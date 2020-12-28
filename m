@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C36B2E394C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E99F72E3D91
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388156AbgL1NVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:21:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
+        id S2440150AbgL1ORK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:17:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387952AbgL1NVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:21:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B4E02076D;
-        Mon, 28 Dec 2020 13:20:57 +0000 (UTC)
+        id S2441275AbgL1OQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:16:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27247229C6;
+        Mon, 28 Dec 2020 14:16:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161658;
-        bh=sgF4Q3ov+2pWL1fm3BA2gwI9U7s0BINqtbqU6jWGU90=;
+        s=korg; t=1609164974;
+        bh=+UVOVBXimYoObFCQp8SN04LodEhgzRXmhBpGwt81flQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qFgFJDcjgWmXZICtwobBxJjxex110x5mRNcUuTsI5faXpbX51kNgqt64VXAjgBqal
-         GtNKuKgoo3SdsaCIKd2iK6Qs/zpjHme42lPdM/ozhfeFWohnytd3gcVcO9Hy+bJKQI
-         jIyLmkT1Jnn+nJ33MuTDExcxaksRntLQPjja6HL0=
+        b=bmpm4nMZXT3quni7mEvhnoXrd+bjxYWN49Rh07oS4Rj3ODX4JK2fx3wWzZJw2hI1t
+         WnCG3euZULDEqR69S9n3LKCzcQWE+B2q1hQQ23vKZ+vAxZQlycRAfRu2MedvjjIc8o
+         CJUArHF0YQWyv8A8QU4UWsUEd4ZgJDSlpBtujCuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Jun <jun.li@nxp.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.19 043/346] xhci: Give USB2 ports time to enter U3 in bus suspend
-Date:   Mon, 28 Dec 2020 13:46:02 +0100
-Message-Id: <20201228124921.872006343@linuxfoundation.org>
+        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 365/717] powerpc/pseries/hibernation: remove redundant cacheinfo update
+Date:   Mon, 28 Dec 2020 13:46:03 +0100
+Message-Id: <20201228125038.502092541@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jun <jun.li@nxp.com>
+From: Nathan Lynch <nathanl@linux.ibm.com>
 
-commit c1373f10479b624fb6dba0805d673e860f1b421d upstream.
+[ Upstream commit b866459489fe8ef0e92cde3cbd6bbb1af6c4e99b ]
 
-If a USB2 device wakeup is not enabled/supported the link state may
-still be in U0 in xhci_bus_suspend(), where it's then manually put
-to suspended U3 state.
+Partitions with cache nodes in the device tree can encounter the
+following warning on resume:
 
-Just as with selective suspend the device needs time to enter U3
-suspend before continuing with further suspend operations
-(e.g. system suspend), otherwise we may enter system suspend with link
-state in U0.
+CPU 0 already accounted in PowerPC,POWER9@0(Data)
+WARNING: CPU: 0 PID: 3177 at arch/powerpc/kernel/cacheinfo.c:197 cacheinfo_cpu_online+0x640/0x820
 
-[commit message rewording -Mathias]
+These calls to cacheinfo_cpu_offline/online have been redundant since
+commit e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo
+hierarchy post-migration").
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Li Jun <jun.li@nxp.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20201208092912.1773650-6-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo hierarchy post-migration")
+Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201207215200.1785968-25-nathanl@linux.ibm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-hub.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/powerpc/platforms/pseries/suspend.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/usb/host/xhci-hub.c
-+++ b/drivers/usb/host/xhci-hub.c
-@@ -1617,6 +1617,10 @@ retry:
- 	hcd->state = HC_STATE_SUSPENDED;
- 	bus_state->next_statechange = jiffies + msecs_to_jiffies(10);
- 	spin_unlock_irqrestore(&xhci->lock, flags);
-+
-+	if (bus_state->bus_suspended)
-+		usleep_range(5000, 10000);
-+
- 	return 0;
+diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
+index 3eaa9d59dc7ab..64b36a93c33a6 100644
+--- a/arch/powerpc/platforms/pseries/suspend.c
++++ b/arch/powerpc/platforms/pseries/suspend.c
+@@ -13,7 +13,6 @@
+ #include <asm/mmu.h>
+ #include <asm/rtas.h>
+ #include <asm/topology.h>
+-#include "../../kernel/cacheinfo.h"
+ 
+ static u64 stream_id;
+ static struct device suspend_dev;
+@@ -78,9 +77,7 @@ static void pseries_suspend_enable_irqs(void)
+ 	 * Update configuration which can be modified based on device tree
+ 	 * changes during resume.
+ 	 */
+-	cacheinfo_cpu_offline(smp_processor_id());
+ 	post_mobility_fixup();
+-	cacheinfo_cpu_online(smp_processor_id());
  }
  
+ /**
+-- 
+2.27.0
+
 
 
