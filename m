@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED91C2E3F29
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E803F2E3C23
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505610AbgL1Ogq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:36:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40610 "EHLO mail.kernel.org"
+        id S2407851AbgL1N7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:59:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504832AbgL1Ocx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:32:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F2720715;
-        Mon, 28 Dec 2020 14:32:37 +0000 (UTC)
+        id S2407541AbgL1N6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:58:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 025A42063A;
+        Mon, 28 Dec 2020 13:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165958;
-        bh=makajlTgKrkDXtZGtQ05T7vo8w9t6OlI/7TlJLuMcgc=;
+        s=korg; t=1609163918;
+        bh=wWdwbggOAEpP2APycyx8kFOaofaTw6L3Q2Oc8VRWULA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HzSjWSBG2n80G7V/Oe8TQZ8AsSlE1jLt+ir7IEIYoysMy/Xqbx5KBRgmP0PAqAdXb
-         myp3iVPEnF8z7lt3o0X45h+KKihcXDrIZ4p+XinVMIlIFK1rB77TybpKZnSK/iCUJT
-         O/QN5jRIG4uCRTD7+yNSwon+Vvl88DcPvZYfKW0k=
+        b=lgRNHy4yjh0Z2PZdMCN37Yz3zoOvzY5DT45FG05ks4rwVTdnn4cF7T37srKY3OkWI
+         rZycXHXloiuL2Yi+Jy+pTBmoxdRs9K9waBXTM+KpJrHo7GsNQA33fVDcSaALGbKRmf
+         eckheAVEL/l03Va+kpcwG30BUAs8MsfKOlt61Jq4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 675/717] iio: adc: rockchip_saradc: fix missing clk_disable_unprepare() on error in rockchip_saradc_resume
-Date:   Mon, 28 Dec 2020 13:51:13 +0100
-Message-Id: <20201228125053.320979856@linuxfoundation.org>
+        stable@vger.kernel.org, Terry Zhou <bjzhou@marvell.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.4 438/453] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
+Date:   Mon, 28 Dec 2020 13:51:14 +0100
+Message-Id: <20201228124958.299780724@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Terry Zhou <bjzhou@marvell.com>
 
-commit 560c6b914c6ec7d9d9a69fddbb5bf3bf71433e8b upstream.
+commit 6f37689cf6b38fff96de52e7f0d3e78f22803ba0 upstream.
 
-Fix the missing clk_disable_unprepare() of info->pclk
-before return from rockchip_saradc_resume in the error
-handling case when fails to prepare and enable info->clk.
+There is an error in the current code that the XTAL MODE
+pin was set to NB MPP1_31 which should be NB MPP1_9.
+The latch register of NB MPP1_9 has different offset of 0x8.
 
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
-Fixes: 44d6f2ef94f9 ("iio: adc: add driver for Rockchip saradc")
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201103120743.110662-1-miaoqinglang@huawei.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Terry Zhou <bjzhou@marvell.com>
+[pali: Fix pin name in commit message]
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201106100039.11385-1-pali@kernel.org
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/rockchip_saradc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/mvebu/armada-37xx-xtal.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/adc/rockchip_saradc.c
-+++ b/drivers/iio/adc/rockchip_saradc.c
-@@ -462,7 +462,7 @@ static int rockchip_saradc_resume(struct
+--- a/drivers/clk/mvebu/armada-37xx-xtal.c
++++ b/drivers/clk/mvebu/armada-37xx-xtal.c
+@@ -13,8 +13,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
  
- 	ret = clk_prepare_enable(info->clk);
- 	if (ret)
--		return ret;
-+		clk_disable_unprepare(info->pclk);
+-#define NB_GPIO1_LATCH	0xC
+-#define XTAL_MODE	    BIT(31)
++#define NB_GPIO1_LATCH	0x8
++#define XTAL_MODE	    BIT(9)
  
- 	return ret;
- }
+ static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
+ {
 
 
