@@ -2,28 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9A82E42EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB962E3B92
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406943AbgL1Nvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:51:36 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10086 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406922AbgL1Nvd (ORCPT
+        id S2406986AbgL1Nvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:51:47 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:10370 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406945AbgL1Nvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:51:33 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D4Jnm3qbhzMBTJ;
-        Mon, 28 Dec 2020 21:49:48 +0800 (CST)
+        Mon, 28 Dec 2020 08:51:38 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D4Jp76KXnz7MGL;
+        Mon, 28 Dec 2020 21:50:07 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 28 Dec 2020 21:50:41 +0800
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 28 Dec 2020 21:50:49 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+To:     <patrik.r.jakobsson@gmail.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] i2c: busses: Use DEFINE_SPINLOCK() for spinlock
-Date:   Mon, 28 Dec 2020 21:51:20 +0800
-Message-ID: <20201228135120.28678-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] gpu: drm: gma500: Use DEFINE_SPINLOCK() for spinlock
+Date:   Mon, 28 Dec 2020 21:51:28 +0800
+Message-ID: <20201228135128.28733-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,30 +41,30 @@ rather than explicitly calling spin_lock_init().
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/i2c/busses/i2c-elektor.c | 3 +--
+ drivers/gpu/drm/gma500/power.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-elektor.c b/drivers/i2c/busses/i2c-elektor.c
-index 140426db28df..671f9ac8387e 100644
---- a/drivers/i2c/busses/i2c-elektor.c
-+++ b/drivers/i2c/busses/i2c-elektor.c
-@@ -49,7 +49,7 @@ static int mmapped;
+diff --git a/drivers/gpu/drm/gma500/power.c b/drivers/gpu/drm/gma500/power.c
+index b361e41c6acd..cfb0a1906950 100644
+--- a/drivers/gpu/drm/gma500/power.c
++++ b/drivers/gpu/drm/gma500/power.c
+@@ -36,7 +36,7 @@
+ #include <linux/pm_runtime.h>
  
- static wait_queue_head_t pcf_wait;
- static int pcf_pending;
--static spinlock_t lock;
-+static DEFINE_SPINLOCK(lock);
+ static DEFINE_MUTEX(power_mutex);	/* Serialize power ops */
+-static spinlock_t power_ctrl_lock;	/* Serialize power claim */
++static DEFINE_SPINLOCK(power_ctrl_lock);	/* Serialize power claim */
  
- static struct i2c_adapter pcf_isa_ops;
+ /**
+  *	gma_power_init		-	initialise power manager
+@@ -55,7 +55,6 @@ void gma_power_init(struct drm_device *dev)
+ 	dev_priv->display_power = true;	/* We start active */
+ 	dev_priv->display_count = 0;	/* Currently no users */
+ 	dev_priv->suspended = false;	/* And not suspended */
+-	spin_lock_init(&power_ctrl_lock);
  
-@@ -132,7 +132,6 @@ static irqreturn_t pcf_isa_handler(int this_irq, void *dev_id) {
- 
- static int pcf_isa_init(void)
- {
--	spin_lock_init(&lock);
- 	if (!mmapped) {
- 		if (!request_region(base, 2, pcf_isa_ops.name)) {
- 			printk(KERN_ERR "%s: requested I/O region (%#x:2) is "
+ 	if (dev_priv->ops->init_pm)
+ 		dev_priv->ops->init_pm(dev);
 -- 
 2.22.0
 
