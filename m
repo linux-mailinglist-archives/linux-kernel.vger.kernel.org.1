@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7074F2E3F16
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CFC2E3EC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505032AbgL1Odc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:33:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39562 "EHLO mail.kernel.org"
+        id S2504665AbgL1OcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:32:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504356AbgL1ObV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:31:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C0382245C;
-        Mon, 28 Dec 2020 14:30:40 +0000 (UTC)
+        id S2504403AbgL1ObY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:31:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BA0D22573;
+        Mon, 28 Dec 2020 14:30:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165841;
-        bh=xni1xbnFKMBXSg0riPo9DOg8dKdcuDT9JL1hPe3zpxA=;
+        s=korg; t=1609165844;
+        bh=1xvNz+z0lFAd+OY6z96kpeCbnLJPAUZvH3SSCJdjepc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dc33vX19f3DCFMfskJ8VwLf04x3I6fbkNeJXXe0qk6z8mJBs6BHArZNZlDh1nGVxN
-         0Fic7eat7UbPuBaQCke+mY68+XdXAen8JF5BK6mrf4t+OkTf2EHBEFgEwJYPMXinbZ
-         Y+x20b5flz5AxwPsGJSdqfZlbvmDRasevOB9xDZI=
+        b=bydR/I2BAjcFVSAAoPh2wYSiZAdiuvOLIFh3hJgCz1qd4DSeDxUHDIT6ZnHcYbwUZ
+         mJGa+NZPx6El3r6SHMi5YoyzN4b7CUHN2JdxQ2DTtXSBhto2ZinmKyTt9riA8yMTA+
+         kN3vwM3+gSDF/Cw9JY+Cr/vSGOXXm7STvd2hyuLc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 672/717] scsi: lpfc: Re-fix use after free in lpfc_rq_buf_free()
-Date:   Mon, 28 Dec 2020 13:51:10 +0100
-Message-Id: <20201228125053.178924484@linuxfoundation.org>
+        stable@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH 5.10 673/717] openat2: reject RESOLVE_BENEATH|RESOLVE_IN_ROOT
+Date:   Mon, 28 Dec 2020 13:51:11 +0100
+Message-Id: <20201228125053.220476023@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -39,46 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <james.smart@broadcom.com>
+From: Aleksa Sarai <cyphar@cyphar.com>
 
-commit e5785d3ec32f5f44dd88cd7b398e496742630469 upstream.
+commit 398840f8bb935d33c64df4ec4fed77a7d24c267d upstream.
 
-Commit 9816ef6ecbc1 ("scsi: lpfc: Use after free in lpfc_rq_buf_free()")
-was made to correct a use after free condition in lpfc_rq_buf_free().
-Unfortunately, a subsequent patch cut on a tree without the fix
-inadvertently reverted the fix.
+This was an oversight in the original implementation, as it makes no
+sense to specify both scoping flags to the same openat2(2) invocation
+(before this patch, the result of such an invocation was equivalent to
+RESOLVE_IN_ROOT being ignored).
 
-Put the fix back: Move the freeing of the rqb_entry to after the print
-function that references it.
+This is a userspace-visible ABI change, but the only user of openat2(2)
+at the moment is LXC which doesn't specify both flags and so no
+userspace programs will break as a result.
 
-Link: https://lore.kernel.org/r/20201020202719.54726-4-james.smart@broadcom.com
-Fixes: 411de511c694 ("scsi: lpfc: Fix RQ empty firmware trap")
-Cc: <stable@vger.kernel.org> # v4.17+
-Signed-off-by: James Smart <james.smart@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: fddb5d430ad9 ("open: introduce openat2(2) syscall")
+Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: <stable@vger.kernel.org> # v5.6+
+Link: https://lore.kernel.org/r/20201027235044.5240-2-cyphar@cyphar.com
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/lpfc/lpfc_mem.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/open.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/scsi/lpfc/lpfc_mem.c
-+++ b/drivers/scsi/lpfc/lpfc_mem.c
-@@ -721,7 +721,6 @@ lpfc_rq_buf_free(struct lpfc_hba *phba,
- 	drqe.address_hi = putPaddrHigh(rqb_entry->dbuf.phys);
- 	rc = lpfc_sli4_rq_put(rqb_entry->hrq, rqb_entry->drq, &hrqe, &drqe);
- 	if (rc < 0) {
--		(rqbp->rqb_free_buffer)(phba, rqb_entry);
- 		lpfc_printf_log(phba, KERN_ERR, LOG_INIT,
- 				"6409 Cannot post to HRQ %d: %x %x %x "
- 				"DRQ %x %x\n",
-@@ -731,6 +730,7 @@ lpfc_rq_buf_free(struct lpfc_hba *phba,
- 				rqb_entry->hrq->entry_count,
- 				rqb_entry->drq->host_index,
- 				rqb_entry->drq->hba_index);
-+		(rqbp->rqb_free_buffer)(phba, rqb_entry);
- 	} else {
- 		list_add_tail(&rqb_entry->hbuf.list, &rqbp->rqb_buffer_list);
- 		rqbp->buffer_count++;
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -1010,6 +1010,10 @@ inline int build_open_flags(const struct
+ 	if (how->resolve & ~VALID_RESOLVE_FLAGS)
+ 		return -EINVAL;
+ 
++	/* Scoping flags are mutually exclusive. */
++	if ((how->resolve & RESOLVE_BENEATH) && (how->resolve & RESOLVE_IN_ROOT))
++		return -EINVAL;
++
+ 	/* Deal with the mode. */
+ 	if (WILL_CREATE(flags)) {
+ 		if (how->mode & ~S_IALLUGO)
 
 
