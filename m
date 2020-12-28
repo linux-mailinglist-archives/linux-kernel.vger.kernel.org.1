@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0042E6718
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0156E2E6879
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732377AbgL1NOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:14:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41832 "EHLO mail.kernel.org"
+        id S2442176AbgL1Qhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:37:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732320AbgL1NN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:13:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7897207CF;
-        Mon, 28 Dec 2020 13:13:40 +0000 (UTC)
+        id S1729822AbgL1NBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:01:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30CC9207C9;
+        Mon, 28 Dec 2020 13:01:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161221;
-        bh=b4HI2o2L0UGgvI4NCxWbGluFCSpvWLmEED1AhU6H+18=;
+        s=korg; t=1609160479;
+        bh=HJIhZb/jp000vfo5nikW6TJi20kwbfRo40g+g5sqEZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FYuLkqnzICX7lxNOCDiwE65j917rc6OPNcMyl73YyjPc6SuoZdcFw5CXk+VcrwVtE
-         RluFB0ZnfNe1F0GHo6sF8BJJjwvaE2gSgIlaTERHaa1XuGsLvcaAgj96CwwXQzveA5
-         itLL7WmqDz7VKLzum8q0Mo5Z5q1iPHdDS/Ag+uzQ=
+        b=PM/aYrUFYhPGEGvQ3z4s3kBAt7rzXaSbBOD3yYMBRNbbCUHFw5g+KohL1kIyKrwkz
+         U2yyNnY3NgE3Cb5uvvv38oHFAS1KvJHwILgrn5W3pH0UCk1jjGCATXsbf4e0F+trYL
+         5J1qxpN9xmvZH+B9URoF8EdD0XoY+BItGxEeFOtU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Daniel T. Lee" <danieltimlee@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 113/242] samples: bpf: Fix lwt_len_hist reusing previous BPF map
-Date:   Mon, 28 Dec 2020 13:48:38 +0100
-Message-Id: <20201228124910.254906372@linuxfoundation.org>
+Subject: [PATCH 4.9 066/175] staging: greybus: codecs: Fix reference counter leak in error handling
+Date:   Mon, 28 Dec 2020 13:48:39 +0100
+Message-Id: <20201228124856.448340696@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel T. Lee <danieltimlee@gmail.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 0afe0a998c40085a6342e1aeb4c510cccba46caf ]
+[ Upstream commit 3952659a6108f77a0d062d8e8487bdbdaf52a66c ]
 
-Currently, lwt_len_hist's map lwt_len_hist_map is uses pinning, and the
-map isn't cleared on test end. This leds to reuse of that map for
-each test, which prevents the results of the test from being accurate.
+gb_pm_runtime_get_sync has increased the usage counter of the device here.
+Forgetting to call gb_pm_runtime_put_noidle will result in usage counter
+leak in the error branch of (gbcodec_hw_params and gbcodec_prepare). We
+fixed it by adding it.
 
-This commit fixes the problem by removing of pinned map from bpffs.
-Also, this commit add the executable permission to shell script
-files.
-
-Fixes: f74599f7c5309 ("bpf: Add tests and samples for LWT-BPF")
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20201124090310.24374-7-danieltimlee@gmail.com
+Fixes: c388ae7696992 ("greybus: audio: Update pm runtime support in dai_ops callback")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201109131347.1725288-2-zhangqilong3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/lwt_len_hist.sh | 2 ++
- samples/bpf/test_lwt_bpf.sh | 0
- 2 files changed, 2 insertions(+)
- mode change 100644 => 100755 samples/bpf/lwt_len_hist.sh
- mode change 100644 => 100755 samples/bpf/test_lwt_bpf.sh
+ drivers/staging/greybus/audio_codec.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/samples/bpf/lwt_len_hist.sh b/samples/bpf/lwt_len_hist.sh
-old mode 100644
-new mode 100755
-index 090b96eaf7f76..0eda9754f50b8
---- a/samples/bpf/lwt_len_hist.sh
-+++ b/samples/bpf/lwt_len_hist.sh
-@@ -8,6 +8,8 @@ VETH1=tst_lwt1b
- TRACE_ROOT=/sys/kernel/debug/tracing
- 
- function cleanup {
-+	# To reset saved histogram, remove pinned map
-+	rm /sys/fs/bpf/tc/globals/lwt_len_hist_map
- 	ip route del 192.168.253.2/32 dev $VETH0 2> /dev/null
- 	ip link del $VETH0 2> /dev/null
- 	ip link del $VETH1 2> /dev/null
-diff --git a/samples/bpf/test_lwt_bpf.sh b/samples/bpf/test_lwt_bpf.sh
-old mode 100644
-new mode 100755
+diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
+index 8a0744b58a329..4c2d6c2d4fb41 100644
+--- a/drivers/staging/greybus/audio_codec.c
++++ b/drivers/staging/greybus/audio_codec.c
+@@ -491,6 +491,7 @@ static int gbcodec_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret) {
+ 		dev_err_ratelimited(dai->dev, "%d: Error during set_config\n",
+ 				    ret);
++		gb_pm_runtime_put_noidle(bundle);
+ 		mutex_unlock(&codec->lock);
+ 		return ret;
+ 	}
+@@ -562,6 +563,7 @@ static int gbcodec_prepare(struct snd_pcm_substream *substream,
+ 		break;
+ 	}
+ 	if (ret) {
++		gb_pm_runtime_put_noidle(bundle);
+ 		mutex_unlock(&codec->lock);
+ 		dev_err_ratelimited(dai->dev, "set_data_size failed:%d\n",
+ 				     ret);
 -- 
 2.27.0
 
