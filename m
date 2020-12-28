@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79392E3795
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2482E38DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729005AbgL1M5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:57:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53784 "EHLO mail.kernel.org"
+        id S1733186AbgL1NQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:16:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728953AbgL1M51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:57:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCDE6208BA;
-        Mon, 28 Dec 2020 12:56:45 +0000 (UTC)
+        id S1732835AbgL1NQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:16:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3355022583;
+        Mon, 28 Dec 2020 13:15:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160206;
-        bh=qA4XfFoJXSk7xNjMcRZKS/oFgOclCgHcjJNDgC90tY0=;
+        s=korg; t=1609161345;
+        bh=JevaJKgB0OQZVfFrtoZeKjvd2DOI6bStpsdjPtf2Kkk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pMfGYHLlAUJZvDHAuF5E27xYLVsH+miRGuoN7ITCTvDATJWM6DEV+ZQBdvCy9ClGK
-         bEi0aDiI7kTKFj8zAKAREIwSABzNCCv7/9r6bWDZ97fA6Kl/r/+BRUaPKJYj11MR7t
-         9fXcy+tZ8P2OAG9OgxfroETY41btSvGBsilXlQhk=
+        b=ubMcuKju+q2r5TiykRdJOgI+us1K53YmT5FRK9XEOi+t3ASiHl5T3oTAuLfImM8z1
+         odsfxI7Vay0Cq0HgnNeoSEUCShopf9caP3qgmlGJ0dqo2hjQEKPfvsu6odQ/NOtkFD
+         0NztR1QZHhPq+k70OsS7hCbuEZJtbeThBAD3+QiY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.4 105/132] s390/dasd: fix list corruption of lcu list
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.14 184/242] Input: cyapa_gen6 - fix out-of-bounds stack access
 Date:   Mon, 28 Dec 2020 13:49:49 +0100
-Message-Id: <20201228124851.484831378@linuxfoundation.org>
+Message-Id: <20201228124913.747270605@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 53a7f655834c7c335bf683f248208d4fbe4b47bc upstream.
+commit f051ae4f6c732c231046945b36234e977f8467c6 upstream.
 
-In dasd_alias_disconnect_device_from_lcu the device is removed from any
-list on the LCU. Afterwards the LCU is removed from the lcu list if it
-does not contain devices any longer.
+gcc -Warray-bounds warns about a serious bug in
+cyapa_pip_retrieve_data_structure:
 
-The lcu->lock protects the lcu from parallel updates. But to cancel all
-workers and wait for completion the lcu->lock has to be unlocked.
+drivers/input/mouse/cyapa_gen6.c: In function 'cyapa_pip_retrieve_data_structure.constprop':
+include/linux/unaligned/access_ok.h:40:17: warning: array subscript -1 is outside array bounds of 'struct retrieve_data_struct_cmd[1]' [-Warray-bounds]
+   40 |  *((__le16 *)p) = cpu_to_le16(val);
+drivers/input/mouse/cyapa_gen6.c:569:13: note: while referencing 'cmd'
+  569 |  } __packed cmd;
+      |             ^~~
 
-If two devices are removed in parallel and both are removed from the LCU
-the first device that takes the lcu->lock again will delete the LCU because
-it is already empty but the second device also tries to free the LCU which
-leads to a list corruption of the lcu list.
+Apparently the '-2' was added to the pointer instead of the value,
+writing garbage into the stack next to this variable.
 
-Fix by removing the device right before the lcu is checked without
-unlocking the lcu->lock in between.
-
-Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
+Fixes: c2c06c41f700 ("Input: cyapa - add gen6 device module support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20201026161332.3708389-1-arnd@kernel.org
 Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/block/dasd_alias.c |    2 +-
+ drivers/input/mouse/cyapa_gen6.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/s390/block/dasd_alias.c
-+++ b/drivers/s390/block/dasd_alias.c
-@@ -258,7 +258,6 @@ void dasd_alias_disconnect_device_from_l
- 		return;
- 	device->discipline->get_uid(device, &uid);
- 	spin_lock_irqsave(&lcu->lock, flags);
--	list_del_init(&device->alias_list);
- 	/* make sure that the workers don't use this device */
- 	if (device == lcu->suc_data.device) {
- 		spin_unlock_irqrestore(&lcu->lock, flags);
-@@ -285,6 +284,7 @@ void dasd_alias_disconnect_device_from_l
+--- a/drivers/input/mouse/cyapa_gen6.c
++++ b/drivers/input/mouse/cyapa_gen6.c
+@@ -573,7 +573,7 @@ static int cyapa_pip_retrieve_data_struc
  
- 	spin_lock_irqsave(&aliastree.lock, flags);
- 	spin_lock(&lcu->lock);
-+	list_del_init(&device->alias_list);
- 	if (list_empty(&lcu->grouplist) &&
- 	    list_empty(&lcu->active_devices) &&
- 	    list_empty(&lcu->inactive_devices)) {
+ 	memset(&cmd, 0, sizeof(cmd));
+ 	put_unaligned_le16(PIP_OUTPUT_REPORT_ADDR, &cmd.head.addr);
+-	put_unaligned_le16(sizeof(cmd), &cmd.head.length - 2);
++	put_unaligned_le16(sizeof(cmd) - 2, &cmd.head.length);
+ 	cmd.head.report_id = PIP_APP_CMD_REPORT_ID;
+ 	cmd.head.cmd_code = PIP_RETRIEVE_DATA_STRUCTURE;
+ 	put_unaligned_le16(read_offset, &cmd.read_offset);
 
 
