@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98E02E3A72
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DC12E64E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390604AbgL1NhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:37:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36744 "EHLO mail.kernel.org"
+        id S2393095AbgL1PyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:54:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390757AbgL1Ngp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:36:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5B0B208B3;
-        Mon, 28 Dec 2020 13:36:29 +0000 (UTC)
+        id S2390663AbgL1NhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:37:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8509120719;
+        Mon, 28 Dec 2020 13:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162590;
-        bh=L9b+n1hCMZtqDIVFQ/pZDCvENED2Cxb2QKO1Mlgv+Gs=;
+        s=korg; t=1609162593;
+        bh=3zC6EWdok2I3DAvM5fV1Ahd3MB2We0PH0OBlRlqky0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JGEW5unHfLPVB89ad7KOkA5hKq1QvXCxwk/I6p1rwS006iFxMUOmPeykCikJRKIsV
-         BLGJJ5YKAA2unY7e2edvw7ljmQyjbsAxWU7PK4Jc/mj+DFU66y7urc+fhs0yCf3jGO
-         nK42Vv8W39GpQOOnE20FT2gCqGRi+YgCML/RuyBE=
+        b=LjLjwj4Cv4Y+2F6o4iMT0hWJecs93BM5t6Z1BPAncLvRPIhm5c5LaWAnR3JgsRtyP
+         4fXLjmTBJFVgPiazClFFNc4vkBJ2w1e9VoGDQcr/UBID0g9oZ2BkCkLy6t1zwta7i8
+         D791zu6RX4oBfaQiEAjHzRORPsXQ5NsKYW1BErkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.19 323/346] mtd: spinand: Fix OOB read
-Date:   Mon, 28 Dec 2020 13:50:42 +0100
-Message-Id: <20201228124935.397724080@linuxfoundation.org>
+        stable@vger.kernel.org, Ron Minnich <rminnich@google.com>,
+        Sven Eckelmann <sven@narfation.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 4.19 324/346] mtd: parser: cmdline: Fix parsing of part-names with colons
+Date:   Mon, 28 Dec 2020 13:50:43 +0100
+Message-Id: <20201228124935.445949358@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -38,35 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Sven Eckelmann <sven@narfation.org>
 
-commit 868cbe2a6dcee451bd8f87cbbb2a73cf463b57e5 upstream.
+commit 639a82434f16a6df0ce0e7c8595976f1293940fd upstream.
 
-So far OOB have never been used in SPI-NAND, add the missing memcpy to
-make it work properly.
+Some devices (especially QCA ones) are already using hardcoded partition
+names with colons in it. The OpenMesh A62 for example provides following
+mtd relevant information via cmdline:
 
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
+  root=31:11 mtdparts=spi0.0:256k(0:SBL1),128k(0:MIBIB),384k(0:QSEE),64k(0:CDT),64k(0:DDRPARAMS),64k(0:APPSBLENV),512k(0:APPSBL),64k(0:ART),64k(custom),64k(0:KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive) rootfsname=rootfs rootwait
+
+The change to split only on the last colon between mtd-id and partitions
+will cause newpart to see following string for the first partition:
+
+  KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive)
+
+Such a partition list cannot be parsed and thus the device fails to boot.
+
+Avoid this behavior by making sure that the start of the first part-name
+("(") will also be the last byte the mtd-id split algorithm is using for
+its colon search.
+
+Fixes: eb13fa022741 ("mtd: parser: cmdline: Support MTD names containing one or more colons")
 Cc: stable@vger.kernel.org
+Cc: Ron Minnich <rminnich@google.com>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20201001102014.20100-6-miquel.raynal@bootlin.com
+Link: https://lore.kernel.org/linux-mtd/20201124062506.185392-1-sven@narfation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/spi/core.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/cmdlinepart.c |   14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -378,6 +378,10 @@ static int spinand_write_to_cache_op(str
- 		}
- 	}
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -231,7 +231,7 @@ static int mtdpart_setup_real(char *s)
+ 		struct cmdline_mtd_partition *this_mtd;
+ 		struct mtd_partition *parts;
+ 		int mtd_id_len, num_parts;
+-		char *p, *mtd_id, *semicol;
++		char *p, *mtd_id, *semicol, *open_parenth;
  
-+	if (req->ooblen)
-+		memcpy(req->oobbuf.in, spinand->oobbuf + req->ooboffs,
-+		       req->ooblen);
+ 		/*
+ 		 * Replace the first ';' by a NULL char so strrchr can work
+@@ -241,6 +241,14 @@ static int mtdpart_setup_real(char *s)
+ 		if (semicol)
+ 			*semicol = '\0';
+ 
++		/*
++		 * make sure that part-names with ":" will not be handled as
++		 * part of the mtd-id with an ":"
++		 */
++		open_parenth = strchr(s, '(');
++		if (open_parenth)
++			*open_parenth = '\0';
 +
- 	return 0;
- }
+ 		mtd_id = s;
  
+ 		/*
+@@ -250,6 +258,10 @@ static int mtdpart_setup_real(char *s)
+ 		 */
+ 		p = strrchr(s, ':');
+ 
++		/* Restore the '(' now. */
++		if (open_parenth)
++			*open_parenth = '(';
++
+ 		/* Restore the ';' now. */
+ 		if (semicol)
+ 			*semicol = ';';
 
 
