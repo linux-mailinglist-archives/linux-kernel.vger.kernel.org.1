@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB072E42D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C092E3A65
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392709AbgL1P2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:28:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58430 "EHLO mail.kernel.org"
+        id S2390512AbgL1NgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:36:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406523AbgL1N5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:57:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0304420782;
-        Mon, 28 Dec 2020 13:56:50 +0000 (UTC)
+        id S2390265AbgL1Nfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:35:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C347E2063A;
+        Mon, 28 Dec 2020 13:35:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163811;
-        bh=FgAvX5q8uBUQ9ARkg1kdFr4ER2t34gxlaxZVlDPXBsM=;
+        s=korg; t=1609162537;
+        bh=L/E+7J6dGfw5xTQiGkp8ecsc9W6Ce2KLtFxFlBvbHqM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DcDvcdGOYKEiRuCfBBMeKjVjG5L7tC2mutg2vreiCSRZIg2Euke563HXnvQRzIjXa
-         OV+H4QYssbMc52hOQXvza0X5Ls/C6GgaJRJJceQiZHY6XGAw44B7db1XKI7FiUWxxL
-         cK4OSfBykZNi5/Bt62wP0xQXFnXOZ+eQas+xwFbo=
+        b=nekKmobkUG0cX2a5jdEU1qYp91b+Q9yAIu1iQBtKzmJr0BX/lQSPC4BWSP6sIkGIM
+         h/5e5ksF+9jXq1SRqZHjjK0xcQycBglvtfvyOtus6yeSFR8OAgXS8NgkKXN+qRqUCJ
+         6qQqbZ8crEpnPvA/ZOYEAVO5vZD64MI8/eNzRSy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Burkart <tom@aussec.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 416/453] spi: atmel-quadspi: Fix AHB memory accesses
-Date:   Mon, 28 Dec 2020 13:50:52 +0100
-Message-Id: <20201228124957.240440116@linuxfoundation.org>
+        stable@vger.kernel.org, Zhao Heming <heming.zhao@suse.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH 4.19 334/346] md/cluster: block reshape with remote resync job
+Date:   Mon, 28 Dec 2020 13:50:53 +0100
+Message-Id: <20201228124935.917152773@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+From: Zhao Heming <heming.zhao@suse.com>
 
-commit cac8c821059639b015586abf61623c62cc549a13 upstream.
+commit a8da01f79c89755fad55ed0ea96e8d2103242a72 upstream.
 
-Following error was seen when mounting a 16MByte ubifs:
-UBIFS error (ubi0:0 pid 1893): check_lpt_type.constprop.6: invalid type (15) in LPT node type
+Reshape request should be blocked with ongoing resync job. In cluster
+env, a node can start resync job even if the resync cmd isn't executed
+on it, e.g., user executes "mdadm --grow" on node A, sometimes node B
+will start resync job. However, current update_raid_disks() only check
+local recovery status, which is incomplete. As a result, we see user will
+execute "mdadm --grow" successfully on local, while the remote node deny
+to do reshape job when it doing resync job. The inconsistent handling
+cause array enter unexpected status. If user doesn't observe this issue
+and continue executing mdadm cmd, the array doesn't work at last.
 
-QSPI_IFR.TFRTYP was not set correctly. When data transfer is enabled
-and one wants to access the serial memory through AHB in order to:
- - read in the serial memory, but not a memory data, for example
-   a JEDEC-ID, QSPI_IFR.TFRTYP must be written to '0' (both sama5d2
-   and sam9x60).
- - read in the serial memory, and particularly a memory data,
-   TFRTYP must be written to '1' (both sama5d2 and sam9x60).
- - write in the serial memory, but not a memory data, for example
-   writing the configuration or the QSPI_SR, TFRTYP must be written
-   to '2' for sama5d2 and to '0' for sam9x60.
- - write in the serial memory in particular to program a memory data,
-   TFRTYP must be written to '3' for sama5d2 and to '1' for sam9x60.
+Fix this issue by blocking reshape request. When node executes "--grow"
+and detects ongoing resync, it should stop and report error to user.
 
-Fix the setting of the QSPI_IFR.TFRTYP field.
+The following script reproduces the issue with ~100% probability.
+(two nodes share 3 iSCSI luns: sdg/sdh/sdi. Each lun size is 1GB)
+```
+ # on node1, node2 is the remote node.
+ssh root@node2 "mdadm -S --scan"
+mdadm -S --scan
+for i in {g,h,i};do dd if=/dev/zero of=/dev/sd$i oflag=direct bs=1M \
+count=20; done
 
-Fixes: 2d30ac5ed633 ("mtd: spi-nor: atmel-quadspi: Use spi-mem interface for atmel-quadspi driver")
-Cc: <stable@vger.kernel.org> # v5.0+
-Reported-by: Tom Burkart <tom@aussec.com>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20201207135959.154124-2-tudor.ambarus@microchip.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+mdadm -C /dev/md0 -b clustered -e 1.2 -n 2 -l mirror /dev/sdg /dev/sdh
+ssh root@node2 "mdadm -A /dev/md0 /dev/sdg /dev/sdh"
+
+sleep 5
+
+mdadm --manage --add /dev/md0 /dev/sdi
+mdadm --wait /dev/md0
+mdadm --grow --raid-devices=3 /dev/md0
+
+mdadm /dev/md0 --fail /dev/sdg
+mdadm /dev/md0 --remove /dev/sdg
+mdadm --grow --raid-devices=2 /dev/md0
+```
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Zhao Heming <heming.zhao@suse.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/atmel-quadspi.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/md/md.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/spi/atmel-quadspi.c
-+++ b/drivers/spi/atmel-quadspi.c
-@@ -284,10 +284,14 @@ static int atmel_qspi_set_cfg(struct atm
- 	if (dummy_cycles)
- 		ifr |= QSPI_IFR_NBDUM(dummy_cycles);
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -6895,6 +6895,7 @@ static int update_raid_disks(struct mdde
+ 		return -EINVAL;
+ 	if (mddev->sync_thread ||
+ 	    test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) ||
++	    test_bit(MD_RESYNCING_REMOTE, &mddev->recovery) ||
+ 	    mddev->reshape_position != MaxSector)
+ 		return -EBUSY;
  
--	/* Set data enable */
--	if (op->data.nbytes)
-+	/* Set data enable and data transfer type. */
-+	if (op->data.nbytes) {
- 		ifr |= QSPI_IFR_DATAEN;
+@@ -9241,8 +9242,11 @@ static void check_sb_changes(struct mdde
+ 		}
+ 	}
  
-+		if (op->addr.nbytes)
-+			ifr |= QSPI_IFR_TFRTYP_MEM;
+-	if (mddev->raid_disks != le32_to_cpu(sb->raid_disks))
+-		update_raid_disks(mddev, le32_to_cpu(sb->raid_disks));
++	if (mddev->raid_disks != le32_to_cpu(sb->raid_disks)) {
++		ret = update_raid_disks(mddev, le32_to_cpu(sb->raid_disks));
++		if (ret)
++			pr_warn("md: updating array disks failed. %d\n", ret);
 +	}
-+
- 	/*
- 	 * If the QSPI controller is set in regular SPI mode, set it in
- 	 * Serial Memory Mode (SMM).
-@@ -312,7 +316,7 @@ static int atmel_qspi_set_cfg(struct atm
- 			writel_relaxed(icr, aq->regs + QSPI_WICR);
- 		writel_relaxed(ifr, aq->regs + QSPI_IFR);
- 	} else {
--		if (op->data.dir == SPI_MEM_DATA_OUT)
-+		if (op->data.nbytes && op->data.dir == SPI_MEM_DATA_OUT)
- 			ifr |= QSPI_IFR_SAMA5D2_WRITE_TRSFR;
  
- 		/* Set QSPI Instruction Frame registers */
+ 	/* Finally set the event to be up to date */
+ 	mddev->events = le64_to_cpu(sb->events);
 
 
