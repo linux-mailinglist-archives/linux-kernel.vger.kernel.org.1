@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392752E3B57
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8472E389D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406033AbgL1Ns6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:48:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49620 "EHLO mail.kernel.org"
+        id S1732086AbgL1NMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:12:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405981AbgL1Nsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:48:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C29792063A;
-        Mon, 28 Dec 2020 13:48:39 +0000 (UTC)
+        id S1731979AbgL1NMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:12:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25A9720728;
+        Mon, 28 Dec 2020 13:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163320;
-        bh=2fe5uT9KEneNCTSSaG1epWrlmrWDDsGDQDg1DmXlT6I=;
+        s=korg; t=1609161117;
+        bh=c4B3fO1OtDoA3nScQPDsP5CUgnB+CtrDeTI9K8bCwjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PxMY9cokmAifCO89sm+0yyQrhcU5IE/fIXM0FTB1M8kQODYYOmZmt9+yBDmdyuXQU
-         y6vBbiB63/pE0hz0ZD6nbdkf5NePuQbzC4Bu2bLmKNJz8D7L+RmmYnzI+4uH7Kj1Fn
-         nAlxvIZyEHJdVh2D83A8C0LSVy8EX5qhsYV/wqME=
+        b=ElcEqNXiHUVHM/KCv8e5oKOynpDo9m7kOvk4pHmnyIPB8VqUetYbhKGde6mAafRqm
+         yZ8+QtTvhEzpEx1JsTnJ+rBvTyGI4ApuWKmQuMbLCWUX5f5zh72lvatVhQIuscFG7k
+         tv0g18X5rg8TKMPC76RTGRAzCHcF3Y+UJ/nQyOOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 246/453] powerpc/pseries/hibernation: remove redundant cacheinfo update
+Subject: [PATCH 4.14 077/242] ASoC: pcm: DRAIN support reactivation
 Date:   Mon, 28 Dec 2020 13:48:02 +0100
-Message-Id: <20201228124949.064658270@linuxfoundation.org>
+Message-Id: <20201228124908.478135413@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-[ Upstream commit b866459489fe8ef0e92cde3cbd6bbb1af6c4e99b ]
+[ Upstream commit 4c22b80f61540ea99d9b4af0127315338755f05b ]
 
-Partitions with cache nodes in the device tree can encounter the
-following warning on resume:
+soc-pcm's dpcm_fe_dai_do_trigger() supported DRAIN commnad up to kernel
+v5.4 where explicit switch(cmd) has been introduced which takes into
+account all SNDRV_PCM_TRIGGER_xxx but SNDRV_PCM_TRIGGER_DRAIN. Update
+switch statement to reactive support for it.
 
-CPU 0 already accounted in PowerPC,POWER9@0(Data)
-WARNING: CPU: 0 PID: 3177 at arch/powerpc/kernel/cacheinfo.c:197 cacheinfo_cpu_online+0x640/0x820
+As DRAIN is somewhat unique by lacking negative/stop counterpart, bring
+behaviour of dpcm_fe_dai_do_trigger() for said command back to its
+pre-v5.4 state by adding it to START/RESUME/PAUSE_RELEASE group.
 
-These calls to cacheinfo_cpu_offline/online have been redundant since
-commit e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo
-hierarchy post-migration").
-
-Fixes: e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo hierarchy post-migration")
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201207215200.1785968-25-nathanl@linux.ibm.com
+Fixes: acbf27746ecf ("ASoC: pcm: update FE/BE trigger order based on the command")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20201026100129.8216-1-cezary.rojewski@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/suspend.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/soc-pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
-index 0749ccb994002..e5ecadfb5dea2 100644
---- a/arch/powerpc/platforms/pseries/suspend.c
-+++ b/arch/powerpc/platforms/pseries/suspend.c
-@@ -13,7 +13,6 @@
- #include <asm/mmu.h>
- #include <asm/rtas.h>
- #include <asm/topology.h>
--#include "../../kernel/cacheinfo.h"
- 
- static u64 stream_id;
- static struct device suspend_dev;
-@@ -78,9 +77,7 @@ static void pseries_suspend_enable_irqs(void)
- 	 * Update configuration which can be modified based on device tree
- 	 * changes during resume.
- 	 */
--	cacheinfo_cpu_offline(smp_processor_id());
- 	post_mobility_fixup();
--	cacheinfo_cpu_online(smp_processor_id());
- }
- 
- /**
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index fd4b71729eedd..e995e96ab9030 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2172,6 +2172,7 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		case SNDRV_PCM_TRIGGER_START:
+ 		case SNDRV_PCM_TRIGGER_RESUME:
+ 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		case SNDRV_PCM_TRIGGER_DRAIN:
+ 			ret = dpcm_dai_trigger_fe_be(substream, cmd, true);
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
+@@ -2189,6 +2190,7 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		case SNDRV_PCM_TRIGGER_START:
+ 		case SNDRV_PCM_TRIGGER_RESUME:
+ 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		case SNDRV_PCM_TRIGGER_DRAIN:
+ 			ret = dpcm_dai_trigger_fe_be(substream, cmd, false);
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
 -- 
 2.27.0
 
