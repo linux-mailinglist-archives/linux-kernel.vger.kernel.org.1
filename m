@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265922E660E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9A32E67A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388957AbgL1NZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:25:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53950 "EHLO mail.kernel.org"
+        id S2633475AbgL1Q1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:27:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388880AbgL1NZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:25:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27C7D208D5;
-        Mon, 28 Dec 2020 13:24:35 +0000 (UTC)
+        id S1730880AbgL1NIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:08:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACE1E2076D;
+        Mon, 28 Dec 2020 13:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161876;
-        bh=fQZgblhjFzDdcEo9QNDDaTdNYYxU6/ECnoa3kOsORnc=;
+        s=korg; t=1609160881;
+        bh=WaveH1Q9AVRFJF+yNl25odc0yleqi42jKABjuKowRTk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dUowhocmN2G+Wkpmy+Mxgws+329TLAGdkYz8t7/Ay/6Yo5g1u1GP6bY/kw0y3KL3r
-         hMbD1LcTUe9C5z5HdM3JbQiZd8O28y4ttaqFJOMRnXUMXPZfruxG/hIrT3/o2I1CRt
-         20bI6u4IgmKqZ8Lco6sONjOInRmqCbXgZngKsUNA=
+        b=zfaaEfGbXNkI+T3SAxCylmLcBM/zKYK1UhKPKglxxGdG1Lhmfi9jcpY5ouuVg6cng
+         88ZjvZvynN2C3sEckyLwI3x4Ep2VS1YpAcFY42C7v3I/ssS4Z+cCONIKtxJW4lpVFS
+         8rnbqxMF8K9wGx+AIOf5VdRv7PPLz+VukCPxUtMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 112/346] crypto: talitos - Endianess in current_desc_hdr()
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 4.14 026/242] USB: add RESET_RESUME quirk for Snapscan 1212
 Date:   Mon, 28 Dec 2020 13:47:11 +0100
-Message-Id: <20201228124925.202873002@linuxfoundation.org>
+Message-Id: <20201228124905.953836204@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +38,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit 195404db27f9533c71fdcb78d32a77075c2cb4a2 ]
+commit 08a02f954b0def3ada8ed6d4b2c7bcb67e885e9c upstream.
 
-current_desc_hdr() compares the value of the current descriptor
-with the next_desc member of the talitos_desc struct.
+I got reports that some models of this old scanner need
+this when using runtime PM.
 
-While the current descriptor is obtained from in_be32() which
-return CPU ordered bytes, next_desc member is in big endian order.
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201207130323.23857-1-oneukum@suse.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Convert the current descriptor into big endian before comparing it
-with next_desc.
-
-This fixes a sparse warning.
-
-Fixes: 37b5e8897eb5 ("crypto: talitos - chain in buffered data for ahash on SEC1")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/talitos.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/core/quirks.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index ea16308fae0a5..7e69d77ea2595 100644
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -492,7 +492,7 @@ static u32 current_desc_hdr(struct device *dev, int ch)
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -189,6 +189,9 @@ static const struct usb_device_id usb_qu
+ 	{ USB_DEVICE(0x06a3, 0x0006), .driver_info =
+ 			USB_QUIRK_CONFIG_INTF_STRINGS },
  
- 	iter = tail;
- 	while (priv->chan[ch].fifo[iter].dma_desc != cur_desc &&
--	       priv->chan[ch].fifo[iter].desc->next_desc != cur_desc) {
-+	       priv->chan[ch].fifo[iter].desc->next_desc != cpu_to_be32(cur_desc)) {
- 		iter = (iter + 1) & (priv->fifo_len - 1);
- 		if (iter == tail) {
- 			dev_err(dev, "couldn't locate current descriptor\n");
-@@ -500,7 +500,7 @@ static u32 current_desc_hdr(struct device *dev, int ch)
- 		}
- 	}
++	/* Agfa SNAPSCAN 1212U */
++	{ USB_DEVICE(0x06bd, 0x0001), .driver_info = USB_QUIRK_RESET_RESUME },
++
+ 	/* Guillemot Webcam Hercules Dualpix Exchange (2nd ID) */
+ 	{ USB_DEVICE(0x06f8, 0x0804), .driver_info = USB_QUIRK_RESET_RESUME },
  
--	if (priv->chan[ch].fifo[iter].desc->next_desc == cur_desc) {
-+	if (priv->chan[ch].fifo[iter].desc->next_desc == cpu_to_be32(cur_desc)) {
- 		struct talitos_edesc *edesc;
- 
- 		edesc = container_of(priv->chan[ch].fifo[iter].desc,
--- 
-2.27.0
-
 
 
