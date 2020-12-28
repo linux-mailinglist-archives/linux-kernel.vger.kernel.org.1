@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF562E3767
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC182E42FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728461AbgL1MzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:55:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51306 "EHLO mail.kernel.org"
+        id S2407252AbgL1NxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:53:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728418AbgL1Myy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:54:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2C022242A;
-        Mon, 28 Dec 2020 12:54:37 +0000 (UTC)
+        id S2406450AbgL1Nu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:50:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67F682072C;
+        Mon, 28 Dec 2020 13:50:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160078;
-        bh=ybeW+MRvfiry6Slx1IHoz96EyqhddNY5zVuH8+nABLg=;
+        s=korg; t=1609163415;
+        bh=sFbIyZ9uA3bLA/H5qOTyait014Jn6mbwR5xYsXwk01I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sAhp2P8zaQOuwMd8z8USbsb69LZJQ5PYw5etE5VYTcgrYo8WaIkS7ZYNqv3Ap4hHY
-         vT5SM16U3gT0MdPel19KPPP1bcz5+c5nqaxPRVpVU2JiZZtCqIYPlgLOauk5xb4uk5
-         mocPRfYMITOicNLSCS0LRENPtk4txGaEfPhy+uVo=
+        b=gM4OeY5sD61O5z4nkzx73KDZJN5oqBK9Gq6UefsZa60O6bxQyMDIWJdY4FYiFRS9g
+         NPLvLNEHEKoCDVf0rS0vsNe7knOgpoMP5G7nfati5qPUT4zqb53lGvVLb8VyMnevd3
+         TH5kOk7RWQmn+RkcFBiTrnJbQ7CIYwZp7r+jmjKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 031/132] Bluetooth: Fix slab-out-of-bounds read in hci_le_direct_adv_report_evt()
+        stable@vger.kernel.org, Wang Wensheng <wangwensheng4@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 279/453] watchdog: Fix potential dereferencing of null pointer
 Date:   Mon, 28 Dec 2020 13:48:35 +0100
-Message-Id: <20201228124847.907457202@linuxfoundation.org>
+Message-Id: <20201228124950.640960345@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Wang Wensheng <wangwensheng4@huawei.com>
 
-commit f7e0e8b2f1b0a09b527885babda3e912ba820798 upstream.
+[ Upstream commit 6f733cb2e7db38f8141b14740bcde577844a03b7 ]
 
-`num_reports` is not being properly checked. A malformed event packet with
-a large `num_reports` number makes hci_le_direct_adv_report_evt() read out
-of bounds. Fix it.
+A reboot notifier, which stops the WDT by calling the stop hook without
+any check, would be registered when we set WDOG_STOP_ON_REBOOT flag.
 
-Cc: stable@vger.kernel.org
-Fixes: 2f010b55884e ("Bluetooth: Add support for handling LE Direct Advertising Report events")
-Reported-and-tested-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Howerer we allow the WDT driver to omit the stop hook since commit
+"d0684c8a93549" ("watchdog: Make stop function optional") and provide
+a module parameter for user that controls the WDOG_STOP_ON_REBOOT flag
+in commit 9232c80659e94 ("watchdog: Add stop_on_reboot parameter to
+control reboot policy"). Together that commits make user potential to
+insert a watchdog driver that don't provide a stop hook but with the
+stop_on_reboot parameter set, then dereferencing of null pointer occurs
+on system reboot.
 
+Check the stop hook before registering the reboot notifier to fix the
+issue.
+
+Fixes: d0684c8a9354 ("watchdog: Make stop function optional")
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20201109130512.28121-1-wangwensheng4@huawei.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/watchdog/watchdog_core.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5114,20 +5114,18 @@ static void hci_le_direct_adv_report_evt
- 					 struct sk_buff *skb)
- {
- 	u8 num_reports = skb->data[0];
--	void *ptr = &skb->data[1];
-+	struct hci_ev_le_direct_adv_info *ev = (void *)&skb->data[1];
+diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+index 861daf4f37b28..faa46a666f4c5 100644
+--- a/drivers/watchdog/watchdog_core.c
++++ b/drivers/watchdog/watchdog_core.c
+@@ -255,15 +255,19 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+ 	}
  
--	hci_dev_lock(hdev);
-+	if (!num_reports || skb->len < num_reports * sizeof(*ev) + 1)
-+		return;
- 
--	while (num_reports--) {
--		struct hci_ev_le_direct_adv_info *ev = ptr;
-+	hci_dev_lock(hdev);
- 
-+	for (; num_reports; num_reports--, ev++)
- 		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
- 				   ev->bdaddr_type, &ev->direct_addr,
- 				   ev->direct_addr_type, ev->rssi, NULL, 0);
- 
--		ptr += sizeof(*ev);
--	}
+ 	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
+-		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
 -
- 	hci_dev_unlock(hdev);
- }
+-		ret = register_reboot_notifier(&wdd->reboot_nb);
+-		if (ret) {
+-			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
+-			       wdd->id, ret);
+-			watchdog_dev_unregister(wdd);
+-			ida_simple_remove(&watchdog_ida, id);
+-			return ret;
++		if (!wdd->ops->stop)
++			pr_warn("watchdog%d: stop_on_reboot not supported\n", wdd->id);
++		else {
++			wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
++
++			ret = register_reboot_notifier(&wdd->reboot_nb);
++			if (ret) {
++				pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
++					wdd->id, ret);
++				watchdog_dev_unregister(wdd);
++				ida_simple_remove(&watchdog_ida, id);
++				return ret;
++			}
+ 		}
+ 	}
  
+-- 
+2.27.0
+
 
 
