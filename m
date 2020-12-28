@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C0F2E4355
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DD02E3806
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632767AbgL1PgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:36:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54768 "EHLO mail.kernel.org"
+        id S1730405AbgL1NER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:04:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407188AbgL1Nwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:52:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 680FA20715;
-        Mon, 28 Dec 2020 13:52:14 +0000 (UTC)
+        id S1730306AbgL1NDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D277421D94;
+        Mon, 28 Dec 2020 13:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163535;
-        bh=C/gBNapSyXLn8ieLTufOfneQYnWUQ9QESDsfm6uBEFk=;
+        s=korg; t=1609160593;
+        bh=Q8Jma1sP/c+EfQWsNXNfmNNGb0Xk9HnEbDSWPklweC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oWsnmyp0JUBBTZNcAwl1e0htxDvr+WRXF6LGBIEkiGem0snm+VKAKGOwDwAX2pf95
-         qE2x55pwgSZpcHIQGwQmRfFCF8rMGl+PDQGPmZ8lJdZ/ORP4SPP9l0tb5OmKDWTTre
-         fV/FX8sLefuUWzOONVE5cVuz54SFUG4igt7RgmQg=
+        b=l4Mrqj8zIxLLRMjCCEJDNEGIgU/fJ/3PphKHFFxv+oh71LccZeJUqcb/JJgIMAllo
+         r0MCcEssk52GsFvo6jsOcHChm5im32qJ6a09F0Jm37fP3TyXCMxmlEEMrlS80uzBjG
+         GiXHE292WjmsnpYQejYmvJRdSY0li68eZzzcZsg8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: [PATCH 5.4 320/453] vfio/pci/nvlink2: Do not attempt NPU2 setup on POWER8NVL NPU
-Date:   Mon, 28 Dec 2020 13:49:16 +0100
-Message-Id: <20201228124952.610173617@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Karan Tilak Kumar <kartilak@cisco.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 104/175] scsi: fnic: Fix error return code in fnic_probe()
+Date:   Mon, 28 Dec 2020 13:49:17 +0100
+Message-Id: <20201228124858.290905049@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Kardashevskiy <aik@ozlabs.ru>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit d22f9a6c92de96304c81792942ae7c306f08ac77 upstream.
+[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
 
-We execute certain NPU2 setup code (such as mapping an LPID to a device
-in NPU2) unconditionally if an Nvlink bridge is detected. However this
-cannot succeed on POWER8NVL machines as the init helpers return an error
-other than ENODEV which means the device is there is and setup failed so
-vfio_pci_enable() fails and pass through is not possible.
+Return a negative error code from the error handling case instead of 0 as
+done elsewhere in this function.
 
-This changes the two NPU2 related init helpers to return -ENODEV if
-there is no "memory-region" device tree property as this is
-the distinction between NPU and NPU2.
-
-Tested on
-- POWER9 pvr=004e1201, Ubuntu 19.04 host, Ubuntu 18.04 vm,
-  NVIDIA GV100 10de:1db1 driver 418.39
-- POWER8 pvr=004c0100, RHEL 7.6 host, Ubuntu 16.10 vm,
-  NVIDIA P100 10de:15f9 driver 396.47
-
-Fixes: 7f92891778df ("vfio_pci: Add NVIDIA GV100GL [Tesla V100 SXM2] subdriver")
-Cc: stable@vger.kernel.org # 5.0
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
+Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci_nvlink2.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/scsi/fnic/fnic_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/vfio/pci/vfio_pci_nvlink2.c
-+++ b/drivers/vfio/pci/vfio_pci_nvlink2.c
-@@ -231,7 +231,7 @@ int vfio_pci_nvdia_v100_nvlink2_init(str
- 		return -EINVAL;
+diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
+index 58ce9020d69c5..389c13e1c9788 100644
+--- a/drivers/scsi/fnic/fnic_main.c
++++ b/drivers/scsi/fnic/fnic_main.c
+@@ -735,6 +735,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	for (i = 0; i < FNIC_IO_LOCKS; i++)
+ 		spin_lock_init(&fnic->io_req_lock[i]);
  
- 	if (of_property_read_u32(npu_node, "memory-region", &mem_phandle))
--		return -EINVAL;
-+		return -ENODEV;
- 
- 	mem_node = of_find_node_by_phandle(mem_phandle);
- 	if (!mem_node)
-@@ -393,7 +393,7 @@ int vfio_pci_ibm_npu2_init(struct vfio_p
- 	int ret;
- 	struct vfio_pci_npu2_data *data;
- 	struct device_node *nvlink_dn;
--	u32 nvlink_index = 0;
-+	u32 nvlink_index = 0, mem_phandle = 0;
- 	struct pci_dev *npdev = vdev->pdev;
- 	struct device_node *npu_node = pci_device_to_OF_node(npdev);
- 	struct pci_controller *hose = pci_bus_to_host(npdev->bus);
-@@ -408,6 +408,9 @@ int vfio_pci_ibm_npu2_init(struct vfio_p
- 	if (!pnv_pci_get_gpu_dev(vdev->pdev))
- 		return -ENODEV;
- 
-+	if (of_property_read_u32(npu_node, "memory-region", &mem_phandle))
-+		return -ENODEV;
-+
- 	/*
- 	 * NPU2 normally has 8 ATSD registers (for concurrency) and 6 links
- 	 * so we can allocate one register per link, using nvlink index as
++	err = -ENOMEM;
+ 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
+ 	if (!fnic->io_req_pool)
+ 		goto err_out_free_resources;
+-- 
+2.27.0
+
 
 
