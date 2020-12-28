@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA672E3923
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D47E82E3C18
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733083AbgL1NTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:19:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
+        id S2407696AbgL1N61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:58:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732877AbgL1NTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:19:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE04A20719;
-        Mon, 28 Dec 2020 13:18:48 +0000 (UTC)
+        id S2391620AbgL1N6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:58:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 724DC206D4;
+        Mon, 28 Dec 2020 13:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161529;
-        bh=64S+ue954003e8Su1KiMTSIA3PBuEWwQ8reQrr2NDhI=;
+        s=korg; t=1609163857;
+        bh=QUQBwe+w8UY2x4I69f9tbE4aqveZ8D5HF1lCcBfUCWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e68TWZi+SD/T16ep/hjOJm6FYM9IiMs0L8CnnagO++uG54UJzngNU/1Ibyrn8/ZEb
-         1TUovH/35dJ/AtFT/DLF6tDxLTLVIM+kfGc50pGK89Oup28Ix5m/3Ge68hwx9a7eJX
-         fqwhFxGGaCEQUq7BqM7OXe3ZN/gSrV8oDNppf9P0=
+        b=uY99wrkpbzOZiK5Wyu3uRd0/QF3P6dSW8QIZTBRjcXX6u1hwttX61eVsv1HL8cAKF
+         PP1Q9BXmJR376JiUoy0Q1dePYHf4SvpFATXAnYLdMx0TJtQV/+zSv2/P42UVaioQle
+         FSmzFWYd/JerLzcisCBRVRKh95KjijIDMJxiW2q8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
-        Michael Kurth <mku@amazon.de>,
-        Pawel Wieczorkiewicz <wipawel@amazon.de>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.14 236/242] xen/xenbus: Allow watches discard events before queueing
+        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 405/453] spi: fsl: fix use of spisel_boot signal on MPC8309
 Date:   Mon, 28 Dec 2020 13:50:41 +0100
-Message-Id: <20201228124916.309986263@linuxfoundation.org>
+Message-Id: <20201228124956.701538844@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,115 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 
-commit fed1755b118147721f2c87b37b9d66e62c39b668 upstream.
+commit 122541f2b10897b08f7f7e6db5f1eb693e51f0a1 upstream.
 
-If handling logics of watch events are slower than the events enqueue
-logic and the events can be created from the guests, the guests could
-trigger memory pressure by intensively inducing the events, because it
-will create a huge number of pending events that exhausting the memory.
+Commit 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
+broke the use of the SPISEL_BOOT signal as a chip select on the
+MPC8309.
 
-Fortunately, some watch events could be ignored, depending on its
-handler callback.  For example, if the callback has interest in only one
-single path, the watch wouldn't want multiple pending events.  Or, some
-watches could ignore events to same path.
+pdata->max_chipselect, which becomes master->num_chipselect, must be
+initialized to take into account the possibility that there's one more
+chip select in use than the number of GPIO chip selects.
 
-To let such watches to volutarily help avoiding the memory pressure
-situation, this commit introduces new watch callback, 'will_handle'.  If
-it is not NULL, it will be called for each new event just before
-enqueuing it.  Then, if the callback returns false, the event will be
-discarded.  No watch is using the callback for now, though.
-
-This is part of XSA-349
-
-Cc: stable@vger.kernel.org
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reported-by: Michael Kurth <mku@amazon.de>
-Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Cc: stable@vger.kernel.org # v5.4+
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Link: https://lore.kernel.org/r/20201127152947.376-1-rasmus.villemoes@prevas.dk
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/xen-netback/xenbus.c   |    4 ++++
- drivers/xen/xenbus/xenbus_client.c |    1 +
- drivers/xen/xenbus/xenbus_xs.c     |    5 ++++-
- include/xen/xenbus.h               |    7 +++++++
- 4 files changed, 16 insertions(+), 1 deletion(-)
+ drivers/spi/spi-fsl-spi.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/net/xen-netback/xenbus.c
-+++ b/drivers/net/xen-netback/xenbus.c
-@@ -777,12 +777,14 @@ static int xen_register_credit_watch(str
- 		return -ENOMEM;
- 	snprintf(node, maxlen, "%s/rate", dev->nodename);
- 	vif->credit_watch.node = node;
-+	vif->credit_watch.will_handle = NULL;
- 	vif->credit_watch.callback = xen_net_rate_changed;
- 	err = register_xenbus_watch(&vif->credit_watch);
- 	if (err) {
- 		pr_err("Failed to set watcher %s\n", vif->credit_watch.node);
- 		kfree(node);
- 		vif->credit_watch.node = NULL;
-+		vif->credit_watch.will_handle = NULL;
- 		vif->credit_watch.callback = NULL;
+--- a/drivers/spi/spi-fsl-spi.c
++++ b/drivers/spi/spi-fsl-spi.c
+@@ -717,10 +717,11 @@ static int of_fsl_spi_probe(struct platf
+ 	type = fsl_spi_get_type(&ofdev->dev);
+ 	if (type == TYPE_FSL) {
+ 		struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
++		bool spisel_boot = false;
+ #if IS_ENABLED(CONFIG_FSL_SOC)
+ 		struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
+-		bool spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
+ 
++		spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
+ 		if (spisel_boot) {
+ 			pinfo->immr_spi_cs = ioremap(get_immrbase() + IMMR_SPI_CS_OFFSET, 4);
+ 			if (!pinfo->immr_spi_cs) {
+@@ -737,10 +738,14 @@ static int of_fsl_spi_probe(struct platf
+ 		 * supported on the GRLIB variant.
+ 		 */
+ 		ret = gpiod_count(dev, "cs");
+-		if (ret <= 0)
++		if (ret < 0)
++			ret = 0;
++		if (ret == 0 && !spisel_boot) {
+ 			pdata->max_chipselect = 1;
+-		else
++		} else {
++			pdata->max_chipselect = ret + spisel_boot;
+ 			pdata->cs_control = fsl_spi_cs_control;
++		}
  	}
- 	return err;
-@@ -829,6 +831,7 @@ static int xen_register_mcast_ctrl_watch
- 	snprintf(node, maxlen, "%s/request-multicast-control",
- 		 dev->otherend);
- 	vif->mcast_ctrl_watch.node = node;
-+	vif->mcast_ctrl_watch.will_handle = NULL;
- 	vif->mcast_ctrl_watch.callback = xen_mcast_ctrl_changed;
- 	err = register_xenbus_watch(&vif->mcast_ctrl_watch);
- 	if (err) {
-@@ -836,6 +839,7 @@ static int xen_register_mcast_ctrl_watch
- 		       vif->mcast_ctrl_watch.node);
- 		kfree(node);
- 		vif->mcast_ctrl_watch.node = NULL;
-+		vif->mcast_ctrl_watch.will_handle = NULL;
- 		vif->mcast_ctrl_watch.callback = NULL;
- 	}
- 	return err;
---- a/drivers/xen/xenbus/xenbus_client.c
-+++ b/drivers/xen/xenbus/xenbus_client.c
-@@ -120,6 +120,7 @@ int xenbus_watch_path(struct xenbus_devi
- 	int err;
  
- 	watch->node = path;
-+	watch->will_handle = NULL;
- 	watch->callback = callback;
- 
- 	err = register_xenbus_watch(watch);
---- a/drivers/xen/xenbus/xenbus_xs.c
-+++ b/drivers/xen/xenbus/xenbus_xs.c
-@@ -700,7 +700,10 @@ int xs_watch_msg(struct xs_watch_event *
- 
- 	spin_lock(&watches_lock);
- 	event->handle = find_watch(event->token);
--	if (event->handle != NULL) {
-+	if (event->handle != NULL &&
-+			(!event->handle->will_handle ||
-+			 event->handle->will_handle(event->handle,
-+				 event->path, event->token))) {
- 		spin_lock(&watch_events_lock);
- 		list_add_tail(&event->list, &watch_events);
- 		wake_up(&watch_events_waitq);
---- a/include/xen/xenbus.h
-+++ b/include/xen/xenbus.h
-@@ -59,6 +59,13 @@ struct xenbus_watch
- 	/* Path being watched. */
- 	const char *node;
- 
-+	/*
-+	 * Called just before enqueing new event while a spinlock is held.
-+	 * The event will be discarded if this callback returns false.
-+	 */
-+	bool (*will_handle)(struct xenbus_watch *,
-+			      const char *path, const char *token);
-+
- 	/* Callback (executed in a process context with no locks held). */
- 	void (*callback)(struct xenbus_watch *,
- 			 const char *path, const char *token);
+ 	ret = of_address_to_resource(np, 0, &mem);
 
 
