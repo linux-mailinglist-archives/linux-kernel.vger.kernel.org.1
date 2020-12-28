@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FA42E663D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00A32E662A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393609AbgL1QKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:10:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51952 "EHLO mail.kernel.org"
+        id S2393586AbgL1QJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:09:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388513AbgL1NXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:23:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32815207C9;
-        Mon, 28 Dec 2020 13:22:52 +0000 (UTC)
+        id S2388600AbgL1NXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:23:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F44322475;
+        Mon, 28 Dec 2020 13:23:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161772;
-        bh=MjM1C2S8hy4o3teJH+kaPWf6nPImpZwMYpp/5Kwj5kE=;
+        s=korg; t=1609161793;
+        bh=k9eOuaPTiFozOgNF9rx9KZ06evrYinSvgIJmaQqBn34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H4QsuOH10KZWCJOMZRuFu7UxFMWOOQhEj4fPG23rBB4A4mCxXvmYJo3+SzpwTrGlv
-         g5XiGmmuuLVkWKHY23bUtTzzSb5r6W3wfUV61absRjHhBLtTZ77kuIBTLnaj5jxFS2
-         SDX/SVaWvc7jE9nDJWkITvliOglmMw98psXtIH/o=
+        b=pA8ndQdgC9Kvfd4/0To0wIkGDfnqr0IBtyT1jc3aT/r7JZp2zPX3AjYL3jEPwT5te
+         zzmrKs9SL69GwggH8REZE7Hthvkxe899v8kjDVHe3mg4LOnhGbhDVvbfYf+DeqbA5P
+         /QLolXvrXniMGYD2CIhalKMjNGcOlWDIIHImYl8g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 076/346] dm table: Remove BUG_ON(in_interrupt())
-Date:   Mon, 28 Dec 2020 13:46:35 +0100
-Message-Id: <20201228124923.470192404@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        EJ Hsu <ejh@nvidia.com>, Peter Chen <peter.chen@nxp.com>,
+        Will McVicker <willmcvicker@google.com>
+Subject: [PATCH 4.19 082/346] USB: gadget: f_rndis: fix bitrate for SuperSpeed and above
+Date:   Mon, 28 Dec 2020 13:46:41 +0100
+Message-Id: <20201228124923.767227787@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -41,45 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Will McVicker <willmcvicker@google.com>
 
-[ Upstream commit e7b624183d921b49ef0a96329f21647d38865ee9 ]
+commit b00f444f9add39b64d1943fa75538a1ebd54a290 upstream.
 
-The BUG_ON(in_interrupt()) in dm_table_event() is a historic leftover from
-a rework of the dm table code which changed the calling context.
+Align the SuperSpeed Plus bitrate for f_rndis to match f_ncm's ncm_bitrate
+defined by commit 1650113888fe ("usb: gadget: f_ncm: add SuperSpeed descriptors
+for CDC NCM").
 
-Issuing a BUG for a wrong calling context is frowned upon and
-in_interrupt() is deprecated and only covering parts of the wrong
-contexts. The sanity check for the context is covered by
-CONFIG_DEBUG_ATOMIC_SLEEP and other debug facilities already.
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: EJ Hsu <ejh@nvidia.com>
+Cc: Peter Chen <peter.chen@nxp.com>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20201127140559.381351-2-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-table.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/usb/gadget/function/f_rndis.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 36275c59e4e7b..f849db3035a05 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1336,12 +1336,6 @@ void dm_table_event_callback(struct dm_table *t,
- 
- void dm_table_event(struct dm_table *t)
+--- a/drivers/usb/gadget/function/f_rndis.c
++++ b/drivers/usb/gadget/function/f_rndis.c
+@@ -87,8 +87,10 @@ static inline struct f_rndis *func_to_rn
+ /* peak (theoretical) bulk transfer rate in bits-per-second */
+ static unsigned int bitrate(struct usb_gadget *g)
  {
--	/*
--	 * You can no longer call dm_table_event() from interrupt
--	 * context, use a bottom half instead.
--	 */
--	BUG_ON(in_interrupt());
--
- 	mutex_lock(&_event_lock);
- 	if (t->event_fn)
- 		t->event_fn(t->event_context);
--- 
-2.27.0
-
++	if (gadget_is_superspeed(g) && g->speed >= USB_SPEED_SUPER_PLUS)
++		return 4250000000U;
+ 	if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
+-		return 13 * 1024 * 8 * 1000 * 8;
++		return 3750000000U;
+ 	else if (gadget_is_dualspeed(g) && g->speed == USB_SPEED_HIGH)
+ 		return 13 * 512 * 8 * 1000 * 8;
+ 	else
 
 
