@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABF72E37F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7762E631E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730177AbgL1NDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:03:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57102 "EHLO mail.kernel.org"
+        id S2407008AbgL1Pir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:38:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728158AbgL1NAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:00:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB21C208D5;
-        Mon, 28 Dec 2020 13:00:08 +0000 (UTC)
+        id S2406249AbgL1NuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:50:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91533205CB;
+        Mon, 28 Dec 2020 13:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160409;
-        bh=20mV+FVIdTdiqXwcl4mtzCvNrTGudFxrNl3FrEycrTw=;
+        s=korg; t=1609163359;
+        bh=3GDsBp3B0FRcQoI2cx6UJifOCMMLXE1DKASdl12KdH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IpyDLweG9B79f11exwawisENG80afd1wpQ64iqzQhjrU9frokk/xYa9Tww//PLkM0
-         TYJ8SmcuMx70XFOEuY6M5azYj5VnTLRY45SSk7ERcx6XvmHKB4ZqYaNI1vXs23Gs/5
-         5fmpW5nES+D7zgjYNpZ+wl4mCL94F15y6soBFqOw=
+        b=thDOOAmHQKzYIt43MVTOQ6ZNjx9GWVJyhb2++6YarPXx4O4C1WdvViTPKuqngMc5N
+         upgMFf2zgGV7UMGwxzpyPbMN7oGgLek0I39tYoQgvqCxP8lM7w2Bb02IIE9xxUb/2G
+         yoz6ErR2QlgWemFAfck9hKLibCaQGUdCrLns3oJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 4.9 041/175] usb: chipidea: ci_hdrc_imx: Pass DISABLE_DEVICE_STREAMING flag to imx6ul
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 258/453] s390/cio: fix use-after-free in ccw_device_destroy_console
 Date:   Mon, 28 Dec 2020 13:48:14 +0100
-Message-Id: <20201228124855.242462222@linuxfoundation.org>
+Message-Id: <20201228124949.642068078@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-commit c7721e15f434920145c376e8fe77e1c079fc3726 upstream.
+[ Upstream commit 14d4c4fa46eeaa3922e8e1c4aa727eb0a1412804 ]
 
-According to the i.MX6UL Errata document:
-https://www.nxp.com/docs/en/errata/IMX6ULCE.pdf
+Use of sch->dev reference after the put_device() call could trigger
+the use-after-free bugs.
 
-ERR007881 also affects i.MX6UL, so pass the
-CI_HDRC_DISABLE_DEVICE_STREAMING flag to workaround the issue.
+Fix this by simply adjusting the position of put_device.
 
-Fixes: 52fe568e5d71 ("usb: chipidea: imx: add imx6ul usb support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20201207020909.22483-2-peter.chen@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 37db8985b211 ("s390/cio: add basic protected virtualization support")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Suggested-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reviewed-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+[vneethv@linux.ibm.com: Slight modification in the commit-message]
+Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/chipidea/ci_hdrc_imx.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/s390/cio/device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/chipidea/ci_hdrc_imx.c
-+++ b/drivers/usb/chipidea/ci_hdrc_imx.c
-@@ -63,7 +63,8 @@ static const struct ci_hdrc_imx_platform
+diff --git a/drivers/s390/cio/device.c b/drivers/s390/cio/device.c
+index 983f9c9e08deb..23e9227e60fd7 100644
+--- a/drivers/s390/cio/device.c
++++ b/drivers/s390/cio/device.c
+@@ -1664,10 +1664,10 @@ void __init ccw_device_destroy_console(struct ccw_device *cdev)
+ 	struct io_subchannel_private *io_priv = to_io_private(sch);
  
- static const struct ci_hdrc_imx_platform_flag imx6ul_usb_data = {
- 	.flags = CI_HDRC_SUPPORTS_RUNTIME_PM |
--		CI_HDRC_TURN_VBUS_EARLY_ON,
-+		CI_HDRC_TURN_VBUS_EARLY_ON |
-+		CI_HDRC_DISABLE_DEVICE_STREAMING,
- };
+ 	set_io_private(sch, NULL);
+-	put_device(&sch->dev);
+-	put_device(&cdev->dev);
+ 	dma_free_coherent(&sch->dev, sizeof(*io_priv->dma_area),
+ 			  io_priv->dma_area, io_priv->dma_area_dma);
++	put_device(&sch->dev);
++	put_device(&cdev->dev);
+ 	kfree(io_priv);
+ }
  
- static const struct ci_hdrc_imx_platform_flag imx7d_usb_data = {
+-- 
+2.27.0
+
 
 
