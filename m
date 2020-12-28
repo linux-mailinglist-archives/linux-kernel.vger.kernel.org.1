@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26C92E6339
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7512E3742
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408491AbgL1PjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:39:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50564 "EHLO mail.kernel.org"
+        id S1728078AbgL1MxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:53:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406091AbgL1NtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:49:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 575C72063A;
-        Mon, 28 Dec 2020 13:48:58 +0000 (UTC)
+        id S1728049AbgL1MxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:53:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 238B0208B6;
+        Mon, 28 Dec 2020 12:52:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163338;
-        bh=sp4axyxxl5S/xptDsExnUqSqOihMvEg2Eg9j/uWFKKY=;
+        s=korg; t=1609159929;
+        bh=0Mgz45b/m6wkk2VL5RG5jTqPpg0ff7aJZjix0UxXSjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E2l+JMjwhOLccSggoRCfF4vPZ4vTPH4ACJr3OVNv2Jj9moSeBxzJ4Aggs7GSGAE9z
-         0u6r0FoPQNmeS0oOfSwLlA8cnuuvTr9Y7DU7iPeTOEFd+VpyosPezLlASgSF1RNeO5
-         PoNgX9373IWFZy9xAkb0ZBdW9oofQnDZd6CCOqq4=
+        b=CNDaNZ4vOVRCTvqHl+lbbChlZw70a6sy3bEjvvCWmNk/4rQZh8BtR/chycvviZC03
+         fwLqYDza3QajosXDukDR0ylIy+bSFBh/keLCvNbUOUiI1/r+Exs3ke6i/EVXZqqhVe
+         pI2lJpWEqEOJLCwpQW2tx+GkQQc6UVqDvt9kO+KA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 252/453] speakup: fix uninitialized flush_lock
-Date:   Mon, 28 Dec 2020 13:48:08 +0100
-Message-Id: <20201228124949.353126663@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
+Subject: [PATCH 4.4 005/132] Input: cm109 - do not stomp on control URB
+Date:   Mon, 28 Dec 2020 13:48:09 +0100
+Message-Id: <20201228124846.682341600@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit d1b928ee1cfa965a3327bbaa59bfa005d97fa0fe ]
+commit 82e06090473289ce63e23fdeb8737aad59b10645 upstream.
 
-The flush_lock is uninitialized, use DEFINE_SPINLOCK
-to define and initialize flush_lock.
+We need to make sure we are not stomping on the control URB that was
+issued when opening the device when attempting to toggle buzzer.
+To do that we need to mark it as pending in cm109_open().
 
-Fixes: c6e3fd22cd53 ("Staging: add speakup to the staging directory")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20201117012229.3395186-1-yangyingliang@huawei.com
+Reported-and-tested-by: syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/staging/speakup/speakup_dectlk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/misc/cm109.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/speakup/speakup_dectlk.c b/drivers/staging/speakup/speakup_dectlk.c
-index dccb4ea29d379..45ac48d031805 100644
---- a/drivers/staging/speakup/speakup_dectlk.c
-+++ b/drivers/staging/speakup/speakup_dectlk.c
-@@ -37,7 +37,7 @@ static unsigned char get_index(struct spk_synth *synth);
- static int in_escape;
- static int is_flushing;
+--- a/drivers/input/misc/cm109.c
++++ b/drivers/input/misc/cm109.c
+@@ -546,12 +546,15 @@ static int cm109_input_open(struct input
+ 	dev->ctl_data->byte[HID_OR2] = dev->keybit;
+ 	dev->ctl_data->byte[HID_OR3] = 0x00;
  
--static spinlock_t flush_lock;
-+static DEFINE_SPINLOCK(flush_lock);
- static DECLARE_WAIT_QUEUE_HEAD(flush);
++	dev->ctl_urb_pending = 1;
+ 	error = usb_submit_urb(dev->urb_ctl, GFP_KERNEL);
+-	if (error)
++	if (error) {
++		dev->ctl_urb_pending = 0;
+ 		dev_err(&dev->intf->dev, "%s: usb_submit_urb (urb_ctl) failed %d\n",
+ 			__func__, error);
+-	else
++	} else {
+ 		dev->open = 1;
++	}
  
- static struct var_t vars[] = {
--- 
-2.27.0
-
+ 	mutex_unlock(&dev->pm_mutex);
+ 
 
 
