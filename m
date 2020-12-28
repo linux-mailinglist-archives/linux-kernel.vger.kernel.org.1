@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D272E40E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF672E3A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440378AbgL1OOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:14:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
+        id S2391368AbgL1NjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:39:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440333AbgL1OOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:14:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA29D205CB;
-        Mon, 28 Dec 2020 14:13:52 +0000 (UTC)
+        id S2391320AbgL1NjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:39:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 915532072C;
+        Mon, 28 Dec 2020 13:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164833;
-        bh=6uS6DcEZBBgSlgBOVMDtReFI4lLMqPz3dm/DqCxaXW8=;
+        s=korg; t=1609162710;
+        bh=rv1yFjZZ9I9JlrjIrNoNTrEZQKLua7ohWVI9uMNSZi4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PkJhHP61BJWpN4qvrtHcxKWYrOA9h8krHf67guIoyLyAlbC3LSkgejfljLnogbrl7
-         eVYsve0L1b+nRAb4T6iqiruZ7DuZ40PimPw5NSBj8bUZ+J6qwNf+N47aqQyJL0SH7w
-         PnFRLgojG1eYAmurCM4IWdBykq4xyWI23TfHbatg=
+        b=gCFy3XOh2NglaPQG26ulO87tApgMKIs4J/SIQki9CBgT+OT56LLgWNEPe+uNaXlJB
+         nzVCZ8PvFH1prcrXrQmWGEo0jZguzMjmbdkDMFyJoOKEnooe+GZi0hWnMCvkwzPBHR
+         B0cQOQvE7ssvybmUOQSD1xLryVaQByF1syLbdXps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Brandon Syu <Brandon.Syu@amd.com>,
+        Tony Cheng <Tony.Cheng@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 284/717] powerpc/perf: Fix the PMU group constraints for threshold events in power10
-Date:   Mon, 28 Dec 2020 13:44:42 +0100
-Message-Id: <20201228125034.635827677@linuxfoundation.org>
+Subject: [PATCH 5.4 047/453] drm/amd/display: Init clock value by current vbios CLKs
+Date:   Mon, 28 Dec 2020 13:44:43 +0100
+Message-Id: <20201228124939.518905538@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Brandon Syu <Brandon.Syu@amd.com>
 
-[ Upstream commit 0263bbb377af0c2d38bc8b2ad2ff147e240094de ]
+[ Upstream commit 7e0b367db85ef7b91399006253759a024eab7653 ]
 
-The PMU group constraints mask for threshold events covers
-all thresholding bits which includes threshold control value
-(start/stop), select value as well as thresh_cmp value (MMCRA[9:18].
-In power9, thresh_cmp bits were part of the event code. But in case
-of power10, thresh_cmp bits are not part of event code due to
-inclusion of MMCR3 bits. Hence thresh_cmp is not valid for
-group constraints for power10.
+[Why]
+While booting into OS, driver updates DPP/DISP CLKs.
+But init clock value is zero which is invalid.
 
-Fix the PMU group constraints checking for threshold events in
-power10 by using constraint mask and value for only threshold control
-and select bits.
+[How]
+Get current clocks value to update init clocks.
+To avoid underflow.
 
-Fixes: a64e697cef23 ("powerpc/perf: power10 Performance Monitoring support")
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1606409684-1589-4-git-send-email-atrajeev@linux.vnet.ibm.com
+Signed-off-by: Brandon Syu <Brandon.Syu@amd.com>
+Reviewed-by: Tony Cheng <Tony.Cheng@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/perf/isa207-common.c | 7 ++++++-
- arch/powerpc/perf/isa207-common.h | 3 +++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c   | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207-common.c
-index 38ed450c78557..0f4983ef41036 100644
---- a/arch/powerpc/perf/isa207-common.c
-+++ b/arch/powerpc/perf/isa207-common.c
-@@ -351,7 +351,12 @@ int isa207_get_constraint(u64 event, unsigned long *maskp, unsigned long *valp)
- 		value |= CNST_SAMPLE_VAL(event >> EVENT_SAMPLE_SHIFT);
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
+index dd92f9c295b45..9f301f8575a54 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
+@@ -97,8 +97,17 @@ void rn_update_clocks(struct clk_mgr *clk_mgr_base,
+ 			new_clocks->dppclk_khz = 100000;
  	}
  
--	if (cpu_has_feature(CPU_FTR_ARCH_300))  {
-+	if (cpu_has_feature(CPU_FTR_ARCH_31)) {
-+		if (event_is_threshold(event)) {
-+			mask  |= CNST_THRESH_CTL_SEL_MASK;
-+			value |= CNST_THRESH_CTL_SEL_VAL(event >> EVENT_THRESH_SHIFT);
-+		}
-+	} else if (cpu_has_feature(CPU_FTR_ARCH_300))  {
- 		if (event_is_threshold(event) && is_thresh_cmp_valid(event)) {
- 			mask  |= CNST_THRESH_MASK;
- 			value |= CNST_THRESH_VAL(event >> EVENT_THRESH_SHIFT);
-diff --git a/arch/powerpc/perf/isa207-common.h b/arch/powerpc/perf/isa207-common.h
-index dc9c3d22fb38d..42087643c3331 100644
---- a/arch/powerpc/perf/isa207-common.h
-+++ b/arch/powerpc/perf/isa207-common.h
-@@ -149,6 +149,9 @@
- #define CNST_THRESH_VAL(v)	(((v) & EVENT_THRESH_MASK) << 32)
- #define CNST_THRESH_MASK	CNST_THRESH_VAL(EVENT_THRESH_MASK)
- 
-+#define CNST_THRESH_CTL_SEL_VAL(v)	(((v) & 0x7ffull) << 32)
-+#define CNST_THRESH_CTL_SEL_MASK	CNST_THRESH_CTL_SEL_VAL(0x7ff)
+-	if (should_set_clock(safe_to_lower, new_clocks->dppclk_khz, clk_mgr->base.clks.dppclk_khz)) {
+-		if (clk_mgr->base.clks.dppclk_khz > new_clocks->dppclk_khz)
++	/*
++	 * Temporally ignore thew 0 cases for disp and dpp clks.
++	 * We may have a new feature that requires 0 clks in the future.
++	 */
++	if (new_clocks->dppclk_khz == 0 || new_clocks->dispclk_khz == 0) {
++		new_clocks->dppclk_khz = clk_mgr_base->clks.dppclk_khz;
++		new_clocks->dispclk_khz = clk_mgr_base->clks.dispclk_khz;
++	}
 +
- #define CNST_EBB_VAL(v)		(((v) & EVENT_EBB_MASK) << 24)
- #define CNST_EBB_MASK		CNST_EBB_VAL(EVENT_EBB_MASK)
- 
++	if (should_set_clock(safe_to_lower, new_clocks->dppclk_khz, clk_mgr_base->clks.dppclk_khz)) {
++		if (clk_mgr_base->clks.dppclk_khz > new_clocks->dppclk_khz)
+ 			dpp_clock_lowered = true;
+ 		clk_mgr_base->clks.dppclk_khz = new_clocks->dppclk_khz;
+ 		update_dppclk = true;
 -- 
 2.27.0
 
