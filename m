@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8342E37B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED622E4051
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgL1M71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:59:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55584 "EHLO mail.kernel.org"
+        id S2392184AbgL1Ot5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:49:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726606AbgL1M7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68D2422573;
-        Mon, 28 Dec 2020 12:58:38 +0000 (UTC)
+        id S2437948AbgL1OVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:21:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B7722CB9;
+        Mon, 28 Dec 2020 14:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160319;
-        bh=Qd6aj9x/qUTjM3GHQ853OvkN2U3bcXzD0Z2BxUwS9uY=;
+        s=korg; t=1609165255;
+        bh=xDlOt0jpK9eElgV1QaTMzGTGvnCs2EIRpHJLnub4fic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0RBWjr/fMjz60uE1JHvvow3Za7fPKWnM6kpsxt8NQ0dS9NlOy5zF0h0K+XVaYFui4
-         N8rUNOHVHd+yTKXkadSzZnCTSCo8VYSJqfkB74hpq/kZQU1bzYdLDtkE6RtISCPqjr
-         GKjUJL2Vvr4cV+ZN/8iiDqvdkFdEcOnhrwQFv/lY=
+        b=vaDMMUMlVuPm6blIskmFvbjSPR4qvuYPt+hFmSY4rM5vVNoSmu+xipkx+1VBalU9N
+         ky0VQVKReHZHC2DZOy5Wp9KnnZ20qzMvu5r90lOM39MX2OtCQXn1ia5FkLNITHgb9d
+         ghcdAdKy5cQsuWdpr4lw6lwll2OImYQrTXwn5WOw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Octavian Purdila <octavian.purdila@intel.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 011/175] spi: Prevent adding devices below an unregistering controller
-Date:   Mon, 28 Dec 2020 13:47:44 +0100
-Message-Id: <20201228124853.801123776@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 467/717] net: mscc: ocelot: Fix a resource leak in the error handling path of the probe function
+Date:   Mon, 28 Dec 2020 13:47:45 +0100
+Message-Id: <20201228125043.345137184@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,110 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit ddf75be47ca748f8b12d28ac64d624354fddf189 upstream
+[ Upstream commit f87675b836b324d270fd52f1f5e6d6bb9f4bd1d5 ]
 
-CONFIG_OF_DYNAMIC and CONFIG_ACPI allow adding SPI devices at runtime
-using a DeviceTree overlay or DSDT patch.  CONFIG_SPI_SLAVE allows the
-same via sysfs.
+In case of error after calling 'ocelot_init()', it must be undone by a
+corresponding 'ocelot_deinit()' call, as already done in the remove
+function.
 
-But there are no precautions to prevent adding a device below a
-controller that's being removed.  Such a device is unusable and may not
-even be able to unbind cleanly as it becomes inaccessible once the
-controller has been torn down.  E.g. it is then impossible to quiesce
-the device's interrupt.
-
-of_spi_notify() and acpi_spi_notify() do hold a ref on the controller,
-but otherwise run lockless against spi_unregister_controller().
-
-Fix by holding the spi_add_lock in spi_unregister_controller() and
-bailing out of spi_add_device() if the controller has been unregistered
-concurrently.
-
-Fixes: ce79d54ae447 ("spi/of: Add OF notifier handler")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v3.19+
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Octavian Purdila <octavian.purdila@intel.com>
-Cc: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
-Link: https://lore.kernel.org/r/a8c3205088a969dc8410eec1eba9aface60f36af.1596451035.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: a556c76adc05 ("net: mscc: Add initial Ocelot switch support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20201213114838.126922-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/Kconfig |    3 +++
- drivers/spi/spi.c   |   21 ++++++++++++++++++++-
- 2 files changed, 23 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mscc/ocelot_vsc7514.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -763,4 +763,7 @@ endif # SPI_MASTER
+diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+index 1e7729421a825..9cf2bc5f42892 100644
+--- a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
++++ b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+@@ -1267,7 +1267,7 @@ static int mscc_ocelot_probe(struct platform_device *pdev)
  
- # (slave support would go here)
+ 	err = mscc_ocelot_init_ports(pdev, ports);
+ 	if (err)
+-		goto out_put_ports;
++		goto out_ocelot_deinit;
  
-+config SPI_DYNAMIC
-+	def_bool ACPI || OF_DYNAMIC || SPI_SLAVE
+ 	if (ocelot->ptp) {
+ 		err = ocelot_init_timestamp(ocelot, &ocelot_ptp_clock_info);
+@@ -1282,8 +1282,14 @@ static int mscc_ocelot_probe(struct platform_device *pdev)
+ 	register_switchdev_notifier(&ocelot_switchdev_nb);
+ 	register_switchdev_blocking_notifier(&ocelot_switchdev_blocking_nb);
+ 
++	of_node_put(ports);
 +
- endif # SPI
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -422,6 +422,12 @@ static LIST_HEAD(spi_master_list);
-  */
- static DEFINE_MUTEX(board_lock);
+ 	dev_info(&pdev->dev, "Ocelot switch probed\n");
  
-+/*
-+ * Prevents addition of devices with same chip select and
-+ * addition of devices below an unregistering controller.
-+ */
-+static DEFINE_MUTEX(spi_add_lock);
++	return 0;
 +
- /**
-  * spi_alloc_device - Allocate a new SPI device
-  * @master: Controller to which device is connected
-@@ -500,7 +506,6 @@ static int spi_dev_check(struct device *
-  */
- int spi_add_device(struct spi_device *spi)
- {
--	static DEFINE_MUTEX(spi_add_lock);
- 	struct spi_master *master = spi->master;
- 	struct device *dev = master->dev.parent;
- 	int status;
-@@ -529,6 +534,13 @@ int spi_add_device(struct spi_device *sp
- 		goto done;
- 	}
- 
-+	/* Controller may unregister concurrently */
-+	if (IS_ENABLED(CONFIG_SPI_DYNAMIC) &&
-+	    !device_is_registered(&master->dev)) {
-+		status = -ENODEV;
-+		goto done;
-+	}
-+
- 	if (master->cs_gpios)
- 		spi->cs_gpio = master->cs_gpios[spi->chip_select];
- 
-@@ -2070,6 +2082,10 @@ static int __unregister(struct device *d
-  */
- void spi_unregister_master(struct spi_master *master)
- {
-+	/* Prevent addition of new devices, unregister existing ones */
-+	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
-+		mutex_lock(&spi_add_lock);
-+
- 	device_for_each_child(&master->dev, NULL, __unregister);
- 
- 	if (master->queued) {
-@@ -2089,6 +2105,9 @@ void spi_unregister_master(struct spi_ma
- 	if (!devres_find(master->dev.parent, devm_spi_release_master,
- 			 devm_spi_match_master, master))
- 		put_device(&master->dev);
-+
-+	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
-+		mutex_unlock(&spi_add_lock);
- }
- EXPORT_SYMBOL_GPL(spi_unregister_master);
- 
++out_ocelot_deinit:
++	ocelot_deinit(ocelot);
+ out_put_ports:
+ 	of_node_put(ports);
+ 	return err;
+-- 
+2.27.0
+
 
 
