@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0182E3974
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 480842E63B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388591AbgL1NXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:23:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52346 "EHLO mail.kernel.org"
+        id S2392022AbgL1NpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:45:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388546AbgL1NXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:23:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9360F205CB;
-        Mon, 28 Dec 2020 13:23:06 +0000 (UTC)
+        id S2387411AbgL1NpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:45:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BFC0205CB;
+        Mon, 28 Dec 2020 13:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161787;
-        bh=Ylht5glLL1d/jMpFgE0i23vRrQRePLcVfo9gWJQVU5s=;
+        s=korg; t=1609163087;
+        bh=SQzHwa6T+eq2wQVMMfVjvoZJuszvA2TFWHrYUN7xhIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QI+Lajfb519Dtzs3aovkkVhp+yWiGc7UQaVc7st2ONv/maIahcFKWjDazeUuOOuU5
-         OzZnzXW1xNAsO5MCoCPT0Q8osGn6VvJhWGGEwWxq0aXEZkMey15Ge7U2orrbqtXTES
-         f1W+9g/1hfnYdMRyv3FV5M+o0YMtK+JnMJITNLUs=
+        b=nhufFAsBA/jsH+sqCF5CxdTmUftYB3bFpseiLXzl+zqA10iPF9/YfF2qpnf38gVD9
+         y1bBq1c+N9A85TS5UZHexzT4xGMq65wOrr/mFSSh4cO/xu+ohLQ0c4EOe1oUvM38/z
+         YtRKebvjv07XhlqRHi/jnxTO2YSzWXiHMzFlF37I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Pham <jackp@codeaurora.org>
-Subject: [PATCH 4.19 081/346] usb: gadget: f_fs: Re-use SS descriptors for SuperSpeedPlus
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 164/453] orinoco: Move context allocation after processing the skb
 Date:   Mon, 28 Dec 2020 13:46:40 +0100
-Message-Id: <20201228124923.718032845@linuxfoundation.org>
+Message-Id: <20201228124945.102799302@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,68 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Pham <jackp@codeaurora.org>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-commit a353397b0d5dfa3c99b372505db3378fc919c6c6 upstream.
+[ Upstream commit a31eb615646a63370aa1da1053c45439c7653d83 ]
 
-In many cases a function that supports SuperSpeed can very well
-operate in SuperSpeedPlus, if a gadget controller supports it,
-as the endpoint descriptors (and companion descriptors) are
-generally identical and can be re-used. This is true for two
-commonly used functions: Android's ADB and MTP. So we can simply
-assign the usb_function's ssp_descriptors array to point to its
-ss_descriptors, if available. Similarly, we need to allow an
-epfile's ioctl for FUNCTIONFS_ENDPOINT_DESC to correctly
-return the corresponding SuperSpeed endpoint descriptor in case
-the connected speed is SuperSpeedPlus as well.
+ezusb_xmit() allocates a context which is leaked if
+orinoco_process_xmit_skb() returns an error.
 
-The only exception is if a function wants to implement an
-Isochronous endpoint capable of transferring more than 48KB per
-service interval when operating at greater than USB 3.1 Gen1
-speed, in which case it would require an additional SuperSpeedPlus
-Isochronous Endpoint Companion descriptor to be returned as part
-of the Configuration Descriptor. Support for that would need
-to be separately added to the userspace-facing FunctionFS API
-which may not be a trivial task--likely a new descriptor format
-(v3?) may need to be devised to allow for separate SS and SSP
-descriptors to be supplied.
+Move ezusb_alloc_ctx() after the invocation of
+orinoco_process_xmit_skb() because the context is not needed so early.
+ezusb_access_ltv() will cleanup the context in case of an error.
 
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201027230731.9073-1-jackp@codeaurora.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: bac6fafd4d6a0 ("orinoco: refactor xmit path")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201113212252.2243570-2-bigeasy@linutronix.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_fs.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ .../net/wireless/intersil/orinoco/orinoco_usb.c    | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -1247,6 +1247,7 @@ static long ffs_epfile_ioctl(struct file
+diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
+index e753f43e0162f..e2368bfe3e468 100644
+--- a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
++++ b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
+@@ -1234,13 +1234,6 @@ static netdev_tx_t ezusb_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (skb->len < ETH_HLEN)
+ 		goto drop;
  
- 		switch (epfile->ffs->gadget->speed) {
- 		case USB_SPEED_SUPER:
-+		case USB_SPEED_SUPER_PLUS:
- 			desc_idx = 2;
- 			break;
- 		case USB_SPEED_HIGH:
-@@ -3077,7 +3078,8 @@ static int _ffs_func_bind(struct usb_con
- 	}
+-	ctx = ezusb_alloc_ctx(upriv, EZUSB_RID_TX, 0);
+-	if (!ctx)
+-		goto busy;
+-
+-	memset(ctx->buf, 0, BULK_BUF_SIZE);
+-	buf = ctx->buf->data;
+-
+ 	tx_control = 0;
  
- 	if (likely(super)) {
--		func->function.ss_descriptors = vla_ptr(vlabuf, d, ss_descs);
-+		func->function.ss_descriptors = func->function.ssp_descriptors =
-+			vla_ptr(vlabuf, d, ss_descs);
- 		ss_len = ffs_do_descs(ffs->ss_descs_count,
- 				vla_ptr(vlabuf, d, raw_descs) + fs_len + hs_len,
- 				d_raw_descs__sz - fs_len - hs_len,
-@@ -3487,6 +3489,7 @@ static void ffs_func_unbind(struct usb_c
- 	func->function.fs_descriptors = NULL;
- 	func->function.hs_descriptors = NULL;
- 	func->function.ss_descriptors = NULL;
-+	func->function.ssp_descriptors = NULL;
- 	func->interfaces_nums = NULL;
+ 	err = orinoco_process_xmit_skb(skb, dev, priv, &tx_control,
+@@ -1248,6 +1241,13 @@ static netdev_tx_t ezusb_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (err)
+ 		goto drop;
  
- 	ffs_event_add(ffs, FUNCTIONFS_UNBIND);
++	ctx = ezusb_alloc_ctx(upriv, EZUSB_RID_TX, 0);
++	if (!ctx)
++		goto drop;
++
++	memset(ctx->buf, 0, BULK_BUF_SIZE);
++	buf = ctx->buf->data;
++
+ 	{
+ 		__le16 *tx_cntl = (__le16 *)buf;
+ 		*tx_cntl = cpu_to_le16(tx_control);
+-- 
+2.27.0
+
 
 
