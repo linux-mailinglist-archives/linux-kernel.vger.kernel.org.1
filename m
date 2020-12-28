@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAF62E3E06
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6A12E3732
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502739AbgL1OWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:22:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58090 "EHLO mail.kernel.org"
+        id S1727746AbgL1MwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:52:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502696AbgL1OWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C51C522B30;
-        Mon, 28 Dec 2020 14:22:26 +0000 (UTC)
+        id S1726420AbgL1MwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:52:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D937221D94;
+        Mon, 28 Dec 2020 12:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165347;
-        bh=SGoB8j5yDF3J909SAHZihhflgFYzkjcmdLEJAdoZbjc=;
+        s=korg; t=1609159894;
+        bh=tedodv7/jItYJBdjk+HQ6K67sOYuvkEqB+/LVYsubZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DCyhoPgKa/eApoOLnlaAOnIq8XKZcqMjqh7I77d58Xt649S6qkqPIZSdoCKwuIqKf
-         i9JwqHhUY/DZB5Hyzoz8jxF+Mm2TorkNTJjC6glxHotjPiVonXaBqnhg0jQYWYLzN8
-         w6nnE2k7mfnXOoNEWZz1CdnzP1uFNVFl2X6SK0l8=
+        b=BJjKJZYBI6YtzgpfvXJw2qaBcNeVW+3hiIFow9/MDCxudZx7zsrLCD6AU/AupCsp+
+         ThfRWGvzsQikPyoB9aqM4naabdpbz6peV1mfBRZr37jrwD0I3ixPF23RgGgFhC2w6J
+         BGoh9u9Qcifa2zOPS4ZeYrgLM/0HL7AX/ewMeRVc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 498/717] clk: sunxi-ng: Make sure divider tables have sentinel
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 012/132] net: bridge: vlan: fix error return code in __vlan_add()
 Date:   Mon, 28 Dec 2020 13:48:16 +0100
-Message-Id: <20201228125044.826880929@linuxfoundation.org>
+Message-Id: <20201228124846.989768740@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit 48f68de00c1405351fa0e7bc44bca067c49cd0a3 ]
+[ Upstream commit ee4f52a8de2c6f78b01f10b4c330867d88c1653a ]
 
-Two clock divider tables are missing sentinel at the end. Effect of that
-is that clock framework reads past the last entry. Fix that with adding
-sentinel at the end.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Issue was discovered with KASan.
-
-Fixes: 0577e4853bfb ("clk: sunxi-ng: Add H3 clocks")
-Fixes: c6a0637460c2 ("clk: sunxi-ng: Add A64 clocks")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://lore.kernel.org/r/20201202203817.438713-1-jernej.skrabec@siol.net
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f8ed289fab84 ("bridge: vlan: use br_vlan_(get|put)_master to deal with refcounts")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Link: https://lore.kernel.org/r/1607071737-33875-1-git-send-email-zhangchangzhong@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 1 +
- drivers/clk/sunxi-ng/ccu-sun8i-h3.c   | 1 +
- 2 files changed, 2 insertions(+)
+ net/bridge/br_vlan.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-index 5f66bf8797723..149cfde817cba 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-@@ -389,6 +389,7 @@ static struct clk_div_table ths_div_table[] = {
- 	{ .val = 1, .div = 2 },
- 	{ .val = 2, .div = 4 },
- 	{ .val = 3, .div = 6 },
-+	{ /* Sentinel */ },
- };
- static const char * const ths_parents[] = { "osc24M" };
- static struct ccu_div ths_clk = {
-diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
-index 6b636362379ee..7e629a4493afd 100644
---- a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
-@@ -322,6 +322,7 @@ static struct clk_div_table ths_div_table[] = {
- 	{ .val = 1, .div = 2 },
- 	{ .val = 2, .div = 4 },
- 	{ .val = 3, .div = 6 },
-+	{ /* Sentinel */ },
- };
- static SUNXI_CCU_DIV_TABLE_WITH_GATE(ths_clk, "ths", "osc24M",
- 				     0x074, 0, 2, ths_div_table, BIT(31), 0);
--- 
-2.27.0
-
+--- a/net/bridge/br_vlan.c
++++ b/net/bridge/br_vlan.c
+@@ -225,8 +225,10 @@ static int __vlan_add(struct net_bridge_
+ 		}
+ 
+ 		masterv = br_vlan_get_master(br, v->vid);
+-		if (!masterv)
++		if (!masterv) {
++			err = -ENOMEM;
+ 			goto out_filt;
++		}
+ 		v->brvlan = masterv;
+ 	}
+ 
 
 
