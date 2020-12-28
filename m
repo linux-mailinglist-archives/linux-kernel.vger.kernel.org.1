@@ -2,276 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE3F2E3B0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C88F2E4377
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404796AbgL1NpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:45:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391987AbgL1NpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:45:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91D5D22AAA;
-        Mon, 28 Dec 2020 13:44:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609163063;
-        bh=ecWJIXOObvXjNDuBv9XDqjlS22b4wjf8++7qFbttwes=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LZpbm6VbzmkfAO/dDhl5/fOyPjVxH6UQOVFLX8FTXTUBp8kd6t6x6xjtWpR+vMnJE
-         mRzs+aP9GU5wP0fRQoBI/qP2/zKjmsWHS7Skm8TqAR7Gvac413CPonJfyiuAqxfWD9
-         KkGD1jE+7ULBZ3oDJma6mREF5T1ovfSuUwBUEMdB5xJOwyE4aAXMvEZshpopYWC4To
-         Eyz6pe63TK5/HKrV6zUh8f8XjJIZjcH6mu0pNc0hC3kmW2kFdlYV1Ye5r67W1Ijq+7
-         ZyT0sbzlh0mjzRah2XSZYYvPEXOUjWZoEdd0+Y8Uz4ewG2EPYO1PgvtUjUTxxfRLKy
-         GLBULrsFmkp4A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8B14B411E9; Mon, 28 Dec 2020 10:44:37 -0300 (-03)
-Date:   Mon, 28 Dec 2020 10:44:37 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 15/15] perf record: Add --buildid-mmap option to enable
- mmap's build id
-Message-ID: <20201228134437.GC521329@kernel.org>
-References: <20201214105457.543111-1-jolsa@kernel.org>
- <20201214105457.543111-16-jolsa@kernel.org>
+        id S2393021AbgL1PiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:38:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406339AbgL1Nub (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:50:31 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44017C061794;
+        Mon, 28 Dec 2020 05:49:51 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id y5so9421719iow.5;
+        Mon, 28 Dec 2020 05:49:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aY3+fF6ahur6BRAAf5s0alh02lNeUKehSGviAXjROSI=;
+        b=p2R639eutLj/ekQRl7oLIRUzjKG8W3xHyJI3x6H4EjLeKBgR9oxl5pUNxkRkTkg7LS
+         9ySap+Nwztuphg0TUJeraGRHJHhF7jBPjGODY2EDuwShgHADXKHY19YqM2fKfiMXjB47
+         veQE9NSLh8yB7IH1FcriExXeL1NgEYjd8JPcT94hg/hNeXFWlQgfC9/BCFynQ7Ka3Dfr
+         0fNBNQgoU2iZPY3dilnC7f71CfYucqG1eRakyCbvdYACUMsueoawnGyQYneBC6l6+elg
+         GDHeG3UavN/0JOgL0AtiuTFkL7JC54/BQbB4xO3zrG31oMqHPisfcXEfbgLJ3yo0ubnW
+         Yt3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aY3+fF6ahur6BRAAf5s0alh02lNeUKehSGviAXjROSI=;
+        b=UcdGPiCZiwb2uM9bHuhSaxh8Of4JmjpTkB7AgFnUn51x19HTFSGFiKYwLycXBP3/Eh
+         Lv9KLrsR8JWBoTyxof4jpFGpR4yuBVwX3UWv8HgAFHcSHJi35lPUHd+YPLs/OuhtRgG4
+         MYv/ziKiLF85lv/VjiMbQcFJ3UMtiOuClQ2OWdX3Pq/ui4QWiO8HeW9qtZsfGvcSRqjE
+         XmMxMmdvKcdsCf7OkNe6La/mLz0imecSPGWRji3uEdWXrJIAByBIsh+5nJNdoPYLUApK
+         9cGGdZzguWrvfuJKIr4/nTpo4zPg1b8mYHvrDZDWdCIWAWc1ACBpoSt2Uf8NrCdTc1Od
+         9JMQ==
+X-Gm-Message-State: AOAM533fgv4qWcQ06dbTKBaqGnKFs/rhv7sO4HRgbhIJZgA2b58UBOZu
+        urnALx4lQes8WUNKZGQzfbm5u1nXLhq7l9vHpqY=
+X-Google-Smtp-Source: ABdhPJxV3MQQijnCDs5PRer+8kGiEbxEcyeundH6v2iVn++5qu0ItwUnDD9NekDaNisM0C92aCYmrw189ktK0gzp1z4=
+X-Received: by 2002:a05:6638:296:: with SMTP id c22mr39135330jaq.65.1609163390490;
+ Mon, 28 Dec 2020 05:49:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214105457.543111-16-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20201212165648.166220-1-aford173@gmail.com> <CAMuHMdUr5MWpa5fhpKgAm7zRgzzJga=pjNSVG3aoTvCmuq5poQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdUr5MWpa5fhpKgAm7zRgzzJga=pjNSVG3aoTvCmuq5poQ@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Mon, 28 Dec 2020 07:49:39 -0600
+Message-ID: <CAHCN7x+jm8agBzqDqnkmW1Obtd0zL6EA_xbicvkroZ+kmgEqiA@mail.gmail.com>
+Subject: Re: [RFC] ravb: Add support for optional txc_refclk
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Charles Stevens <charles.stevens@logicpd.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Dec 14, 2020 at 11:54:57AM +0100, Jiri Olsa escreveu:
-> Adding --buildid-mmap option to enable build id in mmap2 events.
-> It will only work if there's kernel support for that and it disables
-> build id cache (implies --no-buildid).
-> 
-> It's also possible to enable it permanently via config option
-> in ~.perfconfig file:
-> 
->   [record]
->   build-id=mmap
-> 
-> Also added build_id bit in the verbose output for perf_event_attr:
-> 
->   # perf record --buildid-mmap -vv
->   ...
->   perf_event_attr:
->     type                             1
->     size                             120
->     ...
->     build_id                         1
-> 
-> Adding also missing text_poke bit.
+On Mon, Dec 14, 2020 at 4:05 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Adam,
+>
+> On Sun, Dec 13, 2020 at 5:18 PM Adam Ford <aford173@gmail.com> wrote:
+> > The SoC expects the txv_refclk is provided, but if it is provided
+> > by a programmable clock, there needs to be a way to get and enable
+> > this clock to operate.  It needs to be optional since it's only
+> > necessary for those with programmable clocks.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> Thanks for your patch!
+>
+> > --- a/drivers/net/ethernet/renesas/ravb.h
+> > +++ b/drivers/net/ethernet/renesas/ravb.h
+> > @@ -994,6 +994,7 @@ struct ravb_private {
+> >         struct platform_device *pdev;
+> >         void __iomem *addr;
+> >         struct clk *clk;
+> > +       struct clk *ref_clk;
+> >         struct mdiobb_ctrl mdiobb;
+> >         u32 num_rx_ring[NUM_RX_QUEUE];
+> >         u32 num_tx_ring[NUM_TX_QUEUE];
+> > diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> > index bd30505fbc57..4c3f95923ef2 100644
+> > --- a/drivers/net/ethernet/renesas/ravb_main.c
+> > +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> > @@ -2148,6 +2148,18 @@ static int ravb_probe(struct platform_device *pdev)
+> >                 goto out_release;
+> >         }
+> >
+> > +       priv->ref_clk = devm_clk_get(&pdev->dev, "txc_refclk");
+>
+> Please also update the DT bindings[1], to document the optional
+> presence of the clock.
 
-I'm moving this to just before the:
+I am not all that familiar with the YAML syntax, but right now, the
+clock-names property isn't in the binding, and the driver doesn't use
+a name when requesting the single clock it's expecting.
+Since the txc_refclk is optional, can the clock-names property allow
+for 0-2 names while the number of clocks be 1-2?
 
-  perf tools: Add support to display build id when available in PERF_RECORD_MMAP2 events
+clocks:
+    minItems: 1
+    maxItems: 2
 
-So that I can actually print the synthesized/obtained from the kernel
-build-ids, i.e. this:
+  clock-names:
+    minItems: 0
+    maxItems: 2
+    items:
+      enum:
+        - fck # AVB functional clock (optional if it is the only clock)
+        - txc_refclk # TXC reference clock
 
-  perf report -D | grep MMAP2 | head -4
+With the above proposal, the clock-names would only be necessary when
+using the txc_refclk.
 
-Will work at that point.
- 
-> Acked-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/Documentation/perf-config.txt  |  3 ++-
->  tools/perf/Documentation/perf-record.txt  |  3 +++
->  tools/perf/builtin-record.c               | 20 ++++++++++++++++++++
->  tools/perf/util/evsel.c                   | 10 ++++++----
->  tools/perf/util/perf_api_probe.c          | 10 ++++++++++
->  tools/perf/util/perf_api_probe.h          |  1 +
->  tools/perf/util/perf_event_attr_fprintf.c |  2 ++
->  tools/perf/util/record.h                  |  1 +
->  8 files changed, 45 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-> index e3672c5d801b..8a1c6c16821a 100644
-> --- a/tools/perf/Documentation/perf-config.txt
-> +++ b/tools/perf/Documentation/perf-config.txt
-> @@ -559,11 +559,12 @@ kmem.*::
->  
->  record.*::
->  	record.build-id::
-> -		This option can be 'cache', 'no-cache' or 'skip'.
-> +		This option can be 'cache', 'no-cache', 'skip' or 'mmap'.
->  		'cache' is to post-process data and save/update the binaries into
->  		the build-id cache (in ~/.debug). This is the default.
->  		But if this option is 'no-cache', it will not update the build-id cache.
->  		'skip' skips post-processing and does not update the cache.
-> +		'mmap' skips post-processing and reads build-ids from MMAP events.
->  
->  	record.call-graph::
->  		This is identical to 'call-graph.record-mode', except it is
-> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-> index 768888b9326a..1bcf51e24979 100644
-> --- a/tools/perf/Documentation/perf-record.txt
-> +++ b/tools/perf/Documentation/perf-record.txt
-> @@ -482,6 +482,9 @@ Specify vmlinux path which has debuginfo.
->  --buildid-all::
->  Record build-id of all DSOs regardless whether it's actually hit or not.
->  
-> +--buildid-mmap::
-> +Record build ids in mmap2 events, disables build id cache (implies --no-buildid).
-> +
->  --aio[=n]::
->  Use <n> control blocks in asynchronous (Posix AIO) trace writing mode (default: 1, max: 4).
->  Asynchronous mode is supported only when linking Perf tool with libc library
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index d832c108a1ca..f6bfad096756 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -102,6 +102,7 @@ struct record {
->  	bool			no_buildid_cache;
->  	bool			no_buildid_cache_set;
->  	bool			buildid_all;
-> +	bool			buildid_mmap;
->  	bool			timestamp_filename;
->  	bool			timestamp_boundary;
->  	struct switch_output	switch_output;
-> @@ -2135,6 +2136,8 @@ static int perf_record_config(const char *var, const char *value, void *cb)
->  			rec->no_buildid_cache = true;
->  		else if (!strcmp(value, "skip"))
->  			rec->no_buildid = true;
-> +		else if (!strcmp(value, "mmap"))
-> +			rec->buildid_mmap = true;
->  		else
->  			return -1;
->  		return 0;
-> @@ -2550,6 +2553,8 @@ static struct option __record_options[] = {
->  		   "file", "vmlinux pathname"),
->  	OPT_BOOLEAN(0, "buildid-all", &record.buildid_all,
->  		    "Record build-id of all DSOs regardless of hits"),
-> +	OPT_BOOLEAN(0, "buildid-mmap", &record.buildid_mmap,
-> +		    "Record build-id in map events"),
->  	OPT_BOOLEAN(0, "timestamp-filename", &record.timestamp_filename,
->  		    "append timestamp to output filename"),
->  	OPT_BOOLEAN(0, "timestamp-boundary", &record.timestamp_boundary,
-> @@ -2653,6 +2658,21 @@ int cmd_record(int argc, const char **argv)
->  
->  	}
->  
-> +	if (rec->buildid_mmap) {
-> +		if (!perf_can_record_build_id()) {
-> +			pr_err("Failed: no support to record build id in mmap events, update your kernel.\n");
-> +			err = -EINVAL;
-> +			goto out_opts;
-> +		}
-> +		pr_debug("Enabling build id in mmap2 events.\n");
-> +		/* Enable mmap build id synthesizing. */
-> +		symbol_conf.buildid_mmap2 = true;
-> +		/* Enable perf_event_attr::build_id bit. */
-> +		rec->opts.build_id = true;
-> +		/* Disable build id cache. */
-> +		rec->no_buildid = true;
-> +	}
-> +
->  	if (rec->opts.kcore)
->  		rec->data.is_dir = true;
->  
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 3dd0eae9810d..191500c1f9f6 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1168,10 +1168,12 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
->  	if (opts->sample_weight)
->  		evsel__set_sample_bit(evsel, WEIGHT);
->  
-> -	attr->task  = track;
-> -	attr->mmap  = track;
-> -	attr->mmap2 = track && !perf_missing_features.mmap2;
-> -	attr->comm  = track;
-> +	attr->task     = track;
-> +	attr->mmap     = track;
-> +	attr->mmap2    = track && !perf_missing_features.mmap2;
-> +	attr->comm     = track;
-> +	attr->build_id = track && opts->build_id;
-> +
->  	/*
->  	 * ksymbol is tracked separately with text poke because it needs to be
->  	 * system wide and enabled immediately.
-> diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_probe.c
-> index 3840d02f0f7b..829af17a0867 100644
-> --- a/tools/perf/util/perf_api_probe.c
-> +++ b/tools/perf/util/perf_api_probe.c
-> @@ -98,6 +98,11 @@ static void perf_probe_text_poke(struct evsel *evsel)
->  	evsel->core.attr.text_poke = 1;
->  }
->  
-> +static void perf_probe_build_id(struct evsel *evsel)
-> +{
-> +	evsel->core.attr.build_id = 1;
-> +}
-> +
->  bool perf_can_sample_identifier(void)
->  {
->  	return perf_probe_api(perf_probe_sample_identifier);
-> @@ -172,3 +177,8 @@ bool perf_can_aux_sample(void)
->  
->  	return true;
->  }
-> +
-> +bool perf_can_record_build_id(void)
-> +{
-> +	return perf_probe_api(perf_probe_build_id);
-> +}
-> diff --git a/tools/perf/util/perf_api_probe.h b/tools/perf/util/perf_api_probe.h
-> index d5506a983a94..f12ca55f509a 100644
-> --- a/tools/perf/util/perf_api_probe.h
-> +++ b/tools/perf/util/perf_api_probe.h
-> @@ -11,5 +11,6 @@ bool perf_can_record_cpu_wide(void);
->  bool perf_can_record_switch_events(void);
->  bool perf_can_record_text_poke_events(void);
->  bool perf_can_sample_identifier(void);
-> +bool perf_can_record_build_id(void);
->  
->  #endif // __PERF_API_PROBE_H
-> diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-> index e67a227c0ce7..656a7fddfc26 100644
-> --- a/tools/perf/util/perf_event_attr_fprintf.c
-> +++ b/tools/perf/util/perf_event_attr_fprintf.c
-> @@ -134,6 +134,8 @@ int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
->  	PRINT_ATTRf(bpf_event, p_unsigned);
->  	PRINT_ATTRf(aux_output, p_unsigned);
->  	PRINT_ATTRf(cgroup, p_unsigned);
-> +	PRINT_ATTRf(text_poke, p_unsigned);
-> +	PRINT_ATTRf(build_id, p_unsigned);
->  
->  	PRINT_ATTRn("{ wakeup_events, wakeup_watermark }", wakeup_events, p_unsigned);
->  	PRINT_ATTRf(bp_type, p_unsigned);
-> diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-> index 266760ac9143..609e706f4282 100644
-> --- a/tools/perf/util/record.h
-> +++ b/tools/perf/util/record.h
-> @@ -49,6 +49,7 @@ struct record_opts {
->  	bool	      no_bpf_event;
->  	bool	      kcore;
->  	bool	      text_poke;
-> +	bool	      build_id;
->  	unsigned int  freq;
->  	unsigned int  mmap_pages;
->  	unsigned int  auxtrace_mmap_pages;
-> -- 
-> 2.26.2
-> 
+>
+> > +       if (IS_ERR(priv->ref_clk)) {
+> > +               if (PTR_ERR(priv->ref_clk) == -EPROBE_DEFER) {
+> > +                       /* for Probe defer return error */
+> > +                       error = PTR_ERR(priv->ref_clk);
+> > +                       goto out_release;
+> > +               }
+> > +               /* Ignore other errors since it's optional */
+> > +       } else {
+> > +               (void)clk_prepare_enable(priv->ref_clk);
+>
+> This can fail.
+> Does this clock need to be enabled all the time?
+> At least it should be disabled in the probe failure path, and in
+> ravb_remove().
 
--- 
+I'll do that for the next rev.
 
-- Arnaldo
+thanks,
+
+adam
+>
+> [1] Documentation/devicetree/bindings/net/renesas,etheravb.yaml
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
