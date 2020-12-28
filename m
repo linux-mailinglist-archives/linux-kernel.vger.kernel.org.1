@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C164A2E6441
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E832E3D6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406558AbgL1PtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:49:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42612 "EHLO mail.kernel.org"
+        id S2440699AbgL1OPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:15:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391937AbgL1NmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:42:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C9C22582;
-        Mon, 28 Dec 2020 13:41:38 +0000 (UTC)
+        id S2440654AbgL1OPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:15:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8621D22B2B;
+        Mon, 28 Dec 2020 14:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162899;
-        bh=hgQqUUzWEpHMe1QVlFunP3E+jqTndYMeC8TX7qWAHMk=;
+        s=korg; t=1609164893;
+        bh=EwWYf0l3c77LObBRIzTxn4rOwQxgD5rxQ9U3iVNuaQA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lnVznXW/W7eUu8YGYk1CSrBIJPTeRVQ27RYY3tf9wufi5qkknKfc5vb0K5oxq8fJy
-         DFaqcY7wQCkaZjJc2MyAOHJ6yb4m37U0cCykk2+1boKm8VeouT2eXRucVfTLE7gtnV
-         9/EVdFw+OVjEmcSULjgnmqAPGns2QwrQzkgWuakQ=
+        b=XqI2q/THEqsycNomFW//S+VUHLCuZNYlOmzngxbS5g0XtGrGQDB2Tam2We56j15+h
+         OJXDjfg9T7/oQOUWaDApquvLHfzJWgFpxnqRQtMGRinzdoPys7UrJxN5hmazsRB7j7
+         anxvyzZAn3z7ZJm7ZnTdC78Ifa1YlZ4Jax4GzM9U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vijay Khemka <vijaykhemka@fb.com>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 098/453] ARM: dts: aspeed: tiogapass: Remove vuart
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 336/717] staging: greybus: audio: Fix possible leak free widgets in gbaudio_dapm_free_controls
 Date:   Mon, 28 Dec 2020 13:45:34 +0100
-Message-Id: <20201228124941.945632022@linuxfoundation.org>
+Message-Id: <20201228125037.119719747@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vijay Khemka <vijaykhemka@fb.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 14f100c00f1e35e5890340d4c6a64bda5dff4320 ]
+[ Upstream commit e77b259f67ab99f1e22ce895b9b1c637fd5f2d4c ]
 
-Removed vuart for facebook tiogapass platform as it uses uart2 and
-uart3 pin with aspeed uart routing feature.
+In gbaudio_dapm_free_controls(), if one of the widgets is not found, an error
+will be returned directly, which will cause the rest to be unable to be freed,
+resulting in leak.
 
-Signed-off-by: Vijay Khemka <vijaykhemka@fb.com>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Fixes: ffdbf494821d ("ARM: dts: aspeed: tiogapass: Enable VUART")
-Link: https://lore.kernel.org/r/20200813190431.3331026-1-vijaykhemka@fb.com
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+This patch fixes the bug. If if one of them is not found, just skip and free the others.
+
+Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio module")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Link: https://lore.kernel.org/r/20201205103827.31244-1-wanghai38@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/staging/greybus/audio_helper.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
-index 682f729ea25e1..c58230fea45f8 100644
---- a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
-@@ -81,11 +81,6 @@
- 	status = "okay";
- };
- 
--&vuart {
--	// VUART Host Console
--	status = "okay";
--};
--
- &uart1 {
- 	// Host Console
- 	status = "okay";
+diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
+index 237531ba60f30..3011b8abce389 100644
+--- a/drivers/staging/greybus/audio_helper.c
++++ b/drivers/staging/greybus/audio_helper.c
+@@ -135,7 +135,8 @@ int gbaudio_dapm_free_controls(struct snd_soc_dapm_context *dapm,
+ 		if (!w) {
+ 			dev_err(dapm->dev, "%s: widget not found\n",
+ 				widget->name);
+-			return -EINVAL;
++			widget++;
++			continue;
+ 		}
+ 		widget++;
+ #ifdef CONFIG_DEBUG_FS
 -- 
 2.27.0
 
