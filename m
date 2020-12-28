@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68412E401C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C372E3B68
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502672AbgL1OWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:22:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58090 "EHLO mail.kernel.org"
+        id S2406177AbgL1Ntd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:49:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502653AbgL1OWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04A93229C5;
-        Mon, 28 Dec 2020 14:21:44 +0000 (UTC)
+        id S2406145AbgL1Ntb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:49:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF399206D4;
+        Mon, 28 Dec 2020 13:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165305;
-        bh=LO7Z7cpT3HSB5ywvOQW2n2mXrUz8dPcxydiH2FxqTV4=;
+        s=korg; t=1609163330;
+        bh=zaxgaEkKzxTl4/XQu3GTS5usm3K8DeoIEXavCOHkPjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jQ9P5CAMXlG9tq4z/zNO798yizkpx5sTJCsTOC3FGWTP/SWvueKQESHCDXHLnoZIn
-         UkdJ9d1YLuClC4eFDE0hMVAmWAAgjpX8u1Vm8OYPbnxdqOGx2puSsSily+zTapD7+n
-         WmUQfyIpcAfGaGmlT8u0C5z89rrCpeZq+DNRUDpg=
+        b=w9iw2lXwot2JQ0k8hdFaJdeLzsyjoAJgEO90s+veBurGSUBFw6wsW6mtRm0tIiUIJ
+         qUvK0Tf9zI2qHb1qQ27dqKCW/Adb6JWDJE8DzOkEUN6BC5SKl/29Sf3vF46M1Tb+7/
+         e5p12+bnThvV+CEZZe+GTLPDUZvezNqgZWn1v+uc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 486/717] qlcnic: Fix error code in probe
-Date:   Mon, 28 Dec 2020 13:48:04 +0100
-Message-Id: <20201228125044.247058646@linuxfoundation.org>
+Subject: [PATCH 5.4 249/453] powerpc/mm: sanity_check_fault() should work for all, not only BOOK3S
+Date:   Mon, 28 Dec 2020 13:48:05 +0100
+Message-Id: <20201228124949.209954959@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 0d52848632a357948028eab67ff9b7cc0c12a0fb ]
+[ Upstream commit 7ceb40027e19567a0a066e3b380cc034cdd9a124 ]
 
-Return -EINVAL if we can't find the correct device.  Currently it
-returns success.
+The verification and message introduced by commit 374f3f5979f9
+("powerpc/mm/hash: Handle user access of kernel address gracefully")
+applies to all platforms, it should not be limited to BOOK3S.
 
-Fixes: 13159183ec7a ("qlcnic: 83xx base driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/X9nHbMqEyI/xPfGd@mwanda
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Make the BOOK3S version of sanity_check_fault() the one for all,
+and bail out earlier if not BOOK3S.
+
+Fixes: 374f3f5979f9 ("powerpc/mm/hash: Handle user access of kernel address gracefully")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/fe199d5af3578d3bf80035d203a94d742a7a28af.1607491748.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/mm/fault.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-index 5a7e240fd4698..c2faf96fcade8 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-@@ -2492,6 +2492,7 @@ qlcnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		qlcnic_sriov_vf_register_map(ahw);
- 		break;
- 	default:
-+		err = -EINVAL;
- 		goto err_out_free_hw_res;
+diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+index 187047592d53c..bb01a862aaf8d 100644
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -349,7 +349,6 @@ static inline void cmo_account_page_fault(void)
+ static inline void cmo_account_page_fault(void) { }
+ #endif /* CONFIG_PPC_SMLPAR */
+ 
+-#ifdef CONFIG_PPC_BOOK3S
+ static void sanity_check_fault(bool is_write, bool is_user,
+ 			       unsigned long error_code, unsigned long address)
+ {
+@@ -366,6 +365,9 @@ static void sanity_check_fault(bool is_write, bool is_user,
+ 		return;
  	}
  
++	if (!IS_ENABLED(CONFIG_PPC_BOOK3S))
++		return;
++
+ 	/*
+ 	 * For hash translation mode, we should never get a
+ 	 * PROTFAULT. Any update to pte to reduce access will result in us
+@@ -400,10 +402,6 @@ static void sanity_check_fault(bool is_write, bool is_user,
+ 
+ 	WARN_ON_ONCE(error_code & DSISR_PROTFAULT);
+ }
+-#else
+-static void sanity_check_fault(bool is_write, bool is_user,
+-			       unsigned long error_code, unsigned long address) { }
+-#endif /* CONFIG_PPC_BOOK3S */
+ 
+ /*
+  * Define the correct "is_write" bit in error_code based
 -- 
 2.27.0
 
