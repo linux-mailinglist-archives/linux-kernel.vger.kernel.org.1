@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D692E67F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5C22E66C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502506AbgL1Qat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:30:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34198 "EHLO mail.kernel.org"
+        id S2440833AbgL1QQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:16:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728712AbgL1NG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:06:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2F4A208D5;
-        Mon, 28 Dec 2020 13:05:44 +0000 (UTC)
+        id S1731568AbgL1NR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:17:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 581BB22582;
+        Mon, 28 Dec 2020 13:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160745;
-        bh=SmTaqo7WzE/EmaufsDZ7mCiHw4+6ilbbmMuXd2r1WVs=;
+        s=korg; t=1609161408;
+        bh=Tt9ah73l8oHBJKPy+KBT56ay72n6oWKYEGai7OLO93g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UL/1aMYjPtcBv6eWEWMudJPxtsbOHOpzRs5aUC9xhSt2Ux0nExGijKX0Sul94EkHB
-         i42MFHrIxSxqNccPaLnQVdhIs0PYRQmMrveDJICsFxkyVDejcGQqmE6coG4J50sZ8t
-         9pS/HpGFFSXhrZgiRXj6g0VTPVuxE8hl0mc4CJ58=
+        b=KgpedvJ+XhNcXyj60ZtfW/uPOfmM94e0jqc2EVlzyCBNtQ4FrZkVnI9MbVprZFDBj
+         Ob33p8poXbJ4Q1oONHu6yLUNCyTKg2VQJOMjHTYbAwujb4U2q5S4e6jKT7au7U4U7f
+         fv1qT+fA/WBesJ/TSkhWONKEVX5bODR9j6yqM+kM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 126/175] qlcnic: Fix error code in probe
+Subject: [PATCH 4.14 174/242] qlcnic: Fix error code in probe
 Date:   Mon, 28 Dec 2020 13:49:39 +0100
-Message-Id: <20201228124859.359088678@linuxfoundation.org>
+Message-Id: <20201228124913.267495759@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,10 +57,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-index ebf5ead16939a..0928da21efd04 100644
+index 1b5f7d57b6f8f..6684a4cb8b88b 100644
 --- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
 +++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-@@ -2507,6 +2507,7 @@ qlcnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+@@ -2511,6 +2511,7 @@ qlcnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
  		qlcnic_sriov_vf_register_map(ahw);
  		break;
  	default:
