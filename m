@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161A82E3803
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA832E3BA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730364AbgL1NEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:04:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59668 "EHLO mail.kernel.org"
+        id S2407180AbgL1Nww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730240AbgL1NDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:03:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8112E22583;
-        Mon, 28 Dec 2020 13:02:52 +0000 (UTC)
+        id S2407145AbgL1Nwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 048D322B45;
+        Mon, 28 Dec 2020 13:51:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160573;
-        bh=BXoseXLqsmTvoiuD9ILe66ltxgzsJ25N9S0bGuGCgns=;
+        s=korg; t=1609163517;
+        bh=PMqsHKAoq0iT55G2tvZrvS+C7JQ3NJ2UIXWTLjRc8yI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ft6XqiJGofcpDfa3OJUxDwSP/onf3yepal2ySsi+ellm+k2VuiObMfaZ+UpyJAx6z
-         EfAGCwGS8vn5JBpcIlqe/Sy3uxeYcAUNenH/nbUYrSFWF17Pt1DZ2z6rOHUnmXYf54
-         FYaxDoiEtirlAXQlfdB85bNxyLk/f1HVbTdpv2uY=
+        b=aozkWLxfRt5Oo8htq8xYARU9ltmP4GwjZy5qcL4KiG4GVSMlvriomXeVeo4jVZe5v
+         myfDY+udS7f5LN5eI3FXFpUs/77PjzRzF3JGONQADXyuv0DES473K3rzs38Itm4kuV
+         uL0P9sO4AlK+Y6lY4AHpYUsOsfRqS2lHyGWJ6LSM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 097/175] clocksource/drivers/arm_arch_timer: Correct fault programming of CNTKCTL_EL1.EVNTI
+Subject: [PATCH 5.4 314/453] lwt: Disable BH too in run_lwt_bpf()
 Date:   Mon, 28 Dec 2020 13:49:10 +0100
-Message-Id: <20201228124857.943284191@linuxfoundation.org>
+Message-Id: <20201228124952.318239146@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keqian Zhu <zhukeqian1@huawei.com>
+From: Dongdong Wang <wangdongdong.6@bytedance.com>
 
-[ Upstream commit 8b7770b877d187bfdae1eaf587bd2b792479a31c ]
+[ Upstream commit d9054a1ff585ba01029584ab730efc794603d68f ]
 
-ARM virtual counter supports event stream, it can only trigger an event
-when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 changes,
-so the actual period of event stream is 2^(cntkctl_evnti + 1). For example,
-when the trigger bit is 0, then virtual counter trigger an event for every
-two cycles.
+The per-cpu bpf_redirect_info is shared among all skb_do_redirect()
+and BPF redirect helpers. Callers on RX path are all in BH context,
+disabling preemption is not sufficient to prevent BH interruption.
 
-While we're at it, rework the way we compute the trigger bit position
-by making it more obvious that when bits [n:n-1] are both set (with n
-being the most significant bit), we pick bit (n + 1).
+In production, we observed strange packet drops because of the race
+condition between LWT xmit and TC ingress, and we verified this issue
+is fixed after we disable BH.
 
-Fixes: 037f637767a8 ("drivers: clocksource: add support for ARM architected timer event stream")
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201204073126.6920-3-zhukeqian1@huawei.com
+Although this bug was technically introduced from the beginning, that
+is commit 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure"),
+at that time call_rcu() had to be call_rcu_bh() to match the RCU context.
+So this patch may not work well before RCU flavor consolidation has been
+completed around v5.0.
+
+Update the comments above the code too, as call_rcu() is now BH friendly.
+
+Signed-off-by: Dongdong Wang <wangdongdong.6@bytedance.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+Link: https://lore.kernel.org/bpf/20201205075946.497763-1-xiyou.wangcong@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/arm_arch_timer.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ net/core/lwt_bpf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index a2503db7e533e..5d7f83d27093f 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -426,15 +426,24 @@ static void arch_timer_evtstrm_enable(int divider)
- 
- static void arch_timer_configure_evtstream(void)
+diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
+index 99a6de52b21da..a5502c5aa44e7 100644
+--- a/net/core/lwt_bpf.c
++++ b/net/core/lwt_bpf.c
+@@ -39,12 +39,11 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_lwt_prog *lwt,
  {
--	int evt_stream_div, pos;
-+	int evt_stream_div, lsb;
-+
-+	/*
-+	 * As the event stream can at most be generated at half the frequency
-+	 * of the counter, use half the frequency when computing the divider.
-+	 */
-+	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ / 2;
-+
-+	/*
-+	 * Find the closest power of two to the divisor. If the adjacent bit
-+	 * of lsb (last set bit, starts from 0) is set, then we use (lsb + 1).
-+	 */
-+	lsb = fls(evt_stream_div) - 1;
-+	if (lsb > 0 && (evt_stream_div & BIT(lsb - 1)))
-+		lsb++;
+ 	int ret;
  
--	/* Find the closest power of two to the divisor */
--	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ;
--	pos = fls(evt_stream_div);
--	if (pos > 1 && !(evt_stream_div & (1 << (pos - 2))))
--		pos--;
- 	/* enable event stream */
--	arch_timer_evtstrm_enable(min(pos, 15));
-+	arch_timer_evtstrm_enable(max(0, min(lsb, 15)));
- }
+-	/* Preempt disable is needed to protect per-cpu redirect_info between
+-	 * BPF prog and skb_do_redirect(). The call_rcu in bpf_prog_put() and
+-	 * access to maps strictly require a rcu_read_lock() for protection,
+-	 * mixing with BH RCU lock doesn't work.
++	/* Preempt disable and BH disable are needed to protect per-cpu
++	 * redirect_info between BPF prog and skb_do_redirect().
+ 	 */
+ 	preempt_disable();
++	local_bh_disable();
+ 	bpf_compute_data_pointers(skb);
+ 	ret = bpf_prog_run_save_cb(lwt->prog, skb);
  
- static void arch_counter_set_user_access(void)
+@@ -78,6 +77,7 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_lwt_prog *lwt,
+ 		break;
+ 	}
+ 
++	local_bh_enable();
+ 	preempt_enable();
+ 
+ 	return ret;
 -- 
 2.27.0
 
