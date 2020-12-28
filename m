@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B442E3C00
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7532E3915
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407283AbgL1N5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:57:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58676 "EHLO mail.kernel.org"
+        id S1730147AbgL1NSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406512AbgL1N5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:57:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36CAA20731;
-        Mon, 28 Dec 2020 13:56:25 +0000 (UTC)
+        id S1731803AbgL1NSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD8112076D;
+        Mon, 28 Dec 2020 13:18:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163785;
-        bh=gRqv+bXUF7OfOcorPigBcxLaD+/i8zlRLh0gtR/jp0A=;
+        s=korg; t=1609161508;
+        bh=P3raXtEBSIH6/xIGEVgeFVA6AX+u3JpnQit2IEx/KWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fCexUYnKBG4SswQ55OnqnWheEUZa7z8NAQn2gDfFMEplO881zLAwTrYG/BNqHfb18
-         Pqh6xKNcs/yl52utj8W5DdCHHx1Ct6Miaycb0gG5xfNRxd0np/y/4sXgtwx7g+yEFj
-         wAx9smK8Vp0KBuppAQZWB4G8QSQFltHqbw3Ah8fQ=
+        b=h5JA/aEa8ZnnygAZSuZKHtA9CHNT9urNoSSFnDsEZMhgUKh7B+YKf72wG1O70uxtg
+         pr1qVrThrx3q7vB0707jg6zfiXbkZa+/ApKBzvU8OHCDxCUL3g5Wx7KEX+VxPrJ9WI
+         bXzynk8tnMEYIWX1XFJD+uluklyjHmxSXQncGfWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.4 376/453] KVM: arm64: Introduce handling of AArch32 TTBCR2 traps
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        "Pavel Machek (CIP)" <pavel@denx.de>,
+        David Sterba <dsterba@suse.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.14 207/242] btrfs: fix return value mixup in btrfs_get_extent
 Date:   Mon, 28 Dec 2020 13:50:12 +0100
-Message-Id: <20201228124955.296753643@linuxfoundation.org>
+Message-Id: <20201228124914.864168544@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Pavel Machek <pavel@denx.de>
 
-commit ca4e514774930f30b66375a974b5edcbebaf0e7e upstream.
+commit 881a3a11c2b858fe9b69ef79ac5ee9978a266dc9 upstream
 
-ARMv8.2 introduced TTBCR2, which shares TCR_EL1 with TTBCR.
-Gracefully handle traps to this register when HCR_EL2.TVM is set.
+btrfs_get_extent() sets variable ret, but out: error path expect error
+to be in variable err so the error code is lost.
 
-Cc: stable@vger.kernel.org
-Reported-by: James Morse <james.morse@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Fixes: 6bf9e4bd6a27 ("btrfs: inode: Verify inode mode to avoid NULL pointer dereference")
+CC: stable@vger.kernel.org # 5.4+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/arm64/include/asm/kvm_host.h |    1 +
- arch/arm64/kvm/sys_regs.c         |    1 +
- 2 files changed, 2 insertions(+)
+ fs/btrfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -182,6 +182,7 @@ enum vcpu_sysreg {
- #define c2_TTBR1	(TTBR1_EL1 * 2)	/* Translation Table Base Register 1 */
- #define c2_TTBR1_high	(c2_TTBR1 + 1)	/* TTBR1 top 32 bits */
- #define c2_TTBCR	(TCR_EL1 * 2)	/* Translation Table Base Control R. */
-+#define c2_TTBCR2	(c2_TTBCR + 1)	/* Translation Table Base Control R. 2 */
- #define c3_DACR		(DACR32_EL2 * 2)/* Domain Access Control Register */
- #define c5_DFSR		(ESR_EL1 * 2)	/* Data Fault Status Register */
- #define c5_IFSR		(IFSR32_EL2 * 2)/* Instruction Fault Status Register */
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1837,6 +1837,7 @@ static const struct sys_reg_desc cp15_re
- 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 0), access_vm_reg, NULL, c2_TTBR0 },
- 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 1), access_vm_reg, NULL, c2_TTBR1 },
- 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 2), access_vm_reg, NULL, c2_TTBCR },
-+	{ Op1( 0), CRn( 2), CRm( 0), Op2( 3), access_vm_reg, NULL, c2_TTBCR2 },
- 	{ Op1( 0), CRn( 3), CRm( 0), Op2( 0), access_vm_reg, NULL, c3_DACR },
- 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 0), access_vm_reg, NULL, c5_DFSR },
- 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 1), access_vm_reg, NULL, c5_IFSR },
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7179,7 +7179,7 @@ again:
+ 	    found_type == BTRFS_FILE_EXTENT_PREALLOC) {
+ 		/* Only regular file could have regular/prealloc extent */
+ 		if (!S_ISREG(inode->vfs_inode.i_mode)) {
+-			ret = -EUCLEAN;
++			err = -EUCLEAN;
+ 			btrfs_crit(fs_info,
+ 		"regular/prealloc extent found for non-regular inode %llu",
+ 				   btrfs_ino(inode));
 
 
