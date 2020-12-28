@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81FE2E65CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1A62E6774
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389744AbgL1N1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:27:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55890 "EHLO mail.kernel.org"
+        id S2633293AbgL1QYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:24:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389583AbgL1N1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:27:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 629D7206ED;
-        Mon, 28 Dec 2020 13:26:25 +0000 (UTC)
+        id S1731268AbgL1NKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:10:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC221206ED;
+        Mon, 28 Dec 2020 13:09:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161986;
-        bh=m7W4TKN+pz1FPn3U3CcLtI0In9PRR9pUBl7A3UEoAOI=;
+        s=korg; t=1609160991;
+        bh=1DaF/85+Whecx+sQMqbF/Fotl1ecWKjQJQYQl9Jn2ZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B61t6qjJlnDIp76Ebbe7G3OGqn99jhvaOcDvX0H5nJaSdPcVKZMUD6vi3cKuzUc4l
-         3VmMmsW2X2izEAFKgR4lmKsthWGMhlgdsuwlotxvnZ6Z+FjuO60RE1jnZ2saNhSBPr
-         aLDkLpSl/70B5hmJG3azqgzkb7u2X5tGqJiWq4iY=
+        b=XpCbKWyYRt8NYqaTf3a7dwfDVjj0SQMYl+hoZ66z6gdTlwdmcdU62hhFJ6Zy8W92a
+         iMoTirkC4aBWY4YYMQGwtOSusqjBFvO4aAs8Kdd3Y53atLqF/QiRZtfEyDG9RYP49g
+         lLuwP4b93Dv//0jPgpTAaZ+EC7ZGkfpvNzHYnkSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Jander <david@protonic.nl>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 148/346] Input: ads7846 - fix integer overflow on Rt calculation
-Date:   Mon, 28 Dec 2020 13:47:47 +0100
-Message-Id: <20201228124926.945160534@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+1e46a0864c1a6e9bd3d8@syzkaller.appspotmail.com,
+        "Dae R. Jeong" <dae.r.jeong@kaist.ac.kr>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH 4.14 063/242] md: fix a warning caused by a race between concurrent md_ioctl()s
+Date:   Mon, 28 Dec 2020 13:47:48 +0100
+Message-Id: <20201228124907.785123170@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +41,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Dae R. Jeong <dae.r.jeong@kaist.ac.kr>
 
-[ Upstream commit 820830ec918f6c3dcd77a54a1c6198ab57407916 ]
+commit c731b84b51bf7fe83448bea8f56a6d55006b0615 upstream.
 
-In some rare cases the 32 bit Rt value will overflow if z2 and x is max,
-z1 is minimal value and x_plate_ohms is relatively high (for example 800
-ohm). This would happen on some screen age with low pressure.
+Syzkaller reports a warning as belows.
+WARNING: CPU: 0 PID: 9647 at drivers/md/md.c:7169
+...
+Call Trace:
+...
+RIP: 0010:md_ioctl+0x4017/0x5980 drivers/md/md.c:7169
+RSP: 0018:ffff888096027950 EFLAGS: 00010293
+RAX: ffff88809322c380 RBX: 0000000000000932 RCX: ffffffff84e266f2
+RDX: 0000000000000000 RSI: ffffffff84e299f7 RDI: 0000000000000007
+RBP: ffff888096027bc0 R08: ffff88809322c380 R09: ffffed101341a482
+R10: ffff888096027940 R11: ffff88809a0d240f R12: 0000000000000932
+R13: ffff8880a2c14100 R14: ffff88809a0d2268 R15: ffff88809a0d2408
+ __blkdev_driver_ioctl block/ioctl.c:304 [inline]
+ blkdev_ioctl+0xece/0x1c10 block/ioctl.c:606
+ block_ioctl+0xee/0x130 fs/block_dev.c:1930
+ vfs_ioctl fs/ioctl.c:46 [inline]
+ file_ioctl fs/ioctl.c:509 [inline]
+ do_vfs_ioctl+0xd5f/0x1380 fs/ioctl.c:696
+ ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
+ __do_sys_ioctl fs/ioctl.c:720 [inline]
+ __se_sys_ioctl fs/ioctl.c:718 [inline]
+ __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+ do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-There are two possible fixes:
-- make Rt 64bit
-- reorder calculation to avoid overflow
+This is caused by a race between two concurrenct md_ioctl()s closing
+the array.
+CPU1 (md_ioctl())                   CPU2 (md_ioctl())
+------                              ------
+set_bit(MD_CLOSING, &mddev->flags);
+did_set_md_closing = true;
+                                    WARN_ON_ONCE(test_bit(MD_CLOSING,
+                                            &mddev->flags));
+if(did_set_md_closing)
+    clear_bit(MD_CLOSING, &mddev->flags);
 
-The second variant seems to be preferable, since 64 bit calculation on
-32 bit system is a bit more expensive.
+Fix the warning by returning immediately if the MD_CLOSING bit is set
+in &mddev->flags which indicates that the array is being closed.
 
-Fixes: ffa458c1bd9b6f653008d450f337602f3d52a646 ("spi: ads7846 driver")
-Co-developed-by: David Jander <david@protonic.nl>
-Signed-off-by: David Jander <david@protonic.nl>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20201113112240.1360-1-o.rempel@pengutronix.de
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
+Reported-by: syzbot+1e46a0864c1a6e9bd3d8@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dae R. Jeong <dae.r.jeong@kaist.ac.kr>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/input/touchscreen/ads7846.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/md/md.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index 0fbad337e45a3..7ce0eedaa0e5e 100644
---- a/drivers/input/touchscreen/ads7846.c
-+++ b/drivers/input/touchscreen/ads7846.c
-@@ -801,10 +801,11 @@ static void ads7846_report_state(struct ads7846 *ts)
- 		/* compute touch pressure resistance using equation #2 */
- 		Rt = z2;
- 		Rt -= z1;
--		Rt *= x;
- 		Rt *= ts->x_plate_ohms;
-+		Rt = DIV_ROUND_CLOSEST(Rt, 16);
-+		Rt *= x;
- 		Rt /= z1;
--		Rt = (Rt + 2047) >> 12;
-+		Rt = DIV_ROUND_CLOSEST(Rt, 256);
- 	} else {
- 		Rt = 0;
- 	}
--- 
-2.27.0
-
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -7187,8 +7187,11 @@ static int md_ioctl(struct block_device
+ 			err = -EBUSY;
+ 			goto out;
+ 		}
+-		WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
+-		set_bit(MD_CLOSING, &mddev->flags);
++		if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
++			mutex_unlock(&mddev->open_mutex);
++			err = -EBUSY;
++			goto out;
++		}
+ 		did_set_md_closing = true;
+ 		mutex_unlock(&mddev->open_mutex);
+ 		sync_blockdev(bdev);
 
 
