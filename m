@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71C32E3ABF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C90DB2E3AB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403928AbgL1Nkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:40:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40724 "EHLO mail.kernel.org"
+        id S2403945AbgL1Nkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:40:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391435AbgL1Nka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:40:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BF9F207C9;
-        Mon, 28 Dec 2020 13:39:48 +0000 (UTC)
+        id S2403922AbgL1Nkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:40:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3546122472;
+        Mon, 28 Dec 2020 13:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162789;
-        bh=Sa8wnWGI+jrp/L3LiFuUnc4c/d7KE7JE2axxyux/NqI=;
+        s=korg; t=1609162792;
+        bh=9AveZ90NTvNgrW35by+X/NMIQhtS9w+XJqObNv3Jv8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zBLyAoCID6ThW91xK+9U+BVbMeyf5EJimCjEggRXaCQd2lDwJXq51pFLEcZSgi1VM
-         saX5nwKM3xR8GVvbl361yWZSaBkn5uO0ZdEU1+X8X3VXzNSm32JplDFhcPChAEjJM5
-         VNIn+VWuXOvL34GuT6x9SpeLLr1chSpwrlHkPTTw=
+        b=qd8uHsFEIjTXPnaavy0vBccyc42XQcZvZ8Z2LdeEODPoFKKvILceSvRm+PtIYzi6v
+         vFATD2vlectejK1xgeYgifPH5ZGEv+mne13bQqcrRuhmvidmg14Tf9B4iq04+pjtBN
+         3lnIx01Al83mqLTmd6ujV1HtRR7ImZ1rBB5KHWhc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: [PATCH 5.4 062/453] coresight: tmc-etr: Check if page is valid before dma_map_page()
-Date:   Mon, 28 Dec 2020 13:44:58 +0100
-Message-Id: <20201228124940.228087486@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Al Grant <al.grant@arm.com>, Mike Leach <mike.leach@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH 5.4 063/453] coresight: tmc-etr: Fix barrier packet insertion for perf buffer
+Date:   Mon, 28 Dec 2020 13:44:59 +0100
+Message-Id: <20201228124940.278097060@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,58 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mao Jinlong <jinlmao@codeaurora.org>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-commit 1cc573d5754e92372a7e30e35468644f8811e1a4 upstream.
+commit 83be0b84fe846edf0c722fefe225482d5f0d7395 upstream.
 
-alloc_pages_node() return should be checked before calling
-dma_map_page() to make sure that valid page is mapped or
-else it can lead to aborts as below:
+When the ETR is used in perf mode with a larger buffer (configured
+via sysfs or the default size of 1M) than the perf aux buffer size,
+we end up inserting the barrier packet at the wrong offset, while
+moving the offset forward. i.e, instead of the "new moved offset",
+we insert it at the current hardware buffer offset. These packets
+will not be visible as they are never copied and could lead to
+corruption in the trace decoding side, as the decoder is not aware
+that it needs to reset the decoding.
 
- Unable to handle kernel paging request at virtual address ffffffc008000000
- Mem abort info:
- <snip>...
- pc : __dma_inv_area+0x40/0x58
- lr : dma_direct_map_page+0xd8/0x1c8
-
- Call trace:
-  __dma_inv_area
-  tmc_pages_alloc
-  tmc_alloc_data_pages
-  tmc_alloc_sg_table
-  tmc_init_etr_sg_table
-  tmc_alloc_etr_buf
-  tmc_enable_etr_sink_sysfs
-  tmc_enable_etr_sink
-  coresight_enable_path
-  coresight_enable
-  enable_source_store
-  dev_attr_store
-  sysfs_kf_write
-
-Fixes: 99443ea19e8b ("coresight: Add generic TMC sg table framework")
+Fixes: ec13c78d7b45 ("coresight: tmc-etr: Add barrier packets when moving offset forward")
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: stable@vger.kernel.org
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Mao Jinlong <jinlmao@codeaurora.org>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Reported-by: Al Grant <al.grant@arm.com>
+Tested-by: Mike Leach <mike.leach@arm.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20201127175256.1092685-13-mathieu.poirier@linaro.org
+Link: https://lore.kernel.org/r/20201208182651.1597945-2-mathieu.poirier@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hwtracing/coresight/coresight-tmc-etr.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hwtracing/coresight/coresight-tmc-etr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
 +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-@@ -217,6 +217,8 @@ static int tmc_pages_alloc(struct tmc_pa
- 		} else {
- 			page = alloc_pages_node(node,
- 						GFP_KERNEL | __GFP_ZERO, 0);
-+			if (!page)
-+				goto err;
- 		}
- 		paddr = dma_map_page(real_dev, page, 0, PAGE_SIZE, dir);
- 		if (dma_mapping_error(real_dev, paddr))
+@@ -1535,7 +1535,7 @@ tmc_update_etr_buffer(struct coresight_d
+ 
+ 	/* Insert barrier packets at the beginning, if there was an overflow */
+ 	if (lost)
+-		tmc_etr_buf_insert_barrier_packet(etr_buf, etr_buf->offset);
++		tmc_etr_buf_insert_barrier_packet(etr_buf, offset);
+ 	tmc_etr_sync_perf_buffer(etr_perf, offset, size);
+ 
+ 	/*
 
 
