@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BC72E64FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2932E3E84
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389153AbgL1Ne2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:34:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
+        id S2392091AbgL1O3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:29:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387850AbgL1NeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:34:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA619208BA;
-        Mon, 28 Dec 2020 13:33:48 +0000 (UTC)
+        id S2390307AbgL1O25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:28:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1E34224D2;
+        Mon, 28 Dec 2020 14:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162429;
-        bh=g5pToJZmXPcrVVJlBDpsti+Y/MlgPW5vov2T6UWPMXw=;
+        s=korg; t=1609165696;
+        bh=RrjdCz/cNTsw03Xucv98F+MuW7Wpax9nWU/g6xXb16w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=coVHSitk08WlgMNoLOBB5TuQqvF63dNsnJmBB3VP7wxSHd8HOPGOCSw1+nWvriq66
-         2QOQBub1ap3qGFNpM+RNiAUCTDOSpt42eystp1yFi+kcfVRH+6MgZ7yqJrmwt5GXEQ
-         /HFeFoVsGmTHgOh1nWIO5z6QHmFol15bjaD/UFHY=
+        b=lW7QKLsTziE/hFQzCBndEo6kqccEgRHYu3oMwaCf1sm3jbmJ6jfPlGiWW4Cdoh3Cl
+         FGrBpNvfiwZ5XpP9FHAURuuJZYzxixS+x/JUstFTKMO9OKnOYnMQTe9L0gaEeEoHu3
+         HJBZO8PfSjqof1zkmulwCR08aaF5RY6dgNIp2srk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 302/346] powerpc: Fix incorrect stw{, ux, u, x} instructions in __set_pte_at
+        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.10 623/717] SMB3: avoid confusing warning message on mount to Azure
 Date:   Mon, 28 Dec 2020 13:50:21 +0100
-Message-Id: <20201228124934.386624650@linuxfoundation.org>
+Message-Id: <20201228125050.774782951@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,63 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+From: Steve French <stfrench@microsoft.com>
 
-commit d85be8a49e733dcd23674aa6202870d54bf5600d upstream.
+commit ebcd6de98754d9b6a5f89d7835864b1c365d432f upstream.
 
-The placeholder for instruction selection should use the second
-argument's operand, which is %1, not %0. This could generate incorrect
-assembly code if the memory addressing of operand %0 is a different
-form from that of operand %1.
+Mounts to Azure cause an unneeded warning message in dmesg
+   "CIFS: VFS: parse_server_interfaces: incomplete interface info"
 
-Also remove the %Un placeholder because having %Un placeholders
-for two operands which are based on the same local var (ptep) doesn't
-make much sense. By the way, it doesn't change the current behaviour
-because "<>" constraint is missing for the associated "=m".
+Azure rounds up the size (by 8 additional bytes, to a
+16 byte boundary) of the structure returned on the query
+of the server interfaces at mount time.  This is permissible
+even though different than other servers so do not log a warning
+if query network interfaces response is only rounded up by 8
+bytes or fewer.
 
-[chleroy: revised commit log iaw segher's comments and removed %U0]
-
-Fixes: 9bf2b5cdc5fe ("powerpc: Fixes for CONFIG_PTE_64BIT for SMP support")
-Cc: <stable@vger.kernel.org> # v2.6.28+
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/96354bd77977a6a933fe9020da57629007fdb920.1603358942.git.christophe.leroy@csgroup.eu
+CC: Stable <stable@vger.kernel.org>
+Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/book3s/32/pgtable.h |    4 ++--
- arch/powerpc/include/asm/nohash/pgtable.h    |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ fs/cifs/smb2ops.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-@@ -434,9 +434,9 @@ static inline void __set_pte_at(struct m
- 	if (pte_val(*ptep) & _PAGE_HASHPTE)
- 		flush_hash_entry(mm, ptep, addr);
- 	__asm__ __volatile__("\
--		stw%U0%X0 %2,%0\n\
-+		stw%X0 %2,%0\n\
- 		eieio\n\
--		stw%U0%X0 %L2,%1"
-+		stw%X1 %L2,%1"
- 	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
- 	: "r" (pte) : "memory");
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -477,7 +477,8 @@ parse_server_interfaces(struct network_i
+ 		goto out;
+ 	}
  
---- a/arch/powerpc/include/asm/nohash/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/pgtable.h
-@@ -151,9 +151,9 @@ static inline void __set_pte_at(struct m
- 	 */
- 	if (IS_ENABLED(CONFIG_PPC32) && IS_ENABLED(CONFIG_PTE_64BIT) && !percpu) {
- 		__asm__ __volatile__("\
--			stw%U0%X0 %2,%0\n\
-+			stw%X0 %2,%0\n\
- 			eieio\n\
--			stw%U0%X0 %L2,%1"
-+			stw%X1 %L2,%1"
- 		: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
- 		: "r" (pte) : "memory");
- 		return;
+-	if (bytes_left || p->Next)
++	/* Azure rounds the buffer size up 8, to a 16 byte boundary */
++	if ((bytes_left > 8) || p->Next)
+ 		cifs_dbg(VFS, "%s: incomplete interface info\n", __func__);
+ 
+ 
 
 
