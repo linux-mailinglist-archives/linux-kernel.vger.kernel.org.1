@@ -2,73 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697D92E33E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 04:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA362E33E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 04:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgL1DTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 22:19:44 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9999 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgL1DTo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 22:19:44 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D42n13hnVzhXwt;
-        Mon, 28 Dec 2020 11:18:13 +0800 (CST)
-Received: from huawei.com (10.175.112.227) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Mon, 28 Dec 2020
- 11:19:00 +0800
-From:   Xiangyang Yu <yuxiangyang4@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH] locking/qspinlock: Modify comments to adapt to code modification.
-Date:   Mon, 28 Dec 2020 11:18:55 +0800
-Message-ID: <20201228031855.1991595-1-yuxiangyang4@huawei.com>
-X-Mailer: git-send-email 2.23.0
+        id S1726551AbgL1DTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 22:19:52 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:41023 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726340AbgL1DTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 22:19:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1609125590;
+  x=1640661590;
+  h=from:to:cc:subject:mime-version:
+   content-transfer-encoding:message-id:date;
+  bh=6J3/haCJ1S4udfL+2NKVZM/qxvY7zBWBBCGW8TDBFh0=;
+  b=Cuz5xMXH05qFVAGPTAlN15bImnLNqRm05MiRhMWGMu+iciT7O2ktorJg
+   a/Gca7Uty1zIGswI/JZqgeb0OVznhlfhydf8aPs8m67PqYeqCQhgS+RuX
+   yLarXlhTkl1aN7S38IVyQ4FZo3/u+yKZZJ3sXpBEAY6UKDvg6pTPxuVFq
+   d45bYrZn0NPBuuWkzJ/Y2SGZ3455oAnpxUU/NizNE+LXdSh8KQb0zSi+S
+   M6wzUYgVqfqe1TOq2ULEIevvG6fDFkgPgOq9cisbkBBh8jdXK2mZCYP7w
+   mcietoLbiVFFwKyCnHOhvcmVTqvbuY8bUyIZ6dtWhNccboaHWOUwWlytE
+   Q==;
+From:   Hans-Peter Nilsson <hp@axis.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH] perf record: Tweak "Lowering..." warning in record_opts__config_freq
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Message-ID: <20201228031908.B049B203B5@pchp3.se.axis.com>
+Date:   Mon, 28 Dec 2020 04:19:08 +0100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function 'pv_wait_head_or_lock' comment is not modified in
-commit 625e88be1f41 ("locking/qspinlock: Merge 'struct __qspinlock'
-into 'struct qspinlock'"). Fix it.
+That is, instead of "Lowering default frequency rate to <F>" say
+"Lowering default frequency rate from <f> to <F>", specifying
+the overridden default frequency <f>, so you don't have to grep
+through the source to "remember" that was e.g. 4000.
 
-Signed-off-by: Xiangyang Yu <yuxiangyang4@huawei.com>
+Signed-off-by: Hans-Peter Nilsson <hp@axis.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
 ---
- kernel/locking/qspinlock_paravirt.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/perf/util/record.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/locking/qspinlock_paravirt.h b/kernel/locking/qspinlock_paravirt.h
-index e84d21aa0722..0b7ecf4eb8b8 100644
---- a/kernel/locking/qspinlock_paravirt.h
-+++ b/kernel/locking/qspinlock_paravirt.h
-@@ -393,7 +393,7 @@ static void pv_kick_node(struct qspinlock *lock, struct mcs_spinlock *node)
- }
+diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+index 07e4b96a6625..3b38e7be10da 100644
+--- a/tools/perf/util/record.c
++++ b/tools/perf/util/record.c
+@@ -202,10 +202,10 @@ static int record_opts__config_freq(struct record_opts *opts)
+ 	 * Default frequency is over current maximum.
+ 	 */
+ 	if (max_rate < opts->freq) {
+-		pr_warning("Lowering default frequency rate to %u.\n"
++		pr_warning("Lowering default frequency rate from %u to %u.\n"
+ 			   "Please consider tweaking "
+ 			   "/proc/sys/kernel/perf_event_max_sample_rate.\n",
+-			   max_rate);
++			   opts->freq, max_rate);
+ 		opts->freq = max_rate;
+ 	}
  
- /*
-- * Wait for l->locked to become clear and acquire the lock;
-+ * Wait for lock->locked to become clear and acquire the lock;
-  * halt the vcpu after a short spin.
-  * __pv_queued_spin_unlock() will wake us.
-  *
-@@ -447,9 +447,9 @@ pv_wait_head_or_lock(struct qspinlock *lock, struct mcs_spinlock *node)
- 			 * when we observe _Q_SLOW_VAL in __pv_queued_spin_unlock()
- 			 * we'll be sure to be able to observe our hash entry.
- 			 *
--			 *   [S] <hash>                 [Rmw] l->locked == _Q_SLOW_VAL
--			 *       MB                           RMB
--			 * [RmW] l->locked = _Q_SLOW_VAL  [L] <unhash>
-+			 *   [S] <hash>                    [Rmw] lock->locked == _Q_SLOW_VAL
-+			 *       MB                              RMB
-+			 * [RmW] lock->locked = _Q_SLOW_VAL  [L] <unhash>
- 			 *
- 			 * Matches the smp_rmb() in __pv_queued_spin_unlock().
- 			 */
 -- 
-2.23.0
+2.11.0
 
+brgds, H-P
