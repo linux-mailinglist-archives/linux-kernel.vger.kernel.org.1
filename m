@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5F12E33C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 03:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8FD2E33C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 03:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgL1CrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 21:47:06 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4124 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbgL1CrG (ORCPT
+        id S1726420AbgL1Cyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 21:54:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgL1Cyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 21:47:06 -0500
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4D423S3XW4zXsl4;
-        Mon, 28 Dec 2020 10:45:40 +0800 (CST)
-Received: from [10.174.187.128] (10.174.187.128) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 28 Dec 2020 10:46:22 +0800
-Subject: Re: [PATCH v2 0/3] RFC: Solve several problems in stage 2 translation
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>
-CC:     <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>
-References: <20201216122844.25092-1-wangyanan55@huawei.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <fe7d6cbd-b8ec-f1f9-1163-004aeca94d49@huawei.com>
-Date:   Mon, 28 Dec 2020 10:46:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Sun, 27 Dec 2020 21:54:32 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09CEC061794;
+        Sun, 27 Dec 2020 18:53:52 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id h186so5605741pfe.0;
+        Sun, 27 Dec 2020 18:53:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y9GjcdWdDXwMVCPh4R/oYm+2IT0dwMb9tBB+uvycjjY=;
+        b=l4he/Zrdd8dEAvIQeOJrYq5TwY3Ue9Ac0Jbj1lBgvPCYkCVWuqZjJwM2b3M1MN/Epb
+         axdGL6/adhs4+V1u49MGNqkANkVhFjH0RfH3ypPBYG9EGx2Dromy3BXrMAj4uHDkvrcJ
+         L8JGAFXogegZ2VjDQkpHsfKxrEVOsyxzrgx037xjqF6ntEYgWAtH/EqQ2iI0Pugthh+o
+         zIdnjNNsNrUcXw/wrIPc8yJqGybwSK3eXFMNwEDrXu1ECil+2hpy9MnFEA8HOEiNJEf1
+         3WXqSmDkRQHP9G7sj0246rHZAIUItkvd97keN7AstN4yJmhn2deIo/3CibVN7p/VXb9v
+         uxxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y9GjcdWdDXwMVCPh4R/oYm+2IT0dwMb9tBB+uvycjjY=;
+        b=saEHyxZF+iJw6xew5ESly4zuEHaN3HPL5GpQho0frjyhmMc3KTLOS+1xJgQj6N5YoW
+         W9sOZCzTinkYudURvA2EzmkI5oYI0i9bEwJLHV8reDbNJzaqgdUPPx4VAXT0uB8Ot7cD
+         hybojQQSAB5KasVcXs/m1Q1dp6xECH4cksWJ6ZJWSwVgl5YyI6u0uqr86PnGSoWpqms1
+         zsv25CHR5H+RbAQD73iTsgDv20R7AFiFXHuY8kMeClIJe5QToQ4pRC/3/0ZdgdaYVhBP
+         Tuc0LvAaUObYowO8ApuhZ1N3Uo/1MU0EyU2BD13W38eGqf3RWH6aLIlhlOGXYKghNWRV
+         kahA==
+X-Gm-Message-State: AOAM5318Dd0GqagY84YtkfWC9Eber6p4sPd9bWAusqHhLFubadF/pMc5
+        y02yEgxSmVzyYdh4LQDvCUQ=
+X-Google-Smtp-Source: ABdhPJzIdlsTokLU8dAzHzq5D8auP0RtqFTMMHRBSKvnByGmzfxb+8rnlAhix0kwm/4v3BrpqiPm6A==
+X-Received: by 2002:a62:3503:0:b029:1aa:6f15:b9fe with SMTP id c3-20020a6235030000b02901aa6f15b9femr39125193pfa.65.1609124032133;
+        Sun, 27 Dec 2020 18:53:52 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:feaa:4103:8c8c:bf1])
+        by smtp.gmail.com with ESMTPSA id w1sm12425173pjt.23.2020.12.27.18.53.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Dec 2020 18:53:51 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net v2] net: hdlc_ppp: Fix issues when mod_timer is called while timer is running
+Date:   Sun, 27 Dec 2020 18:53:39 -0800
+Message-Id: <20201228025339.3210-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201216122844.25092-1-wangyanan55@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggeme752-chm.china.huawei.com (10.3.19.98)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will, Marc,
+ppp_cp_event is called directly or indirectly by ppp_rx with "ppp->lock"
+held. It may call mod_timer to add a new timer. However, at the same time
+ppp_timer may be already running and waiting for "ppp->lock". In this
+case, there's no need for ppp_timer to continue running and it can just
+exit.
 
-Gently Ping.
+If we let ppp_timer continue running, it may call add_timer. This causes
+kernel panic because add_timer can't be called with a timer pending.
+This patch fixes this problem.
 
-Is there any comments about this V2 series?
+Fixes: e022c2f07ae5 ("WAN: new synchronous PPP implementation for generic HDLC.")
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ drivers/net/wan/hdlc_ppp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/drivers/net/wan/hdlc_ppp.c b/drivers/net/wan/hdlc_ppp.c
+index 64f855651336..261b53fc8e04 100644
+--- a/drivers/net/wan/hdlc_ppp.c
++++ b/drivers/net/wan/hdlc_ppp.c
+@@ -569,6 +569,13 @@ static void ppp_timer(struct timer_list *t)
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&ppp->lock, flags);
++	/* mod_timer could be called after we entered this function but
++	 * before we got the lock.
++	 */
++	if (timer_pending(&proto->timer)) {
++		spin_unlock_irqrestore(&ppp->lock, flags);
++		return;
++	}
+ 	switch (proto->state) {
+ 	case STOPPING:
+ 	case REQ_SENT:
+-- 
+2.27.0
 
-Many thanks,
-
-Yanan.
-
-On 2020/12/16 20:28, Yanan Wang wrote:
-> Hi, this is the second version, thanks for reading.
->
-> PATCH1/3:
-> Procedures of hyp stage 1 mapping and guest stage 2 mapping are different, but
-> they are tied closely by function kvm_set_valid_leaf_pte(). So separate them by
-> rewriting kvm_set_valid_leaf_pte().
->
-> PATCH2/3:
-> To avoid unnecessary update and small loops, add prejudgement in the translation
-> fault handler: Skip updating the PTE with break-before-make if we are trying to
-> recreate the exact same mapping or only change the access permissions. Actually,
-> change of permissions will be handled through the relax_perms path next time if
-> necessary.
->
-> (1) If there are some vCPUs accessing the same GPA at the same time and the leaf
-> PTE is not set yet, then they will all cause translation faults and the first vCPU
-> holding mmu_lock will set valid leaf PTE, and the others will later update the old
-> PTE with a new one if they are different.
->
-> (2) When changing a leaf entry or a table entry with break-before-make, if there
-> are some vCPUs accessing the same GPA just catch the moment when the target PTE
-> is set invalid in a BBM procedure coincidentally, they will all cause translation
-> faults and will later update the old PTE with a new one if they are different.
->
-> The worst case can be like this: vCPU A causes a translation fault with RW prot and
-> sets the leaf PTE with RW permissions, and then the next vCPU B with RO prot updates
-> the PTE back to RO permissions with break-before-make. And the BBM-invalid moment
-> may trigger more unnecessary translation faults, then some useless small loops might
-> occur which could lead to vCPU stuck.
->
-> PATCH3/3:
-> We now mark the page dirty and set the bitmap before calling fault handlers in
-> user_mem_abort(), and we might end up having spurious dirty pages if update of
-> permissions or mapping has failed. So, mark the page dirty only if the fault is
-> handled successfully.
->
-> Let the guest directly enter again but not return to userspace if we were trying
-> to recreate the same mapping or only change access permissions with BBM, which is
-> not permitted in the mapping path.
->
-> Changes from v1:
-> - Make part of the diff as an independent patch (PATCH1/3),
->    and add Will's Signed-off-by.
-> - Use *return -EPERM* way when changing permissions only in the mapping path.
-> - Add a new patch (PATCH3/3).
->
-> Yanan Wang (3):
->    KVM: arm64: Decouple partial code of hyp stage 1 mapping and guest
->      stage 2 mapping
->    KVM: arm64: Add prejudgement for relaxing permissions only case in
->      stage2 translation fault handler
->    KVM: arm64: Mark the page dirty only if the fault is handled
->      successfully
->
->   arch/arm64/kvm/hyp/pgtable.c | 78 ++++++++++++++++++++----------------
->   arch/arm64/kvm/mmu.c         | 18 +++++++--
->   2 files changed, 58 insertions(+), 38 deletions(-)
->
