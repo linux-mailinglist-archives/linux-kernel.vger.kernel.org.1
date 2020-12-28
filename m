@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DA62E3946
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F502E63F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388168AbgL1NVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:21:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
+        id S2404537AbgL1NoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:44:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388125AbgL1NVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:21:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 000B622A84;
-        Mon, 28 Dec 2020 13:21:00 +0000 (UTC)
+        id S2404449AbgL1NnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:43:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1754205CB;
+        Mon, 28 Dec 2020 13:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161661;
-        bh=U3yHKivQRVGNFrJtSvxdpBPinVe69YAA6C0rK95jaQ8=;
+        s=korg; t=1609162983;
+        bh=27VwrQoWTxZMfb3nbLFIqHHM+ZMeoScZtvDEugBpn0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UM01AABcOBr9apjPMlLQdb/f6TGUyable2E6ywhnkS5h4KYM0Bl4C/ON4+rYwvT3b
-         wVItDZgM2q3rU0D399OT/DR3nNkU8t1wPVvDWRzCLuIqDzoPWo+irtDRFSju/U0mTH
-         46k6e4tsPl5rdTPk/OLILCnmth5LiDm2urOgQFH8=
+        b=ADFc4KwdFwnxdV9ustIWYzhon6NWDSsapls/09ogAJ5qNXQS4toxhIi4DLKQb+rr8
+         nufIYUBWC4uLLSI+VlgAqGy/vI1KfKcSpSmp2Vr0ADQmQIa/Cz7JhoiqjrBgZMGkZw
+         Ok1wSHruD0qWhEmuycdMuEWLwOuC3Q3S91wi1i54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "David C. Partridge" <david.partridge@perdrix.co.uk>,
-        Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 4.19 044/346] USB: UAS: introduce a quirk to set no_write_same
-Date:   Mon, 28 Dec 2020 13:46:03 +0100
-Message-Id: <20201228124921.920510440@linuxfoundation.org>
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 128/453] MIPS: BCM47XX: fix kconfig dependency bug for BCM47XX_BCMA
+Date:   Mon, 28 Dec 2020 13:46:04 +0100
+Message-Id: <20201228124943.370780713@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,94 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 
-commit 8010622c86ca5bb44bc98492f5968726fc7c7a21 upstream.
+[ Upstream commit 3a5fe2fb9635c43359c9729352f45044f3c8df6b ]
 
-UAS does not share the pessimistic assumption storage is making that
-devices cannot deal with WRITE_SAME.  A few devices supported by UAS,
-are reported to not deal well with WRITE_SAME. Those need a quirk.
+When BCM47XX_BCMA is enabled and BCMA_DRIVER_PCI is disabled, it results
+in the following Kbuild warning:
 
-Add it to the device that needs it.
+WARNING: unmet direct dependencies detected for BCMA_DRIVER_PCI_HOSTMODE
+  Depends on [n]: MIPS [=y] && BCMA_DRIVER_PCI [=n] && PCI_DRIVERS_LEGACY [=y] && BCMA [=y]=y
+  Selected by [y]:
+  - BCM47XX_BCMA [=y] && BCM47XX [=y] && PCI [=y]
 
-Reported-by: David C. Partridge <david.partridge@perdrix.co.uk>
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201209152639.9195-1-oneukum@suse.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The reason is that BCM47XX_BCMA selects BCMA_DRIVER_PCI_HOSTMODE without
+depending on or selecting BCMA_DRIVER_PCI while BCMA_DRIVER_PCI_HOSTMODE
+depends on BCMA_DRIVER_PCI. This can also fail building the kernel.
 
+Honor the kconfig dependency to remove unmet direct dependency warnings
+and avoid any potential build failures.
+
+Fixes: c1d1c5d4213e ("bcm47xx: add support for bcma bus")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=209879
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |    1 +
- drivers/usb/storage/uas.c                       |    3 +++
- drivers/usb/storage/unusual_uas.h               |    7 +++++--
- drivers/usb/storage/usb.c                       |    3 +++
- include/linux/usb_usual.h                       |    2 ++
- 5 files changed, 14 insertions(+), 2 deletions(-)
+ arch/mips/bcm47xx/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4998,6 +4998,7 @@
- 					device);
- 				j = NO_REPORT_LUNS (don't use report luns
- 					command, uas only);
-+				k = NO_SAME (do not use WRITE_SAME, uas only)
- 				l = NOT_LOCKABLE (don't try to lock and
- 					unlock ejectable media, not on uas);
- 				m = MAX_SECTORS_64 (don't transfer more
---- a/drivers/usb/storage/uas.c
-+++ b/drivers/usb/storage/uas.c
-@@ -874,6 +874,9 @@ static int uas_slave_configure(struct sc
- 	if (devinfo->flags & US_FL_NO_READ_CAPACITY_16)
- 		sdev->no_read_capacity_16 = 1;
- 
-+	/* Some disks cannot handle WRITE_SAME */
-+	if (devinfo->flags & US_FL_NO_SAME)
-+		sdev->no_write_same = 1;
- 	/*
- 	 * Some disks return the total number of blocks in response
- 	 * to READ CAPACITY rather than the highest block number.
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -35,12 +35,15 @@ UNUSUAL_DEV(0x054c, 0x087d, 0x0000, 0x99
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
- 		US_FL_NO_REPORT_OPCODES),
- 
--/* Reported-by: Julian Groß <julian.g@posteo.de> */
-+/*
-+ *  Initially Reported-by: Julian Groß <julian.g@posteo.de>
-+ *  Further reports David C. Partridge <david.partridge@perdrix.co.uk>
-+ */
- UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x9999,
- 		"LaCie",
- 		"2Big Quadra USB3",
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
--		US_FL_NO_REPORT_OPCODES),
-+		US_FL_NO_REPORT_OPCODES | US_FL_NO_SAME),
- 
- /*
-  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
---- a/drivers/usb/storage/usb.c
-+++ b/drivers/usb/storage/usb.c
-@@ -541,6 +541,9 @@ void usb_stor_adjust_quirks(struct usb_d
- 		case 'j':
- 			f |= US_FL_NO_REPORT_LUNS;
- 			break;
-+		case 'k':
-+			f |= US_FL_NO_SAME;
-+			break;
- 		case 'l':
- 			f |= US_FL_NOT_LOCKABLE;
- 			break;
---- a/include/linux/usb_usual.h
-+++ b/include/linux/usb_usual.h
-@@ -84,6 +84,8 @@
- 		/* Cannot handle REPORT_LUNS */			\
- 	US_FLAG(ALWAYS_SYNC, 0x20000000)			\
- 		/* lies about caching, so always sync */	\
-+	US_FLAG(NO_SAME, 0x40000000)				\
-+		/* Cannot handle WRITE_SAME */			\
- 
- #define US_FLAG(name, value)	US_FL_##name = value ,
- enum { US_DO_ALL_FLAGS };
+diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
+index 6889f74e06f54..490bb6da74b7e 100644
+--- a/arch/mips/bcm47xx/Kconfig
++++ b/arch/mips/bcm47xx/Kconfig
+@@ -27,6 +27,7 @@ config BCM47XX_BCMA
+ 	select BCMA
+ 	select BCMA_HOST_SOC
+ 	select BCMA_DRIVER_MIPS
++	select BCMA_DRIVER_PCI if PCI
+ 	select BCMA_DRIVER_PCI_HOSTMODE if PCI
+ 	select BCMA_DRIVER_GPIO
+ 	default y
+-- 
+2.27.0
+
 
 
