@@ -2,101 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EE72E6A76
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 20:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C09E2E6A79
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 20:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgL1T2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 14:28:35 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:46629 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729172AbgL1T2f (ORCPT
+        id S1729200AbgL1T3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 14:29:21 -0500
+Received: from lists.gateworks.com ([108.161.130.12]:46931 "EHLO
+        lists.gateworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728025AbgL1T3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 14:28:35 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id D05A95C0073;
-        Mon, 28 Dec 2020 14:27:28 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 28 Dec 2020 14:27:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=LAf31SSA3emL1ZfbhVTJf6Edmd
-        TealsQbl0QIPOUCdY=; b=rUQVUQ8Au/QGvekw5Rj6t6APq25bn3feDC5yzt3HKl
-        sqSVkiTeSJecPOg4Ru8f9urOSRD+lECGFMZCmnSxJ9+H/Nhz8uPTKokukkHnak+P
-        TpawTSmRHn9QOZdaOji48OfshF0nL2Jp/1wIAriyNbTiXiZ8oLC8ugFXF+vJtsmN
-        g8MZtiyTeVIRMA0le9DvVaF37ZtNJFLQHCtfFX884K4nLoRGs+ElLagOCTuPTDDJ
-        pBmnc0DYY8v5Vgn5ZGMpSTY5TqQm4Soakhfr+/4nxuziqcaG/DWnKHgxgn04KopF
-        XGkW9iPNfpHLqwQ7iprcZpVxOHoU6/K/JbfEepM7K98w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=LAf31SSA3emL1Zfbh
-        VTJf6EdmdTealsQbl0QIPOUCdY=; b=o93gCIVppRPYExdlc0sv0PPv7K5JrRXFo
-        hsg7XTa9Y31Ln4G9JU+aRimOm/HgNUzkd5OOjffNkHtBTqWnxMkYo/xwSLF5IYol
-        pp+zwfd6PsIs5utfUu6RrD8n1hz79rGrlxbX02G5J5nZ6XFc2U4T3BiDirc4TcCY
-        PwTQxbJyamC8XhxSZ3/V6kwDgMzHMS50bX4pn75AXd79lJt/iJW78kB48CTdJBZL
-        8h3zop8P0qizrCt/tRy6EHkxIhuTadjToX/zKBnqAL0JVewoF2CT0dAGVYrVc9tT
-        jhtTejB+WaJDcIKI+KMx6VzKIVEnZnoUsdhO0+GjmqQBxD63FjuFw==
-X-ME-Sender: <xms:nzHqX11AegeXGFKAhFAWgr7W6WjmQmwjne7yM5M2eETB84pvq4VA1Q>
-    <xme:nzHqXwbhNJ6gMsKohi_Phbj13Kf5RqPRVKUONema-6YbreCqRyZECq4e6-2KYyxqH
-    VXCnFhE5Dup__kH3A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdduledguddvkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheptehnughrvghs
-    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
-    htvghrnhepiedtkeelvdffveeuudfhteduieefteehfffgheeggfdvgfetueffleetvdej
-    heejnecukfhppeeijedrudeitddrvddujedrvdehtdenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvshesrghnrghrrgiivghlrdgu
-    vg
-X-ME-Proxy: <xmx:nzHqX1Dmy19HEvXZieOdSH3jbz-WLTdvYtb8oDTlzZpQaaeops8Uig>
-    <xmx:nzHqX6_nTl56gItVyF0UhOELxBTeSpSl1RTN_F6U2sKmpYbEGQi4AQ>
-    <xmx:nzHqX9_nkZdu-sNASTOB-IwgPKfQ9JYVxeyIPxlFb43jnOI_S8C_Tg>
-    <xmx:oDHqX2MdPizDlP55wJhxuSmkRdCb1vAfr7qpbxhSc8cwY8bpPNyGJg>
-Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 556B91080057;
-        Mon, 28 Dec 2020 14:27:27 -0500 (EST)
-From:   Andres Freund <andres@anarazel.de>
-To:     Mike Snitzer <snitzer@redhat.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Cc:     Andres Freund <andres@anarazel.de>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] block: add debugfs stanza for QUEUE_FLAG_NOWAIT.
-Date:   Mon, 28 Dec 2020 11:27:18 -0800
-Message-Id: <20201228192717.1015629-1-andres@anarazel.de>
-X-Mailer: git-send-email 2.29.2.540.g3cf59784d4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 28 Dec 2020 14:29:21 -0500
+Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
+        by lists.gateworks.com with esmtp (Exim 4.82)
+        (envelope-from <tharvey@gateworks.com>)
+        id 1ktyJK-0005R5-En; Mon, 28 Dec 2020 19:36:06 +0000
+From:   Tim Harvey <tharvey@gateworks.com>
+To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH] dt-bindings: mfd: gateworks-gsc: Add fan-tach mode
+Date:   Mon, 28 Dec 2020 11:28:36 -0800
+Message-Id: <1609183716-26529-1-git-send-email-tharvey@gateworks.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was missed in 021a24460dc2. Leads to the numeric value of
-QUEUE_FLAG_NOWAIT (i.e. 29) showing up in
-/sys/kernel/debug/block/*/state.
+In 7497d4a66c59 ("hwmon: (gsc-hwmon) add fan sensor") a mode
+was added to report RPM's from a fan tach input.
 
-Fixes: 021a24460dc28e7412aecfae89f60e1847e685c0
-Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc: Mike Snitzer <snitzer@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Andres Freund <andres@anarazel.de>
+Add this mode to the dt-bindings for the Gateworks System Controller.
+
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 ---
- block/blk-mq-debugfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index 3094542e12ae..e21eed20a155 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -129,6 +129,7 @@ static const char *const blk_queue_flag_name[] = {
- 	QUEUE_FLAG_NAME(PCI_P2PDMA),
- 	QUEUE_FLAG_NAME(ZONE_RESETALL),
- 	QUEUE_FLAG_NAME(RQ_ALLOC_TIME),
-+	QUEUE_FLAG_NAME(NOWAIT),
- };
- #undef QUEUE_FLAG_NAME
+diff --git a/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
+index d08e8fe..5a1e8d2 100644
+--- a/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
++++ b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
+@@ -83,8 +83,9 @@ properties:
+                 2 - scaled voltage based on an optional resistor divider
+                     and optional offset
+                 3 - pre-scaled 16-bit voltage value
++                4 - fan tach input to report RPM's
+             $ref: /schemas/types.yaml#/definitions/uint32
+-            enum: [0, 1, 2, 3]
++            enum: [0, 1, 2, 3, 4]
  
+           gw,voltage-divider-ohms:
+             description: Values of resistors for divider on raw ADC input
 -- 
-2.29.2.540.g3cf59784d4
+2.7.4
 
