@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394592E6593
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D2D2E65CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390155AbgL1N3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:29:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57966 "EHLO mail.kernel.org"
+        id S2389756AbgL1N1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:27:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390045AbgL1N3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:29:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5448B20728;
-        Mon, 28 Dec 2020 13:28:26 +0000 (UTC)
+        id S2389599AbgL1N1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:27:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1CD22072C;
+        Mon, 28 Dec 2020 13:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162106;
-        bh=c1zVYX3l6BcS+BfoSbgcYnY6cFr3UTXTKNHLfVDB8dE=;
+        s=korg; t=1609162018;
+        bh=Lwv8CmGye8bYWj3ELKJ9mQRHMfNUnWuYrQQaayD9kGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sA2J+BoKVmXzHyu7dWYc0CDqOZ/G8jOz/E7wY4D7olddTBmwzJvl3Hbqdo8YP0amH
-         1EUCaLi4HkEcBzZujDmp0ugwPYTG0U8rCjwczSwjYMafQznQaEmC/bHfTH+7iIg11m
-         2EViFmVmD6dbmbiIqBBhKLQJwgSlWNUJ38aEQmZo=
+        b=erRW/ohTbWFfU3B5XMmpY/DL6w/wEealgr4ZNqcgKVfCSHLL8nnR2u0D9ZQhefxSm
+         Syr1ik5AkGUDw9mMADDL7wWd53SUxcMTDmxHobCkh3dwvB+tMuY1EHXNsixf/FSwxU
+         E3LCSv3z4OYk+8Q6XMRfkjsHB7300qThWfh+FJ4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 160/346] RDMA/cxgb4: Validate the number of CQEs
-Date:   Mon, 28 Dec 2020 13:47:59 +0100
-Message-Id: <20201228124927.523016117@linuxfoundation.org>
+Subject: [PATCH 4.19 161/346] memstick: fix a double-free bug in memstick_check
+Date:   Mon, 28 Dec 2020 13:48:00 +0100
+Message-Id: <20201228124927.569529213@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -40,36 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit 6d8285e604e0221b67bd5db736921b7ddce37d00 ]
+[ Upstream commit e3e9ced5c93803d5b2ea1942c4bf0192622531d6 ]
 
-Before create CQ, make sure that the requested number of CQEs is in the
-supported range.
+kfree(host->card) has been called in put_device so that
+another kfree would raise cause a double-free bug.
 
-Fixes: cfdda9d76436 ("RDMA/cxgb4: Add driver for Chelsio T4 RNIC")
-Link: https://lore.kernel.org/r/20201108132007.67537-1-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 0193383a5833 ("memstick: core: fix device_register() error handling")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Link: https://lore.kernel.org/r/20201120074846.31322-1-miaoqinglang@huawei.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/cq.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/memstick/core/memstick.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
-index 1fd8798d91a73..beba761902449 100644
---- a/drivers/infiniband/hw/cxgb4/cq.c
-+++ b/drivers/infiniband/hw/cxgb4/cq.c
-@@ -1012,6 +1012,9 @@ struct ib_cq *c4iw_create_cq(struct ib_device *ibdev,
- 
- 	rhp = to_c4iw_dev(ibdev);
- 
-+	if (entries < 1 || entries > ibdev->attrs.max_cqe)
-+		return -EINVAL;
-+
- 	if (vector >= rhp->rdev.lldi.nciq)
- 		return ERR_PTR(-EINVAL);
- 
+diff --git a/drivers/memstick/core/memstick.c b/drivers/memstick/core/memstick.c
+index b1564cacd19e1..20ae8652adf44 100644
+--- a/drivers/memstick/core/memstick.c
++++ b/drivers/memstick/core/memstick.c
+@@ -469,7 +469,6 @@ static void memstick_check(struct work_struct *work)
+ 			host->card = card;
+ 			if (device_register(&card->dev)) {
+ 				put_device(&card->dev);
+-				kfree(host->card);
+ 				host->card = NULL;
+ 			}
+ 		} else
 -- 
 2.27.0
 
