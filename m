@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CF92E6740
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473C42E6698
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731913AbgL1NL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
+        id S1731671AbgL1NSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731692AbgL1NLT (ORCPT
+        with ESMTP id S1731631AbgL1NRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:19 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82104C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 05:10:38 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id k10so10315953wmi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 05:10:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zftq0G0O7QGXq9h4glxWYJpeeRtUvNit+ou+JTWbY3g=;
-        b=OELhWxcuL53FNsdC6+tcvBdGBwCtiwHpUcARzk9hyAswemPyZAGkZ7Q7hDnvwzUu/K
-         fuVSkNQpP7wFpf/0EqMLIG5qPRBqhOBoEEiNPetdKbdZtDwuPAyoTD72Sgg8Y/FI0M36
-         bpzCBCcnrk0d+JltV1DQ90m+9470gutUpGDJn/iO4wN8lFvJm5L1vgyxFNZczeiqTBfL
-         9DUhQELJ7+06CvPU1y8oJj1KUoOPxKU6sNXTwDxXI6C1TLG6wYsLNVpjzLIN704RkZWk
-         Sob8LihCUI8GAk2T+zVem5lFC4Qinixa1CHOQvg6P44gwtPAEm0Inb6lH+UeLSBzhE3w
-         89Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zftq0G0O7QGXq9h4glxWYJpeeRtUvNit+ou+JTWbY3g=;
-        b=Bmrpdmwj8XxjFyUV9de2Ev1FTQLno3RUrGDtiYWvsF/SaQCX7mgb/EGHiZKCTNGaQg
-         uW2PV+1QRAHos/qTXx3ZROyNwWdZGpVmWEfHW682qXbL8aTLi7SOzl9yPlHpM6vY30oi
-         d/6gJDB5+RnHBob1VxvTNrHfSattTnqnFZwOFnZa8et9zNgMxTvnJ8dziwn9IYgsArX6
-         z/DFuSgD9dfCPq0M4lSUvAniINX5TSLQNylBq9zFpLHZg1Juy2ONkjnJvGNQHuIcRsfe
-         IbvfuIe2Gm34EaFU9so4Un5J9dA2jBPOQIXMMD5BxSOGxyzEztzRa93AcsC+XM8vQGA4
-         PDcA==
-X-Gm-Message-State: AOAM533XX9fs3rR7nTR9osfaiJK4CUTKKXEJfFQPcysbbsFCJOi7rzrK
-        0xD7KZAY1ixvx0PMh0/vDZEWtg==
-X-Google-Smtp-Source: ABdhPJzpQFEgHuV56rvoENm0o2TMz62ZmYZzx2qPmRPQyU4imjso2CB9zz8eCjqqBcmuNiFqO+/3kA==
-X-Received: by 2002:a1c:186:: with SMTP id 128mr20370509wmb.176.1609161037060;
-        Mon, 28 Dec 2020 05:10:37 -0800 (PST)
-Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
-        by smtp.gmail.com with ESMTPSA id a62sm21401461wmh.40.2020.12.28.05.10.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 05:10:36 -0800 (PST)
-From:   Jann Horn <jannh@google.com>
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm, slub: Consider rest of partial list if acquire_slab() fails
-Date:   Mon, 28 Dec 2020 14:08:53 +0100
-Message-Id: <20201228130853.1871516-1-jannh@google.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+        Mon, 28 Dec 2020 08:17:52 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207B8C061794;
+        Mon, 28 Dec 2020 05:17:11 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6598799;
+        Mon, 28 Dec 2020 14:17:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1609161428;
+        bh=IcgI8ZiGoVQeWrVhvAi4jCXSswEN/GJ7vur314v3VMs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sfs1EOUqkruSzYbSEdcuk/cDF6oMCJCLnv0bV8O88ff8F8X8nw0hVOMbHqSf2qLpH
+         aPxcY5TLOt7EfBroZAfYiZ2vcIH5nLWFirVjKEQjFHB9GzweXPdQ/YLUaqVV7iBQXJ
+         UAXcWMX5N32ipvAc2PuLZwxez4jm1c+I/7MRSeW8=
+Date:   Mon, 28 Dec 2020 15:16:58 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Subject: Re: [PATCH] media: v4l2-async: Put fwnode after last access
+Message-ID: <X+naygVCfh2QVh8P@pendragon.ideasonboard.com>
+References: <20201228121725.133898-1-ezequiel@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201228121725.133898-1-ezequiel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-acquire_slab() fails if there is contention on the freelist of the page
-(probably because some other CPU is concurrently freeing an object from the
-page). In that case, it might make sense to look for a different page
-(since there might be more remote frees to the page from other CPUs, and we
-don't want contention on struct page).
+Hi Ezequiel,
 
-However, the current code accidentally stops looking at the partial list
-completely in that case. Especially on kernels without CONFIG_NUMA set,
-this means that get_partial() fails and new_slab_objects() falls back to
-new_slab(), allocating new pages. This could lead to an unnecessary
-increase in memory fragmentation.
+Thank you for the patch.
 
-Fixes: 7ced37197196 ("slub: Acquire_slab() avoid loop")
-Signed-off-by: Jann Horn <jannh@google.com>
----
- mm/slub.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Dec 28, 2020 at 09:17:25AM -0300, Ezequiel Garcia wrote:
+> fwnode_handle_put() should be called after the fwnode
+> is last accessed. Fix it.
+> 
+> Fixes: b98158d837ef ("media: v4l2-async: Accept endpoints and devices for fwnode matching")
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-async.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
+> index e3ab003a6c85..1303c9b83138 100644
+> --- a/drivers/media/v4l2-core/v4l2-async.c
+> +++ b/drivers/media/v4l2-core/v4l2-async.c
+> @@ -78,6 +78,7 @@ static bool match_fwnode(struct v4l2_async_notifier *notifier,
+>  	bool asd_fwnode_is_ep;
+>  	bool sd_fwnode_is_ep;
+>  	struct device *dev;
+> +	bool match;
+>  
+>  	/*
+>  	 * Both the subdev and the async subdev can provide either an endpoint
+> @@ -113,9 +114,10 @@ static bool match_fwnode(struct v4l2_async_notifier *notifier,
+>  		other_fwnode = sd->fwnode;
+>  	}
+>  
+> -	fwnode_handle_put(dev_fwnode);
+> +	match = (dev_fwnode == other_fwnode);
+>  
+> -	if (dev_fwnode != other_fwnode)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 0c8b43a5b3b0..b1777ba06735 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1974,7 +1974,7 @@ static void *get_partial_node(struct kmem_cache *s, s=
-truct kmem_cache_node *n,
-=20
- 		t =3D acquire_slab(s, n, page, object =3D=3D NULL, &objects);
- 		if (!t)
--			break;
-+			continue; /* cmpxchg raced */
-=20
- 		available +=3D objects;
- 		if (!object) {
+This only performs a pointer comparison, it doesn't access dev_fwnode. I
+don't think the change is necessary.
 
-base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
---=20
-2.29.2.729.g45daf8777d-goog
+> +	fwnode_handle_put(dev_fwnode);
+> +	if (!match)
+>  		return false;
+>  
+>  	/*
 
+-- 
+Regards,
+
+Laurent Pinchart
