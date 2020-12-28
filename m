@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003692E6157
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B922E39B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405916AbgL1Nsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:48:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49796 "EHLO mail.kernel.org"
+        id S2389541AbgL1N0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:26:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405902AbgL1Nsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:48:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 248A522AAA;
-        Mon, 28 Dec 2020 13:47:46 +0000 (UTC)
+        id S2389487AbgL1N03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51D8020719;
+        Mon, 28 Dec 2020 13:26:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163267;
-        bh=USMpCL9bNvMHIeZ3KURxV+/tP3/hVUWvPmJp/zlBXZ8=;
+        s=korg; t=1609161973;
+        bh=Nt/MzaAIEEJxH5sdzbVHDdFTyFSIOnPo/lyqHov3v/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UYuuLozvjpYJ7P/dq40/xjOZ4Vo0ksUv3hTnunuU84QKSvpgqPwfnEAd1bYMV1V21
-         BZ1tEXYgh1oruPt1YztCs4Lv4uvx8HQ6WdhJungE2wkoMGY9TM5Y9yWAZpheNtUwJi
-         1OlKovotO0HxA7kKOOj+MlrPLX0Hx838Cpp61HnQ=
+        b=t1jqAGu5JmTKcOtO/nKGZm0wq503+qm7P7Dcyb6SvhXR+dcN8FdSH+NhWM8uEU0tZ
+         RX54rUUWQpYoBI2A6pvXOSo0ni6CB9ejO+yaRQipp9Bmn/D57PYjnZkh8G0Y+Hg5hn
+         JizXvyEZGdEzDfxhDb+KvmO9qegAH4Oe6cTq3aWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 227/453] cpufreq: ap806: Add missing MODULE_DEVICE_TABLE
-Date:   Mon, 28 Dec 2020 13:47:43 +0100
-Message-Id: <20201228124948.144819703@linuxfoundation.org>
+Subject: [PATCH 4.19 145/346] video: fbdev: atmel_lcdfb: fix return error code in atmel_lcdfb_of_init()
+Date:   Mon, 28 Dec 2020 13:47:44 +0100
+Message-Id: <20201228124926.797764598@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 925a5bcefe105f2790ecbdc252eb2315573f309d ]
+[ Upstream commit ba236455ee750270f33998df57f982433cea4d8e ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this cpufreq driver when it is
-compiled as an external module.
+If devm_kzalloc() failed after the first time, atmel_lcdfb_of_init()
+can't return -ENOMEM, fix this by putting the error code in loop.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: f525a670533d9 ("cpufreq: ap806: add cpufreq driver for Armada 8K")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Fixes: b985172b328a ("video: atmel_lcdfb: add device tree suport")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201117061350.3453742-1-yangyingliang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/armada-8k-cpufreq.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/video/fbdev/atmel_lcdfb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/armada-8k-cpufreq.c b/drivers/cpufreq/armada-8k-cpufreq.c
-index 39e34f5066d3d..b0fc5e84f8570 100644
---- a/drivers/cpufreq/armada-8k-cpufreq.c
-+++ b/drivers/cpufreq/armada-8k-cpufreq.c
-@@ -204,6 +204,12 @@ static void __exit armada_8k_cpufreq_exit(void)
- }
- module_exit(armada_8k_cpufreq_exit);
+diff --git a/drivers/video/fbdev/atmel_lcdfb.c b/drivers/video/fbdev/atmel_lcdfb.c
+index 4ed55e6bbb840..6d01ae3984c73 100644
+--- a/drivers/video/fbdev/atmel_lcdfb.c
++++ b/drivers/video/fbdev/atmel_lcdfb.c
+@@ -1071,8 +1071,8 @@ static int atmel_lcdfb_of_init(struct atmel_lcdfb_info *sinfo)
+ 	}
  
-+static const struct of_device_id __maybe_unused armada_8k_cpufreq_of_match[] = {
-+	{ .compatible = "marvell,ap806-cpu-clock" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, armada_8k_cpufreq_of_match);
-+
- MODULE_AUTHOR("Gregory Clement <gregory.clement@bootlin.com>");
- MODULE_DESCRIPTION("Armada 8K cpufreq driver");
- MODULE_LICENSE("GPL");
+ 	INIT_LIST_HEAD(&pdata->pwr_gpios);
+-	ret = -ENOMEM;
+ 	for (i = 0; i < gpiod_count(dev, "atmel,power-control"); i++) {
++		ret = -ENOMEM;
+ 		gpiod = devm_gpiod_get_index(dev, "atmel,power-control",
+ 					     i, GPIOD_ASIS);
+ 		if (IS_ERR(gpiod))
 -- 
 2.27.0
 
