@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2608B2E40BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5562E641B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502012AbgL1O4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:56:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50990 "EHLO mail.kernel.org"
+        id S2632920AbgL1Pro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:47:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441192AbgL1OQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:16:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8278B22583;
-        Mon, 28 Dec 2020 14:16:11 +0000 (UTC)
+        id S2404434AbgL1NnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:43:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E9F1206D4;
+        Mon, 28 Dec 2020 13:42:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164972;
-        bh=WwQZgz85Hxcv0lpZP4RPu7pywIyi+Pa/yJYPGnHR5IQ=;
+        s=korg; t=1609162977;
+        bh=oF4XxR/L5dzqgVJ61UhkynEJ9IH3369GEhn3/lLo8vg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jOIQPOyEY/Qdr3pNGBru08A7t4TMaunhClIhayevfDypWtuUhK7Y/T1mHL1jJyKml
-         TpN6L4fsE/vhudn7/aFExByuznqFbfe8U6C+2qZ91Dmt/4Ms7XBkyrNCfCk5bs86Yt
-         C8N2uNeX/kSWrnd0PdDN2MTiDKei4ghZvyLI40OI=
+        b=pB+NFmkjoxmunfeleC6aE2DR0tUYWA+cVG4SJudUPyViZiykStjbPfbyJ8CWgAGwg
+         UeFRBwvRNkn2UGTj72RzHHxgWWf/bzDddjLGCkdArbD2sj+ZfizK8PEL0AUtSem2ZQ
+         m9CG2hpsUqUwvgnL0imsQzgqFG+PgPHgRJ0DJqGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 364/717] powerpc/pseries/hibernation: drop pseries_suspend_begin() from suspend ops
+Subject: [PATCH 5.4 126/453] ASoC: arizona: Fix a wrong free in wm8997_probe
 Date:   Mon, 28 Dec 2020 13:46:02 +0100
-Message-Id: <20201228125038.454025599@linuxfoundation.org>
+Message-Id: <20201228124943.280201353@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 52719fce3f4c7a8ac9eaa191e8d75a697f9fbcbc ]
+[ Upstream commit 5e7aace13df24ff72511f29c14ebbfe638ef733c ]
 
-There are three ways pseries_suspend_begin() can be reached:
+In the normal path, we should not free the arizona,
+we should return immediately. It will be free when
+call remove operation.
 
-1. When "mem" is written to /sys/power/state:
-
-kobj_attr_store()
--> state_store()
-  -> pm_suspend()
-    -> suspend_devices_and_enter()
-      -> pseries_suspend_begin()
-
-This never works because there is no way to supply a valid stream id
-using this interface, and H_VASI_STATE is called with a stream id of
-zero. So this call path is useless at best.
-
-2. When a stream id is written to /sys/devices/system/power/hibernate.
-pseries_suspend_begin() is polled directly from store_hibernate()
-until the stream is in the "Suspending" state (i.e. the platform is
-ready for the OS to suspend execution):
-
-dev_attr_store()
--> store_hibernate()
-  -> pseries_suspend_begin()
-
-3. When a stream id is written to /sys/devices/system/power/hibernate
-(continued). After #2, pseries_suspend_begin() is called once again
-from the pm core:
-
-dev_attr_store()
--> store_hibernate()
-  -> pm_suspend()
-    -> suspend_devices_and_enter()
-      -> pseries_suspend_begin()
-
-This is redundant because the VASI suspend state is already known to
-be Suspending.
-
-The begin() callback of platform_suspend_ops is optional, so we can
-simply remove that assignment with no loss of function.
-
-Fixes: 32d8ad4e621d ("powerpc/pseries: Partition hibernation support")
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201207215200.1785968-18-nathanl@linux.ibm.com
+Fixes: 31833ead95c2c ("ASoC: arizona: Move request of speaker IRQs into bus probe")
+Reported-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Acked-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20201111130923.220186-2-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/suspend.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/wm8997.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
-index 81e0ac58d6204..3eaa9d59dc7ab 100644
---- a/arch/powerpc/platforms/pseries/suspend.c
-+++ b/arch/powerpc/platforms/pseries/suspend.c
-@@ -187,7 +187,6 @@ static struct bus_type suspend_subsys = {
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index 37e4bb3dbd8a9..229f2986cd96b 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -1177,6 +1177,8 @@ static int wm8997_probe(struct platform_device *pdev)
+ 		goto err_spk_irqs;
+ 	}
  
- static const struct platform_suspend_ops pseries_suspend_ops = {
- 	.valid		= suspend_valid_only_mem,
--	.begin		= pseries_suspend_begin,
- 	.prepare_late	= pseries_prepare_late,
- 	.enter		= pseries_suspend_enter,
- };
++	return ret;
++
+ err_spk_irqs:
+ 	arizona_free_spk_irqs(arizona);
+ 
 -- 
 2.27.0
 
