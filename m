@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE532E3FE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59B12E3757
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408022AbgL1Opu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:45:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59798 "EHLO mail.kernel.org"
+        id S1728321AbgL1MyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:54:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503057AbgL1OYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:24:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 067C922D04;
-        Mon, 28 Dec 2020 14:24:05 +0000 (UTC)
+        id S1728307AbgL1MyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:54:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13450208BA;
+        Mon, 28 Dec 2020 12:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165446;
-        bh=8VkzJDBeMi29PFDS0HI5w7Ul2rXmw/Asb617Y2dy6Sk=;
+        s=korg; t=1609160026;
+        bh=ptFPIz9lZpViiVcw/Tq59SMJUevrJ/8CJ9Pgv00+OmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MOspK4wZb1kmqeZMfetx2i5reiIDOEH+ugsfJDPcQKXN9YdHoYLPnPi3v/yU9vZvq
-         5wlnmmPVXH5GnVEQL2coUnHU8IxiKSYc9K0eowH8Xm7NxIDpdgbD7OpRFzMJLl6s+f
-         ysDx5WdbXeDvqzxOOdVRufSXhMaJvgOmQQ/7Yvl4=
+        b=BJ7/uPOSGYD6PoNYQIc6J+5PBCD+gLptu4Rs+/JYGyJyzf8SWGpjOdpLgpN/na/nC
+         uQdHvbXiGzPfdzZuCqXTw1WESAOLrfTvaXzXZysJsvhcAP846eIsToO+AFAOeN/PkP
+         QoNCzXXZ3sm/mgp+y8kKc8Ee0ovzMWI1g4eol/44=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 5.10 534/717] ACPI: PNP: compare the string length in the matching_id()
+        stable@vger.kernel.org, David Jander <david@protonic.nl>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 048/132] Input: ads7846 - fix integer overflow on Rt calculation
 Date:   Mon, 28 Dec 2020 13:48:52 +0100
-Message-Id: <20201228125046.556137216@linuxfoundation.org>
+Message-Id: <20201228124848.758785759@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-commit b08221c40febcbda9309dd70c61cf1b0ebb0e351 upstream.
+[ Upstream commit 820830ec918f6c3dcd77a54a1c6198ab57407916 ]
 
-Recently we met a touchscreen problem on some Thinkpad machines, the
-touchscreen driver (i2c-hid) is not loaded and the touchscreen can't
-work.
+In some rare cases the 32 bit Rt value will overflow if z2 and x is max,
+z1 is minimal value and x_plate_ohms is relatively high (for example 800
+ohm). This would happen on some screen age with low pressure.
 
-An i2c ACPI device with the name WACF2200 is defined in the BIOS, with
-the current rule in matching_id(), this device will be regarded as
-a PNP device since there is WACFXXX in the acpi_pnp_device_ids[] and
-this PNP device is attached to the acpi device as the 1st
-physical_node, this will make the i2c bus match fail when i2c bus
-calls acpi_companion_match() to match the acpi_id_table in the i2c-hid
-driver.
+There are two possible fixes:
+- make Rt 64bit
+- reorder calculation to avoid overflow
 
-WACF2200 is an i2c device instead of a PNP device, after adding the
-string length comparing, the matching_id() will return false when
-matching WACF2200 and WACFXXX, and it is reasonable to compare the
-string length when matching two IDs.
+The second variant seems to be preferable, since 64 bit calculation on
+32 bit system is a bit more expensive.
 
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Cc: All applicable <stable@vger.kernel.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: ffa458c1bd9b6f653008d450f337602f3d52a646 ("spi: ads7846 driver")
+Co-developed-by: David Jander <david@protonic.nl>
+Signed-off-by: David Jander <david@protonic.nl>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://lore.kernel.org/r/20201113112240.1360-1-o.rempel@pengutronix.de
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpi_pnp.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/input/touchscreen/ads7846.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/acpi/acpi_pnp.c
-+++ b/drivers/acpi/acpi_pnp.c
-@@ -319,6 +319,9 @@ static bool matching_id(const char *idst
- {
- 	int i;
- 
-+	if (strlen(idstr) != strlen(list_id))
-+		return false;
-+
- 	if (memcmp(idstr, list_id, 3))
- 		return false;
- 
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index a61b2153ab8c2..b4ded36cc4162 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -785,10 +785,11 @@ static void ads7846_report_state(struct ads7846 *ts)
+ 		/* compute touch pressure resistance using equation #2 */
+ 		Rt = z2;
+ 		Rt -= z1;
+-		Rt *= x;
+ 		Rt *= ts->x_plate_ohms;
++		Rt = DIV_ROUND_CLOSEST(Rt, 16);
++		Rt *= x;
+ 		Rt /= z1;
+-		Rt = (Rt + 2047) >> 12;
++		Rt = DIV_ROUND_CLOSEST(Rt, 256);
+ 	} else {
+ 		Rt = 0;
+ 	}
+-- 
+2.27.0
+
 
 
