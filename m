@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174BE2E3FC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 010602E3805
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392325AbgL1Oo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:44:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33142 "EHLO mail.kernel.org"
+        id S1730391AbgL1NEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:04:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503205AbgL1OZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:25:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2402A206D4;
-        Mon, 28 Dec 2020 14:25:10 +0000 (UTC)
+        id S1730293AbgL1NDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A89432245C;
+        Mon, 28 Dec 2020 13:03:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165511;
-        bh=hZO3f+sU8DLpmWcx9RIoRxYScZUiG1znp4VtXoefxS8=;
+        s=korg; t=1609160590;
+        bh=ZDLuezUecvvZpYdnsZTEvnhf/rHrjafxsKalCchwpfU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=almREdgTXiPwmBn8reYup59gV8k+AgtWs9UcY6E4rPZFP0f4V1Xn425ncBsRchI5G
-         aobWlpXRMojZQCEpDt0qRe8Lu7ETKH0Tt7OanjNxxJ2TRjPCUU1MpB0DshPkqR6IAm
-         kNbKB6YlOVQ7V9x5jsKGhQLdLR24nSjOGyhOHNJo=
+        b=K3AW9CL4ImGoQsDRTY7NHUdKi5wtJ3I/0myaTDuiplrL3emMtfUyQ8gcgH224liE5
+         L0Lfb/ujeh82ShYmqOnk3L5bldsj/tP06iJjovCfNAldlBNjISYoqU9bZcDubfMuFT
+         VDdHi1DZUuKU5b9Zgc4ZC8Qm1+SDURylDeHBBG6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 558/717] s390/dasd: fix list corruption of lcu list
+        stable@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 103/175] seq_buf: Avoid type mismatch for seq_buf_init
 Date:   Mon, 28 Dec 2020 13:49:16 +0100
-Message-Id: <20201228125047.658380897@linuxfoundation.org>
+Message-Id: <20201228124858.240683231@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 53a7f655834c7c335bf683f248208d4fbe4b47bc upstream.
+[ Upstream commit d9a9280a0d0ae51dc1d4142138b99242b7ec8ac6 ]
 
-In dasd_alias_disconnect_device_from_lcu the device is removed from any
-list on the LCU. Afterwards the LCU is removed from the lcu list if it
-does not contain devices any longer.
+Building with W=2 prints a number of warnings for one function that
+has a pointer type mismatch:
 
-The lcu->lock protects the lcu from parallel updates. But to cancel all
-workers and wait for completion the lcu->lock has to be unlocked.
+linux/seq_buf.h: In function 'seq_buf_init':
+linux/seq_buf.h:35:12: warning: pointer targets in assignment from 'unsigned char *' to 'char *' differ in signedness [-Wpointer-sign]
 
-If two devices are removed in parallel and both are removed from the LCU
-the first device that takes the lcu->lock again will delete the LCU because
-it is already empty but the second device also tries to free the LCU which
-leads to a list corruption of the lcu list.
+Change the type in the function prototype according to the type in
+the structure.
 
-Fix by removing the device right before the lcu is checked without
-unlocking the lcu->lock in between.
+Link: https://lkml.kernel.org/r/20201026161108.3707783-1-arnd@kernel.org
 
-Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 9a7777935c34 ("tracing: Convert seq_buf fields to be like seq_file fields")
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/block/dasd_alias.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/seq_buf.h   | 2 +-
+ include/linux/trace_seq.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/s390/block/dasd_alias.c
-+++ b/drivers/s390/block/dasd_alias.c
-@@ -256,7 +256,6 @@ void dasd_alias_disconnect_device_from_l
- 		return;
- 	device->discipline->get_uid(device, &uid);
- 	spin_lock_irqsave(&lcu->lock, flags);
--	list_del_init(&device->alias_list);
- 	/* make sure that the workers don't use this device */
- 	if (device == lcu->suc_data.device) {
- 		spin_unlock_irqrestore(&lcu->lock, flags);
-@@ -283,6 +282,7 @@ void dasd_alias_disconnect_device_from_l
+diff --git a/include/linux/seq_buf.h b/include/linux/seq_buf.h
+index fb7eb9ccb1cd4..d4c3c9bab5826 100644
+--- a/include/linux/seq_buf.h
++++ b/include/linux/seq_buf.h
+@@ -29,7 +29,7 @@ static inline void seq_buf_clear(struct seq_buf *s)
+ }
  
- 	spin_lock_irqsave(&aliastree.lock, flags);
- 	spin_lock(&lcu->lock);
-+	list_del_init(&device->alias_list);
- 	if (list_empty(&lcu->grouplist) &&
- 	    list_empty(&lcu->active_devices) &&
- 	    list_empty(&lcu->inactive_devices)) {
+ static inline void
+-seq_buf_init(struct seq_buf *s, unsigned char *buf, unsigned int size)
++seq_buf_init(struct seq_buf *s, char *buf, unsigned int size)
+ {
+ 	s->buffer = buf;
+ 	s->size = size;
+diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
+index cfaf5a1d4bad7..f5be2716b01c6 100644
+--- a/include/linux/trace_seq.h
++++ b/include/linux/trace_seq.h
+@@ -11,7 +11,7 @@
+  */
+ 
+ struct trace_seq {
+-	unsigned char		buffer[PAGE_SIZE];
++	char			buffer[PAGE_SIZE];
+ 	struct seq_buf		seq;
+ 	int			full;
+ };
+@@ -50,7 +50,7 @@ static inline int trace_seq_used(struct trace_seq *s)
+  * that is about to be written to and then return the result
+  * of that write.
+  */
+-static inline unsigned char *
++static inline char *
+ trace_seq_buffer_ptr(struct trace_seq *s)
+ {
+ 	return s->buffer + seq_buf_used(&s->seq);
+-- 
+2.27.0
+
 
 
