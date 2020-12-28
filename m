@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39A62E40F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AADD2E3D50
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440228AbgL1ONi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:13:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
+        id S2440335AbgL1OOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:14:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440209AbgL1ONe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:13:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA8BD205CB;
-        Mon, 28 Dec 2020 14:13:18 +0000 (UTC)
+        id S2440309AbgL1OOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:14:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9540720731;
+        Mon, 28 Dec 2020 14:13:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164799;
-        bh=zzuJMY+o0rZHf9ldOzV0e4o8kbV+3YZQxBj4RWsQ82g=;
+        s=korg; t=1609164802;
+        bh=fZ6Kn4rPUq9KtioS1e0jKBS0B5PWzIC6EwLWFf1z2Zc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UFvWvzN0vke9UUs1TibiJeMn+TVnJaXRg/zMFbQe9Ki0lVWlvft5DZfb3yiLQgSPp
-         nfNq1XVPYkNEG6EZjime8o+eVhdXTV0UqZxCy4mY4qHtEJBP1SROR2zmsm2olUyMkb
-         yrY+X5keTBT66JrZdQL9g/avva3wPLLGBNWJCZkE=
+        b=h+AW7z/fSZiMKzFjOaKxGGH7rpjj0M+842MDO/+aNYJRF0d7UoIgjao8M/N6O/chT
+         er+kkCdSfBnvo5CuW+XGgu8abDFKaPJ59fcSKllf2RZHE9BsiHQ0CYI/JkTCu+xRyH
+         48QtyP0/TfejChmRHP38FuXOy1sQTkVOzZjz7Eqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
         Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 302/717] mt76: mt7663s: fix a possible ple quota underflow
-Date:   Mon, 28 Dec 2020 13:45:00 +0100
-Message-Id: <20201228125035.496787170@linuxfoundation.org>
+Subject: [PATCH 5.10 303/717] mt76: mt7915: set fops_sta_stats.owner to THIS_MODULE
+Date:   Mon, 28 Dec 2020 13:45:01 +0100
+Message-Id: <20201228125035.544901560@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -39,34 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Taehee Yoo <ap420073@gmail.com>
 
-[ Upstream commit 1c79a190e94325e01811f653f770a34e816fdd8f ]
+[ Upstream commit 5efbe3b1b8992d5f837388091920945c23212159 ]
 
-Properly account current consumed ple quota in mt7663s_tx_pick_quota
-routine and avoid possible underflow.
+If THIS_MODULE is not set, the module would be removed while debugfs is
+being used.
+It eventually makes kernel panic.
 
-Fixes: 6ef2d665f64d ("mt76: mt7663s: split mt7663s_tx_update_sched in mt7663s_tx_{pick,update}_quota")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Fixes: ec9742a8f38e ("mt76: mt7915: add .sta_add_debugfs support")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/mt7915/debugfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c b/drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c
-index 2486cda3243bc..69e38f477b1e4 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c
-@@ -150,7 +150,7 @@ static int mt7663s_tx_pick_quota(struct mt76_sdio *sdio, enum mt76_txq_id qid,
- 			return -EBUSY;
- 	} else {
- 		if (sdio->sched.pse_data_quota < *pse_size + pse_sz ||
--		    sdio->sched.ple_data_quota < *ple_size)
-+		    sdio->sched.ple_data_quota < *ple_size + 1)
- 			return -EBUSY;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/debugfs.c b/drivers/net/wireless/mediatek/mt76/mt7915/debugfs.c
+index 1049927faf246..d2ac7e5ee60a2 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/debugfs.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/debugfs.c
+@@ -460,6 +460,7 @@ static const struct file_operations fops_sta_stats = {
+ 	.read = seq_read,
+ 	.llseek = seq_lseek,
+ 	.release = single_release,
++	.owner = THIS_MODULE,
+ };
  
- 		*ple_size = *ple_size + 1;
+ void mt7915_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 -- 
 2.27.0
 
