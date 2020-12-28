@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E722E66E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFB62E683D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440959AbgL1QSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:18:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43604 "EHLO mail.kernel.org"
+        id S2634148AbgL1QeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:34:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732709AbgL1NPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:15:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F9C32076D;
-        Mon, 28 Dec 2020 13:15:20 +0000 (UTC)
+        id S1730249AbgL1NDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F9F7206ED;
+        Mon, 28 Dec 2020 13:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161321;
-        bh=sGXZ3I6qiui6Kj2Gy9swHJhCbRugfhmlmZHm86NumJg=;
+        s=korg; t=1609160576;
+        bh=iRrV4hdtPk4eKcU5Iq0aDCH+J2vIQi9boaG6kCWLdjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t29B4oDcZ8YcXXtMLLS3XIDa6mUD1SenInugivOvFnmjJ9h4REpk+HuCLPmu3PZVR
-         rFX6vB/CAnZaDXARit06XwvQEBJqUMmApWtw+gbUBLHTHWqcKzwiHoOuhna+GqVXJG
-         fcdQjCTFMfe5lB4mXWiSV3GtiBW2BchL7aM0jRbY=
+        b=RJSie41mo+TjWgGYjivs58mJity1GEsYjvAzYIP/O12uTCEClrvVJoKu1MwL6BU/Q
+         zvPuoWIFjumJWXMFVTjcys3rHMygAUQ5OUUnuTwwhrC+iGEenhU2N2DzkEj0tffRy6
+         /SDHbt3UI+ghpkxpSXGJdTYkLx5FJ4dKIVSOt/Dg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 145/242] scsi: pm80xx: Fix error return in pm8001_pci_probe()
-Date:   Mon, 28 Dec 2020 13:49:10 +0100
-Message-Id: <20201228124911.842957287@linuxfoundation.org>
+Subject: [PATCH 4.9 098/175] cpufreq: highbank: Add missing MODULE_DEVICE_TABLE
+Date:   Mon, 28 Dec 2020 13:49:11 +0100
+Message-Id: <20201228124857.990371427@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 97031ccffa4f62728602bfea8439dd045cd3aeb2 ]
+[ Upstream commit 9433777a6e0aae27468d3434b75cd51bb88ff711 ]
 
-The driver did not return an error in the case where
-pm8001_configure_phy_settings() failed.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this cpufreq driver when it is
+compiled as an external module.
 
-Use rc to store the return value of pm8001_configure_phy_settings().
-
-Link: https://lore.kernel.org/r/20201205115551.2079471-1-zhangqilong3@huawei.com
-Fixes: 279094079a44 ("[SCSI] pm80xx: Phy settings support for motherboard controller.")
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 6754f556103be ("cpufreq / highbank: add support for highbank cpufreq")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm8001_init.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/cpufreq/highbank-cpufreq.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-index 0e013f76b582e..30e49b4acaeaf 100644
---- a/drivers/scsi/pm8001/pm8001_init.c
-+++ b/drivers/scsi/pm8001/pm8001_init.c
-@@ -1054,7 +1054,8 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
+diff --git a/drivers/cpufreq/highbank-cpufreq.c b/drivers/cpufreq/highbank-cpufreq.c
+index 1608f7105c9f8..ad743f2f31e78 100644
+--- a/drivers/cpufreq/highbank-cpufreq.c
++++ b/drivers/cpufreq/highbank-cpufreq.c
+@@ -104,6 +104,13 @@ out_put_node:
+ }
+ module_init(hb_cpufreq_driver_init);
  
- 	pm8001_init_sas_add(pm8001_ha);
- 	/* phy setting support for motherboard controller */
--	if (pm8001_configure_phy_settings(pm8001_ha))
-+	rc = pm8001_configure_phy_settings(pm8001_ha);
-+	if (rc)
- 		goto err_out_shost;
- 
- 	pm8001_post_sas_ha_init(shost, chip);
++static const struct of_device_id __maybe_unused hb_cpufreq_of_match[] = {
++	{ .compatible = "calxeda,highbank" },
++	{ .compatible = "calxeda,ecx-2000" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, hb_cpufreq_of_match);
++
+ MODULE_AUTHOR("Mark Langsdorf <mark.langsdorf@calxeda.com>");
+ MODULE_DESCRIPTION("Calxeda Highbank cpufreq driver");
+ MODULE_LICENSE("GPL");
 -- 
 2.27.0
 
