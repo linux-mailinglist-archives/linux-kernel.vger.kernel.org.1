@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DB82E6581
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C172E66F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393729AbgL1QCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:02:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60432 "EHLO mail.kernel.org"
+        id S2633203AbgL1QTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:19:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389536AbgL1Nba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:31:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3F8920728;
-        Mon, 28 Dec 2020 13:30:48 +0000 (UTC)
+        id S1732575AbgL1NOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:14:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B691208BA;
+        Mon, 28 Dec 2020 13:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162249;
-        bh=DilgPCEYNKulBt2jpnQxaepZv0vFRE1WB3AwTzIHGPU=;
+        s=korg; t=1609161250;
+        bh=5Ifg2u+QVkhkt6fItwGA/It3WlpGsA+JomikPcAeMqY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lox8N0qQTEamJs+UfJZLGTKFHBKOm6gfwkvNUwPVSW0PtMmpKLZhRaLY8ZmR55G9b
-         6Pr3Lqni9Kt+eXynSb59+qLucKAaSA7j/rLqsFDOK4nKqX/lsXtlToghovkQCkF6xl
-         FKsdUI3JoHh8RC2gjWFuI/HWjQWuPegYnVdEIrek=
+        b=oeQLaMvftdy6iQInuT1l+6RgVeHouFx6rNB+P5kGxyZqz2q+zguzHlHjqKu7zbyai
+         4bKonO99/I6GRTxia1A5KwuwDQ43tN3/DjIirLqgzXA96o0GzfuceSYAoWsrvtDxhe
+         QmPysjW1i/trM/xezTKy9gZkl2HpRw5uPrdFqzdY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, kazuo ito <kzpn200@gmail.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 238/346] net: bcmgenet: Fix a resource leak in an error handling path in the probe functin
-Date:   Mon, 28 Dec 2020 13:49:17 +0100
-Message-Id: <20201228124931.281102335@linuxfoundation.org>
+Subject: [PATCH 4.14 153/242] nfsd: Fix message level for normal termination
+Date:   Mon, 28 Dec 2020 13:49:18 +0100
+Message-Id: <20201228124912.234545081@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: kazuo ito <kzpn200@gmail.com>
 
-[ Upstream commit 4375ada01963d1ebf733d60d1bb6e5db401e1ac6 ]
+[ Upstream commit 4420440c57892779f265108f46f83832a88ca795 ]
 
-If the 'register_netdev()' call fails, we must undo a previous
-'bcmgenet_mii_init()' call.
+The warning message from nfsd terminating normally
+can confuse system adminstrators or monitoring software.
 
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20201212182005.120437-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Though it's not exactly fair to pin-point a commit where it
+originated, the current form in the current place started
+to appear in:
+
+Fixes: e096bbc6488d ("knfsd: remove special handling for SIGHUP")
+Signed-off-by: kazuo ito <kzpn200@gmail.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/nfsd/nfssvc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index c7667017c1a3f..c3e824f5e50e8 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -3593,8 +3593,10 @@ static int bcmgenet_probe(struct platform_device *pdev)
- 	clk_disable_unprepare(priv->clk);
+diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+index 4a9e0fb634b6c..67e85a752d3a4 100644
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -410,8 +410,7 @@ static void nfsd_last_thread(struct svc_serv *serv, struct net *net)
+ 		return;
  
- 	err = register_netdev(dev);
--	if (err)
-+	if (err) {
-+		bcmgenet_mii_exit(dev);
- 		goto err;
-+	}
- 
- 	return err;
+ 	nfsd_shutdown_net(net);
+-	printk(KERN_WARNING "nfsd: last server has exited, flushing export "
+-			    "cache\n");
++	pr_info("nfsd: last server has exited, flushing export cache\n");
+ 	nfsd_export_flush(net);
+ }
  
 -- 
 2.27.0
