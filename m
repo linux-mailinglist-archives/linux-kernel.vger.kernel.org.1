@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781CD2E3A3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155232E435B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387999AbgL1Ndt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:33:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
+        id S2408571AbgL1Pex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:34:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387826AbgL1Nc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:32:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F38D22A84;
-        Mon, 28 Dec 2020 13:32:18 +0000 (UTC)
+        id S2407386AbgL1NyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:54:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E572F20731;
+        Mon, 28 Dec 2020 13:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162339;
-        bh=nWGqTU481O4Cju/QKmovFI4BuSkHywJZT74B5gO1/4E=;
+        s=korg; t=1609163625;
+        bh=hZO3f+sU8DLpmWcx9RIoRxYScZUiG1znp4VtXoefxS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MRMAQ0Wpk8ivlrLlZJEvDZz1msSRzsFE5Weyz1rxzPGRUYV12mor+aGlLtVrtMILn
-         KoVY9ru752WRv7sztBVvGJ6Ln6bSYVBRKHZJKnqINcHcYGUM53nlKU9by6NXMmo4Zq
-         W4hDwWAhSOclEbWOi9lB72Y3/i0irfdRYUpxk+HQ=
+        b=gPhMGu6KQyKeOPFkcpcpV41fkvHJcK5pY2UttKTQyCmmxFTpQFvFwVNohGu2MTI/v
+         WNQVoKMto6AbEvaHfPFZdAe22wVH+7dZwyMiSveDv+fQfhf1R3AgCRYnohYl16s/Wd
+         L9EtdlyVQlQ30U8Er//dmJKxLEwcJwx3ShoNaVxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.19 269/346] Revert "ACPI / resources: Use AE_CTRL_TERMINATE to terminate resources walks"
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.4 352/453] s390/dasd: fix list corruption of lcu list
 Date:   Mon, 28 Dec 2020 13:49:48 +0100
-Message-Id: <20201228124932.773371224@linuxfoundation.org>
+Message-Id: <20201228124954.144537956@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Scally <djrscally@gmail.com>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-commit 12fc4dad94dfac25599f31257aac181c691ca96f upstream.
+commit 53a7f655834c7c335bf683f248208d4fbe4b47bc upstream.
 
-This reverts commit 8a66790b7850a6669129af078768a1d42076a0ef.
+In dasd_alias_disconnect_device_from_lcu the device is removed from any
+list on the LCU. Afterwards the LCU is removed from the lcu list if it
+does not contain devices any longer.
 
-Switching this function to AE_CTRL_TERMINATE broke the documented
-behaviour of acpi_dev_get_resources() - AE_CTRL_TERMINATE does not, in
-fact, terminate the resource walk because acpi_walk_resource_buffer()
-ignores it (specifically converting it to AE_OK), referring to that
-value as "an OK termination by the user function". This means that
-acpi_dev_get_resources() does not abort processing when the preproc
-function returns a negative value.
+The lcu->lock protects the lcu from parallel updates. But to cancel all
+workers and wait for completion the lcu->lock has to be unlocked.
 
-Signed-off-by: Daniel Scally <djrscally@gmail.com>
-Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+If two devices are removed in parallel and both are removed from the LCU
+the first device that takes the lcu->lock again will delete the LCU because
+it is already empty but the second device also tries to free the LCU which
+leads to a list corruption of the lcu list.
+
+Fix by removing the device right before the lcu is checked without
+unlocking the lcu->lock in between.
+
+Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/resource.c |    2 +-
+ drivers/s390/block/dasd_alias.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -549,7 +549,7 @@ static acpi_status acpi_dev_process_reso
- 		ret = c->preproc(ares, c->preproc_data);
- 		if (ret < 0) {
- 			c->error = ret;
--			return AE_CTRL_TERMINATE;
-+			return AE_ABORT_METHOD;
- 		} else if (ret > 0) {
- 			return AE_OK;
- 		}
+--- a/drivers/s390/block/dasd_alias.c
++++ b/drivers/s390/block/dasd_alias.c
+@@ -256,7 +256,6 @@ void dasd_alias_disconnect_device_from_l
+ 		return;
+ 	device->discipline->get_uid(device, &uid);
+ 	spin_lock_irqsave(&lcu->lock, flags);
+-	list_del_init(&device->alias_list);
+ 	/* make sure that the workers don't use this device */
+ 	if (device == lcu->suc_data.device) {
+ 		spin_unlock_irqrestore(&lcu->lock, flags);
+@@ -283,6 +282,7 @@ void dasd_alias_disconnect_device_from_l
+ 
+ 	spin_lock_irqsave(&aliastree.lock, flags);
+ 	spin_lock(&lcu->lock);
++	list_del_init(&device->alias_list);
+ 	if (list_empty(&lcu->grouplist) &&
+ 	    list_empty(&lcu->active_devices) &&
+ 	    list_empty(&lcu->inactive_devices)) {
 
 
