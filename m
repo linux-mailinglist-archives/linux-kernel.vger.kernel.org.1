@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A212E391C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A96CC2E64F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732978AbgL1NTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:19:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
+        id S2393181AbgL1Pyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:54:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732906AbgL1NS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:18:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3328207C9;
-        Mon, 28 Dec 2020 13:18:42 +0000 (UTC)
+        id S2390728AbgL1Ngj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:36:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA71122582;
+        Mon, 28 Dec 2020 13:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161523;
-        bh=2zswwcbAHBiiyXxKUukt8I2higsivO73El+lvUDkKBQ=;
+        s=korg; t=1609162584;
+        bh=MBsRX0JfOb89PKhMoHVVa+yrEZlnmUuBRK6UAA5HWVw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tf31uTe9VkLXa6Az1PFU4USmyhB8s0d+SEiCTZ/Tsa7FnQ2LO0IdxMF9XXE8kYpop
-         4uSXdz+Co7hqWXKgCbkagWwitrBZMcey3OWZ7v3g/NPrujVC0oIbdF3Wv5ex9auef4
-         0RbN3zBlcAifqnqJf6uhmcL6TdJ3hQ2X8UIptUBk=
+        b=TbHr2AGoBAprjzWqOxaAh2M+1g5GYzEl99vZb4Dx9tJ8JIsK04dgV7WKTDkLT82xN
+         DVCR0diymX3oRLkchFsJkgF306nKPGzMaJ+xBLkB/lxWzp7SWrKZewF1TLkZeWPnWG
+         tWPbZ0e+IVqkc10t3XH9nK2iu/M3JUH7BzeH2ROU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Terry Zhou <bjzhou@marvell.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 4.14 234/242] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
-Date:   Mon, 28 Dec 2020 13:50:39 +0100
-Message-Id: <20201228124916.205858748@linuxfoundation.org>
+        stable@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 321/346] spi: mt7621: fix missing clk_disable_unprepare() on error in mt7621_spi_probe
+Date:   Mon, 28 Dec 2020 13:50:40 +0100
+Message-Id: <20201228124935.303797409@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Terry Zhou <bjzhou@marvell.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-commit 6f37689cf6b38fff96de52e7f0d3e78f22803ba0 upstream.
+commit 702b15cb97123cedcec56a39d9a21c5288eb9ae1 upstream.
 
-There is an error in the current code that the XTAL MODE
-pin was set to NB MPP1_31 which should be NB MPP1_9.
-The latch register of NB MPP1_9 has different offset of 0x8.
+Fix the missing clk_disable_unprepare() before return
+from mt7621_spi_probe in the error handling case.
 
-Signed-off-by: Terry Zhou <bjzhou@marvell.com>
-[pali: Fix pin name in commit message]
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201106100039.11385-1-pali@kernel.org
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: cbd66c626e16 ("spi: mt7621: Move SPI driver out of staging")
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Link: https://lore.kernel.org/r/20201103074912.195576-1-miaoqinglang@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/clk/mvebu/armada-37xx-xtal.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/mt7621-spi/spi-mt7621.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/clk/mvebu/armada-37xx-xtal.c
-+++ b/drivers/clk/mvebu/armada-37xx-xtal.c
-@@ -15,8 +15,8 @@
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
+--- a/drivers/staging/mt7621-spi/spi-mt7621.c
++++ b/drivers/staging/mt7621-spi/spi-mt7621.c
+@@ -455,6 +455,7 @@ static int mt7621_spi_probe(struct platf
+ 	master = spi_alloc_master(&pdev->dev, sizeof(*rs));
+ 	if (master == NULL) {
+ 		dev_info(&pdev->dev, "master allocation failed\n");
++		clk_disable_unprepare(clk);
+ 		return -ENOMEM;
+ 	}
  
--#define NB_GPIO1_LATCH	0xC
--#define XTAL_MODE	    BIT(31)
-+#define NB_GPIO1_LATCH	0x8
-+#define XTAL_MODE	    BIT(9)
+@@ -480,6 +481,7 @@ static int mt7621_spi_probe(struct platf
+ 	ret = device_reset(&pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "SPI reset failed!\n");
++		clk_disable_unprepare(clk);
+ 		return ret;
+ 	}
  
- static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
- {
 
 
