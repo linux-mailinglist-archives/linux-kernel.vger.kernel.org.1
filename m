@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8182E3F5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607002E3E7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505741AbgL1Oji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:39:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37236 "EHLO mail.kernel.org"
+        id S2502572AbgL1O2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:28:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503674AbgL1O3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:29:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E59B2063A;
-        Mon, 28 Dec 2020 14:29:26 +0000 (UTC)
+        id S2502527AbgL1O2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:28:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 853EF21D94;
+        Mon, 28 Dec 2020 14:28:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165767;
-        bh=nyx47SjlkERTqGlLQ6jggC8WWVcJ966K7g9l1ftwhnI=;
+        s=korg; t=1609165682;
+        bh=hNDb6AIRg1fqbNpMU55tf8NOw9z3dSfL2qiCAXinYwk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uY2q7+bdVFfDVJP7NgEGXpgIMDoBVFZYSM/3tp7VA7mh6Jngqefeq8wmoRqWELoow
-         zOTrkRGPo384MBKoevoWx1rNyGG2zslRAd5xAH9xJTJmcHHHeCcZ7MetwGIp0kdjls
-         RjZYgryD6+Ealogwi4BtoUDfCnxbSIoAWnQmhVZo=
+        b=qvtAMoMhkM/Xs3LH3jdiC7gZJRUNcHezXhv9WrB4NKRpmAQslyBnOv6mWDpkLw+0f
+         D40W+dcHk/jlukvniSJmpaIZOVyaOwXyI9MPrsEkuBw9kv3+PrSrmqPkgQduYtuT1g
+         FTaRyAYCaKndIwnP7IMfJKSEu81Mh0xYu+BsHqLA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 617/717] powerpc/powernv/memtrace: Fix crashing the kernel when enabling concurrently
-Date:   Mon, 28 Dec 2020 13:50:15 +0100
-Message-Id: <20201228125050.482097286@linuxfoundation.org>
+        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: [PATCH 5.10 618/717] ovl: make ioctl() safe
+Date:   Mon, 28 Dec 2020 13:50:16 +0100
+Message-Id: <20201228125050.531661006@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -40,96 +40,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit d6718941a2767fb383e105d257d2105fe4f15f0e upstream.
+commit 89bdfaf93d9157499c3a0d61f489df66f2dead7f upstream.
 
-It's very easy to crash the kernel right now by simply trying to
-enable memtrace concurrently, hammering on the "enable" interface
+ovl_ioctl_set_flags() does a capability check using flags, but then the
+real ioctl double-fetches flags and uses potentially different value.
 
-loop.sh:
-  #!/bin/bash
+The "Check the capability before cred override" comment misleading: user
+can skip this check by presenting benign flags first and then overwriting
+them to non-benign flags.
 
-  dmesg --console-off
+Just remove the cred override for now, hoping this doesn't cause a
+regression.
 
-  while true; do
-          echo 0x40000000 > /sys/kernel/debug/powerpc/memtrace/enable
-  done
+The proper solution is to create a new setxflags i_op (patches are in the
+works).
 
-[root@localhost ~]# loop.sh &
-[root@localhost ~]# loop.sh &
+Xfstests don't show a regression.
 
-Resulting quickly in a kernel crash. Let's properly protect using a
-mutex.
-
-Fixes: 9d5171a8f248 ("powerpc/powernv: Enable removal of memory for in memory tracing")
-Cc: stable@vger.kernel.org# v4.14+
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201111145322.15793-3-david@redhat.com
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+Fixes: dab5ca8fd9dd ("ovl: add lsattr/chattr support")
+Cc: <stable@vger.kernel.org> # v4.19
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/platforms/powernv/memtrace.c |   22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ fs/overlayfs/file.c |   87 +++++++++-------------------------------------------
+ 1 file changed, 16 insertions(+), 71 deletions(-)
 
---- a/arch/powerpc/platforms/powernv/memtrace.c
-+++ b/arch/powerpc/platforms/powernv/memtrace.c
-@@ -30,6 +30,7 @@ struct memtrace_entry {
- 	char name[16];
- };
- 
-+static DEFINE_MUTEX(memtrace_mutex);
- static u64 memtrace_size;
- 
- static struct memtrace_entry *memtrace_array;
-@@ -279,6 +280,7 @@ static int memtrace_online(void)
- 
- static int memtrace_enable_set(void *data, u64 val)
+--- a/fs/overlayfs/file.c
++++ b/fs/overlayfs/file.c
+@@ -541,46 +541,31 @@ static long ovl_real_ioctl(struct file *
+ 			   unsigned long arg)
  {
-+	int rc = -EAGAIN;
- 	u64 bytes;
+ 	struct fd real;
+-	const struct cred *old_cred;
+ 	long ret;
  
- 	/*
-@@ -291,25 +293,31 @@ static int memtrace_enable_set(void *dat
- 		return -EINVAL;
- 	}
+ 	ret = ovl_real_fdget(file, &real);
+ 	if (ret)
+ 		return ret;
  
-+	mutex_lock(&memtrace_mutex);
-+
- 	/* Re-add/online previously removed/offlined memory */
- 	if (memtrace_size) {
- 		if (memtrace_online())
--			return -EAGAIN;
-+			goto out_unlock;
- 	}
- 
--	if (!val)
--		return 0;
-+	if (!val) {
-+		rc = 0;
-+		goto out_unlock;
+-	old_cred = ovl_override_creds(file_inode(file)->i_sb);
+ 	ret = security_file_ioctl(real.file, cmd, arg);
+-	if (!ret)
++	if (!ret) {
++		/*
++		 * Don't override creds, since we currently can't safely check
++		 * permissions before doing so.
++		 */
+ 		ret = vfs_ioctl(real.file, cmd, arg);
+-	revert_creds(old_cred);
 +	}
  
- 	/* Offline and remove memory */
- 	if (memtrace_init_regions_runtime(val))
--		return -EINVAL;
-+		goto out_unlock;
+ 	fdput(real);
  
- 	if (memtrace_init_debugfs())
--		return -EINVAL;
-+		goto out_unlock;
- 
- 	memtrace_size = val;
--
--	return 0;
-+	rc = 0;
-+out_unlock:
-+	mutex_unlock(&memtrace_mutex);
-+	return rc;
+ 	return ret;
  }
  
- static int memtrace_enable_get(void *data, u64 *val)
+-static unsigned int ovl_iflags_to_fsflags(unsigned int iflags)
+-{
+-	unsigned int flags = 0;
+-
+-	if (iflags & S_SYNC)
+-		flags |= FS_SYNC_FL;
+-	if (iflags & S_APPEND)
+-		flags |= FS_APPEND_FL;
+-	if (iflags & S_IMMUTABLE)
+-		flags |= FS_IMMUTABLE_FL;
+-	if (iflags & S_NOATIME)
+-		flags |= FS_NOATIME_FL;
+-
+-	return flags;
+-}
+-
+ static long ovl_ioctl_set_flags(struct file *file, unsigned int cmd,
+-				unsigned long arg, unsigned int flags)
++				unsigned long arg)
+ {
+ 	long ret;
+ 	struct inode *inode = file_inode(file);
+-	unsigned int oldflags;
+ 
+ 	if (!inode_owner_or_capable(inode))
+ 		return -EACCES;
+@@ -591,10 +576,13 @@ static long ovl_ioctl_set_flags(struct f
+ 
+ 	inode_lock(inode);
+ 
+-	/* Check the capability before cred override */
+-	oldflags = ovl_iflags_to_fsflags(READ_ONCE(inode->i_flags));
+-	ret = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+-	if (ret)
++	/*
++	 * Prevent copy up if immutable and has no CAP_LINUX_IMMUTABLE
++	 * capability.
++	 */
++	ret = -EPERM;
++	if (!ovl_has_upperdata(inode) && IS_IMMUTABLE(inode) &&
++	    !capable(CAP_LINUX_IMMUTABLE))
+ 		goto unlock;
+ 
+ 	ret = ovl_maybe_copy_up(file_dentry(file), O_WRONLY);
+@@ -613,46 +601,6 @@ unlock:
+ 
+ }
+ 
+-static long ovl_ioctl_set_fsflags(struct file *file, unsigned int cmd,
+-				  unsigned long arg)
+-{
+-	unsigned int flags;
+-
+-	if (get_user(flags, (int __user *) arg))
+-		return -EFAULT;
+-
+-	return ovl_ioctl_set_flags(file, cmd, arg, flags);
+-}
+-
+-static unsigned int ovl_fsxflags_to_fsflags(unsigned int xflags)
+-{
+-	unsigned int flags = 0;
+-
+-	if (xflags & FS_XFLAG_SYNC)
+-		flags |= FS_SYNC_FL;
+-	if (xflags & FS_XFLAG_APPEND)
+-		flags |= FS_APPEND_FL;
+-	if (xflags & FS_XFLAG_IMMUTABLE)
+-		flags |= FS_IMMUTABLE_FL;
+-	if (xflags & FS_XFLAG_NOATIME)
+-		flags |= FS_NOATIME_FL;
+-
+-	return flags;
+-}
+-
+-static long ovl_ioctl_set_fsxflags(struct file *file, unsigned int cmd,
+-				   unsigned long arg)
+-{
+-	struct fsxattr fa;
+-
+-	memset(&fa, 0, sizeof(fa));
+-	if (copy_from_user(&fa, (void __user *) arg, sizeof(fa)))
+-		return -EFAULT;
+-
+-	return ovl_ioctl_set_flags(file, cmd, arg,
+-				   ovl_fsxflags_to_fsflags(fa.fsx_xflags));
+-}
+-
+ long ovl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+ 	long ret;
+@@ -663,12 +611,9 @@ long ovl_ioctl(struct file *file, unsign
+ 		ret = ovl_real_ioctl(file, cmd, arg);
+ 		break;
+ 
+-	case FS_IOC_SETFLAGS:
+-		ret = ovl_ioctl_set_fsflags(file, cmd, arg);
+-		break;
+-
+ 	case FS_IOC_FSSETXATTR:
+-		ret = ovl_ioctl_set_fsxflags(file, cmd, arg);
++	case FS_IOC_SETFLAGS:
++		ret = ovl_ioctl_set_flags(file, cmd, arg);
+ 		break;
+ 
+ 	default:
 
 
