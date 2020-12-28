@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC012E400C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC3A2E38A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392398AbgL1Or1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:47:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59708 "EHLO mail.kernel.org"
+        id S1730829AbgL1NMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:12:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502843AbgL1OXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:23:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C06D9221F0;
-        Mon, 28 Dec 2020 14:22:58 +0000 (UTC)
+        id S1732060AbgL1NM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:12:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 467DF22BEA;
+        Mon, 28 Dec 2020 13:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165379;
-        bh=9NahrlYyNAdZZ/yKDuE0CcW/q+WhkGrcf3ZkyE8qS/s=;
+        s=korg; t=1609161131;
+        bh=QQZtdrtNDL2KFOEHs3fB6urx7WxcNySkqdHC+ILRyuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a9aPrI2PnqVo28Gjv8JXbZptgLzUsGugxzNF8xN+GiJh0vwobIfbq/y+SU7ltE9hu
-         NLgP6P7ikurSUEQY/c/Y/B/9Ve72VdIg/I8JIFwzKCCTx1W/eA5HOfLcqZ+rnAnrfq
-         UiyUSY3SrU1YIwsbzd0X600ph0jsBcdPy7IkjCvY=
+        b=F03/f9a2uYXIRZpBQuWQpsFOsnXBywuynLsKGvS/5VfzIDiG49klwQBMp00Kk9zG0
+         flY5KJ+kPN+rVRTKTBPsdF+0cgP1vtZvPDjO3jWG2LCxucSro6l/zzq9KIObGOZJGg
+         +s69Nywe9D5em1gVSaYYP2baagozD9JTQQS76Cbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 479/717] pwm: zx: Add missing cleanup in error path
+Subject: [PATCH 4.14 072/242] ARM: p2v: fix handling of LPAE translation in BE mode
 Date:   Mon, 28 Dec 2020 13:47:57 +0100
-Message-Id: <20201228125043.916154515@linuxfoundation.org>
+Message-Id: <20201228124908.229667365@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit 269effd03f6142df4c74814cfdd5f0b041b30bf9 ]
+[ Upstream commit 4e79f0211b473f8e1eab8211a9fd50cc41a3a061 ]
 
-zx_pwm_probe() called clk_prepare_enable() before; this must be undone
-in the error path.
+When running in BE mode on LPAE hardware with a PA-to-VA translation
+that exceeds 4 GB, we patch bits 39:32 of the offset into the wrong
+byte of the opcode. So fix that, by rotating the offset in r0 to the
+right by 8 bits, which will put the 8-bit immediate in bits 31:24.
 
-Fixes: 4836193c435c ("pwm: Add ZTE ZX PWM device driver")
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Note that this will also move bit #22 in its correct place when
+applying the rotation to the constant #0x400000.
+
+Fixes: d9a790df8e984 ("ARM: 7883/1: fix mov to mvn conversion in case of 64 bit phys_addr_t and BE")
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-zx.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/kernel/head.S | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/pwm/pwm-zx.c b/drivers/pwm/pwm-zx.c
-index e2c21cc34a96a..3763ce5311ac2 100644
---- a/drivers/pwm/pwm-zx.c
-+++ b/drivers/pwm/pwm-zx.c
-@@ -238,6 +238,7 @@ static int zx_pwm_probe(struct platform_device *pdev)
- 	ret = pwmchip_add(&zpc->chip);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to add PWM chip: %d\n", ret);
-+		clk_disable_unprepare(zpc->pclk);
- 		return ret;
- 	}
- 
+diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+index 6b1148cafffdb..90add5ded3f1f 100644
+--- a/arch/arm/kernel/head.S
++++ b/arch/arm/kernel/head.S
+@@ -674,12 +674,8 @@ ARM_BE8(rev16	ip, ip)
+ 	ldrcc	r7, [r4], #4	@ use branch for delay slot
+ 	bcc	1b
+ 	bx	lr
+-#else
+-#ifdef CONFIG_CPU_ENDIAN_BE8
+-	moveq	r0, #0x00004000	@ set bit 22, mov to mvn instruction
+ #else
+ 	moveq	r0, #0x400000	@ set bit 22, mov to mvn instruction
+-#endif
+ 	b	2f
+ 1:	ldr	ip, [r7, r3]
+ #ifdef CONFIG_CPU_ENDIAN_BE8
+@@ -688,7 +684,7 @@ ARM_BE8(rev16	ip, ip)
+ 	tst	ip, #0x000f0000	@ check the rotation field
+ 	orrne	ip, ip, r6, lsl #24 @ mask in offset bits 31-24
+ 	biceq	ip, ip, #0x00004000 @ clear bit 22
+-	orreq	ip, ip, r0      @ mask in offset bits 7-0
++	orreq	ip, ip, r0, ror #8  @ mask in offset bits 7-0
+ #else
+ 	bic	ip, ip, #0x000000ff
+ 	tst	ip, #0xf00	@ check the rotation field
 -- 
 2.27.0
 
