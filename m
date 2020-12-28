@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2260F2E69D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE42C2E69DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728536AbgL1Rqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 12:46:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728091AbgL1Rqt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 12:46:49 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B83C061796;
-        Mon, 28 Dec 2020 09:46:08 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id d14so9369396qkc.13;
-        Mon, 28 Dec 2020 09:46:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=VbG+zWmEgZSccqMOdqNiSByvxNCbGh0yLNOk1f1Ikbg=;
-        b=CJ5P1bSSL+8ExHCZ5JT4yd04Na/kEdSxzFPpPKJjoxZM1eUJxput5Ox5G37ptu+TEU
-         q2LCCopmGNJPTYJZONTtPUeM3NkAlnRnM+sgzpBOdN1tBFh5cWNBACH20yIoLIPVdejv
-         52SUA6Y0rGtkfFKWqzFMWyRfXsBtGYfXfIOcrj6W/NsCfAfsI+Qw78rcElhFoewWe5Rr
-         /Mi9JOrvAtPFVy3o6y3pbIPwWgcQ92RaSb7gINmTIS9XpOK1K1HfiJ9lF5mGXkHAA32H
-         HqNQYSuSK6732j45nCcjOi2AWUVZaADif9sLLnMwz3V3vIlLh3VJ6JbMZFg4FwZoSvGE
-         jYwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=VbG+zWmEgZSccqMOdqNiSByvxNCbGh0yLNOk1f1Ikbg=;
-        b=MgZ4f3OWeygklWz7gl8E1ZaomiuVMMBLkTIEnNfldJReF53rlie4TEOjUkwQQi0SHb
-         dX18fSgz1dEZ84Ids6gV6I5Fz2mrrGzLV9WnaHZNwNluEKlBQCiU3197fm3shgWmwt8p
-         xhMKEDmmfEu310BnlB39sKs7ZM71w1YNrnx4HDdTfSTimYU8wHutPTRMdccHNTD5iUfG
-         vtWAH1M1rpRUGMUyWZELuIAHE3YbsWxqFnjwrX9zBqOiFSFvmCZfPyS6sgHsOxOZlnz+
-         kG8wGP63gGV/XYizE9+Q9BUyc/5yJKAvetg8QeGV0MmFg7cLwEM6fjcIFoSSWAAdeXHj
-         3CLQ==
-X-Gm-Message-State: AOAM531BpIXWq1ZukwtPJzHwS3Wxad7WapgloJHq4JJKMjhMD2RuXlx6
-        i6ZhSwmXUNk6e+QELWd927g=
-X-Google-Smtp-Source: ABdhPJxC2vPNG/AA5oTc38D/0KIJ2WSoPxSEi2CsbVJm/V9KjXs2gXNPe788Mb5zqJclTpUjaKtKiQ==
-X-Received: by 2002:a37:6713:: with SMTP id b19mr43343979qkc.493.1609177568049;
-        Mon, 28 Dec 2020 09:46:08 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id o30sm23051571qtd.24.2020.12.28.09.46.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 09:46:07 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 28 Dec 2020 12:45:28 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [GIT PULL] cgroup changes for v5.11-rc1
-Message-ID: <X+oZuAwO1/GcBeqy@mtj.duckdns.org>
+        id S1728568AbgL1Rsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 12:48:41 -0500
+Received: from mga07.intel.com ([134.134.136.100]:44521 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728427AbgL1Rsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 12:48:40 -0500
+IronPort-SDR: JUBcfNaynn90dzJ4Z1+hZsZ2cbz1a+Nv8TT77eEHNswQ/BRXcf0N76M+NHYlvDkZShVrkPlQh7
+ q2uxUpRLW8Lg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="240490238"
+X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
+   d="scan'208";a="240490238"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 09:46:49 -0800
+IronPort-SDR: F+iePjSvC28UpUOwdS5NapmwvWE+JcaV0lCEZJDdxqB+CSty7Qzz3h/ul22bRfZO9ik3EDRgPB
+ aKS+8OlTJvPQ==
+X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
+   d="scan'208";a="392834104"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 09:46:43 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ktwcS-000GAJ-9c; Mon, 28 Dec 2020 19:47:44 +0200
+Date:   Mon, 28 Dec 2020 19:47:44 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        niklas.soderlund+renesas@ragnatech.se, slongerbeam@gmail.com,
+        heikki.krogerus@linux.intel.com, linus.walleij@linaro.org,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v3 05/14] software_node: unregister software_nodes in
+ reverse order
+Message-ID: <20201228174744.GB4077@smile.fi.intel.com>
+References: <20201224010907.263125-1-djrscally@gmail.com>
+ <20201224010907.263125-6-djrscally@gmail.com>
+ <20201228163410.GX26370@paasikivi.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201228163410.GX26370@paasikivi.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Linus.
+On Mon, Dec 28, 2020 at 06:34:10PM +0200, Sakari Ailus wrote:
+> On Thu, Dec 24, 2020 at 01:08:58AM +0000, Daniel Scally wrote:
 
-These three patches were scheduled for the merge window but I forgot to send
-them out. Sorry about that. None of them are significant and they fit well
-in a fix pull request too - two are cosmetic and one fixes a memory leak in
-the mount option parsing path.
+...
 
-Thanks and happy holidays!
+> >  void software_node_unregister_node_group(const struct software_node **node_group)
+> 
+> With this line wrapped,
 
-The following changes since commit 127c501a03d5db8b833e953728d3bcf53c8832a9:
+Why? It's only one character behind 80 and wrapping it will decrease
+readability. Moreover, documentation has explicit exceptions for such cases.
 
-  Merge tag '5.10-rc5-smb3-fixes' of git://git.samba.org/sfrench/cifs-2.6 (2020-11-24 15:33:18 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.11
-
-for you to fetch changes up to 2d18e54dd8662442ef5898c6bdadeaf90b3cebbc:
-
-  cgroup: Fix memory leak when parsing multiple source parameters (2020-12-16 10:10:32 -0500)
-
-----------------------------------------------------------------
-Bhaskar Chowdhury (1):
-      kernel: cgroup: Mundane spelling fixes throughout the file
-
-Hui Su (1):
-      cgroup/cgroup.c: replace 'of->kn->priv' with of_cft()
-
-Qinglang Miao (1):
-      cgroup: Fix memory leak when parsing multiple source parameters
-
- kernel/cgroup/cgroup-v1.c |  2 ++
- kernel/cgroup/cgroup.c    | 30 +++++++++++++++---------------
- 2 files changed, 17 insertions(+), 15 deletions(-)
 
 -- 
-tejun
+With Best Regards,
+Andy Shevchenko
+
+
