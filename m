@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A592E3B55
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A17542E4011
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406004AbgL1Nsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:48:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49880 "EHLO mail.kernel.org"
+        id S2502833AbgL1Orr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:47:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405984AbgL1Nsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:48:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24D032072C;
-        Mon, 28 Dec 2020 13:48:33 +0000 (UTC)
+        id S2502790AbgL1OX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:23:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B19D229C4;
+        Mon, 28 Dec 2020 14:23:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163314;
-        bh=IsUwDPqynoOASa/y75Diw+kc2CaFnyzBxeGtKKxJ+FE=;
+        s=korg; t=1609165392;
+        bh=ZnULBoh5qmZPHWWE9q2VxdVQt5TjHmDwwe8aLxDIELM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CY5Y9WlEeqJVtiBn5rHa1M0QtqEIu1hX1dH4B9nMjnEy7lhobhTxY7u9DCERZOari
-         Pb8am1bf56LwMvlT1QHdJ203hAiTv0lnu1vLPV/n5QW8NAsVNyofU09QzgzIz7mhEh
-         2U46G9Afh7iOwF8WL4134E5tEivWC1KYm7s+WAMg=
+        b=r9lXR4tSbg4TMa3eIb7q8mcEsvrMdtwz6YfI+RQzYPu2Geo4difDveOWAqFLMF3YR
+         ZfyySzHW9O6ZmNVeYp4xg9EKl+i/aPP+n+CfxZV8de7c8Z3AL1it8RP27fPlKEYi0Y
+         o2iRLQejTUL6/ABF4cmNUHqiMzCfeAkuktSUwltk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@intel.com>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 236/453] Bluetooth: btmtksdio: Add the missed release_firmware() in mtk_setup_firmware()
+Subject: [PATCH 5.10 474/717] libnvdimm/label: Return -ENXIO for no slot in __blk_label_update
 Date:   Mon, 28 Dec 2020 13:47:52 +0100
-Message-Id: <20201228124948.575744463@linuxfoundation.org>
+Message-Id: <20201228125043.675191244@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit b73b5781a85c03113476f62346c390f0277baa4b ]
+[ Upstream commit 4c46764733c85b82c07e9559b39da4d00a7dd659 ]
 
-mtk_setup_firmware() misses to call release_firmware() in an error
-path. Jump to free_fw to fix it.
+Forget to set error code when nd_label_alloc_slot failed, and we
+add it to avoid overwritten error code.
 
-Fixes: 737cd06072a7 ("Bluetooth: btmtksdio: fix up firmware download sequence")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Johan Hedberg <johan.hedberg@intel.com>
+Fixes: 0ba1c634892b ("libnvdimm: write blk label set")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201205115056.2076523-1-zhangqilong3@huawei.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btmtksdio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvdimm/label.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
-index b7de7cb8cca90..304178be1ef40 100644
---- a/drivers/bluetooth/btmtksdio.c
-+++ b/drivers/bluetooth/btmtksdio.c
-@@ -703,7 +703,7 @@ static int mtk_setup_firmware(struct hci_dev *hdev, const char *fwname)
- 	err = mtk_hci_wmt_sync(hdev, &wmt_params);
- 	if (err < 0) {
- 		bt_dev_err(hdev, "Failed to power on data RAM (%d)", err);
--		return err;
-+		goto free_fw;
- 	}
+diff --git a/drivers/nvdimm/label.c b/drivers/nvdimm/label.c
+index 47a4828b8b310..05c1f186a6be8 100644
+--- a/drivers/nvdimm/label.c
++++ b/drivers/nvdimm/label.c
+@@ -999,8 +999,10 @@ static int __blk_label_update(struct nd_region *nd_region,
+ 		if (is_old_resource(res, old_res_list, old_num_resources))
+ 			continue; /* carry-over */
+ 		slot = nd_label_alloc_slot(ndd);
+-		if (slot == UINT_MAX)
++		if (slot == UINT_MAX) {
++			rc = -ENXIO;
+ 			goto abort;
++		}
+ 		dev_dbg(ndd->dev, "allocated: %d\n", slot);
  
- 	fw_ptr = fw->data;
+ 		nd_label = to_label(ndd, slot);
 -- 
 2.27.0
 
