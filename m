@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC3F2E3BE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C042E3903
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405367AbgL1Nzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:55:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57446 "EHLO mail.kernel.org"
+        id S1731614AbgL1NRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:17:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405342AbgL1Nzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:55:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC3F22064B;
-        Mon, 28 Dec 2020 13:55:07 +0000 (UTC)
+        id S1731554AbgL1NR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:17:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A5820728;
+        Mon, 28 Dec 2020 13:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163708;
-        bh=Pp1oZr9QjFByhRyQ6o4RCW4FNfSeuKdiEuEVv85WAAg=;
+        s=korg; t=1609161433;
+        bh=InEEN5TLcf6aB59Y6YcfDqtxH4ByJKED1/yu9sBITZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oSNQOzSTF7+R/sFHN3PMnl0YiMfzuVxnZDvBa2qvgbEV7O3WnDQX3Ci997ofOIGHE
-         DUa77cOWrXj3j80iXY8/kqMw6ZzwxDeBqTdKBrwbHXwhbkEcqCKzxzAEqQjhbsSIdS
-         mbll5Y5Y2nwbLAVZWkg/Ywi6sVPOTbCZ8hLzr/GQ=
+        b=H0VscWeWvj5hX0BS46hRvrawO4XHFKI+WSNI6em3UuEVYjaSQ2JlzFR+/coWmVS10
+         yzR5C5OaHPINnyt3JqcOO3sYzZ5rDQHMK/Cca+z1t/H0ooXcexdcNi2oUHnjCUdoRr
+         g8qIBFZSQPJjAHPLxxFJOsJOOmoa2bXHCuce1uxM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 381/453] powerpc/rtas: Fix typo of ibm,open-errinjct in RTAS filter
+Subject: [PATCH 4.14 212/242] powerpc/rtas: Fix typo of ibm,open-errinjct in RTAS filter
 Date:   Mon, 28 Dec 2020 13:50:17 +0100
-Message-Id: <20201228124955.540204716@linuxfoundation.org>
+Message-Id: <20201228124915.107833640@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,7 +73,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/arch/powerpc/kernel/rtas.c
 +++ b/arch/powerpc/kernel/rtas.c
-@@ -978,7 +978,7 @@ static struct rtas_filter rtas_filters[]
+@@ -1094,7 +1094,7 @@ static struct rtas_filter rtas_filters[]
  	{ "ibm,display-message", -1, 0, -1, -1, -1 },
  	{ "ibm,errinjct", -1, 2, -1, -1, -1, 1024 },
  	{ "ibm,close-errinjct", -1, -1, -1, -1, -1 },
