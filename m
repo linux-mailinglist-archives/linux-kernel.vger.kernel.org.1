@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDE32E68D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC2E2E67E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634427AbgL1Qm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:42:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53240 "EHLO mail.kernel.org"
+        id S1728527AbgL1NGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:06:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729068AbgL1M6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:58:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E990224D2;
-        Mon, 28 Dec 2020 12:57:43 +0000 (UTC)
+        id S1730687AbgL1NGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC2C122582;
+        Mon, 28 Dec 2020 13:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160264;
-        bh=atqh+Y209bhdTcWJkiam23XFKnX88D7Xj8/+QbdLrL0=;
+        s=korg; t=1609160748;
+        bh=6H5pjMjHihSttCdD9uwYDZanw03bglRNU90wlsoq1jY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SxM5w6PvGD6PeUHuOGIJNQMhz/RHZ+9pGoCYPCals2c+5j9DYLz7BQV60y80b0Gy9
-         GxsLsTGazL77sEwvdFl4SHRtPqEYReG8dh4LeUl6pxHChzzrbJuQGCpqwhX4jp1BSS
-         pdLsP89PQv9A64kJta+vYWwqGGCm0Gv/oUtRaETI=
+        b=Nofjy6AlF0TyYESRIPTyB7+nne0Smy2r0MRt79qyH1g9l6HZnF7vs3HEFViGdlQHs
+         rTKisTlzm3YCv15JZcgbr1T+gPZHUrxVLaUBUlBkxhQpBfCQ/sjP+gHmHe3Fs4Brn0
+         8tjK9sNdBpAM7BLUCFTR3hUXricJM/vTIwhcanjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rajat Jain <rajatja@google.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 095/132] Input: cros_ec_keyb - send scancodes in addition to key events
-Date:   Mon, 28 Dec 2020 13:49:39 +0100
-Message-Id: <20201228124851.012230812@linuxfoundation.org>
+Subject: [PATCH 4.9 127/175] clk: s2mps11: Fix a resource leak in error handling paths in the probe function
+Date:   Mon, 28 Dec 2020 13:49:40 +0100
+Message-Id: <20201228124859.407962502@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 80db2a087f425b63f0163bc95217abd01c637cb5 ]
+[ Upstream commit d2d94fc567624f96187e8b52083795620f93e69f ]
 
-To let userspace know what 'scancodes' should be used in EVIOCGKEYCODE
-and EVIOCSKEYCODE ioctls, we should send EV_MSC/MSC_SCAN events in
-addition to EV_KEY/KEY_* events. The driver already declared MSC_SCAN
-capability, so it is only matter of actually sending the events.
+Some resource should be released in the error handling path of the probe
+function, as already done in the remove function.
 
-Link: https://lore.kernel.org/r/X87aOaSptPTvZ3nZ@google.com
-Acked-by: Rajat Jain <rajatja@google.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+The remove function was fixed in commit bf416bd45738 ("clk: s2mps11: Add
+missing of_node_put and of_clk_del_provider")
+
+Fixes: 7cc560dea415 ("clk: s2mps11: Add support for s2mps11")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201212122818.86195-1-christophe.jaillet@wanadoo.fr
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/cros_ec_keyb.c | 1 +
+ drivers/clk/clk-s2mps11.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
-index b01966dc7eb3d..44a5a5496cfd0 100644
---- a/drivers/input/keyboard/cros_ec_keyb.c
-+++ b/drivers/input/keyboard/cros_ec_keyb.c
-@@ -137,6 +137,7 @@ static void cros_ec_keyb_process(struct cros_ec_keyb *ckdev,
- 					"changed: [r%d c%d]: byte %02x\n",
- 					row, col, new_state);
+diff --git a/drivers/clk/clk-s2mps11.c b/drivers/clk/clk-s2mps11.c
+index f5d74e8db4327..1803af6230b27 100644
+--- a/drivers/clk/clk-s2mps11.c
++++ b/drivers/clk/clk-s2mps11.c
+@@ -211,6 +211,7 @@ static int s2mps11_clk_probe(struct platform_device *pdev)
+ 	return ret;
  
-+				input_event(idev, EV_MSC, MSC_SCAN, pos);
- 				input_report_key(idev, keycodes[pos],
- 						 new_state);
- 			}
+ err_reg:
++	of_node_put(s2mps11_clks[0].clk_np);
+ 	while (--i >= 0)
+ 		clkdev_drop(s2mps11_clks[i].lookup);
+ 
 -- 
 2.27.0
 
