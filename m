@@ -2,122 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09082E6BED
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B92EE2E6BB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730562AbgL1Wzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:55:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729365AbgL1UGR (ORCPT
+        id S1730627AbgL1Wzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:55:51 -0500
+Received: from sonic317-38.consmr.mail.ne1.yahoo.com ([66.163.184.49]:39246
+        "EHLO sonic317-38.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729377AbgL1UHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 15:06:17 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFCDC0613D6;
-        Mon, 28 Dec 2020 12:05:36 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id 81so10301660ioc.13;
-        Mon, 28 Dec 2020 12:05:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=+/MsPpCh29b44ND0x83djGy2ECRhuoKehorw2KDsX2o=;
-        b=CxcY4+gjX1bcha2T2RGhJjo7HxtnyitY+batxNoybrlx91FYHZ0Mqghg6geSQNxuR7
-         GXYyaRkl0HMUk9n7wwp+NwPniaZEdzfaOcOgzR3CfQLFFXPr4/8FB2qHnZOCR64iLYHd
-         aNWdQx947sUTs1d788ghupI8SaEbO3O9Xo5t/7lePpo372kPTH+1mkzhZ3xybwNuEi6Y
-         yI9DfL6dwxTAFPnWFfk0fRQXm+83jI3wrtBB0XkWRvt679gIDEhbfcBl9SQirIwzuc3+
-         HyOyh3wVQcv+/8urKOl/BJeg0BctiXmwvDi3nLxQoOWlveY2d5eB1YahbgAOQCgUTcUZ
-         yhPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=+/MsPpCh29b44ND0x83djGy2ECRhuoKehorw2KDsX2o=;
-        b=DT75A9KN3fDCcCMeKY1EGe+A9+P+ewXxjeKIPpEUdzE5301qKk2BTpwJTwC9hN2y5M
-         TmCv4kqhMIkxeASWtOEoUiLuIC5NlX5aZ/sZpYZqo1C0IYyrMRhHmZs6SQ6njhe9jnH8
-         c7ft4p3YQpg9w0XFYzvfur2ZAlDitbLbj9Hza5b95bQLZtVmCJaUPMxaqeTHtVQ0irbb
-         vDXZ1K+D1sNu+aPXJt5xuOH0MZh92RR0FJMVBMlKzMcLAjFSuc0BE6Ure4ngpXRUtSO8
-         ZpvX+e6cQ/iUyIIfIxTsQVI06HcINJUk/ag8mWlcA5lgwVkXars5luLPb4HlYpUhmxWQ
-         cUEQ==
-X-Gm-Message-State: AOAM530cpb7Lm71Icf5sK8j0JMDyacbuyMLN9o1G+x2fp4H9/+WhmPlj
-        yLImHedgZNDVxZ4SCpg6tgYNev46LMk2TDQzugk=
-X-Google-Smtp-Source: ABdhPJwPztDBX6R+RT6mHuvGQycgQ+038wB9ibLIuTqmBTj1cVMUERFXGKG1H09pgi1zpVB8euNiHNINGKIEd31y9Rs=
-X-Received: by 2002:a6b:c9cb:: with SMTP id z194mr37561833iof.110.1609185935951;
- Mon, 28 Dec 2020 12:05:35 -0800 (PST)
+        Mon, 28 Dec 2020 15:07:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1609185986; bh=pnRS6Ne8ypesj+Wp8sFl8V5vaIifQ3lktb3h2yQwP3A=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=sFvQKAfTuKSiccv7HsJHr0it9IvuYxEJcCy4ZAl8KZrrAvAYPBP/A9+ik1Lg9ENAj7QQNwW5vuvU0eiGszKchoXBEAR5Y7kRhaWnpejam0UQpp337SpngIg1xy5GcGbTn3DxYe/oXRaanQmp0NVUObWEabhdxrjJ4Z4V+SMiTe9l0so4CYk0RhBxeIFRSd4qzLmy1OGnklECMy0LtaoXJntiWbSl6ONTBTJ7t2UKYoVPI4KIxNtV8tjvpO51K4+JoRG/ahbpsdEYX7Ie3yhaXmYyZYmwMJl0W2czNeWLWuyCAWDL9YOt8kXsfA6dZT5NW4gedihga5R9ubLQ9KfVXg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1609185986; bh=4Cxx3YpjZ3C5iG7rLwC66A6nTNFHE/8m1yqTy9NSdpk=; h=Subject:To:From:Date:From:Subject; b=lEoLZTAbxND96Q2UxRupGMNW5qx2JU4uhJUIhfNicqZY9pD0y41e3v+ESeO0Oz675eAJx68O9apdglcVUJwjFXIWHSgBuMXzS9eTSmlEvRa3Xb51iG/hL6amwBcXku/CfIeVko2bHGycv95fq1GyCp3/hBW6HEujvse4jURS9He4gkPONAWWha5wYz3mTFC6wWgdM5IoM0OOJlEKKiqB1QP0Mwi0I78+SINOqajZc7lvArUBiSwkJ8GDdwqamW7qBh4KRbRPu8ptR48V9qB8A6aHL0+MtDZ8tYR2nPlmhSKIiqdo3fw83912IIc9+NS9Y0kE0OpkL64QPOoRxn8+Bw==
+X-YMail-OSG: pgTuvrAVM1l7NYsNNBbxGy0EZFHz4n1shaJGzloNw0Ls_GpWFA1yPxU46IZG4oU
+ nDAFXsKaSVEYydEYA1nzCrqYpByQL1AyI76p8698eUhqhCXtAj5pD5Ger3zJZmfYPrIKSxUa9FkV
+ enbr5ekxvueDX6q6QtFiFbBudXzsW2i5_70ABOyD_uxxz6qzUJ1mgiSo043R9Y999dGvl8xI59..
+ 6jGpcP7vi7.lRtYAnlPcnPGSW0.OtdnCBYaHhEBUPQ8hoZfy3iDENCHR04KGZnGx8ddP0RXpVY1Y
+ 9hoKV81iwEMLvq0GrnfkB1Q5IZ8GBxHIPNacZ4VSyvSXif_EzQAh7NenuXf2j6NLrNb5RoyTqA6G
+ Yn94eJAb04Gn8g_GsQEU.AW5axp1bPnPqvzzgxMlx7nyjhAizGA9mo.DVWI.eIHBZpyHZju4zStY
+ zzaqom3Z4ipgUtZTWlUs95hdfyhgsf1VQYU07Ps9WuoLvKSz3P7PGMOphIzldzxjfaT8HOcfoNm7
+ wPgB_gDzRKj3I0XkuNwPaoZitjZpj9ZI7ymll7EYE8IJJdnaYT5fz0VH4Atdeexv0khiTjIcEkEJ
+ 0SMhUrbjDn8B_7rx19_drff2XDPLc09DunPdDkH.2rU_hwKPBrS4cU7hMzYsmPPZCXHFIp6.k8iG
+ WFyXmQc7CoEVxRuktkLUJCUF6_WYjG2CN6HuGysZjdzZxX2W90.9qOTl5VIW371Js8lVdjM4N2eD
+ H1AwxRSuWx_Bkk6RpxMOL5zJDGiqvjjCguRiLeb8hCHM4mN_FqiUx2vlUktUBgOfGmk_EVwQi_mJ
+ JaFWWdBHOLxpLbc7d1mcjKTHd8srpB6_oimrhmKqoGrKAim.Uq5INVpUbqa8clC5sGf6paSZsgbK
+ 99ERcVHsgfKWapjX8j_4M6tXMrBvOMR.P6WWb2idBBPOEWt86gqC0OBMrXYSewYF._vlXIYP.QU7
+ A9bKnmHkVnfoFFDi3Ygs4LTlsvvMZR0svIE70Q0PzlvSGxgowqPr9XL7seGYJ_gFDocdaJsn1jYs
+ Za8OH_W5_Na9KT7eAV1WrZwUJrxiSMG6JGFc235rf4yLUNpRQnjOWTNHdNTpyeprB86vreZpIZTG
+ 32qY0.4OlcUN.nXrexa7iLxnxbMMbIAjDrmoCPIzhYA9m3FtrJjGEoFHfoGyMuUP4nLlRVvjk6Zl
+ 6GjvgpUB.U3POoRF9TD_QZKokoaVei0edwDKZgjZr_VadOkK56hOPZp4bmJtQOkb1TT9tTieTFYg
+ RkwZOetItWEYvrJu7qqajXdvE_cO32bczXXy6h6DEL7aXuzLrSKIxoLGaZUyrcMx3LOCE9nphPFv
+ GSlfi8T2jPXttlwJtukCss.SgkUy9ly3RRWVNdKk3N_qJuggxfyHZ5tXXga5U5SPBzqhTP466KXI
+ zK3.LYSDgWCzkuOQstIwH.GaJKO4IyRcXz31XERVBsrocM4ZZ6GQCrPSSzt6gEPbuvj7meR21r8a
+ 6OyiAbLcBkgazcCWwM.Y5F04OrLvtI1itKyT7jnjUDUYLDs6hrLLLMdMRqh70_RWoz6cb1.mtlMt
+ zCo4f_6a_kuQGUC8cybCU4UI_xzjXxOLfyVU1R4XLqZ5TyU7rSk4hZX1HiCwg0X_Mt6fbd.zyRWQ
+ hPH4GPBat8mfrZ7qfk0iyKKiUgl7dWOQCG50dUBs1EM0D1E9_ZLv3Npl0WSMToKXqtZviqwalG3C
+ ycJ7XBYsRVQdLMjB8FEtnF76OuG_uVf29TXud_natS02DYhpoFop1A8pBFdQ8xYhzfLPtndozCLG
+ MKwAeoNlSYkF37AAU4GTkiED9atwPtrCeL1.NlUhamtSYO3hDrTN_DVNao5eEWi3WHrWc7PT0ubj
+ 9lZrf5jJ_xQeURGKWqd1JTy0AaByzKNKvxJbSE.IUJXKVi0uaihdo605XTLR0tZ2Ew3UW46tNu3F
+ NMU0lDuD8JRQ01QR.Y.4ayTsfHZGJHRUt3EUVOAMe4vs22hhuXUhuInF_GXZPLLdk7dZDgqKq9i6
+ NcOWd3JIY8vpVLZZlmGiOZ9l1slV6GKXzxXLzMTHh4PAW4h0ufEoA390knhhDou7t2Ya8rzfGqje
+ mTwb9jx.YVfuGasUweoL3PuZvIxiMOXSEnV3S_2QALRvtYe3zhUoQ.8HGSoI8fDOlVo9pbM4TEgZ
+ KwSAWQs_kCIRBLANQ2RIMzGMO4rFKn6FuhPtDMKOsTRz2NbuKJA3ybvk6m7tJ0U09rQIeEJMhJa8
+ fRE7u7KtZg0mNipzhA9gWP6eXFQrF1F.6pFAUBXsjgfEhi0j2E05A7MkuuMOfARlas9D5Knt8qRs
+ wslxJa.MqhTTWIvcSZeBM7nPrc9nKUTjy1av_3.IBBK1cDdS46cYXzB6SmzRpKaHmYgDUyL1AnHt
+ GA7hrZxOAIfokT0s6N0HplDbmxSqEUHaULV2o1fu8wPwYSbpX_6vLuhaEh1jchwetZnarFeXKZP2
+ 7pIKiE6Ln9e3XfNZYDTHUSDJrwoLA7IIphHYquOKGzcUR57AxIx0BUTPwJGVwdidva2YJdcM7xRj
+ SApOuqdjjoILetS92yptMxneW4UA.9m1ddTLKdF.tPYhlHHVflJmwRXOjwqkVX.ulJPr9tZXb.HO
+ 65oRfeYPvhdgN3ixeBQf3ytWEeRpPASLGnRyJm_a0Tj35pmYGTv.d9KJJvZVm2AmwPRRtnOlTqGB
+ Qs6xiIz5ZKae1FPyVGkMucrQOknycTrG25oRtsOF7_.fA3Qs3QPhJayVbDH0tbGnr37okOX2PP.T
+ VfahQBTUFBbjnCBu8IHFkySYXAdhbc5CWESX9ikAHxOZ1AgkKIwrx6_Bs.wr9HDfCPX5IZ7Z1qJj
+ tslI9cGu.nVYsNiTukXspH86.fz.ZyS.DPe7R1Acfc2JVd9pBhOR06Qf89gfInfWjtB3UDqLxkny
+ QaC1SR0hUUrf90Obgw8SlnYJS_MUv4cVIMqC1sEh.yyi074Gl33eIxPc42EaPTjvBQV8wHMmFdH_
+ kbHmjHW0xvQl6gONAAuhBIKq8IN8h1Vijmsy6azdFsIOFAmSlbuFNSpMdypzGmaUwNnuugw1yULQ
+ tenWfskchET6L27SJ64zAlgKJZSRXabVK
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Mon, 28 Dec 2020 20:06:26 +0000
+Received: by smtp421.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID b01905f8d95e2b254c7aa58e888394de;
+          Mon, 28 Dec 2020 20:06:26 +0000 (UTC)
+Subject: Re: [PATCH v23 02/23] LSM: Create and manage the lsmblob data
+ structure.
+To:     Mimi Zohar <zohar@linux.ibm.com>, casey.schaufler@intel.com,
+        jmorris@namei.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Cc:     linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20201120201507.11993-1-casey@schaufler-ca.com>
+ <20201120201507.11993-3-casey@schaufler-ca.com>
+ <b0e154a0db21fcb42303c7549fd44135e571ab00.camel@linux.ibm.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <886fcd04-6a08-d78c-dc82-301c991e5ad8@schaufler-ca.com>
+Date:   Mon, 28 Dec 2020 12:06:24 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
- <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com> <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
-In-Reply-To: <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 28 Dec 2020 21:05:23 +0100
-Message-ID: <CA+icZUVGKq=_9kJGo7Xgn_MV-ErsEWyY1pXU-aEL7BdWdQDjng@mail.gmail.com>
-Subject: Re: Linux 5.11-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b0e154a0db21fcb42303c7549fd44135e571ab00.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.17278 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.8)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 8:40 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On 12/28/2020 11:24 AM, Mimi Zohar wrote:
+> Hi Casey,
 >
-> On Mon, Dec 28, 2020 at 12:04 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > > $ dpkg -L kmod | grep bin | grep depmod
-> > > /sbin/depmod
-> > >
-> > > $ which depmod
-> > > [ empty ]
-> > >
-> > > $ echo $PATH
-> > > /opt/proxychains-ng/bin:/home/dileks/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
->
-> Ok, I think this is a broken setup that has a separate /sbin but does
-> not have it in the PATH.
->
-> As you noticed, you can fix it with
->
->    DEPMOD=/sbin/depmod
->
-> or you could just make /sbin part of your PATH.
->
-> It looks like on your distro, /sbin is restricted to just the
-> super-user PATH, which is odd, but I guess there's at least _some_
-> logic to it.
->
-> I guess we could have some compatibility thing in scripts/depmod.sh,
-> something like
->
->   diff --git a/scripts/depmod.sh b/scripts/depmod.sh
->   index e083bcae343f..a93261207453 100755
->   --- a/scripts/depmod.sh
->   +++ b/scripts/depmod.sh
->   @@ -15,6 +15,8 @@ if ! test -r System.map ; then
->         exit 0
->    fi
->
->   +# legacy behavior: "depmod" in /sbin
->   +PATH="$PATH:/sbin"
->    if [ -z $(command -v $DEPMOD) ]; then
->         echo "Warning: 'make modules_install' requires $DEPMOD. Please
-> install it." >&2
->         echo "This is probably in the kmod package." >&2
->
-> or similar. Does that work for you?
->
+> On Fri, 2020-11-20 at 12:14 -0800, Casey Schaufler wrote:
+>> diff --git a/security/security.c b/security/security.c
+>> index 5da8b3643680..d01363cb0082 100644
+>> --- a/security/security.c
+>> +++ b/security/security.c
+>>
+>> @@ -2510,7 +2526,24 @@ int security_key_getsecurity(struct key *key, c=
+har **_buffer)
+>>
+>>  int security_audit_rule_init(u32 field, u32 op, char *rulestr, void *=
+*lsmrule)
+>>  {
+>> -       return call_int_hook(audit_rule_init, 0, field, op, rulestr, l=
+smrule);
+>> +       struct security_hook_list *hp;
+>> +       bool one_is_good =3D false;
+>> +       int rc =3D 0;
+>> +       int trc;
+>> +
+>> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_init,=
+ list) {
+>> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >=3D=
+ lsm_slot))
+>> +                       continue;
+>> +               trc =3D hp->hook.audit_rule_init(field, op, rulestr,
+>> +                                              &lsmrule[hp->lsmid->slo=
+t]);
+>> +               if (trc =3D=3D 0)
+>> +                       one_is_good =3D true;
+>> +               else
+>> +                       rc =3D trc;
+>> +       }
+>> +       if (one_is_good)
+>> +               return 0;
+>> +       return rc;
+>>  }
+> So the same string may be defined by multiple LSMs.
 
-Looks like it works.
+Yes. Any legal AppArmor label would also be a legal Smack label.
 
-I see:
+>>  int security_audit_rule_known(struct audit_krule *krule)
+>> @@ -2518,14 +2551,31 @@ int security_audit_rule_known(struct audit_kru=
+le *krule)
+>>         return call_int_hook(audit_rule_known, 0, krule);
+>>  }
+>>
+>> -void security_audit_rule_free(void *lsmrule)
+>> +void security_audit_rule_free(void **lsmrule)
+>>  {
+>> -       call_void_hook(audit_rule_free, lsmrule);
+>> +       struct security_hook_list *hp;
+>> +
+>> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_free,=
+ list) {
+>> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >=3D=
+ lsm_slot))
+>> +                       continue;
+>> +               hp->hook.audit_rule_free(lsmrule[hp->lsmid->slot]);
+>> +       }
+>>  }
+>>
+> If one LSM frees the string, then the string is deleted from all LSMs. =
 
-  sh ./scripts/depmod.sh depmod 5.11.0-rc1-2-amd64-clang-ias
+> I don't understand how this safe.
 
-But no more a depmod warning.
+The audit system doesn't have a way to specify which LSM
+a watched label is associated with. Even if we added one,
+we'd still have to address the current behavior. Assigning
+the watch to all modules means that seeing the string
+in any module is sufficient to generate the event.
 
-Will you send a patch or apply this directly?
+>
+>> -int security_audit_rule_match(u32 secid, u32 field, u32 op, void *lsm=
+rule)
+>> +int security_audit_rule_match(u32 secid, u32 field, u32 op, void **ls=
+mrule)
+>>  {
+>> -       return call_int_hook(audit_rule_match, 0, secid, field, op, ls=
+mrule);
+>> +       struct security_hook_list *hp;
+>> +       int rc;
+>> +
+>> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_match=
+, list) {
+>> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >=3D=
+ lsm_slot))
+>> +                       continue;
+>> +               rc =3D hp->hook.audit_rule_match(secid, field, op,
+>> +                                              &lsmrule[hp->lsmid->slo=
+t]);
+>> +               if (rc)
+>> +                       return rc;
+> Suppose that there is an IMA dont_measure or dont_appraise rule, if one=
 
-- Sedat -
+> LSM matches, then this returns true, causing any measurement or
+> integrity verification to be skipped.
+
+Yes, that is correct. Like the audit system, you're doing a string based
+lookup, which pretty well has to work this way. I have proposed compound
+label specifications in the past, but even if we accepted something like
+"apparmor=3Ddates,selinux=3Dfigs" we'd still have to be compatible with t=
+he
+old style inputs.
+
+>
+> Sample policy rules:
+> dont_measure obj_type=3Dfoo_log
+> dont_appraise obj_type=3Dfoo_log
+>
+> Are there any plans to prevent label collisions or at least notify of a=
+
+> label collision?
+
+What would that look like? You can't say that Smack isn't allowed
+to use valid AppArmor labels. How would Smack know? If the label is
+valid to both, how would you decide which LSM gets to use it?
+
+>
+> Mimi
+>
+>> +       }
+>> +       return 0;
+>>  }
+>>  #endif /* CONFIG_AUDIT */
+
