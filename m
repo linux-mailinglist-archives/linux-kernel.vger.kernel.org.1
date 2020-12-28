@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1682E3DFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 623782E3B48
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437899AbgL1OVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:21:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
+        id S2405826AbgL1NsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:48:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437851AbgL1OUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:20:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7E51208B6;
-        Mon, 28 Dec 2020 14:20:10 +0000 (UTC)
+        id S2405761AbgL1Nrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:47:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3098C208BA;
+        Mon, 28 Dec 2020 13:47:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165211;
-        bh=URGn/nc5X3IZVP5lSJ1b5sZFo5R1EmYRzC5wcS5JbQQ=;
+        s=korg; t=1609163226;
+        bh=rDa+tRso19nOXqK3oypBBItt/qOeQF0e38L5BfD5xm0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HXXZnVWGtCvc5q/GkUBlY368AQjobMvbs84J39E8fv+SM8z717BcdpdBRkQYm1XfR
-         G0d7xxsa14XOQcztZcjaY3pRURGmcHpFUJ56W9py0kCKDuIdxzQ48bKIlsnJNWRZbx
-         BjkRrcAy/cuduemnEzbrvZvA1bmVgDetmP+Uz18I=
+        b=vEoWyptQlvhw9M0R8ww+tDFWe3w8WrSBDqqm3U6Sb+eTTEq+M04kHW/n9S/fC+YLF
+         5biWSMXV7EWt6d3p90ri3l/WOlba8vmUaSuMMFrBREnNO6h5RO+xt8XjNFQc9BdJaE
+         Ub5WmMWD8iH14qKsFhrnzB22l7mOAI0F3VuamjVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Miller <davem@davemloft.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 452/717] sparc: fix handling of page table constructor failure
+Subject: [PATCH 5.4 214/453] iio: hrtimer-trigger: Mark hrtimer to expire in hard interrupt context
 Date:   Mon, 28 Dec 2020 13:47:30 +0100
-Message-Id: <20201228125042.630608511@linuxfoundation.org>
+Message-Id: <20201228124947.517349703@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,41 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-[ Upstream commit 06517c9a336f4c20f2064611bf4b1e7881a95fe1 ]
+[ Upstream commit 0178297c1e6898e2197fe169ef3be723e019b971 ]
 
-The page has just been allocated, so its refcount is 1.  free_unref_page()
-is for use on pages which have a zero refcount.  Use __free_page() like
-the other implementations of pte_alloc_one().
+On PREEMPT_RT enabled kernels unmarked hrtimers are moved into soft
+interrupt expiry mode by default.
 
-Link: https://lkml.kernel.org/r/20201125034655.27687-1-willy@infradead.org
-Fixes: 1ae9ae5f7df7 ("sparc: handle pgtable_page_ctor() fail")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Miller <davem@davemloft.net>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+The IIO hrtimer-trigger needs to run in hard interrupt context since it
+will end up calling generic_handle_irq() which has the requirement to run
+in hard interrupt context.
+
+Explicitly specify that the timer needs to run in hard interrupt context by
+using the HRTIMER_MODE_REL_HARD flag.
+
+Fixes: f5c2f0215e36 ("hrtimer: Move unmarked hrtimers to soft interrupt expiry on RT")
+Reported-by: Christian Eggers <ceggers@arri.de>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lore.kernel.org/r/20201117103751.16131-1-lars@metafoo.de
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sparc/mm/init_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/trigger/iio-trig-hrtimer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 96edf64d4fb30..182bb7bdaa0a1 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -2894,7 +2894,7 @@ pgtable_t pte_alloc_one(struct mm_struct *mm)
- 	if (!page)
- 		return NULL;
- 	if (!pgtable_pte_page_ctor(page)) {
--		free_unref_page(page);
-+		__free_page(page);
- 		return NULL;
- 	}
- 	return (pte_t *) page_address(page);
+diff --git a/drivers/iio/trigger/iio-trig-hrtimer.c b/drivers/iio/trigger/iio-trig-hrtimer.c
+index a5e670726717f..58c1c30d5612b 100644
+--- a/drivers/iio/trigger/iio-trig-hrtimer.c
++++ b/drivers/iio/trigger/iio-trig-hrtimer.c
+@@ -102,7 +102,7 @@ static int iio_trig_hrtimer_set_state(struct iio_trigger *trig, bool state)
+ 
+ 	if (state)
+ 		hrtimer_start(&trig_info->timer, trig_info->period,
+-			      HRTIMER_MODE_REL);
++			      HRTIMER_MODE_REL_HARD);
+ 	else
+ 		hrtimer_cancel(&trig_info->timer);
+ 
+@@ -132,7 +132,7 @@ static struct iio_sw_trigger *iio_trig_hrtimer_probe(const char *name)
+ 	trig_info->swt.trigger->ops = &iio_hrtimer_trigger_ops;
+ 	trig_info->swt.trigger->dev.groups = iio_hrtimer_attr_groups;
+ 
+-	hrtimer_init(&trig_info->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	hrtimer_init(&trig_info->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
+ 	trig_info->timer.function = iio_hrtimer_trig_handler;
+ 
+ 	trig_info->sampling_frequency = HRTIMER_DEFAULT_SAMPLING_FREQUENCY;
 -- 
 2.27.0
 
