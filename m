@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE782E39C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0C52E3B5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389853AbgL1N2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:28:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56724 "EHLO mail.kernel.org"
+        id S2406109AbgL1NtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:49:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389792AbgL1N15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:27:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 174DC22475;
-        Mon, 28 Dec 2020 13:27:15 +0000 (UTC)
+        id S2406093AbgL1NtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:49:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7CC92072C;
+        Mon, 28 Dec 2020 13:48:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162036;
-        bh=H3xXG7heZmr8E3pR8ey6f5OW8FXgOIqPx2xWFJZAaNc=;
+        s=korg; t=1609163333;
+        bh=TvIlDPjdIkJe+7zN6vQIRqWJZHwYCQXkBF9bLH5BiFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OuipYNXLHPA85VNGA4HNXNjSVdMHS4+LwruL5KJetHh4t26KdOKyZ33h18EtX/4kE
-         EqkXfV/NTvcMcIdMvSYaw9FYr4lWmVNIhJJ13PhkNkE86o1VawdCC8P2qIzAAIfgDb
-         P2ExYBmwQul9evQ+RzY4hUDavnl/ZRa9JEyjWGys=
+        b=VWSwLMqpFLPUpXU14ZOOa8cfnRLJj3QSdPhxxcX3wVK75KjmTuYJzkuLor3yUpH+3
+         YJWf/RI3vE8U0Rfx4JT/oRMssRBvd0wEPC0/bFtLh1ffAnFqdvyA0rT6Ad7Z7QNr3L
+         ve4833bSNbxQAPIPpX080EvgwtFRt/8r1r2UzXs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 167/346] media: siano: fix memory leak of debugfs members in smsdvb_hotplug
+Subject: [PATCH 5.4 250/453] usb: ehci-omap: Fix PM disable depth umbalance in ehci_hcd_omap_probe
 Date:   Mon, 28 Dec 2020 13:48:06 +0100
-Message-Id: <20201228124927.864396552@linuxfoundation.org>
+Message-Id: <20201228124949.255487380@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit abf287eeff4c6da6aa804bbd429dfd9d0dfb6ea7 ]
+[ Upstream commit d6ff32478d7e95d6ca199b5c852710d6964d5811 ]
 
-When dvb_create_media_graph fails, the debugfs kept inside client should
-be released. However, the current implementation does not release them.
+The pm_runtime_enable will decrement the power disable depth. Imbalance
+depth will resulted in enabling runtime PM of device fails later.  Thus
+a pairing decrement must be needed on the error handling path to keep it
+balanced.
 
-Fix this by adding a new goto label to call smsdvb_debugfs_release.
-
-Fixes: 0d3ab8410dcb ("[media] dvb core: must check dvb_create_media_graph()")
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 6c984b066d84b ("ARM: OMAP: USBHOST: Replace usbhs core driver APIs by Runtime pm APIs")
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201123145719.1455849-1-zhangqilong3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/common/siano/smsdvb-main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/usb/host/ehci-omap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
-index 43cfd1dbda014..afca47b97c2a2 100644
---- a/drivers/media/common/siano/smsdvb-main.c
-+++ b/drivers/media/common/siano/smsdvb-main.c
-@@ -1180,12 +1180,15 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
- 	rc = dvb_create_media_graph(&client->adapter, true);
- 	if (rc < 0) {
- 		pr_err("dvb_create_media_graph failed %d\n", rc);
--		goto client_error;
-+		goto media_graph_error;
- 	}
+diff --git a/drivers/usb/host/ehci-omap.c b/drivers/usb/host/ehci-omap.c
+index fc125b3d06e7d..03122dc332eda 100644
+--- a/drivers/usb/host/ehci-omap.c
++++ b/drivers/usb/host/ehci-omap.c
+@@ -220,6 +220,7 @@ static int ehci_hcd_omap_probe(struct platform_device *pdev)
  
- 	pr_info("DVB interface registered.\n");
- 	return 0;
+ err_pm_runtime:
+ 	pm_runtime_put_sync(dev);
++	pm_runtime_disable(dev);
  
-+media_graph_error:
-+	smsdvb_debugfs_release(client);
-+
- client_error:
- 	dvb_unregister_frontend(&client->frontend);
- 
+ err_phy:
+ 	for (i = 0; i < omap->nports; i++) {
 -- 
 2.27.0
 
