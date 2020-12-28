@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F202E3FFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6798D2E373D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502892AbgL1OXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:23:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58134 "EHLO mail.kernel.org"
+        id S1728000AbgL1Mwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:52:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439205AbgL1OXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:23:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31C31206D4;
-        Mon, 28 Dec 2020 14:22:46 +0000 (UTC)
+        id S1727802AbgL1Mwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:52:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FD2C22583;
+        Mon, 28 Dec 2020 12:51:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165366;
-        bh=WRweE56Sggq+j1TTQlMOnNqJFbetII3+OiqQ4iwFQzQ=;
+        s=korg; t=1609159910;
+        bh=ZQx4jiJYSqq0ifLV2fS+ihkyAB+CjY19pTM7Afr80S8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQWLcePOcqq1nA/TwvKH2iM81Wqy6dugxhEuV1/VTf90+/JgzbEfGX4ddxbEYjBJY
-         lL1vuhkOmj7NL31d/oqJyufnmfQYbXEnVLV6i3yQbu1h1W+BK1/sbjTzs/3NUG7RsV
-         kdkfIQ2AXmf7qmXV5Ev17i65RP8Vo6ckfSZSvkkc=
+        b=hXM5KtDEGlWkUHKjUuqoNvB2GkzcLJY/FFO9N5C500A/6ATVvuIi1ZCt2u+AkRQZ1
+         lKFWf7R35Fy4TfboK2LEvjNjUqRBHBKl5hXPg4efrJh6wDKFipy/rQ60KA0WSIbtyn
+         REsVWE9be0y8JE6FagQsPA90dtF5vVt1LGBicmN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 504/717] ARM: 9036/1: uncompress: Fix dbgadtb size parameter name
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        linux-usb@vger.kernel.org
+Subject: [PATCH 4.4 018/132] USB: sisusbvga: Make console support depend on BROKEN
 Date:   Mon, 28 Dec 2020 13:48:22 +0100
-Message-Id: <20201228125045.105550253@linuxfoundation.org>
+Message-Id: <20201228124847.289840307@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,46 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 1ecec38547d415054fdb63a231234f44396b6d06 ]
+commit 862ee699fefe1e6d6f2c1518395f0b999b8beb15 upstream.
 
-The dbgadtb macro is passed the size of the appended DTB, not the end
-address.
+The console part of sisusbvga is broken vs. printk(). It uses in_atomic()
+to detect contexts in which it cannot sleep despite the big fat comment in
+preempt.h which says: Do not use in_atomic() in driver code.
 
-Fixes: c03e41470e901123 ("ARM: 9010/1: uncompress: Print the location of appended DTB")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+in_atomic() does not work on kernels with CONFIG_PREEMPT_COUNT=n which
+means that spin/rw_lock held regions are not detected by it.
+
+There is no way to make this work by handing context information through to
+the driver and this only can be solved once the core printk infrastructure
+supports sleepable console drivers.
+
+Make it depend on BROKEN for now.
+
+Fixes: 1bbb4f2035d9 ("[PATCH] USB: sisusb[vga] update")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Thomas Winischhofer <thomas@winischhofer.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201019101109.603244207@linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/compressed/head.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/misc/sisusbvga/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
-index caa27322a0ab7..3a392983ac079 100644
---- a/arch/arm/boot/compressed/head.S
-+++ b/arch/arm/boot/compressed/head.S
-@@ -116,7 +116,7 @@
- 		/*
- 		 * Debug print of the final appended DTB location
- 		 */
--		.macro dbgadtb, begin, end
-+		.macro dbgadtb, begin, size
- #ifdef DEBUG
- 		kputc   #'D'
- 		kputc   #'T'
-@@ -129,7 +129,7 @@
- 		kputc	#'('
- 		kputc	#'0'
- 		kputc	#'x'
--		kphex	\end, 8		/* End of appended DTB */
-+		kphex	\size, 8	/* Size of appended DTB */
- 		kputc	#')'
- 		kputc	#'\n'
- #endif
--- 
-2.27.0
-
+--- a/drivers/usb/misc/sisusbvga/Kconfig
++++ b/drivers/usb/misc/sisusbvga/Kconfig
+@@ -15,7 +15,7 @@ config USB_SISUSBVGA
+ 
+ config USB_SISUSBVGA_CON
+ 	bool "Text console and mode switching support" if USB_SISUSBVGA
+-	depends on VT
++	depends on VT && BROKEN
+ 	select FONT_8x16
+ 	---help---
+ 	  Say Y here if you want a VGA text console via the USB dongle or
 
 
