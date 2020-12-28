@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019412E37BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357B02E3867
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729374AbgL1M75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:59:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56052 "EHLO mail.kernel.org"
+        id S1731260AbgL1NJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:09:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728898AbgL1M7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4680224D2;
-        Mon, 28 Dec 2020 12:59:09 +0000 (UTC)
+        id S1731244AbgL1NJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:09:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2BDE208BA;
+        Mon, 28 Dec 2020 13:09:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160350;
-        bh=p1SBuvEuvOnE6F0Yhv0RPPh1j3jJpmrPEhHjsIXR10c=;
+        s=korg; t=1609160956;
+        bh=cj5sgS/Minp5KVuWIjmrxGnsQ0SEpKr8dj4vTk6yJy0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kWRbKqKcYLyeeDHDR1+aM2oyTtt+oEiEBpY7WT9CfR6w1w7JxqMECq08gbeYhC4Nz
-         OhwaQJZ7b7xb5XXX8rhzWGn/BORSAM5rPj0tCFeyTL4hTgez8pp3nlNmmfBZ7iFT8t
-         htTFDjv3XTPU/Db/PA48ZRaTdVISRUbvD1j6HiNY=
+        b=MfG4QAUXXFPY8lqwlLrTHDDc4HaK6N/tVbTEzDECfJkt1TzOHtitTQLBTg8e+vbiF
+         MhLd74nrU4BTMOHFB01wlAfkfV0h9nLROCEqcC/fF0l8EoGEzEkZbQFCAtOMxNabac
+         az3v1xS3khLQmG7s9+aj1xsppjIbibQ1Hb5ue1tw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Markus Reichl <m.reichl@fivetechno.de>,
-        Douglas Anderson <dianders@chromium.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 004/175] arm64: dts: rockchip: Assign a fixed index to mmc devices on rk3399 boards.
+        stable@vger.kernel.org, Jack Pham <jackp@codeaurora.org>
+Subject: [PATCH 4.14 052/242] usb: gadget: f_fs: Re-use SS descriptors for SuperSpeedPlus
 Date:   Mon, 28 Dec 2020 13:47:37 +0100
-Message-Id: <20201228124853.453748321@linuxfoundation.org>
+Message-Id: <20201228124907.243090287@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +38,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Reichl <m.reichl@fivetechno.de>
+From: Jack Pham <jackp@codeaurora.org>
 
-[ Upstream commit 0011c6d182774fc781fb9e115ebe8baa356029ae ]
+commit a353397b0d5dfa3c99b372505db3378fc919c6c6 upstream.
 
-Recently introduced async probe on mmc devices can shuffle block IDs.
-Pin them to fixed values to ease booting in environments where UUIDs
-are not practical. Use newly introduced aliases for mmcblk devices from [1].
+In many cases a function that supports SuperSpeed can very well
+operate in SuperSpeedPlus, if a gadget controller supports it,
+as the endpoint descriptors (and companion descriptors) are
+generally identical and can be re-used. This is true for two
+commonly used functions: Android's ADB and MTP. So we can simply
+assign the usb_function's ssp_descriptors array to point to its
+ss_descriptors, if available. Similarly, we need to allow an
+epfile's ioctl for FUNCTIONFS_ENDPOINT_DESC to correctly
+return the corresponding SuperSpeed endpoint descriptor in case
+the connected speed is SuperSpeedPlus as well.
 
-[1]
-https://patchwork.kernel.org/patch/11747669/
+The only exception is if a function wants to implement an
+Isochronous endpoint capable of transferring more than 48KB per
+service interval when operating at greater than USB 3.1 Gen1
+speed, in which case it would require an additional SuperSpeedPlus
+Isochronous Endpoint Companion descriptor to be returned as part
+of the Configuration Descriptor. Support for that would need
+to be separately added to the userspace-facing FunctionFS API
+which may not be a trivial task--likely a new descriptor format
+(v3?) may need to be devised to allow for separate SS and SSP
+descriptors to be supplied.
 
-Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Link: https://lore.kernel.org/r/20201104162356.1251-1-m.reichl@fivetechno.de
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201027230731.9073-1-jackp@codeaurora.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/gadget/function/f_fs.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 7afbfb0f96a3c..dd211dbdaaae0 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -65,6 +65,9 @@
- 		i2c6 = &i2c6;
- 		i2c7 = &i2c7;
- 		i2c8 = &i2c8;
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
- 		serial0 = &uart0;
- 		serial1 = &uart1;
- 		serial2 = &uart2;
--- 
-2.27.0
-
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -1248,6 +1248,7 @@ static long ffs_epfile_ioctl(struct file
+ 
+ 		switch (epfile->ffs->gadget->speed) {
+ 		case USB_SPEED_SUPER:
++		case USB_SPEED_SUPER_PLUS:
+ 			desc_idx = 2;
+ 			break;
+ 		case USB_SPEED_HIGH:
+@@ -3067,7 +3068,8 @@ static int _ffs_func_bind(struct usb_con
+ 	}
+ 
+ 	if (likely(super)) {
+-		func->function.ss_descriptors = vla_ptr(vlabuf, d, ss_descs);
++		func->function.ss_descriptors = func->function.ssp_descriptors =
++			vla_ptr(vlabuf, d, ss_descs);
+ 		ss_len = ffs_do_descs(ffs->ss_descs_count,
+ 				vla_ptr(vlabuf, d, raw_descs) + fs_len + hs_len,
+ 				d_raw_descs__sz - fs_len - hs_len,
+@@ -3477,6 +3479,7 @@ static void ffs_func_unbind(struct usb_c
+ 	func->function.fs_descriptors = NULL;
+ 	func->function.hs_descriptors = NULL;
+ 	func->function.ss_descriptors = NULL;
++	func->function.ssp_descriptors = NULL;
+ 	func->interfaces_nums = NULL;
+ 
+ 	ffs_event_add(ffs, FUNCTIONFS_UNBIND);
 
 
