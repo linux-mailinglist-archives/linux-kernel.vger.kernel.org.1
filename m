@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF5F2E68D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B712E690A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634398AbgL1Qlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:41:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54836 "EHLO mail.kernel.org"
+        id S1728811AbgL1M4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:56:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729158AbgL1M62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:58:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0832322A84;
-        Mon, 28 Dec 2020 12:57:46 +0000 (UTC)
+        id S1728775AbgL1M4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 665DF208B6;
+        Mon, 28 Dec 2020 12:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160267;
-        bh=qv79hZe7JFG/aJRatGTRnn60yY1sUS660McQot7CuUA=;
+        s=korg; t=1609160182;
+        bh=hN//SUe8IPgpmWtUUzsfGKLVhQz8xJVBNrm0Inhur+Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N9c2Yyu04DYEOiqvQX5mOVd50ZQ9YLALIuXAuOYfEFg170WOXtihFynl8uyNCBNYV
-         dtulNpZAokZ+FX3LhuUL5iAHagD2B62l07SMAb/63Qz/0Z9IOwHM/zfAAQ3j8lEAR2
-         L4TY1AAucaDrPFckQjN42fUeURkarr5KnNSjAuJk=
+        b=H7AUfV57IUBWGNaNBgVxUQxS9KO/fkUGuv0TTDAShAEY66W87xYQIW8LqPjIc3cRK
+         OpTvjkisJ26r5dKqWALrWJTEps9uhDsckd2SF5U09uC80FxQsPrMIXhfRGvnPzwZ0I
+         PGuBKHx9cLRvcjWbSC9W13Fm4T+e1BnAIlUplx2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon Beginn <linux@simonmicro.de>,
-        Bastien Nocera <hadess@hadess.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 096/132] Input: goodix - add upside-down quirk for Teclast X98 Pro tablet
-Date:   Mon, 28 Dec 2020 13:49:40 +0100
-Message-Id: <20201228124851.059705946@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
+Subject: [PATCH 4.4 097/132] media: gspca: Fix memory leak in probe
+Date:   Mon, 28 Dec 2020 13:49:41 +0100
+Message-Id: <20201228124851.099553745@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
 References: <20201228124846.409999325@linuxfoundation.org>
@@ -41,47 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Beginn <linux@simonmicro.de>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-[ Upstream commit cffdd6d90482316e18d686060a4397902ea04bd2 ]
+commit e469d0b09a19496e1972a20974bbf55b728151eb upstream.
 
-The touchscreen on the Teclast x98 Pro is also mounted upside-down in
-relation to the display orientation.
+The gspca driver leaks memory when a probe fails.  gspca_dev_probe2()
+calls v4l2_device_register(), which takes a reference to the
+underlying device node (in this case, a USB interface).  But the
+failure pathway neglects to call v4l2_device_unregister(), the routine
+responsible for dropping this reference.  Consequently the memory for
+the USB interface and its device never gets released.
 
-Signed-off-by: Simon Beginn <linux@simonmicro.de>
-Signed-off-by: Bastien Nocera <hadess@hadess.net>
-Link: https://lore.kernel.org/r/20201117004253.27A5A27EFD@localhost
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch adds the missing function call.
+
+Reported-and-tested-by: syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
+
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+CC: <stable@vger.kernel.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/input/touchscreen/goodix.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/media/usb/gspca/gspca.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index 67cadda13ab17..d7cc8f6a292ea 100644
---- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -77,6 +77,18 @@ static const struct dmi_system_id rotated_screen[] = {
- 			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
- 		},
- 	},
-+	{
-+		.ident = "Teclast X98 Pro",
-+		.matches = {
-+			/*
-+			 * Only match BIOS date, because the manufacturers
-+			 * BIOS does not report the board name at all
-+			 * (sometimes)...
-+			 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
-+		},
-+	},
- 	{
- 		.ident = "WinBook TW100",
- 		.matches = {
--- 
-2.27.0
-
+--- a/drivers/media/usb/gspca/gspca.c
++++ b/drivers/media/usb/gspca/gspca.c
+@@ -2130,6 +2130,7 @@ out:
+ 		input_unregister_device(gspca_dev->input_dev);
+ #endif
+ 	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
++	v4l2_device_unregister(&gspca_dev->v4l2_dev);
+ 	kfree(gspca_dev->usb_buf);
+ 	kfree(gspca_dev);
+ 	return ret;
 
 
