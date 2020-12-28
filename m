@@ -2,181 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CF42E340A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 05:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226212E340C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 05:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgL1Ep3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 23:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbgL1Ep1 (ORCPT
+        id S1727481AbgL1Ewi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 23:52:38 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:50202 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727461AbgL1Ewi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 23:45:27 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC96C061794;
-        Sun, 27 Dec 2020 20:44:46 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id b26so21345054lff.9;
-        Sun, 27 Dec 2020 20:44:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=+CR29elvVKQSNdumP/sgf+nYuw8Uo/s+wj+MiSatPFE=;
-        b=dZLKm88+0GjjmrRzBvC0cM5lukuZyBfAa0WVZwW0Kkgky+Qesxpc8NERXwADJmFpB+
-         8crd2MEip8wM+2gKMI9zAUxCydWC+wyWvtVWG1sR8MRw2zGInaI74dEOqc5nx561sI+L
-         mGXgB80vHZHOQR8HgDrIz01ogkFoCk3in9LGCAzmkZMPCc7pXJyZZsV0ebfGFh7vT3i/
-         zpiORw8pChvl+11nGqdpSNGfZuaDLOo+JaOT4oNs3p6sO7+8rEOVviB185mBS4Y992IX
-         b55/y3DSwwT4v7MAF72YVX8wk/g6xu6W2H5Dlxxz0HK544nU0xdSoDmyk3IXp8/Yumao
-         t8TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=+CR29elvVKQSNdumP/sgf+nYuw8Uo/s+wj+MiSatPFE=;
-        b=Ys8esmOImgBIuPvdxzsPCdh5nqgo0gSPF1aCaWn6PMJbRAuqbctLA1jx7ZaUhIaBMc
-         fPJqBZWRA8PWWrTMXYmCaXrpgt5SEYHMCd/pVD4J2v2RZeAsTrbiwID1RkVQi7sU1INy
-         YsRm8H2MDoChs8bXIqW+NbX7fkNBwbFvrfEsKGqFZa5FG0xJ8aHgox/n7SCK1ZmlIJ8D
-         Qsf9FeaEZ7Rbk/OCrciNH9wDFDTXVP1DNZnWaWemoDqUmz5JEBGANQEDj/vc5bwz3d+j
-         Vz8JCCbY2sdnHRo3bEVVO6BRel3AcOjR60BZ5FDbObNQ9+1j7/x/1PeposlkkLlDUoTj
-         lH5Q==
-X-Gm-Message-State: AOAM531RO/GUyzcUEcA+emGmd73MgqfRF1ASZqYwO21BHHuGcbcmXy1I
-        fYqOaiGscsRKrMbkM0Vuf+AGVaBGUqZQqzwx5UM=
-X-Google-Smtp-Source: ABdhPJzC38ARMeaNXOCIEy3ctNrFbi6fHd5RxNMbF68TI1w1IrhywqmDY4HgAbUs/8jpnBhrM8mrzZWTFDK2MBhCJb8=
-X-Received: by 2002:a19:4f51:: with SMTP id a17mr20687416lfk.522.1609130685244;
- Sun, 27 Dec 2020 20:44:45 -0800 (PST)
+        Sun, 27 Dec 2020 23:52:38 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609131133; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=BO8IW9Q/PT7UqzydT2jMWi2wLodhoA3BrQp/tn36dPI=; b=mxKzoTX68KAtUSKWHJ/uUEc0PJDzDIlj2m/z50+iiY4aFH7aW2CTInWd7I9nXx39hQksfgwW
+ 9igtpnzVakkVV6JyJx4AxrIFp/jgmuuaB0wIaJh89C9a2HiRtkX9IVck5PdV1TXFMvY60VC2
+ hWyXs/EtNxemFTDgUQqCq3vU6Vo=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fe96463cfd94dd3283f000a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Dec 2020 04:51:47
+ GMT
+Sender: vjitta=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3EC2C43466; Mon, 28 Dec 2020 04:51:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.7 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.106] (unknown [182.18.191.136])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vjitta)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B5DEBC433C6;
+        Mon, 28 Dec 2020 04:51:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B5DEBC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
+Subject: Re: [PATCH v3] lib: stackdepot: Add support to configure
+ STACK_HASH_SIZE
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        dan.j.williams@intel.com, broonie@kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>, qcai@redhat.com,
+        ylal@codeaurora.org, vinmenon@codeaurora.org,
+        kasan-dev <kasan-dev@googlegroups.com>
+References: <CAG_fn=UjJQP_gfDm3eJTPY371QTwyDJKXBCN2gs4DvnLP2pbyQ@mail.gmail.com>
+ <7f2e171f-fa44-ef96-6cc6-14e615e3e457@codeaurora.org>
+ <CAG_fn=VihkHLx7nHRrzQRuHeL-UYRezcyGLDQMJY+d1O5AkJfA@mail.gmail.com>
+ <601d4b1a-8526-f7ad-d0f3-305894682109@codeaurora.org>
+ <CAG_fn=V8e8y1fbOaYUD5SfDSQ9+Tc3r7w6ZSoJ-ZNFJvvq-Aeg@mail.gmail.com>
+ <9e0d2c07-af1f-a1d3-fb0d-dbf2ae669f96@codeaurora.org>
+ <CAG_fn=UXQUGiDqmChqD-xX-yF5Jp+7K+oHwKPrO9DZL-zW_4KQ@mail.gmail.com>
+ <48df48fe-dc36-83a4-1c11-e9d0cf230372@codeaurora.org>
+ <6110a26b-dc87-b6f9-e679-aa60917403de@codeaurora.org>
+ <CAG_fn=VjejHtY8=cuuFkixpXd6A6q1C==6RAaUC3Vb5_4hZkcg@mail.gmail.com>
+ <X+EFmQz6JKfpdswG@google.com>
+ <d769a7b1-89a2-aabe-f274-db132f7229d1@codeaurora.org>
+ <CAG_fn=UUo3tP1XtdOntNG1krvbPV7pmE9XXwMyuhL2gMUoc4Jw@mail.gmail.com>
+From:   Vijayanand Jitta <vjitta@codeaurora.org>
+Message-ID: <dbce90d4-17e5-15a3-4336-9efede16c772@codeaurora.org>
+Date:   Mon, 28 Dec 2020 10:21:31 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-From:   Paul Thomas <pthomas8589@gmail.com>
-Date:   Sun, 27 Dec 2020 23:44:05 -0500
-Message-ID: <CAD56B7dpewwJVttuk4GAcAsx62HP=vPF9jmxTFNG3Z9RP4u9zA@mail.gmail.com>
-Subject: dmaengine : xilinx_dma two issues
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Matthew Murrian <matthew.murrian@goctsi.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Marc Ferland <ferlandm@amotus.ca>,
-        Sebastian von Ohr <vonohr@smaract.com>,
-        dmaengine@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAG_fn=UUo3tP1XtdOntNG1krvbPV7pmE9XXwMyuhL2gMUoc4Jw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-I'm trying to get the 5.10 kernel up and running for our system, and
-I'm running into a couple of issues with xilinx_dma.
 
-First, commit 14ccf0aab46e 'dmaengine: xilinx_dma: In dma channel
-probe fix node order dependency' breaks our usage. Before this commit
-a call to:
-dma_request_chan(&indio_dev->dev, "axi_dma_0");
-returns fine, but after that commit it returns -19. The reason for
-this seems to be that the only channel that is setup is channel 1
-(chan->id is 1 in xilinx_dma_chan_probe()). However in
-of_dma_xilinx_xlate() chan_id is gets set to 0 (int chan_id =
-dma_spec->args[0];), which causes the:
-!xdev->chan[chan_id]
-test to fail in of_dma_xilinx_xlate()
+On 12/23/2020 8:10 PM, Alexander Potapenko wrote:
+>>
+>> Michan, We would still need config option so that we can reduce the
+>> memory consumption on low ram devices using config.
+>>
+>> Alex, On this,
+>> "I also suppose device vendors may prefer setting a fixed (maybe
+>> non-default) hash size for low-memory devices rather than letting the
+>> admins increase it."
+>> I see kernel param swiotlb does similar thing i.e; '0' to disable and
+>> set a value to configure size.
+>>
+>> I am fine with either of the approaches,
+>>
+>> 1. I can split this patch into two
+>>    i)  A bool variable to enable/disable stack depot.
+>>    ii) A config for the size.
+> 
+> I still believe this is a more appropriate solution.
+> 
+> Thanks in advance!
+> 
 
-Our device-tree entry looks like this:
-    axi_dma_0: dma@80002000 {
-        status = "okay";
-        #dma-cells = <1>;
-        compatible = "xlnx,axi-dma-1.00.a";
-        interrupt-parent = <&gic>;
-        interrupts = <0 89 4>;
-        reg = <0x0 0x80002000 0x0 0x1000>;
-        xlnx,addrwidth = <0x20>;
-        clocks = <&zynqmp_clk LPD_LSBUS>, <&zynqmp_clk LPD_LSBUS>,
-<&zynqmp_clk LPD_LSBUS>, <&zynqmp_clk LPD_LSBUS>;
-        clock-names = "s_axi_lite_aclk", "m_axi_sg_aclk",
-"m_axi_mm2s_aclk", "m_axi_s2mm_aclk";
-        dma-channel@80002030 {
-            compatible = "xlnx,axi-dma-s2mm-channel";
-            dma-channels = <0x1>;
-            interrupts = <0 89 4>;
-            xlnx,datawidth = <0x20>;
-            xlnx,device-id = <0x0>;
-        };
-    };
+Thanks, Will work on a patch with above approach.
 
-This is on a 5.10.1 kernel on arm64 zynqmp hardware.
-
-The second issue goes a little further back to commit e81274cd6b526
-'dmaengine: add support to dynamic register/unregister of channels'.
-After this commit even just removing the module 'rmmod xilinx_dma',
-without ever using it, results in a kernel oops like this:
-[   37.214568] xilinx-vdma 80002000.dma: ch 0: SG disabled
-[   37.219807] xilinx-vdma 80002000.dma: WARN: Device release is not
-defined so it is not safe to unbind this driver while in use
-[   37.231299] xilinx-vdma 80002000.dma: Xilinx AXI DMA Engine Driver Probed!!
-[   42.100660] Unable to handle kernel paging request at virtual
-address dead000000000108
-[   42.108598] Mem abort info:
-[   42.111393]   ESR = 0x96000044
-[   42.114443]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   42.119744]   SET = 0, FnV = 0
-[   42.122794]   EA = 0, S1PTW = 0
-[   42.125918] Data abort info:
-[   42.128789]   ISV = 0, ISS = 0x00000044
-[   42.132617]   CM = 0, WnR = 1
-[   42.135577] [dead000000000108] address between user and kernel address ranges
-[   42.142705] Internal error: Oops: 96000044 [#1] SMP
-[   42.147566] Modules linked in: xilinx_dma(-) clk_xlnx_clock_wizard
-uio_pdrv_genirq
-[   42.155139] CPU: 1 PID: 2075 Comm: rmmod Not tainted
-5.10.1-00026-g3a2e6dd7a05-dirty #192
-[   42.163302] Hardware name: Enclustra XU5 SOM (DT)
-[   42.167992] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-[   42.173996] pc : xilinx_dma_chan_remove+0x74/0xa0 [xilinx_dma]
-[   42.179815] lr : xilinx_dma_chan_remove+0x70/0xa0 [xilinx_dma]
-[   42.185636] sp : ffffffc01112bca0
-[   42.188935] x29: ffffffc01112bca0 x28: ffffff80402ea640
-[   42.194238] x27: 0000000000000000 x26: 0000000000000000
-[   42.199542] x25: 0000000000000000 x24: 0000000000000000
-[   42.204845] x23: 0000000000000000 x22: 0000000000000000
-[   42.210149] x21: ffffffc0088a2028 x20: ffffff8040c08410
-[   42.215452] x19: ffffff80423fa480 x18: ffffffffffffffff
-[   42.220756] x17: 0000000000000000 x16: 0000000000000000
-[   42.226059] x15: ffffffc010ce88c8 x14: 0000000000000040
-[   42.231363] x13: ffffff0000000000 x12: ffffffffffffffff
-[   42.236667] x11: 0000000000000028 x10: ffffffff7fffffff
-[   42.241970] x9 : ffffffff00f0dfe0 x8 : 0000000000000000
-[   42.247273] x7 : ffffffc010da4000 x6 : 0000000000000000
-[   42.252577] x5 : 0000000000210d00 x4 : ffffffc010da4da0
-[   42.257881] x3 : ffffff80423fa578 x2 : 0000000000000000
-[   42.263184] x1 : dead000000000100 x0 : dead000000000122
-[   42.268488] Call trace:
-[   42.270923]  xilinx_dma_chan_remove+0x74/0xa0 [xilinx_dma]
-[   42.276399]  xilinx_dma_remove+0x3c/0x70 [xilinx_dma]
-[   42.281446]  platform_drv_remove+0x24/0x38
-[   42.285530]  device_release_driver_internal+0xec/0x1a8
-[   42.290659]  driver_detach+0x64/0xd8
-[   42.294226]  bus_remove_driver+0x58/0xb8
-[   42.298133]  driver_unregister+0x30/0x60
-[   42.302048]  platform_driver_unregister+0x14/0x20
-[   42.306744]  xilinx_vdma_driver_exit+0x18/0x978 [xilinx_dma]
-[   42.312396]  __arm64_sys_delete_module+0x1e4/0x270
-[   42.317178]  el0_svc_common.constprop.4+0x68/0x170
-[   42.321959]  do_el0_svc+0x70/0x90
-[   42.325267]  el0_svc+0x14/0x20
-[   42.328313]  el0_sync_handler+0x90/0xb8
-[   42.332141]  el0_sync+0x158/0x180
-[   42.335442] Code: 95dfce29 9103c260 95de7ffb a9490261 (f9000420)
-[   42.341525] ---[ end trace dbd90aeb5ca71943 ]---
-
-So if I use the 04c2bc2bede1 (commit before 14ccf0aab46e) version of
-xilinx_dma.c and never remove the module then it is working with the
-5.10.1 kernel.
-
-Hopefully, this will be clear to someone how these issues can be
-resolved. In general we've been very happy using the xilinx dma.
-
-I'm not subscribed to the linux-kernel ML so if you need any further
-info or testing just keep me in the to: list.
-
-thanks,
-Paul
+Thanks,
+Vijay
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of Code Aurora Forum, hosted by The Linux Foundation
