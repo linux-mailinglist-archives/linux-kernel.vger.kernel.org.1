@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35602E685A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158362E674D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729952AbgL1NCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:02:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57930 "EHLO mail.kernel.org"
+        id S2633282AbgL1QXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:23:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729816AbgL1NBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8AA4208D5;
-        Mon, 28 Dec 2020 13:00:52 +0000 (UTC)
+        id S1731876AbgL1NLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6B4C207C9;
+        Mon, 28 Dec 2020 13:11:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160453;
-        bh=3LplwEOCINzARgHDwmDjE88PLhUxKzlSGUbUgBtVux8=;
+        s=korg; t=1609161073;
+        bh=CKvCff/TjX0Irjb1rYE0n5vX4aDYDAx0sSYOzQctXwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GgW5ySjCSCNOSRm6HN1ewE6pOBWD+KeENCjm3QfPGZ9dn1EBPCXK6DhHpIfEcSuXP
-         Nuq6Uc+sPLOex2z/sgcnjslCCLoTESIrgAsDuWKIsJU1f0uonHvaMAnILcz3Qa5JcR
-         Shp4vLtkIB57Apklf4vt7Kb3HdHFDK5HBmKAC77I=
+        b=uKZwmCyS7D2I08kQ9lBvOc4mBCcKuKLT0IKxF++vI9+esT3odw75MV4CdVXPvYWF7
+         9DnT/x9oWrj4OUBMzhCVaVOLFnvIDGMhgZKW2UmQ5/2ECeRW9M3jNQWj7FoQvi8AOf
+         ILbLz0Hg6716lhCi8BdjseZV+np6v+LVtyMI3zXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 026/175] pinctrl: merrifield: Set default bias in case no particular value given
+Subject: [PATCH 4.14 074/242] sched: Reenable interrupts in do_sched_yield()
 Date:   Mon, 28 Dec 2020 13:47:59 +0100
-Message-Id: <20201228124854.525019102@linuxfoundation.org>
+Message-Id: <20201228124908.329826479@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 0fa86fc2e28227f1e64f13867e73cf864c6d25ad ]
+[ Upstream commit 345a957fcc95630bf5535d7668a59ed983eb49a7 ]
 
-When GPIO library asks pin control to set the bias, it doesn't pass
-any value of it and argument is considered boolean (and this is true
-for ACPI GpioIo() / GpioInt() resources, by the way). Thus, individual
-drivers must behave well, when they got the resistance value of 1 Ohm,
-i.e. transforming it to sane default.
+do_sched_yield() invokes schedule() with interrupts disabled which is
+not allowed. This goes back to the pre git era to commit a6efb709806c
+("[PATCH] irqlock patch 2.5.27-H6") in the history tree.
 
-In case of Intel Merrifield pin control hardware the 20 kOhm sounds plausible
-because it gives a good trade off between weakness and minimization of leakage
-current (will be only 50 uA with the above choice).
+Reenable interrupts and remove the misleading comment which "explains" it.
 
-Fixes: 4e80c8f50574 ("pinctrl: intel: Add Intel Merrifield pin controller support")
-Depends-on: 2956b5d94a76 ("pinctrl / gpio: Introduce .set_config() callback for GPIO chips")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/87r1pt7y5c.fsf@nanos.tec.linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/intel/pinctrl-merrifield.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ kernel/sched/core.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-merrifield.c b/drivers/pinctrl/intel/pinctrl-merrifield.c
-index 04d6fd2be08cc..8d0cff3146b87 100644
---- a/drivers/pinctrl/intel/pinctrl-merrifield.c
-+++ b/drivers/pinctrl/intel/pinctrl-merrifield.c
-@@ -731,6 +731,10 @@ static int mrfld_config_set_pin(struct mrfld_pinctrl *mp, unsigned int pin,
- 		mask |= BUFCFG_Px_EN_MASK | BUFCFG_PUPD_VAL_MASK;
- 		bits |= BUFCFG_PU_EN;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index c5599174e7450..7cedada731c1b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4826,12 +4826,8 @@ SYSCALL_DEFINE0(sched_yield)
+ 	schedstat_inc(rq->yld_count);
+ 	current->sched_class->yield_task(rq);
  
-+		/* Set default strength value in case none is given */
-+		if (arg == 1)
-+			arg = 20000;
-+
- 		switch (arg) {
- 		case 50000:
- 			bits |= BUFCFG_PUPD_VAL_50K << BUFCFG_PUPD_VAL_SHIFT;
-@@ -751,6 +755,10 @@ static int mrfld_config_set_pin(struct mrfld_pinctrl *mp, unsigned int pin,
- 		mask |= BUFCFG_Px_EN_MASK | BUFCFG_PUPD_VAL_MASK;
- 		bits |= BUFCFG_PD_EN;
+-	/*
+-	 * Since we are going to call schedule() anyway, there's
+-	 * no need to preempt or enable interrupts:
+-	 */
+ 	preempt_disable();
+-	rq_unlock(rq, &rf);
++	rq_unlock_irq(rq, &rf);
+ 	sched_preempt_enable_no_resched();
  
-+		/* Set default strength value in case none is given */
-+		if (arg == 1)
-+			arg = 20000;
-+
- 		switch (arg) {
- 		case 50000:
- 			bits |= BUFCFG_PUPD_VAL_50K << BUFCFG_PUPD_VAL_SHIFT;
+ 	schedule();
 -- 
 2.27.0
 
