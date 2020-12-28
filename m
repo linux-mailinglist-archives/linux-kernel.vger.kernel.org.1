@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691AE2E39C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8CC2E38A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389692AbgL1N1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:27:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55060 "EHLO mail.kernel.org"
+        id S1732169AbgL1NM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:12:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389412AbgL1N0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1E492072C;
-        Mon, 28 Dec 2020 13:25:37 +0000 (UTC)
+        id S1731651AbgL1NLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0766207F7;
+        Mon, 28 Dec 2020 13:10:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161938;
-        bh=1aLIONNo7VULB/zM0kUYcO0gvgKxQJHh/aZ9o2agKcA=;
+        s=korg; t=1609161036;
+        bh=E/Z9LZvYqn6ru0ZTP8p5p0hAmmDNU8np5PX/xj12fY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tvNS4nuqDlQ4BwtRDrH5YTxlQ+ZPkw9GQocVBhj25WSwUNnOhZYJcDSYnPrmYwzHS
-         S6O0szVhcCHjCuukIUkBEpQ4RA3yhLcNkHlpE0K6sqAbL3asX0RdqkoIEaAF6XTjTi
-         ZkMl5QkPEzOOlf4YCHSPIrUrFqCx15Ba7MrX7CsU=
+        b=EdTDrrEco8Dt5fzGqppkkDjHsBSXx6Cb6sVcPi+dIhEnETJ+JpC7O7W9Cx2j0qqUu
+         biFNHPZDr5Jg3+es5CqKUxpgYZT/NYdkB9ZdkGbhfu6EBolJ2NSVsPg49/ZHwdhyFJ
+         51EZDYaHQYtznn/tAzphh5Uio8mo60k1q4GT/XRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 134/346] ASoC: arizona: Fix a wrong free in wm8997_probe
+        stable@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH 4.14 048/242] soc/tegra: fuse: Fix index bug in get_process_id
 Date:   Mon, 28 Dec 2020 13:47:33 +0100
-Message-Id: <20201228124926.266770980@linuxfoundation.org>
+Message-Id: <20201228124907.045853542@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
 
-[ Upstream commit 5e7aace13df24ff72511f29c14ebbfe638ef733c ]
+commit b9ce9b0f83b536a4ac7de7567a265d28d13e5bea upstream.
 
-In the normal path, we should not free the arizona,
-we should return immediately. It will be free when
-call remove operation.
+This patch simply fixes a bug of referencing speedos[num] in every
+for-loop iteration in get_process_id function.
 
-Fixes: 31833ead95c2c ("ASoC: arizona: Move request of speaker IRQs into bus probe")
-Reported-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Acked-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20201111130923.220186-2-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 0dc5a0d83675 ("soc/tegra: fuse: Add Tegra210 support")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/soc/codecs/wm8997.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/soc/tegra/fuse/speedo-tegra210.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index df5b36b8fc5a6..bb6a95be87265 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -1180,6 +1180,8 @@ static int wm8997_probe(struct platform_device *pdev)
- 		goto err_spk_irqs;
- 	}
+--- a/drivers/soc/tegra/fuse/speedo-tegra210.c
++++ b/drivers/soc/tegra/fuse/speedo-tegra210.c
+@@ -105,7 +105,7 @@ static int get_process_id(int value, con
+ 	unsigned int i;
  
-+	return ret;
-+
- err_spk_irqs:
- 	arizona_free_spk_irqs(arizona);
+ 	for (i = 0; i < num; i++)
+-		if (value < speedos[num])
++		if (value < speedos[i])
+ 			return i;
  
--- 
-2.27.0
-
+ 	return -EINVAL;
 
 
