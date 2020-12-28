@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CCB2E4074
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6C02E41B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505373AbgL1OwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:52:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727085AbgL1OwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:52:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B2A2084D;
-        Mon, 28 Dec 2020 14:51:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609167088;
-        bh=odTKooUE1YbyrBjjpDjD4r0zjZEcvPiR1tfvSqIE2UY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AUMwak0p6vcVE1k3Gz6DJgbtEKg4wrXpTqFBHcXTndBMiMNhF/lkleEM+pCEezohe
-         nqUKEhtrJXzNXIm/ovexKsqjm2IiHWaIK/6D+LqJ6AACWRxcSMuIdhcjaPe07sFcgi
-         JGgX8wB8yt+rwyiIOFCLmQAtZVWaYnQ9PyY7AVRk=
-Date:   Mon, 28 Dec 2020 15:52:50 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Nazime Hande Harputluoglu <handeharput@gmail.com>
-Subject: Re: [PATCH v5] kcov, usb: only collect coverage from
- __usb_hcd_giveback_urb in softirq
-Message-ID: <X+nxQo7q2n4dGzoy@kroah.com>
-References: <d7035335fdfe7493067fbf7d677db57807a42d5d.1606175031.git.andreyknvl@google.com>
+        id S2441054AbgL1PL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:11:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408243AbgL1PLO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 10:11:14 -0500
+X-Greylist: delayed 448 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 28 Dec 2020 07:10:25 PST
+Received: from forward104j.mail.yandex.net (forward104j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603B2C06179C;
+        Mon, 28 Dec 2020 07:10:25 -0800 (PST)
+Received: from myt4-e3ad475e0976.qloud-c.yandex.net (myt4-e3ad475e0976.qloud-c.yandex.net [IPv6:2a02:6b8:c12:240b:0:640:e3ad:475e])
+        by forward104j.mail.yandex.net (Yandex) with ESMTP id 29E934A1251;
+        Mon, 28 Dec 2020 18:02:10 +0300 (MSK)
+Received: from myt5-ca5ec8faf378.qloud-c.yandex.net (myt5-ca5ec8faf378.qloud-c.yandex.net [2a02:6b8:c12:2514:0:640:ca5e:c8fa])
+        by myt4-e3ad475e0976.qloud-c.yandex.net (mxback/Yandex) with ESMTP id JEUUKoOEkX-2AHaDoXU;
+        Mon, 28 Dec 2020 18:02:10 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1609167730;
+        bh=8rF2MWGAOEsWs06S9iHqzALnLEi1PQMJ8OPtBzR9Nqs=;
+        h=Date:Subject:To:From:Message-Id:Cc;
+        b=B6fKFPSvKV6fwY6lhdpbE2UvTRig+gCaW1QNNAJIgwjz/s2lRVw9kXSfO+ijUnSPE
+         pqMK1SxqvVhqYzBEWrrxyPBuXdg/tFgC+FqYxwBBNcRA5sPcwlQnCHlFWSkaa/Hxct
+         geFarzIYTgG2s/AUS90cDwPM8lUMXGvm06FCjFzw=
+Authentication-Results: myt4-e3ad475e0976.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by myt5-ca5ec8faf378.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id ZBhtlKloNv-29JGqOcW;
+        Mon, 28 Dec 2020 18:02:09 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Thierry Reding <treding@nvidia.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] gpiolib: warning on gpiochip->to_irq defined
+Date:   Mon, 28 Dec 2020 18:00:52 +0300
+Message-Id: <20201228150052.2633-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7035335fdfe7493067fbf7d677db57807a42d5d.1606175031.git.andreyknvl@google.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:47:25AM +0100, Andrey Konovalov wrote:
-> Currently there's a kcov remote coverage collection section in
-> __usb_hcd_giveback_urb(). Initially that section was added based on the
-> assumption that usb_hcd_giveback_urb() can only be called in interrupt
-> context as indicated by a comment before it. This is what happens when
-> syzkaller is fuzzing the USB stack via the dummy_hcd driver.
-> 
-> As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
-> context, provided that the caller turned off the interrupts; USB/IP does
-> exactly that. This can lead to a nested KCOV remote coverage collection
-> sections both trying to collect coverage in task context. This isn't
-> supported by kcov, and leads to a WARNING.
-> 
-> Change __usb_hcd_giveback_urb() to only call kcov_remote_*() callbacks
-> when it's being executed in a softirq. To avoid calling
-> in_serving_softirq() directly in the driver code, add a couple of new kcov
-> wrappers.
-> 
-> As the result of this change, the coverage from USB/IP related
-> usb_hcd_giveback_urb() calls won't be collected, but the WARNING is fixed.
-> 
-> A potential future improvement would be to support nested remote coverage
-> collection sections, but this patch doesn't address that.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Acked-by: Marco Elver <elver@google.com>
-> ---
-> 
-> Changes in v5:
-> - Don't call in_serving_softirq() in USB driver code directly, do that
->   via kcov wrappers.
+gpiochip->to_irq method is redefined in gpiochip_add_irqchip.
 
-Does not apply to 5.11-rc1 :(
+A lot of gpiod driver's still define ->to_irq method, let's give
+a gentle warning that they can no longer rely on it, so they can remove
+it on ocassion.
+
+Fixes: e0d8972898139 ("gpio: Implement tighter IRQ chip integration")
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ drivers/gpio/gpiolib.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 5ce0c14c637b..44538d1a771a 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -1489,6 +1489,9 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
+ 		type = IRQ_TYPE_NONE;
+ 	}
+ 
++	if (gc->to_irq)
++		chip_err(gc, "to_irq is redefined in %s and you shouldn't rely on it\n", __func__);
++
+ 	gc->to_irq = gpiochip_to_irq;
+ 	gc->irq.default_type = type;
+ 	gc->irq.lock_key = lock_key;
+-- 
+2.29.2
+
