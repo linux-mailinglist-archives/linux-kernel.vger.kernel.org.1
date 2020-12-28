@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E17C2E42DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0412E3A5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392741AbgL1P27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:28:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58638 "EHLO mail.kernel.org"
+        id S2389401AbgL1Nfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:35:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387498AbgL1N5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:57:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 414C220715;
-        Mon, 28 Dec 2020 13:56:19 +0000 (UTC)
+        id S2389320AbgL1NfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:35:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6477207C9;
+        Mon, 28 Dec 2020 13:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163779;
-        bh=9u2VidfIrScgolGlJe0rbtCtj0YhJiBdkpE9hXTSrLY=;
+        s=korg; t=1609162503;
+        bh=7cQDaEUqqy2Z+ZsG1YF2Up5+GInOJP/+GzQEoaKyGPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SZOeH965GKQsL9xDEK/aZ1KrOYtzwoVI/hYEAdqzzwnEBT1b7XCwKF63yVdz7tfsi
-         HQmBEztmUB+gpXjbcBjSb/Kpyrz1lUkh8j9O1omEtWL6di84UGenDZYOD+l0uKwP9S
-         diFsRzmAE7fv4hpMNyTjigmmaBkQLJnb/hneM8EE=
+        b=n+SQjiZhubjptwgoDxg/EqHl4TIIzSLcS8RSZiufpXfgsomRmhqrhOrUvxspAv0fL
+         2uVbnWoNcb91uG4HNQxZ5wcDz5MJV6MekPy2I/DrqdavED2UQ9czOLis9Z9GJtHsPl
+         IkJJUH5bgaFvghuXkV6CO2s8ys/VcJttpWCjj/eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunguang Xu <brookxu@tencent.com>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 5.4 374/453] ext4: fix a memory leak of ext4_free_data
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 291/346] USB: serial: keyspan_pda: fix dropped unthrottle interrupts
 Date:   Mon, 28 Dec 2020 13:50:10 +0100
-Message-Id: <20201228124955.205444449@linuxfoundation.org>
+Message-Id: <20201228124933.844993053@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit cca415537244f6102cbb09b5b90db6ae2c953bdd upstream.
+commit 696c541c8c6cfa05d65aa24ae2b9e720fc01766e upstream.
 
-When freeing metadata, we will create an ext4_free_data and
-insert it into the pending free list.  After the current
-transaction is committed, the object will be freed.
+Commit c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity
+checks") broke write-unthrottle handling by dropping well-formed
+unthrottle-interrupt packets which are precisely two bytes long. This
+could lead to blocked writers not being woken up when buffer space again
+becomes available.
 
-ext4_mb_free_metadata() will check whether the area to be freed
-overlaps with the pending free list. If true, return directly. At this
-time, ext4_free_data is leaked.  Fortunately, the probability of this
-problem is small, since it only occurs if the file system is corrupted
-such that a block is claimed by more one inode and those inodes are
-deleted within a single jbd2 transaction.
+Instead, stop unconditionally printing the third byte which is
+(presumably) only valid on modem-line changes.
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-Link: https://lore.kernel.org/r/1604764698-4269-8-git-send-email-brookxu@tencent.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
+Fixes: c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity checks")
+Cc: stable <stable@vger.kernel.org>     # 4.11
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/mballoc.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/serial/keyspan_pda.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4691,6 +4691,7 @@ ext4_mb_free_metadata(handle_t *handle,
- 				ext4_group_first_block_no(sb, group) +
- 				EXT4_C2B(sbi, cluster),
- 				"Block already on to-be-freed list");
-+			kmem_cache_free(ext4_free_data_cachep, new_entry);
- 			return 0;
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -172,11 +172,11 @@ static void keyspan_pda_rx_interrupt(str
+ 		break;
+ 	case 1:
+ 		/* status interrupt */
+-		if (len < 3) {
++		if (len < 2) {
+ 			dev_warn(&port->dev, "short interrupt message received\n");
+ 			break;
  		}
- 	}
+-		dev_dbg(&port->dev, "rx int, d1=%d, d2=%d\n", data[1], data[2]);
++		dev_dbg(&port->dev, "rx int, d1=%d\n", data[1]);
+ 		switch (data[1]) {
+ 		case 1: /* modemline change */
+ 			break;
 
 
