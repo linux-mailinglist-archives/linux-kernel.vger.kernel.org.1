@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CECC2E3B1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7105A2E385D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404929AbgL1Nps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:45:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46154 "EHLO mail.kernel.org"
+        id S1730625AbgL1NJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:09:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404900AbgL1Npl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:45:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BD732072C;
-        Mon, 28 Dec 2020 13:45:25 +0000 (UTC)
+        id S1731120AbgL1NJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:09:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C650F22583;
+        Mon, 28 Dec 2020 13:08:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163125;
-        bh=4jSSyZ0r5+PNBCPZq7Ft0Utddr2hanooyBcC/bmj6EU=;
+        s=korg; t=1609160923;
+        bh=V5XK7HyuAyfcsA7ABswim+1ASd/M/u1TgwpVCaBgVqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QlVSKDKkqoUtPB7V32Vqyq60kH2srrSr6BBmFY8ETw1x1kg7AeyVuenZfBRG5Oe+f
-         VG4Kn3LZaarqH1PaSnPPG4wROIdEpIPqEAtv5XmMFy8ls60HGIVoTrcW/DdyUU4SBW
-         guoL2H7Yd96K2/PAMR59yxEi5/MZpCYuPxELtAvg=
+        b=pXgXfQtnIgSelK82ak0SppdsuwMIq+WdLGqVIxK2tLBWpxfNFRu57eKWQQMa11z61
+         W6YmY6hgd9dIBuBuCiZIFbf2l3jwHnNIsLenlCeO/BMJpVk8WpuNLa4eCLWkvv2uCH
+         FpcdbkEUvVrVLGVcSZx4bWATQA8XTxPegM0JHlhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 179/453] HSI: omap_ssi: Dont jump to free ID in ssi_add_controller()
+        stable@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
+Subject: [PATCH 4.14 010/242] Input: cm109 - do not stomp on control URB
 Date:   Mon, 28 Dec 2020 13:46:55 +0100
-Message-Id: <20201228124945.814203745@linuxfoundation.org>
+Message-Id: <20201228124905.166508922@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit 41fff6e19bc8d6d8bca79ea388427c426e72e097 ]
+commit 82e06090473289ce63e23fdeb8737aad59b10645 upstream.
 
-In current code, it jumps to ida_simple_remove() when ida_simple_get()
-failes to allocate an ID. Just return to fix it.
+We need to make sure we are not stomping on the control URB that was
+issued when opening the device when attempting to toggle buzzer.
+To do that we need to mark it as pending in cm109_open().
 
-Fixes: 0fae198988b8 ("HSI: omap_ssi: built omap_ssi and omap_ssi_port into one module")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-and-tested-by: syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/hsi/controllers/omap_ssi_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/misc/cm109.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hsi/controllers/omap_ssi_core.c b/drivers/hsi/controllers/omap_ssi_core.c
-index 4bc4a201f0f6c..2be9c01e175ca 100644
---- a/drivers/hsi/controllers/omap_ssi_core.c
-+++ b/drivers/hsi/controllers/omap_ssi_core.c
-@@ -355,7 +355,7 @@ static int ssi_add_controller(struct hsi_controller *ssi,
+--- a/drivers/input/misc/cm109.c
++++ b/drivers/input/misc/cm109.c
+@@ -571,12 +571,15 @@ static int cm109_input_open(struct input
+ 	dev->ctl_data->byte[HID_OR2] = dev->keybit;
+ 	dev->ctl_data->byte[HID_OR3] = 0x00;
  
- 	err = ida_simple_get(&platform_omap_ssi_ida, 0, 0, GFP_KERNEL);
- 	if (err < 0)
--		goto out_err;
-+		return err;
- 	ssi->id = err;
++	dev->ctl_urb_pending = 1;
+ 	error = usb_submit_urb(dev->urb_ctl, GFP_KERNEL);
+-	if (error)
++	if (error) {
++		dev->ctl_urb_pending = 0;
+ 		dev_err(&dev->intf->dev, "%s: usb_submit_urb (urb_ctl) failed %d\n",
+ 			__func__, error);
+-	else
++	} else {
+ 		dev->open = 1;
++	}
  
- 	ssi->owner = THIS_MODULE;
--- 
-2.27.0
-
+ 	mutex_unlock(&dev->pm_mutex);
+ 
 
 
