@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0EB2E643A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7465D2E3965
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404174AbgL1NmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:42:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42146 "EHLO mail.kernel.org"
+        id S2388428AbgL1NXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:23:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404069AbgL1Nly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:41:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60205206ED;
-        Mon, 28 Dec 2020 13:41:12 +0000 (UTC)
+        id S2387590AbgL1NUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:20:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89FE222583;
+        Mon, 28 Dec 2020 13:19:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162873;
-        bh=dyWkDjoN4+LbMxdoKB7/zPr4aeXpCUykO/2BiZOpTK8=;
+        s=korg; t=1609161596;
+        bh=h+e//3wSsKhNj5m4c/zqqorIHwL0AJS3ppIz62t7CJk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UQd8HgVH9EpgS7noTsAri3vcC0WGjVsw/D1W9zLjCaDSkByfhenK983DuozWcCo85
-         k8iYTNWB8u0inY2rgQ7R4V4ipI30I3gFJg7PGvgEnOzZSgpHGG8VUQvLy6c4BdUXFI
-         FaL5Htz5q9+alg5GKZEo9uxsOj/ydpNOcmOdnfBE=
+        b=QFXNEKp9JcWB2MZQprAyi0Pb9smyhlemIOIRJiB/AN5SYA52F1/tdHVAhU9sQkX33
+         TSlJM9VStqJDvmG/1CQSoHJLJYGdGjwGDO96RUbEHOkuQkD07BOxJD2A8GBTWDtT/L
+         PEha9oaZHVTl4d6gMt9wMWwwDtgse6MksLwSWQ7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        stable@vger.kernel.org, Sara Sharon <sara.sharon@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 090/453] x86/apic: Fix x2apic enablement without interrupt remapping
+Subject: [PATCH 4.19 007/346] iwlwifi: mvm: fix kernel panic in case of assert during CSA
 Date:   Mon, 28 Dec 2020 13:45:26 +0100
-Message-Id: <20201228124941.564347749@linuxfoundation.org>
+Message-Id: <20201228124920.112093096@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,103 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+From: Sara Sharon <sara.sharon@intel.com>
 
-[ Upstream commit 26573a97746c7a99f394f9d398ce91a8853b3b89 ]
+[ Upstream commit fe56d05ee6c87f6a1a8c7267affd92c9438249cc ]
 
-Currently, Linux as a hypervisor guest will enable x2apic only if there are
-no CPUs present at boot time with an APIC ID above 255.
+During CSA, we briefly nullify the phy context, in __iwl_mvm_unassign_vif_chanctx.
+In case we have a FW assert right after it, it remains NULL though.
+We end up running into endless loop due to mac80211 trying repeatedly to
+move us to ASSOC state, and we keep returning -EINVAL. Later down the road
+we hit a kernel panic.
 
-Hotplugging a CPU later with a higher APIC ID would result in a CPU which
-cannot be targeted by external interrupts.
+Detect and avoid this endless loop.
 
-Add a filter in x2apic_apic_id_valid() which can be used to prevent such
-CPUs from coming online, and allow x2apic to be enabled even if they are
-present at boot time.
-
-Fixes: ce69a784504 ("x86/apic: Enable x2APIC without interrupt remapping under KVM")
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201024213535.443185-2-dwmw2@infradead.org
+Signed-off-by: Sara Sharon <sara.sharon@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20201107104557.d64de2c17bff.Iedd0d2afa20a2aacba5259a5cae31cb3a119a4eb@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/apic.h        |  1 +
- arch/x86/kernel/apic/apic.c        | 14 ++++++++------
- arch/x86/kernel/apic/x2apic_phys.c |  9 +++++++++
- 3 files changed, 18 insertions(+), 6 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 19e94af9cc5d7..6016559ed1713 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -259,6 +259,7 @@ static inline u64 native_x2apic_icr_read(void)
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index 525b26e0f65ee..2fad20c845b47 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -2880,7 +2880,7 @@ static int iwl_mvm_mac_sta_state(struct ieee80211_hw *hw,
  
- extern int x2apic_mode;
- extern int x2apic_phys;
-+extern void __init x2apic_set_max_apicid(u32 apicid);
- extern void __init check_x2apic(void);
- extern void x2apic_setup(void);
- static inline int x2apic_enabled(void)
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index fce94c799f015..06fa808d72032 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -1886,20 +1886,22 @@ static __init void try_to_enable_x2apic(int remap_mode)
- 		return;
+ 	/* this would be a mac80211 bug ... but don't crash */
+ 	if (WARN_ON_ONCE(!mvmvif->phy_ctxt))
+-		return -EINVAL;
++		return test_bit(IWL_MVM_STATUS_HW_RESTART_REQUESTED, &mvm->status) ? 0 : -EINVAL;
  
- 	if (remap_mode != IRQ_REMAP_X2APIC_MODE) {
--		/* IR is required if there is APIC ID > 255 even when running
--		 * under KVM
-+		/*
-+		 * Using X2APIC without IR is not architecturally supported
-+		 * on bare metal but may be supported in guests.
- 		 */
--		if (max_physical_apicid > 255 ||
--		    !x86_init.hyper.x2apic_available()) {
-+		if (!x86_init.hyper.x2apic_available()) {
- 			pr_info("x2apic: IRQ remapping doesn't support X2APIC mode\n");
- 			x2apic_disable();
- 			return;
- 		}
- 
- 		/*
--		 * without IR all CPUs can be addressed by IOAPIC/MSI
--		 * only in physical mode
-+		 * Without IR, all CPUs can be addressed by IOAPIC/MSI only
-+		 * in physical mode, and CPUs with an APIC ID that cannnot
-+		 * be addressed must not be brought online.
- 		 */
-+		x2apic_set_max_apicid(255);
- 		x2apic_phys = 1;
- 	}
- 	x2apic_enable();
-diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
-index bc9693841353c..e14eae6d6ea71 100644
---- a/arch/x86/kernel/apic/x2apic_phys.c
-+++ b/arch/x86/kernel/apic/x2apic_phys.c
-@@ -8,6 +8,12 @@
- int x2apic_phys;
- 
- static struct apic apic_x2apic_phys;
-+static u32 x2apic_max_apicid __ro_after_init;
-+
-+void __init x2apic_set_max_apicid(u32 apicid)
-+{
-+	x2apic_max_apicid = apicid;
-+}
- 
- static int __init set_x2apic_phys_mode(char *arg)
- {
-@@ -98,6 +104,9 @@ static int x2apic_phys_probe(void)
- /* Common x2apic functions, also used by x2apic_cluster */
- int x2apic_apic_id_valid(u32 apicid)
- {
-+	if (x2apic_max_apicid && apicid > x2apic_max_apicid)
-+		return 0;
-+
- 	return 1;
- }
- 
+ 	/*
+ 	 * If we are in a STA removal flow and in DQA mode:
 -- 
 2.27.0
 
