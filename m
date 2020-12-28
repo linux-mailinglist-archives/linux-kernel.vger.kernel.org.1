@@ -2,133 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC842E6C88
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E05F82E6C8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729996AbgL1Xbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 18:31:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729604AbgL1Xbk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 18:31:40 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CAEC0613D6;
-        Mon, 28 Dec 2020 15:31:00 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id c133so691667wme.4;
-        Mon, 28 Dec 2020 15:31:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Rbm54XmbViPVWteCI0YRZVtATFNPo3mryVFGn+rPYY8=;
-        b=FJb/J+fKQNhptQMF7RjyIpHxRczlo2IJpFroQfmNSrV6nrLDxMxzPj9vacnt+Zau4a
-         htTiiJQsuB+wFKcphIb6FejRWc4XdQChpl6z2wF+EAhqQfLS08AJXCpqAxIKQQEiO8AR
-         mA0j34K0uOQA4eyDJUR0H9HVrL9mNYA5v5aqrnvyddThTkiblMvzNIqASfx5oOq24GYV
-         ZdW7+KeKyAh0/ssHd4vMFi+qLdg0Nr3PLJUZFhTpu5Yyz85PekOmvtfJ++O3KboDm9xp
-         bvzn4LWyynFpcccOAFPmsrsraNmEpEDgcEIzhwWSn4h5fxfGEBKXOCZuQygbYe8R9mnM
-         7ygA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Rbm54XmbViPVWteCI0YRZVtATFNPo3mryVFGn+rPYY8=;
-        b=aQ782764Qzs3pJUBA9FwTO+AHqpZ/H+Xu6i+DKB4tQbeMlnn7mjMHCzrbjUnq1fu+8
-         xjhWYQ1WsyLyHuhtq/Jgzg64Ny2/PY37JY8mX/dbolEe6OoGXLBAsYf8dxq3Ekloc+bF
-         rFSX6JilR9ugeXLnamMIkOGGqXvQrVWwYZEvhZeQERYQxPhUmR4JlG+hp+XFiIRPU7c1
-         YCnH5yDHgpbdOZizYZDrKp6N5OJKxf7f6u9m7ONsg+Xbe+RFcsAMZvynW2erRMiRxhBq
-         zV39VMsZxX/qwMir4EY0CfpHZdhPnSKWN8Pdej3HGKXSKKvilmj7PgfGaxNvSRsCdrGR
-         OTNw==
-X-Gm-Message-State: AOAM533B5gN/XJor4LAWD1kBvWUAevV4Djs18xHjtPbh034Ibt8XWgFy
-        dHCr+XPjmOQRFuQB39VYHHQ=
-X-Google-Smtp-Source: ABdhPJypYG54wTWAhSIwDzfD/aMq2IZjStR080fOAxRXLxI77o0FG29owuJ5LzcJ88BNzydu67Xe4w==
-X-Received: by 2002:a7b:cd90:: with SMTP id y16mr955907wmj.115.1609198258919;
-        Mon, 28 Dec 2020 15:30:58 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id h16sm990254wmb.41.2020.12.28.15.30.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Dec 2020 15:30:58 -0800 (PST)
-Subject: Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20201224010907.263125-1-djrscally@gmail.com>
- <20201224010907.263125-15-djrscally@gmail.com>
- <CAHp75VeXN6PnV7Mzz6UMpD+m-yjPi6XK0kx1=+-M5mci=Vb=YQ@mail.gmail.com>
- <20201228170521.GZ26370@paasikivi.fi.intel.com>
- <2d37df3d-f04c-6679-6e27-6c7f82e9b158@gmail.com>
- <20201228225544.GH4077@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <1b6ffc66-d16e-8ab4-64c8-b92bfac557f0@gmail.com>
-Date:   Mon, 28 Dec 2020 23:30:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729143AbgL1Xcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 18:32:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727731AbgL1Xcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 18:32:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 457C2224D2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 23:32:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609198333;
+        bh=4zuOP87T+tBs/U4EXSadvydWrwt6Bdq/pnBuDyNsp3I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MHDXi03f6vV1G6r6J8eFCqOIkk4cqccxHFFVwin1a+8+kZzWn+BEsSAcrFk3u2n/d
+         IV61cDtg8SfC13nFvgcrDj5TQvSvEgBeiooxTnLLWzv6J0IRxUrMOd3djHju93YkuF
+         yGwuP3iSRjDdcgwB9OpA9MwRPi6zp4gssF+xUXElj13YzfV2fxqYYKaG5Ut3Pqw+PM
+         iIw0zohsbxUniZC76Go+v0RypNxVa5uyZobQ9pvQuKNpqbzA3Tlw1or6YfrL1EdW2D
+         H1OgXrkfbC3NLj4nOfZ8qSDCfBDqlzhwkzgI/tq6luEysWVdltiITD4FafGRmMLgud
+         uMi1kAUMFexQw==
+Received: by mail-ej1-f48.google.com with SMTP id g20so16170380ejb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 15:32:13 -0800 (PST)
+X-Gm-Message-State: AOAM533+Q0MKad6l7elxxeQvUYJ267YP4ns5dOYcpflp8sNqC4rkM4CT
+        sor0JsTuiwckuRLgemvgxdeRUDKQPWF5ayeZWw==
+X-Google-Smtp-Source: ABdhPJyi7sWe+M1pwp7M/taBxI8fPAUdgCkIwfXdysJx91vWg0TwrvQd0TZnEL+XEJtjyTVXSlFp6eaIJBvkueKMUQw=
+X-Received: by 2002:a17:906:fb1a:: with SMTP id lz26mr43221179ejb.194.1609198331821;
+ Mon, 28 Dec 2020 15:32:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201228225544.GH4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201210161050.8460-1-chunkuang.hu@kernel.org>
+In-Reply-To: <20201210161050.8460-1-chunkuang.hu@kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 29 Dec 2020 07:32:00 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8vxmAR-RBVhPZdpMRZzUZZ8KBAV2R1rR0FvxhMv22UvQ@mail.gmail.com>
+Message-ID: <CAAOTY_8vxmAR-RBVhPZdpMRZzUZZ8KBAV2R1rR0FvxhMv22UvQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] Decouple Mediatek DRM sub driver
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy
-
-On 28/12/2020 22:55, Andy Shevchenko wrote:
-> On Mon, Dec 28, 2020 at 10:37:38PM +0000, Daniel Scally wrote:
->> On 28/12/2020 17:05, Sakari Ailus wrote:
->>> On Thu, Dec 24, 2020 at 02:54:44PM +0200, Andy Shevchenko wrote:
-> ...
+Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B412=E6=9C=881=
+1=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8812:10=E5=AF=AB=E9=81=93=EF=
+=BC=9A
 >
->>>>> +#include <linux/property.h>
->>>>> +
->>>>> +#define CIO2_HID                               "INT343E"
->>>>> +#define CIO2_NUM_PORTS                         4
->>> This is already defined in ipu3-cio2.h. Could you include that instead?
->> Yes; but I'd need to also include media/v4l2-device.h and
->> media/videobuf2-dma-sg.h (they're included in ipu3-cio2-main.c at the
->> moment). It didn't seem worth it; but I can move those two includes from
->> the .c to the .h and then include ipu3-cio2.h in cio2-bridge.h
->>
->> Which do you prefer?
-> Actually ipu3-cio2.h misses a lot of inclusions (like mutex.h which I
-> immediately noticed when scrolled over data types). I think here should be a
-> compromise variant, split out something like ipu3-cio2-defs.h which can be
-> included in both ipu3-cio2.h and cio2-bridge.h.
+> mtk ccorr is controlled by DRM and MDP [1]. In order to share
+> mtk_ccorr driver for DRM and MDP, decouple Mediatek DRM sub driver
+> which include mtk_ccorr, so MDP could use this decoupled mtk_ccorr.
 
+For this series, applied to mediatek-drm-next [1].
 
-And just including all the things that need to be in both files you mean?
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
+
+Regards,
+Chun-Kuang.
 
 >
-> And cio2-bridge.h needs more inclusions like types.h.
-
-
-Added this in there too
-
+> Changes in v2:
+> 1. Fix iommu larb problem.
+> 2. Based on mediatek-drm-next-5.11-2 [2].
+>
+> [1] https://patchwork.kernel.org/patch/11140751/
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.gi=
+t/log/?h=3Dmediatek-drm-next-5.11-2
+>
+> CK Hu (10):
+>   drm/mediatek: Separate getting larb device to a function
+>   drm/mediatek: Move clk info from struct mtk_ddp_comp to sub driver
+>     private data
+>   drm/mediatek: Move regs info from struct mtk_ddp_comp to sub driver
+>     private data
+>   drm/mediatek: Remove irq in struct mtk_ddp_comp
+>   drm/mediatek: Use struct cmdq_client_reg to gather cmdq variable
+>   drm/mediatek: Move cmdq_reg info from struct mtk_ddp_comp to sub
+>     driver private data
+>   drm/mediatek: Change sub driver interface from mtk_ddp_comp to device
+>   drm/mediatek: Register vblank callback function
+>   drm/mediatek: DRM driver directly refer to sub driver's function
+>   drm/mediatek: Move mtk_ddp_comp_init() from sub driver to DRM driver
+>
+> Chun-Kuang Hu (2):
+>   drm/mediatek: Get CMDQ client register for all ddp component
+>   drm/mediatek: Use correct device pointer to get CMDQ client register
+>
+>  drivers/gpu/drm/mediatek/mtk_disp_color.c   |  89 ++--
+>  drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  69 ++++
+>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c     | 217 +++++-----
+>  drivers/gpu/drm/mediatek/mtk_disp_rdma.c    | 169 ++++----
+>  drivers/gpu/drm/mediatek/mtk_dpi.c          |  44 +-
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c     |  75 ++--
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |   1 -
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 429 ++++++++++++--------
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h | 100 +++--
+>  drivers/gpu/drm/mediatek/mtk_drm_drv.c      |  30 +-
+>  drivers/gpu/drm/mediatek/mtk_drm_drv.h      |   2 +-
+>  drivers/gpu/drm/mediatek/mtk_dsi.c          |  47 +--
+>  12 files changed, 676 insertions(+), 596 deletions(-)
+>  create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_drv.h
+>
+> --
+> 2.17.1
+>
