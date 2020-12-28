@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22E02E3D24
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CEF92E3D25
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439761AbgL1OL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:11:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46568 "EHLO mail.kernel.org"
+        id S2439772AbgL1OMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:12:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439728AbgL1OL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:11:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A292C20715;
-        Mon, 28 Dec 2020 14:11:15 +0000 (UTC)
+        id S2439728AbgL1OMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:12:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82801207B7;
+        Mon, 28 Dec 2020 14:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164676;
-        bh=QzUb8k2L9ZU+aPkQhH4a7riCme34oUXh+tm3u8vGmlk=;
+        s=korg; t=1609164679;
+        bh=WlKXHPw2P3sDA/vXpx6wksKP9ovGFhoBM8z+BDlOdcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KXIZ2LRSiLqKfpyraJGFA2SmFGI71o/DyKEoRsUM3q3gjunvzMnKIHrez/hqlBFw6
-         zIDdyoanTpRwwwo5MLLILr1ScD7O/9yOrUzeFMuNn2lOaIR8DB7O+8gio59iCcFWZD
-         wdaBGDHdPOC4ZrisXcTJiRntVRTN3ZsN5HwK+SmA=
+        b=V+DGDgfKnhU9Pqv2QP9PdVoQJfd6XW4WJ1I3y0B6zrH7bqti20U101QQdev4Jq0dw
+         X7eZ++4HHWKKQxNdBqz5FbU33P2uxkK+fUhJc0/jQ1WYR/frvGHty4nWYy5M2AXOeq
+         gg32Kshe+C9bd589Vs2JyNuUuUT0yuxdGfiLEsVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Sven Eckelmann <sven@narfation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 259/717] media: i2c: imx219: Selection compliance fixes
-Date:   Mon, 28 Dec 2020 13:44:17 +0100
-Message-Id: <20201228125033.404681857@linuxfoundation.org>
+Subject: [PATCH 5.10 260/717] ath11k: Dont cast ath11k_skb_cb to ieee80211_tx_info.control
+Date:   Mon, 28 Dec 2020 13:44:18 +0100
+Message-Id: <20201228125033.455513792@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -42,91 +40,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Sven Eckelmann <sven@narfation.org>
 
-[ Upstream commit 1ed36ecd1459b653cced8929bfb37dba94b64c5d ]
+[ Upstream commit f4d291b43f809b74c66b21f5190cd578af43070b ]
 
-To comply with the intended usage of the V4L2 selection target when
-used to retrieve a sensor image properties, adjust the rectangles
-returned by the imx219 driver.
+The driver_data area of ieee80211_tx_info is used in ath11k for
+ath11k_skb_cb. The first function in the TX patch which rewrites it to
+ath11k_skb_cb is already ath11k_mac_op_tx. No one else in the code path
+must use it for something else before it reinitializes it. Otherwise the
+data has to be considered uninitialized or corrupt.
 
-The top/left crop coordinates of the TGT_CROP rectangle were set to
-(0, 0) instead of (8, 8) which is the offset from the larger physical
-pixel array rectangle. This was also a mismatch with the default values
-crop rectangle value, so this is corrected. Found with v4l2-compliance.
+But the ieee80211_tx_info.control shares exactly the same area as
+ieee80211_tx_info.driver_data and ath11k is still using it. This results in
+best case in a
 
-While at it, add V4L2_SEL_TGT_CROP_BOUNDS support: CROP_DEFAULT and
-CROP_BOUNDS have the same size as the non-active pixels are not readable
-using the selection API. Found with v4l2-compliance.
+  ath11k c000000.wifi1: no vif found for mgmt frame, flags 0x0
 
-[reword commit message, use macros for pixel offsets]
+or (slightly worse) in a kernel oops.
 
-Fixes: e6d4ef7d58aa7 ("media: i2c: imx219: Implement get_selection")
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Jacopo Mondi <jacopo@jmondi.org>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Instead, the interesting data must be moved first into the ath11k_skb_cb
+and ieee80211_tx_info.control must then not be used anymore.
+
+Tested-on: IPQ8074 hw2.0 WLAN.HK.2.4.0.1.r1-00026-QCAHKSWPL_SILICONZ-2
+
+Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201119154235.263250-1-sven@narfation.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/imx219.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath11k/core.h  |  2 ++
+ drivers/net/wireless/ath/ath11k/dp_tx.c |  5 ++---
+ drivers/net/wireless/ath/ath11k/mac.c   | 26 ++++++++++++++++---------
+ 3 files changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
-index 1cee45e353554..0ae66091a6962 100644
---- a/drivers/media/i2c/imx219.c
-+++ b/drivers/media/i2c/imx219.c
-@@ -473,8 +473,8 @@ static const struct imx219_mode supported_modes[] = {
- 		.width = 3280,
- 		.height = 2464,
- 		.crop = {
--			.left = 0,
--			.top = 0,
-+			.left = IMX219_PIXEL_ARRAY_LEFT,
-+			.top = IMX219_PIXEL_ARRAY_TOP,
- 			.width = 3280,
- 			.height = 2464
- 		},
-@@ -489,8 +489,8 @@ static const struct imx219_mode supported_modes[] = {
- 		.width = 1920,
- 		.height = 1080,
- 		.crop = {
--			.left = 680,
--			.top = 692,
-+			.left = 688,
-+			.top = 700,
- 			.width = 1920,
- 			.height = 1080
- 		},
-@@ -505,8 +505,8 @@ static const struct imx219_mode supported_modes[] = {
- 		.width = 1640,
- 		.height = 1232,
- 		.crop = {
--			.left = 0,
--			.top = 0,
-+			.left = IMX219_PIXEL_ARRAY_LEFT,
-+			.top = IMX219_PIXEL_ARRAY_TOP,
- 			.width = 3280,
- 			.height = 2464
- 		},
-@@ -521,8 +521,8 @@ static const struct imx219_mode supported_modes[] = {
- 		.width = 640,
- 		.height = 480,
- 		.crop = {
--			.left = 1000,
--			.top = 752,
-+			.left = 1008,
-+			.top = 760,
- 			.width = 1280,
- 			.height = 960
- 		},
-@@ -1008,6 +1008,7 @@ static int imx219_get_selection(struct v4l2_subdev *sd,
- 		return 0;
+diff --git a/drivers/net/wireless/ath/ath11k/core.h b/drivers/net/wireless/ath/ath11k/core.h
+index 18b97420f0d8a..5a7915f75e1e2 100644
+--- a/drivers/net/wireless/ath/ath11k/core.h
++++ b/drivers/net/wireless/ath/ath11k/core.h
+@@ -75,12 +75,14 @@ static inline enum wme_ac ath11k_tid_to_ac(u32 tid)
  
- 	case V4L2_SEL_TGT_CROP_DEFAULT:
-+	case V4L2_SEL_TGT_CROP_BOUNDS:
- 		sel->r.top = IMX219_PIXEL_ARRAY_TOP;
- 		sel->r.left = IMX219_PIXEL_ARRAY_LEFT;
- 		sel->r.width = IMX219_PIXEL_ARRAY_WIDTH;
+ enum ath11k_skb_flags {
+ 	ATH11K_SKB_HW_80211_ENCAP = BIT(0),
++	ATH11K_SKB_CIPHER_SET = BIT(1),
+ };
+ 
+ struct ath11k_skb_cb {
+ 	dma_addr_t paddr;
+ 	u8 eid;
+ 	u8 flags;
++	u32 cipher;
+ 	struct ath11k *ar;
+ 	struct ieee80211_vif *vif;
+ } __packed;
+diff --git a/drivers/net/wireless/ath/ath11k/dp_tx.c b/drivers/net/wireless/ath/ath11k/dp_tx.c
+index 3d962eee4d61d..21dfd08d3debb 100644
+--- a/drivers/net/wireless/ath/ath11k/dp_tx.c
++++ b/drivers/net/wireless/ath/ath11k/dp_tx.c
+@@ -84,7 +84,6 @@ int ath11k_dp_tx(struct ath11k *ar, struct ath11k_vif *arvif,
+ 	struct ath11k_dp *dp = &ab->dp;
+ 	struct hal_tx_info ti = {0};
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+-	struct ieee80211_key_conf *key = info->control.hw_key;
+ 	struct ath11k_skb_cb *skb_cb = ATH11K_SKB_CB(skb);
+ 	struct hal_srng *tcl_ring;
+ 	struct ieee80211_hdr *hdr = (void *)skb->data;
+@@ -149,9 +148,9 @@ tcl_ring_sel:
+ 	ti.meta_data_flags = arvif->tcl_metadata;
+ 
+ 	if (ti.encap_type == HAL_TCL_ENCAP_TYPE_RAW) {
+-		if (key) {
++		if (skb_cb->flags & ATH11K_SKB_CIPHER_SET) {
+ 			ti.encrypt_type =
+-				ath11k_dp_tx_get_encrypt_type(key->cipher);
++				ath11k_dp_tx_get_encrypt_type(skb_cb->cipher);
+ 
+ 			if (ieee80211_has_protected(hdr->frame_control))
+ 				skb_put(skb, IEEE80211_CCMP_MIC_LEN);
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index f5e49e1c11ed7..6b7f00e0086f5 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -3977,21 +3977,20 @@ static void ath11k_mgmt_over_wmi_tx_purge(struct ath11k *ar)
+ static void ath11k_mgmt_over_wmi_tx_work(struct work_struct *work)
+ {
+ 	struct ath11k *ar = container_of(work, struct ath11k, wmi_mgmt_tx_work);
+-	struct ieee80211_tx_info *info;
++	struct ath11k_skb_cb *skb_cb;
+ 	struct ath11k_vif *arvif;
+ 	struct sk_buff *skb;
+ 	int ret;
+ 
+ 	while ((skb = skb_dequeue(&ar->wmi_mgmt_tx_queue)) != NULL) {
+-		info = IEEE80211_SKB_CB(skb);
+-		if (!info->control.vif) {
+-			ath11k_warn(ar->ab, "no vif found for mgmt frame, flags 0x%x\n",
+-				    info->control.flags);
++		skb_cb = ATH11K_SKB_CB(skb);
++		if (!skb_cb->vif) {
++			ath11k_warn(ar->ab, "no vif found for mgmt frame\n");
+ 			ieee80211_free_txskb(ar->hw, skb);
+ 			continue;
+ 		}
+ 
+-		arvif = ath11k_vif_to_arvif(info->control.vif);
++		arvif = ath11k_vif_to_arvif(skb_cb->vif);
+ 		if (ar->allocated_vdev_map & (1LL << arvif->vdev_id) &&
+ 		    arvif->is_started) {
+ 			ret = ath11k_mac_mgmt_tx_wmi(ar, arvif, skb);
+@@ -4004,8 +4003,8 @@ static void ath11k_mgmt_over_wmi_tx_work(struct work_struct *work)
+ 			}
+ 		} else {
+ 			ath11k_warn(ar->ab,
+-				    "dropping mgmt frame for vdev %d, flags 0x%x is_started %d\n",
+-				    arvif->vdev_id, info->control.flags,
++				    "dropping mgmt frame for vdev %d, is_started %d\n",
++				    arvif->vdev_id,
+ 				    arvif->is_started);
+ 			ieee80211_free_txskb(ar->hw, skb);
+ 		}
+@@ -4053,10 +4052,19 @@ static void ath11k_mac_op_tx(struct ieee80211_hw *hw,
+ 	struct ieee80211_vif *vif = info->control.vif;
+ 	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
++	struct ieee80211_key_conf *key = info->control.hw_key;
++	u32 info_flags = info->flags;
+ 	bool is_prb_rsp;
+ 	int ret;
+ 
+-	if (info->flags & IEEE80211_TX_CTL_HW_80211_ENCAP) {
++	skb_cb->vif = vif;
++
++	if (key) {
++		skb_cb->cipher = key->cipher;
++		skb_cb->flags |= ATH11K_SKB_CIPHER_SET;
++	}
++
++	if (info_flags & IEEE80211_TX_CTL_HW_80211_ENCAP) {
+ 		skb_cb->flags |= ATH11K_SKB_HW_80211_ENCAP;
+ 	} else if (ieee80211_is_mgmt(hdr->frame_control)) {
+ 		is_prb_rsp = ieee80211_is_probe_resp(hdr->frame_control);
 -- 
 2.27.0
 
