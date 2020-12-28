@@ -2,193 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E2D2E65BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 536DA2E6574
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389550AbgL1N0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:26:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55368 "EHLO mail.kernel.org"
+        id S2390230AbgL1N36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:29:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389499AbgL1N0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 735BF2076D;
-        Mon, 28 Dec 2020 13:25:51 +0000 (UTC)
+        id S2390132AbgL1N3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:29:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C384322AAD;
+        Mon, 28 Dec 2020 13:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609161952;
-        bh=+pGRaTYXGuT+i7lKG+XzG1sOtgcBMLjdE3eIEPblyw0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=kWUxCMp1l/IksMCOI96IbM7QfatkfbLqK4pbz4y0LDIZ7OPq7jPGKkRLuRkoS7P91
-         kmY1/Gvq3pnpVzx0p+jx0fYlSVVmQ2VE6zTh7HQTzWeBw2VSfSCUL+2x3iTZXRYX5m
-         F3JOwh5LhkjJdqc/xnCNkTW09vbcPKTcybcQiCVjufVG2HAe3nb2wshNkU1EGr460D
-         GpPR582rQAepjHgiuPl5l0b0x/7QZQv1p8EkTIDwFoaIQ1OWiPEAOfAbXZ1Jo+1cV8
-         YxaLooruYu1/ASGuZnSPIhV89h9rFAPyBYwT4zOG3ZX7A2/bkSeZk00eyAwclddB0W
-         kOPKvj15HDRsQ==
-Message-ID: <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sargun Dhillon <sargun@sargun.me>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chengguang Xu <cgxu519@mykernel.net>
-Date:   Mon, 28 Dec 2020 08:25:50 -0500
-In-Reply-To: <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
-References: <20201221195055.35295-1-vgoyal@redhat.com>
-         <20201221195055.35295-4-vgoyal@redhat.com>
-         <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
-         <20201223185044.GQ874@casper.infradead.org>
-         <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
-         <20201223200746.GR874@casper.infradead.org>
-         <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
-         <20201223204428.GS874@casper.infradead.org>
-         <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
-         <20201224121352.GT874@casper.infradead.org>
-         <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+        s=k20201202; t=1609162131;
+        bh=QcOoA9D9ThsvL4uxQqbflIfCi98+/vXgTdIczfXKWsc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ducxyJuw9SIgbZ8Zl3VdvaksykK+bELoH+yJOWKwm27rRXUavIReqq1kznzgkDrEe
+         T14zTMPO/7vWkIVWMNXjeUT6P0k5MHeP2ZYXdRML6rf+V1cxeO5xwxC0OkX0km5cM1
+         8zw5odk7Zt9Xu9CNb05Rxcd63RnLkmOYCa5md2i8HsuhL89isPrD7gFLl11NUJvOAb
+         YpY7VdiODLLZUzoFnWbRtbWoaHlTFhTySFI+k9CkWhxbd85ijzOklT7EjCQvTOGG8f
+         el9h8Osn7KAl9wVDMozG5lLgGJNYGeisC3/v/XviMcvSiHUHACgJgWRR8aJfD7+2C5
+         GfpKKgwQFBvAg==
+Date:   Mon, 28 Dec 2020 14:28:48 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     chenshiyan <chenshiyan@linux.alibaba.com>
+Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V1] nohz: exit nohz idle before invoking softirq
+Message-ID: <20201228132848.GA10119@lothringen>
+References: <1609127268-40179-1-git-send-email-chenshiyan@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1609127268-40179-1-git-send-email-chenshiyan@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-25 at 08:50 +0200, Amir Goldstein wrote:
-> On Thu, Dec 24, 2020 at 2:13 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > 
-> > On Thu, Dec 24, 2020 at 11:32:55AM +0200, Amir Goldstein wrote:
-> > > In current master, syncfs() on any file by any container user will
-> > > result in full syncfs() of the upperfs, which is very bad for container
-> > > isolation. This has been partly fixed by Chengguang Xu [1] and I expect
-> > > his work will be merged soon. Overlayfs still does not do the writeback
-> > > and syncfs() in overlay still waits for all upper fs writeback to complete,
-> > > but at least syncfs() in overlay only kicks writeback for upper fs files
-> > > dirtied by this overlay.
-> > > 
-> > > [1] https://lore.kernel.org/linux-unionfs/CAJfpegsbb4iTxW8ZyuRFVNc63zg7Ku7vzpSNuzHASYZH-d5wWA@mail.gmail.com/
-> > > 
-> > > Sharing the same SEEN flag among thousands of containers is also
-> > > far from ideal, because effectively this means that any given workload
-> > > in any single container has very little chance of observing the SEEN flag.
-> > 
-> > Perhaps you misunderstand how errseq works.  If each container samples
-> > the errseq at startup, then they will all see any error which occurs
-> > during their lifespan
+On Mon, Dec 28, 2020 at 11:47:48AM +0800, chenshiyan wrote:
+> From: "shiyan.csy" <shiyan.csy@alibaba-inc.com>
 > 
-> Meant to say "...very little chance of NOT observing the SEEN flag",
-> but We are not in disagreement.
-> My argument against sharing the SEEN flag refers to Vivek's patch of
-> stacked errseq_sample()/errseq_check_and_advance() which does NOT
-> sample errseq at overlayfs mount time. That is why my next sentence is:
-> "I do agree with Matthew that overlayfs should sample errseq...".
+> exit nohz idle before invoking softirq, or it maymiss
+> some ticks during softirq.
 > 
-> > (and possibly an error which occurred before they started up).
-> > 
+> Signed-off-by: Shiyan Chen <chenshiyan@linux.alibaba.com>
+> ---
+>  kernel/softirq.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> Right. And this is where the discussion of splitting the SEEN flag started.
-> Some of us want to treat overlayfs mount time as a true epoc for errseq.
-> The new container didn't write any files yet, so it should not care about
-> writeback errors from the past.
-> 
-> I agree that it may not be very critical, but as I wrote before, I think we
-> should do our best to try and isolate container workloads.
-> 
-> > > To this end, I do agree with Matthew that overlayfs should sample errseq
-> > > and the best patchset to implement it so far IMO is Jeff's patchset [2].
-> > > This patch set was written to cater only "volatile" overlayfs mount, but
-> > > there is no reason not to use the same mechanism for regular overlay
-> > > mount. The only difference being that "volatile" overlay only checks for
-> > > error since mount on syncfs() (because "volatile" overlay does NOT
-> > > syncfs upper fs) and regular overlay checks and advances the overlay's
-> > > errseq sample on syncfs (and does syncfs upper fs).
-> > > 
-> > > Matthew, I hope that my explanation of the use case and Jeff's answer
-> > > is sufficient to understand why the split of the SEEN flag is needed.
-> > > 
-> > > [2] https://lore.kernel.org/linux-unionfs/20201213132713.66864-1-jlayton@kernel.org/
-> > 
-> > No, it still feels weird and wrong.
-> > 
-> 
-> All right. Considering your reservations, I think perhaps the split of the
-> SEEN flag can wait for a later time after more discussions and maybe
-> not as suitable for stable as we thought.
-> 
-> I think that for stable, it would be sufficient to adapt Surgun's original
-> syncfs for volatile mount patch [1] to cover the non-volatile case:
-> on mout:
-> - errseq_sample() upper fs
-> - on volatile mount, errseq_check() upper fs and fail mount on un-SEEN error
-> on syncfs:
-> - errseq_check() for volatile mount
-> - errseq_check_and_advance() for non-volatile mount
-> - errseq_set() overlay sb on upper fs error
-> 
-> Now errseq_set() is not only a hack around __sync_filesystem ignoring
-> return value of ->sync_fs(). It is really needed for per-overlay SEEN
-> error isolation in the non-volatile case.
-> 
-> Unless I am missing something, I think we do not strictly need Vivek's
-> 1/3 patch [2] for stable, but not sure.
-> 
-> Sargun,
-> 
-> Do you agree with the above proposal?
-> Will you make it into a patch?
-> 
-> Vivek, Jefff,
-> 
-> Do you agree that overlay syncfs observing writeback errors that predate
-> overlay mount time is an issue that can be deferred (maybe forever)?
-> 
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index 9d71046..59bd6fe 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -404,6 +404,10 @@ static inline void tick_irq_exit(void)
+>  		if (!in_irq())
+>  			tick_nohz_irq_exit();
+>  	}
+> +
+> +	/* need to exit nohz idle if there's a softirq */
+> +	if (in_serving_softirq() || local_softirq_pending())
+> +		tick_nohz_idle_exit();
+>  #endif
+>  }
+>  
+> @@ -416,10 +420,11 @@ static inline void __irq_exit_rcu(void)
+>  #endif
+>  	account_hardirq_exit(current);
+>  	preempt_count_sub(HARDIRQ_OFFSET);
+> -	if (!in_interrupt() && local_softirq_pending())
+> -		invoke_softirq();
+>  
+> +	/* must call before invoke_softirq */
+>  	tick_irq_exit();
+> +	if (!in_interrupt() && local_softirq_pending())
+> +		invoke_softirq();
 
-That's very application dependent.
+You can't reverse the order here because the softirqs may update
+the next tick expiry. And that needs to be taken into account by
+tick_nohz_full_update_tick().
 
-To be clear, the main thing you'll lose with the method above is the
-ability to see an unseen error on a newly opened fd, if there was an
-overlayfs mount using the same upper sb before your open occurred.
+But what issue are you trying to solve exactly?
 
-IOW, consider two overlayfs mounts using the same upper layer sb:
+Thanks.
 
-ovlfs1				ovlfs2
-----------------------------------------------------------------------
-mount
-open fd1
-write to fd1
-<writeback fails>
-				mount (upper errseq_t SEEN flag marked)
-open fd2
-syncfs(fd2)
-syncfs(fd1)
-
-
-On a "normal" (non-overlay) fs, you'd get an error back on both syncfs
-calls. The first one has a sample from before the error occurred, and
-the second one has a sample of 0, due to the fact that the error was
-unseen at open time.
-
-On overlayfs, with the intervening mount of ovlfs2, syncfs(fd1) will
-return an error and syncfs(fd2) will not. If we split the SEEN flag into
-two, then we can ensure that they both still get an error in this
-situation.
-
-> BTW, in all the discussions we always assumed that stacked fsync() is correct
-> WRT errseq, but in fact, fsync() can also observe an unseen error that predates
-> overlay mount.
-> In order to fix that, we will probably need to split the SEEN flag and some
-> more errseq acrobatics, but again, not sure it is worth the effort.
+>  }
+>  
+>  /**
+> -- 
+> 1.8.3.1
 > 
-> Thanks,
-> Amir.
-> 
-> [1] https://lore.kernel.org/linux-unionfs/20201202092720.41522-1-sargun@sargun.me/
-> [2] https://lore.kernel.org/linux-unionfs/20201222151752.GA3248@redhat.com/
-
--- 
-Jeff Layton <jlayton@kernel.org>
-
