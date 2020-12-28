@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81542E3A36
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 391902E4351
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387937AbgL1Ndf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:33:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59260 "EHLO mail.kernel.org"
+        id S2408676AbgL1Pfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:35:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390312AbgL1NaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24F2E2063A;
-        Mon, 28 Dec 2020 13:29:41 +0000 (UTC)
+        id S2406872AbgL1Nv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:51:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0A9B2064B;
+        Mon, 28 Dec 2020 13:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162182;
-        bh=eEBUkreNbxeJtlMy7/o495At/IUofxpXENnKGBKLzZE=;
+        s=korg; t=1609163471;
+        bh=cDRDiNUiAz22bBLFYws8YvUnvtciL92IYlOIDYofWe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tEmaZeHsXLimRIV/A5oBmCwKb35reqYcgTFuvVZ2w0hlSblHJd0w+tdz86tEjrH9b
-         X2yaCEEYq3DDNOAvu0+fWTqHKg8S97jQZdytN9PeJGsL0uFgq6BO1e4kAfK0hyWJiP
-         HVjvjHm68hYxeWXvKaFREQ0LeJVBVfRA3DVt3X7g=
+        b=t+BKw8ToCbi2zS9nQN666bxTKajxKvY187Be37D/+F7Da7QMtIaryMXtOuyOY194H
+         IC45L7Vsq91owBtJqr3CkYJmb40naKCVkP7pt6gohjNY3dz3x+4L5zoDYtdgnDgZY+
+         EQTg5gQ4b0q5uVy6o5piWAX5Qb8a1+wpYqSFqXMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 214/346] powerpc/pseries/hibernation: drop pseries_suspend_begin() from suspend ops
+Subject: [PATCH 5.4 297/453] watchdog: coh901327: add COMMON_CLK dependency
 Date:   Mon, 28 Dec 2020 13:48:53 +0100
-Message-Id: <20201228124930.124643958@linuxfoundation.org>
+Message-Id: <20201228124951.496227175@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 52719fce3f4c7a8ac9eaa191e8d75a697f9fbcbc ]
+[ Upstream commit 36c47df85ee8e1f8a35366ac11324f8875de00eb ]
 
-There are three ways pseries_suspend_begin() can be reached:
+clang produces a build failure in configurations without COMMON_CLK
+when a timeout calculation goes wrong:
 
-1. When "mem" is written to /sys/power/state:
+arm-linux-gnueabi-ld: drivers/watchdog/coh901327_wdt.o: in function `coh901327_enable':
+coh901327_wdt.c:(.text+0x50): undefined reference to `__bad_udelay'
 
-kobj_attr_store()
--> state_store()
-  -> pm_suspend()
-    -> suspend_devices_and_enter()
-      -> pseries_suspend_begin()
+Add a Kconfig dependency to only do build testing when COMMON_CLK
+is enabled.
 
-This never works because there is no way to supply a valid stream id
-using this interface, and H_VASI_STATE is called with a stream id of
-zero. So this call path is useless at best.
-
-2. When a stream id is written to /sys/devices/system/power/hibernate.
-pseries_suspend_begin() is polled directly from store_hibernate()
-until the stream is in the "Suspending" state (i.e. the platform is
-ready for the OS to suspend execution):
-
-dev_attr_store()
--> store_hibernate()
-  -> pseries_suspend_begin()
-
-3. When a stream id is written to /sys/devices/system/power/hibernate
-(continued). After #2, pseries_suspend_begin() is called once again
-from the pm core:
-
-dev_attr_store()
--> store_hibernate()
-  -> pm_suspend()
-    -> suspend_devices_and_enter()
-      -> pseries_suspend_begin()
-
-This is redundant because the VASI suspend state is already known to
-be Suspending.
-
-The begin() callback of platform_suspend_ops is optional, so we can
-simply remove that assignment with no loss of function.
-
-Fixes: 32d8ad4e621d ("powerpc/pseries: Partition hibernation support")
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201207215200.1785968-18-nathanl@linux.ibm.com
+Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20201203223358.1269372-1-arnd@kernel.org
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/suspend.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/watchdog/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
-index 52a021e1f86bf..fd2c090681aa6 100644
---- a/arch/powerpc/platforms/pseries/suspend.c
-+++ b/arch/powerpc/platforms/pseries/suspend.c
-@@ -223,7 +223,6 @@ static struct bus_type suspend_subsys = {
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index 6cdffbdaf98a5..1aa42e879e633 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -618,7 +618,7 @@ config SUNXI_WATCHDOG
  
- static const struct platform_suspend_ops pseries_suspend_ops = {
- 	.valid		= suspend_valid_only_mem,
--	.begin		= pseries_suspend_begin,
- 	.prepare_late	= pseries_prepare_late,
- 	.enter		= pseries_suspend_enter,
- };
+ config COH901327_WATCHDOG
+ 	bool "ST-Ericsson COH 901 327 watchdog"
+-	depends on ARCH_U300 || (ARM && COMPILE_TEST)
++	depends on ARCH_U300 || (ARM && COMMON_CLK && COMPILE_TEST)
+ 	default y if MACH_U300
+ 	select WATCHDOG_CORE
+ 	help
 -- 
 2.27.0
 
