@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF0D2E40AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0D22E63EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408030AbgL1Oz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:55:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51268 "EHLO mail.kernel.org"
+        id S2404684AbgL1Not (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:44:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441347AbgL1ORG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:17:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6640522583;
-        Mon, 28 Dec 2020 14:16:50 +0000 (UTC)
+        id S2404463AbgL1NoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:44:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AC0A2072C;
+        Mon, 28 Dec 2020 13:43:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165011;
-        bh=yILNp6kH/yw5GNmBb/hw2thVBIH/jQnLg3VdnXrTiR4=;
+        s=korg; t=1609163018;
+        bh=YMPTSssMi1YmhhP66jNW89dJEyt9dUSiPtp+sq5D8GU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZKU+1NO/shupuddV9rpAe8uAEF/8TcIAyCc/yZgmvkMwWA+4ZYUuWlEk8cb/HXyEq
-         XgGj2qvPtOkVqrM2ni2SiOZd4UN1IkED7EUUX3lib/nAHyh2qd9PdiHJP26GLt8Sev
-         3CAUZRqO5menYAUPc4FSXPjkyK3xwS9TPYoRZuJ0=
+        b=brsmcsu4QfEvW1V76JnC7havhKRs9lgFkIUHHIKG7jNhGjzCRO0jK+XnLVmNXZXFv
+         fZhAMsi6QA4jWGxgiI0Eb9nNi3bN56IO1Ako2Pq4+QxiqR3xzZKDshWTUlkBDalOvt
+         aaDqN2TcwKHGXaM2Kd0lp1cORJOakv06zrDFZpYw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 348/717] mtd: spi-nor: atmel: remove global protection flag
+Subject: [PATCH 5.4 110/453] arm64: dts: exynos: Include common syscon restart/poweroff for Exynos7
 Date:   Mon, 28 Dec 2020 13:45:46 +0100
-Message-Id: <20201228125037.701027739@linuxfoundation.org>
+Message-Id: <20201228124942.506487667@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,101 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
+From: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
 
-[ Upstream commit e6204d4620276398ed7317d64c369813a1f96615 ]
+[ Upstream commit 73bc7510ea0dafb4ff1ae6808759627a8ec51f5a ]
 
-This is considered bad for the following reasons:
- (1) We only support the block protection with BPn bits for write
-     protection. Not all Atmel parts support this.
- (2) Newly added flash chip will automatically inherit the "has
-     locking" support and thus needs to explicitly tested. Better
-     be opt-in instead of opt-out.
- (3) There are already supported flashes which doesn't support
-     the locking scheme. So I assume this wasn't properly tested
-     before adding that chip; which enforces my previous argument
-     that locking support should be an opt-in.
+Exynos7 uses the same syscon reboot and poweroff nodes as other Exynos
+SoCs, so instead of duplicating code we can just include common dtsi
+file, which already contains definitions of them. After this change,
+poweroff node will be also available, previously this dts file did
+contain only reboot node.
 
-Remove the global flag and add individual flags to all flashes which
-supports BP locking. In particular the following flashes don't support
-the BP scheme:
- - AT26F004
- - AT25SL321
- - AT45DB081D
-
-Please note, that some flashes which are marked as SPI_NOR_HAS_LOCK just
-support Global Protection, i.e. not our supported block protection
-locking scheme. This is to keep backwards compatibility with the
-current "unlock all at boot" mechanism. In particular the following
-flashes doesn't have BP bits:
- - AT25DF041A
- - AT25DF321
- - AT25DF321A
- - AT25DF641
- - AT26DF081A
- - AT26DF161A
- - AT26DF321
-
-Signed-off-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20201203162959.29589-4-michael@walle.cc
+Fixes: fb026cb65247 ("arm64: dts: Add reboot node for exynos7")
+Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+Link: https://lore.kernel.org/r/20201107133926.37187-1-pawel.mikolaj.chmiel@gmail.com
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/spi-nor/atmel.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 3f5f21a473a69..49d392c6c8bc5 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -10,37 +10,27 @@
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 0821489a874de..c5be82d48c986 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -494,13 +494,6 @@
+ 		pmu_system_controller: system-controller@105c0000 {
+ 			compatible = "samsung,exynos7-pmu", "syscon";
+ 			reg = <0x105c0000 0x5000>;
+-
+-			reboot: syscon-reboot {
+-				compatible = "syscon-reboot";
+-				regmap = <&pmu_system_controller>;
+-				offset = <0x0400>;
+-				mask = <0x1>;
+-			};
+ 		};
  
- static const struct flash_info atmel_parts[] = {
- 	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
--	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K) },
--	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) },
-+	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K | SPI_NOR_HAS_LOCK) },
- 
--	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K) },
--	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K) },
--	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K) },
--	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_HAS_LOCK) },
- 
- 	{ "at25sl321",	INFO(0x1f4216, 0, 64 * 1024, 64,
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 
- 	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8, SECT_4K) },
--	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K) },
--	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K) },
--	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K) },
-+	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
- 
- 	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
+ 		rtc: rtc@10590000 {
+@@ -650,3 +643,4 @@
  };
  
--static void atmel_default_init(struct spi_nor *nor)
--{
--	nor->flags |= SNOR_F_HAS_LOCK;
--}
--
--static const struct spi_nor_fixups atmel_fixups = {
--	.default_init = atmel_default_init,
--};
--
- const struct spi_nor_manufacturer spi_nor_atmel = {
- 	.name = "atmel",
- 	.parts = atmel_parts,
- 	.nparts = ARRAY_SIZE(atmel_parts),
--	.fixups = &atmel_fixups,
- };
+ #include "exynos7-pinctrl.dtsi"
++#include "arm/exynos-syscon-restart.dtsi"
 -- 
 2.27.0
 
