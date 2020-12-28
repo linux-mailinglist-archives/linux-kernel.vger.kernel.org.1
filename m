@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C411E2E3AA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593042E3AA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732609AbgL1Njb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:39:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39630 "EHLO mail.kernel.org"
+        id S2403775AbgL1Njq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:39:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403760AbgL1NjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:39:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C213206ED;
-        Mon, 28 Dec 2020 13:38:38 +0000 (UTC)
+        id S2391407AbgL1Nja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:39:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 211EB205CB;
+        Mon, 28 Dec 2020 13:39:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162719;
-        bh=cgvaEvUbZO/s3ntixqFDPhN+DSKY1SMEqwqPehHNPIw=;
+        s=korg; t=1609162754;
+        bh=OqhHtuOdgaauMQMONCSX+P4cGrOeVwc6S4p25cYuAAE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LZwVcQCYAgsasKBYUAabF5UI4J/MEwFUzxBxZNdsVXQ0qZblM+EubuJU+S+qZo4hU
-         NayXbf8M38kUlrgKd6BK8Kg/8we+I0DHEqFnCR1JXOdh6ofQ/rE8Wa3nyLAZay7oQ8
-         SeF4atv+JTqAJdAPo9go+Y7N/TsqoZwDsxwuLRJ8=
+        b=FudFa4GLSwtXQNN9yFQW73sSAuErJ9G4ARtnlAYXEz0uFqvkRooAcE7FxN5CzvzCR
+         x8+2X2TSoHBbEkw8M0h9dF77sGGnyQaavrim/YuHQQB6wJu5MilHfh1ADHJuM5LJJ3
+         OkLzIIal2I3fw5aeBr9eZFSfakaBxm//nNaOA22w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH 5.4 050/453] soc/tegra: fuse: Fix index bug in get_process_id
-Date:   Mon, 28 Dec 2020 13:44:46 +0100
-Message-Id: <20201228124939.664815964@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 5.4 051/453] usb: mtu3: fix memory corruption in mtu3_debugfs_regset()
+Date:   Mon, 28 Dec 2020 13:44:47 +0100
+Message-Id: <20201228124939.712874728@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -39,33 +38,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolin Chen <nicoleotsuka@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit b9ce9b0f83b536a4ac7de7567a265d28d13e5bea upstream.
+commit 3f6f6343a29d9ea7429306b83b18e66dc1331d5c upstream.
 
-This patch simply fixes a bug of referencing speedos[num] in every
-for-loop iteration in get_process_id function.
+This code is using the wrong sizeof() so it does not allocate enough
+memory.  It allocates 32 bytes but 72 are required.  That will lead to
+memory corruption.
 
-Fixes: 0dc5a0d83675 ("soc/tegra: fuse: Add Tegra210 support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Fixes: ae07809255d3 ("usb: mtu3: add debugfs interface files")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X8ikqc4Mo2/0G72j@mwanda
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/soc/tegra/fuse/speedo-tegra210.c |    2 +-
+ drivers/usb/mtu3/mtu3_debugfs.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/soc/tegra/fuse/speedo-tegra210.c
-+++ b/drivers/soc/tegra/fuse/speedo-tegra210.c
-@@ -94,7 +94,7 @@ static int get_process_id(int value, con
- 	unsigned int i;
+--- a/drivers/usb/mtu3/mtu3_debugfs.c
++++ b/drivers/usb/mtu3/mtu3_debugfs.c
+@@ -127,7 +127,7 @@ static void mtu3_debugfs_regset(struct m
+ 	struct debugfs_regset32 *regset;
+ 	struct mtu3_regset *mregs;
  
- 	for (i = 0; i < num; i++)
--		if (value < speedos[num])
-+		if (value < speedos[i])
- 			return i;
+-	mregs = devm_kzalloc(mtu->dev, sizeof(*regset), GFP_KERNEL);
++	mregs = devm_kzalloc(mtu->dev, sizeof(*mregs), GFP_KERNEL);
+ 	if (!mregs)
+ 		return;
  
- 	return -EINVAL;
 
 
