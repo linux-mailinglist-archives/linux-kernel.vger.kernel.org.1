@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD482E3828
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1436A2E3A42
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729630AbgL1NGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:06:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33806 "EHLO mail.kernel.org"
+        id S2389101AbgL1NeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:34:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729592AbgL1NF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:05:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E721F22A84;
-        Mon, 28 Dec 2020 13:05:15 +0000 (UTC)
+        id S2387910AbgL1Nd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:33:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1FE12063A;
+        Mon, 28 Dec 2020 13:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160716;
-        bh=r9xCeAMs5iAVd1Tko00oM32AUvZdGbhJW/nO/a7uMbc=;
+        s=korg; t=1609162367;
+        bh=jtUitWLLgs3FggGy8jqFsSicHcVMQKTpSuregd/+HBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PQlswl1pstoINSAHI67Ft712cJybMqQqRPr4oxIm4YkB43rD9i9jpK2rN9NGixY/O
-         chLORpgEjEL1t7GpJrR8t0/9v03HhrGdEnvCS+uPWtkUOqvf52DeV5Sr323v+DXGce
-         rUecUDrB419bVSSBIBSZ1ZPbV3alJOD+pWIN9rWQ=
+        b=K/PAsRvBLy96lTG0xIAIuUNqNON3Eh4wusMtoGuvpRIky2Hdj5PdSXjJD1pIzDt63
+         AEf/cy5Ro99FWskcYZiq4lDz2JDbWt+cyO+5oGYnWGj84nW/vIyanK6uNg3lb2RiaW
+         jQLSITon01yyUZ4VSFC8CY114UW6w/0NTnM0NIig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 146/175] USB: serial: keyspan_pda: fix write deadlock
+        stable@vger.kernel.org, Philipp Rudo <prudo@linux.ibm.com>,
+        Xiaoying Yan <yiyan@redhat.com>,
+        Lianbo Jiang <lijiang@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 4.19 280/346] s390/kexec_file: fix diag308 subcode when loading crash kernel
 Date:   Mon, 28 Dec 2020 13:49:59 +0100
-Message-Id: <20201228124900.327629405@linuxfoundation.org>
+Message-Id: <20201228124933.317068748@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Philipp Rudo <prudo@linux.ibm.com>
 
-commit 7353cad7ee4deaefc16e94727e69285563e219f6 upstream.
+commit 613775d62ec60202f98d2c5f520e6e9ba6dd4ac4 upstream.
 
-The write() callback can be called in interrupt context (e.g. when used
-as a console) so interrupts must be disabled while holding the port lock
-to prevent a possible deadlock.
+diag308 subcode 0 performes a clear reset which inlcudes the reset of
+all registers in the system. While this is the preferred behavior when
+loading a normal kernel via kexec it prevents the crash kernel to store
+the register values in the dump. To prevent this use subcode 1 when
+loading a crash kernel instead.
 
-Fixes: e81ee637e4ae ("usb-serial: possible irq lock inversion (PPP vs. usb/serial)")
-Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
-Cc: stable <stable@vger.kernel.org>     # 2.6.19
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: ee337f5469fd ("s390/kexec_file: Add crash support to image loader")
+Cc: <stable@vger.kernel.org> # 4.17
+Signed-off-by: Philipp Rudo <prudo@linux.ibm.com>
+Reported-by: Xiaoying Yan <yiyan@redhat.com>
+Tested-by: Lianbo Jiang <lijiang@redhat.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/s390/purgatory/head.S |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -447,6 +447,7 @@ static int keyspan_pda_write(struct tty_
- 	int request_unthrottle = 0;
- 	int rc = 0;
- 	struct keyspan_pda_private *priv;
-+	unsigned long flags;
+--- a/arch/s390/purgatory/head.S
++++ b/arch/s390/purgatory/head.S
+@@ -61,14 +61,15 @@
+ 	jh	10b
+ .endm
  
- 	priv = usb_get_serial_port_data(port);
- 	/* guess how much room is left in the device's ring buffer, and if we
-@@ -466,13 +467,13 @@ static int keyspan_pda_write(struct tty_
- 	   the TX urb is in-flight (wait until it completes)
- 	   the device is full (wait until it says there is room)
- 	*/
--	spin_lock_bh(&port->lock);
-+	spin_lock_irqsave(&port->lock, flags);
- 	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled) {
--		spin_unlock_bh(&port->lock);
-+		spin_unlock_irqrestore(&port->lock, flags);
- 		return 0;
- 	}
- 	clear_bit(0, &port->write_urbs_free);
--	spin_unlock_bh(&port->lock);
-+	spin_unlock_irqrestore(&port->lock, flags);
+-.macro START_NEXT_KERNEL base
++.macro START_NEXT_KERNEL base subcode
+ 	lg	%r4,kernel_entry-\base(%r13)
+ 	lg	%r5,load_psw_mask-\base(%r13)
+ 	ogr	%r4,%r5
+ 	stg	%r4,0(%r0)
  
- 	/* At this point the URB is in our control, nobody else can submit it
- 	   again (the only sudden transition was the one from EINPROGRESS to
+ 	xgr	%r0,%r0
+-	diag	%r0,%r0,0x308
++	lghi	%r1,\subcode
++	diag	%r0,%r1,0x308
+ .endm
+ 
+ .text
+@@ -123,7 +124,7 @@ ENTRY(purgatory_start)
+ 	je	.start_crash_kernel
+ 
+ 	/* start normal kernel */
+-	START_NEXT_KERNEL .base_crash
++	START_NEXT_KERNEL .base_crash 0
+ 
+ .return_old_kernel:
+ 	lmg	%r6,%r15,gprregs-.base_crash(%r13)
+@@ -227,7 +228,7 @@ ENTRY(purgatory_start)
+ 	MEMCPY	%r9,%r10,%r11
+ 
+ 	/* start crash kernel */
+-	START_NEXT_KERNEL .base_dst
++	START_NEXT_KERNEL .base_dst 1
+ 
+ 
+ load_psw_mask:
 
 
