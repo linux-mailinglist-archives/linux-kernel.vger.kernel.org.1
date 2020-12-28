@@ -2,139 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEB72E3379
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 02:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4628C2E337F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 02:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgL1BeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 20:34:09 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:63768 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726361AbgL1BeH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 20:34:07 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609119227; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=eZTjBgbTUfr1OVRJYpoYf8PCujArXTjn/09ZaCNxY/w=;
- b=TMVI8oTBrgSaQlL50XDabgFO7GHzcWKf/wzfzTqC0ZkxOWYlwPZjTaEkV/FfY6ulHYwncAgf
- +pHVlBlsDY6tM82g15UKtdmKrUVvhpCFeRR4bdbLWesYLLB5NA/FTtNn8xLDmOoGVmHa+geK
- psIlcb8oV5cdnBxd6S3U7HTvWUs=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fe935f97036173f4f932bd7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Dec 2020 01:33:45
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EAD00C433C6; Mon, 28 Dec 2020 01:33:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 434FDC433CA;
-        Mon, 28 Dec 2020 01:33:44 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        id S1726363AbgL1Bo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 20:44:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725962AbgL1Bo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 20:44:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AD2D22522;
+        Mon, 28 Dec 2020 01:44:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609119857;
+        bh=+odxiDUmAkqtS67hXT2msSOU8wUvOYdpSg7ZS7qOcXw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AL5poWRTnO5hJyWIv8CyHmkn6o2A1202rwGGlFU+BJn/I032S7dALax9Ho7huXwQH
+         nwhmjmSxmC/KDz0y3mMH/s3bNkEMVC+S6PK0osRG1E3tRyEUJzSjj7ND47JcisgWon
+         tqLw31dqMy22ZRRGOdtuOxZzFbE5OHzcx9CX7Rk3EfPi7HgWWT6K4TXKRhPvYkezis
+         Y06DZ3hCaa4XNrQWnUiabJ3feHVkb9QFlFj/lj4fYeLH6bH2rUJyjcJw0sGkaDsIAl
+         a4PjSN0jOmveCPeMQ/Afbgu4sxZF1ITkH8UDIjAasuiNU/HpORjCrmfuD+jWPLmHfR
+         RsLDnRODIV4iQ==
+Date:   Mon, 28 Dec 2020 10:44:14 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 02/19] x86/insn: Add @buf_len param to insn_init()
+ kernel-doc comment
+Message-Id: <20201228104414.e1061048ce09305ec0dc4c3d@kernel.org>
+In-Reply-To: <20201223174233.28638-3-bp@alien8.de>
+References: <20201223174233.28638-1-bp@alien8.de>
+        <20201223174233.28638-3-bp@alien8.de>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 28 Dec 2020 09:33:44 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     Bean Huo <huobean@gmail.com>, Avri Altman <Avri.Altman@wdc.com>,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com, beanhuo@micron.com,
-        asutoshd@codeaurora.org, matthias.bgg@gmail.com,
-        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com
-Subject: Re: [PATCH v1] scsi: ufs-mediatek: Enable
- UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
-In-Reply-To: <1608817657.14045.30.camel@mtkswgap22>
-References: <20201222072928.32328-1-stanley.chu@mediatek.com>
- <c862866ec97516a7ffb891e5de3d132d@codeaurora.org>
- <1608697172.14045.5.camel@mtkswgap22>
- <c83d34ca8b0338526f6440f1c4ee43dd@codeaurora.org>
- <ff8efda608e6f95737a675ee03fa3ca2@codeaurora.org>
- <1608796334.14045.21.camel@mtkswgap22>
- <DM6PR04MB6575D0DD2C04692AEF771494FCDD0@DM6PR04MB6575.namprd04.prod.outlook.com>
- <5eb12622222bd9ba5e705801a204f3160ba3966b.camel@gmail.com>
- <1608817657.14045.30.camel@mtkswgap22>
-Message-ID: <ed467feb9c692896ddffe3c36e0dbced@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-24 21:47, Stanley Chu wrote:
-> Hi Avri, Bean,
-> 
-> On Thu, 2020-12-24 at 13:01 +0100, Bean Huo wrote:
->> On Thu, 2020-12-24 at 11:03 +0000, Avri Altman wrote:
->> > > > Do you see any substantial benefit of having
->> > > > fWriteBoosterBufferFlushEn
->> > > > disabled?
->> > >
->> > > 1. The definition of fWriteBoosterBufferFlushEn is that host allows
->> > > device to do flush in anytime after fWriteBoosterBufferFlushEn is
->> > > set as
->> > > on. This is not what we want.
->> > >
->> > > Just Like BKOP, We do not want flush happening beyond host's
->> > > expected
->> > > timing that device performance may be "randomly" dropped.
->> >
->> > Explicit flush takes place only when the device is idle:
->> > if fWriteBoosterBufferFlushEn is set, the device is idle, and before
->> > h8 received.
->> > If a request arrives, the flush operation should be halted.
->> > So no performance degradation is expected.
->> 
->> Hi Stanley
->> 
->> Avri's comment is correct, fWriteBoosterBufferFlushEn==1, device will
->> flush only when it is in idle, once there is new incoming request, the
->> flush will be suspended. You should be very careful when you want to
->> skip this stetting of this flag.
-> 
-> Very appreciate your the clarification.
-> 
-> However similar to "Background Operations Termination Latency", while
-> the next request comes, device may need some time to suspend on-going
-> flush operations. This delay may "randomly" degrade the performance
-> right?
+On Wed, 23 Dec 2020 18:42:16 +0100
+Borislav Petkov <bp@alien8.de> wrote:
 
-That can be case by case (or vendor by vendor), but generally I agree
-with you on this.
-
+> From: Borislav Petkov <bp@suse.de>
 > 
-> Since the configuration, i.e., enable
-> fWriteBoosterBufferFlushDuringHibernate only with
-> fWriteBoosterBufferFlushEn disabled, has been applied in many of our
-> mass-produced products these yeas, we would like to keep it unless the
-> new setting has obvious benefits.
-
-Thanks for sharing the info. I will leave the decision to Asutosh on 
-this.
-
-Thanks,
-Can Guo.
-
+> It wasn't documented so add it. No functional changes.
 > 
-> Thanks,
-> Stanley Chu
+
+Thank you for fixing!
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  arch/x86/lib/insn.c       | 1 +
+>  tools/arch/x86/lib/insn.c | 1 +
+>  2 files changed, 2 insertions(+)
 > 
->> 
->> Bean
->> 
+> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> index 404279563891..1ba994862b56 100644
+> --- a/arch/x86/lib/insn.c
+> +++ b/arch/x86/lib/insn.c
+> @@ -37,6 +37,7 @@
+>   * insn_init() - initialize struct insn
+>   * @insn:	&struct insn to be initialized
+>   * @kaddr:	address (in kernel memory) of instruction (or copy thereof)
+> + * @buf_len:	length of the insn buffer at @kaddr
+>   * @x86_64:	!0 for 64-bit kernel or 64-bit app
+>   */
+>  void insn_init(struct insn *insn, const void *kaddr, int buf_len, int x86_64)
+> diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+> index 0151dfc6da61..f3277d6e4ef2 100644
+> --- a/tools/arch/x86/lib/insn.c
+> +++ b/tools/arch/x86/lib/insn.c
+> @@ -37,6 +37,7 @@
+>   * insn_init() - initialize struct insn
+>   * @insn:	&struct insn to be initialized
+>   * @kaddr:	address (in kernel memory) of instruction (or copy thereof)
+> + * @buf_len:	length of the insn buffer at @kaddr
+>   * @x86_64:	!0 for 64-bit kernel or 64-bit app
+>   */
+>  void insn_init(struct insn *insn, const void *kaddr, int buf_len, int x86_64)
+> -- 
+> 2.29.2
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
