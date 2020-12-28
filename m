@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4352E6B2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63652E6B2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbgL1W4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732148AbgL1W4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:56:30 -0500
-Received: from elvis.franken.de ([193.175.24.41]:43952 "EHLO elvis.franken.de"
+Received: from mail.kernel.org ([198.145.29.99]:55938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729632AbgL1W0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 17:26:21 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1ku0xP-00069Q-00; Mon, 28 Dec 2020 23:25:39 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 8475EC05C4; Mon, 28 Dec 2020 23:25:32 +0100 (CET)
-Date:   Mon, 28 Dec 2020 23:25:32 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>, od@zcrc.me,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: boot: Fix unaligned access with
- CONFIG_MIPS_RAW_APPENDED_DTB
-Message-ID: <20201228222532.GA24926@alpha.franken.de>
-References: <20201216233956.280068-1-paul@crapouillou.net>
+        id S1729608AbgL1W1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 17:27:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F98020829;
+        Mon, 28 Dec 2020 22:26:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609194414;
+        bh=zzXcS/voSL8xh/stF+PRvCY4adKxzk7/Qfd2xuMJbv4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PyYudmcwEhbVp5IyvQupjd6Sf0LirLTX7KAq8Wq54DL6u6lVHr/HL2DfY7fSywEfI
+         HqonOK9lYCnQbekC1g3m1B1dVdroFfipPgMRbtUA8qFDOTmtUVxi2cJoj3r1aAeoY7
+         tjxyXzgRgQRvYHa++GQM2AirKcaWF/6FS+2GpcInse8SIrk6WGoYxSKyADxi8vmdm0
+         XlOadpwx0DSpCBtSsFb1Vp2PRJFeU391AmL5gbDcXhi+ZQBKBpzJIqIvKDSoNW7frG
+         DSY7wIx922g0tTJ/45ahBnTzHLcd1AEFKHSCyY+OrcmLEW14tYB+rLZawXD0kMySAd
+         19KvQHPg25n3w==
+Date:   Mon, 28 Dec 2020 14:26:53 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     netdev@vger.kernel.org,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net 2/2] net: switchdev: don't set
+ port_obj_info->handled true when -EOPNOTSUPP
+Message-ID: <20201228142653.2987e42d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201223144533.4145-3-rasmus.villemoes@prevas.dk>
+References: <20201223144533.4145-1-rasmus.villemoes@prevas.dk>
+        <20201223144533.4145-3-rasmus.villemoes@prevas.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201216233956.280068-1-paul@crapouillou.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:39:56PM +0000, Paul Cercueil wrote:
-> The compressed payload is not necesarily 4-byte aligned, at least when
-> compiling with Clang. In that case, the 4-byte value appended to the
-> compressed payload that corresponds to the uncompressed kernel image
-> size must be read using get_unaligned_le().
+On Wed, 23 Dec 2020 15:45:33 +0100 Rasmus Villemoes wrote:
+> It's not true that switchdev_port_obj_notify() only inspects the
+> ->handled field of "struct switchdev_notifier_port_obj_info" if  
+> call_switchdev_blocking_notifiers() returns 0 - there's a WARN_ON()
+> triggering for a non-zero return combined with ->handled not being
+> true. But the real problem here is that -EOPNOTSUPP is not being
+> properly handled.
 > 
-> This fixes Clang-built kernels not booting on MIPS (tested on a Ingenic
-> JZ4770 board).
+> The wrapper functions switchdev_handle_port_obj_add() et al change a
+> return value of -EOPNOTSUPP to 0, and the treatment of ->handled in
+> switchdev_port_obj_notify() seems to be designed to change that back
+> to -EOPNOTSUPP in case nobody actually acted on the notifier (i.e.,
+> everybody returned -EOPNOTSUPP).
 > 
-> Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of the kernel")
-> Cc: <stable@vger.kernel.org> # v4.7
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  arch/mips/boot/compressed/decompress.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Currently, as soon as some device down the stack passes the check_cb()
+> check, ->handled gets set to true, which means that
+> switchdev_port_obj_notify() cannot actually ever return -EOPNOTSUPP.
 > 
-> diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
-> index c61c641674e6..47c07990432b 100644
-> --- a/arch/mips/boot/compressed/decompress.c
-> +++ b/arch/mips/boot/compressed/decompress.c
-> @@ -117,7 +117,7 @@ void decompress_kernel(unsigned long boot_heap_start)
->  		dtb_size = fdt_totalsize((void *)&__appended_dtb);
->  
->  		/* last four bytes is always image size in little endian */
-> -		image_size = le32_to_cpup((void *)&__image_end - 4);
-> +		image_size = get_unaligned_le32((void *)&__image_end - 4);
+> This, for example, means that the detection of hardware offload
+> support in the MRP code is broken - br_mrp_set_ring_role() always ends
+> up setting mrp->ring_role_offloaded to 1, despite not a single
+> mainline driver implementing any of the SWITCHDEV_OBJ_ID*_MRP. So
+> since the MRP code thinks the generation of MRP test frames has been
+> offloaded, no such frames are actually put on the wire.
+> 
+> So, continue to set ->handled true if any callback returns success or
+> any error distinct from -EOPNOTSUPP. But if all the callbacks return
+> -EOPNOTSUPP, make sure that ->handled stays false, so the logic in
+> switchdev_port_obj_notify() can propagate that information.
+> 
+> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 
-gives me following error
-
-arch/mips/boot/compressed/decompress.c:120:16: error: implicit declaration of function ‘get_unaligned_le32’ [-Werror=implicit-function-declaration]
-   image_size = get_unaligned_le32((void *)&__image_end - 4);
-
-I've added
-
-#include <asm/unaligned.h>
-
-which fixes the compile error, but I'm wondering why the patch compiled
-for you ?
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Please make sure you CC the folks who may have something to say about
+this - Jiri, Ivan, Ido, Florian, etc.
