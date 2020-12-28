@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883D72E3A12
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368062E3E33
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387630AbgL1Nbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:31:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59552 "EHLO mail.kernel.org"
+        id S2503214AbgL1OZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:25:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390471AbgL1Nay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AE3221D94;
-        Mon, 28 Dec 2020 13:30:38 +0000 (UTC)
+        id S2392074AbgL1OZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:25:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7890920791;
+        Mon, 28 Dec 2020 14:25:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162238;
-        bh=Bt+C6YDQ9Sk4LBd78Nvk1ltHodyZmgSB8g2GIX0vHfU=;
+        s=korg; t=1609165506;
+        bh=68WcUA4SCIq5euYBlkcE9hSO8wqkCfcl9VXdHARhno0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l/d89VHo+UMFss5jZUr+83lJSaVgHk9ec1q3XABGT7Dhz/QXgg1CpdwN3fs2XETAc
-         bR2xvkiNGPKgbrJ4Gi/aRa1/ONM1Q1iOlZzFDth8sRgA/3TxNstN7KSkTlo2gv374y
-         FbTjoil5UVq5D413bd4452ssYEKGytyOai7J1lic=
+        b=VjqyHDH9+5+orkt911zLGAFjmxKtWZb0qEiY8Jn/s0MO8W9DLFLz+rMCn6UF+EAEw
+         X+HIxC0yTpsOXuEoibYcM52fK/Q9YC1uBUPYJaPg2vt+KvZ4TdLH3/JmfMIHZFSG5o
+         ddPDpnTO/edF0ue46S3rijZ7KQwVaB7E1fXACJM4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 235/346] nfc: s3fwrn5: Release the nfc firmware
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 556/717] s390/dasd: prevent inconsistent LCU device data
 Date:   Mon, 28 Dec 2020 13:49:14 +0100
-Message-Id: <20201228124931.132718184@linuxfoundation.org>
+Message-Id: <20201228125047.570920649@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bongsu Jeon <bongsu.jeon@samsung.com>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-[ Upstream commit a4485baefa1efa596702ebffd5a9c760d42b14b5 ]
+commit a29ea01653493b94ea12bb2b89d1564a265081b6 upstream.
 
-add the code to release the nfc firmware when the firmware image size is
-wrong.
+Prevent _lcu_update from adding a device to a pavgroup if the LCU still
+requires an update. The data is not reliable any longer and in parallel
+devices might have been moved on the lists already.
+This might lead to list corruptions or invalid PAV grouping.
+Only add devices to a pavgroup if the LCU is up to date. Additional steps
+are taken by the scheduled lcu update.
 
-Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC Chip")
-Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20201213095850.28169-1-bongsu.jeon@samsung.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/nfc/s3fwrn5/firmware.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/s390/block/dasd_alias.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/nfc/s3fwrn5/firmware.c b/drivers/nfc/s3fwrn5/firmware.c
-index b7828fb252f27..b7d5b12035c1a 100644
---- a/drivers/nfc/s3fwrn5/firmware.c
-+++ b/drivers/nfc/s3fwrn5/firmware.c
-@@ -304,8 +304,10 @@ static int s3fwrn5_fw_request_firmware(struct s3fwrn5_fw_info *fw_info)
- 	if (ret < 0)
- 		return ret;
+--- a/drivers/s390/block/dasd_alias.c
++++ b/drivers/s390/block/dasd_alias.c
+@@ -511,6 +511,14 @@ static int _lcu_update(struct dasd_devic
+ 		return rc;
  
--	if (fw->fw->size < S3FWRN5_FW_IMAGE_HEADER_SIZE)
-+	if (fw->fw->size < S3FWRN5_FW_IMAGE_HEADER_SIZE) {
-+		release_firmware(fw->fw);
- 		return -EINVAL;
-+	}
- 
- 	memcpy(fw->date, fw->fw->data + 0x00, 12);
- 	fw->date[12] = '\0';
--- 
-2.27.0
-
+ 	spin_lock_irqsave(&lcu->lock, flags);
++	/*
++	 * there is another update needed skip the remaining handling
++	 * the data might already be outdated
++	 * but especially do not add the device to an LCU with pending
++	 * update
++	 */
++	if (lcu->flags & NEED_UAC_UPDATE)
++		goto out;
+ 	lcu->pav = NO_PAV;
+ 	for (i = 0; i < MAX_DEVICES_PER_LCU; ++i) {
+ 		switch (lcu->uac->unit[i].ua_type) {
+@@ -529,6 +537,7 @@ static int _lcu_update(struct dasd_devic
+ 				 alias_list) {
+ 		_add_device_to_lcu(lcu, device, refdev);
+ 	}
++out:
+ 	spin_unlock_irqrestore(&lcu->lock, flags);
+ 	return 0;
+ }
 
 
