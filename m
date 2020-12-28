@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1092F2E3DF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77112E3B58
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502611AbgL1OWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:22:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57490 "EHLO mail.kernel.org"
+        id S2406046AbgL1NtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:49:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441433AbgL1OV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:21:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7392E221F0;
-        Mon, 28 Dec 2020 14:21:17 +0000 (UTC)
+        id S2406030AbgL1Ns6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:48:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F2322B47;
+        Mon, 28 Dec 2020 13:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165278;
-        bh=dZn5O+DNoIlyQ7eVyRid+SmugfrjUNdAQX8cUqeS0gM=;
+        s=korg; t=1609163297;
+        bh=bUPiKQLNXtx8/iJR4wmUgEoOef8OQYb4cHYzEMqaWLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZvaIcYdKAfDZg5kwpSO0EX+aT21lZrRct5UA0ByQeYb23plsJ7/tfSUhOxtjHbxAf
-         c5oF9sYsf1J+1Rfnsc8WbTwsp7m96eqrEfiCoPnCL65wnlQQhWWSGb4S57X7nrJW1Q
-         +nn9xovkf6/JdsyrIHqDBzrpS1pYy7GUeX4kyPh4=
+        b=vLjJMaLUeG/j9tJ4j/gmfM9DXVAj7MNLmTl9xYYTEFZVCa9EJ8MhHHKxF19tqqDD4
+         YQG8+lN6WPYZXX8kv5wTRaQe7/pQXAFsKAzwl3Kw8F+N3VmCmAtjrehBhYwQX84M8+
+         RmKA/b0/9Xo/sqAwpHzHEYnw2M6Om+BeqyrmrznA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 445/717] drm/amdgpu: fix regression in vbios reservation handling on headless
+Subject: [PATCH 5.4 207/453] vfio-pci: Use io_remap_pfn_range() for PCI IO memory
 Date:   Mon, 28 Dec 2020 13:47:23 +0100
-Message-Id: <20201228125042.291855184@linuxfoundation.org>
+Message-Id: <20201228124947.177124046@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-[ Upstream commit 7eded018bfeccb365963bb51be731a9f99aeea59 ]
+[ Upstream commit 7b06a56d468b756ad6bb43ac21b11e474ebc54a0 ]
 
-We need to move the check under the non-headless case, otherwise
-we always reserve the VGA save size.
+commit f8f6ae5d077a ("mm: always have io_remap_pfn_range() set
+pgprot_decrypted()") allows drivers using mmap to put PCI memory mapped
+BAR space into userspace to work correctly on AMD SME systems that default
+to all memory encrypted.
 
-Fixes: 157fe68d74c2ad ("drm/amdgpu: fix size calculation with stolen vga memory")
-Reviewed-by: Guchun Chen <guchun.chen@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Since vfio_pci_mmap_fault() is working with PCI memory mapped BAR space it
+should be calling io_remap_pfn_range() otherwise it will not work on SME
+systems.
+
+Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Acked-by: Peter Xu <peterx@redhat.com>
+Tested-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/vfio/pci/vfio_pci.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c
-index 3e4892b7b7d3c..ff4e226739308 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c
-@@ -494,13 +494,14 @@ void amdgpu_gmc_get_vbios_allocations(struct amdgpu_device *adev)
- 		break;
- 	}
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index 443a35dde7f52..632653cd70e3b 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -1451,8 +1451,8 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
  
--	if (!amdgpu_device_ip_get_ip_block(adev, AMD_IP_BLOCK_TYPE_DCE))
-+	if (!amdgpu_device_ip_get_ip_block(adev, AMD_IP_BLOCK_TYPE_DCE)) {
- 		size = 0;
--	else
-+	} else {
- 		size = amdgpu_gmc_get_vbios_fb_size(adev);
+ 	mutex_unlock(&vdev->vma_lock);
  
--	if (adev->mman.keep_stolen_vga_memory)
--		size = max(size, (unsigned)AMDGPU_VBIOS_VGA_ALLOCATION);
-+		if (adev->mman.keep_stolen_vga_memory)
-+			size = max(size, (unsigned)AMDGPU_VBIOS_VGA_ALLOCATION);
-+	}
+-	if (remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
+-			    vma->vm_end - vma->vm_start, vma->vm_page_prot))
++	if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
++			       vma->vm_end - vma->vm_start, vma->vm_page_prot))
+ 		ret = VM_FAULT_SIGBUS;
  
- 	/* set to 0 if the pre-OS buffer uses up most of vram */
- 	if ((adev->gmc.real_vram_size - size) < (8 * 1024 * 1024))
+ up_out:
 -- 
 2.27.0
 
