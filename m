@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5688F2E63E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A472E3B3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408214AbgL1Pnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:43:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48342 "EHLO mail.kernel.org"
+        id S2405720AbgL1Nrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:47:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405578AbgL1NrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:47:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A0C522583;
-        Mon, 28 Dec 2020 13:46:35 +0000 (UTC)
+        id S2405589AbgL1NrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:47:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 537AD22AAA;
+        Mon, 28 Dec 2020 13:46:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163195;
-        bh=JishJXtSAgNUndNRE53CIabyi2ypFsIQnjCcnhMrjoE=;
+        s=korg; t=1609163199;
+        bh=b4HI2o2L0UGgvI4NCxWbGluFCSpvWLmEED1AhU6H+18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rqZh97bquvxuor8RmADVKvXH2Szwfuli/6GTRnpFHmGfme9g9gzN+OFMvKSVX+iC8
-         0bQTwlSiHdhC4Ess1csv/DZMD3lxRyq0krgmVXs28EQBDkxrG/IIyPpn4+2B4f42Lk
-         3siU26grQnFw7mBpivGw36mPh+XIUGlFhyvCbdAU=
+        b=jecoy7HJxnuO3hq40rClqwn1AUWXExnNmtRmp3vsjnU+BnNVLev74Aam6/mG25iqT
+         Mea9iJXfPuPSjQyEViyFCQpkkbk+aZ0uMu3RfrQ0O1D2021475b//MoTwFevf9RP39
+         /XtqK8o1c37r9VL2ICfe9IraEZYADkyApLrFV0tc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, "Daniel T. Lee" <danieltimlee@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 173/453] platform/x86: mlx-platform: Remove PSU EEPROM from MSN274x platform configuration
-Date:   Mon, 28 Dec 2020 13:46:49 +0100
-Message-Id: <20201228124945.522748506@linuxfoundation.org>
+Subject: [PATCH 5.4 174/453] samples: bpf: Fix lwt_len_hist reusing previous BPF map
+Date:   Mon, 28 Dec 2020 13:46:50 +0100
+Message-Id: <20201228124945.571481645@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -40,53 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Pasternak <vadimp@nvidia.com>
+From: Daniel T. Lee <danieltimlee@gmail.com>
 
-[ Upstream commit 912b341585e302ee44fc5a2733f7bcf505e2c86f ]
+[ Upstream commit 0afe0a998c40085a6342e1aeb4c510cccba46caf ]
 
-Remove PSU EEPROM configuration for systems class equipped with
-Mellanox chip Spectrum and ATOM CPU - system types MSN274x. Till now
-all the systems from this class used few types of power units, all
-equipped with EEPROM device with address space two bytes. Thus, all
-these devices have been handled by EEPROM driver "24c02".
+Currently, lwt_len_hist's map lwt_len_hist_map is uses pinning, and the
+map isn't cleared on test end. This leds to reuse of that map for
+each test, which prevents the results of the test from being accurate.
 
-There is a new requirement is to support power unit replacement by "off
-the shelf" device, matching electrical required parameters. Such device
-can be equipped with different EEPROM type, which could be one byte
-address space addressing or even could be not equipped with EEPROM.
-In such case "24c02" will not work.
+This commit fixes the problem by removing of pinned map from bpffs.
+Also, this commit add the executable permission to shell script
+files.
 
-Fixes: ef08e14a3 ("platform/x86: mlx-platform: Add support for new msn274x system type")
-Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
-Link: https://lore.kernel.org/r/20201125101056.174708-3-vadimp@nvidia.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: f74599f7c5309 ("bpf: Add tests and samples for LWT-BPF")
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20201124090310.24374-7-danieltimlee@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/mlx-platform.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ samples/bpf/lwt_len_hist.sh | 2 ++
+ samples/bpf/test_lwt_bpf.sh | 0
+ 2 files changed, 2 insertions(+)
+ mode change 100644 => 100755 samples/bpf/lwt_len_hist.sh
+ mode change 100644 => 100755 samples/bpf/test_lwt_bpf.sh
 
-diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
-index bd57d3bbaa432..4b3d94c4a939a 100644
---- a/drivers/platform/x86/mlx-platform.c
-+++ b/drivers/platform/x86/mlx-platform.c
-@@ -442,15 +442,13 @@ static struct mlxreg_core_data mlxplat_mlxcpld_msn274x_psu_items_data[] = {
- 		.label = "psu1",
- 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
- 		.mask = BIT(0),
--		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[0],
--		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
-+		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
- 	},
- 	{
- 		.label = "psu2",
- 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
- 		.mask = BIT(1),
--		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[1],
--		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
-+		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
- 	},
- };
+diff --git a/samples/bpf/lwt_len_hist.sh b/samples/bpf/lwt_len_hist.sh
+old mode 100644
+new mode 100755
+index 090b96eaf7f76..0eda9754f50b8
+--- a/samples/bpf/lwt_len_hist.sh
++++ b/samples/bpf/lwt_len_hist.sh
+@@ -8,6 +8,8 @@ VETH1=tst_lwt1b
+ TRACE_ROOT=/sys/kernel/debug/tracing
  
+ function cleanup {
++	# To reset saved histogram, remove pinned map
++	rm /sys/fs/bpf/tc/globals/lwt_len_hist_map
+ 	ip route del 192.168.253.2/32 dev $VETH0 2> /dev/null
+ 	ip link del $VETH0 2> /dev/null
+ 	ip link del $VETH1 2> /dev/null
+diff --git a/samples/bpf/test_lwt_bpf.sh b/samples/bpf/test_lwt_bpf.sh
+old mode 100644
+new mode 100755
 -- 
 2.27.0
 
