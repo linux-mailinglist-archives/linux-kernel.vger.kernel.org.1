@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E272E63D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 370D62E4043
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405872AbgL1PnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:43:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48084 "EHLO mail.kernel.org"
+        id S2502151AbgL1OUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:20:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405462AbgL1Nq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:46:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C11352063A;
-        Mon, 28 Dec 2020 13:46:14 +0000 (UTC)
+        id S2408006AbgL1OUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:20:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C9A8224D2;
+        Mon, 28 Dec 2020 14:19:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163175;
-        bh=5RIt5RhyZaOy70yDIRpjwA5lyk2dWHvBE7htwUHnNJ8=;
+        s=korg; t=1609165164;
+        bh=dsO4pAir/3Nd1Q/udkQLs/3ftxCvTKnhFW5oc9/Dqu4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gVftEQSLxpmCgGCz/PAI9hDgS4mA7n5DFoQt+/hfxhCegJPC4a95rFx+2DpG429jK
-         aLg5ylf3akLLDeV/j+Y3xkUqLkReruD67bHpMuFnUdW2f7LgcGOJUaQ0oJADnueYAn
-         jQR62m3aRTa8MsWb9hdeJb3azIOyrnkhVufSkdG8=
+        b=mFIQTk2PDVdLVw1amZERM+PIokfC3txzOIyTXTbFRFSGZqfBv5uAGHWkD3YfKORBg
+         XOYOpjxR6HdUFNOM9iu3IBdK5f0A+Vxc2AQYsEE86wJlByMPLL7pFGGOwRzJRlrATG
+         QcnwUQDX2Ejk6iOnFRKSSAc7BYHU3h4cxtxZEjsk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rakesh Pillai <pillair@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 196/453] ath10k: Fix the parsing error in service available event
+Subject: [PATCH 5.10 434/717] um: Monitor error events in IRQ controller
 Date:   Mon, 28 Dec 2020 13:47:12 +0100
-Message-Id: <20201228124946.645802470@linuxfoundation.org>
+Message-Id: <20201228125041.764461551@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,90 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rakesh Pillai <pillair@codeaurora.org>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-[ Upstream commit c7cee9c0f499f27ec6de06bea664b61320534768 ]
+[ Upstream commit e3a01cbee9c5f2c6fc813dd6af007716e60257e7 ]
 
-The wmi service available event has been
-extended to contain extra 128 bit for new services
-to be indicated by firmware.
+Ensure that file closes, connection closes, etc are propagated
+as interrupts in the interrupt controller.
 
-Currently the presence of any optional TLVs in
-the wmi service available event leads to a parsing
-error with the below error message:
-ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
-
-The wmi service available event parsing should
-not return error for the newly added optional TLV.
-Fix this parsing for service available event message.
-
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00720-QCAHLSWMTPL-1
-
-Fixes: cea19a6ce8bf ("ath10k: add WMI_SERVICE_AVAILABLE_EVENT support")
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1605501291-23040-1-git-send-email-pillair@codeaurora.org
+Fixes: ff6a17989c08 ("Epoll based IRQ controller")
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 4 +++-
- drivers/net/wireless/ath/ath10k/wmi.c     | 9 +++++++--
- drivers/net/wireless/ath/ath10k/wmi.h     | 1 +
- 3 files changed, 11 insertions(+), 3 deletions(-)
+ arch/um/os-Linux/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 9d5b9df29c352..3ec71f52e8fe1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1260,13 +1260,15 @@ static int ath10k_wmi_tlv_svc_avail_parse(struct ath10k *ar, u16 tag, u16 len,
- 
- 	switch (tag) {
- 	case WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT:
-+		arg->service_map_ext_valid = true;
- 		arg->service_map_ext_len = *(__le32 *)ptr;
- 		arg->service_map_ext = ptr + sizeof(__le32);
- 		return 0;
- 	default:
- 		break;
- 	}
--	return -EPROTO;
-+
-+	return 0;
- }
- 
- static int ath10k_wmi_tlv_op_pull_svc_avail(struct ath10k *ar,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 2675174cc4fec..91604a14a8f46 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5659,8 +5659,13 @@ void ath10k_wmi_event_service_available(struct ath10k *ar, struct sk_buff *skb)
- 			    ret);
- 	}
- 
--	ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
--			       __le32_to_cpu(arg.service_map_ext_len));
-+	/*
-+	 * Initialization of "arg.service_map_ext_valid" to ZERO is necessary
-+	 * for the below logic to work.
-+	 */
-+	if (arg.service_map_ext_valid)
-+		ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
-+				       __le32_to_cpu(arg.service_map_ext_len));
- }
- 
- static int ath10k_wmi_event_temperature(struct ath10k *ar, struct sk_buff *skb)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index e80dbe7e8f4cf..761bc4a7064df 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6857,6 +6857,7 @@ struct wmi_svc_rdy_ev_arg {
- };
- 
- struct wmi_svc_avail_ev_arg {
-+	bool service_map_ext_valid;
- 	__le32 service_map_ext_len;
- 	const __le32 *service_map_ext;
- };
+diff --git a/arch/um/os-Linux/irq.c b/arch/um/os-Linux/irq.c
+index d508310ee5e1e..f1732c308c615 100644
+--- a/arch/um/os-Linux/irq.c
++++ b/arch/um/os-Linux/irq.c
+@@ -48,7 +48,7 @@ int os_epoll_triggered(int index, int events)
+ int os_event_mask(int irq_type)
+ {
+ 	if (irq_type == IRQ_READ)
+-		return EPOLLIN | EPOLLPRI;
++		return EPOLLIN | EPOLLPRI | EPOLLERR | EPOLLHUP | EPOLLRDHUP;
+ 	if (irq_type == IRQ_WRITE)
+ 		return EPOLLOUT;
+ 	return 0;
 -- 
 2.27.0
 
