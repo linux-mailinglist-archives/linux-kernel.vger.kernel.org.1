@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF5C2E3B81
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D382E4001
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406428AbgL1Nuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:50:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52576 "EHLO mail.kernel.org"
+        id S2439250AbgL1OX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:23:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406393AbgL1Nup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3ABB22B45;
-        Mon, 28 Dec 2020 13:50:03 +0000 (UTC)
+        id S2502875AbgL1OXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:23:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED6E120791;
+        Mon, 28 Dec 2020 14:23:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163404;
-        bh=HJXWCu/izvTBPjAeF83P24eLZC0teLISiU7P4bEBWw4=;
+        s=korg; t=1609165384;
+        bh=dKFIqJAkreP7x4OwIFF3ICRl8vZM4yI8GJOz+q8JmpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IyEINAKN0FE2Iirlm+efFyCSHD2pCKKX8yyQB0OYCixYaIVxskNw1Wsitm5hdhUHk
-         5aUirW7egfC302zZi60ocd7fnlGRuKXTviMVBU5SzHPuWHI33znEx5oRTmzVY+vaWh
-         A7u4RmBuWP0ba6rRCfswzroVOcxe5+4gBrOqgmmQ=
+        b=VGKBdZtvTAHf5g0Qqb/997Rs8zyrDcpDHXvAxmhn4foxBZ3vtn8dQFyJUW6FontRU
+         vVallKgODw9tDq7ZxBEiaTCmeKQkDbciMX8SkdmmYI/xgyUVGI4WQB/K5aNqZjBusT
+         L2PTCkm6LoZ7P3KHJw7dTrE0cK+6jp1LjBebMfAc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Johannes Pointner <johannes.pointner@br-automation.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 243/453] scsi: fnic: Fix error return code in fnic_probe()
+Subject: [PATCH 5.10 481/717] pwm: imx27: Fix overflow for bigger periods
 Date:   Mon, 28 Dec 2020 13:47:59 +0100
-Message-Id: <20201228124948.919360361@linuxfoundation.org>
+Message-Id: <20201228125044.013444789@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Uwe Kleine-König <uwe@kleine-koenig.org>
 
-[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
+[ Upstream commit 1ce65396e6b2386b4fd54f87beff0647a772e1cd ]
 
-Return a negative error code from the error handling case instead of 0 as
-done elsewhere in this function.
+The second parameter of do_div is an u32 and NSEC_PER_SEC * prescale
+overflows this for bigger periods. Assuming the usual pwm input clk rate
+of 66 MHz this happens starting at requested period > 606060 ns.
 
-Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
-Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Splitting the division into two operations doesn't loose any precision.
+It doesn't need to be feared that c / NSEC_PER_SEC doesn't fit into the
+unsigned long variable "duty_cycles" because in this case the assignment
+above to period_cycles would already have been overflowing as
+period >= duty_cycle and then the calculation is moot anyhow.
+
+Fixes: aef1a3799b5c ("pwm: imx27: Fix rounding behavior")
+Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+Tested-by: Johannes Pointner <johannes.pointner@br-automation.com>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/fnic/fnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pwm/pwm-imx27.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
-index 18584ab27c329..3a2618bcce67b 100644
---- a/drivers/scsi/fnic/fnic_main.c
-+++ b/drivers/scsi/fnic/fnic_main.c
-@@ -741,6 +741,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	for (i = 0; i < FNIC_IO_LOCKS; i++)
- 		spin_lock_init(&fnic->io_req_lock[i]);
+diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c
+index c50d453552bd4..86bcafd23e4f6 100644
+--- a/drivers/pwm/pwm-imx27.c
++++ b/drivers/pwm/pwm-imx27.c
+@@ -235,8 +235,9 @@ static int pwm_imx27_apply(struct pwm_chip *chip, struct pwm_device *pwm,
  
-+	err = -ENOMEM;
- 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
- 	if (!fnic->io_req_pool)
- 		goto err_out_free_resources;
+ 	period_cycles /= prescale;
+ 	c = clkrate * state->duty_cycle;
+-	do_div(c, NSEC_PER_SEC * prescale);
++	do_div(c, NSEC_PER_SEC);
+ 	duty_cycles = c;
++	duty_cycles /= prescale;
+ 
+ 	/*
+ 	 * according to imx pwm RM, the real period value should be PERIOD
 -- 
 2.27.0
 
