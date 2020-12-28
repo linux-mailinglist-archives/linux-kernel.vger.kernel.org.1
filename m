@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6A02E3FD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 461772E37FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730773AbgL1Oou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:44:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60678 "EHLO mail.kernel.org"
+        id S1730256AbgL1NDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:03:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503147AbgL1OYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:24:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6FA020731;
-        Mon, 28 Dec 2020 14:24:36 +0000 (UTC)
+        id S1730197AbgL1NDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7EB4224D2;
+        Mon, 28 Dec 2020 13:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165477;
-        bh=TBN0Rupb7x2AMhVcEwary34ZDTbkcSxfptAImk294So=;
+        s=korg; t=1609160555;
+        bh=tPHNLy6ChmPxCDv8jojGpiPaY8KCHrWmaRARlMv547s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gE1IR0X5rIXpkC08wwDJ0eDlSw9axEwHYv5ar2k/sSaKO4vS6MGAEFrUT94cV183Q
-         vngbBhE//EnrKTxdN6LAISXC9GmAYVucCYLClyeoV48pWCaeDvnVhZyU+eqzgjh9i9
-         y4r4vlIGsDRuLXMSyiRgKt8fRZAW7gBh6u/7tlF0=
+        b=XMd0/qyiHSQ3Xaz/QPSXURrutDkij4NahX04Id3COiXqkNz6d8aaYV+/RZpAk29is
+         m8tVqPDetNV/uOYmF/7h9xOQ9u0s1O4c0RhbHVt/u6XFyvQeN7oAZgybZAIetHNIn9
+         BxbqnAeB1Drc2o3XuK+0hr7ib4sCILdTHzh93Kl4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 515/717] media: gspca: Fix memory leak in probe
-Date:   Mon, 28 Dec 2020 13:48:33 +0100
-Message-Id: <20201228125045.636623499@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 061/175] spi: tegra114: fix reference leak in tegra spi ops
+Date:   Mon, 28 Dec 2020 13:48:34 +0100
+Message-Id: <20201228124856.213790632@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-commit e469d0b09a19496e1972a20974bbf55b728151eb upstream.
+[ Upstream commit a042184c7fb99961ea083d4ec192614bec671969 ]
 
-The gspca driver leaks memory when a probe fails.  gspca_dev_probe2()
-calls v4l2_device_register(), which takes a reference to the
-underlying device node (in this case, a USB interface).  But the
-failure pathway neglects to call v4l2_device_unregister(), the routine
-responsible for dropping this reference.  Consequently the memory for
-the USB interface and its device never gets released.
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to pm_runtime_put_noidle will result in
+reference leak in two callers(tegra_spi_setup and
+tegra_spi_resume), so we should fix it.
 
-This patch adds the missing function call.
-
-Reported-and-tested-by: syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
-
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: f333a331adfac ("spi/tegra114: add spi driver")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201103141306.5607-1-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/gspca.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-tegra114.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/media/usb/gspca/gspca.c
-+++ b/drivers/media/usb/gspca/gspca.c
-@@ -1575,6 +1575,7 @@ out:
- 		input_unregister_device(gspca_dev->input_dev);
- #endif
- 	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
-+	v4l2_device_unregister(&gspca_dev->v4l2_dev);
- 	kfree(gspca_dev->usb_buf);
- 	kfree(gspca_dev);
- 	return ret;
+diff --git a/drivers/spi/spi-tegra114.c b/drivers/spi/spi-tegra114.c
+index e37712bed0b2d..d1ca8f619b828 100644
+--- a/drivers/spi/spi-tegra114.c
++++ b/drivers/spi/spi-tegra114.c
+@@ -801,6 +801,7 @@ static int tegra_spi_setup(struct spi_device *spi)
+ 
+ 	ret = pm_runtime_get_sync(tspi->dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(tspi->dev);
+ 		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
+ 		return ret;
+ 	}
+@@ -1214,6 +1215,7 @@ static int tegra_spi_resume(struct device *dev)
+ 
+ 	ret = pm_runtime_get_sync(dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(dev);
+ 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
+ 		return ret;
+ 	}
+-- 
+2.27.0
+
 
 
