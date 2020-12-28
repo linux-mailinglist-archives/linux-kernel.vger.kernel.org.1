@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6023E2E3E4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CE02E39F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503839AbgL1O0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:26:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
+        id S2390422AbgL1Nag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:30:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503810AbgL1O03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:26:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8895322B2C;
-        Mon, 28 Dec 2020 14:26:13 +0000 (UTC)
+        id S2390410AbgL1Nad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:30:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87A0821D94;
+        Mon, 28 Dec 2020 13:30:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165574;
-        bh=AKnz6m8x89h9wAhRc4txYXMGEUPM4bXyTYHoqBlQJ/E=;
+        s=korg; t=1609162218;
+        bh=ALpvGakY8ZaPmf8tfK+hMeAlxu/pGB+/TwCGdvzls+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q48QpJ2fzORn5zNp52xQXUgtNohPOnMSn0KOkk36G/uSJTAsmPr5D82FSc5DYl+He
-         KJX25Eo9FdjRsotPELxfOZAjf1NLS3vPr9egsFFblnV7v36NxGzbL9wOnuje07gKGX
-         iAhIM51GMtu8BLXW9/5F1TvGI3UsFljj9Zc5eM5Y=
+        b=Af73H4Zhwh62bIIWc+B2qM9i91pKWbYkDBQUTTMhlTGzx1Vsz5AX3fk7JKnb+s2O5
+         PEYIPPzAsnI8mS0NBZT6p55rBy0r31t5CHv6KtE7a4h8+kStFhB1VSu39lYnUPsqkh
+         Glz6n76FyymI54SUVwLyGMg/u9LkrTqRqdhco7Pg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 549/717] ALSA: usb-audio: Add alias entry for ASUS PRIME TRX40 PRO-S
+        stable@vger.kernel.org,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 228/346] watchdog: sirfsoc: Add missing dependency on HAS_IOMEM
 Date:   Mon, 28 Dec 2020 13:49:07 +0100
-Message-Id: <20201228125047.244418615@linuxfoundation.org>
+Message-Id: <20201228124930.799234843@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,35 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 525d9c57d0eeeb660d9b25e5b2d1c95975e3ba95 upstream.
+[ Upstream commit 8ae2511112d2e18bc7d324b77f965d34083a25a2 ]
 
-ASUS PRIME TRX40 PRO-S mobo with 0b05:1918 needs the same quirk alias
-for another ASUS mobo (0b05:1917) for the proper mixer mapping, etc.
-Add the corresponding entry.
+If HAS_IOMEM is not defined and SIRFSOC_WATCHDOG is enabled,
+the build fails with the following error.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210783
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201221080159.24468-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+drivers/watchdog/sirfsoc_wdt.o: in function `sirfsoc_wdt_probe':
+sirfsoc_wdt.c:(.text+0x112):
+	undefined reference to `devm_platform_ioremap_resource'
 
+Reported-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
+Link: https://lore.kernel.org/r/20201108162550.27660-2-linux@roeck-us.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/card.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/watchdog/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -382,6 +382,9 @@ static const struct usb_audio_device_nam
- 	/* ASUS ROG Strix */
- 	PROFILE_NAME(0x0b05, 0x1917,
- 		     "Realtek", "ALC1220-VB-DT", "Realtek-ALC1220-VB-Desktop"),
-+	/* ASUS PRIME TRX40 PRO-S */
-+	PROFILE_NAME(0x0b05, 0x1918,
-+		     "Realtek", "ALC1220-VB-DT", "Realtek-ALC1220-VB-Desktop"),
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index 709d4de11f40f..9feeb8e82d500 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -651,6 +651,7 @@ config MOXART_WDT
  
- 	/* Dell WD15 Dock */
- 	PROFILE_NAME(0x0bda, 0x4014, "Dell", "WD15 Dock", "Dell-WD15-Dock"),
+ config SIRFSOC_WATCHDOG
+ 	tristate "SiRFSOC watchdog"
++	depends on HAS_IOMEM
+ 	depends on ARCH_SIRF || COMPILE_TEST
+ 	select WATCHDOG_CORE
+ 	default y
+-- 
+2.27.0
+
 
 
