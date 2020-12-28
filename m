@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06DC2E64EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8DE2E391F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393150AbgL1Pye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:54:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
+        id S1733026AbgL1NTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:19:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390806AbgL1Ngu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:36:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09BF2205CB;
-        Mon, 28 Dec 2020 13:36:34 +0000 (UTC)
+        id S1732454AbgL1NTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:19:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD32C206ED;
+        Mon, 28 Dec 2020 13:18:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162595;
-        bh=vZR1R8UKoQOzWQgxP0/r17nEVW9uP8nzLqLLRezA7Eo=;
+        s=korg; t=1609161538;
+        bh=fxEV+T+67ehhJY5BiibI8qpWzIOYTjkTKEPR5YQIsx8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IZ+pmpUtWqbvbz1TyFtD47DpvPlWRTBTZJncvNorZcqpHbi+Xsw10ASE0Yn6stERe
-         YyeOmKshllz2e2Z58bgupmvjPznzDTJ8a2donrfs7SidACc4v0EwmfZQiuXLQdMzQk
-         0X//q7+F9N3bMhOGAdQeApBAso1a294h/sRJhlZ4=
+        b=cXNeh5E5WBqesT2Q7mWrYD5g+XOgZD6gS29eiujox16CyHBSpGRSTN1QI6VK96zQm
+         1A9DSPzrSD2x5JVlJMdYwr0Ia8L8GaZcYTS+Kf3xME5C4wjiIHPsJB4UebOHLSkxiK
+         IA/s9ga4FkZII5bL+Av2Sj2z2nfB6KtQoDLLv/5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Praveenkumar I <ipkumar@codeaurora.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.19 325/346] mtd: rawnand: qcom: Fix DMA sync on FLASH_STATUS register read
+        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
+        Michael Kurth <mku@amazon.de>,
+        Pawel Wieczorkiewicz <wipawel@amazon.de>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.14 239/242] xen/xenbus: Count pending messages for each watch
 Date:   Mon, 28 Dec 2020 13:50:44 +0100
-Message-Id: <20201228124935.498565031@linuxfoundation.org>
+Message-Id: <20201228124916.450261118@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Praveenkumar I <ipkumar@codeaurora.org>
+From: SeongJae Park <sjpark@amazon.de>
 
-commit bc3686021122de953858a5be4cbf6e3f1d821e79 upstream.
+commit 3dc86ca6b4c8cfcba9da7996189d1b5a358a94fc upstream.
 
-After each codeword NAND_FLASH_STATUS is read for possible operational
-failures. But there is no DMA sync for CPU operation before reading it
-and this leads to incorrect or older copy of DMA buffer in reg_read_buf.
+This commit adds a counter of pending messages for each watch in the
+struct.  It is used to skip unnecessary pending messages lookup in
+'unregister_xenbus_watch()'.  It could also be used in 'will_handle'
+callback.
 
-This patch adds the DMA sync on reg_read_buf for CPU before reading it.
+This is part of XSA-349
 
-Fixes: 5bc36b2bf6e2 ("mtd: rawnand: qcom: check for operation errors in case of raw read")
 Cc: stable@vger.kernel.org
-Signed-off-by: Praveenkumar I <ipkumar@codeaurora.org>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/1602230872-25616-1-git-send-email-ipkumar@codeaurora.org
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Reported-by: Michael Kurth <mku@amazon.de>
+Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/raw/qcom_nandc.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/xen/xenbus/xenbus_xs.c |   29 ++++++++++++++++++-----------
+ include/xen/xenbus.h           |    2 ++
+ 2 files changed, 20 insertions(+), 11 deletions(-)
 
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1578,6 +1578,8 @@ static int check_flash_errors(struct qco
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	int i;
+--- a/drivers/xen/xenbus/xenbus_xs.c
++++ b/drivers/xen/xenbus/xenbus_xs.c
+@@ -706,6 +706,7 @@ int xs_watch_msg(struct xs_watch_event *
+ 				 event->path, event->token))) {
+ 		spin_lock(&watch_events_lock);
+ 		list_add_tail(&event->list, &watch_events);
++		event->handle->nr_pending++;
+ 		wake_up(&watch_events_waitq);
+ 		spin_unlock(&watch_events_lock);
+ 	} else
+@@ -763,6 +764,8 @@ int register_xenbus_watch(struct xenbus_
  
-+	nandc_read_buffer_sync(nandc, true);
+ 	sprintf(token, "%lX", (long)watch);
+ 
++	watch->nr_pending = 0;
 +
- 	for (i = 0; i < cw_cnt; i++) {
- 		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);
+ 	down_read(&xs_watch_rwsem);
  
+ 	spin_lock(&watches_lock);
+@@ -812,11 +815,14 @@ void unregister_xenbus_watch(struct xenb
+ 
+ 	/* Cancel pending watch events. */
+ 	spin_lock(&watch_events_lock);
+-	list_for_each_entry_safe(event, tmp, &watch_events, list) {
+-		if (event->handle != watch)
+-			continue;
+-		list_del(&event->list);
+-		kfree(event);
++	if (watch->nr_pending) {
++		list_for_each_entry_safe(event, tmp, &watch_events, list) {
++			if (event->handle != watch)
++				continue;
++			list_del(&event->list);
++			kfree(event);
++		}
++		watch->nr_pending = 0;
+ 	}
+ 	spin_unlock(&watch_events_lock);
+ 
+@@ -863,7 +869,6 @@ void xs_suspend_cancel(void)
+ 
+ static int xenwatch_thread(void *unused)
+ {
+-	struct list_head *ent;
+ 	struct xs_watch_event *event;
+ 
+ 	xenwatch_pid = current->pid;
+@@ -878,13 +883,15 @@ static int xenwatch_thread(void *unused)
+ 		mutex_lock(&xenwatch_mutex);
+ 
+ 		spin_lock(&watch_events_lock);
+-		ent = watch_events.next;
+-		if (ent != &watch_events)
+-			list_del(ent);
++		event = list_first_entry_or_null(&watch_events,
++				struct xs_watch_event, list);
++		if (event) {
++			list_del(&event->list);
++			event->handle->nr_pending--;
++		}
+ 		spin_unlock(&watch_events_lock);
+ 
+-		if (ent != &watch_events) {
+-			event = list_entry(ent, struct xs_watch_event, list);
++		if (event) {
+ 			event->handle->callback(event->handle, event->path,
+ 						event->token);
+ 			kfree(event);
+--- a/include/xen/xenbus.h
++++ b/include/xen/xenbus.h
+@@ -59,6 +59,8 @@ struct xenbus_watch
+ 	/* Path being watched. */
+ 	const char *node;
+ 
++	unsigned int nr_pending;
++
+ 	/*
+ 	 * Called just before enqueing new event while a spinlock is held.
+ 	 * The event will be discarded if this callback returns false.
 
 
