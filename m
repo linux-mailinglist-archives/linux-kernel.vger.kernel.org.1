@@ -2,147 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E632E64F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4612E3AA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390609AbgL1Ng0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391400AbgL1NgK (ORCPT
+        id S2391432AbgL1Njj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:39:39 -0500
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:20726 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391394AbgL1Nj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:36:10 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C68C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 05:35:30 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id x20so23848503lfe.12
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 05:35:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lnlocphoctX4r6uKPUYm4iHsqJYYWrO7RnR7sqTcTMQ=;
-        b=DdXN+SIqlIxijQhfqX1KanDmg13RIXZawO+UXnE2GnWP6WUQA7qLK01tybwDacK6iT
-         h9liV046J29RuS5Zo7EOoAUQXF2kmtjRWi7TLj0vlg/kmog2D6lwCNkbM3zfTiw0/Gnt
-         2A7ihf1wx1d8wlrQdJbC9WjqiuVOgoEiAoSPc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lnlocphoctX4r6uKPUYm4iHsqJYYWrO7RnR7sqTcTMQ=;
-        b=ugnli7t9xPL60GrvjXyTHqfxwOTT9Ms3uy3pyTLW1TkeO749p1/Dk1yn4O0KGzNqK7
-         alFHli6EEnMGmMGoIAFKRJ0ONLQ11tq4NRf/3GwnT54B0Pe+VkIsgMobHE7gbpc7mjYv
-         ED6j11So83sgJuQikuVM4nUsG9T1gA8rBdhJDBzKxa4Z+BvFSOr3j/qSHnioIVsz1Sg5
-         6rcpKfkdbg5gWvjZKJ9694/5x8jLio9IY3+Sn/ARxwzT1YLaZAM/WS8ohfanMyB8Yo1+
-         Wu/4XW4rASZWFORGI0m5GDElSPuLfojDhK4GmsxpI6kyzCbstkQu4T/i2sQ1ubfKJxVh
-         n3vg==
-X-Gm-Message-State: AOAM531YXW6UniEDY5+U+8NF2+fU9Fqio+KJwj1iF0EPF+oU2b+wL4fm
-        Dy0XQZ50GEWkoAVGWngMx5RRO7CTx2LZMJRIiF3kWw==
-X-Google-Smtp-Source: ABdhPJyiqupZuDE0Vxp4Jp2VXGNRbz8ArOYKPHzS+2ZWvcmC136bVxjhF83SmGCPsFzZ1cANTCZzpN6YjAEuwCAW2d0=
-X-Received: by 2002:a05:6512:2009:: with SMTP id a9mr18356183lfb.575.1609162526880;
- Mon, 28 Dec 2020 05:35:26 -0800 (PST)
+        Mon, 28 Dec 2020 08:39:26 -0500
+Received: from pps.filterd (m0170393.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BSDbcDO024327
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:38:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=smtpout1; bh=tQR4jRZ/qW4QaiXsR3B6X0bnpzWvfDAF7DkqMpvHFTE=;
+ b=dmL7psTX4D24omgfTn6mVJa+DRX0zWRF2aBrold8uiYoHY4ZHiQf9DQYXsVjkjRCCEeH
+ 4fsRs37I8izNPMjYcKmxlZbFqLGu0PK7b0JX1QRRPwbcjolAAr3uCoW66q/AFp5A1eY6
+ UBCrwcBlMDA7Sd+jmzxBAThoxHn5zmL/5hp58t5CPS0Gu4n2TQ4yBt7LmSSDInR/BmdE
+ RQHUI3Yr8PmqkXR0XqTZbAC8fflhMFZiC8AMz+VmtI2jMDeu2ol/+hVKOAMuVt1ssA+Y
+ PywbJNyW1+WUmAXqwJVx+djhL0eHVjBU0ecI1VGTTWZ4K+0jIVvy9Ndb9fEbtf1JJfCD YA== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 35p1cpcdus-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:38:45 -0500
+Received: from pps.filterd (m0133268.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BSDalx8144978
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:38:45 -0500
+Received: from ausxippc106.us.dell.com ([143.166.85.156])
+        by mx0a-00154901.pphosted.com with ESMTP id 35pkmqmdyw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:38:44 -0500
+X-LoopCount0: from 10.69.132.19
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.60,349,1549951200"; 
+   d="scan'208";a="639372522"
+From:   Perry Yuan <Perry.Yuan@dell.com>
+To:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Perry Yuan <Perry.Yuan@dell.com>,
+        Limonciello Mario <Mario.Limonciello@dell.com>
+Subject: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control support
+Date:   Mon, 28 Dec 2020 21:38:31 +0800
+Message-Id: <20201228133831.17464-1-Perry_Yuan@Dell.com>
+X-Mailer: git-send-email 2.19.2.windows.1
 MIME-Version: 1.0
-References: <20201226163037.43691-1-vitaly.wool@konsulko.com> <CAAhSdy1M5pMjYHNWdOicb3N3fjTfQLEgE8tFb74sqGbPE_9eyQ@mail.gmail.com>
-In-Reply-To: <CAAhSdy1M5pMjYHNWdOicb3N3fjTfQLEgE8tFb74sqGbPE_9eyQ@mail.gmail.com>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Mon, 28 Dec 2020 14:35:16 +0100
-Message-ID: <CAM4kBBJ3Vbytx=dFK7+DMByV3zK=FVLATSwjyuuygkDK1MCQjA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: add BUILTIN_DTB support for MMU-enabled targets
-To:     Anup Patel <anup@brainfault.org>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Bin Meng <bin.meng@windriver.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-28_11:2020-12-24,2020-12-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=955 bulkscore=0
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 priorityscore=1501
+ adultscore=0 suspectscore=0 spamscore=0 impostorscore=0 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012280085
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012280085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 12:59 PM Anup Patel <anup@brainfault.org> wrote:
->
-> On Sat, Dec 26, 2020 at 10:03 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
-> >
-> > Sometimes, especially in a production system we may not want to
-> > use a "smart bootloader" like u-boot to load kernel, ramdisk and
-> > device tree from a filesystem on eMMC, but rather load the kernel
-> > from a NAND partition and just run it as soon as we can, and in
-> > this case it is convenient to have device tree compiled into the
-> > kernel binary. Since this case is not limited to MMU-less systems,
-> > let's support it for these which have MMU enabled too.
-> >
-> > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> > ---
-> >  arch/riscv/Kconfig   |  1 -
-> >  arch/riscv/mm/init.c | 12 ++++++++++--
-> >  2 files changed, 10 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > index 2b41f6d8e458..9464b4e3a71a 100644
-> > --- a/arch/riscv/Kconfig
-> > +++ b/arch/riscv/Kconfig
-> > @@ -419,7 +419,6 @@ endmenu
-> >
-> >  config BUILTIN_DTB
-> >         def_bool n
-> > -       depends on RISCV_M_MODE
-> >         depends on OF
-> >
-> >  menu "Power management options"
-> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > index 87c305c566ac..5d1c7a3ec01c 100644
-> > --- a/arch/riscv/mm/init.c
-> > +++ b/arch/riscv/mm/init.c
-> > @@ -194,12 +194,20 @@ void __init setup_bootmem(void)
-> >         setup_initrd();
-> >  #endif /* CONFIG_BLK_DEV_INITRD */
-> >
-> > +       /*
-> > +        * If DTB is built in, no need to reserve its memblock.
-> > +        * OTOH, initial_boot_params has to be set to properly copy DTB
-> > +        * before unflattening later on.
-> > +        */
-> > +       if (IS_ENABLED(CONFIG_BUILTIN_DTB))
-> > +               initial_boot_params = __va(dtb_early_pa);
->
-> Don't assign initial_boot_params directly here because the
-> early_init_dt_scan() will do it.
+From: Perry Yuan <perry_yuan@dell.com>
 
-early_init_dt_scan will set initial_boot_params to dtb_early_va from
-the early mapping which will be gone by the time
-unflatten_and_copy_device_tree() is called.
+Some new Dell system is going to support audio internal micphone
+privacy setting from hardware level with micmute led state changing
+When micmute hotkey pressed by user, soft mute will need to be enabled
+firstly in case of pop noise, and codec driver need to react to mic
+mute event to EC notifying that SW mute is completed. Then EC will do the
+HW mute physically.
 
-> The setup_vm() is supposed to setup dtb_early_va and dtb_early_pa
-> for MMU-enabled case so please add a "#ifdef" over there for the
-> built-in DTB case.
->
-> > +       else
-> > +               memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
-> > +
-> >         /*
-> >          * Avoid using early_init_fdt_reserve_self() since __pa() does
-> >          * not work for DTB pointers that are fixmap addresses
-> >          */
->
-> This comment needs to be updated and moved along the memblock_reserve()
-> statement.
->
-> > -       memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
-> > -
-> >         early_init_fdt_scan_reserved_mem();
-> >         dma_contiguous_reserve(dma32_phys_limit);
-> >         memblock_allow_resize();
-> > --
-> > 2.29.2
-> >
->
-> This patch should be based upon Damiens builtin DTB patch.
-> Refer, https://www.spinics.net/lists/linux-gpio/msg56616.html
+This patch allow codec rt715 driver to ack EC when micmute key pressed
+through this micphone led control interface like hda_generic provided.
 
-Thanks for the pointer, however I don't think our patches have
-intersections. Besides, Damien is dealing with the MMU-less case
-there.
+Signed-off-by: Perry Yuan <perry_yuan@dell.com>
+Signed-off-by: Limonciello Mario <mario_limonciello@dell.com>
+---
+ sound/soc/codecs/rt715-sdca.c | 19 ++++++++++++++++++-
+ sound/soc/codecs/rt715-sdca.h |  1 +
+ sound/soc/codecs/rt715.c      | 19 ++++++++++++++++++-
+ sound/soc/codecs/rt715.h      |  1 +
+ 4 files changed, 38 insertions(+), 2 deletions(-)
 
-Best regards,
-   Vitaly
+diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
+index b43ac8559e45..e168ef6efcf5 100644
+--- a/sound/soc/codecs/rt715-sdca.c
++++ b/sound/soc/codecs/rt715-sdca.c
+@@ -12,6 +12,7 @@
+ #include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
++#include <linux/leds.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pm.h>
+ #include <linux/soundwire/sdw.h>
+@@ -268,6 +269,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
+ 	unsigned int reg2 = mc->rreg;
+ 	unsigned int reg = mc->reg;
+ 	unsigned int max = mc->max;
++	unsigned int val0, val1;
+ 	int err;
+ 
+ 	val = ucontrol->value.integer.value[0];
+@@ -286,7 +288,22 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
+ 		if (err < 0)
+ 			return err;
+ 	}
+-
++#if IS_ENABLED(CONFIG_DELL_PRIVACY)
++	/* Privacy LED Trigger State Changed by muted/unmute switch */
++	if (mc->invert) {
++		val0 = ucontrol->value.integer.value[0];
++		val1 = ucontrol->value.integer.value[1];
++		if (val0 == 1 && val1 == 1) {
++			rt715->micmute_led = LED_OFF;
++			ledtrig_audio_set(LED_AUDIO_MICMUTE,
++					rt715->micmute_led ? LED_ON : LED_OFF);
++		} else if (val0 == 0 && val1 == 0) {
++			rt715->micmute_led = LED_ON;
++			ledtrig_audio_set(LED_AUDIO_MICMUTE,
++					rt715->micmute_led ? LED_ON : LED_OFF);
++		}
++	}
++#endif
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/rt715-sdca.h b/sound/soc/codecs/rt715-sdca.h
+index 840c237895dd..2ab8724ae50b 100644
+--- a/sound/soc/codecs/rt715-sdca.h
++++ b/sound/soc/codecs/rt715-sdca.h
+@@ -31,6 +31,7 @@ struct rt715_sdca_priv {
+ 	int l_is_unmute;
+ 	int r_is_unmute;
+ 	int hw_sdw_ver;
++	int micmute_led;
+ };
+ 
+ struct rt715_sdw_stream_data {
+diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
+index cdcba70146da..faa4dee6b39a 100644
+--- a/sound/soc/codecs/rt715.c
++++ b/sound/soc/codecs/rt715.c
+@@ -13,6 +13,7 @@
+ #include <linux/init.h>
+ #include <linux/delay.h>
+ #include <linux/i2c.h>
++#include <linux/leds.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pm.h>
+ #include <linux/soundwire/sdw.h>
+@@ -88,13 +89,29 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol *kcontrol,
+ 		RT715_SET_GAIN_MIX_ADC2_L};
+ 	unsigned int addr_h, addr_l, val_h, val_ll, val_lr;
+ 	unsigned int read_ll, read_rl, i, j, loop_cnt;
++	unsigned int val0, val1;
+ 
+ 	if (strstr(ucontrol->id.name, "Main Capture Switch") ||
+ 		strstr(ucontrol->id.name, "Main Capture Volume"))
+ 		loop_cnt = 4;
+ 	else
+ 		loop_cnt = 1;
+-
++#if IS_ENABLED(CONFIG_DELL_PRIVACY)
++	/*  Privacy micmute led trigger for  muted/unmute switch */
++	if (mc->invert) {
++		val0 = ucontrol->value.integer.value[0];
++		val1 = ucontrol->value.integer.value[1];
++		if (val0 == 1 && val1 == 1) {
++			rt715->micmute_led = LED_OFF;
++			ledtrig_audio_set(LED_AUDIO_MICMUTE,
++					rt715->micmute_led ? LED_ON : LED_OFF);
++		} else if (val0 == 0 && val1 == 0) {
++			rt715->micmute_led = LED_ON;
++			ledtrig_audio_set(LED_AUDIO_MICMUTE,
++					rt715->micmute_led ? LED_ON : LED_OFF);
++		}
++	}
++#endif
+ 	for (j = 0; j < loop_cnt; j++) {
+ 		/* Can't use update bit function, so read the original value first */
+ 		if (loop_cnt == 1) {
+diff --git a/sound/soc/codecs/rt715.h b/sound/soc/codecs/rt715.h
+index 009a8266f606..2d3b5b299514 100644
+--- a/sound/soc/codecs/rt715.h
++++ b/sound/soc/codecs/rt715.h
+@@ -22,6 +22,7 @@ struct rt715_priv {
+ 	struct sdw_bus_params params;
+ 	bool hw_init;
+ 	bool first_hw_init;
++	int micmute_led;
+ };
+ 
+ struct sdw_stream_data {
+-- 
+2.25.1
+
