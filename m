@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF45A2E37A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40432E3E7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728570AbgL1M65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:58:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55242 "EHLO mail.kernel.org"
+        id S2502552AbgL1O2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:28:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729261AbgL1M6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:58:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 676BB22CAE;
-        Mon, 28 Dec 2020 12:58:12 +0000 (UTC)
+        id S2502506AbgL1O2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:28:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 808512063A;
+        Mon, 28 Dec 2020 14:27:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160293;
-        bh=HKVBM16avOEKdjz+NaHmxjroT+xlNi3GmgGkoe+Jq/U=;
+        s=korg; t=1609165679;
+        bh=HGMd/h8nbLcP8Sto8/VobMHZGzRZ2knmuCq3giUb4Cg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RdpromRSsx1fljgW4030DYt769OZVDvRty5uyGJ1GXnSULz9botJdbtJHki6mk9bD
-         d+3cfyDvVCxgqPOs7njfQSMXRGMM5zxiRWVeaAiPmxzy9CrLYOWV/diW0SIKf7iOJN
-         Bv9tUS3UJBRrcOzZuOpm2HpE36/qfkiRs62/eh3w=
+        b=U2qLlFczPzDcUT41O+DU3h+B2yeml3H0V0wQm2wDrKG2Jp2mWWEHjVB10rB02aLax
+         V1XNAE1nO03De9On7cxDZ7cBaTVYLfdNcTATFIxkg9Qk+0octH+83pMBufrilK+THf
+         /0Cujot7znEPfjZ9qDklfrfY56+1n9PYfB07dfZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Bert Vermeulen <bert@biot.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.4 123/132] spi: rb4xx: Dont leak SPI master in probe error path
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 609/717] powerpc/rtas: Fix typo of ibm,open-errinjct in RTAS filter
 Date:   Mon, 28 Dec 2020 13:50:07 +0100
-Message-Id: <20201228124852.360531265@linuxfoundation.org>
+Message-Id: <20201228125050.095419182@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-commit a4729c3506c3eb1a6ca5c0289f4e7cafa4115065 upstream.
+commit f10881a46f8914428110d110140a455c66bdf27b upstream.
 
-If the calls to devm_clk_get(), devm_spi_register_master() or
-clk_prepare_enable() fail on probe of the Mikrotik RB4xx SPI driver,
-the spi_master struct is erroneously not freed.
+Commit bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
+introduced the following error when invoking the errinjct userspace
+tool:
 
-Fix by switching over to the new devm_spi_alloc_master() helper.
+  [root@ltcalpine2-lp5 librtas]# errinjct open
+  [327884.071171] sys_rtas: RTAS call blocked - exploit attempt?
+  [327884.071186] sys_rtas: token=0x26, nargs=0 (called by errinjct)
+  errinjct: Could not open RTAS error injection facility
+  errinjct: librtas: open: Unexpected I/O error
 
-Fixes: 05aec357871f ("spi: Add SPI driver for Mikrotik RB4xx series boards")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.2+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.2+
-Cc: Bert Vermeulen <bert@biot.com>
-Link: https://lore.kernel.org/r/369bf26d71927f60943b1d9d8f51810f00b0237d.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+The entry for ibm,open-errinjct in rtas_filter array has a typo where
+the "j" is omitted in the rtas call name. After fixing this typo the
+errinjct tool functions again as expected.
+
+  [root@ltcalpine2-lp5 linux]# errinjct open
+  RTAS error injection facility open, token = 1
+
+Fixes: bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
+Cc: stable@vger.kernel.org
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201208195434.8289-1-tyreld@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-rb4xx.c |    2 +-
+ arch/powerpc/kernel/rtas.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/spi/spi-rb4xx.c
-+++ b/drivers/spi/spi-rb4xx.c
-@@ -148,7 +148,7 @@ static int rb4xx_spi_probe(struct platfo
- 	if (IS_ERR(spi_base))
- 		return PTR_ERR(spi_base);
- 
--	master = spi_alloc_master(&pdev->dev, sizeof(*rbspi));
-+	master = devm_spi_alloc_master(&pdev->dev, sizeof(*rbspi));
- 	if (!master)
- 		return -ENOMEM;
- 
+--- a/arch/powerpc/kernel/rtas.c
++++ b/arch/powerpc/kernel/rtas.c
+@@ -1030,7 +1030,7 @@ static struct rtas_filter rtas_filters[]
+ 	{ "ibm,display-message", -1, 0, -1, -1, -1 },
+ 	{ "ibm,errinjct", -1, 2, -1, -1, -1, 1024 },
+ 	{ "ibm,close-errinjct", -1, -1, -1, -1, -1 },
+-	{ "ibm,open-errinct", -1, -1, -1, -1, -1 },
++	{ "ibm,open-errinjct", -1, -1, -1, -1, -1 },
+ 	{ "ibm,get-config-addr-info2", -1, -1, -1, -1, -1 },
+ 	{ "ibm,get-dynamic-sensor-state", -1, 1, -1, -1, -1 },
+ 	{ "ibm,get-indices", -1, 2, 3, -1, -1 },
 
 
