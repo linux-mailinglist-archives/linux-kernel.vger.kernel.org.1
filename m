@@ -2,165 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0FD2E6B55
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B96A2E6B46
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728201AbgL1W4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731641AbgL1W4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:56:13 -0500
-Received: from mail.efficios.com ([167.114.26.124]:48196 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729509AbgL1V1Y (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729522AbgL1Vc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 16:27:24 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id DD2AF276346;
-        Mon, 28 Dec 2020 16:26:42 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id bbvVjxmkCU_s; Mon, 28 Dec 2020 16:26:42 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 680D4276524;
-        Mon, 28 Dec 2020 16:26:42 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 680D4276524
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1609190802;
-        bh=z5SadIcR2lzpMzQSq0MlMGX6w4abtftg0yLn7xs5uL0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=APaKQfS/4RtIWzaWOaHYIx5R3o6+lMdlIwnwMvuRpQPipj9Vp5blrwND39rR+isBS
-         si6sR5LIrYQxIyVChB8SzsIXIJhMANi1S1teS4XeCjz7xEY1a/JyedylDqgsP4pQjR
-         NVMmTbwC4A7eYN3McEdVHyAjaancpxsGQFXHYaJlOm/t4D0jIkO9hm+CJVECVz12AJ
-         F4K2OUbbRpRsgnd2ALM5tqH11Nd6ye1S7LIH8C3PnR4reveNmvnbnvNTLaK1WasdWp
-         nT6sVspVjGFMUSzI/+326EQCOivv6yCkn0Tda/qm3O/aASJ47v7WebROPCfSbx+mlR
-         dECQokSZCgHOw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 6zlFCT90YhfK; Mon, 28 Dec 2020 16:26:42 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 53B23276602;
-        Mon, 28 Dec 2020 16:26:42 -0500 (EST)
-Date:   Mon, 28 Dec 2020 16:26:42 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     paulmck <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
-        x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        stable <stable@vger.kernel.org>
-Message-ID: <1378834482.3699.1609190802236.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com>
-References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org> <20201228102537.GG1551@shell.armlinux.org.uk> <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com> <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com> <20201228190852.GI1551@shell.armlinux.org.uk> <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com> <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com> <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com>
-Subject: Re: [RFC please help] membarrier: Rewrite
- sync_core_before_usermode()
+        Mon, 28 Dec 2020 16:32:56 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FB5C061793;
+        Mon, 28 Dec 2020 13:32:16 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id 2so10561840ilg.9;
+        Mon, 28 Dec 2020 13:32:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0mgkEBKIgthZwWHaiaeNu2SDu9707vUBzGfBzMLaV6Y=;
+        b=O/WiIoBhWkr8USQeFOPH6PH2BVd2jaVYBAIFzOYkmx0ONnlsHRjaIk4CUVP6lEGiUg
+         rP8t0I9iFTH2MAfc5MCf20HsHO3+/OLK/8CPUqJIMLArDZsDmFnGZXq87DuCh8mHXDS9
+         4vqT7OCiG7zo4Coc63pJYpaAhTx6rohb3yIiTeAV9dIQAgWl3hsD/0scF4wbkmJtxJmA
+         cAWu98GZK+7+8HA2+N+VgZlXpw//HD5YfUKhuqahPCPuIahVAgNLX5DQX91/4MovR2BD
+         0NA18UaUiY+Vz6AyV0oNpoMhFiO3KItYSEerqtzTNRVnuRs24J24lWnMkajFmvEsXDgp
+         5pgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0mgkEBKIgthZwWHaiaeNu2SDu9707vUBzGfBzMLaV6Y=;
+        b=C79XtdZQFH3izK2vO14SgAmpVbXBToFI+lxOs9bJUZy7aBZaxW6UYmMoQNZw44gJ7P
+         xRWKFmHgBQfUYoEHwHEFZg80jzjtqduWGvs6i3P4TouNEUgIiSODxpjxj8CsyU7NIInd
+         JyMEVWqmhsCHfPF7cuawaHiTNR4Mf4TBBOD2zMK6FI2tyUHSHSwJta/QIbTIzpVjEFuF
+         OL6R63F2gK6HBOe1dWz5nwhOOiliH8zlEuLI5wWvhAyUq1LHlBtF3KC7fE+1MlcVlC5Y
+         m3BXpG4/TQsIoRAja1ARePcfeUOmvqLS34M42P7RMCa27VMVqaFWHuCPN8VK3XyIuBj8
+         e9pQ==
+X-Gm-Message-State: AOAM530wwlfwebve6CgaQpWwCpX1GvypZyVDxPJo1BTskPPIR5ewy+84
+        oiXkmWQ59tDE4hGNNyh5qCCgf1iHJ8/9HQ==
+X-Google-Smtp-Source: ABdhPJzaz0G0X0wJXZF1uo8GTeZwZfzPWHCfWSYQIuJg3ssr/osNzmLj7vgStIksKo3Dtj994NVBIg==
+X-Received: by 2002:a92:6410:: with SMTP id y16mr46130029ilb.126.1609191135309;
+        Mon, 28 Dec 2020 13:32:15 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:f45d:df49:9a4c:4914])
+        by smtp.gmail.com with ESMTPSA id r10sm27671275ilo.34.2020.12.28.13.32.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Dec 2020 13:32:14 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] dt-bindings: net: renesas,etheravb: Add additional clocks
+Date:   Mon, 28 Dec 2020 15:31:17 -0600
+Message-Id: <20201228213121.2331449-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3991 (ZimbraWebClient - FF84 (Linux)/8.8.15_GA_3980)
-Thread-Topic: membarrier: Rewrite sync_core_before_usermode()
-Thread-Index: tIlQLlu+op3Kl5YqWG9aEqEFkV0nuQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Dec 28, 2020, at 4:06 PM, Andy Lutomirski luto@kernel.org wrote:
+The AVB driver assumes there is an external clock, but it could
+be driven by an external clock.  In order to enable a programmable
+clock, it needs to be added to the clocks list and enabled in the
+driver.  Since there currently only one clock, there is no
+clock-names list either.
 
-> On Mon, Dec 28, 2020 at 12:32 PM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
->> ----- On Dec 28, 2020, at 2:44 PM, Andy Lutomirski luto@kernel.org wrote:
->>
->> > On Mon, Dec 28, 2020 at 11:09 AM Russell King - ARM Linux admin
->> > <linux@armlinux.org.uk> wrote:
->> >>
->> >> On Mon, Dec 28, 2020 at 07:29:34PM +0100, Jann Horn wrote:
->> >> > After chatting with rmk about this (but without claiming that any of
->> >> > this is his opinion), based on the manpage, I think membarrier()
->> >> > currently doesn't really claim to be synchronizing caches? It just
->> >> > serializes cores. So arguably if userspace wants to use membarrier()
->> >> > to synchronize code changes, userspace should first do the code
->> >> > change, then flush icache as appropriate for the architecture, and
->> >> > then do the membarrier() to ensure that the old code is unused?
->>
->> ^ exactly, yes.
->>
->> >> >
->> >> > For 32-bit arm, rmk pointed out that that would be the cacheflush()
->> >> > syscall. That might cause you to end up with two IPIs instead of one
->> >> > in total, but we probably don't care _that_ much about extra IPIs on
->> >> > 32-bit arm?
->>
->> This was the original thinking, yes. The cacheflush IPI will flush specific
->> regions of code, and the membarrier IPI issues context synchronizing
->> instructions.
->>
->> Architectures with coherent i/d caches don't need the cacheflush step.
-> 
-> There are different levels of coherency -- VIVT architectures may have
-> differing requirements compared to PIPT, etc.
-> 
-> In any case, I feel like the approach taken by the documentation is
-> fundamentally confusing.  Architectures don't all speak the same
-> language
+Update bindings to add the additional optional clock, and explicitly
+name both of them.
 
-Agreed.
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
+ .../devicetree/bindings/net/renesas,etheravb.yaml     | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-> How about something like:
-
-I dislike the wording "barrier" and the association between "write" and
-"instruction fetch" done in the descriptions below. It leads to think that
-this behaves like a memory barrier, when in fact my understanding of
-a context synchronizing instruction is that it simply flushes internal
-CPU state, which would cause coherency issues if the CPU observes both the
-old and then the new code without having this state flushed.
-
-[ Sorry if I take more time to reply and if my replies are a bit more
-  concise than usual. I'm currently on parental leave, so I have
-  non-maskable interrupts to attend to. ;-) ]
-
-Thanks,
-
-Mathieu
-
-> 
-> The SYNC_CORE operation causes all threads in the caller's address
-> space (including the caller) to execute an architecture-defined
-> barrier operation.  membarrier() will ensure that this barrier is
-> executed at a time such that all data writes done by the calling
-> thread before membarrier() are made visible by the barrier.
-> Additional architecture-dependent cache management operations may be
-> required to use this for JIT code.
-> 
-> x86: SYNC_CORE executes a barrier that will cause subsequent
-> instruction fetches to observe prior writes.  Currently this will be a
-> "serializing" instruction, but, if future improved CPU documentation
-> becomes available and relaxes this requirement, the barrier may
-> change.  The kernel guarantees that writing new or modified
-> instructions to normal memory (and issuing SFENCE if the writes were
-> non-temporal) then doing a membarrier SYNC_CORE operation is
-> sufficient to cause all threads in the caller's address space to
-> execute the new or modified instructions.  This is true regardless of
-> whether or not those instructions are written at the same virtual
-> address from which they are subsequently executed.  No additional
-> cache management is required on x86.
-> 
-> arm: Something about the cache management syscalls.
-> 
-> arm64: Ditto
-> 
-> powerpc: I have no idea.
-
+diff --git a/Documentation/devicetree/bindings/net/renesas,etheravb.yaml b/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
+index 244befb6402a..c1a06510f056 100644
+--- a/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
++++ b/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
+@@ -49,7 +49,16 @@ properties:
+   interrupt-names: true
+ 
+   clocks:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 2
++    items:
++      - description: AVB functional clock
++      - description: Optional TXC reference clock
++
++  clock-names:
++    items:
++      - const: fck
++      - const: txc_refclk
+ 
+   iommus:
+     maxItems: 1
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.25.1
+
