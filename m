@@ -2,143 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637A12E68A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1522D2E68A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633782AbgL1QjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:39:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729523AbgL1Qi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:38:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87E822245C;
-        Mon, 28 Dec 2020 16:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609173498;
-        bh=YV/sRyX1UmvG3GgdJ2m2ftk6FRFQv84QER2+PC7WNP0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UK5kKQ8TFRZmctDcMCpNwJwPKX+GfRJDqejqbHjLqlfEGLwBX3n8bZVw06xsMmJwR
-         JjKvIRcN6I2rcNK9gh7+SV29hg+EgYWBPEJavUuG0h6Ra0F37O29wffn2NdMjKzj/s
-         rh1frW8ZlXyOSbvX9wbPxFjkpT/f6IlwfQrNVs/KNGhUPwS99KMnLHk+0AWVBPx43i
-         pt0Y7fdU1Q25Fn4Un7lOvEIwUHgNTQkdFEjgigz5z9SQ2xtTP3Xlss94yRHSBm4VEm
-         7tAvCyq6ElkWLMiXTcmGas+bUNAxqzmhn6OPA0tKNyqGvqDeg8ZanAQsu+WtK+gAyv
-         i7agiC8kfw8cw==
-Received: by mail-wr1-f51.google.com with SMTP id 91so11780957wrj.7;
-        Mon, 28 Dec 2020 08:38:18 -0800 (PST)
-X-Gm-Message-State: AOAM533koXx012QVX392Fg1pd/efWqvttBqLVkZQ3NNP3q7XS8YXihFV
-        kmkAMuF8V3Q1a0AIyaV6gtEVC+RzdMRR11gYrQ==
-X-Google-Smtp-Source: ABdhPJyH9luqvq7mDBrXfC//wmYqhVyPNCFSGbrh2c9nlDMvIXGLGHRAotR70G+rGeb+bseslPiYL4Rabit/Z+t8IxA=
-X-Received: by 2002:adf:e84c:: with SMTP id d12mr53775611wrn.382.1609173497206;
- Mon, 28 Dec 2020 08:38:17 -0800 (PST)
+        id S2441184AbgL1Qjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:39:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729444AbgL1Qjb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 11:39:31 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5BFC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:38:51 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id a12so25107864lfl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:38:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l6SS1scNjE1vPCP4wCk2BIZ3zGkp8hqDahwS2HOGBHc=;
+        b=cI8VJXC1C/bDkRCEq7hbWM0zAjKz9rkUJwyt//MfgJsGxs31rPM8LDXwxR7+KO7bZT
+         Sxb4blwNTPzKpjcqaNAiCVXhq2o0SvFVBjbCCU2lVaeH0O4FWkBotHzFUWtDYXUcuwZe
+         tm6SULa0zv72CxkoEwKgqwMYW3JZAKNRWBBIY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l6SS1scNjE1vPCP4wCk2BIZ3zGkp8hqDahwS2HOGBHc=;
+        b=FNWQZiITwZsX/8po/Y9lz6WnrD3iB60DGBtbB0xWMrlsFisTQ9DS5aI8ErsvZ8VIl3
+         qLj88Sc+G1+ragZs/yS4US2mlOTEKKSvUAR1EQNdzfKF7w3MoNWkZZJVeRwT3E2ZP3Bn
+         fIWw2nLGHjPSoB8sq9iG7HTl33aBP1Lys/wla5eO+E7eZjJAJ01H0LVNJwou4k0A3Szl
+         ZZgbHHDY1WydVDurHlMUnNRijejrVxXbh+/PmUrimQSpbdbMC+bqGzCRGxIjs14NO6p4
+         yXoLLg6kVN7PeCs5y2/z5crDY5ACBKQAPqn5Yy2MQ/cvwtqSHlKM8kitE0vk1ggnMBSU
+         LhjA==
+X-Gm-Message-State: AOAM5300G2zIuWbw5H39wWRlOOR2BbmBbsn56pj3sxISZbaiZjrwZxEN
+        zATdhT26KAaKv/meGPkPXVd5l5OwY3VyqwbDsC8ZOg==
+X-Google-Smtp-Source: ABdhPJwz0Fxx9LLj2z88LTe0UC1LHs48miC1FDDtUcODfBZNxv/T65x8UtIsLR6HBrIViAxHgL0KvEm8Cu74BBDBfvw=
+X-Received: by 2002:ac2:5edb:: with SMTP id d27mr18240410lfq.411.1609173529728;
+ Mon, 28 Dec 2020 08:38:49 -0800 (PST)
 MIME-Version: 1.0
-References: <1609144630-14721-1-git-send-email-yongqiang.niu@mediatek.com> <1609144630-14721-8-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1609144630-14721-8-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 29 Dec 2020 00:38:05 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9ObwPwKt6nRc_qSu9JE3WbqeRDEpKObnxsfhENbkT+iw@mail.gmail.com>
-Message-ID: <CAAOTY_9ObwPwKt6nRc_qSu9JE3WbqeRDEpKObnxsfhENbkT+iw@mail.gmail.com>
-Subject: Re: [PATCH v3, 7/8] soc: mediatek: mmsys: Use function call for
- setting mmsys ovl mout register
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201226163037.43691-1-vitaly.wool@konsulko.com>
+ <CAAhSdy1M5pMjYHNWdOicb3N3fjTfQLEgE8tFb74sqGbPE_9eyQ@mail.gmail.com>
+ <CAM4kBBJ3Vbytx=dFK7+DMByV3zK=FVLATSwjyuuygkDK1MCQjA@mail.gmail.com> <CAAhSdy0E8xspb3epBdrTmjg7vSQanG9zwyMY19eeDDL8z=WJFg@mail.gmail.com>
+In-Reply-To: <CAAhSdy0E8xspb3epBdrTmjg7vSQanG9zwyMY19eeDDL8z=WJFg@mail.gmail.com>
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+Date:   Mon, 28 Dec 2020 17:38:38 +0100
+Message-ID: <CAM4kBBJLnrp8XB1OZnv2FEuKdEQuQfDWdgwsV--9mZYB=JmJPQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: add BUILTIN_DTB support for MMU-enabled targets
+To:     Anup Patel <anup@brainfault.org>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Bin Meng <bin.meng@windriver.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On Mon, Dec 28, 2020 at 3:10 PM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Mon, Dec 28, 2020 at 7:05 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+> >
+> > On Mon, Dec 28, 2020 at 12:59 PM Anup Patel <anup@brainfault.org> wrote:
+> > >
+> > > On Sat, Dec 26, 2020 at 10:03 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+> > > >
+> > > > Sometimes, especially in a production system we may not want to
+> > > > use a "smart bootloader" like u-boot to load kernel, ramdisk and
+> > > > device tree from a filesystem on eMMC, but rather load the kernel
+> > > > from a NAND partition and just run it as soon as we can, and in
+> > > > this case it is convenient to have device tree compiled into the
+> > > > kernel binary. Since this case is not limited to MMU-less systems,
+> > > > let's support it for these which have MMU enabled too.
+> > > >
+> > > > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
+> > > > ---
+> > > >  arch/riscv/Kconfig   |  1 -
+> > > >  arch/riscv/mm/init.c | 12 ++++++++++--
+> > > >  2 files changed, 10 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > > > index 2b41f6d8e458..9464b4e3a71a 100644
+> > > > --- a/arch/riscv/Kconfig
+> > > > +++ b/arch/riscv/Kconfig
+> > > > @@ -419,7 +419,6 @@ endmenu
+> > > >
+> > > >  config BUILTIN_DTB
+> > > >         def_bool n
+> > > > -       depends on RISCV_M_MODE
+> > > >         depends on OF
+> > > >
+> > > >  menu "Power management options"
+> > > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > > > index 87c305c566ac..5d1c7a3ec01c 100644
+> > > > --- a/arch/riscv/mm/init.c
+> > > > +++ b/arch/riscv/mm/init.c
+> > > > @@ -194,12 +194,20 @@ void __init setup_bootmem(void)
+> > > >         setup_initrd();
+> > > >  #endif /* CONFIG_BLK_DEV_INITRD */
+> > > >
+> > > > +       /*
+> > > > +        * If DTB is built in, no need to reserve its memblock.
+> > > > +        * OTOH, initial_boot_params has to be set to properly copy DTB
+> > > > +        * before unflattening later on.
+> > > > +        */
+> > > > +       if (IS_ENABLED(CONFIG_BUILTIN_DTB))
+> > > > +               initial_boot_params = __va(dtb_early_pa);
+> > >
+> > > Don't assign initial_boot_params directly here because the
+> > > early_init_dt_scan() will do it.
+> >
+> > early_init_dt_scan will set initial_boot_params to dtb_early_va from
+> > the early mapping which will be gone by the time
+> > unflatten_and_copy_device_tree() is called.
+>
+> That's why we are doing early_init_dt_verify() again for the MMU-enabled
+> case which already takes care of your concern.
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
-=8828=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=884:38=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> Use function call for setting mmsys ovl mout register
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/soc/mediatek/mmsys/mtk-mmsys.c | 20 ++++++++++++++++++++
->  include/linux/soc/mediatek/mtk-mmsys.h |  3 +++
->  2 files changed, 23 insertions(+)
->
-> diff --git a/drivers/soc/mediatek/mmsys/mtk-mmsys.c b/drivers/soc/mediate=
-k/mmsys/mtk-mmsys.c
-> index dae665b..ea36a11 100644
-> --- a/drivers/soc/mediatek/mmsys/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mmsys/mtk-mmsys.c
-> @@ -74,6 +74,17 @@ void mtk_mmsys_ddp_connect(struct device *dev,
->                 reg =3D readl_relaxed(mmsys->regs + addr) | value;
->                 writel_relaxed(reg, mmsys->regs + addr);
->         }
-> +
-> +       if (!funcs->ovl_mout_en)
-> +               return;
-> +
-> +       if (funcs->ovl_mout_en) {
-> +               value =3D funcs->ovl_mout_en(cur, next, &addr);
-> +               if (value) {
-> +                       reg =3D readl_relaxed(mmsys->regs + addr) | value=
-;
-> +                       writel_relaxed(reg, mmsys->regs + addr);
-> +               }
-> +       }
+I might be out in the woods here but... Do you mean the call to
+early_init_dt_verify() in setup_arch() which is compiled out
+completely in the CONFIG_BUILTIN_DTB case?
+Or is there any other call that I'm overlooking?
 
-mtk_mmsys_ddp_mout_en() could write register inside it rather than
-return value and write register in mtk_mmsys_ddp_connect(). So you
-could do ovl_mout_en() in mtk_mmsys_ddp_mout_en().
+Best regards,
+   Vitaly
 
-Regards,
-Chun-Kuang.
-
->  }
->  EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_connect);
+> We use early_init_dt_verify() like most architectures to set the initial DTB.
 >
-> @@ -99,6 +110,15 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
->                 reg =3D readl_relaxed(mmsys->regs + addr) & ~value;
->                 writel_relaxed(reg, mmsys->regs + addr);
->         }
-> +
-> +       if (!funcs->ovl_mout_en)
-> +               return;
-> +
-> +       value =3D funcs->ovl_mout_en(cur, next, &addr);
-> +       if (value) {
-> +               reg =3D readl_relaxed(mmsys->regs + addr) & ~value;
-> +               writel_relaxed(reg, mmsys->regs + addr);
-> +       }
->  }
->  EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_disconnect);
+> >
+> > > The setup_vm() is supposed to setup dtb_early_va and dtb_early_pa
+> > > for MMU-enabled case so please add a "#ifdef" over there for the
+> > > built-in DTB case.
+> > >
+> > > > +       else
+> > > > +               memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+> > > > +
+> > > >         /*
+> > > >          * Avoid using early_init_fdt_reserve_self() since __pa() does
+> > > >          * not work for DTB pointers that are fixmap addresses
+> > > >          */
+> > >
+> > > This comment needs to be updated and moved along the memblock_reserve()
+> > > statement.
+> > >
+> > > > -       memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+> > > > -
+> > > >         early_init_fdt_scan_reserved_mem();
+> > > >         dma_contiguous_reserve(dma32_phys_limit);
+> > > >         memblock_allow_resize();
+> > > > --
+> > > > 2.29.2
+> > > >
+> > >
+> > > This patch should be based upon Damiens builtin DTB patch.
+> > > Refer, https://www.spinics.net/lists/linux-gpio/msg56616.html
+> >
+> > Thanks for the pointer, however I don't think our patches have
+> > intersections. Besides, Damien is dealing with the MMU-less case
+> > there.
 >
-> diff --git a/include/linux/soc/mediatek/mtk-mmsys.h b/include/linux/soc/m=
-ediatek/mtk-mmsys.h
-> index aa4f60e..220203d 100644
-> --- a/include/linux/soc/mediatek/mtk-mmsys.h
-> +++ b/include/linux/soc/mediatek/mtk-mmsys.h
-> @@ -49,6 +49,9 @@ struct mtk_mmsys_conn_funcs {
->         u32 (*mout_en)(enum mtk_ddp_comp_id cur,
->                        enum mtk_ddp_comp_id next,
->                        unsigned int *addr);
-> +       u32 (*ovl_mout_en)(enum mtk_ddp_comp_id cur,
-> +                          enum mtk_ddp_comp_id next,
-> +                          unsigned int *addr);
->         u32 (*sel_in)(enum mtk_ddp_comp_id cur,
->                       enum mtk_ddp_comp_id next,
->                       unsigned int *addr);
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> Damien's patch is also trying to move to use generic BUILTIN_DTB
+> support for the MMU-less case so it is similar work hence the chance
+> of patch conflict.
+>
+> Regards,
+> Anup
