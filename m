@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D1C2E3A60
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0182E3E74
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391169AbgL1Nf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:35:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36214 "EHLO mail.kernel.org"
+        id S2502357AbgL1O2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:28:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389458AbgL1Nfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:35:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46B3A21D94;
-        Mon, 28 Dec 2020 13:35:09 +0000 (UTC)
+        id S2502267AbgL1O2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:28:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B69E20731;
+        Mon, 28 Dec 2020 14:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162509;
-        bh=nZMrMAamCH8fxLv4x7n/eb5SNkknL3x8hgvUN8jEIWo=;
+        s=korg; t=1609165647;
+        bh=tdGdLUZfsF7tFpOXL0/+HJPdzx8bUH55MqPcJijOdC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vVmxu1f3ekA6dFu86AtSsfSXs1sMRD4rnFsgKKZkuLreIUZaXQQyhWiJqM6fz9tKz
-         k+GOpctX8x92+Kz04pxlyp2r89ZLos66MS/cju8hu2hxOwEpDloa7yzgL35aou0gTK
-         jC19mL6ff8GMybPnta9rGKyTJSyvD0x2vxnMik7g=
+        b=J3Ij4Xz9M3EloWeIkbfn1N325A+4dNTL7Fnqw+2nZujW1s/74rlvduscV/eqxgDfQ
+         iyrYrkR5mfQD4mbbuNfJ2mUeyEDLTCweiB5bg2/xhC0TPE1n1aBEr2o5PAEX5QVfOf
+         wh348XKQoJb75Zi8bXRiTpn3zJjAjsp57Rq4owBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.19 283/346] s390/dasd: fix list corruption of pavgroup group list
+        stable@vger.kernel.org, Dan Sneddon <dan.sneddon@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Cristian Birsan <cristian.birsan@microchip.com>
+Subject: [PATCH 5.10 604/717] ARM: dts: at91: sama5d2: fix CAN message ram offset and size
 Date:   Mon, 28 Dec 2020 13:50:02 +0100
-Message-Id: <20201228124933.460267821@linuxfoundation.org>
+Message-Id: <20201228125049.845682248@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-commit 0ede91f83aa335da1c3ec68eb0f9e228f269f6d8 upstream.
+commit 85b8350ae99d1300eb6dc072459246c2649a8e50 upstream.
 
-dasd_alias_add_device() moves devices to the active_devices list in case
-of a scheduled LCU update regardless if they have previously been in a
-pavgroup or not.
+CAN0 and CAN1 instances share the same message ram configured
+at 0x210000 on sama5d2 Linux systems.
+According to current configuration of CAN0, we need 0x1c00 bytes
+so that the CAN1 don't overlap its message ram:
+64 x RX FIFO0 elements => 64 x 72 bytes
+32 x TXE (TX Event FIFO) elements => 32 x 8 bytes
+32 x TXB (TX Buffer) elements => 32 x 72 bytes
+So a total of 7168 bytes (0x1C00).
 
-Example: device A and B are in the same pavgroup.
+Fix offset to match this needed size.
+Make the CAN0 message ram ioremap match exactly this size so that is
+easily understandable.  Adapt CAN1 size accordingly.
 
-Device A has already been in a pavgroup and the private->pavgroup pointer
-is set and points to a valid pavgroup. While going through dasd_add_device
-it is moved from the pavgroup to the active_devices list.
-
-In parallel device B might be removed from the same pavgroup in
-remove_device_from_lcu() which in turn checks if the group is empty
-and deletes it accordingly because device A has already been removed from
-there.
-
-When now device A enters remove_device_from_lcu() it is tried to remove it
-from the pavgroup again because the pavgroup pointer is still set and again
-the empty group will be cleaned up which leads to a list corruption.
-
-Fix by setting private->pavgroup to NULL in dasd_add_device.
-
-If the device has been the last device on the pavgroup an empty pavgroup
-remains but this will be cleaned up by the scheduled lcu_update which
-iterates over all existing pavgroups.
-
-Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: bc6d5d7666b7 ("ARM: dts: at91: sama5d2: add m_can nodes")
+Reported-by: Dan Sneddon <dan.sneddon@microchip.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Tested-by: Cristian Birsan <cristian.birsan@microchip.com>
+Cc: stable@vger.kernel.org # v4.13+
+Link: https://lore.kernel.org/r/20201203091949.9015-1-nicolas.ferre@microchip.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/block/dasd_alias.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/sama5d2.dtsi |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/s390/block/dasd_alias.c
-+++ b/drivers/s390/block/dasd_alias.c
-@@ -642,6 +642,7 @@ int dasd_alias_add_device(struct dasd_de
- 	}
- 	if (lcu->flags & UPDATE_PENDING) {
- 		list_move(&device->alias_list, &lcu->active_devices);
-+		private->pavgroup = NULL;
- 		_schedule_lcu_update(lcu, device);
- 	}
- 	spin_unlock_irqrestore(&lcu->lock, flags);
+--- a/arch/arm/boot/dts/sama5d2.dtsi
++++ b/arch/arm/boot/dts/sama5d2.dtsi
+@@ -725,7 +725,7 @@
+ 
+ 			can0: can@f8054000 {
+ 				compatible = "bosch,m_can";
+-				reg = <0xf8054000 0x4000>, <0x210000 0x4000>;
++				reg = <0xf8054000 0x4000>, <0x210000 0x1c00>;
+ 				reg-names = "m_can", "message_ram";
+ 				interrupts = <56 IRQ_TYPE_LEVEL_HIGH 7>,
+ 					     <64 IRQ_TYPE_LEVEL_HIGH 7>;
+@@ -1131,7 +1131,7 @@
+ 
+ 			can1: can@fc050000 {
+ 				compatible = "bosch,m_can";
+-				reg = <0xfc050000 0x4000>, <0x210000 0x4000>;
++				reg = <0xfc050000 0x4000>, <0x210000 0x3800>;
+ 				reg-names = "m_can", "message_ram";
+ 				interrupts = <57 IRQ_TYPE_LEVEL_HIGH 7>,
+ 					     <65 IRQ_TYPE_LEVEL_HIGH 7>;
+@@ -1141,7 +1141,7 @@
+ 				assigned-clocks = <&pmc PMC_TYPE_GCK 57>;
+ 				assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_UTMI>;
+ 				assigned-clock-rates = <40000000>;
+-				bosch,mram-cfg = <0x1100 0 0 64 0 0 32 32>;
++				bosch,mram-cfg = <0x1c00 0 0 64 0 0 32 32>;
+ 				status = "disabled";
+ 			};
+ 
 
 
