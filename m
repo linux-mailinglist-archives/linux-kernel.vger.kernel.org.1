@@ -2,72 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984FD2E6B4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F422E6B50
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731491AbgL1W4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:56:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729493AbgL1VJn (ORCPT
+        id S1731508AbgL1W4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:56:10 -0500
+Received: from mail.efficios.com ([167.114.26.124]:40400 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729494AbgL1VKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 16:09:43 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17CBC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 13:09:02 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id t30so12557498wrb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 13:09:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UhuhFwDBpnue8NMFhTCdyQgKIPZtaS0TCc7EAkELyOk=;
-        b=P1mGykHV5DcrKhwSVonNTIWBzaaisO/PBBF2I1RVPmMMHkpkgk+c2tPC36S481bmm1
-         Eke0ftw+b1toxwEZpTC/UrEg6mvwRQ1LvjDGvE00ncnE59Qt9B+S6PMSkaQzPqE0Jion
-         9h9nYq+akcjIshxL++XXnV9rNaOm+Q6SP0YhNpBTBzKYqtz84Bv/rJS9XT2hlslxsXbh
-         NgWIXcMLWuB1UUlZPlnPoANWFJf5qqO+SqymDpr2BX0uP9RGAr7QQM4GOAcY3dyeuGjx
-         yM8Zjck8y81SpngJFbdz8EnCaVEL5lPNhkBEM0WwcwdpxYI1kw0FIy8Z5Ynwq3uQHTBE
-         qiRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UhuhFwDBpnue8NMFhTCdyQgKIPZtaS0TCc7EAkELyOk=;
-        b=lBdWBMtLFPojv1OQNJimZshHFPQss7DaqXJqBOqycLkYPGP31wIng+1MgT40XdoJZK
-         pIt7OmzmM5DYexHjNgbkfrdKaGrq32nDdL6Qg1DuxE2AhqJ4WPNWOh9bNbEkyQqblAE9
-         t8bEjkRaK295VfcO3AMHkavcLPsEEK4oRbhQgKy/cbp7lRz09mNdMgOxTHcI4mZJIrK2
-         eluu+IqMHs22C/greuH9oBZgfQy7IDFg0jfD8q0oj//0L4ynuA6bGk8VL8blXVuh1vsL
-         tsTJ6++OdBf7uNqhcHxXay3MHSz8F1xnNj5O0bBeEiFbPknuDilh/GPV8PYX1T8ksFZZ
-         c6TQ==
-X-Gm-Message-State: AOAM533IxveJGA5R7SeR6Y7uyxvogwo+JFRHZFsOUkvNXiKkohp/yS/N
-        +dNCkwFahaNlvZ73wd4EeGY3+TSFPawuwkKhuNQ=
-X-Google-Smtp-Source: ABdhPJyLQP00+NgkTDvXJDf3P/BaUpBJcpB2dSx1VIzEvgnHs9knkAOD4CEH6S+8KuCruUJJrpWZrxlqTOJFumKpNKw=
-X-Received: by 2002:a5d:6ccb:: with SMTP id c11mr52718987wrc.224.1609189741482;
- Mon, 28 Dec 2020 13:09:01 -0800 (PST)
+        Mon, 28 Dec 2020 16:10:21 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 063922761C7;
+        Mon, 28 Dec 2020 16:09:40 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Xl2HNlqr6BSs; Mon, 28 Dec 2020 16:09:39 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8512E2761C5;
+        Mon, 28 Dec 2020 16:09:39 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8512E2761C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1609189779;
+        bh=A+A/Blx9QD1hoONN5Jxqqa59/BnSFAuRhzOnDZD8md8=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=p/szlAxKXnb8sMCXgDpGdE6is/o1rjODbnzdRovA9owiEjuUPlM3+dte9oFxY/+Hd
+         pvcRHGvBLx8S5o5ANGCMKBwMqzBmFMfuacgLtZuDT1vBtUVUSIdSFMD3lwBW0Mm8Sq
+         XkulYMWharVGPEE76YIKlwesiZMP7dKhpXj/gToE1q4CiEAv+QDgP6f1MTue34+EDL
+         yC7abPFDn6sQU4EVRsjnLUgN48sbY+nRlQq9VYRasErERk2As+18wk5Q0JRbIc/lci
+         ltQp4+4byni+b6Qb7IBjB/By21MOffNXi7Ev/3OOnq+SzZHcRZHXttXzb3ZGlGI4S3
+         +WkZTiCC1H5Hw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id BWu1pC_47JoY; Mon, 28 Dec 2020 16:09:39 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 725FE27640E;
+        Mon, 28 Dec 2020 16:09:39 -0500 (EST)
+Date:   Mon, 28 Dec 2020 16:09:39 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Andy Lutomirski <luto@kernel.org>, paulmck <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Message-ID: <1670059472.3671.1609189779376.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org> <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com> <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite
+ sync_core_before_usermode()
 MIME-Version: 1.0
-References: <1608762196-29871-1-git-send-email-tharvey@gateworks.com>
- <1608762196-29871-2-git-send-email-tharvey@gateworks.com> <CAGngYiXSyNXjxTHBVd13NfjexzZpOZb1dayWDWO7eV19xNr5wg@mail.gmail.com>
- <CAJ+vNU3in8f1zchYj=X3LFY8P6G-_zTeOvCQ1u_rjp8+Bdmicw@mail.gmail.com>
-In-Reply-To: <CAJ+vNU3in8f1zchYj=X3LFY8P6G-_zTeOvCQ1u_rjp8+Bdmicw@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Mon, 28 Dec 2020 16:08:49 -0500
-Message-ID: <CAGngYiXiJq3Xp9fSrs21QcTzOHJC0Yg9OVU+5648_-pVgV5bvg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: imx8mm: Add Gateworks IMX8MM Development Kits
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3991 (ZimbraWebClient - FF84 (Linux)/8.8.15_GA_3980)
+Thread-Topic: membarrier: Rewrite sync_core_before_usermode()
+Thread-Index: UfUbgHPNYlsGbr5X+VxS/QBaGieq4w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 12:55 PM Tim Harvey <tharvey@gateworks.com> wrote:
->
-> I'm happy to test your patches for lan743x.
->
+----- On Dec 27, 2020, at 4:36 PM, Andy Lutomirski luto@kernel.org wrote:
 
-That's awesome ! I'll post them early in the new year, so that test + review can
-happen in parallel.
+[...]
+
+>> You seem to have noticed odd cases on arm64 where this guarantee does not
+>> match reality. Where exactly can we find this in the code, and which part
+>> of the architecture manual can you point us to which supports your concern ?
+>>
+>> Based on the notes I have, use of `eret` on aarch64 guarantees a context
+>> synchronizing
+>> instruction when returning to user-space.
+> 
+> Based on my reading of the manual, ERET on ARM doesn't synchronize
+> anything at all.  I can't find any evidence that it synchronizes data
+> or instructions, and I've seen reports that the CPU will happily
+> speculate right past it.
+
+Reading [1] there appears to be 3 kind of context synchronization events:
+
+- Taking an exception,
+- Returning from an exception,
+- ISB.
+
+This other source [2] adds (search for Context synchronization operation):
+
+- Exit from Debug state
+- Executing a DCPS instruction
+- Executing a DRPS instruction
+
+"ERET" falls into the second kind of events, and AFAIU should be context
+synchronizing. That was confirmed to me by Will Deacon when membarrier
+sync-core was implemented for aarch64. If the architecture reference manuals
+are wrong, is there an errata ?
+
+As for the algorithm to use on ARMv8 to update instructions, see [2]
+B2.3.4  Implication of caches for the application programmer
+"Synchronization and coherency issues between data and instruction accesses"
+
+Membarrier only takes care of making sure the "ISB" part of the algorithm can be
+done easily and efficiently on multiprocessor systems.
+
+Thanks,
+
+Mathieu
+
+[1] https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/ISB-in-more-detail
+[2] https://montcs.bloomu.edu/Information/ARMv8/ARMv8-A_Architecture_Reference_Manual_(Issue_A.a).pdf
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
