@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FF32E3DFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B12082E3E04
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502643AbgL1OWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:22:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
+        id S2502724AbgL1OWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:22:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441686AbgL1OWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D649520731;
-        Mon, 28 Dec 2020 14:21:58 +0000 (UTC)
+        id S2502710AbgL1OWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05FC920791;
+        Mon, 28 Dec 2020 14:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165319;
-        bh=DT+JgyDmWanLqDIAzzZ+1jqPi8DVkBgpjT3FkD4Z/c8=;
+        s=korg; t=1609165322;
+        bh=W2UfboFIBBwVqsbsKmolmBBBDU6+SkyFSE/U0tqttb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SYY/qPjf5qQYwnPY0Bl1qtHc1ITdrfPUwOeRumrVC2bFxTHUK9C1Oyferm+pWXniW
-         1Dx7KKVrYUQ2XgxHU1tkuMvAPSKuOj5qO6Y4bZxd+jplb1QnjL/kza0n6cvIkR8eNX
-         +qJhgG0Q0M9poPSK2yL5dwztKDaDoQgddlLCSb+8=
+        b=ghEiBcV/WGCriMEiVvGLi0E+8nN198cK+De4coqaCPfnLjmGsnciE6/d4zrUBgjMl
+         XKCFYlPzPCUO8Rkz/tgWgEC7ndGtHWORmVxm8vDTBD74eCGklnbMEnyP27UwSnrrT1
+         JssY9f+avlI0cyMvtNyGFm4VvLnyrGpnYJnUWRAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Robert Buhren <robert.buhren@sect.tu-berlin.de>,
-        Felicitas Hetzelt <file@sect.tu-berlin.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 491/717] virtio_ring: Fix two use after free bugs
-Date:   Mon, 28 Dec 2020 13:48:09 +0100
-Message-Id: <20201228125044.489456056@linuxfoundation.org>
+Subject: [PATCH 5.10 492/717] vhost scsi: fix error return code in vhost_scsi_set_endpoint()
+Date:   Mon, 28 Dec 2020 13:48:10 +0100
+Message-Id: <20201228125044.537408192@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -44,62 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit e152d8af4220a05c9797591609151d404866beaa ]
+[ Upstream commit 2e1139d613c7fb0956e82f72a8281c0a475ad4f8 ]
 
-The "vq" struct is added to the "vdev->vqs" list prematurely.  If we
-encounter an error later in the function then the "vq" is freed, but
-since it is still on the list that could lead to a use after free bug.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: cbeedb72b97a ("virtio_ring: allocate desc state for split ring separately")
-Reported-by: Robert Buhren <robert.buhren@sect.tu-berlin.de>
-Reported-by: Felicitas Hetzelt <file@sect.tu-berlin.de>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/X8pGaG/zkI3jk8mk@mwanda
+Fixes: 25b98b64e284 ("vhost scsi: alloc cmds per vq instead of session")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Link: https://lore.kernel.org/r/1607071411-33484-1-git-send-email-zhangchangzhong@huawei.com
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_ring.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/vhost/scsi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 924b6b85376bd..71e16b53e9c18 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1608,7 +1608,6 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	vq->num_added = 0;
- 	vq->packed_ring = true;
- 	vq->use_dma_api = vring_use_dma_api(vdev);
--	list_add_tail(&vq->vq.list, &vdev->vqs);
- #ifdef DEBUG
- 	vq->in_use = false;
- 	vq->last_add_time_valid = false;
-@@ -1669,6 +1668,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 			cpu_to_le16(vq->packed.event_flags_shadow);
- 	}
+diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
+index 6ff8a50966915..4ce9f00ae10e8 100644
+--- a/drivers/vhost/scsi.c
++++ b/drivers/vhost/scsi.c
+@@ -1643,7 +1643,8 @@ vhost_scsi_set_endpoint(struct vhost_scsi *vs,
+ 			if (!vhost_vq_is_setup(vq))
+ 				continue;
  
-+	list_add_tail(&vq->vq.list, &vdev->vqs);
- 	return &vq->vq;
+-			if (vhost_scsi_setup_vq_cmds(vq, vq->num))
++			ret = vhost_scsi_setup_vq_cmds(vq, vq->num);
++			if (ret)
+ 				goto destroy_vq_cmds;
+ 		}
  
- err_desc_extra:
-@@ -2085,7 +2085,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	vq->last_used_idx = 0;
- 	vq->num_added = 0;
- 	vq->use_dma_api = vring_use_dma_api(vdev);
--	list_add_tail(&vq->vq.list, &vdev->vqs);
- #ifdef DEBUG
- 	vq->in_use = false;
- 	vq->last_add_time_valid = false;
-@@ -2127,6 +2126,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	memset(vq->split.desc_state, 0, vring.num *
- 			sizeof(struct vring_desc_state_split));
- 
-+	list_add_tail(&vq->vq.list, &vdev->vqs);
- 	return &vq->vq;
- }
- EXPORT_SYMBOL_GPL(__vring_new_virtqueue);
 -- 
 2.27.0
 
