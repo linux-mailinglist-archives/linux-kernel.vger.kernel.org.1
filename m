@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB0B2E66E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB71A2E67C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732998AbgL1QS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:18:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43694 "EHLO mail.kernel.org"
+        id S1730727AbgL1NHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:07:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732707AbgL1NPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:15:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 600F122C7B;
-        Mon, 28 Dec 2020 13:15:27 +0000 (UTC)
+        id S1730841AbgL1NGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F7FB208BA;
+        Mon, 28 Dec 2020 13:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161327;
-        bh=Pfhr6gtaEmtm4tpojp8fahW8fu5iIc3nUB0qyfR5wYs=;
+        s=korg; t=1609160734;
+        bh=eptr1VOMUZ/Sxd/aF0suxtNHdsUVfmGFUTJTc3GzE6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GgEw6SgO7+akuVoLp6+KX2DvkxyhwDSBEVGypktx1LFpL7qPTE9/f9M2NfgO9KjlW
-         tg0ynhHT/GTTjMl2smXg4Faz/+kNlpnK3MnAnU78i8GRtg+xFQlqNuBOCsMhLaCZ25
-         l6xiLZ4F6bKH1KTo3+6jTB9PP9uHN5m2pJZp3Q5M=
+        b=M/uYxL2/1UHVwn+Gj9Eo+spsZwzSQKAmh1JLxLngkQSH0fxrTXTmD/yPu/16mdap3
+         +yPjdlGufpsJVF6/B8I7VTWYYGMWYn+Xx2qGupjUXNpexNoVXxFDD0c/izu79kCfoq
+         +UyqrM1XlvqT9HsyGx7mTdSRAL5tes5Uy1v88DBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 170/242] clk: ti: Fix memleak in ti_fapll_synth_setup
+Subject: [PATCH 4.9 122/175] net: korina: fix return value
 Date:   Mon, 28 Dec 2020 13:49:35 +0100
-Message-Id: <20201228124913.069387364@linuxfoundation.org>
+Message-Id: <20201228124859.170110953@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Vincent Stehlé <vincent.stehle@laposte.net>
 
-[ Upstream commit 8c6239f6e95f583bb763d0228e02d4dd0fb3d492 ]
+[ Upstream commit 7eb000bdbe7c7da811ef51942b356f6e819b13ba ]
 
-If clk_register fails, we should goto free branch
-before function returns to prevent memleak.
+The ndo_start_xmit() method must not attempt to free the skb to transmit
+when returning NETDEV_TX_BUSY. Therefore, make sure the
+korina_send_packet() function returns NETDEV_TX_OK when it frees a packet.
 
-Fixes: 163152cbbe321 ("clk: ti: Add support for FAPLL on dm816x")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201113131623.2098222-1-zhangqilong3@huawei.com
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201214220952.19935-1-vincent.stehle@laposte.net
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/ti/fapll.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/korina.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/ti/fapll.c b/drivers/clk/ti/fapll.c
-index 071af44b1ba85..e33ce851837e4 100644
---- a/drivers/clk/ti/fapll.c
-+++ b/drivers/clk/ti/fapll.c
-@@ -497,6 +497,7 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
- {
- 	struct clk_init_data *init;
- 	struct fapll_synth *synth;
-+	struct clk *clk = ERR_PTR(-ENOMEM);
+diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+index cd8895838a04c..4cf1fc89df3c6 100644
+--- a/drivers/net/ethernet/korina.c
++++ b/drivers/net/ethernet/korina.c
+@@ -216,7 +216,7 @@ static int korina_send_packet(struct sk_buff *skb, struct net_device *dev)
+ 			dev_kfree_skb_any(skb);
+ 			spin_unlock_irqrestore(&lp->lock, flags);
  
- 	init = kzalloc(sizeof(*init), GFP_KERNEL);
- 	if (!init)
-@@ -519,13 +520,19 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
- 	synth->hw.init = init;
- 	synth->clk_pll = pll_clk;
+-			return NETDEV_TX_BUSY;
++			return NETDEV_TX_OK;
+ 		}
+ 	}
  
--	return clk_register(NULL, &synth->hw);
-+	clk = clk_register(NULL, &synth->hw);
-+	if (IS_ERR(clk)) {
-+		pr_err("failed to register clock\n");
-+		goto free;
-+	}
-+
-+	return clk;
- 
- free:
- 	kfree(synth);
- 	kfree(init);
- 
--	return ERR_PTR(-ENOMEM);
-+	return clk;
- }
- 
- static void __init ti_fapll_setup(struct device_node *node)
 -- 
 2.27.0
 
