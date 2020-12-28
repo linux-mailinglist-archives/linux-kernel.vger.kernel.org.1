@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2FD2E3493
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 07:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AD72E34A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 08:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbgL1GsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 01:48:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgL1GsL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 01:48:11 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140BEC061794;
-        Sun, 27 Dec 2020 22:47:31 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id t16so10495103wra.3;
-        Sun, 27 Dec 2020 22:47:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/UKmRzFqrXr3oBhWBs08I7ckptL5gCh5r4ECFD/wdmE=;
-        b=gesGFLjMF1jc+zUjpW8efQN2E0o2in6H3jBs8+qWtu6Bsh7GYmPoWQ6cr/VdIK0Tvg
-         HELFZFNYCJBR+lh8zbDwqdlMWRdlvaFB+2ZcQkOD3o82sop6RNKflDOSMPe1u46v6kn6
-         y9/fV7yavtjMZDDSsrz+ivZIbKWXoLmeyDTBFExZzh0/gfn3Ss4V8ZnoT/v+NGv+gMtU
-         9LhMQhH2k/PpPkszB+/oBKGBTK0JRz++Gpfb7yVbU33q2pMPSqjKrJJkUaLNZpHZsMN7
-         HhPkh2RFNl3h6nBpzg5SpGFHe9/AbrFCmnpHfXFICPMFDKIjKK94VEkC1iSM7G+aT5Fs
-         fgQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/UKmRzFqrXr3oBhWBs08I7ckptL5gCh5r4ECFD/wdmE=;
-        b=oJo3RLYFQ//uE+JdfTTCZdp2r0jr6B5sijzX4p9e59E4/tvTgGEaJFudpFsdrE+KRS
-         pRX+N7nNLSZX6CqWIXYVgTuyxVB6w0JfdxpIx3azCB/Hj22j0qqUpnFMLXABxLBtp7jn
-         oCKsHw3/nrk/T4OghmPZXwjN94drUgbwf6JMp1lZNtZjAtqvFFpTnuQpWWeBfOxsUnWG
-         FWsPf9bXRqW7fWMZ4dC+9IXUovlqbSde03p0Hsqo/IXNXGI5E2znAiI5OzL3VzFi/0ZY
-         KXpfvd6QvZ7Il07eN/6tar7tK81jw25PoAouT9EvRSgFyz8+D1eRWeCoUaqa1qq1Z3HH
-         EE7w==
-X-Gm-Message-State: AOAM533/3reQo+1TMZy89JXhbbENIvf0uR4zhYCOLZt67LmZFzgDydLO
-        LtjBxVnew8HWkJ7Wp/NDAWU=
-X-Google-Smtp-Source: ABdhPJwks9F5j8NQOuvz2ZNc477KFidIMN1/2amuv4aRqeDjuIhl1C5M/ksA+w3VCpU12hmjgAZV5w==
-X-Received: by 2002:adf:f7d2:: with SMTP id a18mr48941609wrq.47.1609138049806;
-        Sun, 27 Dec 2020 22:47:29 -0800 (PST)
-Received: from localhost.localdomain (188.red-81-44-87.dynamicip.rima-tde.net. [81.44.87.188])
-        by smtp.gmail.com with ESMTPSA id s3sm17107194wmc.44.2020.12.27.22.47.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 27 Dec 2020 22:47:29 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linus.walleij@linaro.org
-Cc:     linux-gpio@vger.kernel.org, gregkh@linuxfoundation.org,
-        yanaijie@huawei.com, neil@brown.name, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] pinctrl: ralink: rt2880: fix '-Wmissing-prototypes' in init function
-Date:   Mon, 28 Dec 2020 07:47:27 +0100
-Message-Id: <20201228064727.30098-1-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726340AbgL1HBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 02:01:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726242AbgL1HBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 02:01:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75015221F0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 07:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609138835;
+        bh=bSXg7RHm7u3Znyw1k3FKLph//gAChgLwpvW706SNkQk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mujrZ4E8fsQE7rQf+NJWYMBhB0JrZAJpcvJT7XkSALJgnPfO3y/oytFww0Qq4hCIE
+         uVfCMSldF1iknEWogQBOkEKrVjY4N3jTZBzHrR9odao6cKN0uSwtkgGuQYJXtZHtA3
+         HBwHXcdz8yj2Cw16INwnpR97Lbgbzbg+YTswTFN8P2Bdas/iv4hJKZCsULOVnt0QXQ
+         g31sYBiO8FZtGBymVLpgAvn7OgC1qW7T5gOECo33gHEaS/nH0QtnPZPXrw1nDxTtn7
+         BhP5pebWpa9J+EoZKF6b5foeKwi+dZhrgLgLJGDq4lqJGTJlZ9qyBbNemGXa5e5Hbc
+         /D4A+umCU+uaw==
+Received: by mail-oi1-f174.google.com with SMTP id 9so10691250oiq.3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 23:00:35 -0800 (PST)
+X-Gm-Message-State: AOAM531lycO+H9G74gNL8bqMoa6a03OzONvS5aEEJ8vtljmAR0Nfv+NT
+        rfrkuBCM6Y0DbkgGfHHYYc9C8325np09Ou6a+Xo=
+X-Google-Smtp-Source: ABdhPJy19H8ee/BWya0jA1dYcrbEw7gnzfamcai0Ywm13COPmfE6738raifgksUZ1VzDbgv2pXel29FZjTMQsyz/Fyw=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr10679587oig.11.1609138834791;
+ Sun, 27 Dec 2020 23:00:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201225114458.1334-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20201225114458.1334-1-thunder.leizhen@huawei.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 28 Dec 2020 08:00:00 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1-zTyd9WoWxaqZ3s1ye44t1CUuZaU0a5w9bE+krk2cBA@mail.gmail.com>
+Message-ID: <CAK8P3a1-zTyd9WoWxaqZ3s1ye44t1CUuZaU0a5w9bE+krk2cBA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ARM: LPAE: use phys_addr_t instead of unsigned long
+ in outercache hooks
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel test robot reported the following warning:
-'warning: no previous prototype for 'rt2880_pinmux_init''.
-This function is the entry point for the platform driver and
-it is private to this driver. Hence declare it 'static' which is
-the correct thing to do fixing also this warning.
+On Fri, Dec 25, 2020 at 12:48 PM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>
+> The outercache of some Hisilicon SOCs support physical addresses wider
+> than 32-bits. The unsigned long datatype is not sufficient for mapping
+> physical addresses >= 4GB. The commit ad6b9c9d78b9 ("ARM: 6671/1: LPAE:
+> use phys_addr_t instead of unsigned long in outercache functions") has
+> already modified the outercache functions. But the parameters of the
+> outercache hooks are not changed. This patch use phys_addr_t instead of
+> unsigned long in outercache hooks: inv_range, clean_range, flush_range.
+>
+> To ensure the outercache that does not support LPAE works properly, do
+> cast phys_addr_t to unsigned long by adding a middle-tier function.
+> For example:
+> -static void l2c220_inv_range(unsigned long start, unsigned long end)
+> +static void __l2c220_inv_range(unsigned long start, unsigned long end)
+>  {
+>         ...
+>  }
+> +static void l2c220_inv_range(phys_addr_t start, phys_addr_t end)
+> +{
+> +  __l2c220_inv_range(start, end);
+> +}
+>
+> Note that the outercache functions have been doing this cast before this
+> patch. So now, the cast is just moved to the middle-tier function.
+>
+> No functional change.
+>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
-Hi Linus, 
+This looks reasonable in principle, but it would be helpful to
+understand better which SoCs are affected. In which way is
+this specific to Hisilicon implementations, and why would others
+not need this?
 
-Just a note to let you know that this patch is rebased on the top of this
-series which are pending to be applied:
-http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2020-December/149353.html
+Wouldn't this also be needed by an Armada XP that supports
+more than 4GB of RAM but has an outer cache?
 
-Thanks in advance for your time!
+I suppose those SoCs using off-the-shelf Arm cores are either
+pre-LPAE and cannot address memory above 4GB, or they do
+not need the outer_cache interfaces.
 
-Best regards,
-    Sergio Paracuellos
+> diff --git a/arch/arm/mm/cache-feroceon-l2.c b/arch/arm/mm/cache-feroceon-l2.c
+> index 5c1b7a7b9af6300..ab1d8051bf832c9 100644
+> --- a/arch/arm/mm/cache-feroceon-l2.c
+> +++ b/arch/arm/mm/cache-feroceon-l2.c
+> @@ -168,7 +168,7 @@ static unsigned long calc_range_end(unsigned long start, unsigned long end)
+>         return range_end;
+>  }
+>
+> -static void feroceon_l2_inv_range(unsigned long start, unsigned long end)
+> +static void __feroceon_l2_inv_range(unsigned long start, unsigned long end)
+>  {
+>         /*
+>          * Clean and invalidate partial first cache line.
+> @@ -198,7 +198,12 @@ static void feroceon_l2_inv_range(unsigned long start, unsigned long end)
+>         dsb();
+>  }
+>
+> -static void feroceon_l2_clean_range(unsigned long start, unsigned long end)
+> +static void feroceon_l2_inv_range(phys_addr_t start, phys_addr_t end)
+> +{
+> +       __feroceon_l2_inv_range(start, end);
+> +}
+> +
 
- drivers/pinctrl/ralink/pinctrl-rt2880.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+What is this indirection for? It looks like you do this for all implementations,
+so the actual address gets truncated here.
 
-diff --git a/drivers/pinctrl/ralink/pinctrl-rt2880.c b/drivers/pinctrl/ralink/pinctrl-rt2880.c
-index 983da62ff3be..1f8e8d5b71fd 100644
---- a/drivers/pinctrl/ralink/pinctrl-rt2880.c
-+++ b/drivers/pinctrl/ralink/pinctrl-rt2880.c
-@@ -361,7 +361,7 @@ static struct platform_driver rt2880_pinmux_driver = {
- 	},
- };
- 
--int __init rt2880_pinmux_init(void)
-+static int __init rt2880_pinmux_init(void)
- {
- 	return platform_driver_register(&rt2880_pinmux_driver);
- }
--- 
-2.25.1
-
+       Arnd
