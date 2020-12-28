@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BA32E665C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D320A2E667F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733039AbgL1NUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:20:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48526 "EHLO mail.kernel.org"
+        id S2394248AbgL1QNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:13:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733002AbgL1NT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:19:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 739C8206ED;
-        Mon, 28 Dec 2020 13:19:17 +0000 (UTC)
+        id S1733098AbgL1NUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:20:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1740E22CAF;
+        Mon, 28 Dec 2020 13:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161558;
-        bh=iQbz3cXD+jdaNPAAQppX6o8MsPGEkblhEFYCIt2uIsw=;
+        s=korg; t=1609161566;
+        bh=SHArwn4atAxNk8iq5AzqpwdcweU1Bdbh6k8khupodYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rL7w6YIHY5HTDklBC8SBkcqYb95GIIwuTfArRCMKcp6LYJNeHeNkIFdvl6VCGYQm5
-         1Y5Xn6Azay/6nDgilolk2EfM+XMOzNkQaLwZWdPtN2YGNx3Q7XZRXq9kV7+fkPXRgA
-         sHGqe+XC1WXaCRmNLSmZBNdpkxmim3i1jmaBEDcw=
+        b=A2Qrphm/Nn8t14ugNbyk62QsqbgU2W0aJ8VDTglalRn9PQ7XvHtry+3O/O6purlnv
+         oUC0KSi+kaeeTvDEHZfMgRZJGSOCVNFiNA+jJ9xy8DhgnI3O7tCNY/CENfv0LChdpS
+         T3gGZ2X9iH49Kfn6Ca/nNPzRneb7lwDDtM2bdHK0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xu Qiang <xuqiang36@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 011/346] irqchip/gic-v3-its: Unconditionally save/restore the ITS state on suspend
-Date:   Mon, 28 Dec 2020 13:45:30 +0100
-Message-Id: <20201228124920.309451207@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 014/346] platform/x86: thinkpad_acpi: Add BAT1 is primary battery quirk for Thinkpad Yoga 11e 4th gen
+Date:   Mon, 28 Dec 2020 13:45:33 +0100
+Message-Id: <20201228124920.457761151@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -39,96 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Qiang <xuqiang36@huawei.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 74cde1a53368aed4f2b4b54bf7030437f64a534b ]
+[ Upstream commit c986a7024916c92a775fc8d853fba3cae1d5fde4 ]
 
-On systems without HW-based collections (i.e. anything except GIC-500),
-we rely on firmware to perform the ITS save/restore. This doesn't
-really work, as although FW can properly save everything, it cannot
-fully restore the state of the command queue (the read-side is reset
-to the head of the queue). This results in the ITS consuming previously
-processed commands, potentially corrupting the state.
+The Thinkpad Yoga 11e 4th gen with the N3450 / Celeron CPU only has
+one battery which is named BAT1 instead of the expected BAT0, add a
+quirk for this. This fixes not being able to set the charging tresholds
+on this model; and this alsoe fixes the following errors in dmesg:
 
-Instead, let's always save the ITS state on suspend, disabling it in the
-process, and restore the full state on resume. This saves us from broken
-FW as long as it doesn't enable the ITS by itself (for which we can't do
-anything).
+ACPI: \_SB_.PCI0.LPCB.EC__.HKEY: BCTG evaluated but flagged as error
+thinkpad_acpi: Error probing battery 2
+battery: extension failed to load: ThinkPad Battery Extension
+battery: extension unregistered: ThinkPad Battery Extension
 
-This amounts to simply dropping the ITS_FLAGS_SAVE_SUSPEND_STATE.
+Note that the added quirk is for the "R0K" BIOS versions which are
+used on the Thinkpad Yoga 11e 4th gen's with a Celeron CPU, there
+is a separate "R0L" BIOS for the i3/i5 based versions. This may also
+need the same quirk, but if that really is necessary is unknown.
 
-Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
-[maz: added warning on resume, rewrote commit message]
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20201107104226.14282-1-xuqiang36@huawei.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20201109103550.16265-1-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-gic-v3-its.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+ drivers/platform/x86/thinkpad_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index d5cc32e80f5e2..cd58c123f547e 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -49,7 +49,6 @@
- #define ITS_FLAGS_CMDQ_NEEDS_FLUSHING		(1ULL << 0)
- #define ITS_FLAGS_WORKAROUND_CAVIUM_22375	(1ULL << 1)
- #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
--#define ITS_FLAGS_SAVE_SUSPEND_STATE		(1ULL << 3)
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 79ac62d8ff7ba..a6e69f2495d23 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -9697,6 +9697,7 @@ static const struct tpacpi_quirk battery_quirk_table[] __initconst = {
+ 	TPACPI_Q_LNV3('R', '0', 'B', true), /* Thinkpad 11e gen 3 */
+ 	TPACPI_Q_LNV3('R', '0', 'C', true), /* Thinkpad 13 */
+ 	TPACPI_Q_LNV3('R', '0', 'J', true), /* Thinkpad 13 gen 2 */
++	TPACPI_Q_LNV3('R', '0', 'K', true), /* Thinkpad 11e gen 4 celeron BIOS */
+ };
  
- #define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
- 
-@@ -3240,9 +3239,6 @@ static int its_save_disable(void)
- 	list_for_each_entry(its, &its_nodes, entry) {
- 		void __iomem *base;
- 
--		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
--			continue;
--
- 		base = its->base;
- 		its->ctlr_save = readl_relaxed(base + GITS_CTLR);
- 		err = its_force_quiescent(base);
-@@ -3261,9 +3257,6 @@ err:
- 		list_for_each_entry_continue_reverse(its, &its_nodes, entry) {
- 			void __iomem *base;
- 
--			if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
--				continue;
--
- 			base = its->base;
- 			writel_relaxed(its->ctlr_save, base + GITS_CTLR);
- 		}
-@@ -3283,9 +3276,6 @@ static void its_restore_enable(void)
- 		void __iomem *base;
- 		int i;
- 
--		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
--			continue;
--
- 		base = its->base;
- 
- 		/*
-@@ -3293,7 +3283,10 @@ static void its_restore_enable(void)
- 		 * don't restore it since writing to CBASER or BASER<n>
- 		 * registers is undefined according to the GIC v3 ITS
- 		 * Specification.
-+		 *
-+		 * Firmware resuming with the ITS enabled is terminally broken.
- 		 */
-+		WARN_ON(readl_relaxed(base + GITS_CTLR) & GITS_CTLR_ENABLE);
- 		ret = its_force_quiescent(base);
- 		if (ret) {
- 			pr_err("ITS@%pa: failed to quiesce on resume: %d\n",
-@@ -3558,9 +3551,6 @@ static int __init its_probe_one(struct resource *res,
- 		ctlr |= GITS_CTLR_ImDe;
- 	writel_relaxed(ctlr, its->base + GITS_CTLR);
- 
--	if (GITS_TYPER_HCC(typer))
--		its->flags |= ITS_FLAGS_SAVE_SUSPEND_STATE;
--
- 	err = its_init_domain(handle, its);
- 	if (err)
- 		goto out_free_tables;
+ static int __init tpacpi_battery_init(struct ibm_init_struct *ibm)
 -- 
 2.27.0
 
