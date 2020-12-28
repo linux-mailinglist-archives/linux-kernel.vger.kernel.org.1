@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D172E3BB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721BF2E380B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391571AbgL1Nx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:53:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55282 "EHLO mail.kernel.org"
+        id S1730452AbgL1NEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:04:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391551AbgL1NxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DE90205CB;
-        Mon, 28 Dec 2020 13:52:42 +0000 (UTC)
+        id S1730410AbgL1NEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:04:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1F07206ED;
+        Mon, 28 Dec 2020 13:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163563;
-        bh=JevaJKgB0OQZVfFrtoZeKjvd2DOI6bStpsdjPtf2Kkk=;
+        s=korg; t=1609160619;
+        bh=cB6GxS2x63pOn/MpzovqZPI8ZneqZuI20R/cGwPS+38=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FTvefcYTq9+m7AVWw/wn5NEicWUChSycBcl/yysZPqqoJFf1WphsPhVykaMwO97XW
-         lGYN81iAzQYivLUqtOJvB7WLNDUCH5zcI6clOk0IF0GqxNya67Pegr0yT3xaV85Fbw
-         M5Wu6y+7FGjphXiu6jE+Qpphv0qPNeGKAs3hoFQQ=
+        b=tEXNBDx0Yq6WgbgndPqIMnBZdtv36dO1cMFIaVqti4hydS9bEP6GJoqDTZFSYg/SE
+         qy9Lx1ZhHIX3Pv6FAkkwFbLwG8IdsCMjav8okgCQewMVPFw3/2gu+1hjC+8vYCWpO+
+         xqHWuVH7aAaGdr2+FOrnxu0WcA9cmWRkjhfdJQOw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.4 329/453] Input: cyapa_gen6 - fix out-of-bounds stack access
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 112/175] clk: tegra: Fix duplicated SE clock entry
 Date:   Mon, 28 Dec 2020 13:49:25 +0100
-Message-Id: <20201228124953.049408937@linuxfoundation.org>
+Message-Id: <20201228124858.683750287@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit f051ae4f6c732c231046945b36234e977f8467c6 upstream.
+[ Upstream commit 5bf5861d6ea6c3f4b38fc8fda2062b2dc44ac63d ]
 
-gcc -Warray-bounds warns about a serious bug in
-cyapa_pip_retrieve_data_structure:
+The periph_clks[] array contains duplicated entry for Security Engine
+clock which was meant to be defined for T210, but it wasn't added
+properly. This patch corrects the T210 SE entry and fixes the following
+error message on T114/T124: "Tegra clk 127: register failed with -17".
 
-drivers/input/mouse/cyapa_gen6.c: In function 'cyapa_pip_retrieve_data_structure.constprop':
-include/linux/unaligned/access_ok.h:40:17: warning: array subscript -1 is outside array bounds of 'struct retrieve_data_struct_cmd[1]' [-Warray-bounds]
-   40 |  *((__le16 *)p) = cpu_to_le16(val);
-drivers/input/mouse/cyapa_gen6.c:569:13: note: while referencing 'cmd'
-  569 |  } __packed cmd;
-      |             ^~~
-
-Apparently the '-2' was added to the pointer instead of the value,
-writing garbage into the stack next to this variable.
-
-Fixes: c2c06c41f700 ("Input: cyapa - add gen6 device module support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20201026161332.3708389-1-arnd@kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: dc37fec48314 ("clk: tegra: periph: Add new periph clks and muxes for Tegra210")
+Tested-by Nicolas Chauvet <kwizart@gmail.com>
+Reported-by Nicolas Chauvet <kwizart@gmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20201025224212.7790-1-digetx@gmail.com
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/mouse/cyapa_gen6.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/tegra/clk-id.h           | 1 +
+ drivers/clk/tegra/clk-tegra-periph.c | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/input/mouse/cyapa_gen6.c
-+++ b/drivers/input/mouse/cyapa_gen6.c
-@@ -573,7 +573,7 @@ static int cyapa_pip_retrieve_data_struc
- 
- 	memset(&cmd, 0, sizeof(cmd));
- 	put_unaligned_le16(PIP_OUTPUT_REPORT_ADDR, &cmd.head.addr);
--	put_unaligned_le16(sizeof(cmd), &cmd.head.length - 2);
-+	put_unaligned_le16(sizeof(cmd) - 2, &cmd.head.length);
- 	cmd.head.report_id = PIP_APP_CMD_REPORT_ID;
- 	cmd.head.cmd_code = PIP_RETRIEVE_DATA_STRUCTURE;
- 	put_unaligned_le16(read_offset, &cmd.read_offset);
+diff --git a/drivers/clk/tegra/clk-id.h b/drivers/clk/tegra/clk-id.h
+index 5738635c52741..9f8397c696e6c 100644
+--- a/drivers/clk/tegra/clk-id.h
++++ b/drivers/clk/tegra/clk-id.h
+@@ -233,6 +233,7 @@ enum clk_id {
+ 	tegra_clk_sdmmc4_8,
+ 	tegra_clk_sdmmc4_9,
+ 	tegra_clk_se,
++	tegra_clk_se_10,
+ 	tegra_clk_soc_therm,
+ 	tegra_clk_soc_therm_8,
+ 	tegra_clk_sor0,
+diff --git a/drivers/clk/tegra/clk-tegra-periph.c b/drivers/clk/tegra/clk-tegra-periph.c
+index d9c1f229c644b..bf88f90e6c438 100644
+--- a/drivers/clk/tegra/clk-tegra-periph.c
++++ b/drivers/clk/tegra/clk-tegra-periph.c
+@@ -648,7 +648,7 @@ static struct tegra_periph_init_data periph_clks[] = {
+ 	INT8("host1x", mux_pllm_pllc2_c_c3_pllp_plla, CLK_SOURCE_HOST1X, 28, 0, tegra_clk_host1x_8),
+ 	INT8("host1x", mux_pllc4_out1_pllc_pllc4_out2_pllp_clkm_plla_pllc4_out0, CLK_SOURCE_HOST1X, 28, 0, tegra_clk_host1x_9),
+ 	INT8("se", mux_pllp_pllc2_c_c3_pllm_clkm, CLK_SOURCE_SE, 127, TEGRA_PERIPH_ON_APB, tegra_clk_se),
+-	INT8("se", mux_pllp_pllc2_c_c3_clkm, CLK_SOURCE_SE, 127, TEGRA_PERIPH_ON_APB, tegra_clk_se),
++	INT8("se", mux_pllp_pllc2_c_c3_clkm, CLK_SOURCE_SE, 127, TEGRA_PERIPH_ON_APB, tegra_clk_se_10),
+ 	INT8("2d", mux_pllm_pllc2_c_c3_pllp_plla, CLK_SOURCE_2D, 21, 0, tegra_clk_gr2d_8),
+ 	INT8("3d", mux_pllm_pllc2_c_c3_pllp_plla, CLK_SOURCE_3D, 24, 0, tegra_clk_gr3d_8),
+ 	INT8("vic03", mux_pllm_pllc_pllp_plla_pllc2_c3_clkm, CLK_SOURCE_VIC03, 178, 0, tegra_clk_vic03),
+-- 
+2.27.0
+
 
 
