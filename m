@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DBA2E679C
+	by mail.lfdr.de (Postfix) with ESMTP id 358A52E679B
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633432AbgL1Q1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:27:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
+        id S1729659AbgL1Q1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:27:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730942AbgL1NIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:08:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF79A21D94;
-        Mon, 28 Dec 2020 13:08:15 +0000 (UTC)
+        id S1730952AbgL1NIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:08:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC11E2076D;
+        Mon, 28 Dec 2020 13:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160896;
-        bh=ZQx4jiJYSqq0ifLV2fS+ihkyAB+CjY19pTM7Afr80S8=;
+        s=korg; t=1609160902;
+        bh=VKZZq1lAep4ckvFSXWk1nX6K8L/Guxz5MJjcCRsjij8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FFjoX43TD+MDOHaW6R+DYwmIIwNrbMUuP/MIQhm31xOAHy7gfH8vAVuiNKS/KtyJ3
-         ZtzYxLSz0RVmTkXemezp9KeYTjtGCKo3IFu7eE1zu90sbmWtapdE1Qfab3dyjukjk3
-         UTsy1p9u9KSsULsQbTEvchg3lxMjndbzdIrWgRVs=
+        b=wu8ZkdtUtl6/D/fkMjQA8GxHKgzAK1FrhUTLAB7ilCIcxL7pL8oV8n6decuSHliNK
+         9thCBy0kaTTPc/1l9g+HY4HatFgxXWrRHLNB2JFzuAoISorsZcudnooZCUpw8d/mnd
+         K9wFz9FN/eyMGHEjIRE6TO5sK20Y/VVMG9CqHjNw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Winischhofer <thomas@winischhofer.net>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH 4.14 031/242] USB: sisusbvga: Make console support depend on BROKEN
-Date:   Mon, 28 Dec 2020 13:47:16 +0100
-Message-Id: <20201228124906.194088309@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Subject: [PATCH 4.14 033/242] serial: 8250_omap: Avoid FIFO corruption caused by MDR1 access
+Date:   Mon, 28 Dec 2020 13:47:18 +0100
+Message-Id: <20201228124906.292663489@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -40,46 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 
-commit 862ee699fefe1e6d6f2c1518395f0b999b8beb15 upstream.
+commit d96f04d347e4011977abdbb4da5d8f303ebd26f8 upstream.
 
-The console part of sisusbvga is broken vs. printk(). It uses in_atomic()
-to detect contexts in which it cannot sleep despite the big fat comment in
-preempt.h which says: Do not use in_atomic() in driver code.
+It has been observed that once per 300-1300 port openings the first
+transmitted byte is being corrupted on AM3352 ("v" written to FIFO appeared
+as "e" on the wire). It only happened if single byte has been transmitted
+right after port open, which means, DMA is not used for this transfer and
+the corruption never happened afterwards.
 
-in_atomic() does not work on kernels with CONFIG_PREEMPT_COUNT=n which
-means that spin/rw_lock held regions are not detected by it.
+Therefore I've carefully re-read the MDR1 errata (link below), which says
+"when accessing the MDR1 registers that causes a dummy under-run condition
+that will freeze the UART in IrDA transmission. In UART mode, this may
+corrupt the transferred data". Strictly speaking,
+omap_8250_mdr1_errataset() performs a read access and if the value is the
+same as should be written, exits without errata-recommended FIFO reset.
 
-There is no way to make this work by handing context information through to
-the driver and this only can be solved once the core printk infrastructure
-supports sleepable console drivers.
+A brief check of the serial_omap_mdr1_errataset() from the competing
+omap-serial driver showed it has no read access of MDR1. After removing the
+read access from omap_8250_mdr1_errataset() the data corruption never
+happened any more.
 
-Make it depend on BROKEN for now.
-
-Fixes: 1bbb4f2035d9 ("[PATCH] USB: sisusb[vga] update")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Thomas Winischhofer <thomas@winischhofer.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org
+Link: https://www.ti.com/lit/er/sprz360i/sprz360i.pdf
+Fixes: 61929cf0169d ("tty: serial: Add 8250-core based omap driver")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201019101109.603244207@linutronix.de
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Link: https://lore.kernel.org/r/20201210055257.1053028-1-alexander.sverdlin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/misc/sisusbvga/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_omap.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/drivers/usb/misc/sisusbvga/Kconfig
-+++ b/drivers/usb/misc/sisusbvga/Kconfig
-@@ -15,7 +15,7 @@ config USB_SISUSBVGA
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -161,11 +161,6 @@ static void omap_8250_mdr1_errataset(str
+ 				     struct omap8250_priv *priv)
+ {
+ 	u8 timeout = 255;
+-	u8 old_mdr1;
+-
+-	old_mdr1 = serial_in(up, UART_OMAP_MDR1);
+-	if (old_mdr1 == priv->mdr1)
+-		return;
  
- config USB_SISUSBVGA_CON
- 	bool "Text console and mode switching support" if USB_SISUSBVGA
--	depends on VT
-+	depends on VT && BROKEN
- 	select FONT_8x16
- 	---help---
- 	  Say Y here if you want a VGA text console via the USB dongle or
+ 	serial_out(up, UART_OMAP_MDR1, priv->mdr1);
+ 	udelay(2);
 
 
