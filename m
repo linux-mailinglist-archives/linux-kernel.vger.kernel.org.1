@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5BD2E671E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4901B2E682B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393643AbgL1QUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:20:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
+        id S1730241AbgL1NDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:03:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732398AbgL1NOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:14:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDC4B22B3A;
-        Mon, 28 Dec 2020 13:13:25 +0000 (UTC)
+        id S1730189AbgL1NDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1455208BA;
+        Mon, 28 Dec 2020 13:02:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161206;
-        bh=VMCbE7nrLhhGfe1E7kARDa8URoATMwrEDL3yoARcwTI=;
+        s=korg; t=1609160552;
+        bh=Umn2im3wKL1U3i3xsCfO0vl3cKxcFTZf51tW8yz409Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PfJ9ZVjJYEl8b6RsZe3nZEtNsDsWc/Roh91/wCQiks+Td6GI3ckTwrWBJySqqsA/E
-         8RJxiDHU+m89M2h+1gBMmdEXbrUQphNtJt76RUE4TtNjXTX1smgGi2bDTSMLcJ/xVy
-         I4+KdwqJXd9MTJE70RGZSGChxbJGRuLesJMF36EU=
+        b=ajr4PZIDHUYnyjWdWCnz8+ro5Nme+6d1VZl2+nSjF3zejxRmLHccKeMEFF4sp+RAi
+         QJAhelhbXttBwqAUKGtqvZmyDY0ICI5fp7F2zK9NYWViZT26bdmXrSgTzZ74Be4zqB
+         XMm5MSVuOcUaG9UKq+vMHvQ41rEtojNY87l8Sw34=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Birsan <cristian.birsan@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 108/242] ARM: dts: at91: sama5d4_xplained: add pincontrol for USB Host
+Subject: [PATCH 4.9 060/175] spi: tegra20-sflash: fix reference leak in tegra_sflash_resume
 Date:   Mon, 28 Dec 2020 13:48:33 +0100
-Message-Id: <20201228124910.010635078@linuxfoundation.org>
+Message-Id: <20201228124856.163817016@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Birsan <cristian.birsan@microchip.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit be4dd2d448816a27c1446f8f37fce375daf64148 ]
+[ Upstream commit 3482e797ab688da6703fe18d8bad52f94199f4f2 ]
 
-The pincontrol node is needed for USB Host since Linux v5.7-rc1. Without
-it the driver probes but VBus is not powered because of wrong pincontrol
-configuration.
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to pm_runtime_put_noidle will result in
+reference leak in tegra_sflash_resume, so we should fix it.
 
-Fixes: 38153a017896f ("ARM: at91/dt: sama5d4: add dts for sama5d4 xplained board")
-Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-Link: https://lore.kernel.org/r/20201118120019.1257580-3-cristian.birsan@microchip.com
+Fixes: 8528547bcc336 ("spi: tegra: add spi driver for sflash controller")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201103141323.5841-1-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/at91-sama5d4_xplained.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/spi/spi-tegra20-sflash.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/at91-sama5d4_xplained.dts b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
-index 10f2fb9e0ea61..c271ca960caee 100644
---- a/arch/arm/boot/dts/at91-sama5d4_xplained.dts
-+++ b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
-@@ -158,6 +158,11 @@
- 						atmel,pins =
- 							<AT91_PIOE 31 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;
- 					};
-+					pinctrl_usb_default: usb_default {
-+						atmel,pins =
-+							<AT91_PIOE 11 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
-+							 AT91_PIOE 14 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-+					};
- 					pinctrl_key_gpio: key_gpio_0 {
- 						atmel,pins =
- 							<AT91_PIOE 8 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
-@@ -183,6 +188,8 @@
- 					   &pioE 11 GPIO_ACTIVE_HIGH
- 					   &pioE 14 GPIO_ACTIVE_HIGH
- 					  >;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_usb_default>;
- 			status = "okay";
- 		};
+diff --git a/drivers/spi/spi-tegra20-sflash.c b/drivers/spi/spi-tegra20-sflash.c
+index b6558bb6f9dfc..4b9541e1726a5 100644
+--- a/drivers/spi/spi-tegra20-sflash.c
++++ b/drivers/spi/spi-tegra20-sflash.c
+@@ -564,6 +564,7 @@ static int tegra_sflash_resume(struct device *dev)
  
+ 	ret = pm_runtime_get_sync(dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(dev);
+ 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
+ 		return ret;
+ 	}
 -- 
 2.27.0
 
