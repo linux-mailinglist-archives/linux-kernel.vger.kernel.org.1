@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E102E3A68
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 318F62E64F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390681AbgL1Ngb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:36:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36744 "EHLO mail.kernel.org"
+        id S2390721AbgL1Ngi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:36:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390523AbgL1Ng3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:36:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97D3620719;
-        Mon, 28 Dec 2020 13:35:48 +0000 (UTC)
+        id S2390523AbgL1Ngd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:36:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 935E1205CB;
+        Mon, 28 Dec 2020 13:35:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162549;
-        bh=2zswwcbAHBiiyXxKUukt8I2higsivO73El+lvUDkKBQ=;
+        s=korg; t=1609162552;
+        bh=cYKIWtitTmOCqJ67n06KAUnkiW4C0HOfRQEAM2qKt70=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uDgRUg7RlnrvK8kswsPPwCzGVhvr0Eewvm2LWAEgpDmURTns4tC7a53ZUo2LhTfDp
-         CZ6Igab0FEMyW2JAJjZnqkj8D2A1qxRygHJGbXklyyaNEK8ZVkpIECXSZ1z/fAj61F
-         Oc+IGhJ9GF8PbSGyhXiqnk+FY/H8a3Pys2TzEZLo=
+        b=vCK3ZYXlXhq9HqTz5+/53/cXbtXAl51s5iW1Mho3m5qDDRGV/eqeqrnD7uxCr+Atf
+         7N1R59E4uQAv7Q8AFcEOhu3e6Q42KpRRGKRXG7kEc1P/BmE0+JG/a+RJP9jQNmhF33
+         Of4vxsMYgajBe0Ibne8wFuBGEuRyPamSGOVovHnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Terry Zhou <bjzhou@marvell.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 4.19 337/346] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
-Date:   Mon, 28 Dec 2020 13:50:56 +0100
-Message-Id: <20201228124936.050125892@linuxfoundation.org>
+        stable@vger.kernel.org, Olivier Benjamin <oliben@amazon.com>,
+        Pawel Wieczorkiewicz <wipawel@amazon.de>,
+        Julien Grall <jgrall@amazon.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.19 338/346] xen-blkback: set ring->xenblkd to NULL after kthread_stop()
+Date:   Mon, 28 Dec 2020 13:50:57 +0100
+Message-Id: <20201228124936.096961407@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -41,40 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Terry Zhou <bjzhou@marvell.com>
+From: Pawel Wieczorkiewicz <wipawel@amazon.de>
 
-commit 6f37689cf6b38fff96de52e7f0d3e78f22803ba0 upstream.
+commit 1c728719a4da6e654afb9cc047164755072ed7c9 upstream.
 
-There is an error in the current code that the XTAL MODE
-pin was set to NB MPP1_31 which should be NB MPP1_9.
-The latch register of NB MPP1_9 has different offset of 0x8.
+When xen_blkif_disconnect() is called, the kernel thread behind the
+block interface is stopped by calling kthread_stop(ring->xenblkd).
+The ring->xenblkd thread pointer being non-NULL determines if the
+thread has been already stopped.
+Normally, the thread's function xen_blkif_schedule() sets the
+ring->xenblkd to NULL, when the thread's main loop ends.
 
-Signed-off-by: Terry Zhou <bjzhou@marvell.com>
-[pali: Fix pin name in commit message]
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201106100039.11385-1-pali@kernel.org
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+However, when the thread has not been started yet (i.e.
+wake_up_process() has not been called on it), the xen_blkif_schedule()
+function would not be called yet.
+
+In such case the kthread_stop() call returns -EINTR and the
+ring->xenblkd remains dangling.
+When this happens, any consecutive call to xen_blkif_disconnect (for
+example in frontend_changed() callback) leads to a kernel crash in
+kthread_stop() (e.g. NULL pointer dereference in exit_creds()).
+
+This is XSA-350.
+
+Cc: <stable@vger.kernel.org> # 4.12
+Fixes: a24fa22ce22a ("xen/blkback: don't use xen_blkif_get() in xen-blkback kthread")
+Reported-by: Olivier Benjamin <oliben@amazon.com>
+Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Signed-off-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Reviewed-by: Julien Grall <jgrall@amazon.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/clk/mvebu/armada-37xx-xtal.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/block/xen-blkback/xenbus.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/clk/mvebu/armada-37xx-xtal.c
-+++ b/drivers/clk/mvebu/armada-37xx-xtal.c
-@@ -15,8 +15,8 @@
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
+--- a/drivers/block/xen-blkback/xenbus.c
++++ b/drivers/block/xen-blkback/xenbus.c
+@@ -264,6 +264,7 @@ static int xen_blkif_disconnect(struct x
  
--#define NB_GPIO1_LATCH	0xC
--#define XTAL_MODE	    BIT(31)
-+#define NB_GPIO1_LATCH	0x8
-+#define XTAL_MODE	    BIT(9)
+ 		if (ring->xenblkd) {
+ 			kthread_stop(ring->xenblkd);
++			ring->xenblkd = NULL;
+ 			wake_up(&ring->shutdown_wq);
+ 		}
  
- static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
- {
 
 
