@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B822E3DC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2092E384E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441651AbgL1OTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:19:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55172 "EHLO mail.kernel.org"
+        id S1730939AbgL1NIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:08:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392031AbgL1OTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:19:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5BB3229C4;
-        Mon, 28 Dec 2020 14:19:06 +0000 (UTC)
+        id S1730926AbgL1NIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:08:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C6D22582;
+        Mon, 28 Dec 2020 13:07:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165147;
-        bh=NxB4p1Y2rEVXI0bWk37gLU9g3oSKskovcdtgtfkeicE=;
+        s=korg; t=1609160863;
+        bh=xjtL+iv3DcMyV6dkej0drfYg8VG96FI18LRjD0Omnlw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i6OvenJBaJ1BH1anvC7040Z1giPDpyjFvQmjdhKccYbXpdpM8uHTmdMTofFxdd0j+
-         j3M42KjZ5V5RIDePSPqZ1XILWUPm1RU6WMVwqPThB7vr6QPzLLBS3pnIuvOb62+HtR
-         2k9osCB534PK1HACp5QrKx4RzQbUx88S2fThY9lQ=
+        b=GADUdhdxwhaR9uRhzJjpkNoQDA/qo1t9sJA6oEff4oxevrNSfbTgS4/fOedczgb/G
+         z9xtItyWcKBreFq+PIGd4/TFGnTdTPfPbsc4nRfcf6cET57QHTyxy2f4lsL11txQWQ
+         jBiUJS7by3Q9DWbI/kKe6H0VjNywN7+IzI6mwUgA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 428/717] watchdog: armada_37xx: Add missing dependency on HAS_IOMEM
+        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 021/242] net: stmmac: delete the eee_ctrl_timer after napi disabled
 Date:   Mon, 28 Dec 2020 13:47:06 +0100
-Message-Id: <20201228125041.471941480@linuxfoundation.org>
+Message-Id: <20201228124905.714771477@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Fugang Duan <fugang.duan@nxp.com>
 
-[ Upstream commit 7f6f1dfb2dcbe5d2bfa213f2df5d74c147cd5954 ]
+[ Upstream commit 5f58591323bf3f342920179f24515935c4b5fd60 ]
 
-The following kbuild warning is seen on a system without HAS_IOMEM.
+There have chance to re-enable the eee_ctrl_timer and fire the timer
+in napi callback after delete the timer in .stmmac_release(), which
+introduces to access eee registers in the timer function after clocks
+are disabled then causes system hang. Found this issue when do
+suspend/resume and reboot stress test.
 
-WARNING: unmet direct dependencies detected for MFD_SYSCON
-  Depends on [n]: HAS_IOMEM [=n]
-  Selected by [y]:
-  - ARMADA_37XX_WATCHDOG [=y] && WATCHDOG [=y] && (ARCH_MVEBU || COMPILE_TEST
+It is safe to delete the timer after napi disabled and disable lpi mode.
 
-This results in a subsequent compile error.
-
-drivers/watchdog/armada_37xx_wdt.o: in function `armada_37xx_wdt_probe':
-armada_37xx_wdt.c:(.text+0xdc): undefined reference to `devm_ioremap'
-
-Add the missing dependency.
-
-Reported-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Fixes: 54e3d9b518c8 ("watchdog: Add support for Armada 37xx CPU watchdog")
-Link: https://lore.kernel.org/r/20201108162550.27660-1-linux@roeck-us.net
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: d765955d2ae0b ("stmmac: add the Energy Efficient Ethernet support")
+Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/watchdog/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index fd7968635e6df..b3e8bdaa2a112 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -386,6 +386,7 @@ config ARM_SBSA_WATCHDOG
- config ARMADA_37XX_WATCHDOG
- 	tristate "Armada 37xx watchdog"
- 	depends on ARCH_MVEBU || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	select MFD_SYSCON
- 	select WATCHDOG_CORE
- 	help
--- 
-2.27.0
-
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -2705,9 +2705,6 @@ static int stmmac_release(struct net_dev
+ {
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 
+-	if (priv->eee_enabled)
+-		del_timer_sync(&priv->eee_ctrl_timer);
+-
+ 	/* Stop and disconnect the PHY */
+ 	if (dev->phydev) {
+ 		phy_stop(dev->phydev);
+@@ -2727,6 +2724,11 @@ static int stmmac_release(struct net_dev
+ 	if (priv->lpi_irq > 0)
+ 		free_irq(priv->lpi_irq, dev);
+ 
++	if (priv->eee_enabled) {
++		priv->tx_path_in_lpi_mode = false;
++		del_timer_sync(&priv->eee_ctrl_timer);
++	}
++
+ 	/* Stop TX/RX DMA and clear the descriptors */
+ 	stmmac_stop_all_dma(priv);
+ 
+@@ -4418,6 +4420,11 @@ int stmmac_suspend(struct device *dev)
+ 
+ 	stmmac_disable_all_queues(priv);
+ 
++	if (priv->eee_enabled) {
++		priv->tx_path_in_lpi_mode = false;
++		del_timer_sync(&priv->eee_ctrl_timer);
++	}
++
+ 	/* Stop TX/RX DMA */
+ 	stmmac_stop_all_dma(priv);
+ 
 
 
