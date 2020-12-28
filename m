@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500482E38D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1642E381A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732730AbgL1NPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:15:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43892 "EHLO mail.kernel.org"
+        id S1730613AbgL1NFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:05:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732707AbgL1NPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:15:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EE67207C9;
-        Mon, 28 Dec 2020 13:14:55 +0000 (UTC)
+        id S1730540AbgL1NE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:04:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5275622583;
+        Mon, 28 Dec 2020 13:04:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161296;
-        bh=etFg+hdY9cYDgYnDmZBzPds9btDoJxw4EV86C3JFYyc=;
+        s=korg; t=1609160659;
+        bh=RrbJ4+7p2iNFjjHMmfG4uXIo4O5twLFiZCJZBbcwzwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x1xVUCnOJAfez7ayxa/xon4EW8Y72F2M5X7k5gzieZrKZDi4lMX9tvp10d/UtEZB0
-         PGDRSElVGaCPtRey3r+YCwoAO5UDmjznEFmXrUnU0+DzCrkA+x0Jzr8WjDiz3ErPT5
-         yelRYoaGXkMbMXk+etvnI1TBXALQdnUWnNiLxKUI=
+        b=SzTUKQsB7Ow8L0ABmZldPH5r98Guas8EFa1xQ2QgKhbDRh/lhluxoLYVX6z4eAR+g
+         ZUVuxOEzw2SpYUKbFz+LVzzRSjH/L+NYQ+jbOUUy1OxMbrfJluibMCY/nEYC0gLxKx
+         27XcNMstqGwkpdb9WquvvCe/0/BQvdWDb9F0p7Tw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 166/242] net: allwinner: Fix some resources leak in the error handling path of the probe and in the remove function
-Date:   Mon, 28 Dec 2020 13:49:31 +0100
-Message-Id: <20201228124912.873105684@linuxfoundation.org>
+Subject: [PATCH 4.9 119/175] checkpatch: fix unescaped left brace
+Date:   Mon, 28 Dec 2020 13:49:32 +0100
+Message-Id: <20201228124859.024146357@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dwaipayan Ray <dwaipayanray1@gmail.com>
 
-[ Upstream commit 322e53d1e2529ae9d501f5e0f20604a79b873aef ]
+[ Upstream commit 03f4935135b9efeb780b970ba023c201f81cf4e6 ]
 
-'irq_of_parse_and_map()' should be balanced by a corresponding
-'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
+There is an unescaped left brace in a regex in OPEN_BRACE check.  This
+throws a runtime error when checkpatch is run with --fix flag and the
+OPEN_BRACE check is executed.
 
-Add such a call in the error handling path of the probe function and in the
-remove function.
+Fix it by escaping the left brace.
 
-Fixes: 492205050d77 ("net: Add EMAC ethernet driver found on Allwinner A10 SoC's")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201214202117.146293-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lkml.kernel.org/r/20201115202928.81955-1-dwaipayanray1@gmail.com
+Fixes: 8d1824780f2f ("checkpatch: add --fix option for a couple OPEN_BRACE misuses")
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Acked-by: Joe Perches <joe@perches.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/allwinner/sun4i-emac.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ scripts/checkpatch.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
-index c458b81ba63af..d249a4309da2f 100644
---- a/drivers/net/ethernet/allwinner/sun4i-emac.c
-+++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
-@@ -847,13 +847,13 @@ static int emac_probe(struct platform_device *pdev)
- 	db->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(db->clk)) {
- 		ret = PTR_ERR(db->clk);
--		goto out_iounmap;
-+		goto out_dispose_mapping;
- 	}
- 
- 	ret = clk_prepare_enable(db->clk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Error couldn't enable clock (%d)\n", ret);
--		goto out_iounmap;
-+		goto out_dispose_mapping;
- 	}
- 
- 	ret = sunxi_sram_claim(&pdev->dev);
-@@ -910,6 +910,8 @@ out_release_sram:
- 	sunxi_sram_release(&pdev->dev);
- out_clk_disable_unprepare:
- 	clk_disable_unprepare(db->clk);
-+out_dispose_mapping:
-+	irq_dispose_mapping(ndev->irq);
- out_iounmap:
- 	iounmap(db->membase);
- out:
-@@ -928,6 +930,7 @@ static int emac_remove(struct platform_device *pdev)
- 	unregister_netdev(ndev);
- 	sunxi_sram_release(&pdev->dev);
- 	clk_disable_unprepare(db->clk);
-+	irq_dispose_mapping(ndev->irq);
- 	iounmap(db->membase);
- 	free_netdev(ndev);
- 
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 9432387dc1789..c3b23244e64ff 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3818,7 +3818,7 @@ sub process {
+ 			    $fix) {
+ 				fix_delete_line($fixlinenr, $rawline);
+ 				my $fixed_line = $rawline;
+-				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*){(.*)$/;
++				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*)\{(.*)$/;
+ 				my $line1 = $1;
+ 				my $line2 = $2;
+ 				fix_insert_line($fixlinenr, ltrim($line1));
 -- 
 2.27.0
 
