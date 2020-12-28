@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2132E3784
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AABD2E4305
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgL1M4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:56:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52930 "EHLO mail.kernel.org"
+        id S2407423AbgL1NyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:54:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728749AbgL1M43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:56:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78645208D5;
-        Mon, 28 Dec 2020 12:55:48 +0000 (UTC)
+        id S2407350AbgL1Nxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2426820782;
+        Mon, 28 Dec 2020 13:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160149;
-        bh=lvwYvNFIDi+G0NRwNUnwGYk3ODaC4aPA09ja4I6Lbzo=;
+        s=korg; t=1609163583;
+        bh=DnUdUTEh6elaUJ7PIe+yfNe7X723hnOussZtnFcjv0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A9WyNbpDCDuU99AB1XLT6j3Uq62jg+6D6SIuEnc6w2Lk3tcdweEolpcE63zvbjZr7
-         peSzda4h/t2sDjWkk2dIgBG+lkXTa3kzULSySbGGgI1dbS1cr6DTQXE4ShD8kEODFF
-         a866MjxpVG3xVNAw8a1zsTlNdwfRDqyHTovLq5bA=
+        b=bQe4iIrFhQ2Byp7PhekmhAMc/z+513ABIQD1+mD35PbsDQFr6xhgB4Z053t4dlC5B
+         MjUVGi/oEqfHpAbYFY8ptjFtGru9vHFP8q5ksPEUUyC7ikPZKEJQ6oB7rNs+fVQRM7
+         1tn51tukWtjJQE4wwLzqwFrchmjfUr0IGqF+0x5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 058/132] cw1200: fix missing destroy_workqueue() on error in cw1200_init_common
+Subject: [PATCH 5.4 306/453] clk: at91: sam9x60: remove atmel,osc-bypass support
 Date:   Mon, 28 Dec 2020 13:49:02 +0100
-Message-Id: <20201228124849.250003856@linuxfoundation.org>
+Message-Id: <20201228124951.934742020@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-[ Upstream commit 7ec8a926188eb8e7a3cbaca43ec44f2d7146d71b ]
+[ Upstream commit 01324f9e88b5cfc1f4c26eef66bdcb52596c9af8 ]
 
-Add the missing destroy_workqueue() before return from
-cw1200_init_common in the error handling case.
+The sam9x60 doesn't have the MOSCXTBY bit to enable the crystal oscillator
+bypass.
 
-Fixes: a910e4a94f69 ("cw1200: add driver for the ST-E CW1100 & CW1200 WLAN chipsets")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201119070842.1011-1-miaoqinglang@huawei.com
+Fixes: 01e2113de9a5 ("clk: at91: add sam9x60 pmc driver")
+Reported-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20201202125816.168618-1-alexandre.belloni@bootlin.com
+Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Tested-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/cw1200/main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/clk/at91/sam9x60.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/cw1200/main.c b/drivers/net/wireless/cw1200/main.c
-index 317daa968e037..057725b06f640 100644
---- a/drivers/net/wireless/cw1200/main.c
-+++ b/drivers/net/wireless/cw1200/main.c
-@@ -385,6 +385,7 @@ static struct ieee80211_hw *cw1200_init_common(const u8 *macaddr,
- 				    CW1200_LINK_ID_MAX,
- 				    cw1200_skb_dtor,
- 				    priv)) {
-+		destroy_workqueue(priv->workqueue);
- 		ieee80211_free_hw(hw);
- 		return NULL;
- 	}
-@@ -396,6 +397,7 @@ static struct ieee80211_hw *cw1200_init_common(const u8 *macaddr,
- 			for (; i > 0; i--)
- 				cw1200_queue_deinit(&priv->tx_queue[i - 1]);
- 			cw1200_queue_stats_deinit(&priv->tx_queue_stats);
-+			destroy_workqueue(priv->workqueue);
- 			ieee80211_free_hw(hw);
- 			return NULL;
- 		}
+diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
+index 7338a3bc71eb1..e3f4c8f20223a 100644
+--- a/drivers/clk/at91/sam9x60.c
++++ b/drivers/clk/at91/sam9x60.c
+@@ -162,7 +162,6 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+ 	struct regmap *regmap;
+ 	struct clk_hw *hw;
+ 	int i;
+-	bool bypass;
+ 
+ 	i = of_property_match_string(np, "clock-names", "td_slck");
+ 	if (i < 0)
+@@ -197,10 +196,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+-	bypass = of_property_read_bool(np, "atmel,osc-bypass");
+-
+-	hw = at91_clk_register_main_osc(regmap, "main_osc", mainxtal_name,
+-					bypass);
++	hw = at91_clk_register_main_osc(regmap, "main_osc", mainxtal_name, 0);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
 -- 
 2.27.0
 
