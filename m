@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9BA2E407C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E012E397F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505401AbgL1Owt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:52:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53240 "EHLO mail.kernel.org"
+        id S2388680AbgL1NYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:24:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2501963AbgL1OS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:18:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA3A2206D4;
-        Mon, 28 Dec 2020 14:18:13 +0000 (UTC)
+        id S2388637AbgL1NYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:24:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C14CA22AAD;
+        Mon, 28 Dec 2020 13:23:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165094;
-        bh=knmx04ElNEQXe1pqfqequ5Od6CLtzLgVSaUyaCQk6sM=;
+        s=korg; t=1609161810;
+        bh=DzQVrDmpBv/nzWuap9GEoQhzLuYOWJZ/LoOP4HLkE0s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zc7oERVXS7wcmsZcc9xctIyYDOqTnmpV6N7KpDcyzRksYmzOpWGLcRWGfPzcjsbAq
-         uZYxhrgoJT1fYUqXQDvIt4UfFlWVpHn6YKyVn+rjYQ+Dlr0efXDLOD7Nj0sz4k59ww
-         MDdOJz7oWk3ntmOXFWh1oCA4BN3s4LuyHSo4idsk=
+        b=FWOiSa9cdM/AZRLgV0e8+krBKk93tSs+cq/8mc/FikT3j4O7A4v1Y6l8GxngXeX6o
+         g/ZcOlAKSkGidR0tbjYrtl1X5YlvP1y23kUr35YdmTfQsEhJERyjPBhy9B29nYYrO+
+         /AFTBc7JWVVDtsUnAbcSFO+1PS21Wz0qjIMv6Z/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Arun Easi <aeasi@marvell.com>,
+        stable@vger.kernel.org, linux-scsi@vger.kernel.org,
         Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 379/717] scsi: qla2xxx: Fix FW initialization error on big endian machines
-Date:   Mon, 28 Dec 2020 13:46:17 +0100
-Message-Id: <20201228125039.168657058@linuxfoundation.org>
+Subject: [PATCH 4.19 059/346] scsi: bnx2i: Requires MMU
+Date:   Mon, 28 Dec 2020 13:46:18 +0100
+Message-Id: <20201228124922.648498092@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,99 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arun Easi <aeasi@marvell.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 8a78dd6ed1af06bfa7b4ade81328ff7ea11b6947 ]
+[ Upstream commit 2d586494c4a001312650f0b919d534e429dd1e09 ]
 
-Some fields are not correctly byte swapped causing failure during
-initialization. As probe() returns failure, HBAs will not be claimed when
-this happens.
+The SCSI_BNX2_ISCSI kconfig symbol selects CNIC and CNIC selects UIO, which
+depends on MMU.
 
-qla2xxx [0007:01:00.0]-ffff:3: Secure Flash Update in FW: Supported
-qla2xxx [0007:01:00.0]-ffff:3: SCM in FW: Supported
-qla2xxx [0007:01:00.0]-00d2:3: Init Firmware **** FAILED ****.
-qla2xxx [0007:01:00.0]-00d6:3: Failed to initialize adapter - Adapter flags 2.
-qla2xxx 0007:01:00.1: enabling device (0140 -> 0142)
-qla2xxx [0007:01:00.1]-011c: : MSI-X vector count: 128.
-qla2xxx [0007:01:00.1]-001d: : Found an ISP2289 irq 18 iobase 0xd000080080004000.
-qla2xxx 0007:01:00.1: Using 64-bit direct DMA at offset 800000000000000
-BUG: Bad page state in process insmod  pfn:67118 page:f00000000168bd40
-count:-1 mapcount:0 mapping: (null) index:0x0
-page flags: 0x3ffff800000000() page dumped because: nonzero _count
-Modules linked in: qla2xxx(OE+) nvme_fc nvme_fabrics
-	nvme_core scsi_transport_fc scsi_tgt nls_utf8 isofs ip6t_rpfilter
-	ipt_REJECT nf_reject_ipv4 ip6t_REJECT nf_reject_ipv6 xt_conntrack ip_set
-	nfnetlink ebtable_nat ebtable_broute bridge stp llc ip6table_nat
-	nf_conntrack_ipv6 nf_defrag_ipv6 nf_nat_ipv6 ip6table_mangle
-	ip6table_security ip6table_raw iptable_nat nf_conntrack_ipv4
-	nf_defrag_ipv4 nf_nat_ipv4 nf_nat nf_conntrack iptable_mangle
-	iptable_security iptable_raw ebtable_filter ebtables ip6table_filter
-	ip6_tables iptable_filter nx_crypto ses enclosure scsi_transport_sas
-	pseries_rng sg ip_tables xfs libcrc32c sr_mod cdrom sd_mod crc_t10dif
-	crct10dif_generic crct10dif_common usb_storage ipr libata tg3 ptp
-	pps_core dm_mirror dm_region_hash dm_log dm_mod
-CPU: 32 PID: 8560 Comm: insmod Kdump: loaded Tainted: G
-	OE  ------------   3.10.0-957.el7.ppc64 #1
-Call Trace:
-[c0000006dd7caa70] [c00000000001cca8] .show_stack+0x88/0x330 (unreliable)
-[c0000006dd7cab30] [c000000000ac3d88] .dump_stack+0x28/0x3c
-[c0000006dd7caba0] [c00000000029e48c] .bad_page+0x15c/0x1c0
-[c0000006dd7cac40] [c00000000029f938] .get_page_from_freelist+0x11e8/0x1ea0
-[c0000006dd7caf40] [c0000000002a1d30] .__alloc_pages_nodemask+0x1c0/0xc70
-[c0000006dd7cb140] [c00000000002ba0c] .__dma_direct_alloc_coherent+0x8c/0x170
-[c0000006dd7cb1e0] [d000000010a94688] .qla2x00_mem_alloc+0x10f8/0x1370 [qla2xxx]
-[c0000006dd7cb2d0] [d000000010a9c790] .qla2x00_probe_one+0xb60/0x22e0 [qla2xxx]
-[c0000006dd7cb540] [c0000000005de764] .pci_device_probe+0x204/0x300
-[c0000006dd7cb600] [c0000000006ca61c] .driver_probe_device+0x2cc/0x6f0
-[c0000006dd7cb6b0] [c0000000006cabec] .__driver_attach+0x10c/0x110
-[c0000006dd7cb740] [c0000000006c5f04] .bus_for_each_dev+0x94/0x100
-[c0000006dd7cb7e0] [c0000000006c94f4] .driver_attach+0x34/0x50
-[c0000006dd7cb860] [c0000000006c8f58] .bus_add_driver+0x298/0x3b0
-[c0000006dd7cb900] [c0000000006cb6e0] .driver_register+0xb0/0x1a0
-[c0000006dd7cb980] [c0000000005dc474] .__pci_register_driver+0xc4/0xf0
-[c0000006dd7cba10] [d000000010b94e20] .qla2x00_module_init+0x2a8/0x328 [qla2xxx]
-[c0000006dd7cbaa0] [c00000000000c130] .do_one_initcall+0x130/0x2e0
-[c0000006dd7cbb50] [c0000000001b2e8c] .load_module+0x1afc/0x2340
-[c0000006dd7cbd40] [c0000000001b3920] .SyS_finit_module+0xd0/0x130
-[c0000006dd7cbe30] [c00000000000a284] 	system_call+0x38/0xfc
+Since 'select' does not follow dependency chains, add the same MMU
+dependency to SCSI_BNX2_ISCSI.
 
-Link: https://lore.kernel.org/r/20201202132312.19966-9-njavali@marvell.com
-Fixes: 9f2475fe7406 ("scsi: qla2xxx: SAN congestion management implementation")
-Fixes: cf3c54fb49a4 ("scsi: qla2xxx: Add SLER and PI control support”)
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Arun Easi <aeasi@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Quietens this kconfig warning:
+
+WARNING: unmet direct dependencies detected for CNIC
+  Depends on [n]: NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_BROADCOM [=y] && PCI [=y] && (IPV6 [=m] || IPV6 [=m]=n) && MMU [=n]
+  Selected by [m]:
+  - SCSI_BNX2_ISCSI [=m] && SCSI_LOWLEVEL [=y] && SCSI [=y] && NET [=y] && PCI [=y] && (IPV6 [=m] || IPV6 [=m]=n)
+
+Link: https://lore.kernel.org/r/20201129070916.3919-1-rdunlap@infradead.org
+Fixes: cf4e6363859d ("[SCSI] bnx2i: Add bnx2i iSCSI driver.")
+Cc: linux-scsi@vger.kernel.org
+Cc: Nilesh Javali <njavali@marvell.com>
+Cc: Manish Rangankar <mrangankar@marvell.com>
+Cc: GR-QLogic-Storage-Upstream@marvell.com
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_mbx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/bnx2i/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
-index 07afd0d8a8f3e..bef871a890281 100644
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
-@@ -1129,7 +1129,7 @@ qla2x00_get_fw_version(scsi_qla_host_t *vha)
- 		if (ha->flags.scm_supported_a &&
- 		    (ha->fw_attributes_ext[0] & FW_ATTR_EXT0_SCM_SUPPORTED)) {
- 			ha->flags.scm_supported_f = 1;
--			ha->sf_init_cb->flags |= BIT_13;
-+			ha->sf_init_cb->flags |= cpu_to_le16(BIT_13);
- 		}
- 		ql_log(ql_log_info, vha, 0x11a3, "SCM in FW: %s\n",
- 		       (ha->flags.scm_supported_f) ? "Supported" :
-@@ -1137,9 +1137,9 @@ qla2x00_get_fw_version(scsi_qla_host_t *vha)
- 
- 		if (vha->flags.nvme2_enabled) {
- 			/* set BIT_15 of special feature control block for SLER */
--			ha->sf_init_cb->flags |= BIT_15;
-+			ha->sf_init_cb->flags |= cpu_to_le16(BIT_15);
- 			/* set BIT_14 of special feature control block for PI CTRL*/
--			ha->sf_init_cb->flags |= BIT_14;
-+			ha->sf_init_cb->flags |= cpu_to_le16(BIT_14);
- 		}
- 	}
- 
+diff --git a/drivers/scsi/bnx2i/Kconfig b/drivers/scsi/bnx2i/Kconfig
+index ba30ff86d5818..b27a3738d940c 100644
+--- a/drivers/scsi/bnx2i/Kconfig
++++ b/drivers/scsi/bnx2i/Kconfig
+@@ -3,6 +3,7 @@ config SCSI_BNX2_ISCSI
+ 	depends on NET
+ 	depends on PCI
+ 	depends on (IPV6 || IPV6=n)
++	depends on MMU
+ 	select SCSI_ISCSI_ATTRS
+ 	select NETDEVICES
+ 	select ETHERNET
 -- 
 2.27.0
 
