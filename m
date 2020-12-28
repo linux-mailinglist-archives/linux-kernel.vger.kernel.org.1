@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC032E364C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 12:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1291F2E366F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 12:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbgL1LQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 06:16:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53632 "EHLO mail.kernel.org"
+        id S1727358AbgL1L2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 06:28:16 -0500
+Received: from www.zeus03.de ([194.117.254.33]:37422 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727019AbgL1LQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 06:16:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BD2F22583;
-        Mon, 28 Dec 2020 11:15:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609154136;
-        bh=p/d9NYlRf2ZDsjuZYUJr8g6BtTGtaBFrKLIAM/vqTPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MORuj9xwiOPBco/0e42u+QXr446Q86w1dpcRwtrz91efiB24qedqo35x0YJe/qQRR
-         tHAhtqC2v4hR8Ti3Ap7j+vj80PFK8s0A/xNmkzZYGn0NfW7zlsTxBP8EwOMkTlMw9i
-         q8GMNI4sSsmpzTaFoCFTcbUbEIYxV+OeMseb8xH94nqgLoOmu3h69iedGqonu/jxzy
-         SlyAUuyw4MwGz37V+7hguuHn0w456xOinnH7y9A3PZ4SbCjPIPF43GTGNNNl2T0o2i
-         pyZBDDfYeOHC2LLNrEUdW9R0R8SGNlBNrLeHxYC466pQT8viCFMgmQe2f1sS3WE57F
-         QEhRUNT5ttFQA==
-Date:   Mon, 28 Dec 2020 13:15:32 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Saeed Mahameed <saeedm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Gal Pressman <galp@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] net/mlx5e: Fix two double free cases
-Message-ID: <20201228111532.GJ4457@unreal>
-References: <20201228084840.5013-1-dinghao.liu@zju.edu.cn>
+        id S1726662AbgL1L16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 06:27:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=GVxhTXLPfgHw1CkQt9T4NPJKwc9
+        uEgyIGg6fuAWxXH8=; b=0uz2JgKdg1DMm2gfKLOFm56B0CWCUIgmGbqN4sQpGBK
+        bu+SorzTfcR3mrCX9cdo/y7dApOVvi7Fc86XaFhYWY4lz7aR4oN0tFj55ldR2vSj
+        J9khEDn1QT0Ht7s7PmmGEk3tKKAqlZag0C4P66Xvc46Q1R2DU6/UPfwftMqpk9fE
+        =
+Received: (qmail 1738945 invoked from network); 28 Dec 2020 12:27:15 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 28 Dec 2020 12:27:15 +0100
+X-UD-Smtp-Session: l3s3148p1@s1dYjoS3xJQgAwDPXwIpAOUwDQytQs2L
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH 0/6] v3u: add & update (H)SCIF nodes
+Date:   Mon, 28 Dec 2020 12:27:07 +0100
+Message-Id: <20201228112715.14947-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201228084840.5013-1-dinghao.liu@zju.edu.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 04:48:40PM +0800, Dinghao Liu wrote:
-> mlx5e_create_ttc_table_groups() frees ft->g on failure of
-> kvzalloc(), but such failure will be caught by its caller
-> in mlx5e_create_ttc_table() and ft->g will be freed again
-> in mlx5e_destroy_flow_table(). The same issue also occurs
-> in mlx5e_create_ttc_table_groups(). Set ft->g to NULL after
-> kfree() to avoid double free.
->
-> Fixes: 7b3722fa9ef64 ("net/mlx5e: Support RSS for GRE tunneled packets")
-> Fixes: 33cfaaa8f36ff ("net/mlx5e: Split the main flow steering table")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->
-> Changelog:
->
-> v2: - Set ft->g to NULL after kfree() instead of removing kfree().
->       Refine commit message.
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 2 ++
->  1 file changed, 2 insertions(+)
->
+SCIF0 already worked because of firmware settings, but let's have a
+proper node for it. Also add HSCIF0 because the last patch shows that it
+also works. Because these blocks work in general, let's add the other
+instances to the DTSI, too.
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+These additions make me a bit wonder about the 'reg'-based sorting in
+our DTSI files. It looks a bit messy to me, but I kept it for
+consistency. Same with the (H)SCIF reg sizes which are a tad too large
+but in sync with our other DTSI files.
+
+Looking forward to comments!
+
+All the best,
+
+   Wolfram
+
+
+Linh Phung (1):
+  arm64: dts: renesas: r8a779a0: Add HSCIF support
+
+Wolfram Sang (5):
+  arm64: dts: renesas: r8a779a0: add & update SCIF nodes
+  arm64: dts: renesas: falcon: add SCIF0 nodes
+  dt-bindings: serial: renesas,hscif: Add r8a779a0 support
+  clk: renesas: r8a779a0: add HSCIF support
+  WIP: arm64: dts: renesas: falcon: switch to from SCIF0 to HSCIF0
+
+ .../bindings/serial/renesas,hscif.yaml        |   1 +
+ .../boot/dts/renesas/r8a779a0-falcon.dts      |  31 ++++-
+ arch/arm64/boot/dts/renesas/r8a779a0.dtsi     | 114 ++++++++++++++++++
+ drivers/clk/renesas/r8a779a0-cpg-mssr.c       |   4 +
+ 4 files changed, 149 insertions(+), 1 deletion(-)
+
+-- 
+2.29.2
+
