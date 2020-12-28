@@ -2,92 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFEE2E3673
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 12:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E053D2E3682
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 12:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727402AbgL1L2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 06:28:43 -0500
-Received: from www.zeus03.de ([194.117.254.33]:37774 "EHLO mail.zeus03.de"
+        id S1727203AbgL1LeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 06:34:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727163AbgL1L2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 06:28:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=k1; bh=CLhOPFEJVR+TzA
-        e+nHEahGEsCwUVk3be+Yt7VkTUhBc=; b=Np0/W1/xSiNUAnBvuXz7AB5RQpqO9K
-        C3natCMXeQHAVJiT3pDPaJfzPIhV9S28kUVBP9QDlEFsBNM9tUfxfwyvEGbUkLoz
-        tGCe/N56UVSMnlw+JjwPm6EdH5CO1pPvtrNDHsBFklY/LowHlILfi0Ay+ntWdLYR
-        MdBpxjSQQC03w=
-Received: (qmail 1739157 invoked from network); 28 Dec 2020 12:27:19 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 28 Dec 2020 12:27:19 +0100
-X-UD-Smtp-Session: l3s3148p1@YteUjoS30JQgAwDPXwIpAOUwDQytQs2L
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] WIP: arm64: dts: renesas: falcon: switch to from SCIF0 to HSCIF0
-Date:   Mon, 28 Dec 2020 12:27:13 +0100
-Message-Id: <20201228112715.14947-7-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228112715.14947-1-wsa+renesas@sang-engineering.com>
-References: <20201228112715.14947-1-wsa+renesas@sang-engineering.com>
+        id S1727094AbgL1LeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 06:34:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BFB222583;
+        Mon, 28 Dec 2020 11:33:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609155208;
+        bh=saKOfYncCd9Ec75dBMzr7MpCe5M2fYvC02vnawyCTDI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Um/GuWVlwvn5yoXMQzCrBVsSwn10oXBH8CDNZs/Jt3zbFEO8VwsNlnkPUbVhpndT9
+         y7hL0mn5tPln8ULHbkQs12qbg0v6pz2JibwGT7ydVWmywhQmahdGG835i8H7lIKoZK
+         IoqXv3t9RFvKsxXadReFOJ5/wpEajfZMZ+PCguAM=
+Date:   Mon, 28 Dec 2020 12:29:11 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
+        doebel@amazon.de, aams@amazon.de, mku@amazon.de, jgross@suse.com,
+        julien@xen.org, wipawel@amazon.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] Backport of patch series for stable 4.4 branch
+Message-ID: <X+nBh/5nsI8QrWCg@kroah.com>
+References: <20201217160402.26303-1-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217160402.26303-1-sjpark@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mainly for testing the HSCIF0 node. We could make this switch permanent,
-but we never did for any other SoC. So, I think this is not to be
-applied.
+On Thu, Dec 17, 2020 at 05:03:57PM +0100, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> Changes from v2
+> (https://lore.kernel.org/stable/20201217130501.12702-1-sjpark@amazon.com/)
+> - Move 'nr_pending' increase from 5th patch to 4th patch
+> 
+> Changes from v1
+> (https://lore.kernel.org/stable/20201217081727.8253-1-sjpark@amazon.com/)
+> - Remove wrong 'Signed-off-by' lines for 'Author Redacted'
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+All now queued up, but you also need a series of this for the 4.9.y tree
+as well.
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-index 54763c73dc74..e2bbaa7a72e3 100644
---- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-+++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-@@ -14,7 +14,7 @@ / {
- 	compatible = "renesas,falcon-breakout", "renesas,falcon-cpu", "renesas,r8a779a0";
- 
- 	aliases {
--		serial0 = &scif0;
-+		serial0 = &hscif0;
- 	};
- 
- 	chosen {
-@@ -352,9 +352,9 @@ mmc_pins: mmc {
- 		power-source = <1800>;
- 	};
- 
--	scif0_pins: scif0 {
--		groups = "scif0_data", "scif0_ctrl";
--		function = "scif0";
-+	hscif0_pins: hscif0 {
-+		groups = "hscif0_data", "hscif0_ctrl";
-+		function = "hscif0";
- 	};
- 
- 	scif_clk_pins: scif_clk {
-@@ -369,7 +369,11 @@ &rwdt {
- };
- 
- &scif0 {
--	pinctrl-0 = <&scif0_pins>;
-+	status = "disabled";
-+};
-+
-+&hscif0 {
-+	pinctrl-0 = <&hscif0_pins>;
- 	pinctrl-names = "default";
- 
- 	uart-has-rtscts;
--- 
-2.29.2
+thanks,
 
+greg k-h
