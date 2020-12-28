@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B23C2E42B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:27:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D512E4363
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392528AbgL1P05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387680AbgL1P0v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 10:26:51 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F7AC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 07:26:10 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id o6so9623537iob.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 07:26:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=UhNcTN3a6kOuyijy6IwTZGopEC0im7Jf6sspgsY6VGY=;
-        b=vQ9uMSEZ3cDzg//S3NtwLffPUEo74XFAw6QiyuahY8xOtEwW4XuzGhz7MusofLOJBe
-         5TVO1tOc3ZBSjdISvEPdGVIm/VMqUStVGq5uXPrPo7nZrNgRIvEQAqolkKPRLH1PAIeJ
-         gohJoC2xuxw9CJnMlhwEGMCPqhQmX1MJEMGLCZserLWznm3xZtS1AbLffD1j7Gu1DDtm
-         THflaUnKBdlR5/hKvcrTfDL4ZvQyp1nIA46QqeSbjxobV7Vv3k/IxC/TKYqi/mNn+3Nk
-         /bO0OLB5iORxXH82QBKTmsYPZrF1c0FK+jafyc8BK2g27MA/qsXofg+l2xzYJW7Psvw7
-         Qoew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=UhNcTN3a6kOuyijy6IwTZGopEC0im7Jf6sspgsY6VGY=;
-        b=raTwgq1o9XSqoTLvvUVY+PuWOfJ1RaSHe9wfhWeH0ZQV3aNH+/8D+NBQmeyEsz5WR/
-         xjCmXpEfWUVbEz0ykBkElg0H2mmRgb9mkplE9+l05FNIxTldm/u5FxHrKsfbzs2Z0xHP
-         SiQzAPHDaNXtQRW5n37X3Qwy9buWlYCf7SJbb7qh1aqtF8f1TcDMTcl1X6cuc/U+0q8I
-         KsA4iJOpgvOM5TO+tL1EPNownKVGBrL8Mh39pROUi2y8AZKWEg9KXmkEtAvDfhII325y
-         S5SisNZfI46Eja6HOhDWA44tre3K43TJ7DdbM3ON/ix4eldCY0VWnTExzI5y6xXDou/+
-         Xm1g==
-X-Gm-Message-State: AOAM533SOuq8TkVqcX8EDiDU4LJso7HElk4OTQ1oZut+MQ7TLddEwSls
-        wp4iSF6B12yqhPQYsbSMNxV7W1Z+wguMgNz+bqmvvnz1oTo=
-X-Google-Smtp-Source: ABdhPJxJbudusJRphyBEUznDC359BFSK/Q3fM12j1KO6Zxss4X+r3x9kGUv/SF3pwUtPjt6Gl2tnyPHmUvWh3i1xQP4=
-X-Received: by 2002:a6b:92c4:: with SMTP id u187mr36194706iod.57.1609169169965;
- Mon, 28 Dec 2020 07:26:09 -0800 (PST)
-MIME-Version: 1.0
-References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
-In-Reply-To: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 28 Dec 2020 16:25:59 +0100
-Message-ID: <CA+icZUXfVF49iBYTvz-g9f=Fo04jkgLhHiYRxoon9NjZtWzGQg@mail.gmail.com>
-Subject: Re: Linux 5.11-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S2408764AbgL1Pg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:36:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408674AbgL1Pfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 10:35:55 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44B2922475;
+        Mon, 28 Dec 2020 15:35:14 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1ktuYC-004FUG-4O; Mon, 28 Dec 2020 15:35:12 +0000
+Date:   Mon, 28 Dec 2020 15:35:11 +0000
+Message-ID: <87a6tyoseo.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Eric Auger <eric.auger@redhat.com>
+Cc:     eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        drjones@redhat.com, alexandru.elisei@arm.com, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        shuah@kernel.org, pbonzini@redhat.com
+Subject: Re: [PATCH 3/9] KVM: arm64: vgic-v3: Fix error handling in vgic_v3_set_redist_base()
+In-Reply-To: <20201212185010.26579-4-eric.auger@redhat.com>
+References: <20201212185010.26579-1-eric.auger@redhat.com>
+        <20201212185010.26579-4-eric.auger@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: eric.auger@redhat.com, eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, drjones@redhat.com, alexandru.elisei@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Please CC me I am not subscribed to LKML and linux-kbuild ML ]
+Hi Eric,
 
-Hi Linus,
+On Sat, 12 Dec 2020 18:50:04 +0000,
+Eric Auger <eric.auger@redhat.com> wrote:
+> 
+> vgic_register_all_redist_iodevs may succeed while
+> vgic_register_all_redist_iodevs fails. For example this can happen
 
-I also tested with LLVM toolchain v11.0.1-rc2 together with passing
-LLVM=1 and LLVM_IAS=1 to my make line.
+The same function cannot both fail and succeed ;-) Can you shed some
+light on what you had in mind?
 
-I had one ERROR:
+> while adding a redistributor region overlapping a dist region. The
+> failure only is detected on vgic_register_all_redist_iodevs when
+> vgic_v3_check_base() gets called.
+> 
+> In such a case, remove the newly added redistributor region and free
+> it.
+> 
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+> ---
+>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index 8e8a862def76..581f0f490000 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -866,8 +866,14 @@ int vgic_v3_set_redist_base(struct kvm *kvm, u32 index, u64 addr, u32 count)
+>  	 * afterwards will register the iodevs when needed.
+>  	 */
+>  	ret = vgic_register_all_redist_iodevs(kvm);
+> -	if (ret)
+> +	if (ret) {
+> +		struct vgic_redist_region *rdreg =
+> +			vgic_v3_rdist_region_from_index(kvm, index);
+> +
 
-error: too few operands for instruction in arch/x86/kvm/svm/sev.c
+nit: consider splitting declaration and assignment so that we avoid
+the line split if you insist on the 80 character limit.
 
-The issue was reported in ClangBuiltLinux (CBL) issue #1216.
-A fix was offered in [2] and fixes the issue on the kernel-side.
+> +		list_del(&rdreg->list);
+> +		kfree(rdreg);
+>  		return ret;
+> +	}
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.21.3
+> 
+> 
 
-I had one WARNING:
+Thanks,
 
-drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-eb_relocate_parse_slow()+0x3d0: stack state mismatch: cfa1=7+120
-cfa2=-1+0
-drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-eb_copy_relocations()+0x229: stack state mismatch: cfa1=7+120
-cfa2=-1+0
+	M.
 
-Looks like a similar issue was reported as
-"drivers/gpu/drm/i915/gem/i915_gem_execbuffer: objtool warning on
-stack state mismatch" in [3].
-I CCed Josh in the CBL issue #1192.
-
-Thanks.
-
-Regards,
-- Sedat -
-
-[1] https://github.com/ClangBuiltLinux/linux/issues/1216
-[2] https://lore.kernel.org/kvm/20201219063711.3526947-1-natechancellor@gmail.com/
-[3] https://github.com/ClangBuiltLinux/linux/issues/1192
+-- 
+Without deviation from the norm, progress is not possible.
