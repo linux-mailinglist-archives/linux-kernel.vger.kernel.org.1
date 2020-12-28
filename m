@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B41E2E3BB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9AC2E380E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407327AbgL1Nxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:53:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55300 "EHLO mail.kernel.org"
+        id S1730499AbgL1NEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:04:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391553AbgL1Nx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E901020738;
-        Mon, 28 Dec 2020 13:52:45 +0000 (UTC)
+        id S1730422AbgL1NEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:04:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 824322242A;
+        Mon, 28 Dec 2020 13:03:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163566;
-        bh=dTBNeIQoXXIgb05w2ZaQsXC5r47+ftvp/SEv42YAZso=;
+        s=korg; t=1609160622;
+        bh=CftL8oSrtLZXqQtk+vzmIDpAvBAOuHgbd3ypBo7Y2ww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2AflgKI+NNI9tzgNzGSvsRjgYPnZCq+coqJtMlhIDcnl5y0eOF6UwDVCC1y02OYMX
-         eacIBVSWbyBLxVG9e+mn2J26iRh+XVDd04etSUk4j4RAiraoAHeUHPhmfGomikuNGb
-         eLQRTavhQPIkksybuHghqd0P3FlZXMHcf52/Rorw=
+        b=h7Eh//zS30VrTtpgA7LXkZfibiX90DBJP2R79uGjDC1b9/FCubDfub+HBBhup8YuM
+         1C8g7qnkLojygUrPiYwBeErW8/6SV3VktR9S2hGhg1+bTpuS4ZqMekAA/fYnEQ/YDf
+         5Rv2Hm9x52/4Pie6O2ZNRwmoEnku3SvN86OHVIhc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Connor McAdams <conmanx360@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 330/453] ALSA: hda/ca0132 - Change Input Source enum strings.
+        stable@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 113/175] extcon: max77693: Fix modalias string
 Date:   Mon, 28 Dec 2020 13:49:26 +0100
-Message-Id: <20201228124953.100248982@linuxfoundation.org>
+Message-Id: <20201228124858.732520856@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Connor McAdams <conmanx360@gmail.com>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
 
-commit 7079f785b50055a32b72eddcb7d9ba5688db24d0 upstream.
+[ Upstream commit e1efdb604f5c9903a5d92ef42244009d3c04880f ]
 
-Change the Input Source enumerated control's strings to make it play
-nice with pulseaudio.
+The platform device driver name is "max77693-muic", so advertise it
+properly in the modalias string. This fixes automated module loading when
+this driver is compiled as a module.
 
-Fixes: 7cb9d94c05de9 ("ALSA: hda/ca0132: add alt_select_in/out for R3Di + SBZ")
-Cc: <stable@kernel.org>
-Signed-off-by: Connor McAdams <conmanx360@gmail.com>
-Link: https://lore.kernel.org/r/20201208195223.424753-2-conmanx360@gmail.com
-Link: https://lore.kernel.org/r/20201210173550.2968-2-conmanx360@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: db1b9037424b ("extcon: MAX77693: Add extcon-max77693 driver to support Maxim MAX77693 MUIC device")
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_ca0132.c |    2 +-
+ drivers/extcon/extcon-max77693.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -93,7 +93,7 @@ enum {
- };
- 
- /* Strings for Input Source Enum Control */
--static const char *const in_src_str[3] = {"Rear Mic", "Line", "Front Mic" };
-+static const char *const in_src_str[3] = { "Microphone", "Line In", "Front Microphone" };
- #define IN_SRC_NUM_OF_INPUTS 3
- enum {
- 	REAR_MIC,
+diff --git a/drivers/extcon/extcon-max77693.c b/drivers/extcon/extcon-max77693.c
+index 68dbcb814b2ff..4cf72487381e3 100644
+--- a/drivers/extcon/extcon-max77693.c
++++ b/drivers/extcon/extcon-max77693.c
+@@ -1272,4 +1272,4 @@ module_platform_driver(max77693_muic_driver);
+ MODULE_DESCRIPTION("Maxim MAX77693 Extcon driver");
+ MODULE_AUTHOR("Chanwoo Choi <cw00.choi@samsung.com>");
+ MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:extcon-max77693");
++MODULE_ALIAS("platform:max77693-muic");
+-- 
+2.27.0
+
 
 
