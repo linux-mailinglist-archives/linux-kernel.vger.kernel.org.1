@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BBB2E4082
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF7A2E385F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505427AbgL1OxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:53:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54718 "EHLO mail.kernel.org"
+        id S1731132AbgL1NJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:09:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441630AbgL1OTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:19:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CFF122B2C;
-        Mon, 28 Dec 2020 14:18:43 +0000 (UTC)
+        id S1731160AbgL1NJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:09:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DFF222582;
+        Mon, 28 Dec 2020 13:08:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165124;
-        bh=9g0/XxWyP3jMlOsB5v6yCEAHuPcYlFakdyDme1xpF90=;
+        s=korg; t=1609160935;
+        bh=fShka0oswP6q+oPjMziHDeTMWXTj5YhmY3JA6kuv8N8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S9Uq+TmgZMFgxJ038nCf9KWDK+conzJRmbihJ36QHuYDcLgRKHaHdr1LsTQ9jDJ07
-         2sAycyA7j19PeGEUSmDRVM/KxGdQygIs5pZyt7QOavaRqF1liA2t5UvYcE6dGK8R6b
-         5kVEXHDXRAsojnczReBAsj20RqlE03X9b8bJnsGM=
+        b=NUzW5WfKSMtEkFcl6R2PoQFpcotPdtZRjGFhNHiX/8sXpshfpK5XqytJbT5RUQr6a
+         AhoLzjq2xL5xJ7mC0URZVRRa75q1zrms8RSQqUSVFM6ezu6dC4pzbqX29kJG6KUdkq
+         7JVgK2171oL85Zu7u/nGU6RVXSaxjE/3lUd7NyxY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 421/717] dmaengine: ti: k3-udma: Correct normal channel offset when uchan_cnt is not 0
+        stable@vger.kernel.org, Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.14 014/242] scsi: be2iscsi: Revert "Fix a theoretical leak in beiscsi_create_eqs()"
 Date:   Mon, 28 Dec 2020 13:46:59 +0100
-Message-Id: <20201228125041.133605068@linuxfoundation.org>
+Message-Id: <20201228124905.365452340@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit e2de925bbfe321ba0588c99f577c59386ab1f428 ]
+commit eeaf06af6f87e1dba371fbe42674e6f963220b9c upstream.
 
-According to different sections of the TRM, the hchan_cnt of CAP3 includes
-the number of uchan in UDMA, thus the start offset of the normal channels
-are hchan_cnt.
+My patch caused kernel Oopses and delays in boot.  Revert it.
 
-Fixes: daf4ad0499aa4 ("dmaengine: ti: k3-udma: Query throughput level information from hardware")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/20201208090440.31792-2-peter.ujfalusi@ti.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The problem was that I moved the "mem->dma = paddr;" before the call to
+be_fill_queue().  But the first thing that the be_fill_queue() function
+does is memset the whole struct to zero which overwrites the assignment.
+
+Link: https://lore.kernel.org/r/X8jXkt6eThjyVP1v@mwanda
+Fixes: 38b2db564d9a ("scsi: be2iscsi: Fix a theoretical leak in beiscsi_create_eqs()")
+Cc: stable <stable@vger.kernel.org>
+Reported-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/dma/ti/k3-udma.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/scsi/be2iscsi/be_main.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-index 82cf6c77f5c93..d3902784cae24 100644
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -3201,8 +3201,7 @@ static int udma_setup_resources(struct udma_dev *ud)
- 	} else if (UDMA_CAP3_UCHAN_CNT(cap3)) {
- 		ud->tpl_levels = 3;
- 		ud->tpl_start_idx[1] = UDMA_CAP3_UCHAN_CNT(cap3);
--		ud->tpl_start_idx[0] = ud->tpl_start_idx[1] +
--				       UDMA_CAP3_HCHAN_CNT(cap3);
-+		ud->tpl_start_idx[0] = UDMA_CAP3_HCHAN_CNT(cap3);
- 	} else if (UDMA_CAP3_HCHAN_CNT(cap3)) {
- 		ud->tpl_levels = 2;
- 		ud->tpl_start_idx[0] = UDMA_CAP3_HCHAN_CNT(cap3);
--- 
-2.27.0
-
+--- a/drivers/scsi/be2iscsi/be_main.c
++++ b/drivers/scsi/be2iscsi/be_main.c
+@@ -3013,7 +3013,6 @@ static int beiscsi_create_eqs(struct bei
+ 			goto create_eq_error;
+ 		}
+ 
+-		mem->dma = paddr;
+ 		mem->va = eq_vaddress;
+ 		ret = be_fill_queue(eq, phba->params.num_eq_entries,
+ 				    sizeof(struct be_eq_entry), eq_vaddress);
+@@ -3023,6 +3022,7 @@ static int beiscsi_create_eqs(struct bei
+ 			goto create_eq_error;
+ 		}
+ 
++		mem->dma = paddr;
+ 		ret = beiscsi_cmd_eq_create(&phba->ctrl, eq,
+ 					    phwi_context->cur_eqd);
+ 		if (ret) {
+@@ -3079,7 +3079,6 @@ static int beiscsi_create_cqs(struct bei
+ 			goto create_cq_error;
+ 		}
+ 
+-		mem->dma = paddr;
+ 		ret = be_fill_queue(cq, phba->params.num_cq_entries,
+ 				    sizeof(struct sol_cqe), cq_vaddress);
+ 		if (ret) {
+@@ -3089,6 +3088,7 @@ static int beiscsi_create_cqs(struct bei
+ 			goto create_cq_error;
+ 		}
+ 
++		mem->dma = paddr;
+ 		ret = beiscsi_cmd_cq_create(&phba->ctrl, cq, eq, false,
+ 					    false, 0);
+ 		if (ret) {
 
 
