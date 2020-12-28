@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396932E3DC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9852A2E3DC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502103AbgL1OTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:19:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54352 "EHLO mail.kernel.org"
+        id S2502145AbgL1OTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:19:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440677AbgL1OT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:19:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E95620791;
-        Mon, 28 Dec 2020 14:19:11 +0000 (UTC)
+        id S2502110AbgL1OTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:19:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBBA5207B2;
+        Mon, 28 Dec 2020 14:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165152;
-        bh=C4Vspwt1iBhs04ZgSjdE9/sf0p9HMj2D5pe5BswkYc4=;
+        s=korg; t=1609165155;
+        bh=TQSSlT2EQRSgXCmBGXqu5Wg5Cl/1A1x7DS0kj6eoQgw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kgPggfKSH6DYieCtMw6lR2nZo4eeHnzuQHWtqC6SxGmo7k6GHzqzAFqCLu8zNhOys
-         rDVbOUoAKYk+8aPwfe/danS9DxcKNgIWA92V/KSlhSRJBvVcLsEPd2drKeS2GpErSg
-         zlrefstXIW1FpXVd8HB73USPOr9RLfROsLT8Y5OM=
+        b=WAk4aR1LPtoVgIFhqVltKLzJKqCFILHzwojQqVt7rMYvqH03vhmRWVRT3XBGmN6Fh
+         VdwtRLBbtimdR9y41JAIl+Gn/EOL0ttWlpKhNQUCUGq3snZmiLEJ5BQhvBotwlkYqe
+         3fSXZBeSPhSMPH3osbL60ErpcGb44k5ZuTVuoPVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 430/717] watchdog: sprd: remove watchdog disable from resume fail path
-Date:   Mon, 28 Dec 2020 13:47:08 +0100
-Message-Id: <20201228125041.568891057@linuxfoundation.org>
+Subject: [PATCH 5.10 431/717] watchdog: sprd: check busy bit before new loading rather than after that
+Date:   Mon, 28 Dec 2020 13:47:09 +0100
+Message-Id: <20201228125041.617496340@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -44,13 +44,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lingling Xu <ling_ling.xu@unisoc.com>
 
-[ Upstream commit f61a59acb462840bebcc192f754fe71b6a16ff99 ]
+[ Upstream commit 3e07d240939803bed9feb2a353d94686a411a7ca ]
 
-sprd_wdt_start() would return fail if the loading operation is not completed
-in a certain time, disabling watchdog for that case would probably cause
-the kernel crash when kick watchdog later, that's too bad, so remove the
-watchdog disable operation for the fail case to make sure other parts in
-the kernel can run normally.
+As the specification described, users must check busy bit before start
+a new loading operation to make sure that the previous loading is done
+and the device is ready to accept a new one.
 
 [ chunyan: Massaged changelog ]
 
@@ -58,36 +56,57 @@ Fixes: 477603467009 ("watchdog: Add Spreadtrum watchdog driver")
 Signed-off-by: Lingling Xu <ling_ling.xu@unisoc.com>
 Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20201029023933.24548-2-zhang.lyra@gmail.com
+Link: https://lore.kernel.org/r/20201029023933.24548-3-zhang.lyra@gmail.com
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/sprd_wdt.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/watchdog/sprd_wdt.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/watchdog/sprd_wdt.c b/drivers/watchdog/sprd_wdt.c
-index 65cb55f3916fc..f3c90b4afead1 100644
+index f3c90b4afead1..b9b1daa9e2a4c 100644
 --- a/drivers/watchdog/sprd_wdt.c
 +++ b/drivers/watchdog/sprd_wdt.c
-@@ -345,15 +345,10 @@ static int __maybe_unused sprd_wdt_pm_resume(struct device *dev)
- 	if (ret)
- 		return ret;
+@@ -108,18 +108,6 @@ static int sprd_wdt_load_value(struct sprd_wdt *wdt, u32 timeout,
+ 	u32 tmr_step = timeout * SPRD_WDT_CNT_STEP;
+ 	u32 prtmr_step = pretimeout * SPRD_WDT_CNT_STEP;
  
--	if (watchdog_active(&wdt->wdd)) {
-+	if (watchdog_active(&wdt->wdd))
- 		ret = sprd_wdt_start(&wdt->wdd);
--		if (ret) {
--			sprd_wdt_disable(wdt);
--			return ret;
--		}
--	}
+-	sprd_wdt_unlock(wdt->base);
+-	writel_relaxed((tmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
+-		      SPRD_WDT_LOW_VALUE_MASK, wdt->base + SPRD_WDT_LOAD_HIGH);
+-	writel_relaxed((tmr_step & SPRD_WDT_LOW_VALUE_MASK),
+-		       wdt->base + SPRD_WDT_LOAD_LOW);
+-	writel_relaxed((prtmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
+-			SPRD_WDT_LOW_VALUE_MASK,
+-		       wdt->base + SPRD_WDT_IRQ_LOAD_HIGH);
+-	writel_relaxed(prtmr_step & SPRD_WDT_LOW_VALUE_MASK,
+-		       wdt->base + SPRD_WDT_IRQ_LOAD_LOW);
+-	sprd_wdt_lock(wdt->base);
+-
+ 	/*
+ 	 * Waiting the load value operation done,
+ 	 * it needs two or three RTC clock cycles.
+@@ -134,6 +122,19 @@ static int sprd_wdt_load_value(struct sprd_wdt *wdt, u32 timeout,
  
--	return 0;
-+	return ret;
+ 	if (delay_cnt >= SPRD_WDT_LOAD_TIMEOUT)
+ 		return -EBUSY;
++
++	sprd_wdt_unlock(wdt->base);
++	writel_relaxed((tmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
++		      SPRD_WDT_LOW_VALUE_MASK, wdt->base + SPRD_WDT_LOAD_HIGH);
++	writel_relaxed((tmr_step & SPRD_WDT_LOW_VALUE_MASK),
++		       wdt->base + SPRD_WDT_LOAD_LOW);
++	writel_relaxed((prtmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
++			SPRD_WDT_LOW_VALUE_MASK,
++		       wdt->base + SPRD_WDT_IRQ_LOAD_HIGH);
++	writel_relaxed(prtmr_step & SPRD_WDT_LOW_VALUE_MASK,
++		       wdt->base + SPRD_WDT_IRQ_LOAD_LOW);
++	sprd_wdt_lock(wdt->base);
++
+ 	return 0;
  }
  
- static const struct dev_pm_ops sprd_wdt_pm_ops = {
 -- 
 2.27.0
 
