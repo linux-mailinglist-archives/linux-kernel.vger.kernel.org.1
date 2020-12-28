@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1642E381A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 486652E3A3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730613AbgL1NFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:05:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32904 "EHLO mail.kernel.org"
+        id S2388068AbgL1NeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:34:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730540AbgL1NE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5275622583;
-        Mon, 28 Dec 2020 13:04:18 +0000 (UTC)
+        id S2387850AbgL1NdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:33:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EC91207B2;
+        Mon, 28 Dec 2020 13:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160659;
-        bh=RrbJ4+7p2iNFjjHMmfG4uXIo4O5twLFiZCJZBbcwzwE=;
+        s=korg; t=1609162375;
+        bh=dhtSM7DMnpDcyF9XmBOl3F0BOmWb8GmC6lDqNAgyppQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SzTUKQsB7Ow8L0ABmZldPH5r98Guas8EFa1xQ2QgKhbDRh/lhluxoLYVX6z4eAR+g
-         ZUVuxOEzw2SpYUKbFz+LVzzRSjH/L+NYQ+jbOUUy1OxMbrfJluibMCY/nEYC0gLxKx
-         27XcNMstqGwkpdb9WquvvCe/0/BQvdWDb9F0p7Tw=
+        b=chIhUOdyVVmPRCoLDW/80nDx5hK6GlELCbQbaAMDKUWVIdHQdYI7wsSzc0zi4hHrh
+         bzM5n19Tsr4s1bZNxs/blp0BOw81FRoNV5ymfOjz+EdUp4xGaKL7ubawmL+CU+kK0g
+         Irbmbd/9P8EQA1qjawniSJb1jhMjT8aGNjm7iKUk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Sara Sharon <sara.sharon@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 119/175] checkpatch: fix unescaped left brace
+Subject: [PATCH 4.19 253/346] cfg80211: initialize rekey_data
 Date:   Mon, 28 Dec 2020 13:49:32 +0100
-Message-Id: <20201228124859.024146357@linuxfoundation.org>
+Message-Id: <20201228124932.017707776@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dwaipayan Ray <dwaipayanray1@gmail.com>
+From: Sara Sharon <sara.sharon@intel.com>
 
-[ Upstream commit 03f4935135b9efeb780b970ba023c201f81cf4e6 ]
+[ Upstream commit f495acd8851d7b345e5f0e521b2645b1e1f928a0 ]
 
-There is an unescaped left brace in a regex in OPEN_BRACE check.  This
-throws a runtime error when checkpatch is run with --fix flag and the
-OPEN_BRACE check is executed.
+In case we have old supplicant, the akm field is uninitialized.
 
-Fix it by escaping the left brace.
-
-Link: https://lkml.kernel.org/r/20201115202928.81955-1-dwaipayanray1@gmail.com
-Fixes: 8d1824780f2f ("checkpatch: add --fix option for a couple OPEN_BRACE misuses")
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-Acked-by: Joe Perches <joe@perches.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sara Sharon <sara.sharon@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20201129172929.930f0ab7ebee.Ic546e384efab3f4a89f318eafddc3eb7d556aecb@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/checkpatch.pl | 2 +-
+ net/wireless/nl80211.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 9432387dc1789..c3b23244e64ff 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3818,7 +3818,7 @@ sub process {
- 			    $fix) {
- 				fix_delete_line($fixlinenr, $rawline);
- 				my $fixed_line = $rawline;
--				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*){(.*)$/;
-+				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*)\{(.*)$/;
- 				my $line1 = $1;
- 				my $line2 = $2;
- 				fix_insert_line($fixlinenr, ltrim($line1));
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index fbc8875502c3e..5f0605275fa39 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -11502,7 +11502,7 @@ static int nl80211_set_rekey_data(struct sk_buff *skb, struct genl_info *info)
+ 	struct net_device *dev = info->user_ptr[1];
+ 	struct wireless_dev *wdev = dev->ieee80211_ptr;
+ 	struct nlattr *tb[NUM_NL80211_REKEY_DATA];
+-	struct cfg80211_gtk_rekey_data rekey_data;
++	struct cfg80211_gtk_rekey_data rekey_data = {};
+ 	int err;
+ 
+ 	if (!info->attrs[NL80211_ATTR_REKEY_DATA])
 -- 
 2.27.0
 
