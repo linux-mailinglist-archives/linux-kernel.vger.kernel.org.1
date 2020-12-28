@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7762E631E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:40:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7AC2E3893
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407008AbgL1Pir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:38:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
+        id S1731939AbgL1NMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:12:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406249AbgL1NuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91533205CB;
-        Mon, 28 Dec 2020 13:49:18 +0000 (UTC)
+        id S1731701AbgL1NLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA56F2076D;
+        Mon, 28 Dec 2020 13:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163359;
-        bh=3GDsBp3B0FRcQoI2cx6UJifOCMMLXE1DKASdl12KdH0=;
+        s=korg; t=1609161064;
+        bh=FEmEKYfImGIDHIpcOTTgbpAx49E4hAepF0mdHwCE8gM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=thDOOAmHQKzYIt43MVTOQ6ZNjx9GWVJyhb2++6YarPXx4O4C1WdvViTPKuqngMc5N
-         upgMFf2zgGV7UMGwxzpyPbMN7oGgLek0I39tYoQgvqCxP8lM7w2Bb02IIE9xxUb/2G
-         yoz6ErR2QlgWemFAfck9hKLibCaQGUdCrLns3oJ4=
+        b=UyN6BzAJRwuOk3Sc+nmlazl0Pwu6fyTV5cTDvQ92Mh8xSt3/lDZP4DR4U3J/lVmS1
+         hRGaxFKxpczmNgAWFxr8D0w1FPoitIRrztokgsQ+vz71h1b+XwW0RcTTdwTgYI4PFW
+         rH5xADBC97JGnjP0ZX2EnQ3jkBOBauxhHBeXgJAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 258/453] s390/cio: fix use-after-free in ccw_device_destroy_console
+Subject: [PATCH 4.14 089/242] ASoC: arizona: Fix a wrong free in wm8997_probe
 Date:   Mon, 28 Dec 2020 13:48:14 +0100
-Message-Id: <20201228124949.642068078@linuxfoundation.org>
+Message-Id: <20201228124909.079502004@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 14d4c4fa46eeaa3922e8e1c4aa727eb0a1412804 ]
+[ Upstream commit 5e7aace13df24ff72511f29c14ebbfe638ef733c ]
 
-Use of sch->dev reference after the put_device() call could trigger
-the use-after-free bugs.
+In the normal path, we should not free the arizona,
+we should return immediately. It will be free when
+call remove operation.
 
-Fix this by simply adjusting the position of put_device.
-
-Fixes: 37db8985b211 ("s390/cio: add basic protected virtualization support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Suggested-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Reviewed-by: Vineeth Vijayan <vneethv@linux.ibm.com>
-[vneethv@linux.ibm.com: Slight modification in the commit-message]
-Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: 31833ead95c2c ("ASoC: arizona: Move request of speaker IRQs into bus probe")
+Reported-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Acked-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20201111130923.220186-2-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/cio/device.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8997.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/s390/cio/device.c b/drivers/s390/cio/device.c
-index 983f9c9e08deb..23e9227e60fd7 100644
---- a/drivers/s390/cio/device.c
-+++ b/drivers/s390/cio/device.c
-@@ -1664,10 +1664,10 @@ void __init ccw_device_destroy_console(struct ccw_device *cdev)
- 	struct io_subchannel_private *io_priv = to_io_private(sch);
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index 49401a8aae64a..19c963801e264 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -1179,6 +1179,8 @@ static int wm8997_probe(struct platform_device *pdev)
+ 		goto err_spk_irqs;
+ 	}
  
- 	set_io_private(sch, NULL);
--	put_device(&sch->dev);
--	put_device(&cdev->dev);
- 	dma_free_coherent(&sch->dev, sizeof(*io_priv->dma_area),
- 			  io_priv->dma_area, io_priv->dma_area_dma);
-+	put_device(&sch->dev);
-+	put_device(&cdev->dev);
- 	kfree(io_priv);
- }
++	return ret;
++
+ err_spk_irqs:
+ 	arizona_free_spk_irqs(arizona);
  
 -- 
 2.27.0
