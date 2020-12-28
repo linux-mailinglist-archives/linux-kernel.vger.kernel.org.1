@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6A12E3732
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC3B2E3733
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727746AbgL1MwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:52:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49464 "EHLO mail.kernel.org"
+        id S1727762AbgL1MwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:52:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgL1MwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:52:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D937221D94;
-        Mon, 28 Dec 2020 12:51:33 +0000 (UTC)
+        id S1726420AbgL1MwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:52:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 537AB2245C;
+        Mon, 28 Dec 2020 12:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609159894;
-        bh=tedodv7/jItYJBdjk+HQ6K67sOYuvkEqB+/LVYsubZA=;
+        s=korg; t=1609159896;
+        bh=3b41thYAONDglUo3QhFt3AC3Irrdt/NOex5xJYTSwi4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BJjKJZYBI6YtzgpfvXJw2qaBcNeVW+3hiIFow9/MDCxudZx7zsrLCD6AU/AupCsp+
-         ThfRWGvzsQikPyoB9aqM4naabdpbz6peV1mfBRZr37jrwD0I3ixPF23RgGgFhC2w6J
-         BGoh9u9Qcifa2zOPS4ZeYrgLM/0HL7AX/ewMeRVc=
+        b=vrlHg77g7jPcvGDowJM871+thtOHLMMW7fLrp+483TeoHTn0IF9tz/rr2qaIouKVD
+         /vGm8BaIjzAlXfTcqpuqVVHzZBu3XRNZy6wkceTzCudC3qPbDaspgRs54oJGzqErX6
+         cpiNdV+zNNDXFLFk8Bii09Riq7F4j+at3kXFydD0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 012/132] net: bridge: vlan: fix error return code in __vlan_add()
-Date:   Mon, 28 Dec 2020 13:48:16 +0100
-Message-Id: <20201228124846.989768740@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Bui Quang Minh <minhquangbui99@gmail.com>
+Subject: [PATCH 4.4 013/132] USB: dummy-hcd: Fix uninitialized array use in init()
+Date:   Mon, 28 Dec 2020 13:48:17 +0100
+Message-Id: <20201228124847.039350869@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
 References: <20201228124846.409999325@linuxfoundation.org>
@@ -41,37 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Bui Quang Minh <minhquangbui99@gmail.com>
 
-[ Upstream commit ee4f52a8de2c6f78b01f10b4c330867d88c1653a ]
+commit e90cfa813da7a527785033a0b247594c2de93dd8 upstream.
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+This error path
 
-Fixes: f8ed289fab84 ("bridge: vlan: use br_vlan_(get|put)_master to deal with refcounts")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Link: https://lore.kernel.org/r/1607071737-33875-1-git-send-email-zhangchangzhong@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+	err_add_pdata:
+		for (i = 0; i < mod_data.num; i++)
+			kfree(dum[i]);
+
+can be triggered when not all dum's elements are initialized.
+
+Fix this by initializing all dum's elements to NULL.
+
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+Link: https://lore.kernel.org/r/1607063090-3426-1-git-send-email-minhquangbui99@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/bridge/br_vlan.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/bridge/br_vlan.c
-+++ b/net/bridge/br_vlan.c
-@@ -225,8 +225,10 @@ static int __vlan_add(struct net_bridge_
- 		}
+---
+ drivers/usb/gadget/udc/dummy_hcd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/usb/gadget/udc/dummy_hcd.c
++++ b/drivers/usb/gadget/udc/dummy_hcd.c
+@@ -2741,7 +2741,7 @@ static int __init init(void)
+ {
+ 	int	retval = -ENOMEM;
+ 	int	i;
+-	struct	dummy *dum[MAX_NUM_UDC];
++	struct	dummy *dum[MAX_NUM_UDC] = {};
  
- 		masterv = br_vlan_get_master(br, v->vid);
--		if (!masterv)
-+		if (!masterv) {
-+			err = -ENOMEM;
- 			goto out_filt;
-+		}
- 		v->brvlan = masterv;
- 	}
- 
+ 	if (usb_disabled())
+ 		return -ENODEV;
 
 
