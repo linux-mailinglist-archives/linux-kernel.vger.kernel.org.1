@@ -2,127 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515142E699B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C60252E69A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgL1RPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 12:15:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727784AbgL1RPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 12:15:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27513225AB
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 17:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609175676;
-        bh=nMFBr3AvYXRRq2owotQjD2yoFpgfyoWAPgMz9PhnD/Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZeSX2vRlCanroSsW4BK7DGUrK3k2SOzmqV2xEXyMyPjqu44pP9BiMfE8tPd3llJsX
-         HUJ/W5trVCAdI7BSXID6rGbWhICir5MECyTiACa1g1J2CK43kMFJ9WaPpCNkxF8Joo
-         EaN3FUyXtsgJiCyfnKA/EQBgRM+ls3mmBaXjI7gLHAHQBT5L1B+DKxooB1H4Mqx51z
-         ngviP39PLF3mgFDcWB/8wL0SM/PIWLfUIcrvO5KuB8525M997tpEidUOcGxQKUfhxP
-         Pg5tXjIQVuLfdHVd7iWP1C/S4quq69OdNPfQwCRTb4Aj4d6KObdBM86I/C8LATMP5B
-         W7XvKz/a3n/fg==
-Received: by mail-wr1-f51.google.com with SMTP id a12so11877552wrv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 09:14:36 -0800 (PST)
-X-Gm-Message-State: AOAM533eBZ8MW+mT7MU+7Dqjab81WrLfycFL1ZmGoyrym1TtwDY3tTrD
-        GSlCukiZz8MtC+D4b2Yi70fEEdjcXQ81hgIMsM+kKw==
-X-Google-Smtp-Source: ABdhPJy0oinDLzaLY7q03WGWqBsF+upjqJxfvdljiaLA/MhTFGMKNak9Fp8Heg/rl+JnpYn31/xU0l5Nkg8k+wnrVDI=
-X-Received: by 2002:a5d:43c3:: with SMTP id v3mr51067579wrr.184.1609175674739;
- Mon, 28 Dec 2020 09:14:34 -0800 (PST)
+        id S1728119AbgL1RRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 12:17:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727332AbgL1RRj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 12:17:39 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786E7C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 09:16:58 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id t22so6599612pfl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 09:16:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xo85X2Ouvk2qmQnbe1sme7C4PzCQCpFco37fNwH/Scw=;
+        b=Wni+jZvFm7AhNh6R/UDmCw93fnvISItY0FCW44F+YUw+sO/UbD4W259PR9P5/hzbyW
+         vRr3cjrT2ez443blpaerWJoVACUjBl8KlDjB5FGByFUC+xDAml3CZdri6YbM5AGcpzlB
+         uZ3aIwEmyebGp8PlA4u3jL9tupHhybz7bdolNVwZkNuckH/Us7Idxalz6DPXaq/zSf6d
+         cSjo0lTIhflGk0gyeXDc6Qm4czM8wI59a8regxd/CNVHNm+3Dp8Mgn7iyAbHgw25+NqB
+         JObnP5jMSLuN32Ws5qksu9JFA13k38Pm6GYL2wvtR4TVgR2TNXS/6hgpBGfVpnSVaTu4
+         xs9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xo85X2Ouvk2qmQnbe1sme7C4PzCQCpFco37fNwH/Scw=;
+        b=e4EI09dKqQzg0qYEXX4qO4xLD4ar0az10ZUyHMSBP+hufDvxCiCgrgBDOEKBN09Mzv
+         UlcpmZfda/qPUtuYADR5NDHdOMgUAqpAMqXY3Peo37Xmd4qbMqvhwqqMeM0ALkQVF1bs
+         y2jHKf8sWflAyXeGCuAGF17l/gLPBC+fP99hAOECZDOgjnGZspMfURvkVTl2wFvJpq1l
+         zmlVbDkgeInklglVSNV9P3u22fL4dgtUnptBfauBvcwCPsJ/U/6vpVvynuC0b8r802ko
+         vg+CgtY5TmNElhKk4wJ5zWJkAQAtK86wh0kmAWSdjRbxsIYtgdE9S6redkELCdG8a8pK
+         YpQg==
+X-Gm-Message-State: AOAM530GLx4tjGopcLN7JypGJpUjvLQ1D3CAT1Am8plhsvJ1RUjZTBrE
+        cvqN+PPsrK+EC10wZ45+tuDHcQ==
+X-Google-Smtp-Source: ABdhPJyHL7IDMjv2S/3KB5CLVcRs50PUkjDv2aDSqBp8J/NyHY6MuTvlhp8nZjm+ft+SKa/PBJ7TGw==
+X-Received: by 2002:a62:ca:0:b029:19e:67a9:f0f2 with SMTP id 193-20020a6200ca0000b029019e67a9f0f2mr41177784pfa.60.1609175817956;
+        Mon, 28 Dec 2020 09:16:57 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id k25sm37172351pfi.10.2020.12.28.09.16.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Dec 2020 09:16:57 -0800 (PST)
+Date:   Mon, 28 Dec 2020 09:16:50 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 01/19] x86/insn: Rename insn_decode() to
+ insn_decode_regs()
+Message-ID: <X+oTAiMqfoDe1GBg@google.com>
+References: <20201223174233.28638-1-bp@alien8.de>
+ <20201223174233.28638-2-bp@alien8.de>
 MIME-Version: 1.0
-References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
- <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
- <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com> <20201228102537.GG1551@shell.armlinux.org.uk>
-In-Reply-To: <20201228102537.GG1551@shell.armlinux.org.uk>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 28 Dec 2020 09:14:23 -0800
-X-Gmail-Original-Message-ID: <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
-Message-ID: <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
-Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201223174233.28638-2-bp@alien8.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 2:25 AM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Sun, Dec 27, 2020 at 01:36:13PM -0800, Andy Lutomirski wrote:
-> > On Sun, Dec 27, 2020 at 12:18 PM Mathieu Desnoyers
-> > <mathieu.desnoyers@efficios.com> wrote:
-> > >
-> > > ----- On Dec 27, 2020, at 1:28 PM, Andy Lutomirski luto@kernel.org wrote:
-> > >
-> >
-> > > >
-> > > > I admit that I'm rather surprised that the code worked at all on arm64,
-> > > > and I'm suspicious that it has never been very well tested.  My apologies
-> > > > for not reviewing this more carefully in the first place.
-> > >
-> > > Please refer to Documentation/features/sched/membarrier-sync-core/arch-support.txt
-> > >
-> > > It clearly states that only arm, arm64, powerpc and x86 support the membarrier
-> > > sync core feature as of now:
-> >
-> > Sigh, I missed arm (32).  Russell or ARM folks, what's the right
-> > incantation to make the CPU notice instruction changes initiated by
-> > other cores on 32-bit ARM?
->
-> You need to call flush_icache_range(), since the changes need to be
-> flushed from the data cache to the point of unification (of the Harvard
-> I and D), and the instruction cache needs to be invalidated so it can
-> then see those updated instructions. This will also take care of the
-> necessary barriers that the CPU requires for you.
+On Wed, Dec 23, 2020, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> Rename insn_decode() to insn_decode_regs() to denote that it receives
+> regs as param and free the name for a more generic version of the
+> function.
 
-With what parameters?   From looking at the header, this is for the
-case in which the kernel writes some memory and then intends to
-execute it.  That's not what membarrier() does at all.  membarrier()
-works like this:
-
-User thread 1:
-
-write to RWX memory *or* write to an RW alias of an X region.
-membarrier(...);
-somehow tell thread 2 that we're ready (with a store release, perhaps,
-or even just a relaxed store.)
-
-User thread 2:
-
-wait for the indication from thread 1.
-barrier();
-jump to the code.
-
-membarrier() is, for better or for worse, not given a range of addresses.
-
-On x86, the documentation is a bit weak, but a strict reading
-indicates that thread 2 must execute a serializing instruction at some
-point after thread 1 writes the code and before thread 2 runs it.
-membarrier() does this by sending an IPI and ensuring that a
-"serializing" instruction (thanks for great terminology, Intel) is
-executed.  Note that flush_icache_range() is a no-op on x86, and I've
-asked Intel's architects to please clarify their precise rules.  No
-response yet.
-
-On arm64, flush_icache_range() seems to send an IPI, and that's not
-what I want.  membarrier() already does an IPI.
-
-I suppose one option is to revert support for this membarrier()
-operation on arm, but it would be nice to just implement it instead.
-
---Andy
+Can we add a preposition in there, e.g. insn_decode_from_regs() or
+insn_decode_with_regs()?  For me, "decode_regs" means "decode the register
+operands of the instruction".
