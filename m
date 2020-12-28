@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7632E38CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E03C32E380C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732639AbgL1NPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:15:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43010 "EHLO mail.kernel.org"
+        id S1730464AbgL1NEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:04:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732623AbgL1NPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:15:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5754D20728;
-        Mon, 28 Dec 2020 13:14:52 +0000 (UTC)
+        id S1730412AbgL1NEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:04:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E94208B6;
+        Mon, 28 Dec 2020 13:04:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161293;
-        bh=iRrV4hdtPk4eKcU5Iq0aDCH+J2vIQi9boaG6kCWLdjY=;
+        s=korg; t=1609160644;
+        bh=zRCEZ6P3oZffdYMkmna1aRcGAqJZVYCCMLN1xZ4mHu0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rklHbjGy/dNJlFVRYC/1K9IczCDzsTD01OnNrlUD13nW0nsPK+5fbu6nvJE1D+8YT
-         cS+RuMRzdaaJH6C99KBBZFXRDc7C2oqf++CPIL4rQF/gRTP3o51fvKcqPHbQEPYaFs
-         XvyfNVR5OxLEH8FT3W4ZIOTa+KuC6+I1yXde2A90=
+        b=ZmCQE5CaLbzFCyRYhG7Da3aWF6wwD5b82Sn46BNDqDuFqx1LEz2jnF2C7S4TgMR4I
+         ZZ1SAT33HewpleKj0wCuRK7W9IHgzzs4TzjDIyCG/wzWtyY65/E+wjDlPHlTYg2SDT
+         i45+EQLJUbnI7q/EorgEMULrXkEkCweqaLTwvBlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 139/242] cpufreq: highbank: Add missing MODULE_DEVICE_TABLE
+Subject: [PATCH 4.9 091/175] media: saa7146: fix array overflow in vidioc_s_audio()
 Date:   Mon, 28 Dec 2020 13:49:04 +0100
-Message-Id: <20201228124911.549316025@linuxfoundation.org>
+Message-Id: <20201228124857.660257549@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 9433777a6e0aae27468d3434b75cd51bb88ff711 ]
+[ Upstream commit 8e4d86e241cf035d6d3467cd346e7ce490681937 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this cpufreq driver when it is
-compiled as an external module.
+The "a->index" value comes from the user via the ioctl.  The problem is
+that the shift can wrap resulting in setting "mxb->cur_audinput" to an
+invalid value, which later results in an array overflow.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 6754f556103be ("cpufreq / highbank: add support for highbank cpufreq")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Fixes: 6680427791c9 ("[media] mxb: fix audio handling")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/highbank-cpufreq.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/media/pci/saa7146/mxb.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/cpufreq/highbank-cpufreq.c b/drivers/cpufreq/highbank-cpufreq.c
-index 1608f7105c9f8..ad743f2f31e78 100644
---- a/drivers/cpufreq/highbank-cpufreq.c
-+++ b/drivers/cpufreq/highbank-cpufreq.c
-@@ -104,6 +104,13 @@ out_put_node:
- }
- module_init(hb_cpufreq_driver_init);
+diff --git a/drivers/media/pci/saa7146/mxb.c b/drivers/media/pci/saa7146/mxb.c
+index 504d788076392..3e8753c9e1e47 100644
+--- a/drivers/media/pci/saa7146/mxb.c
++++ b/drivers/media/pci/saa7146/mxb.c
+@@ -652,16 +652,17 @@ static int vidioc_s_audio(struct file *file, void *fh, const struct v4l2_audio *
+ 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
  
-+static const struct of_device_id __maybe_unused hb_cpufreq_of_match[] = {
-+	{ .compatible = "calxeda,highbank" },
-+	{ .compatible = "calxeda,ecx-2000" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, hb_cpufreq_of_match);
+ 	DEB_D("VIDIOC_S_AUDIO %d\n", a->index);
+-	if (mxb_inputs[mxb->cur_input].audioset & (1 << a->index)) {
+-		if (mxb->cur_audinput != a->index) {
+-			mxb->cur_audinput = a->index;
+-			tea6420_route(mxb, a->index);
+-			if (mxb->cur_audinput == 0)
+-				mxb_update_audmode(mxb);
+-		}
+-		return 0;
++	if (a->index >= 32 ||
++	    !(mxb_inputs[mxb->cur_input].audioset & (1 << a->index)))
++		return -EINVAL;
 +
- MODULE_AUTHOR("Mark Langsdorf <mark.langsdorf@calxeda.com>");
- MODULE_DESCRIPTION("Calxeda Highbank cpufreq driver");
- MODULE_LICENSE("GPL");
++	if (mxb->cur_audinput != a->index) {
++		mxb->cur_audinput = a->index;
++		tea6420_route(mxb, a->index);
++		if (mxb->cur_audinput == 0)
++			mxb_update_audmode(mxb);
+ 	}
+-	return -EINVAL;
++	return 0;
+ }
+ 
+ #ifdef CONFIG_VIDEO_ADV_DEBUG
 -- 
 2.27.0
 
