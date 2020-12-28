@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191F92E3B77
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16722E389F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406342AbgL1Nua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:50:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
+        id S1732123AbgL1NMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:12:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406314AbgL1NuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C882720715;
-        Mon, 28 Dec 2020 13:50:06 +0000 (UTC)
+        id S1732058AbgL1NM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:12:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8FCD21D94;
+        Mon, 28 Dec 2020 13:11:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163407;
-        bh=3kH8G1S0zb0Zmt4rApJclmEE26nhfudDk2YtEQm9L5M=;
+        s=korg; t=1609161106;
+        bh=v8xGXZpQ0TfXnuv4B/zhEACipqrrttL22vMUL/cuUI8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s9uhXhFsOaMYeQOpoepuUyqR+taaphaTt8HDWnZWFa1Q+756goB7L/r0w/nepmHCW
-         zyVX/hI3bh9a69W64dF9HSZXKIpY7x9eGx5iwCtjGHW6ZQ2wTjVxsxGx/lKcvIDHRx
-         Os8m0x6ZQ+GU4MWhdkZP52oQbY6VKH+MXrb2Ct8w=
+        b=A9ZG1PITiHVmZy04pBs3qGHh3a4XBJHwkZtFieGCkAItTM65fi7eBj9442zxZbW0J
+         kT/aUn3ec0E9vqhW8P67LkhzXZ3zZdennPe795kOwSWpeQU9CCCr9EV92zu2IEbkTY
+         zg4l65SMLgnZXDYK8x2FmyH1gVyvYhtfqetoI1KY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 244/453] platform/x86: mlx-platform: Fix item counter assignment for MSN2700, MSN24xx systems
+Subject: [PATCH 4.14 075/242] crypto: talitos - Fix return type of current_desc_hdr()
 Date:   Mon, 28 Dec 2020 13:48:00 +0100
-Message-Id: <20201228124948.966635631@linuxfoundation.org>
+Message-Id: <20201228124908.379018203@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Pasternak <vadimp@nvidia.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit ba4939f1dd46dde08c2f9b9d7ac86ed3ea7ead86 ]
+[ Upstream commit 0237616173fd363a54bd272aa3bd376faa1d7caa ]
 
-Fix array names to match assignments for data items and data items
-counter in 'mlxplat_mlxcpld_default_items' structure for:
-	.data = mlxplat_mlxcpld_default_pwr_items_data,
-	.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
-and
-	.data = mlxplat_mlxcpld_default_fan_items_data,
-	.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
+current_desc_hdr() returns a u32 but in fact this is a __be32,
+leading to a lot of sparse warnings.
 
-Replace:
-- 'mlxplat_mlxcpld_pwr' by 'mlxplat_mlxcpld_default_pwr_items_data' for
-   ARRAY_SIZE() calculation.
-- 'mlxplat_mlxcpld_fan' by 'mlxplat_mlxcpld_default_fan_items_data'
-   for ARRAY_SIZE() calculation.
+Change the return type to __be32 and ensure it is handled as
+sure by the caller.
 
-Fixes: c6acad68eb2d ("platform/mellanox: mlxreg-hotplug: Modify to use a regmap interface")
-Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
-Link: https://lore.kernel.org/r/20201207174745.22889-2-vadimp@nvidia.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: 3e721aeb3df3 ("crypto: talitos - handle descriptor not found in error path")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/mlx-platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/talitos.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
-index 4b3d94c4a939a..acb094ddf8e61 100644
---- a/drivers/platform/x86/mlx-platform.c
-+++ b/drivers/platform/x86/mlx-platform.c
-@@ -355,7 +355,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_default_items[] = {
- 		.aggr_mask = MLXPLAT_CPLD_AGGR_PWR_MASK_DEF,
- 		.reg = MLXPLAT_CPLD_LPC_REG_PWR_OFFSET,
- 		.mask = MLXPLAT_CPLD_PWR_MASK,
--		.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
-+		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_pwr_items_data),
- 		.inversed = 0,
- 		.health = false,
- 	},
-@@ -364,7 +364,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_default_items[] = {
- 		.aggr_mask = MLXPLAT_CPLD_AGGR_FAN_MASK_DEF,
- 		.reg = MLXPLAT_CPLD_LPC_REG_FAN_OFFSET,
- 		.mask = MLXPLAT_CPLD_FAN_MASK,
--		.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
-+		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_fan_items_data),
- 		.inversed = 1,
- 		.health = false,
- 	},
+diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
+index 6c8a03a1132f6..8028fbd5cda47 100644
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -447,7 +447,7 @@ DEF_TALITOS2_DONE(ch1_3, TALITOS2_ISR_CH_1_3_DONE)
+ /*
+  * locate current (offending) descriptor
+  */
+-static u32 current_desc_hdr(struct device *dev, int ch)
++static __be32 current_desc_hdr(struct device *dev, int ch)
+ {
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+ 	int tail, iter;
+@@ -478,13 +478,13 @@ static u32 current_desc_hdr(struct device *dev, int ch)
+ /*
+  * user diagnostics; report root cause of error based on execution unit status
+  */
+-static void report_eu_error(struct device *dev, int ch, u32 desc_hdr)
++static void report_eu_error(struct device *dev, int ch, __be32 desc_hdr)
+ {
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+ 	int i;
+ 
+ 	if (!desc_hdr)
+-		desc_hdr = in_be32(priv->chan[ch].reg + TALITOS_DESCBUF);
++		desc_hdr = cpu_to_be32(in_be32(priv->chan[ch].reg + TALITOS_DESCBUF));
+ 
+ 	switch (desc_hdr & DESC_HDR_SEL0_MASK) {
+ 	case DESC_HDR_SEL0_AFEU:
 -- 
 2.27.0
 
