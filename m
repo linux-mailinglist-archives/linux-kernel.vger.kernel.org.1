@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7A62E3EEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 850022E3D15
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505149AbgL1OeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:34:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392125AbgL1OeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:34:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC9AA207B2;
-        Mon, 28 Dec 2020 14:33:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609166004;
-        bh=I7jE2I7TX/Q5cSqr3uhksj+C5kruZK3oQbMMN0vdYTY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1PysX0zkEXB/sW3+NakL6CHUzPnahHsftu92tAXe3t8f8JTCr2qN5Ji5ahBOc2NZn
-         RhujTxGj/zgz3AjTAE6DORux7+PfXjd4/7cZwa7C47cE60DmoMUtmVJHyeos9bRMgK
-         BQWyttwj1E/N4HJWo2RTzoBLI50FfiCWf6k2pBHU=
-Date:   Mon, 28 Dec 2020 15:09:07 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniel West <daniel.west.dev@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        insafonov@gmail.com, gustavoars@kernel.org,
-        andrealmeidap1996@gmail.com, linux-kernel@vger.kernel.org,
-        yepeilin.cs@gmail.com
-Subject: Re: [PATCH 8455/8455] staging: rtl8188eu: core: fixed a comment
- format issue.
-Message-ID: <X+nnAwy/a7mZlmeL@kroah.com>
-References: <20201219224312.380126-1-daniel.west.dev@gmail.com>
+        id S2439169AbgL1OK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:10:56 -0500
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:40502 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439140AbgL1OKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:10:52 -0500
+Received: by mail-vs1-f53.google.com with SMTP id x4so5565613vsp.7;
+        Mon, 28 Dec 2020 06:10:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kVDVcWWL6BrKWAViQNJ51zoi/mT+OBUb6BuJEL+vMoo=;
+        b=pE4CTaRrZYjFplGHrWnQdEsl68KB7lK0M4s8XWTiGRuYAT6sW+RzYZQdLZJAcO4zu+
+         pqn/oaceomlj59wTB7ZB4PPOgVVknq3jp4LBSfUbTaZO3rXHcxVw7Ab2pc1MpkjsgBmZ
+         bxGlyauAfTRm2gk6n7p/2ohOJmweAjZm3aDRUv5IA4zbS4gnYiWKcwcrS7UeASihKPsn
+         8PUVKsu+HTd9Ac58qS0Q0y5X+EeEVqR3ZWMkXzkaJxCeE5RFqHyVttQAYU+bKS2uIjnW
+         h8Uk44fSw4EfkC/aJifP3aVn3vLevRw5ghdGJOEjwK4fznZrhm+/uBXb0idDBeM80Lb0
+         6KYA==
+X-Gm-Message-State: AOAM5330QSiltI+gY6MW3N+embluiTwUXfYi8Tr1C8bMfEEGts/VodDT
+        sdEVeQV4ztt3hGPNkfP8oz2ZR2Xj+wwTGRt8kiOWlCjItTg=
+X-Google-Smtp-Source: ABdhPJyMFLLyG19RShLswn1DSR8JZ58ywdALLa9LeyQVLy11CNG6bQXE6EcX/vDssohktYYfTRnABoFmZNKkk1D0UR4=
+X-Received: by 2002:a67:f601:: with SMTP id k1mr28677791vso.46.1609164610688;
+ Mon, 28 Dec 2020 06:10:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201219224312.380126-1-daniel.west.dev@gmail.com>
+References: <20201228125020.963311703@linuxfoundation.org> <20201228125024.061845231@linuxfoundation.org>
+In-Reply-To: <20201228125024.061845231@linuxfoundation.org>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Mon, 28 Dec 2020 09:09:59 -0500
+Message-ID: <CAKb7UvhvjW+q+FXKoNaWUYm1QqzZ_o6FNjJQbwBJ+Lo9ybBcKQ@mail.gmail.com>
+Subject: Re: [PATCH 5.10 064/717] drm/edid: Fix uninitialized variable in drm_cvt_modes()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "# 3.9+" <stable@vger.kernel.org>, Lyude Paul <lyude@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 02:43:12PM -0800, Daniel West wrote:
-> Fixed a checkpatch warning:
-> 
-> WARNING: Block comments use * on subsequent lines
->  #4595: FILE: drivers/staging/rtl8188eu/core/rtw_mlme_ext.c:4595:
-> +/****************************************************************************
-> +
-> 
-> The code is full of comments like this. Should the coding style
-> be inforced here, even when there is a logic to the way the code
-> was broken up?
-> 
-> Signed-off-by: Daniel West <daniel.west.dev@gmail.com>
+Hi Greg,
+
+Linus had to apply a fixup for this patch. Please ensure that it's in
+your patch list:
+
+commit d652d5f1eeeb06046009f4fcb9b4542249526916
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu Dec 17 09:27:57 2020 -0800
+
+    drm/edid: fix objtool warning in drm_cvt_modes()
+
+It does not appear to have a Fixes tag, so may not have been picked up
+by your automated tooling.
+
+Cheers,
+
+  -ilia
+
+On Mon, Dec 28, 2020 at 9:01 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Lyude Paul <lyude@redhat.com>
+>
+> [ Upstream commit 991fcb77f490390bcad89fa67d95763c58cdc04c ]
+>
+> Noticed this when trying to compile with -Wall on a kernel fork. We
+> potentially don't set width here, which causes the compiler to complain
+> about width potentially being uninitialized in drm_cvt_modes(). So, let's
+> fix that.
+>
+> Changes since v1:
+> * Don't emit an error as this code isn't reachable, just mark it as such
+> Changes since v2:
+> * Remove now unused variable
+>
+> Fixes: 3f649ab728cd ("treewide: Remove uninitialized_var() usage")
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Reviewed-by: Ilia Mirkin <imirkin@alum.mit.edu>
+> Link: https://patchwork.freedesktop.org/patch/msgid/20201105235703.1328115-1-lyude@redhat.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-> index 8794907a39f4..adf2788a416f 100644
-> --- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-> @@ -4591,11 +4591,10 @@ void mlmeext_sta_del_event_callback(struct adapter *padapter)
->  	}
->  }
->  
-> -/****************************************************************************
-> -
-> -Following are the functions for the timer handlers
-> -
-> -*****************************************************************************/
-> +/*
-> + *
-> + *Following are the functions for the timer handlers
-> + */
-
-Does that look correct?  Make it all one line please.
-
-thanks,
-
-greg k-h
+>  drivers/gpu/drm/drm_edid.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index 631125b46e04c..b84efd538a702 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -3114,6 +3114,8 @@ static int drm_cvt_modes(struct drm_connector *connector,
+>                 case 0x0c:
+>                         width = height * 15 / 9;
+>                         break;
+> +               default:
+> +                       unreachable();
+>                 }
+>
+>                 for (j = 1; j < 5; j++) {
+> --
+> 2.27.0
+>
+>
+>
