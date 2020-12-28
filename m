@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14872E4282
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDB12E3EE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407543AbgL1N67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:58:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60744 "EHLO mail.kernel.org"
+        id S2505097AbgL1Odt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:33:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407548AbgL1N6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:58:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D240F205CB;
-        Mon, 28 Dec 2020 13:58:10 +0000 (UTC)
+        id S2504944AbgL1OdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:33:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C45E221F0;
+        Mon, 28 Dec 2020 14:32:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163891;
-        bh=3pitrn+OSz+zq9Mn/OzSQ97Z+lpLb4gLAO+mHS1U07o=;
+        s=korg; t=1609165955;
+        bh=LpshotZFNW0JsA3g9lmgb7EiGJIc7DHNz7kMQTVFhOg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zuj3Zl73Yy2Cq52YsUu3lNmd9hg7ztmZPI7VQU1NJAkGUfPcSohqFk/8IuA5xIQog
-         ELZiNJT7g1pvSO60ihzss/WI/NGRSbDiVuz+jv35enfdBbiMOg+7QweFCMjAqgLEG8
-         huFzoi7/ifEsO00opNpGfE1aiHiWima1iCf3/ZXU=
+        b=UGPU/t6AF5doLFj4bYoO//7j69U+UqfkXMwGdLnu5mT9N2ndZqSCHl7LOu4mJsxPC
+         BAqhoDCIeY7Z8Z7lhVongYJ91iTtNF+LomabC7O7W4rSK89S+sAWGdokLM94sW3KiZ
+         Y8JJ19uWYU6DtTWnmO3E1eGtQN0NQUNrvicMDUI8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
-        Michael Kurth <mku@amazon.de>,
-        Pawel Wieczorkiewicz <wipawel@amazon.de>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.4 445/453] xen/xenbus/xen_bus_type: Support will_handle watch callback
-Date:   Mon, 28 Dec 2020 13:51:21 +0100
-Message-Id: <20201228124958.634771013@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Dan Murphy <dmurphy@ti.com>, Stable@vger.kernel.org
+Subject: [PATCH 5.10 684/717] iio:adc:ti-ads124s08: Fix alignment and data leak issues.
+Date:   Mon, 28 Dec 2020 13:51:22 +0100
+Message-Id: <20201228125053.753772212@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +41,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit be987200fbaceaef340872841d4f7af2c5ee8dc3 upstream.
+commit 1e405bc2512f80a903ddd6ba8740cee885238d7f upstream.
 
-This commit adds support of the 'will_handle' watch callback for
-'xen_bus_type' users.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp() assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv() data with alignment
+explicitly requested.  This data is allocated with kzalloc() so no
+data can leak apart from previous readings.
 
-This is part of XSA-349
+In this driver the timestamp can end up in various different locations
+depending on what other channels are enabled.  As a result, we don't
+use a structure to specify it's position as that would be misleading.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reported-by: Michael Kurth <mku@amazon.de>
-Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: e717f8c6dfec ("iio: adc: Add the TI ads124s08 ADC code")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc: Dan Murphy <dmurphy@ti.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200920112742.170751-9-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/xenbus/xenbus.h       |    2 ++
- drivers/xen/xenbus/xenbus_probe.c |    3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/iio/adc/ti-ads124s08.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/drivers/xen/xenbus/xenbus.h
-+++ b/drivers/xen/xenbus/xenbus.h
-@@ -44,6 +44,8 @@ struct xen_bus_type {
- 	int (*get_bus_id)(char bus_id[XEN_BUS_ID_SIZE], const char *nodename);
- 	int (*probe)(struct xen_bus_type *bus, const char *type,
- 		     const char *dir);
-+	bool (*otherend_will_handle)(struct xenbus_watch *watch,
-+				     const char *path, const char *token);
- 	void (*otherend_changed)(struct xenbus_watch *watch, const char *path,
- 				 const char *token);
- 	struct bus_type bus;
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -136,7 +136,8 @@ static int watch_otherend(struct xenbus_
- 		container_of(dev->dev.bus, struct xen_bus_type, bus);
+--- a/drivers/iio/adc/ti-ads124s08.c
++++ b/drivers/iio/adc/ti-ads124s08.c
+@@ -99,6 +99,14 @@ struct ads124s_private {
+ 	struct gpio_desc *reset_gpio;
+ 	struct spi_device *spi;
+ 	struct mutex lock;
++	/*
++	 * Used to correctly align data.
++	 * Ensure timestamp is naturally aligned.
++	 * Note that the full buffer length may not be needed if not
++	 * all channels are enabled, as long as the alignment of the
++	 * timestamp is maintained.
++	 */
++	u32 buffer[ADS124S08_MAX_CHANNELS + sizeof(s64)/sizeof(u32)] __aligned(8);
+ 	u8 data[5] ____cacheline_aligned;
+ };
  
- 	return xenbus_watch_pathfmt(dev, &dev->otherend_watch,
--				    NULL, bus->otherend_changed,
-+				    bus->otherend_will_handle,
-+				    bus->otherend_changed,
- 				    "%s/%s", dev->otherend, "state");
- }
+@@ -269,7 +277,6 @@ static irqreturn_t ads124s_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct ads124s_private *priv = iio_priv(indio_dev);
+-	u32 buffer[ADS124S08_MAX_CHANNELS + sizeof(s64)/sizeof(u32)];
+ 	int scan_index, j = 0;
+ 	int ret;
  
+@@ -284,7 +291,7 @@ static irqreturn_t ads124s_trigger_handl
+ 		if (ret)
+ 			dev_err(&priv->spi->dev, "Start ADC conversions failed\n");
+ 
+-		buffer[j] = ads124s_read(indio_dev, scan_index);
++		priv->buffer[j] = ads124s_read(indio_dev, scan_index);
+ 		ret = ads124s_write_cmd(indio_dev, ADS124S08_STOP_CONV);
+ 		if (ret)
+ 			dev_err(&priv->spi->dev, "Stop ADC conversions failed\n");
+@@ -292,7 +299,7 @@ static irqreturn_t ads124s_trigger_handl
+ 		j++;
+ 	}
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, priv->buffer,
+ 			pf->timestamp);
+ 
+ 	iio_trigger_notify_done(indio_dev->trig);
 
 
