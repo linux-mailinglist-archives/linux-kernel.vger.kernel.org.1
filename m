@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A27C2E3D36
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9032E3D1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440004AbgL1OMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:12:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46706 "EHLO mail.kernel.org"
+        id S2439702AbgL1OLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:11:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439910AbgL1OMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:12:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 556E52063A;
-        Mon, 28 Dec 2020 14:12:23 +0000 (UTC)
+        id S2439679AbgL1OLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:11:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48EA1207AB;
+        Mon, 28 Dec 2020 14:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164743;
-        bh=u81EBZxBV+ddhWB2v3XDMRlaNyq29QoFNxu9fFsZkf8=;
+        s=korg; t=1609164651;
+        bh=BPLJyYCj6LPWniZc0PkwrcuhXfUq2MC+pD3UGtF4CQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b6/VcQt4S7LGv/TK61nIdhKB0NQKh+JTX1IrsZhirVm14BV5SCOHLsJYyPU3CSV07
-         kX0p/0Y9Sd+SNn9L23t/Zg5/aKwZIdy085c4yx7wI9HfreiWz+jW+CNYN+RH9R8nXD
-         ncdRp050/ZmZz2Jh5Bh9GJ+IV4DbyrnNwv3Qmvvw=
+        b=Y2cZG2yUblyY5kQFMCnI1mGYHn1FWPBy9Va5SKof2fDItXj7Izsd0PQcphvgfkYtO
+         50NlzPG8diVLmX61CILcvKX51BlM2IHdj2H86jpBlOu8aNqTetnvwoW8fyILTC3d9m
+         gdmK1yMISdgKf4UTlxgkwzRcbNo9pb9LFQxj34Rk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
+        stable@vger.kernel.org, Bharat Gooty <bharat.gooty@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 241/717] PCI: Fix overflow in command-line resource alignment requests
-Date:   Mon, 28 Dec 2020 13:43:59 +0100
-Message-Id: <20201228125032.535801761@linuxfoundation.org>
+Subject: [PATCH 5.10 242/717] PCI: iproc: Fix out-of-bound array accesses
+Date:   Mon, 28 Dec 2020 13:44:00 +0100
+Message-Id: <20201228125032.584145274@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -41,38 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Bharat Gooty <bharat.gooty@broadcom.com>
 
-[ Upstream commit cc73eb321d246776e5a9f7723d15708809aa3699 ]
+[ Upstream commit a3ff529f5d368a17ff35ada8009e101162ebeaf9 ]
 
-The shift of 1 by align_order is evaluated using 32 bit arithmetic and the
-result is assigned to a resource_size_t type variable that is a 64 bit
-unsigned integer on 64 bit platforms. Fix an overflow before widening issue
-by making the 1 a ULL.
+Declare the full size array for all revisions of PAX register sets
+to avoid potentially out of bound access of the register array
+when they are being initialized in iproc_pcie_rev_init().
 
-Addresses-Coverity: ("Unintentional integer overflow")
-Fixes: 32a9a682bef2 ("PCI: allow assignment of memory resources with a specified alignment")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Link: https://lore.kernel.org/r/20201001060054.6616-2-srinath.mannam@broadcom.com
+Fixes: 06324ede76cdf ("PCI: iproc: Improve core register population")
+Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/pcie-iproc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index b7a860e790979..6427cbd0a5be2 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -6216,7 +6216,7 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
- 		ret = pci_dev_str_match(dev, p, &p);
- 		if (ret == 1) {
- 			*resize = true;
--			align = 1 << align_order;
-+			align = 1ULL << align_order;
- 			break;
- 		} else if (ret < 0) {
- 			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
+diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
+index 905e938082432..d901b9d392b8c 100644
+--- a/drivers/pci/controller/pcie-iproc.c
++++ b/drivers/pci/controller/pcie-iproc.c
+@@ -307,7 +307,7 @@ enum iproc_pcie_reg {
+ };
+ 
+ /* iProc PCIe PAXB BCMA registers */
+-static const u16 iproc_pcie_reg_paxb_bcma[] = {
++static const u16 iproc_pcie_reg_paxb_bcma[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -318,7 +318,7 @@ static const u16 iproc_pcie_reg_paxb_bcma[] = {
+ };
+ 
+ /* iProc PCIe PAXB registers */
+-static const u16 iproc_pcie_reg_paxb[] = {
++static const u16 iproc_pcie_reg_paxb[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -334,7 +334,7 @@ static const u16 iproc_pcie_reg_paxb[] = {
+ };
+ 
+ /* iProc PCIe PAXB v2 registers */
+-static const u16 iproc_pcie_reg_paxb_v2[] = {
++static const u16 iproc_pcie_reg_paxb_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -363,7 +363,7 @@ static const u16 iproc_pcie_reg_paxb_v2[] = {
+ };
+ 
+ /* iProc PCIe PAXC v1 registers */
+-static const u16 iproc_pcie_reg_paxc[] = {
++static const u16 iproc_pcie_reg_paxc[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x1f0,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x1f4,
+@@ -372,7 +372,7 @@ static const u16 iproc_pcie_reg_paxc[] = {
+ };
+ 
+ /* iProc PCIe PAXC v2 registers */
+-static const u16 iproc_pcie_reg_paxc_v2[] = {
++static const u16 iproc_pcie_reg_paxc_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_MSI_GIC_MODE]	= 0x050,
+ 	[IPROC_PCIE_MSI_BASE_ADDR]	= 0x074,
+ 	[IPROC_PCIE_MSI_WINDOW_SIZE]	= 0x078,
 -- 
 2.27.0
 
