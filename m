@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A7B2E7130
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79CE2E7137
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727141AbgL2NyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 08:54:07 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10094 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbgL2NyF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 08:54:05 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D4wp62smJzM9yc;
-        Tue, 29 Dec 2020 21:52:14 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 29 Dec 2020 21:53:07 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] scsi: lpfc: Use kzalloc for allocating only one thing
-Date:   Tue, 29 Dec 2020 21:53:46 +0800
-Message-ID: <20201229135346.24257-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1726939AbgL2NzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 08:55:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726657AbgL2NzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 08:55:23 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5440320784;
+        Tue, 29 Dec 2020 13:54:41 +0000 (UTC)
+Date:   Tue, 29 Dec 2020 13:54:38 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-iio@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 0/8] Documentation: HID: edit/correct all files
+Message-ID: <20201229135438.347469da@archlinux>
+In-Reply-To: <20201228205327.1063-1-rdunlap@infradead.org>
+References: <20201228205327.1063-1-rdunlap@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kzalloc rather than kcalloc(1,...)
+On Mon, 28 Dec 2020 12:53:19 -0800
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+> Make editing corrections to all files in Documentation/hid/.
 
-// <smpl>
-@@
-@@
+As with all docs, we could bikeshed this for ever and a day, but
+these changes seem to be good to me.
 
-- kcalloc(1,
-+ kzalloc(
-          ...)
-// </smpl>
+I did argue with myself over "an HID" vs "a HID" depending
+on whether people tend to go with hid (as a word) vs H.I.D. (spelling
+out the acronym) but I think hid is the one I've heard more commonly.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/scsi/lpfc/lpfc_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-diff --git a/drivers/scsi/lpfc/lpfc_debugfs.c b/drivers/scsi/lpfc/lpfc_debugfs.c
-index c9a327b13e5c..f550a52dab4f 100644
---- a/drivers/scsi/lpfc/lpfc_debugfs.c
-+++ b/drivers/scsi/lpfc/lpfc_debugfs.c
-@@ -3033,7 +3033,7 @@ lpfc_debugfs_hdwqstat_open(struct inode *inode, struct file *file)
- 		goto out;
- 
- 	 /* Round to page boundary */
--	debug->buffer = kcalloc(1, LPFC_SCSISTAT_SIZE, GFP_KERNEL);
-+	debug->buffer = kzalloc(LPFC_SCSISTAT_SIZE, GFP_KERNEL);
- 	if (!debug->buffer) {
- 		kfree(debug);
- 		goto out;
--- 
-2.22.0
+Thanks,
+
+Jonathan
+
+
+> 
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: linux-input@vger.kernel.org
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: linux-iio@vger.kernel.org
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> 
+>  [PATCH v2 1/8] Documentation: HID: hid-alps editing & corrections
+>  [PATCH v2 2/8] Documentation: HID: amd-sfh-hid editing & corrections
+>  [PATCH v2 3/8] Documentation: HID: hiddev editing & corrections
+>  [PATCH v2 4/8] Documentation: HID: intel-ish-hid editing & corrections
+>  [PATCH v2 5/8] Documentation: HID: hidraw editing & corrections
+>  [PATCH v2 6/8] Documentation: HID: hid-sensor editing & corrections
+>  [PATCH v2 7/8] Documentation: HID: hid-transport editing & corrections
+>  [PATCH v2 8/8] Documentation: HID: uhid editing & corrections
+> 
+>  Documentation/hid/amd-sfh-hid.rst   |   22 +++----
+>  Documentation/hid/hid-alps.rst      |    4 -
+>  Documentation/hid/hid-sensor.rst    |   18 +++---
+>  Documentation/hid/hid-transport.rst |   12 ++--
+>  Documentation/hid/hiddev.rst        |   10 +--
+>  Documentation/hid/hidraw.rst        |    5 +
+>  Documentation/hid/intel-ish-hid.rst |   78 +++++++++++++-------------
+>  Documentation/hid/uhid.rst          |   34 +++++------
+>  8 files changed, 93 insertions(+), 90 deletions(-)
 
