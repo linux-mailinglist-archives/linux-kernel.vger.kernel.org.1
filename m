@@ -2,125 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EED2E7250
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D5A2E7253
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgL2Qan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 11:30:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726158AbgL2Qan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 11:30:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C74F207BC;
-        Tue, 29 Dec 2020 16:30:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609259402;
-        bh=m67px+2pRMeljHeb6eW6pNDGGZ3YI69PjC0TCzw071A=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pzXGUsP+lpfxKhmpYA1py0aKiRuzA7WFHj1UkZ1+Qrlv/9ckT/emnYXRuVxOL0QJV
-         3RKKwbZgzzAffg9KeuIUZSOZ+HQPg/0DRbIkea6M5qEXNE6cseaBSyYaZX13GSA4It
-         bM9D2LyoX92WyIC/UJuFC4eIhLUoueW4aeqzSYyn4m+TPDcqqbG4YhBN+Z0lMuzRje
-         1jei/gn1J0M4RsFDSDTXgcPmRY0Y8awMnQerpKv6sYN19sVtVMdK0jTzGGhIASsGSJ
-         Y2oKc30+2wC6GhMN/Do8755NgNctXJsafIuXLy7iX8B5ZNFLnu0eRKoCEBR9rS1IMf
-         KIU/If5rR6HOw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id BAD3A352265D; Tue, 29 Dec 2020 08:30:01 -0800 (PST)
-Date:   Tue, 29 Dec 2020 08:30:01 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:dev.2020.12.15b 130/134] include/linux/stddef.h:8:14:
- error: called object is not a function or function pointer
-Message-ID: <20201229163001.GL2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <202012291105.rCCNspgz-lkp@intel.com>
+        id S1726242AbgL2QeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 11:34:10 -0500
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:33634 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726114AbgL2QeJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 11:34:09 -0500
+Received: by mail-vs1-f43.google.com with SMTP id e15so7308270vsa.0;
+        Tue, 29 Dec 2020 08:33:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c90Yfkzxi2l1NqUDIqbf6Cne1PXUWdz6gZSsPnQW+zE=;
+        b=f193JBmn7zRIHmQSc3Bw5FcsvMEW4FO7dm8qZgoJrTkKHBD9jteEIHAdZ0r4rN/SQD
+         XcXh2EKG9KrTb9SnTk80HeI0AWzNb4q1slgp9UAGqgPpvOPIpnIBNrvaprS5diMWO4ba
+         ARtzyKEkSxrWpfk5n/Glf2jCxla25a6ObiPQnHJ/AoURheEFaGemhWCkESjjOD65P1EN
+         jbijM64kB7eirKFBt1V9qaSVgDBsheVxHg50b0GOABGyF/CZnYE7tE5RWCuObMDYqp+j
+         PN86U8xuphUEm2/aUo1m4wg7sXlGDQPf29KuAbE+/ytNYrGV8EFafJt+gPK/1tEs1UnD
+         qLOw==
+X-Gm-Message-State: AOAM532veRCDwHSHSgYt3p/jNY/pvJGrWNDpzUcq8Nmrx/9S7ZjdDuxw
+        f5Ggrcr04AAGQ8ehQXyQQGVG8aI/GQwcnTpadYZ7WR6RmsI=
+X-Google-Smtp-Source: ABdhPJygiqPIW+1oU9rzWZsuwzhAAFBJgTgpCzgGaBDBFFck84jgtUQzsqb8Me3je1qgZXUHrXaTToqlp41gvtkN0Lc=
+X-Received: by 2002:a67:ca84:: with SMTP id a4mr33047893vsl.2.1609259608233;
+ Tue, 29 Dec 2020 08:33:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202012291105.rCCNspgz-lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200908002935.GD20064@merlins.org> <20200529180315.GA18804@merlins.org>
+ <20201229155159.GG23389@merlins.org>
+In-Reply-To: <20201229155159.GG23389@merlins.org>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Tue, 29 Dec 2020 11:33:16 -0500
+Message-ID: <CAKb7UviFP_YVxC4PO7MDNnw6NDrD=3BCGF37umwAfaimjbX9Pw@mail.gmail.com>
+Subject: Re: 5.9.11 still hanging 2mn at each boot and looping on nvidia-gpu
+ 0000:01:00.3: PME# enabled (Quadro RTX 4000 Mobile)
+To:     Marc MERLIN <marc_nouveau@merlins.org>
+Cc:     nouveau <nouveau@lists.freedesktop.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 11:28:26AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2020.12.15b
-> head:   f895a17eec290b0038a6294d884a9cc92d7d6e80
-> commit: 7655dc620982c6505386efdaf975e6bde3c27afb [130/134] rcu-tasks: Use NULL pointer instead of empty show_rcu_tasks_*() functions
-> config: ia64-randconfig-r012-20201217 (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=7655dc620982c6505386efdaf975e6bde3c27afb
->         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->         git fetch --no-tags rcu dev.2020.12.15b
->         git checkout 7655dc620982c6505386efdaf975e6bde3c27afb
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+On Tue, Dec 29, 2020 at 10:52 AM Marc MERLIN <marc_nouveau@merlins.org> wrote:
+>
+> On Sat, Dec 26, 2020 at 03:12:09AM -0800, Ilia Mirkin wrote:
+> > > after boot, when it gets the right trigger (not sure which ones), it
+> > > loops on this evern 2 seconds, mostly forever.
+> >
+> > The gpu suspends with runtime pm. And then gets woken up for some
+> > reason (could be something quite silly, like lspci, or could be
+> > something explicitly checking connectors, etc). Repeat.
+>
+> Ah, fair point.  Could it be powertop even?
+> How would I go towards tracing that?
+> Sounds like this would be a problem with all chips if userspace is able
+> to wake them up every second or two with a probe. Now I wonder what
+> broken userspace I have that could be doing this.
 
-This is fixed in -rcu by reverting 4cad23d7f4de ("rcu-tasks: Use NULL
-pointer instead of empty show_rcu_tasks_*() functions").  Thank you for
-your testing!
+Well, it's a theory. Some userspace helpfully prevents the GPU from
+suspending entirely, unfortunately I don't remember its name though by
+messing with the attached audio device. It's very common and meant to
+help... oh well.
 
-							Thanx, Paul
+>
+> > Display offload usually requires acceleration -- the copies are done
+> > using the DMA engine. Please make sure that you have firmware
+> > available (and a new enough mesa). The errors suggest that you don't
+> > have firmware available at the time that nouveau loads. Depending on
+> > your setup, that might mean the firmware has to be built into the
+> > kernel, or available in initramfs. (Or just regular filesystem if you
+> > don't use a complicated boot sequence. But many people go with distro
+> > defaults, which do have this complexity.)
+>
+> Hi Ilia, thanks for your answer.
+>
+> Do you think that could be a reason why the boot would hang for 2 full minutes at every
+> boot ever since I upgraded to 5.5?
 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from arch/ia64/include/asm/pgtable.h:154,
->                     from include/linux/pgtable.h:6,
->                     from arch/ia64/include/asm/uaccess.h:40,
->                     from include/linux/uaccess.h:11,
->                     from arch/ia64/include/asm/sections.h:11,
->                     from include/linux/interrupt.h:20,
->                     from kernel/rcu/update.c:25:
->    arch/ia64/include/asm/mmu_context.h: In function 'reload_context':
->    arch/ia64/include/asm/mmu_context.h:137:41: warning: variable 'old_rr4' set but not used [-Wunused-but-set-variable]
->      137 |  unsigned long rr0, rr1, rr2, rr3, rr4, old_rr4;
->          |                                         ^~~~~~~
->    In file included from include/uapi/linux/posix_types.h:5,
->                     from include/uapi/linux/types.h:14,
->                     from include/linux/types.h:6,
->                     from kernel/rcu/update.c:20:
->    kernel/rcu/tasks.h: In function 'show_rcu_tasks_gp_kthreads':
-> >> include/linux/stddef.h:8:14: error: called object is not a function or function pointer
->        8 | #define NULL ((void *)0)
->          |              ^
->    kernel/rcu/rcu.h:554:40: note: in expansion of macro 'NULL'
->      554 | #define show_rcu_tasks_rude_gp_kthread NULL
->          |                                        ^~~~
->    kernel/rcu/tasks.h:1222:2: note: in expansion of macro 'show_rcu_tasks_rude_gp_kthread'
->     1222 |  show_rcu_tasks_rude_gp_kthread();
->          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >> include/linux/stddef.h:8:14: error: called object is not a function or function pointer
->        8 | #define NULL ((void *)0)
->          |              ^
->    kernel/rcu/rcu.h:559:41: note: in expansion of macro 'NULL'
->      559 | #define show_rcu_tasks_trace_gp_kthread NULL
->          |                                         ^~~~
->    kernel/rcu/tasks.h:1223:2: note: in expansion of macro 'show_rcu_tasks_trace_gp_kthread'
->     1223 |  show_rcu_tasks_trace_gp_kthread();
->          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> 
-> vim +8 include/linux/stddef.h
-> 
-> ^1da177e4c3f415 Linus Torvalds   2005-04-16  6  
-> ^1da177e4c3f415 Linus Torvalds   2005-04-16  7  #undef NULL
-> ^1da177e4c3f415 Linus Torvalds   2005-04-16 @8  #define NULL ((void *)0)
-> 6e2182874324727 Richard Knutsson 2006-09-30  9  
-> 
-> :::::: The code at line 8 was first introduced by commit
-> :::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
-> 
-> :::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-> :::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I'd have to check, but I'm guessing TU104 acceleration became a thing
+in 5.5. I would also not be very surprised if the code didn't handle
+failure extremely gracefully - there definitely have been problems
+with that in the past.
 
+>
+> Also, without wanting to sound like a full newbie, where is that
+> firmware you're talking about? In my kernel source?
+>
+> Here's what I do have:
+> sauron:/usr/local/bin# dpkggrep nouveau
+> libdrm-nouveau2:amd64                           install
+> xserver-xorg-video-nouveau                      install
+>
+> no nouveau-firmware package in debian:
+> sauron:/usr/local/bin# apt-cache search nouveau
+> bumblebee - NVIDIA Optimus support for Linux
+> libdrm-nouveau2 - Userspace interface to nouveau-specific kernel DRM services -- runtime
+> xfonts-jmk - Jim Knoble's character-cell fonts for X
+> xserver-xorg-video-nouveau - X.Org X server -- Nouveau display driver
+>
+> No firmware file on my disk:
+> sauron:/usr/local/bin# find /lib/modules/5.9.11-amd64-preempt-sysrq-20190817/ /lib/firmware/ |grep nouveau
+> /lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau
+> /lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau/nouveau.ko
+> sauron:/usr/local/bin#
+>
+> The kernel module is in my initrd:
+> sauron:/usr/local/bin# dd if=/boot/initrd.img-5.9.11-amd64-preempt-sysrq-20190817 bs=2966528  skip=1 | gunzip | cpio -tdv | grep nouveau
+> drwxr-xr-x   1 root     root            0 Nov 30 15:40 usr/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau
+> -rw-r--r--   1 root     root      3691385 Nov 30 15:35 usr/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau/nouveau.ko
+> 17+1 records in
+> 17+1 records out
+> 52566778 bytes (53 MB, 50 MiB) copied, 1.69708 s, 31.0 MB/s
 
+I think that gets you out of "full newbie" land...
+
+>
+> What am I supposed to do/check next?
+>
+> Note that ultimately I only need nouveau not to hang my boot 2mn and do
+> PM so that the nvidia chip goes to sleep since I don't use it.
+
+I'm not extremely familiar with debian packaging, but the firmware is
+provided by NVIDIA and shipped as part of linux-firmware:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/nvidia
+
+This needs to be available at /lib/firmware/nvidia when nouveau loads.
+Based on your email above, it's most likely that it would load from
+the initrd - so make sure it's in there.
+
+Of course now that I read your email a bit more carefully, it seems
+your issue is with the "saving config space" messages. I'm not sure
+I've seen those before. Perhaps you have some sort of debug enabled.
+I'd find where in the kernel they are being produced, and what the
+conditions for it are. But the failure to load firmware isn't great --
+not 100% sure if it impacts runpm or not.
+
+I just double-checked, TU10x accel came in via
+afa3b96b058d87c2c44d1c83dadb2ba6998d03ce, which was first in v5.6.
+Initial TU10x support came in v5.0. So that doesn't line up with your
+timeline.
+
+Anyways, I'd definitely sort the firmware situation out, but it may
+not be the cause of your problem.
+
+Cheers,
+
+  -ilia
