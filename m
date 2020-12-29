@@ -2,116 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FB32E7195
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF482E7196
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgL2PIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgL2PIT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:08:19 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D11C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 07:07:38 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id d203so14883451oia.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 07:07:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QqvfcvBB/yuJN88cknZSgA0GC7ju7WQsqKbZVnzon9A=;
-        b=rcYdCtotJM+LpY7Zu7AX9yGCRCcl+q2r5SXVbMFfkoXpoZ8WDV/Hc7fHIijlA5hicY
-         uOcqjg0wmvJsVzeQMwHLisl9uzMf3YRVSE+lgPeihRVUNVxzJYwLD/GsvmzkmcCLRPRJ
-         6+ffFonT6L/DPJVdkI//S/yINgTmuXTZtY31pR4M3j6rZOniXPHroG6ivM11QsBSmwKu
-         Ksi31p54tgkrUqUOTqtLp+++7PjXKKpF7TDIoQKncd1Ht3YrSkXUiKeAHsJwDgY7Tq4L
-         4Ws0lRjBLS6vJ1ifUOveTlj7BVwWJatShcc2qlHOyxGoKsyBabt6p/wN48L7o5rtOM2K
-         yb0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QqvfcvBB/yuJN88cknZSgA0GC7ju7WQsqKbZVnzon9A=;
-        b=RqWdJHMVq2DBu+wIFyfZLFlUhny2bgo5Qk3n2cTJ7xp8FojqAslb3N2wBCq9M7Vb1J
-         iAQuRRs9l3TXv4alJquX3YUSbgn6etvxbNwfSJD5puVcLszZ3bUbOHGHLTt9ilGcm7vK
-         b6hgGSY5jH3mCYT6v9TUhrr6uOfFQhDe2sftPWw54js0udfjcXVk5LC9n1WVhRU85nbn
-         JzJ9FL8U+C2Wx4kbTNWQMfXHMsQMlXpLD4BKs5ksis4mZ2zoM5Oihwn5EE6rvbRrrzU+
-         INJBO6PAiAsU+b0NqZsxyiLiq1y/KlceU7OBZfmHJSxmIXZYSxZjXRewj4T/l0KVLh3P
-         WoGA==
-X-Gm-Message-State: AOAM530beH+RtG2OFjLow40mG9Zh+wxtxzS/a46z/gX3W4AIZe7gSLr2
-        rtjZZDI6M5w/16uqkHLfCuc96X/Be6GL/1YLAyw=
-X-Google-Smtp-Source: ABdhPJzC2MH8SjmAcuJHIWCLv3XOp2I/AEt3ZNbGPd3fKXcTSy+TUAWZJnrJznG1ESwJk4StebJOioPc98JbCD+BjVQ=
-X-Received: by 2002:a54:4083:: with SMTP id i3mr2552418oii.120.1609254458047;
- Tue, 29 Dec 2020 07:07:38 -0800 (PST)
+        id S1726628AbgL2PJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:09:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726586AbgL2PJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 10:09:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7C8220867;
+        Tue, 29 Dec 2020 15:08:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609254508;
+        bh=qBCnqgfbAFbo0kfsHjsHUPPZWLpRyZyx+XwoPwWNgmU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QvzDHuW9IuIgIeEwaiaof2VigNtCnTzkIJbZrbKGg6WPE7hrH6VB8wl4mN2o2t6PC
+         bZ/yyaGtnSPDomerH/RjgI0yZgX9A/qWWCzx2Zxo1dRyy/WPf7fG8xszjq3ZTsGVMs
+         VUBj+akEmSAng7zQVRMpsPl3wbNTIO9dMEcKhWhQsFiLbnObWWndrTLpF9feljcDgt
+         8K7Si1bwyTfP12tLPTkpGOkXZnLprcM/fhdSYr7XI2Hd+gX5TLYO5j/laigMOAamjO
+         2qR5d14xYm8suTrV/tY8EyvpxE+ImskNBPmBaqPP0FJCkBGMEh+m+5Bv0ApGHsqgAB
+         XiwbE4Q/8MjjQ==
+Date:   Tue, 29 Dec 2020 15:08:07 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
+Message-ID: <20201229150807.GF4786@sirena.org.uk>
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-2-hdegoede@redhat.com>
+ <20201228122138.GA5352@sirena.org.uk>
+ <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
+ <20201228162807.GE5352@sirena.org.uk>
+ <20201229130657.GN9673@ediswmail.ad.cirrus.com>
+ <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
 MIME-Version: 1.0
-References: <CAPM=9twrkJdUqTLXXsNygtzkrc4P2iyw4kwU1T83D4_+-gdpDA@mail.gmail.com>
- <CAHk-=whf+kw=YSDbmvgiSvNL9ckHc8EpkTgZzMXu-bMw941GYQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whf+kw=YSDbmvgiSvNL9ckHc8EpkTgZzMXu-bMw941GYQ@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 29 Dec 2020 10:07:27 -0500
-Message-ID: <CADnq5_N_2iYnh13p-z5vrvNK9rzKV-5TYtCC-FiEYjvi--_org@mail.gmail.com>
-Subject: Re: [git pull] drm fixes for 5.11-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Harry Wentland <hwentlan@amd.com>,
-        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>
-Cc:     Dave Airlie <airlied@gmail.com>, Josip Pavic <Josip.Pavic@amd.com>,
-        Bindu Ramamurthy <bindu.r@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Ls2Gy6y7jbHLe9Od"
+Content-Disposition: inline
+In-Reply-To: <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
+X-Cookie: Mother Earth is not flat!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 5:28 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, Dec 23, 2020 at 6:29 PM Dave Airlie <airlied@gmail.com> wrote:
-> >
-> > Xmas eve pull request present. Just some fixes that trickled in this
-> > past week. Mostly amdgpu fixes, with a dma-buf/mips build fix and some
-> > misc komeda fixes.
->
-> Well, I already pulled and pushed out my merge, but only noticed
-> afterwards that clang complains about this, and I think it's a real
-> bug:
->
->   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_mpc.c:475:6: warning:
->      variable 'val' is used uninitialized whenever 'if' condition is
-> false [-Wsometimes-uninitialized]
->
-> and it sure is true: the code literally does
->
->         uint32_t val;
->
->         if (opp_id < MAX_OPP && REG(MUX[opp_id]))
->                 REG_GET(MUX[opp_id], MPC_OUT_MUX, &val);
->
->         return val;
->
-> so clearly 'val' isn't initialized if that if-statement isn't true.
->
-> I assume 'opp_id' is always presumed to be valid, but that code really
-> is disgusting.
->
-> Just make it return 0 (or whatever) for invalid, possibly together
-> with a WARN_ON_ONCE(). Ok?
 
-Harry, Nick, Hersen,
+--Ls2Gy6y7jbHLe9Od
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Can you take a look?
+On Tue, Dec 29, 2020 at 02:57:38PM +0100, Hans de Goede wrote:
+> On 12/29/20 2:06 PM, Charles Keepax wrote:
 
-Thanks,
+> > I would agree with Mark though that if extcon exists for external
+> > connectors it seems odd that audio jacks would have their own
+> > special way rather than just using the connector stuff.
 
-Alex
+> Well as I said above in me experience the extcon code is (was) mostly
+> meant for kernel internal use. The sysfs API is more of a debugging
+> tool then anything else (IMHO).
 
->
->              Linus
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+No, that's not the case.  extcon is a port of an Android custom API that
+looks very similar to what ended up in mainline, it was also a
+combination of sysfs and uevents but a bit less generic.  It mainly
+existed to provide information to userspace about what was plugged into
+the various ports on devices, things like headphone jacks and the
+pre-USB C multifunction connectors you used to get on phones.  In kernel
+use wasn't really a thing for that as far as I can remember.  It's
+become a bit less of a pressing concern for Android with the move to USB
+C and the deprecation of headphone jacks in favour of a combination of
+USB C and Bluetooth but the use case is still there and it's clear that
+none of the audio stuff is currently exactly designed.
+
+The issues I'm seeing are more to do with nobody working on things, I
+guess mainly due to the change in priorities for Android systems and in
+my case a job change.
+
+> Also the kernel has support for a lot of sound devices, including
+> many with jack-detection support. Yet a grep for EXTCON_JACK_HEADPHONE
+> over the entire mainline kernel tree shows that only extcon-arizona.c
+> is using it. So given that we have dozens of drivers providing jack
+> functionality through the sound/core/jack.c core and only 1 driver
+> using the extcon interface I believe that the ship on how to export
+> this to userspace has long sailed, since most userspace code will
+> clearly expect the sound/core/jack.c way of doing things to be used.
+
+The whole purpose of creating sound/core/jack.c is to abstract away the
+userspace interfaces from the drivers, most audio devices shouldn't be
+working with extcon directly just as they shouldn't be creating input
+devices or ALSA controls directly.  The missing bit there is to add
+extcon into jack.c.
+
+BTW note that the existing arizona extcon driver does provide an input
+device so I'm guesing that whatever userspace you're concerned about is
+one that uses only the ALSA controls for jack detection.
+
+> Arguably we should/could maybe even drop the extcon part of extcon-arizona.c
+> but I did not do that as I did not want to regress existing userspace
+> code which may depend on this (on specific embedded/android devices).
+
+I do think pushing things over to extcon is a useful goal, the existing
+interfaces have fairly clear issues that it does actually address.
+
+--Ls2Gy6y7jbHLe9Od
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/rRlYACgkQJNaLcl1U
+h9CmrQf+KczNR72kmDzv/wsP0MtRJXjVpI1zsAU2XWl2wd1p/NkAjS7wWDsM+WyQ
+LXSssRyt6Z5g+mVUOZLu+W/LwNGa2sCxaP4NE5XNdohTwV43YaFCtojA1O5IvooZ
+dPJ9y0qm5aeVrVc30SXiPO4EgUCGHvaEUQ8NoamvsAjio56fQhuOVd934ga0L9ln
+gVmwilPmxH5MvSyVkNtHXC1ycHJB5Wc6h2Hnk69MKa55aknl11CiMYFzgSxGik23
+PLgecOQ1LTtJmJ5Jmy15ZFLM5B1qqhv3uwRE2l6hPzl7+YgGGZ50yEu6cH3bTIIn
+NearEyg9UT1lu8vV7OqvdqB+z1tpgw==
+=SJ5p
+-----END PGP SIGNATURE-----
+
+--Ls2Gy6y7jbHLe9Od--
