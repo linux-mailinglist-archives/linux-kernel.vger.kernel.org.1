@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E452E72ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1650D2E72F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbgL2SMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 13:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        id S1726246AbgL2SQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 13:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726300AbgL2SMF (ORCPT
+        with ESMTP id S1726138AbgL2SQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 13:12:05 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BB7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 10:11:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=viV2rX2w2i9Hdm9ONoTqTJFY2cOrENzdsrkBg4PRr5I=; b=0WfJGaCXCUrUAefVlFICv4ymRr
-        YI+ZcwDuluq7ussSVYQn0C3pjBbJX80DPtG0sMPBHFFJJG+o0s3SIq6KYzsmHVT6XHo/czVUixzw4
-        9s/VsFvCRO2fVLyND9RVCr6RKtT1pQ67041UKS3ORBNdzwUS+ukIwsKgVQs2IsEEsOP0J7OGEjBjK
-        rrz/IBNvMyOsLYMabG3Y7vl/i3Ro9junBMg+zYBnJuBRhTPK1ez6Vd8AAwdek/owHP0aIWpXEcbZh
-        uc+zfHt6BUmHlTMJQmCB7nmnNe04LaVaJkctJmYX8iVDFa5LZwOsNx5QOWdIBq4A/bvDs+73iZV4a
-        B1Ji1YFg==;
-Received: from [2601:1c0:6280:3f0::2c43]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kuJSo-0003sk-Ry; Tue, 29 Dec 2020 18:11:19 +0000
-Subject: Re: [RFC PATCH 2/2] mm: readahead: handle LARGE input to
- get_init_ra_size()
-To:     =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org
-References: <20201220211051.1416-1-rdunlap@infradead.org>
- <20201222173533.c9e28416835d7487b0e28cda@linux-foundation.org>
- <6a595671-20a8-e63f-f3ea-f4749a574efa@infradead.org>
- <d2edfb69-93b4-d938-faf0-5f7c0f1158b9@gmx.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1f5a6e7b-c779-861e-fde8-409ca8e2541b@infradead.org>
-Date:   Tue, 29 Dec 2020 10:11:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 29 Dec 2020 13:16:45 -0500
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C551C061574;
+        Tue, 29 Dec 2020 10:16:05 -0800 (PST)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4D52f16GcszQlWv;
+        Tue, 29 Dec 2020 19:15:37 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dylanvanassche.be;
+        s=MBO0001; t=1609265733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=uAi+P0BDIEVHfAACitvE53eerN20LFfY1Wewe1kXQaM=;
+        b=AITspcHidfh0o2Koyv8GGx6LejfKuLEYDkvdSWtFsuT2B382SF7LbEUWbKMv8NCRY68xg+
+        Odw/ICFWz8xuP1HFJdfqBBQx6WI5tws7orpjwTo2jpnojoAbHHOXieZVTsnR/l5lq+VEkV
+        Wg8T6hmDS6lOEGP/wLZyalRH59hx3Ho7gTMBB35vxBSfomd5QXTtivv3bTtfYx8vsFX+Sx
+        pAty3u+ZBcnfhdGD3zkLFK8k/mK+IG1wgFqCKbDuVoy5XF70paFq6zkHh1d1+JLxx2wxpP
+        Apb9qmSkVw/zWfYn7KTELn/0vhjDP5KehokA+Fv3QoUu0NNe2SM/t9OrkGahnw==
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id 2yVREUYdCIF0; Tue, 29 Dec 2020 19:15:32 +0100 (CET)
+From:   Dylan Van Assche <me@dylanvanassche.be>
+To:     pavel@ucw.cz, dmurphy@ti.com, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Dylan Van Assche <me@dylanvanassche.be>
+Subject: [PATCH v3] leds: gpio: Set max brightness to 1
+Date:   Tue, 29 Dec 2020 19:15:12 +0100
+Message-Id: <20201229181512.21057-1-me@dylanvanassche.be>
 MIME-Version: 1.0
-In-Reply-To: <d2edfb69-93b4-d938-faf0-5f7c0f1158b9@gmx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -6.12 / 15.00 / 15.00
+X-Rspamd-Queue-Id: E0BF11726
+X-Rspamd-UID: e92318
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/29/20 10:01 AM, Toralf Förster wrote:
-> On 12/23/20 2:50 AM, Randy Dunlap wrote:
->>> What motivates this change?  Is there any reason to think this can
->>> happen?
->> Spotted in the wild:
-> I run 2 hardened Gentoo systems, a server and a desktop.
-> 
-> I patched the server with this:
-> 
-> mr-fox ~ # cat ubsan.patch
-> --- linux-5.10.1.orig/mm/readahead.c
-> +++ linux-5.10.1/mm/readahead.c
-> @@ -310,7 +310,11 @@ void force_page_cache_ra(struct readahea
->   */
->  static unsigned long get_init_ra_size(unsigned long size, unsigned
-> long max)
->  {
-> -       unsigned long newsize = roundup_pow_of_two(size);
-> +       unsigned long newsize;
-> +
-> +       if (!size)
-> +               size = 32;
-> +       newsize = roundup_pow_of_two(size);
-> 
->         if (newsize <= max / 32)
->                 newsize = newsize * 4;
-> 
-> 
-> 
-> and the issue did no longer occurred at the server (5.10.2).
-> 
-> I did not patched the desktop system and the issue occurred still 3
-> times since 21th of december (5.10.2/3)
+GPIO LEDs only know 2 states: ON or OFF and do not have PWM capabilities.
+However, the max brightness is reported as 255.
 
-Yes, that's the patch that I posted on 2020-DEC-22.
+This patch sets the max brightness value of a GPIO controlled LED to 1.
 
-Looks like I should submit a real patch for that.
+Tested on my PinePhone 1.2.
 
-thanks.
+Signed-off-by: Dylan Van Assche <me@dylanvanassche.be>
+---
+Changelog                                          
+  - v2 drops an obsolete change in include/linux/leds.h
+  - v3 simplifies the patch and makes it more readable
+
+ drivers/leds/leds-gpio.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
+index 93f5b1b60fde..b5d5e22d2d1e 100644
+--- a/drivers/leds/leds-gpio.c
++++ b/drivers/leds/leds-gpio.c
+@@ -96,7 +96,8 @@ static int create_gpio_led(const struct gpio_led *template,
+ 	} else {
+ 		state = (template->default_state == LEDS_GPIO_DEFSTATE_ON);
+ 	}
+-	led_dat->cdev.brightness = state ? LED_FULL : LED_OFF;
++	led_dat->cdev.brightness = state;
++	led_dat->cdev.max_brightness = 1;
+ 	if (!template->retain_state_suspended)
+ 		led_dat->cdev.flags |= LED_CORE_SUSPENDRESUME;
+ 	if (template->panic_indicator)
 -- 
-~Randy
+2.26.2
 
