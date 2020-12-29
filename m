@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5382E6CF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 02:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6B82E6CF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 02:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729964AbgL2BKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 20:10:25 -0500
-Received: from mail.cock.li ([37.120.193.124]:47320 "EHLO mail.cock.li"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726738AbgL2BKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 20:10:23 -0500
-X-Greylist: delayed 599 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Dec 2020 20:10:23 EST
+        id S1730569AbgL2BL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 20:11:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730280AbgL2BL1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 20:11:27 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA279C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 17:10:46 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id v5so8079802qtv.7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 17:10:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jTblGVy12KttnCpCdJ35MVlE2TQ4BSno7et+Y7H5Mfg=;
+        b=j9heRQVh+jzLspOpfU+dZ9v5/6Yj4OgxBhU4m/3bCIK52i36ADCx9E3y8Cb+Za1Xbk
+         VvFFevVP0fTjYWjeOVYlmirhCGyXErQlr5EiB7WkWvngFsLeTQ6iNO7txJquQqC7W4zA
+         pahrsdYaVf2uocS5iyV4Fs7SsHVusLSg5u/rSP8nuW3cvCtsXuhHXlC1vXcDb/K/hIEj
+         YsLDodEMgkmahlL1SL0a3ti/iUtKR4c03lVRnc/7kc9wxIqd0XqK1h8OScYsBFLBSJiu
+         F6oY07OLzpdrlpHOIufpNKb70jQ23lGOtq31TydflOmFr2FHdqDu1nu+BPlQwOXGH0lW
+         m5FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jTblGVy12KttnCpCdJ35MVlE2TQ4BSno7et+Y7H5Mfg=;
+        b=Dlt3x0zf7QTHxLPmPJU8hHqCn+XjwcCLp4RDiVHqanJ5V9pFiRqsTXFMJns6fzgg/z
+         I11FLEcRZydArup9OCpRl0JFGXNpRqBEdzoDLdTbRe/gbJN3CcX1YrRTOhUswvAfqJ21
+         xSPLA2mpxT3h8IusVlySdOjMyg73/YM1/EaD+bWQrE7uOGvgqVAYxIn+cF3wFuPQ2QLz
+         s89vFXjx1hlvkpTjdf2Nr92QcNbF19OhnQ7fOfMqUdWqrqEdOJCrQ5Ikg+LPHfXTWkvD
+         eyH6sXVMJ1e+8KHIzJTtDwXpjr05HXPMX5ZhelyUctECw2grWpNUz6wKtHQjvD1jBbCI
+         jSag==
+X-Gm-Message-State: AOAM5328tHpBIgBIfKLNFBZttze7wqP32UQV7Cdzacm5cGIBMxdGpnaY
+        xHcdAPVhbqOWz+j6BgrWlQdQcM8v5UV0xrYDRFs=
+X-Google-Smtp-Source: ABdhPJytjvaYrurpuqAHSjl12rETbCix8KlKt/uoQw+UZHZHfkmwyxpaTa/cAiCJAv+urriOgPavUVfxHZwHLlT5RU8=
+X-Received: by 2002:ac8:58d1:: with SMTP id u17mr46735628qta.158.1609204245809;
+ Mon, 28 Dec 2020 17:10:45 -0800 (PST)
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firemail.cc; s=mail;
-        t=1609203578; bh=eCiOQGxiPZJs7rH3GIOjggodNGZ3G2WmQmcJCEW3PTY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IMT/VnidNmN85gjFnsZ4ribF7showFQ414aH3KX1tmPvA398ULSalEkdGo+aOEO6+
-         3vDGeML9s0WyBbWWd0JenZ+mRyg7cFrax3tWnp7GI/xCxX8daN4T9UZe3+02/5gDDs
-         6yyxreG7cguwqTrcoFMizvBcyqUInAJoBOIVT07v3uvxoBRW6KHAhnLoeU6KIfPbop
-         YRr4LDbQ6nsMTtfocYXTlRksGNHNNAVPuoY7CKiC/Kjz3O3s0flrrTRxh0/0aIgOtP
-         Kk6+lCmpM7B2H2R7Q6LplEfkrF9fdDRrZbk9gX4xe8qSS+mTrZpo+uuqYAG8XuS9ht
-         CfXEcXPDPSvEQ==
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 29 Dec 2020 00:59:39 +0000
-From:   nipponmail@firemail.cc
-To:     linux-kernel@vger.kernel.org
-Cc:     rms@gnu.org, bruce@perens.com, esr@thyrsus.com,
-        moglen@columbia.edu, blukashev@sempervictus.com,
-        tcallawa@redhat.com, editor@lwn.net, skraw.ml@ithnet.com,
-        torvalds@osdl.org
-Subject: Bring a CASE act claim every time GrSecurity releases a new
- infringing work?
-Message-ID: <20fe0b28f3ac8661624f01d231bf60a8@firemail.cc>
-X-Sender: nipponmail@firemail.cc
-User-Agent: Roundcube Webmail/1.3.15
+References: <20201228130853.1871516-1-jannh@google.com>
+In-Reply-To: <20201228130853.1871516-1-jannh@google.com>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Tue, 29 Dec 2020 10:10:34 +0900
+Message-ID: <CAAmzW4P9OQTh0TYfKUc6Q6z1j0-ewfmOD3c18b9tHPNy0T45hQ@mail.gmail.com>
+Subject: Re: [PATCH] mm, slub: Consider rest of partial list if acquire_slab() fails
+To:     Jann Horn <jannh@google.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-     Should each Linux copyright owner of whom's copyright is being 
-violated (By GrSecurity) bring a "small claims copyright" case every 
-time GrSecurity sends a new infringing patch to a customer?
+2020=EB=85=84 12=EC=9B=94 28=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 10:10,=
+ Jann Horn <jannh@google.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> acquire_slab() fails if there is contention on the freelist of the page
+> (probably because some other CPU is concurrently freeing an object from t=
+he
+> page). In that case, it might make sense to look for a different page
+> (since there might be more remote frees to the page from other CPUs, and =
+we
+> don't want contention on struct page).
+>
+> However, the current code accidentally stops looking at the partial list
+> completely in that case. Especially on kernels without CONFIG_NUMA set,
+> this means that get_partial() fails and new_slab_objects() falls back to
+> new_slab(), allocating new pages. This could lead to an unnecessary
+> increase in memory fragmentation.
+>
+> Fixes: 7ced37197196 ("slub: Acquire_slab() avoid loop")
+> Signed-off-by: Jann Horn <jannh@google.com>
 
-     (GRSecurity blatantly violates the clause in the Linux kernel and 
-GCC copyright licenses regarding adding addtional terms between the 
-licensee of the kernel / gcc and furthur down-the-line licensees, 
-regarding derivative works)
-     (The linux kernel has 1000s of copyright holders)
-     (All who shake at the knees at the thought of initiating a federal 
-Copyright lawsuit)
+Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-     (GrSecurity's main Programmer: Brad Spengler: has shining 
-resplendent blue eyes; like sapphires, however)
-
-     > 
-https://www.billboard.com/articles/business/9503848/congress-case-copyright-reforms-covid-19-relief-bill/
-     >The CASE Act creates a new small claims system in the US that 
-allows copyright holders to pursue damages for copyright infringement 
-without filing a federal lawsuit. These claims would be decided by 
-copyright officers, not judges and juries, and could involve no more 
-than $15,000 per work infringed upon, and $30,000 total.
-
-     Does this new law create broader per-violation rights for the 
-copyright holder? The then current copyright law makes it quite hard to 
-go after violators: usually the lawsuit costs more than any hope of 
-recovery. Every version you want to sue over, if you actually want to 
-recover attorneys fees and statutory damages (not just whatever revenue 
-you can proove (good luck)), has to be registered with the copyright 
-office; same or similar violations subsequent to a registration by the 
-same violator DO NOT grant you Attorney's fees and Statutory recovery; 
-the same of a later version doesn't either.
-
-     It's hard to get any money out of a violator.
-     Especially how Free Software and Opensource copyright holders do 
-things... (never registering their copyrights seemingly, always afraid, 
-cowering before CoC's, being servants and slaves, doing it all for free, 
-being kicked out of their own "societies)
-
+Thanks.
