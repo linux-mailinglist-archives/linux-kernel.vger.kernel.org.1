@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5607F2E725B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C63F2E7260
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgL2Qff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 11:35:35 -0500
-Received: from mga03.intel.com ([134.134.136.65]:16329 "EHLO mga03.intel.com"
+        id S1726209AbgL2QkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 11:40:09 -0500
+Received: from elvis.franken.de ([193.175.24.41]:45176 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgL2Qfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 11:35:34 -0500
-IronPort-SDR: VaVd5Ys1JKd0Ly9gmiVYspzMBb8YfggZlAMPWIGacHvV9ZvhDQcvGA83Wug6cgMgI2Q6gzSt0f
- 1/52q6cxYKfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9849"; a="176608615"
-X-IronPort-AV: E=Sophos;i="5.78,458,1599548400"; 
-   d="scan'208";a="176608615"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 08:34:53 -0800
-IronPort-SDR: Wl5EDOps++Sos5Yh78VcJcwz2qfJFTwjnoTuS6PxulCuZ2H6XYQEqKjNjZ5w+VQZcz+Mv3rcID
- +GA8BBRxgBKA==
-X-IronPort-AV: E=Sophos;i="5.78,458,1599548400"; 
-   d="scan'208";a="347442009"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.251.0.43]) ([10.251.0.43])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 08:34:51 -0800
-Subject: Re: [PATCH v16 02/26] x86/cet/shstk: Add Kconfig option for user-mode
- control-flow protection
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201209222320.1724-1-yu-cheng.yu@intel.com>
- <20201209222320.1724-3-yu-cheng.yu@intel.com>
- <20201229123910.GB29947@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <c193c18e-6a3c-e079-67dc-bca35bceee71@intel.com>
-Date:   Tue, 29 Dec 2020 08:34:51 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726114AbgL2QkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 11:40:08 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kuI1p-0007OT-00; Tue, 29 Dec 2020 17:39:21 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 9CCF2C07BF; Tue, 29 Dec 2020 17:39:07 +0100 (CET)
+Date:   Tue, 29 Dec 2020 17:39:07 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>
+Subject: Re: [PATCH] MIPS: Loongson64: Give chance to build under
+ !CONFIG_NUMA and !CONFIG_SMP
+Message-ID: <20201229163907.GA8519@alpha.franken.de>
+References: <1606998772-5904-1-git-send-email-yangtiezhu@loongson.cn>
+ <20201215132123.GA9201@alpha.franken.de>
+ <3eb215e2-82ae-2834-2837-55f429027840@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <20201229123910.GB29947@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3eb215e2-82ae-2834-2837-55f429027840@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/29/2020 4:39 AM, Borislav Petkov wrote:
-> On Wed, Dec 09, 2020 at 02:22:56PM -0800, Yu-cheng Yu wrote:
->> Shadow Stack provides protection against function return address
->> corruption.  It is active when the processor supports it, the kernel has
->> CONFIG_X86_CET_USER, and the application is built for the feature.
-> 		     ^
-> 		   enabled.
+On Wed, Dec 16, 2020 at 10:44:23AM +0800, Tiezhu Yang wrote:
+> I have tested the following three configs on the Loongson platform:
+> (1) !NUMA and !SMP,
+> (2) !NUMA and SMP,
+> (3) NUMA and SMP,
+> everything is all right.
 > 
->> This is only implemented for the 64-bit kernel.  When it is enabled, legacy
->> non-Shadow Stack applications continue to work, but without protection.
->>
->> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->> ---
->>   arch/x86/Kconfig           | 22 ++++++++++++++++++++++
->>   arch/x86/Kconfig.assembler |  5 +++++
->>   2 files changed, 27 insertions(+)
+> But there exists the following build error under NUMA and !SMP:
 > 
-> Rest looks good, thanks.
+>   CC      arch/mips/kernel/asm-offsets.s
+> In file included from ./include/linux/gfp.h:9:0,
+>                  from ./include/linux/xarray.h:14,
+>                  from ./include/linux/radix-tree.h:19,
+>                  from ./include/linux/fs.h:15,
+>                  from ./include/linux/compat.h:17,
+>                  from arch/mips/kernel/asm-offsets.c:12:
+> ./include/linux/topology.h: In function ‘numa_node_id’:
+> ./include/linux/topology.h:119:2: error: implicit declaration of function
+> ‘cpu_logical_map’ [-Werror=implicit-function-declaration]
+>   return cpu_to_node(raw_smp_processor_id());
+>   ^
+> cc1: some warnings being treated as errors
+> scripts/Makefile.build:117: recipe for target
+> 'arch/mips/kernel/asm-offsets.s' failed
+> make[1]: *** [arch/mips/kernel/asm-offsets.s] Error 1
+> arch/mips/Makefile:396: recipe for target 'archprepare' failed
+> make: *** [archprepare] Error 2
 > 
+> I find a patch to fix this kind of build errors [1], but it seems
+> meaningless.
+> 
+> According to the NUMA and SMP description in arch/mips/Kconfig,
+> we will use only one CPU of a multiprocessor machine if !SMP,
+> on single node systems leave NUMA disabled.
+> 
+> So I think there is no need to use NUMA if !SMP, and also we should
+> make NUMA depend on SMP to avoid build errors.
 
-Thanks!  I will re-base to v5.11-rc1 and send out a new version.
+ok, but compiling IP27 with your patch gives
 
---
-Yu-cheng
+WARNING: unmet direct dependencies detected for NUMA
+  Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
+  Selected by [y]:
+  - SGI_IP27 [=y] && <choice>
+
+WARNING: unmet direct dependencies detected for NUMA
+  Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
+  Selected by [y]:
+  - SGI_IP27 [=y] && <choice>
+
+WARNING: unmet direct dependencies detected for NUMA
+  Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
+  Selected by [y]:
+  - SGI_IP27 [=y] && <choice>
+
+If I use "select SMP" instead both ip27 and loongson64 compile.
+
+If you are ok with this change, I'll change it while appling your
+patch.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
