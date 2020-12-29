@@ -2,289 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB512E6E09
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 06:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE532E6E0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 06:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgL2FGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 00:06:12 -0500
-Received: from mga03.intel.com ([134.134.136.65]:37340 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726060AbgL2FGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 00:06:11 -0500
-IronPort-SDR: JjP6iwtx0qobY7Ona5gD4ZJ/sIRe9q5Ajf9W/fYv+WkYSVO/j+wjkezI5P+3kTwLu0qsjLY4hu
- 7Qr0Si6IbZyQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="176554735"
-X-IronPort-AV: E=Sophos;i="5.78,457,1599548400"; 
-   d="scan'208";a="176554735"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 21:04:56 -0800
-IronPort-SDR: WiAUN+T2/lQ2wawnj/F4HtfDZd5ZMgaD4WSpeBCfPvnmmU78ifYHl5cQRzRL30t4naHlofNzxZ
- SDYI4z0wu51Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,457,1599548400"; 
-   d="scan'208";a="347249858"
-Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Dec 2020 21:04:54 -0800
-From:   Sia Jee Heng <jee.heng.sia@intel.com>
-To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
-Cc:     andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v8 16/16] dmaengine: dw-axi-dmac: Virtually split the linked-list
-Date:   Tue, 29 Dec 2020 12:47:13 +0800
-Message-Id: <20201229044713.28464-17-jee.heng.sia@intel.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201229044713.28464-1-jee.heng.sia@intel.com>
-References: <20201229044713.28464-1-jee.heng.sia@intel.com>
+        id S1726929AbgL2FGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 00:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726889AbgL2FGO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 00:06:14 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4EEC061793
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 21:05:33 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id d13so13310585wrc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 21:05:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MtTLYi9/z5bmG8OV/D75QNEkytkigcLic7eAluHSrCY=;
+        b=t9u1IrL/S3W78GpLyJzQ8Qzl8cWPmCvKbbo7w/axT4HDhgZ+gDilMN1q1jFaIyhZdC
+         OU8hAO2aNrqmYhfagLWR/bEirursfUlBkFnVpi7xAZvc6kzVshYo4/Ihpsx97UYN0+LH
+         WTdMhYY4wewmrzM5dS6FE5R6fc7T+rM97v+X6llxUkakepof8dZE/AeWUJDMVJfg38ZQ
+         suN9aVmt+rUx8mJQFHDuZDA5UVXHIrjyvw63R9CxXMUb47Z1Ir5FLEN9uM3j5swJohRx
+         4mKBSXFf4fPfE/TBFvyCg7aGlYfMEr46AHQ3PuXVlrRIoXeG7oI9uj3VPuEfrvfbuyUP
+         q4wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MtTLYi9/z5bmG8OV/D75QNEkytkigcLic7eAluHSrCY=;
+        b=qVaVEg4nfVoSqpPPJRAHgYySUQjaE/LD19MyH4Nh116Ncg1gWxGQMDDsQ+M07LaYRY
+         4vrQ+hPhHwF7txi7SLSHoDzPz8Jr20rcog+cESPIrT1ge4NsMqfd6LqQFpdI5oN2zQR8
+         pLxcr2ueR27WivsUXQzyESDJtuERVcoIDG/9/m0UNybu6NT/HX9f2o4GgViwiFx3M6SD
+         i5Q3zfW6y4C5FPif1ebmOlF1xK8djGtzvOltbVeIENZcuE8D8ckfbF+BmyK/lxJVdkkx
+         Nr/VYdkkjemnJN8vKVPA8970jiziYwZSpavOGygkwZw6hsBVvuq4n58lXczX0b7O9aaB
+         lrDg==
+X-Gm-Message-State: AOAM531Dyx1L7WnYaY4Nf8/d3VvpSXoz1UUVjL74F5AcnCX22IoPpql4
+        +lWP5/D6+eNCpRBfSlujog1BfMkLVUzX/KTywCaVVg==
+X-Google-Smtp-Source: ABdhPJxLHZXfHgfk1GwltK7Tl1Tbo73bR6sjspJj13PwgW8mG6N0YLIxy1J5tc0rFLw9Lzv9PfemqI3Ugs9gQkLIxcM=
+X-Received: by 2002:adf:e44d:: with SMTP id t13mr53677244wrm.144.1609218332256;
+ Mon, 28 Dec 2020 21:05:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20201226163037.43691-1-vitaly.wool@konsulko.com>
+ <CAAhSdy1M5pMjYHNWdOicb3N3fjTfQLEgE8tFb74sqGbPE_9eyQ@mail.gmail.com>
+ <CAM4kBBJ3Vbytx=dFK7+DMByV3zK=FVLATSwjyuuygkDK1MCQjA@mail.gmail.com>
+ <CAAhSdy0E8xspb3epBdrTmjg7vSQanG9zwyMY19eeDDL8z=WJFg@mail.gmail.com> <CAM4kBBJLnrp8XB1OZnv2FEuKdEQuQfDWdgwsV--9mZYB=JmJPQ@mail.gmail.com>
+In-Reply-To: <CAM4kBBJLnrp8XB1OZnv2FEuKdEQuQfDWdgwsV--9mZYB=JmJPQ@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 29 Dec 2020 10:35:20 +0530
+Message-ID: <CAAhSdy1VMujreaaWCDjO9BPa0P2As7c0Hh3riZsY3ncU3NnsGg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: add BUILTIN_DTB support for MMU-enabled targets
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Bin Meng <bin.meng@windriver.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AxiDMA driver exposed the dma_set_max_seg_size() to the DMAENGINE.
-It shall helps the DMA clients to create size-optimized linked-list
-for the controller.
+On Mon, Dec 28, 2020 at 10:08 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+>
+> On Mon, Dec 28, 2020 at 3:10 PM Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Mon, Dec 28, 2020 at 7:05 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+> > >
+> > > On Mon, Dec 28, 2020 at 12:59 PM Anup Patel <anup@brainfault.org> wrote:
+> > > >
+> > > > On Sat, Dec 26, 2020 at 10:03 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+> > > > >
+> > > > > Sometimes, especially in a production system we may not want to
+> > > > > use a "smart bootloader" like u-boot to load kernel, ramdisk and
+> > > > > device tree from a filesystem on eMMC, but rather load the kernel
+> > > > > from a NAND partition and just run it as soon as we can, and in
+> > > > > this case it is convenient to have device tree compiled into the
+> > > > > kernel binary. Since this case is not limited to MMU-less systems,
+> > > > > let's support it for these which have MMU enabled too.
+> > > > >
+> > > > > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
+> > > > > ---
+> > > > >  arch/riscv/Kconfig   |  1 -
+> > > > >  arch/riscv/mm/init.c | 12 ++++++++++--
+> > > > >  2 files changed, 10 insertions(+), 3 deletions(-)
+> > > > >
+> > > > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > > > > index 2b41f6d8e458..9464b4e3a71a 100644
+> > > > > --- a/arch/riscv/Kconfig
+> > > > > +++ b/arch/riscv/Kconfig
+> > > > > @@ -419,7 +419,6 @@ endmenu
+> > > > >
+> > > > >  config BUILTIN_DTB
+> > > > >         def_bool n
+> > > > > -       depends on RISCV_M_MODE
+> > > > >         depends on OF
+> > > > >
+> > > > >  menu "Power management options"
+> > > > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > > > > index 87c305c566ac..5d1c7a3ec01c 100644
+> > > > > --- a/arch/riscv/mm/init.c
+> > > > > +++ b/arch/riscv/mm/init.c
+> > > > > @@ -194,12 +194,20 @@ void __init setup_bootmem(void)
+> > > > >         setup_initrd();
+> > > > >  #endif /* CONFIG_BLK_DEV_INITRD */
+> > > > >
+> > > > > +       /*
+> > > > > +        * If DTB is built in, no need to reserve its memblock.
+> > > > > +        * OTOH, initial_boot_params has to be set to properly copy DTB
+> > > > > +        * before unflattening later on.
+> > > > > +        */
+> > > > > +       if (IS_ENABLED(CONFIG_BUILTIN_DTB))
+> > > > > +               initial_boot_params = __va(dtb_early_pa);
+> > > >
+> > > > Don't assign initial_boot_params directly here because the
+> > > > early_init_dt_scan() will do it.
+> > >
+> > > early_init_dt_scan will set initial_boot_params to dtb_early_va from
+> > > the early mapping which will be gone by the time
+> > > unflatten_and_copy_device_tree() is called.
+> >
+> > That's why we are doing early_init_dt_verify() again for the MMU-enabled
+> > case which already takes care of your concern.
+>
+> I might be out in the woods here but... Do you mean the call to
+> early_init_dt_verify() in setup_arch() which is compiled out
+> completely in the CONFIG_BUILTIN_DTB case?
+> Or is there any other call that I'm overlooking?
 
-However, there are certain situations where DMA client might not be
-abled to benefit from the dma_get_max_seg_size() if the segment size
-can't meet the nature of the DMA client's operation.
+Sorry for the confusion, what I meant was that we are calling
+early_init_dt_verify() from setup_arch() for the MMU-enabled
+with built-in DTB disabled case to update "initial_boot_params"
+after the boot CPU has switched from early_pg_dir to swapper_pg_dir.
 
-In the case of ALSA operation, ALSA application and driver expecting
-to run in a period of larger than 10ms regardless of the bit depth.
-With this large period, there is a strong request to split the linked-list
-in the AxiDMA driver.
+For MMU-enabled with built-in DTB case, if setup_vm() sets the
+dtb_early_va and dtb_early_pa correctly then early_init_dt_scan()
+called from setup_arch() will automatically set correct value for
+"initial_boot_params".
 
-Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
----
- .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 111 ++++++++++++++----
- drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |   1 +
- 2 files changed, 92 insertions(+), 20 deletions(-)
+It is strange that early_init_dt_verify() is being compiled-out for you
+because the early_init_dt_scan() called from setup_arch() also uses
+early_init_dt_verify(). I quickly compiled the NoMMU kernel for K210
+which also uses built-in DTB and I see that early_init_dt_verify()
+is not being compiled-out when built-in DTB is enabled.
 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index 58845b058d9d..c17b96245f13 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -576,6 +576,11 @@ static int dw_axi_dma_set_hw_desc(struct axi_dma_chan *chan,
- 	if (mem_width > DWAXIDMAC_TRANS_WIDTH_32)
- 		mem_width = DWAXIDMAC_TRANS_WIDTH_32;
- 
-+	if (!IS_ALIGNED(mem_addr, 4)) {
-+		dev_err(chan->chip->dev, "invalid buffer alignment\n");
-+		return -EINVAL;
-+	}
-+
- 	switch (chan->direction) {
- 	case DMA_MEM_TO_DEV:
- 		reg_width = __ffs(chan->config.dst_addr_width);
-@@ -637,6 +642,35 @@ static int dw_axi_dma_set_hw_desc(struct axi_dma_chan *chan,
- 	return 0;
- }
- 
-+static size_t calculate_block_len(struct axi_dma_chan *chan,
-+				  dma_addr_t dma_addr, size_t buf_len,
-+				  enum dma_transfer_direction direction)
-+{
-+	u32 data_width, reg_width, mem_width;
-+	size_t axi_block_ts, block_len;
-+
-+	axi_block_ts = chan->chip->dw->hdata->block_size[chan->id];
-+
-+	switch (direction) {
-+	case DMA_MEM_TO_DEV:
-+		data_width = BIT(chan->chip->dw->hdata->m_data_width);
-+		mem_width = __ffs(data_width | dma_addr | buf_len);
-+		if (mem_width > DWAXIDMAC_TRANS_WIDTH_32)
-+			mem_width = DWAXIDMAC_TRANS_WIDTH_32;
-+
-+		block_len = axi_block_ts << mem_width;
-+		break;
-+	case DMA_DEV_TO_MEM:
-+		reg_width = __ffs(chan->config.src_addr_width);
-+		block_len = axi_block_ts << reg_width;
-+		break;
-+	default:
-+		block_len = 0;
-+	}
-+
-+	return block_len;
-+}
-+
- static struct dma_async_tx_descriptor *
- dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 			    size_t buf_len, size_t period_len,
-@@ -647,13 +681,27 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 	struct axi_dma_hw_desc *hw_desc = NULL;
- 	struct axi_dma_desc *desc = NULL;
- 	dma_addr_t src_addr = dma_addr;
--	u32 num_periods = buf_len / period_len;
-+	u32 num_periods, num_segments;
-+	size_t axi_block_len;
-+	u32 total_segments;
-+	u32 segment_len;
- 	unsigned int i;
- 	int status;
- 	u64 llp = 0;
- 	u8 lms = 0; /* Select AXI0 master for LLI fetching */
- 
--	desc = axi_desc_alloc(num_periods);
-+	num_periods = buf_len / period_len;
-+
-+	axi_block_len = calculate_block_len(chan, dma_addr, buf_len, direction);
-+	if (axi_block_len == 0)
-+		return NULL;
-+
-+	num_segments = DIV_ROUND_UP(period_len, axi_block_len);
-+	segment_len = DIV_ROUND_UP(period_len, num_segments);
-+
-+	total_segments = num_periods * num_segments;
-+
-+	desc = axi_desc_alloc(total_segments);
- 	if (unlikely(!desc))
- 		goto err_desc_get;
- 
-@@ -661,12 +709,13 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 	desc->chan = chan;
- 	chan->cyclic = true;
- 	desc->length = 0;
-+	desc->period_len = period_len;
- 
--	for (i = 0; i < num_periods; i++) {
-+	for (i = 0; i < total_segments; i++) {
- 		hw_desc = &desc->hw_desc[i];
- 
- 		status = dw_axi_dma_set_hw_desc(chan, hw_desc, src_addr,
--						period_len);
-+						segment_len);
- 		if (status < 0)
- 			goto err_desc_get;
- 
-@@ -676,17 +725,17 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 		 */
- 		set_desc_last(hw_desc);
- 
--		src_addr += period_len;
-+		src_addr += segment_len;
- 	}
- 
- 	llp = desc->hw_desc[0].llp;
- 
- 	/* Managed transfer list */
- 	do {
--		hw_desc = &desc->hw_desc[--num_periods];
-+		hw_desc = &desc->hw_desc[--total_segments];
- 		write_desc_llp(hw_desc, llp | lms);
- 		llp = hw_desc->llp;
--	} while (num_periods);
-+	} while (total_segments);
- 
- 	if (dw_axi_dma_set_hw_channel(chan->chip, chan->hw_handshake_num, true))
- 		goto err_desc_get;
-@@ -709,9 +758,13 @@ dw_axi_dma_chan_prep_slave_sg(struct dma_chan *dchan, struct scatterlist *sgl,
- 	struct axi_dma_chan *chan = dchan_to_axi_dma_chan(dchan);
- 	struct axi_dma_hw_desc *hw_desc = NULL;
- 	struct axi_dma_desc *desc = NULL;
-+	u32 num_segments, segment_len;
-+	unsigned int loop = 0;
- 	struct scatterlist *sg;
-+	size_t axi_block_len;
-+	u32 len, num_sgs = 0;
- 	unsigned int i;
--	u32 mem, len;
-+	dma_addr_t mem;
- 	int status;
- 	u64 llp = 0;
- 	u8 lms = 0; /* Select AXI0 master for LLI fetching */
-@@ -719,35 +772,51 @@ dw_axi_dma_chan_prep_slave_sg(struct dma_chan *dchan, struct scatterlist *sgl,
- 	if (unlikely(!is_slave_direction(direction) || !sg_len))
- 		return NULL;
- 
--	chan->direction = direction;
-+	mem = sg_dma_address(sgl);
-+	len = sg_dma_len(sgl);
-+
-+	axi_block_len = calculate_block_len(chan, mem, len, direction);
-+	if (axi_block_len == 0)
-+		return NULL;
- 
--	desc = axi_desc_alloc(sg_len);
-+	for_each_sg(sgl, sg, sg_len, i)
-+		num_sgs += DIV_ROUND_UP(sg_dma_len(sg), axi_block_len);
-+
-+	desc = axi_desc_alloc(num_sgs);
- 	if (unlikely(!desc))
- 		goto err_desc_get;
- 
- 	desc->chan = chan;
- 	desc->length = 0;
-+	chan->direction = direction;
- 
- 	for_each_sg(sgl, sg, sg_len, i) {
- 		mem = sg_dma_address(sg);
- 		len = sg_dma_len(sg);
--		hw_desc = &desc->hw_desc[i];
--
--		status = dw_axi_dma_set_hw_desc(chan, hw_desc, mem, len);
--		if (status < 0)
--			goto err_desc_get;
--		desc->length += hw_desc->len;
-+		num_segments = DIV_ROUND_UP(sg_dma_len(sg), axi_block_len);
-+		segment_len = DIV_ROUND_UP(sg_dma_len(sg), num_segments);
-+
-+		do {
-+			hw_desc = &desc->hw_desc[loop++];
-+			status = dw_axi_dma_set_hw_desc(chan, hw_desc, mem, segment_len);
-+			if (status < 0)
-+				goto err_desc_get;
-+
-+			desc->length += hw_desc->len;
-+			len -= segment_len;
-+			mem += segment_len;
-+		} while (len >= segment_len);
- 	}
- 
- 	/* Set end-of-link to the last link descriptor of list */
--	set_desc_last(&desc->hw_desc[sg_len - 1]);
-+	set_desc_last(&desc->hw_desc[num_sgs - 1]);
- 
- 	/* Managed transfer list */
- 	do {
--		hw_desc = &desc->hw_desc[--sg_len];
-+		hw_desc = &desc->hw_desc[--num_sgs];
- 		write_desc_llp(hw_desc, llp | lms);
- 		llp = hw_desc->llp;
--	} while (sg_len);
-+	} while (num_sgs);
- 
- 	if (dw_axi_dma_set_hw_channel(chan->chip, chan->hw_handshake_num, true))
- 		goto err_desc_get;
-@@ -950,7 +1019,6 @@ static void axi_chan_block_xfer_complete(struct axi_dma_chan *chan)
- 	vd = vchan_next_desc(&chan->vc);
- 
- 	if (chan->cyclic) {
--		vchan_cyclic_callback(vd);
- 		desc = vd_to_axi_desc(vd);
- 		if (desc) {
- 			llp = lo_hi_readq(chan->chan_regs + CH_LLP);
-@@ -960,6 +1028,9 @@ static void axi_chan_block_xfer_complete(struct axi_dma_chan *chan)
- 					axi_chan_irq_clear(chan, hw_desc->lli->status_lo);
- 					hw_desc->lli->ctl_hi |= CH_CTL_H_LLI_VALID;
- 					desc->completed_blocks = i;
-+
-+					if (((hw_desc->len * (i + 1)) % desc->period_len) == 0)
-+						vchan_cyclic_callback(vd);
- 					break;
- 				}
- 			}
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index 1e937ea2a96d..b69897887c76 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-@@ -100,6 +100,7 @@ struct axi_dma_desc {
- 	struct axi_dma_chan		*chan;
- 	u32				completed_blocks;
- 	u32				length;
-+	u32				period_len;
- };
- 
- static inline struct device *dchan2dev(struct dma_chan *dchan)
--- 
-2.18.0
+Regards,
+Anup
 
+>
+> Best regards,
+>    Vitaly
+>
+> > We use early_init_dt_verify() like most architectures to set the initial DTB.
+> >
+> > >
+> > > > The setup_vm() is supposed to setup dtb_early_va and dtb_early_pa
+> > > > for MMU-enabled case so please add a "#ifdef" over there for the
+> > > > built-in DTB case.
+> > > >
+> > > > > +       else
+> > > > > +               memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+> > > > > +
+> > > > >         /*
+> > > > >          * Avoid using early_init_fdt_reserve_self() since __pa() does
+> > > > >          * not work for DTB pointers that are fixmap addresses
+> > > > >          */
+> > > >
+> > > > This comment needs to be updated and moved along the memblock_reserve()
+> > > > statement.
+> > > >
+> > > > > -       memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+> > > > > -
+> > > > >         early_init_fdt_scan_reserved_mem();
+> > > > >         dma_contiguous_reserve(dma32_phys_limit);
+> > > > >         memblock_allow_resize();
+> > > > > --
+> > > > > 2.29.2
+> > > > >
+> > > >
+> > > > This patch should be based upon Damiens builtin DTB patch.
+> > > > Refer, https://www.spinics.net/lists/linux-gpio/msg56616.html
+> > >
+> > > Thanks for the pointer, however I don't think our patches have
+> > > intersections. Besides, Damien is dealing with the MMU-less case
+> > > there.
+> >
+> > Damien's patch is also trying to move to use generic BUILTIN_DTB
+> > support for the MMU-less case so it is similar work hence the chance
+> > of patch conflict.
+> >
+> > Regards,
+> > Anup
