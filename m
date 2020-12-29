@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805902E6FA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 11:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3692E6FA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 11:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgL2KXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 05:23:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
+        id S1726475AbgL2KXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 05:23:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgL2KXY (ORCPT
+        with ESMTP id S1726144AbgL2KXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 05:23:24 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9CEC061799
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 02:22:44 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id w5so14186506wrm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 02:22:44 -0800 (PST)
+        Tue, 29 Dec 2020 05:23:46 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AB0C06179A
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 02:22:45 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id a12so14191051wrv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 02:22:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=brKzI07OrCgLgZNXcEIweSdzyPpH8dhYXtEgqrfQyCA=;
-        b=IiDg4eLIm4OhSktvbI8Oa/wK/1e11yl06zrUR41pa/BNlZAL6YO9ThzDn7ecKDYt/V
-         KnnY9qMUi1B9LJoPA94BKrg4Ur5U99eU7Gfd9NNgREQakDRLr6SugmoD1tiYLU+f97XY
-         p8vILXfngqveVZ2yJ8gEbGn+3JqUfSwPVZxOyoikB/tWf13FhiRltN1UHT0ckb9ZxTA7
-         MXohSTwaSu6re3KjThKb9iLIAHrTlnOZqN7LP3kENxeFMCBOq/NNxkI3+/IfsHdw732e
-         I3bXy67PUG5wZFm0FUx+Z46vmbcq/3fc/O7mCnfTIj1LASKVtFPpiiRyxgEtEPgX6ZYc
-         WlPQ==
+        bh=7x7Rp0TwyGU3wHG6Q9tLIeUVomrTHpb9n0dn8AEf4Jc=;
+        b=w65EsAlqhZijDx4WzuyXTFn+hYw9HTTXqcsEZF0flBmbCxwO+8Qx/UPkpZkV71cIuG
+         AxTEnRVeH2+ugjJv7ddHFSOXVITmja1RwuDbhTpf/bwYsXGv8va08ncNLiFaOHRmfVdC
+         PXEdUUKG/I37WrlplorR4pzHqhV/TRLZTZ059ZSP8IHmEiPNgwc416sdeLtPICtWvOt1
+         HL/Ww9Z7wDpmve0YFPO7crA2rj6P//QRnPD/m2W0918/V+SS4NeeGDngybI8rtiQnOlK
+         az78rXqzDlLh6BwlVwUdTKPspcXMPFkecg8EueyzNChAcQzmuHeN9TR/HqAOTE/lR6mH
+         yYXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=brKzI07OrCgLgZNXcEIweSdzyPpH8dhYXtEgqrfQyCA=;
-        b=gKAZr+zYAt6yevjvexB3TJAnCoc6+2BIXYsapd3KKMXdhQV3o9JondnEh8I9KtYG+b
-         WIJXR59fJwscJAl/5oqhjOUBY4p1+dfuaESSrcOma/WCajwklc4LTaA+Nm+2+tKDF6kw
-         nq1GoNeVZhHrb098k7nNgGrTmPXjgnWMKzXBxQKRRxJRo8u32jMlNS1xMPMn9evlOkB/
-         pGZ/XbeoH71yj87x1TQahSONm9OBiHz04MMebHlB+nlYYozb2IzVrBoNgYy8arypddOh
-         j/c7pQOvvy39FpY91xzCoP1D+xr8mWhLvY13hDCyKzTE2ZUMEyDRSTnqZk52NwbVkVTD
-         /A9g==
-X-Gm-Message-State: AOAM530ZTHiMIFyHmcBvYbpQ4VRV+doc9q3t9ESgLisjDnb/kBCz5C/D
-        nAN7NkpfV7XSZb2KfWkwTp9vZQ==
-X-Google-Smtp-Source: ABdhPJyFCWqreOZbXwfKEOyM2dgyOCdpwVbSfFe+QokygSzNZT5wJfZ1ljrro6v1qSySP4dKNr7i1w==
-X-Received: by 2002:adf:9d82:: with SMTP id p2mr42807368wre.330.1609237362839;
-        Tue, 29 Dec 2020 02:22:42 -0800 (PST)
+        bh=7x7Rp0TwyGU3wHG6Q9tLIeUVomrTHpb9n0dn8AEf4Jc=;
+        b=PbaPs2P6BJAlu7na3y1c0y1sqZcyD8D6nZMaAONXqDYm7wXk5J0jObGDI10+9f7odL
+         aPf1cKXfVb3Zk6AuMk2RSOceDJw36CvX4gCdrH1QfwuxV3iATwQYBTSq2nWqqcDxKEfZ
+         n3snGCBlJvlVy81jE0lA0jIFNxxqW25Ozx4/sLl+w+SY8KXycbjjyfFxk0Z8dH5UQX8H
+         C9/JRh5ZsAjEO1kv605iIJMwP/r59waNHvxsWBJEpjxQl9pMtiwRARa7w6Ax/+/x44uG
+         R8ThTKRPiulsoD5DHMovChPhRsvTKnlwRCaYMkjRAXOOnHayGR5eFF5Ogz1qKA+Ww1W5
+         xZgw==
+X-Gm-Message-State: AOAM533LTYS3iPZ403Q21a5jHIUajreCPR66TSv4lXXNgQjURQI6MjmV
+        +6UPfzqG/Shf+8vuvSTldDba7g==
+X-Google-Smtp-Source: ABdhPJz1MqoAgF109mSoi6wH87nfzGYg0FpcEz7yGIECizPe7w45iVwYVhZbyf/+9x3znvSPmU8UFA==
+X-Received: by 2002:adf:e44d:: with SMTP id t13mr54860226wrm.144.1609237363845;
+        Tue, 29 Dec 2020 02:22:43 -0800 (PST)
 Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id h5sm61174512wrp.56.2020.12.29.02.22.41
+        by smtp.gmail.com with ESMTPSA id h5sm61174512wrp.56.2020.12.29.02.22.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Dec 2020 02:22:42 -0800 (PST)
+        Tue, 29 Dec 2020 02:22:43 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
 Cc:     linux-kernel@vger.kernel.org, Kent Gibson <warthog618@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [RESEND PATCH v3 3/4] configfs: implement committable items
-Date:   Tue, 29 Dec 2020 11:22:34 +0100
-Message-Id: <20201229102235.29550-4-brgl@bgdev.pl>
+Subject: [RESEND PATCH v3 4/4] samples: configfs: add a committable group
+Date:   Tue, 29 Dec 2020 11:22:35 +0100
+Message-Id: <20201229102235.29550-5-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201229102235.29550-1-brgl@bgdev.pl>
 References: <20201229102235.29550-1-brgl@bgdev.pl>
@@ -68,403 +68,185 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-This implements configfs committable items. We mostly follow the
-documentation except that we extend config_group_ops with uncommit_item()
-callback for reverting the changes made by commit_item().
-
-Each committable group has two sub-directories: pending and live. New
-items can only be created in pending/. Attributes can only be modified
-while the item is in pending/. Once it's ready to be committed, it must
-be moved over to live/ using the rename() system call. This is when the
-commit_item() function will be called.
-
-Implementation-wise: we reuse the default group mechanism to elegantly
-plug the new pseude-groups into configfs. The pending group inherits the
-parent group's operations so that config_items can be seamlesly created
-in it using the callbacks supplied by the user as part of the committable
-group itself.
+Add an example of using committable items to configfs samples. Each
+config item has two attributes: read-write 'storeme' which works
+similarly to other examples in this file and a read-only 'committed'
+attribute which changes its value between false and true depending on
+whether it's committed or not at the moment.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- Documentation/filesystems/configfs.rst |   6 +-
- fs/configfs/configfs_internal.h        |   2 +
- fs/configfs/dir.c                      | 240 ++++++++++++++++++++++++-
- fs/configfs/file.c                     |   8 +
- include/linux/configfs.h               |   1 +
- 5 files changed, 248 insertions(+), 9 deletions(-)
+ samples/configfs/configfs_sample.c | 150 +++++++++++++++++++++++++++++
+ 1 file changed, 150 insertions(+)
 
-diff --git a/Documentation/filesystems/configfs.rst b/Documentation/filesystems/configfs.rst
-index 1d3d6f4a82a9..7e0e7c356450 100644
---- a/Documentation/filesystems/configfs.rst
-+++ b/Documentation/filesystems/configfs.rst
-@@ -290,6 +290,7 @@ config_item_type::
- 		struct config_group *(*make_group)(struct config_group *group,
- 						   const char *name);
- 		int (*commit_item)(struct config_item *item);
-+		int (*uncommit_item)(struct config_item *item);
- 		void (*disconnect_notify)(struct config_group *group,
- 					  struct config_item *item);
- 		void (*drop_item)(struct config_group *group,
-@@ -490,9 +491,6 @@ pass up an error.
- Committable Items
- =================
+diff --git a/samples/configfs/configfs_sample.c b/samples/configfs/configfs_sample.c
+index f9008be7a8a1..08fc22c7aa55 100644
+--- a/samples/configfs/configfs_sample.c
++++ b/samples/configfs/configfs_sample.c
+@@ -315,6 +315,155 @@ static struct configfs_subsystem group_children_subsys = {
  
--Note:
--     Committable items are currently unimplemented.
--
- Some config_items cannot have a valid initial state.  That is, no
- default values can be specified for the item's attributes such that the
- item can do its work.  Userspace must configure one or more attributes,
-@@ -532,4 +530,4 @@ method returns zero and the item is moved to the "live" directory.
- As rmdir(2) does not work in the "live" directory, an item must be
- shutdown, or "uncommitted".  Again, this is done via rename(2), this
- time from the "live" directory back to the "pending" one.  The subsystem
--is notified by the ct_group_ops->uncommit_object() method.
-+is notified by the ct_group_ops->uncommit_item() method.
-diff --git a/fs/configfs/configfs_internal.h b/fs/configfs/configfs_internal.h
-index 2d21bba92acf..3e74876c2bd5 100644
---- a/fs/configfs/configfs_internal.h
-+++ b/fs/configfs/configfs_internal.h
-@@ -56,6 +56,8 @@ struct configfs_dirent {
- #define CONFIGFS_USET_DROPPING		(1UL << 8)
- #define CONFIGFS_USET_IN_MKDIR		(1UL << 9)
- #define CONFIGFS_USET_CREATING		(1UL << 10)
-+#define CONFIGFS_GROUP_PENDING		(1UL << 11)
-+#define CONFIGFS_GROUP_LIVE		(1UL << 12)
- #define CONFIGFS_NOT_PINNED	(CONFIGFS_ITEM_ATTR | CONFIGFS_ITEM_BIN_ATTR)
+ /* ----------------------------------------------------------------- */
  
- extern struct mutex configfs_symlink_mutex;
-diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
-index b839dd1b459f..a1390ff33283 100644
---- a/fs/configfs/dir.c
-+++ b/fs/configfs/dir.c
-@@ -656,6 +656,13 @@ static void detach_groups(struct config_group *group)
- 
- 		inode_unlock(d_inode(child));
- 
-+		/*
-+		 * Free memory allocated for the pending and live directories
-+		 * of committable groups.
-+		 */
-+		if (sd->s_type & (CONFIGFS_GROUP_PENDING | CONFIGFS_GROUP_LIVE))
-+			kfree(sd->s_element);
++/*
++ * 04-committable-children
++ *
++ * This is an example of a committable group.  It's similar to the simple
++ * children example but each config_item has an additional 'committed'
++ * attribute which is read-only and is only modified when the config_item
++ * is moved from the 'pending' to the 'live' directory.
++ */
 +
- 		d_delete(child);
- 		dput(child);
- 	}
-@@ -860,6 +867,134 @@ static void configfs_detach_item(struct config_item *item)
- 	configfs_remove_dir(item);
- }
- 
-+static bool is_committable_group(struct config_item *item)
-+{
-+	const struct config_item_type *type = item->ci_type;
-+
-+	if (type && type->ct_group_ops &&
-+	    type->ct_group_ops->commit_item &&
-+	    type->ct_group_ops->uncommit_item)
-+		return true;
-+
-+	return false;
-+}
-+
-+struct pending_group_data {
-+	struct config_group group;
-+	struct config_item_type type;
-+	struct configfs_group_operations group_ops;
++struct committable_child {
++	struct config_item item;
++	int storeme;
++	bool committed;
 +};
 +
-+struct live_group_data {
-+	struct config_group group;
-+	struct config_item_type type;
-+};
-+
-+static int create_pending_group(struct config_item *parent_item,
-+				struct configfs_fragment *frag)
++static inline struct committable_child *
++to_committable_child(struct config_item *item)
 +{
-+	const struct config_item_type *parent_type = parent_item->ci_type;
-+	struct pending_group_data *pending;
-+	struct configfs_dirent *sd;
-+	int ret;
-+
-+	pending = kzalloc(sizeof(*pending), GFP_KERNEL);
-+	if (!pending)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Let's inherit the group_ops from the parent except for item
-+	 * committing and uncommitting.
-+	 */
-+	memcpy(&pending->group_ops, parent_type->ct_group_ops,
-+	       sizeof(struct configfs_group_operations));
-+	pending->type.ct_group_ops = &pending->group_ops;
-+	pending->type.ct_group_ops->commit_item = NULL;
-+	pending->type.ct_group_ops->uncommit_item = NULL;
-+
-+	/* Let's directly reuse item_ops. */
-+	pending->type.ct_item_ops = parent_type->ct_item_ops;
-+	pending->type.ct_owner = parent_type->ct_owner;
-+
-+	config_group_init_type_name(&pending->group, "pending", &pending->type);
-+
-+	ret = create_default_group(to_config_group(parent_item),
-+				   &pending->group, frag);
-+	if (ret) {
-+		kfree(pending);
-+		return ret;
-+	}
-+
-+	link_group(to_config_group(parent_item), &pending->group);
-+
-+	sd = pending->group.cg_item.ci_dentry->d_fsdata;
-+	/* Allow creating config_items in 'pending' group. */
-+	sd->s_type |= (CONFIGFS_GROUP_PENDING | CONFIGFS_USET_DIR);
-+
-+	return 0;
++	return container_of(item, struct committable_child, item);
 +}
 +
-+static int create_live_group(struct config_item *parent_item,
-+			     struct configfs_fragment *frag)
++static ssize_t
++committable_child_storeme_show(struct config_item *item, char *page)
 +{
-+	struct live_group_data *live;
-+	struct configfs_dirent *sd;
-+	int ret;
-+
-+	live = kzalloc(sizeof(*live), GFP_KERNEL);
-+	if (!live)
-+		return -ENOMEM;
-+
-+	live->type.ct_owner = parent_item->ci_type->ct_owner;
-+
-+	config_group_init_type_name(&live->group, "live", &live->type);
-+
-+	ret = create_default_group(to_config_group(parent_item),
-+				   &live->group, frag);
-+	if (ret) {
-+		kfree(live);
-+		return ret;
-+	}
-+
-+	link_group(to_config_group(parent_item), &live->group);
-+
-+	sd = live->group.cg_item.ci_dentry->d_fsdata;
-+	sd->s_type |= CONFIGFS_GROUP_LIVE;
-+	sd->s_type &= ~CONFIGFS_USET_DIR;
-+
-+	return 0;
++	return sprintf(page, "%d\n", to_committable_child(item)->storeme);
 +}
 +
-+static int create_committable_groups(struct config_item *parent_item,
-+				     struct configfs_fragment *frag)
++static ssize_t committable_child_storeme_store(struct config_item *item,
++					       const char *page, size_t count)
 +{
-+	struct configfs_dirent *sd;
++	struct committable_child *child = to_committable_child(item);
 +	int ret;
 +
-+	ret = create_pending_group(parent_item, frag);
++	ret = kstrtoint(page, 10, &child->storeme);
 +	if (ret)
 +		return ret;
 +
-+	ret = create_live_group(parent_item, frag);
-+	if (ret) {
-+		detach_groups(to_config_group(parent_item));
-+		return ret;
-+	}
++	return count;
++}
 +
-+	/* Disallow creating items directly in the committable group. */
-+	sd = parent_item->ci_dentry->d_fsdata;
-+	sd->s_type &= ~CONFIGFS_USET_DIR;
++CONFIGFS_ATTR(committable_child_, storeme);
++
++static ssize_t
++committable_child_committed_show(struct config_item *item, char *page)
++{
++	return sprintf(page, "%s\n",
++		to_committable_child(item)->committed ? "true" : "false");
++}
++
++CONFIGFS_ATTR_RO(committable_child_, committed);
++
++static struct configfs_attribute *committable_child_attrs[] = {
++	&committable_child_attr_storeme,
++	&committable_child_attr_committed,
++	NULL,
++};
++
++static void committable_child_release(struct config_item *item)
++{
++	kfree(to_committable_child(item));
++}
++
++static struct configfs_item_operations committable_child_item_ops = {
++	.release	= committable_child_release,
++};
++
++static const struct config_item_type committable_child_type = {
++	.ct_item_ops	= &committable_child_item_ops,
++	.ct_attrs	= committable_child_attrs,
++	.ct_owner	= THIS_MODULE,
++};
++
++struct committable_children {
++	struct config_group group;
++};
++
++static struct config_item *
++committable_children_make_item(struct config_group *group, const char *name)
++{
++	struct committable_child *child;
++
++	child = kzalloc(sizeof(*child), GFP_KERNEL);
++	if (!child)
++		return ERR_PTR(-ENOMEM);
++
++	config_item_init_type_name(&child->item, name, &committable_child_type);
++
++	return &child->item;
++}
++
++static ssize_t
++committable_children_description_show(struct config_item *item, char *page)
++{
++	return sprintf(page,
++"[04-committable-children]\n"
++"\n"
++"This subsystem allows creation of committable config_items.  The subsystem\n"
++"has two subdirectories: pending and live.  New config_items can only be\n"
++"created in pending/ and they have one writable and readable attribute as\n"
++"well as a single read-only attribute.  The latter is only changed once the\n"
++"item is 'committed'.  This is done by moving the config_item (using\n"
++"rename()) to the live/ directory.  At that point even the read-write\n"
++"attributes can no longer be written to.\n");
++}
++
++CONFIGFS_ATTR_RO(committable_children_, description);
++
++static struct configfs_attribute *committable_children_attrs[] = {
++	&committable_children_attr_description,
++	NULL,
++};
++
++static int committable_children_commit_item(struct config_item *item)
++{
++	to_committable_child(item)->committed = true;
 +
 +	return 0;
 +}
 +
-+static void dentry_mark_dead(struct config_item *item, struct dentry *dentry)
++static int committable_children_uncommit_item(struct config_item *item)
 +{
-+	configfs_detach_item(item);
-+	d_inode(dentry)->i_flags |= S_DEAD;
-+	dont_mount(dentry);
++	to_committable_child(item)->committed = false;
++
++	return 0;
 +}
 +
- static int configfs_attach_group(struct config_item *parent_item,
- 				 struct config_item *item,
- 				 struct dentry *dentry,
-@@ -885,11 +1020,15 @@ static int configfs_attach_group(struct config_item *parent_item,
- 		inode_lock_nested(d_inode(dentry), I_MUTEX_CHILD);
- 		configfs_adjust_dir_dirent_depth_before_populate(sd);
- 		ret = populate_groups(to_config_group(item), frag);
--		if (ret) {
--			configfs_detach_item(item);
--			d_inode(dentry)->i_flags |= S_DEAD;
--			dont_mount(dentry);
-+		if (ret)
-+			dentry_mark_dead(item, dentry);
++static struct configfs_group_operations committable_children_group_ops = {
++	.make_item	= committable_children_make_item,
++	.commit_item	= committable_children_commit_item,
++	.uncommit_item	= committable_children_uncommit_item,
++};
 +
-+		if (is_committable_group(item)) {
-+			ret = create_committable_groups(item, frag);
-+			if (ret)
-+				dentry_mark_dead(item, dentry);
- 		}
++static const struct config_item_type committable_children_type = {
++	.ct_group_ops	= &committable_children_group_ops,
++	.ct_attrs	= committable_children_attrs,
++	.ct_owner	= THIS_MODULE,
++};
 +
- 		configfs_adjust_dir_dirent_depth_after_populate(sd);
- 		inode_unlock(d_inode(dentry));
- 		if (ret)
-@@ -966,6 +1105,8 @@ static void configfs_dump_one(struct configfs_dirent *sd, int level)
- 	type_print(CONFIGFS_USET_DIR);
- 	type_print(CONFIGFS_USET_DEFAULT);
- 	type_print(CONFIGFS_USET_DROPPING);
-+	type_print(CONFIGFS_GROUP_PENDING);
-+	type_print(CONFIGFS_GROUP_LIVE);
- #undef type_print
- }
- 
-@@ -1456,7 +1597,7 @@ static int configfs_rmdir(struct inode *dir, struct dentry *dentry)
- 	struct config_item *parent_item;
- 	struct config_item *item;
- 	struct configfs_subsystem *subsys;
--	struct configfs_dirent *sd;
-+	struct configfs_dirent *sd, *parent_sd;
- 	struct configfs_fragment *frag;
- 	struct module *subsys_owner = NULL, *dead_item_owner = NULL;
- 	int ret;
-@@ -1475,6 +1616,12 @@ static int configfs_rmdir(struct inode *dir, struct dentry *dentry)
- 		return -EINVAL;
- 	}
- 
-+	parent_sd = dentry->d_parent->d_fsdata;
-+	if (parent_sd->s_type & CONFIGFS_GROUP_LIVE) {
-+		config_item_put(parent_item);
-+		return -EPERM;
-+	}
++static struct configfs_subsystem committable_children_subsys = {
++	.su_group = {
++		.cg_item = {
++			.ci_namebuf = "04-committable-children",
++			.ci_type = &committable_children_type,
++		},
++	},
++};
 +
- 	/* configfs_mkdir() shouldn't have allowed this */
- 	BUG_ON(!subsys->su_group.cg_item.ci_type);
- 	subsys_owner = subsys->su_group.cg_item.ci_type->ct_owner;
-@@ -1561,9 +1708,92 @@ static int configfs_rmdir(struct inode *dir, struct dentry *dentry)
- 	return 0;
- }
- 
-+static int configfs_rename(struct inode *old_dir, struct dentry *old_dentry,
-+			   struct inode *new_dir, struct dentry *new_dentry,
-+			   unsigned int flags)
-+{
-+	struct configfs_dirent *sd, *old_parent_sd, *new_parent_sd;
-+	struct dentry *old_parent_dentry, *new_parent_dentry;
-+	struct dentry *committable_group_dentry;
-+	struct config_item *committable_group_item, *item, *new_parent_item;
-+	struct configfs_subsystem *committable_group_subsys;
-+	struct configfs_group_operations *committable_group_ops;
-+	int ret = 0;
++/* ----------------------------------------------------------------- */
 +
-+	if (flags)
-+		return -EINVAL;
-+
-+	old_parent_dentry = old_dentry->d_parent;
-+	new_parent_dentry = new_dentry->d_parent;
-+
-+	sd = old_dentry->d_fsdata;
-+	old_parent_sd = old_dentry->d_parent->d_fsdata;
-+	new_parent_sd = new_dentry->d_parent->d_fsdata;
-+
-+	if (!old_parent_sd || !new_parent_sd)
-+		return -EPERM;
-+
-+	/*
-+	 * Renaming must always be between a 'pending' and a 'live' group and
-+	 * both need to have the same parent.
-+	 */
-+	if (!((old_parent_sd->s_type & CONFIGFS_GROUP_PENDING) &&
-+	      (new_parent_sd->s_type & CONFIGFS_GROUP_LIVE)) &&
-+	    !((old_parent_sd->s_type & CONFIGFS_GROUP_LIVE) &&
-+	      (new_parent_sd->s_type & CONFIGFS_GROUP_PENDING)))
-+		return -EPERM;
-+
-+	if (old_parent_dentry->d_parent != new_parent_dentry->d_parent)
-+		return -EPERM;
-+
-+	committable_group_dentry = old_parent_dentry->d_parent;
-+	/*
-+	 * Grab a reference to the committable group for the duration of
-+	 * this function.
-+	 */
-+	committable_group_item =
-+		configfs_get_config_item(committable_group_dentry);
-+	committable_group_subsys =
-+		to_config_group(committable_group_item)->cg_subsys;
-+	committable_group_ops = committable_group_item->ci_type->ct_group_ops;
-+
-+	item = sd->s_element;
-+	new_parent_item = new_parent_sd->s_element;
-+
-+	if (WARN_ON(!is_committable_group(committable_group_item))) {
-+		/* This would be a result of a programming error in configfs. */
-+		config_item_put(committable_group_item);
-+		return -EPERM;
-+	}
-+
-+	mutex_lock(&committable_group_subsys->su_mutex);
-+	spin_lock(&configfs_dirent_lock);
-+
-+	if ((old_parent_sd->s_type & CONFIGFS_GROUP_PENDING) &&
-+	    (new_parent_sd->s_type & CONFIGFS_GROUP_LIVE))
-+		ret = committable_group_ops->commit_item(item);
-+	else
-+		ret = committable_group_ops->uncommit_item(item);
-+	if (ret)
-+		goto out;
-+
-+	new_dentry->d_fsdata = sd;
-+	list_move(&sd->s_sibling, &new_parent_sd->s_children);
-+	item->ci_parent = new_parent_item;
-+	d_move(old_dentry, new_dentry);
-+
-+out:
-+	spin_unlock(&configfs_dirent_lock);
-+	mutex_unlock(&committable_group_subsys->su_mutex);
-+	config_item_put(committable_group_item);
-+
-+	return ret;
-+}
-+
- const struct inode_operations configfs_dir_inode_operations = {
- 	.mkdir		= configfs_mkdir,
- 	.rmdir		= configfs_rmdir,
-+	.rename		= configfs_rename,
- 	.symlink	= configfs_symlink,
- 	.unlink		= configfs_unlink,
- 	.lookup		= configfs_lookup,
-diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-index 1f0270229d7b..a20e55fd05e8 100644
---- a/fs/configfs/file.c
-+++ b/fs/configfs/file.c
-@@ -243,9 +243,17 @@ fill_write_buffer(struct configfs_buffer * buffer, const char __user * buf, size
- static int
- flush_write_buffer(struct file *file, struct configfs_buffer *buffer, size_t count)
- {
-+	struct config_item *parent_item = buffer->item->ci_parent;
- 	struct configfs_fragment *frag = to_frag(file);
-+	struct configfs_dirent *sd;
- 	int res = -ENOENT;
- 
-+	if (parent_item && parent_item->ci_dentry) {
-+		sd = parent_item->ci_dentry->d_fsdata;
-+		if (sd->s_type & CONFIGFS_GROUP_LIVE)
-+			return -EPERM;
-+	}
-+
- 	down_read(&frag->frag_sem);
- 	if (!frag->frag_dead)
- 		res = buffer->attr->store(buffer->item, buffer->page, count);
-diff --git a/include/linux/configfs.h b/include/linux/configfs.h
-index 4f76dcc08134..ff6b0e408136 100644
---- a/include/linux/configfs.h
-+++ b/include/linux/configfs.h
-@@ -219,6 +219,7 @@ struct configfs_group_operations {
- 	struct config_item *(*make_item)(struct config_group *group, const char *name);
- 	struct config_group *(*make_group)(struct config_group *group, const char *name);
- 	int (*commit_item)(struct config_item *item);
-+	int (*uncommit_item)(struct config_item *item);
- 	void (*disconnect_notify)(struct config_group *group, struct config_item *item);
- 	void (*drop_item)(struct config_group *group, struct config_item *item);
+ /*
+  * We're now done with our subsystem definitions.
+  * For convenience in this module, here's a list of them all.  It
+@@ -326,6 +475,7 @@ static struct configfs_subsystem *example_subsys[] = {
+ 	&childless_subsys.subsys,
+ 	&simple_children_subsys,
+ 	&group_children_subsys,
++	&committable_children_subsys,
+ 	NULL,
  };
+ 
 -- 
 2.29.1
 
