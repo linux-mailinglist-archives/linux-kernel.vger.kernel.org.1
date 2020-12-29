@@ -2,171 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE832E6E8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 07:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3662E6EA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 07:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgL2Gcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 01:32:54 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:22596 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgL2Gcy (ORCPT
+        id S1726189AbgL2Gqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 01:46:47 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9940 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbgL2Gqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 01:32:54 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 0BT6RULT012599;
-        Tue, 29 Dec 2020 14:27:30 +0800 (GMT-8)
-        (envelope-from chiawei_wang@aspeedtech.com)
-Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Dec
- 2020 14:31:36 +0800
-From:   "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
-To:     <robh+dt@kernel.org>, <lee.jones@linaro.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linus.walleij@linaro.org>, <minyard@acm.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>
-CC:     <BMC-SW@aspeedtech.com>, <haiyue.wang@linux.intel.com>,
-        <cyrilbur@gmail.com>, <rlippert@google.com>
-Subject: [PATCH v4 5/5] soc: aspeed: Adapt to new LPC device tree layout
-Date:   Tue, 29 Dec 2020 14:31:57 +0800
-Message-ID: <20201229063157.3587-6-chiawei_wang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201229063157.3587-1-chiawei_wang@aspeedtech.com>
-References: <20201229063157.3587-1-chiawei_wang@aspeedtech.com>
+        Tue, 29 Dec 2020 01:46:46 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D4lKb5s1HzhyLV;
+        Tue, 29 Dec 2020 14:45:23 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.9) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Tue, 29 Dec 2020
+ 14:46:00 +0800
+Subject: Re: [PATCH 1/1] ARM: LPAE: use phys_addr_t instead of unsigned long
+ in outercache hooks
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201225114458.1334-1-thunder.leizhen@huawei.com>
+ <CAK8P3a1-zTyd9WoWxaqZ3s1ye44t1CUuZaU0a5w9bE+krk2cBA@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <8c384744-dee3-6ed8-a4b2-753c329c8def@huawei.com>
+Date:   Tue, 29 Dec 2020 14:45:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.66]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 0BT6RULT012599
+In-Reply-To: <CAK8P3a1-zTyd9WoWxaqZ3s1ye44t1CUuZaU0a5w9bE+krk2cBA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add check against LPC device v2 compatible string to
-ensure that the fixed device tree layout is adopted.
-The LPC register offsets are also fixed accordingly.
 
-Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
----
- drivers/soc/aspeed/aspeed-lpc-ctrl.c  | 20 ++++++++++++++------
- drivers/soc/aspeed/aspeed-lpc-snoop.c | 23 +++++++++++++++--------
- 2 files changed, 29 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/soc/aspeed/aspeed-lpc-ctrl.c b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-index 439bcd6b8c4a..c557ffd0992c 100644
---- a/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-+++ b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-@@ -18,15 +18,15 @@
- 
- #define DEVICE_NAME	"aspeed-lpc-ctrl"
- 
--#define HICR5 0x0
-+#define HICR5 0x80
- #define HICR5_ENL2H	BIT(8)
- #define HICR5_ENFWH	BIT(10)
- 
--#define HICR6 0x4
-+#define HICR6 0x84
- #define SW_FWH2AHB	BIT(17)
- 
--#define HICR7 0x8
--#define HICR8 0xc
-+#define HICR7 0x88
-+#define HICR8 0x8c
- 
- struct aspeed_lpc_ctrl {
- 	struct miscdevice	miscdev;
-@@ -215,6 +215,7 @@ static int aspeed_lpc_ctrl_probe(struct platform_device *pdev)
- 	struct device_node *node;
- 	struct resource resm;
- 	struct device *dev;
-+	struct device_node *np;
- 	int rc;
- 
- 	dev = &pdev->dev;
-@@ -270,8 +271,15 @@ static int aspeed_lpc_ctrl_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	lpc_ctrl->regmap = syscon_node_to_regmap(
--			pdev->dev.parent->of_node);
-+	np = pdev->dev.parent->of_node;
-+	if (!of_device_is_compatible(np, "aspeed,ast2400-lpc-v2") &&
-+	    !of_device_is_compatible(np, "aspeed,ast2500-lpc-v2") &&
-+	    !of_device_is_compatible(np, "aspeed,ast2600-lpc-v2")) {
-+		dev_err(dev, "unsupported LPC device binding\n");
-+		return -ENODEV;
-+	}
-+
-+	lpc_ctrl->regmap = syscon_node_to_regmap(np);
- 	if (IS_ERR(lpc_ctrl->regmap)) {
- 		dev_err(dev, "Couldn't get regmap\n");
- 		return -ENODEV;
-diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
-index 682ba0eb4eba..ab0f0a54fea6 100644
---- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
-+++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
-@@ -28,26 +28,25 @@
- #define NUM_SNOOP_CHANNELS 2
- #define SNOOP_FIFO_SIZE 2048
- 
--#define HICR5	0x0
-+#define HICR5	0x80
- #define HICR5_EN_SNP0W		BIT(0)
- #define HICR5_ENINT_SNP0W	BIT(1)
- #define HICR5_EN_SNP1W		BIT(2)
- #define HICR5_ENINT_SNP1W	BIT(3)
--
--#define HICR6	0x4
-+#define HICR6	0x84
- #define HICR6_STR_SNP0W		BIT(0)
- #define HICR6_STR_SNP1W		BIT(1)
--#define SNPWADR	0x10
-+#define SNPWADR	0x90
- #define SNPWADR_CH0_MASK	GENMASK(15, 0)
- #define SNPWADR_CH0_SHIFT	0
- #define SNPWADR_CH1_MASK	GENMASK(31, 16)
- #define SNPWADR_CH1_SHIFT	16
--#define SNPWDR	0x14
-+#define SNPWDR	0x94
- #define SNPWDR_CH0_MASK		GENMASK(7, 0)
- #define SNPWDR_CH0_SHIFT	0
- #define SNPWDR_CH1_MASK		GENMASK(15, 8)
- #define SNPWDR_CH1_SHIFT	8
--#define HICRB	0x80
-+#define HICRB	0x100
- #define HICRB_ENSNP0D		BIT(14)
- #define HICRB_ENSNP1D		BIT(15)
- 
-@@ -258,6 +257,7 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
- {
- 	struct aspeed_lpc_snoop *lpc_snoop;
- 	struct device *dev;
-+	struct device_node *np;
- 	u32 port;
- 	int rc;
- 
-@@ -267,8 +267,15 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
- 	if (!lpc_snoop)
- 		return -ENOMEM;
- 
--	lpc_snoop->regmap = syscon_node_to_regmap(
--			pdev->dev.parent->of_node);
-+	np = pdev->dev.parent->of_node;
-+	if (!of_device_is_compatible(np, "aspeed,ast2400-lpc-v2") &&
-+	    !of_device_is_compatible(np, "aspeed,ast2500-lpc-v2") &&
-+	    !of_device_is_compatible(np, "aspeed,ast2600-lpc-v2")) {
-+		dev_err(dev, "unsupported LPC device binding\n");
-+		return -ENODEV;
-+	}
-+
-+	lpc_snoop->regmap = syscon_node_to_regmap(np);
- 	if (IS_ERR(lpc_snoop->regmap)) {
- 		dev_err(dev, "Couldn't get regmap\n");
- 		return -ENODEV;
--- 
-2.17.1
+On 2020/12/28 15:00, Arnd Bergmann wrote:
+> On Fri, Dec 25, 2020 at 12:48 PM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>
+>> The outercache of some Hisilicon SOCs support physical addresses wider
+>> than 32-bits. The unsigned long datatype is not sufficient for mapping
+>> physical addresses >= 4GB. The commit ad6b9c9d78b9 ("ARM: 6671/1: LPAE:
+>> use phys_addr_t instead of unsigned long in outercache functions") has
+>> already modified the outercache functions. But the parameters of the
+>> outercache hooks are not changed. This patch use phys_addr_t instead of
+>> unsigned long in outercache hooks: inv_range, clean_range, flush_range.
+>>
+>> To ensure the outercache that does not support LPAE works properly, do
+>> cast phys_addr_t to unsigned long by adding a middle-tier function.
+>> For example:
+>> -static void l2c220_inv_range(unsigned long start, unsigned long end)
+>> +static void __l2c220_inv_range(unsigned long start, unsigned long end)
+>>  {
+>>         ...
+>>  }
+>> +static void l2c220_inv_range(phys_addr_t start, phys_addr_t end)
+>> +{
+>> +  __l2c220_inv_range(start, end);
+>> +}
+>>
+>> Note that the outercache functions have been doing this cast before this
+>> patch. So now, the cast is just moved to the middle-tier function.
+>>
+>> No functional change.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> 
+> This looks reasonable in principle, but it would be helpful to
+> understand better which SoCs are affected. In which way is
+> this specific to Hisilicon implementations, and why would others
+> not need this?
+
+I answered at the end.
+
+> 
+> Wouldn't this also be needed by an Armada XP that supports
+> more than 4GB of RAM but has an outer cache?
+
+I don't know about the armada XP environment.
+
+> 
+> I suppose those SoCs using off-the-shelf Arm cores are either
+> pre-LPAE and cannot address memory above 4GB, or they do
+> not need the outer_cache interfaces.
+
+I think so.
+
+> 
+>> diff --git a/arch/arm/mm/cache-feroceon-l2.c b/arch/arm/mm/cache-feroceon-l2.c
+>> index 5c1b7a7b9af6300..ab1d8051bf832c9 100644
+>> --- a/arch/arm/mm/cache-feroceon-l2.c
+>> +++ b/arch/arm/mm/cache-feroceon-l2.c
+>> @@ -168,7 +168,7 @@ static unsigned long calc_range_end(unsigned long start, unsigned long end)
+>>         return range_end;
+>>  }
+>>
+>> -static void feroceon_l2_inv_range(unsigned long start, unsigned long end)
+>> +static void __feroceon_l2_inv_range(unsigned long start, unsigned long end)
+>>  {
+>>         /*
+>>          * Clean and invalidate partial first cache line.
+>> @@ -198,7 +198,12 @@ static void feroceon_l2_inv_range(unsigned long start, unsigned long end)
+>>         dsb();
+>>  }
+>>
+>> -static void feroceon_l2_clean_range(unsigned long start, unsigned long end)
+>> +static void feroceon_l2_inv_range(phys_addr_t start, phys_addr_t end)
+>> +{
+>> +       __feroceon_l2_inv_range(start, end);
+>> +}
+>> +
+> 
+> What is this indirection for? It looks like you do this for all implementations,
+> so the actual address gets truncated here.
+
+Because these environments are all 32-bit physical addresses or only the lower
+32-bit physical addresses need to be operated. But my environment operates 64-bit
+physical address and sizeof(long) is 32. So need to change the datatype of the
+outchache hooks.
+
+ struct outer_cache_fns {
+-	void (*inv_range)(unsigned long, unsigned long);
+-	void (*clean_range)(unsigned long, unsigned long);
+-	void (*flush_range)(unsigned long, unsigned long);
++	void (*inv_range)(phys_addr_t, phys_addr_t);
++	void (*clean_range)(phys_addr_t, phys_addr_t);
++	void (*flush_range)(phys_addr_t, phys_addr_t);
+ 	void (*flush_all)(void);
+
+I added middle-tier function for all implementations, just to ensure that the
+above changes do not have side effects on them.
+
+> 
+>        Arnd
+> 
+> .
+> 
 
