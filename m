@@ -2,219 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A252E7520
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 00:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95172E7535
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 00:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgL2XGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 18:06:04 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:52669 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgL2XGD (ORCPT
+        id S1726278AbgL2XUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 18:20:42 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:59567 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726158AbgL2XUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 18:06:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609283142; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=qPSGGbSQ/whpFm0CGfEW2fSmc4Ym/F/rF5YoPwodicU=; b=ImPAvcy1zzOV8AkTSpwhPdfXNUxQJaGgk+uX0xVNmkRYY9CTPEBAv9/WJm+NgHwfZ+mFMXT3
- jEyK4mtP5KJYJihsw01wL2U2vLTOtoKGgqN7nFaB1z1B9QfvnHZFIQ8Oomzlrh2EFCcjaGPd
- T0j+nllHcb6zDIc/cPLTc1UVl18=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5febb646e61d77c9716c718c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Dec 2020 23:05:42
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 76729C43461; Tue, 29 Dec 2020 23:05:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9EBF1C433C6;
-        Tue, 29 Dec 2020 23:05:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9EBF1C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v2 2/2] usb: dwc3: gadget: Preserve UDC max speed setting
-Date:   Tue, 29 Dec 2020 15:05:36 -0800
-Message-Id: <1609283136-22140-3-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609283136-22140-1-git-send-email-wcheng@codeaurora.org>
-References: <1609283136-22140-1-git-send-email-wcheng@codeaurora.org>
+        Tue, 29 Dec 2020 18:20:37 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 8C82A814;
+        Tue, 29 Dec 2020 18:19:24 -0500 (EST)
+Received: from imap6 ([10.202.2.56])
+  by compute2.internal (MEProxy); Tue, 29 Dec 2020 18:19:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kdrag0n.dev; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=X8JjLKTzxPlMmcPcU4nO/utDw356gR9
+        db/irIXsYAqw=; b=nj423ISJqaZkzLjeb8BCfXLypxop2LvCpDz/RnAQISKxbET
+        YfTUslptbyQ+TktxMYg4SDWS9/fi7CwDEENIwXWLK6JeWLDAG5ZYLVOdOOx7W5PF
+        K5mywgjtMjFMIyMW0x8AwThYqcLqkR4UluvgsiLXoqkEKy4amgR6AbSZxWj76rZ4
+        CXzJg+bOdrIO4ims+R13vxGNHGyBXThrXx/8h+pun/aC+A1KRyzvuU98t+O3BqMw
+        l32umwHAB8J5lgvQUcMVl+lt1BAub3MrtlQJEHyLsnv4nvpD7AnNk/Z2lBsEvnNA
+        UcvLvPvr3zGL5wCgvoV29eZgRC6KeNs1ASSCVOA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=X8JjLK
+        TzxPlMmcPcU4nO/utDw356gR9db/irIXsYAqw=; b=MsBQR0rDjFO+QbXWw+y3kq
+        V/b7WkEeVzN8ybCl9q7YbHtBfbv7i4MLkF4Xpo+XCZmgt/8FZPImO7/kWSJXBHgb
+        dJSw/mFiMrBNCL3W/MB6ry60A7gQCIyPWYw6gGJdOQhcfuJTtJL4lqKUb3ug1y1l
+        27G0qS7Rlg5M8o/QfBem+fspysnxRFoAgwxsjjEFmk+N1V8yIEWY6DuCBS9aOkG/
+        lZ/CNUoBPLveFdltAVA/dTcElLycv/iawTRsnlJw5IrpM+bhEHPt98SYVYNMlQLp
+        tBfZOkQq+esv6nLrBA+kPvW6x7Vg5kiJH2T4X4PU9sVHhGGgwtBw9NJSfKLdaEnw
+        ==
+X-ME-Sender: <xms:e7nrX8GbFfNGMxKSlgHgC2Mri_QWlKzVJ1GT43VKjd_Ju-iiOoxj-A>
+    <xme:e7nrX1XTBCZdbfg_ceQ607Hv0EkMmcaDS6GqMOgDfeAs6XwCR6pta7MsbKFNyd8y3
+    6-8_RbeeEg3KDYRDpk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddvvddgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdffrghn
+    nhihucfnihhnfdcuoegurghnnhihsehkughrrghgtdhnrdguvghvqeenucggtffrrghtth
+    gvrhhnpeektdetjeffffeileektdfhgeevgfdttdfggedtueeihfejjeffheettdevtddt
+    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegurg
+    hnnhihsehkughrrghgtdhnrdguvghv
+X-ME-Proxy: <xmx:e7nrX2KxqAUfipDEWaVIzTxqH1cfVNf3roASkX3YMdO2l4Uawf_vhg>
+    <xmx:e7nrX-H-bL_qp9GiOWpuMKx0QDIifIdTrLS_KCPmVM2nLEoeSkOZRA>
+    <xmx:e7nrXyVwFsAGSr-8jaWz2TxbO6_7HnzVXU0MLAee_XOCepkHzY5SaA>
+    <xmx:fLnrXxQPnvupQ9f_Jfedt9bwmi5RsL7DhGaMVdD_GUO5a5RjkqKlhA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6D5B71400A1; Tue, 29 Dec 2020 18:19:29 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
+Mime-Version: 1.0
+Message-Id: <52495cb9-6230-4f7f-b138-83e74d2834cc@www.fastmail.com>
+In-Reply-To: <X+odnnZYFW3qpubJ@builder.lan>
+References: <20201221002907.2870059-1-danny@kdrag0n.dev>
+ <20201221002907.2870059-3-danny@kdrag0n.dev> <X+AbJvE7OGs3cRCw@ripper>
+ <e7776f3c-a517-4cf3-9265-92dc0ac09c88@www.fastmail.com>
+ <X+odnnZYFW3qpubJ@builder.lan>
+Date:   Tue, 29 Dec 2020 15:19:03 -0800
+From:   "Danny Lin" <danny@kdrag0n.dev>
+To:     "Bjorn Andersson" <bjorn.andersson@linaro.org>
+Cc:     "Andy Gross" <agross@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sm8150: Add PSCI idle states
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The USB gadget/UDC driver can restrict the DWC3 controller speed using
-dwc3_gadget_set_speed().  Store this setting into a variable, in order for
-this setting to persist across controller resets due to runtime PM.
+On Mon, Dec 28, 2020 at10:02 AM, Bjorn Andersson wrote:
+> On Tue 22 Dec 20:00 CST 2020, Danny Lin wrote:
+> 
+> > On Sun, Dec 20, 2020 at 7:48 PM, Bjorn Andersson wrote:
+> > > On Sun 20 Dec 16:29 PST 2020, Danny Lin wrote:
+> > > 
+> > > > Like other Qualcomm SoCs, sm8150 exposes CPU and cluster idle states
+> > > > through PSCI. Define the idle states to save power when the CPU is not
+> > > > in active use.
+> > > > 
+> > > > These idle states, latency, and residency values match the downstream
+> > > > 4.14 kernel from Qualcomm as of LA.UM.8.1.r1-15600-sm8150.0.
+> > > > 
+> > > > It's worth noting that the CPU has an additional C3 power collapse idle
+> > > > state between WFI and rail power collapse (with PSCI mode 0x40000003),
+> > > > but it is not officially used in downstream kernels due to "thermal
+> > > > throttling issues."
+> > > > 
+> > > 
+> > > Thanks Danny for this series, very happy to see this kind of additions.
+> > > Just one small question about the cluster param below.
+> > > 
+> > > > Signed-off-by: Danny Lin <danny@kdrag0n.dev>
+> > > > ---
+> > > >  arch/arm64/boot/dts/qcom/sm8150.dtsi | 50 ++++++++++++++++++++++++++++
+> > > >  1 file changed, 50 insertions(+)
+> > > > 
+> > > > diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > > > index 75ed38ee5d88..edc1fe6d7f1b 100644
+> > > > --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > > > +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > > > @@ -50,6 +50,8 @@ CPU0: cpu@0 {
+> > > >  			compatible = "qcom,kryo485";
+> > > >  			reg = <0x0 0x0>;
+> > > >  			enable-method = "psci";
+> > > > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
+> > > > +					   &CLUSTER_SLEEP_0>;
+> > > >  			next-level-cache = <&L2_0>;
+> > > >  			qcom,freq-domain = <&cpufreq_hw 0>;
+> > > >  			#cooling-cells = <2>;
+> > > > @@ -67,6 +69,8 @@ CPU1: cpu@100 {
+> > > >  			compatible = "qcom,kryo485";
+> > > >  			reg = <0x0 0x100>;
+> > > >  			enable-method = "psci";
+> > > > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
+> > > > +					   &CLUSTER_SLEEP_0>;
+> > > >  			next-level-cache = <&L2_100>;
+> > > >  			qcom,freq-domain = <&cpufreq_hw 0>;
+> > > >  			#cooling-cells = <2>;
+> > > > @@ -82,6 +86,8 @@ CPU2: cpu@200 {
+> > > >  			compatible = "qcom,kryo485";
+> > > >  			reg = <0x0 0x200>;
+> > > >  			enable-method = "psci";
+> > > > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
+> > > > +					   &CLUSTER_SLEEP_0>;
+> > > >  			next-level-cache = <&L2_200>;
+> > > >  			qcom,freq-domain = <&cpufreq_hw 0>;
+> > > >  			#cooling-cells = <2>;
+> > > > @@ -96,6 +102,8 @@ CPU3: cpu@300 {
+> > > >  			compatible = "qcom,kryo485";
+> > > >  			reg = <0x0 0x300>;
+> > > >  			enable-method = "psci";
+> > > > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
+> > > > +					   &CLUSTER_SLEEP_0>;
+> > > >  			next-level-cache = <&L2_300>;
+> > > >  			qcom,freq-domain = <&cpufreq_hw 0>;
+> > > >  			#cooling-cells = <2>;
+> > > > @@ -110,6 +118,8 @@ CPU4: cpu@400 {
+> > > >  			compatible = "qcom,kryo485";
+> > > >  			reg = <0x0 0x400>;
+> > > >  			enable-method = "psci";
+> > > > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
+> > > > +					   &CLUSTER_SLEEP_0>;
+> > > >  			next-level-cache = <&L2_400>;
+> > > >  			qcom,freq-domain = <&cpufreq_hw 1>;
+> > > >  			#cooling-cells = <2>;
+> > > > @@ -124,6 +134,8 @@ CPU5: cpu@500 {
+> > > >  			compatible = "qcom,kryo485";
+> > > >  			reg = <0x0 0x500>;
+> > > >  			enable-method = "psci";
+> > > > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
+> > > > +					   &CLUSTER_SLEEP_0>;
+> > > >  			next-level-cache = <&L2_500>;
+> > > >  			qcom,freq-domain = <&cpufreq_hw 1>;
+> > > >  			#cooling-cells = <2>;
+> > > > @@ -138,6 +150,8 @@ CPU6: cpu@600 {
+> > > >  			compatible = "qcom,kryo485";
+> > > >  			reg = <0x0 0x600>;
+> > > >  			enable-method = "psci";
+> > > > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
+> > > > +					   &CLUSTER_SLEEP_0>;
+> > > >  			next-level-cache = <&L2_600>;
+> > > >  			qcom,freq-domain = <&cpufreq_hw 1>;
+> > > >  			#cooling-cells = <2>;
+> > > > @@ -152,6 +166,8 @@ CPU7: cpu@700 {
+> > > >  			compatible = "qcom,kryo485";
+> > > >  			reg = <0x0 0x700>;
+> > > >  			enable-method = "psci";
+> > > > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
+> > > > +					   &CLUSTER_SLEEP_0>;
+> > > >  			next-level-cache = <&L2_700>;
+> > > >  			qcom,freq-domain = <&cpufreq_hw 2>;
+> > > >  			#cooling-cells = <2>;
+> > > > @@ -196,6 +212,40 @@ core7 {
+> > > >  				};
+> > > >  			};
+> > > >  		};
+> > > > +
+> > > > +		idle-states {
+> > > > +			entry-method = "psci";
+> > > > +
+> > > > +			LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
+> > > > +				compatible = "arm,idle-state";
+> > > > +				idle-state-name = "little-rail-power-collapse";
+> > > > +				arm,psci-suspend-param = <0x40000004>;
+> > > > +				entry-latency-us = <355>;
+> > > > +				exit-latency-us = <909>;
+> > > > +				min-residency-us = <3934>;
+> > > > +				local-timer-stop;
+> > > > +			};
+> > > > +
+> > > > +			BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
+> > > > +				compatible = "arm,idle-state";
+> > > > +				idle-state-name = "big-rail-power-collapse";
+> > > > +				arm,psci-suspend-param = <0x40000004>;
+> > > > +				entry-latency-us = <241>;
+> > > > +				exit-latency-us = <1461>;
+> > > > +				min-residency-us = <4488>;
+> > > > +				local-timer-stop;
+> > > > +			};
+> > > > +
+> > > > +			CLUSTER_SLEEP_0: cluster-sleep-0 {
+> > > > +				compatible = "arm,idle-state";
+> > > > +				idle-state-name = "cluster-power-collapse";
+> > > > +				arm,psci-suspend-param = <0x400000F4>;
+> > > 
+> > > How come this is 0xf4?
+> > > 
+> > > Isn't downstream saying that this should be either 0x1 << 4 or 0xc24 <<
+> > > 4, depending on how deep we want to go? Could we at least mention why
+> > > this is 0xf4?
+> > 
+> > I'm not sure where 0x400000F4 originally came from. I noticed that
+> > sdm845 uses the same 0xc24 mode in downstream, but Qualcomm used
+> > 0x400000F4 in mainline.
+> > 
+> > I did some testing on a downstream kernel and found that the real value
+> > it uses on sm8150 is 0x4100c244, but the idle state doesn't work at all
+> > if I use the same value on mainline. The logic appears to be the same in
+> > the downstream sdm845 kernel. Maybe it has to do with how downstream has
+> > "notify RPM" before attempting to enter the idle state?
+> > 
+> > In downstream, the final PSCI value is calculated as the sum of:
+> > 
+> > 1. (cluster-mode & cluster-mode-mask) << cluster-mode-shift = (0xc24 & 0xfff) << 4 = 0xc240
+> > 2. (is-reset << 30) = 0x40000000
+> > 3. (affinity level & 0x3) << 24 = 0x1000000
+> > 4. (cpu-mode) = 0x4
+> > 
+> > so 0xc240 + 0x40000000 + 0x1000000 + 0x4 = 0x4100c244.
+> > 
+> > It's also possible that the problem comes from the cluster idle state
+> > needing all CPUs in the cluster to be asleep (as far as I know), since
+> > it doesn't look like mainline handles that.
+> > 
+> 
+> Thanks for the explanation. I believe we have the code in place to do
+> OSI sleep using the "psci domain cpuidle" driver, but I'm not entirely
+> sure about the details about it - perhaps it's just a matter of wiring
+> it all up(?).
+> 
+> Let's go with your current patches and then swing back to this once
+> we've figured out the remaining details.
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- drivers/usb/dwc3/core.h   |   1 +
- drivers/usb/dwc3/gadget.c | 108 ++++++++++++++++++++------------------
- 2 files changed, 58 insertions(+), 51 deletions(-)
+Following your hint, I was able to get cluster idle working using power
+domain idle states. The cluster idle state is now successfully using the
+same value as downstream with no apparent issues, and individual CPU
+idle states are still working. Time spent in the cluster idle state
+increases when and only when all CPUs are idle, which matches the
+expected behavior.
 
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 2f04b3e42bf1..390d3deef0ba 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -1119,6 +1119,7 @@ struct dwc3 {
- 	u32			nr_scratch;
- 	u32			u1u2;
- 	u32			maximum_speed;
-+	u32			gadget_max_speed;
- 
- 	u32			ip;
- 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index babf977cadc0..c145da1d8ba5 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1941,6 +1941,61 @@ static void dwc3_stop_active_transfers(struct dwc3 *dwc)
- 	}
- }
- 
-+static void __dwc3_gadget_set_speed(struct dwc3 *dwc)
-+{
-+	u32			reg;
-+
-+	reg = dwc3_readl(dwc->regs, DWC3_DCFG);
-+	reg &= ~(DWC3_DCFG_SPEED_MASK);
-+
-+	/*
-+	 * WORKAROUND: DWC3 revision < 2.20a have an issue
-+	 * which would cause metastability state on Run/Stop
-+	 * bit if we try to force the IP to USB2-only mode.
-+	 *
-+	 * Because of that, we cannot configure the IP to any
-+	 * speed other than the SuperSpeed
-+	 *
-+	 * Refers to:
-+	 *
-+	 * STAR#9000525659: Clock Domain Crossing on DCTL in
-+	 * USB 2.0 Mode
-+	 */
-+	if (DWC3_VER_IS_PRIOR(DWC3, 220A) &&
-+	    !dwc->dis_metastability_quirk) {
-+		reg |= DWC3_DCFG_SUPERSPEED;
-+	} else {
-+		switch (dwc->gadget_max_speed) {
-+		case USB_SPEED_LOW:
-+			reg |= DWC3_DCFG_LOWSPEED;
-+			break;
-+		case USB_SPEED_FULL:
-+			reg |= DWC3_DCFG_FULLSPEED;
-+			break;
-+		case USB_SPEED_HIGH:
-+			reg |= DWC3_DCFG_HIGHSPEED;
-+			break;
-+		case USB_SPEED_SUPER:
-+			reg |= DWC3_DCFG_SUPERSPEED;
-+			break;
-+		case USB_SPEED_SUPER_PLUS:
-+			if (DWC3_IP_IS(DWC3))
-+				reg |= DWC3_DCFG_SUPERSPEED;
-+			else
-+				reg |= DWC3_DCFG_SUPERSPEED_PLUS;
-+			break;
-+		default:
-+			dev_err(dwc->dev, "invalid speed (%d)\n", dwc->gadget_max_speed);
-+
-+			if (DWC3_IP_IS(DWC3))
-+				reg |= DWC3_DCFG_SUPERSPEED;
-+			else
-+				reg |= DWC3_DCFG_SUPERSPEED_PLUS;
-+		}
-+	}
-+	dwc3_writel(dwc->regs, DWC3_DCFG, reg);
-+}
-+
- static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
- {
- 	u32			reg;
-@@ -1963,6 +2018,7 @@ static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
- 		if (dwc->has_hibernation)
- 			reg |= DWC3_DCTL_KEEP_CONNECT;
- 
-+		__dwc3_gadget_set_speed(dwc);
- 		dwc->pullups_connected = true;
- 	} else {
- 		reg &= ~DWC3_DCTL_RUN_STOP;
-@@ -2325,59 +2381,9 @@ static void dwc3_gadget_set_speed(struct usb_gadget *g,
- {
- 	struct dwc3		*dwc = gadget_to_dwc(g);
- 	unsigned long		flags;
--	u32			reg;
- 
- 	spin_lock_irqsave(&dwc->lock, flags);
--	reg = dwc3_readl(dwc->regs, DWC3_DCFG);
--	reg &= ~(DWC3_DCFG_SPEED_MASK);
--
--	/*
--	 * WORKAROUND: DWC3 revision < 2.20a have an issue
--	 * which would cause metastability state on Run/Stop
--	 * bit if we try to force the IP to USB2-only mode.
--	 *
--	 * Because of that, we cannot configure the IP to any
--	 * speed other than the SuperSpeed
--	 *
--	 * Refers to:
--	 *
--	 * STAR#9000525659: Clock Domain Crossing on DCTL in
--	 * USB 2.0 Mode
--	 */
--	if (DWC3_VER_IS_PRIOR(DWC3, 220A) &&
--	    !dwc->dis_metastability_quirk) {
--		reg |= DWC3_DCFG_SUPERSPEED;
--	} else {
--		switch (speed) {
--		case USB_SPEED_LOW:
--			reg |= DWC3_DCFG_LOWSPEED;
--			break;
--		case USB_SPEED_FULL:
--			reg |= DWC3_DCFG_FULLSPEED;
--			break;
--		case USB_SPEED_HIGH:
--			reg |= DWC3_DCFG_HIGHSPEED;
--			break;
--		case USB_SPEED_SUPER:
--			reg |= DWC3_DCFG_SUPERSPEED;
--			break;
--		case USB_SPEED_SUPER_PLUS:
--			if (DWC3_IP_IS(DWC3))
--				reg |= DWC3_DCFG_SUPERSPEED;
--			else
--				reg |= DWC3_DCFG_SUPERSPEED_PLUS;
--			break;
--		default:
--			dev_err(dwc->dev, "invalid speed (%d)\n", speed);
--
--			if (DWC3_IP_IS(DWC3))
--				reg |= DWC3_DCFG_SUPERSPEED;
--			else
--				reg |= DWC3_DCFG_SUPERSPEED_PLUS;
--		}
--	}
--	dwc3_writel(dwc->regs, DWC3_DCFG, reg);
--
-+	dwc->gadget_max_speed = speed;
- 	spin_unlock_irqrestore(&dwc->lock, flags);
- }
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Should I send a separate patch for it or revise this series? It might be
+helpful for future reference to keep a record of how to convert the
+current 0xf4 cluster states on modern Qualcomm SoCs in the commit
+history.
 
+>
+> Thanks,
+> Bjorn
+> 
+> > > 
+> > > Regards,
+> > > Bjorn
+> > > 
+> > > > +				entry-latency-us = <3263>;
+> > > > +				exit-latency-us = <6562>;
+> > > > +				min-residency-us = <9987>;
+> > > > +				local-timer-stop;
+> > > > +			};
+> > > > +		};
+> > > >  	};
+> > > >  
+> > > >  	firmware {
+> > > > -- 
+> > > > 2.29.2
+> > > > 
+> > >
+>
