@@ -2,144 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E482E723D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BB12E723F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgL2QUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 11:20:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726197AbgL2QUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 11:20:24 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E99A3207CF;
-        Tue, 29 Dec 2020 16:19:42 +0000 (UTC)
-Date:   Tue, 29 Dec 2020 16:19:39 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Cristian Pop <cristian.pop@analog.com>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] dt-bindings: iio: dac: AD5766 yaml documentation
-Message-ID: <20201229161939.7860f1b1@archlinux>
-In-Reply-To: <20201221184434.GA331914@robh.at.kernel.org>
-References: <20201218171231.58794-1-cristian.pop@analog.com>
-        <20201221184434.GA331914@robh.at.kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1726276AbgL2QXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 11:23:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgL2QXy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 11:23:54 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1627C061793
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 08:23:13 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id qw4so18718732ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 08:23:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xpOzHh6y1INWl7zzSelCcrj9eLoAEtCjCcdN755O9hI=;
+        b=yyzqXn4Ea75b1WKZ6qQf1rODlgLK1tmfni7cQLFs1EG9AZrp47FrdDE1qQXF8ZM7LK
+         KXLnjc1juo+pdBy/pbmU08uMAggNq5QV0RLpl038md17GVMhp/qWcA+ON8AykeWGC6XP
+         pVOASRH1JTF8eC6ehOOw/SHpVzPjw1GP5DEG6u8sQ9q2mGENNGl8A8HHZEzIqySz6k/C
+         wVPU1Jovmg9KxljjOTcg8YRQv5rBdSh3GPooct+upLzu21KP+5KUBFJN3+T3y7wTvRKa
+         kVdMwTWznaBWAXHGW9hBDfS8HK6i9+66iZc2z5L0PstBhcWYRXpSfIKTuwmch/ceoU8d
+         GTZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xpOzHh6y1INWl7zzSelCcrj9eLoAEtCjCcdN755O9hI=;
+        b=Moe6PtXCrkUsSZYRH4wQ3wSZkfbECQiUiBtAvgZcZgnd0NWnvTMxG4+itvcSu4O1sP
+         W/cPFMesspSRNwJ5GzBQSDeLyyex60cf/N1jqV7yZtIr2iWWa9xv38jA2ltP7zD9Ir1a
+         YJgcNCq5Zhzmk1/4JiFl4XGAybpohd5CKt9Dn3ryB6nVws2YWD74Kl8yg6o529LEFNgl
+         +wOHteCoRLawWOS9tCZXYcgAVVyLOkqCgF6kjyEEXo9Jb51myCToeK+Y08GTSsBv6Kcx
+         y/lbJrxxXf3HmX5fXa7PbMH3JZmWU0nCAoxt8j/VyRep0xYI+uceDZh5gczzavlZxWzg
+         Ip+w==
+X-Gm-Message-State: AOAM532u9kO4de+CEdo5UTZxulqmMDEtJO0iVmChcT1jrNZUHEzrFpZ1
+        TogZPcEYopO9Q6Zzx9z1Vfy3jp6ka3Dn183U5PmEww==
+X-Google-Smtp-Source: ABdhPJzQB8HPp8RbHxPIG3HohPpgFl6lQXZoYVkykPnmeLXH1HQsdysVfr5bbJG18L958b6h3Hld0UL1W3vbvFZnOBg=
+X-Received: by 2002:a17:906:2b50:: with SMTP id b16mr45072726ejg.255.1609258991366;
+ Tue, 29 Dec 2020 08:23:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1609191951-15590-1-git-send-email-tharvey@gateworks.com> <20201229130629.GD4786@sirena.org.uk>
+In-Reply-To: <20201229130629.GD4786@sirena.org.uk>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Tue, 29 Dec 2020 08:23:00 -0800
+Message-ID: <CAJ+vNU3hWOdXUoogCH0U_WvYaMMaFBYs8D30KEg96ctgkhBqyQ@mail.gmail.com>
+Subject: Re: [PATCH] regmap: irq: do not allow setting irq bits during ack
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Laxminath Kasam <lkasam@codeaurora.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Robert Jones <rjones@gateworks.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Dec 2020 11:44:34 -0700
-Rob Herring <robh@kernel.org> wrote:
+On Tue, Dec 29, 2020 at 5:06 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Mon, Dec 28, 2020 at 01:45:51PM -0800, Tim Harvey wrote:
+>
+> > Some interrupt controllers may not de-assert their interrupt if
+> > bits are set when acknowledging the bits that caused the interrupt.
+>
+> > Take care to not apply the mask to the status until we are done
+> > acknowledging the interrupt and take care to mask the bits according
+> > for the ack_invert state.
+>
+> I can't understand what this commit message is trying to say, sorry.
+> Which bits are you talking about when you say "if bits are set"?  Isn't
+> acknowleding the interrupt clearing the bits asserting the interrupt?  I
+> can't tell what the problem you're trying to fix is.
 
-> On Fri, Dec 18, 2020 at 07:12:29PM +0200, Cristian Pop wrote:
-> > This adds device tree bindings for the AD5766 DAC.
-> > 
-> > Signed-off-by: Cristian Pop <cristian.pop@analog.com>
-> > ---
-> >  Changelog v4:
-> > 	- Add range selection
-> > 	- Reset is GPIO_ACTIVE_LOW
-> > 	
-> >  .../bindings/iio/dac/adi,ad5766.yaml          | 64 +++++++++++++++++++
-> >  1 file changed, 64 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> > new file mode 100644
-> > index 000000000000..846b5ee50761
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> > @@ -0,0 +1,64 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +# Copyright 2020 Analog Devices Inc.
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/dac/adi,ad5766.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Analog Devices AD5766 DAC device driver
-> > +
-> > +maintainers:
-> > +  - Cristian Pop <cristian.pop@analog.com>
-> > +
-> > +description: |
-> > +  Bindings for the Analog Devices AD5766 current DAC device. Datasheet can be
-> > +  found here:
-> > +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad5766-5767.pdf
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - adi,ad5766
-> > +      - adi,ad5767
-> > +
-> > +  output-range:
-> > +    description: Select converter output range.  
-> 
-> Something standard for DACs? If not needs a vendor prefix and type. 
+Mark,
 
-Hmm. It's a common enough thing that we could think about standardizing
-it but it would need units in the naming.
+If for example status=0x01 the current code for ack_invert will write
+a 0xfe to clear that bit which ends up setting all other interrupt
+bits keeping the interrupt from ever being de-asserted. With the patch
+applied a status=0x01 will result in a 0x00 written to clear that bit
+and keep other's from being set.
 
-output-range-volts
-
-and promoting to a higher level in the DT bindings docs than the individual
-driver.
-
-We almost certainly have a bunch of preexisting bindings using manufacturer
-specific equivalents.  I've not be completely consistent on this so have
-encouraged separate max / min attributes but with hind sight I two value
-version like this probably makes more sense in a DT binding (not so much
-if userspace is controlling it).
-
-
-> 
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  spi-max-frequency:
-> > +    maximum: 1000000
-> > +
-> > +  spi-cpol: true
-> > +
-> > +  reset-gpios:
-> > +    description: GPIO spec for the RESET pin. If specified, it will be asserted
-> > +      during driver probe. As the line is active low, it should be marked
-> > +      GPIO_ACTIVE_LOW.
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - output-range
-> > +  - reg
-> > +  - spi-max-frequency
-> > +  - spi-cpol
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    spi {
-> > +          #address-cells = <1>;
-> > +          #size-cells = <0>;
-> > +          
-> > +          ad5766@0 {
-> > +              compatible = "adi,ad5766";
-> > +              output-range = <(-5) 5>;
-> > +              reg = <0>;
-> > +              spi-cpol;
-> > +              spi-max-frequency = <1000000>;
-> > +              reset-gpios = <&gpio 22 0>;
-> > +            };
-> > +      };
-> > -- 
-> > 2.17.1
-> >   
-
+Tim
