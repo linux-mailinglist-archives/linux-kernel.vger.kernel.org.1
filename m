@@ -2,29 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B692E711C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB822E711A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgL2NwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 08:52:20 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9696 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgL2NwT (ORCPT
+        id S1726921AbgL2NwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 08:52:14 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9946 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726488AbgL2NwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 08:52:19 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D4wly4ZVzzkx7l;
-        Tue, 29 Dec 2020 21:50:22 +0800 (CST)
+        Tue, 29 Dec 2020 08:52:13 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D4wmV5M2fzhysl;
+        Tue, 29 Dec 2020 21:50:50 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 29 Dec 2020 21:51:15 +0800
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 29 Dec 2020 21:51:24 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <peterhuewe@gmx.de>, <jarkko@kernel.org>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jgg@ziepe.ca>, Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] tpm: Use kzalloc for allocating only one thing
-Date:   Tue, 29 Dec 2020 21:51:54 +0800
-Message-ID: <20201229135154.23648-1-zhengyongjun3@huawei.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <pdeschrijver@nvidia.com>, <pgaikwad@nvidia.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] clk: tegra: Use kzalloc for allocating only one thing
+Date:   Tue, 29 Dec 2020 21:52:02 +0800
+Message-ID: <20201229135202.23702-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -51,22 +54,22 @@ The semantic patch that makes this change is as follows:
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/char/tpm/tpm1-cmd.c | 2 +-
+ drivers/clk/tegra/clk-tegra124-emc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/tpm/tpm1-cmd.c b/drivers/char/tpm/tpm1-cmd.c
-index ca7158fa6e6c..4d8415e3b778 100644
---- a/drivers/char/tpm/tpm1-cmd.c
-+++ b/drivers/char/tpm/tpm1-cmd.c
-@@ -794,7 +794,7 @@ int tpm1_pm_suspend(struct tpm_chip *chip, u32 tpm_suspend_pcr)
-  */
- int tpm1_get_pcr_allocation(struct tpm_chip *chip)
- {
--	chip->allocated_banks = kcalloc(1, sizeof(*chip->allocated_banks),
-+	chip->allocated_banks = kzalloc(sizeof(*chip->allocated_banks),
- 					GFP_KERNEL);
- 	if (!chip->allocated_banks)
- 		return -ENOMEM;
+diff --git a/drivers/clk/tegra/clk-tegra124-emc.c b/drivers/clk/tegra/clk-tegra124-emc.c
+index 745f9faa98d8..7cc89c234eaa 100644
+--- a/drivers/clk/tegra/clk-tegra124-emc.c
++++ b/drivers/clk/tegra/clk-tegra124-emc.c
+@@ -483,7 +483,7 @@ struct clk *tegra_clk_register_emc(void __iomem *base, struct device_node *np,
+ 	struct clk *clk;
+ 	int err;
+ 
+-	tegra = kcalloc(1, sizeof(*tegra), GFP_KERNEL);
++	tegra = kzalloc(sizeof(*tegra), GFP_KERNEL);
+ 	if (!tegra)
+ 		return ERR_PTR(-ENOMEM);
+ 
 -- 
 2.22.0
 
