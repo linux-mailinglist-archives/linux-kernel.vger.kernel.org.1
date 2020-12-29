@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101032E711F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04C82E7123
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgL2Nws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 08:52:48 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9947 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726618AbgL2Nwr (ORCPT
+        id S1727017AbgL2Nwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 08:52:53 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10003 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgL2Nww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 08:52:47 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D4wn71FGbzhylk;
-        Tue, 29 Dec 2020 21:51:23 +0800 (CST)
+        Tue, 29 Dec 2020 08:52:52 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D4wn543NJzhyxt;
+        Tue, 29 Dec 2020 21:51:21 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 29 Dec 2020 21:51:52 +0800
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 29 Dec 2020 21:51:59 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <bharat@chelsio.com>, <dledford@redhat.com>, <jgg@ziepe.ca>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] iw_cxgb4: Use kzalloc for allocating only one thing
-Date:   Tue, 29 Dec 2020 21:52:32 +0800
-Message-ID: <20201229135232.23869-1-zhengyongjun3@huawei.com>
+To:     <olteanv@gmail.com>, <andrew@lunn.ch>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: dsa: sja1105: Use kzalloc for allocating only one thing
+Date:   Tue, 29 Dec 2020 21:52:38 +0800
+Message-ID: <20201229135239.23923-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -51,22 +52,22 @@ The semantic patch that makes this change is as follows:
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/infiniband/hw/cxgb4/restrack.c | 2 +-
+ drivers/net/dsa/sja1105/sja1105_main.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/restrack.c b/drivers/infiniband/hw/cxgb4/restrack.c
-index b32e6516d65f..ff645b955a08 100644
---- a/drivers/infiniband/hw/cxgb4/restrack.c
-+++ b/drivers/infiniband/hw/cxgb4/restrack.c
-@@ -209,7 +209,7 @@ int c4iw_fill_res_cm_id_entry(struct sk_buff *msg,
- 	epcp = (struct c4iw_ep_common *)iw_cm_id->provider_data;
- 	if (!epcp)
- 		return 0;
--	uep = kcalloc(1, sizeof(*uep), GFP_KERNEL);
-+	uep = kzalloc(sizeof(*uep), GFP_KERNEL);
- 	if (!uep)
- 		return 0;
+diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
+index 4ca029650993..59e00d55780b 100644
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -317,7 +317,7 @@ static int sja1105_init_static_vlan(struct sja1105_private *priv)
+ 		table->entry_count = 0;
+ 	}
  
+-	table->entries = kcalloc(1, table->ops->unpacked_entry_size,
++	table->entries = kzalloc(table->ops->unpacked_entry_size,
+ 				 GFP_KERNEL);
+ 	if (!table->entries)
+ 		return -ENOMEM;
 -- 
 2.22.0
 
