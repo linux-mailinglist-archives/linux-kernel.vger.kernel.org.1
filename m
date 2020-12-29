@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789FB2E7032
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 12:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A92DD2E7036
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:01:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgL2L5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 06:57:14 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:37171 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgL2L5M (ORCPT
+        id S1726261AbgL2MBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 07:01:37 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:58836 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725979AbgL2MBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 06:57:12 -0500
-Received: from mail-oi1-f197.google.com ([209.85.167.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kuDc6-0004kO-HQ
-        for linux-kernel@vger.kernel.org; Tue, 29 Dec 2020 11:56:30 +0000
-Received: by mail-oi1-f197.google.com with SMTP id r204so8463458oia.19
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 03:56:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q74LhyOMocTQWIe3Ylg6HmsCuTC4QalH4b9SeCz/Lmw=;
-        b=gB7cD8cgbJBgWmUJCggzob5fC6p2d5fkGrEIKLY+XLIfz6L7gMrsnDV/pyDuCR3ibP
-         xKBvXP3WwLEeHL9schsVpdidsINXpee/vN3EpCKUgBHGT7DNkVgWBZVSm2zOV+bmMaMh
-         fiC4oliGeD906djdGLzmoONJRRXGARLd4N88Nz8JOD/M4XTjHXVVR5es/mWZL4c8nYZv
-         Qp9NDk6Ysanvu4hBsu7aSLrIDn/ZMyRK/ib7jnbNSW+DcJ/tXFV1XuXdA7xI4ZFcheVC
-         ZBUyMxaQGDcsRu4ZjnzVNoTwUghYizQ4PMoOKcgnwQFTVo0xwi+HhNhDm1oNYtcMI3II
-         QtCA==
-X-Gm-Message-State: AOAM533qS0PeTKDAPibBEY+1wd86K0aAPZpesbGEM0Sa05GRbo4sb0TJ
-        WShywP/Km9vCy2Q/dWVWXnB5CEo9hPOHO3Dbc5I/wAxDBCAIEIgpLqdi5HKCRg9Y1d10CZTASiY
-        g9ryyGaNezut6lP2GYOLyfRXqvsHW4gKSeeopDhqoxeIq/qyl00GHw2WDNA==
-X-Received: by 2002:a9d:7411:: with SMTP id n17mr35055822otk.262.1609242989498;
-        Tue, 29 Dec 2020 03:56:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwd87AmyCfADf4gnKzotbQ9sDAN7TepdjBNdv0JiQGNi7ekW7M752Dbwu1xJRXPDL61O/Uw1lOEG3U6xYjQtTU=
-X-Received: by 2002:a9d:7411:: with SMTP id n17mr35055815otk.262.1609242989230;
- Tue, 29 Dec 2020 03:56:29 -0800 (PST)
+        Tue, 29 Dec 2020 07:01:37 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTBrbs9003695;
+        Tue, 29 Dec 2020 06:00:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=JuJssSRaUYe6JFnUlHct2u9BzdB+OHvVGf7j9G8SCnk=;
+ b=gjDWEht7MTPdC2ANpFk4QDdsLrwOG5527gEQW30S+7wwr8RYyGLZEHgM19AFkdS5C9t8
+ JbF8/yDzqc2xpNW58TlGbCvoLD/SeB98HlFkEBv/epxCvgaJeqx7yQsjnoGfw/eUNVu4
+ 2QlKvTsrXqrDPFlLnZ1OU0apWZ67TEpEaTUcEhzw7OYBW1E/hw35I311OJtClfaDLPri
+ rGT95wqF+dhoyKBboolXaTFW33CetXYhmPl3UZtGhvlVjoX3Tdz4bt3WBRLLsqopTPvU
+ b6aZSS97MsRoVierL4rl8iPu6QLK3D9A4JztTxkJAxIKMNfi3NDRp/mka2/92eacpRH5 pg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 35p2fs2a5x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 29 Dec 2020 06:00:41 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Dec
+ 2020 12:00:39 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 29 Dec 2020 12:00:39 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6C2E111CB;
+        Tue, 29 Dec 2020 12:00:39 +0000 (UTC)
+Date:   Tue, 29 Dec 2020 12:00:39 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH 04/14] mfd: arizona: Allow building arizona MFD-core as
+ module
+Message-ID: <20201229120039.GI9673@ediswmail.ad.cirrus.com>
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-5-hdegoede@redhat.com>
 MIME-Version: 1.0
-References: <79940973-b631-90f9-dbc4-9579c6000816@gmail.com>
- <20201117163817.GA1397220@bjorn-Precision-5520> <CAJZ5v0ipMJ1gCB7okpROG_yAUi5Q8LknqeH+Jpdrjbb4D_vfuQ@mail.gmail.com>
- <b7bf02fd-c1aa-f430-524e-98922041ed81@gmail.com>
-In-Reply-To: <b7bf02fd-c1aa-f430-524e-98922041ed81@gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Tue, 29 Dec 2020 19:56:17 +0800
-Message-ID: <CAAd53p43tMEk3b-BUUW1_rxFPo9zr3ZYqpSrLYddxBk_U=aw2g@mail.gmail.com>
-Subject: Re: Time to re-enable Runtime PM per default for PCI devcies?
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201227211232.117801-5-hdegoede@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 mlxlogscore=935 spamscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012290075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 11:26 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->
-> On 17.11.2020 17:57, Rafael J. Wysocki wrote:
-> > On Tue, Nov 17, 2020 at 5:38 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >>
-> >> [+to Rafael, author of the commit you mentioned,
-> >> +cc Mika, Kai Heng, Lukas, linux-pm, linux-kernel]
-> >>
-> >> On Tue, Nov 17, 2020 at 04:56:09PM +0100, Heiner Kallweit wrote:
-> >>> More than 10 yrs ago Runtime PM was disabled per default by bb910a7040
-> >>> ("PCI/PM Runtime: Make runtime PM of PCI devices inactive by default").
-> >>>
-> >>> Reason given: "avoid breakage on systems where ACPI-based wake-up is
-> >>> known to fail for some devices"
-> >>> Unfortunately the commit message doesn't mention any affected  devices
-> >>> or systems.
-> >
-> > Even if it did that, it wouldn't have been a full list almost for sure.
-> >
-> > We had received multiple problem reports related to that, most likely
-> > because the ACPI PM in BIOSes at that time was tailored for
-> > system-wide PM transitions only.
-> >
->
-> To follow up on this discussion:
-> We could call pm_runtime_forbid() conditionally, e.g. with the following
-> condition. This would enable runtime pm per default for all non-ACPI
-> systems, and it uses the BIOS date as an indicator for a hopefully
-> not that broken ACPI implementation. However I could understand the
-> argument that this looks a little hacky ..
->
-> if (IS_ENABLED(CONFIG_ACPI) && dmi_get_bios_year() <= 2016)
+On Sun, Dec 27, 2020 at 10:12:22PM +0100, Hans de Goede wrote:
+> There is no reason why the arizona core,irq and codec model specific
+> regmap bits cannot be build as a module. All they do is export symbols
+> which are used by the arizona-spi and/or arizona-i2c modules, which
+> themselves can be built as module.
+> 
+> Change the Kconfig and Makefile arizona bits so that the arizona MFD-core
+> can be built as a module.
+> 
+> This is especially useful on x86 platforms with a WM5102 codec, this
+> allows the arizona MFD driver necessary for the WM5102 codec to be
+> enabled in generic distro-kernels without growing the base kernel-image
+> size.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
 
-dmi_get_bios_year() may not be a good indicator. Last time I used it
-caused regression, because the value changed after BIOS update.
-For example, my MacBook Pro is manufactured in 2011, but
-dmi_get_bios_year() returns 2018 with latest BIOS.
+I think this patch might still cause some issues. ASoC has an
+idiom where the machine driver does a select on the necessary
+CODEC drivers. Select doesn't take care of dependencies etc. So I
+believe if you build the machine driver as built in, it then
+selects the CODEC as built in. If you have the MFD as a module
+the build then fails due to the the CODEC calling some Arizona
+functions.
 
-Kai-Heng
+arizona_request_irq, arizona_free_irq, arizona_set_irq_wake
 
->
->
->
-> >>> With Runtime PM disabled e.g. the PHY on network devices may remain
-> >>> powered up even with no cable plugged in, affecting battery lifetime
-> >>> on mobile devices. Currently we have to rely on the respective distro
-> >>> or user to enable Runtime PM via sysfs (echo auto > power/control).
-> >>> Some devices work around this restriction by calling pm_runtime_allow
-> >>> in their probe routine, even though that's not recommended by
-> >>> https://www.kernel.org/doc/Documentation/power/pci.txt
-> >>>
-> >>> Disabling Runtime PM per default seems to be a big hammer, a quirk
-> >>> for affected devices / systems may had been better. And we still
-> >>> have the option to disable Runtime PM for selected devices via sysfs.
-> >>>
-> >>> So, to cut a long story short: Wouldn't it be time to remove this
-> >>> restriction?
-> >>
-> >> I don't know the history of this, but maybe Rafael or the others can
-> >> shed some light on it.
-> >
-> > The systems that had those problems 10 years ago would still have
-> > them, but I expect there to be more systems where runtime PM can be
-> > enabled by default for PCI devices without issues.
-> >
->
+On Madera we made the equivalents inline functions to avoid the
+issue, the same should work here.
+
+include/linux/irqchip/irq-madera.h
+
+Thanks,
+Charles
