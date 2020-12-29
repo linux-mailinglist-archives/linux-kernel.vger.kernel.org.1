@@ -2,118 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EE32E7292
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 18:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A4C2E72AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 18:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgL2RRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 12:17:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726258AbgL2RRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 12:17:24 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC47A21D94;
-        Tue, 29 Dec 2020 17:16:43 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kuIbx-004Ri2-Kb; Tue, 29 Dec 2020 17:16:41 +0000
+        id S1726209AbgL2RcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 12:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgL2RcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 12:32:07 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8692AC061793;
+        Tue, 29 Dec 2020 09:31:26 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id ce23so18987967ejb.8;
+        Tue, 29 Dec 2020 09:31:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NpRbovEFhIUWDeLgLi1cmLAq8hw0Nkuzyn5MTBdA9MY=;
+        b=cb9FFcqwCorBCPQ8N8ipTckD/AzQQFNpSvvMeqTM6ZitmkksK6Xf2Q8nov5FVrIez1
+         HfpJRvWvPfin+VztGqsfHchJSXT2nJjnkvCwPEU2jBTPyEGMhkqtkPd2iKkWQPm9kT3R
+         yCiZ19Rq6QuCEKjzljWG5k77s2EhgF9AYZ5+c+aubRwdt6ls0viIfY64IIl1FYLW6HK/
+         KIfLWX84ZzTvuvA7wvatcsHBKg1y8+h7dn9v+VpzKGrgq6Tg+LbDH0psuhyCNJ64rkCm
+         uMPwGwsYJN/Ftv5nU5EXeGI2kq5euNxEjyhzCTFU33B3as6aMnbYzsNBcoa2p/JXYbaD
+         b4uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NpRbovEFhIUWDeLgLi1cmLAq8hw0Nkuzyn5MTBdA9MY=;
+        b=UcTNh9sV8zi/89wqlM4ts/RSGv4ZQpeDTLGQX8dVHKxf8cKN8Eq9yn89saBtGDp7a4
+         7a98Hbthg8CZ/9sZTIKml/xvmNPzIdoG97uvUdvpa4XgRuZIT1cr+haUZWZo5Mi3cqhK
+         MmfmRQwkd+2ZuFAR8GLfEUl8tE0fkqiBXPe/fkOR3q1GyVLZ9cp1MnDe+1BWV1hu5B5B
+         JbBB187Z7wpDSpUggzDJ5ICSlN3bP16x7ueDFfujneu//l4y3VumldEF7+CDvR79ND1N
+         jbwGcVWQhQmeh4puVh5vjwP651PrHdZDe2Rkt28oTQ9NFY7PwnfTrZOGxT0x1+5ENv3f
+         jTMA==
+X-Gm-Message-State: AOAM533ivYFkoRsho4rwJEDBmL7O0SgMIhL5wRfLnsbXtPdG0QdBaHOb
+        temW29PA8vo0Aiw2rGgsJf8=
+X-Google-Smtp-Source: ABdhPJwngcnyeFWq9S5cj8VQ/qbch7z2mOYsx5pDTPqOuhiSwX6UF9jtITAGWLy6Qy7qauFMMNCKFA==
+X-Received: by 2002:a17:906:2499:: with SMTP id e25mr46484142ejb.446.1609263085258;
+        Tue, 29 Dec 2020 09:31:25 -0800 (PST)
+Received: from localhost.localdomain ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id q25sm37385362eds.85.2020.12.29.09.31.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Dec 2020 09:31:24 -0800 (PST)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v4 0/7] Add initial support for ATC260x PMICs
+Date:   Tue, 29 Dec 2020 19:31:15 +0200
+Message-Id: <cover.1609258905.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 29 Dec 2020 17:16:41 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH] KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
-In-Reply-To: <20201229160059.64135-1-dbrazdil@google.com>
-References: <20201229160059.64135-1-dbrazdil@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <229d84b8d7818a170adf489535ea2d43@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+The ATC260x family of PMICs integrates Audio Codec, Power management,
+Clock generation and GPIO controller blocks. There are currently 3
+variants: ATC2603A, ATC2603C and ATC2609A.
 
-On 2020-12-29 16:00, David Brazdil wrote:
-> The KVM/arm64 PSCI relay assumes that SYSTEM_OFF and SYSTEM_RESET 
-> should
-> not return, as dictated by the PSCI spec. However, there is firmware 
-> out
-> there which breaks this assumption, leading to a hyp panic. Make KVM
-> more robust to broken firmware by allowing these to return.
-> 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  arch/arm64/kvm/hyp/nvhe/psci-relay.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> index e3947846ffcb..8e7128cb7667 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> @@ -77,12 +77,6 @@ static unsigned long psci_forward(struct
-> kvm_cpu_context *host_ctxt)
->  			 cpu_reg(host_ctxt, 2), cpu_reg(host_ctxt, 3));
->  }
-> 
-> -static __noreturn unsigned long psci_forward_noreturn(struct
-> kvm_cpu_context *host_ctxt)
-> -{
-> -	psci_forward(host_ctxt);
-> -	hyp_panic(); /* unreachable */
-> -}
-> -
->  static unsigned int find_cpu_id(u64 mpidr)
->  {
->  	unsigned int i;
-> @@ -251,10 +245,13 @@ static unsigned long psci_0_2_handler(u64
-> func_id, struct kvm_cpu_context *host_
->  	case PSCI_0_2_FN_MIGRATE_INFO_TYPE:
->  	case PSCI_0_2_FN64_MIGRATE_INFO_UP_CPU:
->  		return psci_forward(host_ctxt);
-> +	/*
-> +	 * SYSTEM_OFF/RESET should not return according to the spec.
-> +	 * Allow it so as to stay robust to broken firmware.
-> +	 */
->  	case PSCI_0_2_FN_SYSTEM_OFF:
->  	case PSCI_0_2_FN_SYSTEM_RESET:
-> -		psci_forward_noreturn(host_ctxt);
-> -		unreachable();
-> +		return psci_forward(host_ctxt);
->  	case PSCI_0_2_FN64_CPU_SUSPEND:
->  		return psci_cpu_suspend(func_id, host_ctxt);
->  	case PSCI_0_2_FN64_CPU_ON:
+This is re-spin of the v1 patch series submitted some time ago by
+Mani, who provided the MFD and regulator drivers for ATC2609A:
+https://lore.kernel.org/lkml/20190617155011.15376-1-manivannan.sadhasivam@linaro.org/
 
-Thanks for having tracked this.
+Since v2, I added support for ATC2603C, together with some new
+functionalities for both chips: power controller and onkey input.
+The ATC2603A chip type remains unsupported for the moment.
 
-I wonder whether we should also taint the kernel in this case,
-because this is completely unexpected, and a major spec violation.
+This has been tested on RoseapplePi, a SBC based on the Actions Semi S500
+SoC, which integrates the ATC2603C variant of the PMIC.
 
-Ideally, we'd be able to detect this case and prevent pKVM from
-getting initialised at all, but I guess there is no way to detect
-the sucker without ... calling SYSTEM_RESET?
+Note that enabling the ATC260x PMICs on compatible Actions Semi Owl SoC
+based boards depends on:
 
-         M.
+* the Actions Semi SIRQ driver (for PMIC DTS setup), merged in v5.10:
+  https://lore.kernel.org/lkml/cover.1600114378.git.cristian.ciocaltea@gmail.com/
+
+* the atomic transfers in Owl I2C driver (for power controller), merged in v5.11:
+  https://lore.kernel.org/lkml/cover.1602190168.git.cristian.ciocaltea@gmail.com/
+
+Additionally, please note that I have taken the authorship for the MFD
+and regulator drivers patches, considering the original code has been
+modified to a large extent.
+
+Thanks,
+Cristi
+
+Changes in v4:
+- Updated MFD driver according to Lee's review
+- Handled ATC2603C's LDO12 fixed regulator per Mark's suggestion
+- Rebased patchset on v5.11-rc1
+
+Changes in v3:
+- Integrated feedback from Mani, Rob, Mark, Sebastian, Dmitry
+- Fixed issues reported by Lee's kernel test robot
+- Added new patch for 'reset-time-sec' DT binding property
+- Rebased patchset on v5.10-rc6
+
+Changes in v2:
+- Reworked MFD core & I2C driver
+  * Integrated Lee's feedback
+  * Added support for using the regmap within atomic contexts
+  * Added support for ATC2603C chip variant
+  * Reorganized KConfig entries
+- Improved regulator driver
+  * Added support for ATC2603C variant
+  * Used helper macros for more compact specification of regulator_desc items
+  * Added more regulator capabilities
+- Added power controller driver
+  * Provides system poweroff/reboot functionalities
+  * Depends on atomic transfers in the Owl I2C driver
+- Added onkey driver: exposes the power button as an input device
+- Added yaml binding doc
+- Rebased patchset on kernel v5.9-rc1
+
+Cristian Ciocaltea (6):
+  dt-bindings: input: Add reset-time-sec common property
+  dt-bindings: mfd: Add Actions Semi ATC260x PMIC binding
+  mfd: Add MFD driver for ATC260x PMICs
+  regulator: Add regulator driver for ATC260x PMICs
+  power: reset: Add poweroff driver for ATC260x PMICs
+  input: atc260x: Add onkey driver for ATC260x PMICs
+
+Manivannan Sadhasivam (1):
+  MAINTAINERS: Add entry for ATC260x PMIC
+
+ .../devicetree/bindings/input/input.yaml      |   7 +
+ .../bindings/mfd/actions,atc260x.yaml         | 183 ++++++
+ MAINTAINERS                                   |  12 +
+ drivers/input/misc/Kconfig                    |  11 +
+ drivers/input/misc/Makefile                   |   2 +-
+ drivers/input/misc/atc260x-onkey.c            | 305 ++++++++++
+ drivers/mfd/Kconfig                           |  18 +
+ drivers/mfd/Makefile                          |   3 +
+ drivers/mfd/atc260x-core.c                    | 293 ++++++++++
+ drivers/mfd/atc260x-i2c.c                     |  64 +++
+ drivers/power/reset/Kconfig                   |   8 +-
+ drivers/power/reset/Makefile                  |   1 +
+ drivers/power/reset/atc260x-poweroff.c        | 263 +++++++++
+ drivers/regulator/Kconfig                     |   8 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/atc260x-regulator.c         | 539 ++++++++++++++++++
+ include/linux/mfd/atc260x/atc2603c.h          | 281 +++++++++
+ include/linux/mfd/atc260x/atc2609a.h          | 308 ++++++++++
+ include/linux/mfd/atc260x/core.h              |  58 ++
+ 19 files changed, 2363 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+ create mode 100644 drivers/input/misc/atc260x-onkey.c
+ create mode 100644 drivers/mfd/atc260x-core.c
+ create mode 100644 drivers/mfd/atc260x-i2c.c
+ create mode 100644 drivers/power/reset/atc260x-poweroff.c
+ create mode 100644 drivers/regulator/atc260x-regulator.c
+ create mode 100644 include/linux/mfd/atc260x/atc2603c.h
+ create mode 100644 include/linux/mfd/atc260x/atc2609a.h
+ create mode 100644 include/linux/mfd/atc260x/core.h
+
 -- 
-Jazz is not dead. It just smells funny...
+2.30.0
+
