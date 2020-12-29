@@ -2,79 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5A22E73ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 21:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12442E73FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 21:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgL2UXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 15:23:35 -0500
-Received: from ozlabs.org ([203.11.71.1]:34051 "EHLO ozlabs.org"
+        id S1726203AbgL2UrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 15:47:15 -0500
+Received: from mga12.intel.com ([192.55.52.136]:35872 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgL2UXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 15:23:34 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D55Sr2mbsz9sWL;
-        Wed, 30 Dec 2020 07:22:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1609273372;
-        bh=eHgCZQIxu+lT/fW5eiXbsC0wCd8aoqvPLoZK0h2m5aY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eVBx58J8Z4nVJ4I1Cc6u0D6M/KjL6ilZa/Nomm/j/qNqhO7R17QqWYh7713PMcghd
-         H0VU+L8ZwW992VLTCDUt4ip/n1IbFvJxojRO5brJx4sp7P0aO1BLwflvuc3Tr0ONKi
-         oewf5/IlWT2sTLVM1ndQrFRbyE27BMyAcFGjUBgxwICcgcXxhFA6tAnJygg4oIy8LD
-         rh3bw0oF/9+Rog/od4GcAllrKyG0DLHXaRbVoVm595fw55e+6gWFvvDWJG9aaJtfRW
-         kIKYfXEcRmPkVTnSkbUKKYfCoblPdyEo37z/glh6ON1+7+P7zraf+GY08PMFDBfrK1
-         i0SHKnCHylTgQ==
-Date:   Wed, 30 Dec 2020 07:22:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Whitehouse <swhiteho@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the gfs2 tree
-Message-ID: <20201230072251.60ca2751@canb.auug.org.au>
+        id S1726126AbgL2UrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 15:47:14 -0500
+IronPort-SDR: mZhPyYyJXH2kLSCYanjut1P4RdtCtOVSj3cGuqGw/Xqg2s8M8lFlUhyoyq1YDb7Ibq3zifioVy
+ QQRRVlU8SSDw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9849"; a="155739128"
+X-IronPort-AV: E=Sophos;i="5.78,459,1599548400"; 
+   d="scan'208";a="155739128"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 12:46:34 -0800
+IronPort-SDR: 44pwxcdy6Gf9KbvyVC9W1b/QTGZ5ejY0VtOIMY+DgLzXrCFB1/b7092ibZ2kfn5SzSL7mT7oTz
+ y4OXzGlo3btw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,459,1599548400"; 
+   d="scan'208";a="347511524"
+Received: from lkp-server02.sh.intel.com (HELO 4242b19f17ef) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Dec 2020 12:46:33 -0800
+Received: from kbuild by 4242b19f17ef with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kuLt2-0003mI-Id; Tue, 29 Dec 2020 20:46:32 +0000
+Date:   Wed, 30 Dec 2020 04:45:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 1173fb292bae23f5e1a2bb6a95f4eca9b6725b30
+Message-ID: <5feb9585.vU3H9AE/fZKezPEn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VKT8_td1mKU02zv9njE.fAF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VKT8_td1mKU02zv9njE.fAF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 1173fb292bae23f5e1a2bb6a95f4eca9b6725b30  Merge branch 'x86/build'
 
-Hi all,
+elapsed time: 722m
 
-Commits
+configs tested: 145
+configs skipped: 2
 
-  c2af4bc4f3a0 ("gfs2: make recovery workqueue operate on a gfs2 mount poin=
-t, not journal")
-  c8e56050f64f ("gfs2: make gfs2_log_write_page static")
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-are missing a Signed-off-by from their committer.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc834x_itx_defconfig
+arm                          gemini_defconfig
+arm                         bcm2835_defconfig
+mips                         bigsur_defconfig
+powerpc                      cm5200_defconfig
+riscv                               defconfig
+arm                       mainstone_defconfig
+arm                            qcom_defconfig
+mips                           ip27_defconfig
+mips                           mtx1_defconfig
+arm                        cerfcube_defconfig
+mips                         tb0226_defconfig
+nds32                             allnoconfig
+sh                           se7619_defconfig
+sh                        sh7785lcr_defconfig
+arm                        trizeps4_defconfig
+sh                           se7722_defconfig
+sh                          polaris_defconfig
+powerpc                        fsp2_defconfig
+arm                           omap1_defconfig
+powerpc                 mpc837x_mds_defconfig
+openrisc                    or1ksim_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                      mgcoge_defconfig
+sh                           se7712_defconfig
+arm                       cns3420vb_defconfig
+mips                    maltaup_xpa_defconfig
+arm                         lpc32xx_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                      ep88xc_defconfig
+arm                        mvebu_v5_defconfig
+ia64                          tiger_defconfig
+arm                        multi_v5_defconfig
+arm                     davinci_all_defconfig
+arm                           corgi_defconfig
+arm                            u300_defconfig
+mips                      maltasmvp_defconfig
+mips                            ar7_defconfig
+powerpc                      ppc64e_defconfig
+c6x                              allyesconfig
+mips                        nlm_xlp_defconfig
+arm                      jornada720_defconfig
+arm                          pxa3xx_defconfig
+arm                           spitz_defconfig
+arm                            dove_defconfig
+m68k                             allyesconfig
+powerpc                           allnoconfig
+mips                     decstation_defconfig
+arm                            xcep_defconfig
+powerpc                  storcenter_defconfig
+ia64                        generic_defconfig
+x86_64                           alldefconfig
+arm                        vexpress_defconfig
+ia64                         bigsur_defconfig
+powerpc                     kmeter1_defconfig
+sh                          landisk_defconfig
+arm                         assabet_defconfig
+xtensa                  cadence_csp_defconfig
+arc                        nsimosci_defconfig
+arm                            zeus_defconfig
+sh                          r7780mp_defconfig
+powerpc                 mpc8560_ads_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                          simpad_defconfig
+powerpc                    adder875_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                          iop32x_defconfig
+powerpc                     mpc83xx_defconfig
+mips                        vocore2_defconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                     redwood_defconfig
+powerpc                     powernv_defconfig
+mips                        maltaup_defconfig
+powerpc                       eiger_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a001-20201229
+x86_64               randconfig-a006-20201229
+x86_64               randconfig-a002-20201229
+x86_64               randconfig-a004-20201229
+x86_64               randconfig-a003-20201229
+x86_64               randconfig-a005-20201229
+i386                 randconfig-a002-20201229
+i386                 randconfig-a005-20201229
+i386                 randconfig-a004-20201229
+i386                 randconfig-a006-20201229
+i386                 randconfig-a003-20201229
+i386                 randconfig-a001-20201229
+i386                 randconfig-a014-20201229
+i386                 randconfig-a012-20201229
+i386                 randconfig-a011-20201229
+i386                 randconfig-a016-20201229
+i386                 randconfig-a015-20201229
+i386                 randconfig-a013-20201229
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
---=20
-Cheers,
-Stephen Rothwell
+clang tested configs:
+x86_64               randconfig-a014-20201229
+x86_64               randconfig-a015-20201229
+x86_64               randconfig-a016-20201229
+x86_64               randconfig-a012-20201229
+x86_64               randconfig-a011-20201229
+x86_64               randconfig-a013-20201229
 
---Sig_/VKT8_td1mKU02zv9njE.fAF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/rkBsACgkQAVBC80lX
-0GxGDQgAmE+O6jvlEj7miIDESeQ26KMCklFpcK5B4IrAer8/fQzaDZvi6zd1nFfo
-/4ku4zWdTk/29uy4Bh82KuLbI+HSBu9pigWCt25kQFXU8ywjxcUHE7P398u9fJX7
-xUI3tSglexNfDa83TJgM5EerrYpcaSJlbM5juZcO6ex5JG764oKMKevYoPT2H75H
-c+YdeKaa2/no/cvdLo4nuRe+oiFeHdPTKvl/qKxv9KrN5YNYI4orG6jaVKHygXrp
-RETjLupxWBc2NRgPJZXoGCMB5gIA2RjVNmvaiTrMq+1FQgcQ3zgCcKvUrUuChaSi
-egK26VZr5QIJ0SQ/cs6J9J0c2pRSKA==
-=DD5K
------END PGP SIGNATURE-----
-
---Sig_/VKT8_td1mKU02zv9njE.fAF--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
