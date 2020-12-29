@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34CF2E719E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876FE2E71A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgL2PKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:10:25 -0500
-Received: from elvis.franken.de ([193.175.24.41]:45052 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgL2PKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:10:24 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kuGd4-0006mx-01; Tue, 29 Dec 2020 16:09:42 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0C7C4C07BE; Tue, 29 Dec 2020 16:09:25 +0100 (CET)
-Date:   Tue, 29 Dec 2020 16:09:25 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Denys Vlasenko <dvlasenk@redhat.com>
-Subject: Re: [RFC][PATCH] NT_FILE/NT_SIGINFO breakage on mips compat coredumps
-Message-ID: <20201229150924.GB7832@alpha.franken.de>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
- <20201203230336.GC3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
- <20201216030154.GL3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
- <20201223070320.GW3579531@ZenIV.linux.org.uk>
- <20201223071213.GX3579531@ZenIV.linux.org.uk>
- <20201224194438.GY3579531@ZenIV.linux.org.uk>
+        id S1726663AbgL2PMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726511AbgL2PMT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 10:12:19 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2D6C0613D6;
+        Tue, 29 Dec 2020 07:11:39 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id x13so12037037oto.8;
+        Tue, 29 Dec 2020 07:11:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QTh6fA91I++9gcTkOHj/HCKNyVdUA4qhYY29Jc1MRJU=;
+        b=P3KNRpDhCfwtKVxmRd9ZwxmhRVFoa3xGofjfO6z7wk4C4LIkLlHzk8xEcjlxmwR3wk
+         yEYuhVfv0ANOGZ+Dpqg2SmY6sB4YO/HhVxW+lFjSWx7v9tdUXY7H05yx2CwknJf7X4nJ
+         Auv9k1P/ZviZj5xotDA43n5WEYLTMJnGqBWRGLxyHZOoWx/mN9nfyDKKLqixbPWAU79r
+         ks3D3NGh+EGWkC4HLpCVH3QUlWPi3bZsEd0icnysa3MYs0ELop4a523orR0/hN5bSwMd
+         U6bF4CG6ov2RXZdfOOmlGUzmXUU1nt53r0IVdVudgnzvS5zMWz2gfHiDf+t8Eb4V0cj+
+         5kqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QTh6fA91I++9gcTkOHj/HCKNyVdUA4qhYY29Jc1MRJU=;
+        b=ZFiCG9XgMg49T2jNLWuVLhn82z6Sot6UGMRVX3YCBAxK7Era+fDlDfSL0JaZCOTr1I
+         ThzAEe+1fLOTEC1cSRDwYM0vQP0qhglqXWDp0rcxHGUcJB6O1pLfVHwU9JE058p1A+la
+         Ls8AHt6FKP3c3ZjGzg1OZiltv6AXGzTa9cw0V4JC5hfBIpzF0i1jXz0T4FyQOKtqyYJz
+         y6n6UxNDRKgjS35qvqO8szbx8Oku4yJqmFDyL5/jPKjTlpkB6PCoyVOQFuhUPpIqmlbL
+         pZUBMOxSgRiXc2gTH/nkniBwXromkCQdUGJ6rUcS0SCeIG0fWrhKvjsPF7eCT0N+jDMa
+         EZsw==
+X-Gm-Message-State: AOAM532inthX3nlRLV+JtAXs7USRlTyR4yDCFrwh7mhrQTcBYvTBg/eh
+        GFdio10+V2PvcsnTkccYiLY=
+X-Google-Smtp-Source: ABdhPJyIfyi2tdPx9C1KNzW9Tg57yNztWxCfnB0ny/UInidZoMYFTVqn7qibPhFvkEETRkrFuLRjbA==
+X-Received: by 2002:a9d:347:: with SMTP id 65mr37487546otv.312.1609254698898;
+        Tue, 29 Dec 2020 07:11:38 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r25sm10104505otp.23.2020.12.29.07.11.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Dec 2020 07:11:38 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 29 Dec 2020 07:11:37 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/450] 5.4.86-rc2 review
+Message-ID: <20201229151137.GA49720@roeck-us.net>
+References: <20201229103747.123668426@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201224194438.GY3579531@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201229103747.123668426@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 07:44:38PM +0000, Al Viro wrote:
-> [mips] fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
+On Tue, Dec 29, 2020 at 11:53:14AM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.86 release.
+> There are 450 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> 	Patches that introduced NT_FILE and NT_SIGINFO notes back in 2012
-> had taken care of native (fs/binfmt_elf.c) and compat (fs/compat_binfmt_elf.c)
-> coredumps; unfortunately, compat on mips (which does not go through the
-> usual compat_binfmt_elf.c) had not been noticed.
+> Responses should be made by Thu, 31 Dec 2020 10:36:29 +0000.
+> Anything received after that time might be too late.
 > 
-> 	As the result, both N32 and O32 coredumps on 64bit mips kernels
-> have those sections malformed enough to confuse the living hell out of
-> all gdb and readelf versions (up to and including the tip of binutils-gdb.git).
-> 
-> 	Longer term solution is to make both O32 and N32 compat use the
-> regular compat_binfmt_elf.c, but that's too much for backports.  The minimal
-> solution is to do in arch/mips/kernel/binfmt_elf[on]32.c the same thing
-> those patches have done in fs/compat_binfmt_elf.c
-> 
-> Cc: stable@kernel.org # v3.7+
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
-> diff --git a/arch/mips/kernel/binfmt_elfn32.c b/arch/mips/kernel/binfmt_elfn32.c
-> index 6ee3f7218c67..c4441416e96b 100644
-> --- a/arch/mips/kernel/binfmt_elfn32.c
-> +++ b/arch/mips/kernel/binfmt_elfn32.c
-> @@ -103,4 +103,11 @@ jiffies_to_old_timeval32(unsigned long jiffies, struct old_timeval32 *value)
->  #undef ns_to_kernel_old_timeval
->  #define ns_to_kernel_old_timeval ns_to_old_timeval32
->  
-> +/*
-> + * Some data types as stored in coredump.
-> + */
-> +#define user_long_t             compat_long_t
-> +#define user_siginfo_t          compat_siginfo_t
-> +#define copy_siginfo_to_external        copy_siginfo_to_external32
-> +
->  #include "../../../fs/binfmt_elf.c"
-> diff --git a/arch/mips/kernel/binfmt_elfo32.c b/arch/mips/kernel/binfmt_elfo32.c
-> index 6dd103d3cebb..7b2a23f48c1a 100644
-> --- a/arch/mips/kernel/binfmt_elfo32.c
-> +++ b/arch/mips/kernel/binfmt_elfo32.c
-> @@ -106,4 +106,11 @@ jiffies_to_old_timeval32(unsigned long jiffies, struct old_timeval32 *value)
->  #undef ns_to_kernel_old_timeval
->  #define ns_to_kernel_old_timeval ns_to_old_timeval32
->  
-> +/*
-> + * Some data types as stored in coredump.
-> + */
-> +#define user_long_t             compat_long_t
-> +#define user_siginfo_t          compat_siginfo_t
-> +#define copy_siginfo_to_external        copy_siginfo_to_external32
-> +
->  #include "../../../fs/binfmt_elf.c"
 
-LGTM, I've applied it to mips-fixes.
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 427 pass: 427 fail: 0
 
-Thomas.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Guenter
