@@ -2,156 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D5A2E7253
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA132E7254
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbgL2QeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 11:34:10 -0500
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:33634 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgL2QeJ (ORCPT
+        id S1726316AbgL2QeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 11:34:20 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:39179 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726247AbgL2QeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 11:34:09 -0500
-Received: by mail-vs1-f43.google.com with SMTP id e15so7308270vsa.0;
-        Tue, 29 Dec 2020 08:33:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c90Yfkzxi2l1NqUDIqbf6Cne1PXUWdz6gZSsPnQW+zE=;
-        b=f193JBmn7zRIHmQSc3Bw5FcsvMEW4FO7dm8qZgoJrTkKHBD9jteEIHAdZ0r4rN/SQD
-         XcXh2EKG9KrTb9SnTk80HeI0AWzNb4q1slgp9UAGqgPpvOPIpnIBNrvaprS5diMWO4ba
-         ARtzyKEkSxrWpfk5n/Glf2jCxla25a6ObiPQnHJ/AoURheEFaGemhWCkESjjOD65P1EN
-         jbijM64kB7eirKFBt1V9qaSVgDBsheVxHg50b0GOABGyF/CZnYE7tE5RWCuObMDYqp+j
-         PN86U8xuphUEm2/aUo1m4wg7sXlGDQPf29KuAbE+/ytNYrGV8EFafJt+gPK/1tEs1UnD
-         qLOw==
-X-Gm-Message-State: AOAM532veRCDwHSHSgYt3p/jNY/pvJGrWNDpzUcq8Nmrx/9S7ZjdDuxw
-        f5Ggrcr04AAGQ8ehQXyQQGVG8aI/GQwcnTpadYZ7WR6RmsI=
-X-Google-Smtp-Source: ABdhPJygiqPIW+1oU9rzWZsuwzhAAFBJgTgpCzgGaBDBFFck84jgtUQzsqb8Me3je1qgZXUHrXaTToqlp41gvtkN0Lc=
-X-Received: by 2002:a67:ca84:: with SMTP id a4mr33047893vsl.2.1609259608233;
- Tue, 29 Dec 2020 08:33:28 -0800 (PST)
+        Tue, 29 Dec 2020 11:34:19 -0500
+Received: (qmail 695108 invoked by uid 1000); 29 Dec 2020 11:33:37 -0500
+Date:   Tue, 29 Dec 2020 11:33:37 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+5925509f78293baa7331@syzkaller.appspotmail.com>
+Cc:     andreyknvl@gmail.com, andreyknvl@google.com, balbi@kernel.org,
+        gregkh@linuxfoundation.org, gustavoars@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: UBSAN: shift-out-of-bounds in dummy_hub_control
+Message-ID: <20201229163337.GA694118@rowland.harvard.edu>
+References: <000000000000cad14c05b74f714c@google.com>
 MIME-Version: 1.0
-References: <20200908002935.GD20064@merlins.org> <20200529180315.GA18804@merlins.org>
- <20201229155159.GG23389@merlins.org>
-In-Reply-To: <20201229155159.GG23389@merlins.org>
-From:   Ilia Mirkin <imirkin@alum.mit.edu>
-Date:   Tue, 29 Dec 2020 11:33:16 -0500
-Message-ID: <CAKb7UviFP_YVxC4PO7MDNnw6NDrD=3BCGF37umwAfaimjbX9Pw@mail.gmail.com>
-Subject: Re: 5.9.11 still hanging 2mn at each boot and looping on nvidia-gpu
- 0000:01:00.3: PME# enabled (Quadro RTX 4000 Mobile)
-To:     Marc MERLIN <marc_nouveau@merlins.org>
-Cc:     nouveau <nouveau@lists.freedesktop.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000cad14c05b74f714c@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 10:52 AM Marc MERLIN <marc_nouveau@merlins.org> wrote:
->
-> On Sat, Dec 26, 2020 at 03:12:09AM -0800, Ilia Mirkin wrote:
-> > > after boot, when it gets the right trigger (not sure which ones), it
-> > > loops on this evern 2 seconds, mostly forever.
-> >
-> > The gpu suspends with runtime pm. And then gets woken up for some
-> > reason (could be something quite silly, like lspci, or could be
-> > something explicitly checking connectors, etc). Repeat.
->
-> Ah, fair point.  Could it be powertop even?
-> How would I go towards tracing that?
-> Sounds like this would be a problem with all chips if userspace is able
-> to wake them up every second or two with a probe. Now I wonder what
-> broken userspace I have that could be doing this.
+On Fri, Dec 25, 2020 at 12:05:22PM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    e37b12e4 Merge tag 'for-linus-5.11-ofs1' of git://git.kern..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17429937500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=98408202fed1f636
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5925509f78293baa7331
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1781fc5b500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157cd123500000
+> 
+> The issue was bisected to:
+> 
+> commit 8442b02bf3c6770e0d7e7ea17be36c30e95987b6
+> Author: Andrey Konovalov <andreyknvl@google.com>
+> Date:   Mon Oct 21 14:20:58 2019 +0000
+> 
+>     USB: dummy-hcd: increase max number of devices to 32
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1631d0db500000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1531d0db500000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1131d0db500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5925509f78293baa7331@syzkaller.appspotmail.com
+> Fixes: 8442b02bf3c6 ("USB: dummy-hcd: increase max number of devices to 32")
+> 
+> ================================================================================
+> UBSAN: shift-out-of-bounds in drivers/usb/gadget/udc/dummy_hcd.c:2293:33
+> shift exponent 257 is too large for 32-bit type 'int'
+> CPU: 0 PID: 8526 Comm: syz-executor949 Not tainted 5.10.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+>  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+>  dummy_hub_control.cold+0x1a/0xbc drivers/usb/gadget/udc/dummy_hcd.c:2293
+>  rh_call_control drivers/usb/core/hcd.c:683 [inline]
+>  rh_urb_enqueue drivers/usb/core/hcd.c:841 [inline]
+>  usb_hcd_submit_urb+0xcaa/0x22d0 drivers/usb/core/hcd.c:1544
+>  usb_submit_urb+0x6e4/0x1560 drivers/usb/core/urb.c:585
+>  usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
+>  usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
+>  usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
+>  do_proc_control+0x4cb/0x9c0 drivers/usb/core/devio.c:1165
+>  proc_control drivers/usb/core/devio.c:1191 [inline]
+>  usbdev_do_ioctl drivers/usb/core/devio.c:2535 [inline]
+>  usbdev_ioctl+0x12c1/0x3b20 drivers/usb/core/devio.c:2708
+>  vfs_ioctl fs/ioctl.c:48 [inline]
+>  __do_sys_ioctl fs/ioctl.c:753 [inline]
+>  __se_sys_ioctl fs/ioctl.c:739 [inline]
+>  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x443f29
+> Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007ffc10df4328 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00000000004002e0 RCX: 0000000000443f29
+> RDX: 0000000020000000 RSI: 00000000c0185500 RDI: 0000000000000003
+> RBP: 00000000006ce018 R08: 0000000000000000 R09: 00000000004002e0
+> R10: 000000000000000f R11: 0000000000000246 R12: 0000000000401bb0
+> R13: 0000000000401c40 R14: 0000000000000000 R15: 0000000000000000
+> ================================================================================
 
-Well, it's a theory. Some userspace helpfully prevents the GPU from
-suspending entirely, unfortunately I don't remember its name though by
-messing with the attached audio device. It's very common and meant to
-help... oh well.
+The cause is pretty obvious.  dummy-hcd assumes that requests sent to 
+the root hub are always valid, which isn't always true when they come 
+from userspace.
 
->
-> > Display offload usually requires acceleration -- the copies are done
-> > using the DMA engine. Please make sure that you have firmware
-> > available (and a new enough mesa). The errors suggest that you don't
-> > have firmware available at the time that nouveau loads. Depending on
-> > your setup, that might mean the firmware has to be built into the
-> > kernel, or available in initramfs. (Or just regular filesystem if you
-> > don't use a complicated boot sequence. But many people go with distro
-> > defaults, which do have this complexity.)
->
-> Hi Ilia, thanks for your answer.
->
-> Do you think that could be a reason why the boot would hang for 2 full minutes at every
-> boot ever since I upgraded to 5.5?
+Alan Stern
 
-I'd have to check, but I'm guessing TU104 acceleration became a thing
-in 5.5. I would also not be very surprised if the code didn't handle
-failure extremely gracefully - there definitely have been problems
-with that in the past.
+#syz test: upstream e37b12e4
 
->
-> Also, without wanting to sound like a full newbie, where is that
-> firmware you're talking about? In my kernel source?
->
-> Here's what I do have:
-> sauron:/usr/local/bin# dpkggrep nouveau
-> libdrm-nouveau2:amd64                           install
-> xserver-xorg-video-nouveau                      install
->
-> no nouveau-firmware package in debian:
-> sauron:/usr/local/bin# apt-cache search nouveau
-> bumblebee - NVIDIA Optimus support for Linux
-> libdrm-nouveau2 - Userspace interface to nouveau-specific kernel DRM services -- runtime
-> xfonts-jmk - Jim Knoble's character-cell fonts for X
-> xserver-xorg-video-nouveau - X.Org X server -- Nouveau display driver
->
-> No firmware file on my disk:
-> sauron:/usr/local/bin# find /lib/modules/5.9.11-amd64-preempt-sysrq-20190817/ /lib/firmware/ |grep nouveau
-> /lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau
-> /lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau/nouveau.ko
-> sauron:/usr/local/bin#
->
-> The kernel module is in my initrd:
-> sauron:/usr/local/bin# dd if=/boot/initrd.img-5.9.11-amd64-preempt-sysrq-20190817 bs=2966528  skip=1 | gunzip | cpio -tdv | grep nouveau
-> drwxr-xr-x   1 root     root            0 Nov 30 15:40 usr/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau
-> -rw-r--r--   1 root     root      3691385 Nov 30 15:35 usr/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau/nouveau.ko
-> 17+1 records in
-> 17+1 records out
-> 52566778 bytes (53 MB, 50 MiB) copied, 1.69708 s, 31.0 MB/s
-
-I think that gets you out of "full newbie" land...
-
->
-> What am I supposed to do/check next?
->
-> Note that ultimately I only need nouveau not to hang my boot 2mn and do
-> PM so that the nvidia chip goes to sleep since I don't use it.
-
-I'm not extremely familiar with debian packaging, but the firmware is
-provided by NVIDIA and shipped as part of linux-firmware:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/nvidia
-
-This needs to be available at /lib/firmware/nvidia when nouveau loads.
-Based on your email above, it's most likely that it would load from
-the initrd - so make sure it's in there.
-
-Of course now that I read your email a bit more carefully, it seems
-your issue is with the "saving config space" messages. I'm not sure
-I've seen those before. Perhaps you have some sort of debug enabled.
-I'd find where in the kernel they are being produced, and what the
-conditions for it are. But the failure to load firmware isn't great --
-not 100% sure if it impacts runpm or not.
-
-I just double-checked, TU10x accel came in via
-afa3b96b058d87c2c44d1c83dadb2ba6998d03ce, which was first in v5.6.
-Initial TU10x support came in v5.0. So that doesn't line up with your
-timeline.
-
-Anyways, I'd definitely sort the firmware situation out, but it may
-not be the cause of your problem.
-
-Cheers,
-
-  -ilia
+Index: usb-devel/drivers/usb/gadget/udc/dummy_hcd.c
+===================================================================
+--- usb-devel.orig/drivers/usb/gadget/udc/dummy_hcd.c
++++ usb-devel/drivers/usb/gadget/udc/dummy_hcd.c
+@@ -2114,9 +2114,21 @@ static int dummy_hub_control(
+ 				dum_hcd->port_status &= ~USB_PORT_STAT_POWER;
+ 			set_link_state(dum_hcd);
+ 			break;
+-		default:
++		case USB_PORT_FEAT_ENABLE:
++		case USB_PORT_FEAT_C_ENABLE:
++		case USB_PORT_FEAT_C_SUSPEND:
++			/* Not allowed for USB-3 */
++			if (hcd->speed == HCD_USB3)
++				goto error;
++			fallthrough;
++		case USB_PORT_FEAT_C_CONNECTION:
++		case USB_PORT_FEAT_C_RESET:
+ 			dum_hcd->port_status &= ~(1 << wValue);
+ 			set_link_state(dum_hcd);
++			break;
++		default:
++		/* Disallow INDICATOR and C_OVER_CURRENT */
++			goto error;
+ 		}
+ 		break;
+ 	case GetHubDescriptor:
+@@ -2277,18 +2289,17 @@ static int dummy_hub_control(
+ 			 */
+ 			dum_hcd->re_timeout = jiffies + msecs_to_jiffies(50);
+ 			fallthrough;
++		case USB_PORT_FEAT_C_CONNECTION:
++		case USB_PORT_FEAT_C_RESET:
++		case USB_PORT_FEAT_C_ENABLE:
++		case USB_PORT_FEAT_C_SUSPEND:
++			/* Not allowed for USB-3, and ignored for USB-2 */
++			if (hcd->speed == HCD_USB3)
++				goto error;
++			break;
+ 		default:
+-			if (hcd->speed == HCD_USB3) {
+-				if ((dum_hcd->port_status &
+-				     USB_SS_PORT_STAT_POWER) != 0) {
+-					dum_hcd->port_status |= (1 << wValue);
+-				}
+-			} else
+-				if ((dum_hcd->port_status &
+-				     USB_PORT_STAT_POWER) != 0) {
+-					dum_hcd->port_status |= (1 << wValue);
+-				}
+-			set_link_state(dum_hcd);
++		/* Disallow TEST, INDICATOR, and C_OVER_CURRENT */
++			goto error;
+ 		}
+ 		break;
+ 	case GetPortErrorCount:
