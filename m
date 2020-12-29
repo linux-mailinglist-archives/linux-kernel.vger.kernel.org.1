@@ -2,225 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90092E6F8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 10:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776492E6F95
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 11:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgL2JsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 04:48:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43274 "EHLO
+        id S1726197AbgL2KN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 05:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgL2JsG (ORCPT
+        with ESMTP id S1725866AbgL2KNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 04:48:06 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0050AC061793
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 01:47:25 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id r5so12022395eda.12
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 01:47:25 -0800 (PST)
+        Tue, 29 Dec 2020 05:13:55 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF99C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 02:13:14 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id r9so11677371ioo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 02:13:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=s7j4Pe6eJg0HCC4/qm6ul3siTUoFrSailmjqNjQmSwU=;
-        b=vodT7B5xfjYHY1fr0hktexOhJSa5M0UaW8XANhd6Y0Um3/oo20wJYLT+PhXy+zyEor
-         7fOEh8k6h3U32cSb3sueBewG7JVWyjcfkVxYUEhARuwZtZD/L1Du74Wv8sxRCYwJYSoM
-         TSFFnBti3c5i5flOS/fAt0kJ4SdVEw1ReADnvS/B/v9jfk9eM6EiXHgJ++dmb0aWmUOq
-         Wlz8keidhFceuqT3qPobhdbxoJ1qfzEqhIZf0ZF8JlYsG6gxhVbHYLmmGcxXhhr2xgKl
-         088Pcs7wFIy8/cypeypS9SPrVy6a+HLlLL5XD3LUU7h7ga5hBIOxttniRoYgNh6R7kwH
-         i5OQ==
+         :cc;
+        bh=nxxJyUupuOipVqoTejX62ILCfA+vlGogryHhEKFbgXA=;
+        b=t1vAvkOIrQvUJghsdAHef/mFBJZBONF/ibczwETWJLN3/kF4IfMjuQOCHJHekhrkIi
+         xOzlmW8/H8d78dMmVRhZYAXF3TUEx3AcYZ7b7oBFfrgOXg2ddz2HMnaeJB7Yb+UiyqUY
+         hGlKOfLSJh7Ty+pNEnOLdUhEgsJB6Pqw/6vFH6mA5QKwncUrcArrSGO3h5AMPT9muhUh
+         4nheWbatKfjfbHuUglzEGy56676J/tAprsaa92Jo2OUdRkD+jjDE/8ajnX6KaCtiPGSI
+         nLUzD1VnQMcUUWcEIWdHg/eGaaxCfy+RPQj3yLRfL9CR632O7ekqqSmcHLnf6HxwN6Pz
+         bv2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=s7j4Pe6eJg0HCC4/qm6ul3siTUoFrSailmjqNjQmSwU=;
-        b=I3r2840xvhK3lrjNZfi/q+vUL8UhTsBP9xbSoyCdyb3XEQP8YNRp7si5gLLiFl6eTN
-         Yqi6IlHxZtVuhg92UYM7uOsX5xa8QAZGdiIkgtOdhb9Nl5whH3vAaiG+JhJhakI+zWus
-         XSqfH9p6RNv2S08UTFSCRnueOkvxgZSYS0XJybYiznwb+1Pqs7v1zVlnNGQWDtmdawrp
-         g+3iJZ9y4CkHbRDYsLZQYq91wzama9rBrsgG5HLFLPzFdR01CVA89kZyj/vbRtTmGBXY
-         FOVfpQfbc/suFNSqIptzlltqNhCz0C1NmAvANRQof+PG8dlMP8z3Q3h4AwfCmhrKQ2Q3
-         wyng==
-X-Gm-Message-State: AOAM530nAViC2tzdMb/RHHatkorKnIaEvoMwhsoNES34GS9Cq0IxUQz/
-        WVQIz/tRxYm4BFeTPwPdWlQ2f+EPzLeSIn6gn07ww40rh1iBAVv+
-X-Google-Smtp-Source: ABdhPJzppc+LsnwptpBTJ08tJt1B0mmUqQMkSUCqCh6BfXTl1NUzZB3TrrvJRTMcCjBHaNBr0/yvdzwseecHn4mzUTY=
-X-Received: by 2002:a05:6402:3074:: with SMTP id bs20mr45261063edb.365.1609235244527;
- Tue, 29 Dec 2020 01:47:24 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=nxxJyUupuOipVqoTejX62ILCfA+vlGogryHhEKFbgXA=;
+        b=T7qBUZgxU/tGDuresCbjQ8fs6gEOiup7KtpTrP4y+dQkFfGrO2do3pW3mZ7jOZfEHl
+         p6Beg+FyNoPQ/EbHA7e72GUPnvU0pwNvDztQo/P0rD0WNoxv26aL8ln4YSvrqnaWSQbE
+         Fdw27Z19Vbf/pZZhjwsK9eqep7gNcgkZl1VXtj6MuN3Owc1O2SFZxEfhIdTdhVLi1/q9
+         rcYBCUHOwcJmGXsj71uMXoawHe1JzvbOx3ZKpCZN5+qeiGBcjK5bNoIWzC7b10hXY+Sf
+         d6bQUiJgv3FZWIMNWj6LI10wma3Mo7WcYjburVPuGk7UEYGl0FKhRNGqoJaxj6Cg7wAg
+         FI6g==
+X-Gm-Message-State: AOAM531jIoA+YNzQdqdGgPkxuayR+y7yyE83U5kh3oqJ2f1cgedbVUnf
+        LFYQ1kKnBqTCpHrcZ3lZ5cNiM2yManyGkGiK+jM=
+X-Google-Smtp-Source: ABdhPJwlTBEKPyfmkrUYRDeAWuKw00YOIdDpHcmwcJ7RJfKRylbhO8ivnv06n3ne9ROff/Vi0IXpYin2XPt4EPlRc0A=
+X-Received: by 2002:a02:2444:: with SMTP id q4mr42147387jae.43.1609236793860;
+ Tue, 29 Dec 2020 02:13:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20201228124846.409999325@linuxfoundation.org>
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 29 Dec 2020 15:17:11 +0530
-Message-ID: <CA+G9fYvyJ+tZ25WGagDgM=8Y1a-OaAB+8AeP7_3wPrp32o84Qw@mail.gmail.com>
-Subject: Re: [PATCH 4.4 000/132] 4.4.249-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com> <20201226025117.2770-9-jiangshanlai@gmail.com>
+ <20201229100639.2086-1-hdanton@sina.com>
+In-Reply-To: <20201229100639.2086-1-hdanton@sina.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Tue, 29 Dec 2020 18:13:03 +0800
+Message-ID: <CAJhGHyCvnj1w=yO45_HxD8dgy=Xa1vUw9wsnJKtfDX2Jkm5FsQ@mail.gmail.com>
+Subject: Re: [PATCH -tip V3 8/8] workqueue: Fix affinity of kworkers when
+ attaching into pool
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Dec 2020 at 18:22, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Dec 29, 2020 at 6:06 PM Hillf Danton <hdanton@sina.com> wrote:
 >
-> This is the start of the stable review cycle for the 4.4.249 release.
-> There are 132 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Sat, 26 Dec 2020 10:51:16 +0800
+> > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> >
+> > When worker_attach_to_pool() is called, we should not put the workers
+> > to pool->attrs->cpumask when there is not CPU online in it.
+> >
+> > We have to use wq_online_cpumask in worker_attach_to_pool() to check
+> > if pool->attrs->cpumask is valid rather than cpu_online_mask or
+> > cpu_active_mask due to gaps between stages in cpu hot[un]plug.
 >
-> Responses should be made by Wed, 30 Dec 2020 12:48:23 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.249-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+> In 5/8 pool->attrs->cpumask is not restored to avoid triggering
+> the warning added in e9d867a67fd03ccc ("sched: Allow
+> per-cpu kernel threads to run on online && !active"), is it likely
+> needed to repeat that trick here?
+> Is the above gap no longer existing here at the presence of
+> wq_online_cpumask?
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+It still exists. When online, wq_online_cpumask is always
+cpu_online_mask, no thing changed.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+An alternative way is to move the code into a work item, which adds
+the proper protection against cpu hotlug and does the work.
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.249-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 45f5fd21658c73f302ca6e7a05952b9354835354
-git describe: v4.4.248-133-g45f5fd21658c
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.248-133-g45f5fd21658c
-
-No regressions (compared to build v4.4.248)
-
-No fixes (compared to build v4.4.248)
-
-Ran 22873 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- i386
-- juno-r2 - arm64
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* v4l2-compliance
-* install-android-platform-tools-r2600
-* fwts
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.249-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.249-rc1-hikey-20201228-883
-git commit: 8260d75b2737884615cf923d8a1708725a92738e
-git describe: 4.4.249-rc1-hikey-20201228-883
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.249-rc1-hikey-20201228-883
-
-No regressions (compared to build 4.4.249-rc1-hikey-20201223-880)
-
-No fixes (compared to build 4.4.249-rc1-hikey-20201223-880)
-
-Ran 1698 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+I don't want to add too much complex in this patchset.
