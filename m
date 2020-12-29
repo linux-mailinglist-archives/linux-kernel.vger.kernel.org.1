@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F962E70CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57FC2E70D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgL2NIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 08:08:44 -0500
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:40902 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726274AbgL2NIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 08:08:43 -0500
-Received: by mail-oi1-f176.google.com with SMTP id p5so14541704oif.7;
-        Tue, 29 Dec 2020 05:08:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=55BF9LGP/3e9LMkfd7/X2NTZkoK/W4LemoCa3QSAEtM=;
-        b=GbkOQO5vaCuz56PrUaQ9JvaLvlbV5vxcRquXzpRcVqp7lVrcDmSiz5M7M1vl/NAbj7
-         rlza2a0Ce2NNGzYPzwtVRLzMSNQMt23V7A4Oo1mHjh8ANLipcm+Ls1+IH5jVSVnpbF/U
-         3WORGZO1Sqeeg4J4SrCsdwcZbEm3lvyWtoObWqzBqEqyX1idgQXcg74kXykZ/9HsRcdI
-         WooXDuysb/pqQTNbDu2dw5c+r0n4lMsTvs2vT4YuvUdgTwEZE2H60UueLX7Yf0GoT78z
-         egEc1u/iAFlUsze5RF0VGHk6lQkTWtZn/FIZC+5AAw+oVpYzze1L3Oog+uCWra2kKGPP
-         TR+Q==
-X-Gm-Message-State: AOAM532lsHQUEftdCGT2/wuHOaBdk10V7vGq1zRyvJmsTJE+UENcDKkD
-        YiRTiwDxvdAsU81hwpE2A5/7/dTmkwEzmxj523A=
-X-Google-Smtp-Source: ABdhPJxpUhZhi636mfGYblnJawbMJPDR24YWZKnTvbBTAsoSf8EFuqU95hyyDRRkS/y+XaOzFT+KF4gxV9vKYBtkKsg=
-X-Received: by 2002:aca:3cc5:: with SMTP id j188mr2267513oia.54.1609247283124;
- Tue, 29 Dec 2020 05:08:03 -0800 (PST)
+        id S1726318AbgL2NOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 08:14:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgL2NOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 08:14:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D092D207C9;
+        Tue, 29 Dec 2020 13:13:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609247610;
+        bh=F1E9cB5RvfAMSJ6P7U5Sn/01BAPEd+Mq8/e9iajd2qo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qkAPvYMbjLtMOPbrg842+X7xhFtp+35t4MWGNuATCZQzhPQifaaEYDnaqHI/QXLot
+         QEppU0n/o1oYmqaoLbW5llYIlrQbVf5s3l0i4h9Emy8fj53vL3GfkyEjbepIVudWZ5
+         GnNO6d4QKKYnaejd9nTY1lVsvs5ZvDUmyKT7IgToX3HnuQVwZyoiza4y7Aki+YKRgp
+         myhlWCUpEgjMvcCOalbmxD8uL12J9FRrH2Q7PsY6MXTh2vB17X6cfL/RvhyQCLKJ2Z
+         s7xHwpK+Sb7PGj7qTFD2LTHFM/sVKtt88GzUsg19N6hQ0b/49ryjcJiQ7KI4AcLinv
+         jx/O/1MylT9kQ==
+Date:   Tue, 29 Dec 2020 13:13:08 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     linux-spi@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] spi: fix the divide by 0 error when calculating xfer
+ waiting time
+Message-ID: <20201229131308.GE4786@sirena.org.uk>
+References: <1609219662-27057-1-git-send-email-yilun.xu@intel.com>
+ <1609219662-27057-3-git-send-email-yilun.xu@intel.com>
 MIME-Version: 1.0
-References: <20201210124422.3858524-1-anders.roxell@linaro.org>
-In-Reply-To: <20201210124422.3858524-1-anders.roxell@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 29 Dec 2020 14:07:52 +0100
-Message-ID: <CAMuHMdUAaRRsHi2+Yr+PkALGeDYQkBROU3pKkp-z6BXNNtK+Rw@mail.gmail.com>
-Subject: Re: [PATCH] sh: kernel: traps: remove unused variable
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IU5/I01NYhRvwH70"
+Content-Disposition: inline
+In-Reply-To: <1609219662-27057-3-git-send-email-yilun.xu@intel.com>
+X-Cookie: Mother Earth is not flat!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 1:46 PM Anders Roxell <anders.roxell@linaro.org> wrote:
-> When building defconfig the following warning shows up:
->
-> arch/sh/kernel/traps.c: In function 'nmi_trap_handler':
-> arch/sh/kernel/traps.c:183:15: warning: unused variable 'cpu' [-Wunused-variable]
->   unsigned int cpu = smp_processor_id();
->                ^~~
->
-> Remove an unused variable 'cpu'.
->
-> Fixes: fe3f1d5d7cd3 ("sh: Get rid of nmi_count()")
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+--IU5/I01NYhRvwH70
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Gr{oetje,eeting}s,
+On Tue, Dec 29, 2020 at 01:27:42PM +0800, Xu Yilun wrote:
+> The xfer waiting time is the result of xfer->len / xfer->speed_hz, but
+> when the following patch is merged,
+>=20
+> commit 9326e4f1e5dd ("spi: Limit the spi device max speed to controller's=
+ max speed")
+>=20
+> the xfer->speed_hz may always be clamped to 0 if the controller doesn't
+> provide its max_speed_hz. There may be no hardware indication of the
+> max_speed_hz so the controller driver leaves it, but exception happens
+> when it tries to do irq mode transfer.
 
-                        Geert
+Does this still apply with current code?  There have been some fixes in
+this area which I think should ensure that we don't turn the speed down
+to 0 if the controller doesn't supply a limit IIRC.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> This patch makes the assumption of 1khz xfer speed if the xfer->speed_hz
+> is not assigned. This avoids the divide by 0 issue and ensures a
+> reasonable tolerant waiting time.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+It will cause absurdly slow transfers if the controller does actually
+implement speed setting though, if we're going to pick a default value
+I'd go for at least 100kHz. =20
+
+>  	} else {
+> +		speed_hz =3D xfer->speed_hz ? : 1000;
+
+Please don't abuse the ternery operator, write normal conditional
+statements to make things more legible.
+
+--IU5/I01NYhRvwH70
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/rK2QACgkQJNaLcl1U
+h9Dymwf/QLkOzrj6ACi6NcWjvIm1O33sTuJ1CrsrHVC9YTfzV+k6Ru9q0P8b0sNj
+tFfX4dEh8017F6KgSSBt1Hj5nR+xD4RfkmNueV5BVEMj5C1g+wZbX+KvzGPdImk/
+TRJ/oactqQ6oYHvbMkDGzIvh5WcPeAozmSe1yPLIBw1Y4Xihx8CHu4Vf/BrfS6rl
+aK2jvKAN484thgw1J6hK7GXPSzBJZwifiaQivbJJ1OXv4BMfp79lorCQP1l0TDZk
+9LGD9uFx6vytgtcBJp7MQASBbDKVMjJ0L6T5lfsqwiBD6lKt2Csh3pv51Fc/S+VQ
+3MiHEJw90NDSVzzfy8VntUJDLreUeg==
+=HVTS
+-----END PGP SIGNATURE-----
+
+--IU5/I01NYhRvwH70--
