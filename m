@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1A12E70C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9DE2E70C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgL2M6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 07:58:42 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:5938 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726156AbgL2M6l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 07:58:41 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTCvjWU025022;
-        Tue, 29 Dec 2020 06:57:45 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=E+LLn2lciRVI6aTOT3XvuKQAoEO/c5/A1kLV+3X0f5A=;
- b=Xu1LMv/8j9TsOFqyDDIXTQTXVVqeddtAxplQnhRqbXZsu8GTLbnDM2J0781ZI1r41Azx
- j+V9qBi4DC7aw6Ax8eA7rWueN0yNEg93vsgcThEw/BBA0zPFvFsaaXYg67TMvAGs3L+y
- qSmXs+2PJLRhm4AQGW0UfhAfKs9x1PCnx6aQgOCukkfhJSfsVWw5+H+Dme82WYNdEVKv
- rvD6yxkV8diW75f0iB+/5COKyPanAfxHiVoFp6d7gIW05OplQIgoAlVi8z2t+084Cvff
- gsyifXt24HKYjFnrYpqK1mSwVo/fOqa2NVUQge7Q4vk42MvMzWfGIY2vDiQLRzD9oQZE zA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35p2fs2b86-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Dec 2020 06:57:45 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Dec
- 2020 12:57:43 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 29 Dec 2020 12:57:43 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7F7952AB;
-        Tue, 29 Dec 2020 12:57:43 +0000 (UTC)
-Date:   Tue, 29 Dec 2020 12:57:43 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 09/14] extcon: arizona: Add arizona_set_extcon_state()
- helper
-Message-ID: <20201229125743.GM9673@ediswmail.ad.cirrus.com>
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-10-hdegoede@redhat.com>
+        id S1726337AbgL2NCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 08:02:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725979AbgL2NCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 08:02:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB15D20867;
+        Tue, 29 Dec 2020 13:01:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609246911;
+        bh=jxRpIBnA/TEFkDnlujeZKbR7yvaeen/RJzbWpxWgWM4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kopjODYjeXAmGXlUnbd4m4aCDTVFEJduxJVBUaBVXJ+j7qnjkzjuR3SttK0rbGIPX
+         frB8RJ3sAI+Vxj3XB12K27KpeLhiXqV9ezF5h+gTAeqmGi0U1fv03cGeIGiUxjx/Yc
+         Moqin18iQ8pSUMzIg/sGLqFUpY4qfNiBlqIlCuf6E9e00LcdEfGHsturpizJOj4SdL
+         ScH0Zs8r5hLaQGwES1ewuIWhCc4WbYeLSI1dQUTOT90igNksAYhCuavZGJVx6oGEG+
+         a7FzuQwwX8B+uyKvAwqswtwhRuU+8yy3b1RZPrjNCD4jL4GQd0mtk61gMHUXFPQlcQ
+         gOzxmZcwQV33Q==
+Received: by mail-ot1-f42.google.com with SMTP id i6so11777315otr.2;
+        Tue, 29 Dec 2020 05:01:51 -0800 (PST)
+X-Gm-Message-State: AOAM530bM7jNoy2Nxo7kwoDgHoEGTwcObhlRvC1Jc+wHkLsPbeO8RhI/
+        eYaV2Lgm135s8R7VcoeBEoz1GqpZpbt1EXzxZFM=
+X-Google-Smtp-Source: ABdhPJygobuwVqLYHz+mRLLv/+yv9CqwMo2io2KJO1VT0oj3eyR6h7lf/PPz5ghGQBVZWrHxCoB5FIHqCSGRNRYmb5o=
+X-Received: by 2002:a9d:12c:: with SMTP id 41mr35377364otu.77.1609246911170;
+ Tue, 29 Dec 2020 05:01:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201227211232.117801-10-hdegoede@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 mlxlogscore=999 spamscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012290080
+References: <20201127192051.1430-1-xypron.glpk@gmx.de> <bb31dcbe-cf19-64c5-daa0-5eb84f1a3583@gmx.de>
+In-Reply-To: <bb31dcbe-cf19-64c5-daa0-5eb84f1a3583@gmx.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 29 Dec 2020 14:01:40 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXERVcY5myjAxSgqVf99Pr10utyoQF4N=06508cXd9EEPQ@mail.gmail.com>
+Message-ID: <CAMj1kXERVcY5myjAxSgqVf99Pr10utyoQF4N=06508cXd9EEPQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] efi/efi_test: read RuntimeServicesSupported
+To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc:     Ivan Hu <ivan.hu@canonical.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Colin King <colin.king@canonical.com>,
+        fwts-devel@lists.ubuntu.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 10:12:27PM +0100, Hans de Goede wrote:
-> All the callers of extcon_set_state_sync() log an error on failure,
-> without doing any further error-handling (as there is nothing they
-> can do about the error).
-> 
-> Factor this out into a helper to remove some duplicate code.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/extcon/extcon-arizona.c | 47 ++++++++++++---------------------
->  1 file changed, 17 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-> index 145ca5cd40d5..d5b3231744f9 100644
-> --- a/drivers/extcon/extcon-arizona.c
-> +++ b/drivers/extcon/extcon-arizona.c
-> @@ -595,6 +595,16 @@ static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
->  	return 0;
->  }
->  
-> +static void arizona_set_extcon_state(struct arizona_extcon_info *info,
-> +				     unsigned int id, bool state)
-> +{
-> +	int ret;
-> +
-> +	ret = extcon_set_state_sync(info->edev, id, state);
-> +	if (ret)
-> +		dev_err(info->arizona->dev, "Failed to set extcon state: %d\n", ret);
-> +}
+On Sat, 26 Dec 2020 at 11:16, Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+>
+> On 11/27/20 8:20 PM, Heinrich Schuchardt wrote:
+> > Since the UEFI 2.8A specification the UEFI enabled firmware provides a
+> > configuration table EFI_RT_PROPERTIES_TABLE which indicates which runtime
+> > services are enabled. The EFI stub reads this table and saves the value of
+> > the field RuntimeServicesSupported internally.
+> >
+> > The Firmware Test Suite requires the value to determine if UEFI runtime
+> > services are correctly implemented.
+> >
+> > With this patch an IOCTL call is provided to read the value of the field
+> > RuntimeServicesSupported, e.g.
+> >
+> >      #define EFI_RUNTIME_GET_SUPPORTED_MASK \
+> >              _IOR('p', 0x0C, unsigned int)
+> >      unsigned int mask;
+> >      fd = open("/dev/efi_test", O_RDWR);
+> >      ret = ioctl(fd, EFI_RUNTIME_GET_SUPPORTED_MASK, &mask);
+> >
+> > Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+>
+> Hello Ard,
+>
+> the patch has now been admitted to Linus' branch.
+>
+> Could we, please, have this patch applied to the 5.10 long term release,
+> too.
+>
 
-Would be nice to also print which ID it is that is failing,
-would help to narrow things down since we lose the customer error
-messages for each case.
+If you think this patch needs to go to -stable, please send an email
+to stable@vger.kernel.org containing the commit title and SHA1, and a
+short motivation why this patch needs to be backported.
+
+If the stable maintainers are willing to take it, I won't object to it.
 
 Thanks,
-Charles
+Ard.
