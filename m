@@ -2,87 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC3F2E7226
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C95B2E722A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbgL2QNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 11:13:44 -0500
-Received: from mail-ej1-f54.google.com ([209.85.218.54]:39631 "EHLO
-        mail-ej1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgL2QNn (ORCPT
+        id S1726242AbgL2QSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 11:18:11 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:60595 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgL2QSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 11:13:43 -0500
-Received: by mail-ej1-f54.google.com with SMTP id n26so18713419eju.6;
-        Tue, 29 Dec 2020 08:13:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jvaxF2qqbNWuMGJFsY0/jXt/I0/AEmLETs3GwqJSk18=;
-        b=CWXeNbNeemL3dAhN7TEgbiNrxr0B1bBdiuC6qZ670+8/th9NGyhqZP6F1Qm5TG6d2K
-         hhBeRqsTKPlcNvf9xjVGtujjmD3UnZ6cVO+Rt0e/1tNrKSFtonF81AKcZ6yy37eKSRQq
-         oGC9KLKOVlpNlAqJ0eDeRrxOFNNHv9R7FMAyJH/i1/lX2Kh/gpJopPZdaW6PLilmmGn0
-         wC0TfayszGIyd7j+vxs0EBlWezZxKMWhm7nMNimywfZWpbS5gq1Sq8QU4nVuuDVxjwc5
-         upXEN3URtkvSvZK5MEzimKtgshuJ8VqgyeRWHFgNOrf5LX2WYrkkcHAadR510RBgipop
-         eQXg==
-X-Gm-Message-State: AOAM530pdSw7JidExp+wCl/wKnLnXlVghmOTJWpBeD9ZZXNS63DNiwCS
-        iG32JnueTmDd5JrmHL+9JRg=
-X-Google-Smtp-Source: ABdhPJyj5hB3vZjTglhIpQkZ3IbFk6ReoXXtsOqKHwm2zdExL3ET4aBoUub9886coqnCotYL91TShQ==
-X-Received: by 2002:a17:906:d8a3:: with SMTP id qc3mr46409002ejb.443.1609258382297;
-        Tue, 29 Dec 2020 08:13:02 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id dk16sm18309258ejb.85.2020.12.29.08.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Dec 2020 08:13:01 -0800 (PST)
-Date:   Tue, 29 Dec 2020 17:13:00 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     peng.fan@nxp.com
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        robh+dt@kernel.org, kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 3/4] arm64: dts: imx8mn: add spba bus node
-Message-ID: <20201229161300.GB17229@kozik-lap>
-References: <1609243245-9671-1-git-send-email-peng.fan@nxp.com>
- <1609243245-9671-4-git-send-email-peng.fan@nxp.com>
+        Tue, 29 Dec 2020 11:18:10 -0500
+X-Originating-IP: 90.55.97.122
+Received: from pc-2.home (apoitiers-259-1-26-122.w90-55.abo.wanadoo.fr [90.55.97.122])
+        (Authenticated sender: maxime.chevallier@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id AC240E0007;
+        Tue, 29 Dec 2020 16:17:25 +0000 (UTC)
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: [PATCH v5 0/3] media: rockchip: Introduce driver for Rockchip's camera interface
+Date:   Tue, 29 Dec 2020 17:17:21 +0100
+Message-Id: <20201229161724.511102-1-maxime.chevallier@bootlin.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1609243245-9671-4-git-send-email-peng.fan@nxp.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 08:00:44PM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> According to RM, there is a spba bus inside aips3 and aips1, add it.
+Hi everyone,
 
-This does not look like matching contents of commit.
+This is the fifth iteration of the series introducing a driver for the
+PX30 camera interface.
 
-Best regards,
-Krzysztof
+This was previously known as the "cif" driver in other iterations, but
+was renamed to "vip" following Ezequiel's advices to match the datasheet
+name.
 
+This is based on a BSP driver, and I'm not fully familiar with the media
+and V4L2 frameworks, so I guess some review is still needed.
 
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> index 73602832ccaa..033fa90570ff 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> @@ -749,7 +749,7 @@ uart2: serial@30890000 {
->  					clock-names = "ipg", "per";
->  					status = "disabled";
->  				};
-> -			}
-> +			};
->  
->  			crypto: crypto@30900000 {
->  				compatible = "fsl,sec-v4.0";
-> -- 
-> 2.28.0
-> 
+On top of the previous series, this series addresses most of the reviews
+by Ezequiel (Thanks again), and was tested on a PX30 chip.
+
+This Fifth iteration addresses some issues uncovered by the kbuild bot
+and Rob's binding_check bot.
+
+The output of v4l2-compliance for this driver is the following :
+
+# v4l2-compliance
+v4l2-compliance SHA: not available, 64 bits
+  
+Compliance test for rk_vip device /dev/video0:
+  
+Driver Info:
+        Driver name      : rk_vip
+        Card type        : rk_vip
+        Bus info         : platform:ff490000.vip
+        Driver version   : 5.11.0
+        Capabilities     : 0x84201000
+                Video Capture Multiplanar
+                Streaming
+                Extended Pix Format
+                Device Capabilities
+        Device Caps      : 0x04201000
+                Video Capture Multiplanar
+                Streaming
+                Extended Pix Format
+Media Driver Info:
+        Driver name      : rk_vip
+        Model            : rk_vip
+        Serial           :
+        Bus info         :
+        Media version    : 5.11.0
+        Hardware revision: 0x00000000 (0)
+        Driver version   : 5.11.0
+Interface Info:
+        ID               : 0x03000002
+        Type             : V4L Video
+Entity Info:
+        ID               : 0x00000001 (1)
+        Name             : video_rkvip
+        Function         : V4L2 I/O
+        Pad 0x01000004   : 0: Sink
+          Link 0x02000009: from remote pad 0x1000006 of entity 'tw9900 2-0044': Data, Enabled
+  
+Required ioctls:
+        test MC information (see 'Media Driver Info' above): OK
+        test VIDIOC_QUERYCAP: OK
+  
+Allow for multiple opens:
+        test second /dev/video0 open: OK
+        test VIDIOC_QUERYCAP: OK
+        test VIDIOC_G/S_PRIORITY: OK
+        test for unlimited opens: OK
+  
+Debug ioctls:
+        test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+        test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+        test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+        test VIDIOC_ENUMAUDIO: OK (Not Supported)
+        test VIDIOC_G/S/ENUMINPUT: OK
+        test VIDIOC_G/S_AUDIO: OK (Not Supported)
+        Inputs: 1 Audio Inputs: 0 Tuners: 0
+  
+Output ioctls:
+        test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+        test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+        test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+        Outputs: 0 Audio Outputs: 0 Modulators: 0
+  
+Input/Output configuration ioctls:
+        test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+        test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+        test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+        test VIDIOC_G/S_EDID: OK (Not Supported)
+  
+Control ioctls (Input 0):
+        test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+        test VIDIOC_QUERYCTRL: OK (Not Supported)
+        test VIDIOC_G/S_CTRL: OK (Not Supported)
+        test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+        test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+        Standard Controls: 0 Private Controls: 0
+  
+Format ioctls (Input 0):
+        test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+        test VIDIOC_G/S_PARM: OK (Not Supported)
+        test VIDIOC_G_FBUF: OK (Not Supported)
+        test VIDIOC_G_FMT: OK
+        test VIDIOC_TRY_FMT: OK
+        test VIDIOC_S_FMT: OK
+        test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+        test Cropping: OK (Not Supported)
+        test Composing: OK (Not Supported)
+        test Scaling: OK (Not Supported)
+
+Codec ioctls (Input 0):
+        test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+        test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+        test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+  
+Buffer ioctls (Input 0):
+        test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+        test VIDIOC_EXPBUF: OK
+        test Requests: OK (Not Supported)
+  
+Total for rk_vip device /dev/video0: 45, Succeeded: 45, Failed: 0, Warnings: 0
+
+Once again, any review is welcome :)
+
+Thanks a lot,
+
+Maxime
+
+Maxime Chevallier (3):
+  media: dt-bindings: media: Document Rockchip VIP bindings
+  media: rockchip: Introduce driver for Rockhip's camera interface
+  arm64: dts: rockchip: Add the camera interface description of the PX30
+
+ .../bindings/media/rockchip-vip.yaml          |  101 ++
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   12 +
+ drivers/media/platform/Kconfig                |   15 +
+ drivers/media/platform/Makefile               |    1 +
+ drivers/media/platform/rockchip/vip/Makefile  |    3 +
+ drivers/media/platform/rockchip/vip/capture.c | 1146 +++++++++++++++++
+ drivers/media/platform/rockchip/vip/dev.c     |  331 +++++
+ drivers/media/platform/rockchip/vip/dev.h     |  203 +++
+ drivers/media/platform/rockchip/vip/regs.h    |  260 ++++
+ 9 files changed, 2072 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/rockchip-vip.yaml
+ create mode 100644 drivers/media/platform/rockchip/vip/Makefile
+ create mode 100644 drivers/media/platform/rockchip/vip/capture.c
+ create mode 100644 drivers/media/platform/rockchip/vip/dev.c
+ create mode 100644 drivers/media/platform/rockchip/vip/dev.h
+ create mode 100644 drivers/media/platform/rockchip/vip/regs.h
+
+-- 
+2.25.4
+
