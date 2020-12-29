@@ -2,90 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964612E72FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E00F02E72FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgL2SVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 13:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
+        id S1726190AbgL2S21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 13:28:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgL2SVt (ORCPT
+        with ESMTP id S1726111AbgL2S20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 13:21:49 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD66C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 10:21:09 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id l23so1930912pjg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 10:21:09 -0800 (PST)
+        Tue, 29 Dec 2020 13:28:26 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF45C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 10:27:46 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id w17so12846768ilj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 10:27:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XrwZVRACwCg/e90lYyTObv+TWc0w3XAzWydYSJtQB4s=;
-        b=Y/SjpHNXSo0Q6CxHwHxlkIZejG2sOseUh8O8q5fZVQ2T37sDwFAQ+epHSTSJyaYE4F
-         18u2nWHLRua0oxrSXO9ID4H2ou+widD13+wm8H9ZFvsSrZGv+S3O6Rvbef5Dy2pPviJl
-         LDo9WR1pPIwabqNPuh+AeuWnYg8E0wGT4KyjL5415kV8oY5atv/8PysP1SrZ00+YgRVQ
-         1U5wPXLi1P1LQl70M5uDMM4EWQHtQmkdpyKOZgcYiHrpYMSCsagMV8H9OoQuQNMr1HOr
-         5o18jFSKlmfNGYbZTvkjLfrNyU1iOWxWMqs1XqjMsqUpVB560INoaRRvO0LDtboxT/Ld
-         FOjg==
+        bh=fbV8d1t1Pgkhw+yWYebOZ+ycw1SMWEyFjO8QWJ9yTkk=;
+        b=BrqIj0n39Sq2tt2mI8sl+0z7vc4Y69NHA50cLjX3P49bU3DySEWQ0XZKPDhOLq8vj+
+         f8rw41o7xbZL4ZH8uQbfe44UqqR3kVJ/fVMJOQdFWO9q3/AHO4Ysv0QU5M11ZLzwMraw
+         Vbvg/RIgAcT2xt7yxvMUkbVslazJ3Sl+19FalV06jiC5u00e9hFTSGNiBIzCPSIcGduM
+         YgQUghpHUI0TgIEH3wtNm4w3HBz4QangkYps6XGhGPmHWsAG1pVkwrDdRVQ7kjMpRoC3
+         qbR3pM5/t3AsDbUVhjCS6l3cBp2AtVw3PdL2/8zo1Sh2po84TJL4deZnWkh+RVU4Ugt5
+         L2Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XrwZVRACwCg/e90lYyTObv+TWc0w3XAzWydYSJtQB4s=;
-        b=prjO8bYLF1yr2jMCWoXnweOIjET1gX7raIjw5o3VjTsbzryfAffRwufHOLWWvxnUvO
-         uRsMqAKuXZetl92D1FcKfsvv5oUdluTXtWdMguZ/DbZNRuSaU1q+w0uUjrjYTggoLgJ7
-         yT6MzgkwzjcC8hyEalF3ypMxxkqiKjebM5E2DLGuWfCbEdeyYmGlxCbC+jK7mZrdU9Z6
-         XpOTfD1fXZfAfsoCNXOGg8WIQ2RXEG3lJqlbTNfG/ep6q947QWqhqHCMSwJG+Ei9Ybh6
-         dZny6CsjVcWmNSQZUqZhdxXRgVVa5qIa7QNwqC+FpYdIlKt3aGqgT8bixEXc7Iq3vLpd
-         kjoA==
-X-Gm-Message-State: AOAM533yG/2QX0f1NZ7EvP6Spbpk/LoO+/C8jBTDRpTwuK5f1454wBW1
-        780BgvC+msZOqqkqTyk65etTpbESVoS5cXrDZIiqCQnAlcI=
-X-Google-Smtp-Source: ABdhPJz1LMObzBF/ro6Ksyw4yl7aw8d8AY5S2RL0w7c3Cq1DaQRpj5UTnAx+cYPX0GYWzIskEq1hvpeEsBK16o5zzdE=
-X-Received: by 2002:a17:90a:c910:: with SMTP id v16mr5069600pjt.198.1609266069221;
- Tue, 29 Dec 2020 10:21:09 -0800 (PST)
+        bh=fbV8d1t1Pgkhw+yWYebOZ+ycw1SMWEyFjO8QWJ9yTkk=;
+        b=T18WEC3y8f0gKaxT1rSUIr8ArTkshvC6Fbub6YN/92H78CYwOBam5iIXQW19z5lRG9
+         qy14AIVQ0gT/e2S7Of8KQsR+POLeZDV5sdmmRWkQQo1HJPzpO1w8Tj/EfFOEUUhM3SOq
+         utwUmf04mloFHRZoUdTi8z/9GkBoDJzPuivaMMm2Y4lyTDQbLidrEHbeU6hjmBoatM3Q
+         rMPJEtK0A+tO23qPuSSJgPSr0ELv4oEh3d4+C0VNhPTiq3pzS9TC7C2Sxa3hFfnyPi5b
+         44S0VwDfvu97B+aSasU2ToaEDAYEipzledZbyK0sUBAQtpmevkkbT6VcfFWfWJ2d6QuY
+         7rxA==
+X-Gm-Message-State: AOAM5320+SSYAfvPC1ohT9g9aoB+1exi7OwwKhwpF0lOLx2ukvtfghTu
+        sa3fx42r+jxujVv3RuODSuSay4uRW3WBFL5zQ/k=
+X-Google-Smtp-Source: ABdhPJwx+JncDGbJbZaq+Yf3bdr6VfsUakPDYwAeKEwzVq0Ho6Sw7xmoLCyVIMDxzHvZE5uEfS1l9461cRT5c63Y6pk=
+X-Received: by 2002:a05:6e02:12e4:: with SMTP id l4mr47874192iln.252.1609266465473;
+ Tue, 29 Dec 2020 10:27:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20201228025339.3210-1-xie.he.0141@gmail.com> <20201228091654.1963-1-hdanton@sina.com>
- <CAJht_ENqaJtUwfcXCC2WXNJi+9_HuYX4SrY-QZd19mZrL0EHBg@mail.gmail.com> <20201229081034.2026-1-hdanton@sina.com>
-In-Reply-To: <20201229081034.2026-1-hdanton@sina.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Tue, 29 Dec 2020 10:20:58 -0800
-Message-ID: <CAJht_EN5kmPLSUM=h7D_0Y=g0AwE+16jx71H8op1kFHJ8ZsbVg@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: hdlc_ppp: Fix issues when mod_timer is called
- while timer is running
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
+References: <20201228194343.88880-1-yury.norov@gmail.com> <20201228195016.GD4077@smile.fi.intel.com>
+ <CAAH8bW9UvDAB4NSQB6CuhBU6D=R6Ex6=5V=Ld74hYGK474_Trw@mail.gmail.com>
+ <808b7555-5ba2-f1fe-3800-1d5f59c47b52@arm.com> <CAHp75Vd8PZM5Z5A0bCapeOEbvzqXtfUXUDK=6G1nxD527E3=rA@mail.gmail.com>
+ <CAAH8bW_gaA9m_tFX_HGJZ-fy0FHeVonO-jMU6Zpu7roo7kXQwA@mail.gmail.com>
+In-Reply-To: <CAAH8bW_gaA9m_tFX_HGJZ-fy0FHeVonO-jMU6Zpu7roo7kXQwA@mail.gmail.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Tue, 29 Dec 2020 10:27:34 -0800
+Message-ID: <CAAH8bW-6bR7gBdA+hsE5k-EwUycbiL4-wZ-AznxyxQg5SHuxcA@mail.gmail.com>
+Subject: Re: [PATCH] drm/komeda: use bitmap API to convert U32 to bitmap
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Carsten Haitzler <Carsten.Haitzler@arm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 12:10 AM Hillf Danton <hdanton@sina.com> wrote:
+On Tue, Dec 29, 2020 at 10:09 AM Yury Norov <yury.norov@gmail.com> wrote:
 >
-> >The code path that calls add_timer is for sending keep-alive packets
-> >when operating in the OPENED state. If we have just changed to the
-> >OPENED state in ppp_cp_event, we should wait for the amount of time
-> >set by the (2nd) mod_timer call in ppp_cp_event, before firing the
->
-> What if your change also covers the first case of mod_timer() in
-> ppp_cp_event()?
-
-Yes, for the 1st mod_timer call in ppp_cp_event, the situation is the
-same. If it is called, it means we are sending out a Configure Request
-or Terminate Request. In this case, we should wait for the amount of
-time set by this mod_timer call, before firing the timer. We shouldn't
-fire the timer immediately because this is not the intention of this
-mod_timer call.
-
-> >timer. We shouldn't fire the timer immediately after we change to the
-> >OPENED state. This is not the intention of the (2nd) mod_timer call in
-> >ppp_cp_event. Therefore aborting ppp_timer is the correct solution.
+> On Tue, Dec 29, 2020 at 5:50 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
 > >
-> Given an expiring timer, is it the right time to call ppp_tx_flush() in
-> addition to add/mod_timer()?
+> > On Tue, Dec 29, 2020 at 2:24 PM Carsten Haitzler
+> > <Carsten.Haitzler@arm.com> wrote:
+> > >
+> > > On 12/28/20 8:10 PM, Yury Norov wrote:
+> > > > On Mon, Dec 28, 2020 at 11:49 AM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > >> On Mon, Dec 28, 2020 at 11:43:43AM -0800, Yury Norov wrote:
+> > > >>> The commit be3e477effba636ad25 ("drm/komeda: Fix bit
+> > > >>> check to import to value of proper type") fixes possible
+> > > >>> out-of-bound issue related to find_first_bit() usage, but
+> > > >>> does not address the endianness problem.
+> > > >> Hmm... Can you elaborate?
+> > > >>
+> > > >> ...
+> > > >>
+> > > >>>                                    u32 comp_mask)
+> > > >>> -     unsigned long comp_mask_local = (unsigned long)comp_mask;
+> > > >> Here we convert u32 to unsigned long (LSB is kept LSB since it happens in
+> > > >> native endianess).
+> > > >>
+> > > >>> -     id = find_first_bit(&comp_mask_local, 32);
+> > > >> Here it takes an address to unsigned long and tries only lower 32 bits.
+> > > >>
+> > > >> Are you telling that find_first_bit() has an issue?
+> > > > It seems you're right, there's no issue with endianness in existing code.
+> > > > In fact, the line
+> > >
+> > > Indeed Andy covered this. Take LSB32 with the cast to "local on-stack
+> > > long" and possible extend upper 32bits with 0's if needed (64bit longs).
+> > >
+> > > >>> -     unsigned long comp_mask_local = (unsigned long)comp_mask;
+> > > > is an opencoded version of bitmap_from_arr32(dst, src, 32).
+> > > >
+> > > > Maybe it would be better to use the bitmap API here, but existing code is
+> > > > correct. Sorry for the noise.
+> > > While your code is seemingly also valid (I can check to be sure with
+> > > KASAN if you want still), it does seem a little less "nice to read" with
+> > > more lines of code for the same work. Is it worth making the code a
+> > > little longer here as it's not actually fixing anything to do it this
+> > > other way? DECLARE_BITMAP() is a bit of an obscure way to declare a
+> > > single unsigned long (in this case) where the compiler does the right
+> > > thing anyway with a simple assign+cast making it easier to read/follow IMHO.
+> >
+> > What we can do is to declare BITS_PER_U32.
+> > Also we can pay attention on these definitions:
+> > https://elixir.bootlin.com/linux/latest/source/kernel/bpf/btf.c#L168
+> > https://elixir.bootlin.com/linux/latest/source/security/selinux/ss/ebitmap.c#L27
 
-Do you mean when we are aborting ppp_timer, whether we need to call
-ppp_tx_flush in the aborted ppp_timer? I don't think so. Because when
-ppp_rx (which directly or indirectly calls ppp_cp_event) releases the
-lock, it will call ppp_tx_flush. So we don't need to call it again.
+On the other hand, fixed width types are designed especially to
+contain a specific
+number of bits. I don't understand why BITS_PER_U32 is any better than
+just 32 ...
+
+> > And define BITMAP_FROM_U32() macro.
+> >
+> > Then It would be written like
+> >
+> > DECLARE_BITMAP(comp_mask_local, BITS_PER_U32) = BITMAP_FROM_U32(comp_mask);
+> >
+> > But this is a bit verbose.
+> >
+> > Also, it can be something like DECLARE_BITMAP_U32(...) = BITMAP_FROM_U32(...);
+
+People often do things like this:
+https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/pcie-hisi-error.c#L199
+
+Maybe it's worth adding a shorthand for it, like CREATE_BITMAP32(name, val) and
+CREATE_BITMAP64(name, val)?
