@@ -2,112 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF6F2E72FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B093D2E72FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgL2SU6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Dec 2020 13:20:58 -0500
-Received: from aposti.net ([89.234.176.197]:58822 "EHLO aposti.net"
+        id S1726323AbgL2SVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 13:21:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgL2SU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 13:20:57 -0500
-Date:   Tue, 29 Dec 2020 18:20:04 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] MIPS: boot: Fix unaligned access
- =?UTF-8?Q?with=3F=3F=0D=0A?= CONFIG_MIPS_RAW_APPENDED_DTB
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>, od@zcrc.me,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Message-Id: <GL54MQ.XG61RLIPAFCV@crapouillou.net>
-In-Reply-To: <20201229150810.GA7832@alpha.franken.de>
-References: <20201216233956.280068-1-paul@crapouillou.net>
-        <20201228222532.GA24926@alpha.franken.de>
-        <0JM2MQ.PMKIEAOX7SCZ@crapouillou.net>
-        <20201229150810.GA7832@alpha.franken.de>
+        id S1726264AbgL2SVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 13:21:34 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E75FE207AB;
+        Tue, 29 Dec 2020 18:20:52 +0000 (UTC)
+Date:   Tue, 29 Dec 2020 18:20:49 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <david@lechnology.com>
+Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        linux-iio@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] counter:ti-eqep: remove floor
+Message-ID: <20201229182049.3ef72268@archlinux>
+In-Reply-To: <88a5ed56-ac49-bf64-4d52-8ada6d3af4ef@lechnology.com>
+References: <20201214000927.1793062-1-david@lechnology.com>
+        <X9dQeKy/Ol4d+3iM@shinobu>
+        <88a5ed56-ac49-bf64-4d52-8ada6d3af4ef@lechnology.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Mon, 14 Dec 2020 08:05:44 -0600
+David Lechner <david@lechnology.com> wrote:
 
-Le mar. 29 déc. 2020 à 16:08, Thomas Bogendoerfer 
-<tsbogend@alpha.franken.de> a écrit :
-> On Mon, Dec 28, 2020 at 10:30:36PM +0000, Paul Cercueil wrote:
->>  Le lun. 28 déc. 2020 à 23:25, Thomas Bogendoerfer
->>  <tsbogend@alpha.franken.de> a écrit :
->>  > On Wed, Dec 16, 2020 at 11:39:56PM +0000, Paul Cercueil wrote:
->>  > >  The compressed payload is not necesarily 4-byte aligned, at 
->> least
->>  > > when
->>  > >  compiling with Clang. In that case, the 4-byte value appended 
->> to the
->>  > >  compressed payload that corresponds to the uncompressed kernel 
->> image
->>  > >  size must be read using get_unaligned_le().
->>  > >
->>  > >  This fixes Clang-built kernels not booting on MIPS (tested on a
->>  > > Ingenic
->>  > >  JZ4770 board).
->>  > >
->>  > >  Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the 
->> end of
->>  > > the kernel")
->>  > >  Cc: <stable@vger.kernel.org> # v4.7
->>  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  > >  ---
->>  > >   arch/mips/boot/compressed/decompress.c | 2 +-
->>  > >   1 file changed, 1 insertion(+), 1 deletion(-)
->>  > >
->>  > >  diff --git a/arch/mips/boot/compressed/decompress.c
->>  > > b/arch/mips/boot/compressed/decompress.c
->>  > >  index c61c641674e6..47c07990432b 100644
->>  > >  --- a/arch/mips/boot/compressed/decompress.c
->>  > >  +++ b/arch/mips/boot/compressed/decompress.c
->>  > >  @@ -117,7 +117,7 @@ void decompress_kernel(unsigned long
->>  > > boot_heap_start)
->>  > >   		dtb_size = fdt_totalsize((void *)&__appended_dtb);
->>  > >
->>  > >   		/* last four bytes is always image size in little endian */
->>  > >  -		image_size = le32_to_cpup((void *)&__image_end - 4);
->>  > >  +		image_size = get_unaligned_le32((void *)&__image_end - 4);
->>  >
->>  > gives me following error
->>  >
->>  > arch/mips/boot/compressed/decompress.c:120:16: error: implicit
->>  > declaration of function ‘get_unaligned_le32’
->>  > [-Werror=implicit-function-declaration]
->>  >    image_size = get_unaligned_le32((void *)&__image_end - 4);
->>  >
->>  > I've added
->>  >
->>  > #include <asm/unaligned.h>
->>  >
->>  > which fixes the compile error, but I'm wondering why the patch 
->> compiled
->>  > for you ?
->> 
->>  No idea - but it does compile fine without the include here. 
->> Probably a
->>  defconfig difference.
+> On 12/14/20 5:46 AM, William Breathitt Gray wrote:
+> > On Sun, Dec 13, 2020 at 06:09:27PM -0600, David Lechner wrote:  
+> >> The hardware doesn't support this. QPOSINIT is an initialization value
+> >> that is triggered by other things. When the counter overflows, it
+> >> always wraps around to zero.
+> >>
+> >> Fixes: f213729f6796 "counter: new TI eQEP driver"
+> >> Signed-off-by: David Lechner <david@lechnology.com>  
+> > 
+> > Is the QPOSINIT preprocessor define needed at all anymore, or should it also be
+> > removed?  
 > 
-> # CONFIG_KERNEL_LZO is not set
-> # CONFIG_KERNEL_LZ4 is not set
+> There are already many more defines for registers that are not
+> used, so I didn't remove it.
+Applied to the fixes-togreg branch of iio.git and marked for stable.
+
+Thanks,
+
+Jonathan
+
 > 
-> this makes the difference. Both decompress.c files include 
-> asm/unaligned.h.
+> > 
+> > Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> >   
+> >> ---
+> >>   drivers/counter/ti-eqep.c | 35 -----------------------------------
+> >>   1 file changed, 35 deletions(-)
+> >>
+> >> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
+> >> index a60aee1a1a29..65df9ef5b5bc 100644
+> >> --- a/drivers/counter/ti-eqep.c
+> >> +++ b/drivers/counter/ti-eqep.c
+> >> @@ -235,36 +235,6 @@ static ssize_t ti_eqep_position_ceiling_write(struct counter_device *counter,
+> >>   	return len;
+> >>   }
+> >>   
+> >> -static ssize_t ti_eqep_position_floor_read(struct counter_device *counter,
+> >> -					   struct counter_count *count,
+> >> -					   void *ext_priv, char *buf)
+> >> -{
+> >> -	struct ti_eqep_cnt *priv = counter->priv;
+> >> -	u32 qposinit;
+> >> -
+> >> -	regmap_read(priv->regmap32, QPOSINIT, &qposinit);
+> >> -
+> >> -	return sprintf(buf, "%u\n", qposinit);
+> >> -}
+> >> -
+> >> -static ssize_t ti_eqep_position_floor_write(struct counter_device *counter,
+> >> -					    struct counter_count *count,
+> >> -					    void *ext_priv, const char *buf,
+> >> -					    size_t len)
+> >> -{
+> >> -	struct ti_eqep_cnt *priv = counter->priv;
+> >> -	int err;
+> >> -	u32 res;
+> >> -
+> >> -	err = kstrtouint(buf, 0, &res);
+> >> -	if (err < 0)
+> >> -		return err;
+> >> -
+> >> -	regmap_write(priv->regmap32, QPOSINIT, res);
+> >> -
+> >> -	return len;
+> >> -}
+> >> -
+> >>   static ssize_t ti_eqep_position_enable_read(struct counter_device *counter,
+> >>   					    struct counter_count *count,
+> >>   					    void *ext_priv, char *buf)
+> >> @@ -301,11 +271,6 @@ static struct counter_count_ext ti_eqep_position_ext[] = {
+> >>   		.read	= ti_eqep_position_ceiling_read,
+> >>   		.write	= ti_eqep_position_ceiling_write,
+> >>   	},
+> >> -	{
+> >> -		.name	= "floor",
+> >> -		.read	= ti_eqep_position_floor_read,
+> >> -		.write	= ti_eqep_position_floor_write,
+> >> -	},
+> >>   	{
+> >>   		.name	= "enable",
+> >>   		.read	= ti_eqep_position_enable_read,
+> >> -- 
+> >> 2.25.1
+> >>  
 > 
-> I've added the #include, fixed the get_unaligned_le32 in the 
-> description
-> and applied it to mips-fixes.
-
-Alright, great! Thanks!
-
-Cheers,
--Paul
-
 
