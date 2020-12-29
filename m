@@ -2,197 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D0F2E72E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8962D2E72E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgL2SAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 13:00:08 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31492 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726240AbgL2SAI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 13:00:08 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTHswYr013843;
-        Tue, 29 Dec 2020 09:59:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=RrvfvK7iVCEIjmr89x1C52LtSsn6KZHCt6O49NwijH8=;
- b=ipCZS+ZpeYDiELGtsGeOAs1AGcrG8zsvdPrXFB7AJNAbrRHEQT6rlijWDE5tGtRSrFRu
- a2jPZhnC0ydWNPIFkcc7Y8q/ctJydM3y805YxWbn08rjYebQ/FrQP8X+UIv7ZOUUbJbX
- LDcPPzbU3LzX6fBoj7/adyX0R7lSckpIBtU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35pp3vrbtp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Dec 2020 09:59:17 -0800
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 29 Dec 2020 09:59:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cVSu7ZKIfGVCG0PZ17ht/REGXyFiC18F4hc05Tr9/CyOIajpPzrg6Lrm80TvmN3n25q8lPIcglDC5HNv2j00sbJgUxOZAGycGk30OCBVdYb0JDBfmMnYk3hOnE8zQACgo4HXAKcFT93EctV9i5NIm4VDuoEP0rZYXlTvnmIvhoMo1Y5QtviXgPDQOaE4pgtFynOf5y+d/45bwjGoqEv/O9sug876RM44Ag9TSCA0XML3HdHWOUHbqpGCaD9Glem7GRqZPeyhmbUHnTVV7qIxw08DE9RFD6eLDX4uByFQ1Oj9DsJnk8BHJ32oiOCiABIVpcR+wWWR3aVN3UP9KPSFeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RrvfvK7iVCEIjmr89x1C52LtSsn6KZHCt6O49NwijH8=;
- b=VSx98T5tfT8mzOyZkNnqL5emsCxPzJrG1sgE+ifjvyiScJeKDLwbUKyX6vPSXoZa889XK/88ERKostJx2gFUM32xGHuYPP1wKqNTjqC6m8rc5LZGIwJSyL0mJhL9ZcNUqFEHk3hkKnt8HD7BhrixLH+cjZqDTMA+DxQWYFyA+YW1ZSx2QH7dvPE/sX7WcI9ZZJBIEnhuKkZ26C6R+oh2rm6CfRizh8GxA/q6w16QO8T2Zs6YlqEmbzpA3rirhDyqvXDblrOAIEBeB5wCBVksXtDiHgnIdUxFRjID0hJrE6V3ALaljg4z8pXdrfXCYsPw+FmbPvXmCxWc+TflnmBpeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RrvfvK7iVCEIjmr89x1C52LtSsn6KZHCt6O49NwijH8=;
- b=IZ9D8wdhezCb5LH5kuwUTppZ3y5VPgtru+ios7hvkF18OnOHFM24pZV+6gC/YzKM6YxHAcnS4lwrh0D8c1/7f6sPgsfn2+p88peTC29zQI/YCHPhdn/yWq57jNKGyKVrevw3yxqktyP9+TyHXehHD6BYCUBOX5ZJdeTy+uNwofo=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB4120.namprd15.prod.outlook.com (2603:10b6:a02:c4::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.31; Tue, 29 Dec
- 2020 17:59:15 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::2c:f12b:82e9:105c]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::2c:f12b:82e9:105c%5]) with mapi id 15.20.3700.031; Tue, 29 Dec 2020
- 17:59:14 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Kernel Team" <Kernel-team@fb.com>
-Subject: Re: [PATCH v6 3/4] perf-stat: enable counting events for BPF programs
-Thread-Topic: [PATCH v6 3/4] perf-stat: enable counting events for BPF
- programs
-Thread-Index: AQHW3UCo6hW/vcfUc06GxX5agiqE96oNrCiAgACuXACAAAOdAA==
-Date:   Tue, 29 Dec 2020 17:59:14 +0000
-Message-ID: <0D527E3F-7390-4D54-8E6B-FCCD09BA8901@fb.com>
-References: <20201228174054.907740-1-songliubraving@fb.com>
- <20201228174054.907740-4-songliubraving@fb.com>
- <CAM9d7ciBsQqp2C5jWnitaK1Lttrq46NMcTLwE70oaqm82T88+Q@mail.gmail.com>
- <B5D51BCD-C9FA-458D-B8C9-345BC2AD16E6@fb.com>
-In-Reply-To: <B5D51BCD-C9FA-458D-B8C9-345BC2AD16E6@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:7414]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9fa6f22f-c479-4069-b7f4-08d8ac23745e
-x-ms-traffictypediagnostic: BYAPR15MB4120:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB412053153C84B9CCBBE99536B3D80@BYAPR15MB4120.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:2331;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /3UZtv0Vnguv4ojs5l8GoZ8WDe1zaDZ3BYwcRjxBEaaFk2VO7TpQl7XA/H5SyFF26gyeennXGqAB6qO62mn/tYJ8fZ0Ur56/dmQxhbXDMzkdpLW4r8kK1UKDcZC43aiih8XbN4VywlaOrZ/ctqGsUsE2I8ZXyjxXZ0hQB0ulIYWfu7Fwz1U8ercxwnRGgdI7EiFzSWTw0E7Rq9XdK0EOgDF3yamqbt3VEDHIASTDOQcmHmq7VymBVjZh5ts1i0kya46dHgj897xXb8CGFBE9GI/93zg3MhIsuUzgnKCrC/m4nfucTYjhl4hT6K8X2Mi5MOwTEoEb8r4pmWYjtOOnXSurZquQQCUewqmgXLGIP79xYHBrg2mdmVpEtEX2kLlcnQtoZkHKXByPJKkKV0GVt30pVNBxVu19Kb2jm/l7HM7QzAblX+/8hwtZ0cRnpBxV
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39860400002)(376002)(346002)(396003)(33656002)(6512007)(2906002)(71200400001)(6486002)(86362001)(6506007)(53546011)(83380400001)(66476007)(64756008)(8936002)(2616005)(8676002)(5660300002)(54906003)(66446008)(91956017)(316002)(66556008)(6916009)(36756003)(478600001)(76116006)(186003)(66946007)(4326008)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?uY/OvtgFHKfrAd5VovqzEoKyvtmykTY5+SOFmB+nv6SUS4lQAIsgnSkRNkax?=
- =?us-ascii?Q?TF1BwQCcoeYZBMljHaLdxzQcB9++bh5okrSuKDDfpQTYT+tnmXtn3CE+IWSN?=
- =?us-ascii?Q?TuKfg4pW0rSCnmpZf69vOvQuRn3VkpLrBpavdH4J/TvPMIHENIGY8ZhXjGFZ?=
- =?us-ascii?Q?Y2aoHTuJFTziwkJcQG5xlEZ6DZvKSP7sXjVGHzZCxIrART0D3jvy5gW9cXbP?=
- =?us-ascii?Q?eGt+HqIh6hIpkG3qyqcjosL90zteaFnhYjgJdZSJEDvD9SENW3Oo4hk7TGGC?=
- =?us-ascii?Q?ZHpr4gL5g8ZWCSxxNY3FmMNZ8Q3jOZsHK301fQKQZS7vaepH5+7QEBK+J1in?=
- =?us-ascii?Q?Ykl9aB7WLBozPduMaHVqZ0gxJ3HY0TJdLrs5YXX/vZNQtFyAMCyUaze3MCTf?=
- =?us-ascii?Q?QEYNt7/FZ3KfnlFbRIOoizCldIzVTNi7aALGwCSjHlYc4yZq337mv4YCe2Vk?=
- =?us-ascii?Q?FmKyWCYwS6cEahYBajeVvgNx8tn4oXgsbCycx9RHstzbq8RAJ6PUtgnGAbuE?=
- =?us-ascii?Q?jJ5OR0W0ERCdbU/Nua9bfPM9TrAmlqDZuqNgd8BaQEekkhpAS0p3SGTN1hSd?=
- =?us-ascii?Q?VK68qYgv5UT+PV3YyQk2uszfNWu5G8JNuSAM8dbSMDsOgBl6dATEv70AZw20?=
- =?us-ascii?Q?SrC796bcxJX0/ekjg2i2MT3VtGpWFBF2dV+Pj21CPu/oOlcf+WXQkR8YRBQA?=
- =?us-ascii?Q?Dx4C6pifQ/LZBLm7pLBkbNKTQACdJ+IUKLnbXyMopsyix74D3n6scxa7KUP0?=
- =?us-ascii?Q?++kMgyY7Tlsm2zAvNsP2Zwb9s2gPOwWqW09qUcO9iCiw4z0qS7C/ZQ/pFqJv?=
- =?us-ascii?Q?hYJn9SFbqF9AqBfK1ROpaepr/Es/cCsDNvh8AtbCRjpGBy7zeKzgF6iysCcB?=
- =?us-ascii?Q?ovalwXz/9BqI7c73rr3tLIf4OhjyC4Upz8e7C9ibRuHHrhR+TDd1HF3EeU76?=
- =?us-ascii?Q?mL/rBWccijBT3hvSEca1dnhX7fC8xoYAjoypNUrTiqG1hLy1EghxThZrmsLI?=
- =?us-ascii?Q?stXvArKNVIfEWK27Ss8NKO6YANTCFOb6vNopjPhaKLDgkXI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <7B32630DB6C6E1459D7C44B7592CA59A@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726230AbgL2SDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 13:03:39 -0500
+Received: from mout.gmx.net ([212.227.15.19]:35501 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726111AbgL2SDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 13:03:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609264916;
+        bh=SK8QITzCfWoZ/op3YpTUgnGR0uIsWk1XBJ/06nVaCnw=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=FO1EJ9ABcWzp/xDi9Q3yWXhGcFk1S6PgHUJDWsfYHxIbLaB6PG2wIM+WrXsG0kAU7
+         Hci5v/2hSHbHvvCsxKcCQVSBqRbUu72vZ+N7wfCxp/MPq5bSJx+dZJan6XYP1VXBFe
+         1damZl+J9t1OkdaGuCK67muinFVaFHLchgpHrKM4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.23] ([77.6.105.225]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8ykW-1kzGrK1aha-0065Jm; Tue, 29
+ Dec 2020 19:01:56 +0100
+Subject: Re: [RFC PATCH 2/2] mm: readahead: handle LARGE input to
+ get_init_ra_size()
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org
+References: <20201220211051.1416-1-rdunlap@infradead.org>
+ <20201222173533.c9e28416835d7487b0e28cda@linux-foundation.org>
+ <6a595671-20a8-e63f-f3ea-f4749a574efa@infradead.org>
+From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
+Message-ID: <d2edfb69-93b4-d938-faf0-5f7c0f1158b9@gmx.de>
+Date:   Tue, 29 Dec 2020 19:01:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9fa6f22f-c479-4069-b7f4-08d8ac23745e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Dec 2020 17:59:14.8143
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pQnAkMBYMWP3BcjLE2YekzgdZpdnn3Q1+ay6Jl0NglAs5rLMaPC8cp2Na+kAOdHHeELcgYWrLUye5Q6xPs/rAg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4120
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-29_13:2020-12-28,2020-12-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- spamscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012290115
-X-FB-Internal: deliver
+In-Reply-To: <6a595671-20a8-e63f-f3ea-f4749a574efa@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:O57Jbv6kXlXZvbyRWDd9xH2aYHMSjIDdEK/JCXmJADBX42EyMzX
+ LL0jUj6u14qy4yJtCdb9NXZ9AWB0HNGF1Qmwg9rGBeDpz1JNW1ZZDB36zzC7zDxa20/UopD
+ Lf273dw33OevxfFGr2xnPrsrLUswP1LZeWcn8TkZ6OL60VzyMYt7oqyuUvKoEIH77h2HV5u
+ KrZrJkW2VK6DgBIeZ3B3Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VnL47sgNejg=:X0iVsPMBWnbU304MgmUW73
+ fAzlnctILy1ZoCB96gR15CzJC+aEMQyRspayN670fgaqvFHSEnqdDP4uoT+t8Y4lgif3+hyVa
+ CJkLd7AVQvDH6EFe1BlILTs5hrj5eriFx7i2rGrNkEQ+nZKuepkhgoa/R7oDTNNzAIk/Nd/4l
+ EhjofJhRUgzC60zgmGuprnroaUuo0uXF38+28yvqQ3GquNvz/CJRbWjI7r6qSnRC2Sl6B49Fr
+ etc2gMTstE/Le74dgtCsK/VIebV/QpG///NhASwklRxIv0RxhU5UMDAMMlqUC5okgWfX0f44q
+ oKqwq2dRIgIaGuSrT/PxbBEWuYXfxFQnkKZpTmRqGbwGSZmherqRHimRgWLSytVTrnHrMlvYK
+ vZ548K2NSXMm0z1RGmlWzU8btBhgZhndMzWCQloROb1SD3zz6IMtRfejxPrKCtXI86IgQisZs
+ zWNRsWWYrYNsYHyNXhtIINjShVnlpjiLZh48JyEguttyHUPctu+3DpSOJLiqER/x5nLsYPkre
+ MhNnuwa9IkKsWJt+gz1UbRv2Iejvb20GfHWVIWwUbq+FY2+dFt6RHkF8Z2ctlZu8dJHPoVItT
+ N7Nc2+n5B/VZJxMjX+whj0yuXpVcpg//01zb/PrLBhRj9R7WGHPElSD3pGZ6pd0FTgUP2dn25
+ Qo8XOEBaCJlwa3w4lZxLdZRNAx+Rk/SE8biaOS2+CFMsEyEk8DihpX5a5jh6KCDyepuJ7A8K2
+ XbaNHK81vvaLBJAoTYwLal/eyZna3R9aDzgEcXU/N3zlZZNYFFWOLhypXdhwoH2vXZHQCoruh
+ QDI6LAgGct51MmEgJGjdc3v54Lf90rWQPdaeFZsfytxbq1BWfrrzJmZ98yNgVIgnWaJONQp/H
+ urG2BJj5XFik0T7SKadg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/23/20 2:50 AM, Randy Dunlap wrote:
+>> What motivates this change?  Is there any reason to think this can
+>> happen?
+> Spotted in the wild:
+I run 2 hardened Gentoo systems, a server and a desktop.
+
+I patched the server with this:
+
+mr-fox ~ # cat ubsan.patch
+=2D-- linux-5.10.1.orig/mm/readahead.c
++++ linux-5.10.1/mm/readahead.c
+@@ -310,7 +310,11 @@ void force_page_cache_ra(struct readahea
+   */
+  static unsigned long get_init_ra_size(unsigned long size, unsigned
+long max)
+  {
+-       unsigned long newsize =3D roundup_pow_of_two(size);
++       unsigned long newsize;
++
++       if (!size)
++               size =3D 32;
++       newsize =3D roundup_pow_of_two(size);
+
+         if (newsize <=3D max / 32)
+                 newsize =3D newsize * 4;
 
 
-> On Dec 29, 2020, at 9:46 AM, Song Liu <songliubraving@fb.com> wrote:
->=20
->>>=20
 
-[...]
+and the issue did no longer occurred at the server (5.10.2).
 
->=20
-> [...]
->=20
->>> +static inline bool target__has_bpf(struct target *target)
->>> +{
->>> +       return target->bpf_str;
->>> +}
->>> +
->>> static inline bool target__none(struct target *target)
->>> {
->>>       return !target__has_task(target) && !target__has_cpu(target);
->>=20
->> Shouldn't it have && !target__has_bpf() too?
+I did not patched the desktop system and the issue occurred still 3
+times since 21th of december (5.10.2/3)
 
-Actually, we don't need target__has_bpf() here. As -b requires setting up c=
-ounters
-system wide (in setup_system_wide()). If we add target__has_bpf() here, we =
-will
-need something like below, which I think it not necessary.=20
-
-diff --git i/tools/perf/builtin-stat.c w/tools/perf/builtin-stat.c
-index 09bffb3fbcdd4..853cec040191b 100644
---- i/tools/perf/builtin-stat.c
-+++ w/tools/perf/builtin-stat.c
-@@ -2081,7 +2081,7 @@ static void setup_system_wide(int forks)
-         *   - there is workload specified but all requested
-         *     events are system wide events
-         */
--       if (!target__none(&target))
-+       if (!target__none(&target) && !target__has_bpf(&target))
-                return;
-
-        if (!forks)
-diff --git i/tools/perf/util/target.h w/tools/perf/util/target.h
-index f132c6c2eef81..295fb11f4daff 100644
---- i/tools/perf/util/target.h
-+++ w/tools/perf/util/target.h
-@@ -71,7 +71,8 @@ static inline bool target__has_bpf(struct target *target)
-
- static inline bool target__none(struct target *target)
- {
--       return !target__has_task(target) && !target__has_cpu(target);
-+       return !target__has_task(target) && !target__has_cpu(target) &&
-+               !target__has_bpf(target);
- }
-
- static inline bool target__has_per_thread(struct target *target)
-
-
+=2D-
+Toralf
