@@ -2,165 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8212E7333
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 20:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 262292E7337
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 20:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgL2TRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 14:17:43 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58776 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726111AbgL2TRm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 14:17:42 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BTJ1Ycm102817;
-        Tue, 29 Dec 2020 14:16:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=+0QSpONsD5OqXpAfAQwJxgPBmRsNRSVo2PjX+5Gc8KI=;
- b=JLwIq1e/8RtxbBLlD0MP2GWDqyLwGjcCzQP+lLjNHF4ElGTbdSMdTse0tCzN7V6vftWW
- Qq/6sH9PokpwvAHegZ4sbmZJckdp5A0KTEn0pLLkyY0EmGn06EPLJbYpu+DMaPKm5Pbn
- gNtREhq7eWML6nvJZigONVhvvVjLixTw8dCahmOO/VctUr3L0y0RNqctYXJ+9QaMaCni
- rCJ76BxxEZ7K5LRLJ6CEHjhJo9TlfZb1w2L3oJaRp1pizLa9wLx5oR0kKx2ImqoL8z8f
- qNYhByMccjfXID1EjIcEjJc/E0VTPgzaydrDuLvTOEah4VdG7JaRY+/gEL0GERprT3Iq Aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35r9h613bj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Dec 2020 14:16:50 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BTJDWgA152743;
-        Tue, 29 Dec 2020 14:16:50 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35r9h613b1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Dec 2020 14:16:49 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BTJDfRL011467;
-        Tue, 29 Dec 2020 19:16:48 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 35nvt89ns7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Dec 2020 19:16:47 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BTJGhJr29295046
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Dec 2020 19:16:43 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A1884C040;
-        Tue, 29 Dec 2020 19:16:45 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D21C04C046;
-        Tue, 29 Dec 2020 19:16:42 +0000 (GMT)
-Received: from sig-9-65-200-189.ibm.com (unknown [9.65.200.189])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 29 Dec 2020 19:16:42 +0000 (GMT)
-Message-ID: <ed9e0dbb48b712a371d3ca4ea5dfa5121d2f98df.camel@linux.ibm.com>
-Subject: Re: [PATCH v23 02/23] LSM: Create and manage the lsmblob data
- structure.
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Date:   Tue, 29 Dec 2020 14:16:41 -0500
-In-Reply-To: <10442dd5-f16e-3ca4-c233-7394a11cbbad@schaufler-ca.com>
-References: <20201120201507.11993-1-casey@schaufler-ca.com>
-         <20201120201507.11993-3-casey@schaufler-ca.com>
-         <b0e154a0db21fcb42303c7549fd44135e571ab00.camel@linux.ibm.com>
-         <886fcd04-6a08-d78c-dc82-301c991e5ad8@schaufler-ca.com>
-         <07784164969d0c31debd9defaedb46d89409ad78.camel@linux.ibm.com>
-         <8f11964c-fa7e-21d1-ea60-7d918cfaabe0@schaufler-ca.com>
-         <e260e8c5bbbb488052cbe1f5b528d43461bc4258.camel@linux.ibm.com>
-         <10442dd5-f16e-3ca4-c233-7394a11cbbad@schaufler-ca.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-29_13:2020-12-28,2020-12-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 priorityscore=1501
- phishscore=0 malwarescore=0 suspectscore=0 spamscore=0 bulkscore=0
- mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012290117
+        id S1726277AbgL2TTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 14:19:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726138AbgL2TTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 14:19:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 324FC207B2;
+        Tue, 29 Dec 2020 19:18:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609269512;
+        bh=io2KnTEM0Yp3zOg6gSjPV9V+ZBeWN1zxB5b2aI+MLMw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rNItszpkl3y2T3P2JPjN4iI4OSbtzgvJqQ39btQ+QoJdCit008wjorZPMFKHVxPH9
+         uEsqZplr76gCZFd5i0gLFJaJDozp/5n7iOjZ9L9q3c80I1XiDWkOGz25faG1BTAKoV
+         Ayc0zxy+y/aOS2+uRgANrLgLH9aANQ08RIgEIzIwc6D+YCo79pdk9ZDuHilKIIXn8x
+         n2css1TRspN4ui/OUvzjLQ5YBOHbXjc2lre/zbsVZ2Cv9IzufopPOxdRG5CZcHOE2r
+         qun+8x/GCWVr6/1wB5IDbS/LooOQEd/iLyjPp4TE3kwC/h7hJBWSNXgml+D63LCGnm
+         WaPzi+Y4XfNhQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EEF9D411E9; Tue, 29 Dec 2020 16:18:48 -0300 (-03)
+Date:   Tue, 29 Dec 2020 16:18:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v6 3/4] perf-stat: enable counting events for BPF programs
+Message-ID: <20201229191848.GL521329@kernel.org>
+References: <20201228174054.907740-1-songliubraving@fb.com>
+ <20201228174054.907740-4-songliubraving@fb.com>
+ <20201228201159.GF521329@kernel.org>
+ <6CB86649-9A1B-4585-8E1F-611F25935041@fb.com>
+ <20201229151504.GI521329@kernel.org>
+ <3E293E73-ECB7-48E0-8A6E-337988218299@fb.com>
+ <20201229184829.GK521329@kernel.org>
+ <9BDC4556-E802-4152-91E1-1A4696F62AAE@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9BDC4556-E802-4152-91E1-1A4696F62AAE@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-29 at 10:46 -0800, Casey Schaufler wrote:
-> >>>>>> -int security_audit_rule_match(u32 secid, u32 field, u32 op, void *lsmrule)
-> >>>>>> +int security_audit_rule_match(u32 secid, u32 field, u32 op, void **lsmrule)
-> >>>>>>  {
-> >>>>>> -       return call_int_hook(audit_rule_match, 0, secid, field, op, lsmrule);
-> >>>>>> +       struct security_hook_list *hp;
-> >>>>>> +       int rc;
-> >>>>>> +
-> >>>>>> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_match, list) {
-> >>>>>> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >= lsm_slot))
-> >>>>>> +                       continue;
-> >>>>>> +               rc = hp->hook.audit_rule_match(secid, field, op,
-> >>>>>> +                                              &lsmrule[hp->lsmid->slot]);
-> >>>>>> +               if (rc)
-> >>>>>> +                       return rc;
-> >>>>> Suppose that there is an IMA dont_measure or dont_appraise rule, if one
-> >>>>> LSM matches, then this returns true, causing any measurement or
-> >>>>> integrity verification to be skipped.
-> >>>> Yes, that is correct. Like the audit system, you're doing a string based
-> >>>> lookup, which pretty well has to work this way. I have proposed compound
-> >>>> label specifications in the past, but even if we accepted something like
-> >>>> "apparmor=dates,selinux=figs" we'd still have to be compatible with the
-> >>>> old style inputs.
-> >>>>
-> >>>>> Sample policy rules:
-> >>>>> dont_measure obj_type=foo_log
-> >>>>> dont_appraise obj_type=foo_log
-> >>> IMA could extend the existing policy rules like "lsm=[selinux] |
-> >>> [smack] | [apparmor]", but that assumes that the underlying
-> >>> infrastructure supports it.
-> >> Yes, but you would still need rational behavior in the
-> >> case where someone has old IMA policy rules.
-> > From an IMA perspective, allowing multiple LSMs to define the same
-> > policy label is worse than requiring the label be constrained to a
-> > particular LSM.
+Em Tue, Dec 29, 2020 at 07:11:12PM +0000, Song Liu escreveu:
 > 
-> Just to be sure we're talking about the same thing,
-> the case I'm referring to is something like a file with
-> two extended attributes:
 > 
-> 	security.apparmor MacAndCheese
-> 	security.SMACK64 MacAndCheese
+> > On Dec 29, 2020, at 10:48 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > 
+> > Em Tue, Dec 29, 2020 at 06:42:18PM +0000, Song Liu escreveu:
+> >> 
+> >> 
+> >>> On Dec 29, 2020, at 7:15 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >>> 
+> >>> Em Mon, Dec 28, 2020 at 11:43:25PM +0000, Song Liu escreveu:
+> >>>> 
+> >>>> 
+> >>>>> On Dec 28, 2020, at 12:11 PM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >>>>> 
+> >>>>> Em Mon, Dec 28, 2020 at 09:40:53AM -0800, Song Liu escreveu:
+> >>>>>> Introduce perf-stat -b option, which counts events for BPF programs, like:
+> >>>>>> 
+> >>>>>> [root@localhost ~]# ~/perf stat -e ref-cycles,cycles -b 254 -I 1000
+> >>>>>>   1.487903822            115,200      ref-cycles
+> >>>>>>   1.487903822             86,012      cycles
+> >>>>>>   2.489147029             80,560      ref-cycles
+> >>>>>>   2.489147029             73,784      cycles
+> >>>>>>   3.490341825             60,720      ref-cycles
+> >>>>>>   3.490341825             37,797      cycles
+> >>>>>>   4.491540887             37,120      ref-cycles
+> >>>>>>   4.491540887             31,963      cycles
+> >>>>>> 
+> >>>>>> The example above counts cycles and ref-cycles of BPF program of id 254.
+> >>>>>> This is similar to bpftool-prog-profile command, but more flexible.
+> >>>>>> 
+> >>>>>> perf-stat -b creates per-cpu perf_event and loads fentry/fexit BPF
+> >>>>>> programs (monitor-progs) to the target BPF program (target-prog). The
+> >>>>>> monitor-progs read perf_event before and after the target-prog, and
+> >>>>>> aggregate the difference in a BPF map. Then the user space reads data
+> >>>>>> from these maps.
+> >>>>>> 
+> >>>>>> A new struct bpf_counter is introduced to provide common interface that
+> >>>>>> uses BPF programs/maps to count perf events.
+> >>>>> 
+> >>>>> Segfaulting here:
+> >>>>> 
+> >>>>> [root@five ~]# bpftool prog  | grep tracepoint
+> >>>>> 110: tracepoint  name syscall_unaugme  tag 57cd311f2e27366b  gpl
+> >>>>> 111: tracepoint  name sys_enter_conne  tag 3555418ac9476139  gpl
+> >>>>> 112: tracepoint  name sys_enter_sendt  tag bc7fcadbaf7b8145  gpl
+> >>>>> 113: tracepoint  name sys_enter_open  tag 0e59c3ac2bea5280  gpl
+> >>>>> 114: tracepoint  name sys_enter_opena  tag 0baf443610f59837  gpl
+> >>>>> 115: tracepoint  name sys_enter_renam  tag 24664e4aca62d7fa  gpl
+> >>>>> 116: tracepoint  name sys_enter_renam  tag 20093e51a8634ebb  gpl
+> >>>>> 117: tracepoint  name sys_enter  tag 0bc3fc9d11754ba1  gpl
+> >>>>> 118: tracepoint  name sys_exit  tag 29c7ae234d79bd5c  gpl
+> >>>>> [root@five ~]#
+> >>>>> [root@five ~]# gdb perf
+> >>>>> GNU gdb (GDB) Fedora 10.1-2.fc33
+> >>>>> Reading symbols from perf...
+> >>>>> (gdb) run stat -e instructions,cycles -b 113 -I 1000
+> >>>>> Starting program: /root/bin/perf stat -e instructions,cycles -b 113 -I 1000
+> >>>>> [Thread debugging using libthread_db enabled]
+> >>>>> Using host libthread_db library "/lib64/libthread_db.so.1".
+> >>>>> libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> >>>>> libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
+> >>>>> libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> >>>>> libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
+> >>>>> 
+> >>>>> Program received signal SIGSEGV, Segmentation fault.
+> >>>>> 0x000000000058d55b in bpf_program_profiler__read (evsel=0xc612c0) at util/bpf_counter.c:217
+> >>>>> 217			reading_map_fd = bpf_map__fd(skel->maps.accum_readings);
+> >>>>> (gdb) bt
+> >>>>> #0  0x000000000058d55b in bpf_program_profiler__read (evsel=0xc612c0) at util/bpf_counter.c:217
+> >>>>> #1  0x0000000000000000 in ?? ()
+> >>>>> (gdb)
+> >>>>> 
+> >>>>> [acme@five perf]$ clang -v |& head -2
+> >>>>> clang version 11.0.0 (Fedora 11.0.0-2.fc33)
+> >>>>> Target: x86_64-unknown-linux-gnu
+> >>>>> [acme@five perf]$
+> >>>>> 
+> >>>>> Do you need any extra info?
+> >>>> 
+> >>>> Hmm... I am not able to reproduce this. I am trying to setup an environment similar
+> >>>> to fc33 (clang 11, etc.). Does this segfault every time, and on all programs? 
+> >>> 
+> >>> I'll try it with a BPF proggie attached to a kprobes, but here is
+> >>> something else I noticed:
+> >>> 
+> >>> [root@five perf]# export PYTHONPATH=/tmp/build/perf/python
+> >>> [root@five perf]# tools/perf/python/twatch.py
+> >>> Traceback (most recent call last):
+> >>> File "/home/acme/git/perf/tools/perf/python/twatch.py", line 9, in <module>
+> >>>   import perf
+> >>> ImportError: /tmp/build/perf/python/perf.cpython-39-x86_64-linux-gnu.so: undefined symbol: bpf_counter__destroy
+> >>> [root@five perf]# perf test python
+> >>> 19: 'import perf' in python                                         : FAILED!
+> >>> [root@five perf]# perf test -v python
+> >>> 19: 'import perf' in python                                         :
+> >>> --- start ---
+> >>> test child forked, pid 3198864
+> >>> python usage test: "echo "import sys ; sys.path.append('/tmp/build/perf/python'); import perf" | '/usr/bin/python3' "
+> >>> Traceback (most recent call last):
+> >>> File "<stdin>", line 1, in <module>
+> >>> ImportError: /tmp/build/perf/python/perf.cpython-39-x86_64-linux-gnu.so: undefined symbol: bpf_counter__destroy
+> >>> test child finished with -1
+> >>> ---- end ----
+> >>> 'import perf' in python: FAILED!
+> >>> [root@five perf]#
+> >>> 
+> >>> This should be trivial, I hope, just add the new object file to
+> >>> tools/perf/util/python-ext-sources, then do a 'perf test python', if it
+> >>> fails, use 'perf test -v python' to see what is preventing the python
+> >>> binding from loading.
+> >> 
+> >> I fixed the undefined bpf_counter__destroy. But this one looks trickier:
+> >> 
+> >> 19: 'import perf' in python                                         :
+> >> --- start ---
+> >> test child forked, pid 2714986
+> >> python usage test: "echo "import sys ; sys.path.append('python'); import perf" | '/bin/python2' "
+> >> Traceback (most recent call last):
+> >>  File "<stdin>", line 1, in <module>
+> >> ImportError: XXXXX /tools/perf/python/perf.so: undefined symbol: bpf_map_update_elem
+> >> 
+> >> Given I already have:
+> > 
+> > I'll check this one to get a patch that at least moves the needle here,
+> > i.e. probably we can leave supporting bpf counters in the python binding
+> > for a later step.
 > 
-> and an IMA rule that says
+> Thanks Arnaldo!
 > 
-> 	dont_measure obj_type=MacAndCheese
+> Currently, I have:
+> 1. Fixed issues highlighted by Namhyung;
+> 2. Merged 3/4 and 4/4;
+> 3. NOT found segfault;
+> 4. NOT fixed python import perf. 
 > 
-> In this case the dont_measure will be applied to both.
-> On the other hand,
-> 
-> 	security.apparmor MacAndCheese
-> 	security.SMACK64 FranksAndBeans
-> 
-> would also apply the rule to both, which is not
-> what you want. Unfortunately, there is no way to
-> differentiate which LSM hit the rule.
-> 
-> So now I'm a little confused. The case where both LSMs
-> use the same label looks like it works right, where the
-> case where they're different doesn't.
+> I don't have good ideas with 3 and 4... Shall I send current code as v7?
 
-I'm more concerned about multiple LSMs using the same label.  The
-label's meaning is LSM specific.
+For 4, please fold the patch below into the relevant patch, we don't
+need bpf_counter.h included in util/evsel.h, you even added a forward
+declaration for that 'struct bpf_counter_ops'.
 
-> 
-> I'm beginning to think that identifying which LSMs matched
-> a rule (it may be none, either or both) is the right solution.
-> I don't think that audit is as sensitive to this.
+And in general we should refrain from adding extra includes to header
+files, .h-ell is not good.
 
-If the label's meaning is LSM specific, then the rule needs to be LSM
-specific.
+Then we provide a stub for that bpf_counter__destroy() so that
+util/evsel.o when linked into the perf python biding find it there,
+links ok.
 
+As we don't have a way to create such events via the perf python
+binding, there will nothing to be done when destroying evsels created
+via python.
+
+- Arnaldo
+
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index 40e3946cd7518113..8226b1fefa8cf2a3 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -10,7 +10,6 @@
+ #include <internal/evsel.h>
+ #include <perf/evsel.h>
+ #include "symbol_conf.h"
+-#include "bpf_counter.h"
+ #include <internal/cpumap.h>
+ 
+ struct bpf_object;
+diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+index cc5ade85a33fc999..9609cc166d71a6f5 100644
+--- a/tools/perf/util/python.c
++++ b/tools/perf/util/python.c
+@@ -79,6 +79,21 @@ int metricgroup__copy_metric_events(struct evlist *evlist, struct cgroup *cgrp,
+ 	return 0;
+ }
+ 
++/*
++ * XXX: All these evsel destructors need some better mechanism, like a linked
++ * list of destructors registered when the relevant code indeed is used instead
++ * of having more and more calls in perf_evsel__delete(). -- acme
++ *
++ * For now, add one more:
++ *
++ * Not to drag the BPF bandwagon...
++ */
++void bpf_counter__destroy(struct evsel *evsel);
++
++void bpf_counter__destroy(struct evsel *evsel __maybe_unused)
++{
++}
++
+ /*
+  * Support debug printing even though util/debug.c is not linked.  That means
+  * implementing 'verbose' and 'eprintf'.
