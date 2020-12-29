@@ -2,122 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACD32E6FC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 11:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102812E6FC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 11:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgL2KzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 05:55:13 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:54256 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725866AbgL2KzM (ORCPT
+        id S1726499AbgL2Kzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 05:55:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgL2Kzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 05:55:12 -0500
-X-UUID: 939ac46eb0be4dd28ecef758b110a329-20201229
-X-UUID: 939ac46eb0be4dd28ecef758b110a329-20201229
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 277752702; Tue, 29 Dec 2020 18:54:25 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 29 Dec 2020 18:54:22 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 29 Dec 2020 18:54:22 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>,
+        Tue, 29 Dec 2020 05:55:43 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F83C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 02:55:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=0uQgaj597Ggj1wDQBfIEf1REq00x52pMob7nc+PArJU=; b=mlhUCDwZ+CoWj3o1JuQ8YPN/v
+        kuVr8wCcnpL3CJmQcVa6UeM6tWmv4oPhGz1xVNocGRANCxSmmrolYfZI+6ygqgrKcMTUd/VB/GSeC
+        2ecDBVLsgmTxKkIf69TJ+xJMB905Obyy7f0XrQun20TbsgTVLoasg/kkT8MyAFgQfR2oCGfqJtze6
+        BJbq5obH4nJR8vpTF3riOFUQxE0g70QW8YM4561/dc/pmF/a4GbrXI8rym9bnyNDYcgM91w81PhCk
+        jRz4MuSc8UmSXO7edSl5WPPV4r8H3KP64dWMg3moDTVBHl3y7RHPy+IoYkrWgkbOuQPYOz7uO8ctD
+        CzWUNvKFA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44868)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kuCeW-00053e-VP; Tue, 29 Dec 2020 10:54:57 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kuCeW-0001An-IG; Tue, 29 Dec 2020 10:54:56 +0000
+Date:   Tue, 29 Dec 2020 10:54:56 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>
-CC:     Ainge Hsu <ainge.hsu@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>, <stable@vger.kernel.org>
-Subject: [PATCH RESEND v2] usb: gadget: configfs: Fix use-after-free issue with udc_name
-Date:   Tue, 29 Dec 2020 18:53:35 +0800
-Message-ID: <1609239215-21819-1-git-send-email-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1595040303-23046-1-git-send-email-macpaul.lin@mediatek.com>
-References: <1595040303-23046-1-git-send-email-macpaul.lin@mediatek.com>
+        Will Deacon <will.deacon@arm.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] ARM: LPAE: use phys_addr_t instead of unsigned long
+ in outercache hooks
+Message-ID: <20201229105456.GM1551@shell.armlinux.org.uk>
+References: <20201225114458.1334-1-thunder.leizhen@huawei.com>
+ <CAK8P3a1-zTyd9WoWxaqZ3s1ye44t1CUuZaU0a5w9bE+krk2cBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: D7599083FB75AC51A42E27F5D4110B8FDDD3B0ADAEA3DC865F0F32B8950722872000:8
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1-zTyd9WoWxaqZ3s1ye44t1CUuZaU0a5w9bE+krk2cBA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eddie Hung <eddie.hung@mediatek.com>
+On Mon, Dec 28, 2020 at 08:00:00AM +0100, Arnd Bergmann wrote:
+> Wouldn't this also be needed by an Armada XP that supports
+> more than 4GB of RAM but has an outer cache?
 
-There is a use-after-free issue, if access udc_name
-in function gadget_dev_desc_UDC_store after another context
-free udc_name in function unregister_gadget.
+While Armada XP has an outer cache, it requires no maintanence; the
+only support the kernel has is for configuring it at boot and resume:
 
-Context 1:
-gadget_dev_desc_UDC_store()->unregister_gadget()->
-free udc_name->set udc_name to NULL
+ * For Aurora cache in no outer mode, enable via the CP15 coprocessor
+ * broadcasting of cache commands to L2.
 
-Context 2:
-gadget_dev_desc_UDC_show()-> access udc_name
-
-Call trace:
-dump_backtrace+0x0/0x340
-show_stack+0x14/0x1c
-dump_stack+0xe4/0x134
-print_address_description+0x78/0x478
-__kasan_report+0x270/0x2ec
-kasan_report+0x10/0x18
-__asan_report_load1_noabort+0x18/0x20
-string+0xf4/0x138
-vsnprintf+0x428/0x14d0
-sprintf+0xe4/0x12c
-gadget_dev_desc_UDC_show+0x54/0x64
-configfs_read_file+0x210/0x3a0
-__vfs_read+0xf0/0x49c
-vfs_read+0x130/0x2b4
-SyS_read+0x114/0x208
-el0_svc_naked+0x34/0x38
-
-Add mutex_lock to protect this kind of scenario.
-
-Signed-off-by: Eddie Hung <eddie.hung@mediatek.com>
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Cc: stable@vger.kernel.org
----
-Changes for v2:
-  - Fix typo %s/contex/context, Thanks Peter.
-
- drivers/usb/gadget/configfs.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/gadget/configfs.c b/drivers/usb/gadget/configfs.c
-index 56051bb..d9743f4 100644
---- a/drivers/usb/gadget/configfs.c
-+++ b/drivers/usb/gadget/configfs.c
-@@ -221,9 +221,16 @@ static ssize_t gadget_dev_desc_bcdUSB_store(struct config_item *item,
- 
- static ssize_t gadget_dev_desc_UDC_show(struct config_item *item, char *page)
- {
--	char *udc_name = to_gadget_info(item)->composite.gadget_driver.udc_name;
-+	struct gadget_info *gi = to_gadget_info(item);
-+	char *udc_name;
-+	int ret;
-+
-+	mutex_lock(&gi->lock);
-+	udc_name = gi->composite.gadget_driver.udc_name;
-+	ret = sprintf(page, "%s\n", udc_name ?: "");
-+	mutex_unlock(&gi->lock);
- 
--	return sprintf(page, "%s\n", udc_name ?: "");
-+	return ret;
- }
- 
- static int unregister_gadget(struct gadget_info *gi)
 -- 
-1.7.9.5
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
