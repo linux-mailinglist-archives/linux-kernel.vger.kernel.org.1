@@ -2,159 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5487B2E7194
+	by mail.lfdr.de (Postfix) with ESMTP id E4FB32E7195
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgL2PHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:07:42 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:1702 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726196AbgL2PHm (ORCPT
+        id S1726569AbgL2PIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgL2PIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:07:42 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTEurMH029389;
-        Tue, 29 Dec 2020 09:06:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=ft0FMgPygPHnrN9sJcmJjuza0kcCsmbf1k6oQa0rk2s=;
- b=HdBmQEh46qeegNcVwn1awTiM0qTkcxbhViwGhtbI9qwNc89LYFPDDrrGH2lhwSAWGY/c
- mam1HNLmSUlbQqCVn6lFZxw+JYKD5A8C2yJ6aHZD0D/5/H7YITvarhD7YZ+tpD1o4eRt
- OqnP828B+jqNf/MhmnbiUBgvkn9+6Kx4e0SEqxLV6JdfSNAEISjroaXXR58BeZbXJbtu
- kfsXzckDEI1MUVIhYWYV4/KUKrFnkPJiPAxsJzdLlMwbBa2EicsSaYy+hkHnuxhsCzXe
- A9CNLCHVhNmN0bNT4aZnKTHZnLfoP5q8E56o3EmuYTCatq4B+1iSbK0xbUjBrf48PHDH 6w== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35p2fs2ecw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Dec 2020 09:06:37 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Dec
- 2020 15:06:35 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 29 Dec 2020 15:06:35 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AD5442AB;
-        Tue, 29 Dec 2020 15:06:35 +0000 (UTC)
-Date:   Tue, 29 Dec 2020 15:06:35 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-CC:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-Message-ID: <20201229150635.GP9673@ediswmail.ad.cirrus.com>
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-2-hdegoede@redhat.com>
- <20201228122138.GA5352@sirena.org.uk>
- <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
- <20201228162807.GE5352@sirena.org.uk>
- <20201229130657.GN9673@ediswmail.ad.cirrus.com>
- <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
+        Tue, 29 Dec 2020 10:08:19 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D11C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 07:07:38 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id d203so14883451oia.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 07:07:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QqvfcvBB/yuJN88cknZSgA0GC7ju7WQsqKbZVnzon9A=;
+        b=rcYdCtotJM+LpY7Zu7AX9yGCRCcl+q2r5SXVbMFfkoXpoZ8WDV/Hc7fHIijlA5hicY
+         uOcqjg0wmvJsVzeQMwHLisl9uzMf3YRVSE+lgPeihRVUNVxzJYwLD/GsvmzkmcCLRPRJ
+         6+ffFonT6L/DPJVdkI//S/yINgTmuXTZtY31pR4M3j6rZOniXPHroG6ivM11QsBSmwKu
+         Ksi31p54tgkrUqUOTqtLp+++7PjXKKpF7TDIoQKncd1Ht3YrSkXUiKeAHsJwDgY7Tq4L
+         4Ws0lRjBLS6vJ1ifUOveTlj7BVwWJatShcc2qlHOyxGoKsyBabt6p/wN48L7o5rtOM2K
+         yb0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QqvfcvBB/yuJN88cknZSgA0GC7ju7WQsqKbZVnzon9A=;
+        b=RqWdJHMVq2DBu+wIFyfZLFlUhny2bgo5Qk3n2cTJ7xp8FojqAslb3N2wBCq9M7Vb1J
+         iAQuRRs9l3TXv4alJquX3YUSbgn6etvxbNwfSJD5puVcLszZ3bUbOHGHLTt9ilGcm7vK
+         b6hgGSY5jH3mCYT6v9TUhrr6uOfFQhDe2sftPWw54js0udfjcXVk5LC9n1WVhRU85nbn
+         JzJ9FL8U+C2Wx4kbTNWQMfXHMsQMlXpLD4BKs5ksis4mZ2zoM5Oihwn5EE6rvbRrrzU+
+         INJBO6PAiAsU+b0NqZsxyiLiq1y/KlceU7OBZfmHJSxmIXZYSxZjXRewj4T/l0KVLh3P
+         WoGA==
+X-Gm-Message-State: AOAM530beH+RtG2OFjLow40mG9Zh+wxtxzS/a46z/gX3W4AIZe7gSLr2
+        rtjZZDI6M5w/16uqkHLfCuc96X/Be6GL/1YLAyw=
+X-Google-Smtp-Source: ABdhPJzC2MH8SjmAcuJHIWCLv3XOp2I/AEt3ZNbGPd3fKXcTSy+TUAWZJnrJznG1ESwJk4StebJOioPc98JbCD+BjVQ=
+X-Received: by 2002:a54:4083:: with SMTP id i3mr2552418oii.120.1609254458047;
+ Tue, 29 Dec 2020 07:07:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 mlxlogscore=999 spamscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012290095
+References: <CAPM=9twrkJdUqTLXXsNygtzkrc4P2iyw4kwU1T83D4_+-gdpDA@mail.gmail.com>
+ <CAHk-=whf+kw=YSDbmvgiSvNL9ckHc8EpkTgZzMXu-bMw941GYQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whf+kw=YSDbmvgiSvNL9ckHc8EpkTgZzMXu-bMw941GYQ@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 29 Dec 2020 10:07:27 -0500
+Message-ID: <CADnq5_N_2iYnh13p-z5vrvNK9rzKV-5TYtCC-FiEYjvi--_org@mail.gmail.com>
+Subject: Re: [git pull] drm fixes for 5.11-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Harry Wentland <hwentlan@amd.com>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>
+Cc:     Dave Airlie <airlied@gmail.com>, Josip Pavic <Josip.Pavic@amd.com>,
+        Bindu Ramamurthy <bindu.r@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 02:57:38PM +0100, Hans de Goede wrote:
-> On 12/29/20 2:06 PM, Charles Keepax wrote:
-> > On Mon, Dec 28, 2020 at 04:28:07PM +0000, Mark Brown wrote:
-> >> On Mon, Dec 28, 2020 at 02:16:04PM +0100, Hans de Goede wrote:
-> >>
-> >>> And more in general AFAIK extcon is sort of deprecated and it is
-> >>> not advised to use it for new code. I would esp. not expect it to
-> >>> be used for new jack-detection code since we already have standard
-> >>> uAPI support for that through sound/core/jack.c .
-> >>
-> >> Has Android been fixed to use the ALSA/input layer interfaces?  That's
-> >> why that code is there, long term the goal was to have ALSA generate
-> >> extcon events too so userspace could fall over to using that.  The basic
-> >> thing at the time was that nobody liked any of the existing interfaces
-> >> (the input layer thing is a total bodge stemming from it having been
-> >> easy to hack in a key for GPIO detection and using ALSA controls means
-> >> having to link against alsa-lib which is an awful faff for system level
-> >> UI stuff) and there were three separate userspace interfaces used by
-> >> different software stacks which needed to be joined together, extcon was
-> >> felt to be a bit more designed and is a superset so that was the
-> >> direction we were heading in.
-> > 
-> > Android has been updated to have the option to catch input events
-> > for jack detection now.
-> > 
-> > I have always been slightly confused between extcon and the ALSA
-> > jack reporting and have been unsure as to what is the longer term
-> > plan here. I vaguely thought there was a gentle plan to move to
-> > extcon, it is interesting to see Hans basically saying the
-> > opposite that extcon is intended to be paritially deprecated. I
-> > assume you just mean with respect to audio jacks, not other
-> > connector types?
-> 
-> No I mean that afaik extcon is being deprecated in general. Extcon
-> is mostly meant for kernel internal use, to allow things like
-> charger-type-detection done by e.g. a fsa micro-usb mux or a
-> Type-C PD controller to be hooked up to the actual charger chip
-> and set the input-current-limit based on this.
-> 
+On Thu, Dec 24, 2020 at 5:28 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, Dec 23, 2020 at 6:29 PM Dave Airlie <airlied@gmail.com> wrote:
+> >
+> > Xmas eve pull request present. Just some fixes that trickled in this
+> > past week. Mostly amdgpu fixes, with a dma-buf/mips build fix and some
+> > misc komeda fixes.
+>
+> Well, I already pulled and pushed out my merge, but only noticed
+> afterwards that clang complains about this, and I think it's a real
+> bug:
+>
+>   drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_mpc.c:475:6: warning:
+>      variable 'val' is used uninitialized whenever 'if' condition is
+> false [-Wsometimes-uninitialized]
+>
+> and it sure is true: the code literally does
+>
+>         uint32_t val;
+>
+>         if (opp_id < MAX_OPP && REG(MUX[opp_id]))
+>                 REG_GET(MUX[opp_id], MPC_OUT_MUX, &val);
+>
+>         return val;
+>
+> so clearly 'val' isn't initialized if that if-statement isn't true.
+>
+> I assume 'opp_id' is always presumed to be valid, but that code really
+> is disgusting.
+>
+> Just make it return 0 (or whatever) for invalid, possibly together
+> with a WARN_ON_ONCE(). Ok?
 
-Fascinating thanks for taking the time to write such detailed
-answers. I thought it was mostly intended for user-space usage,
-but I guess I never really thought through that most of this
-stuff you don't really need to know from user-space.
+Harry, Nick, Hersen,
 
-> > I would agree with Mark though that if extcon exists for external
-> > connectors it seems odd that audio jacks would have their own
-> > special way rather than just using the connector stuff.
-> 
-> Well as I said above in me experience the extcon code is (was) mostly
-> meant for kernel internal use. The sysfs API is more of a debugging
-> tool then anything else (IMHO).
-> 
-> Also the kernel has support for a lot of sound devices, including
-> many with jack-detection support. Yet a grep for EXTCON_JACK_HEADPHONE
-> over the entire mainline kernel tree shows that only extcon-arizona.c
-> is using it. So given that we have dozens of drivers providing jack
-> functionality through the sound/core/jack.c core and only 1 driver
-> using the extcon interface I believe that the ship on how to export
-> this to userspace has long sailed, since most userspace code will
-> clearly expect the sound/core/jack.c way of doing things to be used.
-> 
-> Arguably we should/could maybe even drop the extcon part of extcon-arizona.c
-> but I did not do that as I did not want to regress existing userspace
-> code which may depend on this (on specific embedded/android devices).
-> 
-
-All reasonable arguments, with Android now supporting input
-events for jacks I guess there would be no need for us to use
-extcon for future devices.
-
-There is maybe more argument for porting the Arizona code across
-anyways, since for a long time Android didn't properly support extcon
-either. It supported the earlier out of tree switch stuff, extcon
-had a switch compatibility mode, but that didn't actually work I
-think due to android hard coding some sysfs naming or something
-(memory is a little fuzzy on the details was a while ago now).
-
-I think extcon support was fixed in Android at about the same time
-the support for input events was added. So it might be harmless but
-someone probably needs to go and check the timeline before we go
-changing stuff.
+Can you take a look?
 
 Thanks,
-Charles
+
+Alex
+
+>
+>              Linus
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
