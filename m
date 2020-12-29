@@ -2,58 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202952E7318
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327312E7321
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 20:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgL2S4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 13:56:52 -0500
-Received: from smtprelay0053.hostedemail.com ([216.40.44.53]:52714 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726126AbgL2S4w (ORCPT
+        id S1726322AbgL2S66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 13:58:58 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:55454 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgL2S65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 13:56:52 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 68C28181D3039;
-        Tue, 29 Dec 2020 18:56:11 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3867:3868:3870:3871:3872:3874:4321:5007:6120:7652:10004:10400:10848:11232:11658:11914:12048:12297:12740:12760:12895:13019:13069:13311:13357:13439:14096:14097:14659:14721:21080:21433:21451:21627:21939:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: son76_1713ca52749e
-X-Filterd-Recvd-Size: 1573
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 29 Dec 2020 18:56:10 +0000 (UTC)
-Message-ID: <4520e86ead300c92de0736fcb7b1ec3045c34efa.camel@perches.com>
-Subject: Re: [RFC PATCH v2 00/19] dynamic debug diet plan
-From:   Joe Perches <joe@perches.com>
-To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Date:   Tue, 29 Dec 2020 10:56:08 -0800
-In-Reply-To: <20201225201944.3701590-1-jim.cromie@gmail.com>
-References: <20201225201944.3701590-1-jim.cromie@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 29 Dec 2020 13:58:57 -0500
+Received: by mail-il1-f197.google.com with SMTP id c13so13411582ilg.22
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 10:58:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+TBsWIfvGU4VhD7Hd6BwPAnBfpcnr8dDlMOLqb/jGdg=;
+        b=BVUMjMBjrnJ33pa/Ceq55UyTc4IPzJ+yEKI9zurYCLk+1IrnwICgYbyoeLGbhIQO7y
+         gViUpLTVPtAawbsldLJGEhWf0rb8CzNF3cvPRBPoxYWrhmplb8pVtInB9/SDt/UUTEju
+         h3c8MGlGVTrHFIL+bWXi7OQl5Hvyck+X8H0FvYF3yneOTG0qsd4zwkSpD4xJ+Cujh0zu
+         J0AlnGqENV9DbE069cutEnqd+bUm6enh8LB2qxH3GLWLpUnXGmw5JVVC5tb5EwHKtu4P
+         o7dNSsBrml1E1gzpvwVuIKMChC+8Yafjfuwwh8HaqaWCtffC2paIc+1kcIbpWYqqCkiX
+         z/kA==
+X-Gm-Message-State: AOAM533ZU1bUhh/16RF+ltA2h51iiubmCLz6mm4kc7IShZNZDmCdEsmr
+        mrMT2UvjNENAPw8hfOYBGX4vPWwefw3gUcg4zXhcyIq/RWBv
+X-Google-Smtp-Source: ABdhPJxen17g8uLsEGBTknQu7HdfqvdN+/NqwsWzSwD2/BFCe4x0NLdNg22WkK4cejrtf7o4wbRuIrIcLWjQAbh5AtxdAyK5PK75
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:b02:: with SMTP id 2mr43666362jad.15.1609268296590;
+ Tue, 29 Dec 2020 10:58:16 -0800 (PST)
+Date:   Tue, 29 Dec 2020 10:58:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002aa9f905b79ef9c3@google.com>
+Subject: UBSAN: shift-out-of-bounds in choke_change
+From:   syzbot <syzbot+4eda8c01ca2315d1722e@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-25 at 13:19 -0700, Jim Cromie wrote:
-> Well, we're mostly overeating, but we can all look forward to a diet
-> in January.  And more exersize.
-> 
-> dyndbg's compiled-in data-table currently uses 56 bytes per prdebug;
-> this includes 3 pointers to hierarchical "decorator" data, which is
-> primarily for adding "module:function:line:" prefixes to prdebug
-> messages, and for enabling and modifying those prdebugs selectively.
-> 
-> This patchset decouples "decorator" data, and makes it optional, and
-> disposable.  By separating that data, it opens up possiblities to
-> compress it, swap it out, map it selectively, etc.
+Hello,
 
-While this may be somewhat useful, what debugging does it really help?
-Are there really memory limited platforms that enable dynamic debug?
+syzbot found the following issue on:
+
+HEAD commit:    71c5f031 Merge tag 'docs-5.11-2' of git://git.lwn.net/linux
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15103693500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e7e34a83d606100
+dashboard link: https://syzkaller.appspot.com/bug?extid=4eda8c01ca2315d1722e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143d33ff500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13725277500000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=137f60db500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10ff60db500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=177f60db500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4eda8c01ca2315d1722e@syzkaller.appspotmail.com
+
+netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+================================================================================
+UBSAN: shift-out-of-bounds in ./include/net/red.h:252:22
+shift exponent 96 is too large for 32-bit type 'int'
+CPU: 0 PID: 8513 Comm: syz-executor800 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ red_set_parms include/net/red.h:252 [inline]
+ choke_change.cold+0xce/0x115 net/sched/sch_choke.c:413
+ qdisc_create+0x4ba/0x13a0 net/sched/sch_api.c:1246
+ tc_modify_qdisc+0x4c8/0x1a30 net/sched/sch_api.c:1662
+ rtnetlink_rcv_msg+0x498/0xb80 net/core/rtnetlink.c:5564
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x907/0xe40 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4437b9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 eb 0d fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff205ca1d8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004437b9
+RDX: 0000000000000000 RSI: 00000000200007c0 RDI: 0000000000000004
+RBP: 00007fff205ca1e0 R08: 0000000001bbbbbb R09: 0000000001bbbbbb
+R10: 0000000001bbbbbb R11: 0000000000000246 R12: 00007fff205ca1f0
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+================================================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
