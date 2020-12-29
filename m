@@ -2,72 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073C82E717B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 15:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6342E7171
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 15:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgL2OrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 09:47:01 -0500
-Received: from st43p00im-ztfb10061701.me.com ([17.58.63.172]:52394 "EHLO
-        st43p00im-ztfb10061701.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726014AbgL2OrA (ORCPT
+        id S1726564AbgL2OjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 09:39:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47767 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726469AbgL2OjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 09:47:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1609252552; bh=XO8zq2EXDKAyfVYGEamn7GG/YHuzCZsXUCUrRThi74Y=;
-        h=Date:From:To:Message-ID:MIME-Version:Content-Type;
-        b=ofTQu6C+ge0Xnv86Z/k/7QGh5P8W869S49EkUSSPlq+U0GIACDhr7izMJ5fRGpIdi
-         O0AnVTfOOeqPFd+SyyLEebGvBzZVosl7AjxJeWSpnft3tPbFlq9BNqfizGQlAKw5HJ
-         l6YCbPbIJVuBqw2N8tVihMK8r1h4Ju/wlAa8SPUqtBtWyBwUsfaZiNBG6BcqLTPKdV
-         gj8t4XHWeifhTa+9nzQyS6xEbtIk43M4WtnIyumgW51To8DgaXNyTGdxjH0ioq1+Ik
-         43Sw+fJ0MBcJby3pzdg1xmijNLAM9ylqlFfz7HLFEcwu62UgJuzL/se13ASflw1VBA
-         +qcY87Q/724tA==
-Received: from HP-Pavilion-13 (static-168-222-226-77.ipcom.comunitel.net [77.226.222.168])
-        by st43p00im-ztfb10061701.me.com (Postfix) with ESMTPSA id 3C990AC08E4;
-        Tue, 29 Dec 2020 14:35:50 +0000 (UTC)
-Date:   Tue, 29 Dec 2020 15:35:46 +0100
-From:   Manuel =?iso-8859-1?Q?Jim=E9nez?= <mjbfm99@me.com>
-To:     tiwai@suse.com, kailang@realtek.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Message-ID: <X+s+wvhNhzL32+Dk@HP-Pavilion-13>
+        Tue, 29 Dec 2020 09:39:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609252663;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hC7lXKKIec1KBqGI+vzMItLuhIyQqpSsbQE96ALnpHY=;
+        b=Wey7y9XUsHQhOJNrlydpuioH1b/OEer0qumxVspuAtPhidWiiS/CDOXlbsqeyzj2qYxuUH
+        QQWJxJXqIkfmh4m240kBF4MHTlykWoekO+O4sx8bJadw7wNqwGIi3FBzLhelq6ffCh6NBH
+        EP/8UiPf347IdJN3xEOTOFCbsxkwfas=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-_9ti1DyVNe2SQf9oXS0ZAg-1; Tue, 29 Dec 2020 09:37:41 -0500
+X-MC-Unique: _9ti1DyVNe2SQf9oXS0ZAg-1
+Received: by mail-oo1-f72.google.com with SMTP id z20so8021329ooe.13
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 06:37:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=hC7lXKKIec1KBqGI+vzMItLuhIyQqpSsbQE96ALnpHY=;
+        b=MajgxYPLz85hjnUyMztRyYjLyu7FKwGOyzJ3LBxke1o+rMhkhB+gbLqvCPO85WHdyB
+         2lODPSkL53lo/EPkCsT4N6ALi/y9q/LTSBgtagwM9ejhtgqptnOEPtfeLBwTRiVLaWlb
+         LGRmfEe3ZEnUttnIZiPx0V8IOY79f5J0j734fZiYMDkgHrULY+BscVKRY9rDlTrR46LC
+         Oe5J5PV7Of2sWvt5RKS1ZfHKkb32zpQE/R2NaaAQStpIiOs6Fb1tW0TJfnujyt1ObGoK
+         3cNtR4pM/6haoC8x3mIs6CnI+AOD4dB8y7AEAq9YuJcqDA0mpLD8flXuy54J8/fd17ro
+         cjyw==
+X-Gm-Message-State: AOAM530vCXD4GeT1g8yG7HsXKKVKZyLa77ebW1gNerVMWE5UiVNB4GOI
+        vPctY6gCUC5v67vN/rc0FVE9Pl81fAJmFhjYIY8eMNvIAJsm1ysqlBp9tf2rmy9uRq5hiL9POH7
+        o79+HdWVnAlMdrby2wKnwJjFz
+X-Received: by 2002:a05:6830:16d9:: with SMTP id l25mr36695914otr.314.1609252660066;
+        Tue, 29 Dec 2020 06:37:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzxA/JG3xOFWv/fao8cFMkm84kafP5sj0x3xxCuXUgzsj4SrXBKhpHtQ8QknY/CXncRbLFJ/Q==
+X-Received: by 2002:a05:6830:16d9:: with SMTP id l25mr36695904otr.314.1609252659823;
+        Tue, 29 Dec 2020 06:37:39 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a26sm8109044oos.46.2020.12.29.06.37.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Dec 2020 06:37:39 -0800 (PST)
+Subject: Re: [PATCH v4 1/2] fpga: dfl: add the userspace I/O device support
+ for DFL devices
+To:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, lgoncalv@redhat.com, hao.wu@intel.com
+References: <1609209776-7296-1-git-send-email-yilun.xu@intel.com>
+ <1609209776-7296-2-git-send-email-yilun.xu@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <761ed67a-f4cd-2f6c-82db-d88873c7c718@redhat.com>
+Date:   Tue, 29 Dec 2020 06:37:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-29_11:2020-12-28,2020-12-29 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=624 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2012290092
+In-Reply-To: <1609209776-7296-2-git-send-email-yilun.xu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mjbfm99@me.com
-Bcc: 
-Subject: [PATCH] ALSA: hda/realtek: Add mute LED quirk for more HP laptops
-Reply-To: 
 
-HP Pavilion 13-bb0000 (SSID 103c:87c8) needs the same
-quirk as other models with ALC287.
+On 12/28/20 6:42 PM, Xu Yilun wrote:
+> This patch supports the DFL drivers be written in userspace. This is
+> realized by exposing the userspace I/O device interfaces.
+>
+> The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
+> platform device with the DFL device's resources, and let the generic UIO
+> platform device driver provide support to userspace access to kernel
+> interrupts and memory locations.
+>
+> The driver now supports the ether group feature. To support a new DFL
+> feature been directly accessed via UIO, its feature id should be added to
+> the driver's id_table.
+>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> ---
+> v2: switch to the new matching algorithem. It matches DFL devices which
+>      could not be handled by other DFL drivers.
+>     refacor the code about device resources filling.
+>     fix some comments.
+> v3: split the dfl.c changes out of this patch.
+>     some minor fixes
+> v4: drop the idea of a generic matching algorithem, instead we specify
+>      each matching device in id_table.
+>     to make clear that only one irq is supported, the irq handling code
+>      is refactored.
+> ---
+>  drivers/fpga/Kconfig        |  10 +++++
+>  drivers/fpga/Makefile       |   1 +
+>  drivers/fpga/dfl-uio-pdev.c | 101 ++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 112 insertions(+)
+>  create mode 100644 drivers/fpga/dfl-uio-pdev.c
+>
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index 5ff9438..61445be 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -203,6 +203,16 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
+>  	  the card. It also instantiates the SPI master (spi-altera) for
+>  	  the card's BMC (Board Management Controller).
+>  
+> +config FPGA_DFL_UIO_PDEV
+> +	tristate "FPGA DFL Driver for Userspace I/O platform devices"
+> +	depends on FPGA_DFL && UIO_PDRV_GENIRQ
+> +	help
+> +	  Enable this to allow some DFL drivers be written in userspace. It
+> +	  adds the uio_pdrv_genirq platform device with the DFL feature's
+> +	  resources, and lets the generic UIO platform device driver provide
+> +	  support for userspace access to kernel interrupts and memory
+> +	  locations.
+> +
+>  config FPGA_DFL_PCI
+>  	tristate "FPGA DFL PCIe Device Driver"
+>  	depends on PCI && FPGA_DFL
+> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> index 18dc9885..8847fe0 100644
+> --- a/drivers/fpga/Makefile
+> +++ b/drivers/fpga/Makefile
+> @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-dma-region.o
+>  dfl-afu-objs += dfl-afu-error.o
+>  
+>  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
+> +obj-$(CONFIG_FPGA_DFL_UIO_PDEV)		+= dfl-uio-pdev.o
+>  
+>  # Drivers for FPGAs which implement DFL
+>  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
+> diff --git a/drivers/fpga/dfl-uio-pdev.c b/drivers/fpga/dfl-uio-pdev.c
+> new file mode 100644
+> index 0000000..1100434
+> --- /dev/null
+> +++ b/drivers/fpga/dfl-uio-pdev.c
+> @@ -0,0 +1,101 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * DFL driver for Userspace I/O platform devices
+> + *
+> + * Copyright (C) 2020 Intel Corporation, Inc.
+> + */
+> +#include <linux/dfl.h>
+> +#include <linux/errno.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/uio_driver.h>
+> +
+> +#define DRIVER_NAME "dfl-uio-pdev"
+> +
+> +static int dfl_uio_pdev_probe(struct dfl_device *ddev)
+> +{
+> +	struct device *dev = &ddev->dev;
+> +	struct platform_device_info pdevinfo = { 0 };
+> +	struct uio_info uio_pdata = { 0 };
+> +	struct platform_device *uio_pdev;
+> +	unsigned int num_res = 1;
+> +	struct resource *res;
+> +
+> +	if (ddev->num_irqs > 1)
+This num_irq check could be combined with the one below.
+> +		dev_warn(&ddev->dev,
+> +			 "%d irqs for %s, but UIO only supports the first one\n",
+> +			 ddev->num_irqs, dev_name(&ddev->dev));
+> +
+> +	pdevinfo.name = "uio_pdrv_genirq";
+> +
+> +	if (ddev->num_irqs)
+> +		num_res++;
+> +
+> +	res = kcalloc(num_res, sizeof(*res), GFP_KERNEL);
 
-Signed-off-by: Manuel Jiménez <mjbfm99@me.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Since num_res is at most 2, could res be converted to a stack array ?
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index dde5ba209541..b77cef72c2d5 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7964,6 +7964,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8760, "HP", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x877d, "HP", ALC236_FIXUP_HP_MUTE_LED),
-+	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
--- 
-2.29.2
+Reviewed-by: Tom Rix <trix@redhat.com>
+
+> +	if (!res)
+> +		return -ENOMEM;
+> +
+> +	res[0].parent = &ddev->mmio_res;
+> +	res[0].flags = IORESOURCE_MEM;
+> +	res[0].start = ddev->mmio_res.start;
+> +	res[0].end = ddev->mmio_res.end;
+> +
+> +	/* then add irq resource */
+> +	if (num_res > 1) {
+> +		res[1].flags = IORESOURCE_IRQ;
+> +		res[1].start = ddev->irqs[0];
+> +		res[1].end = ddev->irqs[0];
+> +	}
+> +
+> +	uio_pdata.name = DRIVER_NAME;
+> +	uio_pdata.version = "0";
+> +
+> +	pdevinfo.res = res;
+> +	pdevinfo.num_res = num_res;
+> +	pdevinfo.parent = &ddev->dev;
+> +	pdevinfo.id = PLATFORM_DEVID_AUTO;
+> +	pdevinfo.data = &uio_pdata;
+> +	pdevinfo.size_data = sizeof(uio_pdata);
+> +
+> +	uio_pdev = platform_device_register_full(&pdevinfo);
+> +	if (!IS_ERR(uio_pdev))
+> +		dev_set_drvdata(dev, uio_pdev);
+> +
+> +	kfree(res);
+> +
+> +	return PTR_ERR_OR_ZERO(uio_pdev);
+> +}
+> +
+> +static void dfl_uio_pdev_remove(struct dfl_device *ddev)
+> +{
+> +	struct platform_device *uio_pdev = dev_get_drvdata(&ddev->dev);
+> +
+> +	platform_device_unregister(uio_pdev);
+> +}
+> +
+> +#define FME_FEATURE_ID_ETH_GROUP	0x10
+> +
+> +static const struct dfl_device_id dfl_uio_pdev_ids[] = {
+> +	{ FME_ID, FME_FEATURE_ID_ETH_GROUP },
+> +
+> +	/* Add your new id entries here to support uio for more dfl features */
+> +
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(dfl, dfl_uio_pdev_ids);
+> +
+> +static struct dfl_driver dfl_uio_pdev_driver = {
+> +	.drv	= {
+> +		.name       = DRIVER_NAME,
+> +	},
+> +	.id_table = dfl_uio_pdev_ids,
+> +	.probe	= dfl_uio_pdev_probe,
+> +	.remove	= dfl_uio_pdev_remove,
+> +};
+> +module_dfl_driver(dfl_uio_pdev_driver);
+> +
+> +MODULE_DESCRIPTION("DFL driver for Userspace I/O platform devices");
+> +MODULE_AUTHOR("Intel Corporation");
+> +MODULE_LICENSE("GPL v2");
 
