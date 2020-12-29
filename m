@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8D42E74F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 23:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4504F2E74F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 23:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgL2WLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 17:11:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgL2WLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 17:11:50 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78D3020825;
-        Tue, 29 Dec 2020 22:11:09 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kuNCt-004Ti1-6E; Tue, 29 Dec 2020 22:11:07 +0000
+        id S1726305AbgL2WO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 17:14:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726244AbgL2WO6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 17:14:58 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FF7C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 14:14:18 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id s15so7740469plr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 14:14:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PizDOlpVsbZH64i8GikIjYAR5gm+hOoRIX/6bX40NPY=;
+        b=tIkFpkAYvxjSJbAi6xFgMwqFfQ1saKG9rOj6RgONZ75cs96TTDk3U4q+QkAzIWv+nL
+         jjStgb0rHgjLB2LmJ/6FZcjzd0V4XfBAtXZm+P6Y5NfOhxwPrnsNxXC6tyl5eO4waGxy
+         xCPwIbGAuh/eipyySHHCNgd4f7wveAwpY00nt9F2ho5JVq2OcNFuSerHcv96O/MJeveq
+         kvL/c4a1s8SDktbqBX8RBhp928WpSjoXYupqCttcYtDJa6oHJFXbKZI7K5BhVNSrmfky
+         y8vR3cDDnc3LDuyPA2fkD1CS+umzgKxHXk2wUeRRFC+OYR0beisUadB2OeI4eyPNbyc7
+         x8RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PizDOlpVsbZH64i8GikIjYAR5gm+hOoRIX/6bX40NPY=;
+        b=WmZn8quEKembtXwGfCgHJfgWEFq2Iyqxom+DBBEjDOkPuw1L4scKX+y/EB3lWQzIXP
+         MimhyKSbdh3Zbxx8GjLzoInRUxagcL/AkC59YO25/zQGcnfTx8Ju8cMlpFnqTR09bscx
+         QgRh6ISUpqVvHxIMUMILddiHRIRjgwdAUUhkvFDRa9Tt3CuxnHbPLmuEanHTClRpm8i5
+         O5g9Ck1JNUY0zR3ujEW9Z2cW8JQYTha6xzmH1wiTBXrADjhyaPfE+PLeu84WalB0Z52W
+         YZ23NHWWKhmavmJsjxRz41DGN121p1LTqWO1g42XEC2ykMeAW70VLxqlplaPwVvdUl1R
+         T1Gw==
+X-Gm-Message-State: AOAM532JNYVmNfrBOj5U9lqftfgcUPC3KVJegCWvszF6LcOIQo89RSHN
+        BiwuDNfamIXSwo2jk86zf7rt/g==
+X-Google-Smtp-Source: ABdhPJwCYt4hVFX1UCVZSMle7MH/FQuzhRpMwILJYtblJPy2Nl/nv6I1upp2/FZoRpWvv4cwqDSx0Q==
+X-Received: by 2002:a17:902:7c04:b029:db:e44d:9366 with SMTP id x4-20020a1709027c04b02900dbe44d9366mr50594161pll.51.1609280057285;
+        Tue, 29 Dec 2020 14:14:17 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 4sm4346037pjn.14.2020.12.29.14.14.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Dec 2020 14:14:16 -0800 (PST)
+Date:   Tue, 29 Dec 2020 14:14:10 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Subject: Re: [PATCH v3] KVM/x86: Move definition of __ex to x86.h
+Message-ID: <X+uqMvJDXCHH199o@google.com>
+References: <20201221194800.46962-1-ubizjak@gmail.com>
+ <X+pwQrLgVcMg0x3M@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 29 Dec 2020 22:11:07 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64: Fix section mismatches around
- hyp_cpu_pm_{init,exit}
-In-Reply-To: <20201229214336.4098955-1-natechancellor@gmail.com>
-References: <20201229214336.4098955-1-natechancellor@gmail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <49e9d2e2e7103c49882b54c18c567667@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: natechancellor@gmail.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X+pwQrLgVcMg0x3M@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-29 21:43, Nathan Chancellor wrote:
-> Commit fa8c3d65538a ("KVM: arm64: Keep nVHE EL2 vector installed")
-> inadvertently changed clang's inlining decisions around
-> hyp_cpu_pm_{init,exit}, causing the following section mismatch 
-> warnings:
+On Mon, Dec 28, 2020, Sean Christopherson wrote:
+> On Mon, Dec 21, 2020, Uros Bizjak wrote:
+> > Merge __kvm_handle_fault_on_reboot with its sole user
+> > and move the definition of __ex to a common include to be
+> > shared between VMX and SVM.
+> > 
+> > v2: Rebase to the latest kvm/queue.
+> > 
+> > v3: Incorporate changes from review comments.
 > 
-> WARNING: modpost: vmlinux.o(.text+0x95c6c): Section mismatch in
-> reference from the function kvm_arch_init() to the function
-> .init.text:hyp_cpu_pm_exit()
-> The function kvm_arch_init() references
-> the function __init hyp_cpu_pm_exit().
-> This is often because kvm_arch_init lacks a __init
-> annotation or the annotation of hyp_cpu_pm_exit is wrong.
+> The v2, v3, ... vN patch history should go below the '---' so that it doesn't
+> need to be manually stripped when applying.
 > 
-> WARNING: modpost: vmlinux.o(.text+0x97054): Section mismatch in
-> reference from the function init_subsystems() to the function
-> .init.text:hyp_cpu_pm_init()
-> The function init_subsystems() references
-> the function __init hyp_cpu_pm_init().
-> This is often because init_subsystems lacks a __init
-> annotation or the annotation of hyp_cpu_pm_init is wrong.
+> > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> > Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
+> > ---
 > 
-> Remove the __init annotation so that there are no warnings regardless 
-> of
-> how functions are inlined.
+> vN stuff down here
 > 
-> Fixes: 1fcf7ce0c602 ("arm: kvm: implement CPU PM notifier")
-> Fixes: 06a71a24bae5 ("arm64: KVM: unregister notifiers in hyp mode
-> teardown path")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1230
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> >  arch/x86/include/asm/kvm_host.h | 25 -------------------------
+> >  arch/x86/kvm/svm/sev.c          |  2 --
+> >  arch/x86/kvm/svm/svm.c          |  2 --
+> >  arch/x86/kvm/vmx/vmx.c          |  4 +---
+> >  arch/x86/kvm/vmx/vmx_ops.h      |  4 +---
+> >  arch/x86/kvm/x86.h              | 24 ++++++++++++++++++++++++
+> >  6 files changed, 26 insertions(+), 35 deletions(-)
+> 
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
 
-Hi Nathan,
+Paolo, can you hold off on queuing this patch?  Long story short, this jogged my
+memory for something tangentially related and I ended up with series that kills
+off __ex() / ____kvm_handle_fault_on_reboot() completely.  It's coded up, I just
+need to test.  I'm OOO for a few days, will hopefully get it posted next week.
 
-Already posted[1] last week.
-
-Thanks,
-
-         M.
-
-[1] htps://lore.kernel.org/r/20201223120854.255347-1-maz@kernel.org
--- 
-Jazz is not dead. It just smells funny...
+Thanks!
