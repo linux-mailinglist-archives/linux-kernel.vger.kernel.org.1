@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952122E71BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F39B82E71CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgL2PUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:20:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbgL2PUB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:20:01 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEA7C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 07:19:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xLMIthYL2Moj7S22JZC3kYzACmfCDhYMvd4FNRf+Y5g=; b=u9jp5uidl9OFE7aCkObe9hp5pE
-        +3t85eqnumPsw8Itiig813l4H8FbMDr8AB3FsQ3aGflZ4y1LWngwZTpC18ULCj7WjiL4oFyWzSnV/
-        T83wdFX0xpUfzoKThAEewAT6fWdIx4uABtIZ2kE1npaPbtNtCMRaG9nEDKRm+ocFuZDtmwmRkJCTu
-        5VssaG1acx+twykk7iaTIip2PdVqbhd67tl+wZIUvZl4yD6TQOMmQ/emoSOf+KXuAAZHalpZ/Puws
-        MOAt8LUcun9ENkXyMeviWVznuZZx6+ruszTg0v2X0TaKUKLE6Mznmi/nK63Zu2490TWXR3beqi0fN
-        Wz7IMSUQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1kuGm6-0004xb-NO; Tue, 29 Dec 2020 15:19:03 +0000
-Date:   Tue, 29 Dec 2020 15:19:02 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries
- when prefaulting
-Message-ID: <20201229151902.GC28221@casper.infradead.org>
-References: <alpine.LSU.2.11.2012261623140.1022@eggly.anvils>
- <alpine.LSU.2.11.2012261816520.1071@eggly.anvils>
- <CAHk-=wjHvipz5DqWUFP5zuPK-kWM4QD-eokf75V8NGNATnn+BQ@mail.gmail.com>
- <20201227234853.5mjyxcybucts3kbq@box>
- <CAHk-=wiVrd4R2EVGCGtmybt6+u9LoGgMdnf12zc=sYL=QbvRWQ@mail.gmail.com>
- <alpine.LSU.2.11.2012272233170.24487@eggly.anvils>
- <20201228125352.phnj2x2ci3kwfld5@box>
- <CAHk-=wg4bzJ9ugrOp7DBoMjNpHechm4QWb0-HC3A_pN564RU5A@mail.gmail.com>
- <CAHk-=whwJcJubrP8ELH=UvEHX146_Jdmfn992W55KJgPvUx_Uw@mail.gmail.com>
- <20201229132819.najtavneutnf7ajp@box>
+        id S1726671AbgL2PUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:20:36 -0500
+Received: from mga02.intel.com ([134.134.136.20]:30357 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726626AbgL2PUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 10:20:35 -0500
+IronPort-SDR: 1JikxN0GW0FfPYUlnrXlKUvpn623HZO5XjQAlar/araWchFfVtuzrVyOMROGf5jnwaJnsdtpjK
+ 3RTq4zXxOKgA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9849"; a="163565166"
+X-IronPort-AV: E=Sophos;i="5.78,458,1599548400"; 
+   d="scan'208";a="163565166"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 07:18:49 -0800
+IronPort-SDR: LfQFh3FCSLCw7j9NXEv830+I72UGzbgVRdTuZvUJk0PyXWdjgJfGm6rz6ACXnCS2mTIBCMtwqV
+ /crL6PO4dDaQ==
+X-IronPort-AV: E=Sophos;i="5.78,458,1599548400"; 
+   d="scan'208";a="460182920"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 07:18:47 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kuGmr-000RPF-JW; Tue, 29 Dec 2020 17:19:49 +0200
+Date:   Tue, 29 Dec 2020 17:19:49 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: drivers/media/pci/intel/ipu3/ipu3-cio2.h:22:28: warning:
+ conversion from 'long unsigned int' to 'u16' {aka 'short unsigned int'}
+ changes value from '131072' to '0'
+Message-ID: <20201229151949.GJ4077@smile.fi.intel.com>
+References: <202012291200.Q8gXBY94-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201229132819.najtavneutnf7ajp@box>
+In-Reply-To: <202012291200.Q8gXBY94-lkp@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 04:28:19PM +0300, Kirill A. Shutemov wrote:
-> > At that point, there would no longer be any need to update the
-> > address/pte fields in the vmf struct, and in fact I think it could be
-> > made a "const" pointer in this cal chain.
+On Tue, Dec 29, 2020 at 12:42:08PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   dea8dcf2a9fa8cc540136a6cd885c3beece16ec3
+> commit: 7b285f41f7376dc37e7fad1e803995fd39f42848 media: ipu3-cio2: Introduce CIO2_LOP_ENTRIES constant
+> date:   4 months ago
+> config: ia64-randconfig-r014-20201221 (attached as .config)
+> compiler: ia64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7b285f41f7376dc37e7fad1e803995fd39f42848
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 7b285f41f7376dc37e7fad1e803995fd39f42848
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64 
 > 
-> Unfortunately, we would still need to NULLify vmf->prealloc_pte once it's
-> consumed. It kills idea with const.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    In file included from drivers/media/pci/intel/ipu3/ipu3-cio2.c:29:
+>    drivers/media/pci/intel/ipu3/ipu3-cio2.c: In function 'cio2_fbpt_entry_init_dummy':
+> >> drivers/media/pci/intel/ipu3/ipu3-cio2.h:22:28: warning: conversion from 'long unsigned int' to 'u16' {aka 'short unsigned int'} changes value from '131072' to '0' [-Woverflow]
+>       22 | #define CIO2_LOP_ENTRIES   (PAGE_SIZE / sizeof(u32))
+>          |                            ^
+>    drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:39: note: in expansion of macro 'CIO2_LOP_ENTRIES'
+>      163 |  entry[1].second_entry.num_of_pages = CIO2_LOP_ENTRIES * CIO2_MAX_LOPS;
+>          |                                       ^~~~~~~~~~~~~~~~
 
-We could abstract out a refcount for pgtable_t (usually it's a struct
-page, but sometimes it's a portion of a struct page, or sometimes
-it's multiple struct pages) and always put it instead of freeing it.
-There'd be some details to sort out, and I'm not sure it's worth it just
-to constify the vmf on this path, but something that might be worth it
-for a future case.
+Patch is available https://lore.kernel.org/linux-media/20201214152832.39463-1-andriy.shevchenko@linux.intel.com/
 
-> +++ b/fs/xfs/xfs_file.c
-> @@ -1319,17 +1319,19 @@ xfs_filemap_pfn_mkwrite(
->  	return __xfs_filemap_fault(vmf, PE_SIZE_PTE, true);
->  }
->  
-> -static void
-> +static vm_fault_t
->  xfs_filemap_map_pages(
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Can we just ditch the ->map_pages callback and make the rule "if you've put
-uptodate pages in the page cache, they can be mapped without informing
-the filesystem"?
-
-> +++ b/include/linux/mm.h
-> @@ -534,8 +534,8 @@ struct vm_fault {
->  					 * is not NULL, otherwise pmd.
->  					 */
->  	pgtable_t prealloc_pte;		/* Pre-allocated pte page table.
-> -					 * vm_ops->map_pages() calls
-> -					 * alloc_set_pte() from atomic context.
-> +					 * vm_ops->map_pages() sets up a page
-> +					 * table from from atomic context.
-
-Doubled word "from" here.
 
