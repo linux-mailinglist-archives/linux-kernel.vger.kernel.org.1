@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE022E74DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 22:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44952E74DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 22:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgL2Vho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 16:37:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43410 "EHLO mail.kernel.org"
+        id S1726791AbgL2Vhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 16:37:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726263AbgL2Vhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 16:37:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BA9422209;
-        Tue, 29 Dec 2020 21:36:59 +0000 (UTC)
+        id S1726507AbgL2Vhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 16:37:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6215222225;
+        Tue, 29 Dec 2020 21:37:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609277820;
-        bh=VaYM17xiAey5ugVovGzUuNOVOFkSsjJiVQISd9BkUR4=;
+        s=k20201202; t=1609277822;
+        bh=wyTNMhnhZthRPoza2DR8Wr/bx4nAWlyeuYeELmYoeRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UEOqigf+TQmvNhWe7eWYvR6K+yDEAIkvrV/2/nfqLsVSkR75UwgCgk2ecg6EAsTg5
-         UlCHVY+7rZY7aTGaz/8pQMWiaHPwyRoZ3ht+Elflu/OhyZBVA6Bb4zHn32ftkxP6M7
-         M1UVZ1Hs+Ucrj3gmKCX7eCqGIGFqOHKNmGkpOtpDl02CwtTauB2yPmVSxrHs9Vx37y
-         3S0OwOqpxlejJmNHJXIs7cYN55U+FtX9go8uEM2ZCsPAqQuiv3aGf+Pbgs12tk+fIu
-         teZRCiRFO8/ge0K3qZ7cZ+/WYeR8y6l5JHAuOSjimJ+xlNZ5LEpGjitIk8qYn7ODK8
-         D5tIEVilOPXHA==
+        b=rcRlFLG744NqSTr7ZusEkxrxl7oS3C7WhapKbTg6JgJ4rdoABOyXWCNu2VBTvBRGh
+         4tNBEPLr8jAFhUQOmmRhQQXi/nIP8mshKDR9nL5dLzzjggDIeEvspDukg0AVayX9v1
+         r/8NzSIAR06SfqZmsi5bMo2u/+jPNP6tSkwL+mU2Th3UQDOPAtKAc/WkaEaPQo8aG2
+         7QMaX8CVNrFg60Aak+uOiUnuKCtI3h1cOGsfrL1eXZyAoJwGwVzzUQZYF0CD1CwdjN
+         oZ+2c3XBcdBYzhmbjuqZb8+loe+UAR0em96KyLcTceWP2WIL2iqHONxrQe2hVz2sBB
+         bqRd0WFfTwlmQ==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Omer Shpigelman <oshpigelman@habana.ai>
-Subject: [PATCH 3/8] habanalabs: modify memory functions signatures
-Date:   Tue, 29 Dec 2020 23:36:48 +0200
-Message-Id: <20201229213653.29749-3-ogabbay@kernel.org>
+Cc:     Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 4/8] habanalabs/gaudi: add debug prints for security status
+Date:   Tue, 29 Dec 2020 23:36:49 +0200
+Message-Id: <20201229213653.29749-4-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201229213653.29749-1-ogabbay@kernel.org>
 References: <20201229213653.29749-1-ogabbay@kernel.org>
@@ -38,113 +38,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Omer Shpigelman <oshpigelman@habana.ai>
+From: Ofir Bitton <obitton@habana.ai>
 
-For consistency, modify all memory ioctl functions to get the ioctl
-arguments structure rather than the arguments themselves.
+In order to have more information while debugging boot issues,
+we should print the firmware security status at every boot stage.
 
-Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/memory.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ drivers/misc/habanalabs/common/firmware_if.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
-index 6efd90d25ff5..5d8228522bfc 100644
---- a/drivers/misc/habanalabs/common/memory.c
-+++ b/drivers/misc/habanalabs/common/memory.c
-@@ -314,16 +314,17 @@ static void free_phys_pg_pack(struct hl_device *hdev,
- /**
-  * free_device_memory() - free device memory.
-  * @ctx: pointer to the context structure.
-- * @handle: handle of the memory chunk to free.
-+ * @args: host parameters containing the requested size.
-  *
-  * This function does the following:
-  * - Free the device memory related to the given handle.
-  */
--static int free_device_memory(struct hl_ctx *ctx, u32 handle)
-+static int free_device_memory(struct hl_ctx *ctx, struct hl_mem_in *args)
- {
- 	struct hl_device *hdev = ctx->hdev;
- 	struct hl_vm *vm = &hdev->vm;
- 	struct hl_vm_phys_pg_pack *phys_pg_pack;
-+	u32 handle = args->free.handle;
- 
- 	spin_lock(&vm->idr_lock);
- 	phys_pg_pack = idr_find(&vm->phys_pg_pack_handles, handle);
-@@ -1111,20 +1112,22 @@ static int map_device_va(struct hl_ctx *ctx, struct hl_mem_in *args,
- /**
-  * unmap_device_va() - unmap the given device virtual address.
-  * @ctx: pointer to the context structure.
-- * @vaddr: device virtual address to unmap.
-+ * @args: host parameters with device virtual address to unmap.
-  * @ctx_free: true if in context free flow, false otherwise.
-  *
-  * This function does the following:
-  * - unmap the physical pages related to the given virtual address.
-  * - return the device virtual block to the virtual block list.
-  */
--static int unmap_device_va(struct hl_ctx *ctx, u64 vaddr, bool ctx_free)
-+static int unmap_device_va(struct hl_ctx *ctx, struct hl_mem_in *args,
-+				bool ctx_free)
- {
- 	struct hl_device *hdev = ctx->hdev;
- 	struct hl_vm_phys_pg_pack *phys_pg_pack = NULL;
- 	struct hl_vm_hash_node *hnode = NULL;
- 	struct hl_userptr *userptr = NULL;
- 	struct hl_va_range *va_range;
-+	u64 vaddr = args->unmap.device_virt_addr;
- 	enum vm_type_t *vm_type;
- 	bool is_userptr;
- 	int rc = 0;
-@@ -1274,7 +1277,7 @@ static int mem_ioctl_no_mmu(struct hl_fpriv *hpriv, union hl_mem_args *args)
- 		break;
- 
- 	case HL_MEM_OP_FREE:
--		rc = free_device_memory(ctx, args->in.free.handle);
-+		rc = free_device_memory(ctx, &args->in);
- 		break;
- 
- 	case HL_MEM_OP_MAP:
-@@ -1382,7 +1385,7 @@ int hl_mem_ioctl(struct hl_fpriv *hpriv, void *data)
- 			goto out;
- 		}
- 
--		rc = free_device_memory(ctx, args->in.free.handle);
-+		rc = free_device_memory(ctx, &args->in);
- 		break;
- 
- 	case HL_MEM_OP_MAP:
-@@ -1393,8 +1396,7 @@ int hl_mem_ioctl(struct hl_fpriv *hpriv, void *data)
- 		break;
- 
- 	case HL_MEM_OP_UNMAP:
--		rc = unmap_device_va(ctx, args->in.unmap.device_virt_addr,
--					false);
-+		rc = unmap_device_va(ctx, &args->in, false);
- 		break;
- 
- 	default:
-@@ -1852,6 +1854,7 @@ void hl_vm_ctx_fini(struct hl_ctx *ctx)
- 	struct hl_vm_phys_pg_pack *phys_pg_list;
- 	struct hl_vm_hash_node *hnode;
- 	struct hlist_node *tmp_node;
-+	struct hl_mem_in args;
- 	int i;
- 
- 	if (!hdev->mmu_enable)
-@@ -1871,7 +1874,8 @@ void hl_vm_ctx_fini(struct hl_ctx *ctx)
- 		dev_dbg(hdev->dev,
- 			"hl_mem_hash_node of vaddr 0x%llx of asid %d is still alive\n",
- 			hnode->vaddr, ctx->asid);
--		unmap_device_va(ctx, hnode->vaddr, true);
-+		args.unmap.device_virt_addr = hnode->vaddr;
-+		unmap_device_va(ctx, &args, true);
+diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
+index 20f77f58edef..94dda314233b 100644
+--- a/drivers/misc/habanalabs/common/firmware_if.c
++++ b/drivers/misc/habanalabs/common/firmware_if.c
+@@ -654,6 +654,9 @@ int hl_fw_read_preboot_status(struct hl_device *hdev, u32 cpu_boot_status_reg,
+ 		prop->fw_security_disabled = true;
  	}
  
- 	mutex_lock(&ctx->mmu_lock);
++	dev_dbg(hdev->dev, "Firmware preboot security status %#x\n",
++			security_status);
++
+ 	dev_dbg(hdev->dev, "Firmware preboot hard-reset is %s\n",
+ 			prop->hard_reset_done_by_fw ? "enabled" : "disabled");
+ 
+@@ -748,6 +751,10 @@ int hl_fw_init_cpu(struct hl_device *hdev, u32 cpu_boot_status_reg,
+ 		if (prop->fw_boot_cpu_security_map &
+ 				CPU_BOOT_DEV_STS0_FW_HARD_RST_EN)
+ 			prop->hard_reset_done_by_fw = true;
++
++		dev_dbg(hdev->dev,
++			"Firmware boot CPU security status %#x\n",
++			prop->fw_boot_cpu_security_map);
+ 	}
+ 
+ 	dev_dbg(hdev->dev, "Firmware boot CPU hard-reset is %s\n",
+@@ -832,6 +839,10 @@ int hl_fw_init_cpu(struct hl_device *hdev, u32 cpu_boot_status_reg,
+ 		if (prop->fw_app_security_map &
+ 				CPU_BOOT_DEV_STS0_FW_HARD_RST_EN)
+ 			prop->hard_reset_done_by_fw = true;
++
++		dev_dbg(hdev->dev,
++			"Firmware application CPU security status %#x\n",
++			prop->fw_app_security_map);
+ 	}
+ 
+ 	dev_dbg(hdev->dev, "Firmware application CPU hard-reset is %s\n",
 -- 
 2.25.1
 
