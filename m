@@ -2,149 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761132E7343
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 20:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EB82E7348
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 20:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbgL2TnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 14:43:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgL2TnY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 14:43:24 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B134BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 11:42:43 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id q5so13018725ilc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 11:42:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=basnieuwenhuizen.nl; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Oekv1J5QG7HQ3jpbahBJYVPd5uN5IoF/8wAYXXEPdeY=;
-        b=CA5qAg67Nub4Grsajvru4ROzGio57N4pcnmkQtFTyXsMiUXWKIWxKpPs1d9O3wLv3l
-         WjzzPnSKAMWF1w06/8YA2KfhhgOn1k4gAoZWpa7GIdB/9++2cdXjs7tAeBWySlsX8uYR
-         yNPlKs0f9DGDABxVTPD2t633C7tHnloPNgQoFvUBqty43qLmWHoL45kF8jVSyOTYeiSB
-         VSaJtXwxgoOEf9dJtoP+5szcRjPrM8sEMUH9jpB00mGEGq3XMTAl7odRhTHrq9bLPXny
-         IWJvYFrIC7ni+hNT6TuU3SUHO2MpTZny0vttTvgDrTUOi8r7FxcXUcwDKhjRjXPzHml5
-         o6pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Oekv1J5QG7HQ3jpbahBJYVPd5uN5IoF/8wAYXXEPdeY=;
-        b=Koo6e9yGrURXuPRNu/fQOIvgW6729wP7w2zwvr4FRfiPlgpbkzXhKEmY/chLVyvJTL
-         rTLrQPLAq920CPBPljbkGEgVGEylQ4EHcBrCzH6eH2Y8WZiUKwy73aEzW3XPGYozAVSA
-         qhC1H8BFrYr44P0WCnfsoyoEXHRqgP7tv1tSAfSFzoM4ZR/oBTsDrGgkiMZMdV01g4wP
-         zqmUr2cUIDGm/TBHsRvbQcI2MYgzUhOSHsq/76zcOODxjPqf60H0QeIvFzRFHb9ysYL1
-         LjoKtQBI1+2P+G1nqW5/8w/XPSFDdrMypJahQR7a+R5xivkynXTjRLUP7wQ5k+BQbeFP
-         5F8w==
-X-Gm-Message-State: AOAM533STs5Rp4QOgV/Pgm19IVTkb3eUT0RMOFMvT/RxiTDwxA0h8qVa
-        TEosSwCOnnngsjZDuPdlaCY3gujowNyDl0lY9WYGl0+4+7oEkw==
-X-Google-Smtp-Source: ABdhPJwWKk7L64dGy4mygYGkE3P97A14wHEdlYb5ivlJ8kyjewfcZc4ukTADMzFr5n6PwHgYQVbJUhcIylAumw3zc6s=
-X-Received: by 2002:a05:6e02:ca5:: with SMTP id 5mr48244379ilg.40.1609270962974;
- Tue, 29 Dec 2020 11:42:42 -0800 (PST)
+        id S1726314AbgL2Tq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 14:46:27 -0500
+Received: from mga07.intel.com ([134.134.136.100]:39055 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726111AbgL2Tq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 14:46:27 -0500
+IronPort-SDR: cYDMnYjB2cvH0mAUscbu9MKs9IqkRNfLcJUdP3afzdB0dl/w9MHao6N7TSg8wRZJNztI8PCkdu
+ LmJifKmX2LQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9849"; a="240614524"
+X-IronPort-AV: E=Sophos;i="5.78,459,1599548400"; 
+   d="scan'208";a="240614524"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 11:45:45 -0800
+IronPort-SDR: BJEZM3Pbk1fhqXurox2+kgVnwclIjNFsumkq6n89lXAk4TEX01DnMH683T0nrIkTIGrJeU2oM8
+ r1hHjLwUaYFg==
+X-IronPort-AV: E=Sophos;i="5.78,459,1599548400"; 
+   d="scan'208";a="344158096"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.251.0.43]) ([10.251.0.43])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 11:45:44 -0800
+Subject: Re: [PATCH v16 02/26] x86/cet/shstk: Add Kconfig option for user-mode
+ control-flow protection
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201209222320.1724-1-yu-cheng.yu@intel.com>
+ <20201209222320.1724-3-yu-cheng.yu@intel.com>
+ <20201229123910.GB29947@zn.tnic>
+ <c193c18e-6a3c-e079-67dc-bca35bceee71@intel.com>
+ <20201229185422.GC29947@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <b6d327fa-8785-fded-8169-295fe235d1c2@intel.com>
+Date:   Tue, 29 Dec 2020 11:45:43 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201228125020.963311703@linuxfoundation.org> <20201228125051.345050198@linuxfoundation.org>
-In-Reply-To: <20201228125051.345050198@linuxfoundation.org>
-From:   Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
-Date:   Tue, 29 Dec 2020 20:42:50 +0100
-Message-ID: <CAP+8YyF+SeTpMDc_c4tFpBmmabwFJLymW7CByZwoYZD8UXGVVQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 635/717] drm/amd/display: Honor the offset for plane 0.
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201229185422.GC29947@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On 12/29/2020 10:54 AM, Borislav Petkov wrote:
+> On Tue, Dec 29, 2020 at 08:34:51AM -0800, Yu, Yu-cheng wrote:
+>> Thanks!  I will re-base to v5.11-rc1 and send out a new version.
+> 
+> You don't have to if it still applies and there are no changes pending.
+> 
 
-Someone bisected a non-booting computer with 5.10.4-rc1 to this
-commit. Would it be possible to back out of backporting this commit
-(was backported to 5.4 and 5.10)? I suspect we may need
-53f4cb8b5580a20d01449a7d8e1cbfdaed9ff6b6 to be picked too to avoid
-regressing, but I'm not sure about process (e.g. timeline to confirm
-things) here and a not booting computer is really bad.
+There are some small conflicts, so I will send a new version.
 
-Thanks,
-Bas
-
-On Mon, Dec 28, 2020 at 3:28 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
->
-> commit be7b9b327e79cd2db07b659af599867b629b2f66 upstream.
->
-> With modifiers I'd like to support non-dedicated buffers for
-> images.
->
-> Signed-off-by: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
-> Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-> Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-> Cc: stable@vger.kernel.org # 5.1.0
-> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -3746,6 +3746,7 @@ fill_plane_dcc_attributes(struct amdgpu_
->         struct dc *dc = adev->dm.dc;
->         struct dc_dcc_surface_param input;
->         struct dc_surface_dcc_cap output;
-> +       uint64_t plane_address = afb->address + afb->base.offsets[0];
->         uint32_t offset = AMDGPU_TILING_GET(info, DCC_OFFSET_256B);
->         uint32_t i64b = AMDGPU_TILING_GET(info, DCC_INDEPENDENT_64B) != 0;
->         uint64_t dcc_address;
-> @@ -3789,7 +3790,7 @@ fill_plane_dcc_attributes(struct amdgpu_
->                 AMDGPU_TILING_GET(info, DCC_PITCH_MAX) + 1;
->         dcc->independent_64b_blks = i64b;
->
-> -       dcc_address = get_dcc_address(afb->address, info);
-> +       dcc_address = get_dcc_address(plane_address, info);
->         address->grph.meta_addr.low_part = lower_32_bits(dcc_address);
->         address->grph.meta_addr.high_part = upper_32_bits(dcc_address);
->
-> @@ -3820,6 +3821,8 @@ fill_plane_buffer_attributes(struct amdg
->         address->tmz_surface = tmz_surface;
->
->         if (format < SURFACE_PIXEL_FORMAT_VIDEO_BEGIN) {
-> +               uint64_t addr = afb->address + fb->offsets[0];
-> +
->                 plane_size->surface_size.x = 0;
->                 plane_size->surface_size.y = 0;
->                 plane_size->surface_size.width = fb->width;
-> @@ -3828,9 +3831,10 @@ fill_plane_buffer_attributes(struct amdg
->                         fb->pitches[0] / fb->format->cpp[0];
->
->                 address->type = PLN_ADDR_TYPE_GRAPHICS;
-> -               address->grph.addr.low_part = lower_32_bits(afb->address);
-> -               address->grph.addr.high_part = upper_32_bits(afb->address);
-> +               address->grph.addr.low_part = lower_32_bits(addr);
-> +               address->grph.addr.high_part = upper_32_bits(addr);
->         } else if (format < SURFACE_PIXEL_FORMAT_INVALID) {
-> +               uint64_t luma_addr = afb->address + fb->offsets[0];
->                 uint64_t chroma_addr = afb->address + fb->offsets[1];
->
->                 plane_size->surface_size.x = 0;
-> @@ -3851,9 +3855,9 @@ fill_plane_buffer_attributes(struct amdg
->
->                 address->type = PLN_ADDR_TYPE_VIDEO_PROGRESSIVE;
->                 address->video_progressive.luma_addr.low_part =
-> -                       lower_32_bits(afb->address);
-> +                       lower_32_bits(luma_addr);
->                 address->video_progressive.luma_addr.high_part =
-> -                       upper_32_bits(afb->address);
-> +                       upper_32_bits(luma_addr);
->                 address->video_progressive.chroma_addr.low_part =
->                         lower_32_bits(chroma_addr);
->                 address->video_progressive.chroma_addr.high_part =
->
->
+--
+Yu-cheng
