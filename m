@@ -2,273 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5122E707C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FDD2E708A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbgL2MGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 07:06:10 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8373 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgL2MGJ (ORCPT
+        id S1726540AbgL2MLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 07:11:34 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:4206 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726492AbgL2MLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 07:06:09 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5feb1b880005>; Tue, 29 Dec 2020 04:05:28 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Tue, 29 Dec 2020 12:05:08 +0000
-Date:   Tue, 29 Dec 2020 14:05:04 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     <mst@redhat.com>, <eperezma@redhat.com>, <kvm@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>, <eli@mellanox.com>, <lingshan.zhu@intel.com>,
-        <rob.miller@broadcom.com>, <stefanha@redhat.com>,
-        <sgarzare@redhat.com>
-Subject: Re: [PATCH 11/21] vhost-vdpa: introduce asid based IOTLB
-Message-ID: <20201229120504.GE195479@mtl-vdi-166.wap.labs.mlnx>
-References: <20201216064818.48239-1-jasowang@redhat.com>
- <20201216064818.48239-12-jasowang@redhat.com>
+        Tue, 29 Dec 2020 07:11:31 -0500
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTC6OiU003407;
+        Tue, 29 Dec 2020 06:10:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=b2p/w4UnxX8C3PmPAuMuKiC0cnORaVzXsa0NBHbWtOM=;
+ b=qVaYrJjO3xxPjDkZnyjzxkfnmd4dcrDco/F4/9nTokm/23ZhF1e+24ekZK6tOrck+LYS
+ +MWGnsU2aViYcHHjLEu+PO1KHdJdnd9c5/TWMrWgi55kCLccUQDNvW3VWglIoglegzTo
+ oImtnZQXS3bGIcS7EMJ7gykErNkBVhRhjvJkAzytDXZ4TvDaPMqMftzex0U96a10mOjc
+ QlTLssPcl9EtDjWZxfK3EiKfU0HWu/DxzONW5L/d/j5I82KnU4ojX/blaFzRaABLaUy4
+ kxBzsXVINXQlC+ps2BBfY8woZk+lzFOn5dYNj9V86RspsiwxgCwg7GzvMW2ZK6KlT74K iQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 35p3f7a8wr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 29 Dec 2020 06:10:39 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Dec
+ 2020 12:10:37 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 29 Dec 2020 12:10:37 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9AB902AB;
+        Tue, 29 Dec 2020 12:10:37 +0000 (UTC)
+Date:   Tue, 29 Dec 2020 12:10:37 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH 06/14] extcon: arizona: Fix various races on driver unbind
+Message-ID: <20201229121037.GJ9673@ediswmail.ad.cirrus.com>
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-7-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201216064818.48239-12-jasowang@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609243528; bh=yeL80eBThKjFpOyBauK8Udo5xRQYwPMG1nU63oHFHLE=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=NkfwIkCS9nIBxWzBGFRJtDaauSGIxIQCPgCG3atO90ORA3NatItqDs0B7mvN5WKoj
-         bDE8qwXsa/NJWo9hZnTH5Lz4tdUXvVjfBMZw3Fx9MVwCVuYUfE5HgMVDMy9WZARn84
-         +ApjOimDt5GgGzD8ZD8SEai0aEzQJ0knO/GngwXXhZL5k/pcDZffkNAgRLE+ebCZYa
-         c6lAltWqm4i1w3tWhdL9gK8pWoqK+NpmWibAIPn1rw8st6xmvVwH2wt/EOHfJRbxXL
-         Jn7gBHRibUj+181BhGBVy7WvwO7RDOwS2cdHz18dtoqzbbKy3D1/4pmg3ppUK1Hlud
-         K+c2KhUCIR4sg==
+In-Reply-To: <20201227211232.117801-7-hdegoede@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxscore=0
+ spamscore=0 priorityscore=1501 adultscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 bulkscore=0 malwarescore=0 suspectscore=0 mlxlogscore=995
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012290077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 02:48:08PM +0800, Jason Wang wrote:
-> This patch converts the vhost-vDPA device to support multiple IOTLBs
-> tagged via ASID via hlist. This will be used for supporting multiple
-> address spaces in the following patches.
+On Sun, Dec 27, 2020 at 10:12:24PM +0100, Hans de Goede wrote:
+> We must free/disable all interrupts and cancel all pending works
+> before doing further cleanup.
 > 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> Before this commit arizona_extcon_remove() was doing several
+> register writes to shut things down before disabling the IRQs
+> and it was cancelling only 1 of the 3 different works used.
+> 
+> Move all the register-writes shutting things down to after
+> the disabling of the IRQs and add the 2 missing
+> cancel_delayed_work_sync() calls.
+> 
+> This fixes various possible races on driver unbind. One of which
+> would always trigger on devices using the mic-clamp feature for
+> jack detection. The ARIZONA_MICD_CLAMP_MODE_MASK update was
+> done before disabling the IRQs, causing:
+> 1. arizona_jackdet() to run
+> 2. detect a jack being inserted (clamp disabled means jack inserted)
+> 3. call arizona_start_mic() which:
+> 3.1 Enables the MICVDD regulator
+> 3.2 takes a pm_runtime_reference
+> 
+> And this was all happening after the ARIZONA_MICD_ENA bit clearing,
+> which would undo 3.1 and 3.2 because the ARIZONA_MICD_CLAMP_MODE_MASK
+> update was being done after the ARIZONA_MICD_ENA bit clearing.
+> 
+> So this means that arizona_extcon_remove() would exit with
+> 1. MICVDD enabled and 2. The pm_runtime_reference being unbalanced.
+> 
+> MICVDD still being enabled caused the following oops when the
+> regulator is released by the devm framework:
+> 
+> [ 2850.745757] ------------[ cut here ]------------
+> [ 2850.745827] WARNING: CPU: 2 PID: 2098 at drivers/regulator/core.c:2123 _regulator_put.part.0+0x19f/0x1b0
+> [ 2850.745835] Modules linked in: extcon_arizona ...
+> ...
+> [ 2850.746909] Call Trace:
+> [ 2850.746932]  regulator_put+0x2d/0x40
+> [ 2850.746946]  release_nodes+0x22a/0x260
+> [ 2850.746984]  __device_release_driver+0x190/0x240
+> [ 2850.747002]  driver_detach+0xd4/0x120
+> ...
+> [ 2850.747337] ---[ end trace f455dfd7abd9781f ]---
+> 
+> Note this oops is just one of various theoretically possible races caused
+> by the wrong ordering inside arizona_extcon_remove(), this fixes the
+> ordering fixing all possible races, including the reported oops.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > ---
->  drivers/vhost/vdpa.c | 106 ++++++++++++++++++++++++++++++++-----------
->  1 file changed, 80 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index feb6a58df22d..060d5b5b7e64 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -33,13 +33,21 @@ enum {
->  
->  #define VHOST_VDPA_DEV_MAX (1U << MINORBITS)
->  
-> +#define VHOST_VDPA_IOTLB_BUCKETS 16
-> +
-> +struct vhost_vdpa_as {
-> +	struct hlist_node hash_link;
-> +	struct vhost_iotlb iotlb;
-> +	u32 id;
-> +};
-> +
->  struct vhost_vdpa {
->  	struct vhost_dev vdev;
->  	struct iommu_domain *domain;
->  	struct vhost_virtqueue *vqs;
->  	struct completion completion;
->  	struct vdpa_device *vdpa;
-> -	struct vhost_iotlb *iotlb;
-> +	struct hlist_head as[VHOST_VDPA_IOTLB_BUCKETS];
->  	struct device dev;
->  	struct cdev cdev;
->  	atomic_t opened;
-> @@ -49,12 +57,64 @@ struct vhost_vdpa {
->  	struct eventfd_ctx *config_ctx;
->  	int in_batch;
->  	struct vdpa_iova_range range;
-> +	int used_as;
->  };
->  
->  static DEFINE_IDA(vhost_vdpa_ida);
->  
->  static dev_t vhost_vdpa_major;
->  
-> +static struct vhost_vdpa_as *asid_to_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +	struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
-> +	struct vhost_vdpa_as *as;
-> +
-> +	hlist_for_each_entry(as, head, hash_link)
-> +		if (as->id == asid)
-> +			return as;
-> +
-> +	return NULL;
-> +}
-> +
-> +static struct vhost_vdpa_as *vhost_vdpa_alloc_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +	struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
-> +	struct vhost_vdpa_as *as;
-> +
-> +	if (asid_to_as(v, asid))
-> +		return NULL;
-> +
-> +	as = kmalloc(sizeof(*as), GFP_KERNEL);
-> +	if (!as)
-> +		return NULL;
-> +
-> +	vhost_iotlb_init(&as->iotlb, 0, 0);
-> +	as->id = asid;
-> +	hlist_add_head(&as->hash_link, head);
-> +	++v->used_as;
-> +
-> +	return as;
-> +}
-> +
-> +static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asid)
 
-The return value is never interpreted. I think it should either be made
-void or return values checked.
+Sorry yes there are a few rough corners on the extcon stuff, I
+have clean up series I have been working on as part of
+upstreaming the Madera extcon hopefully I will get that sent out
+one day.
 
-> +{
-> +	struct vhost_vdpa_as *as = asid_to_as(v, asid);
-> +
-> +	/* Remove default address space is not allowed */
-> +	if (asid == 0)
-> +		return -EINVAL;
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Can you explain why? I think you have a memory leak due to this as no
-one will ever free as with id 0.
-
-> +
-> +	if (!as)
-> +		return -EINVAL;
-> +
-> +	hlist_del(&as->hash_link);
-> +	vhost_iotlb_reset(&as->iotlb);
-> +	kfree(as);
-> +	--v->used_as;
-> +
-> +	return 0;
-> +}
-> +
->  static void handle_vq_kick(struct vhost_work *work)
->  {
->  	struct vhost_virtqueue *vq = container_of(work, struct vhost_virtqueue,
-> @@ -525,15 +585,6 @@ static void vhost_vdpa_iotlb_unmap(struct vhost_vdpa *v,
->  	}
->  }
->  
-> -static void vhost_vdpa_iotlb_free(struct vhost_vdpa *v)
-> -{
-> -	struct vhost_iotlb *iotlb = v->iotlb;
-> -
-> -	vhost_vdpa_iotlb_unmap(v, iotlb, 0ULL, 0ULL - 1);
-> -	kfree(v->iotlb);
-> -	v->iotlb = NULL;
-> -}
-> -
->  static int perm_to_iommu_flags(u32 perm)
->  {
->  	int flags = 0;
-> @@ -745,7 +796,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev, u32 asid,
->  	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
->  	struct vdpa_device *vdpa = v->vdpa;
->  	const struct vdpa_config_ops *ops = vdpa->config;
-> -	struct vhost_iotlb *iotlb = v->iotlb;
-> +	struct vhost_vdpa_as *as = asid_to_as(v, 0);
-> +	struct vhost_iotlb *iotlb = &as->iotlb;
->  	int r = 0;
->  
->  	if (asid != 0)
-> @@ -856,6 +908,13 @@ static void vhost_vdpa_set_iova_range(struct vhost_vdpa *v)
->  	}
->  }
->  
-> +static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
-> +{
-> +	vhost_dev_cleanup(&v->vdev);
-> +	kfree(v->vdev.vqs);
-> +	vhost_vdpa_remove_as(v, 0);
-> +}
-> +
->  static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->  {
->  	struct vhost_vdpa *v;
-> @@ -886,15 +945,12 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->  	vhost_dev_init(dev, vqs, nvqs, 0, 0, 0, false,
->  		       vhost_vdpa_process_iotlb_msg);
->  
-> -	v->iotlb = vhost_iotlb_alloc(0, 0);
-> -	if (!v->iotlb) {
-> -		r = -ENOMEM;
-> -		goto err_init_iotlb;
-> -	}
-> +	if (!vhost_vdpa_alloc_as(v, 0))
-> +		goto err_alloc_as;
->  
->  	r = vhost_vdpa_alloc_domain(v);
->  	if (r)
-> -		goto err_alloc_domain;
-> +		goto err_alloc_as;
->  
->  	vhost_vdpa_set_iova_range(v);
->  
-> @@ -902,11 +958,8 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->  
->  	return 0;
->  
-> -err_alloc_domain:
-> -	vhost_vdpa_iotlb_free(v);
-> -err_init_iotlb:
-> -	vhost_dev_cleanup(&v->vdev);
-> -	kfree(vqs);
-> +err_alloc_as:
-> +	vhost_vdpa_cleanup(v);
->  err:
->  	atomic_dec(&v->opened);
->  	return r;
-> @@ -933,12 +986,10 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
->  	filep->private_data = NULL;
->  	vhost_vdpa_reset(v);
->  	vhost_dev_stop(&v->vdev);
-> -	vhost_vdpa_iotlb_free(v);
->  	vhost_vdpa_free_domain(v);
->  	vhost_vdpa_config_put(v);
->  	vhost_vdpa_clean_irq(v);
-> -	vhost_dev_cleanup(&v->vdev);
-> -	kfree(v->vdev.vqs);
-> +	vhost_vdpa_cleanup(v);
->  	mutex_unlock(&d->mutex);
->  
->  	atomic_dec(&v->opened);
-> @@ -1033,7 +1084,7 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->  	const struct vdpa_config_ops *ops = vdpa->config;
->  	struct vhost_vdpa *v;
->  	int minor;
-> -	int r;
-> +	int i, r;
->  
->  	/* Only support 1 address space and 1 groups */
->  	if (vdpa->ngroups != 1 || vdpa->nas != 1)
-> @@ -1085,6 +1136,9 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->  	init_completion(&v->completion);
->  	vdpa_set_drvdata(vdpa, v);
->  
-> +	for (i = 0; i < VHOST_VDPA_IOTLB_BUCKETS; i++)
-> +		INIT_HLIST_HEAD(&v->as[i]);
-> +
->  	return 0;
->  
->  err:
-> -- 
-> 2.25.1
-> 
+Thanks,
+Charles
