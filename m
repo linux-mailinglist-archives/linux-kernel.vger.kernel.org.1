@@ -2,273 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5882E702F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 12:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 789FB2E7032
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 12:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbgL2Lyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 06:54:44 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7443 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgL2Lyo (ORCPT
+        id S1726214AbgL2L5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 06:57:14 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:37171 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgL2L5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 06:54:44 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5feb18db0000>; Tue, 29 Dec 2020 03:54:03 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Tue, 29 Dec 2020 11:53:44 +0000
-Date:   Tue, 29 Dec 2020 13:53:40 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     <mst@redhat.com>, <eperezma@redhat.com>, <kvm@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>, <eli@mellanox.com>, <lingshan.zhu@intel.com>,
-        <rob.miller@broadcom.com>, <stefanha@redhat.com>,
-        <sgarzare@redhat.com>
-Subject: Re: [PATCH 11/21] vhost-vdpa: introduce asid based IOTLB
-Message-ID: <20201229115340.GD195479@mtl-vdi-166.wap.labs.mlnx>
-References: <20201216064818.48239-1-jasowang@redhat.com>
- <20201216064818.48239-12-jasowang@redhat.com>
+        Tue, 29 Dec 2020 06:57:12 -0500
+Received: from mail-oi1-f197.google.com ([209.85.167.197])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kuDc6-0004kO-HQ
+        for linux-kernel@vger.kernel.org; Tue, 29 Dec 2020 11:56:30 +0000
+Received: by mail-oi1-f197.google.com with SMTP id r204so8463458oia.19
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 03:56:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q74LhyOMocTQWIe3Ylg6HmsCuTC4QalH4b9SeCz/Lmw=;
+        b=gB7cD8cgbJBgWmUJCggzob5fC6p2d5fkGrEIKLY+XLIfz6L7gMrsnDV/pyDuCR3ibP
+         xKBvXP3WwLEeHL9schsVpdidsINXpee/vN3EpCKUgBHGT7DNkVgWBZVSm2zOV+bmMaMh
+         fiC4oliGeD906djdGLzmoONJRRXGARLd4N88Nz8JOD/M4XTjHXVVR5es/mWZL4c8nYZv
+         Qp9NDk6Ysanvu4hBsu7aSLrIDn/ZMyRK/ib7jnbNSW+DcJ/tXFV1XuXdA7xI4ZFcheVC
+         ZBUyMxaQGDcsRu4ZjnzVNoTwUghYizQ4PMoOKcgnwQFTVo0xwi+HhNhDm1oNYtcMI3II
+         QtCA==
+X-Gm-Message-State: AOAM533qS0PeTKDAPibBEY+1wd86K0aAPZpesbGEM0Sa05GRbo4sb0TJ
+        WShywP/Km9vCy2Q/dWVWXnB5CEo9hPOHO3Dbc5I/wAxDBCAIEIgpLqdi5HKCRg9Y1d10CZTASiY
+        g9ryyGaNezut6lP2GYOLyfRXqvsHW4gKSeeopDhqoxeIq/qyl00GHw2WDNA==
+X-Received: by 2002:a9d:7411:: with SMTP id n17mr35055822otk.262.1609242989498;
+        Tue, 29 Dec 2020 03:56:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwd87AmyCfADf4gnKzotbQ9sDAN7TepdjBNdv0JiQGNi7ekW7M752Dbwu1xJRXPDL61O/Uw1lOEG3U6xYjQtTU=
+X-Received: by 2002:a9d:7411:: with SMTP id n17mr35055815otk.262.1609242989230;
+ Tue, 29 Dec 2020 03:56:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201216064818.48239-12-jasowang@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609242843; bh=KQD3OrCeFs+jURKnQzJB+fjVhrIz4DS9epB6vpa/2GE=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=sMk7nHqV4p7W0GvdWKDBlvr3NR8cyJT86pXMJGiCdJ2GUjr24f+5aC3hrqMC/SZ33
-         lUgWIPGnqSDZfdfhSBMEvCpi37fl3hbIEP4hBzuKM9qW+dKmeQhKKMgXNKKgd70LQN
-         13gXBNhiOOIvWSGzA6ZQG6pq8EmzVPczXvoZtLpKAOYJE6y5D3WMORlF/AxJA8daYw
-         2oM6fr7KgrA6jeDu1CHNLxhWCIMAp6G7Akl1NBoAlx+nka5s2CwmYF12cG7zVeNzGE
-         QXhArEogDkx/RiP8o1Zp+3RYdERCb0+21arst0TJReS6n8KdMKyqauxIeEInBOVGBm
-         hc2txR3XGPUOg==
+References: <79940973-b631-90f9-dbc4-9579c6000816@gmail.com>
+ <20201117163817.GA1397220@bjorn-Precision-5520> <CAJZ5v0ipMJ1gCB7okpROG_yAUi5Q8LknqeH+Jpdrjbb4D_vfuQ@mail.gmail.com>
+ <b7bf02fd-c1aa-f430-524e-98922041ed81@gmail.com>
+In-Reply-To: <b7bf02fd-c1aa-f430-524e-98922041ed81@gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue, 29 Dec 2020 19:56:17 +0800
+Message-ID: <CAAd53p43tMEk3b-BUUW1_rxFPo9zr3ZYqpSrLYddxBk_U=aw2g@mail.gmail.com>
+Subject: Re: Time to re-enable Runtime PM per default for PCI devcies?
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 02:48:08PM +0800, Jason Wang wrote:
-> This patch converts the vhost-vDPA device to support multiple IOTLBs
-> tagged via ASID via hlist. This will be used for supporting multiple
-> address spaces in the following patches.
-> 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/vhost/vdpa.c | 106 ++++++++++++++++++++++++++++++++-----------
->  1 file changed, 80 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index feb6a58df22d..060d5b5b7e64 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -33,13 +33,21 @@ enum {
->  
->  #define VHOST_VDPA_DEV_MAX (1U << MINORBITS)
->  
-> +#define VHOST_VDPA_IOTLB_BUCKETS 16
-> +
-> +struct vhost_vdpa_as {
-> +	struct hlist_node hash_link;
-> +	struct vhost_iotlb iotlb;
-> +	u32 id;
-> +};
-> +
->  struct vhost_vdpa {
->  	struct vhost_dev vdev;
->  	struct iommu_domain *domain;
->  	struct vhost_virtqueue *vqs;
->  	struct completion completion;
->  	struct vdpa_device *vdpa;
-> -	struct vhost_iotlb *iotlb;
-> +	struct hlist_head as[VHOST_VDPA_IOTLB_BUCKETS];
->  	struct device dev;
->  	struct cdev cdev;
->  	atomic_t opened;
-> @@ -49,12 +57,64 @@ struct vhost_vdpa {
->  	struct eventfd_ctx *config_ctx;
->  	int in_batch;
->  	struct vdpa_iova_range range;
-> +	int used_as;
->  };
->  
->  static DEFINE_IDA(vhost_vdpa_ida);
->  
->  static dev_t vhost_vdpa_major;
->  
-> +static struct vhost_vdpa_as *asid_to_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +	struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
-> +	struct vhost_vdpa_as *as;
-> +
-> +	hlist_for_each_entry(as, head, hash_link)
-> +		if (as->id == asid)
-> +			return as;
-> +
-> +	return NULL;
-> +}
-> +
-> +static struct vhost_vdpa_as *vhost_vdpa_alloc_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +	struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
-> +	struct vhost_vdpa_as *as;
-> +
-> +	if (asid_to_as(v, asid))
-> +		return NULL;
-> +
-> +	as = kmalloc(sizeof(*as), GFP_KERNEL);
+On Sat, Dec 26, 2020 at 11:26 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> On 17.11.2020 17:57, Rafael J. Wysocki wrote:
+> > On Tue, Nov 17, 2020 at 5:38 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >>
+> >> [+to Rafael, author of the commit you mentioned,
+> >> +cc Mika, Kai Heng, Lukas, linux-pm, linux-kernel]
+> >>
+> >> On Tue, Nov 17, 2020 at 04:56:09PM +0100, Heiner Kallweit wrote:
+> >>> More than 10 yrs ago Runtime PM was disabled per default by bb910a7040
+> >>> ("PCI/PM Runtime: Make runtime PM of PCI devices inactive by default").
+> >>>
+> >>> Reason given: "avoid breakage on systems where ACPI-based wake-up is
+> >>> known to fail for some devices"
+> >>> Unfortunately the commit message doesn't mention any affected  devices
+> >>> or systems.
+> >
+> > Even if it did that, it wouldn't have been a full list almost for sure.
+> >
+> > We had received multiple problem reports related to that, most likely
+> > because the ACPI PM in BIOSes at that time was tailored for
+> > system-wide PM transitions only.
+> >
+>
+> To follow up on this discussion:
+> We could call pm_runtime_forbid() conditionally, e.g. with the following
+> condition. This would enable runtime pm per default for all non-ACPI
+> systems, and it uses the BIOS date as an indicator for a hopefully
+> not that broken ACPI implementation. However I could understand the
+> argument that this looks a little hacky ..
+>
+> if (IS_ENABLED(CONFIG_ACPI) && dmi_get_bios_year() <= 2016)
 
-kzalloc()? See comment below.
+dmi_get_bios_year() may not be a good indicator. Last time I used it
+caused regression, because the value changed after BIOS update.
+For example, my MacBook Pro is manufactured in 2011, but
+dmi_get_bios_year() returns 2018 with latest BIOS.
 
-> +	if (!as)
-> +		return NULL;
-> +
-> +	vhost_iotlb_init(&as->iotlb, 0, 0);
-> +	as->id = asid;
-> +	hlist_add_head(&as->hash_link, head);
-> +	++v->used_as;
+Kai-Heng
 
-Although you eventually ended up removing used_as, this is a bug since
-you're incrementing a random value. Maybe it's better to be on the safe
-side and use kzalloc() for as above.
-
-> +
-> +	return as;
-> +}
-> +
-> +static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +	struct vhost_vdpa_as *as = asid_to_as(v, asid);
-> +
-> +	/* Remove default address space is not allowed */
-> +	if (asid == 0)
-> +		return -EINVAL;
-> +
-> +	if (!as)
-> +		return -EINVAL;
-> +
-> +	hlist_del(&as->hash_link);
-> +	vhost_iotlb_reset(&as->iotlb);
-> +	kfree(as);
-> +	--v->used_as;
-> +
-> +	return 0;
-> +}
-> +
->  static void handle_vq_kick(struct vhost_work *work)
->  {
->  	struct vhost_virtqueue *vq = container_of(work, struct vhost_virtqueue,
-> @@ -525,15 +585,6 @@ static void vhost_vdpa_iotlb_unmap(struct vhost_vdpa *v,
->  	}
->  }
->  
-> -static void vhost_vdpa_iotlb_free(struct vhost_vdpa *v)
-> -{
-> -	struct vhost_iotlb *iotlb = v->iotlb;
-> -
-> -	vhost_vdpa_iotlb_unmap(v, iotlb, 0ULL, 0ULL - 1);
-> -	kfree(v->iotlb);
-> -	v->iotlb = NULL;
-> -}
-> -
->  static int perm_to_iommu_flags(u32 perm)
->  {
->  	int flags = 0;
-> @@ -745,7 +796,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev, u32 asid,
->  	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
->  	struct vdpa_device *vdpa = v->vdpa;
->  	const struct vdpa_config_ops *ops = vdpa->config;
-> -	struct vhost_iotlb *iotlb = v->iotlb;
-> +	struct vhost_vdpa_as *as = asid_to_as(v, 0);
-> +	struct vhost_iotlb *iotlb = &as->iotlb;
->  	int r = 0;
->  
->  	if (asid != 0)
-> @@ -856,6 +908,13 @@ static void vhost_vdpa_set_iova_range(struct vhost_vdpa *v)
->  	}
->  }
->  
-> +static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
-> +{
-> +	vhost_dev_cleanup(&v->vdev);
-> +	kfree(v->vdev.vqs);
-> +	vhost_vdpa_remove_as(v, 0);
-> +}
-> +
->  static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->  {
->  	struct vhost_vdpa *v;
-> @@ -886,15 +945,12 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->  	vhost_dev_init(dev, vqs, nvqs, 0, 0, 0, false,
->  		       vhost_vdpa_process_iotlb_msg);
->  
-> -	v->iotlb = vhost_iotlb_alloc(0, 0);
-> -	if (!v->iotlb) {
-> -		r = -ENOMEM;
-> -		goto err_init_iotlb;
-> -	}
-> +	if (!vhost_vdpa_alloc_as(v, 0))
-> +		goto err_alloc_as;
->  
->  	r = vhost_vdpa_alloc_domain(v);
->  	if (r)
-> -		goto err_alloc_domain;
-> +		goto err_alloc_as;
->  
->  	vhost_vdpa_set_iova_range(v);
->  
-> @@ -902,11 +958,8 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->  
->  	return 0;
->  
-> -err_alloc_domain:
-> -	vhost_vdpa_iotlb_free(v);
-> -err_init_iotlb:
-> -	vhost_dev_cleanup(&v->vdev);
-> -	kfree(vqs);
-> +err_alloc_as:
-> +	vhost_vdpa_cleanup(v);
->  err:
->  	atomic_dec(&v->opened);
->  	return r;
-> @@ -933,12 +986,10 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
->  	filep->private_data = NULL;
->  	vhost_vdpa_reset(v);
->  	vhost_dev_stop(&v->vdev);
-> -	vhost_vdpa_iotlb_free(v);
->  	vhost_vdpa_free_domain(v);
->  	vhost_vdpa_config_put(v);
->  	vhost_vdpa_clean_irq(v);
-> -	vhost_dev_cleanup(&v->vdev);
-> -	kfree(v->vdev.vqs);
-> +	vhost_vdpa_cleanup(v);
->  	mutex_unlock(&d->mutex);
->  
->  	atomic_dec(&v->opened);
-> @@ -1033,7 +1084,7 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->  	const struct vdpa_config_ops *ops = vdpa->config;
->  	struct vhost_vdpa *v;
->  	int minor;
-> -	int r;
-> +	int i, r;
->  
->  	/* Only support 1 address space and 1 groups */
->  	if (vdpa->ngroups != 1 || vdpa->nas != 1)
-> @@ -1085,6 +1136,9 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->  	init_completion(&v->completion);
->  	vdpa_set_drvdata(vdpa, v);
->  
-> +	for (i = 0; i < VHOST_VDPA_IOTLB_BUCKETS; i++)
-> +		INIT_HLIST_HEAD(&v->as[i]);
-> +
->  	return 0;
->  
->  err:
-> -- 
-> 2.25.1
-> 
+>
+>
+>
+> >>> With Runtime PM disabled e.g. the PHY on network devices may remain
+> >>> powered up even with no cable plugged in, affecting battery lifetime
+> >>> on mobile devices. Currently we have to rely on the respective distro
+> >>> or user to enable Runtime PM via sysfs (echo auto > power/control).
+> >>> Some devices work around this restriction by calling pm_runtime_allow
+> >>> in their probe routine, even though that's not recommended by
+> >>> https://www.kernel.org/doc/Documentation/power/pci.txt
+> >>>
+> >>> Disabling Runtime PM per default seems to be a big hammer, a quirk
+> >>> for affected devices / systems may had been better. And we still
+> >>> have the option to disable Runtime PM for selected devices via sysfs.
+> >>>
+> >>> So, to cut a long story short: Wouldn't it be time to remove this
+> >>> restriction?
+> >>
+> >> I don't know the history of this, but maybe Rafael or the others can
+> >> shed some light on it.
+> >
+> > The systems that had those problems 10 years ago would still have
+> > them, but I expect there to be more systems where runtime PM can be
+> > enabled by default for PCI devices without issues.
+> >
+>
