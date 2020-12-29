@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48EA2E751B
+	by mail.lfdr.de (Postfix) with ESMTP id 769922E751A
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 00:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgL2XEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 18:04:31 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:33269 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbgL2XE3 (ORCPT
+        id S1726356AbgL2XEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 18:04:30 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:52669 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbgL2XE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 18:04:29 -0500
+        Tue, 29 Dec 2020 18:04:28 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
  s=smtp; t=1609283044; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=nVA9imMdXcE8PT6MSamn4YRBP3Ps+JuFDFv3elCOHP0=; b=GeHfEMOwbz/B2NX/6plFlTViEgYaCOBgznA6gD5ZheDZ3zL+WF/1o5Mqt/vSQuty8mLPpnRt
- JO7DfWG7UgEY4hff95Cd+Jc9rZ0K6X7P1zvylsN/HOXuKU4QxIPuHA7B467hCk+8IpnX3wE2
- 3s9AdByPEkvuKrh5ACT1JESJwNc=
-X-Mailgun-Sending-Ip: 198.61.254.31
+ bh=PKj/oH8mcTb06L2IlxPFJrZqUVkdzDPVZ6Z2jFENH84=; b=s6wIXamD34oO9M83yB97mr1/GENq35BtIwboQZuV2R8zwc7YYbAoJw28x5k/5E37UMUOZXCA
+ JionQsB3k3sPHVFGuvFgeNGdfTDS5U2X3KW+BEl8kBR8cyrb5Ar18D3HwNeWePavgfqxkBgu
+ MeXEcAgQJZFSmUuFbj12+sfuY6k=
+X-Mailgun-Sending-Ip: 69.72.43.15
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5febb5c91d5c1fa4278951ab (version=TLS1.2,
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5febb5c91d5c1fa42789533a (version=TLS1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Dec 2020 23:03:37
  GMT
 Sender: wcheng=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 24085C433CA; Tue, 29 Dec 2020 23:03:37 +0000 (UTC)
+        id 68BF9C43462; Tue, 29 Dec 2020 23:03:37 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -38,18 +38,18 @@ Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0E5D4C433CA;
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 941A0C433ED;
         Tue, 29 Dec 2020 23:03:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0E5D4C433CA
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 941A0C433ED
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
 From:   Wesley Cheng <wcheng@codeaurora.org>
 To:     peter.chen@nxp.com, balbi@kernel.org, gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
         Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH 1/3] usb: dwc3: gadget: Introduce a DWC3 VBUS draw callback
-Date:   Tue, 29 Dec 2020 15:03:29 -0800
-Message-Id: <1609283011-21997-2-git-send-email-wcheng@codeaurora.org>
+Subject: [PATCH 2/3] usb: gadget: composite: Split composite reset and disconnect
+Date:   Tue, 29 Dec 2020 15:03:30 -0800
+Message-Id: <1609283011-21997-3-git-send-email-wcheng@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1609283011-21997-1-git-send-email-wcheng@codeaurora.org>
 References: <1609283011-21997-1-git-send-email-wcheng@codeaurora.org>
@@ -57,47 +57,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some devices support charging while in device mode.  In these situations,
-the USB gadget will notify the DWC3 gadget driver to modify the current
-based on the enumeration and device state.  The usb_phy_set_power() API
-will allow external charger entities to adjust the charge current through
-the notifier block.
+Add a specific composite reset API to differentiate between disconnect and
+reset events.  This is needed for adjusting the current draw accordingly
+based on the USB battery charging specification.  The device is only allowed
+to draw the 500/900 mA (HS/SS) while in the CONFIGURED state, and only 100 mA
+in the connected and UNCONFIGURED state.
 
 Reviewed-by: Peter Chen <peter.chen@nxp.com>
 Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
 ---
- drivers/usb/dwc3/gadget.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/usb/gadget/composite.c | 21 +++++++++++++++++++--
+ include/linux/usb/composite.h  |  2 ++
+ 2 files changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index c145da1d8ba5..69122f66978e 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2387,6 +2387,16 @@ static void dwc3_gadget_set_speed(struct usb_gadget *g,
- 	spin_unlock_irqrestore(&dwc->lock, flags);
+diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
+index 05b176c82cc5..a41f7fe4b518 100644
+--- a/drivers/usb/gadget/composite.c
++++ b/drivers/usb/gadget/composite.c
+@@ -2036,7 +2036,7 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
+ 	return value;
  }
  
-+static int dwc3_gadget_vbus_draw(struct usb_gadget *g, unsigned int mA)
+-void composite_disconnect(struct usb_gadget *gadget)
++static void __composite_disconnect(struct usb_gadget *gadget)
+ {
+ 	struct usb_composite_dev	*cdev = get_gadget_data(gadget);
+ 	unsigned long			flags;
+@@ -2053,6 +2053,23 @@ void composite_disconnect(struct usb_gadget *gadget)
+ 	spin_unlock_irqrestore(&cdev->lock, flags);
+ }
+ 
++void composite_disconnect(struct usb_gadget *gadget)
 +{
-+	struct dwc3		*dwc = gadget_to_dwc(g);
-+
-+	if (dwc->usb2_phy)
-+		return usb_phy_set_power(dwc->usb2_phy, mA);
-+
-+	return 0;
++	usb_gadget_vbus_draw(gadget, 0);
++	__composite_disconnect(gadget);
 +}
 +
- static const struct usb_gadget_ops dwc3_gadget_ops = {
- 	.get_frame		= dwc3_gadget_get_frame,
- 	.wakeup			= dwc3_gadget_wakeup,
-@@ -2396,6 +2406,7 @@ static const struct usb_gadget_ops dwc3_gadget_ops = {
- 	.udc_stop		= dwc3_gadget_stop,
- 	.udc_set_speed		= dwc3_gadget_set_speed,
- 	.get_config_params	= dwc3_gadget_config_params,
-+	.vbus_draw		= dwc3_gadget_vbus_draw,
- };
++void composite_reset(struct usb_gadget *gadget)
++{
++	/*
++	 * Section 1.4.13 Standard Downstream Port of the USB battery charging
++	 * specification v1.2 states that a device connected on a SDP shall only
++	 * draw at max 100mA while in a connected, but unconfigured state.
++	 */
++	usb_gadget_vbus_draw(gadget, 100);
++	__composite_disconnect(gadget);
++}
++
+ /*-------------------------------------------------------------------------*/
  
- /* -------------------------------------------------------------------------- */
+ static ssize_t suspended_show(struct device *dev, struct device_attribute *attr,
+@@ -2373,7 +2390,7 @@ static const struct usb_gadget_driver composite_driver_template = {
+ 	.unbind		= composite_unbind,
+ 
+ 	.setup		= composite_setup,
+-	.reset		= composite_disconnect,
++	.reset		= composite_reset,
+ 	.disconnect	= composite_disconnect,
+ 
+ 	.suspend	= composite_suspend,
+diff --git a/include/linux/usb/composite.h b/include/linux/usb/composite.h
+index 2040696d75b6..0d8a71471512 100644
+--- a/include/linux/usb/composite.h
++++ b/include/linux/usb/composite.h
+@@ -525,6 +525,8 @@ extern struct usb_string *usb_gstrings_attach(struct usb_composite_dev *cdev,
+ extern int usb_string_ids_n(struct usb_composite_dev *c, unsigned n);
+ 
+ extern void composite_disconnect(struct usb_gadget *gadget);
++extern void composite_reset(struct usb_gadget *gadget);
++
+ extern int composite_setup(struct usb_gadget *gadget,
+ 		const struct usb_ctrlrequest *ctrl);
+ extern void composite_suspend(struct usb_gadget *gadget);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
