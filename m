@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468FB2E71F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF2C2E7203
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbgL2Pwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:52:44 -0500
-Received: from magic.merlins.org ([209.81.13.136]:41106 "EHLO
-        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgL2Pwo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:52:44 -0500
-Received: from aaubervilliers-653-1-146-240.w86-218.abo.wanadoo.fr ([86.218.37.240]:44390 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92 #3)
-        id 1kuHI0-0000jm-Un by authid <merlins.org> with srv_auth_plain; Tue, 29 Dec 2020 07:52:00 -0800
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc_nouveau@merlins.org>)
-        id 1kuHHz-0005Ee-LP; Tue, 29 Dec 2020 07:51:59 -0800
-Date:   Tue, 29 Dec 2020 07:51:59 -0800
-From:   Marc MERLIN <marc_nouveau@merlins.org>
-To:     Ilia Mirkin <imirkin@alum.mit.edu>
-Cc:     nouveau@lists.freedesktop.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        id S1726350AbgL2P7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:59:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:41244 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726126AbgL2P7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 10:59:42 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2FD830E;
+        Tue, 29 Dec 2020 07:58:56 -0800 (PST)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DD4B3F6CF;
+        Tue, 29 Dec 2020 07:58:55 -0800 (PST)
+Date:   Tue, 29 Dec 2020 15:58:52 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Subject: Re: 5.9.11 still hanging 2mn at each boot and looping on nvidia-gpu
- 0000:01:00.3: PME# enabled (Quadro RTX 4000 Mobile)
-Message-ID: <20201229155159.GG23389@merlins.org>
-References: <20200908002935.GD20064@merlins.org>
- <20200529180315.GA18804@merlins.org>
+        Tony Luck <tony.luck@intel.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: Re: [PATCH 4/5] irqtime: Move irqtime entry accounting after irq
+ offset incrementation
+Message-ID: <20201229155852.paudsonz6m66x2nz@e107158-lin>
+References: <20201202115732.27827-1-frederic@kernel.org>
+ <20201202115732.27827-5-frederic@kernel.org>
+ <20201228021529.2dlioupobocjcqzk@e107158-lin>
+ <20201229134146.GA21613@lothringen>
+ <20201229141231.c2ppmjucxxbz5j5h@e107158-lin>
+ <20201229143054.GC21613@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 86.218.37.240
-X-SA-Exim-Mail-From: marc_nouveau@merlins.org
+In-Reply-To: <20201229143054.GC21613@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 03:12:09AM -0800, Ilia Mirkin wrote:
-> > after boot, when it gets the right trigger (not sure which ones), it
-> > loops on this evern 2 seconds, mostly forever.
+On 12/29/20 15:30, Frederic Weisbecker wrote:
+> On Tue, Dec 29, 2020 at 02:12:31PM +0000, Qais Yousef wrote:
+> > On 12/29/20 14:41, Frederic Weisbecker wrote:
+> > > > > -void vtime_account_irq(struct task_struct *tsk)
+> > > > > +void vtime_account_irq(struct task_struct *tsk, unsigned int offset)
+> > > > >  {
+> > > > > -	if (hardirq_count()) {
+> > > > > +	unsigned int pc = preempt_count() - offset;
+> > > > > +
+> > > > > +	if (pc & HARDIRQ_OFFSET) {
+> > > > 
+> > > > Shouldn't this be HARDIRQ_MASK like above?
+> > > 
+> > > In the rare cases of nested hardirqs happening with broken drivers, Only the outer hardirq
+> > > does matter. All the time spent in the inner hardirqs is included in the outer
+> > > one.
+> > 
+> > Ah I see. The original code was doing hardirq_count(), which apparently wasn't
+> > right either.
+> > 
+> > Shouldn't it be pc == HARDIRQ_OFFSET then? All odd nest counts will trigger
+> > this otherwise, and IIUC we want this to trigger once on first entry only.
 > 
-> The gpu suspends with runtime pm. And then gets woken up for some
-> reason (could be something quite silly, like lspci, or could be
-> something explicitly checking connectors, etc). Repeat.
+> Right but we must also handle hardirqs interrupting either preempt disabled sections
+> or softirq servicing/disabled section.
+> 
+> 3 stacking hardirqs should be rare enough that we don't really care. In the
+> worst case we are going to account the third IRQ seperately. Not a correctness
+> issue, just a rare unoptimized case.
 
-Ah, fair point.  Could it be powertop even?
-How would I go towards tracing that?
-Sounds like this would be a problem with all chips if userspace is able
-to wake them up every second or two with a probe. Now I wonder what
-broken userspace I have that could be doing this.
- 
-> Display offload usually requires acceleration -- the copies are done
-> using the DMA engine. Please make sure that you have firmware
-> available (and a new enough mesa). The errors suggest that you don't
-> have firmware available at the time that nouveau loads. Depending on
-> your setup, that might mean the firmware has to be built into the
-> kernel, or available in initramfs. (Or just regular filesystem if you
-> don't use a complicated boot sequence. But many people go with distro
-> defaults, which do have this complexity.)
+I admit I need to wrap my head around some more details to fully comprehend
+that, but that's my own confusion to clear out :-)
 
-Hi Ilia, thanks for your answer.
+Thanks for your answer.
 
-Do you think that could be a reason why the boot would hang for 2 full minutes at every
-boot ever since I upgraded to 5.5?
+Cheers
 
-Also, without wanting to sound like a full newbie, where is that
-firmware you're talking about? In my kernel source?
-
-Here's what I do have:
-sauron:/usr/local/bin# dpkggrep nouveau
-libdrm-nouveau2:amd64				install
-xserver-xorg-video-nouveau			install
-
-no nouveau-firmware package in debian:
-sauron:/usr/local/bin# apt-cache search nouveau
-bumblebee - NVIDIA Optimus support for Linux
-libdrm-nouveau2 - Userspace interface to nouveau-specific kernel DRM services -- runtime
-xfonts-jmk - Jim Knoble's character-cell fonts for X
-xserver-xorg-video-nouveau - X.Org X server -- Nouveau display driver
-
-No firmware file on my disk:
-sauron:/usr/local/bin# find /lib/modules/5.9.11-amd64-preempt-sysrq-20190817/ /lib/firmware/ |grep nouveau
-/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau
-/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau/nouveau.ko
-sauron:/usr/local/bin# 
-
-The kernel module is in my initrd:
-sauron:/usr/local/bin# dd if=/boot/initrd.img-5.9.11-amd64-preempt-sysrq-20190817 bs=2966528  skip=1 | gunzip | cpio -tdv | grep nouveau
-drwxr-xr-x   1 root     root            0 Nov 30 15:40 usr/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau
--rw-r--r--   1 root     root      3691385 Nov 30 15:35 usr/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau/nouveau.ko
-17+1 records in
-17+1 records out
-52566778 bytes (53 MB, 50 MiB) copied, 1.69708 s, 31.0 MB/s
-
-What am I supposed to do/check next?
-
-Note that ultimately I only need nouveau not to hang my boot 2mn and do
-PM so that the nvidia chip goes to sleep since I don't use it.
-
-Thanks,
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+--
+Qais Yousef
