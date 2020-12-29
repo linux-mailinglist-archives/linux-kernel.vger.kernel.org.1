@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C63F2E7260
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A105B2E7261
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 17:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726209AbgL2QkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 11:40:09 -0500
-Received: from elvis.franken.de ([193.175.24.41]:45176 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgL2QkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 11:40:08 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kuI1p-0007OT-00; Tue, 29 Dec 2020 17:39:21 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9CCF2C07BF; Tue, 29 Dec 2020 17:39:07 +0100 (CET)
-Date:   Tue, 29 Dec 2020 17:39:07 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Youling Tang <tangyouling@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>
-Subject: Re: [PATCH] MIPS: Loongson64: Give chance to build under
- !CONFIG_NUMA and !CONFIG_SMP
-Message-ID: <20201229163907.GA8519@alpha.franken.de>
-References: <1606998772-5904-1-git-send-email-yangtiezhu@loongson.cn>
- <20201215132123.GA9201@alpha.franken.de>
- <3eb215e2-82ae-2834-2837-55f429027840@loongson.cn>
+        id S1726242AbgL2Qnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 11:43:55 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:60017 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726126AbgL2Qnz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 11:43:55 -0500
+Received: (qmail 695442 invoked by uid 1000); 29 Dec 2020 11:43:14 -0500
+Date:   Tue, 29 Dec 2020 11:43:14 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+5925509f78293baa7331@syzkaller.appspotmail.com>
+Cc:     andreyknvl@gmail.com, andreyknvl@google.com, balbi@kernel.org,
+        gregkh@linuxfoundation.org, gustavoars@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: Re: UBSAN: shift-out-of-bounds in dummy_hub_control
+Message-ID: <20201229164314.GB694118@rowland.harvard.edu>
+References: <20201229163337.GA694118@rowland.harvard.edu>
+ <000000000000f7882005b79cf3a6@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3eb215e2-82ae-2834-2837-55f429027840@loongson.cn>
+In-Reply-To: <000000000000f7882005b79cf3a6@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 10:44:23AM +0800, Tiezhu Yang wrote:
-> I have tested the following three configs on the Loongson platform:
-> (1) !NUMA and !SMP,
-> (2) !NUMA and SMP,
-> (3) NUMA and SMP,
-> everything is all right.
-> 
-> But there exists the following build error under NUMA and !SMP:
-> 
->   CC      arch/mips/kernel/asm-offsets.s
-> In file included from ./include/linux/gfp.h:9:0,
->                  from ./include/linux/xarray.h:14,
->                  from ./include/linux/radix-tree.h:19,
->                  from ./include/linux/fs.h:15,
->                  from ./include/linux/compat.h:17,
->                  from arch/mips/kernel/asm-offsets.c:12:
-> ./include/linux/topology.h: In function ‘numa_node_id’:
-> ./include/linux/topology.h:119:2: error: implicit declaration of function
-> ‘cpu_logical_map’ [-Werror=implicit-function-declaration]
->   return cpu_to_node(raw_smp_processor_id());
->   ^
-> cc1: some warnings being treated as errors
-> scripts/Makefile.build:117: recipe for target
-> 'arch/mips/kernel/asm-offsets.s' failed
-> make[1]: *** [arch/mips/kernel/asm-offsets.s] Error 1
-> arch/mips/Makefile:396: recipe for target 'archprepare' failed
-> make: *** [archprepare] Error 2
-> 
-> I find a patch to fix this kind of build errors [1], but it seems
-> meaningless.
-> 
-> According to the NUMA and SMP description in arch/mips/Kconfig,
-> we will use only one CPU of a multiprocessor machine if !SMP,
-> on single node systems leave NUMA disabled.
-> 
-> So I think there is no need to use NUMA if !SMP, and also we should
-> make NUMA depend on SMP to avoid build errors.
+On Tue, Dec 29, 2020 at 08:33:39AM -0800, syzbot wrote:
+> > #syz test: upstream e37b12e4
+>
+> "upstream" does not look like a valid git repo address.
 
-ok, but compiling IP27 with your patch gives
+I thought syzbot had been changed to recognize "upstream" as a valid
+repo name.
 
-WARNING: unmet direct dependencies detected for NUMA
-  Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
-  Selected by [y]:
-  - SGI_IP27 [=y] && <choice>
+Alan Stern
 
-WARNING: unmet direct dependencies detected for NUMA
-  Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
-  Selected by [y]:
-  - SGI_IP27 [=y] && <choice>
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git e37b12e4
 
-WARNING: unmet direct dependencies detected for NUMA
-  Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
-  Selected by [y]:
-  - SGI_IP27 [=y] && <choice>
+Index: usb-devel/drivers/usb/gadget/udc/dummy_hcd.c
+===================================================================
+--- usb-devel.orig/drivers/usb/gadget/udc/dummy_hcd.c
++++ usb-devel/drivers/usb/gadget/udc/dummy_hcd.c
+@@ -2114,9 +2114,21 @@ static int dummy_hub_control(
+ 				dum_hcd->port_status &= ~USB_PORT_STAT_POWER;
+ 			set_link_state(dum_hcd);
+ 			break;
+-		default:
++		case USB_PORT_FEAT_ENABLE:
++		case USB_PORT_FEAT_C_ENABLE:
++		case USB_PORT_FEAT_C_SUSPEND:
++			/* Not allowed for USB-3 */
++			if (hcd->speed == HCD_USB3)
++				goto error;
++			fallthrough;
++		case USB_PORT_FEAT_C_CONNECTION:
++		case USB_PORT_FEAT_C_RESET:
+ 			dum_hcd->port_status &= ~(1 << wValue);
+ 			set_link_state(dum_hcd);
++			break;
++		default:
++		/* Disallow INDICATOR and C_OVER_CURRENT */
++			goto error;
+ 		}
+ 		break;
+ 	case GetHubDescriptor:
+@@ -2277,18 +2289,17 @@ static int dummy_hub_control(
+ 			 */
+ 			dum_hcd->re_timeout = jiffies + msecs_to_jiffies(50);
+ 			fallthrough;
++		case USB_PORT_FEAT_C_CONNECTION:
++		case USB_PORT_FEAT_C_RESET:
++		case USB_PORT_FEAT_C_ENABLE:
++		case USB_PORT_FEAT_C_SUSPEND:
++			/* Not allowed for USB-3, and ignored for USB-2 */
++			if (hcd->speed == HCD_USB3)
++				goto error;
++			break;
+ 		default:
+-			if (hcd->speed == HCD_USB3) {
+-				if ((dum_hcd->port_status &
+-				     USB_SS_PORT_STAT_POWER) != 0) {
+-					dum_hcd->port_status |= (1 << wValue);
+-				}
+-			} else
+-				if ((dum_hcd->port_status &
+-				     USB_PORT_STAT_POWER) != 0) {
+-					dum_hcd->port_status |= (1 << wValue);
+-				}
+-			set_link_state(dum_hcd);
++		/* Disallow TEST, INDICATOR, and C_OVER_CURRENT */
++			goto error;
+ 		}
+ 		break;
+ 	case GetPortErrorCount:
 
-If I use "select SMP" instead both ip27 and loongson64 compile.
-
-If you are ok with this change, I'll change it while appling your
-patch.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
