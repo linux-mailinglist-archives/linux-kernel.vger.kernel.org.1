@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563F32E7448
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 22:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834B52E74BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 22:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgL2Vcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 16:32:32 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:52571 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgL2Vcc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 16:32:32 -0500
-X-Originating-IP: 91.174.235.35
-Received: from windsurf (unknown [91.174.235.35])
-        (Authenticated sender: thomas.petazzoni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id C8144240005;
-        Tue, 29 Dec 2020 21:31:47 +0000 (UTC)
-Date:   Tue, 29 Dec 2020 22:31:46 +0100
-From:   Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-To:     Nadeem Athani <nadeem@cadence.com>
-Cc:     <tjoseph@cadence.com>, <lorenzo.pieralisi@arm.com>,
-        <robh@kernel.org>, <bhelgaas@google.com>, <kishon@ti.com>,
-        <linux-omap@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, mparab@cadence.com,
-        pthombar@cadence.com, sjakhade@cadence.com
-Subject: Re: [PATCH v6 2/2] PCI: cadence: Retrain Link to work around Gen2
- training defect.
-Message-ID: <20201229223146.3081aa50@windsurf>
-In-Reply-To: <20201228140510.14641-3-nadeem@cadence.com>
-References: <20201228140510.14641-1-nadeem@cadence.com>
-        <20201228140510.14641-3-nadeem@cadence.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1727226AbgL2VfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 16:35:08 -0500
+Received: from mga09.intel.com ([134.134.136.24]:31875 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726795AbgL2VfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 16:35:01 -0500
+IronPort-SDR: v1SHsvWPEX3BrfQIpRgNkGF/6dDpEck5Hd5+ZWsgIV+SPZIEqwq9YU0wp9Xjb3VD2ngC0x/bL2
+ K/HeuIE8b6tw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9849"; a="176695619"
+X-IronPort-AV: E=Sophos;i="5.78,459,1599548400"; 
+   d="scan'208";a="176695619"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 13:34:18 -0800
+IronPort-SDR: iHnimHIRiOOPbycyvFdOs88BLkuqL7O7LJtzt8MV31+GGJ0TkcgWdnfCedxwIMmU/0+EYt2odk
+ DuYKpPTbGEwg==
+X-IronPort-AV: E=Sophos;i="5.78,459,1599548400"; 
+   d="scan'208";a="376190113"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 13:34:17 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v17 0/7] Control-flow Enforcement: Indirect Branch Tracking
+Date:   Tue, 29 Dec 2020 13:33:43 -0800
+Message-Id: <20201229213350.17010-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Dec 2020 15:05:10 +0100
-Nadeem Athani <nadeem@cadence.com> wrote:
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
 
-> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
+This is the second part of CET and enables Indirect Branch Tracking (IBT).
+It is built on top of the shadow stack series.
 
-Shouldn't this propagate a return value ?
+Changes in v17:
+- Rebase to v5.11-rc1.
 
-> +{
-> +	u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
-> +	u16 lnk_stat, lnk_ctl;
-> +
-> +	/*
-> +	 * Set retrain bit if current speed is 2.5 GB/s,
-> +	 * but the PCIe root port support is > 2.5 GB/s.
-> +	 */
-> +
-> +	lnk_cap_sls = cdns_pcie_readl(pcie, (CDNS_PCIE_RP_BASE + pcie_cap_off +
-> +					     PCI_EXP_LNKCAP));
-> +	if ((lnk_cap_sls & PCI_EXP_LNKCAP_SLS) <= PCI_EXP_LNKCAP_SLS_2_5GB)
-> +		return;
-> +
-> +	lnk_stat = cdns_pcie_rp_readw(pcie, pcie_cap_off + PCI_EXP_LNKSTA);
-> +	if ((lnk_stat & PCI_EXP_LNKSTA_CLS) == PCI_EXP_LNKSTA_CLS_2_5GB) {
-> +		lnk_ctl = cdns_pcie_rp_readw(pcie,
-> +					     pcie_cap_off + PCI_EXP_LNKCTL);
-> +		lnk_ctl |= PCI_EXP_LNKCTL_RL;
-> +		cdns_pcie_rp_writew(pcie, pcie_cap_off + PCI_EXP_LNKCTL,
-> +				    lnk_ctl);
-> +
-> +		if (cdns_pcie_host_wait_for_link(pcie))
-> +			return;
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
 
-Here, shouldn't you return the status of
-cdns_pcie_host_wait_for_link(), to propagate whether the PCIe link
-indeed came up after the retrain ?
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
 
-Thomas
+[2] Indirect Branch Tracking patches v16:
+
+    https://lkml.kernel.org/r/20201209222752.2911-1-yu-cheng.yu@intel.com/
+
+H.J. Lu (3):
+  x86/cet/ibt: Update arch_prctl functions for Indirect Branch Tracking
+  x86/vdso/32: Add ENDBR32 to __kernel_vsyscall entry point
+  x86/vdso: Insert endbr32/endbr64 to vDSO
+
+Yu-cheng Yu (4):
+  x86/cet/ibt: Update Kconfig for user-mode Indirect Branch Tracking
+  x86/cet/ibt: User-mode Indirect Branch Tracking support
+  x86/cet/ibt: Handle signals for Indirect Branch Tracking
+  x86/cet/ibt: Update ELF header parsing for Indirect Branch Tracking
+
+ arch/x86/Kconfig                         |  1 +
+ arch/x86/entry/vdso/Makefile             |  4 ++
+ arch/x86/entry/vdso/vdso32/system_call.S |  3 ++
+ arch/x86/include/asm/cet.h               |  3 ++
+ arch/x86/kernel/cet.c                    | 60 +++++++++++++++++++++++-
+ arch/x86/kernel/cet_prctl.c              |  5 ++
+ arch/x86/kernel/fpu/signal.c             |  8 ++--
+ arch/x86/kernel/process_64.c             |  8 ++++
+ 8 files changed, 87 insertions(+), 5 deletions(-)
+
 -- 
-Thomas Petazzoni, CTO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.21.0
+
