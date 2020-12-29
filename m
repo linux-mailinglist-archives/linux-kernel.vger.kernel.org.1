@@ -2,110 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A842E70C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F962E70CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgL2NHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 08:07:53 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:54386 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725964AbgL2NHw (ORCPT
+        id S1726508AbgL2NIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 08:08:44 -0500
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:40902 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726274AbgL2NIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 08:07:52 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTCviBw002861;
-        Tue, 29 Dec 2020 07:07:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=uU90DJMC7gOVeuziT4MtY3N83Bz0OgswiG8k+8q6tXM=;
- b=Ik8e7Jr+W2X4P2xZq97YXVi9lYDg5kNMlHYu08QQDfpsxhYOmx9xaCxSb9y0gqirD3j4
- BG9XiHTp3O5bQ+0HlSJ08M+Jm4M1SZz9xnaJfFlTPBsDxvzdCfl699YtCodxOxrZwWr3
- 0rAQT7LMhOKdrg1NJ2jWMtgW91F8AxIU3+x1tklVyN+gpGVcm1GEBEFl1KfIAC+mQMkb
- Hf9XqTTljT/epI3KvMlBDAmRfkXYwmJCUI5tweuEAAM7f0uACRVzn2EGIPhc8hIH2eZp
- DjXdsvb5gvfZ9Ykt302+aukXE9EOShj/PMqDzi2TCtWk3WHp1UGY+PrOMnu55oFBofN2 Gw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 35p3f7aa01-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Dec 2020 07:07:00 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Dec
- 2020 13:06:57 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 29 Dec 2020 13:06:57 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D391F2AB;
-        Tue, 29 Dec 2020 13:06:57 +0000 (UTC)
-Date:   Tue, 29 Dec 2020 13:06:57 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Hans de Goede <hdegoede@redhat.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-Message-ID: <20201229130657.GN9673@ediswmail.ad.cirrus.com>
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-2-hdegoede@redhat.com>
- <20201228122138.GA5352@sirena.org.uk>
- <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
- <20201228162807.GE5352@sirena.org.uk>
+        Tue, 29 Dec 2020 08:08:43 -0500
+Received: by mail-oi1-f176.google.com with SMTP id p5so14541704oif.7;
+        Tue, 29 Dec 2020 05:08:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=55BF9LGP/3e9LMkfd7/X2NTZkoK/W4LemoCa3QSAEtM=;
+        b=GbkOQO5vaCuz56PrUaQ9JvaLvlbV5vxcRquXzpRcVqp7lVrcDmSiz5M7M1vl/NAbj7
+         rlza2a0Ce2NNGzYPzwtVRLzMSNQMt23V7A4Oo1mHjh8ANLipcm+Ls1+IH5jVSVnpbF/U
+         3WORGZO1Sqeeg4J4SrCsdwcZbEm3lvyWtoObWqzBqEqyX1idgQXcg74kXykZ/9HsRcdI
+         WooXDuysb/pqQTNbDu2dw5c+r0n4lMsTvs2vT4YuvUdgTwEZE2H60UueLX7Yf0GoT78z
+         egEc1u/iAFlUsze5RF0VGHk6lQkTWtZn/FIZC+5AAw+oVpYzze1L3Oog+uCWra2kKGPP
+         TR+Q==
+X-Gm-Message-State: AOAM532lsHQUEftdCGT2/wuHOaBdk10V7vGq1zRyvJmsTJE+UENcDKkD
+        YiRTiwDxvdAsU81hwpE2A5/7/dTmkwEzmxj523A=
+X-Google-Smtp-Source: ABdhPJxpUhZhi636mfGYblnJawbMJPDR24YWZKnTvbBTAsoSf8EFuqU95hyyDRRkS/y+XaOzFT+KF4gxV9vKYBtkKsg=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr2267513oia.54.1609247283124;
+ Tue, 29 Dec 2020 05:08:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201228162807.GE5352@sirena.org.uk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxscore=0
- spamscore=0 priorityscore=1501 adultscore=0 phishscore=0 clxscore=1015
- impostorscore=0 bulkscore=0 malwarescore=0 suspectscore=0 mlxlogscore=791
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012290080
+References: <20201210124422.3858524-1-anders.roxell@linaro.org>
+In-Reply-To: <20201210124422.3858524-1-anders.roxell@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 29 Dec 2020 14:07:52 +0100
+Message-ID: <CAMuHMdUAaRRsHi2+Yr+PkALGeDYQkBROU3pKkp-z6BXNNtK+Rw@mail.gmail.com>
+Subject: Re: [PATCH] sh: kernel: traps: remove unused variable
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 04:28:07PM +0000, Mark Brown wrote:
-> On Mon, Dec 28, 2020 at 02:16:04PM +0100, Hans de Goede wrote:
-> 
-> > And more in general AFAIK extcon is sort of deprecated and it is
-> > not advised to use it for new code. I would esp. not expect it to
-> > be used for new jack-detection code since we already have standard
-> > uAPI support for that through sound/core/jack.c .
-> 
-> Has Android been fixed to use the ALSA/input layer interfaces?  That's
-> why that code is there, long term the goal was to have ALSA generate
-> extcon events too so userspace could fall over to using that.  The basic
-> thing at the time was that nobody liked any of the existing interfaces
-> (the input layer thing is a total bodge stemming from it having been
-> easy to hack in a key for GPIO detection and using ALSA controls means
-> having to link against alsa-lib which is an awful faff for system level
-> UI stuff) and there were three separate userspace interfaces used by
-> different software stacks which needed to be joined together, extcon was
-> felt to be a bit more designed and is a superset so that was the
-> direction we were heading in.
+On Thu, Dec 10, 2020 at 1:46 PM Anders Roxell <anders.roxell@linaro.org> wrote:
+> When building defconfig the following warning shows up:
+>
+> arch/sh/kernel/traps.c: In function 'nmi_trap_handler':
+> arch/sh/kernel/traps.c:183:15: warning: unused variable 'cpu' [-Wunused-variable]
+>   unsigned int cpu = smp_processor_id();
+>                ^~~
+>
+> Remove an unused variable 'cpu'.
+>
+> Fixes: fe3f1d5d7cd3 ("sh: Get rid of nmi_count()")
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
-Android has been updated to have the option to catch input events
-for jack detection now.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-I have always been slightly confused between extcon and the ALSA
-jack reporting and have been unsure as to what is the longer term
-plan here. I vaguely thought there was a gentle plan to move to
-extcon, it is interesting to see Hans basically saying the
-opposite that extcon is intended to be paritially deprecated. I
-assume you just mean with respect to audio jacks, not other
-connector types?
+Gr{oetje,eeting}s,
 
-I would agree with Mark though that if extcon exists for external
-connectors it seems odd that audio jacks would have their own
-special way rather than just using the connector stuff.
+                        Geert
 
-Thanks,
-Charles
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
