@@ -2,81 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2AD2E7324
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 20:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C3C2E7326
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 20:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgL2TBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 14:01:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgL2TBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 14:01:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 296AE2074B;
-        Tue, 29 Dec 2020 19:01:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609268472;
-        bh=gbihcHQsXDrC/i8VMlXVaelWOathEKGyHnbkck553gY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rNLvq5kbdSUUuXxBgRSMGv2Fem3rHUpxQCI+Xpq1i5HqSQFMczLDjJt48lYEr9A4F
-         IPATKxn0Z1NpJMUMuxiu0FlbuazMIWNp9X1jpBGffDvRksPyqu9w7N1QGMjIUYaTVw
-         Duy/iwN14N+D0gpHmnuzXxMSw9OM0sCf3GfZnrY8UbpcBhvCMBakasmJ7RnCF3uUEP
-         f6J1o0UqVTxR+pRC6y/3DnOUEyjVpUIXpdXLwZcOGWakURKj72Vm+9POobslJXzjMU
-         t33Bg6lz5Bja1Le+IwcUzgOQdELTDBRcfyMyMKuTXtiQsFCwdiJfaABmZENw1FdU3N
-         TQhukoNJbEAVQ==
-Date:   Tue, 29 Dec 2020 11:01:10 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     syzbot <syzbot+35bc8fe94c9f38db8320@syzkaller.appspotmail.com>
-Cc:     aviadye@mellanox.com, borisp@mellanox.com, daniel@iogearbox.net,
-        davejwatson@fb.com, davem@davemloft.net,
-        jakub.kicinski@netronome.com, john.fastabend@gmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: memory leak in tls_init
-Message-ID: <20201229110106.430c6859@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <00000000000047a6eb05937eaced@google.com>
-References: <00000000000047a6eb05937eaced@google.com>
+        id S1726338AbgL2TC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 14:02:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726284AbgL2TC1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 14:02:27 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1727DC0613D6;
+        Tue, 29 Dec 2020 11:01:47 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id 7so9573235qtp.1;
+        Tue, 29 Dec 2020 11:01:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jrEhMwpNQAl7xOzRkKY3szVtyXF/rjqGEHYOMOmVWY4=;
+        b=c0E56/DicuMgMV5OmWE7GDXsWJPOv+pAQgIGunVJR155bJ+pe6ockBIB/4HUfra9q8
+         7RYRzjoBpx7BlOnLNtw0JFbQyX8shaWhGx2f8hd3/ckjrXpIW1BYZoKcbAMmyD3NPngI
+         mzjk2F1Vtj0LtFWRi4hi59PFRXt80MO7wjLruPKO4JZHdyUEQrg9Rnxuli6XQesC0uuJ
+         aY+wFPPtXw5oc1qFGW4Nzzh3t1s3R/A2OEzZM7p2mj3CsT8ZynAvV9YYA7Zc7TaX/ji2
+         5pT19g4KWQJZhCJLFu4qVB31uhrLRq/gPVt4v8DzeUmJvSkvp3xpNANWtrTGrLxfwKxL
+         8V4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jrEhMwpNQAl7xOzRkKY3szVtyXF/rjqGEHYOMOmVWY4=;
+        b=eFPU6lbpjBUnopgTAGmoGDjoBjycxaufX+OrsaVw9TiSG/WS/p5vfj3y4hqu8RJsD1
+         kTmgA+F55LZrikheSmCcsELLK3vKw+l2JYnr2YPvHDwG3sZmFPespMulsdCnCwyaPAnC
+         or2EYXjhvQeICRpEIfbQEAdbwLWXJPdp/kg8r7p1/Bpxi3peBNKz83PL2ZkGJHWzW+FI
+         s9xtxFRG3Kww90kMTOr6IgJaPkLJ1+Rcc7HTjvm/hVJKYbLxnzru4wkz5RxUb6d1wIR9
+         qwjTvGZn1ORyrSDrB/4xkr/jm1/QfXbGB7hGINpJVhqtRXeffz9OgV0CWWabFgEZkd4Y
+         /yLw==
+X-Gm-Message-State: AOAM531vBFBEyce+PejmWVy8AYNDQasycEIh/IULcKXz+8ZOqDnSQfzO
+        8ksty7r3mJsHo2dfKSF+uIA=
+X-Google-Smtp-Source: ABdhPJyBskNL1rUdVXYnduk2x5H+1tiRizLhshoDwJPTZl/+trGuhUNoQMeXm85TDUGh1/RgmK9VAg==
+X-Received: by 2002:ac8:6b14:: with SMTP id w20mr49742203qts.320.1609268506169;
+        Tue, 29 Dec 2020 11:01:46 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id k7sm26400601qtg.65.2020.12.29.11.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Dec 2020 11:01:45 -0800 (PST)
+Date:   Tue, 29 Dec 2020 12:01:44 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 212/717] platform/x86: mlx-platform: Remove PSU
+ EEPROM from MSN274x platform configuration
+Message-ID: <20201229190144.GA1515901@ubuntu-m3-large-x86>
+References: <20201228125020.963311703@linuxfoundation.org>
+ <20201228125031.129265421@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201228125031.129265421@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Sep 2019 18:19:09 -0700 syzbot wrote:
-> 2019/09/26 13:11:21 executed programs: 23
-> BUG: memory leak
-> unreferenced object 0xffff88810e482a00 (size 512):
->    comm "syz-executor.4", pid 6874, jiffies 4295090041 (age 14.090s)
->    hex dump (first 32 bytes):
->      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->    backtrace:
->      [<00000000e93f019a>] kmemleak_alloc_recursive  
-> include/linux/kmemleak.h:43 [inline]
->      [<00000000e93f019a>] slab_post_alloc_hook mm/slab.h:586 [inline]
->      [<00000000e93f019a>] slab_alloc mm/slab.c:3319 [inline]
->      [<00000000e93f019a>] kmem_cache_alloc_trace+0x145/0x2c0 mm/slab.c:3548
->      [<00000000268637bd>] kmalloc include/linux/slab.h:552 [inline]
->      [<00000000268637bd>] kzalloc include/linux/slab.h:686 [inline]
->      [<00000000268637bd>] create_ctx net/tls/tls_main.c:611 [inline]
->      [<00000000268637bd>] tls_init net/tls/tls_main.c:794 [inline]
->      [<00000000268637bd>] tls_init+0xbc/0x200 net/tls/tls_main.c:773
->      [<00000000f52c33c5>] __tcp_set_ulp net/ipv4/tcp_ulp.c:139 [inline]
->      [<00000000f52c33c5>] tcp_set_ulp+0xe2/0x190 net/ipv4/tcp_ulp.c:160
->      [<0000000009cb49a0>] do_tcp_setsockopt.isra.0+0x1c1/0xe10  
-> net/ipv4/tcp.c:2825
->      [<00000000b9d96429>] tcp_setsockopt+0x71/0x80 net/ipv4/tcp.c:3152
->      [<0000000038a5546c>] sock_common_setsockopt+0x38/0x50  
-> net/core/sock.c:3142
->      [<00000000d945b2a0>] __sys_setsockopt+0x10f/0x220 net/socket.c:2084
->      [<000000003c3afaa0>] __do_sys_setsockopt net/socket.c:2100 [inline]
->      [<000000003c3afaa0>] __se_sys_setsockopt net/socket.c:2097 [inline]
->      [<000000003c3afaa0>] __x64_sys_setsockopt+0x26/0x30 net/socket.c:2097
->      [<00000000f7f21cbd>] do_syscall_64+0x73/0x1f0  
-> arch/x86/entry/common.c:290
->      [<00000000d4c003b9>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Mon, Dec 28, 2020 at 01:43:30PM +0100, Greg Kroah-Hartman wrote:
+> From: Vadim Pasternak <vadimp@nvidia.com>
+> 
+> [ Upstream commit 912b341585e302ee44fc5a2733f7bcf505e2c86f ]
+> 
+> Remove PSU EEPROM configuration for systems class equipped with
+> Mellanox chip Spectrum and ATOM CPU - system types MSN274x. Till now
+> all the systems from this class used few types of power units, all
+> equipped with EEPROM device with address space two bytes. Thus, all
+> these devices have been handled by EEPROM driver "24c02".
+> 
+> There is a new requirement is to support power unit replacement by "off
+> the shelf" device, matching electrical required parameters. Such device
+> can be equipped with different EEPROM type, which could be one byte
+> address space addressing or even could be not equipped with EEPROM.
+> In such case "24c02" will not work.
+> 
+> Fixes: ef08e14a3 ("platform/x86: mlx-platform: Add support for new msn274x system type")
+> Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+> Link: https://lore.kernel.org/r/20201125101056.174708-3-vadimp@nvidia.com
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/platform/x86/mlx-platform.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
+> index 623e7f737d4ab..598f445587649 100644
+> --- a/drivers/platform/x86/mlx-platform.c
+> +++ b/drivers/platform/x86/mlx-platform.c
+> @@ -601,15 +601,13 @@ static struct mlxreg_core_data mlxplat_mlxcpld_msn274x_psu_items_data[] = {
+>  		.label = "psu1",
+>  		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+>  		.mask = BIT(0),
+> -		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[0],
+> -		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
+> +		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
+>  	},
+>  	{
+>  		.label = "psu2",
+>  		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+>  		.mask = BIT(1),
+> -		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[1],
+> -		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
+> +		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
+>  	},
+>  };
+>  
+> -- 
+> 2.27.0
+> 
+> 
+> 
 
-#syz invalid
+Please pick up eca6ba20f38c ("platform/x86: mlx-platform: remove an
+unused variable") everywhere that this patch was applied to avoid
+introducing a new clang warning.
 
-This hasn't happened for over a year, so perhaps the TOE-related
-restructuring accidentally fixed it, somehow.
+Cheers,
+Nathan
