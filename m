@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF93D2E74FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 23:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11B32E74FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 23:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgL2WYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 17:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgL2WYI (ORCPT
+        id S1726246AbgL2Wae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 17:30:34 -0500
+Received: from v07.bizneshost.by ([178.124.128.102]:52636 "EHLO
+        v07.bizneshost.by" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbgL2Wae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 17:24:08 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC562C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 14:23:27 -0800 (PST)
+        Tue, 29 Dec 2020 17:30:34 -0500
+X-Greylist: delayed 1472 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Dec 2020 17:30:33 EST
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=j/bNtqMm2dxQxj54tA+5zXYhll2ElA1bhXS58HU9rB8=; b=HF87GccL7FEt19lB2EOb+Dp1vL
-        pJwxP4UUvqUkpZLrydtqaiJ6BMXK5dYiDyflIsEremMLY1RDv1d5wPWb2uBdcoLg1ahhcREGhwdtq
-        JEYPbVZmI0fo5XY1nBo7Ft677yCx+6f9jGdTDEiuO8agsCmZX2BFdz5kQ7DKDjOzqFhy4qrQJf85i
-        O2w17+RGBkyx1IrrGh+cDLxY7mE4lVQ/MK0z57C8w9M21pmu2PRVGmHO2XLS1TjAdxxp7yOT7CD+w
-        zJKnUoqBj1NaMpWeBeHjSDfIirUbZd9Ohu1xfqJtmEroBAZjp2bhNMnWRU/IfaW7+HnM3ie1mrMaC
-        tD3+xH3w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1kuNOZ-000H1i-D0; Tue, 29 Dec 2020 22:23:18 +0000
-Date:   Tue, 29 Dec 2020 22:23:11 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org
-Subject: Re: [PATCH -mm] mm: readahead: apply a default readahead size
-Message-ID: <20201229222311.GD28221@casper.infradead.org>
-References: <20201229212634.31307-1-rdunlap@infradead.org>
+        d=infoprivoz.by; s=default; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:From:Date:Subject:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=B4J49Wk07j5sMHJaAZYFDQnXUUKgqHtgF1yy6vie4lY=; b=LgWMztVyFpMt18J9GbUCJ9St3o
+        IKty/9uZJJufdoYssxDv3x/opoLFRi29lcO96HRjARmAtWqCtuncxwG1pQQ6ci7XvQM0gE2bqZCGn
+        mCRfdjI+K/LZ6TktZBpPqKw7+H0t4/ooYx0jFbMPPIeCAfW1Dq/rK78+OLyGpaPPI496uduijK09d
+        cTaIRmydlIAvAWb/iClEnvqTLrJ+3zoyBl9bOM7AwFDhLjUcOm4GpDTOWk7j1etoytrq9lpH9ELo+
+        nyD7LdRKB7I0X7+5vuy07Vx5Hq0+uj9gYV1x5UBVF7fLs2MI5yrHoUY242xPfj7rQC6xdUcDjILcb
+        v+Ijykqg==;
+Received: from infopriv by v07.bizneshost.by with local (Exim 4.93)
+        (envelope-from <Artyombobr@gmail.com>)
+        id 1kuN7E-007P1Q-Kk
+        for linux-kernel@vger.kernel.org; Wed, 30 Dec 2020 01:05:16 +0300
+To:     linux-kernel@vger.kernel.org
+Subject: =?utf-8?Q?=3DD0=3D9F=3DD0=3DB0=3DD1=3D80=3DD0=3DB0=3DD0=3DBC=3DD0=3DB5=3D?=  =?utf-8?Q?D1=3D82=3DD1=3D80=3DD1=3D8B_=3DD1=3D83=3DD1=3D87=3DD1=3D91=3DD1?=  =?utf-8?Q?=3D82=3DD0=3DBD=3DD0=3DBE=3DD0=3DB9_=3DD0=3DB7=3DD0=3DB0=3DD0?=  =?utf-8?Q?=3DBF=3DD0=3DB8=3DD1=3D81=3DD0=3DB8_=3DD0=3DB4=3DD0=3DBB=3DD1?=  =?utf-8?Q?=3D8F_RE:_Success_Stories_-_Smart_Passive_Income._Generate_$100?=  =?utf-8?Q?00_in_Monthly_Passive_Income__>>>>>>>>>>>>>>__https://www.googl?=  =?utf-8?Q?e.com/url=3D3Fq=3Dhttps%3A%2F%2Fvk.cc%2FbW9Ahb%3Fq%3Da&sa=3DD&l?=  =?utf-8?Q?ll=3Daap&usg=3DAFQjCNFmdcUrwh=5FNlvClKeEaVPTKYlFtoA____=3DD0=3D?=  =?utf-8?Q?BD=3DD0=3DB0_=3DD1=3D81=3DD0=3DB0=3DD0=3DB9=3DD1=3D82=3DD0=3DB5?=  =?utf-8?Q?_=3DD0=A0=3DD1=3D8B=3DD0=3DBD=3DD0=3DBE=3DD0=BA_"=3DD0=3D9F=3DD?=  =?utf-8?Q?1=3D80=3DD0=3DB8=3DD0=B2=3DD0=3DBE=3DD0=3DB7"?=
+X-PHP-Script: infoprivoz.by/index.php for 143.244.57.155
+X-PHP-Originating-Script: 1100:phpmailer.php
+Date:   Wed, 30 Dec 2020 01:05:16 +0300
+From:   =?utf-8?B?0KDRi9C90L7QuiAi0J/RgNC40LLQvtC3Ig==?= 
+        <Artyombobr@gmail.com>
+Message-ID: <abd32a74dc7e44a286a889eec76ddd20@infoprivoz.by>
+X-Priority: 3
+X-Mailer: PHPMailer 5.2.6 (https://github.com/PHPMailer/PHPMailer/)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201229212634.31307-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - v07.bizneshost.by
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [1100 991] / [47 12]
+X-AntiAbuse: Sender Address Domain - gmail.com
+X-Get-Message-Sender-Via: v07.bizneshost.by: authenticated_id: infopriv/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: v07.bizneshost.by: infopriv
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 01:26:34PM -0800, Randy Dunlap wrote:
-> UBSAN reports an invalid shift size:
-> 
-> mr-fox kernel: UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
-> mr-fox kernel: shift exponent 64 is too large for 64-bit type 'long unsigned int'
-> 
-> Original report:
-> https://lore.kernel.org/lkml/c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de/
-> 
-> Follow-up report:
-> https://lore.kernel.org/lkml/0c283ea9-b446-0e40-6dc8-e9585ae171b4@gmx.de/T/#m9b604660925f9e8a544f7453130c31d083c1e5bb
-> 
-> 
-> Willy suggested that get_init_ra_size() was being called with a size of 0,
-> which would cause this (instead of some Huge value), so add a check in
-> that function for size == 0, and if 0, default it to 32 (pages).
+Здравствуйте, RE: Success Stories - Smart Passive Income. Generate $10000 in Monthly Passive Income  >>>>>>>>>>>>>>  https://www.google.com/url?q=https%3A%2F%2Fvk.cc%2FbW9Ahb%3Fq%3Da&sa=D&lll=aap&usg=AFQjCNFmdcUrwh_NlvClKeEaVPTKYlFtoA   ,
 
-No, this is wrong.  'size' in this case is the size of the read.
-And it's zero.  Is this fixed by commit
-3644e2d2dda78e21edd8f5415b6d7ab03f5f54f3
+Благодарим вас за регистрацию на сайте Рынок "Привоз". Ваша учётная запись создана, но должна быть активирована прежде, чем вы сможете ею воспользоваться.
+Чтобы активировать учётную запись, перейдите по ссылке ниже, или скопируйте её в адресную строку браузера:
+http://infoprivoz.by/index.php/component/users/?task=registration.activate&token=ed8bf967dadbe993cca6da0c05281054 
+
+После активации вы сможете входить на сайт http://infoprivoz.by/ с помощью указанных ниже логина и пароля:
+
+Логин: RE: Success Stories - Smart Passive Income. Generate $10000 in Monthly Passive Income    https://www.google.com/url?q=https3A2F2Fvk.cc2FbW9Ahb3Fq3Dasa=Dlll=aapusg=AFQjCNFmdcUrwh_NlvClKeEaVPTKYlFtoA   
+Пароль: f5vs6Uk9@qH
 
