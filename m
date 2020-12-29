@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A3A2E7091
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0542E7092
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgL2MNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 07:13:12 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:50842 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726148AbgL2MNK (ORCPT
+        id S1726360AbgL2MOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 07:14:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgL2MOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 07:13:10 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTC65vq003360;
-        Tue, 29 Dec 2020 06:12:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=XzSzeiMkz3xC8gN0V+6Id8JeJE8RFvkW97wanhq9H0s=;
- b=kTXwCz3wKD6hweKav7qzEV3dJ83/ZpHzh1k8JgafNAd6lQOAXYBp/xpcV0sDMFwM6qyd
- 4JlB75Gm4Tm4u6MMrzO9DAwQed+scbuyguw7x6EKfqn4C2Dsb7oMjhARe28cTC4qztxt
- QsGYZ2wy7kbNoHk1ekPfGWc/AcGjV0LxtjSxmfIL19Md/sCP4UJ9DweY18erPkVQGugo
- 58vGS/kXXx0WuwEvGWk3GWOm4yTAbZ/egEfVxzZvGGXRs+41p037lN2fpeH5RoUy+1vf
- 1rhutGFp/JwXe0JdYkSF6S5aNYghGd4sPqX4wKA04jS7R0203ekgmPQYwcxa7TDGatiQ UA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 35p3f7a8xn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Dec 2020 06:12:19 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Dec
- 2020 12:12:17 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 29 Dec 2020 12:12:17 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0743111CB;
-        Tue, 29 Dec 2020 12:12:17 +0000 (UTC)
-Date:   Tue, 29 Dec 2020 12:12:17 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 08/14] extcon: arizona: Fix flags parameter to the
- gpiod_get("wlf,micd-pol") call
-Message-ID: <20201229121217.GL9673@ediswmail.ad.cirrus.com>
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-9-hdegoede@redhat.com>
+        Tue, 29 Dec 2020 07:14:50 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E13C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 04:14:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PkExMLV9c9lZCtCXh3APiHVKga9LqLmI/zBDquxhRIg=; b=FU0l6SLeoylsCNKzA9NGEHOwI6
+        wT04xGHwNLlexyLowbXq0KdQLQNhvd3tR91P+lJ78LS1w5b7783zrFYnjBCUOq9ddSfb6SQWMdExi
+        3gSjB5aN5FbqDlafKXXYN3lTVlsFzdjB40n5twC2sDR5ygbhEnvxvQcp1Mah5fSVocKQb/nscQFJy
+        yIF9SLLfTYOgbjosLHBOjRky6GsSZNb4Pz7qbsN9HH8WIBYPldtal3kULGB6gdNdApWWmAocKUdgY
+        RQq6cHfVnmD7XTHqX/7ZTgnwVj7u4ULJv0GRsyp87vC6mv6eiE63HCP4vpGeHliqYitfSFLfZd9e1
+        VYCLcbkQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kuDsv-0006F6-2X; Tue, 29 Dec 2020 12:13:56 +0000
+Date:   Tue, 29 Dec 2020 12:13:53 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: rectify a page bad reason
+Message-ID: <20201229121353.GB28221@casper.infradead.org>
+References: <20201229031156.3861-1-rongwei.wang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201227211232.117801-9-hdegoede@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxscore=0
- spamscore=0 priorityscore=1501 adultscore=0 phishscore=0 clxscore=1015
- impostorscore=0 bulkscore=0 malwarescore=0 suspectscore=0 mlxlogscore=648
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012290077
+In-Reply-To: <20201229031156.3861-1-rongwei.wang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 10:12:26PM +0100, Hans de Goede wrote:
-> The initial value of the GPIO should match the info->micd_modes[0].gpio
-> value. arizona_extcon_probe() already stores the necessary flag in a
-> mode variable, but instead of passing mode as flags to the gpiod_get()
-> it was using a hardcoded GPIOD_OUT_LOW.
+On Tue, Dec 29, 2020 at 11:11:56AM +0800, Rongwei Wang wrote:
+> When I was doing some memory-related projects, it always reported error
+> "nonzero mapcount", but its judgment condition was that _mapcount was not equal
+> to -1, so I felt the original string was a bit inappropriate, so I tried to
+> update it.
+
+But '_mapcount' of -1 _is_ a mapcount of 0.  If we need to improve the
+documentation somewhere, that'd be better than changing this message.
+
+I do wonder if we want to add:
+
+	if (unlikely(page_has_type(page))
+		bad_reason = "page still typed";
+
+It's covered by the non-zero mapcount case, but is slightly misleading.
+
+>  	if (unlikely(atomic_read(&page->_mapcount) != -1))
+> -		bad_reason = "nonzero mapcount";
+> +		bad_reason = "non-(-1) _mapcount";
+>  	if (unlikely(page->mapping != NULL))
+>  		bad_reason = "non-NULL mapping";
+>  	if (unlikely(page_ref_count(page) != 0))
+> -- 
+> 1.8.3.1
 > 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
-
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
+> 
