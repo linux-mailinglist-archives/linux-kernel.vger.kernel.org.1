@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244F92E70F1
+	by mail.lfdr.de (Postfix) with ESMTP id 9B51A2E70F2
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgL2Nkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 08:40:35 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:38866 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgL2Nke (ORCPT
+        id S1726497AbgL2NlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 08:41:03 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10092 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgL2NlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 08:40:34 -0500
-Received: from 1.general.khfeng.us.vpn ([10.172.68.174] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kuFDN-0005Xa-J7; Tue, 29 Dec 2020 13:39:06 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
-        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
-        daniel.baluta@nxp.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Keyon Jie <yang.jie@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Marcin Rajwa <marcin.rajwa@linux.intel.com>,
-        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
-        sound-open-firmware@alsa-project.org (moderated list:SOUND - SOUND OPEN
-        FIRMWARE (SOF) DRIVERS),
-        alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC
-        AUDIO POWER MANAGEM...), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] ASoC: SOF: Intel: hda: Avoid checking jack on system suspend
-Date:   Tue, 29 Dec 2020 21:38:15 +0800
-Message-Id: <20201229133817.190160-2-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201229133817.190160-1-kai.heng.feng@canonical.com>
-References: <20201229133817.190160-1-kai.heng.feng@canonical.com>
+        Tue, 29 Dec 2020 08:41:02 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D4wW701LPzMBDJ;
+        Tue, 29 Dec 2020 21:39:15 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 29 Dec 2020 21:40:08 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <hch@lst.de>, <m.szyprowski@samsung.com>, <robin.murphy@arm.com>
+CC:     <wanghaibin.wang@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH] dma-debug: Delete outdated comment of the hash function
+Date:   Tue, 29 Dec 2020 21:40:06 +0800
+Message-ID: <20201229134006.1691-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-System takes a very long time to suspend after commit 215a22ed31a1
-("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
-[   90.065964] PM: suspend entry (s2idle)
-[   90.067337] Filesystems sync: 0.001 seconds
-[   90.185758] Freezing user space processes ... (elapsed 0.002 seconds) done.
-[   90.188713] OOM killer disabled.
-[   90.188714] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-[   90.190024] printk: Suspending console(s) (use no_console_suspend to debug)
-[   90.904912] intel_pch_thermal 0000:00:12.0: CPU-PCH is cool [49C], continue to suspend
-[  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-[  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-[  329.490933] ACPI: EC: interrupt blocked
+We actually use dev_addr[26:13] as the index into dma_entry_hash. Given
+that the code itself is clear enough, let's drop the hardcoded comment so
+that we won't need to revisit it every time HASH_FN_{SHIFT,MASK} gets
+updated.
 
-That commit keeps codec suspended during the system suspend. However,
-SOF driver's runtime resume, which is for system suspend, calls
-hda_codec_jack_check() and schedules jackpoll_work. The jackpoll
-work uses snd_hda_power_up_pm() which tries to resume the codec in
-system suspend path, hence blocking the suspend process.
-
-So only check jack status if it's not in system PM process.
-
-Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
 ---
- sound/soc/sof/intel/hda-dsp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/dma/debug.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 7d00107cf3b2..1c5e05b88a90 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -685,7 +685,8 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
- 	/* check jack status */
- 	if (runtime_resume) {
- 		hda_codec_jack_wake_enable(sdev, false);
--		hda_codec_jack_check(sdev);
-+		if (sdev->system_suspend_target == SOF_SUSPEND_NONE)
-+			hda_codec_jack_check(sdev);
- 	}
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 14de1271463f..d89341162d35 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -235,10 +235,7 @@ static bool driver_filter(struct device *dev)
+  */
+ static int hash_fn(struct dma_debug_entry *entry)
+ {
+-	/*
+-	 * Hash function is based on the dma address.
+-	 * We use bits 20-27 here as the index into the hash
+-	 */
++	/* Hash function is based on the dma address. */
+ 	return (entry->dev_addr >> HASH_FN_SHIFT) & HASH_FN_MASK;
+ }
  
- 	/* turn off the links that were off before suspend */
 -- 
-2.29.2
+2.19.1
 
