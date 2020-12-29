@@ -2,191 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570CE2E6CB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 01:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9812E6CBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 01:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730270AbgL2ABi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 19:01:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730216AbgL2ABh (ORCPT
+        id S1730087AbgL2AH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 19:07:58 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:44820 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727527AbgL2AH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 19:01:37 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73774C061793
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 16:00:57 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id b5so582269pjk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 16:00:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pLmwRaVmPS4eFmFVTegTCZkKTcXX+6gp0TQho8zJvWY=;
-        b=0/5e63PLnPOMQqBEjVQfb/s+lIjXpYnZKzbyFV4HwHTTU+05C7Vjid50XebXPlDFAO
-         U1WYnnY38b3YXTMTWezfNn/Frs0kwVjdMp4JoP384byy+/1PEZJ7q0JIqwGa0yiK+6rC
-         8FdmsaYhLIxXgZMuwUgL8BuuIJa1OYCl7zmIdJUMJDC88z13PQDYOLA3XUKUQOZdYMW/
-         BWsZl7O5AkG1UU/vawuhxDdfV8AzIi9Zx+vu/Nku1YL8C8+IuCxTv4yzlwHisN4XRWLw
-         PJs4aPJJ0c9Zx/ydq4TmAMKQtta5/tLGM2azznr0aQERFSbH5khSx6cB3afveVuwnoOI
-         5Udg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pLmwRaVmPS4eFmFVTegTCZkKTcXX+6gp0TQho8zJvWY=;
-        b=NnCXb7zeaIZQMjrGQ6zbi/CEc8txFHsvNB24yfkg38U2p1RfLD8pSKqR7CbiUZnZWH
-         JILYy8v9t3onxVoggReqAGbytax+MywqROsUAZ9a4GZ3UE+3V4cvXYoGi2M05Z6E5cJM
-         q17wbmbNWw83qnFOntWOG5By4/ZGiNzK1y0DjAbqwtCICdYVivjQ9tGQDJfeiualU/+d
-         /945D5hTYXooXfuGOOx/qZksUNeXvleniGDo8I689SVGadsvqvutCtxnzOQE37zlw2Ka
-         n3o0dCsdL+yo1Lji1TS89isZGMDB+EDYf43m0UFgJUuCkg6tlLYT1PN4F3+WqMdMjPRA
-         ER7Q==
-X-Gm-Message-State: AOAM530ZUc90Ece/n/ZjdO2LkU12I/2gwoXtpx3gozR6J805buKgvzmB
-        Cv9LyS9Y+57Hh0f3Aq4xd7/K1ngLrxM5CQ==
-X-Google-Smtp-Source: ABdhPJxAFHgtQJ9jUAe6q+Z9VicIRKPnHkHNrcNWF9PwkNGOGb4tTmGaVVwfpXth46uJu498G0Mfag==
-X-Received: by 2002:a17:902:d202:b029:da:d86b:78be with SMTP id t2-20020a170902d202b02900dad86b78bemr28119530ply.0.1609200056678;
-        Mon, 28 Dec 2020 16:00:56 -0800 (PST)
-Received: from ?IPv6:2603:8001:2900:d1ce:dbbc:ecfd:6790:1f2e? (2603-8001-2900-d1ce-dbbc-ecfd-6790-1f2e.res6.spectrum.com. [2603:8001:2900:d1ce:dbbc:ecfd:6790:1f2e])
-        by smtp.gmail.com with ESMTPSA id w1sm37339494pfn.151.2020.12.28.16.00.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Dec 2020 16:00:55 -0800 (PST)
-Subject: Re: Bug in __mmdrop() triggered by io-uring on v5.11-rc1
-To:     Christian Brauner <christian.brauner@ubuntu.com>, hch@infradead.org
-Cc:     willy@infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org
-References: <20201228165429.c3v637xlqxt56fsv@wittgenstein>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d6788552-90bb-33f8-48ee-fb7081965e08@kernel.dk>
-Date:   Mon, 28 Dec 2020 17:00:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 28 Dec 2020 19:07:58 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8BC5D98;
+        Tue, 29 Dec 2020 01:07:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1609200434;
+        bh=d4Mhfe3bfkE71312xd7PJbpeT/ceK/ppJxKjsDG5mdA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pXfrmYmua0twZRFvuhxMt7W8MJbwh2Lre6rJEvwDuS/nfUsF2WPCJM7kBxduidM+Y
+         zZMMvC8paqLiNrH7tJvaB9z9xRTQqpKIyryeFcsRASAuLVYXCvAMHh5npSrXh5CD3s
+         oaojhOJE+hcISC6kr6s5P3YJwqtHcgaWjzE05kBk=
+Date:   Tue, 29 Dec 2020 02:07:04 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jordan Hand <jorhand@linux.microsoft.com>
+Subject: Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+Message-ID: <X+pzKDNWpiQWenHy@pendragon.ideasonboard.com>
+References: <20201224010907.263125-1-djrscally@gmail.com>
+ <20201224010907.263125-15-djrscally@gmail.com>
+ <CAHp75VeXN6PnV7Mzz6UMpD+m-yjPi6XK0kx1=+-M5mci=Vb=YQ@mail.gmail.com>
+ <20201228170521.GZ26370@paasikivi.fi.intel.com>
+ <2d37df3d-f04c-6679-6e27-6c7f82e9b158@gmail.com>
+ <20201228225544.GH4077@smile.fi.intel.com>
+ <X+plTyUFhfHi7eIE@pendragon.ideasonboard.com>
+ <CAHp75Vdzk7i+QzkTxLJUUkw3xZot9F7QT8pyu6b5yjkCVzMXEA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201228165429.c3v637xlqxt56fsv@wittgenstein>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vdzk7i+QzkTxLJUUkw3xZot9F7QT8pyu6b5yjkCVzMXEA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/28/20 9:54 AM, Christian Brauner wrote:
-> Hey everyone,
-> 
-> The following oops can be triggered on a pristine v5.11-rc1 which I discovered
-> while rebasing my idmapped mount patchset onto v5.11-rc1:
-> 
-> [  577.716339][ T7216] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)/LXD, BIOS 0.0.0 02/06/2015
-> [  577.718584][ T7216] Call Trace:
-> [  577.719357][ T7216]  dump_stack+0x10b/0x167
-> [  577.720505][ T7216]  panic+0x347/0x783
-> [  577.721588][ T7216]  ? print_oops_end_marker.cold+0x15/0x15
-> [  577.723502][ T7216]  ? __warn.cold+0x5/0x2f
-> [  577.725079][ T7216]  ? __mmdrop+0x30c/0x400
-> [  577.736066][ T7216]  __warn.cold+0x20/0x2f
-> [  577.745503][ T7216]  ? __mmdrop+0x30c/0x400
-> [  577.755101][ T7216]  report_bug+0x277/0x300
-> 
-> f2-vm login: [  577.764873][ T7216]  handle_bug+0x3c/0x60
-> [  577.773982][ T7216]  exc_invalid_op+0x18/0x50
-> [  577.786341][ T7216]  asm_exc_invalid_op+0x12/0x20
-> [  577.795500][ T7216] RIP: 0010:__mmdrop+0x30c/0x400
-> [  577.804426][ T7216] Code: 00 00 4c 89 ef e8 64 61 8c 02 eb 82 e8 dd 48 32 00 4c 89 e7 e8 35 97 2e 00 e9 70 ff ff ff e8 cb 48 32 00 0f 0b e8 c4 48 32 00 <0f> 0b e9 51 fd ff ff e8 b8 48 32 00 0f 0b e9 82 fd ff ff e8 ac 48
-> [  577.826526][ T7216] RSP: 0018:ffffc900073676d8 EFLAGS: 00010246
-> [  577.836448][ T7216] RAX: 0000000000000000 RBX: ffff88810d56d1c0 RCX: ffff88810d56d1c0
-> [  577.845860][ T7216] RDX: 0000000000000000 RSI: ffff88810d56d1c0 RDI: 0000000000000002
-> [  577.856896][ T7216] RBP: ffff888025244700 R08: ffffffff8141a4ec R09: ffffed1004a488ed
-> [  577.866712][ T7216] R10: ffff888025244763 R11: ffffed1004a488ec R12: ffff8880660b4c40
-> [  577.875736][ T7216] R13: ffff888013930000 R14: ffff888025244700 R15: 0000000000000001
-> [  577.889094][ T7216]  ? __mmdrop+0x30c/0x400
-> [  577.898466][ T7216]  ? __mmdrop+0x30c/0x400
-> [  577.907746][ T7216]  finish_task_switch+0x56f/0x8c0
-> [  577.917553][ T7216]  ? __switch_to+0x580/0x1060
-> [  577.926962][ T7216]  __schedule+0xa04/0x2310
-> [  577.937965][ T7216]  ? firmware_map_remove+0x1a1/0x1a1
-> 
-> f2-vm login: [  577.947035][ T7216]  ? try_to_wake_up+0x7f3/0x16e0
-> [  577.955799][ T7216]  ? preempt_schedule_thunk+0x16/0x18
-> [  577.964988][ T7216]  preempt_schedule_common+0x4a/0xc0
-> [  577.973670][ T7216]  preempt_schedule_thunk+0x16/0x18
-> [  577.985967][ T7216]  try_to_wake_up+0x9eb/0x16e0
-> [  577.994498][ T7216]  ? migrate_swap_stop+0x9d0/0x9d0
-> [  578.003265][ T7216]  ? rcu_read_lock_held+0xae/0xc0
-> [  578.012182][ T7216]  ? rcu_read_lock_sched_held+0xe0/0xe0
-> [  578.021280][ T7216]  io_wqe_wake_worker.isra.0+0x4ba/0x670
-> [  578.029857][ T7216]  ? io_wq_manager+0xc00/0xc00
-> [  578.041295][ T7216]  ? _raw_spin_unlock_irqrestore+0x46/0x50
-> [  578.050139][ T7216]  io_wqe_enqueue+0x212/0x980
-> [  578.058213][ T7216]  __io_queue_async_work+0x201/0x4a0
-> [  578.067518][ T7216]  io_queue_async_work+0x52/0x80
-> [  578.078327][ T7216]  __io_queue_sqe+0x986/0xe80
-> [  578.086615][ T7216]  ? io_uring_setup+0x3a90/0x3a90
-> [  578.094528][ T7216]  ? radix_tree_load_root+0x119/0x1b0
-> [  578.102598][ T7216]  ? io_async_task_func+0xa90/0xa90
-> [  578.110208][ T7216]  ? __sanitizer_cov_trace_pc+0x1e/0x50
-> [  578.120847][ T7216]  io_queue_sqe+0x5e3/0xc40
-> [  578.127950][ T7216]  io_submit_sqes+0x17ca/0x26f0
-> [  578.135559][ T7216]  ? io_queue_sqe+0xc40/0xc40
-> [  578.143129][ T7216]  ? __x64_sys_io_uring_enter+0xa10/0xf00
-> [  578.152183][ T7216]  ? xa_store+0x40/0x50
-> [  578.162501][ T7216]  ? mutex_lock_io_nested+0x12a0/0x12a0
-> [  578.170203][ T7216]  ? do_raw_spin_unlock+0x175/0x260
-> [  578.177874][ T7216]  ? _raw_spin_unlock+0x28/0x40
-> [  578.185560][ T7216]  ? xa_store+0x40/0x50
-> [  578.192755][ T7216]  __x64_sys_io_uring_enter+0xa1b/0xf00
-> [  578.201089][ T7216]  ? __io_uring_task_cancel+0x1e0/0x1e0
-> [  578.210378][ T7216]  ? __sanitizer_cov_trace_pc+0x1e/0x50
-> [  578.218401][ T7216]  ? __audit_syscall_entry+0x3fe/0x540
-> [  578.226264][ T7216]  do_syscall_64+0x31/0x70
-> [  578.234410][ T7216]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  578.244957][ T7216] RIP: 0033:0x7f5204b9c89d
-> [  578.252372][ T7216] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c3 f5 0c 00 f7 d8 64 89 01 48
-> [  578.272398][ T7216] RSP: 002b:00007ffd62bb14e8 EFLAGS: 00000212 ORIG_RAX: 00000000000001aa
-> [  578.280966][ T7216] RAX: ffffffffffffffda RBX: 00007ffd62bb1560 RCX: 00007f5204b9c89d
-> [  578.289068][ T7216] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000005
-> [  578.300693][ T7216] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000008
-> [  578.308932][ T7216] R10: 0000000000000000 R11: 0000000000000212 R12: 0000000000000001
-> [  578.317255][ T7216] R13: 0000000000000000 R14: 00007ffd62bb1520 R15: 0000000000000000
-> [  578.328448][ T7216] Kernel Offset: disabled
-> [  578.544329][ T7216] Rebooting in 86400 seconds..
+Hi Andy,
 
-I can't get your reproducer to work, and unfortunately that trace doesn't
-have some of the debug info? But it looks like it must be the BUG in there.
-Can you try with this? Must be related to creds and identity COW'ing,
-and you are using multiple processes that share the ring.
+On Tue, Dec 29, 2020 at 01:54:59AM +0200, Andy Shevchenko wrote:
+> On Tue, Dec 29, 2020 at 1:08 AM Laurent Pinchart wrote:
+> >
+> > On Tue, Dec 29, 2020 at 12:55:44AM +0200, Andy Shevchenko wrote:
+> > > On Mon, Dec 28, 2020 at 10:37:38PM +0000, Daniel Scally wrote:
+> > > > On 28/12/2020 17:05, Sakari Ailus wrote:
+> 
+> ...
+> 
+> > > > Which do you prefer?
+> > >
+> > > Actually ipu3-cio2.h misses a lot of inclusions (like mutex.h which I
+> > > immediately noticed when scrolled over data types).
+> >
+> > Then ipu3-cio2.h should be fixed :-)
+> 
+> Below is a draft patch (it is possible mangled, due to Gmail). Can you
+> look at it and tell me what you think?
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 7e35283fc0b1..eb4620ff638e 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1501,6 +1501,13 @@ static bool io_grab_identity(struct io_kiocb *req)
- 		spin_unlock_irq(&ctx->inflight_lock);
- 		req->work.flags |= IO_WQ_WORK_FILES;
- 	}
-+	if (!(req->work.flags & IO_WQ_WORK_MM) &&
-+	    (def->work_flags & IO_WQ_WORK_MM)) {
-+		if (id->mm != current->mm)
-+			return false;
-+		mmgrab(id->mm);
-+		req->work.flags |= IO_WQ_WORK_MM;
-+	}
- 
- 	return true;
- }
-@@ -1525,13 +1532,6 @@ static void io_prep_async_work(struct io_kiocb *req)
- 			req->work.flags |= IO_WQ_WORK_UNBOUND;
- 	}
- 
--	/* ->mm can never change on us */
--	if (!(req->work.flags & IO_WQ_WORK_MM) &&
--	    (def->work_flags & IO_WQ_WORK_MM)) {
--		mmgrab(id->mm);
--		req->work.flags |= IO_WQ_WORK_MM;
--	}
--
- 	/* if we fail grabbing identity, we must COW, regrab, and retry */
- 	if (io_grab_identity(req))
- 		return;
+Thank you for the patch.
+
+> I believe some headers can be removed, but I have no idea about header
+> inclusion guarantees that v4l2 provides.
+> 
+> From 10fa6c7ff66ded35a246677ffe20c677e8453f5b3 Mon Sep 17 00:00:00 2001
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Date: Tue, 29 Dec 2020 01:42:03 +0200
+> Subject: [PATCH 1/1] media: ipu3-cio2: Add headers that ipu3-cio2.h is direct
+>  user of
+> 
+> Add headers that ipu3-cio2.h is direct user of.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/media/pci/intel/ipu3/ipu3-cio2.h | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
+> b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
+> index ccf0b85ae36f..9ea154c50ba1 100644
+> --- a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
+> +++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
+> @@ -4,8 +4,25 @@
+>  #ifndef __IPU3_CIO2_H
+>  #define __IPU3_CIO2_H
+> 
+> +#include <linux/bits.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mutex.h>
+>  #include <linux/types.h>
+> 
+> +#include <asm/page.h>
+> +
+> +#include <linux/videodev2.h>
+
+I think this can be dropped.
+
+> +
+> +#include <media/media-device.h>
+> +#include <media/media-entity.h>
+> +#include <media/v4l2-async.h>
+> +#include <media/v4l2-dev.h>
+> +#include <media/v4l2-device.h>
+> +#include <media/v4l2-subdev.h>
+> +#include <media/videobuf2-core.h>
+> +#include <media/videobuf2-v4l2.h>
+> +
+>  #define CIO2_NAME "ipu3-cio2"
+>  #define CIO2_DEVICE_NAME "Intel IPU3 CIO2"
+>  #define CIO2_ENTITY_NAME "ipu3-csi2"
+> @@ -325,6 +342,8 @@ struct csi2_bus_info {
+>   u32 lanes;
+>  };
+> 
+> +struct cio2_fbpt_entry;
+> +
+>  struct cio2_queue {
+>   /* mutex to be used by vb2_queue */
+>   struct mutex lock;
+> @@ -355,6 +374,8 @@ struct cio2_queue {
+>   atomic_t bufs_queued;
+>  };
+> 
+> +struct pci_dev;
+> +
+
+How about grouping all forward declarations at the top ?
+
+Otherwise this looks good,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+If I was maintaining this driver I would likely move the structure
+definitions to ipu3-cio2.c though.
+
+>  struct cio2_device {
+>   struct pci_dev *pci_dev;
+>   void __iomem *base;
 
 -- 
-Jens Axboe
+Regards,
 
+Laurent Pinchart
