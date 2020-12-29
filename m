@@ -2,124 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285B32E6D29
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 03:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6712A2E6D39
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 03:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgL2CCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 21:02:07 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64234 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726014AbgL2CCH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 21:02:07 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BT20dt3084874;
-        Mon, 28 Dec 2020 21:01:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=zpGZc8IXi4CYn0gMF7b15UVmW0LDja39wbTr+ZLDeHc=;
- b=C9Dj029zjXs6APnNtJlwuJxET53G2T9JpmqSP7F3/yvwB9knFlf4MYoFlFj8DiXLzee8
- NDpZywEJWTY9WzB0zWVmFzGegkH+SoXEEa6bus2pG/jDW0zc+xG9AgpIX4H/HUvaX1NK
- xB469TQcL8uKVakntQx/26tCGMjx2yWq6pc7IDq+iRSE0ZpvewYEMvqepb2Gw7kn67wa
- mXua3IL9SNogx4pKsATy6osUYL3yuZ5WAtPC4DArpSBwKqB0Gj+ho+XbAK6LwJBkkDay
- 26EQroStU+FMh61Ha5TAl3rwmox/sOduy1XvUQ6k+wMytprGYePu0VJbQDRuxXQeGP9U Ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35qtv4rjp3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 21:01:21 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BT21LEG086703;
-        Mon, 28 Dec 2020 21:01:21 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35qtv4rjnm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 21:01:21 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BT1vU8G018439;
-        Tue, 29 Dec 2020 02:01:19 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 35nveh2hev-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Dec 2020 02:01:19 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BT21H7h49348898
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Dec 2020 02:01:17 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1A7E5A4053;
-        Tue, 29 Dec 2020 02:01:17 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD5CAA4055;
-        Tue, 29 Dec 2020 02:01:14 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.72.172])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 29 Dec 2020 02:01:14 +0000 (GMT)
-Message-ID: <50b9d5059e8e2b86c25770d76432a555fbaf29c0.camel@linux.ibm.com>
-Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with
- kernel measurements
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Ken Goldman <kgold@linux.ibm.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
-        Bruno Meneguele <bmeneg@redhat.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Mon, 28 Dec 2020 21:01:13 -0500
-In-Reply-To: <fccbb614-3a73-651d-b2f4-fb98ff4022f5@linux.ibm.com>
-References: <20200708154116.3199728-1-sashal@kernel.org>
-         <20200708154116.3199728-3-sashal@kernel.org>
-         <1594224793.23056.251.camel@linux.ibm.com>
-         <20200709012735.GX2722994@sasha-vm>
-         <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
-         <20201211031008.GN489768@sequoia>
-         <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
-         <76710d8ec58c440ed7a7b446696b8659f694d0db.camel@HansenPartnership.com>
-         <05266e520f62276b07e76aab177ea6db47916a7f.camel@linux.ibm.com>
-         <fccbb614-3a73-651d-b2f4-fb98ff4022f5@linux.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-28_20:2020-12-28,2020-12-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1031 bulkscore=0 impostorscore=0 mlxscore=0 phishscore=0
- spamscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012290006
+        id S1727339AbgL2CWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 21:22:13 -0500
+Received: from mga14.intel.com ([192.55.52.115]:61435 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727213AbgL2CWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 21:22:12 -0500
+IronPort-SDR: WFuB7dVkneKz5TKG4lpaFqj40Uj1SbsDYQukyXEv96Gm+mkosjtSydFKWCFSNC0LRJvn69WiFV
+ /+q1F6nPbXRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="175672159"
+X-IronPort-AV: E=Sophos;i="5.78,456,1599548400"; 
+   d="scan'208";a="175672159"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 18:21:31 -0800
+IronPort-SDR: 6v1FP23WRj3IXNCDP4lNIB7ejLIBkLRjkk8ditc1hOeKz9lWBAyRsx2Pqea6dQ2Iqv+GDNA8J/
+ y0sqf30B8iQA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,456,1599548400"; 
+   d="scan'208";a="419006047"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga001.jf.intel.com with ESMTP; 28 Dec 2020 18:21:29 -0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, krzk@kernel.org, gregkh@linuxfoundation.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com
+Subject: [PATCH v14 0/6] add DFL bus support to MODULE_DEVICE_TABLE()
+Date:   Tue, 29 Dec 2020 10:16:42 +0800
+Message-Id: <1609208208-6697-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-28 at 14:28 -0500, Ken Goldman wrote:
-> On 12/12/2020 9:22 PM, Mimi Zohar wrote:
-> > Ok.   Going forward, it sounds like we need to define a new
-> > "boot_aggregate" record.  One that contains a version number and PCR
-> > mask.
-> 
-> Just BTW, there is a TCG standard for a TPM 2.0 PCR mask that works
-> well.
+Main changes from v1:
+- A new patch (Patch #3) to fix the description.
+- Rename the dfl-bus.h to dfl.h
+- Updated the MAINTAINERS under FPGA DFL DRIVERS.
+- Improve comments and minor fixes.
 
-Sounds good.
-> 
-> There is also a standard for an event log version number.  It is
-> the first event of a TPM 2.0 event log.  It is strange.
+Main changes from v2:
+- Change the bus name from "dfl" to "fpga-dfl", also rename related
+  variables, functions ...
+- Changes the data type of fpga_dfl_device_id.type from u8 to u16
+- Explicitly defines the values of enum fpga_dfl_id_type
+- Delete the comments for the valid bits of type & feature_id
+- changes MODALIAS format for fpga dfl devices
 
-Ok
-> 
-> One useful field, though, is a mapping between the algorithm ID (e.g.,
-> sha256 is 0x000b) and the digest size (e.g., 32 bytes).  This permits
-> a parser to parse a log even when it encounters an unknown digest
-> algorithm.
+Main changes from v3:
+- Change the bus name back to "dfl".
+- Add 2 patches (#5, 6) for dfl drivers.
+- Delete the retimer FEC mode configuration via module_parameter for
+  Patch #5
+- Merge the patch "Make m10_n3000_info static" (https://lore.kernel.org/linux-fpga/52d8411e-13d8-1e91-756d-131802f5f445@huawei.com/T/#t)
+  into Patch #5
+- Add static prefix for emif attributes macro for Patch #6
 
-The template data is prefixed with the template data length.  The
-problem is verifying the boot_aggregate, not parsing the log.
+Main changes from v9:
+- Add the description for struct dfl_device_id in mod_devicetable.h
+- Move the dfl.h from include/linux/fpga to include/linux
+- some code refactor and minor fixes for dfl-n3000-nios
 
-thanks,
+Main changes from v10:
+- use sysfs_emit instead of sprintf for both patches
+- rebase to 5.10-rc1
 
-Mimi
+Main changes from v11:
+- Fix the type of driver_data from unsigned long to kernel_ulong_t
+- Fixed up header guards to match filename by Moritz
+- move the MODULE_DEVICE_TABLE() right after its definition
+
+Main changes from v12:
+- For patch #5, fix the wrong use of logical'||', should use '|'
+
+Main changes from v13:
+- Rebase to 5.11-rc1
+
+Xu Yilun (6):
+  fpga: dfl: fix the definitions of type & feature_id for dfl devices
+  fpga: dfl: move dfl_device_id to mod_devicetable.h
+  fpga: dfl: add dfl bus support to MODULE_DEVICE_TABLE()
+  fpga: dfl: move dfl bus related APIs to include/linux/dfl.h
+  fpga: dfl: add support for N3000 Nios private feature
+  memory: dfl-emif: add the DFL EMIF private feature driver
+
+ .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +
+ .../ABI/testing/sysfs-bus-dfl-devices-n3000-nios   |  47 ++
+ MAINTAINERS                                        |   3 +-
+ drivers/fpga/Kconfig                               |  11 +
+ drivers/fpga/Makefile                              |   2 +
+ drivers/fpga/dfl-n3000-nios.c                      | 588 +++++++++++++++++++++
+ drivers/fpga/dfl.c                                 |   4 +-
+ drivers/fpga/dfl.h                                 |  85 +--
+ drivers/memory/Kconfig                             |   9 +
+ drivers/memory/Makefile                            |   2 +
+ drivers/memory/dfl-emif.c                          | 207 ++++++++
+ include/linux/dfl.h                                |  86 +++
+ include/linux/mod_devicetable.h                    |  24 +
+ scripts/mod/devicetable-offsets.c                  |   4 +
+ scripts/mod/file2alias.c                           |  13 +
+ 15 files changed, 1023 insertions(+), 87 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-n3000-nios
+ create mode 100644 drivers/fpga/dfl-n3000-nios.c
+ create mode 100644 drivers/memory/dfl-emif.c
+ create mode 100644 include/linux/dfl.h
+
+-- 
+2.7.4
 
