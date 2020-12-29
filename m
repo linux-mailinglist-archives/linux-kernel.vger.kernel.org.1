@@ -2,174 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49462E6EF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 09:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CF42E6EF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 09:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgL2Id1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 03:33:27 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:59191 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726008AbgL2Id0 (ORCPT
+        id S1726277AbgL2IeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 03:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgL2IeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 03:33:26 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UK7gJ7u_1609230761;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UK7gJ7u_1609230761)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 29 Dec 2020 16:32:41 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     magnus.karlsson@intel.com
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        netdev@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
-        bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next] xsk: build skb by page
-Date:   Tue, 29 Dec 2020 16:32:41 +0800
-Message-Id: <3fab080e36b322b6749190ad6054d53c67658050.1609230615.git.xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <CAJ8uoz2Enx-WwY6RmCp0RXBG2U3BUpagw-X8hQChPResHCM-XA@mail.gmail.com>
-References: <CAJ8uoz2Enx-WwY6RmCp0RXBG2U3BUpagw-X8hQChPResHCM-XA@mail.gmail.com>
+        Tue, 29 Dec 2020 03:34:07 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB4FC061793
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 00:33:27 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id x13so13998281oic.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 00:33:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YzL5OPHv3mWjmx1l9cT/jFzRb4YxfwRuJjsIlWyqNWA=;
+        b=LKoUXihABs39u/GdX/F6L0eyuhlQLQaUNhTePHZgV9E4Jy/SrhAzXXOxVsSXFLmuop
+         XB1iwsytNVbDlZoCKu58Ah4LgTya9paJvC1WnmaF7NOVscO8pVof68sQBO6MjBxdqpDA
+         +dWdRXCSfCcps+K3Z/u5lLf8GPHDNA+SkzyIzcsJzoI7MxffZXM7bGWb6Mjnb+f0KQwc
+         m4cQFb14q852uj9nsryVrZ0gM7Gw2t76xpnmLNafyR5Wkae5ggGsiZNOZgqrgCuGqusz
+         B0iwXnvke4t8ZrMXNK9yTSjmAWOTeG5PDHnN/viEyYh+clk72vDd3f/X3VH/vXvnD+0O
+         jgig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YzL5OPHv3mWjmx1l9cT/jFzRb4YxfwRuJjsIlWyqNWA=;
+        b=YLumMNeUaUmpDsCMcz5oxUrbRQrrcH49xD0KhJhw+3Y3ZPJQssNVOqu9NGiuG3aEyN
+         mz2YkFVYIvoxPowX/5cA9wHq8tvE6adMWB9f7jIcHP72H30ZhlDgqhgzHp/Vw+UJUGVL
+         yovDyQwGPZQqDL2w9qHMFdTJ9wXX1NiIVZ7G3z+ZnQDQJThXl9BzTGbv0viDGML3GK4l
+         GbQn1cnpT7jGWBKdW4C+r8yYK4RX6Gn+RHsFkjSp8XDqbpaN88MA1ECkp6GS4QGVHrRu
+         fxBjQ1+sN4uzTF2Qkj5tCKGzewAAkr2imd2W2kbhQVfZEOXwE0ulZR/Uz7EZ9i+so7NC
+         0eWg==
+X-Gm-Message-State: AOAM531tZouO8ngI7cr59ITT6bX/VmyDiFSm5gDYNyMMTWcjRFZiuDXc
+        x1bJ7ZJOohZRY/b1/3bXxM2jWWDUqLc/OUd1yko=
+X-Google-Smtp-Source: ABdhPJyOKK2EHe8CiPVaq5adTOd/dPQEa6D+dktW5VFsB4iJGMmwJNzELBFP9hK2VhKHdjXU/Ml33rkpweGr3Qj+6r4=
+X-Received: by 2002:a54:400d:: with SMTP id x13mr1667443oie.81.1609230806510;
+ Tue, 29 Dec 2020 00:33:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20201228215402.GA572900@localhost.localdomain>
+In-Reply-To: <20201228215402.GA572900@localhost.localdomain>
+From:   Andrei Vagin <avagin@gmail.com>
+Date:   Tue, 29 Dec 2020 00:33:15 -0800
+Message-ID: <CANaxB-yKRpFx+SkushhG2v5=f9J8TFNPMv9YEcsg1=91QyRRzw@mail.gmail.com>
+Subject: Re: [PATCH] timens: delete no-op time_ns_init()
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is used to construct skb based on page to save memory copy
-overhead.
+On Mon, Dec 28, 2020 at 1:54 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+>
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 
-Taking into account the problem of addr unaligned, and the
-possibility of frame size greater than page in the future.
+Acked-by: Andrei Vagin <avagin@gmail.com>
 
-The test environment is Aliyun ECS server.
-Test cmd:
-```
-xdpsock -i eth0 -t  -S -s <msg size>
-```
+Thanks,
+Andrei
 
-Test result data:
-
-size 	64	512	1024	1500
-copy	1916747	1775988	1600203	1440054
-page	1974058	1953655	1945463	1904478
-percent	3.0%	10.0%	21.58%	32.3%
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- net/xdp/xsk.c | 68 ++++++++++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 51 insertions(+), 17 deletions(-)
-
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index ac4a317..7cab40f 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -430,6 +430,55 @@ static void xsk_destruct_skb(struct sk_buff *skb)
- 	sock_wfree(skb);
- }
- 
-+static struct sk_buff *xsk_build_skb_bypage(struct xdp_sock *xs, struct xdp_desc *desc)
-+{
-+	char *buffer;
-+	u64 addr;
-+	u32 len, offset, copy, copied;
-+	int err, i;
-+	struct page *page;
-+	struct sk_buff *skb;
-+
-+	skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-+	if (unlikely(!skb))
-+		return NULL;
-+
-+	addr = desc->addr;
-+	len = desc->len;
-+
-+	buffer = xsk_buff_raw_get_data(xs->pool, addr);
-+	offset = offset_in_page(buffer);
-+	addr = buffer - (char *)xs->pool->addrs;
-+
-+	for (copied = 0, i = 0; copied < len; ++i) {
-+		page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-+
-+		get_page(page);
-+
-+		copy = min((u32)(PAGE_SIZE - offset), len - copied);
-+
-+		skb_fill_page_desc(skb, i, page, offset, copy);
-+
-+		copied += copy;
-+		addr += copy;
-+		offset = 0;
-+	}
-+
-+	skb->len += len;
-+	skb->data_len += len;
-+	skb->truesize += len;
-+
-+	refcount_add(len, &xs->sk.sk_wmem_alloc);
-+
-+	skb->dev = xs->dev;
-+	skb->priority = xs->sk.sk_priority;
-+	skb->mark = xs->sk.sk_mark;
-+	skb_shinfo(skb)->destructor_arg = (void *)(long)addr;
-+	skb->destructor = xsk_destruct_skb;
-+
-+	return skb;
-+}
-+
- static int xsk_generic_xmit(struct sock *sk)
- {
- 	struct xdp_sock *xs = xdp_sk(sk);
-@@ -445,40 +494,25 @@ static int xsk_generic_xmit(struct sock *sk)
- 		goto out;
- 
- 	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
--		char *buffer;
--		u64 addr;
--		u32 len;
--
- 		if (max_batch-- == 0) {
- 			err = -EAGAIN;
- 			goto out;
- 		}
- 
--		len = desc.len;
--		skb = sock_alloc_send_skb(sk, len, 1, &err);
-+		skb = xsk_build_skb_bypage(xs, &desc);
- 		if (unlikely(!skb))
- 			goto out;
- 
--		skb_put(skb, len);
--		addr = desc.addr;
--		buffer = xsk_buff_raw_get_data(xs->pool, addr);
--		err = skb_store_bits(skb, 0, buffer, len);
- 		/* This is the backpressure mechanism for the Tx path.
- 		 * Reserve space in the completion queue and only proceed
- 		 * if there is space in it. This avoids having to implement
- 		 * any buffering in the Tx path.
- 		 */
--		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-+		if (xskq_prod_reserve(xs->pool->cq)) {
- 			kfree_skb(skb);
- 			goto out;
- 		}
- 
--		skb->dev = xs->dev;
--		skb->priority = sk->sk_priority;
--		skb->mark = sk->sk_mark;
--		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
--		skb->destructor = xsk_destruct_skb;
--
- 		err = __dev_direct_xmit(skb, xs->queue_id);
- 		if  (err == NETDEV_TX_BUSY) {
- 			/* Tell user-space to retry the send */
--- 
-1.8.3.1
-
+> ---
+>
+>  kernel/time/namespace.c |    6 ------
+>  1 file changed, 6 deletions(-)
+>
+> --- a/kernel/time/namespace.c
+> +++ b/kernel/time/namespace.c
+> @@ -465,9 +465,3 @@ struct time_namespace init_time_ns = {
+>         .ns.ops         = &timens_operations,
+>         .frozen_offsets = true,
+>  };
+> -
+> -static int __init time_ns_init(void)
+> -{
+> -       return 0;
+> -}
+> -subsys_initcall(time_ns_init);
