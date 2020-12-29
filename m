@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 070C12E6EE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 09:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D20B92E6EE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 09:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgL2ISj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 03:18:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
+        id S1726265AbgL2IXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 03:23:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgL2ISi (ORCPT
+        with ESMTP id S1725866AbgL2IXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 03:18:38 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70A4C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 00:17:57 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id A8Hr2400a4C55Sk018HrBb; Tue, 29 Dec 2020 09:17:55 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kuACV-000vOA-Bz; Tue, 29 Dec 2020 09:17:51 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kuACU-006QD1-Te; Tue, 29 Dec 2020 09:17:50 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] arm64/smp: Remove unused irq variable in arch_show_interrupts()
-Date:   Tue, 29 Dec 2020 09:17:48 +0100
-Message-Id: <20201229081748.1530671-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Tue, 29 Dec 2020 03:23:16 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C48C0613D6;
+        Tue, 29 Dec 2020 00:22:36 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 23so29112608lfg.10;
+        Tue, 29 Dec 2020 00:22:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OheNXD0wgSbqafLbNMTZFOg48uYf1GKU5jktV12cxNs=;
+        b=ot6ULxg5Zdhx3YVdR8VT0mECT8K8Qyuef1L2VQolfxpzBteg6Bh8D5t2jpZIxacxOe
+         H6MV+2N0sMrn46ik3kwceKd+2XjO7tO836EBq1eAnOVK7iPj2ZUxRRkdb9jC2uynn5pQ
+         xA7rfVxVYiQ5fHgkjxNRQrAKFq7P2x2Jq8v65xXHVrSiGkMkFRfJPQOgfVBo86fmsqhn
+         cknvF/y9miYT6lDm/xCkAJd5GKoc9MCwRoiEGT+8ZuRTOSg2w+qgfj5aDoADA9NvcGKE
+         dqcyT0PqnBIRmzaM/gOlN8shegqXIK6hAcfjCFTuc/HAiBqTWF2LOW7BdGVxnfOj9RE9
+         RU2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=OheNXD0wgSbqafLbNMTZFOg48uYf1GKU5jktV12cxNs=;
+        b=beLkYVTPzyI74w6uzlkoUsmHudKC6ZN9jl6JlIoVhz9zV8oa/+geeWX8rONGY0aL+C
+         aCwhQMA0AXWOs+LNhbjBPt1c/qefknLDnp5vgy2liVVoBCTES2eYqozEK2LR7hy8NEYr
+         xYJgCRTkoHjZRs/qDfkQzCaJWn8utJW6SScbvSV6gECdnT93e+k4p21MajhEamKJH5o/
+         ltjy9fIvlkY0qpPPbkLztO+h18iWGUFgBrEo6awsNsHnDmb+2Qsojt/8AYONqIzJwjBX
+         kcqM92bOhywsp++2K+/rSCvA/59GntUYkhEpCalOlc6wouKhYt354LqF02TG+Wm4zUMc
+         gUxA==
+X-Gm-Message-State: AOAM530j27zUCJfBOrsM1tPGERnKyHOGocrRtMjaoMzzpMfvfrCerpIH
+        Wybj8pUbBGvwp0w2xO43KwTL54ZmtyI=
+X-Google-Smtp-Source: ABdhPJxfob/vyRWa1EHOk0zaw3j92ax5KEHgynTtQ1/LWvCvASh4UHxvTfq3IQbn3sedT8Zat8xbGQ==
+X-Received: by 2002:a19:675d:: with SMTP id e29mr19342796lfj.491.1609230154337;
+        Tue, 29 Dec 2020 00:22:34 -0800 (PST)
+Received: from [192.168.1.100] ([178.176.78.246])
+        by smtp.gmail.com with ESMTPSA id d12sm6744083ljl.111.2020.12.29.00.22.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Dec 2020 00:22:34 -0800 (PST)
+Subject: Re: [PATCH 4/4] net: ethernet: ravb: Name the AVB functional clock
+ fck
+To:     Adam Ford <aford173@gmail.com>, linux-renesas-soc@vger.kernel.org
+Cc:     aford@beaconembedded.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201228213121.2331449-1-aford173@gmail.com>
+ <20201228213121.2331449-4-aford173@gmail.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <06bd46f2-d57a-a1f8-95e8-d8942fced217@gmail.com>
+Date:   Tue, 29 Dec 2020 11:22:27 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201228213121.2331449-4-aford173@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    arch/arm64/kernel/smp.c: In function ‘arch_show_interrupts’:
-    arch/arm64/kernel/smp.c:808:16: warning: unused variable ‘irq’ [-Wunused-variable]
-      808 |   unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
-	  |                ^~~
+On 29.12.2020 0:31, Adam Ford wrote:
 
-The removal of the last user forgot to remove the variable.
+> The bindings have been updated to support two clocks, but the
+> original clock now requires the name fck to distinguish it
+> from the other.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Fixes: 5089bc51f81f05ad ("arm64/smp: Use irq_desc_kstat_cpu() in arch_show_interrupts()")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - Update Fixes tag, as the offending commit was rebased just before
-    being sent upstream.
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
 
- arch/arm64/kernel/smp.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 6bc3a3698c3d1ea9..376343d6f13aec5d 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -807,7 +807,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
- 	unsigned int cpu, i;
- 
- 	for (i = 0; i < NR_IPI; i++) {
--		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
- 		seq_printf(p, "%*s%u:%s", prec - 1, "IPI", i,
- 			   prec >= 4 ? " " : "");
- 		for_each_online_cpu(cpu)
--- 
-2.25.1
-
+MBR, Sergei
