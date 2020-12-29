@@ -2,322 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EDE2E6E66
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 06:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7584A2E6E68
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 06:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgL2Fyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 00:54:55 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37426 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725832AbgL2Fyy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 00:54:54 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BT5mhPY023907;
-        Mon, 28 Dec 2020 21:53:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=21r0Wgg4SqFePaaMwMKR3GB5dlKK+OcybhYCrLth/Mo=;
- b=lSgyyrG9fbUspNVrv0MmqRE3ycZIORSy35KSO44sNZbozK2feQevflf71r/dBxfONEr1
- YUYttar+eJCrs9PVDUb+jbWvz4p+PdfIdYDG5TkX5iGlSCqlW5/Ag8ZXcV/woXH68qz9
- ymL8RVaZuPftLdOqo5WWdvjj2AzlLYdP7e4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35pp4bebuk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 28 Dec 2020 21:53:52 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 28 Dec 2020 21:53:51 -0800
+        id S1726284AbgL2F4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 00:56:43 -0500
+Received: from mail-bn7nam10on2103.outbound.protection.outlook.com ([40.107.92.103]:2389
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725832AbgL2F4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 00:56:41 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gMO15DWnPvXjO1YHXWtSoOdMmTQZMKu6U6R+6TIkohwNLxaHWUUQMmU5yHrsChb/97i/ma/6aFmjjjrldtWFUjlie8kUVzMCy0lwdYyuaBHuemdqnAxsFO1hnZ8VauhSwRq+oZqHJPYauoJsrT8wPNAzYrGT1f9qFQOafUBYmwKCykF07eID7TZMviMORqXCg93AvPEU/x/9aqVqHlTjgjn7l/o5yO/1XnLuM56Jk5+j+2kCb//b6ivukzxL+SbG0hWJEacHqQ7dsCBV+OvBufY3CnD3if5//c+MLBezGX5fKKX2Xsc2sZY7Hsq7SR2Lae7/T5lnUNc/nF66q/N87A==
+ b=FEDdv+xLAeRyjQgI4qKEgUNiZMg0RySyhwlLxPVPehbQWPl7zI7ni5R89XLpQWIU2k6TbVeL7+B8Suoj4jjGe+TwS8PWgT34HK+2ryQ/SyCPrvml2e5JnfKC437DRnrJD85z6KF0Ls80702XzWuQtjaWIg+TSi8L1AmLp/hGTvCsbpXkN9Z70VlqoLxsqL+I3Mos5L4wLuGuBcJXS+O5aG8aY4aOK+ZYONOa74H/BPiL31lp5csRdO/6uCL6zkZzQ2+mRdrAR+jIK266MkbOQxlQdujlmz1oK3Q5EvES4Zwek8uX5d7i/FfhH6hVghcgb6x2pVnwmdgStl4RWZH1Ag==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HBKlk9johxAF/fCIJU+t/ca1PxE2wKP7RwObNDXS6oM=;
- b=lUTUcUMadHg9r3HdMywvfJCm5gbmC+iYX5y3yK53g+l0grIsT2fQYtpncJlexBNzQjQfmcJMWJk2RPlRp9mbzgslSGnocXG0fMFv1qoepdMMsLPGc4uuENXF3qOgDxWw0YlePJ3XHiaGY47Wty3L/CL9XO4ni+JUMsMlJW1Y6nHs+8YrXimpdYrpizj4r43EWIKz3g0e7sGcFl6WPgwNqNl9gplBWL99XxbDczArPdMhfXRSW8BSPg7puyEMHICiYlkYHGUrtdJL07dYYScfm6P/+OGju6qjvwOS25xIPqi6Nbq0LWxOl7RyMbtpui3nZqfi6m+I6TsvoCn1b9T74g==
+ bh=9Y5mXq3bm2+btt43X188ydooJJmcQ77kDIx89opU+TY=;
+ b=C0iZDRQKZbiUNNsCrdawPMHMvHBspliIlu/1TOzCYjZqg+g2YBPpPl0B1v/KUsie3/3EvuoLcJo/lEMEwwiH+PmssQMnMDLYCRvHbdSnjoTqzv0HEZIfUOKxUAqWLo/C+qfpTDMG/vtaLSU9b/mVhNm7Lzj/eHGhaeHwGFpdmNG05v4ruia5X31kwnBOsWqSqFDldVFac03JT8Dn/I/ncVcGIL16zP8RkRk+XkKBaysP00kpt1W0xzPoKA+dp2BSK+BCcfEMBICgQDWpMXbx7J6Stc5W/5SWME7qjvyQnp8ngfmjNO7nRNY3fquqcEITcXrqjqiiYmFnYp4BDsKGYA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HBKlk9johxAF/fCIJU+t/ca1PxE2wKP7RwObNDXS6oM=;
- b=O8G9BFLoSnTRMLiyj50K80rOBcygnAHCU0g/VKtV/3Dx6qtKGZzpEbYPQN4u9+JpisE4zsA6K81YYU2M0LEWhsK0dF3Icia5BF3zhymuQIbE8Fsf+MuJClu0b7AEg8/VR8l6J6ftabPFwy5d66TRdIANAhLaBkcSzmXeYC0Faag=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB4246.namprd15.prod.outlook.com (2603:10b6:a03:10e::24) with
+ bh=9Y5mXq3bm2+btt43X188ydooJJmcQ77kDIx89opU+TY=;
+ b=xmBR1J9qjQFCZXSZU151NwTB4KMXRpZnIzrYhXIeRZ0MiO2X8j2v4+hHfgWA2bQ8KPEMIgiMTLONHTS37uXFeFsTN6RcH6GAA4W8H7ydPra5lFdWTFrykSw0OgUO9IaTSmejHoDbDio/231x0E+cuLIZIcDk9KlHdJ8ftXOVKbE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB4583.namprd04.prod.outlook.com (2603:10b6:a03:5a::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27; Tue, 29 Dec
- 2020 05:53:48 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::2c:f12b:82e9:105c]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::2c:f12b:82e9:105c%5]) with mapi id 15.20.3700.031; Tue, 29 Dec 2020
- 05:53:47 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     lkml <linux-kernel@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v6 3/4] perf-stat: enable counting events for BPF programs
-Thread-Topic: [PATCH v6 3/4] perf-stat: enable counting events for BPF
- programs
-Thread-Index: AQHW3UCo6hW/vcfUc06GxX5agiqE96oM8OOAgAA7EgCAAGd6AA==
-Date:   Tue, 29 Dec 2020 05:53:47 +0000
-Message-ID: <A6A0ED56-9CC0-4361-BE7F-CDA7A40A9822@fb.com>
-References: <20201228174054.907740-1-songliubraving@fb.com>
- <20201228174054.907740-4-songliubraving@fb.com>
- <20201228201159.GF521329@kernel.org>
- <6CB86649-9A1B-4585-8E1F-611F25935041@fb.com>
-In-Reply-To: <6CB86649-9A1B-4585-8E1F-611F25935041@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:7414]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ee077bb5-3f1c-4f82-6b56-08d8abbe1c30
-x-ms-traffictypediagnostic: BYAPR15MB4246:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB4246E500312368A11097E3A7B3D80@BYAPR15MB4246.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:299;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZYFmftiDzmN9uh0OZWFE3aKkvKqk5CKJMZPVd54FR3LaOzIdkg8K+K2ji3VBroqpdkC9pMzabA369MDkVKbw3rY2JJ1r9HGHBkOcRHi4nlt0QblA+O2N9LTgDzDgTSo6N7DD/Y9MVzcxy65Rz1c50li2IDdf9msxv5/TrjBi3qlNXzEme8qFxyfh9cMuhU0qN9GIyWeLKEyuGQvW1mE0xvpA1hq+X+zs1smyiIqkR/T5cWQ1qW9jW9DK14FdqszgYXybQ7ie0R+9x4WDBi4ogPicMEElgK8P+c7dLZ+ReLo7ByR1D11r9Ija1FYWpyeJkZaRC5LBf+mFb7QgapCCwtYhEGpSe1m5cgMOxERJoTSYVH9C9dADZesH4EYEBQJzxSLZfqCr15upImp52cpqOGzcUOxFTYfnLkOYveNPt8moooMtZIIavhjSbVDyNAo4pb4WsJlH/RJnLpRLj7ts9TdYq2CdupCg1C93Z1TbapOVWq0N/UcyzYhaA656E9xZqV5kSsmAphxYlME9OO/r/g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(396003)(39860400002)(136003)(2616005)(966005)(83380400001)(5660300002)(54906003)(66446008)(186003)(316002)(6916009)(71200400001)(4326008)(2906002)(8676002)(6512007)(53546011)(66946007)(64756008)(86362001)(6486002)(36756003)(33656002)(76116006)(66556008)(478600001)(8936002)(66476007)(6506007)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ACCqT796eYk6p7OVMRqWhOJb1P9zuPzXPD6Avu7K7XUCfQk5+vF+LBBziYJr?=
- =?us-ascii?Q?scX3BEob4cWhdu4yZR6mtn8iFKiF8irwm6fJL1hFeqPpsr74YzDN2FlmRXi9?=
- =?us-ascii?Q?1lYR34TMQLdhT7Qox+TMiviSry8hn9B9uzzWvW0hWHRKHcUZIU76nMYwCG4p?=
- =?us-ascii?Q?Nw6KODB7PMRQ4p9tuincmuUSi/jrdrJohIo0MDNrX1bYlBvuGqtYLOrmcflC?=
- =?us-ascii?Q?LLq9eAUJatQJhRZ7oJHaoyt8QlJqCOS1ultPRfPl9nVJ1tgsEWNt6+XE/Aok?=
- =?us-ascii?Q?B2oG+he6VP7QmdB0mMKL3mR27nHjKPPxllwHzWrnOBdUJH2ddJsuW9tmBigO?=
- =?us-ascii?Q?VEwzZNjE1iIVR0y/eVt6E0Uk/Dv0wjO0lL1cTTKKDBmsEwn0KlJCnx7YCHMN?=
- =?us-ascii?Q?5zFdmc5LL3qZAnF05fuaxUa7ZoJmgVkFUxNeSmh3EtyEPIf4Y4o8MwGGqHbP?=
- =?us-ascii?Q?Wt84Ja6uSQZeQII3bve/T3c+SSurK/1VnM7fBQoplwXLGvdkaOMReg3O3mYA?=
- =?us-ascii?Q?1DKx8Z5fzbGSfLTZC8MXYZXol1mco6C25pXbvi3d36RiUo4OJopPbkE8ExLK?=
- =?us-ascii?Q?gUssykN+YR+GwTT+JDAJ6Za4n8GDvd6+iTJ9UlrlgHij/mZRzVwkxIzOoWRy?=
- =?us-ascii?Q?Z0quiRvvc2zPmjeSEDne0BYAr8pPsp94bEkxVKfJFhBszSZEyYQ9P2JdtkDj?=
- =?us-ascii?Q?MUGkzBI+ImQbOqqXyMFJGaF3XUfFn78QzO5TsGSip6lNZsLJCW4oC59MEQ+O?=
- =?us-ascii?Q?4JPwaAWlReyRe9DNmuW8bY/wRj1uZZdk48G0eL5VbBBH1CwYRH8I2Z/TLvQx?=
- =?us-ascii?Q?IYDUo8/gH9IeiU2Uip4HqZaZ0GXmudYu1902QBLYT8YBuiv+r32r9ZqvnraA?=
- =?us-ascii?Q?g/pIcSsiuxT7m4fU91bKBKQy9roKxyRGz6qX29d07gOxJLdBnYrAAiIx+P9x?=
- =?us-ascii?Q?xlKa6X4l7HesT4q8YS/sW0VKlIc9vQB02JLIhHnKIdCXWTjle5bA7064wXv/?=
- =?us-ascii?Q?4l/WFI/CIdiFkf+wJW82hoVpatWpyEAwrTiIrXyM3L9gwTw=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <70D6E7902E7C944C85FB5AFA479C3B99@namprd15.prod.outlook.com>
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee077bb5-3f1c-4f82-6b56-08d8abbe1c30
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Dec 2020 05:53:47.6447
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mnWnABNqtB94/PFXMVqAINCsZjcDO0wpjXuJ9Q5JzG7Ki48N7XSLEqJt5nJo6TzSyADG7o/AO7QK96n0qVQmZA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4246
-X-OriginatorOrg: fb.com
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.31; Tue, 29 Dec
+ 2020 05:55:31 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::441c:9020:2a79:3eff]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::441c:9020:2a79:3eff%6]) with mapi id 15.20.3700.031; Tue, 29 Dec 2020
+ 05:55:31 +0000
+Date:   Tue, 29 Dec 2020 13:55:21 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
+        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, Sheng Pan <span@analogixsemi.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] dt-bindings: drm/bridge: anx7625: add DPI flag
+ and swing setting
+Message-ID: <20201229055521.GA7073@pc-user>
+References: <cover.1608883950.git.xji@analogixsemi.com>
+ <c29b7d9fda9ce8619d1c718b077250998a8600b8.1608883950.git.xji@analogixsemi.com>
+ <1609088181.493422.1338173.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+In-Reply-To: <1609088181.493422.1338173.nullmailer@robh.at.kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [61.148.116.10]
+X-ClientProxiedBy: HKAPR03CA0025.apcprd03.prod.outlook.com
+ (2603:1096:203:c9::12) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-29_04:2020-12-28,2020-12-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 impostorscore=0 malwarescore=0
- suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012290034
-X-FB-Internal: deliver
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-user (61.148.116.10) by HKAPR03CA0025.apcprd03.prod.outlook.com (2603:1096:203:c9::12) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3721.12 via Frontend Transport; Tue, 29 Dec 2020 05:55:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a7938974-47fd-4e25-d442-08d8abbe5a1a
+X-MS-TrafficTypeDiagnostic: BYAPR04MB4583:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB45833194B6042E3A7E7B04CEC7D80@BYAPR04MB4583.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pPvdFZ+MHiuj7IOrKJjtGVHUrzYdIh5kkSccBqAybq1iCJd2cXYa77JLrIp7WVUEBthZmkX1VStpt1lFLhBhqQqCcnQIqEVxSXVKy1CaJQf2VroX0HhCOrM+o6ElFssUgAhMBK1Tx9BAIWwL+unjQWiAkzFaDL97g7a8PeQl48xrfY9ZwDkEZPfMwSkVroJTcT3QCOvkbD62KHUoddHqjufoZyCTpp3gJ5KvwonBwype5nOZp75DeNTFVIYKXg1a/x+pTpV2YVzmxUOMUaHR5jepJ9sDK4i67cXTMMEr6DvdKEJxOPM/uGMewIJuJp51PDsIt9hTLMh0VCHRd7epgHtKkMsXbYOyUy9rlEr7U0SHZJkcrwqkepad+AGPYWeDb+YLIXZXeWLDJZI2QOjAF2+Kw72aL0nhrLRKKssn00FNe0uX4vqXhEDlAoGM3dsXTdi55rO12Y6TqBIWlS2uEw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(136003)(376002)(346002)(366004)(396003)(7416002)(66556008)(30864003)(9686003)(45080400002)(1076003)(5660300002)(16526019)(26005)(86362001)(966005)(956004)(6666004)(478600001)(186003)(2906002)(6496006)(8676002)(83380400001)(54906003)(6916009)(52116002)(4326008)(55016002)(8936002)(66946007)(66476007)(33716001)(33656002)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ZaKVLVYd3QLZ782+rHRDpgsBLIyoKOcV9wv335cChJkuE6LNPmYHJ1fKhs7Y?=
+ =?us-ascii?Q?F1DcuxtGIMABQEkO59CPM+2kyUIvnUUi6xbPqstFHE1LrN7rNMTdNZwSWO9+?=
+ =?us-ascii?Q?6v1VbI+djk9ZbKfTlhvGMkmLkn7/FLDaMP8+OJUr60JOY4R0MLHkaPkR5fic?=
+ =?us-ascii?Q?rMZmppwOkAEIXmM0w6ys8shc6qd8MCoB5dzvSTHvDuRxkHVnY8Fiho9bIorV?=
+ =?us-ascii?Q?SM2kzDicE5nEsLMUQMImb+KtwlYiW3tDagiDC86zcSxseVXclevP+84qQ6tp?=
+ =?us-ascii?Q?YAWV+8T6LZhXzjE3GsP/+ZlAD3xqXQhuwjPPjn7bssqgLMuRlPc2TTLeukix?=
+ =?us-ascii?Q?dsFOPOm2Ik2NJOG7n6yhxWRsGKenMJHCiFmFGcoM1BbcC9dNmJQQcp1i+g1o?=
+ =?us-ascii?Q?bk+PpUn1dlWjZKK+wMAJBMlujo3s1ShclWYwHQSqoRYNVlJjSRS8hYAKBLmq?=
+ =?us-ascii?Q?92dBKa8MrT6eW3M62zeusbNWMkbu95Lls5tMKQ+/xf2KYxSW7nVb2BGeVxQR?=
+ =?us-ascii?Q?46uHl+nIVI9pDYxJniDGoD+/uEgpaUHOt1ZYzP2LY0Zx1wjNyopJbUyMx7y3?=
+ =?us-ascii?Q?+ERHr8f4SjB+o6MOJ6jgyI6GWYsehx1RVvb0MEEXk7U56NbG25urIjQS8T8i?=
+ =?us-ascii?Q?JeSxvRbi1sXPuPnq78+DP6Ek71+oTs6P3j+2YpofjzS/l9u4977V3q0he61y?=
+ =?us-ascii?Q?jRkdJ6a8RCRwPbG2Vc9jG9wipASvbUbCFbxzkbiN6iLhoDloIzGz3QS5ooQ3?=
+ =?us-ascii?Q?MixCiyQ24iVXPG6wPNA9szFI+sUcplaBjLB4PjN8vGXniydq/nBjblDCr3v4?=
+ =?us-ascii?Q?gXpWhFPal81wq4LI0sRxnC8g6ApgQv6AlGmzW7B5jz1hDMqXBD8GZaVswnGk?=
+ =?us-ascii?Q?cI/daLH1QKGr6cvETecEWHjFblc2CVV7B/WJlJ/dNXwgD484vXg6fJzFdlb/?=
+ =?us-ascii?Q?fF3sJ/BFu8CRBhfo36MPbF65YLUHUC9UpcPOKlUe6vixmUQfzV32c/IGQQgS?=
+ =?us-ascii?Q?Mxrx?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2020 05:55:31.6111
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7938974-47fd-4e25-d442-08d8abbe5a1a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /ablWvyiFK/qa8qlQD3e6dPuz0QQyG2fw8n18k7WfLBZh28PjXGim2XmK0BM1uorZBFZvW5PtfR7X05RUnP3aA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4583
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Dec 28, 2020, at 3:43 PM, Song Liu <songliubraving@fb.com> wrote:
+On Sun, Dec 27, 2020 at 09:56:21AM -0700, Rob Herring wrote:
+> On Fri, 25 Dec 2020 19:01:09 +0800, Xin Ji wrote:
+> > Add DPI flag for distinguish MIPI input signal type, DSI or DPI. Add
+> > swing setting for adjusting DP tx PHY swing
+> >=20
+> > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > ---
+> >  .../bindings/display/bridge/analogix,anx7625.yaml     | 19 +++++++++++=
+++++++++
+> >  1 file changed, 19 insertions(+)
+> >=20
 >=20
+> My bot found errors running 'make dt_binding_check' on your patch:
+Hi Rob Herring, I'll fix this issue in the next serial, thanks!
 >=20
+> yamllint warnings/errors:
 >=20
->> On Dec 28, 2020, at 12:11 PM, Arnaldo Carvalho de Melo <acme@kernel.org>=
- wrote:
->>=20
->> Em Mon, Dec 28, 2020 at 09:40:53AM -0800, Song Liu escreveu:
->>> Introduce perf-stat -b option, which counts events for BPF programs, li=
-ke:
->>>=20
->>> [root@localhost ~]# ~/perf stat -e ref-cycles,cycles -b 254 -I 1000
->>>    1.487903822            115,200      ref-cycles
->>>    1.487903822             86,012      cycles
->>>    2.489147029             80,560      ref-cycles
->>>    2.489147029             73,784      cycles
->>>    3.490341825             60,720      ref-cycles
->>>    3.490341825             37,797      cycles
->>>    4.491540887             37,120      ref-cycles
->>>    4.491540887             31,963      cycles
->>>=20
->>> The example above counts cycles and ref-cycles of BPF program of id 254.
->>> This is similar to bpftool-prog-profile command, but more flexible.
->>>=20
->>> perf-stat -b creates per-cpu perf_event and loads fentry/fexit BPF
->>> programs (monitor-progs) to the target BPF program (target-prog). The
->>> monitor-progs read perf_event before and after the target-prog, and
->>> aggregate the difference in a BPF map. Then the user space reads data
->>> from these maps.
->>>=20
->>> A new struct bpf_counter is introduced to provide common interface that
->>> uses BPF programs/maps to count perf events.
->>=20
->> Segfaulting here:
->>=20
->> [root@five ~]# bpftool prog  | grep tracepoint
->> 110: tracepoint  name syscall_unaugme  tag 57cd311f2e27366b  gpl
->> 111: tracepoint  name sys_enter_conne  tag 3555418ac9476139  gpl
->> 112: tracepoint  name sys_enter_sendt  tag bc7fcadbaf7b8145  gpl
->> 113: tracepoint  name sys_enter_open  tag 0e59c3ac2bea5280  gpl
->> 114: tracepoint  name sys_enter_opena  tag 0baf443610f59837  gpl
->> 115: tracepoint  name sys_enter_renam  tag 24664e4aca62d7fa  gpl
->> 116: tracepoint  name sys_enter_renam  tag 20093e51a8634ebb  gpl
->> 117: tracepoint  name sys_enter  tag 0bc3fc9d11754ba1  gpl
->> 118: tracepoint  name sys_exit  tag 29c7ae234d79bd5c  gpl
->> [root@five ~]#
->> [root@five ~]# gdb perf
->> GNU gdb (GDB) Fedora 10.1-2.fc33
->> Reading symbols from perf...
->> (gdb) run stat -e instructions,cycles -b 113 -I 1000
->> Starting program: /root/bin/perf stat -e instructions,cycles -b 113 -I 1=
-000
->> [Thread debugging using libthread_db enabled]
->> Using host libthread_db library "/lib64/libthread_db.so.1".
->> libbpf: elf: skipping unrecognized data section(9) .eh_frame
->> libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
-frame
->> libbpf: elf: skipping unrecognized data section(9) .eh_frame
->> libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_=
-frame
->>=20
->> Program received signal SIGSEGV, Segmentation fault.
->> 0x000000000058d55b in bpf_program_profiler__read (evsel=3D0xc612c0) at u=
-til/bpf_counter.c:217
->> 217			reading_map_fd =3D bpf_map__fd(skel->maps.accum_readings);
->> (gdb) bt
->> #0  0x000000000058d55b in bpf_program_profiler__read (evsel=3D0xc612c0) =
-at util/bpf_counter.c:217
->> #1  0x0000000000000000 in ?? ()
->> (gdb)
->>=20
->> [acme@five perf]$ clang -v |& head -2
->> clang version 11.0.0 (Fedora 11.0.0-2.fc33)
->> Target: x86_64-unknown-linux-gnu
->> [acme@five perf]$
->>=20
->> Do you need any extra info?
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/disp=
+lay/bridge/analogix,anx7625.example.dt.yaml: encoder@58: anx,swing-setting:=
+ 'anyOf' conditional failed, one must be fixed:
+> 	[[0, 20], [1, 84], [2, 100], [3, 116], [4, 41], [5, 123], [6, 119], [7, =
+91], [8, 127], [12, 32], [13, 96], [16, 96], [18, 64], [19, 96], [20, 20], =
+[21, 84], [22, 100], [23, 116], [24, 41], [25, 123], [26, 119], [27, 91], [=
+28, 127], [32, 32], [33, 96], [36, 96], [38, 64], [39, 96]] is too long
+> 	[0, 20] is too long
+> 	[1, 84] is too long
+> 	[2, 100] is too long
+> 	[3, 116] is too long
+> 	[4, 41] is too long
+> 	[5, 123] is too long
+> 	[6, 119] is too long
+> 	[7, 91] is too long
+> 	[8, 127] is too long
+> 	[12, 32] is too long
+> 	[13, 96] is too long
+> 	[16, 96] is too long
+> 	[18, 64] is too long
+> 	[19, 96] is too long
+> 	[20, 20] is too long
+> 	[21, 84] is too long
+> 	[22, 100] is too long
+> 	[23, 116] is too long
+> 	[24, 41] is too long
+> 	[25, 123] is too long
+> 	[26, 119] is too long
+> 	[27, 91] is too long
+> 	[28, 127] is too long
+> 	[32, 32] is too long
+> 	[33, 96] is too long
+> 	[36, 96] is too long
+> 	[38, 64] is too long
+> 	[39, 96] is too long
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree=
+/bindings/display/bridge/analogix,anx7625.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/disp=
+lay/bridge/analogix,anx7625.example.dt.yaml: encoder@58: 'anx,mipi-dpi-in',=
+ 'anx,swing-setting' do not match any of the regexes: '^#.*', '^(at25|bm|de=
+vbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio-key|gpio|gpmc|hdmi|i2c-gpio),.=
+*', '^(keypad|m25p|max8952|max8997|max8998|mpmc),.*', '^(pinctrl-single|#pi=
+nctrl-single|PowerPC),.*', '^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m87=
+67|sdhci),.*', '^(simple-audio-card|st-plgpio|st-spics|ts),.*', '^70mai,.*'=
+, '^GEFanuc,.*', '^ORCL,.*', '^SUNW,.*', '^[a-zA-Z0-9#_][a-zA-Z0-9+\\-._@]{=
+0,63}$', '^[a-zA-Z0-9+\\-._]*@[0-9a-zA-Z,]*$', '^abb,.*', '^abilis,.*', '^a=
+bracon,.*', '^abt,.*', '^acer,.*', '^acme,.*', '^actions,.*', '^active-semi=
+,.*', '^ad,.*', '^adafruit,.*', '^adapteva,.*', '^adaptrum,.*', '^adh,.*', =
+'^adi,.*', '^advantech,.*', '^aeroflexgaisler,.*', '^al,.*', '^allegro,.*',=
+ '^allo,.*', '^allwinner,.*', '^alphascale,.*', '^alps,.*', '^alt,.*', '^al=
+tr,.*', '^amarula,.*', '^amazon,.*', '^amcc,.*', '^amd,.*', '^amediatech,.*=
+', '^amlogic,.*', '^ampere,.*', '^ampire,.*', '^ams,.*', '^amstaos,.*', '^a=
+nalogix,.*', '^andestech,.*', '^anvo,.*', '^apm,.*', '^aptina,.*', '^arasan=
+,.*', '^archermind,.*', '^arctic,.*', '^arcx,.*', '^aries,.*', '^arm,.*', '=
+^armadeus,.*', '^arrow,.*', '^artesyn,.*', '^asahi-kasei,.*', '^asc,.*', '^=
+aspeed,.*', '^asus,.*', '^atlas,.*', '^atmel,.*', '^auo,.*', '^auvidea,.*',=
+ '^avago,.*', '^avia,.*', '^avic,.*', '^avnet,.*', '^awinic,.*', '^axentia,=
+.*', '^axis,.*', '^azoteq,.*', '^azw,.*', '^baikal,.*', '^bananapi,.*', '^b=
+eacon,.*', '^beagle,.*', '^bhf,.*', '^bitmain,.*', '^boe,.*', '^bosch,.*', =
+'^boundary,.*', '^brcm,.*', '^broadmobi,.*', '^bticino,.*', '^buffalo,.*', =
+'^bur,.*', '^calaosystems,.*', '^calxeda,.*', '^caninos,.*', '^capella,.*',=
+ '^cascoda,.*', '^catalyst,.*', '^cavium,.*', '^cdns,.*', '^cdtech,.*', '^c=
+ellwise,.*', '^ceva,.*', '^checkpoint,.*', '^chefree,.*', '^chipidea,.*', '=
+^chipone,.*', '^chipspark,.*', '^chrontel,.*', '^chrp,.*', '^chunghwa,.*', =
+'^chuwi,.*', '^ciaa,.*', '^cirrus,.*', '^cloudengines,.*', '^cnm,.*', '^cnx=
+t,.*', '^colorfly,.*', '^compulab,.*', '^coreriver,.*', '^corpro,.*', '^cor=
+tina,.*', '^cosmic,.*', '^crane,.*', '^creative,.*', '^crystalfontz,.*', '^=
+csky,.*', '^csq,.*', '^cubietech,.*', '^cypress,.*', '^cznic,.*', '^dallas,=
+.*', '^dataimage,.*', '^davicom,.*', '^dell,.*', '^delta,.*', '^denx,.*', '=
+^devantech,.*', '^dfi,.*', '^dh,.*', '^difrnce,.*', '^digi,.*', '^digilent,=
+.*', '^dioo,.*', '^dlc,.*', '^dlg,.*', '^dlink,.*', '^dmo,.*', '^domintech,=
+.*', '^dongwoon,.*', '^dptechnics,.*', '^dragino,.*', '^dserve,.*', '^dynai=
+mage,.*', '^ea,.*', '^ebs-systart,.*', '^ebv,.*', '^eckelmann,.*', '^edt,.*=
+', '^eeti,.*', '^einfochips,.*', '^elan,.*', '^element14,.*', '^elgin,.*', =
+'^elida,.*', '^elimo,.*', '^embest,.*', '^emlid,.*', '^emmicro,.*', '^empir=
+e-electronix,.*', '^emtrion,.*', '^endless,.*', '^ene,.*', '^energymicro,.*=
+', '^engicam,.*', '^epcos,.*', '^epfl,.*', '^epson,.*', '^esp,.*', '^est,.*=
+', '^ettus,.*', '^eukrea,.*', '^everest,.*', '^everspin,.*', '^evervision,.=
+*', '^exar,.*', '^excito,.*', '^ezchip,.*', '^facebook,.*', '^fairphone,.*'=
+, '^faraday,.*', '^fastrax,.*', '^fcs,.*', '^feixin,.*', '^feiyang,.*', '^f=
+ii,.*', '^firefly,.*', '^focaltech,.*', '^frida,.*', '^friendlyarm,.*', '^f=
+sl,.*', '^fujitsu,.*', '^gardena,.*', '^gateworks,.*', '^gcw,.*', '^ge,.*',=
+ '^geekbuying,.*', '^gef,.*', '^gemei,.*', '^geniatech,.*', '^giantec,.*', =
+'^giantplus,.*', '^globalscale,.*', '^globaltop,.*', '^gmt,.*', '^goodix,.*=
+', '^google,.*', '^grinn,.*', '^grmn,.*', '^gumstix,.*', '^gw,.*', '^hannst=
+ar,.*', '^haoyu,.*', '^hardkernel,.*', '^hideep,.*', '^himax,.*', '^hirschm=
+ann,.*', '^hisilicon,.*', '^hit,.*', '^hitex,.*', '^holt,.*', '^holtek,.*',=
+ '^honestar,.*', '^honeywell,.*', '^hoperun,.*', '^hp,.*', '^hsg,.*', '^hug=
+sun,.*', '^hwacom,.*', '^hydis,.*', '^hyundai,.*', '^i2se,.*', '^ibm,.*', '=
+^icplus,.*', '^idt,.*', '^ifi,.*', '^ilitek,.*', '^img,.*', '^imi,.*', '^in=
+circuit,.*', '^inet-tek,.*', '^infineon,.*', '^inforce,.*', '^ingenic,.*', =
+'^innolux,.*', '^inside-secure,.*', '^inspur,.*', '^intel,.*', '^intercontr=
+ol,.*', '^invensense,.*', '^inversepath,.*', '^iom,.*', '^isee,.*', '^isil,=
+.*', '^issi,.*', '^ite,.*', '^itead,.*', '^ivo,.*', '^iwave,.*', '^jdi,.*',=
+ '^jedec,.*', '^jesurun,.*', '^jianda,.*', '^kam,.*', '^karo,.*', '^keithko=
+ep,.*', '^keymile,.*', '^khadas,.*', '^kiebackpeter,.*', '^kinetic,.*', '^k=
+ingdisplay,.*', '^kingnovel,.*', '^kionix,.*', '^kobo,.*', '^kobol,.*', '^k=
+oe,.*', '^kontron,.*', '^kosagi,.*', '^kyo,.*', '^lacie,.*', '^laird,.*', '=
+^lamobo,.*', '^lantiq,.*', '^lattice,.*', '^leadtek,.*', '^leez,.*', '^lego=
+,.*', '^lemaker,.*', '^lenovo,.*', '^lg,.*', '^lgphilips,.*', '^libretech,.=
+*', '^licheepi,.*', '^linaro,.*', '^linksprite,.*', '^linksys,.*', '^linutr=
+onix,.*', '^linux,.*', '^linx,.*', '^litex,.*', '^lltc,.*', '^logicpd,.*', =
+'^logictechno,.*', '^longcheer,.*', '^lontium,.*', '^loongson,.*', '^lsi,.*=
+', '^lwn,.*', '^lxa,.*', '^macnica,.*', '^mantix,.*', '^mapleboard,.*', '^m=
+arvell,.*', '^maxbotix,.*', '^maxim,.*', '^mbvl,.*', '^mcube,.*', '^meas,.*=
+', '^mecer,.*', '^mediatek,.*', '^megachips,.*', '^mele,.*', '^melexis,.*',=
+ '^melfas,.*', '^mellanox,.*', '^memsic,.*', '^menlo,.*', '^mentor,.*', '^m=
+eraki,.*', '^merrii,.*', '^micrel,.*', '^microchip,.*', '^microcrystal,.*',=
+ '^micron,.*', '^microsoft,.*', '^microsys,.*', '^mikroe,.*', '^mikrotik,.*=
+', '^miniand,.*', '^minix,.*', '^miramems,.*', '^mitsubishi,.*', '^modtroni=
+x,.*', '^mosaixtech,.*', '^motorola,.*', '^moxa,.*', '^mpl,.*', '^mps,.*', =
+'^mqmaker,.*', '^mrvl,.*', '^mscc,.*', '^msi,.*', '^mstar,.*', '^mti,.*', '=
+^multi-inno,.*', '^mundoreader,.*', '^murata,.*', '^mxicy,.*', '^myir,.*', =
+'^national,.*', '^nec,.*', '^neonode,.*', '^netgear,.*', '^netlogic,.*', '^=
+netron-dy,.*', '^netxeon,.*', '^neweast,.*', '^newhaven,.*', '^nexbox,.*', =
+'^nextthing,.*', '^ni,.*', '^nintendo,.*', '^nlt,.*', '^nokia,.*', '^nordic=
+,.*', '^novtech,.*', '^nutsboard,.*', '^nuvoton,.*', '^nvd,.*', '^nvidia,.*=
+', '^nxp,.*', '^oceanic,.*', '^oct,.*', '^okaya,.*', '^oki,.*', '^olimex,.*=
+', '^olpc,.*', '^onion,.*', '^onnn,.*', '^ontat,.*', '^opalkelly,.*', '^ope=
+ncores,.*', '^openrisc,.*', '^option,.*', '^oranth,.*', '^orisetech,.*', '^=
+ortustech,.*', '^osddisplays,.*', '^ouya,.*', '^overkiz,.*', '^ovti,.*', '^=
+oxsemi,.*', '^ozzmaker,.*', '^panasonic,.*', '^parade,.*', '^parallax,.*', =
+'^pda,.*', '^pericom,.*', '^pervasive,.*', '^phicomm,.*', '^phytec,.*', '^p=
+icochip,.*', '^pine64,.*', '^pineriver,.*', '^pixcir,.*', '^plantower,.*', =
+'^plathome,.*', '^plda,.*', '^plx,.*', '^pni,.*', '^pocketbook,.*', '^polar=
+oid,.*', '^portwell,.*', '^poslab,.*', '^pov,.*', '^powertip,.*', '^powervr=
+,.*', '^primux,.*', '^probox2,.*', '^prt,.*', '^pulsedlight,.*', '^purism,.=
+*', '^qca,.*', '^qcom,.*', '^qemu,.*', '^qi,.*', '^qiaodian,.*', '^qihua,.*=
+', '^qnap,.*', '^radxa,.*', '^raidsonic,.*', '^ralink,.*', '^ramtron,.*', '=
+^raspberrypi,.*', '^raydium,.*', '^rda,.*', '^realtek,.*', '^renesas,.*', '=
+^rervision,.*', '^revotics,.*', '^rex,.*', '^richtek,.*', '^ricoh,.*', '^ri=
+komagic,.*', '^riot,.*', '^riscv,.*', '^rockchip,.*', '^rocktech,.*', '^roh=
+m,.*', '^ronbo,.*', '^roofull,.*', '^roseapplepi,.*', '^samsung,.*', '^samt=
+ec,.*', '^sancloud,.*', '^sandisk,.*', '^satoz,.*', '^sbs,.*', '^schindler,=
+.*', '^seagate,.*', '^seeed,.*', '^seirobotics,.*', '^semtech,.*', '^sensir=
+ion,.*', '^sensortek,.*', '^sff,.*', '^sgd,.*', '^sgmicro,.*', '^sgx,.*', '=
+^sharp,.*', '^shimafuji,.*', '^shiratech,.*', '^si-en,.*', '^si-linux,.*', =
+'^sifive,.*', '^sigma,.*', '^sii,.*', '^sil,.*', '^silabs,.*', '^silead,.*'=
+, '^silergy,.*', '^silex-insight,.*', '^siliconmitus,.*', '^simtek,.*', '^s=
+inlinx,.*', '^sinovoip,.*', '^sipeed,.*', '^sirf,.*', '^sis,.*', '^sitronix=
+,.*', '^skyworks,.*', '^smartlabs,.*', '^smsc,.*', '^snps,.*', '^sochip,.*'=
+, '^socionext,.*', '^solidrun,.*', '^solomon,.*', '^sony,.*', '^spansion,.*=
+', '^sprd,.*', '^sst,.*', '^sstar,.*', '^st,.*', '^st-ericsson,.*', '^starr=
+y,.*', '^startek,.*', '^ste,.*', '^stericsson,.*', '^summit,.*', '^sunchip,=
+.*', '^swir,.*', '^syna,.*', '^synology,.*', '^tbs,.*', '^tbs-biometrics,.*=
+', '^tcg,.*', '^tcl,.*', '^tdo,.*', '^technexion,.*', '^technologic,.*', '^=
+techstar,.*', '^te
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree=
+/bindings/vendor-prefixes.yaml
 >=20
-> Hmm... I am not able to reproduce this. I am trying to setup an environme=
-nt similar
-> to fc33 (clang 11, etc.). Does this segfault every time, and on all progr=
-ams?=20
+> See https://patchwork.ozlabs.org/patch/1420616
 >=20
-
-I tried it on CentOS Stream release 8, with=20
-
-  gcc version 8.4.1 20200928 (Red Hat 8.4.1-1) (GCC)
-  clang version 11.0.0 (Red Hat 11.0.0-0.2.rc2.module_el8.4.0+533+50191577)
-
-Unfortunately, I still cannot repro it.=20
-
-I didn't find the issue while looking through the code. AFAICS, the code
-fail over when the skeleton is not ready, so bpf_program_profiler__read()
-should find a valid skeleton.=20
-
-Could you please help run the test with the following patch? The patch is=20
-also available at=20
-
-    https://git.kernel.org/pub/scm/linux/kernel/git/song/linux.git perf-das=
-h-b
-
-Thanks,
-Song
-
-
-diff --git i/tools/perf/util/bpf_counter.c w/tools/perf/util/bpf_counter.c
-index f2cb86a40c882..e09c571365b56 100644
---- i/tools/perf/util/bpf_counter.c
-+++ w/tools/perf/util/bpf_counter.c
-@@ -46,8 +46,10 @@ static int bpf_program_profiler__destroy(struct evsel *e=
-vsel)
- {
-        struct bpf_counter *counter;
-
--       list_for_each_entry(counter, &evsel->bpf_counter_list, list)
-+       list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-+               pr_debug("%s counter =3D %lx\n", __func__, (unsigned long)c=
-ounter);
-                bpf_prog_profiler_bpf__destroy(counter->skel);
-+       }
-        INIT_LIST_HEAD(&evsel->bpf_counter_list);
-        return 0;
- }
-@@ -141,8 +143,14 @@ static int bpf_program_profiler_load_one(struct evsel =
-*evsel, u32 prog_id)
-        counter->skel =3D skel;
-        list_add(&counter->list, &evsel->bpf_counter_list);
-        close(prog_fd);
-+       pr_debug("%s counter =3D %lx\n", __func__, (unsigned long)counter);
-+       pr_debug("%s skel =3D %lx\n", __func__, (unsigned long)skel);
-+       pr_debug("%s return 0\n", __func__);
-        return 0;
- err_out:
-+       pr_debug("%s counter =3D %lx\n", __func__, (unsigned long)counter);
-+       pr_debug("%s skel =3D %lx\n", __func__, (unsigned long)skel);
-+       pr_debug("%s return -1\n", __func__);
-        free(counter);
-        close(prog_fd);
-        return -1;
-@@ -214,11 +222,22 @@ static int bpf_program_profiler__read(struct evsel *e=
-vsel)
-        list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-                struct bpf_prog_profiler_bpf *skel =3D counter->skel;
-
-+               pr_debug("%s counter =3D %lx\n", __func__, (unsigned long)c=
-ounter);
-+               pr_debug("%s skel =3D %lx\n", __func__, (unsigned long)skel=
-);
-+               if (!skel) {
-+                       pr_err("%s !skel\n", __func__);
-+                       continue;
-+               }
-+               if (!skel->maps.accum_readings) {
-+                       pr_err("%s !skel->maps.accum_readings", __func__);
-+                       continue;
-+               }
-+
-                reading_map_fd =3D bpf_map__fd(skel->maps.accum_readings);
-
-                err =3D bpf_map_lookup_elem(reading_map_fd, &key, values);
-                if (err) {
--                       fprintf(stderr, "failed to read value\n");
-+                       pr_err("failed to read value\n");
-                        return err;
-                }
-
-@@ -240,6 +259,8 @@ static int bpf_program_profiler__install_pe(struct evse=
-l *evsel, int cpu,
-
-        list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-                skel =3D counter->skel;
-+               pr_debug("%s counter =3D %lx\n", __func__, (unsigned long)c=
-ounter);
-+               pr_debug("%s skel =3D %lx\n", __func__, (unsigned long)skel=
-);
-                ret =3D bpf_map_update_elem(bpf_map__fd(skel->maps.events),
-                                          &cpu, &fd, BPF_ANY);
-                if (ret)=
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+>=20
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>=20
+> pip3 install dtschema --upgrade
+>=20
+> Please check and re-submit.
