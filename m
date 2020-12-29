@@ -2,131 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF482E7196
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 299C82E71A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgL2PJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:09:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37154 "EHLO mail.kernel.org"
+        id S1726716AbgL2PK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:10:26 -0500
+Received: from elvis.franken.de ([193.175.24.41]:45047 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726586AbgL2PJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:09:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7C8220867;
-        Tue, 29 Dec 2020 15:08:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609254508;
-        bh=qBCnqgfbAFbo0kfsHjsHUPPZWLpRyZyx+XwoPwWNgmU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QvzDHuW9IuIgIeEwaiaof2VigNtCnTzkIJbZrbKGg6WPE7hrH6VB8wl4mN2o2t6PC
-         bZ/yyaGtnSPDomerH/RjgI0yZgX9A/qWWCzx2Zxo1dRyy/WPf7fG8xszjq3ZTsGVMs
-         VUBj+akEmSAng7zQVRMpsPl3wbNTIO9dMEcKhWhQsFiLbnObWWndrTLpF9feljcDgt
-         8K7Si1bwyTfP12tLPTkpGOkXZnLprcM/fhdSYr7XI2Hd+gX5TLYO5j/laigMOAamjO
-         2qR5d14xYm8suTrV/tY8EyvpxE+ImskNBPmBaqPP0FJCkBGMEh+m+5Bv0ApGHsqgAB
-         XiwbE4Q/8MjjQ==
-Date:   Tue, 29 Dec 2020 15:08:07 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-Message-ID: <20201229150807.GF4786@sirena.org.uk>
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-2-hdegoede@redhat.com>
- <20201228122138.GA5352@sirena.org.uk>
- <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
- <20201228162807.GE5352@sirena.org.uk>
- <20201229130657.GN9673@ediswmail.ad.cirrus.com>
- <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
+        id S1726664AbgL2PKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 10:10:24 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kuGd4-0006mx-00; Tue, 29 Dec 2020 16:09:42 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 5A6EEC076D; Tue, 29 Dec 2020 16:08:10 +0100 (CET)
+Date:   Tue, 29 Dec 2020 16:08:10 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>, od@zcrc.me,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: boot: Fix unaligned access with??
+ CONFIG_MIPS_RAW_APPENDED_DTB
+Message-ID: <20201229150810.GA7832@alpha.franken.de>
+References: <20201216233956.280068-1-paul@crapouillou.net>
+ <20201228222532.GA24926@alpha.franken.de>
+ <0JM2MQ.PMKIEAOX7SCZ@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Ls2Gy6y7jbHLe9Od"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
-X-Cookie: Mother Earth is not flat!
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0JM2MQ.PMKIEAOX7SCZ@crapouillou.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 28, 2020 at 10:30:36PM +0000, Paul Cercueil wrote:
+> Le lun. 28 déc. 2020 à 23:25, Thomas Bogendoerfer
+> <tsbogend@alpha.franken.de> a écrit :
+> > On Wed, Dec 16, 2020 at 11:39:56PM +0000, Paul Cercueil wrote:
+> > >  The compressed payload is not necesarily 4-byte aligned, at least
+> > > when
+> > >  compiling with Clang. In that case, the 4-byte value appended to the
+> > >  compressed payload that corresponds to the uncompressed kernel image
+> > >  size must be read using get_unaligned_le().
+> > > 
+> > >  This fixes Clang-built kernels not booting on MIPS (tested on a
+> > > Ingenic
+> > >  JZ4770 board).
+> > > 
+> > >  Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of
+> > > the kernel")
+> > >  Cc: <stable@vger.kernel.org> # v4.7
+> > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >  ---
+> > >   arch/mips/boot/compressed/decompress.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > >  diff --git a/arch/mips/boot/compressed/decompress.c
+> > > b/arch/mips/boot/compressed/decompress.c
+> > >  index c61c641674e6..47c07990432b 100644
+> > >  --- a/arch/mips/boot/compressed/decompress.c
+> > >  +++ b/arch/mips/boot/compressed/decompress.c
+> > >  @@ -117,7 +117,7 @@ void decompress_kernel(unsigned long
+> > > boot_heap_start)
+> > >   		dtb_size = fdt_totalsize((void *)&__appended_dtb);
+> > > 
+> > >   		/* last four bytes is always image size in little endian */
+> > >  -		image_size = le32_to_cpup((void *)&__image_end - 4);
+> > >  +		image_size = get_unaligned_le32((void *)&__image_end - 4);
+> > 
+> > gives me following error
+> > 
+> > arch/mips/boot/compressed/decompress.c:120:16: error: implicit
+> > declaration of function ‘get_unaligned_le32’
+> > [-Werror=implicit-function-declaration]
+> >    image_size = get_unaligned_le32((void *)&__image_end - 4);
+> > 
+> > I've added
+> > 
+> > #include <asm/unaligned.h>
+> > 
+> > which fixes the compile error, but I'm wondering why the patch compiled
+> > for you ?
+> 
+> No idea - but it does compile fine without the include here. Probably a
+> defconfig difference.
 
---Ls2Gy6y7jbHLe9Od
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+# CONFIG_KERNEL_LZO is not set
+# CONFIG_KERNEL_LZ4 is not set
 
-On Tue, Dec 29, 2020 at 02:57:38PM +0100, Hans de Goede wrote:
-> On 12/29/20 2:06 PM, Charles Keepax wrote:
+this makes the difference. Both decompress.c files include asm/unaligned.h.
 
-> > I would agree with Mark though that if extcon exists for external
-> > connectors it seems odd that audio jacks would have their own
-> > special way rather than just using the connector stuff.
+I've added the #include, fixed the get_unaligned_le32 in the description
+and applied it to mips-fixes.
 
-> Well as I said above in me experience the extcon code is (was) mostly
-> meant for kernel internal use. The sysfs API is more of a debugging
-> tool then anything else (IMHO).
+Thomas.
 
-No, that's not the case.  extcon is a port of an Android custom API that
-looks very similar to what ended up in mainline, it was also a
-combination of sysfs and uevents but a bit less generic.  It mainly
-existed to provide information to userspace about what was plugged into
-the various ports on devices, things like headphone jacks and the
-pre-USB C multifunction connectors you used to get on phones.  In kernel
-use wasn't really a thing for that as far as I can remember.  It's
-become a bit less of a pressing concern for Android with the move to USB
-C and the deprecation of headphone jacks in favour of a combination of
-USB C and Bluetooth but the use case is still there and it's clear that
-none of the audio stuff is currently exactly designed.
-
-The issues I'm seeing are more to do with nobody working on things, I
-guess mainly due to the change in priorities for Android systems and in
-my case a job change.
-
-> Also the kernel has support for a lot of sound devices, including
-> many with jack-detection support. Yet a grep for EXTCON_JACK_HEADPHONE
-> over the entire mainline kernel tree shows that only extcon-arizona.c
-> is using it. So given that we have dozens of drivers providing jack
-> functionality through the sound/core/jack.c core and only 1 driver
-> using the extcon interface I believe that the ship on how to export
-> this to userspace has long sailed, since most userspace code will
-> clearly expect the sound/core/jack.c way of doing things to be used.
-
-The whole purpose of creating sound/core/jack.c is to abstract away the
-userspace interfaces from the drivers, most audio devices shouldn't be
-working with extcon directly just as they shouldn't be creating input
-devices or ALSA controls directly.  The missing bit there is to add
-extcon into jack.c.
-
-BTW note that the existing arizona extcon driver does provide an input
-device so I'm guesing that whatever userspace you're concerned about is
-one that uses only the ALSA controls for jack detection.
-
-> Arguably we should/could maybe even drop the extcon part of extcon-arizona.c
-> but I did not do that as I did not want to regress existing userspace
-> code which may depend on this (on specific embedded/android devices).
-
-I do think pushing things over to extcon is a useful goal, the existing
-interfaces have fairly clear issues that it does actually address.
-
---Ls2Gy6y7jbHLe9Od
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/rRlYACgkQJNaLcl1U
-h9CmrQf+KczNR72kmDzv/wsP0MtRJXjVpI1zsAU2XWl2wd1p/NkAjS7wWDsM+WyQ
-LXSssRyt6Z5g+mVUOZLu+W/LwNGa2sCxaP4NE5XNdohTwV43YaFCtojA1O5IvooZ
-dPJ9y0qm5aeVrVc30SXiPO4EgUCGHvaEUQ8NoamvsAjio56fQhuOVd934ga0L9ln
-gVmwilPmxH5MvSyVkNtHXC1ycHJB5Wc6h2Hnk69MKa55aknl11CiMYFzgSxGik23
-PLgecOQ1LTtJmJ5Jmy15ZFLM5B1qqhv3uwRE2l6hPzl7+YgGGZ50yEu6cH3bTIIn
-NearEyg9UT1lu8vV7OqvdqB+z1tpgw==
-=SJ5p
------END PGP SIGNATURE-----
-
---Ls2Gy6y7jbHLe9Od--
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
