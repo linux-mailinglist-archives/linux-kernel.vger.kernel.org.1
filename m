@@ -2,131 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F1B2E6E4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 06:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCEE2E6E4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 06:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgL2F2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 00:28:31 -0500
-Received: from mail-qt1-f178.google.com ([209.85.160.178]:40132 "EHLO
-        mail-qt1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbgL2F2a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 00:28:30 -0500
-Received: by mail-qt1-f178.google.com with SMTP id v5so8326684qtv.7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 21:28:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eXjWu/zitfPX31anoPTlB8mGevTypYdxXLLBsNM4LMI=;
-        b=nD0lfm88lGNkyCaDlPSkeDggWtrXn44TBfq6744qUBauJvZFi5RwZkLvCTVUwpf9Tl
-         DXBsl/e+DgcbIHU9L2svdoJ+YTUaSZN8FMNGnYJVQvmtCix8EAM5Tub8nqQigcXBopTL
-         k7eoFVsy6mkh6dHIJRraa66bD/ORAe1VP2oo2p0f6N0UAp6lMGWhQV7qdpUG4qtwHFLm
-         cnr9tmyS1Y0tAlyXkOQhqMPz3ea4oHEt6sYo3mo3fFsV79YACrj4/h6sSK1/4AI3u7Fr
-         UL5hbtFwslvrn//jeemhvZ7CirNU9v3HjpFbwcpadHixIqPMOtnXOwSeu2cI6d2QhDAP
-         iclQ==
-X-Gm-Message-State: AOAM5320LBQI9cjj90CzG6N4E4bfI7hiW79dvRxdQswlszhyFTRPsky1
-        qEzCApCTsQ2WgGBYuypJGTNVP8DNTEx5rGYqfcU=
-X-Google-Smtp-Source: ABdhPJwtUtVs0pB6fEiNDsdDmgJ809MhMDxOUezmoB+poCHH/T0I099xl719HJvky15rdZ/3bwV+rp+p6g+yLEzAhCk=
-X-Received: by 2002:ac8:4d4d:: with SMTP id x13mr47165747qtv.385.1609219669276;
- Mon, 28 Dec 2020 21:27:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20201216090556.813996-1-namhyung@kernel.org> <20201216090556.813996-2-namhyung@kernel.org>
- <20201228083120.GA450923@krava>
-In-Reply-To: <20201228083120.GA450923@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 29 Dec 2020 14:27:36 +0900
-Message-ID: <CAM9d7cicPSLeMa25=GOsrzMBzk-Oz6XfA1NP=nOsH3fkvgkrmg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] tools/lib/fs: Diet cgroupfs_find_mountpoint()
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726203AbgL2FdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 00:33:00 -0500
+Received: from mga18.intel.com ([134.134.136.126]:18331 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725832AbgL2FdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 00:33:00 -0500
+IronPort-SDR: IFSDHHKH4D47i/s64fh9tv3Zh11KTUGQSYwyjdCJWBgKaIAPbwYFoM9GyE7kHkMiZSYeAgO3jy
+ t0OmJV2qszlw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="164170711"
+X-IronPort-AV: E=Sophos;i="5.78,457,1599548400"; 
+   d="scan'208";a="164170711"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 21:32:19 -0800
+IronPort-SDR: lacNd/9BuLT+r2v1mYTx6wdTVw3BvetJabXAOqHGiOBZGerSEbQsUMDhc+/jmfYp5V8Yw/I0g8
+ GpNrNsylZTGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,457,1599548400"; 
+   d="scan'208";a="395307680"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by fmsmga002.fm.intel.com with ESMTP; 28 Dec 2020 21:32:16 -0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     broonie@kernel.org, linux-spi@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] fix the issue when xfer by spi-altera
+Date:   Tue, 29 Dec 2020 13:27:40 +0800
+Message-Id: <1609219662-27057-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+When doing spi xfer by spi-altera, divide by 0 exception happens in
+spi_transfer_wait(), This is because the xfer->speed_hz is always
+clamped to 0 by spi->controller->max_speed_hz, the feature is
+introduced in:
 
-On Mon, Dec 28, 2020 at 5:31 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Dec 16, 2020 at 06:05:55PM +0900, Namhyung Kim wrote:
->
-> SNIP
->
-> > +             *p++ = '\0';
-> >
-> > -                     while (token != NULL) {
-> > -                             if (subsys && !strcmp(token, subsys)) {
-> > -                                     /* found */
-> > -                                     fclose(fp);
-> > +             /* check filesystem type */
-> > +             if (strncmp(p, "cgroup", 6))
-> > +                     continue;
-> >
-> > -                                     if (strlen(mountpoint) < maxlen) {
-> > -                                             strcpy(buf, mountpoint);
-> > -                                             return 0;
-> > -                                     }
-> > -                                     return -1;
-> > -                             }
-> > -                             token = strtok_r(NULL, ",", &saved_ptr);
-> > -                     }
-> > +             if (p[6] == '2') {
-> > +                     /* save cgroup v2 path */
-> > +                     strcpy(mountpoint, path);
-> > +                     continue;
-> >               }
-> >
-> > -             if (!strcmp(type, "cgroup2"))
-> > -                     strcpy(path_v2, mountpoint);
-> > +             /* now we have cgroup v1, check the options for subsystem */
-> > +             p += 7;
-> > +
-> > +             p = strstr(p, subsys);
->
-> not sure this is a real problem, but this would mixe up for
-> cpu/cpuacct/cpuset no? we are using the function for perf_event
-> subsys only, but it's globaly availble
+commit 9326e4f1e5dd ("spi: Limit the spi device max speed to controller's max speed")
 
-Yeah, that's why I added the sanity check below. :)
+The spi-altera doesn't have hardware indication for controller's
+max_speed_hz, so its value is uninitialized as 0.
 
->
-> > +             if (p == NULL)
-> > +                     continue;
-> > +
-> > +             /* sanity check: it should be separated by a space or a comma */
-> > +             if (!strchr(" ,", p[-1]) || !strchr(" ,", p[strlen(subsys)]))
-> > +                     continue;
+Patch #1 fixes the issue of spi_altera driver. When doing polling
+mode xfer, its transfer_one() callback should return 1, to indicate
+the xfer is finished. It should return 0 for irq mode xfer. With
+this patch the polling mode xfer is OK as it needs no
+spi_transfer_wait() anymore.
 
-Here.
+But the irq mode xfer is still broken. So Patch #2 assumes 1khz xfer
+speed if the xfer->speed_hz is not assigned. I try to avoid the
+divide by 0 issue and ensures a reasonable tolerant waiting time in
+a generic way.
 
-Thanks,
-Namhyung
+Xu Yilun (2):
+  spi: altera: fix return value for altera_spi_txrx()
+  spi: fix the divide by 0 error when calculating xfer waiting time
 
+ drivers/spi/spi-altera.c | 26 ++++++++++++++------------
+ drivers/spi/spi.c        |  4 +++-
+ 2 files changed, 17 insertions(+), 13 deletions(-)
 
-> > +
-> > +             strcpy(mountpoint, path);
-> > +             break;
-> >       }
-> > +     free(line);
-> >       fclose(fp);
-> >
-> > -     if (path_v2[0] && strlen(path_v2) < maxlen) {
-> > -             strcpy(buf, path_v2);
-> > +     if (mountpoint[0] && strlen(mountpoint) < maxlen) {
-> > +             strcpy(buf, mountpoint);
-> >               return 0;
-> >       }
-> >       return -1;
-> > --
-> > 2.29.2.684.gfbc64c5ab5-goog
-> >
->
+-- 
+2.7.4
+
