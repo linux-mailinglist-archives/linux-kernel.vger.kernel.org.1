@@ -2,91 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA9F2E6F55
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 10:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E26C2E6F61
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 10:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgL2J2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 04:28:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgL2J2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 04:28:23 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAD26207D1;
-        Tue, 29 Dec 2020 09:27:42 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kuBI4-004OBp-Q4; Tue, 29 Dec 2020 09:27:40 +0000
+        id S1726317AbgL2J3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 04:29:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgL2J3V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 04:29:21 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E8CC061793
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 01:28:40 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id cm17so12027289edb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 01:28:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HepAVDKvZJWRYV8tscH7GI9jO51F7D0aIWXHAergF2M=;
+        b=NjHUedr/HdYpwuFAEEa/ndjMId424eoBZz8EXlEoB5f6fc92TuEc7+PMAzdwvA6fMu
+         2JxrcWjurNvWRrTQgy6H/mFGeuHTJrNHiHWrFqimidkZUuzT6M6JD2IwQgwT92lf0Vg5
+         Dle0MnwNLHy96net+zTPdVXtU2EZt7fJV40GvX55+n0TH6JcWgdB6CW7+KfyhWaj+GLN
+         OOds0pgOlucswOswXf2jpF/MxVltfATx+d2ikebZRNg7E/mbzZCktdmhsTSTiVvR3+SW
+         b/oVMnZaC74/geDgVDeDF6yKIRsVfoaZsk9caIw6qRzCgjDNiGeuzdacH9yA+0Q4DVdR
+         zMSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HepAVDKvZJWRYV8tscH7GI9jO51F7D0aIWXHAergF2M=;
+        b=uVEAew35p5Z0isX4qck+4jO+P/wgIR+549+bLnxIlMPvl/6Qw8V9/B+jYo4HEIHmOp
+         Ly/89rKz6xIoEpIEJxZTydsd8+2AZz9aHA44Eljjp+881lhsYayOHDKG6I7rhbCv/Eno
+         ZnuzdYYXWdB9bkh3UdgfM4P9hd/nru/82VBVveFxKTB5MKGh+Aarc7I3tZhwkg1+Ritk
+         r5hlS5TZ2jJBKWU1mBUGO078spXSN1Rei4OQ3GnpKUBd1NsCisi2afhZI+EwLtLcfjcg
+         TawEAqxOEeAikgLTB3AZ0/IrHbIE+qPBEkAFfy+/FmwSmxNh0tt9ok0o0Ts+xV/cic4u
+         wH+w==
+X-Gm-Message-State: AOAM531Uib3k8e8wMQvqH3ewefT7lx5hvy9oyrnPRBiOMS/+Uk4Xy482
+        fMSo41+zL5dxM/4hLDGcR7Q0AYirXMwXienqtI3LRw==
+X-Google-Smtp-Source: ABdhPJyy2UZPrlaVuwxKSwpyQBUYDAqppA2beL/7simyxJUF6Ncydj1hLXJDWvOslR7EW7O8AMx7sJYAedaTEVEmMLY=
+X-Received: by 2002:a05:6402:3074:: with SMTP id bs20mr45208651edb.365.1609234119050;
+ Tue, 29 Dec 2020 01:28:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 29 Dec 2020 09:27:40 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] irqchip/gic: add WARN_ON() to facilitate backtracking
-In-Reply-To: <1609226114-32933-1-git-send-email-yejune.deng@gmail.com>
-References: <1609226114-32933-1-git-send-email-yejune.deng@gmail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <36538faa77fd0e34f559ec547b983c72@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: yejune.deng@gmail.com, tglx@linutronix.de, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Dec 2020 14:58:05 +0530
+Message-ID: <CA+G9fYsgQk4kFXm8uaj-DaPHEyT2knO6q1cRr7=CkiFP+WUQxQ@mail.gmail.com>
+Subject: Re: [PATCH 4.9 000/175] 4.9.249-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yejune,
+On Mon, 28 Dec 2020 at 18:30, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.249 release.
+> There are 175 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 30 Dec 2020 12:48:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.249-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 2020-12-29 07:15, Yejune Deng wrote:
-> There is two function gic_of_init() and gic_of_init_child() called
-> gic_of_setup(),so add WARN_ON() to facilitate backtracking.
-> 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> ---
->  drivers/irqchip/irq-gic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
-> index b1d9c22..7c11705 100644
-> --- a/drivers/irqchip/irq-gic.c
-> +++ b/drivers/irqchip/irq-gic.c
-> @@ -1380,7 +1380,7 @@ static bool gic_check_eoimode(struct device_node
-> *node, void __iomem **base)
-> 
->  static int gic_of_setup(struct gic_chip_data *gic, struct device_node 
-> *node)
->  {
-> -	if (!gic || !node)
-> +	if (WARN_ON(!gic || !node))
->  		return -EINVAL;
-> 
->  	gic->raw_dist_base = of_iomap(node, 0);
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I don't immediately see what you gain with this. If you end-up here
-with NULL pointers, that either because:
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-- you have failed to allocate the GIC private data structure:
-   but as it turns out, these allocations either cannot fail (gic_data[]
-   is static), or the dynamic allocation in gic_of_init_child() is 
-already
-   checked.
+Summary
+------------------------------------------------------------------------
 
-- node is NULL: both paths already check for a NULL node, so that cannot
-   fail either.
+kernel: 4.9.249-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: cde5fe0304e36dea08f5ad6651d19a906da97d71
+git describe: v4.9.248-176-gcde5fe0304e3
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.248-176-gcde5fe0304e3
 
-My conclusion is that these checks can never trigger, and we should be
-able to *remove* them altogether.
 
-Am I missing something?
+No regressions (compared to build v4.9.248)
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+No fixes (compared to build v4.9.248)
+
+Ran 32769 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fs-tests
+* ltp-sched-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* ltp-commands-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
