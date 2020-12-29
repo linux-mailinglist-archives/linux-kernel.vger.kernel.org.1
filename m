@@ -2,133 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C3E2E71E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9852E71E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgL2Plx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:41:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20411 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726138AbgL2Plw (ORCPT
+        id S1726625AbgL2Pm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:42:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726203AbgL2Pm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:41:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609256425;
+        Tue, 29 Dec 2020 10:42:28 -0500
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9A1C061793;
+        Tue, 29 Dec 2020 07:41:47 -0800 (PST)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4D4zDS2LXZzQlSP;
+        Tue, 29 Dec 2020 16:41:44 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dylanvanassche.be;
+        s=MBO0001; t=1609256502;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=St5ow6BktJ+43KSijX9WxkANnyFhd1WZD38g7LbRQnU=;
-        b=iwSngT4rZjPNOWOyxfL/huB2+G4VFslQc2NYtHGRpcKkXhLX9r/Gmv5oLqLx57TktmNR1F
-        aIuoLOocFZF9Z6MucsIZYThBd06RfdW6lng3w/J0/5RCb0h1ZeW3gpVlVXOiASXaMqwj55
-        2VD/45g17JBX3uiqKmI8dx0NERoKOKk=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-Bzbe4ZoKN_mNtRyd1qZdCg-1; Tue, 29 Dec 2020 10:40:22 -0500
-X-MC-Unique: Bzbe4ZoKN_mNtRyd1qZdCg-1
-Received: by mail-ej1-f71.google.com with SMTP id lw15so5035376ejb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 07:40:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=St5ow6BktJ+43KSijX9WxkANnyFhd1WZD38g7LbRQnU=;
-        b=K/qlBiP3wD3iBCjgGFbVcjf4oBBp7NfTrhsk7KtVvo5Gshr8J7KM1Zi466apl9NbHK
-         tk17uViQ1INc6JzVSJAQqJyJyDLrfHKmzFxEQh5Y/K6XhKEUlpTJaD3trq2yCva60xtv
-         jYOUkZh4PzXPy3e5nM5zYCfw7RD0V/qS1QCVCPqUVsI5a5zird4NwJ9yP6dQlQ0zUuCZ
-         qVPe8DY/LkVSb6ORFj1vfP2iRSrOH7/yyLXOEcpliQ6NzpLPgorxRnfp2maAGX2oS1In
-         ErwVxcDzatDeMuepNCn/Ddol8s0YNMN6dsFgF+lXVOhbEgS6Zt5SiQIVZ2VoKXK11eoH
-         v3lQ==
-X-Gm-Message-State: AOAM5313xiqeKdMQeakwr83F4AflE/gK77d6SU5WX1/EcqvA+lpa4VxZ
-        MBY9R1zBBsBZr8e2cMjAu52VaiPp9/OSRUfhNyZhpe8lFVjgIAH6qVXmYqXF/6LKoUhXQ6RuLXa
-        RkPwR5hV4y1hvSiuu+oIlimR0
-X-Received: by 2002:a17:907:c05:: with SMTP id ga5mr44328061ejc.32.1609256420747;
-        Tue, 29 Dec 2020 07:40:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwm7L2MghW6vxcPj16+RHJrGVR3ouARaHp79/K0nTwsWgjSGaF4SkRll8L+4h3Qy/71rVr3HA==
-X-Received: by 2002:a17:907:c05:: with SMTP id ga5mr44328049ejc.32.1609256420559;
-        Tue, 29 Dec 2020 07:40:20 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id n20sm18116708ejo.83.2020.12.29.07.40.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Dec 2020 07:40:19 -0800 (PST)
-Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-To:     Mark Brown <broonie@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-2-hdegoede@redhat.com>
- <20201228122138.GA5352@sirena.org.uk>
- <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
- <20201228162807.GE5352@sirena.org.uk>
- <20201229130657.GN9673@ediswmail.ad.cirrus.com>
- <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
- <20201229150635.GP9673@ediswmail.ad.cirrus.com>
- <20201229151548.GG4786@sirena.org.uk>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <1d982dd1-eb02-e7c7-357e-83cf5003c624@redhat.com>
-Date:   Tue, 29 Dec 2020 16:40:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=uKT0cLL+d/nmDWQwlOMUWMMa7kP9pQLAwictzFKP4yc=;
+        b=1kdh6+yNcmBuY3MpbxMEO7pTCuf6873uPbBUbZuwLbd9G+TeHMiO3DKyyUEuUKU48kihaI
+        iBgCVRjAP0ISWN3S/Tyq9KEqhcfbqkbRND88jcdb3TEeRXX1R60T7DWhhZnoiJaAKCoDno
+        +9C44X7VgZvAMyy6upAMyBfYNy7hF7T9mzkal2pexTJg+T4UZi4OlxFug588sg0XZ8T0nS
+        MdUbem021XOXDSHFzkNOmPnBdydpQmazC287yE078QxmFgapR21pnjBn4ZR1ZfCLmvdDiu
+        8pBVFXitGf4XAy0dnDJbgKdEhpkq4bGSO7MfbvXyVxOwQ8+PcTjj8ZXbKMHfTg==
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id NnwlQkX85Ze4; Tue, 29 Dec 2020 16:41:40 +0100 (CET)
+From:   Dylan Van Assche <me@dylanvanassche.be>
+To:     robh+dt@kernel.org, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Dylan Van Assche <me@dylanvanassche.be>
+Subject: [PATCH] arm64: dts: sun50i-a64-pinephone: add 'pine64, pinephone' to the compatible list
+Date:   Tue, 29 Dec 2020 16:41:06 +0100
+Message-Id: <20201229154106.4867-1-me@dylanvanassche.be>
 MIME-Version: 1.0
-In-Reply-To: <20201229151548.GG4786@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: *
+X-Rspamd-Score: 1.28 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 43CDF186C
+X-Rspamd-UID: e5a479
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+All revisions of the PinePhone share most of the hardware.
+This patch makes it easier to detect PinePhone hardware without
+having to check for each possible revision.
 
-On 12/29/20 4:15 PM, Mark Brown wrote:
-> On Tue, Dec 29, 2020 at 03:06:35PM +0000, Charles Keepax wrote:
-> 
->> There is maybe more argument for porting the Arizona code across
->> anyways, since for a long time Android didn't properly support extcon
->> either. It supported the earlier out of tree switch stuff, extcon
-> 
-> Completely moving the driver doesn't cause the same problems as the
-> current proposal (unless it drops functionality I guess, there were
-> issues with adding new detection types into the input layer but I can't
-> remember if this hardware was impacted by that or not).
+Signed-off-by: Dylan Van Assche <me@dylanvanassche.be>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts | 2 +-
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts | 2 +-
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-The input-layer supports the following switches:
-
-SW_HEADPHONE_INSERT
-SW_MICROPHONE_INSERT
-SW_LINEOUT_INSERT 
-SW_JACK_PHYSICAL_INSERT
-
-Which is a 1:1 mapping with the cable-types currently exported by
-extcon-arizona.c .
-
-I'm fine with fully moving extcon-arizona.c over to only using
-sound/core/jack.c functionality and it no longer exporting an
-extcon device.
-
-I guess we should move it out of drivers/extcon then though.
-I suggest using: sound/soc/cirrus/arizona-jack-detect.c
-Note that sound/soc/cirrus is a new dir here. Would that work
-for you ?
-
-And I guess we probably also want to change the MFD instantiated
-platform-dev's name to which it binds then?
-
-I suggest using: "arizona-jack-detect" as new pdev name.
-
-It will take me some time before I can make time to implement this,
-but this is a plan which I can get behind.
-
-Regards,
-
-Hans
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts
+index 3d5a2ae9aa39..fb65319a3bd3 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dts
+@@ -7,7 +7,7 @@
+ 
+ / {
+ 	model = "Pine64 PinePhone Developer Batch (1.0)";
+-	compatible = "pine64,pinephone-1.0", "allwinner,sun50i-a64";
++	compatible = "pine64,pinephone-1.0", "pine64,pinephone", "allwinner,sun50i-a64";
+ };
+ 
+ &sgm3140 {
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
+index c9b9f6e9ee8c..5e59d3752178 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dts
+@@ -7,7 +7,7 @@
+ 
+ / {
+ 	model = "Pine64 PinePhone Braveheart (1.1)";
+-	compatible = "pine64,pinephone-1.1", "allwinner,sun50i-a64";
++	compatible = "pine64,pinephone-1.1", "pine64,pinephone", "allwinner,sun50i-a64";
+ };
+ 
+ &backlight {
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts
+index acc0ab53b9c1..4e7e237cb46a 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dts
+@@ -7,7 +7,7 @@
+ 
+ / {
+ 	model = "Pine64 PinePhone (1.2)";
+-	compatible = "pine64,pinephone-1.2", "allwinner,sun50i-a64";
++	compatible = "pine64,pinephone-1.2", "pine64,pinephone", "allwinner,sun50i-a64";
+ 
+ 	wifi_pwrseq: wifi-pwrseq {
+ 		compatible = "mmc-pwrseq-simple";
+-- 
+2.26.2
 
