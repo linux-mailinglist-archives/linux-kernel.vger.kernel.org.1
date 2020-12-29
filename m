@@ -2,105 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92DD2E7036
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9323E2E7083
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgL2MBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 07:01:37 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:58836 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725979AbgL2MBh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 07:01:37 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTBrbs9003695;
-        Tue, 29 Dec 2020 06:00:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=JuJssSRaUYe6JFnUlHct2u9BzdB+OHvVGf7j9G8SCnk=;
- b=gjDWEht7MTPdC2ANpFk4QDdsLrwOG5527gEQW30S+7wwr8RYyGLZEHgM19AFkdS5C9t8
- JbF8/yDzqc2xpNW58TlGbCvoLD/SeB98HlFkEBv/epxCvgaJeqx7yQsjnoGfw/eUNVu4
- 2QlKvTsrXqrDPFlLnZ1OU0apWZ67TEpEaTUcEhzw7OYBW1E/hw35I311OJtClfaDLPri
- rGT95wqF+dhoyKBboolXaTFW33CetXYhmPl3UZtGhvlVjoX3Tdz4bt3WBRLLsqopTPvU
- b6aZSS97MsRoVierL4rl8iPu6QLK3D9A4JztTxkJAxIKMNfi3NDRp/mka2/92eacpRH5 pg== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35p2fs2a5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Dec 2020 06:00:41 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Dec
- 2020 12:00:39 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 29 Dec 2020 12:00:39 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6C2E111CB;
-        Tue, 29 Dec 2020 12:00:39 +0000 (UTC)
-Date:   Tue, 29 Dec 2020 12:00:39 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 04/14] mfd: arizona: Allow building arizona MFD-core as
- module
-Message-ID: <20201229120039.GI9673@ediswmail.ad.cirrus.com>
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-5-hdegoede@redhat.com>
+        id S1726314AbgL2MKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 07:10:45 -0500
+Received: from mail-db8eur05on2070.outbound.protection.outlook.com ([40.107.20.70]:49409
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726016AbgL2MKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 07:10:44 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c0+EhZ3r+E66TXYOqpK3wFNHvfq9sVsWJKaD4knDRhiip4OZMKzT/h1zEf1jgInW5BX+zGMnvchIMvemhKReJvlsDTVxfn4/zisLo8Muq6W9hDi5Zkdh0KsGChSXzbQTtA/xctTjdFfsv+BMlmTVse8mbT0uztvsJ8W8KsX21BpUoQFTH/Awz/3DeOPrBFLFay5FWu9j70Q1UQODqEeg2C+IxI+hhfzrVeLsd/njNvOwXl7v73VwPS9xcDbp4E14pK3DuGEj4/t9airCMG8vHCF9sgUvddw6YCgkxKza3Pi/ngJzkRyqVbnMNv12jWxOpz+quoF0oGkj1tA+443dFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FrdX5qQC0bDMROMzITwpF1um9Ec4pjifGKg5kLH8/C0=;
+ b=UYoVj1XFYohJb3Cp8p/tHjGhHwqSRvtiioMNAuNX5UNbBigksyw/UJJEDRZFMS1GyHZeRduKfr4sN/dRf9zUGvnGdrgdn/Cn6Vfq3p6u9dhlf0EO+9Mbuo6gvr9O0RYd2+r2M9mgZk/HJbbrXLB/7Q576W1L/GErZBsau9LnuJTJZqtruUP0r0WFB9/D4OMOYKlLX3ZN/YSjpdRZ9K/gukVLOLXHaR35d4yrjEZh0177geHrHaONZ5eCgpFqd9r7GX9WefIHHkPdLfnC0cQp3yl7imaIHKWy72Hzl4Gjp20M6TIAQbEPiqN2f4jD15/4xevoy+tqOX6mZvRg8x6l8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FrdX5qQC0bDMROMzITwpF1um9Ec4pjifGKg5kLH8/C0=;
+ b=f53WKKlfXo2YubD69HC4bSKL2zhduGcMeK+vQyUr5RN/H8XKnJ+DfZFRsk3gU0NKsYpVTuJUdZKDWulYlO64mLW9+S20tXonX8lOlDXChpFA7HgxkiSsg+U7HPtxtJluF2uxkgYdA7utEufxe0yKiJUAeDRVh2Tbd382vUnIBBw=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0401MB2533.eurprd04.prod.outlook.com (2603:10a6:4:37::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.29; Tue, 29 Dec
+ 2020 12:09:55 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3700.031; Tue, 29 Dec 2020
+ 12:09:54 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        robh+dt@kernel.org
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, krzk@kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 0/4] arm64: dts: imx8m: add spda bus
+Date:   Tue, 29 Dec 2020 20:00:41 +0800
+Message-Id: <1609243245-9671-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR03CA0161.apcprd03.prod.outlook.com
+ (2603:1096:4:c9::16) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201227211232.117801-5-hdegoede@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 mlxlogscore=935 spamscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012290075
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0161.apcprd03.prod.outlook.com (2603:1096:4:c9::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3721.12 via Frontend Transport; Tue, 29 Dec 2020 12:09:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: aeccf346-8cbb-4940-b4e5-08d8abf2a736
+X-MS-TrafficTypeDiagnostic: DB6PR0401MB2533:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0401MB253362850C9EAF8AD83C398788D80@DB6PR0401MB2533.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1GE30/zwyi9fx+CyZQ6qyiLJst5ttV7L71m9pI/j4ZKXGrb+YRbDOnqS5msUq7jJTVqLcVYtmnxqOFDVfH6V+0qjUahChXe2HsQVLzfSHAW8PFCpJld3/bM+mdxidPYCykp9jTfqRzlAslxGl2dcWPtFmHMFqr4khT/YjNiuXp0sf//ubgRRJzXtTPzLWAt0sIPGlJ9bhoA3+lGIZaO5UQu8JWO7wqnUaJSZYVMtJXxHI6lZO+VliFawp+Zn5q+U9hRgX4hTT2uB7bsX4aT2Sfy/KIiQIHgof7aGmRBQ7VqNGg1o53baUl2fMrDHM0qUCwV0nnhSFBfLCp0+vhEfJAsUEK76VxyOrxuQrTj8q0UCO3oTEZyKkZcglhodQu7TiBexX7pxl98/ctCZi+/im91LtKHSRRJyUXwYKrGAsNclwQf1YIyFGQDYA6v0moe+CiN2bBY8QvDm2HHXSSSXKRJae59bcSMBzk5NCU1tDiU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(66476007)(66556008)(66946007)(86362001)(52116002)(5660300002)(4744005)(2906002)(8936002)(26005)(16526019)(69590400010)(6666004)(36756003)(6512007)(8676002)(83380400001)(498600001)(9686003)(186003)(956004)(2616005)(6486002)(4326008)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+yPoRMAxpolMzsH0WA5fEldB4R56Esj8ze7y/C+163M5BqayFWGozvvPiVO+?=
+ =?us-ascii?Q?nYG/3uD9HNTKKQtWdlyQwOoA0ZjMqB+Ar7XFqJSZLsdbq9thLPrYwt0faUjG?=
+ =?us-ascii?Q?Wi6trrowlApnez0AJXq5K4jsPZbXONf7qK84IeNLr3NGRKHsTyzLCYoLRc2w?=
+ =?us-ascii?Q?Mv1CVae8eft8LIwdtMSMixRo0CkN3A9os1Gsp61LwABZsW8xK5okWzO03aeE?=
+ =?us-ascii?Q?kfOw1ovCVVQDbmLxRPtmZQr/6QuzwJBs+djHyNDCWM5RmjdOuBepz0GKQG0A?=
+ =?us-ascii?Q?hAZTZ7v4pXJssgmo90YXW1HXNUj3eUdUndtsHWVrKrqRnhMeJ0EXnWjCDuFe?=
+ =?us-ascii?Q?cLdv2CDPuPMpQHPZnb/Jl09NYciJAjzr83/Y8fECTwp/iGdtqVvfjZZ8+g8Z?=
+ =?us-ascii?Q?bBjbIYstaksAHS0pLpx7rsTJLc65CBZE30vOeb/09biDXIkTHCwAL4/XCqLZ?=
+ =?us-ascii?Q?3/mAuehT1BxN1FE4cyENrF2ozWJrgnUe7U8gRRgrTyNb3YYCdXbSic1JauLo?=
+ =?us-ascii?Q?/IIltxybJD2wr66hhjcfguS7YOHNlgxuX2Obypyfj4Tp2qfr4wbggiGZJ1Zv?=
+ =?us-ascii?Q?reFa8SpA2vvUr6VIZnVkjVsOH6PmiQNqAdQI7FcKBwuSlgnWoKDZ2IJqlK48?=
+ =?us-ascii?Q?Yu9q9DwX0fqXoTE39nP+W18oLtx+RFWmICm4xckmB+OkCbcvyPqYZ7YX6wbb?=
+ =?us-ascii?Q?mGUhLwP+v6Z2Rdh5cy8zc1sKYqPsSNLaLHBJMB98zUiStRE/4KQ3dEmi2GvP?=
+ =?us-ascii?Q?v5pGBVjndrMk3biAB5VR8JNQZMS7oFmcnQbN2v3pMreOUjlhz9wccOBL7lJl?=
+ =?us-ascii?Q?XPpKGIxa8CHxDiyWeo8gJGHlYpF09HcV4qo37XESUlA5cUWbJEtqaBpr/c3V?=
+ =?us-ascii?Q?piIVADqznTYVa2WXkJsu7csRsKoCh6r+HefDjmrFmaFDfkgEfqZo1b6bjo9Y?=
+ =?us-ascii?Q?ARYeO8Wd0guzW+jxvPzYR+QZXbjIRRSks7H0t34Xwn5zU0tqSwp/FcqScQEl?=
+ =?us-ascii?Q?2SLy?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2020 12:09:54.7521
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Network-Message-Id: aeccf346-8cbb-4940-b4e5-08d8abf2a736
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: B/oiZWPrtv/YErEEfdZIp53eLYWdPGDRW2kpKgBUNs329RHrsei7+Q8SShdoojEeUqbcp+z5Ofdc8ceikORf7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2533
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 10:12:22PM +0100, Hans de Goede wrote:
-> There is no reason why the arizona core,irq and codec model specific
-> regmap bits cannot be build as a module. All they do is export symbols
-> which are used by the arizona-spi and/or arizona-i2c modules, which
-> themselves can be built as module.
-> 
-> Change the Kconfig and Makefile arizona bits so that the arizona MFD-core
-> can be built as a module.
-> 
-> This is especially useful on x86 platforms with a WM5102 codec, this
-> allows the arizona MFD driver necessary for the WM5102 codec to be
-> enabled in generic distro-kernels without growing the base kernel-image
-> size.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
+From: Peng Fan <peng.fan@nxp.com>
 
-I think this patch might still cause some issues. ASoC has an
-idiom where the machine driver does a select on the necessary
-CODEC drivers. Select doesn't take care of dependencies etc. So I
-believe if you build the machine driver as built in, it then
-selects the CODEC as built in. If you have the MFD as a module
-the build then fails due to the the CODEC calling some Arizona
-functions.
+There is spba bus in aips1 and aips3, each spba bus has some
+peripherals inside, add the spba bus node
 
-arizona_request_irq, arizona_free_irq, arizona_set_irq_wake
+Peng Fan (4):
+  arm64: dts: imx8mn: add spba bus node of aips3
+  arm64: dts: imx8mn: add spba bus node
+  arm64: dts: imx8mn: add spba bus node
+  arm64: dts: imx8mq: add spba bus node
 
-On Madera we made the equivalents inline functions to avoid the
-issue, the same should work here.
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 362 ++++++++++----------
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 146 ++++----
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 386 +++++++++++-----------
+ 3 files changed, 467 insertions(+), 427 deletions(-)
 
-include/linux/irqchip/irq-madera.h
+-- 
+2.28.0
 
-Thanks,
-Charles
