@@ -2,137 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68E62E6EAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 08:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B86542E6EB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 08:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgL2HHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 02:07:09 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:22709 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgL2HHI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 02:07:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609225605; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=7zGtIOyD/hhxxV+ykkqwv0Q59u5xzFt43Oi7tidUFG4=; b=uphdxaObLakDrCgtgnDeTmdLB+WY0Gw+A2j4ADDHqWYr4Gdk9rv5J6+49FxML6LK+uN/xlyH
- xPFX/aoa/zVNF37OpM+OmOWrhKRH7yPEiYCpkEddlh/5nAiyxMkERrAZkeIjoO3t20DCqhBx
- zU/Z2hmmDkoxaa5xUods8yEUZTA=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fead55ecfd94dd3284629c1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Dec 2020 07:06:06
- GMT
-Sender: cjhuang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E074AC43461; Tue, 29 Dec 2020 07:06:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from cjhuang-Inspiron-7590.qca.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: cjhuang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A87E2C433C6;
-        Tue, 29 Dec 2020 07:06:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A87E2C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cjhuang@codeaurora.org
-From:   Carl Huang <cjhuang@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
-Subject: [PATCH v2] mhi: use irq_flags if client driver configures it
-Date:   Tue, 29 Dec 2020 02:05:51 -0500
-Message-Id: <20201229070551.3129-1-cjhuang@codeaurora.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726290AbgL2HTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 02:19:11 -0500
+Received: from mga04.intel.com ([192.55.52.120]:11855 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgL2HTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 02:19:10 -0500
+IronPort-SDR: kJgi/DFXkXKTzu65gduZgNlOhGsHoRACROFXvp8dLh9jbqwt2sHuMZEmIiO69tPaiyK7UbjWAN
+ Bob+yjabg4dQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="173888152"
+X-IronPort-AV: E=Sophos;i="5.78,457,1599548400"; 
+   d="scan'208";a="173888152"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 23:17:25 -0800
+IronPort-SDR: QKCKIStYkeNmfJgKwwFY1lbNsImWFJP+blXuQKbjL2cbTrl2SQEqqYBlWswOBNA1LnXwYwDFyL
+ u5/2oMz8bZjg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,457,1599548400"; 
+   d="scan'208";a="347286495"
+Received: from unknown (HELO clx-ap-likexu.sh.intel.com) ([10.239.48.105])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Dec 2020 23:17:23 -0800
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     syzkaller-bugs@googlegroups.com,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: x86/pmu: Fix UBSAN shift-out-of-bounds warning in intel_pmu_refresh()
+Date:   Tue, 29 Dec 2020 15:11:44 +0800
+Message-Id: <20201229071144.85418-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If client driver has specified the irq_flags, mhi uses this specified
-irq_flags. Otherwise, mhi uses default irq_flags.
+Since we know vPMU will not work properly when the guest bit_width(s) of
+the [gp|fixed] counters are greater than the host ones, so we can setup a
+smaller left shift value and refresh the guest pmu cpuid entry, thus fixing
+the following UBSAN shift-out-of-bounds warning:
 
-The purpose of this change is to support one MSI vector for QCA6390.
-MHI will use one same MSI vector too in this scenario.
+shift exponent 197 is too large for 64-bit type 'long long unsigned int'
 
-In case of one MSI vector, IRQ_NO_BALANCING is needed when irq handler
-is requested. The reason is if irq migration happens, the msi_data may
-change too. However, the msi_data is already programmed to QCA6390
-hardware during initialization phase. This msi_data inconsistence will
-result in crash in kernel.
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ intel_pmu_refresh.cold+0x75/0x99 arch/x86/kvm/vmx/pmu_intel.c:348
+ kvm_vcpu_after_set_cpuid+0x65a/0xf80 arch/x86/kvm/cpuid.c:177
+ kvm_vcpu_ioctl_set_cpuid2+0x160/0x440 arch/x86/kvm/cpuid.c:308
+ kvm_arch_vcpu_ioctl+0x11b6/0x2d70 arch/x86/kvm/x86.c:4709
+ kvm_vcpu_ioctl+0x7b9/0xdb0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3386
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Another issue is in case of one MSI vector, IRQF_NO_SUSPEND will trigger
-WARNINGS because QCA6390 wants to disable the IRQ during the suspend.
-
-To avoid above two issues, QCA6390 driver specifies the irq_flags in case
-of one MSI vector when mhi_register_controller is called.
-
-Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+Reported-by: syzbot+ae488dc136a4cc6ba32b@syzkaller.appspotmail.com
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
 ---
-v2:
-- document irq_flags added to mhi_controller
+ arch/x86/kvm/vmx/pmu_intel.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
- drivers/bus/mhi/core/init.c | 9 +++++++--
- include/linux/mhi.h         | 2 ++
- 2 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 0ffdebd..5f74e1e 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -148,12 +148,17 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
- {
- 	struct mhi_event *mhi_event = mhi_cntrl->mhi_event;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-+	unsigned long irq_flags = IRQF_SHARED | IRQF_NO_SUSPEND;
- 	int i, ret;
+diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+index a886a47daebd..a86a1690e75c 100644
+--- a/arch/x86/kvm/vmx/pmu_intel.c
++++ b/arch/x86/kvm/vmx/pmu_intel.c
+@@ -345,6 +345,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
  
-+	/* if client driver has set irq_flags, use it */
-+	if (mhi_cntrl->irq_flags)
-+		irq_flags = mhi_cntrl->irq_flags;
-+
- 	/* Setup BHI_INTVEC IRQ */
- 	ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
- 				   mhi_intvec_threaded_handler,
--				   IRQF_SHARED | IRQF_NO_SUSPEND,
-+				   irq_flags,
- 				   "bhi", mhi_cntrl);
- 	if (ret)
- 		return ret;
-@@ -171,7 +176,7 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
- 
- 		ret = request_irq(mhi_cntrl->irq[mhi_event->irq],
- 				  mhi_irq_handler,
--				  IRQF_SHARED | IRQF_NO_SUSPEND,
-+				  irq_flags,
- 				  "mhi", mhi_event);
- 		if (ret) {
- 			dev_err(dev, "Error requesting irq:%d for ev:%d\n",
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index d4841e5..918cf6a 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -353,6 +353,7 @@ struct mhi_controller_config {
-  * @fbc_download: MHI host needs to do complete image transfer (optional)
-  * @pre_init: MHI host needs to do pre-initialization before power up
-  * @wake_set: Device wakeup set flag
-+ * @irq_flags: irq flags passed to request_irq (optional)
-  *
-  * Fields marked as (required) need to be populated by the controller driver
-  * before calling mhi_register_controller(). For the fields marked as (optional)
-@@ -442,6 +443,7 @@ struct mhi_controller {
- 	bool fbc_download;
- 	bool pre_init;
- 	bool wake_set;
-+	unsigned long irq_flags;
- };
- 
- /**
+ 	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
+ 					 x86_pmu.num_counters_gp);
++	eax.split.bit_width = min_t(int, eax.split.bit_width, x86_pmu.bit_width_gp);
+ 	pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << eax.split.bit_width) - 1;
+ 	pmu->available_event_types = ~entry->ebx &
+ 					((1ull << eax.split.mask_length) - 1);
+@@ -355,6 +356,8 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+ 		pmu->nr_arch_fixed_counters =
+ 			min_t(int, edx.split.num_counters_fixed,
+ 			      x86_pmu.num_counters_fixed);
++		edx.split.bit_width_fixed = min_t(int,
++			edx.split.bit_width_fixed, x86_pmu.bit_width_fixed);
+ 		pmu->counter_bitmask[KVM_PMC_FIXED] =
+ 			((u64)1 << edx.split.bit_width_fixed) - 1;
+ 	}
 -- 
-2.7.4
+2.29.2
 
