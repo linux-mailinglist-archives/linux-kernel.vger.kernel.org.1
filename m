@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33792E7169
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 15:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB3C2E716B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 15:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgL2OdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 09:33:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57412 "EHLO mail.kernel.org"
+        id S1726610AbgL2OeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 09:34:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726388AbgL2OdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 09:33:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEA4E20867;
-        Tue, 29 Dec 2020 14:32:41 +0000 (UTC)
+        id S1726388AbgL2OeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 09:34:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A60D720825;
+        Tue, 29 Dec 2020 14:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609252362;
-        bh=o8G01+EUJ4PFnjk2eLKaq/MrDAUuZ0xOUrjXHZwYqGE=;
+        s=k20201202; t=1609252419;
+        bh=OM4yK2FWmzsUMhH7NnbeAd1mVNiGwmDdgVhLgqh66JY=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=X+9rYKhVsGuc9wHvNx5+mzgOh23QKwo4c2931HBq5/z/KxQFEPYwX8cTppMWdM0RW
-         g7jY32S770rWMEMr8Lc8emWtZWNjOHVZp8wgL0AsyYkCB6NdiCIc8yaFHw4xkbD71U
-         oi7dvM67rbvnvA5hj6ss53mQSEeuXqx8nyBFoX0jnXTdRFzgChyrRjgQIE5LLGNVz0
-         zRfu7W48+woEV28aZ47cMOrzoBwSjROh33wT58rjFY1hYO5Mri1x+Z3GTNrtjVAqy5
-         ezA99u6aIa5Y/7EGtgn9o38GmVauOTPG+b/bYjTA2ppwPscdyWkPeMFHnqWysM1pYl
-         mVB+fBKXkT0Rw==
+        b=rfsMvOxCxGJn4Rkpjxyzw430gzV2Szbm3dl+rI1zJ63q/f4HhXxkPzdpAGVhs/0aj
+         84MSPj7+Ff7fozUzlFMtqyb/69nUx+RNpQOpk09ixsNmF7BH75QA6p79fyjHmiKE4G
+         M/hi6imFtb5lFasZSPuQwTKB+CfwL1PlnnqQhSXe4vBBkhK+/nUGPgjLbKCQJjHwrJ
+         wTPJqFO4f3uQ4Grh1oNLQ5eM47t170f3p/GpdSEkyHslbPkAUz4p4j84OmQxn2nMi9
+         PtLUS0zkAAGU9f2IDiTTAwlFTibHGcnjX0ZDj3FCoqWbjfQkuFq2V7dqEU17AbbM1e
+         9ha1SmgSrgMiQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Xiaolei Wang <xiaolei.wang@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, david@lechnology.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org
-In-Reply-To: <20201229105046.41984-1-xiaolei.wang@windriver.com>
-References: <20201229105046.41984-1-xiaolei.wang@windriver.com>
-Subject: Re: [PATCH v3] regmap: debugfs: Fix a memory leak when calling regmap_attach_dev
-Message-Id: <160925234119.47920.2670168056681998812.b4-ty@kernel.org>
-Date:   Tue, 29 Dec 2020 14:32:21 +0000
+To:     linux-spi@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>
+Cc:     matthew.gerlach@linux.intel.com, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, trix@redhat.com, russell.h.weight@intel.com,
+        hao.wu@intel.com
+In-Reply-To: <1609219662-27057-1-git-send-email-yilun.xu@intel.com>
+References: <1609219662-27057-1-git-send-email-yilun.xu@intel.com>
+Subject: Re: (subset) [PATCH 0/2] fix the issue when xfer by spi-altera
+Message-Id: <160925239795.47982.14921180945738212657.b4-ty@kernel.org>
+Date:   Tue, 29 Dec 2020 14:33:17 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -39,41 +40,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Dec 2020 18:50:46 +0800, Xiaolei Wang wrote:
-> After initializing the regmap through
-> syscon_regmap_lookup_by_compatible, then regmap_attach_dev to the
-> device, because the debugfs_name has been allocated, there is no
-> need to redistribute it again
+On Tue, 29 Dec 2020 13:27:40 +0800, Xu Yilun wrote:
+> When doing spi xfer by spi-altera, divide by 0 exception happens in
+> spi_transfer_wait(), This is because the xfer->speed_hz is always
+> clamped to 0 by spi->controller->max_speed_hz, the feature is
+> introduced in:
 > 
-> unreferenced object 0xd8399b80 (size 64):
->   comm "swapper/0", pid 1, jiffies 4294937641 (age 278.590s)
->   hex dump (first 32 bytes):
-> 	64 75 6d 6d 79 2d 69 6f 6d 75 78 63 2d 67 70 72
-> dummy-iomuxc-gpr
-> 	40 32 30 65 34 30 30 30 00 7f 52 5b d8 7e 42 69
-> @20e4000..R[.~Bi
->   backtrace:
->     [<ca384d6f>] kasprintf+0x2c/0x54
->     [<6ad3bbc2>] regmap_debugfs_init+0xdc/0x2fc
->     [<bc4181da>] __regmap_init+0xc38/0xd88
->     [<1f7e0609>] of_syscon_register+0x168/0x294
->     [<735e8766>] device_node_get_regmap+0x6c/0x98
->     [<d96c8982>] imx6ul_init_machine+0x20/0x88
->     [<0456565b>] customize_machine+0x1c/0x30
->     [<d07393d8>] do_one_initcall+0x80/0x3ac
->     [<7e584867>] kernel_init_freeable+0x170/0x1f0
->     [<80074741>] kernel_init+0x8/0x120
->     [<285d6f28>] ret_from_fork+0x14/0x20
->     [<00000000>] 0x0
+> commit 9326e4f1e5dd ("spi: Limit the spi device max speed to controller's max speed")
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regmap: debugfs: Fix a memory leak when calling regmap_attach_dev
-      commit: cffa4b2122f5f3e53cf3d529bbc74651f95856d5
+[1/2] spi: altera: fix return value for altera_spi_txrx()
+      commit: ede090f5a438e97d0586f64067bbb956e30a2a31
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
