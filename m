@@ -2,134 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537CF2E716F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 15:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073C82E717B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 15:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgL2OgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 09:36:04 -0500
-Received: from mga09.intel.com ([134.134.136.24]:20295 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgL2OgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 09:36:04 -0500
-IronPort-SDR: EaGsnAmXK65klsB3oslnfVHBO9Jmi4hH0aMc1g7FhU5emadby+c3Ho62xSbnGDO1pM4WWxjH6t
- g4B7isMO+ZTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9849"; a="176652524"
-X-IronPort-AV: E=Sophos;i="5.78,458,1599548400"; 
-   d="scan'208";a="176652524"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2020 06:35:23 -0800
-IronPort-SDR: eYxPnBAWuuBFssEaZl+on9r7PyKlV5TajRHuQ2CGZcaFo3np2Uiks/13bzVdmbX/LUrwDE110k
- VixndsB/+xFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,458,1599548400"; 
-   d="scan'208";a="419194823"
-Received: from shbuild999.sh.intel.com ([10.239.147.98])
-  by orsmga001.jf.intel.com with ESMTP; 29 Dec 2020 06:35:18 -0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, andi.kleen@intel.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
-        Feng Tang <feng.tang@intel.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH 2/2] mm: memcg: add a new MEMCG_UPDATE_BATCH
-Date:   Tue, 29 Dec 2020 22:35:14 +0800
-Message-Id: <1609252514-27795-2-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
-References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
+        id S1726560AbgL2OrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 09:47:01 -0500
+Received: from st43p00im-ztfb10061701.me.com ([17.58.63.172]:52394 "EHLO
+        st43p00im-ztfb10061701.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726014AbgL2OrA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 09:47:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1609252552; bh=XO8zq2EXDKAyfVYGEamn7GG/YHuzCZsXUCUrRThi74Y=;
+        h=Date:From:To:Message-ID:MIME-Version:Content-Type;
+        b=ofTQu6C+ge0Xnv86Z/k/7QGh5P8W869S49EkUSSPlq+U0GIACDhr7izMJ5fRGpIdi
+         O0AnVTfOOeqPFd+SyyLEebGvBzZVosl7AjxJeWSpnft3tPbFlq9BNqfizGQlAKw5HJ
+         l6YCbPbIJVuBqw2N8tVihMK8r1h4Ju/wlAa8SPUqtBtWyBwUsfaZiNBG6BcqLTPKdV
+         gj8t4XHWeifhTa+9nzQyS6xEbtIk43M4WtnIyumgW51To8DgaXNyTGdxjH0ioq1+Ik
+         43Sw+fJ0MBcJby3pzdg1xmijNLAM9ylqlFfz7HLFEcwu62UgJuzL/se13ASflw1VBA
+         +qcY87Q/724tA==
+Received: from HP-Pavilion-13 (static-168-222-226-77.ipcom.comunitel.net [77.226.222.168])
+        by st43p00im-ztfb10061701.me.com (Postfix) with ESMTPSA id 3C990AC08E4;
+        Tue, 29 Dec 2020 14:35:50 +0000 (UTC)
+Date:   Tue, 29 Dec 2020 15:35:46 +0100
+From:   Manuel =?iso-8859-1?Q?Jim=E9nez?= <mjbfm99@me.com>
+To:     tiwai@suse.com, kailang@realtek.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Message-ID: <X+s+wvhNhzL32+Dk@HP-Pavilion-13>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-29_11:2020-12-28,2020-12-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=624 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2012290092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When profiling memory cgroup involved benchmarking, status update
-sometimes take quite some CPU cycles. Current MEMCG_CHARGE_BATCH
-is used for both charging and statistics/events updating, and is
-set to 32, which may be good for accuracy of memcg charging, but
-too small for stats update which causes concurrent access to global
-stats data instead of per-cpu ones.
+mjbfm99@me.com
+Bcc: 
+Subject: [PATCH] ALSA: hda/realtek: Add mute LED quirk for more HP laptops
+Reply-To: 
 
-So handle them differently, by adding a new bigger batch number
-for stats updating, while keeping the value for charging (though
-comments in memcontrol.h suggests to consider a bigger value too)
+HP Pavilion 13-bb0000 (SSID 103c:87c8) needs the same
+quirk as other models with ALC287.
 
-The new batch is set to 512, which considers 2MB huge pages (512
-pages), as the check logic mostly is:
-
-    if (x > BATCH), then skip updating global data
-
-so it will save 50% global data updating for 2MB pages
-
-Following are some performance data with the patch, against
-v5.11-rc1, on several generations of Xeon platforms. Each category
-below has several subcases run on different platform, and only the
-worst and best scores are listed:
-
-fio:				 +2.0% ~  +6.8%
-will-it-scale/malloc:		 -0.9% ~  +6.2%
-will-it-scale/page_fault1:	 no change
-will-it-scale/page_fault2:	+13.7% ~ +26.2%
-
-One thought is it could be dynamically calculated according to
-memcg limit and number of CPUs, and another is to add a periodic
-syncing of the data for accuracy reason similar to vmstat, as
-suggested by Ying.
-
-Signed-off-by: Feng Tang <feng.tang@intel.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Roman Gushchin <guro@fb.com>
+Signed-off-by: Manuel Jiménez <mjbfm99@me.com>
 ---
- include/linux/memcontrol.h | 2 ++
- mm/memcontrol.c            | 6 +++---
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index d827bd7..d58bf28 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -335,6 +335,8 @@ struct mem_cgroup {
-  */
- #define MEMCG_CHARGE_BATCH 32U
- 
-+#define MEMCG_UPDATE_BATCH 512U
-+
- extern struct mem_cgroup *root_mem_cgroup;
- 
- enum page_memcg_data_flags {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 605f671..01ca85d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -760,7 +760,7 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
-  */
- void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
- {
--	long x, threshold = MEMCG_CHARGE_BATCH;
-+	long x, threshold = MEMCG_UPDATE_BATCH;
- 
- 	if (mem_cgroup_disabled())
- 		return;
-@@ -800,7 +800,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- {
- 	struct mem_cgroup_per_node *pn;
- 	struct mem_cgroup *memcg;
--	long x, threshold = MEMCG_CHARGE_BATCH;
-+	long x, threshold = MEMCG_UPDATE_BATCH;
- 
- 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
- 	memcg = pn->memcg;
-@@ -905,7 +905,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
- 		return;
- 
- 	x = count + __this_cpu_read(memcg->vmstats_percpu->events[idx]);
--	if (unlikely(x > MEMCG_CHARGE_BATCH)) {
-+	if (unlikely(x > MEMCG_UPDATE_BATCH)) {
- 		struct mem_cgroup *mi;
- 
- 		/*
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index dde5ba209541..b77cef72c2d5 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7964,6 +7964,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8760, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877d, "HP", ALC236_FIXUP_HP_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
 -- 
-2.7.4
+2.29.2
 
