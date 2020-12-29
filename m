@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E562E71D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5E22E71D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgL2PZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:25:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726316AbgL2PZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:25:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D696F22242;
-        Tue, 29 Dec 2020 15:24:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609255490;
-        bh=eilapBpeoN7sFfsn0ggyc6cG1SRv9g+vbu+jGX2ZpLA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZuE4S5P8hITqz1X0escxosAV3o1TcBsgoMQeesxCNTHHQe/plvD7FZCCTDiLIcLPE
-         M7e05HXO+CUT6e9Zff8a3+X20r4zbjxf9KiwqenvAwvk33wV6ALdsIms9sLlVdGmXk
-         wKIm59mqBicAYE6HeMrLt25t6akFJyCSSC/9/5braxafr3QejL9ZRxfkyeAbczYOEm
-         qKKy5AYZLr0MtZmYvZwxrDuOBZTHMj7lnCAcxD9+/QrnlhHgcwBxC4DKfk/WnxUnBy
-         L4k732YoW7feYNMHf8FXVjHhUD05rVVwtC5tpm68hyzs1KiJc4wX/zoZe+E40WpW/k
-         syBd7vI0wl4Pg==
-Received: by mail-wr1-f47.google.com with SMTP id i9so14960866wrc.4;
-        Tue, 29 Dec 2020 07:24:49 -0800 (PST)
-X-Gm-Message-State: AOAM531ReujgvT47JiX8HA6mi05pn7Kkv6BAFEfRBvpYlgNL9Cb9mK10
-        JQHpLnAT02KSONsPcOlEnl5TLa6SXqv8AaCmcw==
-X-Google-Smtp-Source: ABdhPJwfw4rYEsYu8nEniPGc6G6JHID1nl4QlJyDYtZF/WHawvurk6lDHUtip9QnXX+NOG2EV9QTm0HD335QYsb/xq8=
-X-Received: by 2002:adf:e60f:: with SMTP id p15mr55674939wrm.60.1609255488542;
- Tue, 29 Dec 2020 07:24:48 -0800 (PST)
+        id S1726686AbgL2P0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:26:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgL2P0Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 10:26:24 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D73C0613D6;
+        Tue, 29 Dec 2020 07:25:27 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id q25so12051740otn.10;
+        Tue, 29 Dec 2020 07:25:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Wp95xn6bWLWiQPeFhAiO4UPvYEASlop/01yQ3VCyGaM=;
+        b=OD0uLxYHR6cqU93uITUGE5yrtKu97pDd8waH8uFPe4HaQ1BrchyuwwgbxiCAa44Bxt
+         x5Rmc3oURt6SNeQ1WRSjvg6w1E/GDi1rfNq4QJjKTdEa9rb0yNHBMSABI7fIdi5668AF
+         sW3QUy+utuhe9jYZ3+A93YmnBIqLk6hNd+pXh2h8Ic5Ye0jX08KV4xu1pkqMixvA/LNh
+         nZ4IK+DDt2TmyeYLvrtpikxzKNz4k0dWk804N3DMc8a3TNFH5UHk+ldZNmVc67AXlW0t
+         xNIHeij+MyuLd33NwpBOcThyr54dVd6GWFGUZL9tqeJDXzuqU5+SuT6/aeWA+Ajv+z94
+         GyJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Wp95xn6bWLWiQPeFhAiO4UPvYEASlop/01yQ3VCyGaM=;
+        b=Cs/mGws0a04QeXPPXAeF1V0PVWHDm18sbOuRJMN6EPf/xsb3jiSN3EwjdyOH7vR3Lg
+         KurRskdoq7Jw1LUmvDvFoLYTLOmNYYa5nTfJYhWPoxhNVfI9/cvd8Hh1vmKtTSj9Ew4u
+         dKAt0zX4YzEUrqtg+kqAMc7YagV49Pbk+iXBavQDKbsl9veyNC8PvGUJwfKTb8N+yXiE
+         oibrCgreVt+aGbqoI55X2vfsD40rfiIx6nxNl9wQ45VKpmW0sxK4mKRVTshyPzxgLqe5
+         MMyzPHLfKEm5IhIDg5euTfEy02hXaNZtL9rFKCU7zTOB0nHxeOvgx96ibv4ncOWYHP/r
+         y5lQ==
+X-Gm-Message-State: AOAM530z7NWAbhSbKKqZILzZnFzYXEf8G6Pu/a0Qeo/SpyF0FXPDva5B
+        coq3D0JuUnycI4XZzORYyu0=
+X-Google-Smtp-Source: ABdhPJwiu0Oy9zNX7tgghYHN8XIUgnmneBhFkURdp1nM0KBPPhnXGwiVUrfrlUqBDW/LWs7U5Z6Tfg==
+X-Received: by 2002:a9d:6642:: with SMTP id q2mr36320198otm.172.1609255527001;
+        Tue, 29 Dec 2020 07:25:27 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t186sm9753877oif.1.2020.12.29.07.25.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Dec 2020 07:25:26 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 29 Dec 2020 07:25:25 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/716] 5.10.4-rc2 review
+Message-ID: <20201229152525.GB49720@roeck-us.net>
+References: <20201229103832.108495696@linuxfoundation.org>
 MIME-Version: 1.0
-References: <1609144630-14721-1-git-send-email-yongqiang.niu@mediatek.com> <1609144630-14721-7-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1609144630-14721-7-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 29 Dec 2020 23:24:36 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9ZL9FEMKT_3xARh51hxK6_AbYJHci9ENXDwzCwNGo8Fg@mail.gmail.com>
-Message-ID: <CAAOTY_9ZL9FEMKT_3xARh51hxK6_AbYJHci9ENXDwzCwNGo8Fg@mail.gmail.com>
-Subject: Re: [PATCH v3, 6/8] soc: mediatek: mmsys: add component RDMA4
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229103832.108495696@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On Tue, Dec 29, 2020 at 11:52:58AM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.4 release.
+> There are 716 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 31 Dec 2020 10:36:33 +0000.
+> Anything received after that time might be too late.
+> 
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
-=8828=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=884:37=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> This patch add component RDMA4
+Build results:
+	total: 154 pass: 154 fail: 0
+Qemu test results:
+	total: 427 pass: 427 fail: 0
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  include/linux/soc/mediatek/mtk-mmsys.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/linux/soc/mediatek/mtk-mmsys.h b/include/linux/soc/m=
-ediatek/mtk-mmsys.h
-> index 09ee424..aa4f60e 100644
-> --- a/include/linux/soc/mediatek/mtk-mmsys.h
-> +++ b/include/linux/soc/mediatek/mtk-mmsys.h
-> @@ -38,6 +38,7 @@ enum mtk_ddp_comp_id {
->         DDP_COMPONENT_RDMA0,
->         DDP_COMPONENT_RDMA1,
->         DDP_COMPONENT_RDMA2,
-> +       DDP_COMPONENT_RDMA4,
->         DDP_COMPONENT_UFOE,
->         DDP_COMPONENT_WDMA0,
->         DDP_COMPONENT_WDMA1,
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Guenter
