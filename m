@@ -2,197 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE532E6E0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 06:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5F92E6E0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 06:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgL2FGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 00:06:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgL2FGO (ORCPT
+        id S1726161AbgL2FJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 00:09:37 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44775 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725967AbgL2FJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 00:06:14 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4EEC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 21:05:33 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id d13so13310585wrc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 21:05:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MtTLYi9/z5bmG8OV/D75QNEkytkigcLic7eAluHSrCY=;
-        b=t9u1IrL/S3W78GpLyJzQ8Qzl8cWPmCvKbbo7w/axT4HDhgZ+gDilMN1q1jFaIyhZdC
-         OU8hAO2aNrqmYhfagLWR/bEirursfUlBkFnVpi7xAZvc6kzVshYo4/Ihpsx97UYN0+LH
-         WTdMhYY4wewmrzM5dS6FE5R6fc7T+rM97v+X6llxUkakepof8dZE/AeWUJDMVJfg38ZQ
-         suN9aVmt+rUx8mJQFHDuZDA5UVXHIrjyvw63R9CxXMUb47Z1Ir5FLEN9uM3j5swJohRx
-         4mKBSXFf4fPfE/TBFvyCg7aGlYfMEr46AHQ3PuXVlrRIoXeG7oI9uj3VPuEfrvfbuyUP
-         q4wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MtTLYi9/z5bmG8OV/D75QNEkytkigcLic7eAluHSrCY=;
-        b=qVaVEg4nfVoSqpPPJRAHgYySUQjaE/LD19MyH4Nh116Ncg1gWxGQMDDsQ+M07LaYRY
-         4vrQ+hPhHwF7txi7SLSHoDzPz8Jr20rcog+cESPIrT1ge4NsMqfd6LqQFpdI5oN2zQR8
-         pLxcr2ueR27WivsUXQzyESDJtuERVcoIDG/9/m0UNybu6NT/HX9f2o4GgViwiFx3M6SD
-         i5Q3zfW6y4C5FPif1ebmOlF1xK8djGtzvOltbVeIENZcuE8D8ckfbF+BmyK/lxJVdkkx
-         Nr/VYdkkjemnJN8vKVPA8970jiziYwZSpavOGygkwZw6hsBVvuq4n58lXczX0b7O9aaB
-         lrDg==
-X-Gm-Message-State: AOAM531Dyx1L7WnYaY4Nf8/d3VvpSXoz1UUVjL74F5AcnCX22IoPpql4
-        +lWP5/D6+eNCpRBfSlujog1BfMkLVUzX/KTywCaVVg==
-X-Google-Smtp-Source: ABdhPJxLHZXfHgfk1GwltK7Tl1Tbo73bR6sjspJj13PwgW8mG6N0YLIxy1J5tc0rFLw9Lzv9PfemqI3Ugs9gQkLIxcM=
-X-Received: by 2002:adf:e44d:: with SMTP id t13mr53677244wrm.144.1609218332256;
- Mon, 28 Dec 2020 21:05:32 -0800 (PST)
+        Tue, 29 Dec 2020 00:09:36 -0500
+X-UUID: e4301387693b4638b66833880f68d291-20201229
+X-UUID: e4301387693b4638b66833880f68d291-20201229
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <michael.kao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 401845018; Tue, 29 Dec 2020 13:08:52 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 29 Dec 2020 13:09:37 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 29 Dec 2020 13:09:36 +0800
+From:   Michael Kao <michael.kao@mediatek.com>
+To:     <michael.kao@mediatek.com>, <fan.chen@mediatek.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
+CC:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        brian-sy yang <brian-sy.yang@mediatek.com>
+Subject: [PATCH v2] thermal: cpufreq_cooling: fix slab OOB issue
+Date:   Tue, 29 Dec 2020 13:08:31 +0800
+Message-ID: <20201229050831.19493-1-michael.kao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20201226163037.43691-1-vitaly.wool@konsulko.com>
- <CAAhSdy1M5pMjYHNWdOicb3N3fjTfQLEgE8tFb74sqGbPE_9eyQ@mail.gmail.com>
- <CAM4kBBJ3Vbytx=dFK7+DMByV3zK=FVLATSwjyuuygkDK1MCQjA@mail.gmail.com>
- <CAAhSdy0E8xspb3epBdrTmjg7vSQanG9zwyMY19eeDDL8z=WJFg@mail.gmail.com> <CAM4kBBJLnrp8XB1OZnv2FEuKdEQuQfDWdgwsV--9mZYB=JmJPQ@mail.gmail.com>
-In-Reply-To: <CAM4kBBJLnrp8XB1OZnv2FEuKdEQuQfDWdgwsV--9mZYB=JmJPQ@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 29 Dec 2020 10:35:20 +0530
-Message-ID: <CAAhSdy1VMujreaaWCDjO9BPa0P2As7c0Hh3riZsY3ncU3NnsGg@mail.gmail.com>
-Subject: Re: [PATCH] riscv: add BUILTIN_DTB support for MMU-enabled targets
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Bin Meng <bin.meng@windriver.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 89869AB40C5636F00832BEFA7C75FECE2ED5AC7D82557EE0D66B7497DA6FFB252000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 10:08 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
->
-> On Mon, Dec 28, 2020 at 3:10 PM Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Mon, Dec 28, 2020 at 7:05 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
-> > >
-> > > On Mon, Dec 28, 2020 at 12:59 PM Anup Patel <anup@brainfault.org> wrote:
-> > > >
-> > > > On Sat, Dec 26, 2020 at 10:03 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
-> > > > >
-> > > > > Sometimes, especially in a production system we may not want to
-> > > > > use a "smart bootloader" like u-boot to load kernel, ramdisk and
-> > > > > device tree from a filesystem on eMMC, but rather load the kernel
-> > > > > from a NAND partition and just run it as soon as we can, and in
-> > > > > this case it is convenient to have device tree compiled into the
-> > > > > kernel binary. Since this case is not limited to MMU-less systems,
-> > > > > let's support it for these which have MMU enabled too.
-> > > > >
-> > > > > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> > > > > ---
-> > > > >  arch/riscv/Kconfig   |  1 -
-> > > > >  arch/riscv/mm/init.c | 12 ++++++++++--
-> > > > >  2 files changed, 10 insertions(+), 3 deletions(-)
-> > > > >
-> > > > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > > > > index 2b41f6d8e458..9464b4e3a71a 100644
-> > > > > --- a/arch/riscv/Kconfig
-> > > > > +++ b/arch/riscv/Kconfig
-> > > > > @@ -419,7 +419,6 @@ endmenu
-> > > > >
-> > > > >  config BUILTIN_DTB
-> > > > >         def_bool n
-> > > > > -       depends on RISCV_M_MODE
-> > > > >         depends on OF
-> > > > >
-> > > > >  menu "Power management options"
-> > > > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > > > > index 87c305c566ac..5d1c7a3ec01c 100644
-> > > > > --- a/arch/riscv/mm/init.c
-> > > > > +++ b/arch/riscv/mm/init.c
-> > > > > @@ -194,12 +194,20 @@ void __init setup_bootmem(void)
-> > > > >         setup_initrd();
-> > > > >  #endif /* CONFIG_BLK_DEV_INITRD */
-> > > > >
-> > > > > +       /*
-> > > > > +        * If DTB is built in, no need to reserve its memblock.
-> > > > > +        * OTOH, initial_boot_params has to be set to properly copy DTB
-> > > > > +        * before unflattening later on.
-> > > > > +        */
-> > > > > +       if (IS_ENABLED(CONFIG_BUILTIN_DTB))
-> > > > > +               initial_boot_params = __va(dtb_early_pa);
-> > > >
-> > > > Don't assign initial_boot_params directly here because the
-> > > > early_init_dt_scan() will do it.
-> > >
-> > > early_init_dt_scan will set initial_boot_params to dtb_early_va from
-> > > the early mapping which will be gone by the time
-> > > unflatten_and_copy_device_tree() is called.
-> >
-> > That's why we are doing early_init_dt_verify() again for the MMU-enabled
-> > case which already takes care of your concern.
->
-> I might be out in the woods here but... Do you mean the call to
-> early_init_dt_verify() in setup_arch() which is compiled out
-> completely in the CONFIG_BUILTIN_DTB case?
-> Or is there any other call that I'm overlooking?
+From: brian-sy yang <brian-sy.yang@mediatek.com>
 
-Sorry for the confusion, what I meant was that we are calling
-early_init_dt_verify() from setup_arch() for the MMU-enabled
-with built-in DTB disabled case to update "initial_boot_params"
-after the boot CPU has switched from early_pg_dir to swapper_pg_dir.
+Slab OOB issue is scanned by KASAN in cpu_power_to_freq().
+If power is limited below the power of OPP0 in EM table,
+it will cause slab out-of-bound issue with negative array
+index.
 
-For MMU-enabled with built-in DTB case, if setup_vm() sets the
-dtb_early_va and dtb_early_pa correctly then early_init_dt_scan()
-called from setup_arch() will automatically set correct value for
-"initial_boot_params".
+Return the lowest frequency if limited power cannot found
+a suitable OPP in EM table to fix this issue.
 
-It is strange that early_init_dt_verify() is being compiled-out for you
-because the early_init_dt_scan() called from setup_arch() also uses
-early_init_dt_verify(). I quickly compiled the NoMMU kernel for K210
-which also uses built-in DTB and I see that early_init_dt_verify()
-is not being compiled-out when built-in DTB is enabled.
+Backtrace:
+[<ffffffd02d2a37f0>] die+0x104/0x5ac
+[<ffffffd02d2a5630>] bug_handler+0x64/0xd0
+[<ffffffd02d288ce4>] brk_handler+0x160/0x258
+[<ffffffd02d281e5c>] do_debug_exception+0x248/0x3f0
+[<ffffffd02d284488>] el1_dbg+0x14/0xbc
+[<ffffffd02d75d1d4>] __kasan_report+0x1dc/0x1e0
+[<ffffffd02d75c2e0>] kasan_report+0x10/0x20
+[<ffffffd02d75def8>] __asan_report_load8_noabort+0x18/0x28
+[<ffffffd02e6fce5c>] cpufreq_power2state+0x180/0x43c
+[<ffffffd02e6ead80>] power_actor_set_power+0x114/0x1d4
+[<ffffffd02e6fac24>] allocate_power+0xaec/0xde0
+[<ffffffd02e6f9f80>] power_allocator_throttle+0x3ec/0x5a4
+[<ffffffd02e6ea888>] handle_thermal_trip+0x160/0x294
+[<ffffffd02e6edd08>] thermal_zone_device_check+0xe4/0x154
+[<ffffffd02d351cb4>] process_one_work+0x5e4/0xe28
+[<ffffffd02d352f44>] worker_thread+0xa4c/0xfac
+[<ffffffd02d360124>] kthread+0x33c/0x358
+[<ffffffd02d289940>] ret_from_fork+0xc/0x18
 
-Regards,
-Anup
+Fixes: 371a3bc79c11b ("thermal/drivers/cpufreq_cooling: Fix wrong frequency converted from power")
+Signed-off-by: brian-sy yang <brian-sy.yang@mediatek.com>
+Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+---
 
->
-> Best regards,
->    Vitaly
->
-> > We use early_init_dt_verify() like most architectures to set the initial DTB.
-> >
-> > >
-> > > > The setup_vm() is supposed to setup dtb_early_va and dtb_early_pa
-> > > > for MMU-enabled case so please add a "#ifdef" over there for the
-> > > > built-in DTB case.
-> > > >
-> > > > > +       else
-> > > > > +               memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
-> > > > > +
-> > > > >         /*
-> > > > >          * Avoid using early_init_fdt_reserve_self() since __pa() does
-> > > > >          * not work for DTB pointers that are fixmap addresses
-> > > > >          */
-> > > >
-> > > > This comment needs to be updated and moved along the memblock_reserve()
-> > > > statement.
-> > > >
-> > > > > -       memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
-> > > > > -
-> > > > >         early_init_fdt_scan_reserved_mem();
-> > > > >         dma_contiguous_reserve(dma32_phys_limit);
-> > > > >         memblock_allow_resize();
-> > > > > --
-> > > > > 2.29.2
-> > > > >
-> > > >
-> > > > This patch should be based upon Damiens builtin DTB patch.
-> > > > Refer, https://www.spinics.net/lists/linux-gpio/msg56616.html
-> > >
-> > > Thanks for the pointer, however I don't think our patches have
-> > > intersections. Besides, Damien is dealing with the MMU-less case
-> > > there.
-> >
-> > Damien's patch is also trying to move to use generic BUILTIN_DTB
-> > support for the MMU-less case so it is similar work hence the chance
-> > of patch conflict.
-> >
-> > Regards,
-> > Anup
+Changes from v1:
+- add fixes tag
+- add reviewed-by
+
+ drivers/thermal/cpufreq_cooling.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+index cc2959f22f01..fb33b3480a8f 100644
+--- a/drivers/thermal/cpufreq_cooling.c
++++ b/drivers/thermal/cpufreq_cooling.c
+@@ -123,7 +123,7 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
+ {
+ 	int i;
+ 
+-	for (i = cpufreq_cdev->max_level; i >= 0; i--) {
++	for (i = cpufreq_cdev->max_level; i > 0; i--) {
+ 		if (power >= cpufreq_cdev->em->table[i].power)
+ 			break;
+ 	}
+-- 
+2.18.0
+
