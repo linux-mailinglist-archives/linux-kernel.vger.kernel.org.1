@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1650D2E72F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142082E72F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 19:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbgL2SQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 13:16:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgL2SQp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 13:16:45 -0500
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C551C061574;
-        Tue, 29 Dec 2020 10:16:05 -0800 (PST)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4D52f16GcszQlWv;
-        Tue, 29 Dec 2020 19:15:37 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dylanvanassche.be;
-        s=MBO0001; t=1609265733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=uAi+P0BDIEVHfAACitvE53eerN20LFfY1Wewe1kXQaM=;
-        b=AITspcHidfh0o2Koyv8GGx6LejfKuLEYDkvdSWtFsuT2B382SF7LbEUWbKMv8NCRY68xg+
-        Odw/ICFWz8xuP1HFJdfqBBQx6WI5tws7orpjwTo2jpnojoAbHHOXieZVTsnR/l5lq+VEkV
-        Wg8T6hmDS6lOEGP/wLZyalRH59hx3Ho7gTMBB35vxBSfomd5QXTtivv3bTtfYx8vsFX+Sx
-        pAty3u+ZBcnfhdGD3zkLFK8k/mK+IG1wgFqCKbDuVoy5XF70paFq6zkHh1d1+JLxx2wxpP
-        Apb9qmSkVw/zWfYn7KTELn/0vhjDP5KehokA+Fv3QoUu0NNe2SM/t9OrkGahnw==
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id 2yVREUYdCIF0; Tue, 29 Dec 2020 19:15:32 +0100 (CET)
-From:   Dylan Van Assche <me@dylanvanassche.be>
-To:     pavel@ucw.cz, dmurphy@ti.com, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Dylan Van Assche <me@dylanvanassche.be>
-Subject: [PATCH v3] leds: gpio: Set max brightness to 1
-Date:   Tue, 29 Dec 2020 19:15:12 +0100
-Message-Id: <20201229181512.21057-1-me@dylanvanassche.be>
+        id S1726305AbgL2SQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 13:16:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726138AbgL2SQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 13:16:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2A8922209;
+        Tue, 29 Dec 2020 18:16:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609265772;
+        bh=xanVi1iw88MT8ZhxmKG43l0yIw1fF5uWKSjJPRJhZSQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m2gA0N65pNUHyzDdejFZhUVX/ICIMJUg6D32qYU6SkGXYT+cE6P15SdzizG15J0Bk
+         QsEkP8w8mgN2jTbyA7S+B/gujST3XR7BFiWo8UvmS20LH+/4UH9uYo1SxU33T/J/hC
+         2uTAgH2rtDBZ9QjLS/afZ51CJg3SzDXfqhXD75T8BpAC139xU0tBqf/N8fBSiK9eAf
+         TeGIziPZBjT2BfLqpHYuiFPvJx48WMXcamHhJmEb2ZHIR8MhWaaDcqv2oQfvpdBz0H
+         VLChngXsiXm17NcrXBWTSqbCg6G5CBlg2xkS4gasCQtMWuu8wRV1Fq0POybhWVk1tP
+         3OHkSXLdPxs1w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6978C411E9; Tue, 29 Dec 2020 15:16:29 -0300 (-03)
+Date:   Tue, 29 Dec 2020 15:16:29 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v6 2/4] perf: support build BPF skeletons with perf
+Message-ID: <20201229181629.GJ521329@kernel.org>
+References: <20201228174054.907740-1-songliubraving@fb.com>
+ <20201228174054.907740-3-songliubraving@fb.com>
+ <CAM9d7chjWMFNeQMBftu725cTbCRauUJinQSqy9E9itv=AJXvyA@mail.gmail.com>
+ <20201229114828.GG521329@kernel.org>
+ <7219C2C5-48F1-44A3-9787-FBD39CC58514@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -6.12 / 15.00 / 15.00
-X-Rspamd-Queue-Id: E0BF11726
-X-Rspamd-UID: e92318
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7219C2C5-48F1-44A3-9787-FBD39CC58514@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GPIO LEDs only know 2 states: ON or OFF and do not have PWM capabilities.
-However, the max brightness is reported as 255.
+Em Tue, Dec 29, 2020 at 05:14:12PM +0000, Song Liu escreveu:
+> > On Dec 29, 2020, at 3:48 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 
-This patch sets the max brightness value of a GPIO controlled LED to 1.
+> > Em Tue, Dec 29, 2020 at 04:01:41PM +0900, Namhyung Kim escreveu:
+> >> On Tue, Dec 29, 2020 at 2:41 AM Song Liu <songliubraving@fb.com> wrote:
+> >>> BPF programs are useful in perf to profile BPF programs. BPF skeleton is
 
-Tested on my PinePhone 1.2.
+> >> I'm having difficulties understanding the first sentence - looks like a
+> >> recursion. :)  So do you want to use two (or more) BPF programs?
 
-Signed-off-by: Dylan Van Assche <me@dylanvanassche.be>
----
-Changelog                                          
-  - v2 drops an obsolete change in include/linux/leds.h
-  - v3 simplifies the patch and makes it more readable
+> > Yeah, we use perf to perf perf, so we need to use bpf with perf to perf
+> > bpf :-)
 
- drivers/leds/leds-gpio.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> > Look at tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c, the BPF
+> > skeleton used to create the in-kernel scaffold to profile BPF programs.
 
-diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
-index 93f5b1b60fde..b5d5e22d2d1e 100644
---- a/drivers/leds/leds-gpio.c
-+++ b/drivers/leds/leds-gpio.c
-@@ -96,7 +96,8 @@ static int create_gpio_led(const struct gpio_led *template,
- 	} else {
- 		state = (template->default_state == LEDS_GPIO_DEFSTATE_ON);
- 	}
--	led_dat->cdev.brightness = state ? LED_FULL : LED_OFF;
-+	led_dat->cdev.brightness = state;
-+	led_dat->cdev.max_brightness = 1;
- 	if (!template->retain_state_suspended)
- 		led_dat->cdev.flags |= LED_CORE_SUSPENDRESUME;
- 	if (template->panic_indicator)
--- 
-2.26.2
+> > It uses two BPF programs (fentry/XXX and fexit/XXX) and some a
+                                                           s/some//
+> > PERF_EVENT_ARRAY map and an array to diff counters read at exit from
+> > counters read at exit of the profiled BPF programs and then accumulate
+                    s/exit/entry/
+> > those diffs in another PERCPU_ARRAY.
 
+> > This all ends up composing a "BPF PMU" that is what the userspace perf
+> > tooling will read (from "accum_readings" BPF map)  and 'perf stat' will
+> > consume as if reading from an "old style perf counter" :-)
+
+> > Song, did I get it right? :-)
+ 
+> Thanks Arnaldo! I don't think anyone can explain it better. :-)
+
+There, a patch :-)
+
+- Arnaldo
