@@ -2,104 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4504F2E74F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 23:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF93D2E74FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 23:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgL2WO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 17:14:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
+        id S1726203AbgL2WYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 17:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726244AbgL2WO6 (ORCPT
+        with ESMTP id S1726138AbgL2WYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 17:14:58 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FF7C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 14:14:18 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id s15so7740469plr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 14:14:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PizDOlpVsbZH64i8GikIjYAR5gm+hOoRIX/6bX40NPY=;
-        b=tIkFpkAYvxjSJbAi6xFgMwqFfQ1saKG9rOj6RgONZ75cs96TTDk3U4q+QkAzIWv+nL
-         jjStgb0rHgjLB2LmJ/6FZcjzd0V4XfBAtXZm+P6Y5NfOhxwPrnsNxXC6tyl5eO4waGxy
-         xCPwIbGAuh/eipyySHHCNgd4f7wveAwpY00nt9F2ho5JVq2OcNFuSerHcv96O/MJeveq
-         kvL/c4a1s8SDktbqBX8RBhp928WpSjoXYupqCttcYtDJa6oHJFXbKZI7K5BhVNSrmfky
-         y8vR3cDDnc3LDuyPA2fkD1CS+umzgKxHXk2wUeRRFC+OYR0beisUadB2OeI4eyPNbyc7
-         x8RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PizDOlpVsbZH64i8GikIjYAR5gm+hOoRIX/6bX40NPY=;
-        b=WmZn8quEKembtXwGfCgHJfgWEFq2Iyqxom+DBBEjDOkPuw1L4scKX+y/EB3lWQzIXP
-         MimhyKSbdh3Zbxx8GjLzoInRUxagcL/AkC59YO25/zQGcnfTx8Ju8cMlpFnqTR09bscx
-         QgRh6ISUpqVvHxIMUMILddiHRIRjgwdAUUhkvFDRa9Tt3CuxnHbPLmuEanHTClRpm8i5
-         O5g9Ck1JNUY0zR3ujEW9Z2cW8JQYTha6xzmH1wiTBXrADjhyaPfE+PLeu84WalB0Z52W
-         YZ23NHWWKhmavmJsjxRz41DGN121p1LTqWO1g42XEC2ykMeAW70VLxqlplaPwVvdUl1R
-         T1Gw==
-X-Gm-Message-State: AOAM532JNYVmNfrBOj5U9lqftfgcUPC3KVJegCWvszF6LcOIQo89RSHN
-        BiwuDNfamIXSwo2jk86zf7rt/g==
-X-Google-Smtp-Source: ABdhPJwCYt4hVFX1UCVZSMle7MH/FQuzhRpMwILJYtblJPy2Nl/nv6I1upp2/FZoRpWvv4cwqDSx0Q==
-X-Received: by 2002:a17:902:7c04:b029:db:e44d:9366 with SMTP id x4-20020a1709027c04b02900dbe44d9366mr50594161pll.51.1609280057285;
-        Tue, 29 Dec 2020 14:14:17 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id 4sm4346037pjn.14.2020.12.29.14.14.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Dec 2020 14:14:16 -0800 (PST)
-Date:   Tue, 29 Dec 2020 14:14:10 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>
-Subject: Re: [PATCH v3] KVM/x86: Move definition of __ex to x86.h
-Message-ID: <X+uqMvJDXCHH199o@google.com>
-References: <20201221194800.46962-1-ubizjak@gmail.com>
- <X+pwQrLgVcMg0x3M@google.com>
+        Tue, 29 Dec 2020 17:24:08 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC562C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 14:23:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=j/bNtqMm2dxQxj54tA+5zXYhll2ElA1bhXS58HU9rB8=; b=HF87GccL7FEt19lB2EOb+Dp1vL
+        pJwxP4UUvqUkpZLrydtqaiJ6BMXK5dYiDyflIsEremMLY1RDv1d5wPWb2uBdcoLg1ahhcREGhwdtq
+        JEYPbVZmI0fo5XY1nBo7Ft677yCx+6f9jGdTDEiuO8agsCmZX2BFdz5kQ7DKDjOzqFhy4qrQJf85i
+        O2w17+RGBkyx1IrrGh+cDLxY7mE4lVQ/MK0z57C8w9M21pmu2PRVGmHO2XLS1TjAdxxp7yOT7CD+w
+        zJKnUoqBj1NaMpWeBeHjSDfIirUbZd9Ohu1xfqJtmEroBAZjp2bhNMnWRU/IfaW7+HnM3ie1mrMaC
+        tD3+xH3w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kuNOZ-000H1i-D0; Tue, 29 Dec 2020 22:23:18 +0000
+Date:   Tue, 29 Dec 2020 22:23:11 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org
+Subject: Re: [PATCH -mm] mm: readahead: apply a default readahead size
+Message-ID: <20201229222311.GD28221@casper.infradead.org>
+References: <20201229212634.31307-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X+pwQrLgVcMg0x3M@google.com>
+In-Reply-To: <20201229212634.31307-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020, Sean Christopherson wrote:
-> On Mon, Dec 21, 2020, Uros Bizjak wrote:
-> > Merge __kvm_handle_fault_on_reboot with its sole user
-> > and move the definition of __ex to a common include to be
-> > shared between VMX and SVM.
-> > 
-> > v2: Rebase to the latest kvm/queue.
-> > 
-> > v3: Incorporate changes from review comments.
+On Tue, Dec 29, 2020 at 01:26:34PM -0800, Randy Dunlap wrote:
+> UBSAN reports an invalid shift size:
 > 
-> The v2, v3, ... vN patch history should go below the '---' so that it doesn't
-> need to be manually stripped when applying.
+> mr-fox kernel: UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
+> mr-fox kernel: shift exponent 64 is too large for 64-bit type 'long unsigned int'
 > 
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Sean Christopherson <seanjc@google.com>
-> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
-> > ---
+> Original report:
+> https://lore.kernel.org/lkml/c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de/
 > 
-> vN stuff down here
+> Follow-up report:
+> https://lore.kernel.org/lkml/0c283ea9-b446-0e40-6dc8-e9585ae171b4@gmx.de/T/#m9b604660925f9e8a544f7453130c31d083c1e5bb
 > 
-> >  arch/x86/include/asm/kvm_host.h | 25 -------------------------
-> >  arch/x86/kvm/svm/sev.c          |  2 --
-> >  arch/x86/kvm/svm/svm.c          |  2 --
-> >  arch/x86/kvm/vmx/vmx.c          |  4 +---
-> >  arch/x86/kvm/vmx/vmx_ops.h      |  4 +---
-> >  arch/x86/kvm/x86.h              | 24 ++++++++++++++++++++++++
-> >  6 files changed, 26 insertions(+), 35 deletions(-)
 > 
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> Willy suggested that get_init_ra_size() was being called with a size of 0,
+> which would cause this (instead of some Huge value), so add a check in
+> that function for size == 0, and if 0, default it to 32 (pages).
 
-Paolo, can you hold off on queuing this patch?  Long story short, this jogged my
-memory for something tangentially related and I ended up with series that kills
-off __ex() / ____kvm_handle_fault_on_reboot() completely.  It's coded up, I just
-need to test.  I'm OOO for a few days, will hopefully get it posted next week.
+No, this is wrong.  'size' in this case is the size of the read.
+And it's zero.  Is this fixed by commit
+3644e2d2dda78e21edd8f5415b6d7ab03f5f54f3
 
-Thanks!
