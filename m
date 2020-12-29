@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5642E6DAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 04:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF02E2E6DAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 04:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbgL2DxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 22:53:11 -0500
-Received: from out28-171.mail.aliyun.com ([115.124.28.171]:43047 "EHLO
-        out28-171.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgL2DxL (ORCPT
+        id S1727770AbgL2DzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 22:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgL2DzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 22:53:11 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.109993|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00600531-0.000138118-0.993857;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=bo.liu@senarytech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.JCdxAfz_1609213946;
-Received: from localhost.localdomain(mailfrom:bo.liu@senarytech.com fp:SMTPD_---.JCdxAfz_1609213946)
-          by smtp.aliyun-inc.com(10.194.99.21);
-          Tue, 29 Dec 2020 11:52:28 +0800
-From:   bo.liu@senarytech.com
-To:     perex@perex.cz, tiwai@suse.com
-Cc:     bo.liu@senarytech.com, mirq-linux@rere.qmqm.pl,
-        gustavoars@kernel.org, pegro@friiks.de,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] sound: pci: hda: add a new hda codec
-Date:   Tue, 29 Dec 2020 11:52:26 +0800
-Message-Id: <20201229035226.62120-1-bo.liu@senarytech.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 28 Dec 2020 22:55:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DCCC0613D6;
+        Mon, 28 Dec 2020 19:54:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=nfSJJiBRRh3gR0oJDJf5MDGnGvnvpbyxOsiI4umA4Q0=; b=RriK5QGVdQwfz6XAzPD2YMGgT5
+        4PNhr/Vh4FKKAeKfoUPtG7Zc/ryLfhKfoYVSIcMoJrJC+Gu5PuTPPYUpq0WvHmn73++ehuv098bpb
+        RQLXVF7xrPMY2OAnEbqFVW+Y1+I3enmd2JrIGMs0o9KZ6s+W5RiReG6sAK0gmObGpzgWOUJ+t2BBD
+        HNR27KM4GLxkL3WBC8AT0fbHoJ/4RekM5KuZqeS+J/YB/v1CDBsAkGE5LJ8LIvolg/FMCW76qSm/x
+        JUCmar38OOql1O9ugJ4HpCNZTAbul/gekiwytDKuPAz2rn8jKmjshHtHpbLOyADs6crPQTd/Yhyyn
+        l7D5qa9Q==;
+Received: from [2601:1c0:6280:3f0::2c43] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ku65g-0000j1-HE; Tue, 29 Dec 2020 03:54:33 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Kun Yi <kunyi@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Subject: [PATCH] hwmon: fix sbtsi_temp Documenation kernel-doc warning
+Date:   Mon, 28 Dec 2020 19:54:28 -0800
+Message-Id: <20201229035428.31270-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: bo liu <bo.liu@senarytech.com>
+Fix Documentation/hwmon/ kernel-doc warning in 5.11-rc1:
 
-The current kernel does not support the cx11970 codec chip.
-Add a codec configuration item to kernel.
+lnx-511-rc1/Documentation/hwmon/sbtsi_temp.rst:4: WARNING: Title underline too short.
 
-Signed-off-by: bo liu <bo.liu@senarytech.com>
+Kernel driver sbtsi_temp
+==================
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index be5000dd1585..e80fe8ba537c 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -1070,6 +1070,7 @@ static int patch_conexant_auto(struct hda_codec *codec)
- static const struct hda_device_id snd_hda_id_conexant[] = {
- 	HDA_CODEC_ENTRY(0x14f11f86, "CX8070", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f12008, "CX8200", patch_conexant_auto),
-+	HDA_CODEC_ENTRY(0x14f120D0, "CX11970", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f15045, "CX20549 (Venice)", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f15047, "CX20551 (Waikiki)", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f15051, "CX20561 (Hermosa)", patch_conexant_auto),
+Fixes: 6ec3fcf556fe ("hwmon: (sbtsi) Add documentation")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Kun Yi <kunyi@google.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Jean Delvare <jdelvare@suse.com>
+Cc: linux-hwmon@vger.kernel.org
 ---
- sound/pci/hda/patch_conexant.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/hwmon/sbtsi_temp.rst |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index be5000dd1585..e80fe8ba537c 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -1070,6 +1070,7 @@ static int patch_conexant_auto(struct hda_codec *codec)
- static const struct hda_device_id snd_hda_id_conexant[] = {
- 	HDA_CODEC_ENTRY(0x14f11f86, "CX8070", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f12008, "CX8200", patch_conexant_auto),
-+	HDA_CODEC_ENTRY(0x14f120D0, "CX11970", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f15045, "CX20549 (Venice)", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f15047, "CX20551 (Waikiki)", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f15051, "CX20561 (Hermosa)", patch_conexant_auto),
--- 
-2.25.1
-
+--- lnx-511-rc1.orig/Documentation/hwmon/sbtsi_temp.rst
++++ lnx-511-rc1/Documentation/hwmon/sbtsi_temp.rst
+@@ -1,7 +1,7 @@
+ .. SPDX-License-Identifier: GPL-2.0-or-later
+ 
+ Kernel driver sbtsi_temp
+-==================
++========================
+ 
+ Supported hardware:
+ 
