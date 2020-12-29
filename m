@@ -2,69 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4266A2E71F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468FB2E71F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgL2PvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:51:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726511AbgL2PvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:51:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D92420825;
-        Tue, 29 Dec 2020 15:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609257032;
-        bh=idGHe6XgGrHrozlc5y1HPIckvhMG9YuWl1lvsglwhz8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TAi10HZxlh4JvE6fYT9TDJ0pHxU5GT7r8p0bBUvlz1wEJEUCxBhnk+kenRazJmZ2G
-         f+GEUAzurFkyDHoj8j0VuH/5A6OqHKpYoTxvQpJVVb91FAdSgRIBQWyowG6RkQ3HT2
-         PrmsZk29tuX+i8emiWw+n3VrX2B00kU9pqhRHDUZ5os+gAtJQzRAQ8OeA6+35JPbcK
-         81pU/Ux9zGZlWCJlM1ik6gzsa6Y4MLcfhpehHakAOk5Ne0xKnQTHfjt2RNj/BW5n9w
-         AvuhpzOZ8/Z06J/fLpOq5YsoNs1nd2hb5W9uPa6oyoNtTFPLZNeLPr7mOrp+P4o0sU
-         jNG/t6e40K4jg==
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Marian Mihailescu <mihailescu2m@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Willy Wolff <willy.mh.wolff.ml@gmail.com>
-Subject: Re: (subset) [PATCH 0/2] Fix USB2 PHY operation on Exynos542x
-Date:   Tue, 29 Dec 2020 16:50:21 +0100
-Message-Id: <160925691513.14694.5573678403811317177.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201120085637.7299-1-m.szyprowski@samsung.com>
-References: <CGME20201120085651eucas1p1382e2677b29af0fc94a0b6c1f8d7da12@eucas1p1.samsung.com> <20201120085637.7299-1-m.szyprowski@samsung.com>
+        id S1726602AbgL2Pwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:52:44 -0500
+Received: from magic.merlins.org ([209.81.13.136]:41106 "EHLO
+        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbgL2Pwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 10:52:44 -0500
+Received: from aaubervilliers-653-1-146-240.w86-218.abo.wanadoo.fr ([86.218.37.240]:44390 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92 #3)
+        id 1kuHI0-0000jm-Un by authid <merlins.org> with srv_auth_plain; Tue, 29 Dec 2020 07:52:00 -0800
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc_nouveau@merlins.org>)
+        id 1kuHHz-0005Ee-LP; Tue, 29 Dec 2020 07:51:59 -0800
+Date:   Tue, 29 Dec 2020 07:51:59 -0800
+From:   Marc MERLIN <marc_nouveau@merlins.org>
+To:     Ilia Mirkin <imirkin@alum.mit.edu>
+Cc:     nouveau@lists.freedesktop.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Subject: Re: 5.9.11 still hanging 2mn at each boot and looping on nvidia-gpu
+ 0000:01:00.3: PME# enabled (Quadro RTX 4000 Mobile)
+Message-ID: <20201229155159.GG23389@merlins.org>
+References: <20200908002935.GD20064@merlins.org>
+ <20200529180315.GA18804@merlins.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 86.218.37.240
+X-SA-Exim-Mail-From: marc_nouveau@merlins.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 09:56:35 +0100, Marek Szyprowski wrote:
-> This patchset finally fixes the last remaining issue related to the
-> system suspend/resume on Odroid XU3/XU4/HC1 board family. It can be
-> observed that system suspend/resume fails on XU4/HC1 when kernel is
-> compiled from multi_v7_defconfig. Chaning the configuration a bit -
-> switching Exynos USB2 PHY driver to be built-in surprisingly fixed that
-> issue. An investigation revealed that the Exynos USB2 PHY driver poked
-> wrong registers in the PMU area on Exynos5420 SoCs breaking the USB3.0
-> DRD PHY operation, what caused the suspend failure. Fix this by learning
-> the Exynos USB2 PHY driver about the Exynos5420 variant.
+On Sat, Dec 26, 2020 at 03:12:09AM -0800, Ilia Mirkin wrote:
+> > after boot, when it gets the right trigger (not sure which ones), it
+> > loops on this evern 2 seconds, mostly forever.
 > 
-> [...]
+> The gpu suspends with runtime pm. And then gets woken up for some
+> reason (could be something quite silly, like lspci, or could be
+> something explicitly checking connectors, etc). Repeat.
 
-Applied, thanks!
+Ah, fair point.  Could it be powertop even?
+How would I go towards tracing that?
+Sounds like this would be a problem with all chips if userspace is able
+to wake them up every second or two with a probe. Now I wonder what
+broken userspace I have that could be doing this.
+ 
+> Display offload usually requires acceleration -- the copies are done
+> using the DMA engine. Please make sure that you have firmware
+> available (and a new enough mesa). The errors suggest that you don't
+> have firmware available at the time that nouveau loads. Depending on
+> your setup, that might mean the firmware has to be built into the
+> kernel, or available in initramfs. (Or just regular filesystem if you
+> don't use a complicated boot sequence. But many people go with distro
+> defaults, which do have this complexity.)
 
-[2/2] ARM: dts: exynos: use Exynos5420 dedicated USB2 PHY compatible
-      commit: 75681980c4e3d89c55b5b8f20b8f4c1aace601be
+Hi Ilia, thanks for your answer.
 
-Best regards,
+Do you think that could be a reason why the boot would hang for 2 full minutes at every
+boot ever since I upgraded to 5.5?
+
+Also, without wanting to sound like a full newbie, where is that
+firmware you're talking about? In my kernel source?
+
+Here's what I do have:
+sauron:/usr/local/bin# dpkggrep nouveau
+libdrm-nouveau2:amd64				install
+xserver-xorg-video-nouveau			install
+
+no nouveau-firmware package in debian:
+sauron:/usr/local/bin# apt-cache search nouveau
+bumblebee - NVIDIA Optimus support for Linux
+libdrm-nouveau2 - Userspace interface to nouveau-specific kernel DRM services -- runtime
+xfonts-jmk - Jim Knoble's character-cell fonts for X
+xserver-xorg-video-nouveau - X.Org X server -- Nouveau display driver
+
+No firmware file on my disk:
+sauron:/usr/local/bin# find /lib/modules/5.9.11-amd64-preempt-sysrq-20190817/ /lib/firmware/ |grep nouveau
+/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau
+/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau/nouveau.ko
+sauron:/usr/local/bin# 
+
+The kernel module is in my initrd:
+sauron:/usr/local/bin# dd if=/boot/initrd.img-5.9.11-amd64-preempt-sysrq-20190817 bs=2966528  skip=1 | gunzip | cpio -tdv | grep nouveau
+drwxr-xr-x   1 root     root            0 Nov 30 15:40 usr/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau
+-rw-r--r--   1 root     root      3691385 Nov 30 15:35 usr/lib/modules/5.9.11-amd64-preempt-sysrq-20190817/kernel/drivers/gpu/drm/nouveau/nouveau.ko
+17+1 records in
+17+1 records out
+52566778 bytes (53 MB, 50 MiB) copied, 1.69708 s, 31.0 MB/s
+
+What am I supposed to do/check next?
+
+Note that ultimately I only need nouveau not to hang my boot 2mn and do
+PM so that the nvidia chip goes to sleep since I don't use it.
+
+Thanks,
+Marc
 -- 
-Krzysztof Kozlowski <krzk@kernel.org>
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
