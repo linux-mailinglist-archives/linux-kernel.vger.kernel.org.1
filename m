@@ -2,169 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3F62E728D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 18:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4732E728F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 18:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgL2RP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 12:15:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgL2RP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 12:15:27 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F6A021D94;
-        Tue, 29 Dec 2020 17:14:44 +0000 (UTC)
-Date:   Tue, 29 Dec 2020 17:14:41 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     Xu Wang <vulab@iscas.ac.cn>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <krzk@kernel.org>,
-        <andy.shevchenko@gmail.com>, <olivier.moysan@st.com>,
-        <etienne.carriere@st.com>, <alexandru.ardelean@analog.com>,
-        <peter.ujfalusi@ti.com>, <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: adc: stm32-adc: Remove redundant null check before
- clk_prepare_enable/clk_disable_unprepare
-Message-ID: <20201229171441.5bfa812b@archlinux>
-In-Reply-To: <ccf4d36d-dbb0-aea0-5625-4aaf6850c73d@foss.st.com>
-References: <20201218093512.871-1-vulab@iscas.ac.cn>
-        <ccf4d36d-dbb0-aea0-5625-4aaf6850c73d@foss.st.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1726371AbgL2RQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 12:16:08 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:56434 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgL2RQH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 12:16:07 -0500
+Received: from 89-64-79-59.dynamic.chello.pl (89.64.79.59) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id 49482a060e45e105; Tue, 29 Dec 2020 18:15:24 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Kenneth R. Crudup" <kenny@panix.com>
+Subject: [PATCH] cpufreq: intel_pstate: Fix fast-switch fallback path
+Date:   Tue, 29 Dec 2020 18:15:23 +0100
+Message-ID: <2586979.mvXUDI8C0e@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 15:32:32 +0100
-Fabrice Gasnier <fabrice.gasnier@foss.st.com> wrote:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> On 12/18/20 10:35 AM, Xu Wang wrote:
-> > Because clk_prepare_enable() and clk_disable_unprepare() already checked
-> > NULL clock parameter, so the additional checks are unnecessary, just
-> > remove them.
-> > 
-> > Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-> > ---
-> >  drivers/iio/adc/stm32-adc-core.c | 29 +++++++++++------------------
-> >  drivers/iio/adc/stm32-adc.c      | 14 +++++---------
-> >  2 files changed, 16 insertions(+), 27 deletions(-)  
-> 
-> Hi Xu,
-> 
-> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Applied,
+When sugov_update_single_perf() falls back to the "frequency"
+path due to the missing scale-invariance, it will call
+cpufreq_driver_fast_switch() via sugov_fast_switch()
+and the driver's ->fast_switch() callback will be invoked,
+so it must not be NULL.
 
-thanks,
+However, after commit a365ab6b9dfb ("cpufreq: intel_pstate: Implement
+the ->adjust_perf() callback") intel_pstate sets ->fast_switch() to
+NULL when it is going to use intel_cpufreq_adjust_perf(), which is a
+mistake, because on x86 the scale-invariance may be turned off
+dynamically, so modify it to retain the original ->adjust_perf()
+callback pointer.
 
-Jonathan
+Fixes: a365ab6b9dfb ("cpufreq: intel_pstate: Implement the ->adjust_perf() callback")
+Reported-by: Kenneth R. Crudup <kenny@panix.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/intel_pstate.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-> 
-> Thanks for your patch,
-> Best Regards,
-> Fabrice
-> 
-> > 
-> > diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
-> > index 9d1ad6e38e85..c088cb990193 100644
-> > --- a/drivers/iio/adc/stm32-adc-core.c
-> > +++ b/drivers/iio/adc/stm32-adc-core.c
-> > @@ -535,20 +535,16 @@ static int stm32_adc_core_hw_start(struct device *dev)
-> >  		goto err_switches_dis;
-> >  	}
-> >  
-> > -	if (priv->bclk) {
-> > -		ret = clk_prepare_enable(priv->bclk);
-> > -		if (ret < 0) {
-> > -			dev_err(dev, "bus clk enable failed\n");
-> > -			goto err_regulator_disable;
-> > -		}
-> > +	ret = clk_prepare_enable(priv->bclk);
-> > +	if (ret < 0) {
-> > +		dev_err(dev, "bus clk enable failed\n");
-> > +		goto err_regulator_disable;
-> >  	}
-> >  
-> > -	if (priv->aclk) {
-> > -		ret = clk_prepare_enable(priv->aclk);
-> > -		if (ret < 0) {
-> > -			dev_err(dev, "adc clk enable failed\n");
-> > -			goto err_bclk_disable;
-> > -		}
-> > +	ret = clk_prepare_enable(priv->aclk);
-> > +	if (ret < 0) {
-> > +		dev_err(dev, "adc clk enable failed\n");
-> > +		goto err_bclk_disable;
-> >  	}
-> >  
-> >  	writel_relaxed(priv->ccr_bak, priv->common.base + priv->cfg->regs->ccr);
-> > @@ -556,8 +552,7 @@ static int stm32_adc_core_hw_start(struct device *dev)
-> >  	return 0;
-> >  
-> >  err_bclk_disable:
-> > -	if (priv->bclk)
-> > -		clk_disable_unprepare(priv->bclk);
-> > +	clk_disable_unprepare(priv->bclk);
-> >  err_regulator_disable:
-> >  	regulator_disable(priv->vref);
-> >  err_switches_dis:
-> > @@ -575,10 +570,8 @@ static void stm32_adc_core_hw_stop(struct device *dev)
-> >  
-> >  	/* Backup CCR that may be lost (depends on power state to achieve) */
-> >  	priv->ccr_bak = readl_relaxed(priv->common.base + priv->cfg->regs->ccr);
-> > -	if (priv->aclk)
-> > -		clk_disable_unprepare(priv->aclk);
-> > -	if (priv->bclk)
-> > -		clk_disable_unprepare(priv->bclk);
-> > +	clk_disable_unprepare(priv->aclk);
-> > +	clk_disable_unprepare(priv->bclk);
-> >  	regulator_disable(priv->vref);
-> >  	stm32_adc_core_switches_supply_dis(priv);
-> >  	regulator_disable(priv->vdda);
-> > diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> > index c067c994dae2..f7c53cea509a 100644
-> > --- a/drivers/iio/adc/stm32-adc.c
-> > +++ b/drivers/iio/adc/stm32-adc.c
-> > @@ -546,8 +546,7 @@ static int stm32_adc_hw_stop(struct device *dev)
-> >  	if (adc->cfg->unprepare)
-> >  		adc->cfg->unprepare(indio_dev);
-> >  
-> > -	if (adc->clk)
-> > -		clk_disable_unprepare(adc->clk);
-> > +	clk_disable_unprepare(adc->clk);
-> >  
-> >  	return 0;
-> >  }
-> > @@ -558,11 +557,9 @@ static int stm32_adc_hw_start(struct device *dev)
-> >  	struct stm32_adc *adc = iio_priv(indio_dev);
-> >  	int ret;
-> >  
-> > -	if (adc->clk) {
-> > -		ret = clk_prepare_enable(adc->clk);
-> > -		if (ret)
-> > -			return ret;
-> > -	}
-> > +	ret = clk_prepare_enable(adc->clk);
-> > +	if (ret)
-> > +		return ret;
-> >  
-> >  	stm32_adc_set_res(adc);
-> >  
-> > @@ -575,8 +572,7 @@ static int stm32_adc_hw_start(struct device *dev)
-> >  	return 0;
-> >  
-> >  err_clk_dis:
-> > -	if (adc->clk)
-> > -		clk_disable_unprepare(adc->clk);
-> > +	clk_disable_unprepare(adc->clk);
-> >  
-> >  	return ret;
-> >  }
-> >   
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -3088,7 +3088,6 @@ static int __init intel_pstate_init(void
+ 			intel_pstate.attr = hwp_cpufreq_attrs;
+ 			intel_cpufreq.attr = hwp_cpufreq_attrs;
+ 			intel_cpufreq.flags |= CPUFREQ_NEED_UPDATE_LIMITS;
+-			intel_cpufreq.fast_switch = NULL;
+ 			intel_cpufreq.adjust_perf = intel_cpufreq_adjust_perf;
+ 			if (!default_driver)
+ 				default_driver = &intel_pstate;
+
+
 
