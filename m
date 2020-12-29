@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4285C2E7085
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345E52E7089
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgL2MLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 07:11:21 -0500
-Received: from mail-eopbgr70051.outbound.protection.outlook.com ([40.107.7.51]:56642
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        id S1726517AbgL2MLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 07:11:32 -0500
+Received: from mail-eopbgr00079.outbound.protection.outlook.com ([40.107.0.79]:43563
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726318AbgL2MLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 07:11:18 -0500
+        id S1726016AbgL2MLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 07:11:30 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ezr4W2PdDQUs19AtioPoZYxpu2ohBzdDn6E/l8mTAgxsdPnUfxO9qyTPPcNG4EpCMoUCxlGYW86x1XfW9VO2FGTQMeDNcBYnZhRJCnRFupGBy7g5FtjAEQcBR4/apfS9DyFZieyhfsoWAu1ud+GlUGrfR5r6x05ubNxt4lLOF4+FotY9s1uCpytGe1SWbpCm+v2Q5GfXei5jLyPHdzOoMR0o2ik75ntPf5xXeK+OcxbyKXazpxGXhMfydl5gCMNYb3w+tZ7Ljg2sxP0+4LJB22rWQniXoVaS2XoChGaOYHvLrtA7MqbTXQwhRH3iPPXh/nYbuLTuRHauY7VezlbsiA==
+ b=b7vTxKDBFx1WkFSgmXuY3/J/ZG0xXT7qqs2ndVevpRu+fHcVRHv+K/+KTtRvhIQ5y3+ukCcV3cQyPcFsc/FNleN0sai0vjkh0zWip5bBCiteuWLEArvhhRPLTXqKoBliG42YNTCDjFKGO20jTZqGRKI4v6G7jBXyWTtIRkq+6G1HN3/TuminpbTjThHEUWrerX0JpJoFrheTHb+4e0Sx48U8wvzUOTR3a/QE1PgQnsaog9vlYSzsFdWRBoab4zoHhX/EZ0jBZLuIdml3xAID99UleWpar7YQqkkkYDGve6IBuq6cUCxmOXYEtJzcjv6jlbU7NXBpzUwume7M2TYdjg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mRlswaGZz+EMySLImxIT8nPYFpVQq6HS8PdYGMR9Z48=;
- b=YG5QsmqyXq91F4JoOJBhWQcrSHYisJvDwdt9unvxYx3t/Z1yI2GYPW7n6Q9JopK7mjPVDa39l5nVWUt0TIQ+43JBoC6LGOiyE0abjAZFph+hM2HaSLwB6cOCknouDeaeNqpWWx2xxCPEcVhQGkqhQF6vD5DpZPEKWxxbVkW28j5OMoCjkArrUToUsXDs2rxUT/tOwOmaTwSk7g26nAqCPyipHnxOsDIfRvwUxyyTKev2+TcOGSbxykCO9BUpjWiB8huS2mKkwHDOGgGY6UUfdQ4MdWH9EfTT2wt4eTfv76arKwCL3MImLDBqOUhFARUVhKSpR4nwHPJST5KcM+zBCw==
+ bh=s6li1FgkbQ4HM5vDTVOGRkPjq+Lyeoq5nWpLP7Yc6FI=;
+ b=H8uhMk6CSxOivj0Oogac2WgrRflCjwhvaspL3LxfVKW+2Se9By/IFE/0ITY6foedZsBQqcvYlUo7pgQ7fE5n6my7UscQ/eCIaiMXtQL0SUSeOKMbnGHNTRMRA2OUSmRw1miGdLfaNeW1Vf3RYf+WUdg3aW/leC8ZapLltXBCYk7zY5/LgmUH2I+GAO64RL2FXnajyoFoxqJr3HFRVQTeCFulEi5W49W0VCanVROQb5nIEGaicZjULXsQl+hNySLo0pm8rLfgqvndfskI8bqptk4f8bYMsdJFT+hI+ZBH/ziz+d4hDeaWD/iEEqYZMRbnCLu2dxJ3LWDYC6QWVpuUdw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mRlswaGZz+EMySLImxIT8nPYFpVQq6HS8PdYGMR9Z48=;
- b=W0SnhRfPJkH3f+ksdT3BCXviUbTWEmmo+fcTaDpVcS8kOHPi5Id9aZ3CW5L1bhd2rPnc5sY4gnL3vhBBVfBW3POJZjxXMMgjHuY+Ur3J7FGv13kSFkPfnGLRtwS4bpwR50TnmDELoMOI9/IN6izNA5d7FB87iN/WLn+aqpKq6/0=
+ bh=s6li1FgkbQ4HM5vDTVOGRkPjq+Lyeoq5nWpLP7Yc6FI=;
+ b=m4sOWf8y1BwCCs0cFZfmAXxGR8SNnoCgiLPHLwoHJhJUjoX5nm09hag/C8IhPwM+4Z3JX6mum7N4i/T0KHVQPRKVeN2DcNHxdFafsfti+2PVgZ6liJAW8ZHST8Gw1Sw3YDd7krjRqOojtz/KPTnkdYcTsoGBO9iK+CuHjEh+Ub8=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
  by DB7PR04MB4089.eurprd04.prod.outlook.com (2603:10a6:5:1b::29) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27; Tue, 29 Dec
- 2020 12:10:02 +0000
+ 2020 12:10:06 +0000
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3700.031; Tue, 29 Dec 2020
- 12:10:02 +0000
+ 12:10:06 +0000
 From:   peng.fan@nxp.com
 To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
         robh+dt@kernel.org
@@ -44,9 +44,9 @@ Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, krzk@kernel.org,
         Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH 2/4] arm64: dts: imx8mn: add spba bus node
-Date:   Tue, 29 Dec 2020 20:00:43 +0800
-Message-Id: <1609243245-9671-3-git-send-email-peng.fan@nxp.com>
+Subject: [PATCH 3/4] arm64: dts: imx8mn: add spba bus node
+Date:   Tue, 29 Dec 2020 20:00:44 +0800
+Message-Id: <1609243245-9671-4-git-send-email-peng.fan@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1609243245-9671-1-git-send-email-peng.fan@nxp.com>
 References: <1609243245-9671-1-git-send-email-peng.fan@nxp.com>
@@ -57,46 +57,46 @@ X-ClientProxiedBy: SG2PR03CA0161.apcprd03.prod.outlook.com
  (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0161.apcprd03.prod.outlook.com (2603:1096:4:c9::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3721.12 via Frontend Transport; Tue, 29 Dec 2020 12:09:58 +0000
+Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0161.apcprd03.prod.outlook.com (2603:1096:4:c9::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3721.12 via Frontend Transport; Tue, 29 Dec 2020 12:10:02 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 50cceeb6-cb01-4a08-aea8-08d8abf2abad
+X-MS-Office365-Filtering-Correlation-Id: 6e5a1b5a-7e5d-476d-1161-08d8abf2adec
 X-MS-TrafficTypeDiagnostic: DB7PR04MB4089:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB40890F5D481783B06AF77DE688D80@DB7PR04MB4089.eurprd04.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <DB7PR04MB408966B90690ED2B131E333988D80@DB7PR04MB4089.eurprd04.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:655;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: C6O6yxaoODUEr4AxYJdXAuYJm0EeWyyKj6Ge/FJE8Cp86fr+LCcDpBmbOrmHe9xiCmI5gt1UN0b4SQbWRN35Q6NdKKAqrtkv3V1N8im/S3ZPPmABEEdO+jsPj31fuA2PM6KIhNyyPMBBxPyI8V2ycL1hDWuwakzQJoXJ9A8lW9RzivUgbmY7vml7r1QVTQd45sPO97hcS/Nr6DuyZu7k+C1lZpH5kRnWNzSrd72IpzjR7qXLhEUZm93HmVfKoSk78m+DVLYxr9P5mT+kPpc5odXNVwn3OifEl3cC1L8JGawooQvHb0C99NEpr5i+hnSsomvwUDz3ygVgbKZsRc2YsIhZ/tt1YTnmpoM8kb8dbiJbEa8XHIEl9xXZ8KsQ+0P+uH0ySvaKxxzA19oLEU//qz438Ov8HNCQiwoNdRkfAlC+8/NJgpwYRjVB4HbpI+XDhYvY5YD3uyalXMT+PXnllU9ssh3G1Qu0b8yb7HQyUVw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(66556008)(956004)(6666004)(6486002)(83380400001)(86362001)(30864003)(66476007)(36756003)(16526019)(4326008)(2906002)(26005)(52116002)(498600001)(9686003)(8676002)(66946007)(5660300002)(6512007)(6506007)(2616005)(186003)(69590400010)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Ppay0RTEzaU3pmxE9edps4ukUQojAwbOix6TiwGAznd/GdVt6IDUjy0Pj46T?=
- =?us-ascii?Q?xZ5OnVJTHdHbc+1EBHLTOpkInkqMr8hBsB1xnFSCPR3WzKpNgt5AO+fufkyR?=
- =?us-ascii?Q?/M7TSlKoLlQFcWFF7a8OYQlzMp8Xtdyd9vsYPMzCMrHuXv2cj55Ql/5Tve8x?=
- =?us-ascii?Q?TA0KzJ/GoFCd6sGb3sWUn4UHNLo+GyCrYIAFnHr5koFrFUxHfzJJPxTZ+D6F?=
- =?us-ascii?Q?YQ4zsOyzyk2e4ZAJ8PBrXMb8Rm6Tc+XstzeDIj7pgz/d1lbyjYFenM8WTe/U?=
- =?us-ascii?Q?doxy8N9A6/iRDJGDZxSyHuE7aSY1rZX/34Kg56PRE5r69uoJKDVYUsSa3Gmh?=
- =?us-ascii?Q?oU0487dV+fe65sf66ifRZ2FIbvtgCFys4Xj9wtamMp1kVGTfpYy8BjVis3RA?=
- =?us-ascii?Q?5E/OYJFDltEdzYWd1U8cHutweLrqu6l0LmtWPoQZDgKjIfzUTILew4NvDvqM?=
- =?us-ascii?Q?opsxpQ9CDvYI6Ula86Lw1YB8DSZf1SSFfgpdjduJ5C1BMe4VF0v39PwvvJ36?=
- =?us-ascii?Q?oxBTOUnkQzlArhDqsbbIhpMd1VvKoycc2yVjrWF5i5kE21a8gI+9RZv8aYph?=
- =?us-ascii?Q?W0min+dsZv0KEdFwaZlaFQu0fbPn6zV4yGF6Gyf1gFE6ZKGrslUc9H15oAsU?=
- =?us-ascii?Q?0fw0fq9Y7Tsy2ep/kZioKuPaBrDPenTO1uyQ6O1szRmwVPfrIyAIc6ZPMGtR?=
- =?us-ascii?Q?ZX/a6VjHpNGTtm9x8i3QTNJVVaFUmeaPcGq6VEtTzHSBRKw6k+ASQvGlDgKY?=
- =?us-ascii?Q?Rtx0TsPaK3MoS2l3JymOijaE5pP5RJYQXkrZk8ObpfI+DUwavSez2sCLKtpT?=
- =?us-ascii?Q?OKwbRwOOukaDPqXZ6Gk/uQhDBvQSi0hBwlp2xqBl9ox+0aiufmrtweSDVIqv?=
- =?us-ascii?Q?mpjF+Mv+Ah1rZKThhcwQNtSzAc24m0yxeeFXI/RH0pFWU2+tzGsIqx2x8Gp9?=
- =?us-ascii?Q?RYK+eD8P2g9EHXnFE4Di2QhHGD5O3P2RTobQL9+q4S/BhYmxARL6lAOkxYRn?=
- =?us-ascii?Q?q0nS?=
+X-Microsoft-Antispam-Message-Info: gUoDdfQ3iDaPJ6rpuGdq+q0AjpQ5sGAsUKIoz8K7zxvWCgkvslPOfHhMi8TsnimuI0rsU3LEzop+OBENTm/9dScSDu5dl8aL+9PKJCo9AqNSu1Vuxim5OreJUhXkk9/C2MZb+VfPOV4amIxmROb6hNeEi82sepmIn8i4O+rERAys394M+rIT3z96GyE4c5P47PdfsfiDD9qb9IunV53FK/2ZP2uqUcLMa4F8rr6Yj9DOXLo2nY/ipwFep4uhKFJgO4FPBGNcn447nM8onjmgS2AkOHiXmnL1bPCRdcuDiKCEow9ykWZr/cWnkZyGqCN3f6egBdN3U1MQ1ITBw49g7zUBNOLxZNu5EGAFHwuMZ3IWtqOxiGMLHmdz8/PlVHqHCUfs4JlIkATTgt3GuPfJcB60uGnyCr5FKC3qtG4N500qhf0ZP9ZZSEW+495w0fMnnktgUz6jzDG0KTAy9iqoZQWFIeZ2ji8XnqhBaNxRn2M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(66556008)(956004)(6666004)(6486002)(83380400001)(86362001)(4744005)(66476007)(36756003)(16526019)(4326008)(2906002)(26005)(52116002)(498600001)(9686003)(8676002)(66946007)(5660300002)(6512007)(6506007)(2616005)(186003)(69590400010)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?b+FBGVrvJNX8OT9+qvpK/aRyKEtl9/eEzjCJG2dtu43aJqK9Ns3rUTSQka+U?=
+ =?us-ascii?Q?X3lh8d5UndE035Zwa00Bz2gYfYAXvw/I21Dm0jZ9g1kLBD+zuWq+jbD1Tuf0?=
+ =?us-ascii?Q?glgWuKiMWV907fthE08OXbEc69BX7K9RlQQ6/upZhx9EHcfUaM5IEN65cxfB?=
+ =?us-ascii?Q?47OdZmH4knfrPC+Hy7Z1vvpU4LrBFUwd7IACKwjeFCSMrmce0QUEQLcRZsEM?=
+ =?us-ascii?Q?Bcvzjz1PYOrConS+SR1FXfcK8gfqqZoUGwaSvYe/Jx0Tq23NrEBUrBRbwoUE?=
+ =?us-ascii?Q?Y1eUp+JHO45/wZWOOZ5rjztegJHRpQeKoF1Wqu0Pg68SScFxw1oA19gYh8P6?=
+ =?us-ascii?Q?jd9n9AdumUyLySPvdxNDN/4Ama3o/b6AINXJ6/sSFtlaFHRwT0GEXqefdM2D?=
+ =?us-ascii?Q?xhUWc86g/jAuFUvy4R2pRVSTwPZmfDz5lkjon+NDt8JOSwXlp2F9kVOG3N8J?=
+ =?us-ascii?Q?ZF1Ibt5uUJ5UawHPPhgJ5+uGDnRGbIVVliBeC2hARA45aBYuTXHJ9xJMOnZ9?=
+ =?us-ascii?Q?NhWmN+gw3FkexVybO7AKgRTUncCl3RRlOHkYoWJ0ZEfUmwrUcW8u6RwAdG0Z?=
+ =?us-ascii?Q?KxJxtVrhweqqN88cdcfez0Ua9sbSXCCp4ge7JWzzIofpa0LcslpevJ+s0LpD?=
+ =?us-ascii?Q?fZatBiHrBOuj9ukFvAI5r368i9TybsFCeMUjiocC6uRYX0vzadu/SbLQcY4C?=
+ =?us-ascii?Q?9E98L0szCTfBwAKygxKGda69O/u0GIYd7ElxY8fnVpDJoOQLKAKiZsc7Y1pq?=
+ =?us-ascii?Q?NGn5CFZ91+aO1UMwCmnMWooI7V5i2zI2jdSjpHUw1U4gHkCM3ABUgudmxY3i?=
+ =?us-ascii?Q?qC/oOPntuLTGI36ya+Sc3sC5WS/i0DFezKQX9KxuGpCOplxNC84dReLwLdC8?=
+ =?us-ascii?Q?xOq/xRSZGyX7jRWeCTnqLUmr8iHOtqbSxsdCdOsM/r+V5sMrGN1PdLw1wWtY?=
+ =?us-ascii?Q?TMJ2rHqMryPDSlRV95+1uJcxteZwcgdPO9zI5yhjetZS4+5lAIfkvt/4jgMk?=
+ =?us-ascii?Q?CmUQ?=
 X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2020 12:10:02.3097
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2020 12:10:06.0310
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50cceeb6-cb01-4a08-aea8-08d8abf2abad
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e5a1b5a-7e5d-476d-1161-08d8abf2adec
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RJR/WuDzjiJtxSz9X0uJ1zPAY5HAyNVS2W3xNt26bx6nkqIgYwLQ2g9PoHP0XoBeHJWSSKURchsz6OE8T1IGXQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: L2Qyx5jTCpui3mXbV+bJJ/CSjLwaT5f56Eljut8qFEb19quzkTRMrnuG4XkCe1UdLi2J9sUdhS42PFhbCFxFYA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -108,401 +108,22 @@ According to RM, there is a spba bus inside aips3 and aips1, add it.
 
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mm.dtsi | 362 +++++++++++-----------
- 1 file changed, 189 insertions(+), 173 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index c824f2615fe8..91f85b8cee9a 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -269,117 +269,125 @@ aips1: bus@30000000 {
- 			#size-cells = <1>;
- 			ranges = <0x30000000 0x30000000 0x400000>;
- 
--			sai1: sai@30010000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30010000 0x10000>;
--				interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI1_IPG>,
--					 <&clk IMX8MM_CLK_SAI1_ROOT>,
--					 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 0 2 0>, <&sdma2 1 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+			bus@30000000 {
-+				compatible = "fsl,spba-bus", "simple-bus";
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				reg = <0x30000000 0x100000>;
-+				ranges;
-+
-+				sai1: sai@30010000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30010000 0x10000>;
-+					interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI1_IPG>,
-+						 <&clk IMX8MM_CLK_SAI1_ROOT>,
-+						 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 0 2 0>, <&sdma2 1 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			sai2: sai@30020000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30020000 0x10000>;
--				interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI2_IPG>,
--					<&clk IMX8MM_CLK_SAI2_ROOT>,
--					<&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 2 2 0>, <&sdma2 3 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				sai2: sai@30020000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30020000 0x10000>;
-+					interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI2_IPG>,
-+						<&clk IMX8MM_CLK_SAI2_ROOT>,
-+						<&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 2 2 0>, <&sdma2 3 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			sai3: sai@30030000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30030000 0x10000>;
--				interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI3_IPG>,
--					 <&clk IMX8MM_CLK_SAI3_ROOT>,
--					 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 4 2 0>, <&sdma2 5 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				sai3: sai@30030000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30030000 0x10000>;
-+					interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI3_IPG>,
-+						 <&clk IMX8MM_CLK_SAI3_ROOT>,
-+						 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 4 2 0>, <&sdma2 5 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			sai5: sai@30050000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30050000 0x10000>;
--				interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI5_IPG>,
--					 <&clk IMX8MM_CLK_SAI5_ROOT>,
--					 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 8 2 0>, <&sdma2 9 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				sai5: sai@30050000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30050000 0x10000>;
-+					interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI5_IPG>,
-+						 <&clk IMX8MM_CLK_SAI5_ROOT>,
-+						 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 8 2 0>, <&sdma2 9 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			sai6: sai@30060000 {
--				#sound-dai-cells = <0>;
--				compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
--				reg = <0x30060000 0x10000>;
--				interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_SAI6_IPG>,
--					 <&clk IMX8MM_CLK_SAI6_ROOT>,
--					 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
--				clock-names = "bus", "mclk1", "mclk2", "mclk3";
--				dmas = <&sdma2 10 2 0>, <&sdma2 11 2 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				sai6: sai@30060000 {
-+					#sound-dai-cells = <0>;
-+					compatible = "fsl,imx8mm-sai", "fsl,imx8mq-sai";
-+					reg = <0x30060000 0x10000>;
-+					interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_SAI6_IPG>,
-+						 <&clk IMX8MM_CLK_SAI6_ROOT>,
-+						 <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-+					clock-names = "bus", "mclk1", "mclk2", "mclk3";
-+					dmas = <&sdma2 10 2 0>, <&sdma2 11 2 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			micfil: audio-controller@30080000 {
--				compatible = "fsl,imx8mm-micfil";
--				reg = <0x30080000 0x10000>;
--				interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
--					     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
--					     <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
--					     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_PDM_IPG>,
--					 <&clk IMX8MM_CLK_PDM_ROOT>,
--					 <&clk IMX8MM_AUDIO_PLL1_OUT>,
--					 <&clk IMX8MM_AUDIO_PLL2_OUT>,
--					 <&clk IMX8MM_CLK_EXT3>;
--				clock-names = "ipg_clk", "ipg_clk_app",
--					      "pll8k", "pll11k", "clkext3";
--				dmas = <&sdma2 24 25 0x80000000>;
--				dma-names = "rx";
--				status = "disabled";
--			};
-+				micfil: audio-controller@30080000 {
-+					compatible = "fsl,imx8mm-micfil";
-+					reg = <0x30080000 0x10000>;
-+					interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_PDM_IPG>,
-+						 <&clk IMX8MM_CLK_PDM_ROOT>,
-+						 <&clk IMX8MM_AUDIO_PLL1_OUT>,
-+						 <&clk IMX8MM_AUDIO_PLL2_OUT>,
-+						 <&clk IMX8MM_CLK_EXT3>;
-+					clock-names = "ipg_clk", "ipg_clk_app",
-+						      "pll8k", "pll11k", "clkext3";
-+					dmas = <&sdma2 24 25 0x80000000>;
-+					dma-names = "rx";
-+					status = "disabled";
-+				};
- 
--			spdif1: spdif@30090000 {
--				compatible = "fsl,imx35-spdif";
--				reg = <0x30090000 0x10000>;
--				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, /* core */
--					 <&clk IMX8MM_CLK_24M>, /* rxtx0 */
--					 <&clk IMX8MM_CLK_SPDIF1>, /* rxtx1 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx2 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx3 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx4 */
--					 <&clk IMX8MM_CLK_AUDIO_AHB>, /* rxtx5 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx6 */
--					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx7 */
--					 <&clk IMX8MM_CLK_DUMMY>; /* spba */
--				clock-names = "core", "rxtx0",
--					      "rxtx1", "rxtx2",
--					      "rxtx3", "rxtx4",
--					      "rxtx5", "rxtx6",
--					      "rxtx7", "spba";
--				dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
-+				spdif1: spdif@30090000 {
-+					compatible = "fsl,imx35-spdif";
-+					reg = <0x30090000 0x10000>;
-+					interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, /* core */
-+						 <&clk IMX8MM_CLK_24M>, /* rxtx0 */
-+						 <&clk IMX8MM_CLK_SPDIF1>, /* rxtx1 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx2 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx3 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx4 */
-+						 <&clk IMX8MM_CLK_AUDIO_AHB>, /* rxtx5 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx6 */
-+						 <&clk IMX8MM_CLK_DUMMY>, /* rxtx7 */
-+						 <&clk IMX8MM_CLK_DUMMY>; /* spba */
-+					clock-names = "core", "rxtx0",
-+						      "rxtx1", "rxtx2",
-+						      "rxtx3", "rxtx4",
-+						      "rxtx5", "rxtx6",
-+						      "rxtx7", "spba";
-+					dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 			};
- 
- 			gpio1: gpio@30200000 {
-@@ -660,80 +668,88 @@ aips3: bus@30800000 {
- 			ranges = <0x30800000 0x30800000 0x400000>,
- 				 <0x8000000 0x8000000 0x10000000>;
- 
--			ecspi1: spi@30820000 {
--				compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
-+			bus@30800000 {
-+				compatible = "fsl,spba-bus", "simple-bus";
- 				#address-cells = <1>;
--				#size-cells = <0>;
--				reg = <0x30820000 0x10000>;
--				interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_ECSPI1_ROOT>,
--					 <&clk IMX8MM_CLK_ECSPI1_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 0 7 1>, <&sdma1 1 7 2>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				#size-cells = <1>;
-+				reg = <0x30800000 0x100000>;
-+				ranges;
-+
-+				ecspi1: spi@30820000 {
-+					compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0x30820000 0x10000>;
-+					interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_ECSPI1_ROOT>,
-+						 <&clk IMX8MM_CLK_ECSPI1_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 0 7 1>, <&sdma1 1 7 2>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			ecspi2: spi@30830000 {
--				compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
--				#address-cells = <1>;
--				#size-cells = <0>;
--				reg = <0x30830000 0x10000>;
--				interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_ECSPI2_ROOT>,
--					 <&clk IMX8MM_CLK_ECSPI2_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 2 7 1>, <&sdma1 3 7 2>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				ecspi2: spi@30830000 {
-+					compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0x30830000 0x10000>;
-+					interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_ECSPI2_ROOT>,
-+						 <&clk IMX8MM_CLK_ECSPI2_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 2 7 1>, <&sdma1 3 7 2>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			ecspi3: spi@30840000 {
--				compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
--				#address-cells = <1>;
--				#size-cells = <0>;
--				reg = <0x30840000 0x10000>;
--				interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_ECSPI3_ROOT>,
--					 <&clk IMX8MM_CLK_ECSPI3_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 4 7 1>, <&sdma1 5 7 2>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				ecspi3: spi@30840000 {
-+					compatible = "fsl,imx8mm-ecspi", "fsl,imx51-ecspi";
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0x30840000 0x10000>;
-+					interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_ECSPI3_ROOT>,
-+						 <&clk IMX8MM_CLK_ECSPI3_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 4 7 1>, <&sdma1 5 7 2>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			uart1: serial@30860000 {
--				compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
--				reg = <0x30860000 0x10000>;
--				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_UART1_ROOT>,
--					 <&clk IMX8MM_CLK_UART1_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 22 4 0>, <&sdma1 23 4 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				uart1: serial@30860000 {
-+					compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
-+					reg = <0x30860000 0x10000>;
-+					interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_UART1_ROOT>,
-+						 <&clk IMX8MM_CLK_UART1_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 22 4 0>, <&sdma1 23 4 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			uart3: serial@30880000 {
--				compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
--				reg = <0x30880000 0x10000>;
--				interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_UART3_ROOT>,
--					 <&clk IMX8MM_CLK_UART3_ROOT>;
--				clock-names = "ipg", "per";
--				dmas = <&sdma1 26 4 0>, <&sdma1 27 4 0>;
--				dma-names = "rx", "tx";
--				status = "disabled";
--			};
-+				uart3: serial@30880000 {
-+					compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
-+					reg = <0x30880000 0x10000>;
-+					interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_UART3_ROOT>,
-+						 <&clk IMX8MM_CLK_UART3_ROOT>;
-+					clock-names = "ipg", "per";
-+					dmas = <&sdma1 26 4 0>, <&sdma1 27 4 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
- 
--			uart2: serial@30890000 {
--				compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
--				reg = <0x30890000 0x10000>;
--				interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
--				clocks = <&clk IMX8MM_CLK_UART2_ROOT>,
--					 <&clk IMX8MM_CLK_UART2_ROOT>;
--				clock-names = "ipg", "per";
--				status = "disabled";
-+				uart2: serial@30890000 {
-+					compatible = "fsl,imx8mm-uart", "fsl,imx6q-uart";
-+					reg = <0x30890000 0x10000>;
-+					interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MM_CLK_UART2_ROOT>,
-+						 <&clk IMX8MM_CLK_UART2_ROOT>;
-+					clock-names = "ipg", "per";
-+					status = "disabled";
-+				};
- 			};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index 73602832ccaa..033fa90570ff 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -749,7 +749,7 @@ uart2: serial@30890000 {
+ 					clock-names = "ipg", "per";
+ 					status = "disabled";
+ 				};
+-			}
++			};
  
  			crypto: crypto@30900000 {
+ 				compatible = "fsl,sec-v4.0";
 -- 
 2.28.0
 
