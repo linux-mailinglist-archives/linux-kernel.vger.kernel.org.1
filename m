@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CF42E6EF6
+	by mail.lfdr.de (Postfix) with ESMTP id DA7912E6EF8
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 09:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgL2IeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 03:34:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgL2IeH (ORCPT
+        id S1726308AbgL2Iey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 03:34:54 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:27513 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbgL2Iex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 03:34:07 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB4FC061793
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 00:33:27 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id x13so13998281oic.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 00:33:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YzL5OPHv3mWjmx1l9cT/jFzRb4YxfwRuJjsIlWyqNWA=;
-        b=LKoUXihABs39u/GdX/F6L0eyuhlQLQaUNhTePHZgV9E4Jy/SrhAzXXOxVsSXFLmuop
-         XB1iwsytNVbDlZoCKu58Ah4LgTya9paJvC1WnmaF7NOVscO8pVof68sQBO6MjBxdqpDA
-         +dWdRXCSfCcps+K3Z/u5lLf8GPHDNA+SkzyIzcsJzoI7MxffZXM7bGWb6Mjnb+f0KQwc
-         m4cQFb14q852uj9nsryVrZ0gM7Gw2t76xpnmLNafyR5Wkae5ggGsiZNOZgqrgCuGqusz
-         B0iwXnvke4t8ZrMXNK9yTSjmAWOTeG5PDHnN/viEyYh+clk72vDd3f/X3VH/vXvnD+0O
-         jgig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YzL5OPHv3mWjmx1l9cT/jFzRb4YxfwRuJjsIlWyqNWA=;
-        b=YLumMNeUaUmpDsCMcz5oxUrbRQrrcH49xD0KhJhw+3Y3ZPJQssNVOqu9NGiuG3aEyN
-         mz2YkFVYIvoxPowX/5cA9wHq8tvE6adMWB9f7jIcHP72H30ZhlDgqhgzHp/Vw+UJUGVL
-         yovDyQwGPZQqDL2w9qHMFdTJ9wXX1NiIVZ7G3z+ZnQDQJThXl9BzTGbv0viDGML3GK4l
-         GbQn1cnpT7jGWBKdW4C+r8yYK4RX6Gn+RHsFkjSp8XDqbpaN88MA1ECkp6GS4QGVHrRu
-         fxBjQ1+sN4uzTF2Qkj5tCKGzewAAkr2imd2W2kbhQVfZEOXwE0ulZR/Uz7EZ9i+so7NC
-         0eWg==
-X-Gm-Message-State: AOAM531tZouO8ngI7cr59ITT6bX/VmyDiFSm5gDYNyMMTWcjRFZiuDXc
-        x1bJ7ZJOohZRY/b1/3bXxM2jWWDUqLc/OUd1yko=
-X-Google-Smtp-Source: ABdhPJyOKK2EHe8CiPVaq5adTOd/dPQEa6D+dktW5VFsB4iJGMmwJNzELBFP9hK2VhKHdjXU/Ml33rkpweGr3Qj+6r4=
-X-Received: by 2002:a54:400d:: with SMTP id x13mr1667443oie.81.1609230806510;
- Tue, 29 Dec 2020 00:33:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20201228215402.GA572900@localhost.localdomain>
-In-Reply-To: <20201228215402.GA572900@localhost.localdomain>
-From:   Andrei Vagin <avagin@gmail.com>
-Date:   Tue, 29 Dec 2020 00:33:15 -0800
-Message-ID: <CANaxB-yKRpFx+SkushhG2v5=f9J8TFNPMv9YEcsg1=91QyRRzw@mail.gmail.com>
-Subject: Re: [PATCH] timens: delete no-op time_ns_init()
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 29 Dec 2020 03:34:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609230868; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=/xH+QM/cA6wZt3vjwXZX4/z9l+hds6utzd84arUehbs=; b=Eld8SFnRCcr5wLzoVieYac9vk+VGAj9EKIe128CTaOkW/Et5q7Bk1+tA7ygnA1B8Fpytvc+n
+ aS7GvR8GPVjGNABpBoEbAP42LZ7xPOH9kPKXJzaYq+G7LcnU0ID3yGuiHKqo3MGCokphE5QI
+ 5yN1zgQWkECkOVvSqpo3tFcKZIU=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5feae9e77bc801dc4fc2547c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Dec 2020 08:33:43
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 05BD2C433C6; Tue, 29 Dec 2020 08:33:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8EE21C433CA;
+        Tue, 29 Dec 2020 08:33:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8EE21C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dianders@chromium.org, ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH v2] drivers: qcom: rpmh-rsc: Do not read back the register write on trigger
+Date:   Tue, 29 Dec 2020 14:03:21 +0530
+Message-Id: <1609230801-31721-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 1:54 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
->
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+From: Lina Iyer <ilina@codeaurora.org>
 
-Acked-by: Andrei Vagin <avagin@gmail.com>
+When triggering a TCS to send its contents, reading back the trigger
+value may return an incorrect value. That is because, writing the
+trigger may raise an interrupt which could be handled immediately and
+the trigger value could be reset in the interrupt handler.
 
-Thanks,
-Andrei
+A write_tcs_reg_sync() would read back the value that is written and try
+to match it to the value written to ensure that the value is written,
+but if that value is different, we may see false error for same.
 
-> ---
->
->  kernel/time/namespace.c |    6 ------
->  1 file changed, 6 deletions(-)
->
-> --- a/kernel/time/namespace.c
-> +++ b/kernel/time/namespace.c
-> @@ -465,9 +465,3 @@ struct time_namespace init_time_ns = {
->         .ns.ops         = &timens_operations,
->         .frozen_offsets = true,
->  };
-> -
-> -static int __init time_ns_init(void)
-> -{
-> -       return 0;
-> -}
-> -subsys_initcall(time_ns_init);
+Fixes: 658628e7ef78 ("drivers: qcom: rpmh-rsc: add RPMH controller for QCOM SoCs")
+Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+---
+Changes in v2:
+- Add Fixes tag
+- Add Reviewed-by tag
+---
+ drivers/soc/qcom/rpmh-rsc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+index 37969dc..0b082ec 100644
+--- a/drivers/soc/qcom/rpmh-rsc.c
++++ b/drivers/soc/qcom/rpmh-rsc.c
+@@ -364,7 +364,7 @@ static void __tcs_set_trigger(struct rsc_drv *drv, int tcs_id, bool trigger)
+ 		enable = TCS_AMC_MODE_ENABLE;
+ 		write_tcs_reg_sync(drv, RSC_DRV_CONTROL, tcs_id, enable);
+ 		enable |= TCS_AMC_MODE_TRIGGER;
+-		write_tcs_reg_sync(drv, RSC_DRV_CONTROL, tcs_id, enable);
++		write_tcs_reg(drv, RSC_DRV_CONTROL, tcs_id, enable);
+ 	}
+ }
+ 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
