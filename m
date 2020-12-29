@@ -2,268 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3589D2E7006
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 12:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D96B2E7018
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 12:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgL2LmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 06:42:15 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8119 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726190AbgL2LmO (ORCPT
+        id S1726307AbgL2Ls3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 06:48:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgL2Ls3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 06:42:14 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5feb15ed0000>; Tue, 29 Dec 2020 03:41:33 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Tue, 29 Dec 2020 11:41:14 +0000
-Date:   Tue, 29 Dec 2020 13:41:10 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     <mst@redhat.com>, <eperezma@redhat.com>, <kvm@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>, <eli@mellanox.com>, <lingshan.zhu@intel.com>,
-        <rob.miller@broadcom.com>, <stefanha@redhat.com>,
-        <sgarzare@redhat.com>
-Subject: Re: [PATCH 11/21] vhost-vdpa: introduce asid based IOTLB
-Message-ID: <20201229114110.GC195479@mtl-vdi-166.wap.labs.mlnx>
-References: <20201216064818.48239-1-jasowang@redhat.com>
- <20201216064818.48239-12-jasowang@redhat.com>
+        Tue, 29 Dec 2020 06:48:29 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A78C0613D6;
+        Tue, 29 Dec 2020 03:47:48 -0800 (PST)
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 5CDD722EE4;
+        Tue, 29 Dec 2020 12:47:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1609242466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VrXbXLZtCoumKFxMp1+LesYeK4uPvY4I2rBFNv+DLVw=;
+        b=fN3wAdzqZxlMqIoLQDqHH46ENIluyavZ/Hezwr0Yf0c9v9B09V7DpfEUuwE5O7+BS0NboT
+        UmSHdpHtE36Gd4hEPZ/B3wWttudTdBKjp4Ke4mIhqiO/9AXPHK3W67OGFkHlqJuFfal30q
+        cOqxKWPTtfQr6Pl1YaHz9jTil1UM8Jw=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH 0/7] arm64: dts: fsl: use the new clockgen constants
+Date:   Tue, 29 Dec 2020 12:47:33 +0100
+Message-Id: <20201229114740.7936-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201216064818.48239-12-jasowang@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609242093; bh=i3rTaib5NcV6KJJxWrk6SWWwem9gJlvQyoOR5K61BrA=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=RvKmmGAKG+eX5Ms8LuPZqgrQo+Ob3quHLvc28oQvBWATjpP6wczpNDs49Z/l7EB9q
-         O9xzQB29ak3ikIc6x0jk8l34UdDwU8eIt8CyHiC5Hb+yW144gpLLaDxcTva5IF6/YT
-         5hu1lDByvmQIj9SJXM0bLzrQtVKs9tDdoIUE3nOE8Q3ptV5+HW5VJjyTCzPbpScTkx
-         LXkIY9F+ynnbGaCzlTJ4XDcJWLC/1aQYm7DSg8miTkiGjFnRz/sbzeHS6X7R6hmX3E
-         fLM3sTH/LadWE3DXrJwZ/Xkk7BJTEhuIzj+zBDQGEV4Yd8/dVaKr2x4RLvMHnFdFfd
-         7Q0eYVX5Du7sA==
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 02:48:08PM +0800, Jason Wang wrote:
-> This patch converts the vhost-vDPA device to support multiple IOTLBs
-> tagged via ASID via hlist. This will be used for supporting multiple
-> address spaces in the following patches.
-> 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/vhost/vdpa.c | 106 ++++++++++++++++++++++++++++++++-----------
->  1 file changed, 80 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index feb6a58df22d..060d5b5b7e64 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -33,13 +33,21 @@ enum {
->  
->  #define VHOST_VDPA_DEV_MAX (1U << MINORBITS)
->  
-> +#define VHOST_VDPA_IOTLB_BUCKETS 16
-> +
-> +struct vhost_vdpa_as {
-> +	struct hlist_node hash_link;
-> +	struct vhost_iotlb iotlb;
-> +	u32 id;
-> +};
-> +
->  struct vhost_vdpa {
->  	struct vhost_dev vdev;
->  	struct iommu_domain *domain;
->  	struct vhost_virtqueue *vqs;
->  	struct completion completion;
->  	struct vdpa_device *vdpa;
-> -	struct vhost_iotlb *iotlb;
-> +	struct hlist_head as[VHOST_VDPA_IOTLB_BUCKETS];
->  	struct device dev;
->  	struct cdev cdev;
->  	atomic_t opened;
-> @@ -49,12 +57,64 @@ struct vhost_vdpa {
->  	struct eventfd_ctx *config_ctx;
->  	int in_batch;
->  	struct vdpa_iova_range range;
-> +	int used_as;
+Since commit 4cb15934ba05 ("clk: qoriq: provide constants for the type")
+there are constants for better readabilty. This series will use them for
+all arm64 device trees.
 
-This is not really used. Not in this patch and later removed.
+This is just a mechanical change. The change was done with the following
+script:
 
->  };
->  
->  static DEFINE_IDA(vhost_vdpa_ida);
->  
->  static dev_t vhost_vdpa_major;
->  
-> +static struct vhost_vdpa_as *asid_to_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +	struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
-> +	struct vhost_vdpa_as *as;
-> +
-> +	hlist_for_each_entry(as, head, hash_link)
-> +		if (as->id == asid)
-> +			return as;
-> +
-> +	return NULL;
-> +}
-> +
-> +static struct vhost_vdpa_as *vhost_vdpa_alloc_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +	struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
-> +	struct vhost_vdpa_as *as;
-> +
-> +	if (asid_to_as(v, asid))
-> +		return NULL;
-> +
-> +	as = kmalloc(sizeof(*as), GFP_KERNEL);
-> +	if (!as)
-> +		return NULL;
-> +
-> +	vhost_iotlb_init(&as->iotlb, 0, 0);
-> +	as->id = asid;
-> +	hlist_add_head(&as->hash_link, head);
-> +	++v->used_as;
-> +
-> +	return as;
-> +}
-> +
-> +static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +	struct vhost_vdpa_as *as = asid_to_as(v, asid);
-> +
-> +	/* Remove default address space is not allowed */
-> +	if (asid == 0)
-> +		return -EINVAL;
-> +
-> +	if (!as)
-> +		return -EINVAL;
-> +
-> +	hlist_del(&as->hash_link);
-> +	vhost_iotlb_reset(&as->iotlb);
-> +	kfree(as);
-> +	--v->used_as;
-> +
-> +	return 0;
-> +}
-> +
->  static void handle_vq_kick(struct vhost_work *work)
->  {
->  	struct vhost_virtqueue *vq = container_of(work, struct vhost_virtqueue,
-> @@ -525,15 +585,6 @@ static void vhost_vdpa_iotlb_unmap(struct vhost_vdpa *v,
->  	}
->  }
->  
-> -static void vhost_vdpa_iotlb_free(struct vhost_vdpa *v)
-> -{
-> -	struct vhost_iotlb *iotlb = v->iotlb;
-> -
-> -	vhost_vdpa_iotlb_unmap(v, iotlb, 0ULL, 0ULL - 1);
-> -	kfree(v->iotlb);
-> -	v->iotlb = NULL;
-> -}
-> -
->  static int perm_to_iommu_flags(u32 perm)
->  {
->  	int flags = 0;
-> @@ -745,7 +796,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev, u32 asid,
->  	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
->  	struct vdpa_device *vdpa = v->vdpa;
->  	const struct vdpa_config_ops *ops = vdpa->config;
-> -	struct vhost_iotlb *iotlb = v->iotlb;
-> +	struct vhost_vdpa_as *as = asid_to_as(v, 0);
-> +	struct vhost_iotlb *iotlb = &as->iotlb;
->  	int r = 0;
->  
->  	if (asid != 0)
-> @@ -856,6 +908,13 @@ static void vhost_vdpa_set_iova_range(struct vhost_vdpa *v)
->  	}
->  }
->  
-> +static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
-> +{
-> +	vhost_dev_cleanup(&v->vdev);
-> +	kfree(v->vdev.vqs);
-> +	vhost_vdpa_remove_as(v, 0);
-> +}
-> +
->  static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->  {
->  	struct vhost_vdpa *v;
-> @@ -886,15 +945,12 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->  	vhost_dev_init(dev, vqs, nvqs, 0, 0, 0, false,
->  		       vhost_vdpa_process_iotlb_msg);
->  
-> -	v->iotlb = vhost_iotlb_alloc(0, 0);
-> -	if (!v->iotlb) {
-> -		r = -ENOMEM;
-> -		goto err_init_iotlb;
-> -	}
-> +	if (!vhost_vdpa_alloc_as(v, 0))
-> +		goto err_alloc_as;
->  
->  	r = vhost_vdpa_alloc_domain(v);
->  	if (r)
-> -		goto err_alloc_domain;
-> +		goto err_alloc_as;
->  
->  	vhost_vdpa_set_iova_range(v);
->  
-> @@ -902,11 +958,8 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->  
->  	return 0;
->  
-> -err_alloc_domain:
-> -	vhost_vdpa_iotlb_free(v);
-> -err_init_iotlb:
-> -	vhost_dev_cleanup(&v->vdev);
-> -	kfree(vqs);
-> +err_alloc_as:
-> +	vhost_vdpa_cleanup(v);
->  err:
->  	atomic_dec(&v->opened);
->  	return r;
-> @@ -933,12 +986,10 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
->  	filep->private_data = NULL;
->  	vhost_vdpa_reset(v);
->  	vhost_dev_stop(&v->vdev);
-> -	vhost_vdpa_iotlb_free(v);
->  	vhost_vdpa_free_domain(v);
->  	vhost_vdpa_config_put(v);
->  	vhost_vdpa_clean_irq(v);
-> -	vhost_dev_cleanup(&v->vdev);
-> -	kfree(v->vdev.vqs);
-> +	vhost_vdpa_cleanup(v);
->  	mutex_unlock(&d->mutex);
->  
->  	atomic_dec(&v->opened);
-> @@ -1033,7 +1084,7 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->  	const struct vdpa_config_ops *ops = vdpa->config;
->  	struct vhost_vdpa *v;
->  	int minor;
-> -	int r;
-> +	int i, r;
->  
->  	/* Only support 1 address space and 1 groups */
->  	if (vdpa->ngroups != 1 || vdpa->nas != 1)
-> @@ -1085,6 +1136,9 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->  	init_completion(&v->completion);
->  	vdpa_set_drvdata(vdpa, v);
->  
-> +	for (i = 0; i < VHOST_VDPA_IOTLB_BUCKETS; i++)
-> +		INIT_HLIST_HEAD(&v->as[i]);
-> +
->  	return 0;
->  
->  err:
-> -- 
-> 2.25.1
-> 
+$ sed -e 's/<&clockgen 0 \([0-9]\)>/<\&clockgen QORIQ_CLK_SYSCLK \1>/g' \
+      -e 's/<&clockgen 1 \([0-9]\)>/<\&clockgen QORIQ_CLK_CMUX \1>/g' \
+      -e 's/<&clockgen 2 \([0-9]\)>/<\&clockgen QORIQ_CLK_HWACCEL \1>/g' \
+      -e 's/<&clockgen 3 \([0-9]\)>/<\&clockgen QORIQ_CLK_FMAN \1>/g' \
+      -e 's/<&clockgen 4 0>/<\&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(1)>/g' \
+      -e 's/<&clockgen 4 1>/<\&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(2)>/g' \
+      -e 's/<&clockgen 4 3>/<\&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(4)>/g' \
+      -e 's/<&clockgen 4 7>/<\&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(8)>/g' \
+      -e 's/<&clockgen 4 15>/<\&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(16)>/g' \
+      -i \
+         arm64/boot/dts/freescale/fsl-ls1012a.dtsi \
+         arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts \
+         arm64/boot/dts/freescale/fsl-ls1028a.dtsi \
+         arm64/boot/dts/freescale/fsl-ls1043a.dtsi \
+         arm64/boot/dts/freescale/fsl-ls1046a.dtsi \
+         arm64/boot/dts/freescale/fsl-ls1088a.dtsi \
+         arm64/boot/dts/freescale/fsl-ls2080a.dtsi \
+         arm64/boot/dts/freescale/fsl-ls2088a.dtsi \
+         arm64/boot/dts/freescale/fsl-ls208xa.dtsi \
+         arm64/boot/dts/freescale/fsl-lx2160a.dtsi \
+         boot/dts/freescale/qoriq-fman3-0.dtsi
+
+Afterwards the changes were manually clean-up for proper indendation, the
+include file was added and split into individual commits per SoC.
+
+Michael Walle (7):
+  arm64: dts: ls1012a: use constants in the clockgen phandle
+  arm64: dts: ls1028a: use constants in the clockgen phandle
+  arm64: dts: ls1043a: use constants in the clockgen phandle
+  arm64: dts: ls1046a: use constants in the clockgen phandle
+  arm64: dts: ls1088a: use constants in the clockgen phandle
+  arm64: dts: ls208xa: use constants in the clockgen phandle
+  arm64: dts: lx2160a: use constants in the clockgen phandle
+
+ .../arm64/boot/dts/freescale/fsl-ls1012a.dtsi |  60 +++++--
+ .../fsl-ls1028a-kontron-sl28-var3-ads2.dts    |   5 +-
+ .../arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 162 +++++++++++++-----
+ .../arm64/boot/dts/freescale/fsl-ls1043a.dtsi |  73 +++++---
+ .../arm64/boot/dts/freescale/fsl-ls1046a.dtsi |  73 +++++---
+ .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi |  91 +++++++---
+ .../arm64/boot/dts/freescale/fsl-ls2080a.dtsi |  17 +-
+ .../arm64/boot/dts/freescale/fsl-ls2088a.dtsi |  17 +-
+ .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi |  85 ++++++---
+ .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi |  92 ++++++----
+ .../boot/dts/freescale/qoriq-fman3-0.dtsi     |   6 +-
+ 11 files changed, 465 insertions(+), 216 deletions(-)
+
+-- 
+2.20.1
+
