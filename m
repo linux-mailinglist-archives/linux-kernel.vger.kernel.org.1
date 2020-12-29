@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8C22E710E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2992F2E711D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 14:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgL2NuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 08:50:10 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9656 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgL2NuJ (ORCPT
+        id S1726962AbgL2Nwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 08:52:40 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9943 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbgL2Nwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 08:50:09 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D4wjw5hcMz15l4N;
-        Tue, 29 Dec 2020 21:48:36 +0800 (CST)
+        Tue, 29 Dec 2020 08:52:39 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D4wkG0rzdzhys4;
+        Tue, 29 Dec 2020 21:48:54 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 29 Dec 2020 21:49:15 +0800
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 29 Dec 2020 21:49:24 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+To:     <rmfrfs@gmail.com>, <johan@kernel.org>, <elder@kernel.org>,
+        <gregkh@linuxfoundation.org>, <devel@driverdev.osuosl.org>,
         <linux-kernel@vger.kernel.org>
-CC:     <dchickles@marvell.com>, <sburla@marvell.com>,
-        <fmanlunas@marvell.com>, Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] cavium/liquidio: Use DEFINE_SPINLOCK() for spinlock
-Date:   Tue, 29 Dec 2020 21:49:54 +0800
-Message-ID: <20201229134954.23361-1-zhengyongjun3@huawei.com>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] staging: greybus: light: Use kzalloc for allocating only one thing
+Date:   Tue, 29 Dec 2020 21:50:03 +0800
+Message-ID: <20201229135003.23416-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -36,35 +36,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-spinlock can be initialized automatically with DEFINE_SPINLOCK()
-rather than explicitly calling spin_lock_init().
+Use kzalloc rather than kcalloc(1,...)
+
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@@
+@@
+
+- kcalloc(1,
++ kzalloc(
+          ...)
+// </smpl>
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/net/ethernet/cavium/liquidio/octeon_device.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/staging/greybus/light.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/octeon_device.c b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
-index 387a57cbfb73..e159194d0aef 100644
---- a/drivers/net/ethernet/cavium/liquidio/octeon_device.c
-+++ b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
-@@ -545,7 +545,7 @@ static atomic_t adapter_fw_states[MAX_OCTEON_DEVICES];
- 
- static u32 octeon_device_count;
- /* locks device array (i.e. octeon_device[]) */
--static spinlock_t octeon_devices_lock;
-+static DEFINE_SPINLOCK(octeon_devices_lock);
- 
- static struct octeon_core_setup core_setup[MAX_OCTEON_DEVICES];
- 
-@@ -563,7 +563,6 @@ void octeon_init_device_list(int conf_type)
- 	memset(octeon_device, 0, (sizeof(void *) * MAX_OCTEON_DEVICES));
- 	for (i = 0; i <  MAX_OCTEON_DEVICES; i++)
- 		oct_set_config_info(i, conf_type);
--	spin_lock_init(&octeon_devices_lock);
- }
- 
- static void *__retrieve_octeon_config_info(struct octeon_device *oct,
+diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
+index d2672b65c3f4..d227382fca20 100644
+--- a/drivers/staging/greybus/light.c
++++ b/drivers/staging/greybus/light.c
+@@ -290,7 +290,7 @@ static int channel_attr_groups_set(struct gb_channel *channel,
+ 	channel->attrs = kcalloc(size + 1, sizeof(*channel->attrs), GFP_KERNEL);
+ 	if (!channel->attrs)
+ 		return -ENOMEM;
+-	channel->attr_group = kcalloc(1, sizeof(*channel->attr_group),
++	channel->attr_group = kzalloc(sizeof(*channel->attr_group),
+ 				      GFP_KERNEL);
+ 	if (!channel->attr_group)
+ 		return -ENOMEM;
 -- 
 2.22.0
 
