@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97082E735D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 21:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1536B2E7387
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 21:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgL2UQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 15:16:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        id S1726396AbgL2URf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 15:17:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726158AbgL2UQO (ORCPT
+        with ESMTP id S1726348AbgL2URd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 15:16:14 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D50C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 12:15:34 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id o11so12900590ote.4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 12:15:34 -0800 (PST)
+        Tue, 29 Dec 2020 15:17:33 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC24C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 12:16:53 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id n42so12860993ota.12
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 12:16:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ljLGN++nr9P9/bQ/nEsRNU9kLfyULM9FGdJ8j8vmjz4=;
-        b=nyOQgQgtyM/NmkH1slyWIpS1mI1dss6DdNq28TcVD3M7gPRaN93rOkiO3omRB992Ez
-         gXhHZ3pgZ9J4bs2u9LJ+JSuWzmeh3b9Zc1LdsZt3/+5+RHLQ0A8OCInG8rUQ/yYFeh16
-         llsulkGWEa2AzLeVquE8VSa6wAqq6xvegC9bVyh8C0DdgZmfzzB6YVQEIPmVL4gXnGLg
-         wgahq0Ib0mXmnzSFTNUVh15DCcgygACP/SAz6Jd/i2jw2DjSOpPMcdp6fysDLDrJ7nBR
-         en4QvgMx8AqEIVmwEbyNcl8ROlZ2jcpuFInwORUFSjMkn5jgzuWYfP/PyQbhIECLoiMS
-         FRBw==
+        bh=8/ff/aC/FhYEg52rqnXpLoUks3WoQxxG1cMVlDozpaU=;
+        b=x5tXRrCUmPqoAHYnFM5l7WEJv/r9L1hCwRG0EgRdosgP1OgQXTy66XjccTckZ/yndt
+         4rfKYGmjl+khza2KyQguPE/MZC215djf138sF1RDdbjjDjd7SUMUFPvyTo8EfugZAFqi
+         Edin5dcBoKAU4EywLnF9uA/RXEzvdOEdgBYiB2eQRps5Cj1sigIxZPO23b7/cdhn/e/v
+         20CI5dW3F0EMMw+wMRPoB6xTOAyM2RXVYUU1PD+cjCf/Uixywgr3sICImkLxMJuNPdjL
+         Ig2KS1J3BOUe/W5/ltS97G9q4F7mXWzq/hgEc/vC+fbdLj8+I5/WRFPg8O32MU1fAiPF
+         A67w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ljLGN++nr9P9/bQ/nEsRNU9kLfyULM9FGdJ8j8vmjz4=;
-        b=N5IcmISsB5d1+20je9BMSeSmOKSAh/bkXwncyi9Aoz/KEoCV0S1I1rEzaROlgYy+8X
-         oucjRcjt2foptTVvdB45EsyxSHDf9xiJkToPSsvXY9VqApqLj5Xrsjhm5YdXeAmap2j8
-         UHahc2B5xAPdVD4ihLH2jvVcqs5allLkbKp8tYwy/m7DbCVpLUr5EHWIwGqIZWJwKQqt
-         XNaOO2yWB84K5fL6px+1gn6NWmPATP82JxaEnJvxRGmzY7Z/lpxIYB6192KlPVD6Aru7
-         TbMHF8W1U3ewYRwxRCzgUjmJo9SvoHXW7C07DN0Zs10vmoXMFsAZsyrECSWe2oRMhm4w
-         fw5w==
-X-Gm-Message-State: AOAM530WPVDGtn+6PxivbQSS6i9ajR8yJgKIKv4lMTVEbmfOLP+ogqqx
-        9/5lCa4dUzS4MFGwewAeiReRvw==
-X-Google-Smtp-Source: ABdhPJwwf5g2IRHJdyVgYBWU+m4p9dkM1+VgwSurV65XB/sbHSiNS6DfmuKG8dLyZcFQsopeKk/pJg==
-X-Received: by 2002:a9d:6185:: with SMTP id g5mr36614241otk.273.1609272933921;
-        Tue, 29 Dec 2020 12:15:33 -0800 (PST)
+        bh=8/ff/aC/FhYEg52rqnXpLoUks3WoQxxG1cMVlDozpaU=;
+        b=p23vbawXHqsRz2efWeheW+crNHX9fUK6xayiGdoaFv+uuxV5/t+E6bmbSm1p38Wwo0
+         Pi8iGyRplMb0rjMM9vCE2FU0LuBSbT4/T4/qtwH8d3qKra4BonEIqbJWyxI69XsWSjuB
+         d2SkUcvmggGNDfxPScBaeDQWHNvrVazkaVDR+ft+G4q1RakPlefvsjM7jGsF5M963pUD
+         oWNKqtl9clTRm5h94Q4ny6KQCcoOF1XddUWrf0SEXd4nGRkE0UawLWJYktYHbqs2y7AX
+         KPdiXPYoBJ5xQrSVdQum3+lgLo+djiq5r/xcGC+cYwKjV9vZDlEA2RCokriuufzjjDh0
+         c5FQ==
+X-Gm-Message-State: AOAM530VJtvh7CTRqRD7pTTIQsZ1Ujp3D1g5eF35scO9sKkkHNq0qm7M
+        /UigcDhqNVcnIdpASRPDAFaQow==
+X-Google-Smtp-Source: ABdhPJxKumJC6mzfR9r1ZhYYuJaUFurnw/1OUTdKkOqcYu3tKhJ7K0CksMbCXe3nC6OqOPfMyzOZDg==
+X-Received: by 2002:a9d:479a:: with SMTP id b26mr36730205otf.297.1609273012821;
+        Tue, 29 Dec 2020 12:16:52 -0800 (PST)
 Received: from [192.168.17.50] (CableLink-189-219-75-19.Hosts.InterCable.net. [189.219.75.19])
-        by smtp.gmail.com with ESMTPSA id e12sm10137695otp.25.2020.12.29.12.15.32
+        by smtp.gmail.com with ESMTPSA id c204sm9819205oob.44.2020.12.29.12.16.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Dec 2020 12:15:33 -0800 (PST)
-Subject: Re: [PATCH 5.10 000/716] 5.10.4-rc2 review
+        Tue, 29 Dec 2020 12:16:52 -0800 (PST)
+Subject: Re: [PATCH 5.4 000/450] 5.4.86-rc2 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     shuah@kernel.org, patches@kernelci.org,
         lkft-triage@lists.linaro.org, stable@vger.kernel.org,
         pavel@denx.de, akpm@linux-foundation.org,
         torvalds@linux-foundation.org, linux@roeck-us.net
-References: <20201229103832.108495696@linuxfoundation.org>
+References: <20201229103747.123668426@linuxfoundation.org>
 From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <923e3123-7247-f8e5-8bbb-67f5e43c3b7d@linaro.org>
-Date:   Tue, 29 Dec 2020 14:15:32 -0600
+Message-ID: <e2c7797f-1a92-0082-b41c-23d11a0c73aa@linaro.org>
+Date:   Tue, 29 Dec 2020 14:16:51 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201229103832.108495696@linuxfoundation.org>
+In-Reply-To: <20201229103747.123668426@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -73,19 +73,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello!
 
-On 12/29/20 4:52 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.4 release.
-> There are 716 patches in this series, all will be posted as a response
+On 12/29/20 4:53 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.86 release.
+> There are 450 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
-> Responses should be made by Thu, 31 Dec 2020 10:36:33 +0000.
+> Responses should be made by Thu, 31 Dec 2020 10:36:29 +0000.
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.4-rc2.gz
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.86-rc2.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
 > and the diffstat can be found below.
 > 
 > thanks,
@@ -100,18 +100,18 @@ Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 Summary
 ------------------------------------------------------------------------
 
-kernel: 5.10.4-rc2
+kernel: 5.4.86-rc2
 git repo: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-git branch: linux-5.10.y
-git commit: 5069132d06b7c5d706b4ef9147aba5f6de422a9b
-git describe: v5.10.3-717-g5069132d06b7
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.3-717-g5069132d06b7
+git branch: linux-5.4.y
+git commit: d797ea26c4313e38eb3eaddba53ae3316eae7a98
+git describe: v5.4.85-451-gd797ea26c431
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.85-451-gd797ea26c431
 
-No regressions (compared to build v5.10.3)
+No regressions (compared to build v5.4.85)
 
-No fixes (compared to build v5.10.3)
+No fixes (compared to build v5.4.85)
 
-Ran 53358 total tests in the following environments and test suites.
+Ran 43508 total tests in the following environments and test suites.
 
 Environments
 --------------
@@ -122,7 +122,6 @@ Environments
 - hi6220-hikey
 - i386
 - juno-r2
-- juno-r2-compat
 - juno-r2-kasan
 - mips
 - parisc
@@ -130,7 +129,6 @@ Environments
 - qemu-arm-clang
 - qemu-arm64-clang
 - qemu-arm64-kasan
-- qemu-i386-clang
 - qemu-x86_64-clang
 - qemu-x86_64-kasan
 - qemu-x86_64-kcsan
@@ -156,7 +154,6 @@ Test Suites
 * kselftest
 * kselftest-vsyscall-mode-native
 * kselftest-vsyscall-mode-none
-* kunit
 * kvm-unit-tests
 * libhugetlbfs
 * linux-log-parser
