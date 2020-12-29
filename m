@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A2B2E73FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 21:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F4A2E73FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 21:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgL2UsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 15:48:20 -0500
-Received: from mout.gmx.net ([212.227.15.18]:48981 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgL2UsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 15:48:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1609274796;
-        bh=DXNgMY2gAULxd8AeqlplAUzLbTg5YqXKvx2KpWfrN5o=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=HH/53CbBvwzhCJ7zVldUpXaPnhFMWCOPhW9GdYgNARzl6bSg0xdnKetIW2DbmyOgG
-         739hiXOZPfx0tJ+gLqqG9+X+I8MDmGLy/6N0R8u8acNH3+cdte3dIOGtai3+R1kKcq
-         ms/X482SocPu58cKp5Z+GvuwiJmT+rWSMyNXe79M=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.23] ([77.6.105.225]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MpDNl-1kEiKx1WLn-00qhyQ; Tue, 29
- Dec 2020 21:46:36 +0100
-Subject: Re: [RFC PATCH 2/2] mm: readahead: handle LARGE input to
- get_init_ra_size()
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org
-References: <20201220211051.1416-1-rdunlap@infradead.org>
- <20201222173533.c9e28416835d7487b0e28cda@linux-foundation.org>
- <6a595671-20a8-e63f-f3ea-f4749a574efa@infradead.org>
- <d2edfb69-93b4-d938-faf0-5f7c0f1158b9@gmx.de>
- <1f5a6e7b-c779-861e-fde8-409ca8e2541b@infradead.org>
- <bb5d8aee-96bf-4403-6a64-27f4c1159320@infradead.org>
-From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
-Message-ID: <0c283ea9-b446-0e40-6dc8-e9585ae171b4@gmx.de>
-Date:   Tue, 29 Dec 2020 21:46:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726274AbgL2UsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 15:48:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgL2UsD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 15:48:03 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0122BC061574;
+        Tue, 29 Dec 2020 12:47:23 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id h16so6882418qvu.8;
+        Tue, 29 Dec 2020 12:47:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y+rG0GxaF7x1wXd8TaaHi/8Xfv1oonAYxPZa52+iv1g=;
+        b=VbPKpHSd6tZDH2zm47wqbko1A0NgXSGNZkyRuWT0E2sm0HTfdFGyHB/RCpWIrj7w6K
+         6n3mAJ2YuIkUF8tc/Vwb7YU3jzqAvQ2K6gMG6pw9rwMinOmto/FfSwtx3dEuJVqwnIJK
+         nJ0oxhLGzqgHFkd/VxDZ25QH9kktVZZZG2zzfsYFgUC3h3471N3WWeDrlbOJrLxhFyKb
+         DB4DGheTESkWASZV2gKyaTv9HKFUbvDmwZo1pGfdaxr6PaTv8s8/Fem2m2YLZt6RMK7v
+         BthRbKXKTbOpr1mRPdPglD+3dbyVjIDJgve7+rr+6hEi2O4dHkip7cTrYSKDpbCTN/1h
+         siuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y+rG0GxaF7x1wXd8TaaHi/8Xfv1oonAYxPZa52+iv1g=;
+        b=t7rWJhUuud2TATO+kc5vRrFDczRk2Ntxos8k4+MeCr9FBx3+MqTv4wGrncumg9At3x
+         z2omKgq/Olmhg68sS9ShJ/oS4zr30Vmequw9TmBLQy0riIvZ5x21BsMjbDdylVN3Df8F
+         PCUWgtc+gw9bkKgRd3Tdkfb9W86VImd1lplqnUVAPTqXgIx++FVqbbb/nSQRcb3Vks9l
+         7NghPHe7uLKICLtWBdth6FPzK1s2j0C5fLXAH3eUUTuG3UyAeEi3cJwRn+eQ3aGyvOzz
+         rfxMKgyw+tAUg3sk3wmN8h/m7blTlhSgybSvFAWKOMGDQQargTvr7dC88pr6hl/PgUcL
+         NFnA==
+X-Gm-Message-State: AOAM5307ycM5qk8CLyaleJCeTDvFpcNsNWPPtyDG7C/NEnS5RBwFa1mY
+        IefjigR5c05QvUrH8fITMcU=
+X-Google-Smtp-Source: ABdhPJx/7QCz1uzdmG7N+yZpMXQZ01RrfD1TOA7M0mU/tmv2rVqr45+D6n3cQ9hHWlePDfPWlfO3pA==
+X-Received: by 2002:a0c:f690:: with SMTP id p16mr5946583qvn.58.1609274842134;
+        Tue, 29 Dec 2020 12:47:22 -0800 (PST)
+Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id w8sm27667541qts.50.2020.12.29.12.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Dec 2020 12:47:21 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] pinctrl: nomadik: Remove unused variable in nmk_gpio_dbg_show_one
+Date:   Tue, 29 Dec 2020 13:47:10 -0700
+Message-Id: <20201229204710.1129033-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <bb5d8aee-96bf-4403-6a64-27f4c1159320@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yripnOslDXNF7S/5HaYCwP/wjPGGKJsaXiQIgRaa1et1PdgbB3w
- hRjLX2kb79Vmi2TMqaSWmU9gg0+HRi4lpnsqbGAmuk+f1D/v/wN2qXRQCSqZGzuw+s/eFyB
- xecGWpUVUfpL0rVrnV6xWiGsCKTLwZmJ3auAVD2N6/JJHDekpQplc+jhW29jATgph1w0ByQ
- OaEGsPUVd7UC9SBLmedtg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:61KuzHQwVJ8=:3aKJHiW7uqlgY9iKR3k97K
- I8zd+kjqHw5qknrqhICpFQ1fl12w1zJ39KdQWIEFxasP0N7ci/ODdrhDqBjJhg/NqZJEBTTU+
- ZXkVGIp5Fwxw6jim2Vv99zTwhSoUe0HeMUuQXPRZpdkaIFbVgmwi/Mz0aU2mSjqm8FtrTnR9s
- beqV4yWrHP34CfSQ8I+j9PYCFsvM4nd8E0NgDpCSXsfrySlpSA3TSRBHqFf3TjcofM4SskCWB
- kPn8tMPxJUEltOljrd5GwwtRWIocUNIbz13XjdechuDEfrFwu559RMSXWrdXrBHW0YQCAYXw9
- DgLGxacxROvOZj2Gv5ySgl7pEEVfmSyBZ5Jljuh0ZDeWO3HV19fHSoxyrrcCe0ea2wQgym89M
- ovxPnm0fV6B8+vuvK/ecZhE30tPvoo7or7yXqqcIDIi5z9MryLD++nXYoIX1tUOBTimahrcqm
- Pp7O4v3V4ff1WPQBwiwFi/BD+t/6sHKYzPVG9BSehodgeq081hGpmXz/oVkQI8dIKFA1ohz6M
- vZcgao5VOkgaK90qccuTYM421O2sOf5SEYgCKWL/HVBHiaUQrvkO1osHwkaeeFeVGwWVCJWfs
- Rbe8J4Or42lbSPl1bOrdzUJ+cn452trJOADkqwe7XBo1OZxOurdaUFlE8OLLEZJnFyLKqwAky
- jiXFx5ShKVl3I9YuPzlC+OiBadXcAgcw48eWX/pJu63IxrS51Asui8ZpRUJ6KyXJCoFaBbTCi
- 2olDxvVQ+TXWAEdJjiZMJV8gWOBTlMe5gnMCznc+02ORbrBDcxoWL0KhFFtlYMoW4a5w/tbSN
- nu/PhO322heT06vHXcxVwIriSwHShXfGmiQR2AbpGkbr/iQDbLjwXtvRQ6gsUJe1xml8zs7Lp
- mzrfL/a5sE/5I6d4Ua2A==
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/29/20 9:00 PM, Randy Dunlap wrote:
-> Hi Toralf,
->
-> Do you want either or both of your
-> Reported-by: and Tested-by: on the patch?
->
-> thanks.
-> -- ~Randy
-The first is enough, for a Tested-by: was the time frame too short IMO.
+Clang warns:
 
-=2D-
-Toralf
+drivers/pinctrl/nomadik/pinctrl-nomadik.c:952:8: warning: unused
+variable 'wake' [-Wunused-variable]
+                bool wake;
+                     ^
+1 warning generated.
+
+There were two wake declarations added to nmk_gpio_dbg_show_one when
+converting it to use irq_has_action but only one is used within its
+scope. Remove the unused one so there is no more warning.
+
+Fixes: f3925032d7fd ("pinctrl: nomadik: Use irq_has_action()")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/pinctrl/nomadik/pinctrl-nomadik.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik.c b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+index d4ea10803fd9..abfe11c7b49f 100644
+--- a/drivers/pinctrl/nomadik/pinctrl-nomadik.c
++++ b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+@@ -949,7 +949,6 @@ static void nmk_gpio_dbg_show_one(struct seq_file *s,
+ 	} else {
+ 		int irq = chip->to_irq(chip, offset);
+ 		const int pullidx = pull ? 1 : 0;
+-		bool wake;
+ 		int val;
+ 		static const char * const pulls[] = {
+ 			"none        ",
+
+base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
+-- 
+2.30.0
+
