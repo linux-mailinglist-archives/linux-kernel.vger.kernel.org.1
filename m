@@ -2,163 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4FE2E718F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5487B2E7194
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 16:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgL2PBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 10:01:43 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:40055 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgL2PBm (ORCPT
+        id S1726486AbgL2PHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 10:07:42 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:1702 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726196AbgL2PHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:01:42 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kuGUc-0005yc-B9; Tue, 29 Dec 2020 15:00:58 +0000
-Date:   Tue, 29 Dec 2020 16:00:56 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     hch@infradead.org, willy@infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-aio@kvack.org, io-uring@vger.kernel.org
-Subject: Re: Bug in __mmdrop() triggered by io-uring on v5.11-rc1
-Message-ID: <20201229150056.7ki6h25biyioommx@wittgenstein>
-References: <20201228165429.c3v637xlqxt56fsv@wittgenstein>
- <d6788552-90bb-33f8-48ee-fb7081965e08@kernel.dk>
+        Tue, 29 Dec 2020 10:07:42 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTEurMH029389;
+        Tue, 29 Dec 2020 09:06:37 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=ft0FMgPygPHnrN9sJcmJjuza0kcCsmbf1k6oQa0rk2s=;
+ b=HdBmQEh46qeegNcVwn1awTiM0qTkcxbhViwGhtbI9qwNc89LYFPDDrrGH2lhwSAWGY/c
+ mam1HNLmSUlbQqCVn6lFZxw+JYKD5A8C2yJ6aHZD0D/5/H7YITvarhD7YZ+tpD1o4eRt
+ OqnP828B+jqNf/MhmnbiUBgvkn9+6Kx4e0SEqxLV6JdfSNAEISjroaXXR58BeZbXJbtu
+ kfsXzckDEI1MUVIhYWYV4/KUKrFnkPJiPAxsJzdLlMwbBa2EicsSaYy+hkHnuxhsCzXe
+ A9CNLCHVhNmN0bNT4aZnKTHZnLfoP5q8E56o3EmuYTCatq4B+1iSbK0xbUjBrf48PHDH 6w== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 35p2fs2ecw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 29 Dec 2020 09:06:37 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Dec
+ 2020 15:06:35 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 29 Dec 2020 15:06:35 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AD5442AB;
+        Tue, 29 Dec 2020 15:06:35 +0000 (UTC)
+Date:   Tue, 29 Dec 2020 15:06:35 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
+Message-ID: <20201229150635.GP9673@ediswmail.ad.cirrus.com>
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-2-hdegoede@redhat.com>
+ <20201228122138.GA5352@sirena.org.uk>
+ <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
+ <20201228162807.GE5352@sirena.org.uk>
+ <20201229130657.GN9673@ediswmail.ad.cirrus.com>
+ <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <d6788552-90bb-33f8-48ee-fb7081965e08@kernel.dk>
+In-Reply-To: <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 mlxlogscore=999 spamscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012290095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 05:00:53PM -0700, Jens Axboe wrote:
-> On 12/28/20 9:54 AM, Christian Brauner wrote:
-> > Hey everyone,
+On Tue, Dec 29, 2020 at 02:57:38PM +0100, Hans de Goede wrote:
+> On 12/29/20 2:06 PM, Charles Keepax wrote:
+> > On Mon, Dec 28, 2020 at 04:28:07PM +0000, Mark Brown wrote:
+> >> On Mon, Dec 28, 2020 at 02:16:04PM +0100, Hans de Goede wrote:
+> >>
+> >>> And more in general AFAIK extcon is sort of deprecated and it is
+> >>> not advised to use it for new code. I would esp. not expect it to
+> >>> be used for new jack-detection code since we already have standard
+> >>> uAPI support for that through sound/core/jack.c .
+> >>
+> >> Has Android been fixed to use the ALSA/input layer interfaces?  That's
+> >> why that code is there, long term the goal was to have ALSA generate
+> >> extcon events too so userspace could fall over to using that.  The basic
+> >> thing at the time was that nobody liked any of the existing interfaces
+> >> (the input layer thing is a total bodge stemming from it having been
+> >> easy to hack in a key for GPIO detection and using ALSA controls means
+> >> having to link against alsa-lib which is an awful faff for system level
+> >> UI stuff) and there were three separate userspace interfaces used by
+> >> different software stacks which needed to be joined together, extcon was
+> >> felt to be a bit more designed and is a superset so that was the
+> >> direction we were heading in.
 > > 
-> > The following oops can be triggered on a pristine v5.11-rc1 which I discovered
-> > while rebasing my idmapped mount patchset onto v5.11-rc1:
+> > Android has been updated to have the option to catch input events
+> > for jack detection now.
 > > 
-> > [  577.716339][ T7216] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)/LXD, BIOS 0.0.0 02/06/2015
-> > [  577.718584][ T7216] Call Trace:
-> > [  577.719357][ T7216]  dump_stack+0x10b/0x167
-> > [  577.720505][ T7216]  panic+0x347/0x783
-> > [  577.721588][ T7216]  ? print_oops_end_marker.cold+0x15/0x15
-> > [  577.723502][ T7216]  ? __warn.cold+0x5/0x2f
-> > [  577.725079][ T7216]  ? __mmdrop+0x30c/0x400
-> > [  577.736066][ T7216]  __warn.cold+0x20/0x2f
-> > [  577.745503][ T7216]  ? __mmdrop+0x30c/0x400
-> > [  577.755101][ T7216]  report_bug+0x277/0x300
-> > 
-> > f2-vm login: [  577.764873][ T7216]  handle_bug+0x3c/0x60
-> > [  577.773982][ T7216]  exc_invalid_op+0x18/0x50
-> > [  577.786341][ T7216]  asm_exc_invalid_op+0x12/0x20
-> > [  577.795500][ T7216] RIP: 0010:__mmdrop+0x30c/0x400
-> > [  577.804426][ T7216] Code: 00 00 4c 89 ef e8 64 61 8c 02 eb 82 e8 dd 48 32 00 4c 89 e7 e8 35 97 2e 00 e9 70 ff ff ff e8 cb 48 32 00 0f 0b e8 c4 48 32 00 <0f> 0b e9 51 fd ff ff e8 b8 48 32 00 0f 0b e9 82 fd ff ff e8 ac 48
-> > [  577.826526][ T7216] RSP: 0018:ffffc900073676d8 EFLAGS: 00010246
-> > [  577.836448][ T7216] RAX: 0000000000000000 RBX: ffff88810d56d1c0 RCX: ffff88810d56d1c0
-> > [  577.845860][ T7216] RDX: 0000000000000000 RSI: ffff88810d56d1c0 RDI: 0000000000000002
-> > [  577.856896][ T7216] RBP: ffff888025244700 R08: ffffffff8141a4ec R09: ffffed1004a488ed
-> > [  577.866712][ T7216] R10: ffff888025244763 R11: ffffed1004a488ec R12: ffff8880660b4c40
-> > [  577.875736][ T7216] R13: ffff888013930000 R14: ffff888025244700 R15: 0000000000000001
-> > [  577.889094][ T7216]  ? __mmdrop+0x30c/0x400
-> > [  577.898466][ T7216]  ? __mmdrop+0x30c/0x400
-> > [  577.907746][ T7216]  finish_task_switch+0x56f/0x8c0
-> > [  577.917553][ T7216]  ? __switch_to+0x580/0x1060
-> > [  577.926962][ T7216]  __schedule+0xa04/0x2310
-> > [  577.937965][ T7216]  ? firmware_map_remove+0x1a1/0x1a1
-> > 
-> > f2-vm login: [  577.947035][ T7216]  ? try_to_wake_up+0x7f3/0x16e0
-> > [  577.955799][ T7216]  ? preempt_schedule_thunk+0x16/0x18
-> > [  577.964988][ T7216]  preempt_schedule_common+0x4a/0xc0
-> > [  577.973670][ T7216]  preempt_schedule_thunk+0x16/0x18
-> > [  577.985967][ T7216]  try_to_wake_up+0x9eb/0x16e0
-> > [  577.994498][ T7216]  ? migrate_swap_stop+0x9d0/0x9d0
-> > [  578.003265][ T7216]  ? rcu_read_lock_held+0xae/0xc0
-> > [  578.012182][ T7216]  ? rcu_read_lock_sched_held+0xe0/0xe0
-> > [  578.021280][ T7216]  io_wqe_wake_worker.isra.0+0x4ba/0x670
-> > [  578.029857][ T7216]  ? io_wq_manager+0xc00/0xc00
-> > [  578.041295][ T7216]  ? _raw_spin_unlock_irqrestore+0x46/0x50
-> > [  578.050139][ T7216]  io_wqe_enqueue+0x212/0x980
-> > [  578.058213][ T7216]  __io_queue_async_work+0x201/0x4a0
-> > [  578.067518][ T7216]  io_queue_async_work+0x52/0x80
-> > [  578.078327][ T7216]  __io_queue_sqe+0x986/0xe80
-> > [  578.086615][ T7216]  ? io_uring_setup+0x3a90/0x3a90
-> > [  578.094528][ T7216]  ? radix_tree_load_root+0x119/0x1b0
-> > [  578.102598][ T7216]  ? io_async_task_func+0xa90/0xa90
-> > [  578.110208][ T7216]  ? __sanitizer_cov_trace_pc+0x1e/0x50
-> > [  578.120847][ T7216]  io_queue_sqe+0x5e3/0xc40
-> > [  578.127950][ T7216]  io_submit_sqes+0x17ca/0x26f0
-> > [  578.135559][ T7216]  ? io_queue_sqe+0xc40/0xc40
-> > [  578.143129][ T7216]  ? __x64_sys_io_uring_enter+0xa10/0xf00
-> > [  578.152183][ T7216]  ? xa_store+0x40/0x50
-> > [  578.162501][ T7216]  ? mutex_lock_io_nested+0x12a0/0x12a0
-> > [  578.170203][ T7216]  ? do_raw_spin_unlock+0x175/0x260
-> > [  578.177874][ T7216]  ? _raw_spin_unlock+0x28/0x40
-> > [  578.185560][ T7216]  ? xa_store+0x40/0x50
-> > [  578.192755][ T7216]  __x64_sys_io_uring_enter+0xa1b/0xf00
-> > [  578.201089][ T7216]  ? __io_uring_task_cancel+0x1e0/0x1e0
-> > [  578.210378][ T7216]  ? __sanitizer_cov_trace_pc+0x1e/0x50
-> > [  578.218401][ T7216]  ? __audit_syscall_entry+0x3fe/0x540
-> > [  578.226264][ T7216]  do_syscall_64+0x31/0x70
-> > [  578.234410][ T7216]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > [  578.244957][ T7216] RIP: 0033:0x7f5204b9c89d
-> > [  578.252372][ T7216] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c3 f5 0c 00 f7 d8 64 89 01 48
-> > [  578.272398][ T7216] RSP: 002b:00007ffd62bb14e8 EFLAGS: 00000212 ORIG_RAX: 00000000000001aa
-> > [  578.280966][ T7216] RAX: ffffffffffffffda RBX: 00007ffd62bb1560 RCX: 00007f5204b9c89d
-> > [  578.289068][ T7216] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000005
-> > [  578.300693][ T7216] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000008
-> > [  578.308932][ T7216] R10: 0000000000000000 R11: 0000000000000212 R12: 0000000000000001
-> > [  578.317255][ T7216] R13: 0000000000000000 R14: 00007ffd62bb1520 R15: 0000000000000000
-> > [  578.328448][ T7216] Kernel Offset: disabled
-> > [  578.544329][ T7216] Rebooting in 86400 seconds..
+> > I have always been slightly confused between extcon and the ALSA
+> > jack reporting and have been unsure as to what is the longer term
+> > plan here. I vaguely thought there was a gentle plan to move to
+> > extcon, it is interesting to see Hans basically saying the
+> > opposite that extcon is intended to be paritially deprecated. I
+> > assume you just mean with respect to audio jacks, not other
+> > connector types?
 > 
-> I can't get your reproducer to work, and unfortunately that trace doesn't
-> have some of the debug info? But it looks like it must be the BUG in there.
-> Can you try with this? Must be related to creds and identity COW'ing,
-> and you are using multiple processes that share the ring.
+> No I mean that afaik extcon is being deprecated in general. Extcon
+> is mostly meant for kernel internal use, to allow things like
+> charger-type-detection done by e.g. a fsa micro-usb mux or a
+> Type-C PD controller to be hooked up to the actual charger chip
+> and set the input-current-limit based on this.
 > 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 7e35283fc0b1..eb4620ff638e 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -1501,6 +1501,13 @@ static bool io_grab_identity(struct io_kiocb *req)
->  		spin_unlock_irq(&ctx->inflight_lock);
->  		req->work.flags |= IO_WQ_WORK_FILES;
->  	}
-> +	if (!(req->work.flags & IO_WQ_WORK_MM) &&
-> +	    (def->work_flags & IO_WQ_WORK_MM)) {
-> +		if (id->mm != current->mm)
-> +			return false;
-> +		mmgrab(id->mm);
-> +		req->work.flags |= IO_WQ_WORK_MM;
-> +	}
->  
->  	return true;
->  }
-> @@ -1525,13 +1532,6 @@ static void io_prep_async_work(struct io_kiocb *req)
->  			req->work.flags |= IO_WQ_WORK_UNBOUND;
->  	}
->  
-> -	/* ->mm can never change on us */
-> -	if (!(req->work.flags & IO_WQ_WORK_MM) &&
-> -	    (def->work_flags & IO_WQ_WORK_MM)) {
-> -		mmgrab(id->mm);
-> -		req->work.flags |= IO_WQ_WORK_MM;
-> -	}
-> -
->  	/* if we fail grabbing identity, we must COW, regrab, and retry */
->  	if (io_grab_identity(req))
->  		return;
 
-I've taken this and applied it to:
-https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/commit/?h=io_uring_mmdrop&id=c8c68b2402709f7904a1a61cffbce4998278976e
+Fascinating thanks for taking the time to write such detailed
+answers. I thought it was mostly intended for user-space usage,
+but I guess I never really thought through that most of this
+stuff you don't really need to know from user-space.
 
-With this patch applied the bug is gone so feel free to turn this into a
-proper patch and add:
-Tested-by: Christian Brauner <christian.brauner@ubuntu.com>:
+> > I would agree with Mark though that if extcon exists for external
+> > connectors it seems odd that audio jacks would have their own
+> > special way rather than just using the connector stuff.
+> 
+> Well as I said above in me experience the extcon code is (was) mostly
+> meant for kernel internal use. The sysfs API is more of a debugging
+> tool then anything else (IMHO).
+> 
+> Also the kernel has support for a lot of sound devices, including
+> many with jack-detection support. Yet a grep for EXTCON_JACK_HEADPHONE
+> over the entire mainline kernel tree shows that only extcon-arizona.c
+> is using it. So given that we have dozens of drivers providing jack
+> functionality through the sound/core/jack.c core and only 1 driver
+> using the extcon interface I believe that the ship on how to export
+> this to userspace has long sailed, since most userspace code will
+> clearly expect the sound/core/jack.c way of doing things to be used.
+> 
+> Arguably we should/could maybe even drop the extcon part of extcon-arizona.c
+> but I did not do that as I did not want to regress existing userspace
+> code which may depend on this (on specific embedded/android devices).
+> 
 
-Christian
+All reasonable arguments, with Android now supporting input
+events for jacks I guess there would be no need for us to use
+extcon for future devices.
+
+There is maybe more argument for porting the Arizona code across
+anyways, since for a long time Android didn't properly support extcon
+either. It supported the earlier out of tree switch stuff, extcon
+had a switch compatibility mode, but that didn't actually work I
+think due to android hard coding some sysfs naming or something
+(memory is a little fuzzy on the details was a while ago now).
+
+I think extcon support was fixed in Android at about the same time
+the support for input events was added. So it might be harmless but
+someone probably needs to go and check the timeline before we go
+changing stuff.
+
+Thanks,
+Charles
