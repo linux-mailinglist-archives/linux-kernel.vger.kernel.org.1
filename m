@@ -2,123 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EC02E6CDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 01:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADE62E6CE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 01:57:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729709AbgL2Axw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 19:53:52 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:43270 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726738AbgL2Axv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 19:53:51 -0500
-X-UUID: 5dd04a54453a4bc085642d383a6c7dbb-20201229
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=l5BaJ1fMqhHLJEANX8+mPHsA/fgq1r0nW6xefUzPcD0=;
-        b=BMKdDMaJzjql8G8KIJnmwDY+rUBPV47cBBNBD9bRbaHnimWjAEvsFuTIVKz+POc8SlaWSnTiPUt0fC1Og/TWdBCYdKCZfkEObMJlETQyEhEk2I2Pot641Lq2ssmUyBP83Jcb8qOZSirVLg5azkc9DLZfqwicixQsJ8dm2Ukf3xk=;
-X-UUID: 5dd04a54453a4bc085642d383a6c7dbb-20201229
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 28539555; Tue, 29 Dec 2020 08:53:02 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs05n1.mediatek.inc
- (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Dec
- 2020 08:54:07 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 29 Dec 2020 08:54:07 +0800
-Message-ID: <1609203179.24062.0.camel@mhfsdcap03>
-Subject: Re: [PATCH v3, 7/8] soc: mediatek: mmsys: Use function call for
- setting mmsys ovl mout register
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 29 Dec 2020 08:52:59 +0800
-In-Reply-To: <CAAOTY_9ObwPwKt6nRc_qSu9JE3WbqeRDEpKObnxsfhENbkT+iw@mail.gmail.com>
-References: <1609144630-14721-1-git-send-email-yongqiang.niu@mediatek.com>
-         <1609144630-14721-8-git-send-email-yongqiang.niu@mediatek.com>
-         <CAAOTY_9ObwPwKt6nRc_qSu9JE3WbqeRDEpKObnxsfhENbkT+iw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1730532AbgL2A5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 19:57:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730229AbgL2A5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 19:57:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 406572222A
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 00:56:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609203411;
+        bh=5ea1GP7R9ThOqNi8XEr5gxNXJU/ubpRT/SpIDHm2c0M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bOnhgK3ds/goNLDhJWb0r7fRqd65KN5BXdE4oYSm7k5zkRDAV/1pooaKncbxQMwqf
+         fOUNJPfyVyB6nkeEQNc6maqX0cSIgI+eyBG9L1sgaBgPd6EuwaKhSYBROHQnL4TJGL
+         Cq3PeZ3nvlkFmpumXZ6nt9sK04hHjLnE7fJk3gNqGhoR0Vn8m2i5GbX4pO+WXnbinV
+         CGz/aqbTkNVecOveVLht/LqNxen/d+Me/6DXPqdBMRvND/LlObgSwJ3/9TqmR0Rtc4
+         h04e4s9Al0uBq8gpPaU+BYRPynbzikeks9DGeoUdJshRNB307Y1HbkY/YqTEuVF/FC
+         wa+4hCR8K1IBA==
+Received: by mail-wm1-f44.google.com with SMTP id c124so791807wma.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 16:56:51 -0800 (PST)
+X-Gm-Message-State: AOAM5305wmxNXzTObJCicOEO12esXBjBPAHniX0HWtTw6094Hyegv37d
+        HnQOCFB1qY7/4dAMtEBGdzZpViG6c79mrlW3TCDvlg==
+X-Google-Smtp-Source: ABdhPJwWLZzdWjQFkiOrEi0hD/sw8QEhosbYgv30yS3Mb/zDERHlmT9dUrmSuLKTMJNeve8TtWbk4bbcTCBfJLD539U=
+X-Received: by 2002:a1c:6741:: with SMTP id b62mr1172357wmc.21.1609203409735;
+ Mon, 28 Dec 2020 16:56:49 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
+ <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+ <20201228102537.GG1551@shell.armlinux.org.uk> <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+ <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
+ <20201228190852.GI1551@shell.armlinux.org.uk> <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
+ <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com>
+ <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com> <1609200902.me5niwm2t6.astroid@bobo.none>
+In-Reply-To: <1609200902.me5niwm2t6.astroid@bobo.none>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 28 Dec 2020 16:56:36 -0800
+X-Gmail-Original-Message-ID: <CALCETrX6MOqmN5_jhyO1jJB7M3_T+hbomjxPYZLJmLVNmXAVzA@mail.gmail.com>
+Message-ID: <CALCETrX6MOqmN5_jhyO1jJB7M3_T+hbomjxPYZLJmLVNmXAVzA@mail.gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jann Horn <jannh@google.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        paulmck <paulmck@kernel.org>, Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        stable <stable@vger.kernel.org>, Will Deacon <will@kernel.org>,
+        x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEyLTI5IGF0IDAwOjM4ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBIaSwgWW9uZ3FpYW5nOg0KPiANCj4gWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRp
-YXRlay5jb20+IOaWvCAyMDIw5bm0MTLmnIgyOOaXpSDpgLHkuIAg5LiL5Y2INDozOOWvq+mBk++8
-mg0KPiA+DQo+ID4gVXNlIGZ1bmN0aW9uIGNhbGwgZm9yIHNldHRpbmcgbW1zeXMgb3ZsIG1vdXQg
-cmVnaXN0ZXINCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmdxaWFuZyBOaXUgPHlvbmdxaWFu
-Zy5uaXVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3NvYy9tZWRpYXRlay9t
-bXN5cy9tdGstbW1zeXMuYyB8IDIwICsrKysrKysrKysrKysrKysrKysrDQo+ID4gIGluY2x1ZGUv
-bGludXgvc29jL21lZGlhdGVrL210ay1tbXN5cy5oIHwgIDMgKysrDQo+ID4gIDIgZmlsZXMgY2hh
-bmdlZCwgMjMgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29j
-L21lZGlhdGVrL21tc3lzL210ay1tbXN5cy5jIGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbW1zeXMv
-bXRrLW1tc3lzLmMNCj4gPiBpbmRleCBkYWU2NjViLi5lYTM2YTExIDEwMDY0NA0KPiA+IC0tLSBh
-L2RyaXZlcnMvc29jL21lZGlhdGVrL21tc3lzL210ay1tbXN5cy5jDQo+ID4gKysrIGIvZHJpdmVy
-cy9zb2MvbWVkaWF0ZWsvbW1zeXMvbXRrLW1tc3lzLmMNCj4gPiBAQCAtNzQsNiArNzQsMTcgQEAg
-dm9pZCBtdGtfbW1zeXNfZGRwX2Nvbm5lY3Qoc3RydWN0IGRldmljZSAqZGV2LA0KPiA+ICAgICAg
-ICAgICAgICAgICByZWcgPSByZWFkbF9yZWxheGVkKG1tc3lzLT5yZWdzICsgYWRkcikgfCB2YWx1
-ZTsNCj4gPiAgICAgICAgICAgICAgICAgd3JpdGVsX3JlbGF4ZWQocmVnLCBtbXN5cy0+cmVncyAr
-IGFkZHIpOw0KPiA+ICAgICAgICAgfQ0KPiA+ICsNCj4gPiArICAgICAgIGlmICghZnVuY3MtPm92
-bF9tb3V0X2VuKQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm47DQo+ID4gKw0KPiA+ICsgICAg
-ICAgaWYgKGZ1bmNzLT5vdmxfbW91dF9lbikgew0KPiA+ICsgICAgICAgICAgICAgICB2YWx1ZSA9
-IGZ1bmNzLT5vdmxfbW91dF9lbihjdXIsIG5leHQsICZhZGRyKTsNCj4gPiArICAgICAgICAgICAg
-ICAgaWYgKHZhbHVlKSB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmVnID0gcmVhZGxf
-cmVsYXhlZChtbXN5cy0+cmVncyArIGFkZHIpIHwgdmFsdWU7DQo+ID4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgd3JpdGVsX3JlbGF4ZWQocmVnLCBtbXN5cy0+cmVncyArIGFkZHIpOw0KPiA+ICsg
-ICAgICAgICAgICAgICB9DQo+ID4gKyAgICAgICB9DQo+IA0KPiBtdGtfbW1zeXNfZGRwX21vdXRf
-ZW4oKSBjb3VsZCB3cml0ZSByZWdpc3RlciBpbnNpZGUgaXQgcmF0aGVyIHRoYW4NCj4gcmV0dXJu
-IHZhbHVlIGFuZCB3cml0ZSByZWdpc3RlciBpbiBtdGtfbW1zeXNfZGRwX2Nvbm5lY3QoKS4gU28g
-eW91DQo+IGNvdWxkIGRvIG92bF9tb3V0X2VuKCkgaW4gbXRrX21tc3lzX2RkcF9tb3V0X2VuKCku
-DQo+IA0KPiBSZWdhcmRzLA0KPiBDaHVuLUt1YW5nLg0KDQppZiB0aGF0LCB0aGVyZSB3aWxsIGJl
-IG1hbnkgcmVwZWF0IGNvZGUgbGlrZSB0aGlzOg0KDQppZiAodmFsdWUpIHsNCiAgICAgICAgICAg
-ICAgICAgICAgcmVnID0gcmVhZGxfcmVsYXhlZChtbXN5cy0+cmVncyArIGFkZHIpIHwgdmFsdWU7
-DQogICAgICAgICAgICAgICAgICAgIHdyaXRlbF9yZWxheGVkKHJlZywgbW1zeXMtPnJlZ3MgKyBh
-ZGRyKTsNCiAgICAgICAgICAgICB9DQoNCg0KPiANCj4gPiAgfQ0KPiA+ICBFWFBPUlRfU1lNQk9M
-X0dQTChtdGtfbW1zeXNfZGRwX2Nvbm5lY3QpOw0KPiA+DQo+ID4gQEAgLTk5LDYgKzExMCwxNSBA
-QCB2b2lkIG10a19tbXN5c19kZHBfZGlzY29ubmVjdChzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+ID4g
-ICAgICAgICAgICAgICAgIHJlZyA9IHJlYWRsX3JlbGF4ZWQobW1zeXMtPnJlZ3MgKyBhZGRyKSAm
-IH52YWx1ZTsNCj4gPiAgICAgICAgICAgICAgICAgd3JpdGVsX3JlbGF4ZWQocmVnLCBtbXN5cy0+
-cmVncyArIGFkZHIpOw0KPiA+ICAgICAgICAgfQ0KPiA+ICsNCj4gPiArICAgICAgIGlmICghZnVu
-Y3MtPm92bF9tb3V0X2VuKQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm47DQo+ID4gKw0KPiA+
-ICsgICAgICAgdmFsdWUgPSBmdW5jcy0+b3ZsX21vdXRfZW4oY3VyLCBuZXh0LCAmYWRkcik7DQo+
-ID4gKyAgICAgICBpZiAodmFsdWUpIHsNCj4gPiArICAgICAgICAgICAgICAgcmVnID0gcmVhZGxf
-cmVsYXhlZChtbXN5cy0+cmVncyArIGFkZHIpICYgfnZhbHVlOw0KPiA+ICsgICAgICAgICAgICAg
-ICB3cml0ZWxfcmVsYXhlZChyZWcsIG1tc3lzLT5yZWdzICsgYWRkcik7DQo+ID4gKyAgICAgICB9
-DQo+ID4gIH0NCj4gPiAgRVhQT1JUX1NZTUJPTF9HUEwobXRrX21tc3lzX2RkcF9kaXNjb25uZWN0
-KTsNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9tdGst
-bW1zeXMuaCBiL2luY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL210ay1tbXN5cy5oDQo+ID4gaW5k
-ZXggYWE0ZjYwZS4uMjIwMjAzZCAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L3NvYy9t
-ZWRpYXRlay9tdGstbW1zeXMuaA0KPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvc29jL21lZGlhdGVr
-L210ay1tbXN5cy5oDQo+ID4gQEAgLTQ5LDYgKzQ5LDkgQEAgc3RydWN0IG10a19tbXN5c19jb25u
-X2Z1bmNzIHsNCj4gPiAgICAgICAgIHUzMiAoKm1vdXRfZW4pKGVudW0gbXRrX2RkcF9jb21wX2lk
-IGN1ciwNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgIGVudW0gbXRrX2RkcF9jb21wX2lkIG5l
-eHQsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBpbnQgKmFkZHIpOw0KPiA+
-ICsgICAgICAgdTMyICgqb3ZsX21vdXRfZW4pKGVudW0gbXRrX2RkcF9jb21wX2lkIGN1ciwNCj4g
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICBlbnVtIG10a19kZHBfY29tcF9pZCBuZXh0LA0K
-PiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVkIGludCAqYWRkcik7DQo+ID4g
-ICAgICAgICB1MzIgKCpzZWxfaW4pKGVudW0gbXRrX2RkcF9jb21wX2lkIGN1ciwNCj4gPiAgICAg
-ICAgICAgICAgICAgICAgICAgZW51bSBtdGtfZGRwX2NvbXBfaWQgbmV4dCwNCj4gPiAgICAgICAg
-ICAgICAgICAgICAgICAgdW5zaWduZWQgaW50ICphZGRyKTsNCj4gPiAtLQ0KPiA+IDEuOC4xLjEu
-ZGlydHkNCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xw0KPiA+IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiA+IExpbnV4LW1lZGlhdGVrQGxp
-c3RzLmluZnJhZGVhZC5vcmcNCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVrDQoNCg==
+On Mon, Dec 28, 2020 at 4:36 PM Nicholas Piggin <npiggin@gmail.com> wrote:
+>
+> Excerpts from Andy Lutomirski's message of December 29, 2020 7:06 am:
+> > On Mon, Dec 28, 2020 at 12:32 PM Mathieu Desnoyers
+> > <mathieu.desnoyers@efficios.com> wrote:
+> >>
+> >> ----- On Dec 28, 2020, at 2:44 PM, Andy Lutomirski luto@kernel.org wrote:
+> >>
+> >> > On Mon, Dec 28, 2020 at 11:09 AM Russell King - ARM Linux admin
+> >> > <linux@armlinux.org.uk> wrote:
+> >> >>
+> >> >> On Mon, Dec 28, 2020 at 07:29:34PM +0100, Jann Horn wrote:
+> >> >> > After chatting with rmk about this (but without claiming that any of
+> >> >> > this is his opinion), based on the manpage, I think membarrier()
+> >> >> > currently doesn't really claim to be synchronizing caches? It just
+> >> >> > serializes cores. So arguably if userspace wants to use membarrier()
+> >> >> > to synchronize code changes, userspace should first do the code
+> >> >> > change, then flush icache as appropriate for the architecture, and
+> >> >> > then do the membarrier() to ensure that the old code is unused?
+> >>
+> >> ^ exactly, yes.
+> >>
+> >> >> >
+> >> >> > For 32-bit arm, rmk pointed out that that would be the cacheflush()
+> >> >> > syscall. That might cause you to end up with two IPIs instead of one
+> >> >> > in total, but we probably don't care _that_ much about extra IPIs on
+> >> >> > 32-bit arm?
+> >>
+> >> This was the original thinking, yes. The cacheflush IPI will flush specific
+> >> regions of code, and the membarrier IPI issues context synchronizing
+> >> instructions.
+>
+> APIs should be written in terms of the service they provide to
+> userspace, and in highest level terms as possible, rather than directing
+> hardware to do some low level operation. Unfortunately we're stuck with
+> this for now. We could deprecate it and replace it though.
+>
+> If userspace wants to modify code and ensure that after the system call
+> returns then no other thread will be executing the previous code, then
+> there should be an API for that. It could actually combine the two IPIs
+> into one for architectures that require both too.
 
+I agree.  The membarrier API for SYNC_CORE is pretty nasty.  I would
+much prefer a real API for JITs to use.
+
+>
+> >>
+> >> Architectures with coherent i/d caches don't need the cacheflush step.
+> >
+> > There are different levels of coherency -- VIVT architectures may have
+> > differing requirements compared to PIPT, etc.
+> >
+> > In any case, I feel like the approach taken by the documentation is
+> > fundamentally confusing.  Architectures don't all speak the same
+> > language  How about something like:
+> >
+> > The SYNC_CORE operation causes all threads in the caller's address
+> > space (including the caller) to execute an architecture-defined
+> > barrier operation.  membarrier() will ensure that this barrier is
+> > executed at a time such that all data writes done by the calling
+> > thread before membarrier() are made visible by the barrier.
+> > Additional architecture-dependent cache management operations may be
+> > required to use this for JIT code.
+>
+> As said this isn't what SYNC_CORE does, and it's not what powerpc
+> context synchronizing instructions do either, it will very much
+> re-order visibility of stores around such an instruction.
+
+Perhaps the docs should be entirely arch-specific.  It may well be
+impossible to state what it does in an arch-neutral way.
+
+>
+> A thread completes store instructions into a store queue, which is
+> as far as a context synchronizing event goes. Visibility comes at
+> some indeterminite time later.
+
+As currently implemented, it has the same visibility semantics as
+regular membarrier, too.  So if I do:
+
+a = 1;
+membarrier(SYNC_CORE);
+b = 1;
+
+and another thread does:
+
+while (READ_ONCE(b) != 1)
+  ;
+barrier();
+assert(a == 1);
+
+then the assertion will pass.  Similarly, one can do this, I hope:
+
+memcpy(codeptr, [some new instructions], len);
+arch_dependent_cache_flush(codeptr, len);
+membarrier(SYNC_CORE);
+ready = 1;
+
+and another thread does:
+
+while (READ_ONCE(ready) != 1)
+  ;
+barrier();
+(*codeptr)();
+
+arch_dependent_cache_flush is a nop on x86.  On arm and arm64, it
+appears to be a syscall, although maybe arm64 can do it from
+userspace.  I still don't know what it is on powerpc.
+
+Even using the term "cache" here is misleading.  x86 chips have all
+kinds of barely-documented instruction caches, and they have varying
+degrees of coherency.  The architecture actually promises that, if you
+do a certain incantation, then you get the desired result.
+membarrier() allows a user to do this incantation.  But trying to
+replicate the incantation verbatim on an architecture like ARM is
+insufficient, and trying to flush the things that are documented as
+being caches on x86 is expensive and a complete waste of time on x86.
+When you write some JIT code, you do *not* want to flush it all the
+way to main memory, especially on CPUs don't have the ability to write
+back invalidating.  (That's most CPUs.)
+
+Even on x86, I suspect that the various decoded insn caches are rather
+more coherent than documented, and I have questions in to Intel about
+this.  No answers yet.
+
+So perhaps the right approach is to say that membarrier() helps you
+perform the architecture-specific sequence of steps needed to safely
+modify code.  On x86, you use it like this.  On arm64, you do this
+other thing.  On powerpc, you do something else.
+
+>
+> I would be surprised if x86's serializing instructions were different
+> than powerpc. rdtsc ordering or flushing stores to cache would be
+> surprising.
+>
+
+At the very least, x86 has several levels of what ARM might call
+"context synchronization" AFAICT.  STAC, CLAC, and POPF do a form of
+context synchronization in that the changes they cause to the MMU take
+effect immediately, but they are not documented as synchronizing the
+instruction stream.  "Serializing" instructions do all kinds of
+things, not all of which may be architecturally visible at all.
+MFENCE and LFENCE do various complicated things, and LFENCE has magic
+retroactive capabilities on old CPUs that were not documented when
+those CPUs were released.  SFENCE does a different form of
+synchronization entirely.  LOCK does something else.  (The
+relationship between LOCK and MFENCE is confusing at best.)  RDTSC
+doesn't serialize anything at all, but RDTSCP does provide a form of
+serialization that's kind of ilke LFENCE.  It's a mess.  Even the
+manuals are inconsistent about what "serialize" means.  JMP has its
+own magic on x86, but only on very very old CPUs.
+
+The specific instruction that flushes everything into the coherency
+domain is SFENCE, and SFENCE is not, for normal purposes, needed for
+self- or cross-modifying code.
