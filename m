@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86542E6EB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 08:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 976002E6EB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 08:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgL2HTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 02:19:11 -0500
-Received: from mga04.intel.com ([192.55.52.120]:11855 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgL2HTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 02:19:10 -0500
-IronPort-SDR: kJgi/DFXkXKTzu65gduZgNlOhGsHoRACROFXvp8dLh9jbqwt2sHuMZEmIiO69tPaiyK7UbjWAN
- Bob+yjabg4dQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="173888152"
-X-IronPort-AV: E=Sophos;i="5.78,457,1599548400"; 
-   d="scan'208";a="173888152"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 23:17:25 -0800
-IronPort-SDR: QKCKIStYkeNmfJgKwwFY1lbNsImWFJP+blXuQKbjL2cbTrl2SQEqqYBlWswOBNA1LnXwYwDFyL
- u5/2oMz8bZjg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,457,1599548400"; 
-   d="scan'208";a="347286495"
-Received: from unknown (HELO clx-ap-likexu.sh.intel.com) ([10.239.48.105])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Dec 2020 23:17:23 -0800
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     syzkaller-bugs@googlegroups.com,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86/pmu: Fix UBSAN shift-out-of-bounds warning in intel_pmu_refresh()
-Date:   Tue, 29 Dec 2020 15:11:44 +0800
-Message-Id: <20201229071144.85418-1-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
+        id S1726160AbgL2HN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 02:13:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgL2HN6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 02:13:58 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942E5C0613D6;
+        Mon, 28 Dec 2020 23:13:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=lBCNuS5v86MpcyX53G9VuW1LBgOBtl/EWWx2AJBcQwQ=; b=vb7cCCMqrqq16DgF7JC7l3MdZ0
+        RAF0LsxgiRTTI3TtzQFnMsoiG1b3S1xICvCC1+JUXzFrndSXvCbLPhg8Z9uWyv5dub6DEFssBr3Nh
+        PvlIZ1/dHk+k6/mNmq1UspfsDu9A9BuO9dHriDgxMIiSmz75AusICrw8y9kCz/NtMyE0HFEJKYOv0
+        oaFzF0fFjZNuQlJObTB1LNE7qq+MdrCftyaxbQ7YWye536fup+b7o61QBRzXOdV1bOn3fv8W5IoG2
+        DMkXjgLha4Yg/loNkxBDmbuqBkTQn5aHDbBarhrWuOPXYkf9wy/k1Sp22w4+XAqem03yuAv8ilAXm
+        ZDgs3Gew==;
+Received: from [2601:1c0:6280:3f0::2c43] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ku9Bx-00026A-RK; Tue, 29 Dec 2020 07:13:14 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        syzbot+297d20e437b79283bf6d@syzkaller.appspotmail.com,
+        Yuyang Du <yuyang.du@intel.com>,
+        Shuah Khan <shuahkh@osg.samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Subject: [PATCH] usb: usbip: vhci_hcd: protect shift size
+Date:   Mon, 28 Dec 2020 23:13:09 -0800
+Message-Id: <20201229071309.18418-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we know vPMU will not work properly when the guest bit_width(s) of
-the [gp|fixed] counters are greater than the host ones, so we can setup a
-smaller left shift value and refresh the guest pmu cpuid entry, thus fixing
-the following UBSAN shift-out-of-bounds warning:
+Fix shift out-of-bounds in vhci_hcd.c:
 
-shift exponent 197 is too large for 64-bit type 'long long unsigned int'
+  UBSAN: shift-out-of-bounds in ../drivers/usb/usbip/vhci_hcd.c:399:41
+  shift exponent 768 is too large for 32-bit type 'int'
 
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- intel_pmu_refresh.cold+0x75/0x99 arch/x86/kvm/vmx/pmu_intel.c:348
- kvm_vcpu_after_set_cpuid+0x65a/0xf80 arch/x86/kvm/cpuid.c:177
- kvm_vcpu_ioctl_set_cpuid2+0x160/0x440 arch/x86/kvm/cpuid.c:308
- kvm_arch_vcpu_ioctl+0x11b6/0x2d70 arch/x86/kvm/x86.c:4709
- kvm_vcpu_ioctl+0x7b9/0xdb0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3386
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Reported-by: syzbot+ae488dc136a4cc6ba32b@syzkaller.appspotmail.com
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
+Fixes: 03cd00d538a6 ("usbip: vhci-hcd: Set the vhci structure up to work")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: syzbot+297d20e437b79283bf6d@syzkaller.appspotmail.com
+Cc: Yuyang Du <yuyang.du@intel.com>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
 ---
- arch/x86/kvm/vmx/pmu_intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/usbip/vhci_hcd.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index a886a47daebd..a86a1690e75c 100644
---- a/arch/x86/kvm/vmx/pmu_intel.c
-+++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -345,6 +345,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 
- 	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
- 					 x86_pmu.num_counters_gp);
-+	eax.split.bit_width = min_t(int, eax.split.bit_width, x86_pmu.bit_width_gp);
- 	pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << eax.split.bit_width) - 1;
- 	pmu->available_event_types = ~entry->ebx &
- 					((1ull << eax.split.mask_length) - 1);
-@@ -355,6 +356,8 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 		pmu->nr_arch_fixed_counters =
- 			min_t(int, edx.split.num_counters_fixed,
- 			      x86_pmu.num_counters_fixed);
-+		edx.split.bit_width_fixed = min_t(int,
-+			edx.split.bit_width_fixed, x86_pmu.bit_width_fixed);
- 		pmu->counter_bitmask[KVM_PMC_FIXED] =
- 			((u64)1 << edx.split.bit_width_fixed) - 1;
- 	}
--- 
-2.29.2
-
+--- linux-5.10.orig/drivers/usb/usbip/vhci_hcd.c
++++ linux-5.10/drivers/usb/usbip/vhci_hcd.c
+@@ -396,6 +396,8 @@ static int vhci_hub_control(struct usb_h
+ 		default:
+ 			usbip_dbg_vhci_rh(" ClearPortFeature: default %x\n",
+ 					  wValue);
++			if (wValue >= 32)
++				goto error;
+ 			vhci_hcd->port_status[rhport] &= ~(1 << wValue);
+ 			break;
+ 		}
