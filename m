@@ -2,292 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8D52E7511
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 00:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEAA2E7515
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 00:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgL2W7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 17:59:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgL2W7i (ORCPT
+        id S1726330AbgL2XBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 18:01:48 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:14331 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgL2XBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 17:59:38 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23A2C061799
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 14:57:58 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id 91so15988860wrj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 14:57:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6LOVRIN+dHLlkldBNCaLmuLD7ORcE6+GLQF/833fwkU=;
-        b=zEqf4KE0zng7uJSq9TLccKBz6yioDvPjkB4ufL+6FTK0P2BwBm2fjTTCmbWNo3UwZ8
-         7pZD+oSCiYmvU6DsBTcmSar6ErEC0zY6qp6Ma/04rJoHZT6wsHZLYuEh8iyus+m1fAxw
-         7HZYPpOJMHPNQqIvGEcvWAetjreQes3kRmEcM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6LOVRIN+dHLlkldBNCaLmuLD7ORcE6+GLQF/833fwkU=;
-        b=bcrvtAHzBRFX4/B6s4OAAU2tUwJ+ZKS66MdSM8VJgmlzvwfsANgUS1G0zuY/59CzoB
-         A4ts/G85Ep1PwgsiVVl9VN8m4+9J1EcO6QvumvcLnnVMCDQ4bLdvfawVU+FrlMbYwoQf
-         IRmL7kd7KGMiifylLr14FNCK4aHF4bGbTNCkYezj9QnZctEVXmgcLZl43JOwx237pFj+
-         GDOVpnCvQbJBSBl/VcFUU9lLjtrNA5WB4W7xF8ljPVj7ljzZN++qfQ3knNbv6ifIzISc
-         5SzvnAMR/QsxuYSu7xI5lcvGDTNsXeUOB9WkHWrVDQrtMBS+uec/lERW3nCbCrPJw5Sj
-         Vx6Q==
-X-Gm-Message-State: AOAM530x5ahjAFo+j32gQv6jGbOs2o/C0EeAADGUKdn98rUQ9ySLaBH5
-        jS3YOVW4kAi/vDjvsmDHQ0/CNg==
-X-Google-Smtp-Source: ABdhPJx6mbQ7eliHuiWL9TcrMD6Lvzqs8brXQIJLd4Fk6RPORgP9+Q/9lIupEaZX7+yhDOqKyN7Y4w==
-X-Received: by 2002:adf:f605:: with SMTP id t5mr56673240wrp.39.1609282676001;
-        Tue, 29 Dec 2020 14:57:56 -0800 (PST)
-Received: from dev.cfops.net (165.176.200.146.dyn.plus.net. [146.200.176.165])
-        by smtp.gmail.com with ESMTPSA id u205sm5182840wme.42.2020.12.29.14.57.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Dec 2020 14:57:55 -0800 (PST)
-From:   Ignat Korchagin <ignat@cloudflare.com>
-To:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
-        dm-crypt@saout.de, linux-kernel@vger.kernel.org
-Cc:     Ignat Korchagin <ignat@cloudflare.com>, ebiggers@kernel.org,
-        Damien.LeMoal@wdc.com, mpatocka@redhat.com,
-        herbert@gondor.apana.org.au, kernel-team@cloudflare.com,
-        nobuto.murata@canonical.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        mail@maciej.szmigiero.name, stable@vger.kernel.org
-Subject: [PATCH 2/2] dm crypt: do not wait for backlogged crypto request completion in softirq
-Date:   Tue, 29 Dec 2020 22:57:14 +0000
-Message-Id: <20201229225714.1580-2-ignat@cloudflare.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201229225714.1580-1-ignat@cloudflare.com>
-References: <20201229225714.1580-1-ignat@cloudflare.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 29 Dec 2020 18:01:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609282888; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=qpAMQSyjBq4xVMemJq1tY6TMHhDkbGd1U4vaPpVEhow=; b=HDnc4f5UlGSfa/wxpsRoaGJAlSXa1W/c5x2vAdC6FsUH3xZ3gZUNECPyYT5c3iyujxuxYS9d
+ JnW8vMT/koD3enQT243Q/V8q8hfn0TLKsCSpbM9lDF/y3qDR4O7QITdZwp0S4W5aj50fXOwt
+ 699t9NK3hlWrgqvLAPzuneIe+u0=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5febb51cda47198188ab54f9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Dec 2020 23:00:44
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E078FC43461; Tue, 29 Dec 2020 23:00:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94E35C433C6;
+        Tue, 29 Dec 2020 23:00:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94E35C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH] usb: dwc3: gadget: Restart DWC3 gadget when enabling pullup
+Date:   Tue, 29 Dec 2020 15:00:37 -0800
+Message-Id: <1609282837-21666-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 39d42fa96ba1b7d2544db3f8ed5da8fb0d5cb877 made it possible for some code
-paths in dm-crypt to be executed in softirq context, when the underlying driver
-processes IO requests in interrupt/softirq context.
+usb_gadget_deactivate/usb_gadget_activate does not execute the UDC start
+operation, which may leave EP0 disabled and event IRQs disabled when
+re-activating the function. Move the enabling/disabling of USB EP0 and
+device event IRQs to be performed in the pullup routine.
 
-When Crypto API backlogs a crypto request, dm-crypt uses wait_for_completion to
-avoid sending further requests to an already overloaded crypto driver. However,
-if the code is executing in softirq context, we might get the following
-stacktrace:
+Fixes: ae7e86108b12 ("usb: dwc3: Stop active transfers before halting the
+controller")
 
-[  210.235213][    C0] BUG: scheduling while atomic: fio/2602/0x00000102
-[  210.236701][    C0] Modules linked in:
-[  210.237566][    C0] CPU: 0 PID: 2602 Comm: fio Tainted: G        W         5.10.0+ #50
-[  210.239292][    C0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-[  210.241233][    C0] Call Trace:
-[  210.241946][    C0]  <IRQ>
-[  210.242561][    C0]  dump_stack+0x7d/0xa3
-[  210.243466][    C0]  __schedule_bug.cold+0xb3/0xc2
-[  210.244539][    C0]  __schedule+0x156f/0x20d0
-[  210.245518][    C0]  ? io_schedule_timeout+0x140/0x140
-[  210.246660][    C0]  schedule+0xd0/0x270
-[  210.247541][    C0]  schedule_timeout+0x1fb/0x280
-[  210.248586][    C0]  ? usleep_range+0x150/0x150
-[  210.249624][    C0]  ? unpoison_range+0x3a/0x60
-[  210.250632][    C0]  ? ____kasan_kmalloc.constprop.0+0x82/0xa0
-[  210.251949][    C0]  ? unpoison_range+0x3a/0x60
-[  210.252958][    C0]  ? __prepare_to_swait+0xa7/0x190
-[  210.254067][    C0]  do_wait_for_common+0x2ab/0x370
-[  210.255158][    C0]  ? usleep_range+0x150/0x150
-[  210.256192][    C0]  ? bit_wait_io_timeout+0x160/0x160
-[  210.257358][    C0]  ? blk_update_request+0x757/0x1150
-[  210.258582][    C0]  ? _raw_spin_lock_irq+0x82/0xd0
-[  210.259674][    C0]  ? _raw_read_unlock_irqrestore+0x30/0x30
-[  210.260917][    C0]  wait_for_completion+0x4c/0x90
-[  210.261971][    C0]  crypt_convert+0x19a6/0x4c00
-[  210.263033][    C0]  ? _raw_spin_lock_irqsave+0x87/0xe0
-[  210.264193][    C0]  ? kasan_set_track+0x1c/0x30
-[  210.265191][    C0]  ? crypt_iv_tcw_ctr+0x4a0/0x4a0
-[  210.266283][    C0]  ? kmem_cache_free+0x104/0x470
-[  210.267363][    C0]  ? crypt_endio+0x91/0x180
-[  210.268327][    C0]  kcryptd_crypt_read_convert+0x30e/0x420
-[  210.269565][    C0]  blk_update_request+0x757/0x1150
-[  210.270563][    C0]  blk_mq_end_request+0x4b/0x480
-[  210.271680][    C0]  blk_done_softirq+0x21d/0x340
-[  210.272775][    C0]  ? _raw_spin_lock+0x81/0xd0
-[  210.273847][    C0]  ? blk_mq_stop_hw_queue+0x30/0x30
-[  210.275031][    C0]  ? _raw_read_lock_irq+0x40/0x40
-[  210.276182][    C0]  __do_softirq+0x190/0x611
-[  210.277203][    C0]  ? handle_edge_irq+0x221/0xb60
-[  210.278340][    C0]  asm_call_irq_on_stack+0x12/0x20
-[  210.279514][    C0]  </IRQ>
-[  210.280164][    C0]  do_softirq_own_stack+0x37/0x40
-[  210.281281][    C0]  irq_exit_rcu+0x110/0x1b0
-[  210.282286][    C0]  common_interrupt+0x74/0x120
-[  210.283376][    C0]  asm_common_interrupt+0x1e/0x40
-[  210.284496][    C0] RIP: 0010:_aesni_enc1+0x65/0xb0
-
-Fix this by making crypt_convert function reentrant from the point of a single
-bio and make dm-crypt defer further bio processing to a workqueue, if Crypto API
-backlogs a request in interrupt context.
-
-Fixes: 39d42fa96ba1 ("dm crypt: add flags to optionally bypass kcryptd workq
-ueues")
-Cc: <stable@vger.kernel.org> # v5.9+
-
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+Tested-by: Michael Tretter <m.tretter@pengutronix.de>
+Reported-by: Michael Tretter <m.tretter@pengutronix.de>
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
 ---
- drivers/md/dm-crypt.c | 102 +++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 97 insertions(+), 5 deletions(-)
+ drivers/usb/dwc3/gadget.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 777b5c71a2f7..6df907bd6c7c 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -1529,13 +1529,19 @@ static void crypt_free_req(struct crypt_config *cc, void *req, struct bio *base_
-  * Encrypt / decrypt data from one bio to another one (can be the same one)
-  */
- static blk_status_t crypt_convert(struct crypt_config *cc,
--			 struct convert_context *ctx, bool atomic)
-+			 struct convert_context *ctx, bool atomic, bool reset_pending)
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 5d879b7606d5..922c8b76e534 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1988,6 +1988,7 @@ static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
+ 
+ static void dwc3_gadget_disable_irq(struct dwc3 *dwc);
+ static void __dwc3_gadget_stop(struct dwc3 *dwc);
++static int __dwc3_gadget_start(struct dwc3 *dwc);
+ 
+ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
  {
- 	unsigned int tag_offset = 0;
- 	unsigned int sector_step = cc->sector_size >> SECTOR_SHIFT;
- 	int r;
- 
--	atomic_set(&ctx->cc_pending, 1);
-+	/*
-+	 * if reset_pending is set we are dealing with the bio for the first time,
-+	 * else we're continuing to work on the previous bio, so don't mess with
-+	 * the cc_pending counter
-+	 */
-+	if (reset_pending)
-+		atomic_set(&ctx->cc_pending, 1);
- 
- 	while (ctx->iter_in.bi_size && ctx->iter_out.bi_size) {
- 
-@@ -1553,7 +1559,24 @@ static blk_status_t crypt_convert(struct crypt_config *cc,
- 		 * but the driver request queue is full, let's wait.
- 		 */
- 		case -EBUSY:
--			wait_for_completion(&ctx->restart);
-+			if (in_interrupt()) {
-+				if (try_wait_for_completion(&ctx->restart)) {
-+					/*
-+					 * we don't have to block to wait for completion,
-+					 * so proceed
-+					 */
-+				} else {
-+					/*
-+					 * we can't wait for completion without blocking
-+					 * exit and continue processing in a workqueue
-+					 */
-+					ctx->r.req = NULL;
-+					ctx->cc_sector += sector_step;
-+					tag_offset++;
-+					return BLK_STS_DEV_RESOURCE;
-+				}
-+			} else
-+				wait_for_completion(&ctx->restart);
- 			reinit_completion(&ctx->restart);
- 			fallthrough;
- 		/*
-@@ -1945,6 +1968,37 @@ static bool kcryptd_crypt_write_inline(struct crypt_config *cc,
+@@ -2050,6 +2051,8 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+ 			dwc->ev_buf->lpos = (dwc->ev_buf->lpos + count) %
+ 						dwc->ev_buf->length;
+ 		}
++	} else {
++		__dwc3_gadget_start(dwc);
  	}
- }
  
-+static void kcryptd_crypt_write_continue(struct work_struct *work)
-+{
-+	struct dm_crypt_io *io = container_of(work, struct dm_crypt_io, work);
-+	struct crypt_config *cc = io->cc;
-+	struct convert_context *ctx = &io->ctx;
-+	int crypt_finished;
-+	sector_t sector = io->sector;
-+	blk_status_t r;
-+
-+	wait_for_completion(&ctx->restart);
-+	reinit_completion(&ctx->restart);
-+
-+	r = crypt_convert(cc, &io->ctx, true, false);
-+	if (r)
-+		io->error = r;
-+	crypt_finished = atomic_dec_and_test(&ctx->cc_pending);
-+	if (!crypt_finished && kcryptd_crypt_write_inline(cc, ctx)) {
-+		/* Wait for completion signaled by kcryptd_async_done() */
-+		wait_for_completion(&ctx->restart);
-+		crypt_finished = 1;
-+	}
-+
-+	/* Encryption was already finished, submit io now */
-+	if (crypt_finished) {
-+		kcryptd_crypt_write_io_submit(io, 0);
-+		io->sector = sector;
-+	}
-+
-+	crypt_dec_pending(io);
-+}
-+
- static void kcryptd_crypt_write_convert(struct dm_crypt_io *io)
- {
- 	struct crypt_config *cc = io->cc;
-@@ -1973,7 +2027,17 @@ static void kcryptd_crypt_write_convert(struct dm_crypt_io *io)
+ 	ret = dwc3_gadget_run_stop(dwc, is_on, false);
+@@ -2224,10 +2227,6 @@ static int dwc3_gadget_start(struct usb_gadget *g,
+ 	}
  
- 	crypt_inc_pending(io);
- 	r = crypt_convert(cc, ctx,
--			  test_bit(DM_CRYPT_NO_WRITE_WORKQUEUE, &cc->flags));
-+			  test_bit(DM_CRYPT_NO_WRITE_WORKQUEUE, &cc->flags), true);
-+	/*
-+	 * Crypto API backlogged the request, because its queue was full
-+	 * and we're in softirq context, so continue from a workqueue
-+	 * (TODO: is it actually possible to be in softirq in the write path?)
-+	 */
-+	if (r == BLK_STS_DEV_RESOURCE) {
-+		INIT_WORK(&io->work, kcryptd_crypt_write_continue);
-+		queue_work(cc->crypt_queue, &io->work);
-+		return;
-+	}
- 	if (r)
- 		io->error = r;
- 	crypt_finished = atomic_dec_and_test(&ctx->cc_pending);
-@@ -1998,6 +2062,25 @@ static void kcryptd_crypt_read_done(struct dm_crypt_io *io)
- 	crypt_dec_pending(io);
- }
+ 	dwc->gadget_driver	= driver;
+-
+-	if (pm_runtime_active(dwc->dev))
+-		__dwc3_gadget_start(dwc);
+-
+ 	spin_unlock_irqrestore(&dwc->lock, flags);
  
-+static void kcryptd_crypt_read_continue(struct work_struct *work)
-+{
-+	struct dm_crypt_io *io = container_of(work, struct dm_crypt_io, work);
-+	struct crypt_config *cc = io->cc;
-+	blk_status_t r;
-+
-+	wait_for_completion(&io->ctx.restart);
-+	reinit_completion(&io->ctx.restart);
-+
-+	r = crypt_convert(cc, &io->ctx, true, false);
-+	if (r)
-+		io->error = r;
-+
-+	if (atomic_dec_and_test(&io->ctx.cc_pending))
-+		kcryptd_crypt_read_done(io);
-+
-+	crypt_dec_pending(io);
-+}
-+
- static void kcryptd_crypt_read_convert(struct dm_crypt_io *io)
- {
- 	struct crypt_config *cc = io->cc;
-@@ -2009,7 +2092,16 @@ static void kcryptd_crypt_read_convert(struct dm_crypt_io *io)
- 			   io->sector);
+ 	return 0;
+@@ -2253,13 +2252,6 @@ static int dwc3_gadget_stop(struct usb_gadget *g)
+ 	unsigned long		flags;
  
- 	r = crypt_convert(cc, &io->ctx,
--			  test_bit(DM_CRYPT_NO_READ_WORKQUEUE, &cc->flags));
-+			  test_bit(DM_CRYPT_NO_READ_WORKQUEUE, &cc->flags), true);
-+	/*
-+	 * Crypto API backlogged the request, because its queue was full
-+	 * and we're in softirq context, so continue from a workqueue
-+	 */
-+	if (r == BLK_STS_DEV_RESOURCE) {
-+		INIT_WORK(&io->work, kcryptd_crypt_read_continue);
-+		queue_work(cc->crypt_queue, &io->work);
-+		return;
-+	}
- 	if (r)
- 		io->error = r;
+ 	spin_lock_irqsave(&dwc->lock, flags);
+-
+-	if (pm_runtime_suspended(dwc->dev))
+-		goto out;
+-
+-	__dwc3_gadget_stop(dwc);
+-
+-out:
+ 	dwc->gadget_driver	= NULL;
+ 	spin_unlock_irqrestore(&dwc->lock, flags);
  
 -- 
-2.20.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
