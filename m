@@ -2,152 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003702E6CB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 01:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 570CE2E6CB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 01:01:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730185AbgL2ABC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 19:01:02 -0500
-Received: from smtp.infotech.no ([82.134.31.41]:59795 "EHLO smtp.infotech.no"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729046AbgL2AAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 19:00:17 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.infotech.no (Postfix) with ESMTP id D4C05204238;
-        Tue, 29 Dec 2020 00:50:08 +0100 (CET)
-X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
-Received: from smtp.infotech.no ([127.0.0.1])
-        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yOsrXQPjSrST; Tue, 29 Dec 2020 00:50:07 +0100 (CET)
-Received: from xtwo70.bingwo.ca (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        by smtp.infotech.no (Postfix) with ESMTPA id 423E4204237;
-        Tue, 29 Dec 2020 00:50:05 +0100 (CET)
-From:   Douglas Gilbert <dgilbert@interlog.com>
-To:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
-        bostroesser@gmail.com, bvanassche@acm.org, ddiss@suse.de
-Subject: [PATCH v5 4/4] scatterlist: add sgl_memset()
-Date:   Mon, 28 Dec 2020 18:49:55 -0500
-Message-Id: <20201228234955.190858-5-dgilbert@interlog.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201228234955.190858-1-dgilbert@interlog.com>
-References: <20201228234955.190858-1-dgilbert@interlog.com>
+        id S1730270AbgL2ABi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 19:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730216AbgL2ABh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 19:01:37 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73774C061793
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 16:00:57 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id b5so582269pjk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 16:00:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pLmwRaVmPS4eFmFVTegTCZkKTcXX+6gp0TQho8zJvWY=;
+        b=0/5e63PLnPOMQqBEjVQfb/s+lIjXpYnZKzbyFV4HwHTTU+05C7Vjid50XebXPlDFAO
+         U1WYnnY38b3YXTMTWezfNn/Frs0kwVjdMp4JoP384byy+/1PEZJ7q0JIqwGa0yiK+6rC
+         8FdmsaYhLIxXgZMuwUgL8BuuIJa1OYCl7zmIdJUMJDC88z13PQDYOLA3XUKUQOZdYMW/
+         BWsZl7O5AkG1UU/vawuhxDdfV8AzIi9Zx+vu/Nku1YL8C8+IuCxTv4yzlwHisN4XRWLw
+         PJs4aPJJ0c9Zx/ydq4TmAMKQtta5/tLGM2azznr0aQERFSbH5khSx6cB3afveVuwnoOI
+         5Udg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pLmwRaVmPS4eFmFVTegTCZkKTcXX+6gp0TQho8zJvWY=;
+        b=NnCXb7zeaIZQMjrGQ6zbi/CEc8txFHsvNB24yfkg38U2p1RfLD8pSKqR7CbiUZnZWH
+         JILYy8v9t3onxVoggReqAGbytax+MywqROsUAZ9a4GZ3UE+3V4cvXYoGi2M05Z6E5cJM
+         q17wbmbNWw83qnFOntWOG5By4/ZGiNzK1y0DjAbqwtCICdYVivjQ9tGQDJfeiualU/+d
+         /945D5hTYXooXfuGOOx/qZksUNeXvleniGDo8I689SVGadsvqvutCtxnzOQE37zlw2Ka
+         n3o0dCsdL+yo1Lji1TS89isZGMDB+EDYf43m0UFgJUuCkg6tlLYT1PN4F3+WqMdMjPRA
+         ER7Q==
+X-Gm-Message-State: AOAM530ZUc90Ece/n/ZjdO2LkU12I/2gwoXtpx3gozR6J805buKgvzmB
+        Cv9LyS9Y+57Hh0f3Aq4xd7/K1ngLrxM5CQ==
+X-Google-Smtp-Source: ABdhPJxAFHgtQJ9jUAe6q+Z9VicIRKPnHkHNrcNWF9PwkNGOGb4tTmGaVVwfpXth46uJu498G0Mfag==
+X-Received: by 2002:a17:902:d202:b029:da:d86b:78be with SMTP id t2-20020a170902d202b02900dad86b78bemr28119530ply.0.1609200056678;
+        Mon, 28 Dec 2020 16:00:56 -0800 (PST)
+Received: from ?IPv6:2603:8001:2900:d1ce:dbbc:ecfd:6790:1f2e? (2603-8001-2900-d1ce-dbbc-ecfd-6790-1f2e.res6.spectrum.com. [2603:8001:2900:d1ce:dbbc:ecfd:6790:1f2e])
+        by smtp.gmail.com with ESMTPSA id w1sm37339494pfn.151.2020.12.28.16.00.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Dec 2020 16:00:55 -0800 (PST)
+Subject: Re: Bug in __mmdrop() triggered by io-uring on v5.11-rc1
+To:     Christian Brauner <christian.brauner@ubuntu.com>, hch@infradead.org
+Cc:     willy@infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org
+References: <20201228165429.c3v637xlqxt56fsv@wittgenstein>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d6788552-90bb-33f8-48ee-fb7081965e08@kernel.dk>
+Date:   Mon, 28 Dec 2020 17:00:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201228165429.c3v637xlqxt56fsv@wittgenstein>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing sg_zero_buffer() function is a bit restrictive. For
-example protection information (PI) blocks are usually initialized
-to 0xff bytes. As its name suggests sgl_memset() is modelled on
-memset(). One difference is the type of the val argument which is
-u8 rather than int. Plus it returns the number of bytes (over)written.
+On 12/28/20 9:54 AM, Christian Brauner wrote:
+> Hey everyone,
+> 
+> The following oops can be triggered on a pristine v5.11-rc1 which I discovered
+> while rebasing my idmapped mount patchset onto v5.11-rc1:
+> 
+> [  577.716339][ T7216] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)/LXD, BIOS 0.0.0 02/06/2015
+> [  577.718584][ T7216] Call Trace:
+> [  577.719357][ T7216]  dump_stack+0x10b/0x167
+> [  577.720505][ T7216]  panic+0x347/0x783
+> [  577.721588][ T7216]  ? print_oops_end_marker.cold+0x15/0x15
+> [  577.723502][ T7216]  ? __warn.cold+0x5/0x2f
+> [  577.725079][ T7216]  ? __mmdrop+0x30c/0x400
+> [  577.736066][ T7216]  __warn.cold+0x20/0x2f
+> [  577.745503][ T7216]  ? __mmdrop+0x30c/0x400
+> [  577.755101][ T7216]  report_bug+0x277/0x300
+> 
+> f2-vm login: [  577.764873][ T7216]  handle_bug+0x3c/0x60
+> [  577.773982][ T7216]  exc_invalid_op+0x18/0x50
+> [  577.786341][ T7216]  asm_exc_invalid_op+0x12/0x20
+> [  577.795500][ T7216] RIP: 0010:__mmdrop+0x30c/0x400
+> [  577.804426][ T7216] Code: 00 00 4c 89 ef e8 64 61 8c 02 eb 82 e8 dd 48 32 00 4c 89 e7 e8 35 97 2e 00 e9 70 ff ff ff e8 cb 48 32 00 0f 0b e8 c4 48 32 00 <0f> 0b e9 51 fd ff ff e8 b8 48 32 00 0f 0b e9 82 fd ff ff e8 ac 48
+> [  577.826526][ T7216] RSP: 0018:ffffc900073676d8 EFLAGS: 00010246
+> [  577.836448][ T7216] RAX: 0000000000000000 RBX: ffff88810d56d1c0 RCX: ffff88810d56d1c0
+> [  577.845860][ T7216] RDX: 0000000000000000 RSI: ffff88810d56d1c0 RDI: 0000000000000002
+> [  577.856896][ T7216] RBP: ffff888025244700 R08: ffffffff8141a4ec R09: ffffed1004a488ed
+> [  577.866712][ T7216] R10: ffff888025244763 R11: ffffed1004a488ec R12: ffff8880660b4c40
+> [  577.875736][ T7216] R13: ffff888013930000 R14: ffff888025244700 R15: 0000000000000001
+> [  577.889094][ T7216]  ? __mmdrop+0x30c/0x400
+> [  577.898466][ T7216]  ? __mmdrop+0x30c/0x400
+> [  577.907746][ T7216]  finish_task_switch+0x56f/0x8c0
+> [  577.917553][ T7216]  ? __switch_to+0x580/0x1060
+> [  577.926962][ T7216]  __schedule+0xa04/0x2310
+> [  577.937965][ T7216]  ? firmware_map_remove+0x1a1/0x1a1
+> 
+> f2-vm login: [  577.947035][ T7216]  ? try_to_wake_up+0x7f3/0x16e0
+> [  577.955799][ T7216]  ? preempt_schedule_thunk+0x16/0x18
+> [  577.964988][ T7216]  preempt_schedule_common+0x4a/0xc0
+> [  577.973670][ T7216]  preempt_schedule_thunk+0x16/0x18
+> [  577.985967][ T7216]  try_to_wake_up+0x9eb/0x16e0
+> [  577.994498][ T7216]  ? migrate_swap_stop+0x9d0/0x9d0
+> [  578.003265][ T7216]  ? rcu_read_lock_held+0xae/0xc0
+> [  578.012182][ T7216]  ? rcu_read_lock_sched_held+0xe0/0xe0
+> [  578.021280][ T7216]  io_wqe_wake_worker.isra.0+0x4ba/0x670
+> [  578.029857][ T7216]  ? io_wq_manager+0xc00/0xc00
+> [  578.041295][ T7216]  ? _raw_spin_unlock_irqrestore+0x46/0x50
+> [  578.050139][ T7216]  io_wqe_enqueue+0x212/0x980
+> [  578.058213][ T7216]  __io_queue_async_work+0x201/0x4a0
+> [  578.067518][ T7216]  io_queue_async_work+0x52/0x80
+> [  578.078327][ T7216]  __io_queue_sqe+0x986/0xe80
+> [  578.086615][ T7216]  ? io_uring_setup+0x3a90/0x3a90
+> [  578.094528][ T7216]  ? radix_tree_load_root+0x119/0x1b0
+> [  578.102598][ T7216]  ? io_async_task_func+0xa90/0xa90
+> [  578.110208][ T7216]  ? __sanitizer_cov_trace_pc+0x1e/0x50
+> [  578.120847][ T7216]  io_queue_sqe+0x5e3/0xc40
+> [  578.127950][ T7216]  io_submit_sqes+0x17ca/0x26f0
+> [  578.135559][ T7216]  ? io_queue_sqe+0xc40/0xc40
+> [  578.143129][ T7216]  ? __x64_sys_io_uring_enter+0xa10/0xf00
+> [  578.152183][ T7216]  ? xa_store+0x40/0x50
+> [  578.162501][ T7216]  ? mutex_lock_io_nested+0x12a0/0x12a0
+> [  578.170203][ T7216]  ? do_raw_spin_unlock+0x175/0x260
+> [  578.177874][ T7216]  ? _raw_spin_unlock+0x28/0x40
+> [  578.185560][ T7216]  ? xa_store+0x40/0x50
+> [  578.192755][ T7216]  __x64_sys_io_uring_enter+0xa1b/0xf00
+> [  578.201089][ T7216]  ? __io_uring_task_cancel+0x1e0/0x1e0
+> [  578.210378][ T7216]  ? __sanitizer_cov_trace_pc+0x1e/0x50
+> [  578.218401][ T7216]  ? __audit_syscall_entry+0x3fe/0x540
+> [  578.226264][ T7216]  do_syscall_64+0x31/0x70
+> [  578.234410][ T7216]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [  578.244957][ T7216] RIP: 0033:0x7f5204b9c89d
+> [  578.252372][ T7216] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c3 f5 0c 00 f7 d8 64 89 01 48
+> [  578.272398][ T7216] RSP: 002b:00007ffd62bb14e8 EFLAGS: 00000212 ORIG_RAX: 00000000000001aa
+> [  578.280966][ T7216] RAX: ffffffffffffffda RBX: 00007ffd62bb1560 RCX: 00007f5204b9c89d
+> [  578.289068][ T7216] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000005
+> [  578.300693][ T7216] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000008
+> [  578.308932][ T7216] R10: 0000000000000000 R11: 0000000000000212 R12: 0000000000000001
+> [  578.317255][ T7216] R13: 0000000000000000 R14: 00007ffd62bb1520 R15: 0000000000000000
+> [  578.328448][ T7216] Kernel Offset: disabled
+> [  578.544329][ T7216] Rebooting in 86400 seconds..
 
-Change implementation of sg_zero_buffer() to call this new function.
+I can't get your reproducer to work, and unfortunately that trace doesn't
+have some of the debug info? But it looks like it must be the BUG in there.
+Can you try with this? Must be related to creds and identity COW'ing,
+and you are using multiple processes that share the ring.
 
-Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
-Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
----
- include/linux/scatterlist.h |  3 ++
- lib/scatterlist.c           | 65 +++++++++++++++++++++++++------------
- 2 files changed, 48 insertions(+), 20 deletions(-)
-
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index 71be65f9ebb5..70d3f1f73df1 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -333,6 +333,9 @@ bool sgl_compare_sgl_idx(struct scatterlist *x_sgl, unsigned int x_nents, off_t
- 			 struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
- 			 size_t n_bytes, size_t *miscompare_idx);
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 7e35283fc0b1..eb4620ff638e 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1501,6 +1501,13 @@ static bool io_grab_identity(struct io_kiocb *req)
+ 		spin_unlock_irq(&ctx->inflight_lock);
+ 		req->work.flags |= IO_WQ_WORK_FILES;
+ 	}
++	if (!(req->work.flags & IO_WQ_WORK_MM) &&
++	    (def->work_flags & IO_WQ_WORK_MM)) {
++		if (id->mm != current->mm)
++			return false;
++		mmgrab(id->mm);
++		req->work.flags |= IO_WQ_WORK_MM;
++	}
  
-+size_t sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
-+		  u8 val, size_t n_bytes);
-+
- /*
-  * Maximum number of entries that will be allocated in one piece, if
-  * a list larger than this is required then chaining will be utilized.
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 9332365e7eb6..f06614a880c8 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -1038,26 +1038,7 @@ EXPORT_SYMBOL(sg_pcopy_to_buffer);
- size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
- 		       size_t buflen, off_t skip)
- {
--	unsigned int offset = 0;
--	struct sg_mapping_iter miter;
--	unsigned int sg_flags = SG_MITER_ATOMIC | SG_MITER_TO_SG;
--
--	sg_miter_start(&miter, sgl, nents, sg_flags);
--
--	if (!sg_miter_skip(&miter, skip))
--		return false;
--
--	while (offset < buflen && sg_miter_next(&miter)) {
--		unsigned int len;
--
--		len = min(miter.length, buflen - offset);
--		memset(miter.addr, 0, len);
--
--		offset += len;
+ 	return true;
+ }
+@@ -1525,13 +1532,6 @@ static void io_prep_async_work(struct io_kiocb *req)
+ 			req->work.flags |= IO_WQ_WORK_UNBOUND;
+ 	}
+ 
+-	/* ->mm can never change on us */
+-	if (!(req->work.flags & IO_WQ_WORK_MM) &&
+-	    (def->work_flags & IO_WQ_WORK_MM)) {
+-		mmgrab(id->mm);
+-		req->work.flags |= IO_WQ_WORK_MM;
 -	}
 -
--	sg_miter_stop(&miter);
--	return offset;
-+	return sgl_memset(sgl, nents, skip, 0, buflen);
- }
- EXPORT_SYMBOL(sg_zero_buffer);
- 
-@@ -1243,3 +1224,47 @@ bool sgl_compare_sgl(struct scatterlist *x_sgl, unsigned int x_nents, off_t x_sk
- 	return sgl_compare_sgl_idx(x_sgl, x_nents, x_skip, y_sgl, y_nents, y_skip, n_bytes, NULL);
- }
- EXPORT_SYMBOL(sgl_compare_sgl);
-+
-+/**
-+ * sgl_memset - set byte 'val' up to n_bytes times on SG list
-+ * @sgl:		 The SG list
-+ * @nents:		 Number of SG entries in sgl
-+ * @skip:		 Number of bytes to skip before starting
-+ * @val:		 byte value to write to sgl
-+ * @n_bytes:		 The (maximum) number of bytes to modify
-+ *
-+ * Returns:
-+ *   The number of bytes written.
-+ *
-+ * Notes:
-+ *   Stops writing if either sgl or n_bytes is exhausted. If n_bytes is
-+ *   set SIZE_MAX then val will be written to each byte until the end
-+ *   of sgl.
-+ *
-+ *   The notes in sgl_copy_sgl() about large sgl_s _applies here as well.
-+ *
-+ **/
-+size_t sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
-+		  u8 val, size_t n_bytes)
-+{
-+	size_t offset = 0;
-+	size_t len;
-+	struct sg_mapping_iter miter;
-+
-+	if (n_bytes == 0)
-+		return 0;
-+	sg_miter_start(&miter, sgl, nents, SG_MITER_ATOMIC | SG_MITER_TO_SG);
-+	if (!sg_miter_skip(&miter, skip))
-+		goto fini;
-+
-+	while ((offset < n_bytes) && sg_miter_next(&miter)) {
-+		len = min(miter.length, n_bytes - offset);
-+		memset(miter.addr, val, len);
-+		offset += len;
-+	}
-+fini:
-+	sg_miter_stop(&miter);
-+	return offset;
-+}
-+EXPORT_SYMBOL(sgl_memset);
-+
+ 	/* if we fail grabbing identity, we must COW, regrab, and retry */
+ 	if (io_grab_identity(req))
+ 		return;
+
 -- 
-2.25.1
+Jens Axboe
 
