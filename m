@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912EF2E70A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3263E2E70A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 13:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgL2MmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 07:42:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgL2MmE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 07:42:04 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7B5C0613D6;
-        Tue, 29 Dec 2020 04:41:24 -0800 (PST)
-Received: from zn.tnic (p2e584e83.dip0.t-ipconnect.de [46.88.78.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F8A61EC04EC;
-        Tue, 29 Dec 2020 13:41:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1609245682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=OOvXZBMQoIK+UvAUZYe+0qhjBjyUbhc4PxiosDWY7K8=;
-        b=kSuZWitBGMRGQgaVggsdrAEL0Efy6toGfl5eErUFhou97tpqX+9b/p9nk/yCryuEtYGxJJ
-        nLtpzpe73aNhdSirVgFlhBSWelCg12bdGxtFgP7bfWtiRHIVkis2gYEbs9o8jv2mspotTD
-        n+cLy+uJbPZtThZnmxp/C/nzgtm7zFc=
-Date:   Tue, 29 Dec 2020 13:39:10 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v16 02/26] x86/cet/shstk: Add Kconfig option for
- user-mode control-flow protection
-Message-ID: <20201229123910.GB29947@zn.tnic>
-References: <20201209222320.1724-1-yu-cheng.yu@intel.com>
- <20201209222320.1724-3-yu-cheng.yu@intel.com>
+        id S1726168AbgL2Mlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 07:41:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725964AbgL2Mlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 07:41:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2C95207B8;
+        Tue, 29 Dec 2020 12:40:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609245655;
+        bh=qdL1uB6B1UXV2TxgliugspF/mrGeSPiZnH8ZtIXseis=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q5Al3s7pH/Q2gOLjsJl5bUsGE93nP8II2zubSheoULmZ7ACPrddQSEXGRysWmfayY
+         kiXLjIBOniPt3RCgQTNgCNLmHKjceAk+7iDr1RuApuiFICzA+kJmNbD0GNE3F79puW
+         /PRcgr313b2H0BS0vI4UwmCOi+0u+eJVNKQD/8Lrxx4BUugCxc8s9jRXIMuB9aD67M
+         CPNH7s525WPl19lVhIAH/juY1Yqrx3ipec8Ps09MyBN0xZcwKoxmKbmijCQKFcXMDZ
+         2QCzq0RVKEJzQTjbBVLCIqwIsr9/nJkJ2dMPsezHx/YO4fs84olRzA+IcmoBorRc6t
+         lVZ/mh7yR3Ltg==
+Date:   Tue, 29 Dec 2020 12:40:33 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Perry Yuan <Perry.Yuan@dell.com>
+Cc:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
+        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Limonciello Mario <Mario.Limonciello@dell.com>
+Subject: Re: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control support
+Message-ID: <20201229124033.GC4786@sirena.org.uk>
+References: <20201228133831.17464-1-Perry_Yuan@Dell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5G06lTa6Jq83wMTw"
 Content-Disposition: inline
-In-Reply-To: <20201209222320.1724-3-yu-cheng.yu@intel.com>
+In-Reply-To: <20201228133831.17464-1-Perry_Yuan@Dell.com>
+X-Cookie: Mother Earth is not flat!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 02:22:56PM -0800, Yu-cheng Yu wrote:
-> Shadow Stack provides protection against function return address
-> corruption.  It is active when the processor supports it, the kernel has
-> CONFIG_X86_CET_USER, and the application is built for the feature.
-		     ^
-		   enabled.
 
-> This is only implemented for the 64-bit kernel.  When it is enabled, legacy
-> non-Shadow Stack applications continue to work, but without protection.
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> ---
->  arch/x86/Kconfig           | 22 ++++++++++++++++++++++
->  arch/x86/Kconfig.assembler |  5 +++++
->  2 files changed, 27 insertions(+)
+--5G06lTa6Jq83wMTw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Rest looks good, thanks.
+On Mon, Dec 28, 2020 at 09:38:31PM +0800, Perry Yuan wrote:
+> From: Perry Yuan <perry_yuan@dell.com>
+>=20
+> Some new Dell system is going to support audio internal micphone
+> privacy setting from hardware level with micmute led state changing
 
--- 
-Regards/Gruss,
-    Boris.
+I'm missing patch 1 of this series - what's the story with dependencies
+and so on?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--5G06lTa6Jq83wMTw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/rI8EACgkQJNaLcl1U
+h9AfVAf9EwDCDp+92vwJSYVphVfeIPziIaQ9i80zg0jLhzFjnxBt8t0xA34rJync
+vGk2dgIgwe5mi+E5hTtNx3rpKQ0YjXrCxUPFnrk284ZsiFpufuUVwbixnzYQpth9
+mxPp5lgkOChpYf5n6kYm9gGvW8r6Ijt9CI1SbXV/pUvpbrzN4QP2OPymSyGGvXO9
+JUx+FTZOXRVnDs3NqFWQW4T1oaipvOkXTqYAJshBaDsNqn+6/2UaRLQtR1yhet3V
+78kMpk0/BjBqrkofsIO/3nUzEgOCX5HwUviCAoqrtmhLmrT97luF/eHlV8k9SjA3
+Rf02r7CedzVvZrS+zho8fKD2X4btoQ==
+=d8Jt
+-----END PGP SIGNATURE-----
+
+--5G06lTa6Jq83wMTw--
