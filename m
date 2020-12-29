@@ -2,140 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30022E6DA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 04:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 218422E6DA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 04:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727735AbgL2DgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 22:36:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727217AbgL2DgD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 22:36:03 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2536C0613D6;
-        Mon, 28 Dec 2020 19:35:22 -0800 (PST)
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id E039722802;
-        Tue, 29 Dec 2020 04:35:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1609212919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cNdJDbDl/05MujOD4qQl4/7GqexrrHvbmx1qNqivlSU=;
-        b=WM/xtIyBLhf31SuCiZgFmRkU8AS6VdMxcUgA/+iMcr5GeIDX82oWeb+NHgHO8DXlam3F9r
-        t8PwP2aDtrFNXpGL0vC7HcTLESRO5qWs1eYqqSWpuUmCHEN3wOHE6TvBp64bT/FHf775I6
-        c2J5isdcP499j2aMyDW2ot/unbwI0sY=
-From:   Michael Walle <michael@walle.cc>
-To:     saravanak@google.com
-Cc:     ardb@kernel.org, devicetree@vger.kernel.org,
-        frowand.list@gmail.com, gregkh@linuxfoundation.org,
-        grygorii.strashko@ti.com, kernel-team@android.com,
-        laurent.pinchart@ideasonboard.com, lenb@kernel.org,
-        linux-acpi@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org, rafael@kernel.org,
-        rjw@rjwysocki.net, robh+dt@kernel.org, tglx@linutronix.de,
-        tomi.valkeinen@ti.com, Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH v2 16/17] driver core: Refactor fw_devlink feature
-Date:   Tue, 29 Dec 2020 04:34:40 +0100
-Message-Id: <20201229033440.32142-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201121020232.908850-17-saravanak@google.com>
-References: <20201121020232.908850-17-saravanak@google.com>
+        id S1727778AbgL2Dgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 22:36:55 -0500
+Received: from mail-bn7nam10on2087.outbound.protection.outlook.com ([40.107.92.87]:63329
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726659AbgL2Dgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 22:36:54 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NKLAzV1OsM4RWUGC2QmqilEHxijUY9DM9iEsb/W9I5do7w6IjyZnSe0Qnhlo0zk4WRubz2OYE8L/ljcwAwN5t68NRyFGfUA5rVYm0x9iVim13efQKT/f0Rqh7Q3cks4FdLHSWCaS4wK5d72k5+37G/zkRlrfKmgJgxd0Cen0oQGDYWxYkKdlBzQHFswgcH3amuTP+2MW4eH41l9o8Smj3lxe+ApwOTkW7z6OXeNt4jJ+Umtj2X8REdC89INMS5nFLwp2h286FUi5TaRuGqZmUZjJkzDIn3JtKpjbbeGx8Svx9oqJJn7yg6rhKwkV4yg/yvopZTFmeYu7+LP1OEJxzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HoKMmvmbwFPdVl/LaHseApPwy06yaJuinAdbNdoYssU=;
+ b=CgefxWbkPc97eQbrHe75rHW6UVbalgpx4ZzPNfXRZuNumJCjd8AqWfE2Z/pitl7zOuP6Y4esZtd+/LGODfmLKJo0hnabhtR8RQqG0FJDySE6nLBBJ2cE32sdvwC2T1TX64GW9r1nfifOMlsARQDkcHL6Mb6JLDolNGlUvwcK8UEs1vaiWSnZL1SJ82h5V9c8ryA15ixvt+FRIhc/WjkXQtGol1oz3cBh3OEBxjOFMwmnwq859cZxEclSSKdgrlCv4cafVyFv6Yt8cPk6+NeoDIyXHxui+XEOiUmSLuZKJ556CLBD7mCtQA+NEHehHTu3PWOzBIre3L5jN1hjUo3owA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HoKMmvmbwFPdVl/LaHseApPwy06yaJuinAdbNdoYssU=;
+ b=MwGHmMT//5EgbxpIg3dVpooxByZtB1QynFTxQGfUMwVp08sbQkZi9FxYJWS9y0MiYDhgrUzuFsGqQRr1UvzHeSGlPt3rJ7Im7NKgXI3pFc2NSMUNPmudB6Mvxvuum9FoTCfYpfyQHVOr25lwzQAnCxC2OK9yIUS3kMDIWG51Lng=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BN8PR03MB4724.namprd03.prod.outlook.com (2603:10b6:408:96::21)
+ by BN7PR03MB3940.namprd03.prod.outlook.com (2603:10b6:408:2d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.31; Tue, 29 Dec
+ 2020 03:36:05 +0000
+Received: from BN8PR03MB4724.namprd03.prod.outlook.com
+ ([fe80::e192:4c65:5936:1fb4]) by BN8PR03MB4724.namprd03.prod.outlook.com
+ ([fe80::e192:4c65:5936:1fb4%5]) with mapi id 15.20.3700.031; Tue, 29 Dec 2020
+ 03:36:05 +0000
+Date:   Tue, 29 Dec 2020 11:35:56 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2] PCI: dwc: Fix MSI not work after resume
+Message-ID: <20201229113556.5dd4610c@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR04CA0029.namprd04.prod.outlook.com
+ (2603:10b6:a03:40::42) To BN8PR03MB4724.namprd03.prod.outlook.com
+ (2603:10b6:408:96::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR04CA0029.namprd04.prod.outlook.com (2603:10b6:a03:40::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27 via Frontend Transport; Tue, 29 Dec 2020 03:36:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c54e2b8b-8dd4-4c8e-b737-08d8abaadf39
+X-MS-TrafficTypeDiagnostic: BN7PR03MB3940:
+X-Microsoft-Antispam-PRVS: <BN7PR03MB394065FB844C38037C1D3D59EDD80@BN7PR03MB3940.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +EgrO5xR2pRUKesNYoXpbTUN7KOnr3CQGcEMUaYY1xm3U+SC2Ort0XMxw5QWPn6dmrz7wj1zMbnwFej44fxf8rYKwEyoCVj9kpQkO37iZAlGzjtNuQ2WPouBENKitqHN+yGAcrPfY2NGmNBcLKZwR8dnnUxDKWufgZCbg9obQipHAQqK0O/RS5YKbIhD96dZcH6A56mR2YZH66mN0emMqczMWp71bkgVfJeV2PVNxPmki9xr7CfQnRi5W9Sz2Uhg7GUMmUw6rYmCdFnPUroNvIcQ9cWJpgybCN+/px55zXrCuUOzixcgIem+qkGW/2KFil1xJYYtuFYU5ps9kmU/Mgux1VSA0e9hqFJY/4ldofeDnnHoQ9DK60qdavNz5dW5SKbMFtKRhbu3iif5YQBLtQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR03MB4724.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(366004)(396003)(110136005)(8676002)(956004)(478600001)(316002)(2906002)(52116002)(8936002)(5660300002)(86362001)(26005)(6506007)(7696005)(9686003)(186003)(66476007)(6666004)(66556008)(4326008)(16526019)(83380400001)(55016002)(66946007)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?GlrbuYQawiUG1i3D+h3ToMvcLmQ5MHOP4czzn28bimbZ/uHqwwInycqSpmc5?=
+ =?us-ascii?Q?4ucT7pD9WUEt1Pmy9hMJXeIob7tqwL8VVVkIeMJ4vw1RsfqHzIN+nFsyahrO?=
+ =?us-ascii?Q?/9LeHyV1O4Byap28lMWvArJZYcWX9+QFKkLqiKR3xamlaqUh1d9gtt1cBXPA?=
+ =?us-ascii?Q?GeYqx8jlZ0xDPPSzyDzFAYbMfWhMAytmF2UjJZ3cePsqhE/wiKfp+wUUm+tU?=
+ =?us-ascii?Q?s4wQc3bX7rzkz0Khwcq/IAosmvWEs+I1G3vMBofrMhknJ2Us322kJPhyUmJ2?=
+ =?us-ascii?Q?kXEPnVmxTwX7mSPKlKvq8hNsGP+8RoZ6j7UYPurhRzOreMAaC+zCZATGgxxV?=
+ =?us-ascii?Q?Wzuk7W2C2QuQMq+TMJtk9ZVRNkqivO4xq1g95vPhplgfEpDnNwRrKRZ50iG5?=
+ =?us-ascii?Q?wBBOt017JjyvJoGzCT6IuvB38jnj6pv9v66/qD9f0CwPNAjAuUgRj1EZWK9y?=
+ =?us-ascii?Q?8vL6eWYtCk5k622IfcGkaByOdPAk5wJ5WsNR/YkCguNOLn1AZ69YGy+4Vnpl?=
+ =?us-ascii?Q?RXTyTUbqhJayYa4wl5sGlDAdXu5J3ugQswooDT4+CMaMe3wX0y2JVh979HXu?=
+ =?us-ascii?Q?9js5mami3eLF3sgzwdxLwC1a8xWUvsZP7kr+eR779YVnibCX0TSF5wrCw5IT?=
+ =?us-ascii?Q?V8426zGK/8bOee5mSybJzPoNX6+LZHboyjmvlFUmLU1hciTar57XYFMWDIiT?=
+ =?us-ascii?Q?Mw+FIkkATmwoAtrgMFA71hIYM4j/vP/i6YGXUYdTN92F6SAvsHS+BOIqo/w6?=
+ =?us-ascii?Q?ofz3lKJSd3AgjKo0Y7NQD6M+EYEfkpPs28t5rqlKx8PnQ///zE4nZO9njXnF?=
+ =?us-ascii?Q?aEsarznjNOOUToMHUscXVcLoJWnUFwWJkuabzckNnAVe+tLljNeubQMwg3QS?=
+ =?us-ascii?Q?Gz2eSjfyyFFWkxpt/kV5sU3Ydm96z+mJtQ2aOKVrKN7lINVeoOgvZVbAjg7x?=
+ =?us-ascii?Q?m2SypnJM5/GI7dlW2CCt7A9oUuiQFKd5xlRVid6+RIN4KhnWx8GTEIaswAqP?=
+ =?us-ascii?Q?AHiX?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR03MB4724.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2020 03:36:04.9497
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-Network-Message-Id: c54e2b8b-8dd4-4c8e-b737-08d8abaadf39
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: o6Q46OcDxRtnFeoeus05QYzjMxEER8HseS5gNYdrkLTpri1y3nv3U3FP7tiaQLZ88R8LLId02FxFPaFZikQDvw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR03MB3940
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The current implementation of fw_devlink is very inefficient because it
-> tries to get away without creating fwnode links in the name of saving
-> memory usage. Past attempts to optimize runtime at the cost of memory
-> usage were blocked with request for data showing that the optimization
-> made significant improvement for real world scenarios.
-> 
-> We have those scenarios now. There have been several reports of boot
-> time increase in the order of seconds in this thread [1]. Several OEMs
-> and SoC manufacturers have also privately reported significant
-> (350-400ms) increase in boot time due to all the parsing done by
-> fw_devlink.
-> 
-> So this patch uses all the setup done by the previous patches in this
-> series to refactor fw_devlink to be more efficient. Most of the code has
-> been moved out of firmware specific (DT mostly) code into driver core.
-> 
-> This brings the following benefits:
-> - Instead of parsing the device tree multiple times during bootup,
->   fw_devlink parses each fwnode node/property only once and creates
->   fwnode links. The rest of the fw_devlink code then just looks at these
->   fwnode links to do rest of the work.
-> 
-> - Makes it much easier to debug probe issue due to fw_devlink in the
->   future. fw_devlink=on blocks the probing of devices if they depend on
->   a device that hasn't been added yet. With this refactor, it'll be very
->   easy to tell what that device is because we now have a reference to
->   the fwnode of the device.
-> 
-> - Much easier to add fw_devlink support to ACPI and other firmware
->   types. A refactor to move the common bits from DT specific code to
->   driver core was in my TODO list as a prerequisite to adding ACPI
->   support to fw_devlink. This series gets that done.
-> 
-> [1] - https://lore.kernel.org/linux-omap/ea02f57e-871d-cd16-4418-c1da4bbc4696@ti.com/
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Tested-by: Grygorii Strashko <grygorii.strashko@ti.com>
+After we move dw_pcie_msi_init() into core -- dw_pcie_host_init(), the
+MSI stops working after resume. Because dw_pcie_host_init() is only
+called once during probe. To fix this issue, we move dw_pcie_msi_init()
+to dw_pcie_setup_rc().
 
-git bisect show that this commit broke my board in 5.11-rc1:
+Fixes: 59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
 
-[    2.294375] sysfs: cannot create duplicate filename '/devices/virtual/devlink/0000:00:00.1--0000:00:00.1'
-[    2.303999] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc1-00016-ga0fb284b267 #267
-[    2.312125] Hardware name: Kontron SMARC-sAL28 (4 Lane) (DT)
-[    2.317804] Call trace:
-[    2.320253]  dump_backtrace+0x0/0x1b8
-[    2.323936]  show_stack+0x20/0x70
-[    2.327263]  dump_stack+0xd8/0x134
-[    2.330677]  sysfs_warn_dup+0x6c/0x88
-[    2.334351]  sysfs_create_dir_ns+0xe8/0x100
-[    2.338547]  kobject_add_internal+0x9c/0x290
-[    2.342833]  kobject_add+0xa0/0x108
-[    2.346331]  device_add+0xfc/0x798
-[    2.349746]  device_link_add+0x454/0x5e0
-[    2.353682]  fw_devlink_create_devlink+0xb8/0xc8
-[    2.358316]  __fw_devlink_link_to_suppliers+0x84/0x180
-[    2.363474]  __fw_devlink_link_to_suppliers+0x134/0x180
-[    2.368718]  device_add+0x778/0x798
-[    2.372217]  device_register+0x28/0x38
-[    2.375979]  __mdiobus_register+0x94/0x340
-[    2.380089]  of_mdiobus_register+0xb4/0x380
-[    2.384285]  enetc_pf_probe+0x73c/0xb10
-[    2.388132]  local_pci_probe+0x48/0xb8
-[    2.391896]  pci_device_probe+0x120/0x1c0
-[    2.395920]  really_probe+0xec/0x3c0
-[    2.399505]  driver_probe_device+0x60/0xc0
-[    2.403614]  device_driver_attach+0x7c/0x88
-[    2.407810]  __driver_attach+0x60/0xe8
-[    2.411570]  bus_for_each_dev+0x7c/0xd0
-[    2.415419]  driver_attach+0x2c/0x38
-[    2.419004]  bus_add_driver+0x194/0x1f8
-[    2.422851]  driver_register+0x6c/0x128
-[    2.426698]  __pci_register_driver+0x4c/0x58
-[    2.430983]  enetc_pf_driver_init+0x2c/0x38
-[    2.435181]  do_one_initcall+0x54/0x2d8
-[    2.439029]  kernel_init_freeable+0x1fc/0x268
-[    2.443403]  kernel_init+0x1c/0x120
-[    2.446904]  ret_from_fork+0x10/0x30
-[    2.450502] kobject_add_internal failed for 0000:00:00.1--0000:00:00.1 with -EEXIST, don't try to register things with the same name in the same directory.
+Since v1:
+ - rebased on 5.11-rc1
+ - add Fixes tag
 
-Looks like it will generate that link twice? Let me know if I can help
-testing.
+ drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-See also: https://lavalab.kontron.com/scheduler/job/3894#L831
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index 8a84c005f32b..5240b5f0973d 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -423,7 +423,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
+ 	}
+ 
+ 	dw_pcie_setup_rc(pp);
+-	dw_pcie_msi_init(pp);
+ 
+ 	if (!dw_pcie_link_up(pci) && pci->ops->start_link) {
+ 		ret = pci->ops->start_link(pci);
+@@ -574,6 +573,8 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+ 		}
+ 	}
+ 
++	dw_pcie_msi_init(pp);
++
+ 	/* Setup RC BARs */
+ 	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 0x00000004);
+ 	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_1, 0x00000000);
+-- 
+2.30.0.rc2
 
--michael
