@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80042E6E87
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8E72E6E86
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 07:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgL2Gcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 01:32:35 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9655 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbgL2Gcf (ORCPT
+        id S1726515AbgL2Gcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 01:32:33 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:22588 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgL2Gcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 01:32:35 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D4l1343dqz15klg;
-        Tue, 29 Dec 2020 14:31:03 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.9) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Tue, 29 Dec 2020
- 14:31:50 +0800
-Subject: Re: [PATCH 1/1] ARM: LPAE: use phys_addr_t instead of unsigned long
- in outercache hooks
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201225114458.1334-1-thunder.leizhen@huawei.com>
- <a0ca2ec8-40cf-4b5e-a6fe-f68d9650a82f@huawei.com>
- <20201226121547.GC1551@shell.armlinux.org.uk>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <da5efb31-1bea-af50-5cc9-601212472118@huawei.com>
-Date:   Tue, 29 Dec 2020 14:31:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 29 Dec 2020 01:32:33 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 0BT6RTSM012593;
+        Tue, 29 Dec 2020 14:27:29 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Dec
+ 2020 14:31:35 +0800
+From:   "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+To:     <robh+dt@kernel.org>, <lee.jones@linaro.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <linus.walleij@linaro.org>, <minyard@acm.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>
+CC:     <BMC-SW@aspeedtech.com>, <haiyue.wang@linux.intel.com>,
+        <cyrilbur@gmail.com>, <rlippert@google.com>
+Subject: [PATCH v4 0/5] Remove LPC register partitioning
+Date:   Tue, 29 Dec 2020 14:31:52 +0800
+Message-ID: <20201229063157.3587-1-chiawei_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20201226121547.GC1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.66]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 0BT6RTSM012593
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The LPC controller has no concept of the BMC and the Host partitions.
+The incorrect partitioning can impose unnecessary range restrictions
+on register access through the syscon regmap interface.
 
+For instance, HICRB contains the I/O port address configuration
+of KCS channel 1/2. However, the KCS#1/#2 drivers cannot access
+HICRB as it is located at the other LPC partition.
 
-On 2020/12/26 20:15, Russell King - ARM Linux admin wrote:
-> On Sat, Dec 26, 2020 at 10:18:08AM +0800, Leizhen (ThunderTown) wrote:
->> On 2020/12/25 19:44, Zhen Lei wrote:
->>> The outercache of some Hisilicon SOCs support physical addresses wider
->>> than 32-bits. The unsigned long datatype is not sufficient for mapping
->>> physical addresses >= 4GB. The commit ad6b9c9d78b9 ("ARM: 6671/1: LPAE:
->>> use phys_addr_t instead of unsigned long in outercache functions") has
->>> already modified the outercache functions. But the parameters of the
->>> outercache hooks are not changed. This patch use phys_addr_t instead of
->>> unsigned long in outercache hooks: inv_range, clean_range, flush_range.
->>>
->>> To ensure the outercache that does not support LPAE works properly, do
->>> cast phys_addr_t to unsigned long by adding a middle-tier function.
->>
->> This patch will impact the outercache drivers that have not been merged into
->> the kernel. They should also update the datatype of the outercache hooks.
-> 
-> This isn't much of a concern to mainline. If it's that big a problem
-> for you, then please consider merging your code into mainline so that
-> everyone can benefit from it.
+In addition, to be backward compatible, the newly added HW control
+bits could be located at any reserved bits over the LPC addressing
+space.
 
-All right, I got it.
+Thereby, this patch series aims to remove the LPC partitioning for
+better driver development and maintenance. This requires the change
+to both the device tree and the driver implementation. To ensure
+both sides are synchronously updated, a v2 binding check is added.
 
-> 
+Chagnes since v3:
+	- Revise binding check as suggested by Haiyue Wang
+
+Changes since v2:
+	- Add v2 binding check to ensure the synchronization between the
+	  device tree change and the driver register offset fix.
+
+Changes since v1:
+	- Add the fix to the aspeed-lpc binding documentation.
+
+Chia-Wei, Wang (5):
+  dt-bindings: aspeed-lpc: Remove LPC partitioning
+  ARM: dts: Remove LPC BMC and Host partitions
+  ipmi: kcs: aspeed: Adapt to new LPC DTS layout
+  pinctrl: aspeed-g5: Adapt to new LPC device tree layout
+  soc: aspeed: Adapt to new LPC device tree layout
+
+ .../devicetree/bindings/mfd/aspeed-lpc.txt    |  99 +++----------
+ arch/arm/boot/dts/aspeed-g4.dtsi              |  74 ++++------
+ arch/arm/boot/dts/aspeed-g5.dtsi              | 135 ++++++++----------
+ arch/arm/boot/dts/aspeed-g6.dtsi              | 135 ++++++++----------
+ drivers/char/ipmi/kcs_bmc_aspeed.c            |  27 ++--
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c    |  17 ++-
+ drivers/soc/aspeed/aspeed-lpc-ctrl.c          |  20 ++-
+ drivers/soc/aspeed/aspeed-lpc-snoop.c         |  23 +--
+ 8 files changed, 225 insertions(+), 305 deletions(-)
+
+-- 
+2.17.1
 
