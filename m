@@ -2,178 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9812E6CBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 01:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B04DA2E6CC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 01:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730087AbgL2AH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 19:07:58 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:44820 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727527AbgL2AH6 (ORCPT
+        id S1730190AbgL2AMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 19:12:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727527AbgL2AME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 19:07:58 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8BC5D98;
-        Tue, 29 Dec 2020 01:07:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1609200434;
-        bh=d4Mhfe3bfkE71312xd7PJbpeT/ceK/ppJxKjsDG5mdA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pXfrmYmua0twZRFvuhxMt7W8MJbwh2Lre6rJEvwDuS/nfUsF2WPCJM7kBxduidM+Y
-         zZMMvC8paqLiNrH7tJvaB9z9xRTQqpKIyryeFcsRASAuLVYXCvAMHh5npSrXh5CD3s
-         oaojhOJE+hcISC6kr6s5P3YJwqtHcgaWjzE05kBk=
-Date:   Tue, 29 Dec 2020 02:07:04 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jordan Hand <jorhand@linux.microsoft.com>
-Subject: Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-Message-ID: <X+pzKDNWpiQWenHy@pendragon.ideasonboard.com>
-References: <20201224010907.263125-1-djrscally@gmail.com>
- <20201224010907.263125-15-djrscally@gmail.com>
- <CAHp75VeXN6PnV7Mzz6UMpD+m-yjPi6XK0kx1=+-M5mci=Vb=YQ@mail.gmail.com>
- <20201228170521.GZ26370@paasikivi.fi.intel.com>
- <2d37df3d-f04c-6679-6e27-6c7f82e9b158@gmail.com>
- <20201228225544.GH4077@smile.fi.intel.com>
- <X+plTyUFhfHi7eIE@pendragon.ideasonboard.com>
- <CAHp75Vdzk7i+QzkTxLJUUkw3xZot9F7QT8pyu6b5yjkCVzMXEA@mail.gmail.com>
+        Mon, 28 Dec 2020 19:12:04 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30ACAC0613D6;
+        Mon, 28 Dec 2020 16:11:24 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2so7120517pfq.5;
+        Mon, 28 Dec 2020 16:11:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=+x0jg3kgtAnVsZSiLJVqeiqq/kBhePK5zrv50jFdLuw=;
+        b=IRcovKNGSDtnXPhGzyqD7eyJ8xFOY06mgqPAH+dIQcl1Q2qBdd1KfvZaTUAaCWSouR
+         OF7dcFcaTAAMkiQ4Hc9JLvPgOFnEetNx9BpimyxpCVgv5ifpx10XC+yZKl/JOtC2OMn5
+         M7kgyvd1BUR1+0S8aDjsWCCD6Jk6pPEHO9a3j4oayoVYcGXLLAEd/4eyc0h/83/pqHG4
+         j55aC4Z20m1D1cMPUX8l+BkAtcB7XVS5+AAW/HS7DDlCE+UJYC6/HCTjzt0dkdDs7Qql
+         j4eXnCP8ybnbZ0qK8O+2WMlivBPVkLMSTzR3m+dS3hyeR5ZLkae8RJawpTHjti7+jC68
+         zytg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=+x0jg3kgtAnVsZSiLJVqeiqq/kBhePK5zrv50jFdLuw=;
+        b=IaykZzuJpx/3kpfPLaLAwB6esqo3Sr/2x0uH3abmRagU+PQv5WF/qSDYjgRKAg/W2b
+         8Rq5iXZoW3QXTn1gOL7FPVWOtY/fUL/MGnAaTJeVJU5h+7xAhDX1wrmtaNnD5t9/2Gbi
+         YWBGsICKTpx9K8Z9W08aHM9umXLSdaFxyOJNhVcnLStBHredDmjjDhNOsI134vg0Keo9
+         eDCVlX0Rl1s/oXLQv0n4CTtGopXOadswsC/myf6pd0uERamj59rdryb65ZG7tzDsjuJb
+         DOezVaTeLuXm8O0CbPoFIsm2C8ygK9ecrCPRHBEh2g5VhH5gh3xpSe5A1helLEi6UphJ
+         KJEQ==
+X-Gm-Message-State: AOAM5336z05zchd1EinDGZDjdAHQ43SJ6KpTGpNFXIJu9SkEPSi/RaUN
+        IMsmDZr1Cx0AD71hQgysor5vZodKvkE=
+X-Google-Smtp-Source: ABdhPJziWQaDuQ55fGtxjE6fQbAeK72BPSalCM5Tcc9+bonmCukOTiRZskRtE1A/1ZjpqIusBtl70w==
+X-Received: by 2002:a62:63c5:0:b029:1a9:3a46:7d32 with SMTP id x188-20020a6263c50000b02901a93a467d32mr43109410pfb.39.1609200683417;
+        Mon, 28 Dec 2020 16:11:23 -0800 (PST)
+Received: from localhost (193-116-97-30.tpgi.com.au. [193.116.97.30])
+        by smtp.gmail.com with ESMTPSA id 92sm589278pjv.15.2020.12.28.16.11.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Dec 2020 16:11:22 -0800 (PST)
+Date:   Tue, 29 Dec 2020 10:11:16 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+To:     Andy Lutomirski <luto@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>, stable@vger.kernel.org,
+        Will Deacon <will@kernel.org>
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+In-Reply-To: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vdzk7i+QzkTxLJUUkw3xZot9F7QT8pyu6b5yjkCVzMXEA@mail.gmail.com>
+Message-Id: <1609199804.yrsu9vagzk.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Excerpts from Andy Lutomirski's message of December 28, 2020 4:28 am:
+> The old sync_core_before_usermode() comments said that a non-icache-synci=
+ng
+> return-to-usermode instruction is x86-specific and that all other
+> architectures automatically notice cross-modified code on return to
+> userspace.  Based on my general understanding of how CPUs work and based =
+on
+> my atttempt to read the ARM manual, this is not true at all.  In fact, x8=
+6
+> seems to be a bit of an anomaly in the other direction: x86's IRET is
+> unusually heavyweight for a return-to-usermode instruction.
 
-On Tue, Dec 29, 2020 at 01:54:59AM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 29, 2020 at 1:08 AM Laurent Pinchart wrote:
-> >
-> > On Tue, Dec 29, 2020 at 12:55:44AM +0200, Andy Shevchenko wrote:
-> > > On Mon, Dec 28, 2020 at 10:37:38PM +0000, Daniel Scally wrote:
-> > > > On 28/12/2020 17:05, Sakari Ailus wrote:
-> 
-> ...
-> 
-> > > > Which do you prefer?
-> > >
-> > > Actually ipu3-cio2.h misses a lot of inclusions (like mutex.h which I
-> > > immediately noticed when scrolled over data types).
-> >
-> > Then ipu3-cio2.h should be fixed :-)
-> 
-> Below is a draft patch (it is possible mangled, due to Gmail). Can you
-> look at it and tell me what you think?
+"sync_core_before_usermode" as I've said says nothing to arch, or to the=20
+scheduler, or to membarrier. It's badly named to start with so if=20
+renaming it it should be something else. exit_lazy_tlb() at least says
+something quite precise to scheudler and arch code that implements
+the membarrier.
 
-Thank you for the patch.
+But I don't mind the idea of just making it x86 specific if as you say the
+arch code can detect lazy mm switches more precisely than generic and=20
+you want to do that.
 
-> I believe some headers can be removed, but I have no idea about header
-> inclusion guarantees that v4l2 provides.
-> 
-> From 10fa6c7ff66ded35a246677ffe20c677e8453f5b3 Mon Sep 17 00:00:00 2001
-> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Date: Tue, 29 Dec 2020 01:42:03 +0200
-> Subject: [PATCH 1/1] media: ipu3-cio2: Add headers that ipu3-cio2.h is direct
->  user of
-> 
-> Add headers that ipu3-cio2.h is direct user of.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> So let's drop any pretense that we can have a generic way implementation
+> behind membarrier's SYNC_CORE flush and require all architectures that op=
+t
+> in to supply their own.  This means x86, arm64, and powerpc for now.  Let=
+'s
+> also rename the function from sync_core_before_usermode() to
+> membarrier_sync_core_before_usermode() because the precise flushing detai=
+ls
+> may very well be specific to membarrier, and even the concept of
+> "sync_core" in the kernel is mostly an x86-ism.
+
+The concept of "sync_core" (x86: serializing instruction, powerpc: context
+synchronizing instruction, etc) is not an x86-ism at all. x86 just wanted
+to add a serializing instruction to generic code so it grew this nasty API,
+but the concept applies broadly.
+
+>=20
+> I admit that I'm rather surprised that the code worked at all on arm64,
+> and I'm suspicious that it has never been very well tested.  My apologies
+> for not reviewing this more carefully in the first place.
+
+
+>=20
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: x86@kernel.org
+> Cc: stable@vger.kernel.org
+> Fixes: 70216e18e519 ("membarrier: Provide core serializing command, *_SYN=
+C_CORE")
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
 > ---
->  drivers/media/pci/intel/ipu3/ipu3-cio2.h | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> index ccf0b85ae36f..9ea154c50ba1 100644
-> --- a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> +++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> @@ -4,8 +4,25 @@
->  #ifndef __IPU3_CIO2_H
->  #define __IPU3_CIO2_H
-> 
-> +#include <linux/bits.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mutex.h>
->  #include <linux/types.h>
-> 
-> +#include <asm/page.h>
+>=20
+> Hi arm64 and powerpc people-
+>=20
+> This is part of a series here:
+>=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/log/?h=3Dx=
+86/fixes
+>=20
+> Before I send out the whole series, I'm hoping that some arm64 and powerp=
+c
+> people can help me verify that I did this patch right.  Once I get
+> some feedback on this patch, I'll send out the whole pile.  And once
+> *that's* done, I'll start giving the mm lazy stuff some serious thought.
+>=20
+> The x86 part is already fixed in Linus' tree.
+>=20
+> Thanks,
+> Andy
+>=20
+>  arch/arm64/include/asm/sync_core.h   | 21 +++++++++++++++++++++
+>  arch/powerpc/include/asm/sync_core.h | 20 ++++++++++++++++++++
+>  arch/x86/Kconfig                     |  1 -
+>  arch/x86/include/asm/sync_core.h     |  7 +++----
+>  include/linux/sched/mm.h             |  1 -
+>  include/linux/sync_core.h            | 21 ---------------------
+>  init/Kconfig                         |  3 ---
+>  kernel/sched/membarrier.c            | 15 +++++++++++----
+>  8 files changed, 55 insertions(+), 34 deletions(-)
+>  create mode 100644 arch/arm64/include/asm/sync_core.h
+>  create mode 100644 arch/powerpc/include/asm/sync_core.h
+>  delete mode 100644 include/linux/sync_core.h
+>=20
+> diff --git a/arch/arm64/include/asm/sync_core.h b/arch/arm64/include/asm/=
+sync_core.h
+> new file mode 100644
+> index 000000000000..5be4531caabd
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/sync_core.h
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_ARM64_SYNC_CORE_H
+> +#define _ASM_ARM64_SYNC_CORE_H
 > +
-> +#include <linux/videodev2.h>
-
-I think this can be dropped.
-
+> +#include <asm/barrier.h>
 > +
-> +#include <media/media-device.h>
-> +#include <media/media-entity.h>
-> +#include <media/v4l2-async.h>
-> +#include <media/v4l2-dev.h>
-> +#include <media/v4l2-device.h>
-> +#include <media/v4l2-subdev.h>
-> +#include <media/videobuf2-core.h>
-> +#include <media/videobuf2-v4l2.h>
+> +/*
+> + * Ensure that the CPU notices any instruction changes before the next t=
+ime
+> + * it returns to usermode.
+> + */
+> +static inline void membarrier_sync_core_before_usermode(void)
+> +{
+> +	/*
+> +	 * XXX: is this enough or do we need a DMB first to make sure that
+> +	 * writes from other CPUs become visible to this CPU?  We have an
+> +	 * smp_mb() already, but that's not quite the same thing.
+> +	 */
+> +	isb();
+> +}
 > +
->  #define CIO2_NAME "ipu3-cio2"
->  #define CIO2_DEVICE_NAME "Intel IPU3 CIO2"
->  #define CIO2_ENTITY_NAME "ipu3-csi2"
-> @@ -325,6 +342,8 @@ struct csi2_bus_info {
->   u32 lanes;
->  };
-> 
-> +struct cio2_fbpt_entry;
+> +#endif /* _ASM_ARM64_SYNC_CORE_H */
+> diff --git a/arch/powerpc/include/asm/sync_core.h b/arch/powerpc/include/=
+asm/sync_core.h
+> new file mode 100644
+> index 000000000000..71dfbe7794e5
+> --- /dev/null
+> +++ b/arch/powerpc/include/asm/sync_core.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_POWERPC_SYNC_CORE_H
+> +#define _ASM_POWERPC_SYNC_CORE_H
 > +
->  struct cio2_queue {
->   /* mutex to be used by vb2_queue */
->   struct mutex lock;
-> @@ -355,6 +374,8 @@ struct cio2_queue {
->   atomic_t bufs_queued;
->  };
-> 
-> +struct pci_dev;
+> +#include <asm/barrier.h>
 > +
+> +/*
+> + * Ensure that the CPU notices any instruction changes before the next t=
+ime
+> + * it returns to usermode.
+> + */
+> +static inline void membarrier_sync_core_before_usermode(void)
+> +{
+> +	/*
+> +	 * XXX: I know basically nothing about powerpc cache management.
+> +	 * Is this correct?
+> +	 */
+> +	isync();
 
-How about grouping all forward declarations at the top ?
+This is not about memory ordering or cache management, it's about=20
+pipeline management. Powerpc's return to user mode serializes the
+CPU (aka the hardware thread, _not_ the core; another wrongness of
+the name, but AFAIKS the HW thread is what is required for
+membarrier). So this is wrong, powerpc needs nothing here.
 
-Otherwise this looks good,
+Thanks,
+Nick
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-If I was maintaining this driver I would likely move the structure
-definitions to ipu3-cio2.c though.
-
->  struct cio2_device {
->   struct pci_dev *pci_dev;
->   void __iomem *base;
-
--- 
-Regards,
-
-Laurent Pinchart
