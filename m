@@ -2,182 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF8F2E6E72
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 07:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7772E6E77
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 07:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgL2GSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 01:18:09 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33816 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725832AbgL2GSI (ORCPT
+        id S1726513AbgL2GTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 01:19:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725986AbgL2GTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 01:18:08 -0500
-X-UUID: 41a8b44ef2ea45fca9cfccf68da20dca-20201229
-X-UUID: 41a8b44ef2ea45fca9cfccf68da20dca-20201229
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1171348968; Tue, 29 Dec 2020 14:17:21 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 29 Dec 2020 14:17:19 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 29 Dec 2020 14:17:19 +0800
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <wsd_upstream@mediatek.com>, <hector.yuan@mediatek.com>
-Subject: [PATCH v10 2/2] dt-bindings: cpufreq: add bindings for MediaTek cpufreq HW
-Date:   Tue, 29 Dec 2020 14:17:09 +0800
-Message-ID: <1609222629-2979-3-git-send-email-hector.yuan@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1609222629-2979-1-git-send-email-hector.yuan@mediatek.com>
-References: <1609222629-2979-1-git-send-email-hector.yuan@mediatek.com>
+        Tue, 29 Dec 2020 01:19:23 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD56C0613D6;
+        Mon, 28 Dec 2020 22:18:42 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id hk16so994550pjb.4;
+        Mon, 28 Dec 2020 22:18:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iQ57yDlhaXQP4FMUP6u+cqmcjHx6tyVwVCZONWgFI3Y=;
+        b=LDYhSWjHMTEZ6f9yejIxbZFELwf52UcOV0uLIcQYwV5DrC1fpzcn3jPAVzlTJ4alwd
+         yvlwG+8eBNz85zBybs5uTjQN6hYK1G2UGYlhrW1jgnI01ONT5o3CZkp5YitiYxWlYoYG
+         gcwkQophOqFjSpXVz5ciUlbhTd5Q//dMmOF3oL8Zk1ofo4uGoIeyu0edctwkHFXwzv3Z
+         GO+3Em6SA/3bzXDRdIO1F+bkGi5Dme+L/daCF9LsQqesKlID3skrL2k/MGfFx0Tf7xy9
+         TqrUXl12V5TN2/0f+SLaB4ikTvDax54Rq9s9PGUQu4+VOtOXYIhVWJsIctPnavC3Bxmq
+         NUiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iQ57yDlhaXQP4FMUP6u+cqmcjHx6tyVwVCZONWgFI3Y=;
+        b=Yb9IvO0nrDGsb8OZ61Db3RgjwEsB6YMU5d82yUTvkyuCU1rCrOYE1NgS1tTBkJgLu+
+         wgBVwKMyancWXxyKBORedskJPr27EKpgaw5uDMXGLkgauXp2NzPken6yuVEPTE+V5l13
+         NLf7jrgnoBNErSt5agFGoD8rfZepo5IrVixDs8bLi2Qef8HDNqpYPXffnhUne076Az4B
+         cZUu/zrrgwiOAs4ptatMc+FkcdSKEkfOTDfHQ9/QV6cDV56OivuJEmFRasDld9PTqoY6
+         mBTcezFg/ZzRcCyF5F/dNPnhC6OW1jxmWMVOnKNzuW+lvP0g8ep/C4dC686cWzbqm9jh
+         yq7g==
+X-Gm-Message-State: AOAM532bW0VFbgdDePTrN47gsG0y7uMM8w9en+XjxhxeKqtfWnmN54jU
+        IMczGmY9Kw4BHMhchBMMs1Q=
+X-Google-Smtp-Source: ABdhPJwqdYggJ2xmahWNQn4DJwa7BSHZGjS6OB7HaO4SDM3vKKOT/XjeyxtehZtw4odI8f3tgo4IqA==
+X-Received: by 2002:a17:90a:1c02:: with SMTP id s2mr2671199pjs.212.1609222722132;
+        Mon, 28 Dec 2020 22:18:42 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id v3sm1657993pjn.7.2020.12.28.22.18.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Dec 2020 22:18:41 -0800 (PST)
+Date:   Mon, 28 Dec 2020 22:18:38 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Philip Chen <philipchen@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, dtor@chromium.org,
+        swboyd@chromium.org, dianders@chromium.org, rajatja@chromium.org,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: input: cros-ec-keyb: Add a new property
+Message-ID: <X+rKPhJrQaykPxri@google.com>
+References: <20201221174751.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201221174751.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Hector.Yuan" <hector.yuan@mediatek.com>
+Hi Philip,
 
-Add devicetree bindings for MediaTek HW driver.
+On Mon, Dec 21, 2020 at 05:47:57PM -0800, Philip Chen wrote:
+> This patch adds a new property `google,custom-keyb-top-row` to the
+> device tree for the custom keyboard top row design.
 
-Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
----
- .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |  116 ++++++++++++++++++++
- 1 file changed, 116 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+Why don't we use the property we have for the same purpose in atkbd.c?
+I.e. function-row-physmap?
 
-diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-new file mode 100644
-index 0000000..53e0eb3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-@@ -0,0 +1,116 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek's CPUFREQ Bindings
-+
-+maintainers:
-+  - Hector Yuan <hector.yuan@mediatek.com>
-+
-+description:
-+  CPUFREQ HW is a hardware engine used by MediaTek
-+  SoCs to manage frequency in hardware. It is capable of controlling frequency
-+  for multiple clusters.
-+
-+properties:
-+  compatible:
-+    const: mediatek,cpufreq-hw
-+
-+  reg:
-+    minItems: 1
-+    maxItems: 2
-+    description: |
-+      Addresses and sizes for the memory of the
-+      HW bases in each frequency domain.
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    cpus {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            cpu0: cpu@0 {
-+                device_type = "cpu";
-+                compatible = "arm,cortex-a55";
-+                enable-method = "psci";
-+                performance-domains = <&performance 0>;
-+                reg = <0x000>;
-+            };
-+
-+            cpu1: cpu@100 {
-+                device_type = "cpu";
-+                compatible = "arm,cortex-a55";
-+                enable-method = "psci";
-+                performance-domains = <&performance 0>;
-+                reg = <0x100>;
-+            };
-+
-+            cpu2: cpu@200 {
-+                device_type = "cpu";
-+                compatible = "arm,cortex-a55";
-+                enable-method = "psci";
-+                performance-domains = <&performance 0>;
-+                reg = <0x200>;
-+            };
-+
-+            cpu3: cpu@300 {
-+                device_type = "cpu";
-+                compatible = "arm,cortex-a55";
-+                enable-method = "psci";
-+                performance-domains = <&performance 0>;
-+                reg = <0x300>;
-+            };
-+
-+            cpu4: cpu@400 {
-+                device_type = "cpu";
-+                compatible = "arm,cortex-a55";
-+                enable-method = "psci";
-+                performance-domains = <&performance 1>;
-+                reg = <0x400>;
-+            };
-+
-+            cpu5: cpu@500 {
-+                device_type = "cpu";
-+                compatible = "arm,cortex-a55";
-+                enable-method = "psci";
-+                performance-domains = <&performance 1>;
-+                reg = <0x500>;
-+            };
-+
-+            cpu6: cpu@600 {
-+                device_type = "cpu";
-+                compatible = "arm,cortex-a75";
-+                enable-method = "psci";
-+                performance-domains = <&performance 1>;
-+                reg = <0x600>;
-+            };
-+
-+            cpu7: cpu@700 {
-+                device_type = "cpu";
-+                compatible = "arm,cortex-a75";
-+                enable-method = "psci";
-+                performance-domains = <&performance 1>;
-+                reg = <0x700>;
-+            };
-+    };
-+
-+    /* ... */
-+
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        performance: performance-controller@11bc00 {
-+            compatible = "mediatek,cpufreq-hw";
-+            reg = <0 0x0011bc10 0 0x120>, <0 0x0011bd30 0 0x120>;
-+            #performance-domain-cells = <1>;
-+        };
-+    };
+Also, instead of specifying keycodes in this array we should use
+combination of row and column identifying keys, like this:
+
+	function-row-physmap = <
+		MATRIX_KEY(0x00, 0x02, KEY_F1),
+		MATRIX_KEY(0x03, 0x02, KEY_F2),
+		...
+	>;
+
+Note that the last item in the triple is purely cosmetic in this case,
+you can change it to 0. It is row and column that are important.
+
+Then the mapping will work properly even if we change keymap, for
+example from userspace.
+
+Thanks.
+
 -- 
-1.7.9.5
-
+Dmitry
