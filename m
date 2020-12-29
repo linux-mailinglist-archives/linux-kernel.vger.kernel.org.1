@@ -2,147 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDB32E7278
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 18:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F4D2E7279
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 18:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbgL2Q6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 11:58:45 -0500
-Received: from mail-co1nam11on2070.outbound.protection.outlook.com ([40.107.220.70]:29184
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726214AbgL2Q6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 11:58:44 -0500
+        id S1726292AbgL2RAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 12:00:06 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44216 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726189AbgL2RAE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 12:00:04 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BTGt7Ok019863;
+        Tue, 29 Dec 2020 08:59:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=4nNgcDPZyhbU8Pn8ynFgC7WEINJ+yW/FQVEQspoKSCk=;
+ b=W1lpbHYoICdkDHwDbkVwS3DrFJWkLriie2o2HLfdg4LcR98FeFALJHIRiorxRPcLg6td
+ Yt6gCYluqXa1skfL4Fpu9iF6S9MKov1vr+15fcZCrhO/viaTKC4v7OR8TFHisijftF7M
+ 42e1JWzgnJwshL2rpNnxuTpsDgwtanq/Cxg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35p3jutaq0-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 29 Dec 2020 08:59:02 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 29 Dec 2020 08:59:01 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LibqbsDYHkvwJfdBaCmICGvbfQri80Bw4TB3v4SIvGw9F6kxmJt8F9QLtFZ/GSRPwyFLl0NfBXy56Mvpy3/oJD9tJRZt/Npo6tCClChGQ+Py+vzfycchxwYihveV1GQ01zHaf6lDVbyOK01PAQgY+eVm8ynYuLZQHO+r0kEpvsRtyTuN8Wu9Y4WmHjhTVi72NklqBWyUpsfkXSKi1cCWYPfCrb2lUasJMtVKjJdQD4vEM1LYOUo9shD/0YijvGrkgsxPSle2ovpziHSx4/ZPyrvZY14gPnjOg1gsl/rwM3BONB1q7cDz70Tkm/AWaHXDuwpVGtoLsIZW5FX60P6FmQ==
+ b=TDJ9kgtLwh2ZR43Zx1xFQLtr9V7tvdEs7Mvpy2DZzb2V/KNfbEeetSDeR2IZytwrnPg5vIS167TbogPrQqn51YTKLZvCwbYb8owMWcVbZXlBKuKEbhiUxzU80lTrQzTILyhEVZQKe9U+Uqp7+upj/DNYUaqEHXvIUIyO6u2LTwNbjfScxLWfGU20ZQacyA9Q6JVSvHhMq8RinyliiAQgf6zePfdeK7zSEfhs+qlP7VhqljLc2mInJoH235Gf/erIWyAGWk8Fbb1yWiG9F+08uekPYTUGWeSbW7jRyHF29c/MyPAxTwpNLNA5mJUVka5zGvMbpPiwgcwNNj+x6711tg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ntjwf3kigAGqOWgNrkLxi2ZAmK/8GNK+LZWDgQ2UE+s=;
- b=lP/P+DI2zNQ9AjDiuvcbuKNaxGoKNFTeXCDEysqgMoyykNgLcml0KqBiX0CIj9pFOOH0hF86SQ1LtEPxLcOVMfXzaaKtx89wdM8yL0TEfItWqwLQInjY4Z0HW407QiUiZEd511/qa9alw321GK2/286UpGK4V1kq8h9ct2lc0LYr9v5scnpKK7wxePQJBDKmgxGa9dz5yVJRI6XIy9qmUvgNFkruhzYgRovUr73BjLSuPtiRaXPtjhK0Rx45P1EyH2Jp8+jrsEY3ceaFUCat2N/upI/BA1skYiTqHbfeQz77RjUcHIECW1m9FsVf0ksYcPZrONm3G/a3Wp8vVJ373A==
+ bh=4nNgcDPZyhbU8Pn8ynFgC7WEINJ+yW/FQVEQspoKSCk=;
+ b=I2DlRXjVZd6wOwkp7QYdJ45iNFRgOfv1WD83KgqLV1XxdyH6RW/FAd/qpowVlNUwxDqKS9Y3eDhEvqzc0VCFr9SY6VPYceA++cZ8BnCpet+t0cDrz9X5C1zQqJd+QpLIvNCrZAgEX/vx9wK0jTX3dgKFXDCrF3zks0YvGDH4vCA//4cftrYSuLQ9tjIzhq7OYmGPhJnxJ8NFNohhzt5rWxB7IoJ7IDd/IrM866Kka05KwYEwhM/xF83gL89m2K2j1Dj5BQXapDe1ry0ctlFXO7AxeY7hGua+2DbfbadaxRNk5bPEb99lN8R7/h0ZCmwebIULw+uQmn1vFGb+YpzHNA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ntjwf3kigAGqOWgNrkLxi2ZAmK/8GNK+LZWDgQ2UE+s=;
- b=uB5laS6KzU74W6AVRqsJ3771+JYotJX1D83tyUnXcv0j8oX5zHHIYA5hduY/k2Yne8Y/DogS78w5pcJhBae4tVfsgOboNdalZLgkpDUJaMfMZD65ahxJMCnWY2Pbr6Iuh8Fy/9FBo0f8PhkC/oGuh+Q3EGgfDXHcc2joB5mZ0ss=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from CH2PR12MB3781.namprd12.prod.outlook.com (2603:10b6:610:27::11)
- by CH2PR12MB4149.namprd12.prod.outlook.com (2603:10b6:610:7c::13) with
+ bh=4nNgcDPZyhbU8Pn8ynFgC7WEINJ+yW/FQVEQspoKSCk=;
+ b=CayMeYrcjNsMYgBHTS76inWzeWZH5zyIBBd7EjlfuXHXNZ1ZrTdRMIKJRpO0VMxbDfWabGBO/3CcDHyOdjyb61lM0PVWgsPMYY7D0+KSM63mDswedq3fF59iebVef2HlvWeHZ3T2zOXLzdqSvekB7jHu1q97nJlp/0PpbbZ+XhE=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2950.namprd15.prod.outlook.com (2603:10b6:a03:f6::30) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.28; Tue, 29 Dec
- 2020 16:57:52 +0000
-Received: from CH2PR12MB3781.namprd12.prod.outlook.com
- ([fe80::3d50:f4c3:fb52:cc93]) by CH2PR12MB3781.namprd12.prod.outlook.com
- ([fe80::3d50:f4c3:fb52:cc93%3]) with mapi id 15.20.3700.031; Tue, 29 Dec 2020
- 16:57:52 +0000
-From:   Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx@lists.freedesktop.org
-Cc:     Wesley Chalmers <Wesley.Chalmers@amd.com>,
-        Alex Deucher <Alexander.Deucher@amd.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Harry Wentland <Harry.Wentland@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Josip Pavic <Josip.Pavic@amd.com>,
-        Bindu Ramamurthy <bindu.r@amd.com>,
-        Martin Leung <Martin.Leung@amd.com>
-Subject: [PATCH] drm/amd/display: Initialize stack variable
-Date:   Tue, 29 Dec 2020 11:57:40 -0500
-Message-Id: <20201229165740.519759-1-Rodrigo.Siqueira@amd.com>
-X-Mailer: git-send-email 2.30.0.rc2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [2607:fea8:56e0:6d60:f639:9ff:fe01:4714]
-X-ClientProxiedBy: YTXPR0101CA0024.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00::37) To CH2PR12MB3781.namprd12.prod.outlook.com
- (2603:10b6:610:27::11)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.29; Tue, 29 Dec
+ 2020 16:59:00 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::2c:f12b:82e9:105c]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::2c:f12b:82e9:105c%5]) with mapi id 15.20.3700.031; Tue, 29 Dec 2020
+ 16:59:00 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Kernel Team" <Kernel-team@fb.com>
+Subject: Re: [PATCH v6 4/4] perf-stat: add documentation for -b option
+Thread-Topic: [PATCH v6 4/4] perf-stat: add documentation for -b option
+Thread-Index: AQHW3UClMrEXECir+ESI2Ux8tEpG96oNrOWAgACgZ4A=
+Date:   Tue, 29 Dec 2020 16:59:00 +0000
+Message-ID: <84A7363C-5944-43CB-8902-3EAA5BBA1495@fb.com>
+References: <20201228174054.907740-1-songliubraving@fb.com>
+ <20201228174054.907740-5-songliubraving@fb.com>
+ <CAM9d7chxLKqjhB3CoxPV8Oz9y6fzZBTZ-YhtEWc1dzf9s-iB3A@mail.gmail.com>
+In-Reply-To: <CAM9d7chxLKqjhB3CoxPV8Oz9y6fzZBTZ-YhtEWc1dzf9s-iB3A@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:7414]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fca554fd-100b-41e8-7b9c-08d8ac1b09fe
+x-ms-traffictypediagnostic: BYAPR15MB2950:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB29501DE3AF7D06D6D23362E3B3D80@BYAPR15MB2950.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WfOqi671jsHaSPtxgA0Mexnl+hrriSeIzFfQ4CmvUlFvfVgnNT7bvL/Sd0jrOmG/Bl4k8MFeQIXWuy19b5/6LqwD3XyHYuA6ZiUXgH65g8vpYxyloGAdHCQ4dN+aBOCsWPaeQXq49hpVkq1qlcGrWcjSG/KFLnMdKFO3+FjnadB2PQ7b2MsZtYNxA/OeIkUPMI2Al52QpunzjHOLVkxYyZOmN2TOnAogJLzMCU2Tt6rY6yCSztxSi57o6aSbvW0bwtfM+ceiStN2ES7ejbMmC3tNXbXirbO8dkx4/vwFIly8QPPSEGxF/pJWcVdepjt/LloczP9WpEtwTEUrjbvX7OLbr9xrblnk9/e4tLoXvRYDQZugqT9DkDh84spsZT4y1GoD/mWEsDI3JRy40F3F44fi+d4NEFCBtCUikaTj2QtSTnIrhxc1odRG3vNvUWdZ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(366004)(39860400002)(346002)(136003)(478600001)(86362001)(8676002)(71200400001)(186003)(8936002)(6486002)(36756003)(33656002)(64756008)(91956017)(5660300002)(66556008)(316002)(76116006)(2906002)(54906003)(4326008)(6512007)(53546011)(66476007)(4744005)(66446008)(66946007)(6506007)(6916009)(2616005)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?cq5fBx0rN1o6+c3i+wjbEphAzIaknF24iuBEQ0KaNUshSTdL714igi1yncNZ?=
+ =?us-ascii?Q?c5To3LteYFZVMrz1nqz5SAnEdIB+7Rra4tQH0XvNtbJd8zI0hqdUdSvpAPgx?=
+ =?us-ascii?Q?Ozw4WyG2tmyDy24nSSq2qJj24eFArJGWqnCVX3cYrT7wD6mMELyj4xi1E6sl?=
+ =?us-ascii?Q?DAPtImnQcUacmeSOJKRptfRL0Z8j3JwJY0/0fPAb3GmR9vkXoKgzIicgNliU?=
+ =?us-ascii?Q?HU/XFCyTNBl4roHzuGyEx7xC21+gCDqKCF6bHPGd8fuSTgE/La6v506h/Bh/?=
+ =?us-ascii?Q?u96+jZh0XojYz2XLHWL8Mf3sawIT5eyP9wkG78A6SH+x4koNz56/fiBzbqyE?=
+ =?us-ascii?Q?7e+dEKNZgxyLbwoozEGvgVtPxWyxWWzNNINxcc4zaOX5+KSNPWM6CCqnrtHu?=
+ =?us-ascii?Q?EDIm3RR9vCS5EQg1O4rx3TqxCz04VgWd7x3DP8w8gFVNSs+dMU9shImYvCLr?=
+ =?us-ascii?Q?zBp3ksDer8MHM8xKrcI0xX3h9HFeCUx2/3gjb41uKYUE5BSEuf3GTtZPQWOk?=
+ =?us-ascii?Q?+uSLcYKYqAB07p3leIjJiqvgFqOsX/WTwGXlyQ+4RDHi0M/ySJLDL9v/p7J9?=
+ =?us-ascii?Q?oiAGD4/f7/ApxaD241LvSo+yluJ8EPqACLBN71M7WgkqCqmfeboyGDHGodmc?=
+ =?us-ascii?Q?c2IR58B0iLJgjYqOEK3zQZcA6wlD6si20pvHqnv1WHqWuZ2zQSwudnv4JC0N?=
+ =?us-ascii?Q?FMpbgGEWaDTpvQX/4AbMr3uFIJ7x7rvZtpg+XDIOCnmTsMz6+O+MzyO9PF/z?=
+ =?us-ascii?Q?KdcfhBONDJt51sH8wij5I4edP802boXZGW90JZMtS8Ed6Dr3XK+UupjnSLQ3?=
+ =?us-ascii?Q?hGpWlorPr0aZJCiDaVoH8UjM9Axfbwd2LCCgesx2TIWZiYq1iTchks+2TjjP?=
+ =?us-ascii?Q?jSaHlaF5drWEePs28PCitTLXFXwYR1bn3/RSTOzZgVxYRGzIAiV7xmn+zL/+?=
+ =?us-ascii?Q?FHn65yP+YSGvGPoPkcMZnv2ZFh2xTU8k955n48xhMoFvoev6r0xJf1t3fYaW?=
+ =?us-ascii?Q?kgFN5wklk2vMqXyOFXn2e6f+8sks1v9gfszmVOZ3SrGfsBo=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <57BAFCF6D15046438750223E2CBA38A8@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from atma1.hitronhub.home (2607:fea8:56e0:6d60:f639:9ff:fe01:4714) by YTXPR0101CA0024.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19 via Frontend Transport; Tue, 29 Dec 2020 16:57:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d36cd2c8-e7b9-47ba-cc16-08d8ac1ae148
-X-MS-TrafficTypeDiagnostic: CH2PR12MB4149:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CH2PR12MB41494692141C9A39D53FA2B198D80@CH2PR12MB4149.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:514;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V+c9Bu6eHhJgFYIa+hPH6Y0vX448z8SorK0rdtybwse7Sy0O3Rmq4hk2BHosAPpfkscIsZjUfggQkhQ3rJg1G+POsVcbph98kmfpNFtY/mlz9Lo17c3K09FRoJJDHVICLbDozWGnv2Kpy6BeF6GyDWKKAbOlR15c7wZKc1mZf6DpS1nNarkmdCzNeYumN3Sb0UzxwsJZyrt1fVscq+Lj+dByFxuv8uv18+cidwkHCmPT/GfKtR3s2OyNLjT+BJC3KUwDcbnk4azzv52JU+4BIpoJFNkFqNTa7ntmPekzeP2ZQk/2vll1KDelxS3OIpxW1e7H5Ysmx9n3bdfoTw5B7OFbJayZI8lvN8GDv3HgSCtVD8qN7d00t8Qt68yy5NOTbDMJkpQ9L7OyOFxZFpzMfw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3781.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(376002)(396003)(346002)(4326008)(54906003)(110136005)(66556008)(66476007)(83380400001)(86362001)(8936002)(316002)(6486002)(8676002)(16526019)(66946007)(1076003)(5660300002)(478600001)(2906002)(6666004)(36756003)(52116002)(2616005)(6506007)(186003)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?DmQPuEigKDZ4wa0HzXnR2+qPykRvI8+7Afeo6yOdaRARZEmyTO8op0nWF/vc?=
- =?us-ascii?Q?ow9UQ7Oo+Bq3rsCThvKQG99lu5/4E62CcagOiRI/AGCIUHVIZz+sNzIPhntj?=
- =?us-ascii?Q?wjbNuIsexdDxmrJhM6IMlR/qE7jfSDwxgo3GnhHKFwiFxDJhiZ+PePKxioIH?=
- =?us-ascii?Q?XSpmqxU9pwdzkV+odJ7fVYGFuwTPJy8vwuhhvfkWCcVCXcWcO1C00itwLLwV?=
- =?us-ascii?Q?RRFJDP60qAvqoZM3s8N7jdTbY7742QOOUUdTou7Vsoc4U4xnLGce5eNYNuNh?=
- =?us-ascii?Q?o1GAip1X1ODDNzYK8wGZu++zgnQBhfO5h2hSqkXva2BcdfHOCpZatXIU/eB6?=
- =?us-ascii?Q?+SBKM/a5Eufgivir+/gI7URczvvRGHowxjKTtYCneeCs9AT4Cr8Dd+MGS69p?=
- =?us-ascii?Q?rHxR+hC8pgG7Ehcsym3KdgtYc5cQpNGVlm2YmCi7AnjQeITNG9Uoaj78Q5YQ?=
- =?us-ascii?Q?xoZh0U5X6fbS6/MmEzi1BF2l/EJYbnjbttYWO7VQlEkYE/01V4Y/BZXhnnQ1?=
- =?us-ascii?Q?lYVe7j6AfOmW752NEgi/7zXKJ8wzbUX1CoEJqi52Iu1t4fMffpobd5R9B3GD?=
- =?us-ascii?Q?eM/50khyKQUqwlWctI2QEJsGHURoXMDLkQnt4UJStJ4qv54GNVZrfcIttpNr?=
- =?us-ascii?Q?Vxm6TJu+wb4UgxtM5xSWHYVPuqDJbpBfthAg1wajNKTq9oOmE+X08J7cplMM?=
- =?us-ascii?Q?KaDzeKH0Ol9WGBJZcKfkK4QQe811pp3d6HQoZzuggKEj++Xrq4PDFAtss7QR?=
- =?us-ascii?Q?E+xhRfRyfxEJjDCySHO3t9d4WLRu60cXjFUj0s/QgZPHUnjlKjYWw9hlIQFJ?=
- =?us-ascii?Q?ouRcl9WVpqrPVeO35GDXHNVLILSBwgUjZ5ejGGeod2cnpIo9BgeaQUpSUjo2?=
- =?us-ascii?Q?E2YpOfbzwYNN1OsAopwWv3vtjwy/yMJPrNwAZkzGaqlkpl+qXuyb44JAsgM9?=
- =?us-ascii?Q?eOiSnjt6Ah2B3w/H7HfiY2rLpUU/+DaZF5Wtz8feenPddT3l1cWb26tNpZEY?=
- =?us-ascii?Q?Z+XROPgahtNpjJ3lT1F0d8bq4Iw+PqrRwnaoLUNxsMjXsfvwPVmd/R7J/ZZc?=
- =?us-ascii?Q?MZEzgczq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3781.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2020 16:57:52.0097
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fca554fd-100b-41e8-7b9c-08d8ac1b09fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Dec 2020 16:59:00.3553
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: d36cd2c8-e7b9-47ba-cc16-08d8ac1ae148
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2NnbHa7tyIR3LcZs7HXEGpPgpLEwyoe5iucBLRHFPyev4LGHgPY/1jtSMRiGAM/4TV5+8Tz1IhG6Tc/GM28qUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4149
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Dpbrw0YDntnqz2m5mtH29+9uYXfM5HkTkeOHTp/yVgr/IJ0GL8qrgUQGQyGbUw0AfRlYnLUWqCHmi0X/QgDbcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2950
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-29_13:2020-12-28,2020-12-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ clxscore=1015 bulkscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
+ spamscore=0 adultscore=0 suspectscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012290107
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Chalmers <Wesley.Chalmers@amd.com>
 
-The stack variable "val" is potentially unpopulate it, so initialize it
-with the value 0xf (indicating an invalid mux).
 
-Cc: Alex Deucher <Alexander.Deucher@amd.com>
-Cc: Alex Deucher <alexdeucher@gmail.com>
-Cc: Harry Wentland <Harry.Wentland@amd.com>
-Cc: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Cc: Hersen Wu <hersenxs.wu@amd.com>
-Cc: Dave Airlie <airlied@gmail.com>
-Cc: Josip Pavic <Josip.Pavic@amd.com>
-Cc: Bindu Ramamurthy <bindu.r@amd.com>
-Signed-off-by: Wesley Chalmers <Wesley.Chalmers@amd.com>
-Reviewed-by: Martin Leung <Martin.Leung@amd.com>
-Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
----
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_mpc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Dec 28, 2020, at 11:24 PM, Namhyung Kim <namhyung@kernel.org> wrote:
+>=20
+> On Tue, Dec 29, 2020 at 2:41 AM Song Liu <songliubraving@fb.com> wrote:
+>>=20
+>> Add documentation to perf-stat -b option, which stats event for BPF
+>> programs.
+>>=20
+>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>> ---
+>> tools/perf/Documentation/perf-stat.txt | 14 ++++++++++++++
+>> 1 file changed, 14 insertions(+)
+>>=20
+>> diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documen=
+tation/perf-stat.txt
+>> index 5d4a673d7621a..15b9a646e853d 100644
+>> --- a/tools/perf/Documentation/perf-stat.txt
+>> +++ b/tools/perf/Documentation/perf-stat.txt
+>> @@ -75,6 +75,20 @@ report::
+>> --tid=3D<tid>::
+>>         stat events on existing thread id (comma separated list)
+>>=20
+>> +-b::
+>> +--bpf-prog::
+>> +        stat events on existing bpf program id (comma separated list),
+>> +        requiring root righs. For example:
+>=20
+> Typo: rights
+>=20
+> It'd be nice if it can show how we can get the id.
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_mpc.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_mpc.c
-index a46cb20596fe..b096011acb49 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_mpc.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_mpc.c
-@@ -470,7 +470,7 @@ void mpc1_cursor_lock(struct mpc *mpc, int opp_id, bool lock)
- unsigned int mpc1_get_mpc_out_mux(struct mpc *mpc, int opp_id)
- {
- 	struct dcn10_mpc *mpc10 = TO_DCN10_MPC(mpc);
--	uint32_t val;
-+	uint32_t val = 0xf;
- 
- 	if (opp_id < MAX_OPP && REG(MUX[opp_id]))
- 		REG_GET(MUX[opp_id], MPC_OUT_MUX, &val);
--- 
-2.30.0.rc2
+Thanks for the review! I fill fix these in the next version.=20
+
+Song
 
