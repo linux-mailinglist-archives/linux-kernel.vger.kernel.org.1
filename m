@@ -2,435 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227FC2E6D11
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 02:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029A92E6D23
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 02:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727198AbgL2BtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 20:49:06 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:34363 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgL2BtF (ORCPT
+        id S1727013AbgL2By2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 20:54:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9598 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726014AbgL2By1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 20:49:05 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609206520; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=g7uVnjV+Q9ur5+jW3/IYGRkZdqHPgWp3kNlcTu1ULeo=;
- b=vqnPKSJK6mWXYakJAipkvvFaRhSjzEkanYTr6uHnGoU5UfF4yg3pVwD9k0OrHHVLyp3bndfp
- f6eCVJUP0yMuBFskGvWiiEDgrTd5XynHxHTZpOdhlJNlMcRAPI7V6YjBG7SA3m5gMrVC53YH
- 2GCT03wduOw+hFVGCfBIuSWpWxk=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fea8adcb00c0d7ad4b8efa1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Dec 2020 01:48:12
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 82DA9C4346B; Tue, 29 Dec 2020 01:48:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C481C433CA;
-        Tue, 29 Dec 2020 01:48:08 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        Mon, 28 Dec 2020 20:54:27 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BT1dBO2108237;
+        Mon, 28 Dec 2020 20:53:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=p0mK2//Fc1O0SZfnnFo/fcfAnruCU/L9ITv18tKA2so=;
+ b=kkKdbPUf/v3YgzvBqq0G7qkcpO3ux7yJe3aMMC4AcTvZ53qCtnzDuL9/QC9lBSi9hbLG
+ cXzWrDOHh1MHYs8IGCqkd4YsxOBXNrq4UQwz6eFwzgBODmzvzkptb08uGm8uPsn8MKX+
+ 3R72L9e7lQMGiBVZSEgwUk5WFeXmkDIjRIHm1exZva8N2M6JOOd6AGuBam0aUPZlnlXy
+ K0sYfuA+PuDAu9r6jh9QTOtHk1ReAiZ8VQacgmx42YAEbNRrjnBG3oTUr1Gbtg1hJW88
+ UiXMUgRyTGfk3w5seqQEIpS1X1oSEZeQ8qPOCjRy3FRtE6JsjGdvGgkyrvDU4Nqb0DUV iw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35qts68f83-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 20:53:35 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BT1f90L115092;
+        Mon, 28 Dec 2020 20:53:35 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35qts68f7j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 20:53:34 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BT1fmM9020405;
+        Tue, 29 Dec 2020 01:53:32 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 35nvt89920-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Dec 2020 01:53:32 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BT1rUuk46530944
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Dec 2020 01:53:30 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 455F242045;
+        Tue, 29 Dec 2020 01:53:30 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7F69642041;
+        Tue, 29 Dec 2020 01:53:27 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.72.172])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Dec 2020 01:53:27 +0000 (GMT)
+Message-ID: <e260e8c5bbbb488052cbe1f5b528d43461bc4258.camel@linux.ibm.com>
+Subject: Re: [PATCH v23 02/23] LSM: Create and manage the lsmblob data
+ structure.
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Date:   Mon, 28 Dec 2020 20:53:26 -0500
+In-Reply-To: <8f11964c-fa7e-21d1-ea60-7d918cfaabe0@schaufler-ca.com>
+References: <20201120201507.11993-1-casey@schaufler-ca.com>
+         <20201120201507.11993-3-casey@schaufler-ca.com>
+         <b0e154a0db21fcb42303c7549fd44135e571ab00.camel@linux.ibm.com>
+         <886fcd04-6a08-d78c-dc82-301c991e5ad8@schaufler-ca.com>
+         <07784164969d0c31debd9defaedb46d89409ad78.camel@linux.ibm.com>
+         <8f11964c-fa7e-21d1-ea60-7d918cfaabe0@schaufler-ca.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 29 Dec 2020 09:48:08 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Ziqi Chen <ziqichen@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        rnayak@codeaurora.org, vinholikatti@gmail.com,
-        jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, kwmad.kim@samsung.com,
-        stanley.chu@mediatek.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
- violation
-In-Reply-To: <4c3035c418d0a0c4344be84fb1919314@codeaurora.org>
-References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
- <X+ob+FylvPfl3NR/@builder.lan>
- <4c3035c418d0a0c4344be84fb1919314@codeaurora.org>
-Message-ID: <182321abfc98e0cfca071d1ec1255f6d@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-28_20:2020-12-28,2020-12-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0 clxscore=1015
+ suspectscore=0 impostorscore=0 spamscore=0 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012290002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-29 09:18, Can Guo wrote:
-> On 2020-12-29 01:55, Bjorn Andersson wrote:
->> On Tue 22 Dec 07:49 CST 2020, Ziqi Chen wrote:
->> 
->>> As per specs, e.g, JESD220E chapter 7.2, while powering
->>> off/on the ufs device, RST_N signal and REF_CLK signal
->>> should be between VSS(Ground) and VCCQ/VCCQ2.
->>> 
->>> To flexibly control device reset line, refactor the function
->>> ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
->>> vops_device_reset(sturct ufs_hba *hba, bool asserted). The
->>> new parameter "bool asserted" is used to separate device reset
->>> line pulling down from pulling up.
->>> 
->>> Cc: Kiwoong Kim <kwmad.kim@samsung.com>
->>> Cc: Stanley Chu <stanley.chu@mediatek.com>
->>> Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
->>> ---
->>>  drivers/scsi/ufs/ufs-mediatek.c | 32 
->>> ++++++++++++++++----------------
->>>  drivers/scsi/ufs/ufs-qcom.c     | 24 +++++++++++++++---------
->>>  drivers/scsi/ufs/ufshcd.c       | 36 
->>> +++++++++++++++++++++++++-----------
->>>  drivers/scsi/ufs/ufshcd.h       |  8 ++++----
->>>  4 files changed, 60 insertions(+), 40 deletions(-)
->>> 
->>> diff --git a/drivers/scsi/ufs/ufs-mediatek.c 
->>> b/drivers/scsi/ufs/ufs-mediatek.c
->>> index 80618af..072f4db 100644
->>> --- a/drivers/scsi/ufs/ufs-mediatek.c
->>> +++ b/drivers/scsi/ufs/ufs-mediatek.c
->>> @@ -841,27 +841,27 @@ static int ufs_mtk_link_startup_notify(struct 
->>> ufs_hba *hba,
->>>  	return ret;
->>>  }
->>> 
->>> -static int ufs_mtk_device_reset(struct ufs_hba *hba)
->>> +static int ufs_mtk_device_reset(struct ufs_hba *hba, bool asserted)
->>>  {
->>>  	struct arm_smccc_res res;
->>> 
->>> -	ufs_mtk_device_reset_ctrl(0, res);
->>> +	if (asserted) {
->>> +		ufs_mtk_device_reset_ctrl(0, res);
->>> 
->>> -	/*
->>> -	 * The reset signal is active low. UFS devices shall detect
->>> -	 * more than or equal to 1us of positive or negative RST_n
->>> -	 * pulse width.
->>> -	 *
->>> -	 * To be on safe side, keep the reset low for at least 10us.
->>> -	 */
->>> -	usleep_range(10, 15);
->>> -
->>> -	ufs_mtk_device_reset_ctrl(1, res);
->>> -
->>> -	/* Some devices may need time to respond to rst_n */
->>> -	usleep_range(10000, 15000);
->>> +		/*
->>> +		 * The reset signal is active low. UFS devices shall detect
->>> +		 * more than or equal to 1us of positive or negative RST_n
->>> +		 * pulse width.
->>> +		 *
->>> +		 * To be on safe side, keep the reset low for at least 10us.
->>> +		 */
->>> +		usleep_range(10, 15);
->> 
->> I see no point in allowing vendors to "tweak" the 1us->10us 
->> adjustment.
->> The specification says 1us and we all agree that 10us gives us good
->> enough slack. I.e. this is common code.
+On Mon, 2020-12-28 at 15:20 -0800, Casey Schaufler wrote:
+> On 12/28/2020 2:14 PM, Mimi Zohar wrote:
+> > On Mon, 2020-12-28 at 12:06 -0800, Casey Schaufler wrote:
+> >> On 12/28/2020 11:24 AM, Mimi Zohar wrote:
+> >>> Hi Casey,
+> >>>
+> >>> On Fri, 2020-11-20 at 12:14 -0800, Casey Schaufler wrote:
+> >>>> diff --git a/security/security.c b/security/security.c
+> >>>> index 5da8b3643680..d01363cb0082 100644
+> >>>> --- a/security/security.c
+> >>>> +++ b/security/security.c
+> >>>>
+> >>>> @@ -2510,7 +2526,24 @@ int security_key_getsecurity(struct key *key, char **_buffer)
+> >>>>
+> >>>>  int security_audit_rule_init(u32 field, u32 op, char *rulestr, void **lsmrule)
+> >>>>  {
+> >>>> -       return call_int_hook(audit_rule_init, 0, field, op, rulestr, lsmrule);
+> >>>> +       struct security_hook_list *hp;
+> >>>> +       bool one_is_good = false;
+> >>>> +       int rc = 0;
+> >>>> +       int trc;
+> >>>> +
+> >>>> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_init, list) {
+> >>>> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >= lsm_slot))
+> >>>> +                       continue;
+> >>>> +               trc = hp->hook.audit_rule_init(field, op, rulestr,
+> >>>> +                                              &lsmrule[hp->lsmid->slot]);
+> >>>> +               if (trc == 0)
+> >>>> +                       one_is_good = true;
+> >>>> +               else
+> >>>> +                       rc = trc;
+> >>>> +       }
+> >>>> +       if (one_is_good)
+> >>>> +               return 0;
+> >>>> +       return rc;
+> >>>>  }
+> >>> So the same string may be defined by multiple LSMs.
+> >> Yes. Any legal AppArmor label would also be a legal Smack label.
+> >>
+> >>>>  int security_audit_rule_known(struct audit_krule *krule)
+> >>>> @@ -2518,14 +2551,31 @@ int security_audit_rule_known(struct audit_krule *krule)
+> >>>>         return call_int_hook(audit_rule_known, 0, krule);
+> >>>>  }
+> >>>>
+> >>>> -void security_audit_rule_free(void *lsmrule)
+> >>>> +void security_audit_rule_free(void **lsmrule)
+> >>>>  {
+> >>>> -       call_void_hook(audit_rule_free, lsmrule);
+> >>>> +       struct security_hook_list *hp;
+> >>>> +
+> >>>> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_free, list) {
+> >>>> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >= lsm_slot))
+> >>>> +                       continue;
+> >>>> +               hp->hook.audit_rule_free(lsmrule[hp->lsmid->slot]);
+> >>>> +       }
+> >>>>  }
+> >>>>
+> >>> If one LSM frees the string, then the string is deleted from all LSMs. 
+> >>> I don't understand how this safe.
+> >> The audit system doesn't have a way to specify which LSM
+> >> a watched label is associated with. Even if we added one,
+> >> we'd still have to address the current behavior. Assigning
+> >> the watch to all modules means that seeing the string
+> >> in any module is sufficient to generate the event.
+> > I originally thought loading a new LSM policy could not delete existing
+> > LSM labels, but that isn't true.  If LSM labels can come and go based
+> > on policy, with this code, could loading a new policy for one LSM
+> > result in deleting labels of another LSM?
 > 
-> Hi Bjron,
+> No. I could imagine a situation where changing policy on
+> a system where audit rules have been set could result in
+> confusion, but that would be true in the single LSM case.
+> It would require that secids used in the old policy be
+> used for different labels in the new policy. That would
+> not be sane behavior. I know it's impossible for Smack.
 > 
-> We tried, but Samsung fellows wanted 5us. We couldn't get a agreement
-> on this delay in short term, so we chose to leave it in vops.
+> This is one of the reasons I'm switching from a single secid
+> to a collection of secids. You don't want unnatural behavior
+> of one LSM to impact the behavior of another.
 > 
->> 
->>> +	} else {
->>> +		ufs_mtk_device_reset_ctrl(1, res);
->>> 
->>> -	dev_info(hba->dev, "device reset done\n");
->>> +		/* Some devices may need time to respond to rst_n */
->>> +		usleep_range(10000, 15000);
->> 
->> The comment in both the Qualcomm and Mediatek drivers claim that this 
->> is
->> sleep relates to the UFS device (not host), so why should it be
->> different?
->> 
->> What happens if I take the device that Mediatek see a need for a 10ms
->> delay and hook that up to a Qualcomm host? This really should go in 
->> the
->> common code.
->> 
 > 
-> Agree, but Qualcomm host didn't have any problems with 10us yet, so if 
-> we put
-> the 10ms delay to common code, Qualcomm host would suffer longer delay 
-> when
-> device reset happens - both bootup and resume(xpm_lvl = 5/6) latency 
-> would
-> be increased.
+> >
+> >>>> -int security_audit_rule_match(u32 secid, u32 field, u32 op, void *lsmrule)
+> >>>> +int security_audit_rule_match(u32 secid, u32 field, u32 op, void **lsmrule)
+> >>>>  {
+> >>>> -       return call_int_hook(audit_rule_match, 0, secid, field, op, lsmrule);
+> >>>> +       struct security_hook_list *hp;
+> >>>> +       int rc;
+> >>>> +
+> >>>> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_match, list) {
+> >>>> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >= lsm_slot))
+> >>>> +                       continue;
+> >>>> +               rc = hp->hook.audit_rule_match(secid, field, op,
+> >>>> +                                              &lsmrule[hp->lsmid->slot]);
+> >>>> +               if (rc)
+> >>>> +                       return rc;
+> >>> Suppose that there is an IMA dont_measure or dont_appraise rule, if one
+> >>> LSM matches, then this returns true, causing any measurement or
+> >>> integrity verification to be skipped.
+> >> Yes, that is correct. Like the audit system, you're doing a string based
+> >> lookup, which pretty well has to work this way. I have proposed compound
+> >> label specifications in the past, but even if we accepted something like
+> >> "apparmor=dates,selinux=figs" we'd still have to be compatible with the
+> >> old style inputs.
+> >>
+> >>> Sample policy rules:
+> >>> dont_measure obj_type=foo_log
+> >>> dont_appraise obj_type=foo_log
+> > IMA could extend the existing policy rules like "lsm=[selinux] |
+> > [smack] | [apparmor]", but that assumes that the underlying
+> > infrastructure supports it.
 > 
-> Regards,
-> Can Guo.
+> Yes, but you would still need rational behavior in the
+> case where someone has old IMA policy rules.
+
+From an IMA perspective, allowing multiple LSMs to define the same
+policy label is worse than requiring the label be constrained to a
+particular LSM.
+
+> 
+> >
+> >>> Are there any plans to prevent label collisions or at least notify of a
+> >>> label collision?
+> >> What would that look like? You can't say that Smack isn't allowed
+> >> to use valid AppArmor labels. How would Smack know? If the label is
+> >> valid to both, how would you decide which LSM gets to use it?
+
+Unfortunately, unless audit supports per LSM labels, the infrastructure
+needs to detect and prevent the label collision.
+
+> > As this is a runtime issue, when loading a new policy at least flag the
+> > collision.  When removing the label, when it is defined by multiple
+> > LSMs, at least flag the removal.
+> 
+> To what end would the collision be flagged? What would you do with
+> the information?
+
+LSM label collision is probably an example of kernel integrity critical
+data (yet to be upstreamed).
+
+> 
+> >
+> >>>> +       }
+> >>>> +       return 0;
+> >>>>  }
+> >>>>  #endif /* CONFIG_AUDIT */
 > 
 
-Besides, currently this device reset vops is only registered by 
-ufs-qcom.c
-and ufs-mediatek.c, meaning any delays that we put in the common code 
-are not
-necessary for those who do not have this vops registered, i.e 
-ufs-exynos.c,
-ufs-hisi.c.
 
-Regards,
-Can Guo.
-
->> 
->> 
->> As such I really would prefer to see these delays in the common code!
->> You really shouldn't write code based on a speculation that one day
->> there might come someone who need other values - when that day come we
->> can just change the code, and if it never comes we're better off with
->> the cleaner implementation.
->> 
->> Regards,
->> Bjorn
->> 
->>> +	}
->>> 
->>>  	return 0;
->>>  }
->>> diff --git a/drivers/scsi/ufs/ufs-qcom.c 
->>> b/drivers/scsi/ufs/ufs-qcom.c
->>> index 2206b1e..fed10e5 100644
->>> --- a/drivers/scsi/ufs/ufs-qcom.c
->>> +++ b/drivers/scsi/ufs/ufs-qcom.c
->>> @@ -1406,10 +1406,11 @@ static void ufs_qcom_dump_dbg_regs(struct 
->>> ufs_hba *hba)
->>>  /**
->>>   * ufs_qcom_device_reset() - toggle the (optional) device reset line
->>>   * @hba: per-adapter instance
->>> + * @asserted: assert or deassert device reset line
->>>   *
->>>   * Toggles the (optional) reset line to reset the attached device.
->>>   */
->>> -static int ufs_qcom_device_reset(struct ufs_hba *hba)
->>> +static int ufs_qcom_device_reset(struct ufs_hba *hba, bool asserted)
->>>  {
->>>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->>> 
->>> @@ -1417,15 +1418,20 @@ static int ufs_qcom_device_reset(struct 
->>> ufs_hba *hba)
->>>  	if (!host->device_reset)
->>>  		return -EOPNOTSUPP;
->>> 
->>> -	/*
->>> -	 * The UFS device shall detect reset pulses of 1us, sleep for 10us 
->>> to
->>> -	 * be on the safe side.
->>> -	 */
->>> -	gpiod_set_value_cansleep(host->device_reset, 1);
->>> -	usleep_range(10, 15);
->>> +	if (asserted) {
->>> +		gpiod_set_value_cansleep(host->device_reset, 1);
->>> 
->>> -	gpiod_set_value_cansleep(host->device_reset, 0);
->>> -	usleep_range(10, 15);
->>> +		/*
->>> +		 * The UFS device shall detect reset pulses of 1us, sleep for 10us 
->>> to
->>> +		 * be on the safe side.
->>> +		 */
->>> +		usleep_range(10, 15);
->>> +	} else {
->>> +		gpiod_set_value_cansleep(host->device_reset, 0);
->>> +
->>> +		 /* Some devices may need time to respond to rst_n */
->>> +		usleep_range(10, 15);
->>> +	}
->>> 
->>>  	return 0;
->>>  }
->>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->>> index e221add..f2daac2 100644
->>> --- a/drivers/scsi/ufs/ufshcd.c
->>> +++ b/drivers/scsi/ufs/ufshcd.c
->>> @@ -585,7 +585,13 @@ static void ufshcd_device_reset(struct ufs_hba 
->>> *hba)
->>>  {
->>>  	int err;
->>> 
->>> -	err = ufshcd_vops_device_reset(hba);
->>> +	err = ufshcd_vops_device_reset(hba, true);
->>> +	if (err) {
->>> +		dev_err(hba->dev, "asserting device reset failed: %d\n", err);
->>> +		return;
->>> +	}
->>> +
->>> +	err = ufshcd_vops_device_reset(hba, false);
->>> 
->>>  	if (!err) {
->>>  		ufshcd_set_ufs_dev_active(hba);
->>> @@ -593,7 +599,11 @@ static void ufshcd_device_reset(struct ufs_hba 
->>> *hba)
->>>  			hba->wb_enabled = false;
->>>  			hba->wb_buf_flush_enabled = false;
->>>  		}
->>> +		dev_dbg(hba->dev, "device reset done\n");
->>> +	} else {
->>> +		dev_err(hba->dev, "deasserting device reset failed: %d\n", err);
->>>  	}
->>> +
->>>  	if (err != -EOPNOTSUPP)
->>>  		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
->>>  }
->>> @@ -8686,8 +8696,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
->>> enum ufs_pm_op pm_op)
->>>  	if (ret)
->>>  		goto set_dev_active;
->>> 
->>> -	ufshcd_vreg_set_lpm(hba);
->>> -
->>>  disable_clks:
->>>  	/*
->>>  	 * Call vendor specific suspend callback. As these callbacks may 
->>> access
->>> @@ -8703,6 +8711,9 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
->>> enum ufs_pm_op pm_op)
->>>  	 */
->>>  	ufshcd_disable_irq(hba);
->>> 
->>> +	if (ufshcd_is_link_off(hba))
->>> +		ufshcd_vops_device_reset(hba, true);
->>> +
->>>  	ufshcd_setup_clocks(hba, false);
->>> 
->>>  	if (ufshcd_is_clkgating_allowed(hba)) {
->>> @@ -8711,6 +8722,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
->>> enum ufs_pm_op pm_op)
->>>  					hba->clk_gating.state);
->>>  	}
->>> 
->>> +	ufshcd_vreg_set_lpm(hba);
->>> +
->>>  	/* Put the host controller in low power mode if possible */
->>>  	ufshcd_hba_vreg_set_lpm(hba);
->>>  	goto out;
->>> @@ -8778,18 +8791,19 @@ static int ufshcd_resume(struct ufs_hba *hba, 
->>> enum ufs_pm_op pm_op)
->>>  	old_link_state = hba->uic_link_state;
->>> 
->>>  	ufshcd_hba_vreg_set_hpm(hba);
->>> +
->>> +	ret = ufshcd_vreg_set_hpm(hba);
->>> +	if (ret)
->>> +		goto out;
->>> +
->>>  	/* Make sure clocks are enabled before accessing controller */
->>>  	ret = ufshcd_setup_clocks(hba, true);
->>>  	if (ret)
->>> -		goto out;
->>> +		goto disable_vreg;
->>> 
->>>  	/* enable the host irq as host controller would be active soon */
->>>  	ufshcd_enable_irq(hba);
->>> 
->>> -	ret = ufshcd_vreg_set_hpm(hba);
->>> -	if (ret)
->>> -		goto disable_irq_and_vops_clks;
->>> -
->>>  	/*
->>>  	 * Call vendor specific resume callback. As these callbacks may 
->>> access
->>>  	 * vendor specific host controller register space call them when 
->>> the
->>> @@ -8797,7 +8811,7 @@ static int ufshcd_resume(struct ufs_hba *hba, 
->>> enum ufs_pm_op pm_op)
->>>  	 */
->>>  	ret = ufshcd_vops_resume(hba, pm_op);
->>>  	if (ret)
->>> -		goto disable_vreg;
->>> +		goto disable_irq_and_vops_clks;
->>> 
->>>  	/* For DeepSleep, the only supported option is to have the link off 
->>> */
->>>  	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && 
->>> !ufshcd_is_link_off(hba));
->>> @@ -8864,8 +8878,6 @@ static int ufshcd_resume(struct ufs_hba *hba, 
->>> enum ufs_pm_op pm_op)
->>>  	ufshcd_link_state_transition(hba, old_link_state, 0);
->>>  vendor_suspend:
->>>  	ufshcd_vops_suspend(hba, pm_op);
->>> -disable_vreg:
->>> -	ufshcd_vreg_set_lpm(hba);
->>>  disable_irq_and_vops_clks:
->>>  	ufshcd_disable_irq(hba);
->>>  	if (hba->clk_scaling.is_allowed)
->>> @@ -8876,6 +8888,8 @@ static int ufshcd_resume(struct ufs_hba *hba, 
->>> enum ufs_pm_op pm_op)
->>>  		trace_ufshcd_clk_gating(dev_name(hba->dev),
->>>  					hba->clk_gating.state);
->>>  	}
->>> +disable_vreg:
->>> +	ufshcd_vreg_set_lpm(hba);
->>>  out:
->>>  	hba->pm_op_in_progress = 0;
->>>  	if (ret)
->>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->>> index 9bb5f0e..d5fbaba 100644
->>> --- a/drivers/scsi/ufs/ufshcd.h
->>> +++ b/drivers/scsi/ufs/ufshcd.h
->>> @@ -319,7 +319,7 @@ struct ufs_pwr_mode_info {
->>>   * @resume: called during host controller PM callback
->>>   * @dbg_register_dump: used to dump controller debug information
->>>   * @phy_initialization: used to initialize phys
->>> - * @device_reset: called to issue a reset pulse on the UFS device
->>> + * @device_reset: called to assert or deassert device reset line
->>>   * @program_key: program or evict an inline encryption key
->>>   * @event_notify: called to notify important events
->>>   */
->>> @@ -350,7 +350,7 @@ struct ufs_hba_variant_ops {
->>>  	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
->>>  	void	(*dbg_register_dump)(struct ufs_hba *hba);
->>>  	int	(*phy_initialization)(struct ufs_hba *);
->>> -	int	(*device_reset)(struct ufs_hba *hba);
->>> +	int	(*device_reset)(struct ufs_hba *hba, bool asserted);
->>>  	void	(*config_scaling_param)(struct ufs_hba *hba,
->>>  					struct devfreq_dev_profile *profile,
->>>  					void *data);
->>> @@ -1216,10 +1216,10 @@ static inline void 
->>> ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
->>>  		hba->vops->dbg_register_dump(hba);
->>>  }
->>> 
->>> -static inline int ufshcd_vops_device_reset(struct ufs_hba *hba)
->>> +static inline int ufshcd_vops_device_reset(struct ufs_hba *hba, bool 
->>> asserted)
->>>  {
->>>  	if (hba->vops && hba->vops->device_reset)
->>> -		return hba->vops->device_reset(hba);
->>> +		return hba->vops->device_reset(hba, asserted);
->>> 
->>>  	return -EOPNOTSUPP;
->>>  }
->>> --
->>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->>> Forum,
->>> a Linux Foundation Collaborative Project
->>> 
