@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF442E7590
+	by mail.lfdr.de (Postfix) with ESMTP id D9EEA2E7591
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 02:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgL3BhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 20:37:24 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9949 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgL3BhY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 20:37:24 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D5DQ92L4jzhygb;
-        Wed, 30 Dec 2020 09:36:01 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 30 Dec 2020 09:36:29 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <rmfrfs@gmail.com>, <johan@kernel.org>, <elder@kernel.org>,
-        <gregkh@linuxfoundation.org>, <devel@driverdev.osuosl.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH v2 -next] staging: greybus: light: Use kzalloc for allocating only one thing
-Date:   Wed, 30 Dec 2020 09:37:06 +0800
-Message-ID: <20201230013706.28698-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1726551AbgL3BiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 20:38:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726185AbgL3BiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 20:38:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55BE920867;
+        Wed, 30 Dec 2020 01:37:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609292251;
+        bh=Zj+7kvWGhFidy9YRhsyGr5SYm2+ujzEHQdRwB6kn1b8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DODA7CW0dRa25xofNIoZcBPNVfB+QrSeUoUmboId5tMusHc9ySf4G8wZhtEKW7Xge
+         QwpUXedVeu+0v5rdwlWeVk7rAARlX5ZXAZhKKlXdq+F2I4+UN1ERCTg+whIGXrM84E
+         VBcG4ulG7SM6Tp/eulZZWDcyNR2PgZnivsf7OtH+SyBP4ChJiBHjglozKp6i2AkJis
+         hOu5Ue6Uoc40Kz/Tmf7LYPH7I52Gl1ZHltAXujY9q3j0G+9EobeHYX0aU5byVhp7XI
+         dodMyLUsaX4UEVb8AAgqc+GTRHF6CnpELPTRX0iAlseoFGTjdLcSazdjJH5GLqSFKu
+         BQ5wDSPJAZKYw==
+Date:   Tue, 29 Dec 2020 17:37:30 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     syzbot <syzbot+eaaf6c4a6a8cb1869d86@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
+        keescook@chromium.org, ktkhai@virtuozzo.com, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pombredanne@nexb.com, stephen@networkplumber.org,
+        syzkaller-bugs@googlegroups.com, tom@herbertland.com,
+        yoshfuji@linux-ipv6.org
+Subject: Re: inconsistent lock state in ila_xlat_nl_cmd_add_mapping
+Message-ID: <20201229173730.65f74253@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <000000000000b14d8c05735dcdf8@google.com>
+References: <000000000000b14d8c05735dcdf8@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kzalloc rather than kcalloc(1,...)
+On Mon, 13 Aug 2018 21:40:03 -0700 syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    78cbac647e61 Merge branch 'ip-faster-in-order-IP-fragments'
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14df4828400000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=9100338df26ab75
+> dashboard link: https://syzkaller.appspot.com/bug?extid=eaaf6c4a6a8cb1869d86
+> compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
+> syzkaller repro:https://syzkaller.appspot.com/x/repro.syz?x=13069ad2400000
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+eaaf6c4a6a8cb1869d86@syzkaller.appspotmail.com
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+#syz invalid
 
-// <smpl>
-@@
-@@
-
-- kcalloc(1,
-+ kzalloc(
-          ...)
-// </smpl>
-
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/staging/greybus/light.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-index d2672b65c3f4..87d36948c610 100644
---- a/drivers/staging/greybus/light.c
-+++ b/drivers/staging/greybus/light.c
-@@ -290,8 +290,7 @@ static int channel_attr_groups_set(struct gb_channel *channel,
- 	channel->attrs = kcalloc(size + 1, sizeof(*channel->attrs), GFP_KERNEL);
- 	if (!channel->attrs)
- 		return -ENOMEM;
--	channel->attr_group = kcalloc(1, sizeof(*channel->attr_group),
--				      GFP_KERNEL);
-+	channel->attr_group = kzalloc(sizeof(*channel->attr_group), GFP_KERNEL);
- 	if (!channel->attr_group)
- 		return -ENOMEM;
- 	channel->attr_groups = kcalloc(2, sizeof(*channel->attr_groups),
--- 
-2.22.0
-
+Hard to track down what fixed this, but the lockdep splat is mixing up
+locks from two different hashtables, so there was never a real issue
+here.
