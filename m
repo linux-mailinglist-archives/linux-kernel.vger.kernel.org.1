@@ -2,166 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B6C2E75B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CAB2E75B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgL3Cdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 21:33:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgL3Cdu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 21:33:50 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D53C06179C;
-        Tue, 29 Dec 2020 18:33:10 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id c12so8966254pfo.10;
-        Tue, 29 Dec 2020 18:33:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=PfIl0EjmWMxnSF+EOk80ZAbjAPzwaEf3qyLecMl/XRc=;
-        b=nDaFL5lxYCUZxEPCVotfMjioI5BLNIhicG92GYRl+bW9o7TrWxGxPe0PqDXDUdvxGL
-         ovvYBF0bISGn/Zpzf1pyHYOdLFAxrz3UfAR1lXz51N/K03KuWE71VFegfMD1DDIP/drp
-         KUhqJ9Fn3WcSfrmIuDfPZ/QOnNSC22L/Z/ORAmWhZN1D2xASIe52OucM/qXVfSayaGAT
-         57fbAo1T7kYgyhJGZ9Evd5nqFiAIc1edFYHuzkkIxctQBFyOJMPSHfXVdoKBjZA9clIV
-         kEZ8gdlTRJigmHZJrUOZzCZPE80ijU9zMl4P4nZYuEkJlMxEzvQaP8bXxzoxR5aFvcz5
-         +Drg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=PfIl0EjmWMxnSF+EOk80ZAbjAPzwaEf3qyLecMl/XRc=;
-        b=R6NiuCYK4Ut9dRe3OD4qgs8HrMmZEUHke/1bbzKnnsGMJ20knc4qNRR4hPm5K/Wsad
-         2zc2F16BJ533Q0I4JJr/xLNLAAnjlrmWYOqA3kZcwQ4wdKLKY99WVUilz8XOZAgAWt8I
-         P04aQ6HaTkn/i686C/eHr977CKP2EqUXveXjXa6MNkzgdfrLaCQxKJ8yY3X7s8r5zx+i
-         m5Oirx2CQD7Rr48DOCH7705mJs0C/PsY1loSHUyjTWJBEL6yv1XKqNVuo+FBMfR6wshM
-         Q5C4vsHM4bzRG5pEamm7dPwEBqWoPlWKRly71qY5qzkAsTiJi1HV+jz/tmIJKZb3jcxB
-         wWbQ==
-X-Gm-Message-State: AOAM532bt8w44ndQjX0cW6qCfB8jp3FwC+PXlkTaHlfhlYuF8Jp0cj9I
-        a6zdbSEuYn8rN4buCSpDLbs=
-X-Google-Smtp-Source: ABdhPJxrOi9/gzDcjAgCtPx6FdiSP/JyedYlzSeHtVs/umobQsm2fE2URPOa8A0aW0Z8ZJFEkl2N/w==
-X-Received: by 2002:a63:c04b:: with SMTP id z11mr50606521pgi.74.1609295589813;
-        Tue, 29 Dec 2020 18:33:09 -0800 (PST)
-Received: from localhost (193-116-97-30.tpgi.com.au. [193.116.97.30])
-        by smtp.gmail.com with ESMTPSA id 6sm39988438pfj.216.2020.12.29.18.33.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Dec 2020 18:33:08 -0800 (PST)
-Date:   Wed, 30 Dec 2020 12:33:02 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jann Horn <jannh@google.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        paulmck <paulmck@kernel.org>, Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        stable <stable@vger.kernel.org>, Will Deacon <will@kernel.org>,
-        x86 <x86@kernel.org>
-References: <20201228102537.GG1551@shell.armlinux.org.uk>
-        <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
-        <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
-        <20201228190852.GI1551@shell.armlinux.org.uk>
-        <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
-        <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com>
-        <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com>
-        <1609200902.me5niwm2t6.astroid@bobo.none>
-        <CALCETrX6MOqmN5_jhyO1jJB7M3_T+hbomjxPYZLJmLVNmXAVzA@mail.gmail.com>
-        <1609210162.4d8dqilke6.astroid@bobo.none>
-        <20201229104456.GK1551@shell.armlinux.org.uk>
-In-Reply-To: <20201229104456.GK1551@shell.armlinux.org.uk>
-MIME-Version: 1.0
-Message-Id: <1609290821.wrfh89v23a.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
+        id S1726391AbgL3Ce4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 21:34:56 -0500
+Received: from mail-eopbgr40044.outbound.protection.outlook.com ([40.107.4.44]:7902
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726178AbgL3Cez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 21:34:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bqbz+xx1FNcq3jVisbmKxdwyd+RS6sOWDbHIDB3S4H7CeZ/+VSiZQN4WQrz3zKEG7qyvSGA99WL02TZVdqgcg8i+VEXawUy/363EwjTFoAvlhpTKtfC5faye2dtpwet8AKjl8A5w09hux0rEInBkT3KH6J/hNdZm9/KyiXqRjP3FPZaSVrMpfuWXYmHYh7suU6LnPO91q7thPEAXfF+HoI7mq0DeLpLGcLo3Favlhf1z4rtjqrAr52J4vmIH+GOI8cYGcUrFZu6qqfJ1kVdcVkCIzgPvYuu71fsZgKgdi71npteIL+7+LFh63kH9JwPgliUqnsLy6LyH+o7yCXjL7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pPpDSjl9JNJpbrJqNN1Gc9H1Uw8DEIokwybePGBdk8s=;
+ b=C3VbkwKMxFjZGAEL5ChTJocxEUujujOeRuH15/yr0KmKrCqMbnhjTnfRYhY80qiNhc0S8GPZizq8gUO6EQCPOc5IF8ahI68/GeiSkYntqLSDpLEEYSvVR+mZGYdk9WUIPBnGKpp9FXTv0h9lV4KMmcEn0NstbvFBNjWj4dvFnFpSi0vnHHDd7J0RXWksFC9u/vXLjk9OKkW+tOMH86in2DmqzMmlsXuVu5zPfdCaWP9LG3CeHzEGNUdPZfAjevc0cK/drn9gYhJqAsDq91gR9n/WkSeipICD5wZIEq9tAueYFXCqPxFWozZoR5rqGJabezLI5UNdBf6r1IvuwzQEhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pPpDSjl9JNJpbrJqNN1Gc9H1Uw8DEIokwybePGBdk8s=;
+ b=imXye3o8yesqbX1nsSxaZUg7lWfmomjlki4+b+8O1GIqGHmMMUWrGLf0tbXxT+eQfFMPYlYxXSsybxZVAa68NyJyGPwszZk6B/DNGTQyYfDwG0phzgtMGVjdkRohVo8XoZD2tqoCCe02h4OMnaeZfYkcujkMI+GSGRHR+qx7JGs=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB5996.eurprd04.prod.outlook.com (2603:10a6:10:84::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Wed, 30 Dec
+ 2020 02:34:06 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3700.031; Wed, 30 Dec 2020
+ 02:34:06 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        "S.j. Wang" <shengjiu.wang@nxp.com>
+CC:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH 2/4] arm64: dts: imx8mn: add spba bus node
+Thread-Topic: [PATCH 2/4] arm64: dts: imx8mn: add spba bus node
+Thread-Index: AQHW3duJvPuYDUtWdEOkXpLhy092Y6oOAAGAgAA/DACAAK1T8A==
+Date:   Wed, 30 Dec 2020 02:34:06 +0000
+Message-ID: <DB6PR0402MB2760BBFAAA6C5CE0373EDEFE88D70@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <1609243245-9671-1-git-send-email-peng.fan@nxp.com>
+ <1609243245-9671-3-git-send-email-peng.fan@nxp.com>
+ <CAHCN7x+=ebLn8vrrT=fyByQDydDNfkESFZHjdUrw=OHBz_E0hw@mail.gmail.com>
+ <20201229161220.GA17229@kozik-lap>
+In-Reply-To: <20201229161220.GA17229@kozik-lap>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: ba403243-b72a-4323-e352-08d8ac6b612e
+x-ms-traffictypediagnostic: DB7PR04MB5996:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB59961A12848038BB2E2FC6CB88D70@DB7PR04MB5996.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /pYSjcCgKduteeI5UFsj9W7FD2OIVimGYPb2DXyjlUIpzMXLMW2VFEU9hVYnBxXFjg2loY2ZXWq+NSZaMbXvFCA6Rzl+aKJRqzFHnB1gVT50SQp1qIK156XU+/j4Dwex89jL1D/jcx8X3yk7/5YEe9ywpNBma8HdsxcWzAENzfVc/F+9bblxEF6R4LJ7eWSBSGCsJfwP34AQboHYsHt6eJLxV0LwQK75jPY1Yy8IValKu57xPpfCrygwEriLP1HuYG+OBHoV++sPYOm38CvRT6tKdi0P8AensYSnDjnHC+lRZycX9sUBiwVjwGjLXQOauBi8UBpt8oxPQti8DdL9/76fa7EKEI01/uBd4WE25DJnYk7B2cA05Hnpm0q7MRfWMc8kskQN31Okmf3UvqI2LGIDAB2Qi416oCXbaRmJtbMys51IxDHp3JhwO7evq+sa8rAAK5X3Zm5DatjVFnjqts2aJ5LXgJvUA9x2eNNkmfON5jzVxv+pi8tO6X9or9cNVN2tmZB66t2PzLyvM+rToQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(39860400002)(346002)(53546011)(6506007)(33656002)(71200400001)(86362001)(110136005)(186003)(54906003)(26005)(7416002)(316002)(7696005)(8936002)(8676002)(6636002)(2906002)(44832011)(52536014)(4326008)(55016002)(478600001)(45080400002)(66446008)(76116006)(66946007)(83380400001)(66556008)(64756008)(66476007)(966005)(9686003)(5660300002)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?hC5NHQy9vgyMtUoKwZWPQSn1ZKejHRrgux3Xi5dEtEHkx+cGxK2hKEoyOF86?=
+ =?us-ascii?Q?6OO36/n+C6Q4CsDJRqn7wDeg1ecm3Wsizlp7dqstIyRKzmzYGkodCGN9OUWH?=
+ =?us-ascii?Q?jFsEzYXWyKnF6Ff+wr+17EmmX6OrvH2weo25e5qubXsjP1Ji/iEtvkL3TjPo?=
+ =?us-ascii?Q?cJkctFN6I/M1GQyPvenpZIjFbwP3wNGWe/h1unH4yG816j1jfweeFjAYihQf?=
+ =?us-ascii?Q?of9oyiYkIvEG8XjpWV26VHTniJO9Hjd6l5e3Ss98SgAry3p/fhrQkIiHMeej?=
+ =?us-ascii?Q?P2IG3S4wHXw0ZkP9QoXPBtaMXxl4gM14LtK2M6VOZsGew0n6g89KQMJ4RAV3?=
+ =?us-ascii?Q?BsGMPZJhLGyUB683An4Z6etUtfyYJEtw7wbwYj6JtZlJxD2BP3Km6EDWl0aO?=
+ =?us-ascii?Q?I+7MDKRu38CcUcbJWHvijAq5vJfGs+iEOKW3FeBXrfSQAG4VD5FslnVL4D4Q?=
+ =?us-ascii?Q?FSy32/ImNujoM0/wavJuHnDGMXwdmak+Nu+kFGjHURHStq18URyfcvTwAn8D?=
+ =?us-ascii?Q?Z0kTKk+ASLgNJYtQ44tGkLLxsP5XRycaQJS02CAJMJItiUwRzgAmLJ2sp3RC?=
+ =?us-ascii?Q?k5dDZ6DjgDe0poqo8oKGnQS4lT1m/WQN1orDJ4Tgm3LfF3IQdlvs0y85S60p?=
+ =?us-ascii?Q?Ajn6Gd2iIpMsHu9m/0DLjsyULkc2qdnT+fTxAGG29AhpCHxThX1wpBqtmVHL?=
+ =?us-ascii?Q?wxBVg4hwa4crC5alSHTLhvxkQRkuJ1oDargyUV54rmlorOYJvE+B0roLcF9Z?=
+ =?us-ascii?Q?OCpmkBbRqcfO1sE5SHeA73yJ7l4UPyHIHIJ11VXa4MI3uCCQjASZkVYnzIl9?=
+ =?us-ascii?Q?LlS9jV604Sd2nuKpdAoPAamq4a0iRUnm10J8IK6y7AWF5n3WjB3M5XWf/GAQ?=
+ =?us-ascii?Q?CzRHsMChcdbDW5OHFglxZVcECLfJZnJi9Aiu9j8LSQbNSrs2C9ATIZo8TAGu?=
+ =?us-ascii?Q?bB/yRqVQj321NdKincHuPcJJcaBQdn8N//s1I/XSz0Y=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba403243-b72a-4323-e352-08d8ac6b612e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Dec 2020 02:34:06.3416
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WiYJ++iV5jtcGOfvG0Zcq6uYS666yOg2RzN2hzgZ6E9lanc8SzXUElZUip3KgP1k1D7vMIpCkjbtvmf5TcmsDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5996
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Russell King - ARM Linux admin's message of December 29, 2020=
- 8:44 pm:
-> On Tue, Dec 29, 2020 at 01:09:12PM +1000, Nicholas Piggin wrote:
->> I think it should certainly be documented in terms of what guarantees
->> it provides to application, _not_ the kinds of instructions it may or
->> may not induce the core to execute. And if existing API can't be
->> re-documented sanely, then deprecatd and new ones added that DTRT.
->> Possibly under a new system call, if arch's like ARM want a range
->> flush and we don't want to expand the multiplexing behaviour of
->> membarrier even more (sigh).
+> Subject: Re: [PATCH 2/4] arm64: dts: imx8mn: add spba bus node
 >=20
-> The 32-bit ARM sys_cacheflush() is there only to support self-modifying
-> code, and takes whatever actions are necessary to support that.
-> Exactly what actions it takes are cache implementation specific, and
-> should be of no concern to the caller, but the underlying thing is...
-> it's to support self-modifying code.
-
-   Caveat
-       cacheflush()  should  not  be used in programs intended to be portab=
-le.
-       On Linux, this call first appeared on the MIPS architecture, but  no=
-wa=E2=80=90
-       days, Linux provides a cacheflush() system call on some other archit=
-ec=E2=80=90
-       tures, but with different arguments.
-
-What a disaster. Another badly designed interface, although it didn't=20
-originate in Linux it sounds like we weren't to be outdone so
-we messed it up even worse.
-
-flushing caches is neither necessary nor sufficient for code modification
-on many processors. Maybe some old MIPS specific private thing was fine,
-but certainly before it grew to other architectures, somebody should=20
-have thought for more than 2 minutes about it. Sigh.
-
+> On Tue, Dec 29, 2020 at 06:26:41AM -0600, Adam Ford wrote:
+> > On Tue, Dec 29, 2020 at 6:15 AM <peng.fan@nxp.com> wrote:
+> > >
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > According to RM, there is a spba bus inside aips3 and aips1, add it.
+> > >
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > ---
+> > >  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 362
+> > > +++++++++++-----------
+> > >  1 file changed, 189 insertions(+), 173 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > > b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > > index c824f2615fe8..91f85b8cee9a 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > > @@ -269,117 +269,125 @@ aips1: bus@30000000 {
+> > >                         #size-cells =3D <1>;
+> > >                         ranges =3D <0x30000000 0x30000000
+> 0x400000>;
+> > >
+> > > -                       sai1: sai@30010000 {
+> > > -                               #sound-dai-cells =3D <0>;
+> > > -                               compatible =3D "fsl,imx8mm-sai",
+> "fsl,imx8mq-sai";
+> > > -                               reg =3D <0x30010000 0x10000>;
+> > > -                               interrupts =3D <GIC_SPI 95
+> IRQ_TYPE_LEVEL_HIGH>;
+> > > -                               clocks =3D <&clk
+> IMX8MM_CLK_SAI1_IPG>,
+> > > -                                        <&clk
+> IMX8MM_CLK_SAI1_ROOT>,
+> > > -                                        <&clk
+> IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
+> > > -                               clock-names =3D "bus", "mclk1",
+> "mclk2", "mclk3";
+> > > -                               dmas =3D <&sdma2 0 2 0>, <&sdma2
+> 1 2 0>;
+> > > -                               dma-names =3D "rx", "tx";
+> > > -                               status =3D "disabled";
+> > > -                       };
+> > > +                       bus@30000000 {
+> >
+> > There is already a bus@30000000 (aips1), and I think the system
+> > doesn't like it when there are multiple busses with the same name.
+> >
+> > There was some discussion on fixing the 8mn [1], but it doesn't look
+> > like it went anywhere.
+> >
+> > I am guessing the Mini will need something similar to the nano.
+> >
+> > [1] -
+> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpat=
+c
+> >
+> hwork.kernel.org%2Fproject%2Flinux-arm-kernel%2Fpatch%2F1607324004-1
+> 29
+> >
+> 60-1-git-send-email-shengjiu.wang%40nxp.com%2F&amp;data=3D04%7C01%7
+> Cpeng
+> > .fan%40nxp.com%7C970d320f3ef7413296ed08d8ac1486f9%7C686ea1d3bc
+> 2b4c6fa9
+> >
+> 2cd99c5c301635%7C0%7C0%7C637448551481206715%7CUnknown%7CTW
+> FpbGZsb3d8ey
+> >
+> JWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D
+> %7C200
+> >
+> 0&amp;sdata=3DxKgYHCDyitbUyTPKVuwQV%2FCoJvepCbdBJ1MD9vP%2B6MY
+> %3D&amp;res
+> > erved=3D0
 >=20
-> Sadly, because it's existed for 20+ years, and it has historically been
-> sufficient for other purposes too, it has seen quite a bit of abuse
-> despite its design purpose not changing - it's been used by graphics
-> drivers for example. They quickly learnt the error of their ways with
-> ARMv6+, since it does not do sufficient for their purposes given the
-> cache architectures found there.
->=20
-> Let's not go around redesigning this after twenty odd years, requiring
-> a hell of a lot of pain to users. This interface is called by code
-> generated by GCC, so to change it you're looking at patching GCC as
-> well as the kernel, and you basically will make new programs
-> incompatible with older kernels - very bad news for users.
+> Several replies from S.j. Wang are missing from LKML (and maybe
+> patchwork?) but we reached a conclusion:
 
-For something to be redesigned it had to have been designed in the first=20
-place, so there is no danger of that don't worry... But no I never=20
-suggested making incompatible changes to any existing system call, I=20
-said "re-documented". And yes I said deprecated but in Linux that really=20
-means kept indefinitely.
-
-If ARM, MIPS, 68k etc programs and toolchains keep using what they are=20
-using it'll keep working no problem.
-
-The point is we're growing new interfaces, and making the same mistakes.=20
-It's not portable (ARCH_HAS_MEMBARRIER_SYNC_CORE), it's also specified=20
-in terms of low level processor operations rather than higher level=20
-intent, and also is not sufficient for self-modifying code (without=20
-additional cache flush on some processors).
-
-The application wants a call that says something like "memory modified=20
-before the call will be visible as instructions (including illegal=20
-instructions) by all threads in the program after the system call=20
-returns, and no threads will be subject to any effects of executing the=20
-previous contents of that memory.
-
-So I think the basics are simple (although should confirm with some JIT=20
-and debugger etc developers, and not just Android mind you). There are=20
-some complications in details, address ranges, virtual/physical, thread=20
-local vs process vs different process or system-wide, memory ordering=20
-and propagation of i and d sides, etc. But that can be worked through,=20
-erring on the side of sanity rather than pointless micro-optmisations.
+Thanks for the pointing, I'll give a look. If S.J take it, I'll leave it to=
+ S.J.
 
 Thanks,
-Nick
+Peng.=20
+
+> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.=
+ke
+> rnel.org%2Flinux-arm-kernel%2F20201208090601.GA8347%40kozik-lap%2F&
+> amp;data=3D04%7C01%7Cpeng.fan%40nxp.com%7C970d320f3ef7413296ed08
+> d8ac1486f9%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C63744
+> 8551481206715%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiL
+> CJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=3Dnk
+> t0J5RtzA%2B29nK4aPnd434FNQV8MUZ%2F8Aq64o6hl6I%3D&amp;reserved
+> =3D0
+>=20
+> Either you do some remapping of address space or just rename the "bus"
+> nodes (e.g. generic bus-1 or a specific spba-bus).
+>=20
+> Best regards,
+> Krzysztof
