@@ -2,107 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDF32E7596
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 02:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD832E759B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbgL3Bxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 20:53:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
+        id S1726477AbgL3B7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 20:59:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgL3Bxr (ORCPT
+        with ESMTP id S1726300AbgL3B7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 20:53:47 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683DCC061799;
-        Tue, 29 Dec 2020 17:53:07 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id j1so8020961pld.3;
-        Tue, 29 Dec 2020 17:53:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MATtNX8g2V0CtdnpcPx0ufzydTCH4FKcH5GFuI54yMg=;
-        b=uWtPqavN3J8W5GGy5OeZVQtA3LWGAw4QFIEQFcnJ7q2lpqvU4O9Txyk5AZA3YH0weV
-         kQq1ha97sc87UiZOSPitNOQrBN5n+/5ZQEp4YH2/feQ0LtWxVAhPprwrfVK6O30NgWY4
-         jY2T4Kc+2b+8lI7ezKwpmxqxS1iZRMIUXWS2TzTUZzgx4spUl8S1m7csuvRIYYbF4irw
-         S5FLLkdsxQHwcoU4YFooELqFRkoxx9zPt+yXNtgBMMA45Cv/hiS0YPX7wJqdBYXvScK1
-         5e+zFdreed++Eccs7j9F+DXj8E/9494Q5R2UCF3boO5s5mzq7P2/iweeTzm4YXiD0j4+
-         3g1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MATtNX8g2V0CtdnpcPx0ufzydTCH4FKcH5GFuI54yMg=;
-        b=m2+qDU1oaQIVSPHTWNaBlIpCzSR4bZlI70BbgQQb6rv+uoLciJU5Z4tXd6jN4FFATe
-         JxNB5tttt2e44zx/Kwjx+EnTE3luEu9DD4jwzXgycF3e7A+sLh8qHbPlg9UmI0ouJjmU
-         5/GvIe22fHPC1WeCjycZnaje5IlCyXsdjpnIiC7ogk2pSZsg9gSkIDIiGSC5pkjkWfY1
-         sucBGqIVki1YB/iSSX23+luc83NWiD2ABYMUZKZnkX2lXLM9Qj8htgImSDCIQOWaqCl4
-         C+IZtgozq5KBjfSERwC63xr/8kCMwUivY0Ft5IFz1Xd+hP7gvt3/ilSAiVe6OMJ+z3zQ
-         rvFQ==
-X-Gm-Message-State: AOAM531UJh15I3qpYLEGzIHpavh/oB+rkw7D0PZNCoUAlhzyorHbY2Zm
-        U/wfZjZdRQlJM+M9pVY//7kOAyxjO1o7m8In9+U=
-X-Google-Smtp-Source: ABdhPJxOTWa5YFwusqXpxXvwX6034q8lA64p4sFm71sD+DmnKmifA3nfHowmlayUCuf6HxBX/kmFzomkNhRcpEsi324=
-X-Received: by 2002:a17:902:6f01:b029:dc:3182:ce69 with SMTP id
- w1-20020a1709026f01b02900dc3182ce69mr27788205plk.10.1609293186906; Tue, 29
- Dec 2020 17:53:06 -0800 (PST)
+        Tue, 29 Dec 2020 20:59:46 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8045BC061799;
+        Tue, 29 Dec 2020 17:59:05 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D5Dwj6hJJz9sVM;
+        Wed, 30 Dec 2020 12:59:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1609293542;
+        bh=5j0RDxUsHx5KfXlsc7z/rrLF1bwFavVIRm8qCp7QDLc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tKd9kH/DbgEPXxnYsjFnF4Oxrp6YKgq1K8QOk4WVZS+TH/rnZQl5efIfdhahJajQ6
+         6Qe8T1gPugfDBiLGIRlZj+cFzV8boqxQu+qdqvbzSmub2nOGdgrFziExugJNlajXrV
+         UvTJejLJbRyqTaQHHBUO6NPJQiTfRaKqhJc2RxNjBAocI5VKrdJvK3IQIwomknAupB
+         nxV7ODiyIkhPP5LPKkDCJE/T9D/wohWGmEqHY9/xz6rhxtJWsqK66D50SLPcm/12nC
+         Q2g8vvxiRDr/k5PUif1KBfW0qz8F6SpbblCZK/xmTW7I2xLKv7M/IWM9A+0+dFGq6L
+         6cpys3f7XoJQw==
+Date:   Wed, 30 Dec 2020 12:59:01 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: stats (Was: Linux 5.11-rc1)
+Message-ID: <20201230125901.19486db4@canb.auug.org.au>
+In-Reply-To: <CAHk-=wg1+kf1AVzXA-RQX0zjM6t9J2Kay9xyuNqcFHWV-y5ZYw@mail.gmail.com>
+References: <CAHk-=wg1+kf1AVzXA-RQX0zjM6t9J2Kay9xyuNqcFHWV-y5ZYw@mail.gmail.com>
 MIME-Version: 1.0
-References: <000000000000b14d8c05735dcdf8@google.com> <20201229173730.65f74253@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201229173730.65f74253@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 29 Dec 2020 17:52:56 -0800
-Message-ID: <CAM_iQpUzEgWYzW4BAih9M0JnPjZs+hESpCv-gkEKWc4s1SMV2A@mail.gmail.com>
-Subject: Re: inconsistent lock state in ila_xlat_nl_cmd_add_mapping
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     syzbot <syzbot+eaaf6c4a6a8cb1869d86@syzkaller.appspotmail.com>,
-        David Miller <davem@davemloft.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Tom Herbert <tom@herbertland.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/fCNKAy98MINyCWJkyhqUa.w";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 5:39 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Mon, 13 Aug 2018 21:40:03 -0700 syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following crash on:
-> >
-> > HEAD commit:    78cbac647e61 Merge branch 'ip-faster-in-order-IP-fragments'
-> > git tree:       net-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=14df4828400000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=9100338df26ab75
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=eaaf6c4a6a8cb1869d86
-> > compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
-> > syzkaller repro:https://syzkaller.appspot.com/x/repro.syz?x=13069ad2400000
-> >
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+eaaf6c4a6a8cb1869d86@syzkaller.appspotmail.com
->
-> #syz invalid
->
-> Hard to track down what fixed this, but the lockdep splat is mixing up
-> locks from two different hashtables, so there was never a real issue
-> here.
+--Sig_/fCNKAy98MINyCWJkyhqUa.w
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This one is probably fixed by:
+Hi all,
 
-commit ff93bca769925a2d8fd7f910cdf543d992e17f07
-Author: Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue Aug 14 15:21:31 2018 -0700
+As usual, the executive friendly graph is at
+http://neuling.org/linux-next-size.html :-)
 
-    ila: make lockdep happy again
+(No merge commits counted, next-20201214 was the first linux-next after
+the merge window opened.)
 
-given the time of last reproducing...
+Commits in v5.11-rc1 (relative to v5.10):          12498
+Commits in next-20201214:                          12038
+Commits with the same SHA1:                        10988
+Commits with the same patch_id:                      500 (1)
+Commits with the same subject line:                   47 (1)
 
-Thanks.
+(1) not counting those in the lines above.
+
+So commits in -rc1 that were in next-20201214:     11535 92%
+
+Some breakdown of the list of extra commits (relative to next-20201214)
+in -rc1:
+
+Top ten first word of commit summary:
+
+    135 perf
+     76 drm
+     49 kvm
+     35 libceph
+     31 clk
+     27 net
+     27 cifs
+     26 dt-bindings
+     24 tools
+     23 ceph
+
+Top ten authors:
+
+     56 acme@redhat.com
+     34 thomas.lendacky@amd.com
+     34 idryomov@gmail.com
+     32 tglx@linutronix.de
+     31 leo.yan@linaro.org
+     19 trond.myklebust@hammerspace.com
+     19 peter.ujfalusi@ti.com
+     16 sgarzare@redhat.com
+     15 jolsa@kernel.org
+     15 jlayton@kernel.org
+
+Top ten commiters:
+
+    158 acme@redhat.com
+     88 kuba@kernel.org
+     59 idryomov@gmail.com
+     57 alexander.deucher@amd.com
+     50 pbonzini@redhat.com
+     37 axboe@kernel.dk
+     36 sboyd@kernel.org
+     33 tglx@linutronix.de
+     30 stfrench@microsoft.com
+     30 mst@redhat.com
+
+There are also 503 commits in next-20201214 that didn't make it into
+v5.11-rc1.
+
+Top ten first word of commit summary:
+
+     65 drm
+     42 arm
+     38 mm
+     30 usb
+     23 scsi
+     23 btrfs
+     14 fpga
+     12 dt-bindings
+     11 sparc32
+     11 soc
+
+Top ten authors:
+
+     22 mchehab+huawei@kernel.org
+     20 willy@infradead.org
+     19 josef@toxicpanda.com
+     16 jani.nikula@intel.com
+     15 uma.shankar@intel.com
+     15 akpm@linux-foundation.org
+     14 rppt@kernel.org
+     14 mdf@kernel.org
+     13 pawell@cadence.com
+     12 arnd@arndb.de
+
+Some of Andrew's patches are fixes for other patches in his tree (and
+have been merged into those).
+
+Top ten commiters:
+
+    121 sfr@canb.auug.org.au
+     32 peter.chen@nxp.com
+     28 alexandre.torgue@st.com
+     23 dsterba@suse.com
+     23 dhowells@redhat.com
+     22 martin.petersen@oracle.com
+     21 mchehab+huawei@kernel.org
+     19 geert+renesas@glider.be
+     18 mdf@kernel.org
+     18 arnd@arndb.de
+
+Those commits by me are from Andrew's mmotm tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/fCNKAy98MINyCWJkyhqUa.w
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/r3uUACgkQAVBC80lX
+0GxSfgf/TZTi0bFEkWnDP9YL3PsAJBcrasND0dRfi+cIKoCcblanb7AuWfcl8ZCs
+Mud6gmBIyf5sqIVKKIQjdRGBdYVEnVDPU3JXk0PLcrw4ZG7i1mxDE+xqAlaaL7ZX
+KhJG1VsNlFrx5UqKE2bsw2KFjYaLcQEyZPyDpLYxGn+CC6EpJgOX/hOpGNLXqCXK
+kTp2Wv5m0uMvlFgJGz6EzXlQpWXOuesESNluc2hrBhse4RahGOWDeHVBxdqv+kR9
+96jmnqiQvAyzKY8QmZCGLp1JCk+2RujV4opAHILj/M7FiH5GX04IfR0JAvhCNhqy
+nPGM4n6+eRJ+mBLoc3LtTLPRXfX1dQ==
+=gVPZ
+-----END PGP SIGNATURE-----
+
+--Sig_/fCNKAy98MINyCWJkyhqUa.w--
