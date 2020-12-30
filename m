@@ -2,61 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4D22E766C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B582E7676
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbgL3GLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 01:11:47 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:42258 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726360AbgL3GLq (ORCPT
+        id S1726338AbgL3GYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 01:24:02 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:41890 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726161AbgL3GYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 01:11:46 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UKD8wHa_1609308653;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UKD8wHa_1609308653)
+        Wed, 30 Dec 2020 01:24:01 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UKCfTR5_1609309377;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UKCfTR5_1609309377)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 30 Dec 2020 14:11:02 +0800
+          Wed, 30 Dec 2020 14:23:07 +0800
 From:   YANG LI <abaci-bugfix@linux.alibaba.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, dchickles@marvell.com, sburla@marvell.com,
-        fmanlunas@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+To:     axboe@kernel.dk
+Cc:     viro@zeniv.linux.org.uk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         YANG LI <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] liquidio: style:  Identical condition and return expression 'retval', return value is always 0.
-Date:   Wed, 30 Dec 2020 14:10:51 +0800
-Message-Id: <1609308651-53731-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] io_uring: style: redundant NULL check.
+Date:   Wed, 30 Dec 2020 14:22:55 +0800
+Message-Id: <1609309375-65129-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The warning was because of the following line in function
-liquidio_get_fec():
-
-retval = wait_for_sc_completion_timeout(oct, sc, 0);
-    if (retval)
-	return retval;
-
-If this statement is not true, retval must be 0 and not updated
-later. So, It is better to return 0 directly.
+If the pointer in kfree is empty, the function does nothing,
+so remove the redundant NULL check.
 
 Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
 Reported-by: Abaci <abaci@linux.alibaba.com>
 ---
- drivers/net/ethernet/cavium/liquidio/lio_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/io_uring.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_core.c b/drivers/net/ethernet/cavium/liquidio/lio_core.c
-index 37d0641..cff18a0 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_core.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_core.c
-@@ -1811,5 +1811,5 @@ int liquidio_get_fec(struct lio *lio)
- 			oct->props[lio->ifidx].fec ? "on" : "off");
- 	}
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 7e35283..105e188 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1934,8 +1934,8 @@ static void io_dismantle_req(struct io_kiocb *req)
+ {
+ 	io_clean_op(req);
  
--	return retval;
-+	return 0;
+-	if (req->async_data)
+-		kfree(req->async_data);
++	kfree(req->async_data);
++
+ 	if (req->file)
+ 		io_put_file(req, req->file, (req->flags & REQ_F_FIXED_FILE));
+ 	if (req->fixed_file_refs)
+@@ -3537,8 +3537,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock,
+ 	ret = 0;
+ out_free:
+ 	/* it's reportedly faster than delegating the null check to kfree() */
+-	if (iovec)
+-		kfree(iovec);
++	kfree(iovec);
+ 	return ret;
  }
+ 
+@@ -3644,8 +3643,7 @@ static int io_write(struct io_kiocb *req, bool force_nonblock,
+ 	}
+ out_free:
+ 	/* it's reportedly faster than delegating the null check to kfree() */
+-	if (iovec)
+-		kfree(iovec);
++	kfree(iovec);
+ 	return ret;
+ }
+ 
+@@ -6133,8 +6131,7 @@ static void __io_clean_op(struct io_kiocb *req)
+ 		case IORING_OP_WRITE_FIXED:
+ 		case IORING_OP_WRITE: {
+ 			struct io_async_rw *io = req->async_data;
+-			if (io->free_iovec)
+-				kfree(io->free_iovec);
++			kfree(io->free_iovec);
+ 			break;
+ 			}
+ 		case IORING_OP_RECVMSG:
 -- 
 1.8.3.1
 
