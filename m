@@ -2,270 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153AF2E773B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26BE62E7740
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgL3ItW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 03:49:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgL3ItV (ORCPT
+        id S1726277AbgL3IyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 03:54:13 -0500
+Received: from mail-ed1-f44.google.com ([209.85.208.44]:40799 "EHLO
+        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725814AbgL3IyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 03:49:21 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB60C06179B;
-        Wed, 30 Dec 2020 00:48:40 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id g3so8408606plp.2;
-        Wed, 30 Dec 2020 00:48:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=stjJ/ZyqK3D4lx+sldwpApKZ5c34uuiZLq2vtS6ffDM=;
-        b=K81fRK/+sadqnxCZgdyE92pL3ojeLvrQKtFJbi+gkPUX2ZYe4dBcvFeG63zBjY6aJa
-         TVJU66YYWwNu4JHE+I54hKxLCEFIl7ZFJULYIA6BVV+IOrwSAjiCBBb5hMaXRo99lhwp
-         ibOM0bARBuPN6cqXu/6ykNchxQSjmT/bjTyrbHzBiRuh246gU/0cm18L3UcLdAWzzvVt
-         TY0KMrMFP8Ddw4tKl/FRrWZXmc6laZivz817+HkpzBRkOUcBi6QdcEbERNLUBBtwvUBK
-         IRcpxfZkbPUnvXOUBUkEJMpHOOP5sFSaV4hmnEUcI2YTl5vyhKtfgpHeLBPOrl5zbFuK
-         nJaw==
+        Wed, 30 Dec 2020 03:54:12 -0500
+Received: by mail-ed1-f44.google.com with SMTP id h16so14770393edt.7;
+        Wed, 30 Dec 2020 00:53:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=stjJ/ZyqK3D4lx+sldwpApKZ5c34uuiZLq2vtS6ffDM=;
-        b=B1bpMzIDmdTc0jcK5wv8HZp9TNgKdvQVyHS/yHFeex6tySfD8uJFoj0RtrvN7FVfvu
-         2JDnSaCupLPuZ2YxSoo50GHfLvPYrXTyLqE+EbYAa8upDpjTprQjIYQsa0hidWHilX+j
-         a+nV0DwxIrF8G4hsd2Ppw6p/bbGkgB17f8BfTamGvrGZrs/vs6feT0Si74otWucr/LnO
-         pDF1Pm5YY9blTZGhM+TEiK8xxKzpQJ0JaRO/FDjMv+NcFHKmeudhFYinr+K85l8DxBng
-         seBMgBuoln5qsAc/EGaD/LoU6u5evhoejUB7XWLsKBZTB1hbuMafhwgDJHfh4WFHz8ru
-         E7Vw==
-X-Gm-Message-State: AOAM532bXtiYzamfZ/uTJrzC2b5NssvFs7W0iR1mU2BDtLvg4+G9L59P
-        ZZcn+vVixP0nECNcQLsf1w==
-X-Google-Smtp-Source: ABdhPJxeU5Yalywof3N6PmsuMe8Dm5rgHkLM6/HGFd0H4jEs7n3KpK5/bM/7MOpHz1JaZyHFgJ+APQ==
-X-Received: by 2002:a17:902:59dc:b029:da:84c7:f175 with SMTP id d28-20020a17090259dcb02900da84c7f175mr29348656plj.75.1609318120390;
-        Wed, 30 Dec 2020 00:48:40 -0800 (PST)
-Received: from localhost.localdomain ([216.52.21.4])
-        by smtp.gmail.com with ESMTPSA id h1sm30907643pgj.59.2020.12.30.00.48.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 30 Dec 2020 00:48:39 -0800 (PST)
-From:   Praveen Chaudhary <praveen5582@gmail.com>
-X-Google-Original-From: Praveen Chaudhary <pchaudhary@linkedin.com>
-To:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zhenggen Xu <zxu1@linkedin.com>
-Subject: [PATCH] Allow user to set metric on default route learned via Router Advertisement.
-Date:   Wed, 30 Dec 2020 00:48:33 -0800
-Message-Id: <1609318113-12770-2-git-send-email-pchaudhary@linkedin.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609318113-12770-1-git-send-email-pchaudhary@linkedin.com>
-References: <1609318113-12770-1-git-send-email-pchaudhary@linkedin.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o+wQy2o26jMtvHnmORIqXJqx6UqjuXqke4h03tDcQHA=;
+        b=KW6YFOhChQBQVZTM+pPO/zIRNrz844kNFFEN+6ksogcP4ZUbpCf6tuF1WOB6mrehOn
+         NdT8ltwS+/NOhEDZjbUTo8hUE6VGj2+t3fOCfKXLZ+M/6P5vgv30IeiCtal+M1zlWu/1
+         l+fccLfCEWd+Hn0x5PIuHJG0VYU1gKfvuW75ITWAn072JUqYAMRfDMKKa8FyAfIsrQ6a
+         O19yk6hSXw/cNB923CmJvw24iuo1ke+wJ7M0eFN1Txux0xnFUr42p5ziMC4kWY3YtPBv
+         6qjpZMvjhqap+TuRCXyJGvy3ZRdeUoJusmi5ad0fp2GVLFXdAKgdpzty2vTe32zHBVHW
+         c7tA==
+X-Gm-Message-State: AOAM530M6z1WfroRIzi128oIgRjxYWkNE0h01BunNEkJ6Bn5yLzzXRMv
+        BmXq1jffV0+m/3ZYKmQg8CY=
+X-Google-Smtp-Source: ABdhPJwHxR8cKFIHZ2OHMoPngNV7/RHznHyY6wIsr3Ae8CaOiQ9eJR7pRDBejM27r5rJT6pUUzVMfw==
+X-Received: by 2002:aa7:c919:: with SMTP id b25mr48339596edt.108.1609318409771;
+        Wed, 30 Dec 2020 00:53:29 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id p12sm18766183ejc.116.2020.12.30.00.53.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 00:53:28 -0800 (PST)
+Date:   Wed, 30 Dec 2020 09:53:27 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v5 3/8] power: supply: max8997_charger: Set CHARGER
+ current limit
+Message-ID: <20201230085327.GB9214@kozik-lap>
+References: <20201228113507.1292506-1-timon.baetz@protonmail.com>
+ <20201228113507.1292506-3-timon.baetz@protonmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201228113507.1292506-3-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix:
-For IPv4, default route is learned via DHCPv4 and user is allowed to change
-metric using config etc/network/interfaces. But for IPv6, default route can
-be learned via RA, for which, currently a fixed metric value 1024 is used.
+On Mon, Dec 28, 2020 at 11:36:02AM +0000, Timon Baetz wrote:
+> Register for extcon notification and set charging current depending on
+> the detected cable type. Current values are taken from vendor kernel,
+> where most charger types end up setting 650mA [0].
+> 
+> Also enable and disable the CHARGER regulator based on extcon events.
+> 
+> [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1678
+> 
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> ---
+>  drivers/power/supply/max8997_charger.c | 96 ++++++++++++++++++++++++++
+>  1 file changed, 96 insertions(+)
+> 
+> diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/max8997_charger.c
+> index 1947af25879a..f0f725385dfc 100644
+> --- a/drivers/power/supply/max8997_charger.c
+> +++ b/drivers/power/supply/max8997_charger.c
+> @@ -6,12 +6,14 @@
+>  //  MyungJoo Ham <myungjoo.ham@samsung.com>
+>  
+>  #include <linux/err.h>
+> +#include <linux/extcon.h>
+>  #include <linux/module.h>
+>  #include <linux/slab.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/power_supply.h>
+>  #include <linux/mfd/max8997.h>
+>  #include <linux/mfd/max8997-private.h>
+> +#include <linux/regulator/consumer.h>
+>  
+>  /* MAX8997_REG_STATUS4 */
+>  #define DCINOK_SHIFT		1
+> @@ -31,6 +33,10 @@ struct charger_data {
+>  	struct device *dev;
+>  	struct max8997_dev *iodev;
+>  	struct power_supply *battery;
+> +	struct regulator *reg;
+> +	struct extcon_dev *edev;
+> +	struct notifier_block extcon_nb;
+> +	struct work_struct extcon_work;
+>  };
+>  
+>  static enum power_supply_property max8997_battery_props[] = {
+> @@ -88,6 +94,67 @@ static int max8997_battery_get_property(struct power_supply *psy,
+>  	return 0;
+>  }
+>  
+> +static void max8997_battery_extcon_evt_stop_work(void *data)
+> +{
+> +	struct charger_data *charger = data;
+> +
+> +	cancel_work_sync(&charger->extcon_work);
+> +}
+> +
+> +static void max8997_battery_extcon_evt_worker(struct work_struct *work)
+> +{
+> +	struct charger_data *charger =
+> +	    container_of(work, struct charger_data, extcon_work);
+> +	struct extcon_dev *edev = charger->edev;
+> +	int current_limit;
+> +
+> +	if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
+> +		dev_dbg(charger->dev, "USB SDP charger is connected\n");
+> +		current_limit = 450000;
+> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_DCP) > 0) {
+> +		dev_dbg(charger->dev, "USB DCP charger is connected\n");
+> +		current_limit = 650000;
+> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_FAST) > 0) {
+> +		dev_dbg(charger->dev, "USB FAST charger is connected\n");
+> +		current_limit = 650000;
+> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_SLOW) > 0) {
+> +		dev_dbg(charger->dev, "USB SLOW charger is connected\n");
+> +		current_limit = 650000;
+> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
+> +		dev_dbg(charger->dev, "USB CDP charger is connected\n");
+> +		current_limit = 650000;
+> +	} else {
+> +		dev_dbg(charger->dev, "USB charger is diconnected\n");
+> +		current_limit = -1;
+> +	}
+> +
+> +	if (current_limit > 0) {
+> +		int ret = regulator_set_current_limit(charger->reg, current_limit, current_limit);
+> +
+> +		if (ret) {
+> +			dev_err(charger->dev, "failed to set current limit: %d\n", ret);
+> +			return;
+> +		}
+> +		ret = regulator_enable(charger->reg);
+> +		if (ret)
+> +			dev_err(charger->dev, "failed to enable regulator: %d\n", ret);
+> +	} else {
+> +		int ret  = regulator_disable(charger->reg);
+> +
+> +		if (ret)
+> +			dev_err(charger->dev, "failed to disable regulator: %d\n", ret);
+> +	}
+> +}
+> +
+> +static int max8997_battery_extcon_evt(struct notifier_block *nb,
+> +				unsigned long event, void *param)
+> +{
+> +	struct charger_data *charger =
+> +		container_of(nb, struct charger_data, extcon_nb);
+> +	schedule_work(&charger->extcon_work);
+> +	return NOTIFY_OK;
+> +}
+> +
+>  static const struct power_supply_desc max8997_battery_desc = {
+>  	.name		= "max8997_pmic",
+>  	.type		= POWER_SUPPLY_TYPE_BATTERY,
+> @@ -170,6 +237,35 @@ static int max8997_battery_probe(struct platform_device *pdev)
+>  		return PTR_ERR(charger->battery);
+>  	}
+>  
+> +	charger->reg = devm_regulator_get_optional(&pdev->dev, "charger");
+> +	if (IS_ERR(charger->reg)) {
+> +		if (PTR_ERR(charger->reg) == -EPROBE_DEFER)
+> +			return -EPROBE_DEFER;
+> +		dev_err(&pdev->dev, "couldn't get charger regulator\n");
 
-Ideally, user should be able to configure metric on default route for IPv6
-similar to IPv4. This fix adds sysctl for the same.
+This should be dev_info, as we discussed. Otherwise it will scream on
+every boot with a DTS which does not have charger node.
 
-Signed-off-by: Praveen Chaudhary<pchaudhary@linkedin.com>
-Signed-off-by: Zhenggen Xu<zxu1@linkedin.com>
----
- Documentation/networking/ip-sysctl.rst |  8 ++++++++
- include/linux/ipv6.h                   |  1 +
- include/net/ip6_route.h                |  3 ++-
- include/uapi/linux/ipv6.h              |  1 +
- include/uapi/linux/sysctl.h            |  1 +
- net/ipv6/addrconf.c                    | 10 ++++++++++
- net/ipv6/ndisc.c                       | 15 +++++++++++----
- net/ipv6/route.c                       |  8 +++++---
- 8 files changed, 39 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
-index dd2b12a..073c1f3 100644
---- a/Documentation/networking/ip-sysctl.rst
-+++ b/Documentation/networking/ip-sysctl.rst
-@@ -1871,6 +1871,14 @@ accept_ra_defrtr - BOOLEAN
- 		- enabled if accept_ra is enabled.
- 		- disabled if accept_ra is disabled.
- 
-+accept_ra_defrtr_metric - INTEGER
-+	Metric for default router learned in Router Advertisement.
-+
-+	Functional default:
-+
-+		* 0 if accept_ra_defrtr is enabled.
-+		* Ignored, if accept_ra_defrtr is enabled.
-+
- accept_ra_from_local - BOOLEAN
- 	Accept RA with source-address that is found on local machine
- 	if the RA is otherwise proper and able to be accepted.
-diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h
-index dda61d1..19af90c 100644
---- a/include/linux/ipv6.h
-+++ b/include/linux/ipv6.h
-@@ -31,6 +31,7 @@ struct ipv6_devconf {
- 	__s32		max_desync_factor;
- 	__s32		max_addresses;
- 	__s32		accept_ra_defrtr;
-+	__s32		accept_ra_defrtr_metric;
- 	__s32		accept_ra_min_hop_limit;
- 	__s32		accept_ra_pinfo;
- 	__s32		ignore_routes_with_linkdown;
-diff --git a/include/net/ip6_route.h b/include/net/ip6_route.h
-index 2a52777..a470bda 100644
---- a/include/net/ip6_route.h
-+++ b/include/net/ip6_route.h
-@@ -174,7 +174,8 @@ struct fib6_info *rt6_get_dflt_router(struct net *net,
- 				     struct net_device *dev);
- struct fib6_info *rt6_add_dflt_router(struct net *net,
- 				     const struct in6_addr *gwaddr,
--				     struct net_device *dev, unsigned int pref);
-+				     struct net_device *dev, unsigned int pref,
-+				     unsigned int defrtr_usr_metric);
- 
- void rt6_purge_dflt_routers(struct net *net);
- 
-diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
-index 13e8751..945de5d 100644
---- a/include/uapi/linux/ipv6.h
-+++ b/include/uapi/linux/ipv6.h
-@@ -189,6 +189,7 @@ enum {
- 	DEVCONF_ACCEPT_RA_RT_INFO_MIN_PLEN,
- 	DEVCONF_NDISC_TCLASS,
- 	DEVCONF_RPL_SEG_ENABLED,
-+	DEVCONF_ACCEPT_RA_DEFRTR_METRIC,
- 	DEVCONF_MAX
- };
- 
-diff --git a/include/uapi/linux/sysctl.h b/include/uapi/linux/sysctl.h
-index 458179d..5e79c19 100644
---- a/include/uapi/linux/sysctl.h
-+++ b/include/uapi/linux/sysctl.h
-@@ -571,6 +571,7 @@ enum {
- 	NET_IPV6_ACCEPT_SOURCE_ROUTE=25,
- 	NET_IPV6_ACCEPT_RA_FROM_LOCAL=26,
- 	NET_IPV6_ACCEPT_RA_RT_INFO_MIN_PLEN=27,
-+	NET_IPV6_ACCEPT_RA_DEFRTR_METRIC=28,
- 	__NET_IPV6_MAX
- };
- 
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index eff2cac..702ec4a 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -205,6 +205,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
- 	.max_desync_factor	= MAX_DESYNC_FACTOR,
- 	.max_addresses		= IPV6_MAX_ADDRESSES,
- 	.accept_ra_defrtr	= 1,
-+	.accept_ra_defrtr_metric = 0,
- 	.accept_ra_from_local	= 0,
- 	.accept_ra_min_hop_limit= 1,
- 	.accept_ra_pinfo	= 1,
-@@ -260,6 +261,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
- 	.max_desync_factor	= MAX_DESYNC_FACTOR,
- 	.max_addresses		= IPV6_MAX_ADDRESSES,
- 	.accept_ra_defrtr	= 1,
-+	.accept_ra_defrtr_metric = 0,
- 	.accept_ra_from_local	= 0,
- 	.accept_ra_min_hop_limit= 1,
- 	.accept_ra_pinfo	= 1,
-@@ -5475,6 +5477,7 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
- 	array[DEVCONF_MAX_DESYNC_FACTOR] = cnf->max_desync_factor;
- 	array[DEVCONF_MAX_ADDRESSES] = cnf->max_addresses;
- 	array[DEVCONF_ACCEPT_RA_DEFRTR] = cnf->accept_ra_defrtr;
-+	array[DEVCONF_ACCEPT_RA_DEFRTR_METRIC] = cnf->accept_ra_defrtr_metric;
- 	array[DEVCONF_ACCEPT_RA_MIN_HOP_LIMIT] = cnf->accept_ra_min_hop_limit;
- 	array[DEVCONF_ACCEPT_RA_PINFO] = cnf->accept_ra_pinfo;
- #ifdef CONFIG_IPV6_ROUTER_PREF
-@@ -6668,6 +6671,13 @@ static const struct ctl_table addrconf_sysctl[] = {
- 		.proc_handler	= proc_dointvec,
- 	},
- 	{
-+		.procname	= "accept_ra_defrtr_metric",
-+		.data		= &ipv6_devconf.accept_ra_defrtr_metric,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
-+	{
- 		.procname	= "accept_ra_min_hop_limit",
- 		.data		= &ipv6_devconf.accept_ra_min_hop_limit,
- 		.maxlen		= sizeof(int),
-diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
-index 7671747..05f7f24 100644
---- a/net/ipv6/ndisc.c
-+++ b/net/ipv6/ndisc.c
-@@ -1180,6 +1180,7 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 	unsigned int pref = 0;
- 	__u32 old_if_flags;
- 	bool send_ifinfo_notify = false;
-+	unsigned int defrtr_usr_metric = 0;
- 
- 	__u8 *opt = (__u8 *)(ra_msg + 1);
- 
-@@ -1303,18 +1304,24 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 			return;
- 		}
- 	}
--	if (rt && lifetime == 0) {
-+
-+	defrtr_usr_metric = in6_dev->cnf.accept_ra_defrtr_metric;
-+	/* default metric is IP6_RT_PRIO_USER */
-+	if (defrtr_usr_metric == 0)
-+		defrtr_usr_metric = IP6_RT_PRIO_USER;
-+	/* delete the route if lifetime is 0 or if new metric is needed */
-+	if (rt && (lifetime == 0 || rt->rt6i_metric != defrtr_usr_metric))  {
- 		ip6_del_rt(net, rt, false);
- 		rt = NULL;
- 	}
- 
--	ND_PRINTK(3, info, "RA: rt: %p  lifetime: %d, for dev: %s\n",
--		  rt, lifetime, skb->dev->name);
-+	ND_PRINTK(3, info, "RA: rt: %p  lifetime: %d, metric: %d, for dev: %s\n",
-+		  rt, lifetime, defrtr_usr_metric, skb->dev->name);
- 	if (!rt && lifetime) {
- 		ND_PRINTK(3, info, "RA: adding default router\n");
- 
- 		rt = rt6_add_dflt_router(net, &ipv6_hdr(skb)->saddr,
--					 skb->dev, pref);
-+					 skb->dev, pref, defrtr_usr_metric);
- 		if (!rt) {
- 			ND_PRINTK(0, err,
- 				  "RA: %s failed to add default route\n",
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 188e114..249b211 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -4252,11 +4252,12 @@ struct fib6_info *rt6_get_dflt_router(struct net *net,
- struct fib6_info *rt6_add_dflt_router(struct net *net,
- 				     const struct in6_addr *gwaddr,
- 				     struct net_device *dev,
--				     unsigned int pref)
-+				     unsigned int pref,
-+				     unsigned int defrtr_usr_metric)
- {
- 	struct fib6_config cfg = {
- 		.fc_table	= l3mdev_fib_table(dev) ? : RT6_TABLE_DFLT,
--		.fc_metric	= IP6_RT_PRIO_USER,
-+		.fc_metric	= defrtr_usr_metric ? defrtr_usr_metric : IP6_RT_PRIO_USER,
- 		.fc_ifindex	= dev->ifindex,
- 		.fc_flags	= RTF_GATEWAY | RTF_ADDRCONF | RTF_DEFAULT |
- 				  RTF_UP | RTF_EXPIRES | RTF_PREF(pref),
-@@ -4266,7 +4267,8 @@ struct fib6_info *rt6_add_dflt_router(struct net *net,
- 		.fc_nlinfo.nlh = NULL,
- 		.fc_nlinfo.nl_net = net,
- 	};
--
-+    ND_PRINTK(3, info, "RA: metric: %d for dev: %s\n",
-+              cfg.fc_metric, dev->name);
- 	cfg.fc_gateway = *gwaddr;
- 
- 	if (!ip6_route_add(&cfg, GFP_ATOMIC, NULL)) {
--- 
-2.7.4
-
+Best regards,
+Krzysztof
