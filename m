@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A68B2E78A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CF62E78A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgL3Mpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 07:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgL3Mpf (ORCPT
+        id S1726699AbgL3Mq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 07:46:59 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:36748 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726470AbgL3Mq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 07:45:35 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB09C061799;
-        Wed, 30 Dec 2020 04:44:55 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A7FE62A3;
-        Wed, 30 Dec 2020 13:44:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1609332292;
-        bh=N+MD8mxlPXnOnzIDjroQAQZ5KolfEPGJfCr+iUEPOlA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uevXKJ2rNoCc5LwVn+NT8iESWfmswY4JXvrb8p+P0T+NKsZ4Fyvis9PlnYw8LHftc
-         bK0xt+tnlWOjCVv/OD1x3AHFYtVcf68ck3I1NDorJd+xRKnJn8EmcPwrs/SMSh5hvH
-         zG1VeUqxfQM4D/QHl6mJhiBKfhzSwNvb/NF+Ftsc=
-Date:   Wed, 30 Dec 2020 14:44:41 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH 5.10 527/717] media: ipu3-cio2: Validate mbus format in
- setting subdev format
-Message-ID: <X+x2OakYZ5GGCxuS@pendragon.ideasonboard.com>
-References: <20201228125020.963311703@linuxfoundation.org>
- <20201228125046.214023397@linuxfoundation.org>
- <20201230122508.GA12190@duo.ucw.cz>
- <CAHp75VdFT-SUUj2LiPTs1_RJ-n97OiyQ2pF0jVbHsARkDshfwA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdFT-SUUj2LiPTs1_RJ-n97OiyQ2pF0jVbHsARkDshfwA@mail.gmail.com>
+        Wed, 30 Dec 2020 07:46:59 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609332399; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=1zDdKA8i4/11hEC/A2sOQfdslkdjVvAiVveazgQQF8g=; b=A6AW3AZGRUXS4FNbHJFohCZsWCC9edq+k+iSC5E8E3LEsKBZxjxFQD/yIOEd/A9f7E+0q0LU
+ u80IQAIllbcpMow0u3jk9il/APHqaBwSRezL7Apjm8N16Tu4cisqnqv1/lMzKD7xAYzsvCmy
+ VuqKP17U271OG8gE9+yhBypRyyo=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fec7690c48ae5302a8890d4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Dec 2020 12:46:08
+ GMT
+Sender: vjitta=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BCEEDC43465; Wed, 30 Dec 2020 12:46:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from vjitta-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vjitta)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 615B1C433CA;
+        Wed, 30 Dec 2020 12:46:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 615B1C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
+From:   vjitta@codeaurora.org
+To:     minchan@kernel.org, glider@google.com, dan.j.williams@intel.com,
+        broonie@kernel.org, mhiramat@kernel.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        vjitta@codeaurora.org, ylal@codeaurora.org, vinmenon@codeaurora.org
+Subject: [PATCH v4 1/2] lib: stackdepot: Add support to configure STACK_HASH_SIZE
+Date:   Wed, 30 Dec 2020 18:15:30 +0530
+Message-Id: <1609332331-2456-1-git-send-email-vjitta@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 02:32:46PM +0200, Andy Shevchenko wrote:
-> On Wed, Dec 30, 2020 at 2:25 PM Pavel Machek wrote:
-> 
-> > > commit a86cf9b29e8b12811cf53c4970eefe0c1d290476 upstream.
-> > >
-> > > Validate media bus code, width and height when setting the subdev format.
-> > >
-> > > This effectively reworks how setting subdev format is implemented in the
-> > > driver.
-> >
-> > Something is wrong here:
-> >
-> > > +     fmt->format.code = formats[0].mbus_code;
-> > > +     for (i = 0; i < ARRAY_SIZE(formats); i++) {
-> 
-> Looks like 'i = 1' should be...
-> 
-> > > +             if (formats[i].mbus_code == fmt->format.code) {
+From: Yogesh Lal <ylal@codeaurora.org>
 
-More likely
+Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
 
-			if (formats[i].mbus_code == mbus_code) {
+Aim is to have configurable value for  STACK_HASH_SIZE,
+so depend on use case one can configure it.
 
-I think.
+One example is of Page Owner, default value of
+STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
+Making it configurable and use lower value helps to enable features like
+CONFIG_PAGE_OWNER without any significant overhead.
 
-Pavel, would you like to submit a patch ?
+Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
+Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
+Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+---
+ lib/Kconfig      | 9 +++++++++
+ lib/stackdepot.c | 3 +--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-> > > +                     fmt->format.code = mbus_code;
-> > > +                     break;
-> > > +             }
-> >
-> > This does not make sense. Loop will always exit during the first
-> > iteration, making the whole loop crazy/redundant.
-
+diff --git a/lib/Kconfig b/lib/Kconfig
+index 3321d04..fd967fb 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -623,6 +623,15 @@ config STACKDEPOT
+ 	bool
+ 	select STACKTRACE
+ 
++config STACK_HASH_ORDER_SHIFT
++	int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
++	range 12 20
++	default 20
++	depends on STACKDEPOT
++	help
++	 Select the hash size as a power of 2 for the stackdepot hash table.
++	 Choose a lower value to reduce the memory impact.
++
+ config SBITMAP
+ 	bool
+ 
+diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+index 81c69c0..614ac28 100644
+--- a/lib/stackdepot.c
++++ b/lib/stackdepot.c
+@@ -141,8 +141,7 @@ static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
+ 	return stack;
+ }
+ 
+-#define STACK_HASH_ORDER 20
+-#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
++#define STACK_HASH_SIZE (1L << CONFIG_STACK_HASH_ORDER_SHIFT)
+ #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
+ #define STACK_HASH_SEED 0x9747b28c
+ 
 -- 
-Regards,
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+2.7.4
 
-Laurent Pinchart
