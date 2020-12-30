@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640E22E7D1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 00:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DED92E7D22
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 00:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgL3XEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 18:04:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
+        id S1726419AbgL3XSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 18:18:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgL3XEl (ORCPT
+        with ESMTP id S1726277AbgL3XSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 18:04:41 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA04C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 15:04:01 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id y128so16032070ybf.10
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 15:04:01 -0800 (PST)
+        Wed, 30 Dec 2020 18:18:06 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3685C061573;
+        Wed, 30 Dec 2020 15:17:25 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id x2so16044468ybt.11;
+        Wed, 30 Dec 2020 15:17:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ql83ZaG5kFTGr0FRYfJCOpqal8HcPkgkn8hYS09mDDE=;
-        b=lCsDfUashp3z6ValkmnpLjSij0RAg+Z8sdoIxNK5F941zulEhW1OKwAzpHpbCnVOsI
-         sLGMmDP+guKpcQ6J3YcJ1M6VRHtK7/ezulZLjJtcvy6mMBpjOwm0tiZYIyGGefT5DSe2
-         hJwu/hWo/eFhgfzfaw/LXvR5sD6TxX0Kgayde7RkmO/OYrry51hZn0JrNFHB+LdYFLi6
-         4No7AZBdXzyA0MQUIz8xUJdw+LzD6E5El3UERt2A6at+CjeOJb4x2l33jTnE/l+InNCx
-         +sSZRQT/aiFK0b+VOqdYQhC7EkvzMdG+neGDoMNHYTDmBDuOG8zwcJVuOnuXe/tMfCrQ
-         PojQ==
+        bh=z8q0Nh83KQJqdrU3Ti3YzSkwdpifTCJmR0XUgZguW3Q=;
+        b=WhUPBZY/x3x0VRC7PC223KPWQKbX6BbE2crEq/K7/wDpFGbvd1mfTTVKkg8p+aZdy3
+         yCjRUtxHVk1lpX7EvXsM2FNNGz6K48BKWiVP9j4gvaWUU4c68KzOaHllkB0lmzqZEqSa
+         jd7jfewbMlJIpxzRE3QgswTtksWV8L+62JLZ37W7Jjqf/88LM5e+R/2DHWEmQu8HsuwY
+         hzxCDcbSDWJgdA/T7Jt71Ky+ewCTi+uOKqvLzXZojQiNsOSHZj4Kq62qo7Dt3Lzy/EsV
+         WzSo0ADlVVkqA9B6K8VEkRajyebynpKybmJLjM0FOwVFf6Uraq8QwcjPrcGjbRzGSUOn
+         mBCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ql83ZaG5kFTGr0FRYfJCOpqal8HcPkgkn8hYS09mDDE=;
-        b=Vg+uiJD1knwEOQeuGGP0fR61sQPL7a9L7TDWir8wutAf7pyURJrvCQXqbojFHdTVHq
-         Lp6Ee5A3UHuRDXRmOebXeZHx34WPR1grQeQYkfpv8ZBhn6r3gaf5FPEiQ3MlNqbe6oZf
-         3FVjnhpb2UJHZzeUDtaAVf1OjCJlSdQEOD7gQFjywlVTro8jT90JVQO+S/LQCNbO7xiU
-         tsV9xnYnktMxw/eHjk0uGhbITU83u+B7khV9gmHcoEcjoyQ+U3ogS71PVPhnTnna4iWH
-         1YLuDdFuZwYRpcWPeRalKImSxxpT+UifEb4vXviqQV2zdIME//wE62HkgYzWTAx4tLyC
-         p9bg==
-X-Gm-Message-State: AOAM530DG8Xy0Dy+Rb4ah6eHLbxjlGB5xuzA36MLAuBhyN6iPzQBf8B2
-        Rdq/Oi1GXqPUJcUNALV7r7BoMNKHsDYmM2tMyVAuJojp6kI=
-X-Google-Smtp-Source: ABdhPJxEfxk1Pk0IblLg2TfIh87W3VroLhRQTNc099ozpfNxp6EM10p3fTD388jHr+K6uMSsU/5GtsVXQe66RMt1Kcc=
-X-Received: by 2002:a5b:949:: with SMTP id x9mr80792474ybq.33.1609369440456;
- Wed, 30 Dec 2020 15:04:00 -0800 (PST)
+        bh=z8q0Nh83KQJqdrU3Ti3YzSkwdpifTCJmR0XUgZguW3Q=;
+        b=LwlOjxwQXVtW8X2PQ1xGsExeIKIHXEdXxsR8iXTFRB6woyx7J92fX8VwZK7Zy2b0og
+         EkJcX1c0KI7iEaHEnpZvHv11Xsv79Oq4ZlCwoLyfT80teN8Klfwn7/bgxkx4oKGuNZRP
+         9cl4DQXaSKr+3onP9Gvgai+t6nyk+O5LGfhaunMwbbKnUrFi9CQwwKZXS0/oMGwc8ZaV
+         rSLK/DdFvtn28OvQbiQgx/SNHdk7USydUdc81HAbTvql+2k0WXDm04b2staC2VVx6RXn
+         62U3YdpXZ5UpTsylQQSYYqbZOZ4QKHKxDWQKt/nMm+igriDkLD/LRToOYVY9DAvpPJ2p
+         f9ng==
+X-Gm-Message-State: AOAM532wr0Peh8DEMkj7QsfDNea/ZecebpTkWy2bCOnyuANIL6CnDgFo
+        O4gVliKMaC+guWOftRkWBDxsFbBDv42WxYPhjG8=
+X-Google-Smtp-Source: ABdhPJzt7E5JtXHWlwqtDFR/KU2YqC8mMoZ4CNWFAOvMWUHN23R8bq4hIVK6SJSJr3P1SIeOOjM8uLv8MiM88Rmqm6k=
+X-Received: by 2002:a25:7c06:: with SMTP id x6mr16995551ybc.445.1609370244898;
+ Wed, 30 Dec 2020 15:17:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20201230155506.1085689-1-arnd@kernel.org>
-In-Reply-To: <20201230155506.1085689-1-arnd@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 31 Dec 2020 00:03:49 +0100
-Message-ID: <CANiq72=Ac+VtzYbU_Hftb-aJv2vkWN2M2GU5_Atc0q2s_otnqQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: avoid cpuidle link warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
+References: <20201230145708.28544-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201230145708.28544-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <822dc356-4416-23a4-a460-90055dfd627a@gmail.com>
+In-Reply-To: <822dc356-4416-23a4-a460-90055dfd627a@gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 30 Dec 2020 23:16:58 +0000
+Message-ID: <CA+V-a8tOwOvYVRJj8Yf5U58DOfzwzY8XGZrYattLCPUFwG=cqQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] spi: rpc-if: Avoid use of C++ style comments
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jiri Kosina <trivial@kernel.org>, Pavel Machek <pavel@denx.de>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 4:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> Change the definition of CPUIDLE_METHOD_OF_DECLARE() to silently
-> drop the table and all code referenced from it when CONFIG_CPU_IDLE
-> is disabled.
+Hi Sergei,
 
-Re-Cc'ing Nick (Arnd's email had a wrong address).
+On Wed, Dec 30, 2020 at 4:27 PM Sergei Shtylyov
+<sergei.shtylyov@gmail.com> wrote:
+>
+> On 12/30/20 5:57 PM, Lad Prabhakar wrote:
+>
+> > Replace C++ style comment with C style.
+>
+>    Note that the switch to // was made following the SPI maintainer's request...
+>
+Thanks for letting me know, let's drop this patch.
 
 Cheers,
-Miguel
+Prabhakar
+
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> [...]
+>
+> MBR, Sergei
