@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E266D2E7A81
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CDE2E7A89
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgL3Pl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 10:41:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45108 "EHLO mail.kernel.org"
+        id S1726354AbgL3Pnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 10:43:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726214AbgL3Pl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 10:41:58 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DB622222A;
-        Wed, 30 Dec 2020 15:41:11 +0000 (UTC)
-Date:   Wed, 30 Dec 2020 15:41:07 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     lars@metafoo.de, pmeerw@pmeerw.net, mcoquelin.stm32@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: stm32-dfsdm: Remove redundant null check
- before clk_disable_unprepare
-Message-ID: <20201230154107.4b301aed@archlinux>
-In-Reply-To: <20201218094145.1123-1-vulab@iscas.ac.cn>
-References: <20201218094145.1123-1-vulab@iscas.ac.cn>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1726185AbgL3Pnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 10:43:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDD1F20725;
+        Wed, 30 Dec 2020 15:43:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609342989;
+        bh=RgCdwo79oX9AX/HZWofDnlRT6UBxCbYnV4jmsyma3T0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bKxeAX1e8hMsEkf8JXE0A37wDH03wJp5JaovJSKjAWRe4aN+LrEsByQ6fKonOKlU8
+         cwi4dSh/+alGMmflfVNrmQEblGwoVx9/6tsfcShwshV3HkuSkMtm0z179bTrFdnNjD
+         xHgEtCvVvKkIlFiNkO1bkoBis1IFUQSN6Pt5oKn6QNcCPoAYtKy+zmKsXcxlEK86zY
+         3oHoqTKIKOe2uEUG3N9qzp6wdck2QJ7tsPTQutUvpkMQgcA8bKYbBEr5Xtv8WweUwZ
+         3vYtLnoUwRfFhJigeb55j9o2rg6AVZMoJyfHtPlarOthxdIhIPW0p6hi7+Hsy+y6wr
+         g7Nn71Bn7VOnA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Nicolas Pitre <npitre@baylibre.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] i3c/master/mipi-i3c-hci: re-fix __maybe_unused attribute
+Date:   Wed, 30 Dec 2020 16:42:50 +0100
+Message-Id: <20201230154304.598900-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 09:41:45 +0000
-Xu Wang <vulab@iscas.ac.cn> wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-> ecause clk_disable_unprepare() already checked NULL clock parameter,
-> so the additional check is unnecessary, just remove it.
-Please resend, making sure to cc linux-iio@vger.kernel.org
+clang warns because the added __maybe_unused attribute is in
+the wrong place:
 
-Thanks,
+drivers/i3c/master/mipi-i3c-hci/core.c:780:21: error: attribute declaration must precede definition [-Werror,-Wignored-attributes]
+static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
+                    ^
+include/linux/compiler_attributes.h:267:56: note: expanded
 
-Jonathan
+Fixes: 95393f3e07ab ("i3c/master/mipi-i3c-hci: quiet maybe-unused variable warning")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/i3c/master/mipi-i3c-hci/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-> ---
->  drivers/iio/adc/stm32-dfsdm-core.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
-> index 42a7377704a4..bb925a11c8ae 100644
-> --- a/drivers/iio/adc/stm32-dfsdm-core.c
-> +++ b/drivers/iio/adc/stm32-dfsdm-core.c
-> @@ -117,8 +117,7 @@ static void stm32_dfsdm_clk_disable_unprepare(struct stm32_dfsdm *dfsdm)
->  {
->  	struct dfsdm_priv *priv = to_stm32_dfsdm_priv(dfsdm);
->  
-> -	if (priv->aclk)
-> -		clk_disable_unprepare(priv->aclk);
-> +	clk_disable_unprepare(priv->aclk);
->  	clk_disable_unprepare(priv->clk);
->  }
->  
+diff --git a/drivers/i3c/master/mipi-i3c-hci/core.c b/drivers/i3c/master/mipi-i3c-hci/core.c
+index 500abd27fb22..1b73647cc3b1 100644
+--- a/drivers/i3c/master/mipi-i3c-hci/core.c
++++ b/drivers/i3c/master/mipi-i3c-hci/core.c
+@@ -777,7 +777,7 @@ static int i3c_hci_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
++static const __maybe_unused struct of_device_id i3c_hci_of_match[] = {
+ 	{ .compatible = "mipi-i3c-hci", },
+ 	{},
+ };
+-- 
+2.29.2
 
