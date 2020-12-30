@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F402E8419
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 16:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EBE2E8372
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 11:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727202AbhAAPjP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Jan 2021 10:39:15 -0500
-Received: from mail.univ-alger.dz ([193.194.83.97]:38548 "EHLO
-        mail.univ-alger.dz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726747AbhAAPjO (ORCPT
+        id S1727074AbhAAKFf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Jan 2021 05:05:35 -0500
+Received: from mail.askinacable.net.np ([103.115.84.7]:52020 "EHLO
+        mail.askinacable.net.np" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726469AbhAAKFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 10:39:14 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.univ-alger.dz (Postfix) with ESMTP id 5E5324C44604;
-        Tue, 29 Dec 2020 06:43:17 +0100 (CET)
-Received: from mail.univ-alger.dz ([127.0.0.1])
-        by localhost (mail.univ-alger.dz [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id LLcEqrJ2enKu; Tue, 29 Dec 2020 06:43:17 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.univ-alger.dz (Postfix) with ESMTP id 0D9574E62608;
-        Tue, 29 Dec 2020 06:42:42 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mail.univ-alger.dz
-Received: from mail.univ-alger.dz ([127.0.0.1])
-        by localhost (mail.univ-alger.dz [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EXuoCSTBqev9; Tue, 29 Dec 2020 06:42:41 +0100 (CET)
-Received: from MACBOOK341C.localdomain (unknown [104.37.31.249])
-        by mail.univ-alger.dz (Postfix) with ESMTPSA id 260B84E82E07;
-        Tue, 29 Dec 2020 06:42:22 +0100 (CET)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 1 Jan 2021 05:05:35 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.askinacable.net.np (Postfix) with ESMTP id 957FA407053CC;
+        Wed, 30 Dec 2020 14:36:42 +0545 (+0545)
+Received: from mail.askinacable.net.np ([127.0.0.1])
+        by localhost (mail.askinacable.net.np [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id wMXrj9seowSh; Wed, 30 Dec 2020 14:36:42 +0545 (+0545)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.askinacable.net.np (Postfix) with ESMTP id 9F2B7408AC91C;
+        Wed, 30 Dec 2020 13:57:16 +0545 (+0545)
+X-Virus-Scanned: amavisd-new at mail.askinacable.net.np
+Received: from mail.askinacable.net.np ([127.0.0.1])
+        by localhost (mail.askinacable.net.np [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id glEeQ2VMVm7L; Wed, 30 Dec 2020 13:57:16 +0545 (+0545)
+Received: from Hp-??.tendawifi.com (unknown [31.202.16.82])
+        by mail.askinacable.net.np (Postfix) with ESMTPSA id D5C2C405D30E5;
+        Wed, 30 Dec 2020 13:16:30 +0545 (+0545)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 Content-Description: Mail message body
-Subject: =?utf-8?q?Sie_haben_eine_Spende_von_=E2=82=AC_5=2E800=2E000=2C00=2E?=
-To:     Recipients <z.benamor@univ-alger.dz>
-From:   "Mrs. Mavis" <z.benamor@univ-alger.dz>
-Date:   Mon, 28 Dec 2020 21:42:12 -0800
-Reply-To: wanczykm61@gmail.com
-Message-Id: <20201229054223.260B84E82E07@mail.univ-alger.dz>
+Subject: Spende
+To:     Recipients <jerson.moreno@inac.gob.ve>
+From:   Sheryll Goedert <jerson.moreno@inac.gob.ve>
+Date:   Wed, 30 Dec 2020 09:41:08 +0200
+Reply-To: sheryllgoedertdonation@hotmail.com
+Message-Id: <20201230073130.D5C2C405D30E5@mail.askinacable.net.np>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sie haben eine Spende von â‚¬ 5.800.000,00. von Mavis Wanczyk antworten Sie mit diesem Code [MW530342019], um die Spende zu erhalten
+Mein Name ist Sheryll Goedert (geschäftsführendes Mitglied von Vacation Life LLC). Ich bin der Gewinner des Powerball-Jackpots in Höhe von 396,9 Millionen US-Dollar. Ich habe am 29. Januar 2020 gewonnen.
 
+Dieser Gewinn ist ein Segen, daher haben wir beschlossen, der Gesellschaft etwas zurückzugeben, was bedeutet, dass wir Sie offiziell darüber informieren, dass Sie als einer der Begünstigten des Cash Aid-Programms für soziale Verantwortung von 2020 VACATION LIFE LLC ausgewählt wurden.
 
-Vous avez un don de 5 800 000,00 â‚¬. de Mavis Wanczyk rÃ©pondez avec ce code [MW530342019] pour recevoir le don
+Ihre E-Mail-Adresse wurde vom Topaz Ballot System zufällig ausgewählt. Sie haben von VACATION LIFE LLC die Summe von 4.800.000 Euro erhalten. Ich hoffe nur, dass Sie anderen in Ihrer Umgebung helfen können. Senden Sie mir eine E-Mail an (sheryllgoedertdonation@hotmail.com), um weitere Informationen darüber zu erhalten, wie Sie den gespendeten Betrag erhalten
