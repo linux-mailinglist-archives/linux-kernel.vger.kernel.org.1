@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EFE2E7702
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC182E7705
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgL3I2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 03:28:24 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:1187 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726240AbgL3I2X (ORCPT
+        id S1726354AbgL3Iag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 03:30:36 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10009 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgL3Iag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 03:28:23 -0500
-X-IronPort-AV: E=Sophos;i="5.78,460,1599494400"; 
-   d="scan'208";a="103077286"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 30 Dec 2020 16:27:34 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 9AE354CE5CE3;
-        Wed, 30 Dec 2020 16:27:28 +0800 (CST)
-Received: from [10.167.225.206] (10.167.225.206) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 30 Dec 2020 16:27:28 +0800
-Subject: Re: [PATCH] fs: fix: second lock in function d_prune_aliases().
-To:     YANG LI <abaci-bugfix@linux.alibaba.com>, <viro@zeniv.linux.org.uk>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1609311685-99562-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>
-Message-ID: <1c0dfdc1-911c-a12c-c25a-e88b082acb25@cn.fujitsu.com>
-Date:   Wed, 30 Dec 2020 16:27:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 30 Dec 2020 03:30:36 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D5PZn1Fwlzj12C;
+        Wed, 30 Dec 2020 16:29:05 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.9) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 30 Dec 2020 16:29:46 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2 0/1] ARM: LPAE: use phys_addr_t instead of unsigned long in outercache hooks
+Date:   Wed, 30 Dec 2020 16:28:04 +0800
+Message-ID: <20201230082805.1428-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <1609311685-99562-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.167.225.206]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
-X-yoursite-MailScanner-ID: 9AE354CE5CE3.AE2DC
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/30 15:01, YANG LI wrote:
-> Goto statement jumping will cause lock to be executed again without
-> executing unlock, placing the lock statement in front of goto
-> label to fix this problem.
->
-> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-> Reported-by: Abaci <abaci@linux.alibaba.com>
-> ---
->  fs/dcache.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/dcache.c b/fs/dcache.c
-> index 97e81a8..bf38446 100644
-> --- a/fs/dcache.c
-> +++ b/fs/dcache.c
-> @@ -1050,6 +1050,6 @@ void d_prune_aliases(struct inode *inode)
->  {
->      struct dentry *dentry;
-> -restart:
->      spin_lock(&inode->i_lock);
+v1 --> v2:
+Discard the middle-tier functions and do silent narrowing cast in the outcache
+hook functions. For example:
+-static void l2c220_inv_range(unsigned long start, unsigned long end)
++static void l2c220_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
+ {
++	unsigned long start = pa_start;
++	unsigned long end = pa_end;
 
-This inode lock should be released at __dentry_kill->dentry_unlink_inode.
 
-Regards,
-Hao Lee
+v1:
+Do cast phys_addr_t to unsigned long by adding a middle-tier function.
+For example:
+-static void l2c220_inv_range(unsigned long start, unsigned long end)
++static void __l2c220_inv_range(unsigned long start, unsigned long end)
+ {
+ 	...
+ }
++static void l2c220_inv_range(phys_addr_t start, phys_addr_t end)
++{
++  __l2c220_inv_range(start, end);
++}
 
->
-> +restart:
->      hlist_for_each_entry(dentry, &inode->i_dentry, d_u.d_alias) {
->          spin_lock(&dentry->d_lock);
 
+Zhen Lei (1):
+  ARM: LPAE: use phys_addr_t instead of unsigned long in outercache
+    hooks
+
+ arch/arm/include/asm/outercache.h |  6 ++--
+ arch/arm/mm/cache-feroceon-l2.c   | 15 ++++++++--
+ arch/arm/mm/cache-l2x0.c          | 50 ++++++++++++++++++++++---------
+ arch/arm/mm/cache-tauros2.c       | 15 ++++++++--
+ arch/arm/mm/cache-uniphier.c      |  6 ++--
+ arch/arm/mm/cache-xsc3l2.c        | 12 ++++++--
+ 6 files changed, 75 insertions(+), 29 deletions(-)
+
+-- 
+2.26.0.106.g9fadedd
 
 
