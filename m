@@ -2,117 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987DF2E7896
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B34F22E789A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgL3Mig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 07:38:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726625AbgL3Mif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 07:38:35 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1498A20715;
-        Wed, 30 Dec 2020 12:37:51 +0000 (UTC)
-Date:   Wed, 30 Dec 2020 12:37:48 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jyoti Bhayana <jbhayana@google.com>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        cristian.marussi@arm.com, sudeep.holla@arm.com,
-        egranata@google.com, mikhail.golubev@opensynergy.com,
-        Igor.Skalkin@opensynergy.com, Peter.hilber@opensynergy.com,
-        ankitarora@google.com
-Subject: Re: [RFC PATCH v2 0/1] Adding support for IIO SCMI based sensors
-Message-ID: <20201230123748.4e969f82@archlinux>
-In-Reply-To: <20201224031921.1547519-1-jbhayana@google.com>
-References: <20201224031921.1547519-1-jbhayana@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1726709AbgL3Mjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 07:39:41 -0500
+Received: from smtprelay0108.hostedemail.com ([216.40.44.108]:56798 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726547AbgL3Mjk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 07:39:40 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 1762E1730840;
+        Wed, 30 Dec 2020 12:38:59 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2903:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:4321:4362:5007:7652:7875:8603:10004:10400:10848:11026:11232:11658:11783:11914:12043:12295:12296:12297:12438:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:21660:30029:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: field67_0e06870274a5
+X-Filterd-Recvd-Size: 2547
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 30 Dec 2020 12:38:58 +0000 (UTC)
+Message-ID: <9defa63ffed0e526269672776c94eca36af6afae.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: ignore warning designated initializers
+ using NR_CPUS
+From:   Joe Perches <joe@perches.com>
+To:     Peng Wang <rocking@linux.alibaba.com>, apw@canonical.com,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Wed, 30 Dec 2020 04:38:56 -0800
+In-Reply-To: <5d4998aa8a8ac7efada2c7daffa9e73559f8b186.1609331255.git.rocking@linux.alibaba.com>
+References: <5ca6c2d28f6cf091a676f8e7d8f14a933da0b267.camel@perches.com>
+         <5d4998aa8a8ac7efada2c7daffa9e73559f8b186.1609331255.git.rocking@linux.alibaba.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Dec 2020 03:19:20 +0000
-Jyoti Bhayana <jbhayana@google.com> wrote:
+On Wed, 2020-12-30 at 20:29 +0800, Peng Wang wrote:
+> Some max_length wants to hold as large room as possible to
+> ensure enough size to tackle with the biggest NR_CPUS.
+> An example below:
+> 
+> kernel/cgroup/cpuset.c:
+> static struct cftype legacy_files[] = {
+>         {
+>                 .name = "cpus",
+>                 .seq_show = cpuset_common_seq_show,
+>                 .write = cpuset_write_resmask,
+>                 .max_write_len = (100U + 6 * NR_CPUS),
+>                 .private = FILE_CPULIST,
+>         },
+> 	...
+> }
+> 
+> Signed-off-by: Peng Wang <rocking@linux.alibaba.com>
+> ---
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -7028,12 +7028,14 @@ sub process {
+>  
+>  # use of NR_CPUS is usually wrong
+>  # ignore definitions of NR_CPUS and usage to define arrays as likely right
+> +# ignore designated initializers using NR_CPUS
+>  		if ($line =~ /\bNR_CPUS\b/ &&
+>  		    $line !~ /^.\s*\s*#\s*if\b.*\bNR_CPUS\b/ &&
+>  		    $line !~ /^.\s*\s*#\s*define\b.*\bNR_CPUS\b/ &&
+>  		    $line !~ /^.\s*$Declare\s.*\[[^\]]*NR_CPUS[^\]]*\]/ &&
+>  		    $line !~ /\[[^\]]*\.\.\.[^\]]*NR_CPUS[^\]]*\]/ &&
+> -		    $line !~ /\[[^\]]*NR_CPUS[^\]]*\.\.\.[^\]]*\]/)
+> +		    $line !~ /\[[^\]]*NR_CPUS[^\]]*\.\.\.[^\]]*\]/ &&
+> +		    $line !~ /^.\s*\.\w+\s*=\s*.*\bNR_CPUS\b/)
+>  		{
+>  			WARN("NR_CPUS",
+>  			     "usage of NR_CPUS is often wrong - consider using cpu_possible(), num_possible_cpus(), for_each_possible_cpu(), etc\n" . $herecurr);
 
-> Hi,
-> 
-> This series adds support for ARM SCMI Protocol based IIO Device.
-> This driver provides support for Accelerometer and Gyroscope sensor
-> using new SCMI Sensor Protocol defined by the upcoming SCMIv3.0 ARM
-> specification, which is available at 
-> 
-> https://developer.arm.com/documentation/den0056/c/
-> 
-> The series is currently based on top of:
-> 
-> commit f83eb664cdb4 ("Merge tag 'scmi-voltage-5.11' of git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into for-next/scmi")
-> 
-> in Sudeep for-next/scmi branch:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/\
-> linux.git/log/?h=for-next/scmi
-> 
-> This version of the patch series has been tested using 
-> version 5.4.21 branch of Android common kernel.
-> 
-> Any feedback welcome,
-> 
-> Thanks,
-> 
-> Jyoti Bhayana
-> 
-> v1 --> v2
-> - Incorporated the feedback comments from v1 review of the patch
-> - Regarding the new ABI for sensor_power,sensor_max_range,
-> and sensor_resolution, these are some of the sensor attributes
-> which Android passes to the apps. If there is any other way of getting
-> those values, please let us know
+Thanks.
 
-So, sensor_max_range can effectively be exposed as a combination of
-scale and the *_raw_avail for a raw read (via the read_avail callback in IIO).
-We'll ignore the fact the interface assumes a single value (so I assume symmetric?)
+Acked-by: Joe Perches <joe@perches.com>
 
-I think resolution in android is equivalent to _scale in IIO terms?
-Docs seem to say it's "resolution of the sensor in sensor's units".
-There are a few corners where that might not be true (sensors that do some
-odd padding for example) but we can probably rely on it normally being fine.
-
-Power.  Hmm. Currently we have no provision for this as users
-of the sensor don't care.  The OS might of course, but individual applications
-tend not to.
-
-The question is much more general than IIO if we go down the route of
-exposing this from the kernel as we should define some sort of power query
-interface for any device in the system in a generic way. I'm not sure if
-any such thing already exists.
-
-Jonathan
-
-> 
-> Jyoti Bhayana (1):
->   iio/scmi: Adding support for IIO SCMI Based Sensors
-> 
->  MAINTAINERS                                |   6 +
->  drivers/iio/common/Kconfig                 |   1 +
->  drivers/iio/common/Makefile                |   1 +
->  drivers/iio/common/scmi_sensors/Kconfig    |  18 +
->  drivers/iio/common/scmi_sensors/Makefile   |   5 +
->  drivers/iio/common/scmi_sensors/scmi_iio.c | 693 +++++++++++++++++++++
->  6 files changed, 724 insertions(+)
->  create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
->  create mode 100644 drivers/iio/common/scmi_sensors/Makefile
->  create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
-> 
 
