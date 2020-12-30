@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4182E778A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 015AF2E7793
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgL3Jtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 04:49:39 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:35039 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbgL3Jti (ORCPT
+        id S1726354AbgL3Jw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 04:52:57 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:59571 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725814AbgL3Jw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 04:49:38 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201230094856epoutp02e2f19fce4793b41e6879940e22b4b2e3~VdZerMzX80445704457epoutp02h
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 09:48:56 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201230094856epoutp02e2f19fce4793b41e6879940e22b4b2e3~VdZerMzX80445704457epoutp02h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1609321736;
-        bh=v7DGWSbookem4KPaGtataQwzMlNb9nDZ8zNvP4ltbe8=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=FiX4BG7vZC8hQsi6GeGDJmVFVS2PKKSFKpcww2yoeIO0SHFoDSu/t6iHFo3Dd6LIN
-         vD1nLVaKi+Yn04zBKNn+1TTi9taJSH7+kOjORanb4WDIW6O85Va7Qb6U0mGxrRKbxH
-         wLdRP3QaKaAQAeFHSD8aheu5RzF+QfbmZrPQZfKw=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20201230094855epcas2p49a103611e30a080fb33c7c422d89d334~VdZeT2Z5g0598105981epcas2p4o;
-        Wed, 30 Dec 2020 09:48:55 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.186]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4D5RLs3hTcz4x9Q1; Wed, 30 Dec
-        2020 09:48:53 +0000 (GMT)
-X-AuditID: b6c32a48-4f9ff7000000cd1f-17-5fec4d035a4c
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        35.22.52511.30D4CEF5; Wed, 30 Dec 2020 18:48:51 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH] ext4: Fix wrong list_splice in ext4_fc_cleanup
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a@epcms2p6>
-Date:   Wed, 30 Dec 2020 18:48:51 +0900
-X-CMS-MailID: 20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMJsWRmVeSWpSXmKPExsWy7bCmmS6z75t4gz+XxCy+fulgsZg57w6b
-        xeVdc9gsWnt+sjuweLRsLvdoOnOU2ePzJrkA5qgGRpvEouSMzLJUhdS85PyUzLx0W6XQEDdd
-        CyWFjPziElulaEMLIz1DS1M9E0s9I/NYK0MDAyNTJYW8xNxUW6UKXahuJYWi5AKg6pLU4pKi
-        1ORUoFCRQ3FJYnqqXnFibnFpXrpecn6ukkJZYk4pUJ+Svp1NRmpiSmqRQsITxowJ6zcyFzxj
-        q2g92s7awPiStYuRg0NCwERi7UujLkYuDiGBHYwS/3uOg8V5BQQl/u4QBjGFBewlfj1L7WLk
-        BCpRklh/cRY7iC0soCdx6+EaRhCbTUBHYvqJ+2BxEYEYiaYHOxlBWpkF6iQ+3WUBCUsI8ErM
-        aH8KZUtLbF++lRHC1pD4sayXGcIWlbi5+i07jP3+2HyoGhGJ1ntnoWoEJR783A0Vl5Q4tvsD
-        E4RdL7H1zi9GkE8kBHoYJQ7vvMUKkdCXuNaxEWwxr4CvxMneG2DNLAKqEnvP7GCChIKLRM8O
-        DZAws4C8xPa3c5ghzteUWL9LH6JCWeLILRaICj6JjsN/2WG+2jHvCdQFahLrfq6HGigjcWse
-        1JEeEpv6/rFDwi9Q4tK7M0wTGBVmIQJ5FpK1sxDWLmBkXsUollpQnJueWmxUYIIcxZsYwQlR
-        y2MH4+y3H/QOMTJxMB5ilOBgVhLhTUh4FS/Em5JYWZValB9fVJqTWnyIsQro34nMUqLJ+cCU
-        nFcSb2hmYGRmamxibGxqYkq2sKmRmZmBpamFqZmRhZI4b5HBg3ghgfTEktTs1NSC1CKY5Uwc
-        nFINTK1HppiyXbH6Xhm8LaQid1GnquXT7MOx8ele3Z3XvNtUmD9nW85RrT67QeeJUeYCoGq1
-        M6dvvN1xcs/qnT2ZecmacS4czLM/x85iTI9bXc0+dWKLxkudpPxJom1GMl+DDtya/kdI+vOf
-        L1JRh2cU7lf1v++jLNt39aFEu/N6D517Vf/Cc978Evat1p+xYSaTTtTkJw+1Co+eVLW6mbMu
-        Nkx/5sGKZsFf1v/YbmlM5f73nG9btuZKW43eJ0ITdkyLt1AoO//zlkbaljIh0W93F9u/0t+/
-        jFuNyUhkg8uB5NQH554uOJVaOo3jW+qhdwvunxR7dVLT6uOui4qmKtyG54In3VNJfXNZmCU4
-        UXG+EktxRqKhFnNRcSIA03dwr1YEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a
-References: <CGME20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a@epcms2p6>
+        Wed, 30 Dec 2020 04:52:56 -0500
+Received: from mail-pg1-f199.google.com ([209.85.215.199])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1kuY9N-00083r-NB
+        for linux-kernel@vger.kernel.org; Wed, 30 Dec 2020 09:52:13 +0000
+Received: by mail-pg1-f199.google.com with SMTP id 139so11997739pgd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 01:52:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=i+QpbOc8ony+XYCIFM3o157TRlJnFXAk3ZOK7FKW9BI=;
+        b=RK28FGIzNhOX2BONeD14pqu2FvodF1ehvugKlymIjgJEkTcgQJEvCA6UVzlxIqA2gJ
+         wD7ygkXiozCCrL3ajSyK/iFI0Au7qUNuDp69ZslpwsdLFpdwpH9sKKEcqDL4Vsu0Rbf3
+         UxbJPOAJbyH70cx57Qw4GqnJCC5c8/66v7hWWlpM2hu8P0fH7Ji2hsgnkPgn05u9QJco
+         AsGIpuz9LmWl6cFWCMi9rQ4xmsl5s5XGRXGHmjNYJqMEzje0qo0yktOtQ05bPPDE5OL4
+         pf36rxDs5sfRGD/djUpBIcN8yR/CBISIm0rhd2e7xeGdwSWxg/nFnscGABHmnHge0AmU
+         z9wQ==
+X-Gm-Message-State: AOAM531X16faZUBfuloWYtP0lZsy52CY3pnGY/H5he3dWmAHmpWNi8N7
+        G7TSFU8oUTQWFfiFfX2tIn38tJcyXjmxWV7gnFPoPmnbpoIr+i2/jfhRbSMzpH0rKwiWBbWRv/s
+        WPqh2eTm1T5vkYhAbF41uyH9hC+UV7pZ7+pcqGeSo
+X-Received: by 2002:aa7:9a86:0:b029:1a6:d998:922a with SMTP id w6-20020aa79a860000b02901a6d998922amr48132013pfi.80.1609321932207;
+        Wed, 30 Dec 2020 01:52:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzr5fqZt0GWUwoVWcweJRpwujCifX5YbQe+UHhaQGaqOLkfkyB0G/hbQ9bL9Z95VEAeqyA3JA==
+X-Received: by 2002:aa7:9a86:0:b029:1a6:d998:922a with SMTP id w6-20020aa79a860000b02901a6d998922amr48132008pfi.80.1609321931953;
+        Wed, 30 Dec 2020 01:52:11 -0800 (PST)
+Received: from Leggiero.taipei.internal (61-220-137-38.HINET-IP.hinet.net. [61.220.137.38])
+        by smtp.gmail.com with ESMTPSA id m13sm41214530pff.21.2020.12.30.01.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 01:52:11 -0800 (PST)
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+To:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
+        steffen.klassert@secunet.com, fw@strlen.de
+Subject: [PATCH] selftests: xfrm: fix test return value override issue in xfrm_policy.sh
+Date:   Wed, 30 Dec 2020 17:52:04 +0800
+Message-Id: <20201230095204.21467-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After full/fast commit, entries in staging queue are promoted to main
-queue. In ext4_fs_cleanup function, it splice to staging queue to
-staging queue.
+When running this xfrm_policy.sh test script, even with some cases
+marked as FAIL, the overall test result will still be PASS:
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+$ sudo ./xfrm_policy.sh
+PASS: policy before exception matches
+FAIL: expected ping to .254 to fail (exceptions)
+PASS: direct policy matches (exceptions)
+PASS: policy matches (exceptions)
+FAIL: expected ping to .254 to fail (exceptions and block policies)
+PASS: direct policy matches (exceptions and block policies)
+PASS: policy matches (exceptions and block policies)
+FAIL: expected ping to .254 to fail (exceptions and block policies after hresh changes)
+PASS: direct policy matches (exceptions and block policies after hresh changes)
+PASS: policy matches (exceptions and block policies after hresh changes)
+FAIL: expected ping to .254 to fail (exceptions and block policies after hthresh change in ns3)
+PASS: direct policy matches (exceptions and block policies after hthresh change in ns3)
+PASS: policy matches (exceptions and block policies after hthresh change in ns3)
+FAIL: expected ping to .254 to fail (exceptions and block policies after htresh change to normal)
+PASS: direct policy matches (exceptions and block policies after htresh change to normal)
+PASS: policy matches (exceptions and block policies after htresh change to normal)
+PASS: policies with repeated htresh change
+$ echo $?
+0
+
+This is because the $lret in check_xfrm() is not a local variable.
+Therefore when a test failed in check_exceptions(), the non-zero $lret
+will later get reset to 0 when the next test calls check_xfrm().
+
+With this fix, the final return value will be 1. Make it easier for
+testers to spot this failure.
+
+Fixes: 39aa6928d462d0 ("xfrm: policy: fix netlink/pf_key policy lookups")
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
 ---
- fs/ext4/fast_commit.c | 2 +-
+ tools/testing/selftests/net/xfrm_policy.sh | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 4fcc21c25e79..5b6bb3ef0f33 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1268,7 +1268,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full)
- 	list_splice_init(&sbi->s_fc_dentry_q[FC_Q_STAGING],
- 				&sbi->s_fc_dentry_q[FC_Q_MAIN]);
- 	list_splice_init(&sbi->s_fc_q[FC_Q_STAGING],
--				&sbi->s_fc_q[FC_Q_STAGING]);
-+				&sbi->s_fc_q[FC_Q_MAIN]);
+diff --git a/tools/testing/selftests/net/xfrm_policy.sh b/tools/testing/selftests/net/xfrm_policy.sh
+index 7a1bf94..5922941 100755
+--- a/tools/testing/selftests/net/xfrm_policy.sh
++++ b/tools/testing/selftests/net/xfrm_policy.sh
+@@ -202,7 +202,7 @@ check_xfrm() {
+ 	# 1: iptables -m policy rule count != 0
+ 	rval=$1
+ 	ip=$2
+-	lret=0
++	local lret=0
  
- 	ext4_clear_mount_flag(sb, EXT4_MF_FC_COMMITTING);
- 	ext4_clear_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
+ 	ip netns exec ns1 ping -q -c 1 10.0.2.$ip > /dev/null
+ 
 -- 
-2.25.1
+2.7.4
 
