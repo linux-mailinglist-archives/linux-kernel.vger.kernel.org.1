@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CCE2E7BA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E3E2E7BAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgL3Rnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 12:43:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726214AbgL3Rnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 12:43:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84A762220B;
-        Wed, 30 Dec 2020 17:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609350189;
-        bh=EHQNtl/1fFHFC+/tvysBm6vaGm66LzeIefZs3EPpRF8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RdG6zcLkU/qoadm3ym/yTLc2A8i7+hsKp0UsoI/MZgDWdPyK4ggXYQSjxM5Dwi0Zg
-         A/wGyfwm4zTYsORRx6l+ZtgVvqSdXeCCZ2qwEflxDCjyXqKo2+XUrL5gIHx6GOd0G2
-         fJP7zg1XJpsibZCWcBX1H5AvEtolaGIFY/8QyBIbwljKe2mvTEjSp6u2gqRNZtVYxm
-         zhL0VV/xNA3y5HE+Woc98vSU9Qf3I3Vxy6TGf/o+kD7IT3s9b8xro4I7KkUoDHM6mY
-         FonjEJOSKhWssthRoLv0pSqtB08OVM7LwUzYqHYPBCynPZrDechAqF7wv1XNOCIBYs
-         GXUWoBXQJakgg==
-Received: by pali.im (Postfix)
-        id 6372F9F8; Wed, 30 Dec 2020 18:43:07 +0100 (CET)
-Date:   Wed, 30 Dec 2020 18:43:07 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <20201230174307.lvehswvj5q6c6vk3@pali>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20201230154755.14746-2-pali@kernel.org>
- <20201230161036.GR1551@shell.armlinux.org.uk>
- <20201230165634.c4ty3mw6djezuyq6@pali>
- <20201230170546.GU1551@shell.armlinux.org.uk>
- <X+y1K21tp01GpvMy@lunn.ch>
+        id S1726391AbgL3Ru6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 12:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgL3Ru6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 12:50:58 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059DEC061573;
+        Wed, 30 Dec 2020 09:50:17 -0800 (PST)
+Date:   Wed, 30 Dec 2020 17:50:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1609350615;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=94/oJqFeXHpo1xmMGiYLl4yNf/K6/PEFDbGQOaEMgSA=;
+        b=Z+LF0THJAejubPac4dh9SK4tam2+FRofinKrXRufJ1qvGXMm/4jZryBr4Ex7Xv2wai69Df
+        KWNv/w99rbCPqr2i8jG4/aacpfV25huvWx54WzeZ+q1juiXPO45YwPV2gFPBD5QwnjjeD2
+        WUcel+udvXY+Lon2jMtXXiu0CU/koUDJ0/RIbbzRUvS2WK5YxvFq4bbyn6xyHU2yh8BbAe
+        f87F5kEitLCX9TAxczTmJp/ZSiKzgMaRP98tO2Rvwmsq926bq62k9RVKzbJ0cLUKRqjxZY
+        r5ly8iZE/fhyg8PZiGL7wSy5/0HK7gNrH0/VvPm9p6CeSTFFEFYwZOl4voZWOw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1609350615;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=94/oJqFeXHpo1xmMGiYLl4yNf/K6/PEFDbGQOaEMgSA=;
+        b=T8Ia6xfRbSn2xuhxANi6pPS5eXz+fnwOKXdJ23Vb8WuwjOhKt4dBKCjWM5xSiKZwoWzoyQ
+        I0D7dX7BxgbqcnDQ==
+From:   "tip-bot2 for Heiner Kallweit" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] x86/reboot: Add Zotac ZBOX CI327 nano PCI reboot quirk
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com>
+References: <1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X+y1K21tp01GpvMy@lunn.ch>
-User-Agent: NeoMutt/20180716
+Message-ID: <160935061419.414.5228048100044741334.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 30 December 2020 18:13:15 Andrew Lunn wrote:
-> On Wed, Dec 30, 2020 at 05:05:46PM +0000, Russell King - ARM Linux admin wrote:
-> > On Wed, Dec 30, 2020 at 05:56:34PM +0100, Pali Rohár wrote:
-> > > This change is really required for those Realtek chips. I thought that
-> > > it is obvious that from *both* addresses 0x50 and 0x51 can be read only
-> > > one byte at the same time. Reading 2 bytes (for be16 value) cannot be
-> > > really done by one i2 transfer, it must be done in two.
-> > 
-> > Then these modules are even more broken than first throught, and
-> > quite simply it is pointless supporting the diagnostics on them
-> > because we can never read the values in an atomic way.
-> > 
-> > It's also a violation of the SFF-8472 that _requires_ multi-byte reads
-> > to read these 16 byte values atomically. Reading them with individual
-> > byte reads results in a non-atomic read, and the 16-bit value can not
-> > be trusted to be correct.
-> 
-> Hi Pali
-> 
-> I have to agree with Russell here. I would rather have no diagnostics
-> than untrustable diagnostics.
+The following commit has been merged into the x86/misc branch of tip:
 
-Ok!
+Commit-ID:     4b2d8ca9208be636b30e924b1cbcb267b0740c93
+Gitweb:        https://git.kernel.org/tip/4b2d8ca9208be636b30e924b1cbcb267b0740c93
+Author:        Heiner Kallweit <hkallweit1@gmail.com>
+AuthorDate:    Tue, 01 Dec 2020 12:39:57 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 30 Dec 2020 18:38:39 +01:00
 
-So should we completely skip hwmon_device_register_with_info() call
-if (i2c_block_size < 2) ?
+x86/reboot: Add Zotac ZBOX CI327 nano PCI reboot quirk
 
-> The only way this is going to be accepted is if the manufacture says
-> that reading the first byte of a word snapshots the second byte as
-> well in an atomic way and returns that snapshot on the second
-> read. But i highly doubt that happens, given how bad these SFPs are.
+On this system the M.2 PCIe WiFi card isn't detected after reboot, only
+after cold boot. reboot=pci fixes this behavior. In [0] the same issue
+is described, although on another system and with another Intel WiFi
+card. In case it's relevant, both systems have Celeron CPUs.
 
-I do not think that manufacture says something. I think that they even
-do not know that their Realtek chips are completely broken.
+Add a PCI reboot quirk on affected systems until a more generic fix is
+available.
 
-I can imagine that vendor just says: it is working in our branded boxes
-with SFP cages and if it does not work in your kernel then problem is
-with your custom kernel and we do not care about 3rd parties.
+[0] https://bugzilla.kernel.org/show_bug.cgi?id=202399
+
+ [ bp: Massage commit message. ]
+
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com
+---
+ arch/x86/kernel/reboot.c |  9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index db11594..9991c59 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -477,6 +477,15 @@ static const struct dmi_system_id reboot_dmi_table[] __initconst = {
+ 		},
+ 	},
+ 
++	{	/* PCIe Wifi card isn't detected after reboot otherwise */
++		.callback = set_pci_reboot,
++		.ident = "Zotac ZBOX CI327 nano",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "NA"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "ZBOX-CI327NANO-GS-01"),
++		},
++	},
++
+ 	/* Sony */
+ 	{	/* Handle problems with rebooting on Sony VGN-Z540N */
+ 		.callback = set_bios_reboot,
