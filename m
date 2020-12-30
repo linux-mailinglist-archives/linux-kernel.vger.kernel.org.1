@@ -2,117 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2985A2E7C75
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 21:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAA92E7C7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 21:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgL3UyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 15:54:00 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:19880 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbgL3Ux7 (ORCPT
+        id S1726575AbgL3U5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 15:57:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27765 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726305AbgL3U5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 15:53:59 -0500
-Date:   Wed, 30 Dec 2020 20:53:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1609361597;
-        bh=uYDyTYEISn/6Dn56ySZ1G8C+g1webIBwDMuMSIUTjPM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=AsELXTqyVYE4EDeDlC04hCVT4g0IYLBL71lOWBBL8nVi94pY+dqqmQ7mF2JpSiy7n
-         8o9xedGqF9lLl5rDEYfggsQXwRFJT8B9iJkD6+tblc+kK9wp22apF2XmqkaaWnEXB7
-         6oZuXNkdmbz3AWB/dvDhuAhtQbcq/xfp0W0FF+EU=
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Timon Baetz <timon.baetz@protonmail.com>
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: [PATCH v6 8/8] ARM: dts: exynos: Add top-off charging regulator node for I9100
-Message-ID: <20201230205139.1812366-8-timon.baetz@protonmail.com>
-In-Reply-To: <20201230205139.1812366-1-timon.baetz@protonmail.com>
-References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
+        Wed, 30 Dec 2020 15:57:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609361766;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iFlZtz74xmTz/ktSlcFt8gctOusgNHUwrHkjcpUKl9Y=;
+        b=IAFjOFKTzYuL0nPHFkOlMlBDN55g2RIpd3qxmTvzWZZXtDB1s4KAdcJ1pP69CE1fY1ctNx
+        q6q+rFDLhV0D0P+D0cdK7aAfS6ZDGTfEx5myFI3Rvwv3taNkdSf0mY6qYAfczEItszerjN
+        rJGJ2HmdOUvyJh0roeq78fGXVvdk1hA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-ZIU9BJcdMDm9wtkBGgZnqw-1; Wed, 30 Dec 2020 15:56:04 -0500
+X-MC-Unique: ZIU9BJcdMDm9wtkBGgZnqw-1
+Received: by mail-wr1-f70.google.com with SMTP id r8so9265490wro.22
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 12:56:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iFlZtz74xmTz/ktSlcFt8gctOusgNHUwrHkjcpUKl9Y=;
+        b=HnFE/texySY358X+5GvUZWBVeFCmN7agbYC8R609cMPFDNOWz39lX+HP1M0qa16I4Q
+         r815LEA7y1AJFfXSkiYdBOEnJR61mWzW1rZg544rNOYNt7fpwC2sCGHtpoSIYbToHMHQ
+         yZR4Skmd5svlLG8k83EzYjLxD2Q2aBl9cLclPhSctAqPnDoGAC8uI+HzZbgps0ZPXR7l
+         aNf9W7iDVwBnGH0jm+8AmMuHAqkOo4DBdfByFAU57d2AVDBpj7yIfh4X8fxqRTpfcmkn
+         4YkcgFlnvYn2+4FyrXISlEI2X1nb/4Lw530eyQgPzCS26o+4Z+12S1MSM6GuRlsRQw0+
+         TSMw==
+X-Gm-Message-State: AOAM53370RoQdmQ6IDKZ4hxXr+7sbJmVktJpFUOpKv7/ZIetibI41239
+        HFYAPZnA8UfglCiop9sgz83G02lT+MDBj85u7Ly9a6oeJI+N/0UX+No9GokMw/u4X7xBuJojzS+
+        zvV0oI0uO1WKjpFkhTKz2b9lr
+X-Received: by 2002:a7b:c319:: with SMTP id k25mr9111292wmj.142.1609361763379;
+        Wed, 30 Dec 2020 12:56:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyB48GLoSLLN8yYRD+dbDksR16DwdSfBGhZ/WcRSvjWjsNVj0mfX0SAKJH/DWv1GhEP0T8aRA==
+X-Received: by 2002:a7b:c319:: with SMTP id k25mr9111280wmj.142.1609361763191;
+        Wed, 30 Dec 2020 12:56:03 -0800 (PST)
+Received: from redhat.com (bzq-79-178-32-166.red.bezeqint.net. [79.178.32.166])
+        by smtp.gmail.com with ESMTPSA id i9sm64608892wrs.70.2020.12.30.12.55.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 12:56:02 -0800 (PST)
+Date:   Wed, 30 Dec 2020 15:55:58 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] vhost/vsock: support for SOCK_SEQPACKET socket.
+Message-ID: <20201230155410-mutt-send-email-mst@kernel.org>
+References: <20201229110634.275024-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229110634.275024-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Value taken from Galaxy S2 Epic 4G Touch SPH-D710 Android vendor
-kernel [0] which always sets 200mA.
+On Tue, Dec 29, 2020 at 02:06:33PM +0300, Arseny Krasnov wrote:
+> 	This patch simply adds transport ops and removes
+> ignore of non-stream type of packets.
+> 
+> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
 
-Also rearrange regulators based on definition in max8997.h.
+How is this supposed to work? virtio vsock at the moment
+has byte level end to end credit accounting at the
+protocol level. I suspect some protocol changes involving
+more than this tweak would
+be needed to properly support anything that isn't a stream.
 
-[0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic=
--4g-touch-sph-d710-exynos4210-dump/drivers/power/sec_battery_u1.c#L1525
-
-Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
----
-v6: No change.
-v5: No change.
-v4: No change.
-v3: Remove label.=20
-    Fix commit message.
-v2: Add patch.
-
- arch/arm/boot/dts/exynos4210-i9100.dts | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exy=
-nos4210-i9100.dts
-index 586d801af0b5..e702adb69670 100644
---- a/arch/arm/boot/dts/exynos4210-i9100.dts
-+++ b/arch/arm/boot/dts/exynos4210-i9100.dts
-@@ -560,6 +560,16 @@ safe2_sreg: ESAFEOUT2 {
- =09=09=09=09regulator-boot-on;
- =09=09=09};
-=20
-+=09=09=09EN32KHZ_AP {
-+=09=09=09=09regulator-name =3D "EN32KHZ_AP";
-+=09=09=09=09regulator-always-on;
-+=09=09=09};
-+
-+=09=09=09EN32KHZ_CP {
-+=09=09=09=09regulator-name =3D "EN32KHZ_CP";
-+=09=09=09=09regulator-always-on;
-+=09=09=09};
-+
- =09=09=09charger_reg: CHARGER {
- =09=09=09=09regulator-name =3D "CHARGER";
- =09=09=09=09regulator-min-microamp =3D <200000>;
-@@ -573,13 +583,10 @@ chargercv_reg: CHARGER_CV {
- =09=09=09=09regulator-always-on;
- =09=09=09};
-=20
--=09=09=09EN32KHZ_AP {
--=09=09=09=09regulator-name =3D "EN32KHZ_AP";
--=09=09=09=09regulator-always-on;
--=09=09=09};
--
--=09=09=09EN32KHZ_CP {
--=09=09=09=09regulator-name =3D "EN32KHZ_CP";
-+=09=09=09CHARGER_TOPOFF {
-+=09=09=09=09regulator-name =3D "CHARGER_TOPOFF";
-+=09=09=09=09regulator-min-microamp =3D <200000>;
-+=09=09=09=09regulator-max-microamp =3D <200000>;
- =09=09=09=09regulator-always-on;
- =09=09=09};
- =09=09};
---=20
-2.25.1
-
+> ---
+>  drivers/vhost/vsock.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> index a483cec31d5c..4a36ef1c52d0 100644
+> --- a/drivers/vhost/vsock.c
+> +++ b/drivers/vhost/vsock.c
+> @@ -346,8 +346,7 @@ vhost_vsock_alloc_pkt(struct vhost_virtqueue *vq,
+>  		return NULL;
+>  	}
+>  
+> -	if (le16_to_cpu(pkt->hdr.type) == VIRTIO_VSOCK_TYPE_STREAM)
+> -		pkt->len = le32_to_cpu(pkt->hdr.len);
+> +	pkt->len = le32_to_cpu(pkt->hdr.len);
+>  
+>  	/* No payload */
+>  	if (!pkt->len)
+> @@ -416,6 +415,9 @@ static struct virtio_transport vhost_transport = {
+>  		.stream_is_active         = virtio_transport_stream_is_active,
+>  		.stream_allow             = virtio_transport_stream_allow,
+>  
+> +		.seqpacket_seq_send_len	  = virtio_transport_seqpacket_seq_send_len,
+> +		.seqpacket_seq_get_len	  = virtio_transport_seqpacket_seq_get_len,
+> +
+>  		.notify_poll_in           = virtio_transport_notify_poll_in,
+>  		.notify_poll_out          = virtio_transport_notify_poll_out,
+>  		.notify_recv_init         = virtio_transport_notify_recv_init,
+> -- 
+> 2.25.1
 
