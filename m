@@ -2,60 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6DD2E78AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0758C2E78AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgL3Ms3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 07:48:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50550 "EHLO mail.kernel.org"
+        id S1726794AbgL3Mt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 07:49:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726619AbgL3Ms2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 07:48:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2837B2220B;
-        Wed, 30 Dec 2020 12:47:47 +0000 (UTC)
+        id S1726605AbgL3Mt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 07:49:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 102EA221FA;
+        Wed, 30 Dec 2020 12:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609332467;
-        bh=+Vj4AXEbOGEO2HVS8Wk6KVWRPCQg4+wEXVUndvahp30=;
+        s=korg; t=1609332557;
+        bh=N5O6ImIkhpBZXKVxzeXm2qESd/kJs56wLovgR0WzzvA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zA38ZEK6j8WGb/Pn/FdwSM/8Q1gZDhxVkijFp29XO3IPnW8XTyfGjXOI7e81eNzbZ
-         95MP0cZJ4qMet5iwrnwcUkj3QJhM6Bj4hSLPwORR6epoKvYNhONYV0Law4FxBTmyUG
-         sIMdCBIdodFZKY5ZHyiIvnxxN/je4528+E0LfJl0=
-Date:   Wed, 30 Dec 2020 13:49:14 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     zhangqiumiao1@huawei.com
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tty: resolve loopback wait problem for aging serial
- port
-Message-ID: <X+x3Soqf6D6XzuxY@kroah.com>
-References: <1609331946-10165-1-git-send-email-zhangqiumiao1@huawei.com>
+        b=WfBzYsy1U4kWCSu15T6F6GHLAulAxHU6NStTDDann3jT9gNRpDyoXovshTBVH5Zie
+         BYx60T/7tNBZg0OrERa8shK1Nyh9dOtc1Qx9vSJGdpVZMQYU53fvjmm8+uHixYnQ1S
+         NnPH1SydXvkM4FY8O0bytIAsLNKaAaB7Xfx8px8k=
+Date:   Wed, 30 Dec 2020 13:50:44 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Xiaolei Wang <Xiaolei.Wang@windriver.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Lechner <david@lechnology.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH v3] regmap: debugfs: Fix a memory leak when calling
+ regmap_attach_dev
+Message-ID: <X+x3pIanr18Ep4ga@kroah.com>
+References: <20201229105046.41984-1-xiaolei.wang@windriver.com>
+ <d516efdd-7e66-13fe-3798-cdea5ff012dc@web.de>
+ <PH0PR11MB5077EC74C0A81ABF8F082BC795D70@PH0PR11MB5077.namprd11.prod.outlook.com>
+ <1503f5fa-1ad6-7675-6e02-6dc1eb04c1de@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1609331946-10165-1-git-send-email-zhangqiumiao1@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1503f5fa-1ad6-7675-6e02-6dc1eb04c1de@web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 08:39:06PM +0800, zhangqiumiao1@huawei.com wrote:
-> From: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+On Wed, Dec 30, 2020 at 01:01:42PM +0100, Markus Elfring wrote:
+> > Thank you very much, very good suggestion,
 > 
-> Because serial port is low-speed device, serial port writing will be suspended
-> when the buffer of driver layer is full due to serial port aging. The concrete
-> representation is n_tty_write blocking in the process of wait_woken, the process
-> of writing serial port exists without feedback, and becomes a zombie process.
-> So for serial port, set the timeout value of wait_woken function to 60s. Wake up
-> and flush the buffer after timeout.
+> Thanks for another positive feedback.
 > 
-> Signed-off-by: Qiumiao Zhang <zhangqiumiao1@huawei.com>
-> ---
->  drivers/tty/n_tty.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> > do I need to re-send a patch to fix this problem, or modify the previous patch and send it again?
+> 
+> Please convince the involved contributors to integrate a corrected patch version.
+> 
+> * Better indentation.
+> 
+> * …
+> >> +		if (!map->debugfs_name)
+> >> +			kfree(map->debugfs_name);
+> 
+>   Would this questionable null pointer check result in a memory leak?
 
-What changed from v1?  Always put that below the --- line as the
-documentation asks you to do so.
+Hi,
 
-Please fix up and submit a v3.
+This is the semi-friendly patch-bot of Greg Kroah-Hartman.
+
+Markus, you seem to have sent a nonsensical or otherwise pointless
+review comment to a patch submission on a Linux kernel developer mailing
+list.  I strongly suggest that you not do this anymore.  Please do not
+bother developers who are actively working to produce patches and
+features with comments that, in the end, are a waste of time.
+
+Patch submitter, please ignore Markus's suggestion; you do not need to
+follow it at all.  The person/bot/AI that sent it is being ignored by
+almost all Linux kernel maintainers for having a persistent pattern of
+behavior of producing distracting and pointless commentary, and
+inability to adapt to feedback.  Please feel free to also ignore emails
+from them.
 
 thanks,
 
-greg k-h
+greg k-h's patch email bot
