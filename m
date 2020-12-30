@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AA92E7C6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 21:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2985A2E7C75
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 21:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgL3Uxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 15:53:52 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:26915 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726631AbgL3Uxw (ORCPT
+        id S1726671AbgL3UyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 15:54:00 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:19880 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726360AbgL3Ux7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 15:53:52 -0500
-Date:   Wed, 30 Dec 2020 20:53:03 +0000
+        Wed, 30 Dec 2020 15:53:59 -0500
+Date:   Wed, 30 Dec 2020 20:53:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1609361590;
-        bh=7PSP7tZdruON7UqCn2tHmSQNfeMik87CR192kVov8SU=;
+        s=protonmail; t=1609361597;
+        bh=uYDyTYEISn/6Dn56ySZ1G8C+g1webIBwDMuMSIUTjPM=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=SRQv171Tk1P5dqsb90Bc3JQRg8a47j0NDrYVizomlkHe46vwOOD1dOYwUn8D/sfnL
-         gCQ6q/ogZKEhOjCnJVPlnrZKx/o61C9ANzPoZ61kzU1kT+ATABmIYbSBPyj79RHI9s
-         0XR6/1uc0PufT2aWf3NVH5EZuWANuuA49g61E69M=
+        b=AsELXTqyVYE4EDeDlC04hCVT4g0IYLBL71lOWBBL8nVi94pY+dqqmQ7mF2JpSiy7n
+         8o9xedGqF9lLl5rDEYfggsQXwRFJT8B9iJkD6+tblc+kK9wp22apF2XmqkaaWnEXB7
+         6oZuXNkdmbz3AWB/dvDhuAhtQbcq/xfp0W0FF+EU=
 To:     Krzysztof Kozlowski <krzk@kernel.org>
 From:   Timon Baetz <timon.baetz@protonmail.com>
 Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -36,8 +36,8 @@ Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         ~postmarketos/upstreaming@lists.sr.ht,
         Timon Baetz <timon.baetz@protonmail.com>
 Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: [PATCH v6 7/8] ARM: dts: exynos: Fix charging regulator voltage and current for I9100
-Message-ID: <20201230205139.1812366-7-timon.baetz@protonmail.com>
+Subject: [PATCH v6 8/8] ARM: dts: exynos: Add top-off charging regulator node for I9100
+Message-ID: <20201230205139.1812366-8-timon.baetz@protonmail.com>
 In-Reply-To: <20201230205139.1812366-1-timon.baetz@protonmail.com>
 References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
 MIME-Version: 1.0
@@ -52,56 +52,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set CHARGER current and CHARGER_CV voltage according to Galaxy S2 Epic
-4G Touch SPH-D710 Android vendor sources [0,1].
+Value taken from Galaxy S2 Epic 4G Touch SPH-D710 Android vendor
+kernel [0] which always sets 200mA.
 
-Remove regulator-always-on. The regulator can be enabled and disabled
-based on extcon events.
+Also rearrange regulators based on definition in max8997.h.
 
 [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic=
--4g-touch-sph-d710-exynos4210-dump/drivers/power/max8997_charger_u1.c#L169-=
-L170
-[1] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic=
--4g-touch-sph-d710-exynos4210-dump/drivers/power/max8997_charger_u1.c#L390-=
-L391
+-4g-touch-sph-d710-exynos4210-dump/drivers/power/sec_battery_u1.c#L1525
 
 Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
 ---
 v6: No change.
 v5: No change.
 v4: No change.
-v3: Reorder patch.
-    Remove regulator-always-on.
-v2: Fix commit message, add references.
+v3: Remove label.=20
+    Fix commit message.
+v2: Add patch.
 
- arch/arm/boot/dts/exynos4210-i9100.dts | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/exynos4210-i9100.dts | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
 diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exy=
 nos4210-i9100.dts
-index 8fa704babd5e..586d801af0b5 100644
+index 586d801af0b5..e702adb69670 100644
 --- a/arch/arm/boot/dts/exynos4210-i9100.dts
 +++ b/arch/arm/boot/dts/exynos4210-i9100.dts
-@@ -562,15 +562,14 @@ safe2_sreg: ESAFEOUT2 {
-=20
- =09=09=09charger_reg: CHARGER {
- =09=09=09=09regulator-name =3D "CHARGER";
--=09=09=09=09regulator-min-microamp =3D <60000>;
--=09=09=09=09regulator-max-microamp =3D <2580000>;
--=09=09=09=09regulator-always-on;
-+=09=09=09=09regulator-min-microamp =3D <200000>;
-+=09=09=09=09regulator-max-microamp =3D <950000>;
+@@ -560,6 +560,16 @@ safe2_sreg: ESAFEOUT2 {
+ =09=09=09=09regulator-boot-on;
  =09=09=09};
 =20
- =09=09=09chargercv_reg: CHARGER_CV {
- =09=09=09=09regulator-name =3D "CHARGER_CV";
--=09=09=09=09regulator-min-microvolt =3D <3800000>;
--=09=09=09=09regulator-max-microvolt =3D <4100000>;
-+=09=09=09=09regulator-min-microvolt =3D <4200000>;
-+=09=09=09=09regulator-max-microvolt =3D <4200000>;
++=09=09=09EN32KHZ_AP {
++=09=09=09=09regulator-name =3D "EN32KHZ_AP";
++=09=09=09=09regulator-always-on;
++=09=09=09};
++
++=09=09=09EN32KHZ_CP {
++=09=09=09=09regulator-name =3D "EN32KHZ_CP";
++=09=09=09=09regulator-always-on;
++=09=09=09};
++
+ =09=09=09charger_reg: CHARGER {
+ =09=09=09=09regulator-name =3D "CHARGER";
+ =09=09=09=09regulator-min-microamp =3D <200000>;
+@@ -573,13 +583,10 @@ chargercv_reg: CHARGER_CV {
  =09=09=09=09regulator-always-on;
  =09=09=09};
 =20
+-=09=09=09EN32KHZ_AP {
+-=09=09=09=09regulator-name =3D "EN32KHZ_AP";
+-=09=09=09=09regulator-always-on;
+-=09=09=09};
+-
+-=09=09=09EN32KHZ_CP {
+-=09=09=09=09regulator-name =3D "EN32KHZ_CP";
++=09=09=09CHARGER_TOPOFF {
++=09=09=09=09regulator-name =3D "CHARGER_TOPOFF";
++=09=09=09=09regulator-min-microamp =3D <200000>;
++=09=09=09=09regulator-max-microamp =3D <200000>;
+ =09=09=09=09regulator-always-on;
+ =09=09=09};
+ =09=09};
 --=20
 2.25.1
 
