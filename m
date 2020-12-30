@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CBC2E75EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 05:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBCE2E75F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 05:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgL3EGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 23:06:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51118 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726144AbgL3EGO (ORCPT
+        id S1726221AbgL3EOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 23:14:46 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:41994 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726138AbgL3EOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 23:06:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609301088;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=87Z6ci1v2zuVojOQC2txx0MeUSow10QAvJKJUecJndQ=;
-        b=JtN5bCKkXkOelUdFDKBhY/aXK/wCNVVHfx4Ym3Z0gWjUMRnfVH5/T4QLIGNQ+8EmjdYa87
-        atrxRV5D45biFvoJ3T0AfSnyyGlO9f6v0NOXANXCLbUKLb+dFzAIP6cu6LPW1tXED39ASg
-        VNqjh6sHWvdVkM17uwYU/lJaj5d9oG4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-108-JamB0Jt2P9y1nW7cSEysxg-1; Tue, 29 Dec 2020 23:04:45 -0500
-X-MC-Unique: JamB0Jt2P9y1nW7cSEysxg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4CCAD107ACE3;
-        Wed, 30 Dec 2020 04:04:43 +0000 (UTC)
-Received: from [10.72.13.30] (ovpn-13-30.pek2.redhat.com [10.72.13.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B1B565C8AA;
-        Wed, 30 Dec 2020 04:04:31 +0000 (UTC)
-Subject: Re: [PATCH 07/21] vdpa: multiple address spaces support
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, eperezma@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com, eli@mellanox.com,
-        lingshan.zhu@intel.com, rob.miller@broadcom.com,
-        stefanha@redhat.com, sgarzare@redhat.com
-References: <20201216064818.48239-1-jasowang@redhat.com>
- <20201216064818.48239-8-jasowang@redhat.com>
- <20201229072832.GA195479@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <e8b9dabb-ae78-1c84-b5f3-409bec3e8255@redhat.com>
-Date:   Wed, 30 Dec 2020 12:04:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201229072832.GA195479@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Tue, 29 Dec 2020 23:14:46 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=rocking@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UKCUbX8_1609301637;
+Received: from localhost(mailfrom:rocking@linux.alibaba.com fp:SMTPD_---0UKCUbX8_1609301637)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 30 Dec 2020 12:14:04 +0800
+From:   Peng Wang <rocking@linux.alibaba.com>
+To:     apw@canonical.com, joe@perches.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] checkpatch: ignore warning designated initializers using NR_CPUS
+Date:   Wed, 30 Dec 2020 12:13:55 +0800
+Message-Id: <2eba2ec8531f440410ee8164aaf2ab754bd5a0d1.1609301434.git.rocking@linux.alibaba.com>
+X-Mailer: git-send-email 2.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some max_length wants to hold as large room as possible to
+ensure enough size to tackle with the biggest NR_CPUS. As
+an example below:
 
-On 2020/12/29 下午3:28, Eli Cohen wrote:
->> @@ -43,6 +43,8 @@ struct vdpa_vq_state {
->>    * @index: device index
->>    * @features_valid: were features initialized? for legacy guests
->>    * @nvqs: the number of virtqueues
->> + * @ngroups: the number of virtqueue groups
->> + * @nas: the number of address spaces
-> I am not sure these can be categorised as part of the state of the VQ.
-> It's more of a property so maybe we can have a callback to get the
-> properties of the VQ?
+kernel/cgroup/cpuset.c:
+static struct cftype legacy_files[] = {
+        {
+                .name = "cpus",
+                .seq_show = cpuset_common_seq_show,
+                .write = cpuset_write_resmask,
+                .max_write_len = (100U + 6 * NR_CPUS),
+                .private = FILE_CPULIST,
+        },
+	...
+}
 
+Signed-off-by: Peng Wang <rocking@linux.alibaba.com>
+---
+ scripts/checkpatch.pl | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Or maybe there's a misunderstanding of the patch.
-
-Those two attributes belongs to vdpa_device instead of vdpa_vq_state 
-actually.
-
-Thanks
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 0008530..da8fc48 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -7022,12 +7022,15 @@ sub process {
+ 
+ # use of NR_CPUS is usually wrong
+ # ignore definitions of NR_CPUS and usage to define arrays as likely right
++# ignore designated initializers using NR_CPUS
++
+ 		if ($line =~ /\bNR_CPUS\b/ &&
+ 		    $line !~ /^.\s*\s*#\s*if\b.*\bNR_CPUS\b/ &&
+ 		    $line !~ /^.\s*\s*#\s*define\b.*\bNR_CPUS\b/ &&
+ 		    $line !~ /^.\s*$Declare\s.*\[[^\]]*NR_CPUS[^\]]*\]/ &&
+ 		    $line !~ /\[[^\]]*\.\.\.[^\]]*NR_CPUS[^\]]*\]/ &&
+-		    $line !~ /\[[^\]]*NR_CPUS[^\]]*\.\.\.[^\]]*\]/)
++		    $line !~ /\[[^\]]*NR_CPUS[^\]]*\.\.\.[^\]]*\]/ &&
++		    $line !~ /\s*\..*=.*\bNR_CPUS\b.*,$/)
+ 		{
+ 			WARN("NR_CPUS",
+ 			     "usage of NR_CPUS is often wrong - consider using cpu_possible(), num_possible_cpus(), for_each_possible_cpu(), etc\n" . $herecurr);
+-- 
+2.9.5
 
