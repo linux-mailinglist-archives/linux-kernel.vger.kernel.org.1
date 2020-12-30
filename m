@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C862E769B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E42C32E769F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbgL3Ggg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 01:36:36 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:33290 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726185AbgL3Ggg (ORCPT
+        id S1726434AbgL3GjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 01:39:10 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54901 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726230AbgL3GjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 01:36:36 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UKCUujN_1609310147;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UKCUujN_1609310147)
+        Wed, 30 Dec 2020 01:39:09 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UKCfVeh_1609310288;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UKCfVeh_1609310288)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 30 Dec 2020 14:35:53 +0800
+          Wed, 30 Dec 2020 14:38:15 +0800
 From:   YANG LI <abaci-bugfix@linux.alibaba.com>
-To:     sfrench@samba.org
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org,
+To:     boris.ostrovsky@oracle.com
+Cc:     jgross@suse.com, sstabellini@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
         YANG LI <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] cifs: style: replace one-element array with flexible-array 
-Date:   Wed, 30 Dec 2020 14:35:45 +0800
-Message-Id: <1609310145-75787-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] xen: fix: use WARN_ON instead of if condition followed by BUG.
+Date:   Wed, 30 Dec 2020 14:38:06 +0800
+Message-Id: <1609310286-77985-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare
-having a dynamically sized set of trailing elements in a structure.
-Kernel code should always use "flexible array members"[1] for these
-cases. The older style of one-element or zero-length arrays should
-no longer be used[2].
+Use WARN_ON instead of if condition followed by BUG in
+gnttab_batch_map() and gnttab_batch_copy().
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9/process/
-    deprecated.html#zero-length-and-one-element-arrays
+This issue was detected with the help of coccicheck.
 
 Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
 Reported-by: Abaci <abaci@linux.alibaba.com>
 ---
- fs/cifs/smb2pdu.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/xen/grant-table.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/cifs/smb2pdu.h b/fs/cifs/smb2pdu.h
-index 204a622..d85edf5 100644
---- a/fs/cifs/smb2pdu.h
-+++ b/fs/cifs/smb2pdu.h
-@@ -424,7 +424,7 @@ struct smb2_rdma_transform_capabilities_context {
- 	__le16	TransformCount;
- 	__u16	Reserved1;
- 	__u32	Reserved2;
--	__le16	RDMATransformIds[1];
-+	__le16	RDMATransformIds[];
- } __packed;
+diff --git a/drivers/xen/grant-table.c b/drivers/xen/grant-table.c
+index 3729bea..db1770c 100644
+--- a/drivers/xen/grant-table.c
++++ b/drivers/xen/grant-table.c
+@@ -1080,8 +1080,8 @@ void gnttab_batch_map(struct gnttab_map_grant_ref *batch, unsigned count)
+ {
+ 	struct gnttab_map_grant_ref *op;
  
- /* Signing algorithms */
+-	if (HYPERVISOR_grant_table_op(GNTTABOP_map_grant_ref, batch, count))
+-		BUG();
++	WARN_ON(HYPERVISOR_grant_table_op(GNTTABOP_map_grant_ref, batch, count));
++
+ 	for (op = batch; op < batch + count; op++)
+ 		if (op->status == GNTST_eagain)
+ 			gnttab_retry_eagain_gop(GNTTABOP_map_grant_ref, op,
+@@ -1093,8 +1093,8 @@ void gnttab_batch_copy(struct gnttab_copy *batch, unsigned count)
+ {
+ 	struct gnttab_copy *op;
+ 
+-	if (HYPERVISOR_grant_table_op(GNTTABOP_copy, batch, count))
+-		BUG();
++	WARN_ON(HYPERVISOR_grant_table_op(GNTTABOP_copy, batch, count));
++
+ 	for (op = batch; op < batch + count; op++)
+ 		if (op->status == GNTST_eagain)
+ 			gnttab_retry_eagain_gop(GNTTABOP_copy, op,
 -- 
 1.8.3.1
 
