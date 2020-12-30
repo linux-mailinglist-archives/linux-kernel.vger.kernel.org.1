@@ -2,141 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65992E7857
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C5D2E785A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgL3MBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 07:01:42 -0500
-Received: from mail-bn7nam10on2085.outbound.protection.outlook.com ([40.107.92.85]:17665
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726518AbgL3MBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 07:01:41 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dW1iGPIMz/2l+uCjBuNp+Sqybrbi6GykF0DoFyjCrHveY0dr86pRTPRPO6B2Vd+hJ2uhcJBeyn9fGC11sbc2aNCIlQgc9TD8zmjGhK6e5g3TGTARSrNjYBibR0pjeVHHNrl46Z1GtTvePieCIzmvxpe3KNyxlhRyGSw/vxPQput2Zh43UWskruDf1iMmF324OFc61OUDnW3QgHVyd4OztuO977xP8gnC7EQD9eureNjY+jlkScPkHeKrhEPO19cjhLMzvMKFO2GL9qcFQurCGJ0IoacKV6Vmu6A4AMxK1KiamQcFuoI2rA629emc/qGjGSn8779nWS/4O9ep3g6CPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ni0JsyRoG12NSwgH7JD0l3pAOk4vwS1ciNdSt1rlYq8=;
- b=lhespQuNjfdCJOIQ/XAAaryJj1lNPbijBTDoCSrHzRsB8ri89YXb6lNRBxgy3N+tqSHzOV2C3aUriYnppou6oM1QRPToPngF4UV5YULkTfENMmOuTrWb8YgOEznr44Rb//csNR6F3wTV0FsMnAgaeBN1kJwYt26b0hHr0Jw9WbBFEwQQpPJnE4Apl4o1smiXqNh/4DlMZQocnOpWWV76et+CbelJ9tw5bBe55fz3cAv5ATkAHaXA+LjjI76pByj4BgemElaMuw49Owr5KfK8bRTGNNxRj3u4QVJgyqFlPstZrdbPsSAvLlnjL5LSCCRPFUUsPAHAw2SLmWl86xEUxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ni0JsyRoG12NSwgH7JD0l3pAOk4vwS1ciNdSt1rlYq8=;
- b=ccrKt+nTlBqvEG2tVx62TDZ+IMBwoJOFZYsM5zUA+rMDaM0fFyPdvsk6F2ZWW8y2FEAITUWxohntsLUat+wOY0CtYc/2+BTeko0E1TmwMz60V9HVJRfgJfWqfP3a2+PXXAXT0N6OWATtQEjVjWbUSo/a3IPhPAQzCQ8+vyuH+Dk=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by SJ0PR11MB4829.namprd11.prod.outlook.com (2603:10b6:a03:2d3::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.28; Wed, 30 Dec
- 2020 12:00:52 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::94a4:4e15:ab64:5006]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::94a4:4e15:ab64:5006%5]) with mapi id 15.20.3700.031; Wed, 30 Dec 2020
- 12:00:52 +0000
-From:   qiang.zhang@windriver.com
-To:     akpm@linux-foundation.org, manfred@colorfullife.com,
-        gustavoars@kernel.org
-Cc:     paulmck@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ipc/sem.c: Convert kfree_rcu() to call_rcu() in freeary function
-Date:   Wed, 30 Dec 2020 20:00:38 +0800
-Message-Id: <20201230120038.19489-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR04CA0065.apcprd04.prod.outlook.com
- (2603:1096:202:14::33) To BYAPR11MB2632.namprd11.prod.outlook.com
- (2603:10b6:a02:c4::17)
+        id S1726551AbgL3MD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 07:03:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42656 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726422AbgL3MDZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 07:03:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609329717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NvjfJ+LFatFfbZe/Q9mQaV9ad4YgiDZqIK+OxZ/le3U=;
+        b=ePIbyGpPxngsBEe7HeLxtJyhWFMl5a1VG9mhzUQ6tJWMrHxSLyc8ey7KNIeTMk6re1fd8j
+        2UR1gPatxNucxAeIFplgL8jL5PHrOUFQi+Q484Z433OOYtDuS2hyxCmzlox9X0ZB7dM8eC
+        q9BIA9s5doZHmIL+Yl0x8kpqxF9hlsg=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-418-D8DS2KgmMIi_wuFS9-_yqw-1; Wed, 30 Dec 2020 07:01:55 -0500
+X-MC-Unique: D8DS2KgmMIi_wuFS9-_yqw-1
+Received: by mail-ed1-f70.google.com with SMTP id x13so4764196edi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 04:01:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NvjfJ+LFatFfbZe/Q9mQaV9ad4YgiDZqIK+OxZ/le3U=;
+        b=RX4X939gykobDMG99mIXqcXdwgHXNumMFHF96PU5a9Fb6/aYMt/6osAK2zv5DObNco
+         vOaGzqId6FVbsCy1n3wsI24QKtLw2DW951McdvRtDY76zND9zlBOgbJcy6ar09/X/WLu
+         8FNYdqtyMPMHn1/D4VelTUO8WBfNvEzTSNKMXCsm2fX8XJ8mudiK0Le41tusEMVTlO7o
+         SdeA4cQyaHEAPrtKOpz06hHj9k8sHOp4MKTUuaB3V+fVsjP1+l/tNlCno6ER1WnkjV+q
+         mI1CzIUd64UQxqZSchN2EQeJm/BvjqPoCG86/J9/JXo55/OCbTFzn2EVChMYdUrimPfU
+         95CA==
+X-Gm-Message-State: AOAM532Zq3cuclGayzjknT5aJX0nRpTmEkVuvWfqV1kYUrCDtDfArIvF
+        RBXzPYWAvGEPvatpZp1TwCDk4jj5g335ZnGQD27X3oy7pjjAXLStMng0t8vQvLOWRTZs8RJSXe5
+        XbAJGYYIx+JRELTW2+VNSmSQD
+X-Received: by 2002:a05:6402:3553:: with SMTP id f19mr36819126edd.129.1609329713683;
+        Wed, 30 Dec 2020 04:01:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxjaRbE/am2+NboBmQCUgz+kg7SEgmdVf3ihW/4XjLdr0/9shWVpLDwEOOxXukbmncXQYENeg==
+X-Received: by 2002:a05:6402:3553:: with SMTP id f19mr36819110edd.129.1609329713442;
+        Wed, 30 Dec 2020 04:01:53 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id d6sm18914733ejy.114.2020.12.30.04.01.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Dec 2020 04:01:52 -0800 (PST)
+Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-2-hdegoede@redhat.com>
+ <20201228122138.GA5352@sirena.org.uk>
+ <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
+ <20201228162807.GE5352@sirena.org.uk>
+ <20201229130657.GN9673@ediswmail.ad.cirrus.com>
+ <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
+ <20201229150635.GP9673@ediswmail.ad.cirrus.com>
+ <20201229151548.GG4786@sirena.org.uk>
+ <1d982dd1-eb02-e7c7-357e-83cf5003c624@redhat.com>
+ <21333e30-1e7a-2c95-9e7c-6325c7e78f9a@opensource.cirrus.com>
+ <833781fc-efde-fe98-fded-f81855e54de8@redhat.com>
+ <53504898-3062-fb9a-3e44-ac0a2ccc86e2@opensource.cirrus.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <f2c7d303-6137-4a02-a581-afd2ab6b1ca9@redhat.com>
+Date:   Wed, 30 Dec 2020 13:01:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-qzhang2-d1.wrs.com (60.247.85.82) by HK2PR04CA0065.apcprd04.prod.outlook.com (2603:1096:202:14::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20 via Frontend Transport; Wed, 30 Dec 2020 12:00:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5259f800-6ff9-4221-5922-08d8acba8e71
-X-MS-TrafficTypeDiagnostic: SJ0PR11MB4829:
-X-Microsoft-Antispam-PRVS: <SJ0PR11MB4829723AD63F720A82EE59DDFFD70@SJ0PR11MB4829.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w9uc0mf0NxOj2BBn3sgDDAPSzKV8su+L4dWjEgabeqrKFjhXlI+7eELFTXcpAt5Elt69XJ0JdbBeubPSlKmuUEihmTCFhwhTskYInhbYri7Gl9CegQRzNgxCX9kMEyqPf3dUcB0jNwv8Fr2WrgVfb0w2hCCcXJlf1H0Tz58dqz1Wad1w7Hkn9jW/uMrpAyFMe5MnzAYNBCvr2nFSnTA86xWPht/Vy+4DhJIAm3DhHnSrqmUfz1XjqwJKXnHHAJZYTLEWZ8QnUZYHDlH6Txps9mqV+YSTB/D24LgoQLpyT+n/xqCYYfOI7pBApy0sVWfCg7I/vVxXs+lt7txFu89gXQ7ABczWCcjM9oOH1DOwJbYn8Hf7oxcZAJHZ7hd9rq2VGo2/RTVaFdv1S0gQZ34UKQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(376002)(366004)(39840400004)(8936002)(26005)(2616005)(8676002)(316002)(52116002)(66476007)(6486002)(186003)(478600001)(66946007)(66556008)(4326008)(956004)(86362001)(9686003)(36756003)(1076003)(6512007)(83380400001)(16526019)(6506007)(5660300002)(2906002)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?52770caLwXgX27s7i+1jXHzuiZGNnBUhJNHHEcBll4VyLpgSzjzw72OPlflH?=
- =?us-ascii?Q?0i9BS6vh2rOB0xtWj8qBUIN7ZJnaGa++A94X/ITjN6EGo4oEXZwuUH8kKZSx?=
- =?us-ascii?Q?iC/HlmeXRlS9aUORL85uOxdR6dsZEg102M2YSeOxnjl1p9w/D2Bx/wZSQhhW?=
- =?us-ascii?Q?p6AYYROwkGHTmNybOgTgD5SUnV09ti5JA5HH2CKdIpdm9Mgf2mUW0CgD0aCH?=
- =?us-ascii?Q?WfE7OslJUvZYXwcy17rPGsXJB8e56VJJNgc6f8myI4DRZI5gGgA7/rbQFNPx?=
- =?us-ascii?Q?MujJXazhO1BR9MQIXe5+g42VpSjg5fPjec8BknnZJqITRKltZq2oC8LqMa8j?=
- =?us-ascii?Q?Tb10KMo7bFv5W2Wy/AqErH1bfT/yPXlH9URzk/mVcBE71qoMPV4aAWMz7Xlu?=
- =?us-ascii?Q?q+sG6dHn6XlQfv7s9ISh+kIpc4pzg+m5NN4zt29GQv1kR+JZaYnnr5pbpVf4?=
- =?us-ascii?Q?3quRikdbyvz6qxnY17QUaInTR8jbCjfmS9rnZQTb+/OVCTNOhES+nQWJ7+fy?=
- =?us-ascii?Q?M0DAIlqISASF3vfU2bMkdbu1JfP8iwsqeKssknXGvLTxP2xNhp/KKPZCS5WV?=
- =?us-ascii?Q?aD8IjPzAN+Q5aaiRNV5Ca12bzKiPqNizpUjdBWgIC9hsQIPwXx1+LdIPsLp7?=
- =?us-ascii?Q?yyP8SpHsg1K33U1X2rr7H/4A9X6whSzOMmFMSHi4ZbdlCwuvJCzMn83KxpjM?=
- =?us-ascii?Q?nuSuuUD50dkpZZF9Mh4NDQQlfpMkFeh3yYwkSAZ8TB+1sNFb+1G6GPfezlNs?=
- =?us-ascii?Q?s+fpsm+FPUWkhgO854YV9C2VvIfE2H4MExFcKsVz8UHwh1phoysRCXXsrTs9?=
- =?us-ascii?Q?MwvKJOUY/zMNIKUM/BToFhsSqz43y9gxYwUR064PXIq36phjHhFwG6/ZjuYx?=
- =?us-ascii?Q?/KhgT6KNWZa9A/TwCJNm/q5v+KkWnaFI0ChNKJZxljS1On8UPLIzXh5B6JU5?=
- =?us-ascii?Q?VH/QaC2u/ryz+wQ+Jfl5qQZQeF4cPIB8gCOQDWfoiy0=3D?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2020 12:00:52.4943
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5259f800-6ff9-4221-5922-08d8acba8e71
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iXJYY3McwKGatRIL2y44mOz7ztLeHiM4fFBahf+yEGFJ2BqsDy9YwbKqefDv6CAUOvHPEC7TjNMez0SJqs8oXKBw8PGEbXhme8FbtK2/V0U=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4829
+In-Reply-To: <53504898-3062-fb9a-3e44-ac0a2ccc86e2@opensource.cirrus.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+Hi,
 
-Due to freeary function is called with spinlock be held,
-the synchronize_rcu function may be called in kfree_rcu
-function, the schedule may be happen in spinlock critical
-region, need to replace kfree_rcu() with call_rcu().
+On 12/30/20 12:23 PM, Richard Fitzgerald wrote:
+> On 30/12/2020 11:04, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 12/29/20 5:51 PM, Richard Fitzgerald wrote:
+>>>
+>>>
+>>> On 29/12/2020 15:40, Hans de Goede wrote:
+>>>> Hi,
+>>>>
+>>>> On 12/29/20 4:15 PM, Mark Brown wrote:
+>>>>> On Tue, Dec 29, 2020 at 03:06:35PM +0000, Charles Keepax wrote:
+>>>>>
+>>>>>> There is maybe more argument for porting the Arizona code across
+>>>>>> anyways, since for a long time Android didn't properly support extcon
+>>>>>> either. It supported the earlier out of tree switch stuff, extcon
+>>>>>
+>>>>> Completely moving the driver doesn't cause the same problems as the
+>>>>> current proposal (unless it drops functionality I guess, there were
+>>>>> issues with adding new detection types into the input layer but I can't
+>>>>> remember if this hardware was impacted by that or not).
+>>>>
+>>>> The input-layer supports the following switches:
+>>>>
+>>>> SW_HEADPHONE_INSERT
+>>>> SW_MICROPHONE_INSERT
+>>>> SW_LINEOUT_INSERT
+>>>> SW_JACK_PHYSICAL_INSERT
+>>>>
+>>>> Which is a 1:1 mapping with the cable-types currently exported by
+>>>> extcon-arizona.c .
+>>>>
+>>>> I'm fine with fully moving extcon-arizona.c over to only using
+>>>> sound/core/jack.c functionality and it no longer exporting an
+>>>> extcon device.
+>>>>
+>>>> I guess we should move it out of drivers/extcon then though.
+>>>> I suggest using: sound/soc/cirrus/arizona-jack-detect.c
+>>>> Note that sound/soc/cirrus is a new dir here. Would that work
+>>>> for you ?
+>>>
+>>> Shouldn't it be sound/soc/codecs/arizona-jack.c so that it is with all
+>>> the other code for those codecs?
+>>
+>> The arizona codecs use the MFD framework and there is a separate
+>> platform-device instantiated for the jack-detect functionality, so this
+> 
+> That is because it is an extcon driver. It is a different subsystem to
+> the other child drivers so has to be a separate child.
+> 
+>> (mostly) a standalone platform-driver which has very little interaction
+>> with the rest of the codec code.
+>>
+>> It is not a codec driver, or code shared between the codec drivers,
+>> so putting it under sound/soc/codecs would be a bit weird.
+>>
+> 
+> In fact it is tied into the codec driver. The code in arizona.c that
+> handles HP OUT has to synchronize  with the jack detection to avoid one
+> driver trashing the state of the other. But because they are currently
+> separate drivers they have to communicate through hp_ena and
+> hp_clamp in the parent mfd data. See arizona_hp_ev().
 
-Fixes: 693a8b6eecce ("ipc,rcu: Convert call_rcu(free_un) to kfree_rcu()")
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- ipc/sem.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+So what you are suggesting is to do something along these lines ? :
 
-diff --git a/ipc/sem.c b/ipc/sem.c
-index f6c30a85dadf..12c3184347d9 100644
---- a/ipc/sem.c
-+++ b/ipc/sem.c
-@@ -1132,6 +1132,13 @@ static int count_semcnt(struct sem_array *sma, ushort semnum,
- 	return semcnt;
- }
- 
-+static void free_un(struct rcu_head *head)
-+{
-+	struct sem_undo *un = container_of(head, struct sem_undo, rcu);
-+
-+	kfree(un);
-+}
-+
- /* Free a semaphore set. freeary() is called with sem_ids.rwsem locked
-  * as a writer and the spinlock for this semaphore set hold. sem_ids.rwsem
-  * remains locked on exit.
-@@ -1152,7 +1159,7 @@ static void freeary(struct ipc_namespace *ns, struct kern_ipc_perm *ipcp)
- 		un->semid = -1;
- 		list_del_rcu(&un->list_proc);
- 		spin_unlock(&un->ulp->lock);
--		kfree_rcu(un, rcu);
-+		call_rcu(&un->rcu, free_un);
- 	}
- 
- 	/* Wake up all pending processes and let them fail with EIDRM. */
--- 
-2.17.1
+1. Drop the MFD instantiated arizona-extcon device
+2. Move the extcon code to something more like a library
+3. Have the various codec drivers call into the library
+   at various points
+4. Have the library call snd_soc_card_jack_new,
+   snd_soc_jack_report, etc. ?
+
+That works for me, but I would like to make sure we are all on
+the same page here before spending time on coding this solution.
+
+Regards,
+
+Hans
 
