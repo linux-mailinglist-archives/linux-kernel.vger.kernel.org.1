@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2472E78BC
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3E92E78BD
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgL3M52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 07:57:28 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33850 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgL3M51 (ORCPT
+        id S1726830AbgL3M5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 07:57:41 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:34320 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726203AbgL3M5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 07:57:27 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 499FB1C0B78; Wed, 30 Dec 2020 13:56:29 +0100 (CET)
-Date:   Wed, 30 Dec 2020 13:56:28 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH 5.10 527/717] media: ipu3-cio2: Validate mbus format in
- setting subdev format
-Message-ID: <20201230125628.GB13161@duo.ucw.cz>
-References: <20201228125020.963311703@linuxfoundation.org>
- <20201228125046.214023397@linuxfoundation.org>
- <20201230122508.GA12190@duo.ucw.cz>
- <CAHp75VdFT-SUUj2LiPTs1_RJ-n97OiyQ2pF0jVbHsARkDshfwA@mail.gmail.com>
- <X+x2OakYZ5GGCxuS@pendragon.ideasonboard.com>
+        Wed, 30 Dec 2020 07:57:40 -0500
+Received: from 1-171-218-216.dynamic-ip.hinet.net ([1.171.218.216] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kub1t-0003k4-2h; Wed, 30 Dec 2020 12:56:42 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kailang Yang <kailang@realtek.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Hui Wang <hui.wang@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ALSA: hda/realtek: Enable mute and micmute LED on HP EliteBook 850 G7
+Date:   Wed, 30 Dec 2020 20:56:35 +0800
+Message-Id: <20201230125636.45028-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="jq0ap7NbKX2Kqbes"
-Content-Disposition: inline
-In-Reply-To: <X+x2OakYZ5GGCxuS@pendragon.ideasonboard.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+HP EliteBook 850 G7 uses the same GPIO pins as ALC285_FIXUP_HP_GPIO_LED
+to enable mute and micmute LED. So apply the quirk to enable the LEDs.
 
---jq0ap7NbKX2Kqbes
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Wed 2020-12-30 14:44:41, Laurent Pinchart wrote:
-> On Wed, Dec 30, 2020 at 02:32:46PM +0200, Andy Shevchenko wrote:
-> > On Wed, Dec 30, 2020 at 2:25 PM Pavel Machek wrote:
-> >=20
-> > > > commit a86cf9b29e8b12811cf53c4970eefe0c1d290476 upstream.
-> > > >
-> > > > Validate media bus code, width and height when setting the subdev f=
-ormat.
-> > > >
-> > > > This effectively reworks how setting subdev format is implemented i=
-n the
-> > > > driver.
-> > >
-> > > Something is wrong here:
-> > >
-> > > > +     fmt->format.code =3D formats[0].mbus_code;
-> > > > +     for (i =3D 0; i < ARRAY_SIZE(formats); i++) {
-> >=20
-> > Looks like 'i =3D 1' should be...
-> >=20
-> > > > +             if (formats[i].mbus_code =3D=3D fmt->format.code) {
->=20
-> More likely
->=20
-> 			if (formats[i].mbus_code =3D=3D mbus_code) {
->=20
-> I think.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index dde5ba209541..b12e1f083029 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7959,6 +7959,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8760, "HP", ALC285_FIXUP_HP_MUTE_LED),
+-- 
+2.29.2
 
-That looks reasonable, but I don't have hardware to test.
-
-> Pavel, would you like to submit a patch ?
-
-Done, should be in your inbox.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---jq0ap7NbKX2Kqbes
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX+x4/AAKCRAw5/Bqldv6
-8ut1AKCeguNK4/d1qTU2rUmE6uQxl7TiiACfaiFUMA/wZpA/nrNhCbhoVqVnUr8=
-=9SGb
------END PGP SIGNATURE-----
-
---jq0ap7NbKX2Kqbes--
