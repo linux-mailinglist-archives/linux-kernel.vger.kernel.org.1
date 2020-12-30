@@ -2,150 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A46F2E7AF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 17:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6840F2E7AFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 17:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgL3QNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 11:13:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41166 "EHLO
+        id S1726545AbgL3QQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 11:16:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726620AbgL3QNy (ORCPT
+        with ESMTP id S1726230AbgL3QQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 11:13:54 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0559C06179C;
-        Wed, 30 Dec 2020 08:13:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Ses/rnxWif7X2Xqokp4AmCDl72h9LsApLutXxNkbwaw=; b=FkJB71OHUrc83Rx/oK69Qh3Cp
-        hc7+rnwwEkrgT5mv+9F1x72eMrDCy5PNVvjXt+QhhGzOJ8hTVY7Os2QHBhYGJx+TDaRhFuwHUh+2g
-        ee+hHFF6v4CWSqZlajRRS42ENm/lmctnvBtQqmP999Q85yJl1c0vT38NYw+QW6h1Pnm0/lgvvOx7b
-        WMDqbzyoicRADHClw9lpM+qN22IxhgbYxhXiLomengv3Y7YVFdzXDh5z5pbKqzw2Lh9p39aleLu4M
-        498RlfTxTfIm/k/OEm7YNPbaj7C8dMHGUGLVOTenC3e3NGdoQsNsgOWaY+GQ3vBAVfuidB/9qTltj
-        Ixj+iMOCQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44916)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kue63-0005ol-8m; Wed, 30 Dec 2020 16:13:11 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kue63-0002KW-02; Wed, 30 Dec 2020 16:13:11 +0000
-Date:   Wed, 30 Dec 2020 16:13:10 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] net: sfp: assume that LOS is not implemented if both
- LOS normal and inverted is set
-Message-ID: <20201230161310.GT1551@shell.armlinux.org.uk>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20201230154755.14746-4-pali@kernel.org>
+        Wed, 30 Dec 2020 11:16:39 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1396C061799;
+        Wed, 30 Dec 2020 08:15:59 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id q205so19066132oig.13;
+        Wed, 30 Dec 2020 08:15:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sT1WfvZ/VNnT+yFaWuGoi/l7Bq1FMUDHZOCC1Y2+fPE=;
+        b=ethJ4BLM6aV4G/eZ9jcZg5lqzDbFG2IfsH7b4uaCZR9REUgYTXWiPs5FIeEPR57Vxx
+         Aft8UtClyiKajFgK74xqklRmLnUUyg9d3F+ZBgJjZyJIm/71Og5HJWVNEgMKoMglJfC9
+         5uPpbbxMVtRnIcBDUEDcu998/tKDg8hWX0jsO1vSTmMqkfBoR9K5if9tuabQegzqUsB+
+         LGLlTRqh3FBi3nXgoijiBcEeYoupqPiW3Eko5C49pv7sR5rJjsePRhgMSSRlN4fCh0+7
+         VuDngK9QfwDK9eiLVC+NjPpluyrLgyJiCl+HMJ5XG8yBgrqNp/qfrbUjDiduBwdzmjIj
+         Ub1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sT1WfvZ/VNnT+yFaWuGoi/l7Bq1FMUDHZOCC1Y2+fPE=;
+        b=iiuHLM0/7WqICStEcnLTRQEiKVrLGfLw7UtxVwkWt4Jj6roe8v8/Md4xoeAduktdxa
+         dyxtZMKFkicQ5811hwbO50Wd/erfJ0kn40GmgfOi00W+WyDSXy5sQC2yYwZnZvvMluzb
+         0/n+wFJ2kvktRIZTxgcsID+dwRLwFYHfzIfXRXLN8wVJjCwwFDjULLXfMN7YdBlveqHU
+         rFxVAvIrqAvKH8bL6nlrq7kPW1VVqadIKQ0+gs+yWfCgPx2YsOYiUR3zjkgqHTQNSQx3
+         /GjgLobqzinPQxn+Ssvz21o9NoAwLmA17aZ6pxgubDz7alWN+diZ0UsDzYaq9JbhC4MS
+         CGvA==
+X-Gm-Message-State: AOAM530aq5CHTFaTyS/z8jODEwSDblpV6FkANkUu9UN33kguzN2cIcn0
+        i9JnMaVnUYQy8rgOOFgmBXM=
+X-Google-Smtp-Source: ABdhPJxkAuKmzzPyrPRqPj0G3+aF8DzJxOnTYHUg43sHLpgCHtEew7hUypkyDpPQf97bis89/nR4Cg==
+X-Received: by 2002:a54:4711:: with SMTP id k17mr5569826oik.149.1609344959037;
+        Wed, 30 Dec 2020 08:15:59 -0800 (PST)
+Received: from ?IPv6:2600:1700:dfe0:49f0:549a:788d:4851:c1b0? ([2600:1700:dfe0:49f0:549a:788d:4851:c1b0])
+        by smtp.gmail.com with ESMTPSA id z3sm10684023otq.22.2020.12.30.08.15.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Dec 2020 08:15:58 -0800 (PST)
+Subject: Re: Registering IRQ for MT7530 internal PHYs
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        DENG Qingfang <dqfext@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Ren=c3=a9_van_Dorst?= <opensource@vdorst.com>
+References: <20201230042208.8997-1-dqfext@gmail.com>
+ <a64312eb-8b4c-d6d4-5624-98f55e33e0b7@gmail.com>
+ <CALW65jbV-RwbmmiGjfq8P-ZcApOW0YyN6Ez5FvhhP4dgaA+VjQ@mail.gmail.com>
+ <fa7951e1-4a98-8488-d724-3eda9b97e376@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <546a8430-8865-1be8-4561-6681c7fa8ef8@gmail.com>
+Date:   Wed, 30 Dec 2020 08:15:54 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201230154755.14746-4-pali@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <fa7951e1-4a98-8488-d724-3eda9b97e376@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 04:47:54PM +0100, Pali Rohár wrote:
-> Some GPON SFP modules (e.g. Ubiquiti U-Fiber Instant) have set both
-> SFP_OPTIONS_LOS_INVERTED and SFP_OPTIONS_LOS_NORMAL bits in their EEPROM.
-> 
-> Such combination of bits is meaningless so assume that LOS signal is not
-> implemented.
-> 
-> This patch fixes link carrier for GPON SFP module Ubiquiti U-Fiber Instant.
-> 
-> Co-developed-by: Russell King <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 
-No, this is not co-developed. The patch content is exactly what _I_
-sent you, only the commit description is your own.
 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> ---
->  drivers/net/phy/sfp.c | 36 ++++++++++++++++++++++--------------
->  1 file changed, 22 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-> index 73f3ecf15260..d47485ed239c 100644
-> --- a/drivers/net/phy/sfp.c
-> +++ b/drivers/net/phy/sfp.c
-> @@ -1475,15 +1475,19 @@ static void sfp_sm_link_down(struct sfp *sfp)
->  
->  static void sfp_sm_link_check_los(struct sfp *sfp)
->  {
-> -	unsigned int los = sfp->state & SFP_F_LOS;
-> +	const __be16 los_inverted = cpu_to_be16(SFP_OPTIONS_LOS_INVERTED);
-> +	const __be16 los_normal = cpu_to_be16(SFP_OPTIONS_LOS_NORMAL);
-> +	__be16 los_options = sfp->id.ext.options & (los_inverted | los_normal);
-> +	bool los = false;
->  
->  	/* If neither SFP_OPTIONS_LOS_INVERTED nor SFP_OPTIONS_LOS_NORMAL
-> -	 * are set, we assume that no LOS signal is available.
-> +	 * are set, we assume that no LOS signal is available. If both are
-> +	 * set, we assume LOS is not implemented (and is meaningless.)
->  	 */
-> -	if (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_INVERTED))
-> -		los ^= SFP_F_LOS;
-> -	else if (!(sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_NORMAL)))
-> -		los = 0;
-> +	if (los_options == los_inverted)
-> +		los = !(sfp->state & SFP_F_LOS);
-> +	else if (los_options == los_normal)
-> +		los = !!(sfp->state & SFP_F_LOS);
->  
->  	if (los)
->  		sfp_sm_next(sfp, SFP_S_WAIT_LOS, 0);
-> @@ -1493,18 +1497,22 @@ static void sfp_sm_link_check_los(struct sfp *sfp)
->  
->  static bool sfp_los_event_active(struct sfp *sfp, unsigned int event)
->  {
-> -	return (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_INVERTED) &&
-> -		event == SFP_E_LOS_LOW) ||
-> -	       (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_NORMAL) &&
-> -		event == SFP_E_LOS_HIGH);
-> +	const __be16 los_inverted = cpu_to_be16(SFP_OPTIONS_LOS_INVERTED);
-> +	const __be16 los_normal = cpu_to_be16(SFP_OPTIONS_LOS_NORMAL);
-> +	__be16 los_options = sfp->id.ext.options & (los_inverted | los_normal);
-> +
-> +	return (los_options == los_inverted && event == SFP_E_LOS_LOW) ||
-> +	       (los_options == los_normal && event == SFP_E_LOS_HIGH);
->  }
->  
->  static bool sfp_los_event_inactive(struct sfp *sfp, unsigned int event)
->  {
-> -	return (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_INVERTED) &&
-> -		event == SFP_E_LOS_HIGH) ||
-> -	       (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_NORMAL) &&
-> -		event == SFP_E_LOS_LOW);
-> +	const __be16 los_inverted = cpu_to_be16(SFP_OPTIONS_LOS_INVERTED);
-> +	const __be16 los_normal = cpu_to_be16(SFP_OPTIONS_LOS_NORMAL);
-> +	__be16 los_options = sfp->id.ext.options & (los_inverted | los_normal);
-> +
-> +	return (los_options == los_inverted && event == SFP_E_LOS_HIGH) ||
-> +	       (los_options == los_normal && event == SFP_E_LOS_LOW);
->  }
->  
->  static void sfp_sm_fault(struct sfp *sfp, unsigned int next_state, bool warn)
-> -- 
-> 2.20.1
-> 
-> 
+On 12/30/2020 1:12 AM, Heiner Kallweit wrote:
+> On 30.12.2020 10:07, DENG Qingfang wrote:
+>> Hi Heiner,
+>> Thanks for your reply.
+>>
+>> On Wed, Dec 30, 2020 at 3:39 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>>> I don't think that's the best option.
+>>
+>> I'm well aware of that.
+>>
+>>> You may want to add a PHY driver for your chip. Supposedly it
+>>> supports at least PHY suspend/resume. You can use the RTL8366RB
+>>> PHY driver as template.
+>>
+>> There's no MediaTek PHY driver yet. Do we really need a new one just
+>> for the interrupts?
+>>
+> Not only for the interrupts. The genphy driver e.g. doesn't support
+> PHY suspend/resume. And the PHY driver needs basically no code,
+> just set the proper callbacks.
 
+That statement about not supporting suspend/resume is not exactly true,
+the generic "1g" PHY driver only implements suspend/resume through the
+use of the standard BMCR power down bit, but not anything more
+complicated than that.
+
+Interrupt handling within the PHY itself is not defined by the existing
+standard registers and will typically not reside in a standard register
+space either, so just for that reason you do need a custom PHY driver.
+There are other advantages if you need to expose additional PHY features
+down the road like PHY counters, energy detection, automatic power down etc.
+
+I don't believe we will see discrete/standalone Mediatek PHY chips, but
+if that happens, then you would already have a framework for supporting
+them.
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Florian
