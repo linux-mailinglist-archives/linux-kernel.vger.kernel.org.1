@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3932E7A7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E266D2E7A81
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgL3Plu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 10:41:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45028 "EHLO mail.kernel.org"
+        id S1726650AbgL3Pl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 10:41:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726533AbgL3Plt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 10:41:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E702F22227;
-        Wed, 30 Dec 2020 15:41:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609342869;
-        bh=HfZJWC4DgWzxO94oQompi4plJLMZTWGfjqgfqgqfi5U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DAO3IEqESCs//Kgrgsgvvma3G1GUlcdqVotmH2gNP9/fmWgdVjTYIvo9wOrKG2Vv7
-         r9zr8/4eGzSaAct25yKZ+fvScsiV5OftBVn6GG7ZjcPu1+jWj8yLdkCnctRwbRTis1
-         mehMwK6IU2o5KQL/Q0Q80RIce7hefzbhlYirdFA9yziisGTP6nV0LtPnP7uniqNbLL
-         ytonIXr2P+j5DnoW5xJE2Nuf24cshMLKoUnlmLTbyeppkIq2Q3If9oNKBk9B7qTCB2
-         EMUAgPxOpmXQsjeiQ9oquQxfdJXNtzeCa5D5KNXzudr84xtm5Cfy8ISQ6C2dnWRQxK
-         RSnO08W3oF9lA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Brian Geffon <bgeffon@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] mm/mremap: fix BUILD_BUG_ON() error in get_extent
-Date:   Wed, 30 Dec 2020 16:40:40 +0100
-Message-Id: <20201230154104.522605-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S1726214AbgL3Pl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 10:41:58 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DB622222A;
+        Wed, 30 Dec 2020 15:41:11 +0000 (UTC)
+Date:   Wed, 30 Dec 2020 15:41:07 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     lars@metafoo.de, pmeerw@pmeerw.net, mcoquelin.stm32@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: adc: stm32-dfsdm: Remove redundant null check
+ before clk_disable_unprepare
+Message-ID: <20201230154107.4b301aed@archlinux>
+In-Reply-To: <20201218094145.1123-1-vulab@iscas.ac.cn>
+References: <20201218094145.1123-1-vulab@iscas.ac.cn>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, 18 Dec 2020 09:41:45 +0000
+Xu Wang <vulab@iscas.ac.cn> wrote:
 
-clang cannt evaluate this function argument at compile time
-when the function is not inlined, which leads to a link
-time failure:
+> ecause clk_disable_unprepare() already checked NULL clock parameter,
+> so the additional check is unnecessary, just remove it.
+Please resend, making sure to cc linux-iio@vger.kernel.org
 
-ld.lld: error: undefined symbol: __compiletime_assert_414
->>> referenced by mremap.c
->>>               mremap.o:(get_extent) in archive mm/built-in.a
+Thanks,
 
-Mark the function as __always_inline to avoid it.
+Jonathan
 
-Fixes: 9ad9718bfa41 ("mm/mremap: calculate extent in one place")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- mm/mremap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/mm/mremap.c b/mm/mremap.c
-index c5590afe7165..1cb464a07184 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -336,8 +336,9 @@ enum pgt_entry {
-  * valid. Else returns a smaller extent bounded by the end of the source and
-  * destination pgt_entry.
-  */
--static unsigned long get_extent(enum pgt_entry entry, unsigned long old_addr,
--			unsigned long old_end, unsigned long new_addr)
-+static __always_inline unsigned long get_extent(enum pgt_entry entry,
-+			unsigned long old_addr, unsigned long old_end,
-+			unsigned long new_addr)
- {
- 	unsigned long next, extent, mask, size;
- 
--- 
-2.29.2
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>  drivers/iio/adc/stm32-dfsdm-core.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
+> index 42a7377704a4..bb925a11c8ae 100644
+> --- a/drivers/iio/adc/stm32-dfsdm-core.c
+> +++ b/drivers/iio/adc/stm32-dfsdm-core.c
+> @@ -117,8 +117,7 @@ static void stm32_dfsdm_clk_disable_unprepare(struct stm32_dfsdm *dfsdm)
+>  {
+>  	struct dfsdm_priv *priv = to_stm32_dfsdm_priv(dfsdm);
+>  
+> -	if (priv->aclk)
+> -		clk_disable_unprepare(priv->aclk);
+> +	clk_disable_unprepare(priv->aclk);
+>  	clk_disable_unprepare(priv->clk);
+>  }
+>  
 
