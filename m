@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812DC2E79B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 14:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF362E79B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 14:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgL3Na0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 08:30:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24534 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726230AbgL3Na0 (ORCPT
+        id S1727100AbgL3NbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 08:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726689AbgL3NbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 08:30:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609334939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tRSc7sq5Dg0Q3HCfyMcMQGHnajfmpPOySohf9FwY6XM=;
-        b=Mg4C4NunqcE+jEmHqMmRf+/77YnB9QNsOS9rhosLTZGMdEdDdj0TJ+gKc0h56pvRHNABZg
-        4BgIxVr6To2nqAPFuSW6U8ueRmnV7AY8jyt4luayDj40ysN6RLXYtcbE76SGyGtN7tEuDp
-        G3kWizEXIXDsq0MT19G3HsnTPdfWwEc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-8lLkK23FMAiWkvqeQIIBOA-1; Wed, 30 Dec 2020 08:28:57 -0500
-X-MC-Unique: 8lLkK23FMAiWkvqeQIIBOA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A3CA879500;
-        Wed, 30 Dec 2020 13:28:55 +0000 (UTC)
-Received: from krava (unknown [10.40.192.129])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4602317C5F;
-        Wed, 30 Dec 2020 13:28:53 +0000 (UTC)
-Date:   Wed, 30 Dec 2020 14:28:52 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
-Message-ID: <20201230132852.GC577428@krava>
-References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin>
- <20201229173401.GH450923@krava>
- <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
- <20201230090333.GA577428@krava>
- <20201230132759.GB577428@krava>
+        Wed, 30 Dec 2020 08:31:06 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E093C061799
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 05:30:25 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id u26so12016047iof.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 05:30:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=xmQAKEoo0shcR7ZB7EMhHQfI6sQvKDMQq5NCjlV6eVs=;
+        b=lkrWZFzjIak7uji4YTIhHooOSdlDUjsXlEWjgZP8ssujOqnFLC5BBIJw83He9vcgCb
+         OzCOUzpbPBcrRFMmuYazWOXeO2c+e8C6mXj2JYpQvfFgVu5Rl8x64TKzJUTB+y+8pdY0
+         eXcDZpcEYyDkNcAADQtY4KTygQf3cWaGJI9Q7Pd6ze3dDJlDAxwfDqiOZevBjiQIdDCn
+         65hmN9nz96BmSkroTJ3hMoU0ZX5yP/tpt1XuR0yausVq/C2cREwuPB7AASD6PELNnP6z
+         12mNvkp6hRmSK75nhomH29HnaxPU1nZXdjqTEPZDTQO2cNWpTMA/n9P7RcnDkZ6APC3e
+         tm6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=xmQAKEoo0shcR7ZB7EMhHQfI6sQvKDMQq5NCjlV6eVs=;
+        b=Xa2wImZaHy+cTIA9sNGBTtVAcYtwnZ4QrIMm50TcLn/aPQHfz/LtV8fDPsqr1l+yNt
+         tpCaGZzHOYmQVefAFmTEcpGMYzMQ8SYMmwVKLGHDvA/X48FQUDfi27yCMjsLd0FYjtDc
+         ubUWLnw/fEYxtdV85wLYfhNAeZCOY0XgVl8Ja5RIUf/zeiu963DL5rZfgHLP32vn3ZHh
+         f3RAX6HfyAWl9BcfCJtM081MHTWgQpp+WROFG39m9C2TGdtKIVsvKrueGSYXKqYxnspb
+         CjfBij3K3oP8bViszdcy1x6uPmobUzUC7zkj80ST3yO36BZxUVYDGzpiBiuHtrX0Ig85
+         biug==
+X-Gm-Message-State: AOAM530Aki1bB9DH+wTVDou25S89i8lQtXFuIxwUzTVcBjY3JymEEXe7
+        ds2ez8jLiEeAkAzqsd4bActMo73hdiKi/BG6Ep8=
+X-Google-Smtp-Source: ABdhPJycjuprdXWXBDbcjpYGqlI9LaK4f//K+zhg0SkLkzAeinrY/59/efDYAOyPQSsLSFf6QRybc3vZDUeVfA/F3FM=
+X-Received: by 2002:a02:650e:: with SMTP id u14mr46146396jab.143.1609335025010;
+ Wed, 30 Dec 2020 05:30:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230132759.GB577428@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20201225142347.27204-1-hqjagain@gmail.com>
+In-Reply-To: <20201225142347.27204-1-hqjagain@gmail.com>
+From:   Qiujun Huang <hqjagain@gmail.com>
+Date:   Wed, 30 Dec 2020 21:30:12 +0800
+Message-ID: <CAJRQjodjBMAuaaNqUyb9ooV6PqxBPX=JXrDyg1z=Sm-7q_oanQ@mail.gmail.com>
+Subject: Re: [PATCH] trace: Remove get/put_cpu() from function_trace_init
+To:     Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 02:28:02PM +0100, Jiri Olsa wrote:
-> On Wed, Dec 30, 2020 at 10:03:37AM +0100, Jiri Olsa wrote:
-> > On Tue, Dec 29, 2020 at 11:28:35PM +0000, Qais Yousef wrote:
-> > > Hi Jiri
-> > > 
-> > > On 12/29/20 18:34, Jiri Olsa wrote:
-> > > > On Tue, Dec 29, 2020 at 03:13:52PM +0000, Qais Yousef wrote:
-> > > > > Hi
-> > > > > 
-> > > > > When I enable CONFIG_DEBUG_INFO_BTF I get the following error in the BTFIDS
-> > > > > stage
-> > > > > 
-> > > > > 	FAILED unresolved symbol udp6_sock
-> > > > > 
-> > > > > I cross compile for arm64. My .config is attached.
-> > > > > 
-> > > > > I managed to reproduce the problem on v5.9 and v5.10. Plus 5.11-rc1.
-> > > > > 
-> > > > > Have you seen this before? I couldn't find a specific report about this
-> > > > > problem.
-> > > > > 
-> > > > > Let me know if you need more info.
-> > > > 
-> > > > hi,
-> > > > this looks like symptom of the gcc DWARF bug we were
-> > > > dealing with recently:
-> > > > 
-> > > >   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
-> > > >   https://lore.kernel.org/lkml/CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com/#r
-> > > > 
-> > > > what pahole/gcc version are you using?
-> > > 
-> > > I'm on gcc 9.3.0
-> > > 
-> > > 	aarch64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
-> > > 
-> > > I was on pahole v1.17. I moved to v1.19 but I still see the same problem.
-> > 
-> > I can reproduce with your .config, but make 'defconfig' works,
-> > so I guess it's some config option issue, I'll check later today
-> 
-> so your .config has
->   CONFIG_CRYPTO_DEV_BCM_SPU=y
-> 
-> and that defines 'struct device_private' which
-> clashes with the same struct defined in drivers/base/base.h
-> 
-> so several networking structs will be doubled, like net_device:
-> 
-> 	$ bpftool btf dump file ../vmlinux.config | grep net_device\' | grep STRUCT
-> 	[2731] STRUCT 'net_device' size=2240 vlen=133
-> 	[113981] STRUCT 'net_device' size=2240 vlen=133
-> 
-> each is using different 'struct device_private' when it's unwinded
-> 
-> and that will confuse BTFIDS logic, becase we have multiple structs
-> with the same name, and we can't be sure which one to pick
-> 
-> perhaps we should check on this in pahole and warn earlier with
-> better error message.. I'll check, but I'm not sure if pahole can
-> survive another hastab ;-)
-> 
-> Andrii, any ideas on this? ;-)
-> 
-> easy fix is the patch below that renames the bcm's structs,
-> it makes the kernel to compile.. but of course the new name
-> is probably wrong and we should push this through that code
-> authors
+Sorry, please ignore the patch
 
-also another quick fix is to switch it to module
+[trace] 2158a32526: BUG:using_smp_processor_id()in_preemptible
 
-jirka
+Thanks
 
+On Fri, Dec 25, 2020 at 10:24 PM Qiujun Huang <hqjagain@gmail.com> wrote:
+>
+> Since commit b6f11df26fdc ("trace: Call tracing_reset_online_cpus before
+> tracer->init()"), get/put_cpu() are not needed anymore.
+> We can use smp_processor_id() instead.
+>
+> Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+> ---
+>  kernel/trace/trace_functions.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
+> index c5095dd28e20..e36fbb935017 100644
+> --- a/kernel/trace/trace_functions.c
+> +++ b/kernel/trace/trace_functions.c
+> @@ -106,8 +106,7 @@ static int function_trace_init(struct trace_array *tr)
+>
+>         ftrace_init_array_ops(tr, func);
+>
+> -       tr->array_buffer.cpu = get_cpu();
+> -       put_cpu();
+> +       tr->array_buffer.cpu = smp_processor_id();
+>
+>         tracing_start_cmdline_record();
+>         tracing_start_function_trace(tr);
+> --
+> 2.17.1
+>
