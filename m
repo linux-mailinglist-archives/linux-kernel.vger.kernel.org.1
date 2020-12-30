@@ -2,265 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B170C2E754A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 01:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8833E2E754E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 01:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgL3AKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 19:10:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38089 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726260AbgL3AKG (ORCPT
+        id S1726422AbgL3AMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 19:12:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgL3AMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 19:10:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609286919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=e4GWSW+b7uP2mt0kRauq4WQsKZBizIfrti+Jx+uuuGk=;
-        b=VzCSJCT7BGXMzWr/RhxGWErehcdvzknKmhFWTUSNnu3MAwYWO8RwcGht0eyu7LTIQ0c2d0
-        2F/w6vImjoAu9r+MVhhfTcpCchmhg10mrxYJvVUXVBHEq6BR/CE+tbhETDZ9nJWW0iwUJ+
-        0cHkZniQzj9ig8UA+ze5j04fB5NKyZQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-ZgkwbmrHOM-ZYKoGABN4jA-1; Tue, 29 Dec 2020 19:08:35 -0500
-X-MC-Unique: ZgkwbmrHOM-ZYKoGABN4jA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1DE4801817;
-        Wed, 30 Dec 2020 00:08:33 +0000 (UTC)
-Received: from localhost (ovpn-12-20.pek2.redhat.com [10.72.12.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A34660BFA;
-        Wed, 30 Dec 2020 00:08:29 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] fs/buffer: try to submit writeback bio in unit of page
-Date:   Wed, 30 Dec 2020 08:08:15 +0800
-Message-Id: <20201230000815.3448707-1-ming.lei@redhat.com>
+        Tue, 29 Dec 2020 19:12:33 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C07C061799;
+        Tue, 29 Dec 2020 16:11:53 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id x16so20111590ejj.7;
+        Tue, 29 Dec 2020 16:11:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BIC/2qIdJeGBQNWxLU5IRoKvRyuZw5pGh6L03h8axVM=;
+        b=ZXoYaTF9bdee6/o+D9RUWWvQtRtNTYdwAItnxc5kAGIMUCw7lNqKJ+rZ0UHgq6bCXs
+         6dsBeUb2CoojB6ZeH+53yL0aKdp+OFLOFmxOj5bW0pWbToSoObLYfxG9AY9V5xGyJto3
+         CjMvYrIjsYGKXU+7zPfHelpCusMmEVYheXIDPQDHJg8chMZ0v81Sv+LUiR6aJV/4wgPA
+         IJ6kSZjV+HD+MTgEwCkcNQQwEOrcAXG1JtWGWsTahbpLHBkSHJrJukXd0O1ivxzXEjVk
+         fN66t7QhuzUtHFfFv2yOjXu/n9+usKyxVy0dYuewW1mrbRV3cFibpBIZ2HwnLaBKOOAE
+         POAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BIC/2qIdJeGBQNWxLU5IRoKvRyuZw5pGh6L03h8axVM=;
+        b=ATuKa4rJzavAXWdHBPYD0fUasYLYiorthrc9LqMfZYf6NWClYH6LZ4ZxThVtAReHxD
+         +QejA/Y1kwFQopnsrR3nXE57gHRAntxM4B/6ZiG1SGg9OmxDqAVjBUXPwXzlCLShO6iV
+         sdX349vRIiwUzMHMI3WtrmA/I3le5a68Vj8ZaWJh39/8rRAmtR9ltwIV67HOopxSXXzG
+         aQm0Fc59fyneszrU+jWAsygjbjiC2OkVbK0McMAY+Ifkb4LsT8DLngG6zee1CJQ1cJFQ
+         MohfJlM722fjS93sVOXO34gQgrT70fgz6zgAtGrktZkr643Ze72TDQ/Ik/l5WuzwpVyl
+         1hRg==
+X-Gm-Message-State: AOAM531KAq8K9bBPJSmX3+uocYdtvGq0R2V/s2OVCYeNyA9kVcT4Ls9q
+        Gqm335LFObxTAETd7LZdozWk2/6Vo6G8xzJk3g4=
+X-Google-Smtp-Source: ABdhPJxAo/edRUUxpOPraaqjveLTeoRRb5rrdRwWHdyI1u852zzcnS6mVRrCRKC/Cls55s6FCcSBPu9Xu4SkdZwl2Wg=
+X-Received: by 2002:a17:906:447:: with SMTP id e7mr46945242eja.172.1609287111922;
+ Tue, 29 Dec 2020 16:11:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201223232905.2958651-1-martin.blumenstingl@googlemail.com> <20201228123744.551d1364@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201228123744.551d1364@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Wed, 30 Dec 2020 01:11:41 +0100
+Message-ID: <CAFBinCDM+bPgwquZAG-H=iMZr4+0rW9CG=WafRys5_HdeBkzjA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/5] dwmac-meson8b: picosecond precision RX delay support
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, robh+dt@kernel.org,
+        andrew@lunn.ch, f.fainelli@gmail.com, jianxin.pan@amlogic.com,
+        Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        jbrunet@baylibre.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is observed that __block_write_full_page() always submit bio with size of block size,
-which is often 512 bytes.
+Hi Jakub,
 
-In case of sequential IO, or >=4k BS random/seq writeback IO, most of times IO
-represented by all buffer_head in each page can be done in single bio. It is actually
-done in single request IO by block layer's plug merge too.
+On Mon, Dec 28, 2020 at 9:37 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Thu, 24 Dec 2020 00:29:00 +0100 Martin Blumenstingl wrote:
+> > Hello,
+> >
+> > with the help of Jianxin Pan (many thanks!) the meaning of the "new"
+> > PRG_ETH1[19:16] register bits on Amlogic Meson G12A, G12B and SM1 SoCs
+> > are finally known. These SoCs allow fine-tuning the RGMII RX delay in
+> > 200ps steps (contrary to what I have thought in the past [0] these are
+> > not some "calibration" values).
+>
+> Could you repost in a few days? Net-next is still closed:
+sure
+I also received a Reviewed-by from Florian on patch #1 so I'll also include that
 
-So check if IO represented by buffer_head can be merged to single page
-IO, if yes, just submit single bio instead of submitting one bio for each buffer_head.
 
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-block@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- fs/buffer.c | 112 +++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 90 insertions(+), 22 deletions(-)
-
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 32647d2011df..6bcf9ce5d7f8 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -54,6 +54,8 @@
- static int fsync_buffers_list(spinlock_t *lock, struct list_head *list);
- static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
- 			 enum rw_hint hint, struct writeback_control *wbc);
-+static int submit_page_wbc(int op, int op_flags, struct buffer_head *bh,
-+			 enum rw_hint hint, struct writeback_control *wbc);
- 
- #define BH_ENTRY(list) list_entry((list), struct buffer_head, b_assoc_buffers)
- 
-@@ -1716,10 +1718,12 @@ int __block_write_full_page(struct inode *inode, struct page *page,
- 	int err;
- 	sector_t block;
- 	sector_t last_block;
--	struct buffer_head *bh, *head;
-+	struct buffer_head *bh, *head, *prev_bh;
- 	unsigned int blocksize, bbits;
- 	int nr_underway = 0;
- 	int write_flags = wbc_to_write_flags(wbc);
-+	unsigned int total_size = 0;
-+	bool continuous = true;
- 
- 	head = create_page_buffers(page, inode,
- 					(1 << BH_Dirty)|(1 << BH_Uptodate));
-@@ -1774,6 +1778,7 @@ int __block_write_full_page(struct inode *inode, struct page *page,
- 		block++;
- 	} while (bh != head);
- 
-+	prev_bh = NULL;
- 	do {
- 		if (!buffer_mapped(bh))
- 			continue;
-@@ -1792,9 +1797,17 @@ int __block_write_full_page(struct inode *inode, struct page *page,
- 		}
- 		if (test_clear_buffer_dirty(bh)) {
- 			mark_buffer_async_write_endio(bh, handler);
-+			total_size += bh->b_size;
- 		} else {
- 			unlock_buffer(bh);
- 		}
-+
-+		if (continuous && prev_bh && !(
-+		    prev_bh->b_blocknr + 1 == bh->b_blocknr &&
-+		    prev_bh->b_bdev == bh->b_bdev &&
-+		    buffer_meta(prev_bh) == buffer_meta(bh)))
-+			continuous = false;
-+		prev_bh = bh;
- 	} while ((bh = bh->b_this_page) != head);
- 
- 	/*
-@@ -1804,15 +1817,21 @@ int __block_write_full_page(struct inode *inode, struct page *page,
- 	BUG_ON(PageWriteback(page));
- 	set_page_writeback(page);
- 
--	do {
--		struct buffer_head *next = bh->b_this_page;
--		if (buffer_async_write(bh)) {
--			submit_bh_wbc(REQ_OP_WRITE, write_flags, bh,
--					inode->i_write_hint, wbc);
--			nr_underway++;
--		}
--		bh = next;
--	} while (bh != head);
-+	if (total_size == PAGE_SIZE && continuous) {
-+		submit_page_wbc(REQ_OP_WRITE, write_flags, bh,
-+				inode->i_write_hint, wbc);
-+		nr_underway = MAX_BUF_PER_PAGE;
-+	} else {
-+		do {
-+			struct buffer_head *next = bh->b_this_page;
-+			if (buffer_async_write(bh)) {
-+				submit_bh_wbc(REQ_OP_WRITE, write_flags, bh,
-+						inode->i_write_hint, wbc);
-+				nr_underway++;
-+			}
-+			bh = next;
-+		} while (bh != head);
-+	}
- 	unlock_page(page);
- 
- 	err = 0;
-@@ -3006,8 +3025,28 @@ static void end_bio_bh_io_sync(struct bio *bio)
- 	bio_put(bio);
- }
- 
--static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
--			 enum rw_hint write_hint, struct writeback_control *wbc)
-+static void end_bio_page_io_sync(struct bio *bio)
-+{
-+	struct buffer_head *head = bio->bi_private;
-+	struct buffer_head *bh = head;
-+
-+	do {
-+		struct buffer_head *next = bh->b_this_page;
-+
-+		if (unlikely(bio_flagged(bio, BIO_QUIET)))
-+			set_bit(BH_Quiet, &bh->b_state);
-+
-+		bh->b_end_io(bh, !bio->bi_status);
-+		bh = next;
-+	} while (bh != head);
-+
-+	bio_put(bio);
-+}
-+
-+static int __submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
-+			   enum rw_hint write_hint,
-+			   struct writeback_control *wbc, unsigned int size,
-+			   bio_end_io_t   *end_io_handler)
- {
- 	struct bio *bio;
- 
-@@ -3017,12 +3056,6 @@ static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
- 	BUG_ON(buffer_delay(bh));
- 	BUG_ON(buffer_unwritten(bh));
- 
--	/*
--	 * Only clear out a write error when rewriting
--	 */
--	if (test_set_buffer_req(bh) && (op == REQ_OP_WRITE))
--		clear_buffer_write_io_error(bh);
--
- 	bio = bio_alloc(GFP_NOIO, 1);
- 
- 	fscrypt_set_bio_crypt_ctx_bh(bio, bh, GFP_NOIO);
-@@ -3031,10 +3064,10 @@ static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
- 	bio_set_dev(bio, bh->b_bdev);
- 	bio->bi_write_hint = write_hint;
- 
--	bio_add_page(bio, bh->b_page, bh->b_size, bh_offset(bh));
--	BUG_ON(bio->bi_iter.bi_size != bh->b_size);
-+	bio_add_page(bio, bh->b_page, size, bh_offset(bh));
-+	BUG_ON(bio->bi_iter.bi_size != size);
- 
--	bio->bi_end_io = end_bio_bh_io_sync;
-+	bio->bi_end_io = end_io_handler;
- 	bio->bi_private = bh;
- 
- 	if (buffer_meta(bh))
-@@ -3048,13 +3081,48 @@ static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
- 
- 	if (wbc) {
- 		wbc_init_bio(wbc, bio);
--		wbc_account_cgroup_owner(wbc, bh->b_page, bh->b_size);
-+		wbc_account_cgroup_owner(wbc, bh->b_page, size);
- 	}
- 
- 	submit_bio(bio);
- 	return 0;
- }
- 
-+static inline int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
-+				enum rw_hint write_hint,
-+				struct writeback_control *wbc)
-+{
-+	/*
-+	 * Only clear out a write error when rewriting
-+	 */
-+	if (test_set_buffer_req(bh) && (op == REQ_OP_WRITE))
-+		clear_buffer_write_io_error(bh);
-+
-+	return __submit_bh_wbc(op, op_flags, bh, write_hint, wbc, bh->b_size,
-+			       end_bio_bh_io_sync);
-+}
-+
-+static int submit_page_wbc(int op, int op_flags, struct buffer_head *head,
-+			   enum rw_hint write_hint,
-+			   struct writeback_control *wbc)
-+{
-+	struct buffer_head *bh = head;
-+
-+	WARN_ON(bh_offset(head) != 0);
-+
-+	/*
-+	 * Only clear out a write error when rewriting
-+	 */
-+	do {
-+		if (test_set_buffer_req(bh) && (op == REQ_OP_WRITE))
-+			clear_buffer_write_io_error(bh);
-+		bh = bh->b_this_page;
-+	} while (bh != head);
-+
-+	return __submit_bh_wbc(op, op_flags, head, write_hint, wbc, PAGE_SIZE,
-+			       end_bio_page_io_sync);
-+}
-+
- int submit_bh(int op, int op_flags, struct buffer_head *bh)
- {
- 	return submit_bh_wbc(op, op_flags, bh, 0, NULL);
--- 
-2.28.0
-
+Best regards,
+Martin
