@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686682E7B29
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 17:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494982E7B2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 17:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgL3Qya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 11:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgL3Qy3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 11:54:29 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA611C061799;
-        Wed, 30 Dec 2020 08:53:48 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id m5so17902224wrx.9;
-        Wed, 30 Dec 2020 08:53:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4+FCAThIBIBFdy0r2/jkB586OQFEipavyVIcBnethw0=;
-        b=mqmIhO72s60cwuD0oDiVpSfkhde9VyeMYqzZmMbbb+eDtuKVl/3X7LzWlOXpy67/6y
-         9m7M9SFoPODnL++6qWDJ8hm6XIkOSRcXc3uNN/LLcjoVJLfPC+gsWlJc+0yeYCxia8R3
-         0tIY/fZqTj5I0BX5K+sW15CMR+re1GoqtfZv6B6wdx5nIxgXBCa+vn5QGyPNJjM40ejv
-         10z8bASFSoEt9jCBr3v6yNjCktAcZOE7JWFg/a0BkKfRpOSFRq+6J2QJ0wz42Ar8j4d1
-         lfbXl9ynI3fLR1HbBJpfuEcbPYwtQ5g2ejz1ErOzvcKp7lW3YRMEwiO22QhQFvouJoDo
-         4Cyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4+FCAThIBIBFdy0r2/jkB586OQFEipavyVIcBnethw0=;
-        b=Yr+VODHoAvQx9lWRSOVu2tV2OxipWNenaqWry9b3c4xclpupvhBnLh0ebvs58frRh9
-         2O0gJptEZ3uynPfC7lBS8ymbI4rESDq4k7PUqQ0q0oou9hDy5P8TCSmYOMHfi6iiUQN3
-         FIgZjMzuLRZN+cE+85mVt/V9/XQ9+cMpsKAQHPxJLexfW7iOufMwSPw7JMprDERHZ4LF
-         m+zY+aX8y6EgVXD/sL7r+QKPaiffC4/Ogy++8HS5QLTt/oLXGO3QNzSyp87DPpGXxfpt
-         Lb3PpR3ofT+ITKDxN4Msu2hiDaxqigIwwb7cPuENxHKgTpZBBgyX/yOEFTHOtPLTG28F
-         TsCQ==
-X-Gm-Message-State: AOAM531xNk4oHeonpei4BtFMViy41U9BRsu34tvltHhWsuE+BbA/p3bo
-        bKV1w9SDEO5Wix/vY7liIyae9I6z3RY=
-X-Google-Smtp-Source: ABdhPJwSv/9ZnH6VH/dRJu04QXa1elZhFfM8JLE/J/KanLfYdg9OIb2EZRcVl2bWtJz5DcDUUvS2mA==
-X-Received: by 2002:adf:fdce:: with SMTP id i14mr61682832wrs.58.1609347227453;
-        Wed, 30 Dec 2020 08:53:47 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f06:5500:a1e5:2a55:c7d0:ad89? (p200300ea8f065500a1e52a55c7d0ad89.dip0.t-ipconnect.de. [2003:ea:8f06:5500:a1e5:2a55:c7d0:ad89])
-        by smtp.googlemail.com with ESMTPSA id l5sm65692614wrv.44.2020.12.30.08.53.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Dec 2020 08:53:46 -0800 (PST)
-Subject: Re: Registering IRQ for MT7530 internal PHYs
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        DENG Qingfang <dqfext@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Ren=c3=a9_van_Dorst?= <opensource@vdorst.com>
-References: <20201230042208.8997-1-dqfext@gmail.com>
- <a64312eb-8b4c-d6d4-5624-98f55e33e0b7@gmail.com>
- <CALW65jbV-RwbmmiGjfq8P-ZcApOW0YyN6Ez5FvhhP4dgaA+VjQ@mail.gmail.com>
- <fa7951e1-4a98-8488-d724-3eda9b97e376@gmail.com>
- <546a8430-8865-1be8-4561-6681c7fa8ef8@gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <11ca856b-1d0f-06ed-cf73-58fb9b757928@gmail.com>
-Date:   Wed, 30 Dec 2020 17:53:40 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726603AbgL3Qy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 11:54:57 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:34983 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726214AbgL3Qy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 11:54:57 -0500
+Received: from [192.168.0.8] (ip5f5aef2f.dynamic.kabel-deutschland.de [95.90.239.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 285FC20646219;
+        Wed, 30 Dec 2020 17:54:14 +0100 (CET)
+Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     linux-xfs@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        LKML <linux-kernel@vger.kernel.org>, it+linux-xfs@molgen.mpg.de
+References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
+ <20201230024642.2171-1-hdanton@sina.com>
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Message-ID: <f2933207-a48e-11a6-7dad-0081cae84e06@molgen.mpg.de>
+Date:   Wed, 30 Dec 2020 17:54:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <546a8430-8865-1be8-4561-6681c7fa8ef8@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201230024642.2171-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.12.2020 17:15, Florian Fainelli wrote:
+On 30.12.20 03:46, Hillf Danton wrote:
+> On Wed, 30 Dec 2020 00:56:27 +0100
+>> Threads, which committed items to the CIL, wait in the xc_push_wait
+>> waitqueue when used_space in the push context goes over a limit. These
+>> threads need to be woken when the CIL is pushed.
+>>
+>> The CIL push worker tries to avoid the overhead of calling wake_all()
+>> when there are no waiters waiting. It does so by checking the same
+>> condition which caused the waits to happen. This, however, is
+>> unreliable, because ctx->space_used can actually decrease when items are
+>> recommitted. If the value goes below the limit while some threads are
+>> already waiting but before the push worker gets to it, these threads are
+>> not woken.
 > 
+> Looks like you are fixing a typo in c7f87f3984cf ("xfs: fix
+> use-after-free on CIL context on shutdown") in mainline, and
+> it may mean
 > 
-> On 12/30/2020 1:12 AM, Heiner Kallweit wrote:
->> On 30.12.2020 10:07, DENG Qingfang wrote:
->>> Hi Heiner,
->>> Thanks for your reply.
->>>
->>> On Wed, Dec 30, 2020 at 3:39 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->>>> I don't think that's the best option.
->>>
->>> I'm well aware of that.
->>>
->>>> You may want to add a PHY driver for your chip. Supposedly it
->>>> supports at least PHY suspend/resume. You can use the RTL8366RB
->>>> PHY driver as template.
->>>
->>> There's no MediaTek PHY driver yet. Do we really need a new one just
->>> for the interrupts?
->>>
->> Not only for the interrupts. The genphy driver e.g. doesn't support
->> PHY suspend/resume. And the PHY driver needs basically no code,
->> just set the proper callbacks.
+> 	/*
+> 	 * Wake up any background push waiters now this context is being pushed
+> 	 * if we are no longer over the space limit
+> 	 */
 > 
-> That statement about not supporting suspend/resume is not exactly true,
-> the generic "1g" PHY driver only implements suspend/resume through the
-> use of the standard BMCR power down bit, but not anything more
-> complicated than that.
-> 
-Oh, right. Somehow I had in the back of my mind that the genphy driver
-has no suspend/resume callbacks set.
+> given waiters throttled for comsuming more space than limit in
+> xlog_cil_push_background().
 
-> Interrupt handling within the PHY itself is not defined by the existing
-> standard registers and will typically not reside in a standard register
-> space either, so just for that reason you do need a custom PHY driver.
-> There are other advantages if you need to expose additional PHY features
-> down the road like PHY counters, energy detection, automatic power down etc.
-> 
-> I don't believe we will see discrete/standalone Mediatek PHY chips, but
-> if that happens, then you would already have a framework for supporting
-> them.
-> 
+I'm not sure, I understand you correctly. Do you suggest to update the comment to "...if we are no longer over the space limit"  and change the code to `if (ctx->space_used < XLOG_CIL_BLOCKING_SPACE_LIMIT(log))` ?
 
+I don't think, that would be correct.
+
+The current push context is most probably still over the limit if it ever was. It is exceptional, that the few bytes, which might be returned to ctx->space_used, bring us back below the limit. The new context, on the other hand, will have space_used=0.
+
+We need to resume any thread which is waiting for the push.
+
+Best
+   Donald
+
+>> Always wake all CIL push waiters. Test with waitqueue_active() as an
+>> optimization. This is possible, because we hold the xc_push_lock
+>> spinlock, which prevents additions to the waitqueue.
+>>
+>> Signed-off-by: Donald Buczek <buczek@molgen.mpg.de>
+>> ---
+>>   fs/xfs/xfs_log_cil.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/xfs/xfs_log_cil.c b/fs/xfs/xfs_log_cil.c
+>> index b0ef071b3cb5..d620de8e217c 100644
+>> --- a/fs/xfs/xfs_log_cil.c
+>> +++ b/fs/xfs/xfs_log_cil.c
+>> @@ -670,7 +670,7 @@ xlog_cil_push_work(
+>>   	/*
+>>   	 * Wake up any background push waiters now this context is being pushed.
+>>   	 */
+>> -	if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))
+>> +	if (waitqueue_active(&cil->xc_push_wait))
+>>   		wake_up_all(&cil->xc_push_wait);
+>>   
+>>   	/*
+>> -- 
+>> 2.26.2
