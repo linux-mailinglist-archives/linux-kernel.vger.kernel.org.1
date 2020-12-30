@@ -2,44 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8E02E77E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 11:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D06162E77E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 11:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgL3K4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 05:56:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57598 "EHLO mail.kernel.org"
+        id S1726504AbgL3K4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 05:56:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726203AbgL3K4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 05:56:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67DA9221F8;
-        Wed, 30 Dec 2020 10:55:53 +0000 (UTC)
+        id S1726203AbgL3K4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 05:56:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9656922225;
+        Wed, 30 Dec 2020 10:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609325753;
-        bh=Uzn0V6Ntq8wBMJ38D9siuQPSOSLHAmK6QaFPwF/UDlM=;
+        s=korg; t=1609325775;
+        bh=Gw8mIJ4Tki858u/BW/Nw3TSwmCq5UMaSYZks4bmp2as=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UfTfE35cLhRtiuwhjbR45VFGpcPXtKzIOpBiNdIMD7q+8EnwoljWXYH/SJIedLE4q
-         wrz5twRqhDtPJGqYm+D7DaoM+e0HA45lf6rGnKJtz7dY4El92NK7JX0lGrl0cAGKNj
-         KpWo9nrO9QNVU687valZ/hwUCRb0J6PVrw0YuZNg=
-Date:   Wed, 30 Dec 2020 11:57:20 +0100
+        b=BVDdvNhDKbAu2EiDL0EcBA67LemNoXTIxXePSdN1Ll33dsQCJlzbeLFevhjHf7b0s
+         LCWte45sjhmhe7a87gGxnoNwpsIbfXzRGgtK+gurQ8o1qWjx7uwLpQi7ERxmNEZ3bi
+         YSKJtP6/u5gqkzFH12UDegwwQuXNcGZZ9MmU6LnE=
+Date:   Wed, 30 Dec 2020 11:57:42 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
 Subject: Re: [PATCH 5.10 000/716] 5.10.4-rc2 review
-Message-ID: <X+xdEGLe3liDNFu3@kroah.com>
+Message-ID: <X+xdJkfpzsrn5fuk@kroah.com>
 References: <20201229103832.108495696@linuxfoundation.org>
- <20201229152525.GB49720@roeck-us.net>
+ <923e3123-7247-f8e5-8bbb-67f5e43c3b7d@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201229152525.GB49720@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <923e3123-7247-f8e5-8bbb-67f5e43c3b7d@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 07:25:25AM -0800, Guenter Roeck wrote:
-> On Tue, Dec 29, 2020 at 11:52:58AM +0100, Greg Kroah-Hartman wrote:
+On Tue, Dec 29, 2020 at 02:15:32PM -0600, Daniel Díaz wrote:
+> Hello!
+> 
+> On 12/29/20 4:52 AM, Greg Kroah-Hartman wrote:
 > > This is the start of the stable review cycle for the 5.10.4 release.
 > > There are 716 patches in this series, all will be posted as a response
 > > to this one.  If anyone has any issues with these being applied, please
@@ -48,14 +52,21 @@ On Tue, Dec 29, 2020 at 07:25:25AM -0800, Guenter Roeck wrote:
 > > Responses should be made by Thu, 31 Dec 2020 10:36:33 +0000.
 > > Anything received after that time might be too late.
 > > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.4-rc2.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> Build results:
-> 	total: 154 pass: 154 fail: 0
-> Qemu test results:
-> 	total: 427 pass: 427 fail: 0
+> Results from Linaro’s test farm.
+> No regressions detected.
 > 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks for the testing and letting me know.
+Thanksf or testing and letting me know.
 
 greg k-h
