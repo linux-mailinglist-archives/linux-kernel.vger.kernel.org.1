@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924112E7CE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 23:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B59E2E7CE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 23:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgL3WBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 17:01:22 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:59617 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgL3WBW (ORCPT
+        id S1726499AbgL3WBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 17:01:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgL3WBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 17:01:22 -0500
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 93C3420000A;
-        Wed, 30 Dec 2020 22:00:39 +0000 (UTC)
-Date:   Wed, 30 Dec 2020 23:00:38 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Nicolas Pitre <npitre@baylibre.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-i3c@lists.infradead.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] i3c/master/mipi-i3c-hci: re-fix __maybe_unused attribute
-Message-ID: <20201230220038.GC110311@piout.net>
-References: <20201230154304.598900-1-arnd@kernel.org>
- <orno9ppp-no44-4rp5-s6-58n46rsps045@onlyvoer.pbz>
- <20201230214053.GB110311@piout.net>
- <20201230214321.GA1961980@ubuntu-m3-large-x86>
+        Wed, 30 Dec 2020 17:01:39 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA679C061573;
+        Wed, 30 Dec 2020 14:00:58 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id y23so5917332wmi.1;
+        Wed, 30 Dec 2020 14:00:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5S7hiS0D1Nz3L10rmwrKZxQbbBpU1CmnpvlYUU/6LEU=;
+        b=Ru2Ww/WhliK61JsKemTEPiZMM1R5SNt/H3Soe5qqYF8/m/wlNro6WCA2lIECbrOFEf
+         NGDoDylsZZlZSqsYRzWLAK1Y4Y+FVGJAY8O2tpiMBTtZx72k4VX10jphaMpw2nMEVRQ1
+         P5TdqwLoDRdFrxurvPJBYXY29RPJwDl5P2RwDqaxayHIeCuRKl94O6PyVnpO/YaOUDoe
+         jCNilYYk6J9IV/HFHp9dk1vvuiAqnYKycJDasRi8wTQm/6jGp6qJxtYiC/vrhoeYEfLb
+         wSdhObcKgqW7yLVW8N/nic92TXIjLu6VHhDOuQEj+D5BQO0IZ0fLW5o7JXgqh6K04oMX
+         vxbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5S7hiS0D1Nz3L10rmwrKZxQbbBpU1CmnpvlYUU/6LEU=;
+        b=p5N0/BX+/0TUd+5A62kP8v0kIOGj1TBumRLz1nH3SU6FNb0Zl+cEn692X0Y6Gg6X/C
+         bk3YdTDoyR81oCGqzFAEAwxvj6vx8/syTaPXeDO5spcdK22KrSrHYAJAd5nx7xujKehj
+         hs6/2klBbeUa+dLcYE7whs6gQ4b7Zz4m2CrqhtaJPz/wgZ92qPsgran/2+p9j3eNMkUj
+         573plqmra3qYUhGbU4Dis/9qcAoKACDaU46O2Z0Guko3mk+uVrhFflLdr/CWqETqE9l2
+         1UKyo7MW53ZD/f17iSswDk2MjFiTNfWAtSm0zpazJGwHVyvZgKX/aSHgXp1DUTVKr8pc
+         7zBA==
+X-Gm-Message-State: AOAM533UB6+lG82vBkEMf4zpkvtG6zzWaGI9cfLwcGy2/0khecAZ+zSl
+        kTmeazIAeFjlxTfrEfJJlDzNkmJmw2PFvzosercFyLxQOGYm/w==
+X-Google-Smtp-Source: ABdhPJxrO8bxLi/LAgoYnCE/bMU6bLerAGt+vc416K51PT7VCLFUUMgtmrVv0KmUcTUaO6NjCMm22d74MXLpliAaaYY=
+X-Received: by 2002:a7b:c389:: with SMTP id s9mr8968721wmj.159.1609365657658;
+ Wed, 30 Dec 2020 14:00:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230214321.GA1961980@ubuntu-m3-large-x86>
+References: <1609312994-121032-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <1609312994-121032-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+From:   Lijun Pan <lijunp213@gmail.com>
+Date:   Wed, 30 Dec 2020 16:00:47 -0600
+Message-ID: <CAOhMmr4QaJY6Mr=TByXaR5OHh-LxaV2w77dXtopdsHFAOZuuHg@mail.gmail.com>
+Subject: Re: [PATCH] ibmvnic: fix: NULL pointer dereference.
+To:     YANG LI <abaci-bugfix@linux.alibaba.com>
+Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
+        drt@linux.ibm.com, Lijun Pan <ljp@linux.ibm.com>,
+        sukadev@linux.ibm.com, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/12/2020 14:43:21-0700, Nathan Chancellor wrote:
-> On Wed, Dec 30, 2020 at 10:40:53PM +0100, Alexandre Belloni wrote:
-> > On 30/12/2020 16:23:56-0500, Nicolas Pitre wrote:
-> > > On Wed, 30 Dec 2020, Arnd Bergmann wrote:
-> > > 
-> > > > From: Arnd Bergmann <arnd@arndb.de>
-> > > > 
-> > > > clang warns because the added __maybe_unused attribute is in
-> > > > the wrong place:
-> > > > 
-> > > > drivers/i3c/master/mipi-i3c-hci/core.c:780:21: error: attribute declaration must precede definition [-Werror,-Wignored-attributes]
-> > > > static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
-> > > >                     ^
-> > > > include/linux/compiler_attributes.h:267:56: note: expanded
-> > > > 
-> > > > Fixes: 95393f3e07ab ("i3c/master/mipi-i3c-hci: quiet maybe-unused variable warning")
-> > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > 
-> > > Acked-by: Nicolas Pitre <npitre@baylibre.com>
-> > > 
-> > > This might be the 3rd patch from 3 different people fixing the same 
-> > > thing. Looks like I3C maintainer is on vacation. Please feel free to 
-> > > send this trivial fix upstream some other way.
-> > > 
-> > 
-> > Isn't it already upstream?
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=95393f3e07ab53855b91881692a4a5b52dcdc03c
-> 
-> This patch is fixing that one, the attribute was added between the
-> struct type, causing a new warning for clang.
-> 
+On Wed, Dec 30, 2020 at 1:25 AM YANG LI <abaci-bugfix@linux.alibaba.com> wrote:
+>
+> The error is due to dereference a null pointer in function
+> reset_one_sub_crq_queue():
+>
+> if (!scrq) {
+>     netdev_dbg(adapter->netdev,
+>                "Invalid scrq reset. irq (%d) or msgs(%p).\n",
+>                 scrq->irq, scrq->msgs);
+>                 return -EINVAL;
+> }
+>
+> If the expression is true, scrq must be a null pointer and cannot
+> dereference.
+>
+> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+> Reported-by: Abaci <abaci@linux.alibaba.com>
+> ---
 
-Ah yes, even after reading that 3 times, I got it wrong.
-
-> I sent a fix for this earlier too, I do not care which one goes in as
-> long as one does so:
-> 
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> 
-
-I was going to review and apply yours now that I have access to the i3c
-repo. I must admit I didn't have a look at i3c patches until now and the
-holiday season is not helping.
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Acked-by: Lijun Pan <ljp@linux.ibm.com>
