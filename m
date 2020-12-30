@@ -2,213 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CAB2E75B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083972E75B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgL3Ce4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 21:34:56 -0500
-Received: from mail-eopbgr40044.outbound.protection.outlook.com ([40.107.4.44]:7902
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726178AbgL3Cez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 21:34:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bqbz+xx1FNcq3jVisbmKxdwyd+RS6sOWDbHIDB3S4H7CeZ/+VSiZQN4WQrz3zKEG7qyvSGA99WL02TZVdqgcg8i+VEXawUy/363EwjTFoAvlhpTKtfC5faye2dtpwet8AKjl8A5w09hux0rEInBkT3KH6J/hNdZm9/KyiXqRjP3FPZaSVrMpfuWXYmHYh7suU6LnPO91q7thPEAXfF+HoI7mq0DeLpLGcLo3Favlhf1z4rtjqrAr52J4vmIH+GOI8cYGcUrFZu6qqfJ1kVdcVkCIzgPvYuu71fsZgKgdi71npteIL+7+LFh63kH9JwPgliUqnsLy6LyH+o7yCXjL7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pPpDSjl9JNJpbrJqNN1Gc9H1Uw8DEIokwybePGBdk8s=;
- b=C3VbkwKMxFjZGAEL5ChTJocxEUujujOeRuH15/yr0KmKrCqMbnhjTnfRYhY80qiNhc0S8GPZizq8gUO6EQCPOc5IF8ahI68/GeiSkYntqLSDpLEEYSvVR+mZGYdk9WUIPBnGKpp9FXTv0h9lV4KMmcEn0NstbvFBNjWj4dvFnFpSi0vnHHDd7J0RXWksFC9u/vXLjk9OKkW+tOMH86in2DmqzMmlsXuVu5zPfdCaWP9LG3CeHzEGNUdPZfAjevc0cK/drn9gYhJqAsDq91gR9n/WkSeipICD5wZIEq9tAueYFXCqPxFWozZoR5rqGJabezLI5UNdBf6r1IvuwzQEhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pPpDSjl9JNJpbrJqNN1Gc9H1Uw8DEIokwybePGBdk8s=;
- b=imXye3o8yesqbX1nsSxaZUg7lWfmomjlki4+b+8O1GIqGHmMMUWrGLf0tbXxT+eQfFMPYlYxXSsybxZVAa68NyJyGPwszZk6B/DNGTQyYfDwG0phzgtMGVjdkRohVo8XoZD2tqoCCe02h4OMnaeZfYkcujkMI+GSGRHR+qx7JGs=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB7PR04MB5996.eurprd04.prod.outlook.com (2603:10a6:10:84::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Wed, 30 Dec
- 2020 02:34:06 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3700.031; Wed, 30 Dec 2020
- 02:34:06 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Adam Ford <aford173@gmail.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>
-CC:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH 2/4] arm64: dts: imx8mn: add spba bus node
-Thread-Topic: [PATCH 2/4] arm64: dts: imx8mn: add spba bus node
-Thread-Index: AQHW3duJvPuYDUtWdEOkXpLhy092Y6oOAAGAgAA/DACAAK1T8A==
-Date:   Wed, 30 Dec 2020 02:34:06 +0000
-Message-ID: <DB6PR0402MB2760BBFAAA6C5CE0373EDEFE88D70@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <1609243245-9671-1-git-send-email-peng.fan@nxp.com>
- <1609243245-9671-3-git-send-email-peng.fan@nxp.com>
- <CAHCN7x+=ebLn8vrrT=fyByQDydDNfkESFZHjdUrw=OHBz_E0hw@mail.gmail.com>
- <20201229161220.GA17229@kozik-lap>
-In-Reply-To: <20201229161220.GA17229@kozik-lap>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: ba403243-b72a-4323-e352-08d8ac6b612e
-x-ms-traffictypediagnostic: DB7PR04MB5996:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB59961A12848038BB2E2FC6CB88D70@DB7PR04MB5996.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /pYSjcCgKduteeI5UFsj9W7FD2OIVimGYPb2DXyjlUIpzMXLMW2VFEU9hVYnBxXFjg2loY2ZXWq+NSZaMbXvFCA6Rzl+aKJRqzFHnB1gVT50SQp1qIK156XU+/j4Dwex89jL1D/jcx8X3yk7/5YEe9ywpNBma8HdsxcWzAENzfVc/F+9bblxEF6R4LJ7eWSBSGCsJfwP34AQboHYsHt6eJLxV0LwQK75jPY1Yy8IValKu57xPpfCrygwEriLP1HuYG+OBHoV++sPYOm38CvRT6tKdi0P8AensYSnDjnHC+lRZycX9sUBiwVjwGjLXQOauBi8UBpt8oxPQti8DdL9/76fa7EKEI01/uBd4WE25DJnYk7B2cA05Hnpm0q7MRfWMc8kskQN31Okmf3UvqI2LGIDAB2Qi416oCXbaRmJtbMys51IxDHp3JhwO7evq+sa8rAAK5X3Zm5DatjVFnjqts2aJ5LXgJvUA9x2eNNkmfON5jzVxv+pi8tO6X9or9cNVN2tmZB66t2PzLyvM+rToQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(39860400002)(346002)(53546011)(6506007)(33656002)(71200400001)(86362001)(110136005)(186003)(54906003)(26005)(7416002)(316002)(7696005)(8936002)(8676002)(6636002)(2906002)(44832011)(52536014)(4326008)(55016002)(478600001)(45080400002)(66446008)(76116006)(66946007)(83380400001)(66556008)(64756008)(66476007)(966005)(9686003)(5660300002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?hC5NHQy9vgyMtUoKwZWPQSn1ZKejHRrgux3Xi5dEtEHkx+cGxK2hKEoyOF86?=
- =?us-ascii?Q?6OO36/n+C6Q4CsDJRqn7wDeg1ecm3Wsizlp7dqstIyRKzmzYGkodCGN9OUWH?=
- =?us-ascii?Q?jFsEzYXWyKnF6Ff+wr+17EmmX6OrvH2weo25e5qubXsjP1Ji/iEtvkL3TjPo?=
- =?us-ascii?Q?cJkctFN6I/M1GQyPvenpZIjFbwP3wNGWe/h1unH4yG816j1jfweeFjAYihQf?=
- =?us-ascii?Q?of9oyiYkIvEG8XjpWV26VHTniJO9Hjd6l5e3Ss98SgAry3p/fhrQkIiHMeej?=
- =?us-ascii?Q?P2IG3S4wHXw0ZkP9QoXPBtaMXxl4gM14LtK2M6VOZsGew0n6g89KQMJ4RAV3?=
- =?us-ascii?Q?BsGMPZJhLGyUB683An4Z6etUtfyYJEtw7wbwYj6JtZlJxD2BP3Km6EDWl0aO?=
- =?us-ascii?Q?I+7MDKRu38CcUcbJWHvijAq5vJfGs+iEOKW3FeBXrfSQAG4VD5FslnVL4D4Q?=
- =?us-ascii?Q?FSy32/ImNujoM0/wavJuHnDGMXwdmak+Nu+kFGjHURHStq18URyfcvTwAn8D?=
- =?us-ascii?Q?Z0kTKk+ASLgNJYtQ44tGkLLxsP5XRycaQJS02CAJMJItiUwRzgAmLJ2sp3RC?=
- =?us-ascii?Q?k5dDZ6DjgDe0poqo8oKGnQS4lT1m/WQN1orDJ4Tgm3LfF3IQdlvs0y85S60p?=
- =?us-ascii?Q?Ajn6Gd2iIpMsHu9m/0DLjsyULkc2qdnT+fTxAGG29AhpCHxThX1wpBqtmVHL?=
- =?us-ascii?Q?wxBVg4hwa4crC5alSHTLhvxkQRkuJ1oDargyUV54rmlorOYJvE+B0roLcF9Z?=
- =?us-ascii?Q?OCpmkBbRqcfO1sE5SHeA73yJ7l4UPyHIHIJ11VXa4MI3uCCQjASZkVYnzIl9?=
- =?us-ascii?Q?LlS9jV604Sd2nuKpdAoPAamq4a0iRUnm10J8IK6y7AWF5n3WjB3M5XWf/GAQ?=
- =?us-ascii?Q?CzRHsMChcdbDW5OHFglxZVcECLfJZnJi9Aiu9j8LSQbNSrs2C9ATIZo8TAGu?=
- =?us-ascii?Q?bB/yRqVQj321NdKincHuPcJJcaBQdn8N//s1I/XSz0Y=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726242AbgL3Cs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 21:48:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21953 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726168AbgL3Cs3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 21:48:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609296422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Qd6nMabBaDCBXEiCctK4wjRScqdv2pc8J+Ek6ufNcrI=;
+        b=Jxp4gpkHqln+T2GxemWNQiSq2P0nHDPopO635kq5L3uKgzE3HQQ+zW0us13CaXvTs2fhXx
+        mCU6uRUV5WgQ0otMxn8okHX3kVXNXfxGHaP3SC/Juy9Itf+0HUKTXl1R2FcsGF1W2LNImt
+        n7IGZ8+nSPJLezZxAZvGEKFjIHyqSHw=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-0F-282P1Npyncibw4-_4iQ-1; Tue, 29 Dec 2020 21:47:00 -0500
+X-MC-Unique: 0F-282P1Npyncibw4-_4iQ-1
+Received: by mail-oi1-f200.google.com with SMTP id r204so10038231oia.19
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 18:47:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qd6nMabBaDCBXEiCctK4wjRScqdv2pc8J+Ek6ufNcrI=;
+        b=s79wl+M+PM+p1Fyf4xznWeP9MvxzphasU8uvumWExLetJuE/w2Wzrlvr9c4GvsqJhq
+         ay6grw0UW4o5mX/WYPIZUbW3RXlmFJRD8fZFiBEk7/S4IOmP6tjDJ2+XuyFktWMZEJC8
+         0/Mpt/KOqKMyAWMoKaQb5K0rHMhnyf2E7xG/eGUSlwe8PWPGGpEhzPtu/68BKct1vHxk
+         Sxxrb6OH9gzjxM+/ZxS7D97ygc2xpbkgQ9oob8D6xNc64d+eLB8KezPcsh8ckwfLQSAe
+         PrXKqdjJA5RsTYcchHZ+U43lcp4YtsJw/dziX1nUt+Nlqbzm+JAWuoKIGutu029KVNro
+         9RTw==
+X-Gm-Message-State: AOAM530LQXoQIAOnxExw1qsjuV2YUuUfJKimSKda2sYiNlNSjaXnBy/1
+        hcXj+De+tdMUPsh9JStW8HQNXkJKMg+7HfsWppaRZjIy0wtT95yULLtVohQg613OJ98nEc90yJI
+        /BuQ14hnxL92MjIWteIscTeA9
+X-Received: by 2002:a9d:4793:: with SMTP id b19mr36913686otf.193.1609296419863;
+        Tue, 29 Dec 2020 18:46:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyi+KRvLyMyUmLuqPNbTkK+ueMj71floi2LMwHGuN3AywqUKApUEtQilDxkXXDP+Bc+Nc7x8w==
+X-Received: by 2002:a9d:4793:: with SMTP id b19mr36913679otf.193.1609296419647;
+        Tue, 29 Dec 2020 18:46:59 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 94sm10488091otw.41.2020.12.29.18.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Dec 2020 18:46:59 -0800 (PST)
+From:   trix@redhat.com
+To:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
+        dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        maxg@mellanox.com, galpress@amazon.com, michaelgur@nvidia.com,
+        monis@mellanox.com, gustavoars@kernel.org
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] RDMA/ocrdma: fix use after free in ocrdma_dealloc_ucontext_pd()
+Date:   Tue, 29 Dec 2020 18:46:53 -0800
+Message-Id: <20201230024653.1516495-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba403243-b72a-4323-e352-08d8ac6b612e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Dec 2020 02:34:06.3416
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WiYJ++iV5jtcGOfvG0Zcq6uYS666yOg2RzN2hzgZ6E9lanc8SzXUElZUip3KgP1k1D7vMIpCkjbtvmf5TcmsDQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5996
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH 2/4] arm64: dts: imx8mn: add spba bus node
->=20
-> On Tue, Dec 29, 2020 at 06:26:41AM -0600, Adam Ford wrote:
-> > On Tue, Dec 29, 2020 at 6:15 AM <peng.fan@nxp.com> wrote:
-> > >
-> > > From: Peng Fan <peng.fan@nxp.com>
-> > >
-> > > According to RM, there is a spba bus inside aips3 and aips1, add it.
-> > >
-> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 362
-> > > +++++++++++-----------
-> > >  1 file changed, 189 insertions(+), 173 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > index c824f2615fe8..91f85b8cee9a 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > @@ -269,117 +269,125 @@ aips1: bus@30000000 {
-> > >                         #size-cells =3D <1>;
-> > >                         ranges =3D <0x30000000 0x30000000
-> 0x400000>;
-> > >
-> > > -                       sai1: sai@30010000 {
-> > > -                               #sound-dai-cells =3D <0>;
-> > > -                               compatible =3D "fsl,imx8mm-sai",
-> "fsl,imx8mq-sai";
-> > > -                               reg =3D <0x30010000 0x10000>;
-> > > -                               interrupts =3D <GIC_SPI 95
-> IRQ_TYPE_LEVEL_HIGH>;
-> > > -                               clocks =3D <&clk
-> IMX8MM_CLK_SAI1_IPG>,
-> > > -                                        <&clk
-> IMX8MM_CLK_SAI1_ROOT>,
-> > > -                                        <&clk
-> IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>;
-> > > -                               clock-names =3D "bus", "mclk1",
-> "mclk2", "mclk3";
-> > > -                               dmas =3D <&sdma2 0 2 0>, <&sdma2
-> 1 2 0>;
-> > > -                               dma-names =3D "rx", "tx";
-> > > -                               status =3D "disabled";
-> > > -                       };
-> > > +                       bus@30000000 {
-> >
-> > There is already a bus@30000000 (aips1), and I think the system
-> > doesn't like it when there are multiple busses with the same name.
-> >
-> > There was some discussion on fixing the 8mn [1], but it doesn't look
-> > like it went anywhere.
-> >
-> > I am guessing the Mini will need something similar to the nano.
-> >
-> > [1] -
-> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpat=
-c
-> >
-> hwork.kernel.org%2Fproject%2Flinux-arm-kernel%2Fpatch%2F1607324004-1
-> 29
-> >
-> 60-1-git-send-email-shengjiu.wang%40nxp.com%2F&amp;data=3D04%7C01%7
-> Cpeng
-> > .fan%40nxp.com%7C970d320f3ef7413296ed08d8ac1486f9%7C686ea1d3bc
-> 2b4c6fa9
-> >
-> 2cd99c5c301635%7C0%7C0%7C637448551481206715%7CUnknown%7CTW
-> FpbGZsb3d8ey
-> >
-> JWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D
-> %7C200
-> >
-> 0&amp;sdata=3DxKgYHCDyitbUyTPKVuwQV%2FCoJvepCbdBJ1MD9vP%2B6MY
-> %3D&amp;res
-> > erved=3D0
->=20
-> Several replies from S.j. Wang are missing from LKML (and maybe
-> patchwork?) but we reached a conclusion:
+From: Tom Rix <trix@redhat.com>
 
-Thanks for the pointing, I'll give a look. If S.J take it, I'll leave it to=
- S.J.
+In ocrdma_dealloc_ucontext_pd() uctx->cntxt_pd is assigned to
+the variable pd and then after uctx->cntxt_pd is freed, the
+variable pd is passed to function _ocrdma_dealloc_pd() which
+dereferences pd directly or through its call to
+ocrdma_mbx_dealloc_pd().
 
-Thanks,
-Peng.=20
+Reorder the free using the variable pd.
 
-> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.=
-ke
-> rnel.org%2Flinux-arm-kernel%2F20201208090601.GA8347%40kozik-lap%2F&
-> amp;data=3D04%7C01%7Cpeng.fan%40nxp.com%7C970d320f3ef7413296ed08
-> d8ac1486f9%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C63744
-> 8551481206715%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiL
-> CJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=3Dnk
-> t0J5RtzA%2B29nK4aPnd434FNQV8MUZ%2F8Aq64o6hl6I%3D&amp;reserved
-> =3D0
->=20
-> Either you do some remapping of address space or just rename the "bus"
-> nodes (e.g. generic bus-1 or a specific spba-bus).
->=20
-> Best regards,
-> Krzysztof
+Fixes: 21a428a019c9 ("RDMA: Handle PD allocations by IB/core")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+index bc98bd950d99..3acb5c10b155 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+@@ -434,9 +434,9 @@ static void ocrdma_dealloc_ucontext_pd(struct ocrdma_ucontext *uctx)
+ 		pr_err("%s(%d) Freeing in use pdid=0x%x.\n",
+ 		       __func__, dev->id, pd->id);
+ 	}
+-	kfree(uctx->cntxt_pd);
+ 	uctx->cntxt_pd = NULL;
+ 	_ocrdma_dealloc_pd(dev, pd);
++	kfree(pd);
+ }
+ 
+ static struct ocrdma_pd *ocrdma_get_ucontext_pd(struct ocrdma_ucontext *uctx)
+-- 
+2.27.0
+
