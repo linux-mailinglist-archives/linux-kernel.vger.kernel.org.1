@@ -2,180 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB1F2E7C9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 22:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF882E7CA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 22:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgL3VXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 16:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60300 "EHLO
+        id S1726597AbgL3VYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 16:24:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgL3VXL (ORCPT
+        with ESMTP id S1726292AbgL3VYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 16:23:11 -0500
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3731AC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 13:22:31 -0800 (PST)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kuivN-00AlvP-Df
-        for linux-kernel@vger.kernel.org; Wed, 30 Dec 2020 22:22:29 +0100
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
-        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kuivB-00Alub-8g; Wed, 30 Dec 2020 22:22:17 +0100
-Received: from bert by sumner.biot.com with local (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kuivA-00Avne-ON; Wed, 30 Dec 2020 22:22:16 +0100
-From:   Bert Vermeulen <bert@biot.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sander Vanheule <sander@svanheule.net>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Bert Vermeulen <bert@biot.com>
-Subject: [PATCH v3 4/4] dts: Add support for Cisco SG220-26 switch
-Date:   Wed, 30 Dec 2020 22:22:05 +0100
-Message-Id: <20201230212205.2605383-4-bert@biot.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201230212205.2605383-1-bert@biot.com>
-References: <20201230212205.2605383-1-bert@biot.com>
+        Wed, 30 Dec 2020 16:24:39 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E2EC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 13:23:59 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id v5so11774756qtv.7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 13:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=3JIH2KfcSRonErtkZqTRpOudCvLIbGBt7ERBPB2Wmk8=;
+        b=gKH9KAv4kTyRe1sQX4bdLJ7yjd61FUJfS3pYh6ATPN93cHdzh1gMAL8KZ6QGgPp/aO
+         DY7C+keOpVMkkmBEkejPsOhzrvEShk0WbqoppjFzfcHbKjjsjnnUBFu3KzKBLYK78E3U
+         ELRYE1pv/Uzeiw621HlppDSoUj9IKg0A1Z/U/GhkCpsrcBryoOXvnMKKKHZwrycDzK9J
+         no6uvbxY5aOgXdUf+6CFQ4hNsUgniTRYhIHlUUnmwtSpNQ5dwG75Odo2jnuL5JSve8q/
+         orQogFYTOzFw8WrJpZ9NRKLY2XUptCfNaHYfQ9uN6LE0pub5GvpraCbIcDDMBhVk90p5
+         AUXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=3JIH2KfcSRonErtkZqTRpOudCvLIbGBt7ERBPB2Wmk8=;
+        b=RdgcJSx5ZMGtO0jhVCLVzzoiIgluYKFMvlAXvGJY2w9p4jTu7Zk8a5wVYSisyDm/Wd
+         8b8u8YTGHn3gVY7Jey1hz8GoP+t6kZkD/BbBY6M13issYoUMs/EqGrcj86sNkWwohQZJ
+         VM16KPA0LBpTjqkGnM6vC2RdQpXgehKN02R8CZXlK00bjAfruUXG54hJKdhNKkP1NUv8
+         f2013+nyzhfbrEcgksCzAwOJlYWaIu7svMpBgT0YDZGj/H8cQOCw8ZtTkH/AdGzi9w9E
+         vapvywRC/Oae4v20/Ld9xbwbxfJdryYBbQ4/Rkhbp/L9Kqp1cDdiZY6VMdHuz7dlvmNG
+         6MXQ==
+X-Gm-Message-State: AOAM533IKGhDc0NerB81CrVNqg1IYkqsaOfmWP9YPDKe/ADolmVcMo21
+        wUrzkjWjO4f+sgAgMN4Q6rT2mg==
+X-Google-Smtp-Source: ABdhPJynsmqHlAfiV8grdxXDmiM3GLqmENngmdB/r58gJRmAD6YxfPcRFo6pthzPvBPTcASpnu76Gg==
+X-Received: by 2002:aed:2827:: with SMTP id r36mr54058903qtd.337.1609363438447;
+        Wed, 30 Dec 2020 13:23:58 -0800 (PST)
+Received: from xanadu.home (modemcable076.50-203-24.mc.videotron.ca. [24.203.50.76])
+        by smtp.gmail.com with ESMTPSA id u4sm27590039qtv.49.2020.12.30.13.23.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 13:23:57 -0800 (PST)
+Date:   Wed, 30 Dec 2020 16:23:56 -0500 (EST)
+From:   Nicolas Pitre <npitre@baylibre.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] i3c/master/mipi-i3c-hci: re-fix __maybe_unused
+ attribute
+In-Reply-To: <20201230154304.598900-1-arnd@kernel.org>
+Message-ID: <orno9ppp-no44-4rp5-s6-58n46rsps045@onlyvoer.pbz>
+References: <20201230154304.598900-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Bert Vermeulen <bert@biot.com>
-Signed-off-by: Sander Vanheule <sander@svanheule.net>
----
- arch/mips/Kconfig                             | 10 +++
- arch/mips/boot/dts/realtek/Makefile           |  2 +
- arch/mips/boot/dts/realtek/cisco_sg220-26.dts | 81 +++++++++++++++++++
- 3 files changed, 93 insertions(+)
- create mode 100644 arch/mips/boot/dts/realtek/Makefile
- create mode 100644 arch/mips/boot/dts/realtek/cisco_sg220-26.dts
+On Wed, 30 Dec 2020, Arnd Bergmann wrote:
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 0986d0c4405f..a398416842ca 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1055,6 +1055,16 @@ config NLM_XLP_BOARD
- 
- endchoice
- 
-+if MACH_REALTEK_RTL
-+choice
-+	prompt "Realtek RTL838x/RTL839x-based switch"
-+	optional
-+
-+	config DT_CISCO_SG220_26
-+		bool "Cisco SG220-26"
-+endchoice
-+endif
-+
- source "arch/mips/alchemy/Kconfig"
- source "arch/mips/ath25/Kconfig"
- source "arch/mips/ath79/Kconfig"
-diff --git a/arch/mips/boot/dts/realtek/Makefile b/arch/mips/boot/dts/realtek/Makefile
-new file mode 100644
-index 000000000000..f0a3e5816767
---- /dev/null
-+++ b/arch/mips/boot/dts/realtek/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+dtb-$(CONFIG_DT_CISCO_SG220_26)		+= cisco_sg220-26.dtb
-diff --git a/arch/mips/boot/dts/realtek/cisco_sg220-26.dts b/arch/mips/boot/dts/realtek/cisco_sg220-26.dts
-new file mode 100644
-index 000000000000..5d8ba3df95aa
---- /dev/null
-+++ b/arch/mips/boot/dts/realtek/cisco_sg220-26.dts
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
-+
-+/dts-v1/;
-+
-+#include "rtl83xx.dtsi"
-+#include "rtl838x.dtsi"
-+
-+/ {
-+	model = "Cisco SG220-26";
-+	compatible = "cisco,sg220-26", "realtek,rtl8382-soc";
-+
-+	chosen {
-+		stdout-path = "serial0:9600n8";
-+		bootargs = "earlycon console=ttyS0,9600";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x8000000>;
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-+
-+&spi {
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		spi-max-frequency = <10000000>;
-+		reg = <0>;
-+		m25p,fast-read;
-+		broken-flash-reset;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			loader: partition@0 {
-+				label = "boot";
-+				reg = <0x0 0x80000>;
-+				read-only;
-+			};
-+
-+			bdinfo: partition@80000 {
-+				label = "bdinfo";
-+				reg = <0x80000 0x10000>;
-+				read-only;
-+			};
-+
-+			sysinfo: partition@90000 {
-+				label = "sysinfo";
-+				reg = <0x90000 0x10000>;
-+				read-only;
-+			};
-+
-+			jffs2_cfg: partition@a0000 {
-+				label = "jffs2 cfg";
-+				reg = <0xa0000 0x400000>;
-+			};
-+
-+			jffs2_log: partition@4a0000 {
-+				label = "jffs2 log";
-+				reg = <0x4a0000 0x100000>;
-+			};
-+
-+			runtime: partition@5a0000 {
-+				label = "runtime";
-+				reg = <0x5a0000 0xd30000>;
-+			};
-+
-+			runtime2: partition@12d0000 {
-+				label = "runtime2";
-+				reg = <0x12d0000 0xd30000>;
-+			};
-+		};
-+	};
-+};
--- 
-2.25.1
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> clang warns because the added __maybe_unused attribute is in
+> the wrong place:
+> 
+> drivers/i3c/master/mipi-i3c-hci/core.c:780:21: error: attribute declaration must precede definition [-Werror,-Wignored-attributes]
+> static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
+>                     ^
+> include/linux/compiler_attributes.h:267:56: note: expanded
+> 
+> Fixes: 95393f3e07ab ("i3c/master/mipi-i3c-hci: quiet maybe-unused variable warning")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
+Acked-by: Nicolas Pitre <npitre@baylibre.com>
+
+This might be the 3rd patch from 3 different people fixing the same 
+thing. Looks like I3C maintainer is on vacation. Please feel free to 
+send this trivial fix upstream some other way.
+
+> ---
+>  drivers/i3c/master/mipi-i3c-hci/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i3c/master/mipi-i3c-hci/core.c b/drivers/i3c/master/mipi-i3c-hci/core.c
+> index 500abd27fb22..1b73647cc3b1 100644
+> --- a/drivers/i3c/master/mipi-i3c-hci/core.c
+> +++ b/drivers/i3c/master/mipi-i3c-hci/core.c
+> @@ -777,7 +777,7 @@ static int i3c_hci_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
+> +static const __maybe_unused struct of_device_id i3c_hci_of_match[] = {
+>  	{ .compatible = "mipi-i3c-hci", },
+>  	{},
+>  };
+> -- 
+> 2.29.2
+> 
+> 
