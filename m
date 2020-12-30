@@ -2,153 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE332E7B93
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181392E7B94
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:33:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgL3R3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 12:29:17 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:43867 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgL3R3Q (ORCPT
+        id S1726485AbgL3Rc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 12:32:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726230AbgL3Rc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 12:29:16 -0500
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 8E61722727;
-        Wed, 30 Dec 2020 18:28:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1609349313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6FicUDPIGdxRaI+t09GLlQLPPAddV4hLMgOu+jJmYzQ=;
-        b=Pt0t25f7AZMrS72/2OOTXUIQb1FDTZ4ZIWIqO3kyJ/v3A3O+AZx33wPaO8Z0goKKBfxYXj
-        QhUGVUzo2Ko7OxYWMkf2FQJympk8MXSFnWJgwatDma5ylJ7YKM5mcZDyi04V2CYNm/K4Jy
-        fMTV5CbQh92pdK+c1nICi9JDbZ4TLkM=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH] PCI: add Intel i210 quirk
-Date:   Wed, 30 Dec 2020 18:28:23 +0100
-Message-Id: <20201230172823.28483-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+        Wed, 30 Dec 2020 12:32:26 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2BAC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 09:31:45 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id ce23so22716085ejb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 09:31:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=hnodDRwV7KrX2F5f5m3U5rbzJKs9642aXUNNT4NV9xg=;
+        b=fDBWUKGIMs8QU5mQQEUXZreYyS59CQSHAc1LFFxxdUd1uCod27H/Xrr3dCVrKMuo0C
+         HmavTpybjJ91dgOD1W81NIn5WgOzU/c4yv+uB4p2TO4BIXUzP0V1vxNVYwWS7kXzlrh0
+         YHI82lYeork6vNCkH0QjWfOBJ3dIsvM7tHT7KXYihQ1zC7kOvF7nTLEmLi9zHpvLKMUU
+         OSuL0By3a7ZeVaCXsdE7UJNU4haz2e1x3rx9SM8v3Yi8TZrqVXGRxYdBA28k95//1Oqa
+         KCymDNKe8E5KfiG3gjUrAn7mL4ifNsGndjuN/DwlXH1F+zxzUEoIHY5MvlvBQaJ0PhBd
+         DZ9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=hnodDRwV7KrX2F5f5m3U5rbzJKs9642aXUNNT4NV9xg=;
+        b=Hk6mRNVxIIcYyogKdvVD49N/vvdf58TieiNhMe9/QZwEqe5w5KiKvoar3gDoss6tI1
+         sUPw+qA1L9WK7EvJg+MBaXCcgKaL+OYosx7VFaDWtrqw8m0mubcTN4zvBvgeP1oY1mI1
+         HhwTVBvd3K0zAOC27E0Q68tlKrlNjOYu0/DI8ttj1Ve33/e1PXuU/2j8qXNg0tt4IYnw
+         Kz2dmVBFt5P7PQkp2PeU2ZPzeCwbytoaBFC1fdgjomWLz7RwEM/4G4wXRs3eM1it7Mwm
+         c+Dp60lvk1Xz3O6z2OanJrhcTbSQ+VfeFUOkNcKKPqXNO1SihZoAViKJnl2+vd2OhtNb
+         2Tzw==
+X-Gm-Message-State: AOAM530H0UqHpIa5j+OowxeBY3yQBQFKbYY+I9FLOZ0xHra7e5hcdmCC
+        fEa9BeNLDvxzRnVa0QiVkqk/l57dCBsSNg==
+X-Google-Smtp-Source: ABdhPJxeocVzT2BF0zcq26jNflR5tn8yg80RBmY6qQ1/QKvsdv0JaMY2xmH7cslpKUbg8pZpPWAPWA==
+X-Received: by 2002:a17:906:3712:: with SMTP id d18mr51899918ejc.178.1609349504398;
+        Wed, 30 Dec 2020 09:31:44 -0800 (PST)
+Received: from CORE.localdomain (IGLD-83-130-29-80.inter.net.il. [83.130.29.80])
+        by smtp.gmail.com with ESMTPSA id z1sm17188890edm.89.2020.12.30.09.31.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 09:31:43 -0800 (PST)
+Date:   Wed, 30 Dec 2020 19:31:40 +0200
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] habanalabs fixes for 5.11-rc2
+Message-ID: <20201230173140.GA11958@CORE.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel i210 doesn't work if the Expansion ROM BAR overlaps with
-another BAR. Networking won't work at all and once a packet is sent the
-netdev watchdog will bite:
+Hi Greg,
 
-[   89.059374] ------------[ cut here ]------------
-[   89.064019] NETDEV WATCHDOG: enP2p1s0 (igb): transmit queue 0 timed out
-[   89.070681] WARNING: CPU: 1 PID: 0 at net/sched/sch_generic.c:443 dev_watchdog+0x3a8/0x3b0
-[   89.078989] Modules linked in:
-[   89.082053] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W         5.11.0-rc1-00020-gc16f033804b #289
-[   89.091574] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
-[   89.099870] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-[   89.105900] pc : dev_watchdog+0x3a8/0x3b0
-[   89.109923] lr : dev_watchdog+0x3a8/0x3b0
-[   89.113945] sp : ffff80001000bd50
-[   89.117268] x29: ffff80001000bd50 x28: 0000000000000008
-[   89.122602] x27: 0000000000000004 x26: 0000000000000140
-[   89.127935] x25: ffff002001c6c000 x24: ffff002001c2b940
-[   89.133267] x23: ffff8000118c7000 x22: ffff002001c6c39c
-[   89.138600] x21: ffff002001c6bfb8 x20: ffff002001c6c3b8
-[   89.143932] x19: 0000000000000000 x18: 0000000000000010
-[   89.149264] x17: 0000000000000000 x16: 0000000000000000
-[   89.154596] x15: ffffffffffffffff x14: 0720072007200720
-[   89.159928] x13: 0720072007740775 x12: ffff80001195b980
-[   89.165260] x11: 0000000000000003 x10: ffff800011943940
-[   89.170592] x9 : ffff800010100d44 x8 : 0000000000017fe8
-[   89.175924] x7 : c0000000ffffefff x6 : 0000000000000001
-[   89.181255] x5 : 0000000000000000 x4 : 0000000000000000
-[   89.186587] x3 : 00000000ffffffff x2 : ffff8000118eb908
-[   89.191919] x1 : 84d8200845006900 x0 : 0000000000000000
-[   89.197251] Call trace:
-[   89.199701]  dev_watchdog+0x3a8/0x3b0
-[   89.203374]  call_timer_fn+0x38/0x208
-[   89.207049]  run_timer_softirq+0x290/0x540
-[   89.211158]  __do_softirq+0x138/0x404
-[   89.214831]  irq_exit+0xe8/0xf8
-[   89.217981]  __handle_domain_irq+0x70/0xc8
-[   89.222091]  gic_handle_irq+0xc8/0x2b0
-[   89.225850]  el1_irq+0xb8/0x180
-[   89.228999]  arch_cpu_idle+0x18/0x40
-[   89.232587]  default_idle_call+0x70/0x214
-[   89.236610]  do_idle+0x21c/0x290
-[   89.239848]  cpu_startup_entry+0x2c/0x70
-[   89.243783]  secondary_start_kernel+0x1a0/0x1f0
-[   89.248332] ---[ end trace 1687af62576397bc ]---
-[   89.253350] igb 0002:01:00.0 enP2p1s0: Reset adapter
+This pull request contains a number of important fixes for 5.11-rc2.
+Mainly fixes to support our new F/W with enhanced security features,
+but also additional bugs.
+See details in the tag message below.
 
-Before this fixup the Expansion ROM BAR will overlap with BAR3:
-  # lspci -ns 2:1:0 -xx
-  0002:01:00.0 0200: 8086:1533 (rev 03)
-  00: 86 80 33 15 06 04 10 00 03 00 00 02 08 00 00 00
-  10: 00 00 00 40 00 00 00 00 00 00 00 00 00 00 20 40
-  20: 00 00 00 00 00 00 00 00 00 00 00 00 3c 10 03 00
-  30: 00 00 20 40 40 00 00 00 00 00 00 00 22 01 00 00
+Thanks,
+Oded
 
-Add a quirk which will update the Expansion ROM BAR for Intel i210s even
-if the ROM is disabled. This was tested on an ARM64 board (kontron
-sl28).
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/pci/quirks.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 653660e3ba9e..59c204ef5df7 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5612,3 +5612,37 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
- }
- DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
- 			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
-+
-+/*
-+ * Some devices doesn't work if the Expansion ROM has the same base address as
-+ * one of the other BARs although it is disabled.
-+ * This might happen if the bootloader/BIOS enumerate the BARs in a different
-+ * way than linux. If the Expansion ROM is disabled, linux deliberately skip
-+ * writing the ROM BAR if the BAR is not enabled because of some broken
-+ * devices, see pci_std_update_resource(). Thus, the ROM BAR of the device will
-+ * still contain the value assigned by the booloader, which might be the same
-+ * value as one of the other BARs then.
-+ *
-+ * As a workaround, update the Expansion ROM BAR even if the Expansion ROM is
-+ * disabled.
-+ */
-+static void pci_fixup_rewrite_rom_bar(struct pci_dev *dev)
-+{
-+	struct resource *res = &dev->resource[PCI_ROM_RESOURCE];
-+	struct pci_bus_region region;
-+	u32 rom_addr;
-+
-+	pci_read_config_dword(dev, dev->rom_base_reg, &rom_addr);
-+
-+	if (rom_addr & PCI_ROM_ADDRESS_ENABLE)
-+		return;
-+
-+	pcibios_resource_to_bus(dev->bus, &region, res);
-+	rom_addr &= ~PCI_ROM_ADDRESS_MASK;
-+	rom_addr |= region.start;
-+	pci_write_config_dword(dev, dev->rom_base_reg, rom_addr);
-+}
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x1533, pci_fixup_rewrite_rom_bar);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x1536, pci_fixup_rewrite_rom_bar);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x1537, pci_fixup_rewrite_rom_bar);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x1538, pci_fixup_rewrite_rom_bar);
--- 
-2.20.1
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2020-12-30
+
+for you to fetch changes up to b000700d6db50c933ce8b661154e26cf4ad06dba:
+
+  habanalabs: Fix memleak in hl_device_reset (2020-12-29 23:23:12 +0200)
+
+----------------------------------------------------------------
+This tag contains the following fixes for 5.11-rc2:
+
+- Fixes that are needed for supporting the new F/W with security features:
+  - Correctly fetch PLL information in GOYA when security is enabled in F/W
+  - Fix hard-reset support when F/W is in its preboot stage
+  - Disable clock gating when initializing the H/W
+  - Fix hard-reset procedure
+  - Fix PCI controller initialization
+- Remove setting of Engine-Barrier in collective wait operations. This
+  barrier created a drop in performance
+- Retry loading the TPC firmware in case of EINTR during loading
+- Fix CS counters
+- Register to PCI shutdown callback to fix handling of VM shutdown
+- Fix order of status check
+- Fix memory leak in reset procedure
+- Fix and add comments and fix indentations
+
+----------------------------------------------------------------
+Alon Mizrahi (5):
+      habanalabs: add comment for pll frequency ioctl opcode
+      habanalabs: fetch PSOC PLL frequency from F/W in goya
+      habanalabs: remove generic gaudi get_pll_freq function
+      habanalabs/gaudi: do not set EB in collective slave queues
+      habanalabs: add validation cs counter, fix misplaced counters
+
+Dinghao Liu (1):
+      habanalabs: Fix memleak in hl_device_reset
+
+Oded Gabbay (7):
+      habanalabs/gaudi: disable CGM at HW initialization
+      habanalabs/gaudi: enhance reset message
+      habanalabs: update comment in hl_boot_if.h
+      habanalabs: adjust pci controller init to new firmware
+      habanalabs/gaudi: retry loading TPC f/w on -EINTR
+      habanalabs: register to pci shutdown callback
+      habanalabs: fix order of status check
+
+Ofir Bitton (2):
+      habanalabs: preboot hard reset support
+      habanalabs: full FW hard reset support
+
+Tomer Tayar (2):
+      habanalabs: Fix a missing-braces warning
+      habanalabs: Revise comment to align with mirror list name
+
+ .../misc/habanalabs/common/command_submission.c    |  77 +++++++--
+ drivers/misc/habanalabs/common/device.c            |   8 +-
+ drivers/misc/habanalabs/common/firmware_if.c       |  60 +++++--
+ drivers/misc/habanalabs/common/habanalabs.h        |   4 +-
+ drivers/misc/habanalabs/common/habanalabs_drv.c    |   1 +
+ drivers/misc/habanalabs/common/habanalabs_ioctl.c  |   7 +-
+ drivers/misc/habanalabs/common/hw_queue.c          |   5 +-
+ drivers/misc/habanalabs/common/pci.c               |  28 +--
+ drivers/misc/habanalabs/gaudi/gaudi.c              | 191 +++++++++------------
+ drivers/misc/habanalabs/gaudi/gaudiP.h             |   7 -
+ drivers/misc/habanalabs/gaudi/gaudi_coresight.c    |   3 +-
+ drivers/misc/habanalabs/goya/goya.c                |  75 ++++----
+ .../misc/habanalabs/include/common/hl_boot_if.h    |   9 +-
+ include/uapi/misc/habanalabs.h                     |   5 +
+ 14 files changed, 281 insertions(+), 199 deletions(-)
