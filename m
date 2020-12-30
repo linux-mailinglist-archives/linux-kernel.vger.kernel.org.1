@@ -2,129 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A96A2E7A3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 134F72E7A40
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgL3PSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 10:18:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbgL3PSF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 10:18:05 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4C5C06179B;
-        Wed, 30 Dec 2020 07:17:25 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id qw4so22243807ejb.12;
-        Wed, 30 Dec 2020 07:17:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tN9R7XEuR/MI9VKQRuMKlkJ4/z1wACtnnnmm4C2QvRs=;
-        b=U0FYCGHWsbgYU6cVFVNaMtyKIm1tExUy1jpoAGvYcHCBx4bwWJoRjzLDVDm5a8NfzM
-         Q4db910XAPgI+b3a89f+Aws1ZyenFv5SVF7B+p9iK6g9hH9LgMqkcFM7YLEYaUX52wNS
-         Yq4WRBxUOTxYisGf4gLEPHPMFaVhIpQAuAhrNZgV1Sdt7rPT6VUBCqyuLcGcNPTBpw02
-         xDXq/DI/ShXE0YCVksdkrW04bVugJBSgLNzd9O76vYk4OnO9MzCoifKEUB/XcrGdKkbj
-         hfQuphlgvHHo0ytc3nUM727aYikz22bWM0ir6xDb/25oZ2esgs5/mkumAF4tcjarYTaf
-         IO6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tN9R7XEuR/MI9VKQRuMKlkJ4/z1wACtnnnmm4C2QvRs=;
-        b=YRj+/rvs9SQkZ5/JKe+0TJmTq+cwX6x9uXv2up21sbChmP/uFgsGuHEDb+tVG5+CB8
-         jDISxmL1i3MqDLRGJTSanmxwd9fzBByTp0EJbUdCb95JcKPY49frCOqEE685rvfp827E
-         xddMzP5nk8wPkaY0upNIkFx4BRBet8uO4ETX+ijIef5UuMcbBx59XqTyKrvFgA26AZxZ
-         R6FPwKYQL0rQ76LzaEv+jG5jT+6nMW9I4zjW8ORi0yTyAe0AgmGsp/majpzsAndaIYiD
-         K6YZMMf+o4zVTJj8mNtzTEiP4fEBZAYo4TGz/G+lpzfxyhydlL87lwMJorExStM9SngJ
-         iIhw==
-X-Gm-Message-State: AOAM5302A+4rnEMYNIYq3HK9B8WEQNxffaCF4jNHddH1mRE9UQqyn+Kp
-        VZhvf5QiB/tvhX+iUQ9+WN0=
-X-Google-Smtp-Source: ABdhPJy5CVgXNzWxBNFzhz6ipQehWwMHs78M3LRkZeGND5vm1dqJp9fWwUBfN/eHLLSv/BesAzCA3A==
-X-Received: by 2002:a17:906:f1cc:: with SMTP id gx12mr47991397ejb.164.1609341443932;
-        Wed, 30 Dec 2020 07:17:23 -0800 (PST)
-Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id r24sm38624518edc.21.2020.12.30.07.17.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Dec 2020 07:17:23 -0800 (PST)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Samuel Pascua <pascua.samuel.14@gmail.com>
-Subject: [PATCH 2/2] drm/panel: simple: add samsung,s6e3fa2 panel
-Date:   Wed, 30 Dec 2020 17:17:11 +0200
-Message-Id: <20201230151711.3619846-2-iskren.chernev@gmail.com>
+        id S1726598AbgL3PSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 10:18:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726558AbgL3PSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 10:18:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5985120773;
+        Wed, 30 Dec 2020 15:18:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609341489;
+        bh=iUEidfuhIDpSjXj991cAIXmCEpGL0FL7QOA0p5DLXjs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ulxhLOPcqTOxnJ1rihdlb61hHTawrBF+xmqrBQXF7ctm7g0vYui3djsr7BvV8Ic97
+         OWqJQi3CouXnp3fcFf3f2+cCsIP004sd8zMMfRxJgNn+j9+5/5lME7BZx80z5dIjq6
+         Bmvt0ANDFB4NXUZxKfcVkvDKT94RiMdxrvx+Fggfxzv9mvBN9p8zSBpvqTcHP4j92k
+         yYqn1W7x2/m6mIMWERrcz74sAN1FoBlfyGbd819xFgJvjNc6TStzf0Apk2eABWRU7b
+         AC3nhwuNP/BV6XI4nWhHIFhjBgVbawyvcbz/+zusHv91JJqJigzSTN3F2Ld8niXxYk
+         IRdc5IfSsE+Yw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Peng Fan <peng.fan@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>
+Cc:     arm@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: imx: fix imx8m dependencies
+Date:   Wed, 30 Dec 2020 16:17:51 +0100
+Message-Id: <20201230151804.3862447-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201230151711.3619846-1-iskren.chernev@gmail.com>
-References: <20201230151711.3619846-1-iskren.chernev@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Pascua <pascua.samuel.14@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-This panel is used on the Samsung Galaxy S5 (klte).
+Selecting ARM_GIC_V3 on non-CP15 processors leads to build failures
+like
 
-Signed-off-by: Samuel Pascua <pascua.samuel.14@gmail.com>
+arch/arm/include/asm/arch_gicv3.h: In function 'write_ICC_AP1R3_EL1':
+arch/arm/include/asm/arch_gicv3.h:36:40: error: 'c12' undeclared (first use in this function)
+   36 | #define __ICC_AP1Rx(x)   __ACCESS_CP15(c12, 0, c9, x)
+      |                                        ^~~
+
+Add a dependency to only enable the gic driver when building for
+at an ARMv7 target, which is the closes approximation to the ARMv8
+processor that is actually in this chip.
+
+Fixes: fc40200ebf82 ("soc: imx: increase build coverage for imx8m soc driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/gpu/drm/panel/panel-simple.c | 30 ++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ drivers/soc/imx/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 41bbec72b2dad..5f16826f3ae06 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -4611,6 +4611,33 @@ static const struct panel_desc_dsi osd101t2045_53ts = {
- 	.lanes = 4,
- };
-
-+static const struct drm_display_mode s6e3fa2_mode = {
-+	.clock = 149769,
-+	.hdisplay = 1080,
-+	.hsync_start = 1080 + 162,
-+	.hsync_end = 1080 + 162 + 10,
-+	.htotal = 1080 + 162 + 10 + 36,
-+	.vdisplay = 1920,
-+	.vsync_start = 1920 + 13,
-+	.vsync_end = 1920 + 13 + 2,
-+	.vtotal = 1920 + 13 + 2 + 3,
-+};
-+
-+static const struct panel_desc_dsi samsung_s6e3fa2 = {
-+	.desc = {
-+		.modes = &s6e3fa2_mode,
-+		.num_modes = 1,
-+		.bpc = 8,
-+		.size = {
-+			.width = 65,
-+			.height = 115,
-+		},
-+	},
-+	.flags = MIPI_DSI_MODE_VIDEO_BURST,
-+	.format = MIPI_DSI_FMT_RGB888,
-+	.lanes = 4,
-+};
-+
- static const struct of_device_id dsi_of_match[] = {
- 	{
- 		.compatible = "auo,b080uan01",
-@@ -4633,6 +4660,9 @@ static const struct of_device_id dsi_of_match[] = {
- 	}, {
- 		.compatible = "osddisplays,osd101t2045-53ts",
- 		.data = &osd101t2045_53ts
-+	}, {
-+		.compatible = "samsung,s6e3fa2",
-+		.data = &samsung_s6e3fa2
- 	}, {
- 		/* sentinel */
- 	}
---
+diff --git a/drivers/soc/imx/Kconfig b/drivers/soc/imx/Kconfig
+index a9370f4aacca..05812f8ae734 100644
+--- a/drivers/soc/imx/Kconfig
++++ b/drivers/soc/imx/Kconfig
+@@ -13,7 +13,7 @@ config SOC_IMX8M
+ 	depends on ARCH_MXC || COMPILE_TEST
+ 	default ARCH_MXC && ARM64
+ 	select SOC_BUS
+-	select ARM_GIC_V3 if ARCH_MXC
++	select ARM_GIC_V3 if ARCH_MXC && ARCH_MULTI_V7
+ 	help
+ 	  If you say yes here you get support for the NXP i.MX8M family
+ 	  support, it will provide the SoC info like SoC family,
+-- 
 2.29.2
 
