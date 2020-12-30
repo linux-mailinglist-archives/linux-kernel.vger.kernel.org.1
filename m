@@ -2,206 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E0B2E7C48
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 21:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3B82E7C4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 21:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgL3UgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 15:36:01 -0500
-Received: from mga06.intel.com ([134.134.136.31]:51503 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726352AbgL3UgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 15:36:01 -0500
-IronPort-SDR: jqC7w99YI6kocZAIRSLqUTIMk+7Fu+rSLRV12djPO8nDlm6Mu6m6cqr5rikvaHan4W4ziRQmit
- tGYQYRLdcM7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9850"; a="238191989"
-X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
-   d="scan'208";a="238191989"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 12:35:19 -0800
-IronPort-SDR: O/2wLUoox4zh8Va8EbzL4NS/Jqf3SReiiBwJnmViH2kaPt4Fcfp0zKoGpSQNnX74XoWamE0tcv
- R5XEm/2gTjqg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
-   d="scan'208";a="395976239"
-Received: from lkp-server02.sh.intel.com (HELO 4242b19f17ef) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 30 Dec 2020 12:35:18 -0800
-Received: from kbuild by 4242b19f17ef with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kuiBh-0004VH-UM; Wed, 30 Dec 2020 20:35:17 +0000
-Date:   Thu, 31 Dec 2020 04:34:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/platform] BUILD SUCCESS
- bdb154f074a6d73d520b1fdee6b4143e2e311dfb
-Message-ID: <5fece46e.g1+SZGhaECddmc3Y%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726408AbgL3UoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 15:44:06 -0500
+Received: from relay5.mymailcheap.com ([159.100.248.207]:41477 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgL3UoF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 15:44:05 -0500
+Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [217.182.113.132])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 9D4A1260EB;
+        Wed, 30 Dec 2020 20:43:12 +0000 (UTC)
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay2.mymailcheap.com (Postfix) with ESMTPS id 93EC93EDFC;
+        Wed, 30 Dec 2020 21:41:39 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 711A92A524;
+        Wed, 30 Dec 2020 21:41:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1609360899;
+        bh=FRGW8gu58lGpw7gwIy7zr0D1bR8uZrCGzxkRxv0pFb4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hdOH/nL163C+MJWV37q702UBmnSpoPxINNoYM/yqN/OnYdO1UhNhcbv4CSWTen7te
+         R7REtL21tc9yeDEKvvAAk9i1H4EhwPqHJvBQqk6EtPlq18NXJZQEPo+7ZJPXBFs0qe
+         crcjdAwotB0V2jTBC4sQvWJzWRYQbFhYlP6NZHTM=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 54ouhL5P2Orm; Wed, 30 Dec 2020 21:41:38 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 30 Dec 2020 21:41:38 +0100 (CET)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 88D5241FB0;
+        Wed, 30 Dec 2020 20:41:37 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="ZAE1txoD";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.160.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 18AAF41E18;
+        Wed, 30 Dec 2020 20:41:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1609360887; bh=FRGW8gu58lGpw7gwIy7zr0D1bR8uZrCGzxkRxv0pFb4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZAE1txoDvI/Sr6IEXZfrYbhDo2Wi1V0ZRYetZqSy440m3QtHX3Mz2zOiXm3JbSnLf
+         lQGVZRPHjqJ5YPD61luGKabNDG+YJR4SU51Vtvfy0G1tqSK44anQ/wVaMCokMYCvxO
+         T4hJ9edY6aIB6etTkExDb3jbjaSCvqpqFOQ4+hVU=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Icenowy Zheng <icenowy@aosc.io>, stable@vger.kernel.org
+Subject: [PATCH] drm/panel: ilitek-ili9881c: fix attach failure cleanup
+Date:   Thu, 31 Dec 2020 04:41:10 +0800
+Message-Id: <20201230204110.52053-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Result: default: False [6.40 / 20.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         FREEMAIL_TO(0.00)[gmail.com,ravnborg.org,linux.ie,ffwll.ch,kernel.org];
+         RCVD_NO_TLS_LAST(0.10)[];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.160.237:received];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         MID_CONTAINS_FROM(1.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Queue-Id: 88D5241FB0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/platform
-branch HEAD: bdb154f074a6d73d520b1fdee6b4143e2e311dfb  x86/platform/intel-mid: Convert comma to semicolon
+When mipi_dsi_attach() fails (e.g. got a -EPROBE_DEFER), the panel should
+be removed, otherwise a pointer to it will be kept and then lead to
+use-after-free when DRM panel codes are called (e.g. the panel is probed
+again).
 
-elapsed time: 725m
+Fix this by adding cleanup code after mipi_dsi_attach() failure.
 
-configs tested: 144
-configs skipped: 62
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc834x_itx_defconfig
-arm                          gemini_defconfig
-arm                         bcm2835_defconfig
-mips                         bigsur_defconfig
-powerpc                      cm5200_defconfig
-powerpc                  mpc885_ads_defconfig
-sh                          polaris_defconfig
-riscv                            allyesconfig
-arc                        nsim_700_defconfig
-riscv                               defconfig
-m68k                         apollo_defconfig
-powerpc                    mvme5100_defconfig
-sh                           se7343_defconfig
-sh                             shx3_defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                     davinci_all_defconfig
-arm                           corgi_defconfig
-arm                        mvebu_v5_defconfig
-arm                            u300_defconfig
-mips                      maltasmvp_defconfig
-sh                             sh03_defconfig
-arc                            hsdk_defconfig
-powerpc                  storcenter_defconfig
-sh                          lboxre2_defconfig
-arm                  colibri_pxa300_defconfig
-mips                      fuloong2e_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     mpc83xx_defconfig
-mips                       lemote2f_defconfig
-arm                          imote2_defconfig
-sh                   sh7724_generic_defconfig
-mips                      pic32mzda_defconfig
-arm                       aspeed_g5_defconfig
-arm                           spitz_defconfig
-powerpc                     tqm8540_defconfig
-h8300                       h8s-sim_defconfig
-mips                          malta_defconfig
-mips                     loongson1b_defconfig
-mips                     loongson1c_defconfig
-x86_64                           alldefconfig
-m68k                           sun3_defconfig
-mips                           ip22_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                    sam440ep_defconfig
-arc                     haps_hs_smp_defconfig
-riscv                    nommu_virt_defconfig
-ia64                             alldefconfig
-sh                     sh7710voipgw_defconfig
-arm                         lpc18xx_defconfig
-sh                         microdev_defconfig
-arm                         s5pv210_defconfig
-mips                         tb0226_defconfig
-arm                          pxa910_defconfig
-c6x                        evmc6474_defconfig
-arm                        shmobile_defconfig
-powerpc                    socrates_defconfig
-mips                        qi_lb60_defconfig
-sparc                       sparc32_defconfig
-arc                     nsimosci_hs_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20201229
-i386                 randconfig-a005-20201229
-i386                 randconfig-a004-20201229
-i386                 randconfig-a006-20201229
-i386                 randconfig-a003-20201229
-i386                 randconfig-a001-20201229
-i386                 randconfig-a005-20201230
-i386                 randconfig-a006-20201230
-i386                 randconfig-a004-20201230
-i386                 randconfig-a003-20201230
-i386                 randconfig-a002-20201230
-i386                 randconfig-a001-20201230
-i386                 randconfig-a016-20201230
-i386                 randconfig-a014-20201230
-i386                 randconfig-a012-20201230
-i386                 randconfig-a015-20201230
-i386                 randconfig-a011-20201230
-i386                 randconfig-a013-20201230
-x86_64               randconfig-a005-20201230
-x86_64               randconfig-a001-20201230
-x86_64               randconfig-a006-20201230
-x86_64               randconfig-a002-20201230
-x86_64               randconfig-a004-20201230
-x86_64               randconfig-a003-20201230
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20201230
-x86_64               randconfig-a014-20201230
-x86_64               randconfig-a016-20201230
-x86_64               randconfig-a011-20201230
-x86_64               randconfig-a013-20201230
-x86_64               randconfig-a012-20201230
-x86_64               randconfig-a014-20201229
-x86_64               randconfig-a015-20201229
-x86_64               randconfig-a016-20201229
-x86_64               randconfig-a012-20201229
-x86_64               randconfig-a011-20201229
-x86_64               randconfig-a013-20201229
-
+Fixes: 26aec25593c2 ("drm/panel: Add Ilitek ILI9881c panel driver")
+Cc: stable@vger.kernel.org
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
+index 0145129d7c66..22f2268f00f7 100644
+--- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
++++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
+@@ -674,7 +674,13 @@ static int ili9881c_dsi_probe(struct mipi_dsi_device *dsi)
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+ 	dsi->lanes = 4;
+ 
+-	return mipi_dsi_attach(dsi);
++	ret = mipi_dsi_attach(dsi);
++	if (ret < 0) {
++		drm_panel_remove(&ctx->panel);
++		return ret;
++	}
++
++	return 0;
+ }
+ 
+ static int ili9881c_dsi_remove(struct mipi_dsi_device *dsi)
+-- 
+2.28.0
