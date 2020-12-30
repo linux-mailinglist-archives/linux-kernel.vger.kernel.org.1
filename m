@@ -2,76 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C712E7C21
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 20:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B184F2E7C22
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 20:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgL3TVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 14:21:40 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60666 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgL3TVk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 14:21:40 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 80A641C0B79; Wed, 30 Dec 2020 20:20:57 +0100 (CET)
-Date:   Wed, 30 Dec 2020 20:20:57 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        jacek.anaszewski@gmail.com, dmurphy@ti.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org, thunder.leizhen@huawei.com
-Subject: Re: [PATCH v2] dt-bindings: leds: Document commonly used LED triggers
-Message-ID: <20201230192057.GF25903@duo.ucw.cz>
-References: <20201210082449.30586-1-manivannan.sadhasivam@linaro.org>
- <20201214223621.GA2493849@robh.at.kernel.org>
+        id S1726388AbgL3Tbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 14:31:40 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:44912 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726185AbgL3Tbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 14:31:39 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kuhBM-00F5z5-Ki; Wed, 30 Dec 2020 20:30:52 +0100
+Date:   Wed, 30 Dec 2020 20:30:52 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
+ RTL9601C chips
+Message-ID: <X+zVbM2vetCpiIFG@lunn.ch>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20201230154755.14746-2-pali@kernel.org>
+ <20201230161036.GR1551@shell.armlinux.org.uk>
+ <20201230165634.c4ty3mw6djezuyq6@pali>
+ <20201230170546.GU1551@shell.armlinux.org.uk>
+ <X+y1K21tp01GpvMy@lunn.ch>
+ <20201230174307.lvehswvj5q6c6vk3@pali>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="xkXJwpr35CY/Lc3I"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201214223621.GA2493849@robh.at.kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201230174307.lvehswvj5q6c6vk3@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Ok!
+> 
+> So should we completely skip hwmon_device_register_with_info() call
+> if (i2c_block_size < 2) ?
 
---xkXJwpr35CY/Lc3I
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yep. That would be a nice simple test.
 
-On Mon 2020-12-14 16:36:21, Rob Herring wrote:
-> On Thu, Dec 10, 2020 at 01:54:49PM +0530, Manivannan Sadhasivam wrote:
-> > This commit documents the LED triggers used commonly in the SoCs. Not
-> > all triggers are documented as some of them are very application specif=
-ic.
-> > Most of the triggers documented here are currently used in devicetrees
-> > of many SoCs.
->=20
-> The idea with recent LED binding changes is to move away from=20
-> 'linux,default-trigger' to 'function' and 'trigger-sources' and to have=
-=20
-> some sort of standardized names.
+But does ethtool -m still export the second page? That is also
+unreliable.
 
-Yes, but I guess we still want to document this... and perhaps use it
-during transition and when trigger-sources (etc) are too hard to set
-up.
-
-Best regards,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---xkXJwpr35CY/Lc3I
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX+zTGQAKCRAw5/Bqldv6
-8g4bAJ9c4pSJ1XVBUmopWKPjhhhiIKiUJgCeLML1TCTldG0ypmbnMMN6q0LeMRY=
-=HQML
------END PGP SIGNATURE-----
-
---xkXJwpr35CY/Lc3I--
+	Andrew
