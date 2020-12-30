@@ -2,69 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB0F2E76A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BD92E76A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgL3Gk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 01:40:59 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:54951 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgL3Gk7 (ORCPT
+        id S1726360AbgL3GmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 01:42:12 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:55151 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726214AbgL3GmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 01:40:59 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0BU6e13i9016700, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0BU6e13i9016700
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 30 Dec 2020 14:40:01 +0800
-Received: from localhost (172.22.88.222) by RTEXMBS01.realtek.com.tw
- (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 30 Dec
- 2020 14:40:01 +0800
-From:   <ricky_wu@realtek.com>
-To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
-        <bhelgaas@google.com>, <ricky_wu@realtek.com>,
-        <vaibhavgupta40@gmail.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] misc: rtsx: remove unused function
-Date:   Wed, 30 Dec 2020 14:39:53 +0800
-Message-ID: <20201230063953.10972-1-ricky_wu@realtek.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.22.88.222]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
+        Wed, 30 Dec 2020 01:42:11 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UKCfW9Q_1609310482;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UKCfW9Q_1609310482)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 30 Dec 2020 14:41:28 +0800
+From:   YANG LI <abaci-bugfix@linux.alibaba.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, dchickles@marvell.com, sburla@marvell.com,
+        fmanlunas@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        YANG LI <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] liquidio: fix: warning: %u in format string (no. 3) requires 'unsigned int' but the argument type is 'signed int'.
+Date:   Wed, 30 Dec 2020 14:41:20 +0800
+Message-Id: <1609310480-80777-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricky Wu <ricky_wu@realtek.com>
+For safety, modify '%u' to '%d' to keep the type consistent.
 
-removed unused function 'rtsx_pci_disable_aspm'
-
-Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+Reported-by: Abaci <abaci@linux.alibaba.com>
 ---
- drivers/misc/cardreader/rtsx_pcr.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/net/ethernet/cavium/liquidio/lio_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-index 2aa6648fa41f..d782754fa346 100644
---- a/drivers/misc/cardreader/rtsx_pcr.c
-+++ b/drivers/misc/cardreader/rtsx_pcr.c
-@@ -59,12 +59,6 @@ static const struct pci_device_id rtsx_pci_ids[] = {
+diff --git a/drivers/net/ethernet/cavium/liquidio/lio_core.c b/drivers/net/ethernet/cavium/liquidio/lio_core.c
+index 37d0641..07846f9 100644
+--- a/drivers/net/ethernet/cavium/liquidio/lio_core.c
++++ b/drivers/net/ethernet/cavium/liquidio/lio_core.c
+@@ -1109,12 +1109,12 @@ int octeon_setup_interrupt(struct octeon_device *oct, u32 num_ioqs)
+ 		for (i = 0 ; i < num_ioq_vectors ; i++) {
+ 			if (OCTEON_CN23XX_PF(oct))
+ 				snprintf(&queue_irq_names[IRQ_NAME_OFF(i)],
+-					 INTRNAMSIZ, "LiquidIO%u-pf%u-rxtx-%u",
++					 INTRNAMSIZ, "LiquidIO%u-pf%u-rxtx-%d",
+ 					 oct->octeon_id, oct->pf_num, i);
  
- MODULE_DEVICE_TABLE(pci, rtsx_pci_ids);
+ 			if (OCTEON_CN23XX_VF(oct))
+ 				snprintf(&queue_irq_names[IRQ_NAME_OFF(i)],
+-					 INTRNAMSIZ, "LiquidIO%u-vf%u-rxtx-%u",
++					 INTRNAMSIZ, "LiquidIO%u-vf%u-rxtx-%d",
+ 					 oct->octeon_id, oct->vf_num, i);
  
--static inline void rtsx_pci_disable_aspm(struct rtsx_pcr *pcr)
--{
--	pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL,
--					   PCI_EXP_LNKCTL_ASPMC, 0);
--}
--
- static int rtsx_comm_set_ltr_latency(struct rtsx_pcr *pcr, u32 latency)
- {
- 	rtsx_pci_write_register(pcr, MSGTXDATA0,
+ 			irqret = request_irq(msix_entries[i].vector,
 -- 
-2.17.1
+1.8.3.1
 
