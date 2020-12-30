@@ -2,72 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AB92E76AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B096C2E76B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgL3GuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 01:50:15 -0500
-Received: from smtprelay0131.hostedemail.com ([216.40.44.131]:48084 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726203AbgL3GuP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 01:50:15 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id C3A88180A7FCD;
-        Wed, 30 Dec 2020 06:49:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3874:4321:5007:7652:10004:10400:10471:10848:11026:11232:11473:11657:11658:11914:12043:12296:12297:12438:12740:12895:13069:13161:13229:13255:13311:13357:13439:13894:14659:14721:21080:21627:21660:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: angle06_3e022d3274a3
-X-Filterd-Recvd-Size: 2065
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 30 Dec 2020 06:49:32 +0000 (UTC)
-Message-ID: <42f953220e40a2e32540f729f03b762610b35a42.camel@perches.com>
-Subject: Re: [PATCH] liquidio: fix: warning: %u in format string (no. 3)
- requires 'unsigned int' but the argument type is 'signed int'.
-From:   Joe Perches <joe@perches.com>
-To:     YANG LI <abaci-bugfix@linux.alibaba.com>, davem@davemloft.net
-Cc:     kuba@kernel.org, dchickles@marvell.com, sburla@marvell.com,
-        fmanlunas@marvell.com, netdev@vger.kernel.org,
+        id S1726328AbgL3GyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 01:54:14 -0500
+Received: from mail-bn8nam08on2116.outbound.protection.outlook.com ([40.107.100.116]:2452
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726230AbgL3GyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 01:54:12 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UIJSPAi+QPGE5qpNBxLKff54UbWqBXHwBu1qS2b3HSHIRJIo18Ty0UASKdWUMrxvltcqxf+DubcnTxNaz8kufLwE7XEBsmba+P5f2ChNu5lTW8HneI6Op4J5atpjlc/dZ4yKsbikJyVmT30NFaQIT0hC1t1hNSiWl5N1VoDW9H37fYumhsqc2Qnewdhq8BafSkKS0pwAb4Sbl0R7x3qtMGmhhVowHjqfOJZrYABPsTeA3mmUovKRvKJx/OgSuH4ZNXXrnsoOdv14v186D41IvEc635bOKehFyPVmm+zV8la2p4r1qwyZRL9Mx6J8PVn+UW6wc8Y20JKA23sHI2e20g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9YELPedk8GvDzFuKeU8ulKrf3pcN3C+OF3SkxHDXOa4=;
+ b=NCx1kPuSecaCd5GY8FdPTChyghSud+TN2gg9LiUVT04yta85W6Lk9rKj0Pi2aH5VE1yH2HFOV0vbTWssnhSChbEqmvFaSdsgKitzNQ3SlX9h6zFTjDUTOO0op8DtTGFA2wMB0C8VSCce8jk4UEn0hLpK4lvI7VjR4wHqHqzy14DEYZ95K9Vano22u6p+mZpV9YOfr3ZL1DZhutQlYfRh6j5pRcix45UlcIq9mHA0WFlvbG3ctnqEkzqO+6W3GysLxHF30BcfFdZHzFJ4x9FRz7gKL9ivBAHjJxWSFWw3QD2eS2DR10olq8KYhuRUqxV59dt7t6B4UVvySgfXeJYD0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9YELPedk8GvDzFuKeU8ulKrf3pcN3C+OF3SkxHDXOa4=;
+ b=sbttjiFGLdVqoakiAP48zUivH0dvPYhPo8WyLK6Fk4gopDx2JtvTjex+v+94pCHGn7rd632PbBAPnuFP1mOcoPPEo0HZs3+44lYfpQupf0R3hvCCh5O5mlLm/M2Uns4qHPGIGVUhW/JUUXtAaHbAPyTgzXEUFw0YwGUrM+9oKs0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from CH2PR04MB6741.namprd04.prod.outlook.com (2603:10b6:610:96::19)
+ by CH2PR04MB6696.namprd04.prod.outlook.com (2603:10b6:610:91::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Wed, 30 Dec
+ 2020 06:53:03 +0000
+Received: from CH2PR04MB6741.namprd04.prod.outlook.com
+ ([fe80::957a:caf2:db9e:8c8d]) by CH2PR04MB6741.namprd04.prod.outlook.com
+ ([fe80::957a:caf2:db9e:8c8d%9]) with mapi id 15.20.3721.019; Wed, 30 Dec 2020
+ 06:53:03 +0000
+Date:   Wed, 30 Dec 2020 14:52:53 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
+        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, Sheng Pan <span@analogixsemi.com>,
         linux-kernel@vger.kernel.org
-Date:   Tue, 29 Dec 2020 22:49:31 -0800
-In-Reply-To: <1609310480-80777-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-References: <1609310480-80777-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Subject: Re: [PATCH v1 1/2] dt-bindings: drm/bridge: anx7625: add DPI flag
+ and swing setting
+Message-ID: <20201230065253.GA31290@pc-user>
+References: <cover.1608883950.git.xji@analogixsemi.com>
+ <c29b7d9fda9ce8619d1c718b077250998a8600b8.1608883950.git.xji@analogixsemi.com>
+ <X+n1COtS8nrCFUHd@pendragon.ideasonboard.com>
+ <20201229065048.GB7073@pc-user>
+ <X+s+bDHLbhxBDz7E@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X+s+bDHLbhxBDz7E@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [61.148.116.10]
+X-ClientProxiedBy: HK2PR02CA0174.apcprd02.prod.outlook.com
+ (2603:1096:201:1f::34) To CH2PR04MB6741.namprd04.prod.outlook.com
+ (2603:10b6:610:96::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-user (61.148.116.10) by HK2PR02CA0174.apcprd02.prod.outlook.com (2603:1096:201:1f::34) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3700.27 via Frontend Transport; Wed, 30 Dec 2020 06:53:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 01566213-308f-4687-3431-08d8ac8f8e1a
+X-MS-TrafficTypeDiagnostic: CH2PR04MB6696:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CH2PR04MB6696819A956DDA8A7ABBBCFDC7D70@CH2PR04MB6696.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R22Rjohkys9tmwpYvy3M20ppuEsIt7fIrnlok/3eR/hB8K5lEEz7MYJWkjxWa7Hnhgf+jcrm9n8eDfldM1KxePizMH72/gNGobIcC46xGcXtFgaBBtq+pEPO6HfBqc6fTwOd96k3DzO9wE8FGwV+2N4Ph60E7XS5csQ/wjjp5Nt4wtWFVzrW+x5wLDt56XSDXnmWrMFjQMPbHm9i9AtCRJePf4/vT+3Y+XxCAYPoGI4qQD3kTeNDMOVXVDGEasNyCpqlvXnMwMCq0tbLFRMLRtKnvoxmcxv0Xdvrb0T+6PNrdfus5mBvcTTql0mAyRiNDSdPWQ8bO80o9/40SoQy/fEqXiHxzxZKnKDiSFeLcivWzGWpEFdTGuNMuxprDab+lEgXEBrHqE9AaOfuvVxM+w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB6741.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(366004)(346002)(136003)(396003)(376002)(478600001)(4326008)(33656002)(6666004)(33716001)(9686003)(55016002)(8676002)(83380400001)(956004)(5660300002)(54906003)(186003)(6916009)(1076003)(16526019)(7416002)(86362001)(8936002)(26005)(316002)(66556008)(66946007)(6496006)(2906002)(52116002)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5wwrYOIq+SIG6q0p0tTpA1K9vGcyYZDLpJxkxiTcZlnn4YS58pUAzS9hUqE2?=
+ =?us-ascii?Q?UJ3TYrBAvbj2nCoMtTijVflfVyGjdIaIbjZD9vqY0vM+JYS+v4htlv0+rpJe?=
+ =?us-ascii?Q?Pvq2vzHIjqpqh39g634gNTbMZZoE0oUgMJtg/Q1tyZUkKS2cxoQtrbV7IPEI?=
+ =?us-ascii?Q?fISfO0YLvddOG+FSP923H9sUce4vOfYwQbtnyH5POU1GfCb7L/fejSeGOZOZ?=
+ =?us-ascii?Q?IPTJMAVFVi5wNfyeLH14gxDGHqRlTDufPs7CKD5tgQuTqkm+bIYIKkYYxbkl?=
+ =?us-ascii?Q?ZmBTRJquW4lB0zcHxd8+mG9kh3Gj7XNY0hVNm1HYirTXtkZONGDv4tONxk/g?=
+ =?us-ascii?Q?V9o/2O0vlQalW+D+bZxTEKdYkn/pQjiO/enJBpvU/G8ANLPKbX7K6DQebZS9?=
+ =?us-ascii?Q?xgKBMXppLX1ARdVXcGSb3gymn7JZzE8c5t5ee4ZU+qO8u/U0jYCbF7uO4B9z?=
+ =?us-ascii?Q?PC1YOBJ1BUQQpadmN9Pdn40IMQZG6OCldB1RZIuALSYbZ6I3x03qcVj8N/77?=
+ =?us-ascii?Q?XONzcEaFnHhKoN3qlOyRTGGJDiPE9Nfyx/Mz9GrPr5qaSAEG5H9w5e+9MQZf?=
+ =?us-ascii?Q?X2/PRtObCvkOXcGhpygxJ98GQkN0JovMXB+0Rz1+SLCj2UrXo+lHzd/qKnBu?=
+ =?us-ascii?Q?vbNpNyU2zpd9JC14T6D15HP1Zma88yDQSfPmgyg3Y1x94ewdzrihJt+1CO8t?=
+ =?us-ascii?Q?Xbp4eTiAJZQaluUJVKmJvm3OVpiWIPtzLsHiJQQ2sS00kOhd//iAJyawcX0T?=
+ =?us-ascii?Q?SCF9yH2v3ytuhUGduGAzJBMTqv6HrwWCCvL5qGf4Ui4XFrzEY/I4WSMyaUoK?=
+ =?us-ascii?Q?bLDn6MzRGParh1mT21A1lE0dWCqYVIYb3f8/JbtPWyNYimuKztJDy/ADGGih?=
+ =?us-ascii?Q?zveu4sVP1REUI1m6jMyPbu4czpWXseY/XjXRNcB3MrJREbPrOpuoiZagWid6?=
+ =?us-ascii?Q?zuw/cXWUul2uydrxgMqD6JlLJWzKCKi3VSNCl1JMCG8r8pCsV8qTt4VTlp1K?=
+ =?us-ascii?Q?GHmQ?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB6741.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2020 06:53:03.5894
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01566213-308f-4687-3431-08d8ac8f8e1a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yStyratQDUlyZQl8h8lGhZoAj3HTtIGwQTwMALoZnZJZeyTTpYagREVgtMa9lbErJ7D7CzjVavow0CTYKvtVRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6696
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-30 at 14:41 +0800, YANG LI wrote:
-> For safety, modify '%u' to '%d' to keep the type consistent.
-
-There is no additional safety here.
-
-The for loop ensures that i is positive as num_ioq_vector is also
-int and so i can not be negative as it's incremented from 0.
-
-> diff --git a/drivers/net/ethernet/cavium/liquidio/lio_core.c b/drivers/net/ethernet/cavium/liquidio/lio_core.c
-[]
-> @@ -1109,12 +1109,12 @@ int octeon_setup_interrupt(struct octeon_device *oct, u32 num_ioqs)
->  		for (i = 0 ; i < num_ioq_vectors ; i++) {
->  			if (OCTEON_CN23XX_PF(oct))
->  				snprintf(&queue_irq_names[IRQ_NAME_OFF(i)],
-> -					 INTRNAMSIZ, "LiquidIO%u-pf%u-rxtx-%u",
-> +					 INTRNAMSIZ, "LiquidIO%u-pf%u-rxtx-%d",
->  					 oct->octeon_id, oct->pf_num, i);
->  
+On Tue, Dec 29, 2020 at 04:34:20PM +0200, Laurent Pinchart wrote:
+> Hi Xin Ji,
 > 
->  			if (OCTEON_CN23XX_VF(oct))
->  				snprintf(&queue_irq_names[IRQ_NAME_OFF(i)],
-> -					 INTRNAMSIZ, "LiquidIO%u-vf%u-rxtx-%u",
-> +					 INTRNAMSIZ, "LiquidIO%u-vf%u-rxtx-%d",
->  					 oct->octeon_id, oct->vf_num, i);
->  
+> On Tue, Dec 29, 2020 at 02:50:48PM +0800, Xin Ji wrote:
+> > On Mon, Dec 28, 2020 at 05:08:56PM +0200, Laurent Pinchart wrote:
+> > > On Fri, Dec 25, 2020 at 07:01:09PM +0800, Xin Ji wrote:
+> > > > Add DPI flag for distinguish MIPI input signal type, DSI or DPI. Add
+> > > > swing setting for adjusting DP tx PHY swing
+> > > > 
+> > > > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > > > ---
+> > > >  .../bindings/display/bridge/analogix,anx7625.yaml     | 19 +++++++++++++++++++
+> > > >  1 file changed, 19 insertions(+)
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > > index 60585a4..34a7faf 100644
+> > > > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > > @@ -34,6 +34,14 @@ properties:
+> > > >      description: used for reset chip control, RESET_N pin B7.
+> > > >      maxItems: 1
+> > > >  
+> > > > +  anx,swing-setting:
+> > > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > > +    description: an array of swing register setting for DP tx PHY
+> > > 
+> > > Register values in DT are frowned upon.
+> >
+> > Hi Laurent Pinchart, as the different vendor has the different PCB layout,
+> > it effects DP CTS test result, so they may need config DP tx Swing register
+> > to adjust signal swing(the default swing setting is not satisfy for
+> > every platform). If we move the config code to driver file, it must define
+> > swing register setting for each vendor, so the DT is the best way. Do you
+> > have any idea for it if you don't agree to add in DT.
 > 
->  			irqret = request_irq(msix_entries[i].vector,
+> If it depends on the PCB layout then it should indeed be in DT. What I
+> wonder is if there would be a better way to specify the data than
+> register values. The ANX7625 datasheet isn't public, so there's
+> effectively no way for someone to write a device tree compliant with
+> this binding only with the information contained here. Reviewing the
+> bindings is equally difficult. It would be best if this property instead
+> contained information that could be documented clearly.
+Hi Laurent Pinchart, the swing register setting is optional. Basically, no need
+to care about it if customer PCB layout match our chip requirement. The
+property define just in case. So far, we just found one customer encountered
+DP tx swing issue. As the datasheet swing register adjusting algorithm
+has a little complex, we will help customer to adjust the DP tx swing
+case by case.
+> 
+> > > > +  anx,mipi-dpi-in:
+> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > > +    description: indicate the MIPI rx signal type is DPI or DSI
+> > > 
+> > > This sounds similar to the bus-type property defined in
+> > > Documentation/devicetree/bindings/media/video-interfaces.txt (which is
+> > > getting converted to YAML, Rob has posted a patch series, I expect it to
+> > > land in v5.13). I think it would make sense to extend bus-type to
+> > > support DSI, and use that property.
+> >
+> > Sorry, I didn't found any define for DPI or DSI flag in Rob's patches.
+> > Do you mean I just remove this flag define and call a special function
+> > to read the port's type(DSI or DPI)?
+> 
+> video-interfaces.yaml has initially been written for cameras, so it
+> doesn't support DSI. I think it would make sense to extend the bus-type
+> property with a DSI type, and use it here instead of a vendor-specific
+> property.
+> 
+> Alternatively, I'm wondering if this isn't information we could query at
+> runtime. DRM bridges and panels have a type, so we could look at the
+> next bridge or panel to find the type of the connected device instead of
+> specifying it in DT.
 
+At anx7625 driver probe stage, for the DSI, driver needs call some special
+interface to attach to DSI interface. For the DPI port, there is no such
+limitation, so we need to know what kind of MIPI signal type at driver initial
+stage.
+Maybe we can keep this flag, if the future has defined DSI, I'll submit new
+patch to remove this flag.
 
+Thanks,
+Xin
+
+> 
+> > > > +
+> > > >    ports:
+> > > >      type: object
+> > > >  
+> > > > @@ -72,6 +80,17 @@ examples:
+> > > >              reg = <0x58>;
+> > > >              enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+> > > >              reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
+> > > > +            anx,swing-setting = <0x00 0x14>, <0x01 0x54>,
+> > > > +                <0x02 0x64>, <0x03 0x74>, <0x04 0x29>,
+> > > > +                <0x05 0x7b>, <0x06 0x77>, <0x07 0x5b>,
+> > > > +                <0x08 0x7f>, <0x0c 0x20>, <0x0d 0x60>,
+> > > > +                <0x10 0x60>, <0x12 0x40>, <0x13 0x60>,
+> > > > +                <0x14 0x14>, <0x15 0x54>, <0x16 0x64>,
+> > > > +                <0x17 0x74>, <0x18 0x29>, <0x19 0x7b>,
+> > > > +                <0x1a 0x77>, <0x1b 0x5b>, <0x1c 0x7f>,
+> > > > +                <0x20 0x20>, <0x21 0x60>, <0x24 0x60>,
+> > > > +                <0x26 0x40>, <0x27 0x60>;
+> > > > +            anx,mipi-dpi-in = <0>;
+> > > >  
+> > > >              ports {
+> > > >                  #address-cells = <1>;
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
