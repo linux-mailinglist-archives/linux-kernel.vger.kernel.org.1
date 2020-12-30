@@ -2,131 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D332E7747
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D1E2E774E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgL3JBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 04:01:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgL3JBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 04:01:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FB1920784;
-        Wed, 30 Dec 2020 09:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609318855;
-        bh=VGbxPk1NisiSqYxd4Nqxce4ZFoGBlCOFkyUjPMIVssA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nQBQP3ctDgLy6CjpvBdtIY0Kh9GgbLeT50ysY1W49r0Xb/zCIlUNJ0wTo/vAf8TPa
-         JfPHizDur9486FXFWv9nrfmDTwr2qWB07V0+70ScowvXeimWBV6UCiVqINve+9x1Fo
-         rx2O+Ew54kL697mCGKGgbjBEQOuFkoP7mFdw+ty2vcK3CVrp87kYbDjWRTAiWzaqdZ
-         FL6IxmB2oMQ64KbSQkFDIoyFOE0aVp+fJT3se29XfvfWWD1w5nIkhw5wDNvgM05vqO
-         1kvugbn/094NF2O24i3gPftqvT4/zxjMrex6ijS7cln56STbr9mHFkjSF1fLGU01Ps
-         Nfp2Bob37kq9w==
-Date:   Wed, 30 Dec 2020 18:00:52 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 03/19] x86/insn: Add an insn_decode() API
-Message-Id: <20201230180052.7e1931b4e1b17079023b65b7@kernel.org>
-In-Reply-To: <20201229200654.GF29947@zn.tnic>
-References: <20201223174233.28638-1-bp@alien8.de>
-        <20201223174233.28638-4-bp@alien8.de>
-        <20201228101510.49082d470ed328d81486ef04@kernel.org>
-        <20201229200654.GF29947@zn.tnic>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1726486AbgL3JFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 04:05:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53486 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726400AbgL3JFK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 04:05:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609319022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lop/poXyiJNf2yKQyNAGmJKrn/jVxE6AMImof5eHXJw=;
+        b=NiRXQqNncJ/JC0emzmygPZ8i1JWXpnS4L1p+7FZYPX8MAqZiH78NmBwBUAgxAfpgfQq/pP
+        pgtUBLiOnNOoY6PR+7/EG0BZrNFCqp22Mvm+O2GcWG0BrrM170Tt6syNUsCrlU4HP7GQaf
+        PzVKzOpVSbafQ8V3l7L2/xi4lKOPJ7o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-216-IHPATD3ON2CIFLi1vCFgBQ-1; Wed, 30 Dec 2020 04:03:38 -0500
+X-MC-Unique: IHPATD3ON2CIFLi1vCFgBQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2436107ACE3;
+        Wed, 30 Dec 2020 09:03:36 +0000 (UTC)
+Received: from krava (unknown [10.40.192.76])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 82AE16E53E;
+        Wed, 30 Dec 2020 09:03:34 +0000 (UTC)
+Date:   Wed, 30 Dec 2020 10:03:33 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
+Message-ID: <20201230090333.GA577428@krava>
+References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin>
+ <20201229173401.GH450923@krava>
+ <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Dec 2020 21:06:54 +0100
-Borislav Petkov <bp@alien8.de> wrote:
-
-> On Mon, Dec 28, 2020 at 10:15:10AM +0900, Masami Hiramatsu wrote:
-> > BTW, insn_decode() can return -EINVAL if !insn_complete(), is that OK?
+On Tue, Dec 29, 2020 at 11:28:35PM +0000, Qais Yousef wrote:
+> Hi Jiri
 > 
-> It does with this change. Or are you asking whether it returning -EINVAL
-> in that case is ok?
-> 
-> I don't see why not - this way callers can differentiate where it failed
-> - at fetching bytes with -ENODATA or it wasn't decoded completely -
-> -EINVAL.
-
-Ah, I got it.
-
-> 
-> > I think tools clone code must not use INSN_MODE_KERN because the tools may
-> > not use kernel Kconfig.
+> On 12/29/20 18:34, Jiri Olsa wrote:
+> > On Tue, Dec 29, 2020 at 03:13:52PM +0000, Qais Yousef wrote:
+> > > Hi
+> > > 
+> > > When I enable CONFIG_DEBUG_INFO_BTF I get the following error in the BTFIDS
+> > > stage
+> > > 
+> > > 	FAILED unresolved symbol udp6_sock
+> > > 
+> > > I cross compile for arm64. My .config is attached.
+> > > 
+> > > I managed to reproduce the problem on v5.9 and v5.10. Plus 5.11-rc1.
+> > > 
+> > > Have you seen this before? I couldn't find a specific report about this
+> > > problem.
+> > > 
+> > > Let me know if you need more info.
 > > 
-> > Hmm, this may be better to make a different patch to introduce a NOSYNC tag
-> > for sync checker in the tools. Something like;
+> > hi,
+> > this looks like symptom of the gcc DWARF bug we were
+> > dealing with recently:
+> > 
+> >   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
+> >   https://lore.kernel.org/lkml/CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com/#r
+> > 
+> > what pahole/gcc version are you using?
 > 
-> I'd actually prefer this:
+> I'm on gcc 9.3.0
 > 
-> diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-> index f8772b371452..545320c67855 100644
-> --- a/tools/arch/x86/include/asm/insn.h
-> +++ b/tools/arch/x86/include/asm/insn.h
-> @@ -98,8 +98,6 @@ extern int insn_get_length(struct insn *insn);
->  enum insn_mode {
->         INSN_MODE_32,
->         INSN_MODE_64,
-> -       /* Mode is determined by the current kernel build. */
-> -       INSN_MODE_KERN,
->         INSN_NUM_MODES,
->  };
-
-Agreed. This is much simpler.
-Maybe I need to replace it with dummy lines but it is possible.
-
->  
+> 	aarch64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
 > 
-> so that when a tool does use INSN_MODE_KERN, it would fail building:
-> 
-> In file included from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
-> util/intel-pt-decoder/../../../arch/x86/lib/insn.c: In function ‘insn_decode’:
-> util/intel-pt-decoder/../../../arch/x86/lib/insn.c:751:11: error: ‘INSN_MODE_KERN’ undeclared (first use in this function); did you mean ‘INSN_MODE_64’?
->   751 |  if (m == INSN_MODE_KERN)
->       |           ^~~~~~~~~~~~~~
->       |           INSN_MODE_64
+> I was on pahole v1.17. I moved to v1.19 but I still see the same problem.
 
-This part is OK. I can replace it with dummy lines.
+I can reproduce with your .config, but make 'defconfig' works,
+so I guess it's some config option issue, I'll check later today
 
-> util/intel-pt-decoder/../../../arch/x86/lib/insn.c:751:11: note: each undeclared identifier is reported only once for each function it appears in
->   LD       arch/perf-in.o
-> util/intel-pt-decoder/intel-pt-insn-decoder.c: In function ‘intel_pt_get_insn’:
-> util/intel-pt-decoder/intel-pt-insn-decoder.c:163:37: error: ‘INSN_MODE_KERN’ undeclared (first use in this function); did you mean ‘INSN_MODE_64’?
->   163 |  ret = insn_decode(&insn, buf, len, INSN_MODE_KERN);
->       |                                     ^~~~~~~~~~~~~~
->       |                                     INSN_MODE_64
+jirka
 
-But in [17/19], your patch seems not using INSN_MODE_KERN there.
-
---- a/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c
-@@ -158,11 +158,13 @@ int intel_pt_get_insn(const unsigned char *buf, size_t len, int x86_64,
- 		      struct intel_pt_insn *intel_pt_insn)
- {
- 	struct insn insn;
-+	int ret;
- 
--	insn_init(&insn, buf, len, x86_64);
--	insn_get_length(&insn);
--	if (!insn_complete(&insn) || insn.length > len)
-+	ret = insn_decode(&insn, buf, len,
-+			  x86_64 ? INSN_MODE_64 : INSN_MODE_32);
-+	if (ret < 0 || insn.length > len)
- 		return -1;
-+
- 	intel_pt_insn_decoder(&insn, intel_pt_insn);
- 	if (insn.length < INTEL_PT_INSN_BUF_SZ)
- 		memcpy(intel_pt_insn->buf, buf, insn.length);
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
