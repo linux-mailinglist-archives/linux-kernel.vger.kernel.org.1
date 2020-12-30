@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16542E7CB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 22:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 148282E7CC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 22:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgL3Vhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 16:37:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726292AbgL3Vhb (ORCPT
+        id S1726434AbgL3Vlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 16:41:37 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:40305 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgL3Vlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 16:37:31 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B99C061573;
-        Wed, 30 Dec 2020 13:36:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=x5hbWwksukb8/0wEBDh++Rv5diH8gy8V0T7YtvmU4ss=; b=Bpk/eKrMv0ipYNfN1Y3N2fPfeg
-        Utl9j8h2Q9cG7pglDxwqYKt0Rq38KDs5/NuOMQUqEOdZ9bXwAMIyg3okjT+jlOrxAMzfAIvewEftu
-        xnIryAzIZCCvTVyYLbXkufF80ahQgMycI5zzTQUfalzhtGboCi80QKnSDrS6AjaOSmbwb0iUGGKAU
-        zdORkBOA8IAKkrCNkdn62u4c7QwMyf8NIDv7XQrry1rt0Y59eaXByRcGWxGdOmu4Y0CjydmE7PbKl
-        PFIyHr5bkIdiwfRBr2CuyinpGxESycv7Wmu11lUiTU7/hCfExhLtalGAy8vrxc7WUh3HlFmjx85Qi
-        r1jDEbBw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1kuj92-0004zV-VA; Wed, 30 Dec 2020 21:36:38 +0000
-Date:   Wed, 30 Dec 2020 21:36:36 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     YANG LI <abaci-bugfix@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: fix: second lock in function d_prune_aliases().
-Message-ID: <20201230213636.GA18640@casper.infradead.org>
-References: <1609311685-99562-1-git-send-email-abaci-bugfix@linux.alibaba.com>
- <20201230200449.GF3579531@ZenIV.linux.org.uk>
+        Wed, 30 Dec 2020 16:41:37 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4CC4860003;
+        Wed, 30 Dec 2020 21:40:54 +0000 (UTC)
+Date:   Wed, 30 Dec 2020 22:40:53 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Nicolas Pitre <npitre@baylibre.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] i3c/master/mipi-i3c-hci: re-fix __maybe_unused attribute
+Message-ID: <20201230214053.GB110311@piout.net>
+References: <20201230154304.598900-1-arnd@kernel.org>
+ <orno9ppp-no44-4rp5-s6-58n46rsps045@onlyvoer.pbz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201230200449.GF3579531@ZenIV.linux.org.uk>
+In-Reply-To: <orno9ppp-no44-4rp5-s6-58n46rsps045@onlyvoer.pbz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 08:04:49PM +0000, Al Viro wrote:
-> On Wed, Dec 30, 2020 at 03:01:25PM +0800, YANG LI wrote:
-> > Goto statement jumping will cause lock to be executed again without
-> > executing unlock, placing the lock statement in front of goto
-> > label to fix this problem.
+On 30/12/2020 16:23:56-0500, Nicolas Pitre wrote:
+> On Wed, 30 Dec 2020, Arnd Bergmann wrote:
+> 
+> > From: Arnd Bergmann <arnd@arndb.de>
 > > 
-> > Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-> > Reported-by: Abaci <abaci@linux.alibaba.com>
+> > clang warns because the added __maybe_unused attribute is in
+> > the wrong place:
+> > 
+> > drivers/i3c/master/mipi-i3c-hci/core.c:780:21: error: attribute declaration must precede definition [-Werror,-Wignored-attributes]
+> > static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
+> >                     ^
+> > include/linux/compiler_attributes.h:267:56: note: expanded
+> > 
+> > Fixes: 95393f3e07ab ("i3c/master/mipi-i3c-hci: quiet maybe-unused variable warning")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > 
-> I am sorry, but have you even attempted to trigger that codepath?
-> Just to test your patch...
+> Acked-by: Nicolas Pitre <npitre@baylibre.com>
 > 
-> FWIW, the patch is completely broken.  Obviously so, since you
-> have dput() done just before goto restart and dput() in very
-> much capable of blocking.  It should never be called with spinlocks
-> held.  And if you look at __dentry_kill() (well, dentry_unlink_inode()
-> called by __dentry_kill()), you will see that it bloody well *DOES*
-> drop inode->i_lock.
+> This might be the 3rd patch from 3 different people fixing the same 
+> thing. Looks like I3C maintainer is on vacation. Please feel free to 
+> send this trivial fix upstream some other way.
+> 
 
-Not only that, but the function is even _annotated_ to that effect.
-So this 'abaci' tool you have isn't even capable of the bare minimum.
+Isn't it already upstream?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=95393f3e07ab53855b91881692a4a5b52dcdc03c
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
