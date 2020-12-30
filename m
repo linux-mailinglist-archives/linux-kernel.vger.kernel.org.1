@@ -2,132 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777712E79F1
+	by mail.lfdr.de (Postfix) with ESMTP id 013D32E79F0
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 15:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgL3OUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 09:20:08 -0500
-Received: from mga05.intel.com ([192.55.52.43]:64455 "EHLO mga05.intel.com"
+        id S1726520AbgL3OUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 09:20:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgL3OUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 09:20:07 -0500
-IronPort-SDR: A2bRSNflKh5UXxgCiLXDrERS41dEjd75zbjOc9hdkpTieimqORLjWwmCe8WncHM6jSSKuE1Rdr
- ne241raGa3ZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9849"; a="261359892"
-X-IronPort-AV: E=Sophos;i="5.78,461,1599548400"; 
-   d="scan'208";a="261359892"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 06:19:26 -0800
-IronPort-SDR: tmOl3Z62Uo84jH8hAJiYOeYTECaUdq/2xEvydyjaDffdtZnffmZMTE+4w4FYMqdEf41sOtYtCh
- fHlYantPHPCw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,461,1599548400"; 
-   d="scan'208";a="395850007"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga002.fm.intel.com with ESMTP; 30 Dec 2020 06:19:23 -0800
-Date:   Wed, 30 Dec 2020 22:19:23 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, andi.kleen@intel.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com
-Subject: Re: [PATCH 1/2] mm: page_counter: relayout structure to reduce false
- sharing
-Message-ID: <20201230141923.GA43248@shbuild999.sh.intel.com>
-References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
- <20201229165642.GA371241@carbon.dhcp.thefacebook.com>
+        id S1725814AbgL3OT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 09:19:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53330221F8;
+        Wed, 30 Dec 2020 14:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609337958;
+        bh=KBi2W58R6qvqkkg5K1iO6NP9wQHrKZv2rkO1csO1FZg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XI3JmhfxexRfEQJbHLRTB4nAgkncyR1nFnE3HTSUPRxh3C3JhOXq4Bh94d3zQHj3I
+         EvYH5I0U2+0GHznCMrhSPG/ANXbjAVG5Kc1BIikj+O6G46fVT7OZVYbwHtx6/uh8xV
+         2oLU0/TJGzLxQF/qijSCAVzXi9Cmieb42d3h6tAP87pWfMLtmQDU8/Jad7qMzxaIEP
+         Fe5NvEfd2cHdvobgIl2XxViIeQeE0pmAX8/5XtZFCCGzbekwlxwIz4IM+cEweddapl
+         dOKeRzqE3WE1Sem6BcY8Pizplrq9Kep2vfhJMPW73q/SBDb7LqNkG0qcodsBEfknqi
+         t0qnBUyw3pZzQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D2BB0411E9; Wed, 30 Dec 2020 11:19:36 -0300 (-03)
+Date:   Wed, 30 Dec 2020 11:19:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
+Message-ID: <20201230141936.GA3922432@kernel.org>
+References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin>
+ <20201229173401.GH450923@krava>
+ <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
+ <20201230090333.GA577428@krava>
+ <20201230132759.GB577428@krava>
+ <20201230132852.GC577428@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201229165642.GA371241@carbon.dhcp.thefacebook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201230132852.GC577428@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 08:56:42AM -0800, Roman Gushchin wrote:
-> On Tue, Dec 29, 2020 at 10:35:13PM +0800, Feng Tang wrote:
-> > When checking a memory cgroup related performance regression [1],
-> > from the perf c2c profiling data, we found high false sharing for
-> > accessing 'usage' and 'parent'.
+Em Wed, Dec 30, 2020 at 02:28:52PM +0100, Jiri Olsa escreveu:
+> On Wed, Dec 30, 2020 at 02:28:02PM +0100, Jiri Olsa wrote:
+> > On Wed, Dec 30, 2020 at 10:03:37AM +0100, Jiri Olsa wrote:
+> > > On Tue, Dec 29, 2020 at 11:28:35PM +0000, Qais Yousef wrote:
+> > > > Hi Jiri
+> > > > 
+> > > > On 12/29/20 18:34, Jiri Olsa wrote:
+> > > > > On Tue, Dec 29, 2020 at 03:13:52PM +0000, Qais Yousef wrote:
+> > > > > > Hi
+> > > > > > 
+> > > > > > When I enable CONFIG_DEBUG_INFO_BTF I get the following error in the BTFIDS
+> > > > > > stage
+> > > > > > 
+> > > > > > 	FAILED unresolved symbol udp6_sock
+> > > > > > 
+> > > > > > I cross compile for arm64. My .config is attached.
+> > > > > > 
+> > > > > > I managed to reproduce the problem on v5.9 and v5.10. Plus 5.11-rc1.
+> > > > > > 
+> > > > > > Have you seen this before? I couldn't find a specific report about this
+> > > > > > problem.
+> > > > > > 
+> > > > > > Let me know if you need more info.
+> > > > > 
+> > > > > hi,
+> > > > > this looks like symptom of the gcc DWARF bug we were
+> > > > > dealing with recently:
+> > > > > 
+> > > > >   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
+> > > > >   https://lore.kernel.org/lkml/CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com/#r
+> > > > > 
+> > > > > what pahole/gcc version are you using?
+> > > > 
+> > > > I'm on gcc 9.3.0
+> > > > 
+> > > > 	aarch64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
+> > > > 
+> > > > I was on pahole v1.17. I moved to v1.19 but I still see the same problem.
+
+There are some changes post v1.19 in the git repo:
+
+[acme@five pahole]$ git log --oneline v1.19..
+b688e35970600c15 (HEAD -> master) btf_encoder: fix skipping per-CPU variables at offset 0
+8c009d6ce762dfc9 btf_encoder: fix BTF variable generation for kernel modules
+b94e97e015a94e6b dwarves: Fix compilation on 32-bit architectures
+17df51c700248f02 btf_encoder: Detect kernel module ftrace addresses
+06ca639505fc56c6 btf_encoder: Use address size based on ELF's class
+aff60970d16b909e btf_encoder: Factor filter_functions function
+1e6a3fed6e52d365 (quaco/master) rpm: Fix changelog date
+[acme@five pahole]$
+
+But I think these won't matter in this case :-\
+
+- Arnaldo
+
+> > > I can reproduce with your .config, but make 'defconfig' works,
+> > > so I guess it's some config option issue, I'll check later today
 > > 
-> > On 64 bit system, the 'usage' and 'parent' are close to each other,
-> > and easy to be in one cacheline (for cacheline size == 64+ B). 'usage'
-> > is usally written, while 'parent' is usually read as the cgroup's
-> > hierarchical counting nature.
+> > so your .config has
+> >   CONFIG_CRYPTO_DEV_BCM_SPU=y
 > > 
-> > So move the 'parent' to the end of the structure to make sure they
-> > are in different cache lines.
+> > and that defines 'struct device_private' which
+> > clashes with the same struct defined in drivers/base/base.h
 > > 
-> > Following are some performance data with the patch, against
-> > v5.11-rc1, on several generations of Xeon platforms. Most of the
-> > results are improvements, with only one malloc case on one platform
-> > shows a -4.0% regression. Each category below has several subcases
-> > run on different platform, and only the worst and best scores are
-> > listed:
+> > so several networking structs will be doubled, like net_device:
 > > 
-> > fio:				 +1.8% ~  +8.3%
-> > will-it-scale/malloc1:		 -4.0% ~  +8.9%
-> > will-it-scale/page_fault1:	 no change
-> > will-it-scale/page_fault2:	 +2.4% ~  +20.2%
+> > 	$ bpftool btf dump file ../vmlinux.config | grep net_device\' | grep STRUCT
+> > 	[2731] STRUCT 'net_device' size=2240 vlen=133
+> > 	[113981] STRUCT 'net_device' size=2240 vlen=133
 > > 
-> > [1].https://lore.kernel.org/lkml/20201102091543.GM31092@shao2-debian/
-> > Signed-off-by: Feng Tang <feng.tang@intel.com>
-> > Cc: Roman Gushchin <guro@fb.com>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > ---
-> >  include/linux/page_counter.h | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > each is using different 'struct device_private' when it's unwinded
 > > 
-> > diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-> > index 85bd413..6795913 100644
-> > --- a/include/linux/page_counter.h
-> > +++ b/include/linux/page_counter.h
-> > @@ -12,7 +12,6 @@ struct page_counter {
-> >  	unsigned long low;
-> >  	unsigned long high;
-> >  	unsigned long max;
-> > -	struct page_counter *parent;
-> >  
-> >  	/* effective memory.min and memory.min usage tracking */
-> >  	unsigned long emin;
-> > @@ -27,6 +26,14 @@ struct page_counter {
-> >  	/* legacy */
-> >  	unsigned long watermark;
-> >  	unsigned long failcnt;
-> > +
-> > +	/*
-> > +	 * 'parent' is placed here to be far from 'usage' to reduce
-> > +	 * cache false sharing, as 'usage' is written mostly while
-> > +	 * parent is frequently read for cgroup's hierarchical
-> > +	 * counting nature.
-> > +	 */
-> > +	struct page_counter *parent;
-> >  };
+> > and that will confuse BTFIDS logic, becase we have multiple structs
+> > with the same name, and we can't be sure which one to pick
+> > 
+> > perhaps we should check on this in pahole and warn earlier with
+> > better error message.. I'll check, but I'm not sure if pahole can
+> > survive another hastab ;-)
+> > 
+> > Andrii, any ideas on this? ;-)
+> > 
+> > easy fix is the patch below that renames the bcm's structs,
+> > it makes the kernel to compile.. but of course the new name
+> > is probably wrong and we should push this through that code
+> > authors
 > 
-> LGTM!
+> also another quick fix is to switch it to module
 > 
-> Reviewed-by: Roman Gushchin <guro@fb.com>
+> jirka
+> 
 
-Thanks for the review!
+-- 
 
-> I wonder if we have the same problem with min/low/high/max?
-> Maybe try to group all mostly-read-only fields (min, low, high,
-> max and parent) and separate them with some padding?
-
-Yep, we thought about it too. From current perf c2c profiling
-data, I haven't noticed obvious hot spots of false sharing for
-min/low/high/max (which are read mostly).
-
-For padding, we had some proposal before, current page_counter
-for 64 bits platform is 112 bytes, padding to 2 cacheline
-will only cost 16 bytes more. If this is fine, I can send another
-patch or folder it to this one.
-
-Thanks,
-Feng
-
-> Thank you!
+- Arnaldo
