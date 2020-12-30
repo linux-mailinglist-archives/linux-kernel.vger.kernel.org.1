@@ -2,111 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4107A2E75D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 04:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3152E75DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 04:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgL3DeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 22:34:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgL3DeM (ORCPT
+        id S1726277AbgL3Dob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 22:44:31 -0500
+Received: from regular1.263xmail.com ([211.150.70.199]:53526 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgL3Dob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 22:34:12 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55DFC061799
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 19:33:31 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id w17so13778253ilj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 19:33:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=B3Mt7Vge4rOYCuATbNhfM4ylo5AR8DxmvdDf9ze0ORs=;
-        b=pLTpME5psErfd7pgyRN5Ufaet1tygProILi68YE97K5ERpbjMupWDA7yBpeRswlo3f
-         rv2NsyuiE3ItWMS7A4IkTT9wM2gbfEv1kBuIwU5sL0EeTE2xrbCLPO63RXK0at/TcyQd
-         AVvOQUTj6EPRaaBiPFDx4Eet6X5SsIqnt9MAA55HXRT4AM4SjtFdnO0659LfuB63lMeD
-         JgM1nRpsG6H5t1FRNVd6dl4tu/Y/Mnjs8KcyGVuafPO1KdMGpn31t8x06pVSNnQP1Dcy
-         PLHVSNvmokyMV4UjohdfV/JrVvw+cWE2mayjQ9HQdd2kMM00AsuK9Cy+Oq4grfsu9M+7
-         St+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B3Mt7Vge4rOYCuATbNhfM4ylo5AR8DxmvdDf9ze0ORs=;
-        b=NTIE9izukDd0EKfD0gyWXRaeZSt+thkfmrDrzpbez4wo3Oo0E6Qv3WCD5BE+4JWuNs
-         ZUoEvBWY8eqFldlhjJOPHkFHhuOSK+QmSsqy+hDlqa+vibgdsKpvhamYfZhr918Nejki
-         OiNS8vqa8jRcnkrjbuNQETbKYZniexGodkDaaBGt63fng+qgAMFGAu6wyMiWSGuoejM/
-         akmGyGeEujrQsmWMBd8JxRzb+Pd8YYc8bNvuIfzLyr7k+HMRCaSdK4VMpJ/xGZEs7M7K
-         6mDRZqAuwExhf1amg410ZtLQmzYepU19hioOKQk/spqVTQdnlzEUMncez6nbo0NUo7LL
-         MWog==
-X-Gm-Message-State: AOAM533qhn0/uRqw8C80WSR2dZRhLW2fPtkZtPzzSnQBaU65PJ6ISfZU
-        c4enIi1cMZ4t6OMttjwlWDSC9pgdT8lowQ==
-X-Google-Smtp-Source: ABdhPJzXTrSmIxdHYMNyjkMFDlMMDrmiOtZdAKLDnEW+bZJlQ89iTQcBoBKa9/E/Lh0T/1SXZoMjoA==
-X-Received: by 2002:a05:6e02:20e6:: with SMTP id q6mr21255757ilv.272.1609299210959;
-        Tue, 29 Dec 2020 19:33:30 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id f13sm27380119iog.18.2020.12.29.19.33.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Dec 2020 19:33:30 -0800 (PST)
-Subject: Re: [PATCH v2 -next] staging: greybus: light: Use kzalloc for
- allocating only one thing
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, rmfrfs@gmail.com,
-        johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20201230013706.28698-1-zhengyongjun3@huawei.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <f374b9d0-4020-1c63-2c81-53e963ee182e@linaro.org>
-Date:   Tue, 29 Dec 2020 21:33:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 29 Dec 2020 22:44:31 -0500
+Received: from localhost (unknown [192.168.167.32])
+        by regular1.263xmail.com (Postfix) with ESMTP id 3DAA21176;
+        Wed, 30 Dec 2020 11:38:37 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from localhost.localdomain (unknown [14.18.236.70])
+        by smtp.263.net (postfix) whith ESMTP id P25766T139972536551168S1609299509797817_;
+        Wed, 30 Dec 2020 11:38:36 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <b37322a6021bf82d02a62b61c4143248>
+X-RL-SENDER: yili@winhong.com
+X-SENDER: yili@winhong.com
+X-LOGIN-NAME: yili@winhong.com
+X-FST-TO: tytso@mit.edu
+X-SENDER-IP: 14.18.236.70
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Yi Li <yili@winhong.com>
+To:     tytso@mit.edu
+Cc:     yilikernel@gmail.com, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yi Li <yili@winhong.com>
+Subject: [PATCH] Use IS_ERR instead of IS_ERR_OR_NULL and set inode null when IS_ERR.
+Date:   Wed, 30 Dec 2020 11:38:27 +0800
+Message-Id: <20201230033827.3996064-1-yili@winhong.com>
+X-Mailer: git-send-email 2.25.3
 MIME-Version: 1.0
-In-Reply-To: <20201230013706.28698-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/29/20 7:37 PM, Zheng Yongjun wrote:
-> Use kzalloc rather than kcalloc(1,...)
-> 
-> The semantic patch that makes this change is as follows:
-> (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @@
-> @@
-> 
-> - kcalloc(1,
-> + kzalloc(
->            ...)
-> // </smpl>
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+1: ext4_iget/ext4_find_extent never returns NULL, use IS_ERR
+instead of IS_ERR_OR_NULL to fix this.
 
-Looks good.
+2: ext4_fc_replay_inode should set the inode to NULL when IS_ERR.
+and go to call iput properly.
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Yi Li <yili@winhong.com>
+---
+ fs/ext4/fast_commit.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-> ---
->   drivers/staging/greybus/light.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-> index d2672b65c3f4..87d36948c610 100644
-> --- a/drivers/staging/greybus/light.c
-> +++ b/drivers/staging/greybus/light.c
-> @@ -290,8 +290,7 @@ static int channel_attr_groups_set(struct gb_channel *channel,
->   	channel->attrs = kcalloc(size + 1, sizeof(*channel->attrs), GFP_KERNEL);
->   	if (!channel->attrs)
->   		return -ENOMEM;
-> -	channel->attr_group = kcalloc(1, sizeof(*channel->attr_group),
-> -				      GFP_KERNEL);
-> +	channel->attr_group = kzalloc(sizeof(*channel->attr_group), GFP_KERNEL);
->   	if (!channel->attr_group)
->   		return -ENOMEM;
->   	channel->attr_groups = kcalloc(2, sizeof(*channel->attr_groups),
-> 
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 4fcc21c25e79..6b5489273c85 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -1318,14 +1318,14 @@ static int ext4_fc_replay_unlink(struct super_block *sb, struct ext4_fc_tl *tl)
+ 	entry.len = darg.dname_len;
+ 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
+ 
+-	if (IS_ERR_OR_NULL(inode)) {
++	if (IS_ERR(inode)) {
+ 		jbd_debug(1, "Inode %d not found", darg.ino);
+ 		return 0;
+ 	}
+ 
+ 	old_parent = ext4_iget(sb, darg.parent_ino,
+ 				EXT4_IGET_NORMAL);
+-	if (IS_ERR_OR_NULL(old_parent)) {
++	if (IS_ERR(old_parent)) {
+ 		jbd_debug(1, "Dir with inode  %d not found", darg.parent_ino);
+ 		iput(inode);
+ 		return 0;
+@@ -1410,7 +1410,7 @@ static int ext4_fc_replay_link(struct super_block *sb, struct ext4_fc_tl *tl)
+ 			darg.parent_ino, darg.dname_len);
+ 
+ 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
+-	if (IS_ERR_OR_NULL(inode)) {
++	if (IS_ERR(inode)) {
+ 		jbd_debug(1, "Inode not found.");
+ 		return 0;
+ 	}
+@@ -1466,10 +1466,11 @@ static int ext4_fc_replay_inode(struct super_block *sb, struct ext4_fc_tl *tl)
+ 	trace_ext4_fc_replay(sb, tag, ino, 0, 0);
+ 
+ 	inode = ext4_iget(sb, ino, EXT4_IGET_NORMAL);
+-	if (!IS_ERR_OR_NULL(inode)) {
++	if (!IS_ERR(inode)) {
+ 		ext4_ext_clear_bb(inode);
+ 		iput(inode);
+ 	}
++	inode = NULL;
+ 
+ 	ext4_fc_record_modified_inode(sb, ino);
+ 
+@@ -1512,7 +1513,7 @@ static int ext4_fc_replay_inode(struct super_block *sb, struct ext4_fc_tl *tl)
+ 
+ 	/* Given that we just wrote the inode on disk, this SHOULD succeed. */
+ 	inode = ext4_iget(sb, ino, EXT4_IGET_NORMAL);
+-	if (IS_ERR_OR_NULL(inode)) {
++	if (IS_ERR(inode)) {
+ 		jbd_debug(1, "Inode not found.");
+ 		return -EFSCORRUPTED;
+ 	}
+@@ -1564,7 +1565,7 @@ static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl)
+ 		goto out;
+ 
+ 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
+-	if (IS_ERR_OR_NULL(inode)) {
++	if (IS_ERR(inode)) {
+ 		jbd_debug(1, "inode %d not found.", darg.ino);
+ 		inode = NULL;
+ 		ret = -EINVAL;
+@@ -1577,7 +1578,7 @@ static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl)
+ 		 * dot and dot dot dirents are setup properly.
+ 		 */
+ 		dir = ext4_iget(sb, darg.parent_ino, EXT4_IGET_NORMAL);
+-		if (IS_ERR_OR_NULL(dir)) {
++		if (IS_ERR(dir)) {
+ 			jbd_debug(1, "Dir %d not found.", darg.ino);
+ 			goto out;
+ 		}
+@@ -1653,7 +1654,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
+ 
+ 	inode = ext4_iget(sb, le32_to_cpu(fc_add_ex->fc_ino),
+ 				EXT4_IGET_NORMAL);
+-	if (IS_ERR_OR_NULL(inode)) {
++	if (IS_ERR(inode)) {
+ 		jbd_debug(1, "Inode not found.");
+ 		return 0;
+ 	}
+@@ -1777,7 +1778,7 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl)
+ 		le32_to_cpu(lrange->fc_ino), cur, remaining);
+ 
+ 	inode = ext4_iget(sb, le32_to_cpu(lrange->fc_ino), EXT4_IGET_NORMAL);
+-	if (IS_ERR_OR_NULL(inode)) {
++	if (IS_ERR(inode)) {
+ 		jbd_debug(1, "Inode %d not found", le32_to_cpu(lrange->fc_ino));
+ 		return 0;
+ 	}
+@@ -1832,7 +1833,7 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
+ 	for (i = 0; i < state->fc_modified_inodes_used; i++) {
+ 		inode = ext4_iget(sb, state->fc_modified_inodes[i],
+ 			EXT4_IGET_NORMAL);
+-		if (IS_ERR_OR_NULL(inode)) {
++		if (IS_ERR(inode)) {
+ 			jbd_debug(1, "Inode %d not found.",
+ 				state->fc_modified_inodes[i]);
+ 			continue;
+@@ -1849,7 +1850,7 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
+ 
+ 			if (ret > 0) {
+ 				path = ext4_find_extent(inode, map.m_lblk, NULL, 0);
+-				if (!IS_ERR_OR_NULL(path)) {
++				if (!IS_ERR(path)) {
+ 					for (j = 0; j < path->p_depth; j++)
+ 						ext4_mb_mark_bb(inode->i_sb,
+ 							path[j].p_block, 1, 1);
+-- 
+2.25.3
+
+
 
