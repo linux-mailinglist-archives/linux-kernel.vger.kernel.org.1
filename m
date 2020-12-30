@@ -2,194 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC652E7852
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 12:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C65992E7857
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgL3L6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 06:58:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726604AbgL3L6J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 06:58:09 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0546C061799;
-        Wed, 30 Dec 2020 03:57:28 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id be12so8591573plb.4;
-        Wed, 30 Dec 2020 03:57:28 -0800 (PST)
+        id S1726672AbgL3MBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 07:01:42 -0500
+Received: from mail-bn7nam10on2085.outbound.protection.outlook.com ([40.107.92.85]:17665
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726518AbgL3MBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 07:01:41 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dW1iGPIMz/2l+uCjBuNp+Sqybrbi6GykF0DoFyjCrHveY0dr86pRTPRPO6B2Vd+hJ2uhcJBeyn9fGC11sbc2aNCIlQgc9TD8zmjGhK6e5g3TGTARSrNjYBibR0pjeVHHNrl46Z1GtTvePieCIzmvxpe3KNyxlhRyGSw/vxPQput2Zh43UWskruDf1iMmF324OFc61OUDnW3QgHVyd4OztuO977xP8gnC7EQD9eureNjY+jlkScPkHeKrhEPO19cjhLMzvMKFO2GL9qcFQurCGJ0IoacKV6Vmu6A4AMxK1KiamQcFuoI2rA629emc/qGjGSn8779nWS/4O9ep3g6CPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ni0JsyRoG12NSwgH7JD0l3pAOk4vwS1ciNdSt1rlYq8=;
+ b=lhespQuNjfdCJOIQ/XAAaryJj1lNPbijBTDoCSrHzRsB8ri89YXb6lNRBxgy3N+tqSHzOV2C3aUriYnppou6oM1QRPToPngF4UV5YULkTfENMmOuTrWb8YgOEznr44Rb//csNR6F3wTV0FsMnAgaeBN1kJwYt26b0hHr0Jw9WbBFEwQQpPJnE4Apl4o1smiXqNh/4DlMZQocnOpWWV76et+CbelJ9tw5bBe55fz3cAv5ATkAHaXA+LjjI76pByj4BgemElaMuw49Owr5KfK8bRTGNNxRj3u4QVJgyqFlPstZrdbPsSAvLlnjL5LSCCRPFUUsPAHAw2SLmWl86xEUxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=lyZez/TPJWN6sWd8vUs5LfzoEmRCXqZhMj6jVw0JL/c=;
-        b=czOilpTrKnk++/HN6biw+tuZpOy1CyqfQe54Cv9eZOXtvBnV3GFIsusJj7FMJAiZgk
-         BZbhSTF2fbeQgX2WSdVpy4HVUMDm0Z1KQNXuSEu+wvoe2y/FRgn77wTZeb/6AQxQlYiX
-         myUHZXI9K3wvIzmnUlNDx4j9ejPFW1HeLbMexhxxCZ8/vYk4Wmt7ugM5YyZ2/yi4GqTw
-         hMQSd+CPkMS+R14fOSpiExEzTlybi3a2UpaOgvFKQMnp5iD6L/0OqOwfmKxLKZX2TEhD
-         5UkwfGUDdf9R4ZaltSXJyDnclPg2xX2XIwS4nUrHCDw8Mo8HgPpyO/bsbLYRNL7oQjba
-         2wGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=lyZez/TPJWN6sWd8vUs5LfzoEmRCXqZhMj6jVw0JL/c=;
-        b=W9nTHTu3bn5/+Y7cNL2pQZ/a2zKOHd64q8T8qnTbFCTNt9Zj4rijHdXhUFE8IPzIY/
-         1cY8ZakR7/rgbIyRrwB/gEfoDhsJrIOyucYgGm/cC1aV3ch83KjaeHRjg/Eu26x5B+PT
-         XiwYG7yQYr1Bq+icHeASA6MD4RtZVLaZRpCpeWJpmqyWjiupHTXpJzKAe88Mp4JCTw7k
-         FMck1LK5bWhBUO8eea1QDFlNI7NGkLoBxC7tFD8uvrWxo4Junne1V8s8179gcp3p2ZSg
-         XSzGkNC/WtYaauJ7UX5yGTkdrE8jiatrcIKLen3034LcHSyRknPaOktE2A8eypXUTa/W
-         +ZrA==
-X-Gm-Message-State: AOAM530+PPzjt6OiookMD3C1NmJfdkQRbF43xq7ub57aJigdhwWdKQTY
-        nlWT+9CrPGoXVyawko9orbpsM4brAPA=
-X-Google-Smtp-Source: ABdhPJze2Hr5s+OaI6p57qfWIefx8fVHgwpydEG8SuiTXCiXqCHXJZ8R8YLZ5fwL2VWdQJCmb2R3lQ==
-X-Received: by 2002:a17:90a:1b66:: with SMTP id q93mr8219927pjq.133.1609329448436;
-        Wed, 30 Dec 2020 03:57:28 -0800 (PST)
-Received: from localhost (193-116-97-30.tpgi.com.au. [193.116.97.30])
-        by smtp.gmail.com with ESMTPSA id e13sm44423131pfj.63.2020.12.30.03.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Dec 2020 03:57:27 -0800 (PST)
-Date:   Wed, 30 Dec 2020 21:57:21 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jann Horn <jannh@google.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        paulmck <paulmck@kernel.org>, Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        stable <stable@vger.kernel.org>, Will Deacon <will@kernel.org>,
-        x86 <x86@kernel.org>
-References: <20201228190852.GI1551@shell.armlinux.org.uk>
-        <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
-        <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com>
-        <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com>
-        <1609200902.me5niwm2t6.astroid@bobo.none>
-        <CALCETrX6MOqmN5_jhyO1jJB7M3_T+hbomjxPYZLJmLVNmXAVzA@mail.gmail.com>
-        <1609210162.4d8dqilke6.astroid@bobo.none>
-        <20201229104456.GK1551@shell.armlinux.org.uk>
-        <1609290821.wrfh89v23a.astroid@bobo.none>
-        <20201230100028.GP1551@shell.armlinux.org.uk>
-        <20201230105847.GQ1551@shell.armlinux.org.uk>
-In-Reply-To: <20201230105847.GQ1551@shell.armlinux.org.uk>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ni0JsyRoG12NSwgH7JD0l3pAOk4vwS1ciNdSt1rlYq8=;
+ b=ccrKt+nTlBqvEG2tVx62TDZ+IMBwoJOFZYsM5zUA+rMDaM0fFyPdvsk6F2ZWW8y2FEAITUWxohntsLUat+wOY0CtYc/2+BTeko0E1TmwMz60V9HVJRfgJfWqfP3a2+PXXAXT0N6OWATtQEjVjWbUSo/a3IPhPAQzCQ8+vyuH+Dk=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by SJ0PR11MB4829.namprd11.prod.outlook.com (2603:10b6:a03:2d3::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.28; Wed, 30 Dec
+ 2020 12:00:52 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006%5]) with mapi id 15.20.3700.031; Wed, 30 Dec 2020
+ 12:00:52 +0000
+From:   qiang.zhang@windriver.com
+To:     akpm@linux-foundation.org, manfred@colorfullife.com,
+        gustavoars@kernel.org
+Cc:     paulmck@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ipc/sem.c: Convert kfree_rcu() to call_rcu() in freeary function
+Date:   Wed, 30 Dec 2020 20:00:38 +0800
+Message-Id: <20201230120038.19489-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR04CA0065.apcprd04.prod.outlook.com
+ (2603:1096:202:14::33) To BYAPR11MB2632.namprd11.prod.outlook.com
+ (2603:10b6:a02:c4::17)
 MIME-Version: 1.0
-Message-Id: <1609327110.c18a3h158t.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qzhang2-d1.wrs.com (60.247.85.82) by HK2PR04CA0065.apcprd04.prod.outlook.com (2603:1096:202:14::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20 via Frontend Transport; Wed, 30 Dec 2020 12:00:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5259f800-6ff9-4221-5922-08d8acba8e71
+X-MS-TrafficTypeDiagnostic: SJ0PR11MB4829:
+X-Microsoft-Antispam-PRVS: <SJ0PR11MB4829723AD63F720A82EE59DDFFD70@SJ0PR11MB4829.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w9uc0mf0NxOj2BBn3sgDDAPSzKV8su+L4dWjEgabeqrKFjhXlI+7eELFTXcpAt5Elt69XJ0JdbBeubPSlKmuUEihmTCFhwhTskYInhbYri7Gl9CegQRzNgxCX9kMEyqPf3dUcB0jNwv8Fr2WrgVfb0w2hCCcXJlf1H0Tz58dqz1Wad1w7Hkn9jW/uMrpAyFMe5MnzAYNBCvr2nFSnTA86xWPht/Vy+4DhJIAm3DhHnSrqmUfz1XjqwJKXnHHAJZYTLEWZ8QnUZYHDlH6Txps9mqV+YSTB/D24LgoQLpyT+n/xqCYYfOI7pBApy0sVWfCg7I/vVxXs+lt7txFu89gXQ7ABczWCcjM9oOH1DOwJbYn8Hf7oxcZAJHZ7hd9rq2VGo2/RTVaFdv1S0gQZ34UKQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(376002)(366004)(39840400004)(8936002)(26005)(2616005)(8676002)(316002)(52116002)(66476007)(6486002)(186003)(478600001)(66946007)(66556008)(4326008)(956004)(86362001)(9686003)(36756003)(1076003)(6512007)(83380400001)(16526019)(6506007)(5660300002)(2906002)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?52770caLwXgX27s7i+1jXHzuiZGNnBUhJNHHEcBll4VyLpgSzjzw72OPlflH?=
+ =?us-ascii?Q?0i9BS6vh2rOB0xtWj8qBUIN7ZJnaGa++A94X/ITjN6EGo4oEXZwuUH8kKZSx?=
+ =?us-ascii?Q?iC/HlmeXRlS9aUORL85uOxdR6dsZEg102M2YSeOxnjl1p9w/D2Bx/wZSQhhW?=
+ =?us-ascii?Q?p6AYYROwkGHTmNybOgTgD5SUnV09ti5JA5HH2CKdIpdm9Mgf2mUW0CgD0aCH?=
+ =?us-ascii?Q?WfE7OslJUvZYXwcy17rPGsXJB8e56VJJNgc6f8myI4DRZI5gGgA7/rbQFNPx?=
+ =?us-ascii?Q?MujJXazhO1BR9MQIXe5+g42VpSjg5fPjec8BknnZJqITRKltZq2oC8LqMa8j?=
+ =?us-ascii?Q?Tb10KMo7bFv5W2Wy/AqErH1bfT/yPXlH9URzk/mVcBE71qoMPV4aAWMz7Xlu?=
+ =?us-ascii?Q?q+sG6dHn6XlQfv7s9ISh+kIpc4pzg+m5NN4zt29GQv1kR+JZaYnnr5pbpVf4?=
+ =?us-ascii?Q?3quRikdbyvz6qxnY17QUaInTR8jbCjfmS9rnZQTb+/OVCTNOhES+nQWJ7+fy?=
+ =?us-ascii?Q?M0DAIlqISASF3vfU2bMkdbu1JfP8iwsqeKssknXGvLTxP2xNhp/KKPZCS5WV?=
+ =?us-ascii?Q?aD8IjPzAN+Q5aaiRNV5Ca12bzKiPqNizpUjdBWgIC9hsQIPwXx1+LdIPsLp7?=
+ =?us-ascii?Q?yyP8SpHsg1K33U1X2rr7H/4A9X6whSzOMmFMSHi4ZbdlCwuvJCzMn83KxpjM?=
+ =?us-ascii?Q?nuSuuUD50dkpZZF9Mh4NDQQlfpMkFeh3yYwkSAZ8TB+1sNFb+1G6GPfezlNs?=
+ =?us-ascii?Q?s+fpsm+FPUWkhgO854YV9C2VvIfE2H4MExFcKsVz8UHwh1phoysRCXXsrTs9?=
+ =?us-ascii?Q?MwvKJOUY/zMNIKUM/BToFhsSqz43y9gxYwUR064PXIq36phjHhFwG6/ZjuYx?=
+ =?us-ascii?Q?/KhgT6KNWZa9A/TwCJNm/q5v+KkWnaFI0ChNKJZxljS1On8UPLIzXh5B6JU5?=
+ =?us-ascii?Q?VH/QaC2u/ryz+wQ+Jfl5qQZQeF4cPIB8gCOQDWfoiy0=3D?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2020 12:00:52.4943
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5259f800-6ff9-4221-5922-08d8acba8e71
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iXJYY3McwKGatRIL2y44mOz7ztLeHiM4fFBahf+yEGFJ2BqsDy9YwbKqefDv6CAUOvHPEC7TjNMez0SJqs8oXKBw8PGEbXhme8FbtK2/V0U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4829
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Russell King - ARM Linux admin's message of December 30, 2020=
- 8:58 pm:
-> On Wed, Dec 30, 2020 at 10:00:28AM +0000, Russell King - ARM Linux admin =
-wrote:
->> On Wed, Dec 30, 2020 at 12:33:02PM +1000, Nicholas Piggin wrote:
->> > Excerpts from Russell King - ARM Linux admin's message of December 29,=
- 2020 8:44 pm:
->> > > On Tue, Dec 29, 2020 at 01:09:12PM +1000, Nicholas Piggin wrote:
->> > >> I think it should certainly be documented in terms of what guarante=
-es
->> > >> it provides to application, _not_ the kinds of instructions it may =
-or
->> > >> may not induce the core to execute. And if existing API can't be
->> > >> re-documented sanely, then deprecatd and new ones added that DTRT.
->> > >> Possibly under a new system call, if arch's like ARM want a range
->> > >> flush and we don't want to expand the multiplexing behaviour of
->> > >> membarrier even more (sigh).
->> > >=20
->> > > The 32-bit ARM sys_cacheflush() is there only to support self-modify=
-ing
->> > > code, and takes whatever actions are necessary to support that.
->> > > Exactly what actions it takes are cache implementation specific, and
->> > > should be of no concern to the caller, but the underlying thing is..=
-.
->> > > it's to support self-modifying code.
->> >=20
->> >    Caveat
->> >        cacheflush()  should  not  be used in programs intended to be p=
-ortable.
->> >        On Linux, this call first appeared on the MIPS architecture, bu=
-t  nowa=E2=80=90
->> >        days, Linux provides a cacheflush() system call on some other a=
-rchitec=E2=80=90
->> >        tures, but with different arguments.
->> >=20
->> > What a disaster. Another badly designed interface, although it didn't=20
->> > originate in Linux it sounds like we weren't to be outdone so
->> > we messed it up even worse.
->> >=20
->> > flushing caches is neither necessary nor sufficient for code modificat=
-ion
->> > on many processors. Maybe some old MIPS specific private thing was fin=
-e,
->> > but certainly before it grew to other architectures, somebody should=20
->> > have thought for more than 2 minutes about it. Sigh.
->>=20
->> WARNING: You are bordering on being objectionable and offensive with
->> that comment.
->>=20
->> The ARM interface was designed by me back in the very early days of
->> Linux, probably while you were still in dypers, based on what was
->> known at the time.  Back in the early 2000s, ideas such as relaxed
->> memory ordering were not known.  All there was was one level of
->> harvard cache.
+From: Zqiang <qiang.zhang@windriver.com>
 
-I wasn't talking about memory ordering at all, and I assumed it
-came earlier and was brought to Linux for portability reasons -
+Due to freeary function is called with spinlock be held,
+the synchronize_rcu function may be called in kfree_rcu
+function, the schedule may be happen in spinlock critical
+region, need to replace kfree_rcu() with call_rcu().
 
-CONFORMING TO
-       Historically, this system call was available on all MIPS UNIX  varia=
-nts
-       including RISC/os, IRIX, Ultrix, NetBSD, OpenBSD, and FreeBSD (and a=
-lso
-       on some non-UNIX MIPS operating systems), so that the existence of t=
-his
-       call in MIPS operating systems is a de-facto standard.
+Fixes: 693a8b6eecce ("ipc,rcu: Convert call_rcu(free_un) to kfree_rcu()")
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ ipc/sem.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-I don't think the call was totally unreasonable for incoherent virtual=20
-caches or incoherent i/d caches etc. Although early unix system call interf=
-ace
-demonstrates that people understood how to define good interfaces that deal=
-t
-with intent at an abstract level rather than implementation -- munmap=20
-doesn't specify anywhere that a TLB flush instruction must be executed,=20
-for example. So "cacheflush" was obviously never a well designed interface=20
-but rather the typical hardware-centric hack to get their stuff working
-(which was fine for its purpose I'm sure).
+diff --git a/ipc/sem.c b/ipc/sem.c
+index f6c30a85dadf..12c3184347d9 100644
+--- a/ipc/sem.c
++++ b/ipc/sem.c
+@@ -1132,6 +1132,13 @@ static int count_semcnt(struct sem_array *sma, ushort semnum,
+ 	return semcnt;
+ }
+ 
++static void free_un(struct rcu_head *head)
++{
++	struct sem_undo *un = container_of(head, struct sem_undo, rcu);
++
++	kfree(un);
++}
++
+ /* Free a semaphore set. freeary() is called with sem_ids.rwsem locked
+  * as a writer and the spinlock for this semaphore set hold. sem_ids.rwsem
+  * remains locked on exit.
+@@ -1152,7 +1159,7 @@ static void freeary(struct ipc_namespace *ns, struct kern_ipc_perm *ipcp)
+ 		un->semid = -1;
+ 		list_del_rcu(&un->list_proc);
+ 		spin_unlock(&un->ulp->lock);
+-		kfree_rcu(un, rcu);
++		call_rcu(&un->rcu, free_un);
+ 	}
+ 
+ 	/* Wake up all pending processes and let them fail with EIDRM. */
+-- 
+2.17.1
 
->=20
-> Sorry, I got that slightly wrong. Its origins on ARM were from 12 Dec
-> 1998:
->=20
-> http://www.armlinux.org.uk/developer/patches/viewpatch.php?id=3D88/1
->=20
-> by Philip Blundell, and first appeared in the ARM
-> pre-patch-2.1.131-19981214-1.gz. It was subsequently documented in the
-> kernel sources by me in July 2001 in ARM patch-2.4.6-rmk2.gz. It has
-> a slightly different signature: the third argument on ARM is a flags
-> argument, whereas the MIPS code, it is some undocumented "cache"
-> parameter.
->=20
-> Whether the ARM version pre or post dates the MIPS code, I couldn't say.
-> Whether it was ultimately taken from the MIPS implementation, again, I
-> couldn't say.
-
-I can, it was in MIPS in late 1.3 kernels at least. I would guess it
-came from IRIX.
-
-> However, please stop insulting your fellow developers ability to think.
-
-Sorry, I was being melodramatic. Everyone makes mistakes or decisions
-which with hindsight could have been better or were under some=20
-constraint that isn't apparent. I shouldn't have suggested it indicated=20
-thoughtlessness.
-
-Thanks,
-Nick
