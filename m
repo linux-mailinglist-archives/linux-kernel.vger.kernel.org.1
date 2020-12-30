@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056422E77A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 11:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9490B2E77B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 11:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgL3KHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 05:07:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgL3KHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 05:07:03 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A4EA21D94;
-        Wed, 30 Dec 2020 10:06:22 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kuYN2-004YYb-0Y; Wed, 30 Dec 2020 10:06:20 +0000
+        id S1726360AbgL3KNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 05:13:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgL3KNo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 05:13:44 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC7EC06179F
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 02:13:04 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id w5so16984642wrm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 02:13:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eVxSM5i76pIapJWPjbKuxmCHiHfbsJJSSitypQwb4yc=;
+        b=Z5tL7BngstmdhY1rPFAHXODcLgsAk/5fHp4TLoBVTorrlAsCpFDCEqxGLx32ouhkg9
+         Ggw7ScwfjueLWdeIsUyI2MTKUSUsrNN5WKDUp+Ck28UulmNoFXAyBt/jvp1cyJtmAksR
+         xxKYBBUHHDsDfIuInPhfYA3p3ZI0Wu92xFeKlFLj+trUCCOnqHaSuPLuVk3GYN5yTWI2
+         HxEJvbXDjF4RXgCt3QhENSmwRdv30vYt0SWrZm9hefk4bdhG43YPInIflKxK0fu2aXmH
+         wy9cSVU5CqWIWcMlYnYrWJ3KZz9sKp5ElSHRTHAkhSTiryl6x2eN8FVSsy8F9umWCxLi
+         hNbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eVxSM5i76pIapJWPjbKuxmCHiHfbsJJSSitypQwb4yc=;
+        b=gMI332b8ENhfKjs636TXToptnJ+7EHgnsEtb7AboFaDTNx8rJG1vRxd+kRgyqz+1Ig
+         h6SPwYY+GXn9PuRXpZsCslmRvinPNTZMyGC1PvqhFoEJCpHXaQkUPuGTaltX1v26keXB
+         DMCMDimUlnpzutL7iK2MxA8sBkV9AQoWZZgPDabONgy0rNVX8rb8nbXMheXk5PV8acAA
+         ZsumB0bmBo+w1eWjshpMzAol0SnV57IXSlq4NPZ15KAJwYTzbAB3h+/Lh8iwEvdLiYmb
+         orIT2HUEIQ508lEp/Q2SCm3XV/0ito2WrpAYNjodzqzIwKsk09nma+wBuWjefadg9v83
+         N8dg==
+X-Gm-Message-State: AOAM531gUT/+R0+w5SH3LTBKR3NWamLL9wijExj/cPb1Iq4+hxh1yDqP
+        UA3jlqYJ3I9//fd5HQnDnLI=
+X-Google-Smtp-Source: ABdhPJxefUIxqGz7wVH7Kss44qsC7ce7uVq5I2Yjroj/8zVSQjCvyEC/K5S2YffS44LycDCQ3qd7YA==
+X-Received: by 2002:a5d:6983:: with SMTP id g3mr23791613wru.168.1609323183162;
+        Wed, 30 Dec 2020 02:13:03 -0800 (PST)
+Received: from arch-thunder.localdomain (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
+        by smtp.gmail.com with ESMTPSA id x18sm74818507wrg.55.2020.12.30.02.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 02:13:02 -0800 (PST)
+Date:   Wed, 30 Dec 2020 10:13:00 +0000
+From:   Rui Miguel Silva <rmfrfs@gmail.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] staging: greybus: light: Use kzalloc for
+ allocating only one thing
+Message-ID: <20201230101300.sqouqv3ulez6mzmy@arch-thunder.localdomain>
+References: <20201230013706.28698-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 30 Dec 2020 10:06:19 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     David Brazdil <dbrazdil@google.com>, kvmarm@lists.cs.columbia.edu,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kernel-team@android.com, Will Deacon <will@kernel.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-Subject: Re: [PATCH] KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
-In-Reply-To: <20201229170412.GN1551@shell.armlinux.org.uk>
-References: <20201229160059.64135-1-dbrazdil@google.com>
- <20201229170412.GN1551@shell.armlinux.org.uk>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <0e1d555404e4ae8edcf6737735dc0eb7@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: linux@armlinux.org.uk, dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, suzuki.poulose@arm.com, sudeep.holla@arm.com, linux-kernel@vger.kernel.org, james.morse@arm.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, kernel-team@android.com, will@kernel.org, julien.thierry.kdev@gmail.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230013706.28698-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-29 17:04, Russell King - ARM Linux admin wrote:
-> On Tue, Dec 29, 2020 at 04:00:59PM +0000, David Brazdil wrote:
->> The KVM/arm64 PSCI relay assumes that SYSTEM_OFF and SYSTEM_RESET 
->> should
->> not return, as dictated by the PSCI spec. However, there is firmware 
->> out
->> there which breaks this assumption, leading to a hyp panic. Make KVM
->> more robust to broken firmware by allowing these to return.
+Hi Yongjun,
+many thanks for your patch.
+
+On Wed, Dec 30, 2020 at 09:37:06AM +0800, Zheng Yongjun wrote:
+> Use kzalloc rather than kcalloc(1,...)
 > 
-> Are you sure you should just return?
+> The semantic patch that makes this change is as follows:
+> (http://coccinelle.lip6.fr/)
 > 
-> We've had issues in the past with Linux reboot(2) that returns
-> to userspace, allowing on 32-bit ARM for example watchdogs to
-> unexpectedly continue being serviced.
+> // <smpl>
+> @@
+> @@
+> 
+> - kcalloc(1,
+> + kzalloc(
+>           ...)
+> // </smpl>
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-I don't think this changes anything compared to the case where
-the PSCI relay isn't enabled. The EL1 part of the kernel would
-see the SYSTEM_RESET call return, and handle it accordingly
-(stay in a while(1) loop).
+Like Alex said, LGTM also.
 
-This is consistent with the PSCI relay design goal of being
-invisible to the EL1 kernel.
+Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
 
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+------
+Cheers,
+     Rui
+> ---
+>  drivers/staging/greybus/light.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
+> index d2672b65c3f4..87d36948c610 100644
+> --- a/drivers/staging/greybus/light.c
+> +++ b/drivers/staging/greybus/light.c
+> @@ -290,8 +290,7 @@ static int channel_attr_groups_set(struct gb_channel *channel,
+>  	channel->attrs = kcalloc(size + 1, sizeof(*channel->attrs), GFP_KERNEL);
+>  	if (!channel->attrs)
+>  		return -ENOMEM;
+> -	channel->attr_group = kcalloc(1, sizeof(*channel->attr_group),
+> -				      GFP_KERNEL);
+> +	channel->attr_group = kzalloc(sizeof(*channel->attr_group), GFP_KERNEL);
+>  	if (!channel->attr_group)
+>  		return -ENOMEM;
+>  	channel->attr_groups = kcalloc(2, sizeof(*channel->attr_groups),
+> -- 
+> 2.22.0
+> 
