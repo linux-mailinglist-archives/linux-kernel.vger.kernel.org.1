@@ -2,138 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F362E77EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 12:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B531E2E77F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 12:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgL3LDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 06:03:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgL3LDo (ORCPT
+        id S1726563AbgL3LGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 06:06:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37994 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726470AbgL3LGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 06:03:44 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250FEC061799
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 03:03:04 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 3so4446766wmg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 03:03:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WS30afWY3GKACZJXCkkdeuRXpGLieFQFBc+EFWHXZ8I=;
-        b=mcpxu45JEAPmoccMikSFXPzTHkYmNC9Cr2PxZF40ApQKLEt8ZByo+t4Jg+RtvlgioZ
-         KPFZPvQog2EMXmEuRxbQyh1m8Tgk0umqTlpZKvxJUo2DJucEj9nfKymKPAPUqWFAD9cO
-         VYzGwqDMiJn+rq4wPNXnI3mmw0MGIG408+6RDbnHSbM81z7fptRzXUanxDddqvV6JwKw
-         4P6vsMKVg5ADZEBJVnbIoINXwH3okfS0SYIXIG1pW9wX36MQ5b/4XwpAYWA6Mc6UXq5Z
-         SGY8fG+SjE0UUOIQdOSxaWjRr8S/Xouoc3xoINaMgpjvsBwb3pXklmthHBqXNoVcw2gD
-         O+Zg==
+        Wed, 30 Dec 2020 06:06:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609326283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TpgWKLH5J7D/Oa0vEFsu5sj48pEyZOyT3j58Gf22+Eo=;
+        b=b0B4nZG2KrFWG691pkMKh3XKqFTPTuVl0wgtOCUtIaATPm6razWfIBXBjfjccatKAheqRP
+        IRA5LWhud/CpLnmRKolBHx05Fl8WyfoYBBjFXDCTR+oasA8z62Jf7T33i61I4beVqoMj1U
+        k7guvssxTegRQnvOh7dGTD40/89pHiw=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-cQISeeXMNIqrIxKpHDQ57A-1; Wed, 30 Dec 2020 06:04:39 -0500
+X-MC-Unique: cQISeeXMNIqrIxKpHDQ57A-1
+Received: by mail-ed1-f72.google.com with SMTP id z20so5689012edl.21
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 03:04:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WS30afWY3GKACZJXCkkdeuRXpGLieFQFBc+EFWHXZ8I=;
-        b=IJL3Kfx49RMQ01Z18mVK3sfNgN9Hw8oypfe3Qly9awxQU2foWsNdnnDtYNGuN3MMS/
-         T8/PJYg/CaUYmEdxANd/G0POHadub8vClDYUaPCFt201R2zfkOQCDthnbF3vrx4Wgx7m
-         hruCh75zYZCOqNdMP46RWBuYifqSp938gKie3xjRlPhruShqoS+GCNk7I5n+Wsy+i+Ch
-         4xloqMh+C4ZLoBf6LTle+ylXCGYwCM8GMkVatp3EpT5uyjgSrE9ZV02WndHdle61FFEx
-         SXdY5gpdwe262MYyROa2728qYwVpljM1qvYY1RLOKj/fwy/FaLcW3ljwAmFk7kafoGqc
-         CMug==
-X-Gm-Message-State: AOAM532kuEYN/GAAAWWFmdgq0nHX+ESTE1KjsMX3STSylPFzVvnVopRq
-        S2/Tg/zXjD+Zw7mcPmgaH+esTA==
-X-Google-Smtp-Source: ABdhPJzRBv6eAt8+sGkPthVC4MF6WX/caLmzGEjiLKFuGvqf5bNuQxrUjMah5pk6tT2ykIwAJbZmTw==
-X-Received: by 2002:a1c:4156:: with SMTP id o83mr7146093wma.178.1609326182577;
-        Wed, 30 Dec 2020 03:03:02 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:b0e4:997:fb3:e517])
-        by smtp.gmail.com with ESMTPSA id y130sm7256253wmc.22.2020.12.30.03.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Dec 2020 03:03:01 -0800 (PST)
-Date:   Wed, 30 Dec 2020 11:03:00 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kvmarm@lists.cs.columbia.edu, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH] KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
-Message-ID: <20201230110300.a2wei7ojhjkqfkgk@google.com>
-References: <20201229160059.64135-1-dbrazdil@google.com>
- <229d84b8d7818a170adf489535ea2d43@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TpgWKLH5J7D/Oa0vEFsu5sj48pEyZOyT3j58Gf22+Eo=;
+        b=O1ZnfLdPjdBX4vDVDwbsaJLIEwj58Ic38N0GMODAPrWjiuwYHGTRlnNnw293d2t2TE
+         YnnMm5HOnPW86fFcRUeCmPUAHoOQxhKcYzubjEN36mvgu6IEqw6euueq9jbCt6lJ/USp
+         cCKeANC0ORAyYfhyD6MTksXhxPAtRVZHDlKzQhtQB6XhMWcFU2UWDkGg3W0IIRL0oj9Q
+         q8thegqy2rLTnLKsqVjxHj6doyiiESnz3CbfkXrPxw5emBzuLRnSgOXZwgndXVIE6oPj
+         Vlx8DU29dqbg94ZYMK9F/fvXtmq/2I3TalLj2S5jGTC3t5gGt1+VXyHjzZMLrXxQ9uyL
+         MxJQ==
+X-Gm-Message-State: AOAM5326bgwqInA8P1pgWWr/2dGrYJGCyFqtlJUyU3i8oOZYLVVfFjJl
+        9CFrftZC0HE/1t4XNXcMzXG4LpNRtobETVJ0Q/F0uip76G2+57Iy5SXmXBoxdE/IpIW1j80SARy
+        VTb79kyyyY666wsoSOEi7T2Sj
+X-Received: by 2002:a17:906:3712:: with SMTP id d18mr50627984ejc.178.1609326278642;
+        Wed, 30 Dec 2020 03:04:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwQoK2ErguTmqZhtInIPF5IxlgvA+O3IkrlZ4G4JnSsQc1SmFFfU76rlEsZKdix/bchzl6Hxw==
+X-Received: by 2002:a17:906:3712:: with SMTP id d18mr50627978ejc.178.1609326278480;
+        Wed, 30 Dec 2020 03:04:38 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id o10sm19041814eju.89.2020.12.30.03.04.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Dec 2020 03:04:37 -0800 (PST)
+Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-2-hdegoede@redhat.com>
+ <20201228122138.GA5352@sirena.org.uk>
+ <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
+ <20201228162807.GE5352@sirena.org.uk>
+ <20201229130657.GN9673@ediswmail.ad.cirrus.com>
+ <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
+ <20201229150635.GP9673@ediswmail.ad.cirrus.com>
+ <20201229151548.GG4786@sirena.org.uk>
+ <1d982dd1-eb02-e7c7-357e-83cf5003c624@redhat.com>
+ <21333e30-1e7a-2c95-9e7c-6325c7e78f9a@opensource.cirrus.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <833781fc-efde-fe98-fded-f81855e54de8@redhat.com>
+Date:   Wed, 30 Dec 2020 12:04:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <229d84b8d7818a170adf489535ea2d43@kernel.org>
+In-Reply-To: <21333e30-1e7a-2c95-9e7c-6325c7e78f9a@opensource.cirrus.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 05:16:41PM +0000, Marc Zyngier wrote:
-> Hi David,
-> 
-> On 2020-12-29 16:00, David Brazdil wrote:
-> > The KVM/arm64 PSCI relay assumes that SYSTEM_OFF and SYSTEM_RESET should
-> > not return, as dictated by the PSCI spec. However, there is firmware out
-> > there which breaks this assumption, leading to a hyp panic. Make KVM
-> > more robust to broken firmware by allowing these to return.
-> > 
-> > Signed-off-by: David Brazdil <dbrazdil@google.com>
-> > ---
-> >  arch/arm64/kvm/hyp/nvhe/psci-relay.c | 13 +++++--------
-> >  1 file changed, 5 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> > b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> > index e3947846ffcb..8e7128cb7667 100644
-> > --- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> > +++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> > @@ -77,12 +77,6 @@ static unsigned long psci_forward(struct
-> > kvm_cpu_context *host_ctxt)
-> >  			 cpu_reg(host_ctxt, 2), cpu_reg(host_ctxt, 3));
-> >  }
-> > 
-> > -static __noreturn unsigned long psci_forward_noreturn(struct
-> > kvm_cpu_context *host_ctxt)
-> > -{
-> > -	psci_forward(host_ctxt);
-> > -	hyp_panic(); /* unreachable */
-> > -}
-> > -
-> >  static unsigned int find_cpu_id(u64 mpidr)
-> >  {
-> >  	unsigned int i;
-> > @@ -251,10 +245,13 @@ static unsigned long psci_0_2_handler(u64
-> > func_id, struct kvm_cpu_context *host_
-> >  	case PSCI_0_2_FN_MIGRATE_INFO_TYPE:
-> >  	case PSCI_0_2_FN64_MIGRATE_INFO_UP_CPU:
-> >  		return psci_forward(host_ctxt);
-> > +	/*
-> > +	 * SYSTEM_OFF/RESET should not return according to the spec.
-> > +	 * Allow it so as to stay robust to broken firmware.
-> > +	 */
-> >  	case PSCI_0_2_FN_SYSTEM_OFF:
-> >  	case PSCI_0_2_FN_SYSTEM_RESET:
-> > -		psci_forward_noreturn(host_ctxt);
-> > -		unreachable();
-> > +		return psci_forward(host_ctxt);
-> >  	case PSCI_0_2_FN64_CPU_SUSPEND:
-> >  		return psci_cpu_suspend(func_id, host_ctxt);
-> >  	case PSCI_0_2_FN64_CPU_ON:
-> 
-> Thanks for having tracked this.
-> 
-> I wonder whether we should also taint the kernel in this case,
-> because this is completely unexpected, and a major spec violation.
-> 
-> Ideally, we'd be able to detect this case and prevent pKVM from
-> getting initialised at all, but I guess there is no way to detect
-> the sucker without ... calling SYSTEM_RESET?
+Hi,
 
-Yeah, there are no bits to check, unfortunately. :(
+On 12/29/20 5:51 PM, Richard Fitzgerald wrote:
+> 
+> 
+> On 29/12/2020 15:40, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 12/29/20 4:15 PM, Mark Brown wrote:
+>>> On Tue, Dec 29, 2020 at 03:06:35PM +0000, Charles Keepax wrote:
+>>>
+>>>> There is maybe more argument for porting the Arizona code across
+>>>> anyways, since for a long time Android didn't properly support extcon
+>>>> either. It supported the earlier out of tree switch stuff, extcon
+>>>
+>>> Completely moving the driver doesn't cause the same problems as the
+>>> current proposal (unless it drops functionality I guess, there were
+>>> issues with adding new detection types into the input layer but I can't
+>>> remember if this hardware was impacted by that or not).
+>>
+>> The input-layer supports the following switches:
+>>
+>> SW_HEADPHONE_INSERT
+>> SW_MICROPHONE_INSERT
+>> SW_LINEOUT_INSERT
+>> SW_JACK_PHYSICAL_INSERT
+>>
+>> Which is a 1:1 mapping with the cable-types currently exported by
+>> extcon-arizona.c .
+>>
+>> I'm fine with fully moving extcon-arizona.c over to only using
+>> sound/core/jack.c functionality and it no longer exporting an
+>> extcon device.
+>>
+>> I guess we should move it out of drivers/extcon then though.
+>> I suggest using: sound/soc/cirrus/arizona-jack-detect.c
+>> Note that sound/soc/cirrus is a new dir here. Would that work
+>> for you ?
+> 
+> Shouldn't it be sound/soc/codecs/arizona-jack.c so that it is with all
+> the other code for those codecs?
 
-David
+The arizona codecs use the MFD framework and there is a separate
+platform-device instantiated for the jack-detect functionality, so this
+(mostly) a standalone platform-driver which has very little interaction
+with the rest of the codec code.
+
+It is not a codec driver, or code shared between the codec drivers,
+so putting it under sound/soc/codecs would be a bit weird.
+
+With that said I have no strong preference for putting it under
+a new sound/soc/cirrus dir, if everyone is ok with putting it under
+sound/soc/codecs then that works for me.
+
+Regards,
+
+Hans
+
