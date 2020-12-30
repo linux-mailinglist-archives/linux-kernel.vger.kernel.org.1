@@ -2,84 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34282E75AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E33A22E75AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgL3Cbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 21:31:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        id S1726322AbgL3Cdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 21:33:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgL3Cba (ORCPT
+        with ESMTP id S1726185AbgL3Cdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 21:31:30 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB9EC061799
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 18:30:50 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id p18so10533388pgm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 18:30:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=dg1+8/YFBVrssIqKkO90NVArJGznkH2ISVfNpKVOHe0=;
-        b=hgkSFVeFVX/W10bbqCSyfEtryTQ2m08elSy0cSzbKBYiHgTDFNS8nWQQZYKqfPaULR
-         ErrmBEikw0RnJd1nVz3vCyiuHVwQXwG4g5C0OSEqDFRm3/5v8PzUAZ2ppDRZM7Hc/w0k
-         GtvBdD0rOPfjqBxAFBixHrDQpdGCgXABklOjkyCHNyzXi2afQj1Zhjow+D/LFIfK3epk
-         3dxRQgtmo8OXLByzyiCYWAbmQx1r+He3P/BLE9mHMnuQiWcg2ELztk3X+DqSa41zQWOn
-         Shsf7wRlblMCIaK+NfFwcXoWafsHF13LHBbbbY3y5i0BZmOZaEC9ydjKdNwuWBEe0WJu
-         9mdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=dg1+8/YFBVrssIqKkO90NVArJGznkH2ISVfNpKVOHe0=;
-        b=Nxo70raMoXek7vSRqVhFYGE8xQ11dglh7xvLr7tmNqr3j8xLun1sbVckQuCsH0U4CY
-         uXysrAvR7vBcIVVTECVSvbYCoazUL7s1ClPmXMVPrEuZulV+josyUkF1RqDxzcP46hLg
-         /zDYRdRyYO7e1sPtT5iuhpEUQj6yYOFOSd0wrzafv+sDUrPv3EY3dY4cd68txlzZ0Z6f
-         VbsGVgU1bjhQJPV4tbQ/HOJookMHPufpsWQujjipcC0pTlMIP2eUfHg0SLFP458St0H8
-         CuqMyM/6x/xESF0MoPT8A2LMF+5FyPmVN/icyEkNIUvj1lbhkac0KzTqIsCru/u6xGPN
-         uHKg==
-X-Gm-Message-State: AOAM531r0cEh3/br6WDQ+7CO77ZsXZn5o+jsYXdGzJT5j92/Bm+UQtfF
-        zhEz1O9w8eOmcxph29Sw3mc=
-X-Google-Smtp-Source: ABdhPJwAVhmaQX1DJ+sEhw1OX5AW8F2Avnnz6jzIOuihpmtI5SWfL+swqVLLNxK3s9wICDtlm80yyA==
-X-Received: by 2002:a65:4347:: with SMTP id k7mr39650205pgq.186.1609295450039;
-        Tue, 29 Dec 2020 18:30:50 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id a131sm34848687pfd.171.2020.12.29.18.30.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 29 Dec 2020 18:30:49 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     tglx@linutronix.de, maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org, yejune.deng@gmail.com
-Subject: [PATCH] irqchip/gic: remove a if in gic_of_setup()
-Date:   Wed, 30 Dec 2020 10:30:41 +0800
-Message-Id: <1609295441-36288-1-git-send-email-yejune.deng@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Tue, 29 Dec 2020 21:33:43 -0500
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on060c.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::60c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2942C061799;
+        Tue, 29 Dec 2020 18:32:57 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FG++uJFN+cAhQ9SASEoy8MFT78i1U+tYegz9hv56H23RJn2GjcsU9Dh3R3V6D3i+g9lcMAunWLg5q+VXpU/DTXuWAwHEDQOhGHDz12O5cF+VAbG+zvOBrx1+dkyuCJLJCDuPXJ2xeaZjdEyptScD7VGe5Mx8K4iHc8XFxFRvWp+9aSdgRjaCfLRfWrBOhS/D+lnRiojqAT+dghI5j6JtFfNJlyiD7N/J3TzXA2JE9K2/NSKZ0kn405eVDydW+KocB9cPCHo4hBvWLcuccFfRse7g2gLuEvfsaVV0u1UsUet3OVCNmF7qOsXXLhMmsQVRQgtg5RIB+O+zVceXOQIG5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jb/wOxRj4EMa32IQZ5dyTADSPF9WneO7pUHasKqk3tA=;
+ b=Okn8zX6gl36yfoaoR8wdVDFevXH7GTr3rS9DgU8HZFygBxwPa6UzTwwmwHNgzJaSItDC0FRCeu2AIDKIKST6lvg9bzZPtDTzqvGJWMSbai/T1SKJJ+x+AuETTKNmtaseOScTu/2MUVT8QXDIki9Isb6H5Gdr0qrcyfBVvTt4+moangtv++lC1F2Tcw4oo7NQDS6OBgN9IT2tQmCIl44GG9VN5+YgNo7e97YhI9rEX+TOwTkT65CESlsxG/IzqV9Kb5ymcJlf/h8nNGJ35WEoDMLtAJO04mIuRdMx0g0lPwls2O2PqXMfHh0TLNdMKzvItA/Znd7J+yxeqFSGX2nNDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jb/wOxRj4EMa32IQZ5dyTADSPF9WneO7pUHasKqk3tA=;
+ b=QQzBT+/wfpUoO+ouIDIi7gUM5RvZrEDYotNIBIXJk4jfSjvAT9KYxFCBlm3sBgmw1v9uBLztLOO7/KnmBnsvCrAUosS0nFQn7UnHhNYYroKwlt/d6k466hzotLm7NFkM7IoTSJvtfV8rsIqVYKucYUWsSBGQocC/53AZ2oy3PW0=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB5996.eurprd04.prod.outlook.com (2603:10a6:10:84::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Wed, 30 Dec
+ 2020 02:32:41 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3700.031; Wed, 30 Dec 2020
+ 02:32:41 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH 3/4] arm64: dts: imx8mn: add spba bus node
+Thread-Topic: [PATCH 3/4] arm64: dts: imx8mn: add spba bus node
+Thread-Index: AQHW3duLbYhmQ5UsDkWjPU7MeJAKE6oOPz0AgACslHA=
+Date:   Wed, 30 Dec 2020 02:32:41 +0000
+Message-ID: <DB6PR0402MB2760208A9F845D2E1D30B69D88D70@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <1609243245-9671-1-git-send-email-peng.fan@nxp.com>
+ <1609243245-9671-4-git-send-email-peng.fan@nxp.com>
+ <20201229161300.GB17229@kozik-lap>
+In-Reply-To: <20201229161300.GB17229@kozik-lap>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 55ecab1f-4143-42ef-6bf2-08d8ac6b2e64
+x-ms-traffictypediagnostic: DB7PR04MB5996:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB5996B438A4F12946FE0A7BCF88D70@DB7PR04MB5996.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:590;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kPqbljIZfUNtDOjn/YrbFIypyh5CvPociBCSoHHtaxJxJrdPNAXjuJK7bWpFZFLeLMQHUB2V/2m73M7IJ/B3xLzIViPNl/PY66JMHCNLwm+5+py3iu0QvwHVboP55PyNBrUXOiHQe39IpPhshIXOhYXgBbvFGO7eP0G3WrtVSYFGZ6nvGOyHDCOb/Ct8LnxPGO/pFnEwm13UIfqxWQuRwEL08QAHpuRS+hkUuunMQS2vyOrQGt9aySHOGXpkGYT82BF/OHABpZtRBujQa7Ld+nY4XXnlfdaK/dvEOkyyNoaApEkbqGIbWry1ITgzKwkubvFGPrJJircug8fGaYLBv56jU8ie/LAOsTdDFxELnpxrNW/sQDpDPhn9AwLH5rf18tDw8dPRNojpxK4noYdfgy78UzKhyucdUcKdW7pGoo0A4StGl27vTqBwgw8IaAb5
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(39860400002)(346002)(6506007)(33656002)(71200400001)(86362001)(186003)(54906003)(26005)(316002)(7696005)(8936002)(8676002)(2906002)(44832011)(52536014)(4326008)(55016002)(478600001)(4744005)(66446008)(76116006)(66946007)(83380400001)(66556008)(64756008)(66476007)(6916009)(9686003)(5660300002)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?clAzdlpDbjRFdDRaaXBobXdqa21lK0Zwb1p1aS9iQzdTeUpLbFFhV2JaQy9Z?=
+ =?utf-8?B?QzF5L0RQVzRiWFR0b1RnMDB4ekxXclZoRWFrQ2wrM3BwTFBxVVE3MHBNVVRy?=
+ =?utf-8?B?QzhrenJROHFjZ1hnZUJUNG0vVXNicmhZdWNob0FSU1FnSzE3SXZPTlFDMjJG?=
+ =?utf-8?B?K3ZKSlllMEpENUVQQ0ZHSWdUVmlqendmT1lTdmx1eDE1M2NzOGx1cG5KWVlo?=
+ =?utf-8?B?S3JsMzZlRnVVbUQ0eDh4WitMNmQvYlN2WElhNFYwMnBWZHV2NnA3clB3dVNP?=
+ =?utf-8?B?S2pBcDg1TnBwbFFnRlM4SzRGTnI3QUR3bEhadVJsbHY5b2dyL2VicGxLWVRM?=
+ =?utf-8?B?NDB5NFpWWCtxOTdUWVVtUEFUN3Q4a21TdGNCYjRVUGFWTS9pRTQxRno0dWl5?=
+ =?utf-8?B?MEhWYmZoOGNtcC95WnR5ZFVZSGwrdGY0R0FyS3ZkMkNLdCs2RDFDN2djLzZL?=
+ =?utf-8?B?V3dVek1LV294TUU5SFVySVJZNDRFS3I0OWxwdVhpNDNWR1hxRmVOU251L085?=
+ =?utf-8?B?V3oyelRxM1lzbFVBUXMyYllreE80U29xOUczbFQxR2RoVWdwNWFXYjN0YVNy?=
+ =?utf-8?B?R0FsL3lsYVVoZnozaXU3T1ZRd3p3bTVGNVR4cG44RXVjd1BkRGhONHhkSisv?=
+ =?utf-8?B?ZG5kYlROTXlYZXkwSnM0eDdJeit3R3NIZHk0UzlZTzE5NnVJaWthRk92S3U2?=
+ =?utf-8?B?RkRZV2lHUkt3TXFYQ0Q0OXZrWklxQWhEaElobGRXV2FheDBGZGlxWGo3VFA3?=
+ =?utf-8?B?VDh4L2FnbnJ0NEpyaGI3UUlmUFYwMGJKZEExTzVZdFF2TzZuMFM4cTU1eVlJ?=
+ =?utf-8?B?TjNVL1poWDlRUCtvR3FJUEs2OFpWN1Z1SG9LZ3IxRi9xZXhNMzJUbDR5RUhx?=
+ =?utf-8?B?RFA0STZoTmNla1NMVTg0YldUMXpMNHR3Vk95ZWRoejc0Nmg3QmVPbjBvU3Zs?=
+ =?utf-8?B?QXM3RE1LclkvUlJHQ2RqTENYSWQ2RUpqdzN6SmlmekdKLzRJdGlDZHdkYjhW?=
+ =?utf-8?B?L2gzZGg2MUVTMWhYUUhmZmw5TXhTdjVQaURuamVPa08xajRRVktGVjkyMUly?=
+ =?utf-8?B?aHMvWXVETjFDUGl6ZXYwRXFtSVZCZUwrV3hrRHc0VElhUTJyYkd1V3RoeVZk?=
+ =?utf-8?B?MFFVaFcyTTVMNDhkRXRESmIxV2RQejBvRE9EM2VDcXFBOFdYOVZKUERqam9o?=
+ =?utf-8?B?eDZVQkJJRG5ONmVORncrTSsrN25MMklDbzhMSkpxWXFYQ2czMkJ1MEZtUWVv?=
+ =?utf-8?B?UXg4R0g2ZXBpc0UyRDRYcHRUakhIRGFzaDRjYjRLVm83VjJyNW1KUXBHTCty?=
+ =?utf-8?Q?hSL9nwFT33B84=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55ecab1f-4143-42ef-6bf2-08d8ac6b2e64
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Dec 2020 02:32:41.1107
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rpeIMBaVkwj7BsdZQnj4iJgRcH+++NtaKTqbIgbejv3MS9P4yad4wHK6DctPATMaLrjW7Ud7g6JaBkeXwtn8iw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5996
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is two function gic_of_init() and gic_of_init_child() called
-gic_of_setup(),both gic and node never fail,so remove
-if (!gic || !node) is safe.
-
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- drivers/irqchip/irq-gic.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
-index b1d9c22..a65678f0 100644
---- a/drivers/irqchip/irq-gic.c
-+++ b/drivers/irqchip/irq-gic.c
-@@ -1380,9 +1380,6 @@ static bool gic_check_eoimode(struct device_node *node, void __iomem **base)
- 
- static int gic_of_setup(struct gic_chip_data *gic, struct device_node *node)
- {
--	if (!gic || !node)
--		return -EINVAL;
--
- 	gic->raw_dist_base = of_iomap(node, 0);
- 	if (WARN(!gic->raw_dist_base, "unable to map gic dist registers\n"))
- 		goto error;
--- 
-1.9.1
-
+PiBTdWJqZWN0OiBSZTogW1BBVENIIDMvNF0gYXJtNjQ6IGR0czogaW14OG1uOiBhZGQgc3BiYSBi
+dXMgbm9kZQ0KPiANCj4gT24gVHVlLCBEZWMgMjksIDIwMjAgYXQgMDg6MDA6NDRQTSArMDgwMCwg
+cGVuZy5mYW5AbnhwLmNvbSB3cm90ZToNCj4gPiBGcm9tOiBQZW5nIEZhbiA8cGVuZy5mYW5Abnhw
+LmNvbT4NCj4gPg0KPiA+IEFjY29yZGluZyB0byBSTSwgdGhlcmUgaXMgYSBzcGJhIGJ1cyBpbnNp
+ZGUgYWlwczMgYW5kIGFpcHMxLCBhZGQgaXQuDQo+IA0KPiBUaGlzIGRvZXMgbm90IGxvb2sgbGlr
+ZSBtYXRjaGluZyBjb250ZW50cyBvZiBjb21taXQuDQoNClBvc3RlZCBpbiBhIHJ1c2guIEZvcmdv
+dCB0byBzcXVhc2ggY29tbWl0cy4NCg0KVGhhbmtzLA0KUGVuZy4NCg0KPiANCj4gQmVzdCByZWdh
+cmRzLA0KPiBLcnp5c3p0b2YNCj4gDQo+IA0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUGVuZyBG
+YW4gPHBlbmcuZmFuQG54cC5jb20+DQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9kdHMv
+ZnJlZXNjYWxlL2lteDhtbi5kdHNpIHwgMiArLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
+cnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0
+L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4bW4uZHRzaQ0KPiBiL2FyY2gvYXJtNjQvYm9vdC9kdHMv
+ZnJlZXNjYWxlL2lteDhtbi5kdHNpDQo+ID4gaW5kZXggNzM2MDI4MzJjY2FhLi4wMzNmYTkwNTcw
+ZmYgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvaW14OG1u
+LmR0c2kNCj4gPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4bW4uZHRz
+aQ0KPiA+IEBAIC03NDksNyArNzQ5LDcgQEAgdWFydDI6IHNlcmlhbEAzMDg5MDAwMCB7DQo+ID4g
+IAkJCQkJY2xvY2stbmFtZXMgPSAiaXBnIiwgInBlciI7DQo+ID4gIAkJCQkJc3RhdHVzID0gImRp
+c2FibGVkIjsNCj4gPiAgCQkJCX07DQo+ID4gLQkJCX0NCj4gPiArCQkJfTsNCj4gPg0KPiA+ICAJ
+CQljcnlwdG86IGNyeXB0b0AzMDkwMDAwMCB7DQo+ID4gIAkJCQljb21wYXRpYmxlID0gImZzbCxz
+ZWMtdjQuMCI7DQo+ID4gLS0NCj4gPiAyLjI4LjANCj4gPg0K
