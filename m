@@ -2,172 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3152E75DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 04:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4DE2E75D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 04:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgL3Dob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 22:44:31 -0500
-Received: from regular1.263xmail.com ([211.150.70.199]:53526 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgL3Dob (ORCPT
+        id S1726242AbgL3Dk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 22:40:58 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:54533 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726138AbgL3Dk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 22:44:31 -0500
-Received: from localhost (unknown [192.168.167.32])
-        by regular1.263xmail.com (Postfix) with ESMTP id 3DAA21176;
-        Wed, 30 Dec 2020 11:38:37 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [14.18.236.70])
-        by smtp.263.net (postfix) whith ESMTP id P25766T139972536551168S1609299509797817_;
-        Wed, 30 Dec 2020 11:38:36 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <b37322a6021bf82d02a62b61c4143248>
-X-RL-SENDER: yili@winhong.com
-X-SENDER: yili@winhong.com
-X-LOGIN-NAME: yili@winhong.com
-X-FST-TO: tytso@mit.edu
-X-SENDER-IP: 14.18.236.70
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Yi Li <yili@winhong.com>
-To:     tytso@mit.edu
-Cc:     yilikernel@gmail.com, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yi Li <yili@winhong.com>
-Subject: [PATCH] Use IS_ERR instead of IS_ERR_OR_NULL and set inode null when IS_ERR.
-Date:   Wed, 30 Dec 2020 11:38:27 +0800
-Message-Id: <20201230033827.3996064-1-yili@winhong.com>
-X-Mailer: git-send-email 2.25.3
+        Tue, 29 Dec 2020 22:40:58 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 33412700;
+        Tue, 29 Dec 2020 22:40:12 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 29 Dec 2020 22:40:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=AAVrpDmMadjqROimwI2b/EOt+H
+        kVq5eqBpwwbJ/SxYY=; b=oJdCeTqGIbkQ9Qhy12tH6UsyFVh88nphmBbq+6AuE0
+        mtBvrx3T7lMv/HQ5G66/+AWd2ql6cUmd1Trel4ariZZMqZqvkX27BY3CCQ2enA3i
+        LkpAVr2APzGeAGakScV9c4GmnCxb1pXr5Ays7wkHJ/KBo+XnS3TgaNdFVqsa3wda
+        /03MJmJbb/yNejWvgexw3vFbxKLZPv04xANk0bgFF6u/CBmxjrVgj5nxCgJ/UnlK
+        rpg58YK14gNLPnQ6vU2CXLIpzptwLRom8yEL6tV/MZ2q+6mJR/30v/mDEYbMncc5
+        8e0UL+MylDkzgY06up+0sc5x4EyQ5ZWl7aGDft2odK5A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=AAVrpDmMadjqROimw
+        I2b/EOt+HkVq5eqBpwwbJ/SxYY=; b=M+KbwuUcnsjIZW5OxTypyR6qkPm1+cYGe
+        3PHhC63bbffUdn7kMpF5M0KsmogzgXkxliYLQ28+8jsear+8paze0ixpa2kyKrYY
+        HxO0uGCm83YHiKAIIxq2BEpzJ1bM63nHeBFwEJgL/NwEP7Eu0IxHvoY6kJhsem+S
+        9dYrnuM3Ovoa0k/O9wNlU8QO9inAxUsW1/YiA/okpGwJmBdIPbVMgoCOrZ269elW
+        lovbV8Xl0lRzFBw87I4Dduad0GTiyMQM+a6vBxtaHF74ErC2se2JP/iTPNQM94TD
+        xazSlZl7MAi6otFDRNhJq9NnLxuaR4pJMGPlUNjUQQVp1IqUBpkEA==
+X-ME-Sender: <xms:mfbrX4K2DVfgtlwh7QUNylkn5ffmv8HMALB0OP_nJIsDsalFZJlKeA>
+    <xme:mfbrX4KdnabbL9cGOOZkay4-d6uKAHRHQzzh85vWhztYs7fp1qDbWXxmrg_HDVxWA
+    bBXCClFQEl75eAyDEE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddvvddgiedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflihgrgihunhcu
+    jggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecuggftrf
+    grthhtvghrnhephfejtdektdeuhedtieefteekveffteejteefgeekveegffetvddugfel
+    iefhtddunecukfhppeeitddrudejjedrudekledrudejudenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhih
+    ghhorghtrdgtohhm
+X-ME-Proxy: <xmx:mfbrX4s013N-71jbVOWQL-DdM9CZnSwnjoHGAbeFhPHfsPhOCjd6rA>
+    <xmx:mfbrX1at3eqVPj24zIP-Mxk4Frc-bUhqCYjfIZm4j4VnAVLsHCgr7A>
+    <xmx:mfbrX_bVqcV88G4pMHeawWpEsFTypFOuvZKs5dw3urzmbWvY46BGdA>
+    <xmx:m_brX-lrIWrcnVR0iLHdqNlg1XAh-vNbC6U5SRFHe_qeeU4WnChSr3JfsXs>
+Received: from strike.202.net.flygoat.com (unknown [60.177.189.171])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9F90124005A;
+        Tue, 29 Dec 2020 22:40:05 -0500 (EST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND 1/2] MIPS: cacheinfo: Add missing VCache
+Date:   Wed, 30 Dec 2020 11:39:48 +0800
+Message-Id: <20201230033950.13839-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1: ext4_iget/ext4_find_extent never returns NULL, use IS_ERR
-instead of IS_ERR_OR_NULL to fix this.
+Victim Cache is defined by Loongson as per-core unified
+private Cache.
+Add this into cacheinfo and make cache levels selfincrement
+instead of hardcode levels.
 
-2: ext4_fc_replay_inode should set the inode to NULL when IS_ERR.
-and go to call iput properly.
-
-Signed-off-by: Yi Li <yili@winhong.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Reviewed-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- fs/ext4/fast_commit.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ arch/mips/kernel/cacheinfo.c | 34 ++++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 4fcc21c25e79..6b5489273c85 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1318,14 +1318,14 @@ static int ext4_fc_replay_unlink(struct super_block *sb, struct ext4_fc_tl *tl)
- 	entry.len = darg.dname_len;
- 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
+diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
+index 47312c529410..83548331ee94 100644
+--- a/arch/mips/kernel/cacheinfo.c
++++ b/arch/mips/kernel/cacheinfo.c
+@@ -35,6 +35,11 @@ static int __init_cache_level(unsigned int cpu)
  
--	if (IS_ERR_OR_NULL(inode)) {
-+	if (IS_ERR(inode)) {
- 		jbd_debug(1, "Inode %d not found", darg.ino);
- 		return 0;
+ 	leaves += (c->icache.waysize) ? 2 : 1;
+ 
++	if (c->vcache.waysize) {
++		levels++;
++		leaves++;
++	}
++
+ 	if (c->scache.waysize) {
+ 		levels++;
+ 		leaves++;
+@@ -74,25 +79,38 @@ static int __populate_cache_leaves(unsigned int cpu)
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+ 	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
++	int level = 1;
+ 
+ 	if (c->icache.waysize) {
+-		/* L1 caches are per core */
++		/* D/I caches are per core */
+ 		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+-		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
++		populate_cache(dcache, this_leaf, level, CACHE_TYPE_DATA);
+ 		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+-		populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
++		populate_cache(icache, this_leaf, level, CACHE_TYPE_INST);
++		level++;
+ 	} else {
+-		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
++		populate_cache(dcache, this_leaf, level, CACHE_TYPE_UNIFIED);
++		level++;
++	}
++
++	if (c->vcache.waysize) {
++		/* Vcache is per core as well */
++		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
++		populate_cache(vcache, this_leaf, level, CACHE_TYPE_UNIFIED);
++		level++;
  	}
  
- 	old_parent = ext4_iget(sb, darg.parent_ino,
- 				EXT4_IGET_NORMAL);
--	if (IS_ERR_OR_NULL(old_parent)) {
-+	if (IS_ERR(old_parent)) {
- 		jbd_debug(1, "Dir with inode  %d not found", darg.parent_ino);
- 		iput(inode);
- 		return 0;
-@@ -1410,7 +1410,7 @@ static int ext4_fc_replay_link(struct super_block *sb, struct ext4_fc_tl *tl)
- 			darg.parent_ino, darg.dname_len);
- 
- 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
--	if (IS_ERR_OR_NULL(inode)) {
-+	if (IS_ERR(inode)) {
- 		jbd_debug(1, "Inode not found.");
- 		return 0;
+ 	if (c->scache.waysize) {
+-		/* L2 cache is per cluster */
++		/* Scache is per cluster */
+ 		fill_cpumask_cluster(cpu, &this_leaf->shared_cpu_map);
+-		populate_cache(scache, this_leaf, 2, CACHE_TYPE_UNIFIED);
++		populate_cache(scache, this_leaf, level, CACHE_TYPE_UNIFIED);
++		level++;
  	}
-@@ -1466,10 +1466,11 @@ static int ext4_fc_replay_inode(struct super_block *sb, struct ext4_fc_tl *tl)
- 	trace_ext4_fc_replay(sb, tag, ino, 0, 0);
  
- 	inode = ext4_iget(sb, ino, EXT4_IGET_NORMAL);
--	if (!IS_ERR_OR_NULL(inode)) {
-+	if (!IS_ERR(inode)) {
- 		ext4_ext_clear_bb(inode);
- 		iput(inode);
- 	}
-+	inode = NULL;
+-	if (c->tcache.waysize)
+-		populate_cache(tcache, this_leaf, 3, CACHE_TYPE_UNIFIED);
++	if (c->tcache.waysize) {
++		populate_cache(tcache, this_leaf, level, CACHE_TYPE_UNIFIED);
++		level++;
++	}
  
- 	ext4_fc_record_modified_inode(sb, ino);
+ 	this_cpu_ci->cpu_map_populated = true;
  
-@@ -1512,7 +1513,7 @@ static int ext4_fc_replay_inode(struct super_block *sb, struct ext4_fc_tl *tl)
- 
- 	/* Given that we just wrote the inode on disk, this SHOULD succeed. */
- 	inode = ext4_iget(sb, ino, EXT4_IGET_NORMAL);
--	if (IS_ERR_OR_NULL(inode)) {
-+	if (IS_ERR(inode)) {
- 		jbd_debug(1, "Inode not found.");
- 		return -EFSCORRUPTED;
- 	}
-@@ -1564,7 +1565,7 @@ static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl)
- 		goto out;
- 
- 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
--	if (IS_ERR_OR_NULL(inode)) {
-+	if (IS_ERR(inode)) {
- 		jbd_debug(1, "inode %d not found.", darg.ino);
- 		inode = NULL;
- 		ret = -EINVAL;
-@@ -1577,7 +1578,7 @@ static int ext4_fc_replay_create(struct super_block *sb, struct ext4_fc_tl *tl)
- 		 * dot and dot dot dirents are setup properly.
- 		 */
- 		dir = ext4_iget(sb, darg.parent_ino, EXT4_IGET_NORMAL);
--		if (IS_ERR_OR_NULL(dir)) {
-+		if (IS_ERR(dir)) {
- 			jbd_debug(1, "Dir %d not found.", darg.ino);
- 			goto out;
- 		}
-@@ -1653,7 +1654,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
- 
- 	inode = ext4_iget(sb, le32_to_cpu(fc_add_ex->fc_ino),
- 				EXT4_IGET_NORMAL);
--	if (IS_ERR_OR_NULL(inode)) {
-+	if (IS_ERR(inode)) {
- 		jbd_debug(1, "Inode not found.");
- 		return 0;
- 	}
-@@ -1777,7 +1778,7 @@ ext4_fc_replay_del_range(struct super_block *sb, struct ext4_fc_tl *tl)
- 		le32_to_cpu(lrange->fc_ino), cur, remaining);
- 
- 	inode = ext4_iget(sb, le32_to_cpu(lrange->fc_ino), EXT4_IGET_NORMAL);
--	if (IS_ERR_OR_NULL(inode)) {
-+	if (IS_ERR(inode)) {
- 		jbd_debug(1, "Inode %d not found", le32_to_cpu(lrange->fc_ino));
- 		return 0;
- 	}
-@@ -1832,7 +1833,7 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
- 	for (i = 0; i < state->fc_modified_inodes_used; i++) {
- 		inode = ext4_iget(sb, state->fc_modified_inodes[i],
- 			EXT4_IGET_NORMAL);
--		if (IS_ERR_OR_NULL(inode)) {
-+		if (IS_ERR(inode)) {
- 			jbd_debug(1, "Inode %d not found.",
- 				state->fc_modified_inodes[i]);
- 			continue;
-@@ -1849,7 +1850,7 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
- 
- 			if (ret > 0) {
- 				path = ext4_find_extent(inode, map.m_lblk, NULL, 0);
--				if (!IS_ERR_OR_NULL(path)) {
-+				if (!IS_ERR(path)) {
- 					for (j = 0; j < path->p_depth; j++)
- 						ext4_mb_mark_bb(inode->i_sb,
- 							path[j].p_block, 1, 1);
 -- 
-2.25.3
-
-
+2.30.0
 
