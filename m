@@ -2,45 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3872E76F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 864BC2E76F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgL3IKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 03:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgL3IKY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 03:10:24 -0500
-Received: from s05657058.fastvps-server.com (s05657058.fastvps-server.com [IPv6:2a03:f480:1:1c::c6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DF4C061799
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 00:09:43 -0800 (PST)
-Received: from chinagaz by s05657058.fastvps-server.com with local (Exim 4.84_2)
-        (envelope-from <support@chinagas.ru>)
-        id 1kuWY8-0005YX-NT
-        for linux-kernel@vger.kernel.org; Wed, 30 Dec 2020 11:09:40 +0300
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?=C3=9Cnnepi_=C3=BCdv=C3=B6zlet.?=
-X-PHP-Originating-Script: 5037:5QFAYhvl2Bq.php(3) : eval()'d code
-Date:   Wed, 30 Dec 2020 11:09:40 +0300
-From:   =?UTF-8?Q?=C3=9Cnnepi_=C3=BCdv=C3=B6zlet=2E?= <support@chinagas.ru>
-Reply-To: Lawyer.karimalassani@gmail.com
-Message-ID: <fb312a263014f25f4590f8980fe56652@chinagas.ru>
+        id S1726247AbgL3IQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 03:16:24 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:34614 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725814AbgL3IQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 03:16:23 -0500
+Received: from zn.tnic (p200300ec2f0ae9002293c057202a1917.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e900:2293:c057:202a:1917])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4EB3F1EC0513;
+        Wed, 30 Dec 2020 09:15:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609316142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=uI6jUEBXx3dgS1ABqv+Yi4YcXAMzRepG8Y+o4rruDJ0=;
+        b=iGdiAhSOs8EhM5J8a74dhjFcHDgBIMyUQh1aAWWkKqdU2TjIurH5aLRmPiAq8W0LFEojQp
+        R/GwCTEq4DT0lkq0Zk99GwYfUnDiB9aNhJ/hN0ZjK4qGz4bL/R9eQWMOzD2kSvNjIMoBZg
+        hZZrmCb78C5xAvPd9W3ChjBdvH9S/qs=
+Date:   Wed, 30 Dec 2020 09:15:39 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     james.morse@arm.com, rric@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] edac: ppc4xx_edac: convert comma to semicolon
+Message-ID: <20201230081539.GD22022@zn.tnic>
+References: <20201216131846.14937-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201216131846.14937-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ünnepi üdvözlet. A nevem Karim Alassani, jogász és a Late személyes ügyvédje. Mr. Jovan, ügyfelem, aki autóbalesetben halt meg családjával és egyetlen lányával. A bank megkereste velem a legközelebbi rokont, hogy az általa otthagyott alapot (4,211 000 millió dollár) elkobozzák.
+On Wed, Dec 16, 2020 at 09:18:46PM +0800, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/edac/ppc4xx_edac.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/edac/ppc4xx_edac.c b/drivers/edac/ppc4xx_edac.c
+> index 677095769182..6793f6d799e7 100644
+> --- a/drivers/edac/ppc4xx_edac.c
+> +++ b/drivers/edac/ppc4xx_edac.c
+> @@ -1058,7 +1058,7 @@ static int ppc4xx_edac_mc_init(struct mem_ctl_info *mci,
+>  	/* Initialize strings */
+>  
+>  	mci->mod_name		= PPC4XX_EDAC_MODULE_NAME;
+> -	mci->ctl_name		= ppc4xx_edac_match->compatible,
+> +	mci->ctl_name		= ppc4xx_edac_match->compatible;
+>  	mci->dev_name		= np->full_name;
+>  
+>  	/* Initialize callbacks */
+> -- 
 
-De néhai ügyfelemnek a kutatásom után nincsenek hozzátartozói, ezért keresem fel Önt, hogy segítsen a művelet végrehajtásában, mivel közös neve van késői ügyfelemmel.
+Applied, thanks.
 
-Ez 100 százalékos kockázatmentes, és minden dokumentum birtokában van a követelés alátámasztására.
-Válaszoljon, ha további részleteket szeretne megtudni arról, hogyan lehet az alapot átutalni Önnek.
+-- 
+Regards/Gruss,
+    Boris.
 
-Üdvözlettel
-ESQ Karim Alassani
-Lawyer.karimalassani@gmail.com
-
+https://people.kernel.org/tglx/notes-about-netiquette
