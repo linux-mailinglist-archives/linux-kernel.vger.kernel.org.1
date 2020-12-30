@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187B42E77DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 11:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8E02E77E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 11:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbgL3Kuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 05:50:51 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:54743 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726203AbgL3Kuv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 05:50:51 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 0D7F39AF;
-        Wed, 30 Dec 2020 05:49:44 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 30 Dec 2020 05:49:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=YDHFjg
-        vHwzkhjLyFLCWnqvCXL3fYINzbOxnJ/e3Y7Rw=; b=In2x+CzY/aIHD944haER51
-        lhkBkUECBEfj+fTfj1s9G+IFC2rD3DeTq/dOIJpobmS8sknfgjo1CVKMQOZCZ4PG
-        wFg3qgqirtnM9pmWlyHZbdtaFkEB4cpRRqhpCW8lQHG07SqhY5Isb2BfgESeFJZ0
-        yWHeaZPtdfwle9oiKCOYlAoZAM/2kamzYL3H2eOVFaqHEr4qVw4Nam4jGbpacuEd
-        qDsYTAtCrdZxCy3Y9UV7PcP9DEGHUfdL/xDMar/dY+YxGMiSrkovfHABwIA1DwR/
-        0mTqifwrxL1JPOkn4uC0KjM9aTgQXRRf4sOKcnmkFnHbZ/BNiKEmNQ0lL0sxKZzw
-        ==
-X-ME-Sender: <xms:R1vsX0OEW9PiJKzStrdkxhut-i0d7ciI5lGrsADxMuqEfZO1e3tjCQ>
-    <xme:R1vsX6-ehYaPvOED-ODQybmYKEQzrW9bc1rrTMcL9-L2etwuAncJVFUH0OmadV6jx
-    jnRvTW-bY3IiSk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddvfedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeffheeuvdehuefgvdethfeuveegveevieevieejvdeujefftedvleekueelledv
-    keenucffohhmrghinheplhhipheirdhfrhenucfkphepkeegrddvvdelrdduheefrdegge
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiugho
-    shgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:R1vsX7QiKlbUARMVNGFjwJv2TeeWrI9RLxUOnfljb2mCFmvAe96Hjw>
-    <xmx:R1vsX8vq8eUShw8i2mieQ8xnA4NMIHPkepHinptXBUfy_a5SrAp_OA>
-    <xmx:R1vsX8ceW_oNNM4LKYtj-9yw3bzqi-CI3tB1ScobL1zVr_0Q24Xq9g>
-    <xmx:SFvsX9qdaqY1dnKubhvJ3DXZ1TLVLHwWQ4lUZEg6aDGQRtl9f0kP6w>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5400F24005B;
-        Wed, 30 Dec 2020 05:49:43 -0500 (EST)
-Date:   Wed, 30 Dec 2020 12:49:40 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mlxsw@nvidia.com
-Subject: Re: [PATCH net-next] net/mlxfw: Use kzalloc for allocating only one
- thing
-Message-ID: <20201230104940.GA386343@shredder.lan>
-References: <20201230081835.536-1-zhengyongjun3@huawei.com>
+        id S1726363AbgL3K4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 05:56:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726203AbgL3K4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 05:56:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67DA9221F8;
+        Wed, 30 Dec 2020 10:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609325753;
+        bh=Uzn0V6Ntq8wBMJ38D9siuQPSOSLHAmK6QaFPwF/UDlM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UfTfE35cLhRtiuwhjbR45VFGpcPXtKzIOpBiNdIMD7q+8EnwoljWXYH/SJIedLE4q
+         wrz5twRqhDtPJGqYm+D7DaoM+e0HA45lf6rGnKJtz7dY4El92NK7JX0lGrl0cAGKNj
+         KpWo9nrO9QNVU687valZ/hwUCRb0J6PVrw0YuZNg=
+Date:   Wed, 30 Dec 2020 11:57:20 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/716] 5.10.4-rc2 review
+Message-ID: <X+xdEGLe3liDNFu3@kroah.com>
+References: <20201229103832.108495696@linuxfoundation.org>
+ <20201229152525.GB49720@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201230081835.536-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20201229152525.GB49720@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 04:18:35PM +0800, Zheng Yongjun wrote:
-> Use kzalloc rather than kcalloc(1,...)
+On Tue, Dec 29, 2020 at 07:25:25AM -0800, Guenter Roeck wrote:
+> On Tue, Dec 29, 2020 at 11:52:58AM +0100, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.4 release.
+> > There are 716 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Thu, 31 Dec 2020 10:36:33 +0000.
+> > Anything received after that time might be too late.
+> > 
 > 
-> The semantic patch that makes this change is as follows:
-> (http://coccinelle.lip6.fr/)
+> Build results:
+> 	total: 154 pass: 154 fail: 0
+> Qemu test results:
+> 	total: 427 pass: 427 fail: 0
 > 
-> // <smpl>
-> @@
-> @@
-> 
-> - kcalloc(1,
-> + kzalloc(
->           ...)
-> // </smpl>
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Thanks for the testing and letting me know.
 
-Thanks
+greg k-h
