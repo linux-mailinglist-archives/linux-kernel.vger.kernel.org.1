@@ -2,535 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068872E785B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC8B2E7869
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgL3MEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 07:04:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726569AbgL3MEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 07:04:05 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA8722074D;
-        Wed, 30 Dec 2020 12:03:22 +0000 (UTC)
-Date:   Wed, 30 Dec 2020 12:03:20 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ye Xiang <xiang.ye@intel.com>
-Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] iio: hid-sensors: Add hinge sensor driver
-Message-ID: <20201230120320.2c2f3e1c@archlinux>
-In-Reply-To: <20201215054444.9324-3-xiang.ye@intel.com>
-References: <20201215054444.9324-1-xiang.ye@intel.com>
-        <20201215054444.9324-3-xiang.ye@intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1726713AbgL3MHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 07:07:06 -0500
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:58484 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726486AbgL3MGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 07:06:51 -0500
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BUBwJrs000983;
+        Wed, 30 Dec 2020 04:05:30 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=TcWzqyfJgk6LYAu/u4iflmlFrD/Dex+cvnsjRXtvJJA=;
+ b=AGhGwPr3MR6WvWXLCE5SoDXkwxQFmCtJNBmmuPQu8F+RDI3zQVKIHw3V3pC0wRFWNKCY
+ jOWksa8nxIHmrQ800WXpYNerfJjaK0ASGLwNK743PSL50eUAH2/zPgiCmmpmlB6woio/
+ pTPoDK6phRLXmsKnNf+lsaji37O1PSsZcBhVi72EfIU80tV9ecaA2sN5ZQ18c+VqwJZ4
+ EnW4YcYiNlkLdpTv4Vy7HkcK9LOkdhvJR4TGxj9YGWnA5y2V6DtoZiW+kxoPaIrl9tqs
+ zQM2KdCWTvUC1ZHPmVeLfvPe0SfbQkM2vmyM+0vuIvzpfKiKzeEADg1K2Xc2h0mTrPxa fA== 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 35p2m1fh2k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Dec 2020 04:05:29 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YL+kZGJNTCL2Pw18BNV5rL5IPFEv+xnc+lZowQ4asx24C313ENnKBLeLQn2/cW3j5Sv3ccHafM85wvEJ6zeyWc+TuhQhdDthMXnZkBf6yRUIIy9HD701GD0WyIBD9z4pxnC4YymLRSfRzWTOouELkNNbril2K05azvkwMm6StuQ/dS5AsGel784ZTCzdRGaNpDyMr2D64ua/9o2cWYTlF0U58NF1uRLhy1Ou+EaG9UtZy/xVyh/WyxAFauvCp73XLMWI/O7UmIjpmjh4vNunyGMaRCzzvxxG+At103LW0gvMLDZFjDBIlIXbpHTEG7j2CimpO+zNYdHluPJz61Ue1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TcWzqyfJgk6LYAu/u4iflmlFrD/Dex+cvnsjRXtvJJA=;
+ b=O8P8d4of8bN1amjh+AIW2J1KX5xcMNnDRod/EcSbuDW0fYiNCGmdx338Hx0VCfttj0GvEKkUtLqGHzst/6X69fTqqGArYlnxfNDV7oaTcEiaTuWFzgxcXu37enhRejrYiD1vZWQJokVtPGlbfO8VpbqGhbi8thwDR8m5ZigApXDDpIijKwm0jPlTZXEBcGpDWQrcIh50g3XhgIuO7t89i1kNib1Z+6ClL65ech0DjZpkc2v76XjPtsLY8zg2ZZyYdEH9r4oge1TBF+Le2eerAOr7RCSIVRO0ALEcJCj0lRkTjXA+mwQqG9kYTSXx37CsxRLll0cvtfmgn1RQ3dTdrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.147) smtp.rcpttodomain=google.com smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TcWzqyfJgk6LYAu/u4iflmlFrD/Dex+cvnsjRXtvJJA=;
+ b=azOQaP4u/sdZQX2jn0hLEE79lRf4Tq/CyRzKJAewZZ231RfyG2y+7f5pahLrWLqqjZgiYPjMEr1WRAQsnCigAFZIWMqbIq2XPJWjy2LyslMvfwxB8Dzd0PTaewAQQrqAMWq+EjC5dg2KQAOJKA8n73KmkhLEYtIc6Ob4xpXHi28=
+Received: from DM6PR07CA0074.namprd07.prod.outlook.com (2603:10b6:5:337::7) by
+ DM6PR07MB6809.namprd07.prod.outlook.com (2603:10b6:5:17c::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3700.31; Wed, 30 Dec 2020 12:05:27 +0000
+Received: from DM6NAM12FT007.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:5:337:cafe::70) by DM6PR07CA0074.outlook.office365.com
+ (2603:10b6:5:337::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19 via Frontend
+ Transport; Wed, 30 Dec 2020 12:05:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
+ smtp.mailfrom=cadence.com; google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ DM6NAM12FT007.mail.protection.outlook.com (10.13.178.236) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3721.12 via Frontend Transport; Wed, 30 Dec 2020 12:05:26 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 0BUC5MCe030682
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Dec 2020 04:05:23 -0800
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Wed, 30 Dec 2020 13:05:21 +0100
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Wed, 30 Dec 2020 13:05:21 +0100
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0BUC5Ldc002398;
+        Wed, 30 Dec 2020 13:05:21 +0100
+Received: (from nadeem@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0BUC5JA6002397;
+        Wed, 30 Dec 2020 13:05:19 +0100
+From:   Nadeem Athani <nadeem@cadence.com>
+To:     <tjoseph@cadence.com>, <lorenzo.pieralisi@arm.com>,
+        <robh@kernel.org>, <bhelgaas@google.com>, <kishon@ti.com>,
+        <linux-omap@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <nadeem@cadence.com>, <mparab@cadence.com>, <sjakhade@cadence.com>,
+        <pthombar@cadence.com>
+Subject: [PATCH v7 0/2] PCI: cadence: Retrain Link to work around Gen2
+Date:   Wed, 30 Dec 2020 13:05:13 +0100
+Message-ID: <20201230120515.2348-1-nadeem@cadence.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0eabc87f-d997-4224-6906-08d8acbb31e1
+X-MS-TrafficTypeDiagnostic: DM6PR07MB6809:
+X-Microsoft-Antispam-PRVS: <DM6PR07MB680916A82F71E232AB42CC32D8D70@DM6PR07MB6809.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: S1aoGZWMP6Iva/WSt4qPxVR5i+8WmfksUIs0BfS483oXB4I3Tee7DJeSHbg3FTeTGq4Xv4wq9P3aduThagUqzFUkGsXekmvvj6+zkUTTm1pIQaA2xlNcVlMm6qi9ghmxGtZ8Eif9DEDXcfpiO5fGmcM35eisXaXqZgnh5ZZbiwvKIp/wR9Vr+ELSkhUYhak2guCv814MLjFPuUvsj2A4cQ7YRhOxDq8WL5B8DPHPwGroTKrpV/ZDiqC1d5asRWYjUJqYJR4N1eBKdJJ5T9XedeIfskyRqEJvB0gAQBXxwD1wOXHkNuNuEtjEkUXqIj62hOKFreUnsyrFSkvDEKilPWQCEhChr2bGjtG7HC5iPegqWMe0/5RNQcjtoGlYV7sgQC7hORPCttX+/g9zumivySnwCG/191L+wHhedKId5O0wuzqGe3lcPlboJ56B6LtBAlrFURBo1QRhmoQEe66v6J8Y9pj/C+ifdbRPZZyqLTWJJHMPs2YEi2cBDVliVlBE
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39850400004)(36092001)(46966006)(5660300002)(426003)(70586007)(186003)(316002)(4326008)(478600001)(42186006)(356005)(82310400003)(86362001)(7636003)(70206006)(110136005)(36756003)(82740400003)(336012)(2616005)(1076003)(2906002)(107886003)(47076005)(54906003)(8936002)(26005)(83380400001)(36906005)(8676002)(6666004)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2020 12:05:26.7593
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0eabc87f-d997-4224-6906-08d8acbb31e1
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT007.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR07MB6809
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-30_07:2020-12-30,2020-12-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 malwarescore=0
+ spamscore=0 adultscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ phishscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012300075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 13:44:43 +0800
-Ye Xiang <xiang.ye@intel.com> wrote:
+Cadence controller will not initiate autonomous speed change if strapped
+as Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+Adding a quirk flag for defective IP. In future IP revisions this will not
+be applicable.
 
-> The Hinge sensor is a common custom sensor on laptops. It calculates
-> the angle between the lid (screen) and the base (keyboard). In addition,
-> it also exposes screen and the keyboard angles with respect to the
-> ground. Applications can easily get laptop's status in space through
-> this sensor, in order to display appropriate user interface.
-> 
-> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-Hi.
+Version history:
+Changes in v7:
+- Changing the commit title of patch 1 in this series.
+- Added a return value for function cdns_pcie_retrain().
+Changes in v6:
+- Move the position of function cdns_pcie_host_wait_for_link to remove
+  compilation error. No changes in code. Separate patch for this.
+Changes in v5:
+- Remove the compatible string based setting of quirk flag.
+- Removed additional Link Up Check
+- Removed quirk from pcie-cadence-plat.c and added in pci-j721e.c
+Changes in v4:
+- Added a quirk flag based on a new compatible string.
+- Change of api for link up: cdns_pcie_host_wait_for_link().
+Changes in v3:
+- To set retrain link bit,checking device capability & link status.
+- 32bit read in place of 8bit.
+- Minor correction in patch comment.
+- Change in variable & macro name.
+Changes in v2:
+- 16bit read in place of 8bit.
 
-A few things spotted on a fresh read through.  If this is all that comes
-up in this round of review, I can tidy them up whilst applying.
-If you are doing a v5 for any reason, please fix them up whilst doing that.
+Nadeem Athani (2):
+  PCI: cadence: Shifting of a function to support new code.
+  PCI: cadence: Retrain Link to work around Gen2 training defect.
 
-Thanks,
+ drivers/pci/controller/cadence/pci-j721e.c         |  3 +
+ drivers/pci/controller/cadence/pcie-cadence-host.c | 70 ++++++++++++++++------
+ drivers/pci/controller/cadence/pcie-cadence.h      | 11 +++-
+ 3 files changed, 65 insertions(+), 19 deletions(-)
 
-Jonathan
-
-> ---
->  .../hid-sensors/hid-sensor-attributes.c       |   2 +
->  drivers/iio/position/Kconfig                  |  16 +
->  drivers/iio/position/Makefile                 |   1 +
->  .../position/hid-sensor-custom-intel-hinge.c  | 391 ++++++++++++++++++
->  4 files changed, 410 insertions(+)
->  create mode 100644 drivers/iio/position/hid-sensor-custom-intel-hinge.c
-> 
-> diff --git a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> index 442ff787f7af..5b822a4298a0 100644
-> --- a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> +++ b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> @@ -71,6 +71,8 @@ static struct {
->  	{HID_USAGE_SENSOR_TEMPERATURE, HID_USAGE_SENSOR_UNITS_DEGREES, 1000, 0},
->  
->  	{HID_USAGE_SENSOR_HUMIDITY, 0, 1000, 0},
-> +	{HID_USAGE_SENSOR_HINGE, 0, 0, 17453293},
-> +	{HID_USAGE_SENSOR_HINGE, HID_USAGE_SENSOR_UNITS_DEGREES, 0, 17453293},
->  };
->  
->  static void simple_div(int dividend, int divisor, int *whole,
-> diff --git a/drivers/iio/position/Kconfig b/drivers/iio/position/Kconfig
-> index eda67f008c5b..1576a6380b53 100644
-> --- a/drivers/iio/position/Kconfig
-> +++ b/drivers/iio/position/Kconfig
-> @@ -16,4 +16,20 @@ config IQS624_POS
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called iqs624-pos.
->  
-> +config HID_SENSOR_CUSTOM_INTEL_HINGE
-> +	depends on HID_SENSOR_HUB
-> +	select IIO_BUFFER
-> +	select IIO_TRIGGERED_BUFFER
-> +	select HID_SENSOR_IIO_COMMON
-> +	select HID_SENSOR_IIO_TRIGGER
-> +	tristate "HID Hinge"
-> +	help
-> +	  This sensor present three angles, hinge angel, screen angles
-> +	  and keyboard angle respect to horizon (ground).
-> +	  Say yes here to build support for the HID custom
-> +	  intel hinge sensor.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called hid-sensor-custom-hinge.
-> +
->  endmenu
-> diff --git a/drivers/iio/position/Makefile b/drivers/iio/position/Makefile
-> index 3cbe7a734352..d70902f2979d 100644
-> --- a/drivers/iio/position/Makefile
-> +++ b/drivers/iio/position/Makefile
-> @@ -4,4 +4,5 @@
->  
->  # When adding new entries keep the list in alphabetical order
->  
-> +obj-$(CONFIG_HID_SENSOR_CUSTOM_INTEL_HINGE) += hid-sensor-custom-intel-hinge.o
->  obj-$(CONFIG_IQS624_POS)	+= iqs624-pos.o
-> diff --git a/drivers/iio/position/hid-sensor-custom-intel-hinge.c b/drivers/iio/position/hid-sensor-custom-intel-hinge.c
-> new file mode 100644
-> index 000000000000..24cf31c039a3
-> --- /dev/null
-> +++ b/drivers/iio/position/hid-sensor-custom-intel-hinge.c
-> @@ -0,0 +1,391 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * HID Sensors Driver
-> + * Copyright (c) 2020, Intel Corporation.
-> + */
-> +#include <linux/hid-sensor-hub.h>
-> +#include <linux/iio/buffer.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include "../common/hid-sensors/hid-sensor-trigger.h"
-> +
-> +enum hinge_channel {
-> +	CHANNEL_SCAN_INDEX_HINGE_ANGLE,
-> +	CHANNEL_SCAN_INDEX_SCREEN_ANGLE,
-> +	CHANNEL_SCAN_INDEX_KEYBOARD_ANGLE,
-> +	CHANNEL_SCAN_INDEX_MAX,
-> +};
-> +
-> +#define CHANNEL_SCAN_INDEX_TIMESTAMP CHANNEL_SCAN_INDEX_MAX
-> +
-> +static const u32 hinge_addresses[CHANNEL_SCAN_INDEX_MAX] = {
-> +	HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(1),
-> +	HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(2),
-> +	HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(3)
-> +};
-> +
-> +static const char *const hinge_labels[CHANNEL_SCAN_INDEX_MAX] = { "hinge",
-> +								  "screen",
-> +								  "keyboard" };
-> +
-> +struct hinge_state {
-> +	struct iio_dev *indio_dev;
-> +	struct hid_sensor_hub_attribute_info hinge[CHANNEL_SCAN_INDEX_MAX];
-> +	struct hid_sensor_hub_callbacks callbacks;
-> +	struct hid_sensor_common common_attributes;
-> +	const char *labels[CHANNEL_SCAN_INDEX_MAX];
-> +	struct {
-> +		u32 hinge_val[3];
-> +		u64 timestamp __aligned(8);
-> +	} scan;
-> +
-> +	int scale_pre_decml;
-> +	int scale_post_decml;
-> +	int scale_precision;
-> +	int value_offset;
-> +	u64 timestamp;
-> +};
-> +
-> +/* Channel definitions */
-> +static const struct iio_chan_spec hinge_channels[] = {
-> +	{
-> +		.type = IIO_ANGL,
-> +		.indexed = 1,
-> +		.channel = 0,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.info_mask_shared_by_type =
-> +			BIT(IIO_CHAN_INFO_OFFSET) | BIT(IIO_CHAN_INFO_SCALE) |
-> +			BIT(IIO_CHAN_INFO_SAMP_FREQ) | BIT(IIO_CHAN_INFO_HYSTERESIS),
-> +		.scan_index = CHANNEL_SCAN_INDEX_HINGE_ANGLE,
-> +		.scan_type = {
-> +			.sign = 's',
-> +			.storagebits = 32,
-> +		},
-> +	}, {
-> +		.type = IIO_ANGL,
-> +		.indexed = 1,
-> +		.channel = 1,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.info_mask_shared_by_type =
-> +			BIT(IIO_CHAN_INFO_OFFSET) | BIT(IIO_CHAN_INFO_SCALE) |
-> +			BIT(IIO_CHAN_INFO_SAMP_FREQ) | BIT(IIO_CHAN_INFO_HYSTERESIS),
-> +		.scan_index = CHANNEL_SCAN_INDEX_SCREEN_ANGLE,
-> +		.scan_type = {
-> +			.sign = 's',
-> +			.storagebits = 32,
-> +		},
-> +	}, {
-> +		.type = IIO_ANGL,
-> +		.indexed = 1,
-> +		.channel = 2,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.info_mask_shared_by_type =
-> +			BIT(IIO_CHAN_INFO_OFFSET) | BIT(IIO_CHAN_INFO_SCALE) |
-> +			BIT(IIO_CHAN_INFO_SAMP_FREQ) | BIT(IIO_CHAN_INFO_HYSTERESIS),
-> +		.scan_index = CHANNEL_SCAN_INDEX_KEYBOARD_ANGLE,
-> +		.scan_type = {
-> +			.sign = 's',
-> +			.storagebits = 32,
-> +		},
-> +	},
-> +	IIO_CHAN_SOFT_TIMESTAMP(CHANNEL_SCAN_INDEX_TIMESTAMP)
-> +};
-> +
-> +/* Adjust channel real bits based on report descriptor */
-> +static void hinge_adjust_channel_realbits(struct iio_chan_spec *channels,
-> +					  int channel, int size)
-> +{
-> +	channels[channel].scan_type.realbits = size * 8;
-> +}
-> +
-> +/* Channel read_raw handler */
-> +static int hinge_read_raw(struct iio_dev *indio_dev,
-> +			  struct iio_chan_spec const *chan, int *val, int *val2,
-> +			  long mask)
-> +{
-> +	struct hinge_state *st = iio_priv(indio_dev);
-> +	struct hid_sensor_hub_device *hsdev;
-> +	int report_id;
-> +	int ret_type;
-> +	s32 min;
-> +
-> +	hsdev = st->common_attributes.hsdev;
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		hid_sensor_power_state(&st->common_attributes, true);
-> +		report_id = st->hinge[chan->scan_index].report_id;
-> +		min = st->hinge[chan->scan_index].logical_minimum;
-> +		if (report_id < 0) {
-> +			hid_sensor_power_state(&st->common_attributes, false);
-> +			return -EINVAL;
-> +		}
-> +
-> +		*val = sensor_hub_input_attr_get_raw_value(st->common_attributes.hsdev,
-> +							   hsdev->usage,
-> +							   hinge_addresses[chan->scan_index],
-> +							   report_id,
-> +							   SENSOR_HUB_SYNC, min < 0);
-> +
-> +		hid_sensor_power_state(&st->common_attributes, false);
-> +		return IIO_VAL_INT;
-> +	case IIO_CHAN_INFO_SCALE:
-> +		*val = st->scale_pre_decml;
-> +		*val2 = st->scale_post_decml;
-> +		return st->scale_precision;
-> +	case IIO_CHAN_INFO_OFFSET:
-> +		*val = st->value_offset;
-> +		return IIO_VAL_INT;
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		ret_type = hid_sensor_read_samp_freq_value(&st->common_attributes,
-> +							   val, val2);
-> +		return ret_type;
-> +	case IIO_CHAN_INFO_HYSTERESIS:
-> +		ret_type = hid_sensor_read_raw_hyst_value(&st->common_attributes,
-> +							  val, val2);
-> +		return ret_type;
-
-As below, I would return directly rather than use the local variable.
-
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +/* Channel write_raw handler */
-> +static int hinge_write_raw(struct iio_dev *indio_dev,
-> +			   struct iio_chan_spec const *chan, int val, int val2,
-> +			   long mask)
-> +{
-> +	struct hinge_state *st = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		ret = hid_sensor_write_samp_freq_value(&st->common_attributes,
-> +						       val, val2);
-> +		return ret;
-
-If you happen to be respinning I'd go with the slightly shorter option of...
-
-		return hid_sensor_write_samp_freq_value(&st->common_attributes,
-
-> +	case IIO_CHAN_INFO_HYSTERESIS:
-> +		ret = hid_sensor_write_raw_hyst_value(&st->common_attributes,
-> +						      val, val2);
-> +
-> +		return ret;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int hinge_read_label(struct iio_dev *indio_dev,
-> +			    struct iio_chan_spec const *chan, char *label)
-> +{
-> +	struct hinge_state *st = iio_priv(indio_dev);
-> +
-> +	return sprintf(label, "%s\n", st->labels[chan->channel]);
-> +}
-> +
-> +static const struct iio_info hinge_info = {
-> +	.read_raw = hinge_read_raw,
-> +	.write_raw = hinge_write_raw,
-> +	.read_label = hinge_read_label,
-> +};
-> +
-> +/*
-> + * Callback handler to send event after all samples are received
-> + * and captured.
-> + */
-> +static int hinge_proc_event(struct hid_sensor_hub_device *hsdev,
-> +			    unsigned int usage_id, void *priv)
-> +{
-> +	struct iio_dev *indio_dev = platform_get_drvdata(priv);
-> +	struct hinge_state *st = iio_priv(indio_dev);
-> +
-> +	if (atomic_read(&st->common_attributes.data_ready)) {
-> +		if (!st->timestamp)
-> +			st->timestamp = iio_get_time_ns(indio_dev);
-> +
-> +		iio_push_to_buffers_with_timestamp(indio_dev, &st->scan,
-> +						   st->timestamp);
-> +
-> +		st->timestamp = 0;
-> +	}
-> +	return 0;
-> +}
-> +
-> +/* Capture samples in local storage */
-> +static int hinge_capture_sample(struct hid_sensor_hub_device *hsdev,
-> +				unsigned int usage_id, size_t raw_len,
-> +				char *raw_data, void *priv)
-> +{
-> +	struct iio_dev *indio_dev = platform_get_drvdata(priv);
-> +	struct hinge_state *st = iio_priv(indio_dev);
-> +	int offset;
-> +
-> +	switch (usage_id) {
-> +	case HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(1):
-> +	case HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(2):
-> +	case HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(3):
-> +		offset = usage_id - HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(1);
-> +		st->scan.hinge_val[offset] = *(u32 *)raw_data;
-> +		return 0;
-> +	case HID_USAGE_SENSOR_TIME_TIMESTAMP:
-> +		st->timestamp = hid_sensor_convert_timestamp(&st->common_attributes,
-> +							     *(int64_t *)raw_data);
-> +		return 0;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +/* Parse report which is specific to an usage id */
-> +static int hinge_parse_report(struct platform_device *pdev,
-> +			      struct hid_sensor_hub_device *hsdev,
-> +			      struct iio_chan_spec *channels,
-> +			      unsigned int usage_id, struct hinge_state *st)
-> +{
-> +	int ret;
-> +	int i;
-> +
-> +	for (i = 0; i < CHANNEL_SCAN_INDEX_MAX; ++i) {
-> +		ret = sensor_hub_input_get_attribute_info(hsdev,
-> +							  HID_INPUT_REPORT,
-> +							  usage_id,
-> +							  hinge_addresses[i],
-> +							  &st->hinge[i]);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		hinge_adjust_channel_realbits(channels, i, st->hinge[i].size);
-> +	}
-> +
-> +	st->scale_precision = hid_sensor_format_scale(HID_USAGE_SENSOR_HINGE,
-> +			&st->hinge[CHANNEL_SCAN_INDEX_HINGE_ANGLE],
-> +			&st->scale_pre_decml, &st->scale_post_decml);
-> +
-> +	/* Set Sensitivity field ids, when there is no individual modifier */
-> +	if (st->common_attributes.sensitivity.index < 0) {
-> +		sensor_hub_input_get_attribute_info(hsdev,
-> +				HID_FEATURE_REPORT, usage_id,
-> +				HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSITIVITY_ABS |
-> +					HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(1),
-> +				&st->common_attributes.sensitivity);
-> +		dev_dbg(&pdev->dev, "Sensitivity index:report %d:%d\n",
-> +			st->common_attributes.sensitivity.index,
-> +			st->common_attributes.sensitivity.report_id);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/* Function to initialize the processing for usage id */
-> +static int hid_hinge_probe(struct platform_device *pdev)
-> +{
-> +	struct hinge_state *st;
-> +	struct iio_dev *indio_dev;
-> +	struct hid_sensor_hub_device *hsdev = pdev->dev.platform_data;
-> +	int ret;
-> +	int i;
-> +
-> +	indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*st));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, indio_dev);
-> +
-> +	st = iio_priv(indio_dev);
-> +	st->common_attributes.hsdev = hsdev;
-> +	st->common_attributes.pdev = pdev;
-> +	st->indio_dev = indio_dev;
-> +	for (i = 0; i < CHANNEL_SCAN_INDEX_MAX; i++)
-> +		st->labels[i] = hinge_labels[i];
-> +
-> +	ret = hid_sensor_parse_common_attributes(hsdev, hsdev->usage,
-> +						 &st->common_attributes);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to setup common attributes\n");
-> +		return ret;
-> +	}
-> +
-> +	indio_dev->num_channels = ARRAY_SIZE(hinge_channels);
-> +	indio_dev->channels = devm_kmemdup(&indio_dev->dev, hinge_channels,
-> +					   sizeof(hinge_channels), GFP_KERNEL);
-> +	if (!indio_dev->channels)
-> +		return -ENOMEM;
-> +
-> +	ret = hinge_parse_report(pdev, hsdev,
-> +				 (struct iio_chan_spec *)indio_dev->channels,
-> +				 hsdev->usage, st);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to setup attributes\n");
-> +		return ret;
-> +	}
-> +
-> +	indio_dev->dev.parent = &pdev->dev;
-> +	indio_dev->info = &hinge_info;
-> +	indio_dev->name = "hinge";
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
-> +
-> +	atomic_set(&st->common_attributes.data_ready, 0);
-> +	ret = hid_sensor_setup_trigger(indio_dev, indio_dev->name,
-> +				       &st->common_attributes);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "trigger setup failed\n");
-> +		return ret;
-> +	}
-> +
-> +	st->callbacks.send_event = hinge_proc_event;
-> +	st->callbacks.capture_sample = hinge_capture_sample;
-> +	st->callbacks.pdev = pdev;
-> +	ret = sensor_hub_register_callback(hsdev, hsdev->usage, &st->callbacks);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "callback reg failed\n");
-> +		goto error_remove_trigger;
-> +	}
-> +
-> +	ret = devm_iio_device_register(&pdev->dev, indio_dev);
-
-Please don't mix devm and non devm functions.  The first time we
-hit a non devm function that needs manual unwinding, then all later functions
-in probe should also go the manual unwind route.
-
-What you have here leads to a remove order which is not the precise reverse of
-probe and makes it a lot harder to review for subtle race conditions. In this
-case you leave the userspace interface exposed whilst removing some of the
-underlying infrastructure.  I really don't want to have to figure out if
-that is safe (probably isn't!)
-
-Much better to just use iio_device_register here and
-have an explicit iio_device_unregister in the remove function.
-
-If nothing else comes up I can tidy that up whilst applying rather than
-you needing to do a v5.
-
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "device register failed\n");
-> +		goto error_remove_callback;
-> +	}
-> +
-> +	return ret;
-> +
-> +error_remove_callback:
-> +	sensor_hub_remove_callback(hsdev, hsdev->usage);
-> +error_remove_trigger:
-> +	hid_sensor_remove_trigger(indio_dev, &st->common_attributes);
-> +	return ret;
-> +}
-> +
-> +/* Function to deinitialize the processing for usage id */
-> +static int hid_hinge_remove(struct platform_device *pdev)
-> +{
-> +	struct hid_sensor_hub_device *hsdev = pdev->dev.platform_data;
-> +	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
-> +	struct hinge_state *st = iio_priv(indio_dev);
-> +
-> +	sensor_hub_remove_callback(hsdev, hsdev->usage);
-> +	hid_sensor_remove_trigger(indio_dev, &st->common_attributes);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct platform_device_id hid_hinge_ids[] = {
-> +	{
-> +		/* Format: HID-SENSOR-INT-usage_id_in_hex_lowercase */
-> +		.name = "HID-SENSOR-INT-020b",
-> +	},
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(platform, hid_hinge_ids);
-> +
-> +static struct platform_driver hid_hinge_platform_driver = {
-> +	.id_table = hid_hinge_ids,
-> +	.driver = {
-> +		.name	= KBUILD_MODNAME,
-> +		.pm	= &hid_sensor_pm_ops,
-> +	},
-> +	.probe		= hid_hinge_probe,
-> +	.remove		= hid_hinge_remove,
-> +};
-> +module_platform_driver(hid_hinge_platform_driver);
-> +
-> +MODULE_DESCRIPTION("HID Sensor INTEL Hinge");
-> +MODULE_AUTHOR("Ye Xiang <xiang.ye@intel.com>");
-> +MODULE_LICENSE("GPL");
+-- 
+2.15.0
 
