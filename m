@@ -2,110 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E3E2E7BAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E5F2E7BB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgL3Ru6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 12:50:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgL3Ru6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 12:50:58 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059DEC061573;
-        Wed, 30 Dec 2020 09:50:17 -0800 (PST)
-Date:   Wed, 30 Dec 2020 17:50:14 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1609350615;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=94/oJqFeXHpo1xmMGiYLl4yNf/K6/PEFDbGQOaEMgSA=;
-        b=Z+LF0THJAejubPac4dh9SK4tam2+FRofinKrXRufJ1qvGXMm/4jZryBr4Ex7Xv2wai69Df
-        KWNv/w99rbCPqr2i8jG4/aacpfV25huvWx54WzeZ+q1juiXPO45YwPV2gFPBD5QwnjjeD2
-        WUcel+udvXY+Lon2jMtXXiu0CU/koUDJ0/RIbbzRUvS2WK5YxvFq4bbyn6xyHU2yh8BbAe
-        f87F5kEitLCX9TAxczTmJp/ZSiKzgMaRP98tO2Rvwmsq926bq62k9RVKzbJ0cLUKRqjxZY
-        r5ly8iZE/fhyg8PZiGL7wSy5/0HK7gNrH0/VvPm9p6CeSTFFEFYwZOl4voZWOw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1609350615;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=94/oJqFeXHpo1xmMGiYLl4yNf/K6/PEFDbGQOaEMgSA=;
-        b=T8Ia6xfRbSn2xuhxANi6pPS5eXz+fnwOKXdJ23Vb8WuwjOhKt4dBKCjWM5xSiKZwoWzoyQ
-        I0D7dX7BxgbqcnDQ==
-From:   "tip-bot2 for Heiner Kallweit" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/misc] x86/reboot: Add Zotac ZBOX CI327 nano PCI reboot quirk
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com>
-References: <1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com>
+        id S1726419AbgL3R5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 12:57:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726185AbgL3R5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 12:57:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B04B52220B;
+        Wed, 30 Dec 2020 17:56:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609350984;
+        bh=v2vDZj7jq1Mssp1pb0X2MgJcwWHSKlcMLv0ogo1wJTY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mBlT8Je8oIWdTvRooGTBJZuS8q5X1UeXbjjT7jy0rWGz1TrveQwUlUDdmN4hvVF5t
+         37JavBSd41Z8W9UnCIHDj16S+yqgDUYpJ2kMWAEaP/IZOFCm+oo2Vaql9rIOX+SoZp
+         t9sOeElxLd1fHBITiglyAacwy5pPxYu6qtp8HM9g=
+Date:   Wed, 30 Dec 2020 18:57:20 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [git pull] habanalabs fixes for 5.11-rc2
+Message-ID: <X+y/gKijNgZrMF4b@kroah.com>
+References: <20201230173306.GA12162@CORE.localdomain>
 MIME-Version: 1.0
-Message-ID: <160935061419.414.5228048100044741334.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230173306.GA12162@CORE.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/misc branch of tip:
+On Wed, Dec 30, 2020 at 07:33:06PM +0200, Oded Gabbay wrote:
+> Hi Greg,
+> 
+> This pull request contains a number of important fixes for 5.11-rc2.
+> Mainly fixes to support our new F/W with enhanced security features,
+> but also additional bugs.
+> See details in the tag message below.
+> 
+> Thanks,
+> Oded
+> 
+> The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+> 
+>   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2020-12-30
 
-Commit-ID:     4b2d8ca9208be636b30e924b1cbcb267b0740c93
-Gitweb:        https://git.kernel.org/tip/4b2d8ca9208be636b30e924b1cbcb267b0740c93
-Author:        Heiner Kallweit <hkallweit1@gmail.com>
-AuthorDate:    Tue, 01 Dec 2020 12:39:57 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 30 Dec 2020 18:38:39 +01:00
+Pulled and pushed out, thanks.
 
-x86/reboot: Add Zotac ZBOX CI327 nano PCI reboot quirk
-
-On this system the M.2 PCIe WiFi card isn't detected after reboot, only
-after cold boot. reboot=pci fixes this behavior. In [0] the same issue
-is described, although on another system and with another Intel WiFi
-card. In case it's relevant, both systems have Celeron CPUs.
-
-Add a PCI reboot quirk on affected systems until a more generic fix is
-available.
-
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=202399
-
- [ bp: Massage commit message. ]
-
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com
----
- arch/x86/kernel/reboot.c |  9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index db11594..9991c59 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -477,6 +477,15 @@ static const struct dmi_system_id reboot_dmi_table[] __initconst = {
- 		},
- 	},
- 
-+	{	/* PCIe Wifi card isn't detected after reboot otherwise */
-+		.callback = set_pci_reboot,
-+		.ident = "Zotac ZBOX CI327 nano",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "NA"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "ZBOX-CI327NANO-GS-01"),
-+		},
-+	},
-+
- 	/* Sony */
- 	{	/* Handle problems with rebooting on Sony VGN-Z540N */
- 		.callback = set_bios_reboot,
+greg k-h
