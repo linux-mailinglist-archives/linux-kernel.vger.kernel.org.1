@@ -2,68 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ACF2E7CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 22:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2702E7CAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 22:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgL3V0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 16:26:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726391AbgL3V0t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 16:26:49 -0500
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE44C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 13:26:09 -0800 (PST)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kuiyt-00Am1o-Rd
-        for linux-kernel@vger.kernel.org; Wed, 30 Dec 2020 22:26:08 +0100
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8]
-        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kuiyn-00Am1F-Ja; Wed, 30 Dec 2020 22:26:01 +0100
-Subject: Re: [PATCH v3 1/4] Add support for Realtek RTL838x/RTL839x switch
- SoCs
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sander Vanheule <sander@svanheule.net>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Birger Koblitz <mail@birger-koblitz.de>,
-        John Crispin <john@phrozen.org>
-References: <20201230212205.2605383-1-bert@biot.com>
-From:   Bert Vermeulen <bert@biot.com>
-Message-ID: <4a000db7-54e5-76c7-7a1f-7c4c9b6b2c22@biot.com>
-Date:   Wed, 30 Dec 2020 22:26:01 +0100
+        id S1726337AbgL3Ves (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 16:34:48 -0500
+Received: from relay.sw.ru ([185.231.240.75]:56882 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726197AbgL3Ves (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 16:34:48 -0500
+Received: from [192.168.15.152]
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1kuj5h-00ExIG-La; Thu, 31 Dec 2020 00:33:09 +0300
+Subject: [PATCH v2] crypto: Fix divide error in do_xor_speed()
+To:     Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <160933061716.928967.463919628731790218.stgit@localhost.localdomain>
+ <CAMj1kXHTzafF5ZZR5Ornusjt6cd0K-Lczb0Z0FK54jBTv9cKsA@mail.gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <30381b78-8721-5b4e-e075-300c5af3f9fa@virtuozzo.com>
+Date:   Thu, 31 Dec 2020 00:33:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <20201230212205.2605383-1-bert@biot.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <CAMj1kXHTzafF5ZZR5Ornusjt6cd0K-Lczb0Z0FK54jBTv9cKsA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/30/20 10:22 PM, Bert Vermeulen wrote:
-> The RTL838x/839x family of SoCs are Realtek switches with an embedded
-> MIPS core.
+crypto: Fix divide error in do_xor_speed()
 
-Oops, forgot patch version note:
+From: Kirill Tkhai <ktkhai@virtuozzo.com>
 
-v3:
-- all code removed, the base system is now only device tree files and docs
-   and some build config.
-- ioremap.h restored to the v1 version, with hardcoded I/O ranges, since I
-   got flak on changing that as suggested. This brings it in line with other
-   systems in arch/mips/generic.
+Latest (but not only latest) linux-next panics with divide
+error on my QEMU setup.
 
+The patch at the bottom of this message fixes the problem.
 
--- 
-Bert Vermeulen
-bert@biot.com
+xor: measuring software checksum speed
+divide error: 0000 [#1] PREEMPT SMP KASAN
+PREEMPT SMP KASAN
+CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.10.0-next-20201223+ #2177
+RIP: 0010:do_xor_speed+0xbb/0xf3
+Code: 41 ff cc 75 b5 bf 01 00 00 00 e8 3d 23 8b fe 65 8b 05 f6 49 83 7d 85 c0 75 05 e8
+ 84 70 81 fe b8 00 00 50 c3 31 d2 48 8d 7b 10 <f7> f5 41 89 c4 e8 58 07 a2 fe 44 89 63 10 48 8d 7b 08
+ e8 cb 07 a2
+RSP: 0000:ffff888100137dc8 EFLAGS: 00010246
+RAX: 00000000c3500000 RBX: ffffffff823f0160 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000808 RDI: ffffffff823f0170
+RBP: 0000000000000000 R08: ffffffff8109c50f R09: ffffffff824bb6f7
+R10: fffffbfff04976de R11: 0000000000000001 R12: 0000000000000000
+R13: ffff888101997000 R14: ffff888101994000 R15: ffffffff823f0178
+FS:  0000000000000000(0000) GS:ffff8881f7780000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000000220e000 CR4: 00000000000006a0
+Call Trace:
+ calibrate_xor_blocks+0x13c/0x1c4
+ ? do_xor_speed+0xf3/0xf3
+ do_one_initcall+0xc1/0x1b7
+ ? start_kernel+0x373/0x373
+ ? unpoison_range+0x3a/0x60
+ kernel_init_freeable+0x1dd/0x238
+ ? rest_init+0xc6/0xc6
+ kernel_init+0x8/0x10a
+ ret_from_fork+0x1f/0x30
+---[ end trace 5bd3c1d0b77772da ]---
+
+Fixes: c055e3eae0f1 ("crypto: xor - use ktime for template benchmarking")
+Signed-off-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+---
+
+v2: New Year resend :) Added fixes tag.
+ crypto/xor.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/crypto/xor.c b/crypto/xor.c
+index eacbf4f93990..8f899f898ec9 100644
+--- a/crypto/xor.c
++++ b/crypto/xor.c
+@@ -107,6 +107,8 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
+ 	preempt_enable();
+ 
+ 	// bytes/ns == GB/s, multiply by 1000 to get MB/s [not MiB/s]
++	if (!min)
++		min = 1;
+ 	speed = (1000 * REPS * BENCH_SIZE) / (unsigned int)ktime_to_ns(min);
+ 	tmpl->speed = speed;
+ 
