@@ -2,139 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33A22E75AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B6C2E75B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgL3Cdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 21:33:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
+        id S1726363AbgL3Cdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 21:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgL3Cdn (ORCPT
+        with ESMTP id S1726325AbgL3Cdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 21:33:43 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on060c.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::60c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2942C061799;
-        Tue, 29 Dec 2020 18:32:57 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FG++uJFN+cAhQ9SASEoy8MFT78i1U+tYegz9hv56H23RJn2GjcsU9Dh3R3V6D3i+g9lcMAunWLg5q+VXpU/DTXuWAwHEDQOhGHDz12O5cF+VAbG+zvOBrx1+dkyuCJLJCDuPXJ2xeaZjdEyptScD7VGe5Mx8K4iHc8XFxFRvWp+9aSdgRjaCfLRfWrBOhS/D+lnRiojqAT+dghI5j6JtFfNJlyiD7N/J3TzXA2JE9K2/NSKZ0kn405eVDydW+KocB9cPCHo4hBvWLcuccFfRse7g2gLuEvfsaVV0u1UsUet3OVCNmF7qOsXXLhMmsQVRQgtg5RIB+O+zVceXOQIG5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jb/wOxRj4EMa32IQZ5dyTADSPF9WneO7pUHasKqk3tA=;
- b=Okn8zX6gl36yfoaoR8wdVDFevXH7GTr3rS9DgU8HZFygBxwPa6UzTwwmwHNgzJaSItDC0FRCeu2AIDKIKST6lvg9bzZPtDTzqvGJWMSbai/T1SKJJ+x+AuETTKNmtaseOScTu/2MUVT8QXDIki9Isb6H5Gdr0qrcyfBVvTt4+moangtv++lC1F2Tcw4oo7NQDS6OBgN9IT2tQmCIl44GG9VN5+YgNo7e97YhI9rEX+TOwTkT65CESlsxG/IzqV9Kb5ymcJlf/h8nNGJ35WEoDMLtAJO04mIuRdMx0g0lPwls2O2PqXMfHh0TLNdMKzvItA/Znd7J+yxeqFSGX2nNDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jb/wOxRj4EMa32IQZ5dyTADSPF9WneO7pUHasKqk3tA=;
- b=QQzBT+/wfpUoO+ouIDIi7gUM5RvZrEDYotNIBIXJk4jfSjvAT9KYxFCBlm3sBgmw1v9uBLztLOO7/KnmBnsvCrAUosS0nFQn7UnHhNYYroKwlt/d6k466hzotLm7NFkM7IoTSJvtfV8rsIqVYKucYUWsSBGQocC/53AZ2oy3PW0=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB7PR04MB5996.eurprd04.prod.outlook.com (2603:10a6:10:84::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Wed, 30 Dec
- 2020 02:32:41 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3700.031; Wed, 30 Dec 2020
- 02:32:41 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-CC:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH 3/4] arm64: dts: imx8mn: add spba bus node
-Thread-Topic: [PATCH 3/4] arm64: dts: imx8mn: add spba bus node
-Thread-Index: AQHW3duLbYhmQ5UsDkWjPU7MeJAKE6oOPz0AgACslHA=
-Date:   Wed, 30 Dec 2020 02:32:41 +0000
-Message-ID: <DB6PR0402MB2760208A9F845D2E1D30B69D88D70@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <1609243245-9671-1-git-send-email-peng.fan@nxp.com>
- <1609243245-9671-4-git-send-email-peng.fan@nxp.com>
- <20201229161300.GB17229@kozik-lap>
-In-Reply-To: <20201229161300.GB17229@kozik-lap>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 55ecab1f-4143-42ef-6bf2-08d8ac6b2e64
-x-ms-traffictypediagnostic: DB7PR04MB5996:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB5996B438A4F12946FE0A7BCF88D70@DB7PR04MB5996.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:590;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kPqbljIZfUNtDOjn/YrbFIypyh5CvPociBCSoHHtaxJxJrdPNAXjuJK7bWpFZFLeLMQHUB2V/2m73M7IJ/B3xLzIViPNl/PY66JMHCNLwm+5+py3iu0QvwHVboP55PyNBrUXOiHQe39IpPhshIXOhYXgBbvFGO7eP0G3WrtVSYFGZ6nvGOyHDCOb/Ct8LnxPGO/pFnEwm13UIfqxWQuRwEL08QAHpuRS+hkUuunMQS2vyOrQGt9aySHOGXpkGYT82BF/OHABpZtRBujQa7Ld+nY4XXnlfdaK/dvEOkyyNoaApEkbqGIbWry1ITgzKwkubvFGPrJJircug8fGaYLBv56jU8ie/LAOsTdDFxELnpxrNW/sQDpDPhn9AwLH5rf18tDw8dPRNojpxK4noYdfgy78UzKhyucdUcKdW7pGoo0A4StGl27vTqBwgw8IaAb5
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(39860400002)(346002)(6506007)(33656002)(71200400001)(86362001)(186003)(54906003)(26005)(316002)(7696005)(8936002)(8676002)(2906002)(44832011)(52536014)(4326008)(55016002)(478600001)(4744005)(66446008)(76116006)(66946007)(83380400001)(66556008)(64756008)(66476007)(6916009)(9686003)(5660300002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?clAzdlpDbjRFdDRaaXBobXdqa21lK0Zwb1p1aS9iQzdTeUpLbFFhV2JaQy9Z?=
- =?utf-8?B?QzF5L0RQVzRiWFR0b1RnMDB4ekxXclZoRWFrQ2wrM3BwTFBxVVE3MHBNVVRy?=
- =?utf-8?B?QzhrenJROHFjZ1hnZUJUNG0vVXNicmhZdWNob0FSU1FnSzE3SXZPTlFDMjJG?=
- =?utf-8?B?K3ZKSlllMEpENUVQQ0ZHSWdUVmlqendmT1lTdmx1eDE1M2NzOGx1cG5KWVlo?=
- =?utf-8?B?S3JsMzZlRnVVbUQ0eDh4WitMNmQvYlN2WElhNFYwMnBWZHV2NnA3clB3dVNP?=
- =?utf-8?B?S2pBcDg1TnBwbFFnRlM4SzRGTnI3QUR3bEhadVJsbHY5b2dyL2VicGxLWVRM?=
- =?utf-8?B?NDB5NFpWWCtxOTdUWVVtUEFUN3Q4a21TdGNCYjRVUGFWTS9pRTQxRno0dWl5?=
- =?utf-8?B?MEhWYmZoOGNtcC95WnR5ZFVZSGwrdGY0R0FyS3ZkMkNLdCs2RDFDN2djLzZL?=
- =?utf-8?B?V3dVek1LV294TUU5SFVySVJZNDRFS3I0OWxwdVhpNDNWR1hxRmVOU251L085?=
- =?utf-8?B?V3oyelRxM1lzbFVBUXMyYllreE80U29xOUczbFQxR2RoVWdwNWFXYjN0YVNy?=
- =?utf-8?B?R0FsL3lsYVVoZnozaXU3T1ZRd3p3bTVGNVR4cG44RXVjd1BkRGhONHhkSisv?=
- =?utf-8?B?ZG5kYlROTXlYZXkwSnM0eDdJeit3R3NIZHk0UzlZTzE5NnVJaWthRk92S3U2?=
- =?utf-8?B?RkRZV2lHUkt3TXFYQ0Q0OXZrWklxQWhEaElobGRXV2FheDBGZGlxWGo3VFA3?=
- =?utf-8?B?VDh4L2FnbnJ0NEpyaGI3UUlmUFYwMGJKZEExTzVZdFF2TzZuMFM4cTU1eVlJ?=
- =?utf-8?B?TjNVL1poWDlRUCtvR3FJUEs2OFpWN1Z1SG9LZ3IxRi9xZXhNMzJUbDR5RUhx?=
- =?utf-8?B?RFA0STZoTmNla1NMVTg0YldUMXpMNHR3Vk95ZWRoejc0Nmg3QmVPbjBvU3Zs?=
- =?utf-8?B?QXM3RE1LclkvUlJHQ2RqTENYSWQ2RUpqdzN6SmlmekdKLzRJdGlDZHdkYjhW?=
- =?utf-8?B?L2gzZGg2MUVTMWhYUUhmZmw5TXhTdjVQaURuamVPa08xajRRVktGVjkyMUly?=
- =?utf-8?B?aHMvWXVETjFDUGl6ZXYwRXFtSVZCZUwrV3hrRHc0VElhUTJyYkd1V3RoeVZk?=
- =?utf-8?B?MFFVaFcyTTVMNDhkRXRESmIxV2RQejBvRE9EM2VDcXFBOFdYOVZKUERqam9o?=
- =?utf-8?B?eDZVQkJJRG5ONmVORncrTSsrN25MMklDbzhMSkpxWXFYQ2czMkJ1MEZtUWVv?=
- =?utf-8?B?UXg4R0g2ZXBpc0UyRDRYcHRUakhIRGFzaDRjYjRLVm83VjJyNW1KUXBHTCty?=
- =?utf-8?Q?hSL9nwFT33B84=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 29 Dec 2020 21:33:50 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D53C06179C;
+        Tue, 29 Dec 2020 18:33:10 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id c12so8966254pfo.10;
+        Tue, 29 Dec 2020 18:33:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=PfIl0EjmWMxnSF+EOk80ZAbjAPzwaEf3qyLecMl/XRc=;
+        b=nDaFL5lxYCUZxEPCVotfMjioI5BLNIhicG92GYRl+bW9o7TrWxGxPe0PqDXDUdvxGL
+         ovvYBF0bISGn/Zpzf1pyHYOdLFAxrz3UfAR1lXz51N/K03KuWE71VFegfMD1DDIP/drp
+         KUhqJ9Fn3WcSfrmIuDfPZ/QOnNSC22L/Z/ORAmWhZN1D2xASIe52OucM/qXVfSayaGAT
+         57fbAo1T7kYgyhJGZ9Evd5nqFiAIc1edFYHuzkkIxctQBFyOJMPSHfXVdoKBjZA9clIV
+         kEZ8gdlTRJigmHZJrUOZzCZPE80ijU9zMl4P4nZYuEkJlMxEzvQaP8bXxzoxR5aFvcz5
+         +Drg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=PfIl0EjmWMxnSF+EOk80ZAbjAPzwaEf3qyLecMl/XRc=;
+        b=R6NiuCYK4Ut9dRe3OD4qgs8HrMmZEUHke/1bbzKnnsGMJ20knc4qNRR4hPm5K/Wsad
+         2zc2F16BJ533Q0I4JJr/xLNLAAnjlrmWYOqA3kZcwQ4wdKLKY99WVUilz8XOZAgAWt8I
+         P04aQ6HaTkn/i686C/eHr977CKP2EqUXveXjXa6MNkzgdfrLaCQxKJ8yY3X7s8r5zx+i
+         m5Oirx2CQD7Rr48DOCH7705mJs0C/PsY1loSHUyjTWJBEL6yv1XKqNVuo+FBMfR6wshM
+         Q5C4vsHM4bzRG5pEamm7dPwEBqWoPlWKRly71qY5qzkAsTiJi1HV+jz/tmIJKZb3jcxB
+         wWbQ==
+X-Gm-Message-State: AOAM532bt8w44ndQjX0cW6qCfB8jp3FwC+PXlkTaHlfhlYuF8Jp0cj9I
+        a6zdbSEuYn8rN4buCSpDLbs=
+X-Google-Smtp-Source: ABdhPJxrOi9/gzDcjAgCtPx6FdiSP/JyedYlzSeHtVs/umobQsm2fE2URPOa8A0aW0Z8ZJFEkl2N/w==
+X-Received: by 2002:a63:c04b:: with SMTP id z11mr50606521pgi.74.1609295589813;
+        Tue, 29 Dec 2020 18:33:09 -0800 (PST)
+Received: from localhost (193-116-97-30.tpgi.com.au. [193.116.97.30])
+        by smtp.gmail.com with ESMTPSA id 6sm39988438pfj.216.2020.12.29.18.33.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Dec 2020 18:33:08 -0800 (PST)
+Date:   Wed, 30 Dec 2020 12:33:02 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jann Horn <jannh@google.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        paulmck <paulmck@kernel.org>, Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        stable <stable@vger.kernel.org>, Will Deacon <will@kernel.org>,
+        x86 <x86@kernel.org>
+References: <20201228102537.GG1551@shell.armlinux.org.uk>
+        <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+        <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
+        <20201228190852.GI1551@shell.armlinux.org.uk>
+        <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
+        <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com>
+        <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com>
+        <1609200902.me5niwm2t6.astroid@bobo.none>
+        <CALCETrX6MOqmN5_jhyO1jJB7M3_T+hbomjxPYZLJmLVNmXAVzA@mail.gmail.com>
+        <1609210162.4d8dqilke6.astroid@bobo.none>
+        <20201229104456.GK1551@shell.armlinux.org.uk>
+In-Reply-To: <20201229104456.GK1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55ecab1f-4143-42ef-6bf2-08d8ac6b2e64
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Dec 2020 02:32:41.1107
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rpeIMBaVkwj7BsdZQnj4iJgRcH+++NtaKTqbIgbejv3MS9P4yad4wHK6DctPATMaLrjW7Ud7g6JaBkeXwtn8iw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5996
+Message-Id: <1609290821.wrfh89v23a.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogW1BBVENIIDMvNF0gYXJtNjQ6IGR0czogaW14OG1uOiBhZGQgc3BiYSBi
-dXMgbm9kZQ0KPiANCj4gT24gVHVlLCBEZWMgMjksIDIwMjAgYXQgMDg6MDA6NDRQTSArMDgwMCwg
-cGVuZy5mYW5AbnhwLmNvbSB3cm90ZToNCj4gPiBGcm9tOiBQZW5nIEZhbiA8cGVuZy5mYW5Abnhw
-LmNvbT4NCj4gPg0KPiA+IEFjY29yZGluZyB0byBSTSwgdGhlcmUgaXMgYSBzcGJhIGJ1cyBpbnNp
-ZGUgYWlwczMgYW5kIGFpcHMxLCBhZGQgaXQuDQo+IA0KPiBUaGlzIGRvZXMgbm90IGxvb2sgbGlr
-ZSBtYXRjaGluZyBjb250ZW50cyBvZiBjb21taXQuDQoNClBvc3RlZCBpbiBhIHJ1c2guIEZvcmdv
-dCB0byBzcXVhc2ggY29tbWl0cy4NCg0KVGhhbmtzLA0KUGVuZy4NCg0KPiANCj4gQmVzdCByZWdh
-cmRzLA0KPiBLcnp5c3p0b2YNCj4gDQo+IA0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUGVuZyBG
-YW4gPHBlbmcuZmFuQG54cC5jb20+DQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9kdHMv
-ZnJlZXNjYWxlL2lteDhtbi5kdHNpIHwgMiArLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
-cnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0
-L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4bW4uZHRzaQ0KPiBiL2FyY2gvYXJtNjQvYm9vdC9kdHMv
-ZnJlZXNjYWxlL2lteDhtbi5kdHNpDQo+ID4gaW5kZXggNzM2MDI4MzJjY2FhLi4wMzNmYTkwNTcw
-ZmYgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvaW14OG1u
-LmR0c2kNCj4gPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL2ZyZWVzY2FsZS9pbXg4bW4uZHRz
-aQ0KPiA+IEBAIC03NDksNyArNzQ5LDcgQEAgdWFydDI6IHNlcmlhbEAzMDg5MDAwMCB7DQo+ID4g
-IAkJCQkJY2xvY2stbmFtZXMgPSAiaXBnIiwgInBlciI7DQo+ID4gIAkJCQkJc3RhdHVzID0gImRp
-c2FibGVkIjsNCj4gPiAgCQkJCX07DQo+ID4gLQkJCX0NCj4gPiArCQkJfTsNCj4gPg0KPiA+ICAJ
-CQljcnlwdG86IGNyeXB0b0AzMDkwMDAwMCB7DQo+ID4gIAkJCQljb21wYXRpYmxlID0gImZzbCxz
-ZWMtdjQuMCI7DQo+ID4gLS0NCj4gPiAyLjI4LjANCj4gPg0K
+Excerpts from Russell King - ARM Linux admin's message of December 29, 2020=
+ 8:44 pm:
+> On Tue, Dec 29, 2020 at 01:09:12PM +1000, Nicholas Piggin wrote:
+>> I think it should certainly be documented in terms of what guarantees
+>> it provides to application, _not_ the kinds of instructions it may or
+>> may not induce the core to execute. And if existing API can't be
+>> re-documented sanely, then deprecatd and new ones added that DTRT.
+>> Possibly under a new system call, if arch's like ARM want a range
+>> flush and we don't want to expand the multiplexing behaviour of
+>> membarrier even more (sigh).
+>=20
+> The 32-bit ARM sys_cacheflush() is there only to support self-modifying
+> code, and takes whatever actions are necessary to support that.
+> Exactly what actions it takes are cache implementation specific, and
+> should be of no concern to the caller, but the underlying thing is...
+> it's to support self-modifying code.
+
+   Caveat
+       cacheflush()  should  not  be used in programs intended to be portab=
+le.
+       On Linux, this call first appeared on the MIPS architecture, but  no=
+wa=E2=80=90
+       days, Linux provides a cacheflush() system call on some other archit=
+ec=E2=80=90
+       tures, but with different arguments.
+
+What a disaster. Another badly designed interface, although it didn't=20
+originate in Linux it sounds like we weren't to be outdone so
+we messed it up even worse.
+
+flushing caches is neither necessary nor sufficient for code modification
+on many processors. Maybe some old MIPS specific private thing was fine,
+but certainly before it grew to other architectures, somebody should=20
+have thought for more than 2 minutes about it. Sigh.
+
+>=20
+> Sadly, because it's existed for 20+ years, and it has historically been
+> sufficient for other purposes too, it has seen quite a bit of abuse
+> despite its design purpose not changing - it's been used by graphics
+> drivers for example. They quickly learnt the error of their ways with
+> ARMv6+, since it does not do sufficient for their purposes given the
+> cache architectures found there.
+>=20
+> Let's not go around redesigning this after twenty odd years, requiring
+> a hell of a lot of pain to users. This interface is called by code
+> generated by GCC, so to change it you're looking at patching GCC as
+> well as the kernel, and you basically will make new programs
+> incompatible with older kernels - very bad news for users.
+
+For something to be redesigned it had to have been designed in the first=20
+place, so there is no danger of that don't worry... But no I never=20
+suggested making incompatible changes to any existing system call, I=20
+said "re-documented". And yes I said deprecated but in Linux that really=20
+means kept indefinitely.
+
+If ARM, MIPS, 68k etc programs and toolchains keep using what they are=20
+using it'll keep working no problem.
+
+The point is we're growing new interfaces, and making the same mistakes.=20
+It's not portable (ARCH_HAS_MEMBARRIER_SYNC_CORE), it's also specified=20
+in terms of low level processor operations rather than higher level=20
+intent, and also is not sufficient for self-modifying code (without=20
+additional cache flush on some processors).
+
+The application wants a call that says something like "memory modified=20
+before the call will be visible as instructions (including illegal=20
+instructions) by all threads in the program after the system call=20
+returns, and no threads will be subject to any effects of executing the=20
+previous contents of that memory.
+
+So I think the basics are simple (although should confirm with some JIT=20
+and debugger etc developers, and not just Android mind you). There are=20
+some complications in details, address ranges, virtual/physical, thread=20
+local vs process vs different process or system-wide, memory ordering=20
+and propagation of i and d sides, etc. But that can be worked through,=20
+erring on the side of sanity rather than pointless micro-optmisations.
+
+Thanks,
+Nick
