@@ -2,149 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B531E2E77F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 12:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F802E77FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 12:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgL3LGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 06:06:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37994 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726470AbgL3LGK (ORCPT
+        id S1726485AbgL3LKg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Dec 2020 06:10:36 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:29253 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726203AbgL3LKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 06:06:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609326283;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TpgWKLH5J7D/Oa0vEFsu5sj48pEyZOyT3j58Gf22+Eo=;
-        b=b0B4nZG2KrFWG691pkMKh3XKqFTPTuVl0wgtOCUtIaATPm6razWfIBXBjfjccatKAheqRP
-        IRA5LWhud/CpLnmRKolBHx05Fl8WyfoYBBjFXDCTR+oasA8z62Jf7T33i61I4beVqoMj1U
-        k7guvssxTegRQnvOh7dGTD40/89pHiw=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-575-cQISeeXMNIqrIxKpHDQ57A-1; Wed, 30 Dec 2020 06:04:39 -0500
-X-MC-Unique: cQISeeXMNIqrIxKpHDQ57A-1
-Received: by mail-ed1-f72.google.com with SMTP id z20so5689012edl.21
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 03:04:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TpgWKLH5J7D/Oa0vEFsu5sj48pEyZOyT3j58Gf22+Eo=;
-        b=O1ZnfLdPjdBX4vDVDwbsaJLIEwj58Ic38N0GMODAPrWjiuwYHGTRlnNnw293d2t2TE
-         YnnMm5HOnPW86fFcRUeCmPUAHoOQxhKcYzubjEN36mvgu6IEqw6euueq9jbCt6lJ/USp
-         cCKeANC0ORAyYfhyD6MTksXhxPAtRVZHDlKzQhtQB6XhMWcFU2UWDkGg3W0IIRL0oj9Q
-         q8thegqy2rLTnLKsqVjxHj6doyiiESnz3CbfkXrPxw5emBzuLRnSgOXZwgndXVIE6oPj
-         Vlx8DU29dqbg94ZYMK9F/fvXtmq/2I3TalLj2S5jGTC3t5gGt1+VXyHjzZMLrXxQ9uyL
-         MxJQ==
-X-Gm-Message-State: AOAM5326bgwqInA8P1pgWWr/2dGrYJGCyFqtlJUyU3i8oOZYLVVfFjJl
-        9CFrftZC0HE/1t4XNXcMzXG4LpNRtobETVJ0Q/F0uip76G2+57Iy5SXmXBoxdE/IpIW1j80SARy
-        VTb79kyyyY666wsoSOEi7T2Sj
-X-Received: by 2002:a17:906:3712:: with SMTP id d18mr50627984ejc.178.1609326278642;
-        Wed, 30 Dec 2020 03:04:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwQoK2ErguTmqZhtInIPF5IxlgvA+O3IkrlZ4G4JnSsQc1SmFFfU76rlEsZKdix/bchzl6Hxw==
-X-Received: by 2002:a17:906:3712:: with SMTP id d18mr50627978ejc.178.1609326278480;
-        Wed, 30 Dec 2020 03:04:38 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id o10sm19041814eju.89.2020.12.30.03.04.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Dec 2020 03:04:37 -0800 (PST)
-Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-2-hdegoede@redhat.com>
- <20201228122138.GA5352@sirena.org.uk>
- <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
- <20201228162807.GE5352@sirena.org.uk>
- <20201229130657.GN9673@ediswmail.ad.cirrus.com>
- <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
- <20201229150635.GP9673@ediswmail.ad.cirrus.com>
- <20201229151548.GG4786@sirena.org.uk>
- <1d982dd1-eb02-e7c7-357e-83cf5003c624@redhat.com>
- <21333e30-1e7a-2c95-9e7c-6325c7e78f9a@opensource.cirrus.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <833781fc-efde-fe98-fded-f81855e54de8@redhat.com>
-Date:   Wed, 30 Dec 2020 12:04:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 30 Dec 2020 06:10:35 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-iIqilTbKO8KhCOAOUL2QRg-1; Wed, 30 Dec 2020 06:09:41 -0500
+X-MC-Unique: iIqilTbKO8KhCOAOUL2QRg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75403107ACF5;
+        Wed, 30 Dec 2020 11:09:39 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.129])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 41AB876E3C;
+        Wed, 30 Dec 2020 11:09:36 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: [PATCHv2] perf tools: Detect when pipe is passed as perf data
+Date:   Wed, 30 Dec 2020 12:09:35 +0100
+Message-Id: <20201230110935.582332-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <21333e30-1e7a-2c95-9e7c-6325c7e78f9a@opensource.cirrus.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Currently we allow pipe input/output only through '-' string
+being passed to '-o' or '-i' options, like:
 
-On 12/29/20 5:51 PM, Richard Fitzgerald wrote:
-> 
-> 
-> On 29/12/2020 15:40, Hans de Goede wrote:
->> Hi,
->>
->> On 12/29/20 4:15 PM, Mark Brown wrote:
->>> On Tue, Dec 29, 2020 at 03:06:35PM +0000, Charles Keepax wrote:
->>>
->>>> There is maybe more argument for porting the Arizona code across
->>>> anyways, since for a long time Android didn't properly support extcon
->>>> either. It supported the earlier out of tree switch stuff, extcon
->>>
->>> Completely moving the driver doesn't cause the same problems as the
->>> current proposal (unless it drops functionality I guess, there were
->>> issues with adding new detection types into the input layer but I can't
->>> remember if this hardware was impacted by that or not).
->>
->> The input-layer supports the following switches:
->>
->> SW_HEADPHONE_INSERT
->> SW_MICROPHONE_INSERT
->> SW_LINEOUT_INSERT
->> SW_JACK_PHYSICAL_INSERT
->>
->> Which is a 1:1 mapping with the cable-types currently exported by
->> extcon-arizona.c .
->>
->> I'm fine with fully moving extcon-arizona.c over to only using
->> sound/core/jack.c functionality and it no longer exporting an
->> extcon device.
->>
->> I guess we should move it out of drivers/extcon then though.
->> I suggest using: sound/soc/cirrus/arizona-jack-detect.c
->> Note that sound/soc/cirrus is a new dir here. Would that work
->> for you ?
-> 
-> Shouldn't it be sound/soc/codecs/arizona-jack.c so that it is with all
-> the other code for those codecs?
+  # mkfifo perf.pipe
+  # perf record --no-buffering -e 'sched:sched_switch' -o - > perf.pipe &
+  [1] 354406
+  # cat perf.pipe | ./perf --no-pager script -i - | head -3
+            perf 354406 [000] 168190.164921: sched:sched_switch: perf:354406..
+     migration/0    12 [000] 168190.164928: sched:sched_switch: migration/0:..
+            perf 354406 [001] 168190.164981: sched:sched_switch: perf:354406..
+  ...
 
-The arizona codecs use the MFD framework and there is a separate
-platform-device instantiated for the jack-detect functionality, so this
-(mostly) a standalone platform-driver which has very little interaction
-with the rest of the codec code.
+This patch detects if given path is pipe and set the perf data
+object accordingly, so it's possible now to do above with:
 
-It is not a codec driver, or code shared between the codec drivers,
-so putting it under sound/soc/codecs would be a bit weird.
+  # mkfifo perf.pipe
+  # perf record --no-buffering -e 'sched:sched_switch' -o perf.pipe &
+  [1] 360188
+  # perf --no-pager script -i ./perf.pipe | head -3
+            perf 354442 [000] 168275.464895: sched:sched_switch: perf:354442..
+     migration/0    12 [000] 168275.464902: sched:sched_switch: migration/0:..
+            perf 354442 [001] 168275.464953: sched:sched_switch: perf:354442..
 
-With that said I have no strong preference for putting it under
-a new sound/soc/cirrus dir, if everyone is ok with putting it under
-sound/soc/codecs then that works for me.
+It's of course possible to combine any of above ways.
 
-Regards,
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+v2:
+  - removed O_CREAT|O_TRUNC flags from pipe's write end
 
-Hans
+ tools/perf/util/data.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+index f29af4fc3d09..4dfa9e0f2fec 100644
+--- a/tools/perf/util/data.c
++++ b/tools/perf/util/data.c
+@@ -159,7 +159,7 @@ int perf_data__update_dir(struct perf_data *data)
+ 	return 0;
+ }
+ 
+-static bool check_pipe(struct perf_data *data)
++static int check_pipe(struct perf_data *data)
+ {
+ 	struct stat st;
+ 	bool is_pipe = false;
+@@ -172,6 +172,15 @@ static bool check_pipe(struct perf_data *data)
+ 	} else {
+ 		if (!strcmp(data->path, "-"))
+ 			is_pipe = true;
++		else if (!stat(data->path, &st) && S_ISFIFO(st.st_mode)) {
++			int flags = perf_data__is_read(data) ?
++				    O_RDONLY : O_WRONLY;
++
++			fd = open(data->path, flags);
++			if (fd < 0)
++				return -EINVAL;
++			is_pipe = true;
++		}
+ 	}
+ 
+ 	if (is_pipe) {
+@@ -190,7 +199,8 @@ static bool check_pipe(struct perf_data *data)
+ 		}
+ 	}
+ 
+-	return data->is_pipe = is_pipe;
++	data->is_pipe = is_pipe;
++	return 0;
+ }
+ 
+ static int check_backup(struct perf_data *data)
+@@ -344,8 +354,11 @@ static int open_dir(struct perf_data *data)
+ 
+ int perf_data__open(struct perf_data *data)
+ {
+-	if (check_pipe(data))
+-		return 0;
++	int err;
++
++	err = check_pipe(data);
++	if (err || data->is_pipe)
++		return err;
+ 
+ 	/* currently it allows stdio for pipe only */
+ 	data->use_stdio = false;
+@@ -410,8 +423,10 @@ int perf_data__switch(struct perf_data *data,
+ {
+ 	int ret;
+ 
+-	if (check_pipe(data))
+-		return -EINVAL;
++	ret = check_pipe(data);
++	if (ret || data->is_pipe)
++		return ret;
++
+ 	if (perf_data__is_read(data))
+ 		return -EINVAL;
+ 
+-- 
+2.26.2
 
