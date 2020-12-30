@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0442E2E757E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 02:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956B12E7588
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 02:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgL3B2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 20:28:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
+        id S1726610AbgL3B2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 20:28:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgL3B2X (ORCPT
+        with ESMTP id S1726502AbgL3B2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 20:28:23 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70967C06179B;
-        Tue, 29 Dec 2020 17:27:43 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id u19so14152508edx.2;
-        Tue, 29 Dec 2020 17:27:43 -0800 (PST)
+        Tue, 29 Dec 2020 20:28:24 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C8EC06179C;
+        Tue, 29 Dec 2020 17:27:44 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id q22so20289315eja.2;
+        Tue, 29 Dec 2020 17:27:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ywgU0RqknLqPrZiMHs7nQjxQoQ/2d1Llugr9rRHrcUE=;
-        b=Rj8sOYCIS+E/MVa5ui7wQLxQvcV4br+unm0GXxfRMUVlGrsVmTT4tqm4go25pqIMYA
-         IT21SXvZZKWQ5kM/Iwc6licAvzMedXfc5gp4V3kj75OR81MOjx3uuHrZ0Qm8Qn9kRXEX
-         u5G4KjxywmTJUJlnXVgwlmTQg1z4QSCI00xqr+6ByMVtTOZPgJU5kurQG6KXYT5B6+Wz
-         v64C2+wovgn3UKz4bBI2eyzur5JNRFBEPTlBPrUB2bsipAGEZ7giztyyh74d03B8pxNi
-         kMhBmJeKCROWqvlcuRBZhaJ3Mzar3EhDxOziSZp/NptCb2b4scDHOTHlN+dNyBYo9IfN
-         9U9Q==
+        bh=imrJKcMY1s8JA1VMBRSaaZtkdQdYVBWQyZZ2ZjhBALM=;
+        b=hAABnlye+GbQK4TdQGvjwPMR9PQbrndwo9E9Bx/ndweH2aXp26ibb/WBmmexHiaOiO
+         9eh+2xWTTWcyEzeNd7JPDmI0W+k8ayK7lpyOfFafrX3rDO519y01b4Kq7IoFwlxF8hgX
+         6jR8K4n2Gn5Sq3pQYOgYStaXNh0rJ3so2AzCz/KCiRGEKYu22fppijSY85Ha5bpEC49V
+         sNx3cF/hcYorO/BxhzV6bzcDD4jwkrQkQuXOXDJzI26bsyGim9RCEbYM0uy1/BqJQMBP
+         u4cJ3iLZRVtNr117ZHK9J5KUOnfF1pj975OC6+z/2YW2TvIErfihDjSF36cF7J77+SsM
+         2Vsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ywgU0RqknLqPrZiMHs7nQjxQoQ/2d1Llugr9rRHrcUE=;
-        b=KcG5ajkselOHpApgCTeBZjpGJ0wcfyZCLpzTAvXWCfN9ltGJm5+hkezMhWqfRkxV/9
-         /iPmzLhlcv0L+mDCoTeJ44B4nM6c+e8N1hkWT6wj3NqBhoGtABHc/oglBDCzyROrPxjU
-         YQCZv/yDrtYFWM/K+ljJ437E0wYIshFoe5pUTuwkRHdSVRM2xzeoigQyQAo9NuBKQoVN
-         Yz/I5D76CPxIlxj8e+wHqpQyMojOxH8LzNI+4X6v8lMFZbuFX0BwgXFjfBFI32zy5A58
-         9DKyv5q7VdjW6DeckHdqoJnKoMgIHSQ0TZIRcWGFWlR17VqNIQowRxw+R8SIr6T1PjNi
-         nfkw==
-X-Gm-Message-State: AOAM530PBVqOw9jKDWJx5hq8193buHGD6mUR8/dW+weeBvfE0WZ9wDZW
-        x3f5oW+4A9E1GlHlcIr3UPb3bDc5Nj0=
-X-Google-Smtp-Source: ABdhPJzydY6e89yCgNrlsCho+Eqw9nrvxV6BTll14imCz7x61V1dXkTAfpJW6o8YTwcmkpXnPnrcSQ==
-X-Received: by 2002:aa7:d608:: with SMTP id c8mr47385390edr.260.1609291661976;
-        Tue, 29 Dec 2020 17:27:41 -0800 (PST)
+        bh=imrJKcMY1s8JA1VMBRSaaZtkdQdYVBWQyZZ2ZjhBALM=;
+        b=ZdrrIUXeIzSou7IHAO83TE31SEuDlRYQJofohjPTB+8qVXiqtmwG0OjA8PvQmnsebC
+         htrgEROV5bEyyq0M7hK6C+jpauTBrLyUsmXe2YajXlS8y3CIhipFVdbeiOKkJrTMxoPY
+         Ta5j6vSHrHFWwxKj4Zk+Holpcy/l0Aelfi0nIdSBhCYoDLh1vNW2Lcs9UBhglmia6i45
+         s+OmDvIAnG2Bsyd8GuUB40RC+zlAMd2br8WrEMTfsKiQhysoSLV8PmKFFIBhIlYM44uB
+         AQdxxGoAqUxGiuh92+8GzY+0+FQAF+jdZqTkBtV5lhQt1a66lpBrEAYhqvVRlmcwg/1/
+         bvbg==
+X-Gm-Message-State: AOAM53307fFG8pdqApNDheOr3/jWJX2d85gju248/RTnTXMLyRg4pPiR
+        Q0EH4ymkvX+FCtWASqtFeDGglSjboM4=
+X-Google-Smtp-Source: ABdhPJwShPofrfvJIRzJpMlIT4O6xPnONzNS3zWXwCvFAQNcxMUg5Fe/b1aISTX+RbgFa+YfNFgWhA==
+X-Received: by 2002:a17:906:154d:: with SMTP id c13mr35357439ejd.471.1609291662846;
+        Tue, 29 Dec 2020 17:27:42 -0800 (PST)
 Received: from localhost.localdomain (p200300f1372a4000428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:372a:4000:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id f20sm26576696edx.92.2020.12.29.17.27.41
+        by smtp.googlemail.com with ESMTPSA id f20sm26576696edx.92.2020.12.29.17.27.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Dec 2020 17:27:41 -0800 (PST)
+        Tue, 29 Dec 2020 17:27:42 -0800 (PST)
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To:     linux-remoteproc@vger.kernel.org, linux-amlogic@lists.infradead.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
         ohad@wizery.com, robh+dt@kernel.org,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 1/5] dt-bindings: sram: Add compatible strings for the Meson AO ARC SRAM
-Date:   Wed, 30 Dec 2020 02:27:20 +0100
-Message-Id: <20201230012724.1326156-2-martin.blumenstingl@googlemail.com>
+Subject: [PATCH 2/5] dt-bindings: Amlogic: add the documentation for the SECBUS2 registers
+Date:   Wed, 30 Dec 2020 02:27:21 +0100
+Message-Id: <20201230012724.1326156-3-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20201230012724.1326156-1-martin.blumenstingl@googlemail.com>
 References: <20201230012724.1326156-1-martin.blumenstingl@googlemail.com>
@@ -66,29 +66,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amlogic Meson8, Meson8b and Meson8m2 SoCs embed an ARC EM4 core
-typically used for managing system suspend. A section of the SoCs SRAM
-is mapped as memory for this ARC core. Add new compatible strings for
-the SRAM section for the ARC core memory.
+The Meson8/Meson8b/Meson8m2 SoCs have a register bank called SECBUS2 which
+contains registers for various IP blocks such as pin-controller bits for
+the BSD_EN and TEST_N GPIOs as well as some AO ARC core control bits.
+The registers can be accessed directly when not running in "secure mode".
+When "secure mode" is enabled then these registers have to be accessed
+through secure monitor calls.
+
+So far these SoCs are always known to boot in "non-secure mode".
+Add a binding documentation using syscon (as these registers are shared
+across different IPs) for the SECBUS2 registers.
 
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- Documentation/devicetree/bindings/sram/sram.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../arm/amlogic/amlogic,meson-mx-secbus2.yaml | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-mx-secbus2.yaml
 
-diff --git a/Documentation/devicetree/bindings/sram/sram.yaml b/Documentation/devicetree/bindings/sram/sram.yaml
-index 19d116ff9ddc..6d65771e979c 100644
---- a/Documentation/devicetree/bindings/sram/sram.yaml
-+++ b/Documentation/devicetree/bindings/sram/sram.yaml
-@@ -72,6 +72,8 @@ patternProperties:
-             - allwinner,sun4i-a10-sram-d
-             - allwinner,sun9i-a80-smp-sram
-             - allwinner,sun50i-a64-sram-c
-+            - amlogic,meson8-ao-arc-sram
-+            - amlogic,meson8b-ao-arc-sram
-             - amlogic,meson8-smp-sram
-             - amlogic,meson8b-smp-sram
-             - amlogic,meson-gxbb-scp-shmem
+diff --git a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-mx-secbus2.yaml b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-mx-secbus2.yaml
+new file mode 100644
+index 000000000000..cfa8e9de6c28
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-mx-secbus2.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/arm/amlogic/amlogic,meson-mx-secbus2.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Amlogic Meson8/Meson8b/Meson8m2 SECBUS2 register interface
++
++maintainers:
++  - Martin Blumenstingl <martin.blumenstingl@googlemail.com>
++
++description: |
++  The Meson8/Meson8b/Meson8m2 SoCs have a register bank called SECBUS2 which
++  contains registers for various IP blocks such as pin-controller bits for
++  the BSD_EN and TEST_N GPIOs as well as some AO ARC core control bits.
++  The registers can be accessed directly when not running in "secure mode".
++  When "secure mode" is enabled then these registers have to be accessed
++  through secure monitor calls.
++
++# We need a select here so we don't match all nodes with 'syscon'
++select:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - amlogic,meson8-secbus2
++          - amlogic,meson8b-secbus2
++  required:
++    - compatible
++
++properties:
++  compatible:
++    items:
++      - enum:
++        - amlogic,meson8-secbus2
++        - amlogic,meson8b-secbus2
++      - const: syscon
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    secbus2: system-controller@4000 {
++      compatible = "amlogic,meson8-secbus2", "syscon";
++      reg = <0x4000 0x2000>;
++    };
 -- 
 2.30.0
 
