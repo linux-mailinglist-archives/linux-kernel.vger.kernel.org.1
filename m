@@ -2,228 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39BC2E7B68
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD3A2E7B42
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgL3RBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 12:01:10 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:10914 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726469AbgL3RBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 12:01:09 -0500
-X-IronPort-AV: E=Sophos;i="5.78,461,1599494400"; 
-   d="scan'208";a="103085840"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 31 Dec 2020 00:58:45 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 896D04CE6027;
-        Thu, 31 Dec 2020 00:58:44 +0800 (CST)
-Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Thu, 31 Dec 2020 00:58:44 +0800
-Received: from irides.mr (10.167.225.141) by G08CNEXCHPEKD04.g08.fujitsu.local
- (10.167.33.209) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 31 Dec 2020 00:58:43 +0800
-From:   Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
-        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
-        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
-Subject: [PATCH 10/10] fs/dax: remove useless functions
-Date:   Thu, 31 Dec 2020 00:56:01 +0800
-Message-ID: <20201230165601.845024-11-ruansy.fnst@cn.fujitsu.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
-References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
+        id S1726651AbgL3Q6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 11:58:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726214AbgL3Q6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 11:58:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08FAA207B0;
+        Wed, 30 Dec 2020 16:58:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609347481;
+        bh=WwsvJ6+e/U3mYbaKukuVwmTy/RvjFznh/gcnh5DFkAA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c/YF14HfGmC3vY5t5+qvfpHFUi4qDNyp4zeci0iTKy7oMh6lFC80YZ9GRWvLFxLdp
+         Vqbev9I08rJgj+WNXKR5vaPUVuuEar7fWYW0jBqZMb+Q2914ZWt0WJ9ei1Fxa+kYGY
+         qkhFqvGeRVDV/c8WaxOzOPsV1OFqJFGEeHhLcFR5mYQSdKJr9lehiF6L3oqCURGx4y
+         wxEAJWf1YgPgUm0hcQjc8l/BSWfYliYlHlJlrknS9meJwAEm0I4+Kz35X2E1V8+nGa
+         qInO3lBp17Oga6zBwRWOJ/kOUe8SF8mC4U2dOLplh5PrwFoMawhwXrQ6VjeXl6aTWF
+         4A45k951w/umw==
+Received: by pali.im (Postfix)
+        id CE8C99F8; Wed, 30 Dec 2020 17:57:58 +0100 (CET)
+Date:   Wed, 30 Dec 2020 17:57:58 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] net: sfp: assume that LOS is not implemented if both
+ LOS normal and inverted is set
+Message-ID: <20201230165758.jqezvxnl44cvvodw@pali>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20201230154755.14746-4-pali@kernel.org>
+ <20201230161310.GT1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 896D04CE6027.ABF58
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201230161310.GT1551@shell.armlinux.org.uk>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since owner tarcking is triggerred by pmem device, these functions are
-useless.  So remove it.
+On Wednesday 30 December 2020 16:13:10 Russell King - ARM Linux admin wrote:
+> On Wed, Dec 30, 2020 at 04:47:54PM +0100, Pali Rohár wrote:
+> > Some GPON SFP modules (e.g. Ubiquiti U-Fiber Instant) have set both
+> > SFP_OPTIONS_LOS_INVERTED and SFP_OPTIONS_LOS_NORMAL bits in their EEPROM.
+> > 
+> > Such combination of bits is meaningless so assume that LOS signal is not
+> > implemented.
+> > 
+> > This patch fixes link carrier for GPON SFP module Ubiquiti U-Fiber Instant.
+> > 
+> > Co-developed-by: Russell King <rmk+kernel@armlinux.org.uk>
+> > Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+> 
+> No, this is not co-developed. The patch content is exactly what _I_
+> sent you, only the commit description is your own.
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
----
- fs/dax.c            | 112 --------------------------------------------
- include/linux/dax.h |   2 -
- 2 files changed, 114 deletions(-)
+Sorry, in this case I misunderstood usage of this Co-developed-by tag.
+I will remove it in next iteration of patches.
 
-diff --git a/fs/dax.c b/fs/dax.c
-index 799210cfa687..4267de360d79 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -323,48 +323,6 @@ static unsigned long dax_end_pfn(void *entry)
- 	for (pfn = dax_to_pfn(entry); \
- 			pfn < dax_end_pfn(entry); pfn++)
- 
--/*
-- * TODO: for reflink+dax we need a way to associate a single page with
-- * multiple address_space instances at different linear_page_index()
-- * offsets.
-- */
--static void dax_associate_entry(void *entry, struct address_space *mapping,
--		struct vm_area_struct *vma, unsigned long address)
--{
--	unsigned long size = dax_entry_size(entry), pfn, index;
--	int i = 0;
--
--	if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
--		return;
--
--	index = linear_page_index(vma, address & ~(size - 1));
--	for_each_mapped_pfn(entry, pfn) {
--		struct page *page = pfn_to_page(pfn);
--
--		WARN_ON_ONCE(page->mapping);
--		page->mapping = mapping;
--		page->index = index + i++;
--	}
--}
--
--static void dax_disassociate_entry(void *entry, struct address_space *mapping,
--		bool trunc)
--{
--	unsigned long pfn;
--
--	if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
--		return;
--
--	for_each_mapped_pfn(entry, pfn) {
--		struct page *page = pfn_to_page(pfn);
--
--		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
--		WARN_ON_ONCE(page->mapping && page->mapping != mapping);
--		page->mapping = NULL;
--		page->index = 0;
--	}
--}
--
- static struct page *dax_busy_page(void *entry)
- {
- 	unsigned long pfn;
-@@ -399,72 +357,6 @@ unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index)
- 	return pfn;
- }
- 
--/*
-- * dax_lock_mapping_entry - Lock the DAX entry corresponding to a page
-- * @page: The page whose entry we want to lock
-- *
-- * Context: Process context.
-- * Return: A cookie to pass to dax_unlock_page() or 0 if the entry could
-- * not be locked.
-- */
--dax_entry_t dax_lock_page(struct page *page)
--{
--	XA_STATE(xas, NULL, 0);
--	void *entry;
--
--	/* Ensure page->mapping isn't freed while we look at it */
--	rcu_read_lock();
--	for (;;) {
--		struct address_space *mapping = READ_ONCE(page->mapping);
--
--		entry = NULL;
--		if (!mapping || !dax_mapping(mapping))
--			break;
--
--		/*
--		 * In the device-dax case there's no need to lock, a
--		 * struct dev_pagemap pin is sufficient to keep the
--		 * inode alive, and we assume we have dev_pagemap pin
--		 * otherwise we would not have a valid pfn_to_page()
--		 * translation.
--		 */
--		entry = (void *)~0UL;
--		if (S_ISCHR(mapping->host->i_mode))
--			break;
--
--		xas.xa = &mapping->i_pages;
--		xas_lock_irq(&xas);
--		if (mapping != page->mapping) {
--			xas_unlock_irq(&xas);
--			continue;
--		}
--		xas_set(&xas, page->index);
--		entry = xas_load(&xas);
--		if (dax_is_locked(entry)) {
--			rcu_read_unlock();
--			wait_entry_unlocked(&xas, entry);
--			rcu_read_lock();
--			continue;
--		}
--		dax_lock_entry(&xas, entry);
--		xas_unlock_irq(&xas);
--		break;
--	}
--	rcu_read_unlock();
--	return (dax_entry_t)entry;
--}
--
--void dax_unlock_page(struct page *page, dax_entry_t cookie)
--{
--	struct address_space *mapping = page->mapping;
--	XA_STATE(xas, &mapping->i_pages, page->index);
--
--	if (S_ISCHR(mapping->host->i_mode))
--		return;
--
--	dax_unlock_entry(&xas, (void *)cookie);
--}
--
- /*
-  * Find page cache entry at given index. If it is a DAX entry, return it
-  * with the entry locked. If the page cache doesn't contain an entry at
-@@ -543,7 +435,6 @@ static void *grab_mapping_entry(struct xa_state *xas,
- 			xas_lock_irq(xas);
- 		}
- 
--		dax_disassociate_entry(entry, mapping, false);
- 		xas_store(xas, NULL);	/* undo the PMD join */
- 		dax_wake_entry(xas, entry, true);
- 		mapping->nrexceptional--;
-@@ -680,7 +571,6 @@ static int __dax_invalidate_entry(struct address_space *mapping,
- 	    (xas_get_mark(&xas, PAGECACHE_TAG_DIRTY) ||
- 	     xas_get_mark(&xas, PAGECACHE_TAG_TOWRITE)))
- 		goto out;
--	dax_disassociate_entry(entry, mapping, trunc);
- 	xas_store(&xas, NULL);
- 	mapping->nrexceptional--;
- 	ret = 1;
-@@ -774,8 +664,6 @@ static void *dax_insert_entry(struct xa_state *xas,
- 	if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
- 		void *old;
- 
--		dax_disassociate_entry(entry, mapping, false);
--		dax_associate_entry(new_entry, mapping, vmf->vma, vmf->address);
- 		/*
- 		 * Only swap our new entry into the page cache if the current
- 		 * entry is a zero page or an empty entry.  If a normal PTE or
-diff --git a/include/linux/dax.h b/include/linux/dax.h
-index 89e56ceeffc7..c6b8dc094b26 100644
---- a/include/linux/dax.h
-+++ b/include/linux/dax.h
-@@ -151,8 +151,6 @@ int dax_writeback_mapping_range(struct address_space *mapping,
- struct page *dax_layout_busy_page(struct address_space *mapping);
- struct page *dax_layout_busy_page_range(struct address_space *mapping, loff_t start, loff_t end);
- unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index);
--dax_entry_t dax_lock_page(struct page *page);
--void dax_unlock_page(struct page *page, dax_entry_t cookie);
- #else
- static inline bool bdev_dax_supported(struct block_device *bdev,
- 		int blocksize)
--- 
-2.29.2
-
-
-
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > ---
+> >  drivers/net/phy/sfp.c | 36 ++++++++++++++++++++++--------------
+> >  1 file changed, 22 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
+> > index 73f3ecf15260..d47485ed239c 100644
+> > --- a/drivers/net/phy/sfp.c
+> > +++ b/drivers/net/phy/sfp.c
+> > @@ -1475,15 +1475,19 @@ static void sfp_sm_link_down(struct sfp *sfp)
+> >  
+> >  static void sfp_sm_link_check_los(struct sfp *sfp)
+> >  {
+> > -	unsigned int los = sfp->state & SFP_F_LOS;
+> > +	const __be16 los_inverted = cpu_to_be16(SFP_OPTIONS_LOS_INVERTED);
+> > +	const __be16 los_normal = cpu_to_be16(SFP_OPTIONS_LOS_NORMAL);
+> > +	__be16 los_options = sfp->id.ext.options & (los_inverted | los_normal);
+> > +	bool los = false;
+> >  
+> >  	/* If neither SFP_OPTIONS_LOS_INVERTED nor SFP_OPTIONS_LOS_NORMAL
+> > -	 * are set, we assume that no LOS signal is available.
+> > +	 * are set, we assume that no LOS signal is available. If both are
+> > +	 * set, we assume LOS is not implemented (and is meaningless.)
+> >  	 */
+> > -	if (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_INVERTED))
+> > -		los ^= SFP_F_LOS;
+> > -	else if (!(sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_NORMAL)))
+> > -		los = 0;
+> > +	if (los_options == los_inverted)
+> > +		los = !(sfp->state & SFP_F_LOS);
+> > +	else if (los_options == los_normal)
+> > +		los = !!(sfp->state & SFP_F_LOS);
+> >  
+> >  	if (los)
+> >  		sfp_sm_next(sfp, SFP_S_WAIT_LOS, 0);
+> > @@ -1493,18 +1497,22 @@ static void sfp_sm_link_check_los(struct sfp *sfp)
+> >  
+> >  static bool sfp_los_event_active(struct sfp *sfp, unsigned int event)
+> >  {
+> > -	return (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_INVERTED) &&
+> > -		event == SFP_E_LOS_LOW) ||
+> > -	       (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_NORMAL) &&
+> > -		event == SFP_E_LOS_HIGH);
+> > +	const __be16 los_inverted = cpu_to_be16(SFP_OPTIONS_LOS_INVERTED);
+> > +	const __be16 los_normal = cpu_to_be16(SFP_OPTIONS_LOS_NORMAL);
+> > +	__be16 los_options = sfp->id.ext.options & (los_inverted | los_normal);
+> > +
+> > +	return (los_options == los_inverted && event == SFP_E_LOS_LOW) ||
+> > +	       (los_options == los_normal && event == SFP_E_LOS_HIGH);
+> >  }
+> >  
+> >  static bool sfp_los_event_inactive(struct sfp *sfp, unsigned int event)
+> >  {
+> > -	return (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_INVERTED) &&
+> > -		event == SFP_E_LOS_HIGH) ||
+> > -	       (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_NORMAL) &&
+> > -		event == SFP_E_LOS_LOW);
+> > +	const __be16 los_inverted = cpu_to_be16(SFP_OPTIONS_LOS_INVERTED);
+> > +	const __be16 los_normal = cpu_to_be16(SFP_OPTIONS_LOS_NORMAL);
+> > +	__be16 los_options = sfp->id.ext.options & (los_inverted | los_normal);
+> > +
+> > +	return (los_options == los_inverted && event == SFP_E_LOS_HIGH) ||
+> > +	       (los_options == los_normal && event == SFP_E_LOS_LOW);
+> >  }
+> >  
+> >  static void sfp_sm_fault(struct sfp *sfp, unsigned int next_state, bool warn)
+> > -- 
+> > 2.20.1
+> > 
+> > 
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
