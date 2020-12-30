@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34BA2E7BA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9443C2E7BA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgL3Rhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 12:37:32 -0500
-Received: from vern.gendns.com ([98.142.107.122]:59962 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgL3Rhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 12:37:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=q/atSoRqWe6ArFqQDRSwZ347fqwQAV01GCsR8rdFUSs=; b=ijWFIfKJaFLZHbWGNeqgftbam7
-        Ohn+42g7uPEJm5+wNE+Stn0MYNIBECTX7lDS2M1fxZie/DWxND2qEFcryKyN2zqMc5GAQCJGbxp6c
-        xFPl5UaQBmfq1fEqJFiGp9zynb1dyUqgO+JGkl6Q4xWi1xwN0JMP9bvaycnsO4rgNewdW0MrftId8
-        zo0/WRVUwa7NEu9pQ71yOjjOIRW5sYjWiLr4ElPUACkmfG4We2Fd1cuLffzgZSCZrKLkuZcF9H95v
-        5Os/4REvBMexmvAz9CnWBOdtzZ9gBKYlZCp3J/sKNoLnZidXeP6B0hj20yW2YkNqM0t/ptsnD2+24
-        f5QpSVLw==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:58304 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1kufOw-0007hO-9h; Wed, 30 Dec 2020 12:36:46 -0500
-Subject: Re: [PATCH v7 5/5] counter: 104-quad-8: Add IRQ support for the ACCES
- 104-QUAD-8
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-References: <cover.1608935587.git.vilhelm.gray@gmail.com>
- <bb2db54669ef27515da4d5f235c52e0b484b5820.1608935587.git.vilhelm.gray@gmail.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <7a78ad95-9eba-277d-25da-ddf68357b969@lechnology.com>
-Date:   Wed, 30 Dec 2020 11:36:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726618AbgL3Rj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 12:39:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgL3Rj2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 12:39:28 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559E6C061573;
+        Wed, 30 Dec 2020 09:38:48 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id cm17so16069641edb.4;
+        Wed, 30 Dec 2020 09:38:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mbKx0VrbcGX06OaD1gA2/3Ij2LLzirD/wkDYpvq9AE0=;
+        b=O6JiKAKKBpKsEACJ+nJbzrhpC/wWcEaXgsY2ZqS1Fpw4sVi2okW3pfkTL4yRRdTKgB
+         ipFEdnCWfOxt63c1fr9ETg7pjFsHBotYmy8RSOrha4soUwWAa22/kqBPykqjqYscQ1Sl
+         vRR3SRewJCj/G5ijicAYloRGn6aKfWer81jklyTiT1dg9KhGDGzPecWCsvVOlrLAy6qA
+         Fo828isvddmWxu3xqpD2aIE3MMcWQdUFcfyBQVkSR8jf8VeAtE3YmviEMcaTWj43r0oq
+         b0adpisfaRGbRq0P4Uk+19iBqb8SYo1hfR7R3ExswNwVu9x+LQeuL44OB3W5x51g/zq/
+         WT4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mbKx0VrbcGX06OaD1gA2/3Ij2LLzirD/wkDYpvq9AE0=;
+        b=pmqxuvAE84Cs6SWrCH4DNduWFmVYT4g3LW5aW5RZ2aqjQSb7EJht4eVDlI7TA90FlP
+         z5KqP5gK5tiYjT3P0YjTpuoXsFfwcPRqNi/APUaQP8cKPmpw5mZVb8yy2Ay++QR0qT9L
+         VGIWSDKeBgC2XekQC0yq3astDG19Zd2PE26o0ci0LwkKvUdPKXl2S4dAEqEzw9GMAvp4
+         nBl84Dtl5T0qwjC11ilPJ9IiEIDDpa+VhYbpPDnRXoaKUpN/Vrm4UvnjtIm1L9Zsk5Ke
+         QjHO7zI1tZX0at2yUGn3VXSmdcvJBjTLJKOm6UINyiOvldv5g5ZVlcjELGYI4b0iq46g
+         7GQg==
+X-Gm-Message-State: AOAM531+a3d0Lk+PBZL4vXP4CNrNhKGOMY15azFReqU1KvvqFlcaMYS+
+        9PJBV8qQkk2TLJta1iN4PvyU/h3YGAk=
+X-Google-Smtp-Source: ABdhPJxiytOfWDsB0ffyp6zUyB9WJrtGtCWQ82wMxbLo1LzsD0UuqBUn00+fczFHX+RoXB2zlFB6EQ==
+X-Received: by 2002:a50:9dc9:: with SMTP id l9mr51220288edk.377.1609349927121;
+        Wed, 30 Dec 2020 09:38:47 -0800 (PST)
+Received: from kwango.local (ip-94-112-132-16.net.upcbroadband.cz. [94.112.132.16])
+        by smtp.gmail.com with ESMTPSA id f20sm27361523edx.92.2020.12.30.09.38.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 09:38:46 -0800 (PST)
+From:   Ilya Dryomov <idryomov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph fixes for 5.11-rc2
+Date:   Wed, 30 Dec 2020 18:38:46 +0100
+Message-Id: <20201230173846.7369-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.19.2
 MIME-Version: 1.0
-In-Reply-To: <bb2db54669ef27515da4d5f235c52e0b484b5820.1608935587.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/25/20 6:15 PM, William Breathitt Gray wrote:
+Hi Linus,
 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8 b/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
-> index eac32180c40d..0ecba24d43aa 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
-> +++ b/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
-> @@ -1,3 +1,28 @@
-> +What:		/sys/bus/counter/devices/counterX/countY/irq_trigger
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
-Do we really need this sysfs attribute? Shouldn't interrupts be configured
-_only_ by the chrdev interface?
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 
+are available in the Git repository at:
 
+  https://github.com/ceph/ceph-client.git tags/ceph-for-5.11-rc2
+
+for you to fetch changes up to 664f1e259a982bf213f0cd8eea7616c89546585c:
+
+  libceph: add __maybe_unused to DEFINE_MSGR2_FEATURE (2020-12-28 20:34:33 +0100)
+
+----------------------------------------------------------------
+A fix for an edge case in MClientRequest encoding and a couple of
+trivial fixups for the new msgr2 support.
+
+----------------------------------------------------------------
+Ilya Dryomov (4):
+      ceph: reencode gid_list when reconnecting
+      libceph: fix auth_signature buffer allocation in secure mode
+      libceph: align session_key and con_secret to 16 bytes
+      libceph: add __maybe_unused to DEFINE_MSGR2_FEATURE
+
+ fs/ceph/mds_client.c      | 53 ++++++++++++++++++++---------------------------
+ include/linux/ceph/msgr.h |  4 ++--
+ net/ceph/messenger_v2.c   | 15 +++++++++++---
+ 3 files changed, 36 insertions(+), 36 deletions(-)
