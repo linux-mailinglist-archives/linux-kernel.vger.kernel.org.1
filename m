@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E29D2E76CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 08:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBAB2E76D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 08:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgL3HQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 02:16:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
+        id S1726545AbgL3HSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 02:18:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgL3HQT (ORCPT
+        with ESMTP id S1726316AbgL3HS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 02:16:19 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606A9C06179B;
-        Tue, 29 Dec 2020 23:15:39 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0ae90058345bc89b9c20d2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e900:5834:5bc8:9b9c:20d2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E869F1EC01E0;
-        Wed, 30 Dec 2020 08:15:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1609312538;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=m7erdCIKszJz06nljy/boxQcYlOItJn7Lccn/F6AG0E=;
-        b=WQm6pea9Ag14tpilLtVxXkLhf59+Eog93W1nz6TGWe9i8lEmlBySCVCJh5kFVvbvMjwzXb
-        nrakKwkpqLp7kt4wtgjLzCUF5Yb909c2WBWfpOX8Y8uzeyoDL8ajGtm/oj/Wm6g9WBU+sX
-        mqcDomicDUv8xTQvcs1ZpnkTEUJkaiY=
-Date:   Wed, 30 Dec 2020 08:15:41 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        fenghua.yu@intel.com, tony.luck@intel.com, wanpengli@tencent.com,
-        kvm@vger.kernel.org, thomas.lendacky@amd.com, peterz@infradead.org,
-        seanjc@google.com, joro@8bytes.org, x86@kernel.org,
-        kyung.min.park@intel.com, linux-kernel@vger.kernel.org,
-        krish.sadhukhan@oracle.com, hpa@zytor.com, mgross@linux.intel.com,
-        vkuznets@redhat.com, kim.phillips@amd.com, wei.huang2@amd.com,
-        jmattson@google.com
-Subject: Re: [PATCH v2 1/2] x86/cpufeatures: Add the Virtual SPEC_CTRL feature
-Message-ID: <20201230071541.GC22022@zn.tnic>
-References: <160867624053.3471.7106539070175910424.stgit@bmoger-ubuntu>
- <160867629293.3471.18225691185459839634.stgit@bmoger-ubuntu>
+        Wed, 30 Dec 2020 02:18:29 -0500
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEB2C06179B;
+        Tue, 29 Dec 2020 23:17:48 -0800 (PST)
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id 14555C01E; Wed, 30 Dec 2020 08:17:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1609312667; bh=HCaSoQg8ICQUetSY/RdCKPwts6rtqy9M+q2/JVAQ/U0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RgexwDLJ7hCvc7e+ifUEjQVJ9zgsIRmVxms2KvvSQh5c8ycXyuHKb4fOXRlrtKvGa
+         suHrv2Rcao3ByqqlGDS1SisNsOMbeNzfVECfuL9rfcbT3Fb8c/16Ut/PT+ToQu6mn9
+         KyRT6CISOBg81zLwtNcpFKY9lAaNCWxAoqck6cBN4JvHsB45CmGhgfSC00+uXnF/k0
+         IZxdzBFDxVNNj0BGVg0drdAZM3CyT5qnCzsKV+skAe1DXOeY2mPeXk2IUxtZW5Hxi/
+         TcpVg7TQFmjoJZcZlgd9wWep1Bp0GHjT8Yk/4TRLExy4F6q+YcMc7sWw0qABFG/7DB
+         i3+ir71hKCkYw==
+Date:   Wed, 30 Dec 2020 08:17:32 +0100
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     YANG LI <abaci-bugfix@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, ericvh@gmail.com,
+        lucho@ionkov.net, v9fs-developer@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] 9p: fix: Uninitialized variable p.
+Message-ID: <20201230071732.GA4256@nautica>
+References: <1609310713-84972-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <160867629293.3471.18225691185459839634.stgit@bmoger-ubuntu>
+In-Reply-To: <1609310713-84972-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 04:31:32PM -0600, Babu Moger wrote:
-> Newer AMD processors have a feature to virtualize the use of the
-> SPEC_CTRL MSR. Presence of this feature is indicated via CPUID
-> function 0x8000000A_EDX[20]: GuestSpecCtrl. When preset, the SPEC_CTRL
-> MSR is automatically virtualized.
-> 
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
->  arch/x86/include/asm/cpufeatures.h |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index dad350d42ecf..aee4a924ecd7 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -335,6 +335,7 @@
->  #define X86_FEATURE_AVIC		(15*32+13) /* Virtual Interrupt Controller */
->  #define X86_FEATURE_V_VMSAVE_VMLOAD	(15*32+15) /* Virtual VMSAVE VMLOAD */
->  #define X86_FEATURE_VGIF		(15*32+16) /* Virtual GIF */
-> +#define X86_FEATURE_V_SPEC_CTRL 	(15*32+20) /* Virtual SPEC_CTRL */
->  
->  /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
->  #define X86_FEATURE_AVX512VBMI		(16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
+YANG LI wrote on Wed, Dec 30, 2020:
+> The pointer p is being used but it isn't being initialized,
+> need to assign a NULL to it.
+
+My understanding is p has to be initialized: the only way out of the
+while(1) loop below sets it.
 
 
-I'm guessing this will go through the kvm tree so:
+I don't mind fixing false positive warnings as it makes maintenance
+easier for everyone, but:
 
-Acked-by: Borislav Petkov <bp@suse.de>
+ 1/ the commit message needs to reflect that and at least name which
+tool had a problem with it. I'm tempted to think this case is common
+enough that the tool ought to be fixed instead...
 
+ 2/ the code needs to work in the p=NULL case if you set it that way
+(right now, it doesn't, so in the event the code changes in the future
+and there really comes a way to skip initialization this change would
+actually hinder bug detection -- it'd need to add a p == NULL check
+below, which is going to be useless code, but hopefully compilers will
+optimize it away)
+
+
+Thanks,
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Dominique
