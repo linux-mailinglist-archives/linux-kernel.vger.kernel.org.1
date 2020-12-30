@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FFE2E79D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 14:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C31962E79D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 14:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgL3NxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 08:53:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34530 "EHLO mail.kernel.org"
+        id S1727071AbgL3Nxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 08:53:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726656AbgL3Nw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 08:52:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D0920791;
-        Wed, 30 Dec 2020 13:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609336339;
-        bh=A8KDxk2J7yDBfz+5AzQj8eYVlMtcX4Tp2Ks9wdanxjY=;
+        id S1726656AbgL3Nxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 08:53:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D97AB2220B;
+        Wed, 30 Dec 2020 13:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609336368;
+        bh=30jsp5BVA2f3TpS9tI7rc6XDWizumbT6G0NirNSQCM0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DOk5fuT/SZohpcmYMIoLDKexl84L1uiwodTWrcIQs8Y5iuNlHrYkt4ptFLtTtplsr
-         yprYZUWFUPVRGv0ibQw3SLBeHD9BhmDnCHXx5Ab6eo+PYFgV08zRSsCUEynvqiQddj
-         cFUbzeSSGvQ7UPpOCUwCizyGx4ccXoYNjtRRnv7hKNMS9fv74lWAJWHAKXN4qA04m5
-         hjhIq4CgTFe0okfbtqywsxYvvEPWkj1i5DQJYt7a5QRUF5S8J6OMqwhmWGGGvpwBr3
-         RNEZNHVNtxW7Sif3zjRKvWsFxYVMikE7HqJGC5KwM/LVOY/N4QnbZl/XXJwy+3nmqY
-         28P3Uu23IDUMA==
-Date:   Wed, 30 Dec 2020 13:51:56 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Birger Koblitz <mail@birger-koblitz.de>,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v2 1/2] dt-bindings: spi: Realtek RTL838x/RTL839x
- SPI controller
-Message-ID: <20201230135156.GF4428@sirena.org.uk>
-References: <20201229231904.2558916-1-bert@biot.com>
+        b=Z0X4u5NxQXa/UWDGn5WU0vLZb3yjh//GXGo1yr1804TRXWhr9FEmvWo5KmzMikYi3
+         c79KVsuzTGNFPQUDhpBIYRmIRqXCHp3Kyz4uwV8Y3dgCilDbJKVAWo8GI3HZRZdE3B
+         9Hf8ighHKx0dxL77RpzXUlp+GQZFa+t0nFOvoa20=
+Date:   Wed, 30 Dec 2020 14:54:14 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 154/346] crypto: omap-aes - Fix PM disable depth
+ imbalance in omap_aes_probe
+Message-ID: <X+yGhmU3xW/fXgmz@kroah.com>
+References: <20201228124919.745526410@linuxfoundation.org>
+ <20201228124927.229346776@linuxfoundation.org>
+ <20201230131635.GA15217@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p8PhoBjPxaQXD0vg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201229231904.2558916-1-bert@biot.com>
-X-Cookie: Above all things, reverence yourself.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201230131635.GA15217@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 30, 2020 at 02:16:35PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > From: Zhang Qilong <zhangqilong3@huawei.com>
+> > 
+> > [ Upstream commit ff8107200367f4abe0e5bce66a245e8d0f2d229e ]
+> > 
+> > The pm_runtime_enable will increase power disable depth.
+> > Thus a pairing decrement is needed on the error handling
+> > path to keep it balanced according to context.
+> 
+> Oops, this is complex.
+> 
+> First, same bug exist in 4.4, but is not fixed there, and there is
+> missing pm_runtime_put() there and elsewhere.
+> 
+> 4.4 needs these two fixes + backport of ff81072003.
+> 
+> 4.19 needs fixes similar to these, at three places.
+> 
+> mainline is okay, afaict.
+> 
+> Best regards,
+> 								Pavel
+> 
+> diff --git a/drivers/crypto/omap-aes.c b/drivers/crypto/omap-aes.c
+> index eba23147c0ee..48370711c794 100644
+> --- a/drivers/crypto/omap-aes.c
+> +++ b/drivers/crypto/omap-aes.c
+> @@ -801,6 +801,7 @@ static int omap_aes_cra_init(struct crypto_tfm *tfm)
+>  
+>  	err = pm_runtime_get_sync(dd->dev);
+>  	if (err < 0) {
+> +		pm_runtime_put_sync(dd->dev);
+>  		dev_err(dd->dev, "%s: failed to get_sync(%d)\n",
+>  			__func__, err);
+>  		return err;
+> @@ -1195,6 +1196,7 @@ static int omap_aes_probe(struct platform_device *pdev)
+>  	pm_runtime_enable(dev);
+>  	err = pm_runtime_get_sync(dev);
+>  	if (err < 0) {
+> +		pm_runtime_put_sync(dev);	  
+>  		dev_err(dev, "%s: failed to get_sync(%d)\n",
+>  			__func__, err);
+>  		goto err_res;
+> 
+> 
 
---p8PhoBjPxaQXD0vg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Can you submit all of this in a format that I can apply it in?
 
-On Wed, Dec 30, 2020 at 12:19:03AM +0100, Bert Vermeulen wrote:
+thanks,
 
-> +properties:
-> +  compatible:
-> +    const: realtek,spi
-
-It is possibled Realtek might make other SPI controllers, there should
-be some more specific name such as a compatible for each SoC that the
-controller appears in or an IP name if one is known.
-
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
---p8PhoBjPxaQXD0vg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/shfsACgkQJNaLcl1U
-h9B4mwf/SDei1d9DKPMjGfTGoqYmyuzwYLFOr3ddZgUv7qoN3PvV0AIXoJNBSR4h
-Ajwh5t8bopJIo4sqplupw22PcIT7jzIejn7XgQdr9ctYPZSeaBt/3smJainNvDit
-K/in9Os6lvPa6YGLeDPYFlrZK59W2Fx2ApIYY2a8luq2Y8CLH6TzJbuYj3ps72eZ
-MtQW1Bv6VMg1F6wCUd7jgDP6ppLrIss671KSGxlCMk36UiRYNJdH2TDB3o89LhT1
-tfuC3n/kCS+DIfTb82B3nQxSKb2dijnd53a0S9/hqr2sLuYBhQm2b5ZqB+H3wmeM
-dfYORicJLznhGIZZOgpbIETvMTRKxA==
-=UBK0
------END PGP SIGNATURE-----
-
---p8PhoBjPxaQXD0vg--
+greg k-h
