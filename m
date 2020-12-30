@@ -2,78 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3342A2E7565
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 01:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBA22E756B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 01:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgL3AfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 19:35:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44317 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726323AbgL3AfH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 19:35:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609288421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fQqmQgejia5zdNPAXJa4cSOsZ9WjULOA78O3gb5cwIM=;
-        b=FA3iLIeQy71Xf1QSRqPZm2SUIihlIaPvmgEE3xcHDxQyrSoq/uNW+DnqmUNSS/b2ApQwAz
-        c4HEuT8yvFI8q/hnOtp3YMh9smyDPpFoIAaXtDk2idS9ygukAsOBPOpilCOTmeghIVug1P
-        fh07ne1Y5jVJri1m00OaGvtRY9wHRkA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-XivWjf9qNkyKmJLUk992cA-1; Tue, 29 Dec 2020 19:33:39 -0500
-X-MC-Unique: XivWjf9qNkyKmJLUk992cA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F29B710054FF;
-        Wed, 30 Dec 2020 00:33:37 +0000 (UTC)
-Received: from localhost (ovpn-12-20.pek2.redhat.com [10.72.12.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F01CFE155;
-        Wed, 30 Dec 2020 00:33:33 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        linux-bcache@vger.kernel.org, Coly Li <colyli@suse.de>
-Subject: [PATCH 6/6] bcache: don't pass BIOSET_NEED_BVECS for the 'bio_set' embedded in 'cache_set'
-Date:   Wed, 30 Dec 2020 08:32:55 +0800
-Message-Id: <20201230003255.3450874-7-ming.lei@redhat.com>
-In-Reply-To: <20201230003255.3450874-1-ming.lei@redhat.com>
-References: <20201230003255.3450874-1-ming.lei@redhat.com>
+        id S1726325AbgL3AzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 19:55:22 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:56048 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726156AbgL3AzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 19:55:21 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax+cnKz+tf56YHAA--.56S3;
+        Wed, 30 Dec 2020 08:54:35 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Loongson64: Give chance to build under !CONFIG_NUMA
+ and !CONFIG_SMP
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1606998772-5904-1-git-send-email-yangtiezhu@loongson.cn>
+ <20201215132123.GA9201@alpha.franken.de>
+ <3eb215e2-82ae-2834-2837-55f429027840@loongson.cn>
+ <20201229163907.GA8519@alpha.franken.de>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <5354959b-eacb-ff77-ab3d-dc0a6c89dc9f@loongson.cn>
+Date:   Wed, 30 Dec 2020 08:54:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
+In-Reply-To: <20201229163907.GA8519@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-CM-TRANSID: AQAAf9Ax+cnKz+tf56YHAA--.56S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7try8Xw15Xw1fAFyxGr1xKrg_yoW8KFyDpa
+        yvkasIyws2ga45AasxAw1Iq34Yqw48ArW2yFW8W34UAa4q9F97Kr4rtF1j9F1Ikr4v9a10
+        ga15WFy5GryvvF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
+        bIxvr21lc2xSY4AK67AK6w1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUb5Ef7UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bioset is just for allocating bio only from bio_next_split, and it needn't
-bvecs, so remove the flag.
+On 12/30/2020 12:39 AM, Thomas Bogendoerfer wrote:
+> On Wed, Dec 16, 2020 at 10:44:23AM +0800, Tiezhu Yang wrote:
+>> I have tested the following three configs on the Loongson platform:
+>> (1) !NUMA and !SMP,
+>> (2) !NUMA and SMP,
+>> (3) NUMA and SMP,
+>> everything is all right.
+>>
+>> But there exists the following build error under NUMA and !SMP:
+>>
+>>    CC      arch/mips/kernel/asm-offsets.s
+>> In file included from ./include/linux/gfp.h:9:0,
+>>                   from ./include/linux/xarray.h:14,
+>>                   from ./include/linux/radix-tree.h:19,
+>>                   from ./include/linux/fs.h:15,
+>>                   from ./include/linux/compat.h:17,
+>>                   from arch/mips/kernel/asm-offsets.c:12:
+>> ./include/linux/topology.h: In function ‘numa_node_id’:
+>> ./include/linux/topology.h:119:2: error: implicit declaration of function
+>> ‘cpu_logical_map’ [-Werror=implicit-function-declaration]
+>>    return cpu_to_node(raw_smp_processor_id());
+>>    ^
+>> cc1: some warnings being treated as errors
+>> scripts/Makefile.build:117: recipe for target
+>> 'arch/mips/kernel/asm-offsets.s' failed
+>> make[1]: *** [arch/mips/kernel/asm-offsets.s] Error 1
+>> arch/mips/Makefile:396: recipe for target 'archprepare' failed
+>> make: *** [archprepare] Error 2
+>>
+>> I find a patch to fix this kind of build errors [1], but it seems
+>> meaningless.
+>>
+>> According to the NUMA and SMP description in arch/mips/Kconfig,
+>> we will use only one CPU of a multiprocessor machine if !SMP,
+>> on single node systems leave NUMA disabled.
+>>
+>> So I think there is no need to use NUMA if !SMP, and also we should
+>> make NUMA depend on SMP to avoid build errors.
+> ok, but compiling IP27 with your patch gives
+>
+> WARNING: unmet direct dependencies detected for NUMA
+>    Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
+>    Selected by [y]:
+>    - SGI_IP27 [=y] && <choice>
+>
+> WARNING: unmet direct dependencies detected for NUMA
+>    Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
+>    Selected by [y]:
+>    - SGI_IP27 [=y] && <choice>
+>
+> WARNING: unmet direct dependencies detected for NUMA
+>    Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
+>    Selected by [y]:
+>    - SGI_IP27 [=y] && <choice>
+>
+> If I use "select SMP" instead both ip27 and loongson64 compile.
+>
+> If you are ok with this change, I'll change it while appling your
+> patch.
 
-Cc: linux-bcache@vger.kernel.org
-Cc: Coly Li <colyli@suse.de>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- drivers/md/bcache/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+No problem, looks good to me, thank you very much.
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 0e06d721cd8e..61c8aafc0a32 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1897,7 +1897,7 @@ struct cache_set *bch_cache_set_alloc(struct cache_sb *sb)
- 		goto err;
- 
- 	if (bioset_init(&c->bio_split, 4, offsetof(struct bbio, bio),
--			BIOSET_NEED_BVECS|BIOSET_NEED_RESCUER))
-+			BIOSET_NEED_RESCUER))
- 		goto err;
- 
- 	c->uuids = alloc_meta_bucket_pages(GFP_KERNEL, sb);
--- 
-2.28.0
+Thanks,
+Tiezhu
+>
+> Thomas.
+>
 
