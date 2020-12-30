@@ -2,408 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9D02E7706
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336C52E7709
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgL3Iai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 03:30:38 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10010 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbgL3Iah (ORCPT
+        id S1726317AbgL3Icd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 03:32:33 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:60088 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgL3Icc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 03:30:37 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D5PZn0zgLzj0jC;
-        Wed, 30 Dec 2020 16:29:05 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.9) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 30 Dec 2020 16:29:46 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] ARM: LPAE: use phys_addr_t instead of unsigned long in outercache hooks
-Date:   Wed, 30 Dec 2020 16:28:05 +0800
-Message-ID: <20201230082805.1428-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201230082805.1428-1-thunder.leizhen@huawei.com>
-References: <20201230082805.1428-1-thunder.leizhen@huawei.com>
+        Wed, 30 Dec 2020 03:32:32 -0500
+Date:   Wed, 30 Dec 2020 08:31:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1609317109;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kkcS4Kn8DsWp728R/9ppRhr+Ekra8DGkRSsNPoaZhpw=;
+        b=RS4XBR2OzI+W32x2rTRtxxn8bxyzNKGeBVwnQlELTAD7gH2LDsxRqZ4R07tsBY9WBXr3lU
+        0RpqCdbIhqLL5t1i110B/s8vn/TalLJhJmd9iQm592hUXSZ/IqXe3mZaqLq3SMj1+lQ1Yw
+        wC8ZAPu2EPbnEkdLs9SP8XIVowSq82gRjRDsqbMYFkIMs1KZ2C3KiTyRe7D/JOluVYw0zu
+        YbfcYi0UhidVkSpKKXYFJZH1dEF2vo9Pn2S0ZzYqcjOZwSYdU7BjzgDby1Zg8sHx270OU1
+        59ho8ZHOuxt5jwo3zoIweooKKjhTbox8IlKlbAnR11sk6yx8BDRjq6bvCwryBg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1609317109;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kkcS4Kn8DsWp728R/9ppRhr+Ekra8DGkRSsNPoaZhpw=;
+        b=N1HPFQCUPtBbzE/s3jAwyHzWtvCC45+Wn0YjSoVoVJjIjgLTo5fNWYbX33Mqkrdm7WmGsV
+        vk8lOORXwBZSoHCA==
+From:   "tip-bot2 for Zheng Yongjun" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/platform] x86/platform/intel-mid: Convert comma to semicolon
+Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201216131107.14339-1-zhengyongjun3@huawei.com>
+References: <20201216131107.14339-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Message-ID: <160931710867.414.3027150956562454767.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The outercache of some Hisilicon SOCs support physical addresses wider
-than 32-bits. The unsigned long datatype is not sufficient for mapping
-physical addresses >= 4GB. The commit ad6b9c9d78b9 ("ARM: 6671/1: LPAE:
-use phys_addr_t instead of unsigned long in outercache functions") has
-already modified the outercache functions. But the parameters of the
-outercache hooks are not changed. This patch use phys_addr_t instead of
-unsigned long in outercache hooks: inv_range, clean_range, flush_range.
+The following commit has been merged into the x86/platform branch of tip:
 
-To ensure the outercache that does not support LPAE works properly, do
-cast phys_addr_t to unsigned long by adding a group of temporary
-variables. For example:
--static void l2c220_inv_range(unsigned long start, unsigned long end)
-+static void l2c220_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
+Commit-ID:     bdb154f074a6d73d520b1fdee6b4143e2e311dfb
+Gitweb:        https://git.kernel.org/tip/bdb154f074a6d73d520b1fdee6b4143e2e311dfb
+Author:        Zheng Yongjun <zhengyongjun3@huawei.com>
+AuthorDate:    Wed, 16 Dec 2020 21:11:07 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 30 Dec 2020 09:27:38 +01:00
 
-Note that the outercache functions have been doing this cast before this
-patch. So now, the cast is just moved into the outercache hook functions.
+x86/platform/intel-mid: Convert comma to semicolon
 
-No functional change.
+Replace a comma between expression statements with a semicolon.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lkml.kernel.org/r/20201216131107.14339-1-zhengyongjun3@huawei.com
 ---
- arch/arm/include/asm/outercache.h |  6 ++--
- arch/arm/mm/cache-feroceon-l2.c   | 15 ++++++++--
- arch/arm/mm/cache-l2x0.c          | 50 ++++++++++++++++++++++---------
- arch/arm/mm/cache-tauros2.c       | 15 ++++++++--
- arch/arm/mm/cache-uniphier.c      |  6 ++--
- arch/arm/mm/cache-xsc3l2.c        | 12 ++++++--
- 6 files changed, 75 insertions(+), 29 deletions(-)
+ arch/x86/platform/intel-mid/device_libs/platform_bt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/include/asm/outercache.h b/arch/arm/include/asm/outercache.h
-index 3364637755e86aa..4cee1ea0c15449a 100644
---- a/arch/arm/include/asm/outercache.h
-+++ b/arch/arm/include/asm/outercache.h
-@@ -14,9 +14,9 @@
- struct l2x0_regs;
-
- struct outer_cache_fns {
--	void (*inv_range)(unsigned long, unsigned long);
--	void (*clean_range)(unsigned long, unsigned long);
--	void (*flush_range)(unsigned long, unsigned long);
-+	void (*inv_range)(phys_addr_t, phys_addr_t);
-+	void (*clean_range)(phys_addr_t, phys_addr_t);
-+	void (*flush_range)(phys_addr_t, phys_addr_t);
- 	void (*flush_all)(void);
- 	void (*disable)(void);
- #ifdef CONFIG_OUTER_CACHE_SYNC
-diff --git a/arch/arm/mm/cache-feroceon-l2.c b/arch/arm/mm/cache-feroceon-l2.c
-index 5c1b7a7b9af6300..10f909744d5e963 100644
---- a/arch/arm/mm/cache-feroceon-l2.c
-+++ b/arch/arm/mm/cache-feroceon-l2.c
-@@ -168,8 +168,11 @@ static unsigned long calc_range_end(unsigned long start, unsigned long end)
- 	return range_end;
- }
-
--static void feroceon_l2_inv_range(unsigned long start, unsigned long end)
-+static void feroceon_l2_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
-+
- 	/*
- 	 * Clean and invalidate partial first cache line.
- 	 */
-@@ -198,8 +201,11 @@ static void feroceon_l2_inv_range(unsigned long start, unsigned long end)
- 	dsb();
- }
-
--static void feroceon_l2_clean_range(unsigned long start, unsigned long end)
-+static void feroceon_l2_clean_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
-+
- 	/*
- 	 * If L2 is forced to WT, the L2 will always be clean and we
- 	 * don't need to do anything here.
-@@ -217,8 +223,11 @@ static void feroceon_l2_clean_range(unsigned long start, unsigned long end)
- 	dsb();
- }
-
--static void feroceon_l2_flush_range(unsigned long start, unsigned long end)
-+static void feroceon_l2_flush_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
-+
- 	start &= ~(CACHE_LINE_SIZE - 1);
- 	end = (end + CACHE_LINE_SIZE - 1) & ~(CACHE_LINE_SIZE - 1);
- 	while (start != end) {
-diff --git a/arch/arm/mm/cache-l2x0.c b/arch/arm/mm/cache-l2x0.c
-index 43d91bfd2360086..cdaddd772b09ede 100644
---- a/arch/arm/mm/cache-l2x0.c
-+++ b/arch/arm/mm/cache-l2x0.c
-@@ -184,8 +184,10 @@ static void __l2c210_op_pa_range(void __iomem *reg, unsigned long start,
- 	}
- }
-
--static void l2c210_inv_range(unsigned long start, unsigned long end)
-+static void l2c210_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	void __iomem *base = l2x0_base;
-
- 	if (start & (CACHE_LINE_SIZE - 1)) {
-@@ -203,8 +205,10 @@ static void l2c210_inv_range(unsigned long start, unsigned long end)
- 	__l2c210_cache_sync(base);
- }
-
--static void l2c210_clean_range(unsigned long start, unsigned long end)
-+static void l2c210_clean_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	void __iomem *base = l2x0_base;
-
- 	start &= ~(CACHE_LINE_SIZE - 1);
-@@ -212,8 +216,10 @@ static void l2c210_clean_range(unsigned long start, unsigned long end)
- 	__l2c210_cache_sync(base);
- }
-
--static void l2c210_flush_range(unsigned long start, unsigned long end)
-+static void l2c210_flush_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	void __iomem *base = l2x0_base;
-
- 	start &= ~(CACHE_LINE_SIZE - 1);
-@@ -304,8 +310,10 @@ static unsigned long l2c220_op_pa_range(void __iomem *reg, unsigned long start,
- 	return flags;
- }
-
--static void l2c220_inv_range(unsigned long start, unsigned long end)
-+static void l2c220_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	void __iomem *base = l2x0_base;
- 	unsigned long flags;
-
-@@ -331,8 +339,10 @@ static void l2c220_inv_range(unsigned long start, unsigned long end)
- 	raw_spin_unlock_irqrestore(&l2x0_lock, flags);
- }
-
--static void l2c220_clean_range(unsigned long start, unsigned long end)
-+static void l2c220_clean_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	void __iomem *base = l2x0_base;
- 	unsigned long flags;
-
-@@ -350,8 +360,10 @@ static void l2c220_clean_range(unsigned long start, unsigned long end)
- 	raw_spin_unlock_irqrestore(&l2x0_lock, flags);
- }
-
--static void l2c220_flush_range(unsigned long start, unsigned long end)
-+static void l2c220_flush_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	void __iomem *base = l2x0_base;
- 	unsigned long flags;
-
-@@ -464,8 +476,10 @@ static const struct l2c_init_data l2c220_data = {
-  *	Affects: store buffer
-  *	store buffer is not automatically drained.
-  */
--static void l2c310_inv_range_erratum(unsigned long start, unsigned long end)
-+static void l2c310_inv_range_erratum(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	void __iomem *base = l2x0_base;
-
- 	if ((start | end) & (CACHE_LINE_SIZE - 1)) {
-@@ -496,8 +510,10 @@ static void l2c310_inv_range_erratum(unsigned long start, unsigned long end)
- 	__l2c210_cache_sync(base);
- }
-
--static void l2c310_flush_range_erratum(unsigned long start, unsigned long end)
-+static void l2c310_flush_range_erratum(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	raw_spinlock_t *lock = &l2x0_lock;
- 	unsigned long flags;
- 	void __iomem *base = l2x0_base;
-@@ -1400,12 +1416,12 @@ static void aurora_pa_range(unsigned long start, unsigned long end,
- 		start = range_end;
- 	}
- }
--static void aurora_inv_range(unsigned long start, unsigned long end)
-+static void aurora_inv_range(phys_addr_t start, phys_addr_t end)
- {
- 	aurora_pa_range(start, end, AURORA_INVAL_RANGE_REG);
- }
-
--static void aurora_clean_range(unsigned long start, unsigned long end)
-+static void aurora_clean_range(phys_addr_t start, phys_addr_t end)
- {
- 	/*
- 	 * If L2 is forced to WT, the L2 will always be clean and we
-@@ -1415,7 +1431,7 @@ static void aurora_clean_range(unsigned long start, unsigned long end)
- 		aurora_pa_range(start, end, AURORA_CLEAN_RANGE_REG);
- }
-
--static void aurora_flush_range(unsigned long start, unsigned long end)
-+static void aurora_flush_range(phys_addr_t start, phys_addr_t end)
- {
- 	if (l2_wt_override)
- 		aurora_pa_range(start, end, AURORA_INVAL_RANGE_REG);
-@@ -1604,8 +1620,10 @@ static inline unsigned long bcm_l2_phys_addr(unsigned long addr)
- 		return addr + BCM_VC_EMI_OFFSET;
- }
-
--static void bcm_inv_range(unsigned long start, unsigned long end)
-+static void bcm_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	unsigned long new_start, new_end;
-
- 	BUG_ON(start < BCM_SYS_EMI_START_ADDR);
-@@ -1631,8 +1649,10 @@ static void bcm_inv_range(unsigned long start, unsigned long end)
- 		new_end);
- }
-
--static void bcm_clean_range(unsigned long start, unsigned long end)
-+static void bcm_clean_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	unsigned long new_start, new_end;
-
- 	BUG_ON(start < BCM_SYS_EMI_START_ADDR);
-@@ -1658,8 +1678,10 @@ static void bcm_clean_range(unsigned long start, unsigned long end)
- 		new_end);
- }
-
--static void bcm_flush_range(unsigned long start, unsigned long end)
-+static void bcm_flush_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	unsigned long new_start, new_end;
-
- 	BUG_ON(start < BCM_SYS_EMI_START_ADDR);
-diff --git a/arch/arm/mm/cache-tauros2.c b/arch/arm/mm/cache-tauros2.c
-index 88255bea65e41e6..d768bbb5e05c690 100644
---- a/arch/arm/mm/cache-tauros2.c
-+++ b/arch/arm/mm/cache-tauros2.c
-@@ -66,8 +66,11 @@ static inline void tauros2_inv_pa(unsigned long addr)
-  */
- #define CACHE_LINE_SIZE		32
-
--static void tauros2_inv_range(unsigned long start, unsigned long end)
-+static void tauros2_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
-+
- 	/*
- 	 * Clean and invalidate partial first cache line.
- 	 */
-@@ -95,8 +98,11 @@ static void tauros2_inv_range(unsigned long start, unsigned long end)
- 	dsb();
- }
-
--static void tauros2_clean_range(unsigned long start, unsigned long end)
-+static void tauros2_clean_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
-+
- 	start &= ~(CACHE_LINE_SIZE - 1);
- 	while (start < end) {
- 		tauros2_clean_pa(start);
-@@ -106,8 +112,11 @@ static void tauros2_clean_range(unsigned long start, unsigned long end)
- 	dsb();
- }
-
--static void tauros2_flush_range(unsigned long start, unsigned long end)
-+static void tauros2_flush_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
-+
- 	start &= ~(CACHE_LINE_SIZE - 1);
- 	while (start < end) {
- 		tauros2_clean_inv_pa(start);
-diff --git a/arch/arm/mm/cache-uniphier.c b/arch/arm/mm/cache-uniphier.c
-index ff2881458504329..e2508358e9f4082 100644
---- a/arch/arm/mm/cache-uniphier.c
-+++ b/arch/arm/mm/cache-uniphier.c
-@@ -250,17 +250,17 @@ static void uniphier_cache_maint_all(u32 operation)
- 		__uniphier_cache_maint_all(data, operation);
- }
-
--static void uniphier_cache_inv_range(unsigned long start, unsigned long end)
-+static void uniphier_cache_inv_range(phys_addr_t start, phys_addr_t end)
- {
- 	uniphier_cache_maint_range(start, end, UNIPHIER_SSCOQM_CM_INV);
- }
-
--static void uniphier_cache_clean_range(unsigned long start, unsigned long end)
-+static void uniphier_cache_clean_range(phys_addr_t start, phys_addr_t end)
- {
- 	uniphier_cache_maint_range(start, end, UNIPHIER_SSCOQM_CM_CLEAN);
- }
-
--static void uniphier_cache_flush_range(unsigned long start, unsigned long end)
-+static void uniphier_cache_flush_range(phys_addr_t start, phys_addr_t end)
- {
- 	uniphier_cache_maint_range(start, end, UNIPHIER_SSCOQM_CM_FLUSH);
- }
-diff --git a/arch/arm/mm/cache-xsc3l2.c b/arch/arm/mm/cache-xsc3l2.c
-index d20d7af02d10fc0..5814731653d9091 100644
---- a/arch/arm/mm/cache-xsc3l2.c
-+++ b/arch/arm/mm/cache-xsc3l2.c
-@@ -83,8 +83,10 @@ static inline unsigned long l2_map_va(unsigned long pa, unsigned long prev_va)
- #endif
- }
-
--static void xsc3_l2_inv_range(unsigned long start, unsigned long end)
-+static void xsc3_l2_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	unsigned long vaddr;
-
- 	if (start == 0 && end == -1ul) {
-@@ -127,8 +129,10 @@ static void xsc3_l2_inv_range(unsigned long start, unsigned long end)
- 	dsb();
- }
-
--static void xsc3_l2_clean_range(unsigned long start, unsigned long end)
-+static void xsc3_l2_clean_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	unsigned long vaddr;
-
- 	vaddr = -1;  /* to force the first mapping */
-@@ -165,8 +169,10 @@ static inline void xsc3_l2_flush_all(void)
- 	dsb();
- }
-
--static void xsc3_l2_flush_range(unsigned long start, unsigned long end)
-+static void xsc3_l2_flush_range(phys_addr_t pa_start, phys_addr_t pa_end)
- {
-+	unsigned long start = pa_start;
-+	unsigned long end = pa_end;
- 	unsigned long vaddr;
-
- 	if (start == 0 && end == -1ul) {
---
-2.26.0.106.g9fadedd
-
-
+diff --git a/arch/x86/platform/intel-mid/device_libs/platform_bt.c b/arch/x86/platform/intel-mid/device_libs/platform_bt.c
+index 31dda18..2930b6e 100644
+--- a/arch/x86/platform/intel-mid/device_libs/platform_bt.c
++++ b/arch/x86/platform/intel-mid/device_libs/platform_bt.c
+@@ -88,8 +88,8 @@ static int __init bt_sfi_init(void)
+ 	memset(&info, 0, sizeof(info));
+ 	info.fwnode	= ddata->dev->fwnode;
+ 	info.parent	= ddata->dev;
+-	info.name	= ddata->name,
+-	info.id		= PLATFORM_DEVID_NONE,
++	info.name	= ddata->name;
++	info.id		= PLATFORM_DEVID_NONE;
+ 
+ 	pdev = platform_device_register_full(&info);
+ 	if (IS_ERR(pdev))
