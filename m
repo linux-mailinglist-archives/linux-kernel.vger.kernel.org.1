@@ -2,58 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E5F2E7BB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B770E2E7BBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgL3R5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 12:57:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgL3R5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 12:57:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B04B52220B;
-        Wed, 30 Dec 2020 17:56:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609350984;
-        bh=v2vDZj7jq1Mssp1pb0X2MgJcwWHSKlcMLv0ogo1wJTY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mBlT8Je8oIWdTvRooGTBJZuS8q5X1UeXbjjT7jy0rWGz1TrveQwUlUDdmN4hvVF5t
-         37JavBSd41Z8W9UnCIHDj16S+yqgDUYpJ2kMWAEaP/IZOFCm+oo2Vaql9rIOX+SoZp
-         t9sOeElxLd1fHBITiglyAacwy5pPxYu6qtp8HM9g=
-Date:   Wed, 30 Dec 2020 18:57:20 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [git pull] habanalabs fixes for 5.11-rc2
-Message-ID: <X+y/gKijNgZrMF4b@kroah.com>
-References: <20201230173306.GA12162@CORE.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230173306.GA12162@CORE.localdomain>
+        id S1726586AbgL3R7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 12:59:34 -0500
+Received: from lists.gateworks.com ([108.161.130.12]:50519 "EHLO
+        lists.gateworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgL3R7d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 12:59:33 -0500
+Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
+        by lists.gateworks.com with esmtp (Exim 4.82)
+        (envelope-from <tharvey@gateworks.com>)
+        id 1kufrT-0008Ov-SQ; Wed, 30 Dec 2020 18:06:16 +0000
+From:   Tim Harvey <tharvey@gateworks.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH v4 1/2] dt-bindings: arm: fsl: Add binding for Gateworks boards with IMX8MM
+Date:   Wed, 30 Dec 2020 09:58:42 -0800
+Message-Id: <1609351123-22418-1-git-send-email-tharvey@gateworks.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 07:33:06PM +0200, Oded Gabbay wrote:
-> Hi Greg,
-> 
-> This pull request contains a number of important fixes for 5.11-rc2.
-> Mainly fixes to support our new F/W with enhanced security features,
-> but also additional bugs.
-> See details in the tag message below.
-> 
-> Thanks,
-> Oded
-> 
-> The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
-> 
->   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2020-12-30
+Add bindings for the Gateworks Venice Development kit boards with
+IMX8MM System on Module.
 
-Pulled and pushed out, thanks.
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+---
+v4: no changes
+v3: no changes
+v2: no changes
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-greg k-h
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 1ca9dfa..705c6e8 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -405,6 +405,9 @@ properties:
+               - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
+               - fsl,imx8mm-ddr4-evk       # i.MX8MM DDR4 EVK Board
+               - fsl,imx8mm-evk            # i.MX8MM EVK Board
++              - gw,imx8mm-gw71xx-0x       # i.MX8MM Gateworks Development Kit
++              - gw,imx8mm-gw72xx-0x       # i.MX8MM Gateworks Development Kit
++              - gw,imx8mm-gw73xx-0x       # i.MX8MM Gateworks Development Kit
+               - variscite,var-som-mx8mm   # i.MX8MM Variscite VAR-SOM-MX8MM module
+           - const: fsl,imx8mm
+ 
+-- 
+2.7.4
+
