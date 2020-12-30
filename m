@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA272E775C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66482E775F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgL3JSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 04:18:20 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9659 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgL3JSU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 04:18:20 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D5Qdr0msSz15lf9;
-        Wed, 30 Dec 2020 17:16:48 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 30 Dec 2020 17:17:30 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <Markus.Elring@web.de>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH v3 net-next] net: kcm: Replace fput with sockfd_put
-Date:   Wed, 30 Dec 2020 17:18:09 +0800
-Message-ID: <20201230091809.942-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1726336AbgL3JWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 04:22:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgL3JWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 04:22:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00F372078D;
+        Wed, 30 Dec 2020 09:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609320085;
+        bh=rUbSRIdhyVyskfTnTpqEi9ejHTGxyO+MSWyCfemGzbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OJEGnid/WbFLDQ9NY5yPXNx0NdhsE5v2ZA0Ec+1uT6WU2NqITOL0YhjZDABqIvLpG
+         O6Va5939Gm+/WVnFG+nSZKjE3rNJ4hnGkB6z3qGXqdDbB899JYKZaRbQjoKMWlXSJz
+         xYRm0uNSkwdk5j67/5aonuJDjK7WpS8xQFHaKB2k=
+Date:   Wed, 30 Dec 2020 10:22:43 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.4 099/453] drm/amdgpu: fix build_coefficients() argument
+Message-ID: <X+xG4/b+XW54u1ej@kroah.com>
+References: <20201228124937.240114599@linuxfoundation.org>
+ <20201228124941.984955049@linuxfoundation.org>
+ <20201229175819.GA15548@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229175819.GA15548@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function sockfd_lookup uses fget on the value that is stored in
-the file field of the returned structure, so fput should ultimately be
-applied to this value.  This can be done directly, but it seems better
-to use the specific macro sockfd_put, which does the same thing.
+On Tue, Dec 29, 2020 at 06:58:19PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > [ Upstream commit dbb60031dd0c2b85f10ce4c12ae604c28d3aaca4 ]
+> > 
+> > gcc -Wextra warns about a function taking an enum argument
+> > being called with a bool:
+> > 
+> > drivers/gpu/drm/amd/amdgpu/../display/modules/color/color_gamma.c: In function 'apply_degamma_for_user_regamma':
+> > drivers/gpu/drm/amd/amdgpu/../display/modules/color/color_gamma.c:1617:29: warning: implicit conversion from 'enum <anonymous>' to 'enum dc_transfer_func_predefined' [-Wenum-conversion]
+> >  1617 |  build_coefficients(&coeff, true);
+> > 
+> > It appears that a patch was added using the old calling conventions
+> > after the type was changed, and the value should actually be 0
+> > (TRANSFER_FUNCTION_SRGB) here instead of 1 (true).
+> 
+> Yeah, but 4.19 still uses bool there, so this actually introduces a
+> bug.
+> 
+> Please drop.
 
-Perform a source code refactoring by using the following semantic patch.
+Now dropped, thanks.
 
-    // <smpl>
-    @@
-    expression s;
-    @@
-
-       s = sockfd_lookup(...)
-       ...
-    + sockfd_put(s);
-    - fput(s->file);
-    // </smpl>
-
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- net/kcm/kcmsock.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
-index 56dad9565bc9..a9eb616f5521 100644
---- a/net/kcm/kcmsock.c
-+++ b/net/kcm/kcmsock.c
-@@ -1496,7 +1496,7 @@ static int kcm_attach_ioctl(struct socket *sock, struct kcm_attach *info)
- 
- 	return 0;
- out:
--	fput(csock->file);
-+	sockfd_put(csock);
- 	return err;
- }
- 
-@@ -1644,7 +1644,7 @@ static int kcm_unattach_ioctl(struct socket *sock, struct kcm_unattach *info)
- 	spin_unlock_bh(&mux->lock);
- 
- out:
--	fput(csock->file);
-+	sockfd_put(csock);
- 	return err;
- }
- 
--- 
-2.22.0
-
+greg k-h
