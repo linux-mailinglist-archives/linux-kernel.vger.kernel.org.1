@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACE32E7A73
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3932E7A7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgL3Pj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 10:39:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44370 "EHLO mail.kernel.org"
+        id S1726628AbgL3Plu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 10:41:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726197AbgL3Pj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 10:39:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6517C22288;
-        Wed, 30 Dec 2020 15:39:31 +0000 (UTC)
+        id S1726533AbgL3Plt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 10:41:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E702F22227;
+        Wed, 30 Dec 2020 15:41:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609342773;
-        bh=R+QtqUjZdUsen8XjrwbBijiAfroUZOBF7AE3pnTq3Mg=;
+        s=k20201202; t=1609342869;
+        bh=HfZJWC4DgWzxO94oQompi4plJLMZTWGfjqgfqgqfi5U=;
         h=From:To:Cc:Subject:Date:From;
-        b=t/LvhBIVwknbkuroGTdJD9EhpS/WiYbw3HrpsiOpHIQps7Ax8kj38V01plDw3z9FD
-         WZEBZzWXdRZIkxaIXYgvpCkeItoHbJQnPQ5gtVJNGY3cvuqdrxYC1WgLmIzTHdNkXC
-         SNThC2LqzfKzKNnh2jmIlMqiKKzTVAuOr82Dwzve11IRoAAspH4dFzMj2IwuvQOfnb
-         BewGRZqFu+oWApmvdqTcaHHKNCMuTgmJMCWTP7WF3E7i1/B13eWiQbowSC+vcnfQ6i
-         JWV1qrDo+ALV5AGsd5ChEL5yLK3uiLQrlNsMDKrFCYP3LkcmJnRbzWV2d/Y1b+4s1j
-         0v0zU64bBfJrw==
+        b=DAO3IEqESCs//Kgrgsgvvma3G1GUlcdqVotmH2gNP9/fmWgdVjTYIvo9wOrKG2Vv7
+         r9zr8/4eGzSaAct25yKZ+fvScsiV5OftBVn6GG7ZjcPu1+jWj8yLdkCnctRwbRTis1
+         mehMwK6IU2o5KQL/Q0Q80RIce7hefzbhlYirdFA9yziisGTP6nV0LtPnP7uniqNbLL
+         ytonIXr2P+j5DnoW5xJE2Nuf24cshMLKoUnlmLTbyeppkIq2Q3If9oNKBk9B7qTCB2
+         EMUAgPxOpmXQsjeiQ9oquQxfdJXNtzeCa5D5KNXzudr84xtm5Cfy8ISQ6C2dnWRQxK
+         RSnO08W3oF9lA==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] i915: fix shift warning
-Date:   Wed, 30 Dec 2020 16:39:14 +0100
-Message-Id: <20201230153928.456260-1-arnd@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Brian Geffon <bgeffon@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] mm/mremap: fix BUILD_BUG_ON() error in get_extent
+Date:   Wed, 30 Dec 2020 16:40:40 +0100
+Message-Id: <20201230154104.522605-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -50,35 +45,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Randconfig builds on 32-bit machines show lots of warnings for
-the i915 driver for incorrect bit masks like:
+clang cannt evaluate this function argument at compile time
+when the function is not inlined, which leads to a link
+time failure:
 
-drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2584:9: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
-        return hweight64(VDBOX_MASK(&i915->gt));
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from macro 'hweight64'
- #define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) : __arch_hweight64(w))
+ld.lld: error: undefined symbol: __compiletime_assert_414
+>>> referenced by mremap.c
+>>>               mremap.o:(get_extent) in archive mm/built-in.a
 
-Since this is a 64-bit mask, use GENMASK_ULL instead of GENMASK.
+Mark the function as __always_inline to avoid it.
 
+Fixes: 9ad9718bfa41 ("mm/mremap: calculate extent in one place")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/gpu/drm/i915/i915_drv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/mremap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index 0a3ee4f9dc0a..ca32fa0d6a57 100644
---- a/drivers/gpu/drm/i915/i915_drv.h
-+++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -1624,7 +1624,7 @@ tgl_revids_get(struct drm_i915_private *dev_priv)
- 	unsigned int first__ = (first);					\
- 	unsigned int count__ = (count);					\
- 	((gt)->info.engine_mask &						\
--	 GENMASK(first__ + count__ - 1, first__)) >> first__;		\
-+	 GENMASK_ULL(first__ + count__ - 1, first__)) >> first__;		\
- })
- #define VDBOX_MASK(gt) \
- 	ENGINE_INSTANCES_MASK(gt, VCS0, I915_MAX_VCS)
+diff --git a/mm/mremap.c b/mm/mremap.c
+index c5590afe7165..1cb464a07184 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -336,8 +336,9 @@ enum pgt_entry {
+  * valid. Else returns a smaller extent bounded by the end of the source and
+  * destination pgt_entry.
+  */
+-static unsigned long get_extent(enum pgt_entry entry, unsigned long old_addr,
+-			unsigned long old_end, unsigned long new_addr)
++static __always_inline unsigned long get_extent(enum pgt_entry entry,
++			unsigned long old_addr, unsigned long old_end,
++			unsigned long new_addr)
+ {
+ 	unsigned long next, extent, mask, size;
+ 
 -- 
 2.29.2
 
