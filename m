@@ -2,302 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFD32E79ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 15:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 777712E79F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 15:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgL3OT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 09:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgL3OT1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 09:19:27 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52381C06179B
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 06:18:47 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kucIt-0005xZ-9o; Wed, 30 Dec 2020 15:18:19 +0100
-Subject: Re: [PATCH AUTOSEL 5.10 01/31] ARM: 9014/2: Replace string mem*
- functions for KASan
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux <rmk+kernel@armlinux.org.uk>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20201230130314.3636961-1-sashal@kernel.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <25b25571-41d6-9482-4c65-09fe88b200d5@pengutronix.de>
-Date:   Wed, 30 Dec 2020 15:18:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726596AbgL3OUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 09:20:08 -0500
+Received: from mga05.intel.com ([192.55.52.43]:64455 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725814AbgL3OUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 09:20:07 -0500
+IronPort-SDR: A2bRSNflKh5UXxgCiLXDrERS41dEjd75zbjOc9hdkpTieimqORLjWwmCe8WncHM6jSSKuE1Rdr
+ ne241raGa3ZQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9849"; a="261359892"
+X-IronPort-AV: E=Sophos;i="5.78,461,1599548400"; 
+   d="scan'208";a="261359892"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 06:19:26 -0800
+IronPort-SDR: tmOl3Z62Uo84jH8hAJiYOeYTECaUdq/2xEvydyjaDffdtZnffmZMTE+4w4FYMqdEf41sOtYtCh
+ fHlYantPHPCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,461,1599548400"; 
+   d="scan'208";a="395850007"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Dec 2020 06:19:23 -0800
+Date:   Wed, 30 Dec 2020 22:19:23 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com
+Subject: Re: [PATCH 1/2] mm: page_counter: relayout structure to reduce false
+ sharing
+Message-ID: <20201230141923.GA43248@shbuild999.sh.intel.com>
+References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
+ <20201229165642.GA371241@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20201230130314.3636961-1-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229165642.GA371241@carbon.dhcp.thefacebook.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sasha,
+On Tue, Dec 29, 2020 at 08:56:42AM -0800, Roman Gushchin wrote:
+> On Tue, Dec 29, 2020 at 10:35:13PM +0800, Feng Tang wrote:
+> > When checking a memory cgroup related performance regression [1],
+> > from the perf c2c profiling data, we found high false sharing for
+> > accessing 'usage' and 'parent'.
+> > 
+> > On 64 bit system, the 'usage' and 'parent' are close to each other,
+> > and easy to be in one cacheline (for cacheline size == 64+ B). 'usage'
+> > is usally written, while 'parent' is usually read as the cgroup's
+> > hierarchical counting nature.
+> > 
+> > So move the 'parent' to the end of the structure to make sure they
+> > are in different cache lines.
+> > 
+> > Following are some performance data with the patch, against
+> > v5.11-rc1, on several generations of Xeon platforms. Most of the
+> > results are improvements, with only one malloc case on one platform
+> > shows a -4.0% regression. Each category below has several subcases
+> > run on different platform, and only the worst and best scores are
+> > listed:
+> > 
+> > fio:				 +1.8% ~  +8.3%
+> > will-it-scale/malloc1:		 -4.0% ~  +8.9%
+> > will-it-scale/page_fault1:	 no change
+> > will-it-scale/page_fault2:	 +2.4% ~  +20.2%
+> > 
+> > [1].https://lore.kernel.org/lkml/20201102091543.GM31092@shao2-debian/
+> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> > Cc: Roman Gushchin <guro@fb.com>
+> > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > ---
+> >  include/linux/page_counter.h | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
+> > index 85bd413..6795913 100644
+> > --- a/include/linux/page_counter.h
+> > +++ b/include/linux/page_counter.h
+> > @@ -12,7 +12,6 @@ struct page_counter {
+> >  	unsigned long low;
+> >  	unsigned long high;
+> >  	unsigned long max;
+> > -	struct page_counter *parent;
+> >  
+> >  	/* effective memory.min and memory.min usage tracking */
+> >  	unsigned long emin;
+> > @@ -27,6 +26,14 @@ struct page_counter {
+> >  	/* legacy */
+> >  	unsigned long watermark;
+> >  	unsigned long failcnt;
+> > +
+> > +	/*
+> > +	 * 'parent' is placed here to be far from 'usage' to reduce
+> > +	 * cache false sharing, as 'usage' is written mostly while
+> > +	 * parent is frequently read for cgroup's hierarchical
+> > +	 * counting nature.
+> > +	 */
+> > +	struct page_counter *parent;
+> >  };
+> 
+> LGTM!
+> 
+> Reviewed-by: Roman Gushchin <guro@fb.com>
 
-On 30.12.20 14:02, Sasha Levin wrote:
-> From: Linus Walleij <linus.walleij@linaro.org>
-> 
-> [ Upstream commit d6d51a96c7d63b7450860a3037f2d62388286a52 ]
-> 
-> Functions like memset()/memmove()/memcpy() do a lot of memory
-> accesses.
-> 
-> If a bad pointer is passed to one of these functions it is important
-> to catch this. Compiler instrumentation cannot do this since these
-> functions are written in assembly.
-> 
-> KASan replaces these memory functions with instrumented variants.
+Thanks for the review!
 
-Unless someone actually wants this, I suggest dropping it.
+> I wonder if we have the same problem with min/low/high/max?
+> Maybe try to group all mostly-read-only fields (min, low, high,
+> max and parent) and separate them with some padding?
 
-It's a prerequisite patch for KASan support on ARM32, which is new in
-v5.11-rc1. Backporting it on its own doesn't add any value IMO.
+Yep, we thought about it too. From current perf c2c profiling
+data, I haven't noticed obvious hot spots of false sharing for
+min/low/high/max (which are read mostly).
 
-Cheers
-Ahmad
+For padding, we had some proposal before, current page_counter
+for 64 bits platform is 112 bytes, padding to 2 cacheline
+will only cost 16 bytes more. If this is fine, I can send another
+patch or folder it to this one.
 
-> 
-> The original functions are declared as weak symbols so that
-> the strong definitions in mm/kasan/kasan.c can replace them.
-> 
-> The original functions have aliases with a '__' prefix in their
-> name, so we can call the non-instrumented variant if needed.
-> 
-> We must use __memcpy()/__memset() in place of memcpy()/memset()
-> when we copy .data to RAM and when we clear .bss, because
-> kasan_early_init cannot be called before the initialization of
-> .data and .bss.
-> 
-> For the kernel compression and EFI libstub's custom string
-> libraries we need a special quirk: even if these are built
-> without KASan enabled, they rely on the global headers for their
-> custom string libraries, which means that e.g. memcpy()
-> will be defined to __memcpy() and we get link failures.
-> Since these implementations are written i C rather than
-> assembly we use e.g. __alias(memcpy) to redirected any
-> users back to the local implementation.
-> 
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: kasan-dev@googlegroups.com
-> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-> Tested-by: Ard Biesheuvel <ardb@kernel.org> # QEMU/KVM/mach-virt/LPAE/8G
-> Tested-by: Florian Fainelli <f.fainelli@gmail.com> # Brahma SoCs
-> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # i.MX6Q
-> Reported-by: Russell King - ARM Linux <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> Signed-off-by: Abbott Liu <liuwenliang@huawei.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  arch/arm/boot/compressed/string.c | 19 +++++++++++++++++++
->  arch/arm/include/asm/string.h     | 26 ++++++++++++++++++++++++++
->  arch/arm/kernel/head-common.S     |  4 ++--
->  arch/arm/lib/memcpy.S             |  3 +++
->  arch/arm/lib/memmove.S            |  5 ++++-
->  arch/arm/lib/memset.S             |  3 +++
->  6 files changed, 57 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm/boot/compressed/string.c b/arch/arm/boot/compressed/string.c
-> index ade5079bebbf9..8c0fa276d9946 100644
-> --- a/arch/arm/boot/compressed/string.c
-> +++ b/arch/arm/boot/compressed/string.c
-> @@ -7,6 +7,25 @@
->  
->  #include <linux/string.h>
->  
-> +/*
-> + * The decompressor is built without KASan but uses the same redirects as the
-> + * rest of the kernel when CONFIG_KASAN is enabled, defining e.g. memcpy()
-> + * to __memcpy() but since we are not linking with the main kernel string
-> + * library in the decompressor, that will lead to link failures.
-> + *
-> + * Undefine KASan's versions, define the wrapped functions and alias them to
-> + * the right names so that when e.g. __memcpy() appear in the code, it will
-> + * still be linked to this local version of memcpy().
-> + */
-> +#ifdef CONFIG_KASAN
-> +#undef memcpy
-> +#undef memmove
-> +#undef memset
-> +void *__memcpy(void *__dest, __const void *__src, size_t __n) __alias(memcpy);
-> +void *__memmove(void *__dest, __const void *__src, size_t count) __alias(memmove);
-> +void *__memset(void *s, int c, size_t count) __alias(memset);
-> +#endif
-> +
->  void *memcpy(void *__dest, __const void *__src, size_t __n)
->  {
->  	int i = 0;
-> diff --git a/arch/arm/include/asm/string.h b/arch/arm/include/asm/string.h
-> index 111a1d8a41ddf..6c607c68f3ad7 100644
-> --- a/arch/arm/include/asm/string.h
-> +++ b/arch/arm/include/asm/string.h
-> @@ -5,6 +5,9 @@
->  /*
->   * We don't do inline string functions, since the
->   * optimised inline asm versions are not small.
-> + *
-> + * The __underscore versions of some functions are for KASan to be able
-> + * to replace them with instrumented versions.
->   */
->  
->  #define __HAVE_ARCH_STRRCHR
-> @@ -15,15 +18,18 @@ extern char * strchr(const char * s, int c);
->  
->  #define __HAVE_ARCH_MEMCPY
->  extern void * memcpy(void *, const void *, __kernel_size_t);
-> +extern void *__memcpy(void *dest, const void *src, __kernel_size_t n);
->  
->  #define __HAVE_ARCH_MEMMOVE
->  extern void * memmove(void *, const void *, __kernel_size_t);
-> +extern void *__memmove(void *dest, const void *src, __kernel_size_t n);
->  
->  #define __HAVE_ARCH_MEMCHR
->  extern void * memchr(const void *, int, __kernel_size_t);
->  
->  #define __HAVE_ARCH_MEMSET
->  extern void * memset(void *, int, __kernel_size_t);
-> +extern void *__memset(void *s, int c, __kernel_size_t n);
->  
->  #define __HAVE_ARCH_MEMSET32
->  extern void *__memset32(uint32_t *, uint32_t v, __kernel_size_t);
-> @@ -39,4 +45,24 @@ static inline void *memset64(uint64_t *p, uint64_t v, __kernel_size_t n)
->  	return __memset64(p, v, n * 8, v >> 32);
->  }
->  
-> +/*
-> + * For files that are not instrumented (e.g. mm/slub.c) we
-> + * must use non-instrumented versions of the mem*
-> + * functions named __memcpy() etc. All such kernel code has
-> + * been tagged with KASAN_SANITIZE_file.o = n, which means
-> + * that the address sanitization argument isn't passed to the
-> + * compiler, and __SANITIZE_ADDRESS__ is not set. As a result
-> + * these defines kick in.
-> + */
-> +#if defined(CONFIG_KASAN) && !defined(__SANITIZE_ADDRESS__)
-> +#define memcpy(dst, src, len) __memcpy(dst, src, len)
-> +#define memmove(dst, src, len) __memmove(dst, src, len)
-> +#define memset(s, c, n) __memset(s, c, n)
-> +
-> +#ifndef __NO_FORTIFY
-> +#define __NO_FORTIFY /* FORTIFY_SOURCE uses __builtin_memcpy, etc. */
-> +#endif
-> +
-> +#endif
-> +
->  #endif
-> diff --git a/arch/arm/kernel/head-common.S b/arch/arm/kernel/head-common.S
-> index 4a3982812a401..6840c7c60a858 100644
-> --- a/arch/arm/kernel/head-common.S
-> +++ b/arch/arm/kernel/head-common.S
-> @@ -95,7 +95,7 @@ __mmap_switched:
->   THUMB(	ldmia	r4!, {r0, r1, r2, r3} )
->   THUMB(	mov	sp, r3 )
->  	sub	r2, r2, r1
-> -	bl	memcpy				@ copy .data to RAM
-> +	bl	__memcpy			@ copy .data to RAM
->  #endif
->  
->     ARM(	ldmia	r4!, {r0, r1, sp} )
-> @@ -103,7 +103,7 @@ __mmap_switched:
->   THUMB(	mov	sp, r3 )
->  	sub	r2, r1, r0
->  	mov	r1, #0
-> -	bl	memset				@ clear .bss
-> +	bl	__memset			@ clear .bss
->  
->  	ldmia	r4, {r0, r1, r2, r3}
->  	str	r9, [r0]			@ Save processor ID
-> diff --git a/arch/arm/lib/memcpy.S b/arch/arm/lib/memcpy.S
-> index 09a333153dc66..ad4625d16e117 100644
-> --- a/arch/arm/lib/memcpy.S
-> +++ b/arch/arm/lib/memcpy.S
-> @@ -58,6 +58,8 @@
->  
->  /* Prototype: void *memcpy(void *dest, const void *src, size_t n); */
->  
-> +.weak memcpy
-> +ENTRY(__memcpy)
->  ENTRY(mmiocpy)
->  ENTRY(memcpy)
->  
-> @@ -65,3 +67,4 @@ ENTRY(memcpy)
->  
->  ENDPROC(memcpy)
->  ENDPROC(mmiocpy)
-> +ENDPROC(__memcpy)
-> diff --git a/arch/arm/lib/memmove.S b/arch/arm/lib/memmove.S
-> index b50e5770fb44d..fd123ea5a5a4a 100644
-> --- a/arch/arm/lib/memmove.S
-> +++ b/arch/arm/lib/memmove.S
-> @@ -24,12 +24,14 @@
->   * occurring in the opposite direction.
->   */
->  
-> +.weak memmove
-> +ENTRY(__memmove)
->  ENTRY(memmove)
->  	UNWIND(	.fnstart			)
->  
->  		subs	ip, r0, r1
->  		cmphi	r2, ip
-> -		bls	memcpy
-> +		bls	__memcpy
->  
->  		stmfd	sp!, {r0, r4, lr}
->  	UNWIND(	.fnend				)
-> @@ -222,3 +224,4 @@ ENTRY(memmove)
->  18:		backward_copy_shift	push=24	pull=8
->  
->  ENDPROC(memmove)
-> +ENDPROC(__memmove)
-> diff --git a/arch/arm/lib/memset.S b/arch/arm/lib/memset.S
-> index 6ca4535c47fb6..0e7ff0423f50b 100644
-> --- a/arch/arm/lib/memset.S
-> +++ b/arch/arm/lib/memset.S
-> @@ -13,6 +13,8 @@
->  	.text
->  	.align	5
->  
-> +.weak memset
-> +ENTRY(__memset)
->  ENTRY(mmioset)
->  ENTRY(memset)
->  UNWIND( .fnstart         )
-> @@ -132,6 +134,7 @@ UNWIND( .fnstart            )
->  UNWIND( .fnend   )
->  ENDPROC(memset)
->  ENDPROC(mmioset)
-> +ENDPROC(__memset)
->  
->  ENTRY(__memset32)
->  UNWIND( .fnstart         )
-> 
+Thanks,
+Feng
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> Thank you!
