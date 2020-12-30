@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9443C2E7BA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CCE2E7BA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgL3Rj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 12:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgL3Rj2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 12:39:28 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559E6C061573;
-        Wed, 30 Dec 2020 09:38:48 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id cm17so16069641edb.4;
-        Wed, 30 Dec 2020 09:38:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mbKx0VrbcGX06OaD1gA2/3Ij2LLzirD/wkDYpvq9AE0=;
-        b=O6JiKAKKBpKsEACJ+nJbzrhpC/wWcEaXgsY2ZqS1Fpw4sVi2okW3pfkTL4yRRdTKgB
-         ipFEdnCWfOxt63c1fr9ETg7pjFsHBotYmy8RSOrha4soUwWAa22/kqBPykqjqYscQ1Sl
-         vRR3SRewJCj/G5ijicAYloRGn6aKfWer81jklyTiT1dg9KhGDGzPecWCsvVOlrLAy6qA
-         Fo828isvddmWxu3xqpD2aIE3MMcWQdUFcfyBQVkSR8jf8VeAtE3YmviEMcaTWj43r0oq
-         b0adpisfaRGbRq0P4Uk+19iBqb8SYo1hfR7R3ExswNwVu9x+LQeuL44OB3W5x51g/zq/
-         WT4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mbKx0VrbcGX06OaD1gA2/3Ij2LLzirD/wkDYpvq9AE0=;
-        b=pmqxuvAE84Cs6SWrCH4DNduWFmVYT4g3LW5aW5RZ2aqjQSb7EJht4eVDlI7TA90FlP
-         z5KqP5gK5tiYjT3P0YjTpuoXsFfwcPRqNi/APUaQP8cKPmpw5mZVb8yy2Ay++QR0qT9L
-         VGIWSDKeBgC2XekQC0yq3astDG19Zd2PE26o0ci0LwkKvUdPKXl2S4dAEqEzw9GMAvp4
-         nBl84Dtl5T0qwjC11ilPJ9IiEIDDpa+VhYbpPDnRXoaKUpN/Vrm4UvnjtIm1L9Zsk5Ke
-         QjHO7zI1tZX0at2yUGn3VXSmdcvJBjTLJKOm6UINyiOvldv5g5ZVlcjELGYI4b0iq46g
-         7GQg==
-X-Gm-Message-State: AOAM531+a3d0Lk+PBZL4vXP4CNrNhKGOMY15azFReqU1KvvqFlcaMYS+
-        9PJBV8qQkk2TLJta1iN4PvyU/h3YGAk=
-X-Google-Smtp-Source: ABdhPJxiytOfWDsB0ffyp6zUyB9WJrtGtCWQ82wMxbLo1LzsD0UuqBUn00+fczFHX+RoXB2zlFB6EQ==
-X-Received: by 2002:a50:9dc9:: with SMTP id l9mr51220288edk.377.1609349927121;
-        Wed, 30 Dec 2020 09:38:47 -0800 (PST)
-Received: from kwango.local (ip-94-112-132-16.net.upcbroadband.cz. [94.112.132.16])
-        by smtp.gmail.com with ESMTPSA id f20sm27361523edx.92.2020.12.30.09.38.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Dec 2020 09:38:46 -0800 (PST)
-From:   Ilya Dryomov <idryomov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph fixes for 5.11-rc2
-Date:   Wed, 30 Dec 2020 18:38:46 +0100
-Message-Id: <20201230173846.7369-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.19.2
+        id S1726530AbgL3Rnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 12:43:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726214AbgL3Rnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 12:43:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84A762220B;
+        Wed, 30 Dec 2020 17:43:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609350189;
+        bh=EHQNtl/1fFHFC+/tvysBm6vaGm66LzeIefZs3EPpRF8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RdG6zcLkU/qoadm3ym/yTLc2A8i7+hsKp0UsoI/MZgDWdPyK4ggXYQSjxM5Dwi0Zg
+         A/wGyfwm4zTYsORRx6l+ZtgVvqSdXeCCZ2qwEflxDCjyXqKo2+XUrL5gIHx6GOd0G2
+         fJP7zg1XJpsibZCWcBX1H5AvEtolaGIFY/8QyBIbwljKe2mvTEjSp6u2gqRNZtVYxm
+         zhL0VV/xNA3y5HE+Woc98vSU9Qf3I3Vxy6TGf/o+kD7IT3s9b8xro4I7KkUoDHM6mY
+         FonjEJOSKhWssthRoLv0pSqtB08OVM7LwUzYqHYPBCynPZrDechAqF7wv1XNOCIBYs
+         GXUWoBXQJakgg==
+Received: by pali.im (Postfix)
+        id 6372F9F8; Wed, 30 Dec 2020 18:43:07 +0100 (CET)
+Date:   Wed, 30 Dec 2020 18:43:07 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
+ RTL9601C chips
+Message-ID: <20201230174307.lvehswvj5q6c6vk3@pali>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20201230154755.14746-2-pali@kernel.org>
+ <20201230161036.GR1551@shell.armlinux.org.uk>
+ <20201230165634.c4ty3mw6djezuyq6@pali>
+ <20201230170546.GU1551@shell.armlinux.org.uk>
+ <X+y1K21tp01GpvMy@lunn.ch>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <X+y1K21tp01GpvMy@lunn.ch>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wednesday 30 December 2020 18:13:15 Andrew Lunn wrote:
+> On Wed, Dec 30, 2020 at 05:05:46PM +0000, Russell King - ARM Linux admin wrote:
+> > On Wed, Dec 30, 2020 at 05:56:34PM +0100, Pali Rohár wrote:
+> > > This change is really required for those Realtek chips. I thought that
+> > > it is obvious that from *both* addresses 0x50 and 0x51 can be read only
+> > > one byte at the same time. Reading 2 bytes (for be16 value) cannot be
+> > > really done by one i2 transfer, it must be done in two.
+> > 
+> > Then these modules are even more broken than first throught, and
+> > quite simply it is pointless supporting the diagnostics on them
+> > because we can never read the values in an atomic way.
+> > 
+> > It's also a violation of the SFF-8472 that _requires_ multi-byte reads
+> > to read these 16 byte values atomically. Reading them with individual
+> > byte reads results in a non-atomic read, and the 16-bit value can not
+> > be trusted to be correct.
+> 
+> Hi Pali
+> 
+> I have to agree with Russell here. I would rather have no diagnostics
+> than untrustable diagnostics.
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+Ok!
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+So should we completely skip hwmon_device_register_with_info() call
+if (i2c_block_size < 2) ?
 
-are available in the Git repository at:
+> The only way this is going to be accepted is if the manufacture says
+> that reading the first byte of a word snapshots the second byte as
+> well in an atomic way and returns that snapshot on the second
+> read. But i highly doubt that happens, given how bad these SFPs are.
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-5.11-rc2
+I do not think that manufacture says something. I think that they even
+do not know that their Realtek chips are completely broken.
 
-for you to fetch changes up to 664f1e259a982bf213f0cd8eea7616c89546585c:
-
-  libceph: add __maybe_unused to DEFINE_MSGR2_FEATURE (2020-12-28 20:34:33 +0100)
-
-----------------------------------------------------------------
-A fix for an edge case in MClientRequest encoding and a couple of
-trivial fixups for the new msgr2 support.
-
-----------------------------------------------------------------
-Ilya Dryomov (4):
-      ceph: reencode gid_list when reconnecting
-      libceph: fix auth_signature buffer allocation in secure mode
-      libceph: align session_key and con_secret to 16 bytes
-      libceph: add __maybe_unused to DEFINE_MSGR2_FEATURE
-
- fs/ceph/mds_client.c      | 53 ++++++++++++++++++++---------------------------
- include/linux/ceph/msgr.h |  4 ++--
- net/ceph/messenger_v2.c   | 15 +++++++++++---
- 3 files changed, 36 insertions(+), 36 deletions(-)
+I can imagine that vendor just says: it is working in our branded boxes
+with SFP cages and if it does not work in your kernel then problem is
+with your custom kernel and we do not care about 3rd parties.
