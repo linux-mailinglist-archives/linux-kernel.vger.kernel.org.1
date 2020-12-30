@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015AF2E7793
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5302E7796
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgL3Jw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 04:52:57 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:59571 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgL3Jw4 (ORCPT
+        id S1726388AbgL3Jze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 04:55:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgL3Jze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 04:52:56 -0500
-Received: from mail-pg1-f199.google.com ([209.85.215.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1kuY9N-00083r-NB
-        for linux-kernel@vger.kernel.org; Wed, 30 Dec 2020 09:52:13 +0000
-Received: by mail-pg1-f199.google.com with SMTP id 139so11997739pgd.11
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 01:52:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=i+QpbOc8ony+XYCIFM3o157TRlJnFXAk3ZOK7FKW9BI=;
-        b=RK28FGIzNhOX2BONeD14pqu2FvodF1ehvugKlymIjgJEkTcgQJEvCA6UVzlxIqA2gJ
-         wD7ygkXiozCCrL3ajSyK/iFI0Au7qUNuDp69ZslpwsdLFpdwpH9sKKEcqDL4Vsu0Rbf3
-         UxbJPOAJbyH70cx57Qw4GqnJCC5c8/66v7hWWlpM2hu8P0fH7Ji2hsgnkPgn05u9QJco
-         AsGIpuz9LmWl6cFWCMi9rQ4xmsl5s5XGRXGHmjNYJqMEzje0qo0yktOtQ05bPPDE5OL4
-         pf36rxDs5sfRGD/djUpBIcN8yR/CBISIm0rhd2e7xeGdwSWxg/nFnscGABHmnHge0AmU
-         z9wQ==
-X-Gm-Message-State: AOAM531X16faZUBfuloWYtP0lZsy52CY3pnGY/H5he3dWmAHmpWNi8N7
-        G7TSFU8oUTQWFfiFfX2tIn38tJcyXjmxWV7gnFPoPmnbpoIr+i2/jfhRbSMzpH0rKwiWBbWRv/s
-        WPqh2eTm1T5vkYhAbF41uyH9hC+UV7pZ7+pcqGeSo
-X-Received: by 2002:aa7:9a86:0:b029:1a6:d998:922a with SMTP id w6-20020aa79a860000b02901a6d998922amr48132013pfi.80.1609321932207;
-        Wed, 30 Dec 2020 01:52:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzr5fqZt0GWUwoVWcweJRpwujCifX5YbQe+UHhaQGaqOLkfkyB0G/hbQ9bL9Z95VEAeqyA3JA==
-X-Received: by 2002:aa7:9a86:0:b029:1a6:d998:922a with SMTP id w6-20020aa79a860000b02901a6d998922amr48132008pfi.80.1609321931953;
-        Wed, 30 Dec 2020 01:52:11 -0800 (PST)
-Received: from Leggiero.taipei.internal (61-220-137-38.HINET-IP.hinet.net. [61.220.137.38])
-        by smtp.gmail.com with ESMTPSA id m13sm41214530pff.21.2020.12.30.01.52.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Dec 2020 01:52:11 -0800 (PST)
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-To:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        steffen.klassert@secunet.com, fw@strlen.de
-Subject: [PATCH] selftests: xfrm: fix test return value override issue in xfrm_policy.sh
-Date:   Wed, 30 Dec 2020 17:52:04 +0800
-Message-Id: <20201230095204.21467-1-po-hsu.lin@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 30 Dec 2020 04:55:34 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED2BC061799
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 01:54:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=tC5AzUFj3vhhQUtd8mKtAuskWB2M0osIMt6IGW6xE/k=; b=vIDBJsd4+lkzkDp3JM7aiya5O
+        6DlAocHYxO0gkbupDVwIhkn1j8AG67zt/BKtSkZjcEZUMBDJkO30yM7BGv3HyWmU59uFeXufOWeUx
+        U4m2I+dFL+DY+wRirB8jDs56Zd66xwt3KbxwnWe6lde7zpvxvLtTQkIWYlc0CPqFza4BFLDF9Zvlt
+        Dq89S0R6IdpAY93NxuxB0psaB8uRodLxgTVgOpEnR6mrIcEL6FfXmcYlx5teHiFlcWxWDLuPsQw6y
+        mFity4HIgG3nBqzDxv7bl0k/3rt69tJUpR/+LcOK8xE6yVPwl0Ax4hDBVJbVBYOANekkVC4RL/CuE
+        tN6Ck42TQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44900)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kuYBY-0005bQ-Fp; Wed, 30 Dec 2020 09:54:28 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kuYBU-000263-VP; Wed, 30 Dec 2020 09:54:24 +0000
+Date:   Wed, 30 Dec 2020 09:54:24 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] ARM: LPAE: use phys_addr_t instead of unsigned
+ long in outercache hooks
+Message-ID: <20201230095424.GO1551@shell.armlinux.org.uk>
+References: <20201230082805.1428-1-thunder.leizhen@huawei.com>
+ <20201230082805.1428-2-thunder.leizhen@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230082805.1428-2-thunder.leizhen@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running this xfrm_policy.sh test script, even with some cases
-marked as FAIL, the overall test result will still be PASS:
+On Wed, Dec 30, 2020 at 04:28:05PM +0800, Zhen Lei wrote:
+> The outercache of some Hisilicon SOCs support physical addresses wider
+> than 32-bits. The unsigned long datatype is not sufficient for mapping
+> physical addresses >= 4GB. The commit ad6b9c9d78b9 ("ARM: 6671/1: LPAE:
+> use phys_addr_t instead of unsigned long in outercache functions") has
+> already modified the outercache functions. But the parameters of the
+> outercache hooks are not changed. This patch use phys_addr_t instead of
+> unsigned long in outercache hooks: inv_range, clean_range, flush_range.
+> 
+> To ensure the outercache that does not support LPAE works properly, do
+> cast phys_addr_t to unsigned long by adding a group of temporary
+> variables. For example:
+> -static void l2c220_inv_range(unsigned long start, unsigned long end)
+> +static void l2c220_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
+>  {
+> +	unsigned long start = pa_start;
+> +	unsigned long end = pa_end;
+> 
+> Note that the outercache functions have been doing this cast before this
+> patch. So now, the cast is just moved into the outercache hook functions.
+> 
+> No functional change.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-$ sudo ./xfrm_policy.sh
-PASS: policy before exception matches
-FAIL: expected ping to .254 to fail (exceptions)
-PASS: direct policy matches (exceptions)
-PASS: policy matches (exceptions)
-FAIL: expected ping to .254 to fail (exceptions and block policies)
-PASS: direct policy matches (exceptions and block policies)
-PASS: policy matches (exceptions and block policies)
-FAIL: expected ping to .254 to fail (exceptions and block policies after hresh changes)
-PASS: direct policy matches (exceptions and block policies after hresh changes)
-PASS: policy matches (exceptions and block policies after hresh changes)
-FAIL: expected ping to .254 to fail (exceptions and block policies after hthresh change in ns3)
-PASS: direct policy matches (exceptions and block policies after hthresh change in ns3)
-PASS: policy matches (exceptions and block policies after hthresh change in ns3)
-FAIL: expected ping to .254 to fail (exceptions and block policies after htresh change to normal)
-PASS: direct policy matches (exceptions and block policies after htresh change to normal)
-PASS: policy matches (exceptions and block policies after htresh change to normal)
-PASS: policies with repeated htresh change
-$ echo $?
-0
+This is fine, but there really needs to be a patch that makes use of
+this change before we accept it into mainline kernels.
 
-This is because the $lret in check_xfrm() is not a local variable.
-Therefore when a test failed in check_exceptions(), the non-zero $lret
-will later get reset to 0 when the next test calls check_xfrm().
-
-With this fix, the final return value will be 1. Make it easier for
-testers to spot this failure.
-
-Fixes: 39aa6928d462d0 ("xfrm: policy: fix netlink/pf_key policy lookups")
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- tools/testing/selftests/net/xfrm_policy.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/net/xfrm_policy.sh b/tools/testing/selftests/net/xfrm_policy.sh
-index 7a1bf94..5922941 100755
---- a/tools/testing/selftests/net/xfrm_policy.sh
-+++ b/tools/testing/selftests/net/xfrm_policy.sh
-@@ -202,7 +202,7 @@ check_xfrm() {
- 	# 1: iptables -m policy rule count != 0
- 	rval=$1
- 	ip=$2
--	lret=0
-+	local lret=0
- 
- 	ip netns exec ns1 ping -q -c 1 10.0.2.$ip > /dev/null
- 
 -- 
-2.7.4
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
