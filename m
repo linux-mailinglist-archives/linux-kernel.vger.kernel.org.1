@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5B92E7B7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335F92E7B83
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgL3ROB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 12:14:01 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:44792 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726168AbgL3ROB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 12:14:01 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kuf2B-00F3rd-FZ; Wed, 30 Dec 2020 18:13:15 +0100
-Date:   Wed, 30 Dec 2020 18:13:15 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <X+y1K21tp01GpvMy@lunn.ch>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20201230154755.14746-2-pali@kernel.org>
- <20201230161036.GR1551@shell.armlinux.org.uk>
- <20201230165634.c4ty3mw6djezuyq6@pali>
- <20201230170546.GU1551@shell.armlinux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201230170546.GU1551@shell.armlinux.org.uk>
+        id S1726391AbgL3RSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 12:18:18 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:27907 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726168AbgL3RSR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 12:18:17 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 30 Dec 2020 09:17:37 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Dec 2020 09:17:35 -0800
+X-QCInternal: smtphost
+Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 30 Dec 2020 22:47:11 +0530
+Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
+        id 283B821298; Wed, 30 Dec 2020 22:47:10 +0530 (IST)
+From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        rjliao@codeaurora.org, hbandi@codeaurora.org,
+        abhishekpandit@chromium.org,
+        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Subject: [PATCH v1] Bluetooth: hci_qca: Wait for SSR completion during suspend
+Date:   Wed, 30 Dec 2020 22:47:08 +0530
+Message-Id: <1609348628-3932-1-git-send-email-gubbaven@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 05:05:46PM +0000, Russell King - ARM Linux admin wrote:
-> On Wed, Dec 30, 2020 at 05:56:34PM +0100, Pali Rohár wrote:
-> > This change is really required for those Realtek chips. I thought that
-> > it is obvious that from *both* addresses 0x50 and 0x51 can be read only
-> > one byte at the same time. Reading 2 bytes (for be16 value) cannot be
-> > really done by one i2 transfer, it must be done in two.
-> 
-> Then these modules are even more broken than first throught, and
-> quite simply it is pointless supporting the diagnostics on them
-> because we can never read the values in an atomic way.
-> 
-> It's also a violation of the SFF-8472 that _requires_ multi-byte reads
-> to read these 16 byte values atomically. Reading them with individual
-> byte reads results in a non-atomic read, and the 16-bit value can not
-> be trusted to be correct.
+During SSR after memory dump collection,BT controller will be powered off,
+powered on and then FW will be downloaded.During suspend if BT controller
+is powered off due to SSR then we should wait until SSR is completed and
+then suspend.
 
-Hi Pali
+Fixes: 2be43abac5a8 ("Bluetooth: hci_qca: Wait for timeout during suspend")
+Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+---
+ drivers/bluetooth/hci_qca.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-I have to agree with Russell here. I would rather have no diagnostics
-than untrustable diagnostics.
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 4a96368..6ad4079 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -50,7 +50,8 @@
+ #define IBS_HOST_TX_IDLE_TIMEOUT_MS	2000
+ #define CMD_TRANS_TIMEOUT_MS		100
+ #define MEMDUMP_TIMEOUT_MS		8000
+-#define IBS_DISABLE_SSR_TIMEOUT_MS	(MEMDUMP_TIMEOUT_MS + 1000)
++#define IBS_DISABLE_SSR_TIMEOUT_MS \
++	(MEMDUMP_TIMEOUT_MS + FW_DOWNLOAD_TIMEOUT_MS)
+ #define FW_DOWNLOAD_TIMEOUT_MS		3000
+ 
+ /* susclk rate */
+@@ -2100,7 +2101,12 @@ static int __maybe_unused qca_suspend(struct device *dev)
+ 
+ 	set_bit(QCA_SUSPENDING, &qca->flags);
+ 
+-	if (test_bit(QCA_BT_OFF, &qca->flags))
++	/* During SSR after memory dump collection, controller will be
++	 * powered off and then powered on.If controller is powered off
++	 * during SSR then we should wait until SSR is completed.
++	 */
++	if (test_bit(QCA_BT_OFF, &qca->flags) &&
++	    !test_bit(QCA_SSR_TRIGGERED, &qca->flags))
+ 		return 0;
+ 
+ 	if (test_bit(QCA_IBS_DISABLED, &qca->flags)) {
+@@ -2110,7 +2116,7 @@ static int __maybe_unused qca_suspend(struct device *dev)
+ 
+ 		/* QCA_IBS_DISABLED flag is set to true, During FW download
+ 		 * and during memory dump collection. It is reset to false,
+-		 * After FW download complete and after memory dump collections.
++		 * After FW download complete.
+ 		 */
+ 		wait_on_bit_timeout(&qca->flags, QCA_IBS_DISABLED,
+ 			    TASK_UNINTERRUPTIBLE, msecs_to_jiffies(wait_timeout));
+@@ -2122,10 +2128,6 @@ static int __maybe_unused qca_suspend(struct device *dev)
+ 		}
+ 	}
+ 
+-	/* After memory dump collection, Controller is powered off.*/
+-	if (test_bit(QCA_BT_OFF, &qca->flags))
+-		return 0;
+-
+ 	cancel_work_sync(&qca->ws_awake_device);
+ 	cancel_work_sync(&qca->ws_awake_rx);
+ 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-The only way this is going to be accepted is if the manufacture says
-that reading the first byte of a word snapshots the second byte as
-well in an atomic way and returns that snapshot on the second
-read. But i highly doubt that happens, given how bad these SFPs are.
-
-      Andrew
