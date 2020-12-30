@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CDE2E7A89
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4A32E7A8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgL3Pnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 10:43:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
+        id S1726530AbgL3Pob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 10:44:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgL3Pnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 10:43:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDD1F20725;
-        Wed, 30 Dec 2020 15:43:07 +0000 (UTC)
+        id S1726477AbgL3Pob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 10:44:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4871021D1B;
+        Wed, 30 Dec 2020 15:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609342989;
-        bh=RgCdwo79oX9AX/HZWofDnlRT6UBxCbYnV4jmsyma3T0=;
+        s=k20201202; t=1609343030;
+        bh=Dr9mLOW7dfuWMVS7lwdbQQhz8bsyb9ZknSWmQdtAQ50=;
         h=From:To:Cc:Subject:Date:From;
-        b=bKxeAX1e8hMsEkf8JXE0A37wDH03wJp5JaovJSKjAWRe4aN+LrEsByQ6fKonOKlU8
-         cwi4dSh/+alGMmflfVNrmQEblGwoVx9/6tsfcShwshV3HkuSkMtm0z179bTrFdnNjD
-         xHgEtCvVvKkIlFiNkO1bkoBis1IFUQSN6Pt5oKn6QNcCPoAYtKy+zmKsXcxlEK86zY
-         3oHoqTKIKOe2uEUG3N9qzp6wdck2QJ7tsPTQutUvpkMQgcA8bKYbBEr5Xtv8WweUwZ
-         3vYtLnoUwRfFhJigeb55j9o2rg6AVZMoJyfHtPlarOthxdIhIPW0p6hi7+Hsy+y6wr
-         g7Nn71Bn7VOnA==
+        b=pBY3tylFQvxqVhAaPPVFQMbq7vsGkynLjJ2rQxOAB0mcU8ct4N5wvdsEVCAttFypy
+         AGsSpDqAV1abFnbgf/XgfjTmDMsiJocZolFIeb7Pro1rrDYC+kbsDYeM/DdrwAGnIK
+         2D6uD0J6nWDcWRKXoNsikkmhiHoq8/d8hGlsgerxei3aSMwH9oPNMVIiU3x4z/JcJa
+         71rrsftnWPirApCsts7sp889RZg8H3VkWoSn3q727UQIqDeOkrnhQcEmUavGxM6eT6
+         KATY5Cu2nnu03RLafpxYqiJPFbiiDe2sja1nLRpUSCK/k3hPHE3G1Mb8MLQBPqspjC
+         R0SMwOgQppTdg==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Nicolas Pitre <npitre@baylibre.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-i3c@lists.infradead.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] i3c/master/mipi-i3c-hci: re-fix __maybe_unused attribute
-Date:   Wed, 30 Dec 2020 16:42:50 +0100
-Message-Id: <20201230154304.598900-1-arnd@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] ASoC: mediatek: add MTK_PMIC_WRAP dependency
+Date:   Wed, 30 Dec 2020 16:43:34 +0100
+Message-Id: <20201230154345.639122-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,33 +46,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-clang warns because the added __maybe_unused attribute is in
-the wrong place:
+Randconfig builds often show harmless warnings like
 
-drivers/i3c/master/mipi-i3c-hci/core.c:780:21: error: attribute declaration must precede definition [-Werror,-Wignored-attributes]
-static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
-                    ^
-include/linux/compiler_attributes.h:267:56: note: expanded
+WARNING: unmet direct dependencies detected for SND_SOC_MT6359
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MTK_PMIC_WRAP [=n]
+  Selected by [y]:
+  - SND_SOC_MT8192_MT6359_RT1015_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8192 [=y]
 
-Fixes: 95393f3e07ab ("i3c/master/mipi-i3c-hci: quiet maybe-unused variable warning")
+Add a dependency to avoid that.
+
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/i3c/master/mipi-i3c-hci/core.c | 2 +-
+ sound/soc/mediatek/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i3c/master/mipi-i3c-hci/core.c b/drivers/i3c/master/mipi-i3c-hci/core.c
-index 500abd27fb22..1b73647cc3b1 100644
---- a/drivers/i3c/master/mipi-i3c-hci/core.c
-+++ b/drivers/i3c/master/mipi-i3c-hci/core.c
-@@ -777,7 +777,7 @@ static int i3c_hci_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
-+static const __maybe_unused struct of_device_id i3c_hci_of_match[] = {
- 	{ .compatible = "mipi-i3c-hci", },
- 	{},
- };
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 8d3dcfb6a580..effdb76369e4 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -172,7 +172,7 @@ config SND_SOC_MT8192
+ config SND_SOC_MT8192_MT6359_RT1015_RT5682
+ 	tristate "ASoC Audio driver for MT8192 with MT6359 RT1015 RT5682 codec"
+ 	depends on I2C
+-	depends on SND_SOC_MT8192
++	depends on SND_SOC_MT8192 && MTK_PMIC_WRAP
+ 	select SND_SOC_MT6359
+ 	select SND_SOC_RT1015
+ 	select SND_SOC_RT1015P
 -- 
 2.29.2
 
