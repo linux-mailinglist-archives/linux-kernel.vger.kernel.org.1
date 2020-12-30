@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D406E2E7A46
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EAA2E7A4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgL3PY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 10:24:26 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:44596 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgL3PYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 10:24:25 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kudK6-00F2yp-6X; Wed, 30 Dec 2020 16:23:38 +0100
-Date:   Wed, 30 Dec 2020 16:23:38 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     DENG Qingfang <dqfext@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>
-Subject: Re: Registering IRQ for MT7530 internal PHYs
-Message-ID: <X+ybeg4dvR5Vq8LY@lunn.ch>
-References: <20201230042208.8997-1-dqfext@gmail.com>
- <441a77e8c30927ce5bc24708e1ceed79@kernel.org>
+        id S1726529AbgL3P0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 10:26:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726391AbgL3P0n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 10:26:43 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49919C06179B;
+        Wed, 30 Dec 2020 07:26:03 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id q22so22342416eja.2;
+        Wed, 30 Dec 2020 07:26:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=6qSxpmMSH03FsmOJk6lrCHZxc7Tqo9FbYKTPYty80Wk=;
+        b=aRoZmdLbDUKt5dk4sF0j87yGfpnLlW9y8bxpxebQceppT2/G2cDsTcvN9jdx+3vHaj
+         Cd9d/F5R5L8TABJmBS15V6fk53yO+5YrenC3OtyjECiTfoqLX77+cCmSH2Q48GCpjgH5
+         /GWGocQ0T1GyiEqMg9imbB1i+6yVQ0LPUhQ2XWC9TeiGDJpcovsZIGBFT925gRzoz3Ye
+         JvfaVeT/sXsIMGar+ghTME/QqRhE+qtHi/JtC4lOMucD11tprnwGIE8Kwep+H9+EduP9
+         jI98YlkEF2lyWyj6wmViJw8EHtTm+9wyXy6Tc7eDzhwmAgD6peW2NW5dRvyAUBkNwew0
+         D4hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=6qSxpmMSH03FsmOJk6lrCHZxc7Tqo9FbYKTPYty80Wk=;
+        b=FUo/hzwAANuLwS7UJLdKA/JB/WtTDEIxUL/U78M6fFbuyb7VELoK5R8EjF6LfZ2pzC
+         YyXNs1XWBAiM8O9MbHwaSABRloAzB41kka4f7tWfAHxRnRKryt7wLnckxLj6iqrNjQEO
+         0HayuWPLujApeAEJKkdEMUfZpheiCLQhTidqE1S+IRKTf8teLHE2qUH1Hygymraa+im3
+         dH+eEmtyNBAiE4pe0+JJ5sb8IEm7xyyTnKvHX0BUhLQXRhoMOMGf0juE/0sN83DZpcjV
+         BbHPvKDHnBQ8GHACczqKjbi8CIeLaqNg3VKUUsPred2R9n1OXXfzPy11lU4bF8lfOqma
+         20mw==
+X-Gm-Message-State: AOAM530F1UpAwUDr3XlWa7NCUTWbMfGoTpEqKGkCgGbBaCe1sC/QK/w3
+        aq164wGPyBlc8K9UVhGbc+QJ/0Ux8/k=
+X-Google-Smtp-Source: ABdhPJzHWXzPSPXMQCHYDaYJWhv03p/5vBZH3dAvdjym7a1xc9YAHKK359F2qASsFpOOhgvIWqBIdw==
+X-Received: by 2002:a17:906:2695:: with SMTP id t21mr45700546ejc.287.1609341961692;
+        Wed, 30 Dec 2020 07:26:01 -0800 (PST)
+Received: from cl-fw-1.fritz.box (p200300d86714d50000b12fbf0e2de53d.dip0.t-ipconnect.de. [2003:d8:6714:d500:b1:2fbf:e2d:e53d])
+        by smtp.gmail.com with ESMTPSA id e11sm19196464ejz.94.2020.12.30.07.26.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 07:26:01 -0800 (PST)
+Message-ID: <d1b1e6b0e3af13f3756a34131ffb84df6a209ee0.camel@gmail.com>
+Subject: sound
+From:   Christian Labisch <clnetbox@gmail.com>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Date:   Wed, 30 Dec 2020 16:26:00 +0100
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <441a77e8c30927ce5bc24708e1ceed79@kernel.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 09:42:09AM +0000, Marc Zyngier wrote:
-> > +static irqreturn_t
-> > +mt7530_irq(int irq, void *data)
-> > +{
-> > +	struct mt7530_priv *priv = data;
-> > +	bool handled = false;
-> > +	int phy;
-> > +	u32 val;
-> > +
-> > +	val = mt7530_read(priv, MT7530_SYS_INT_STS);
-> > +	mt7530_write(priv, MT7530_SYS_INT_STS, val);
-> 
-> If that is an ack operation, it should be dealt with as such in
-> an irqchip callback instead of being open-coded here.
+Hello !
 
-Hi Qingfang
+I could need your help ... I have tested the new kernel 5.10.3 and sound doesn't work with this
+version.
+Seems the new Intel audio drivers are the main reason. What can be done ? Do you have any ideas ?
 
-Does the PHY itself have interrupt control and status registers?
+Intel Catpt driver support is new ... This deprecates the previous Haswell SoC audio driver code
+previously providing the audio capabilities.
+And I am having a Haswell CPU -> Audio device: Intel Corporation Xeon E3-1200 v3/4th Gen Core
+Processor HD Audio Controller (rev 06)
 
-My experience with the Marvell Switch and its embedded PHYs is that
-the PHYs are just the same as the discrete PHYs. There are bits to
-enable different interrupts, and there are status bits indicating what
-event caused the interrupt. Clearing the interrupt in the PHY clears
-the interrupt in the switch interrupt controller. So in the mv88e6xxx
-interrupt code, you see i do a read of the switch interrupt controller
-status register, but i don't write to it as you have done.
+Regards,
+Christian
 
-       Andrew
