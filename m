@@ -2,206 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3E42E7675
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7142C2E7666
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 07:11:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgL3GXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 01:23:10 -0500
-Received: from mail-m972.mail.163.com ([123.126.97.2]:42468 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgL3GXK (ORCPT
+        id S1726330AbgL3GIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 01:08:34 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:50279 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726198AbgL3GIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 01:23:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=vwLnnKIQ6AwNTFQq3y
-        uKtvrwYwXYLUDyf68GlSk/Nfc=; b=epajJGOkZnIQ7PrYP7KS2DQ9minaKyWXIQ
-        NiA1j9G6QYNkFlK0iz8416P3YWWNYWrXDKh+0s0wH9//TWFQmF5ls/Syr33535uE
-        GDUKi1uZosWbFFVNe6S2r9p90/0C/TStIKDs0x2ynd5di41i11PTk+w54105a9iV
-        eF6tbxUBg=
-Received: from pek-pliu1-d1.wrs.com (unknown [60.247.85.82])
-        by smtp2 (Coremail) with SMTP id GtxpCgD3h29pGOxf8oeWHA--.716S4;
-        Wed, 30 Dec 2020 14:04:32 +0800 (CST)
-From:   Liu Peibao <liupeibao@163.com>
-To:     mhiramat@kernel.org, rostedt@goodmis.org, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] init/main.c: sink the kernel_init to the bottom
-Date:   Wed, 30 Dec 2020 14:04:24 +0800
-Message-Id: <20201230060424.29097-3-liupeibao@163.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201230060424.29097-1-liupeibao@163.com>
-References: <20201230060424.29097-1-liupeibao@163.com>
-X-CM-TRANSID: GtxpCgD3h29pGOxf8oeWHA--.716S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXw1UGF4DZFyfJF4DKF18AFb_yoWrCF15pr
-        Wvkry3Kry8GanrtrWfArZ5WFySy3ykGa4UKrZrG34SqFn5Cr1rXr9FgrySvFykXrWFv3Wa
-        qFWkAFWfur17XrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j9a9-UUUUU=
-X-Originating-IP: [60.247.85.82]
-X-CM-SenderInfo: xolx1vpled0qqrwthudrp/xtbBaRALbFXltCo5wAAAsJ
+        Wed, 30 Dec 2020 01:08:34 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UKD8vsA_1609308452;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UKD8vsA_1609308452)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 30 Dec 2020 14:07:51 +0800
+From:   YANG LI <abaci-bugfix@linux.alibaba.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, dchickles@marvell.com, sburla@marvell.com,
+        fmanlunas@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        YANG LI <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] liquidio: style:  Identical condition and return expression  'retval', return value is always 0.
+Date:   Wed, 30 Dec 2020 14:07:30 +0800
+Message-Id: <1609308450-50695-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the redundant kernel_init_freeable statement.
+The warning was because of the following line in function
+liquidio_set_fec():
 
-Signed-off-by: Liu Peibao <liupeibao@163.com>
+retval = wait_for_sc_completion_timeout(oct, sc, 0);
+    if (retval)
+	return (-EIO);
+
+If this statement is not true, retval must be 0 and not updated
+later. So, It is better to return 0 directly.
+
+Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+Reported-by: Abaci <abaci@linux.alibaba.com>
 ---
- init/main.c | 132 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 65 insertions(+), 67 deletions(-)
+ drivers/net/ethernet/cavium/liquidio/lio_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/init/main.c b/init/main.c
-index 1e492de770c8..d5c2fa85ee54 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1364,8 +1364,6 @@ static int try_to_run_init_process(const char *init_filename)
- 	return ret;
+diff --git a/drivers/net/ethernet/cavium/liquidio/lio_core.c b/drivers/net/ethernet/cavium/liquidio/lio_core.c
+index 37d0641..6e2426f 100644
+--- a/drivers/net/ethernet/cavium/liquidio/lio_core.c
++++ b/drivers/net/ethernet/cavium/liquidio/lio_core.c
+@@ -1747,7 +1747,7 @@ int liquidio_set_fec(struct lio *lio, int on_off)
+ 			oct->props[lio->ifidx].fec ? "on" : "off");
+ 	}
+ 
+-	return retval;
++	return 0;
  }
  
--static noinline void __init kernel_init_freeable(void);
--
- #if defined(CONFIG_STRICT_KERNEL_RWX) || defined(CONFIG_STRICT_MODULE_RWX)
- bool rodata_enabled __ro_after_init = true;
- static int __init set_debug_rodata(char *str)
-@@ -1408,71 +1406,6 @@ void __weak free_initmem(void)
- 	free_initmem_default(POISON_FREE_INITMEM);
- }
- 
--static int __ref kernel_init(void *unused)
--{
--	int ret;
--
--	kernel_init_freeable();
--	/* need to finish all async __init code before freeing the memory */
--	async_synchronize_full();
--	kprobe_free_init_mem();
--	ftrace_free_init_mem();
--	free_initmem();
--	mark_readonly();
--
--	/*
--	 * Kernel mappings are now finalized - update the userspace page-table
--	 * to finalize PTI.
--	 */
--	pti_finalize();
--
--	system_state = SYSTEM_RUNNING;
--	numa_default_policy();
--
--	rcu_end_inkernel_boot();
--
--	do_sysctl_args();
--
--	if (ramdisk_execute_command) {
--		ret = run_init_process(ramdisk_execute_command);
--		if (!ret)
--			return 0;
--		pr_err("Failed to execute %s (error %d)\n",
--		       ramdisk_execute_command, ret);
--	}
--
--	/*
--	 * We try each of these until one succeeds.
--	 *
--	 * The Bourne shell can be used instead of init if we are
--	 * trying to recover a really broken machine.
--	 */
--	if (execute_command) {
--		ret = run_init_process(execute_command);
--		if (!ret)
--			return 0;
--		panic("Requested init %s failed (error %d).",
--		      execute_command, ret);
--	}
--
--	if (CONFIG_DEFAULT_INIT[0] != '\0') {
--		ret = run_init_process(CONFIG_DEFAULT_INIT);
--		if (ret)
--			pr_err("Default init %s failed (error %d)\n",
--			       CONFIG_DEFAULT_INIT, ret);
--		else
--			return 0;
--	}
--
--	if (!try_to_run_init_process("/sbin/init") ||
--	    !try_to_run_init_process("/etc/init") ||
--	    !try_to_run_init_process("/bin/init") ||
--	    !try_to_run_init_process("/bin/sh"))
--		return 0;
--
--	panic("No working init found. Try passing init= option to kernel. See Linux Documentation/admin-guide/init.rst for guidance.");
--}
--
- /* Open /dev/console, for stdin/stdout/stderr, this should never fail */
- void __init console_on_rootfs(void)
- {
-@@ -1554,3 +1487,68 @@ static noinline void __init kernel_init_freeable(void)
- 
- 	integrity_load_keys();
- }
-+
-+static int __ref kernel_init(void *unused)
-+{
-+	int ret;
-+
-+	kernel_init_freeable();
-+	/* need to finish all async __init code before freeing the memory */
-+	async_synchronize_full();
-+	kprobe_free_init_mem();
-+	ftrace_free_init_mem();
-+	free_initmem();
-+	mark_readonly();
-+
-+	/*
-+	 * Kernel mappings are now finalized - update the userspace page-table
-+	 * to finalize PTI.
-+	 */
-+	pti_finalize();
-+
-+	system_state = SYSTEM_RUNNING;
-+	numa_default_policy();
-+
-+	rcu_end_inkernel_boot();
-+
-+	do_sysctl_args();
-+
-+	if (ramdisk_execute_command) {
-+		ret = run_init_process(ramdisk_execute_command);
-+		if (!ret)
-+			return 0;
-+		pr_err("Failed to execute %s (error %d)\n",
-+		       ramdisk_execute_command, ret);
-+	}
-+
-+	/*
-+	 * We try each of these until one succeeds.
-+	 *
-+	 * The Bourne shell can be used instead of init if we are
-+	 * trying to recover a really broken machine.
-+	 */
-+	if (execute_command) {
-+		ret = run_init_process(execute_command);
-+		if (!ret)
-+			return 0;
-+		panic("Requested init %s failed (error %d).",
-+		      execute_command, ret);
-+	}
-+
-+	if (CONFIG_DEFAULT_INIT[0] != '\0') {
-+		ret = run_init_process(CONFIG_DEFAULT_INIT);
-+		if (ret)
-+			pr_err("Default init %s failed (error %d)\n",
-+			       CONFIG_DEFAULT_INIT, ret);
-+		else
-+			return 0;
-+	}
-+
-+	if (!try_to_run_init_process("/sbin/init") ||
-+	    !try_to_run_init_process("/etc/init") ||
-+	    !try_to_run_init_process("/bin/init") ||
-+	    !try_to_run_init_process("/bin/sh"))
-+		return 0;
-+
-+	panic("No working init found. Try passing init= option to kernel. See Linux Documentation/admin-guide/init.rst for guidance.");
-+}
+ int liquidio_get_fec(struct lio *lio)
 -- 
-2.17.1
+1.8.3.1
 
