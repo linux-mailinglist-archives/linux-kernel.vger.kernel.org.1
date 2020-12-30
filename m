@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336C52E7709
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BFE2E770C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgL3Icd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 03:32:33 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60088 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgL3Icc (ORCPT
+        id S1726363AbgL3Iei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 03:34:38 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:55194 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725853AbgL3Iei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 03:32:32 -0500
-Date:   Wed, 30 Dec 2020 08:31:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1609317109;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kkcS4Kn8DsWp728R/9ppRhr+Ekra8DGkRSsNPoaZhpw=;
-        b=RS4XBR2OzI+W32x2rTRtxxn8bxyzNKGeBVwnQlELTAD7gH2LDsxRqZ4R07tsBY9WBXr3lU
-        0RpqCdbIhqLL5t1i110B/s8vn/TalLJhJmd9iQm592hUXSZ/IqXe3mZaqLq3SMj1+lQ1Yw
-        wC8ZAPu2EPbnEkdLs9SP8XIVowSq82gRjRDsqbMYFkIMs1KZ2C3KiTyRe7D/JOluVYw0zu
-        YbfcYi0UhidVkSpKKXYFJZH1dEF2vo9Pn2S0ZzYqcjOZwSYdU7BjzgDby1Zg8sHx270OU1
-        59ho8ZHOuxt5jwo3zoIweooKKjhTbox8IlKlbAnR11sk6yx8BDRjq6bvCwryBg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1609317109;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kkcS4Kn8DsWp728R/9ppRhr+Ekra8DGkRSsNPoaZhpw=;
-        b=N1HPFQCUPtBbzE/s3jAwyHzWtvCC45+Wn0YjSoVoVJjIjgLTo5fNWYbX33Mqkrdm7WmGsV
-        vk8lOORXwBZSoHCA==
-From:   "tip-bot2 for Zheng Yongjun" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/intel-mid: Convert comma to semicolon
-Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201216131107.14339-1-zhengyongjun3@huawei.com>
-References: <20201216131107.14339-1-zhengyongjun3@huawei.com>
+        Wed, 30 Dec 2020 03:34:38 -0500
+X-UUID: 6d5be9ddf8904ca4ab1481f38afc1884-20201230
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=EzXwqs+poHgsVaqz/QjcZDwPofwlI/DBkbg5hyAshKg=;
+        b=lBxI7fhzuuMySPmVTkBhA/jly4/XixT4ZiMu/FSjU0+PC0xZOVOXOrxlA53vcw4XfT2vQJnecs7fMhbHrGET/5gxOZRQ5bHkIgPc65gZUn26ZZoa49Oc0pwY8ajTwZ7Efent4wKmY7kbPUGezHjHRH5lhMwvBeqRCP2nzYxEhPU=;
+X-UUID: 6d5be9ddf8904ca4ab1481f38afc1884-20201230
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1642656073; Wed, 30 Dec 2020 16:33:56 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 30 Dec 2020 16:33:54 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 30 Dec 2020 16:33:54 +0800
+Message-ID: <1609317234.9795.11.camel@mtkswgap22>
+Subject: Re: [PATCH] scsi: ufs: Correct the lun used in
+ eh_device_reset_handler() callback
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <ziqichen@codeaurora.org>,
+        <rnayak@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <kernel-team@android.com>, <saravanak@google.com>,
+        <salyzyn@google.com>, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 30 Dec 2020 16:33:54 +0800
+In-Reply-To: <1609157080-26283-1-git-send-email-cang@codeaurora.org>
+References: <1609157080-26283-1-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Message-ID: <160931710867.414.3027150956562454767.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-TM-SNTS-SMTP: 7ADB87078B6301CF35771595272FACC3A25FDDDD69E9931D11B4E1857AA114D52000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/platform branch of tip:
+T24gTW9uLCAyMDIwLTEyLTI4IGF0IDA0OjA0IC0wODAwLCBDYW4gR3VvIHdyb3RlOg0KPiBVc2Vy
+cyBjYW4gaW5pdGlhdGUgcmVzZXRzIHRvIHNwZWNpZmljIFNDU0kgZGV2aWNlL3RhcmdldC9ob3N0
+IHRocm91Z2gNCj4gSU9DVEwuIFdoZW4gdGhpcyBoYXBwZW5zLCB0aGUgU0NTSSBjbWQgcGFzc2Vk
+IHRvIGVoX2RldmljZS90YXJnZXQvaG9zdA0KPiBfcmVzZXRfaGFuZGxlcigpIGNhbGxiYWNrcyBp
+cyBpbml0aWFsaXplZCB3aXRoIGEgcmVxdWVzdCB3aG9zZSB0YWcgaXMgLTEuDQo+IFNvLCBpbiB0
+aGlzIGNhc2UsIGl0IGlzIG5vdCByaWdodCBmb3IgZWhfZGV2aWNlX3Jlc2V0X2hhbmRsZXIoKSBj
+YWxsYmFjaw0KPiB0byBjb3VudCBvbiB0aGUgbHVuIGdldCBmcm9tIGhiYS0+bHJiWy0xXS4gRml4
+IGl0IGJ5IGdldHRpbmcgbHVuIGZyb20gdGhlDQo+IFNDU0kgZGV2aWNlIGFzc29jaWF0ZWQgd2l0
+aCB0aGUgU0NTSSBjbWQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDYW4gR3VvIDxjYW5nQGNvZGVh
+dXJvcmEub3JnPg0KDQpSZXZpZXdlZC1ieTogU3RhbmxleSBDaHUgPHN0YW5sZXkuY2h1QG1lZGlh
+dGVrLmNvbT4NCg==
 
-Commit-ID:     bdb154f074a6d73d520b1fdee6b4143e2e311dfb
-Gitweb:        https://git.kernel.org/tip/bdb154f074a6d73d520b1fdee6b4143e2e311dfb
-Author:        Zheng Yongjun <zhengyongjun3@huawei.com>
-AuthorDate:    Wed, 16 Dec 2020 21:11:07 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 30 Dec 2020 09:27:38 +01:00
-
-x86/platform/intel-mid: Convert comma to semicolon
-
-Replace a comma between expression statements with a semicolon.
-
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lkml.kernel.org/r/20201216131107.14339-1-zhengyongjun3@huawei.com
----
- arch/x86/platform/intel-mid/device_libs/platform_bt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/platform/intel-mid/device_libs/platform_bt.c b/arch/x86/platform/intel-mid/device_libs/platform_bt.c
-index 31dda18..2930b6e 100644
---- a/arch/x86/platform/intel-mid/device_libs/platform_bt.c
-+++ b/arch/x86/platform/intel-mid/device_libs/platform_bt.c
-@@ -88,8 +88,8 @@ static int __init bt_sfi_init(void)
- 	memset(&info, 0, sizeof(info));
- 	info.fwnode	= ddata->dev->fwnode;
- 	info.parent	= ddata->dev;
--	info.name	= ddata->name,
--	info.id		= PLATFORM_DEVID_NONE,
-+	info.name	= ddata->name;
-+	info.id		= PLATFORM_DEVID_NONE;
- 
- 	pdev = platform_device_register_full(&info);
- 	if (IS_ERR(pdev))
