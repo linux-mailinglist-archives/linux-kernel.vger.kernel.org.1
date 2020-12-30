@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20182E78B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2472E78BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 13:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgL3M4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 07:56:50 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33746 "EHLO
+        id S1726687AbgL3M52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 07:57:28 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:33850 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgL3M4t (ORCPT
+        with ESMTP id S1726203AbgL3M51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 07:56:49 -0500
+        Wed, 30 Dec 2020 07:57:27 -0500
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E78431C0B85; Wed, 30 Dec 2020 13:55:50 +0100 (CET)
-Date:   Wed, 30 Dec 2020 13:55:50 +0100
+        id 499FB1C0B78; Wed, 30 Dec 2020 13:56:29 +0100 (CET)
+Date:   Wed, 30 Dec 2020 13:56:28 +0100
 From:   Pavel Machek <pavel@denx.de>
-To:     sakari.ailus@linux.intel.com, andy.shevchenko@gmail.com,
-        laurent.pinchart@ideasonboard.com, mchehab+huawei@kernel.org,
-        yong.zhi@intel.com, bingbu.cao@intel.com, tian.shu.qiu@intel.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: ipu3-cio2: Fix mbus_code processing in
- cio2_subdev_set_fmt()
-Message-ID: <20201230125550.GA14074@duo.ucw.cz>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: [PATCH 5.10 527/717] media: ipu3-cio2: Validate mbus format in
+ setting subdev format
+Message-ID: <20201230125628.GB13161@duo.ucw.cz>
+References: <20201228125020.963311703@linuxfoundation.org>
+ <20201228125046.214023397@linuxfoundation.org>
+ <20201230122508.GA12190@duo.ucw.cz>
+ <CAHp75VdFT-SUUj2LiPTs1_RJ-n97OiyQ2pF0jVbHsARkDshfwA@mail.gmail.com>
+ <X+x2OakYZ5GGCxuS@pendragon.ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
+        protocol="application/pgp-signature"; boundary="jq0ap7NbKX2Kqbes"
 Content-Disposition: inline
+In-Reply-To: <X+x2OakYZ5GGCxuS@pendragon.ideasonboard.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---LZvS9be/3tNcYl/X
+--jq0ap7NbKX2Kqbes
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Loop was useless as it would always exit on the first iteration. Fix
-it with right condition.=20
+On Wed 2020-12-30 14:44:41, Laurent Pinchart wrote:
+> On Wed, Dec 30, 2020 at 02:32:46PM +0200, Andy Shevchenko wrote:
+> > On Wed, Dec 30, 2020 at 2:25 PM Pavel Machek wrote:
+> >=20
+> > > > commit a86cf9b29e8b12811cf53c4970eefe0c1d290476 upstream.
+> > > >
+> > > > Validate media bus code, width and height when setting the subdev f=
+ormat.
+> > > >
+> > > > This effectively reworks how setting subdev format is implemented i=
+n the
+> > > > driver.
+> > >
+> > > Something is wrong here:
+> > >
+> > > > +     fmt->format.code =3D formats[0].mbus_code;
+> > > > +     for (i =3D 0; i < ARRAY_SIZE(formats); i++) {
+> >=20
+> > Looks like 'i =3D 1' should be...
+> >=20
+> > > > +             if (formats[i].mbus_code =3D=3D fmt->format.code) {
+>=20
+> More likely
+>=20
+> 			if (formats[i].mbus_code =3D=3D mbus_code) {
+>=20
+> I think.
 
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-Fixes: a86cf9b29e8b ("media: ipu3-cio2: Validate mbus format in setting sub=
-dev format")
+That looks reasonable, but I don't have hardware to test.
 
-index 36e354ecf71e..e8ea69d30bfd 100644
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-@@ -1269,7 +1269,7 @@ static int cio2_subdev_set_fmt(struct v4l2_subdev *sd,
- 	fmt->format.code =3D formats[0].mbus_code;
-=20
- 	for (i =3D 0; i < ARRAY_SIZE(formats); i++) {
--		if (formats[i].mbus_code =3D=3D fmt->format.code) {
-+		if (formats[i].mbus_code =3D=3D mbus_code) {
- 			fmt->format.code =3D mbus_code;
- 			break;
- 		}
+> Pavel, would you like to submit a patch ?
 
+Done, should be in your inbox.
+
+Best regards,
+								Pavel
 --=20
 DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
 HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
---LZvS9be/3tNcYl/X
+--jq0ap7NbKX2Kqbes
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX+x41gAKCRAw5/Bqldv6
-8i+mAKCHsIm46MSL3YqNC9y2aZBbqUsRUwCcD1mOTaJgCn1SCO8EItO+i7PduYc=
-=Rvsp
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX+x4/AAKCRAw5/Bqldv6
+8ut1AKCeguNK4/d1qTU2rUmE6uQxl7TiiACfaiFUMA/wZpA/nrNhCbhoVqVnUr8=
+=9SGb
 -----END PGP SIGNATURE-----
 
---LZvS9be/3tNcYl/X--
+--jq0ap7NbKX2Kqbes--
