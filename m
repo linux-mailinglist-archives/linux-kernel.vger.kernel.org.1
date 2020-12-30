@@ -2,97 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D1E2E774E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE8E2E7749
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 10:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgL3JFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 04:05:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53486 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726400AbgL3JFK (ORCPT
+        id S1726329AbgL3JE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 04:04:59 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:39998 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726190AbgL3JE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 04:05:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609319022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lop/poXyiJNf2yKQyNAGmJKrn/jVxE6AMImof5eHXJw=;
-        b=NiRXQqNncJ/JC0emzmygPZ8i1JWXpnS4L1p+7FZYPX8MAqZiH78NmBwBUAgxAfpgfQq/pP
-        pgtUBLiOnNOoY6PR+7/EG0BZrNFCqp22Mvm+O2GcWG0BrrM170Tt6syNUsCrlU4HP7GQaf
-        PzVKzOpVSbafQ8V3l7L2/xi4lKOPJ7o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-216-IHPATD3ON2CIFLi1vCFgBQ-1; Wed, 30 Dec 2020 04:03:38 -0500
-X-MC-Unique: IHPATD3ON2CIFLi1vCFgBQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2436107ACE3;
-        Wed, 30 Dec 2020 09:03:36 +0000 (UTC)
-Received: from krava (unknown [10.40.192.76])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 82AE16E53E;
-        Wed, 30 Dec 2020 09:03:34 +0000 (UTC)
-Date:   Wed, 30 Dec 2020 10:03:33 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
-Message-ID: <20201230090333.GA577428@krava>
-References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin>
- <20201229173401.GH450923@krava>
- <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
+        Wed, 30 Dec 2020 04:04:58 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0BU948QB0013687, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0BU948QB0013687
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 30 Dec 2020 17:04:08 +0800
+Received: from localhost (172.22.88.222) by RTEXMBS01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 30 Dec
+ 2020 17:04:08 +0800
+From:   <ricky_wu@realtek.com>
+To:     <ulf.hansson@linaro.org>, <ricky_wu@realtek.com>,
+        <gregkh@linuxfoundation.org>, <rui_feng@realsil.com.cn>,
+        <rmfrfs@gmail.com>, <dianders@chromium.org>,
+        <lee.jones@linaro.org>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] mmc: rtsx: add delay before power on
+Date:   Wed, 30 Dec 2020 17:04:00 +0800
+Message-ID: <20201230090401.12627-1-ricky_wu@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-Originating-IP: [172.22.88.222]
+X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 11:28:35PM +0000, Qais Yousef wrote:
-> Hi Jiri
-> 
-> On 12/29/20 18:34, Jiri Olsa wrote:
-> > On Tue, Dec 29, 2020 at 03:13:52PM +0000, Qais Yousef wrote:
-> > > Hi
-> > > 
-> > > When I enable CONFIG_DEBUG_INFO_BTF I get the following error in the BTFIDS
-> > > stage
-> > > 
-> > > 	FAILED unresolved symbol udp6_sock
-> > > 
-> > > I cross compile for arm64. My .config is attached.
-> > > 
-> > > I managed to reproduce the problem on v5.9 and v5.10. Plus 5.11-rc1.
-> > > 
-> > > Have you seen this before? I couldn't find a specific report about this
-> > > problem.
-> > > 
-> > > Let me know if you need more info.
-> > 
-> > hi,
-> > this looks like symptom of the gcc DWARF bug we were
-> > dealing with recently:
-> > 
-> >   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
-> >   https://lore.kernel.org/lkml/CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com/#r
-> > 
-> > what pahole/gcc version are you using?
-> 
-> I'm on gcc 9.3.0
-> 
-> 	aarch64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
-> 
-> I was on pahole v1.17. I moved to v1.19 but I still see the same problem.
+From: Ricky Wu <ricky_wu@realtek.com>
 
-I can reproduce with your .config, but make 'defconfig' works,
-so I guess it's some config option issue, I'll check later today
+Make sure voltage below 0.5V before power on
+when do power cycle
 
-jirka
+Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+---
+ drivers/mmc/host/rtsx_pci_sdmmc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index e6f5bbce5685..d21b99962b36 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -906,6 +906,8 @@ static int sd_power_on(struct realtek_pci_sdmmc *host)
+ 	if (host->power_state == SDMMC_POWER_ON)
+ 		return 0;
+ 
++	mdelay(100);
++
+ 	rtsx_pci_init_cmd(pcr);
+ 	rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, CARD_SELECT, 0x07, SD_MOD_SEL);
+ 	rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, CARD_SHARE_MODE,
+-- 
+2.17.1
 
