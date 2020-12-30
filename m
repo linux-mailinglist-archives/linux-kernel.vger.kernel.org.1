@@ -2,180 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD832E759B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A362E75A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 03:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgL3B7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 20:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51256 "EHLO
+        id S1726480AbgL3CRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 21:17:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726300AbgL3B7q (ORCPT
+        with ESMTP id S1726365AbgL3CRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 20:59:46 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8045BC061799;
-        Tue, 29 Dec 2020 17:59:05 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D5Dwj6hJJz9sVM;
-        Wed, 30 Dec 2020 12:59:01 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1609293542;
-        bh=5j0RDxUsHx5KfXlsc7z/rrLF1bwFavVIRm8qCp7QDLc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tKd9kH/DbgEPXxnYsjFnF4Oxrp6YKgq1K8QOk4WVZS+TH/rnZQl5efIfdhahJajQ6
-         6Qe8T1gPugfDBiLGIRlZj+cFzV8boqxQu+qdqvbzSmub2nOGdgrFziExugJNlajXrV
-         UvTJejLJbRyqTaQHHBUO6NPJQiTfRaKqhJc2RxNjBAocI5VKrdJvK3IQIwomknAupB
-         nxV7ODiyIkhPP5LPKkDCJE/T9D/wohWGmEqHY9/xz6rhxtJWsqK66D50SLPcm/12nC
-         Q2g8vvxiRDr/k5PUif1KBfW0qz8F6SpbblCZK/xmTW7I2xLKv7M/IWM9A+0+dFGq6L
-         6cpys3f7XoJQw==
-Date:   Wed, 30 Dec 2020 12:59:01 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: stats (Was: Linux 5.11-rc1)
-Message-ID: <20201230125901.19486db4@canb.auug.org.au>
-In-Reply-To: <CAHk-=wg1+kf1AVzXA-RQX0zjM6t9J2Kay9xyuNqcFHWV-y5ZYw@mail.gmail.com>
-References: <CAHk-=wg1+kf1AVzXA-RQX0zjM6t9J2Kay9xyuNqcFHWV-y5ZYw@mail.gmail.com>
+        Tue, 29 Dec 2020 21:17:07 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE54CC061799
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 18:16:26 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id 7so10230775qtp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Dec 2020 18:16:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4rO7Co7WzIAwVSZ8ozsY8HDb9mFde5EJnTF+blPVPzY=;
+        b=oEZHg6vvmpcKi6d3ukkihO+h7vAEsVhPC2dmvABehsnEB28zdRVikdubDHGTnLxv9V
+         C/Xct1axEznRTHbBUhRvFt8//nsX8ZWK2piX7YiPkXsQqbZEPDUSDfax1Vvjhnb93NIs
+         uIp1kgrPR0T4TyevE3MMeESW29rxL3YeaUk/Y6Gv4I5xh8QTEUdPY+n7KIhoOZIRKi9R
+         1SCTAbQmg/n6rD5F3azAh4Ry9klP3wk4t9OjXMmkW4MIMOTq0eA90VmUesab8D50R7T0
+         wuIh/VdzLJkOWbLI08ZrxI8AKYqzrMsf/Scn8eN7ag/peyYO+lewLdxfY2AvnqG4Q79S
+         i76w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4rO7Co7WzIAwVSZ8ozsY8HDb9mFde5EJnTF+blPVPzY=;
+        b=JLfyjHJjVg9uR8CULsvWxf6m/3OhqDToNQPi2Ele4ugJ/0WWsAOn2yQrECCt7pONEM
+         pg+o1iCw+DHDrjt/Ls7KvOB9Os4IAgoy9d0mvVA6b2K8vKj2wygfirLadyHNonZn8hoH
+         s7fnpOHw4NGs/D9R2RS/3LvLltiLuQFBPrHcHwBE8nzZSGbiMi6LC2DUUkqtrbp2FEKk
+         ozu/FdXtuUTUcWEe3HB3SjeyAcVnDyOz7Bri3r7DFC30covy9q6xqS6CVn7a+YbyWF/N
+         drzf+NmFX7vzeJ4b3cue6aWy0votKjktS+jbgi5TKs3TL44vpkKsNlFNMFGa6EbqD2+F
+         GxLA==
+X-Gm-Message-State: AOAM530LNqnIUrKRQgksZWg/YeB5MFpBK/6nXs/x3PU2QocoxrN199OL
+        rJA/x3Lb3LfslhuEXL+4gG58AGBrfeIj/nsbsPKu0vHVHo17Yg==
+X-Google-Smtp-Source: ABdhPJyz+fwefS0eTEh7UeBxDQf1zgFD529BZRyjo1viUtlvab9/fTHFXwt+oS/6y8cDAo8M+voe6sti5z4VD836ZQw=
+X-Received: by 2002:ac8:5745:: with SMTP id 5mr50874850qtx.131.1609294586096;
+ Tue, 29 Dec 2020 18:16:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fCNKAy98MINyCWJkyhqUa.w";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1609226114-32933-1-git-send-email-yejune.deng@gmail.com> <36538faa77fd0e34f559ec547b983c72@kernel.org>
+In-Reply-To: <36538faa77fd0e34f559ec547b983c72@kernel.org>
+From:   Yejune Deng <yejune.deng@gmail.com>
+Date:   Wed, 30 Dec 2020 10:16:14 +0800
+Message-ID: <CABWKuGUar=8HYkkS-KGjN_TB4NAh6+cSspk8J=sB+sZ70VyscQ@mail.gmail.com>
+Subject: Re: [PATCH] irqchip/gic: add WARN_ON() to facilitate backtracking
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     tglx@linutronix.de,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fCNKAy98MINyCWJkyhqUa.w
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+OK=EF=BC=8CI will adopt it and resubmit.
 
-Hi all,
-
-As usual, the executive friendly graph is at
-http://neuling.org/linux-next-size.html :-)
-
-(No merge commits counted, next-20201214 was the first linux-next after
-the merge window opened.)
-
-Commits in v5.11-rc1 (relative to v5.10):          12498
-Commits in next-20201214:                          12038
-Commits with the same SHA1:                        10988
-Commits with the same patch_id:                      500 (1)
-Commits with the same subject line:                   47 (1)
-
-(1) not counting those in the lines above.
-
-So commits in -rc1 that were in next-20201214:     11535 92%
-
-Some breakdown of the list of extra commits (relative to next-20201214)
-in -rc1:
-
-Top ten first word of commit summary:
-
-    135 perf
-     76 drm
-     49 kvm
-     35 libceph
-     31 clk
-     27 net
-     27 cifs
-     26 dt-bindings
-     24 tools
-     23 ceph
-
-Top ten authors:
-
-     56 acme@redhat.com
-     34 thomas.lendacky@amd.com
-     34 idryomov@gmail.com
-     32 tglx@linutronix.de
-     31 leo.yan@linaro.org
-     19 trond.myklebust@hammerspace.com
-     19 peter.ujfalusi@ti.com
-     16 sgarzare@redhat.com
-     15 jolsa@kernel.org
-     15 jlayton@kernel.org
-
-Top ten commiters:
-
-    158 acme@redhat.com
-     88 kuba@kernel.org
-     59 idryomov@gmail.com
-     57 alexander.deucher@amd.com
-     50 pbonzini@redhat.com
-     37 axboe@kernel.dk
-     36 sboyd@kernel.org
-     33 tglx@linutronix.de
-     30 stfrench@microsoft.com
-     30 mst@redhat.com
-
-There are also 503 commits in next-20201214 that didn't make it into
-v5.11-rc1.
-
-Top ten first word of commit summary:
-
-     65 drm
-     42 arm
-     38 mm
-     30 usb
-     23 scsi
-     23 btrfs
-     14 fpga
-     12 dt-bindings
-     11 sparc32
-     11 soc
-
-Top ten authors:
-
-     22 mchehab+huawei@kernel.org
-     20 willy@infradead.org
-     19 josef@toxicpanda.com
-     16 jani.nikula@intel.com
-     15 uma.shankar@intel.com
-     15 akpm@linux-foundation.org
-     14 rppt@kernel.org
-     14 mdf@kernel.org
-     13 pawell@cadence.com
-     12 arnd@arndb.de
-
-Some of Andrew's patches are fixes for other patches in his tree (and
-have been merged into those).
-
-Top ten commiters:
-
-    121 sfr@canb.auug.org.au
-     32 peter.chen@nxp.com
-     28 alexandre.torgue@st.com
-     23 dsterba@suse.com
-     23 dhowells@redhat.com
-     22 martin.petersen@oracle.com
-     21 mchehab+huawei@kernel.org
-     19 geert+renesas@glider.be
-     18 mdf@kernel.org
-     18 arnd@arndb.de
-
-Those commits by me are from Andrew's mmotm tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/fCNKAy98MINyCWJkyhqUa.w
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/r3uUACgkQAVBC80lX
-0GxSfgf/TZTi0bFEkWnDP9YL3PsAJBcrasND0dRfi+cIKoCcblanb7AuWfcl8ZCs
-Mud6gmBIyf5sqIVKKIQjdRGBdYVEnVDPU3JXk0PLcrw4ZG7i1mxDE+xqAlaaL7ZX
-KhJG1VsNlFrx5UqKE2bsw2KFjYaLcQEyZPyDpLYxGn+CC6EpJgOX/hOpGNLXqCXK
-kTp2Wv5m0uMvlFgJGz6EzXlQpWXOuesESNluc2hrBhse4RahGOWDeHVBxdqv+kR9
-96jmnqiQvAyzKY8QmZCGLp1JCk+2RujV4opAHILj/M7FiH5GX04IfR0JAvhCNhqy
-nPGM4n6+eRJ+mBLoc3LtTLPRXfX1dQ==
-=gVPZ
------END PGP SIGNATURE-----
-
---Sig_/fCNKAy98MINyCWJkyhqUa.w--
+On Tue, Dec 29, 2020 at 5:27 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Yejune,
+>
+> On 2020-12-29 07:15, Yejune Deng wrote:
+> > There is two function gic_of_init() and gic_of_init_child() called
+> > gic_of_setup(),so add WARN_ON() to facilitate backtracking.
+> >
+> > Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> > ---
+> >  drivers/irqchip/irq-gic.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+> > index b1d9c22..7c11705 100644
+> > --- a/drivers/irqchip/irq-gic.c
+> > +++ b/drivers/irqchip/irq-gic.c
+> > @@ -1380,7 +1380,7 @@ static bool gic_check_eoimode(struct device_node
+> > *node, void __iomem **base)
+> >
+> >  static int gic_of_setup(struct gic_chip_data *gic, struct device_node
+> > *node)
+> >  {
+> > -     if (!gic || !node)
+> > +     if (WARN_ON(!gic || !node))
+> >               return -EINVAL;
+> >
+> >       gic->raw_dist_base =3D of_iomap(node, 0);
+>
+> I don't immediately see what you gain with this. If you end-up here
+> with NULL pointers, that either because:
+>
+> - you have failed to allocate the GIC private data structure:
+>    but as it turns out, these allocations either cannot fail (gic_data[]
+>    is static), or the dynamic allocation in gic_of_init_child() is
+> already
+>    checked.
+>
+> - node is NULL: both paths already check for a NULL node, so that cannot
+>    fail either.
+>
+> My conclusion is that these checks can never trigger, and we should be
+> able to *remove* them altogether.
+>
+> Am I missing something?
+>
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
