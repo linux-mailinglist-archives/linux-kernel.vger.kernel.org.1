@@ -2,48 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EBE2E8372
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 11:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 049A62E7C49
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 21:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbhAAKFf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Jan 2021 05:05:35 -0500
-Received: from mail.askinacable.net.np ([103.115.84.7]:52020 "EHLO
-        mail.askinacable.net.np" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726469AbhAAKFf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 05:05:35 -0500
+        id S1726388AbgL3Uks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 15:40:48 -0500
+Received: from mail.pim.co.id ([118.97.151.36]:33054 "EHLO mail.pim.co.id"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726289AbgL3Ukr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 15:40:47 -0500
+X-Greylist: delayed 36781 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Dec 2020 15:40:46 EST
 Received: from localhost (localhost [127.0.0.1])
-        by mail.askinacable.net.np (Postfix) with ESMTP id 957FA407053CC;
-        Wed, 30 Dec 2020 14:36:42 +0545 (+0545)
-Received: from mail.askinacable.net.np ([127.0.0.1])
-        by localhost (mail.askinacable.net.np [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id wMXrj9seowSh; Wed, 30 Dec 2020 14:36:42 +0545 (+0545)
+        by mail.pim.co.id (Postfix) with ESMTP id 81120900CFB0C;
+        Wed, 30 Dec 2020 15:47:25 +0700 (WIB)
+Received: from mail.pim.co.id ([127.0.0.1])
+        by localhost (mail.pim.co.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id o5ShcRzcapVs; Wed, 30 Dec 2020 15:47:19 +0700 (WIB)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.askinacable.net.np (Postfix) with ESMTP id 9F2B7408AC91C;
-        Wed, 30 Dec 2020 13:57:16 +0545 (+0545)
-X-Virus-Scanned: amavisd-new at mail.askinacable.net.np
-Received: from mail.askinacable.net.np ([127.0.0.1])
-        by localhost (mail.askinacable.net.np [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id glEeQ2VMVm7L; Wed, 30 Dec 2020 13:57:16 +0545 (+0545)
-Received: from Hp-??.tendawifi.com (unknown [31.202.16.82])
-        by mail.askinacable.net.np (Postfix) with ESMTPSA id D5C2C405D30E5;
-        Wed, 30 Dec 2020 13:16:30 +0545 (+0545)
+        by mail.pim.co.id (Postfix) with ESMTP id DE061900BEC1D;
+        Wed, 30 Dec 2020 15:47:17 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.pim.co.id DE061900BEC1D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pim.co.id; s=pim;
+        t=1609318038; bh=f4Gwp99QqwIgp70DrLZa5RVehtCt2lHU6k53oE27ops=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=D9RQPVI6/rWQnwEhnY84zj8A4dk51hYXZkF/eHBEcnMW/6cAa9Aw0DF4HvJTw+SWf
+         ci28pNDK4jXFw+rUqBf54dTiHUMTnziZYW4Wv7AslEuDrUEO2K8WEW4P2mKbiq8G3X
+         CtC4idkhucZx6ZGeyHhx4ZY+7FjkuByQ/Dv1Swk4=
+X-Virus-Scanned: amavisd-new at pim.co.id
+Received: from mail.pim.co.id ([127.0.0.1])
+        by localhost (mail.pim.co.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id KwII3nllX_4b; Wed, 30 Dec 2020 15:47:17 +0700 (WIB)
+Received: from [172.20.10.3] (unknown [129.205.124.190])
+        by mail.pim.co.id (Postfix) with ESMTPSA id 9B318900ACA2B;
+        Wed, 30 Dec 2020 15:46:59 +0700 (WIB)
 Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <jerson.moreno@inac.gob.ve>
-From:   Sheryll Goedert <jerson.moreno@inac.gob.ve>
-Date:   Wed, 30 Dec 2020 09:41:08 +0200
-Reply-To: sheryllgoedertdonation@hotmail.com
-Message-Id: <20201230073130.D5C2C405D30E5@mail.askinacable.net.np>
+Subject: Gespendet
+To:     "Mr. Landolt" <proyeknpk@pim.co.id>
+From:   "Mr. Landolt" <proyeknpk@pim.co.id>
+Date:   Wed, 30 Dec 2020 00:46:37 -0800
+Reply-To: mehmetaras279@gmail.com
+Message-Id: <20201230084659.9B318900ACA2B@mail.pim.co.id>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mein Name ist Sheryll Goedert (geschäftsführendes Mitglied von Vacation Life LLC). Ich bin der Gewinner des Powerball-Jackpots in Höhe von 396,9 Millionen US-Dollar. Ich habe am 29. Januar 2020 gewonnen.
-
-Dieser Gewinn ist ein Segen, daher haben wir beschlossen, der Gesellschaft etwas zurückzugeben, was bedeutet, dass wir Sie offiziell darüber informieren, dass Sie als einer der Begünstigten des Cash Aid-Programms für soziale Verantwortung von 2020 VACATION LIFE LLC ausgewählt wurden.
-
-Ihre E-Mail-Adresse wurde vom Topaz Ballot System zufällig ausgewählt. Sie haben von VACATION LIFE LLC die Summe von 4.800.000 Euro erhalten. Ich hoffe nur, dass Sie anderen in Ihrer Umgebung helfen können. Senden Sie mir eine E-Mail an (sheryllgoedertdonation@hotmail.com), um weitere Informationen darüber zu erhalten, wie Sie den gespendeten Betrag erhalten
+850.000,00 Euro wurden Ihnen gerade gespendet.
