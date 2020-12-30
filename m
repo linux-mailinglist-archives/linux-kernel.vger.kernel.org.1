@@ -2,83 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258012E7713
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D28C2E7722
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 09:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgL3Ija (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 03:39:30 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10099 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgL3Ija (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 03:39:30 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D5Pmm3pZkzMBkC;
-        Wed, 30 Dec 2020 16:37:44 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 30 Dec 2020 16:38:36 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: trival cleanup in move_data_block()
-Date:   Wed, 30 Dec 2020 16:38:35 +0800
-Message-ID: <20201230083835.115049-1-yuchao0@huawei.com>
+        id S1726390AbgL3Iob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 03:44:31 -0500
+Received: from muru.com ([72.249.23.125]:40498 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725853AbgL3Ioa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 03:44:30 -0500
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 9940380BA;
+        Wed, 30 Dec 2020 08:44:01 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Amit Kucheria <amitk@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     Eduardo Valentin <edubezval@gmail.com>, Keerthy <j-keerthy@ti.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: [PATCH 1/3] thermal: ti-soc-thermal: Fix stuck sensor with continuous mode for 4430
+Date:   Wed, 30 Dec 2020 10:43:36 +0200
+Message-Id: <20201230084338.19410-1-tony@atomide.com>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trival cleanups:
-- relocate set_summary() before its use
-- relocate "allocate block address" to correct place
-- remove unneeded f2fs_wait_on_page_writeback()
+At least for 4430, trying to use the single conversion mode eventually
+hangs the thermal sensor. This can be quite easily seen with errors:
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+thermal thermal_zone0: failed to read out thermal zone (-5)
+
+Also, trying to read the temperature shows a stuck value with:
+
+$ while true; do cat /sys/class/thermal/thermal_zone0/temp; done
+
+Where the temperature is not rising at all with the busy loop.
+
+Additionally, the EOCZ (end of conversion) bit is not rising on 4430 in
+single conversion mode while it works fine in continuous conversion mode.
+It is also possible that the hung temperature sensor can affect the
+thermal shutdown alert too.
+
+Let's fix the issue by adding TI_BANDGAP_FEATURE_CONT_MODE_ONLY flag and
+use it for 4430.
+
+Note that we also need to add udelay to for the EOCZ (end of conversion)
+bit polling as otherwise we have it time out too early on 4430. We'll be
+changing the loop to use iopoll in the following clean-up patch.
+
+Cc: Adam Ford <aford173@gmail.com>
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Eduardo Valentin <edubezval@gmail.com>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc: Sebastian Reichel <sre@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- fs/f2fs/gc.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/thermal/ti-soc-thermal/omap4-thermal-data.c | 3 ++-
+ drivers/thermal/ti-soc-thermal/ti-bandgap.c         | 9 +++++++--
+ drivers/thermal/ti-soc-thermal/ti-bandgap.h         | 2 ++
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index 43919a3ae6a6..4561c44dfa8f 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -1169,8 +1169,6 @@ static int move_data_block(struct inode *inode, block_t bidx,
- 	if (err)
- 		goto put_out;
+diff --git a/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c b/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
+--- a/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
++++ b/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
+@@ -58,7 +58,8 @@ omap4430_adc_to_temp[OMAP4430_ADC_END_VALUE - OMAP4430_ADC_START_VALUE + 1] = {
+ const struct ti_bandgap_data omap4430_data = {
+ 	.features = TI_BANDGAP_FEATURE_MODE_CONFIG |
+ 			TI_BANDGAP_FEATURE_CLK_CTRL |
+-			TI_BANDGAP_FEATURE_POWER_SWITCH,
++			TI_BANDGAP_FEATURE_POWER_SWITCH |
++			TI_BANDGAP_FEATURE_CONT_MODE_ONLY,
+ 	.fclock_name = "bandgap_fclk",
+ 	.div_ck_name = "bandgap_fclk",
+ 	.conv_table = omap4430_adc_to_temp,
+diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+--- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
++++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+@@ -15,6 +15,7 @@
+ #include <linux/kernel.h>
+ #include <linux/interrupt.h>
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/err.h>
+@@ -605,8 +606,10 @@ ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id)
+ 	u32 counter = 1000;
+ 	struct temp_sensor_registers *tsr;
  
--	set_summary(&sum, dn.nid, dn.ofs_in_node, ni.version);
--
- 	/* read page */
- 	fio.page = page;
- 	fio.new_blkaddr = fio.old_blkaddr = dn.data_blkaddr;
-@@ -1207,6 +1205,9 @@ static int move_data_block(struct inode *inode, block_t bidx,
- 		}
+-	/* Select single conversion mode */
+-	if (TI_BANDGAP_HAS(bgp, MODE_CONFIG))
++	/* Select continuous or single conversion mode */
++	if (TI_BANDGAP_HAS(bgp, CONT_MODE_ONLY))
++		RMW_BITS(bgp, id, bgap_mode_ctrl, mode_ctrl_mask, 1);
++	else if (TI_BANDGAP_HAS(bgp, MODE_CONFIG))
+ 		RMW_BITS(bgp, id, bgap_mode_ctrl, mode_ctrl_mask, 0);
+ 
+ 	/* Start of Conversion = 1 */
+@@ -619,6 +622,7 @@ ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id)
+ 		if (ti_bandgap_readl(bgp, tsr->temp_sensor_ctrl) &
+ 		    tsr->bgap_eocz_mask)
+ 			break;
++		udelay(1);
  	}
  
-+	set_summary(&sum, dn.nid, dn.ofs_in_node, ni.version);
-+
-+	/* allocate block address */
- 	f2fs_allocate_data_block(fio.sbi, NULL, fio.old_blkaddr, &newaddr,
- 				&sum, type, NULL);
+ 	/* Start of Conversion = 0 */
+@@ -630,6 +634,7 @@ ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id)
+ 		if (!(ti_bandgap_readl(bgp, tsr->temp_sensor_ctrl) &
+ 		      tsr->bgap_eocz_mask))
+ 			break;
++		udelay(1);
+ 	}
  
-@@ -1234,9 +1235,6 @@ static int move_data_block(struct inode *inode, block_t bidx,
- 	set_page_writeback(fio.encrypted_page);
- 	ClearPageError(page);
+ 	return 0;
+diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.h b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+--- a/drivers/thermal/ti-soc-thermal/ti-bandgap.h
++++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+@@ -280,6 +280,7 @@ struct ti_temp_sensor {
+  *	has Errata 814
+  * TI_BANDGAP_FEATURE_UNRELIABLE - used when the sensor readings are too
+  *	inaccurate.
++ * TI_BANDGAP_FEATURE_CONT_MODE_ONLY - used when single mode hangs the sensor
+  * TI_BANDGAP_HAS(b, f) - macro to check if a bandgap device is capable of a
+  *      specific feature (above) or not. Return non-zero, if yes.
+  */
+@@ -295,6 +296,7 @@ struct ti_temp_sensor {
+ #define TI_BANDGAP_FEATURE_HISTORY_BUFFER	BIT(9)
+ #define TI_BANDGAP_FEATURE_ERRATA_814		BIT(10)
+ #define TI_BANDGAP_FEATURE_UNRELIABLE		BIT(11)
++#define TI_BANDGAP_FEATURE_CONT_MODE_ONLY	BIT(12)
+ #define TI_BANDGAP_HAS(b, f)			\
+ 			((b)->conf->features & TI_BANDGAP_FEATURE_ ## f)
  
--	/* allocate block address */
--	f2fs_wait_on_page_writeback(dn.node_page, NODE, true, true);
--
- 	fio.op = REQ_OP_WRITE;
- 	fio.op_flags = REQ_SYNC;
- 	fio.new_blkaddr = newaddr;
 -- 
 2.29.2
-
