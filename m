@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3B82E7C4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 21:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76982E7C4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 21:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgL3UoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 15:44:06 -0500
-Received: from relay5.mymailcheap.com ([159.100.248.207]:41477 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbgL3UoF (ORCPT
+        id S1726363AbgL3Ust (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 15:48:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgL3Ust (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 15:44:05 -0500
-Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [217.182.113.132])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 9D4A1260EB;
-        Wed, 30 Dec 2020 20:43:12 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id 93EC93EDFC;
-        Wed, 30 Dec 2020 21:41:39 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 711A92A524;
-        Wed, 30 Dec 2020 21:41:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1609360899;
-        bh=FRGW8gu58lGpw7gwIy7zr0D1bR8uZrCGzxkRxv0pFb4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hdOH/nL163C+MJWV37q702UBmnSpoPxINNoYM/yqN/OnYdO1UhNhcbv4CSWTen7te
-         R7REtL21tc9yeDEKvvAAk9i1H4EhwPqHJvBQqk6EtPlq18NXJZQEPo+7ZJPXBFs0qe
-         crcjdAwotB0V2jTBC4sQvWJzWRYQbFhYlP6NZHTM=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 54ouhL5P2Orm; Wed, 30 Dec 2020 21:41:38 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Wed, 30 Dec 2020 21:41:38 +0100 (CET)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 88D5241FB0;
-        Wed, 30 Dec 2020 20:41:37 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="ZAE1txoD";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.160.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 18AAF41E18;
-        Wed, 30 Dec 2020 20:41:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1609360887; bh=FRGW8gu58lGpw7gwIy7zr0D1bR8uZrCGzxkRxv0pFb4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZAE1txoDvI/Sr6IEXZfrYbhDo2Wi1V0ZRYetZqSy440m3QtHX3Mz2zOiXm3JbSnLf
-         lQGVZRPHjqJ5YPD61luGKabNDG+YJR4SU51Vtvfy0G1tqSK44anQ/wVaMCokMYCvxO
-         T4hJ9edY6aIB6etTkExDb3jbjaSCvqpqFOQ4+hVU=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Icenowy Zheng <icenowy@aosc.io>, stable@vger.kernel.org
-Subject: [PATCH] drm/panel: ilitek-ili9881c: fix attach failure cleanup
-Date:   Thu, 31 Dec 2020 04:41:10 +0800
-Message-Id: <20201230204110.52053-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.28.0
+        Wed, 30 Dec 2020 15:48:49 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F28C061573;
+        Wed, 30 Dec 2020 12:48:08 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id h10so9295795pfo.9;
+        Wed, 30 Dec 2020 12:48:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jRVdipqMo3SGkScdVCSY0NCVDydJxCZXUp0vL0ss0j8=;
+        b=Ex8hVNUWqY+rbyZwRHu0Z8ZFDWv3n6GCNQ6/oKC9ORvHkbkiVNGzdB91SjAk392fsg
+         s3ED8sOmsckgJOxTaNfYxosbDaaMTahyn8teOd4ojTAUMBd0JUPKX5HzCwG4Hhbis73B
+         uRuMcfr3NQT5ekO4VMFxihb+mdcnRnFki6aY9LJt3PYKLZkgwrGw4VeNdH9ioFHjsks1
+         vbOzj6pKww4PqUZL4f29Bi4HnqOfCxVzr4w0ISFjRmcq4dfx2pLhCVAB43Q8usle0KNN
+         XoU1DpgnpDL8QwmG6+owvGJ/TZUxTIGNNavC1HalaTQByK0CRPAB+fhq7VP0yAqWMm5L
+         wt4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jRVdipqMo3SGkScdVCSY0NCVDydJxCZXUp0vL0ss0j8=;
+        b=EvKOt2D2oKqHTPO5ECfCGDcGPZ/Mbx08uNO1GIA/DrfNwAMXzjq1gjhaz7jsMzcrDb
+         WcOjDyFGLUj3FbBeEHViVCpxk32HKfZeoqVcJ7eAGlBDqfBFxh1Ee55QOyeTfJrrH79T
+         51ibimUaLZuv9ZtE6/AIIOT7kyXfr/iW1Tti6s8DTecrnbHjHiJP+rUL2axyGHbbL4xb
+         6ib/1VVZOcgq/eI6HmOhtOgS+pdi4HB0F6b5b+umvKghnxsnWYyeMyEuYa6cqsY3rcH5
+         A1ZNW/TwuLOkvwvRk1HNboy2XIyBcy0JwKFcKr6PZtM0A3Mq7Jo0eAdj2fsAKXswx66Y
+         ypxA==
+X-Gm-Message-State: AOAM531K/Ev6mIXZCkokCn4f4uqC4EiEjFgnlJNiq9kNNkx1sBUOrr0C
+        0fVAuJzt3YkLKoEwLhzJ62RQL9cXZsTi/XqjnroaXIlKC6/9wA==
+X-Google-Smtp-Source: ABdhPJxSMf4/TA4B3IeFbMjgSsLR1NtTgwkka1CnQ1qojXL0WNjbTMpocAhYi5Qhs2jjwKkiX06W8HtrgHf96sok07s=
+X-Received: by 2002:a63:c04b:: with SMTP id z11mr53914993pgi.74.1609361287808;
+ Wed, 30 Dec 2020 12:48:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spamd-Result: default: False [6.40 / 20.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         FREEMAIL_TO(0.00)[gmail.com,ravnborg.org,linux.ie,ffwll.ch,kernel.org];
-         RCVD_NO_TLS_LAST(0.10)[];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.160.237:received];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         MID_CONTAINS_FROM(1.00)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Queue-Id: 88D5241FB0
+References: <20201224010907.263125-1-djrscally@gmail.com> <20201224010907.263125-15-djrscally@gmail.com>
+ <CAHp75VeXN6PnV7Mzz6UMpD+m-yjPi6XK0kx1=+-M5mci=Vb=YQ@mail.gmail.com>
+ <20201228170521.GZ26370@paasikivi.fi.intel.com> <2d37df3d-f04c-6679-6e27-6c7f82e9b158@gmail.com>
+ <20201228225544.GH4077@smile.fi.intel.com> <X+plTyUFhfHi7eIE@pendragon.ideasonboard.com>
+ <CAHp75Vdzk7i+QzkTxLJUUkw3xZot9F7QT8pyu6b5yjkCVzMXEA@mail.gmail.com> <X+pzKDNWpiQWenHy@pendragon.ideasonboard.com>
+In-Reply-To: <X+pzKDNWpiQWenHy@pendragon.ideasonboard.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 30 Dec 2020 22:47:51 +0200
+Message-ID: <CAHp75Vf18sse_QQGSy+E2qK-N_B=ky83x36HiNfmUKmya_CS9Q@mail.gmail.com>
+Subject: Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jordan Hand <jorhand@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When mipi_dsi_attach() fails (e.g. got a -EPROBE_DEFER), the panel should
-be removed, otherwise a pointer to it will be kept and then lead to
-use-after-free when DRM panel codes are called (e.g. the panel is probed
-again).
+On Tue, Dec 29, 2020 at 2:07 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Tue, Dec 29, 2020 at 01:54:59AM +0200, Andy Shevchenko wrote:
+> > On Tue, Dec 29, 2020 at 1:08 AM Laurent Pinchart wrote:
 
-Fix this by adding cleanup code after mipi_dsi_attach() failure.
+...
 
-Fixes: 26aec25593c2 ("drm/panel: Add Ilitek ILI9881c panel driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
----
- drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> > +#include <linux/videodev2.h>
+>
+> I think this can be dropped.
 
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-index 0145129d7c66..22f2268f00f7 100644
---- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-@@ -674,7 +674,13 @@ static int ili9881c_dsi_probe(struct mipi_dsi_device *dsi)
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->lanes = 4;
- 
--	return mipi_dsi_attach(dsi);
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		drm_panel_remove(&ctx->panel);
-+		return ret;
-+	}
-+
-+	return 0;
- }
- 
- static int ili9881c_dsi_remove(struct mipi_dsi_device *dsi)
+I dropped above (I noticed it's included by a half of the headers listed below.
+
+> > +#include <media/media-device.h>
+> > +#include <media/media-entity.h>
+> > +#include <media/v4l2-async.h>
+> > +#include <media/v4l2-dev.h>
+> > +#include <media/v4l2-device.h>
+> > +#include <media/v4l2-subdev.h>
+> > +#include <media/videobuf2-core.h>
+> > +#include <media/videobuf2-v4l2.h>
+
+...
+
+> How about grouping all forward declarations at the top ?
+
+Done.
+
+> Otherwise this looks good,
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+Thanks!
+I just sent a formal patch with your tag included.
+
 -- 
-2.28.0
+With Best Regards,
+Andy Shevchenko
