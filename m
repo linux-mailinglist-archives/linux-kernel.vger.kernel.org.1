@@ -2,712 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C85B2E75CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 04:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608942E75CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 04:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgL3DTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Dec 2020 22:19:05 -0500
-Received: from mail.prewas.sk ([212.5.209.170]:58976 "EHLO mail.prewas.sk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726161AbgL3DTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Dec 2020 22:19:04 -0500
-dkim-signature: v=1; a=rsa-sha256; d=3ksolutions.sk; s=mail.prewas.sk;
-        c=relaxed/relaxed; q=dns/txt; h=From:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Transfer-Encoding;
-        bh=D4OVs1jCztpvCd6WMXfYhJ3GXsFsUNL7lrMd04hxrvA=;
-        b=KW8P+ePZNDqlTdfDee0Knd6T1dxLEfBSp5ScdWWO13ZqgVh6dphWohRcCvKBKIA8FL190pmH50kI8AxyahRSmH13OA7kA93Uv7wCBkuluS1rlq3op7kWVIFqUQChuoykvD8fECbI7ts+F5eTS9hQueeqA0XKw1QuF3dTnqu7gv0WRxHfO58FeY1iaPKbcsK+nZCyiI+OYW4TWMEVqka2B/b9ykN/CzvIpvizADxWcZXpAZSAojbRCKvCPd
-        zljX64Be+oDM4vhf9rt9xHsqgYYYgodABpxLLW14drwnI4Ib2GyefG3pLrp3VZBdNP4aegkNsgt7VhXcfFEywGWqeScw==
-Received: from localhost.localdomain (Unknown [10.0.1.41])
-        by mail.prewas.sk with ESMTPSA
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256)
-        ; Wed, 30 Dec 2020 04:18:22 +0100
-From:   Ivan Sistik <sistik@3ksolutions.sk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     jslaby@suse.com, suravee.suthikulpanit@amd.com,
-        sbranden@broadcom.com, wahrenst@gmx.net,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, Ivan Sistik <sistik@3ksolutions.sk>
-Subject: [PATCH] tty: serial: amba-pl011: added RS485 support [v3]
-Date:   Wed, 30 Dec 2020 04:16:42 +0100
-Message-Id: <20201230031642.118872-1-sistik@3ksolutions.sk>
-X-Mailer: git-send-email 2.25.1
+        id S1726292AbgL3DZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Dec 2020 22:25:17 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:57467 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726138AbgL3DZP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Dec 2020 22:25:15 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id A4D349D7;
+        Tue, 29 Dec 2020 22:24:08 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 29 Dec 2020 22:24:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=N587kIZF++Onsdnv505v6x5WYf
+        BETpt5IAx0RuRgOzA=; b=aXLPl7s7zREyCZ4U7hSVnkES8/Ze2bJw7hmfrV2M1Y
+        bz3rMaPKS0LxvHZsF4gSNePVopeGjZIf+DHdgfu5KrWOBi2OGH0Laj8huwWbpyRt
+        3aahjUFHjCrUHVBKwOPjFXHmTH82ZNCeiGsyjOryZ0HPn9ke5PXRO+V6CRQF0yFy
+        8t4uKm+h1VKKwg+zkNan/SQTKdy+FjcO7KYwux4v6c3ygm1Ve1sL7rC3i9EOGgaW
+        YTeIbPNQ8Ia93lYfo5fsJmZmb9x9iSsl4yJ31VOTeK2rPnPw/vqm2fZ/0/26dS6n
+        SZs7Yz3HqJ6pp8s6tdNdfyXldFpQgHCdw8QPv5jJ905g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=N587kIZF++Onsdnv5
+        05v6x5WYfBETpt5IAx0RuRgOzA=; b=b9Iid9/tiJXeJDOq/vwVdnaTaiWZTqgY4
+        2ovR7GzBFQGcMYecZPdLRVfgv12PbGTxdiRSxk/TdbV8qgDloxDs+/PPl6iv1Nm3
+        LFkOy9D8/DuL+8PrqTvZmgC0qSHzpdRjG4hH9CazrLNxr2jofsUT99VmVfw290GS
+        vSn+JsCCwljOdrvVOlrM8yWEvnVBh7AOVHjYTXAIIPSmEyws/+ZhH0idwu8K/F89
+        988gMA1RDc+dH2Oe+5jqy3hpN/MTNxnhLEaGweGgCM3eon3mQVm9b7udHSqpVV3w
+        U1hNLu31GOpMrVskVs2t2OoJhxxLCErjCdFNgzXwD4PJUm5pr5o1A==
+X-ME-Sender: <xms:0vLrXwHAeEaMowGFAyNa6Ctj2avG1bNuw26HH1_47m4sVGa6jsRu9A>
+    <xme:0vLrX5XCzKR9Z3yu04EeX1KvQOBZHcGe8oiW4GEONZxMmkuaCe3vFaMrot0AoE0xO
+    HZubTKYAihrV985-YM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddvvddgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflihgrgihunhcu
+    jggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecuggftrf
+    grthhtvghrnhephfejtdektdeuhedtieefteekveffteejteefgeekveegffetvddugfel
+    iefhtddunecukfhppeeitddrudejjedrudekledrudejudenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhih
+    ghhorghtrdgtohhm
+X-ME-Proxy: <xmx:0vLrX6IPvbCLgZMAYWxC3NmFrP1bbaynLX5DtuViineRISAhSO55tg>
+    <xmx:0vLrXyGgxkY85AqztpAOn2htFz4Qau3ogazy_HbntVtbwwXUFYfx0g>
+    <xmx:0vLrX2WYHw_O9chQZx-dI0mSgtWYdd8A3csEJB5iYxdDG64ZpjdT-Q>
+    <xmx:1_LrX_MNYZQU6gDhv0RRAwRj3jgrEGjzMHT7esmuo5YucJC4u7QNpFUttMFfiAHa>
+Received: from strike.202.net.flygoat.com (unknown [60.177.189.171])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B122A1080064;
+        Tue, 29 Dec 2020 22:23:56 -0500 (EST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        WANG Xuerui <git@xen0n.name>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>, Paul Burton <paulburton@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Huacai Chen <chenhc@lemote.com>, YunQiang Su <syq@debian.org>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] MIPS: Add vulnerabilities infrastructure
+Date:   Wed, 30 Dec 2020 11:23:07 +0800
+Message-Id: <20201230032314.10042-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AMBA PL011 do not have hardware support for RS485. This implementation is
-for drive enable signal (DE), which switch direction of RS485 driver chip.
-This signal si drived by RTS pin. Correct multiplexor settings have to be
-provided to Device Tree. Usually it is 'ctsrts', which is used for enabling
-of HW flow control, too.
+Add infrastructure to display CPU vulnerabilities.
+As most MIPS CPU vendors are dead today and we can't confirm
+vulnerabilities states with them, we'll display vulnerabilities
+as "Unknown" by default and override them in cpu-probe.c
 
-DE signal is switched by starting transmition from serial core and data
-transfer is initiated by first hrtimer if there is delay before send
-enabled.
-
-There is missing FIFO empty interrupt in PL011. It is replaced by second
-hrtimer which is started if there are no more data in port transmit buffer.
-Notice that port transmit buffer is not the same as HW TX FIFO. Time of
-this timmer is set to char send time and it is running until fifo is empty.
-This kind of implementation cause that there can be unwanted delay of one
-timer tick before DE signal is switched. This is used to prevent data loss
-during transmit. Second timer can start first if there is delay after send
-enabled.
-
-Signed-off-by: Ivan Sistik <sistik@3ksolutions.sk>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
+ arch/mips/Kconfig                |  1 +
+ arch/mips/include/asm/cpu-info.h |  5 ++++
+ arch/mips/include/asm/cpu.h      |  7 +++++
+ arch/mips/kernel/Makefile        |  2 +-
+ arch/mips/kernel/vulnbl.c        | 46 ++++++++++++++++++++++++++++++++
+ 5 files changed, 60 insertions(+), 1 deletion(-)
+ create mode 100644 arch/mips/kernel/vulnbl.c
 
-Notes:
-    This patch is ported and corrected version of my previous patches which
-    can be reviewed here:
-    https://lore.kernel.org/lkml/20200106235203.27256-1-sistik@3ksolutions.sk/
-    and here:
-    https://lore.kernel.org/lkml/20201228164108.16508-1-sistik@3ksolutions.sk/
-    
-    I have been waiting for some time to see if Lukas Wunner <lukas@wunner.de>
-    will create patch with his own solution.
-    
-    Now I am successfully running my imeplementation for almost one year in
-    production environment. It is running 24/7 on Raspberry PI 4B which is
-    used as modbus master. There are no problems with it. I have made
-    corrections to patch according to notes from Greg Kroah-Hartman
-    <gregkh@linuxfoundation.org> and Stefan Wahren <stefan.wahren@i2se.com>.
-
- drivers/tty/serial/Kconfig      |  11 +
- drivers/tty/serial/amba-pl011.c | 463 +++++++++++++++++++++++++++++++-
- 2 files changed, 471 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index a9751a83d..26dddab0c 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -75,6 +75,17 @@ config SERIAL_AMBA_PL011_CONSOLE
- 	  your boot loader (lilo or loadlin) about how to pass options to the
- 	  kernel at boot time.)
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index ef5b2a177b1b..524053b8f769 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -24,6 +24,7 @@ config MIPS
+ 	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CMOS_UPDATE
+ 	select GENERIC_CPU_AUTOPROBE
++	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_GETTIMEOFDAY
+ 	select GENERIC_IOMAP
+ 	select GENERIC_IRQ_PROBE
+diff --git a/arch/mips/include/asm/cpu-info.h b/arch/mips/include/asm/cpu-info.h
+index a600670d00e9..1a964dbfc0a8 100644
+--- a/arch/mips/include/asm/cpu-info.h
++++ b/arch/mips/include/asm/cpu-info.h
+@@ -106,6 +106,11 @@ struct cpuinfo_mips {
+ 	unsigned int		guestid_mask;
+ 	unsigned int		guestid_cache;
  
-+config SERIAL_AMBA_PL011_SOFT_RS485
-+	bool "RS485 software direction switching for ARM AMBA PL011 serial"
-+	depends on SERIAL_AMBA_PL011=y
-+	help
-+	  Enable RS485 software direction switching of driver enable (RTS pin)
-+	  for ARM AMBA PL011 serial. AMBA PL011 does not have HW support for
-+	  RS485. This driver use 2 hrtimers. One is used for rs485 delays.
-+	  Second one is used for polling of TX FIFO. There is not TX FIFO
-+	  empty interrupt in PL011. Secondary timer is started by empty
-+	  transmit buffer.
-+
- config SERIAL_EARLYCON_ARM_SEMIHOST
- 	bool "Early console using ARM semihosting"
- 	depends on ARM64 || ARM
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 16720c97a..6a40e5bc5 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -46,6 +46,7 @@
- #include <linux/sizes.h>
- #include <linux/io.h>
- #include <linux/acpi.h>
-+#include <linux/math64.h>
- 
- #include "amba-pl011.h"
- 
-@@ -60,6 +61,18 @@
- #define UART_DR_ERROR		(UART011_DR_OE|UART011_DR_BE|UART011_DR_PE|UART011_DR_FE)
- #define UART_DUMMY_DR_RX	(1 << 16)
- 
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+/*
-+ * Enum with current status
-+ */
-+enum rs485_status {
-+	rs485_receiving,
-+	rs485_delay_before_send,
-+	rs485_sending,
-+	rs485_delay_after_send
-+};
-+#endif
-+
- static u16 pl011_std_offsets[REG_ARRAY_SIZE] = {
- 	[REG_DR] = UART01x_DR,
- 	[REG_FR] = UART01x_FR,
-@@ -270,6 +283,16 @@ struct uart_amba_port {
- 	unsigned int		old_cr;		/* state during shutdown */
- 	unsigned int		fixed_baud;	/* vendor-set fixed baud rate */
- 	char			type[12];
-+
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	enum rs485_status	rs485_current_status; /* status used for RTS */
-+	enum rs485_status	rs485_next_status; /* this status after tick */
-+	struct hrtimer		rs485_delay_timer;
-+	struct hrtimer		rs485_tx_empty_poll_timer;
-+	unsigned long		send_char_time;	/* send char (nanoseconds) */
-+	bool			rs485_last_char_sending;
-+#endif
-+
- #ifdef CONFIG_DMA_ENGINE
- 	/* DMA stuff */
- 	bool			using_tx_dma;
-@@ -306,6 +329,36 @@ static void pl011_write(unsigned int val, const struct uart_amba_port *uap,
- 		writew_relaxed(val, addr);
- }
- 
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+
-+static void pl011_rs485_start_rts_delay(struct uart_amba_port *uap);
-+
-+static void rs485_set_rts_signal(struct uart_amba_port *uap, bool value)
-+{
-+	unsigned int rts_temp_cr;
-+
-+	rts_temp_cr = pl011_read(uap, REG_CR);
-+
-+	if (!value)
-+		rts_temp_cr |= UART011_CR_RTS;
-+	else
-+		rts_temp_cr &= ~UART011_CR_RTS;
-+
-+	pl011_write(rts_temp_cr, uap, REG_CR);
-+}
-+
-+void rs485_cancel_timers(struct uart_amba_port *uap)
-+{
-+	hrtimer_try_to_cancel(&(uap->rs485_delay_timer));
-+	hrtimer_try_to_cancel(&(uap->rs485_tx_empty_poll_timer));
-+}
-+
-+bool rs485_tx_fifo_empty(struct uart_amba_port *uap)
-+{
-+	return (pl011_read(uap, REG_FR) & UART011_FR_TXFE);
-+}
-+#endif
-+
- /*
-  * Reads up to 256 characters from the FIFO or until it's empty and
-  * inserts them into the TTY layer. Returns the number of characters
-@@ -1301,6 +1354,11 @@ static void pl011_stop_tx(struct uart_port *port)
- 	uap->im &= ~UART011_TXIM;
- 	pl011_write(uap->im, uap, REG_IMSC);
- 	pl011_dma_tx_stop(uap);
-+
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	if (uap->port.rs485.flags & SER_RS485_ENABLED)
-+		pl011_rs485_start_rts_delay(uap);
-+#endif
- }
- 
- static bool pl011_tx_chars(struct uart_amba_port *uap, bool from_irq);
-@@ -1319,8 +1377,113 @@ static void pl011_start_tx(struct uart_port *port)
- 	struct uart_amba_port *uap =
- 	    container_of(port, struct uart_amba_port, port);
- 
--	if (!pl011_dma_tx_start(uap))
--		pl011_start_tx_pio(uap);
-+#define START_PL011_TX()				\
-+	do {						\
-+		if (!pl011_dma_tx_start(uap))		\
-+			pl011_start_tx_pio(uap);	\
-+	} while (0)
-+
-+#ifndef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	START_PL011_TX();
-+#else
-+
-+	if (uap->port.rs485.flags & SER_RS485_ENABLED) {
-+		ktime_t ktime;
-+
-+		switch (uap->rs485_current_status) {
-+		case rs485_delay_after_send:
-+
-+			rs485_cancel_timers(uap);
-+
-+			/* check if timer expired */
-+			if (uap->rs485_current_status
-+					!= rs485_delay_after_send) {
-+				/* Timer expired and RTS is in wrong state.*/
-+				uap->rs485_current_status
-+					= rs485_delay_before_send;
-+				uap->rs485_next_status = rs485_sending;
-+
-+				rs485_set_rts_signal(uap,
-+					uap->port.rs485.flags
-+						& SER_RS485_RTS_ON_SEND);
-+
-+				ktime = ktime_set(0,
-+					  uap->port.rs485
-+						.delay_rts_before_send
-+					  * 1000000L);
-+
-+				hrtimer_start(
-+					&(uap->rs485_delay_timer),
-+					ktime,
-+					HRTIMER_MODE_REL);
-+				return;
-+			}
-+
-+			/* timer was stopped and driver can continue sending */
-+			uap->rs485_current_status = rs485_sending;
-+			uap->rs485_next_status = rs485_sending;
-+
-+			/* driver is already in sending state */
-+			START_PL011_TX();
-+			break;
-+
-+
-+		case rs485_sending:
-+			/* stop old timer. There can be running timer	*/
-+			/* which is checking TX FIFO empty flag		*/
-+			rs485_cancel_timers(uap);
-+
-+			/* driver is already in sending state */
-+			START_PL011_TX();
-+			break;
-+
-+		case rs485_receiving:
-+		default:
-+			/* stop old timer. There can be running timer	*/
-+			/* which is checking TX FIFO empty flag		*/
-+			rs485_cancel_timers(uap);
-+
-+			/* Set RTS */
-+			rs485_set_rts_signal(uap,
-+				     uap->port.rs485.flags
-+					     & SER_RS485_RTS_ON_SEND);
-+
-+			if (uap->port.rs485.delay_rts_before_send == 0) {
-+				/* Change state */
-+				uap->rs485_current_status
-+					= rs485_sending;
-+				uap->rs485_next_status
-+					= rs485_sending;
-+
-+				/* driver is in sending state */
-+				START_PL011_TX();
-+				break;
-+			}
-+
-+			/* Change state */
-+			uap->rs485_current_status
-+				= rs485_delay_before_send;
-+			uap->rs485_next_status = rs485_sending;
-+
-+			/* Start timer */
-+			ktime = ktime_set(0,
-+				  uap->port.rs485.delay_rts_before_send
-+				  * 1000000L);
-+			hrtimer_start(&(uap->rs485_delay_timer),
-+				ktime,
-+				HRTIMER_MODE_REL);
-+			break;
-+
-+		case rs485_delay_before_send:
-+			/* do nothing because delay timer should be running */
-+			break;
-+		}
-+	} else {
-+		START_PL011_TX();
-+	}
-+#endif
-+
-+#undef START_PL011_TX
- }
- 
- static void pl011_stop_rx(struct uart_port *port)
-@@ -1476,6 +1639,166 @@ static void check_apply_cts_event_workaround(struct uart_amba_port *uap)
- 	dummy_read = pl011_read(uap, REG_ICR);
- }
- 
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+
-+/*
-+ * Change state according to pending delay
-+ * Locking: port is locked in this function
-+ */
-+static enum hrtimer_restart
-+pl011_rs485_tx_poll_timer(struct hrtimer *timer)
-+{
-+	unsigned long flags;
-+	ktime_t ktime;
-+
-+	struct uart_amba_port *uap =
-+		container_of(timer, struct uart_amba_port,
-+			     rs485_tx_empty_poll_timer);
-+
-+	spin_lock_irqsave(&uap->port.lock, flags);
-+
-+	if (!(uart_circ_empty(&uap->port.state->xmit))) {
-+		spin_unlock_irqrestore(&uap->port.lock, flags);
-+		return HRTIMER_NORESTART;
-+	}
-+
-+	if (!rs485_tx_fifo_empty(uap) || !uap->rs485_last_char_sending) {
-+		/*
-+		 *  FIFO is empty but there is last char in transmit shift
-+		 * register so we need one more tick
-+		 */
-+		uap->rs485_last_char_sending = rs485_tx_fifo_empty(uap);
-+
-+		hrtimer_forward_now(timer, ktime_set(0, uap->send_char_time));
-+
-+		spin_unlock_irqrestore(&uap->port.lock, flags);
-+		return HRTIMER_RESTART;
-+	}
-+
-+	/* Check if delay after send is set*/
-+	if (uap->port.rs485.delay_rts_after_send == 0) {
-+		/* Change state */
-+		uap->rs485_current_status = rs485_receiving;
-+		uap->rs485_next_status = rs485_receiving;
-+
-+		/* if there is no delay after send change RTS value*/
-+		rs485_set_rts_signal(uap,
-+			     uap->port.rs485.flags
-+				     & SER_RS485_RTS_AFTER_SEND);
-+
-+		spin_unlock_irqrestore(&uap->port.lock, flags);
-+		return HRTIMER_NORESTART;
-+	}
-+
-+	/* Change state */
-+	uap->rs485_current_status = rs485_delay_after_send;
-+	uap->rs485_next_status = rs485_receiving;
-+
-+	/* RTS will be set in timer handler */
-+
-+	/* Start delay timer */
-+	ktime = ktime_set(0, (uap->port.rs485.delay_rts_after_send
-+			* 1000000L));
-+	hrtimer_start(&(uap->rs485_delay_timer), ktime, HRTIMER_MODE_REL);
-+
-+	spin_unlock_irqrestore(&uap->port.lock, flags);
-+	return HRTIMER_NORESTART;
-+}
-+
-+/*
-+ * Change state according to pending delay
-+ * Locking: port is locked in this function
-+ */
-+static enum hrtimer_restart
-+pl011_rs485_timer(struct hrtimer *timer)
-+{
-+	unsigned long flags;
-+
-+	struct uart_amba_port *uap =
-+		container_of(timer, struct uart_amba_port, rs485_delay_timer);
-+
-+	spin_lock_irqsave(&uap->port.lock, flags);
-+
-+	/* check if timer was canceled or handled */
-+	if (uap->rs485_current_status != uap->rs485_next_status) {
-+
-+		switch (uap->rs485_current_status) {
-+
-+		case rs485_delay_before_send:
-+			uap->rs485_current_status = rs485_sending;
-+			uap->rs485_next_status = rs485_sending;
-+			if (!pl011_dma_tx_start(uap))
-+				pl011_start_tx_pio(uap);
-+			break;
-+
-+		case rs485_delay_after_send:
-+			uap->rs485_current_status = rs485_receiving;
-+			uap->rs485_next_status = rs485_receiving;
-+			rs485_set_rts_signal(uap,
-+				     uap->port.rs485.flags
-+					     & SER_RS485_RTS_AFTER_SEND);
-+			break;
-+
-+		default:
-+			break;
-+		}
-+	}
-+
-+	spin_unlock_irqrestore(&uap->port.lock, flags);
-+	return HRTIMER_NORESTART;
-+}
-+
-+/*
-+ * Evaluate transmit buffer status and start delay to off
-+ * Locking: called with port lock held and IRQs disabled
-+ */
-+static void pl011_rs485_start_rts_delay(struct uart_amba_port *uap)
-+{
-+	ktime_t ktime;
-+
-+	if (uap->rs485_current_status == rs485_receiving)
-+		return;
-+
-+	/* if there is timeout in progress cancel it and start new */
-+	hrtimer_try_to_cancel(&(uap->rs485_delay_timer));
-+	hrtimer_try_to_cancel(&(uap->rs485_tx_empty_poll_timer));
-+
-+
-+	if (!rs485_tx_fifo_empty(uap)
-+			|| uap->port.rs485.delay_rts_after_send == 0) {
-+		/*
-+		 * Schedule validation timer if there is data in TX FIFO
-+		 * because there is not TX FIFO empty interrupt
-+		 */
-+
-+		uap->rs485_current_status = rs485_sending;
-+		uap->rs485_next_status = rs485_sending;
-+
-+		uap->rs485_last_char_sending = false;
-+
-+		ktime = ktime_set(0, uap->send_char_time);
-+		hrtimer_start(&(uap->rs485_tx_empty_poll_timer),
-+			ktime,
-+			HRTIMER_MODE_REL);
-+		return;
-+	}
-+
-+	/* Change state */
-+	uap->rs485_current_status = rs485_delay_after_send;
-+	uap->rs485_next_status = rs485_receiving;
-+
-+	/* RTS will be set in timer handler */
-+
-+	/* Start timer */
-+	ktime = ktime_set(0, (uap->port.rs485.delay_rts_after_send
-+			* 1000000L));
-+
-+	hrtimer_start(&(uap->rs485_delay_timer),
-+		ktime,
-+		HRTIMER_MODE_REL);
-+}
-+#endif
-+
- static irqreturn_t pl011_int(int irq, void *dev_id)
- {
- 	struct uart_amba_port *uap = dev_id;
-@@ -1618,6 +1941,11 @@ static void pl011_quiesce_irqs(struct uart_port *port)
- 	 */
- 	pl011_write(pl011_read(uap, REG_IMSC) & ~UART011_TXIM, uap,
- 		    REG_IMSC);
-+
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	if (uap->port.rs485.flags & SER_RS485_ENABLED)
-+		pl011_rs485_start_rts_delay(uap);
-+#endif
- }
- 
- static int pl011_get_poll_char(struct uart_port *port)
-@@ -1690,6 +2018,27 @@ static int pl011_hwinit(struct uart_port *port)
- 		if (plat->init)
- 			plat->init();
- 	}
-+
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	/*
-+	 * Initialize timers used for RS485
-+	 */
-+	hrtimer_init(&(uap->rs485_delay_timer),
-+		CLOCK_MONOTONIC,
-+		HRTIMER_MODE_REL);
-+
-+	uap->rs485_delay_timer.function = &pl011_rs485_timer;
-+
-+	hrtimer_init(&(uap->rs485_tx_empty_poll_timer),
-+		CLOCK_MONOTONIC,
-+		HRTIMER_MODE_REL);
-+
-+	uap->rs485_tx_empty_poll_timer.function = &pl011_rs485_tx_poll_timer;
-+
-+	uap->rs485_current_status = rs485_receiving;
-+	rs485_set_rts_signal(uap, false);
-+#endif
-+
- 	return 0;
- }
- 
-@@ -1873,6 +2222,16 @@ static void pl011_shutdown(struct uart_port *port)
- 	struct uart_amba_port *uap =
- 		container_of(port, struct uart_amba_port, port);
- 
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	if (uap->port.rs485.flags & SER_RS485_ENABLED) {
-+		hrtimer_try_to_cancel(&(uap->rs485_delay_timer));
-+		hrtimer_try_to_cancel(&(uap->rs485_tx_empty_poll_timer));
-+
-+		uap->rs485_current_status = rs485_receiving;
-+		rs485_set_rts_signal(uap, true);
-+	}
-+#endif
-+
- 	pl011_disable_interrupts(uap);
- 
- 	pl011_dma_shutdown(uap);
-@@ -1955,6 +2314,24 @@ pl011_set_termios(struct uart_port *port, struct ktermios *termios,
- 	unsigned long flags;
- 	unsigned int baud, quot, clkdiv;
- 
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	unsigned int transfer_bit_count;
-+	unsigned long char_transfer_time;
-+
-+	/*
-+	 * Calculate bit count which will be send
-+	 * by UART. It is used for calculation of
-+	 * time required to start timer until TX FIFO (HW) is empty
-+	 * There is not interrupt for FIFO empty in PL011.
-+	 * There is only FIFO empty flag in REG_FR.
-+	 */
-+	transfer_bit_count = 0;
-+
-+#define	ADD_DATA_BITS(bits)	(transfer_bit_count += bits)
-+#else
-+#define	ADD_DATA_BITS(bits)
-+#endif
-+
- 	if (uap->vendor->oversampling)
- 		clkdiv = 8;
- 	else
-@@ -1981,29 +2358,53 @@ pl011_set_termios(struct uart_port *port, struct ktermios *termios,
- 	switch (termios->c_cflag & CSIZE) {
- 	case CS5:
- 		lcr_h = UART01x_LCRH_WLEN_5;
-+		ADD_DATA_BITS(7);
- 		break;
- 	case CS6:
- 		lcr_h = UART01x_LCRH_WLEN_6;
-+		ADD_DATA_BITS(8);
- 		break;
- 	case CS7:
- 		lcr_h = UART01x_LCRH_WLEN_7;
-+		ADD_DATA_BITS(9);
- 		break;
- 	default: // CS8
- 		lcr_h = UART01x_LCRH_WLEN_8;
-+		ADD_DATA_BITS(10);
- 		break;
- 	}
--	if (termios->c_cflag & CSTOPB)
-+
-+	if (termios->c_cflag & CSTOPB) {
- 		lcr_h |= UART01x_LCRH_STP2;
-+		ADD_DATA_BITS(1);
-+	}
-+
- 	if (termios->c_cflag & PARENB) {
- 		lcr_h |= UART01x_LCRH_PEN;
-+		ADD_DATA_BITS(1);
-+
- 		if (!(termios->c_cflag & PARODD))
- 			lcr_h |= UART01x_LCRH_EPS;
-+
- 		if (termios->c_cflag & CMSPAR)
- 			lcr_h |= UART011_LCRH_SPS;
- 	}
-+
-+#undef ADD_DATA_BITS
-+
- 	if (uap->fifosize > 1)
- 		lcr_h |= UART01x_LCRH_FEN;
- 
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	/* Calculate time required to send one char (nanoseconds) */
-+	char_transfer_time =
-+		(unsigned long) div_u64(
-+				mul_u32_u32(
-+					(u32)transfer_bit_count,
-+					(u32)NSEC_PER_SEC),
-+				(u32)baud);
-+#endif
-+
- 	spin_lock_irqsave(&port->lock, flags);
- 
- 	/*
-@@ -2020,6 +2421,11 @@ pl011_set_termios(struct uart_port *port, struct ktermios *termios,
- 	old_cr = pl011_read(uap, REG_CR);
- 	pl011_write(0, uap, REG_CR);
- 
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	/* Update send_char_time in locked context */
-+	uap->send_char_time = char_transfer_time;
-+#endif
-+
- 	if (termios->c_cflag & CRTSCTS) {
- 		if (old_cr & UART011_CR_RTS)
- 			old_cr |= UART011_CR_RTSEN;
-@@ -2122,6 +2528,47 @@ static void pl011_config_port(struct uart_port *port, int flags)
- 	}
- }
++	/* Vulnerabilities */
++	unsigned int		vulnerabilities; /* Vulnerabilities states that we known */
++	unsigned int		vulnerable; /* Vulnerabilities affated */
++	unsigned int		mitigations; /* Mitigations */
++
+ #ifdef CONFIG_CPU_LOONGSON3_CPUCFG_EMULATION
+ 	/* CPUCFG data for this CPU, synthesized at probe time.
+ 	 *
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index f5b04e8f6061..3414c9f5464e 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -447,4 +447,11 @@ enum cpu_type_enum {
+ #define MIPS_ASE_LOONGSON_EXT	0x00002000 /* Loongson EXTensions */
+ #define MIPS_ASE_LOONGSON_EXT2	0x00004000 /* Loongson EXTensions R2 */
  
 +/*
-+ * Configure RS485
-+ * Locking: called with port lock held and IRQs disabled
++ * CPU security vulnerabilities
 + */
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+static int pl011_config_rs485(struct uart_port *port,
-+			      struct serial_rs485 *rs485)
++#define MIPS_VULNBL_MELTDOWN	BIT(0)
++#define MIPS_VULNBL_SPECTRE_V1	BIT(1)
++#define MIPS_VULNBL_SPECTRE_V2	BIT(2)
++
+ #endif /* _ASM_CPU_H */
+diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
+index 13a26d254829..39abc8ead5e0 100644
+--- a/arch/mips/kernel/Makefile
++++ b/arch/mips/kernel/Makefile
+@@ -8,7 +8,7 @@ extra-y		:= head.o vmlinux.lds
+ obj-y		+= cmpxchg.o cpu-probe.o branch.o elf.o entry.o genex.o idle.o irq.o \
+ 		   process.o prom.o ptrace.o reset.o setup.o signal.o \
+ 		   syscall.o time.o topology.o traps.o unaligned.o watch.o \
+-		   vdso.o cacheinfo.o
++		   vdso.o cacheinfo.o vulnbl.o
+ 
+ ifdef CONFIG_FUNCTION_TRACER
+ CFLAGS_REMOVE_ftrace.o = -pg
+diff --git a/arch/mips/kernel/vulnbl.c b/arch/mips/kernel/vulnbl.c
+new file mode 100644
+index 000000000000..fc73da6214fe
+--- /dev/null
++++ b/arch/mips/kernel/vulnbl.c
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2020, Jiaxun Yang <jiaxun.yang@flygoat.com>
++ *  MIPS CPU vulnerabilities
++ */
++
++#include <linux/device.h>
++
++#include <asm/cpu-info.h>
++#include <asm/cpu.h>
++
++ssize_t cpu_show_meltdown(struct device *dev,
++			  struct device_attribute *attr, char *buf)
 +{
-+	bool was_disabled;
-+	struct uart_amba_port *uap =
-+			container_of(port, struct uart_amba_port, port);
++	if (!(boot_cpu_data.vulnerabilities & MIPS_VULNBL_MELTDOWN))
++		return sprintf(buf, "Unknown\n");
 +
-+	was_disabled = !(port->rs485.flags & SER_RS485_ENABLED);
++	if (!(boot_cpu_data.vulnerable & MIPS_VULNBL_MELTDOWN))
++		return sprintf(buf, "Not affected\n");
 +
-+	port->rs485.flags = rs485->flags;
-+	port->rs485.delay_rts_after_send = rs485->delay_rts_after_send;
-+	port->rs485.delay_rts_before_send = rs485->delay_rts_before_send;
-+
-+	if (port->rs485.flags & SER_RS485_ENABLED) {
-+		unsigned int cr;
-+
-+		hrtimer_try_to_cancel(&(uap->rs485_delay_timer));
-+		hrtimer_try_to_cancel(&(uap->rs485_tx_empty_poll_timer));
-+
-+		/* If RS485 is enabled, disable auto RTS */
-+		cr = pl011_read(uap, REG_CR);
-+		cr &= ~UART011_CR_RTSEN;
-+		pl011_write(cr, uap, REG_CR);
-+
-+		uap->rs485_current_status = rs485_receiving;
-+		rs485_set_rts_signal(uap,
-+			     port->rs485.flags
-+				     & SER_RS485_RTS_AFTER_SEND);
-+	} else {
-+		rs485_set_rts_signal(uap, true);
-+	}
-+
-+	return 0;
++	return sprintf(buf, "Affected\n");
 +}
-+#endif
 +
- /*
-  * verify the new serial_struct (for TIOCSSERIAL).
-  */
-@@ -2647,6 +3094,11 @@ static int pl011_probe(struct amba_device *dev, const struct amba_id *id)
- 	uap->port.irq = dev->irq[0];
- 	uap->port.ops = &amba_pl011_pops;
- 
-+#ifdef CONFIG_SERIAL_AMBA_PL011_SOFT_RS485
-+	uap->port.rs485_config = &pl011_config_rs485;
-+	uap->port.rs485.flags = 0;	/* RS485 is not enabled by default */
-+#endif
++ssize_t cpu_show_spectre_v1(struct device *dev,
++			    struct device_attribute *attr, char *buf)
++{
++	if (!(boot_cpu_data.vulnerabilities & MIPS_VULNBL_SPECTRE_V1))
++		return sprintf(buf, "Unknown\n");
 +
- 	snprintf(uap->type, sizeof(uap->type), "PL011 rev%u", amba_rev(dev));
- 
- 	ret = pl011_setup_port(&dev->dev, uap, &dev->res, portnr);
-@@ -2819,10 +3271,15 @@ static struct amba_driver pl011_driver = {
- 
- static int __init pl011_init(void)
- {
-+#if IS_ENABLED(CONFIG_SERIAL_AMBA_PL011_SOFT_RS485)
-+	printk(KERN_INFO "Serial: AMBA PL011 UART driver with soft RS485 support\n");
-+#else
- 	printk(KERN_INFO "Serial: AMBA PL011 UART driver\n");
-+#endif
- 
- 	if (platform_driver_register(&arm_sbsa_uart_platform_driver))
- 		pr_warn("could not register SBSA UART platform driver\n");
++	if (!(boot_cpu_data.vulnerable & MIPS_VULNBL_SPECTRE_V1))
++		return sprintf(buf, "Not affected\n");
 +
- 	return amba_driver_register(&pl011_driver);
- }
- 
++	return sprintf(buf, "Affected\n");
++}
++
++ssize_t cpu_show_spectre_v2(struct device *dev,
++				   struct device_attribute *attr, char *buf)
++{
++	if (!(boot_cpu_data.vulnerabilities & MIPS_VULNBL_SPECTRE_V2))
++		return sprintf(buf, "Unknown\n");
++
++	if (!(boot_cpu_data.vulnerable & MIPS_VULNBL_SPECTRE_V2))
++		return sprintf(buf, "Not affected\n");
++
++	return sprintf(buf, "Affected\n");
++}
 -- 
-2.25.1
-
+2.30.0
 
