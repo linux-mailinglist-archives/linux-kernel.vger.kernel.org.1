@@ -2,144 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181392E7B94
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E2B2E7B95
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 18:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgL3Rc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 12:32:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726230AbgL3Rc0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 12:32:26 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2BAC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 09:31:45 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id ce23so22716085ejb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 09:31:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=hnodDRwV7KrX2F5f5m3U5rbzJKs9642aXUNNT4NV9xg=;
-        b=fDBWUKGIMs8QU5mQQEUXZreYyS59CQSHAc1LFFxxdUd1uCod27H/Xrr3dCVrKMuo0C
-         HmavTpybjJ91dgOD1W81NIn5WgOzU/c4yv+uB4p2TO4BIXUzP0V1vxNVYwWS7kXzlrh0
-         YHI82lYeork6vNCkH0QjWfOBJ3dIsvM7tHT7KXYihQ1zC7kOvF7nTLEmLi9zHpvLKMUU
-         OSuL0By3a7ZeVaCXsdE7UJNU4haz2e1x3rx9SM8v3Yi8TZrqVXGRxYdBA28k95//1Oqa
-         KCymDNKe8E5KfiG3gjUrAn7mL4ifNsGndjuN/DwlXH1F+zxzUEoIHY5MvlvBQaJ0PhBd
-         DZ9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=hnodDRwV7KrX2F5f5m3U5rbzJKs9642aXUNNT4NV9xg=;
-        b=Hk6mRNVxIIcYyogKdvVD49N/vvdf58TieiNhMe9/QZwEqe5w5KiKvoar3gDoss6tI1
-         sUPw+qA1L9WK7EvJg+MBaXCcgKaL+OYosx7VFaDWtrqw8m0mubcTN4zvBvgeP1oY1mI1
-         HhwTVBvd3K0zAOC27E0Q68tlKrlNjOYu0/DI8ttj1Ve33/e1PXuU/2j8qXNg0tt4IYnw
-         Kz2dmVBFt5P7PQkp2PeU2ZPzeCwbytoaBFC1fdgjomWLz7RwEM/4G4wXRs3eM1it7Mwm
-         c+Dp60lvk1Xz3O6z2OanJrhcTbSQ+VfeFUOkNcKKPqXNO1SihZoAViKJnl2+vd2OhtNb
-         2Tzw==
-X-Gm-Message-State: AOAM530H0UqHpIa5j+OowxeBY3yQBQFKbYY+I9FLOZ0xHra7e5hcdmCC
-        fEa9BeNLDvxzRnVa0QiVkqk/l57dCBsSNg==
-X-Google-Smtp-Source: ABdhPJxeocVzT2BF0zcq26jNflR5tn8yg80RBmY6qQ1/QKvsdv0JaMY2xmH7cslpKUbg8pZpPWAPWA==
-X-Received: by 2002:a17:906:3712:: with SMTP id d18mr51899918ejc.178.1609349504398;
-        Wed, 30 Dec 2020 09:31:44 -0800 (PST)
-Received: from CORE.localdomain (IGLD-83-130-29-80.inter.net.il. [83.130.29.80])
-        by smtp.gmail.com with ESMTPSA id z1sm17188890edm.89.2020.12.30.09.31.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Dec 2020 09:31:43 -0800 (PST)
-Date:   Wed, 30 Dec 2020 19:31:40 +0200
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [git pull] habanalabs fixes for 5.11-rc2
-Message-ID: <20201230173140.GA11958@CORE.localdomain>
+        id S1726617AbgL3Rcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 12:32:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726230AbgL3Rcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 12:32:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C8D02222A;
+        Wed, 30 Dec 2020 17:31:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609349515;
+        bh=sbDpGc3jPUAugLxWf9wbwxtbNJRLn21ld/ZCiTC1yVA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UQW75j0OsdsgoA8kO2E/oiEGB8UMQtTIq+4aVVP92AB63wvvJoiFn01cLrH4CMCwN
+         4nJVs3GAstDy14OTPApn5fceJ55/9ngEX8ZIlD0mDvBz9P8bF6ig5oQ9LBW1AHgeVR
+         ERhnS1qIsOojZfX7lpMzAYl0BWuL61H3SYfwTv2dRkNp0vERhPYu7VE+Ldp30ATRHn
+         lsRBgYFPPorsFCsIPMMd1qp75lyN9MEm3caUSDBV49vxa2bfci+FfjL5dbLMAgYkaX
+         FzmkGyJC6NRg7D1fg4RUbbiCPpaXDsNf+oTxj/l77Q+NEvNzr+NGXXGOR4Efjam2Ok
+         yT1+/+zIAMNQQ==
+Received: by pali.im (Postfix)
+        id E1DC69F8; Wed, 30 Dec 2020 18:31:52 +0100 (CET)
+Date:   Wed, 30 Dec 2020 18:31:52 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
+ RTL9601C chips
+Message-ID: <20201230173152.7dlq6t5erhspwhvs@pali>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20201230154755.14746-2-pali@kernel.org>
+ <20201230161036.GR1551@shell.armlinux.org.uk>
+ <20201230165634.c4ty3mw6djezuyq6@pali>
+ <20201230170546.GU1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201230170546.GU1551@shell.armlinux.org.uk>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Wednesday 30 December 2020 17:05:46 Russell King - ARM Linux admin wrote:
+> On Wed, Dec 30, 2020 at 05:56:34PM +0100, Pali Rohár wrote:
+> > This change is really required for those Realtek chips. I thought that
+> > it is obvious that from *both* addresses 0x50 and 0x51 can be read only
+> > one byte at the same time. Reading 2 bytes (for be16 value) cannot be
+> > really done by one i2 transfer, it must be done in two.
+> 
+> Then these modules are even more broken than first throught, and
+> quite simply it is pointless supporting the diagnostics on them
+> because we can never read the values in an atomic way.
 
-This pull request contains a number of important fixes for 5.11-rc2.
-Mainly fixes to support our new F/W with enhanced security features,
-but also additional bugs.
-See details in the tag message below.
+They are broken in a way that neither holy water help them...
 
-Thanks,
-Oded
+But from diagnostic 0x51 address we can read at least 8bit registers in
+atomic way :-)
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+> It's also a violation of the SFF-8472 that _requires_ multi-byte reads
+> to read these 16 byte values atomically. Reading them with individual
+> byte reads results in a non-atomic read, and the 16-bit value can not
+> be trusted to be correct.
+> 
+> That is really not optional, no matter what any manufacturer says - if
+> they claim the SFP MSAs allows it, they're quite simply talking out of
+> a donkey's backside and you should dispose of the module in biohazard
+> packaging. :)
+> 
+> So no, I hadn't understood this from your emails, and as I say above,
+> if this is the case, then we quite simply disable diagnostics on these
+> modules since they are _highly_ noncompliant.
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+We have just two options:
 
-are available in the Git repository at:
+Disable 2 (and more) bytes reads from 0x51 address and therefore disable
+sfp_hwmon_read_sensor() function.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2020-12-30
+Or allow 2 bytes non-atomic reads and allow at least semi-correct values
+for hwmon. I guess that upper 8bits would not change between two single
+byte i2c transfers too much (when they are done immediately one by one).
 
-for you to fetch changes up to b000700d6db50c933ce8b661154e26cf4ad06dba:
-
-  habanalabs: Fix memleak in hl_device_reset (2020-12-29 23:23:12 +0200)
-
-----------------------------------------------------------------
-This tag contains the following fixes for 5.11-rc2:
-
-- Fixes that are needed for supporting the new F/W with security features:
-  - Correctly fetch PLL information in GOYA when security is enabled in F/W
-  - Fix hard-reset support when F/W is in its preboot stage
-  - Disable clock gating when initializing the H/W
-  - Fix hard-reset procedure
-  - Fix PCI controller initialization
-- Remove setting of Engine-Barrier in collective wait operations. This
-  barrier created a drop in performance
-- Retry loading the TPC firmware in case of EINTR during loading
-- Fix CS counters
-- Register to PCI shutdown callback to fix handling of VM shutdown
-- Fix order of status check
-- Fix memory leak in reset procedure
-- Fix and add comments and fix indentations
-
-----------------------------------------------------------------
-Alon Mizrahi (5):
-      habanalabs: add comment for pll frequency ioctl opcode
-      habanalabs: fetch PSOC PLL frequency from F/W in goya
-      habanalabs: remove generic gaudi get_pll_freq function
-      habanalabs/gaudi: do not set EB in collective slave queues
-      habanalabs: add validation cs counter, fix misplaced counters
-
-Dinghao Liu (1):
-      habanalabs: Fix memleak in hl_device_reset
-
-Oded Gabbay (7):
-      habanalabs/gaudi: disable CGM at HW initialization
-      habanalabs/gaudi: enhance reset message
-      habanalabs: update comment in hl_boot_if.h
-      habanalabs: adjust pci controller init to new firmware
-      habanalabs/gaudi: retry loading TPC f/w on -EINTR
-      habanalabs: register to pci shutdown callback
-      habanalabs: fix order of status check
-
-Ofir Bitton (2):
-      habanalabs: preboot hard reset support
-      habanalabs: full FW hard reset support
-
-Tomer Tayar (2):
-      habanalabs: Fix a missing-braces warning
-      habanalabs: Revise comment to align with mirror list name
-
- .../misc/habanalabs/common/command_submission.c    |  77 +++++++--
- drivers/misc/habanalabs/common/device.c            |   8 +-
- drivers/misc/habanalabs/common/firmware_if.c       |  60 +++++--
- drivers/misc/habanalabs/common/habanalabs.h        |   4 +-
- drivers/misc/habanalabs/common/habanalabs_drv.c    |   1 +
- drivers/misc/habanalabs/common/habanalabs_ioctl.c  |   7 +-
- drivers/misc/habanalabs/common/hw_queue.c          |   5 +-
- drivers/misc/habanalabs/common/pci.c               |  28 +--
- drivers/misc/habanalabs/gaudi/gaudi.c              | 191 +++++++++------------
- drivers/misc/habanalabs/gaudi/gaudiP.h             |   7 -
- drivers/misc/habanalabs/gaudi/gaudi_coresight.c    |   3 +-
- drivers/misc/habanalabs/goya/goya.c                |  75 ++++----
- .../misc/habanalabs/include/common/hl_boot_if.h    |   9 +-
- include/uapi/misc/habanalabs.h                     |   5 +
- 14 files changed, 281 insertions(+), 199 deletions(-)
+But in any case we really need to set read operation for this eeprom to
+one byte.
