@@ -2,750 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71292E7B1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 17:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 174772E7B23
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 17:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgL3Qpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 11:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
+        id S1726336AbgL3Qv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 11:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgL3Qpf (ORCPT
+        with ESMTP id S1726168AbgL3QvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 11:45:35 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379CBC061799;
-        Wed, 30 Dec 2020 08:44:55 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id j12so15797387ota.7;
-        Wed, 30 Dec 2020 08:44:55 -0800 (PST)
+        Wed, 30 Dec 2020 11:51:25 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7183AC061799;
+        Wed, 30 Dec 2020 08:50:45 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id w124so19218072oia.6;
+        Wed, 30 Dec 2020 08:50:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8HqR4na7m/sZYN4wzF+DSzloLNBXrkqVJfAC6jP0wU0=;
-        b=iExn5MTJIYU0ggepHP6rsthAFdP1PtJjHIpv2I+qkCr5BPjkSvlyg2pH/JvkxBn4Sc
-         3Aju0xbROjWWO0xfVhYxMnWYpRFNBh4/FAZUQ4+PhY1f4s3e5zJegWTmiaTH4/XIjVir
-         /ep+xXexz3m03RDO4b8kkYVVFJCyIX7Rjt/lfJ68epNJq2HfhvOYAIoJpCHM7DwJRfUL
-         QkxVe875kYQ23SOHDA1eHQuSADL5v8ZWw+bmrgYLzNN59R9ZLsKbK7udrWVZ6ZgTfT6u
-         U9jMi1Ed6dyyycJGJ7NYgpDpntlDY5AhE7MVBHHzP4Px7EXJv1PW4kwbDXOMO0CXj2NE
-         WUgQ==
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t6P2ZmqFtyuJnEdPK04I8RYAnBRXAqg/IepNl21Cbws=;
+        b=oudrF+mjQm9CIsSNXF3AG95P6M7J3xuiQ9Zl3dy+TUGsU1E16HqeEtl6S/qjJvUtUE
+         qb40sKxIYScmsFud9oAP9wDI55/lDc8cV9JhZ4MfYTy3WI7o8/1TYfdfSsW4Z0GxxYI6
+         qeIUqDB2npCwwT7Om8TWrFR8qdARWvN7RVchzHQ6uNx4pWX0gGZxkA6jY8PTqse0ISMg
+         iXAUM2A5mENAR+ZKparAPY8kE1fKxIt0tGleS0vVFDlblWF0kYvqUgrMso1k5QC0R/fI
+         mXZnuzmbNzGb9ru3RxIRmKTXn3bYY1AcRs5mqj5pl7JxIYZS3CqXe+PNdBk6686NVK5+
+         7R5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8HqR4na7m/sZYN4wzF+DSzloLNBXrkqVJfAC6jP0wU0=;
-        b=In8wN6T2diqO//Qz/KWlKWEratO0t85Awrkv4a1Zl3m5ZVv4cMSCTaLcKj0QJjZBab
-         Aqu3Ol4UkbiOUjlC6CNMBUCCHTYsgX8rI2r6Z9NgnFaKA+yQmA7PK7U4QwplYkGl53JK
-         yAXw0VTLK5/yh28YGUbovSgZFtZr9+S5x+uoh7WDO5NEC/LBaCiSCiDXSmvJOBd0fuLM
-         ugaueD3HMSz267ItvXwPrftAiQeuT94JhgEw1Yt1e6PHZC6D9TRGuzMBLhMnm52im55+
-         ZsvjAmvxdJ8bs3uXiOmOGQjy6rQW6ntCntOUSbmN0XBdcqeUJym62z1HR+1lKF1ylX+i
-         czCA==
-X-Gm-Message-State: AOAM532HoHGMMZJKJwF3ttidMQxdTVU1k4IlVjKuiO852UCVTnMW8B3J
-        JUcQ1fflgWyXqUniH0EsyRYdl+OW1ks=
-X-Google-Smtp-Source: ABdhPJzA0yUOJePAEt01JaB66nlndXyzQmksl3px0XVhm6pPyDH/DV5hBBLMwJhyJ7bgY8vXCnejiQ==
-X-Received: by 2002:a05:6830:314b:: with SMTP id c11mr38089414ots.151.1609346694338;
-        Wed, 30 Dec 2020 08:44:54 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r13sm10752596oti.49.2020.12.30.08.44.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Dec 2020 08:44:53 -0800 (PST)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=t6P2ZmqFtyuJnEdPK04I8RYAnBRXAqg/IepNl21Cbws=;
+        b=Y7rL78MGVW7+WHGJI7DRiszAwlbuXD6lfGo321rPwGPFNhRISSt2LfonoOhzs/O6AN
+         2sYPypUL6M6vSE+u31e7iYOJTOLWM+y0SV9elyWsMaFNSX5H3PkQgYwM8WSAGN77+acq
+         JcosA48GdIcMcrBMHrkUE9tIKNfiHf1HzFZ40gMRQIWpHxA56JnVqEq+9gJNhOITNtxC
+         4CbgqWHpZszaOeFQUFkYsJ8w3alGBgBX0nemyVQgBiVU1xEKNuZFAwpwpqPhpDfKF+QN
+         eaHzpYLUsI/MBnBFQa7Uwk4uk3N05eOQUk7vjqMKwlfNQiIufmdUZn07dEnOLJ+Br6t1
+         4EQQ==
+X-Gm-Message-State: AOAM531JGHaW7D9obQ9i8vIbTW8rPjoveAMUGLVvt/e/PpM5K8suQgW1
+        usirmApvtbnpogABe1GRkrg=
+X-Google-Smtp-Source: ABdhPJyrSf9VRgu9BaXlpvk7YtjB4Ru5An5wu1Bknd9ykdUrZ+fbLhApJdre3ait5CwY9bQ11zhfGw==
+X-Received: by 2002:aca:1b04:: with SMTP id b4mr5724082oib.3.1609347044677;
+        Wed, 30 Dec 2020 08:50:44 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z9sm10727970otj.67.2020.12.30.08.50.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Dec 2020 08:50:44 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 30 Dec 2020 08:44:52 -0800
+Subject: Re: [PATCH v2 1/1] watchdog: mtk_wdt: Remove mtk_wdt_stop() in
+ probe() to prevent the system freeze and it doesn't reboot by watchdog
+ problem
+To:     Freddy Hsin <freddy.hsin@mediatek.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     wsd_upstream@mediatek.com, chang-an.chen@mediatek.com,
+        kuohong.wang@mediatek.com
+References: <1609316157-3748-1-git-send-email-freddy.hsin@mediatek.com>
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     jdelvare@suse.com, robh+dt@kernel.org, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: Re: [PATCH v3 2/3] hwmon: add Texas Instruments TPS23861 driver
-Message-ID: <20201230164452.GA103852@roeck-us.net>
-References: <20201222143012.1618807-1-robert.marko@sartura.hr>
- <20201222143012.1618807-2-robert.marko@sartura.hr>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <6ce2a1f6-9385-8004-5227-88bb5cdba5e2@roeck-us.net>
+Date:   Wed, 30 Dec 2020 08:50:42 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222143012.1618807-2-robert.marko@sartura.hr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1609316157-3748-1-git-send-email-freddy.hsin@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 03:30:11PM +0100, Robert Marko wrote:
-> Add basic monitoring support as well as port on/off control for Texas
-> Instruments TPS23861 PoE PSE IC.
+On 12/30/20 12:15 AM, Freddy Hsin wrote:
+> From: "freddy.hsin" <freddy.hsin@mediatek.com>
 > 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Before user space daemon start to access the watchdog device,
+> there is a time interval that watchdog is disabled in the
+> original flow. If the system freezing at this interval, it
+> cannot be rebooted by watchdog hardware automatically.
+> 
+> In order to solve this problem, the watchdog hardware should be
+> kept working, and start hrtimer in framework to ping it by
+> setting max_hw_heartbeat_ms and HW_RUNNING used in
+> watchdog_need_worker to determine whether the worker should be
+> started or not. Besides the redundant setting of max_timeout is
+> also removed.
+> 
+> Signed-off-by: freddy.hsin <freddy.hsin@mediatek.com>
 > ---
-> Changes in v3:
-> * Leave only standard values in hwmon hwmon
-> * Drop custom sysfs entries
-> * Use debugfs to provide non standard debug information
-> * Add temperature label
-> * Use hwmon_in_enable to enable/disable ports
-> 
-> Changes in v2:
-> * Convert to devm_hwmon_device_register_with_info()
-> * Change license
-> 
->  drivers/hwmon/Kconfig    |  11 +
->  drivers/hwmon/Makefile   |   1 +
->  drivers/hwmon/tps23861.c | 603 +++++++++++++++++++++++++++++++++++++++
 
-Driver documentation (Documentation/hwmon/tps23861) is missing.
+Change log goes here.
 
->  3 files changed, 615 insertions(+)
->  create mode 100644 drivers/hwmon/tps23861.c
+Looks good though.
+
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+>  drivers/watchdog/mtk_wdt.c |   17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index a850e4f0e0bd..3368ecfa7a9c 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -1102,6 +1102,17 @@ config SENSORS_TC654
->  	  This driver can also be built as a module. If so, the module
->  	  will be called tc654.
+> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+> index d6a6393..0c869b7 100644
+> --- a/drivers/watchdog/mtk_wdt.c
+> +++ b/drivers/watchdog/mtk_wdt.c
+> @@ -195,6 +195,19 @@ static int mtk_wdt_set_timeout(struct watchdog_device *wdt_dev,
+>  	return 0;
+>  }
 >  
-> +config SENSORS_TPS23861
-> +	tristate "Texas Instruments TPS23861 PoE PSE"
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	help
-> +	  If you say yes here you get support for Texas Instruments
-> +	  TPS23861 802.3at PoE PSE chips.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called tps23861.
-> +
->  config SENSORS_MENF21BMC_HWMON
->  	tristate "MEN 14F021P00 BMC Hardware Monitoring"
->  	depends on MFD_MENF21BMC
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 9db2903b61e5..7493e9d5dc43 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -141,6 +141,7 @@ obj-$(CONFIG_SENSORS_MAX31790)	+= max31790.o
->  obj-$(CONFIG_SENSORS_MC13783_ADC)+= mc13783-adc.o
->  obj-$(CONFIG_SENSORS_MCP3021)	+= mcp3021.o
->  obj-$(CONFIG_SENSORS_TC654)	+= tc654.o
-> +obj-$(CONFIG_SENSORS_TPS23861)	+= tps23861.o
->  obj-$(CONFIG_SENSORS_MLXREG_FAN) += mlxreg-fan.o
->  obj-$(CONFIG_SENSORS_MENF21BMC_HWMON) += menf21bmc_hwmon.o
->  obj-$(CONFIG_SENSORS_MR75203)	+= mr75203.o
-> diff --git a/drivers/hwmon/tps23861.c b/drivers/hwmon/tps23861.c
-> new file mode 100644
-> index 000000000000..a321e4700f48
-> --- /dev/null
-> +++ b/drivers/hwmon/tps23861.c
-> @@ -0,0 +1,603 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2020 Sartura Ltd.
-> + *
-> + * Driver for the TI TPS23861 PoE PSE.
-> + *
-> + * Author: Robert Marko <robert.marko@sartura.hr>
-> + */
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/delay.h>
-> +#include <linux/hwmon-sysfs.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/i2c.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/regmap.h>
-> +
-> +#define TEMPERATURE			0x2c
-> +#define INPUT_VOLTAGE_LSB		0x2e
-> +#define INPUT_VOLTAGE_MSB		0x2f
-> +#define PORT_1_CURRENT_LSB		0x30
-> +#define PORT_1_CURRENT_MSB		0x31
-> +#define PORT_1_VOLTAGE_LSB		0x32
-> +#define PORT_1_VOLTAGE_MSB		0x33
-> +#define PORT_2_CURRENT_LSB		0x34
-> +#define PORT_2_CURRENT_MSB		0x35
-> +#define PORT_2_VOLTAGE_LSB		0x36
-> +#define PORT_2_VOLTAGE_MSB		0x37
-> +#define PORT_3_CURRENT_LSB		0x38
-> +#define PORT_3_CURRENT_MSB		0x39
-> +#define PORT_3_VOLTAGE_LSB		0x3a
-> +#define PORT_3_VOLTAGE_MSB		0x3b
-> +#define PORT_4_CURRENT_LSB		0x3c
-> +#define PORT_4_CURRENT_MSB		0x3d
-> +#define PORT_4_VOLTAGE_LSB		0x3e
-> +#define PORT_4_VOLTAGE_MSB		0x3f
-> +#define PORT_N_CURRENT_LSB_OFFSET	0x04
-> +#define PORT_N_VOLTAGE_LSB_OFFSET	0x04
-> +#define VOLTAGE_CURRENT_MASK		GENMASK(13, 0)
-> +#define PORT_1_RESISTANCE_LSB		0x60
-> +#define PORT_1_RESISTANCE_MSB		0x61
-> +#define PORT_2_RESISTANCE_LSB		0x62
-> +#define PORT_2_RESISTANCE_MSB		0x63
-> +#define PORT_3_RESISTANCE_LSB		0x64
-> +#define PORT_3_RESISTANCE_MSB		0x65
-> +#define PORT_4_RESISTANCE_LSB		0x66
-> +#define PORT_4_RESISTANCE_MSB		0x67
-> +#define PORT_N_RESISTANCE_LSB_OFFSET	0x02
-> +#define PORT_RESISTANCE_MASK		GENMASK(13, 0)
-> +#define PORT_RESISTANCE_RSN_MASK	GENMASK(15, 14)
-> +#define PORT_RESISTANCE_RSN_OTHER	0
-> +#define PORT_RESISTANCE_RSN_LOW		1
-> +#define PORT_RESISTANCE_RSN_OPEN	2
-> +#define PORT_RESISTANCE_RSN_SHORT	3
-> +#define PORT_1_STATUS			0x0c
-> +#define PORT_2_STATUS			0x0d
-> +#define PORT_3_STATUS			0x0e
-> +#define PORT_4_STATUS			0x0f
-> +#define PORT_STATUS_CLASS_MASK		GENMASK(7, 4)
-> +#define PORT_STATUS_DETECT_MASK		GENMASK(3, 0)
-> +#define PORT_CLASS_UNKNOWN		0
-> +#define PORT_CLASS_1			1
-> +#define PORT_CLASS_2			2
-> +#define PORT_CLASS_3			3
-> +#define PORT_CLASS_4			4
-> +#define PORT_CLASS_RESERVED		5
-> +#define PORT_CLASS_0			6
-> +#define PORT_CLASS_OVERCURRENT		7
-> +#define PORT_CLASS_MISMATCH		8
-> +#define PORT_DETECT_UNKNOWN		0
-> +#define PORT_DETECT_SHORT		1
-> +#define PORT_DETECT_RESERVED		2
-> +#define PORT_DETECT_RESISTANCE_LOW	3
-> +#define PORT_DETECT_RESISTANCE_OK	4
-> +#define PORT_DETECT_RESISTANCE_HIGH	5
-> +#define PORT_DETECT_OPEN_CIRCUIT	6
-> +#define PORT_DETECT_RESERVED_2		7
-> +#define PORT_DETECT_MOSFET_FAULT	8
-> +#define PORT_DETECT_LEGACY		9
-> +/* Measurment beyond clamp voltage */
-> +#define PORT_DETECT_CAPACITANCE_INVALID_BEYOND	10
-> +/* Insufficient voltage delta */
-> +#define PORT_DETECT_CAPACITANCE_INVALID_DELTA	11
-> +#define PORT_DETECT_CAPACITANCE_OUT_OF_RANGE	12
-> +#define POE_PLUS			0x40
-> +#define OPERATING_MODE			0x12
-> +#define OPERATING_MODE_OFF		0
-> +#define OPERATING_MODE_MANUAL		1
-> +#define OPERATING_MODE_SEMI		2
-> +#define OPERATING_MODE_AUTO		3
-> +#define OPERATING_MODE_PORT_1_MASK	GENMASK(1, 0)
-> +#define OPERATING_MODE_PORT_2_MASK	GENMASK(3, 2)
-> +#define OPERATING_MODE_PORT_3_MASK	GENMASK(5, 4)
-> +#define OPERATING_MODE_PORT_4_MASK	GENMASK(7, 6)
-> +
-> +#define DETECT_CLASS_RESTART		0x18
-> +#define POWER_ENABLE			0x19
-> +#define TPS23861_NUM_PORTS		4
-> +
-> +#define TEMPERATURE_LSB			652 /* 0.652 degrees Celsius */
-> +#define VOLTAGE_LSB			3662 /* 3.662 mV */
-> +#define SHUNT_RESISTOR_DEFAULT		255000 /* 255 mOhm */
-> +#define CURRENT_LSB_255			62260 /* 62.260 uA */
-> +#define CURRENT_LSB_250			61039 /* 61.039 uA */
-> +#define RESISTANCE_LSB			110966 /* 11.0966 Ohm*/
-> +#define RESISTANCE_LSB_LOW		157216 /* 15.7216 Ohm*/
-> +
-> +struct tps23861_data {
-> +	struct regmap *regmap;
-> +	u32 shunt_resistor;
-> +	struct i2c_client *client;
-> +	struct dentry *debugfs_dir;
-> +};
-> +
-> +static struct regmap_config tps23861_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +};
-> +
-> +static int tps23861_read_temp(struct tps23861_data *data, long *val)
+> +static void mtk_wdt_init(struct watchdog_device *wdt_dev)
 > +{
-> +	unsigned int regval;
-> +	int err;
+> +	struct mtk_wdt_dev *mtk_wdt = watchdog_get_drvdata(wdt_dev);
+> +	void __iomem *wdt_base;
 > +
-> +	err = regmap_read(data->regmap, TEMPERATURE, &regval);
-> +	if (err < 0)
-> +		return err;
+> +	wdt_base = mtk_wdt->wdt_base;
 > +
-> +	*val = (regval * TEMPERATURE_LSB) - 20000;
-> +
-> +	return 0;
-> +}
-> +
-> +static int tps23861_read_voltage(struct tps23861_data *data, int channel,
-> +				 long *val)
-> +{
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	if (channel < TPS23861_NUM_PORTS) {
-> +		err = regmap_bulk_read(data->regmap,
-> +				       PORT_1_VOLTAGE_LSB + channel * PORT_N_VOLTAGE_LSB_OFFSET,
-> +				       &regval, 2);
-> +	} else {
-> +		err = regmap_bulk_read(data->regmap,
-> +				       INPUT_VOLTAGE_LSB,
-> +				       &regval, 2);
-> +	}
-> +	if (err < 0)
-> +		return err;
-> +
-> +	*val = (FIELD_GET(VOLTAGE_CURRENT_MASK, regval) * VOLTAGE_LSB) / 1000;
-> +
-> +	return 0;
-> +}
-> +
-> +static int tps23861_read_current(struct tps23861_data *data, int channel,
-> +				 long *val)
-> +{
-> +	unsigned int current_lsb;
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	if (data->shunt_resistor == SHUNT_RESISTOR_DEFAULT)
-> +		current_lsb = CURRENT_LSB_255;
-> +	else
-> +		current_lsb = CURRENT_LSB_250;
-> +
-> +	err = regmap_bulk_read(data->regmap,
-> +			       PORT_1_CURRENT_LSB + channel * PORT_N_CURRENT_LSB_OFFSET,
-> +			       &regval, 2);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	*val = (FIELD_GET(VOLTAGE_CURRENT_MASK, regval) * current_lsb) / 1000000;
-> +
-> +	return 0;
-> +}
-> +
-> +static int tps23861_port_disable(struct tps23861_data *data, int channel)
-> +{
-> +	unsigned int regval = 0;
-> +	int err;
-> +
-> +	regval |= BIT(channel + 4);
-> +	err = regmap_write(data->regmap, POWER_ENABLE, regval);
-> +
-> +	return err;
-> +}
-> +
-> +static int tps23861_port_enable(struct tps23861_data *data, int channel)
-> +{
-> +	unsigned int regval = 0;
-> +	int err;
-> +
-> +	regval |= BIT(channel);
-> +	regval |= BIT(channel + 4);
-> +	err = regmap_write(data->regmap, DETECT_CLASS_RESTART, regval);
-> +
-> +	return err;
-> +}
-> +
-> +static umode_t tps23861_is_visible(const void *data, enum hwmon_sensor_types type,
-> +				   u32 attr, int channel)
-> +{
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		switch (attr) {
-> +		case hwmon_temp_input:
-> +		case hwmon_temp_label:
-> +			return 0444;
-> +		default:
-> +			return 0;
-> +		}
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +		case hwmon_in_label:
-> +			return 0444;
-> +		case hwmon_in_enable:
-> +			return 0200;
-> +		default:
-> +			return 0;
-> +		}
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_input:
-> +		case hwmon_curr_label:
-> +			return 0444;
-> +		default:
-> +			return 0;
-> +		}
-> +	default:
-> +		return 0;
+> +	if (readl(wdt_base + WDT_MODE) & WDT_MODE_EN) {
+> +		set_bit(WDOG_HW_RUNNING, &wdt_dev->status);
+> +		mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout);
 > +	}
 > +}
 > +
-> +static int tps23861_write(struct device *dev, enum hwmon_sensor_types type,
-> +			  u32 attr, int channel, long val)
-> +{
-> +	struct tps23861_data *data = dev_get_drvdata(dev);
-> +	int err;
-> +
-> +	switch (type) {
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_enable:
-> +			if (val == 0)
-> +				err = tps23861_port_disable(data, channel);
-> +			else if (val == 1)
-> +				err = tps23861_port_enable(data, channel);
-> +			else
-> +				err = -EINVAL;
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static int tps23861_read(struct device *dev, enum hwmon_sensor_types type,
-> +			 u32 attr, int channel, long *val)
-> +{
-> +	struct tps23861_data *data = dev_get_drvdata(dev);
-> +	int err;
-> +
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		switch (attr) {
-> +		case hwmon_temp_input:
-> +			err = tps23861_read_temp(data, val);
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			err = tps23861_read_voltage(data, channel, val);
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_input:
-> +			err = tps23861_read_current(data, channel, val);
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static const char * const tps23861_port_label[] = {
-> +	"Port1",
-> +	"Port2",
-> +	"Port3",
-> +	"Port4",
-> +	"Input",
-> +};
-> +
-> +static int tps23861_read_string(struct device *dev,
-> +				enum hwmon_sensor_types type,
-> +				u32 attr, int channel, const char **str)
-> +{
-> +	switch (type) {
-> +	case hwmon_in:
-> +	case hwmon_curr:
-> +		*str = tps23861_port_label[channel];
-> +		break;
-> +	case hwmon_temp:
-> +		*str = "Die";
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct hwmon_channel_info *tps23861_info[] = {
-> +	HWMON_CHANNEL_INFO(chip,
-> +			   HWMON_C_REGISTER_TZ),
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL),
-> +	HWMON_CHANNEL_INFO(in,
-> +			   HWMON_I_INPUT | HWMON_I_ENABLE | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_ENABLE | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_ENABLE | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_ENABLE | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL),
-> +	HWMON_CHANNEL_INFO(curr,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL),
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_ops tps23861_hwmon_ops = {
-> +	.is_visible = tps23861_is_visible,
-> +	.write = tps23861_write,
-> +	.read = tps23861_read,
-> +	.read_string = tps23861_read_string,
-> +};
-> +
-> +static const struct hwmon_chip_info tps23861_chip_info = {
-> +	.ops = &tps23861_hwmon_ops,
-> +	.info = tps23861_info,
-> +};
-> +
-> +static char *tps23861_port_operating_mode(struct tps23861_data *data, int port)
-> +{
-> +	unsigned int regval;
-> +	int mode;
-> +
-> +	regmap_read(data->regmap, OPERATING_MODE, &regval);
-> +
-> +	switch (port) {
-> +	case 1:
-> +		mode = FIELD_GET(OPERATING_MODE_PORT_1_MASK, regval);
-> +		break;
-> +	case 2:
-> +		mode = FIELD_GET(OPERATING_MODE_PORT_2_MASK, regval);
-> +		break;
-> +	case 3:
-> +		mode = FIELD_GET(OPERATING_MODE_PORT_3_MASK, regval);
-> +		break;
-> +	case 4:
-> +		mode = FIELD_GET(OPERATING_MODE_PORT_4_MASK, regval);
-> +		break;
-> +	default:
-> +		mode = -EINVAL;
-> +	}
-> +
-> +	switch (mode) {
-> +	case OPERATING_MODE_OFF:
-> +		return "Off";
-> +	case OPERATING_MODE_MANUAL:
-> +		return "Manual";
-> +	case OPERATING_MODE_SEMI:
-> +		return "Semi-Auto";
-> +	case OPERATING_MODE_AUTO:
-> +		return "Auto";
-> +	default:
-> +		return "Invalid";
-> +	}
-> +}
-> +
-> +static char *tps23861_port_detect_status(struct tps23861_data *data, int port)
-> +{
-> +	unsigned int regval;
-> +
-> +	regmap_read(data->regmap,
-> +		    PORT_1_STATUS + (port - 1),
-> +		    &regval);
-> +
-> +	switch (FIELD_GET(PORT_STATUS_DETECT_MASK, regval)) {
-> +	case PORT_DETECT_UNKNOWN:
-> +		return "Unknown device";
-> +	case PORT_DETECT_SHORT:
-> +		return "Short circuit";
-> +	case PORT_DETECT_RESISTANCE_LOW:
-> +		return "Too low resistance";
-> +	case PORT_DETECT_RESISTANCE_OK:
-> +		return "Valid resistance";
-> +	case PORT_DETECT_RESISTANCE_HIGH:
-> +		return "Too high resistance";
-> +	case PORT_DETECT_OPEN_CIRCUIT:
-> +		return "Open circuit";
-> +	case PORT_DETECT_MOSFET_FAULT:
-> +		return "MOSFET fault";
-> +	case PORT_DETECT_LEGACY:
-> +		return "Legacy device";
-> +	case PORT_DETECT_CAPACITANCE_INVALID_BEYOND:
-> +		return "Invalid capacitance, beyond clamp voltage";
-> +	case PORT_DETECT_CAPACITANCE_INVALID_DELTA:
-> +		return "Invalid capacitance, insufficient voltage delta";
-> +	case PORT_DETECT_CAPACITANCE_OUT_OF_RANGE:
-> +		return "Valid capacitance, outside of legacy range";
-> +	case PORT_DETECT_RESERVED:
-> +	case PORT_DETECT_RESERVED_2:
-> +	default:
-> +		return "Invalid";
-> +	}
-> +}
-> +
-> +static char *tps23861_port_class_status(struct tps23861_data *data, int port)
-> +{
-> +	unsigned int regval;
-> +
-> +	regmap_read(data->regmap,
-> +		    PORT_1_STATUS + (port - 1),
-> +		    &regval);
-> +
-> +	switch (FIELD_GET(PORT_STATUS_CLASS_MASK, regval)) {
-> +	case PORT_CLASS_UNKNOWN:
-> +		return "Unknown";
-> +	case PORT_CLASS_RESERVED:
-> +	case PORT_CLASS_0:
-> +		return "0";
-> +	case PORT_CLASS_1:
-> +		return "1";
-> +	case PORT_CLASS_2:
-> +		return "2";
-> +	case PORT_CLASS_3:
-> +		return "3";
-> +	case PORT_CLASS_4:
-> +		return "4";
-> +	case PORT_CLASS_OVERCURRENT:
-> +		return "Overcurrent";
-> +	case PORT_CLASS_MISMATCH:
-> +		return "Mismatch";
-> +	default:
-> +		return "Invalid";
-> +	}
-> +}
-> +
-> +static char *tps23861_port_poe_plus_status(struct tps23861_data *data, int port)
-> +{
-> +	unsigned int regval;
-> +
-> +	regmap_read(data->regmap, POE_PLUS, &regval);
-> +
-> +	if (BIT(port + 3) & regval)
-> +		return "Yes";
-> +	else
-> +		return "No";
-> +}
-> +
-> +static int tps23861_port_resistance(struct tps23861_data *data, int port)
-> +{
-> +	u16 regval;
-> +
-> +	regmap_bulk_read(data->regmap,
-> +			 PORT_1_RESISTANCE_LSB + PORT_N_RESISTANCE_LSB_OFFSET * (port - 1),
-> +			 &regval,
-> +			 2);
-> +
-> +	switch (FIELD_GET(PORT_RESISTANCE_RSN_MASK, regval)) {
-> +	case PORT_RESISTANCE_RSN_OTHER:
-> +		return (FIELD_GET(PORT_RESISTANCE_MASK, regval) * RESISTANCE_LSB) / 10000;
-> +	case PORT_RESISTANCE_RSN_LOW:
-> +		return (FIELD_GET(PORT_RESISTANCE_MASK, regval) * RESISTANCE_LSB_LOW) / 10000;
-> +	case PORT_RESISTANCE_RSN_SHORT:
-> +	case PORT_RESISTANCE_RSN_OPEN:
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +static int tps23861_port_status_show(struct seq_file *s, void *data)
-> +{
-> +	struct tps23861_data *priv = s->private;
-> +	int i;
-> +
-> +	for (i = 1; i < TPS23861_NUM_PORTS + 1; i++) {
-> +		seq_printf(s, "Port: \t\t%d\n", i);
-> +		seq_printf(s, "Operating mode: %s\n", tps23861_port_operating_mode(priv, i));
-> +		seq_printf(s, "Detected: \t%s\n", tps23861_port_detect_status(priv, i));
-> +		seq_printf(s, "Class: \t\t%s\n", tps23861_port_class_status(priv, i));
-> +		seq_printf(s, "PoE Plus: \t%s\n", tps23861_port_poe_plus_status(priv, i));
-> +		seq_printf(s, "Resistance: \t%d\n", tps23861_port_resistance(priv, i));
-> +		seq_putc(s, '\n');
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +DEFINE_SHOW_ATTRIBUTE(tps23861_port_status);
-> +
-> +static void tps23861_init_debugfs(struct tps23861_data *data)
-> +{
-> +	data->debugfs_dir = debugfs_create_dir(data->client->name, NULL);
-> +	if (!data->debugfs_dir)
-> +		return;
+>  static int mtk_wdt_stop(struct watchdog_device *wdt_dev)
+>  {
+>  	struct mtk_wdt_dev *mtk_wdt = watchdog_get_drvdata(wdt_dev);
+> @@ -264,7 +277,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>  	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
+>  	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
+>  	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
+> -	mtk_wdt->wdt_dev.max_timeout = WDT_MAX_TIMEOUT;
+> +	mtk_wdt->wdt_dev.max_hw_heartbeat_ms = WDT_MAX_TIMEOUT * 1000;
+>  	mtk_wdt->wdt_dev.min_timeout = WDT_MIN_TIMEOUT;
+>  	mtk_wdt->wdt_dev.parent = dev;
+>  
+> @@ -274,7 +287,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>  
+>  	watchdog_set_drvdata(&mtk_wdt->wdt_dev, mtk_wdt);
+>  
+> -	mtk_wdt_stop(&mtk_wdt->wdt_dev);
+> +	mtk_wdt_init(&mtk_wdt->wdt_dev);
+>  
+>  	watchdog_stop_on_reboot(&mtk_wdt->wdt_dev);
+>  	err = devm_watchdog_register_device(dev, &mtk_wdt->wdt_dev);
+> 
 
-Unecessary (and wrongh) error check. debugfs_create_dir() returns an
-ERR_PTR() on error, not NULL. debugfs_create_file() checks for that
-error condition, so the check here is unencessary.
-
-> +
-> +	debugfs_create_file("port_status",
-> +			    0400,
-> +			    data->debugfs_dir,
-> +			    data,
-> +			    &tps23861_port_status_fops);
-> +}
-> +
-> +static int tps23861_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	struct tps23861_data *data;
-> +	struct device *hwmon_dev;
-> +	u32 shunt_resistor;
-> +
-> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->client = client;
-> +	i2c_set_clientdata(client, data);
-> +
-> +	data->regmap = devm_regmap_init_i2c(client, &tps23861_regmap_config);
-> +	if (IS_ERR(data->regmap)) {
-> +		dev_err(dev, "failed to allocate register map\n");
-> +		return PTR_ERR(data->regmap);
-> +	}
-> +
-> +	if (of_property_read_u32(dev->of_node, "shunt-resistor-micro-ohms", &shunt_resistor) < 0)
-> +		data->shunt_resistor = shunt_resistor;
-> +	else
-> +		data->shunt_resistor = SHUNT_RESISTOR_DEFAULT;
-> +
-
-The error condition is wrong; of_property_read_u32() never returns
-a negative value. Per documentation:
-
-"Returns true if the property exists false otherwise"
-
-> +	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name,
-> +							 data, &tps23861_chip_info,
-> +							 NULL);
-> +	if (IS_ERR(hwmon_dev))
-> +		return PTR_ERR(hwmon_dev);
-> +
-> +	tps23861_init_debugfs(data);
-> +
-> +	return 0;
-> +}
-> +
-> +static int tps23861_remove(struct i2c_client *client)
-> +{
-> +	struct tps23861_data *data = i2c_get_clientdata(client);
-> +
-> +	debugfs_remove_recursive(data->debugfs_dir);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id __maybe_unused tps23861_of_match[] = {
-> +	{ .compatible = "ti,tps23861", },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, tps23861_of_match);
-> +
-> +static struct i2c_driver tps23861_driver = {
-> +	.probe_new		= tps23861_probe,
-> +	.remove			= tps23861_remove,
-> +	.driver = {
-> +		.name		= "tps23861",
-> +		.of_match_table	= of_match_ptr(tps23861_of_match),
-> +	},
-> +};
-> +module_i2c_driver(tps23861_driver);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
-> +MODULE_DESCRIPTION("TI TPS23861 PoE PSE");
