@@ -2,48 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A2A2E7A92
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE112E7A99
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Dec 2020 16:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgL3Ppb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 10:45:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45784 "EHLO mail.kernel.org"
+        id S1726631AbgL3PqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 10:46:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725853AbgL3Pp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 10:45:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 413BD20725;
-        Wed, 30 Dec 2020 15:44:45 +0000 (UTC)
+        id S1726545AbgL3PqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 10:46:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A39B21D1B;
+        Wed, 30 Dec 2020 15:45:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609343088;
-        bh=B6KEEyF4RQKJhn/Tlgm2gPhwOX1a1c48tzMAbskoqNY=;
+        s=k20201202; t=1609343121;
+        bh=P+xne73UctVsVnC1Gr0TZD3UqOR9IIi7bTByxK8n7+0=;
         h=From:To:Cc:Subject:Date:From;
-        b=HCKeDJ0KSZ7nc1CoEISb/ZRNzccPTaWWh06Nn2VIZBsId6eP9cn0oGFUJlOABZZZO
-         iI0X3/jv9pxyQ5bU7W/XqVpiwAVKTetRviaE1CBU80GpLg/jmLlz66OeoO4ZhibBqQ
-         PjjjdalMW1Zz2BoWMBZ8kelnigjz4DMVLkz9RLZvfhx2BBPns1SB0TRK+cYujQxlOH
-         8MnDwDJqOqRtqV2yMQCPacw1DfF9pBrJ/RhsJA8R+VJ3BdV7xvpCIPfiT77gwd3boZ
-         PiTBMWGGCaRfDf7RBRjRMAgbFOqHd28vArCHhJoja2QAirqWZnxT1vUTZKPDO8Anij
-         h3IyOvDVmuzrg==
+        b=TqzxMtV7+WQSjHIkSNVg3un2pQSVy6qb919XD1hfBTjenNmvf5xdbzXg0d/Nbmoto
+         GBlN7oDDjouAI9hgb0q3sq5etgTRWeX+R/r0WXllDtlTOroTykqug7kI9rPyMs7zsB
+         hG5AiJMI6kZ9NlfQpNJNDbtMHc6naF0o4xGl69N2ir8mHfSNsG/elFiWQ8MBuaVgG4
+         xIOaF7Rycl/+s3eBtNmv7knqoN9WY5EHh/JUKZouGFUrBTBwp+5pafZ8N22amFK82k
+         cptXaLMJw8993VE7un1pBEmxa/oQ0i0xbQUU8VjwMdrVV0JMUIvoEC24z5ZOaUQaJa
+         8KFVNj+d//jpg==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] ASoC: fsl: fix -Wmaybe-uninitialized warning
-Date:   Wed, 30 Dec 2020 16:44:15 +0100
-Message-Id: <20201230154443.656997-1-arnd@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/smp: Remove unused 'irq' variable
+Date:   Wed, 30 Dec 2020 16:45:04 +0100
+Message-Id: <20201230154516.680413-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -53,37 +43,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Clang points out a code path that returns an undefined value
-in an error case:
+The only use of this variable was removed in a recent patch:
 
-sound/soc/fsl/imx-hdmi.c:165:6: error: variable 'ret' is used uninitialized whenever 'if' condition is true [-Werror,-Wsom
-etimes-uninitialized]
-        if ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in)) {
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/soc/fsl/imx-hdmi.c:212:9: note: uninitialized use occurs here
-        return ret;
+arch/arm64/kernel/smp.c:810:16: error: unused variable 'irq' [-Werror,-Wunused-variable]
+                unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
 
-The driver returns -EINVAL for other broken DT properties, so do
-it the same way here.
-
-Fixes: 6a5f850aa83a ("ASoC: fsl: Add imx-hdmi machine driver")
+Fixes: 5089bc51f81f ("arm64/smp: Use irq_desc_kstat_cpu() in arch_show_interrupts()")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/fsl/imx-hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/kernel/smp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
-index 2c2a76a71940..ede4a9ad1054 100644
---- a/sound/soc/fsl/imx-hdmi.c
-+++ b/sound/soc/fsl/imx-hdmi.c
-@@ -164,6 +164,7 @@ static int imx_hdmi_probe(struct platform_device *pdev)
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 6bc3a3698c3d..376343d6f13a 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -807,7 +807,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+ 	unsigned int cpu, i;
  
- 	if ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in)) {
- 		dev_err(&pdev->dev, "Invalid HDMI DAI link\n");
-+		ret = -EINVAL;
- 		goto fail;
- 	}
- 
+ 	for (i = 0; i < NR_IPI; i++) {
+-		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
+ 		seq_printf(p, "%*s%u:%s", prec - 1, "IPI", i,
+ 			   prec >= 4 ? " " : "");
+ 		for_each_online_cpu(cpu)
 -- 
 2.29.2
 
