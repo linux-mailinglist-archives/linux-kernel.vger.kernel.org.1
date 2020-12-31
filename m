@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6D52E8042
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 14:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C70DE2E8048
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 15:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgLaNx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 08:53:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbgLaNx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 08:53:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 385B9223DB;
-        Thu, 31 Dec 2020 13:52:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609422766;
-        bh=6MagMP6DhH5VzRYAkJVqUwze9OoZb5askbPUn2mLudE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k85DfwWZZ8MOND7g633lMxsYpZtUNdL8aFLVZ4WOAp1ywt06ZsHRdtJ+lEw+WQKGT
-         QGg7KwXxZKx3L1xJnunhI+YQONPSvZFYy4gf3yhMmIiAa2W+q/uDJCExkCWRjrDCFZ
-         3sBodQzjIGZthjIY0P5GcduXH1zVIKmr3p3reNBO4qYf8YWOzQENx159QHFE4rg/Kj
-         u3fXl3oBZULA2xfRTUQvgG92gEE5Wx/oOddKIIl2H43qczHVw20LoHzY1daXR/RBPp
-         +2ZpEovWdWqOxRBnenq00j/oVk7bpt8ePhf/BjSCxB40BEHBpJVyGc9pQm0e9s0slQ
-         iKn5VqghzWNHg==
-Received: by pali.im (Postfix)
-        id BDA50C35; Thu, 31 Dec 2020 14:52:43 +0100 (CET)
-Date:   Thu, 31 Dec 2020 14:52:43 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] net: sfp: allow to use also SFP modules which are
- detected as SFF
-Message-ID: <20201231135243.tvzkre2sddhdxfbq@pali>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20201230154755.14746-3-pali@kernel.org>
- <20201230161151.GS1551@shell.armlinux.org.uk>
- <20201230170652.of3m226tidtunslm@pali>
- <20201230182707.4a8b13d0@kernel.org>
- <20201230191240.GX1551@shell.armlinux.org.uk>
+        id S1726634AbgLaOTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 09:19:30 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:34677 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgLaOT3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 09:19:29 -0500
+X-Originating-IP: 93.29.109.196
+Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 51C65E0007;
+        Thu, 31 Dec 2020 14:18:45 +0000 (UTC)
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v6 0/2] media: i2c: OV5648 image sensor support
+Date:   Thu, 31 Dec 2020 15:18:31 +0100
+Message-Id: <20201231141833.2634838-1-paul.kocialkowski@bootlin.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201230191240.GX1551@shell.armlinux.org.uk>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 30 December 2020 19:12:40 Russell King - ARM Linux admin wrote:
-> On Wed, Dec 30, 2020 at 06:27:07PM +0100, Marek Behún wrote:
-> > On Wed, 30 Dec 2020 18:06:52 +0100
-> > Pali Rohár <pali@kernel.org> wrote:
-> > 
-> > > 	if (!sfp->type->module_supported(&id) &&
-> > > 	    (memcmp(id.base.vendor_name, "UBNT            ", 16) ||
-> > > 	     memcmp(id.base.vendor_pn, "UF-INSTANT      ", 16)))
-> > 
-> > I would rather add a quirk member (bitfield) to the sfp structure and do
-> > something like this
-> > 
-> > if (!sfp->type->module_supported(&id) &&
-> >     !(sfp->quirks & SFP_QUIRK_BAD_PHYS_ID))
-> > 
-> > or maybe put this check into the module_supported method.
-> 
-> Sorry, definitely not. If you've ever looked at the SDHCI driver with
-> its multiple "quirks" bitfields, doing this is a recipe for creating
-> a very horrid hard to understand mess.
-> 
-> What you suggest just results in yet more complexity.
+This series adds support for the OV5648 image sensor,
+as a V4L2 subdev driver.
 
-Should I rather put this vendor name/pn check into the
-sfp_module_supported() function?
+Changes since v5:
+- Removed extra tailing ret checks;
+- Fixed variables names in macros using container_of;
+- Set ctrls flags after handler error check;
+- Removed useless ret initializations and gotos;
+- Removed call to v4l2_device_unregister_subdev;
 
-static bool sfp_module_supported(const struct sfp_eeprom_id *id)
-{
-	if (id->base.phys_id == SFF8024_ID_SFP &&
-	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP)
-		return true;
+Changes since v4:
+- Squashed tailing function calls in return;
+- Added Kconfig depend on PM since it's not optional;
+- Reordered runtime PM in init;
+- Reworked runtime PM order and added ctrls handler free in exit.
 
-	if (id->base.phys_id == SFF8024_ID_SFF_8472 &&
-	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP &&
-	    !memcmp(id->base.vendor_name, "UBNT            ", 16) &&
-	    !memcmp(id->base.vendor_pn, "UF-INSTANT      ", 16))
-		return true;
+Changes since v3:
+- Removed mipi_clk_rate variable that skipped through.
 
-	return false;
-}
+Changes since v2:
+- Added link-frequencies endpoint property support;
+- Used NULL ctrl ops for pixel rate and link freq;
+- Extra cosmetic changes.
+
+Changes since v1:
+- Used runtime pm;
+- Used assigned-clock-rate;
+- Removed clock name;
+- Returned closest size in set_fmt;
+- Removed unneeded references to v4l2 controls;
+- Removed i2c device table;
+- Dual-licensed bindings;
+- Used SPDX tags.
+
+Paul Kocialkowski (2):
+  dt-bindings: media: i2c: Add OV5648 bindings documentation
+  media: i2c: Add support for the OV5648 image sensor
+
+ .../bindings/media/i2c/ovti,ov5648.yaml       |  115 +
+ drivers/media/i2c/Kconfig                     |   13 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/ov5648.c                    | 2624 +++++++++++++++++
+ 4 files changed, 2753 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml
+ create mode 100644 drivers/media/i2c/ov5648.c
+
+-- 
+2.29.2
+
