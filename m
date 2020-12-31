@@ -2,189 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAAC42E7FD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059082E7FD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgLaMOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 07:14:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726071AbgLaMOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 07:14:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BE93223DB;
-        Thu, 31 Dec 2020 12:14:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609416853;
-        bh=RtWoLeGbWbintP+acf+80IAQXZOGQZCtPB+lC1usOpg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vwo1zm26XZukJb37NnoTPdx8DpC/QKyZn6CzWUSMmvLk+5vrMlv+3SCLs0rsm+fWE
-         q+NbBpb1E4+dUtMK1C6ubN/768Lr4QMqOdbc5LAp6c41x10BD4GYodoKjLQkfFFD1g
-         8J3UYk6gggX7DyuFNnFhTr/2nc+ELLGqSomRntEPr3CNciOBi1jDfOUkPea+ett+7n
-         cKQ1293E8ejISNuum9wHvPxqB1pEQxcLAIR68GeJnBCY2uDLVc571YkyYCmlIdujIY
-         hObytOHQnCeHyMqLiz37CzwFuM7EKC2eckwY28cIN474+kij78WpYaVh2JdUopljAd
-         qF/QV6KggnAMA==
-Received: by pali.im (Postfix)
-        id 722A8C35; Thu, 31 Dec 2020 13:14:10 +0100 (CET)
-Date:   Thu, 31 Dec 2020 13:14:10 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <20201231121410.2xlxtyqjelrlysd2@pali>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20201230154755.14746-2-pali@kernel.org>
- <20201230161036.GR1551@shell.armlinux.org.uk>
- <20201230165634.c4ty3mw6djezuyq6@pali>
- <20201230170546.GU1551@shell.armlinux.org.uk>
- <X+y1K21tp01GpvMy@lunn.ch>
- <20201230174307.lvehswvj5q6c6vk3@pali>
- <20201230190958.GW1551@shell.armlinux.org.uk>
+        id S1726601AbgLaMSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 07:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgLaMSt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 07:18:49 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95F4C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 04:18:08 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id v14so7216573wml.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 04:18:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7SqcNl5KWJPGbXH65bKbbN1vtS8pHNjLIp3wmAVPS+8=;
+        b=F0Ty4zFCDW5DJIvU7G6DHJocno5RtfsBgnYkYnGMSK88ObGi0268Fnw/DLUJdepaxW
+         A6ZQM3J5FWnOBndRIGfHhgmNDZ8q4i3o5tf84GZU3fndsYVjgVqrCelSI1OkFUpHDDV3
+         OG9x14ceTTBlV+ytPQUQywLl0XlZMZvNir9NDn8eLY69sZY2NRW3Q7u+rIsAJ0/zRxGm
+         E4uhdTVSWJSPn2/ljRClFbQZ4B/9efeoO1O8+hCOTBZEjGOgaQwN8E7EGQEPNITYr81Z
+         qBQZdcB+FgEMd4ZvsrgDxCWat9IM7yeyBuU0v5X9ow3No6WxvbHtTKgq+G4vcCsHcGZK
+         8QUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7SqcNl5KWJPGbXH65bKbbN1vtS8pHNjLIp3wmAVPS+8=;
+        b=n1Pz6JnqQpZUpLBhjFf9j4x41ldyWG/2cWnsgkR77tRbHYTZEfBeuVXn+VwZZ0aNS0
+         0yA8h7OVHvH3KYhuc7+HvRdcYhzugBAVBCjptf49Bjt9uKnTktMxA7yCw3FEOss0u9jp
+         MVoopXcLlOyiXrv0ZyI9Qcsula+d1zOcYAFX1UkU6itKD05urRsUqdDFbGhTk0INswC4
+         eLaY68wj/1cU9xbTiFa4eKKPd5/wqLcRXTFKScCLVCfU8rqvmJ02jbDDvyWEqHCMY2EP
+         Xz6E+Os4XSoPBrfDjVSfAsG30S9xU5hPRI1mYnahiwLTdZl084C7dqyjD+Mu1FVVHnKg
+         SfiQ==
+X-Gm-Message-State: AOAM531t32SBoCS12YRdtxCBTYiDPUdLerrlPVz7SVskAmh9jRfMwt1K
+        7/sYpsggMnfsqdo4tsC91KkD4w==
+X-Google-Smtp-Source: ABdhPJyZpFCcTny/kpxj+lNXYT/J5a5zwnln/azNAkSLIx5BERCKXlTb9EROUOzJtMiXDd6c5BrYzg==
+X-Received: by 2002:a1c:4d0a:: with SMTP id o10mr11923999wmh.185.1609417086646;
+        Thu, 31 Dec 2020 04:18:06 -0800 (PST)
+Received: from dell ([91.110.221.133])
+        by smtp.gmail.com with ESMTPSA id a62sm12743892wmf.7.2020.12.31.04.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 04:18:05 -0800 (PST)
+Date:   Thu, 31 Dec 2020 12:18:03 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Alexander Dahl <post@lespocky.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, Jeff LaBundy <jeff@labundy.com>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v9 1/4] dt-bindings: mfd: Fix schema warnings for pwm-leds
+Message-ID: <20201231121803.GC4413@dell>
+References: <20201228163217.32520-1-post@lespocky.de>
+ <20201228163217.32520-2-post@lespocky.de>
+ <20201230185439.GC25903@duo.ucw.cz>
+ <20201231083317.GB4413@dell>
+ <20201231093945.GA22962@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201230190958.GW1551@shell.armlinux.org.uk>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201231093945.GA22962@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 30 December 2020 19:09:58 Russell King - ARM Linux admin wrote:
-> On Wed, Dec 30, 2020 at 06:43:07PM +0100, Pali Rohár wrote:
-> > On Wednesday 30 December 2020 18:13:15 Andrew Lunn wrote:
-> > > Hi Pali
+On Thu, 31 Dec 2020, Pavel Machek wrote:
+
+> Hi!
+> 
+> > > > The node names for devices using the pwm-leds driver follow a certain
+> > > > naming scheme (now).  Parent node name is not enforced, but recommended
+> > > > by DT project.
+> > > > 
+> > > >   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+> > > >   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+> > > > /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml: pwmleds: 'panel' does not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
+> > > >         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> > > > 
+> > > > Signed-off-by: Alexander Dahl <post@lespocky.de>
+> > > > Acked-by: Jeff LaBundy <jeff@labundy.com>
+> > > > Acked-by: Rob Herring <robh@kernel.org>
 > > > 
-> > > I have to agree with Russell here. I would rather have no diagnostics
-> > > than untrustable diagnostics.
+> > > Thanks, applied.
 > > 
-> > Ok!
+> > Sorry, what?
 > > 
-> > So should we completely skip hwmon_device_register_with_info() call
-> > if (i2c_block_size < 2) ?
+> > Applied to what tree?
 > 
-> I don't think that alone is sufficient - there's also the matter of
-> ethtool -m which will dump that information as well, and we don't want
-> to offer it to userspace in an unreliable form.
-
-Any idea/preference how to disable access to these registers?
-
-> For reference, here is what SFF-8472 which defines the diagnostics, says
-> about this:
+> I took it to (local copy) of leds-next tree on. But now I realised it
+> is mfd, not a LED patch, so I undone that. Sorry for the confusion.
 > 
->   To guarantee coherency of the diagnostic monitoring data, the host is
->   required to retrieve any multi-byte fields from the diagnostic
->   monitoring data structure (IE: Rx Power MSB - byte 104 in A2h, Rx Power
->   LSB - byte 105 in A2h) by the use of a single two-byte read sequence
->   across the two-wire interface interface.
+> Anyway, patch still looks good to me:
 > 
->   The transceiver is required to ensure that any multi-byte fields which
->   are updated with diagnostic monitoring data (e.g. Rx Power MSB - byte
->   104 in A2h, Rx Power LSB - byte 105 in A2h) must have this update done
->   in a fashion which guarantees coherency and consistency of the data. In
->   other words, the update of a multi-byte field by the transceiver must
->   not occur such that a partially updated multi-byte field can be
->   transferred to the host. Also, the transceiver shall not update a
->   multi-byte field within the structure during the transfer of that
->   multi-byte field to the host, such that partially updated data would be
->   transferred to the host.
-> 
-> The first paragraph is extremely definitive in how these fields shall
-> be read atomically - by a _single_ two-byte read sequence. From what
-> you are telling us, these modules do not support that. Therefore, by
-> definition, they do *not* support proper and reliable reporting of
-> diagnostic data, and are non-conformant with the SFP MSAs.
-> 
-> So, they are basically broken, and the diagnostics can't be used to
-> retrieve data that can be said to be useful.
+> Acked-by: Pavel Machek <pavel@ucw.cz>
 
-I agree they are broken. We really should disable access to those 16bit
-registers.
+Thanks Pavel.
 
-Anyway here is "datasheet" to some CarlitoxxPro SFP:
-https://www.docdroid.net/hRsJ560/cpgos03-0490v2-datasheet-10-pdf
+I plan on taking this next week.
 
-And on page 10 is written:
-
-    The I2C system can support the mode of random address / single
-    byteread which conform to SFF-8431.
-
-Which seems to be wrong.
-
-> > I do not think that manufacture says something. I think that they even
-> > do not know that their Realtek chips are completely broken.
-> 
-> Oh, they do know. I had a response from CarlitoxxPro passed to me, which
-> was:
-
-Could you give me contact address?
-
-Anyway, we would rather should contact Realtek chip division, real
-manufacture. Not CarlitoxxPro rebrander which can just "buy product"
-from Realtek reseller and put its logo on stick (and maybe configuration
-like sn, mac address, password and enable/disable bit for web/telnet).
-
->   That is a behavior related on how your router/switch try to read the
->   EEPROM, as described in the datasheet of the GPON ONU SFP, the EEPROM
->   can be read in Sequential Single-Byte mode, not in Multi-byte mode as
->   you router do, basically, your router is trying to read the full a0h
->   table in a single call, and retrieve a null response. that is normal
->   and not affect the operations of the GPON ONU SFP, because these
->   values are informational only. so the Software for your router should
->   be able to read in Single-Byte mode to read the content of the EEPROM
->   in concordance to SFF-8431
-> 
-> which totally misses the point that it is /not/ up to the module to
-> choose whether multi-byte reads are supported or not. If they bothered
-> to gain a proper understanding of the MSAs, they would have noticed that
-> the device on 0xA0 is required to behave as an Atmel AT24Cxx EEPROM.
-> The following from INF-8074i, which is the very first definition of the
-> SFP form factor modules:
-> 
->   The SFP serial ID provides access to sophisticated identification
->   information that describes the transceiver's capabilities, standard
->   interfaces, manufacturer, and other information. The serial interface
->   uses the 2-wire serial CMOS E2PROM protocol defined for the ATMEL
->   AT24C01A/02/04 family of components.
-> 
-> As they took less than one working day to provide the above response, I
-> suspect they know full well that there's a problem - and it likely
-> affects other "routers" as well.
-
-As this issue is with all those Realtek chips I really think this issue
-is in underlying Realtek chip and not in CarlitoxxPro rebranding. Seems
-that they know about this issue and because it affects all GPON Realtek
-SFPs with that chip that cannot do anything with it, so just wrote it
-into "datasheet" and trying to find arguments "why behavior is correct"
-even it is not truth.
-
-> They're also confused about their SFF specifications. SFF-8431 is: "SFP+
-> 10 Gb/s and Low Speed Electrical Interface" which is not the correct
-> specification for a 1Gbps module.
-
-Looks like "trying to find arguments why it is correct".
-
-> > I can imagine that vendor just says: it is working in our branded boxes
-> > with SFP cages and if it does not work in your kernel then problem is
-> > with your custom kernel and we do not care about 3rd parties.
-> 
-> Which shows why it's pointless producing an EEPROM validation tool that
-> runs under Linux (as has been your suggestion). They won't use it,
-> since their testing only goes as far as "does it work in our product?"
-
-At least users could do their own validation and for rewritable EEPROMs
-they could be able to fix its content.
-
-Anyway, if there is such tool then users could start creating database
-of working and non-working SFPs where can be put result of this tool.
-
-It could help people to decide which SFP they should buy and which not.
-Sending page/database to manufactures with showing "do not buy this your
-SFP, does not work and is broken" maybe change their state and start
-doing validation if people stop buying their products or manufacture
-name would be on unsupported black list.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
