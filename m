@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459862E7FAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 12:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775C92E7FB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 12:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgLaLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 06:32:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
+        id S1726549AbgLaLgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 06:36:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgLaLc0 (ORCPT
+        with ESMTP id S1726363AbgLaLgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 06:32:26 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91EDC061573;
-        Thu, 31 Dec 2020 03:31:45 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id t16so19894770wra.3;
-        Thu, 31 Dec 2020 03:31:45 -0800 (PST)
+        Thu, 31 Dec 2020 06:36:14 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8631C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 03:35:33 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id be12so9946640plb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 03:35:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=NetuAQ3tAGo/yEGinEHsE/lyqwm3xy3dMQvLbO/Uhjg=;
-        b=rOWefD88HPMFfm4hmIR//V8/ciZbGZtTbQ3U2eM/l0BG8xJR4d+5iDms+LuFGN0oJg
-         sXuYm67IEJlb4fq3loobJlLHcahWTxFb9T6Uv5tOOiNIleCl8GrGE8yi+YHSOCnI+0i5
-         i1SnkfpbHrvt1cZxcKSL1NRwDePjvPoktBjtgxuX7oKUa/cmp1ax2p3TfnqS6fhlebyG
-         3XJu+zxFizxzW2U/kgQR2SGRNf6k2C8nLf1ffeL1NC3+PQeIWPoeXhBtEOHWAIaE0iMS
-         Jp+4YThqaH2U1rI8AzAIMt6RtUqXlOou1QRwog8lypzEqmrbn7ZQW2nBMr1SEJ18fOJr
-         vPoA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=VvNbdMgLzpd7ixuoNwnyFlGlaRTTC2c804LXFW9PL8Q=;
+        b=wg5KP8IzqFr4LBkLFYoo0kTLFg3muBtnzy4SsGLz2/GYX3cGmgtFwiZXxtMdzoNYQ1
+         eLiq+NGuE2ZPqSzyWX/6D/P4oj+LVsuMakpXzNlQ9dPST4xK/mFNRV5YqsA9znelGQsM
+         tCqb1Gb/89bdo1F+4seZ2n4FCMfaHWW2+9zXux2GBf1uZT7RXkNyDzvsUmn8hvJ5gkun
+         7nUDIswlPJt0D9igHYTEs6yaVcjca+ENL8KEeq4kPqKiAJ3JrsDCwwus1BEveEt6Q+ov
+         U3VA9i7NtixpCZDbSPeHhPPvlwN211EkdR/e8eK4drhKtLwiwD0dtymuQMR6O9JqrS6d
+         R09w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=NetuAQ3tAGo/yEGinEHsE/lyqwm3xy3dMQvLbO/Uhjg=;
-        b=Np32TVOpcxRdBvsYwhTTavt8mbYH3QOMfjS1l4jAbrShiKNwSopzuuQ1G9P+hbd2LI
-         aVfwVYNNpeDz4OAxyduZrBa9gpRfH89PhldY9sysiKLiOO9VPLvv+wtPrHY9Diig9L67
-         qrEBe8tnlILo040yehBjFPTaWyGgYtvW/A37mjAwlckGYtgPHKszL/XgyTDGFZ6yr9Bi
-         4h1PayMjEfZ2l4D1mYAZfY95Uf66emt3tVGoDR7NMYuA6h8VlQrvJSfZ4qw743Uf6ftZ
-         Sc6yjLzBCgQ6FqoUkh4Q3HCLTh822b3kxAaOZvyP8tI3cNBpmvQ67BQa+hvjtWukzNnv
-         ANSA==
-X-Gm-Message-State: AOAM533QRYlwdOW0zTScfAGCFunvjfdlxplE9bBBXKl4EiB8wtKvwxZv
-        Ved0D6a7iFMUlUzFfBhbl4k=
-X-Google-Smtp-Source: ABdhPJxLy10Wo+8i9+R2td2BnVBE8yx8EwH27vZnUZlvKHJb70Ijtc+s+4bQNgVtyOIa/S3ADwdsKQ==
-X-Received: by 2002:adf:d843:: with SMTP id k3mr64975335wrl.346.1609414304212;
-        Thu, 31 Dec 2020 03:31:44 -0800 (PST)
-Received: from cl-fw-1.fritz.box (p200300d86714220053af1ffdd671ac4f.dip0.t-ipconnect.de. [2003:d8:6714:2200:53af:1ffd:d671:ac4f])
-        by smtp.gmail.com with ESMTPSA id t10sm67717146wrp.39.2020.12.31.03.31.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=VvNbdMgLzpd7ixuoNwnyFlGlaRTTC2c804LXFW9PL8Q=;
+        b=FxVUws/hDyrCOxd7SvB4kAFX37gcRNX6R4i+OJSmlkoXohMulOBHwPRWfeFo76feUr
+         1dXU8EWk8iRX+r6Ipy8brFXLrxDWSAvvXIuxDESJDdkSzgCMdWCBcjqC7K6a4srpNE52
+         kIDFG88A2u4bCRsq6AL6TFh+EtVN5fFdynQOAX5EyVmEHL/NqHUgVLG9ZQivJY9iwvfw
+         DUSqkEoN1EXUh5s2xtPJWS0Ajp2/l9UV1ZMAcfsPKceOcBrdSpMGCkMwX0eFhUitd2iI
+         h0TvLgB+lQC/jreTi3igH/K6YcfVe+PaStEzl65VYUl0NvXCWh51ZiRevEdw1ul/3W9i
+         XQSQ==
+X-Gm-Message-State: AOAM530vVY5J4do8N9EoEmt39tj+sgD2P+kEXew80iJMxXAK9LmBa+yk
+        kI8UREi0nZcMLQtqnOkasl5x1A==
+X-Google-Smtp-Source: ABdhPJwHoHQFvcQVg2voukSs3bfIkm20izqJoruuT3gb8MD6kNkThudCn215vm/E7MdLybVF+lnoEQ==
+X-Received: by 2002:a17:902:6947:b029:db:c7fd:9db3 with SMTP id k7-20020a1709026947b02900dbc7fd9db3mr56751334plt.56.1609414533244;
+        Thu, 31 Dec 2020 03:35:33 -0800 (PST)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id n10sm36381528pfu.176.2020.12.31.03.35.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 03:31:43 -0800 (PST)
-Message-ID: <8b005c64fe129fc2a283da90b2949b1fcb42e8c2.camel@gmail.com>
-Subject: Re: Haswell audio no longer working with new Catpt driver
-From:   Christian Labisch <clnetbox@gmail.com>
-To:     Amadeusz =?UTF-8?Q?S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Akemi Yagi <toracat@elrepo.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Greg Kroah-Hartman <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <linux-kernel@vger.kernel.org>,
-        Justin Forbes <jforbes@redhat.com>
-Date:   Thu, 31 Dec 2020 12:31:42 +0100
-In-Reply-To: <4c5b8a03-6508-541f-2a72-39cb3052b4f1@linux.intel.com>
-References: <2f0acfa1330ca6b40bff564fd317c8029eb23453.camel@gmail.com>
-         <efc6d5e8abc1da3cac754cb760fff08a1887013b.camel@gmail.com>
-         <X+2MzJ7bKCQTRCd/@kroah.com>
-         <a194639e-f444-da95-095d-38e07e34f72f@metafoo.de>
-         <267863e8ca1464e4e433d83c5506ed871e3899b2.camel@gmail.com>
-         <4c5b8a03-6508-541f-2a72-39cb3052b4f1@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 31 Dec 2020 03:35:32 -0800 (PST)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH] ACPI: add stub acpi_create_platform_device() for !CONFIG_ACPI
+Date:   Thu, 31 Dec 2020 19:35:25 +0800
+Message-Id: <20201231113525.19614-1-shawn.guo@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Amadeusz,
+It adds a stub acpi_create_platform_device() for !CONFIG_ACPI build, so
+that caller doesn't have to deal with !CONFIG_ACPI build issue.
 
-Now, who has to do what ?
-I assume many users will be affected !
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+---
+This fixes an build issue reported by kernel test robot as below.
 
-Regards,
-Christian
+https://lore.kernel.org/linux-arm-msm/20201230124925.19260-1-shawn.guo@linaro.org/T/#u
 
-On Thu, 2020-12-31 at 12:20 +0100, Amadeusz Sławiński wrote:
-> On 12/31/2020 11:50 AM, Christian Labisch wrote:
-> > Hi Lars-Peter,
-> > 
-> > Thank you, please find attached the requested information from both kernels.
-> > I freshly installed the fedora kernel 5.10.4 to give you the latest results.
-> > 
-> > Regards,
-> > Christian
-> > 
-> > Christian Labisch
-> > Red Hat Accelerator
-> > clnetbox.blogspot.com
-> > access.redhat.com/community
-> > access.redhat.com/accelerators
-> > 
-> > 
-> > On Thu, 2020-12-31 at 11:04 +0100, Lars-Peter Clausen wrote:
-> > > On 12/31/20 9:33 AM, Greg Kroah-Hartman wrote:
-> > > > On Wed, Dec 30, 2020 at 07:10:16PM +0100, Christian Labisch wrote:
-> > > > > Update :
-> > > > > 
-> > > > > I've just tested the kernel 5.10.4 from ELRepo.
-> > > > > Unfortunately nothing changed - still no sound.
-> > > > Ah, sad.  Can you run 'git bisect' between 5.9 and 5.10 to determine the
-> > > > commit that caused the problem?
-> > > 
-> > > The problem is that one driver was replaced with another driver. git
-> > > bisect wont really help to narrow down why the new driver does not work.
-> > > 
-> > > Christian can you run the alsa-info.sh[1] script on your system and send
-> > > back the result?
-> > > 
-> > > You say sound is not working, can you clarify that a bit? Is no sound
-> > > card registered? Is it registered but output stays silent?
-> > > 
-> > > - Lars
-> > > 
-> > > [1] https://www.alsa-project.org/wiki/AlsaInfo
-> > > <https://www.alsa-project.org/wiki/AlsaInfo>
-> > > 
-> > > 
-> 
-> Hi,
-> 
-> from reading provided files it seems that you use snd_intel_hda driver, 
-> it should be possible to git bisect it between 5.9 and 5.10 as it wasn't 
-> replaced.
-> 
-> Catpt driver is used on machines using DSP.
-> 
-> Amadeusz
+ include/linux/acpi.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 2630c2e953f7..053bf05fb1f7 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -885,6 +885,13 @@ static inline int acpi_device_modalias(struct device *dev,
+ 	return -ENODEV;
+ }
+ 
++static inline struct platform_device *
++acpi_create_platform_device(struct acpi_device *adev,
++			    struct property_entry *properties)
++{
++	return NULL;
++}
++
+ static inline bool acpi_dma_supported(struct acpi_device *adev)
+ {
+ 	return false;
+-- 
+2.17.1
 
