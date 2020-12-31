@@ -2,155 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5A72E82A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 00:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7505A2E82AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 00:52:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgLaXXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 18:23:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
+        id S1727071AbgLaXwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 18:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgLaXXs (ORCPT
+        with ESMTP id S1726219AbgLaXwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 18:23:48 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5121C061573;
-        Thu, 31 Dec 2020 15:23:07 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kv7HZ-005p0B-7o; Thu, 31 Dec 2020 23:23:01 +0000
-Date:   Thu, 31 Dec 2020 23:23:01 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Rich Felker <dalias@libc.org>
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [sh] fix trivial misannotations
-Message-ID: <20201231232301.GG3579531@ZenIV.linux.org.uk>
+        Thu, 31 Dec 2020 18:52:35 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D3EC061573;
+        Thu, 31 Dec 2020 15:51:55 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id 11so19082121oty.9;
+        Thu, 31 Dec 2020 15:51:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CgirU3jbgRz3+G138o2SGfe8IWwZXTAb4h9Spq6+8ec=;
+        b=OMQvxrXMGT0/zqM6fVnT7WGWlbNXJm1/hjcWGgy3IGMAbhDo0cJuYXhfvEMl7hsKlr
+         dhqrrGhgjOcBizufq67Fi6SI3xdBfVXrI8VFoVktO3FH70s/LO7fb7D0D39CZ2QyA51T
+         2/blES+xfRox+hLqwTG3SiYTcTgDgvrjsfsD0pz3rcsXfONbTnWu3dyOkgsSaDBsfWKe
+         /vsMNE3I4W52xxeP/hVpzrOf3JW2Yg92pi+0EYrHPTBqPA0bnH3AVyE9Aq7bSGzT9zu+
+         4e2pZFaq5mc9XK3HGcLtQ1YaLG9fEBl8lgkkuyS/xrD8lOqviF6CdfZZIIYeIh6AaKdl
+         LLRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CgirU3jbgRz3+G138o2SGfe8IWwZXTAb4h9Spq6+8ec=;
+        b=Jg0JZLSqzau19Ue3DbzWc/v5HzrCj7B8KwuuVtxKpseZmgt8W4AZWS8mHtvv12NalK
+         MD/6LG53PYm2kaDA9LdpQbn4liyTxcwB+nK6uRNFnA6qg5y9r57C1q23lcdHM7qlRplt
+         sbSkCHni/+vT/2VMylLaeCQMBq+626KNUpmpD4rcqjS5JmEuedHKM3EaQD6y7GlgyXvW
+         H1OGqz9rd0W8zy0LBjTqMy5ZH07b4tcZbJMoR1eSCYrblEbxRdLCessDdOOnRPlHuXLc
+         gMFbLDuTfQKfFggH4v3EHZiIrlJVb+O0JCXF15NY2/afUlp3jSM53hdpn+XFDY0tzCSi
+         I6tA==
+X-Gm-Message-State: AOAM531xZ9qNsW4usWczs1JPxs9oohZs7mTg7/S4j8IQ6JdOmy+ucHyV
+        nnENaHTAPKs8IGaI9Pfr0UtD9bjhGtgsJ0nIyws=
+X-Google-Smtp-Source: ABdhPJyZrynHxYpOS+k4Vszc+yi6fPH73x5z0pmjUonPpnGHf38Ml/NpTQ/Uk5bDvUGsnyHCGduSS1VWP7ucRx9xMz0=
+X-Received: by 2002:a9d:2248:: with SMTP id o66mr28322045ota.236.1609458713146;
+ Thu, 31 Dec 2020 15:51:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20201220093724.4906-1-sergio.paracuellos@gmail.com>
+ <20201220093724.4906-3-sergio.paracuellos@gmail.com> <20201231223843.GA2494920@robh.at.kernel.org>
+In-Reply-To: <20201231223843.GA2494920@robh.at.kernel.org>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Fri, 1 Jan 2021 00:51:42 +0100
+Message-ID: <CAMhs-H879dSo3CouwA7OPo-W=BO3-mMSx225+q2G1wR3E-DHdA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/6] dt: bindings: add mt7621-clk device tree binding documentation
+To:     Rob Herring <robh@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Weijie Gao <hackpascal@gmail.com>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        NeilBrown <neil@brown.name>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Trivial misannotations in
-* get_user() (__gu_addr is a userland pointer there)
-* ip_fast_csum() (sum is __wsum, not unsigned int)
-* csum_and_copy_to_user() (destination is void *, not const void * - mea culpa)
-* __clear_user() (to is a userland pointer)
-* several places in kernel/traps_32.c (regs->pc is a userland pointer when regs is a
-userland pt_regs)
-* math-emu/math.c: READ() and WRITE() casts of address should be to userland pointer.
+Hi Rob,
 
-No changes in code generation and those take care of the majority of noise from sparse
-on sh builds.
+Thanks for the review.
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
-diff --git a/arch/sh/include/asm/checksum_32.h b/arch/sh/include/asm/checksum_32.h
-index 1a391e3a7659..a6501b856f3e 100644
---- a/arch/sh/include/asm/checksum_32.h
-+++ b/arch/sh/include/asm/checksum_32.h
-@@ -84,7 +84,8 @@ static inline __sum16 csum_fold(__wsum sum)
-  */
- static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
- {
--	unsigned int sum, __dummy0, __dummy1;
-+	__wsum sum;
-+	unsigned int __dummy0, __dummy1;
- 
- 	__asm__ __volatile__(
- 		"mov.l	@%1+, %0\n\t"
-@@ -197,6 +198,6 @@ static inline __wsum csum_and_copy_to_user(const void *src,
- {
- 	if (!access_ok(dst, len))
- 		return 0;
--	return csum_partial_copy_generic((__force const void *)src, dst, len);
-+	return csum_partial_copy_generic(src, (__force void *)dst, len);
- }
- #endif /* __ASM_SH_CHECKSUM_H */
-diff --git a/arch/sh/include/asm/uaccess.h b/arch/sh/include/asm/uaccess.h
-index 73f3b48d4a34..8867bb04b00e 100644
---- a/arch/sh/include/asm/uaccess.h
-+++ b/arch/sh/include/asm/uaccess.h
-@@ -68,7 +68,7 @@ struct __large_struct { unsigned long buf[100]; };
- ({									\
- 	long __gu_err = -EFAULT;					\
- 	unsigned long __gu_val = 0;					\
--	const __typeof__(*(ptr)) *__gu_addr = (ptr);			\
-+	const __typeof__(*(ptr)) __user *__gu_addr = (ptr);			\
- 	if (likely(access_ok(__gu_addr, (size))))		\
- 		__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
- 	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
-@@ -124,7 +124,7 @@ raw_copy_to_user(void __user *to, const void *from, unsigned long n)
-  * Clear the area and return remaining number of bytes
-  * (on failure.  Usually it's 0.)
-  */
--__kernel_size_t __clear_user(void *addr, __kernel_size_t size);
-+__kernel_size_t __clear_user(void __user *addr, __kernel_size_t size);
- 
- #define clear_user(addr,n)						\
- ({									\
-diff --git a/arch/sh/kernel/traps_32.c b/arch/sh/kernel/traps_32.c
-index b62ad0ba2395..b3c715bc254b 100644
---- a/arch/sh/kernel/traps_32.c
-+++ b/arch/sh/kernel/traps_32.c
-@@ -490,7 +490,7 @@ asmlinkage void do_address_error(struct pt_regs *regs,
- 		inc_unaligned_user_access();
- 
- 		oldfs = force_uaccess_begin();
--		if (copy_from_user(&instruction, (insn_size_t *)(regs->pc & ~1),
-+		if (copy_from_user(&instruction, (insn_size_t __user *)(regs->pc & ~1),
- 				   sizeof(instruction))) {
- 			force_uaccess_end(oldfs);
- 			goto uspace_segv;
-@@ -614,7 +614,7 @@ asmlinkage void do_reserved_inst(void)
- 	unsigned short inst = 0;
- 	int err;
- 
--	get_user(inst, (unsigned short*)regs->pc);
-+	get_user(inst, (unsigned short __user *)regs->pc);
- 
- 	err = do_fpu_inst(inst, regs);
- 	if (!err) {
-@@ -699,9 +699,9 @@ asmlinkage void do_illegal_slot_inst(void)
- 		return;
- 
- #ifdef CONFIG_SH_FPU_EMU
--	get_user(inst, (unsigned short *)regs->pc + 1);
-+	get_user(inst, (unsigned short __user *)regs->pc + 1);
- 	if (!do_fpu_inst(inst, regs)) {
--		get_user(inst, (unsigned short *)regs->pc);
-+		get_user(inst, (unsigned short __user *)regs->pc);
- 		if (!emulate_branch(inst, regs))
- 			return;
- 		/* fault in branch.*/
-diff --git a/arch/sh/math-emu/math.c b/arch/sh/math-emu/math.c
-index e8be0eca0444..3495a48b7713 100644
---- a/arch/sh/math-emu/math.c
-+++ b/arch/sh/math-emu/math.c
-@@ -51,8 +51,8 @@
- #define Rn	(regs->regs[n])
- #define Rm	(regs->regs[m])
- 
--#define WRITE(d,a)	({if(put_user(d, (typeof (d)*)a)) return -EFAULT;})
--#define READ(d,a)	({if(get_user(d, (typeof (d)*)a)) return -EFAULT;})
-+#define WRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-+#define READ(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
- 
- #define PACK_S(r,f)	FP_PACK_SP(&r,f)
- #define UNPACK_S(f,r)	FP_UNPACK_SP(f,&r)
-diff --git a/arch/sh/mm/nommu.c b/arch/sh/mm/nommu.c
-index 8b4504413c5f..78c4b6e6d33b 100644
---- a/arch/sh/mm/nommu.c
-+++ b/arch/sh/mm/nommu.c
-@@ -28,9 +28,9 @@ __kernel_size_t __copy_user(void *to, const void *from, __kernel_size_t n)
- 	return 0;
- }
- 
--__kernel_size_t __clear_user(void *to, __kernel_size_t n)
-+__kernel_size_t __clear_user(void __user *to, __kernel_size_t n)
- {
--	memset(to, 0, n);
-+	memset((__force void *)to, 0, n);
- 	return 0;
- }
- 
+On Thu, Dec 31, 2020 at 11:38 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Sun, Dec 20, 2020 at 10:37:20AM +0100, Sergio Paracuellos wrote:
+> > Adds device tree binding documentation for clocks in the
+> > MT7621 SOC.
+> >
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  .../bindings/clock/mediatek,mt7621-clk.yaml   | 52 +++++++++++++++++++
+> >  1 file changed, 52 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+> > new file mode 100644
+> > index 000000000000..f58d01bdc82c
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+> > @@ -0,0 +1,52 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/clock/mediatek,mt7621-clk.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: MT7621 Clock Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > +
+> > +description: |
+> > +  The MT7621 has a PLL controller from where the cpu clock is provided
+> > +  as well as derived clocks for the bus and the peripherals. It also
+> > +  can gate SoC device clocks.
+> > +
+> > +  Each clock is assigned an identifier and client nodes use this identifier
+> > +  to specify the clock which they consume.
+> > +
+> > +  All these identifiers could be found in:
+> > +  [1]: <include/dt-bindings/clock/mt7621-clk.h>.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: mediatek,mt7621-clk
+> > +
+> > +  "#clock-cells":
+> > +    description:
+> > +      The first cell indicates the clock number, see [1] for available
+> > +      clocks.
+> > +    const: 1
+> > +
+> > +  clock-output-names:
+> > +    maxItems: 8
+> > +
+> > +required:
+> > +  - compatible
+> > +  - '#clock-cells'
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/mt7621-clk.h>
+> > +
+> > +    pll {
+> > +      compatible = "mediatek,mt7621-clk";
+> > +      #clock-cells = <1>;
+> > +      clock-output-names = "xtal", "cpu", "bus",
+> > +                           "50m", "125m", "150m",
+> > +                           "250m", "270m";
+>
+> How do you access this h/w. There's nothing defined like 'reg' or
+> a parent node or...
+
+Through read write operations defined in
+"asm/mach-ralink/ralink_regs.h. Please, see my explanation below.
+
+>
+> The suggestion on v4 was to get rid of the child node by merging it with
+> the parent like this:
+>
+> +    sysc: sysc@0 {
+> +      compatible = "mediatek,mt7621-sysc", "syscon";
+> +      reg = <0x0 0x100>;
+> +      #clock-cells = <1>;
+> +      clock-output-names = "xtal", "cpu", "bus",
+> +                             "50m", "125m", "150m",
+> +                             "250m", "270m";
+> +    };
+>
+> Whether you need child nodes or not really depends on what all is in the
+> 'mt7621-sysc' h/w block.
+
+All the drivers in this platform make use of arch operations defined
+in "asm/mach-ralink/ralink_regs.h". This mediatek,mt7621-sysc is
+directly mapped by the architecture
+in arch/mips/ralink/mt7621.c in function void __init
+ralink_of_remap(void). This is the first address in the virtual space
+and from here "rt_sysc_membase" and "rt_memc_membase" are used to
+access the hardware control registers through read and write
+operations. So "mediatek,mt7621-sysc" cannot be remapped from clock
+driver. The benefits I found at first of using the syscon as child
+node was to avoid the use of architecture dependant operations but at
+the end I realized that we need to access another register which is
+not in the syscon block and it is not also well documented so the use
+of arch operations is mandatory to make things work. That's why I end
+up in just follow the architecture driver style and use this in the
+same way, trying to maintain as clean as possible. Is it ok then to
+declare it as it is in this way?
+
+>
+> Rob
+
+Best regards,
+    Sergio Paracuellos
