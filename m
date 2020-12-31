@@ -2,125 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4652E80CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A19E2E80D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgLaPKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 10:10:15 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:45452 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726314AbgLaPKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 10:10:14 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kuzZt-00FFaw-Bj; Thu, 31 Dec 2020 16:09:25 +0100
-Date:   Thu, 31 Dec 2020 16:09:25 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <X+3ppQhbjCGFzs6P@lunn.ch>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20201230154755.14746-2-pali@kernel.org>
- <20201230161036.GR1551@shell.armlinux.org.uk>
- <20201230165634.c4ty3mw6djezuyq6@pali>
- <20201230170546.GU1551@shell.armlinux.org.uk>
- <X+y1K21tp01GpvMy@lunn.ch>
- <20201230174307.lvehswvj5q6c6vk3@pali>
- <20201230190958.GW1551@shell.armlinux.org.uk>
- <20201231121410.2xlxtyqjelrlysd2@pali>
+        id S1726973AbgLaP0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 10:26:50 -0500
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:47204 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726314AbgLaP0t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 10:26:49 -0500
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 362A182256;
+        Thu, 31 Dec 2020 18:26:07 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1609428367;
+        bh=ED4wNoHESlHTP96hXWIg9b7ldoXhnfdzOetLUHDQsIg=;
+        h=From:To:CC:Subject:Date;
+        b=Ur9zBPR5FGnPVwAXmcIMkxpPwmAPSxqipJ91Yxn9jSLIl/lELgqquYGqb6ECJZl5N
+         ogP+FoH3daeiwh+vVe0qg7sQVhO+XVYQQSVSf1DvJe6spppYY9CIjoDBohVYEE/TLW
+         Yv+mzqPzncA+gMujjWMaNk7szFzro6eG06sWuFG4=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 31 Dec 2020 18:26:06 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
+        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
+        <andy.lavr@gmail.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v17 00/10] NTFS read-write driver GPL implementation by Paragon Software
+Date:   Thu, 31 Dec 2020 18:23:51 +0300
+Message-ID: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201231121410.2xlxtyqjelrlysd2@pali>
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 01:14:10PM +0100, Pali Rohár wrote:
-> On Wednesday 30 December 2020 19:09:58 Russell King - ARM Linux admin wrote:
-> > On Wed, Dec 30, 2020 at 06:43:07PM +0100, Pali Rohár wrote:
-> > > On Wednesday 30 December 2020 18:13:15 Andrew Lunn wrote:
-> > > > Hi Pali
-> > > > 
-> > > > I have to agree with Russell here. I would rather have no diagnostics
-> > > > than untrustable diagnostics.
-> > > 
-> > > Ok!
-> > > 
-> > > So should we completely skip hwmon_device_register_with_info() call
-> > > if (i2c_block_size < 2) ?
-> > 
-> > I don't think that alone is sufficient - there's also the matter of
-> > ethtool -m which will dump that information as well, and we don't want
-> > to offer it to userspace in an unreliable form.
-> 
-> Any idea/preference how to disable access to these registers?
-> 
-> > For reference, here is what SFF-8472 which defines the diagnostics, says
-> > about this:
-> > 
-> >   To guarantee coherency of the diagnostic monitoring data, the host is
-> >   required to retrieve any multi-byte fields from the diagnostic
-> >   monitoring data structure (IE: Rx Power MSB - byte 104 in A2h, Rx Power
-> >   LSB - byte 105 in A2h) by the use of a single two-byte read sequence
-> >   across the two-wire interface interface.
-> > 
-> >   The transceiver is required to ensure that any multi-byte fields which
-> >   are updated with diagnostic monitoring data (e.g. Rx Power MSB - byte
-> >   104 in A2h, Rx Power LSB - byte 105 in A2h) must have this update done
-> >   in a fashion which guarantees coherency and consistency of the data. In
-> >   other words, the update of a multi-byte field by the transceiver must
-> >   not occur such that a partially updated multi-byte field can be
-> >   transferred to the host. Also, the transceiver shall not update a
-> >   multi-byte field within the structure during the transfer of that
-> >   multi-byte field to the host, such that partially updated data would be
-> >   transferred to the host.
-> > 
-> > The first paragraph is extremely definitive in how these fields shall
-> > be read atomically - by a _single_ two-byte read sequence. From what
-> > you are telling us, these modules do not support that. Therefore, by
-> > definition, they do *not* support proper and reliable reporting of
-> > diagnostic data, and are non-conformant with the SFP MSAs.
-> > 
-> > So, they are basically broken, and the diagnostics can't be used to
-> > retrieve data that can be said to be useful.
-> 
-> I agree they are broken. We really should disable access to those 16bit
-> registers.
-> 
-> Anyway here is "datasheet" to some CarlitoxxPro SFP:
-> https://www.docdroid.net/hRsJ560/cpgos03-0490v2-datasheet-10-pdf
-> 
-> And on page 10 is written:
-> 
->     The I2C system can support the mode of random address / single
->     byteread which conform to SFF-8431.
-> 
-> Which seems to be wrong.
+This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-Searching around, i found:
+Having decades of expertise in commercial file systems development and huge
+test coverage, we at Paragon Software GmbH want to make our contribution to
+the Open Source Community by providing implementation of NTFS Read-Write
+driver for the Linux Kernel.
 
-http://read.pudn.com/downloads776/doc/3073304/RTL9601B-CG_Datasheet.pdf
+This is fully functional NTFS Read-Write driver. Current version works with
+NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
 
-It has two i2c busses, a master and a slave. The master bus can do
-multi-byte transfers. The slave bus description says nothing in words
-about multi-byte transfers, but the diagram shows only single byte
-transfers.
+We plan to support this version after the codebase once merged, and add new
+features and fix bugs. For example, full journaling support over JBD will be
+added in later updates.
 
-So any SFP based around this device is broken.
+v2:
+ - patch splitted to chunks (file-wise)
+ - build issues fixed
+ - sparse and checkpatch.pl errors fixed
+ - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+ - cosmetics + code cleanup
 
-The silly thing is, it is reading/writing from a shadow SRAM. The CPU
-is not directly involved in an I2C transaction. So it could easily
-read multiple bytes from the SRAM and return them. But it would still
-need a synchronisation method to handle writes from the CPU to the
-SRAM, in order to make these word values safe.
+v3:
+ - added acl, noatime, no_acs_rules, prealloc mount options
+ - added fiemap support
+ - fixed encodings support
+ - removed typedefs
+ - adapted Kernel-way logging mechanisms
+ - fixed typos and corner-case issues
 
-      Andrew
+v4:
+ - atomic_open() refactored
+ - code style updated
+ - bugfixes
+
+v5:
+- nls/nls_alt mount options added
+- Unicode conversion fixes
+- Improved very fragmented files operations
+- logging cosmetics
+
+v6:
+- Security Descriptors processing changed
+  added system.ntfs_security xattr to set
+  SD
+- atomic_open() optimized
+- cosmetics
+
+v7:
+- Security Descriptors validity checks added (by Mark Harmstone)
+- atomic_open() fixed for the compressed file creation with directio
+  case
+- remount support
+- temporarily removed readahead usage
+- cosmetics
+
+v8:
+- Compressed files operations fixed
+
+v9:
+- Further cosmetics applied as suggested
+by Joe Perches
+
+v10:
+- operations with compressed/sparse files on very fragmented volumes improved
+- reduced memory consumption for above cases
+
+v11:
+- further compressed files optimizations: reads/writes are now skipping bufferization
+- journal wipe to the initial state optimized (bufferization is also skipped)
+- optimized run storage (re-packing cluster metainformation)
+- fixes based on Matthew Wilcox feedback to the v10
+- compressed/sparse/normal could be set for empty files with 'system.ntfs_attrib' xattr
+
+v12:
+- nls_alt mount option removed after discussion with Pali Rohar
+- fixed ni_repack()
+- fixed resident files transition to non-resident when size increasing
+
+v13:
+- nested_lock fix (lockdep)
+- out-of-bounds read fix (KASAN warning)
+- resident->nonresident transition fixed for compressed files
+- load_nls() missed fix applied
+- some sparse utility warnings fixes
+
+v14:
+- support for additional compression types (we've adapted WIMLIB's
+  implementation, authored by Eric Biggers, into ntfs3)
+
+v15:
+- kernel test robot warnings fixed
+- lzx/xpress compression license headers updated
+
+v16:
+- lzx/xpress moved to initial ntfs-3g plugin code
+- mutexes instead of a global spinlock for compresions
+- FALLOC_FL_PUNCH_HOLE and FALLOC_FL_COLLAPSE_RANGE implemented
+- CONFIG_NTFS3_FS_POSIX_ACL added
+
+v17:
+- FALLOC_FL_COLLAPSE_RANGE fixed
+- fixes for Mattew Wilcox's and Andy Lavr's concerns
+
+Konstantin Komarov (10):
+  fs/ntfs3: Add headers and misc files
+  fs/ntfs3: Add initialization of super block
+  fs/ntfs3: Add bitmap
+  fs/ntfs3: Add file operations and implementation
+  fs/ntfs3: Add attrib operations
+  fs/ntfs3: Add compression
+  fs/ntfs3: Add NTFS journal
+  fs/ntfs3: Add Kconfig, Makefile and doc
+  fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+  fs/ntfs3: Add MAINTAINERS
+
+ Documentation/filesystems/ntfs3.rst |  107 +
+ MAINTAINERS                         |    7 +
+ fs/Kconfig                          |    1 +
+ fs/Makefile                         |    1 +
+ fs/ntfs3/Kconfig                    |   41 +
+ fs/ntfs3/Makefile                   |   31 +
+ fs/ntfs3/attrib.c                   | 2081 +++++++++++
+ fs/ntfs3/attrlist.c                 |  463 +++
+ fs/ntfs3/bitfunc.c                  |  135 +
+ fs/ntfs3/bitmap.c                   | 1504 ++++++++
+ fs/ntfs3/debug.h                    |   61 +
+ fs/ntfs3/dir.c                      |  570 +++
+ fs/ntfs3/file.c                     | 1140 ++++++
+ fs/ntfs3/frecord.c                  | 3088 ++++++++++++++++
+ fs/ntfs3/fslog.c                    | 5220 +++++++++++++++++++++++++++
+ fs/ntfs3/fsntfs.c                   | 2527 +++++++++++++
+ fs/ntfs3/index.c                    | 2662 ++++++++++++++
+ fs/ntfs3/inode.c                    | 2051 +++++++++++
+ fs/ntfs3/lib/decompress_common.c    |  332 ++
+ fs/ntfs3/lib/decompress_common.h    |  352 ++
+ fs/ntfs3/lib/lib.h                  |   26 +
+ fs/ntfs3/lib/lzx_decompress.c       |  683 ++++
+ fs/ntfs3/lib/xpress_decompress.c    |  155 +
+ fs/ntfs3/lznt.c                     |  452 +++
+ fs/ntfs3/namei.c                    |  590 +++
+ fs/ntfs3/ntfs.h                     | 1237 +++++++
+ fs/ntfs3/ntfs_fs.h                  | 1049 ++++++
+ fs/ntfs3/record.c                   |  614 ++++
+ fs/ntfs3/run.c                      | 1254 +++++++
+ fs/ntfs3/super.c                    | 1477 ++++++++
+ fs/ntfs3/upcase.c                   |   77 +
+ fs/ntfs3/xattr.c                    | 1072 ++++++
+ 32 files changed, 31060 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+ create mode 100644 fs/ntfs3/attrib.c
+ create mode 100644 fs/ntfs3/attrlist.c
+ create mode 100644 fs/ntfs3/bitfunc.c
+ create mode 100644 fs/ntfs3/bitmap.c
+ create mode 100644 fs/ntfs3/debug.h
+ create mode 100644 fs/ntfs3/dir.c
+ create mode 100644 fs/ntfs3/file.c
+ create mode 100644 fs/ntfs3/frecord.c
+ create mode 100644 fs/ntfs3/fslog.c
+ create mode 100644 fs/ntfs3/fsntfs.c
+ create mode 100644 fs/ntfs3/index.c
+ create mode 100644 fs/ntfs3/inode.c
+ create mode 100644 fs/ntfs3/lib/decompress_common.c
+ create mode 100644 fs/ntfs3/lib/decompress_common.h
+ create mode 100644 fs/ntfs3/lib/lib.h
+ create mode 100644 fs/ntfs3/lib/lzx_decompress.c
+ create mode 100644 fs/ntfs3/lib/xpress_decompress.c
+ create mode 100644 fs/ntfs3/lznt.c
+ create mode 100644 fs/ntfs3/namei.c
+ create mode 100644 fs/ntfs3/ntfs.h
+ create mode 100644 fs/ntfs3/ntfs_fs.h
+ create mode 100644 fs/ntfs3/record.c
+ create mode 100644 fs/ntfs3/run.c
+ create mode 100644 fs/ntfs3/super.c
+ create mode 100644 fs/ntfs3/upcase.c
+ create mode 100644 fs/ntfs3/xattr.c
+
+
+base-commit: f6e1ea19649216156576aeafa784e3b4cee45549
+-- 
+2.25.4
+
