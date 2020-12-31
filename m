@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7B12E80EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0072E80F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbgLaP1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 10:27:36 -0500
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:47333 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726823AbgLaP1c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 10:27:32 -0500
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id B63258225C;
-        Thu, 31 Dec 2020 18:26:09 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1609428369;
-        bh=nHpPz2+FrFfh6DcEqKSTGM0lG8GgmmwuJqJUHlyXClc=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=i8eLND7WHhq0BFLqQSETax8U8pv0eL8Q3wnwV2lXtxnpMeT7rtzyTd60bBvCzP5jT
-         wtkCF+rGuRc3YIyvliUllndENFbWO2v6NbboC9RBYBfrNYi4tGvK5r8qEuA09mvOee
-         8SrSBCb5FtY9lpx0Ky1xrHIKT52gd+0OlY10jal8=
-Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 31 Dec 2020 18:26:09 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>, <nborisov@suse.com>,
-        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
-        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
-        <andy.lavr@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v17 10/10] fs/ntfs3: Add MAINTAINERS
-Date:   Thu, 31 Dec 2020 18:24:01 +0300
-Message-ID: <20201231152401.3162425-11-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
-References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
+        id S1727048AbgLaPbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 10:31:19 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:45480 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726080AbgLaPbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 10:31:19 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kuzuL-00FFji-Bs; Thu, 31 Dec 2020 16:30:33 +0100
+Date:   Thu, 31 Dec 2020 16:30:33 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
+ RTL9601C chips
+Message-ID: <X+3ume1+wz8HXHEf@lunn.ch>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20201230154755.14746-2-pali@kernel.org>
+ <20201230161036.GR1551@shell.armlinux.org.uk>
+ <20201230165634.c4ty3mw6djezuyq6@pali>
+ <20201230170546.GU1551@shell.armlinux.org.uk>
+ <X+y1K21tp01GpvMy@lunn.ch>
+ <20201230174307.lvehswvj5q6c6vk3@pali>
+ <20201230190958.GW1551@shell.armlinux.org.uk>
+ <20201231121410.2xlxtyqjelrlysd2@pali>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.30.114.105]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+In-Reply-To: <20201231121410.2xlxtyqjelrlysd2@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds MAINTAINERS
+On Thu, Dec 31, 2020 at 01:14:10PM +0100, Pali Rohár wrote:
+> On Wednesday 30 December 2020 19:09:58 Russell King - ARM Linux admin wrote:
+> > On Wed, Dec 30, 2020 at 06:43:07PM +0100, Pali Rohár wrote:
+> > > On Wednesday 30 December 2020 18:13:15 Andrew Lunn wrote:
+> > > > Hi Pali
+> > > > 
+> > > > I have to agree with Russell here. I would rather have no diagnostics
+> > > > than untrustable diagnostics.
+> > > 
+> > > Ok!
+> > > 
+> > > So should we completely skip hwmon_device_register_with_info() call
+> > > if (i2c_block_size < 2) ?
+> > 
+> > I don't think that alone is sufficient - there's also the matter of
+> > ethtool -m which will dump that information as well, and we don't want
+> > to offer it to userspace in an unreliable form.
+> 
+> Any idea/preference how to disable access to these registers?
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+Page A0, byte 92:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 546aa66428c9..1a990aa2985d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12674,6 +12674,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
- F:	Documentation/filesystems/ntfs.rst
- F:	fs/ntfs/
- 
-+NTFS3 FILESYSTEM
-+M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-+S:	Supported
-+W:	http://www.paragon-software.com/
-+F:	Documentation/filesystems/ntfs3.rst
-+F:	fs/ntfs3/
-+
- NUBUS SUBSYSTEM
- M:	Finn Thain <fthain@telegraphics.com.au>
- L:	linux-m68k@lists.linux-m68k.org
--- 
-2.25.4
+"Diagnostic Monitoring Type" is a 1 byte field with 8 single bit
+indicators describing how diagnostic monitoring is implemented in the
+particular transceiver.
 
+Note that if bit 6, address 92 is set indicating that digital
+diagnostic monitoring has been implemented, received power
+monitoring, transmitted power monitoring, bias current monitoring,
+supply voltage monitoring and temperature monitoring must all be
+implemented. Additionally, alarm and warning thresholds must be
+written as specified in this document at locations 00 to 55 on
+two-wire serial address 1010001X (A2h) (see Table 8-5).
+
+Unfortunately, we cannot simply set sfp->id.ext.diagmon to false,
+because it can also be used to indicate power, software reading of
+TX_DISABLE, LOS, etc. These are all single bytes, so could be returned
+correctly, assuming they have been implemented according to the spec.
+
+Looking at sfp_module_info(), adding a check for i2c_block_size < 2
+when determining what length to return. ethtool should do the right
+thing, know that the second page has not been returned to user space.
+
+	Andrew
