@@ -2,121 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AC52E7DC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 03:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3E42E7DD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 04:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgLaCsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 21:48:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        id S1726511AbgLaDAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 22:00:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgLaCsc (ORCPT
+        with ESMTP id S1726289AbgLaDAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 21:48:32 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A782C061573;
-        Wed, 30 Dec 2020 18:47:52 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id r4so6265630wmh.5;
-        Wed, 30 Dec 2020 18:47:52 -0800 (PST)
+        Wed, 30 Dec 2020 22:00:07 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2003EC061575;
+        Wed, 30 Dec 2020 18:59:42 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id z21so12382203pgj.4;
+        Wed, 30 Dec 2020 18:59:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=uUa8PGFvQ1Nvv0Amw2GKK2Th/K2C6f4QRsmd3CKEORY=;
-        b=ey6xHkgPn+Tbwb+3sSG8iMG/XpU0ZmYxL3+LyHDbS74QzKq++QTCgb49u+3wRngW7T
-         jmWkyNX80fFkddKnguVV9HRJ6FCsejW8tIl2JFEmUsBerN8DpNSYzMpn5S3YUTxaxLaL
-         UDYzqzZLaXN6lgsn5jHro0U9SCbFVqLApd5b68rarc3YtIl+5q5zk7WIdoa6IbOAsNS1
-         dADrXtgoeN8omD1ggMma3kUNpwE6ZlH4kcLfAwg4dE1DENw3+B67zm3CCepmepeO7xkk
-         3X/Ju7T4XTqonKd45s3tatTAFm8YdIZ5ZAYv2mf1/WvGGGVSM9kctFtwP8ggzNHbuYaz
-         LP1A==
+        h=from:to:cc:subject:date:message-id;
+        bh=mIbBu5oerFY8oojdjY4H3fodNxd3UBrAe//XF172Q2U=;
+        b=PjJQpR/g7gNVNgz0zU42o4JzpwTUUVxuVc7Aa/jKd6/5Wb/Xt26UNZZw5Y46KO37er
+         4a7xdqTuQlChEf2WY0J94ZvkovV1AgHFdw7kXNhkGSVU7eyqyy2AWEqDLfhKUlSkcT9q
+         1kgaVkVRp9cukQToCQoO7ZoPNt6/looPtGs8LqBlMDfMahYVnWLTFqptEDVeFhQIO+Du
+         7hbCXzSBTMGk1K/clPEHsSG3ApyNTjutkm9BrmLUhMOKJQcKFfXu1+zxZ1fKF2/Hck7y
+         1no1ocw995UnWJXTGt1Py7ts/aYsw3McnWXRI8pPAWQ5oCuEAtgFTdanD7AxuitmGPQt
+         BGUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=uUa8PGFvQ1Nvv0Amw2GKK2Th/K2C6f4QRsmd3CKEORY=;
-        b=qK7DifVZhNjMXm7WoEtxXtgH3KTFOSaU4gdbXK2SnqMHopf4Udycn74j7HuBh2ba6K
-         B5bvaPpS0wMpPjJzOeIv7HfAQvgQVCnkaI10jOmgTUVz1m/z1lg5V8pRLYAePIYhXc9H
-         fzj+4486KFJ2pBgwwziqjyhBuAOzapGKfMaNl92xfqtBPw36WU+NqV08PsizP4Lhwnci
-         s2pCX4UdO9k8OGI+o0wdAnGnzWKs9DW3hzkSTpNSfOO5NigT7504OJu50lvsW6XYNTbc
-         qULmfOFJD+f/AV2T969jSrUftWNJoQtnb3xLv42KM+Qb+bhXMDVC3khAc01qRqnWE+pP
-         1XXg==
-X-Gm-Message-State: AOAM530CV58H0cUFIo3t6CRqWpALbtWP85sMYLxJ8o9IuBlfY/LlvpFw
-        z2aqrg5tZlZISnEktnJP59i/sqqKffE7fQ==
-X-Google-Smtp-Source: ABdhPJzPfV+OGIvkTCps1CXTf5mzKRTCy/Z2ALL44icJEGXDlTvkk+WIigwKnH0fS1+hlozjejxO5A==
-X-Received: by 2002:a05:600c:21d1:: with SMTP id x17mr9849152wmj.160.1609382870942;
-        Wed, 30 Dec 2020 18:47:50 -0800 (PST)
-Received: from [10.127.0.11] ([167.99.200.149])
-        by smtp.gmail.com with ESMTPSA id b83sm10526090wmd.48.2020.12.30.18.47.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 30 Dec 2020 18:47:50 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.17\))
-Subject: Re: [PATCH v2 2/2] arm64: dts: meson: add initial Beelink GS-King-X
- device-tree
-From:   Christian Hewitt <christianshewitt@gmail.com>
-In-Reply-To: <CAFBinCCUV4piTy7n83GsV9Tny+JYA9_AXS0uiv5FeNPYejNR-Q@mail.gmail.com>
-Date:   Thu, 31 Dec 2020 06:47:46 +0400
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7D798BA5-B2C4-4F9E-BFAE-658C982741D6@gmail.com>
-References: <20201230103729.2272-1-christianshewitt@gmail.com>
- <20201230103729.2272-3-christianshewitt@gmail.com>
- <CAFBinCCUV4piTy7n83GsV9Tny+JYA9_AXS0uiv5FeNPYejNR-Q@mail.gmail.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-X-Mailer: Apple Mail (2.3445.104.17)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mIbBu5oerFY8oojdjY4H3fodNxd3UBrAe//XF172Q2U=;
+        b=qcKNWT/6BOgYz/E/fyEVFXzmudL1yW0jNjYEsB1tDxFN7fipNrL4wrKaNwKj1h+zJh
+         gvrTCgOprrBtu/2DAyPOkiTkGQFsawRxYy9ubNmEHw5GcVZ8y+WUFIcJkK3tN3X/UTaT
+         0UWPy/NA0xWXIF4qPUCF5fN/JdDnOqL5okySIGK9Dz8kNX5p0jHmAnarrSaPHmVy0SES
+         6qZeKisGpvaUZmpZ1420ZcXlzm8x+lZy2tYXuXV4O3ELilE1Nofv5KLrUQxB5KGdY+0E
+         ekHneylxzpyQw3uGQXXFuOvw+/lVmDQMO+sfMpYlMystROriNylz1U3pbD2z4t5G3cLH
+         +obg==
+X-Gm-Message-State: AOAM533teVwkIqrIHYfjzf3Sq8TERPNMmAi6k9QPJt0QxwXQYM99Wuv6
+        IArQEO+XPXQguhDOGaNhjyM=
+X-Google-Smtp-Source: ABdhPJx0ge96w+D+4B6R2ghpq/z3f+0RNeOtatEh7iILDHxSWqYYpNp/gFmvp+7+tCVKmdb465AL/g==
+X-Received: by 2002:a63:c009:: with SMTP id h9mr27776538pgg.119.1609383581687;
+        Wed, 30 Dec 2020 18:59:41 -0800 (PST)
+Received: from localhost.localdomain ([182.226.226.37])
+        by smtp.googlemail.com with ESMTPSA id b72sm43524740pfb.129.2020.12.30.18.59.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 18:59:40 -0800 (PST)
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+X-Google-Original-From: Bongsu Jeon
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfc@lists.01.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: [PATCH net-next v2] net: nfc: nci: Change the NCI close sequence
+Date:   Thu, 31 Dec 2020 11:59:26 +0900
+Message-Id: <20201231025926.2889-1-bongsu.jeon@samsung.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-> On 31 Dec 2020, at 4:23 am, Martin Blumenstingl =
-<martin.blumenstingl@googlemail.com> wrote:
->=20
-> On Wed, Dec 30, 2020 at 11:38 AM Christian Hewitt
-> <christianshewitt@gmail.com> wrote:
->>=20
->> The Shenzen AZW (Beelink) GS-King-X is based on the Amlogic W400 =
-reference
->> board with an S922X-H chip.
->>=20
->> - 4GB LPDDR4 RAM
->> - 64GB eMMC storage
->> - 10/100/1000 Base-T Ethernet
->> - AP6356S Wireless (802.11 a/b/g/n/ac, BT 4.1)
->> - HDMI 2.1 video
->> - S/PDIF optical output
-> are you planning to enable this also?
+If there is a NCI command in work queue after closing the NCI device at 
+nci_unregister_device, The NCI command timer starts at flush_workqueue
+function and then NCI command timeout handler would be called 5 second 
+after flushing the NCI command work queue and destroying the queue.
+At that time, the timeout handler would try to use NCI command work queue
+that is destroyed already. it will causes the problem. To avoid this 
+abnormal situation, change the sequence to prevent the NCI command timeout
+handler from being called after destroying the NCI command work queue.
 
-I plan to add this later (after v1 comments).
+Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+---
 
->> - 2x ESS9018 audio DACs
->> - 4x Ricor RT6862 audio amps
->> - Analogue headphone output
-> there's no driver for that DAC so I think that's why you are not =
-enabling them
+Changes in v2:
+ - Change the commit message.
 
-ESS9018 is used with some Raspberry Pi DAC boards so there may be some =
-prior
-art to build upon. However it=E2=80=99s not clear (even with schematics) =
-how the DAC
-and AMP are controlled (they look like dumb input/output devices) so =
-this is
-still to be explored.
+ net/nfc/nci/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->> - 1x USB 2.0 OTG port
->> - 3x USB 3.0 ports
->> - IR receiver
->> - 1x micro SD card slot (internal)
->> - USB SATA controller with 2x 3.5" drive bays
->> - 1x Power on/off button
->>=20
->> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> I don't know/have this board but also I don't see anything problematic =
-so:
-> Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index e64727e1a72f..79bebf4b0796 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -579,11 +579,11 @@ static int nci_close_device(struct nci_dev *ndev)
+ 
+ 	clear_bit(NCI_INIT, &ndev->flags);
+ 
+-	del_timer_sync(&ndev->cmd_timer);
+-
+ 	/* Flush cmd wq */
+ 	flush_workqueue(ndev->cmd_wq);
+ 
++	del_timer_sync(&ndev->cmd_timer);
++
+ 	/* Clear flags */
+ 	ndev->flags = 0;
+ 
+-- 
+2.17.1
 
-Thx!=
