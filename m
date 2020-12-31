@@ -2,64 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269B02E8279
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 23:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE082E8281
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 23:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727223AbgLaWu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 17:50:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726661AbgLaWu1 (ORCPT
+        id S1727277AbgLaWuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 17:50:51 -0500
+Received: from mail-il1-f180.google.com ([209.85.166.180]:42978 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgLaWuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 17:50:27 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F92DC061573;
-        Thu, 31 Dec 2020 14:49:47 -0800 (PST)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E3F0C60B;
-        Thu, 31 Dec 2020 22:49:46 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E3F0C60B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1609454987; bh=jBr+SLjgiIGsvSUN7WO5mLJZBmJ6HtbFQltnqrSoo9k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pn0kZ1ee5Hiukaf7Ew5mo67bltIWxtBp0QjbNAhWVkqG0AxkaiByqGj77rWr17miL
-         s5vkKh3uM1LgjYeDJxAFpwWX8Qg8suqhcmsuEY4d+j2Ygzju7jcOIogzemJecIz7JT
-         GSQiHCOgbNT9iV6utO/Bwvizue0UGlYQWpsVMC7X4LxmY49QIFsgG9XJ4lPR5u9jGS
-         gM83wz+4BizXqNdyV2cbjY+8LJaRV9hU3dDcZs9wBTmZcA3kQ3FtM1MNXblzPfwgcj
-         Wp+Qza4S9eOP9M6A2IhTqmeeyJvoK/TdTRD6zBxyAMmXhygKOQ9AMxBrh1Vu7TY2X/
-         kE2LMjwCdkczA==
-Date:   Thu, 31 Dec 2020 15:49:45 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [RFC PATCH] Documentation: doc-guide: fixes to sphinx.rst
-Message-ID: <20201231154945.5abca1c4@lwn.net>
-In-Reply-To: <20201228231212.22448-1-rdunlap@infradead.org>
-References: <20201228231212.22448-1-rdunlap@infradead.org>
-Organization: LWN.net
+        Thu, 31 Dec 2020 17:50:50 -0500
+Received: by mail-il1-f180.google.com with SMTP id 2so18351388ilg.9;
+        Thu, 31 Dec 2020 14:50:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FTT5mZwVbwzaG7eO2xhxJL9MrI/0IncmuTso7WylOvo=;
+        b=haMRRLmPOabqolVfEVXMbg18A8Y8PWOt7Aa8eIVfHIAeqJ69gJnWkOpL6RroLU6MSZ
+         8zUxjUSw/31Z8aIPhAgXAaqtZQ2FE/8/rnsOacczMBEILpbDSZj6DqV54UyNc25DhwgZ
+         QT2BaZdEmgMhK/m3CQYkiodKdisP21JBvjgJBqLAvZmmNorPmG/qXhAMN1V3TzJhbZT9
+         8C8tLVRJkazyz423I6gYBHNhr1lvPrnjJveVFtN/N5Meyd1zn0q+CYrPKGtsC802V0ao
+         7rpaIyn9pm+prCkUyFbQHAyYe9sg8sMPA0DESJjryqMn+SsBOakME1k7LveRdOCk+Y9v
+         AkAg==
+X-Gm-Message-State: AOAM530J1UYAWBpA0jJKAkLzH3yBs9xWWPp5CEHZlCj8OEh3etJjkCOz
+        2sONdDhrStPB1pkKE6PDlA==
+X-Google-Smtp-Source: ABdhPJw4L54UvX4krlopSQzP2+D/VHZquWlRvbZQA/BfJqKquzIV83uxJJiBOxlonPiOcykAWZFvmw==
+X-Received: by 2002:a92:d8d1:: with SMTP id l17mr56264705ilo.99.1609455009632;
+        Thu, 31 Dec 2020 14:50:09 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id o7sm36357973iop.51.2020.12.31.14.50.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 14:50:08 -0800 (PST)
+Received: (nullmailer pid 2522805 invoked by uid 1000);
+        Thu, 31 Dec 2020 22:50:07 -0000
+Date:   Thu, 31 Dec 2020 15:50:07 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: mfd: qcom,qca639x: add binding for
+ QCA639x defvice
+Message-ID: <20201231225007.GA2509172@robh.at.kernel.org>
+References: <20201220165845.3712599-1-dmitry.baryshkov@linaro.org>
+ <20201220165845.3712599-2-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201220165845.3712599-2-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Dec 2020 15:12:12 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> Various fixes to sphinx.rst:
+On Sun, Dec 20, 2020 at 07:58:42PM +0300, Dmitry Baryshkov wrote:
+> Qualcomm QCA639x is a family of WiFi + Bluetooth SoCs, with BT part
+> being controlled through the UART and WiFi being present on PCIe bus.
+> Both blocks share common power sources. Add binding to describe power
+> sequencing required to power up this device.
 > 
-> - eliminate a double-space between 2 words
-> - grammar/wording
-> - punctuation
-> - call rows in a table 'rows' instead of 'columns' (or does Sphinx
->   call everything a column?)
-> - It seems that "amdfonts" should be "amsfonts". I can't find any
->   amdfonts.
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  .../devicetree/bindings/mfd/qcom,qca639x.yaml | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/qcom,qca639x.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/qcom,qca639x.yaml b/Documentation/devicetree/bindings/mfd/qcom,qca639x.yaml
+> new file mode 100644
+> index 000000000000..d43c75da136f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/qcom,qca639x.yaml
+> @@ -0,0 +1,84 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/mfd/qcom,qca639x.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm QCA639x WiFi + Bluetoot SoC bindings
+> +
+> +maintainers:
+> +  - Andy Gross <agross@kernel.org>
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description: |
+> +  This binding describes thes Qualcomm QCA6390 or QCA6391 power supplies and
+> +  enablement pins.
 
-Applied, thanks.
+Humm, this should really be for the whole device. For BT/WiFi chips 
+we've gotten away with 2 nodes for each interface. If that doesn't work 
+here, then I think this needs to be 1 node for all, not 3 as it seems 
+you are doing.
 
-jon
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,qca639x
+
+List each device, we don't do wildcards in compatible strings. 
+
+> +
+> +  '#power-domain-cells':
+> +    const: 0
+> +
+> +  pinctrl-0: true
+> +  pinctrl-1: true
+> +
+> +  pinctrl-names:
+> +    items:
+> +      - const: default
+> +      - const: active
+> +
+> +  vddaon-supply:
+> +    description:
+> +      0.95V always-on LDO power input
+> +
+> +  vddpmu-supply:
+> +    description:
+> +      0.95V LDO power input to PMU
+> +
+> +  vddrfa1-supply:
+> +    description:
+> +      0.95V LDO power input to RFA
+> +
+> +  vddrfa2-supply:
+> +    description:
+> +      1.25V LDO power input to RFA
+> +
+> +  vddrfa3-supply:
+> +    description:
+> +      2V LDO power input to RFA
+> +
+> +  vddpcie1-supply:
+> +    description:
+> +      1.25V LDO power input to PCIe part
+> +
+> +  vddpcie2-supply:
+> +    description:
+> +      2V LDO power input to PCIe part
+
+Do the PCIe supplies have to be on if only the BT part is used?
+
+Supplies are refcounted, so I'd suggest just duplicating the supplies in 
+both the BT and PCIe nodes.
+
+> +
+> +  vddio-supply:
+> +    description:
+> +      1.8V VIO input
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    qca639x: qca639x {
+> +      compatible = "qcom,qca639x";
+> +      #power-domain-cells = <0>;
+> +
+> +      vddaon-supply = <&vreg_s6a_0p95>;
+> +      vddpmu-supply = <&vreg_s2f_0p95>;
+> +      vddrfa1-supply = <&vreg_s2f_0p95>;
+> +      vddrfa2-supply = <&vreg_s8c_1p3>;
+> +      vddrfa3-supply = <&vreg_s5a_1p9>;
+> +      vddpcie1-supply = <&vreg_s8c_1p3>;
+> +      vddpcie2-supply = <&vreg_s5a_1p9>;
+> +      vddio-supply = <&vreg_s4a_1p8>;
+> +      pinctrl-names = "default", "active";
+> +      pinctrl-0 = <&wlan_default_state &bt_default_state>;
+> +      pinctrl-1 = <&wlan_active_state &bt_active_state>;
+> +    };
+> +...
+> -- 
+> 2.29.2
+> 
