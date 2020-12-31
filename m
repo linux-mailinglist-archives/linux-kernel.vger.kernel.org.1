@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9502E7D5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23AEF2E7D5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgLaAVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 19:21:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        id S1726561AbgLaAYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 19:24:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbgLaAVo (ORCPT
+        with ESMTP id S1726491AbgLaAYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 19:21:44 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FA4C061573;
-        Wed, 30 Dec 2020 16:21:03 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id q22so23816461eja.2;
-        Wed, 30 Dec 2020 16:21:03 -0800 (PST)
+        Wed, 30 Dec 2020 19:24:51 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC84C061573;
+        Wed, 30 Dec 2020 16:24:11 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id qw4so23754268ejb.12;
+        Wed, 30 Dec 2020 16:24:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BUPikVF2YhEEKQI5Y2qiZcki+hY/VRakhQdbEx50LzY=;
-        b=eCfTfvnTSoETeoHWDtlPFBxXiFMqw5JyKtkKrysmrUVQZ/z6d6a68qEeVM2gJ0d2Ec
-         E3ekMZFUmWM9e0d3vypsF7LsLbyLNfkoDpYpRXqwUjjPY03cZH/OwBOLC29GW/p2PlGR
-         DJPTyHZsd3WO/5b7R4nYGizIEiOFN6QHIbRJfaWV/bj7vUw/lYmQnnEr8WSUyfyuwxRR
-         xqEVvKb78sd0cU+m7jGAJ4s0EukY1JzsYhNWbJzXqGdujJzYG5fprZOvWVfcBuMZbLXT
-         tGGH6jGEKpetHjLt4Xw27vG5dsOiF8/z7U/VSUkcpV0HAR0vxDbXxsFRNVAC8Z3jSk0S
-         /7Og==
+        bh=aw/X/9HRdFlK3ENliYd8yhkSzevuBoqDvbJ7g1FREOk=;
+        b=oBhDqrr7CNIeA+HEckZ/BoMozBaZ67j517MnLQNWF9HHpKlIqcbDi+KgYiPH7xi+KR
+         dEROELyMEY9jwEJo/3g3xLv+DyU7iOcPMkKDvkL20U0bRwSpIKrvroIPmF2OiNgghdem
+         qm57V4I4n57aM+wl6J7q7YFvzobYCcLOUUB/LKM5eraIJmEEDjqDa5PUzi6gbQXlpq2e
+         6dlKXi9yGfxheRtTTszM9X+vWdFbrQB/Jl9vEm9xenlaeetoi8Uz0xL3EuEV832O5uiB
+         JXVYJLF+sTpKw/qBfMAQGvpQG7GsXEp532hX0saFjthrMIympWIjO3iu2EYAmBnEbMOT
+         3+qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BUPikVF2YhEEKQI5Y2qiZcki+hY/VRakhQdbEx50LzY=;
-        b=Cwdph6Uxh2U1a71TG4zRXxlo4DlJpJiSkqZSdomPye/8WyAMmHF333KjjsVT+nmIfx
-         SeMIvM7AxWQvsgiYfdiHaibAhfTT5MJnRrJ60FBNf52h0oDM/+xZNqWZ3Prv7D1j+w85
-         Lz31Y4iYGwe0YVM67+dl6CnoCHtcmc1mgFS5xXald8GsJ3L9mFv9qdAnnPGf1CiDw9NA
-         ERbDxs0WoOl3EoyaHaVM3C1dsNqKh7N8V0J0D5x61x9zVy824KDbs4XbFd4Rn0CDrmkd
-         6/uNc1bmxrE1cV2Zi096+yQvjscGGItOWRiRAccSLbUeCZOgzF+rIOF5ZbR85uRHLozw
-         ZUpA==
-X-Gm-Message-State: AOAM530aahZ++glG2F8VHt9+oOu7qfICkBAe+nvVc56z50QDgqPlP7n4
-        tJFpzc2+25R/SK8OJiJJ623WUI1cPK+BdGKsWAw=
-X-Google-Smtp-Source: ABdhPJwPCA51yecoVh1NsrourKwLdniqdG8nHLj2lo69ygPJMIxAVscbGV6Z8ZEgziKSsvpIRq8AzfyWFG5HoYvhEG8=
-X-Received: by 2002:a17:906:4050:: with SMTP id y16mr49858880ejj.537.1609374062329;
- Wed, 30 Dec 2020 16:21:02 -0800 (PST)
+        bh=aw/X/9HRdFlK3ENliYd8yhkSzevuBoqDvbJ7g1FREOk=;
+        b=EX6KyF+tanIEuwKvYrMuTG9KkGOBhFvFCIOZBn4z9RZXXhsp+azVUA2p98oF84f3Ii
+         7DjmIFSBWslJS0ioh+UI7YkPJEYGjDXoEM2+71ffwfUCvo09JhaVISO5yRryA4oPlvpP
+         OduGfOmWAWMatcYLg8CeDK2u8JCKmRELgQi3unnWOdofNAnB87ra4RF+pRCyFI3f3cbd
+         3Q0jZ1Kv72s7+Es6vPiCelqD2l7wzaXYvJM5hg4Zs1aQL839jgFF/INrrB1/y5O3Yoml
+         79xZ/58GB9IjjWdTjoDSCoKwE9AOLCy2Tk5X62WvaSN3kb1DelLikIZJdSecYLydtNkG
+         uEAQ==
+X-Gm-Message-State: AOAM533A4hYAb6wvmrNqxBuHRXRavz2qyaZTYedFmigOlqybbxAG1lYw
+        6L+112jrVMcQ5KXOUDPHd2niy87CFm/P/vyxMcs=
+X-Google-Smtp-Source: ABdhPJxrDxW07y8dLE5n+dcM/FUCVDaKSfs0FshgoV6zFzewudotaQBLzrHOOshSLszMCmD5zhQsLk6tRtwXHFx1Heg=
+X-Received: by 2002:a17:906:447:: with SMTP id e7mr50750226eja.172.1609374250025;
+ Wed, 30 Dec 2020 16:24:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20201230103729.2272-1-christianshewitt@gmail.com> <20201230103729.2272-2-christianshewitt@gmail.com>
-In-Reply-To: <20201230103729.2272-2-christianshewitt@gmail.com>
+References: <20201230103729.2272-1-christianshewitt@gmail.com> <20201230103729.2272-3-christianshewitt@gmail.com>
+In-Reply-To: <20201230103729.2272-3-christianshewitt@gmail.com>
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 31 Dec 2020 01:20:51 +0100
-Message-ID: <CAFBinCA91_wZ9r9v2HyvU0sX2smYdsijECim94WjRwpqu1qP4A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: amlogic: add support for the
- Beelink GS-King-X
+Date:   Thu, 31 Dec 2020 01:23:59 +0100
+Message-ID: <CAFBinCCUV4piTy7n83GsV9Tny+JYA9_AXS0uiv5FeNPYejNR-Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: meson: add initial Beelink GS-King-X device-tree
 To:     Christian Hewitt <christianshewitt@gmail.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -69,6 +68,26 @@ On Wed, Dec 30, 2020 at 11:38 AM Christian Hewitt
 > The Shenzen AZW (Beelink) GS-King-X is based on the Amlogic W400 reference
 > board with an S922X-H chip.
 >
+> - 4GB LPDDR4 RAM
+> - 64GB eMMC storage
+> - 10/100/1000 Base-T Ethernet
+> - AP6356S Wireless (802.11 a/b/g/n/ac, BT 4.1)
+> - HDMI 2.1 video
+> - S/PDIF optical output
+are you planning to enable this also?
+
+> - 2x ESS9018 audio DACs
+> - 4x Ricor RT6862 audio amps
+> - Analogue headphone output
+there's no driver for that DAC so I think that's why you are not enabling them
+
+> - 1x USB 2.0 OTG port
+> - 3x USB 3.0 ports
+> - IR receiver
+> - 1x micro SD card slot (internal)
+> - USB SATA controller with 2x 3.5" drive bays
+> - 1x Power on/off button
+>
 > Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+I don't know/have this board but also I don't see anything problematic so:
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
