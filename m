@@ -2,84 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4CC2E8208
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 21:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B3A2E8210
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 21:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgLaUua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 15:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726628AbgLaUua (ORCPT
+        id S1726848AbgLaU4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 15:56:52 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:35996 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726583AbgLaU4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 15:50:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E08C061575;
-        Thu, 31 Dec 2020 12:49:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=uRKoJvU7TdaCONZ8ed5/ubeZ6GnkrfHObj5AFY5rUu0=; b=X8vzhElJYLFHKKG/lqG6qK4gIy
-        Hp1g3z2rjL0mhK8KIm7S5lO+nr2gaPez7Kq/YIo4f+QB/+q+BwgDaYVNuEQ2EUuuDmbRujByU8x7R
-        S0ke8wr/44V4DJ2icDuqUZDtkmiwfZBpPTO6Rk5o2++JQXjP1c9oT77JDglbZ30NE9nZTMZ2573mh
-        MlJt782VR7Jy8P7aDt7Cb+qy3NnhBZxq+RrpxrVdwIx0DmmUVatbTvKs79hEKZbHPX4/YBOcF65pN
-        M3CmfeQBabzYxF5PZx5VZCPQV+yphDo2rIjR17isIzKWulLs/xOpf+uynu1ywfEpIOZhpzyZodCzm
-        7qUIghsA==;
-Received: from [2601:1c0:6280:3f0::2c43]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kv4tG-00160z-DR; Thu, 31 Dec 2020 20:49:47 +0000
-Subject: Re: mmotm 2020-12-31-11-52 uploaded (mm/cma.c)
-To:     akpm@linux-foundation.org, broonie@kernel.org, mhocko@suse.cz,
-        sfr@canb.auug.org.au, linux-next@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, mm-commits@vger.kernel.org
-References: <20201231195330.PHhcH%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <75e72a00-8758-7d67-388a-55dc6b35be57@infradead.org>
-Date:   Thu, 31 Dec 2020 12:49:40 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 31 Dec 2020 15:56:51 -0500
+Received: by mail-io1-f72.google.com with SMTP id y197so8549964iof.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 12:56:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=7POGUMTtHouCI9iTNlKKRSwh5qvL2y+t8RWIhaDBDs0=;
+        b=VFNkV2NQ/1fmNiEkDN06GU36XmWmH78xkB/3tT6XRlsJ0euDDlsNMj/FYoXKU2uuLn
+         zHJ/hBok+Ia+pJWnahPDOFOI+nClO1wpgStp2CAgDoYWOfWjk3fVU9p6YOKWMtiIPAns
+         m+D29T70FQQhQagYpW17S1c0LXWGCP0w4olMK/Q+RyS2FIPMF0QM7J70Ebx/nOTHKkt9
+         GMUWrTSRNwRnuylCykpQPzYN3QUzVjDIHRUMjIVuWZ+JDxyFxC4ViWxp23qFZNj4mg7m
+         dpB6hxllqHUJrHeAiwAv6joYUemtm0OfV/4qXo4sCh9n4ucaIUV9wps4uTMcASwdPKGf
+         MdHg==
+X-Gm-Message-State: AOAM531pA2f+fGEQt3KbKISNgg8GMMpc+CVGwKGWta3rad6HWEwFAW5c
+        tnwQmqIbKcXIQpS5tdJB0gxV6nhVtEMva9bLHOPG2JXfQMOe
+X-Google-Smtp-Source: ABdhPJy9GQ6T+wBnHRrpmNVL2QEXGbU0MGvx1hy995GFt32OqlFUh0n35jUzVee0WMTav2UzKQ2zgRWCwGh+txVdPtdI0/CxIgEt
 MIME-Version: 1.0
-In-Reply-To: <20201231195330.PHhcH%akpm@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:c98d:: with SMTP id b13mr50113082jap.124.1609448170302;
+ Thu, 31 Dec 2020 12:56:10 -0800 (PST)
+Date:   Thu, 31 Dec 2020 12:56:10 -0800
+In-Reply-To: <CAAEAJfADBQpyfgBjWtnnF-y0g_jRryrcHQd_J-123KxSrid5=Q@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000079b74605b7c8da15@google.com>
+Subject: Re: memory leak in zr364xx_probe
+From:   syzbot <syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com>
+To:     andriy.shevchenko@linux.intel.com, ezequiel@vanguardiasur.com.ar,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, royale@zerezo.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/31/20 11:53 AM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2020-12-31-11-52 has been uploaded to
-> 
->    https://www.ozlabs.org/~akpm/mmotm/
-> 
-> mmotm-readme.txt says
-> 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
+Hello,
 
-../mm/cma.c: In function ‘cma_declare_contiguous_nid’:
-../mm/cma.c:347:5: warning: "CONFIG_PHYS_ADDR_T_64BIT" is not defined, evaluates to 0 [-Wundef]
- #if CONFIG_PHYS_ADDR_T_64BIT
-     ^~~~~~~~~~~~~~~~~~~~~~~~
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+BUG: unable to handle kernel NULL pointer dereference in __videobuf_free
+
+zr364xx 4-1:0.0: model 06d6:003b detected
+usb 4-1: 320x240 mode selected
+zr364xx: start read pipe failed
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0 
+Oops: 0000 [#1] PREEMPT SMP
+CPU: 1 PID: 8717 Comm: kworker/1:4 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:__videobuf_free+0x62/0x180 drivers/media/v4l2-core/videobuf-core.c:243
+Code: 9d 70 01 00 00 31 ff 83 e3 03 89 de e8 b7 da 4a fe 84 db 0f 85 00 01 00 00 e8 2a e1 4a fe 48 8b 85 68 01 00 00 bf 03 10 26 12 <44> 8b 20 44 89 e6 e8 d3 da 4a fe 41 81 fc 03 10 26 12 0f 85 c4 2c
+RSP: 0018:ffffc900024ef7b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff82e82989
+RDX: ffff88811813d040 RSI: ffffffff82e82996 RDI: 0000000012261003
+RBP: ffff888125921780 R08: ffff888125ffe008 R09: 00000000000008fd
+R10: 0000000000000000 R11: 3a7878343633727a R12: 0000000000000001
+R13: ffff888125921000 R14: ffffc900032b1000 R15: 00000000ffffffa6
+FS:  0000000000000000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000109bb5000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ videobuf_mmap_free+0x1f/0x60 drivers/media/v4l2-core/videobuf-core.c:377
+ zr364xx_release+0x26/0xa0 drivers/media/usb/zr364xx/zr364xx.c:1192
+ v4l2_device_release drivers/media/v4l2-core/v4l2-device.c:51 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ v4l2_device_put+0x82/0xc0 drivers/media/v4l2-core/v4l2-device.c:56
+ zr364xx_probe+0x80c/0x823 drivers/media/usb/zr364xx/zr364xx.c:1536
+ usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+ really_probe+0x159/0x480 drivers/base/dd.c:554
+ driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+ __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+ bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+ __device_attach+0x122/0x250 drivers/base/dd.c:912
+ bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+ device_add+0x5ac/0xc30 drivers/base/core.c:2936
+ usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
+ usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+ usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+ really_probe+0x159/0x480 drivers/base/dd.c:554
+ driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+ __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+ bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+ __device_attach+0x122/0x250 drivers/base/dd.c:912
+ bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+ device_add+0x5ac/0xc30 drivers/base/core.c:2936
+ usb_new_device.cold+0x166/0x578 drivers/usb/core/hub.c:2554
+ hub_port_connect drivers/usb/core/hub.c:5222 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
+ port_event drivers/usb/core/hub.c:5508 [inline]
+ hub_event+0x144a/0x20d0 drivers/usb/core/hub.c:5590
+ process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+ worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+ kthread+0x178/0x1b0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 90e0be95dcb7e0d1 ]---
+RIP: 0010:__videobuf_free+0x62/0x180 drivers/media/v4l2-core/videobuf-core.c:243
+Code: 9d 70 01 00 00 31 ff 83 e3 03 89 de e8 b7 da 4a fe 84 db 0f 85 00 01 00 00 e8 2a e1 4a fe 48 8b 85 68 01 00 00 bf 03 10 26 12 <44> 8b 20 44 89 e6 e8 d3 da 4a fe 41 81 fc 03 10 26 12 0f 85 c4 2c
+RSP: 0018:ffffc900024ef7b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff82e82989
+RDX: ffff88811813d040 RSI: ffffffff82e82996 RDI: 0000000012261003
+RBP: ffff888125921780 R08: ffff888125ffe008 R09: 00000000000008fd
+R10: 0000000000000000 R11: 3a7878343633727a R12: 0000000000000001
+R13: ffff888125921000 R14: ffffc900032b1000 R15: 00000000ffffffa6
+FS:  0000000000000000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000109bb5000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-s/#if/#ifdef/
+Tested on:
 
-
--- 
-~Randy
+commit:         a1714d22 media: zr364xx: Fix memory leak in ->probe()
+git tree:       https://gitlab.collabora.com/linux/0day.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=11415e0b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ec2338be23ae163e
+dashboard link: https://syzkaller.appspot.com/bug?extid=b4d54814b339b5c6bbd4
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
