@@ -2,148 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D30D2E8116
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 034B82E8121
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727231AbgLaPuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 10:50:13 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:46038 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726071AbgLaPuN (ORCPT
+        id S1727277AbgLaP6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 10:58:00 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:33708 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgLaP57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 10:50:13 -0500
-Received: by mail-ot1-f43.google.com with SMTP id n42so18255579ota.12;
-        Thu, 31 Dec 2020 07:49:57 -0800 (PST)
+        Thu, 31 Dec 2020 10:57:59 -0500
+Received: by mail-ot1-f45.google.com with SMTP id b24so18331317otj.0;
+        Thu, 31 Dec 2020 07:57:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vrJ54GWrf1gjKYUTCdpFWMnnDxjUx7yI9iWKN6uWpbY=;
-        b=WvF9QIlLVRSpAnCEu6QgBoKAuHTPcKyGd+e1ZMmHt+wS6sR2QjayqQmYpr3d+n3QwJ
-         /wA2iEuy3vY57OiFvyoKK1K+qH+DngvjTZT1K4ttLJfFSCrcarlLE07PFHrBieGUWMY2
-         L5nWjkl8lX2ofRRMqj1CZe0+QClCe8z+BqDH+u9tPUk8kujoj/FVHSzQF3Rf04FeKOD0
-         1wqwNML5n4vDcFz8+ZPPhQWtavMi2bW4wQYLAsMp4J8bqicQxuG2Ack9RszxwFu26ITP
-         U/I38YCgPP9jK6nT1gdqInwsDobnlxX8lT4L3jWarsicvBmc7m0QUDsM/OZJ7zfCqV2L
-         V5Iw==
-X-Gm-Message-State: AOAM531ojOihhFtsqX391ljRONdvNRoyx5ogm9TZbmj7fAovbRrUUqfL
-        x8cqoSzX5RAP38KKCla+QQ==
-X-Google-Smtp-Source: ABdhPJzPV0VHmm9Ury2BxUsTfggiEYoY5ylxj7HrLmkDpdCswUZWCJ4x1QPsJBsLYVaXS9tqBSnGCQ==
-X-Received: by 2002:a05:6830:1650:: with SMTP id h16mr42298972otr.266.1609429772107;
-        Thu, 31 Dec 2020 07:49:32 -0800 (PST)
+        bh=ByUTKTXYsaKBw8iUInn/Gs7vPhqgWrVkrRV5lDm+3Hs=;
+        b=ZtImf8c/QoUAxLTGjLhxN2SkgYwUjRPjtLQL9uW9l1IFWJ6RRI05D/HP9gNeBttJl1
+         4iYMxNMaGOksNg/QarRo3ExHQsHzhTOuPO7cGsx56r27bVToKl67zR8lkX6hrdbqtT7c
+         zmNJ54EUNcaaYen6IJHj9qA4wJ9VfcOflbUUpSctCCrPh43OYYP8vIy1bBVBLu1qPLF4
+         bWHkPjtyKC5Yi2pJqcD8sZtVFz9wFApKSf6FBYoj2+AnZpcP0XvRt+7hHFmtc6OdIylC
+         Raw5+tEdvezwQgFQ0UFPrINQ4nVLf1gbnVqEO5iImSur3KKzqb8LLTFLcIJum/MgG+Px
+         yQdQ==
+X-Gm-Message-State: AOAM533se+cHSr1BtI677CF14EYFSarBdWi7IRmfjulPt/Xi0mdeIFSE
+        YGhgXRxeJWHCudanceyXvA==
+X-Google-Smtp-Source: ABdhPJwmNEpry9jqQG2UErzq8jVGMxSNohDp/TpPtIPfqvpyd+3br4Z6s3jrNEp0ERAQ63zsjbI3Yw==
+X-Received: by 2002:a9d:7cc9:: with SMTP id r9mr18633469otn.283.1609430237889;
+        Thu, 31 Dec 2020 07:57:17 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id s17sm11209427otg.16.2020.12.31.07.49.30
+        by smtp.gmail.com with ESMTPSA id l5sm11198656otj.57.2020.12.31.07.57.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 07:49:31 -0800 (PST)
-Received: (nullmailer pid 1851540 invoked by uid 1000);
-        Thu, 31 Dec 2020 15:49:29 -0000
-Date:   Thu, 31 Dec 2020 08:49:29 -0700
+        Thu, 31 Dec 2020 07:57:17 -0800 (PST)
+Received: (nullmailer pid 1863518 invoked by uid 1000);
+        Thu, 31 Dec 2020 15:57:15 -0000
+Date:   Thu, 31 Dec 2020 08:57:15 -0700
 From:   Rob Herring <robh@kernel.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>
-Cc:     ulf.hansson@linaro.org, bjorn.andersson@linaro.org, wsa@kernel.org,
-        swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, mka@chromium.org,
-        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
-        parashar@codeaurora.org, rnayak@codeaurora.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: power: Introduce
- 'assigned-performance-states' property
-Message-ID: <20201231154929.GA1846089@robh.at.kernel.org>
-References: <20201224111210.1214-1-rojay@codeaurora.org>
- <20201224111210.1214-2-rojay@codeaurora.org>
+To:     Nick Fan <Nick.Fan@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: Convert Arm Mali Valhall GPU to DT
+ schema
+Message-ID: <20201231155715.GA1852831@robh.at.kernel.org>
+References: <20201224123119.26504-1-Nick.Fan@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201224111210.1214-2-rojay@codeaurora.org>
+In-Reply-To: <20201224123119.26504-1-Nick.Fan@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 04:42:08PM +0530, Roja Rani Yarubandi wrote:
-> While most devices within power-domains which support performance states,
-> scale the performance state dynamically, some devices might want to
-> set a static/default performance state while the device is active.
-> These devices typically would also run off a fixed clock and not support
-> dynamically scaling the device's performance, also known as DVFS
-> techniques.
+On Thu, Dec 24, 2020 at 08:31:18PM +0800, Nick Fan wrote:
+> Convert the Arm Valhall GPU binding to DT schema format.
+
+Convert? There's no existing binding.
+
 > 
-> Add a property 'assigned-performance-states' which client devices can
-> use to set this default performance state on their power-domains.
+> Define a compatible string for the Mali Valhall GPU
+> for Mediatek's SoC platform.
 > 
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> Signed-off-by: Nick Fan <Nick.Fan@mediatek.com>
 > ---
->  .../bindings/power/power-domain.yaml          | 49 +++++++++++++++++++
->  1 file changed, 49 insertions(+)
+>  .../bindings/gpu/arm,mali-valhall.yaml        | 252 ++++++++++++++++++
+>  1 file changed, 252 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/power/power-domain.yaml b/Documentation/devicetree/bindings/power/power-domain.yaml
-> index aed51e9dcb11..a42977a82d06 100644
-> --- a/Documentation/devicetree/bindings/power/power-domain.yaml
-> +++ b/Documentation/devicetree/bindings/power/power-domain.yaml
-> @@ -66,6 +66,18 @@ properties:
->        by the given provider should be subdomains of the domain specified
->        by this binding.
->  
-> +  assigned-performance-states:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description:
-> +       Some devices might need to configure their power domains in a default
-> +       performance state while the device is active. These devices typcially
-> +       would also run off a fixed clock and not support dynamically scaling
-> +       the device's performance, also known as DVFS techniques. Each cell in
-> +       performance state value corresponds to one power domain specified as
-> +       part of the power-domains property. Performance state value can be an
-> +       opp-level inside an OPP table of the power-domain and need not match
-> +       with any OPP table performance state.
-
-Couldn't this just be an additional cell in 'power-domains'?
-
+> diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml
+> new file mode 100644
+> index 000000000000..3dba202bec95
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml
+> @@ -0,0 +1,252 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020 MediaTek Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpu/arm,mali-vallhall.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  required:
->    - "#power-domain-cells"
->  
-> @@ -131,3 +143,40 @@ examples:
->              min-residency-us = <7000>;
->          };
->      };
+> +title: ARM Mali Valhall GPU
 > +
+> +maintainers:
+> +  - Rob Herring <robh@kernel.org>
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: '^gpu@[a-f0-9]+$'
+> +
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - mediatek,mt8192-mali
+> +      - const: arm,mali-valhall # Mali Valhall GPU model/revision is fully discoverable
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    items:
+> +      - description: GPU interrupt
+> +      - description: MMU interrupt
+> +      - description: Job interrupt
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: gpu
+> +      - const: mmu
+> +      - const: job
+> +
+> +  clocks:
+> +    minItems: 1
+> +
+> +  power-domains:
+> +    minItems: 1
+> +    maxItems: 5
+> +
+> +  mali-supply: true
+> +  sram-supply: true
+> +
+> +  operating-points-v2: true
+> +
+> +  "#cooling-cells":
+> +    const: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-names
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: mediatek,mt8192-mali
+> +    then:
+> +      properties:
+> +        sram-supply: true
+
+No need for this line.
+
+> +        power-domains:
+> +          description:
+> +            List of phandle and PM domain specifier as documented in
+> +            Documentation/devicetree/bindings/power/power_domain.txt
+
+No need re-describe a common property.
+
+> +          minItems: 5
+> +          maxItems: 5
+
+blank line between DT properties.
+
+> +        power-domain-names:
+> +          items:
+> +            - const: core0
+> +            - const: core1
+> +            - const: core2
+> +            - const: core3
+> +            - const: core4
+> +
+> +      required:
+> +        - sram-supply
+> +        - power-domains
+> +
+> +examples:
 > +  - |
-> +    parent4: power-controller@12340000 {
-> +        compatible = "foo,power-controller";
-> +        reg = <0x12340000 0x1000>;
-> +        #power-domain-cells = <0>;
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    gpu@13000000 {
+> +           compatible = "mediatek,mt8192-mali", "arm,mali-valhall";
+> +           reg = <0x13000000 0x4000>;
+> +           interrupts =
+> +                   <GIC_SPI 363 IRQ_TYPE_LEVEL_HIGH 0>,
+> +                   <GIC_SPI 364 IRQ_TYPE_LEVEL_HIGH 0>,
+> +                   <GIC_SPI 365 IRQ_TYPE_LEVEL_HIGH 0>;
+> +           interrupt-names =
+> +                   "gpu",
+> +                   "mmu",
+> +                   "job";
+> +
+> +           clocks = <&mfgcfg 0>;
+> +
+> +           power-domains =
+> +                   <&scpsys 4>,
+> +                   <&scpsys 5>,
+> +                   <&scpsys 6>,
+> +                   <&scpsys 7>,
+> +                   <&scpsys 8>;
+> +
+> +           operating-points-v2 = <&gpu_opp_table>;
+> +           mali-supply = <&mt6315_7_vbuck1>;
+> +           sram-supply = <&mt6359_vsram_others_ldo_reg>;
 > +    };
 > +
-> +    parent5: power-controller@43210000 {
-> +        compatible = "foo,power-controller";
-> +        reg = <0x43210000 0x1000>;
-> +        #power-domain-cells = <0>;
-> +        operating-points-v2 = <&power_opp_table>;
+> +    gpu_opp_table: opp_table0 {
+
+Make this a child of the gpu node. Node name should be just 'opp-table'.
+
+> +      compatible = "operating-points-v2";
+> +      opp-shared;
 > +
-> +        power_opp_table: opp-table {
-> +            compatible = "operating-points-v2";
+> +      opp-358000000 {
+> +              opp-hz = /bits/ 64 <358000000>;
+> +              opp-hz-real = /bits/ 64 <358000000>,
+
+I don't recall this being an OPP property.
+
+> +                            /bits/ 64 <358000000>;
+> +              opp-microvolt = <606250>,
+> +                              <750000>;
+> +      };
 > +
-> +            power_opp_low: opp1 {
-> +                opp-level = <16>;
-> +            };
+> +      opp-399000000 {
+> +              opp-hz = /bits/ 64 <399000000>;
+> +              opp-hz-real = /bits/ 64 <399000000>,
+> +                            /bits/ 64 <399000000>;
+> +              opp-microvolt = <618750>,
+> +                              <750000>;
+> +      };
 > +
-> +            rpmpd_opp_ret: opp2 {
-> +                opp-level = <64>;
-> +            };
+> +      opp-440000000 {
+> +              opp-hz = /bits/ 64 <440000000>;
+> +              opp-hz-real = /bits/ 64 <440000000>,
+> +                            /bits/ 64 <440000000>;
+> +              opp-microvolt = <631250>,
+> +                              <750000>;
+> +      };
 > +
-> +            rpmpd_opp_svs: opp3 {
-> +                opp-level = <256>;
-> +            };
-> +        };
+> +      opp-482000000 {
+> +              opp-hz = /bits/ 64 <482000000>;
+> +              opp-hz-real = /bits/ 64 <482000000>,
+> +                            /bits/ 64 <482000000>;
+> +              opp-microvolt = <643750>,
+> +                              <750000>;
+> +      };
+> +
+> +      opp-523000000 {
+> +              opp-hz = /bits/ 64 <523000000>;
+> +              opp-hz-real = /bits/ 64 <523000000>,
+> +                            /bits/ 64 <523000000>;
+> +              opp-microvolt = <656250>,
+> +                              <750000>;
+> +      };
+> +
+> +      opp-564000000 {
+> +              opp-hz = /bits/ 64 <564000000>;
+> +              opp-hz-real = /bits/ 64 <564000000>,
+> +                            /bits/ 64 <564000000>;
+> +              opp-microvolt = <668750>,
+> +                              <750000>;
+> +      };
+> +
+> +      opp-605000000 {
+> +              opp-hz = /bits/ 64 <605000000>;
+> +              opp-hz-real = /bits/ 64 <605000000>,
+> +                            /bits/ 64 <605000000>;
+> +              opp-microvolt = <681250>,
+> +                              <750000>;
+> +      };
+> +
+> +      opp-647000000 {
+> +              opp-hz = /bits/ 64 <647000000>;
+> +              opp-hz-real = /bits/ 64 <647000000>,
+> +                            /bits/ 64 <647000000>;
+> +              opp-microvolt = <693750>,
+> +                              <750000>;
+> +      };
+> +
+> +      opp-688000000 {
+> +              opp-hz = /bits/ 64 <688000000>;
+> +              opp-hz-real = /bits/ 64 <688000000>,
+> +                            /bits/ 64 <688000000>;
+> +              opp-microvolt = <706250>,
+> +                              <750000>;
+> +      };
+> +
+> +      opp-724000000 {
+> +              opp-hz = /bits/ 64 <724000000>;
+> +              opp-hz-real = /bits/ 64 <724000000>,
+> +                            /bits/ 64 <724000000>;
+> +              opp-microvolt = <725000>,
+> +                              <750000>;
+> +      };
+> +
+> +      opp-760000000 {
+> +              opp-hz = /bits/ 64 <760000000>;
+> +              opp-hz-real = /bits/ 64 <760000000>,
+> +                            /bits/ 64 <760000000>;
+> +              opp-microvolt = <743750>,
+> +                              <750000>;
+> +      };
+> +
+> +      opp-795000000 {
+> +              opp-hz = /bits/ 64 <795000000>;
+> +              opp-hz-real = /bits/ 64 <795000000>,
+> +                            /bits/ 64 <795000000>;
+> +              opp-microvolt = <762500>,
+> +                              <762500>;
+> +      };
+> +
+> +      opp-831000000 {
+> +              opp-hz = /bits/ 64 <831000000>;
+> +              opp-hz-real = /bits/ 64 <831000000>,
+> +                            /bits/ 64 <831000000>;
+> +              opp-microvolt = <781250>,
+> +                              <781250>;
+> +      };
+> +
+> +      opp-855000000 {
+> +              opp-hz = /bits/ 64 <855000000>;
+> +              opp-hz-real = /bits/ 64 <855000000>,
+> +                            /bits/ 64 <855000000>;
+> +              opp-microvolt = <793750>,
+> +                              <793750>;
+> +      };
+> +
+> +      opp-902000000 {
+> +              opp-hz = /bits/ 64 <902000000>;
+> +              opp-hz-real = /bits/ 64 <902000000>,
+> +                            /bits/ 64 <902000000>;
+> +              opp-microvolt = <818750>,
+> +                              <818750>;
+> +      };
+> +
+> +      opp-950000000 {
+> +              opp-hz = /bits/ 64 <950000000>;
+> +              opp-hz-real = /bits/ 64 <950000000>,
+> +                            /bits/ 64 <950000000>;
+> +              opp-microvolt = <843750>,
+> +                              <843750>;
+> +      };
 > +    };
-> +
-> +    child4: consumer@12341000 {
-> +        compatible = "foo,consumer";
-> +        reg = <0x12341000 0x1000>;
-> +        power-domains = <&parent4>, <&parent5>;
-> +        assigned-performance-states = <0>, <256>;
-> +    };
+> +...
 > -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
+> 2.18.0
 > 
