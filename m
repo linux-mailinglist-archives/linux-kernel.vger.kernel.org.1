@@ -2,135 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1065F2E7D84
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5FE2E7D8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 02:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbgLaAlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 19:41:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgLaAlN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 19:41:13 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69774C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 16:40:33 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 23so41106315lfg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 16:40:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M67MbkYLxSdOa9oNcNplN7jJDJwLu2PsQUeqJdvpyic=;
-        b=OF7Nm9YBgnrjTgTX1Mc2Wj1H5W17rZ9V82YydDt4k3Mrc6s4zc7lm1sKO+HuivVfbJ
-         0U3G4/JXxT0rhzgwQERoXxp7ISbvGFb9HypkINnGAaP5mIkT9B3SaFj6WASZmmVj3kPk
-         TmBCtqHTl7LAFi8DUwmz6333VYwv7pgy4hM2VMW/oehTBo472dGWRjibuBArVOpEFlCO
-         884sDfXr+LpMcjruQtiBJauoY7ZwM+O/IVhgeydBF+esVt7Hc9bFaRv6Mv53atUawC0w
-         LRLcZhcu9gZ9u5b99QhVwj+lqJePjDXKl4VQEkVFS2kVOQVa1xoVyj6MdFkUutVGPTSB
-         N5Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M67MbkYLxSdOa9oNcNplN7jJDJwLu2PsQUeqJdvpyic=;
-        b=IzF9nIjgyeAiParB8OxLNdDhgwhfNCgcuAKQFo+iM71uTyviMjAuWZMR0IjcIavaBZ
-         eFN2LynVgO8kA8JB+R+wXs+fWO0nkVXUEDEmyjcOmCnTRujTuyUK4Q6pK3miUTD6WEhV
-         m6woMA0ugmFKwHagSaU8/d5FDCJU6EqeTXWtzn4Iur3h4VrqPKgmjCLv5XaVjzis2REb
-         LZhSG0FL5xDMc/uEO3IjOsDZsRjj6LLSBMgChODOe0BFegK6CcxySGJtlo1nygl0aG/2
-         TVv5NnH1aGGrZgtefJbqu++I/S4J1juXNrM15uix9nwLE+pNL9K9G0iQKb6i5/0kGuqZ
-         wphw==
-X-Gm-Message-State: AOAM531bGyTPP3ZpqZoOJylsF+pfR2NzjmlWkxfjGjkg6f/Rm1AiY3aM
-        S64S8ondNezJ/XVRwrynAfL632b7+JWogBcWU9U=
-X-Google-Smtp-Source: ABdhPJwDI3T5RePav+oBWL1/QTVV3ixeyBUrivDpTU4GoQEcaDTmAqZRfVWlkXVAe1i/zpNCvghrjMaQvZ4MO5kgDac=
-X-Received: by 2002:a2e:9787:: with SMTP id y7mr26688745lji.420.1609375230908;
- Wed, 30 Dec 2020 16:40:30 -0800 (PST)
+        id S1726470AbgLaBDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 20:03:13 -0500
+Received: from mga18.intel.com ([134.134.136.126]:63390 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726293AbgLaBDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 20:03:13 -0500
+IronPort-SDR: qUXeRyXAIW8b4iOoM1T0uxVNrj3UT5gteDGviLxu9p5rqjZn0IaRUlCDDhmSRPfx6F3EIazyaS
+ fVLI7rqZWx0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9850"; a="164367223"
+X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
+   d="scan'208";a="164367223"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 17:01:27 -0800
+IronPort-SDR: bZrafJa6JgKKeMplBEHcCnRpluwTaZIJgv0PlOSSG37PYi7wmJwQjfRq7kqw0bM+9vPtUBWq6H
+ eGCLLacmyEZg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
+   d="scan'208";a="460676216"
+Received: from allen-box.sh.intel.com ([10.239.159.28])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Dec 2020 17:01:21 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc:     Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Guo Kaijie <Kaijie.Guo@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH 1/5] iommu/vt-d: Fix misuse of ALIGN in qi_flush_piotlb()
+Date:   Thu, 31 Dec 2020 08:53:19 +0800
+Message-Id: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CABXGCsPsXSTh+WO2XESOU+Q1ocrWmS1c1YJFarzmA=woK_ke5Q@mail.gmail.com>
- <CABXGCsPBBDX3ozAgtT174nesiM+Gx4UkQi+PD27jB3i9OQ=G0g@mail.gmail.com> <MN2PR12MB4488AAA880BA8896EEA97491F7D80@MN2PR12MB4488.namprd12.prod.outlook.com>
-In-Reply-To: <MN2PR12MB4488AAA880BA8896EEA97491F7D80@MN2PR12MB4488.namprd12.prod.outlook.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Thu, 31 Dec 2020 05:40:19 +0500
-Message-ID: <CABXGCsO=6--KOALpNhj1439_wN65247A89dPwByR3e8w49Om1Q@mail.gmail.com>
-Subject: Re: [bug] Radeon 3900XT not switch to graphic mode on kernel 5.10
-To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Dec 2020 at 20:15, Deucher, Alexander
-<Alexander.Deucher@amd.com> wrote:
->
-> It looks like the driver is not able to access the firmware for some reason.  Please make sure it is available in your initrd or compiled into the kernel depending on your config.
+Use IS_ALIGNED() instead. Otherwise, an unaligned address will be ignored.
 
-Exactly! Thanks!
+Fixes: 33cd6e642d6a7 ("iommu/vt-d: Flush PASID-based iotlb for iova over first level")
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+ drivers/iommu/intel/dmar.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-# lsinitrd /boot/initramfs-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64.img
-| grep sienna_cichlid
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index b46dbfa6d0ed..004feaed3c72 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -1461,8 +1461,8 @@ void qi_flush_piotlb(struct intel_iommu *iommu, u16 did, u32 pasid, u64 addr,
+ 		int mask = ilog2(__roundup_pow_of_two(npages));
+ 		unsigned long align = (1ULL << (VTD_PAGE_SHIFT + mask));
+ 
+-		if (WARN_ON_ONCE(!ALIGN(addr, align)))
+-			addr &= ~(align - 1);
++		if (WARN_ON_ONCE(!IS_ALIGNED(addr, align)))
++			addr = ALIGN_DOWN(addr, align);
+ 
+ 		desc.qw0 = QI_EIOTLB_PASID(pasid) |
+ 				QI_EIOTLB_DID(did) |
+-- 
+2.25.1
 
-# ls /usr/lib/firmware/amdgpu | grep sienna_cichlid
-sienna_cichlid_ce.bin
-sienna_cichlid_dmcub.bin
-sienna_cichlid_me.bin
-sienna_cichlid_mec2.bin
-sienna_cichlid_mec.bin
-sienna_cichlid_pfp.bin
-sienna_cichlid_rlc.bin
-sienna_cichlid_sdma.bin
-sienna_cichlid_smc.bin
-sienna_cichlid_sos.bin
-sienna_cichlid_ta.bin
-sienna_cichlid_vcn.bin
-
-# dracut -f --regenerate-all
-
-# lsinitrd /boot/initramfs-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64.img
-| grep sienna_cichlid
--rw-r--r--   1 root     root       263296 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_ce.bin
--rw-r--r--   1 root     root        80244 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_dmcub.bin
--rw-r--r--   1 root     root       263424 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_me.bin
--rw-r--r--   2 root     root       268592 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_mec2.bin
--rw-r--r--   2 root     root            0 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_mec.bin
--rw-r--r--   1 root     root       263424 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_pfp.bin
--rw-r--r--   1 root     root       128592 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_rlc.bin
--rw-r--r--   1 root     root        34048 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_sdma.bin
--rw-r--r--   1 root     root       247396 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_smc.bin
--rw-r--r--   1 root     root       215152 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_sos.bin
--rw-r--r--   1 root     root       333568 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_ta.bin
--rw-r--r--   1 root     root       504224 Dec 15 14:00
-usr/lib/firmware/amdgpu/sienna_cichlid_vcn.bin
-
-# grep '20201204git34816d20f173\|linux-firmware-20201218-116'
-/var/log/dnf.rpm.log
-2020-12-06T12:40:44+0500 SUBDEBUG Installed:
-kernel-core-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64
-2020-12-06T12:40:46+0500 SUBDEBUG Installed:
-kernel-modules-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64
-2020-12-06T12:41:03+0500 SUBDEBUG Installed:
-kernel-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64
-2020-12-06T12:41:03+0500 SUBDEBUG Installed:
-kernel-modules-extra-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64
-2020-12-21T10:52:43+0500 SUBDEBUG Upgrade:
-linux-firmware-20201218-116.fc34.noarch
-
-I think every update of linux-firmware should regenerate initramfs.
-But my downstream report was closed:
-https://bugzilla.redhat.com/show_bug.cgi?id=1911745
-
---
-Best Regards,
-Mike Gavrilov.
