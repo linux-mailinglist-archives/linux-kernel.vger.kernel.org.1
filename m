@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FA82E8163
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 18:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35922E8182
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 18:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbgLaRO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 12:14:27 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:45600 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726661AbgLaRO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 12:14:27 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kv1W6-00FHGF-Uw; Thu, 31 Dec 2020 18:13:38 +0100
-Date:   Thu, 31 Dec 2020 18:13:38 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <X+4GwpFnJ0Asq/Yj@lunn.ch>
-References: <20201230154755.14746-2-pali@kernel.org>
- <20201230161036.GR1551@shell.armlinux.org.uk>
- <20201230165634.c4ty3mw6djezuyq6@pali>
- <20201230170546.GU1551@shell.armlinux.org.uk>
- <X+y1K21tp01GpvMy@lunn.ch>
- <20201230174307.lvehswvj5q6c6vk3@pali>
- <20201230190958.GW1551@shell.armlinux.org.uk>
- <20201231121410.2xlxtyqjelrlysd2@pali>
- <X+3ume1+wz8HXHEf@lunn.ch>
- <20201231170039.zkoa6mij3q3gt7c6@pali>
+        id S1727209AbgLaRnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 12:43:06 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:52541 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727048AbgLaRnF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 12:43:05 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 741A7C0003;
+        Thu, 31 Dec 2020 17:42:23 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-i3c@lists.infradead.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Nicolas Pitre <npitre@baylibre.com>
+Subject: Re: [PATCH] i3c/master/mipi-i3c-hci: Fix position of __maybe_unused in i3c_hci_of_match
+Date:   Thu, 31 Dec 2020 18:42:23 +0100
+Message-Id: <160943653614.132002.12499200411415721355.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201222025931.3043480-1-natechancellor@gmail.com>
+References: <20201222025931.3043480-1-natechancellor@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201231170039.zkoa6mij3q3gt7c6@pali>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Looking at sfp_module_info(), adding a check for i2c_block_size < 2
-> > when determining what length to return. ethtool should do the right
-> > thing, know that the second page has not been returned to user space.
+On Mon, 21 Dec 2020 19:59:31 -0700, Nathan Chancellor wrote:
+> Clang warns:
 > 
-> But if we limit length of eeprom then userspace would not be able to
-> access those TX_DISABLE, LOS and other bits from byte 110 at address A2.
+>  ../drivers/i3c/master/mipi-i3c-hci/core.c:780:21: warning: attribute
+>  declaration must precede definition [-Wignored-attributes]
+>  static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
+>                      ^
+>  ../include/linux/compiler_attributes.h:267:56: note: expanded from macro
+>  '__maybe_unused'
+>  #define __maybe_unused                  __attribute__((__unused__))
+>                                                         ^
+>  ../include/linux/mod_devicetable.h:262:8: note: previous definition is
+>  here
+>  struct of_device_id {
+>         ^
+> 1 warning generated.
+> 
+> [...]
 
-Have you tested these bits to see if they actually work? If they don't
-work...
+Applied, thanks!
 
-	 Andrew
+[1/1] i3c/master/mipi-i3c-hci: Fix position of __maybe_unused in i3c_hci_of_match
+      commit: 291b5c9870fc546376d69cf792b7885cd0c9c1b3
+
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
