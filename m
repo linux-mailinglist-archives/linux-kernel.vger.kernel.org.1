@@ -2,68 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC792E81FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 21:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4892E8200
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 21:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgLaUqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 15:46:12 -0500
-Received: from mail-io1-f42.google.com ([209.85.166.42]:33977 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgLaUqL (ORCPT
+        id S1726873AbgLaUqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 15:46:55 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:56294 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgLaUqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 15:46:11 -0500
-Received: by mail-io1-f42.google.com with SMTP id i18so17981526ioa.1;
-        Thu, 31 Dec 2020 12:45:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FWQywS5uoIESr/XV60D8DkRTnYzyMWSTsob7AgDpdWE=;
-        b=mmxJVyAhaVveq+LV4fN8zIX0dCpNm1YXClcw5DeBMXqdRayYg+N31/keuBSfhU5fgV
-         YthLP3Q8GwapxWMem/vxKTj2ucg2pDKvSdWOLjvsDrAeJq3npeFYhtGXrn7OBCJBye39
-         o1GZhqiIs+ZX5voz+XxH0FSzQRqvXM1991quvJz8D5nWHT4GLwwIZ9y1r/iF0WhKssen
-         P76dxJnvSXuk29ZAy9xV1h3RWGyFllALv1XUNXcCa4XL9ffzDNNCJainDhPv0k6bEMnD
-         ENXS5MciGGQ2ubn0LdKh2dWirJBg80EuhHDyfd6ycwPYOxVqWMwCMcagDaplV5ReK8W2
-         vdMA==
-X-Gm-Message-State: AOAM530spwOvYUp7f4cMv22HQOFmDlLhJHlM0dYsAHu5tAUx8YAPGs8p
-        T+GvdRi6KAqn+Wp2pilSGA==
-X-Google-Smtp-Source: ABdhPJwDsko2aMmzjEiDs4G5n0jm1F4QAbI3OgpUAWtg23stNoRF0jfBKzr1akKTmXR5yY3RQN7NUA==
-X-Received: by 2002:a05:6638:1027:: with SMTP id n7mr50116065jan.35.1609447530669;
-        Thu, 31 Dec 2020 12:45:30 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id o18sm10693846ioa.39.2020.12.31.12.45.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 12:45:29 -0800 (PST)
-Received: (nullmailer pid 2333095 invoked by uid 1000);
-        Thu, 31 Dec 2020 20:45:26 -0000
-Date:   Thu, 31 Dec 2020 13:45:26 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Paul Kocialkowski <contact@paulk.fr>
-Cc:     devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: pwm: allwinner: Add V3s compatible
- description
-Message-ID: <20201231204526.GA2331936@robh.at.kernel.org>
-References: <20201218205436.2326872-1-contact@paulk.fr>
+        Thu, 31 Dec 2020 15:46:55 -0500
+Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id adb218dee83d9126; Thu, 31 Dec 2020 21:46:12 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Stephen Berman <stephen.berman@gmx.net>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
+Date:   Thu, 31 Dec 2020 21:46:11 +0100
+Message-ID: <9709109.MH8tSaV5v9@kreacher>
+In-Reply-To: <CAJZ5v0j7i86twMS+csYMaetUkvqjof4FD2GRNoZ_AN=SBF7F1w@mail.gmail.com>
+References: <87blkbx1gt.fsf@gmx.net> <CAJZ5v0j86pX_a4bSLP=sobLoYhfQYV9dWL8HHf2941kXgND79g@mail.gmail.com> <CAJZ5v0j7i86twMS+csYMaetUkvqjof4FD2GRNoZ_AN=SBF7F1w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218205436.2326872-1-contact@paulk.fr>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 21:54:35 +0100, Paul Kocialkowski wrote:
-> Introduce bindings description for the V3s PWM, which is
-> register-compatible with the A20 PWM.
+On Wednesday, December 2, 2020 8:13:38 PM CET Rafael J. Wysocki wrote:
+> On Wed, Dec 2, 2020 at 7:31 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Wed, Dec 2, 2020 at 7:03 PM Sebastian Andrzej Siewior
+> > <bigeasy@linutronix.de> wrote:
+> > >
+> > > On 2020-10-26 18:20:59 [+0100], To Rafael J. Wysocki wrote:
+> > > > > > > > Done as Bug 208877.
+> > > > > > Rafael, do you have any suggestions?
+> > > > >
+> > > > > I've lost track of this sorry.
+> > > > >
+> > > > > I have ideas, let me get back to this next week.
+> > > >
+> > > > :)
+> > >
+> > > Rafael, any update? If you outline an idea or so then I may be able to
+> > > form a patch out of it. Otherwise I have no idea how to fix this - other
+> > > than telling the driver to not poll in smaller intervals than
+> > > 30secs.
+> >
+> > The idea, roughly speaking, is to limit the number of outstanding work
+> > items in the queue (basically, if there's a notification occurring
+> > before the previous one can be handled, there is no need to queue up
+> > another work item for it).
 > 
-> Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
-> ---
->  .../devicetree/bindings/pwm/allwinner,sun4i-a10-pwm.yaml       | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+> That's easier said than done, though, because of the way the work item
+> queue-up is hooked up into the ACPICA code.
 
-Acked-by: Rob Herring <robh@kernel.org>
+So scratch this and it wouldn't work in general anyway AFAICS.
+
+ATM, I'm tempted to do something like the patch below (with the rationale
+that it shouldn't be necessary to read the temperature right after updating
+the trip points if polling is in use, because the next update through polling
+will cause it to be read anyway and it will trigger trip point actions as
+needed).
+
+Stephen, can you give it a go, please?
+
+---
+ drivers/acpi/thermal.c |   17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -911,24 +911,25 @@ static void acpi_thermal_notify(struct a
+ 	switch (event) {
+ 	case ACPI_THERMAL_NOTIFY_TEMPERATURE:
+ 		acpi_thermal_check(tz);
+-		break;
++		return;
+ 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_THRESHOLDS);
+-		acpi_thermal_check(tz);
+-		acpi_bus_generate_netlink_event(device->pnp.device_class,
+-						  dev_name(&device->dev), event, 0);
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_DEVICES:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_DEVICES);
+-		acpi_thermal_check(tz);
+-		acpi_bus_generate_netlink_event(device->pnp.device_class,
+-						  dev_name(&device->dev), event, 0);
+ 		break;
+ 	default:
+ 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+ 				  "Unsupported event [0x%x]\n", event));
+-		break;
++		return;
+ 	}
++
++	/* Trigger an update of the thermal zone unless polling is in use. */
++	if (!tz->polling_frequency)
++		acpi_thermal_check(tz);
++
++	acpi_bus_generate_netlink_event(device->pnp.device_class,
++					dev_name(&device->dev), event, 0);
+ }
+ 
+ /*
+
+
+
