@@ -2,116 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059082E7FD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC2F2E7FDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgLaMSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 07:18:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgLaMSt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 07:18:49 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95F4C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 04:18:08 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id v14so7216573wml.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 04:18:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7SqcNl5KWJPGbXH65bKbbN1vtS8pHNjLIp3wmAVPS+8=;
-        b=F0Ty4zFCDW5DJIvU7G6DHJocno5RtfsBgnYkYnGMSK88ObGi0268Fnw/DLUJdepaxW
-         A6ZQM3J5FWnOBndRIGfHhgmNDZ8q4i3o5tf84GZU3fndsYVjgVqrCelSI1OkFUpHDDV3
-         OG9x14ceTTBlV+ytPQUQywLl0XlZMZvNir9NDn8eLY69sZY2NRW3Q7u+rIsAJ0/zRxGm
-         E4uhdTVSWJSPn2/ljRClFbQZ4B/9efeoO1O8+hCOTBZEjGOgaQwN8E7EGQEPNITYr81Z
-         qBQZdcB+FgEMd4ZvsrgDxCWat9IM7yeyBuU0v5X9ow3No6WxvbHtTKgq+G4vcCsHcGZK
-         8QUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7SqcNl5KWJPGbXH65bKbbN1vtS8pHNjLIp3wmAVPS+8=;
-        b=n1Pz6JnqQpZUpLBhjFf9j4x41ldyWG/2cWnsgkR77tRbHYTZEfBeuVXn+VwZZ0aNS0
-         0yA8h7OVHvH3KYhuc7+HvRdcYhzugBAVBCjptf49Bjt9uKnTktMxA7yCw3FEOss0u9jp
-         MVoopXcLlOyiXrv0ZyI9Qcsula+d1zOcYAFX1UkU6itKD05urRsUqdDFbGhTk0INswC4
-         eLaY68wj/1cU9xbTiFa4eKKPd5/wqLcRXTFKScCLVCfU8rqvmJ02jbDDvyWEqHCMY2EP
-         Xz6E+Os4XSoPBrfDjVSfAsG30S9xU5hPRI1mYnahiwLTdZl084C7dqyjD+Mu1FVVHnKg
-         SfiQ==
-X-Gm-Message-State: AOAM531t32SBoCS12YRdtxCBTYiDPUdLerrlPVz7SVskAmh9jRfMwt1K
-        7/sYpsggMnfsqdo4tsC91KkD4w==
-X-Google-Smtp-Source: ABdhPJyZpFCcTny/kpxj+lNXYT/J5a5zwnln/azNAkSLIx5BERCKXlTb9EROUOzJtMiXDd6c5BrYzg==
-X-Received: by 2002:a1c:4d0a:: with SMTP id o10mr11923999wmh.185.1609417086646;
-        Thu, 31 Dec 2020 04:18:06 -0800 (PST)
-Received: from dell ([91.110.221.133])
-        by smtp.gmail.com with ESMTPSA id a62sm12743892wmf.7.2020.12.31.04.18.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 04:18:05 -0800 (PST)
-Date:   Thu, 31 Dec 2020 12:18:03 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Alexander Dahl <post@lespocky.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, Jeff LaBundy <jeff@labundy.com>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v9 1/4] dt-bindings: mfd: Fix schema warnings for pwm-leds
-Message-ID: <20201231121803.GC4413@dell>
-References: <20201228163217.32520-1-post@lespocky.de>
- <20201228163217.32520-2-post@lespocky.de>
- <20201230185439.GC25903@duo.ucw.cz>
- <20201231083317.GB4413@dell>
- <20201231093945.GA22962@amd>
+        id S1726569AbgLaMW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 07:22:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgLaMW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 07:22:56 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E7FB223DB;
+        Thu, 31 Dec 2020 12:22:15 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kuwy4-004iEa-Tk; Thu, 31 Dec 2020 12:22:12 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201231093945.GA22962@amd>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 31 Dec 2020 12:22:12 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shenming Lu <lushenming@huawei.com>
+Cc:     Will Deacon <will@kernel.org>, Eric Auger <eric.auger@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, wanghaibin.wang@huawei.com,
+        yuzenghui@huawei.com
+Subject: Re: [PATCH RFC] KVM: arm64: vgic: Decouple the check of the
+ EnableLPIs bit from the ITS LPI translation
+In-Reply-To: <cf530279-4c68-c7de-f87e-1236ce0241cf@huawei.com>
+References: <20201231062813.714-1-lushenming@huawei.com>
+ <683134bdea8a22d3bb784117dcfe17a1@kernel.org>
+ <cf530279-4c68-c7de-f87e-1236ce0241cf@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <85dd45f580eaa7a0b8ec91ac0b7ca066@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: lushenming@huawei.com, will@kernel.org, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Dec 2020, Pavel Machek wrote:
-
-> Hi!
+On 2020-12-31 11:58, Shenming Lu wrote:
+> On 2020/12/31 16:57, Marc Zyngier wrote:
+>> Hi Shemming,
+>> 
+>> On 2020-12-31 06:28, Shenming Lu wrote:
+>>> When the EnableLPIs bit is set to 0, any ITS LPI requests in the
+>>> Redistributor would be ignored. And this check is independent from
+>>> the ITS LPI translation. So it might be better to move the check
+>>> of the EnableLPIs bit out of the LPI resolving, and also add it
+>>> to the path that uses the translation cache.
+>> 
+>> But by doing that, you are moving the overhead of checking for
+>> EnableLPIs from the slow path (translation walk) to the fast
+>> path (cache hit), which seems counter-productive.
 > 
-> > > > The node names for devices using the pwm-leds driver follow a certain
-> > > > naming scheme (now).  Parent node name is not enforced, but recommended
-> > > > by DT project.
-> > > > 
-> > > >   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
-> > > >   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
-> > > > /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml: pwmleds: 'panel' does not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
-> > > >         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> > > > 
-> > > > Signed-off-by: Alexander Dahl <post@lespocky.de>
-> > > > Acked-by: Jeff LaBundy <jeff@labundy.com>
-> > > > Acked-by: Rob Herring <robh@kernel.org>
-> > > 
-> > > Thanks, applied.
-> > 
-> > Sorry, what?
-> > 
-> > Applied to what tree?
-> 
-> I took it to (local copy) of leds-next tree on. But now I realised it
-> is mfd, not a LED patch, so I undone that. Sorry for the confusion.
-> 
-> Anyway, patch still looks good to me:
-> 
-> Acked-by: Pavel Machek <pavel@ucw.cz>
+> Oh, I didn't notice the overhead of the checking, I thought it would
+> be negligible...
 
-Thanks Pavel.
+It probably doesn't show on a modern box, but some of the slower
+systems might see it. Overall, this is a design decision to keep
+the translation cache as simple and straightforward as possible:
+if anything affects the output of the cache, we invalidate it,
+and that's it.
 
-I plan on taking this next week.
+> 
+>> 
+>>> Besides it seems that
+>>> by this the invalidating of the translation cache caused by the LPI
+>>> disabling is unnecessary.
+>>> 
+>>> Not sure if I have missed something... Thanks.
+>> 
+>> I am certainly missing the purpose of this patch.
+>> 
+>> The effect of EnableLPIs being zero is to drop the result of any
+>> translation (a new pending bit) on the floor. Given that, it is
+>> immaterial whether this causes a new translation or hits in the
+>> cache, as the result is still to not pend a new interrupt.
+>> 
+>> I get the feeling that you are trying to optimise for the unusual
+>> case where EnableLPIs is 0 *and* you have a screaming device
+>> injecting tons of interrupt. If that is the case, I don't think
+>> this is worth it.
+> 
+> In fact, I just found (imagining) that if the EnableLPIs bit is 0,
+> the kvm_vgic_v4_set_forwarding() would fail when performing the LPI
+> translation, but indeed we don't try to pend any interrupts there...
+> 
+> By the way, it seems that the LPI disabling would not affect the
+> injection of VLPIs...
 
+Yes, good point. We could unmap the VPE from all ITS, which would result
+in all translations to be discarded, but this has the really bad side
+effect of *also* preventing the delivery of vSGIs, which isn't what
+you'd expect.
+
+Overall, I don't think there is a good way to support this, and maybe
+we should just prevent EnableLPIs to be turned off when using direct
+injection. After all, the architecture does allow that for GICv3
+implementations, which is what we emulate.
+
+Thanks,
+
+         M.
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jazz is not dead. It just smells funny...
