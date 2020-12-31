@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBD82E7EC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 09:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E752E7ED0
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 09:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgLaIyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 03:54:33 -0500
-Received: from smtp21.cstnet.cn ([159.226.251.21]:36134 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726130AbgLaIyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 03:54:32 -0500
-Received: from localhost.localdomain (unknown [124.16.141.241])
-        by APP-01 (Coremail) with SMTP id qwCowABHThaFke1f1bhfAA--.41536S2;
-        Thu, 31 Dec 2020 16:53:25 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     jic23@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        krzk@kernel.org, andy.shevchenko@gmail.com,
-        bobo.shaobowang@huawei.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Subject: [PATCH] iio: adc: stm32-dfsdm: Remove redundant null check before clk_disable_unprepare
-Date:   Thu, 31 Dec 2020 08:53:22 +0000
-Message-Id: <20201231085322.24398-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: qwCowABHThaFke1f1bhfAA--.41536S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8Aw1xGryrKr48Zwb_yoW3tFXEy3
-        WUu39rKF4aqrnay3y8WFn8Zr90vry8Zws3ur10yrWrGFy7Z3y7ZrWavr43Jw1UAanFya47
-        A3WDX34fAr1xCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8Jr0_Cr
-        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kI
-        c2xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07jeApnUUUUU=
-X-Originating-IP: [124.16.141.241]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQkHA102Z1ecAwAAsA
+        id S1726583AbgLaIzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 03:55:52 -0500
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:43601 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgLaIzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 03:55:52 -0500
+Received: by mail-ed1-f46.google.com with SMTP id y24so17605171edt.10;
+        Thu, 31 Dec 2020 00:55:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uNA2f0Y9klhzKIC9fDHc8HD2Ytoultdhg1JorPCx44o=;
+        b=OGqrSWYHkNQV1GHCVrxJKAsvtEUTtmE5W6WEkZzit7FY5vqCrR3X1oK3uWzEM0T26D
+         BPORzGVM/UnQ8kucxGzPqTIXo5jP9Ynzuwa1jCd7DmbRytbNkrcbhAJBM8g/wZC3NU2r
+         SURuu5tUDsYgj5WZr+LCQPtP/6xnM+RHLillFiAcSF3pAtNhAmyXeNmJNvc+qLktbNgm
+         pw0XzJLTV+a3sQc6+nLJItBc7qUXgsRpRM5wKZwc8QT7VakvNednbAl4UP4iPHjvDJ8i
+         NflYolwgID00LGtt6zuQGs8fprixKmD+ZTkVqFMvSADcs/0gCEe6aK5sdN5p9btivzkb
+         L1dQ==
+X-Gm-Message-State: AOAM533duvYcAQfnEDYcQ1I+p50wJdQoJdJ7oynelqUEkigYWExjra9e
+        n68VM5rqemAS0F1yrPrZanc=
+X-Google-Smtp-Source: ABdhPJwP5cE4L9i7CK/EJFSuSBeru/Isv9KRT+5KTAwu+XyBMrUwDAHsHT581iTxZHa5NEOez33YGg==
+X-Received: by 2002:aa7:c543:: with SMTP id s3mr53448874edr.88.1609404909896;
+        Thu, 31 Dec 2020 00:55:09 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id dk16sm19933758ejb.85.2020.12.31.00.55.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 00:55:08 -0800 (PST)
+Date:   Thu, 31 Dec 2020 09:55:07 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v6 3/8] power: supply: max8997_charger: Set CHARGER
+ current limit
+Message-ID: <20201231085507.GA69707@kozik-lap>
+References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
+ <20201230205139.1812366-3-timon.baetz@protonmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201230205139.1812366-3-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ecause clk_disable_unprepare() already checked NULL clock parameter,
-so the additional check is unnecessary, just remove it.
+On Wed, Dec 30, 2020 at 08:52:15PM +0000, Timon Baetz wrote:
+> Register for extcon notification and set charging current depending on
+> the detected cable type. Current values are taken from vendor kernel,
+> where most charger types end up setting 650mA [0].
+> 
+> Also enable and disable the CHARGER regulator based on extcon events.
+> 
+> [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1678
+> 
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> ---
+> v6: dev_info() instead of dev_err().
+> v5: Use devm_regulator_get_optional(), dev_err() on failure.
+>     dev_err() on extcon_get_edev_by_phandle() failure.
+> v4: Make extcon and charger-supply optional.
+> v3: Split MFD change.
+>     return on regulator_set_current_limit() failure.
+> v2: Split DTS changes.
+>     Add missing include.
+>     Rename charger_data members.
+>     Disable regulator on regulator_set_current_limit() failure.
+>     Fix ret declaration.
+>     Remove unneeded variables.
+>     Don't dev_err() on deferral.
+>     Get regulator and extcon from DTS.
+>     Use devm_regulator_get(). 
+>     Fix indentation.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/iio/adc/stm32-dfsdm-core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
-index 42a7377704a4..bb925a11c8ae 100644
---- a/drivers/iio/adc/stm32-dfsdm-core.c
-+++ b/drivers/iio/adc/stm32-dfsdm-core.c
-@@ -117,8 +117,7 @@ static void stm32_dfsdm_clk_disable_unprepare(struct stm32_dfsdm *dfsdm)
- {
- 	struct dfsdm_priv *priv = to_stm32_dfsdm_priv(dfsdm);
- 
--	if (priv->aclk)
--		clk_disable_unprepare(priv->aclk);
-+	clk_disable_unprepare(priv->aclk);
- 	clk_disable_unprepare(priv->clk);
- }
- 
--- 
-2.17.1
 
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Best regards,
+Krzysztof
