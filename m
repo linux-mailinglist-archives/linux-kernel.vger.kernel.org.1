@@ -2,168 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717C82E822C
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 23:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD2E2E822D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 23:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgLaWAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 17:00:06 -0500
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:34454 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726210AbgLaWAG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 17:00:06 -0500
-Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 59428107992;
-        Fri,  1 Jan 2021 08:59:20 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kv5yZ-001jAf-HV; Fri, 01 Jan 2021 08:59:19 +1100
-Date:   Fri, 1 Jan 2021 08:59:19 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Donald Buczek <buczek@molgen.mpg.de>
-Cc:     linux-xfs@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
-Message-ID: <20201231215919.GA331610@dread.disaster.area>
-References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
- <20201229235627.33289-1-buczek@molgen.mpg.de>
- <20201230221611.GC164134@dread.disaster.area>
- <7bd30426-11dc-e482-dcc8-55d279bc75bd@molgen.mpg.de>
+        id S1726830AbgLaWG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 17:06:27 -0500
+Received: from mout.gmx.net ([212.227.17.21]:60485 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726423AbgLaWG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 17:06:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609452289;
+        bh=LLg5+dBODLBTU0omru6oOcMgKkMNMcIm10u+qvBP/5s=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+        b=Ya+1GxtDIQKmdnGnnxLOYUX49IguTuo/demHBmQIFKkdwtWYUq1Dh+456ldH2+Y7O
+         efUXHDKs2j3mFpdKk14Pd06PB8tDgjv6mBsas69nvT7WQhmnXrUS+qTLpE1Z0dlo7I
+         Zlp2U0oOHAuSQAAOslTKy9YNrguOi5vzCJCh3ezc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MIx3C-1kafX92TWc-00KQMW; Thu, 31
+ Dec 2020 23:04:49 +0100
+Date:   Thu, 31 Dec 2020 23:04:48 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
+Cc:     Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: checkpatch.pl: Bogus case of DT_SPLIT_BINDING_PATCH
+Message-ID: <X+5LAFw7AHvAXJaK@latitude>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2nvqc0kNWltf5Qkb"
 Content-Disposition: inline
-In-Reply-To: <7bd30426-11dc-e482-dcc8-55d279bc75bd@molgen.mpg.de>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
-        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
-        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
-        a=kkUkhGpHuB7nuc3Oak8A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+X-Provags-ID: V03:K1:oxUVUZMUYVJDeqCpnPB2mSWJ7wJJ1YjhsZX4JVxoJ+44MgRsbpj
+ pT1ptSFOvV/kmyN3GCnJzJ+9BZHSw7CRKE/eUCEb4g9Mrwj/gakpEjcqcpgcOEDr0JX/ZNw
+ Ab1iDgHOeGxy/f2FibNj9haMEn0W1urYCMBwWnB7Eldg9R41YqtszKtbaLuZs6wk40uaHgq
+ 44GYWIXdnXF2mWEdkBo4Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0q+t5ypCRwg=:0u1w3313QbDfTxW5Bhj6nd
+ JQRZJdM/t5cP1D4HjeZI7qkoPj99aVPO5ooqbwIPhRJoBCBiys6+jqmGwKsNPaqgPnYtuU+4u
+ b8+1kGYXMRtTH0xpKrUd6cAEYYAOzaxxWUmqJLoErIahA055TMMoawx2o2MapusR6eOoislyU
+ Vd2Fm/DCmZLSYUnaWdPBILxNSifWDJNR10ISHGGuDsRqYkqDq8Ah66XYVLnFnhwGjoTWew5mb
+ 79grFMT4C/kpAXhr7FTYR5u4BHPQZFqxFQ5RJdIPr4DBIFhDmKOaFpcNLfUeJaWV7+ovA1ncM
+ JBP1K7tylXkxu08Lrb6yrB35xq2R35zi9Ve9NmpEUdvHn6rsGIjJNrEjacvIX6PFXTATxdugb
+ GTY/eBF3Yi/TiiDwb4K0iKYQq3FOTM+ecen9Y7hbNoKFQugN6aErjCWVQmBvnuMatPjanl/ol
+ zDtAYlyP5BE5XhwYhnDI/F1yz9Iy5bsT2ST3LfEQIeU82o2I2Oqipqh3Ja/fyNxg/QjgkV4yK
+ /2oeORMWeWC5BBflXC2mtnhxjvv/OJ/7Sq9DcNER+flCm2J8ZPX5LkFYSJXSt7O6vjKBw1azx
+ Q4yfHjtasVxVHFEvMnsu89qbS9hFzTNmjVz4ivdK0g/CDLKSAPs1MenVmrW0J50vg03w2TsS1
+ bVCno4p2eVaLKvttRprPJkdnIcTPAnYkRVluyEjiEfKF2Dp3hFKH5ywJwQNvqy+pf+qCn7QGC
+ rLTMRhmPFuq48RF8NRsx4hTNoDDGdG7V0kbBMExKeqI/tLz4T0T4T+s9J175SFGh1s/jXWEwV
+ tWoaIrTr0K1uWgeYtbGlV3c2pGhJm14QM7PEXHHOQ0G6bF6VcxAsrkVOjIbTRJTRpfP/GhDMA
+ mHuFetcHWXFjgw+yG1fA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 12:48:56PM +0100, Donald Buczek wrote:
-> On 30.12.20 23:16, Dave Chinner wrote:
-> > On Wed, Dec 30, 2020 at 12:56:27AM +0100, Donald Buczek wrote:
-> > > Threads, which committed items to the CIL, wait in the
-> > > xc_push_wait waitqueue when used_space in the push context
-> > > goes over a limit. These threads need to be woken when the CIL
-> > > is pushed.
-> > > 
-> > > The CIL push worker tries to avoid the overhead of calling
-> > > wake_all() when there are no waiters waiting. It does so by
-> > > checking the same condition which caused the waits to happen.
-> > > This, however, is unreliable, because ctx->space_used can
-> > > actually decrease when items are recommitted.
-> > 
-> > When does this happen?
-> > 
-> > Do you have tracing showing the operation where the relogged
-> > item has actually gotten smaller? By definition, relogging in
-> > the CIL should only grow the size of the object in the CIL
-> > because it must relog all the existing changes on top of the new
-> > changed being made to the object. Hence the CIL reservation
-> > should only ever grow.
-> 
-> I have (very ugly printk based) log (see below), but it only
-> shows, that it happened (space_used decreasing), not what caused
-> it.
-> 
-> I only browsed the ( xfs_*_item.c ) code and got the impression
-> that the size of a log item is rather dynamic (e.g. number of
-> extends in an inode, extended attributes in an inode, continuity
-> of chunks in a buffer) and wasn't surprised that a relogged item
-> might need less space from time to time.
-> 
-> > IOWs, returning negative lengths from the formatting code is
-> > unexpected and probably a bug and requires further
-> > investigation, not papering over the occurrence with broadcast
-> > wakeups...
-> 
-> One could argue that the code is more robust after the change,
-> because it wakes up every thread which is waiting on the next push
-> to happen when the next push is happening without making
-> assumption of why these threads are waiting by duplicating code
-> from that waiters side. The proposed waitqueue_active() is inlined
-> to two instructions and avoids the call overhead if there are no
-> waiters as well.
 
-One could argue that, but one should also understand the design
-constraints for a particular algorithm are before suggesting that
-their solution is "robust". :)
+--2nvqc0kNWltf5Qkb
+Content-Type: multipart/mixed; boundary="ESYGnOEREAsA8eQo"
+Content-Disposition: inline
 
-> 
-> # seq 29
-> 
-> 2020-12-29T20:08:15.652167+01:00 deadbird kernel: [ 1053.860637] XXX trigger cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=33554656      , push_seq=29, ctx->sequence=29
 
-So, at 20:08:15 we get a push trigger and the work is queued. But...
+--ESYGnOEREAsA8eQo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-.....
-> 2020-12-29T20:09:04.961088+01:00 deadbird kernel: [ 1103.168964] XXX wake    cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+Hi,
 
-It takes the best part of *50 seconds* before the push work actually
-runs?
+I've encountered a case where the DT_SPLIT_BINDING_PATCH warning was
+emitted even though I didn't change anything outside of Documentation/
+devicetree/bindings. I just converted a binding from plain text to YAML.
 
-That's .... well and truly screwed up - the work should run on that
-CPU on the very next time it yeilds the CPU. If we're holding the
-CPU without yeilding it for that long, hangcheck and RCU warnings
-should be going off...
+Here's a transcript of checkpatch (from Linux 5.11-rc1)'s output:
 
-> # seq 30
-> 
-> 2020-12-29T20:09:39.305108+01:00 deadbird kernel: [ 1137.514718] XXX trigger cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=33554480      , push_seq=30, ctx->sequence=30
+  $ scripts/checkpatch.pl --strict patches-wpcm/0001-dt-bindings-arm-Conver=
+t-nuvoton-npcm750-binding-to-Y.patch
+  WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+  #31:
+  deleted file mode 100644
+ =20
+  WARNING: DT binding docs and includes should be a separate patch. See: Do=
+cumentation/devicetree/bindings/submitting-patches.rst
+ =20
+  WARNING: DT binding docs and includes should be a separate patch. See: Do=
+cumentation/devicetree/bindings/submitting-patches.rst
+ =20
+  total: 0 errors, 3 warnings, 0 checks, 21 lines checked
+ =20
+  NOTE: For some of the reported defects, checkpatch may be able to
+        mechanically convert to the typical style using --fix or --fix-inpl=
+ace.
+ =20
+  patches-wpcm/0001-dt-bindings-arm-Convert-nuvoton-npcm750-binding-to-Y.pa=
+tch has style problems, please review.
+ =20
+  NOTE: If any of the errors are false positives, please report
+        them to the maintainer, see CHECKPATCH in MAINTAINERS.
 
-20:09:39 for the next trigger,
 
-> 2020-12-29T20:10:20.389104+01:00 deadbird kernel: [ 1178.597976] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:20.389117+01:00 deadbird kernel: [ 1178.613792] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:20.619077+01:00 deadbird kernel: [ 1178.827935] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:21.129074+01:00 deadbird kernel: [ 1179.337996] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:21.190101+01:00 deadbird kernel: [ 1179.398869] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:21.866096+01:00 deadbird kernel: [ 1180.074325] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:22.076095+01:00 deadbird kernel: [ 1180.283748] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:22.193070+01:00 deadbird kernel: [ 1180.401590] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:22.421082+01:00 deadbird kernel: [ 1180.629682] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108908 >= 67108864, push_seq=30, ctx->sequence=30
+I attached the patch, for reference.
 
-So it dropped by 16 bytes (seems to be common) which is unexpected.
-I wonder if it filled a hole in a buffer and so needed one less
-xlog_op_header()? But then the size would have gone up by at least
-128 bytes for the hole that was filled, so it still shouldn't go
-down in size.
 
-I think you need to instrument xlog_cil_insert_items() and catch
-a negative length here:
+Best regards,
+Jonathan Neusch=C3=A4fer
 
-	/* account for space used by new iovec headers  */
-	iovhdr_res = diff_iovecs * sizeof(xlog_op_header_t);
-	len += iovhdr_res;
-	ctx->nvecs += diff_iovecs;
+--ESYGnOEREAsA8eQo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: quoted-printable
 
-(diff_iovecs will be negative if the number of xlog_op_header
-structures goes down)
+=46rom 3aaf23345633070909e23a05a9f92748e445b3b3 Mon Sep 17 00:00:00 2001
+=46rom: =3D?UTF-8?q?Jonathan=3D20Neusch=3DC3=3DA4fer?=3D <j.neuschaefer@gmx=
+=2Enet>
+Date: Mon, 28 Dec 2020 01:09:31 +0100
+Subject: [PATCH 01/11] dt-bindings: arm: Convert nuvoton,npcm750 binding to
+ YAML
+MIME-Version: 1.0
+Content-Type: text/plain; charset=3DUTF-8
+Content-Transfer-Encoding: 8bit
 
-And if this happens, then dump the transaction ticket via
-xlog_print_trans(tp) so we can see all the log items types and
-vectors that the transaction has formatted...
+The general trend is to have devicetree bindings in YAML format, to
+allow automatic validation of bindings and devicetrees.
 
-> 2020-12-29T20:10:22.507085+01:00 deadbird kernel: [ 1180.715657] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108892 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:22.507094+01:00 deadbird kernel: [ 1180.731757] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108876 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:22.659070+01:00 deadbird kernel: [ 1180.867812] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108872 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:22.771081+01:00 deadbird kernel: [ 1180.980187] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108872 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:22.791116+01:00 deadbird kernel: [ 1180.996535] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108872 >= 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:32.512085+01:00 deadbird kernel: [ 1190.725044] XXX no wake cil 00000000e374c6f1 ctx 00000000c46ab121 ctx->space_used=67108856 < 67108864, push_seq=30, ctx->sequence=30
-> 2020-12-29T20:10:32.528119+01:00 deadbird kernel: [ 1190.753321] XXX xc_push_wait ACTIVE!
+Convert the NPCM SoC family's binding to YAML before extending it.
 
-Also, another 50s hold-off from push work being queued to the work
-actually running. That also needs to be understood, because that's
-clearly contributing to hitting the hard limit regularly and that
-should mostly never happen....
+The nuvoton,npcm750-evb compatible string is introduced to keep the
+structure of the binding a little simpler.
 
-Cheers,
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+---
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+If someone else (e.g. Brendan Higgins) wants to be listed as the
+maintainer, please let me know.
+---
+ .../devicetree/bindings/arm/npcm/npcm.txt     |  6 ------
+ .../devicetree/bindings/arm/npcm/npcm.yaml    | 21 +++++++++++++++++++
+ 2 files changed, 21 insertions(+), 6 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/npcm/npcm.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/npcm/npcm.yaml
+
+diff --git a/Documentation/devicetree/bindings/arm/npcm/npcm.txt b/Document=
+ation/devicetree/bindings/arm/npcm/npcm.txt
+deleted file mode 100644
+index 2d87d9ecea85b..0000000000000
+--- a/Documentation/devicetree/bindings/arm/npcm/npcm.txt
++++ /dev/null
+@@ -1,6 +0,0 @@
+-NPCM Platforms Device Tree Bindings
+------------------------------------
+-NPCM750 SoC
+-Required root node properties:
+-	- compatible =3D "nuvoton,npcm750";
+-
+diff --git a/Documentation/devicetree/bindings/arm/npcm/npcm.yaml b/Documen=
+tation/devicetree/bindings/arm/npcm/npcm.yaml
+new file mode 100644
+index 0000000000000..3ecd00803c003
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/npcm/npcm.yaml
+@@ -0,0 +1,21 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/npcm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NPCM Platforms Device Tree Bindings
++
++maintainers:
++  - Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
++
++properties:
++  $nodename:
++    const: '/'
++  compatible:
++    oneOf:
++      - description: NPCM750 based boards
++        items:
++          - enum:
++            - nuvoton,npcm750-evb           # NPCM750 evaluation board
++          - const: nuvoton,npcm750
+--=20
+2.29.2
+
+
+--ESYGnOEREAsA8eQo--
+
+--2nvqc0kNWltf5Qkb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl/uSvkACgkQCDBEmo7z
+X9vgsg//Wcpmagto1fiQX6J6uVVXuffSZXSEfHlKd/QSTSfJpx1mDOlEQrvUht7w
+Xvk9jmHhm3nM2S6B1afrVR+ygW4g0TBwXcc3JmPeKK2/80Z8BWzW8wUPdusxOpoX
+bgOQVdt7X3BGZCR/5gbIydTJ7uBMl/sdBsmIykPP6m8nCorD5aIc1UAa/49KnnHU
+K5NnX1m9f2Ye6tJSn47mBajNP+lCeKyn6rXzJFvbD0b8EMOm40/I7CQdNWnzJRRq
+GfkbCJD0C8uoqTY0bvGQQSwv69DJc5DcU7dgz2uByRvIg7XFfucUvknwOlmKM1DL
+Bwn1e2+QqjTZhy5T68s3Xs6bDbo2uJ9di6UahF+0Mvrj230pXtJsLG6MH0esQHfS
+j9av7rAi+ZDjnUjX9gQu1t7uoEBXp9VI59pwf2HukFOftCp/V0iXsvodl3arARbn
++oZN4tmduz+9WgoJWoau4vUwF5l4Pz4C7y3uPj5w8x2lEi9Ds2aVgNiF6xoVweqQ
+8kgPPBmaURBEVAcCtjZ+lCbg2pXkEqblXUgIbzYMA1+4hI1cOXC58eqUG11WiliW
+QEn7O43F6fm/Z+g6z4abV19Zj6S4rsJ+c03pHvzUF/tCneaO4ymYcDxjLUfgI46M
+IFv79L16aH2OJ33gFW9Dt4ehVL6SXiznTrZ/O3SFxiGE0yfu9nQ=
+=snBh
+-----END PGP SIGNATURE-----
+
+--2nvqc0kNWltf5Qkb--
