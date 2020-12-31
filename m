@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AB92E8149
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 17:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D932E813F
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 17:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727414AbgLaQqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 11:46:00 -0500
-Received: from mx3.wp.pl ([212.77.101.10]:40781 "EHLO mx3.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726618AbgLaQp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 11:45:59 -0500
-Received: (wp-smtpd smtp.wp.pl 38758 invoked from network); 31 Dec 2020 17:45:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1609433106; bh=qKYUAWch0jVyKMYNOmfsYKPYB5U88iU0KQ9NboXS05I=;
-          h=From:To:Cc:Subject;
-          b=oTbOphPln8ydFOImuTgAcXyFd3DXKzbAqIMnBaiK1cSovPpp5kV9efR7dZckUMoqk
-           U3UAGWAH7RbAnrWDl1Mw12o28lBUmj7/JxZ2V94gjJSNf5EwtwVUBRg+OOfOGSK/3o
-           CjYzLSE8tqOsmc22NidiSKtF+hOlfWqc1Ll+mtps=
-Received: from afrk207.neoplus.adsl.tpnet.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[178.42.192.207])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <tsbogend@alpha.franken.de>; 31 Dec 2020 17:45:06 +0100
-From:   Aleksander Jan Bajkowski <olek2@wp.pl>
-To:     tsbogend@alpha.franken.de, robh+dt@kernel.org, john@phrozen.org,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Subject: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway PMU bindings
-Date:   Thu, 31 Dec 2020 17:31:53 +0100
-Message-Id: <20201231163153.4512-1-olek2@wp.pl>
-X-Mailer: git-send-email 2.20.1
+        id S1727018AbgLaQlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 11:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726618AbgLaQlk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 11:41:40 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90C6C061573;
+        Thu, 31 Dec 2020 08:40:59 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id z21so13316917pgj.4;
+        Thu, 31 Dec 2020 08:40:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=zXVUfGPVmfM5GeK+6QNx3f/rCxdcfMVAGw68Ko8B55M=;
+        b=Gf72lHMuI3ydH6WjdzCXu/AUMnew9JWQRKVndUhXiJ87I78TyQo/3x1dv0ALP5oI7C
+         A5nSoC+ONlMeNviJ3WKH1n94uLuu5SXIbmq0JErN6jEKZFUJeLZ6X+W2eQtEi1wo7V/b
+         kBQ7VdXHhemB6SgntJaEolp96/Em5IrpPpg7+cgQq+iz00TAAZpoHesiUilJNnKBI0uy
+         2spLAHYcLUKwG4y0cGHjgWvyb5HKKnhMyWq+bUEA8haGeyg8lARIVqVS/aZoj7SfHUUq
+         2SnlBujx4mP5IHZZV9Cx1aEv7NC+Ea/vCbl5FJ2Wb6w8Td0JiaHlyAV1kCnCqJ3INPct
+         gDEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=zXVUfGPVmfM5GeK+6QNx3f/rCxdcfMVAGw68Ko8B55M=;
+        b=jLOjyDVNnhcEaAobCBacXJhLQJOLcaOR19OfYkZ0gQpCajTo512O0SbPmAvgFLJD4z
+         xmuJSH2FrECORh8woM6X4r6fKPOAJ8bRH0zQTUn5LLF0mHjEkmHp7A+1p1o+9k+XLWSU
+         LdBeMlig/TZlkR7F0bnLzG2bxPkrxPPAes3u0BJeIXK8wDcemw/0hXRDAuuTXR753XGW
+         1yBEJ3EGCPyoMkVWbo1w44CW/iXCzh90taMI5zyMuqfWLZqVIs3HfrwODj0FaO9XrmQg
+         HF7Ox11yi0FdFhM4pXhNJej3PuufmNGWnFbNzbT2fzUQvtqz5bqgd7Br67aZsAdSLNMs
+         Wxaw==
+X-Gm-Message-State: AOAM531xiUUGxhIEw0IiKxqEMQrS2PoAhbHrg/M5j65bz2jvJDgpxGO9
+        aV3k6cj9iDeF2NefPBeIxTQzTxg/1aaxLx3w5dRryhD/lOJqkQ==
+X-Google-Smtp-Source: ABdhPJzYjjKDewT+otboNO68ifRjGmXei3IC+3EVkUUcETqaRhpRtlLFgHdWeiFJiUTPvN0ZE9IPHO1jpt2v/t02ZZ8=
+X-Received: by 2002:a62:7715:0:b029:19e:26e7:7c87 with SMTP id
+ s21-20020a6277150000b029019e26e77c87mr32461695pfc.18.1609432859320; Thu, 31
+ Dec 2020 08:40:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: wp.pl)                                      
-X-WP-MailID: e441b184dc06375e847228df27a8767d
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000001 [YbK3]                               
+From:   =?UTF-8?B?5b6Q5aSp5a6H?= <xu2tianyu@gmail.com>
+Date:   Fri, 1 Jan 2021 00:40:49 +0800
+Message-ID: <CA+tJOF9SGPzXd4W8NNZWT3fPYHFagUMADdC7sK5tQrOF7bf-vw@mail.gmail.com>
+Subject: =?UTF-8?Q?SDHCI=EF=BC=9Adrivers_problem_running_on_pynq?=
+To:     linux-fpga@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pierre@ossman.eu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Lantiq Xway SoC series Power Management Unit (PMU) bindings.
+When I run the RV_BOOT.bin, which is generated by riscv-pk with
+linux-5.9.4 as payload, on xilinx pynq-z2, the BBL  met the problem below:
 
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
----
- .../bindings/mips/lantiq/lantiq,pmu.yaml      | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,pmu.yaml
+mmc0: Timeout waiting for hardware cmd interrupt.
+mmc0: sdhci: ============ SDHCI REGISTER DUMP ===========
+mmc0: sdhci: Sys addr:  0x00000000 | Version:  0x00008901
+mmc0: sdhci: Blk size:  0x00000000 | Blk cnt:  0x00000000
+mmc0: sdhci: Argument:  0x00000c00 | Trn mode: 0x00000000
+mmc0: sdhci: Present:   0x01ff0001 | Host ctl: 0x00000001
+mmc0: sdhci: Power:     0x0000000f | Blk gap:  0x00000000
+mmc0: sdhci: Wake-up:   0x00000000 | Clock:    0x00004007
+mmc0: sdhci: Timeout:   0x00000000 | Int stat: 0x00018000
+mmc0: sdhci: Int enab:  0x00ff0083 | Sig enab: 0x00ff0083
+mmc0: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000001
+mmc0: sdhci: Caps:      0x69ec0080 | Caps_1:   0x00000000
+mmc0: sdhci: Cmd:       0x0000341a | Max curr: 0x00000001
+mmc0: sdhci: Resp[0]:   0x00000000 | Resp[1]:  0x00000000
+mmc0: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+mmc0: sdhci: Host ctl2: 0x00000000
+mmc0: sdhci: ADMA Err:  0x00000000 | ADMA Ptr: 0x00000000
+mmc0: sdhci:
 
-diff --git a/Documentation/devicetree/bindings/mips/lantiq/lantiq,pmu.yaml b/Documentation/devicetree/bindings/mips/lantiq/lantiq,pmu.yaml
-new file mode 100644
-index 000000000000..4982b458ac12
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/lantiq/lantiq,pmu.yaml
-@@ -0,0 +1,32 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mips/lantiq/lantiq,pmu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Lantiq Xway SoC series Power Management Unit (PMU)
-+
-+maintainers:
-+  - John Crispin <john@phrozen.org>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - lantiq,pmu-xway
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pmu@102000 {
-+        compatible = "lantiq,pmu-xway";
-+        reg = <0x102000 0x1000>;
-+    };
--- 
-2.20.1
-
+Does anyone have any idea about this problem? Thanks a lot.
