@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FC62E7DD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 04:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA9F2E7DDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 04:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgLaDGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 22:06:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgLaDGR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 22:06:17 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773CAC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 19:05:37 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id u26so13543928iof.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 19:05:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Eh0LYyioy3C3UVC9bwYubsDJdeJ6pKMdFF5bTDt6YkI=;
-        b=TdwHg7F/YVh3cN8PVMIQ+oWuBWKeEigWj/hFDBYkaxozMfZ7KRhZV8NB24QPpMxZVK
-         xP3TNC2izS62C735GRSAXt/qTtQMNg7nBjEHOWTRKP1X5oZMcq3dMRgdbzQrH/TzGBQ+
-         SHM5HmfZirh22LlNPpXWW5PHSmqTU1/ts1e8j4qndJlm0ZcHX7mtgmz7VmvebMzPeZ5E
-         ftVVCPZJmNM8NzK+7HhYtl/TCiTuP/yl52CogDcqU7OrPzzEDGipEEGYXYxi23MHUGpc
-         Q4tu2j8nNkWSBI30ztNyCm8ZY7Uq4FW8S3wpY0Td3GVO1U4XtfLJ+Bu/4Y3gS5VhOuX6
-         108w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Eh0LYyioy3C3UVC9bwYubsDJdeJ6pKMdFF5bTDt6YkI=;
-        b=m7V+q7cDocBTS9qDnUcecR2u1hOsXiUsDtuoyYTq1ltp6YUcf2f7dqC1UncLlvDXxv
-         UweUo6C/7NV6fzW4xGPI1kHHsLY2YKSTvUvENkIt8xzjzbSag/gLEcJrI4H6BClfIL2E
-         i3TCnvle87ZjtVzqoXsBGAG6Iv5oPnTa0qquc6qubq23GUwP7TIII7f7VWYgZNrnVHZR
-         T5asZFPpUR6/H/JLc7Qv9dMyJLZZnk46yqIJekZ4o4dqpDnMWxscg/PqEGmkqxuP2DOV
-         4IrMmW5OnltnOOXLxHeBlyXifkZbED4wVIGcWqiV4nmJTaY41eycQOAMU8h48CCS4KMX
-         YtqA==
-X-Gm-Message-State: AOAM532OstpA3Eibru55Ruu3XY9ogwzcKNCEK8fnzZdGeP/unAFXWv8S
-        xM2zbDl+F0jBcomSv7TeGDlnSIcLqAgtkz/wJ74tXQ==
-X-Google-Smtp-Source: ABdhPJxN3b3LpOts6FmTvL8wbWxbWHHukhWKA4JsuemgJC0/GdUY8dN5ynrejN4PSioTS9QR8vw0smV+ayjN/GeXNak=
-X-Received: by 2002:a05:6638:1202:: with SMTP id n2mr48302031jas.85.1609383936067;
- Wed, 30 Dec 2020 19:05:36 -0800 (PST)
+        id S1726560AbgLaD24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 22:28:56 -0500
+Received: from mga18.intel.com ([134.134.136.126]:55661 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726517AbgLaD2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 22:28:55 -0500
+IronPort-SDR: fmiKhIlReQ1Xnn/rGvE3WWHIhcT/4IYf3+8qMcgbsFHOajvTAZiqyesas1dyjDST3QcNz3tDjr
+ bujcrYCebfmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9850"; a="164375799"
+X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
+   d="scan'208";a="164375799"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 19:28:15 -0800
+IronPort-SDR: 4nEd9tuGFET2IJ17xLLLQk2AR5fGET0jtRv9hkcorEN37Rbx0woLwCABynHZk4y/aWyXhDzrTW
+ XzcLGdMl5ktQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
+   d="scan'208";a="419740778"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga001.jf.intel.com with ESMTP; 30 Dec 2020 19:28:13 -0800
+Date:   Thu, 31 Dec 2020 11:23:37 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] spi: fix the divide by 0 error when calculating xfer
+  waiting time
+Message-ID: <20201231032337.GA7980@yilunxu-OptiPlex-7050>
+References: <1609219662-27057-1-git-send-email-yilun.xu@intel.com>
+ <1609219662-27057-3-git-send-email-yilun.xu@intel.com>
+ <20201229131308.GE4786@sirena.org.uk>
+ <20201230022420.GF14854@yilunxu-OptiPlex-7050>
+ <20201230134644.GE4428@sirena.org.uk>
 MIME-Version: 1.0
-References: <20201230154345.639122-1-arnd@kernel.org>
-In-Reply-To: <20201230154345.639122-1-arnd@kernel.org>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Thu, 31 Dec 2020 11:05:25 +0800
-Message-ID: <CA+Px+wXEjm+yb+8g2qdv8+WUWXJf+MPKpLL7ovS_08f0ch_Wnw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: mediatek: add MTK_PMIC_WRAP dependency
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jiaxin Yu <jiaxin.yu@mediatek.com>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230134644.GE4428@sirena.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 11:43 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Randconfig builds often show harmless warnings like
->
-> WARNING: unmet direct dependencies detected for SND_SOC_MT6359
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MTK_PMIC_WRAP [=n]
->   Selected by [y]:
->   - SND_SOC_MT8192_MT6359_RT1015_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8192 [=y]
->
-> Add a dependency to avoid that.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Wed, Dec 30, 2020 at 01:46:44PM +0000, Mark Brown wrote:
+> On Wed, Dec 30, 2020 at 10:24:20AM +0800, Xu Yilun wrote:
+> > On Tue, Dec 29, 2020 at 01:13:08PM +0000, Mark Brown wrote:
+> 
+> > > Does this still apply with current code?  There have been some fixes in
+> > > this area which I think should ensure that we don't turn the speed down
+> > > to 0 if the controller doesn't supply a limit IIRC.
+> 
+> > Yes, there is chance the speed is set to 0, some related code from 5.11-rc1
+> 
+> Please check the code in the SPI tree and -next.
 
-Acked-by: Tzung-Bi Shih <tzungbi@google.com>
+I see the fix patches in maillist, thanks.
+
+> 
+> > BTW, Could we keep the spi->max_speed_hz if no controller->max_speed_hz?
+> > Always clamp the spi->max_speed_hz to 0 makes no sense.
+> 
+> Right, that's the fix.
+
+Seems it still doesn't fix the case that neither controller nor client dev
+provides the non-zero max_speed_hz. Do you think the patch is still
+necessary?
+
+Thanks,
+Yilun
