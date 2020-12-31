@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB1F2E8030
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 14:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D65772E8036
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 14:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgLaN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 08:29:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40498 "EHLO mail.kernel.org"
+        id S1726669AbgLaN3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 08:29:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726230AbgLaN32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 08:29:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18AD920786;
-        Thu, 31 Dec 2020 13:28:46 +0000 (UTC)
+        id S1726630AbgLaN3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 08:29:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 309CE223E0;
+        Thu, 31 Dec 2020 13:28:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609421327;
-        bh=syL2yE+tntkgSTyF3VynGhZ4nc47tn0RNbecRMAL9Lw=;
+        s=k20201202; t=1609421332;
+        bh=K56VJyy27x0kGr4SNtwCRlFlFSdH8USKotViNClcc8s=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=L4C9cJmWb/chfLXI+nTycET9UKhRkQSULtLDvLGfLATu2F1WBDAuE5T9RMjBYQIvT
-         7H0mICW3ug4nxp0WpCcRjuyDd2+0aWsrz+bDYGN8pB6jtw1ZjO0orEAqsl/QGl0iA9
-         FugQ5FbOcLTzJhTBzTxh8s8Oi2GKywF52cR5x/FrqDseA7Bz28HhuRVchk0zjY3XjB
-         WJIdV9jyrm5MRQkJUeatEa2E0hPjhW8MERINOFcTKxBNsT3iAZo0sOuHVAEH6yJzE3
-         Qa5CgopQb73dVyJT655MnlROEVn5q4z//H+LyhEkEIuCKEl+Ckv4E9oZPlwznOBP17
-         YFBQxxENniR9A==
+        b=P3AvGcGR0QvXm9N/JFSFfPexBrn4t4zGYbbibSrhJ1N3C9Jw7JmHB1JptbONJKUGb
+         gFzzWqvc68i/mbItQTs/vqisNp1oaTflQQAl/jZ/Q0Fmlu25EAPuWMx6mdyDynTo7V
+         idb9sFcQ+xZlgs/FjYdzaWzKKL/IetF1tLyzQRI9h/5Fei+/yxio/ggjRs2K/8jR5D
+         aOFYwp5XX0fW/E7Ub3XL/ddbmIYn6kFQOBfvtfNW5iCKZyBagpjNaWdIbRD2OkrKye
+         94i0Nn5Hs6h4FshBOIMkAZpAwFRyQY7wl6VE9uFwmjSOtUroHKpdh3zF/sWe4bNXrs
+         eOnGzyNMqZsiA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201230172427.13865-1-rf@opensource.cirrus.com>
-References: <20201230172427.13865-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: wm_adsp: Only use __be32 for big-endian data
-Message-Id: <160942130384.56416.4203389160143679656.b4-ty@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        linux-mediatek@lists.infradead.org,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20201230154345.639122-1-arnd@kernel.org>
+References: <20201230154345.639122-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: mediatek: add MTK_PMIC_WRAP dependency
+Message-Id: <160942130384.56416.5738350943602041009.b4-ty@kernel.org>
 Date:   Thu, 31 Dec 2020 13:28:23 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -39,15 +45,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Dec 2020 17:24:26 +0000, Richard Fitzgerald wrote:
-> This fixes some minor cases where u32 or unsigned int types were used
-> to store big-endian data, and __be32 types used to store both big-endian
-> and cpu-endian data. This was producing sparse warnings.
+On Wed, 30 Dec 2020 16:43:34 +0100, Arnd Bergmann wrote:
+> Randconfig builds often show harmless warnings like
 > 
-> Most cases resulted from using the same variable to hold the big-endian
-> value and its converted cpu-endian value. These can be simply fixed by
-> introducing another local variable, or avoiding storing the intermediate
-> value back into the original variable.
+> WARNING: unmet direct dependencies detected for SND_SOC_MT6359
+>   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MTK_PMIC_WRAP [=n]
+>   Selected by [y]:
+>   - SND_SOC_MT8192_MT6359_RT1015_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8192 [=y]
 > 
 > [...]
 
@@ -57,10 +61,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: wm_adsp: Only use __be32 for big-endian data
-      commit: a0b653e89a3afd2a833f23589a83488fac842ddb
-[2/2] ASoC: wm_adsp: Use snd_ctl_elem_type_t for control types
-      commit: f6212e0ab3ff28d4e2e53a520496a052c241df39
+[1/1] ASoC: mediatek: add MTK_PMIC_WRAP dependency
+      commit: c1cbbea9c4db41eb69a831d8b07da52e05b1d1e8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
