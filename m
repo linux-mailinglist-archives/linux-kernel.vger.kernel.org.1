@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AEF2E7D5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676722E7D5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgLaAYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 19:24:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgLaAYv (ORCPT
+        id S1726487AbgLaA0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 19:26:30 -0500
+Received: from mail-io1-f44.google.com ([209.85.166.44]:44857 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgLaA03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 19:24:51 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC84C061573;
-        Wed, 30 Dec 2020 16:24:11 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id qw4so23754268ejb.12;
-        Wed, 30 Dec 2020 16:24:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aw/X/9HRdFlK3ENliYd8yhkSzevuBoqDvbJ7g1FREOk=;
-        b=oBhDqrr7CNIeA+HEckZ/BoMozBaZ67j517MnLQNWF9HHpKlIqcbDi+KgYiPH7xi+KR
-         dEROELyMEY9jwEJo/3g3xLv+DyU7iOcPMkKDvkL20U0bRwSpIKrvroIPmF2OiNgghdem
-         qm57V4I4n57aM+wl6J7q7YFvzobYCcLOUUB/LKM5eraIJmEEDjqDa5PUzi6gbQXlpq2e
-         6dlKXi9yGfxheRtTTszM9X+vWdFbrQB/Jl9vEm9xenlaeetoi8Uz0xL3EuEV832O5uiB
-         JXVYJLF+sTpKw/qBfMAQGvpQG7GsXEp532hX0saFjthrMIympWIjO3iu2EYAmBnEbMOT
-         3+qQ==
+        Wed, 30 Dec 2020 19:26:29 -0500
+Received: by mail-io1-f44.google.com with SMTP id z5so16021730iob.11;
+        Wed, 30 Dec 2020 16:26:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aw/X/9HRdFlK3ENliYd8yhkSzevuBoqDvbJ7g1FREOk=;
-        b=EX6KyF+tanIEuwKvYrMuTG9KkGOBhFvFCIOZBn4z9RZXXhsp+azVUA2p98oF84f3Ii
-         7DjmIFSBWslJS0ioh+UI7YkPJEYGjDXoEM2+71ffwfUCvo09JhaVISO5yRryA4oPlvpP
-         OduGfOmWAWMatcYLg8CeDK2u8JCKmRELgQi3unnWOdofNAnB87ra4RF+pRCyFI3f3cbd
-         3Q0jZ1Kv72s7+Es6vPiCelqD2l7wzaXYvJM5hg4Zs1aQL839jgFF/INrrB1/y5O3Yoml
-         79xZ/58GB9IjjWdTjoDSCoKwE9AOLCy2Tk5X62WvaSN3kb1DelLikIZJdSecYLydtNkG
-         uEAQ==
-X-Gm-Message-State: AOAM533A4hYAb6wvmrNqxBuHRXRavz2qyaZTYedFmigOlqybbxAG1lYw
-        6L+112jrVMcQ5KXOUDPHd2niy87CFm/P/vyxMcs=
-X-Google-Smtp-Source: ABdhPJxrDxW07y8dLE5n+dcM/FUCVDaKSfs0FshgoV6zFzewudotaQBLzrHOOshSLszMCmD5zhQsLk6tRtwXHFx1Heg=
-X-Received: by 2002:a17:906:447:: with SMTP id e7mr50750226eja.172.1609374250025;
- Wed, 30 Dec 2020 16:24:10 -0800 (PST)
+        bh=MzT91tppKQB/Uyn3VLuWw+XosR8pFomzL/I34PTPY9E=;
+        b=hyUPxqI1GEFtGObAVIThN0gmrL6fls8+iViSvC+zWKp5sZCimXFzZvCdTh9C8Le/TJ
+         5vULOQN4DM6+CAiWgA0+RmwGa63aY/evxBUzoGuUsZNcL9FWdBXhXmQKUsfKsUAdaiTV
+         BaHT/KS972wkCxGCdIiC1TicTSnYep9WAKvYxg8JOKNIVxGi9rLx0V1xs8ynRwcKvd50
+         7VPWwcXyglA3TnC/aIgY7IGzwM+5meCFWi3OAfwHSw+hum3d1Jpje2Uk7FjJHNoBMYmx
+         /ov7QaEJ93pvPXqfF7ogM1dK4sgPlrNTRnrB+ozs7npt1DkilSDxEYoqQUN2Vqz38nyD
+         frTQ==
+X-Gm-Message-State: AOAM531Gtm0syMohCU7X/BGSJvhR+11S6PbPu+wIoOLPzuiyzR/f3Dok
+        o62cm6yzrB3D79sHHdf2I0pM+CfnnCBDHAAuT6HSXVzbMLI=
+X-Google-Smtp-Source: ABdhPJwqBFO4XsR+VwJO9pz1zl3JmYFKrfYJ9A2cppFDNVaQmFOUq8eh6420wYXfcdqV6fb7+reAQ+fbUHqLbPue5vE=
+X-Received: by 2002:a02:c042:: with SMTP id u2mr47854655jam.32.1609374348444;
+ Wed, 30 Dec 2020 16:25:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20201230103729.2272-1-christianshewitt@gmail.com> <20201230103729.2272-3-christianshewitt@gmail.com>
-In-Reply-To: <20201230103729.2272-3-christianshewitt@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 31 Dec 2020 01:23:59 +0100
-Message-ID: <CAFBinCCUV4piTy7n83GsV9Tny+JYA9_AXS0uiv5FeNPYejNR-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: meson: add initial Beelink GS-King-X device-tree
-To:     Christian Hewitt <christianshewitt@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201230033950.13839-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20201230033950.13839-1-jiaxun.yang@flygoat.com>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Thu, 31 Dec 2020 08:25:36 +0800
+Message-ID: <CAAhV-H6TLn1GwL3WZFPeX-m2ido_8SZ8v=ZwbV+DZod7EoVdew@mail.gmail.com>
+Subject: Re: [PATCH RESEND 1/2] MIPS: cacheinfo: Add missing VCache
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 11:38 AM Christian Hewitt
-<christianshewitt@gmail.com> wrote:
->
-> The Shenzen AZW (Beelink) GS-King-X is based on the Amlogic W400 reference
-> board with an S922X-H chip.
->
-> - 4GB LPDDR4 RAM
-> - 64GB eMMC storage
-> - 10/100/1000 Base-T Ethernet
-> - AP6356S Wireless (802.11 a/b/g/n/ac, BT 4.1)
-> - HDMI 2.1 video
-> - S/PDIF optical output
-are you planning to enable this also?
+Hi, Jiaxun,
 
-> - 2x ESS9018 audio DACs
-> - 4x Ricor RT6862 audio amps
-> - Analogue headphone output
-there's no driver for that DAC so I think that's why you are not enabling them
-
-> - 1x USB 2.0 OTG port
-> - 3x USB 3.0 ports
-> - IR receiver
-> - 1x micro SD card slot (internal)
-> - USB SATA controller with 2x 3.5" drive bays
-> - 1x Power on/off button
+On Wed, Dec 30, 2020 at 11:41 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
 >
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-I don't know/have this board but also I don't see anything problematic so:
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Victim Cache is defined by Loongson as per-core unified
+> private Cache.
+> Add this into cacheinfo and make cache levels selfincrement
+> instead of hardcode levels.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Reviewed-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/kernel/cacheinfo.c | 34 ++++++++++++++++++++++++++--------
+>  1 file changed, 26 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
+> index 47312c529410..83548331ee94 100644
+> --- a/arch/mips/kernel/cacheinfo.c
+> +++ b/arch/mips/kernel/cacheinfo.c
+> @@ -35,6 +35,11 @@ static int __init_cache_level(unsigned int cpu)
+>
+>         leaves += (c->icache.waysize) ? 2 : 1;
+>
+> +       if (c->vcache.waysize) {
+> +               levels++;
+> +               leaves++;
+> +       }
+> +
+>         if (c->scache.waysize) {
+>                 levels++;
+>                 leaves++;
+> @@ -74,25 +79,38 @@ static int __populate_cache_leaves(unsigned int cpu)
+>         struct cpuinfo_mips *c = &current_cpu_data;
+>         struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+>         struct cacheinfo *this_leaf = this_cpu_ci->info_list;
+> +       int level = 1;
+>
+>         if (c->icache.waysize) {
+> -               /* L1 caches are per core */
+> +               /* D/I caches are per core */
+It seems "I/D caches" is better than "D/I caches", see
+arch/mips/include/asm/cpu-info.h and search cache_desc.
+
+Huacai
+>                 fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+> -               populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
+> +               populate_cache(dcache, this_leaf, level, CACHE_TYPE_DATA);
+>                 fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+> -               populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
+> +               populate_cache(icache, this_leaf, level, CACHE_TYPE_INST);
+> +               level++;
+>         } else {
+> -               populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
+> +               populate_cache(dcache, this_leaf, level, CACHE_TYPE_UNIFIED);
+> +               level++;
+> +       }
+> +
+> +       if (c->vcache.waysize) {
+> +               /* Vcache is per core as well */
+> +               fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+> +               populate_cache(vcache, this_leaf, level, CACHE_TYPE_UNIFIED);
+> +               level++;
+>         }
+>
+>         if (c->scache.waysize) {
+> -               /* L2 cache is per cluster */
+> +               /* Scache is per cluster */
+>                 fill_cpumask_cluster(cpu, &this_leaf->shared_cpu_map);
+> -               populate_cache(scache, this_leaf, 2, CACHE_TYPE_UNIFIED);
+> +               populate_cache(scache, this_leaf, level, CACHE_TYPE_UNIFIED);
+> +               level++;
+>         }
+>
+> -       if (c->tcache.waysize)
+> -               populate_cache(tcache, this_leaf, 3, CACHE_TYPE_UNIFIED);
+> +       if (c->tcache.waysize) {
+> +               populate_cache(tcache, this_leaf, level, CACHE_TYPE_UNIFIED);
+> +               level++;
+> +       }
+>
+>         this_cpu_ci->cpu_map_populated = true;
+>
+> --
+> 2.30.0
+>
