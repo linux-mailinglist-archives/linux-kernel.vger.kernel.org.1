@@ -2,148 +2,475 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D082E7EE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 10:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859702E7EEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 10:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgLaJMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 04:12:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbgLaJMj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 04:12:39 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BD3C061573;
-        Thu, 31 Dec 2020 01:11:58 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id cw27so17690438edb.5;
-        Thu, 31 Dec 2020 01:11:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3V6f5iJoHmPBeBDPTmV70Z/7kJqb/KNhqGJIIlNMbpE=;
-        b=q8eZ8MRiVntPruz75x2DlDeQWsbAz8y++8mspPKrbvqneDliKgzIcX/WILl1QFBlCn
-         jh/TJD6uwO/WnbvpI75gFJp9+QYZb+40g1ZoMt/ILAO6TamSOKQVPhs/neoaG0F+IBTF
-         nZf3qMqkdWLzvid1OSCobWcrGFRtFBfieNqty0GKP5H7Wc4wCgXfHia0zFtM4d1DvTbZ
-         ZD5ro4ekALfZKE3FFh7nFL+V7NStksYSwgMAWeHmX4y3SlvliGd4V0aMZsg5A7dsRD+N
-         pLLUovukLYurtHiJe/qAz45rioV787h1hfecghFpniEO0SVoosPRuSOajy1Ye/D1tbaA
-         ypUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3V6f5iJoHmPBeBDPTmV70Z/7kJqb/KNhqGJIIlNMbpE=;
-        b=kk8HXn3ueKud8WuoYRoOAzzEaVCnqN5o+1CD0BbAMR1c9DQvVumwsY1/KUcRv04zoh
-         49UInz/ymMPj9Se5rXW8IOhotzDai0+OB7xck/peOkFATQJdhRufmwYLtKBC8BBDzGeU
-         oLVT5miw660sM/CuagDegE57m3RWlsLte4mj7J1iCWOCldqbJPFUgwfNkCrvUJUEy4qs
-         PZawvWxvenhSEMwrjL9Fjj+y8d5J5bnosXqfZd5xOOAGFDXvgmht8ur8sb5cjk2mDNO/
-         2zwhFLMYxRGONDW0wY0dWG/ZpAnCCKUhLxVUWfnK/ID1LqSM6w+dpZ6zjzK1Z0t5Wdah
-         eiZw==
-X-Gm-Message-State: AOAM530GGLMedY6KtUPBd+Hq+QG+p1nRoLfMP9FfaSg0HKfmvIkbF/Vr
-        FWb7UIjUAKWGQqkA4mWkOxs=
-X-Google-Smtp-Source: ABdhPJzF1ZKXMthkfRNMx0sRVA51tAQGTfW4+hoSTfcEu8H92dFrGFD9E0c/eUEfA9sk5IqwPcHlcg==
-X-Received: by 2002:a05:6402:2074:: with SMTP id bd20mr609736edb.326.1609405917523;
-        Thu, 31 Dec 2020 01:11:57 -0800 (PST)
-Received: from ubuntu2004 ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id ch30sm39779630edb.8.2020.12.31.01.11.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 01:11:56 -0800 (PST)
-Date:   Thu, 31 Dec 2020 11:12:02 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Korsgaard <peter@korsgaard.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Subject: Re: [PATCH v3 00/13] Add CMU/RMU/DMA/MMC/I2C support for Actions Semi
-Message-ID: <20201231091202.GB916001@ubuntu2004>
-References: <cover.1609263738.git.cristian.ciocaltea@gmail.com>
- <20201231075435.GG7345@thinkpad>
+        id S1726348AbgLaJV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 04:21:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726155AbgLaJV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 04:21:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F75622262;
+        Thu, 31 Dec 2020 09:21:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609406477;
+        bh=zPY7UKQ8SEjalIA1GReemQgbCBmlAA+Hr7wC7DCWiNw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A7EH1tDebsh3S5TUoBrYzDVinroncvKsY9kLmZ5qQFlXgmA/2PU6k+zod0MwzBM+f
+         +XzxWCfMoXq5m50nfbuNi4pmM8MPqV/oJTARdbIoRHcMUptosxNj3t3RXx2HDpj9n/
+         ioU4x9AYXRMw/IgrXGPKUddSaNikh4g6ao19w1Co=
+Date:   Thu, 31 Dec 2020 10:22:41 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Wen Yang <wenyang@linux.alibaba.com>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, Pavel Emelyanov <xemul@openvz.org>,
+        Oleg Nesterov <oleg@tv-sign.ru>,
+        Sukadev Bhattiprolu <sukadev@us.ibm.com>,
+        Paul Menage <menage@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 00/10] Cover letter: fix a race in release_task when
+ flushing the dentry
+Message-ID: <X+2YYWy+plMy18+K@kroah.com>
+References: <20201203183204.63759-1-wenyang@linux.alibaba.com>
+ <06bffff8-ed78-e8f5-191e-ecaaec266d46@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201231075435.GG7345@thinkpad>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <06bffff8-ed78-e8f5-191e-ecaaec266d46@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 01:24:35PM +0530, Manivannan Sadhasivam wrote:
-> On Tue, Dec 29, 2020 at 11:17:15PM +0200, Cristian Ciocaltea wrote:
-> > Hi,
+On Thu, Dec 17, 2020 at 10:26:23AM +0800, Wen Yang wrote:
+> 
+> 
+> 在 2020/12/4 上午2:31, Wen Yang 写道:
+> > The dentries such as /proc/<pid>/ns/ have the DCACHE_OP_DELETE flag, they
+> > should be deleted when the process exits.
 > > 
-> > This patchset brings a series of improvements for the Actions Semi S500
-> > SoCs family, by adding support for Clock & Reset Management Units, DMA,
-> > MMC, I2C & SIRQ controllers.
+> > Suppose the following race appears：
 > > 
-> > Please note the patches consist mostly of DTS and bindings/compatibles
-> > changes, since all the work they depend on has been already merged,
-> > i.e. clock fixes/additions, pinctrl driver, sirq driver.
+> > release_task                 dput
+> > -> proc_flush_task
+> >                               -> dentry->d_op->d_delete(dentry)
+> > -> __exit_signal
+> >                               -> dentry->d_lockref.count--  and return.
 > > 
-> > For the moment, I have only enabled the features I could test on
-> > RoseapplePi SBC.
+> > In the proc_flush_task(), if another process is using this dentry, it will
+> > not be deleted. At the same time, in dput(), d_op->d_delete() can be executed
+> > before __exit_signal(pid has not been hashed), d_delete returns false, so
+> > this dentry still cannot be deleted.
+> > 
+> > This dentry will always be cached (although its count is 0 and the
+> > DCACHE_OP_DELETE flag is set), its parent denry will also be cached too, and
+> > these dentries can only be deleted when drop_caches is manually triggered.
+> > 
+> > This will result in wasted memory. What's more troublesome is that these
+> > dentries reference pid, according to the commit f333c700c610 ("pidns: Add a
+> > limit on the number of pid namespaces"), if the pid cannot be released, it
+> > may result in the inability to create a new pid_ns.
+> > 
+> > This problem occurred in our cluster environment (Linux 4.9 LTS).
+> > We could reproduce it by manually constructing a test program + adding some
+> > debugging switches in the kernel:
+> > * A test program to open the directory (/proc/<pid>/ns) [1]
+> > * Adding some debugging switches to the kernel, adding a delay between
+> >     proc_flush_task and __exit_signal in release_task() [2]
+> > 
+> > The test process is as follows:
+> > 
+> > A, terminal #1
+> > 
+> > Turn on the debug switch:
+> > echo 1> /proc/sys/vm/dentry_debug_trace
+> > 
+> > Execute the following unshare command:
+> > sudo unshare --pid --fork --mount-proc bash
+> > 
+> > 
+> > B, terminal #2
+> > 
+> > Find the pid of the unshare process:
+> > 
+> > # pstree -p | grep unshare
+> >             | `-sshd(716)---bash(718)--sudo(816)---unshare(817)---bash(818)
+> > 
+> > 
+> > Find the corresponding dentry:
+> > # dmesg | grep pid=818
+> > [70.424722] XXX proc_pid_instantiate:3119 pid=818 tid=818 entry=818/ffff8802c7b670e8
+> > 
+> > 
+> > C, terminal #3
+> > 
+> > Execute the opendir program, it will always open the /proc/818/ns/ directory:
+> > 
+> > # ./a.out /proc/818/ns/
+> > pid: 876
+> > .
+> > ..
+> > net
+> > uts
+> > ipc
+> > pid
+> > user
+> > mnt
+> > cgroup
+> > 
+> > D, go back to terminal #2
+> > 
+> > Turn on the debugging switches to construct the race:
+> > # echo 818> /proc/sys/vm/dentry_debug_pid
+> > # echo 1> /proc/sys/vm/dentry_debug_delay
+> > 
+> > Kill the unshare process (pid 818). Since the debugging switches have been
+> > turned on, it will get stuck in release_task():
+> > # kill -9 818
+> > 
+> > Then kill the process that opened the /proc/818/ns/ directory:
+> > # kill -9 876
+> > 
+> > Then turn off these debugging switches to allow the 818 process to exit:
+> > # echo 0> /proc/sys/vm/dentry_debug_delay
+> > # echo 0> /proc/sys/vm/dentry_debug_pid
+> > 
+> > Checking the dmesg, we will find that the dentry(/proc/818/ns) ’s count is 0,
+> > and the flag is 2800cc (#define DCACHE_OP_DELETE 0x00000008), but it is still
+> > cached:
+> > # dmesg | grep ffff8802a3999548
+> > …
+> > [565.559156] XXX dput:853 dentry=ns/ffff8802bea7b528, flag=2800cc, cnt=0, inode=ffff8802b38c2010, pdentry=818/ffff8802c7b670e8, pflag=20008c, pcnt=1, pinode=ffff8802c7812010, keywords: be cached
+> > 
+> > 
+> > It could also be verified via the crash tool:
+> > 
+> > crash> dentry.d_flags,d_iname,d_inode,d_lockref -x  ffff8802bea7b528
+> >    d_flags = 0x2800cc
+> >    d_iname = "ns\000kkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+> >    d_inode = 0xffff8802b38c2010
+> >    d_lockref = {
+> >      {
+> >        lock_count = 0x0,
+> >        {
+> >          lock = {
+> >            {
+> >              rlock = {
+> >                raw_lock = {
+> >                  {
+> >                    val = {
+> >                      counter = 0x0
+> >                    },
+> >                    {
+> >                      locked = 0x0,
+> >                      pending = 0x0
+> >                    },
+> >                    {
+> >                      locked_pending = 0x0,
+> >                      tail = 0x0
+> >                    }
+> >                  }
+> >                }
+> >              }
+> >            }
+> >          },
+> >          count = 0x0
+> >        }
+> >      }
+> >    }
+> > crash> kmem  ffff8802bea7b528
+> > CACHE             OBJSIZE  ALLOCATED     TOTAL  SLABS  SSIZE  NAME
+> > ffff8802dd5f5900      192      23663     26130    871    16k  dentry
+> >    SLAB              MEMORY            NODE  TOTAL  ALLOCATED  FREE
+> >    ffffea000afa9e00  ffff8802bea78000     0     30         25     5
+> >    FREE / [ALLOCATED]
+> >    [ffff8802bea7b520]
+> > 
+> >        PAGE        PHYSICAL      MAPPING       INDEX CNT FLAGS
+> > ffffea000afa9ec0 2bea7b000 dead000000000400        0  0 2fffff80000000
+> > crash>
+> > 
+> > This series of patches is to fix this issue.
+> > 
+> > Regards,
+> > Wen
+> > 
+> > Alexey Dobriyan (1):
+> >    proc: use %u for pid printing and slightly less stack
+> > 
+> > Andreas Gruenbacher (1):
+> >    proc: Pass file mode to proc_pid_make_inode
+> > 
+> > Christian Brauner (1):
+> >    clone: add CLONE_PIDFD
+> > 
+> > Eric W. Biederman (6):
+> >    proc: Better ownership of files for non-dumpable tasks in user
+> >      namespaces
+> >    proc: Rename in proc_inode rename sysctl_inodes sibling_inodes
+> >    proc: Generalize proc_sys_prune_dcache into proc_prune_siblings_dcache
+> >    proc: Clear the pieces of proc_inode that proc_evict_inode cares about
+> >    proc: Use d_invalidate in proc_prune_siblings_dcache
+> >    proc: Use a list of inodes to flush from proc
+> > 
+> > Joel Fernandes (Google) (1):
+> >    pidfd: add polling support
+> > 
+> >   fs/proc/base.c             | 242 ++++++++++++++++++++-------------------------
+> >   fs/proc/fd.c               |  20 +---
+> >   fs/proc/inode.c            |  67 ++++++++++++-
+> >   fs/proc/internal.h         |  22 ++---
+> >   fs/proc/namespaces.c       |   3 +-
+> >   fs/proc/proc_sysctl.c      |  45 ++-------
+> >   fs/proc/self.c             |   6 +-
+> >   fs/proc/thread_self.c      |   5 +-
+> >   include/linux/pid.h        |   5 +
+> >   include/linux/proc_fs.h    |   4 +-
+> >   include/uapi/linux/sched.h |   1 +
+> >   kernel/exit.c              |   5 +-
+> >   kernel/fork.c              | 145 ++++++++++++++++++++++++++-
+> >   kernel/pid.c               |   3 +
+> >   kernel/signal.c            |  11 +++
+> >   security/selinux/hooks.c   |   1 +
+> >   16 files changed, 357 insertions(+), 228 deletions(-)
+> > 
+> > [1] A test program to open the directory (/proc/<pid>/ns)
+> > #include <stdio.h>
+> > #include <sys/types.h>
+> > #include <dirent.h>
+> > #include <errno.h>
+> > 
+> > int main(int argc, char *argv[])
+> > {
+> > 	DIR *dip;
+> > 	struct dirent *dit;
+> > 
+> > 	if (argc < 2) {
+> > 		printf("Usage :%s <directory>\n", argv[0]);
+> > 		return -1;
+> > 	}
+> > 
+> > 	if ((dip = opendir(argv[1])) == NULL) {
+> > 		perror("opendir");
+> > 		return -1;
+> > 	}
+> > 
+> > 	printf("pid: %d\n", getpid());
+> > 	while((dit = readdir (dip)) != NULL) {
+> > 		printf("%s\n", dit->d_name);
+> > 	}
+> > 
+> > 	while (1)
+> > 		sleep (1);
+> > 
+> > 	return 0;
+> > }
+> > 
+> > [2] Adding some debugging switches to the kernel, also adding a delay between
+> >      proc_flush_task and __exit_signal in release_task():
+> > 
+> > diff --git a/fs/dcache.c b/fs/dcache.c
+> > index 05bad55..fafad37 100644
+> > --- a/fs/dcache.c
+> > +++ b/fs/dcache.c
+> > @@ -84,6 +84,9 @@
+> >   int sysctl_vfs_cache_pressure __read_mostly = 100;
+> >   EXPORT_SYMBOL_GPL(sysctl_vfs_cache_pressure);
+> > 
+> > +int sysctl_dentry_debug_trace __read_mostly = 0;
+> > +EXPORT_SYMBOL_GPL(sysctl_dentry_debug_trace);
+> > +
+> >   __cacheline_aligned_in_smp DEFINE_SEQLOCK(rename_lock);
+> > 
+> >   EXPORT_SYMBOL(rename_lock);
+> > @@ -758,6 +761,26 @@ static inline bool fast_dput(struct dentry *dentry)
+> >   	return 0;
+> >   }
+> > 
+> > +#define DENTRY_DEBUG_TRACE(dentry, keywords)                            \
+> > +do {                                                                    \
+> > +	if (sysctl_dentry_debug_trace)                                   \
+> > +		printk("XXX %s:%d "                                      \
+> > +                	"dentry=%s/%p, flag=%x, cnt=%d, inode=%p, "      \
+> > +                	"pdentry=%s/%p, pflag=%x, pcnt=%d, pinode=%p, "  \
+> > +			"keywords: %s\n",                                \
+> > +			__func__, __LINE__,                              \
+> > +			dentry->d_name.name,                             \
+> > +			dentry,                                          \
+> > +			dentry->d_flags,                                 \
+> > +			dentry->d_lockref.count,                         \
+> > +			dentry->d_inode,                                 \
+> > +			dentry->d_parent->d_name.name,                   \
+> > +			dentry->d_parent,                                \
+> > +			dentry->d_parent->d_flags,                       \
+> > +			dentry->d_parent->d_lockref.count,               \
+> > +			dentry->d_parent->d_inode,                       \
+> > +			keywords);                                       \
+> > +} while (0)
+> > 
+> >   /*
+> >    * This is dput
+> > @@ -804,6 +827,8 @@ void dput(struct dentry *dentry)
+> > 
+> >   	WARN_ON(d_in_lookup(dentry));
+> > 
+> > +	DENTRY_DEBUG_TRACE(dentry, "be checked");
+> > +
+> >   	/* Unreachable? Get rid of it */
+> >   	if (unlikely(d_unhashed(dentry)))
+> >   		goto kill_it;
+> > @@ -812,8 +837,10 @@ void dput(struct dentry *dentry)
+> >   		goto kill_it;
+> > 
+> >   	if (unlikely(dentry->d_flags & DCACHE_OP_DELETE)) {
+> > -		if (dentry->d_op->d_delete(dentry))
+> > +		if (dentry->d_op->d_delete(dentry)) {
+> > +			DENTRY_DEBUG_TRACE(dentry, "be killed");
+> >   			goto kill_it;
+> > +		}
+> >   	}
+> > 
+> >   	if (!(dentry->d_flags & DCACHE_REFERENCED))
+> > @@ -822,6 +849,9 @@ void dput(struct dentry *dentry)
+> > 
+> >   	dentry->d_lockref.count--;
+> >   	spin_unlock(&dentry->d_lock);
+> > +
+> > +	DENTRY_DEBUG_TRACE(dentry, "be cached");
+> > +
+> >   	return;
+> > 
+> >   kill_it:
+> > diff --git a/fs/proc/base.c b/fs/proc/base.c
+> > index b9e4183..419a409 100644
+> > --- a/fs/proc/base.c
+> > +++ b/fs/proc/base.c
+> > @@ -3090,6 +3090,8 @@ void proc_flush_task(struct task_struct *task)
+> >   	}
+> >   }
+> > 
+> > +extern int sysctl_dentry_debug_trace;
+> > +
+> >   static int proc_pid_instantiate(struct inode *dir,
+> >   				   struct dentry * dentry,
+> >   				   struct task_struct *task, const void *ptr)
+> > @@ -3111,6 +3113,12 @@ static int proc_pid_instantiate(struct inode *dir,
+> >   	d_set_d_op(dentry, &pid_dentry_operations);
+> > 
+> >   	d_add(dentry, inode);
+> > +
+> > +	if (sysctl_dentry_debug_trace)
+> > +		printk("XXX %s:%d pid=%d tid=%d  entry=%s/%p\n",
+> > +			__func__, __LINE__, task->pid, task->tgid,
+> > +			dentry->d_name.name, dentry);
+> > +
+> >   	/* Close the race of the process dying before we return the dentry */
+> >   	if (pid_revalidate(dentry, 0))
+> >   		return 0;
+> > diff --git a/kernel/exit.c b/kernel/exit.c
+> > index 27f4168..2b3e1b6 100644
+> > --- a/kernel/exit.c
+> > +++ b/kernel/exit.c
+> > @@ -55,6 +55,8 @@
+> >   #include <linux/shm.h>
+> >   #include <linux/kcov.h>
+> > 
+> > +#include <linux/delay.h>
+> > +
+> >   #include <asm/uaccess.h>
+> >   #include <asm/unistd.h>
+> >   #include <asm/pgtable.h>
+> > @@ -164,6 +166,8 @@ static void delayed_put_task_struct(struct rcu_head *rhp)
+> >   	put_task_struct(tsk);
+> >   }
+> > 
+> > +int sysctl_dentry_debug_delay __read_mostly = 0;
+> > +int sysctl_dentry_debug_pid __read_mostly = 0;
+> > 
+> >   void release_task(struct task_struct *p)
+> >   {
+> > @@ -178,6 +182,11 @@ void release_task(struct task_struct *p)
+> > 
+> >   	proc_flush_task(p);
+> > 
+> > +	if (sysctl_dentry_debug_delay && p->pid == sysctl_dentry_debug_pid) {
+> > +		while (sysctl_dentry_debug_delay)
+> > +			mdelay(1);
+> > +	}
+> > +
+> >   	write_lock_irq(&tasklist_lock);
+> >   	ptrace_release_task(p);
+> >   	__exit_signal(p);
+> > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> > index 513e6da..27f1395 100644
+> > --- a/kernel/sysctl.c
+> > +++ b/kernel/sysctl.c
+> > @@ -282,6 +282,10 @@ static int sysrq_sysctl_handler(struct ctl_table *table, int write,
+> >   static int max_extfrag_threshold = 1000;
+> >   #endif
+> > 
+> > +extern int sysctl_dentry_debug_trace;
+> > +extern int sysctl_dentry_debug_delay;
+> > +extern int sysctl_dentry_debug_pid;
+> > +
+> >   static struct ctl_table kern_table[] = {
+> >   	{
+> >   		.procname	= "sched_child_runs_first",
+> > @@ -1498,6 +1502,30 @@ static int sysrq_sysctl_handler(struct ctl_table *table, int write,
+> >   		.proc_handler	= proc_dointvec,
+> >   		.extra1		= &zero,
+> >   	},
+> > +	{
+> > +		.procname	= "dentry_debug_trace",
+> > +		.data		= &sysctl_dentry_debug_trace,
+> > +		.maxlen		= sizeof(sysctl_dentry_debug_trace),
+> > +		.mode		= 0644,
+> > +		.proc_handler	= proc_dointvec,
+> > +		.extra1		= &zero,
+> > +	},
+> > +	{
+> > +		.procname	= "dentry_debug_delay",
+> > +		.data		= &sysctl_dentry_debug_delay,
+> > +		.maxlen		= sizeof(sysctl_dentry_debug_delay),
+> > +		.mode		= 0644,
+> > +		.proc_handler	= proc_dointvec,
+> > +		.extra1		= &zero,
+> > +	},
+> > +	{
+> > +		.procname	= "dentry_debug_pid",
+> > +		.data		= &sysctl_dentry_debug_pid,
+> > +		.maxlen		= sizeof(sysctl_dentry_debug_pid),
+> > +		.mode		= 0644,
+> > +		.proc_handler	= proc_dointvec,
+> > +		.extra1		= &zero,
+> > +	},
+> >   #ifdef HAVE_ARCH_PICK_MMAP_LAYOUT
+> >   	{
+> >   		.procname	= "legacy_va_layout",
+> > 
+> > 
+> > Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+> > Cc: Pavel Emelyanov <xemul@openvz.org>
+> > Cc: Oleg Nesterov <oleg@tv-sign.ru>
+> > Cc: Sukadev Bhattiprolu <sukadev@us.ibm.com>
+> > Cc: Paul Menage <menage@google.com>
+> > Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: <stable@vger.kernel.org>
 > > 
 > 
-> Applied all patches except the 2 dmaengine patches for v5.12. Andreas, please
-> let me know if you want to do the PR this time. Else I'll proceed.
-
-Thank you, Mani!
-The dmaengine patches should be picked up by Vinod, right?
-
-> Thanks,
-> Mani
+> Hi Greg,
 > 
-> > Thanks,
-> > Cristi
-> > 
-> > Changes in v3:
-> > - Squashed 'arm: dts: owl-s500-roseapplepi: Use UART clock from CMU' with
-> >   'arm: dts: owl-s500: Set CMU clocks for UARTs', according to Mani's review
-> > - Rebased series on v5.11-rc1 and dropped the already merged patches:
-> >  * dt-bindings: mmc: owl: Add compatible string for Actions Semi S500 SoC
-> >  * dt-bindings: i2c: owl: Convert Actions Semi Owl binding to a schema
-> >  * MAINTAINERS: Update entry for Actions Semi Owl I2C binding
-> >  * i2c: owl: Add compatible for the Actions Semi S500 I2C controller
-> > 
-> > Changes in v2:
-> > - Added new bindings/compatibles for S500 DMA, MMC & I2C controllers
-> > - Added support for the SIRQ controller
-> > - Added new entries in MAINTAINERS
-> > - Updated naming of some patches in v1
-> > 
-> > Cristian Ciocaltea (13):
-> >   arm: dts: owl-s500: Add Clock Management Unit
-> >   arm: dts: owl-s500: Set CMU clocks for UARTs
-> >   arm: dts: owl-s500: Add Reset controller
-> >   dt-bindings: dma: owl: Add compatible string for Actions Semi S500 SoC
-> >   dmaengine: owl: Add compatible for the Actions Semi S500 DMA
-> >     controller
-> >   arm: dts: owl-s500: Add DMA controller
-> >   arm: dts: owl-s500: Add pinctrl & GPIO support
-> >   arm: dts: owl-s500: Add MMC support
-> >   arm: dts: owl-s500: Add I2C support
-> >   arm: dts: owl-s500: Add SIRQ controller
-> >   arm: dts: owl-s500-roseapplepi: Add uSD support
-> >   arm: dts: owl-s500-roseapplepi: Add I2C pinctrl configuration
-> >   MAINTAINERS: Add linux-actions ML for Actions Semi Arch
-> > 
-> >  .../devicetree/bindings/dma/owl-dma.yaml      |   7 +-
-> >  MAINTAINERS                                   |   1 +
-> >  arch/arm/boot/dts/owl-s500-cubieboard6.dts    |   7 -
-> >  .../arm/boot/dts/owl-s500-guitar-bb-rev-b.dts |   7 -
-> >  .../arm/boot/dts/owl-s500-labrador-base-m.dts |   7 -
-> >  arch/arm/boot/dts/owl-s500-roseapplepi.dts    |  97 +++++++++++-
-> >  arch/arm/boot/dts/owl-s500-sparky.dts         |   7 -
-> >  arch/arm/boot/dts/owl-s500.dtsi               | 140 ++++++++++++++++++
-> >  drivers/dma/owl-dma.c                         |   3 +-
-> >  9 files changed, 239 insertions(+), 37 deletions(-)
-> > 
-> > -- 
-> > 2.30.0
-> > 
+> Could you kindly give some suggestions?
+
+I'm sorry, but I don't really understand what this patch series is for.
+
+Why is there a patch in the 00/10 email?  What stable kernel(s) should
+this be backported to?  And why can't you just use a newer kernel (like
+4.19) if you are hitting this issue with much older ones?
+
+confused,
+
+greg k-h
