@@ -2,392 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA332E7E6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 07:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101E62E7E4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 06:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgLaGUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 01:20:15 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9663 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgLaGUO (ORCPT
+        id S1726434AbgLaFsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 00:48:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgLaFsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 01:20:14 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D5ybw3pc4z15lVf;
-        Thu, 31 Dec 2020 14:17:00 +0800 (CST)
-Received: from huawei.com (10.44.142.101) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Thu, 31 Dec 2020
- 14:17:42 +0800
-From:   Zhuling <zhuling8@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
-        <will@kernel.org>, <dan.j.williams@intel.com>,
-        <vishal.l.verma@intel.com>, <dave.jiang@intel.com>
-CC:     <luanjianhai@huawei.com>, <luchunhua@huawei.com>,
-        <sangyan@huawei.com>, <zhuling8@huawei.com>
-Subject: [PATCH] arm64: add pmem module for kernel update
-Date:   Thu, 31 Dec 2020 13:31:56 +0800
-Message-ID: <20201231053156.24276-1-zhuling8@huawei.com>
-X-Mailer: git-send-email 2.9.5
+        Thu, 31 Dec 2020 00:48:12 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C58C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 21:47:31 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id q22so24363500eja.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 21:47:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=LTVWk/JXvWmTiCK8Ij9O2rNPgqJjcwCWf93RbT/Lmi4=;
+        b=G1QRvxqPCkA8+5bW9J2YCo3cGDmAhDe7fcHFcCD87+uPDF7S2fB8F2gKJnU+rN9G+Z
+         QqFJ2M7n96cx8/bHSvQW1YkVYPQasJF46kg4QVqn6DBpzwFgdTJk7Pk2eloacn3dG3te
+         LIzYGBi5Caz6EQJ1Gy8ZxCCP4mZbjqNLPE5dbva72Nj9HKwCpiejVOT0fIlo86t3x6cF
+         ZiIT1794tdL2nZ5tLvntox4AdD45kXQ0fJl/CrLz7uj0irmPg07CnfRMgdJveZ8RhfSl
+         uKiilOZJY6lY6DBb7iZLEuDWGJf4bI55R1/FVzFXxl5YQ4aLc3lVAiFY5dQpJJoHnm/l
+         wZRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=LTVWk/JXvWmTiCK8Ij9O2rNPgqJjcwCWf93RbT/Lmi4=;
+        b=tVOqd2Cz0lvEmSOsKrUfMt1OZMC5Gc0q3kHzYCvpjtOO7HngdFeswwHzqI1SDhIdx0
+         5mDZcLPyOQ1kBopmp1KWI87taJQoYNh/fWIAWISESn1MUs/Th9/5z2c16W3wxZL/Gsgy
+         Oo6vnqz421MO6Fde5MnCZUPDk92QX3d93QDLWdTSl9nqJ2+tbd37w5O+F9oWZ+JaGuvf
+         8O6gfgTq5mvPCSXyNOlSCVZpZpQOtwJgQdaKKyuMFnvcua8t9M61hLbQDLeWHQ3prxul
+         vyxs8GyuQ6ox5JgTNQlHPjS29gjH9HtTNnej5Z8fgVWDZuzfLWEpiHjwg4rNvyE24M7e
+         ju0A==
+X-Gm-Message-State: AOAM532U+MhfRhAB0SYwR9lvtwzg/CVMX58x7p55TY3+wX79wI7cGhPf
+        yv42p+ni7eLwIb2j7Gg1oE77M/f+t+s=
+X-Google-Smtp-Source: ABdhPJzDnwkQTEPUj4+sPkkGAxR6s36ohFaV8n1ZD5mr5cOtfw56LfobC9Z7Y5cFrsyQGKnU3vgr5w==
+X-Received: by 2002:a17:906:7f11:: with SMTP id d17mr51417771ejr.534.1609393650208;
+        Wed, 30 Dec 2020 21:47:30 -0800 (PST)
+Received: from [10.34.12.4] ([81.215.239.150])
+        by smtp.gmail.com with ESMTPSA id k3sm26165653eds.87.2020.12.30.21.47.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Dec 2020 21:47:29 -0800 (PST)
+Subject: Re: wg-crypt-wg0 process
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     WireGuard mailing list <wireguard@lists.zx2c4.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <d56b4194-2b74-b440-c102-3b379daa8194@gmail.com>
+ <CAHmME9oORiNMN6EyAWOy3Fxzo33etkQxQtQbKdPqw_fWdw9wtw@mail.gmail.com>
+From:   Fatih USTA <fatihusta86@gmail.com>
+Message-ID: <73b49753-da23-eef3-890b-92e85278d882@gmail.com>
+Date:   Thu, 31 Dec 2020 08:47:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.44.142.101]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAHmME9oORiNMN6EyAWOy3Fxzo33etkQxQtQbKdPqw_fWdw9wtw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Category: feature
-Bugzilla: NA
-CVE: NA
+Hi Jason,
 
-Use reserved memory to create a pmem device to store the
-processes information that dumped before kernel update.
-When you want to use this feature you need to declare by
-"pmemmem=pmem_size:pmem_phystart" in cmdline.
-(exp: pmemmem=100M:0x202000000000)
+Thanks for the detailed research and explanation.That's ok for me.
 
-Signed-off-by: Zhuling <zhuling8@huawei.com>
----
- arch/arm64/kernel/setup.c |   5 +++
- arch/arm64/mm/init.c      |  90 +++++++++++++++++++++++++++++++++++++++
- drivers/nvdimm/Kconfig    |  11 +++++
- drivers/nvdimm/Makefile   |   3 ++
- drivers/nvdimm/kup_pmem.c | 106 ++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/ioport.h    |   1 +
- include/linux/mm.h        |   4 ++
- lib/Kconfig               |   6 +++
- 8 files changed, 226 insertions(+)
- create mode 100644 drivers/nvdimm/kup_pmem.c
+Regards.
 
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 133257f..0bd9429 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -237,6 +237,11 @@ static void __init request_standard_resources(void)
- 		if (kernel_data.start >= res->start &&
- 		    kernel_data.end <= res->end)
- 			request_resource(res, &kernel_data);
-+#ifdef CONFIG_KUP_PMEM_MEMORY
-+	if (pmem_res.end)
-+		insert_resource(&iomem_resource, &pmem_res);
-+#endif
-+
- #ifdef CONFIG_KEXEC_CORE
- 		/* Userspace will find "Crash kernel" region in /proc/iomem. */
- 		if (crashk_res.end && crashk_res.start >= res->start &&
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 0955406..9d1395e 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -62,6 +62,18 @@ EXPORT_SYMBOL(memstart_addr);
- phys_addr_t arm64_dma_phys_limit __ro_after_init;
- static phys_addr_t arm64_dma32_phys_limit __ro_after_init;
+Fatih USTA
 
-+#ifdef CONFIG_KUP_PMEM_MEMORY
-+static unsigned long long pmem_size, pmem_phystart;
-+
-+struct resource pmem_res = {
-+	.name = "Kpmem Dev",
-+	.start = 0,
-+	.end = 0,
-+	.flags = IORESOURCE_MEM,
-+	.desc = IORES_DESC_KPMEM_DEV
-+};
-+#endif
-+
- #ifdef CONFIG_KEXEC_CORE
- /*
-  * reserve_crashkernel() - reserves memory for crash kernel
-@@ -123,6 +135,80 @@ static void __init reserve_crashkernel(void)
- }
- #endif /* CONFIG_KEXEC_CORE */
-
-+#ifdef CONFIG_KUP_PMEM_MEMORY
-+/*
-+ * reserve_pmem() - reserves memory for pmem
-+ *
-+ * This function reserves memory area given in "pmemmem=" kernel command
-+ * line parameter. The memory reserved is used by pmem restore progress
-+ * when kernel update.
-+ */
-+static int __init parse_pmem(char *par)
-+{
-+	char *cur = par;
-+
-+	if (!par)
-+		return 0;
-+
-+	pmem_size = 0;
-+	pmem_phystart = 0;
-+
-+	pmem_size = memparse(par, &cur);
-+	if (par == cur) {
-+		pr_warn("pmem: memory value expected\n");
-+		return -EINVAL;
-+	}
-+
-+	if (*cur == ':')
-+		pmem_phystart = memparse(cur+1, &cur);
-+	else if (*cur != ' ' && *cur != '\0') {
-+		pr_warn("pmem: unrecognized char %c\n", *cur);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+early_param("pmemmem", parse_pmem);
-+
-+static void __init reserve_pmem(void)
-+{
-+	if (!pmem_size || !pmem_phystart) {
-+		return;
-+	}
-+
-+	pmem_size = PAGE_ALIGN(pmem_size);
-+
-+	if (!memblock_is_region_memory(pmem_phystart, pmem_size)) {
-+		pr_warn("cannot reserve pmem: region is not memory!\n");
-+		return;
-+	}
-+
-+	if (memblock_is_region_reserved(pmem_phystart, pmem_size)) {
-+		pr_warn("cannot reserve pmem: region overlaps reserved memory!\n");
-+		return;
-+	}
-+
-+	if (!IS_ALIGNED(pmem_phystart, SZ_2M)) {
-+		pr_warn("cannot reserve pmem: base address is not 2MB aligned\n");
-+		return;
-+	}
-+	memblock_reserve(pmem_phystart, pmem_size);
-+	memblock_remove(pmem_phystart, pmem_size);
-+	pr_info("pmem reserved: 0x%016llx - 0x%016llx (%lld MB)\n",
-+		    pmem_phystart, pmem_phystart + pmem_size, pmem_size >> 20);
-+
-+	pmem_res.start = pmem_phystart;
-+	pmem_res.end = pmem_phystart + pmem_size - 1;
-+}
-+#else
-+static void __init reserve_pmem(void)
-+{
-+}
-+static void __init reserve_pmem_pages(void)
-+{
-+}
-+#endif /*CONFIG_KUP_PMEM_MEMORY*/
-+
- #ifdef CONFIG_CRASH_DUMP
- static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
- 		const char *uname, int depth, void *data)
-@@ -390,6 +476,10 @@ void __init arm64_memblock_init(void)
-
- 	reserve_elfcorehdr();
-
-+#ifdef CONFIG_KUP_PMEM_MEMORY
-+	reserve_pmem();
-+#endif
-+
- 	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
-
- 	dma_contiguous_reserve(arm64_dma32_phys_limit);
-diff --git a/drivers/nvdimm/Kconfig b/drivers/nvdimm/Kconfig
-index b7d1eb3..7f5fa22 100644
---- a/drivers/nvdimm/Kconfig
-+++ b/drivers/nvdimm/Kconfig
-@@ -119,6 +119,17 @@ config NVDIMM_KEYS
- 	depends on ENCRYPTED_KEYS
- 	depends on (LIBNVDIMM=ENCRYPTED_KEYS) || LIBNVDIMM=m
-
-+config KUP_PMEM
-+	tristate "Persistent memory for kernel update"
-+	depends on LIBNVDIMM
-+	depends on KUP_PMEM_MEMORY
-+	default LIBNVDIMM
-+	help
-+	  Allows regions of persistent memory to be described in the
-+	  device-tree.
-+
-+	  Select Y if unsure.
-+
- config NVDIMM_TEST_BUILD
- 	tristate "Build the unit test core"
- 	depends on m
-diff --git a/drivers/nvdimm/Makefile b/drivers/nvdimm/Makefile
-index 29203f3..39fabc3 100644
---- a/drivers/nvdimm/Makefile
-+++ b/drivers/nvdimm/Makefile
-@@ -6,6 +6,7 @@ obj-$(CONFIG_ND_BLK) += nd_blk.o
- obj-$(CONFIG_X86_PMEM_LEGACY) += nd_e820.o
- obj-$(CONFIG_OF_PMEM) += of_pmem.o
- obj-$(CONFIG_VIRTIO_PMEM) += virtio_pmem.o nd_virtio.o
-+obj-$(CONFIG_KUP_PMEM) += nd_kup_pmem.o
-
- nd_pmem-y := pmem.o
-
-@@ -15,6 +16,8 @@ nd_blk-y := blk.o
-
- nd_e820-y := e820.o
-
-+nd_kup_pmem-y := kup_pmem.o
-+
- libnvdimm-y := core.o
- libnvdimm-y += bus.o
- libnvdimm-y += dimm_devs.o
-diff --git a/drivers/nvdimm/kup_pmem.c b/drivers/nvdimm/kup_pmem.c
-new file mode 100644
-index 0000000..eadf95a
---- /dev/null
-+++ b/drivers/nvdimm/kup_pmem.c
-@@ -0,0 +1,106 @@
-+/*
-+ * Copyright (c) Huawei Technologies Co., Ltd. 2020. All rights reserved.
-+ *
-+ * This source code is licensed under the GNU General Public License,
-+ * Version 2.  See the file COPYING for more details.
-+ *
-+ * kup_pmem.c - kernel update support code.
-+ *   create a pmem device to store the processes information that is dumped
-+ *   when we want to kernel update.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/memory_hotplug.h>
-+#include <linux/libnvdimm.h>
-+#include <linux/module.h>
-+#include <asm/io.h>
-+
-+static const struct attribute_group *kup_pmem_attribute_groups[] = {
-+	&nvdimm_bus_attribute_group,
-+	NULL,
-+};
-+
-+static const struct attribute_group *kup_pmem_region_attribute_groups[] = {
-+	&nd_region_attribute_group,
-+	&nd_device_attribute_group,
-+	NULL,
-+};
-+
-+static int kup_pmem_remove(struct platform_device *pdev)
-+{
-+	struct nvdimm_bus *nvdimm_bus = platform_get_drvdata(pdev);
-+
-+	nvdimm_bus_unregister(nvdimm_bus);
-+
-+	return 0;
-+}
-+
-+static int kup_register_one(struct resource *res, void *data)
-+{
-+	struct nd_region_desc ndr_desc;
-+	struct nvdimm_bus *nvdimm_bus = data;
-+
-+	memset(&ndr_desc, 0, sizeof(ndr_desc));
-+	ndr_desc.res = res;
-+	ndr_desc.attr_groups = kup_pmem_region_attribute_groups;
-+	ndr_desc.numa_node = NUMA_NO_NODE;
-+	set_bit(ND_REGION_PAGEMAP, &ndr_desc.flags);
-+	if (!nvdimm_pmem_region_create(nvdimm_bus, &ndr_desc))
-+		return -ENXIO;
-+	return 0;
-+}
-+
-+static int kup_pmem_probe(struct platform_device *pdev)
-+{
-+	static struct nvdimm_bus_descriptor nd_desc;
-+	struct device *dev = &pdev->dev;
-+	struct nvdimm_bus *nvdimm_bus;
-+	int rc = -ENXIO;
-+
-+	nd_desc.attr_groups = kup_pmem_attribute_groups;
-+	nd_desc.provider_name = "kup_pmem";
-+	nd_desc.module = THIS_MODULE;
-+	nvdimm_bus = nvdimm_bus_register(dev, &nd_desc);
-+	if (!nvdimm_bus)
-+		goto err;
-+	platform_set_drvdata(pdev, nvdimm_bus);
-+
-+	rc = walk_iomem_res_desc(IORES_DESC_KPMEM_DEV,
-+			IORESOURCE_MEM, 0, -1, nvdimm_bus, kup_register_one);
-+	if (rc)
-+		goto err;
-+
-+	return 0;
-+err:
-+	nvdimm_bus_unregister(nvdimm_bus);
-+	dev_err(dev, "kup_pmem: failed to register legacy persistent memory ranges\n");
-+	return rc;
-+}
-+
-+static struct platform_driver kup_pmem_driver = {
-+	.probe = kup_pmem_probe,
-+	.remove = kup_pmem_remove,
-+	.driver = {
-+		.name = "kup_pmem",
-+	},
-+};
-+static struct platform_device *pdev;
-+
-+static __init int register_kup_pmem(void)
-+{
-+	platform_driver_register(&kup_pmem_driver);
-+	pdev = platform_device_alloc("kup_pmem", -1);
-+
-+	return platform_device_add(pdev);
-+}
-+
-+static __exit void unregister_kup_pmem(void)
-+{
-+	platform_device_del(pdev);
-+	platform_driver_unregister(&kup_pmem_driver);
-+}
-+
-+module_init(register_kup_pmem);
-+module_exit(unregister_kup_pmem);
-+MODULE_ALIAS("platform:kup_pmem*");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/ioport.h b/include/linux/ioport.h
-index 5135d4b..bba36f2 100644
---- a/include/linux/ioport.h
-+++ b/include/linux/ioport.h
-@@ -139,6 +139,7 @@ enum {
- 	IORES_DESC_DEVICE_PRIVATE_MEMORY	= 6,
- 	IORES_DESC_RESERVED			= 7,
- 	IORES_DESC_SOFT_RESERVED		= 8,
-+	IORES_DESC_KPMEM_DEV			= 9,
- };
-
- /*
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index db6ae4d..2b2a94c 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -45,6 +45,10 @@ extern int sysctl_page_lock_unfairness;
-
- void init_mm_internals(void);
-
-+#ifdef CONFIG_KUP_PMEM_MEMORY
-+extern struct resource pmem_res;
-+#endif
-+
- #ifndef CONFIG_NEED_MULTIPLE_NODES	/* Don't use mapnrs, do it properly */
- extern unsigned long max_mapnr;
-
-diff --git a/lib/Kconfig b/lib/Kconfig
-index b46a9fd..ff5677c 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -689,3 +689,9 @@ config GENERIC_LIB_UCMPDI2
- config PLDMFW
- 	bool
- 	default n
-+
-+config KUP_PMEM_MEMORY
-+	bool "reserve memory for kup pmem to store image"
-+	default y
-+	help
-+	  Say y here to enable this feature
---
-2.9.5
-
+On 30.12.2020 15:39, Jason A. Donenfeld wrote:
+> Hi Fatih,
+>
+> Thanks for the report and the detailed test case. From what I can see,
+> this behavior presents itself both with the explicit ip link del and
+> without. When running with debugging enabled, I can see this in dmesg:
+>
+> [558758.361056] wireguard: wg0: Keypair 244 destroyed for peer 21
+> [558758.546649] wireguard: wg0: Peer 21 (10.150.150.2:51820) destroyed
+> [558758.563317] wireguard: wg0: Interface destroyed
+> [558758.567803] wireguard: wg0: Keypair 243 destroyed for peer 22
+> [558758.733287] wireguard: wg0: Peer 22 (10.150.150.1:51820) destroyed
+> [558758.749991] wireguard: wg0: Interface destroyed
+>
+> The fact that I see "Interface destroyed" for both interfaces means
+> that wg_destruct() is being called, which includes these calls:
+>
+>          destroy_workqueue(wg->handshake_receive_wq);
+>          destroy_workqueue(wg->handshake_send_wq);
+>          destroy_workqueue(wg->packet_crypt_wq);
+>
+> In doing so, the output of ps changes from:
+>
+> $ ps aux|grep wg0
+> root      200479  0.0  0.0      0     0 ?        I    13:06   0:00
+> [kworker/0:2-wg-crypt-wg0]
+> root      201226  0.0  0.0      0     0 ?        I    13:08   0:00
+> [kworker/1:4-wg-crypt-wg0]
+> root      201476  0.0  0.0      0     0 ?        I<   13:11   0:00
+> [wg-crypt-wg0]
+> root      201484  0.0  0.0      0     0 ?        I<   13:11   0:00
+> [wg-crypt-wg0]
+>
+> to:
+>
+> $ ps aux|grep wg0
+> root      200479  0.0  0.0      0     0 ?        I    13:06   0:00
+> [kworker/0:2-wg-crypt-wg0]
+> root      201226  0.0  0.0      0     0 ?        I    13:08   0:00
+> [kworker/1:4-wg-crypt-wg0]
+>
+> What I suspect is happening is that destroying the workqueue does not
+> actually destroy the kthreads that they were using, so that they can
+> be reused (and eventually relabeled) by other drivers. Looking at the
+> stack of those indicates this is probably the case:
+>
+> $ cat /proc/200479/stack
+> [<0>] worker_thread+0xba/0x3c0
+> [<0>] kthread+0x114/0x130
+> [<0>] ret_from_fork+0x1f/0x30
+>
+> So it's just hanging out there idle waiting to be scheduled by
+> something new. In fact, while I was writing this email, that worker
+> already seems to have been reclaimed by another driver:
+>
+> $ cat /proc/200479/comm
+> kworker/0:2-events
+>
+> Now it's called "events".
+>
+> This is happening because the kthread isn't actually destroyed, and
+> task->comm is being hijacked. In proc_task_name we have:
+>
+>          if (p->flags & PF_WQ_WORKER)
+>                 wq_worker_comm(tcomm, sizeof(tcomm), p);
+>         else
+>                 __get_task_comm(tcomm, sizeof(tcomm), p);
+>
+> That top condition holds for workqueue workers, and wq_worker_comm
+> winds up scnprintf'ing the current worker description in there:
+>
+>                          /*
+>                          * ->desc tracks information (wq name or
+>                          * set_worker_desc()) for the latest execution.  If
+>                          * current, prepend '+', otherwise '-'.
+>                          */
+>                         if (worker->desc[0] != '\0') {
+>                                 if (worker->current_work)
+>                                         scnprintf(buf + off, size - off, "+%s",
+>                                                   worker->desc);
+>                                 else
+>                                         scnprintf(buf + off, size - off, "-%s",
+>                                                   worker->desc);
+>
+> But worker->desc isn't set until process_one_work is called:
+>
+>          /*
+>          * Record wq name for cmdline and debug reporting, may get
+>          * overridden through set_worker_desc().
+>          */
+>         strscpy(worker->desc, pwq->wq->name, WORKER_DESC_LEN);
+>
+> And it's never unset after the work is done and it's waiting idle in
+> worker_thread for the scheduler to reschedule it and eventually call
+> process_one_work on a new work unit.
+>
+> It would be easy to just null out that string after the work is done
+> with something like:
+>
+>          worker->current_func(work);
+>          worker->desc[0] = '\0';
+>
+> But I guess this has never sufficiently bothered anyone before. I
+> suppose I could submit a patch and see how it's received. But it also
+> looks like the scnprintf above in wq_worker_comm distinguishes these
+> cases anyway. If there's a + it means that the work is active and if
+> there's a - it means that it's an old leftover thread. So maybe this
+> is fine as-is?
+>
+> Jason
