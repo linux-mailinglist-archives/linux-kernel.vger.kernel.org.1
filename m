@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863962E7D9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 02:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D13F52E7DA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 03:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgLaBxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 20:53:00 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:21037 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgLaBw7 (ORCPT
+        id S1726463AbgLaCKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 21:10:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgLaCKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 20:52:59 -0500
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201231015216epoutp026234d3c22332e7f944662985698811a6~Vqil07YTi0205502055epoutp02H
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 01:52:16 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201231015216epoutp026234d3c22332e7f944662985698811a6~Vqil07YTi0205502055epoutp02H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1609379536;
-        bh=Pavx+2KlD0fJy/GmKeiLRdvuDhlWzwyoD9M4eFpU3s0=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=I7AAeVKp4y01CXzFXdqRnq+kN5C2xSh5d8YWeR8OezrJaCOlLEuCkgtyQvuy7iO2l
-         SmNIV0oMfJqwEK9LmhHDbSYhBveadlfIIffJgz8I3Ih1O49sD7Uc6h7Rdqq73xyaWc
-         SKktl+EHVtQ/val1gp8kgPnDe7fv4c0J1RsJJ2Gg=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20201231015216epcas2p11548875a00616ea24a0616c08e915fd5~Vqilk0bcI2957129571epcas2p1P;
-        Thu, 31 Dec 2020 01:52:16 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.182]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4D5rkR2F7Fz4x9Q0; Thu, 31 Dec
-        2020 01:52:15 +0000 (GMT)
-X-AuditID: b6c32a48-50fff7000000cd1f-a1-5fed2ecd9a28
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D3.44.52511.DCE2DEF5; Thu, 31 Dec 2020 10:52:13 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH] ext4: Change list_for_each to list_for_each_entry
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51@epcms2p5>
-Date:   Thu, 31 Dec 2020 10:52:13 +0900
-X-CMS-MailID: 20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFKsWRmVeSWpSXmKPExsWy7bCmhe5ZvbfxBse2CVh8/dLBYjFz3h02
-        i8u75rBZtPb8ZHdg8WjZXO7RdOYos8fnTXIBzFE5NhmpiSmpRQqpecn5KZl56bZK3sHxzvGm
-        ZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAy5QUyhJzSoFCAYnFxUr6djZF+aUlqQoZ+cUltkqp
-        BSk5BYaGBXrFibnFpXnpesn5uVaGBgZGpkCVCTkZ567tZS64xF2x9N5yxgbGz5xdjJwcEgIm
-        Env2vGcDsYUEdjBKPGwN6GLk4OAVEJT4u0MYJCws4CQx5/06FogSJYn1F2exQ8T1JG49XMMI
-        YrMJ6EhMP3EfLC4iECPR9GAnWJxZoE5iy4KdbBCreCVmtD9lgbClJbYv38oIYWtI/FjWywxh
-        i0rcXP2WHcZ+f2w+VI2IROu9s1A1ghIPfu6GiktKHNv9gQnCrpfYeucXUJwLyO5hlDi88xYr
-        REJf4lrHRhaIv3wlXr8Bm88ioCpx99NpqHtcJN7ee8UKcbO8xPa3c5hBypkFNCXW79IHMSUE
-        lCWO3GKBqOCT6Dj8lx3mqx3znkBdoCax7ud6JohyGYlb86CO9JB40trJDgnAQInVzffYJjAq
-        zEIE8ywka2chrF3AyLyKUSy1oDg3PbXYqMAEOWI3MYITnZbHDsbZbz/oHWJk4mA8xCjBwawk
-        wpuQ8CpeiDclsbIqtSg/vqg0J7X4EKMp0MMTmaVEk/OBqTavJN7Q1MjMzMDS1MLUzMhCSZy3
-        yOBBvJBAemJJanZqakFqEUwfEwenVANTy5diBYnD/TEroiYlvvGU9l+ZcMF6yp7IL02FU1Tv
-        dUnO2X1gxVUOF3aJnHdROlO7Vbwsnz44HH9I7FzPSkPhjUc9z68U3N53I0aR9/NLZs2/rjyn
-        Nm7oFa3Yp1h44Q4b74OP/ZtjmtODHnIHbhOT92f+++Amp2Pqn67FZ2YuWn3sy5wPSnZznDxs
-        eCo7te0c95w7W3XH8d2ljefrO3L5/9XNazaLXLVxidPkDXJPFpSl3bDqfRwUfPWsp+bho9dU
-        nmpFzv3nl5Pgq1I7UTorbPq8EwEXXK90Wt+7IvFZQcqiM3P5n2tma0qEN8XsmdUyod5qUpy5
-        pOn6xh8Cojc2RvSWHD7d8DFiR4rSaTtXJZbijERDLeai4kQANYXnNP0DAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51
-References: <CGME20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51@epcms2p5>
+        Wed, 30 Dec 2020 21:10:01 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE349C061573;
+        Wed, 30 Dec 2020 18:09:20 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id a13so8535109qvv.0;
+        Wed, 30 Dec 2020 18:09:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QovwV2L0UMEd26xUOh5iY0A9BQ0S+3zOullG0T4ZOPw=;
+        b=jG/zA9gr14gYEU7RcfEASC3XPerOE8ewIyEIonYkp2niGKc9uX7C+F9sosc+NBUJlx
+         ht5zQTeglhqFmPKMFd5WJJ4gCeA4QNYQ8iwBlRT+d+mveZyZLWaQ7FAazlNjGA+2S6O6
+         86x6lLQbglg+lRAkWLrlXn+6Ry94K8TBrkpJMPo4nahpnA9ABpMJoG3VX0RwBpzZAGmb
+         iVhfpQQcuRkDrRyRugsk2o5VsdkzKx+I+Ja0ss0IQFC59DGLtfWvifA01Mbk4ppedMde
+         bov10Td8QuHD2nW/HloO8+Y4vcui0MfFm4KJGO/qonbxRb9VBDsa1+EA2eSJGk0MLHjT
+         eg8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QovwV2L0UMEd26xUOh5iY0A9BQ0S+3zOullG0T4ZOPw=;
+        b=cKCm0r1PWrIm4vie0a6M/L3UfMu5/TjMXg71yBu2eYcXMEMZIWtMoQd0KeaJFW2cXc
+         kTGcBRybwAFCbE7Fl+CraMyHMOxUnGGUumo+ip36YSDWuM65rSitSfCzwoISysOexdfI
+         HUFZLeaqNQfyp/h8c3jVBVTxIX/1jfBnFsWctP68KS5HzDDrgiAPLkK/wn7n0GWiueBW
+         CZJiY161WAiLHE+2K2p5zjeqlZq2nRYGqA/aXad0o15az8JN7MNLv4Z6NxXWIR1/SlsV
+         BLxSjLT9MY9DZHtqvTp6VLmiGk/v06RQkN0l2Hgqp4LQHuB0xy/efdcB1xd7VHBITURz
+         pzbg==
+X-Gm-Message-State: AOAM5324LPqjLr+b/vTI4lA1gxXOMQXkIpDXN7pmt69jEnSMOJrV7HEY
+        XNxEwA7AojUdGvPGyquYx2Q=
+X-Google-Smtp-Source: ABdhPJxH9FJ11CtyboV6HCmPpD29FSDJ9y7WwwxElHrSK3EpnB/0olYZM90pMNS7x/153lBSp5m9mg==
+X-Received: by 2002:a0c:ac44:: with SMTP id m4mr59433000qvb.45.1609380560017;
+        Wed, 30 Dec 2020 18:09:20 -0800 (PST)
+Received: from localhost (097-091-201-069.res.spectrum.com. [97.91.201.69])
+        by smtp.gmail.com with ESMTPSA id b6sm28586075qkc.128.2020.12.30.18.09.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 18:09:19 -0800 (PST)
+Date:   Wed, 30 Dec 2020 20:07:07 -0600
+From:   Andrew Halaney <ajhalaney@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Ding Xiang <dingxiang@cmss.chinamobile.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: nomadik: remove an unused variable
+Message-ID: <20201231020707.sob7kttbv42h7432@halaney-zenbook14.lan>
+References: <20201230154624.714388-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230154624.714388-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-list_for_each + list_entry can be changed to list_for_each_entry
-It reduces number of variables and lines.
+On Wed, Dec 30, 2020 at 04:46:17PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> A recent patch added a local variable twice:
+> 
+> drivers/pinctrl/nomadik/pinctrl-nomadik.c:953:8: error: unused variable 'wake' [-Werror,-Wunused-variable]
+> 
+> Remove the unused outer declaration
+> 
+> Fixes: f3925032d7fd ("pinctrl: nomadik: Use irq_has_action()")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/pinctrl/nomadik/pinctrl-nomadik.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik.c b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+> index d4ea10803fd9..abfe11c7b49f 100644
+> --- a/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+> +++ b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+> @@ -949,7 +949,6 @@ static void nmk_gpio_dbg_show_one(struct seq_file *s,
+>  	} else {
+>  		int irq = chip->to_irq(chip, offset);
+>  		const int pullidx = pull ? 1 : 0;
+> -		bool wake;
+>  		int val;
+>  		static const char * const pulls[] = {
+>  			"none        ",
+> -- 
+> 2.29.2
+> 
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- fs/ext4/fast_commit.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Got rid of the warning for me, I don't have hardware to test on but I
+don't think that's necessary for this.
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 5b6bb3ef0f33..dc58471971db 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -915,13 +915,11 @@ static int ext4_fc_submit_inode_data_all(journal_t *journal)
- 	struct super_block *sb = (struct super_block *)(journal->j_private);
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_inode_info *ei;
--	struct list_head *pos;
- 	int ret = 0;
- 
- 	spin_lock(&sbi->s_fc_lock);
- 	ext4_set_mount_flag(sb, EXT4_MF_FC_COMMITTING);
--	list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
--		ei = list_entry(pos, struct ext4_inode_info, i_fc_list);
-+	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		ext4_set_inode_state(&ei->vfs_inode, EXT4_STATE_FC_COMMITTING);
- 		while (atomic_read(&ei->i_fc_updates)) {
- 			DEFINE_WAIT(wait);
-@@ -1099,8 +1097,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 		goto out;
- 	}
- 
--	list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
--		iter = list_entry(pos, struct ext4_inode_info, i_fc_list);
-+	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		inode = &iter->vfs_inode;
- 		if (!ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
- 			continue;
--- 
-2.25.1
+Tested-by: Andrew Halaney <ajhalaney@gmail.com>
+Reviewed-by: Andrew Halaney <ajhalaney@gmail.com>
 
+Thanks,
+Andrew
