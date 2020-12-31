@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76802E8050
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 15:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9892E8053
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 15:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgLaOXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 09:23:07 -0500
-Received: from comms.puri.sm ([159.203.221.185]:59562 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726219AbgLaOXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 09:23:06 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 31710E117D;
-        Thu, 31 Dec 2020 06:22:26 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Uz3fBmt1EJap; Thu, 31 Dec 2020 06:22:25 -0800 (PST)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
-        festevam@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH] Revert "clk: imx: fix composite peripheral flags"
-Date:   Thu, 31 Dec 2020 15:21:49 +0100
-Message-Id: <20201231142149.26062-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S1726738AbgLaOYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 09:24:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgLaOYC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 09:24:02 -0500
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [IPv6:2a01:37:1000::53df:5f64:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F26CC061573;
+        Thu, 31 Dec 2020 06:23:22 -0800 (PST)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id C39C830000899;
+        Thu, 31 Dec 2020 15:23:19 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id B1FD74EA00; Thu, 31 Dec 2020 15:23:19 +0100 (CET)
+Date:   Thu, 31 Dec 2020 15:23:19 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Birger Koblitz <mail@birger-koblitz.de>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v2 2/2] Add support for Realtek RTL838x/RTL839x
+ SoC SPI controllers
+Message-ID: <20201231142319.GA28104@wunner.de>
+References: <20201229231904.2558916-1-bert@biot.com>
+ <20201229231904.2558916-2-bert@biot.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229231904.2558916-2-bert@biot.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 936c383673b9e3007432f17140ac62de53d87db9.
+On Wed, Dec 30, 2020 at 12:19:04AM +0100, Bert Vermeulen wrote:
+> +static inline void wait_ready(struct rtspi *rtspi)
+> +{
+> +	while (!(readl(REG(RTL8380_SPI_SFCSR)) & RTL8380_SPI_SFCSR_RDY))
+> +		;
+> +}
 
-It breaks clock reparenting via devfreq on the imx8mq used in the
-Librem 5 phone. When switching dram frequency (which worked before)
-the system now hangs after this where the dram_apb clock cannot be
-set:
+I'd suggest calling cpu_relax() in the loop's body.
 
-[  129.391755] imx8m-ddrc-devfreq 3d400000.memory-controller: failed to
-set dram_apb parent: -16
-[  129.391959] imx8m-ddrc-devfreq 3d400000.memory-controller: ddrc
-failed freq switch to 25000000 from 800000000: error -16. now at 25000000
-[  129.406133] imx8m-ddrc-devfreq 3d400000.memory-controller: failed to
-update frequency from PM QoS (-16)
 
-Note that on the Librem 5 devkit that uses a different revision of the
-imx8mq SoC, the added flag does *not* break said clock reparenting so
-there might be subtle differences here.
+> +	err = devm_spi_register_controller(&pdev->dev, ctrl);
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- drivers/clk/imx/clk-composite-8m.c | 1 -
- 1 file changed, 1 deletion(-)
+Since you're invoking devm_spi_register_controller() on probe,
+the controller must not be unregistered explicitly on remove.
+So the ->remove hook can be dropped altogether:
 
-diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-composite-8m.c
-index 2c309e3dc8e3..78fb7e52a42a 100644
---- a/drivers/clk/imx/clk-composite-8m.c
-+++ b/drivers/clk/imx/clk-composite-8m.c
-@@ -216,7 +216,6 @@ struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
- 		div->width = PCG_PREDIV_WIDTH;
- 		divider_ops = &imx8m_clk_composite_divider_ops;
- 		mux_ops = &clk_mux_ops;
--		flags |= CLK_SET_PARENT_GATE;
- 	}
- 
- 	div->lock = &imx_ccm_lock;
--- 
-2.20.1
+> +static int realtek_spi_remove(struct platform_device *pdev)
+> +{
+> +	struct spi_controller *ctrl = platform_get_drvdata(pdev);
+> +
+> +	spi_unregister_controller(ctrl);
+> +
+> +	return 0;
+> +}
+[...]
+> +	.remove = realtek_spi_remove,
 
+The ->probe hook otherwise LGTM.
+
+Thanks,
+
+Lukas
