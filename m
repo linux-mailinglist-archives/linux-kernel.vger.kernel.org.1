@@ -2,438 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347C92E7DF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 05:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847DE2E7DF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 05:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgLaE0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 23:26:51 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:1270 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgLaE0v (ORCPT
+        id S1726314AbgLaEeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 23:34:08 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:54879 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726037AbgLaEeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 23:26:51 -0500
-IronPort-SDR: r4fP6JuGJMeqHQRjvm+h9KH5TRzys/XGGRKR/UIc1MYtWOjuoazeoIFG5sCOAWhclGzoKXqnZf
- FWqDeiyzFMIc1U9D3NI/t2NHVRwx6AOIpS/T+lwSuta+qrJUkkDEdX358+IgxNtMrIQiWxw0Zf
- HAsdQV6bkFK4FFcSwmZBa2Le7K/aTi8v1W0cZN4we3gVR7+kw19Db7CbJHSxvx1SyRY7hS4JJd
- lSJniEXhV14RSqHgknqHQZ3ZbvpPq0j/r2cqMbN4RzRqOZF+1zp0C9ZkE2l5JD206/Jzx6vxIo
- x+I=
-X-IronPort-AV: E=Sophos;i="5.78,463,1599548400"; 
-   d="scan'208";a="29466385"
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by labrats.qualcomm.com with ESMTP; 30 Dec 2020 20:25:52 -0800
-X-QCInternal: smtphost
-Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
-  by ironmsg05-sd.qualcomm.com with ESMTP; 30 Dec 2020 20:25:51 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 64156212C1; Wed, 30 Dec 2020 20:25:51 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] scsi: ufs: Protect PM ops and err_handler from user access through sysfs
-Date:   Wed, 30 Dec 2020 20:25:35 -0800
-Message-Id: <1609388736-22525-3-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609388736-22525-1-git-send-email-cang@codeaurora.org>
-References: <1609388736-22525-1-git-send-email-cang@codeaurora.org>
+        Wed, 30 Dec 2020 23:34:08 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UKHGUt7_1609389194;
+Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UKHGUt7_1609389194)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 31 Dec 2020 12:33:14 +0800
+Subject: Re: [PATCH] ocfs2: Remove redundant conditional before iput
+To:     Yi Li <yili@winhong.com>, akpm@linux-foundation.org
+Cc:     mark@fasheh.com, yilikernel@gmail.com, ocfs2-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+References: <20201231040535.4091761-1-yili@winhong.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <53f4eb0e-87c8-f0a9-572f-76f40434f14f@linux.alibaba.com>
+Date:   Thu, 31 Dec 2020 12:33:14 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20201231040535.4091761-1-yili@winhong.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User layer may access sysfs nodes when system PM ops or error handling
-is running, which can cause various problems. Rename eh_sem to host_sem
-and use it to protect PM ops and error handling from user layer intervene.
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
 
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index 08e72b7..1828b34 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -154,18 +154,29 @@ static ssize_t auto_hibern8_show(struct device *dev,
- 				 struct device_attribute *attr, char *buf)
- {
- 	u32 ahit;
-+	int ret;
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
- 	if (!ufshcd_is_auto_hibern8_supported(hba))
- 		return -EOPNOTSUPP;
- 
-+	down(&hba->host_sem);
-+	if (hba->shutting_down) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	pm_runtime_get_sync(hba->dev);
- 	ufshcd_hold(hba, false);
- 	ahit = ufshcd_readl(hba, REG_AUTO_HIBERNATE_IDLE_TIMER);
- 	ufshcd_release(hba);
- 	pm_runtime_put_sync(hba->dev);
- 
--	return scnprintf(buf, PAGE_SIZE, "%d\n", ufshcd_ahit_to_us(ahit));
-+	ret = scnprintf(buf, PAGE_SIZE, "%d\n", ufshcd_ahit_to_us(ahit));
-+
-+out:
-+	up(&hba->host_sem);
-+	return ret;
- }
- 
- static ssize_t auto_hibern8_store(struct device *dev,
-@@ -174,6 +185,7 @@ static ssize_t auto_hibern8_store(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 	unsigned int timer;
-+	int ret = 0;
- 
- 	if (!ufshcd_is_auto_hibern8_supported(hba))
- 		return -EOPNOTSUPP;
-@@ -184,9 +196,17 @@ static ssize_t auto_hibern8_store(struct device *dev,
- 	if (timer > UFSHCI_AHIBERN8_MAX)
- 		return -EINVAL;
- 
-+	down(&hba->host_sem);
-+	if (hba->shutting_down) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	ufshcd_auto_hibern8_update(hba, ufshcd_us_to_ahit(timer));
- 
--	return count;
-+out:
-+	up(&hba->host_sem);
-+	return ret ? ret : count;
- }
- 
- static DEVICE_ATTR_RW(rpm_lvl);
-@@ -225,12 +245,21 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 	if (param_size > 8)
- 		return -EINVAL;
- 
-+	down(&hba->host_sem);
-+	if (hba->shutting_down) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	pm_runtime_get_sync(hba->dev);
- 	ret = ufshcd_read_desc_param(hba, desc_id, desc_index,
- 				param_offset, desc_buf, param_size);
- 	pm_runtime_put_sync(hba->dev);
--	if (ret)
--		return -EINVAL;
-+	if (ret) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
- 	switch (param_size) {
- 	case 1:
- 		ret = sprintf(sysfs_buf, "0x%02X\n", *desc_buf);
-@@ -249,6 +278,8 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 		break;
- 	}
- 
-+out:
-+	up(&hba->host_sem);
- 	return ret;
- }
- 
-@@ -591,9 +622,16 @@ static ssize_t _name##_show(struct device *dev,				\
- 	int desc_len = QUERY_DESC_MAX_SIZE;				\
- 	u8 *desc_buf;							\
- 									\
-+	down(&hba->host_sem);						\
-+	if (hba->shutting_down) {					\
-+		up(&hba->host_sem);					\
-+		return -EBUSY;						\
-+	}								\
- 	desc_buf = kzalloc(QUERY_DESC_MAX_SIZE, GFP_ATOMIC);		\
--	if (!desc_buf)                                                  \
--		return -ENOMEM;                                         \
-+	if (!desc_buf) {						\
-+		up(&hba->host_sem);					\
-+		return -ENOMEM;						\
-+	}								\
- 	pm_runtime_get_sync(hba->dev);					\
- 	ret = ufshcd_query_descriptor_retry(hba,			\
- 		UPIU_QUERY_OPCODE_READ_DESC, QUERY_DESC_IDN_DEVICE,	\
-@@ -613,6 +651,7 @@ static ssize_t _name##_show(struct device *dev,				\
- out:									\
- 	pm_runtime_put_sync(hba->dev);					\
- 	kfree(desc_buf);						\
-+	up(&hba->host_sem);						\
- 	return ret;							\
- }									\
- static DEVICE_ATTR_RO(_name)
-@@ -651,15 +690,26 @@ static ssize_t _name##_show(struct device *dev,				\
- 	u8 index = 0;							\
- 	int ret;							\
- 	struct ufs_hba *hba = dev_get_drvdata(dev);			\
-+									\
-+	down(&hba->host_sem);						\
-+	if (hba->shutting_down) {					\
-+		up(&hba->host_sem);					\
-+		return -EBUSY;						\
-+	}								\
- 	if (ufshcd_is_wb_flags(QUERY_FLAG_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
- 	pm_runtime_get_sync(hba->dev);					\
- 	ret = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,	\
- 		QUERY_FLAG_IDN##_uname, index, &flag);			\
- 	pm_runtime_put_sync(hba->dev);					\
--	if (ret)							\
--		return -EINVAL;						\
--	return sprintf(buf, "%s\n", flag ? "true" : "false"); \
-+	if (ret) {							\
-+		ret = -EINVAL;						\
-+		goto out;						\
-+	}								\
-+	ret = sprintf(buf, "%s\n", flag ? "true" : "false");		\
-+out:									\
-+	up(&hba->host_sem);						\
-+	return ret;							\
- }									\
- static DEVICE_ATTR_RO(_name)
- 
-@@ -709,15 +759,26 @@ static ssize_t _name##_show(struct device *dev,				\
- 	u32 value;							\
- 	int ret;							\
- 	u8 index = 0;							\
-+									\
-+	down(&hba->host_sem);						\
-+	if (hba->shutting_down) {					\
-+		up(&hba->host_sem);					\
-+		return -EBUSY;						\
-+	}								\
- 	if (ufshcd_is_wb_attrs(QUERY_ATTR_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
- 	pm_runtime_get_sync(hba->dev);					\
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,	\
- 		QUERY_ATTR_IDN##_uname, index, 0, &value);		\
- 	pm_runtime_put_sync(hba->dev);					\
--	if (ret)							\
--		return -EINVAL;						\
--	return sprintf(buf, "0x%08X\n", value);				\
-+	if (ret) {							\
-+		ret = -EINVAL;						\
-+		goto out;						\
-+	}								\
-+	ret = sprintf(buf, "0x%08X\n", value);				\
-+out:									\
-+	up(&hba->host_sem);						\
-+	return ret;							\
- }									\
- static DEVICE_ATTR_RO(_name)
- 
-@@ -850,13 +911,26 @@ static ssize_t dyn_cap_needed_attribute_show(struct device *dev,
- 	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);
- 	int ret;
- 
-+	down(&hba->host_sem);
-+	if (hba->shutting_down) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	pm_runtime_get_sync(hba->dev);
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
- 		QUERY_ATTR_IDN_DYN_CAP_NEEDED, lun, 0, &value);
- 	pm_runtime_put_sync(hba->dev);
--	if (ret)
--		return -EINVAL;
--	return sprintf(buf, "0x%08X\n", value);
-+	if (ret) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = sprintf(buf, "0x%08X\n", value);
-+
-+out:
-+	up(&hba->host_sem);
-+	return ret;
- }
- static DEVICE_ATTR_RO(dyn_cap_needed_attribute);
- 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 34e2541..b035bd0 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1522,11 +1522,17 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 	u32 value;
--	int err;
-+	int err = 0;
- 
- 	if (kstrtou32(buf, 0, &value))
- 		return -EINVAL;
- 
-+	down(&hba->host_sem);
-+	if (hba->shutting_down) {
-+		err = -EBUSY;
-+		goto out;
-+	}
-+
- 	value = !!value;
- 	if (value == hba->clk_scaling.is_allowed)
- 		goto out;
-@@ -1552,7 +1558,8 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
- 	ufshcd_release(hba);
- 	pm_runtime_put_sync(hba->dev);
- out:
--	return count;
-+	up(&hba->host_sem);
-+	return err ? err : count;
- }
- 
- static void ufshcd_clkscaling_init_sysfs(struct ufs_hba *hba)
-@@ -5720,9 +5727,10 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
- 
- static inline bool ufshcd_err_handling_should_stop(struct ufs_hba *hba)
- {
--	return (!hba->is_powered || hba->ufshcd_state == UFSHCD_STATE_ERROR ||
-+	return (!hba->is_powered || hba->shutting_down ||
-+		hba->ufshcd_state == UFSHCD_STATE_ERROR ||
- 		(!(hba->saved_err || hba->saved_uic_err || hba->force_reset ||
--			ufshcd_is_link_broken(hba))));
-+		   ufshcd_is_link_broken(hba))));
- }
- 
- #ifdef CONFIG_PM
-@@ -5792,13 +5800,13 @@ static void ufshcd_err_handler(struct work_struct *work)
- 
- 	hba = container_of(work, struct ufs_hba, eh_work);
- 
--	down(&hba->eh_sem);
-+	down(&hba->host_sem);
- 	spin_lock_irqsave(hba->host->host_lock, flags);
- 	if (ufshcd_err_handling_should_stop(hba)) {
- 		if (hba->ufshcd_state != UFSHCD_STATE_ERROR)
- 			hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
- 		spin_unlock_irqrestore(hba->host->host_lock, flags);
--		up(&hba->eh_sem);
-+		up(&hba->host_sem);
- 		return;
- 	}
- 	ufshcd_set_eh_in_progress(hba);
-@@ -5967,7 +5975,7 @@ static void ufshcd_err_handler(struct work_struct *work)
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 	ufshcd_scsi_unblock_requests(hba);
- 	ufshcd_err_handling_unprepare(hba);
--	up(&hba->eh_sem);
-+	up(&hba->host_sem);
- }
- 
- /**
-@@ -7869,10 +7877,10 @@ static void ufshcd_async_scan(void *data, async_cookie_t cookie)
- 	struct ufs_hba *hba = (struct ufs_hba *)data;
- 	int ret;
- 
--	down(&hba->eh_sem);
-+	down(&hba->host_sem);
- 	/* Initialize hba, detect and initialize UFS device */
- 	ret = ufshcd_probe_hba(hba, true);
--	up(&hba->eh_sem);
-+	up(&hba->host_sem);
- 	if (ret)
- 		goto out;
- 
-@@ -8899,7 +8907,7 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
- 	if (!hba)
- 		return 0;
- 
--	down(&hba->eh_sem);
-+	down(&hba->host_sem);
- 	if (!hba->is_powered)
- 		return 0;
- 
-@@ -8931,7 +8939,7 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
- 	if (!ret)
- 		hba->is_sys_suspended = true;
- 	else
--		up(&hba->eh_sem);
-+		up(&hba->host_sem);
- 	return ret;
- }
- EXPORT_SYMBOL(ufshcd_system_suspend);
-@@ -8965,7 +8973,7 @@ int ufshcd_system_resume(struct ufs_hba *hba)
- 		hba->curr_dev_pwr_mode, hba->uic_link_state);
- 	if (!ret)
- 		hba->is_sys_suspended = false;
--	up(&hba->eh_sem);
-+	up(&hba->host_sem);
- 	return ret;
- }
- EXPORT_SYMBOL(ufshcd_system_resume);
-@@ -9057,7 +9065,10 @@ int ufshcd_shutdown(struct ufs_hba *hba)
- {
- 	int ret = 0;
- 
--	down(&hba->eh_sem);
-+	down(&hba->host_sem);
-+	hba->shutting_down = true;
-+	up(&hba->host_sem);
-+
- 	if (!hba->is_powered)
- 		goto out;
- 
-@@ -9075,7 +9086,6 @@ int ufshcd_shutdown(struct ufs_hba *hba)
- 	if (ret)
- 		dev_err(hba->dev, "%s failed, err %d\n", __func__, ret);
- 	hba->is_powered = false;
--	up(&hba->eh_sem);
- 	/* allow force shutdown even in case of errors */
- 	return 0;
- }
-@@ -9270,7 +9280,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- 	INIT_WORK(&hba->eh_work, ufshcd_err_handler);
- 	INIT_WORK(&hba->eeh_work, ufshcd_exception_event_handler);
- 
--	sema_init(&hba->eh_sem, 1);
-+	sema_init(&hba->host_sem, 1);
- 
- 	/* Initialize UIC command mutex */
- 	mutex_init(&hba->uic_cmd_mutex);
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 9bb5f0e..af33c82 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -655,6 +655,8 @@ struct ufs_hba_variant_params {
-  * @intr_mask: Interrupt Mask Bits
-  * @ee_ctrl_mask: Exception event control mask
-  * @is_powered: flag to check if HBA is powered
-+ * @shutting_down: flag to check if shutdown has been invoked
-+ * @host_sem: semaphore used to serialize concurrent contexts
-  * @eh_wq: Workqueue that eh_work works on
-  * @eh_work: Worker to handle UFS errors that require s/w attention
-  * @eeh_work: Worker to handle exception events
-@@ -751,7 +753,8 @@ struct ufs_hba {
- 	u32 intr_mask;
- 	u16 ee_ctrl_mask;
- 	bool is_powered;
--	struct semaphore eh_sem;
-+	bool shutting_down;
-+	struct semaphore host_sem;
- 
- 	/* Work Queues */
- 	struct workqueue_struct *eh_wq;
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+On 12/31/20 12:05 PM, Yi Li wrote:
+> iput handles NULL pointers gracefully, so there's no need to
+> check the pointer before the call.
+> 
+> Signed-off-by: Yi Li <yili@winhong.com>
 
+Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> ---
+>  fs/ocfs2/super.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
+> index 2febc76e9de7..079f8826993e 100644
+> --- a/fs/ocfs2/super.c
+> +++ b/fs/ocfs2/super.c
+> @@ -973,8 +973,6 @@ static void ocfs2_disable_quotas(struct ocfs2_super *osb)
+>  		 * quota files */
+>  		dquot_disable(sb, type, DQUOT_USAGE_ENABLED |
+>  					DQUOT_LIMITS_ENABLED);
+> -		if (!inode)
+> -			continue;
+>  		iput(inode);
+>  	}
+>  }
+> 
