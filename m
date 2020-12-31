@@ -2,70 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFFF2E7E84
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 08:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F882E7E78
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 07:43:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgLaHDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 02:03:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgLaHDA (ORCPT
+        id S1726352AbgLaGm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 01:42:58 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:44046 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgLaGm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 02:03:00 -0500
-X-Greylist: delayed 1525 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Dec 2020 23:02:20 PST
-Received: from relay.heise.de (relay.heise.de [IPv6:2a00:e68:14:800::19:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA87C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 23:02:20 -0800 (PST)
-Subject: Re: [PATCH] genirq: Export irq_check_status_bit
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Thu, 31 Dec 2020 01:42:57 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609396954; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=OG7q1REiQSPkTlES34Ckv8c4QBwurXTi+jB+GQDEsKI=; b=DXmtZU9r5VmzxWHXEbrpZn6gA2KqDSHgRSc3CR3bUhVrgvz/E7hQkQtusiMdLJy1Jo2Z8DFj
+ 9J3oDgoa6scZylhjTV+4VMXV6kj8mVz/VOK0Tuq1dcz8Kf5iYaLkgpgYqDTxzJDSL/Nh+O6e
+ aGAUuIRX43ylSzFnhh+LiSoGULk=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fed72bd584481b01bdb3188 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 31 Dec 2020 06:42:05
+ GMT
+Sender: vbadigan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B26A7C43462; Thu, 31 Dec 2020 06:42:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.3 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.7] (unknown [117.198.144.215])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84A56C433CA;
+        Thu, 31 Dec 2020 06:42:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 84A56C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
+Subject: Re: [PATCH] mmc: sdhci-msm: Fix possible NULL pointer exception
+To:     Md Sadre Alam <mdalam@codeaurora.org>, bjorn.andersson@linaro.org,
+        adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20201230154600.697832-1-arnd@kernel.org>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Message-ID: <49cdadb1-9624-7a92-f3e7-f403702dc504@leemhuis.info>
-Date:   Thu, 31 Dec 2020 07:36:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+Cc:     sricharan@codeaurora.org
+References: <1608626913-16675-1-git-send-email-mdalam@codeaurora.org>
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Message-ID: <9687f027-7a5d-2959-82fe-96e68d59c1ab@codeaurora.org>
+Date:   Thu, 31 Dec 2020 12:11:52 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20201230154600.697832-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <1608626913-16675-1-git-send-email-mdalam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TMScanToken: 6dcdffc65b05d9a7f26f2c0c644384e3e46d3b73
-X-TMASE-Version: DDEI-3.5-8.6.1012-25882.005
-X-TMASE-Result: 10--3.183000-10.000000
-X-TMASE-MatchedRID: HXSqh3WYKfu8rRvefcjeTXB4kOjNh/grC/ExpXrHizzLkl8e9W70i3jm
-        0APnwZU2memipv1u6D8uKMVOeSDBJed7FYYeUBPYqJSK+HSPY+8o/EsCKojU0pSNvrzEd0cAgyW
-        NJp//h3U/UQO6d5wrV9L9pf3er7uLKkcZdZbwqhJn3ejPjd19cf/dUP8atA+/Ed+K6O5Nt53QgB
-        hawGY6JUK4Kzw5Vavi2Oqz8656LhSjxYyRBa/qJQPTK4qtAgwIIC0OoeD/hCbQLWxBF9DMQcRB0
-        bsfrpPI34T9cYMsdwyMQdS/ovhnQZjA0Phg8EMbqFAyVD16PxizIzSzuzYuwRCcskHezVkRLzKR
-        3kfFEU/SNaJeiJwMqj76msHO2b/gxb1b0rf3JHB3JEmTicHZtRj5UCuziZqVQXUTGRdR3d+JVXE
-        sQ8vgPvhIxIQs/UPl
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
-X-TMASE-INERTIA: 0-0;;;;
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 30.12.20 um 16:45 schrieb Arnd Bergmann:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Changing some inline functions to use the new irq_check_status_bit
-> function out of line breaks calling them from loadable modules:
-> 
-> ERROR: modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!
 
-Just FYI: Levi Yun sent a similar patch a on Dec, 26 already:
-https://lore.kernel.org/lkml/20201226123818.GA693525@ubuntu/
+On 12/22/2020 2:18 PM, Md Sadre Alam wrote:
+> of_device_get_match_data returns NULL when no match.
+> So add the NULL pointer check to avoid dereference.
+>
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> ---
 
-But nothing happened afaics, the festival season is taking its toll. ;-)
+Reviewed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-I'd like to see this fixed, too, as it broke my
-Kernel Vanilla builds for Fedora
-(https://fedoraproject.org/wiki/Kernel_Vanilla_Repositories) just a day
-after I finally started building packages for aarch64, too. Bad timing. :-D
-
-Ciao, Thorsten
-
-
+>   drivers/mmc/host/sdhci-msm.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index 9c7927b..f20e424 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -2235,6 +2235,8 @@ static int sdhci_msm_probe(struct platform_device *pdev)
+>   	 * the data associated with the version info.
+>   	 */
+>   	var_info = of_device_get_match_data(&pdev->dev);
+> +	if (!var_info)
+> +		goto pltfm_free;
+>   
+>   	msm_host->mci_removed = var_info->mci_removed;
+>   	msm_host->restore_dll_config = var_info->restore_dll_config;
