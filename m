@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B3A2E8210
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 21:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC372E8218
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 22:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgLaU4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 15:56:52 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:35996 "EHLO
+        id S1726984AbgLaVJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 16:09:58 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:41235 "EHLO
         mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726583AbgLaU4v (ORCPT
+        with ESMTP id S1726210AbgLaVJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 15:56:51 -0500
-Received: by mail-io1-f72.google.com with SMTP id y197so8549964iof.3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 12:56:35 -0800 (PST)
+        Thu, 31 Dec 2020 16:09:57 -0500
+Received: by mail-io1-f72.google.com with SMTP id v21so8569215iol.8
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 13:09:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=7POGUMTtHouCI9iTNlKKRSwh5qvL2y+t8RWIhaDBDs0=;
-        b=VFNkV2NQ/1fmNiEkDN06GU36XmWmH78xkB/3tT6XRlsJ0euDDlsNMj/FYoXKU2uuLn
-         zHJ/hBok+Ia+pJWnahPDOFOI+nClO1wpgStp2CAgDoYWOfWjk3fVU9p6YOKWMtiIPAns
-         m+D29T70FQQhQagYpW17S1c0LXWGCP0w4olMK/Q+RyS2FIPMF0QM7J70Ebx/nOTHKkt9
-         GMUWrTSRNwRnuylCykpQPzYN3QUzVjDIHRUMjIVuWZ+JDxyFxC4ViWxp23qFZNj4mg7m
-         dpB6hxllqHUJrHeAiwAv6joYUemtm0OfV/4qXo4sCh9n4ucaIUV9wps4uTMcASwdPKGf
-         MdHg==
-X-Gm-Message-State: AOAM531pA2f+fGEQt3KbKISNgg8GMMpc+CVGwKGWta3rad6HWEwFAW5c
-        tnwQmqIbKcXIQpS5tdJB0gxV6nhVtEMva9bLHOPG2JXfQMOe
-X-Google-Smtp-Source: ABdhPJy9GQ6T+wBnHRrpmNVL2QEXGbU0MGvx1hy995GFt32OqlFUh0n35jUzVee0WMTav2UzKQ2zgRWCwGh+txVdPtdI0/CxIgEt
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ImUavmO9HuvNyGGDB8IPh6YqAjU+wI3gTPYJmrthYXU=;
+        b=mr25COy+3deu4PQ+496o/DR568uhLGkMXv87mQLqGHNhDJ91j6jW7gN1J1huZYLRcM
+         W58PNn39svGYz5KLlJqiyscT105saF+9w4NVWCybu6SBPgu8sXkIb1erEAbWUh8yg2Rp
+         +SOzjc9ftoyuVMf61Z9oasu5icWOPS6vyHMxchPNx9mK+Plvdx0ILZDbzqrAdao4bQUI
+         vvML7QYAr4AlrlJuFBQNRu1v9FnT88iBH+JKUENh9CSlUYbCZxezsu1fKNVY4jY2T2mz
+         AUoGkt2WflIKJc9EyNPZxvalIwrZJ7p7Dx4rCOE+jLa2OJe2rSPDnt8jwaVCHq1FEkqv
+         Kwbw==
+X-Gm-Message-State: AOAM532ElDlhy6F3bWU7v9579B5qy8vBACmBl8QHX47+KsL2X/dak/jx
+        FHB1VXbVHYiKrNNTEKaHLJrF7RKhUwLZFs8qUZ5l2qIURaRG
+X-Google-Smtp-Source: ABdhPJx1u4Mvpeq4U3rJyyiMGjuuW5woFFx+b/iIzO2y+OdVVxvV6d665xsfUnub9vDZ7kuyebI1yrMoIa9ieCL84RJ0T9+u9zrp
 MIME-Version: 1.0
-X-Received: by 2002:a02:c98d:: with SMTP id b13mr50113082jap.124.1609448170302;
- Thu, 31 Dec 2020 12:56:10 -0800 (PST)
-Date:   Thu, 31 Dec 2020 12:56:10 -0800
-In-Reply-To: <CAAEAJfADBQpyfgBjWtnnF-y0g_jRryrcHQd_J-123KxSrid5=Q@mail.gmail.com>
+X-Received: by 2002:a02:7650:: with SMTP id z77mr50509422jab.134.1609448956306;
+ Thu, 31 Dec 2020 13:09:16 -0800 (PST)
+Date:   Thu, 31 Dec 2020 13:09:16 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000079b74605b7c8da15@google.com>
-Subject: Re: memory leak in zr364xx_probe
-From:   syzbot <syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com>
-To:     andriy.shevchenko@linux.intel.com, ezequiel@vanguardiasur.com.ar,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-usb@vger.kernel.org, mchehab@kernel.org, royale@zerezo.com,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000532e0205b7c90942@google.com>
+Subject: UBSAN: shift-out-of-bounds in gred_change
+From:   syzbot <syzbot+1819b70451246ed8cf57@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,91 +47,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-BUG: unable to handle kernel NULL pointer dereference in __videobuf_free
+syzbot found the following issue on:
 
-zr364xx 4-1:0.0: model 06d6:003b detected
-usb 4-1: 320x240 mode selected
-zr364xx: start read pipe failed
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 0 P4D 0 
-Oops: 0000 [#1] PREEMPT SMP
-CPU: 1 PID: 8717 Comm: kworker/1:4 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:__videobuf_free+0x62/0x180 drivers/media/v4l2-core/videobuf-core.c:243
-Code: 9d 70 01 00 00 31 ff 83 e3 03 89 de e8 b7 da 4a fe 84 db 0f 85 00 01 00 00 e8 2a e1 4a fe 48 8b 85 68 01 00 00 bf 03 10 26 12 <44> 8b 20 44 89 e6 e8 d3 da 4a fe 41 81 fc 03 10 26 12 0f 85 c4 2c
-RSP: 0018:ffffc900024ef7b8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff82e82989
-RDX: ffff88811813d040 RSI: ffffffff82e82996 RDI: 0000000012261003
-RBP: ffff888125921780 R08: ffff888125ffe008 R09: 00000000000008fd
-R10: 0000000000000000 R11: 3a7878343633727a R12: 0000000000000001
-R13: ffff888125921000 R14: ffffc900032b1000 R15: 00000000ffffffa6
-FS:  0000000000000000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 0000000109bb5000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- videobuf_mmap_free+0x1f/0x60 drivers/media/v4l2-core/videobuf-core.c:377
- zr364xx_release+0x26/0xa0 drivers/media/usb/zr364xx/zr364xx.c:1192
- v4l2_device_release drivers/media/v4l2-core/v4l2-device.c:51 [inline]
- kref_put include/linux/kref.h:65 [inline]
- v4l2_device_put+0x82/0xc0 drivers/media/v4l2-core/v4l2-device.c:56
- zr364xx_probe+0x80c/0x823 drivers/media/usb/zr364xx/zr364xx.c:1536
- usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
- really_probe+0x159/0x480 drivers/base/dd.c:554
- driver_probe_device+0x84/0x100 drivers/base/dd.c:738
- __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
- bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
- __device_attach+0x122/0x250 drivers/base/dd.c:912
- bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
- device_add+0x5ac/0xc30 drivers/base/core.c:2936
- usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
- usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
- usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
- really_probe+0x159/0x480 drivers/base/dd.c:554
- driver_probe_device+0x84/0x100 drivers/base/dd.c:738
- __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
- bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
- __device_attach+0x122/0x250 drivers/base/dd.c:912
- bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
- device_add+0x5ac/0xc30 drivers/base/core.c:2936
- usb_new_device.cold+0x166/0x578 drivers/usb/core/hub.c:2554
- hub_port_connect drivers/usb/core/hub.c:5222 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
- port_event drivers/usb/core/hub.c:5508 [inline]
- hub_event+0x144a/0x20d0 drivers/usb/core/hub.c:5590
- process_one_work+0x27d/0x590 kernel/workqueue.c:2272
- worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
- kthread+0x178/0x1b0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 90e0be95dcb7e0d1 ]---
-RIP: 0010:__videobuf_free+0x62/0x180 drivers/media/v4l2-core/videobuf-core.c:243
-Code: 9d 70 01 00 00 31 ff 83 e3 03 89 de e8 b7 da 4a fe 84 db 0f 85 00 01 00 00 e8 2a e1 4a fe 48 8b 85 68 01 00 00 bf 03 10 26 12 <44> 8b 20 44 89 e6 e8 d3 da 4a fe 41 81 fc 03 10 26 12 0f 85 c4 2c
-RSP: 0018:ffffc900024ef7b8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff82e82989
-RDX: ffff88811813d040 RSI: ffffffff82e82996 RDI: 0000000012261003
-RBP: ffff888125921780 R08: ffff888125ffe008 R09: 00000000000008fd
-R10: 0000000000000000 R11: 3a7878343633727a R12: 0000000000000001
-R13: ffff888125921000 R14: ffffc900032b1000 R15: 00000000ffffffa6
-FS:  0000000000000000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 0000000109bb5000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
-Tested on:
-
-commit:         a1714d22 media: zr364xx: Fix memory leak in ->probe()
-git tree:       https://gitlab.collabora.com/linux/0day.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=11415e0b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ec2338be23ae163e
-dashboard link: https://syzkaller.appspot.com/bug?extid=b4d54814b339b5c6bbd4
+HEAD commit:    3db1a3fa Merge tag 'staging-5.11-rc1' of git://git.kernel...
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=155708db500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2ae878fbf640b72b
+dashboard link: https://syzkaller.appspot.com/bug?extid=1819b70451246ed8cf57
 compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=176b78c0d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12993797500000
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1819b70451246ed8cf57@syzkaller.appspotmail.com
+
+IPVS: ftp: loaded support on port[0] = 21
+================================================================================
+UBSAN: shift-out-of-bounds in ./include/net/red.h:252:22
+shift exponent 255 is too large for 32-bit type 'int'
+CPU: 0 PID: 8465 Comm: syz-executor194 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ red_set_parms include/net/red.h:252 [inline]
+ gred_change_vq net/sched/sch_gred.c:506 [inline]
+ gred_change.cold+0xce/0xe2 net/sched/sch_gred.c:702
+ qdisc_change net/sched/sch_api.c:1331 [inline]
+ tc_modify_qdisc+0xd4e/0x1a30 net/sched/sch_api.c:1633
+ rtnetlink_rcv_msg+0x493/0xb40 net/core/rtnetlink.c:5564
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x907/0xe10 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xd3/0x130 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440e69
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b 10 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff634be6d8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004a2730 RCX: 0000000000440e69
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
+RBP: 00007fff634be6e0 R08: 0000000120080522 R09: 0000000120080522
+R10: 0000000120080522 R11: 0000000000000246 R12: 00000000004a2730
+R13: 0000000000402390 R14: 0000000000000000 R15: 0000000000000000
+================================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
