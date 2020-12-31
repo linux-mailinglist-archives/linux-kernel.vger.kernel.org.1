@@ -2,110 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40732E7E90
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 08:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E77282E7E96
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 08:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgLaHT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 02:19:56 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:36095 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgLaHT4 (ORCPT
+        id S1726499AbgLaHYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 02:24:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726218AbgLaHYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 02:19:56 -0500
-Date:   Thu, 31 Dec 2020 07:19:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1609399152;
-        bh=YoZwhQ90gbl0VD+Jy67qWsHVGWfPpx7CAqbFb3UqWG0=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=JdD0MUs49CsDlCBBZxTXzdWXsfPIu+AlmvPebT55ElvH39wdfIwASwbEvALSLiAMf
-         JchC3S4hYfmO1k6P124n82m8wpjYsSpqzsw62NS9pkflzfGcE3LN9x/h4byTi4GAbj
-         mcL0Ie2d0xviBC2R165wpWXohdvX6V9FXucf50dU=
-To:     kernel test robot <lkp@intel.com>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: Re: [PATCH v6 3/8] power: supply: max8997_charger: Set CHARGER current limit
-Message-ID: <20201231081754.09aad125.timon.baetz@protonmail.com>
-In-Reply-To: <202012310753.axvdsSG1-lkp@intel.com>
-References: <20201230205139.1812366-3-timon.baetz@protonmail.com> <202012310753.axvdsSG1-lkp@intel.com>
+        Thu, 31 Dec 2020 02:24:51 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C45C061799
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 23:24:11 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id g15so12668174pgu.9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 23:24:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=59Y9lLu7gKLA6PBo+Rc/MQHtWZJv/8/MoV+hD4xt+3U=;
+        b=atsO3HYk9RIzqk8lrfu3fkNFFnAf7WDnApVjEQXtzGeV5l09/FU1arRk8JsJgMWPJ2
+         n3sUerQzGu2/R0yY6mssYhacZRfSCQ0X7tRSaRBiMzfnuE5mYY/6Oe/MbXUjHbygu1Bw
+         4P8m5l/Jy8hdli+4kRHqf0hlV8wQ3DNOi/2W1XmYK5JuImxyy/uvcaQDHevU+kKB1GEl
+         6iZV2bukZOjI/FreHO/8kWRGT4/BmrVI1QPgmfBNRkoR7T/VvBcordQ3OW4myXaquSRW
+         0Jcr16pqEfosYZpdN3l3DLmqmcpLfKeZODLFdXbgDEazp3D/ARlv1zmerp1FCpj8BSF+
+         doSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=59Y9lLu7gKLA6PBo+Rc/MQHtWZJv/8/MoV+hD4xt+3U=;
+        b=A49VJV850oIikCJk3zxlbsKpf65RuXcDS0r3zAgt0B8q1/2vMOWQXRe0x2NqMEcWfG
+         NzjUAz7jK3W4KSgrDB1UDaAWjhShJbCvHKJSoWPVhPDQfpU2y4yw7YbE+lnlSSmF606X
+         wEFoasjd1dpvVF4b/3DPIMKGYTjl5NgAENMZs1DQJFQddlRjLvci8AzOtWyvJCpCxlui
+         hpmO+o5tYEVbtyaYPMirfB1FiBi1eDDj2YfeMoRF4Tut8xmVIt5gcazeXsuOwWDDN1jD
+         jV3tVeHgHCa5YvPyS0r8YNsNfRthcAV8IeEDOiuTB3tsoovUVLnZLmEc5TIgabv5JZ9I
+         PWLw==
+X-Gm-Message-State: AOAM531DNcnR8SmsJuZMmj3ymOoXSwkbrlR8yrXkzNytZ+eCBubM1Wr1
+        CwQm0C4GJLpf+VubjAUkoKzZgDeKN8o9
+X-Google-Smtp-Source: ABdhPJzPh9/5Dzj2H8zgXe2mVdWGiMZgpYGXX/bIf3qnJ7fMOTe1H8yA0aiAvu4907EpfBEwso5LIg==
+X-Received: by 2002:a63:eb0c:: with SMTP id t12mr771240pgh.7.1609399451132;
+        Wed, 30 Dec 2020 23:24:11 -0800 (PST)
+Received: from thinkpad ([2409:4072:6d1f:be3b:71a9:d2bf:a32d:897d])
+        by smtp.gmail.com with ESMTPSA id cq15sm9274573pjb.27.2020.12.30.23.24.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 23:24:10 -0800 (PST)
+Date:   Thu, 31 Dec 2020 12:54:04 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Carl Huang <cjhuang@codeaurora.org>
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH v2] mhi: use irq_flags if client driver configures it
+Message-ID: <20201231072404.GE7345@thinkpad>
+References: <20201229070551.3129-1-cjhuang@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229070551.3129-1-cjhuang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Dec 2020 07:22:22 +0800, kernel test robot wrote:
-> Hi Timon,
->=20
-> Thank you for the patch! Yet something to improve:
->=20
-> [auto build test ERROR on regulator/for-next]
-> [also build test ERROR on pinctrl-samsung/for-next krzk/for-next v5.11-rc=
-1 next-20201223]
-> [cannot apply to robh/for-next]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->=20
-> url:    https://github.com/0day-ci/linux/commits/Timon-Baetz/extcon-max89=
-97-Add-CHGINS-and-CHGRM-interrupt-handling/20201231-045812
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator=
-.git for-next
-> config: arm-randconfig-r004-20201230 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 3c0d=
-36f977d9e012b245c796ddc8596ac3af659b)
-> reproduce (this is a W=3D1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
-n/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install arm cross compiling tool for clang build
->         # apt-get install binutils-arm-linux-gnueabi
->         # https://github.com/0day-ci/linux/commit/3a597219bbfc1f9a0b65b96=
-62b7b95bbb7cf728f
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Timon-Baetz/extcon-max8997-Add-C=
-HGINS-and-CHGRM-interrupt-handling/20201231-045812
->         git checkout 3a597219bbfc1f9a0b65b9662b7b95bbb7cf728f
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross AR=
-CH=3Darm
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->=20
-> All errors (new ones prefixed by >>):
->=20
-> >> drivers/power/supply/max8997_charger.c:261:9: error: implicit declarat=
-ion of function 'devm_extcon_register_notifier_all' [-Werror,-Wimplicit-fun=
-ction-declaration] =20
->                    ret =3D devm_extcon_register_notifier_all(&pdev->dev, =
-charger->edev,
->                          ^
->    drivers/power/supply/max8997_charger.c:261:9: note: did you mean 'devm=
-_extcon_register_notifier'?
->    include/linux/extcon.h:263:19: note: 'devm_extcon_register_notifier' d=
-eclared here
->    static inline int devm_extcon_register_notifier(struct device *dev,
->                      ^
->    1 error generated.
+On Tue, Dec 29, 2020 at 02:05:51AM -0500, Carl Huang wrote:
+> If client driver has specified the irq_flags, mhi uses this specified
+> irq_flags. Otherwise, mhi uses default irq_flags.
+> 
+> The purpose of this change is to support one MSI vector for QCA6390.
+> MHI will use one same MSI vector too in this scenario.
+> 
+> In case of one MSI vector, IRQ_NO_BALANCING is needed when irq handler
+> is requested. The reason is if irq migration happens, the msi_data may
+> change too. However, the msi_data is already programmed to QCA6390
+> hardware during initialization phase. This msi_data inconsistence will
+> result in crash in kernel.
+> 
+> Another issue is in case of one MSI vector, IRQF_NO_SUSPEND will trigger
+> WARNINGS because QCA6390 wants to disable the IRQ during the suspend.
+> 
+> To avoid above two issues, QCA6390 driver specifies the irq_flags in case
+> of one MSI vector when mhi_register_controller is called.
+> 
+> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
 
-This is failing because CONFIG_EXTCON is not set and *_all() don't have
-stub implementations in extcon.h. Should I add a fix for it in this
-series?
+Small nitpick below, with that addressed,
 
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+> ---
+> v2:
+> - document irq_flags added to mhi_controller
+> 
+>  drivers/bus/mhi/core/init.c | 9 +++++++--
+>  include/linux/mhi.h         | 2 ++
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 0ffdebd..5f74e1e 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -148,12 +148,17 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
+>  {
+>  	struct mhi_event *mhi_event = mhi_cntrl->mhi_event;
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+> +	unsigned long irq_flags = IRQF_SHARED | IRQF_NO_SUSPEND;
+>  	int i, ret;
+>  
+> +	/* if client driver has set irq_flags, use it */
+
+s/client driver/controller driver
+
+Thanks,
+Mani
+
+> +	if (mhi_cntrl->irq_flags)
+> +		irq_flags = mhi_cntrl->irq_flags;
+> +
+>  	/* Setup BHI_INTVEC IRQ */
+>  	ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
+>  				   mhi_intvec_threaded_handler,
+> -				   IRQF_SHARED | IRQF_NO_SUSPEND,
+> +				   irq_flags,
+>  				   "bhi", mhi_cntrl);
+>  	if (ret)
+>  		return ret;
+> @@ -171,7 +176,7 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
+>  
+>  		ret = request_irq(mhi_cntrl->irq[mhi_event->irq],
+>  				  mhi_irq_handler,
+> -				  IRQF_SHARED | IRQF_NO_SUSPEND,
+> +				  irq_flags,
+>  				  "mhi", mhi_event);
+>  		if (ret) {
+>  			dev_err(dev, "Error requesting irq:%d for ev:%d\n",
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index d4841e5..918cf6a 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -353,6 +353,7 @@ struct mhi_controller_config {
+>   * @fbc_download: MHI host needs to do complete image transfer (optional)
+>   * @pre_init: MHI host needs to do pre-initialization before power up
+>   * @wake_set: Device wakeup set flag
+> + * @irq_flags: irq flags passed to request_irq (optional)
+>   *
+>   * Fields marked as (required) need to be populated by the controller driver
+>   * before calling mhi_register_controller(). For the fields marked as (optional)
+> @@ -442,6 +443,7 @@ struct mhi_controller {
+>  	bool fbc_download;
+>  	bool pre_init;
+>  	bool wake_set;
+> +	unsigned long irq_flags;
+>  };
+>  
+>  /**
+> -- 
+> 2.7.4
+> 
