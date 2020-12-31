@@ -2,78 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C692E81F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 21:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A102E81F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 21:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbgLaUid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 15:38:33 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:32950 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgLaUic (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 15:38:32 -0500
-Received: by mail-ot1-f45.google.com with SMTP id b24so18865135otj.0;
-        Thu, 31 Dec 2020 12:38:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=33mJBDwSaLXSZq9uIF9tHwsSa4/sQ0g8ozhF1F4Sc6E=;
-        b=nMKNLOWz7RJaZORa+VGpDjOHTGM7NJ5DUx3fVmYmsxCZQxtktvO7/NT+VmZA4AybcR
-         4T49EoLfLCGWHp1kC+B44x/gv+aEoMCHBR1+x0eWfpNe8qEb/0m3nAXw/pYNo7VdOO5L
-         tsOUrA/3AlGRTBJT7dWCNPI9CAFy70h7FUVyVZKQX2KeDrI/XaarAN9bxLx+50fyHJfG
-         G7ygRGXXNcPoOEcXx82vIY1CtZJTJeVCfAPpK9fmM5Nr0yQFCPMYGSiEh6cwLQVICRMa
-         +mulLIYNT5Rx/VVYCAQxmW5HZSl7NSuWBbZZzFputHRuzY8bwr6HJy1Wn1njWpyM3EI4
-         1pkA==
-X-Gm-Message-State: AOAM532NHyNGxJkQUSHPz6b7FHeG8RZVT8E3DtsFHJ4gSn51Q9F215d8
-        yywjnHbRFiD93oXZF0Jb2w==
-X-Google-Smtp-Source: ABdhPJzuS6mrQN9/NoCc6lwKj14DfBKazPXicm33pfgZnY6bLolOGpW9iV1iY/aGl6PBWH0MZYg+NQ==
-X-Received: by 2002:a05:6830:1252:: with SMTP id s18mr42780191otp.4.1609447071769;
-        Thu, 31 Dec 2020 12:37:51 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id j126sm11281512oib.13.2020.12.31.12.37.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 12:37:50 -0800 (PST)
-Received: (nullmailer pid 2321274 invoked by uid 1000);
-        Thu, 31 Dec 2020 20:37:49 -0000
-Date:   Thu, 31 Dec 2020 13:37:49 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Erwan Le Ray <erwan.leray@foss.st.com>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Valentin Caron <valentin.caron@foss.st.com>,
-        linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>
-Subject: Re: [PATCH 5/8] dt-bindings: serial: stm32: update rts-gpios and
- cts-gpios
-Message-ID: <20201231203749.GA2321239@robh.at.kernel.org>
-References: <20201218190020.1572-1-erwan.leray@foss.st.com>
- <20201218190020.1572-6-erwan.leray@foss.st.com>
+        id S1726973AbgLaUja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 15:39:30 -0500
+Received: from vern.gendns.com ([98.142.107.122]:33778 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726219AbgLaUj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 15:39:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=lEeXgdp028VV5hJ5mjXAeX/jtJFLXFhcjN2tn3n28jk=; b=KBXtepTJnhf3DCcNTjuvamGQ1e
+        gIE3D1D6f1qgaqNjr9hPkleRaS/DW6yKs6WX/LjfQJZYr1X0uoaUkbpfrUOdbKRYmM7ES89kVa1pb
+        MlcNaPdBQjJyE/Y5YjnthgDg6HSP2fz+lz4T3VJEpzRes5qDo5uaIRNjmW6TT2wsQgNNnumbb2IrT
+        UN0t75iK+qTfOANaW+jvklbVPiO3o32x470pGYmqTaseSIRbvmHJlG7U9RmYRA8L574kQLe6A9ovt
+        G0TOPa9n0+AbVikhePp29opjbkaVONhCfg6ipRb90bTWnSou7+80sbEniW8z6wVl3FTbn0W757MNn
+        n4lJtlOQ==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:54980 helo=freyr.lechnology.com)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kv4ic-0006iP-6a; Thu, 31 Dec 2020 15:38:46 -0500
+From:   David Lechner <david@lechnology.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     David Lechner <david@lechnology.com>, Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: da850: add MMD SDIO interrupts
+Date:   Thu, 31 Dec 2020 14:38:29 -0600
+Message-Id: <20201231203829.2726685-1-david@lechnology.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218190020.1572-6-erwan.leray@foss.st.com>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 20:00:16 +0100, Erwan Le Ray wrote:
-> Update rts-gpios and cts-gpios:
-> - remove max-items as already defined in serial.yaml
-> - add a note describing rts-gpios and cts-gpios usage with stm32
-> 
-> Document the use of cts-gpios and rts-gpios for flow control in STM32 UART
-> controller. These properties can be used instead of 'uart-has-rtscts' or
-> 'st,hw-flow-ctrl' (deprecated) for making use of any gpio pins for flow
-> control instead of dedicated pins.
-> It should be noted that both cts-gpios/rts-gpios and 'uart-has-rtscts' or
-> 'st,hw-flow-ctrl' (deprecated) properties cannot co-exist in a design.
-> 
-> Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
-> 
+This adds the MMC SDIO interrupts to the MMC nodes in the device tree
+for TI DA850/AM18XX/OMAP-L138.
 
-Acked-by: Rob Herring <robh@kernel.org>
+The missing interrupts were causing the following error message to be
+printed:
+
+    davinci_mmc 1c40000.mmc: IRQ index 1 not found
+
+Signed-off-by: David Lechner <david@lechnology.com>
+---
+ arch/arm/boot/dts/da850.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/da850.dtsi b/arch/arm/boot/dts/da850.dtsi
+index 7cf31b6e48b7..d2c609e4da5b 100644
+--- a/arch/arm/boot/dts/da850.dtsi
++++ b/arch/arm/boot/dts/da850.dtsi
+@@ -537,7 +537,7 @@ mmc0: mmc@40000 {
+ 			reg = <0x40000 0x1000>;
+ 			cap-sd-highspeed;
+ 			cap-mmc-highspeed;
+-			interrupts = <16>;
++			interrupts = <16>, <17>;
+ 			dmas = <&edma0 16 0>, <&edma0 17 0>;
+ 			dma-names = "rx", "tx";
+ 			clocks = <&psc0 5>;
+@@ -567,7 +567,7 @@ mmc1: mmc@21b000 {
+ 			reg = <0x21b000 0x1000>;
+ 			cap-sd-highspeed;
+ 			cap-mmc-highspeed;
+-			interrupts = <72>;
++			interrupts = <72>, <73>;
+ 			dmas = <&edma1 28 0>, <&edma1 29 0>;
+ 			dma-names = "rx", "tx";
+ 			clocks = <&psc1 18>;
+-- 
+2.25.1
+
