@@ -2,110 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC372E8218
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 22:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E37B2E821A
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 22:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgLaVJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 16:09:58 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:41235 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgLaVJ5 (ORCPT
+        id S1726980AbgLaVN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 16:13:27 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:43970 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbgLaVN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 16:09:57 -0500
-Received: by mail-io1-f72.google.com with SMTP id v21so8569215iol.8
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 13:09:41 -0800 (PST)
+        Thu, 31 Dec 2020 16:13:26 -0500
+Received: by mail-oi1-f177.google.com with SMTP id q25so22900520oij.10;
+        Thu, 31 Dec 2020 13:13:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ImUavmO9HuvNyGGDB8IPh6YqAjU+wI3gTPYJmrthYXU=;
-        b=mr25COy+3deu4PQ+496o/DR568uhLGkMXv87mQLqGHNhDJ91j6jW7gN1J1huZYLRcM
-         W58PNn39svGYz5KLlJqiyscT105saF+9w4NVWCybu6SBPgu8sXkIb1erEAbWUh8yg2Rp
-         +SOzjc9ftoyuVMf61Z9oasu5icWOPS6vyHMxchPNx9mK+Plvdx0ILZDbzqrAdao4bQUI
-         vvML7QYAr4AlrlJuFBQNRu1v9FnT88iBH+JKUENh9CSlUYbCZxezsu1fKNVY4jY2T2mz
-         AUoGkt2WflIKJc9EyNPZxvalIwrZJ7p7Dx4rCOE+jLa2OJe2rSPDnt8jwaVCHq1FEkqv
-         Kwbw==
-X-Gm-Message-State: AOAM532ElDlhy6F3bWU7v9579B5qy8vBACmBl8QHX47+KsL2X/dak/jx
-        FHB1VXbVHYiKrNNTEKaHLJrF7RKhUwLZFs8qUZ5l2qIURaRG
-X-Google-Smtp-Source: ABdhPJx1u4Mvpeq4U3rJyyiMGjuuW5woFFx+b/iIzO2y+OdVVxvV6d665xsfUnub9vDZ7kuyebI1yrMoIa9ieCL84RJ0T9+u9zrp
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ky5e7ecpOimYlfmbzBD6g0sIwpx6DlLamHwFPdO7WyU=;
+        b=PBaCSqa5arFA4DXKLS9huSzh++4DUKAy4ZvlPaKTeAhGFoMepkNux4rN82h5nqr1eM
+         ZLGY1YiNTdj9jziC8gPK7A7bqIkO5cfZOWLzZYm0Wi09OOzVwTwYxzLd+gIOlcj82ju/
+         eKPRje64Tos93uvDZDNvqO+cwmZfD0NkSbJonDgZkadEltGb3GE140b1qWCO3F3S3iuz
+         72/w/wW4EtkaA+ZjN//imtxWZEzMN0njmRQXjIODWAawdF8zjdhGUUCzwW4RZq/TxAdb
+         +GD40FK2cTdEB2G1yoGNZ3DFgeL6U+MyOmEJC1n/7qhh5j+X5Pey/fp0NQPPooCpOIq9
+         vIwQ==
+X-Gm-Message-State: AOAM533ezh9tLKP18J+Sfxw8bU38qSMWRwEo1o9NoGkxQY14OEHBnV2t
+        XuquWEKXAV0IG4EjCULIeA==
+X-Google-Smtp-Source: ABdhPJwVnHsbzNBDhz5mmMwLcNOxr5M7CDDKCjDghURi0obod+G9XpfZn+7RNg7vvYhZ2HjaHlYIrg==
+X-Received: by 2002:aca:3dd5:: with SMTP id k204mr9286153oia.32.1609449165320;
+        Thu, 31 Dec 2020 13:12:45 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id r25sm11639467otp.23.2020.12.31.13.12.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 13:12:44 -0800 (PST)
+Received: (nullmailer pid 2374456 invoked by uid 1000);
+        Thu, 31 Dec 2020 21:12:40 -0000
+Date:   Thu, 31 Dec 2020 14:12:40 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] of: property: Add device link support for interrupts
+Message-ID: <20201231211240.GA2333246@robh.at.kernel.org>
+References: <20201218210750.3455872-1-saravanak@google.com>
+ <2a6dbcc83d5aca7a3340e0cf4d751cdc@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:7650:: with SMTP id z77mr50509422jab.134.1609448956306;
- Thu, 31 Dec 2020 13:09:16 -0800 (PST)
-Date:   Thu, 31 Dec 2020 13:09:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000532e0205b7c90942@google.com>
-Subject: UBSAN: shift-out-of-bounds in gred_change
-From:   syzbot <syzbot+1819b70451246ed8cf57@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2a6dbcc83d5aca7a3340e0cf4d751cdc@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Dec 21, 2020 at 09:30:45AM +0000, Marc Zyngier wrote:
+> On 2020-12-18 21:07, Saravana Kannan wrote:
+> > Add support for creating device links out of interrupts property.
+> > 
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Kevin Hilman <khilman@baylibre.com>
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> > Rob/Greg,
+> > 
+> > This might need to go into driver-core to avoid conflict
+> > due to fw_devlink refactor series that merged there.
+> > 
+> > Thanks,
+> > Saravana
+> > 
+> > 
+> >  drivers/of/property.c | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> > 
+> > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > index 5f9eed79a8aa..e56a5eae0a0b 100644
+> > --- a/drivers/of/property.c
+> > +++ b/drivers/of/property.c
+> > @@ -1271,6 +1271,22 @@ static struct device_node
+> > *parse_iommu_maps(struct device_node *np,
+> >  	return of_parse_phandle(np, prop_name, (index * 4) + 1);
+> >  }
+> > 
+> > +static struct device_node *parse_interrupts(struct device_node *np,
+> > +					    const char *prop_name, int index)
+> > +{
+> > +	struct device_node *sup;
+> > +
+> > +	if (strcmp(prop_name, "interrupts") || index)
+> > +		return NULL;
+> > +
+> > +	of_node_get(np);
+> > +	while (np && !(sup = of_parse_phandle(np, "interrupt-parent", 0)))
+> > +		np = of_get_next_parent(np);
+> > +	of_node_put(np);
+> > +
+> > +	return sup;
+> > +}
+> > +
+> >  static const struct supplier_bindings of_supplier_bindings[] = {
+> >  	{ .parse_prop = parse_clocks, },
+> >  	{ .parse_prop = parse_interconnects, },
+> > @@ -1296,6 +1312,7 @@ static const struct supplier_bindings
+> > of_supplier_bindings[] = {
+> >  	{ .parse_prop = parse_pinctrl6, },
+> >  	{ .parse_prop = parse_pinctrl7, },
+> >  	{ .parse_prop = parse_pinctrl8, },
+> > +	{ .parse_prop = parse_interrupts, },
+> >  	{ .parse_prop = parse_regulators, },
+> >  	{ .parse_prop = parse_gpio, },
+> >  	{ .parse_prop = parse_gpios, },
+> 
+> You don't really describe what this is for so I'm only guessing
+> from the context. If you want to follow the interrupt hierarchy,
+> "interrupt-parent" isn't enough. You also need to track
+> things like interrupt-map, or anything that carries a phandle
+> to an interrupt controller.
 
-syzbot found the following issue on:
+We don't need to follow the hierarchy, we just need the immediate 
+dependencies. But you are right that 'interrupt-map' also needs to be 
+tracked.
 
-HEAD commit:    3db1a3fa Merge tag 'staging-5.11-rc1' of git://git.kernel...
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=155708db500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2ae878fbf640b72b
-dashboard link: https://syzkaller.appspot.com/bug?extid=1819b70451246ed8cf57
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=176b78c0d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12993797500000
+I also noticed that we define 'interrupt-parent' as a dependency to 
+parse, but that's wrong. The dependency is where 'interrupts' appears 
+and where 'interrupt-parent' appears is irrelevant.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1819b70451246ed8cf57@syzkaller.appspotmail.com
-
-IPVS: ftp: loaded support on port[0] = 21
-================================================================================
-UBSAN: shift-out-of-bounds in ./include/net/red.h:252:22
-shift exponent 255 is too large for 32-bit type 'int'
-CPU: 0 PID: 8465 Comm: syz-executor194 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- red_set_parms include/net/red.h:252 [inline]
- gred_change_vq net/sched/sch_gred.c:506 [inline]
- gred_change.cold+0xce/0xe2 net/sched/sch_gred.c:702
- qdisc_change net/sched/sch_api.c:1331 [inline]
- tc_modify_qdisc+0xd4e/0x1a30 net/sched/sch_api.c:1633
- rtnetlink_rcv_msg+0x493/0xb40 net/core/rtnetlink.c:5564
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x907/0xe10 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xd3/0x130 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440e69
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b 10 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff634be6d8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004a2730 RCX: 0000000000440e69
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
-RBP: 00007fff634be6e0 R08: 0000000120080522 R09: 0000000120080522
-R10: 0000000120080522 R11: 0000000000000246 R12: 00000000004a2730
-R13: 0000000000402390 R14: 0000000000000000 R15: 0000000000000000
-================================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Rob
