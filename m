@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED682E7FF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D22E62E8003
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgLaMgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 07:36:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgLaMgC (ORCPT
+        id S1726707AbgLaMwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 07:52:11 -0500
+Received: from aclms1.advantech.com.tw ([61.58.41.199]:52393 "EHLO
+        aclms1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726348AbgLaMwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 07:36:02 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B985C061573;
-        Thu, 31 Dec 2020 04:35:22 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id x2so17284095ybt.11;
-        Thu, 31 Dec 2020 04:35:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mXeVoFxs+745Wn6735e+UTYyK3Qp5zeb9a5sClBGG1s=;
-        b=oC9xhQ1dG3zjyvFnxOaAiL7i12X1Uon3b46xKKmXQIjNbdhTjhmfyai6RNvG9H7V7E
-         fZpUFKJU+zGCwaclDJL2PrgIwrw+3pTzcjaiLmTG/sA3WJHwuhQOIp6Eqyqc4mGK2M6u
-         JLt3tXsipUhbI7y87pYHRSsclIKYXSFnRNcoU36BI5IyYaMd1C5yEeMGsL9kzbNvasM1
-         IlOH8LhzOB5GgxDla8QaqJeG4CQbWiVoD61i/QCZglal7+2ObbwGhPUCsTvWLInjVzJ+
-         SSrlzR284MAD8vKLuFRxdnWlduDvMD3ruS7uICW4sEPWk/hTQwgxR69Rn1j3swtoivss
-         p8XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mXeVoFxs+745Wn6735e+UTYyK3Qp5zeb9a5sClBGG1s=;
-        b=d1cRSSBp1/mTA4vBJvfgdjh8ftMOSbckWQh+o/j9qJyuv4P6ODy0xk7cTDg//0fOxT
-         gfXUnwkIhHMD8IY9b95ZQx0+PqUOLGittk/k+CJshZBfHGgQT/+Umk5J25Rs9ja+t8i6
-         VZeCM0djxMEU26DOvziE/+juAM74C7vFDOptBPayjr3BLTMW6jgZV+oct6m89cXIOAeL
-         X6PxNCDJasz2tzlZ3ah50ro570Bs13r0TIsdCPCkDJ12Rbn88PiRm9BHXArSnu7OPf3p
-         8Nc+QxZmdxS1OnbXFe64VEkdlqaD3eEvkrDt7LM5mvIsDBoU8MzlGOBoLXRdgAummpKC
-         EIuw==
-X-Gm-Message-State: AOAM5334N2w7yesgPA7BdezJwadaN6pratNHskslNBc73FNGLy7y9OJa
-        PA4dvK7C7suSfWRRZdO9uZ9p0ieQ8dqjSJOh69PSjn2IpcDW6g==
-X-Google-Smtp-Source: ABdhPJz9dLs9E9IoS3g7I2E47i4ZpH5DoAIvMoVlA0ks9MGZ3DQXhgq0Sj9ASlKbTaUPB23zhjkzV6Yqp0moO//3Bu0=
-X-Received: by 2002:a25:5f07:: with SMTP id t7mr81698226ybb.395.1609418121278;
- Thu, 31 Dec 2020 04:35:21 -0800 (PST)
+        Thu, 31 Dec 2020 07:52:10 -0500
+X-Greylist: delayed 686 seconds by postgrey-1.27 at vger.kernel.org; Thu, 31 Dec 2020 07:52:09 EST
+Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS2.ADVANTECH.CORP
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Te3c6efff9fac14014b2650@ACLMS2.ADVANTECH.CORP>;
+ Thu, 31 Dec 2020 20:39:53 +0800
+Received: from localhost (172.16.12.146) by taipei09.ADVANTECH.CORP
+ (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Thu, 31 Dec
+ 2020 20:40:03 +0800
+From:   Campion Kang <campion.kang@advantech.com.tw>
+To:     <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        <linux-hwmon@vger.kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        <linux-watchdog@vger.kernel.org>,
+        AceLan Kao <chia-lin.kao@canonical.com>,
+        Campion Kang <campion.kang@advantech.com.tw>
+Subject: [PATCH v5 1/6] MAINTAINERS: Add Advantech AHC1 embedded controller entry
+Date:   Thu, 31 Dec 2020 20:39:43 +0800
+Message-ID: <20201231123948.10473-1-campion.kang@advantech.com.tw>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201228135104.28566-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20201228135104.28566-1-zhengyongjun3@huawei.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 31 Dec 2020 12:34:55 +0000
-Message-ID: <CA+V-a8tAbXFxJsJ4MUgQa2rVRiW4P_OkHCmJFM5kNgfMqoRrDg@mail.gmail.com>
-Subject: Re: [PATCH -next] media: platform: davinci: Use DEFINE_SPINLOCK() for spinlock
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [172.16.12.146]
+X-ClientProxiedBy: aclcas3.ADVANTECH.CORP (172.20.1.12) To
+ taipei09.ADVANTECH.CORP (172.20.0.236)
+X-TM-SNTS-SMTP: DC59C5B75EFFC2C1B12861D66EBDBD8A25B1FB9FCF13927189C1CD79B162027F2000:8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zheng,
+Add Advantech AHC1 embedded controller entry
 
-Thank you for the patch.
+Signed-off-by: Campion Kang <campion.kang@advantech.com.tw>
+---
+ MAINTAINERS | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-On Mon, Dec 28, 2020 at 1:50 PM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
->
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
->
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/media/platform/davinci/vpif.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-Reviewed-by: Lad Prabhakar <prabhakar.csengg@gmail.com>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 546aa66428c9..20766da2e794 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -562,6 +562,16 @@ S:	Maintained
+ F:	Documentation/scsi/advansys.rst
+ F:	drivers/scsi/advansys.c
+ 
++ADVANTECH EMBEDDED CONTROLLER DRIVER
++M:	Campion Kang <campion.kang@advantech.com.tw>
++L:	linux-kernel@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/mfd/ahc1ec0.yaml
++F:	drivers/hwmon/ahc1ec0-hwmon.c
++F:	drivers/mfd/ahc1ec0.c
++F:	drivers/watchdog/ahc1ec0-wdt.c
++F:	include/dt-bindings/mfd/ahc1ec0-dt.h
++
+ ADXL34X THREE-AXIS DIGITAL ACCELEROMETER DRIVER (ADXL345/ADXL346)
+ M:	Michael Hennerich <michael.hennerich@analog.com>
+ S:	Supported
+-- 
+2.17.1
 
-Cheers,
-Prabhakar
-
-> diff --git a/drivers/media/platform/davinci/vpif.c b/drivers/media/platform/davinci/vpif.c
-> index 5e67994e62cc..f1ce10828b8e 100644
-> --- a/drivers/media/platform/davinci/vpif.c
-> +++ b/drivers/media/platform/davinci/vpif.c
-> @@ -41,7 +41,7 @@ MODULE_ALIAS("platform:" VPIF_DRIVER_NAME);
->  #define VPIF_CH2_MAX_MODES     15
->  #define VPIF_CH3_MAX_MODES     2
->
-> -spinlock_t vpif_lock;
-> +DEFINE_SPINLOCK(vpif_lock);
->  EXPORT_SYMBOL_GPL(vpif_lock);
->
->  void __iomem *vpif_base;
-> @@ -437,7 +437,6 @@ static int vpif_probe(struct platform_device *pdev)
->         pm_runtime_enable(&pdev->dev);
->         pm_runtime_get(&pdev->dev);
->
-> -       spin_lock_init(&vpif_lock);
->         dev_info(&pdev->dev, "vpif probe success\n");
->
->         /*
-> --
-> 2.22.0
->
