@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427BF2E7DF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 05:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 190C12E7DED
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 05:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgLaELq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 23:11:46 -0500
-Received: from regular1.263xmail.com ([211.150.70.195]:35578 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbgLaELq (ORCPT
+        id S1726290AbgLaEIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 23:08:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgLaEIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 23:11:46 -0500
-Received: from localhost (unknown [192.168.167.32])
-        by regular1.263xmail.com (Postfix) with ESMTP id F25971BED;
-        Thu, 31 Dec 2020 12:05:50 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [14.18.236.70])
-        by smtp.263.net (postfix) whith ESMTP id P25766T139972080289536S1609387543054560_;
-        Thu, 31 Dec 2020 12:05:50 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <bca5b2d8096ff06bf864537c773c2a28>
-X-RL-SENDER: yili@winhong.com
-X-SENDER: yili@winhong.com
-X-LOGIN-NAME: yili@winhong.com
-X-FST-TO: joseph.qi@linux.alibaba.com
-X-SENDER-IP: 14.18.236.70
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Yi Li <yili@winhong.com>
-To:     joseph.qi@linux.alibaba.com
-Cc:     mark@fasheh.com, yilikernel@gmail.com, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org, Yi Li <yili@winhong.com>
-Subject: [PATCH] ocfs2: Remove redundant conditional before iput
-Date:   Thu, 31 Dec 2020 12:05:35 +0800
-Message-Id: <20201231040535.4091761-1-yili@winhong.com>
-X-Mailer: git-send-email 2.25.3
+        Wed, 30 Dec 2020 23:08:18 -0500
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21BDC061573;
+        Wed, 30 Dec 2020 20:07:37 -0800 (PST)
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id D98FB2800B3D7;
+        Thu, 31 Dec 2020 05:07:35 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id CFA4D40DBA; Thu, 31 Dec 2020 05:07:35 +0100 (CET)
+Date:   Thu, 31 Dec 2020 05:07:35 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kai Heng Feng <kai.heng.feng@canonical.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Time to re-enable Runtime PM per default for PCI devcies?
+Message-ID: <20201231040735.GA2075@wunner.de>
+References: <79940973-b631-90f9-dbc4-9579c6000816@gmail.com>
+ <20201117163817.GA1397220@bjorn-Precision-5520>
+ <CAJZ5v0ipMJ1gCB7okpROG_yAUi5Q8LknqeH+Jpdrjbb4D_vfuQ@mail.gmail.com>
+ <9ca0fb46-9e65-31e2-103f-1c98ce8362c7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ca0fb46-9e65-31e2-103f-1c98ce8362c7@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iput handles NULL pointers gracefully, so there's no need to
-check the pointer before the call.
+On Wed, Dec 30, 2020 at 11:56:04PM +0100, Heiner Kallweit wrote:
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -3024,7 +3024,9 @@ void pci_pm_init(struct pci_dev *dev)
+>  	u16 status;
+>  	u16 pmc;
+>  
+> -	pm_runtime_forbid(&dev->dev);
+> +	if (pci_acpi_forbid_runtime_pm())
+> +		pm_runtime_forbid(&dev->dev);
+> +
 
-Signed-off-by: Yi Li <yili@winhong.com>
----
- fs/ocfs2/super.c | 2 --
- 1 file changed, 2 deletions(-)
+Generic PCI code usually does not call ACPI-specific functions directly,
+but rather through a pci_platform_pm_ops callback.
 
-diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-index 2febc76e9de7..079f8826993e 100644
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -973,8 +973,6 @@ static void ocfs2_disable_quotas(struct ocfs2_super *osb)
- 		 * quota files */
- 		dquot_disable(sb, type, DQUOT_USAGE_ENABLED |
- 					DQUOT_LIMITS_ENABLED);
--		if (!inode)
--			continue;
- 		iput(inode);
- 	}
- }
--- 
-2.25.3
+FWIW, if platform_pci_power_manageable() returns true, it can probably
+be assumed that allowing runtime PM by default is okay.  So as a first
+step, you may want to call that instead of adding a new callback.
 
+Thanks,
 
-
+Lukas
