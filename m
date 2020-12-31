@@ -2,182 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB192E8135
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 17:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421FC2E813B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 17:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727302AbgLaQRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 11:17:19 -0500
-Received: from mga01.intel.com ([192.55.52.88]:4913 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726071AbgLaQRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 11:17:19 -0500
-IronPort-SDR: Vma6j85AvDnoreMR0JGJeCd6P+IDM9nb4XbyDhruScSnjT4zlYS9Z4TPGZTSfsp1eNLokolMfj
- ghrWJku0Ds+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9851"; a="195228185"
-X-IronPort-AV: E=Sophos;i="5.78,464,1599548400"; 
-   d="scan'208";a="195228185"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Dec 2020 08:16:36 -0800
-IronPort-SDR: LGBdUW7uuPWvhE3ofi5hZ+Y5GBuYiV+YfOUVcKc+23pJrM1h3rLkx+0b4A343NJ2i6P/RLpOpW
- 6KAGcrMrZK4w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,464,1599548400"; 
-   d="scan'208";a="348301608"
-Received: from lkp-server02.sh.intel.com (HELO 4242b19f17ef) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 31 Dec 2020 08:16:35 -0800
-Received: from kbuild by 4242b19f17ef with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kv0ct-00052m-29; Thu, 31 Dec 2020 16:16:35 +0000
-Date:   Fri, 01 Jan 2021 00:16:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS WITH WARNING
- 295c99e6b1466988ac66cd710411f11c610b0294
-Message-ID: <5fedf95f.va4P9fryO6FtsW1z%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1727409AbgLaQ3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 11:29:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgLaQ3y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 11:29:54 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4099C061573;
+        Thu, 31 Dec 2020 08:29:13 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id f132so22220234oib.12;
+        Thu, 31 Dec 2020 08:29:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Vn+j/WNjIhIUuxZEWw5e5TKYZNMJfqI1mbpEqq5yOpc=;
+        b=Lca1oWR8tl2XHHisLTpXhvuv+Ls10CS/+osfKC33Rx20E6kwWRnyinO44PwVvlhvnc
+         V+Qozk4haEM5fRG8i7cEloJsfTFgRipSMEF1/4Rew1KQklmIRZBnOmAcmzb8PaIsoBko
+         jemzG1S6Xv5hkShir32jvxcT5hFfgDhOrJK4zhR5xqJRKG1KvE+eNtIgC1knLtgU7teI
+         Vh7haWxi14nYWxeawQQ6QwJXmJKpxuJsQWhQHlPM6aI2HOvssYoWCoxf3LdinmcDN6iv
+         3E8ca2zDcByYZBW9VhKQvuTuG931EMm6g9PLi2B6CwzPnLEq6o9zsVf48tCSQOHQcCzE
+         LxBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Vn+j/WNjIhIUuxZEWw5e5TKYZNMJfqI1mbpEqq5yOpc=;
+        b=e+pv9q35sDCMLdyF+LABFrXtGLDtqnk6DfMi5LcFusAN1VnKv282TRXvyHaaC/WbZm
+         savmmtTdQCH51TFHYRn/YauEJPjiLZ+rBGIrTe8PCvdSR34kU1wUuD850GdestIgOm3V
+         zrYERVQ5pDggcKvC+6oLB1Xai7GOdrryDkZFb8X0cJzdZ4y/27TCzoxFQkwTvj23UpwI
+         QnVjiNrYTPRRcyC/DHsSVi5yit2wCQ17dEjPwzSCGdBmb+ijMmDbL+vVA2QzD7OnH+NR
+         6Ny1FttZxqjgNQlPyfjOWgEa6sYPnbP5URPCRhPWbujbmNfAoRYr4hlcG8h1CBqdo2CD
+         GZjg==
+X-Gm-Message-State: AOAM530xDZabUNjhC8RBVxj7ldc7uZwrd6dMZN/IdGdDn/4z4lCyKxNp
+        ak1c1Yhh7/2l4ObwEcpfFVE=
+X-Google-Smtp-Source: ABdhPJwPHc9yRDYcP8A75erYXDsjLxi3zJHLATqhDNoBmgWT6m6ovj1aNE/EuuNF8pSA7GaKBELYmg==
+X-Received: by 2002:aca:474b:: with SMTP id u72mr8706432oia.114.1609432153315;
+        Thu, 31 Dec 2020 08:29:13 -0800 (PST)
+Received: from localhost ([184.21.204.5])
+        by smtp.gmail.com with ESMTPSA id c204sm10955890oob.44.2020.12.31.08.29.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 08:29:12 -0800 (PST)
+Date:   Thu, 31 Dec 2020 08:29:04 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, magnus.karlsson@intel.com
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "(open list:XDP SOCKETS \\(AF_XDP\\))" <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org (open list:XDP SOCKETS \(AF_XDP\)),
+        "(open list:XDP SOCKETS \\(AF_XDP\\) open list)" 
+        <linux-kernel@vger.kernel.org>
+Message-ID: <5fedfc50493de_4b796208cb@john-XPS-13-9370.notmuch>
+In-Reply-To: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
+References: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
+Subject: RE: [PATCH bpf-next] xsk: build skb by page
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: 295c99e6b1466988ac66cd710411f11c610b0294  rcutorture: Add rcutree.use_softirq=0 to RUDE01 and TASKS01
+Xuan Zhuo wrote:
+> This patch is used to construct skb based on page to save memory copy
+> overhead.
+> 
+> Taking into account the problem of addr unaligned, and the
+> possibility of frame size greater than page in the future.
+> 
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  net/xdp/xsk.c | 68 ++++++++++++++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 51 insertions(+), 17 deletions(-)
+> 
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index ac4a317..7cab40f 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -430,6 +430,55 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+>  	sock_wfree(skb);
+>  }
+>  
+> +static struct sk_buff *xsk_build_skb_bypage(struct xdp_sock *xs, struct xdp_desc *desc)
+> +{
+> +	char *buffer;
+> +	u64 addr;
+> +	u32 len, offset, copy, copied;
+> +	int err, i;
+> +	struct page *page;
+> +	struct sk_buff *skb;
+> +
+> +	skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
 
-Warning ids grouped by kconfigs:
+Because this is just grabbing an skb did you consider build_skb?
 
-gcc_recent_errors
-`-- x86_64-randconfig-c002-20201229
-    `-- kernel-rcu-rcuscale.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
+> +	if (unlikely(!skb))
+> +		return NULL;
 
-elapsed time: 723m
+I think it would be best to push err back to caller here with ERR_PTR().
 
-configs tested: 117
-configs skipped: 2
+> +
+> +	addr = desc->addr;
+> +	len = desc->len;
+> +
+> +	buffer = xsk_buff_raw_get_data(xs->pool, addr);
+> +	offset = offset_in_page(buffer);
+> +	addr = buffer - (char *)xs->pool->addrs;
+> +
+> +	for (copied = 0, i = 0; copied < len; ++i) {
+> +		page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> +
+> +		get_page(page);
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                            alldefconfig
-powerpc                      pcm030_defconfig
-x86_64                              defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                        bcm63xx_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                           corgi_defconfig
-powerpc                          allyesconfig
-m68k                       m5208evb_defconfig
-mips                         tb0226_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                      tqm8xx_defconfig
-arm                           u8500_defconfig
-powerpc                     skiroot_defconfig
-arm                        oxnas_v6_defconfig
-arm                        mvebu_v5_defconfig
-sh                   sh7724_generic_defconfig
-mips                      pic32mzda_defconfig
-arm                       aspeed_g5_defconfig
-arm                           spitz_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                      chrp32_defconfig
-powerpc                         wii_defconfig
-mips                       bmips_be_defconfig
-microblaze                          defconfig
-sh                           se7722_defconfig
-sh                            migor_defconfig
-arm                      integrator_defconfig
-mips                           ip22_defconfig
-powerpc                           allnoconfig
-powerpc                    sam440ep_defconfig
-arc                     haps_hs_smp_defconfig
-ia64                             alldefconfig
-sh                     sh7710voipgw_defconfig
-powerpc                     tqm8541_defconfig
-arm                      tct_hammer_defconfig
-powerpc                      walnut_defconfig
-arm                           sunxi_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-i386                               tinyconfig
-i386                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-i386                 randconfig-a003-20201231
-i386                 randconfig-a004-20201231
-i386                 randconfig-a002-20201231
-i386                 randconfig-a001-20201231
-i386                 randconfig-a005-20201231
-i386                 randconfig-a006-20201231
-x86_64               randconfig-a015-20201231
-x86_64               randconfig-a014-20201231
-x86_64               randconfig-a011-20201231
-x86_64               randconfig-a016-20201231
-x86_64               randconfig-a013-20201231
-x86_64               randconfig-a012-20201231
-i386                 randconfig-a016-20201231
-i386                 randconfig-a014-20201231
-i386                 randconfig-a012-20201231
-i386                 randconfig-a015-20201231
-i386                 randconfig-a011-20201231
-i386                 randconfig-a013-20201231
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Is it obvious why this get_page() is needed? Maybe a small comment would
+be nice. Something like, "we need to inc refcnt on page to ensure skb
+does not release page from pool".
 
-clang tested configs:
-x86_64               randconfig-a005-20201231
-x86_64               randconfig-a006-20201231
-x86_64               randconfig-a001-20201231
-x86_64               randconfig-a002-20201231
-x86_64               randconfig-a004-20201231
-x86_64               randconfig-a003-20201231
-x86_64               randconfig-a014-20201229
-x86_64               randconfig-a015-20201229
-x86_64               randconfig-a016-20201229
-x86_64               randconfig-a012-20201229
-x86_64               randconfig-a011-20201229
-x86_64               randconfig-a013-20201229
+> +
+> +		copy = min((u32)(PAGE_SIZE - offset), len - copied);
+> +
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+nit: take it or leave it, seems like a lot of new lines imo. I would
+just put all these together. Not really important though.
+
+> +		skb_fill_page_desc(skb, i, page, offset, copy);
+> +
+> +		copied += copy;
+> +		addr += copy;
+> +		offset = 0;
+> +	}
+> +
+> +	skb->len += len;
+> +	skb->data_len += len;
+> +	skb->truesize += len;
+> +
+> +	refcount_add(len, &xs->sk.sk_wmem_alloc);
+> +
+> +	skb->dev = xs->dev;
+> +	skb->priority = xs->sk.sk_priority;
+> +	skb->mark = xs->sk.sk_mark;
+> +	skb_shinfo(skb)->destructor_arg = (void *)(long)addr;
+> +	skb->destructor = xsk_destruct_skb;
+> +
+> +	return skb;
+> +}
+> +
+>  static int xsk_generic_xmit(struct sock *sk)
+>  {
+>  	struct xdp_sock *xs = xdp_sk(sk);
+> @@ -445,40 +494,25 @@ static int xsk_generic_xmit(struct sock *sk)
+>  		goto out;
+>  
+>  	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+> -		char *buffer;
+> -		u64 addr;
+> -		u32 len;
+> -
+>  		if (max_batch-- == 0) {
+>  			err = -EAGAIN;
+>  			goto out;
+>  		}
+>  
+> -		len = desc.len;
+> -		skb = sock_alloc_send_skb(sk, len, 1, &err);
+> +		skb = xsk_build_skb_bypage(xs, &desc);
+>  		if (unlikely(!skb))
+
+Is err set here? Either way if skb is an ERR_PTR we can use that
+here for better error handling.
+
+>  			goto out;
+>  
+> -		skb_put(skb, len);
+> -		addr = desc.addr;
+> -		buffer = xsk_buff_raw_get_data(xs->pool, addr);
+> -		err = skb_store_bits(skb, 0, buffer, len);
+>  		/* This is the backpressure mechanism for the Tx path.
+>  		 * Reserve space in the completion queue and only proceed
+>  		 * if there is space in it. This avoids having to implement
+>  		 * any buffering in the Tx path.
+>  		 */
+> -		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
+> +		if (xskq_prod_reserve(xs->pool->cq)) {
+>  			kfree_skb(skb);
+
+Same here, do we need to set err now that its not explicit above in
+err = skb_store_bits...
+
+>  			goto out;
+>  		}
+>  
+> -		skb->dev = xs->dev;
+> -		skb->priority = sk->sk_priority;
+> -		skb->mark = sk->sk_mark;
+> -		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
+> -		skb->destructor = xsk_destruct_skb;
+> -
+>  		err = __dev_direct_xmit(skb, xs->queue_id);
+>  		if  (err == NETDEV_TX_BUSY) {
+>  			/* Tell user-space to retry the send */
+> -- 
+> 1.8.3.1
+> 
