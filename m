@@ -2,104 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F502E801F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AC92E8024
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgLaMzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 07:55:18 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:35679 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgLaMzQ (ORCPT
+        id S1726942AbgLaMzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 07:55:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgLaMzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 07:55:16 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 75D64E0003;
-        Thu, 31 Dec 2020 12:54:28 +0000 (UTC)
-Date:   Thu, 31 Dec 2020 13:54:28 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kevin.lhopital@hotmail.com
-Subject: Re: [PATCH v3 09/15] media: sunxi: Add support for the A31 MIPI
- CSI-2 controller
-Message-ID: <X+3KBO6o5HVRh12e@aptenodytes>
-References: <20201211155708.154710-1-paul.kocialkowski@bootlin.com>
- <20201211155708.154710-10-paul.kocialkowski@bootlin.com>
- <20201214113904.v6j7z3yrvjv74dcd@gilmour>
+        Thu, 31 Dec 2020 07:55:52 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60235C061573;
+        Thu, 31 Dec 2020 04:55:11 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id o13so43915092lfr.3;
+        Thu, 31 Dec 2020 04:55:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=o561zXcFz+lprPcoBSWJ30moRo9BkHfNcbWfQxWHUqY=;
+        b=u97whO8Cdc3ZdgBeh5qxgBHcuR2NcoCXxumLQLydgqgxVQTHwVCPdaHWcx3tLSbzC5
+         FuxIaGK4zf+0FqtTLsEEacdr9ItvDpY8/OEmXog5EcNMlPyB4IwlyBHTr8YZGU0FgNVc
+         CrfZpK+13fkKm1XN3NrRWO/pVveCSz5AStMiTm/C3IROpr7lay1yEwCtHPw7JpIcQ/lH
+         +AMYeu890Qd8cuoa/RkkfjFNgsIr2a9XGYUXzMs5jwByjzm0cFmD03wfyWLbalgPNm/+
+         tfIuNt5MYAo7ee8z2OZFFXklamQrK4sa0qslBO/+dylr7nnfqUed3B8KZfPrLUpeHubL
+         Eo2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=o561zXcFz+lprPcoBSWJ30moRo9BkHfNcbWfQxWHUqY=;
+        b=aoNYD+ZX5721iI6vvyOoCngR3eyVe3qrXxY4tWVKoPr9lWmmK7FX0WbEXEPXIHo2u9
+         9+k17EZ7dpzRwknw7MFyKDwhqSuliGq5/08fFVUgoQFcb+fdXa1ZztERRILTgYVEh+C4
+         CxozsU461E6m+MKSeJmcSaRUb90/sKfr6rntk1fBUzAOtDkvjxz5oertHr/EeRR+miDo
+         MfwrYgGtN9qkepP2SB7vet+UuPaFTjMcPgyB6aeucgxFes/WtuyEd/X28vHWZZVagW+w
+         T6apoqmBAIkDQkwlP1aSNVlpLvKeL9Fsj3gZwu7pn/tl9M/GhglFlKXZ6fFyMqenTmC9
+         zy7Q==
+X-Gm-Message-State: AOAM532YsH2n6+KJfAG5CgiBB/PBg+nynteYGwXYUpL9c17kY1PYWmfB
+        EHNlYN+vYnyBQd4HPgl8cHP/MHO9QwA0ghS2
+X-Google-Smtp-Source: ABdhPJzTM8k/uHVd+cyYYtY/sjtS3fFiFFrrr75EhaENHljWGUdEQ6ezZVlEhThcOyIMLtWj0h8JCQ==
+X-Received: by 2002:ac2:4d28:: with SMTP id h8mr23119748lfk.263.1609419309811;
+        Thu, 31 Dec 2020 04:55:09 -0800 (PST)
+Received: from [10.0.0.113] (91-157-87-152.elisa-laajakaista.fi. [91.157.87.152])
+        by smtp.gmail.com with ESMTPSA id 2sm6219535lff.188.2020.12.31.04.55.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Dec 2020 04:55:09 -0800 (PST)
+To:     Tony Lindgren <tony@atomide.com>, Amit Kucheria <amitk@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     Eduardo Valentin <edubezval@gmail.com>, Keerthy <j-keerthy@ti.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>, Sebastian Reichel <sre@kernel.org>
+References: <20201230084338.19410-1-tony@atomide.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH 1/3] thermal: ti-soc-thermal: Fix stuck sensor with
+ continuous mode for 4430
+Message-ID: <f108ac41-b38f-2d19-97ee-aaa5a7fdd1cc@gmail.com>
+Date:   Thu, 31 Dec 2020 14:55:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="UZSCC+lhIG3E1TOG"
-Content-Disposition: inline
-In-Reply-To: <20201214113904.v6j7z3yrvjv74dcd@gilmour>
+In-Reply-To: <20201230084338.19410-1-tony@atomide.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tony,
 
---UZSCC+lhIG3E1TOG
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 12/30/20 10:43 AM, Tony Lindgren wrote:
+> At least for 4430, trying to use the single conversion mode eventually
+> hangs the thermal sensor. This can be quite easily seen with errors:
+> 
+> thermal thermal_zone0: failed to read out thermal zone (-5)
+> 
+> Also, trying to read the temperature shows a stuck value with:
+> 
+> $ while true; do cat /sys/class/thermal/thermal_zone0/temp; done
+> 
+> Where the temperature is not rising at all with the busy loop.
+> 
+> Additionally, the EOCZ (end of conversion) bit is not rising on 4430 in
+> single conversion mode while it works fine in continuous conversion mode.
+> It is also possible that the hung temperature sensor can affect the
+> thermal shutdown alert too.
+> 
+> Let's fix the issue by adding TI_BANDGAP_FEATURE_CONT_MODE_ONLY flag and
+> use it for 4430.
+> 
+> Note that we also need to add udelay to for the EOCZ (end of conversion)
+> bit polling as otherwise we have it time out too early on 4430. We'll be
+> changing the loop to use iopoll in the following clean-up patch.
 
-Hi,
+I don't yet have my setup in working condition, so I can not test these.
 
-On Mon 14 Dec 20, 12:39, Maxime Ripard wrote:
-> On Fri, Dec 11, 2020 at 04:57:02PM +0100, Paul Kocialkowski wrote:
-> > +#define sun6i_mipi_csi2_subdev_video(subdev) \
-> > +	container_of(subdev, struct sun6i_mipi_csi2_video, subdev)
-> > +
-> > +#define sun6i_mipi_csi2_video_dev(video) \
-> > +	container_of(video, struct sun6i_mipi_csi2_dev, video)
->=20
-> Isn't it a bit unsafe?
->=20
-> The second subdev and video here is not the variable passed in the macro
-> but the field in the structure, so any attempt at using those two macros
-> with anything but a variable named subdev or video will result in a
-> compilation issue?
+> Cc: Adam Ford <aford173@gmail.com>
+> Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+> Cc: Eduardo Valentin <edubezval@gmail.com>
+> Cc: Merlijn Wajer <merlijn@wizzup.org>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+>  drivers/thermal/ti-soc-thermal/omap4-thermal-data.c | 3 ++-
+>  drivers/thermal/ti-soc-thermal/ti-bandgap.c         | 9 +++++++--
+>  drivers/thermal/ti-soc-thermal/ti-bandgap.h         | 2 ++
+>  3 files changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c b/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
+> --- a/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
+> +++ b/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
+> @@ -58,7 +58,8 @@ omap4430_adc_to_temp[OMAP4430_ADC_END_VALUE - OMAP4430_ADC_START_VALUE + 1] = {
+>  const struct ti_bandgap_data omap4430_data = {
+>  	.features = TI_BANDGAP_FEATURE_MODE_CONFIG |
+>  			TI_BANDGAP_FEATURE_CLK_CTRL |
+> -			TI_BANDGAP_FEATURE_POWER_SWITCH,
+> +			TI_BANDGAP_FEATURE_POWER_SWITCH |
+> +			TI_BANDGAP_FEATURE_CONT_MODE_ONLY,
 
-Yep you're totally right. Will fix in the next revision!
+Can we add a comment with the observations?
 
-Cheers,
+>  	.fclock_name = "bandgap_fclk",
+>  	.div_ck_name = "bandgap_fclk",
+>  	.conv_table = omap4430_adc_to_temp,
+> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/clk.h>
+> +#include <linux/delay.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/err.h>
+> @@ -605,8 +606,10 @@ ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id)
+>  	u32 counter = 1000;
+>  	struct temp_sensor_registers *tsr;
+>  
+> -	/* Select single conversion mode */
+> -	if (TI_BANDGAP_HAS(bgp, MODE_CONFIG))
+> +	/* Select continuous or single conversion mode */
+> +	if (TI_BANDGAP_HAS(bgp, CONT_MODE_ONLY))
+> +		RMW_BITS(bgp, id, bgap_mode_ctrl, mode_ctrl_mask, 1);
+> +	else if (TI_BANDGAP_HAS(bgp, MODE_CONFIG))
+>  		RMW_BITS(bgp, id, bgap_mode_ctrl, mode_ctrl_mask, 0);
 
-Paul
+Would not be better to:
+if (TI_BANDGAP_HAS(bgp, MODE_CONFIG)) {
+	if (TI_BANDGAP_HAS(bgp, CONT_MODE_ONLY))
+		RMW_BITS(bgp, id, bgap_mode_ctrl, mode_ctrl_mask, 1);
+	else
+		RMW_BITS(bgp, id, bgap_mode_ctrl, mode_ctrl_mask, 0);
+}
 
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+One can only switch to cont/single mode if the mode config is possible.
 
---UZSCC+lhIG3E1TOG
-Content-Type: application/pgp-signature; name="signature.asc"
+>  
+>  	/* Start of Conversion = 1 */
+> @@ -619,6 +622,7 @@ ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id)
+>  		if (ti_bandgap_readl(bgp, tsr->temp_sensor_ctrl) &
+>  		    tsr->bgap_eocz_mask)
+>  			break;
+> +		udelay(1);
+>  	}
+>  
+>  	/* Start of Conversion = 0 */
+> @@ -630,6 +634,7 @@ ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id)
+>  		if (!(ti_bandgap_readl(bgp, tsr->temp_sensor_ctrl) &
+>  		      tsr->bgap_eocz_mask))
+>  			break;
+> +		udelay(1);
+>  	}
+>  
+>  	return 0;
+> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.h b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+> @@ -280,6 +280,7 @@ struct ti_temp_sensor {
+>   *	has Errata 814
+>   * TI_BANDGAP_FEATURE_UNRELIABLE - used when the sensor readings are too
+>   *	inaccurate.
+> + * TI_BANDGAP_FEATURE_CONT_MODE_ONLY - used when single mode hangs the sensor
+>   * TI_BANDGAP_HAS(b, f) - macro to check if a bandgap device is capable of a
+>   *      specific feature (above) or not. Return non-zero, if yes.
+>   */
+> @@ -295,6 +296,7 @@ struct ti_temp_sensor {
+>  #define TI_BANDGAP_FEATURE_HISTORY_BUFFER	BIT(9)
+>  #define TI_BANDGAP_FEATURE_ERRATA_814		BIT(10)
+>  #define TI_BANDGAP_FEATURE_UNRELIABLE		BIT(11)
+> +#define TI_BANDGAP_FEATURE_CONT_MODE_ONLY	BIT(12)
+>  #define TI_BANDGAP_HAS(b, f)			\
+>  			((b)->conf->features & TI_BANDGAP_FEATURE_ ## f)
+>  
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/tygMACgkQ3cLmz3+f
-v9Gp0Qf9Hfjq6i2KFmaJ6VFCJGzJSNnxgEPWekzxZsKrMDphbOVlEpz/VH+lLz6I
-UIDtiIhRqxp5j3WH0lU61Ysfd+Dl9SFinxRm4UXDzhGXrK8Bi1W3V30n//pWlA1t
-fHgDXXWcjZ2iEB/lnwa8KmR06JbDW6F2TS7j9Bstxoaxya4uGrQHejHoj6hfO+pr
-p8EvkYsBTVlhRi0meK8bFIfdvW6yT7ijmTFb/yK41Hm3TX3//AZiexLaEasvlFuH
-qUp2sZjEziH3ah6cuVjUQaUgzjxGPdp54/sDK6VRGATnSDmkSOvcTq03JMgdAJtx
-mwoTJPVY3a2Iid1xnqiJA6BzQCGFSA==
-=ofsU
------END PGP SIGNATURE-----
-
---UZSCC+lhIG3E1TOG--
+-- 
+Péter
