@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DA32E7D81
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1065F2E7D84
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgLaAjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 19:39:06 -0500
-Received: from mga06.intel.com ([134.134.136.31]:40962 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgLaAjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 19:39:06 -0500
-IronPort-SDR: QgOBoX9SNfkztQyAfUXIoPqsSfQ+oB267J67ptsStmfsJSKkV4fxD1NqDYjvA0rrjnRRmsl8Cw
- cZbpWEC3g6QQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9850"; a="238208001"
-X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
-   d="scan'208";a="238208001"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 16:38:24 -0800
-IronPort-SDR: kPJYKoMwI6pXg9DAma481Sf49+NNWrqZE3OmDWpvurQO7Drd9nlQYnS36h7iB1T6mwIsulqK5d
- RfQpuHbAW7Ng==
-X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
-   d="scan'208";a="348037595"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.117]) ([10.239.13.117])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 16:38:20 -0800
-Subject: Re: [LKP] Re: [kasan] 97593cad00: RIP:kasan_record_aux_stack
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-References: <20201230031436.GB22185@xsang-OptiPlex-9020>
- <CAHk-=wgGVoa0jzo5CmtHHmAD44qX+aaa6GOEATiABPKh3Lh5Xg@mail.gmail.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <3fdd267a-5a4f-fee8-e0ee-94d1b5229f81@intel.com>
-Date:   Thu, 31 Dec 2020 08:37:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726503AbgLaAlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 19:41:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgLaAlN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 19:41:13 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69774C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 16:40:33 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id 23so41106315lfg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 16:40:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M67MbkYLxSdOa9oNcNplN7jJDJwLu2PsQUeqJdvpyic=;
+        b=OF7Nm9YBgnrjTgTX1Mc2Wj1H5W17rZ9V82YydDt4k3Mrc6s4zc7lm1sKO+HuivVfbJ
+         0U3G4/JXxT0rhzgwQERoXxp7ISbvGFb9HypkINnGAaP5mIkT9B3SaFj6WASZmmVj3kPk
+         TmBCtqHTl7LAFi8DUwmz6333VYwv7pgy4hM2VMW/oehTBo472dGWRjibuBArVOpEFlCO
+         884sDfXr+LpMcjruQtiBJauoY7ZwM+O/IVhgeydBF+esVt7Hc9bFaRv6Mv53atUawC0w
+         LRLcZhcu9gZ9u5b99QhVwj+lqJePjDXKl4VQEkVFS2kVOQVa1xoVyj6MdFkUutVGPTSB
+         N5Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M67MbkYLxSdOa9oNcNplN7jJDJwLu2PsQUeqJdvpyic=;
+        b=IzF9nIjgyeAiParB8OxLNdDhgwhfNCgcuAKQFo+iM71uTyviMjAuWZMR0IjcIavaBZ
+         eFN2LynVgO8kA8JB+R+wXs+fWO0nkVXUEDEmyjcOmCnTRujTuyUK4Q6pK3miUTD6WEhV
+         m6woMA0ugmFKwHagSaU8/d5FDCJU6EqeTXWtzn4Iur3h4VrqPKgmjCLv5XaVjzis2REb
+         LZhSG0FL5xDMc/uEO3IjOsDZsRjj6LLSBMgChODOe0BFegK6CcxySGJtlo1nygl0aG/2
+         TVv5NnH1aGGrZgtefJbqu++I/S4J1juXNrM15uix9nwLE+pNL9K9G0iQKb6i5/0kGuqZ
+         wphw==
+X-Gm-Message-State: AOAM531bGyTPP3ZpqZoOJylsF+pfR2NzjmlWkxfjGjkg6f/Rm1AiY3aM
+        S64S8ondNezJ/XVRwrynAfL632b7+JWogBcWU9U=
+X-Google-Smtp-Source: ABdhPJwDI3T5RePav+oBWL1/QTVV3ixeyBUrivDpTU4GoQEcaDTmAqZRfVWlkXVAe1i/zpNCvghrjMaQvZ4MO5kgDac=
+X-Received: by 2002:a2e:9787:: with SMTP id y7mr26688745lji.420.1609375230908;
+ Wed, 30 Dec 2020 16:40:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgGVoa0jzo5CmtHHmAD44qX+aaa6GOEATiABPKh3Lh5Xg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <CABXGCsPsXSTh+WO2XESOU+Q1ocrWmS1c1YJFarzmA=woK_ke5Q@mail.gmail.com>
+ <CABXGCsPBBDX3ozAgtT174nesiM+Gx4UkQi+PD27jB3i9OQ=G0g@mail.gmail.com> <MN2PR12MB4488AAA880BA8896EEA97491F7D80@MN2PR12MB4488.namprd12.prod.outlook.com>
+In-Reply-To: <MN2PR12MB4488AAA880BA8896EEA97491F7D80@MN2PR12MB4488.namprd12.prod.outlook.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Thu, 31 Dec 2020 05:40:19 +0500
+Message-ID: <CABXGCsO=6--KOALpNhj1439_wN65247A89dPwByR3e8w49Om1Q@mail.gmail.com>
+Subject: Re: [bug] Radeon 3900XT not switch to graphic mode on kernel 5.10
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 29 Dec 2020 at 20:15, Deucher, Alexander
+<Alexander.Deucher@amd.com> wrote:
+>
+> It looks like the driver is not able to access the firmware for some reason.  Please make sure it is available in your initrd or compiled into the kernel depending on your config.
 
+Exactly! Thanks!
 
-On 12/31/20 4:49 AM, Linus Torvalds wrote:
-> On Tue, Dec 29, 2020 at 6:59 PM kernel test robot <oliver.sang@intel.com> wrote:
->> [  235.553325] BUG: sleeping function called from invalid context at arch/x86/mm/fault.c:1351
->> [  235.554684] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 7515, name: trinity-c1
->> [  235.555890] 2 locks held by trinity-c1/7515:
->> [  235.556506]  #0: ffffffff8323dd38 (&ids->rwsem){....}-{3:3}, at: semctl_down+0x6d/0x686
->> [  235.557684]  #1: ffff888128ccc868 (&mm->mmap_lock#2){....}-{3:3}, at: do_user_addr_fault+0x196/0x59e
->> [  235.559020] CPU: 1 PID: 7515 Comm: trinity-c1 Not tainted 5.10.0-g97593cad003c #2
->> [  235.560317] Call Trace:
->> [  235.560767]  dump_stack+0x7d/0xa3
->> [  235.561371]  ___might_sleep+0x2c4/0x2df
->> [  235.562063]  ? do_user_addr_fault+0x196/0x59e
->> [  235.562834]  do_user_addr_fault+0x234/0x59e
->> [  235.563519]  exc_page_fault+0x70/0x8b
->> [  235.564112]  asm_exc_page_fault+0x1b/0x20
-> Btw, I wonder if the kernel test robot dumps could be please run through the
->
->   scripts/decode_stacktrace.sh
->
-> script to give line numbers and inlining information?
->
-> That does require CONFIG_DEBUG_INFO to work, but it would help things
-> like this when you don't have to try to guess where the exact access
-> happens.
->
-> Now, in this case, it seems to be a recursive issue with the original
-> fault happening in:
->
->> [  235.564754] RIP: 0010:kasan_record_aux_stack+0x64/0x74
-> And yeah, that explains why it then bisects to 97593cad003c ("kasan:
-> sanitize objects when metadata doesn't fit")
->
-> The faulting instruction sequence decodes to
->
->    10:   48 39 f3                cmp    %rsi,%rbx
->    13:   48 0f 46 f3             cmovbe %rbx,%rsi
->    17:   e8 6f e5 ff ff          callq  .. something ..
->    1c:   bf 00 08 00 00          mov    $0x800,%edi
->    21:   48 89 c3                mov    %rax,%rbx
->    24:*  8b 40 08                mov    0x8(%rax),%eax           <--
-> trapping instruction
->    27:   89 43 0c                mov    %eax,0xc(%rbx)
->
-> and I *think* that "call something" is the call to
-> kasan_get_alloc_meta. And there is no check for a NULL return.
->
-> So I think this was already fixed by commit 13384f6125ad ("kasan: fix
-> null pointer dereference in kasan_record_aux_stack").
->
-> But see about that "decode_stacktrace,sh" script request. I thought I
-> had already asked for this, but I now realize that I think that was
-> just for syzbot.
->
-> Can we do that for these kernel test robot reports too? Please?
->
->               Linus
+# lsinitrd /boot/initramfs-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64.img
+| grep sienna_cichlid
 
-Hi Linus,
+# ls /usr/lib/firmware/amdgpu | grep sienna_cichlid
+sienna_cichlid_ce.bin
+sienna_cichlid_dmcub.bin
+sienna_cichlid_me.bin
+sienna_cichlid_mec2.bin
+sienna_cichlid_mec.bin
+sienna_cichlid_pfp.bin
+sienna_cichlid_rlc.bin
+sienna_cichlid_sdma.bin
+sienna_cichlid_smc.bin
+sienna_cichlid_sos.bin
+sienna_cichlid_ta.bin
+sienna_cichlid_vcn.bin
 
-Sorry for the inconvenience and we're working on it right now.
+# dracut -f --regenerate-all
 
-Happy New Year!
+# lsinitrd /boot/initramfs-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64.img
+| grep sienna_cichlid
+-rw-r--r--   1 root     root       263296 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_ce.bin
+-rw-r--r--   1 root     root        80244 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_dmcub.bin
+-rw-r--r--   1 root     root       263424 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_me.bin
+-rw-r--r--   2 root     root       268592 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_mec2.bin
+-rw-r--r--   2 root     root            0 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_mec.bin
+-rw-r--r--   1 root     root       263424 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_pfp.bin
+-rw-r--r--   1 root     root       128592 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_rlc.bin
+-rw-r--r--   1 root     root        34048 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_sdma.bin
+-rw-r--r--   1 root     root       247396 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_smc.bin
+-rw-r--r--   1 root     root       215152 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_sos.bin
+-rw-r--r--   1 root     root       333568 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_ta.bin
+-rw-r--r--   1 root     root       504224 Dec 15 14:00
+usr/lib/firmware/amdgpu/sienna_cichlid_vcn.bin
 
+# grep '20201204git34816d20f173\|linux-firmware-20201218-116'
+/var/log/dnf.rpm.log
+2020-12-06T12:40:44+0500 SUBDEBUG Installed:
+kernel-core-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64
+2020-12-06T12:40:46+0500 SUBDEBUG Installed:
+kernel-modules-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64
+2020-12-06T12:41:03+0500 SUBDEBUG Installed:
+kernel-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64
+2020-12-06T12:41:03+0500 SUBDEBUG Installed:
+kernel-modules-extra-5.10.0-0.rc6.20201204git34816d20f173.92.fc34.x86_64
+2020-12-21T10:52:43+0500 SUBDEBUG Upgrade:
+linux-firmware-20201218-116.fc34.noarch
+
+I think every update of linux-firmware should regenerate initramfs.
+But my downstream report was closed:
+https://bugzilla.redhat.com/show_bug.cgi?id=1911745
+
+--
 Best Regards,
-Rong Chen
-
+Mike Gavrilov.
