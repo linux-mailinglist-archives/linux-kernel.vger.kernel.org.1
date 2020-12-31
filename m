@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6440F2E7D7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DA32E7D81
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgLaAeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 19:34:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57034 "EHLO mail.kernel.org"
+        id S1726434AbgLaAjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 19:39:06 -0500
+Received: from mga06.intel.com ([134.134.136.31]:40962 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbgLaAeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 19:34:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0BE522227;
-        Thu, 31 Dec 2020 00:33:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609374807;
-        bh=YvoZijVIuexSHAs+IQ8IRrUPZpDueM3kvQ5ZKWpPiJI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=omcCgltDx5ErCq/0sQtz1GNADqmso4RNI28oKTSL1Hoki4/hEa5JWncgLvHtTtepx
-         UfBtRZL/hIADf1E787YyT2rgpQpKxB0ei2Mei7ETkAI4ZEmIf2NEEda7PMzmpZguzc
-         rP8cYaFlLq7ONbO+tjalbao4ZEZl6L7yXP1eFE/O34HxzBaWive0/I5iSI5iNRvsGp
-         melPelPzHpQE9iBqUBmVlVfXPRoPRnIQbYuoD35NDdfpVHdpbZPPJWWfyRe4TAc2lm
-         lVm+y44IG9+rxLZcvr9CP6Hxs+TXvx6a3+fpKqFjumlQ39Z8PBI1IBWzZ+IEOjqBOb
-         0I5DvRETGGfaw==
-Received: by mail-io1-f53.google.com with SMTP id 81so15996545ioc.13;
-        Wed, 30 Dec 2020 16:33:27 -0800 (PST)
-X-Gm-Message-State: AOAM531QvtZwCTrUzRymWTTfG1kYYt7Z2O7+hXoGFcWIhsY53uBeYdEc
-        RqbDI3a/oX0qcQGBxLhlW43D/uIuuhDN1KgFCzY=
-X-Google-Smtp-Source: ABdhPJyhpA3o1P+7/7e+hMYGgFckNbaoDACSne2mJpBt853SevP7XxuyDumv9fp5JoOQyQDhmXZ1BSVoSR9IedURhZU=
-X-Received: by 2002:a02:c9cf:: with SMTP id c15mr47817173jap.57.1609374807095;
- Wed, 30 Dec 2020 16:33:27 -0800 (PST)
+        id S1726285AbgLaAjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Dec 2020 19:39:06 -0500
+IronPort-SDR: QgOBoX9SNfkztQyAfUXIoPqsSfQ+oB267J67ptsStmfsJSKkV4fxD1NqDYjvA0rrjnRRmsl8Cw
+ cZbpWEC3g6QQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9850"; a="238208001"
+X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
+   d="scan'208";a="238208001"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 16:38:24 -0800
+IronPort-SDR: kPJYKoMwI6pXg9DAma481Sf49+NNWrqZE3OmDWpvurQO7Drd9nlQYnS36h7iB1T6mwIsulqK5d
+ RfQpuHbAW7Ng==
+X-IronPort-AV: E=Sophos;i="5.78,462,1599548400"; 
+   d="scan'208";a="348037595"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.117]) ([10.239.13.117])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 16:38:20 -0800
+Subject: Re: [LKP] Re: [kasan] 97593cad00: RIP:kasan_record_aux_stack
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
+References: <20201230031436.GB22185@xsang-OptiPlex-9020>
+ <CAHk-=wgGVoa0jzo5CmtHHmAD44qX+aaa6GOEATiABPKh3Lh5Xg@mail.gmail.com>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <3fdd267a-5a4f-fee8-e0ee-94d1b5229f81@intel.com>
+Date:   Thu, 31 Dec 2020 08:37:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20201230032314.10042-1-jiaxun.yang@flygoat.com> <20201230032314.10042-3-jiaxun.yang@flygoat.com>
-In-Reply-To: <20201230032314.10042-3-jiaxun.yang@flygoat.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Thu, 31 Dec 2020 08:33:15 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5JVAC4N6Pp6V7f9ZOGA6A=nZsQcYqc1S08ZaSOOazx1Q@mail.gmail.com>
-Message-ID: <CAAhV-H5JVAC4N6Pp6V7f9ZOGA6A=nZsQcYqc1S08ZaSOOazx1Q@mail.gmail.com>
-Subject: Re: [PATCH 3/3] MIPS: cpu-probe: Vulnerabilities for Loongson cores
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        WANG Xuerui <git@xen0n.name>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, Paul Cercueil <paul@crapouillou.net>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        YunQiang Su <syq@debian.org>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=wgGVoa0jzo5CmtHHmAD44qX+aaa6GOEATiABPKh3Lh5Xg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jiaxun,
 
-On Wed, Dec 30, 2020 at 11:26 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
->
-> Loongson64C is known to be vulnerable to meltdown according to
-> PoC from Rui Wang <r@hev.cc>.
-How about Loongson-3A1000/3B1500, and Loongson-2E/2F?
 
-Huacai
+On 12/31/20 4:49 AM, Linus Torvalds wrote:
+> On Tue, Dec 29, 2020 at 6:59 PM kernel test robot <oliver.sang@intel.com> wrote:
+>> [  235.553325] BUG: sleeping function called from invalid context at arch/x86/mm/fault.c:1351
+>> [  235.554684] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 7515, name: trinity-c1
+>> [  235.555890] 2 locks held by trinity-c1/7515:
+>> [  235.556506]  #0: ffffffff8323dd38 (&ids->rwsem){....}-{3:3}, at: semctl_down+0x6d/0x686
+>> [  235.557684]  #1: ffff888128ccc868 (&mm->mmap_lock#2){....}-{3:3}, at: do_user_addr_fault+0x196/0x59e
+>> [  235.559020] CPU: 1 PID: 7515 Comm: trinity-c1 Not tainted 5.10.0-g97593cad003c #2
+>> [  235.560317] Call Trace:
+>> [  235.560767]  dump_stack+0x7d/0xa3
+>> [  235.561371]  ___might_sleep+0x2c4/0x2df
+>> [  235.562063]  ? do_user_addr_fault+0x196/0x59e
+>> [  235.562834]  do_user_addr_fault+0x234/0x59e
+>> [  235.563519]  exc_page_fault+0x70/0x8b
+>> [  235.564112]  asm_exc_page_fault+0x1b/0x20
+> Btw, I wonder if the kernel test robot dumps could be please run through the
 >
-> Loongson64G defended these side-channel attack by silicon.
+>   scripts/decode_stacktrace.sh
 >
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->  arch/mips/kernel/cpu-probe.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> script to give line numbers and inlining information?
 >
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index 2460783dbdb1..24b21f51353c 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -2092,6 +2092,8 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
->                 c->ases |= (MIPS_ASE_LOONGSON_MMI | MIPS_ASE_LOONGSON_CAM |
->                         MIPS_ASE_LOONGSON_EXT | MIPS_ASE_LOONGSON_EXT2);
->                 c->ases &= ~MIPS_ASE_VZ; /* VZ of Loongson-3A2000/3000 is incomplete */
-> +               c->vulnerabilities |= MIPS_VULNBL_MELTDOWN;
-> +               c->vulnerable |= MIPS_VULNBL_MELTDOWN;
->                 break;
->         case PRID_IMP_LOONGSON_64G:
->                 c->cputype = CPU_LOONGSON64;
-> @@ -2100,6 +2102,8 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
->                 set_isa(c, MIPS_CPU_ISA_M64R2);
->                 decode_cpucfg(c);
->                 c->writecombine = _CACHE_UNCACHED_ACCELERATED;
-> +               c->vulnerabilities |= MIPS_VULNBL_MELTDOWN |
-> +                             MIPS_VULNBL_SPECTRE_V1 | MIPS_VULNBL_SPECTRE_V2;
->                 break;
->         default:
->                 panic("Unknown Loongson Processor ID!");
-> --
-> 2.30.0
+> That does require CONFIG_DEBUG_INFO to work, but it would help things
+> like this when you don't have to try to guess where the exact access
+> happens.
 >
+> Now, in this case, it seems to be a recursive issue with the original
+> fault happening in:
+>
+>> [  235.564754] RIP: 0010:kasan_record_aux_stack+0x64/0x74
+> And yeah, that explains why it then bisects to 97593cad003c ("kasan:
+> sanitize objects when metadata doesn't fit")
+>
+> The faulting instruction sequence decodes to
+>
+>    10:   48 39 f3                cmp    %rsi,%rbx
+>    13:   48 0f 46 f3             cmovbe %rbx,%rsi
+>    17:   e8 6f e5 ff ff          callq  .. something ..
+>    1c:   bf 00 08 00 00          mov    $0x800,%edi
+>    21:   48 89 c3                mov    %rax,%rbx
+>    24:*  8b 40 08                mov    0x8(%rax),%eax           <--
+> trapping instruction
+>    27:   89 43 0c                mov    %eax,0xc(%rbx)
+>
+> and I *think* that "call something" is the call to
+> kasan_get_alloc_meta. And there is no check for a NULL return.
+>
+> So I think this was already fixed by commit 13384f6125ad ("kasan: fix
+> null pointer dereference in kasan_record_aux_stack").
+>
+> But see about that "decode_stacktrace,sh" script request. I thought I
+> had already asked for this, but I now realize that I think that was
+> just for syzbot.
+>
+> Can we do that for these kernel test robot reports too? Please?
+>
+>               Linus
+
+Hi Linus,
+
+Sorry for the inconvenience and we're working on it right now.
+
+Happy New Year!
+
+Best Regards,
+Rong Chen
+
