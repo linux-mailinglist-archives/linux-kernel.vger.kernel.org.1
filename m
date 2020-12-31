@@ -2,94 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3460E2E811C
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB222E8110
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727271AbgLaPwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 10:52:05 -0500
-Received: from [115.28.160.31] ([115.28.160.31]:35126 "EHLO
-        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1726949AbgLaPwE (ORCPT
+        id S1727063AbgLaPoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 10:44:44 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:41818 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726540AbgLaPoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 10:52:04 -0500
-X-Greylist: delayed 458 seconds by postgrey-1.27 at vger.kernel.org; Thu, 31 Dec 2020 10:52:04 EST
-Received: from [192.168.9.172] (unknown [101.224.80.228])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 9D7D46055B;
-        Thu, 31 Dec 2020 23:43:52 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1609429432; bh=B3l951PoCELSmDmy9JRHTJi8RD9bCtC5i1o2HvaeKf0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=O6kiwj0u2KBO6lq530bnd+F5T+DzWbY1FEeyneBxcDXv/rQJ/IXT+3IGkLKrVoY87
-         6AqONuZW3WkS/qBK9zwhw8xvIt+sO8mYv6WLJSniWB7IGeUFVPtD4aQc2tNSS8NoVT
-         rw6LEdAZu9oPloQ4xkVT/dhQ1ITB7lbH5VoEHuVc=
-Message-ID: <d9764581-249f-166d-966b-c1b2997a27a7@xen0n.name>
-Date:   Thu, 31 Dec 2020 23:43:51 +0800
+        Thu, 31 Dec 2020 10:44:44 -0500
+Received: by mail-oi1-f170.google.com with SMTP id 15so22171346oix.8;
+        Thu, 31 Dec 2020 07:44:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cY0/B8d4jVkdNyYDuXSgudpiPHLVy6pOgXUesN4v88o=;
+        b=A3bR1JaHNIax2FMzsbW7ZflcYJel2v43cbQWxGuhDXo6ETcZCEgL2YwTrq/+OgA6dZ
+         aBpE+ps1RGC6xiQLM0romksIF5UYsH3fKkKvjXAMpkZbUsJPoVqxG96H/90vWYVi8VjI
+         e/Xifts7/Jpyq0oIkCMr/avOjjUGrAD4u6OWMyfjMAe6qkMLTemShPZA+PB6awQ/r8Go
+         b9h/7a7irA/vx4VTB4WO3hsEkDjzeFP1tCEATz760tgOBDnagdd73ezDNVLLXqvLhf4i
+         oM66yCybGaN6ndkudTGc1gq92YrqcxFnCsSPo5ZO0EqD6P/tVZ2dck2QzjADmSsBo+Af
+         Zt8g==
+X-Gm-Message-State: AOAM533Ku0bdHynXrREbxxl03IEHOHt0OWMsqKD2wQlMHcatMY13Ei18
+        RnmwZcQ2X2BnnoLZVmA5fQ==
+X-Google-Smtp-Source: ABdhPJyfHYCwbjFtiLzrwArTkpQhp8K/FJcjLw0PXOJNAAPOP5x2y/0CZRhGzl6PudDcGsAn/mlESw==
+X-Received: by 2002:aca:ab8c:: with SMTP id u134mr8517925oie.15.1609429442997;
+        Thu, 31 Dec 2020 07:44:02 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id g21sm11349439otj.77.2020.12.31.07.44.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 07:44:02 -0800 (PST)
+Received: (nullmailer pid 1843013 invoked by uid 1000);
+        Thu, 31 Dec 2020 15:44:00 -0000
+Date:   Thu, 31 Dec 2020 08:44:00 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        drinkcat@chromium.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: regulator: document binding for
+ MT6315 regulator
+Message-ID: <20201231154400.GA1840028@robh.at.kernel.org>
+References: <1608725624-30594-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1608725624-30594-2-git-send-email-hsin-hsiung.wang@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0a1
-Subject: Re: [PATCH 3/3] MIPS: cpu-probe: Vulnerabilities for Loongson cores
-Content-Language: en-US
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, Paul Cercueil <paul@crapouillou.net>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Huacai Chen <chenhc@lemote.com>, YunQiang Su <syq@debian.org>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20201230032314.10042-1-jiaxun.yang@flygoat.com>
- <20201230032314.10042-3-jiaxun.yang@flygoat.com>
-From:   WANG Xuerui <i@xen0n.name>
-In-Reply-To: <20201230032314.10042-3-jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608725624-30594-2-git-send-email-hsin-hsiung.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiaxun,
-
-On 12/30/20 11:23 AM, Jiaxun Yang wrote:
-> Loongson64C is known to be vulnerable to meltdown according to
-> PoC from Rui Wang <r@hev.cc>.
->
-> Loongson64G defended these side-channel attack by silicon.
-"Loongson64G mitigated it in hardware"?
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+On Wed, Dec 23, 2020 at 08:13:42PM +0800, Hsin-Hsiung Wang wrote:
+> Add device tree binding information for MT6315 regulator driver.
+> Example bindings for MT6315 are added.
+> 
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
 > ---
->   arch/mips/kernel/cpu-probe.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index 2460783dbdb1..24b21f51353c 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -2092,6 +2092,8 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
->   		c->ases |= (MIPS_ASE_LOONGSON_MMI | MIPS_ASE_LOONGSON_CAM |
->   			MIPS_ASE_LOONGSON_EXT | MIPS_ASE_LOONGSON_EXT2);
->   		c->ases &= ~MIPS_ASE_VZ; /* VZ of Loongson-3A2000/3000 is incomplete */
-> +		c->vulnerabilities |= MIPS_VULNBL_MELTDOWN;
-> +		c->vulnerable |= MIPS_VULNBL_MELTDOWN;
->   		break;
->   	case PRID_IMP_LOONGSON_64G:
->   		c->cputype = CPU_LOONGSON64;
-> @@ -2100,6 +2102,8 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
->   		set_isa(c, MIPS_CPU_ISA_M64R2);
->   		decode_cpucfg(c);
->   		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
-> +		c->vulnerabilities |= MIPS_VULNBL_MELTDOWN |
-> +			      MIPS_VULNBL_SPECTRE_V1 | MIPS_VULNBL_SPECTRE_V2;
+>  .../bindings/regulator/mt6315-regulator.yaml  | 71 +++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml b/Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml
+> new file mode 100644
+> index 000000000000..15ce83a36174
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml
+> @@ -0,0 +1,71 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/regulator/mtk,mt6315-regulator.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek MT6315 Regulator
+> +
+> +maintainers:
+> +  - Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> +
+> +description: |
+> +  The MT6315 is a power management IC (PMIC) configurable with SPMI.
+> +  that contains 4 BUCKs output which can combine with each other
+> +  by different efuse settings.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt6315-regulator
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  regulators:
+> +    type: object
+> +    description: List of regulators and its properties
+> +
+> +    patternProperties:
+> +      "^vbuck[1-4]$":
+> +        type: object
+> +        $ref: "regulator.yaml#"
+> +
+> +        properties:
+> +          regulator-name:
+> +            pattern: "^vbuck[1-4]$"
+> +            description:
+> +              should be "vbuck1", ..., "vbuck4"
 
-Of course you forgot to set the "mitigated" mask... Oh wait.
+The description just repeats what the schema defines. Drop it.
 
-It seems the "mitigated" mask in the 1st patch is never used, so either 
-code there or here must be amended.
-
->   		break;
->   	default:
->   		panic("Unknown Loongson Processor ID!");
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - regulators
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pmic@6 {
+> +      compatible = "mediatek,mt6315-regulator";
+> +      reg = <0x6 0 0xb 1>;
+> +
+> +      regulators {
+> +        vbuck1 {
+> +          regulator-compatible = "vbuck1";
+> +          regulator-min-microvolt = <300000>;
+> +          regulator-max-microvolt = <1193750>;
+> +          regulator-enable-ramp-delay = <256>;
+> +          regulator-allowed-modes = <0 1 2 4>;
+> +        };
+> +
+> +        vbuck3 {
+> +          regulator-compatible = "vbuck3";
+> +          regulator-min-microvolt = <300000>;
+> +          regulator-max-microvolt = <1193750>;
+> +          regulator-enable-ramp-delay = <256>;
+> +          regulator-allowed-modes = <0 1 2 4>;
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.18.0
+> 
