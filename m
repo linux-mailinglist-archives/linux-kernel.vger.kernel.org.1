@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0072E80F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7DC2E80F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbgLaPbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 10:31:19 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:45480 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbgLaPbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 10:31:19 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kuzuL-00FFji-Bs; Thu, 31 Dec 2020 16:30:33 +0100
-Date:   Thu, 31 Dec 2020 16:30:33 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <X+3ume1+wz8HXHEf@lunn.ch>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20201230154755.14746-2-pali@kernel.org>
- <20201230161036.GR1551@shell.armlinux.org.uk>
- <20201230165634.c4ty3mw6djezuyq6@pali>
- <20201230170546.GU1551@shell.armlinux.org.uk>
- <X+y1K21tp01GpvMy@lunn.ch>
- <20201230174307.lvehswvj5q6c6vk3@pali>
- <20201230190958.GW1551@shell.armlinux.org.uk>
- <20201231121410.2xlxtyqjelrlysd2@pali>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201231121410.2xlxtyqjelrlysd2@pali>
+        id S1726999AbgLaPco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 10:32:44 -0500
+Received: from relmlor1.renesas.com ([210.160.252.171]:26523 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726830AbgLaPcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 10:32:43 -0500
+X-IronPort-AV: E=Sophos;i="5.78,464,1599490800"; 
+   d="scan'208";a="67552553"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 01 Jan 2021 00:31:52 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5995F4009866;
+        Fri,  1 Jan 2021 00:31:50 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] gpio: rcar: Remove redundant compatible values
+Date:   Thu, 31 Dec 2020 15:31:41 +0000
+Message-Id: <20201231153141.25525-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 01:14:10PM +0100, Pali Rohár wrote:
-> On Wednesday 30 December 2020 19:09:58 Russell King - ARM Linux admin wrote:
-> > On Wed, Dec 30, 2020 at 06:43:07PM +0100, Pali Rohár wrote:
-> > > On Wednesday 30 December 2020 18:13:15 Andrew Lunn wrote:
-> > > > Hi Pali
-> > > > 
-> > > > I have to agree with Russell here. I would rather have no diagnostics
-> > > > than untrustable diagnostics.
-> > > 
-> > > Ok!
-> > > 
-> > > So should we completely skip hwmon_device_register_with_info() call
-> > > if (i2c_block_size < 2) ?
-> > 
-> > I don't think that alone is sufficient - there's also the matter of
-> > ethtool -m which will dump that information as well, and we don't want
-> > to offer it to userspace in an unreliable form.
-> 
-> Any idea/preference how to disable access to these registers?
+The mandatory compatible values 'renesas,rcar-gen{1,2,3}-gpio' have been
+already added to all the respective R-Car Gen{1,2,3} SoC DTSI files,
+remove the redundant device specific values from the driver.
 
-Page A0, byte 92:
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ drivers/gpio/gpio-rcar.c | 27 ---------------------------
+ 1 file changed, 27 deletions(-)
 
-"Diagnostic Monitoring Type" is a 1 byte field with 8 single bit
-indicators describing how diagnostic monitoring is implemented in the
-particular transceiver.
+diff --git a/drivers/gpio/gpio-rcar.c b/drivers/gpio/gpio-rcar.c
+index 0b572dbc4a36..f3b8c4b44cab 100644
+--- a/drivers/gpio/gpio-rcar.c
++++ b/drivers/gpio/gpio-rcar.c
+@@ -392,33 +392,6 @@ static const struct gpio_rcar_info gpio_rcar_info_gen2 = {
+ 
+ static const struct of_device_id gpio_rcar_of_table[] = {
+ 	{
+-		.compatible = "renesas,gpio-r8a7743",
+-		/* RZ/G1 GPIO is identical to R-Car Gen2. */
+-		.data = &gpio_rcar_info_gen2,
+-	}, {
+-		.compatible = "renesas,gpio-r8a7790",
+-		.data = &gpio_rcar_info_gen2,
+-	}, {
+-		.compatible = "renesas,gpio-r8a7791",
+-		.data = &gpio_rcar_info_gen2,
+-	}, {
+-		.compatible = "renesas,gpio-r8a7792",
+-		.data = &gpio_rcar_info_gen2,
+-	}, {
+-		.compatible = "renesas,gpio-r8a7793",
+-		.data = &gpio_rcar_info_gen2,
+-	}, {
+-		.compatible = "renesas,gpio-r8a7794",
+-		.data = &gpio_rcar_info_gen2,
+-	}, {
+-		.compatible = "renesas,gpio-r8a7795",
+-		/* Gen3 GPIO is identical to Gen2. */
+-		.data = &gpio_rcar_info_gen2,
+-	}, {
+-		.compatible = "renesas,gpio-r8a7796",
+-		/* Gen3 GPIO is identical to Gen2. */
+-		.data = &gpio_rcar_info_gen2,
+-	}, {
+ 		.compatible = "renesas,rcar-gen1-gpio",
+ 		.data = &gpio_rcar_info_gen1,
+ 	}, {
+-- 
+2.17.1
 
-Note that if bit 6, address 92 is set indicating that digital
-diagnostic monitoring has been implemented, received power
-monitoring, transmitted power monitoring, bias current monitoring,
-supply voltage monitoring and temperature monitoring must all be
-implemented. Additionally, alarm and warning thresholds must be
-written as specified in this document at locations 00 to 55 on
-two-wire serial address 1010001X (A2h) (see Table 8-5).
-
-Unfortunately, we cannot simply set sfp->id.ext.diagmon to false,
-because it can also be used to indicate power, software reading of
-TX_DISABLE, LOS, etc. These are all single bytes, so could be returned
-correctly, assuming they have been implemented according to the spec.
-
-Looking at sfp_module_info(), adding a check for i2c_block_size < 2
-when determining what length to return. ethtool should do the right
-thing, know that the second page has not been returned to user space.
-
-	Andrew
