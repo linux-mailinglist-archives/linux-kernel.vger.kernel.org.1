@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83522E8189
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 19:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 601E92E818A
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 19:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgLaSHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 13:07:39 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36647 "EHLO
+        id S1727369AbgLaSIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 13:08:31 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:36670 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726673AbgLaSHj (ORCPT
+        with ESMTP id S1726673AbgLaSIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 13:07:39 -0500
+        Thu, 31 Dec 2020 13:08:31 -0500
 Received: from mail-lf1-f70.google.com ([209.85.167.70])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kv2Lf-0004w2-TL
-        for linux-kernel@vger.kernel.org; Thu, 31 Dec 2020 18:06:56 +0000
-Received: by mail-lf1-f70.google.com with SMTP id m67so12244293lfd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 10:06:55 -0800 (PST)
+        id 1kv2MV-00051y-NC
+        for linux-kernel@vger.kernel.org; Thu, 31 Dec 2020 18:07:47 +0000
+Received: by mail-lf1-f70.google.com with SMTP id a10so12276012lfg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 10:07:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wDj432l99j0xoDiBy5UNgfzTx7FTAcBiF2LYc+uCoyU=;
-        b=lzjkMhxQic2ZbnKp1+S9pGFg+wuNKduZVz6uPTTS4DDUyvya3gcDUYtIn7QPT8RVyB
-         Y2HiDiseH9DzxDFwdSBwAD91VlaO2RazvFyNx1lADSYGTi8dQ5I7kayvRLwZ907fDYde
-         0aWBTwczWmo3PY4ZOxLebD3QxqOVI2YuHL1HVQsJbFjMe7k1x4n27074TIoFaJH+XKIq
-         guYwZ/K+6krycMB+q2xsQ4gUtaE7DxrMehlh+RlmztTGwEv89O0VAqscDE006iSUaPXO
-         B/Tc+2sx8blMG580uugHd+6UA9zyKscfyACPxYn2MnnAXmvMPJGB5ZQNiB9mDmuqjVjI
-         L2aQ==
-X-Gm-Message-State: AOAM5326+gQaGERMHjpRyybxN0QxCZBpsBClPbta/09tfAtG+v6/ktVh
-        MXg1WsGpOoOwRpqnOK63aPgPcWINJ27acWABCsKxa4Wqw92nYAgpWXOyJDL9/keixRHjNjFrBwD
-        vYfN15mRgz9rrjlRhXcvxYU9T/ADC2jQFnhGkQx6tRvg1Tu1voel3Bx6tsw==
-X-Received: by 2002:a2e:3201:: with SMTP id y1mr28334526ljy.12.1609438015219;
-        Thu, 31 Dec 2020 10:06:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyomzGuJYL0lgRaiEO2TvrE1LLBAmPBetoODYiJzvNGvAIg7FcxXQ0JLlat/oHCujvg7jfiyAP+kfmkP7JY9kY=
-X-Received: by 2002:a2e:3201:: with SMTP id y1mr28334512ljy.12.1609438014965;
- Thu, 31 Dec 2020 10:06:54 -0800 (PST)
+        bh=0V7U/gNm+Y+R6u7qQmRsQkwPnBjsroHOTb3lajqSuRM=;
+        b=Vni43KGWFVMzH0ywiThOop7okFOHIqKTeL6Uh17UXDF3nTDpwGDdktfCFVzisb7mSe
+         YkmyvmrqBjG94iDms+hGmRfnRPqZsLglVydjQfq25nJNU0uYXwwyaifNuK2SL4fNw89P
+         JNeBDaWq/qfkuM1ZdhvkHbD7qODkPkgwgR0HXYDIvGimSaMjWdpfDAglNjhR/U1qIo1b
+         Ie5WxQVwQBvz0I7DsX4faxk8f86v0YPFyetVJ17zeT96ibYlorDhfBappBaou4kyJ5fS
+         xG1UzqE2SSxJGdSFlJNPmbcEsTAJwugwwQlR/4ylRClU5ig8FEI8PNCuaRO9H4m98R9v
+         tjNw==
+X-Gm-Message-State: AOAM532HtWbbPBMSKPdEVFvwjYszPwub/XnLuDt9dAhHTy2iwqTPB0Fa
+        951i4EQwIcpDeB+J5y+cGS0wnBwT+goOx4heoiCrTSV6WnJAvhs0sdv6abZAJnO8ePBTa/2XXch
+        3CSmy7fmQ3KUC/c+8NIVXukl/+XMsmm2zyZ2uiEzWnyoXVIRyfvjbAD2ulA==
+X-Received: by 2002:a19:8316:: with SMTP id f22mr27363180lfd.10.1609438066998;
+        Thu, 31 Dec 2020 10:07:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxKnCfGocE3EH8dPTyyxTDZeVYd6vD0uGtU7jtolwNyuue4/jjmMeNyR3I806TvGD2AdPoRwTjn7s4wRb+yE00=
+X-Received: by 2002:a19:8316:: with SMTP id f22mr27363162lfd.10.1609438066739;
+ Thu, 31 Dec 2020 10:07:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20201229133817.190160-1-kai.heng.feng@canonical.com>
- <20201229133817.190160-2-kai.heng.feng@canonical.com> <s5hr1n6b5yp.wl-tiwai@suse.de>
-In-Reply-To: <s5hr1n6b5yp.wl-tiwai@suse.de>
+References: <20201229133817.190160-1-kai.heng.feng@canonical.com> <s5hsg7mb63l.wl-tiwai@suse.de>
+In-Reply-To: <s5hsg7mb63l.wl-tiwai@suse.de>
 From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Fri, 1 Jan 2021 02:06:43 +0800
-Message-ID: <CAAd53p77EGZqFcMrDSNQU+TkdWMgath7+M-41hwn5WOhDpZqcg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: SOF: Intel: hda: Avoid checking jack on system suspend
+Date:   Fri, 1 Jan 2021 02:07:34 +0800
+Message-ID: <CAAd53p4GxNnbWKRDxck0=Qz5JTyKTSubswbG+LQ=y2ntJ=KvqQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: SOF: Intel: hda: Modify existing helper to
+ disable WAKEEN
 To:     Takashi Iwai <tiwai@suse.de>
 Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
@@ -55,10 +55,16 @@ Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         daniel.baluta@nxp.com, Mark Brown <broonie@kernel.org>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
         Keyon Jie <yang.jie@linux.intel.com>,
         Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
         Marcin Rajwa <marcin.rajwa@linux.intel.com>,
-        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Amery Song <chao.song@intel.com>,
         "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
         <sound-open-firmware@alsa-project.org>,
         "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
@@ -69,38 +75,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 6:55 PM Takashi Iwai <tiwai@suse.de> wrote:
+On Thu, Dec 31, 2020 at 6:52 PM Takashi Iwai <tiwai@suse.de> wrote:
 >
-> On Tue, 29 Dec 2020 14:38:15 +0100,
+> On Tue, 29 Dec 2020 14:38:14 +0100,
 > Kai-Heng Feng wrote:
 > >
-> > System takes a very long time to suspend after commit 215a22ed31a1
-> > ("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
-> > [   90.065964] PM: suspend entry (s2idle)
-> > [   90.067337] Filesystems sync: 0.001 seconds
-> > [   90.185758] Freezing user space processes ... (elapsed 0.002 seconds) done.
-> > [   90.188713] OOM killer disabled.
-> > [   90.188714] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> > [   90.190024] printk: Suspending console(s) (use no_console_suspend to debug)
-> > [   90.904912] intel_pch_thermal 0000:00:12.0: CPU-PCH is cool [49C], continue to suspend
-> > [  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-> > [  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-> > [  329.490933] ACPI: EC: interrupt blocked
+> > Modify hda_codec_jack_wake_enable() to also support disable WAKEEN.
+> > This is a preparation for next patch.
 > >
-> > That commit keeps codec suspended during the system suspend. However,
-> > SOF driver's runtime resume, which is for system suspend, calls
-> > hda_codec_jack_check() and schedules jackpoll_work. The jackpoll
-> > work uses snd_hda_power_up_pm() which tries to resume the codec in
-> > system suspend path, hence blocking the suspend process.
-> >
-> > So only check jack status if it's not in system PM process.
+> > No functional change intended.
 >
-> After your previous patch set, the legacy HDA does queue the
-> jackpoll_work only if jackpoll_interval is set.  I suppose rather the
-> same rule would be applied?
+> Maybe it's better to mention that this patch moves the WAKEEN
+> disablement call out of hda_codec_jack_check() into
+> hda_codec_jack_wake_enable(), too.
 
-It's queued in hda_codec_pm_complete(), which happens at the end of PM process.
-This one is queued in the middle of PM suspend, so it's not the same here.
+Ok, will update the commit log in v2.
 
 Kai-Heng
 
@@ -111,26 +100,100 @@ Kai-Heng
 > Takashi
 >
 > >
-> > Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
 > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 > > ---
-> >  sound/soc/sof/intel/hda-dsp.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >  sound/soc/sof/intel/hda-codec.c | 16 +++++++---------
+> >  sound/soc/sof/intel/hda-dsp.c   |  6 ++++--
+> >  sound/soc/sof/intel/hda.h       |  2 +-
+> >  3 files changed, 12 insertions(+), 12 deletions(-)
 > >
+> > diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+> > index 6875fa570c2c..bc9ac4abdab5 100644
+> > --- a/sound/soc/sof/intel/hda-codec.c
+> > +++ b/sound/soc/sof/intel/hda-codec.c
+> > @@ -63,16 +63,18 @@ static int hda_codec_load_module(struct hda_codec *codec)
+> >  }
+> >
+> >  /* enable controller wake up event for all codecs with jack connectors */
+> > -void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev)
+> > +void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable)
+> >  {
+> >       struct hda_bus *hbus = sof_to_hbus(sdev);
+> >       struct hdac_bus *bus = sof_to_bus(sdev);
+> >       struct hda_codec *codec;
+> >       unsigned int mask = 0;
+> >
+> > -     list_for_each_codec(codec, hbus)
+> > -             if (codec->jacktbl.used)
+> > -                     mask |= BIT(codec->core.addr);
+> > +     if (enable) {
+> > +             list_for_each_codec(codec, hbus)
+> > +                     if (codec->jacktbl.used)
+> > +                             mask |= BIT(codec->core.addr);
+> > +     }
+> >
+> >       snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, mask);
+> >  }
+> > @@ -81,12 +83,8 @@ void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev)
+> >  void hda_codec_jack_check(struct snd_sof_dev *sdev)
+> >  {
+> >       struct hda_bus *hbus = sof_to_hbus(sdev);
+> > -     struct hdac_bus *bus = sof_to_bus(sdev);
+> >       struct hda_codec *codec;
+> >
+> > -     /* disable controller Wake Up event*/
+> > -     snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, 0);
+> > -
+> >       list_for_each_codec(codec, hbus)
+> >               /*
+> >                * Wake up all jack-detecting codecs regardless whether an event
+> > @@ -97,7 +95,7 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev)
+> >                                             codec->jackpoll_interval);
+> >  }
+> >  #else
+> > -void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev) {}
+> > +void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable) {}
+> >  void hda_codec_jack_check(struct snd_sof_dev *sdev) {}
+> >  #endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
+> >  EXPORT_SYMBOL_NS(hda_codec_jack_wake_enable, SND_SOC_SOF_HDA_AUDIO_CODEC);
 > > diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-> > index 7d00107cf3b2..1c5e05b88a90 100644
+> > index 2b001151fe37..7d00107cf3b2 100644
 > > --- a/sound/soc/sof/intel/hda-dsp.c
 > > +++ b/sound/soc/sof/intel/hda-dsp.c
-> > @@ -685,7 +685,8 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
+> > @@ -617,7 +617,7 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
+> >
+> >  #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+> >       if (runtime_suspend)
+> > -             hda_codec_jack_wake_enable(sdev);
+> > +             hda_codec_jack_wake_enable(sdev, true);
+> >
+> >       /* power down all hda link */
+> >       snd_hdac_ext_bus_link_power_down_all(bus);
+> > @@ -683,8 +683,10 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
+> >
+> >  #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
 > >       /* check jack status */
-> >       if (runtime_resume) {
-> >               hda_codec_jack_wake_enable(sdev, false);
-> > -             hda_codec_jack_check(sdev);
-> > +             if (sdev->system_suspend_target == SOF_SUSPEND_NONE)
-> > +                     hda_codec_jack_check(sdev);
-> >       }
+> > -     if (runtime_resume)
+> > +     if (runtime_resume) {
+> > +             hda_codec_jack_wake_enable(sdev, false);
+> >               hda_codec_jack_check(sdev);
+> > +     }
 > >
 > >       /* turn off the links that were off before suspend */
+> >       list_for_each_entry(hlink, &bus->hlink_list, list) {
+> > diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+> > index 9ec8ae0fd649..a3b6f3e9121c 100644
+> > --- a/sound/soc/sof/intel/hda.h
+> > +++ b/sound/soc/sof/intel/hda.h
+> > @@ -650,7 +650,7 @@ void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev);
+> >   */
+> >  void hda_codec_probe_bus(struct snd_sof_dev *sdev,
+> >                        bool hda_codec_use_common_hdmi);
+> > -void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev);
+> > +void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable);
+> >  void hda_codec_jack_check(struct snd_sof_dev *sdev);
+> >
+> >  #endif /* CONFIG_SND_SOC_SOF_HDA */
 > > --
 > > 2.29.2
 > >
