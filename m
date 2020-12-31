@@ -2,179 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F392E7F39
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 11:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FB02E7F56
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 11:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgLaKJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 05:09:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgLaKJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 05:09:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58F4A207A3;
-        Thu, 31 Dec 2020 10:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609409347;
-        bh=d7t6jUuuirI4aZvjNFGRK+ftezBCarKE5fHOLdqpTcI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q5lnce7m3LK9x6Tbzp3a3PzmmpN9FUxvSNv7PYPQVCUtHqvVkP+GEgxdiNyVE3zWI
-         fRILM57WCz9PBAcabFcvUaWmHul0ksNf+3rmhVd0xFbJkc/pvzXxtJCdkmSOdVCvL7
-         xQUHgCtuA1ew2D/nPk78WOmwez7Se0o+RAZiycdSHTFn47XpolP76ybRjnbV0OWLCd
-         n3uwugb4cGy/Et4JsCmARIP3x3YH8lqDyLbu2wBfY1yAcz4Pm3iNnlFUowFZVtnzPO
-         eDJFzKYYDowvO9P8IGQwtZwaTBAgso3cx4V1Nes/K14FrfvOHZT0Zz2cB2OKbyoGSV
-         yLOd60RWO/9dA==
-Date:   Thu, 31 Dec 2020 11:09:18 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] mt76: Fix queue ID variable types after mcu queue split
-Message-ID: <20201231100918.GA1819773@computer-5.station>
-References: <20201229211548.1348077-1-natechancellor@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
-Content-Disposition: inline
-In-Reply-To: <20201229211548.1348077-1-natechancellor@gmail.com>
+        id S1726356AbgLaKTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 05:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgLaKTR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 05:19:17 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B012C061573;
+        Thu, 31 Dec 2020 02:18:37 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id n25so12900758pgb.0;
+        Thu, 31 Dec 2020 02:18:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=9R2jGV3ELt7e4yRKD7ul8p29a+2uSNEqBXC3W5gt1Gk=;
+        b=en66T6zNOVQmN1ObDfufH9C8UVy2z+bsJ3I8JkCTQqM8q2a8CkGzcFGs9d6deSfMFG
+         YBcGQ/VDd+dz0fqig7f+kCgdrbxvnpENOPWqX4+XBFRJfHFSgcv8fzoO3i6xa9i0ZMdl
+         Eu+aNtXzr6SRRhntTSLvEqqA8Iz9JI9LSZAvajlsP51WjK+irf6EHwsXDiKYz7nQIRgA
+         5HNDPOMzVUPn/AChwjuTHmwFbARkkQ90k1j++gPZJFxVdG9KyolFO2SVW8triwEdXxau
+         Nq2sgJemiZbYFLPM90meD3ga02JrqE1gcwwoQPYb7t5x7QHkjK/FBqglm3hMrXaYcqlp
+         EXzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9R2jGV3ELt7e4yRKD7ul8p29a+2uSNEqBXC3W5gt1Gk=;
+        b=DQV0HKQsmrs84cseQaLxD3dPRdRln8jrnCx9LTRPzC/NQC/vF/d4uWpIZoPyPgaf7t
+         EbWi/VZhd47rj4PlqeIj5YCN+Bgi/RDgiL4TcolLcV+jqZqle56/yyaEsMB4tFtYLTpL
+         udGepxcZ5ttT1Lb/+bJONzv20KIslvCM0PPpQHxb4E6Yi4G9OKO+ZHPbl0IOJWJynAB5
+         E3PVpFvQEq+i2BkbOseCs6qZaimQGVX0kHut9TH1/WX3Vooe4kkPS2gZaYtym0/Gs6A/
+         hNn3BkpdmaRpQIGBRqk9+MHiqG6mR/dxfQqoLciU/xIZpa4DtX2REd6bsz1IFejeDF59
+         vZng==
+X-Gm-Message-State: AOAM532i4i9Y00PYu+B1HEMh9BNZCBIlGyGMkDdMpRaH/kOLOHFsDegT
+        yy4vQqPPI1JBEeOPLcVQ0xUQsOibEFE=
+X-Google-Smtp-Source: ABdhPJzJoXvuqusBd5m0e3oR2Tr8yOJqQ0B3YLY9VN4xQnBxERuNBhD3a8nHuatRl2rj7k+5QI7C9g==
+X-Received: by 2002:a62:c1c4:0:b029:1a7:efe9:163c with SMTP id i187-20020a62c1c40000b02901a7efe9163cmr30994880pfg.47.1609409916508;
+        Thu, 31 Dec 2020 02:18:36 -0800 (PST)
+Received: from sh05419pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id a141sm45470937pfa.189.2020.12.31.02.18.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 31 Dec 2020 02:18:35 -0800 (PST)
+From:   Hongtao Wu <wuht06@gmail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hongtao Wu <billows.wu@unisoc.com>
+Subject: [PATCH v5 0/2] PCI: Add new Unisoc PCIe driver
+Date:   Thu, 31 Dec 2020 18:18:23 +0800
+Message-Id: <1609409905-30721-1-git-send-email-wuht06@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Hongtao Wu <billows.wu@unisoc.com>
 
---mYCpIKhGyMATD0i+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series adds PCIe controller driver for Unisoc SoCs.
+This controller is based on DesignWare PCIe IP.
 
-> Clang warns in both mt7615 and mt7915:
->=20
-> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:271:9: warning: implicit
-> conversion from enumeration type 'enum mt76_mcuq_id' to different
-> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->                 txq =3D MT_MCUQ_FWDL;
->                     ~ ^~~~~~~~~~~~
-> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:278:9: warning: implicit
-> conversion from enumeration type 'enum mt76_mcuq_id' to different
-> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->                 txq =3D MT_MCUQ_WA;
->                     ~ ^~~~~~~~~~
-> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:282:9: warning: implicit
-> conversion from enumeration type 'enum mt76_mcuq_id' to different
-> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->                 txq =3D MT_MCUQ_WM;
->                     ~ ^~~~~~~~~~
-> 3 warnings generated.
->=20
-> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:238:9: warning: implicit
-> conversion from enumeration type 'enum mt76_mcuq_id' to different
-> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->                 qid =3D MT_MCUQ_WM;
->                     ~ ^~~~~~~~~~
-> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:240:9: warning: implicit
-> conversion from enumeration type 'enum mt76_mcuq_id' to different
-> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
->                 qid =3D MT_MCUQ_FWDL;
->                     ~ ^~~~~~~~~~~~
-> 2 warnings generated.
->=20
-> Use the proper type for the queue ID variables to fix these warnings.
-> Additionally, rename the txq variable in mt7915_mcu_send_message to be
-> more neutral like mt7615_mcu_send_message.
->=20
-> Fixes: e637763b606b ("mt76: move mcu queues to mt76_dev q_mcu array")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1229
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Changes from v1:
+1) Test this patch on top of Rob Herring's 40 part series of DWC clean-ups:
+   https://lore.kernel.org/linux-pci/20200821035420.380495-1-robh@kernel.org/
 
-Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
+2) Delete empty function
 
-> ---
->  drivers/net/wireless/mediatek/mt76/mt7615/mcu.c |  2 +-
->  drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 10 +++++-----
->  2 files changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mcu.c b/drivers/ne=
-t/wireless/mediatek/mt76/mt7615/mcu.c
-> index a44b7766dec6..c13547841a4e 100644
-> --- a/drivers/net/wireless/mediatek/mt76/mt7615/mcu.c
-> +++ b/drivers/net/wireless/mediatek/mt76/mt7615/mcu.c
-> @@ -231,7 +231,7 @@ mt7615_mcu_send_message(struct mt76_dev *mdev, struct=
- sk_buff *skb,
->  			int cmd, int *seq)
->  {
->  	struct mt7615_dev *dev =3D container_of(mdev, struct mt7615_dev, mt76);
-> -	enum mt76_txq_id qid;
-> +	enum mt76_mcuq_id qid;
-> =20
->  	mt7615_mcu_fill_msg(dev, skb, cmd, seq);
->  	if (test_bit(MT76_STATE_MCU_RUNNING, &dev->mphy.state))
-> diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/ne=
-t/wireless/mediatek/mt76/mt7915/mcu.c
-> index 5fdd1a6d32ee..e211a2bd4d3c 100644
-> --- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-> +++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-> @@ -256,7 +256,7 @@ mt7915_mcu_send_message(struct mt76_dev *mdev, struct=
- sk_buff *skb,
->  	struct mt7915_dev *dev =3D container_of(mdev, struct mt7915_dev, mt76);
->  	struct mt7915_mcu_txd *mcu_txd;
->  	u8 seq, pkt_fmt, qidx;
-> -	enum mt76_txq_id txq;
-> +	enum mt76_mcuq_id qid;
->  	__le32 *txd;
->  	u32 val;
-> =20
-> @@ -268,18 +268,18 @@ mt7915_mcu_send_message(struct mt76_dev *mdev, stru=
-ct sk_buff *skb,
->  		seq =3D ++dev->mt76.mcu.msg_seq & 0xf;
-> =20
->  	if (cmd =3D=3D -MCU_CMD_FW_SCATTER) {
-> -		txq =3D MT_MCUQ_FWDL;
-> +		qid =3D MT_MCUQ_FWDL;
->  		goto exit;
->  	}
-> =20
->  	mcu_txd =3D (struct mt7915_mcu_txd *)skb_push(skb, sizeof(*mcu_txd));
-> =20
->  	if (test_bit(MT76_STATE_MCU_RUNNING, &dev->mphy.state)) {
-> -		txq =3D MT_MCUQ_WA;
-> +		qid =3D MT_MCUQ_WA;
->  		qidx =3D MT_TX_MCU_PORT_RX_Q0;
->  		pkt_fmt =3D MT_TX_TYPE_CMD;
->  	} else {
-> -		txq =3D MT_MCUQ_WM;
-> +		qid =3D MT_MCUQ_WM;
->  		qidx =3D MT_TX_MCU_PORT_RX_Q0;
->  		pkt_fmt =3D MT_TX_TYPE_CMD;
->  	}
-> @@ -326,7 +326,7 @@ mt7915_mcu_send_message(struct mt76_dev *mdev, struct=
- sk_buff *skb,
->  	if (wait_seq)
->  		*wait_seq =3D seq;
-> =20
-> -	return mt76_tx_queue_skb_raw(dev, mdev->q_mcu[txq], skb, 0);
-> +	return mt76_tx_queue_skb_raw(dev, mdev->q_mcu[qid], skb, 0);
->  }
-> =20
->  static void
->=20
-> base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
-> --=20
-> 2.30.0
->=20
+3) Document property "sprd,pcie-poweron-syscons" and
+   'sprd,pcie-poweroff-syscons'
 
---mYCpIKhGyMATD0i+
-Content-Type: application/pgp-signature; name="signature.asc"
+4) Delete runtime suspend/resume function
 
------BEGIN PGP SIGNATURE-----
+5) Add COMPILE_TEST which CONFIG_PCIE_SPRD depends on
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX+2jTAAKCRA6cBh0uS2t
-rAxYAP0f0XgVE5eJY2f4tP7MT5fX7WJ8MmFaiXKtkd+0UVZsLQD+JJVnlAsbv2g0
-9j+j5nl0uK4wtbnOauzQykFDergmVAY=
-=7ZmF
------END PGP SIGNATURE-----
+Changes from v2:
+1) Change RC mode to host mode in drivers/pci/controller/dwc/Kconfig
 
---mYCpIKhGyMATD0i+--
+2) Change Signed-off-by from Billows Wu to Hongtao Wu
+
+Changes from v3:
+1) Split the property 'sprd,pcie-poweron-syscons' and
+   'sprd,pcie-poweroff-syscons' into reset, power domains, phy and so on.
+
+2) Delete the function to get resource 'msi' and 'dbi' which were parsed by the
+   DW core.
+
+3) Delete the function 'sprd_pcie_host_init', because the DW core has done it.
+
+Changes from v4:
+1) Install 'yamllint' and upgrade dt-schema in order to solve the yamllint and
+   dtschema/dtc warnings/errors.
+
+Hongtao Wu (2):
+  dt-bindings: PCI: sprd: Document Unisoc PCIe RC host controller
+  PCI: sprd: Add support for Unisoc SoCs' PCIe controller
+
+ .../devicetree/bindings/pci/sprd-pcie.yaml         |  93 +++++++
+ drivers/pci/controller/dwc/Kconfig                 |  12 +
+ drivers/pci/controller/dwc/Makefile                |   1 +
+ drivers/pci/controller/dwc/pcie-sprd.c             | 293 +++++++++++++++++++++
+ 4 files changed, 399 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/sprd-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-sprd.c
+
+--
+2.7.4
+
