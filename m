@@ -2,79 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D932E813F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 17:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918832E8145
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 17:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgLaQlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 11:41:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726618AbgLaQlk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 11:41:40 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90C6C061573;
-        Thu, 31 Dec 2020 08:40:59 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id z21so13316917pgj.4;
-        Thu, 31 Dec 2020 08:40:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=zXVUfGPVmfM5GeK+6QNx3f/rCxdcfMVAGw68Ko8B55M=;
-        b=Gf72lHMuI3ydH6WjdzCXu/AUMnew9JWQRKVndUhXiJ87I78TyQo/3x1dv0ALP5oI7C
-         A5nSoC+ONlMeNviJ3WKH1n94uLuu5SXIbmq0JErN6jEKZFUJeLZ6X+W2eQtEi1wo7V/b
-         kBQ7VdXHhemB6SgntJaEolp96/Em5IrpPpg7+cgQq+iz00TAAZpoHesiUilJNnKBI0uy
-         2spLAHYcLUKwG4y0cGHjgWvyb5HKKnhMyWq+bUEA8haGeyg8lARIVqVS/aZoj7SfHUUq
-         2SnlBujx4mP5IHZZV9Cx1aEv7NC+Ea/vCbl5FJ2Wb6w8Td0JiaHlyAV1kCnCqJ3INPct
-         gDEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=zXVUfGPVmfM5GeK+6QNx3f/rCxdcfMVAGw68Ko8B55M=;
-        b=jLOjyDVNnhcEaAobCBacXJhLQJOLcaOR19OfYkZ0gQpCajTo512O0SbPmAvgFLJD4z
-         xmuJSH2FrECORh8woM6X4r6fKPOAJ8bRH0zQTUn5LLF0mHjEkmHp7A+1p1o+9k+XLWSU
-         LdBeMlig/TZlkR7F0bnLzG2bxPkrxPPAes3u0BJeIXK8wDcemw/0hXRDAuuTXR753XGW
-         1yBEJ3EGCPyoMkVWbo1w44CW/iXCzh90taMI5zyMuqfWLZqVIs3HfrwODj0FaO9XrmQg
-         HF7Ox11yi0FdFhM4pXhNJej3PuufmNGWnFbNzbT2fzUQvtqz5bqgd7Br67aZsAdSLNMs
-         Wxaw==
-X-Gm-Message-State: AOAM531xiUUGxhIEw0IiKxqEMQrS2PoAhbHrg/M5j65bz2jvJDgpxGO9
-        aV3k6cj9iDeF2NefPBeIxTQzTxg/1aaxLx3w5dRryhD/lOJqkQ==
-X-Google-Smtp-Source: ABdhPJzYjjKDewT+otboNO68ifRjGmXei3IC+3EVkUUcETqaRhpRtlLFgHdWeiFJiUTPvN0ZE9IPHO1jpt2v/t02ZZ8=
-X-Received: by 2002:a62:7715:0:b029:19e:26e7:7c87 with SMTP id
- s21-20020a6277150000b029019e26e77c87mr32461695pfc.18.1609432859320; Thu, 31
- Dec 2020 08:40:59 -0800 (PST)
+        id S1727402AbgLaQox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 11:44:53 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:52198 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727168AbgLaQow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 11:44:52 -0500
+Received: from zn.tnic (p200300ec2f124d002bc781a5c0b200e2.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:4d00:2bc7:81a5:c0b2:e2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8D0DA1EC0118;
+        Thu, 31 Dec 2020 17:44:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609433050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=YYvhz9AnthRjVosI8l9DrVzEhZjCTviKSd1FjaNAGJQ=;
+        b=OOzWsX8g/IqONmZjAXGcwhODJ43zWHlV3AFNioX7Xlyw1Unl1YlXtNyG1wQ/cdXZ/r5Wqt
+        rBMyDHPHKNk3enqwRnyib26JSCgrljIB5rCxoG+JKyQZi4at/fByWqXqhuEm7bIeTIKV8Z
+        rIjcirX1PrQ5Aj2eeceBG5laFL16eV0=
+Date:   Thu, 31 Dec 2020 17:44:09 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     linux-edac@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, james.morse@arm.com,
+        mchehab+huawei@kernel.org, tony.luck@intel.com, rjw@rjwysocki.net,
+        lenb@kernel.org, rrichter@marvell.com, linuxarm@huawei.com,
+        xuwei5@huawei.com, jonathan.cameron@huawei.com,
+        john.garry@huawei.com, tanxiaofei@huawei.com,
+        shameerali.kolothum.thodi@huawei.com, salil.mehta@huawei.com
+Subject: Re: [RFC PATCH 1/2] EDAC/ghes: Add EDAC device for the CPU caches
+Message-ID: <20201231164409.GC4504@zn.tnic>
+References: <20201208172959.1249-1-shiju.jose@huawei.com>
+ <20201208172959.1249-2-shiju.jose@huawei.com>
 MIME-Version: 1.0
-From:   =?UTF-8?B?5b6Q5aSp5a6H?= <xu2tianyu@gmail.com>
-Date:   Fri, 1 Jan 2021 00:40:49 +0800
-Message-ID: <CA+tJOF9SGPzXd4W8NNZWT3fPYHFagUMADdC7sK5tQrOF7bf-vw@mail.gmail.com>
-Subject: =?UTF-8?Q?SDHCI=EF=BC=9Adrivers_problem_running_on_pynq?=
-To:     linux-fpga@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pierre@ossman.eu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201208172959.1249-2-shiju.jose@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I run the RV_BOOT.bin, which is generated by riscv-pk with
-linux-5.9.4 as payload, on xilinx pynq-z2, the BBL  met the problem below:
+On Tue, Dec 08, 2020 at 05:29:58PM +0000, Shiju Jose wrote:
+> The corrected error count on the CPU caches required
+> reporting to the user-space for the predictive failure
+> analysis. For this purpose, add an EDAC device and device
+> blocks for the CPU caches found.
+> The cache's corrected error count would be stored in the
+> /sys/devices/system/edac/cpu/cpu*/cache*/ce_count.
 
-mmc0: Timeout waiting for hardware cmd interrupt.
-mmc0: sdhci: ============ SDHCI REGISTER DUMP ===========
-mmc0: sdhci: Sys addr:  0x00000000 | Version:  0x00008901
-mmc0: sdhci: Blk size:  0x00000000 | Blk cnt:  0x00000000
-mmc0: sdhci: Argument:  0x00000c00 | Trn mode: 0x00000000
-mmc0: sdhci: Present:   0x01ff0001 | Host ctl: 0x00000001
-mmc0: sdhci: Power:     0x0000000f | Blk gap:  0x00000000
-mmc0: sdhci: Wake-up:   0x00000000 | Clock:    0x00004007
-mmc0: sdhci: Timeout:   0x00000000 | Int stat: 0x00018000
-mmc0: sdhci: Int enab:  0x00ff0083 | Sig enab: 0x00ff0083
-mmc0: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000001
-mmc0: sdhci: Caps:      0x69ec0080 | Caps_1:   0x00000000
-mmc0: sdhci: Cmd:       0x0000341a | Max curr: 0x00000001
-mmc0: sdhci: Resp[0]:   0x00000000 | Resp[1]:  0x00000000
-mmc0: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
-mmc0: sdhci: Host ctl2: 0x00000000
-mmc0: sdhci: ADMA Err:  0x00000000 | ADMA Ptr: 0x00000000
-mmc0: sdhci:
+This still doesn't begin to explain why the kernel needs this. I had
+already asked whether errors in CPU caches are something which happen
+often enough so that software should count them but nothing came. So pls
+justify first why this wants to be added to the kernel.
 
-Does anyone have any idea about this problem? Thanks a lot.
+> diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
+> index 7a47680d6f07..c73eeab27ac9 100644
+> --- a/drivers/edac/Kconfig
+> +++ b/drivers/edac/Kconfig
+> @@ -74,6 +74,16 @@ config EDAC_GHES
+>  
+>  	  In doubt, say 'Y'.
+>  
+> +config EDAC_GHES_CPU_ERROR
+> +	bool "EDAC device for reporting firmware-first BIOS detected CPU error count"
+
+Why a separate Kconfig item?
+
+> +	depends on EDAC_GHES
+> +	help
+> +	  EDAC device for the firmware-first BIOS detected CPU error count reported
+
+Well this is not what it is doing - you're talking about cache errors.
+"CPU errors" can be a lot more than just cache errors.
+
+> +static void ghes_edac_create_cpu_device(struct device *dev)
+> +{
+> +	int cpu;
+> +	struct cpu_cacheinfo *this_cpu_ci;
+> +
+> +	/*
+> +	 * Find the maximum number of caches present in the CPU heirarchy
+> +	 * among the online CPUs.
+> +	 */
+> +	for_each_online_cpu(cpu) {
+> +		this_cpu_ci = get_cpu_cacheinfo(cpu);
+> +		if (!this_cpu_ci)
+> +			continue;
+> +		if (max_number_of_caches < this_cpu_ci->num_leaves)
+> +			max_number_of_caches = this_cpu_ci->num_leaves;
+
+So this is counting the number of cache levels on the system? So you
+want to count the errors per cache levels?
+
+> +	}
+> +	if (!max_number_of_caches)
+> +		return;
+> +
+> +	/*
+> +	 * EDAC device interface only supports creating the CPU cache hierarchy for alls
+> +	 * the CPUs together. Thus need to allocate cpu_edac_block_list for the
+> +	 * max_number_of_caches among all the CPUs irrespective of the number of caches
+> +	 * per CPU might vary.
+> +	 */
+
+So this is lumping all the caches together into a single list? What for?
+To untangle to the proper ones when the error gets reported?
+
+Have you heard of percpu variables?
+
+> @@ -624,6 +787,10 @@ int ghes_edac_register(struct ghes *ghes, struct device *dev)
+>  	ghes_pvt = pvt;
+>  	spin_unlock_irqrestore(&ghes_lock, flags);
+>  
+> +#if defined(CONFIG_EDAC_GHES_CPU_ERROR)
+> +	ghes_edac_create_cpu_device(dev);
+> +#endif
+> +
+
+Init stuff belongs into ghes_scan_system().
+
+...
+
+Ok, I've seen enough. "required reporting to the user-space for the
+predictive failure analysis." is not even trying to explain *why* you're
+doing this, what *actual* problem it is addressing and why should the
+kernel get it.
+
+And without a proper problem definition of what you're trying to solve,
+this is not going anywhere.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
