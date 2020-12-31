@@ -2,386 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59EF2E8017
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFA12E7FFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 13:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgLaMxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 07:53:04 -0500
-Received: from aclms1.advantech.com.tw ([61.58.41.199]:52393 "EHLO
-        aclms1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgLaMxD (ORCPT
+        id S1726606AbgLaMp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 07:45:26 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:52080 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726128AbgLaMpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 07:53:03 -0500
-X-Greylist: delayed 686 seconds by postgrey-1.27 at vger.kernel.org; Thu, 31 Dec 2020 07:52:09 EST
-Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS2.ADVANTECH.CORP
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Te3c6f1288aac14014b2650@ACLMS2.ADVANTECH.CORP>;
- Thu, 31 Dec 2020 20:41:09 +0800
-Received: from localhost (172.16.12.146) by taipei09.ADVANTECH.CORP
- (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Thu, 31 Dec
- 2020 20:41:19 +0800
-From:   Campion Kang <campion.kang@advantech.com.tw>
-To:     <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        <linux-hwmon@vger.kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        <linux-watchdog@vger.kernel.org>,
-        AceLan Kao <chia-lin.kao@canonical.com>,
-        Campion Kang <campion.kang@advantech.com.tw>
-Subject: [PATCH v5 6/6] watchdog: ahc1ec0-wdt: Add sub-device watchdog for Advantech embedded controller
-Date:   Thu, 31 Dec 2020 20:39:48 +0800
-Message-ID: <20201231123948.10473-6-campion.kang@advantech.com.tw>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201231123948.10473-1-campion.kang@advantech.com.tw>
-References: <20201231123948.10473-1-campion.kang@advantech.com.tw>
+        Thu, 31 Dec 2020 07:45:25 -0500
+Received: from mailhost.synopsys.com (sv1-mailhost1.synopsys.com [10.205.2.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id EC3AFC0AB9;
+        Thu, 31 Dec 2020 12:44:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1609418664; bh=kHrqmVSdMKQDPsZVY07rZXcEi4RKDaByR4o80MrgyGo=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=UHzRzRpl/2KCN/G7k64eSestQeVkJEqbhF8cJ4ojCa/xXRilTaIfQbCevTtDV4rhy
+         jqpUwRetgg2gKEvgEHKcUO+9ozx6wVVX+MWzPUrDu3kp16NvtPm0eCFIgaFxTurNdd
+         YtR95kcmzSb1+Rok5CNa3ulq36J8Gve2G6Ul4MQ+Ey7zJ37sm6av0K8Yh6Dr3IDefP
+         P9gMkNUOdAMYV+Jg8TiGUmKbHMBuHaAnK4Z/m61rwRozU72koeALFi54MWT/0L789v
+         /Yu775AnaCdA+uCbIWgs0lYoiBscz9LJdId0DjUrTLoHLxAcXNHySyyCvw+hUlDLzs
+         NJb3nxS2q+P1A==
+Received: from o365relay-in.synopsys.com (sv2-o365relay3.synopsys.com [10.202.1.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 3427CA005E;
+        Thu, 31 Dec 2020 12:44:23 +0000 (UTC)
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 493C640143;
+        Thu, 31 Dec 2020 12:44:22 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=paltsev@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="Htcg2HRH";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VbnZmAVR1d/mWjD8xYcU0ddIg/9OoJ8wyJv/zArD5Awtlc8EEPPnhShToH4sS18bri6KrsoO2A0OS7pJScagRJNEDGrIZaQsgYXREnmAnE2m6PCls44JSCE1rlzU3i9R/GOAzQo6IqjbDKxa3kk5pGICHIUpiS1+YuGmQnFB3NdfLyTbuVTonPZCFsIf3IRq1kqVlT+kZlqzIiWJibgDIe0qhijadmyj224Ksmt5ly+rBDCtAGNyly0vFKYc6lvu6cfCvL91s7cKgVICko9tiiOA7Oy+EEqITGTDS9Mmm3w5CvHoYRRh0ICHjP7hBjA1V2PJzc4f7oPPPw7tj7MEFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T8a1GmdB32FMbTq3mW2peaboL/vFgG/59NVr8bVm4z0=;
+ b=COIz9vkVg6DXAPId8tbV0OFcdGhI86XtbEPi9GbKeFGV8T9Ml/v6bR3yrjzK9Tiy5ZWZHYLOeupybkrVSceQH/him4EpoAyNYTuOU1QjJN3PfMU2uRM0y4mI7w3KKdSMs1vRA0LZTWrzulW1w2ADdw38TlcOPjAANdAG1ALZDXltFZRaK/pYTP/CslLo7GSD3+Pw9Ba0OhQVIqcREOnKwrzrHpG/mpVBhxV+l64Jt/2CuuTNpSKNF3bSIjoJgY9TMRE/nfxceYHnC7JRp4rUEClxSJE4KIdzBFcp42/jSoD//yZs0a5KPanJI1mAc9Axj2b4pTX0aFeHm5pva5MB4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T8a1GmdB32FMbTq3mW2peaboL/vFgG/59NVr8bVm4z0=;
+ b=Htcg2HRH4TeFUig3fzrBTEMzzMuiHeUUWNqhC9JG25DLNY8dhjxmX+/s73G5SANyIN8kd3LgQ8dunba1XkYUigT7fk6TIqFVN97ihyHawGlFFb0z16BFRPGMCsrZooZSBeKOVx8kbTUGGpkP8rH548IZO7UkKXauU1R/FVNO+hQ=
+Received: from MWHPR1201MB0029.namprd12.prod.outlook.com
+ (2603:10b6:301:4d::15) by MWHPR12MB1790.namprd12.prod.outlook.com
+ (2603:10b6:300:109::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27; Thu, 31 Dec
+ 2020 12:44:19 +0000
+Received: from MWHPR1201MB0029.namprd12.prod.outlook.com
+ ([fe80::49ab:983f:4056:5dff]) by MWHPR1201MB0029.namprd12.prod.outlook.com
+ ([fe80::49ab:983f:4056:5dff%4]) with mapi id 15.20.3700.031; Thu, 31 Dec 2020
+ 12:44:19 +0000
+X-SNPS-Relay: synopsys.com
+From:   Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+To:     Sia Jee Heng <jee.heng.sia@intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [PATCH v8 13/16] dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA
+ handshake
+Thread-Topic: [PATCH v8 13/16] dmaengine: dw-axi-dmac: Add Intel KeemBay
+ AxiDMA handshake
+Thread-Index: AQHW3aAioccw/TUNekO0DxIVg+IMXqoRJs68
+Date:   Thu, 31 Dec 2020 12:44:19 +0000
+Message-ID: <MWHPR1201MB00297BC4BB351FA85FE66A12DED60@MWHPR1201MB0029.namprd12.prod.outlook.com>
+References: <20201229044713.28464-1-jee.heng.sia@intel.com>,<20201229044713.28464-14-jee.heng.sia@intel.com>
+In-Reply-To: <20201229044713.28464-14-jee.heng.sia@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [5.18.204.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 07f6b1dd-6bed-43ac-0ef4-08d8ad89ca70
+x-ms-traffictypediagnostic: MWHPR12MB1790:
+x-microsoft-antispam-prvs: <MWHPR12MB17905ABCC67E5E212E27A7FADED60@MWHPR12MB1790.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UaW05Gi/BvHqnp66ke2sFUtU1rOP3/+AABy6pQqk6wFfgu2LxAFhadhjRUa2EcEPMvvqindZ9N2Ht4xv+9q0kgRINUrlAg7B+ap+HOORqdcGAg5nq7xB8/SM/oYrup+cJLrkH2CbGZnXON+qlmgKkNP89RPkVon1IoqjdcbB+PnKrhHrMtd18T/AQ3go4OJVu9Auj/L00GfU2ZOUnTbJeOhtzOeiSkPbsF7lVKZ9h7H2s3+qI7qw12YNrczrEjk1UtuVH3t9nGxXdEyXFP4coRkOTGMCbhu5UP1sb9qeypeYe8r+y5WZXP9YXpTOZjWgbty0JNF0nzXKy4VGFsVBaOnI6iFf4wzVy5GiwFdS4BaHXqBNiyFOvuHdlQa3kwDy7hUkbIzwmqPhTMUH805xLg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0029.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(366004)(136003)(39850400004)(478600001)(2906002)(91956017)(66556008)(33656002)(5660300002)(9686003)(6506007)(53546011)(55016002)(66946007)(8676002)(7696005)(66446008)(54906003)(83380400001)(52536014)(86362001)(4326008)(64756008)(186003)(26005)(66476007)(110136005)(316002)(76116006)(71200400001)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?NIkUZcGz1H1VekKwQ8LtyFoBUufvWgVKkoXihxno9bwMYx/fnLhcc4wHxE?=
+ =?iso-8859-1?Q?KtpCC/TVKsdXVDmzYa8pyA7GLYQ8kApP3zkK3EcZJWBPfn/0j4svzRE+Nb?=
+ =?iso-8859-1?Q?VBEU3EHspHNqAbe2yK3CCrf9XLXMYZZf8pvjdQAZ/8v2i5+b3ddAyYtLX1?=
+ =?iso-8859-1?Q?lfpFPwTfwLh3G3o5VHWAQKV3UZPCVkE+4n9JnT1j6ASnOCRclK5qZdYGyc?=
+ =?iso-8859-1?Q?5xKMT104DTy9FFwev6+/qZV7Jmbj6ztypfLmx9TRd0KAZ3GhoG6hTxDHcm?=
+ =?iso-8859-1?Q?ofjHnaLYwHlMCcCQXPZ/9Oxia1F2CzrjFrOF0f0GGnmQNlOTTnUcujaTBA?=
+ =?iso-8859-1?Q?9Tj45GTXO//u4glKxUCqBc2mJy0k7QL5NFtoq6pSAx4WyxNxNL08bWJL5c?=
+ =?iso-8859-1?Q?C3yTq2skTyD1FDIk/x/vVp8wgAqQG0oVNOchICL6u4xiETWxmxbrixUQYu?=
+ =?iso-8859-1?Q?3LAkw0BkpUrVGdb3c6WTH6pboJaWzZREw1+CtWO9kz8map3cS7JksPpqMu?=
+ =?iso-8859-1?Q?N2lwuM80l23vKgqtkNw2HkFL7KVVSo0VGDALB2UUkn6SHQLrwVjLzVSG9a?=
+ =?iso-8859-1?Q?xsWWmHAoYjJxW58AmIOTR0d+t1ZE2OE0IJcAudGYD1h2UMyQ6eLXoVDAV7?=
+ =?iso-8859-1?Q?4NYdxjHw3QZY8RhKgWG9Q8/XUObEeCQJzAu32s3jdunD86Eni3p7vLY+5w?=
+ =?iso-8859-1?Q?FoEK/LShtrlL1iAKi9LXW+kvO+hf5LJonZxcqECPdZbjLP+7oTvOtNxOlh?=
+ =?iso-8859-1?Q?Gf+sjc12D1uf5Wio7B4WZ8/IbEaIB4KeLdiB3Tsw4RzGapo8fAsugW8Sbd?=
+ =?iso-8859-1?Q?pztI6iPRM/JPeAIMTtKAFsVVvG8vEYnAM/6GYWWvBp0sX6Kemf8YVJTJgO?=
+ =?iso-8859-1?Q?GEbUIM9Hk6zTcgcAZuQw47FEnoVi6T3HPe3wNXall2eVbVArfyMMitBOwU?=
+ =?iso-8859-1?Q?FtpikJElwI1xZ6XICAb4NSqMSDXayu89gwY+31vc3WQQbiPMQEP40dE7U2?=
+ =?iso-8859-1?Q?9EnipDPXDV7974pIw=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.16.12.146]
-X-ClientProxiedBy: aclcas3.ADVANTECH.CORP (172.20.1.12) To
- taipei09.ADVANTECH.CORP (172.20.0.236)
-X-TM-SNTS-SMTP: F1CBFE2DA085039E196193FD4A48AC7A361D936F45602702FFF6859CE54A51CB2000:8
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0029.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07f6b1dd-6bed-43ac-0ef4-08d8ad89ca70
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Dec 2020 12:44:19.0671
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OeghajUwydaEKc2sITttxK+NcWiJGKUyiUPYyiwMCgJ2dpMrbIcbxrUtYswx+CB/L+jyJOMuz7FFLAtK2e7tZw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1790
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is one of sub-device driver for Advantech embedded controller
-AHC1EC0. This driver provide watchdog functionality for Advantech
-related applications to restart the system.
-
-Signed-off-by: Campion Kang <campion.kang@advantech.com.tw>
----
- drivers/watchdog/Kconfig       |  11 ++
- drivers/watchdog/Makefile      |   1 +
- drivers/watchdog/ahc1ec0-wdt.c | 285 +++++++++++++++++++++++++++++++++
- 3 files changed, 297 insertions(+)
- create mode 100644 drivers/watchdog/ahc1ec0-wdt.c
-
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 7ff941e71b79..b8ea2743899b 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -1636,6 +1636,17 @@ config NIC7018_WDT
- 	  To compile this driver as a module, choose M here: the module will be
- 	  called nic7018_wdt.
- 
-+config AHC1EC0_WDT
-+	tristate "Advantech AHC1 EC Watchdog Function"
-+	depends on MFD_AHC1EC0
-+	help
-+	  This is sub-device for Advantech AHC1EC0 embedded controller.
-+
-+	  This driver provide watchdog functionality for Advantech related
-+	  applications to restart the system.
-+	  To compile thie driver as a module, choose M here: the module will be
-+	  called ahc1ec0-wdt.
-+
- # M68K Architecture
- 
- config M54xx_WATCHDOG
-diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-index 5c74ee19d441..7190811b1e50 100644
---- a/drivers/watchdog/Makefile
-+++ b/drivers/watchdog/Makefile
-@@ -145,6 +145,7 @@ obj-$(CONFIG_INTEL_MID_WATCHDOG) += intel-mid_wdt.o
- obj-$(CONFIG_INTEL_MEI_WDT) += mei_wdt.o
- obj-$(CONFIG_NI903X_WDT) += ni903x_wdt.o
- obj-$(CONFIG_NIC7018_WDT) += nic7018_wdt.o
-+obj-$(CONFIG_AHC1EC0_WDT) += ahc1ec0-wdt.o
- obj-$(CONFIG_MLX_WDT) += mlx_wdt.o
- 
- # M68K Architecture
-diff --git a/drivers/watchdog/ahc1ec0-wdt.c b/drivers/watchdog/ahc1ec0-wdt.c
-new file mode 100644
-index 000000000000..ca1f74aa90df
---- /dev/null
-+++ b/drivers/watchdog/ahc1ec0-wdt.c
-@@ -0,0 +1,285 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Watchdog Driver for Advantech Embedded Controller chip AHC1EC0
-+ *
-+ * Copyright 2020, Advantech IIoT Group
-+ *
-+ */
-+
-+#include <linux/errno.h>
-+#include <linux/fs.h>
-+#include <linux/init.h>
-+#include <linux/ioctl.h>
-+#include <linux/kernel.h>
-+#include <linux/mfd/ahc1ec0.h>
-+#include <linux/miscdevice.h>
-+#include <linux/module.h>
-+#include <linux/notifier.h>
-+#include <linux/platform_device.h>
-+#include <linux/proc_fs.h>
-+#include <linux/reboot.h>
-+#include <linux/seq_file.h>
-+#include <linux/types.h>
-+#include <linux/uaccess.h>
-+#include <linux/uaccess.h>
-+#include <linux/version.h>
-+#include <linux/watchdog.h>
-+
-+#define DRV_NAME      "ahc1ec0-wdt"
-+
-+struct ec_wdt_data {
-+	struct watchdog_device wdtdev;
-+	struct adv_ec_platform_data *adv_ec_data;
-+	struct notifier_block reboot_nb;
-+	struct mutex lock_ioctl;
-+	int is_enable;
-+	int current_timeout;
-+};
-+
-+#define EC_WDT_MIN_TIMEOUT 1	/* The watchdog devices minimum timeout value (in seconds). */
-+#define EC_WDT_MAX_TIMEOUT 600  /* The watchdog devices maximum timeout value (in seconds) */
-+#define EC_WDT_DEFAULT_TIMEOUT 45
-+
-+static int set_delay(struct adv_ec_platform_data *adv_ec_data, unsigned short delay_timeout_in_ms)
-+{
-+	if (write_hw_ram(adv_ec_data, EC_RESET_DELAY_TIME_L, delay_timeout_in_ms & 0x00FF)) {
-+		pr_err("Failed to set Watchdog Retset Time Low byte.");
-+		return -EINVAL;
-+	}
-+
-+	if (write_hw_ram(adv_ec_data, EC_RESET_DELAY_TIME_H, (delay_timeout_in_ms & 0xFF00) >> 8)) {
-+		pr_err("Failed to set Watchdog Retset Time Hight byte.");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int advwdt_set_heartbeat(unsigned long t)
-+{
-+	if (t < 1 || t > 6553) {
-+		pr_err("%s: the input timeout is out of range.",  __func__);
-+		pr_err("Please choose valid data between 1 ~ 6553.");
-+		return -EINVAL;
-+	}
-+
-+	return (t * 10);
-+}
-+
-+/* Notifier for system down */
-+static int advwdt_notify_sys(struct notifier_block *nb, unsigned long code, void *data)
-+{
-+	struct watchdog_device *wdd;
-+	struct ec_wdt_data *ec_wdt_data;
-+
-+	wdd = container_of(nb, struct watchdog_device, reboot_nb);
-+	if (!wdd)
-+		return NOTIFY_BAD;
-+
-+	ec_wdt_data = watchdog_get_drvdata(wdd);
-+	if (!ec_wdt_data)
-+		return NOTIFY_BAD;
-+
-+	if (code == SYS_DOWN || code == SYS_HALT) {
-+		/* Turn the WDT off */
-+		if (write_hwram_command(ec_wdt_data->adv_ec_data, EC_WDT_STOP)) {
-+			pr_err("Failed to set Watchdog stop.");
-+			return -EINVAL;
-+		}
-+		ec_wdt_data->is_enable = 0;
-+		pr_info("%s: notify sys shutdown", __func__);
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static int ec_wdt_start(struct watchdog_device *wdd)
-+{
-+	int ret;
-+	int timeout, timeout_in_ms;
-+	struct ec_wdt_data *ec_wdt_data = watchdog_get_drvdata(wdd);
-+	struct adv_ec_platform_data *adv_ec_data;
-+
-+	dev_dbg(wdd->parent, "%s\n", __func__);
-+
-+	adv_ec_data = ec_wdt_data->adv_ec_data;
-+	timeout = wdd->timeout; /* The watchdog devices timeout value (in seconds). */
-+
-+	mutex_lock(&ec_wdt_data->lock_ioctl);
-+
-+	timeout_in_ms = advwdt_set_heartbeat(timeout);
-+	if (timeout_in_ms < 0) {
-+		mutex_unlock(&ec_wdt_data->lock_ioctl);
-+		return timeout_in_ms;
-+	}
-+
-+	ret = set_delay(adv_ec_data, (unsigned short)(timeout_in_ms-1));
-+	if (ret) {
-+		dev_err(wdd->parent, "Failed to set Watchdog delay (ret=%x).\n", ret);
-+		mutex_unlock(&ec_wdt_data->lock_ioctl);
-+		return ret;
-+	}
-+	ret = write_hwram_command(adv_ec_data, EC_WDT_STOP);
-+	ret = write_hwram_command(adv_ec_data, EC_WDT_START);
-+	if (ret) {
-+		dev_err(wdd->parent, "Failed to set Watchdog start (ret=%x).\n", ret);
-+		mutex_unlock(&ec_wdt_data->lock_ioctl);
-+		return ret;
-+	}
-+	ec_wdt_data->is_enable = 1;
-+	ec_wdt_data->current_timeout = timeout_in_ms/10;
-+
-+	mutex_unlock(&ec_wdt_data->lock_ioctl);
-+	return 0;
-+}
-+
-+static int ec_wdt_stop(struct watchdog_device *wdd)
-+{
-+	int ret;
-+	struct ec_wdt_data *ec_wdt_data = watchdog_get_drvdata(wdd);
-+	struct adv_ec_platform_data *adv_ec_data;
-+
-+	dev_dbg(wdd->parent, "%s\n", __func__);
-+
-+	adv_ec_data = ec_wdt_data->adv_ec_data;
-+
-+	mutex_lock(&ec_wdt_data->lock_ioctl);
-+	ret = write_hwram_command(adv_ec_data, EC_WDT_STOP);
-+	mutex_unlock(&ec_wdt_data->lock_ioctl);
-+	if (ret)
-+		pr_err("Failed to set Watchdog stop.");
-+	else
-+		ec_wdt_data->is_enable = 0;
-+
-+	return ret;
-+}
-+
-+static int ec_wdt_ping(struct watchdog_device *wdd)
-+{
-+	int ret;
-+	struct ec_wdt_data *ec_wdt_data = watchdog_get_drvdata(wdd);
-+	struct adv_ec_platform_data *adv_ec_data;
-+
-+	dev_dbg(wdd->parent, "%s\n", __func__);
-+
-+	adv_ec_data = ec_wdt_data->adv_ec_data;
-+
-+	mutex_lock(&ec_wdt_data->lock_ioctl);
-+	ret = write_hwram_command(adv_ec_data, EC_WDT_RESET);
-+	mutex_unlock(&ec_wdt_data->lock_ioctl);
-+	if (ret) {
-+		pr_err("Failed to set Watchdog reset.");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ec_wdt_set_timeout(struct watchdog_device *wdd,
-+				unsigned int timeout)
-+{
-+	dev_dbg(wdd->parent, "%s, timeout=%ld\n", __func__, timeout);
-+
-+	wdd->timeout = timeout;
-+
-+	if (watchdog_active(wdd))
-+		return ec_wdt_start(wdd);
-+
-+	return 0;
-+}
-+
-+/*
-+ *	The WDT needs to learn about soft shutdowns in order to
-+ *	turn the timebomb registers off.
-+ */
-+static struct notifier_block advwdt_notifier = {
-+	advwdt_notify_sys,
-+	NULL,
-+	0
-+};
-+
-+static const struct watchdog_info ec_watchdog_info = {
-+	.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
-+	.identity = "AHC1EC0 Watchdog",
-+};
-+
-+static const struct watchdog_ops ec_watchdog_ops = {
-+	.owner = THIS_MODULE,
-+	.start = ec_wdt_start,
-+	.stop = ec_wdt_stop,
-+	.ping = ec_wdt_ping,
-+	.set_timeout = ec_wdt_set_timeout,
-+	//.ioctl = advwdt_ioctl,
-+};
-+
-+static int adv_ec_wdt_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct device *dev = &pdev->dev;
-+	struct adv_ec_platform_data *adv_ec_data;
-+	struct ec_wdt_data *ec_wdt_data;
-+	struct watchdog_device *wdd;
-+
-+	dev_info(dev, "watchdog probe start\n");
-+
-+	adv_ec_data = dev_get_drvdata(dev->parent);
-+	if (!adv_ec_data)
-+		return -EINVAL;
-+
-+	ec_wdt_data = devm_kzalloc(dev, sizeof(struct ec_wdt_data), GFP_KERNEL);
-+	if (!ec_wdt_data)
-+		return -ENOMEM;
-+
-+	mutex_init(&ec_wdt_data->lock_ioctl);
-+
-+	ec_wdt_data->adv_ec_data = adv_ec_data;
-+	wdd = &ec_wdt_data->wdtdev;
-+
-+	watchdog_init_timeout(&ec_wdt_data->wdtdev, 0, dev);
-+
-+	//watchdog_set_nowayout(&ec_wdt_data->wdtdev, WATCHDOG_NOWAYOUT);
-+	watchdog_set_drvdata(&ec_wdt_data->wdtdev, ec_wdt_data);
-+	platform_set_drvdata(pdev, ec_wdt_data);
-+
-+	wdd->info = &ec_watchdog_info;
-+	wdd->ops = &ec_watchdog_ops;
-+	wdd->min_timeout = EC_WDT_MIN_TIMEOUT;
-+	wdd->max_timeout = EC_WDT_MAX_TIMEOUT;
-+	wdd->parent = dev;
-+
-+	ec_wdt_data->wdtdev.timeout = EC_WDT_DEFAULT_TIMEOUT;
-+	ec_wdt_data->is_enable = 0;
-+	ec_wdt_data->current_timeout = EC_WDT_DEFAULT_TIMEOUT;
-+
-+	ret = devm_watchdog_register_device(dev, wdd);
-+	if (ret != 0)
-+		dev_err(dev, "watchdog_register_device() failed: %d\n",
-+			ret);
-+
-+	ec_wdt_data->reboot_nb.notifier_call = advwdt_notify_sys;
-+
-+	ret = devm_register_reboot_notifier(ec_wdt_data->adv_ec_data->dev, &advwdt_notifier);
-+	if (ret) {
-+		dev_err(dev, "watchdog%d: Cannot register reboot notifier (%d)\n",
-+			wdd->id, ret);
-+		return ret;
-+	}
-+
-+	dev_info(dev, "watchdog register success\n");
-+
-+	return 0;
-+}
-+
-+static struct platform_driver adv_wdt_drv = {
-+	.driver = {
-+		.name = DRV_NAME,
-+	},
-+	.probe = adv_ec_wdt_probe,
-+};
-+module_platform_driver(adv_wdt_drv);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
-+MODULE_DESCRIPTION("Advantech Embedded Controller Watchdog Driver.");
-+MODULE_AUTHOR("Campion Kang <campion.kang@advantech.com.tw>");
-+MODULE_VERSION("1.0");
--- 
-2.17.1
-
+Hi Sia Jee Heng,=0A=
+=0A=
+see my comments inlined:=0A=
+=0A=
+> From: Sia Jee Heng <jee.heng.sia@intel.com>=0A=
+> Sent: Tuesday, December 29, 2020 07:47=0A=
+> To: vkoul@kernel.org; Eugeniy Paltsev; robh+dt@kernel.org=0A=
+> Cc: andriy.shevchenko@linux.intel.com; dmaengine@vger.kernel.org; linux-k=
+ernel@vger.kernel.org; devicetree@vger.kernel.org=0A=
+> Subject: [PATCH v8 13/16] dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDM=
+A handshake=0A=
+> =0A=
+> Add support for Intel KeemBay AxiDMA device handshake programming.=0A=
+> Device handshake number passed in to the AxiDMA shall be written to=0A=
+> the Intel KeemBay AxiDMA hardware handshake registers before DMA=0A=
+> operations are started.=0A=
+> =0A=
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>=0A=
+> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>=0A=
+> ---=0A=
+>  .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 52 +++++++++++++++++++=
+=0A=
+>  1 file changed, 52 insertions(+)=0A=
+> =0A=
+> diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma=
+/dw-axi-dmac/dw-axi-dmac-platform.c=0A=
+> index 062d27c61983..5e77eb3d040f 100644=0A=
+> --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c=0A=
+> +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c=0A=
+ [snip]=0A=
+> +=0A=
+> +       return 0;=0A=
+> +}=0A=
+> +=0A=
+>  /*=0A=
+>   * If DW_axi_dmac sees CHx_CTL.ShadowReg_Or_LLI_Last bit of the fetched =
+LLI=0A=
+>   * as 1, it understands that the current block is the final block in the=
+=0A=
+> @@ -626,6 +668,9 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, d=
+ma_addr_t dma_addr,=0A=
+>                 llp =3D hw_desc->llp;=0A=
+>         } while (num_periods);=0A=
+> =0A=
+> +       if (dw_axi_dma_set_hw_channel(chan->chip, chan->hw_handshake_num,=
+ true))=0A=
+> +               goto err_desc_get;=0A=
+> +=0A=
+=0A=
+In this implementation 'dw_axi_dma_chan_prep_cyclic' callback will fail if=
+=0A=
+we don't have APB registers which are only specific for KeemBay.=0A=
+Looking for the code of 'dw_axi_dma_chan_prep_cyclic' I don't see the reaso=
+n=0A=
+why it shouldn't work for vanila DW AXI DMAC without this extension. So, co=
+uld=0A=
+you please change this so we wouldn't reject dw_axi_dma_chan_prep_cyclic in=
+ case=0A=
+of APB registers are missed.=0A=
+=0A=
+>         return vchan_tx_prep(&chan->vc, &desc->vd, flags);=0A=
+> =0A=
+>  err_desc_get:=0A=
+> @@ -684,6 +729,9 @@ dw_axi_dma_chan_prep_slave_sg(struct dma_chan *dchan,=
+ struct scatterlist *sgl,=0A=
+>                 llp =3D hw_desc->llp;=0A=
+>         } while (sg_len);=0A=
+> =0A=
+> +       if (dw_axi_dma_set_hw_channel(chan->chip, chan->hw_handshake_num,=
+ true))=0A=
+> +               goto err_desc_get;=0A=
+> +=0A=
+=0A=
+Same here.=0A=
+=0A=
+=0A=
+>         return vchan_tx_prep(&chan->vc, &desc->vd, flags);=0A=
+> =0A=
+>  err_desc_get:=0A=
+> @@ -959,6 +1007,10 @@ static int dma_chan_terminate_all(struct dma_chan *=
+dchan)=0A=
+>                 dev_warn(dchan2dev(dchan),=0A=
+>                          "%s failed to stop\n", axi_chan_name(chan));=0A=
+> =0A=
+> +       if (chan->direction !=3D DMA_MEM_TO_MEM)=0A=
+> +               dw_axi_dma_set_hw_channel(chan->chip,=0A=
+> +                                         chan->hw_handshake_num, false);=
+=0A=
+> +=0A=
+>         spin_lock_irqsave(&chan->vc.lock, flags);=0A=
+> =0A=
+>         vchan_get_all_descriptors(&chan->vc, &head);=0A=
+> --=0A=
+> 2.18.0=0A=
+> =
