@@ -2,179 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB692E81C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 20:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AA62E81C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 20:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgLaTPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 14:15:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgLaTPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 14:15:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6212F2078D;
-        Thu, 31 Dec 2020 19:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609442101;
-        bh=9zoM/7G7js3JqYInb1BS1ScayBgVQxVJWIjM4J6DmSY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TGxZU6X2YVV9phxSKoDhqVgV3tv5+qOEsz2nZ9qC3zexMqGLPYpd/f2zQV3wH8Om1
-         6exJL9Qqb+UWerLTEhI1jJNo5e6P/D27sjyFcUeU7Vi6B1NTBFYkikNqp0kWbziYv3
-         V7QYD3pWltIFJRkrcbdrTQWfu9jhplZRnpMXDcw8s4WMB5YBuok943wV6lxLebqXef
-         0w8aO7xcFwi0DG643ijYdmhUDmZSIsnz1bnIUK92ivX0p1+idjRVqY6QsNtORNjl7X
-         oaEw9GA11i34/CiTSrdAB2wh0utMMB0sfXbB6nWxLJvYkcF8Ihzr+hbqoCdTGdXTDv
-         taUDsO8v+pk+g==
-Received: by mail-ej1-f44.google.com with SMTP id n26so26279347eju.6;
-        Thu, 31 Dec 2020 11:15:01 -0800 (PST)
-X-Gm-Message-State: AOAM530vyWTVSrUZUEV34UOAsrmdJ1nkdTPP+VdIdjKZVunbaMRXI5bO
-        dNwbZGClj9xVYzFdtqWpOfQhT2BD9smNBUEbAA==
-X-Google-Smtp-Source: ABdhPJyQ7WBlxre6XJVdjyLF/2wFIDim27bM3bkbje9oeTHcsPkTbkMzDGQfDN+T5fVAZVB+GL+3CAskssn7ou4WjLM=
-X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr52904735ejb.360.1609442099991;
- Thu, 31 Dec 2020 11:14:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20201211142933.25784-1-grzegorz.jaszczyk@linaro.org>
- <20201211142933.25784-2-grzegorz.jaszczyk@linaro.org> <20201214225842.GA2537432@robh.at.kernel.org>
- <CAMxfBF65ve2Pk5Uz5V1V_LfOLFUFKebVE8bzSjLT0nonuH8TDg@mail.gmail.com>
- <CAL_JsqKpzZvdWJodzbqQBLZ-v98n3KaoTaYM-0iQ-_71hCbW8Q@mail.gmail.com> <CAMxfBF5q2hjiYANZNtxz-PD=pR73EpXBpnWuB4dqXD1a=f2=gg@mail.gmail.com>
-In-Reply-To: <CAMxfBF5q2hjiYANZNtxz-PD=pR73EpXBpnWuB4dqXD1a=f2=gg@mail.gmail.com>
+        id S1726673AbgLaTQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 14:16:39 -0500
+Received: from mail-io1-f46.google.com ([209.85.166.46]:42405 "EHLO
+        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgLaTQj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 14:16:39 -0500
+Received: by mail-io1-f46.google.com with SMTP id q137so17789327iod.9;
+        Thu, 31 Dec 2020 11:16:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+lkPg057yNBJ7KmMevFmNY1g6DJbx0e6fBNJvucI1aw=;
+        b=q5OxJnrEGhUZl0UptrrgODOaph7s4VEaXJTe2X5OFOfNeit0qom+P+YlYJUocyxwSc
+         CoQ4mkQuA/Psaenx0gz+kx9S+bkcYYGSaI+IMwhj4XdywWBhojNIAefaNqz5DCzAoz+3
+         /nCZWzg26G3xKgkD7SzKY+MUbr7EnhnFRQqm95KAv+hmY92Sfehu2FRzTdWV8766uePw
+         teCxC7QAJQrkGDbll3lrPQf6QYJltb9Btf6URW2nAdddn09DWZs+2dPcHUuI7oEXAlwO
+         0xxuRmG0v6fQ8H6T0DnEXlfVUgTEXeYuQoaETSaJLWjY1vqJCeXaAQ1JTEmfBun1aZiT
+         Kqbg==
+X-Gm-Message-State: AOAM533gmY4sRjviuzekDygqo7txQvhEthPBYQcnmwHDX+Ao+OcaGn1F
+        DPXARnEB72OOXlchVldUBA==
+X-Google-Smtp-Source: ABdhPJzQhSaOD9fZsc0CStKiCNRiCrKPY1YfqvXlwLB92jNZwRq9tEh7jp3L4CF6RFQY01rdBiffiA==
+X-Received: by 2002:a6b:dd13:: with SMTP id f19mr48168674ioc.74.1609442157914;
+        Thu, 31 Dec 2020 11:15:57 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id f20sm23983991ilr.85.2020.12.31.11.15.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 11:15:57 -0800 (PST)
+Received: (nullmailer pid 2196828 invoked by uid 1000);
+        Thu, 31 Dec 2020 19:15:55 -0000
+Date:   Thu, 31 Dec 2020 12:15:55 -0700
 From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 31 Dec 2020 12:14:48 -0700
-X-Gmail-Original-Message-ID: <CAL_Jsq+W8GuqKdqSxt7bKcfpK3Wg35V9R-3+UzNi_+3uRqA=AQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+W8GuqKdqSxt7bKcfpK3Wg35V9R-3+UzNi_+3uRqA=AQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] dt-bindings: remoteproc: Add PRU consumer bindings
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Cc:     Ohad Ben Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "Anna, Suman" <s-anna@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "Bajjuri, Praneeth" <praneeth@ti.com>,
-        Roger Quadros <rogerq@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     a.hajda@samsung.com, daniel@ffwll.ch, narmstrong@baylibre.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org, sam@ravnborg.org,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        dri-devel@lists.freedesktop.org, peter.ujfalusi@gmail.com,
+        airlied@linux.ie, devicetree@vger.kernel.org,
+        jernej.skrabec@siol.net
+Subject: Re: [PATCH v2] dt-bindings: display: bridge: tc358768: Change
+ maintainer information
+Message-ID: <20201231191555.GA2196751@robh.at.kernel.org>
+References: <20201218083522.21743-1-peter.ujfalusi@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201218083522.21743-1-peter.ujfalusi@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 8:57 AM Grzegorz Jaszczyk
-<grzegorz.jaszczyk@linaro.org> wrote:
->
-> Hi Rob,
->
-> On Fri, 18 Dec 2020 at 23:51, Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Wed, Dec 16, 2020 at 9:55 AM Grzegorz Jaszczyk
-> > <grzegorz.jaszczyk@linaro.org> wrote:
-> > >
-> > > Hi Rob,
-> > >
-> > > On Mon, 14 Dec 2020 at 23:58, Rob Herring <robh@kernel.org> wrote:
-> > > >
-> > > > On Fri, Dec 11, 2020 at 03:29:29PM +0100, Grzegorz Jaszczyk wrote:
-> > > > > From: Suman Anna <s-anna@ti.com>
-> > > > >
-> > > > > Add a YAML binding document for PRU consumers. The binding includes
-> > > > > all the common properties that can be used by different PRU consumer
-> > > > > or application nodes and supported by the PRU remoteproc driver.
-> > > > > These are used to configure the PRU hardware for specific user
-> > > > > applications.
-> > > > >
-> > > > > The application nodes themselves should define their own bindings.
-> > > > >
-> > > > > Co-developed-by: Tero Kristo <t-kristo@ti.com>
-> > > > > Signed-off-by: Tero Kristo <t-kristo@ti.com>
-> > > > > Signed-off-by: Suman Anna <s-anna@ti.com>
-> > > > > Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > > > > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > > > > ---
-> > > > >  .../bindings/remoteproc/ti,pru-consumer.yaml  | 64 +++++++++++++++++++
-> > > > >  1 file changed, 64 insertions(+)
-> > > > >  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..2c5c5e2b6159
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
-> > > > > @@ -0,0 +1,64 @@
-> > > > > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id: http://devicetree.org/schemas/remoteproc/ti,pru-consumer.yaml#
-> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > +
-> > > > > +title: Common TI PRU Consumer Binding
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Suman Anna <s-anna@ti.com>
-> > > > > +
-> > > > > +description: |
-> > > > > +  A PRU application/consumer/user node typically uses one or more PRU device
-> > > > > +  nodes to implement a PRU application/functionality. Each application/client
-> > > > > +  node would need a reference to at least a PRU node, and optionally define
-> > > > > +  some properties needed for hardware/firmware configuration. The below
-> > > > > +  properties are a list of common properties supported by the PRU remoteproc
-> > > > > +  infrastructure.
-> > > > > +
-> > > > > +  The application nodes shall define their own bindings like regular platform
-> > > > > +  devices, so below are in addition to each node's bindings.
-> > > > > +
-> > > > > +properties:
-> > > > > +  prus:
-> > > >
-> > > > ti,prus
-> > >
-> > > Thank you - I will change and post v2 but with this I will run into
-> > > issues when this binding will be referenced by some consumer YAML
-> > > binding. Running dtbs_check in such case throws:
-> > > ... k3-am654-base-board.dt.yaml: serial@28000: 'ti,prus' does not
-> > > match any of the regexes: 'pinctrl-[0-9]+'
-> > > In the same time if I will remove this property from that node I am getting:
-> > > ... k3-am654-base-board.dt.yaml: serial@28000: 'ti,prus' is a required property
-> > > as expected.
-> >
-> > Sounds like you didn't update 'ti,prus' in whatever schema you include
-> > this one from.
-> >
-> > >
-> > > Getting rid of the comma from this property name workarounds mentioned
-> > > problem (which is not proper but allows me to correctly test this
-> > > binding): e.g. s/ti,prus/ti-pruss/ or using the previous name without
-> > > a comma.
-> > > It seems to be an issue with dtbs_check itself which we will encounter
-> > > in the future.
-> >
-> > If not, can you point me to a branch having this problem.
->
-> Sure, here is temporary branch with 4 last commits demonstrating
-> mentioned issues (when property name contains comma):
-> https://git.linaro.org/people/grzegorz.jaszczyk/linux.git/log/?h=ti-pruss-binding-issue
->
-> The last commit gets rid of the comma from properties names which
-> successfully w/a the problem.
->
-> Please note that those are only TEMP commits which demonstrates the
-> mentioned issue. I've put error logs with some notes in commit log to
-> ease understanding what issues are seen when.
+On Fri, 18 Dec 2020 10:35:22 +0200, Peter Ujfalusi wrote:
+> My employment with TI is coming to an end and I will not have access to
+> the board where this bridge is connected to and I will also loose access to
+> the manual of the chip.
+> 
+> Add the missing copyright information, author and change the maintainer to
+> Sam Ravnborg (thank you for volenteering!)
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  .../devicetree/bindings/display/bridge/toshiba,tc358768.yaml  | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
 
-The problem is any property with a vendor prefix has to define a type.
-There's not a way to define a 'common vendor property' and distinguish
-both cases in the meta-schemas. I'd like to come up with a more robust
-mechanism where we just detect if a property has a defined type or
-not. It should be possible to extract that. (Related, I also want to
-check for conflicting types.)
-
-How many cases of 'ti,prus' do you expect to have and what's the range
-of number of phandles? Either you should just not have the common
-schema and just define the properties in each consumer or don't put
-additional constraints into the consumer schemas (i.e omit the
-properties in 'properties' and use 'unevaluatedProperties').
-
-Also, I think you can get rid of 'ti,pruss-gp-mux-sel'. Can't it just
-be an arg cell in 'ti,prus' entries?
-
-Rob
+Acked-by: Rob Herring <robh@kernel.org>
