@@ -2,198 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601E92E818A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 19:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9232E818C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 19:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbgLaSIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 13:08:31 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36670 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726673AbgLaSIb (ORCPT
+        id S1727376AbgLaSNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 13:13:00 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:39586 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726707AbgLaSNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 13:08:31 -0500
-Received: from mail-lf1-f70.google.com ([209.85.167.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kv2MV-00051y-NC
-        for linux-kernel@vger.kernel.org; Thu, 31 Dec 2020 18:07:47 +0000
-Received: by mail-lf1-f70.google.com with SMTP id a10so12276012lfg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 10:07:47 -0800 (PST)
+        Thu, 31 Dec 2020 13:13:00 -0500
+Received: by mail-ot1-f43.google.com with SMTP id d8so18570881otq.6;
+        Thu, 31 Dec 2020 10:12:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0V7U/gNm+Y+R6u7qQmRsQkwPnBjsroHOTb3lajqSuRM=;
-        b=Vni43KGWFVMzH0ywiThOop7okFOHIqKTeL6Uh17UXDF3nTDpwGDdktfCFVzisb7mSe
-         YkmyvmrqBjG94iDms+hGmRfnRPqZsLglVydjQfq25nJNU0uYXwwyaifNuK2SL4fNw89P
-         JNeBDaWq/qfkuM1ZdhvkHbD7qODkPkgwgR0HXYDIvGimSaMjWdpfDAglNjhR/U1qIo1b
-         Ie5WxQVwQBvz0I7DsX4faxk8f86v0YPFyetVJ17zeT96ibYlorDhfBappBaou4kyJ5fS
-         xG1UzqE2SSxJGdSFlJNPmbcEsTAJwugwwQlR/4ylRClU5ig8FEI8PNCuaRO9H4m98R9v
-         tjNw==
-X-Gm-Message-State: AOAM532HtWbbPBMSKPdEVFvwjYszPwub/XnLuDt9dAhHTy2iwqTPB0Fa
-        951i4EQwIcpDeB+J5y+cGS0wnBwT+goOx4heoiCrTSV6WnJAvhs0sdv6abZAJnO8ePBTa/2XXch
-        3CSmy7fmQ3KUC/c+8NIVXukl/+XMsmm2zyZ2uiEzWnyoXVIRyfvjbAD2ulA==
-X-Received: by 2002:a19:8316:: with SMTP id f22mr27363180lfd.10.1609438066998;
-        Thu, 31 Dec 2020 10:07:46 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxKnCfGocE3EH8dPTyyxTDZeVYd6vD0uGtU7jtolwNyuue4/jjmMeNyR3I806TvGD2AdPoRwTjn7s4wRb+yE00=
-X-Received: by 2002:a19:8316:: with SMTP id f22mr27363162lfd.10.1609438066739;
- Thu, 31 Dec 2020 10:07:46 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/baDFZ04WPKFvnGfg9yUbKzRdx2bFG5qizeKUagnLfM=;
+        b=qmuSBmZFIIqoII7uW/dGOZZGdPJqzDKiY6B9VB4+QpkJm16X+JWd3Oak2ulzDu19RD
+         OwhQV4A65gxQvr1WMdhmQcdmb6gQj8i4AtQ6vN+uEuM2Esw/ev9D0rOB5OH9o45182q8
+         IzYvZX6mo4emXyc5UEw3roDEbarj3CZh47+iK0k3HWNIqoHoriWvdUtFQYjZJNRbcfjV
+         RdYs4pXe9dvNc/lR0qglwyh/mCSxcecyANb5lUCrlCyiXJDdRWOGMhJY9k+0TiBOd7Cb
+         id4dMXzpY5Zka+cAuJW0dAxImyt65GtSn+B6LQpiOii8i4XbFrvj7L0Q2ovGqMh5KyNX
+         wgeg==
+X-Gm-Message-State: AOAM530otzYDU9DxqFQIjts/80g/kOn4dWbFBQTiZJwBoy29pgtBrfGn
+        mb0TR0xuA8LAqwIvsqx3KQ==
+X-Google-Smtp-Source: ABdhPJyDkXZbrOTrCWfEFNlpNchpSRar2P16KYigEufXLX1WTb+p4jeWGh4MH2z99j4KVmakj2IaGA==
+X-Received: by 2002:a05:6830:1c3d:: with SMTP id f29mr42876645ote.47.1609438338832;
+        Thu, 31 Dec 2020 10:12:18 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id f25sm11147568oou.39.2020.12.31.10.12.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 10:12:17 -0800 (PST)
+Received: (nullmailer pid 2074202 invoked by uid 1000);
+        Thu, 31 Dec 2020 18:12:15 -0000
+Date:   Thu, 31 Dec 2020 11:12:15 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Roger Lu <roger.lu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v10 1/7] [v10,1/7]: dt-bindings: soc: mediatek: add mtk
+ svs dt-bindings
+Message-ID: <20201231181215.GA1874134@robh.at.kernel.org>
+References: <20201227105449.11452-1-roger.lu@mediatek.com>
+ <20201227105449.11452-2-roger.lu@mediatek.com>
 MIME-Version: 1.0
-References: <20201229133817.190160-1-kai.heng.feng@canonical.com> <s5hsg7mb63l.wl-tiwai@suse.de>
-In-Reply-To: <s5hsg7mb63l.wl-tiwai@suse.de>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Fri, 1 Jan 2021 02:07:34 +0800
-Message-ID: <CAAd53p4GxNnbWKRDxck0=Qz5JTyKTSubswbG+LQ=y2ntJ=KvqQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: SOF: Intel: hda: Modify existing helper to
- disable WAKEEN
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        daniel.baluta@nxp.com, Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
-        Keyon Jie <yang.jie@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Marcin Rajwa <marcin.rajwa@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Amery Song <chao.song@intel.com>,
-        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
-        <sound-open-firmware@alsa-project.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201227105449.11452-2-roger.lu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 6:52 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Tue, 29 Dec 2020 14:38:14 +0100,
-> Kai-Heng Feng wrote:
-> >
-> > Modify hda_codec_jack_wake_enable() to also support disable WAKEEN.
-> > This is a preparation for next patch.
-> >
-> > No functional change intended.
->
-> Maybe it's better to mention that this patch moves the WAKEEN
-> disablement call out of hda_codec_jack_check() into
-> hda_codec_jack_wake_enable(), too.
+On Sun, Dec 27, 2020 at 06:54:43PM +0800, Roger Lu wrote:
+> Document the binding for enabling mtk svs on MediaTek SoC.
+> 
+> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
+> ---
+>  .../bindings/soc/mediatek/mtk-svs.yaml        | 75 +++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+> new file mode 100644
+> index 000000000000..9c7da0acd82f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+> @@ -0,0 +1,75 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/mediatek/mtk-svs.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Introduce MTK SVS engine
+> +
+> +maintainers:
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+> +  - Kevin Hilman <khilman@kernel.org>
+> +  - Nishanth Menon <nm@ti.com>
+> +
+> +description: |+
+> +  The Smart Voltage Scaling(SVS) engine is a piece of hardware
+> +  which has several controllers(banks) for calculating suitable
+> +  voltage to different power domains(CPU/GPU/CCI) according to
+> +  chip process corner, temperatures and other factors. Then DVFS
+> +  driver could apply SVS bank voltage to PMIC/Buck.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt8183-svs
+> +
+> +  reg:
+> +    description: Address range of the MTK SVS controller.
 
-Ok, will update the commit log in v2.
+Drop. That doesn't really add anything.
 
-Kai-Heng
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: IRQ for the MTK SVS controller.
 
->
->
-> thanks,
->
-> Takashi
->
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> >  sound/soc/sof/intel/hda-codec.c | 16 +++++++---------
-> >  sound/soc/sof/intel/hda-dsp.c   |  6 ++++--
-> >  sound/soc/sof/intel/hda.h       |  2 +-
-> >  3 files changed, 12 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-> > index 6875fa570c2c..bc9ac4abdab5 100644
-> > --- a/sound/soc/sof/intel/hda-codec.c
-> > +++ b/sound/soc/sof/intel/hda-codec.c
-> > @@ -63,16 +63,18 @@ static int hda_codec_load_module(struct hda_codec *codec)
-> >  }
-> >
-> >  /* enable controller wake up event for all codecs with jack connectors */
-> > -void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev)
-> > +void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable)
-> >  {
-> >       struct hda_bus *hbus = sof_to_hbus(sdev);
-> >       struct hdac_bus *bus = sof_to_bus(sdev);
-> >       struct hda_codec *codec;
-> >       unsigned int mask = 0;
-> >
-> > -     list_for_each_codec(codec, hbus)
-> > -             if (codec->jacktbl.used)
-> > -                     mask |= BIT(codec->core.addr);
-> > +     if (enable) {
-> > +             list_for_each_codec(codec, hbus)
-> > +                     if (codec->jacktbl.used)
-> > +                             mask |= BIT(codec->core.addr);
-> > +     }
-> >
-> >       snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, mask);
-> >  }
-> > @@ -81,12 +83,8 @@ void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev)
-> >  void hda_codec_jack_check(struct snd_sof_dev *sdev)
-> >  {
-> >       struct hda_bus *hbus = sof_to_hbus(sdev);
-> > -     struct hdac_bus *bus = sof_to_bus(sdev);
-> >       struct hda_codec *codec;
-> >
-> > -     /* disable controller Wake Up event*/
-> > -     snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, 0);
-> > -
-> >       list_for_each_codec(codec, hbus)
-> >               /*
-> >                * Wake up all jack-detecting codecs regardless whether an event
-> > @@ -97,7 +95,7 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev)
-> >                                             codec->jackpoll_interval);
-> >  }
-> >  #else
-> > -void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev) {}
-> > +void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable) {}
-> >  void hda_codec_jack_check(struct snd_sof_dev *sdev) {}
-> >  #endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
-> >  EXPORT_SYMBOL_NS(hda_codec_jack_wake_enable, SND_SOC_SOF_HDA_AUDIO_CODEC);
-> > diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-> > index 2b001151fe37..7d00107cf3b2 100644
-> > --- a/sound/soc/sof/intel/hda-dsp.c
-> > +++ b/sound/soc/sof/intel/hda-dsp.c
-> > @@ -617,7 +617,7 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
-> >
-> >  #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-> >       if (runtime_suspend)
-> > -             hda_codec_jack_wake_enable(sdev);
-> > +             hda_codec_jack_wake_enable(sdev, true);
-> >
-> >       /* power down all hda link */
-> >       snd_hdac_ext_bus_link_power_down_all(bus);
-> > @@ -683,8 +683,10 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
-> >
-> >  #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-> >       /* check jack status */
-> > -     if (runtime_resume)
-> > +     if (runtime_resume) {
-> > +             hda_codec_jack_wake_enable(sdev, false);
-> >               hda_codec_jack_check(sdev);
-> > +     }
-> >
-> >       /* turn off the links that were off before suspend */
-> >       list_for_each_entry(hlink, &bus->hlink_list, list) {
-> > diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-> > index 9ec8ae0fd649..a3b6f3e9121c 100644
-> > --- a/sound/soc/sof/intel/hda.h
-> > +++ b/sound/soc/sof/intel/hda.h
-> > @@ -650,7 +650,7 @@ void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev);
-> >   */
-> >  void hda_codec_probe_bus(struct snd_sof_dev *sdev,
-> >                        bool hda_codec_use_common_hdmi);
-> > -void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev);
-> > +void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable);
-> >  void hda_codec_jack_check(struct snd_sof_dev *sdev);
-> >
-> >  #endif /* CONFIG_SND_SOC_SOF_HDA */
-> > --
-> > 2.29.2
-> >
+Drop.
+
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description: Main clock for MTK SVS controller to work.
+
+Drop, but you need:
+
+maxItems: 1
+
+> +
+> +  clock-names:
+> +    const: main
+> +
+> +  nvmem-cells:
+> +    maxItems: 2
+> +    description:
+> +      Phandle to the calibration data provided by a nvmem device.
+
+Drop.
+
+> +
+> +  nvmem-cell-names:
+> +    items:
+> +      - const: svs-calibration-data
+> +      - const: t-calibration-data
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - nvmem-cells
+> +  - nvmem-cell-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8183-clk.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    svs: svs@1100b000 {
+> +        compatible = "mediatek,mt8183-svs";
+> +        reg = <0 0x1100b000 0 0x1000>;
+> +        interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_LOW>;
+> +        clocks = <&infracfg CLK_INFRA_THERM>;
+> +        clock-names = "main";
+> +        nvmem-cells = <&svs_calibration>, <&thermal_calibration>;
+> +        nvmem-cell-names = "svs-calibration-data", "t-calibration-data";
+> +    };
+> -- 
+> 2.18.0
+> 
