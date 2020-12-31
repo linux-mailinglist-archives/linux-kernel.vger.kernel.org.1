@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23FA2E80FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F92C2E8102
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgLaPfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 10:35:33 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:36982 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726071AbgLaPfd (ORCPT
+        id S1727173AbgLaPgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 10:36:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgLaPgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 10:35:33 -0500
-Received: by mail-ot1-f50.google.com with SMTP id o11so18275567ote.4;
-        Thu, 31 Dec 2020 07:35:17 -0800 (PST)
+        Thu, 31 Dec 2020 10:36:44 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E00C8C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 07:36:03 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id b5so5489406pjk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 07:36:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TPfQ2uebtrSwoqOcDW/lg9b8TxzWpAgk7WIY2LXzPJs=;
+        b=Gc/Lh/xpjB628PrfrbxyVewoDf1FQcz1w0RbrHAq+1zucmBPUuv5tN61ZE19fOJv9A
+         7zYCD+kQLYjWj7BA7ac2Pw3FZqjm99E5kguh6qXu872YLDzb3CXJo3LFUaIzA5FSAD6l
+         Oshu9tVEXqSoQ3Cq2sjvDwaZcHjn9oCAevDQVQ96ychonS1rf7Xdb1kYZBo/Nc/OeYQx
+         LPMYrVlPnzPZi2pVBZdJRLFYamdAnkr7Zb8lVQBaYGxtUzZ6Yi1hls4ogNoaGRUv05mN
+         vnoEWpdj2HIHikLI23X18eo80Srx/UB1Tei4z2l7PIZpNcoEFoh71BmOcjiFCG1tWEoc
+         mBSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=U5+TgRxBr8Fo4F24dxi/XK3rCsce2994tILTdIkxtms=;
-        b=VYsOjXJADSQAuA4BKAbhJA2e89sZAZTVZdKcVFRiqM2ITm4EulVIYjXSIqk9RcRVgG
-         9w34n9nxx3abDZc16ct2PAjzdtKOZxTEG097n8Dvr8sgYt+zSUASpfev4wIEsbJs9yvz
-         039kQuOMNxAJyePvPzEo3LxL4FqSUML3nuiBSJ+xNU6wiqrBAtOzU7FXNIFAfdVPsTMo
-         RG1bWE206DhGtJgwtVNYKwLJDluk8TKq2NiZ0cm2QeINx6EmDjVxc+1XDmMtIIi/Ndr9
-         KwBqgWubnG27+ob02/6aplzsJP8/Gy+SHpDh9HUdNotwLWjDliB5m8OgsgZfhYc/laML
-         IHTg==
-X-Gm-Message-State: AOAM533ex3VVCMT+G1n4ezV4HRmJOp2wVxU3RKr+foA1nonui2fUpFeF
-        lZg4GfxbaHhZtJEOKXWiRQ==
-X-Google-Smtp-Source: ABdhPJwueo20TglGcEsIU4ebdW4CqO2h44on2UHrkgjVWDuMsGX+RxqetVDTW5S7wZkG+1Pb4x+4/w==
-X-Received: by 2002:a9d:5d02:: with SMTP id b2mr41960733oti.148.1609428892020;
-        Thu, 31 Dec 2020 07:34:52 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id h30sm10449278ooi.12.2020.12.31.07.34.49
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TPfQ2uebtrSwoqOcDW/lg9b8TxzWpAgk7WIY2LXzPJs=;
+        b=sJ0dZzah+w5c+re72KMV7vlEsX5oXv3Y/Isk5QxfgzoHbQ4HXrYem6c+7nPgPjFthm
+         jUnkKHinl3G2YLxTGfEAdjStu+AsppMIEyOsuqfUS0VHqHHYjPrmsAG8v4hZwgpUoqiz
+         hkVfZiEIXxVKCyr0rYtbNzwuUfWFdM3mHqwe13XOCeTDw4nDJHrIyQtjz22ca/CjgpEL
+         DtuQ78y2ayLRv3OicvngMsUAJNbWq2ddBqrx+cOBLPgE9JozGgbiy7V+SGnD9XfWHR4x
+         ng+IQZSeMRimMlc2olq32+G4J3c7SoglI4Bl24ly489RjrHVL4xCJ+2dpnYJMY1T0Riu
+         Avxw==
+X-Gm-Message-State: AOAM530S9HrJHbqf7OQnE0FbXZyVVGc/a8hQHmHo4QYXZ8JPRmp+r0lD
+        oiJV/2hZBivVtffMKk2Q4EIw4mZ6TJw=
+X-Google-Smtp-Source: ABdhPJxBhnaWyYvefe4Ye2D++4H3lq/m35EQykORk0Tb8drlP5bHkMoQXTinLcOiDrr8aM4pHKCWQQ==
+X-Received: by 2002:a17:90a:193:: with SMTP id 19mr13771327pjc.45.1609428963402;
+        Thu, 31 Dec 2020 07:36:03 -0800 (PST)
+Received: from localhost ([13.94.42.177])
+        by smtp.gmail.com with ESMTPSA id i25sm42823185pfo.137.2020.12.31.07.36.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 07:34:50 -0800 (PST)
-Received: (nullmailer pid 1828652 invoked by uid 1000);
-        Thu, 31 Dec 2020 15:34:48 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, ohad@wizery.com
-In-Reply-To: <20201230012724.1326156-3-martin.blumenstingl@googlemail.com>
-References: <20201230012724.1326156-1-martin.blumenstingl@googlemail.com> <20201230012724.1326156-3-martin.blumenstingl@googlemail.com>
-Subject: Re: [PATCH 2/5] dt-bindings: Amlogic: add the documentation for the SECBUS2 registers
-Date:   Thu, 31 Dec 2020 08:34:48 -0700
-Message-Id: <1609428888.809731.1828651.nullmailer@robh.at.kernel.org>
+        Thu, 31 Dec 2020 07:36:02 -0800 (PST)
+From:   Qiujun Huang <hqjagain@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Qiujun Huang <hqjagain@gmail.com>
+Subject: [PATCH] trace: Update trace_ignore_this_task() kernel-doc comment
+Date:   Thu, 31 Dec 2020 10:35:58 -0500
+Message-Id: <20201231153558.4804-1-hqjagain@gmail.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Dec 2020 02:27:21 +0100, Martin Blumenstingl wrote:
-> The Meson8/Meson8b/Meson8m2 SoCs have a register bank called SECBUS2 which
-> contains registers for various IP blocks such as pin-controller bits for
-> the BSD_EN and TEST_N GPIOs as well as some AO ARC core control bits.
-> The registers can be accessed directly when not running in "secure mode".
-> When "secure mode" is enabled then these registers have to be accessed
-> through secure monitor calls.
-> 
-> So far these SoCs are always known to boot in "non-secure mode".
-> Add a binding documentation using syscon (as these registers are shared
-> across different IPs) for the SECBUS2 registers.
-> 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  .../arm/amlogic/amlogic,meson-mx-secbus2.yaml | 53 +++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-mx-secbus2.yaml
-> 
+Update kernel-doc parameter after
+commit b3b1e6ededa4 ("ftrace: Create set_ftrace_notrace_pid to not trace
+tasks")
+added @filtered_no_pids.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+---
+ kernel/trace/trace.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-mx-secbus2.yaml:35:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-
-dtschema/dtc warnings/errors:
-
-See https://patchwork.ozlabs.org/patch/1421302
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index b8a2d786b503..9e4f4043a3df 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -530,6 +530,7 @@ trace_find_filtered_pid(struct trace_pid_list *filtered_pids, pid_t search_pid)
+ /**
+  * trace_ignore_this_task - should a task be ignored for tracing
+  * @filtered_pids: The list of pids to check
++ * @filtered_no_pids: The list of pids not to be traced
+  * @task: The task that should be ignored if not filtered
+  *
+  * Checks if @task should be traced or not from @filtered_pids.
+@@ -780,7 +781,7 @@ u64 ftrace_now(int cpu)
+ }
+ 
+ /**
+- * tracing_is_enabled - Show if global_trace has been disabled
++ * tracing_is_enabled - Show if global_trace has been enabled
+  *
+  * Shows if the global trace has been enabled or not. It uses the
+  * mirror flag "buffer_disabled" to be used in fast paths such as for
+-- 
+2.26.2
 
