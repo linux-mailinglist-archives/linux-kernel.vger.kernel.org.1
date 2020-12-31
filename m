@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C9B2E819F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 19:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C312E81A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 19:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgLaS2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 13:28:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgLaS2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 13:28:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F11BE22473;
-        Thu, 31 Dec 2020 18:28:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609439281;
-        bh=6UolhkPVF5GeowbkR7qYVt8SbbBQkg0MBaZDTZ7XZkA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EBmsXDcW5jpoarQnWGcHDO9dhpOnFjE9QJKzKdGn/5aX5M02iiGQJ7EyPorGy0U2c
-         LJgfnsggWvMWRMpJIMhx9XVeZnem+IbH4LQ4bCVLx+lQDsGt9+eRsxD8eHq1/Wuu+p
-         pd4JAumiNyf0fwn+7cGlqpQPgfyHKtnFJEdiAjX313brJFRbq/riIB4OEgoaveEVDY
-         /1MjiB/973spChUHDAs462vdAuXoV9CkJdSmM8HZHamRbVA/vC6HkWySja196PFGi4
-         yLXH4hDFZFQRl3y1eAAtEpU0SiCsnXrernUogMCK1zZ5PnkmbJ/Wg2Rg2AZsSd0apj
-         Ow1I9JyZtZDCw==
-Received: by mail-ej1-f48.google.com with SMTP id g20so26228475ejb.1;
-        Thu, 31 Dec 2020 10:28:00 -0800 (PST)
-X-Gm-Message-State: AOAM531itJTux8A+/SYa+zwtV0cR+tMxXJk9JCMD17WY3Y+JE+gEW/IH
-        1BiTABji5TE5hB/8DYctLiaFnk6eTwYhLrSHNw==
-X-Google-Smtp-Source: ABdhPJxZmUYiTprAcEpCfD6/J2tgK7kQBJhySuzZfjMMwXoy92HK9fDtQSZwPttUDlwnZOW0iaUAuhyIGCLYtmOb5Uo=
-X-Received: by 2002:a17:906:4146:: with SMTP id l6mr54869145ejk.341.1609439279516;
- Thu, 31 Dec 2020 10:27:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20201229113556.5dd4610c@xhacker.debian>
-In-Reply-To: <20201229113556.5dd4610c@xhacker.debian>
+        id S1726733AbgLaSem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 13:34:42 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:34204 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726606AbgLaSem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 13:34:42 -0500
+Received: by mail-oi1-f170.google.com with SMTP id s75so22581336oih.1;
+        Thu, 31 Dec 2020 10:34:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MK9jvU5T0a1F8Z3yYz4MVsd9Im04HOuhBeQZHz3+74k=;
+        b=VyIjriE0xCvZ9WqWgsxcz9NUqLBQ6SlalIi3UGNnEH3JS9P8FI2/AEev4svx+URxsD
+         3Du1CYhcb4yyYwzKiM0u8aQS0cDWeXWC48Sv3y62WmMQhCD2xEVAboMoRuNXbk6UE85L
+         ql6YCTcCDd+8Rc8bFm4lXJl5re10MN2fEjm3QeJ7Z9sOSSGpUuWAAWvjuSO0cnk73nq0
+         GzfguNRThMd/qitV2Kj8PeNK9ZeRofrDMk4CY1lIzZMSHTkaYEMVsE8M8jMYFpyV0CAZ
+         ObJWbj2CiwQaegszzrK2yY+LA3h40dXCIXw5HDZ+05FIj6k2FsCnGM1MJGIQ9jMCNt+B
+         Ldkw==
+X-Gm-Message-State: AOAM53089UlvERat5fays4G9qzSRzSA5iMv92vx8Itbrvv34Ir74NCX2
+        3NIRaQxjYnv56XxFDwBXAA==
+X-Google-Smtp-Source: ABdhPJzNofcyoenZ3rFYiWkQqrq9Ao9OW2jxP+9TNZPxAR/jbffWTqlpqhPrO4Pi33AiFUHcZ3W+Jg==
+X-Received: by 2002:aca:fcd7:: with SMTP id a206mr8527220oii.134.1609439641451;
+        Thu, 31 Dec 2020 10:34:01 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id i25sm11241585oto.56.2020.12.31.10.33.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 10:34:00 -0800 (PST)
+Received: (nullmailer pid 2112255 invoked by uid 1000);
+        Thu, 31 Dec 2020 18:33:57 -0000
+Date:   Thu, 31 Dec 2020 11:33:57 -0700
 From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 31 Dec 2020 11:27:48 -0700
-X-Gmail-Original-Message-ID: <CAL_Jsq+6HAB4xNzu75oVqoLQZUaEX=Y_j50GAiD4bwY_sq8Pig@mail.gmail.com>
-Message-ID: <CAL_Jsq+6HAB4xNzu75oVqoLQZUaEX=Y_j50GAiD4bwY_sq8Pig@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: dwc: Fix MSI not work after resume
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, lukas@wunner.de, bbrezillon@kernel.org,
+        p.yadav@ti.com, linux-tegra@vger.kernel.org, broonie@kernel.org,
+        tudor.ambarus@microchip.com, devicetree@vger.kernel.org,
+        jonathanh@nvidia.com, thierry.reding@gmail.com
+Subject: Re: [PATCH v5 2/9] dt-bindings: spi: Add Tegra Quad SPI device tree
+ binding
+Message-ID: <20201231183357.GA2112085@robh.at.kernel.org>
+References: <1608585459-17250-1-git-send-email-skomatineni@nvidia.com>
+ <1608585459-17250-3-git-send-email-skomatineni@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608585459-17250-3-git-send-email-skomatineni@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 8:36 PM Jisheng Zhang
-<Jisheng.Zhang@synaptics.com> wrote:
->
-> After we move dw_pcie_msi_init() into core -- dw_pcie_host_init(), the
-> MSI stops working after resume. Because dw_pcie_host_init() is only
-> called once during probe. To fix this issue, we move dw_pcie_msi_init()
-> to dw_pcie_setup_rc().
->
-> Fixes: 59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+On Mon, 21 Dec 2020 13:17:32 -0800, Sowjanya Komatineni wrote:
+> This patch adds YAML based device tree binding document for Tegra
+> Quad SPI driver.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 > ---
->
-> Since v1:
->  - rebased on 5.11-rc1
->  - add Fixes tag
->
->  drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  .../bindings/spi/nvidia,tegra210-quad.yaml         | 117 +++++++++++++++++++++
+>  1 file changed, 117 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
 
-Bjorn, please pick up for 5.11.
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-Rob
+If a tag was not added on purpose, please state why and what changed.
+
