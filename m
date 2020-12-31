@@ -2,153 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB222E8110
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D30D2E8116
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 16:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgLaPoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 10:44:44 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:41818 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgLaPoo (ORCPT
+        id S1727231AbgLaPuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 10:50:13 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:46038 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgLaPuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 10:44:44 -0500
-Received: by mail-oi1-f170.google.com with SMTP id 15so22171346oix.8;
-        Thu, 31 Dec 2020 07:44:28 -0800 (PST)
+        Thu, 31 Dec 2020 10:50:13 -0500
+Received: by mail-ot1-f43.google.com with SMTP id n42so18255579ota.12;
+        Thu, 31 Dec 2020 07:49:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=cY0/B8d4jVkdNyYDuXSgudpiPHLVy6pOgXUesN4v88o=;
-        b=A3bR1JaHNIax2FMzsbW7ZflcYJel2v43cbQWxGuhDXo6ETcZCEgL2YwTrq/+OgA6dZ
-         aBpE+ps1RGC6xiQLM0romksIF5UYsH3fKkKvjXAMpkZbUsJPoVqxG96H/90vWYVi8VjI
-         e/Xifts7/Jpyq0oIkCMr/avOjjUGrAD4u6OWMyfjMAe6qkMLTemShPZA+PB6awQ/r8Go
-         b9h/7a7irA/vx4VTB4WO3hsEkDjzeFP1tCEATz760tgOBDnagdd73ezDNVLLXqvLhf4i
-         oM66yCybGaN6ndkudTGc1gq92YrqcxFnCsSPo5ZO0EqD6P/tVZ2dck2QzjADmSsBo+Af
-         Zt8g==
-X-Gm-Message-State: AOAM533Ku0bdHynXrREbxxl03IEHOHt0OWMsqKD2wQlMHcatMY13Ei18
-        RnmwZcQ2X2BnnoLZVmA5fQ==
-X-Google-Smtp-Source: ABdhPJyfHYCwbjFtiLzrwArTkpQhp8K/FJcjLw0PXOJNAAPOP5x2y/0CZRhGzl6PudDcGsAn/mlESw==
-X-Received: by 2002:aca:ab8c:: with SMTP id u134mr8517925oie.15.1609429442997;
-        Thu, 31 Dec 2020 07:44:02 -0800 (PST)
+        bh=vrJ54GWrf1gjKYUTCdpFWMnnDxjUx7yI9iWKN6uWpbY=;
+        b=WvF9QIlLVRSpAnCEu6QgBoKAuHTPcKyGd+e1ZMmHt+wS6sR2QjayqQmYpr3d+n3QwJ
+         /wA2iEuy3vY57OiFvyoKK1K+qH+DngvjTZT1K4ttLJfFSCrcarlLE07PFHrBieGUWMY2
+         L5nWjkl8lX2ofRRMqj1CZe0+QClCe8z+BqDH+u9tPUk8kujoj/FVHSzQF3Rf04FeKOD0
+         1wqwNML5n4vDcFz8+ZPPhQWtavMi2bW4wQYLAsMp4J8bqicQxuG2Ack9RszxwFu26ITP
+         U/I38YCgPP9jK6nT1gdqInwsDobnlxX8lT4L3jWarsicvBmc7m0QUDsM/OZJ7zfCqV2L
+         V5Iw==
+X-Gm-Message-State: AOAM531ojOihhFtsqX391ljRONdvNRoyx5ogm9TZbmj7fAovbRrUUqfL
+        x8cqoSzX5RAP38KKCla+QQ==
+X-Google-Smtp-Source: ABdhPJzPV0VHmm9Ury2BxUsTfggiEYoY5ylxj7HrLmkDpdCswUZWCJ4x1QPsJBsLYVaXS9tqBSnGCQ==
+X-Received: by 2002:a05:6830:1650:: with SMTP id h16mr42298972otr.266.1609429772107;
+        Thu, 31 Dec 2020 07:49:32 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id g21sm11349439otj.77.2020.12.31.07.44.00
+        by smtp.gmail.com with ESMTPSA id s17sm11209427otg.16.2020.12.31.07.49.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 07:44:02 -0800 (PST)
-Received: (nullmailer pid 1843013 invoked by uid 1000);
-        Thu, 31 Dec 2020 15:44:00 -0000
-Date:   Thu, 31 Dec 2020 08:44:00 -0700
+        Thu, 31 Dec 2020 07:49:31 -0800 (PST)
+Received: (nullmailer pid 1851540 invoked by uid 1000);
+        Thu, 31 Dec 2020 15:49:29 -0000
+Date:   Thu, 31 Dec 2020 08:49:29 -0700
 From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        drinkcat@chromium.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v3 1/3] dt-bindings: regulator: document binding for
- MT6315 regulator
-Message-ID: <20201231154400.GA1840028@robh.at.kernel.org>
-References: <1608725624-30594-1-git-send-email-hsin-hsiung.wang@mediatek.com>
- <1608725624-30594-2-git-send-email-hsin-hsiung.wang@mediatek.com>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>
+Cc:     ulf.hansson@linaro.org, bjorn.andersson@linaro.org, wsa@kernel.org,
+        swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, mka@chromium.org,
+        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
+        parashar@codeaurora.org, rnayak@codeaurora.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        agross@kernel.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: power: Introduce
+ 'assigned-performance-states' property
+Message-ID: <20201231154929.GA1846089@robh.at.kernel.org>
+References: <20201224111210.1214-1-rojay@codeaurora.org>
+ <20201224111210.1214-2-rojay@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1608725624-30594-2-git-send-email-hsin-hsiung.wang@mediatek.com>
+In-Reply-To: <20201224111210.1214-2-rojay@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 08:13:42PM +0800, Hsin-Hsiung Wang wrote:
-> Add device tree binding information for MT6315 regulator driver.
-> Example bindings for MT6315 are added.
+On Thu, Dec 24, 2020 at 04:42:08PM +0530, Roja Rani Yarubandi wrote:
+> While most devices within power-domains which support performance states,
+> scale the performance state dynamically, some devices might want to
+> set a static/default performance state while the device is active.
+> These devices typically would also run off a fixed clock and not support
+> dynamically scaling the device's performance, also known as DVFS
+> techniques.
 > 
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> Add a property 'assigned-performance-states' which client devices can
+> use to set this default performance state on their power-domains.
+> 
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
 > ---
->  .../bindings/regulator/mt6315-regulator.yaml  | 71 +++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml
+>  .../bindings/power/power-domain.yaml          | 49 +++++++++++++++++++
+>  1 file changed, 49 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml b/Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml
-> new file mode 100644
-> index 000000000000..15ce83a36174
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml
-> @@ -0,0 +1,71 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/mtk,mt6315-regulator.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek MT6315 Regulator
-> +
-> +maintainers:
-> +  - Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> +
-> +description: |
-> +  The MT6315 is a power management IC (PMIC) configurable with SPMI.
-> +  that contains 4 BUCKs output which can combine with each other
-> +  by different efuse settings.
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt6315-regulator
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  regulators:
-> +    type: object
-> +    description: List of regulators and its properties
-> +
-> +    patternProperties:
-> +      "^vbuck[1-4]$":
-> +        type: object
-> +        $ref: "regulator.yaml#"
-> +
-> +        properties:
-> +          regulator-name:
-> +            pattern: "^vbuck[1-4]$"
-> +            description:
-> +              should be "vbuck1", ..., "vbuck4"
+> diff --git a/Documentation/devicetree/bindings/power/power-domain.yaml b/Documentation/devicetree/bindings/power/power-domain.yaml
+> index aed51e9dcb11..a42977a82d06 100644
+> --- a/Documentation/devicetree/bindings/power/power-domain.yaml
+> +++ b/Documentation/devicetree/bindings/power/power-domain.yaml
+> @@ -66,6 +66,18 @@ properties:
+>        by the given provider should be subdomains of the domain specified
+>        by this binding.
+>  
+> +  assigned-performance-states:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    description:
+> +       Some devices might need to configure their power domains in a default
+> +       performance state while the device is active. These devices typcially
+> +       would also run off a fixed clock and not support dynamically scaling
+> +       the device's performance, also known as DVFS techniques. Each cell in
+> +       performance state value corresponds to one power domain specified as
+> +       part of the power-domains property. Performance state value can be an
+> +       opp-level inside an OPP table of the power-domain and need not match
+> +       with any OPP table performance state.
 
-The description just repeats what the schema defines. Drop it.
+Couldn't this just be an additional cell in 'power-domains'?
 
 > +
-> +    additionalProperties: false
+>  required:
+>    - "#power-domain-cells"
+>  
+> @@ -131,3 +143,40 @@ examples:
+>              min-residency-us = <7000>;
+>          };
+>      };
 > +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - regulators
-> +
-> +additionalProperties: false
-> +
-> +examples:
 > +  - |
-> +    pmic@6 {
-> +      compatible = "mediatek,mt6315-regulator";
-> +      reg = <0x6 0 0xb 1>;
+> +    parent4: power-controller@12340000 {
+> +        compatible = "foo,power-controller";
+> +        reg = <0x12340000 0x1000>;
+> +        #power-domain-cells = <0>;
+> +    };
 > +
-> +      regulators {
-> +        vbuck1 {
-> +          regulator-compatible = "vbuck1";
-> +          regulator-min-microvolt = <300000>;
-> +          regulator-max-microvolt = <1193750>;
-> +          regulator-enable-ramp-delay = <256>;
-> +          regulator-allowed-modes = <0 1 2 4>;
-> +        };
+> +    parent5: power-controller@43210000 {
+> +        compatible = "foo,power-controller";
+> +        reg = <0x43210000 0x1000>;
+> +        #power-domain-cells = <0>;
+> +        operating-points-v2 = <&power_opp_table>;
 > +
-> +        vbuck3 {
-> +          regulator-compatible = "vbuck3";
-> +          regulator-min-microvolt = <300000>;
-> +          regulator-max-microvolt = <1193750>;
-> +          regulator-enable-ramp-delay = <256>;
-> +          regulator-allowed-modes = <0 1 2 4>;
+> +        power_opp_table: opp-table {
+> +            compatible = "operating-points-v2";
+> +
+> +            power_opp_low: opp1 {
+> +                opp-level = <16>;
+> +            };
+> +
+> +            rpmpd_opp_ret: opp2 {
+> +                opp-level = <64>;
+> +            };
+> +
+> +            rpmpd_opp_svs: opp3 {
+> +                opp-level = <256>;
+> +            };
 > +        };
-> +      };
+> +    };
+> +
+> +    child4: consumer@12341000 {
+> +        compatible = "foo,consumer";
+> +        reg = <0x12341000 0x1000>;
+> +        power-domains = <&parent4>, <&parent5>;
+> +        assigned-performance-states = <0>, <256>;
 > +    };
 > -- 
-> 2.18.0
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
 > 
