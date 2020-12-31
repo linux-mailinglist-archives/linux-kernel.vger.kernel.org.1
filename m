@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615F02E7EC7
+	by mail.lfdr.de (Postfix) with ESMTP id CFBD82E7EC8
 	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 09:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgLaIxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 03:53:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgLaIxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 03:53:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81B83208B8;
-        Thu, 31 Dec 2020 08:53:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609404789;
-        bh=3XT/6I6rd1Yk/9gVWV9Z+YqtCtiIi+MPjlaUt/WQmo0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jt79nNaXxEXhqixdY6zD9cXSGcz+GCu+TbRr2RlI0ft1qDbfgDDDCLpvFkpPuGLtr
-         JylY5qPYnRIL6GWYIvyP6vpghEXduHLsi3GloN96EV+IBItfd0T1WUGYzlnyIY5Bip
-         SNuax/LnMQnwoLBu6JN+HPqr2jEIeIU3Jt1lsmzXOyHwi32IkeLxO7stPlvWYyfvw4
-         fXJ/ISCSqqQajhdVQn9i0ele9tMSv93Bv3MeaVERizqbub9YgJGGkAmeGhPaQmZHQb
-         LPQZMQmRWpqEKiJskIFz//C59kJ8wvp/Amqs03L9uUk0PNgc7l3qXjd2+Ys9U0qDlU
-         WGy0PuoldQgvw==
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Timon Baetz <timon.baetz@protonmail.com>, kbuild-all@lists.01.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] extcon: Add stubs for extcon_register_notifier_all() functions
-Date:   Thu, 31 Dec 2020 09:52:52 +0100
-Message-Id: <20201231085252.69831-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726555AbgLaIyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 03:54:33 -0500
+Received: from smtp21.cstnet.cn ([159.226.251.21]:36134 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726130AbgLaIyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 03:54:32 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-01 (Coremail) with SMTP id qwCowABHThaFke1f1bhfAA--.41536S2;
+        Thu, 31 Dec 2020 16:53:25 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     jic23@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        krzk@kernel.org, andy.shevchenko@gmail.com,
+        bobo.shaobowang@huawei.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: [PATCH] iio: adc: stm32-dfsdm: Remove redundant null check before clk_disable_unprepare
+Date:   Thu, 31 Dec 2020 08:53:22 +0000
+Message-Id: <20201231085322.24398-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowABHThaFke1f1bhfAA--.41536S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8Aw1xGryrKr48Zwb_yoW3tFXEy3
+        WUu39rKF4aqrnay3y8WFn8Zr90vry8Zws3ur10yrWrGFy7Z3y7ZrWavr43Jw1UAanFya47
+        A3WDX34fAr1xCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbV8YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8Jr0_Cr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kI
+        c2xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07jeApnUUUUU=
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQkHA102Z1ecAwAAsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add stubs for extcon_register_notifier_all() function for !CONFIG_EXTCON
-case.  This is useful for compile testing and for drivers which use
-EXTCON but do not require it (therefore do not depend on CONFIG_EXTCON).
+ecause clk_disable_unprepare() already checked NULL clock parameter,
+so the additional check is unnecessary, just remove it.
 
-Fixes: 815429b39d94 ("extcon: Add new extcon_register_notifier_all() to monitor all external connectors")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- include/linux/extcon.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/iio/adc/stm32-dfsdm-core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/extcon.h b/include/linux/extcon.h
-index fd183fb9c20f..0c19010da77f 100644
---- a/include/linux/extcon.h
-+++ b/include/linux/extcon.h
-@@ -271,6 +271,29 @@ static inline  void devm_extcon_unregister_notifier(struct device *dev,
- 				struct extcon_dev *edev, unsigned int id,
- 				struct notifier_block *nb) { }
- 
-+static inline int extcon_register_notifier_all(struct extcon_dev *edev,
-+					       struct notifier_block *nb)
-+{
-+	return 0;
-+}
-+
-+static inline int extcon_unregister_notifier_all(struct extcon_dev *edev,
-+						 struct notifier_block *nb)
-+{
-+	return 0;
-+}
-+
-+static inline int devm_extcon_register_notifier_all(struct device *dev,
-+						    struct extcon_dev *edev,
-+						    struct notifier_block *nb)
-+{
-+	return 0;
-+}
-+
-+static inline void devm_extcon_unregister_notifier_all(struct device *dev,
-+						       struct extcon_dev *edev,
-+						       struct notifier_block *nb) { }
-+
- static inline struct extcon_dev *extcon_get_extcon_dev(const char *extcon_name)
+diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
+index 42a7377704a4..bb925a11c8ae 100644
+--- a/drivers/iio/adc/stm32-dfsdm-core.c
++++ b/drivers/iio/adc/stm32-dfsdm-core.c
+@@ -117,8 +117,7 @@ static void stm32_dfsdm_clk_disable_unprepare(struct stm32_dfsdm *dfsdm)
  {
- 	return ERR_PTR(-ENODEV);
+ 	struct dfsdm_priv *priv = to_stm32_dfsdm_priv(dfsdm);
+ 
+-	if (priv->aclk)
+-		clk_disable_unprepare(priv->aclk);
++	clk_disable_unprepare(priv->aclk);
+ 	clk_disable_unprepare(priv->clk);
+ }
+ 
 -- 
-2.25.1
+2.17.1
 
