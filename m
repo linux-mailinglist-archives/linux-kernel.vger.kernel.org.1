@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028922E7D53
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E942E7D59
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 01:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgLaAQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Dec 2020 19:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
+        id S1726571AbgLaAQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Dec 2020 19:16:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgLaAQB (ORCPT
+        with ESMTP id S1726492AbgLaAQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Dec 2020 19:16:01 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B43C061573;
-        Wed, 30 Dec 2020 16:15:20 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id x16so23778995ejj.7;
-        Wed, 30 Dec 2020 16:15:20 -0800 (PST)
+        Wed, 30 Dec 2020 19:16:38 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC72C061799
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 16:15:58 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id c22so12178504pgg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 16:15:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UvoSlfKOzR9aXfOXBsJ3GswM+8uOh9HphZSo/bhng8w=;
-        b=bvKYG0KdYqYIkJ1r680vMvyx7fx2qEYMXWN0/N9RhRGWeQNhC/O9N5KguxoLJlk8zv
-         ZGcV6SfiJ2qw+foQq3MtDJYXKfmNNK/6OdYAnB4r4YkddVSRbDch1R0v6mgBV53KccxZ
-         FYOSrd+Ipsaq55fseR2FSmEF8uJ+svXVsW4GZkfwEIfPBmorV0+vjQq2ubveZE3RHVsZ
-         L37trk87jql5wejgQUy3mB/KPJZ6V2io2xgWYRvkLw39FtKaXbCb5YxoAKvw6qOtEIPl
-         Av3ZjkqFZjTIHlgMN52IBy9QbjCrMjh2+cmmlKZoc2ejnXm6oeoPMVjBMRYs1p4Jax6h
-         81ng==
+        d=linuxace-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=au5deversDUhjJZ37Ftd3WtVvchDXjoeRWjmb+KgOHU=;
+        b=MhWOQFZsHAE0uuFnYbB/Jc8/42rNUcbi/V4UxJV83oD22AQ+STPyLsxxBUt9LSBWuM
+         FiiC6HSt0I3g688dwrqFrS9xKAS1mKVlI6cgloEQg4yCBCQLm6ui3hqiLfXYOZDQjN/c
+         yTGw1jWAMEKEVCQNRT0ZsV4ES9Gxz2o6MX03p4k0xdRw88kqJLS5RVQuaVrp2cUQjavc
+         IqcpA3rfmXAVgK2akbcJ+3xDoJPULOv/4EtSlbJ9NkqCFgPO1OACDhkN+azVbi3QkVw+
+         1EJUqE//dWefJfE996DoJfPls6PQUy2Ym3Ic6dSPDorr/9f/pG5KIBhHH2x75WAtLWyo
+         ttEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UvoSlfKOzR9aXfOXBsJ3GswM+8uOh9HphZSo/bhng8w=;
-        b=sDa/mpE4japMGwQyHvNZ0V1nbaj0dx1gMo2QiOu1XxaHQroKCgyoqRxtJGrSpZqW7D
-         nrd8y/ONHxevVaCmhA+tdmf3tS79mTFFlSC9Fd18Ha6WTJU8McaL1tG4J3TupaAct45K
-         k0cBeippgHLKW/+S42hALgWTUAImvTzAuN1QxrRgxhZMTrTRgetTQbCQqZJahPfKEmZW
-         p6iwnFLk6hTWXplMi3fRdXawqVHw0Oe+UbShv73Fjs85qEbAgwmlI4K8pWili0B/sGJ/
-         zv1ILEPPUKgMQFSYjNPUT5mCdI9pznyEl7445DN006c+vQ7sJLzv1Kwah+GpuBWORePG
-         Va9Q==
-X-Gm-Message-State: AOAM530NaWTBRMoM+Dyqb7oHLCQ2zGc8xJ12aKabqfBwW83dTsohG1qk
-        dGxklBSdKNz0ckcg1l67ifDjPaBZYOxgwVpQP1W1uiOtpmQ=
-X-Google-Smtp-Source: ABdhPJxb748s3jA7OM4MHs5iwBkFjZbItUx/Lu8HznegChgjdipD9BsFFy2yu4F2Cr4zjR0SwZf8mS7qLieMUFj76ZQ=
-X-Received: by 2002:a17:906:4050:: with SMTP id y16mr49846386ejj.537.1609373719461;
- Wed, 30 Dec 2020 16:15:19 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=au5deversDUhjJZ37Ftd3WtVvchDXjoeRWjmb+KgOHU=;
+        b=Z6+tFYVmyIgS23LPg6CqQG8sbjdIMBZlj503ajGKr+8nSBBEz8QBRekB2+2x4uNeRl
+         ZBnLmgtgQifH9GKFAAQTVrvwH64sj7tDMmhKHYuuanYCTh7QPdozgqjgJy8N7HyvIvss
+         JHxs/mC12Qi8ilTgRr0oUsjWsf4fgm9z1VxHlPoCmQ1AWrwjazPCD+6AD1b26a06FiTE
+         qcAZqfmtOLpFmAKKSvw5CeQUFxAVSR6oSCj1rDWfKaGSM/i6kVLmWilVoeJdv85QmBJU
+         /HwyfcQl92LQbU4oIidaCEKHPq4UNpkTKLrifUVAmYX+Vcpsls4J24KgkQCqslMScmLx
+         jAbg==
+X-Gm-Message-State: AOAM5324aREgCpr0vSUTakVJwJ5kYg3Tv+oGUdpdxSDncUVcmW1xBsTC
+        5llCle/dot1GUHkEgfUq8q5dvQ==
+X-Google-Smtp-Source: ABdhPJwcB47Au0SCL2bya0Ek9wpMqDiNDQIFM8LUop6tXifOpwCBlrKfIqN2Er69MYwJ7KdsZOMWEw==
+X-Received: by 2002:a63:da50:: with SMTP id l16mr38832354pgj.447.1609373757086;
+        Wed, 30 Dec 2020 16:15:57 -0800 (PST)
+Received: from home.linuxace.com (cpe-23-243-7-246.socal.res.rr.com. [23.243.7.246])
+        by smtp.gmail.com with ESMTPSA id h18sm44326353pfo.172.2020.12.30.16.15.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Dec 2020 16:15:56 -0800 (PST)
+Date:   Wed, 30 Dec 2020 16:15:53 -0800
+From:   Phil Oester <kernel@linuxace.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        hch@infradead.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org, Anand Lodnoor <anand.lodnoor@broadcom.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] scsi: megaraid_sas: check user-provided offsets
+Message-ID: <20201231001553.GB16945@home.linuxace.com>
+References: <20200908213715.3553098-1-arnd@arndb.de>
+ <20200908213715.3553098-2-arnd@arndb.de>
 MIME-Version: 1.0
-References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com>
- <20201004162908.3216898-4-martin.blumenstingl@googlemail.com>
- <CACRpkdZo-U_cAhbKb4E+d+p+5FenXkGYW0RXxyk4M5uyEPCpzw@mail.gmail.com>
- <CAFBinCCLubmDvxfabQHx2-ucgAsm1NArMUrtPx-UA2nX5xoFFA@mail.gmail.com> <CAFBinCAZXJ2=fTQuAUyW1hNeJDHY3_pxo4UhxUaOZC=i1bpFxw@mail.gmail.com>
-In-Reply-To: <CAFBinCAZXJ2=fTQuAUyW1hNeJDHY3_pxo4UhxUaOZC=i1bpFxw@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 31 Dec 2020 01:15:08 +0100
-Message-ID: <CAFBinCAYGZC0jXPozScJugsX+8P_BOm1Zj8+f+RE9fMjhbKbJw@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/3] gpio: ej1x8: Add GPIO driver for Etron Tech Inc. EJ168/EJ188/EJ198
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-usb <linux-usb@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908213715.3553098-2-arnd@arndb.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Sep 08, 2020 at 11:36:22PM +0200, Arnd Bergmann wrote:
+> It sounds unwise to let user space pass an unchecked 32-bit
+> offset into a kernel structure in an ioctl. This is an unsigned
+> variable, so checking the upper bound for the size of the structure
+> it points into is sufficient to avoid data corruption, but as
+> the pointer might also be unaligned, it has to be written carefully
+> as well.
+> 
+> While I stumbled over this problem by reading the code, I did not
+> continue checking the function for further problems like it.
 
-On Mon, Dec 21, 2020 at 4:28 PM Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
->
-> Hi Linus,
->
-> On Wed, Oct 7, 2020 at 9:44 PM Martin Blumenstingl
-> <martin.blumenstingl@googlemail.com> wrote:
-> [...]
-> > > As noted on the earlier patches I think this should be folded into the
-> > > existing XHCI USB driver in drivers/usb/host/xhci-pci.c or, if that
-> > > gets messy, as a separate bolt-on, something like
-> > > xhci-pci-gpio.[c|h] in the drivers/usb/host/* directory.
-> > > You can use a Kconfig symbol for the GPIO portions or not.
-> > OK, I will do that if there are no objections from other developers
-> > I am intending to place the relevant code in xhci-pci-etron.c, similar
-> > to what we already have with xhci-pci-renesas.c
-> I tried this and unfortunately there's a catch.
-> the nice thing about having a separate GPIO driver means that the
-> xhci-pci driver doesn't need to know about it.
->
-> I implemented xhci-pci-etron.c and gave it a Kconfig option.
-> xhci-pci is then calling into xhci-pci-etron (through some
-> etron_xhci_pci_probe function).
-> unfortunately this means that xhci-pci now depends on xhci-pci-etron.
-> for xhci-pci-renesas this is fine (I think) because that part of the
-> code is needed to get the xHCI controller going
-> but for xhci-pci-etron this is a different story: the GPIO controller
-> is entirely optional and only used on few devices
->
-> my goal is (at some point in the future) to have the GPIO driver in OpenWrt.
-> I am not sure if they would accept a patch where xhci-pci would then
-> pull in the dependencies for that Etron controller, even though most
-> boards don't need it.
->
-> Please let me know if you have any idea on how to solve this.
-next week I have some free time to work on this
-I am still interested in any ideas that you have about this
+Sorry for replying to an ancient thread, but this patch just recently
+made it into 5.10.3 and has caused unintended consequences.  On Dell
+servers with PERC RAID controllers, booting 5.10.3+ with this patch
+causes a PCI parity error.  Specifically:
 
+Event Message: A PCI parity error was detected on a component at bus 0 device 5 function 0.
+Severity: Critical
+Message ID: PCI1308
 
-Best regards,
-Martin
+I reverted this single patch and the errors went away.
+
+Thoughts?
+
+Phil Oester
