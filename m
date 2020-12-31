@@ -2,201 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392C22E81DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 20:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3482E81E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 21:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgLaTyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 14:54:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgLaTyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 14:54:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06F3A20888;
-        Thu, 31 Dec 2020 19:53:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1609444411;
-        bh=KJIMto6/CN1F/GwJ3MTJEjZ/8SvXAKMXRAQei4SnC+8=;
-        h=Date:From:To:Subject:From;
-        b=zstBQJFQLbXqCJogGlS+jycPiKrfW+wh+URTyEyMSfswNy1+xkVgWCVAiYSylc6xi
-         LAY9MgYcB6G5NDsqOJmQc+k8WHoYzae6DDxPgzEKic0MYR7bFun4Xu0FmCdDC5r6s4
-         m0h7VPjvm2izxw7NRZTf0q7SusoSLF8sxWVsBAZk=
-Date:   Thu, 31 Dec 2020 11:53:30 -0800
-From:   akpm@linux-foundation.org
-To:     broonie@kernel.org, mhocko@suse.cz, sfr@canb.auug.org.au,
-        linux-next@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        mm-commits@vger.kernel.org
-Subject:  mmotm 2020-12-31-11-52 uploaded
-Message-ID: <20201231195330.PHhcH%akpm@linux-foundation.org>
-User-Agent: s-nail v14.9.10
+        id S1726651AbgLaUI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 15:08:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgLaUI1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 15:08:27 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BEBC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 12:07:46 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id j1so10405056pld.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 12:07:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LUdKDlLlflhborB/8hVdW+VgkZLtdJkIlQCMkULEfnY=;
+        b=q4OSIz/JkJT0Z+P9uVNEenQw9LCMicx+csh5V1YclMspc2ubhEGsY9l8aXWn/1o2D2
+         tqsq+6zRnIEQMwGOBhYBOR9pibQi2htQPQreoUST292qXMsKVsAGim3LKXZ9E+zMie7M
+         52pwQiP+QDRiqEfB5yLl54UhEeUJ60jgAJwDEmxEkbKliBbXL/avFooqe6pFZMd1QB1x
+         f3/SsfSySDPPrUOV8ywWsXStpQTqui22/EZnyTuI7YSk7qzrBY3irhTo5l7yn6rfj/Vz
+         GGe2OnNRSe4tThPrYvn4loOQr6sb0xPyFqSteoIbplYoQzmBYtJfo/gJZzG5cX1u/qXP
+         c+Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LUdKDlLlflhborB/8hVdW+VgkZLtdJkIlQCMkULEfnY=;
+        b=IkV4WO6q6gzIe071KDLCQHh2W/XuIUQYTS7Q2V56WTLiPs/95bJXIdYgmIxb2DJLvE
+         bn3I6oZO/7svqV8m9tZZ5rqebmUSSopseLJcJ5+lKUYPlAuCTrj/t2fpQRs659bSNQ37
+         c/raN1gcOgZuPv0pnjxJKsbddB2mE1upG0mzkuX0t3FAe+VDTs03+YJuSQQVbXV/bX72
+         +oO5EjzYo7a/1RICqUu6+j3ARaNsIEQ8NWAbWJ8jwKI5cCjx+dXy4HICX2NaC/IAd6rF
+         OfU3qzUkt/A6rYm/kZ2CuyJLFHSZ8fHqO6YJY6LzSLgFmcqGFoMBNwwhi8VKYjJQWoXR
+         +9+A==
+X-Gm-Message-State: AOAM5316t10qQvB37D/FnIb9UTVJNjKxqbPGayLR62ofmcu0VWpTPUH4
+        QiA1GGNHvTSqPXhBP68m1HI=
+X-Google-Smtp-Source: ABdhPJzl+Fbw2ZK/0YW+xvW1opW2piy82XGq/LFQSMQzdbhXDr9nGtRYASFfPXeTVmyCnl65miZT/w==
+X-Received: by 2002:a17:902:6b0a:b029:dc:31af:8dc3 with SMTP id o10-20020a1709026b0ab02900dc31af8dc3mr36249199plk.41.1609445265935;
+        Thu, 31 Dec 2020 12:07:45 -0800 (PST)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id y189sm44418568pfb.155.2020.12.31.12.07.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 31 Dec 2020 12:07:45 -0800 (PST)
+Date:   Thu, 31 Dec 2020 12:07:57 -0800
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Timur Tabi <timur@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] ASoC: fsl: fix -Wmaybe-uninitialized warning
+Message-ID: <20201231200756.GA15207@Asurada-Nvidia>
+References: <20201230154443.656997-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230154443.656997-1-arnd@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mm-of-the-moment snapshot 2020-12-31-11-52 has been uploaded to
+On Wed, Dec 30, 2020 at 04:44:15PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Clang points out a code path that returns an undefined value
+> in an error case:
+> 
+> sound/soc/fsl/imx-hdmi.c:165:6: error: variable 'ret' is used uninitialized whenever 'if' condition is true [-Werror,-Wsom
+> etimes-uninitialized]
+>         if ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in)) {
+>             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> sound/soc/fsl/imx-hdmi.c:212:9: note: uninitialized use occurs here
+>         return ret;
+> 
+> The driver returns -EINVAL for other broken DT properties, so do
+> it the same way here.
+> 
+> Fixes: 6a5f850aa83a ("ASoC: fsl: Add imx-hdmi machine driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  sound/soc/fsl/imx-hdmi.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
+> index 2c2a76a71940..ede4a9ad1054 100644
+> --- a/sound/soc/fsl/imx-hdmi.c
+> +++ b/sound/soc/fsl/imx-hdmi.c
+> @@ -164,6 +164,7 @@ static int imx_hdmi_probe(struct platform_device *pdev)
+>  
+>  	if ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in)) {
+>  		dev_err(&pdev->dev, "Invalid HDMI DAI link\n");
+> +		ret = -EINVAL;
+>  		goto fail;
 
-   https://www.ozlabs.org/~akpm/mmotm/
-
-mmotm-readme.txt says
-
-README for mm-of-the-moment:
-
-https://www.ozlabs.org/~akpm/mmotm/
-
-This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-more than once a week.
-
-You will need quilt to apply these patches to the latest Linus release (5.x
-or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-https://ozlabs.org/~akpm/mmotm/series
-
-The file broken-out.tar.gz contains two datestamp files: .DATE and
-.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-followed by the base kernel version against which this patch series is to
-be applied.
-
-This tree is partially included in linux-next.  To see which patches are
-included in linux-next, consult the `series' file.  Only the patches
-within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-linux-next.
-
-
-A full copy of the full kernel tree with the linux-next and mmotm patches
-already applied is available through git within an hour of the mmotm
-release.  Individual mmotm releases are tagged.  The master branch always
-points to the latest release, so it's constantly rebasing.
-
-	https://github.com/hnaz/linux-mm
-
-The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
-contains daily snapshots of the -mm tree.  It is updated more frequently
-than mmotm, and is untested.
-
-A git copy of this tree is also available at
-
-	https://github.com/hnaz/linux-mm
-
-
-
-This mmotm tree contains the following patches against 5.11-rc1:
-(patches marked "*" will be included in linux-next)
-
-  origin.patch
-* mm-slub-consider-rest-of-partial-list-if-acquire_slab-fails.patch
-* mm-page_alloc-add-a-missing-mm_page_alloc_zone_locked-tracepoint.patch
-* mm-page_alloc-add-a-missing-mm_page_alloc_zone_locked-tracepoint-fix.patch
-* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
-* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
-* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
-* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
-* ramfs-support-o_tmpfile.patch
-* fs-delete-repeated-words-in-comments.patch
-* kernel-watchdog-flush-all-printk-nmi-buffers-when-hardlockup-detected.patch
-  mm.patch
-* mm-tracing-record-slab-name-for-kmem_cache_free.patch
-* mm-msync-exit-early-when-the-flags-is-an-ms_async-and-start-vm_start.patch
-* mm-swap-dont-setpageworkingset-unconditionally-during-swapin.patch
-* mm-memcg-slab-pre-allocate-obj_cgroups-for-slab-caches-with-slab_account.patch
-* mm-memcg-slab-pre-allocate-obj_cgroups-for-slab-caches-with-slab_account-fix.patch
-* mm-memcontrol-optimize-per-lruvec-stats-counter-memory-usage.patch
-* mm-memcontrol-optimize-per-lruvec-stats-counter-memory-usage-checkpatch-fixes.patch
-* mm-memcontrol-fix-nr_anon_thps-accounting-in-charge-moving.patch
-* mm-memcontrol-convert-nr_anon_thps-account-to-pages.patch
-* mm-memcontrol-convert-nr_file_thps-account-to-pages.patch
-* mm-memcontrol-convert-nr_shmem_thps-account-to-pages.patch
-* mm-memcontrol-convert-nr_shmem_pmdmapped-account-to-pages.patch
-* mm-memcontrol-convert-nr_file_pmdmapped-account-to-pages.patch
-* mm-memcontrol-make-the-slab-calculation-consistent.patch
-* mm-memcg-revise-the-using-condition-of-lock_page_lruvec-function-series.patch
-* mm-memcg-remove-rcu-locking-for-lock_page_lruvec-function-series.patch
-* mm-mmap-remove-unnecessary-local-variable.patch
-* mm-mmap-replace-if-cond-bug-with-bug_on.patch
-* mm-mmap-fix-the-adjusted-length-error.patch
-* mm-page_reporting-use-list_entry_is_head-in-page_reporting_cycle.patch
-* mm-hugetlbc-fix-unnecessary-address-expansion-of-pmd-sharing.patch
-* mm-huge_memoryc-update-tlb-entry-if-pmd-is-changed.patch
-* mips-do-not-call-flush_tlb_all-when-setting-pmd-entry.patch
-* mm-vmscan-__isolate_lru_page_prepare-clean-up.patch
-* mm-compaction-remove-rcu_read_lock-during-page-compaction.patch
-* mm-memblock-enforce-overlap-of-memorymemblock-and-memoryreserved.patch
-* mm-fix-initialization-of-struct-page-for-holes-in-memory-layout.patch
-* mm-fix-initialization-of-struct-page-for-holes-in-memory-layout-checkpatch-fixes.patch
-* mm-hugetlb-change-hugetlb_reserve_pages-to-type-bool.patch
-* hugetlbfs-remove-special-hugetlbfs_set_page_dirty.patch
-* mm-make-pagecache-tagged-lookups-return-only-head-pages.patch
-* mm-shmem-use-pagevec_lookup-in-shmem_unlock_mapping.patch
-* mm-swap-optimise-get_shadow_from_swap_cache.patch
-* mm-add-fgp_entry.patch
-* mm-filemap-rename-find_get_entry-to-mapping_get_entry.patch
-* mm-filemap-add-helper-for-finding-pages.patch
-* mm-filemap-add-helper-for-finding-pages-fix.patch
-* mm-filemap-add-mapping_seek_hole_data.patch
-* mm-filemap-add-mapping_seek_hole_data-fix.patch
-* iomap-use-mapping_seek_hole_data.patch
-* mm-add-and-use-find_lock_entries.patch
-* mm-add-and-use-find_lock_entries-fix.patch
-* mm-add-an-end-parameter-to-find_get_entries.patch
-* mm-add-an-end-parameter-to-pagevec_lookup_entries.patch
-* mm-remove-nr_entries-parameter-from-pagevec_lookup_entries.patch
-* mm-pass-pvec-directly-to-find_get_entries.patch
-* mm-remove-pagevec_lookup_entries.patch
-* mmthpshmem-limit-shmem-thp-alloc-gfp_mask.patch
-* mmthpshm-limit-gfp-mask-to-no-more-than-specified.patch
-* mmthpshmem-make-khugepaged-obey-tmpfs-mount-flags.patch
-* mm-cma-allocate-cma-areas-bottom-up.patch
-* mm-cma-allocate-cma-areas-bottom-up-fix.patch
-* mm-cma-allocate-cma-areas-bottom-up-fix-2.patch
-* mm-cma-allocate-cma-areas-bottom-up-fix-3.patch
-* memblock-do-not-start-bottom-up-allocations-with-kernel_end.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
-* mm-zswap-clean-up-confusing-comment.patch
-* mm-remove-arch_remap-and-mm-arch-hooksh.patch
-* mm-page-flagsh-typo-fix-it-if.patch
-* mm-add-kernel-electric-fence-infrastructure.patch
-* mm-add-kernel-electric-fence-infrastructure-fix.patch
-* mm-add-kernel-electric-fence-infrastructure-fix-2.patch
-* x86-kfence-enable-kfence-for-x86.patch
-* arm64-kfence-enable-kfence-for-arm64.patch
-* kfence-use-pt_regs-to-generate-stack-trace-on-faults.patch
-* mm-kfence-insert-kfence-hooks-for-slab.patch
-* mm-kfence-insert-kfence-hooks-for-slub.patch
-* kfence-kasan-make-kfence-compatible-with-kasan.patch
-* kfence-kasan-make-kfence-compatible-with-kasan-fix.patch
-* kfence-documentation-add-kfence-documentation.patch
-* kfence-add-test-suite.patch
-* kfence-add-test-suite-fix.patch
-* maintainers-add-entry-for-kfence.patch
-* info-task-hung-in-generic_file_write_iter.patch
-* info-task-hung-in-generic_file_write-fix.patch
-* kernel-hung_taskc-monitor-killed-tasks.patch
-* proc-wchan-use-printk-format-instead-of-lookup_symbol_name.patch
-* sysctlc-fix-underflow-value-setting-risk-in-vm_table.patch
-* proc-sysctl-make-protected_-world-readable.patch
-* lib-linear_ranges-fix-repeated-words-one-typo.patch
-* lib-optimize-cpumask_local_spread.patch
-* aio-simplify-read_events.patch
-  linux-next.patch
-  linux-next-git-rejects.patch
-* mm-add-definition-of-pmd_page_order.patch
-* mmap-make-mlock_future_check-global.patch
-* set_memory-allow-set_direct_map__noflush-for-multiple-pages.patch
-* set_memory-allow-set_direct_map__noflush-for-multiple-pages-fix.patch
-* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled.patch
-* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled-fix.patch
-* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas.patch
-* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas-fix.patch
-* secretmem-use-pmd-size-pages-to-amortize-direct-map-fragmentation.patch
-* secretmem-add-memcg-accounting.patch
-* pm-hibernate-disable-when-there-are-active-secretmem-users.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant-fix.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant-fix-fix.patch
-* secretmem-test-add-basic-selftest-for-memfd_secret2.patch
-* secretmem-test-add-basic-selftest-for-memfd_secret2-fix.patch
-  make-sure-nobodys-leaking-resources.patch
-  releasing-resources-with-children.patch
-  mutex-subsystem-synchro-test-module.patch
-  kernel-forkc-export-kernel_thread-to-modules.patch
-  workaround-for-a-pci-restoring-bug.patch
+I think Mark has already applied a fix :)
+https://lkml.org/lkml/2020/12/16/275
