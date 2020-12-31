@@ -2,195 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FD62E7E72
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 07:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFFF2E7E84
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 08:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgLaGeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 01:34:23 -0500
-Received: from mga09.intel.com ([134.134.136.24]:65308 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbgLaGeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 01:34:22 -0500
-IronPort-SDR: sQX1YcFhCdOjp1YrPxFDKYu5nNAa3/6QO84ZLujThFS26G9yMOdBgCkxmedQiFHctKNkJKzwuu
- bCLw/cxRLE+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9850"; a="176828772"
-X-IronPort-AV: E=Sophos;i="5.78,463,1599548400"; 
-   d="scan'208";a="176828772"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2020 22:33:41 -0800
-IronPort-SDR: lx8Xcadb3pTDI7DWthnzlbq4gSdtmLqCA582AkrY2chr00Ahr/5AQ2cEYxMXcEjoORJJuzq1j2
- gDxYUrguLiqQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,463,1599548400"; 
-   d="scan'208";a="376675311"
-Received: from lkp-server02.sh.intel.com (HELO 4242b19f17ef) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 30 Dec 2020 22:33:40 -0800
-Received: from kbuild by 4242b19f17ef with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kurWl-0004lA-DD; Thu, 31 Dec 2020 06:33:39 +0000
-Date:   Thu, 31 Dec 2020 14:32:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.12.26a] BUILD SUCCESS
- 99f7c53b43866761e4df3460ace228e7520898f3
-Message-ID: <5fed708d.NzSp1vtU6vQDMq0A%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726388AbgLaHDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 02:03:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgLaHDA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 02:03:00 -0500
+X-Greylist: delayed 1525 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Dec 2020 23:02:20 PST
+Received: from relay.heise.de (relay.heise.de [IPv6:2a00:e68:14:800::19:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA87C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Dec 2020 23:02:20 -0800 (PST)
+Subject: Re: [PATCH] genirq: Export irq_check_status_bit
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20201230154600.697832-1-arnd@kernel.org>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Message-ID: <49cdadb1-9624-7a92-f3e7-f403702dc504@leemhuis.info>
+Date:   Thu, 31 Dec 2020 07:36:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20201230154600.697832-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TMScanToken: 6dcdffc65b05d9a7f26f2c0c644384e3e46d3b73
+X-TMASE-Version: DDEI-3.5-8.6.1012-25882.005
+X-TMASE-Result: 10--3.183000-10.000000
+X-TMASE-MatchedRID: HXSqh3WYKfu8rRvefcjeTXB4kOjNh/grC/ExpXrHizzLkl8e9W70i3jm
+        0APnwZU2memipv1u6D8uKMVOeSDBJed7FYYeUBPYqJSK+HSPY+8o/EsCKojU0pSNvrzEd0cAgyW
+        NJp//h3U/UQO6d5wrV9L9pf3er7uLKkcZdZbwqhJn3ejPjd19cf/dUP8atA+/Ed+K6O5Nt53QgB
+        hawGY6JUK4Kzw5Vavi2Oqz8656LhSjxYyRBa/qJQPTK4qtAgwIIC0OoeD/hCbQLWxBF9DMQcRB0
+        bsfrpPI34T9cYMsdwyMQdS/ovhnQZjA0Phg8EMbqFAyVD16PxizIzSzuzYuwRCcskHezVkRLzKR
+        3kfFEU/SNaJeiJwMqj76msHO2b/gxb1b0rf3JHB3JEmTicHZtRj5UCuziZqVQXUTGRdR3d+JVXE
+        sQ8vgPvhIxIQs/UPl
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.12.26a
-branch HEAD: 99f7c53b43866761e4df3460ace228e7520898f3  squash! clocksource: Retry clock read if long delays detected
+Am 30.12.20 um 16:45 schrieb Arnd Bergmann:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Changing some inline functions to use the new irq_check_status_bit
+> function out of line breaks calling them from loadable modules:
+> 
+> ERROR: modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!
 
-elapsed time: 724m
+Just FYI: Levi Yun sent a similar patch a on Dec, 26 already:
+https://lore.kernel.org/lkml/20201226123818.GA693525@ubuntu/
 
-configs tested: 133
-configs skipped: 2
+But nothing happened afaics, the festival season is taking its toll. ;-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'd like to see this fixed, too, as it broke my
+Kernel Vanilla builds for Fedora
+(https://fedoraproject.org/wiki/Kernel_Vanilla_Repositories) just a day
+after I finally started building packages for aarch64, too. Bad timing. :-D
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                            alldefconfig
-powerpc                      pcm030_defconfig
-x86_64                              defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                        bcm63xx_defconfig
-arm                            zeus_defconfig
-arm64                            alldefconfig
-h8300                               defconfig
-sh                            migor_defconfig
-powerpc                     akebono_defconfig
-powerpc                      obs600_defconfig
-powerpc                    klondike_defconfig
-arm                        mvebu_v5_defconfig
-s390                             alldefconfig
-sh                   rts7751r2dplus_defconfig
-arm                  colibri_pxa300_defconfig
-mips                      fuloong2e_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     mpc83xx_defconfig
-mips                       lemote2f_defconfig
-arm                          imote2_defconfig
-powerpc                      tqm8xx_defconfig
-arm                           u8500_defconfig
-powerpc                     skiroot_defconfig
-arm                        oxnas_v6_defconfig
-mips                     loongson1b_defconfig
-mips                     loongson1c_defconfig
-x86_64                           alldefconfig
-m68k                           sun3_defconfig
-mips                           ip22_defconfig
-powerpc                      ppc44x_defconfig
-arm                           sama5_defconfig
-parisc                generic-64bit_defconfig
-powerpc                      pmac32_defconfig
-arm                          pxa910_defconfig
-openrisc                    or1ksim_defconfig
-sh                           se7721_defconfig
-powerpc                    sam440ep_defconfig
-arc                     haps_hs_smp_defconfig
-riscv                    nommu_virt_defconfig
-ia64                             alldefconfig
-sh                     sh7710voipgw_defconfig
-arm                          pcm027_defconfig
-mips                       capcella_defconfig
-arm                      footbridge_defconfig
-arm                   milbeaut_m10v_defconfig
-sparc                       sparc32_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20201230
-x86_64               randconfig-a001-20201230
-x86_64               randconfig-a006-20201230
-x86_64               randconfig-a002-20201230
-x86_64               randconfig-a004-20201230
-x86_64               randconfig-a003-20201230
-i386                 randconfig-a005-20201230
-i386                 randconfig-a006-20201230
-i386                 randconfig-a004-20201230
-i386                 randconfig-a003-20201230
-i386                 randconfig-a002-20201230
-i386                 randconfig-a001-20201230
-x86_64               randconfig-a015-20201231
-x86_64               randconfig-a014-20201231
-x86_64               randconfig-a011-20201231
-x86_64               randconfig-a016-20201231
-x86_64               randconfig-a013-20201231
-x86_64               randconfig-a012-20201231
-i386                 randconfig-a016-20201230
-i386                 randconfig-a014-20201230
-i386                 randconfig-a012-20201230
-i386                 randconfig-a015-20201230
-i386                 randconfig-a011-20201230
-i386                 randconfig-a013-20201230
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Ciao, Thorsten
 
-clang tested configs:
-x86_64               randconfig-a014-20201229
-x86_64               randconfig-a015-20201229
-x86_64               randconfig-a016-20201229
-x86_64               randconfig-a012-20201229
-x86_64               randconfig-a011-20201229
-x86_64               randconfig-a013-20201229
-x86_64               randconfig-a015-20201230
-x86_64               randconfig-a014-20201230
-x86_64               randconfig-a016-20201230
-x86_64               randconfig-a011-20201230
-x86_64               randconfig-a013-20201230
-x86_64               randconfig-a012-20201230
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
