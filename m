@@ -2,94 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775C92E7FB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 12:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8CE2E7FC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Dec 2020 12:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgLaLgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 06:36:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbgLaLgO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 06:36:14 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8631C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 03:35:33 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id be12so9946640plb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 03:35:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=VvNbdMgLzpd7ixuoNwnyFlGlaRTTC2c804LXFW9PL8Q=;
-        b=wg5KP8IzqFr4LBkLFYoo0kTLFg3muBtnzy4SsGLz2/GYX3cGmgtFwiZXxtMdzoNYQ1
-         eLiq+NGuE2ZPqSzyWX/6D/P4oj+LVsuMakpXzNlQ9dPST4xK/mFNRV5YqsA9znelGQsM
-         tCqb1Gb/89bdo1F+4seZ2n4FCMfaHWW2+9zXux2GBf1uZT7RXkNyDzvsUmn8hvJ5gkun
-         7nUDIswlPJt0D9igHYTEs6yaVcjca+ENL8KEeq4kPqKiAJ3JrsDCwwus1BEveEt6Q+ov
-         U3VA9i7NtixpCZDbSPeHhPPvlwN211EkdR/e8eK4drhKtLwiwD0dtymuQMR6O9JqrS6d
-         R09w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=VvNbdMgLzpd7ixuoNwnyFlGlaRTTC2c804LXFW9PL8Q=;
-        b=FxVUws/hDyrCOxd7SvB4kAFX37gcRNX6R4i+OJSmlkoXohMulOBHwPRWfeFo76feUr
-         1dXU8EWk8iRX+r6Ipy8brFXLrxDWSAvvXIuxDESJDdkSzgCMdWCBcjqC7K6a4srpNE52
-         kIDFG88A2u4bCRsq6AL6TFh+EtVN5fFdynQOAX5EyVmEHL/NqHUgVLG9ZQivJY9iwvfw
-         DUSqkEoN1EXUh5s2xtPJWS0Ajp2/l9UV1ZMAcfsPKceOcBrdSpMGCkMwX0eFhUitd2iI
-         h0TvLgB+lQC/jreTi3igH/K6YcfVe+PaStEzl65VYUl0NvXCWh51ZiRevEdw1ul/3W9i
-         XQSQ==
-X-Gm-Message-State: AOAM530vVY5J4do8N9EoEmt39tj+sgD2P+kEXew80iJMxXAK9LmBa+yk
-        kI8UREi0nZcMLQtqnOkasl5x1A==
-X-Google-Smtp-Source: ABdhPJwHoHQFvcQVg2voukSs3bfIkm20izqJoruuT3gb8MD6kNkThudCn215vm/E7MdLybVF+lnoEQ==
-X-Received: by 2002:a17:902:6947:b029:db:c7fd:9db3 with SMTP id k7-20020a1709026947b02900dbc7fd9db3mr56751334plt.56.1609414533244;
-        Thu, 31 Dec 2020 03:35:33 -0800 (PST)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id n10sm36381528pfu.176.2020.12.31.03.35.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 03:35:32 -0800 (PST)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] ACPI: add stub acpi_create_platform_device() for !CONFIG_ACPI
-Date:   Thu, 31 Dec 2020 19:35:25 +0800
-Message-Id: <20201231113525.19614-1-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726503AbgLaLtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 06:49:41 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:40053 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726071AbgLaLtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 06:49:40 -0500
+Received: from [192.168.0.8] (ip5f5aef2f.dynamic.kabel-deutschland.de [95.90.239.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 9493A202254D6;
+        Thu, 31 Dec 2020 12:48:56 +0100 (CET)
+Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-xfs@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+linux-xfs@molgen.mpg.de
+References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
+ <20201229235627.33289-1-buczek@molgen.mpg.de>
+ <20201230221611.GC164134@dread.disaster.area>
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Message-ID: <7bd30426-11dc-e482-dcc8-55d279bc75bd@molgen.mpg.de>
+Date:   Thu, 31 Dec 2020 12:48:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201230221611.GC164134@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It adds a stub acpi_create_platform_device() for !CONFIG_ACPI build, so
-that caller doesn't have to deal with !CONFIG_ACPI build issue.
+On 30.12.20 23:16, Dave Chinner wrote:
+> On Wed, Dec 30, 2020 at 12:56:27AM +0100, Donald Buczek wrote:
+>> Threads, which committed items to the CIL, wait in the xc_push_wait
+>> waitqueue when used_space in the push context goes over a limit. These
+>> threads need to be woken when the CIL is pushed.
+>>
+>> The CIL push worker tries to avoid the overhead of calling wake_all()
+>> when there are no waiters waiting. It does so by checking the same
+>> condition which caused the waits to happen. This, however, is
+>> unreliable, because ctx->space_used can actually decrease when items are
+>> recommitted.
+> 
+> When does this happen?
+> 
+> Do you have tracing showing the operation where the relogged item
+> has actually gotten smaller? By definition, relogging in the CIL
+> should only grow the size of the object in the CIL because it must
+> relog all the existing changes on top of the new changed being made
+> to the object. Hence the CIL reservation should only ever grow.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
-This fixes an build issue reported by kernel test robot as below.
+I have (very ugly printk based) log (see below), but it only shows, that it happened (space_used decreasing), not what caused it.
 
-https://lore.kernel.org/linux-arm-msm/20201230124925.19260-1-shawn.guo@linaro.org/T/#u
+I only browsed the ( xfs_*_item.c ) code and got the impression that the size of a log item is rather dynamic (e.g. number of extends in an inode, extended attributes in an inode, continuity of chunks in a buffer) and wasn't surprised that a relogged item might need less space from time to time.
 
- include/linux/acpi.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+> IOWs, returning negative lengths from the formatting code is
+> unexpected and probably a bug and requires further investigation,
+> not papering over the occurrence with broadcast wakeups...
 
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 2630c2e953f7..053bf05fb1f7 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -885,6 +885,13 @@ static inline int acpi_device_modalias(struct device *dev,
- 	return -ENODEV;
- }
- 
-+static inline struct platform_device *
-+acpi_create_platform_device(struct acpi_device *adev,
-+			    struct property_entry *properties)
-+{
-+	return NULL;
-+}
+One could argue that the code is more robust after the change, because it wakes up every thread which is waiting on the next push to happen when the next push is happening without making assumption of why these threads are waiting by duplicating code from that waiters side. The proposed waitqueue_active() is inlined to two instructions and avoids the call overhead if there are no waiters as well.
+
+But, of course, if the size is not expected to decrease, this discrepancy must be clarified anyway. I am sure, I can find out the exact circumstances, this does happen. I will follow up on this.
+
+Happy New Year!
+
+   Donald
+
+Log extract following....
+
+========
+
++++ b/fs/xfs/xfs_log_cil.c
+@@ -17,6 +17,8 @@
+  #include "xfs_log_priv.h"
+  #include "xfs_trace.h"
+  
++#include <linux/printk.h>
 +
- static inline bool acpi_dma_supported(struct acpi_device *adev)
- {
- 	return false;
--- 
-2.17.1
+  struct workqueue_struct *xfs_discard_wq;
+  
+  /*
+@@ -670,8 +672,25 @@ xlog_cil_push_work(
+         /*
+          * Wake up any background push waiters now this context is being pushed.
+          */
+-       if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))
++       if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log)) {
+                 wake_up_all(&cil->xc_push_wait);
++               pr_warn("XXX wake    cil %p ctx %p  ctx->space_used=%d >= %d, push_seq=%lld, ctx->sequence=%lld\n",
++                       cil, ctx,
++                       ctx->space_used,
++                       XLOG_CIL_BLOCKING_SPACE_LIMIT(log),
++                       cil->xc_push_seq,
++                       ctx->sequence);
++       } else {
++               pr_warn("XXX no wake cil %p ctx %p ctx->space_used=%d < %d, push_seq=%lld, ctx->sequence=%lld\n",
++                       cil, ctx,
++                       ctx->space_used,
++                       XLOG_CIL_BLOCKING_SPACE_LIMIT(log),
++                       cil->xc_push_seq,
++                       ctx->sequence);
++               if (waitqueue_active(&cil->xc_push_wait)) {
++                       pr_warn("XXX xc_push_wait ACTIVE!\n");
++               }
++       }
+  
+         /*
+          * Check if we've anything to push. If there is nothing, then we don't
+@@ -918,6 +937,11 @@ xlog_cil_push_background(
+         spin_lock(&cil->xc_push_lock);
+         if (cil->xc_push_seq < cil->xc_current_sequence) {
+                 cil->xc_push_seq = cil->xc_current_sequence;
++               pr_warn("XXX trigger cil %p ctx %p  ctx->space_used=%d      , push_seq=%lld, ctx->sequence=%lld\n",
++                       cil, cil->xc_ctx,
++                       cil->xc_ctx->space_used,
++                       cil->xc_push_seq,
++                       cil->xc_ctx->sequence);
+                 queue_work(log->l_mp->m_cil_workqueue, &cil->xc_push_work);
+         }
+  
+@@ -936,6 +960,12 @@ xlog_cil_push_background(
+         if (cil->xc_ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log)) {
+                 trace_xfs_log_cil_wait(log, cil->xc_ctx->ticket);
+                 ASSERT(cil->xc_ctx->space_used < log->l_logsize);
++               pr_warn("XXX pushw   cil %p ctx %p  ctx->space_used=%d >= %d, push_seq=%lld, ctx->sequence=%lld\n",
++                       cil, cil->xc_ctx,
++                       cil->xc_ctx->space_used,
++                       XLOG_CIL_BLOCKING_SPACE_LIMIT(log),
++                       cil->xc_push_seq,
++                       cil->xc_ctx->sequence);
+                 xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
+                 return;
+         }
 
+=====
+
+14606 "XXX" lines logged before deadlock
+4847 "XXX" lines logged for the deadlocked filesystem (CIL 00000000e374c6f1) before deadlock
+
+relevant lines:
+
+# seq 29
+
+2020-12-29T20:08:15.652167+01:00 deadbird kernel: [ 1053.860637] XXX trigger cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=33554656      , push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.392095+01:00 deadbird kernel: [ 1071.600503] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109068 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.392120+01:00 deadbird kernel: [ 1071.616245] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109108 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.408102+01:00 deadbird kernel: [ 1071.632024] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109108 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.425086+01:00 deadbird kernel: [ 1071.648913] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109108 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.442109+01:00 deadbird kernel: [ 1071.666410] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109108 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.482769+01:00 deadbird kernel: [ 1071.706666] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.501063+01:00 deadbird kernel: [ 1071.725484] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.535711+01:00 deadbird kernel: [ 1071.742926] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.535728+01:00 deadbird kernel: [ 1071.760346] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.552079+01:00 deadbird kernel: [ 1071.776167] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:33.569070+01:00 deadbird kernel: [ 1071.793576] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+[ 953 more of these ...]
+2020-12-29T20:08:50.368192+01:00 deadbird kernel: [ 1088.576346] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:50.385023+01:00 deadbird kernel: [ 1088.593009] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:50.418318+01:00 deadbird kernel: [ 1088.609811] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:08:50.418330+01:00 deadbird kernel: [ 1088.626431] XXX pushw   cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+2020-12-29T20:09:04.961088+01:00 deadbird kernel: [ 1103.168964] XXX wake    cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
+
+# seq 30
+
+2020-12-29T20:09:39.305108+01:00 deadbird kernel: [ 1137.514718] XXX trigger cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=33554480      , push_seq=30, ctx->sequence=30
+2020-12-29T20:10:20.389104+01:00 deadbird kernel: [ 1178.597976] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:20.389117+01:00 deadbird kernel: [ 1178.613792] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:20.619077+01:00 deadbird kernel: [ 1178.827935] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:21.129074+01:00 deadbird kernel: [ 1179.337996] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:21.190101+01:00 deadbird kernel: [ 1179.398869] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:21.866096+01:00 deadbird kernel: [ 1180.074325] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:22.076095+01:00 deadbird kernel: [ 1180.283748] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:22.193070+01:00 deadbird kernel: [ 1180.401590] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108924 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:22.421082+01:00 deadbird kernel: [ 1180.629682] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108908 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:22.507085+01:00 deadbird kernel: [ 1180.715657] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108892 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:22.507094+01:00 deadbird kernel: [ 1180.731757] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108876 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:22.659070+01:00 deadbird kernel: [ 1180.867812] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108872 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:22.771081+01:00 deadbird kernel: [ 1180.980187] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108872 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:22.791116+01:00 deadbird kernel: [ 1180.996535] XXX pushw   cil 00000000e374c6f1 ctx 00000000c46ab121  ctx->space_used=67108872 >= 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:32.512085+01:00 deadbird kernel: [ 1190.725044] XXX no wake cil 00000000e374c6f1 ctx 00000000c46ab121 ctx->space_used=67108856 < 67108864, push_seq=30, ctx->sequence=30
+2020-12-29T20:10:32.528119+01:00 deadbird kernel: [ 1190.753321] XXX xc_push_wait ACTIVE!
+
+After this "xc_push_wait ACTIVE!" the I/O to the filesystem ceased.
+
+space_used was reduced from 67108924 .. 67108908 .. 67108892 .. 67108876 .. 67108872 as seen by waiters to 67108856 as seen by the push worker. Presumably by other calls to xfs_log_commit_cil which did not produce log, because they neither triggered the worker nor waitetd for the push.
