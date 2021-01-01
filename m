@@ -2,243 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE2B2E83FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 15:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7227D2E8400
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 15:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbhAAOeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 09:34:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726747AbhAAOeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 09:34:23 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B805BC061573;
-        Fri,  1 Jan 2021 06:33:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qQchPKqUV9Fw+2YQim7uR/BZWQnFnS2KoTj7FokMvjo=; b=tvELH1lCzvLQX8UNiWCB+dVZ4B
-        gEyiJwz6I+Q8hLo2XmyMwt9yPWjVWHJNsYDFY/zWjMGrw1+QOaA4XOJ2Gfpbfo0GiJlOQhT7qoU4z
-        2tXOVl3B5DQPHwwIoG1t1or51WopyQL9LrBij0f5BD441l4ZGoaP9XAyDw9UNd5o6Lcqn0WyEc+h0
-        AQ+SD+2q+fRQxGA6HR4TLJ0xv+AwWaA83wpGrvbwOgZXUlci6NDZR/59WrykTz3sYXMBt3/3m+/Oa
-        0dj5kadeoRyydx8pva1MZvkl/TdXXsB5SLOyKQ102eFfXmJGmq6ikHEoGQ+8e19hFZneXUoHl4dLz
-        XJbdLoVw==;
-Received: from [54.239.6.185] (helo=freeip.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kvLUR-0001pP-Um; Fri, 01 Jan 2021 14:33:16 +0000
-Message-ID: <c4a1a6824c534d1f1420f6c64d72b02eb5caf4c6.camel@infradead.org>
-Subject: Re: [PATCH RFC 10/39] KVM: x86/xen: support upcall vector
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Joao Martins <joao.m.martins@oracle.com>,
-        Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Radim =?UTF-8?Q?Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 01 Jan 2021 14:33:12 +0000
-In-Reply-To: <c43024b3-6508-3b77-870c-da81e74284a4@oracle.com>
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
-         <20190220201609.28290-11-joao.m.martins@oracle.com>
-         <71753a370cd6f9dd147427634284073b78679fa6.camel@infradead.org>
-         <53baeaa7-0fed-d22c-7767-09ae885d13a0@oracle.com>
-         <4ad0d157c5c7317a660cd8d65b535d3232f9249d.camel@infradead.org>
-         <c43024b3-6508-3b77-870c-da81e74284a4@oracle.com>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-aBF0icJBw2JWCmHUMT6e"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+        id S1727236AbhAAOf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 09:35:29 -0500
+Received: from mail-eopbgr770083.outbound.protection.outlook.com ([40.107.77.83]:62459
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727038AbhAAOf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 09:35:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BJYFT+W5m44+ajk+Bx+uvIxB4xULWj05KgA4Ky5y0dJUODeI92E5Wi2xjLhUOMEn0leePdsFCYossysv7bvaXDeL37e63108I6aU4mQpxHLT/5yKI2kZzERBbz5EnMQ3Al7fY7ezRL3roydjFMiJ3APmhlmgwRVy9F+dHBy/iZwAr/u2NQuRqLPil+XFpHpUTFeIH4VNp7OzeYJO+RAhjSNmroJrAo/VUE1iNDqAK4RNCitYlkvDV0wulOIk20kOu72JNEWasY6JsE1Il6yHIOpIzv/bklt3q5iEcF+qxvMNJhXaIlB2DedlGYfC2NNF44tXWG+rhS3IHDimVCNM8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QghYirFR/gRwJXbAiLTSGNVWef6iuFBeZDNKPmogCOo=;
+ b=Xt2fGjXSjrAZQ3MqMWRYCdOg5De0r/fgLfxuwa7hoY0J/7U5SJl2u+sGmtak9lcUV3kplcLuamTYU0VitHu15pW/vttWUEGjgCsxrW3ojFXx5y1tFOpVuPD1kzzUKIpcXnFHN+y2poMMn310Vsklz8iW03w1C1XitxireP9GpXtnHWy/FnN+T6SZqfZuq2scLJIQ1FS5gxdGKDzDzNjIvygauq09IuCbfs/GV5z3gupLZyw097+iU0OO0XuN9MhCxwu6Ao+ifsbe+ejirzdDSM+JrX1WHU9yQmwwL9SkCkoHy+QCTSVscakFZoFPfkuhbFe7DqMnRtZBJ6LLz9Dbww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QghYirFR/gRwJXbAiLTSGNVWef6iuFBeZDNKPmogCOo=;
+ b=pUNbvI1vnEezs8k9UK2p1VQfPTn5ALOfJRNyCrgQ7mWgKgZxBMhV62T8Czdvp+0HQn8/l6Wz4G9Dq5Y6h/PHcOLZm8PWgWqxMSQ2jaGjR3yUmDDhbk3NH784iJHTBl5Hfx/EhTtCEW+IK3hXMJ43nUi8dOnOHxYLKVBreA9szU8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4606.namprd12.prod.outlook.com (2603:10b6:208:3f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.23; Fri, 1 Jan
+ 2021 14:34:33 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3721.020; Fri, 1 Jan 2021
+ 14:34:32 +0000
+Subject: Re: 5.11-rc1 TTM list corruption
+To:     Borislav Petkov <bp@alien8.de>, Huang Rui <ray.huang@amd.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        lkml <linux-kernel@vger.kernel.org>
+References: <20201231104020.GA4504@zn.tnic>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <e3bfa0a4-5d0a-bd68-6cc8-73db1d29f22c@amd.com>
+Date:   Fri, 1 Jan 2021 15:34:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201231104020.GA4504@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM4PR0202CA0006.eurprd02.prod.outlook.com
+ (2603:10a6:200:89::16) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM4PR0202CA0006.eurprd02.prod.outlook.com (2603:10a6:200:89::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19 via Frontend Transport; Fri, 1 Jan 2021 14:34:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 81b9c3b0-32d5-4f29-2400-08d8ae625af2
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4606:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4606E96403AF18BA2E95C6A283D50@MN2PR12MB4606.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uPxHHQRfiib5i0dHRryY5rRWvSmlB8eLC7sNTYmu0EjlHYGF6lDfsTshQfIGgiX+/hd9FBydjsKuoYIkO+mC+uGLtbYs5DJdOkybSSIy6gIsBzgd2vic6x6P47lCHf6q9uXjRVyR9aVz95aPH955xS4B3wWKjABBB5FTTIDqnegf7bB29sVMMfhM33ovVMJ2O3RAC4VHc/Wu0MwXWc79POVk94B0lgJTidJzA4Ojb/X5wv4VUamBcThc5iHWhLJ0mujECocmxDMvinWgKe+n1izPGgPjTcrVo5xP9iEnuxsePVz0lbZivenlvd56fBNNQNRgxowjM6cRoN3w2g/f+7lhfiAro3oPyTsVOxTjLQ1+Cx+1ABwU3FM/gv+Yw/01ecYDHR1C3R8n4QMzlxN2RncWUFz2sz3DV2tB35WSH+GJZobzH5IYC6UvAy7i99RU4CkJA+JkF3pX3wtU0hvlvbATmELAZ9YksiwQF1GMqRY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(316002)(16526019)(5660300002)(8936002)(186003)(4326008)(86362001)(36756003)(2906002)(66476007)(66556008)(66946007)(83380400001)(31696002)(52116002)(45080400002)(8676002)(31686004)(2616005)(6636002)(478600001)(6486002)(110136005)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TDc3eWIraXc4T0xBdy9aYys2NkNiZFRnR2JwVjhaMklHVHI2SnZQRHRFeGdR?=
+ =?utf-8?B?SDBpQVhWVUpyNHBrZEt3RDNWTWxOM1lONzA0OXZzQ1JyRDQzZHR2K3RBbDU0?=
+ =?utf-8?B?L2NoWWlzRzJsY2lLWUhtZjVkTnZvbkY0WHpHdXMyV01QRlpGQUU3a3dnMHNI?=
+ =?utf-8?B?elBLbGFuTzBWMGdHY2FvbS8zTXd2eGZlelViZHdyRHZyVi84OVhDZWtnNWZa?=
+ =?utf-8?B?ZE92dDFpN205MitSeVRWZ21XT3doNCtTTXJhSld0cjRxY2FoYzh5d2hsWTRB?=
+ =?utf-8?B?V2NWNVhTd2xNUGU4WlE2MnRiVk5PQ3VqbkE2NzlNQmhqVENoSGdVQ21FVW1x?=
+ =?utf-8?B?dXhnazE1OFEwWGlzUGovVEhvM3pBcjZDUXRBOS91b09MbGdqcE1QRjdwTFVq?=
+ =?utf-8?B?RmNaM0xlY3JidWxCcWRQMzZRSzZJWmhCNnIxQ2d2TTdkeStwUysyd1JObzdK?=
+ =?utf-8?B?ci91bDA5SzJIWDlPbCs5aEtoWHU3dkZRM0ZyTEhLdXozd05YMG9WN28xNjlq?=
+ =?utf-8?B?cE9Fd2IwNmhzeUZYT3BzbTlPLzF6cVNtdmpzczhGTzhvemwyVmZCcTdyMGdO?=
+ =?utf-8?B?a2xrdDZjL3hkbkRGT2doN1VSL3gwQTBETlB1WEgvZldUWlhFRUtuaGg2dENu?=
+ =?utf-8?B?MWhJZVVwODUrcml0VXRha0dzOVhMbWluUVc2MzR2bHZCdlY5R1ZPNEg0Z1gz?=
+ =?utf-8?B?clhFa0xrU2p6Q3k2RXliWTNiKzdTV0tmY1Q5K0l6WWdaZlVTVlk1bk1PZE9K?=
+ =?utf-8?B?d0pocU15OGZIc1hsb2R6UHQ2aTFUaWw2Zys4aWZoNWZFWlVCWHBsc2NWTTFv?=
+ =?utf-8?B?ZjVnWXFhQUtXYWk0WEpteVV2Yjg0aFR0QWRpNEo2ajlFcmp5VWMzdG10T2cw?=
+ =?utf-8?B?ZU56UGJMS0V3UUVWaldLNS9KZXc1ejc0NG8vU0hSdEd0ZnNvekU4M1NSNG01?=
+ =?utf-8?B?Q0ZOVVN0YXZ0Q3dha2JSblNnRlNGUTY2eGp2TThFUVFzbEdtTXZMUjZMQ3hl?=
+ =?utf-8?B?K3djMGVPdVNqS24vV2pKdGlieWUvQ09DZVZLMHZlS1hJcmFGV3Jxd3pWQVYy?=
+ =?utf-8?B?MnJLL0N1WG1iZHZUNDM0NnpPRGQ5QVVFUndEY01NUm0reWhmcjJsRGVYWjVz?=
+ =?utf-8?B?bHVDeHhLNUhnb1JtUlRrQ3pFQ1ZmNnpabDY4cU1ybG43QmdReHJLR0JnYy9B?=
+ =?utf-8?B?ako0dHJ4TVIzR3FQckx1aWtGY2RvS2RjajB0bEpGdW8yT2g5bUN3U3I4OFoy?=
+ =?utf-8?B?NmdoUGZEeFo2WmpuMjRlNFpsZDdlZ0hvTVhCdGhQdFkyUzhoYW5CY1E2bVJT?=
+ =?utf-8?B?cTE4dFQ1RzZvQjlmU21KWDQwY1VBVURXYmtWOTU2UFI5ZkZYWTV2ZEtLYjlT?=
+ =?utf-8?B?a1l3WFZUeWROYk5tRllBSFdKamFHRUxadjlBTVl5ZU9kQmx1VVJ3YlE1NjBh?=
+ =?utf-8?Q?fxbeauFP?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jan 2021 14:34:32.7042
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81b9c3b0-32d5-4f29-2400-08d8ae625af2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZGDlZ5zsDVD897eg5kexuoYw9vRCV7O2Up9gHvrnE3lS1PZDDZe5/DwbF+dIRJC/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4606
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Borislav,
 
---=-aBF0icJBw2JWCmHUMT6e
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+my best guess is that this is an use after free.
 
-On Wed, 2020-12-02 at 18:34 +0000, Joao Martins wrote:
-> > But if the kernel is going to short-circuit the IPIs and VIRQs, then
-> > it's already going to have to handle the evtchn_pending/evtchn_mask
-> > bitmaps, and actually injecting interrupts.
-> >=20
->=20
-> Right. I was trying to point that out in the discussion we had
-> in next patch. But true be told, more about touting the idea of kernel
-> knowing if a given event channel is registered for userspace handling,
-> rather than fully handling the event channel.
->=20
-> I suppose we are able to provide both options to the VMM anyway
-> i.e. 1) letting them handle it enterily in userspace by intercepting
-> EVTCHNOP_send, or through the irq route if we want kernel to offload it.
->=20
-> > Given that it has to have that functionality anyway, it seems saner to
-> > let the kernel have full control over it and to just expose
-> > 'evtchn_send' to userspace.
-> >=20
-> > The alternative is to have userspace trying to play along with the
-> > atomic handling of those bitmasks too=20
->=20
-> That part is not particularly hard -- having it done already.
+Going to double check the code, but can you reproduce this issue reliable?
 
-Right, for 2-level it works out fairly well. I like your model of
-installing { vcpu_id, port } into the KVM IRQ routing table and that's
-enough for the kernel to raise the event channels that it *needs* to
-know about, while userspace can do the others for itself. It's just
-atomic test-and-set bitop stuff with no real need for coordination.
+Thanks,
+Christian.
 
-For FIFO event channels it gets more fun, because the updates aren't
-truly atomic =E2=80=94 they require a spinlock around the three operations =
-that
-the host has to perform when linking an event into a queue:=20
-
- =E2=80=A2 Set the new port's LINKED bit
- =E2=80=A2 Set the previous head's LINK to point to the new port
- =E2=80=A2 Store the new port# as the head.
-
-One option might be to declare that for FIFO, all updates for a given
-queue *must* be handled either by the kernel, or by userspace, and
-there's sharing of control.
-
-Or maybe there's a way to keep the kernel side simple by avoiding the
-tail handling completely. Surely we only really care about kernel
-handling of the *fast* path, where a single event channel is triggered
-and handled immediately? In the high-latency case where we're gathering
-multiple events in a queue before the guest ever gets to process them,=20
-we might as well let that be handled by userspace, right?
-
-So in that case, perhaps the kernel part could forget all the horrid
-nonsense with tracking the tail of the queue. It would handle the event
-in-kernel *only* in the case where the event is the *first* in the
-queue, and the head was previously zero?
-
-But even that isn't a simple atomic operation though; we still have to
-mark the event LINKED, then update the head pointer to reference it.
-And what if we set the 'LINKED' bit but then find that userspace has
-already linked another port so ->head is no longer zero?
-
-Can we just clear the LINKED bit and then punt the whole event for
-userspace to (re)handle? Or raise a special event to userspace so it
-knows it needs to go ahead and link the port even though its LINKED bit
-has already been set?
-
-None of the available options really fill me with joy; I'm somewhat
-inclined just to declare that the kernel won't support acceleration of
-FIFO event channels at all.
-
-None of which matters a *huge* amount right now if I was only going to
-leave that as a future optimisation anyway.
-
-What it does actually mean in the short term is that as I update your
-KVM_IRQ_ROUTING_XEN_EVTCHN support, I probably *won't* bother to add a
-'priority' field to struct kvm_irq_routing_xen_evtchn to make it
-extensible to FIFO event channels. We can always add that later.
-
-Does that seem reasonable?
-
---=-aBF0icJBw2JWCmHUMT6e
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
-MTAxMTQzMzEyWjAvBgkqhkiG9w0BCQQxIgQglHdFl/s28y22adMn74RdNZXoTyNO6/oRrTgjdO5F
-8m8wgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBACAPuW2JU1d7rCbqe1/fyssuMG2oTge4yhdMeud2wigJFrymaKqjP6uDccbKLVkZ
-1pa9InZclTRecI6JvhelNyZdny30Yz4K29z/X7NE+CD9xPKgkVYvQSv9USXAd625hcsfcWYaHuqV
-n2lwQ3BEMX8JE/CGNm2EQE9/koY0hwGx3WU0Wznc3pGWiNMUfjca3wCp1k/p0XCmM7T3t3lcajUL
-dD3IHuOVbFQ5wy7kpPugocUPul4EZxTvuR+uEuCNPbRq2LYP/uCoZzS0y1dj/mLEmJogC/GryPac
-jbS8NQS4yNwB7JlfHY9KtjD98MUI3nIkiU10akhmzZcqIzuORrUAAAAAAAA=
-
-
---=-aBF0icJBw2JWCmHUMT6e--
+Am 31.12.20 um 11:40 schrieb Borislav Petkov:
+> Hi folks,
+>
+> got this when trying to suspend my workstation to disk, it was still
+> responsive so I could catch the splat:
+>
+> [22020.334381] ------------[ cut here ]------------
+> [22020.339057] list_del corruption. next->prev should be ffffffff8b7a9a40, but was ffff8881020bced0
+> [22020.347764] WARNING: CPU: 12 PID: 13134 at lib/list_debug.c:54 __list_del_entry_valid+0x8a/0x90
+> [22020.356397] Modules linked in: fuse essiv authenc nft_counter nf_tables libcrc32c nfnetlink loop dm_crypt dm_mod amd64_edac edac_mce_amd kvm_amd snd_hda_codec_realtek snd_hda_codec_generic led_class kvm ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hda_core snd_pcm snd_timer irqbypass crct10dif_pclmul snd crc32_pclmul crc32c_intel ghash_clmulni_intel pcspkr k10temp soundcore gpio_amdpt gpio_generic acpi_cpufreq radeon aesni_intel glue_helper crypto_simd cryptd pinctrl_amd
+> [22020.400855] CPU: 12 PID: 13134 Comm: hib.sh Not tainted 5.11.0-rc1+ #2
+> [22020.400857] Hardware name: Micro-Star International Co., Ltd. MS-7B79/X470 GAMING PRO (MS-7B79), BIOS 1.70 01/23/2019
+> [22020.400858] RIP: 0010:__list_del_entry_valid+0x8a/0x90
+> [22020.400861] Code: 46 00 0f 0b 31 c0 c3 48 89 f2 48 89 fe 48 c7 c7 78 30 0f 82 e8 24 6c 46 00 0f 0b 31 c0 c3 48 c7 c7 b8 30 0f 82 e8 13 6c 46 00 <0f> 0b 31 c0 c3 cc 48 85 d2 89 f8 74 20 48 8d 0c 16 0f b6 16 48 ff
+> [22020.400863] RSP: 0018:ffffc90001fbbcf8 EFLAGS: 00010292
+> [22020.441503] RAX: 0000000000000054 RBX: ffffffff8b7a9a40 RCX: 0000000000000000
+> [22020.441505] RDX: ffff8887fef26600 RSI: ffff8887fef17450 RDI: ffff8887fef17450
+> [22020.441505] RBP: 0000000000003f82 R08: ffff8887fef17450 R09: ffffc90001fbbb38
+> [22020.441506] R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+> [22020.441507] R13: 0000000000000080 R14: 0000000000000480 R15: 000000000000019b
+> [22020.441508] FS:  00007f51c72f9740(0000) GS:ffff8887fef00000(0000) knlGS:0000000000000000
+> [22020.490045] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [22020.490046] CR2: 00005557afb81018 CR3: 000000012099e000 CR4: 00000000003506e0
+> [22020.490047] Call Trace:
+> [22020.490048]  ttm_pool_shrink+0x61/0xd0
+> [22020.508965]  ttm_pool_shrinker_scan+0xa/0x20
+> [22020.508966]  shrink_slab.part.0.constprop.0+0x1a1/0x330
+> [22020.508970]  drop_slab_node+0x37/0x50
+> [22020.522011]  drop_slab+0x33/0x60
+> [22020.522012]  drop_caches_sysctl_handler+0x70/0x80
+> [22020.522015]  proc_sys_call_handler+0x140/0x220
+> [22020.534286]  new_sync_write+0x10b/0x190
+> [22020.534289]  vfs_write+0x1b7/0x290
+> [22020.534291]  ksys_write+0x60/0xe0
+> [22020.544762]  do_syscall_64+0x33/0x40
+> [22020.544765]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [22020.553320] RIP: 0033:0x7f51c73eaff3
+> [22020.553322] Code: 8b 15 a1 ee 0c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 48 89 54 24 18
+> [22020.553324] RSP: 002b:00007ffd0a748ef8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> [22020.553325] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f51c73eaff3
+> [22020.553326] RDX: 0000000000000002 RSI: 000056039fd0ee70 RDI: 0000000000000001
+> [22020.553327] RBP: 000056039fd0ee70 R08: 000000000000000a R09: 0000000000000001
+> [22020.553327] R10: 000056039fd0e770 R11: 0000000000000246 R12: 0000000000000002
+> [22020.611218] R13: 00007f51c74bb6a0 R14: 0000000000000002 R15: 00007f51c74bb8a0
+> [22020.611220] ---[ end trace f7ea94a6ddb98f71 ]---
+>
 
