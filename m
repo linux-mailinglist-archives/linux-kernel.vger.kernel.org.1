@@ -2,78 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2ACD2E85B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F412E2E85B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbhAAV1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 16:27:00 -0500
-Received: from mout.gmx.net ([212.227.17.22]:36295 "EHLO mout.gmx.net"
+        id S1727412AbhAAV0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 16:26:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727231AbhAAV07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 16:26:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1609536327;
-        bh=n5VZorDxJ4E3jMomn5t3g5gHnoDeyVEV26lJvjdJRRI=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=XJS2kfa3tBOQlzAkuIP6EQric8alxi11stwmyZ+QKxR0BGf2i2jFB4kKb/39BH9Kr
-         E2IlEyfZaji7s4cWV5WEy84HSIcAb9XgofN+u46UfoTCqqR9C1HPE48e7LEzMRg7ln
-         4+T1+mj+keBOCOokq1QQoUY6yq0yZSY/H2DmYBIg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MK3Vu-1ka51N2CTe-00LWHp; Fri, 01
- Jan 2021 22:25:27 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Subject: [PATCH] scripts/jobserver-exec: Fix a typo ("envirnoment")
-Date:   Fri,  1 Jan 2021 22:25:17 +0100
-Message-Id: <20210101212519.1028884-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+oTew9IYDGEntlhthJG9SQZD+t1NOZtiN0WGumEIWe+K2KvtjE3
- d69WxHUcatnF3d2Z9XfDX+D+/I6vsGmxea3SvTjdWRwFJdGg6jURKI4qKC5ad96TjQdxNd8
- 0ct3oeU7JFMv8TpPv6Vw0Qlm/KpXCJw4T6YnJrYNf94Je09jfkLByERXpkS7fZcTOdBPbqM
- UMR/rgf5SwZFtqbGNjnLA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ji1GKPCNcNQ=:gXmNYKb/40HcFGk6IsAZ1m
- 9z8SWaObQulc3LmSfHPhy7plHmfUwYW1u0P8sYzPfdte959u33qwUJxzDXubXVc5I9S6txEFq
- KCBv7qeTuHB5fK1mrbKSZKy7GJ/LCLvc/ImmA8+LbEJJukOWNCoCqHicjlx2so9mXry4h+1IR
- H30wR1oMj6DL/lxukO2f8oleYWOg/okVUJ1o5rogljgrbjenBHCe3gTSdbv1PvA3GgDHz0uOd
- 2GItogoNFaih245wquzeE3zSyw9le3IInADj9v7CCofSKA6UztThrG+UgngJuqFudRjAVwSwF
- D5yTZdp9EoA0eLmjEB7bO705yQ7lywOMzAMB32qi5jTg4tD6efzWvB6YOmkTBYEBca4RZ9V5X
- AG+V48wjP2B5NwBaH5Hto9/ylMZFysFVMVSozM51ZIcd0kDLOGFbYukRxMkSCfVM1V/RsN0ZA
- IbyZRbOxbYHZA9XnIvH4w46zoDj7e35CjIBI8LPLjp/HctC8aw1VkRPO5mSD/PUrA2Zaqf9Ws
- 5Hj3v4QelDVrfHZ91TdchnBYZ0MsK8aieQ376fh1/DoARhxwhZTlad5+gd9BbGqsphLQEjVuf
- f+yH93lWpVyQCyhj+FlCzmQvNeDLll27aCKse8cnZ7dNxTWy8S5vjTEVrP8YqvES887swNyXM
- qUxucQbYCu/sAj/O/toK+Fx4WXOtGUXkNoTXDWLMJgm+MKzkW67QIbI9ouvAGilw66hP2HV8E
- 9HR1D/bYQX3CWW4StTUrO5ADs3+lV+tUI0OBeC2RpM4Ce9qKqljJL4ym56jg7qFkTQrltzTTB
- Ufpxgvix0c0FosfS+hKXFQFO/Q8U8t7pzte0Uzh8fAW3pPe83LujwLE4ef15XSp7UzK0K3giD
- ixYp/bH9Mo25dS7QXSLA==
+        id S1727284AbhAAV0A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 16:26:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6DD4020758;
+        Fri,  1 Jan 2021 21:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609536320;
+        bh=HBbiKIomw2V/Zs8PqLPF7pcGJXJfqe5NrGe5i96DocQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=S7qFwlceCWO9t6nT0KpKKwl3PqTf2lfNkAH1siLjSXVIX2cH+Quhe+RE2DZlQlgzi
+         CT6fRmwU/Ps2hpbo/KSfCoJfdtzsuB70owfaOOK40srdWxHGzQMWSns+FGdIIEkEe6
+         QCURnpo0fdNiYFX2sM3LneGfieTzkg+iufB+eMELopifZOP4eHBsBMjzamBlsOx2lH
+         0ptdk/TJ0BQ3Xh0BnaoC23BVIz8hxgao9tOVn+xAb3D2uvAEzrxjqZ5++uMyZ2iBw4
+         ffsKe2sE5Xn/VBQcz3yU9wNzlUB27QUZ43AY79osTOSzLNII89mnIA7YqI+DDQyffp
+         Kkx4aKjcZUf3A==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 5AFDC60190;
+        Fri,  1 Jan 2021 21:25:20 +0000 (UTC)
+Subject: Re: [GIT PULL] SCSI fixes for 5.11-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <dd63a06d53c45f9511307085797086351784b1a3.camel@HansenPartnership.com>
+References: <dd63a06d53c45f9511307085797086351784b1a3.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <dd63a06d53c45f9511307085797086351784b1a3.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: cb5253198f10a4cd79b7523c581e6173c7d49ddb
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: eda809aef53426d044b519405d25d9da55319b76
+Message-Id: <160953632030.8778.11137709644108968089.pr-tracker-bot@kernel.org>
+Date:   Fri, 01 Jan 2021 21:25:20 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- scripts/jobserver-exec | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The pull request you sent on Fri, 01 Jan 2021 12:19:11 -0800:
 
-diff --git a/scripts/jobserver-exec b/scripts/jobserver-exec
-index 0fdb31a790a81..1c779cd1ccb48 100755
-=2D-- a/scripts/jobserver-exec
-+++ b/scripts/jobserver-exec
-@@ -10,7 +10,7 @@ from __future__ import print_function
- import os, sys, errno
- import subprocess
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
--# Extract and prepare jobserver file descriptors from envirnoment.
-+# Extract and prepare jobserver file descriptors from environment.
- claim =3D 0
- jobs =3D b""
- try:
-=2D-
-2.29.2
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/eda809aef53426d044b519405d25d9da55319b76
 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
