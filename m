@@ -2,181 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8364E2E82B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 01:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9412E82B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 02:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbhAAAP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 19:15:26 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59603 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726122AbhAAAPZ (ORCPT
+        id S1727032AbhAAAtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 19:49:53 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:33207 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726641AbhAAAtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 19:15:25 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kv85a-003MAA-Iu; Fri, 01 Jan 2021 01:14:42 +0100
-Received: from p5b13a2ad.dip0.t-ipconnect.de ([91.19.162.173] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kv85Z-001dae-Qj; Fri, 01 Jan 2021 01:14:42 +0100
-Subject: Re: [PATCH] [sh] fix trivial misannotations
-To:     Al Viro <viro@zeniv.linux.org.uk>, Rich Felker <dalias@libc.org>
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201231232301.GG3579531@ZenIV.linux.org.uk>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <e5211aa9-0f0f-4e96-6d01-47e5b0e0aff1@physik.fu-berlin.de>
-Date:   Fri, 1 Jan 2021 01:14:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 31 Dec 2020 19:49:52 -0500
+Received: by mail-il1-f197.google.com with SMTP id j20so18855500ilk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 16:49:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=f4jpcmyenKqYfST2LyQr30I+nGdhfXpwOSlfzY/gMRg=;
+        b=Yom4vHZHT5NqeS2B/p3oONzdjGz4Nf1sSTLt0qa+Qaw1t6acsskGGTAHQHUvr0kOT6
+         LbmDv1dD3V63q4ypQ5lnYTDFlSSwzCRoKi2HmkApNMnWeSykZdHMc5axB3n/sFqMOBy4
+         O2R2jkUAfQpBfi8dDjfN4SaFihiJ2jyUPuWkSsTCXWTAbWnvttHAAoKkAQSakQVz3gqo
+         dJ7MADINrumTpoJOeDnvyg29U0WGdhPCXeMtQ2aITTXwPPuxi0FyYW15oBIEff2w9JSi
+         afMmMfgdTLpgUqSFiH6tmlraWO967+PO9TjUArEMXkI81u3wvpndqhj/YHXbWgd5JUMG
+         XYpA==
+X-Gm-Message-State: AOAM530pUNZ7Bthx9Ba33Zflg0/qqQQyL2XTuF0PJ42mq93D5W94Lgzi
+        dUtyZ8aij9y6KgoLN9H8J2rrtqjHSdHqlzPRtuqYrVidPVkO
+X-Google-Smtp-Source: ABdhPJz5xy4u3Ybd++5GdqLQDigch4VAvgPEqKu2JTiKDWpaq0dnJo0DnSWd61C0FPgiaKY1aFv6nXGlpQzz7SzLD8LwnGBb8WKf
 MIME-Version: 1.0
-In-Reply-To: <20201231232301.GG3579531@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.162.173
+X-Received: by 2002:a92:58dc:: with SMTP id z89mr58050886ilf.11.1609462151899;
+ Thu, 31 Dec 2020 16:49:11 -0800 (PST)
+Date:   Thu, 31 Dec 2020 16:49:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d7f02105b7cc1b99@google.com>
+Subject: WARNING: suspicious RCU usage in xt_obj_to_user
+From:   syzbot <syzbot+00399fa030c641ffc5ae@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/1/21 12:23 AM, Al Viro wrote:
-> 	Trivial misannotations in
-> * get_user() (__gu_addr is a userland pointer there)
-> * ip_fast_csum() (sum is __wsum, not unsigned int)
-> * csum_and_copy_to_user() (destination is void *, not const void * - mea culpa)
-> * __clear_user() (to is a userland pointer)
-> * several places in kernel/traps_32.c (regs->pc is a userland pointer when regs is a
-> userland pt_regs)
-> * math-emu/math.c: READ() and WRITE() casts of address should be to userland pointer.
-> 
-> No changes in code generation and those take care of the majority of noise from sparse
-> on sh builds.
-> 
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
-> diff --git a/arch/sh/include/asm/checksum_32.h b/arch/sh/include/asm/checksum_32.h
-> index 1a391e3a7659..a6501b856f3e 100644
-> --- a/arch/sh/include/asm/checksum_32.h
-> +++ b/arch/sh/include/asm/checksum_32.h
-> @@ -84,7 +84,8 @@ static inline __sum16 csum_fold(__wsum sum)
->   */
->  static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
->  {
-> -	unsigned int sum, __dummy0, __dummy1;
-> +	__wsum sum;
-> +	unsigned int __dummy0, __dummy1;
->  
->  	__asm__ __volatile__(
->  		"mov.l	@%1+, %0\n\t"
-> @@ -197,6 +198,6 @@ static inline __wsum csum_and_copy_to_user(const void *src,
->  {
->  	if (!access_ok(dst, len))
->  		return 0;
-> -	return csum_partial_copy_generic((__force const void *)src, dst, len);
-> +	return csum_partial_copy_generic(src, (__force void *)dst, len);
->  }
->  #endif /* __ASM_SH_CHECKSUM_H */
-> diff --git a/arch/sh/include/asm/uaccess.h b/arch/sh/include/asm/uaccess.h
-> index 73f3b48d4a34..8867bb04b00e 100644
-> --- a/arch/sh/include/asm/uaccess.h
-> +++ b/arch/sh/include/asm/uaccess.h
-> @@ -68,7 +68,7 @@ struct __large_struct { unsigned long buf[100]; };
->  ({									\
->  	long __gu_err = -EFAULT;					\
->  	unsigned long __gu_val = 0;					\
-> -	const __typeof__(*(ptr)) *__gu_addr = (ptr);			\
-> +	const __typeof__(*(ptr)) __user *__gu_addr = (ptr);			\
->  	if (likely(access_ok(__gu_addr, (size))))		\
->  		__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
->  	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
-> @@ -124,7 +124,7 @@ raw_copy_to_user(void __user *to, const void *from, unsigned long n)
->   * Clear the area and return remaining number of bytes
->   * (on failure.  Usually it's 0.)
->   */
-> -__kernel_size_t __clear_user(void *addr, __kernel_size_t size);
-> +__kernel_size_t __clear_user(void __user *addr, __kernel_size_t size);
->  
->  #define clear_user(addr,n)						\
->  ({									\
-> diff --git a/arch/sh/kernel/traps_32.c b/arch/sh/kernel/traps_32.c
-> index b62ad0ba2395..b3c715bc254b 100644
-> --- a/arch/sh/kernel/traps_32.c
-> +++ b/arch/sh/kernel/traps_32.c
-> @@ -490,7 +490,7 @@ asmlinkage void do_address_error(struct pt_regs *regs,
->  		inc_unaligned_user_access();
->  
->  		oldfs = force_uaccess_begin();
-> -		if (copy_from_user(&instruction, (insn_size_t *)(regs->pc & ~1),
-> +		if (copy_from_user(&instruction, (insn_size_t __user *)(regs->pc & ~1),
->  				   sizeof(instruction))) {
->  			force_uaccess_end(oldfs);
->  			goto uspace_segv;
-> @@ -614,7 +614,7 @@ asmlinkage void do_reserved_inst(void)
->  	unsigned short inst = 0;
->  	int err;
->  
-> -	get_user(inst, (unsigned short*)regs->pc);
-> +	get_user(inst, (unsigned short __user *)regs->pc);
->  
->  	err = do_fpu_inst(inst, regs);
->  	if (!err) {
-> @@ -699,9 +699,9 @@ asmlinkage void do_illegal_slot_inst(void)
->  		return;
->  
->  #ifdef CONFIG_SH_FPU_EMU
-> -	get_user(inst, (unsigned short *)regs->pc + 1);
-> +	get_user(inst, (unsigned short __user *)regs->pc + 1);
->  	if (!do_fpu_inst(inst, regs)) {
-> -		get_user(inst, (unsigned short *)regs->pc);
-> +		get_user(inst, (unsigned short __user *)regs->pc);
->  		if (!emulate_branch(inst, regs))
->  			return;
->  		/* fault in branch.*/
-> diff --git a/arch/sh/math-emu/math.c b/arch/sh/math-emu/math.c
-> index e8be0eca0444..3495a48b7713 100644
-> --- a/arch/sh/math-emu/math.c
-> +++ b/arch/sh/math-emu/math.c
-> @@ -51,8 +51,8 @@
->  #define Rn	(regs->regs[n])
->  #define Rm	(regs->regs[m])
->  
-> -#define WRITE(d,a)	({if(put_user(d, (typeof (d)*)a)) return -EFAULT;})
-> -#define READ(d,a)	({if(get_user(d, (typeof (d)*)a)) return -EFAULT;})
-> +#define WRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-> +#define READ(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
->  
->  #define PACK_S(r,f)	FP_PACK_SP(&r,f)
->  #define UNPACK_S(f,r)	FP_UNPACK_SP(f,&r)
-> diff --git a/arch/sh/mm/nommu.c b/arch/sh/mm/nommu.c
-> index 8b4504413c5f..78c4b6e6d33b 100644
-> --- a/arch/sh/mm/nommu.c
-> +++ b/arch/sh/mm/nommu.c
-> @@ -28,9 +28,9 @@ __kernel_size_t __copy_user(void *to, const void *from, __kernel_size_t n)
->  	return 0;
->  }
->  
-> -__kernel_size_t __clear_user(void *to, __kernel_size_t n)
-> +__kernel_size_t __clear_user(void __user *to, __kernel_size_t n)
->  {
-> -	memset(to, 0, n);
-> +	memset((__force void *)to, 0, n);
->  	return 0;
->  }
->  
-> 
+Hello,
 
-Verified on my SH-7785LCR board. Boots fine.
+syzbot found the following issue on:
 
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+HEAD commit:    f838f8d2 mfd: ab8500-debugfs: Remove extraneous seq_putc
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17074c47500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7a43a64bad3fdb39
+dashboard link: https://syzkaller.appspot.com/bug?extid=00399fa030c641ffc5ae
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Unfortunately, I don't have any reproducer for this issue yet.
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+00399fa030c641ffc5ae@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:7877 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by syz-executor.0/9704:
+ #0: ffff888013794458 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
+
+stack backtrace:
+CPU: 0 PID: 9704 Comm: syz-executor.0 Not tainted 5.10.0-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ___might_sleep+0x229/0x2c0 kernel/sched/core.c:7877
+ __might_fault+0x6e/0x180 mm/memory.c:5014
+ xt_obj_to_user+0x31/0x110 net/netfilter/x_tables.c:277
+ xt_target_to_user+0xa8/0x200 net/netfilter/x_tables.c:323
+ copy_entries_to_user net/ipv4/netfilter/arp_tables.c:705 [inline]
+ get_entries net/ipv4/netfilter/arp_tables.c:866 [inline]
+ do_arpt_get_ctl+0x733/0x8f0 net/ipv4/netfilter/arp_tables.c:1450
+ nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:116
+ ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
+ ip_getsockopt+0x164/0x1c0 net/ipv4/ip_sockglue.c:1756
+ tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:4141
+ __sys_getsockopt+0x219/0x4c0 net/socket.c:2156
+ __do_sys_getsockopt net/socket.c:2171 [inline]
+ __se_sys_getsockopt net/socket.c:2168 [inline]
+ __x64_sys_getsockopt+0xba/0x150 net/socket.c:2168
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45ef5a
+Code: b8 34 01 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd 9f fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa 9f fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffcf91ed728 EFLAGS: 00000212 ORIG_RAX: 0000000000000037
+RAX: ffffffffffffffda RBX: 00007ffcf91ed790 RCX: 000000000045ef5a
+RDX: 0000000000000061 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 00007ffcf91ed73c R09: 000000000000000a
+R10: 00007ffcf91ed790 R11: 0000000000000212 R12: 00007ffcf91ed73c
+R13: 0000000000000000 R14: 0000000000000032 R15: 000000000003354d
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
