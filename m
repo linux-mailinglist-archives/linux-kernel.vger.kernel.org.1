@@ -2,455 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438FC2E832F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 06:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D952E8339
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 07:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbhAAFpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 00:45:52 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:28895 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbhAAFpw (ORCPT
+        id S1726779AbhAAGMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 01:12:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726322AbhAAGMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 00:45:52 -0500
-IronPort-SDR: U72dxaQyZauZ6WS6iqUsoT9/7QlY0cnyCVX//Vis7jaOj5bflnguIsQbI1jC9E7BQO8ySlmfGi
- bAnuYJf3au3nCdMr2gQ+GUZUjgj1UofhmRQkhZaKqYDx4OihXLwvy3+6OoCdog37sfysoRTjrq
- pS64Rz9RhxQCYk5ziVNMZADOZbcGfydJM4Twxi7el/6DXLWUCYpD565TJmpONxXpCd804fYFfQ
- slH3VoPKET3sOFBtwhRm/KLh4fcFx4bChz4kghgkdMGnHTm6BXxtxY3vdHYbkn22W8qHbFaIky
- NK8=
-X-IronPort-AV: E=Sophos;i="5.78,466,1599548400"; 
-   d="scan'208";a="29470880"
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by labrats.qualcomm.com with ESMTP; 31 Dec 2020 21:45:08 -0800
-X-QCInternal: smtphost
-Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 31 Dec 2020 21:45:08 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 2CBA3212C1; Thu, 31 Dec 2020 21:45:08 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/2] scsi: ufs: Protect PM ops and err_handler from user access through sysfs
-Date:   Thu, 31 Dec 2020 21:44:53 -0800
-Message-Id: <1609479893-8889-3-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609479893-8889-1-git-send-email-cang@codeaurora.org>
-References: <1609479893-8889-1-git-send-email-cang@codeaurora.org>
+        Fri, 1 Jan 2021 01:12:21 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB70C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 22:11:41 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id w6so12168109pfu.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 22:11:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FmAkaRO9ofNP/6j9RK7haiAvDC6oSSf/13JUxt6XUpg=;
+        b=BTMVd0Mnqvbh3hjtXYbPj9j74wDyKIql+z3uzxuM5xuQAVoMXSKz68StDG467zM5gL
+         lvwlI4fOHLz+mv5b0ErbqlGWWyl8tWGzA1SnsxWFG6wP5czUXTou6TvowB3iiVZaAI3O
+         4DO8B5/oFa0HQtN0FO5vm7EwCV4tJ+AtMKDtemFQSkuBTnewTscBD3e5Kqg8SzTWBRg5
+         3ZlRywm8P+aB1GKNr+2JTuPkLg32hC6MrCcHWrS6v8LcY+KZUsjAEqSDyJrb7nC0LVkl
+         IC9r1Mmu6lndRqyWw5fVdwdKhNyaE80WfXdW2LS+EgXDP0zkW7NiksFm3EZuKHEx74Y1
+         pIXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FmAkaRO9ofNP/6j9RK7haiAvDC6oSSf/13JUxt6XUpg=;
+        b=qWBWvPd156LcGlOHsBt7v2aJka1x3PzM9Za7JQCNcF60KVJ3G1ukGBtT3nH4XcUNUF
+         1hXtPFTOdmlocAz39TZOvWdSh+L5ZoLQv+T3SLDdU8rQGgdBsXVRjsJuzVUXWRYZZW0J
+         obNdXd4SQWukJDFzp6sOYT6CQsIysLNJKSWX9/sthk9NPBRnmmQAf5oHGstHmMeYVULE
+         x9IAL0dPDm9CObydFZk7t+LmSxwtisqOrb6WTcOpHbPmLu6XMVeiHSScnubphxTekLR2
+         Bnycwp80aFvM088VNnaf7h7PduQRq+d5CuEnDRvRxW493TOkNRY7tpL1Ff9T9e/GXXGF
+         OYVw==
+X-Gm-Message-State: AOAM533RdufeG0u6Px0WAshXciyC3xMvQhn15r+crFoPZkmloJNz9ELv
+        sqpldeQy7bIFH5Ygcip1Cl8UdWNf0Aw=
+X-Google-Smtp-Source: ABdhPJxbMw7KU34kDW7dVD8O1dieGLyXAkOPQWp/DIIgRLUyPE3kpanqpWup+pFrWXqVdhspKQsgMA==
+X-Received: by 2002:a63:c444:: with SMTP id m4mr58675255pgg.420.1609481499888;
+        Thu, 31 Dec 2020 22:11:39 -0800 (PST)
+Received: from localhost (g39.222-224-245.ppp.wakwak.ne.jp. [222.224.245.39])
+        by smtp.gmail.com with ESMTPSA id h10sm43515056pfn.213.2020.12.31.22.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 22:11:39 -0800 (PST)
+Date:   Fri, 1 Jan 2021 15:11:35 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        openrisc@lists.librecores.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] openrisc: restart: Call common handlers before hanging
+Message-ID: <20210101061135.GA3106870@lianli.shorne-pla.net>
+References: <20201227091446.118437-1-joel@jms.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201227091446.118437-1-joel@jms.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User layer may access sysfs nodes when system PM ops or error handling
-is running, which can cause various problems. Rename eh_sem to host_sem
-and use it to protect PM ops and error handling from user layer intervene.
+On Sun, Dec 27, 2020 at 07:44:46PM +1030, Joel Stanley wrote:
+> Currently openrisc will print a message and then hang in an infinite
+> loop when rebooting.
+> 
+> This patch adopts some code from ARM, which calls the common restart
+> infrastructure and hangs after a small delay if the restart infra
+> doesn't do anything.
+> 
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
+> ---
+> Geert has a patch[1] for the litex soc code that adds a restart hander.
+> Openrisc doesn't hit that code path, this patch fixes that.
+> 
+> [1] https://github.com/geertu/linux/commit/7d09dc0797a8208a11eb7c0c2156c1a4c120180f
+> 
+>  arch/openrisc/kernel/process.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/process.c
+> index 3c98728cce24..181448f74316 100644
+> --- a/arch/openrisc/kernel/process.c
+> +++ b/arch/openrisc/kernel/process.c
+> @@ -34,6 +34,7 @@
+>  #include <linux/init_task.h>
+>  #include <linux/mqueue.h>
+>  #include <linux/fs.h>
+> +#include <linux/reboot.h>
+>  
+>  #include <linux/uaccess.h>
+>  #include <asm/io.h>
+> @@ -49,10 +50,16 @@
+>   */
+>  struct thread_info *current_thread_info_set[NR_CPUS] = { &init_thread_info, };
+>  
+> -void machine_restart(void)
+> +void machine_restart(char *cmd)
+>  {
+> -	printk(KERN_INFO "*** MACHINE RESTART ***\n");
+> -	__asm__("l.nop 1");
+Just a note, this nop with argument 1, is used by the simulators to shutdown.  I
+am happy to get rid of this though.  The simulator should be simulating how real
+hardware is shut down not doing these tricks.
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufs-sysfs.c | 104 ++++++++++++++++++++++++++++++++++++-------
- drivers/scsi/ufs/ufshcd.c    |  40 ++++++++++-------
- drivers/scsi/ufs/ufshcd.h    |  10 ++++-
- 3 files changed, 123 insertions(+), 31 deletions(-)
+> +	do_kernel_restart(cmd);
+As you mentioned this depends on Geert's patch.  Does he plan to submit it soon?
 
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index 08e72b7..98a9447 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -154,18 +154,29 @@ static ssize_t auto_hibern8_show(struct device *dev,
- 				 struct device_attribute *attr, char *buf)
- {
- 	u32 ahit;
-+	int ret;
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
- 	if (!ufshcd_is_auto_hibern8_supported(hba))
- 		return -EOPNOTSUPP;
- 
-+	down(&hba->host_sem);
-+	if (!ufshcd_is_sysfs_allowed(hba)) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	pm_runtime_get_sync(hba->dev);
- 	ufshcd_hold(hba, false);
- 	ahit = ufshcd_readl(hba, REG_AUTO_HIBERNATE_IDLE_TIMER);
- 	ufshcd_release(hba);
- 	pm_runtime_put_sync(hba->dev);
- 
--	return scnprintf(buf, PAGE_SIZE, "%d\n", ufshcd_ahit_to_us(ahit));
-+	ret = scnprintf(buf, PAGE_SIZE, "%d\n", ufshcd_ahit_to_us(ahit));
-+
-+out:
-+	up(&hba->host_sem);
-+	return ret;
- }
- 
- static ssize_t auto_hibern8_store(struct device *dev,
-@@ -174,6 +185,7 @@ static ssize_t auto_hibern8_store(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 	unsigned int timer;
-+	int ret = 0;
- 
- 	if (!ufshcd_is_auto_hibern8_supported(hba))
- 		return -EOPNOTSUPP;
-@@ -184,9 +196,17 @@ static ssize_t auto_hibern8_store(struct device *dev,
- 	if (timer > UFSHCI_AHIBERN8_MAX)
- 		return -EINVAL;
- 
-+	down(&hba->host_sem);
-+	if (!ufshcd_is_sysfs_allowed(hba)) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	ufshcd_auto_hibern8_update(hba, ufshcd_us_to_ahit(timer));
- 
--	return count;
-+out:
-+	up(&hba->host_sem);
-+	return ret ? ret : count;
- }
- 
- static DEVICE_ATTR_RW(rpm_lvl);
-@@ -225,12 +245,21 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 	if (param_size > 8)
- 		return -EINVAL;
- 
-+	down(&hba->host_sem);
-+	if (!ufshcd_is_sysfs_allowed(hba)) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	pm_runtime_get_sync(hba->dev);
- 	ret = ufshcd_read_desc_param(hba, desc_id, desc_index,
- 				param_offset, desc_buf, param_size);
- 	pm_runtime_put_sync(hba->dev);
--	if (ret)
--		return -EINVAL;
-+	if (ret) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
- 	switch (param_size) {
- 	case 1:
- 		ret = sprintf(sysfs_buf, "0x%02X\n", *desc_buf);
-@@ -249,6 +278,8 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 		break;
- 	}
- 
-+out:
-+	up(&hba->host_sem);
- 	return ret;
- }
- 
-@@ -591,9 +622,16 @@ static ssize_t _name##_show(struct device *dev,				\
- 	int desc_len = QUERY_DESC_MAX_SIZE;				\
- 	u8 *desc_buf;							\
- 									\
-+	down(&hba->host_sem);						\
-+	if (!ufshcd_is_sysfs_allowed(hba)) {				\
-+		up(&hba->host_sem);					\
-+		return -EBUSY;						\
-+	}								\
- 	desc_buf = kzalloc(QUERY_DESC_MAX_SIZE, GFP_ATOMIC);		\
--	if (!desc_buf)                                                  \
--		return -ENOMEM;                                         \
-+	if (!desc_buf) {						\
-+		up(&hba->host_sem);					\
-+		return -ENOMEM;						\
-+	}								\
- 	pm_runtime_get_sync(hba->dev);					\
- 	ret = ufshcd_query_descriptor_retry(hba,			\
- 		UPIU_QUERY_OPCODE_READ_DESC, QUERY_DESC_IDN_DEVICE,	\
-@@ -613,6 +651,7 @@ static ssize_t _name##_show(struct device *dev,				\
- out:									\
- 	pm_runtime_put_sync(hba->dev);					\
- 	kfree(desc_buf);						\
-+	up(&hba->host_sem);						\
- 	return ret;							\
- }									\
- static DEVICE_ATTR_RO(_name)
-@@ -651,15 +690,26 @@ static ssize_t _name##_show(struct device *dev,				\
- 	u8 index = 0;							\
- 	int ret;							\
- 	struct ufs_hba *hba = dev_get_drvdata(dev);			\
-+									\
-+	down(&hba->host_sem);						\
-+	if (!ufshcd_is_sysfs_allowed(hba)) {				\
-+		up(&hba->host_sem);					\
-+		return -EBUSY;						\
-+	}								\
- 	if (ufshcd_is_wb_flags(QUERY_FLAG_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
- 	pm_runtime_get_sync(hba->dev);					\
- 	ret = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,	\
- 		QUERY_FLAG_IDN##_uname, index, &flag);			\
- 	pm_runtime_put_sync(hba->dev);					\
--	if (ret)							\
--		return -EINVAL;						\
--	return sprintf(buf, "%s\n", flag ? "true" : "false"); \
-+	if (ret) {							\
-+		ret = -EINVAL;						\
-+		goto out;						\
-+	}								\
-+	ret = sprintf(buf, "%s\n", flag ? "true" : "false");		\
-+out:									\
-+	up(&hba->host_sem);						\
-+	return ret;							\
- }									\
- static DEVICE_ATTR_RO(_name)
- 
-@@ -709,15 +759,26 @@ static ssize_t _name##_show(struct device *dev,				\
- 	u32 value;							\
- 	int ret;							\
- 	u8 index = 0;							\
-+									\
-+	down(&hba->host_sem);						\
-+	if (!ufshcd_is_sysfs_allowed(hba)) {				\
-+		up(&hba->host_sem);					\
-+		return -EBUSY;						\
-+	}								\
- 	if (ufshcd_is_wb_attrs(QUERY_ATTR_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
- 	pm_runtime_get_sync(hba->dev);					\
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,	\
- 		QUERY_ATTR_IDN##_uname, index, 0, &value);		\
- 	pm_runtime_put_sync(hba->dev);					\
--	if (ret)							\
--		return -EINVAL;						\
--	return sprintf(buf, "0x%08X\n", value);				\
-+	if (ret) {							\
-+		ret = -EINVAL;						\
-+		goto out;						\
-+	}								\
-+	ret = sprintf(buf, "0x%08X\n", value);				\
-+out:									\
-+	up(&hba->host_sem);						\
-+	return ret;							\
- }									\
- static DEVICE_ATTR_RO(_name)
- 
-@@ -850,13 +911,26 @@ static ssize_t dyn_cap_needed_attribute_show(struct device *dev,
- 	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);
- 	int ret;
- 
-+	down(&hba->host_sem);
-+	if (!ufshcd_is_sysfs_allowed(hba)) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	pm_runtime_get_sync(hba->dev);
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
- 		QUERY_ATTR_IDN_DYN_CAP_NEEDED, lun, 0, &value);
- 	pm_runtime_put_sync(hba->dev);
--	if (ret)
--		return -EINVAL;
--	return sprintf(buf, "0x%08X\n", value);
-+	if (ret) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = sprintf(buf, "0x%08X\n", value);
-+
-+out:
-+	up(&hba->host_sem);
-+	return ret;
- }
- static DEVICE_ATTR_RO(dyn_cap_needed_attribute);
- 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 34e2541..6c3006a 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1522,11 +1522,17 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 	u32 value;
--	int err;
-+	int err = 0;
- 
- 	if (kstrtou32(buf, 0, &value))
- 		return -EINVAL;
- 
-+	down(&hba->host_sem);
-+	if (!ufshcd_is_sysfs_allowed(hba)) {
-+		err = -EBUSY;
-+		goto out;
-+	}
-+
- 	value = !!value;
- 	if (value == hba->clk_scaling.is_allowed)
- 		goto out;
-@@ -1552,7 +1558,8 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
- 	ufshcd_release(hba);
- 	pm_runtime_put_sync(hba->dev);
- out:
--	return count;
-+	up(&hba->host_sem);
-+	return err ? err : count;
- }
- 
- static void ufshcd_clkscaling_init_sysfs(struct ufs_hba *hba)
-@@ -5720,9 +5727,10 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
- 
- static inline bool ufshcd_err_handling_should_stop(struct ufs_hba *hba)
- {
--	return (!hba->is_powered || hba->ufshcd_state == UFSHCD_STATE_ERROR ||
-+	return (!hba->is_powered || hba->shutting_down ||
-+		hba->ufshcd_state == UFSHCD_STATE_ERROR ||
- 		(!(hba->saved_err || hba->saved_uic_err || hba->force_reset ||
--			ufshcd_is_link_broken(hba))));
-+		   ufshcd_is_link_broken(hba))));
- }
- 
- #ifdef CONFIG_PM
-@@ -5792,13 +5800,13 @@ static void ufshcd_err_handler(struct work_struct *work)
- 
- 	hba = container_of(work, struct ufs_hba, eh_work);
- 
--	down(&hba->eh_sem);
-+	down(&hba->host_sem);
- 	spin_lock_irqsave(hba->host->host_lock, flags);
- 	if (ufshcd_err_handling_should_stop(hba)) {
- 		if (hba->ufshcd_state != UFSHCD_STATE_ERROR)
- 			hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
- 		spin_unlock_irqrestore(hba->host->host_lock, flags);
--		up(&hba->eh_sem);
-+		up(&hba->host_sem);
- 		return;
- 	}
- 	ufshcd_set_eh_in_progress(hba);
-@@ -5967,7 +5975,7 @@ static void ufshcd_err_handler(struct work_struct *work)
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 	ufshcd_scsi_unblock_requests(hba);
- 	ufshcd_err_handling_unprepare(hba);
--	up(&hba->eh_sem);
-+	up(&hba->host_sem);
- }
- 
- /**
-@@ -7869,10 +7877,10 @@ static void ufshcd_async_scan(void *data, async_cookie_t cookie)
- 	struct ufs_hba *hba = (struct ufs_hba *)data;
- 	int ret;
- 
--	down(&hba->eh_sem);
-+	down(&hba->host_sem);
- 	/* Initialize hba, detect and initialize UFS device */
- 	ret = ufshcd_probe_hba(hba, true);
--	up(&hba->eh_sem);
-+	up(&hba->host_sem);
- 	if (ret)
- 		goto out;
- 
-@@ -8899,7 +8907,7 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
- 	if (!hba)
- 		return 0;
- 
--	down(&hba->eh_sem);
-+	down(&hba->host_sem);
- 	if (!hba->is_powered)
- 		return 0;
- 
-@@ -8931,7 +8939,7 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
- 	if (!ret)
- 		hba->is_sys_suspended = true;
- 	else
--		up(&hba->eh_sem);
-+		up(&hba->host_sem);
- 	return ret;
- }
- EXPORT_SYMBOL(ufshcd_system_suspend);
-@@ -8965,7 +8973,7 @@ int ufshcd_system_resume(struct ufs_hba *hba)
- 		hba->curr_dev_pwr_mode, hba->uic_link_state);
- 	if (!ret)
- 		hba->is_sys_suspended = false;
--	up(&hba->eh_sem);
-+	up(&hba->host_sem);
- 	return ret;
- }
- EXPORT_SYMBOL(ufshcd_system_resume);
-@@ -9057,7 +9065,10 @@ int ufshcd_shutdown(struct ufs_hba *hba)
- {
- 	int ret = 0;
- 
--	down(&hba->eh_sem);
-+	down(&hba->host_sem);
-+	hba->shutting_down = true;
-+	up(&hba->host_sem);
-+
- 	if (!hba->is_powered)
- 		goto out;
- 
-@@ -9075,7 +9086,6 @@ int ufshcd_shutdown(struct ufs_hba *hba)
- 	if (ret)
- 		dev_err(hba->dev, "%s failed, err %d\n", __func__, ret);
- 	hba->is_powered = false;
--	up(&hba->eh_sem);
- 	/* allow force shutdown even in case of errors */
- 	return 0;
- }
-@@ -9270,7 +9280,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- 	INIT_WORK(&hba->eh_work, ufshcd_err_handler);
- 	INIT_WORK(&hba->eeh_work, ufshcd_exception_event_handler);
- 
--	sema_init(&hba->eh_sem, 1);
-+	sema_init(&hba->host_sem, 1);
- 
- 	/* Initialize UIC command mutex */
- 	mutex_init(&hba->uic_cmd_mutex);
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 9bb5f0e..3e91951 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -655,6 +655,8 @@ struct ufs_hba_variant_params {
-  * @intr_mask: Interrupt Mask Bits
-  * @ee_ctrl_mask: Exception event control mask
-  * @is_powered: flag to check if HBA is powered
-+ * @shutting_down: flag to check if shutdown has been invoked
-+ * @host_sem: semaphore used to serialize concurrent contexts
-  * @eh_wq: Workqueue that eh_work works on
-  * @eh_work: Worker to handle UFS errors that require s/w attention
-  * @eeh_work: Worker to handle exception events
-@@ -751,7 +753,8 @@ struct ufs_hba {
- 	u32 intr_mask;
- 	u16 ee_ctrl_mask;
- 	bool is_powered;
--	struct semaphore eh_sem;
-+	bool shutting_down;
-+	struct semaphore host_sem;
- 
- 	/* Work Queues */
- 	struct workqueue_struct *eh_wq;
-@@ -875,6 +878,11 @@ static inline bool ufshcd_is_wb_allowed(struct ufs_hba *hba)
- 	return hba->caps & UFSHCD_CAP_WB_EN;
- }
- 
-+static inline bool ufshcd_is_sysfs_allowed(struct ufs_hba *hba)
-+{
-+	return !hba->shutting_down;
-+}
-+
- #define ufshcd_writel(hba, val, reg)	\
- 	writel((val), (hba)->mmio_base + (reg))
- #define ufshcd_readl(hba, reg)	\
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Geert is CCed.
+
+> +
+> +	/* Give a grace period for failure to restart of 1s */
+> +	mdelay(1000);
+> +
+> +	/* Whoops - the platform was unable to reboot. Tell the user! */
+> +	pr_emerg("Reboot failed -- System halted\n");
+> +	while (1);
+>  }
+>  
+>  /*
+> -- 
+> 2.29.2
+
+I am queing this for 5.11 anyway is it hurt's nothing without Geert's patch.
+
+-Stafford
 
