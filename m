@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85712E85A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 861212E85A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbhAAVMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 16:12:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727316AbhAAVMq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 16:12:46 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61841C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 13:12:05 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id o13so50658208lfr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 13:12:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pQza3UddYXR6eO4r94ZTkx+KQP8jv7dR2DD0yefFXLQ=;
-        b=FVApS46Ywo/T+y6oD79x3UdQ65VYtCz6bTRsGKsfB807UgbgL+RxmIAZzL/+VyI11/
-         RTw/V0Efer+t7CsO1JfIoyarxhtEGoeJ8ziNMOHPut1/aPFGqPVmWWFZP738KO49A0wX
-         IEMGgLZujcKDF3oW6S9KVi87tk1rBR0gSXUvE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pQza3UddYXR6eO4r94ZTkx+KQP8jv7dR2DD0yefFXLQ=;
-        b=CYn6vtK3o/LkeCmUZ/Q7pgMnRzAvnhS1hB9fEr8Z0ioDn7BRWmCDe3tBoLxvesHky6
-         yDvs3ig43BTGpiztcoZ7DE/vBL0elRebYDTVOdhbMPE+02UCeRkmKdMyyqQ+Lkm7pDpr
-         CnDUcJDRjFauxhLdmBWl3effbFnfz0VBAwunmo0XxlQaPCx7X1gi23seUbeQYMUJMqop
-         NY2+Cuz1E608nT9eNNebwyes8Mn+EQLVDMw3DUeF8hv97tnzPwONcwHQKDI85OJjKIat
-         HBw54gG/giAfkm06lJCAramvLwypBh4YyvBdII3WBBkefzT75akPh1y0y1MOgEFfzByg
-         mjiQ==
-X-Gm-Message-State: AOAM530ufPeC+zZuBAJgNuFaHxO23ugqzr2VYqScQIhJ/bsoCX80t53O
-        ltkuf72ut7KgZsrXMTmrGuBWEWtyCPidQQ==
-X-Google-Smtp-Source: ABdhPJz9jOPpwSvLM5Mbuefx2ocT2jzeQarHQOL4wKO3Wf7VYamUZ5rGkOpZjdGLOb/44es2P1uYnQ==
-X-Received: by 2002:a19:c8cc:: with SMTP id y195mr26299665lff.352.1609535523466;
-        Fri, 01 Jan 2021 13:12:03 -0800 (PST)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id n6sm6563537lfi.112.2021.01.01.13.12.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Jan 2021 13:12:02 -0800 (PST)
-Received: by mail-lf1-f43.google.com with SMTP id s26so50560635lfc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 13:12:01 -0800 (PST)
-X-Received: by 2002:ac2:4987:: with SMTP id f7mr25990869lfl.41.1609535521403;
- Fri, 01 Jan 2021 13:12:01 -0800 (PST)
+        id S1727397AbhAAVQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 16:16:31 -0500
+Received: from mout.gmx.net ([212.227.15.18]:59441 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727290AbhAAVQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 16:16:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609535695;
+        bh=EKEVVd/s9tWN96Ad2B4i4FpP9FS4G/rnReNDGVpjXPU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=eCdm30by0JYfMhc5OtCGhNwPHZ6aaCBDwo/FOyOSbmeLy5XlX1ZtxyhrdlDdpx+bK
+         r0umZ7XrIexDELiOeIGSmK9M55topqKx8uhVSd5HwiZMmeRmqS/vVMY+v7PGDtmCmB
+         NRwOElSd13JIrFO+wdFhdtgYEhW+H/wxm5O6b93E=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNbp3-1kfHmu1lRT-00P7la; Fri, 01
+ Jan 2021 22:14:55 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-doc@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Romuald Brunet <romuald@chivil.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: binfmt-misc: Fix .rst formatting
+Date:   Fri,  1 Jan 2021 22:14:47 +0100
+Message-Id: <20210101211447.1021412-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <CAJZ5v0gTcaKg5NeP8Se-YekKDq=pT4Bu81G1RTdvhucBL3MaFg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gTcaKg5NeP8Se-YekKDq=pT4Bu81G1RTdvhucBL3MaFg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 1 Jan 2021 13:11:45 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjoyBj-pfbS9OKkcGgZsPRNPg+dWckiFk90Bdw93GhVww@mail.gmail.com>
-Message-ID: <CAHk-=wjoyBj-pfbS9OKkcGgZsPRNPg+dWckiFk90Bdw93GhVww@mail.gmail.com>
-Subject: Re: [GIT PULL] Power management updates for v5.11-rc2
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:t3sMNTfmY9HCo0M1fE0BCba6iJEC26+jQKWLSWtIRm6it40px68
+ XsQbvSSjVpJ4VJPVLIzYUhgWj1cF9m2jeL5onx8rhe7cCL/wNCuCkIwN4KzfknMfTmB8CVs
+ F0edKfWCvy+EIxOtrHiv8sB4V8dl278bYqKna1X47YPa5XRCfQ8Jj4IKhrznJTF+MED+eRi
+ ybPolgtclyNkqetfgmk+w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:n2VNFGgek5k=:XztQpNDFENjzTDGeTkVtkT
+ 7O9pckC5bpMkc/F12u8QXX3LSMAjIQhN82g9PDry/hvPm6dTLckyVaPEAT2MVGYZen0CjmO9D
+ md5cHKQvx9b6inK0oXymbARRtW9cqRnQ/4omOitJyv4UOQ5qfIhgZGfzxwpmTax9+/cK7KPqu
+ Iu1sdUJOJ9e4hpvhnacw7/PENqif2uBjC+9J00wQofhh13Cqu1mspiyxM1l1a/0xbhUidK7jj
+ uFTysf0A91iVoXRRtdyTuyqPTihGk2IlPwqW2np17CHGEkwAOtWrRfgdI1jFIFM2Uu2h/vPv5
+ 9comF1E/OyEsud2nFovXJ+iK0e8OTC7V5cn30JI1TJeO+SUxMYnoonJ75GscMIs9eO9lMb+JI
+ NbNu3WGq3eVzAwtFE0WAsMic6q0//sap92Fcg0Ojx+cuvX84IKd0NpJxJPnPyRqtO/hWdkFJF
+ UmjvAWOh8lJZBI6UudFtUWQFZni4qHvBLuLHdWMHnEeyMnQ+xX4lRNNAIqEjwggFWKZUXMV1s
+ wrDu3ZnaOapZmpQ551D2Vr2FkNORDtd653Z5WRcXqGLv0T1knJ/39wy4ZIIliaOiybSTcV+o2
+ xjbTxGmUJ0GqF1kjmLC3V33QHgnnETuPCOiTr4S22I9/zKvf4jKtjS39mq78plWMBS2I8laDn
+ 5esIqB67jr9eO4T3t3vp15BQNEafMiYH+nkWQSk9AUYHvMRJdsBmFv/eKIheZaWkkc2P7P/GD
+ VuqMbAs+kozCuUDnyKMzznViQCzxHCX6JXYPiEiEIFIKIz0N4FBB6UgJBi2E1jMnWyU5Zsuhs
+ CQedlMuoKB/EkZu1h/eJgdOF4M4+2OVh4OO86/BNzCM/0nnWLtq9JmrL6pYZtvyFHxnxz5SbR
+ sdHQsyh6fy5JJutTdGng==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 1, 2021 at 8:51 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
->  - Add new power capping facility called DTPM (Dynamic Thermal Power
->    Management), based on the existing power capping framework, to
->    allow aggregate power constraints to be applied to sets of devices
->    in a distributed manner, along with a CPU backend driver based on
->    the Energy Model (Daniel Lezcano).
+"name below" is not part of the /proc path and should not be formatted
+in monospace.
 
-This seems very much a non-fix thing.
+"doesn``t" is rendered in HTML with a double backtick. Revert it back to
+"doesn't".
 
-Please explain why I should accept this outside the merge window.
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ Documentation/admin-guide/binfmt-misc.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-                 Linus
+diff --git a/Documentation/admin-guide/binfmt-misc.rst b/Documentation/adm=
+in-guide/binfmt-misc.rst
+index 7a864131e5ea7..59cd902e35497 100644
+=2D-- a/Documentation/admin-guide/binfmt-misc.rst
++++ b/Documentation/admin-guide/binfmt-misc.rst
+@@ -23,7 +23,7 @@ Here is what the fields mean:
+
+ - ``name``
+    is an identifier string. A new /proc file will be created with this
+-   ``name below /proc/sys/fs/binfmt_misc``; cannot contain slashes ``/`` =
+for
++   name below ``/proc/sys/fs/binfmt_misc``; cannot contain slashes ``/`` =
+for
+    obvious reasons.
+ - ``type``
+    is the type of recognition. Give ``M`` for magic and ``E`` for extensi=
+on.
+@@ -83,7 +83,7 @@ Here is what the fields mean:
+       ``F`` - fix binary
+             The usual behaviour of binfmt_misc is to spawn the
+ 	    binary lazily when the misc format file is invoked.  However,
+-	    this doesn``t work very well in the face of mount namespaces and
++	    this doesn't work very well in the face of mount namespaces and
+ 	    changeroots, so the ``F`` mode opens the binary as soon as the
+ 	    emulation is installed and uses the opened image to spawn the
+ 	    emulator, meaning it is always available once installed,
+=2D-
+2.29.2
+
