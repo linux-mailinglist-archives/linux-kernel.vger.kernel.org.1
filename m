@@ -2,95 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FB32E8578
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 21:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0CB2E857F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 21:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbhAAUDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 15:03:42 -0500
-Received: from mout.gmx.net ([212.227.17.22]:53655 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727213AbhAAUDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 15:03:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1609531325;
-        bh=hfDnNeUCZwBLottlBkKvDlJqHRMGiBRn+k8fIsv45yE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=gRMRKkTo0nB6MA3Afty8WuYBVsUylmcCSmkxkx9xPpZm0mDZJRueglicWDlp3wcDs
-         PwBFyPK3i4NVPBhLbMTtqGctMYxCRMsTdeJ29bdtdAs1Lb9iSz3+uyKaiuzeCS+e3J
-         kJyqe+0470jRcytwzXxsCol9xrXZqg255PSqfPmQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVNB1-1kSzjW2oFD-00SQmh; Fri, 01
- Jan 2021 21:02:05 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-doc@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: gpio: Fix formatting in description of gpiod_*_array_* functions
-Date:   Fri,  1 Jan 2021 21:00:51 +0100
-Message-Id: <20210101200052.967482-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.29.2
+        id S1727321AbhAAUO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 15:14:27 -0500
+Received: from relay4.mymailcheap.com ([137.74.199.117]:37257 "EHLO
+        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727199AbhAAUO1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 15:14:27 -0500
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id 675303F1CF;
+        Fri,  1 Jan 2021 21:12:52 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 9991D2A3E1;
+        Fri,  1 Jan 2021 15:12:51 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1609531971;
+        bh=mup4tYDJ06aF1cMf8ZNg00/qBTcpyfhMXsMxbVvsLmQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=wATXthZJAkEDH6eFX/XRbbNPAAf/O+3FncTdnZDsMlaEVjxxDuSEcx78U5iuBh2cj
+         qRTQF/HOn5Y8iCIMojsFYKgdW83i3WZHQ1ycz6pF5pGLkkood2IrR1N7bIa1esJgBx
+         qAnAcGkQMCRrUr+ZU4Y1HaG60HIzjqZ1C5xfM/to=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JGkaTNTsVahz; Fri,  1 Jan 2021 15:12:50 -0500 (EST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Fri,  1 Jan 2021 15:12:50 -0500 (EST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id C3F6B423F0;
+        Fri,  1 Jan 2021 20:12:48 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="fb/Qkf8G";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.162.48])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id CD82E422E7;
+        Fri,  1 Jan 2021 20:12:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1609531967; bh=mup4tYDJ06aF1cMf8ZNg00/qBTcpyfhMXsMxbVvsLmQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fb/Qkf8GEbxBXwcXuwgZG2SbDyoBMFhlrqxtK2uniTcqeVZ+oXGFWOr4X6Hzbu0jY
+         fEgQ2sLAJjdKQtcx8QL4TugQGQ3GLUL3mn7hfOe6dOWanqiaILdh6UgK+lNg9HBtvG
+         Y5jNuZysmKgmPIBi6pQMVORDjUfpB81PjFC8pepQ=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>
+Cc:     linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Icenowy Zheng <icenowy@aosc.io>, stable@vger.kernel.org
+Subject: [PATCH] ovl: use a dedicated semaphore for dir upperfile caching
+Date:   Sat,  2 Jan 2021 04:12:30 +0800
+Message-Id: <20210101201230.768653-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:qItgLAisBBFHYnP6C8k1SZxbSZ0lVs69gFN4PDcEPRz4ZYK2aOS
- 7OV/EDpA6KKYeCFKO57a/lRyhw0fEL/aBXsxplM2kf03YWw9V6x8/NIZCrlPT4czB6IL4zd
- e4muiwsZgsTJu3GV6YmwlGuKq/+V1G8gKfX6B9eYChFNmReQjiOi2amPvhklXcgah5KC+1L
- s8eZJIhIL6u2E4VUrxEKQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:scAqxaIHHrs=:JXE2ki0KiFBNH+s5G5/zim
- k7ce74kIrDiWDOryvAMGd0vvt/nPn8ZS3qOY3OCoUWZsVImLCU3AqJqikNn2oiImhpRqtFMzv
- 7rrltj5KOTEecdBji0wh5QLnBRi+XxCjY4zMz/J6JUOo73Yco9Q5ZYbLCbAEcYlMWQ5f0abPc
- OzfM1oD8OUgu9zTGnE2kc467pSCgl+LoUR/KCu3CW85kZwPfFHhLNhEaiuXtbBcHmJ2ss0+Bo
- +D2eeyBMTM4arPOaCrBu9t15+5zCbsIpWCAJr3e9XBBtCJbwLAwnb/nDiGy0UKdJ/1KhoPuJ3
- Zp1JSceeulSkONHE8LA43HOOL4f19az7XTbTz1DYVHfIZ0eIgOiCoN+yEStblY3s5mscVzQ2Q
- NAePceMaJJ+Ghp1iqEH/GfCLKrk+BgrIUY2HXW3xB432M1CydHqaq5bQj4Or9NNoa1AHEsuYT
- CIiRaUmuyo0O6s1hn16lGdATlkePFz5UENsjQ6AlF2fhUyW07vQs+02hAcDzu9s27q+i7Hp64
- OOA2QLxb35PM8OK8oXFGcYKAJFC2ajLFAWxxZWgGbIsy99Olq3nI4z6Ebk2j6Mo5L0sYdDGuY
- G3k1Lc4tzf1NmnJ+yM7N1IXg/E0htCFnVeFWC3t5OuBU4bpKR3BDyMFc6WayUeNUhD4jZcLqQ
- XrXgPjlfam7XK6A30C+CgQzAHnabhmqR4Fqq4/1IpywY99ZoQlmKQQlmBwGZ5wj4xcvAPACfx
- ifSGmV4OamzVSnrTjWlD/0qKKITObId2CSk1QF3OB12o9PIPMQXE+UmVNGx94CeDse7ggzQCh
- z38b0Ce0L3/MeYghw4qkT3E5SEjvA2yFnMl/P4IDKY3VyD7fFUEUnaZOQxUjCw0O9Cbeo/HWb
- nMMHJTACM4d/xFXsLcHw==
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [4.90 / 20.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.162.48:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         R_MISSING_CHARSET(2.50)[];
+         MIME_GOOD(-0.10)[text/plain];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         DMARC_NA(0.00)[aosc.io];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MID_CONTAINS_FROM(1.00)[];
+         FREEMAIL_TO(0.00)[szeredi.hu,gmail.com,cn.fujitsu.com];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Queue-Id: C3F6B423F0
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The gpiod_*_array_* functions take four arguments, not three.
-Additionally, the formatting of the "value_bitmap" line results in
-misformatted HTML, so fix that.
+The function ovl_dir_real_file() currently uses the semaphore of the
+inode to synchronize write to the upperfile cache field.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- Documentation/driver-api/gpio/consumer.rst | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+However, this function will get called by ovl_ioctl_set_flags(), which
+utilizes the inode semaphore too. In this case ovl_dir_real_file() will
+try to claim a lock that is owned by a function in its call stack, which
+won't get released before ovl_dir_real_file() returns.
 
-diff --git a/Documentation/driver-api/gpio/consumer.rst b/Documentation/dr=
-iver-api/gpio/consumer.rst
-index 173e4c7b037d0..22271c342d923 100644
-=2D-- a/Documentation/driver-api/gpio/consumer.rst
-+++ b/Documentation/driver-api/gpio/consumer.rst
-@@ -361,12 +361,13 @@ corresponding chip driver. In that case a significan=
-tly improved performance
- can be expected. If simultaneous access is not possible the GPIOs will be
- accessed sequentially.
+Define a dedicated semaphore for the upperfile cache, so that the
+deadlock won't happen.
 
--The functions take three arguments:
-+The functions take four arguments:
-+
- 	* array_size	- the number of array elements
- 	* desc_array	- an array of GPIO descriptors
- 	* array_info	- optional information obtained from gpiod_get_array()
- 	* value_bitmap	- a bitmap to store the GPIOs' values (get) or
--			  a bitmap of values to assign to the GPIOs (set)
-+          a bitmap of values to assign to the GPIOs (set)
+Fixes: 61536bed2149 ("ovl: support [S|G]ETFLAGS and FS[S|G]ETXATTR ioctls for directories")
+Cc: stable@vger.kernel.org # v5.10
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+---
+ fs/overlayfs/readdir.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- The descriptor array can be obtained using the gpiod_get_array() function
- or one of its variants. If the group of descriptors returned by that func=
-tion
-=2D-
-2.29.2
-
+diff --git a/fs/overlayfs/readdir.c b/fs/overlayfs/readdir.c
+index 01620ebae1bd..f10701aabb71 100644
+--- a/fs/overlayfs/readdir.c
++++ b/fs/overlayfs/readdir.c
+@@ -56,6 +56,7 @@ struct ovl_dir_file {
+ 	struct list_head *cursor;
+ 	struct file *realfile;
+ 	struct file *upperfile;
++	struct semaphore upperfile_sem;
+ };
+ 
+ static struct ovl_cache_entry *ovl_cache_entry_from_node(struct rb_node *n)
+@@ -883,7 +884,7 @@ struct file *ovl_dir_real_file(const struct file *file, bool want_upper)
+ 			ovl_path_upper(dentry, &upperpath);
+ 			realfile = ovl_dir_open_realfile(file, &upperpath);
+ 
+-			inode_lock(inode);
++			down(&od->upperfile_sem);
+ 			if (!od->upperfile) {
+ 				if (IS_ERR(realfile)) {
+ 					inode_unlock(inode);
+@@ -896,7 +897,7 @@ struct file *ovl_dir_real_file(const struct file *file, bool want_upper)
+ 					fput(realfile);
+ 				realfile = od->upperfile;
+ 			}
+-			inode_unlock(inode);
++			up(&od->upperfile_sem);
+ 		}
+ 	}
+ 
+@@ -959,6 +960,7 @@ static int ovl_dir_open(struct inode *inode, struct file *file)
+ 	od->realfile = realfile;
+ 	od->is_real = ovl_dir_is_real(file->f_path.dentry);
+ 	od->is_upper = OVL_TYPE_UPPER(type);
++	sema_init(&od->upperfile_sem, 1);
+ 	file->private_data = od;
+ 
+ 	return 0;
+-- 
+2.28.0
