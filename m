@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02D12E82E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 05:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A852E82ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 05:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbhAAEaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 23:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
+        id S1726604AbhAAEwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 23:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbhAAEaF (ORCPT
+        with ESMTP id S1726365AbhAAEwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 23:30:05 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4273AC061573;
-        Thu, 31 Dec 2020 20:29:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=03MHVj7uFca2pur9ftrcvmwDErnMJojp89WXgKNO4AA=; b=ulXhILNkO4Vn79Fz0WFS5QtaVf
-        qFVb6mSuOHgqmfqc1tMBC67fYnpVzBFFXg3A4KfH4e8wRzR55lj+uaovFmy4DxEmleKrSjZ2LdGbQ
-        ac7wa5VoRQUnjiBgRnbVQWRzf+hGu+NG1PQyfbh3wrjL5bHHzEEx1Ps0vVzBbjNC1KRlsMaYiEQtE
-        S0WcdNbWWEbIvEBHdnKLZWUqsXVgFNXvgRWbsh7EcrPb1WPDe2yvILSvE3WKeDBEn6e5kpJ/5lbqr
-        eA+tcvY7ADwkPGBS/IS5raxViLjPSg3TI2JwcGA/8KrnyVI8vj0kKe6Ek0zxYU6WWZLOOHKajeUkL
-        8ZUS163Q==;
-Received: from [2601:1c0:6280:3f0::2c43] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kvC41-0006xy-6o; Fri, 01 Jan 2021 04:29:21 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vineet Gupta <vgupts@synopsys.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org
-Subject: [PATCH v2] fs/dax: include <asm/page.h> to fix build error on ARC
-Date:   Thu, 31 Dec 2020 20:29:14 -0800
-Message-Id: <20210101042914.5313-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Thu, 31 Dec 2020 23:52:05 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CABC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 20:51:25 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id o144so18934120ybc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 20:51:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=L2rVtcmoGrZ4NbWvrQJ+nndibDPCXZonIPv9txz8Yv0=;
+        b=cowz5qlfEgtrs1ornDHD1Cdex3q00uwP6brPrOR99InKPH3Ffi752KZaqADWXvhoMP
+         GRv7nFvgGdy6LxddKL6u5lyTSgKIct+OK/th5uRfBCZCHPzwp9Ik1tzvSqyz2/VWsuau
+         owU3NuMqPJ8aqdlMcehDMkYsvJumKjYh7YYz3LiHu4XuYeT1NCj/YkUDBfyc4cVY3y7O
+         rmo0s5igM7NlNl8A5EpXrHFEVXEaaHcykRHLQGIVDXvgEg9HMfVlVtcEWsLisWY7fYqS
+         UaiEd723Nb2xDBMtT8fzulHLZJYc9DEvVOg2KOMba/hFRyF95gaqgajRYPF9G//EhxcR
+         C62A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=L2rVtcmoGrZ4NbWvrQJ+nndibDPCXZonIPv9txz8Yv0=;
+        b=MfvnuKQ8mjXr5ltqn7RKEfIQMlnHHkFNwSVLOOOB89+kzFnl/p6Iay40gSOoEbx3up
+         kDv7WigmWvcZcd29GdfFtBkuSYunw05dPblS2vz+RCBo65M1IUgLsE/f8XrJqQ5+br+S
+         gHxR775MrZiAuLb5Nuu+4EWUfRt2/eETgAp23of0RvsqwUhEOiVebQOgSBYos793MQSs
+         HIzlmCC+cuQOROq5Wj2DcpUlNr5P+w6TWlDkXdcLDnENImylbmloYIFKCNUxVpnBQDfP
+         Oqae7NvynNW0o1XFXDZovZiybqKAYabFLJklXBDr/JizrMYZSUXwmeuV6L3FU998qjT+
+         B1HA==
+X-Gm-Message-State: AOAM5312I/6cEMq2xluVlwOgAC/hN0M1XV/EDWeML5jQgM8YVaYpIaaQ
+        oZgNaDhs4ToKA8uSyE2BD7gX4xM3KbKh4F/1R3CU4Su18PqP3wR6
+X-Google-Smtp-Source: ABdhPJxVRmhv9wUyM/EghsM9c4ktYhQeZdnNZ44YiT5MzxCaq091Ct/5v4gTCI6Mjy9ocEjV0ey0WAx2EF/8WkMOiq0=
+X-Received: by 2002:a25:cf13:: with SMTP id f19mr41478354ybg.373.1609476684918;
+ Thu, 31 Dec 2020 20:51:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Hongyi Zhao <hongyi.zhao@gmail.com>
+Date:   Fri, 1 Jan 2021 12:51:13 +0800
+Message-ID: <CAGP6POJ1pRgSP+FSC2ds9afx4rDxm0BkbKK-RAJQuwLUE_2WhQ@mail.gmail.com>
+Subject: Generate the config file for kernel compilation non-interactively in script.
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fs/dax.c uses copy_user_page() but ARC does not provide that interface,
-resulting in a build error.
+Hi,
 
-Provide copy_user_page() in <asm/page.h> (beside copy_page()) and
-add <asm/page.h> to fs/dax.c to fix the build error.
+I want to build the realtime Linux for ROS 2 according to the
+guidelines here:
+<https://index.ros.org/doc/ros2/Tutorials/Building-Realtime-rt_preempt-kernel-for-ROS-2/>.
 
-../fs/dax.c: In function 'copy_cow_page_dax':
-../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
+For this purpose, I must enable the rt_preempt relative options in the
+kernel withe the following method interactively:
 
-Fixes: cccbce671582 ("filesystem-dax: convert to dax_direct_access()")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: linux-snps-arc@lists.infradead.org
-Cc: Dan Williams <dan.j.williams@intel.com>
-Acked-by: Vineet Gupta <vgupts@synopsys.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-nvdimm@lists.01.org
----
-v2: rebase, add more Cc:
+$ make menuconfig
 
- arch/arc/include/asm/page.h |    1 +
- fs/dax.c                    |    1 +
- 2 files changed, 2 insertions(+)
+and set the following
 
---- lnx-511-rc1.orig/fs/dax.c
-+++ lnx-511-rc1/fs/dax.c
-@@ -25,6 +25,7 @@
- #include <linux/sizes.h>
- #include <linux/mmu_notifier.h>
- #include <linux/iomap.h>
-+#include <asm/page.h>
- #include <asm/pgalloc.h>
- 
- #define CREATE_TRACE_POINTS
---- lnx-511-rc1.orig/arch/arc/include/asm/page.h
-+++ lnx-511-rc1/arch/arc/include/asm/page.h
-@@ -10,6 +10,7 @@
- #ifndef __ASSEMBLY__
- 
- #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
-+#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
- 
- struct vm_area_struct;
+# Enable CONFIG_PREEMPT_RT
+ -> General Setup
+  -> Preemption Model (Fully Preemptible Kernel (Real-Time))
+   (X) Fully Preemptible Kernel (Real-Time)
+
+# Enable CONFIG_HIGH_RES_TIMERS
+ -> General setup
+  -> Timers subsystem
+   [*] High Resolution Timer Support
+
+# Enable CONFIG_NO_HZ_FULL
+ -> General setup
+  -> Timers subsystem
+   -> Timer tick handling (Full dynticks system (tickless))
+    (X) Full dynticks system (tickless)
+
+# Set CONFIG_HZ_1000 (note: this is no longer in the General Setup
+menu, go back twice)
+ -> Processor type and features
+  -> Timer frequency (1000 HZ)
+   (X) 1000 HZ
+
+# Set CPU_FREQ_DEFAULT_GOV_PERFORMANCE [=y]
+ ->  Power management and ACPI options
+  -> CPU Frequency scaling
+   -> CPU Frequency scaling (CPU_FREQ [=y])
+    -> Default CPUFreq governor (<choice> [=y])
+     (X) performance
+
+But this is very inconvenient for doing the above job in script. Is
+there an alternative method to generate the above configurations for
+kernel compilation  non-interactively in script.
+
+BR,
+-- 
+Assoc. Prof. Hongyi Zhao <hongyi.zhao@gmail.com>
+Theory and Simulation of Materials
+Hebei Polytechnic University of Science and Technology engineering
+NO. 552 North Gangtie Road, Xingtai, China
