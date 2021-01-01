@@ -2,150 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1B62E8430
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 17:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3352E8433
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 17:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727177AbhAAQ3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 11:29:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbhAAQ3b (ORCPT
+        id S1727173AbhAAQwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 11:52:25 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:39671 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726798AbhAAQwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 11:29:31 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760A3C061573
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 08:28:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=7xQylDOU8gMh95fJFNlktBR/duZbHGaSP/VvUN5281c=; b=gTtZ481gvdHqHOiFuQwWixUvsg
-        ZDB3bCrTYYQqjsOCLWBu/PkrBU/vGyUzQ9l4q5XWoKFMuib3jAJj4as4H4OtZYyZgWkUCVQ2o1bQf
-        QqX2xVTVVgTeKMcyMAietovOFtFo6lTxbBDJ0agnMX1RvLqLKhoEy4y3A9On4fYjxQ6HZCtwaGdiY
-        jJHWjEkEvJ0HplIt/J82rcveE86CybvBrNKVpmyzuTPzqJTJGxpcOWNsQTGFgWwDfHBQn/lpMGSGc
-        Z5dm9cLCK4tOFtBAT6F3ATMR9k4ULGWfdzRwDJLCZe0FlMcoxp7q25QuJRZUkRfZh9E15wYnWenXd
-        mh2YF7iw==;
-Received: from [2601:1c0:6280:3f0::2c43]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kvNIH-0007vD-3i; Fri, 01 Jan 2021 16:28:49 +0000
-Subject: Re: Generate the config file for kernel compilation non-interactively
- in script.
-To:     Hongyi Zhao <hongyi.zhao@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <CAGP6POJ1pRgSP+FSC2ds9afx4rDxm0BkbKK-RAJQuwLUE_2WhQ@mail.gmail.com>
- <1b0ed31c-bccb-abcb-b8d5-159719e199c3@infradead.org>
- <CAGP6PO+JjF0iDXHqUD31cBtNASqbik_iEb3DguqVhUBG+q4LYQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <75ee2c40-6a23-9a28-157e-72018faf0925@infradead.org>
-Date:   Fri, 1 Jan 2021 08:28:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 1 Jan 2021 11:52:24 -0500
+Received: by mail-oi1-f180.google.com with SMTP id w124so24893229oia.6;
+        Fri, 01 Jan 2021 08:52:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=6C0H5B447SxC0+tQR+A4x4mQzaQpDNmiWJeKawHrJw4=;
+        b=TJyRtRyfqY8Xb7kO0JsrXkCOV/+r3o3eQrlE5aCHmygu3ZqPLizDnJ+9uFXtRC97p2
+         v7gFIwOkDErBcGHgEx+BQvYxkKrXWWV36TU9itGvsQwPmRixTLiIC3FvD7XXIfJy8e1M
+         50labdu12uSrCEh3/33sU67PEyONUO1iL2k6SLDQboDUG8ou+xPRe81XIRjVDVYZazma
+         OcZT7LBRJM7PmHXcafH8MUtQhaYHy127Fpq2fPjYDuF4ZbwJgLh+p2COjCMcnXukvJz9
+         wH+Ior77Z9s8Ux/IaL2qzA1YDtprKmsAZ1kSL7YQewTwtHHsFLlH39SEdIgCxTh9/71D
+         fzcw==
+X-Gm-Message-State: AOAM532kzJMfwZzwaxob5pWKYp6ltu5phTOhN6z0cO7Et93ZYgsymsg1
+        cbwIQo7hl4sK8Jbzg2klTZVQviAZvTnnzDUrcEXEirH1Ryw=
+X-Google-Smtp-Source: ABdhPJwqT0DEA4vtgrGYVuZw0B8Me3Cg0BhQ43q7475HMAqJnZtggSq0Y3e7Ns35ICtWsefNMQBnpxkPY2MGPPnik6Q=
+X-Received: by 2002:aca:d6c8:: with SMTP id n191mr10637508oig.69.1609519903563;
+ Fri, 01 Jan 2021 08:51:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAGP6PO+JjF0iDXHqUD31cBtNASqbik_iEb3DguqVhUBG+q4LYQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 1 Jan 2021 17:51:32 +0100
+Message-ID: <CAJZ5v0gTcaKg5NeP8Se-YekKDq=pT4Bu81G1RTdvhucBL3MaFg@mail.gmail.com>
+Subject: [GIT PULL] Power management updates for v5.11-rc2
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Linus,
 
-On 1/1/21 1:55 AM, Hongyi Zhao wrote:
-> On Fri, Jan 1, 2021 at 2:32 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 12/31/20 8:51 PM, Hongyi Zhao wrote:
->>> Hi,
->>>
->>> I want to build the realtime Linux for ROS 2 according to the
->>> guidelines here:
->>> <https://index.ros.org/doc/ros2/Tutorials/Building-Realtime-rt_preempt-kernel-for-ROS-2/>.
->>>
->>> For this purpose, I must enable the rt_preempt relative options in the
->>> kernel withe the following method interactively:
->>>
->>> $ make menuconfig
->>>
->>> and set the following
->>>
->>> # Enable CONFIG_PREEMPT_RT
->>>  -> General Setup
->>>   -> Preemption Model (Fully Preemptible Kernel (Real-Time))
->>>    (X) Fully Preemptible Kernel (Real-Time)
->>>
->>> # Enable CONFIG_HIGH_RES_TIMERS
->>>  -> General setup
->>>   -> Timers subsystem
->>>    [*] High Resolution Timer Support
->>>
->>> # Enable CONFIG_NO_HZ_FULL
->>>  -> General setup
->>>   -> Timers subsystem
->>>    -> Timer tick handling (Full dynticks system (tickless))
->>>     (X) Full dynticks system (tickless)
->>>
->>> # Set CONFIG_HZ_1000 (note: this is no longer in the General Setup
->>> menu, go back twice)
->>>  -> Processor type and features
->>>   -> Timer frequency (1000 HZ)
->>>    (X) 1000 HZ
->>>
->>> # Set CPU_FREQ_DEFAULT_GOV_PERFORMANCE [=y]
->>>  ->  Power management and ACPI options
->>>   -> CPU Frequency scaling
->>>    -> CPU Frequency scaling (CPU_FREQ [=y])
->>>     -> Default CPUFreq governor (<choice> [=y])
->>>      (X) performance
->>>
->>> But this is very inconvenient for doing the above job in script. Is
->>> there an alternative method to generate the above configurations for
->>> kernel compilation  non-interactively in script.
->>
->> Hi,
->> You can use scripts/config in the kernel source tree.
->> Something like this (I don't have RT kernel sources):
->>
->>
->> scripts/config -e PREEMPT_RT
->> scripts/config -e HIGH_RES_TIMERS
->> scripts/config -e NO_HZ_FULL
->> scripts/config -e HZ_1000
->> scripts/config -e CPU_FREQ_DEFAULT_GOV_PERFORMANCE
-> 
-> Wonderful. Thanks a lot for your instructions. I really have noticed
-> this tool but failed to figure out the corresponding translation rules
-> for the options used by menuconfig and this script.
-> 
-> BTW, how do you figure out the above options/arguments corresponding
-> to the ones I've mentioned previously?
-> 
+Please pull from the tag
 
-Oh, I just took the ones that you had listed and removed the leading
-"CONFIG_" from them.
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.11-rc2
 
->>
->> Note that if any of those have other Kconfig dependencies, those Kconfig
->> symbols will also have to be enabled for this to work.
-> 
-> How to know whether an option has other Kconfig dependencies and find
-> the corresponding symbols/arguments for feeding to scripts/config?
+with top-most commit 0856ef671f314e27d42998470d07c6b428d23e64
 
-Use one of the interactive config tools (nconfig, xconfig).
-They will show you dependencies, but you may have to enable other
-symbols first.
+ Merge branches 'pm-cpufreq', 'pm-cpuidle' and 'powercap'
 
-Maybe it would be easier to do a temporary 'make allmodconfig'
-to have the symbols that you are interested in be enabled, then
-you can find them and look at their dependencies.
+on top of commit 5c8fe583cce542aa0b84adc939ce85293de36e5e
 
-Or you could just read the Kconfig files, but that would probably
-be painful.
+ Linux 5.11-rc1
 
->> And then run 'make oldconfig' to update the kernel .config file.
-> 
-> Thanks again.
+to receive power management updates for 5.11-rc2.
+
+These fix a crash in intel_pstate during resume from suspend-to-RAM
+that may occur after recent changes and two resource leaks in error
+paths in the operating performance points (OPP) framework, add a new
+C-states table to intel_idle, update the cpuidle MAINTAINERS entry
+to cover the governors too and add a new power capping facility
+allowing aggregate power constraints to be applied to sets of devices
+in a distributed manner.
+
+Specifics:
+
+ - Fix recently introduced crash in the intel_pstate driver that
+   occurs if scale-invariance is disabled during resume from
+   suspend-to-RAM due to inconsistent changes of APERF or MPERF
+   MSR values made by the platform firmware (Rafael Wysocki).
+
+ - Fix a memory leak and add a missing clk_put() in error paths in
+   the OPP framework (Quanyang Wang, Viresh Kumar).
+
+ - Add new C-states table for SnowRidge processors to the intel_idle
+   driver (Artem Bityutskiy).
+
+ - Update the MAINTAINERS entry for cpuidle to make it clear that
+   the governors are covered by it too (Lukas Bulwahn).
+
+ - Add new power capping facility called DTPM (Dynamic Thermal Power
+   Management), based on the existing power capping framework, to
+   allow aggregate power constraints to be applied to sets of devices
+   in a distributed manner, along with a CPU backend driver based on
+   the Energy Model (Daniel Lezcano).
+
+Happy New Year!
 
 
--- 
-~Randy
+---------------
 
+Artem Bityutskiy (1):
+      intel_idle: add SnowRidge C-state table
+
+Daniel Lezcano (5):
+      units: Add Watt units
+      Documentation/powercap/dtpm: Add documentation for dtpm
+      powercap/drivers/dtpm: Add API for dynamic thermal power management
+      powercap/drivers/dtpm: Add CPU energy model based support
+      powercap/drivers/dtpm: Fix __udivdi3 and __aeabi_uldivmod
+unresolved symbols
+
+Lukas Bulwahn (1):
+      MAINTAINERS: include governors into CPU IDLE TIME MANAGEMENT FRAMEWORK
+
+Quanyang Wang (1):
+      opp: fix memory leak in _allocate_opp_table
+
+Rafael J. Wysocki (1):
+      cpufreq: intel_pstate: Fix fast-switch fallback path
+
+Viresh Kumar (1):
+      opp: Call the missing clk_put() on error
+
+---------------
+
+ Documentation/power/index.rst         |   1 +
+ Documentation/power/powercap/dtpm.rst | 212 +++++++++++++++
+ MAINTAINERS                           |   2 +-
+ drivers/cpufreq/intel_pstate.c        |   1 -
+ drivers/idle/intel_idle.c             |  41 ++-
+ drivers/opp/core.c                    |   9 +-
+ drivers/powercap/Kconfig              |  13 +
+ drivers/powercap/Makefile             |   2 +
+ drivers/powercap/dtpm.c               | 473 ++++++++++++++++++++++++++++++++++
+ drivers/powercap/dtpm_cpu.c           | 257 ++++++++++++++++++
+ include/asm-generic/vmlinux.lds.h     |  11 +
+ include/linux/cpuhotplug.h            |   1 +
+ include/linux/dtpm.h                  |  77 ++++++
+ include/linux/units.h                 |   4 +
+ 14 files changed, 1099 insertions(+), 5 deletions(-)
