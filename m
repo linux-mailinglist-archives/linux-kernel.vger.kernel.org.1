@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DCD2E85CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 23:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC55A2E85D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 23:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbhAAWWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 17:22:09 -0500
-Received: from mout.gmx.net ([212.227.17.20]:47757 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727147AbhAAWWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 17:22:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1609539590;
-        bh=jMwXiMjRPNgjy8AA61m/2S9siVt4OWWaNSlKQ33wBSk=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=UHfQ+4E8+6bt7niXqDPg9a/Bs8CVJccbrLd7hichakV7H7Wi1WmZeaHIhWtCdri4V
-         zyFBSGZDT+hzmXhMwg3bdU4JEOM0V4nnt83oivBV4ns2F8fbRdhcSzPhckcxzx8bdx
-         sPEGWOzBsfEUjG1j/q/hc1wHQQnp892KYhzBYHQw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MirjY-1kPRwY2E1k-00ewkT; Fri, 01
- Jan 2021 23:19:50 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-doc@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: ALSA: Fix reference to mixart.rst
-Date:   Fri,  1 Jan 2021 23:19:42 +0100
-Message-Id: <20210101221942.1068388-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.29.2
+        id S1727359AbhAAWcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 17:32:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727147AbhAAWcJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 17:32:09 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED778C061573;
+        Fri,  1 Jan 2021 14:31:28 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id w17so20107011ilj.8;
+        Fri, 01 Jan 2021 14:31:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=jztGCgEhZcyHZnfVt3Ftdbo2JqWYXrffl5TxWTjnd6E=;
+        b=k/duNVksiGSVSP6ioL4e95+kgOS3C+j+XttQ9eUQ23IU8PzN0JwmRQ1/uBHfHiPKyM
+         A97Tu0nEBMXB1qhy+YtPD5E+bl8YRNpAQ5yaR39W9oaNElavDcfxdcV6Gh0ctOz7teOz
+         EomtdaP+5CX3znpDnFzJQzZRf0cUCvgD0jhBKxGTvj1jiwbGUVH1IAtoWtw+8RvERX4y
+         9qP3Ag3Pg3UpEG8Dxj1DVqkrGTDV05/BOK04Rocj+MDGmRGG+aPAo1cY4BFahY40T4g5
+         iv9UwYdHFzaiXAFb1pxSAniIemJm24P2dsp6E51PFV/Zxp7a18I+SSYREjItVbNLK4Mv
+         yUqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=jztGCgEhZcyHZnfVt3Ftdbo2JqWYXrffl5TxWTjnd6E=;
+        b=nFJxCLRUrCEb4sVR3e/xaPakRw+XXq263W67ZL0Cgkl3NTj1eIltFd6hvJht9nPbA6
+         gFXznmvbBnWVCjEIiVkIAJ/X+3tc2BLXbX3/gRjzwT3kDu7t4OzieSoE3vZjIfBaPIWa
+         lJyKTrFVq44zLSySCCwgqPTQhm2C0/eVWoOcZDXz0YcL3T8kdd9u/6O3ZNktDT58lc76
+         LHP+IYbNWLTxhRUhYcKo6ty007Pbb5vdS9JIGis0tG2lyPvngyHl9rKUAEX4zmPl1Ojw
+         gXEXob6PaIaff8R3pdvY5UxYEuSSQuS4+X5FBT/DS1++uSN87ZUCQFxYvVQZ0YEz04hs
+         wzZg==
+X-Gm-Message-State: AOAM530A4Joqtb02SOxeh/jE6qeQhxfgksnrvF66+0v8263BXnvGs8tP
+        s8n6hWzTaAAOHkcuaWbHjJ1lOawfVsx3EsJCOmA=
+X-Google-Smtp-Source: ABdhPJzDxwN33E6yBsB3JmSWq5AQLevbKew7W7ks3jPowciJ/BSDL+U/7gm5yjty7EJZPIy9Esyrg1azP+r9ViaVxYU=
+X-Received: by 2002:a92:d1cd:: with SMTP id u13mr44320065ilg.186.1609540288350;
+ Fri, 01 Jan 2021 14:31:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:u4OdV2KYuu67DbBoGJ+25LQDNFC8odVCZqA11wCKXavaJOYVKwA
- pcmu2JFhX/flR4D295h0ysUXE/v10ePDzBCr9IcbGlq0JWlwb6h7OWQC1bcDQ46QmQdk8tq
- L4W/P8d00ttRVpzgMypWKdezTwGZ18VkVUIiuNlfbs//F0mQEi7GdSiGLvfeVZdUOSzcTNH
- STehxjVcTlsvITUojTv0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:n+OgFaAHS4w=:sAJG1ANtldmAofN6xRLV+u
- e0siHJqME3EYMHQ/iVVlV0bwsjj9QHlSHYm18twbi4ELiu4RkcRu6xT8eQadCEP05Qg+KW/tL
- PEInvzoLsz71c+6u+rbSmtGhn33gQxPNi0cz8EpKS5rKzBUaPUF7Pm++NhM+QHdwSRxwqOQAo
- xabZOhEQ7uD7A+BUyrTqPzIVaAiiBR2GCDPd5x6s4cENQZgKkUsNQf3Ca0IOBxvNjqlwA8WxK
- jdL14vi4QJl2zVYQN7NjLd8c5FSxQIQXGMdbFjJ8X0i0ogyr5KjdYiuhF5e4zxW/EvxWmB9vn
- gklr3msPag3uIhPZ/e0fXJoBuoVQIwOzUVzbxjC16uIFZC4+EFwwPHNYN1botom4xNUhzkpSa
- M662+Bk01E+bSrGKGe81v8oqmh+ncGt1XH+TXuOhCyRnOfkphN5WhWGq3fcfl/W/ho4txXAv/
- P79l2ZfAiB5QSaZ0bOAK4Rm/0H1qAGlBnhBTd767Cw+1WLyw8BZZQfphEPkoVVKBLArrAdKXn
- 8eAT8SAJsewfUK/1l7i4BirIdAB5tXiF0m3InKZ9j66dexUkMpAUGoqb6C/6LIJcph9S6gr0b
- Lz9WBBLXLYW2IGO3ludLk/jVUPK04X6YPtoCnZvSsZO/LQmXJVVSkET1ICASPjU5tC5XzEWIg
- LB6v3Kxhi6x0zi9AfgHoX2ns1BJ2VdzaPqpB8xwpJ2OUnzEyKAQn7jKoFemY8FgrXsOid0tPp
- 0n0VdrQGBUl1MIdpKBzCpNs56kNKqNRHg0G3jDoGE+eBENRqgHsTKjBVXpf2dea0HrNNDEsu4
- olls2alLEG7/8PT0VpHdx7BTqs01mzo+UqU///Kc1PXYyUdtyKx878Q3dF1LQdceafP5NUAoi
- H12oeTUaUnKu6Fb9ZL0g==
+References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
+ <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com>
+ <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
+ <20210101161435.GA344@duo.ucw.cz> <CA+icZUXKXt3NfgVxZN+m+3d_dqBi+o0EyJH53h-sXU8buaUe7g@mail.gmail.com>
+In-Reply-To: <CA+icZUXKXt3NfgVxZN+m+3d_dqBi+o0EyJH53h-sXU8buaUe7g@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 1 Jan 2021 23:31:17 +0100
+Message-ID: <CA+icZUUdHz1mqTy4AD7-ja6Y8w9bXB-Cc_5g3OeUSRu4zRxcUA@mail.gmail.com>
+Subject: Re: Linux 5.11-rc1
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIXART.txt has been converted to ReST and renamed. Fix the reference
-in alsa-configuration.rst.
+On Fri, Jan 1, 2021 at 7:55 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Fri, Jan 1, 2021 at 5:14 PM Pavel Machek <pavel@ucw.cz> wrote:
+> >
+> > Hi!
+> > > >
+> > > > > $ dpkg -L kmod | grep bin | grep depmod
+> > > > > /sbin/depmod
+> > > > >
+> > > > > $ which depmod
+> > > > > [ empty ]
+> > > > >
+> > > > > $ echo $PATH
+> > > > > /opt/proxychains-ng/bin:/home/dileks/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+> > >
+> > > Ok, I think this is a broken setup that has a separate /sbin but does
+> > > not have it in the PATH.
+> >
+> > That's how it is supposed to work, AFAICT. It is so on Debian here,
+> > for example.
+> >
+> > /sbin is for management commands, why would I have it in PATH when
+> > running as normal user?
+> >
+>
+> I am here on Debian/testing AMD64 and waiting for feedback [2].
+>
+> For now I have applied the diff from [1].
+>
+> - Sedat -
+>
+> [1] https://marc.info/?l=linux-kbuild&m=160919738006768&w=2
+> [2] https://marc.info/?l=linux-kernel&m=160919729606750&w=2
 
-Fixes: 3d8e81862ce4 ("ALSA: doc: ReSTize MIXART.txt")
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- Documentation/sound/alsa-configuration.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Fixed upstream, see "depmod: handle the case of /sbin/depmod without
+/sbin in PATH".
 
-diff --git a/Documentation/sound/alsa-configuration.rst b/Documentation/so=
-und/alsa-configuration.rst
-index fe52c314b7639..b36af65a08edf 100644
-=2D-- a/Documentation/sound/alsa-configuration.rst
-+++ b/Documentation/sound/alsa-configuration.rst
-@@ -1501,7 +1501,7 @@ Module for Digigram miXart8 sound cards.
+- Sedat -
 
- This module supports multiple cards.
- Note: One miXart8 board will be represented as 4 alsa cards.
--See MIXART.txt for details.
-+See Documentation/sound/cards/mixart.rst for details.
-
- When the driver is compiled as a module and the hotplug firmware
- is supported, the firmware data is loaded via hotplug automatically.
-=2D-
-2.29.2
-
+[1] https://git.kernel.org/linus/cedd1862be7e666be87ec824dabc6a2b05618f36
