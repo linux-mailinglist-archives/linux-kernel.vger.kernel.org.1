@@ -2,132 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D952E8339
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 07:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5932E833C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 07:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbhAAGMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 01:12:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbhAAGMV (ORCPT
+        id S1727047AbhAAGNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 01:13:04 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:53483 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726322AbhAAGND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 01:12:21 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB70C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 22:11:41 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id w6so12168109pfu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Dec 2020 22:11:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FmAkaRO9ofNP/6j9RK7haiAvDC6oSSf/13JUxt6XUpg=;
-        b=BTMVd0Mnqvbh3hjtXYbPj9j74wDyKIql+z3uzxuM5xuQAVoMXSKz68StDG467zM5gL
-         lvwlI4fOHLz+mv5b0ErbqlGWWyl8tWGzA1SnsxWFG6wP5czUXTou6TvowB3iiVZaAI3O
-         4DO8B5/oFa0HQtN0FO5vm7EwCV4tJ+AtMKDtemFQSkuBTnewTscBD3e5Kqg8SzTWBRg5
-         3ZlRywm8P+aB1GKNr+2JTuPkLg32hC6MrCcHWrS6v8LcY+KZUsjAEqSDyJrb7nC0LVkl
-         IC9r1Mmu6lndRqyWw5fVdwdKhNyaE80WfXdW2LS+EgXDP0zkW7NiksFm3EZuKHEx74Y1
-         pIXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FmAkaRO9ofNP/6j9RK7haiAvDC6oSSf/13JUxt6XUpg=;
-        b=qWBWvPd156LcGlOHsBt7v2aJka1x3PzM9Za7JQCNcF60KVJ3G1ukGBtT3nH4XcUNUF
-         1hXtPFTOdmlocAz39TZOvWdSh+L5ZoLQv+T3SLDdU8rQGgdBsXVRjsJuzVUXWRYZZW0J
-         obNdXd4SQWukJDFzp6sOYT6CQsIysLNJKSWX9/sthk9NPBRnmmQAf5oHGstHmMeYVULE
-         x9IAL0dPDm9CObydFZk7t+LmSxwtisqOrb6WTcOpHbPmLu6XMVeiHSScnubphxTekLR2
-         Bnycwp80aFvM088VNnaf7h7PduQRq+d5CuEnDRvRxW493TOkNRY7tpL1Ff9T9e/GXXGF
-         OYVw==
-X-Gm-Message-State: AOAM533RdufeG0u6Px0WAshXciyC3xMvQhn15r+crFoPZkmloJNz9ELv
-        sqpldeQy7bIFH5Ygcip1Cl8UdWNf0Aw=
-X-Google-Smtp-Source: ABdhPJxbMw7KU34kDW7dVD8O1dieGLyXAkOPQWp/DIIgRLUyPE3kpanqpWup+pFrWXqVdhspKQsgMA==
-X-Received: by 2002:a63:c444:: with SMTP id m4mr58675255pgg.420.1609481499888;
-        Thu, 31 Dec 2020 22:11:39 -0800 (PST)
-Received: from localhost (g39.222-224-245.ppp.wakwak.ne.jp. [222.224.245.39])
-        by smtp.gmail.com with ESMTPSA id h10sm43515056pfn.213.2020.12.31.22.11.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 22:11:39 -0800 (PST)
-Date:   Fri, 1 Jan 2021 15:11:35 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        openrisc@lists.librecores.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] openrisc: restart: Call common handlers before hanging
-Message-ID: <20210101061135.GA3106870@lianli.shorne-pla.net>
-References: <20201227091446.118437-1-joel@jms.id.au>
+        Fri, 1 Jan 2021 01:13:03 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 4079AF6C;
+        Fri,  1 Jan 2021 01:12:17 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 01 Jan 2021 01:12:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=I1lXXepHh7qPnRgGVeB12wxdX+
+        RVecLFPZFy7yLCB74=; b=DACcTb4GzlfcUBKDnmJV6y4wiL0Ra9b33BKwJlpzRi
+        hAz4QLGtM41crvLvkIftnhMsxL9L3T9lvpzdgfRdM1y3v0rspdKYgRg3sLcmejZL
+        TfuEZobpOWEYVq+QiKnVCyB9ViOR/FEpaA9Z9je0GG/SlbOV6u9R/UUHimC3PqW6
+        j8WQ42Tch3YeXUJRVVzYgRiwVzaF9+tzkH2Oco7371tLiqDJNFO+00yxSKl3MeJl
+        qjJ7TNmgzomz3VaVMgoOf6qFNFhmnacVam9VfeIuV/48DqKMk/31mCkVQAefrISI
+        m61UmcAfNf501200WT7orbHqvA/8SJRx2H6PF0q7Lc7A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=I1lXXepHh7qPnRgGV
+        eB12wxdX+RVecLFPZFy7yLCB74=; b=mqTMC2ylhip+02l+28p0rJ26XyYWff7pI
+        abHmguMNwwNzqjuFT3HOmWVRVF6gdE1SvfmO3g9C7FHQ79ZdwF5Y0fm38AfMifAT
+        Dw+aB9VFZRmW/Iz8xbASmFySkMMvzLAHqqH7nDKgL5YrO/EpIh0hOOGcl3JdrDL6
+        VU5bKDHh/H+guoNORT0EdevRu4QcywfL0FUgO0zdHOlz0rS3YfFmm5F+QGPVh2FR
+        dugZFuzoSEMLAwUuyhUN0s8XKLtr+pQ8KxAqAuermmsSABIgIZeKs/aLYKzXNtj6
+        xiFz4H4VU01P0NMEica3QDaR/SnDMxOaPJFiMqsh0bydEugnl1XCg==
+X-ME-Sender: <xms:P73uX5HZwA_6lRIwk06rY9HHfNdejLBlbh9I3CbWNJfxL12VOSfG3w>
+    <xme:P73uX-UEN5C7gzSnm9mQ8WhewM8ioMvGWjdKzpFPnPON8DIW_WTsyo_R7DBPoqDjV
+    vFGKq8OhsyF8Utusks>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddviedgledvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflihgrgihunhcu
+    jggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecuggftrf
+    grthhtvghrnhephfejtdektdeuhedtieefteekveffteejteefgeekveegffetvddugfel
+    iefhtddunecukfhppeeitddrudejjedrudekledrudejudenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhih
+    ghhorghtrdgtohhm
+X-ME-Proxy: <xmx:P73uX7IrT-a5QyBrdCEsnpALU6dDU_ceNNrjxjRh0pkLydaYCKT0dQ>
+    <xmx:P73uX_Hy8hn-Qt-fs7U0CLHnyVmW0-DAiukP37s6LlxpdSVBrElUTA>
+    <xmx:P73uX_W6JYOKqENX0IxqD6ZMVhij9AQbt17cWyaQYa3Aym2TR6YQMw>
+    <xmx:QL3uX6SL_m7qNnkG0fNF14VV4cdjJ5W-CZ24ynEHW7on0gR8uKvKqV-HN8o>
+Received: from strike.202.net.flygoat.com (unknown [60.177.189.171])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BA0F724005A;
+        Fri,  1 Jan 2021 01:12:08 -0500 (EST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     platform-driver-x86@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org,
+        Ike Panhc <ike.pan@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: ideapad-laptop: Add has_touchpad_switch
+Date:   Fri,  1 Jan 2021 14:11:40 +0800
+Message-Id: <20210101061140.27547-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201227091446.118437-1-joel@jms.id.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 07:44:46PM +1030, Joel Stanley wrote:
-> Currently openrisc will print a message and then hang in an infinite
-> loop when rebooting.
-> 
-> This patch adopts some code from ARM, which calls the common restart
-> infrastructure and hangs after a small delay if the restart infra
-> doesn't do anything.
-> 
-> Signed-off-by: Joel Stanley <joel@jms.id.au>
-> ---
-> Geert has a patch[1] for the litex soc code that adds a restart hander.
-> Openrisc doesn't hit that code path, this patch fixes that.
-> 
-> [1] https://github.com/geertu/linux/commit/7d09dc0797a8208a11eb7c0c2156c1a4c120180f
-> 
->  arch/openrisc/kernel/process.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/process.c
-> index 3c98728cce24..181448f74316 100644
-> --- a/arch/openrisc/kernel/process.c
-> +++ b/arch/openrisc/kernel/process.c
-> @@ -34,6 +34,7 @@
->  #include <linux/init_task.h>
->  #include <linux/mqueue.h>
->  #include <linux/fs.h>
-> +#include <linux/reboot.h>
->  
->  #include <linux/uaccess.h>
->  #include <asm/io.h>
-> @@ -49,10 +50,16 @@
->   */
->  struct thread_info *current_thread_info_set[NR_CPUS] = { &init_thread_info, };
->  
-> -void machine_restart(void)
-> +void machine_restart(char *cmd)
->  {
-> -	printk(KERN_INFO "*** MACHINE RESTART ***\n");
-> -	__asm__("l.nop 1");
-Just a note, this nop with argument 1, is used by the simulators to shutdown.  I
-am happy to get rid of this though.  The simulator should be simulating how real
-hardware is shut down not doing these tricks.
+Newer ideapads (e.g.: Yoga 14s, 720S 14) comes with I2C HID
+Touchpad and do not use EC to switch touchpad. Reading VPCCMD_R_TOUCHPAD
+will return zero thus touchpad may be blocked. Writing VPCCMD_W_TOUCHPAD
+may cause a spurious key press.
 
-> +	do_kernel_restart(cmd);
-As you mentioned this depends on Geert's patch.  Does he plan to submit it soon?
+Add has_touchpad_switch to workaround these machines.
 
-Geert is CCed.
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: stable@vger.kernel.org # 5.4+
+---
+ drivers/platform/x86/ideapad-laptop.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-> +
-> +	/* Give a grace period for failure to restart of 1s */
-> +	mdelay(1000);
-> +
-> +	/* Whoops - the platform was unable to reboot. Tell the user! */
-> +	pr_emerg("Reboot failed -- System halted\n");
-> +	while (1);
->  }
->  
->  /*
-> -- 
-> 2.29.2
-
-I am queing this for 5.11 anyway is it hurt's nothing without Geert's patch.
-
--Stafford
+diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+index 7598cd46cf60..b6a4db37d0fc 100644
+--- a/drivers/platform/x86/ideapad-laptop.c
++++ b/drivers/platform/x86/ideapad-laptop.c
+@@ -92,6 +92,7 @@ struct ideapad_private {
+ 	struct dentry *debug;
+ 	unsigned long cfg;
+ 	bool has_hw_rfkill_switch;
++	bool has_touchpad_switch;
+ 	const char *fnesc_guid;
+ };
+ 
+@@ -535,7 +536,9 @@ static umode_t ideapad_is_visible(struct kobject *kobj,
+ 	} else if (attr == &dev_attr_fn_lock.attr) {
+ 		supported = acpi_has_method(priv->adev->handle, "HALS") &&
+ 			acpi_has_method(priv->adev->handle, "SALS");
+-	} else
++	} else if (attr == &dev_attr_touchpad.attr)
++		supported = priv->has_touchpad_switch;
++	else
+ 		supported = true;
+ 
+ 	return supported ? attr->mode : 0;
+@@ -867,6 +870,9 @@ static void ideapad_sync_touchpad_state(struct ideapad_private *priv)
+ {
+ 	unsigned long value;
+ 
++	if (!priv->has_touchpad_switch)
++		return;
++
+ 	/* Without reading from EC touchpad LED doesn't switch state */
+ 	if (!read_ec_data(priv->adev->handle, VPCCMD_R_TOUCHPAD, &value)) {
+ 		/* Some IdeaPads don't really turn off touchpad - they only
+@@ -989,6 +995,12 @@ static int ideapad_acpi_add(struct platform_device *pdev)
+ 	priv->platform_device = pdev;
+ 	priv->has_hw_rfkill_switch = dmi_check_system(hw_rfkill_list);
+ 
++	/* Most ideapads with I2C HID don't use EC touchpad switch */
++	if (acpi_dev_present("PNP0C50", NULL, -1))
++		priv->has_touchpad_switch = false;
++	else
++		priv->has_touchpad_switch = true;
++
+ 	ret = ideapad_sysfs_init(priv);
+ 	if (ret)
+ 		return ret;
+@@ -1006,6 +1018,10 @@ static int ideapad_acpi_add(struct platform_device *pdev)
+ 	if (!priv->has_hw_rfkill_switch)
+ 		write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
+ 
++	/* The same for Touchpad */
++	if (!priv->has_touchpad_switch)
++		write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
++
+ 	for (i = 0; i < IDEAPAD_RFKILL_DEV_NUM; i++)
+ 		if (test_bit(ideapad_rfk_data[i].cfgbit, &priv->cfg))
+ 			ideapad_register_rfkill(priv, i);
+-- 
+2.30.0
 
