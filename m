@@ -2,108 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC4C2E85C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04AC82E85C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727380AbhAAVyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 16:54:08 -0500
-Received: from mout.gmx.net ([212.227.15.15]:52395 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727296AbhAAVyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 16:54:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1609537946;
-        bh=XKGZ6IdJrisGNMLfOonvYytNJSk2tPaP8WnMXq1kJiU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=b7E49iaGfJhpLNIxLVLT33vD/B8gbMaMFMqlT0CZWeQWZcy8I3QKxeZ2e6b2fVNCC
-         jnZhbd1DZjqCTmDyduCuJMKroWkA3F1VUtLtVSGPmwzMSCU7yRMw2rTPctoFaaV06f
-         LSWOxha6XtFS26DQ3g7cUVNSnnoiGK+ZlXoglZO4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MTzay-1kUc6S0Y7e-00R3x1; Fri, 01
- Jan 2021 22:52:26 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-doc@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: Include ext4 documentation via filesystems/
-Date:   Fri,  1 Jan 2021 22:52:13 +0100
-Message-Id: <20210101215215.1047826-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.29.2
+        id S1727425AbhAAVyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 16:54:40 -0500
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:33908 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727173AbhAAVyj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 16:54:39 -0500
+Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 0D56D8BF5;
+        Sat,  2 Jan 2021 08:53:54 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kvSMr-00244f-HB; Sat, 02 Jan 2021 08:53:53 +1100
+Date:   Sat, 2 Jan 2021 08:53:53 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-xfs@vger.kernel.org, Linux MM <linux-mm@kvack.org>
+Subject: Re: [xfs] db962cd266: Assertion_failed
+Message-ID: <20210101215353.GB331610@dread.disaster.area>
+References: <20201222012131.47020-5-laoar.shao@gmail.com>
+ <20201231030158.GB379@xsang-OptiPlex-9020>
+ <CALOAHbD+mLMJSizToKPsx0iUd5Z71sJBOyMaV2enVvUHfHwLzg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Czdc0YoODRSsVa3fBqyKOyvo0YgUP+rX8iwjgZ6TEChiaZI4QJi
- PyNLJdKvoLg8+FW54zU8qNpPHFW+OR1KjOuaB2ckA7OfmRLa3UsH77rhmxOkUy88/EJDoiB
- R21h2gamXtJksvphsrPGHbLfZokq28PLGy4FNI2Z+7iH9sdIh0o+D2KjIvwk/UOLut6XYFs
- ug7Su7D2CzOAAYIyAhJ4w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ry46sLP5EXg=:5IpYF6tcrTVzEh0CaYRojq
- nwhq52s0lD0VSKId9Zy1zj4N2lqGimXhU+gj/s5oILPzgr06oY9KGu4yA8c0bNBuvCVpNRMW1
- L2Y92ieXKXfch50qCLfO3vicSx/EgovH2JaDg5Xa/d0yisuAv7FQqEa6QY4H1hXEMcX65yIG8
- 459UEKiWmZAi/+p+meJzClihPecJZnC41y4Ig66st7FcOr6r//E/LG499sPl1TCUcbLoMSEQ4
- I0+x8MvP2GmltZd6naO8u/6FWzDrdC3pyTzgpzbIZ7FH4te+DlxeE1TvRfVVqeNaawaae2rYq
- aD1JfGAOMLUzDV5KmOVT2NkbTqcDOnHAXiBNz2Ay7+WSRkcg0dx7Elh7Nap1KGSlsS3Cy/6px
- 1wfN53mfUMkxtbRH9fhsBHovCT+/gRrQXWapQjJQSoYgOoIyUPjiKd4JyRVvfUrd5X3E8tvMR
- kJPdoLXGjbCucrfo2YCwHmNrk4wpEfnBPl4S2mqU0BSN9iQXppLKIrfuVTBBY4keTKEsXp3RF
- ftqrE0iWQtc7UJ6hIDaosmuArH6L15YjshIYRLAMISRHhzeuDhW+6w8kfBhg8qHJSHv3fVkDh
- gICQwOCJx7mi2z4s6SRkihzik5rixeWNP9KvF/0xSWeVMqmXyI/bQl4utcPH0pL//UptFwU8Z
- jtQKtpjzqGC5kr9VGoE1RRUnMb3QG5fWFwFDQNSoxkpl4Okh1SluqhIDt9LZYxiRqllE4eALJ
- u54OZzfW5XmazVHDu4xJNzhFmKlngPfORyey9QIjgSNhdh7iEBK9iUhJG+XbO0TPy+a8etCxL
- oyPnypYU2Gql1MpbWCuVDq3+1Y1tE5tBQYt1KJZnPsjyMSdSfMExKz1TrEaNKAu8E9hb2CVNZ
- ySqOcA8j5scsL7IzAIlw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbD+mLMJSizToKPsx0iUd5Z71sJBOyMaV2enVvUHfHwLzg@mail.gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
+        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
+        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8
+        a=XA52iYJiZECpFeylV-IA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The documentation for other filesystems is already included via
-filesystems/index.rst. Include ext4 in the same way and remove it
-from the top-level table of contents.
+On Fri, Jan 01, 2021 at 05:10:49PM +0800, Yafang Shao wrote:
+> On Thu, Dec 31, 2020 at 10:46 AM kernel test robot
+> <oliver.sang@intel.com> wrote:
+.....
+> > [  552.905799] XFS: Assertion failed: !current->journal_info, file: fs/xfs/xfs_trans.h, line: 280
+> > [  553.104459]  xfs_trans_reserve+0x225/0x320 [xfs]
+> > [  553.110556]  xfs_trans_roll+0x6e/0xe0 [xfs]
+> > [  553.116134]  xfs_defer_trans_roll+0x104/0x2a0 [xfs]
+> > [  553.122489]  ? xfs_extent_free_create_intent+0x62/0xc0 [xfs]
+> > [  553.129780]  xfs_defer_finish_noroll+0xb8/0x620 [xfs]
+> > [  553.136299]  xfs_defer_finish+0x11/0xa0 [xfs]
+> > [  553.142017]  xfs_itruncate_extents_flags+0x141/0x440 [xfs]
+> > [  553.149053]  xfs_setattr_size+0x3da/0x480 [xfs]
+> > [  553.154939]  ? setattr_prepare+0x6a/0x1e0
+> > [  553.160250]  xfs_vn_setattr+0x70/0x120 [xfs]
+> > [  553.165833]  notify_change+0x364/0x500
+> > [  553.170820]  ? do_truncate+0x76/0xe0
+> > [  553.175673]  do_truncate+0x76/0xe0
+> > [  553.180184]  path_openat+0xe6c/0x10a0
+> > [  553.184981]  do_filp_open+0x91/0x100
+> > [  553.189707]  ? __check_object_size+0x136/0x160
+> > [  553.195493]  do_sys_openat2+0x20d/0x2e0
+> > [  553.200481]  do_sys_open+0x44/0x80
+> > [  553.204926]  do_syscall_64+0x33/0x40
+> > [  553.209588]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Thanks for the report.
+> 
+> At a first glance, it seems we should make a similar change as we did
+> in xfs_trans_context_clear().
+> 
+> static inline void
+> xfs_trans_context_set(struct xfs_trans *tp)
+> {
+>     /*
+>      * We have already handed over the context via xfs_trans_context_swap().
+>      */
+>     if (current->journal_info)
+>         return;
+>     current->journal_info = tp;
+>     tp->t_pflags = memalloc_nofs_save();
+> }
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- Documentation/filesystems/index.rst |  1 +
- Documentation/index.rst             | 11 -----------
- 2 files changed, 1 insertion(+), 11 deletions(-)
+Ah, no.
 
-diff --git a/Documentation/filesystems/index.rst b/Documentation/filesyste=
-ms/index.rst
-index 7be9b46d85d9b..1f76b1cb33484 100644
-=2D-- a/Documentation/filesystems/index.rst
-+++ b/Documentation/filesystems/index.rst
-@@ -83,6 +83,7 @@ Documentation for filesystem implementations.
-    erofs
-    ext2
-    ext3
-+   ext4/index
-    f2fs
-    gfs2
-    gfs2-uevents
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 5888e8a7272fd..31f2adc8542dc 100644
-=2D-- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -171,17 +171,6 @@ implementation.
-    x86/index
-    xtensa/index
+Remember how I said "split out the wrapping of transaction
+context setup in xfs_trans_reserve() from
+the lifting of the context setting into xfs_trans_alloc()"?
 
--Filesystem Documentation
-=2D------------------------
--
--The documentation in this section are provided by specific filesystem
--subprojects.
--
--.. toctree::
--   :maxdepth: 2
--
--   filesystems/ext4/index
--
- Other documentation
- -------------------
+Well, you did the former and dropped the latter out of the patch
+set.
 
-=2D-
-2.29.2
+Now when a transaction rolls after xfs_trans_context_swap(), it
+calls xfs_trans_reserve() and tries to do transaction context setup
+work inside a transaction context that already exists.  IOWs, you
+need to put the patch that lifts of the context setting up into
+xfs_trans_alloc() back into the patchset before adding the
+current->journal functionality patch.
 
+Also, you need to test XFS code with CONFIG_XFS_DEBUG=y so that
+asserts are actually built into the code and exercised, because this
+ASSERT should have fired on the first rolling transaction that the
+kernel executes...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
