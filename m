@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57E32E853D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 19:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB74F2E854A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 19:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727216AbhAASCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 13:02:30 -0500
-Received: from mx4.wp.pl ([212.77.101.11]:51676 "EHLO mx4.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727138AbhAASCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 13:02:30 -0500
-Received: (wp-smtpd smtp.wp.pl 851 invoked from network); 1 Jan 2021 19:01:36 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1609524096; bh=HIpT57loM/D359P/pbmKMG1HGm2fEdWyvmtwCT4HXPY=;
-          h=From:To:Cc:Subject;
-          b=hMcJ61dW0OK3X54ur2C6/l4tUxoIjcYDBaxf9NMxP0lWrenOAe8kVcHhTJUDMnq3V
-           DXOFRTnWg+lrHA2j8IdslXE6U9jDblraWfNoPBOq/mvDHoyIjwYZr7VO+7rIzTS0zQ
-           xIVYY3BDXW+xC7DYMCttPuHsZjcmN81UdLzFjM6w=
-Received: from riviera.nat.student.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <tsbogend@alpha.franken.de>; 1 Jan 2021 19:01:36 +0100
-From:   Aleksander Jan Bajkowski <olek2@wp.pl>
-To:     tsbogend@alpha.franken.de, robh+dt@kernel.org, john@phrozen.org,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Subject: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway CGU bindings
-Date:   Fri,  1 Jan 2021 19:01:18 +0100
-Message-Id: <20210101180118.2496-1-olek2@wp.pl>
-X-Mailer: git-send-email 2.20.1
+        id S1727231AbhAASfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 13:35:09 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:41315 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727142AbhAASfJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 13:35:09 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-122-YkMGaifVNxGZznooJROwZw-1; Fri, 01 Jan 2021 18:33:29 +0000
+X-MC-Unique: YkMGaifVNxGZznooJROwZw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 1 Jan 2021 18:33:28 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 1 Jan 2021 18:33:28 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andy Lutomirski' <luto@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+CC:     Arnd Bergmann <arnd@arndb.de>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+Thread-Topic: [RFC please help] membarrier: Rewrite
+ sync_core_before_usermode()
+Thread-Index: AQHW3XrLzyrfomRRwUafqZ2cHH9jwqoTGagQ
+Date:   Fri, 1 Jan 2021 18:33:28 +0000
+Message-ID: <30c0fd4917264e75a911527715f5aed3@AcuMS.aculab.com>
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1609199804.yrsu9vagzk.astroid@bobo.none>
+ <CALCETrX4v1KEf6ikVtFg6juh3Z_esJ-+6PLT1A21JJeTVh2k8g@mail.gmail.com>
+In-Reply-To: <CALCETrX4v1KEf6ikVtFg6juh3Z_esJ-+6PLT1A21JJeTVh2k8g@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: wp.pl)                                      
-X-WP-MailID: 3a57721e6fe5fdea9d729c632e66e253
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000001 [UeLH]                               
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Lantiq Xway SoC series Clock Generation Unit (CGU) bindings.
-
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
----
- .../bindings/mips/lantiq/lantiq,cgu.yaml      | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,cgu.yaml
-
-diff --git a/Documentation/devicetree/bindings/mips/lantiq/lantiq,cgu.yaml b/Documentation/devicetree/bindings/mips/lantiq/lantiq,cgu.yaml
-new file mode 100644
-index 000000000000..d5805725befb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/lantiq/lantiq,cgu.yaml
-@@ -0,0 +1,32 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mips/lantiq/lantiq,cgu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Lantiq Xway SoC series Clock Generation Unit (CGU)
-+
-+maintainers:
-+  - John Crispin <john@phrozen.org>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - lantiq,cgu-xway
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    cgu@103000 {
-+        compatible = "lantiq,cgu-xway";
-+        reg = <0x103000 0x1000>;
-+    };
--- 
-2.20.1
+RnJvbTogQW5keSBMdXRvbWlyc2tpDQo+IFNlbnQ6IDI5IERlY2VtYmVyIDIwMjAgMDA6MzYNCi4u
+Lg0KPiBJIG1lYW4gdGhhdCB0aGUgbWFwcGluZyBmcm9tIHRoZSBuYW1lICJzeW5jX2NvcmUiIHRv
+IGl0cyBzZW1hbnRpY3MgaXMNCj4geDg2IG9ubHkuICBUaGUgc3RyaW5nICJzeW5jX2NvcmUiIGFw
+cGVhcnMgaW4gdGhlIGtlcm5lbCBvbmx5IGluDQo+IGFyY2gveDg2LCBtZW1iYXJyaWVyIGNvZGUs
+IG1lbWJhcnJpZXIgZG9jcywgYW5kIGEgc2luZ2xlIFNHSSBkcml2ZXINCj4gdGhhdCBpcyB4ODYt
+b25seS4gIFN1cmUsIHRoZSBpZGVhIG9mIHNlcmlhbGl6aW5nIHRoaW5ncyBpcyBmYWlybHkNCj4g
+Z2VuZXJpYywgYnV0IGV4YWN0bHkgd2hhdCBvcGVyYXRpb25zIHNlcmlhbGl6ZSB3aGF0LCB3aGVu
+IHRoaW5ncyBuZWVkDQo+IHNlcmlhbGl6YXRpb24sIGV0YyBpcyBxdWl0ZSBhcmNoaXRlY3R1cmUg
+c3BlY2lmaWMuDQo+IA0KPiBIZWNrLCBvbiA0ODYgeW91IHNlcmlhbGl6ZSB0aGUgaW5zdHJ1Y3Rp
+b24gc3RyZWFtIHdpdGggSk1QLg0KDQpEaWQgdGhlIDQ4NiBldmVuIGhhdmUgYSBtZW1vcnkgY2Fj
+aGU/DQpOZXZlciBtaW5kIHNlcGFyYXRlIEkmRCBjYWNoZXMuDQpXaXRob3V0IGJyYW5jaCBwcmVk
+aWN0aW9uIG9yIGFuIEkkIGEgam1wIGlzIGVub3VnaC4NCk5vIGlkZWEgaG93IHRoZSBkdWFsIDQ4
+NiBib3ggd2UgaGFkIGFjdHVhbGx5IGJlaGF2ZWQuDQoNCkZvciBub24tU01QIHRoZSB4ODYgY3B1
+cyB0ZW5kIHRvIHN0aWxsIGJlIGNvbXBhdGlibGUgd2l0aA0KdGhlIG9yaWdpbmFsIDgwODYgLSBz
+byBhcmUgcHJldHR5IG11Y2ggZnVsbHkgY29oZXJlbnQuDQpJU1RSIHRoZSBtZW1vcnkgd3JpdGVz
+IHdpbGwgaW52YWxpZGF0ZSBJJCBsaW5lcy4NCg0KQnV0IHRoZXJlIHdhcyBzb21lIGhhcmR3YXJl
+IGNvbXBhdGliaWxpdHkgdGhhdCBtZWFudCBhIGxvYWQNCm9mIFBlbnRpdW0tNzUgc3lzdGVtcyB3
+ZXJlICdzY2F2ZW5nZWQnIGZyb20gZGV2ZWxvcG1lbnQgZm9yDQphIGN1c3RvbWVyIC0gd2UgZ290
+IGZhc3RlciBQLTI2NiBib3hlcyBhcyByZXBsYWNlbWVudHMuDQoNCk9UT0ggd2UgbmV2ZXIgZGlk
+IHdvcmsgb3V0IGhvdyB0byBkbyB0aGUgcmVxdWlyZWQgJ2JhcnJpZXInDQp3aGVuIHN3aXRjaGlu
+ZyBhIFZpYSBDMyB0byBhbmQgZnJvbSAxNi1iaXQgbW9kZS4NClNvbWV0aW1lcyBpdCB3b3JrZWQs
+IG90aGVyIHRpbWVzIHRoZSBjcHUgd2VudCBBV09MLg0KQmVzdCBndWVzcyB3YXMgdGhhdCBpdCBz
+b21ldGltZXMgZXhlY3V0ZWQgcHJlLWRlY29kZWQNCmluc3RydWN0aW9ucyBmb3IgdGhlIHdyb25n
+IG1vZGUgd2hlbiByZXR1cm5pbmcgZnJvbSB0aGUNCmZ1bmN0aW9uIGNhbGwgdGhhdCBmbGlwcGVk
+IG1vZGVzLg0KDQpUaGVuIHRoZXJlIGlzIHRoZSBQLVBybyBlcmEgSW50ZWwgZG9jIHRoYXQgc2F5
+cyB0aGF0IElPUi9JT1cNCmFyZW4ndCBzZXF1ZW5jZWQgd3J0IG1lbW9yeSBhY2Nlc3Nlcy4NCkZv
+cnR1bmF0ZWx5IGFsbCB4ODYgcHJvY2Vzc29ycyBoYXZlIHNlcXVlbmNlZCB0aGVtLg0KV2hpY2gg
+aXMgd2hhdCB0aGUgY3VycmVudCBkb2NzIHNheS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
+QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
+LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
