@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAB52E8420
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 17:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078A32E8421
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 17:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbhAAQFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 11:05:47 -0500
-Received: from mail-pl1-f170.google.com ([209.85.214.170]:34069 "EHLO
-        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727181AbhAAQFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 11:05:46 -0500
-Received: by mail-pl1-f170.google.com with SMTP id t6so11230191plq.1;
-        Fri, 01 Jan 2021 08:05:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C02k2lVQV4BY4JNeZeCIxYmhRctA7lTjARTl+uthnK4=;
-        b=FMTTJYpLyPLE5w+DeL40lEngi7H6jgsZwrmAC4FlXeFDqIUpKZzBfj106cfQdLdtZN
-         7i0IjgNHhY2njfAJ1DWGzNGYt8qPXRbsG4CsF/DzMzh7A+v3vrKQTPCnTYPGdhDZtEsB
-         NABBbiTs6FiNWO5VUmtdtcupr7ltEEnH1rpGPJUa3q/qMWhN+KTH1csu6ClpaOI53xlu
-         9lqcsgfInksnz44L7iCRTkQTpXn6Z/ywLv9JeL4CcQQBG1HuaHVjquTJ44BbHpXkqZFy
-         U5VPA83sBOy+XWEA+/z50UegRHmaJkAfKabdEyoS3bmi8lOw9ZturnPJU9gSZNBI6Eo7
-         H/hA==
-X-Gm-Message-State: AOAM5305Nd6tKnEKtFDGHbZiutfwPwwr9vVZPX/6VFr7Fz/PG8vtL5+P
-        TXV+v/7cFx8a3ZKsZuUB2ATnVajau4I=
-X-Google-Smtp-Source: ABdhPJz4tP4UcpAY+7kHazDsyvutQznO68u3nakYQCZnitmwaJssTbyMK6LvJMIWHpZnlAfa8FyFew==
-X-Received: by 2002:a17:902:b7c3:b029:da:76bc:2aa9 with SMTP id v3-20020a170902b7c3b02900da76bc2aa9mr62271011plz.21.1609517105100;
-        Fri, 01 Jan 2021 08:05:05 -0800 (PST)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id js9sm17588351pjb.2.2021.01.01.08.05.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Jan 2021 08:05:03 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Fix a possible NULL pointer issue
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1609479893-8889-1-git-send-email-cang@codeaurora.org>
- <1609479893-8889-2-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <7cff30c3-6df8-7b8c-0f5b-a95980b8f706@acm.org>
-Date:   Fri, 1 Jan 2021 08:05:01 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727302AbhAAQFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 11:05:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727181AbhAAQFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 11:05:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0A2A221F2;
+        Fri,  1 Jan 2021 16:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609517111;
+        bh=PE3Yh5iJRE9h1nZoPLqiutJok5vYke190iIOLG7X7JY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=smzN+TWH0xTcFRu0ewdMy89ASPghCXoGhbFTNMW3QrrcCgnXFy0K1CGFQVnJWVJz8
+         AYy2ZkLwahZYR3TFh7q6uLqEQRFQWW7W+4a4wq/dn1zr7Axmh3MxKFaeyJkDReQU38
+         +AEi+uhS47amfn6ver5SFXNLtnVVhcEsKwgvkIVkbt8pn90l6KFmO6n8W7/xLkflNH
+         C7dj9rF87JWMKckuSjr9XgPBDk9IvVanz8oqDq6Nj2+NwoFv+J5eTSJln38tQMFA1w
+         ijrbRdIc4RbYtjVCryK3BZR/+IGi1iAfTlgp6G51o+5Ph8cSiijHnEwLTtHGTbPmi3
+         O3LVFeKk0rgjw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 6ED513522781; Fri,  1 Jan 2021 08:05:11 -0800 (PST)
+Date:   Fri, 1 Jan 2021 08:05:11 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Len Brown <lenb@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH 0/4] sched/idle: Fix missing need_resched() checks after
+ rcu_idle_enter()
+Message-ID: <20210101160511.GB12032@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201222013712.15056-1-frederic@kernel.org>
+ <4de33f1a-890b-4d29-20e8-a1163b9c1bf7@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1609479893-8889-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4de33f1a-890b-4d29-20e8-a1163b9c1bf7@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/31/20 9:44 PM, Can Guo wrote:
-> During system resume/suspend, hba could be NULL. In this case, do not touch
-> eh_sem.
+On Tue, Dec 22, 2020 at 05:19:51PM +0100, Rafael J. Wysocki wrote:
+> On 12/22/2020 2:37 AM, Frederic Weisbecker wrote:
+> > With Paul, we've been thinking that the idle loop wasn't twisted enough
+> > yet to deserve 2020.
+> > 
+> > rcutorture, after some recent parameter changes, has been complaining
+> > about a hung task.
+> > 
+> > It appears that rcu_idle_enter() may wake up a NOCB kthread but this
+> > happens after the last generic need_resched() check. Some cpuidle drivers
+> > fix it by chance but many others don't.
+> > 
+> > Here is a proposed bunch of fixes. I will need to also fix the
+> > rcu_user_enter() case, likely using irq_work, since nohz_full requires
+> > irq work to support self IPI.
+> > 
+> > Also more generally, this raise the question of local task wake_up()
+> > under disabled interrupts. When a wake up occurs in a preempt disabled
+> > section, it gets handled by the outer preempt_enable() call. There is no
+> > similar mechanism when a wake up occurs with interrupts disabled. I guess
+> > it is assumed to be handled, at worst, in the next tick. But a local irq
+> > work would provide instant preemption once IRQs are re-enabled. Of course
+> > this would only make sense in CONFIG_PREEMPTION, and when the tick is
+> > disabled...
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > 	sched/idle
+> > 
+> > HEAD: f2fa6e4a070c1535b9edc9ee097167fd2b15d235
+> > 
+> > Thanks,
+> > 	Frederic
+> > ---
+> > 
+> > Frederic Weisbecker (4):
+> >        sched/idle: Fix missing need_resched() check after rcu_idle_enter()
+> >        cpuidle: Fix missing need_resched() check after rcu_idle_enter()
+> >        ARM: imx6q: Fix missing need_resched() check after rcu_idle_enter()
+> >        ACPI: processor: Fix missing need_resched() check after rcu_idle_enter()
+> > 
+> > 
+> >   arch/arm/mach-imx/cpuidle-imx6q.c |  7 ++++++-
+> >   drivers/acpi/processor_idle.c     | 10 ++++++++--
+> >   drivers/cpuidle/cpuidle.c         | 33 +++++++++++++++++++++++++--------
+> >   kernel/sched/idle.c               | 18 ++++++++++++------
+> >   4 files changed, 51 insertions(+), 17 deletions(-)
 > 
-> Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM events and async scan")
+> Please feel free to add
 > 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index e221add..34e2541 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8896,8 +8896,11 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
->  	int ret = 0;
->  	ktime_t start = ktime_get();
->  
-> +	if (!hba)
-> +		return 0;
-> +
->  	down(&hba->eh_sem);
-> -	if (!hba || !hba->is_powered)
-> +	if (!hba->is_powered)
->  		return 0;
->  
->  	if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
-> @@ -8945,10 +8948,8 @@ int ufshcd_system_resume(struct ufs_hba *hba)
->  	int ret = 0;
->  	ktime_t start = ktime_get();
->  
-> -	if (!hba) {
-> -		up(&hba->eh_sem);
-> +	if (!hba)
->  		return -EINVAL;
-> -	}
->  
->  	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
->  		/*
+> to all patches in the series.
 
-Hi Can,
+I would guess that they will take some other path to mainline, but I have
+queued these to cut down on rcutorture's whining.  ;-)
 
-How can ufshcd_system_suspend() or ufshcd_system_resume() be called with a
-NULL argument? In ufshcd_pci_probe() I see that pci_set_drvdata() is called
-before pm_runtime_allow(). ufshcd_pci_remove() calls pm_runtime_forbid().
-
-Thanks,
-
-Bart.
-
+							Thanx, Paul
