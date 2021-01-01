@@ -2,150 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE402E83F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 15:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 801FE2E83F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 15:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbhAAOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 09:21:06 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:52981 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727133AbhAAOVF (ORCPT
+        id S1727135AbhAAO2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 09:28:55 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:34285 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726747AbhAAO2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 09:21:05 -0500
-Date:   Fri, 01 Jan 2021 14:20:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1609510821;
-        bh=9IlciDeE4Mu3twWzeiCd2YETcAlvXlh3tCEyG5790LI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=UKlEtp1Db4Yg2xNY5Szd4Cw3GyCiUpXPUTLt/Y4On4yjy69Njs82wKN//q8RlbZz8
-         zZM3aAgbzsbCDfVQyOMbXg5lYf76Aqtmhv5ZjMQejwMlv0ZZ5lVg1QVTWCXAzRFXxp
-         UOi6a5lCu0vmBC+AZ4QaaG/bIfEBE/x/3+80S5DA=
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH] platform/x86: ideapad-laptop: Add has_touchpad_switch
-Message-ID: <_kQDaYPt7vh_mQfPr1tLJV2IP-p40OBPcU5zk-1xHhF9XJsm8Y-efANBgiRdWU-J2QTtOjmrfE0Tw6UrZpm6uG-zZGlfpaVOp9FuoKAbjzA=@protonmail.com>
-In-Reply-To: <20210101061140.27547-1-jiaxun.yang@flygoat.com>
-References: <20210101061140.27547-1-jiaxun.yang@flygoat.com>
+        Fri, 1 Jan 2021 09:28:55 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kvLPL-001lj7-Nx; Fri, 01 Jan 2021 15:27:59 +0100
+Received: from p5b13a2ad.dip0.t-ipconnect.de ([91.19.162.173] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kvLPK-003G3u-Un; Fri, 01 Jan 2021 15:27:59 +0100
+Subject: Re: [patch 02/19] sh: Get rid of nmi_count()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20201113140207.499353218@linutronix.de>
+ <20201113141732.844232404@linutronix.de>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <b9275f62-45c2-2472-2c1d-00706c757a30@physik.fu-berlin.de>
+Date:   Fri, 1 Jan 2021 15:27:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20201113141732.844232404@linutronix.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.162.173
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hello Thomas!
 
-
-2021. janu=C3=A1r 1., p=C3=A9ntek 7:11 keltez=C3=A9ssel, Jiaxun Yang =C3=
-=ADrta:
-
-> Newer ideapads (e.g.: Yoga 14s, 720S 14) comes with I2C HID
-> Touchpad and do not use EC to switch touchpad. Reading VPCCMD_R_TOUCHPAD
-> will return zero thus touchpad may be blocked. Writing VPCCMD_W_TOUCHPAD
-> may cause a spurious key press.
->
-> Add has_touchpad_switch to workaround these machines.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Cc: stable@vger.kernel.org # 5.4+
-
-Interestingly, the Lenovo Yoga 540-14IKB 80X8 has an HID-over-I2C touchpad,
-and yet it can be controlled by reading/writing the appropriate EC register=
-s.
-
-
+On 11/13/20 3:02 PM, Thomas Gleixner wrote:
+> nmi_count() is a historical leftover and SH is the only user. Replace it
+> with regular per cpu accessors.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: linux-sh@vger.kernel.org
 > ---
->  drivers/platform/x86/ideapad-laptop.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86=
-/ideapad-laptop.c
-> index 7598cd46cf60..b6a4db37d0fc 100644
-> --- a/drivers/platform/x86/ideapad-laptop.c
-> +++ b/drivers/platform/x86/ideapad-laptop.c
-> @@ -92,6 +92,7 @@ struct ideapad_private {
->  =09struct dentry *debug;
->  =09unsigned long cfg;
->  =09bool has_hw_rfkill_switch;
-> +=09bool has_touchpad_switch;
->  =09const char *fnesc_guid;
->  };
->
-> @@ -535,7 +536,9 @@ static umode_t ideapad_is_visible(struct kobject *kob=
-j,
->  =09} else if (attr =3D=3D &dev_attr_fn_lock.attr) {
->  =09=09supported =3D acpi_has_method(priv->adev->handle, "HALS") &&
->  =09=09=09acpi_has_method(priv->adev->handle, "SALS");
-> -=09} else
-> +=09} else if (attr =3D=3D &dev_attr_touchpad.attr)
-> +=09=09supported =3D priv->has_touchpad_switch;
-> +=09else
->  =09=09supported =3D true;
->
->  =09return supported ? attr->mode : 0;
-> @@ -867,6 +870,9 @@ static void ideapad_sync_touchpad_state(struct ideapa=
-d_private *priv)
->  {
->  =09unsigned long value;
->
-> +=09if (!priv->has_touchpad_switch)
-> +=09=09return;
-> +
->  =09/* Without reading from EC touchpad LED doesn't switch state */
->  =09if (!read_ec_data(priv->adev->handle, VPCCMD_R_TOUCHPAD, &value)) {
->  =09=09/* Some IdeaPads don't really turn off touchpad - they only
-> @@ -989,6 +995,12 @@ static int ideapad_acpi_add(struct platform_device *=
-pdev)
->  =09priv->platform_device =3D pdev;
->  =09priv->has_hw_rfkill_switch =3D dmi_check_system(hw_rfkill_list);
->
-> +=09/* Most ideapads with I2C HID don't use EC touchpad switch */
-> +=09if (acpi_dev_present("PNP0C50", NULL, -1))
-> +=09=09priv->has_touchpad_switch =3D false;
-> +=09else
-> +=09=09priv->has_touchpad_switch =3D true;
-> +
+>  arch/sh/kernel/irq.c   |    2 +-
+>  arch/sh/kernel/traps.c |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- a/arch/sh/kernel/irq.c
+> +++ b/arch/sh/kernel/irq.c
+> @@ -44,7 +44,7 @@ int arch_show_interrupts(struct seq_file
+>  
+>  	seq_printf(p, "%*s: ", prec, "NMI");
+>  	for_each_online_cpu(j)
+> -		seq_printf(p, "%10u ", nmi_count(j));
+> +		seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j);
+>  	seq_printf(p, "  Non-maskable interrupts\n");
+>  
+>  	seq_printf(p, "%*s: %10u\n", prec, "ERR", atomic_read(&irq_err_count));
+> --- a/arch/sh/kernel/traps.c
+> +++ b/arch/sh/kernel/traps.c
+> @@ -186,7 +186,7 @@ BUILD_TRAP_HANDLER(nmi)
+>  	arch_ftrace_nmi_enter();
+>  
+>  	nmi_enter();
+> -	nmi_count(cpu)++;
+> +	this_cpu_inc(irq_stat.__nmi_count);
+>  
+>  	switch (notify_die(DIE_NMI, "NMI", regs, 0, vec & 0xff, SIGINT)) {
+>  	case NOTIFY_OK:
+> 
 
-`priv->has_touchpad_switch =3D !acpi_dev_present(...)`
-?
+Just booted my SH7785LCR board with a kernel based on Linus' latest tree
+and can confirm that this change does not cause any regressions.
 
+Adrian
 
->  =09ret =3D ideapad_sysfs_init(priv);
->  =09if (ret)
->  =09=09return ret;
-> @@ -1006,6 +1018,10 @@ static int ideapad_acpi_add(struct platform_device=
- *pdev)
->  =09if (!priv->has_hw_rfkill_switch)
->  =09=09write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
->
-> +=09/* The same for Touchpad */
-> +=09if (!priv->has_touchpad_switch)
-> +=09=09write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
-> +
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
-Shouldn't it be the other way around: `if (priv->has_touchpad_switch)`?
-
-
-
->  =09for (i =3D 0; i < IDEAPAD_RFKILL_DEV_NUM; i++)
->  =09=09if (test_bit(ideapad_rfk_data[i].cfgbit, &priv->cfg))
->  =09=09=09ideapad_register_rfkill(priv, i);
-> --
-> 2.30.0
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
