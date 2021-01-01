@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291F72E85C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC4C2E85C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbhAAVsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 16:48:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726296AbhAAVsW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 16:48:22 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A50CC061573;
-        Fri,  1 Jan 2021 13:47:42 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id AF44F12800A7;
-        Fri,  1 Jan 2021 13:47:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1609537659;
-        bh=AcWCBmCpYzbMF/MEbnq/yt924qqZaAf5/HtOQS6bbQI=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=xxxQDJ9eGCvU5L2CH4TO3Sw39TT45vF0q2pZF43DCIheQgfbvCNAkqWz4PryTJbNe
-         G9oPT3K2yW0Yz10CufyjacpI43igvB5P/JKIi9Hzs44K4vRWnITlvP0gcNWkcN6erE
-         97DgHTS5FtdPcl62Fic2rojl31y/5/uBovarnrpQ=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id fTKmc7V4vpkN; Fri,  1 Jan 2021 13:47:39 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 47A0612800A0;
-        Fri,  1 Jan 2021 13:47:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1609537659;
-        bh=AcWCBmCpYzbMF/MEbnq/yt924qqZaAf5/HtOQS6bbQI=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=xxxQDJ9eGCvU5L2CH4TO3Sw39TT45vF0q2pZF43DCIheQgfbvCNAkqWz4PryTJbNe
-         G9oPT3K2yW0Yz10CufyjacpI43igvB5P/JKIi9Hzs44K4vRWnITlvP0gcNWkcN6erE
-         97DgHTS5FtdPcl62Fic2rojl31y/5/uBovarnrpQ=
-Message-ID: <922c1a43c698df32e81f84c7324c96f2d017eff5.camel@HansenPartnership.com>
-Subject: Re: [GIT PULL] SCSI fixes for 5.11-rc1
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 01 Jan 2021 13:47:38 -0800
-In-Reply-To: <CAHk-=widrXOWKSaDmMLZyhJzUvKx6M0uDP1xGJzYB4YGAJqHJA@mail.gmail.com>
-References: <dd63a06d53c45f9511307085797086351784b1a3.camel@HansenPartnership.com>
-         <CAHk-=widrXOWKSaDmMLZyhJzUvKx6M0uDP1xGJzYB4YGAJqHJA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S1727380AbhAAVyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 16:54:08 -0500
+Received: from mout.gmx.net ([212.227.15.15]:52395 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727296AbhAAVyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 16:54:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609537946;
+        bh=XKGZ6IdJrisGNMLfOonvYytNJSk2tPaP8WnMXq1kJiU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=b7E49iaGfJhpLNIxLVLT33vD/B8gbMaMFMqlT0CZWeQWZcy8I3QKxeZ2e6b2fVNCC
+         jnZhbd1DZjqCTmDyduCuJMKroWkA3F1VUtLtVSGPmwzMSCU7yRMw2rTPctoFaaV06f
+         LSWOxha6XtFS26DQ3g7cUVNSnnoiGK+ZlXoglZO4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MTzay-1kUc6S0Y7e-00R3x1; Fri, 01
+ Jan 2021 22:52:26 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-doc@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: Include ext4 documentation via filesystems/
+Date:   Fri,  1 Jan 2021 22:52:13 +0100
+Message-Id: <20210101215215.1047826-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Czdc0YoODRSsVa3fBqyKOyvo0YgUP+rX8iwjgZ6TEChiaZI4QJi
+ PyNLJdKvoLg8+FW54zU8qNpPHFW+OR1KjOuaB2ckA7OfmRLa3UsH77rhmxOkUy88/EJDoiB
+ R21h2gamXtJksvphsrPGHbLfZokq28PLGy4FNI2Z+7iH9sdIh0o+D2KjIvwk/UOLut6XYFs
+ ug7Su7D2CzOAAYIyAhJ4w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ry46sLP5EXg=:5IpYF6tcrTVzEh0CaYRojq
+ nwhq52s0lD0VSKId9Zy1zj4N2lqGimXhU+gj/s5oILPzgr06oY9KGu4yA8c0bNBuvCVpNRMW1
+ L2Y92ieXKXfch50qCLfO3vicSx/EgovH2JaDg5Xa/d0yisuAv7FQqEa6QY4H1hXEMcX65yIG8
+ 459UEKiWmZAi/+p+meJzClihPecJZnC41y4Ig66st7FcOr6r//E/LG499sPl1TCUcbLoMSEQ4
+ I0+x8MvP2GmltZd6naO8u/6FWzDrdC3pyTzgpzbIZ7FH4te+DlxeE1TvRfVVqeNaawaae2rYq
+ aD1JfGAOMLUzDV5KmOVT2NkbTqcDOnHAXiBNz2Ay7+WSRkcg0dx7Elh7Nap1KGSlsS3Cy/6px
+ 1wfN53mfUMkxtbRH9fhsBHovCT+/gRrQXWapQjJQSoYgOoIyUPjiKd4JyRVvfUrd5X3E8tvMR
+ kJPdoLXGjbCucrfo2YCwHmNrk4wpEfnBPl4S2mqU0BSN9iQXppLKIrfuVTBBY4keTKEsXp3RF
+ ftqrE0iWQtc7UJ6hIDaosmuArH6L15YjshIYRLAMISRHhzeuDhW+6w8kfBhg8qHJSHv3fVkDh
+ gICQwOCJx7mi2z4s6SRkihzik5rixeWNP9KvF/0xSWeVMqmXyI/bQl4utcPH0pL//UptFwU8Z
+ jtQKtpjzqGC5kr9VGoE1RRUnMb3QG5fWFwFDQNSoxkpl4Okh1SluqhIDt9LZYxiRqllE4eALJ
+ u54OZzfW5XmazVHDu4xJNzhFmKlngPfORyey9QIjgSNhdh7iEBK9iUhJG+XbO0TPy+a8etCxL
+ oyPnypYU2Gql1MpbWCuVDq3+1Y1tE5tBQYt1KJZnPsjyMSdSfMExKz1TrEaNKAu8E9hb2CVNZ
+ ySqOcA8j5scsL7IzAIlw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-01 at 13:21 -0800, Linus Torvalds wrote:
-> On Fri, Jan 1, 2021 at 12:19 PM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > Originally this change was slated for the merge window but a late
-> > arriving build problem with CONFIG_PM=n derailed that.
-> 
-> So I've pulled this,
+The documentation for other filesystems is already included via
+filesystems/index.rst. Include ext4 in the same way and remove it
+from the top-level table of contents.
 
-Thanks!
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ Documentation/filesystems/index.rst |  1 +
+ Documentation/index.rst             | 11 -----------
+ 2 files changed, 1 insertion(+), 11 deletions(-)
 
->  but we need to have a policy for reverting this
-> quickly if it turns out to cause problems.
+diff --git a/Documentation/filesystems/index.rst b/Documentation/filesyste=
+ms/index.rst
+index 7be9b46d85d9b..1f76b1cb33484 100644
+=2D-- a/Documentation/filesystems/index.rst
++++ b/Documentation/filesystems/index.rst
+@@ -83,6 +83,7 @@ Documentation for filesystem implementations.
+    erofs
+    ext2
+    ext3
++   ext4/index
+    f2fs
+    gfs2
+    gfs2-uevents
+diff --git a/Documentation/index.rst b/Documentation/index.rst
+index 5888e8a7272fd..31f2adc8542dc 100644
+=2D-- a/Documentation/index.rst
++++ b/Documentation/index.rst
+@@ -171,17 +171,6 @@ implementation.
+    x86/index
+    xtensa/index
 
-Sure, we'd have to revert the six patches plus the dependent PM fix.
+-Filesystem Documentation
+=2D------------------------
+-
+-The documentation in this section are provided by specific filesystem
+-subprojects.
+-
+-.. toctree::
+-   :maxdepth: 2
+-
+-   filesystems/ext4/index
+-
+ Other documentation
+ -------------------
 
-> I'm not worried about any remaining build issues - but I'm simply
-> worried about some missed case where code depended on the block layer
-> passing commands through even while suspended.
-> 
-> The block bits would seem affect non-SCSI stuff too, how extensively
-> have any random odd special case been tested?
-
-The block bits have been in -next since 7 December, so it has had some
-testing.  That said, REQ_PREEMPT doesn't affect much outside of SCSI
-and IDE because we're where the original concept of at head insertion
-for "special" error handling commands like request sense came from.
-
-I'd expect the biggest field of potential problems to be in USB which
-does both block/SCSI and PM.  That should have been well tested by the
-PM people (as far as they can, as you know there are tons of non spec
-devices out there in the space).
-
-> So I'm not so much with you on the "the scary case is the spi domain
-> validation case".  I'm more about "what about all the other random
-> cases for random special drivers"
-
-I picked on that because it's the least likely to get any testing for a
-while.  However, you're right, there are other potential problem
-consumers but hopefully any problem (if there is one) with the rest
-will show up quickly.
-
-James
-
+=2D-
+2.29.2
 
