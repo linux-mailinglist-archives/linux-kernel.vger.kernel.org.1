@@ -2,89 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5CD2E85B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ACD2E85B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727403AbhAAVWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 16:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727284AbhAAVWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 16:22:52 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CBBC061573
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 13:22:11 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id o19so50717482lfo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 13:22:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l/t+YUq5T+ELO4aOtS9plxw75Wi8Om3hyqh2Adc8MEI=;
-        b=dKKZr5xFIrSTAlTu+ix1NH8DxFEU3G8oH6e6h8Sitlp3uawgNXOut539JreZMt5j1T
-         9v/qLcylBLWlZEZSZSSzuQwezNhlXB7kzDwZLp5QX32/w8Tm3CXxTDDqu1T7Yulux+Yq
-         RitFzhBm4N3B8EEuTDExRa5WHblQEeQ5Ktk0A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l/t+YUq5T+ELO4aOtS9plxw75Wi8Om3hyqh2Adc8MEI=;
-        b=FAz0UhLWcd4qJ4Pd5QubS4edLJEcSiOJVuWO21SO/fvb3vV1snP/JogcMS2JGcz5Z3
-         iR6PRWSDaZN/i+PsTTdKIhhyPSw5UOiOtz8wub/uaLJLqVse1jOJG0QjZja/NZ2kdTOo
-         I7KcS1rIgCBe/5w3qbkLq8+l81j6ZWxZaniJ7Q+KHJkWfWMsQqbchXxmBl8N04Q/opX8
-         OqOju5UF8iCv8px+GIrkV6V+SMWkzM3BoYPk4xo0K2wRtJvbUIB+tXu55/w5TJhtveOt
-         znnIuZxASIQm2fCXttF4dpAJ523C3KbQ9G9/hJHwL0TttsXx9wrgL7uwHkXw3roMLQsy
-         +KbQ==
-X-Gm-Message-State: AOAM532sL28WMcBda8HV66Q164Num8XizRaNvxiqjJGlB536ulp7tB1Q
-        z4tcZZz5Taj8378/UEwF3epmUVk3N9XHEw==
-X-Google-Smtp-Source: ABdhPJyZEUyCS+jzwreN5icJ0WjVWGQW3v86safUYAV9V0QWL9Ti7a404vhnUoWeUehlqxLYqzQGfw==
-X-Received: by 2002:a2e:99cc:: with SMTP id l12mr32460390ljj.448.1609536129946;
-        Fri, 01 Jan 2021 13:22:09 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id l6sm7997168ljc.11.2021.01.01.13.22.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Jan 2021 13:22:09 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id y19so50471791lfa.13
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 13:22:08 -0800 (PST)
-X-Received: by 2002:a19:8557:: with SMTP id h84mr25712082lfd.201.1609536128658;
- Fri, 01 Jan 2021 13:22:08 -0800 (PST)
+        id S1727437AbhAAV1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 16:27:00 -0500
+Received: from mout.gmx.net ([212.227.17.22]:36295 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727231AbhAAV07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 16:26:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609536327;
+        bh=n5VZorDxJ4E3jMomn5t3g5gHnoDeyVEV26lJvjdJRRI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=XJS2kfa3tBOQlzAkuIP6EQric8alxi11stwmyZ+QKxR0BGf2i2jFB4kKb/39BH9Kr
+         E2IlEyfZaji7s4cWV5WEy84HSIcAb9XgofN+u46UfoTCqqR9C1HPE48e7LEzMRg7ln
+         4+T1+mj+keBOCOokq1QQoUY6yq0yZSY/H2DmYBIg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MK3Vu-1ka51N2CTe-00LWHp; Fri, 01
+ Jan 2021 22:25:27 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Subject: [PATCH] scripts/jobserver-exec: Fix a typo ("envirnoment")
+Date:   Fri,  1 Jan 2021 22:25:17 +0100
+Message-Id: <20210101212519.1028884-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <dd63a06d53c45f9511307085797086351784b1a3.camel@HansenPartnership.com>
-In-Reply-To: <dd63a06d53c45f9511307085797086351784b1a3.camel@HansenPartnership.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 1 Jan 2021 13:21:52 -0800
-X-Gmail-Original-Message-ID: <CAHk-=widrXOWKSaDmMLZyhJzUvKx6M0uDP1xGJzYB4YGAJqHJA@mail.gmail.com>
-Message-ID: <CAHk-=widrXOWKSaDmMLZyhJzUvKx6M0uDP1xGJzYB4YGAJqHJA@mail.gmail.com>
-Subject: Re: [GIT PULL] SCSI fixes for 5.11-rc1
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+oTew9IYDGEntlhthJG9SQZD+t1NOZtiN0WGumEIWe+K2KvtjE3
+ d69WxHUcatnF3d2Z9XfDX+D+/I6vsGmxea3SvTjdWRwFJdGg6jURKI4qKC5ad96TjQdxNd8
+ 0ct3oeU7JFMv8TpPv6Vw0Qlm/KpXCJw4T6YnJrYNf94Je09jfkLByERXpkS7fZcTOdBPbqM
+ UMR/rgf5SwZFtqbGNjnLA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ji1GKPCNcNQ=:gXmNYKb/40HcFGk6IsAZ1m
+ 9z8SWaObQulc3LmSfHPhy7plHmfUwYW1u0P8sYzPfdte959u33qwUJxzDXubXVc5I9S6txEFq
+ KCBv7qeTuHB5fK1mrbKSZKy7GJ/LCLvc/ImmA8+LbEJJukOWNCoCqHicjlx2so9mXry4h+1IR
+ H30wR1oMj6DL/lxukO2f8oleYWOg/okVUJ1o5rogljgrbjenBHCe3gTSdbv1PvA3GgDHz0uOd
+ 2GItogoNFaih245wquzeE3zSyw9le3IInADj9v7CCofSKA6UztThrG+UgngJuqFudRjAVwSwF
+ D5yTZdp9EoA0eLmjEB7bO705yQ7lywOMzAMB32qi5jTg4tD6efzWvB6YOmkTBYEBca4RZ9V5X
+ AG+V48wjP2B5NwBaH5Hto9/ylMZFysFVMVSozM51ZIcd0kDLOGFbYukRxMkSCfVM1V/RsN0ZA
+ IbyZRbOxbYHZA9XnIvH4w46zoDj7e35CjIBI8LPLjp/HctC8aw1VkRPO5mSD/PUrA2Zaqf9Ws
+ 5Hj3v4QelDVrfHZ91TdchnBYZ0MsK8aieQ376fh1/DoARhxwhZTlad5+gd9BbGqsphLQEjVuf
+ f+yH93lWpVyQCyhj+FlCzmQvNeDLll27aCKse8cnZ7dNxTWy8S5vjTEVrP8YqvES887swNyXM
+ qUxucQbYCu/sAj/O/toK+Fx4WXOtGUXkNoTXDWLMJgm+MKzkW67QIbI9ouvAGilw66hP2HV8E
+ 9HR1D/bYQX3CWW4StTUrO5ADs3+lV+tUI0OBeC2RpM4Ce9qKqljJL4ym56jg7qFkTQrltzTTB
+ Ufpxgvix0c0FosfS+hKXFQFO/Q8U8t7pzte0Uzh8fAW3pPe83LujwLE4ef15XSp7UzK0K3giD
+ ixYp/bH9Mo25dS7QXSLA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 1, 2021 at 12:19 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> Originally this change was slated for the merge window but a late
-> arriving build problem with CONFIG_PM=n derailed that.
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ scripts/jobserver-exec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So I've pulled this, but we need to have a policy for reverting this
-quickly if it turns out to cause problems.
+diff --git a/scripts/jobserver-exec b/scripts/jobserver-exec
+index 0fdb31a790a81..1c779cd1ccb48 100755
+=2D-- a/scripts/jobserver-exec
++++ b/scripts/jobserver-exec
+@@ -10,7 +10,7 @@ from __future__ import print_function
+ import os, sys, errno
+ import subprocess
 
-I'm not worried about any remaining build issues - but I'm simply
-worried about some missed case where code depended on the block layer
-passing commands through even while suspended.
+-# Extract and prepare jobserver file descriptors from envirnoment.
++# Extract and prepare jobserver file descriptors from environment.
+ claim =3D 0
+ jobs =3D b""
+ try:
+=2D-
+2.29.2
 
-The block bits would seem affect non-SCSI stuff too, how extensively
-have any random odd special case been tested?
-
-So I'm not so much with you on the "the scary case is the spi domain
-validation case".  I'm more about "what about all the other random
-cases for random special drivers"
-
-                Linus
