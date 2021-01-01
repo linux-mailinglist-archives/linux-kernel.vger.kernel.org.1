@@ -2,121 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5112E82DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 04:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BE72E82DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 04:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbhAADJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 22:09:47 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9664 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726314AbhAADJr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 22:09:47 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D6VMc07wHz15h91;
-        Fri,  1 Jan 2021 11:08:12 +0800 (CST)
-Received: from [10.174.184.196] (10.174.184.196) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 1 Jan 2021 11:08:55 +0800
-Subject: Re: [PATCH RFC] KVM: arm64: vgic: Decouple the check of the
- EnableLPIs bit from the ITS LPI translation
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Will Deacon <will@kernel.org>, Eric Auger <eric.auger@redhat.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20201231062813.714-1-lushenming@huawei.com>
- <683134bdea8a22d3bb784117dcfe17a1@kernel.org>
- <cf530279-4c68-c7de-f87e-1236ce0241cf@huawei.com>
- <85dd45f580eaa7a0b8ec91ac0b7ca066@kernel.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <032ab609-0602-a3d6-5877-489e583ba0a8@huawei.com>
-Date:   Fri, 1 Jan 2021 11:08:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726896AbhAADuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 22:50:11 -0500
+Received: from smtp.h3c.com ([60.191.123.50]:17289 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726583AbhAADuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Dec 2020 22:50:11 -0500
+Received: from DAG2EX08-IDC.srv.huawei-3com.com ([10.8.0.71])
+        by h3cspam02-ex.h3c.com with ESMTP id 1013lxAF085853;
+        Fri, 1 Jan 2021 11:47:59 +0800 (GMT-8)
+        (envelope-from gao.yanB@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 1 Jan 2021 11:48:00 +0800
+From:   Gao Yan <gao.yanB@h3c.com>
+To:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        <paulus@samba.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Gao Yan <gao.yanB@h3c.com>
+Subject: [PATCH] [v2]net:ppp: remove disc_data_lock in ppp line discipline
+Date:   Fri, 1 Jan 2021 11:37:18 +0800
+Message-ID: <20210101033718.45198-1-gao.yanB@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <85dd45f580eaa7a0b8ec91ac0b7ca066@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.184.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 1013lxAF085853
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/31 20:22, Marc Zyngier wrote:
-> On 2020-12-31 11:58, Shenming Lu wrote:
->> On 2020/12/31 16:57, Marc Zyngier wrote:
->>> Hi Shemming,
->>>
->>> On 2020-12-31 06:28, Shenming Lu wrote:
->>>> When the EnableLPIs bit is set to 0, any ITS LPI requests in the
->>>> Redistributor would be ignored. And this check is independent from
->>>> the ITS LPI translation. So it might be better to move the check
->>>> of the EnableLPIs bit out of the LPI resolving, and also add it
->>>> to the path that uses the translation cache.
->>>
->>> But by doing that, you are moving the overhead of checking for
->>> EnableLPIs from the slow path (translation walk) to the fast
->>> path (cache hit), which seems counter-productive.
->>
->> Oh, I didn't notice the overhead of the checking, I thought it would
->> be negligible...
-> 
-> It probably doesn't show on a modern box, but some of the slower
-> systems might see it. Overall, this is a design decision to keep
-> the translation cache as simple and straightforward as possible:
-> if anything affects the output of the cache, we invalidate it,
-> and that's it.
+In tty layer, it provides tty->ldisc_sem to protect all tty_ldisc_ops
+including ppp_sync_ldisc. So I think tty->ldisc_sem can also
+protect tty->disc_data, and the disc_data_lock is not necessary.
 
-Ok, get it.
+Signed-off-by: Gao Yan <gao.yanB@h3c.com>
+---
+ drivers/net/ppp/ppp_async.c   | 11 ++---------
+ drivers/net/ppp/ppp_synctty.c | 12 ++----------
+ 2 files changed, 4 insertions(+), 19 deletions(-)
 
-> 
->>
->>>
->>>> Besides it seems that
->>>> by this the invalidating of the translation cache caused by the LPI
->>>> disabling is unnecessary.
->>>>
->>>> Not sure if I have missed something... Thanks.
->>>
->>> I am certainly missing the purpose of this patch.
->>>
->>> The effect of EnableLPIs being zero is to drop the result of any
->>> translation (a new pending bit) on the floor. Given that, it is
->>> immaterial whether this causes a new translation or hits in the
->>> cache, as the result is still to not pend a new interrupt.
->>>
->>> I get the feeling that you are trying to optimise for the unusual
->>> case where EnableLPIs is 0 *and* you have a screaming device
->>> injecting tons of interrupt. If that is the case, I don't think
->>> this is worth it.
->>
->> In fact, I just found (imagining) that if the EnableLPIs bit is 0,
->> the kvm_vgic_v4_set_forwarding() would fail when performing the LPI
->> translation, but indeed we don't try to pend any interrupts there...
->>
->> By the way, it seems that the LPI disabling would not affect the
->> injection of VLPIs...
-> 
-> Yes, good point. We could unmap the VPE from all ITS, which would result
-> in all translations to be discarded, but this has the really bad side
-> effect of *also* preventing the delivery of vSGIs, which isn't what
-> you'd expect.
-> 
-> Overall, I don't think there is a good way to support this, and maybe
-> we should just prevent EnableLPIs to be turned off when using direct
-> injection. After all, the architecture does allow that for GICv3
-> implementations, which is what we emulate.
+diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
+index 29a0917a8..20b50facd 100644
+--- a/drivers/net/ppp/ppp_async.c
++++ b/drivers/net/ppp/ppp_async.c
+@@ -127,17 +127,13 @@ static const struct ppp_channel_ops async_ops = {
+  * FIXME: this is no longer true. The _close path for the ldisc is
+  * now guaranteed to be sane.
+  */
+-static DEFINE_RWLOCK(disc_data_lock);
+ 
+ static struct asyncppp *ap_get(struct tty_struct *tty)
+ {
+-	struct asyncppp *ap;
++	struct asyncppp *ap = tty->disc_data;
+ 
+-	read_lock(&disc_data_lock);
+-	ap = tty->disc_data;
+ 	if (ap != NULL)
+ 		refcount_inc(&ap->refcnt);
+-	read_unlock(&disc_data_lock);
+ 	return ap;
+ }
+ 
+@@ -214,12 +210,9 @@ ppp_asynctty_open(struct tty_struct *tty)
+ static void
+ ppp_asynctty_close(struct tty_struct *tty)
+ {
+-	struct asyncppp *ap;
++	struct asyncppp *ap = tty->disc_data;
+ 
+-	write_lock_irq(&disc_data_lock);
+-	ap = tty->disc_data;
+ 	tty->disc_data = NULL;
+-	write_unlock_irq(&disc_data_lock);
+ 	if (!ap)
+ 		return;
+ 
+diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
+index 0f338752c..53fb68e29 100644
+--- a/drivers/net/ppp/ppp_synctty.c
++++ b/drivers/net/ppp/ppp_synctty.c
+@@ -129,17 +129,12 @@ ppp_print_buffer (const char *name, const __u8 *buf, int count)
+  *
+  * FIXME: Fixed in tty_io nowadays.
+  */
+-static DEFINE_RWLOCK(disc_data_lock);
+-
+ static struct syncppp *sp_get(struct tty_struct *tty)
+ {
+-	struct syncppp *ap;
++	struct syncppp *ap = tty->disc_data;
+ 
+-	read_lock(&disc_data_lock);
+-	ap = tty->disc_data;
+ 	if (ap != NULL)
+ 		refcount_inc(&ap->refcnt);
+-	read_unlock(&disc_data_lock);
+ 	return ap;
+ }
+ 
+@@ -213,12 +208,9 @@ ppp_sync_open(struct tty_struct *tty)
+ static void
+ ppp_sync_close(struct tty_struct *tty)
+ {
+-	struct syncppp *ap;
++	struct syncppp *ap = tty->disc_data;
+ 
+-	write_lock_irq(&disc_data_lock);
+-	ap = tty->disc_data;
+ 	tty->disc_data = NULL;
+-	write_unlock_irq(&disc_data_lock);
+ 	if (!ap)
+ 		return;
+ 
+-- 
+2.17.1
 
-Agreed, if there is no good way, we could just make the EnableLPIs clearing
-unsupported...
-
-Thanks(Happy 2021),
-Shenming
-
-> 
-> Thanks,
-> 
->         M.
