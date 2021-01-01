@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F0F2E85C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291F72E85C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 22:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727390AbhAAVi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 16:38:59 -0500
-Received: from mx4.wp.pl ([212.77.101.11]:9611 "EHLO mx4.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727216AbhAAVi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 16:38:59 -0500
-Received: (wp-smtpd smtp.wp.pl 735 invoked from network); 1 Jan 2021 22:38:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1609537086; bh=JpjxtgcoQCj4Jkgnu6Shp3kcG0T2TRzrEKwIxb4dLfk=;
-          h=From:To:Cc:Subject;
-          b=ZwQOPZ1Z1j5wmYyAwj9Hj97V8ojGLAKY/NkHU9FTQNjodx5su/oGcBHbmmP4qhTzf
-           b+VkQ15+wCtuqHakNOXoRBnoRGcKGCR2YzqT3fmc7R93XQPoPWytEm/IGK4T2+OKmy
-           I1MaduZaOvDqrSpIBE0zMSHVbLZ4lqiC3g6kl/6A=
-Received: from riviera.nat.student.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <tsbogend@alpha.franken.de>; 1 Jan 2021 22:38:06 +0100
-From:   Aleksander Jan Bajkowski <olek2@wp.pl>
-To:     tsbogend@alpha.franken.de, robh+dt@kernel.org, john@phrozen.org,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Subject: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway EBU bindings
-Date:   Fri,  1 Jan 2021 22:37:59 +0100
-Message-Id: <20210101213759.2070-1-olek2@wp.pl>
-X-Mailer: git-send-email 2.20.1
+        id S1727371AbhAAVsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 16:48:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726296AbhAAVsW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 16:48:22 -0500
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A50CC061573;
+        Fri,  1 Jan 2021 13:47:42 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id AF44F12800A7;
+        Fri,  1 Jan 2021 13:47:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1609537659;
+        bh=AcWCBmCpYzbMF/MEbnq/yt924qqZaAf5/HtOQS6bbQI=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=xxxQDJ9eGCvU5L2CH4TO3Sw39TT45vF0q2pZF43DCIheQgfbvCNAkqWz4PryTJbNe
+         G9oPT3K2yW0Yz10CufyjacpI43igvB5P/JKIi9Hzs44K4vRWnITlvP0gcNWkcN6erE
+         97DgHTS5FtdPcl62Fic2rojl31y/5/uBovarnrpQ=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fTKmc7V4vpkN; Fri,  1 Jan 2021 13:47:39 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 47A0612800A0;
+        Fri,  1 Jan 2021 13:47:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1609537659;
+        bh=AcWCBmCpYzbMF/MEbnq/yt924qqZaAf5/HtOQS6bbQI=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=xxxQDJ9eGCvU5L2CH4TO3Sw39TT45vF0q2pZF43DCIheQgfbvCNAkqWz4PryTJbNe
+         G9oPT3K2yW0Yz10CufyjacpI43igvB5P/JKIi9Hzs44K4vRWnITlvP0gcNWkcN6erE
+         97DgHTS5FtdPcl62Fic2rojl31y/5/uBovarnrpQ=
+Message-ID: <922c1a43c698df32e81f84c7324c96f2d017eff5.camel@HansenPartnership.com>
+Subject: Re: [GIT PULL] SCSI fixes for 5.11-rc1
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 01 Jan 2021 13:47:38 -0800
+In-Reply-To: <CAHk-=widrXOWKSaDmMLZyhJzUvKx6M0uDP1xGJzYB4YGAJqHJA@mail.gmail.com>
+References: <dd63a06d53c45f9511307085797086351784b1a3.camel@HansenPartnership.com>
+         <CAHk-=widrXOWKSaDmMLZyhJzUvKx6M0uDP1xGJzYB4YGAJqHJA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: wp.pl)                                      
-X-WP-MailID: 9930353f3bddb183dd5187c090468e44
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000001 [YdLX]                               
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Lantiq Xway SoC series External Bus Unit (EBU) bindings.
+On Fri, 2021-01-01 at 13:21 -0800, Linus Torvalds wrote:
+> On Fri, Jan 1, 2021 at 12:19 PM James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> > Originally this change was slated for the merge window but a late
+> > arriving build problem with CONFIG_PM=n derailed that.
+> 
+> So I've pulled this,
 
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
----
- .../bindings/mips/lantiq/lantiq,ebu.yaml      | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,ebu.yaml
+Thanks!
 
-diff --git a/Documentation/devicetree/bindings/mips/lantiq/lantiq,ebu.yaml b/Documentation/devicetree/bindings/mips/lantiq/lantiq,ebu.yaml
-new file mode 100644
-index 000000000000..0fada1f085a9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/lantiq/lantiq,ebu.yaml
-@@ -0,0 +1,32 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mips/lantiq/lantiq,ebu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Lantiq Xway SoC series External Bus Unit (EBU)
-+
-+maintainers:
-+  - John Crispin <john@phrozen.org>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - lantiq,ebu-xway
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    ebu@105300 {
-+        compatible = "lantiq,ebu-xway";
-+        reg = <0x105300 0x100>;
-+    };
--- 
-2.20.1
+>  but we need to have a policy for reverting this
+> quickly if it turns out to cause problems.
+
+Sure, we'd have to revert the six patches plus the dependent PM fix.
+
+> I'm not worried about any remaining build issues - but I'm simply
+> worried about some missed case where code depended on the block layer
+> passing commands through even while suspended.
+> 
+> The block bits would seem affect non-SCSI stuff too, how extensively
+> have any random odd special case been tested?
+
+The block bits have been in -next since 7 December, so it has had some
+testing.  That said, REQ_PREEMPT doesn't affect much outside of SCSI
+and IDE because we're where the original concept of at head insertion
+for "special" error handling commands like request sense came from.
+
+I'd expect the biggest field of potential problems to be in USB which
+does both block/SCSI and PM.  That should have been well tested by the
+PM people (as far as they can, as you know there are tons of non spec
+devices out there in the space).
+
+> So I'm not so much with you on the "the scary case is the spi domain
+> validation case".  I'm more about "what about all the other random
+> cases for random special drivers"
+
+I picked on that because it's the least likely to get any testing for a
+while.  However, you're right, there are other potential problem
+consumers but hopefully any problem (if there is one) with the rest
+will show up quickly.
+
+James
+
 
