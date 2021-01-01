@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BE32E83E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 14:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1C72E83E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 14:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbhAANvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 08:51:09 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:45561 "EHLO
+        id S1727142AbhAAN5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 08:57:20 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:48509 "EHLO
         outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726747AbhAANvJ (ORCPT
+        by vger.kernel.org with ESMTP id S1726747AbhAAN5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 08:51:09 -0500
+        Fri, 1 Jan 2021 08:57:20 -0500
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.94)
           with esmtps (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kvKp0-001cjd-BP; Fri, 01 Jan 2021 14:50:25 +0100
+          id 1kvKuz-001dkJ-B4; Fri, 01 Jan 2021 14:56:36 +0100
 Received: from p5b13a2ad.dip0.t-ipconnect.de ([91.19.162.173] helo=[192.168.178.139])
           by inpost2.zedat.fu-berlin.de (Exim 4.94)
           with esmtpsa (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kvKoz-003BdA-JL; Fri, 01 Jan 2021 14:50:25 +0100
-Subject: Re: [PATCH] sh: check return code of request_irq
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Paul Mundt <lethal@linux-sh.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201212161831.GA28098@roeck-us.net>
- <20201222205402.2269377-1-ndesaulniers@google.com>
+          id 1kvKuy-003CFZ-JE; Fri, 01 Jan 2021 14:56:36 +0100
+Subject: Re: [PATCH] sh: boards: Fix the cacography in irq.c
+To:     Tang Bin <tangbin@cmss.chinamobile.com>,
+        ysato@users.sourceforge.jp, dalias@libc.org
+Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201119105656.11068-1-tangbin@cmss.chinamobile.com>
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <fe77cdc9-7ef1-a300-259b-65b451b2551a@physik.fu-berlin.de>
-Date:   Fri, 1 Jan 2021 14:50:25 +0100
+Message-ID: <dcf1a0d9-d533-63d7-c3d9-5023fe969117@physik.fu-berlin.de>
+Date:   Fri, 1 Jan 2021 14:56:36 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20201222205402.2269377-1-ndesaulniers@google.com>
+In-Reply-To: <20201119105656.11068-1-tangbin@cmss.chinamobile.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,43 +45,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick!
-
-On 12/22/20 9:54 PM, Nick Desaulniers wrote:
-> request_irq is marked __must_check, but the call in shx3_prepare_cpus
-> has a void return type, so it can't propagate failure to the caller.
-> Follow cues from hexagon and just print an error.
+On 11/19/20 11:56 AM, Tang Bin wrote:
+> The world 'swtich' is wrong, so fix it.
 > 
-> Fixes: c7936b9abcf5 ("sh: smp: Hook in to the generic IPI handler for SH-X3 SMP.")
-> Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-> Cc: Paul Mundt <lethal@linux-sh.org>
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 > ---
->  arch/sh/kernel/cpu/sh4a/smp-shx3.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  arch/sh/boards/mach-landisk/irq.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/sh/kernel/cpu/sh4a/smp-shx3.c b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
-> index f8a2bec0f260..1261dc7b84e8 100644
-> --- a/arch/sh/kernel/cpu/sh4a/smp-shx3.c
-> +++ b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
-> @@ -73,8 +73,9 @@ static void shx3_prepare_cpus(unsigned int max_cpus)
->  	BUILD_BUG_ON(SMP_MSG_NR >= 8);
+> diff --git a/arch/sh/boards/mach-landisk/irq.c b/arch/sh/boards/mach-landisk/irq.c
+> index 29b8b1f85..0b672b80c 100644
+> --- a/arch/sh/boards/mach-landisk/irq.c
+> +++ b/arch/sh/boards/mach-landisk/irq.c
+> @@ -26,8 +26,8 @@ enum {
+>  	PCI_INTD, /* PCI int D */
+>  	ATA,	  /* ATA */
+>  	FATA,	  /* CF */
+> -	POWER,	  /* Power swtich */
+> -	BUTTON,	  /* Button swtich */
+> +	POWER,	  /* Power switch */
+> +	BUTTON,	  /* Button switch */
+>  };
 >  
->  	for (i = 0; i < SMP_MSG_NR; i++)
-> -		request_irq(104 + i, ipi_interrupt_handler,
-> -			    IRQF_PERCPU, "IPI", (void *)(long)i);
-> +		if (request_irq(104 + i, ipi_interrupt_handler,
-> +			    IRQF_PERCPU, "IPI", (void *)(long)i))
-> +			pr_err("Failed to request irq %d\n", i);
->  
->  	for (i = 0; i < max_cpus; i++)
->  		set_cpu_present(i, true);
+>  /* Vectors for LANDISK */
 > 
 
-Verified on my SH-7785LCR board. Boots fine.
-
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
 -- 
  .''`.  John Paul Adrian Glaubitz
