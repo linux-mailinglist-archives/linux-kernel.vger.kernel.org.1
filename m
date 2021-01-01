@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDE42E82C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 02:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3862E82C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 02:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbhAAB3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Dec 2020 20:29:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
+        id S1727047AbhAABjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Dec 2020 20:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbhAAB3T (ORCPT
+        with ESMTP id S1726044AbhAABjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Dec 2020 20:29:19 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBDAC061573;
-        Thu, 31 Dec 2020 17:28:38 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id j12so19215096ota.7;
-        Thu, 31 Dec 2020 17:28:38 -0800 (PST)
+        Thu, 31 Dec 2020 20:39:07 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0AAC061575;
+        Thu, 31 Dec 2020 17:38:26 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id lb18so5595575pjb.5;
+        Thu, 31 Dec 2020 17:38:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nqTYURsZuNosp7QXLy1d+4/Lg7owmkjDgemSirLf0O8=;
-        b=OBpHXDjH3ZWbdl1j6JYel4Rfg+SjCgJdzU+UmLFLM0Ez2bF5Zj6yBKB75qPXf/eSHg
-         QtLTH0tU2epVH72kkFizk7eFUsMsfHat5k5zVTzIZD7RWlT5pNbNEAVYb2bXvrTUt3mQ
-         g/9sMXZ1oDhIns5W9v1Q+6b3lWtmIEFQt4wklx73I48+qrlam4773I8NFHWyZ/T5U22x
-         gdZL5kSTblTkywr/0aixFGM/sV0guRs/9WdbhNMTAAeqMjOAjP8MXfm6bSm9XEdoes5q
-         kFNPuorOrSQa1UQXcoXvzGdw7U3d5FnLgsAVZbqdCFablogmnJOP3ox9W+p5rggVCvFk
-         kh8Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jq908JEA6FJmQvAL4fJ2h5ZQ8LT4JDgfWpaEXTfjrgk=;
+        b=ILwlOgDbm1Ty8COhZrZF2/yLoEQSlNnphDtiHd1SKlImeKPzDXWUopeSADfhznPgUQ
+         8zvbUKtoUGSuZ03T4sKszsUWeNSSk36E2YSNU7XjpJ8S7cRfYadecw4grpXecM4gCloR
+         YQPq/j7KkhbYU+hhLq+S22LAQQM2aMsiNQk4H76QqFEoL991HLb0mrygUKxZUG/LYZeI
+         BXrhPUjd4x5RmZybcONpqJ8/4WUA1BfJli3I2cPkf3foLlAHhxvZmGtwEuWmUih5uLQT
+         IhUjUtE5VEYXDYvHETdhxFfsHo7P80qM/qBnT4ghxQqcKTPYUvkqrmSYVnrr+gDEAwum
+         p4Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nqTYURsZuNosp7QXLy1d+4/Lg7owmkjDgemSirLf0O8=;
-        b=Yu5vIdLsoD0MoLe1MbNaLGV7J69pKZK24+UlzggrVh7bVQSnn22LW56QZ9zZfdNBbQ
-         a7Rak9uWsRIkiKWvYPiI6tNgoRq+Kw2sNdzFWJ32Bp/ASX0E8kqUhO+UW5v3z4S/pgl4
-         3ZihBr2sBnsazlDwFYVpY+uG2Y1cZbqhM5Q5W1weYsMexxAdsjko4jzEcevNjnTVziBn
-         la1ZfJGPVRURg4lh98KMktjT2aa1MKtAvgOUHNNB0f0Dv3Lh3/l6DFYbQJR57Lug/PU9
-         Xks6FEuppBe1DAN7O50fGhtmEOfzhNn+Ub6HmtlSdKTKBEkTYYqcLV7yFtzui/e3GaFo
-         XCfQ==
-X-Gm-Message-State: AOAM533VTQtFlP8mA8BZyb6QTWlQVuXGUF9JeXJDAkY6S9bvdwpPn1tZ
-        DXIaF4uw35pxWMw/iyDRQXc=
-X-Google-Smtp-Source: ABdhPJyK2xr4CLSiYfimv85b2ILkMBMwDP2MyFbSRpiwBdmIprcYs5SIhdKU7gPQNzguqIf/oSIf0A==
-X-Received: by 2002:a9d:8ea:: with SMTP id 97mr20145960otf.223.1609464518081;
-        Thu, 31 Dec 2020 17:28:38 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t2sm8762554otj.47.2020.12.31.17.28.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 31 Dec 2020 17:28:36 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 31 Dec 2020 17:28:35 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Campion Kang <campion.kang@advantech.com.tw>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org,
-        AceLan Kao <chia-lin.kao@canonical.com>
-Subject: Re: [PATCH v5 5/6] hwmon: ahc1ec0-hwmon: Add sub-device hwmon for
- Advantech embedded controller
-Message-ID: <20210101012835.GA87441@roeck-us.net>
-References: <20201231123948.10473-1-campion.kang@advantech.com.tw>
- <20201231123948.10473-5-campion.kang@advantech.com.tw>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jq908JEA6FJmQvAL4fJ2h5ZQ8LT4JDgfWpaEXTfjrgk=;
+        b=o9Hin34Wvb+jzJ+ipFnlo16JGti3zh+ySATWJvuZg0G5HWNOoBonbZdhhugolM4Eo0
+         2YKlzRDQoaJQXIPrsgrmFEwNPCp+qhtB1M/lua9IcI2hSJeqQdut7I1ALlLqkW/9wWPi
+         Y06pjNjVLYboc8a/zk0rlqen5mowqrPeHI7+NYywUdYxihPsB/DgfZtwzY6g0A9e1wh4
+         o1I5KiXqZQ+VnDlAk8RSTRmCxxHBmcq2mlDb57Zq6X6YA85dBC47tE5mqPemXllKP61C
+         APt+PtAL5IIgFDjiG1C4gg7Kalwe8sVOpgzHJ6647ZWDq27Cu0sIlwAFE01k30+rBdwQ
+         o7MA==
+X-Gm-Message-State: AOAM531wpd62v5BV/OWTNWwcGqEDKViC4blXmZXNVH+NXwqR0TIwd3Oj
+        fWBQwSkXPbfRmokfms9HN2s=
+X-Google-Smtp-Source: ABdhPJwDaMKpQ8tVVkYqah4YyKSOYEfJUgIZSwTzaFLVsU/1nbDC78p9K8oiO5VCOT5rpf33QE+ljA==
+X-Received: by 2002:a17:90a:470b:: with SMTP id h11mr15438318pjg.186.1609465106406;
+        Thu, 31 Dec 2020 17:38:26 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:d2c3:2203:46f1:3e3e])
+        by smtp.gmail.com with ESMTPSA id z11sm11836055pjn.5.2020.12.31.17.38.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Dec 2020 17:38:25 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Gao Yan <gao.yanB@h3c.com>
+Cc:     paulus@samba.org, davem@davemloft.net, kuba@kernel.org,
+        linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: remove disc_data_lock in ppp line discipline
+Date:   Thu, 31 Dec 2020 17:37:44 -0800
+Message-Id: <20210101013744.72562-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201228071550.15745-1-gao.yanB@h3c.com>
+References: <20201228071550.15745-1-gao.yanB@h3c.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201231123948.10473-5-campion.kang@advantech.com.tw>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 08:39:47PM +0800, Campion Kang wrote:
-> This is one of sub-device driver for Advantech embedded controller
-> AHC1EC0. This driver provides sysfs ABI for Advantech related
-> applications to monitor the system status.
+> In tty layer, it use tty->ldisc_sem to proect tty_ldisc_ops.
+> So I think tty->ldisc_sem can also protect tty->disc_data;
+
+It might help by CC'ing TTY people, so that we could get this reviewed by
+people who are familiar with TTY code.
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> (supporter:TTY LAYER)
+Jiri Slaby <jirislaby@kernel.org> (supporter:TTY LAYER)
+
+Thanks!
+
+> For examlpe,
+> When cpu A is running ppp_synctty_ioctl that hold the tty->ldisc_sem,
+> at the same time  if cpu B calls ppp_synctty_close, it will wait until
+> cpu A release tty->ldisc_sem. So I think it is unnecessary to have the
+> disc_data_lock;
 > 
-> Signed-off-by: Campion Kang <campion.kang@advantech.com.tw>
-> ---
->  drivers/hwmon/Kconfig         |  10 +
+> cpu A                           cpu B
+> tty_ioctl                       tty_reopen
+>  ->hold tty->ldisc_sem            ->hold tty->ldisc_sem(write), failed
+>  ->ld->ops->ioctl                 ->wait...
+>  ->release tty->ldisc_sem         ->wait...OK,hold tty->ldisc_sem
+>                                     ->tty_ldisc_reinit
+>                                       ->tty_ldisc_close
+>                                         ->ld->ops->close
 
-[ ... ]
+IMHO an example might not be necessary. Examples are useful to show
+incorrectness. But we cannot show correctness by examples because
+examples are not exhaustive.
 
-> +	lmsensor_data.hwmon_dev = devm_hwmon_device_register_with_groups(&pdev->dev,
-> +			"ahc1ec0-hwmon", adv_ec_data, ahc1ec0_groups);
+BTW, there're some typos:
+"proect" -> "protect"
+"examlpe" -> "example"
+"that hold ..." -> "that holds ..."
+"cpu A release ..." -> "cpu A releases ..."
 
-New drivers must use [devm_]hwmon_device_register_with_info() and will
-otherwise not be accepted.
+>   * FIXME: this is no longer true. The _close path for the ldisc is
+>   * now guaranteed to be sane.
+>   */
 
-Guenter
+>   *
+>   * FIXME: Fixed in tty_io nowadays.
+>   */
+
+Since you are removing "disc_data_lock", please update (or remove) these
+two comments. Thanks!
