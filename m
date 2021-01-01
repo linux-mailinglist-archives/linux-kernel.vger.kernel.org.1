@@ -2,32 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB722E834B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 09:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A222E834D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 09:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbhAAIC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 03:02:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52622 "EHLO mx2.suse.de"
+        id S1727118AbhAAIH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 03:07:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53022 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726957AbhAAIC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 03:02:58 -0500
+        id S1726798AbhAAIH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 03:07:59 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 08361AD09;
-        Fri,  1 Jan 2021 08:02:17 +0000 (UTC)
-Date:   Fri, 01 Jan 2021 09:02:16 +0100
-Message-ID: <s5hble9axvb.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 6EBD9AC42;
+        Fri,  1 Jan 2021 08:07:17 +0000 (UTC)
+Date:   Fri, 01 Jan 2021 09:07:17 +0100
+Message-ID: <s5ha6ttaxmy.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        stable@kernel.org, Connor McAdams <conmanx360@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 4.19 267/346] ALSA: hda/ca0132 - Change Input Source enum strings.
-In-Reply-To: <20201231181542.GA28026@amd>
-References: <20201228124919.745526410@linuxfoundation.org>
-        <20201228124932.680293903@linuxfoundation.org>
-        <20201231181542.GA28026@amd>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        daniel.baluta@nxp.com, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Keyon Jie <yang.jie@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marcin Rajwa <marcin.rajwa@linux.intel.com>,
+        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
+        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
+        <sound-open-firmware@alsa-project.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: SOF: Intel: hda: Avoid checking jack on system suspend
+In-Reply-To: <CAAd53p77EGZqFcMrDSNQU+TkdWMgath7+M-41hwn5WOhDpZqcg@mail.gmail.com>
+References: <20201229133817.190160-1-kai.heng.feng@canonical.com>
+        <20201229133817.190160-2-kai.heng.feng@canonical.com>
+        <s5hr1n6b5yp.wl-tiwai@suse.de>
+        <CAAd53p77EGZqFcMrDSNQU+TkdWMgath7+M-41hwn5WOhDpZqcg@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -37,42 +50,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Dec 2020 19:15:42 +0100,
-Pavel Machek wrote:
+On Thu, 31 Dec 2020 19:06:43 +0100,
+Kai-Heng Feng wrote:
 > 
-> Hi!
+> On Thu, Dec 31, 2020 at 6:55 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > On Tue, 29 Dec 2020 14:38:15 +0100,
+> > Kai-Heng Feng wrote:
+> > >
+> > > System takes a very long time to suspend after commit 215a22ed31a1
+> > > ("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
+> > > [   90.065964] PM: suspend entry (s2idle)
+> > > [   90.067337] Filesystems sync: 0.001 seconds
+> > > [   90.185758] Freezing user space processes ... (elapsed 0.002 seconds) done.
+> > > [   90.188713] OOM killer disabled.
+> > > [   90.188714] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> > > [   90.190024] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > [   90.904912] intel_pch_thermal 0000:00:12.0: CPU-PCH is cool [49C], continue to suspend
+> > > [  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+> > > [  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+> > > [  329.490933] ACPI: EC: interrupt blocked
+> > >
+> > > That commit keeps codec suspended during the system suspend. However,
+> > > SOF driver's runtime resume, which is for system suspend, calls
+> > > hda_codec_jack_check() and schedules jackpoll_work. The jackpoll
+> > > work uses snd_hda_power_up_pm() which tries to resume the codec in
+> > > system suspend path, hence blocking the suspend process.
+> > >
+> > > So only check jack status if it's not in system PM process.
+> >
+> > After your previous patch set, the legacy HDA does queue the
+> > jackpoll_work only if jackpoll_interval is set.  I suppose rather the
+> > same rule would be applied?
 > 
-> > From: Connor McAdams <conmanx360@gmail.com>
-> > 
-> > commit 7079f785b50055a32b72eddcb7d9ba5688db24d0 upstream.
-> > 
-> > Change the Input Source enumerated control's strings to make it play
-> > nice with pulseaudio.
-> 
-> > +++ b/sound/pci/hda/patch_ca0132.c
-> > @@ -106,7 +106,7 @@ enum {
-> >  };
-> >  
-> >  /* Strings for Input Source Enum Control */
-> > -static const char *const in_src_str[3] = {"Rear Mic", "Line", "Front Mic" };
-> > +static const char *const in_src_str[3] = { "Microphone", "Line In", "Front Microphone" };
-> >  #define IN_SRC_NUM_OF_INPUTS 3
-> 
-> If pulseaudio expects the strings to be from small set, should we have
-> defines for them?
-> 
-> If pulseaudio can't understand short versions, do these need fixing,
-> too?
+> It's queued in hda_codec_pm_complete(), which happens at the end of PM process.
+> This one is queued in the middle of PM suspend, so it's not the same here.
 
-I don't believe so.  Even if PA really doesn't understand, it's a
-problem of PA itself to be fixed there.
-
-In this particular case, we changed the driver side since it's an
-easier path and very specific to the certain model.  But if it's about
-the generic parser that is applied to all models, it's a different
-story.
+But why do we need the jack status check explicitly there if
+hda_codec_pm_complete() already does it (via re-queuing the resume)?
 
 
 thanks,
 
 Takashi
+
+> 
+> Kai-Heng
+> 
+> >
+> >
+> > thanks,
+> >
+> > Takashi
+> >
+> > >
+> > > Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
+> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > ---
+> > >  sound/soc/sof/intel/hda-dsp.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+> > > index 7d00107cf3b2..1c5e05b88a90 100644
+> > > --- a/sound/soc/sof/intel/hda-dsp.c
+> > > +++ b/sound/soc/sof/intel/hda-dsp.c
+> > > @@ -685,7 +685,8 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
+> > >       /* check jack status */
+> > >       if (runtime_resume) {
+> > >               hda_codec_jack_wake_enable(sdev, false);
+> > > -             hda_codec_jack_check(sdev);
+> > > +             if (sdev->system_suspend_target == SOF_SUSPEND_NONE)
+> > > +                     hda_codec_jack_check(sdev);
+> > >       }
+> > >
+> > >       /* turn off the links that were off before suspend */
+> > > --
+> > > 2.29.2
+> > >
+> 
