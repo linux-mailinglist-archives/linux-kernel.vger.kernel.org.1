@@ -2,312 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A14F2E83D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 14:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DDA2E83D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 14:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbhAAN0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 08:26:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727182AbhAAN0O (ORCPT
+        id S1727143AbhAAN0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 08:26:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37676 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727005AbhAAN0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 08:26:14 -0500
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9134C06179B
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 05:24:58 -0800 (PST)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kvKQL-00B67B-17
-        for linux-kernel@vger.kernel.org; Fri, 01 Jan 2021 14:24:57 +0100
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
-        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kvKQ7-00B64v-QX; Fri, 01 Jan 2021 14:24:43 +0100
-Received: from bert by sumner.biot.com with local (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kvKQ7-00Bggx-Cu; Fri, 01 Jan 2021 14:24:43 +0100
-From:   Bert Vermeulen <bert@biot.com>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Birger Koblitz <mail@birger-koblitz.de>,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bert Vermeulen <bert@biot.com>
-Subject: [PATCH v3 2/2] spi: realtek-rtl: Add support for Realtek RTL838x/RTL839x SoC SPI controllers
-Date:   Fri,  1 Jan 2021 14:24:32 +0100
-Message-Id: <20210101132432.2785663-3-bert@biot.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210101132432.2785663-1-bert@biot.com>
-References: <20210101132432.2785663-1-bert@biot.com>
+        Fri, 1 Jan 2021 08:26:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609507479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NlUf3RFrTX25sJTt0DKiuNwG0dF3j8VQJM9/nMs04SU=;
+        b=WgYUE9OT9xoy6yeFdIlkqZtni9/iNJ4hCGuJ+JdNP3p91nuK2NlFTsuGGC/8vYXpuPy/Bk
+        GWn3JMuzXNGdjHQQBjhLE6+JdCjNQyKkH08X0nG5yTI1UDSDwJT659G78Ec5vdrH+Jd+fG
+        sNFDdGOHZS80CJBQFF5rQ8vAO+aPqDk=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-466-qNX_sdWDMZabIIQnAdrG-g-1; Fri, 01 Jan 2021 08:24:37 -0500
+X-MC-Unique: qNX_sdWDMZabIIQnAdrG-g-1
+Received: by mail-ed1-f69.google.com with SMTP id dh21so8250231edb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 05:24:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NlUf3RFrTX25sJTt0DKiuNwG0dF3j8VQJM9/nMs04SU=;
+        b=DTsIkCaP9eU9TzFNzrHs2tTSE4GmrKgwCEXKgothcNXbmFDDrO6pkxjgoRvaIuy6dB
+         ozRPL6N16V8XYJ0D6ue3VjKoeJRENz34EeEE6Ql2yGeUa1CCuyiDYawoKNNwOf2RAOkE
+         G4wUcSh9htDYVipEJ+AoIrByZJLFuo8Dy4JAB5Lu4EwOWKLp4bhUdwOOblroV08S34UJ
+         TWwjpv7Qkccz1k/YFy9QVeqWki/n/cpdeDHL4C3pRVQFeVeYV6yYlCd1nM57mokjSoOg
+         WTWhqZF0+6VBJym3gdCvf/TckepEpRhJzT8x+ehJwB46AZvgkE4Cwoq8NjZuYcTZAlaQ
+         GCiw==
+X-Gm-Message-State: AOAM532YszUMr8l4RBMhxzyNgP8563QXPvMh1Me3Vu2/BbNvKpu83kur
+        YRTwMmBJbGV9mXZTY1VAoRyCWqH4exZsDkZ7yegPMSTCDTxYs3hO36BgT5QPSK888rH8Pb8A8iy
+        78A+GLNnh2JysOVA+JhnaEfk+
+X-Received: by 2002:a17:906:2c54:: with SMTP id f20mr57560680ejh.318.1609507476425;
+        Fri, 01 Jan 2021 05:24:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyOkcdqEPEYFudNaC7S3egmI6FCqsKLaZbnzjTvYAnMq7f7U8r4OTu9efaWXmITnAXsrwDSCQ==
+X-Received: by 2002:a17:906:2c54:: with SMTP id f20mr57560669ejh.318.1609507476213;
+        Fri, 01 Jan 2021 05:24:36 -0800 (PST)
+Received: from x1.localdomain ([185.200.132.250])
+        by smtp.gmail.com with ESMTPSA id r23sm20864486ejd.56.2021.01.01.05.24.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Jan 2021 05:24:35 -0800 (PST)
+Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-2-hdegoede@redhat.com>
+ <20201228122138.GA5352@sirena.org.uk>
+ <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
+ <20201228162807.GE5352@sirena.org.uk>
+ <20201229130657.GN9673@ediswmail.ad.cirrus.com>
+ <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
+ <20201229150807.GF4786@sirena.org.uk>
+ <07037a8a-1d35-362e-1b82-b73b81f7c6ac@redhat.com>
+ <20201230133803.GC4428@sirena.org.uk>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <fca91ed2-408b-bb31-f6e8-4391f06b0ccc@redhat.com>
+Date:   Fri, 1 Jan 2021 14:24:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201230133803.GC4428@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver likely also supports earlier (RTL8196) and later (RTL93xx)
-SoCs.
+Hi,
 
-The SPI hardware in these SoCs is specifically intended for connecting NOR
-bootflash chips, and only used for that in dozens of examined devices.
-However boiled down to basics, it's really just a half-duplex SPI
-controller.
+On 12/30/20 2:38 PM, Mark Brown wrote:
+> On Tue, Dec 29, 2020 at 04:33:09PM +0100, Hans de Goede wrote:
+>> On 12/29/20 4:08 PM, Mark Brown wrote:
 
-The hardware appears to have a vestigial second chip-select control, but
-it hasn't been seen in the wild and is thus not supported.
-
-Signed-off-by: Bert Vermeulen <bert@biot.com>
----
- MAINTAINERS                   |   6 +
- drivers/spi/Makefile          |   1 +
- drivers/spi/spi-realtek-rtl.c | 205 ++++++++++++++++++++++++++++++++++
- 3 files changed, 212 insertions(+)
- create mode 100644 drivers/spi/spi-realtek-rtl.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ad0e34bf8453..c6cb954e5ecf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15048,6 +15048,12 @@ F:	Documentation/devicetree/bindings/net/dsa/realtek-smi.txt
- F:	drivers/net/dsa/realtek-smi*
- F:	drivers/net/dsa/rtl83*
+<snip>
  
-+REALTEK RTL83XX SPI DRIVER
-+M:	Bert Vermeulen <bert@biot.com>
-+M:	Birger Koblitz <mail@birger-koblitz.de>
-+S:	Maintained
-+F:	drivers/spi/spi-realtek-rtl.c
-+
- REALTEK WIRELESS DRIVER (rtlwifi family)
- M:	Ping-Ke Shih <pkshih@realtek.com>
- L:	linux-wireless@vger.kernel.org
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 6fea5821662e..182adef17013 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -94,6 +94,7 @@ obj-$(CONFIG_SPI_QCOM_QSPI)		+= spi-qcom-qspi.o
- obj-$(CONFIG_SPI_QUP)			+= spi-qup.o
- obj-$(CONFIG_SPI_ROCKCHIP)		+= spi-rockchip.o
- obj-$(CONFIG_SPI_RB4XX)			+= spi-rb4xx.o
-+obj-$(CONFIG_MACH_REALTEK_RTL)		+= spi-realtek-rtl.o
- obj-$(CONFIG_SPI_RPCIF)			+= spi-rpc-if.o
- obj-$(CONFIG_SPI_RSPI)			+= spi-rspi.o
- obj-$(CONFIG_SPI_S3C24XX)		+= spi-s3c24xx-hw.o
-diff --git a/drivers/spi/spi-realtek-rtl.c b/drivers/spi/spi-realtek-rtl.c
-new file mode 100644
-index 000000000000..2ad5ab24e4e1
---- /dev/null
-+++ b/drivers/spi/spi-realtek-rtl.c
-@@ -0,0 +1,205 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/spi/spi.h>
-+
-+struct rtspi {
-+	void __iomem *base;
-+};
-+
-+/* SPI Flash Configuration Register */
-+#define RTL_SPI_SFCR			0x00
-+#define RTL_SPI_SFCR_RBO		BIT(28)
-+#define RTL_SPI_SFCR_WBO		BIT(27)
-+
-+/* SPI Flash Control and Status Register */
-+#define RTL_SPI_SFCSR			0x08
-+#define RTL_SPI_SFCSR_CSB0		BIT(31)
-+#define RTL_SPI_SFCSR_CSB1		BIT(30)
-+#define RTL_SPI_SFCSR_RDY		BIT(27)
-+#define RTL_SPI_SFCSR_CS		BIT(24)
-+#define RTL_SPI_SFCSR_LEN_MASK		~(0x03 << 28)
-+#define RTL_SPI_SFCSR_LEN1		(0x00 << 28)
-+#define RTL_SPI_SFCSR_LEN4		(0x03 << 28)
-+
-+/* SPI Flash Data Register */
-+#define RTL_SPI_SFDR			0x0c
-+
-+#define REG(x)		(rtspi->base + x)
-+
-+
-+static void rt_set_cs(struct spi_device *spi, bool active)
-+{
-+	struct rtspi *rtspi = spi_controller_get_devdata(spi->controller);
-+	u32 value;
-+
-+	/* CS0 bit is active low */
-+	value = readl(REG(RTL_SPI_SFCSR));
-+	if (active)
-+		value |= RTL_SPI_SFCSR_CSB0;
-+	else
-+		value &= ~RTL_SPI_SFCSR_CSB0;
-+	writel(value, REG(RTL_SPI_SFCSR));
-+}
-+
-+static void set_size(struct rtspi *rtspi, int size)
-+{
-+	u32 value;
-+
-+	value = readl(REG(RTL_SPI_SFCSR));
-+	value &= RTL_SPI_SFCSR_LEN_MASK;
-+	if (size == 4)
-+		value |= RTL_SPI_SFCSR_LEN4;
-+	else if (size == 1)
-+		value |= RTL_SPI_SFCSR_LEN1;
-+	writel(value, REG(RTL_SPI_SFCSR));
-+}
-+
-+static inline void wait_ready(struct rtspi *rtspi)
-+{
-+	while (!(readl(REG(RTL_SPI_SFCSR)) & RTL_SPI_SFCSR_RDY))
-+		cpu_relax();
-+}
-+static void send4(struct rtspi *rtspi, const u32 *buf)
-+{
-+	wait_ready(rtspi);
-+	set_size(rtspi, 4);
-+	writel(*buf, REG(RTL_SPI_SFDR));
-+}
-+
-+static void send1(struct rtspi *rtspi, const u8 *buf)
-+{
-+	wait_ready(rtspi);
-+	set_size(rtspi, 1);
-+	writel(buf[0] << 24, REG(RTL_SPI_SFDR));
-+}
-+
-+static void rcv4(struct rtspi *rtspi, u32 *buf)
-+{
-+	wait_ready(rtspi);
-+	set_size(rtspi, 4);
-+	*buf = readl(REG(RTL_SPI_SFDR));
-+}
-+
-+static void rcv1(struct rtspi *rtspi, u8 *buf)
-+{
-+	wait_ready(rtspi);
-+	set_size(rtspi, 1);
-+	*buf = readl(REG(RTL_SPI_SFDR)) >> 24;
-+}
-+
-+static int transfer_one(struct spi_controller *ctrl, struct spi_device *spi,
-+			struct spi_transfer *xfer)
-+{
-+	struct rtspi *rtspi = spi_controller_get_devdata(ctrl);
-+	void *rx_buf;
-+	const void *tx_buf;
-+	int cnt;
-+
-+	tx_buf = xfer->tx_buf;
-+	rx_buf = xfer->rx_buf;
-+	cnt = xfer->len;
-+	if (tx_buf) {
-+		while (cnt >= 4) {
-+			send4(rtspi, tx_buf);
-+			tx_buf += 4;
-+			cnt -= 4;
-+		}
-+		while (cnt) {
-+			send1(rtspi, tx_buf);
-+			tx_buf++;
-+			cnt--;
-+		}
-+	} else if (rx_buf) {
-+		while (cnt >= 4) {
-+			rcv4(rtspi, rx_buf);
-+			rx_buf += 4;
-+			cnt -= 4;
-+		}
-+		while (cnt) {
-+			rcv1(rtspi, rx_buf);
-+			rx_buf++;
-+			cnt--;
-+		}
-+	}
-+
-+	spi_finalize_current_transfer(ctrl);
-+
-+	return 0;
-+}
-+
-+static void init_hw(struct rtspi *rtspi)
-+{
-+	u32 value;
-+
-+	/* Turn on big-endian byte ordering */
-+	value = readl(REG(RTL_SPI_SFCR));
-+	value |= RTL_SPI_SFCR_RBO | RTL_SPI_SFCR_WBO;
-+	writel(value, REG(RTL_SPI_SFCR));
-+
-+	value = readl(REG(RTL_SPI_SFCSR));
-+	/* Permanently disable CS1, since it's never used */
-+	value |= RTL_SPI_SFCSR_CSB1;
-+	/* Select CS0 for use */
-+	value &= RTL_SPI_SFCSR_CS;
-+	writel(value, REG(RTL_SPI_SFCSR));
-+}
-+
-+static int realtek_rtl_spi_probe(struct platform_device *pdev)
-+{
-+	struct spi_controller *ctrl;
-+	struct rtspi *rtspi;
-+	int err;
-+
-+	ctrl = devm_spi_alloc_master(&pdev->dev, sizeof(*rtspi));
-+	if (!ctrl) {
-+		dev_err(&pdev->dev, "Error allocating SPI controller\n");
-+		return -ENOMEM;
-+	}
-+	platform_set_drvdata(pdev, ctrl);
-+	rtspi = spi_controller_get_devdata(ctrl);
-+
-+	rtspi->base = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
-+	if (IS_ERR(rtspi->base)) {
-+		dev_err(&pdev->dev, "Could not map SPI register address");
-+		return -ENOMEM;
-+	}
-+
-+	init_hw(rtspi);
-+
-+	ctrl->dev.of_node = pdev->dev.of_node;
-+	ctrl->flags = SPI_CONTROLLER_HALF_DUPLEX;
-+	ctrl->set_cs = rt_set_cs;
-+	ctrl->transfer_one = transfer_one;
-+
-+	err = devm_spi_register_controller(&pdev->dev, ctrl);
-+	if (err) {
-+		dev_err(&pdev->dev, "Could not register SPI controller\n");
-+		return -ENODEV;
-+	}
-+
-+	return 0;
-+}
-+
-+
-+static const struct of_device_id realtek_rtl_spi_of_ids[] = {
-+	{ .compatible = "realtek,rtl-spi" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, realtek_rtl_spi_of_ids);
-+
-+static struct platform_driver realtek_rtl_spi_driver = {
-+	.probe = realtek_rtl_spi_probe,
-+	.driver = {
-+		.name = "realtek-rtl-spi",
-+		.of_match_table = realtek_rtl_spi_of_ids,
-+	},
-+};
-+
-+module_platform_driver(realtek_rtl_spi_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Bert Vermeulen <bert@biot.com>");
-+MODULE_DESCRIPTION("Realtek RTL SPI driver");
--- 
-2.25.1
+>>> The whole purpose of creating sound/core/jack.c is to abstract away the
+>>> userspace interfaces from the drivers, most audio devices shouldn't be
+>>> working with extcon directly just as they shouldn't be creating input
+>>> devices or ALSA controls directly.  The missing bit there is to add
+>>> extcon into jack.c.
+> 
+>> So what you are suggesting is making sound/core/jack.c register the
+>> extcon device and then have arizona-extcon.c talk to sound/core/jack.c
+>> and no longer do any extcon stuff itself.
+> 
+> Yes.
+
+Ok, so this seems to be the same solution as which the opensource.cirrus.com
+folks want in that both you and the opensource.cirrus.com people want to
+change the arizona-extcon.c driver to be changed to stop reporting extcon
+info directly itself and instead do all the reporting through sound/core/jack.c.
+
+Where the thoughts on this seem to differ is that the opensource.cirrus.com
+folks seem to be fine with dropping extcon support, where as you suggest
+to extend sound/core/jack.c to register an extcon device and have it report
+extcon events.
+
+I'm with the opensource.cirrus.com folks here that ATM it seems best to just
+drop extcon support since the only user is Android, which also supports the
+input_dev API.
+
+If the need arises we can always add extcon-support to sound/core/jack.c
+later.
+
+So I'll start on reworking this patch-series to change the arizona-extcon.c
+driver to stop it reporting extcon info directly itself and instead do all
+the reporting through sound/core/jack.c.
+
+Regards,
+
+Hans
 
