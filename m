@@ -2,168 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F7D2E8568
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 19:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA772E856C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Jan 2021 20:43:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbhAAS66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 13:58:58 -0500
-Received: from mail-eopbgr1410091.outbound.protection.outlook.com ([40.107.141.91]:48496
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727138AbhAAS65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 13:58:57 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dPGvxOK/zrEOkfQ9uqBpEar21hgaG2n3ChmktrYX0C3vmVP3Yccp2/+jsBpeoJGADdBOZ/Z5qVPYFfvtLJUqz+CSyF2xT41dqVOxyJdTyhsD3zUzaLQsnzg40GZuvV5tQitiFClAsaEsJHQO955qCFYX51e0q/mQknfL19vwXCRLvTVBttJxZniT295FuUwZwRugBm90duzi4m7g5HjFq6vqoACKlE5GJMoNFzVaw1UkBxpt/U0jQlnRHJPGsq309q1b0gKRGVbM811wTlSweGSq9d+H24aJFQPRY7kPym8KxDMUmAJ9wgFZ9x0A8idhNO/ugKlbict3alXkgooP8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cLZG4doio3DhSqJaJwQiwMCind5NDAvJM+U1J1+r6x0=;
- b=Q0grPuAOmR/bzr/H9eQPldCJGwLjdphq8dA5+SLE3FO/F99XiVcnwh4yRRRhynVn3glsuj6IKHjSGnW0TIxPqnQHspXPB/zR9c4zxu9SJTR8KkxeeZg4HqN4c5dpmFzeVbwaXNgRYmpnqJs/Xr1y80mkgHENVCBnsoIsSSiIGsqaxOPbetlTPhj5Zly9on9lFTahhlsTdxNX604nzHlp0bIO+O0CU4iSBapOmvBx3+bl5TdzC4iULlZJ53P8jE2AfmRlwtvI4bifeYbotwPqQtyTet5K2cMvLbIlns5tJaY/eCLceOWIqu5w2K0bzacUu/NFZ9BWveT9nw3kuqH44A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+        id S1727296AbhAATdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 14:33:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727173AbhAATc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 14:32:59 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6166CC061573
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 11:32:19 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id v1so6430843pjr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 11:32:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cLZG4doio3DhSqJaJwQiwMCind5NDAvJM+U1J1+r6x0=;
- b=bstQIpZO+VpdH4DFbZdq945AwhT1bP3KR4T0d1IdiZXelTSIdQ61+DevqegNqgEeElmBdoCdVtTCa3O5e62AOLp6czSGgjxhbWsvddTLBCNKU6so4wllFNvZlhzx36Z+7t/KM0R0BY64TmSllbY+t3C4NHNvFz68YSY5G+jG3Ik=
-Received: from TYBPR01MB5309.jpnprd01.prod.outlook.com
- (2603:1096:404:8025::15) by TYAPR01MB2655.jpnprd01.prod.outlook.com
- (2603:1096:404:88::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19; Fri, 1 Jan
- 2021 18:58:07 +0000
-Received: from TYBPR01MB5309.jpnprd01.prod.outlook.com
- ([fe80::5d23:de2f:4a70:97db]) by TYBPR01MB5309.jpnprd01.prod.outlook.com
- ([fe80::5d23:de2f:4a70:97db%3]) with mapi id 15.20.3700.032; Fri, 1 Jan 2021
- 18:58:07 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Adam Ford <aford173@gmail.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-CC:     "aford@beaconembedded.com" <aford@beaconembedded.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH 1/2] dt-bindings: memory: Renesas RPC-IF:  Add support for
- RZ/G2 Series
-Thread-Topic: [PATCH 1/2] dt-bindings: memory: Renesas RPC-IF:  Add support
- for RZ/G2 Series
-Thread-Index: AQHW4DL0ZP8Q38rzAESFTJF1agdBJqoTHuaw
-Date:   Fri, 1 Jan 2021 18:58:07 +0000
-Message-ID: <TYBPR01MB5309353C04568B16E029261686D50@TYBPR01MB5309.jpnprd01.prod.outlook.com>
-References: <20210101113927.3252309-1-aford173@gmail.com>
-In-Reply-To: <20210101113927.3252309-1-aford173@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=bp.renesas.com;
-x-originating-ip: [81.135.30.249]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 902d04eb-e06e-4c84-ceca-08d8ae872d13
-x-ms-traffictypediagnostic: TYAPR01MB2655:
-x-microsoft-antispam-prvs: <TYAPR01MB265514D3166CAF59DBF35F0886D50@TYAPR01MB2655.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GDiCMsqH/4QiRh3CyH4xne7tfD8Xf2ghkNWLHsOvmRJG3GL7YIJ5XexFiqjbUfh6idCwtyMUpeezOumC9HMNfqvk/CEg3l8hHPnbaxd3j8ImqtxMMMIulL18D1JcI3OqmL3qZ2vSUeHHVWRSTofT5p8PoyM5xTl5Lbf1AEhyyocEhp1P3J2qLgXLZ9ysu0P2efrvlCGhz4NcsnnaxrVGRB5DwFCU+HIKPz53EG8dbW0YJHflEtvEyUVRUN3aSe1Lw/G3FoKTdFDlO9csRRnVF5mqtwsBEag5YTHlYiX40DqieL773UuCew0sryIjIGsdHjmcZURUdaRopyxUw3eHr2Pa3ZvFyRTkI7lZ4p0UHryb/eeqdsuM9RC2MmijEuUtOo4BqcWvy01csIQfTHbpuA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYBPR01MB5309.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(366004)(39860400002)(396003)(7416002)(66556008)(86362001)(33656002)(66476007)(110136005)(186003)(64756008)(7696005)(54906003)(66946007)(76116006)(8936002)(71200400001)(2906002)(5660300002)(66446008)(478600001)(316002)(8676002)(9686003)(83380400001)(26005)(4326008)(52536014)(55016002)(53546011)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?msr9BoajisQCwSuLdeDm/IVGOtHuDeZNs0M2eH0BEPiVsHXXYQMZ9u3oKBwe?=
- =?us-ascii?Q?4m8AYVmqqhc5duD8u3BCLTHvCiF27Bi+IGfla1LGJf+YAIdJCUXB3Qzny82s?=
- =?us-ascii?Q?9bAFz9IXzAhatyEd9yEPZy7Ho2dAFxlfsqrOYcGdLpsQ5e7u9gqFskdIvOmI?=
- =?us-ascii?Q?ppwltJWg5EJblwB6TKFP7Mf7YLDSsieOFXZUGZYqCCAF10Mz+V2gBtQZnNs0?=
- =?us-ascii?Q?X3ixxdZ082tsqHy1yN6197/kMaNzSYOT/k9Qt7F20K0WEBZ3X7s61FYle5pn?=
- =?us-ascii?Q?uC3uPLy/cChl6IfAo8zw26kh56kdkv29hGWEzkAyb5JrjYwZTCeDgqaAZ4j/?=
- =?us-ascii?Q?mrLEOwtCmrsaMah1o3HIpDDYgt4GQNcnYoIBI4qrtUSIDcEyvvyBOCN5cehs?=
- =?us-ascii?Q?TPIQ7Wj9EmQS97TfcFo7hRJLfmBZy+uLQr/DlUq5P2LlasUsWH/ckHjjzK0S?=
- =?us-ascii?Q?EhsnTq86cGs2mSXjttOlRDX8phDvxCeawW1cTpUgF/sD+Hu1TEU4oBoz2rBU?=
- =?us-ascii?Q?yxmRdF7CVAOZ4FNeQgLW0e3SRWkTGhfvjeP8VusFzNZETtL3Lqa35UBYDADd?=
- =?us-ascii?Q?iLAPsOem8zpLhQDrZMUOvLlEbTKMx0XKZX5gZ0SBrMqltm9x6jwHPEOScuMT?=
- =?us-ascii?Q?L3ovGBprD58sEam8yEY54Uc+xjS5kIHzhLOgUDJIW3iwAcfS3UrpjsS0TlBX?=
- =?us-ascii?Q?4TDyf9tCxVlklscERpjFSSveQEpIJyK7/kLD5ro3RqStdOmIzOH+06AbYK7c?=
- =?us-ascii?Q?xdjRN/LsyKCRrSImGjNGqn8JmCJHd0DGU7vmMk8/PQpHcg1Yu7QDkivMZDaf?=
- =?us-ascii?Q?dvUSrVK9PLLnqqAWYQamhabBjDcsJagjPvbPMXy2qjctJ/t2epRjHQoKE9ld?=
- =?us-ascii?Q?rZSB+gnrx6vQnxn25PoGnBJYo/MKYAhAypZtuu0Co7gJ/WHMKXB6wDOmssRL?=
- =?us-ascii?Q?c8VH+HK700lCe8dsI6yOmBXvO/HxmyZ8gWiHSdxgNbM=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=RBVQjzvg2vAOr7EaTp5W0IS1YdquATj1m1nJKqT0atk=;
+        b=Be5hZgP/Htvvz0wVqlTBQiP9aeu8JxSdkadB/INSbXXI9KlQl7gI49YJXzlavDZ2Gt
+         UINa9x3BjnUifwPWca3cSj/TR/ZXBevkgs+3tc+irTA6oME4XS7Z4ZW3cagTwN6ktJbb
+         4bTjn4+eUUqmKYFCV4a/ai6JdUDoCRVxrr2fWKhNeacmmCGLY4S14k81Dwrv4kVWGrD/
+         MgMoV+iQ9Gm2OWpYVf4CoRzJBqX9lvj+VmsJTy2ltT7/4PRdEWhjaxd1o1R+XK2FEDGZ
+         ueKyHHfL7AON2pu1gGiC4Fv1ayJLuZ9YsbcUvvVTDxZm2kb4KCLBpEjG6w12uI2hv01p
+         BDNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=RBVQjzvg2vAOr7EaTp5W0IS1YdquATj1m1nJKqT0atk=;
+        b=qky4Xb5FOV+4FqOAG/ruiQaAHLjj08zZPJbQBcdJ168dZy2VWAPEz30zqu+FrKLB1r
+         dK/GZ1dcnVjtwwNOIbGXGEKmwZnz1Jdb1h+NlewWwzvl8ZyQMPiD5woFvsfMv/c+vCjc
+         bUJFOHO+5LnLV+aUJ76/DH3Arz8WJuN2tMZpNXdV5k2wq7JKt/chqF58T4pJbnkgaU1I
+         OTFw6/MsCoER96NdA2lTryWTUnHArWYeE7qoaKWZeCWPvgToBwMqL44Z2gUrwDckm9Q/
+         KcoPPEbKGm7vZxH2QfXIjMG67Fp9Kge39KAwKlQtE1/yCEdCxCBSTrtHIZcIlMETSAHu
+         /wCw==
+X-Gm-Message-State: AOAM530BKZBuOgbwX0089n/4UsRsSl2kppQk5ylx79mtuOgIWi0naANu
+        yD/xe6uTsZZy5yzgpg5TmQg=
+X-Google-Smtp-Source: ABdhPJzQfhLQNusBa58WECbRacrHTh9tGRNhVSlSjBye+1n+V0kS87btsBe78lwi5Icja7u8ybAmYg==
+X-Received: by 2002:a17:90a:300c:: with SMTP id g12mr19182828pjb.4.1609529538861;
+        Fri, 01 Jan 2021 11:32:18 -0800 (PST)
+Received: from adolin ([49.207.192.47])
+        by smtp.gmail.com with ESMTPSA id z23sm40771132pfj.143.2021.01.01.11.32.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Jan 2021 11:32:18 -0800 (PST)
+Date:   Sat, 2 Jan 2021 01:02:13 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     melissa.srw@gmail.com
+Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/vkms: Decouple config data for configfs
+Message-ID: <20210101193213.2dq6o7m3kgxf6wt7@adolin>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYBPR01MB5309.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 902d04eb-e06e-4c84-ceca-08d8ae872d13
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jan 2021 18:58:07.0297
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Gt/kmXS9yX4VHnGz6CSwna/nyolnTUoloOz4e6HOB/Mwyhmj4YMKW2FnUxJlumMn+Frme+xKQ191FyibjIGCw5OxU2ZlhkOchCRrcxIAfSk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB2655
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+Currently, data for the device instance is held by vkms_device.
+Add a separate type, vkms_config to contain configuration details
+for the device and various modes to be later used by configfs.
+This config data stays constant once the device is created.
 
-Thanks for the patch.
+Accordingly, add vkms_create and vkms_destroy to initialize/destroy
+device through configfs. Currently, they are being called from vkms_init
+and vkms_exit, but will be evoked from configfs later on. When configfs
+is added, device configuration- enabling/disabling features will
+be tracked by configfs and only vkms device lifetime will be kept track of
+by vkms_init and vkms_exit functions.
 
-> -----Original Message-----
-> From: Adam Ford <aford173@gmail.com>
-> Sent: 01 January 2021 11:39
-> To: linux-renesas-soc@vger.kernel.org
-> Cc: aford@beaconembedded.com; Adam Ford <aford173@gmail.com>; Krzysztof
-> Kozlowski <krzk@kernel.org>; Rob Herring <robh+dt@kernel.org>; Geert
-> Uytterhoeven <geert+renesas@glider.be>; Magnus Damm
-> <magnus.damm@gmail.com>; Sergei Shtylyov <sergei.shtylyov@gmail.com>;
-> linux-kernel@vger.kernel.org; devicetree@vger.kernel.org
-> Subject: [PATCH 1/2] dt-bindings: memory: Renesas RPC-IF: Add support for
-> RZ/G2 Series
->=20
-> The RZ/G2 Series has the RPC-IF interface.
-> Update bindings to support: r8a774a1, r8a774b1, r8a774c0, and r8a774e1
->=20
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> ---
->  .../bindings/memory-controllers/renesas,rpc-if.yaml           | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/memory-
-> controllers/renesas,rpc-if.yaml
-> b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yam=
-l
-> index 6d6ba608fd22..050c66af8c2c 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-
-> if.yaml
-> +++ b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-
-> if.yaml
-> @@ -26,6 +26,10 @@ properties:
->    compatible:
->      items:
->        - enum:
-> +          - renesas,r8a774a1-rpc-if       # RZ/G2M
-> +          - renesas,r8a774b1-rpc-if       # RZ/G2N
-> +          - renesas,r8a774c0-rpc-if       # RZ/G2E
-> +          - renesas,r8a774e1-rpc-if       # RZ/G2H
->            - renesas,r8a77970-rpc-if       # R-Car V3M
->            - renesas,r8a77980-rpc-if       # R-Car V3H
->            - renesas,r8a77995-rpc-if       # R-Car D3
+Modify usage of enable_cursor feature to reflect the changes in
+relevant files.
 
-May be we need to update the below description as well to cover RZ/G2 devic=
-e??
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+---
+ drivers/gpu/drm/vkms/vkms_drv.c    | 40 ++++++++++++++++++++++++------
+ drivers/gpu/drm/vkms/vkms_drv.h    | 11 +++++---
+ drivers/gpu/drm/vkms/vkms_output.c |  4 +--
+ 3 files changed, 42 insertions(+), 13 deletions(-)
 
-- const: renesas,rcar-gen3-rpc-if   # a generic R-Car gen3 device
-
-Cheers,
-Biju
-
-
-> --
-> 2.25.1
+diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
+index aef29393b811..6b33975a5cb2 100644
+--- a/drivers/gpu/drm/vkms/vkms_drv.c
++++ b/drivers/gpu/drm/vkms/vkms_drv.c
+@@ -34,9 +34,9 @@
+ #define DRIVER_MAJOR	1
+ #define DRIVER_MINOR	0
+ 
+-static struct vkms_device *vkms_device;
++static struct vkms_config *default_config;
+ 
+-bool enable_cursor = true;
++static bool enable_cursor = true;
+ module_param_named(enable_cursor, enable_cursor, bool, 0444);
+ MODULE_PARM_DESC(enable_cursor, "Enable/Disable cursor support");
+ 
+@@ -122,10 +122,11 @@ static int vkms_modeset_init(struct vkms_device *vkmsdev)
+ 	return vkms_output_init(vkmsdev, 0);
+ }
+ 
+-static int __init vkms_init(void)
++static int vkms_create(struct vkms_config *config)
+ {
+ 	int ret;
+ 	struct platform_device *pdev;
++	struct vkms_device *vkms_device;
+ 
+ 	pdev = platform_device_register_simple(DRIVER_NAME, -1, NULL, 0);
+ 	if (IS_ERR(pdev))
+@@ -143,6 +144,8 @@ static int __init vkms_init(void)
+ 		goto out_devres;
+ 	}
+ 	vkms_device->platform = pdev;
++	vkms_device->config = config;
++	config->dev = vkms_device;
+ 
+ 	ret = dma_coerce_mask_and_coherent(vkms_device->drm.dev,
+ 					   DMA_BIT_MASK(64));
+@@ -179,21 +182,42 @@ static int __init vkms_init(void)
+ 	return ret;
+ }
+ 
+-static void __exit vkms_exit(void)
++static int __init vkms_init(void)
++{
++	struct vkms_config *config = kmalloc(sizeof(*config), GFP_KERNEL);
++
++	default_config = config;
++
++	config->cursor = enable_cursor;
++
++	return vkms_create(config);
++}
++
++static void vkms_destroy(struct vkms_config *config)
+ {
+ 	struct platform_device *pdev;
+ 
+-	if (!vkms_device) {
++	if (!config->dev) {
+ 		DRM_INFO("vkms_device is NULL.\n");
+ 		return;
+ 	}
+ 
+-	pdev = vkms_device->platform;
++	pdev = config->dev->platform;
+ 
+-	drm_dev_unregister(&vkms_device->drm);
+-	drm_atomic_helper_shutdown(&vkms_device->drm);
++	drm_dev_unregister(&config->dev->drm);
++	drm_atomic_helper_shutdown(&config->dev->drm);
+ 	devres_release_group(&pdev->dev, NULL);
+ 	platform_device_unregister(pdev);
++
++	config->dev = NULL;
++}
++
++static void __exit vkms_exit(void)
++{
++	if (default_config->dev)
++		vkms_destroy(default_config);
++
++	kfree(default_config);
+ }
+ 
+ module_init(vkms_init);
+diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+index 5ed91ff08cb3..2fa0c52f1dd8 100644
+--- a/drivers/gpu/drm/vkms/vkms_drv.h
++++ b/drivers/gpu/drm/vkms/vkms_drv.h
+@@ -19,8 +19,6 @@
+ #define XRES_MAX  8192
+ #define YRES_MAX  8192
+ 
+-extern bool enable_cursor;
+-
+ struct vkms_composer {
+ 	struct drm_framebuffer fb;
+ 	struct drm_rect src, dst;
+@@ -82,10 +80,17 @@ struct vkms_output {
+ 	spinlock_t composer_lock;
+ };
+ 
++struct vkms_device;
++struct vkms_config {
++	bool cursor;
++	/* only set when instantiated */
++	struct vkms_device *dev;
++};
+ struct vkms_device {
+ 	struct drm_device drm;
+ 	struct platform_device *platform;
+ 	struct vkms_output output;
++	const struct vkms_config *config;
+ };
+ 
+ #define drm_crtc_to_vkms_output(target) \
+@@ -123,4 +128,4 @@ void vkms_set_composer(struct vkms_output *out, bool enabled);
+ /* Writeback */
+ int vkms_enable_writeback_connector(struct vkms_device *vkmsdev);
+ 
+-#endif /* _VKMS_DRV_H_ */
++#endif /* _VKMS_DRV_H_ */
+\ No newline at end of file
+diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
+index 4a1848b0318f..8f3ffb28b9d1 100644
+--- a/drivers/gpu/drm/vkms/vkms_output.c
++++ b/drivers/gpu/drm/vkms/vkms_output.c
+@@ -46,7 +46,7 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
+ 	if (IS_ERR(primary))
+ 		return PTR_ERR(primary);
+ 
+-	if (enable_cursor) {
++	if (vkmsdev->config->cursor) {
+ 		cursor = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_CURSOR, index);
+ 		if (IS_ERR(cursor)) {
+ 			ret = PTR_ERR(cursor);
+@@ -98,7 +98,7 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
+ 	drm_crtc_cleanup(crtc);
+ 
+ err_crtc:
+-	if (enable_cursor)
++	if (vkmsdev->config->cursor)
+ 		drm_plane_cleanup(cursor);
+ 
+ err_cursor:
+-- 
+2.25.1
 
