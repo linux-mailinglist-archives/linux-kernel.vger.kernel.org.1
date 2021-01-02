@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEE02E88DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 23:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721352E88E3
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 23:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbhABWG7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 2 Jan 2021 17:06:59 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:50573 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726811AbhABWG6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 17:06:58 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-weeSOveWOFOUU-SzXPu64Q-1; Sat, 02 Jan 2021 17:06:03 -0500
-X-MC-Unique: weeSOveWOFOUU-SzXPu64Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C0FD59;
-        Sat,  2 Jan 2021 22:06:01 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CE9319481;
-        Sat,  2 Jan 2021 22:05:56 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 22/22] perf test: Add daemon ping command test
-Date:   Sat,  2 Jan 2021 23:04:41 +0100
-Message-Id: <20210102220441.794923-23-jolsa@kernel.org>
-In-Reply-To: <20210102220441.794923-1-jolsa@kernel.org>
-References: <20210102220441.794923-1-jolsa@kernel.org>
+        id S1727276AbhABWIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 17:08:36 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:37336 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726822AbhABWIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 17:08:35 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kvp3c-0000bI-Fl; Sun, 03 Jan 2021 09:07:33 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sun, 03 Jan 2021 09:07:32 +1100
+Date:   Sun, 3 Jan 2021 09:07:32 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     arnd@arndb.de, davem@davemloft.net, jernej.skrabec@siol.net,
+        mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v4 0/8] crypto: sun4i-ss: prevent always fallback for
+ ciphers
+Message-ID: <20210102220732.GK12767@gondor.apana.org.au>
+References: <20201214200232.17357-1-clabbe@baylibre.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214200232.17357-1-clabbe@baylibre.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding test for perf daemon ping command. The tests
-verifies the ping command gets proper answer from
-sessions.
+On Mon, Dec 14, 2020 at 08:02:24PM +0000, Corentin Labbe wrote:
+> Hello
+> 
+> For help testing on "crypto: sun4i-ss - Fix sparse endianness markers",
+> I have added "stats" support like other allwinner's crypto drivers.
+> Seeing stats showed a clear problem, the ciphers function were not used
+> at all.
+> This is due to the not-inialized need_fallback which is "init" as true
+> everytime.
+> So basicly, since the patch introduced it, this probem hidden some bugs.
+> 
+> This serie fixes all hidden problems, then fix the initialization of
+> "need_fallback" and then add the stats like other allwinner drivers.
+> 
+> Regards
+> 
+> changes since v3:
+> - patch #2: Rewrite test as suggested by David Laight
+> - patch #7: removed all ifdef CONFIG_CRYPTO_DEV_SUN4I_SS_DEBUG
+> - added kmap patch
+> 
+> Changes since v2:
+> - patch #1: move buf/bufo out of function for reducing stack usage
+> - patch #4: use writesl()
+> - patch #6: use IS_ENABLED instead of #ifdef
+> 
+> Changes since v1:
+> - patch #4 is sufficient to fix BE problem (removed todo)
+> 
+> Corentin Labbe (8):
+>   crypto: sun4i-ss: linearize buffers content must be kept
+>   crypto: sun4i-ss: checking sg length is not sufficient
+>   crypto: sun4i-ss: IV register does not work on A10 and A13
+>   crypto: sun4i-ss: handle BigEndian for cipher
+>   crypto: sun4i-ss: initialize need_fallback
+>   crypto: sun4i-ss: fix kmap usage
+>   crypto: sun4i-ss: enabled stats via debugfs
+>   crypto: sun4i-ss: add SPDX header and remove blank lines
+> 
+>  drivers/crypto/allwinner/Kconfig              |   9 +
+>  .../allwinner/sun4i-ss/sun4i-ss-cipher.c      | 196 +++++++++++-------
+>  .../crypto/allwinner/sun4i-ss/sun4i-ss-core.c |  52 +++++
+>  .../crypto/allwinner/sun4i-ss/sun4i-ss-hash.c |   6 +
+>  .../crypto/allwinner/sun4i-ss/sun4i-ss-prng.c |   6 +
+>  drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h  |   8 +
+>  6 files changed, 207 insertions(+), 70 deletions(-)
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/tests/shell/daemon.sh | 40 ++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
-
-diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index 792a7a846830..242470ff8d06 100755
---- a/tools/perf/tests/shell/daemon.sh
-+++ b/tools/perf/tests/shell/daemon.sh
-@@ -338,11 +338,51 @@ EOF
- 	rm -f ${config}
- }
- 
-+test_ping()
-+{
-+	echo "test daemon ping"
-+
-+	local config=$(mktemp /tmp/perf.daemon.config.XXX)
-+	local base=$(mktemp -d /tmp/perf.daemon.base.XXX)
-+
-+	# prepare config
-+	cat <<EOF > ${config}
-+[daemon]
-+base=BASE
-+
-+[session-size]
-+run = -e cpu-clock
-+
-+[session-time]
-+run = -e task-clock
-+EOF
-+
-+	sed -i -e "s|BASE|${base}|" ${config}
-+
-+	# start daemon
-+	daemon_start ${config} size
-+
-+	size=`perf daemon ping --config ${config} --session size | awk '{ print $1 }'`
-+	type=`perf daemon ping --config ${config} --session time | awk '{ print $1 }'`
-+
-+	if [ ${size} != "OK" -o ${type} != "OK" ]; then
-+		error=1
-+		echo "FAILED: daemon ping failed"
-+	fi
-+
-+	# stop daemon
-+	daemon_exit ${base} ${config}
-+
-+	rm -rf ${base}
-+	rm -f ${config}
-+}
-+
- error=0
- 
- test_list
- test_reconfig
- test_stop
- test_signal
-+test_ping
- 
- exit ${error}
+All applied.  Thanks.
 -- 
-2.26.2
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
