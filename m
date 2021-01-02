@@ -2,127 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0A12E8959
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 00:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634B82E895F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 00:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbhABXaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 18:30:24 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47780 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726678AbhABXaX (ORCPT
+        id S1726921AbhABXqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 18:46:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726687AbhABXqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 18:30:23 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 6BD7429A95;
-        Sat,  2 Jan 2021 18:29:41 -0500 (EST)
-Date:   Sun, 3 Jan 2021 10:29:39 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org,
+        Sat, 2 Jan 2021 18:46:15 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBB6C061573
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Jan 2021 15:45:34 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id 91so27240328wrj.7
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 15:45:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oiqcBp2KAElTs9dOPNYLnYvG9oB7g9MLqN9OAEFRAh8=;
+        b=e9avM2k7O1I5PPA8YBYtZWEXSWrTwO/LKl9Ajo7EmcFNliNiyh5Hij0h/qlj2EfYZw
+         WbvbjvfSGIhjiYi6INqmHJNRE34jhVk6m/FJvOJM2tIBwAaT8Zu2bJuEf+xVvMD50Dkr
+         o/HofBOjuGCKil1ccbDAcM/ImIlRsh3+Lx9vvqMqHQurz42IawVE2DjaIKVmcPmZgut1
+         r3NcGFvX8zOKudYZ2IPXozxXUCi86LRAkwmzc3nx2WJMM+f/f1S5QD1WFIEZjwEZk/eg
+         QG8lXt+sOITg6LdU9UwCwjyQi/rLMW2FYX32phdHho9Owkh2n9qWw08N+3Bs80Tjh2AZ
+         7OkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oiqcBp2KAElTs9dOPNYLnYvG9oB7g9MLqN9OAEFRAh8=;
+        b=kizkezeBEp0XqHjjzW2PeHA1NuSzLQFN0upU4h5gJuqIKX2WuAB6dn3gT1d8/g4Jyx
+         xFTl/ET8L72bdMVLvL2HthKjTHQU2/at3Sl6TEmfHFxSLhiyZrYm1YCurlteor221u46
+         SIwkNgRgg4SnRGEwHIo37hq/gHHfZQP+7o9/vb2pUSqrwEJiCZSeeQ+RsakNCIiDt82i
+         9Bzi1X3Y6BeWBdGdssMyAySM5iEyvz4pj7D8eDb1LHrDwTE7HHw5VzD5mz1WXQVdGjd/
+         VbPtcTDrTLdL4oCq/QmcsVKc75V3VXxxxN2aDf3oLI8duyJEb68QLnaCTM2Yw2Hknft5
+         JS/A==
+X-Gm-Message-State: AOAM5303mj9OH7tfcgXCgnyP6erJ94mTYyYRdxzwacAwp9pqk9MFjic7
+        ADp7/9DZiIm1jY4zwctn04g=
+X-Google-Smtp-Source: ABdhPJznFmVOysGyh8qbi12W6KDlcHlq2prc82N13A5GdDq+QRQz9wv3b0H+ocfijkm+69YtlmMdug==
+X-Received: by 2002:adf:fe05:: with SMTP id n5mr75061339wrr.9.1609631133148;
+        Sat, 02 Jan 2021 15:45:33 -0800 (PST)
+Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
+        by smtp.gmail.com with ESMTPSA id w8sm82574750wrl.91.2021.01.02.15.45.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Jan 2021 15:45:32 -0800 (PST)
+Date:   Sat, 2 Jan 2021 20:45:25 -0300
+From:   Melissa Wen <melissa.srw@gmail.com>
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] ide/falconide: Fix module unload
-In-Reply-To: <63369c9b96673442a4bd653fe92acda99172123a.1605847196.git.fthain@telegraphics.com.au>
-Message-ID: <alpine.LNX.2.23.453.2101031017290.12@nippy.intranet>
-References: <63369c9b96673442a4bd653fe92acda99172123a.1605847196.git.fthain@telegraphics.com.au>
+Subject: Re: [PATCH V2] drm/vkms: Decouple config data for configfs
+Message-ID: <20210102234525.l2j2s2rcd4p56rzr@smtp.gmail.com>
+References: <20210102115557.qqfhohlx6yeo27vh@adolin>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210102115557.qqfhohlx6yeo27vh@adolin>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Hi Sumera,
 
-This patch was sent in September and subsequently resent in November. I've 
-since learned that the maintainer has been ill. What's the best way 
-forward for fixes like this?
+Thanks for your patch.
+Please see some comments below.
 
-Regards,
-Finn
-
-On Fri, 20 Nov 2020, Finn Thain wrote:
-
-> Unloading the falconide module results in a crash:
+On 01/02, Sumera Priyadarsini wrote:
+> Currently, data for the device instance is held by vkms_device.
+> Add a separate type, vkms_config to contain configuration details
+> for the device and various modes to be later used by configfs.
+> This config data stays constant once the device is created.
 > 
-> Unable to handle kernel NULL pointer dereference at virtual address 00000000
-> Oops: 00000000
-> Modules linked in: falconide(-)
-> PC: [<002930b2>] ide_host_remove+0x2e/0x1d2
-> SR: 2000  SP: 00b49e28  a2: 009b0f90
-> d0: 00000000    d1: 009b0f90    d2: 00000000    d3: 00b48000
-> d4: 003cef32    d5: 00299188    a0: 0086d000    a1: 0086d000
-> Process rmmod (pid: 322, task=009b0f90)
-> Frame format=7 eff addr=00000000 ssw=0505 faddr=00000000
-> wb 1 stat/addr/data: 0000 00000000 00000000
-> wb 2 stat/addr/data: 0000 00000000 00000000
-> wb 3 stat/addr/data: 0000 00000000 00018da9
-> push data: 00000000 00000000 00000000 00000000
-> Stack from 00b49e90:
->         004c456a 0027f176 0027cb0a 0027cb9e 00000000 0086d00a 2187d3f0 0027f0e0
->         00b49ebc 2187d1f6 00000000 00b49ec8 002811e8 0086d000 00b49ef0 0028024c
->         0086d00a 002800d6 00279a1a 00000001 00000001 0086d00a 2187d3f0 00279a58
->         00b49f1c 002802e0 0086d00a 2187d3f0 004c456a 0086d00a ef96af74 00000000
->         2187d3f0 002805d2 800de064 00b49f44 0027f088 2187d3f0 00ac1cf4 2187d3f0
->         004c43be 2187d3f0 00000000 2187d3f0 800b66a8 00b49f5c 00280776 2187d3f0
-> Call Trace: [<0027f176>] __device_driver_unlock+0x0/0x48
->  [<0027cb0a>] device_links_busy+0x0/0x94
->  [<0027cb9e>] device_links_unbind_consumers+0x0/0x130
->  [<0027f0e0>] __device_driver_lock+0x0/0x5a
->  [<2187d1f6>] falconide_remove+0x12/0x18 [falconide]
->  [<002811e8>] platform_drv_remove+0x1c/0x28
->  [<0028024c>] device_release_driver_internal+0x176/0x17c
->  [<002800d6>] device_release_driver_internal+0x0/0x17c
->  [<00279a1a>] get_device+0x0/0x22
->  [<00279a58>] put_device+0x0/0x18
->  [<002802e0>] driver_detach+0x56/0x82
->  [<002805d2>] driver_remove_file+0x0/0x24
->  [<0027f088>] bus_remove_driver+0x4c/0xa4
->  [<00280776>] driver_unregister+0x28/0x5a
->  [<00281a00>] platform_driver_unregister+0x12/0x18
->  [<2187d2a0>] ide_falcon_driver_exit+0x10/0x16 [falconide]
->  [<000764f0>] sys_delete_module+0x110/0x1f2
->  [<000e83ea>] sys_rename+0x1a/0x1e
->  [<00002e0c>] syscall+0x8/0xc
->  [<00188004>] ext4_multi_mount_protect+0x35a/0x3ce
-> Code: 0029 9188 4bf9 0027 aa1c 283c 003c ef32 <265c> 4a8b 6700 00b8 2043 2028 000c 0280 00ff ff00 6600 0176 40c0 7202 b2b9 004c
-> Disabling lock debugging due to kernel taint
+> Accordingly, add vkms_create and vkms_destroy to initialize/destroy
+> device through configfs. Currently, they are being called from vkms_init
+> and vkms_exit, but will be evoked from configfs later on. When configfs
+> is added, device configuration- enabling/disabling features will
+> be tracked by configfs and only vkms device lifetime will be kept track of
+> by vkms_init and vkms_exit functions.
+
+I didn't quite understand this very last sentence.
+
 > 
-> This happens because the driver_data pointer is uninitialized.
-> Add the missing platform_set_drvdata() call. For clarity, use the
-> matching platform_get_drvdata() as well.
+> Modify usage of enable_cursor feature to reflect the changes in
+> relevant files.
+
+Since the goal is also enabling/disabling writeback and vblank via a
+future configfs support, it would be nice to see here this same cursor
+adaptation applied to others, initially as a module parameter.  For
+writeback, it's really straightforward...
+
 > 
-> Cc: Michael Schmitz <schmitzmic@gmail.com>
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Fixes: 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> Co-developed-by: Daniel Vetter <danvet.vetter@ffwl.ch>
+
+There are some formatting details for credits, for example, including
+the co-developer s-o-b. See here:
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
+
 > ---
-> This patch was tested using Aranym.
-> ---
->  drivers/ide/falconide.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Changes in v2:
+> - add Co-developed-by tag
 > 
-> diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
-> index dbeb2605e5f6..607c44bc50f1 100644
-> --- a/drivers/ide/falconide.c
-> +++ b/drivers/ide/falconide.c
-> @@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
->  	if (rc)
->  		goto err_free;
+> ---
+>  drivers/gpu/drm/vkms/vkms_drv.c    | 40 ++++++++++++++++++++++++------
+>  drivers/gpu/drm/vkms/vkms_drv.h    | 11 +++++---
+>  drivers/gpu/drm/vkms/vkms_output.c |  4 +--
+>  3 files changed, 42 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
+> index aef29393b811..6b33975a5cb2 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.c
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
+> @@ -34,9 +34,9 @@
+>  #define DRIVER_MAJOR	1
+>  #define DRIVER_MINOR	0
 >  
-> +	platform_set_drvdata(pdev, host);
->  	return 0;
->  err_free:
->  	ide_host_free(host);
-> @@ -176,7 +177,7 @@ static int __init falconide_init(struct platform_device *pdev)
+> -static struct vkms_device *vkms_device;
+> +static struct vkms_config *default_config;
 >  
->  static int falconide_remove(struct platform_device *pdev)
+> -bool enable_cursor = true;
+> +static bool enable_cursor = true;
+>  module_param_named(enable_cursor, enable_cursor, bool, 0444);
+>  MODULE_PARM_DESC(enable_cursor, "Enable/Disable cursor support");
+>  
+> @@ -122,10 +122,11 @@ static int vkms_modeset_init(struct vkms_device *vkmsdev)
+>  	return vkms_output_init(vkmsdev, 0);
+>  }
+>  
+> -static int __init vkms_init(void)
+> +static int vkms_create(struct vkms_config *config)
 >  {
-> -	struct ide_host *host = dev_get_drvdata(&pdev->dev);
-> +	struct ide_host *host = platform_get_drvdata(pdev);
+>  	int ret;
+>  	struct platform_device *pdev;
+> +	struct vkms_device *vkms_device;
 >  
->  	ide_host_remove(host);
+>  	pdev = platform_device_register_simple(DRIVER_NAME, -1, NULL, 0);
+>  	if (IS_ERR(pdev))
+> @@ -143,6 +144,8 @@ static int __init vkms_init(void)
+>  		goto out_devres;
+>  	}
+>  	vkms_device->platform = pdev;
+> +	vkms_device->config = config;
+> +	config->dev = vkms_device;
 >  
+>  	ret = dma_coerce_mask_and_coherent(vkms_device->drm.dev,
+>  					   DMA_BIT_MASK(64));
+> @@ -179,21 +182,42 @@ static int __init vkms_init(void)
+>  	return ret;
+>  }
+>  
+> -static void __exit vkms_exit(void)
+> +static int __init vkms_init(void)
+> +{
+> +	struct vkms_config *config = kmalloc(sizeof(*config), GFP_KERNEL);
+> +
+> +	default_config = config;
+> +
+> +	config->cursor = enable_cursor;
+> +
+> +	return vkms_create(config);
+> +}
+> +
+> +static void vkms_destroy(struct vkms_config *config)
+>  {
+>  	struct platform_device *pdev;
+>  
+> -	if (!vkms_device) {
+> +	if (!config->dev) {
+>  		DRM_INFO("vkms_device is NULL.\n");
+>  		return;
+>  	}
+>  
+> -	pdev = vkms_device->platform;
+> +	pdev = config->dev->platform;
+>  
+> -	drm_dev_unregister(&vkms_device->drm);
+> -	drm_atomic_helper_shutdown(&vkms_device->drm);
+> +	drm_dev_unregister(&config->dev->drm);
+> +	drm_atomic_helper_shutdown(&config->dev->drm);
+>  	devres_release_group(&pdev->dev, NULL);
+>  	platform_device_unregister(pdev);
+> +
+> +	config->dev = NULL;
+> +}
+> +
+> +static void __exit vkms_exit(void)
+> +{
+> +	if (default_config->dev)
+> +		vkms_destroy(default_config);
+> +
+> +	kfree(default_config);
+>  }
+>  
+>  module_init(vkms_init);
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> index 5ed91ff08cb3..2fa0c52f1dd8 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -19,8 +19,6 @@
+>  #define XRES_MAX  8192
+>  #define YRES_MAX  8192
+>  
+> -extern bool enable_cursor;
+> -
+>  struct vkms_composer {
+>  	struct drm_framebuffer fb;
+>  	struct drm_rect src, dst;
+> @@ -82,10 +80,17 @@ struct vkms_output {
+>  	spinlock_t composer_lock;
+>  };
+>  
+> +struct vkms_device;
+> +struct vkms_config {
+> +	bool cursor;
+> +	/* only set when instantiated */
+> +	struct vkms_device *dev;
+> +};
+>  struct vkms_device {
+>  	struct drm_device drm;
+>  	struct platform_device *platform;
+>  	struct vkms_output output;
+> +	const struct vkms_config *config;
+>  };
+>  
+>  #define drm_crtc_to_vkms_output(target) \
+> @@ -123,4 +128,4 @@ void vkms_set_composer(struct vkms_output *out, bool enabled);
+>  /* Writeback */
+>  int vkms_enable_writeback_connector(struct vkms_device *vkmsdev);
+>  
+> -#endif /* _VKMS_DRV_H_ */
+> +#endif /* _VKMS_DRV_H_ */
+> \ No newline at end of file
+> diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
+> index 4a1848b0318f..8f3ffb28b9d1 100644
+> --- a/drivers/gpu/drm/vkms/vkms_output.c
+> +++ b/drivers/gpu/drm/vkms/vkms_output.c
+> @@ -46,7 +46,7 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
+>  	if (IS_ERR(primary))
+>  		return PTR_ERR(primary);
+>  
+> -	if (enable_cursor) {
+> +	if (vkmsdev->config->cursor) {
+>  		cursor = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_CURSOR, index);
+>  		if (IS_ERR(cursor)) {
+>  			ret = PTR_ERR(cursor);
+> @@ -98,7 +98,7 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
+>  	drm_crtc_cleanup(crtc);
+>  
+>  err_crtc:
+> -	if (enable_cursor)
+> +	if (vkmsdev->config->cursor)
+>  		drm_plane_cleanup(cursor);
+>  
+>  err_cursor:
+> -- 
+> 2.25.1
 > 
