@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F8F2E8709
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 12:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADEF2E870B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 12:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbhABLYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 06:24:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726486AbhABLYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 06:24:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F30CB207CD
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Jan 2021 11:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609586617;
-        bh=QkAtYWKA5NhUKSgBrKt3Um+b8JsODNS1rc7ga3g5SHk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HgATpEfsWXamt8ySvK2iYAfXRczn34Y0UgUZBPJY0UgZw985oNTVaoG4BbULlRBIB
-         Q9aBTTWNjizwgF6gud7fLYsnjPbMpCKKo6KZLIPRcfdqQtm1tci3FlaHL/vTiPHgcU
-         q9ePbNvQj2p4CHa/KmdSuKFzELGx51O1Khdy6YK3xlEa35zO1NpHFmghjWmg8sqh0n
-         b36unRniR0uJ3IvEuAJ1+vtDqez7MQzTMUBdUrqL1XPJziunLJU/udGwGAVdZMTFs/
-         MHaV6lubp1QvphvWbNLN/elKic4ZLDkPKhvt7TQGlkv93VPrbmOU6yTaltDB4/mOOa
-         cCpDL9OIKc0/A==
-Received: by mail-ot1-f44.google.com with SMTP id j12so21707473ota.7
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 03:23:36 -0800 (PST)
-X-Gm-Message-State: AOAM532U4AyySrOVgBWIppCRFRMkayEJqbOm4TvTCRi8zyueRYlXC9yd
-        o3GBkOG38PL+++tGUCXVyM1VZh3HGf3iRvVZqoA=
-X-Google-Smtp-Source: ABdhPJxtNm2L3E+7cUbGuFw8FJsQ5ZXduzpGG24W4VGko6nC5XeZqvgH+bJbgT94nbPC/zq9Pz+doj4j9bk+F3IDAWg=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr49011301ots.251.1609586616367;
- Sat, 02 Jan 2021 03:23:36 -0800 (PST)
+        id S1726603AbhABL1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 06:27:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbhABL1X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 06:27:23 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3FBC061573;
+        Sat,  2 Jan 2021 03:26:43 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id x15so21020509ilq.1;
+        Sat, 02 Jan 2021 03:26:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=ilqSGevT+DyYr8MeIp8qHL893rQcqVgolA4bHX/apQI=;
+        b=kfFwW3KUC+iOyuBvNc1vFQfnl6f7Ld3zhYu2uvUR7gFdXKJE/01yg6ci89az7nfV7o
+         BUgo4DTt9KFPa8HE5yFnJUZso3N4yob65jQe4yZ9I2UhLwhG/Nt9tk4hyloPmbW3R+lK
+         bHIVoErrGtWtJ7lO20b1mglLWsQHlBjNZ1RAY5D6Fpd0ZjtGvzOebYdB0OGSav0yNQDe
+         l9brnioQKdT9oHSrGIUeV2kYKyG5QI8G902FRP+o2yhUDitRQ3LUlHWT+fMDdDayumyC
+         r4sxoBbGM7d/AvLb8z9jXa49wZkvW3H4xxJXVHy0GjN8rr2GIbP9lLJsWlXcfVW/cAxp
+         YavQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=ilqSGevT+DyYr8MeIp8qHL893rQcqVgolA4bHX/apQI=;
+        b=UC9c/lybyrp+ax9dKjXq7ihRSsO6lEkhBwguwtvDN868gueRXt99dG5aziFYE7uwte
+         LtA2eaxcHIc/pdkQPg4cpkF0zSWpRruSCRlOrjwqoLLEXRECr3eNBvU0k1AkDHLzjpT9
+         96sbZag6RNxTonF7YInJk03brSlwsrJpaQtIKNrScb56LlxazpBg4hYTGtwMbgNq+KeE
+         ajY+quX3aWWdjAmrh2L1yBVE1zRCcLGFuTbIX1yqXqYOgqRlx6cwZ5hhYixVb77EeO2g
+         rMUrZ9oDjalzrsfZgKgn4cPBxqtD9T7X0JFzhnT4+d9TGorjH0jWqQR5k/Jj+vCNwjJD
+         l4ow==
+X-Gm-Message-State: AOAM530i60Hi5tWzM2ZTI4VufCtZcO6280NCREXQDs2kk62JWk4br8aW
+        BRrAqG3u6Ya/LdVEP8vVj7RoVBzGjrCT9nDLhT8=
+X-Google-Smtp-Source: ABdhPJyGy7BFoDfRwsBKcxFQ/IDLdrWCpXpe+KuzWl+Mlf7vz4gvGsMOAyKWsIjsUs08w73eeji0Qzo2HuM06/iqvK8=
+X-Received: by 2002:a92:d1cd:: with SMTP id u13mr45985648ilg.186.1609586801514;
+ Sat, 02 Jan 2021 03:26:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20201230153928.456260-1-arnd@kernel.org> <160934377188.21284.5702573697011773996@build.alporthouse.com>
-In-Reply-To: <160934377188.21284.5702573697011773996@build.alporthouse.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 2 Jan 2021 12:23:20 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0LWLKs+0quG_OS6EPgg2uSAOM69SKTix47tEUmuZWRdw@mail.gmail.com>
-Message-ID: <CAK8P3a0LWLKs+0quG_OS6EPgg2uSAOM69SKTix47tEUmuZWRdw@mail.gmail.com>
-Subject: Re: [PATCH] i915: fix shift warning
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        =?UTF-8?Q?Jos=C3=A9_Roberto_de_Souza?= <jose.souza@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
+ <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com>
+ <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
+ <20210101161435.GA344@duo.ucw.cz> <CA+icZUXKXt3NfgVxZN+m+3d_dqBi+o0EyJH53h-sXU8buaUe7g@mail.gmail.com>
+ <CAK7LNASQZ7SWrAykdH71iq6SyLj=gG-EGhCy8SHkDz_bdq2BMw@mail.gmail.com>
+ <CA+icZUXyfv0sOP=UG6oeoxpHbEpOrufJzzUWb3ZOpE_TMQerwQ@mail.gmail.com> <b9d3c1063d4c3f9a0cb71442cc92ad77a859d438.camel@petrovitsch.priv.at>
+In-Reply-To: <b9d3c1063d4c3f9a0cb71442cc92ad77a859d438.camel@petrovitsch.priv.at>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 2 Jan 2021 12:26:30 +0100
+Message-ID: <CA+icZUWsffXuBUTcjLhrGvDKRp8fut=k_HdyhQ-QLZHjfXpqmg@mail.gmail.com>
+Subject: Re: Linux 5.11-rc1
+To:     Bernd Petrovitsch <bernd@petrovitsch.priv.at>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 4:56 PM Chris Wilson <chris@chris-wilson.co.uk> wrote:
+On Sat, Jan 2, 2021 at 12:05 PM Bernd Petrovitsch
+<bernd@petrovitsch.priv.at> wrote:
 >
-> Quoting Arnd Bergmann (2020-12-30 15:39:14)
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Randconfig builds on 32-bit machines show lots of warnings for
-> > the i915 driver for incorrect bit masks like:
+> On Sat, 2021-01-02 at 10:13 +0100, Sedat Dilek wrote:
+> [...]
+> > To be honest I wondered why there were no more reports on this.
 >
-> mask is a u8.
+> Perhaps I'm not the only one who has /sbin and /usr/sbin in the
+> $PATH of normal accounts too (and idk what's the default
+> behaviour of distributions is - my .bashrc "fixes" the
+> $PATH).
 >
-> VCS0 is 2, I915_MAX_VCS 4
->
-> (u8 & GENMASK(5, 2)) >> 2
 
-Ah right, I misread the warning then.
+I was thinking more towards maxim/dictum:
+"Never break userspace!" or "It worked before but now it is not."
 
-> > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2584:9: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
-> >         return hweight64(VDBOX_MASK(&i915->gt));
-> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from macro 'hweight64'
-> >  #define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) : __arch_hweight64(w))
->
-> So it's upset by hweight64() on the unsigned long?
+Think of automated kernel build and test setups based on Debian.
 
-I suspect what is going on is that clang once again warns because it performs
-more code checks before dead-code elimination than gcc does. The warning is
-for the __const_hweight64() case, which is not actually used here because the
-input is not a compile-time constant.
+Debian/testing AMD64 has...
 
-> So hweight_long?
+[ /etc/login.defs ]
 
-That seems to work, I'll send a new version with that.
+# *REQUIRED*  The default PATH settings, for superuser and normal users.
+#
+# (they are minimal, add the rest in the shell startup files)
+ENV_SUPATH
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV_PATH        PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
 
-> Or use a cast, hweight8((intel_engine_mask_t)VDMASK())?
->
-> static __always_inline int engine_count(intel_engine_mask_t mask)
-> {
->         return sizeof(mask) == 1 ? hweight8(mask) :
->                 sizeof(mask) == 2 ? hweight16(mask) :
->                 sizeof(mask) == 4 ? hweight32(mask) :
->                 hweight64(mask);
-> }
+IMHO users should not need to fix their environment.
+( The discussion is a bit obsolete as we now have a fix. )
 
-Fine with me as well. If you prefer that way, I'll let you handle that.
-
-        Arnd
+- Sedat -
