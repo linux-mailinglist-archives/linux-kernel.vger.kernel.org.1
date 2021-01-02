@@ -2,196 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586DB2E85F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 00:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CC42E85FA
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 01:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727147AbhAAX4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 18:56:24 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:40914 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbhAAX4X (ORCPT
+        id S1727165AbhABANZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 19:13:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726344AbhABANY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 18:56:23 -0500
-Received: from localhost (unknown [IPv6:2804:431:c7f4:46f8:ae05:b936:9029:cd4b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 90E4B1F411B3;
-        Fri,  1 Jan 2021 23:55:40 +0000 (GMT)
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com, Linux API <linux-api@vger.kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: [PATCH] entry: Use different define for selector variable in SUD
-Date:   Fri,  1 Jan 2021 20:55:29 -0300
-Message-Id: <20210101235529.1563262-1-krisman@collabora.com>
-X-Mailer: git-send-email 2.29.2
+        Fri, 1 Jan 2021 19:13:24 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E990C061573
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 16:12:44 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 23so51061729lfg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 16:12:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wbck+fgkUSYN3SoIvVdtLOIeWmttzgxmYEJ24u5l950=;
+        b=kFXUD1Kh5qBPu/fWthGSe75e3mKRdKKrrI1+SpBjIvEc/0AD4j2daAm/y09QmDw7W+
+         zqkhNkQ/bw6R0MI/0Jwt4bxi8qCCRPTqQij8/lvUiBouueVxbL6OSju+1KGkB+C4Hr+x
+         i8Gd+WMwcA5D88jq9uA63q6qKY+/53OnraiLoUo4XAYudSgw/x0Y6MFHquVaDDNNSl4M
+         t2aKvocvpF1nNhKGC0vEVkXX10Z85kkorTdSt4tUVQysaIYYqw2KD29g2p+DdNaTz8La
+         accU1rggwdt9KEUEwDDBD8nACqFhXHN63dYBP8jmmgVd8glBMWS4Y0ByjynmAOCthC7d
+         vwQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wbck+fgkUSYN3SoIvVdtLOIeWmttzgxmYEJ24u5l950=;
+        b=ocp41D/lrXLFjWANB0g/7WNv9M8OwK+wJoLDaWubzDWTO2AA3aGKpU1vfNyufaIlTP
+         vDRLDsmlLSzjCQKsec6/a0uk/T8fu7n9RvzGG9iWs63msmKMd50nyQL64zuIyKvYhRej
+         ctQbyvFsGyAloRdzBh7n4lg8kMA7xdilX3tY08n3PdqAWJlKmvCK/mbEJBMMmIzcfVIz
+         OdMOQZvDSwHwydC/xxe2bL6IdHF88J9sY9IfrPFWJ0IDsneW4fb5xax4mJlMXKohySkM
+         vI+CwvlRcnCUycjnFO7E7wTT+ukLbVNySYvZ41xFgFZDVzh1wJtmlJCwaxTh1bFapu6v
+         ItqA==
+X-Gm-Message-State: AOAM530cFCD2sL5HwlGCYGxrZVc3aClClamzTcvnJi4kCMIg6PAPlB5p
+        ftoLHyZaNUYpDdNic2r+5Jmk0eo+lwgQ9pOGmjZ9jX+YaCujrJW3
+X-Google-Smtp-Source: ABdhPJynk4sQGX5K5GUk8WUbWuVCojFzQzSpFzdPNixvK/fUCy2UaCuLTw3xXbCxR7tk3G14LlKla2rINn0AWD+j9qY=
+X-Received: by 2002:a19:8b83:: with SMTP id n125mr30122878lfd.75.1609546362734;
+ Fri, 01 Jan 2021 16:12:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAGP6POJ1pRgSP+FSC2ds9afx4rDxm0BkbKK-RAJQuwLUE_2WhQ@mail.gmail.com>
+ <1b0ed31c-bccb-abcb-b8d5-159719e199c3@infradead.org> <CAGP6PO+JjF0iDXHqUD31cBtNASqbik_iEb3DguqVhUBG+q4LYQ@mail.gmail.com>
+ <75ee2c40-6a23-9a28-157e-72018faf0925@infradead.org>
+In-Reply-To: <75ee2c40-6a23-9a28-157e-72018faf0925@infradead.org>
+From:   Hongyi Zhao <hongyi.zhao@gmail.com>
+Date:   Sat, 2 Jan 2021 08:12:30 +0800
+Message-ID: <CAGP6POKUJOZ842mnU4-yWmgZnYNFVuHPFP1tMbFppOjfg9VdgQ@mail.gmail.com>
+Subject: Re: Generate the config file for kernel compilation non-interactively
+ in script.
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Kerrisk suggested that, from an API perspective, it is a bad
-idea to share the PR_SYS_DISPATCH_ defines between the prctl operation
-and the selector variable.  Therefore, define two new constants to be
-used by SUD's selector variable, and the corresponding documentation.
+On Sat, Jan 2, 2021 at 12:28 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> Hi,
+>
+> On 1/1/21 1:55 AM, Hongyi Zhao wrote:
+> > On Fri, Jan 1, 2021 at 2:32 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> >>
+> >> On 12/31/20 8:51 PM, Hongyi Zhao wrote:
+> >>> Hi,
+> >>>
+> >>> I want to build the realtime Linux for ROS 2 according to the
+> >>> guidelines here:
+> >>> <https://index.ros.org/doc/ros2/Tutorials/Building-Realtime-rt_preempt-kernel-for-ROS-2/>.
+> >>>
+> >>> For this purpose, I must enable the rt_preempt relative options in the
+> >>> kernel withe the following method interactively:
+> >>>
+> >>> $ make menuconfig
+> >>>
+> >>> and set the following
+> >>>
+> >>> # Enable CONFIG_PREEMPT_RT
+> >>>  -> General Setup
+> >>>   -> Preemption Model (Fully Preemptible Kernel (Real-Time))
+> >>>    (X) Fully Preemptible Kernel (Real-Time)
+> >>>
+> >>> # Enable CONFIG_HIGH_RES_TIMERS
+> >>>  -> General setup
+> >>>   -> Timers subsystem
+> >>>    [*] High Resolution Timer Support
+> >>>
+> >>> # Enable CONFIG_NO_HZ_FULL
+> >>>  -> General setup
+> >>>   -> Timers subsystem
+> >>>    -> Timer tick handling (Full dynticks system (tickless))
+> >>>     (X) Full dynticks system (tickless)
+> >>>
+> >>> # Set CONFIG_HZ_1000 (note: this is no longer in the General Setup
+> >>> menu, go back twice)
+> >>>  -> Processor type and features
+> >>>   -> Timer frequency (1000 HZ)
+> >>>    (X) 1000 HZ
+> >>>
+> >>> # Set CPU_FREQ_DEFAULT_GOV_PERFORMANCE [=y]
+> >>>  ->  Power management and ACPI options
+> >>>   -> CPU Frequency scaling
+> >>>    -> CPU Frequency scaling (CPU_FREQ [=y])
+> >>>     -> Default CPUFreq governor (<choice> [=y])
+> >>>      (X) performance
+> >>>
+> >>> But this is very inconvenient for doing the above job in script. Is
+> >>> there an alternative method to generate the above configurations for
+> >>> kernel compilation  non-interactively in script.
+> >>
+> >> Hi,
+> >> You can use scripts/config in the kernel source tree.
+> >> Something like this (I don't have RT kernel sources):
+> >>
+> >>
+> >> scripts/config -e PREEMPT_RT
+> >> scripts/config -e HIGH_RES_TIMERS
+> >> scripts/config -e NO_HZ_FULL
+> >> scripts/config -e HZ_1000
+> >> scripts/config -e CPU_FREQ_DEFAULT_GOV_PERFORMANCE
+> >
+> > Wonderful. Thanks a lot for your instructions. I really have noticed
+> > this tool but failed to figure out the corresponding translation rules
+> > for the options used by menuconfig and this script.
+> >
+> > BTW, how do you figure out the above options/arguments corresponding
+> > to the ones I've mentioned previously?
+> >
+>
+> Oh, I just took the ones that you had listed and removed the leading
+> "CONFIG_" from them.
+>
+> >>
+> >> Note that if any of those have other Kconfig dependencies, those Kconfig
+> >> symbols will also have to be enabled for this to work.
+> >
+> > How to know whether an option has other Kconfig dependencies and find
+> > the corresponding symbols/arguments for feeding to scripts/config?
+>
+> Use one of the interactive config tools (nconfig, xconfig).
+> They will show you dependencies, but you may have to enable other
+> symbols first.
+>
+> Maybe it would be easier to do a temporary 'make allmodconfig'
+> to have the symbols that you are interested in be enabled, then
+> you can find them and look at their dependencies.
 
-While this changes the API, it is backward compatible, as the values
-remained the same and the old defines are still in place.  In addition,
-SUD has never been part of a Linux release, it will show up for the
-first time in 5.11.
+It sounds still complicated for manually operation of the above
+mentioned procedure even by the virtue of scripts/config. The more
+feasible way should be done with python package/binding/library
+programmatically, but I'm not sure whether such stuff exists.
 
-Cc: Linux API <linux-api@vger.kernel.org>
-Suggested-by: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- .../admin-guide/syscall-user-dispatch.rst          |  4 ++--
- include/uapi/linux/prctl.h                         |  2 ++
- kernel/entry/syscall_user_dispatch.c               |  4 ++--
- .../syscall_user_dispatch/sud_benchmark.c          |  8 +++++---
- .../selftests/syscall_user_dispatch/sud_test.c     | 14 ++++++++------
- 5 files changed, 19 insertions(+), 13 deletions(-)
-
-diff --git a/Documentation/admin-guide/syscall-user-dispatch.rst b/Documentation/admin-guide/syscall-user-dispatch.rst
-index a380d6515774..fc13112e36e3 100644
---- a/Documentation/admin-guide/syscall-user-dispatch.rst
-+++ b/Documentation/admin-guide/syscall-user-dispatch.rst
-@@ -70,8 +70,8 @@ trampoline code on the vDSO, that trampoline is never intercepted.
- [selector] is a pointer to a char-sized region in the process memory
- region, that provides a quick way to enable disable syscall redirection
- thread-wide, without the need to invoke the kernel directly.  selector
--can be set to PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF.  Any other
--value should terminate the program with a SIGSYS.
-+can be set to PR_SYS_DISPATCH_FILTER_ALLOW or PR_SYS_DISPATCH_FILTER_BLOCK.
-+Any other value should terminate the program with a SIGSYS.
- 
- Security Notes
- --------------
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 90deb41c8a34..a66c9fe41249 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -251,5 +251,7 @@ struct prctl_mm_map {
- #define PR_SET_SYSCALL_USER_DISPATCH	59
- # define PR_SYS_DISPATCH_OFF		0
- # define PR_SYS_DISPATCH_ON		1
-+# define PR_SYS_DISPATCH_FILTER_ALLOW	0
-+# define PR_SYS_DISPATCH_FILTER_BLOCK	1
- 
- #endif /* _LINUX_PRCTL_H */
-diff --git a/kernel/entry/syscall_user_dispatch.c b/kernel/entry/syscall_user_dispatch.c
-index b0338a5625d9..265c33b26dcf 100644
---- a/kernel/entry/syscall_user_dispatch.c
-+++ b/kernel/entry/syscall_user_dispatch.c
-@@ -50,10 +50,10 @@ bool syscall_user_dispatch(struct pt_regs *regs)
- 		if (unlikely(__get_user(state, sd->selector)))
- 			do_exit(SIGSEGV);
- 
--		if (likely(state == PR_SYS_DISPATCH_OFF))
-+		if (likely(state == PR_SYS_DISPATCH_FILTER_ALLOW))
- 			return false;
- 
--		if (state != PR_SYS_DISPATCH_ON)
-+		if (state != PR_SYS_DISPATCH_FILTER_BLOCK)
- 			do_exit(SIGSYS);
- 	}
- 
-diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
-index 6689f1183dbf..7617bd9ba6e1 100644
---- a/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
-+++ b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
-@@ -22,6 +22,8 @@
- # define PR_SET_SYSCALL_USER_DISPATCH	59
- # define PR_SYS_DISPATCH_OFF	0
- # define PR_SYS_DISPATCH_ON	1
-+# define PR_SYS_DISPATCH_FILTER_ALLOW	0
-+# define PR_SYS_DISPATCH_FILTER_BLOCK	1
- #endif
- 
- #ifdef __NR_syscalls
-@@ -55,8 +57,8 @@ unsigned long trapped_call_count = 0;
- unsigned long native_call_count = 0;
- 
- char selector;
--#define SYSCALL_BLOCK   (selector = PR_SYS_DISPATCH_ON)
--#define SYSCALL_UNBLOCK (selector = PR_SYS_DISPATCH_OFF)
-+#define SYSCALL_BLOCK   (selector = PR_SYS_DISPATCH_FILTER_BLOCK)
-+#define SYSCALL_UNBLOCK (selector = PR_SYS_DISPATCH_FILTER_ALLOW)
- 
- #define CALIBRATION_STEP 100000
- #define CALIBRATE_TO_SECS 5
-@@ -170,7 +172,7 @@ int main(void)
- 	syscall(MAGIC_SYSCALL_1);
- 
- #ifdef TEST_BLOCKED_RETURN
--	if (selector == PR_SYS_DISPATCH_OFF) {
-+	if (selector == PR_SYS_DISPATCH_FILTER_ALLOW) {
- 		fprintf(stderr, "Failed to return with selector blocked.\n");
- 		exit(-1);
- 	}
-diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_test.c b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-index 6498b050ef89..21e1550db118 100644
---- a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-+++ b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-@@ -18,6 +18,8 @@
- # define PR_SET_SYSCALL_USER_DISPATCH	59
- # define PR_SYS_DISPATCH_OFF	0
- # define PR_SYS_DISPATCH_ON	1
-+# define PR_SYS_DISPATCH_FILTER_ALLOW	0
-+# define PR_SYS_DISPATCH_FILTER_BLOCK	1
- #endif
- 
- #ifndef SYS_USER_DISPATCH
-@@ -30,8 +32,8 @@
- # define MAGIC_SYSCALL_1 (0xff00)  /* Bad Linux syscall number */
- #endif
- 
--#define SYSCALL_DISPATCH_ON(x) ((x) = 1)
--#define SYSCALL_DISPATCH_OFF(x) ((x) = 0)
-+#define SYSCALL_DISPATCH_ON(x) ((x) = PR_SYS_DISPATCH_FILTER_BLOCK)
-+#define SYSCALL_DISPATCH_OFF(x) ((x) = PR_SYS_DISPATCH_FILTER_ALLOW)
- 
- /* Test Summary:
-  *
-@@ -56,7 +58,7 @@
- 
- TEST_SIGNAL(dispatch_trigger_sigsys, SIGSYS)
- {
--	char sel = 0;
-+	char sel = PR_SYS_DISPATCH_FILTER_ALLOW;
- 	struct sysinfo info;
- 	int ret;
- 
-@@ -79,7 +81,7 @@ TEST_SIGNAL(dispatch_trigger_sigsys, SIGSYS)
- 
- TEST(bad_prctl_param)
- {
--	char sel = 0;
-+	char sel = PR_SYS_DISPATCH_FILTER_ALLOW;
- 	int op;
- 
- 	/* Invalid op */
-@@ -220,7 +222,7 @@ TEST_SIGNAL(bad_selector, SIGSYS)
- 	sigset_t mask;
- 	struct sysinfo info;
- 
--	glob_sel = 0;
-+	glob_sel = PR_SYS_DISPATCH_FILTER_ALLOW;
- 	nr_syscalls_emulated = 0;
- 	si_code = 0;
- 	si_errno = 0;
-@@ -288,7 +290,7 @@ TEST(direct_dispatch_range)
- {
- 	int ret = 0;
- 	struct sysinfo info;
--	char sel = 0;
-+	char sel = PR_SYS_DISPATCH_FILTER_ALLOW;
- 
- 	/*
- 	 * Instead of calculating libc addresses; allow the entire
+BR,
 -- 
-2.29.2
-
+Assoc. Prof. Hongyi Zhao <hongyi.zhao@gmail.com>
+Theory and Simulation of Materials
+Hebei Polytechnic University of Science and Technology engineering
+NO. 552 North Gangtie Road, Xingtai, China
