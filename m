@@ -2,109 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCC42E86DB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 10:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A842E86DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 10:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbhABJ0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 04:26:19 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:37156 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbhABJ0R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 04:26:17 -0500
-Received: by mail-ot1-f53.google.com with SMTP id o11so21614922ote.4;
-        Sat, 02 Jan 2021 01:26:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=KK5Gao4CZ5cdO93e1SzQVnT1gWmX9YctRj6a2D3bYFQ=;
-        b=uXYHGDzaIRSnoXm5JWGEmgu0KCvwH0ObzQmVQ5f2++wG67T5eMk8vvUmxZz2ZEA5Kw
-         9iPMOiYrsA7NdQqJAa1GV8qS0rwnQNndcCAS1lvNKHzYz9iSmLtgCvj2JTj7680pV6dh
-         GM1Co5yXpotybPV2lATWAbsDJNfcWEaUST9NiJSCP1uQCrhPHel8jfptfC6khEsSrVEj
-         80+lepY/loXLxoBs9gdK435ZpcOJlDnnJ0SCgk9Oya+IZzvlCcpKSy5tkyFDw0X3r2+/
-         FzGcNAZ/8cDDM8JDhCwCYxMK9250YKvDZVhDfX73Tej7Pz/LuCIFpQfkTfvKSYsYMj8M
-         sXhQ==
-X-Gm-Message-State: AOAM530W3r2eu24HsXgBVZBBu/BROj+jgviigxDHVo43YL5vgOL2OmZl
-        hpV1QSSD/nVEPvmxFFgLx2ClEvRd0/IA69EjsV94GjeRYPU=
-X-Google-Smtp-Source: ABdhPJxDkL8dxXpHTyOdCdI4k2DQ0nk6KBU9hzmiFARyueJt8m7Yuv6hNwk9yr/AWPoUj7PwLmxmkiZS4azU7UiK10o=
-X-Received: by 2002:a9d:67da:: with SMTP id c26mr47684597otn.321.1609579536875;
- Sat, 02 Jan 2021 01:25:36 -0800 (PST)
-MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Sat, 2 Jan 2021 10:25:25 +0100
-Message-ID: <CAJZ5v0j-4z07zeqcMNKCjG5dt59GAbKHq2xGnzAxUnNnFf3soA@mail.gmail.com>
-Subject: [GIT PULL][Resend] Power management updates for v5.11-rc2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726517AbhABJv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 04:51:56 -0500
+Received: from mail.zju.edu.cn ([61.164.42.155]:22520 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726388AbhABJvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 04:51:55 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app4 (Coremail) with SMTP id cS_KCgBnIzjmQfBfeKpHAA--.34728S4;
+        Sat, 02 Jan 2021 17:50:34 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Jiang Liu <jiang.liu@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iommu/intel: Fix memleak in intel_irq_remapping_alloc
+Date:   Sat,  2 Jan 2021 17:50:29 +0800
+Message-Id: <20210102095029.29053-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgBnIzjmQfBfeKpHAA--.34728S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw45Jw15Wr13GrWxtr15twb_yoWfWFgEkw
+        13try3WFy5uFn5Zr12vFsxZ34qkw4Ygrn7JrZ5ta4fAw18Zr1kur93ZFWkAFsxG3yUGFW7
+        CrW3GrWfA348ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0IBlZdtRuRfAAZsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+When irq_domain_get_irq_data() or irqd_cfg() fails
+meanwhile i == 0, data allocated by kzalloc() has not
+been freed before returning, which leads to memleak.
 
-Please pull from the tag
+Fixes: b106ee63abccb ("irq_remapping/vt-d: Enhance Intel IR driver to support hierarchical irqdomains")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/iommu/intel/irq_remapping.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.11-rc2
+diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
+index aeffda92b10b..cdaeed36750f 100644
+--- a/drivers/iommu/intel/irq_remapping.c
++++ b/drivers/iommu/intel/irq_remapping.c
+@@ -1354,6 +1354,8 @@ static int intel_irq_remapping_alloc(struct irq_domain *domain,
+ 		irq_cfg = irqd_cfg(irq_data);
+ 		if (!irq_data || !irq_cfg) {
+ 			ret = -EINVAL;
++			kfree(data);
++			data = NULL;
+ 			goto out_free_data;
+ 		}
+ 
+-- 
+2.17.1
 
-with top-most commit 89ecf09e0b93de54415de45be241649ec1b162de
-
- Merge branches 'pm-cpufreq' and 'pm-cpuidle'
-
-on top of commit 5c8fe583cce542aa0b84adc939ce85293de36e5e
-
- Linux 5.11-rc1
-
-to receive power management updates for 5.11-rc2.
-
-These fix a crash in intel_pstate during resume from suspend-to-RAM
-that may occur after recent changes and two resource leaks in error
-paths in the operating performance points (OPP) framework, add a new
-C-states table to intel_idle and update the cpuidle MAINTAINERS entry
-to cover the governors too.
-
-Specifics:
-
- - Fix recently introduced crash in the intel_pstate driver that
-   occurs if scale-invariance is disabled during resume from
-   suspend-to-RAM due to inconsistent changes of APERF or MPERF
-   MSR values made by the platform firmware (Rafael Wysocki).
-
- - Fix a memory leak and add a missing clk_put() in error paths in
-   the OPP framework (Quanyang Wang, Viresh Kumar).
-
- - Add new C-states table for SnowRidge processors to the intel_idle
-   driver (Artem Bityutskiy).
-
- - Update the MAINTAINERS entry for cpuidle to make it clear that
-   the governors are covered by it too (Lukas Bulwahn).
-
-Thanks!
-
-
----------------
-
-Artem Bityutskiy (1):
-      intel_idle: add SnowRidge C-state table
-
-Lukas Bulwahn (1):
-      MAINTAINERS: include governors into CPU IDLE TIME MANAGEMENT FRAMEWORK
-
-Quanyang Wang (1):
-      opp: fix memory leak in _allocate_opp_table
-
-Rafael J. Wysocki (1):
-      cpufreq: intel_pstate: Fix fast-switch fallback path
-
-Viresh Kumar (1):
-      opp: Call the missing clk_put() on error
-
----------------
-
- MAINTAINERS                    |  2 +-
- drivers/cpufreq/intel_pstate.c |  1 -
- drivers/idle/intel_idle.c      | 41 ++++++++++++++++++++++++++++++++++++++++-
- drivers/opp/core.c             |  9 +++++++--
- 4 files changed, 48 insertions(+), 5 deletions(-)
