@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90FC2E860B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 02:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FEF2E8610
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 03:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbhABBuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 20:50:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57520 "EHLO mail.kernel.org"
+        id S1727322AbhABC2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 21:28:02 -0500
+Received: from mail.cock.li ([37.120.193.124]:43090 "EHLO mail.cock.li"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727058AbhABBuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 20:50:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90BF522241;
-        Sat,  2 Jan 2021 01:49:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609552198;
-        bh=ftpLdvsvDf6Op/7guRWkU1GTp+LUtuRhZif20iq/5j4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hBpHeX+ylHfhXASU+u0XDWdnQDzosOaZ8yY2oW5P7GJm+i2clh+8urMVbfa/FbyQy
-         2+92fzN0ESMhfqT+K56fKm3qSLgtXMvQi2bY+eNxmv9lvLwEOVwuQlBVisVlu9DFuw
-         ZMSTV6D4JNlXUNq/PaYR7oxjrWc1y5LH397Su7KGoTuJJx0mfTFTUxs7RMpU9wwm8h
-         CZmGrD7PvE65VOlBTL7ePVBGfTCUnYHZp3oUCHAEI0aNczIe80z8rUe7EjkAfixSi6
-         wZY4fXcsKDOFlatZJLdW8DTiDi8Dr0FTouI3mivPap2TItPrUXtCpEeM7gwV7k4gK0
-         FzzoPuXCdWPFA==
-Received: by pali.im (Postfix)
-        id D53C59DC; Sat,  2 Jan 2021 02:49:55 +0100 (CET)
-Date:   Sat, 2 Jan 2021 02:49:55 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Thomas Schreiber <tschreibe@gmail.com>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <20210102014955.2xv27xla65eeqyzz@pali>
-References: <20201230161036.GR1551@shell.armlinux.org.uk>
- <20201230165634.c4ty3mw6djezuyq6@pali>
- <20201230170546.GU1551@shell.armlinux.org.uk>
- <X+y1K21tp01GpvMy@lunn.ch>
- <20201230174307.lvehswvj5q6c6vk3@pali>
- <20201230190958.GW1551@shell.armlinux.org.uk>
- <20201231121410.2xlxtyqjelrlysd2@pali>
- <X+3ume1+wz8HXHEf@lunn.ch>
- <20201231170039.zkoa6mij3q3gt7c6@pali>
- <X+4GwpFnJ0Asq/Yj@lunn.ch>
+        id S1726424AbhABC2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 21:28:02 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X+4GwpFnJ0Asq/Yj@lunn.ch>
-User-Agent: NeoMutt/20180716
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firemail.cc; s=mail;
+        t=1609554432; bh=9K4nt2O021ZCKYcp0ZKGhthprKTmYgkqicaMKo0bXDo=;
+        h=Date:From:To:Subject:From;
+        b=Zl9xxRrQABrrGxEUR5V7gud2f5W1ZajVB5AmV3xiJihONnWny0Bj1NuGcZKQN85JH
+         Ou4Y35BUiIcWZmdPA1aeea1MICRJcHyLvTMop7YZ+alV9/LzXR4Thqu88ByMCTxwJA
+         Z34EBdfK4ypdlAVZ5sELjZhRlD5IAnrz2zT958QU7kNk50FYWnYnQpM548hgsBJz7g
+         0/wVgZYzwSLpaf6xKM+5j7rjzUYZRu48r6GgijotPB0KlRrIDa+87gKI9rRMCHxXgL
+         HHIYQc5ToRXaqHP8kRslGL32pG+vWSaQY/iPBGKc2TbT2v4L8Tr0mtPrDHtyg/XUA5
+         mlQUsi1vou/DQ==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 02 Jan 2021 02:27:13 +0000
+From:   nipponmail@firemail.cc
+To:     linux-kernel@vger.kernel.org
+Subject: Grsecurity GPL Violations: Bring a CASE act claim every time
+ GrSecurity releases a new infringing work?
+Message-ID: <59d0dfe831bbdbe68cc113c6fd225752@firemail.cc>
+X-Sender: nipponmail@firemail.cc
+User-Agent: Roundcube Webmail/1.3.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 31 December 2020 18:13:38 Andrew Lunn wrote:
-> > > Looking at sfp_module_info(), adding a check for i2c_block_size < 2
-> > > when determining what length to return. ethtool should do the right
-> > > thing, know that the second page has not been returned to user space.
-> > 
-> > But if we limit length of eeprom then userspace would not be able to
-> > access those TX_DISABLE, LOS and other bits from byte 110 at address A2.
-> 
-> Have you tested these bits to see if they actually work? If they don't
-> work...
+     Should each Linux copyright owner of whom's copyright is being 
+violated (By GrSecurity) bring a "small claims copyright" case every 
+time GrSecurity sends a new infringing patch to a customer?
 
-On Ubiquiti module that LOS bit does not work.
+     (GRSecurity blatantly violates the clause in the Linux kernel and 
+GCC copyright licenses regarding adding addtional terms between the 
+licensee of the kernel / gcc and furthur down-the-line licensees, 
+regarding derivative works)
+     (The linux kernel has 1000s of copyright holders)
+     (All who shake at the knees at the thought of initiating a federal 
+Copyright lawsuit)
 
-I think that on CarlitoxxPro module LOS bit worked. But I cannot test it
-right now as I do not have access to testing OLT unit.
+     (GrSecurity's main Programmer: Brad Spengler: has shining 
+resplendent blue eyes; like sapphires, however)
 
-Adding Thomas to loop. Can you check if CarlitoxxPro GPON ONT module
-supports LOS or other bits at byte offset 110 at address A2?
+     > 
+https://www.billboard.com/articles/business/9503848/congress-case-copyright-reforms-covid-19-relief-bill/
+     >The CASE Act creates a new small claims system in the US that 
+allows copyright holders to pursue damages for copyright infringement 
+without filing a federal lawsuit. These claims would be decided by 
+copyright officers, not judges and juries, and could involve no more 
+than $15,000 per work infringed upon, and $30,000 total
+
+     Does this new law create broader per-violation rights for the 
+copyright holder? The then current copyright law makes it quite hard to 
+go after violators: usually the lawsuit costs more than any hope of 
+recovery. Every version you want to sue over, if you actually want to 
+recover attorneys fees and statutory damages (not just whatever revenue 
+you can proove (good luck)), has to be registered with the copyright 
+office; same or similar violations subsequent to a registration by the 
+same violator DO NOT grant you Attorney's fees and Statutory recovery; 
+the same of a later version doesn't either.
+
+     It's hard to get any money out of a violator.
+     Especially how Free Software and Opensource copyright holders do 
+things... (never registering their copyrights seemingly, always afraid, 
+cowering before CoC's, being servants and slaves, doing it all for free, 
+being kicked out of their own "societies)
+
