@@ -2,143 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6E22E86F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 12:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 455102E86F1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 12:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbhABLED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 06:04:03 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:55248 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbhABLEC (ORCPT
+        id S1726599AbhABLGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 06:06:36 -0500
+Received: from esgaroth.petrovitsch.at ([78.47.184.11]:3331 "EHLO
+        esgaroth.tuxoid.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbhABLGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 06:04:02 -0500
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
- id f83ed3595adce064; Sat, 2 Jan 2021 12:03:18 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Stephen Berman <stephen.berman@gmx.net>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
-Date:   Sat, 02 Jan 2021 12:03:17 +0100
-Message-ID: <1744807.WFtog62eDp@kreacher>
-In-Reply-To: <9709109.MH8tSaV5v9@kreacher>
-References: <87blkbx1gt.fsf@gmx.net> <CAJZ5v0j7i86twMS+csYMaetUkvqjof4FD2GRNoZ_AN=SBF7F1w@mail.gmail.com> <9709109.MH8tSaV5v9@kreacher>
+        Sat, 2 Jan 2021 06:06:36 -0500
+Received: from thorin.petrovitsch.priv.at (80-110-120-81.cgn.dynamic.surfer.at [80.110.120.81])
+        (authenticated bits=0)
+        by esgaroth.tuxoid.at (8.15.2/8.15.2) with ESMTPSA id 102B5Llo015542
+        (version=TLSv1 cipher=AES256-SHA bits=256 verify=NO);
+        Sat, 2 Jan 2021 12:05:22 +0100
+Message-ID: <b9d3c1063d4c3f9a0cb71442cc92ad77a859d438.camel@petrovitsch.priv.at>
+Subject: Re: Linux 5.11-rc1
+From:   Bernd Petrovitsch <bernd@petrovitsch.priv.at>
+To:     sedat.dilek@gmail.com, Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Sat, 02 Jan 2021 12:05:11 +0100
+In-Reply-To: <CA+icZUXyfv0sOP=UG6oeoxpHbEpOrufJzzUWb3ZOpE_TMQerwQ@mail.gmail.com>
+References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
+         <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com>
+         <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
+         <20210101161435.GA344@duo.ucw.cz>
+         <CA+icZUXKXt3NfgVxZN+m+3d_dqBi+o0EyJH53h-sXU8buaUe7g@mail.gmail.com>
+         <CAK7LNASQZ7SWrAykdH71iq6SyLj=gG-EGhCy8SHkDz_bdq2BMw@mail.gmail.com>
+         <CA+icZUXyfv0sOP=UG6oeoxpHbEpOrufJzzUWb3ZOpE_TMQerwQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-DCC--Metrics: esgaroth.tuxoid.at 1480; Body=6 Fuz1=6 Fuz2=6
+X-Virus-Scanned: clamav-milter 0.97 at esgaroth.tuxoid.at
+X-Virus-Status: Clean
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.1
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5029]
+        *  0.0 UNPARSEABLE_RELAY Informational: message has unparseable relay lines
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on esgaroth.tuxoid.at
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, December 31, 2020 9:46:11 PM CET Rafael J. Wysocki wrote:
-> On Wednesday, December 2, 2020 8:13:38 PM CET Rafael J. Wysocki wrote:
-> > On Wed, Dec 2, 2020 at 7:31 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > >
-> > > On Wed, Dec 2, 2020 at 7:03 PM Sebastian Andrzej Siewior
-> > > <bigeasy@linutronix.de> wrote:
-> > > >
-> > > > On 2020-10-26 18:20:59 [+0100], To Rafael J. Wysocki wrote:
-> > > > > > > > > Done as Bug 208877.
-> > > > > > > Rafael, do you have any suggestions?
-> > > > > >
-> > > > > > I've lost track of this sorry.
-> > > > > >
-> > > > > > I have ideas, let me get back to this next week.
-> > > > >
-> > > > > :)
-> > > >
-> > > > Rafael, any update? If you outline an idea or so then I may be able to
-> > > > form a patch out of it. Otherwise I have no idea how to fix this - other
-> > > > than telling the driver to not poll in smaller intervals than
-> > > > 30secs.
-> > >
-> > > The idea, roughly speaking, is to limit the number of outstanding work
-> > > items in the queue (basically, if there's a notification occurring
-> > > before the previous one can be handled, there is no need to queue up
-> > > another work item for it).
-> > 
-> > That's easier said than done, though, because of the way the work item
-> > queue-up is hooked up into the ACPICA code.
-> 
-> So scratch this and it wouldn't work in general anyway AFAICS.
-> 
-> ATM, I'm tempted to do something like the patch below (with the rationale
-> that it shouldn't be necessary to read the temperature right after updating
-> the trip points if polling is in use, because the next update through polling
-> will cause it to be read anyway and it will trigger trip point actions as
-> needed).
+On Sat, 2021-01-02 at 10:13 +0100, Sedat Dilek wrote:
+[...]
+> To be honest I wondered why there were no more reports on this.
 
-There is one more way to address this, probably better: instead of checking the
-temperature right away in acpi_thermal_notify(), queue that on acpi_thermal_pm_queue
-and so only if another thermal check is not pending.
+Perhaps I'm not the only one who has /sbin and /usr/sbin in the
+$PATH of normal accounts too (and idk what's the default
+behaviour of distributions is - my .bashrc "fixes" the
+$PATH).
 
-This way there will be at most one temperature check coming from
-acpi_thermal_notify() queued up at any time which should prevent the
-build-up of work items from taking place.
-
-So something like this:
-
----
- drivers/acpi/thermal.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -900,6 +900,12 @@ static void acpi_thermal_unregister_ther
-                                  Driver Interface
-    -------------------------------------------------------------------------- */
- 
-+static void acpi_queue_thermal_check(struct acpi_thermal *tz)
-+{
-+	if (!work_pending(&tz->thermal_check_work))
-+		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
-+}
-+
- static void acpi_thermal_notify(struct acpi_device *device, u32 event)
- {
- 	struct acpi_thermal *tz = acpi_driver_data(device);
-@@ -910,17 +916,17 @@ static void acpi_thermal_notify(struct a
- 
- 	switch (event) {
- 	case ACPI_THERMAL_NOTIFY_TEMPERATURE:
--		acpi_thermal_check(tz);
-+		acpi_queue_thermal_check(tz);
- 		break;
- 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
- 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_THRESHOLDS);
--		acpi_thermal_check(tz);
-+		acpi_queue_thermal_check(tz);
- 		acpi_bus_generate_netlink_event(device->pnp.device_class,
- 						  dev_name(&device->dev), event, 0);
- 		break;
- 	case ACPI_THERMAL_NOTIFY_DEVICES:
- 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_DEVICES);
--		acpi_thermal_check(tz);
-+		acpi_queue_thermal_check(tz);
- 		acpi_bus_generate_netlink_event(device->pnp.device_class,
- 						  dev_name(&device->dev), event, 0);
- 		break;
-@@ -1117,7 +1123,7 @@ static int acpi_thermal_resume(struct de
- 		tz->state.active |= tz->trips.active[i].flags.enabled;
- 	}
- 
--	queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
-+	acpi_queue_thermal_check(tz);
- 
- 	return AE_OK;
- }
-
+MfG,
+	Bernd
+-- 
+Bernd Petrovitsch                  Email : bernd@petrovitsch.priv.at
+There is no cloud, just other people computers. - FSFE
+                     LUGA : http://www.luga.at
 
 
