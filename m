@@ -2,157 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591322E88F6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 23:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B39A62E891D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 23:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbhABW02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 17:26:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        id S1726823AbhABWoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 17:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726673AbhABW01 (ORCPT
+        with ESMTP id S1726673AbhABWoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 17:26:27 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FCFC061573;
-        Sat,  2 Jan 2021 14:25:46 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id k4so22443172ybp.6;
-        Sat, 02 Jan 2021 14:25:46 -0800 (PST)
+        Sat, 2 Jan 2021 17:44:18 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BA9C0613C1
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Jan 2021 14:43:32 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id z3so16072457qtw.9
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 14:43:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=avY5RmPLcCE/9xmKkt4hTetpHwa/Sr/9+j/k/Vxitbs=;
-        b=XJmL+uVD29D7YsU+lWThZtABQ2VtHFN/Sa938Vu0nu4Kg/7NM1FRy6vgAJXbh+ejV3
-         r/XGPs79+xmb70vjHL8fahTEDGwwIDRLnrLGAXKQqgP56gZBjj9Z1OGFsnEFPWd8Dmcu
-         HUME9foRghbKrGKnwT+9G1+Wt42xT4zyhsEoqF375STn+atcdXJsIznHKGe+JXFDetei
-         XNjBMoE78TRbop0iSLhltprrksH9P7J+uYsowO055qPE+vMBJ3RENmvwYSwCzS2wJG9Z
-         WF/S27WllKPv/EnhTPo0y6Q+GsNNJpyn2EjUbXZZY9Kng7lY/W4Q+SoQel4i5guSNdMn
-         wpmw==
+        d=mccsd.net; s=google;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=1s737Td8zbHZBMtFnyeEZHgLM0pKP1M/8RLNOmS9Fo4=;
+        b=i3/mjjz6Y8c9mDcAD91Pw/o6TiroYhUwYBkhXpJ9lKqcZ8Ewt0RmXVa0znplMw1kWX
+         d/6JzqR0FEnGTproXmTbCvI8L7oNmiNAzuS2QQk3c2M1LL1F9gyymsSKfbj9CIhg/kJ3
+         4v6iWiJWgpVLwqsZQVVTrYfPT7AK5pH8680/1rinCN/u+ICAaU+CQc2ZVz+y9NXyqaAK
+         Fab3cUb8A5ekNzkJMXjScRASB5ClSv9PEbLpapXBdLCT+VMWNf7XwmQod+x2O9tDlhtz
+         bOvGAipvNzsmjdlLXISS3E+jspgFUj9Es556Yr2PEWELoAqrFEtOC6bYbF+0SWZnssOT
+         wRYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=avY5RmPLcCE/9xmKkt4hTetpHwa/Sr/9+j/k/Vxitbs=;
-        b=prPsCGSGxDKz7lZqj3Nf9GX2jrCUWEu1pXvgheQQ/X3XkhLhqncYeVZe3qQWx8s6LK
-         R9AGfWt7d+IzbJWss+pdzUlfoQcPhbgVxf/bV7qNPRLyIY+ZJjUCJ9wwYbKja3FlRXvp
-         PfPE1uRPR0idDdNv7tYmrnOJHsYc1+KQQKu7WQpV6agOqPzAwQH7exEEXpdxOYKay7wO
-         43XKs+ar25MXI6oqou7ki61AfPKAviEqwQRbNrbbv5ZSFKHvedCSxxiUoad8Qb0r0kcB
-         akLGQpPflT4hkVIJIlnVmUWle228t5F5EshIr7uNMpAMX27tYkT+xG+pg7e7LK3OeeIt
-         jdOA==
-X-Gm-Message-State: AOAM531yMNgE4IcKvFVosmc+0gEPx/OD05OKsDK3Uy3u66OSFBMv3gsT
-        52//rm5qWkeNZYIyT/hcLNIuTblY0Od1T9tzrDWARL/8
-X-Google-Smtp-Source: ABdhPJx4pHQUmCj+6LEz4sWjx2M9wvyQIeaoqjOXvtKyUofxXbVVF17sNnfHJ3eiHe4I6NAt3f3TvjffSOaXfpdk3nw=
-X-Received: by 2002:a25:d6d0:: with SMTP id n199mr91883751ybg.27.1609626345652;
- Sat, 02 Jan 2021 14:25:45 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=1s737Td8zbHZBMtFnyeEZHgLM0pKP1M/8RLNOmS9Fo4=;
+        b=bv9v1IQZMceAkBCF3Eggontvf3N98yoGUYd+tcrB0ynQSDqwJH8xVJPMvZ1DOynIfM
+         PeavexbSYme0mzF+mPOLROGYaF2lx0+lQNgOlDLMJ7J3h//7gDWVmJ9Nus/QcccHfuIh
+         uGWEi7pDMWCvJebh5wLViU+//rCfP5XkW6o0CZDlkiOs+BdLWozDsVcZnhjlaTtrVy1G
+         fIKDyOCL+7Err1IxeSqOOtIc6Kx3CMubypwsCuzjnEPMY73/sxkAj3fqZNUWiBOQKmf5
+         +neZtNEYv3ADRsg7FWQZb37CUi7VGuFwrfZc/hxgNXCHgFIXrEteUczOSDtOZ4P2MQjS
+         0zow==
+X-Gm-Message-State: AOAM533Dw7xcQP82gg16zt64nAwIOmeF2+oiE9nvKocLUnPSYZiNUCCk
+        fivynL6Yw3Wej99NvlWUy+yVSJCUSvXXO6WG1c1A2g==
+X-Google-Smtp-Source: ABdhPJzwVyQSw+wXBj+bK+e3NnB/E/s0SW1Tt1qaAANtjSqsyw2ql7UWC/Dp5DpEBrHoAzN5lpp2b3Qd++7LXDowf4Q=
+X-Received: by 2002:a05:622a:1c7:: with SMTP id t7mr66275650qtw.30.1609627411092;
+ Sat, 02 Jan 2021 14:43:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin> <20201229173401.GH450923@krava>
- <20201229232835.cbyfmja3bu3lx7we@e107158-lin> <20201230090333.GA577428@krava> <20201230132759.GB577428@krava>
-In-Reply-To: <20201230132759.GB577428@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 2 Jan 2021 14:25:34 -0800
-Message-ID: <CAEf4BzYbeQqzK2n9oz6wqysVj35k+VZC7DZrXFEtjUM6eiyvOA@mail.gmail.com>
-Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by 2002:ac8:4e13:0:0:0:0:0 with HTTP; Sat, 2 Jan 2021 14:43:30 -0800 (PST)
+Reply-To: ABDERAZACK.ZEBDANI@hotmail.com
+From:   ABDERAZACK ZEBDANI <jstrong367@mccsd.net>
+Date:   Sat, 2 Jan 2021 14:43:30 -0800
+Message-ID: <CAJqCeNhN3_1fR+xLAiNG1CHRHC56KNUv=x1eLG2hyf2ohiMu_g@mail.gmail.com>
+Subject: Greetings My Dear Friend,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 5:28 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Dec 30, 2020 at 10:03:37AM +0100, Jiri Olsa wrote:
-> > On Tue, Dec 29, 2020 at 11:28:35PM +0000, Qais Yousef wrote:
-> > > Hi Jiri
-> > >
-> > > On 12/29/20 18:34, Jiri Olsa wrote:
-> > > > On Tue, Dec 29, 2020 at 03:13:52PM +0000, Qais Yousef wrote:
-> > > > > Hi
-> > > > >
-> > > > > When I enable CONFIG_DEBUG_INFO_BTF I get the following error in the BTFIDS
-> > > > > stage
-> > > > >
-> > > > >         FAILED unresolved symbol udp6_sock
-> > > > >
-> > > > > I cross compile for arm64. My .config is attached.
-> > > > >
-> > > > > I managed to reproduce the problem on v5.9 and v5.10. Plus 5.11-rc1.
-> > > > >
-> > > > > Have you seen this before? I couldn't find a specific report about this
-> > > > > problem.
-> > > > >
-> > > > > Let me know if you need more info.
-> > > >
-> > > > hi,
-> > > > this looks like symptom of the gcc DWARF bug we were
-> > > > dealing with recently:
-> > > >
-> > > >   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
-> > > >   https://lore.kernel.org/lkml/CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com/#r
-> > > >
-> > > > what pahole/gcc version are you using?
-> > >
-> > > I'm on gcc 9.3.0
-> > >
-> > >     aarch64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
-> > >
-> > > I was on pahole v1.17. I moved to v1.19 but I still see the same problem.
-> >
-> > I can reproduce with your .config, but make 'defconfig' works,
-> > so I guess it's some config option issue, I'll check later today
->
-> so your .config has
->   CONFIG_CRYPTO_DEV_BCM_SPU=y
->
-> and that defines 'struct device_private' which
-> clashes with the same struct defined in drivers/base/base.h
->
-> so several networking structs will be doubled, like net_device:
->
->         $ bpftool btf dump file ../vmlinux.config | grep net_device\' | grep STRUCT
->         [2731] STRUCT 'net_device' size=2240 vlen=133
->         [113981] STRUCT 'net_device' size=2240 vlen=133
->
-> each is using different 'struct device_private' when it's unwinded
->
-> and that will confuse BTFIDS logic, becase we have multiple structs
-> with the same name, and we can't be sure which one to pick
->
-> perhaps we should check on this in pahole and warn earlier with
-> better error message.. I'll check, but I'm not sure if pahole can
-> survive another hastab ;-)
->
-> Andrii, any ideas on this? ;-)
+Greetings My Dear Friend,
 
-It's both unavoidable and correct from the C type system's
-perspective, so there is nothing for pahole to warn about. We used to
-have (for a long time) a similar clash with two completely different
-ring_buffer structs. Eventually they just got renamed to avoid
-duplication of related structs (task_struct and tons of other). But
-both BTF dedup and CO-RE relocation algorithms are designed to handle
-this correctly, so perhaps BTFIDS should be able to handle this as
-well?
+Before I introduce myself, I wish to inform you that this letter is
+not a hoax mail and I urge you to treat it serious.This letter must
+come to you as a big surprise, but I believe it is only a day that
+people meet and become great friends and business partners. Please I
+want you to read this letter very carefully and I must apologize for
+barging this message into your mail box without any formal
+introduction due to the urgency and confidentiality of this business
+and I know that this message will come to you as a surprise. Please
+this is not a joke and I will not like you to joke with it ok,With due
+respect to your person and much sincerity of purpose, I make this
+contact with you as I believe that you can be of great assistance to
+me. My name is Mr.Abderazack zebdani, from Burkina Faso, West Africa.
+I work in Bank Of Africa (BOA) as telex manager, please see this as a
+confidential message and do not reveal it to another person and let me
+know whether you can be of assistance regarding my proposal below
+because it is top secret.
 
->
-> easy fix is the patch below that renames the bcm's structs,
-> it makes the kernel to compile.. but of course the new name
-> is probably wrong and we should push this through that code
-> authors
+I am about to retire from active Banking service to start a new life
+but I am skeptical to reveal this particular secret to a stranger. You
+must assure me that everything will be handled confidentially because
+we are not going to suffer again in life. It has been 10 years now
+that most of the greedy African Politicians used our bank to launder
+money overseas through the help of their Political advisers. Most of
+the funds which they transferred out of the shores of Africa were gold
+and oil money that was supposed to have been used to develop the
+continent. Their Political advisers always inflated the amounts before
+transferring to foreign accounts, so I also used the opportunity to
+divert part of the funds hence I am aware that there is no official
+trace of how much was transferred as all the accounts used for such
+transfers were being closed after transfer. I acted as the Bank
+Officer to most of the politicians and when I discovered that they
+were using me to succeed in their greedy act; I also cleaned some of
+their banking records from the Bank files and no one cared to ask me
+because the money was too much for them to control. They laundered
+over $5billion Dollars during the process.
 
-In this case, I think renaming generic device_private name is a good
-thing regardless.
+Before I send this message to you, I have already diverted
+($10.5million Dollars) to an escrow account belonging to no one in the
+bank. The bank is anxious now to know who the beneficiary to the funds
+is because they have made a lot of profits with the funds. It is more
+than Eight years now and most of the politicians are no longer using
+our bank to transfer funds overseas. The ($10.5million Dollars) has
+been laying waste in our bank and I don=E2=80=99t want to retire from the b=
+ank
+without transferring the funds to a foreign account to enable me share
+the proceeds with the receiver (a foreigner). The money will be shared
+60% for me and 40% for you. There is no one coming to ask you about
+the funds because I secured everything. I only want you to assist me
+by providing a reliable bank account where the funds can be
+transferred.
 
->
-> jirka
->
->
-> ---
-
-[...]
+You are not to face any difficulties or legal implications as I am
+going to handle the transfer personally. If you are capable of
+receiving the funds, do let me know immediately to enable me give you
+a detailed information on what to do. For me, I have not stolen the
+money from anyone because the other people that took the whole money
+did not face any problems. This is my chance to grab my own life
+opportunity but you must keep the details of the funds secret to avoid
+any leakages as no one in the bank knows about my plans.Please get
+back to me if you are interested and capable to handle this project, I
+shall intimate you on what to do when I hear from your confirmation
+and acceptance.If you are capable of being my trusted associate, do
+declare your consent to me I am looking forward to hear from you
+immediately for further information, KINDLY REPLY THIS EMAIL
+(ABDERAZACK.ZEBDANI@HOTMAIL.COM)
+Thanks with my best regards.
+Mr.Abderazack zebdani.
+Telex Manager
+Bank Of Africa (BOA)
+Burkina Faso.
