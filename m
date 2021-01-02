@@ -2,140 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E5C2E862B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 03:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F1B2E8630
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 04:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727213AbhABChR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 21:37:17 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:39259 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726424AbhABChQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 21:37:16 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4F70D580396;
-        Fri,  1 Jan 2021 21:36:10 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 01 Jan 2021 21:36:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=x
-        yRrbT8lXGFkiDEUfbBEaK2NaqFc77PXiY9PLLIADYI=; b=gCcYRkSO36qASJ8hG
-        NRjHzojE1vA9uy3ZSzEkOUAUL0sn+g3rAvKind+h8p44JJu33Cqsep1z/4zNGTBp
-        4mRH0CtbvgVhiSdD4a12E4xVUYU6bAt0azY0jv0BVUTZYJqb2P9FJyjvrg2S/CdP
-        HTxF2D0faCg/SA8I84H/d5Ld6soKQ72+eNDIO6DTnsKWRtFuxFSCWawKm9dQFS0N
-        NrbvS0aB7iFZOzZknkWI/ATk096PI0LDxIt2oZTZvi9lz/Fm2LVbgwo8DnwS5ra9
-        /EqBjeBoBmMJsjpJwVyvfFiKlYPTYwZ/+tMjG8mwVNMSYHMObaT9oQxSrlKfCwm3
-        GTGVA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=xyRrbT8lXGFkiDEUfbBEaK2NaqFc77PXiY9PLLIAD
-        YI=; b=raAj0+vsSZQWz6rq2fgzYHTjCigp0ytuPhEaZnzKIe335a8vAzEzISiht
-        fmHzzwmzKGL5U7UqSt14Xv/yjFckHl1a1Y1+sSYe0bu85UC9seOsJVrx1IgVAvxl
-        WbbP6/OZn4gEf8oSCVYxB4XNhkzfi0nDc5Q/KK72P7iC9BTLxYyfhZjqjdWXlFbo
-        n+tyTGS2c4bv/FpSxKbiQZgVEbMFVUoa0essHziKQL2rn0JnfyeVkK+gDQivgjSz
-        n0MlLXAtqmRhIpQaQ70AM7hjbpTJCgwjNNMPOiZR0ln0YUzTSpbidraWlkb445s2
-        q37AsQSvalyl5jf3jHzYc0A/h+e3g==
-X-ME-Sender: <xms:GNzvXxIO8iVRz9kUCfG8_qFXOO5IqMjjfEWdFSGbTbTC2AyxtX8zHw>
-    <xme:GNzvX9JFQn1yH3AuuBQWPa0pGs6kMCF3EshbEj84PxEh2VJ7LO8b8tgdDnGXR_Gip
-    lPmdrAmcBFSau5pI9Y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddvkedggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeeihffghfeikedugeejvefgffevgeevgeehfffhudeiieffffev
-    ffeugeevfefgfeenucfkphepgeehrdeffedrhedtrddvheegnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
-    hihgohgrthdrtghomh
-X-ME-Proxy: <xmx:GNzvX5u-6lA0nFN4mCw4MddHNHBCt9yo-0_mHyVAOyNB8o9wPayoxg>
-    <xmx:GNzvXybW-cCZl7_m43NV5sCxwNirsyxEA2u_b8XQNGkUJ-LKHK-zgw>
-    <xmx:GNzvX4YWEjzf_ZZ-ayQGP511zCox2fk57M0rN7s6cJ03HdHJowZbJw>
-    <xmx:GtzvXwGJvv7RchG-AkPG4E9x4Uy9_4GeJ1GgNAhQJZjAUPOXyDz2Tg>
-Received: from [0.0.0.0] (li1000-254.members.linode.com [45.33.50.254])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0EC3E24005A;
-        Fri,  1 Jan 2021 21:36:05 -0500 (EST)
-Subject: Re: [PATCH] platform/x86: ideapad-laptop: Add has_touchpad_switch
-To:     =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>
-Cc:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210101061140.27547-1-jiaxun.yang@flygoat.com>
- <_kQDaYPt7vh_mQfPr1tLJV2IP-p40OBPcU5zk-1xHhF9XJsm8Y-efANBgiRdWU-J2QTtOjmrfE0Tw6UrZpm6uG-zZGlfpaVOp9FuoKAbjzA=@protonmail.com>
- <bcb3bc76-da83-4ee1-8c2d-0453d359ae37@www.fastmail.com>
- <XVSpzJf9TdCi-rg53vfxB7yLg8VJQsQVbqoC1Fu1L7tL5mPKCpMABkedQNatITMiUy7pvBC7g0Cqd30-zqc0bCsSSoy5YXp_gJLTLM0odTg=@protonmail.com>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <063eb02d-a699-3f6c-fd1b-721e9d195e82@flygoat.com>
-Date:   Sat, 2 Jan 2021 10:36:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <XVSpzJf9TdCi-rg53vfxB7yLg8VJQsQVbqoC1Fu1L7tL5mPKCpMABkedQNatITMiUy7pvBC7g0Cqd30-zqc0bCsSSoy5YXp_gJLTLM0odTg=@protonmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1727284AbhABDFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 22:05:13 -0500
+Received: from mga11.intel.com ([192.55.52.93]:35271 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727133AbhABDFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 22:05:13 -0500
+IronPort-SDR: vVERRXup/ZnysZn4LstdiLINtKbAr4/jn/Hnt6S8QUC/tJdVjBIqjKu+K713o1bpHaXhGPInGR
+ 5q63ahJLhcbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9851"; a="173297445"
+X-IronPort-AV: E=Sophos;i="5.78,468,1599548400"; 
+   d="scan'208";a="173297445"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2021 19:04:32 -0800
+IronPort-SDR: VGzmKTwRMOJvIvSjAiyTHEPh+kBB0ZmvyEyO2MUStDs0VzkdkpK+OYxui9GmHdIa/inYzXXslf
+ Yr2GbaJPSVMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,468,1599548400"; 
+   d="scan'208";a="349083059"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Jan 2021 19:04:30 -0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     broonie@kernel.org, linux-spi@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] spi: fix the divide by 0 error when calculating xfer waiting time
+Date:   Sat,  2 Jan 2021 10:59:46 +0800
+Message-Id: <1609556386-19422-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/1/2 上午1:09, Barnabás Pőcze 写道:
-> Hi
->
->
-> 2021. január 1., péntek 17:08 keltezéssel, Jiaxun Yang írta:
->
->> [...]
->>>> @@ -1006,6 +1018,10 @@ static int ideapad_acpi_add(struct platform_device *pdev)
->>>>   	if (!priv->has_hw_rfkill_switch)
->>>>   		write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
->>>>
->>>> +	/* The same for Touchpad */
->>>> +	if (!priv->has_touchpad_switch)
->>>> +		write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
->>>> +
->>> Shouldn't it be the other way around: `if (priv->has_touchpad_switch)`?
->> It is to prevent accidentally disable touchpad on machines that do have EC switch,
->> so it's intentional.
->> [...]
-> Sorry, but the explanation not fully clear to me. The commit message seems to
-> indicate that some models "do not use EC to switch touchpad", and I take that
-> means that reading from VPCCMD_R_TOUCHPAD will not reflect the actual state of the
-> touchpad and writing to VPCCMD_W_TOUCHPAD will not change the state of the touchpad.
+The xfer waiting time is the result of xfer->len / xfer->speed_hz. This
+patch makes the assumption of 1khz xfer speed if the xfer->speed_hz is
+not assigned and stays 0. This avoids the divide by 0 issue and ensures
+a reasonable tolerant waiting time.
 
-I'm just trying to prevent removing functionality on machines that 
-touchpad can be controlled
-by EC but also equipped I2C HID touchpad. At least users will have a 
-functional touchpad
-after that.
+Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+---
+v2: use the normal conditional statement instead of the ternery operator
+    change the default xfer speed from 1khz to 100khz
+---
+ drivers/spi/spi.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
->
-> But then why do you still write to VPCCMD_W_TOUCHPAD on devices where supposedly
-> this does not have any effect (at least not the desired one)? And the part of the
-> code I made my comment about only runs on machines on which the touchpad supposedly
-> cannot be controlled by the EC. What am I missing?
->
-> And there is the other problem: on some machines, this patch removes working
-> functionality.
-Yeah that's a problem. I just don't want to repeat the story of rfkill 
-whitelist, it ends up with
-countless machine to be added.
-
-Maybe I should specify HID of touchpad as well. Two machines that known 
-to be problematic
-all have ELAN0634 touchpad.
-
-Thanks.
-
-- Jiaxun
-
->
->
-> Regards,
-> Barnabás Pőcze
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 51d7c00..aacae88 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1108,6 +1108,7 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
+ {
+ 	struct spi_statistics *statm = &ctlr->statistics;
+ 	struct spi_statistics *stats = &msg->spi->statistics;
++	u32 speed_hz = xfer->speed_hz;
+ 	unsigned long long ms;
+ 
+ 	if (spi_controller_is_slave(ctlr)) {
+@@ -1116,8 +1117,11 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
+ 			return -EINTR;
+ 		}
+ 	} else {
++		if (!speed_hz)
++			speed_hz = 100000;
++
+ 		ms = 8LL * 1000LL * xfer->len;
+-		do_div(ms, xfer->speed_hz);
++		do_div(ms, speed_hz);
+ 		ms += ms + 200; /* some tolerance */
+ 
+ 		if (ms > UINT_MAX)
+-- 
+2.7.4
 
