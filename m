@@ -2,382 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22A52E87AB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 16:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DCA2E87AE
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 16:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbhABPOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 10:14:55 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46888 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726552AbhABPOy (ORCPT
+        id S1726690AbhABPWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 10:22:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbhABPWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 10:14:54 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 102F1hY7058862;
-        Sat, 2 Jan 2021 10:14:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=Zs9LW0PDZjOd01PWxzUbueEwckfJwnns/1ukFMK48Lg=;
- b=p7Rdttcw9AZAn6Kdr8dj+MGOITZw7BM2puLKfEadFWbb8aKRPwUFqS+dXtN0fPhmngQV
- eMHBoygyltHgvwGyAHzGkkL2JxcEiAv8HSTV7sDi6ZxLcE7Iw5pSwvsBGXL3SCipth6V
- eds8/6kqL4QkiQZ7ZCtPJq2PPOugXWvoRM2+yuLMJMLyXXi3YDb5YjTD11uefW5mZg2G
- Zm80jLozK/WNihdRCtoMF+VTzJWlzP0kWhFkL/wNBzla6rv1LzGcOWNIA1nsz+nb3/LH
- SQlBLNAMhSLBJvP0rK0OS8M6cWX1wAxSBApDoyKdyOOUngpkfJvyhApWTsC/rQNrLN/+ dA== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35tsr09814-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 02 Jan 2021 10:14:10 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 102F8XF6030098;
-        Sat, 2 Jan 2021 15:14:09 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04fra.de.ibm.com with ESMTP id 35tgf885nd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 02 Jan 2021 15:14:09 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 102FE62l34603450
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 2 Jan 2021 15:14:06 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 66A4AA404D;
-        Sat,  2 Jan 2021 15:14:06 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D8ABFA4040;
-        Sat,  2 Jan 2021 15:14:05 +0000 (GMT)
-Received: from localhost (unknown [9.171.47.54])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat,  2 Jan 2021 15:14:05 +0000 (GMT)
-Date:   Sat, 2 Jan 2021 16:14:04 +0100
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.11-rc2
-Message-ID: <your-ad-here.call-01609600444-ext-3658@work.hours>
+        Sat, 2 Jan 2021 10:22:03 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5E5C061573;
+        Sat,  2 Jan 2021 07:21:23 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 3so13738288wmg.4;
+        Sat, 02 Jan 2021 07:21:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OJBITHaQqc5xps2gqOqR24Tyr4hGdZImALfk9kxilUw=;
+        b=NvGUGxltRkygnkWt8il2VY/VOJmppE+yq+zgwo8hmdFcFZfjYtKFZ/rhfCOQnBc+Zk
+         8xThlikKe45cXimJXDIexKr7ayg3lOvYuqlm7LgZ+jrDz+Caf5N0QJE0y2dlCjD+xd5b
+         sZMQP1sfAQPp+AM5Lig7wFNbxAechxk7ODSAJUgidqhfDVnAMOEFrXTIBGx+mFecPof/
+         RDRBMGsxVZmpKew2I0jLuZP/b9FqovcagcOCF3EuI1HhVpskaO+cUtenCizeHbbVp9KI
+         51z/mVU+s2eorqGFff/E7J47uV8DTSNJnYfBx8YnDhAPSiT9kSXtkQj0iJkYru2Hw4Zk
+         VRAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OJBITHaQqc5xps2gqOqR24Tyr4hGdZImALfk9kxilUw=;
+        b=rpMIAIeirbUfTJ56EvS5BvodnXqMozM4plCagANpQ4XaDpxq1XmqmOMZwWUokqr4JN
+         4QRg/sHIzrrJ9O5gFDQ0eh1zdho+r7ttOrZb8dA2dMK9MpK5/VAKj9bZpCOsIfzZPY83
+         JlwuvtkhjnaVne7VbXG/7GDDDxwrmNQgECFHKafgevYVLUhxfSmhGbCiKqmFx9sp11Dl
+         9RN4S5m3cv5pTjh9iF7RNtgKFUjKpBG/BH7DnbAAx/w/8kU8t6v7DcfxuAFWzPcFMueP
+         eXCGLsBUVeb2jAWQSCgUSieprF8FiD1GyOW/6jAdEKTMxj0hZ+VNrvZMoL8b3RP2Mkc1
+         oyvA==
+X-Gm-Message-State: AOAM533oIgF18UiNDvLB0e7NC2RavlPdNakp5Ahbe1BlgAT03rXnc+fA
+        VIsyaJ97NNnf1NMBFO/yK2our1I/8s55QQ==
+X-Google-Smtp-Source: ABdhPJz1HKKwKxVCoTsKOjB/MYoTeJtGzrGeOEkTWLP+7WGm6nET026PZQx1ZUd9bCXYV2kgxNirfg==
+X-Received: by 2002:a1c:87:: with SMTP id 129mr19523015wma.183.1609600881470;
+        Sat, 02 Jan 2021 07:21:21 -0800 (PST)
+Received: from localhost.localdomain ([85.255.236.0])
+        by smtp.gmail.com with ESMTPSA id h13sm78671243wrm.28.2021.01.02.07.21.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Jan 2021 07:21:20 -0800 (PST)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     linux-block@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v2 0/7] no-copy bvec
+Date:   Sat,  2 Jan 2021 15:17:32 +0000
+Message-Id: <cover.1609461359.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-02_09:2020-12-31,2021-01-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- malwarescore=0 mlxlogscore=999 spamscore=0 impostorscore=0 clxscore=1011
- phishscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101020090
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Currently, when iomap and block direct IO gets a bvec based iterator
+the bvec will be copied, with all other accounting that takes much
+CPU time and causes additional allocation for larger bvecs. The
+patchset makes it to reuse the passed in iter bvec.
 
-please pull s390 changes for 5.11-rc2.
+[1,2] are forbidding zero-length bvec segments to not pile special
+cases, [3] skip/fix PSI tracking to not iterate over bvecs extra
+time.
 
-Thank you,
-Vasily
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+nullblk completion_nsec=0 submit_queues=NR_CORES, no merges, no stats
+fio/t/io_uring /dev/nullb0 -d 128 -s 32 -c 32 -p 0 -B 1 -F 1 -b BLOCK_SIZE
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+BLOCK_SIZE             512     4K      8K      16K     32K     64K
+===================================================================
+old (KIOPS)            1208    1208    1131    1039    863     699
+new (KIOPS)            1222    1222    1170    1137    1083    982
 
-are available in the Git repository at:
+Previously, Jens got before 10% difference for polling real HW and small
+block sizes, but that was for an older version that had one
+iov_iter_advance() less
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.11-3
 
-for you to fetch changes up to 129975e75b9a2ba528d7f58be2e338cd644f6ed8:
+since RFC:
+- add target_core_file patch by Christoph
+- make no-copy default behaviour, remove iter flag
+- iter_advance() instead of hacks to revert to work
+- add bvec iter_advance() optimisation patch
+- remove PSI annotations from direct IO (iomap, block and fs/direct)
+- note in d/f/porting
 
-  s390/Kconfig: sort config S390 select list once again (2020-12-30 17:08:53 +0100)
+since v1:
+- don't allow zero-length bvec segments (Ming)
+- don't add a BIO_WORKINGSET-less version of bio_add_page(), just clear
+  the flag at the end and leave it for further cleanups (Christoph)
+- commit message and comments rewording (Dave)
+- other nits by Christoph
 
-----------------------------------------------------------------
-- Update defconfigs and sort config select list.
+Christoph Hellwig (1):
+  target/file: allocate the bvec array as part of struct
+    target_core_file_cmd
 
-----------------------------------------------------------------
-Heiko Carstens (2):
-      s390: update defconfigs
-      s390/Kconfig: sort config S390 select list once again
+Pavel Begunkov (6):
+  splice: don't generate zero-len segement bvecs
+  bvec/iter: disallow zero-length segment bvecs
+  block/psi: remove PSI annotations from direct IO
+  iov_iter: optimise bvec iov_iter_advance()
+  bio: add a helper calculating nr segments to alloc
+  bio: don't copy bvec for direct IO
 
- arch/s390/Kconfig                    | 31 +++++++++++++++++--------------
- arch/s390/configs/debug_defconfig    | 12 +++++++++---
- arch/s390/configs/defconfig          | 11 +++++++----
- arch/s390/configs/zfcpdump_defconfig |  2 ++
- 4 files changed, 35 insertions(+), 21 deletions(-)
+ Documentation/filesystems/porting.rst | 16 ++++++
+ block/bio.c                           | 71 +++++++++++++--------------
+ drivers/target/target_core_file.c     | 20 +++-----
+ fs/block_dev.c                        |  7 +--
+ fs/direct-io.c                        |  2 +
+ fs/iomap/direct-io.c                  |  9 ++--
+ fs/splice.c                           |  9 ++--
+ include/linux/bio.h                   | 13 +++++
+ lib/iov_iter.c                        | 21 +++++++-
+ 9 files changed, 103 insertions(+), 65 deletions(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index e84bdd15150b..c72874f09741 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -54,17 +54,23 @@ config KASAN_SHADOW_OFFSET
- 
- config S390
- 	def_bool y
-+	#
-+	# Note: keep this list sorted alphabetically
-+	#
-+	imply IMA_SECURE_AND_OR_TRUSTED_BOOT
- 	select ARCH_BINFMT_ELF_STATE
- 	select ARCH_HAS_DEBUG_VM_PGTABLE
- 	select ARCH_HAS_DEBUG_WX
- 	select ARCH_HAS_DEVMEM_IS_ALLOWED
- 	select ARCH_HAS_ELF_RANDOMIZE
-+	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_GIGANTIC_PAGE
- 	select ARCH_HAS_KCOV
- 	select ARCH_HAS_MEM_ENCRYPT
- 	select ARCH_HAS_PTE_SPECIAL
-+	select ARCH_HAS_SCALED_CPUTIME
- 	select ARCH_HAS_SET_MEMORY
- 	select ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_HAS_STRICT_MODULE_RWX
-@@ -111,8 +117,10 @@ config S390
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BUILDTIME_TABLE_SORT
- 	select CLONE_BACKWARDS2
-+	select CPU_NO_EFFICIENT_FFS if !HAVE_MARCH_Z9_109_FEATURES
- 	select DMA_OPS if PCI
- 	select DYNAMIC_FTRACE if FUNCTION_TRACER
-+	select GENERIC_ALLOCATOR
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
- 	select GENERIC_FIND_FIRST_BIT
-@@ -126,22 +134,21 @@ config S390
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
- 	select HAVE_ARCH_KASAN
- 	select HAVE_ARCH_KASAN_VMALLOC
--	select CPU_NO_EFFICIENT_FFS if !HAVE_MARCH_Z9_109_FEATURES
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_SOFT_DIRTY
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
- 	select HAVE_ARCH_VMAP_STACK
- 	select HAVE_ASM_MODVERSIONS
--	select HAVE_EBPF_JIT if PACK_STACK && HAVE_MARCH_Z196_FEATURES
- 	select HAVE_CMPXCHG_DOUBLE
- 	select HAVE_CMPXCHG_LOCAL
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
--	select HAVE_FAST_GUP
-+	select HAVE_EBPF_JIT if PACK_STACK && HAVE_MARCH_Z196_FEATURES
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
-+	select HAVE_FAST_GUP
- 	select HAVE_FENTRY
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_FUNCTION_ERROR_INJECTION
-@@ -163,16 +170,15 @@ config S390
- 	select HAVE_KRETPROBES
- 	select HAVE_KVM
- 	select HAVE_LIVEPATCH
--	select HAVE_PERF_REGS
--	select HAVE_PERF_USER_STACK_DUMP
- 	select HAVE_MEMBLOCK_PHYS_MAP
--	select MMU_GATHER_NO_GATHER
- 	select HAVE_MOD_ARCH_SPECIFIC
-+	select HAVE_NMI
- 	select HAVE_NOP_MCOUNT
- 	select HAVE_OPROFILE
- 	select HAVE_PCI
- 	select HAVE_PERF_EVENTS
--	select MMU_GATHER_RCU_TABLE_FREE
-+	select HAVE_PERF_REGS
-+	select HAVE_PERF_USER_STACK_DUMP
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RELIABLE_STACKTRACE
- 	select HAVE_RSEQ
-@@ -181,6 +187,8 @@ config S390
- 	select HAVE_VIRT_CPU_ACCOUNTING_IDLE
- 	select IOMMU_HELPER		if PCI
- 	select IOMMU_SUPPORT		if PCI
-+	select MMU_GATHER_NO_GATHER
-+	select MMU_GATHER_RCU_TABLE_FREE
- 	select MODULES_USE_ELF_RELA
- 	select NEED_DMA_MAP_STATE	if PCI
- 	select NEED_SG_DMA_LENGTH	if PCI
-@@ -190,17 +198,12 @@ config S390
- 	select PCI_MSI			if PCI
- 	select PCI_MSI_ARCH_FALLBACKS	if PCI_MSI
- 	select SPARSE_IRQ
-+	select SWIOTLB
- 	select SYSCTL_EXCEPTION_TRACE
- 	select THREAD_INFO_IN_TASK
- 	select TTY
- 	select VIRT_CPU_ACCOUNTING
--	select ARCH_HAS_SCALED_CPUTIME
--	select HAVE_NMI
--	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
--	select SWIOTLB
--	select GENERIC_ALLOCATOR
--	imply IMA_SECURE_AND_OR_TRUSTED_BOOT
--
-+	# Note: keep the above list sorted alphabetically
- 
- config SCHED_OMIT_FRAME_POINTER
- 	def_bool y
-diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
-index 1be32fcf6f2e..c4f6ff98a612 100644
---- a/arch/s390/configs/debug_defconfig
-+++ b/arch/s390/configs/debug_defconfig
-@@ -61,7 +61,9 @@ CONFIG_OPROFILE=m
- CONFIG_KPROBES=y
- CONFIG_JUMP_LABEL=y
- CONFIG_STATIC_KEYS_SELFTEST=y
-+CONFIG_SECCOMP_CACHE_DEBUG=y
- CONFIG_LOCK_EVENT_COUNTS=y
-+# CONFIG_GCC_PLUGINS is not set
- CONFIG_MODULES=y
- CONFIG_MODULE_FORCE_LOAD=y
- CONFIG_MODULE_UNLOAD=y
-@@ -410,12 +412,12 @@ CONFIG_SCSI_ENCLOSURE=m
- CONFIG_SCSI_CONSTANTS=y
- CONFIG_SCSI_LOGGING=y
- CONFIG_SCSI_SPI_ATTRS=m
--CONFIG_SCSI_FC_ATTRS=y
-+CONFIG_SCSI_FC_ATTRS=m
- CONFIG_SCSI_SAS_LIBSAS=m
- CONFIG_SCSI_SRP_ATTRS=m
- CONFIG_ISCSI_TCP=m
- CONFIG_SCSI_DEBUG=m
--CONFIG_ZFCP=y
-+CONFIG_ZFCP=m
- CONFIG_SCSI_VIRTIO=m
- CONFIG_SCSI_DH=y
- CONFIG_SCSI_DH_RDAC=m
-@@ -444,6 +446,7 @@ CONFIG_DM_MULTIPATH=m
- CONFIG_DM_MULTIPATH_QL=m
- CONFIG_DM_MULTIPATH_ST=m
- CONFIG_DM_MULTIPATH_HST=m
-+CONFIG_DM_MULTIPATH_IOA=m
- CONFIG_DM_DELAY=m
- CONFIG_DM_UEVENT=y
- CONFIG_DM_FLAKEY=m
-@@ -542,7 +545,6 @@ CONFIG_INPUT_EVDEV=y
- # CONFIG_INPUT_MOUSE is not set
- # CONFIG_SERIO is not set
- CONFIG_LEGACY_PTY_COUNT=0
--CONFIG_NULL_TTY=m
- CONFIG_VIRTIO_CONSOLE=y
- CONFIG_HW_RANDOM_VIRTIO=m
- CONFIG_RAW_DRIVER=m
-@@ -574,6 +576,7 @@ CONFIG_VIRTIO_BALLOON=m
- CONFIG_VIRTIO_INPUT=y
- CONFIG_VHOST_NET=m
- CONFIG_VHOST_VSOCK=m
-+# CONFIG_SURFACE_PLATFORMS is not set
- CONFIG_S390_CCW_IOMMU=y
- CONFIG_S390_AP_IOMMU=y
- CONFIG_EXT4_FS=y
-@@ -655,6 +658,7 @@ CONFIG_CIFS_XATTR=y
- CONFIG_CIFS_POSIX=y
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CIFS_DFS_UPCALL=y
-+CONFIG_CIFS_SWN_UPCALL=y
- CONFIG_NLS_DEFAULT="utf8"
- CONFIG_NLS_CODEPAGE_437=m
- CONFIG_NLS_CODEPAGE_850=m
-@@ -826,6 +830,8 @@ CONFIG_FTRACE_SYSCALLS=y
- CONFIG_BLK_DEV_IO_TRACE=y
- CONFIG_BPF_KPROBE_OVERRIDE=y
- CONFIG_HIST_TRIGGERS=y
-+CONFIG_FTRACE_STARTUP_TEST=y
-+# CONFIG_EVENT_TRACE_STARTUP_TEST is not set
- CONFIG_DEBUG_USER_ASCE=y
- CONFIG_NOTIFIER_ERROR_INJECTION=m
- CONFIG_NETDEV_NOTIFIER_ERROR_INJECT=m
-diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
-index e2171a008809..51135893cffe 100644
---- a/arch/s390/configs/defconfig
-+++ b/arch/s390/configs/defconfig
-@@ -58,6 +58,7 @@ CONFIG_S390_UNWIND_SELFTEST=m
- CONFIG_OPROFILE=m
- CONFIG_KPROBES=y
- CONFIG_JUMP_LABEL=y
-+# CONFIG_GCC_PLUGINS is not set
- CONFIG_MODULES=y
- CONFIG_MODULE_FORCE_LOAD=y
- CONFIG_MODULE_UNLOAD=y
-@@ -95,7 +96,6 @@ CONFIG_ZSMALLOC_STAT=y
- CONFIG_DEFERRED_STRUCT_PAGE_INIT=y
- CONFIG_IDLE_PAGE_TRACKING=y
- CONFIG_PERCPU_STATS=y
--CONFIG_GUP_TEST=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -403,12 +403,12 @@ CONFIG_SCSI_ENCLOSURE=m
- CONFIG_SCSI_CONSTANTS=y
- CONFIG_SCSI_LOGGING=y
- CONFIG_SCSI_SPI_ATTRS=m
--CONFIG_SCSI_FC_ATTRS=y
-+CONFIG_SCSI_FC_ATTRS=m
- CONFIG_SCSI_SAS_LIBSAS=m
- CONFIG_SCSI_SRP_ATTRS=m
- CONFIG_ISCSI_TCP=m
- CONFIG_SCSI_DEBUG=m
--CONFIG_ZFCP=y
-+CONFIG_ZFCP=m
- CONFIG_SCSI_VIRTIO=m
- CONFIG_SCSI_DH=y
- CONFIG_SCSI_DH_RDAC=m
-@@ -437,6 +437,7 @@ CONFIG_DM_MULTIPATH=m
- CONFIG_DM_MULTIPATH_QL=m
- CONFIG_DM_MULTIPATH_ST=m
- CONFIG_DM_MULTIPATH_HST=m
-+CONFIG_DM_MULTIPATH_IOA=m
- CONFIG_DM_DELAY=m
- CONFIG_DM_UEVENT=y
- CONFIG_DM_FLAKEY=m
-@@ -536,7 +537,6 @@ CONFIG_INPUT_EVDEV=y
- # CONFIG_INPUT_MOUSE is not set
- # CONFIG_SERIO is not set
- CONFIG_LEGACY_PTY_COUNT=0
--CONFIG_NULL_TTY=m
- CONFIG_VIRTIO_CONSOLE=y
- CONFIG_HW_RANDOM_VIRTIO=m
- CONFIG_RAW_DRIVER=m
-@@ -568,6 +568,7 @@ CONFIG_VIRTIO_BALLOON=m
- CONFIG_VIRTIO_INPUT=y
- CONFIG_VHOST_NET=m
- CONFIG_VHOST_VSOCK=m
-+# CONFIG_SURFACE_PLATFORMS is not set
- CONFIG_S390_CCW_IOMMU=y
- CONFIG_S390_AP_IOMMU=y
- CONFIG_EXT4_FS=y
-@@ -645,6 +646,7 @@ CONFIG_CIFS_XATTR=y
- CONFIG_CIFS_POSIX=y
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CIFS_DFS_UPCALL=y
-+CONFIG_CIFS_SWN_UPCALL=y
- CONFIG_NLS_DEFAULT="utf8"
- CONFIG_NLS_CODEPAGE_437=m
- CONFIG_NLS_CODEPAGE_850=m
-@@ -778,6 +780,7 @@ CONFIG_FTRACE_SYSCALLS=y
- CONFIG_BLK_DEV_IO_TRACE=y
- CONFIG_BPF_KPROBE_OVERRIDE=y
- CONFIG_HIST_TRIGGERS=y
-+CONFIG_DEBUG_USER_ASCE=y
- CONFIG_LKDTM=m
- CONFIG_PERCPU_TEST=m
- CONFIG_ATOMIC64_SELFTEST=y
-diff --git a/arch/s390/configs/zfcpdump_defconfig b/arch/s390/configs/zfcpdump_defconfig
-index a302630341ef..1ef211dae77a 100644
---- a/arch/s390/configs/zfcpdump_defconfig
-+++ b/arch/s390/configs/zfcpdump_defconfig
-@@ -22,6 +22,7 @@ CONFIG_CRASH_DUMP=y
- # CONFIG_VIRTUALIZATION is not set
- # CONFIG_S390_GUEST is not set
- # CONFIG_SECCOMP is not set
-+# CONFIG_GCC_PLUGINS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_IBM_PARTITION=y
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
-@@ -58,6 +59,7 @@ CONFIG_RAW_DRIVER=y
- # CONFIG_HID is not set
- # CONFIG_VIRTIO_MENU is not set
- # CONFIG_VHOST_MENU is not set
-+# CONFIG_SURFACE_PLATFORMS is not set
- # CONFIG_IOMMU_SUPPORT is not set
- # CONFIG_DNOTIFY is not set
- # CONFIG_INOTIFY_USER is not set
+-- 
+2.24.0
+
