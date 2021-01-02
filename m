@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAA52E8683
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 06:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E93072E868D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 07:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbhABFzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 00:55:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
+        id S1727404AbhABGF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 01:05:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbhABFzw (ORCPT
+        with ESMTP id S1727195AbhABGFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 00:55:52 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DEAC061573;
-        Fri,  1 Jan 2021 21:55:12 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id j1so11789799pld.3;
-        Fri, 01 Jan 2021 21:55:12 -0800 (PST)
+        Sat, 2 Jan 2021 01:05:25 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366E9C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 22:04:45 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id x20so51965503lfe.12
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 22:04:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iJZAqzKqZgcIsMRNmmvHW0lF2fkCdunCtBb6MpxtWhM=;
-        b=jinKG8gH+/HxGhNe7CcKomA1Ta5bARXabnrQLd4e+uei36RFubUkMCX4du3uiAxFDF
-         PDNdRX3j4/VlNSKtIOkFZ2+Pmv+5HTc2i/BXu5Jk8bTi+dvWdmOSaalcHNIZ8cwUALUI
-         kB2GwnyEg8bCCAp046uoC4PUFjh7l9x4W8HhJBg5iOLvTTu7e4MQiF6c/KiXEMUSoB7s
-         ZIZTKvidLuxPd8YV6m4R4ZH3N2UDF+1feXAN/xL4rfd7P4IbD0r8Tvy1iq+RLvxVg2I6
-         X8o5HiMcqyRVwuX+7s3y7vr0DUWTCFe6U+xSERrlgXdAYi4tRw6vltRSlpPv8sJF3Hgn
-         cSCw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=07wP4+HPBVC2VHbUnFYsgWGMeRKZwcznPDaqHki/QJQ=;
+        b=AwvEUT04dRZRxQb/2mz5Sa4Wndo/K1CL1umdComqMZUZlXVWSJQB7lcofjIcuC+ze6
+         2alNCnxiPCMJPDiYt1yQ+KX0t1o1D4fbK34NcrIInky9lgUccS8ZCOHVJCVjsdOgk2rc
+         V2OE/vo+XOF+2RNidBlnvzHq8G9xlV5R9h1SlVuRPoWSfJS/J4cLMAZQwzkamgi/oU0N
+         8GfrtrxIsh/KuLLhPYul+wfUEXTNysSTB1RGEFIbj4BY61t+AwRmMIg/PrbOXDEWLTb2
+         zLEX0d0HvAJ81vDBUOn/a4C6gYrNYwYZLfJ+g943MOR9enck0Kdy17h6xbVMDpWT8keu
+         pv+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iJZAqzKqZgcIsMRNmmvHW0lF2fkCdunCtBb6MpxtWhM=;
-        b=erkKQNi/I173h++gdKno41fCOdCH+tjXT031xLcXCUSdRx0XLOhtM5mluOnSvQPfJw
-         I06b9XDKWsixfneAJ0NsBLkSHZbbzYZExNGPHQ2GzZeqZ572OiSEKrSiH/Dpl3DRfzwG
-         tB3JmEF6SI5hE69oVhsNentHu+03X8Z9ZgF98LLsM2SjsZzCIoFg+j+gfnC6EeLALGt5
-         8VNBdpHqgA+uFPtDu5dfSVB2Df8eO2deO7zjAZP9Q6l9ska/m39Ual5oEaMHF9C9f5zH
-         smyv9x+XUnK2xNzATHYZFo0L8j8fGJHyYqhuptnucRD1RIsSfgMYyikjtA6oNn2DDt5Z
-         cuiw==
-X-Gm-Message-State: AOAM532UmBXWa+wWdMVyv75ObTfL9NGyFWXMie6+MmpbSqnW/43HYnw1
-        gH3Ey4LcZpJOUbfGwsRWC3v3vk07e3o=
-X-Google-Smtp-Source: ABdhPJwE/bgsV8V5R2xrSoKI96HszDccfTzvO2UfH6sPNeHp01IQLNWEVWGYBekoKQ5PUTv3b5mQNg==
-X-Received: by 2002:a17:902:b706:b029:dc:3817:4da5 with SMTP id d6-20020a170902b706b02900dc38174da5mr40202727pls.23.1609566911638;
-        Fri, 01 Jan 2021 21:55:11 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id b7sm38676966pff.96.2021.01.01.21.55.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Jan 2021 21:55:11 -0800 (PST)
-Date:   Fri, 1 Jan 2021 21:55:08 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: ar1021 - use IRQ_NOAUTOEN flags to replace
- disable_irq
-Message-ID: <X/AKvA8Wt0F6DjcU@google.com>
-References: <20210102042902.41664-1-song.bao.hua@hisilicon.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=07wP4+HPBVC2VHbUnFYsgWGMeRKZwcznPDaqHki/QJQ=;
+        b=dCi67t7i42cO4rhHxP/lnW+EtlvaDzH0NoVVh49E1gTxBYW7h6h8FOIVoYJ/pxjIRX
+         zUp8xzjpYqKQrM5t1Cy32gCuyxBKO6UM2BzfchvFaB2fk/poHoTaCIthAvb5ufDgeRc9
+         aHFSKbfTa1z1O2EWQzxUqgzkKvP0KXYq47cEa5H6jOJ3HCSYZjFu+XJYMbC50BAu0/CI
+         cwBkZev8GkuGneeUPz6/f59i1i7OuF2q67GbjOXBW4q3wvP47qpCzHaJKMcW4Z/Is4AY
+         pxtkIEPR1tg5sODBBoZe7frDZG9V3OulEIB+a6/tp4lhJhv2nLR+tLbVdAZH5ZGnv2Wj
+         WjUg==
+X-Gm-Message-State: AOAM532TkaHDF+hQlPBe3cGeZ5DJUR/d7EPCDdXWQ+u8/5LqG7bEpwoO
+        i38CxM/uGb3HX2JDIPLJsK8dtRdGN3fQCb9D0tM=
+X-Google-Smtp-Source: ABdhPJyv5+JjtiVK0j4T9nRqiANhDYU3/AjVCG+MhVVzT0KTsgGX9L+naGOo7ypYgP8i7Y8uQAGnjTRQFzJeJWShygY=
+X-Received: by 2002:a2e:9246:: with SMTP id v6mr7657089ljg.221.1609567482716;
+ Fri, 01 Jan 2021 22:04:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210102042902.41664-1-song.bao.hua@hisilicon.com>
+Received: by 2002:a19:6550:0:0:0:0:0 with HTTP; Fri, 1 Jan 2021 22:04:41 -0800 (PST)
+Reply-To: grace.graceobia@gmail.com
+From:   Grace Obia <kath.rafael2030@gmail.com>
+Date:   Sat, 2 Jan 2021 06:04:41 +0000
+Message-ID: <CADP0Tkc4zsTvGOR87UFbCtG0=7=DQyM=JTEBeeB9BzCQrL_XXA@mail.gmail.com>
+Subject: Dearest in Mind,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Barry,
-
-On Sat, Jan 02, 2021 at 05:29:02PM +1300, Barry Song wrote:
-> disable_irq() after request_irq is unsafe as it gives a time gap which
-> irq can come before disable_irq(). IRQ_NOAUTOEN is the common way to
-> avoid enabling IRQ due to requesting IRQ.
-
-Actually it is OK for the ISR to fire before the input device is
-registered, input core allows that.
-
-What I would like to see is to allow passing something like
-IRQF_DISABLED to request_irq() so that we would not need neither
-irq_set_status_flags() nor disable_irq().
-
-Thanks.
-
 -- 
-Dmitry
+
+Dearest in Mind,
+
+My name is Mrs. Katherine Rafael, a business woman an Ivorian Citizen
+and born in 1961. I have a mission for you worth $3 500, 000,00 (Three
+Million Five Hundred Thousand United State Dollars) which I intend
+using for CHARITY.
+
+I am a breast cancer woman and have told by doctor that I will die in
+no distance future, now and want to donate this money for charity
+through you by transferring this money to your account, to enable
+people in your area benefit from it.
+
+Could you be the one I will use in this noble transaction before I
+will go for my surgery?
+
+
+Mrs.Katherine Rafael
