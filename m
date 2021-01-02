@@ -2,98 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3642D2E887C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 21:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2696D2E887E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 21:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbhABU0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 15:26:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbhABU0y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 15:26:54 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D335C061573;
-        Sat,  2 Jan 2021 12:26:14 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id 91so27026055wrj.7;
-        Sat, 02 Jan 2021 12:26:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uuaswafA4TQVvz1UZDdvhjuiKY9mruy0RJy3iy5N0mA=;
-        b=p3yCOhnYofMOj78YUL7K29Ms+2FxrUzvnsAF11Neo6tRCNTVQGMZd7lvKJrc/mCIfs
-         /ften1O0U3MrV614/ggLyDGT8TqlzR23qZi7nsUg80nRFZeTh3qH3SYvkx+gwpSnFb11
-         Dui+1C/tbdkTBs1XZJUBAEgm0417BZtl5SmNSd3I1LrOxI2iGoGiIiVSYrfUzWi+AJPx
-         RxcZVtsrHxg78ZUuObilVVx/egGgkF5jp3jcwXKZqx9ImXMt3UdJ5a3sFsgRtQcOGqG4
-         Jmb/XrZQlpdpQLGNfXeBy3ZVqZEhVTwnO43NaT+bUbLMnxPqHEnb+h6+Rpc+vI6DS9iY
-         WXDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uuaswafA4TQVvz1UZDdvhjuiKY9mruy0RJy3iy5N0mA=;
-        b=j7l3Pgi7A7wiiDWbQHlALKrrGTPBsmLFA/QkitTRUmFwc3KIpDb39k9SNHBxDjmYoj
-         bwwsqbxWH10saJEQ2SxFqdf0VMGtFNue85pdmojBNpCLA8Xwt+aHvuvqJzqhPK7NDZsd
-         IiRAlzBgXstA+8NOrpuifDvQvZcHztARgBQ8sfFqZ6goxVDGK+RBXgjgLiWvBTiDvmao
-         KfjIEVlK7DC6tt8fB7jnM1RKkdFHQZNyXoThM3ocbu7zENkt+6kDGincXS3CqocwcQ8d
-         +xAvrTJhhbp0kl9lpY66hsLDRxMKM/HUYiUYfDtErzXB2I+vHsXV5ql7qi4+l6IeQkQz
-         2kpA==
-X-Gm-Message-State: AOAM531vLlPUPwHxES+ZvR8hzKihp0UgOdSDvuhUPzLzIb9iSqlhcjOS
-        YSk7ZbAu2vrmU1YxALqTERk=
-X-Google-Smtp-Source: ABdhPJyiDyyRt4hq1SXo4hGhsh+SBiY6KZ/2itqNLIp8w4wvHWusI0T9nN/nQQqg2i2ag1jf1MPGJQ==
-X-Received: by 2002:a5d:4f10:: with SMTP id c16mr72164660wru.398.1609619173035;
-        Sat, 02 Jan 2021 12:26:13 -0800 (PST)
-Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id s25sm90902853wrs.49.2021.01.02.12.26.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Jan 2021 12:26:12 -0800 (PST)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Iskren Chernev <iskren.chernev@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm: Fix MSM_INFO_GET_IOVA with carveout
-Date:   Sat,  2 Jan 2021 22:24:37 +0200
-Message-Id: <20210102202437.1630365-1-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726766AbhABU1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 15:27:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726627AbhABU1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 15:27:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 864BC20796;
+        Sat,  2 Jan 2021 20:26:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609619186;
+        bh=GdOkUQkIyXYCfeFxIBwC+3/AFItGJqJoa4HOHlJd6t8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Qq+LyLxlSZL0phtydjxOH/ONDk95cOJDx9YGoImhqSHVe/C76Weo1SH+5PKDD/poX
+         yTlIkOv9i7gYf4sT3OTc6gr9tMlZsMOQVCrM06dYLQOUEio/wk80E+1fNf8wcsEwFW
+         b0hO79YeAVXKabjgweB1eyDwJIdkRi93NC6meZD7V13YQoc7f7cQJUpULw0cg934Mo
+         v+dSYsUBDHmMufW6mXjHOHa0GEPzbjG/+2oJdNVAXq+BJSK+gkvP+189nyO8cBvFqX
+         IE3jCNyGNN9hPcB6Uq8xZXZL15axFVtZZH8/7jTme571Q932XLvBS0a1UJB3tp4M79
+         /QGKEpYwNvGHg==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 72ACA600A5;
+        Sat,  2 Jan 2021 20:26:26 +0000 (UTC)
+Subject: Re: [GIT PULL][Resend] Power management updates for v5.11-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAJZ5v0j-4z07zeqcMNKCjG5dt59GAbKHq2xGnzAxUnNnFf3soA@mail.gmail.com>
+References: <CAJZ5v0j-4z07zeqcMNKCjG5dt59GAbKHq2xGnzAxUnNnFf3soA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0j-4z07zeqcMNKCjG5dt59GAbKHq2xGnzAxUnNnFf3soA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.11-rc2
+X-PR-Tracked-Commit-Id: 89ecf09e0b93de54415de45be241649ec1b162de
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d9296a7bd9c87321766beeb041dc5b55326d9903
+Message-Id: <160961918639.18509.12643665966172421312.pr-tracker-bot@kernel.org>
+Date:   Sat, 02 Jan 2021 20:26:26 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The msm_gem_get_iova should be guarded with gpu != NULL and not aspace
-!= NULL, because aspace is NULL when using vram carveout.
+The pull request you sent on Sat, 2 Jan 2021 10:25:25 +0100:
 
-Fixes: 933415e24bd0d ("drm/msm: Add support for private address space instances")
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.11-rc2
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
----
- drivers/gpu/drm/msm/msm_drv.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d9296a7bd9c87321766beeb041dc5b55326d9903
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index c5e61cb3356df..c1953fb079133 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -775,9 +775,10 @@ static int msm_ioctl_gem_info_iova(struct drm_device *dev,
- 		struct drm_file *file, struct drm_gem_object *obj,
- 		uint64_t *iova)
- {
-+	struct msm_drm_private *priv = dev->dev_private;
- 	struct msm_file_private *ctx = file->driver_priv;
- 
--	if (!ctx->aspace)
-+	if (!priv->gpu)
- 		return -EINVAL;
- 
- 	/*
+Thank you!
+
 -- 
-2.29.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
