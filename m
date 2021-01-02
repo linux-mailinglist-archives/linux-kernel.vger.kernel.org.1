@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FF92E8681
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 06:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAA52E8683
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 06:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727345AbhABFtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 00:49:01 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:8832 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725827AbhABFtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 00:49:00 -0500
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app2 (Coremail) with SMTP id by_KCgCXz3wMCfBfFuJJAA--.62532S4;
-        Sat, 02 Jan 2021 13:47:59 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: hci_qca: Fix memleak in qca_controller_memdump
-Date:   Sat,  2 Jan 2021 13:47:55 +0800
-Message-Id: <20210102054755.21069-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgCXz3wMCfBfFuJJAA--.62532S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7XrWxZr4rCr1DWryDJrWrXwb_yoWfGFX_C3
-        Z3uFy7Ar1UGr1Yy3WjgF45urySyan8ur1vg3Waq34fW39xZa47WryjqF98Gr1fWr1UGrsx
-        A3yDCFyrAr1UAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
-        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0IBlZdtRuRfAASsb
+        id S1727369AbhABFzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 00:55:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbhABFzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 00:55:52 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DEAC061573;
+        Fri,  1 Jan 2021 21:55:12 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id j1so11789799pld.3;
+        Fri, 01 Jan 2021 21:55:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iJZAqzKqZgcIsMRNmmvHW0lF2fkCdunCtBb6MpxtWhM=;
+        b=jinKG8gH+/HxGhNe7CcKomA1Ta5bARXabnrQLd4e+uei36RFubUkMCX4du3uiAxFDF
+         PDNdRX3j4/VlNSKtIOkFZ2+Pmv+5HTc2i/BXu5Jk8bTi+dvWdmOSaalcHNIZ8cwUALUI
+         kB2GwnyEg8bCCAp046uoC4PUFjh7l9x4W8HhJBg5iOLvTTu7e4MQiF6c/KiXEMUSoB7s
+         ZIZTKvidLuxPd8YV6m4R4ZH3N2UDF+1feXAN/xL4rfd7P4IbD0r8Tvy1iq+RLvxVg2I6
+         X8o5HiMcqyRVwuX+7s3y7vr0DUWTCFe6U+xSERrlgXdAYi4tRw6vltRSlpPv8sJF3Hgn
+         cSCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iJZAqzKqZgcIsMRNmmvHW0lF2fkCdunCtBb6MpxtWhM=;
+        b=erkKQNi/I173h++gdKno41fCOdCH+tjXT031xLcXCUSdRx0XLOhtM5mluOnSvQPfJw
+         I06b9XDKWsixfneAJ0NsBLkSHZbbzYZExNGPHQ2GzZeqZ572OiSEKrSiH/Dpl3DRfzwG
+         tB3JmEF6SI5hE69oVhsNentHu+03X8Z9ZgF98LLsM2SjsZzCIoFg+j+gfnC6EeLALGt5
+         8VNBdpHqgA+uFPtDu5dfSVB2Df8eO2deO7zjAZP9Q6l9ska/m39Ual5oEaMHF9C9f5zH
+         smyv9x+XUnK2xNzATHYZFo0L8j8fGJHyYqhuptnucRD1RIsSfgMYyikjtA6oNn2DDt5Z
+         cuiw==
+X-Gm-Message-State: AOAM532UmBXWa+wWdMVyv75ObTfL9NGyFWXMie6+MmpbSqnW/43HYnw1
+        gH3Ey4LcZpJOUbfGwsRWC3v3vk07e3o=
+X-Google-Smtp-Source: ABdhPJwE/bgsV8V5R2xrSoKI96HszDccfTzvO2UfH6sPNeHp01IQLNWEVWGYBekoKQ5PUTv3b5mQNg==
+X-Received: by 2002:a17:902:b706:b029:dc:3817:4da5 with SMTP id d6-20020a170902b706b02900dc38174da5mr40202727pls.23.1609566911638;
+        Fri, 01 Jan 2021 21:55:11 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id b7sm38676966pff.96.2021.01.01.21.55.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Jan 2021 21:55:11 -0800 (PST)
+Date:   Fri, 1 Jan 2021 21:55:08 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: ar1021 - use IRQ_NOAUTOEN flags to replace
+ disable_irq
+Message-ID: <X/AKvA8Wt0F6DjcU@google.com>
+References: <20210102042902.41664-1-song.bao.hua@hisilicon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210102042902.41664-1-song.bao.hua@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When __le32_to_cpu() fails, qca_memdump should be freed
-just like when vmalloc() fails.
+Hi Barry,
 
-Fixes: d841502c79e3f ("Bluetooth: hci_qca: Collect controller memory dump during SSR")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/bluetooth/hci_qca.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Sat, Jan 02, 2021 at 05:29:02PM +1300, Barry Song wrote:
+> disable_irq() after request_irq is unsafe as it gives a time gap which
+> irq can come before disable_irq(). IRQ_NOAUTOEN is the common way to
+> avoid enabling IRQ due to requesting IRQ.
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 4a963682c702..5dbcb7c42b80 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1024,7 +1024,9 @@ static void qca_controller_memdump(struct work_struct *work)
- 			dump_size = __le32_to_cpu(dump->dump_size);
- 			if (!(dump_size)) {
- 				bt_dev_err(hu->hdev, "Rx invalid memdump size");
-+				kfree(qca_memdump);
- 				kfree_skb(skb);
-+				qca->qca_memdump = NULL;
- 				mutex_unlock(&qca->hci_memdump_lock);
- 				return;
- 			}
+Actually it is OK for the ISR to fire before the input device is
+registered, input core allows that.
+
+What I would like to see is to allow passing something like
+IRQF_DISABLED to request_irq() so that we would not need neither
+irq_set_status_flags() nor disable_irq().
+
+Thanks.
+
 -- 
-2.17.1
-
+Dmitry
