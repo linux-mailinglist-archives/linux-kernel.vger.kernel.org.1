@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBC82E8778
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 14:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 022B32E8786
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 15:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbhABN0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 08:26:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726636AbhABN03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 08:26:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAABD224D4;
-        Sat,  2 Jan 2021 13:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609593949;
-        bh=nQptyWsIb5DLXUAZK2xe+ITycsezO9g8NVJXR3oAkm4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=V8EdnLsyWJKT9bxjUp5n2zEUvpNVcnHpEfJIqpZDfNqU45WzeiJl8WvVsEgET8JHK
-         /MVvoFy59bzktC95YX/+LAyH8bLYWXWeHkY7lH4U6P6SsonscRHCHaax+eg9iMUqD9
-         v1gIa20v6BIikhb4H69COOpMBsWH+Cui7dHtXXKfYCBpABidWvd8W1u6kX5Q9GBTNu
-         CXapbNzjaj3Tv8XDY3ZlBmLtolpfRL4btczqchZk7XxD10IrWH4XWjDzHkSh1UseNT
-         NTdvu/kgGU+iU9SxlWZcJlLdS5Z4rgFBEtVYnv0gwJY9wlQ0q1vrkR/FQDWCCdSnSn
-         RE9wGmXcJOF+A==
-Message-ID: <a8dc3066ec2dd2038af1375d7ecb2e72fe101e7b.camel@kernel.org>
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Amir Goldstein <amir73il@gmail.com>
-Cc:     Sargun Dhillon <sargun@sargun.me>, Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chengguang Xu <cgxu519@mykernel.net>
-Date:   Sat, 02 Jan 2021 08:25:46 -0500
-In-Reply-To: <20201228204837.GA28221@casper.infradead.org>
-References: <20201223200746.GR874@casper.infradead.org>
-         <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
-         <20201223204428.GS874@casper.infradead.org>
-         <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
-         <20201224121352.GT874@casper.infradead.org>
-         <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
-         <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
-         <20201228155618.GA6211@casper.infradead.org>
-         <5bc11eb2e02893e7976f89a888221c902c11a2b4.camel@kernel.org>
-         <CAOQ4uxhFz=Uervz6sMuz=RcFUWAxyLEhBrWnjQ+U0Jj_AaU59w@mail.gmail.com>
-         <20201228204837.GA28221@casper.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726655AbhABOAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 09:00:38 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:20241 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726561AbhABOAh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 09:00:37 -0500
+IronPort-SDR: RKLfSV7ITHhdpTzWS3qwDiMgrp8Wrwz6QVWwflSxipDQJCAgb8hsmEkvkMAy2gYoBow4RAU7KB
+ IIO7AhpWX3dh5ftwh7Re2mfNvDbkA3EptFSP4/o/lwbSJJKjKDIpsDrZ/MahdrBBlnDQzH388q
+ GK28O2fZpe7J037fDEVUlZxXgcnyqZPMhMteIHtm0dhc+8xyUSN/shyEVy8vEbxHFdOo1WxfRa
+ A+9RmcxxPRz0HtXRw/iWmD2vT8LRGfVeoIJ2Z7tzU+yqH2Q6Pn/+iHa2bSUZKdK1OxKlGT3uIX
+ 3lk=
+X-IronPort-AV: E=Sophos;i="5.78,469,1599548400"; 
+   d="scan'208";a="29476449"
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by labrats.qualcomm.com with ESMTP; 02 Jan 2021 05:59:44 -0800
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 02 Jan 2021 05:59:43 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 075EE2187E; Sat,  2 Jan 2021 05:59:44 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] scsi: ufs: Fix a possible NULL pointer issue
+Date:   Sat,  2 Jan 2021 05:59:33 -0800
+Message-Id: <1609595975-12219-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
+References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-28 at 20:48 +0000, Matthew Wilcox wrote:
-> On Mon, Dec 28, 2020 at 09:37:37PM +0200, Amir Goldstein wrote:
-> > Having said that, I never objected to the SEEN flag split.
-> 
-> I STRONGLY object to the SEEN flag split.  I think it is completely
-> unnecessary and nobody's shown me a use-case that changes my mind.
+During system resume/suspend, hba could be NULL. In this case, do not touch
+eh_sem.
 
-I think the flag split makes better sense conceptually, though the
-existing callers don't really have a need for it. I have a use-case in
-mind that doesn't really involve overlayfs:
+Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM events and async scan")
 
-We still have a lot of internal callers that ultimately call
-filemap_check_errors() to check and clear the mapping's AS_EIO/AS_ENOSPC
-flags.
+Signed-off-by: Can Guo <cang@codeaurora.org>
 
-Splitting the SEEN flag in two could allow those callers to instead
-sample the errseq_t using errseq_peek for their own purposes, without
-clearing the REPORTED flag. That means that the existing semantics for
-seeing errors on newly opened files could be preserved while allowing
-internal callers to use errseq_t-based error handling.
-
-That said, I don't have any patches to do this right now. It's a fairly
-significant project to convert all of the existing callers of
-filemap_check_errors() to such a scheme wholesale. It could be done
-piecemeal though, and we could start discouraging new callers of
-filemap_check_errors and the like.
-
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index e221add..9829c8d 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -94,6 +94,8 @@
+ 		       16, 4, buf, __len, false);                        \
+ } while (0)
+ 
++static bool early_suspend;
++
+ int ufshcd_dump_regs(struct ufs_hba *hba, size_t offset, size_t len,
+ 		     const char *prefix)
+ {
+@@ -8896,8 +8898,14 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+ 	int ret = 0;
+ 	ktime_t start = ktime_get();
+ 
++	if (!hba) {
++		early_suspend = true;
++		return 0;
++	}
++
+ 	down(&hba->eh_sem);
+-	if (!hba || !hba->is_powered)
++
++	if (!hba->is_powered)
+ 		return 0;
+ 
+ 	if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
+@@ -8945,9 +8953,12 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+ 	int ret = 0;
+ 	ktime_t start = ktime_get();
+ 
+-	if (!hba) {
+-		up(&hba->eh_sem);
++	if (!hba)
+ 		return -EINVAL;
++
++	if (unlikely(early_suspend)) {
++		early_suspend = false;
++		down(&hba->eh_sem);
+ 	}
+ 
+ 	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
 -- 
-Jeff Layton <jlayton@kernel.org>
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
