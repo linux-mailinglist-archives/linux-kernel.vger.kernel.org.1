@@ -2,120 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15CD2E8742
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 13:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D452E8747
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 13:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbhABMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 07:20:31 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:10675 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbhABMU3 (ORCPT
+        id S1726599AbhABMau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 07:30:50 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:11549 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbhABMas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 07:20:29 -0500
-Date:   Sat, 02 Jan 2021 12:19:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1609589986;
-        bh=xeKFx/zvJeF3EOI2JHzXBLYuaUj021bIJFzj5apYGzs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=WmZmcyfRLRh7AKjO6USItaXwQjM4X6UUHS7RNYtEfmVWCDBe2oCwPtGNMgVVYk01P
-         HUs3p+rvZTmN1AGfTd8bKs7TJIuMzUMVmqMSSmaeb0ThSAsyRpJF+XFyYZh2mPHI0K
-         w5XxToiGjdnQONeNbC1Dww4MJrpSqj5G/9tQgoS8=
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH] platform/x86: ideapad-laptop: Add has_touchpad_switch
-Message-ID: <D2lfUAOv4FVNsPPkc_6KIGFGu1WZEj2JAt2pN2L03sIHxB6qxSwKM85gyKfhE11eEM4wcVYhMmRTC4zoOeaADbu0ueQXtRzxyoy-K2j9Y1Y=@protonmail.com>
-In-Reply-To: <063eb02d-a699-3f6c-fd1b-721e9d195e82@flygoat.com>
-References: <20210101061140.27547-1-jiaxun.yang@flygoat.com> <_kQDaYPt7vh_mQfPr1tLJV2IP-p40OBPcU5zk-1xHhF9XJsm8Y-efANBgiRdWU-J2QTtOjmrfE0Tw6UrZpm6uG-zZGlfpaVOp9FuoKAbjzA=@protonmail.com> <bcb3bc76-da83-4ee1-8c2d-0453d359ae37@www.fastmail.com> <XVSpzJf9TdCi-rg53vfxB7yLg8VJQsQVbqoC1Fu1L7tL5mPKCpMABkedQNatITMiUy7pvBC7g0Cqd30-zqc0bCsSSoy5YXp_gJLTLM0odTg=@protonmail.com> <063eb02d-a699-3f6c-fd1b-721e9d195e82@flygoat.com>
+        Sat, 2 Jan 2021 07:30:48 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609590624; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Oa6eWAu8hCJdpwRyR6afe1+t/IsPfz5IbNBUNLezFiA=;
+ b=quDl0S3OfrBWjQlE4zw4wjhaarHzOVSY57H2Q1V5urSOY8qoMOYHzBW/lc37SL2WqUBHwr/0
+ /ZmtlnFAH6vTUfLZg8SOx5Z1zUnx/uO0rFU7qvASlQtR2kLD3lMEtYVfmP7F3GOpZx6Xtzrj
+ ANk2Lx6dfs4TGTi6K68xG9eN4hU=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5ff06745b73be0303d6c9ea5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 02 Jan 2021 12:29:57
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3F80FC43462; Sat,  2 Jan 2021 12:29:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4DAD3C433C6;
+        Sat,  2 Jan 2021 12:29:56 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 02 Jan 2021 20:29:56 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Fix a possible NULL pointer issue
+In-Reply-To: <7cff30c3-6df8-7b8c-0f5b-a95980b8f706@acm.org>
+References: <1609479893-8889-1-git-send-email-cang@codeaurora.org>
+ <1609479893-8889-2-git-send-email-cang@codeaurora.org>
+ <7cff30c3-6df8-7b8c-0f5b-a95980b8f706@acm.org>
+Message-ID: <b2385bdf0ce1ac799ccf77c2e952d9bf@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021. janu=C3=A1r 2., szombat 3:36 keltez=C3=A9ssel, Jiaxun Yang =C3=ADrta:
+On 2021-01-02 00:05, Bart Van Assche wrote:
+> On 12/31/20 9:44 PM, Can Guo wrote:
+>> During system resume/suspend, hba could be NULL. In this case, do not 
+>> touch
+>> eh_sem.
+>> 
+>> Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM 
+>> events and async scan")
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 9 +++++----
+>>  1 file changed, 5 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index e221add..34e2541 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -8896,8 +8896,11 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+>>  	int ret = 0;
+>>  	ktime_t start = ktime_get();
+>> 
+>> +	if (!hba)
+>> +		return 0;
+>> +
+>>  	down(&hba->eh_sem);
+>> -	if (!hba || !hba->is_powered)
+>> +	if (!hba->is_powered)
+>>  		return 0;
+>> 
+>>  	if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
+>> @@ -8945,10 +8948,8 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+>>  	int ret = 0;
+>>  	ktime_t start = ktime_get();
+>> 
+>> -	if (!hba) {
+>> -		up(&hba->eh_sem);
+>> +	if (!hba)
+>>  		return -EINVAL;
+>> -	}
+>> 
+>>  	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
+>>  		/*
+> 
+> Hi Can,
+> 
+> How can ufshcd_system_suspend() or ufshcd_system_resume() be called 
+> with a
+> NULL argument? In ufshcd_pci_probe() I see that pci_set_drvdata() is 
+> called
+> before pm_runtime_allow(). ufshcd_pci_remove() calls 
+> pm_runtime_forbid().
+> 
+> Thanks,
+> 
+> Bart.
 
-> =E5=9C=A8 2021/1/2 =E4=B8=8A=E5=8D=881:09, Barnab=C3=A1s P=C5=91cze =
-=E5=86=99=E9=81=93:
-> > Hi
-> >
-> >
-> > 2021. janu=C3=A1r 1., p=C3=A9ntek 17:08 keltez=C3=A9ssel, Jiaxun Yang =
-=C3=ADrta:
-> >
-> >> [...]
-> >>>> @@ -1006,6 +1018,10 @@ static int ideapad_acpi_add(struct platform_d=
-evice *pdev)
-> >>>>   =09if (!priv->has_hw_rfkill_switch)
-> >>>>   =09=09write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
-> >>>>
-> >>>> +=09/* The same for Touchpad */
-> >>>> +=09if (!priv->has_touchpad_switch)
-> >>>> +=09=09write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
-> >>>> +
-> >>> Shouldn't it be the other way around: `if (priv->has_touchpad_switch)=
-`?
-> >> It is to prevent accidentally disable touchpad on machines that do hav=
-e EC switch,
-> >> so it's intentional.
-> >> [...]
-> > Sorry, but the explanation not fully clear to me. The commit message se=
-ems to
-> > indicate that some models "do not use EC to switch touchpad", and I tak=
-e that
-> > means that reading from VPCCMD_R_TOUCHPAD will not reflect the actual s=
-tate of the
-> > touchpad and writing to VPCCMD_W_TOUCHPAD will not change the state of =
-the touchpad.
->
-> I'm just trying to prevent removing functionality on machines that
-> touchpad can be controlled
-> by EC but also equipped I2C HID touchpad. At least users will have a
-> functional touchpad
-> after that.
->
+Hi Bart,
 
-Thanks for the clarification.
+You are right about ufshcd_RUNTIME_suspend/resume() - 
+platform_set_drvdata()
+is called before pm_runtime_enable(), so runtime suspend/resume cannot 
+happen
+before pm_runtime_enable() is called. We can remove the sanity checks of
+!hba there, they are outdated.
 
+But for ufshcd_SYSTEM_suspend/resume() callbacks (not runtime ones), my
+understanding is that system suspend/resume may happen after probe 
+(vendor
+driver probe calls ufshcd_pltfrm_init()) starts but before 
+platform_set_drvdata()
+is called, in this case hba is NULL.
 
-> >
-> > But then why do you still write to VPCCMD_W_TOUCHPAD on devices where s=
-upposedly
-> > this does not have any effect (at least not the desired one)? And the p=
-art of the
-> > code I made my comment about only runs on machines on which the touchpa=
-d supposedly
-> > cannot be controlled by the EC. What am I missing?
-> >
-> > And there is the other problem: on some machines, this patch removes wo=
-rking
-> > functionality.
-> Yeah that's a problem. I just don't want to repeat the story of rfkill
-> whitelist, it ends up with
-> countless machine to be added.
->
-> Maybe I should specify HID of touchpad as well. Two machines that known
-> to be problematic
-> all have ELAN0634 touchpad.
+int ufshcd_pltfrm_init(struct platform_device *pdev,
+		       const struct ufs_hba_variant_ops *vops)
+{
+...
+  	platform_set_drvdata(pdev, hba);
 
-I think that would be better since the Lenovo Yoga 520-14IKB 80X8 device
-I'm concerned about has a SYNA2B2C touchpad device, so at least that wouldn=
-'t be
-affected.
+	pm_runtime_set_active(&pdev->dev);
+	pm_runtime_enable(&pdev->dev);
+}
 
+Thanks,
 
-Regards,
-Barnab=C3=A1s P=C5=91cze
+Can Guo.
