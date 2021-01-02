@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93072E868D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 07:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BF22E8692
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 07:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727404AbhABGF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 01:05:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727195AbhABGFZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 01:05:25 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366E9C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 22:04:45 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id x20so51965503lfe.12
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 22:04:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=07wP4+HPBVC2VHbUnFYsgWGMeRKZwcznPDaqHki/QJQ=;
-        b=AwvEUT04dRZRxQb/2mz5Sa4Wndo/K1CL1umdComqMZUZlXVWSJQB7lcofjIcuC+ze6
-         2alNCnxiPCMJPDiYt1yQ+KX0t1o1D4fbK34NcrIInky9lgUccS8ZCOHVJCVjsdOgk2rc
-         V2OE/vo+XOF+2RNidBlnvzHq8G9xlV5R9h1SlVuRPoWSfJS/J4cLMAZQwzkamgi/oU0N
-         8GfrtrxIsh/KuLLhPYul+wfUEXTNysSTB1RGEFIbj4BY61t+AwRmMIg/PrbOXDEWLTb2
-         zLEX0d0HvAJ81vDBUOn/a4C6gYrNYwYZLfJ+g943MOR9enck0Kdy17h6xbVMDpWT8keu
-         pv+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=07wP4+HPBVC2VHbUnFYsgWGMeRKZwcznPDaqHki/QJQ=;
-        b=dCi67t7i42cO4rhHxP/lnW+EtlvaDzH0NoVVh49E1gTxBYW7h6h8FOIVoYJ/pxjIRX
-         zUp8xzjpYqKQrM5t1Cy32gCuyxBKO6UM2BzfchvFaB2fk/poHoTaCIthAvb5ufDgeRc9
-         aHFSKbfTa1z1O2EWQzxUqgzkKvP0KXYq47cEa5H6jOJ3HCSYZjFu+XJYMbC50BAu0/CI
-         cwBkZev8GkuGneeUPz6/f59i1i7OuF2q67GbjOXBW4q3wvP47qpCzHaJKMcW4Z/Is4AY
-         pxtkIEPR1tg5sODBBoZe7frDZG9V3OulEIB+a6/tp4lhJhv2nLR+tLbVdAZH5ZGnv2Wj
-         WjUg==
-X-Gm-Message-State: AOAM532TkaHDF+hQlPBe3cGeZ5DJUR/d7EPCDdXWQ+u8/5LqG7bEpwoO
-        i38CxM/uGb3HX2JDIPLJsK8dtRdGN3fQCb9D0tM=
-X-Google-Smtp-Source: ABdhPJyv5+JjtiVK0j4T9nRqiANhDYU3/AjVCG+MhVVzT0KTsgGX9L+naGOo7ypYgP8i7Y8uQAGnjTRQFzJeJWShygY=
-X-Received: by 2002:a2e:9246:: with SMTP id v6mr7657089ljg.221.1609567482716;
- Fri, 01 Jan 2021 22:04:42 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a19:6550:0:0:0:0:0 with HTTP; Fri, 1 Jan 2021 22:04:41 -0800 (PST)
-Reply-To: grace.graceobia@gmail.com
-From:   Grace Obia <kath.rafael2030@gmail.com>
-Date:   Sat, 2 Jan 2021 06:04:41 +0000
-Message-ID: <CADP0Tkc4zsTvGOR87UFbCtG0=7=DQyM=JTEBeeB9BzCQrL_XXA@mail.gmail.com>
-Subject: Dearest in Mind,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S1726487AbhABG2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 01:28:30 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:10888 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726080AbhABG2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 01:28:30 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app3 (Coremail) with SMTP id cC_KCgAHsA1OEvBfjwVCAA--.45034S4;
+        Sat, 02 Jan 2021 14:27:30 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: media/pci: Fix memleak in empress_init
+Date:   Sat,  2 Jan 2021 14:27:22 +0800
+Message-Id: <20210102062725.27704-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgAHsA1OEvBfjwVCAA--.45034S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw4fJryrGFy7Ww1rKr4xCrg_yoWDCFbE9r
+        4Dua9FvrW8Gr10kFy7tF4fAFWkt3yYvFyFyF1ftFZYvrW7ur45JrWq9rnrCw1UWay293sr
+        Gr43Ja1UZryrWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
+        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0IBlZdtRuRfAAVsc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When vb2_queue_init() fails, dev->empress_dev
+should be released just like other error handling
+paths.
+
+Fixes: 2ada815fc48bb ("[media] saa7134: convert to vb2")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/media/pci/saa7134/saa7134-empress.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/pci/saa7134/saa7134-empress.c b/drivers/media/pci/saa7134/saa7134-empress.c
+index 39e3c7f8c5b4..76a37fbd8458 100644
+--- a/drivers/media/pci/saa7134/saa7134-empress.c
++++ b/drivers/media/pci/saa7134/saa7134-empress.c
+@@ -282,8 +282,11 @@ static int empress_init(struct saa7134_dev *dev)
+ 	q->lock = &dev->lock;
+ 	q->dev = &dev->pci->dev;
+ 	err = vb2_queue_init(q);
+-	if (err)
++	if (err) {
++		video_device_release(dev->empress_dev);
++		dev->empress_dev = NULL;
+ 		return err;
++	}
+ 	dev->empress_dev->queue = q;
+ 	dev->empress_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+ 					V4L2_CAP_VIDEO_CAPTURE;
 -- 
+2.17.1
 
-Dearest in Mind,
-
-My name is Mrs. Katherine Rafael, a business woman an Ivorian Citizen
-and born in 1961. I have a mission for you worth $3 500, 000,00 (Three
-Million Five Hundred Thousand United State Dollars) which I intend
-using for CHARITY.
-
-I am a breast cancer woman and have told by doctor that I will die in
-no distance future, now and want to donate this money for charity
-through you by transferring this money to your account, to enable
-people in your area benefit from it.
-
-Could you be the one I will use in this noble transaction before I
-will go for my surgery?
-
-
-Mrs.Katherine Rafael
