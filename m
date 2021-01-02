@@ -2,99 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACAE2E8638
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 04:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC72A2E8641
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 05:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727402AbhABDS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 22:18:57 -0500
-Received: from mga14.intel.com ([192.55.52.115]:61870 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727133AbhABDS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 22:18:57 -0500
-IronPort-SDR: O2YgumPmjJ2Vb4qkXHiovgQTl9s3ftzjlnp5tfTWWaThdu4sD9TJENZdq8TEaQ7BDdT5T7LLeQ
- fqRKE7mqYMrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9851"; a="176026815"
-X-IronPort-AV: E=Sophos;i="5.78,469,1599548400"; 
-   d="scan'208";a="176026815"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2021 19:17:51 -0800
-IronPort-SDR: +V6gPm97kcYBHH1v/MzMSPYsID6tQC3aB/LPUyJApk+nDsuRT6cHcHH/5/xatCVzklW1OeSMja
- gJScGCPb1H5Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,469,1599548400"; 
-   d="scan'208";a="349085244"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Jan 2021 19:17:50 -0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com
-Subject: [PATCH v5 2/2] Documentation: fpga: dfl: Add description for DFL UIO support
-Date:   Sat,  2 Jan 2021 11:13:02 +0800
-Message-Id: <1609557182-20787-3-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
-References: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
+        id S1727372AbhABENO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 23:13:14 -0500
+Received: from smtprelay0221.hostedemail.com ([216.40.44.221]:59818 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727171AbhABENO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 23:13:14 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 79BF61802926E;
+        Sat,  2 Jan 2021 04:12:32 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:800:960:968:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1437:1515:1516:1518:1535:1544:1593:1594:1605:1711:1730:1747:1777:1792:2194:2197:2199:2200:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3653:3865:3866:3867:3868:3870:3871:4321:4605:5007:7652:7903:8957:10004:10848:11026:11658:11914:12043:12291:12297:12346:12438:12555:12679:12683:12760:12986:13181:13229:13439:14181:14394:14659:14721:21080:21221:21433:21451:21627:21939:30054:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: home30_0c137cb274bc
+X-Filterd-Recvd-Size: 5339
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Sat,  2 Jan 2021 04:12:31 +0000 (UTC)
+Message-ID: <9015fd00742bf4e5b824ad6d7fd7189530958548.camel@perches.com>
+Subject: [PATCH] checkpatch: Improve blank line after declaration test
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Fri, 01 Jan 2021 20:12:30 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds description for UIO support for dfl devices on DFL
-bus.
+Avoid multiple false positives by ignoring attributes.
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
----
-v2: no doc in v1, add it for v2.
-v3: some documentation fixes.
-v4: documentation change since the driver matching is changed.
-v5: no change.
----
- Documentation/fpga/dfl.rst | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Various attributes like volatile and ____cacheline_aligned_in_smp cause
+checkpatch to emit invalid "Missing a blank line after declarations"
+messages.
 
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index 0404fe6..b8497f3 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -7,6 +7,7 @@ Authors:
- - Enno Luebbers <enno.luebbers@intel.com>
- - Xiao Guangrong <guangrong.xiao@linux.intel.com>
- - Wu Hao <hao.wu@intel.com>
-+- Xu Yilun <yilun.xu@intel.com>
+Use copies of $sline and $prevline, remove $Attribute and $Sparse, and
+use the existing tests to avoid these false positives.
+
+Miscellanea:
+
+o Add volatile to $Attribute
+
+This also reduces checkpatch runtime a bit by moving the indentation
+comparison test to the start of the block to avoid multiple unnecessary
+regex tests.
+
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ scripts/checkpatch.pl | 52 ++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 29 insertions(+), 23 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 00085308ed9d..cfa0a7393ef5 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -382,6 +382,7 @@ our $InitAttribute = qr{$InitAttributeData|$InitAttributeConst|$InitAttributeIni
+ # We need \b after 'init' otherwise 'initconst' will cause a false positive in a check
+ our $Attribute	= qr{
+ 			const|
++			volatile|
+ 			__percpu|
+ 			__nocast|
+ 			__safe|
+@@ -3783,43 +3784,48 @@ sub process {
+ 		}
  
- The Device Feature List (DFL) FPGA framework (and drivers according to
- this framework) hides the very details of low layer hardwares and provides
-@@ -502,6 +503,29 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
- could be a reference.
+ # check for missing blank lines after declarations
+-		if ($sline =~ /^\+\s+\S/ &&			#Not at char 1
+-			# actual declarations
+-		    ($prevline =~ /^\+\s+$Declare\s*$Ident\s*[=,;:\[]/ ||
++# (declarations must have the same indentation and not be at the start of line)
++		if (($prevline =~ /\+(\s+)\S/) && $sline =~ /^\+$1\S/) {
++			# use temporaries
++			my $sl = $sline;
++			my $pl = $prevline;
++			# remove $Attribute/$Sparse uses to simplify comparisons
++			$sl =~ s/\b(?:$Attribute|$Sparse)\b//g;
++			$pl =~ s/\b(?:$Attribute|$Sparse)\b//g;
++			if (($pl =~ /^\+\s+$Declare\s*$Ident\s*[=,;:\[]/ ||
+ 			# function pointer declarations
+-		     $prevline =~ /^\+\s+$Declare\s*\(\s*\*\s*$Ident\s*\)\s*[=,;:\[\(]/ ||
++			     $pl =~ /^\+\s+$Declare\s*\(\s*\*\s*$Ident\s*\)\s*[=,;:\[\(]/ ||
+ 			# foo bar; where foo is some local typedef or #define
+-		     $prevline =~ /^\+\s+$Ident(?:\s+|\s*\*\s*)$Ident\s*[=,;\[]/ ||
++			     $pl =~ /^\+\s+$Ident(?:\s+|\s*\*\s*)$Ident\s*[=,;\[]/ ||
+ 			# known declaration macros
+-		     $prevline =~ /^\+\s+$declaration_macros/) &&
++			     $pl =~ /^\+\s+$declaration_macros/) &&
+ 			# for "else if" which can look like "$Ident $Ident"
+-		    !($prevline =~ /^\+\s+$c90_Keywords\b/ ||
++			    !($pl =~ /^\+\s+$c90_Keywords\b/ ||
+ 			# other possible extensions of declaration lines
+-		      $prevline =~ /(?:$Compare|$Assignment|$Operators)\s*$/ ||
++			      $pl =~ /(?:$Compare|$Assignment|$Operators)\s*$/ ||
+ 			# not starting a section or a macro "\" extended line
+-		      $prevline =~ /(?:\{\s*|\\)$/) &&
++			      $pl =~ /(?:\{\s*|\\)$/) &&
+ 			# looks like a declaration
+-		    !($sline =~ /^\+\s+$Declare\s*$Ident\s*[=,;:\[]/ ||
++			    !($sl =~ /^\+\s+$Declare\s*$Ident\s*[=,;:\[]/ ||
+ 			# function pointer declarations
+-		      $sline =~ /^\+\s+$Declare\s*\(\s*\*\s*$Ident\s*\)\s*[=,;:\[\(]/ ||
++			      $sl =~ /^\+\s+$Declare\s*\(\s*\*\s*$Ident\s*\)\s*[=,;:\[\(]/ ||
+ 			# foo bar; where foo is some local typedef or #define
+-		      $sline =~ /^\+\s+$Ident(?:\s+|\s*\*\s*)$Ident\s*[=,;\[]/ ||
++			      $sl =~ /^\+\s+$Ident(?:\s+|\s*\*\s*)$Ident\s*[=,;\[]/ ||
+ 			# known declaration macros
+-		      $sline =~ /^\+\s+$declaration_macros/ ||
++			      $sl =~ /^\+\s+$declaration_macros/ ||
+ 			# start of struct or union or enum
+-		      $sline =~ /^\+\s+(?:static\s+)?(?:const\s+)?(?:union|struct|enum|typedef)\b/ ||
++			      $sl =~ /^\+\s+(?:static\s+)?(?:const\s+)?(?:union|struct|enum|typedef)\b/ ||
+ 			# start or end of block or continuation of declaration
+-		      $sline =~ /^\+\s+(?:$|[\{\}\.\#\"\?\:\(\[])/ ||
++			      $sl =~ /^\+\s+(?:$|[\{\}\.\#\"\?\:\(\[])/ ||
+ 			# bitfield continuation
+-		      $sline =~ /^\+\s+$Ident\s*:\s*\d+\s*[,;]/ ||
++			      $sl =~ /^\+\s+$Ident\s*:\s*\d+\s*[,;]/ ||
+ 			# other possible extensions of declaration lines
+-		      $sline =~ /^\+\s+\(?\s*(?:$Compare|$Assignment|$Operators)/) &&
+-			# indentation of previous and current line are the same
+-		    (($prevline =~ /\+(\s+)\S/) && $sline =~ /^\+$1\S/)) {
+-			if (WARN("LINE_SPACING",
+-				 "Missing a blank line after declarations\n" . $hereprev) &&
+-			    $fix) {
+-				fix_insert_line($fixlinenr, "\+");
++			      $sl =~ /^\+\s+\(?\s*(?:$Compare|$Assignment|$Operators)/)) {
++				if (WARN("LINE_SPACING",
++					 "Missing a blank line after declarations\n" . $hereprev) &&
++				    $fix) {
++					fix_insert_line($fixlinenr, "\+");
++				}
+ 			}
+ 		}
  
- 
-+UIO support for DFL devices
-+===========================
-+The purpose of an FPGA is to be reprogrammed with newly developed hardware
-+components. New hardware can instantiate a new private feature in the DFL, and
-+then get a DFL device in their system. In some cases users may need a userspace
-+driver for the DFL device:
-+
-+* Users may need to run some diagnostic test for their hardwares.
-+* Users may prototype the kernel driver in user space.
-+* Some hardware is designed for specific purposes and does not fit into one of
-+  the standard kernel subsystems.
-+
-+This requires the direct access to the MMIO space and interrupt handling in
-+userspace. The dfl-uio-pdev module exposes the UIO device interfaces for this
-+purpose. It adds the uio_pdrv_genirq platform device with the resources of
-+the DFL feature, and lets the generic UIO platform device driver provide UIO
-+support to userspace.
-+
-+FPGA_DFL_UIO_PDEV should be selected to enable the dfl-uio-pdev module driver.
-+To support a new DFL feature been directly accessed via UIO, its feature id
-+should be added to the driver's id_table.
-+
-+
- Open discussion
- ===============
- FME driver exports one ioctl (DFL_FPGA_FME_PORT_PR) for partial reconfiguration
--- 
-2.7.4
+
 
