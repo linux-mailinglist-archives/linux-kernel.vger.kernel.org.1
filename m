@@ -2,130 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756BF2E8942
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 00:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C1F2E8946
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 00:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbhABXI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 18:08:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52174 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726775AbhABXI3 (ORCPT
+        id S1726954AbhABXIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 18:08:49 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:56804 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726893AbhABXIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 18:08:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609628821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=haYPUQnlq92kVGfzi+gKYWueiXZI9wZI1FGZmjza/5k=;
-        b=ELB3Eb9wlhY5fD1ua0LSMcQB6of5dFGdfEHVuRXJAIuUjxP9od0dXkkGVDF6EiRCuAB/I8
-        9q7KvWpMIIjq6RbuRT+nNnnqZbIM1QSAllLE8zUoLFS1G0+K5hInQqQEgqwDGOYtf3Qb6O
-        3UkqFa5EywUSumpiupsi68iQmppLd2M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-pVONn62IOSqtFEkvCq5I3w-1; Sat, 02 Jan 2021 18:07:00 -0500
-X-MC-Unique: pVONn62IOSqtFEkvCq5I3w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB604C287;
-        Sat,  2 Jan 2021 23:06:57 +0000 (UTC)
-Received: from krava (unknown [10.40.192.22])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3EE75100239A;
-        Sat,  2 Jan 2021 23:06:55 +0000 (UTC)
-Date:   Sun, 3 Jan 2021 00:06:54 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
-Message-ID: <20210102230654.GA732432@krava>
-References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin>
- <20201229173401.GH450923@krava>
- <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
- <20201230090333.GA577428@krava>
- <20201230132759.GB577428@krava>
- <CAEf4BzYbeQqzK2n9oz6wqysVj35k+VZC7DZrXFEtjUM6eiyvOA@mail.gmail.com>
+        Sat, 2 Jan 2021 18:08:48 -0500
+Received: by mail-il1-f197.google.com with SMTP id r20so23446042ilh.23
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 15:08:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=xiEz0zPMyUpnKzLhYUnlv16mJTBk47GYHjbMemvYGag=;
+        b=heIfI5a68263juNSdhp6s2JNKpbnoT/Vr9GMqDiK8nz4fAUzO3mUeym0AN0Z8CLwrP
+         gr/z18+Hd5ugXSlZM2cW8Ehd1IsYenvXXoYvv6A2eznE6gucKu5CThFNGf+AhUUSjD6e
+         SnwR7+wxIX4r8bMU19vVbchsajszW2NMTinfLdPUMPUjQtyizoQXCeCrrGUvX7BAyDmB
+         UgyXNfc3b1GUez/Z5AmAFAQJuA3/xrtAa+5n3cUiucGBAn3UdzEjgPsKAeFiH1P7b67M
+         vBZzaglURGMkFuh6BTmib8KlKB5PPCBccc3W12TCbGKeJ0Ie5uvmxMBa6LCwK7EbQFFv
+         qOJg==
+X-Gm-Message-State: AOAM530KW1/8BjBYbcSfYqWHdq31tYF9B2/hchHmOTCQ68BLRzqMV+ic
+        JtuHlQrDSYOEhILfnqkDuJ9CNe3vZMBxNpT6MTohyMf9XTqu
+X-Google-Smtp-Source: ABdhPJw5aPB63tv+UKyWH6P3GLw1/joSnocDf9Va4zkVn9W6ovN0OmH9m4h5GDMUABDOGXo/PpQv9dQg0Tviuv4SPWoyM7fs5DD8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYbeQqzK2n9oz6wqysVj35k+VZC7DZrXFEtjUM6eiyvOA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Received: by 2002:a92:1508:: with SMTP id v8mr37962807ilk.162.1609628887224;
+ Sat, 02 Jan 2021 15:08:07 -0800 (PST)
+Date:   Sat, 02 Jan 2021 15:08:07 -0800
+In-Reply-To: <000000000000880dcc0598bcfac9@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000b157705b7f2eefd@google.com>
+Subject: Re: possible deadlock in process_measurement (2)
+From:   syzbot <syzbot+18a1619cceea30ed45af@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bhe@redhat.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, mike.kravetz@oracle.com,
+        richard.weiyang@linux.alibaba.com, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
+        zohar@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 02, 2021 at 02:25:34PM -0800, Andrii Nakryiko wrote:
+syzbot suspects this issue was fixed by commit:
 
-SNIP
+commit 15a8d68e9dc23dc9def4bd7e9563db60f4f86580
+Author: Wei Yang <richard.weiyang@linux.alibaba.com>
+Date:   Tue Oct 13 23:56:33 2020 +0000
 
-> >
-> > so your .config has
-> >   CONFIG_CRYPTO_DEV_BCM_SPU=y
-> >
-> > and that defines 'struct device_private' which
-> > clashes with the same struct defined in drivers/base/base.h
-> >
-> > so several networking structs will be doubled, like net_device:
-> >
-> >         $ bpftool btf dump file ../vmlinux.config | grep net_device\' | grep STRUCT
-> >         [2731] STRUCT 'net_device' size=2240 vlen=133
-> >         [113981] STRUCT 'net_device' size=2240 vlen=133
-> >
-> > each is using different 'struct device_private' when it's unwinded
-> >
-> > and that will confuse BTFIDS logic, becase we have multiple structs
-> > with the same name, and we can't be sure which one to pick
-> >
-> > perhaps we should check on this in pahole and warn earlier with
-> > better error message.. I'll check, but I'm not sure if pahole can
-> > survive another hastab ;-)
-> >
-> > Andrii, any ideas on this? ;-)
-> 
-> It's both unavoidable and correct from the C type system's
-> perspective, so there is nothing for pahole to warn about. We used to
-> have (for a long time) a similar clash with two completely different
-> ring_buffer structs. Eventually they just got renamed to avoid
-> duplication of related structs (task_struct and tons of other). But
-> both BTF dedup and CO-RE relocation algorithms are designed to handle
-> this correctly, ...
+    mm/hugetlb: a page from buddy is not on any list
 
-AFAIU it's all correctly dedulicated, but still all structs that
-contain (at some point) 'struct device_private' will appear twice
-in BTF data.. each with different 'struct device_private'
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13612350d00000
+start commit:   1590a2e1 Merge tag 'acpi-5.8-rc3' of git://git.kernel.org/..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bf3aec367b9ab569
+dashboard link: https://syzkaller.appspot.com/bug?extid=18a1619cceea30ed45af
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10c79dbb100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=169bba3d100000
 
-> ... so perhaps BTFIDS should be able to handle this as
-> well?
+If the result looks correct, please mark the issue as fixed by replying with:
 
-hm, BTFIDS sees BTF data with two same struct names and has no
-way to tell which one to use
+#syz fix: mm/hugetlb: a page from buddy is not on any list
 
-unless we have some annotation data for BTF types I don't
-see a way to handle this correctly.. but I think we can
-detect this directly in BTFIDS and print more accurate error
-message
-
-as long as we dont see this on daily basis, I think that better
-error message + following struct rename is good solution
-
-> 
-> >
-> > easy fix is the patch below that renames the bcm's structs,
-> > it makes the kernel to compile.. but of course the new name
-> > is probably wrong and we should push this through that code
-> > authors
-> 
-> In this case, I think renaming generic device_private name is a good
-> thing regardless.
-
-ok, I'll send the change
-
-jirka
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
