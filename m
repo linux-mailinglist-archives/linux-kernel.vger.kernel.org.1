@@ -2,200 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAEA2E87A4
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 15:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E22A52E87AB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 16:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbhABOmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 09:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726552AbhABOl7 (ORCPT
+        id S1726627AbhABPOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 10:14:55 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46888 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726552AbhABPOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 09:41:59 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB6DC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Jan 2021 06:41:12 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id f132so26906741oib.12
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 06:41:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mvista-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rtg5cCarez9Rshf3Uq1IaD02vXT6DPqWvQZxIe08iDc=;
-        b=0a4Akb2/5t4FtuHsI4vNVrQlcykE/gmbpShoPRd8kA0U06lfpni/8gWIsu1hj0JA45
-         L4mH0F87NvZtVPpkXheqtMSJv9T51m9+XWduqeKPBuMstRs+VigykHHiJ+e4EvQQtQFD
-         VMn1LJWsR09aaVDv2dNih8kJ8/R7zyMC8Ge6rx0HyFPEQSog2H+YLd5n4vYXx8coHJwM
-         aqn3DG3Rz07/qeeAOctgH/eKm8F9ISIo8FexqM9X4LvFIZpFvwJl+qX3T5ChQlgdYAld
-         ynZpKIHz1LF9ZrhveZ/ChE6XYdo1OeASRGi/3mtkXkCuVEFgwRyG8p3L7xsgBI9ZtGrZ
-         3YbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Rtg5cCarez9Rshf3Uq1IaD02vXT6DPqWvQZxIe08iDc=;
-        b=H6C2ENDlGx5W+Hx1dfxnIYsajDwsC7YWZSTHNsqvDfR0TZb8EEf3fdgOl3dKHENgYp
-         MW2s5L7mi0mnpqEuubEOAvP055frTj5slz6LZ3k9DSbxfK7MjzM5Kiq1h99mQPhRjx1Z
-         mmfV3v8X/EtPSKNu6tTRS7p10vWDn1xg/AS8rWjetD0eUHxnk9E12ysYSK3x+7sHh9XB
-         WyZJC2TJeiDCK0iHAJxyaE9FzH6deRuk2gcHcKI/Dx8vm0nYwPzLB83AYINODWZp8IM9
-         GQhRLg2isVOSQU+iKu92R1jN4+gBUAIvp5b6crF5zg/nx+tc8fPKIJfkhhIkh/Xnx9nj
-         clXA==
-X-Gm-Message-State: AOAM531dhcVy3adiF0GqAdIWv7Dq8KqUa3Obx4IrWu+XmVi6meHiaD6w
-        6kV2v5OUuOtGxOVtN/OByxaR4A==
-X-Google-Smtp-Source: ABdhPJwWGgjXhUwdnSovvbomfoZSYyLbBCrPvMVhBm2gBtqCgzK05WQ7rehfWcBeHZNb/XLGF9duRA==
-X-Received: by 2002:a54:4096:: with SMTP id i22mr13598204oii.126.1609598472128;
-        Sat, 02 Jan 2021 06:41:12 -0800 (PST)
-Received: from minyard.net ([2001:470:b8f6:1b:9886:db2a:7dce:1243])
-        by smtp.gmail.com with ESMTPSA id b188sm8706008oif.49.2021.01.02.06.41.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Jan 2021 06:41:11 -0800 (PST)
-Date:   Sat, 2 Jan 2021 08:41:09 -0600
-From:   Corey Minyard <cminyard@mvista.com>
-To:     minyard@acm.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Hurley <peter@hurleysoftware.com>,
-        brian.bloniarz@gmail.com
-Subject: Re: [PATCH 2/2] drivers:tty:pty: Fix a race causing data loss on
- close
-Message-ID: <20210102144109.GA4173@minyard.net>
-Reply-To: cminyard@mvista.com
-References: <20201124004902.1398477-1-minyard@acm.org>
- <20201124004902.1398477-3-minyard@acm.org>
+        Sat, 2 Jan 2021 10:14:54 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 102F1hY7058862;
+        Sat, 2 Jan 2021 10:14:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=Zs9LW0PDZjOd01PWxzUbueEwckfJwnns/1ukFMK48Lg=;
+ b=p7Rdttcw9AZAn6Kdr8dj+MGOITZw7BM2puLKfEadFWbb8aKRPwUFqS+dXtN0fPhmngQV
+ eMHBoygyltHgvwGyAHzGkkL2JxcEiAv8HSTV7sDi6ZxLcE7Iw5pSwvsBGXL3SCipth6V
+ eds8/6kqL4QkiQZ7ZCtPJq2PPOugXWvoRM2+yuLMJMLyXXi3YDb5YjTD11uefW5mZg2G
+ Zm80jLozK/WNihdRCtoMF+VTzJWlzP0kWhFkL/wNBzla6rv1LzGcOWNIA1nsz+nb3/LH
+ SQlBLNAMhSLBJvP0rK0OS8M6cWX1wAxSBApDoyKdyOOUngpkfJvyhApWTsC/rQNrLN/+ dA== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35tsr09814-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 02 Jan 2021 10:14:10 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 102F8XF6030098;
+        Sat, 2 Jan 2021 15:14:09 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 35tgf885nd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 02 Jan 2021 15:14:09 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 102FE62l34603450
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 2 Jan 2021 15:14:06 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 66A4AA404D;
+        Sat,  2 Jan 2021 15:14:06 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D8ABFA4040;
+        Sat,  2 Jan 2021 15:14:05 +0000 (GMT)
+Received: from localhost (unknown [9.171.47.54])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat,  2 Jan 2021 15:14:05 +0000 (GMT)
+Date:   Sat, 2 Jan 2021 16:14:04 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.11-rc2
+Message-ID: <your-ad-here.call-01609600444-ext-3658@work.hours>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201124004902.1398477-3-minyard@acm.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-02_09:2020-12-31,2021-01-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ malwarescore=0 mlxlogscore=999 spamscore=0 impostorscore=0 clxscore=1011
+ phishscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101020090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 06:49:02PM -0600, minyard@acm.org wrote:
-> From: Corey Minyard <cminyard@mvista.com>
-> 
-> Remove the tty_vhangup() from the pty code and just release the
-> redirect.  The tty_vhangup() results in data loss and data out of order
-> issues.
+Hello Linus,
 
-It's been a while, so ping on this.  I'm pretty sure this is the right
-fix, the more I've thought about it.
+please pull s390 changes for 5.11-rc2.
 
-Thankks,
+Thank you,
+Vasily
 
--corey
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
-> 
-> If you write to a pty master an immediately close the pty master, the
-> receiver might get a chunk of data dropped, but then receive some later
-> data.  That's obviously something rather unexpected for a user.  It
-> certainly confused my test program.
-> 
-> It turns out that tty_vhangup() on the slave pty gets called from
-> pty_close(), and that causes the data on the slave side to be flushed,
-> but due to races more data can be copied into the slave side's buffer
-> after that.  Consider the following sequence:
-> 
-> thread1          thread2         thread3
-> -------          -------         -------
->  |                |-write data into buffer,
->  |                | n_tty buffer is filled
->  |                | along with other buffers
->  |                |-pty_close(master)
->  |                |--tty_vhangup(slave)
->  |                |---tty_ldisc_hangup()
->  |                |----n_tty_flush_buffer()
->  |                |-----reset_buffer_flags()
->  |-n_tty_read()   |
->  |--up_read(&tty->termios_rwsem);
->  |                |------down_read(&tty->termios_rwsem)
->  |                |------clear n_tty buffer contents
->  |                |------up_read(&tty->termios_rwsem)
->  |--tty_buffer_flush_work()       |
->  |--schedules work calling        |
->  |  flush_to_ldisc()              |
->  |                                |-flush_to_ldisc()
->  |                                |--receive_buf()
->  |                                |---tty_port_default_receive_buf()
->  |                                |----tty_ldisc_receive_buf()
->  |                                |-----n_tty_receive_buf2()
->  |                                |------n_tty_receive_buf_common()
->  |                                |-------down_read(&tty->termios_rwsem)
->  |                                |-------__receive_buf()
->  |                                |       copies data into n_tty buffer
->  |                                |-------up_read(&tty->termios_rwsem)
->  |--down_read(&tty->termios_rwsem)
->  |--copy buffer data to user
-> 
-> From this sequence, you can see that thread2 writes to the buffer then
-> only clears the part of the buffer in n_tty.  The n_tty receive buffer
-> code then copies more data into the n_tty buffer.
-> 
-> But part of the vhangup, releasing the redirect, is still required to
-> avoid issues with consoles running on pty slaves.  So do that.
-> As far as I can tell, that is all that should be required.
-> 
-> Signed-off-by: Corey Minyard <cminyard@mvista.com>
-> ---
->  drivers/tty/pty.c    | 15 +++++++++++++--
->  drivers/tty/tty_io.c |  5 +++--
->  2 files changed, 16 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tty/pty.c b/drivers/tty/pty.c
-> index 23368cec7ee8..29be6b985e76 100644
-> --- a/drivers/tty/pty.c
-> +++ b/drivers/tty/pty.c
-> @@ -67,7 +67,8 @@ static void pty_close(struct tty_struct *tty, struct file *filp)
->  	wake_up_interruptible(&tty->link->read_wait);
->  	wake_up_interruptible(&tty->link->write_wait);
->  	if (tty->driver->subtype == PTY_TYPE_MASTER) {
-> -		set_bit(TTY_OTHER_CLOSED, &tty->flags);
-> +		struct file *f;
-> +
->  #ifdef CONFIG_UNIX98_PTYS
->  		if (tty->driver == ptm_driver) {
->  			mutex_lock(&devpts_mutex);
-> @@ -76,7 +77,17 @@ static void pty_close(struct tty_struct *tty, struct file *filp)
->  			mutex_unlock(&devpts_mutex);
->  		}
->  #endif
-> -		tty_vhangup(tty->link);
-> +
-> +		/*
-> +		 * This hack is required because a program can open a
-> +		 * pty and redirect a console to it, but if the pty is
-> +		 * closed and the console is not released, then the
-> +		 * slave side will never close.  So release the
-> +		 * redirect when the master closes.
-> +		 */
-> +		f = tty_release_redirect(tty->link);
-> +		if (f)
-> +			fput(f);
->  	}
->  }
->  
-> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-> index 571b1d7d4d5a..91c33a0df3c4 100644
-> --- a/drivers/tty/tty_io.c
-> +++ b/drivers/tty/tty_io.c
-> @@ -547,7 +547,9 @@ EXPORT_SYMBOL_GPL(tty_wakeup);
->   *	@tty: tty device
->   *
->   *	This is available to the pty code so if the master closes, if the
-> - *	slave is a redirect it can release the redirect.
-> + *	slave is a redirect it can release the redirect.  It returns the
-> + *	filp for the redirect, which must be fput when the operations on
-> + *	the tty are completed.
->   */
->  struct file *tty_release_redirect(struct tty_struct *tty)
->  {
-> @@ -562,7 +564,6 @@ struct file *tty_release_redirect(struct tty_struct *tty)
->  
->  	return f;
->  }
-> -EXPORT_SYMBOL_GPL(tty_release_redirect);
->  
->  /**
->   *	__tty_hangup		-	actual handler for hangup events
-> -- 
-> 2.25.1
-> 
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.11-3
+
+for you to fetch changes up to 129975e75b9a2ba528d7f58be2e338cd644f6ed8:
+
+  s390/Kconfig: sort config S390 select list once again (2020-12-30 17:08:53 +0100)
+
+----------------------------------------------------------------
+- Update defconfigs and sort config select list.
+
+----------------------------------------------------------------
+Heiko Carstens (2):
+      s390: update defconfigs
+      s390/Kconfig: sort config S390 select list once again
+
+ arch/s390/Kconfig                    | 31 +++++++++++++++++--------------
+ arch/s390/configs/debug_defconfig    | 12 +++++++++---
+ arch/s390/configs/defconfig          | 11 +++++++----
+ arch/s390/configs/zfcpdump_defconfig |  2 ++
+ 4 files changed, 35 insertions(+), 21 deletions(-)
+
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index e84bdd15150b..c72874f09741 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -54,17 +54,23 @@ config KASAN_SHADOW_OFFSET
+ 
+ config S390
+ 	def_bool y
++	#
++	# Note: keep this list sorted alphabetically
++	#
++	imply IMA_SECURE_AND_OR_TRUSTED_BOOT
+ 	select ARCH_BINFMT_ELF_STATE
+ 	select ARCH_HAS_DEBUG_VM_PGTABLE
+ 	select ARCH_HAS_DEBUG_WX
+ 	select ARCH_HAS_DEVMEM_IS_ALLOWED
+ 	select ARCH_HAS_ELF_RANDOMIZE
++	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_GIGANTIC_PAGE
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_MEM_ENCRYPT
+ 	select ARCH_HAS_PTE_SPECIAL
++	select ARCH_HAS_SCALED_CPUTIME
+ 	select ARCH_HAS_SET_MEMORY
+ 	select ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_HAS_STRICT_MODULE_RWX
+@@ -111,8 +117,10 @@ config S390
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select BUILDTIME_TABLE_SORT
+ 	select CLONE_BACKWARDS2
++	select CPU_NO_EFFICIENT_FFS if !HAVE_MARCH_Z9_109_FEATURES
+ 	select DMA_OPS if PCI
+ 	select DYNAMIC_FTRACE if FUNCTION_TRACER
++	select GENERIC_ALLOCATOR
+ 	select GENERIC_CPU_AUTOPROBE
+ 	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_FIND_FIRST_BIT
+@@ -126,22 +134,21 @@ config S390
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN
+ 	select HAVE_ARCH_KASAN_VMALLOC
+-	select CPU_NO_EFFICIENT_FFS if !HAVE_MARCH_Z9_109_FEATURES
+ 	select HAVE_ARCH_SECCOMP_FILTER
+ 	select HAVE_ARCH_SOFT_DIRTY
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+ 	select HAVE_ARCH_VMAP_STACK
+ 	select HAVE_ASM_MODVERSIONS
+-	select HAVE_EBPF_JIT if PACK_STACK && HAVE_MARCH_Z196_FEATURES
+ 	select HAVE_CMPXCHG_DOUBLE
+ 	select HAVE_CMPXCHG_LOCAL
+ 	select HAVE_DEBUG_KMEMLEAK
+ 	select HAVE_DMA_CONTIGUOUS
+ 	select HAVE_DYNAMIC_FTRACE
+ 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
+-	select HAVE_FAST_GUP
++	select HAVE_EBPF_JIT if PACK_STACK && HAVE_MARCH_Z196_FEATURES
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
++	select HAVE_FAST_GUP
+ 	select HAVE_FENTRY
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+@@ -163,16 +170,15 @@ config S390
+ 	select HAVE_KRETPROBES
+ 	select HAVE_KVM
+ 	select HAVE_LIVEPATCH
+-	select HAVE_PERF_REGS
+-	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_MEMBLOCK_PHYS_MAP
+-	select MMU_GATHER_NO_GATHER
+ 	select HAVE_MOD_ARCH_SPECIFIC
++	select HAVE_NMI
+ 	select HAVE_NOP_MCOUNT
+ 	select HAVE_OPROFILE
+ 	select HAVE_PCI
+ 	select HAVE_PERF_EVENTS
+-	select MMU_GATHER_RCU_TABLE_FREE
++	select HAVE_PERF_REGS
++	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_RELIABLE_STACKTRACE
+ 	select HAVE_RSEQ
+@@ -181,6 +187,8 @@ config S390
+ 	select HAVE_VIRT_CPU_ACCOUNTING_IDLE
+ 	select IOMMU_HELPER		if PCI
+ 	select IOMMU_SUPPORT		if PCI
++	select MMU_GATHER_NO_GATHER
++	select MMU_GATHER_RCU_TABLE_FREE
+ 	select MODULES_USE_ELF_RELA
+ 	select NEED_DMA_MAP_STATE	if PCI
+ 	select NEED_SG_DMA_LENGTH	if PCI
+@@ -190,17 +198,12 @@ config S390
+ 	select PCI_MSI			if PCI
+ 	select PCI_MSI_ARCH_FALLBACKS	if PCI_MSI
+ 	select SPARSE_IRQ
++	select SWIOTLB
+ 	select SYSCTL_EXCEPTION_TRACE
+ 	select THREAD_INFO_IN_TASK
+ 	select TTY
+ 	select VIRT_CPU_ACCOUNTING
+-	select ARCH_HAS_SCALED_CPUTIME
+-	select HAVE_NMI
+-	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+-	select SWIOTLB
+-	select GENERIC_ALLOCATOR
+-	imply IMA_SECURE_AND_OR_TRUSTED_BOOT
+-
++	# Note: keep the above list sorted alphabetically
+ 
+ config SCHED_OMIT_FRAME_POINTER
+ 	def_bool y
+diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+index 1be32fcf6f2e..c4f6ff98a612 100644
+--- a/arch/s390/configs/debug_defconfig
++++ b/arch/s390/configs/debug_defconfig
+@@ -61,7 +61,9 @@ CONFIG_OPROFILE=m
+ CONFIG_KPROBES=y
+ CONFIG_JUMP_LABEL=y
+ CONFIG_STATIC_KEYS_SELFTEST=y
++CONFIG_SECCOMP_CACHE_DEBUG=y
+ CONFIG_LOCK_EVENT_COUNTS=y
++# CONFIG_GCC_PLUGINS is not set
+ CONFIG_MODULES=y
+ CONFIG_MODULE_FORCE_LOAD=y
+ CONFIG_MODULE_UNLOAD=y
+@@ -410,12 +412,12 @@ CONFIG_SCSI_ENCLOSURE=m
+ CONFIG_SCSI_CONSTANTS=y
+ CONFIG_SCSI_LOGGING=y
+ CONFIG_SCSI_SPI_ATTRS=m
+-CONFIG_SCSI_FC_ATTRS=y
++CONFIG_SCSI_FC_ATTRS=m
+ CONFIG_SCSI_SAS_LIBSAS=m
+ CONFIG_SCSI_SRP_ATTRS=m
+ CONFIG_ISCSI_TCP=m
+ CONFIG_SCSI_DEBUG=m
+-CONFIG_ZFCP=y
++CONFIG_ZFCP=m
+ CONFIG_SCSI_VIRTIO=m
+ CONFIG_SCSI_DH=y
+ CONFIG_SCSI_DH_RDAC=m
+@@ -444,6 +446,7 @@ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_MULTIPATH_QL=m
+ CONFIG_DM_MULTIPATH_ST=m
+ CONFIG_DM_MULTIPATH_HST=m
++CONFIG_DM_MULTIPATH_IOA=m
+ CONFIG_DM_DELAY=m
+ CONFIG_DM_UEVENT=y
+ CONFIG_DM_FLAKEY=m
+@@ -542,7 +545,6 @@ CONFIG_INPUT_EVDEV=y
+ # CONFIG_INPUT_MOUSE is not set
+ # CONFIG_SERIO is not set
+ CONFIG_LEGACY_PTY_COUNT=0
+-CONFIG_NULL_TTY=m
+ CONFIG_VIRTIO_CONSOLE=y
+ CONFIG_HW_RANDOM_VIRTIO=m
+ CONFIG_RAW_DRIVER=m
+@@ -574,6 +576,7 @@ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_INPUT=y
+ CONFIG_VHOST_NET=m
+ CONFIG_VHOST_VSOCK=m
++# CONFIG_SURFACE_PLATFORMS is not set
+ CONFIG_S390_CCW_IOMMU=y
+ CONFIG_S390_AP_IOMMU=y
+ CONFIG_EXT4_FS=y
+@@ -655,6 +658,7 @@ CONFIG_CIFS_XATTR=y
+ CONFIG_CIFS_POSIX=y
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CIFS_DFS_UPCALL=y
++CONFIG_CIFS_SWN_UPCALL=y
+ CONFIG_NLS_DEFAULT="utf8"
+ CONFIG_NLS_CODEPAGE_437=m
+ CONFIG_NLS_CODEPAGE_850=m
+@@ -826,6 +830,8 @@ CONFIG_FTRACE_SYSCALLS=y
+ CONFIG_BLK_DEV_IO_TRACE=y
+ CONFIG_BPF_KPROBE_OVERRIDE=y
+ CONFIG_HIST_TRIGGERS=y
++CONFIG_FTRACE_STARTUP_TEST=y
++# CONFIG_EVENT_TRACE_STARTUP_TEST is not set
+ CONFIG_DEBUG_USER_ASCE=y
+ CONFIG_NOTIFIER_ERROR_INJECTION=m
+ CONFIG_NETDEV_NOTIFIER_ERROR_INJECT=m
+diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+index e2171a008809..51135893cffe 100644
+--- a/arch/s390/configs/defconfig
++++ b/arch/s390/configs/defconfig
+@@ -58,6 +58,7 @@ CONFIG_S390_UNWIND_SELFTEST=m
+ CONFIG_OPROFILE=m
+ CONFIG_KPROBES=y
+ CONFIG_JUMP_LABEL=y
++# CONFIG_GCC_PLUGINS is not set
+ CONFIG_MODULES=y
+ CONFIG_MODULE_FORCE_LOAD=y
+ CONFIG_MODULE_UNLOAD=y
+@@ -95,7 +96,6 @@ CONFIG_ZSMALLOC_STAT=y
+ CONFIG_DEFERRED_STRUCT_PAGE_INIT=y
+ CONFIG_IDLE_PAGE_TRACKING=y
+ CONFIG_PERCPU_STATS=y
+-CONFIG_GUP_TEST=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+ CONFIG_PACKET_DIAG=m
+@@ -403,12 +403,12 @@ CONFIG_SCSI_ENCLOSURE=m
+ CONFIG_SCSI_CONSTANTS=y
+ CONFIG_SCSI_LOGGING=y
+ CONFIG_SCSI_SPI_ATTRS=m
+-CONFIG_SCSI_FC_ATTRS=y
++CONFIG_SCSI_FC_ATTRS=m
+ CONFIG_SCSI_SAS_LIBSAS=m
+ CONFIG_SCSI_SRP_ATTRS=m
+ CONFIG_ISCSI_TCP=m
+ CONFIG_SCSI_DEBUG=m
+-CONFIG_ZFCP=y
++CONFIG_ZFCP=m
+ CONFIG_SCSI_VIRTIO=m
+ CONFIG_SCSI_DH=y
+ CONFIG_SCSI_DH_RDAC=m
+@@ -437,6 +437,7 @@ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_MULTIPATH_QL=m
+ CONFIG_DM_MULTIPATH_ST=m
+ CONFIG_DM_MULTIPATH_HST=m
++CONFIG_DM_MULTIPATH_IOA=m
+ CONFIG_DM_DELAY=m
+ CONFIG_DM_UEVENT=y
+ CONFIG_DM_FLAKEY=m
+@@ -536,7 +537,6 @@ CONFIG_INPUT_EVDEV=y
+ # CONFIG_INPUT_MOUSE is not set
+ # CONFIG_SERIO is not set
+ CONFIG_LEGACY_PTY_COUNT=0
+-CONFIG_NULL_TTY=m
+ CONFIG_VIRTIO_CONSOLE=y
+ CONFIG_HW_RANDOM_VIRTIO=m
+ CONFIG_RAW_DRIVER=m
+@@ -568,6 +568,7 @@ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_INPUT=y
+ CONFIG_VHOST_NET=m
+ CONFIG_VHOST_VSOCK=m
++# CONFIG_SURFACE_PLATFORMS is not set
+ CONFIG_S390_CCW_IOMMU=y
+ CONFIG_S390_AP_IOMMU=y
+ CONFIG_EXT4_FS=y
+@@ -645,6 +646,7 @@ CONFIG_CIFS_XATTR=y
+ CONFIG_CIFS_POSIX=y
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CIFS_DFS_UPCALL=y
++CONFIG_CIFS_SWN_UPCALL=y
+ CONFIG_NLS_DEFAULT="utf8"
+ CONFIG_NLS_CODEPAGE_437=m
+ CONFIG_NLS_CODEPAGE_850=m
+@@ -778,6 +780,7 @@ CONFIG_FTRACE_SYSCALLS=y
+ CONFIG_BLK_DEV_IO_TRACE=y
+ CONFIG_BPF_KPROBE_OVERRIDE=y
+ CONFIG_HIST_TRIGGERS=y
++CONFIG_DEBUG_USER_ASCE=y
+ CONFIG_LKDTM=m
+ CONFIG_PERCPU_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=y
+diff --git a/arch/s390/configs/zfcpdump_defconfig b/arch/s390/configs/zfcpdump_defconfig
+index a302630341ef..1ef211dae77a 100644
+--- a/arch/s390/configs/zfcpdump_defconfig
++++ b/arch/s390/configs/zfcpdump_defconfig
+@@ -22,6 +22,7 @@ CONFIG_CRASH_DUMP=y
+ # CONFIG_VIRTUALIZATION is not set
+ # CONFIG_S390_GUEST is not set
+ # CONFIG_SECCOMP is not set
++# CONFIG_GCC_PLUGINS is not set
+ CONFIG_PARTITION_ADVANCED=y
+ CONFIG_IBM_PARTITION=y
+ # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
+@@ -58,6 +59,7 @@ CONFIG_RAW_DRIVER=y
+ # CONFIG_HID is not set
+ # CONFIG_VIRTIO_MENU is not set
+ # CONFIG_VHOST_MENU is not set
++# CONFIG_SURFACE_PLATFORMS is not set
+ # CONFIG_IOMMU_SUPPORT is not set
+ # CONFIG_DNOTIFY is not set
+ # CONFIG_INOTIFY_USER is not set
