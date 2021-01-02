@@ -2,99 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48DC2E8712
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 12:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 474762E8719
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 12:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbhABLaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 06:30:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbhABLaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 06:30:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 917B020857;
-        Sat,  2 Jan 2021 11:29:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609586982;
-        bh=12e/d5y8XXJahAgaxYFj4bELsUe5cAYIOPjRCVbsCa8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RdKVQTm+6SQLs5RsdmZLf63WqRtN8cwFFlLM7+G9JsLrkOt2DbGEPZKSolcI5Zl5R
-         0nMECjauCyWEpTlcHemc2Oqjk9yHT26n27W29gaSzUInmrs8yyUupsu2FUna3i4F3d
-         xCF6nmbH/6hpGdXM6DCKy5EVVJb1sJuwKKKqUZ7QqJY2SsygUFoGXZwZrhVmtV5FkF
-         jR18hiSM6B4WEnVoYLW+QQpcDRR8TrlUwbvOx50NN2xJj3ELhtrtijIBLEx+X1NhW+
-         QYHOct6dxebhhMJ51zvXYLdoA85sEwe+e9CfS33EMKy2hF4RXieQsTpb+2RxkgfFeI
-         xc0mX/qdecHNQ==
-Received: by mail-oi1-f180.google.com with SMTP id s2so26668030oij.2;
-        Sat, 02 Jan 2021 03:29:42 -0800 (PST)
-X-Gm-Message-State: AOAM532rItAiD6qxosU/k5lQXSrDD7a6GD4sxDHnx/xLF1/nRMAqZSuB
-        awog02esWxeVmP9UuAOpYfEOC96P/+8P8kYHzl4=
-X-Google-Smtp-Source: ABdhPJwOoZJeWc4//XjRrhGjpBMg/U98KqEnfR9Yy6/+iQ0miwRI9ziRuNwH0dnt5/BAc6q3t6rn+pozBVHq3Qu2tJ4=
-X-Received: by 2002:aca:d98a:: with SMTP id q132mr12999133oig.33.1609586981969;
- Sat, 02 Jan 2021 03:29:41 -0800 (PST)
+        id S1726664AbhABLcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 06:32:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726486AbhABLcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 06:32:16 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403D1C061573;
+        Sat,  2 Jan 2021 03:31:35 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id t8so20721614iov.8;
+        Sat, 02 Jan 2021 03:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TxLZQk7Gx7NGGuktcS7xhogSAnhu+wy4fUkT+RFznDs=;
+        b=TNupG2F47D6rTYNT7cdP4ltvzWdjKkcdWHlJcMNfEzNj7gHLBvckYAyBK/fZ7HAnIe
+         Bn9bYsN7JkTMNs21t7V/5rFfYoEqGh/hv4nr1BMOULm9zFOtElkmeqDZ7njgMB/4DOvR
+         iRCxi7SqAUudLjWzr4qFHjyxCvxMNqY03yCKaBySHq5wLoEOVpcZ3V/p3FkcLzoQocvD
+         tdJnNTfd/GxkFK/OXh3wc3Bc+tP2x62tvNNhWuQu+BnFJI5eRx811/V+O7Kqi2aAbDxC
+         HSotVMLkeYJhkD/ZxbeJ+b4zq7LVEu8p2hPJ8DISiQIg9WE/JrEtd4Fi2p84r2Y6tOyo
+         SUhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TxLZQk7Gx7NGGuktcS7xhogSAnhu+wy4fUkT+RFznDs=;
+        b=rpeFS/nNJB3/23Q2qiVhBR+ZF/Z1G+K0xVngWVxls5Gkyp7kjO+r+ZqxIOaz3YIoMo
+         iN05F84n+KwIFYqAJew7Gj9MMTUi8ljTO5OivYUeFwGQL7QMNQQgafd/5ZQDjEXi3f2z
+         NvF8Sk8BoJEJJMC2Wm3KOBx2zPDirQjCNlo4ffVxR4qOIEeAaYvAVS2CYeerdgK71bp7
+         FSI6ch8+WyEtRvHl9tFqDPBH67++km1dT88lPRbD4WYfYYnRA9tsSbu0lV0Ga7Ygnf+6
+         +rl+fUT3JMbQZ62NPKERt+KXeUMG7eMxPPj22BCVRtuhWlJQp8NpRV2JMOmUqJH2pyao
+         4d8A==
+X-Gm-Message-State: AOAM530X0fQeZvHlXevuV7ZUJnW4Trm+BFuOGFe06gvyB/xgJ2M404Sf
+        Z4gjXFxNJc4b7AS3r5yjaF32ckUHjh2sYLCqm+U=
+X-Google-Smtp-Source: ABdhPJwNoQ4eUhykxp7/Bw/ODRgJKzjT907IP0l5Is4czWm1NB1Onr4S/vfiD7M4XrApfYElqTGzn+G3ug0u7XfD3FU=
+X-Received: by 2002:a5d:8483:: with SMTP id t3mr53856438iom.35.1609587094399;
+ Sat, 02 Jan 2021 03:31:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20201228124919.745526410@linuxfoundation.org> <20201228124933.649086790@linuxfoundation.org>
- <20201231200913.GA32313@amd>
-In-Reply-To: <20201231200913.GA32313@amd>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 2 Jan 2021 12:29:31 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGPtz5Qh4CDE=wBG29U8ESxfOEjZLi9DK4a-9LH7kcMow@mail.gmail.com>
-Message-ID: <CAMj1kXGPtz5Qh4CDE=wBG29U8ESxfOEjZLi9DK4a-9LH7kcMow@mail.gmail.com>
-Subject: Re: [PATCH 4.19 287/346] crypto: ecdh - avoid unaligned accesses in ecdh_set_secret()
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
+References: <20210101113927.3252309-1-aford173@gmail.com> <TYBPR01MB5309353C04568B16E029261686D50@TYBPR01MB5309.jpnprd01.prod.outlook.com>
+ <CAHCN7x+6BobFukqiENYg4HwZm5M0S5Dv14DmbmW5xYn0DdXBwQ@mail.gmail.com> <TYBPR01MB5309CC39CE7896473819E7C486D40@TYBPR01MB5309.jpnprd01.prod.outlook.com>
+In-Reply-To: <TYBPR01MB5309CC39CE7896473819E7C486D40@TYBPR01MB5309.jpnprd01.prod.outlook.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sat, 2 Jan 2021 05:31:23 -0600
+Message-ID: <CAHCN7xL96mU4rdRUaog5YaokWyYb23zbFu_9X3gfVrgf6NM4PQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: memory: Renesas RPC-IF: Add support for
+ RZ/G2 Series
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "aford@beaconembedded.com" <aford@beaconembedded.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Dec 2020 at 21:09, Pavel Machek <pavel@denx.de> wrote:
+On Sat, Jan 2, 2021 at 2:13 AM Biju Das <biju.das.jz@bp.renesas.com> wrote:
 >
-> Hi!
 >
-> > ecdh_set_secret() casts a void* pointer to a const u64* in order to
-> > feed it into ecc_is_key_valid(). This is not generally permitted by
-> > the C standard, and leads to actual misalignment faults on ARMv6
-> > cores. In some cases, these are fixed up in software, but this still
-> > leads to performance hits that are entirely avoidable.
+>
+> > -----Original Message-----
+> > From: Adam Ford <aford173@gmail.com>
+> > Sent: 01 January 2021 21:34
+> > To: Biju Das <biju.das.jz@bp.renesas.com>
+> > Cc: linux-renesas-soc@vger.kernel.org; aford@beaconembedded.com; Krzysztof
+> > Kozlowski <krzk@kernel.org>; Rob Herring <robh+dt@kernel.org>; Geert
+> > Uytterhoeven <geert+renesas@glider.be>; Magnus Damm
+> > <magnus.damm@gmail.com>; Sergei Shtylyov <sergei.shtylyov@gmail.com>;
+> > linux-kernel@vger.kernel.org; devicetree@vger.kernel.org
+> > Subject: Re: [PATCH 1/2] dt-bindings: memory: Renesas RPC-IF: Add support
+> > for RZ/G2 Series
 > >
-> > So let's copy the key into the ctx buffer first, which we will do
-> > anyway in the common case, and which guarantees correct alignment.
+> > On Fri, Jan 1, 2021 at 12:58 PM Biju Das <biju.das.jz@bp.renesas.com>
+> > wrote:
+> > >
+> > > Hi Adam,
+> > >
+> > > Thanks for the patch.
+> > >
+> > > > -----Original Message-----
+> > > > From: Adam Ford <aford173@gmail.com>
+> > > > Sent: 01 January 2021 11:39
+> > > > To: linux-renesas-soc@vger.kernel.org
+> > > > Cc: aford@beaconembedded.com; Adam Ford <aford173@gmail.com>;
+> > > > Krzysztof Kozlowski <krzk@kernel.org>; Rob Herring
+> > > > <robh+dt@kernel.org>; Geert Uytterhoeven <geert+renesas@glider.be>;
+> > > > Magnus Damm <magnus.damm@gmail.com>; Sergei Shtylyov
+> > > > <sergei.shtylyov@gmail.com>; linux-kernel@vger.kernel.org;
+> > > > devicetree@vger.kernel.org
+> > > > Subject: [PATCH 1/2] dt-bindings: memory: Renesas RPC-IF: Add
+> > > > support for
+> > > > RZ/G2 Series
+> > > >
+> > > > The RZ/G2 Series has the RPC-IF interface.
+> > > > Update bindings to support: r8a774a1, r8a774b1, r8a774c0, and
+> > > > r8a774e1
+> > > >
+> > > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > > ---
+> > > >  .../bindings/memory-controllers/renesas,rpc-if.yaml           | 4
+> > ++++
+> > > >  1 file changed, 4 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/memory-
+> > > > controllers/renesas,rpc-if.yaml
+> > > > b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-i
+> > > > f.yaml index 6d6ba608fd22..050c66af8c2c 100644
+> > > > ---
+> > > > a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-
+> > > > if.yaml
+> > > > +++ b/Documentation/devicetree/bindings/memory-controllers/renesas,r
+> > > > +++ pc-
+> > > > if.yaml
+> > > > @@ -26,6 +26,10 @@ properties:
+> > > >    compatible:
+> > > >      items:
+> > > >        - enum:
+> > > > +          - renesas,r8a774a1-rpc-if       # RZ/G2M
+> > > > +          - renesas,r8a774b1-rpc-if       # RZ/G2N
+> > > > +          - renesas,r8a774c0-rpc-if       # RZ/G2E
+> > > > +          - renesas,r8a774e1-rpc-if       # RZ/G2H
+> > > >            - renesas,r8a77970-rpc-if       # R-Car V3M
+> > > >            - renesas,r8a77980-rpc-if       # R-Car V3H
+> > > >            - renesas,r8a77995-rpc-if       # R-Car D3
+> > >
+> > > May be we need to update the below description as well to cover RZ/G2
+> > device??
+> > >
+> > > - const: renesas,rcar-gen3-rpc-if   # a generic R-Car gen3 device
+> >
+> > How do you want it to read?
 >
-> Fair enough... but: params.key_size is validated in
-> ecc_is_key_valid(), and that now happens _after_ memcpy.
+> Since it is generic compatible string for both R-Car gen3 and RZ/G2 device, I would update the description as
 >
-> How is it guaranteed that we don't overflow the buffer during memcpy?
+> - const: renesas,rcar-gen3-rpc-if   # a generic R-Car gen3 or RZ/G2 device
+>
+> Also may be we need to update the description of config RENESAS_RPCIF in drivers/memory/Kconfig to taken care of RZ/G2 devices in a separate patch.
 >
 
-It is not, thanks for pointing that out. There are some redundant
-checks being performed, so you won't trigger it easily with fuzzing,
-but afaict, an intentionally crafted invalid input could indeed
-overflow the buffer.
+Thanks for the suggestion.  I'll work on V2 where I update the
+descriptions for both.
 
-I'll send a fix shortly.
+adam
 
-> > +++ b/crypto/ecdh.c
-> > @@ -57,12 +57,13 @@ static int ecdh_set_secret(struct crypto
-> >               return ecc_gen_privkey(ctx->curve_id, ctx->ndigits,
-> >                                      ctx->private_key);
-> >
-> > -     if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
-> > -                          (const u64 *)params.key, params.key_size) < 0)
-> > -             return -EINVAL;
-> > -
-> >       memcpy(ctx->private_key, params.key, params.key_size);
-> >
-> > +     if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
-> > +                          ctx->private_key, params.key_size) < 0) {
-> > +             memzero_explicit(ctx->private_key, params.key_size);
-> > +             return -EINVAL;
-> > +     }
-> >       return 0;
->
-> Best regards,
->                                                                 Pavel
-> --
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+> Cheers,
+> Biju
