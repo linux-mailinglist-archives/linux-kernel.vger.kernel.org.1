@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F1B2E8630
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 04:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021182E8636
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 04:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727284AbhABDFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 22:05:13 -0500
-Received: from mga11.intel.com ([192.55.52.93]:35271 "EHLO mga11.intel.com"
+        id S1727285AbhABDS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 22:18:27 -0500
+Received: from mga14.intel.com ([192.55.52.115]:61870 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727133AbhABDFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 22:05:13 -0500
-IronPort-SDR: vVERRXup/ZnysZn4LstdiLINtKbAr4/jn/Hnt6S8QUC/tJdVjBIqjKu+K713o1bpHaXhGPInGR
- 5q63ahJLhcbg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9851"; a="173297445"
-X-IronPort-AV: E=Sophos;i="5.78,468,1599548400"; 
-   d="scan'208";a="173297445"
+        id S1727133AbhABDS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Jan 2021 22:18:26 -0500
+IronPort-SDR: qjA8qy3mewSgDS1HHKS0070V6yvQngt9/oKkqLt94DG0wIXFOqx86RLfZhqbB4N6io4WHFxf+p
+ b2lFpD4WH0sw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9851"; a="176026807"
+X-IronPort-AV: E=Sophos;i="5.78,469,1599548400"; 
+   d="scan'208";a="176026807"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2021 19:04:32 -0800
-IronPort-SDR: VGzmKTwRMOJvIvSjAiyTHEPh+kBB0ZmvyEyO2MUStDs0VzkdkpK+OYxui9GmHdIa/inYzXXslf
- Yr2GbaJPSVMQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2021 19:17:45 -0800
+IronPort-SDR: 095pgWAvMhu4qR4CgL0Gfz9exizmAlKf5gStfNfX7QrJwYXKCfyP8Q0QJ62vVVhXlQ5FUxTwtT
+ ZYo/z1Cbp2uQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,468,1599548400"; 
-   d="scan'208";a="349083059"
+X-IronPort-AV: E=Sophos;i="5.78,469,1599548400"; 
+   d="scan'208";a="349085227"
 Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Jan 2021 19:04:30 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 01 Jan 2021 19:17:44 -0800
 From:   Xu Yilun <yilun.xu@intel.com>
-To:     broonie@kernel.org, linux-spi@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@linux.intel.com,
-        russell.h.weight@intel.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] spi: fix the divide by 0 error when calculating xfer waiting time
-Date:   Sat,  2 Jan 2021 10:59:46 +0800
-Message-Id: <1609556386-19422-1-git-send-email-yilun.xu@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com
+Subject: [PATCH v5 0/2] UIO support for dfl devices
+Date:   Sat,  2 Jan 2021 11:13:00 +0800
+Message-Id: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
 X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The xfer waiting time is the result of xfer->len / xfer->speed_hz. This
-patch makes the assumption of 1khz xfer speed if the xfer->speed_hz is
-not assigned and stays 0. This avoids the divide by 0 issue and ensures
-a reasonable tolerant waiting time.
+This patchset supports some dfl device drivers written in userspace.
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
----
-v2: use the normal conditional statement instead of the ternery operator
-    change the default xfer speed from 1khz to 100khz
----
- drivers/spi/spi.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+In the patchset v1, the "driver_override" interface should be used to bind
+the DFL UIO driver to DFL devices. But there is concern that the
+"driver_override" interface is not OK itself.
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 51d7c00..aacae88 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1108,6 +1108,7 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
- {
- 	struct spi_statistics *statm = &ctlr->statistics;
- 	struct spi_statistics *stats = &msg->spi->statistics;
-+	u32 speed_hz = xfer->speed_hz;
- 	unsigned long long ms;
- 
- 	if (spi_controller_is_slave(ctlr)) {
-@@ -1116,8 +1117,11 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
- 			return -EINTR;
- 		}
- 	} else {
-+		if (!speed_hz)
-+			speed_hz = 100000;
-+
- 		ms = 8LL * 1000LL * xfer->len;
--		do_div(ms, xfer->speed_hz);
-+		do_div(ms, speed_hz);
- 		ms += ms + 200; /* some tolerance */
- 
- 		if (ms > UINT_MAX)
+In v2, we use a new matching algorithem. The "driver_override" interface
+is abandoned, the DFL UIO driver matches any DFL device which could not be
+handled by other DFL drivers. So the DFL UIO driver could be used for new
+DFL devices which are not supported by kernel. The concern is the UIO may
+not be suitable as a default/generic driver for all dfl features, such as
+features with multiple interrupts.
+
+In v4, we specify each matching device in the id_table of the UIO driver,
+just the same as other dfl drivers do. Now the UIO driver supports Ether
+Group feature. To support more DFL features, their feature ids should be
+added to the driver's id_table.
+
+
+Main changes from v1:
+- switch to the new matching algorithem. It matches DFL devices which could
+  not be handled by other DFL drivers.
+- refacor the code about device resources filling.
+- add the documentation.
+
+Main changes from v2:
+- split the match ops changes in dfl.c to an independent patch.
+- move the declarations needed for dfl-uio-pdev from include/linux/dfl.h
+  to driver/fpga/dfl.h
+- some minor fixes.
+
+Main changes from v3:
+- switch to specifying each matching device in the driver's id_table.
+- refactor the irq handling code.
+
+Main changes from v4:
+- refactor the irq handling code.
+
+Xu Yilun (2):
+  fpga: dfl: add the userspace I/O device support for DFL devices
+  Documentation: fpga: dfl: Add description for DFL UIO support
+
+ Documentation/fpga/dfl.rst  | 24 ++++++++++++
+ drivers/fpga/Kconfig        | 10 +++++
+ drivers/fpga/Makefile       |  1 +
+ drivers/fpga/dfl-uio-pdev.c | 91 +++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 126 insertions(+)
+ create mode 100644 drivers/fpga/dfl-uio-pdev.c
+
 -- 
 2.7.4
 
