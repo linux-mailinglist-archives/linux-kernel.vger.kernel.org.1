@@ -2,183 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861022E876C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 14:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA522E877B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 14:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbhABNLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 08:11:45 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:52194 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbhABNLm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 08:11:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609593081; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=eaJ8h31PyvyYNYVi/rK6tFQhGNhrT1bvCvVv2q3TF/Q=;
- b=NHrNQzsEJgqGyLWN4/YL7ljbSrDeDmvNd1xju5VqE1nmWe1dntOlyoJ0lHC35gfMNO7UZFMw
- BDU8REQToOSRY7ckATklvzvMdEUk58oGFYSfoYkktD8M5PeftFuIegyKUe5IB6bI6GE3ILJc
- WBkTpBT30hYb9cFnFGqilyRns+8=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5ff070de00a8b47219527cc0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 02 Jan 2021 13:10:54
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AD8A2C433ED; Sat,  2 Jan 2021 13:10:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5CC65C433C6;
-        Sat,  2 Jan 2021 13:10:52 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 02 Jan 2021 21:10:52 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Fix a possible NULL pointer issue
-In-Reply-To: <b2385bdf0ce1ac799ccf77c2e952d9bf@codeaurora.org>
-References: <1609479893-8889-1-git-send-email-cang@codeaurora.org>
- <1609479893-8889-2-git-send-email-cang@codeaurora.org>
- <7cff30c3-6df8-7b8c-0f5b-a95980b8f706@acm.org>
- <b2385bdf0ce1ac799ccf77c2e952d9bf@codeaurora.org>
-Message-ID: <204e13398c0b4c3d61786815e757e0bf@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S1726627AbhABN0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 08:26:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726561AbhABN0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 08:26:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF2A0224D2;
+        Sat,  2 Jan 2021 13:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609593942;
+        bh=TVsidi0zzSt/PgVGHSye3zjeAkDC4WSqDayvsSzjYbE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=etiRHgnGy4cY/GQAen8hsZsp0G2TlXhAWwSmpk6YPupEvE8OAY4/t6ZoObClBymsG
+         tEFudifXAeESBt8pyZTKKZBKg8KUFFT0fNjSZzKqQpPbE6+i+u85lBccXkqbz51E6B
+         d4NQpqKMTiqKMBJznTqoC/Q7NE9eLPYZ+RQyUsRoJrNHtol8EVUOmm5u3aaxGsWt/F
+         MXXuYjMRi8ss1VQt8lpKu4QZuCSWL4DC/QI70NTXGjXhu3Hu4oM0iOml4YqzpqwsWw
+         rOIKb2J19ViqEYkBQdOX2pIkTdWrhWnOhC/GPu8X3wXumS9RlAWYxCH/C6uHSUoCo0
+         DwMchROSS1NMA==
+From:   guoren@kernel.org
+To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        anup@brainfault.org, atish.patra@wdc.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, guoren@kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Vincent Chen <vincent.chen@sifive.com>
+Subject: [PATCH] riscv: Fixup CONFIG_GENERIC_TIME_VSYSCALL
+Date:   Sat,  2 Jan 2021 13:24:34 +0000
+Message-Id: <1609593874-64422-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-02 20:29, Can Guo wrote:
-> On 2021-01-02 00:05, Bart Van Assche wrote:
->> On 12/31/20 9:44 PM, Can Guo wrote:
->>> During system resume/suspend, hba could be NULL. In this case, do not 
->>> touch
->>> eh_sem.
->>> 
->>> Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM 
->>> events and async scan")
->>> 
->>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>> ---
->>>  drivers/scsi/ufs/ufshcd.c | 9 +++++----
->>>  1 file changed, 5 insertions(+), 4 deletions(-)
->>> 
->>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->>> index e221add..34e2541 100644
->>> --- a/drivers/scsi/ufs/ufshcd.c
->>> +++ b/drivers/scsi/ufs/ufshcd.c
->>> @@ -8896,8 +8896,11 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
->>>  	int ret = 0;
->>>  	ktime_t start = ktime_get();
->>> 
->>> +	if (!hba)
->>> +		return 0;
->>> +
->>>  	down(&hba->eh_sem);
->>> -	if (!hba || !hba->is_powered)
->>> +	if (!hba->is_powered)
->>>  		return 0;
->>> 
->>>  	if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
->>> @@ -8945,10 +8948,8 @@ int ufshcd_system_resume(struct ufs_hba *hba)
->>>  	int ret = 0;
->>>  	ktime_t start = ktime_get();
->>> 
->>> -	if (!hba) {
->>> -		up(&hba->eh_sem);
->>> +	if (!hba)
->>>  		return -EINVAL;
->>> -	}
->>> 
->>>  	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
->>>  		/*
->> 
->> Hi Can,
->> 
->> How can ufshcd_system_suspend() or ufshcd_system_resume() be called 
->> with a
->> NULL argument? In ufshcd_pci_probe() I see that pci_set_drvdata() is 
->> called
->> before pm_runtime_allow(). ufshcd_pci_remove() calls 
->> pm_runtime_forbid().
->> 
->> Thanks,
->> 
->> Bart.
-> 
-> Hi Bart,
-> 
-> You are right about ufshcd_RUNTIME_suspend/resume() - 
-> platform_set_drvdata()
-> is called before pm_runtime_enable(), so runtime suspend/resume cannot 
-> happen
-> before pm_runtime_enable() is called. We can remove the sanity checks 
-> of
-> !hba there, they are outdated.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-Add more history here - before Stanley's change (see below), 
-platform_set_drvdata()
-is called AFTER pm_runtime_enable(), which was why we needed sanity 
-checks of !hba.
-But now the sanity checks are unnecessary in 
-ufshcd_RUNTIME_suspend/resume(), so
-feel free to remove them.
+The patch fix commit: ad5d112 ("riscv: use vDSO common flow to
+reduce the latency of the time-related functions").
 
-But still, things are a bit different for 
-ufshcd_SYSTEM_suspend/resume(), we need
-the sanity checks of !hba there if my understanding is correct.
+The GENERIC_TIME_VSYSCALL should be CONFIG_GENERIC_TIME_VSYSCALL
+or vgettimeofday won't work.
 
-commit 24e2e7a19f7e4b83d0d5189040d997bce3596473
-Author: Stanley Chu <stanley.chu@mediatek.com>
-Date:   Wed Jun 12 23:19:05 2019 +0800
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Cc: Atish Patra <atish.patra@wdc.com>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Vincent Chen <vincent.chen@sifive.com>
+---
+ arch/riscv/include/asm/vdso.h | 2 +-
+ arch/riscv/kernel/vdso.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-     scsi: ufs: Avoid runtime suspend possibly being blocked forever
+diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
+index 8454f74..1453a2f 100644
+--- a/arch/riscv/include/asm/vdso.h
++++ b/arch/riscv/include/asm/vdso.h
+@@ -10,7 +10,7 @@
+ 
+ #include <linux/types.h>
+ 
+-#ifndef GENERIC_TIME_VSYSCALL
++#ifndef CONFIG_GENERIC_TIME_VSYSCALL
+ struct vdso_data {
+ };
+ #endif
+diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
+index 6782042..3f1d35e 100644
+--- a/arch/riscv/kernel/vdso.c
++++ b/arch/riscv/kernel/vdso.c
+@@ -12,7 +12,7 @@
+ #include <linux/binfmts.h>
+ #include <linux/err.h>
+ #include <asm/page.h>
+-#ifdef GENERIC_TIME_VSYSCALL
++#ifdef CONFIG_GENERIC_TIME_VSYSCALL
+ #include <vdso/datapage.h>
+ #else
+ #include <asm/vdso.h>
+-- 
+2.7.4
 
-Thanks,
-Can Guo.
-
-> 
-> But for ufshcd_SYSTEM_suspend/resume() callbacks (not runtime ones), my
-> understanding is that system suspend/resume may happen after probe 
-> (vendor
-> driver probe calls ufshcd_pltfrm_init()) starts but before
-> platform_set_drvdata()
-> is called, in this case hba is NULL.
-> 
-> int ufshcd_pltfrm_init(struct platform_device *pdev,
-> 		       const struct ufs_hba_variant_ops *vops)
-> {
-> ...
->  	platform_set_drvdata(pdev, hba);
-> 
-> 	pm_runtime_set_active(&pdev->dev);
-> 	pm_runtime_enable(&pdev->dev);
-> }
-> 
-> Thanks,
-> 
-> Can Guo.
