@@ -2,83 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9893A2E88B8
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 22:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EA82E88BD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 23:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbhABVnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 16:43:01 -0500
-Received: from mout.gmx.net ([212.227.15.15]:49157 "EHLO mout.gmx.net"
+        id S1726739AbhABWBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 17:01:20 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:37250 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726667AbhABVnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 16:43:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1609623687;
-        bh=qNleJz2MDSBKwJ535sioeu+q8NtazABN1rs29sN2K6A=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=a30Eiyol41cYZR7Xfhwmb44/BULuhaZG1oz3Jpnj1Wk0kuqdTq8UBdXFwTqyRNQiw
-         KZi6aaHHoq4sCTqbn/Z6q2IEZ0kDOLQpvuRXS0PqbD4hl6nksr4Y0POPhZz+8679Lj
-         JMhmueyUhONivbKSmrL0Bj5rKQ9y7GUGsM6r8sMI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from MockUp.fritz.box ([77.10.124.214]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M26vL-1kyHcs2H3R-002UOk; Sat, 02
- Jan 2021 22:41:27 +0100
-From:   John-Eric Kamps <johnny86@gmx.de>
-To:     johnny86@gmx.de
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] Bluetooth: hci_h5: Add support for binding RTL8723DS with device tree
-Date:   Sat,  2 Jan 2021 22:41:15 +0100
-Message-Id: <20210102214116.1098030-1-johnny86@gmx.de>
-X-Mailer: git-send-email 2.25.1
+        id S1726667AbhABWBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 17:01:19 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kvowe-0000Ty-AW; Sun, 03 Jan 2021 09:00:21 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sun, 03 Jan 2021 09:00:20 +1100
+Date:   Sun, 3 Jan 2021 09:00:20 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Vic Wu <vic.wu@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: mediatek - remove obsolete driver
+Message-ID: <20210102220020.GA12767@gondor.apana.org.au>
+References: <20201207075842.30090-1-vic.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Otp79H9k2G7AFm+Yvo0CkrX3Lmpr4FZ3yvjFBAgdc6DyOanWqQa
- dWNMXScXe5JPdP8ym7nQuQtFNaX3xMrg1kP1rRFvYJwA+6QgWIc6vIgYNgsaxuN523cWGIY
- BBiarRbSxgCC5AAoQuDoqkBFyH5HMGsu4WeIvR1OFCBfncr0FLqO1ZJEk9TDUW9aVGJA/Ns
- KO4f3hdk2ttYdBduvHDaQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yuIwH5pAvYI=:X224beW9GoqL9nDUq53R+3
- LWAZthQZMih7KJ4l4oFDNjl1ZPn5SXz4w4oVMui6CbcfBd9WRC9cfOiJGjkcdqZ9whutOwCkd
- rA687vkqBk8K9SKA8rQ3Jr7K/w6qiel/qbGsKvwCmN6OuqeCx0IHbRLme7L6oMwjYix6TBCt8
- c//rNn//Rc91FVGkM5TAOayU3DFfgATNfxWSEA79j8Cx6yEMD3onqHKLzz2menaomKT0py1Av
- 3iutj+riAnSZ5g1Tueo2BsrAzax8u65dSBKvjY0ZaZV2ubQV0gGnZhOfy/WpHLQJtVjJ1j6Z9
- zJIz38Gqn9baV8ESGdRE5Hu08Snx4RZinPgHzqT3Xyy0w5Lw5bJhkusT5TcUh6rHy6+i5V396
- sh5glSg/UJpmxhKXMR6aGbL0+yLH115BFnreTnAwIpjqnLvhtWyeuD3xP5L5/fkrT7cY1vnfs
- TiwKxe0SN1JNQs+9LfCrFasQDcFh1Hp/Hb6GgjhUKe6RpE04wvEvDMyjv60l+5ZSR1cn4gtQr
- 6lSK/IEKeNeqI1H1vForsVMihMKQSQeky7ky72/8GkUfOrNQzevPx6S9/9n46zwj4iote/VjZ
- eKeLq5MyWmOO97ELQuoIq1Vgmq6ZZW9gjiQ01XgNl1kYe6RbdPJ7iK7wJ4xI2913LSn1lha5h
- bVwAz9yCf1chLdhBnJL0lGBnKtC/y47Rl6L8z1GhSoZubLDeYS9OElk++G3wOKF1zxxJmz2IG
- j/pkFbpiMYe3ofXoc35HimY1bq8tRYEiBal1HHYt+QebqPwUAyfPkwB0etCUUh3As2wxDTI7q
- NTvnvgI3C0KS+qfWjnt7TT647H8Ax8zxy6Y21giwQtiBcbnKK7m+m4LFfoNTs5Sh3feKKKjuw
- CBqVENsDzAVIHOhdPeMw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207075842.30090-1-vic.wu@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RTL8723DS could be handled by btrtl-driver, so add ability to bind it
-using device tree.
+On Mon, Dec 07, 2020 at 03:58:42PM +0800, Vic Wu wrote:
+> The crypto mediatek driver has been replaced by the inside-secure
+> driver now. Remove this driver to avoid having duplicate drivers.
+> 
+> Signed-off-by: Vic Wu <vic.wu@mediatek.com>
+> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> ---
+>  drivers/crypto/Kconfig                 |   15 -
+>  drivers/crypto/Makefile                |    1 -
+>  drivers/crypto/mediatek/Makefile       |    3 -
+>  drivers/crypto/mediatek/mtk-aes.c      | 1271 ----------------------
+>  drivers/crypto/mediatek/mtk-platform.c |  586 ----------
+>  drivers/crypto/mediatek/mtk-platform.h |  231 ----
+>  drivers/crypto/mediatek/mtk-regs.h     |  190 ----
+>  drivers/crypto/mediatek/mtk-sha.c      | 1352 ------------------------
+>  8 files changed, 3649 deletions(-)
+>  delete mode 100644 drivers/crypto/mediatek/Makefile
+>  delete mode 100644 drivers/crypto/mediatek/mtk-aes.c
+>  delete mode 100644 drivers/crypto/mediatek/mtk-platform.c
+>  delete mode 100644 drivers/crypto/mediatek/mtk-platform.h
+>  delete mode 100644 drivers/crypto/mediatek/mtk-regs.h
+>  delete mode 100644 drivers/crypto/mediatek/mtk-sha.c
 
-Signed-off-by: John-Eric Kamps <johnny86@gmx.de>
-=2D--
- drivers/bluetooth/hci_h5.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index 7be16a7f653b..fb9817f97d45 100644
-=2D-- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -1022,6 +1022,8 @@ static const struct of_device_id rtl_bluetooth_of_ma=
-tch[] =3D {
- 	  .data =3D (const void *)&rtl_vnd },
- 	{ .compatible =3D "realtek,rtl8723bs-bt",
- 	  .data =3D (const void *)&rtl_vnd },
-+	{ .compatible =3D "realtek,rtl8723ds-bt",
-+	  .data =3D (const void *)&rtl_vnd },
- #endif
- 	{ },
- };
-=2D-
-2.25.1
-
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
