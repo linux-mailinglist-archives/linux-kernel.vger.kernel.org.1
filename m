@@ -2,164 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CC42E85FA
+	by mail.lfdr.de (Postfix) with ESMTP id E77DA2E85FB
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 01:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbhABANZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 19:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
+        id S1727306AbhABAOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Jan 2021 19:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbhABANY (ORCPT
+        with ESMTP id S1726344AbhABAOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 19:13:24 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E990C061573
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 16:12:44 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 23so51061729lfg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 16:12:44 -0800 (PST)
+        Fri, 1 Jan 2021 19:14:20 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC5CC061573
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Jan 2021 16:13:40 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id 22so19017565qkf.9
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 16:13:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wbck+fgkUSYN3SoIvVdtLOIeWmttzgxmYEJ24u5l950=;
-        b=kFXUD1Kh5qBPu/fWthGSe75e3mKRdKKrrI1+SpBjIvEc/0AD4j2daAm/y09QmDw7W+
-         zqkhNkQ/bw6R0MI/0Jwt4bxi8qCCRPTqQij8/lvUiBouueVxbL6OSju+1KGkB+C4Hr+x
-         i8Gd+WMwcA5D88jq9uA63q6qKY+/53OnraiLoUo4XAYudSgw/x0Y6MFHquVaDDNNSl4M
-         t2aKvocvpF1nNhKGC0vEVkXX10Z85kkorTdSt4tUVQysaIYYqw2KD29g2p+DdNaTz8La
-         accU1rggwdt9KEUEwDDBD8nACqFhXHN63dYBP8jmmgVd8glBMWS4Y0ByjynmAOCthC7d
-         vwQw==
+        bh=h6hPVw3Y9ffaDd/wr9BylZbRramsxfRldta5Gez13JA=;
+        b=B1dc7LyG1pSw348YgWSBck9yQARBdAnVve3BxcWHMxlG5EZ9S2QEU+wcumJf4gqXgW
+         tqD6UmQWmGfq5te+1mQOjsGrgXMKksSStm/BvPfdpQH6VJbNThxp1rcWhibHY2BHcc9h
+         CSnHy+3/1tSEFthafMpb8gCI8rM2C2MUrPyTQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wbck+fgkUSYN3SoIvVdtLOIeWmttzgxmYEJ24u5l950=;
-        b=ocp41D/lrXLFjWANB0g/7WNv9M8OwK+wJoLDaWubzDWTO2AA3aGKpU1vfNyufaIlTP
-         vDRLDsmlLSzjCQKsec6/a0uk/T8fu7n9RvzGG9iWs63msmKMd50nyQL64zuIyKvYhRej
-         ctQbyvFsGyAloRdzBh7n4lg8kMA7xdilX3tY08n3PdqAWJlKmvCK/mbEJBMMmIzcfVIz
-         OdMOQZvDSwHwydC/xxe2bL6IdHF88J9sY9IfrPFWJ0IDsneW4fb5xax4mJlMXKohySkM
-         vI+CwvlRcnCUycjnFO7E7wTT+ukLbVNySYvZ41xFgFZDVzh1wJtmlJCwaxTh1bFapu6v
-         ItqA==
-X-Gm-Message-State: AOAM530cFCD2sL5HwlGCYGxrZVc3aClClamzTcvnJi4kCMIg6PAPlB5p
-        ftoLHyZaNUYpDdNic2r+5Jmk0eo+lwgQ9pOGmjZ9jX+YaCujrJW3
-X-Google-Smtp-Source: ABdhPJynk4sQGX5K5GUk8WUbWuVCojFzQzSpFzdPNixvK/fUCy2UaCuLTw3xXbCxR7tk3G14LlKla2rINn0AWD+j9qY=
-X-Received: by 2002:a19:8b83:: with SMTP id n125mr30122878lfd.75.1609546362734;
- Fri, 01 Jan 2021 16:12:42 -0800 (PST)
+        bh=h6hPVw3Y9ffaDd/wr9BylZbRramsxfRldta5Gez13JA=;
+        b=GADzVK27kr6Bym2WyBGZloYtWOJcWd8q1BaOcmaW8dRhFGAlI+jjm2SJGL6XIpzGId
+         M6WIilVV8kFqPfxbETcs6acGKa1GD6mwKBCiINPFg17m28Fv6LKuGZcjoAaAWSY09id8
+         Aqedt0FOTurecU9dKzH9cZcaDSKmce+DLbBz8PDLpG9WwPpYf2OgY2XvrRbZYCvUGuJH
+         S936JE+yh63KBWP/CaGLnMMaBGlyRLp4ghjvKwyf2/iKk0KKVt4v5QQZXdu7nV+tLdAM
+         cv5ZmKRI1kfGtStBI2M0TkdmGMgi/bt8dokNJ8eZPvYOExs207PJH3rPciK8uqQLKtFb
+         rJvw==
+X-Gm-Message-State: AOAM531VV/VyXklWmrQv3Bza+VZik68hOAgsV0IxjgHnp63rdes7PChh
+        RM+Fsy6NGmCEdeoEtD/dpb6VZTgb967Svw==
+X-Google-Smtp-Source: ABdhPJzNHZuYiPbHN55vpCeEJh4K/LEIsau3fUqLpVjmusOY3P74u7lL96eSkJLEEYyoC9YSkP5hhQ==
+X-Received: by 2002:a37:a893:: with SMTP id r141mr64872610qke.459.1609546419089;
+        Fri, 01 Jan 2021 16:13:39 -0800 (PST)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id f10sm33149641qtg.27.2021.01.01.16.13.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Jan 2021 16:13:38 -0800 (PST)
+Received: by mail-yb1-f171.google.com with SMTP id y4so20634890ybn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Jan 2021 16:13:37 -0800 (PST)
+X-Received: by 2002:a25:68cc:: with SMTP id d195mr83519466ybc.424.1609546417341;
+ Fri, 01 Jan 2021 16:13:37 -0800 (PST)
 MIME-Version: 1.0
-References: <CAGP6POJ1pRgSP+FSC2ds9afx4rDxm0BkbKK-RAJQuwLUE_2WhQ@mail.gmail.com>
- <1b0ed31c-bccb-abcb-b8d5-159719e199c3@infradead.org> <CAGP6PO+JjF0iDXHqUD31cBtNASqbik_iEb3DguqVhUBG+q4LYQ@mail.gmail.com>
- <75ee2c40-6a23-9a28-157e-72018faf0925@infradead.org>
-In-Reply-To: <75ee2c40-6a23-9a28-157e-72018faf0925@infradead.org>
-From:   Hongyi Zhao <hongyi.zhao@gmail.com>
-Date:   Sat, 2 Jan 2021 08:12:30 +0800
-Message-ID: <CAGP6POKUJOZ842mnU4-yWmgZnYNFVuHPFP1tMbFppOjfg9VdgQ@mail.gmail.com>
-Subject: Re: Generate the config file for kernel compilation non-interactively
- in script.
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org
+References: <20201111143755.24541-1-stanimir.varbanov@linaro.org> <20201111143755.24541-8-stanimir.varbanov@linaro.org>
+In-Reply-To: <20201111143755.24541-8-stanimir.varbanov@linaro.org>
+From:   Fritz Koenig <frkoenig@chromium.org>
+Date:   Fri, 1 Jan 2021 16:13:25 -0800
+X-Gmail-Original-Message-ID: <CAMfZQbzxBdND1VxRJ_P+V7X6f5noZ7bdAjOJHjLfVmQHbBQoLg@mail.gmail.com>
+Message-ID: <CAMfZQbzxBdND1VxRJ_P+V7X6f5noZ7bdAjOJHjLfVmQHbBQoLg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/8] venus: venc: Handle reset encoder state
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 2, 2021 at 12:28 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Hi,
->
-> On 1/1/21 1:55 AM, Hongyi Zhao wrote:
-> > On Fri, Jan 1, 2021 at 2:32 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >>
-> >> On 12/31/20 8:51 PM, Hongyi Zhao wrote:
-> >>> Hi,
-> >>>
-> >>> I want to build the realtime Linux for ROS 2 according to the
-> >>> guidelines here:
-> >>> <https://index.ros.org/doc/ros2/Tutorials/Building-Realtime-rt_preempt-kernel-for-ROS-2/>.
-> >>>
-> >>> For this purpose, I must enable the rt_preempt relative options in the
-> >>> kernel withe the following method interactively:
-> >>>
-> >>> $ make menuconfig
-> >>>
-> >>> and set the following
-> >>>
-> >>> # Enable CONFIG_PREEMPT_RT
-> >>>  -> General Setup
-> >>>   -> Preemption Model (Fully Preemptible Kernel (Real-Time))
-> >>>    (X) Fully Preemptible Kernel (Real-Time)
-> >>>
-> >>> # Enable CONFIG_HIGH_RES_TIMERS
-> >>>  -> General setup
-> >>>   -> Timers subsystem
-> >>>    [*] High Resolution Timer Support
-> >>>
-> >>> # Enable CONFIG_NO_HZ_FULL
-> >>>  -> General setup
-> >>>   -> Timers subsystem
-> >>>    -> Timer tick handling (Full dynticks system (tickless))
-> >>>     (X) Full dynticks system (tickless)
-> >>>
-> >>> # Set CONFIG_HZ_1000 (note: this is no longer in the General Setup
-> >>> menu, go back twice)
-> >>>  -> Processor type and features
-> >>>   -> Timer frequency (1000 HZ)
-> >>>    (X) 1000 HZ
-> >>>
-> >>> # Set CPU_FREQ_DEFAULT_GOV_PERFORMANCE [=y]
-> >>>  ->  Power management and ACPI options
-> >>>   -> CPU Frequency scaling
-> >>>    -> CPU Frequency scaling (CPU_FREQ [=y])
-> >>>     -> Default CPUFreq governor (<choice> [=y])
-> >>>      (X) performance
-> >>>
-> >>> But this is very inconvenient for doing the above job in script. Is
-> >>> there an alternative method to generate the above configurations for
-> >>> kernel compilation  non-interactively in script.
-> >>
-> >> Hi,
-> >> You can use scripts/config in the kernel source tree.
-> >> Something like this (I don't have RT kernel sources):
-> >>
-> >>
-> >> scripts/config -e PREEMPT_RT
-> >> scripts/config -e HIGH_RES_TIMERS
-> >> scripts/config -e NO_HZ_FULL
-> >> scripts/config -e HZ_1000
-> >> scripts/config -e CPU_FREQ_DEFAULT_GOV_PERFORMANCE
-> >
-> > Wonderful. Thanks a lot for your instructions. I really have noticed
-> > this tool but failed to figure out the corresponding translation rules
-> > for the options used by menuconfig and this script.
-> >
-> > BTW, how do you figure out the above options/arguments corresponding
-> > to the ones I've mentioned previously?
-> >
->
-> Oh, I just took the ones that you had listed and removed the leading
-> "CONFIG_" from them.
->
-> >>
-> >> Note that if any of those have other Kconfig dependencies, those Kconfig
-> >> symbols will also have to be enabled for this to work.
-> >
-> > How to know whether an option has other Kconfig dependencies and find
-> > the corresponding symbols/arguments for feeding to scripts/config?
->
-> Use one of the interactive config tools (nconfig, xconfig).
-> They will show you dependencies, but you may have to enable other
-> symbols first.
->
-> Maybe it would be easier to do a temporary 'make allmodconfig'
-> to have the symbols that you are interested in be enabled, then
-> you can find them and look at their dependencies.
+How should we resolve this patch in relation to the "venus: venc: Init
+the session only once in queue_setup" [1] patch?
 
-It sounds still complicated for manually operation of the above
-mentioned procedure even by the virtue of scripts/config. The more
-feasible way should be done with python package/binding/library
-programmatically, but I'm not sure whether such stuff exists.
+"venus: venc: Init the session only once in queue_setup" comes after
+and reworks |venc_start_streaming| substantially.  This patch
+implements |venc_stop_streaming|, but maybe that is not needed with
+the newer patch?  Can this one just be dropped, or does it need
+rework?
 
-BR,
--- 
-Assoc. Prof. Hongyi Zhao <hongyi.zhao@gmail.com>
-Theory and Simulation of Materials
-Hebei Polytechnic University of Science and Technology engineering
-NO. 552 North Gangtie Road, Xingtai, China
+-Fritz
+
+[1]: https://lore.kernel.org/patchwork/patch/1349416/
+
+On Wed, Nov 11, 2020 at 6:38 AM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+> Redesign the encoder driver to be compliant with stateful encoder
+> spec - specifically adds handling of Reset state.
+>
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/venc.c | 155 ++++++++++++++++++-----
+>  1 file changed, 122 insertions(+), 33 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+> index 7512e4a16270..f1ae89d45a54 100644
+> --- a/drivers/media/platform/qcom/venus/venc.c
+> +++ b/drivers/media/platform/qcom/venus/venc.c
+> @@ -907,6 +907,54 @@ static int venc_queue_setup(struct vb2_queue *q,
+>         return ret;
+>  }
+>
+> +static void venc_release_session(struct venus_inst *inst)
+> +{
+> +       int ret, abort = 0;
+> +
+> +       mutex_lock(&inst->lock);
+> +
+> +       ret = hfi_session_deinit(inst);
+> +       abort = (ret && ret != -EINVAL) ? 1 : 0;
+> +
+> +       if (inst->session_error)
+> +               abort = 1;
+> +
+> +       if (abort)
+> +               hfi_session_abort(inst);
+> +
+> +       venus_pm_load_scale(inst);
+> +       INIT_LIST_HEAD(&inst->registeredbufs);
+> +       mutex_unlock(&inst->lock);
+> +
+> +       venus_pm_release_core(inst);
+> +}
+> +
+> +static int venc_buf_init(struct vb2_buffer *vb)
+> +{
+> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+> +
+> +       inst->buf_count++;
+> +
+> +       return venus_helper_vb2_buf_init(vb);
+> +}
+> +
+> +static void venc_buf_cleanup(struct vb2_buffer *vb)
+> +{
+> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> +       struct venus_buffer *buf = to_venus_buffer(vbuf);
+> +
+> +       mutex_lock(&inst->lock);
+> +       if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+> +               if (!list_empty(&inst->registeredbufs))
+> +                       list_del_init(&buf->reg_list);
+> +       mutex_unlock(&inst->lock);
+> +
+> +       inst->buf_count--;
+> +       if (!inst->buf_count)
+> +               venc_release_session(inst);
+> +}
+> +
+>  static int venc_verify_conf(struct venus_inst *inst)
+>  {
+>         enum hfi_version ver = inst->core->res->hfi_version;
+> @@ -938,49 +986,57 @@ static int venc_verify_conf(struct venus_inst *inst)
+>  static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
+>  {
+>         struct venus_inst *inst = vb2_get_drv_priv(q);
+> +       struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
+>         int ret;
+>
+>         mutex_lock(&inst->lock);
+>
+> -       if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> +       v4l2_m2m_update_start_streaming_state(m2m_ctx, q);
+> +
+> +       if (V4L2_TYPE_IS_OUTPUT(q->type))
+>                 inst->streamon_out = 1;
+>         else
+>                 inst->streamon_cap = 1;
+>
+> -       if (!(inst->streamon_out & inst->streamon_cap)) {
+> -               mutex_unlock(&inst->lock);
+> -               return 0;
+> -       }
+> +       if (inst->streamon_out && inst->streamon_cap &&
+> +           inst->state == INST_UNINIT) {
+> +               venus_helper_init_instance(inst);
+>
+> -       venus_helper_init_instance(inst);
+> +               inst->sequence_cap = 0;
+> +               inst->sequence_out = 0;
+>
+> -       inst->sequence_cap = 0;
+> -       inst->sequence_out = 0;
+> +               ret = venc_init_session(inst);
+> +               if (ret)
+> +                       goto bufs_done;
+>
+> -       ret = venc_init_session(inst);
+> -       if (ret)
+> -               goto bufs_done;
+> +               ret = venus_pm_acquire_core(inst);
+> +               if (ret)
+> +                       goto deinit_sess;
+>
+> -       ret = venus_pm_acquire_core(inst);
+> -       if (ret)
+> -               goto deinit_sess;
+> +               ret = venc_verify_conf(inst);
+> +               if (ret)
+> +                       goto deinit_sess;
+>
+> -       ret = venc_set_properties(inst);
+> -       if (ret)
+> -               goto deinit_sess;
+> +               ret = venus_helper_set_num_bufs(inst, inst->num_input_bufs,
+> +                                               inst->num_output_bufs, 0);
+> +               if (ret)
+> +                       goto deinit_sess;
+>
+> -       ret = venc_verify_conf(inst);
+> -       if (ret)
+> -               goto deinit_sess;
+> +               ret = venus_helper_vb2_start_streaming(inst);
+> +               if (ret)
+> +                       goto deinit_sess;
+>
+> -       ret = venus_helper_set_num_bufs(inst, inst->num_input_bufs,
+> -                                       inst->num_output_bufs, 0);
+> -       if (ret)
+> -               goto deinit_sess;
+> +               venus_helper_process_initial_out_bufs(inst);
+> +               venus_helper_process_initial_cap_bufs(inst);
+> +       } else if (V4L2_TYPE_IS_CAPTURE(q->type) && inst->streamon_cap &&
+> +                  inst->streamon_out) {
+> +               ret = venus_helper_vb2_start_streaming(inst);
+> +               if (ret)
+> +                       goto bufs_done;
+>
+> -       ret = venus_helper_vb2_start_streaming(inst);
+> -       if (ret)
+> -               goto deinit_sess;
+> +               venus_helper_process_initial_out_bufs(inst);
+> +               venus_helper_process_initial_cap_bufs(inst);
+> +       }
+>
+>         mutex_unlock(&inst->lock);
+>
+> @@ -990,15 +1046,43 @@ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
+>         hfi_session_deinit(inst);
+>  bufs_done:
+>         venus_helper_buffers_done(inst, q->type, VB2_BUF_STATE_QUEUED);
+> -       if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> +       if (V4L2_TYPE_IS_OUTPUT(q->type))
+>                 inst->streamon_out = 0;
+>         else
+>                 inst->streamon_cap = 0;
+> +
+>         mutex_unlock(&inst->lock);
+>         return ret;
+>  }
+>
+> -static void venc_vb2_buf_queue(struct vb2_buffer *vb)
+> +static void venc_stop_streaming(struct vb2_queue *q)
+> +{
+> +       struct venus_inst *inst = vb2_get_drv_priv(q);
+> +       struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
+> +       int ret = -EINVAL;
+> +
+> +       mutex_lock(&inst->lock);
+> +
+> +       v4l2_m2m_clear_state(m2m_ctx);
+> +
+> +       if (V4L2_TYPE_IS_CAPTURE(q->type)) {
+> +               ret = hfi_session_stop(inst);
+> +               ret |= hfi_session_unload_res(inst);
+> +               ret |= venus_helper_unregister_bufs(inst);
+> +               ret |= venus_helper_intbufs_free(inst);
+> +       }
+> +
+> +       venus_helper_buffers_done(inst, q->type, VB2_BUF_STATE_ERROR);
+> +
+> +       if (V4L2_TYPE_IS_OUTPUT(q->type))
+> +               inst->streamon_out = 0;
+> +       else
+> +               inst->streamon_cap = 0;
+> +
+> +       mutex_unlock(&inst->lock);
+> +}
+> +
+> +static void venc_buf_queue(struct vb2_buffer *vb)
+>  {
+>         struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+>         struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> @@ -1022,11 +1106,12 @@ static void venc_vb2_buf_queue(struct vb2_buffer *vb)
+>
+>  static const struct vb2_ops venc_vb2_ops = {
+>         .queue_setup = venc_queue_setup,
+> -       .buf_init = venus_helper_vb2_buf_init,
+> +       .buf_init = venc_buf_init,
+> +       .buf_cleanup = venc_buf_cleanup,
+>         .buf_prepare = venus_helper_vb2_buf_prepare,
+>         .start_streaming = venc_start_streaming,
+> -       .stop_streaming = venus_helper_vb2_stop_streaming,
+> -       .buf_queue = venc_vb2_buf_queue,
+> +       .stop_streaming = venc_stop_streaming,
+> +       .buf_queue = venc_buf_queue,
+>  };
+>
+>  static void venc_buf_done(struct venus_inst *inst, unsigned int buf_type,
+> @@ -1084,8 +1169,12 @@ static const struct hfi_inst_ops venc_hfi_ops = {
+>         .event_notify = venc_event_notify,
+>  };
+>
+> +static void venc_m2m_device_run(void *priv)
+> +{
+> +}
+> +
+>  static const struct v4l2_m2m_ops venc_m2m_ops = {
+> -       .device_run = venus_helper_m2m_device_run,
+> +       .device_run = venc_m2m_device_run,
+>         .job_abort = venus_helper_m2m_job_abort,
+>  };
+>
+> --
+> 2.17.1
+>
