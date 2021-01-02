@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2698F2E88DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 23:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D72D2E88DC
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 23:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbhABWGv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 2 Jan 2021 17:06:51 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:40869 "EHLO
+        id S1727558AbhABWGx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 2 Jan 2021 17:06:53 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:29591 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727451AbhABWGt (ORCPT
+        by vger.kernel.org with ESMTP id S1727512AbhABWGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 17:06:49 -0500
+        Sat, 2 Jan 2021 17:06:52 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-I7GSC-TiP5uOCyb_2_zM-Q-1; Sat, 02 Jan 2021 17:05:53 -0500
-X-MC-Unique: I7GSC-TiP5uOCyb_2_zM-Q-1
+ us-mta-515-1FKfDyFJO4u1ZRaXCpQ8kw-1; Sat, 02 Jan 2021 17:05:57 -0500
+X-MC-Unique: 1FKfDyFJO4u1ZRaXCpQ8kw-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C18B58015A5;
-        Sat,  2 Jan 2021 22:05:51 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27BB11005504;
+        Sat,  2 Jan 2021 22:05:55 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DAFB41A353;
-        Sat,  2 Jan 2021 22:05:48 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 42BFF19727;
+        Sat,  2 Jan 2021 22:05:52 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -36,9 +36,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 20/22] perf test: Add daemon stop command test
-Date:   Sat,  2 Jan 2021 23:04:39 +0100
-Message-Id: <20210102220441.794923-21-jolsa@kernel.org>
+Subject: [PATCH 21/22] perf test: Add daemon signal command test
+Date:   Sat,  2 Jan 2021 23:04:40 +0100
+Message-Id: <20210102220441.794923-22-jolsa@kernel.org>
 In-Reply-To: <20210102220441.794923-1-jolsa@kernel.org>
 References: <20210102220441.794923-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -53,27 +53,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding test for perf daemon stop command. The test
-stops the daemon and verifies all the configured
-sessions are properly terminated.
+Adding test for perf daemon signal command. The test
+sends a signal to configured sessions and verifies
+the perf data files were generated accordingly.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/tests/shell/daemon.sh | 54 ++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ tools/perf/tests/shell/daemon.sh | 40 ++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
 diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index 8360f61973e2..d86239c21f5b 100755
+index d86239c21f5b..792a7a846830 100755
 --- a/tools/perf/tests/shell/daemon.sh
 +++ b/tools/perf/tests/shell/daemon.sh
-@@ -246,9 +246,63 @@ EOF
- 	rm -rf ${base}
+@@ -299,10 +299,50 @@ EOF
  	rm -f ${config}
  }
-+
-+test_stop()
+ 
++test_signal()
 +{
-+	echo "test daemon stop"
++	echo "test daemon signal"
 +
 +	local config=$(mktemp /tmp/perf.daemon.config.XXX)
 +	local base=$(mktemp -d /tmp/perf.daemon.base.XXX)
@@ -83,40 +82,27 @@ index 8360f61973e2..d86239c21f5b 100755
 +[daemon]
 +base=BASE
 +
-+[session-size]
-+run = -e cpu-clock
-+
-+[session-time]
-+run = -e task-clock
++[session-test]
++run = -e cpu-clock --switch-output
 +EOF
 +
 +	sed -i -e "s|BASE|${base}|" ${config}
 +
 +	# start daemon
-+	daemon_start ${config} size
++	daemon_start ${config} test
 +
-+	local pid_size=`perf daemon --config ${config} -x | head -2 | tail -1 | awk 'BEGIN { FS = ":" } ; { print $1 }'`
-+	local pid_time=`perf daemon --config ${config} -x | head -3 | tail -1 | awk 'BEGIN { FS = ":" } ; { print $1 }'`
-+
-+	# check that sessions are running
-+	if [ ! -d "/proc/${pid_size}" ]; then
-+		echo "FAILED: session size not up"
-+	fi
-+
-+	if [ ! -d "/proc/${pid_time}" ]; then
-+		echo "FAILED: session time not up"
-+	fi
++	# send 2 signals
++	perf daemon signal --config ${config} --session test
++	perf daemon signal --config ${config}
 +
 +	# stop daemon
 +	daemon_exit ${base} ${config}
 +
-+	# check that sessions are gone
-+	if [ -d "/proc/${pid_size}" ]; then
-+		echo "FAILED: session size still up"
-+	fi
-+
-+	if [ -d "/proc/${pid_time}" ]; then
-+		echo "FAILED: session time still up"
++	# count is 2 perf.data for signals and 1 for perf record finished
++	count=`ls ${base}/session-test/ | grep perf.data | wc -l`
++	if [ ${count} -ne 3 ]; then
++		error=1
++		echo "FAILED: perf data no generated"
 +	fi
 +
 +	rm -rf ${base}
@@ -127,7 +113,8 @@ index 8360f61973e2..d86239c21f5b 100755
  
  test_list
  test_reconfig
-+test_stop
+ test_stop
++test_signal
  
  exit ${error}
 -- 
