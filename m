@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0892E8645
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 05:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FF92E8681
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 06:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727368AbhABEey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Jan 2021 23:34:54 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9665 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727165AbhABEey (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Jan 2021 23:34:54 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D78CM2gQ2z15f6p;
-        Sat,  2 Jan 2021 12:33:19 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.201.27) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 2 Jan 2021 12:34:02 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <dmitry.torokhov@gmail.com>, <linux-input@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH] Input: ar1021 - use IRQ_NOAUTOEN flags to replace disable_irq
-Date:   Sat, 2 Jan 2021 17:29:02 +1300
-Message-ID: <20210102042902.41664-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.201.27]
-X-CFilter-Loop: Reflected
+        id S1727345AbhABFtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 00:49:01 -0500
+Received: from mail.zju.edu.cn ([61.164.42.155]:8832 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725827AbhABFtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 00:49:00 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app2 (Coremail) with SMTP id by_KCgCXz3wMCfBfFuJJAA--.62532S4;
+        Sat, 02 Jan 2021 13:47:59 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Bluetooth: hci_qca: Fix memleak in qca_controller_memdump
+Date:   Sat,  2 Jan 2021 13:47:55 +0800
+Message-Id: <20210102054755.21069-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCXz3wMCfBfFuJJAA--.62532S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XrWxZr4rCr1DWryDJrWrXwb_yoWfGFX_C3
+        Z3uFy7Ar1UGr1Yy3WjgF45urySyan8ur1vg3Waq34fW39xZa47WryjqF98Gr1fWr1UGrsx
+        A3yDCFyrAr1UAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0IBlZdtRuRfAASsb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-disable_irq() after request_irq is unsafe as it gives a time gap which
-irq can come before disable_irq(). IRQ_NOAUTOEN is the common way to
-avoid enabling IRQ due to requesting IRQ.
+When __le32_to_cpu() fails, qca_memdump should be freed
+just like when vmalloc() fails.
 
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Fixes: d841502c79e3f ("Bluetooth: hci_qca: Collect controller memory dump during SSR")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- drivers/input/touchscreen/ar1021_i2c.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/bluetooth/hci_qca.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/input/touchscreen/ar1021_i2c.c b/drivers/input/touchscreen/ar1021_i2c.c
-index c0d5c2413356..c9e98ed4520e 100644
---- a/drivers/input/touchscreen/ar1021_i2c.c
-+++ b/drivers/input/touchscreen/ar1021_i2c.c
-@@ -123,6 +123,11 @@ static int ar1021_i2c_probe(struct i2c_client *client,
- 
- 	input_set_drvdata(input, ar1021);
- 
-+	/*
-+	 * Don't enable the IRQ automatically, we'll enable it in
-+	 * ar1021_i2c_open()
-+	 */
-+	irq_set_status_flags(client->irq, IRQ_NOAUTOEN);
- 	error = devm_request_threaded_irq(&client->dev, client->irq,
- 					  NULL, ar1021_i2c_irq,
- 					  IRQF_ONESHOT,
-@@ -133,9 +138,6 @@ static int ar1021_i2c_probe(struct i2c_client *client,
- 		return error;
- 	}
- 
--	/* Disable the IRQ, we'll enable it in ar1021_i2c_open() */
--	disable_irq(client->irq);
--
- 	error = input_register_device(ar1021->input);
- 	if (error) {
- 		dev_err(&client->dev,
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 4a963682c702..5dbcb7c42b80 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1024,7 +1024,9 @@ static void qca_controller_memdump(struct work_struct *work)
+ 			dump_size = __le32_to_cpu(dump->dump_size);
+ 			if (!(dump_size)) {
+ 				bt_dev_err(hu->hdev, "Rx invalid memdump size");
++				kfree(qca_memdump);
+ 				kfree_skb(skb);
++				qca->qca_memdump = NULL;
+ 				mutex_unlock(&qca->hci_memdump_lock);
+ 				return;
+ 			}
 -- 
-2.25.1
+2.17.1
 
