@@ -2,83 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A302E8883
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 21:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 139622E8892
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 22:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbhABUpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 15:45:10 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37841 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726659AbhABUpJ (ORCPT
+        id S1726963AbhABVAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 16:00:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726667AbhABU76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 15:45:09 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 102KiJ66020836
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 2 Jan 2021 15:44:20 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id C0F1015C3516; Sat,  2 Jan 2021 15:44:19 -0500 (EST)
-Date:   Sat, 2 Jan 2021 15:44:19 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Hongyi Zhao <hongyi.zhao@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Generate the config file for kernel compilation
- non-interactively in script.
-Message-ID: <X/DbIyM2aUn+ZSCO@mit.edu>
-References: <CAGP6POJ1pRgSP+FSC2ds9afx4rDxm0BkbKK-RAJQuwLUE_2WhQ@mail.gmail.com>
+        Sat, 2 Jan 2021 15:59:58 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8BCC0613C1;
+        Sat,  2 Jan 2021 12:59:17 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id 6so31447622ejz.5;
+        Sat, 02 Jan 2021 12:59:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZXTaInf+Yo5LsKCyI11wuDAzV+8zs5s3fKU7mcWEjLM=;
+        b=iMtMm8AENs9yq4HSoLVRH5uCuHA4CxeZ7ZjC6hsG46JVXFGIggBgB1Chn/sx83BQDB
+         EifmK1hdCuB5Zf2++3WS7V5cs2jOIwFblHALQnONN69vTDSE+1wsqhkLIV3zHsrVMjYS
+         R+aKPeLJGUBw6u5eYuPHVrFonNMaLvdxRtkeBQ/jEpGNOewxWC1CgJ2q4iixzxvUzwu2
+         zN774PybVeaky+S46eAzr2xs+AHbWsUAL5tv2qs0br7YcekHnpH00dQSXGc1rF4qeU2E
+         n95MoM3+vjAh92+OLyYcjp91QsKh6g1TqrHgdU6z2kC4SN5LEN8BovBs8B9WmAJ9Xa6a
+         M+KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZXTaInf+Yo5LsKCyI11wuDAzV+8zs5s3fKU7mcWEjLM=;
+        b=Lkk0nX4qbx7+vsriw/GK0kxZlmAvcGVybHUEY/Kf8gO+j7MNDAyheF83RXqEdj1zHS
+         sMT0UoegFnMMPlmgjHFMPRyX0zZIh/UCdXcKNOxhLc3uKwu4pzRvTaMj7CgkOOoq4E1D
+         YquqW/hJOdMv1iSTjU0AZdgQvPcxKXsdWpSug865pmpmwEumcUbXC7Mi89gsbH+8RBYn
+         OGpfvsZ3eu8+rqeYibwMjo5L3TIy1mgP63+2X9pobfeGMCvXvWxRcseVFzXqN0+SyGI4
+         hvbOM4Swn/yXUPyVDYsIDhNr+y70cQ5IX5UzQAka0Wf8jeFUo8hTJPGdEXuLCmItC1Ha
+         dRcQ==
+X-Gm-Message-State: AOAM532NcH5OzAfg4iQpxmZshBwP5eHzUYqnWKaAInsu5TCGTHWguB69
+        plRCDtfKKn4a/oCVUkczWoL91Gq5/Xc=
+X-Google-Smtp-Source: ABdhPJzosbgg4ui+GXvaroIAhnbnYvuiBqMtlxkx3Df4uX6nAlSVLgQ1IV+RkkHV0fcRbc7EjNG/7A==
+X-Received: by 2002:a17:906:9250:: with SMTP id c16mr62319967ejx.355.1609621155067;
+        Sat, 02 Jan 2021 12:59:15 -0800 (PST)
+Received: from localhost.localdomain (p200300f13724fd00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3724:fd00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id v18sm41420617edx.30.2021.01.02.12.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Jan 2021 12:59:14 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-remoteproc@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc:     ohad@wizery.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 0/5] Amlogic Meson Always-On ARC remote-processor support
+Date:   Sat,  2 Jan 2021 21:58:59 +0100
+Message-Id: <20210102205904.2691120-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGP6POJ1pRgSP+FSC2ds9afx4rDxm0BkbKK-RAJQuwLUE_2WhQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 01, 2021 at 12:51:13PM +0800, Hongyi Zhao wrote:
-> 
-> I want to build the realtime Linux for ROS 2 according to the
-> guidelines here:
-> <https://index.ros.org/doc/ros2/Tutorials/Building-Realtime-rt_preempt-kernel-for-ROS-2/>.
-> 
-> For this purpose, I must enable the rt_preempt relative options in the
-> kernel withe the following method interactively:
-> 
-> But this is very inconvenient for doing the above job in script. Is
-> there an alternative method to generate the above configurations for
-> kernel compilation  non-interactively in script.
+Amlogic Meson6/8/8b/8m2 come with an ARC core in the Always-On (AO)
+power-domain. This is typically used for waking up the ARM CPU after
+powering it down for system suspend.
 
-What I do for a slightly different use case is to use defconfigs.
-After setting up a minimum kernel that has what I need for my use case
-(in my case, to build a kernel that works for kvm-xfstests and
-gce-xfststs), I save a defconfig: "make savedefconfig", and then stash
-in a git repository:
+The exact ARC core used on Meson6 and earlier is not known. I believe
+it is an ARC625, but I am not sure about this. Meson8/8b/8m2 uses an
+ARC EM4 core.
+They all have in common that they use a section of the SoCs SRAM for
+running code on the ARC core.
 
-https://github.com/tytso/xfstests-bld/tree/master/kernel-configs
+Unfortunately there's no information about the remote-processor control
+registers in the public Meson8b (S805) datasheet. All information is
+either taken from Amlogic's 3.10 kernel and 2011-03 u-boot or found by
+testing (for example the clock input is not mentioned anywhere in the
+reference code, but disabling it stops the AO ARC core from working).
 
-Then when I need to build a kernel, I just copy a defconfig to
-.config, and then run the command "make olddefconfig" to expand it
-out.  The reason why I use defconfigs is that very often, at least for
-my use cases, a defconfig generated for kernel version X.Y tends to
-work for X.Y+1, X.Y+2, etc.  That's not always true, of course, which
-is why there are a few extra lines added to:
+This series consists of five patches:
+ 1: dt-bindings for the SRAM section
+ 2: dt-bindings for the SECBUS2 syscon region which contains a few
+    bits for controlling this remote processor
+ 3: dt-bindings for the AO ARC remote processor
+ 4: the driver for booting code on the AO ARC remote processor
+ 5: (only included for documentation purposes) dts changes (these will
+    be re-sent separately)
 
-https://github.com/tytso/xfstests-bld/blob/master/kernel-configs/x86_64-config-4.19
+Patches #3 and #4 should go through the remoteproc tree. Patches #1
+and #2 may go through Rob's (devicetree) tree, Kevin's linux-amlogic
+tree or through the remoteproc tree. Personally I have no preference
+here.
 
-This was needed so that the this defconfig will work for 4.19.y
-through 5.3.y.  The special cases were needed for 5.1 and 5.2, but I
-haven't needed it for any other kernel versions in terms of making a
-kernel that would correctly boot on KVM and GCE and correctly run
-xfstests for ext4, xfs, btrfs, f2fs, etc.  So I just create a
-defconfig for each LTS kernel version, and for the most part, it will
-work for future kernel versions until the next LTS kerenl version gets
-released, at which point I create a new defconfig for my test
-appliance use case.
+To test this series I ported the Amlogic serial driver and added the
+board files for the Amlogic AO ARC EM4 to the Zephyr RTOS. The code can
+be found here: [0] (the resulting zephyr.elf can then be loaded as
+remote-processor firmware from Linux).
 
-If your goal is to build newer kernel versions for RT_PREMPT kernels
-for your use case, perhaps this technique will be helpful for you.
 
-Hope this helps,
+Changes since v1 at [1]:
+- fixed yamllint warnings (after installing the package these now also
+  show up on my build machine) in patches #2 and #3. Thanks for the
+  hint Rob
+- dropped the explicit "select" statement from the dt-bindings in patch
+  #2 as suggested by Rob (thanks)
 
-					- Ted
+
+[0] https://github.com/xdarklight/zephyr-rtos/commits/amlogic_ao_em4-20201229
+[1] https://patchwork.kernel.org/project/linux-amlogic/list/?series=407349
+
+
+Martin Blumenstingl (5):
+  dt-bindings: sram: Add compatible strings for the Meson AO ARC SRAM
+  dt-bindings: Amlogic: add the documentation for the SECBUS2 registers
+  dt-bindings: remoteproc: Add the documentation for Meson AO ARC rproc
+  remoteproc: meson-mx-ao-arc: Add a driver for the AO ARC remote
+    procesor
+  ARM: dts: meson: add the AO ARC remote processor
+
+ .../arm/amlogic/amlogic,meson-mx-secbus2.yaml |  42 +++
+ .../remoteproc/amlogic,meson-mx-ao-arc.yaml   |  87 +++++++
+ .../devicetree/bindings/sram/sram.yaml        |   2 +
+ arch/arm/boot/dts/meson.dtsi                  |   7 +
+ arch/arm/boot/dts/meson8.dtsi                 |  21 ++
+ arch/arm/boot/dts/meson8b.dtsi                |  21 ++
+ drivers/remoteproc/Kconfig                    |  11 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/meson_mx_ao_arc.c          | 240 ++++++++++++++++++
+ 9 files changed, 432 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-mx-secbus2.yaml
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+ create mode 100644 drivers/remoteproc/meson_mx_ao_arc.c
+
+-- 
+2.30.0
+
