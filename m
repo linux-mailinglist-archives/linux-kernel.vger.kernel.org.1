@@ -2,122 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250212E886B
+	by mail.lfdr.de (Postfix) with ESMTP id 922A62E886C
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 21:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbhABUNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 15:13:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
+        id S1726789AbhABUPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 15:15:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbhABUNG (ORCPT
+        with ESMTP id S1726713AbhABUPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 15:13:06 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8CBC061573
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Jan 2021 12:12:25 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id k10so13606301wmi.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 12:12:25 -0800 (PST)
+        Sat, 2 Jan 2021 15:15:31 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88609C0613C1
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Jan 2021 12:14:51 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id et9so11204433qvb.10
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 12:14:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=QUB4+4d1LDuvfodpASBj+IEX3GafEWaRMquf7qx7cRs=;
-        b=OqTDsRn4oML0wLkk1QCLGIRyCp4OOlaZzpkr28FjjsuARS1LNhgAufItGJP/3AfynU
-         5KQJoIsIMXNYsk3FgMHtSz8odKgz0wxAcbd1naGdDS7p3A+9uBxeMbf2kqxKX9pH7PEf
-         NarlxHv6F9gE8bpCWidZJ/Ffwxjc2FYc28xMSMKVQD/lasEwWC0tb/SMKJh9sAZUO372
-         RCu8uocVyeaEM7jR+3oL7E8v7uPYgsrkHstpy9aH+RC9q8tofULPk0QnDRnk+HH+kZjd
-         UwDF/LWmi69M+j3eY1VSWRCDxi7Ms4xInlEKeAoB0KeTcidyqC7smvNpxsC7nWE6AALI
-         Cx6w==
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:mime-version:content-transfer-encoding
+         :date:message-id;
+        bh=NQTw6CZ9m2eVRRW3/Tq2Et1PomEwPWcsO5QPEkGfZEY=;
+        b=Bj6Cz0+u/t5B5949yZWMmCcwDI7PiscB5GSikTL91qXMiNvVqj7Z0JfmkjJhBb1znq
+         Oqi0mbvTD6Ss+BXe0+O+mcWGNOKrwxrnOJxgjUQSCBqWEdYWBJHK4TSRwpsJScnFCU3x
+         SUgkTMeC24wDVnlx5H4zWDEE+P8t6ukxT7Axedb5/LHK9B8vCjcnm3qA27cW7w0SXIO7
+         yzQMSXF5kZwzBDlwmtgQEdtZ/Kq184dfUIm2I0RYWR+X8C6jPdh4HiAh9Ori+YEZcsKD
+         fwF3LN3/ayQ9CQkIWx1rS4R6BqxPRLBhjq97qfLkN6C2zuaS82dNMsgXAfQ4kA098kcK
+         ESOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QUB4+4d1LDuvfodpASBj+IEX3GafEWaRMquf7qx7cRs=;
-        b=ScgMg9hHjJDczEHgsY0zjf+LoByYjmWbO0TfmeQ0nnYmEEUovntx+TQclWmC62V1PR
-         /W05nXBlablb+tYmLYcSGNd+6fInET8oEWLhVDTUMhescs+5M79zYOa5p6bmZFhew3Pr
-         J/Xn1I2e9WpcUIUJjvdhGf0KK1uYSfeZ+6/DG6kJWFViORqjAz6nCo7siuELnx0rbDJP
-         fY9RrVcBKx/tqucq6o+26ibLkQw04yOdR27SezewMy+smOE1cw80kXyg1kmBJZj32+ka
-         6GO/wB6dEeAGSVZC9mtJvC1ZLAV55VKr+mufdlpd0H2KS+Vu//WxyG8v/CkkoNVvP88o
-         nN0A==
-X-Gm-Message-State: AOAM530XrF7RZhJj9T5UDuX6BiEHopJ7RqQGoT26rrnMSMDtJtylzNnU
-        GI/6+EUn2YBWgfz4JvbUSGY=
-X-Google-Smtp-Source: ABdhPJwgK6UuqAY6qoQQUSAP+SFTqQPtExweuUv2K2cP05/4Km2aJ9YB2hQvBPPO0xTrg8NgKXSIKQ==
-X-Received: by 2002:a7b:c4c7:: with SMTP id g7mr20838226wmk.29.1609618344134;
-        Sat, 02 Jan 2021 12:12:24 -0800 (PST)
-Received: from localhost.localdomain (bzq-109-64-2-78.red.bezeqint.net. [109.64.2.78])
-        by smtp.gmail.com with ESMTPSA id x18sm95692603wrg.55.2021.01.02.12.12.21
+        h=x-gm-message-state:sender:from:to:cc:subject:mime-version
+         :content-transfer-encoding:date:message-id;
+        bh=NQTw6CZ9m2eVRRW3/Tq2Et1PomEwPWcsO5QPEkGfZEY=;
+        b=HtVg0PF8xBQKQfrXSnPW7vuFprfXAC2EClxjoscS7JjARd1WkZODkf+YetAJvdrE2X
+         K4At2McKPYJ5SuirxT96XXhWRQXfISPeqR6IxcMgQZHiSy+9h+z5kxpvPh1GknBF+jB4
+         8StWNS4TBrF+bh0QAJxT8Dwb5xhcqXTLMuqavtmeZrtUoHJ1W+mPT27oZnwepse88r2Q
+         0EF6fObBKvfFBhAeQ/3h3g4w/elp9D/FOwDKK6qjR1RCSuKHdMReBF0oyj2SaKL6I189
+         upPRsNWC9RvprrUGlhfBm/H/9CfvGGZDVj+ESV2cpgKIEvqux97mVIIpLhp7V4SmB6hV
+         BPxQ==
+X-Gm-Message-State: AOAM530uv4KrpX+oHfUOSYQANuvbw/bLRhu/tR5tFF/xmprQUzgAfD5j
+        ioZ7m7BPwWsi36irWMTKOkdXZw==
+X-Google-Smtp-Source: ABdhPJw1BbTelYuJUkoxt5+eTdsa80X+kyf2xVm9S/mU+gJguTRG5tYjVGBgY4fVo7yTLps250LI0g==
+X-Received: by 2002:ad4:47c4:: with SMTP id p4mr70423598qvw.23.1609618490494;
+        Sat, 02 Jan 2021 12:14:50 -0800 (PST)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id p10sm34341099qke.32.2021.01.02.12.14.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Jan 2021 12:12:23 -0800 (PST)
-From:   Ariel Marcovitch <arielmarcovitch@gmail.com>
-X-Google-Original-From: Ariel Marcovitch <ariel.marcovitch@gmail.com>
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        christophe.leroy@csgroup.eu, keescook@chromium.org, dja@axtens.net,
-        npiggin@gmail.com, naveen.n.rao@linux.vnet.ibm.com,
-        maskray@google.com, ariel.marcovitch@gmail.com, oss@buserror.net,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] powerpc: fix alignment bug whithin the init sections
-Date:   Sat,  2 Jan 2021 22:11:56 +0200
-Message-Id: <20210102201156.10805-1-ariel.marcovitch@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 02 Jan 2021 12:14:49 -0800 (PST)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Kconfig, DEFAULT_NETSCH, and shooting yourself in the foot..
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="==_Exmh_1609618487_2273P";
+         micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 02 Jan 2021 15:14:47 -0500
+Message-ID: <16871.1609618487@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a bug that causes early crashes in builds with a
-.exit.text section smaller than a page and a .init.text section that
-ends in the beginning of a physical page (this is kinda random, which
-might explain why this wasn't really encountered before).
+--==_Exmh_1609618487_2273P
+Content-Type: text/plain; charset=us-ascii
 
-The init sections are ordered like this:
-	.init.text
-	.exit.text
-	.init.data
+Consider the following own goal I just discovered I scored:
 
-Currently, these sections aren't page aligned.
+[~] zgrep -i fq_codel /proc/config.gz
+CONFIG_NET_SCH_FQ_CODEL=m
+CONFIG_DEFAULT_FQ_CODEL=y
+CONFIG_DEFAULT_NET_SCH="fq_codel"
 
-Because the init code might become read-only at runtime and because the
-.init.text section can potentially reside on the same physical page as
-.init.data, the beginning of .init.data might be mapped read-only along
-with .init.text.
+Obviously, fq_codel didn't get set as the default, because that happens
+before the module gets loaded (which may never happen if the sysadmin
+thinks the DEFAULT_NET_SCH already made it happen)
 
-Then when the kernel tries to modify a variable in .init.data (like
-kthreadd_done, used in kernel_init()) the kernel panics.
+Whoops. My bad, probably - but....
 
-To avoid this, make _einittext page aligned and also align .exit.text
-to make sure .init.data is always seperated from the text segments.
+The deeper question, part 1:
 
-Fixes: 060ef9d89d18 ("powerpc32: PAGE_EXEC required for inittext")
-Signed-off-by: Ariel Marcovitch <ariel.marcovitch@gmail.com>
----
- arch/powerpc/kernel/vmlinux.lds.S | 7 +++++++
- 1 file changed, 7 insertions(+)
+There's this chunk in net/sched/Kconfig:
 
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index 6db90cdf11da..b6c765d8e7ee 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -187,6 +187,11 @@ SECTIONS
- 	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET) {
- 		_sinittext = .;
- 		INIT_TEXT
-+
-+		/* .init.text might be RO so we must
-+		* ensure this section ends in a page boundary.
-+		*/
-+		. = ALIGN(PAGE_SIZE);
- 		_einittext = .;
- #ifdef CONFIG_PPC64
- 		*(.tramp.ftrace.init);
-@@ -200,6 +205,8 @@ SECTIONS
- 		EXIT_TEXT
- 	}
- 
-+	. = ALIGN(PAGE_SIZE);
-+
- 	.init.data : AT(ADDR(.init.data) - LOAD_OFFSET) {
- 		INIT_DATA
- 	}
+config DEFAULT_NET_SCH
+        string
+        default "pfifo_fast" if DEFAULT_PFIFO_FAST
+        default "fq" if DEFAULT_FQ
+        default "fq_codel" if DEFAULT_FQ_CODEL
+        default "fq_pie" if DEFAULT_FQ_PIE
+        default "sfq" if DEFAULT_SFQ
+        default "pfifo_fast"
+endif
 
-base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
--- 
-2.17.1
+(And a similar chunk right above it with a similar issue)
 
+Should those be "if (foo=y)" so =m can't be chosen? (I'll be
+happy to write the patch if that's what we want)
+
+Deeper question, part 2:
+
+Should there be a way in the Kconfig language to ensure that
+these two chunks can't accidentally get out of sync?  There's other
+places in the kernel where similar issues arise - a few days ago I was
+chasing a CPU governor issue where it looked like it was possible
+to set a default that was a module and thus possibly not actually loaded.
+
+
+
+--==_Exmh_1609618487_2273P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.9.0 11/07/2018
+
+iQIVAwUBX/DUNwdmEQWDXROgAQLg4Q/+L5yhR7DcbE3S76pyo00K3oJHl/tAchR3
+f1EkfqQkxO/6x7TQotHGUiVoPmWpY96nBPt9yocTMD+RC9rNg2wv5EeCbozHak+B
+By6upU5lV/sLEMZ0G+ClOMdsbP3ppK1dAs6aD60VKikEXBfH/VA5SDXmK3gROPLx
+Yc9DGFbSZwFFQ8mtVO9gVJ7NSj06dDSUuZdxNpRzN0cpzcCOCWzktn7gDTw+3Jgt
+rPLEiTLSBM0IcK4PJ5gEypR7bVG1/223wHAXFgyJC+8AqJOsPLywri9AwUShi3mQ
+/u7nAiIo0Qlz/viIpde7bMN6RlKzQHcWvH7qus6hWZ5HOyc8UBE8bDXYSrr+YB83
+E7IC5dv4deZuC1YDePkjWo7hKH+WaoKIYQsDK6MY+YQ7LbqxV4aqU+ecB6AYdZBc
+RYfUfFdKNDlkA/mWD0Ez+4OUMf6U/fXhaNwHXdUpTRqOF8TbsvzDc5g9sJOGGQZp
+6eUYSH5vr+qI5CFSgcpKRzRf1wAzMS+jBmemzBlhIWaw9+aM6NcMhLU1a/iCE6Fm
+Q0U8hlzef3FqWFnAKchzCth+IpflCa8+bn6Ue7HqEyEyDMl3ej038xl4+kQSxLpI
+Krbl3VVGt8auExUsSVRHTUk/c+s178ARJf4KuDTeivSUSqv0bWQu+1CrRuZnX9Lv
+FDKICwWsjxQ=
+=SQQS
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1609618487_2273P--
