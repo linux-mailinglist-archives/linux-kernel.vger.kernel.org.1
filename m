@@ -2,187 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFB62E881C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 18:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E862E8822
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 18:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbhABRX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 12:23:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726598AbhABRX0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 12:23:26 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF281C0613CF;
-        Sat,  2 Jan 2021 09:22:45 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id q18so26824927wrn.1;
-        Sat, 02 Jan 2021 09:22:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RI1la07RMQBdSgSsKtoVFZ2QOt8sq2ZX/FQ9Zp/ixKI=;
-        b=ErklI5srz1vsEtddQfL3x0koi1oLhbejQ2b89HBrzztFzyEo36TEqR6b5+lxfbbGnN
-         yIADv+oabgyNcUj0QoGMk2vf8IkqHLJ94iSwnzdWMYFNedE2l5B/Fxp+7u8z/ULRcM4+
-         bgTLdGQZTqC9ruVjidkx+rieWqvt01+Nzb0+PcL57zYnWs5haVyM47imm480ydMoPWP5
-         SW35QA1i8BQfOLvRcSSIyX0wnzJjz+fMcqFze2DDzJrE6viSbYtfcizErroUAD2cmhPB
-         05zR2Y+MKV7co0SdT5C+Kc8mHeFCt5O3vb4SxL4WmVQWNSYSdxsIP2T66pItR3zLOMgc
-         wu2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RI1la07RMQBdSgSsKtoVFZ2QOt8sq2ZX/FQ9Zp/ixKI=;
-        b=PzXlHoLDv6dhnisHLs+o6UQwP615p/k4O11E/qbRn6uS77IHn84ptHKCdbR9UEyajX
-         fouZ+YcHp6rjLAcnl+JyvqT0N7RokPVcHgk6FEeV0JodOFW15yQi5wowQDXbjlPYAWJV
-         oSzR9wVflB1B9zPKwvtFtgxnaKfuS/8KwEOrSBK+Bc+LNh9qGXCQzKO2qVP+45uN378u
-         5g4E0gOQWBJGErIT2O/nzefHbfdPLVDaCWvrP9fH0O6WRcPilgS4JnFgbXYHCt4xlpn3
-         j1HMyXUjioyBI4CrWo26QqXj6Aexu1KXWh+QeG+5YNkzYehKidCDd0WYzLe4QJeTjn6+
-         VrOg==
-X-Gm-Message-State: AOAM531mIh/GAuQ5BgXYKWvcnHxLCWUBND+hxtDsAbnM2HnGsR9q9r0t
-        hT+G0b1TYCio0sKEHiONniJbvwR6cR4=
-X-Google-Smtp-Source: ABdhPJzOK+t+heJUiYXmEwE8OeRKRcbgevvkRMhUJwL2dOFvPQ3UTthIIpYgYzFsBYsNXPyLbf6Juw==
-X-Received: by 2002:a5d:4f82:: with SMTP id d2mr72511496wru.87.1609608164430;
-        Sat, 02 Jan 2021 09:22:44 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with UTF8SMTPSA id a17sm84075069wrs.20.2021.01.02.09.22.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Jan 2021 09:22:43 -0800 (PST)
-Subject: Re: [PATCH] getcpu.2: Document glibc wrapper instead of kernel
- syscall
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201230214147.874671-6-alx.manpages@gmail.com>
- <9a4fecc5-be0a-99a9-a101-ca956cdceaa8@gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <13d3b37a-6a06-c1c7-3f75-bdd4b90e3aaf@gmail.com>
-Date:   Sat, 2 Jan 2021 18:22:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
- Thunderbird/84.0
+        id S1726777AbhABR0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 12:26:09 -0500
+Received: from mga11.intel.com ([192.55.52.93]:5677 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726598AbhABR0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 12:26:08 -0500
+IronPort-SDR: GK0Jqj3QvB0CQruuc9H6cV3nJj2Kiq27yIVn3MJxMwK2X6CW7kUayGHsEqso/PoEZzejoxu3TA
+ vV59oiqIeJOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9852"; a="173321806"
+X-IronPort-AV: E=Sophos;i="5.78,470,1599548400"; 
+   d="scan'208";a="173321806"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2021 09:24:22 -0800
+IronPort-SDR: lkUcFnVWv/Nz/+rXOt9WvvEz/PpPROoXwzwjMrRu7vcJ2Ad7V8evwW/arZcYE5ZtO7cdp3iuXe
+ bhHbnsYeiQWw==
+X-IronPort-AV: E=Sophos;i="5.78,470,1599548400"; 
+   d="scan'208";a="349268993"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2021 09:24:16 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id A7BE8207BF; Sat,  2 Jan 2021 19:24:14 +0200 (EET)
+Date:   Sat, 2 Jan 2021 19:24:14 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+Message-ID: <20210102172414.GF11878@paasikivi.fi.intel.com>
+References: <20201224010907.263125-1-djrscally@gmail.com>
+ <20201224010907.263125-15-djrscally@gmail.com>
+ <CAHp75VeXN6PnV7Mzz6UMpD+m-yjPi6XK0kx1=+-M5mci=Vb=YQ@mail.gmail.com>
+ <20201228170521.GZ26370@paasikivi.fi.intel.com>
+ <2d37df3d-f04c-6679-6e27-6c7f82e9b158@gmail.com>
+ <20210102170731.GD11878@paasikivi.fi.intel.com>
+ <f0d6751d-b395-49f4-2411-0ed13e4dabc0@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9a4fecc5-be0a-99a9-a101-ca956cdceaa8@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0d6751d-b395-49f4-2411-0ed13e4dabc0@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jan 02, 2021 at 05:12:47PM +0000, Daniel Scally wrote:
+> Hi Sakari
+> 
+> On 02/01/2021 17:07, Sakari Ailus wrote:
+> > Hi Daniel,
+> >
+> > On Mon, Dec 28, 2020 at 10:37:38PM +0000, Daniel Scally wrote:
+> >>>>> +#define CIO2_NUM_PORTS                         4
+> >>> This is already defined in ipu3-cio2.h. Could you include that instead?
+> >> Yes; but I'd need to also include media/v4l2-device.h and
+> >> media/videobuf2-dma-sg.h (they're included in ipu3-cio2-main.c at the
+> >> moment). It didn't seem worth it; but I can move those two includes from
+> >> the .c to the .h and then include ipu3-cio2.h in cio2-bridge.h
+> >>
+> >> Which do you prefer?
+> > Seems you got answers already... :-) splitting the header in two seems good
+> > to me. But IMO it doesn't have to be a part of this set.
+> >
+> Yeah I've been hesitating over this; if we chose not to do it in this
+> set though, how would you want me to deal with the double definition of
+> CIO2_NUM_PORTS
 
+The patch is here:
 
-On 1/2/21 9:41 AM, Michael Kerrisk (man-pages) wrote:
-> Hi Alex,
-> 
-> On 12/30/20 10:41 PM, Alejandro Colomar wrote:
->> The glibc wrapper doesn't provide the third argument.
->> Simplify the info about the (unused) kernel parameter
->> to the minimum that is useful.
->>
->> kernels <=2.6.23 are EOL since a long time ago.
->>
->> The old info is commented out instead of removed.
-> 
-> I tend to be rather conservative about preserving historical
-> detail in the manual pages. Yes, 2.6.23 may be EOL from the
-> kernel community's point of view, but even in quite recent
-> times I've run into folk in the embedded world that who have
-> to at the very least support 2.6.* systems. So, as a general
-> principle, I'm inclined to retain the kind of info that this
-> patch removes. (I admit though that this is an extreme case:
-> historical behavior in a system call that is not frequently
-> used.)
-> 
-> There are exceptions. Occassionaly I run into historical 
-> info in manual pages that is clearly wrong, or incomplete.
-> In such cases, I am sometimes inclined to trim the details,
-> rather than invest the effort in working out all of the
-> historical details.
-> 
-> Clearly though, some fix is needed, since we now have 
-> a glibc wrapper that has just two arguments. I've applied
-> the patch below.
+<URL:https://patchwork.linuxtv.org/project/linux-media/patch/20201230204405.62892-1-andriy.shevchenko@linux.intel.com/>
 
-Hi Michael,
-
-Agreed :-)
-
-Cheers,
-
-Alex
-
-> 
-> Cheers,
-> 
-> Michael
-> 
-> diff --git a/man2/getcpu.2 b/man2/getcpu.2
-> index a75123f97..59089bd74 100644
-> --- a/man2/getcpu.2
-> +++ b/man2/getcpu.2
-> @@ -14,10 +14,10 @@
->  getcpu \- determine CPU and NUMA node on which the calling thread is running
->  .SH SYNOPSIS
->  .nf
-> -.B #include <linux/getcpu.h>
-> +.BR "#define _GNU_SOURCE" "             /* See feature_test_macros(7) */"
-> +.B #include <sched.h>
->  .PP
-> -.BI "int getcpu(unsigned int *" cpu ", unsigned int *" node \
-> -", struct getcpu_cache *" tcache );
-> +.BI "int getcpu(unsigned int *" cpu ", unsigned int *" node );
->  .fi
->  .SH DESCRIPTION
->  The
-> @@ -37,10 +37,6 @@ or
->  .I node
->  is NULL nothing is written to the respective pointer.
->  .PP
-> -The third argument to this system call is nowadays unused,
-> -and should be specified as NULL
-> -unless portability to Linux 2.6.23 or earlier is required (see NOTES).
-> -.PP
->  The information placed in
->  .I cpu
->  is guaranteed to be current only at the time of the call:
-> @@ -82,16 +78,31 @@ The intention of
->  .BR getcpu ()
->  is to allow programs to make optimizations with per-CPU data
->  or for NUMA optimization.
-> +.\"
-> +.SS C library/kernel differences
-> +The kernel system call has a third argument:
-> +.PP
-> +.in +4n
-> +.nf
-> +.BI "int getcpu(unsigned int *" cpu ", unsigned int *" node ,
-> +.BI "           struct getcpu_cache *" tcache );
-> +.fi
-> +.in
->  .PP
->  The
->  .I tcache
-> -argument is unused since Linux 2.6.24.
-> +argument is unused since Linux 2.6.24,
-> +and (when invoking the system call directly)
-> +should be specified as NULL,
-> +unless portability to Linux 2.6.23 or earlier is required.
-> +.PP
->  .\" commit 4307d1e5ada595c87f9a4d16db16ba5edb70dcb1
->  .\" Author: Ingo Molnar <mingo@elte.hu>
->  .\" Date:   Wed Nov 7 18:37:48 2007 +0100
->  .\" x86: ignore the sys_getcpu() tcache parameter
-> -In earlier kernels,
-> -if this argument was non-NULL,
-> +In Linux 2.6.23 and earlier, if the
-> +.I tcache
-> +argument was non-NULL,
->  then it specified a pointer to a caller-allocated buffer in thread-local
->  storage that was used to provide a caching mechanism for
->  .BR getcpu ().
-> 
+I guess Andy forgot to cc you.
 
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+Sakari Ailus
