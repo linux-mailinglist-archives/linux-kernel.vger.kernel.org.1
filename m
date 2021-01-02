@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ADEF2E870B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 12:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48DC2E8712
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 12:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbhABL1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 06:27:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbhABL1X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 06:27:23 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3FBC061573;
-        Sat,  2 Jan 2021 03:26:43 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id x15so21020509ilq.1;
-        Sat, 02 Jan 2021 03:26:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ilqSGevT+DyYr8MeIp8qHL893rQcqVgolA4bHX/apQI=;
-        b=kfFwW3KUC+iOyuBvNc1vFQfnl6f7Ld3zhYu2uvUR7gFdXKJE/01yg6ci89az7nfV7o
-         BUgo4DTt9KFPa8HE5yFnJUZso3N4yob65jQe4yZ9I2UhLwhG/Nt9tk4hyloPmbW3R+lK
-         bHIVoErrGtWtJ7lO20b1mglLWsQHlBjNZ1RAY5D6Fpd0ZjtGvzOebYdB0OGSav0yNQDe
-         l9brnioQKdT9oHSrGIUeV2kYKyG5QI8G902FRP+o2yhUDitRQ3LUlHWT+fMDdDayumyC
-         r4sxoBbGM7d/AvLb8z9jXa49wZkvW3H4xxJXVHy0GjN8rr2GIbP9lLJsWlXcfVW/cAxp
-         YavQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=ilqSGevT+DyYr8MeIp8qHL893rQcqVgolA4bHX/apQI=;
-        b=UC9c/lybyrp+ax9dKjXq7ihRSsO6lEkhBwguwtvDN868gueRXt99dG5aziFYE7uwte
-         LtA2eaxcHIc/pdkQPg4cpkF0zSWpRruSCRlOrjwqoLLEXRECr3eNBvU0k1AkDHLzjpT9
-         96sbZag6RNxTonF7YInJk03brSlwsrJpaQtIKNrScb56LlxazpBg4hYTGtwMbgNq+KeE
-         ajY+quX3aWWdjAmrh2L1yBVE1zRCcLGFuTbIX1yqXqYOgqRlx6cwZ5hhYixVb77EeO2g
-         rMUrZ9oDjalzrsfZgKgn4cPBxqtD9T7X0JFzhnT4+d9TGorjH0jWqQR5k/Jj+vCNwjJD
-         l4ow==
-X-Gm-Message-State: AOAM530i60Hi5tWzM2ZTI4VufCtZcO6280NCREXQDs2kk62JWk4br8aW
-        BRrAqG3u6Ya/LdVEP8vVj7RoVBzGjrCT9nDLhT8=
-X-Google-Smtp-Source: ABdhPJyGy7BFoDfRwsBKcxFQ/IDLdrWCpXpe+KuzWl+Mlf7vz4gvGsMOAyKWsIjsUs08w73eeji0Qzo2HuM06/iqvK8=
-X-Received: by 2002:a92:d1cd:: with SMTP id u13mr45985648ilg.186.1609586801514;
- Sat, 02 Jan 2021 03:26:41 -0800 (PST)
+        id S1726606AbhABLaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 06:30:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726327AbhABLaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 06:30:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 917B020857;
+        Sat,  2 Jan 2021 11:29:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609586982;
+        bh=12e/d5y8XXJahAgaxYFj4bELsUe5cAYIOPjRCVbsCa8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RdKVQTm+6SQLs5RsdmZLf63WqRtN8cwFFlLM7+G9JsLrkOt2DbGEPZKSolcI5Zl5R
+         0nMECjauCyWEpTlcHemc2Oqjk9yHT26n27W29gaSzUInmrs8yyUupsu2FUna3i4F3d
+         xCF6nmbH/6hpGdXM6DCKy5EVVJb1sJuwKKKqUZ7QqJY2SsygUFoGXZwZrhVmtV5FkF
+         jR18hiSM6B4WEnVoYLW+QQpcDRR8TrlUwbvOx50NN2xJj3ELhtrtijIBLEx+X1NhW+
+         QYHOct6dxebhhMJ51zvXYLdoA85sEwe+e9CfS33EMKy2hF4RXieQsTpb+2RxkgfFeI
+         xc0mX/qdecHNQ==
+Received: by mail-oi1-f180.google.com with SMTP id s2so26668030oij.2;
+        Sat, 02 Jan 2021 03:29:42 -0800 (PST)
+X-Gm-Message-State: AOAM532rItAiD6qxosU/k5lQXSrDD7a6GD4sxDHnx/xLF1/nRMAqZSuB
+        awog02esWxeVmP9UuAOpYfEOC96P/+8P8kYHzl4=
+X-Google-Smtp-Source: ABdhPJwOoZJeWc4//XjRrhGjpBMg/U98KqEnfR9Yy6/+iQ0miwRI9ziRuNwH0dnt5/BAc6q3t6rn+pozBVHq3Qu2tJ4=
+X-Received: by 2002:aca:d98a:: with SMTP id q132mr12999133oig.33.1609586981969;
+ Sat, 02 Jan 2021 03:29:41 -0800 (PST)
 MIME-Version: 1.0
-References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
- <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com>
- <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
- <20210101161435.GA344@duo.ucw.cz> <CA+icZUXKXt3NfgVxZN+m+3d_dqBi+o0EyJH53h-sXU8buaUe7g@mail.gmail.com>
- <CAK7LNASQZ7SWrAykdH71iq6SyLj=gG-EGhCy8SHkDz_bdq2BMw@mail.gmail.com>
- <CA+icZUXyfv0sOP=UG6oeoxpHbEpOrufJzzUWb3ZOpE_TMQerwQ@mail.gmail.com> <b9d3c1063d4c3f9a0cb71442cc92ad77a859d438.camel@petrovitsch.priv.at>
-In-Reply-To: <b9d3c1063d4c3f9a0cb71442cc92ad77a859d438.camel@petrovitsch.priv.at>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 2 Jan 2021 12:26:30 +0100
-Message-ID: <CA+icZUWsffXuBUTcjLhrGvDKRp8fut=k_HdyhQ-QLZHjfXpqmg@mail.gmail.com>
-Subject: Re: Linux 5.11-rc1
-To:     Bernd Petrovitsch <bernd@petrovitsch.priv.at>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201228124919.745526410@linuxfoundation.org> <20201228124933.649086790@linuxfoundation.org>
+ <20201231200913.GA32313@amd>
+In-Reply-To: <20201231200913.GA32313@amd>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 2 Jan 2021 12:29:31 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGPtz5Qh4CDE=wBG29U8ESxfOEjZLi9DK4a-9LH7kcMow@mail.gmail.com>
+Message-ID: <CAMj1kXGPtz5Qh4CDE=wBG29U8ESxfOEjZLi9DK4a-9LH7kcMow@mail.gmail.com>
+Subject: Re: [PATCH 4.19 287/346] crypto: ecdh - avoid unaligned accesses in ecdh_set_secret()
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 2, 2021 at 12:05 PM Bernd Petrovitsch
-<bernd@petrovitsch.priv.at> wrote:
+On Thu, 31 Dec 2020 at 21:09, Pavel Machek <pavel@denx.de> wrote:
 >
-> On Sat, 2021-01-02 at 10:13 +0100, Sedat Dilek wrote:
-> [...]
-> > To be honest I wondered why there were no more reports on this.
+> Hi!
 >
-> Perhaps I'm not the only one who has /sbin and /usr/sbin in the
-> $PATH of normal accounts too (and idk what's the default
-> behaviour of distributions is - my .bashrc "fixes" the
-> $PATH).
+> > ecdh_set_secret() casts a void* pointer to a const u64* in order to
+> > feed it into ecc_is_key_valid(). This is not generally permitted by
+> > the C standard, and leads to actual misalignment faults on ARMv6
+> > cores. In some cases, these are fixed up in software, but this still
+> > leads to performance hits that are entirely avoidable.
+> >
+> > So let's copy the key into the ctx buffer first, which we will do
+> > anyway in the common case, and which guarantees correct alignment.
+>
+> Fair enough... but: params.key_size is validated in
+> ecc_is_key_valid(), and that now happens _after_ memcpy.
+>
+> How is it guaranteed that we don't overflow the buffer during memcpy?
 >
 
-I was thinking more towards maxim/dictum:
-"Never break userspace!" or "It worked before but now it is not."
+It is not, thanks for pointing that out. There are some redundant
+checks being performed, so you won't trigger it easily with fuzzing,
+but afaict, an intentionally crafted invalid input could indeed
+overflow the buffer.
 
-Think of automated kernel build and test setups based on Debian.
+I'll send a fix shortly.
 
-Debian/testing AMD64 has...
-
-[ /etc/login.defs ]
-
-# *REQUIRED*  The default PATH settings, for superuser and normal users.
-#
-# (they are minimal, add the rest in the shell startup files)
-ENV_SUPATH
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ENV_PATH        PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
-
-IMHO users should not need to fix their environment.
-( The discussion is a bit obsolete as we now have a fix. )
-
-- Sedat -
+> > +++ b/crypto/ecdh.c
+> > @@ -57,12 +57,13 @@ static int ecdh_set_secret(struct crypto
+> >               return ecc_gen_privkey(ctx->curve_id, ctx->ndigits,
+> >                                      ctx->private_key);
+> >
+> > -     if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
+> > -                          (const u64 *)params.key, params.key_size) < 0)
+> > -             return -EINVAL;
+> > -
+> >       memcpy(ctx->private_key, params.key, params.key_size);
+> >
+> > +     if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
+> > +                          ctx->private_key, params.key_size) < 0) {
+> > +             memzero_explicit(ctx->private_key, params.key_size);
+> > +             return -EINVAL;
+> > +     }
+> >       return 0;
+>
+> Best regards,
+>                                                                 Pavel
+> --
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
