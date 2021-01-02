@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12AAC2E88D1
+	by mail.lfdr.de (Postfix) with ESMTP id F0F4C2E88D3
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 23:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727303AbhABWGS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 2 Jan 2021 17:06:18 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:49576 "EHLO
+        id S1727358AbhABWG0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 2 Jan 2021 17:06:26 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:57601 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727196AbhABWGQ (ORCPT
+        by vger.kernel.org with ESMTP id S1727280AbhABWGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 17:06:16 -0500
+        Sat, 2 Jan 2021 17:06:25 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-JD6mJV6wOO6LXbLw0nBA3w-1; Sat, 02 Jan 2021 17:05:23 -0500
-X-MC-Unique: JD6mJV6wOO6LXbLw0nBA3w-1
+ us-mta-304-qCLXG6HDNd26471zNmt5YQ-1; Sat, 02 Jan 2021 17:05:28 -0500
+X-MC-Unique: qCLXG6HDNd26471zNmt5YQ-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2FAF9180A095;
-        Sat,  2 Jan 2021 22:05:22 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7040107ACE3;
+        Sat,  2 Jan 2021 22:05:26 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 72C671A353;
-        Sat,  2 Jan 2021 22:05:19 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8DF3B19727;
+        Sat,  2 Jan 2021 22:05:22 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -36,9 +36,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 11/22] perf daemon: Add stop command
-Date:   Sat,  2 Jan 2021 23:04:30 +0100
-Message-Id: <20210102220441.794923-12-jolsa@kernel.org>
+Subject: [PATCH 12/22] perf daemon: Allow only one daemon over base directory
+Date:   Sat,  2 Jan 2021 23:04:31 +0100
+Message-Id: <20210102220441.794923-13-jolsa@kernel.org>
 In-Reply-To: <20210102220441.794923-1-jolsa@kernel.org>
 References: <20210102220441.794923-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -53,8 +53,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'perf daemon stop' command to stop daemon process
-and all running sessions.
+Add 'lock' file under daemon base and flock it, so only one
+perf daemon can run on top of it.
 
 Example:
 
@@ -72,80 +72,113 @@ Starting the daemon:
 
   # perf daemon start
 
-Stopping the daemon
+And try once more:
 
-  # perf daemon stop
+  # perf daemon start
+  failed: another perf daemon (pid 775594) owns /opt/perfdata
 
-Daemon is not running, nothing to connect to:
-
-  # perf daemon
-  connect error: Connection refused
+will end up with an error, because there's already one running
+on top of /opt/perfdata.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/builtin-daemon.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ tools/perf/builtin-daemon.c | 49 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-index a7ffbecf8d14..45748bb471ec 100644
+index 45748bb471ec..1982eedd3f3f 100644
 --- a/tools/perf/builtin-daemon.c
 +++ b/tools/perf/builtin-daemon.c
-@@ -524,6 +524,7 @@ static int setup_server_socket(struct daemon *daemon)
- enum {
- 	CMD_LIST   = 0,
- 	CMD_SIGNAL = 1,
-+	CMD_STOP   = 2,
- 	CMD_MAX,
- };
+@@ -8,6 +8,7 @@
+ #include <string.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <sys/file.h>
+ #include <signal.h>
+ #include <stdlib.h>
+ #include <time.h>
+@@ -562,12 +563,18 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
+ 			/* output */
+ 			csv_sep, daemon->base, SESSION_OUTPUT);
  
-@@ -650,6 +651,10 @@ static int handle_server_socket(struct daemon *daemon, int sock_fd)
- 	case CMD_SIGNAL:
- 		ret = cmd_session_kill(daemon, &cmd, out);
- 		break;
-+	case CMD_STOP:
-+		done = 1;
-+		pr_debug("perf daemon is exciting\n");
-+		break;
- 	default:
- 		break;
++		fprintf(out, "%c%s/%s",
++			/* lock */
++			csv_sep, daemon->base, "lock");
++
+ 		fprintf(out, "\n");
+ 	} else {
+ 		fprintf(out, "[%d:daemon] base: %s\n", getpid(), daemon->base);
+ 		if (cmd->list.verbose) {
+ 			fprintf(out, "  output:  %s/%s\n",
+ 				daemon->base, SESSION_OUTPUT);
++			fprintf(out, "  lock:    %s/lock\n",
++				daemon->base);
+ 		}
  	}
-@@ -992,6 +997,27 @@ static int __cmd_signal(struct daemon *daemon, struct option parent_options[],
- 	return send_cmd(daemon, &cmd);
+ 
+@@ -761,6 +768,42 @@ static int handle_config_changes(struct daemon *daemon, int conf_fd,
+ 	return 0;
  }
  
-+static int __cmd_stop(struct daemon *daemon, struct option parent_options[],
-+			int argc, const char **argv)
++static int check_lock(struct daemon *daemon)
 +{
-+	struct option start_options[] = {
-+		OPT_PARENT(parent_options),
-+		OPT_END()
-+	};
-+	union cmd cmd = { .cmd = CMD_STOP, };
++	char path[PATH_MAX];
++	char buf[20];
++	int fd, pid;
++	ssize_t len;
 +
-+	argc = parse_options(argc, argv, start_options, daemon_usage, 0);
-+	if (argc)
-+		usage_with_options(daemon_usage, start_options);
++	scnprintf(path, sizeof(path), "%s/lock", daemon->base);
 +
-+	if (setup_config(daemon)) {
-+		pr_err("failed: config not found\n");
++	fd = open(path, O_RDWR|O_CREAT|O_CLOEXEC, 0640);
++	if (fd < 0)
++		return -1;
++
++	if (lockf(fd, F_TLOCK, 0) < 0) {
++		filename__read_int(path, &pid);
++		fprintf(stderr, "failed: another perf daemon (pid %d) owns %s\n",
++			pid, daemon->base);
 +		return -1;
 +	}
 +
-+	return send_cmd(daemon, &cmd);
++	scnprintf(buf, sizeof(buf), "%d", getpid());
++	len = strlen(buf);
++
++	if (write(fd, buf, len) != len) {
++		perror("write failed");
++		return -1;
++	}
++
++	if (ftruncate(fd, len)) {
++		perror("ftruncate failed");
++		return -1;
++	}
++
++	return 0;
 +}
 +
- int cmd_daemon(int argc, const char **argv)
+ static int go_background(struct daemon *daemon)
  {
- 	struct option daemon_options[] = {
-@@ -1015,6 +1041,8 @@ int cmd_daemon(int argc, const char **argv)
- 	if (argc) {
- 		if (!strcmp(argv[0], "signal"))
- 			return __cmd_signal(&__daemon, daemon_options, argc, argv);
-+		else if (!strcmp(argv[0], "stop"))
-+			return __cmd_stop(&__daemon, daemon_options, argc, argv);
- 
- 		pr_err("failed: unknown command '%s'\n", argv[0]);
+ 	int pid, fd;
+@@ -775,6 +818,9 @@ static int go_background(struct daemon *daemon)
+ 	if (setsid() < 0)
  		return -1;
+ 
++	if (check_lock(daemon))
++		return -1;
++
+ 	umask(0);
+ 
+ 	if (chdir(daemon->base)) {
+@@ -861,6 +907,9 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+ 	if (setup_server_config(daemon))
+ 		return -1;
+ 
++	if (foreground && check_lock(daemon))
++		return -1;
++
+ 	if (!foreground && go_background(daemon))
+ 		return -1;
+ 
 -- 
 2.26.2
 
