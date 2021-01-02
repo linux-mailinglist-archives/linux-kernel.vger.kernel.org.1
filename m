@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FEE2E873D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 13:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F15CD2E8742
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Jan 2021 13:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbhABMMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 07:12:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbhABMMl (ORCPT
+        id S1726598AbhABMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 07:20:31 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:10675 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbhABMU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 07:12:41 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2205BC061573;
-        Sat,  2 Jan 2021 04:12:01 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id d9so20790868iob.6;
-        Sat, 02 Jan 2021 04:12:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=Zia7YjD81hBGAI5yZOzHqZVEQYTe6YXjIf2zZ75X41Y=;
-        b=hOSuah95K0svAcYLL52cUU95FM8NpMHWq9pNsckGUgE9NCEeSDKsk2HUJDLlLzbW/3
-         8wuISAtgQnEnrq49gaQY6tFLj0/9m+qWafRmPwWfm3sAonYkdIlCK8yw2ZULhwr0gEJ/
-         CYnF5XRXLvtL8aZ8TMzxGnZTFwc2pis0rYAhBG1g1RM6i+e8lyh0hbRgyoyBM1iksXJv
-         cJ+/7ZhHTYF3Fa7zsU4Zj7FVqNWnnkxEwzoDzfB+8t/0k0SBLoNYgIdPb58U/yR1ecw7
-         GhRSb2GBi40Dp9HXkrrSRrh2Bn0WMZjgO5Uclhk4CnpZ9i/3W62J5oG/R975Sk81rfGC
-         ftSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=Zia7YjD81hBGAI5yZOzHqZVEQYTe6YXjIf2zZ75X41Y=;
-        b=q2BxaE1wq1WGn4Gey+lLZE7vVlJB8K9yImfHy40cVyWuhh9CRN8EQWX9hgfEDAlayc
-         I1nRtNSoqe28v8sklc6XchcXyDIxOZ1RHgu7uYhtdYpEFQzcG6ksfuUDvHTI8pp9CQ0J
-         GuLNWm6ZFgPyzdlcegn2W4EI5bEHP01VYrUdOpcS/MtNHHiU7fLjEfNU8mcvTqrQNEZq
-         AuZaEp2HSIKxGYfTAWNE2nR5Uj7b1TaHN9JZZ8jA9gqK6wvbqJwqFrroYJAhpIWgO0UJ
-         J4TMAOnEXR2mY1XtypJguJxOisizAjATNW1wU+1m+GaQPbGtwGhtRqA0fRYE0N/k+qXm
-         UnWg==
-X-Gm-Message-State: AOAM533j/PBscvldqszTEGGvYI1tXdCR15FPHbcd0d7F+vn+RtsseVpv
-        OyNnf+TnT2X/qIDmEn9sThlH4MPR0DqXJ16pEjY=
-X-Google-Smtp-Source: ABdhPJzyUF8qG0JcJzis3vCKIjJZSirsEXij9KA3QmlhPCs6wnjVSA6Qa/EAVEsLoPlIE9mIVQNxB5/FHlReaLz5WWU=
-X-Received: by 2002:a5e:9b06:: with SMTP id j6mr53019260iok.171.1609589520440;
- Sat, 02 Jan 2021 04:12:00 -0800 (PST)
+        Sat, 2 Jan 2021 07:20:29 -0500
+Date:   Sat, 02 Jan 2021 12:19:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1609589986;
+        bh=xeKFx/zvJeF3EOI2JHzXBLYuaUj021bIJFzj5apYGzs=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=WmZmcyfRLRh7AKjO6USItaXwQjM4X6UUHS7RNYtEfmVWCDBe2oCwPtGNMgVVYk01P
+         HUs3p+rvZTmN1AGfTd8bKs7TJIuMzUMVmqMSSmaeb0ThSAsyRpJF+XFyYZh2mPHI0K
+         w5XxToiGjdnQONeNbC1Dww4MJrpSqj5G/9tQgoS8=
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Ike Panhc <ike.pan@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH] platform/x86: ideapad-laptop: Add has_touchpad_switch
+Message-ID: <D2lfUAOv4FVNsPPkc_6KIGFGu1WZEj2JAt2pN2L03sIHxB6qxSwKM85gyKfhE11eEM4wcVYhMmRTC4zoOeaADbu0ueQXtRzxyoy-K2j9Y1Y=@protonmail.com>
+In-Reply-To: <063eb02d-a699-3f6c-fd1b-721e9d195e82@flygoat.com>
+References: <20210101061140.27547-1-jiaxun.yang@flygoat.com> <_kQDaYPt7vh_mQfPr1tLJV2IP-p40OBPcU5zk-1xHhF9XJsm8Y-efANBgiRdWU-J2QTtOjmrfE0Tw6UrZpm6uG-zZGlfpaVOp9FuoKAbjzA=@protonmail.com> <bcb3bc76-da83-4ee1-8c2d-0453d359ae37@www.fastmail.com> <XVSpzJf9TdCi-rg53vfxB7yLg8VJQsQVbqoC1Fu1L7tL5mPKCpMABkedQNatITMiUy7pvBC7g0Cqd30-zqc0bCsSSoy5YXp_gJLTLM0odTg=@protonmail.com> <063eb02d-a699-3f6c-fd1b-721e9d195e82@flygoat.com>
 MIME-Version: 1.0
-References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
- <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com>
- <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
- <20210101161435.GA344@duo.ucw.cz> <CA+icZUXKXt3NfgVxZN+m+3d_dqBi+o0EyJH53h-sXU8buaUe7g@mail.gmail.com>
- <CAK7LNASQZ7SWrAykdH71iq6SyLj=gG-EGhCy8SHkDz_bdq2BMw@mail.gmail.com>
- <CA+icZUXyfv0sOP=UG6oeoxpHbEpOrufJzzUWb3ZOpE_TMQerwQ@mail.gmail.com>
- <b9d3c1063d4c3f9a0cb71442cc92ad77a859d438.camel@petrovitsch.priv.at>
- <CA+icZUWsffXuBUTcjLhrGvDKRp8fut=k_HdyhQ-QLZHjfXpqmg@mail.gmail.com> <0b797d40843b2cd54a5840ee97a9f77fb60e4658.camel@petrovitsch.priv.at>
-In-Reply-To: <0b797d40843b2cd54a5840ee97a9f77fb60e4658.camel@petrovitsch.priv.at>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 2 Jan 2021 13:11:49 +0100
-Message-ID: <CA+icZUV8hjw47ixSNf3ZbpyEPKFdcWwiCYn8F4dzSETuQO-gFg@mail.gmail.com>
-Subject: Re: Linux 5.11-rc1
-To:     Bernd Petrovitsch <bernd@petrovitsch.priv.at>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > IMHO users should not need to fix their environment.
-> > ( The discussion is a bit obsolete as we now have a fix. )
+2021. janu=C3=A1r 2., szombat 3:36 keltez=C3=A9ssel, Jiaxun Yang =C3=ADrta:
+
+> =E5=9C=A8 2021/1/2 =E4=B8=8A=E5=8D=881:09, Barnab=C3=A1s P=C5=91cze =
+=E5=86=99=E9=81=93:
+> > Hi
+> >
+> >
+> > 2021. janu=C3=A1r 1., p=C3=A9ntek 17:08 keltez=C3=A9ssel, Jiaxun Yang =
+=C3=ADrta:
+> >
+> >> [...]
+> >>>> @@ -1006,6 +1018,10 @@ static int ideapad_acpi_add(struct platform_d=
+evice *pdev)
+> >>>>   =09if (!priv->has_hw_rfkill_switch)
+> >>>>   =09=09write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
+> >>>>
+> >>>> +=09/* The same for Touchpad */
+> >>>> +=09if (!priv->has_touchpad_switch)
+> >>>> +=09=09write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
+> >>>> +
+> >>> Shouldn't it be the other way around: `if (priv->has_touchpad_switch)=
+`?
+> >> It is to prevent accidentally disable touchpad on machines that do hav=
+e EC switch,
+> >> so it's intentional.
+> >> [...]
+> > Sorry, but the explanation not fully clear to me. The commit message se=
+ems to
+> > indicate that some models "do not use EC to switch touchpad", and I tak=
+e that
+> > means that reading from VPCCMD_R_TOUCHPAD will not reflect the actual s=
+tate of the
+> > touchpad and writing to VPCCMD_W_TOUCHPAD will not change the state of =
+the touchpad.
 >
-> FWIW, I have no (and don't see any) problems simply appending
-> /sbin:/usr/sbin to the $PATH in/for the kernel's scripts.
+> I'm just trying to prevent removing functionality on machines that
+> touchpad can be controlled
+> by EC but also equipped I2C HID touchpad. At least users will have a
+> functional touchpad
+> after that.
 >
 
-Another workaround is to pass DEPMOD=/path/to/depmod in the kernel-build script.
+Thanks for the clarification.
 
-Again, such custom workarounds should not be necessary.
 
-- Sedat -
+> >
+> > But then why do you still write to VPCCMD_W_TOUCHPAD on devices where s=
+upposedly
+> > this does not have any effect (at least not the desired one)? And the p=
+art of the
+> > code I made my comment about only runs on machines on which the touchpa=
+d supposedly
+> > cannot be controlled by the EC. What am I missing?
+> >
+> > And there is the other problem: on some machines, this patch removes wo=
+rking
+> > functionality.
+> Yeah that's a problem. I just don't want to repeat the story of rfkill
+> whitelist, it ends up with
+> countless machine to be added.
+>
+> Maybe I should specify HID of touchpad as well. Two machines that known
+> to be problematic
+> all have ELAN0634 touchpad.
+
+I think that would be better since the Lenovo Yoga 520-14IKB 80X8 device
+I'm concerned about has a SYNA2B2C touchpad device, so at least that wouldn=
+'t be
+affected.
+
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
