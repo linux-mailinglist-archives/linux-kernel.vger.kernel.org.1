@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A3C2E8E95
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE722E8E98
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbhACVyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 16:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
+        id S1727330AbhACVzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 16:55:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbhACVyS (ORCPT
+        with ESMTP id S1726855AbhACVzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 16:54:18 -0500
+        Sun, 3 Jan 2021 16:55:39 -0500
 Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A033FC0613C1
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 13:53:38 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id lb18so8589890pjb.5
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 13:53:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51F9C0613C1
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 13:54:59 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id lj6so8608146pjb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 13:54:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=SOqNdsnqAMqhnVr3MpJKK4X9DOOmp6814kfWnP9S4FM=;
-        b=y1cdXFGZJpYOh6kKX1ouuWSEilCExSz9gYHJ17RezGNA/EBig5DR8biiZGQ4rpGNct
-         84MUcwh0/tba3K7LqfC/lcL2DjJZnm+5v1GgbZjD3jUONljic/IGEPgqMXLn+PxlmQG5
-         uFzNAC9H2TU6buFlKO5fgSlWKK2KthjIGCHjZNEzMuabjwU/0MnyQq185SBoH7wREmoh
-         MfWh5ApELl6ld4c5QvbfdF2y38tFJzDPMFokc0wnQrB14WkKDzB4izb2ef3DPiima6Rd
-         UkeOpyNw5diJEwiqfEEmLTqy6GicK7lCJwdogwg6o6a18cy0oKyfQ+SJBE9IQQieHyQ3
-         G/hA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=q5mLi1qo1IvniJ/lg8x05dulOHxR+g5L4Otl0FpGxeo=;
+        b=Zm8cFyx61w8VNooVwux4OSVgWoFC0L/VNSpg6N1plJYyty6xvPZ79xT0Ecv45mJaBy
+         +504YGPF72+1F1WVKMEZQVjca2IH1mHBibyF/6StM90cm2JpKWQm4mTWSrft9r3+uErB
+         AWEQ3C8+6DHBSCDm8LFwhz/xmnSp1kWqe86pggGssGKTsmjnHMO0260U7Mu1Jk2PQBs7
+         5LdpBCT43X5XTCHNL5dHhYiyWawjjEGDiqURwJMIsKMlQcRpa+sEpN+NNs3tCXlYavFI
+         Szvw9JlZZLVQZyh6Yi8jhvUlAF+b89Yn8xE0suJaMy8HaMEgS+prj4VtMBKXkjOzTyD7
+         tD0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=SOqNdsnqAMqhnVr3MpJKK4X9DOOmp6814kfWnP9S4FM=;
-        b=ssDWnET0FpFcd5G3FZS0Bi8oJ2sWOta+2M116QxXzARbsGYxNBXRT0TBOXh5ssVeRI
-         Z8gi4NyX4Bna2wAyfl2Hh/E2CRnJfsCoC3ok9Eldo82ewL6PU2VEFYA2OH+Iu3bVk42/
-         BsHxszTIQIzlA40c4fuk0SR1ZiCQyTyWoJuyf1w9z3jGeqvkl6bNMfg3UYH0QmwiIybB
-         Pa321tEdncj6l9iwsPKd4fTcSwEjGYzWbq9AZQNqi9Xd7Pq/XcoWp63x1Orj0FjQli5m
-         IezAGJL/OaDNNiqxaIj8v3MVB1ARh2+Kop0WwBmhiRsPS7odbp1OMMJwaSK9jc0wSwB4
-         wUfg==
-X-Gm-Message-State: AOAM531l1GNCxfIgv4SittEChSJQH5ov4mx6++DmZGAiagcwU1r+UHN0
-        jyUzMG219JvQ+Hvg8BhFJwfuCQ==
-X-Google-Smtp-Source: ABdhPJzcd8BBndSAfUu2cIdM/q7zeKNDdn3Zp84q+JXRLH44Np6UcYZ63lGG/K661Ig5IZzidwyodg==
-X-Received: by 2002:a17:90a:a394:: with SMTP id x20mr26316806pjp.24.1609710818032;
-        Sun, 03 Jan 2021 13:53:38 -0800 (PST)
+        bh=q5mLi1qo1IvniJ/lg8x05dulOHxR+g5L4Otl0FpGxeo=;
+        b=LCyS/bWvK2YTK3tYfKDm+soDL+AkKDP1m2D//JCyZdMX/iM2ZOPP9avXO4W8HAQpD8
+         euGxFJCXQCDb5eeLiTFVvZTPXfru6XB4w9eLyZdbiVtRHeg6aFxdIM+7pyz/Qs2zQYNE
+         rxmHNiecSrNxBUwNZJk+9e77pQEmey8+AhFHRWv8Qta25dsFXC+POcEvxIICPjPC1VN4
+         Jk3S6IMya25kBA8ZXvbTz8JH3u5xcHN+2vVQtos0mSqCHZ7PqBkCWu0sO+NTaw+X4ZIg
+         +FId/6bugLz30g3EbWWDczwQWWcoauylQxinZT8aaaxaNmWV/fGm/3O+agG0OKrMqrDh
+         ag3Q==
+X-Gm-Message-State: AOAM532BJdEz6j6u4HJo4iHqGN0kouPbVRTUDUxd+seOcgrTMhIYmJWf
+        /7mB0lr95gr4EFCCKRVDpszCTsziaypA3w==
+X-Google-Smtp-Source: ABdhPJyPlNxLHz9ZxDwdqXdCeF/3G7Y3n+hEdqmWtcg/tF1iQwG/dO9760WCBt4a2+gWDHEfnnM+Bg==
+X-Received: by 2002:a17:902:c104:b029:da:5206:8b9b with SMTP id 4-20020a170902c104b02900da52068b9bmr69469586pli.46.1609710899060;
+        Sun, 03 Jan 2021 13:54:59 -0800 (PST)
 Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id c10sm54804651pfj.54.2021.01.03.13.53.36
+        by smtp.gmail.com with ESMTPSA id 32sm45045920pgq.80.2021.01.03.13.54.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Jan 2021 13:53:37 -0800 (PST)
-Subject: Re: INFO: task hung in __io_uring_task_cancel
-To:     Palash Oswal <oswalpalash@gmail.com>, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, will@kernel.org
-References: <CAGyP=7cFM6BJE7X2PN9YUptQgt5uQYwM4aVmOiVayQPJg1pqaA@mail.gmail.com>
+        Sun, 03 Jan 2021 13:54:58 -0800 (PST)
+Subject: Re: [PATCH] block: rsxx: select CONFIG_CRC32
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Philip J Kelleher <pjk1939@linux.vnet.ibm.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Hannes Reinecke <hare@suse.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210103214254.1996764-1-arnd@kernel.org>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e3bd8214-830d-ab3e-57ba-564c5adcac52@kernel.dk>
-Date:   Sun, 3 Jan 2021 14:53:35 -0700
+Message-ID: <27333956-47ad-4f5b-56de-6b2214b75d0b@kernel.dk>
+Date:   Sun, 3 Jan 2021 14:54:57 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAGyP=7cFM6BJE7X2PN9YUptQgt5uQYwM4aVmOiVayQPJg1pqaA@mail.gmail.com>
+In-Reply-To: <20210103214254.1996764-1-arnd@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,62 +70,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/2/21 9:14 PM, Palash Oswal wrote:
->  Hello,
+On 1/3/21 2:42 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> I was running syzkaller and I found the following issue :
+> Without crc32, the driver fails to link:
 > 
-> Head Commit : b1313fe517ca3703119dcc99ef3bbf75ab42bcfb ( v5.10.4 )
-> Git Tree : stable
-> Console Output :
-> [  242.769080] INFO: task repro:2639 blocked for more than 120 seconds.
-> [  242.769096]       Not tainted 5.10.4 #8
-> [  242.769103] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [  242.769112] task:repro           state:D stack:    0 pid: 2639
-> ppid:  2638 flags:0x00000004
-> [  242.769126] Call Trace:
-> [  242.769148]  __schedule+0x28d/0x7e0
-> [  242.769162]  ? __percpu_counter_sum+0x75/0x90
-> [  242.769175]  schedule+0x4f/0xc0
-> [  242.769187]  __io_uring_task_cancel+0xad/0xf0
-> [  242.769198]  ? wait_woken+0x80/0x80
-> [  242.769210]  bprm_execve+0x67/0x8a0
-> [  242.769223]  do_execveat_common+0x1d2/0x220
-> [  242.769235]  __x64_sys_execveat+0x5d/0x70
-> [  242.769249]  do_syscall_64+0x38/0x90
-> [  242.769260]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  242.769270] RIP: 0033:0x7f59ce45967d
-> [  242.769277] RSP: 002b:00007ffd05d10a58 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000142
-> [  242.769290] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f59ce45967d
-> [  242.769297] RDX: 0000000000000000 RSI: 0000000020000180 RDI: 00000000ffffffff
-> [  242.769304] RBP: 00007ffd05d10a70 R08: 0000000000000000 R09: 00007ffd05d10a70
-> [  242.769311] R10: 0000000000000000 R11: 0000000000000246 R12: 000055a91d37d320
-> [  242.769318] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> arm-linux-gnueabi-ld: drivers/block/rsxx/config.o: in function `rsxx_load_config':
+> config.c:(.text+0x124): undefined reference to `crc32_le'
 
-Can you see if this helps? The reproducer is pretty brutal, it'll fork
-thousands of tasks with rings! But should work of course. I think this
-one is pretty straight forward, and actually an older issue with the
-poll rewaiting.
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index ca46f314640b..539de04f9183 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5103,6 +5103,12 @@ static bool io_poll_rewait(struct io_kiocb *req, struct io_poll_iocb *poll)
- {
- 	struct io_ring_ctx *ctx = req->ctx;
- 
-+	/* Never re-wait on poll if the ctx or task is going away */
-+	if (percpu_ref_is_dying(&ctx->refs) || req->task->flags & PF_EXITING) {
-+		spin_lock_irq(&ctx->completion_lock);
-+		return false;
-+	}
-+
- 	if (!req->result && !READ_ONCE(poll->canceled)) {
- 		struct poll_table_struct pt = { ._key = poll->events };
- 
+Applied, thanks.
 
 -- 
 Jens Axboe
