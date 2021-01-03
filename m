@@ -2,44 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF8F2E8C83
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5585C2E8C85
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbhACOEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 09:04:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36064 "EHLO mail.kernel.org"
+        id S1727308AbhACOFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 09:05:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726558AbhACOEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 09:04:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 482862080D;
-        Sun,  3 Jan 2021 14:04:09 +0000 (UTC)
+        id S1726616AbhACOFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 09:05:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C2A720936;
+        Sun,  3 Jan 2021 14:04:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609682652;
-        bh=Ey75tATsrR5FQShYsC5Hg0ZFtsB2bV+9NEouqmN89Mk=;
+        s=k20201202; t=1609682673;
+        bh=zmUHFqvjqtfLJXF85/Hm1Z5hmOhl2hMkFbi6NnBIHVQ=;
         h=From:To:Cc:Subject:Date:From;
-        b=RZUXyJwUA7NZie53rvyZdBbLFeSOxzKQZcfBmOgFC1JdnjSEuG7vVqfXdibnm8r22
-         /i4uB58bksBlp/Akb0hPM9PREYz7jCCpie9NAm7Knm7LpxUfIEGOnWCtoX3wJjqMSL
-         k98kEZKTBsncR8Mpt0Me0o9xfr5GvtV2QtBB6P1NMuIsS7ik144KP4OhQzQnqk9AkR
-         KsGCNEiv0YFb37qFQi1EDWX6kzGT3PP+ACn6oHR5g7ZgujyS5cHIkZb7jibkR5FLKk
-         M/bQ9lB4ysFAm8rxLl/uQ0DQvr/O47V194vJp3jiIFwcLwiy9zfzT1wTZBxUB4B84h
-         ihgqW17Saqxrw==
+        b=p4UhIZVLqe0yE0mfmOeYHDcVKyiVOzOqKLszjvRygqI5x8KrC8RiQlVC6zDm3QxdJ
+         To3w0JzmKsvqDvn6Bo35f/bmsKx6NK2nNKEq1qXy7dFNocwVYf8af3cdAyNXHRc4uO
+         D5mbdG2EuZeXiqEf5CjDTjJvSjh1X8SHGZtio5mvWnm4f6J81pwWyNslDb4fKGmakS
+         SrQIBs4i+D5wEnCUvwFmti9/11ot4qXDyJnD0zbo42teHSxC6e2IrYotMm7r1SPdVu
+         mukYACQvQhXcc9cABxBuMQn52HX/KoHObEFLD0Pf1T1Sf1cQO7uLOgvJ3j65sv5PCu
+         hbqpreoxjPjng==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/a6xx: add CONFIG_QCOM_LLCC dependency
-Date:   Sun,  3 Jan 2021 15:03:45 +0100
-Message-Id: <20210103140407.3917405-1-arnd@kernel.org>
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/surface: mark PM functions as __maybe_unused
+Date:   Sun,  3 Jan 2021 15:04:21 +0100
+Message-Id: <20210103140429.3929810-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -49,49 +41,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When LLCC support is in a loadable module, the adreno support
-cannot be built-in:
+When CONFIG_PM is disabled, the compiler produces harmless warnings:
 
-aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in function `a6xx_gpu_init':
-a6xx_gpu.c:(.text+0xe0): undefined reference to `llcc_slice_getd'
-a6xx_gpu.c:(.text+0xe0): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `llcc_slice_getd'
-aarch64-linux-ld: a6xx_gpu.c:(.text+0xec): undefined reference to `llcc_slice_getd'
-a6xx_gpu.c:(.text+0xec): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `llcc_slice_getd'
-aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in function `a6xx_destroy':
-a6xx_gpu.c:(.text+0x274): undefined reference to `llcc_slice_putd'
-a6xx_gpu.c:(.text+0x274): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `llcc_slice_putd'
-aarch64-linux-ld: a6xx_gpu.c:(.text+0x27c): undefined reference to `llcc_slice_putd'
+drivers/platform/surface/surface_gpe.c:184:12: error: unused function 'surface_gpe_suspend' [-Werror,-Wunused-function]
+static int surface_gpe_suspend(struct device *dev)
+drivers/platform/surface/surface_gpe.c:189:12: error: unused function 'surface_gpe_resume' [-Werror,-Wunused-function]
+static int surface_gpe_resume(struct device *dev)
 
-Add a Kconfig dependency that disallows the broken configuration
-but allows all working ones.
+Mark these as __maybe_unused to shut up the warning.
 
-Fixes: 474dadb8b0d5 ("drm/msm/a6xx: Add support for using system cache(LLC)")
+Fixes: 274335f1c557 ("platform/surface: Add Driver to set up lid GPEs on MS Surface device")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/gpu/drm/msm/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/platform/surface/surface_gpe.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-index dabb4a1ccdcf..b8e02859fd92 100644
---- a/drivers/gpu/drm/msm/Kconfig
-+++ b/drivers/gpu/drm/msm/Kconfig
-@@ -7,6 +7,8 @@ config DRM_MSM
- 	depends on IOMMU_SUPPORT
- 	depends on OF && COMMON_CLK
- 	depends on QCOM_OCMEM || QCOM_OCMEM=n
-+	depends on QCOM_LLCC || QCOM_LLCC=n
-+	depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
- 	select IOMMU_IO_PGTABLE
- 	select QCOM_MDT_LOADER if ARCH_QCOM
- 	select REGULATOR
-@@ -15,7 +17,6 @@ config DRM_MSM
- 	select SHMEM
- 	select TMPFS
- 	select QCOM_SCM if ARCH_QCOM
--	select QCOM_COMMAND_DB if ARCH_QCOM
- 	select WANT_DEV_COREDUMP
- 	select SND_SOC_HDMI_CODEC if SND_SOC
- 	select SYNC_FILE
+diff --git a/drivers/platform/surface/surface_gpe.c b/drivers/platform/surface/surface_gpe.c
+index e49e5d6d5d4e..86f6991b1215 100644
+--- a/drivers/platform/surface/surface_gpe.c
++++ b/drivers/platform/surface/surface_gpe.c
+@@ -181,12 +181,12 @@ static int surface_lid_enable_wakeup(struct device *dev, bool enable)
+ 	return 0;
+ }
+ 
+-static int surface_gpe_suspend(struct device *dev)
++static int __maybe_unused surface_gpe_suspend(struct device *dev)
+ {
+ 	return surface_lid_enable_wakeup(dev, true);
+ }
+ 
+-static int surface_gpe_resume(struct device *dev)
++static int __maybe_unused surface_gpe_resume(struct device *dev)
+ {
+ 	return surface_lid_enable_wakeup(dev, false);
+ }
 -- 
 2.29.2
 
