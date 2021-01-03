@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C092E8C95
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF39D2E8C98
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbhACOUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 09:20:40 -0500
-Received: from mail-lf1-f52.google.com ([209.85.167.52]:43683 "EHLO
-        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbhACOUj (ORCPT
+        id S1726829AbhACOY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 09:24:28 -0500
+Received: from relay11.mail.gandi.net ([217.70.178.231]:57691 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbhACOY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 09:20:39 -0500
-Received: by mail-lf1-f52.google.com with SMTP id 23so58495556lfg.10;
-        Sun, 03 Jan 2021 06:20:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lyRDga/P88nXpUNSjHBPV4V01nLvTjv4Bg0ZMq7KWiw=;
-        b=Cs3qe7Y3sa+2q2LMYf0Bm7gIHJuTwHz6MmY4eRtwFa9XsmZNSFuNVrEackUJmhBlCY
-         PwhEHiZqJLiA3wwYy+AHKCXDsq7w/lvANqWtKWrDTbIUAEFo+XXFqmBxkSOEC8CGacmO
-         H2RDTHzEf9uAMy5Xz0AVd54y5PuqXgFPhkHyOUX8PVZvlHqBPNoWY6b9Ex8SlZ5Cen6x
-         9uQk/fIM/SyrojJgPswp5a3ZuHHt/XbPScYV7tZdLYm6T2IPkgJtEFVpZYEgNlJgx5My
-         Thf3kQnL5Y23KYjwxYOQVBo4hszTMDHSFpcOTyYzlAL15nMjJYdPgtOPn4zl6H0EGS5E
-         N/rA==
-X-Gm-Message-State: AOAM531YXMoc+jQ3/eKKoQ2GI3nqSmtj4K1QyWy1rne3R2vdh2awrWdH
-        L5nQLQuFO46DQOcymOKZo4atiyE6zkXQ1Q==
-X-Google-Smtp-Source: ABdhPJwqtCL2WZR2lgnS6qNkJmmik9smGPVjF1BAIHsjdmh83+L3Lk9l+Ce1n8Nn8PS141lKdVuKAA==
-X-Received: by 2002:ac2:430a:: with SMTP id l10mr10776662lfh.22.1609683596842;
-        Sun, 03 Jan 2021 06:19:56 -0800 (PST)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id c16sm7006237lfb.236.2021.01.03.06.19.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Jan 2021 06:19:56 -0800 (PST)
-Received: by mail-lf1-f48.google.com with SMTP id a12so58583911lfl.6;
-        Sun, 03 Jan 2021 06:19:56 -0800 (PST)
-X-Received: by 2002:a19:810:: with SMTP id 16mr33000667lfi.233.1609683595991;
- Sun, 03 Jan 2021 06:19:55 -0800 (PST)
+        Sun, 3 Jan 2021 09:24:27 -0500
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 2D397100003;
+        Sun,  3 Jan 2021 14:23:43 +0000 (UTC)
+Date:   Sun, 3 Jan 2021 15:23:43 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: error while fetching the i3c-fixes tree
+Message-ID: <20210103142343.GC382945@piout.net>
+References: <20210103223217.478bc238@canb.auug.org.au>
+ <20210103151855.5d25ee80@collabora.com>
 MIME-Version: 1.0
-References: <20210103100007.32867-1-samuel@sholland.org> <20210103100007.32867-3-samuel@sholland.org>
-In-Reply-To: <20210103100007.32867-3-samuel@sholland.org>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Sun, 3 Jan 2021 22:19:44 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64KioyzGK0uLTVNyhc38fH2A8DWRYc8FVkEVZDjVwr6RA@mail.gmail.com>
-Message-ID: <CAGb2v64KioyzGK0uLTVNyhc38fH2A8DWRYc8FVkEVZDjVwr6RA@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH v2 2/4] pinctrl: sunxi: h6-r: Add s_rsb pin functions
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andre Przywara <andre.przywara@arm.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210103151855.5d25ee80@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 3, 2021 at 6:00 PM Samuel Holland <samuel@sholland.org> wrote:
->
-> As there is an RSB controller in the H6 SoC, there should be some pin
-> configuration for it. While no such configuration is documented, the
-> "s_i2c" pins are suspiciously on the "alternate" function 3, with no
-> primary function 2 given. This suggests the primary function for these
-> pins is actually RSB, and that is indeed the case.
->
-> Add the "s_rsb" pin functions so the RSB controller can be used.
->
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+On 03/01/2021 15:18:55+0100, Boris Brezillon wrote:
+> +Alexandre, the new I3C maintainer. You should probably flag him as the
+> person to contact if you have problem with the I3C tree in the future.
+> 
+> Hi Stephen,
+> 
+> On Sun, 3 Jan 2021 22:32:17 +1100
+> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> 
+> > Hi all,
+> > 
+> > Fetching the i3c-fixes tree
+> > (git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git#master)
+> > produces this error:
+> > 
+> > fatal: couldn't find remote ref refs/heads/master
+> > 
+> > Should I maybe use the i3c/fixes branch instead?
+> 
+> Oops, I thought you were using that branch already. I guess I never
+> noticed because I didn't use the fixes branch much and kept the master
+> one around.
+> 
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+Yes, please use the i3c/fixes branch. I did indeed remove the master
+branch as this was not used anyway.
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
