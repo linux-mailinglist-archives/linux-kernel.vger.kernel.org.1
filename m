@@ -2,235 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72FE2E8E10
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 21:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A761A2E8E16
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 21:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbhACUYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 15:24:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbhACUYD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 15:24:03 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B57C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 12:23:22 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id i5so17451986pgo.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 12:23:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e1xBR8UornTwqH6fVhOXEbzOOGDBOFbaaWz/gve1ZB4=;
-        b=eAgQ/Hy8aNE92XFuJLB7JF8fLfZAZWcsb1P42ypm9pIxHWcoYtjFeKB37vbO8VcEn4
-         7HN0q0c1G3HlSehM17AyTtNaovhaG5sSNkpHiaLUIkNG8Vi4PUImFdEvRPCCUF1jMyiq
-         +SLSThbytPByKI0BBl5AQlTaPbghPdmOIUArRzEhwvebCJD3LCN7G4LmCNQeSi9tad57
-         b8RJ3bGT/k64ySODuPRP96JdK9RaX58RxytLfu+n2P5RKTPSCuM3LllyUdiB/5d+soN9
-         ZJ+5mciEhiSKW6obZ9B2qeMA1LE2Wmrk2M/Nbk99CNgSLyEMsBQJyUHhfROE577xpkyy
-         HVDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e1xBR8UornTwqH6fVhOXEbzOOGDBOFbaaWz/gve1ZB4=;
-        b=G8g9yBnHHUbaRudsgo/DoD1DfdzgIxBuSr5mGUROKqmaFLStRgbnSEB+tXPe8CA47X
-         TVos7Qc6CPkeXgCsuTkdvsI/FG79j5f8ZceMR+lYehing3JbqfVsCo3gltu1HZX13gXw
-         qvXB6mcC+qMchXDRlpfcyLG5ww6A670IH2+7vdyq+1eSQMyj1XCSTPhMo4P2ow6nx0LV
-         uD81gGSvX0YHQOpbvoIeHd/CTzQOrcKjASXl1xCfgrxA6ZEDwfFfrunq8/LhGTr/JZtc
-         0X+NgBKMRv5z8TXlHWRipz3s+RwGIkryZbXqYQC6MuqrFwSL3gbUcrVgMzyvkCqj9tm6
-         kg+w==
-X-Gm-Message-State: AOAM530bQ6L1L7I6uNt/i9orwDXXph+J2qjMd2hKw0LvioTl2EdVuE2e
-        O1Z9Tl/JieJfRzAQemDfitUN2w==
-X-Google-Smtp-Source: ABdhPJyqVu2NCWCxorYPgh0U50FWU5nfkQ2WUDd8qg3Vg0EVXFLQgx70XG5MzHhfqblZyUpOxcBwvQ==
-X-Received: by 2002:a63:520e:: with SMTP id g14mr20496306pgb.378.1609705402142;
-        Sun, 03 Jan 2021 12:23:22 -0800 (PST)
-Received: from x1 ([2601:1c0:4701:ae70:8efb:42a0:32b:a51d])
-        by smtp.gmail.com with ESMTPSA id p9sm19446293pjb.3.2021.01.03.12.23.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 12:23:21 -0800 (PST)
-Date:   Sun, 3 Jan 2021 12:23:19 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Pantelis Antoniou <pantelis.antoniou@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [RFC PATCH v2] pinctrl: add helper to expose pinctrl state in
- debugfs
-Message-ID: <20210103202319.GA973266@x1>
-References: <20201218045134.4158709-1-drew@beagleboard.org>
- <CAHp75Vfwb+f3k2+mAj+jB=XsKFX-hCxx61A_PCmwz6y-YKHMcg@mail.gmail.com>
- <20201224203603.GA59600@x1>
+        id S1727091AbhACU34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 15:29:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726246AbhACU3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 15:29:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D605520780;
+        Sun,  3 Jan 2021 20:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609705754;
+        bh=oQGIgV/H6wrkBUA2S35RTQkgGejmTkSBTYtV62nHBbA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rEV4XlJbWuGqje85a2fGio8WYGPZCTt8vOqcAB55vPu6cqXY9PzJgET4tBoR6k1Mi
+         6qtuV77zjpg8gmYAqLdgKApYqJgvtZvx+zFPlDzraPN1lhqViCYaopQ0iYUpSv99H3
+         ls2nSchzUdePf+GQ4si29qJBOIYAv0w1QnDiUzJMK2T7SLaD6P4p4DzsaVQN3jsCWu
+         /1699fLBMgcjeHwzjybR6/EcLZhgZD93GgO/cZ+yD0GBzSqiO6n7FN3LDqiDlvoHab
+         H7eXQEJOtq1btCCGfXqQSJm8qzOzIZhA2JrTFJDhzo/QV5kplk1CJn9m2IEvJeKgVW
+         +EqQapLYMQdpw==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 1/4] habanalabs: separate common code to dedicated folders
+Date:   Sun,  3 Jan 2021 22:29:06 +0200
+Message-Id: <20210103202909.243-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224203603.GA59600@x1>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 02:36:03PM -0600, Drew Fustini wrote:
-> On Fri, Dec 18, 2020 at 06:01:25PM +0200, Andy Shevchenko wrote:
-> > On Fri, Dec 18, 2020 at 6:52 AM Drew Fustini <drew@beagleboard.org> wrote:
-> > >
-> > > BeagleBoard.org [0] currently uses an out-of-tree driver called
-> > > bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
-> > > The driver assists users of our BeagleBone and PocketBeagle boards in
-> > > rapid prototyping by allowing them to change at run-time between defined
-> > > set of pinctrl states [3] for each pin on the expansion connectors [4].
-> > > This is achieved by exposing a 'state' file in sysfs for each pin which
-> > > is used by our 'config-pin' utility [5].
-> > >
-> > > Our goal is to eliminate all out-of-tree drivers for BeagleBoard.org
-> > > boards and thus I have been working to replace bone-pinmux-helper with a
-> > > new driver that could be acceptable upstream. My understanding is that
-> > > debugfs, unlike sysfs, could be the appropriate mechanism to expose such
-> > > functionality.
-> > 
-> > No objections here.
-> > 
-> > > I used the compatible string "pinctrl,state-helper" but would appreciate
-> > > advice on how to best name this. Should I create a new vendor prefix?
-> > 
-> > Here is the first concern. Why does this require to be a driver with a
-> > compatible string?
-> 
-> I have not been able to figure out how to have different active pinctrl
-> states for each header pins (for example P2 header pin 3) unless they
-> are represented as DT nodes with their own compatible for this helper
-> driver such as:
-> 
-> &ocp {
-> 	P2_03_pinmux {
-> 		compatible = "pinctrl,state-helper";
-> 		pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "gpio_input", "pwm";
-> 		pinctrl-0 = <&P2_03_default_pin>;
-> 		pinctrl-1 = <&P2_03_gpio_pin>;
-> 		pinctrl-2 = <&P2_03_gpio_pu_pin>;
-> 		pinctrl-3 = <&P2_03_gpio_pd_pin>;
-> 		pinctrl-4 = <&P2_03_gpio_input_pin>;
-> 		pinctrl-5 = <&P2_03_pwm_pin>;
-> 	};
-> }
-> 
-> I can assign pinctrl states in the pin controller DT node which has
-> compatible pinctrl-single (line 301 arch/arm/boot/dts/am33xx-l4.dtsi):
-> 
-> &am33xx_pinmux {
-> 
->         pinctrl-names = "default", "gpio", "pwm";
->         pinctrl-0 =   < &P2_03_default_pin &P1_34_default_pin &P2_19_default_pin &P2_24_default_pin
->                         &P2_33_default_pin &P2_22_default_pin &P2_18_default_pin &P2_10_default_pin
->                         &P2_06_default_pin &P2_04_default_pin &P2_02_default_pin &P2_08_default_pin
->                         &P2_17_default_pin >;
->         pinctrl-1 =   < &P2_03_gpio_pin &P1_34_gpio_pin &P2_19_gpio_pin &P2_24_gpio_pin
->                         &P2_33_gpio_pin &P2_22_gpio_pin &P2_18_gpio_pin &P2_10_gpio_pin
->                         &P2_06_gpio_pin &P2_04_gpio_pin &P2_02_gpio_pin &P2_08_gpio_pin
->                         &P2_17_gpio_pin >;
->         pinctrl-2 =   < &P2_03_pwm &P1_34_pwm &P2_19_pwm &P2_24_pwm
->                         &P2_33_pwm &P2_22_pwm &P2_18_pwm &P2_10_pwm
->                         &P2_06_pwm &P2_04_pwm &P2_02_pwm &P2_08_pwm
->                         &P2_17_pwm >;
-> 
-> }
-> 
-> However, there is no way to later select "gpio" for P2.03 and select
-> "pwm" for P1.34 at the same time.  Thus, I can not figure out a way to
-> select independent states per pin unless I make a node for each pin that
-> binds to a helper driver.
-> 
-> It feels like there may be a simpler soluation but I can't see to figure
-> it out.  Suggestions welcome!
-> 
-> > 
-> > > The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
-> > > The driver would create the corresponding pinctrl state file in debugfs
-> > > for the pin.  Here is an example of how the state can be read and
-> > > written from userspace:
-> > >
-> > > root@beaglebone:~# cat /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
-> > > default
-> > > root@beaglebone:~# echo pwm > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
-> > > root@beaglebone:~# cat /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
-> > > pwm
-> > >
-> > > I would very much appreciate feedback on both this general concept, and
-> > > also specific areas in which the code should be changed to be acceptable
-> > > upstream.
-> > 
-> > Two more concerns:
-> >  - why is it OF only?
-> 
-> I am open to figuring out a more general solution but I am really only
-> familiar with Device Tree.  Is there a way to represent the possible
-> pinctrl states in ACPI?
-> 
-> >  - why has it been separated from pin control per device debug folder?
-> 
-> >From the v1 thread, I see what you mean that there could be a combined
-> state file for each pinctrl device where one would echo '<pin>
-> <state-name>' such as 'P2_03 pwm'.  I will attempt to implement that.
+From: Ofir Bitton <obitton@habana.ai>
 
-I have tried creating a single state file:
-/sys/kernel/debug/pinctrl/pinctrl_state
+We separate some of the common code source files to different
+folders for a better maintainability and testability.
 
-where one can write into it:
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/Makefile           | 10 ++++++++--
+ drivers/misc/habanalabs/common/mmu/Makefile       |  2 ++
+ drivers/misc/habanalabs/common/{ => mmu}/mmu.c    |  2 +-
+ drivers/misc/habanalabs/common/{ => mmu}/mmu_v1.c |  4 ++--
+ drivers/misc/habanalabs/common/pci/Makefile       |  2 ++
+ drivers/misc/habanalabs/common/{ => pci}/pci.c    |  4 ++--
+ 6 files changed, 17 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/misc/habanalabs/common/mmu/Makefile
+ rename drivers/misc/habanalabs/common/{ => mmu}/mmu.c (99%)
+ rename drivers/misc/habanalabs/common/{ => mmu}/mmu_v1.c (99%)
+ create mode 100644 drivers/misc/habanalabs/common/pci/Makefile
+ rename drivers/misc/habanalabs/common/{ => pci}/pci.c (99%)
 
-<device-name> <pinctrl-state-name>
+diff --git a/drivers/misc/habanalabs/common/Makefile b/drivers/misc/habanalabs/common/Makefile
+index eccd8c7dc62d..5d8b48288cf4 100644
+--- a/drivers/misc/habanalabs/common/Makefile
++++ b/drivers/misc/habanalabs/common/Makefile
+@@ -1,7 +1,13 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++
++include $(src)/common/mmu/Makefile
++habanalabs-y += $(HL_COMMON_MMU_FILES)
++
++include $(src)/common/pci/Makefile
++habanalabs-y += $(HL_COMMON_PCI_FILES)
++
+ HL_COMMON_FILES := common/habanalabs_drv.o common/device.o common/context.o \
+ 		common/asid.o common/habanalabs_ioctl.o \
+ 		common/command_buffer.o common/hw_queue.o common/irq.o \
+ 		common/sysfs.o common/hwmon.o common/memory.o \
+-		common/command_submission.o common/mmu.o common/mmu_v1.o \
+-		common/firmware_if.o common/pci.o
++		common/command_submission.o common/firmware_if.o
+diff --git a/drivers/misc/habanalabs/common/mmu/Makefile b/drivers/misc/habanalabs/common/mmu/Makefile
+new file mode 100644
+index 000000000000..d852c3874658
+--- /dev/null
++++ b/drivers/misc/habanalabs/common/mmu/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++HL_COMMON_MMU_FILES := common/mmu/mmu.o common/mmu/mmu_v1.o
+diff --git a/drivers/misc/habanalabs/common/mmu.c b/drivers/misc/habanalabs/common/mmu/mmu.c
+similarity index 99%
+rename from drivers/misc/habanalabs/common/mmu.c
+rename to drivers/misc/habanalabs/common/mmu/mmu.c
+index ec11111aee8a..105d556e3028 100644
+--- a/drivers/misc/habanalabs/common/mmu.c
++++ b/drivers/misc/habanalabs/common/mmu/mmu.c
+@@ -7,7 +7,7 @@
+ 
+ #include <linux/slab.h>
+ 
+-#include "habanalabs.h"
++#include "../habanalabs.h"
+ 
+ static bool is_dram_va(struct hl_device *hdev, u64 virt_addr)
+ {
+diff --git a/drivers/misc/habanalabs/common/mmu_v1.c b/drivers/misc/habanalabs/common/mmu/mmu_v1.c
+similarity index 99%
+rename from drivers/misc/habanalabs/common/mmu_v1.c
+rename to drivers/misc/habanalabs/common/mmu/mmu_v1.c
+index 2ce6ea89d4fa..9d37ac9bf316 100644
+--- a/drivers/misc/habanalabs/common/mmu_v1.c
++++ b/drivers/misc/habanalabs/common/mmu/mmu_v1.c
+@@ -5,8 +5,8 @@
+  * All Rights Reserved.
+  */
+ 
+-#include "habanalabs.h"
+-#include "../include/hw_ip/mmu/mmu_general.h"
++#include "../habanalabs.h"
++#include "../../include/hw_ip/mmu/mmu_general.h"
+ 
+ #include <linux/slab.h>
+ 
+diff --git a/drivers/misc/habanalabs/common/pci/Makefile b/drivers/misc/habanalabs/common/pci/Makefile
+new file mode 100644
+index 000000000000..dc922a686683
+--- /dev/null
++++ b/drivers/misc/habanalabs/common/pci/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++HL_COMMON_PCI_FILES := common/pci/pci.o
+diff --git a/drivers/misc/habanalabs/common/pci.c b/drivers/misc/habanalabs/common/pci/pci.c
+similarity index 99%
+rename from drivers/misc/habanalabs/common/pci.c
+rename to drivers/misc/habanalabs/common/pci/pci.c
+index b4725e6101f6..c56ec1574127 100644
+--- a/drivers/misc/habanalabs/common/pci.c
++++ b/drivers/misc/habanalabs/common/pci/pci.c
+@@ -5,8 +5,8 @@
+  * All Rights Reserved.
+  */
+ 
+-#include "habanalabs.h"
+-#include "../include/hw_ip/pci/pci_general.h"
++#include "../habanalabs.h"
++#include "../../include/hw_ip/pci/pci_general.h"
+ 
+ #include <linux/pci.h>
+ 
+-- 
+2.25.1
 
-such as:
-
-ocp:P9_14_pinmux gpio
-
-However, I can not figure out a way for this to work.
-
-I create the pinctrl_state file in pinctrl_state_helper_init() and store
-the dentry in a global variable.
-
-pinctrl_state_helper_probe() still runs for each Px_0y_pinmux device
-tree entry with compatible "pinctrl,state-helper" but there is no
-per-device file created.
-
-The problem comes in pinctrl_state_write().  I use this to extract the
-device_name and state_name:
-
-	ret = sscanf(buf, "%s %s", device_name, state_name);
-
-This does work okay but I don't know what to do with the device_name
-string, such as "ocp:P9_14_pinmux".  Previously, the device was saved
-in the private info:
-
-        sfile = file->private_data;
-        priv = sfile->private;
-        p = devm_pinctrl_get(priv->dev); // use device_name instead?
-	state = pinctrl_lookup_state(p, state_name);
-
-But I don't know how to look up a device based on its name.
-
-Any suggestions as to how to handle that?
-
-
-Thanks and happy new year!
-Drew
-
-> 
-> > 
-> > 
-> > > [0] http://beagleboard.org/latest-images
-> > > [1] https://github.com/beagleboard/linux/blob/5.4/drivers/misc/cape/beaglebone/bone-pinmux-helper.c
-> > > [2] https://github.com/RobertCNelson/linux-dev/blob/master/patches/drivers/ti/gpio/0001-BeagleBone-pinmux-helper.patch
-> > > [3] https://github.com/beagleboard/BeagleBoard-DeviceTrees/blob/v5.4.x-ti-overlays/src/arm/am335x-bone-common-univ.dtsi#L2084
-> > > [4] https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#section-7-1
-> > > [5] https://github.com/beagleboard/bb.org-overlays/blob/master/tools/beaglebone-universal-io/config-pin
-> > 
-> > --
-> > With Best Regards,
-> > Andy Shevchenko
-> 
-> Thanks for reviewing,
-> Drew
