@@ -2,132 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934A92E8C28
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 13:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34952E8C31
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 13:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbhACMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 07:44:19 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:51113 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727030AbhACMoS (ORCPT
+        id S1727118AbhACMxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 07:53:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbhACMxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 07:44:18 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9ED1F580422;
-        Sun,  3 Jan 2021 07:43:32 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Sun, 03 Jan 2021 07:43:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=E
-        QudM2IkgCNnrANuZ5EqosYh8eVwyuFNr39cKDL8pQI=; b=YbcPVeaR6FIG1ljHU
-        ziUoqI+Y6pV6GNKSFNBVOYDertVRmgAdDeT0xOgvZP8hUssCSrWTvG0+lvYU36a+
-        vhBqv2ozeG+JoRuwyo+aZYMXTXmBa5Pk/SVfx/4splQ/jZ1pgvxzDYWF4iEzeYHc
-        N8WntfuLBOH8U08G+8nbNKsN8pFTXewtvjU6fG7q3M4M91E6lFMwoLBcewcIwbQM
-        K5mJUNcJzS9wtAe4EhhJUhjUSLrbVqmZHRc9k28xu6VuH1bjinllsE50Adq4kNfh
-        8s1t2nIe4rV2QJWMQjCk9cUdUExcJ+1DT9Lgg/XwyP+Eol2it3TJdKwNpeKc8D9G
-        S0/UA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=EQudM2IkgCNnrANuZ5EqosYh8eVwyuFNr39cKDL8p
-        QI=; b=CwzpY95tW8/SM1wgieUitIwNOv3rfPQqkTkl5Y8T7IwXrywMX4V9Doabn
-        lxXALtVax5EoIoDr628+oyVzx9mL3NQOQjdJfZVqsDLI2f2DH2+ITCzmUUi8/cns
-        S4ynlbjT2x/D0UBZfxdBNlxv71tSHaCSK9fE15UP0T13rocbrUrrp7gYJIz3f3iO
-        +kEhCxH8OBHIEef2N4f0aFTNgFh01IY1KCblXuXM7UJsTQceUfh+QftxVg3NoQTc
-        sePwOuII3FcGXNcQf85Ua3g+euN+iTSxzjH0bUWi0ZdS4SjvrK5YmdIShA1DQf0s
-        Nmb1epjYD5cRJ9I0lttkSgNoqZzww==
-X-ME-Sender: <xms:87vxX2vDP2i_1i0ghcSB--vpQi59oh6CGH0TCtYezsAOTv3ZU0ssxA>
-    <xme:87vxX7dyUuX0-tilg8SwHdN_olQ6WVDdT6JFcxtx9srIus8mCKVIUM13n4Uwg7cp6
-    r1bihGtG8aa5JEpZw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefuddggeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
-    uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:87vxXxyaPyF6_WAjP7o-mHChN9tYNJ1xmBuLgGIn1mb3OQ7h12aL3Q>
-    <xmx:87vxXxMyPeshUq0BEazhOm6PgKib3507ZjcvON6e2NhwmZ8ZCtrAaA>
-    <xmx:87vxX28o0wMbapswVJqn4bXD1XQ7C_t2SAIhGtT82GFGIGxzav0jXg>
-    <xmx:9LvxX320oCFQGxsqieVDBsXVfuHVYOCdMMHALClA-vMleWLH8nivbA>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9220A108005B;
-        Sun,  3 Jan 2021 07:43:30 -0500 (EST)
-Subject: Re: [PATCH v3 00/10] sunxi: Support IRQ wakeup from deep sleep
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210103103101.33603-1-samuel@sholland.org>
- <874kjykyg0.wl-maz@kernel.org>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <7d867708-c8c2-c248-46c9-eedfdf955408@sholland.org>
-Date:   Sun, 3 Jan 2021 06:43:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Sun, 3 Jan 2021 07:53:18 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DCAC061573;
+        Sun,  3 Jan 2021 04:52:37 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id s26so58212924lfc.8;
+        Sun, 03 Jan 2021 04:52:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fk3XVwTVefOkLbjfXssBtwAHpD8Tcrjmd5/AelczwWk=;
+        b=OEwi935j2c7KzefgNI021QgzicjnnEwbFY0PXx/zRGw9iI/W1MDCJ33nGdFVdpmgK6
+         RIgzZmniThNKQQabZIGWFU35FpubtXtN1R5LazrU8yKIIFEOMvqtTZZ5S+ZI5PwASUDh
+         TxHNixDO7dAndqM40/SeY3e6JavgLO8CB6IJk5nojllWAWb2ldsg7Qly/g8+ynFW8oPL
+         cgNdsvF1E/S8ZWp6UVfr4ESinENcARg/2ifmbIPl9lUD5TbUttr2X8f7TQ9nNIigPWTg
+         IihawwezkYm0eV/L9yiGEhYwV/JPSY1nrPQG12uGVCCkWe86XrpZBpVdlnOYyDyypc5T
+         yDtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fk3XVwTVefOkLbjfXssBtwAHpD8Tcrjmd5/AelczwWk=;
+        b=UiDySKvwgUMp0aJWlYasd22/NicHgjglLcBjz4Q751IwqBWHzZni59MNoQxzWf4ci2
+         fWaiWrq0pkSwtVsd/ufsMtavJAb0Ro4knKV22D84wlPuyWZQHX5rvRaFR7ceSf6DZvr1
+         EmsO+XCHXan/Bo0J3zjFH8GvnO2NN/FEKnX6+y8EjE234bF+763lbSCYq2BxmwIztYw2
+         ySkQhBVA6J8v5PELp4dGFtFTI5yUtL7V4XOjsn6+DQ7IMz8Fhbi+/cFNnGnxRevxQPHL
+         rOEhfc0zLS+kuJ1PWBpY1kenD65S3QkbkH90ot/AIE/6SPoHu11w38Qvi4hGVqnaggJv
+         B7aA==
+X-Gm-Message-State: AOAM533me0Pa2Z6ADRlIh7q/Cf8PFJEiE+yH5TTqo6ctMksMvpr32Cxq
+        KTsm5ueSVowmQ2IQ+dJSKQ7hwXCo2ps=
+X-Google-Smtp-Source: ABdhPJyPgqSAU0iBjgqgqRPmpr/i7kF7QwsvsLVJIEREfmn2IS2TU8rSoup8JfPW09bcJNWdHG7m2A==
+X-Received: by 2002:a05:6512:612:: with SMTP id b18mr32820924lfe.598.1609678355624;
+        Sun, 03 Jan 2021 04:52:35 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id b26sm8429011ljk.132.2021.01.03.04.52.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Jan 2021 04:52:34 -0800 (PST)
+Subject: Re: [PATCH 00/31] Introduce devm_pm_opp_* API
+To:     Yangtao Li <tiny.windzz@gmail.com>, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com, cw00.choi@samsung.com, krzk@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
+        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        lukasz.luba@arm.com, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
+        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
+        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
+        marijn.suijten@somainline.org, gustavoars@kernel.org,
+        emil.velikov@collabora.com, jonathan@marek.ca,
+        akhilpo@codeaurora.org, smasetty@codeaurora.org,
+        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, ddavenport@chromium.org,
+        jsanka@codeaurora.org, rnayak@codeaurora.org,
+        tongtiangen@huawei.com, miaoqinglang@huawei.com,
+        khsieh@codeaurora.org, abhinavk@codeaurora.org,
+        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
+        mka@chromium.org, harigovi@codeaurora.org,
+        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
+        georgi.djakov@linaro.org, akashast@codeaurora.org,
+        parashar@codeaurora.org, dianders@chromium.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20210101165507.19486-1-tiny.windzz@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <819f4eaf-18e4-678d-84dd-e4ac9d88c414@gmail.com>
+Date:   Sun, 3 Jan 2021 15:52:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <874kjykyg0.wl-maz@kernel.org>
+In-Reply-To: <20210101165507.19486-1-tiny.windzz@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/3/21 6:16 AM, Marc Zyngier wrote:
-> [dropped linux-sunxi@googlegroups.com, which seems to be a closed ML]
+01.01.2021 19:54, Yangtao Li пишет:
+> Hi,
 > 
-> On Sun, 03 Jan 2021 10:30:51 +0000,
-> Samuel Holland <samuel@sholland.org> wrote:
->>
->> Allwinner sun6i/sun8i/sun50i SoCs (A31 and newer) have two interrupt
->> controllers: GIC and R_INTC. GIC does not support wakeup. R_INTC handles
->> the external NMI pin, and provides 32+ IRQs to the ARISC. The first 16
->> of these correspond 1:1 to a block of GIC IRQs starting with the NMI.
->> The last 13-16 multiplex the first (up to) 128 GIC SPIs.
->>
->> This series replaces the existing chained irqchip driver that could only
->> control the NMI, with a stacked irqchip driver that also provides wakeup
->> capability for those multiplexed SPI IRQs. The idea is to preconfigure
->> the ARISC's IRQ controller, and then the ARISC firmware knows to wake up
->> as soon as it receives an IRQ. It can also decide how deep it can
->> suspend based on the selected wakeup IRQs.
+> This patchset add devm_pm_opp_set_clkname, devm_pm_opp_put_clkname,
+> devm_pm_opp_set_regulators, devm_pm_opp_put_regulators,
+> devm_pm_opp_set_supported_hw, devm_pm_opp_of_add_table and
+> devm_pm_opp_register_notifier.
 > 
-> Out of curiosity, how do you plan to communicate dynamic configuration
-> of IRQs to the ARISC? We recently went through this with some TI
-> stuff, and the result a bit awkward (the arm64 side configures
-> interrupts that are not visible to the kernel, but only to the
-> co-processors).
-
-Assuming by "dynamic" you mean while Linux is running, I don't plan to
-communicate anything. As far as I'm concerned, the driver is feature-complete
-after this patch series. The ARISC firmware does not use the interrupt
-controller (or any other shared peripherals) while Linux is running. It sits in
-a tight loop polling its side of the mailbox, waiting for a
-hotplug/suspend/poweroff/reboot command.
-
-> I wondered whether you had other ideas...
-
-Sorry, I guess not. We tried to avoid using the ARISC for long enough that
-anything that can have a native Linux driver has one. So the ARISC firmware has
-nothing to do while Linux is running. (This is in comparison to the vendor BSP,
-where some peripherals are only accessed through their firmware.)
-
-Samuel
-
-> Thanks,
+> Yangtao Li (31):
+>   opp: Add devres wrapper for dev_pm_opp_set_clkname and
+>     dev_pm_opp_put_clkname
+>   opp: Add devres wrapper for dev_pm_opp_set_regulators and
+>     dev_pm_opp_put_regulators
+>   opp: Add devres wrapper for dev_pm_opp_set_supported_hw
+>   opp: Add devres wrapper for dev_pm_opp_of_add_table
+>   opp: Add devres wrapper for dev_pm_opp_register_notifier
+>   serial: qcom_geni_serial: fix potential mem leak in
+>     qcom_geni_serial_probe()
+>   serial: qcom_geni_serial: convert to use devm_pm_opp_* API
+>   spi: spi-qcom-qspi: fix potential mem leak in spi_geni_probe()
+>   spi: spi-qcom-qspi: fix potential mem leak in spi_geni_probe()
+>   qcom-geni-se: remove opp_table
+>   mmc: sdhci-msm: fix potential mem leak in sdhci_msm_probe()
+>   mmc: sdhci-msm: convert to use devm_pm_opp_* API
+>   spi: spi-qcom-qspi: fix potential mem leak in qcom_qspi_probe()
+>   spi: spi-qcom-qspi: convert to use devm_pm_opp_* API
+>   drm/msm: fix potential mem leak
+>   drm/msm: convert to use devm_pm_opp_* API and remove dp_ctrl_put
+>   drm/lima: convert to use devm_pm_opp_* API
+>   drm/lima: remove unneeded devm_devfreq_remove_device()
+>   drm/panfrost: convert to use devm_pm_opp_* API
+>   media: venus: fix error check in core_get_v4()
+>   media: venus: convert to use devm_pm_opp_* API
+>   memory: samsung: exynos5422-dmc: fix return error in
+>     exynos5_init_freq_table
+>   memory: samsung: exynos5422-dmc: convert to use devm_pm_opp_* API
+>   memory: tegra20: convert to use devm_pm_opp_* API
+>   memory: tegra30: convert to use devm_pm_opp_* API
+>   PM / devfreq: tegra30: convert to use devm_pm_opp_* API
+>   PM / devfreq: rk3399_dmc: convert to use devm_pm_opp_* API
+>   PM / devfreq: imx8m-ddrc: convert to use devm_pm_opp_* API
+>   PM / devfreq: imx-bus: convert to use devm_pm_opp_* API
+>   PM / devfreq: exynos: convert to use devm_pm_opp_* API
+>   PM / devfreq: convert to devm_pm_opp_register_notifier and remove
+>     unused API
 > 
-> 	M.
+>  drivers/devfreq/devfreq.c                     |  66 +------
+>  drivers/devfreq/exynos-bus.c                  |  42 +----
+>  drivers/devfreq/imx-bus.c                     |  14 +-
+>  drivers/devfreq/imx8m-ddrc.c                  |  15 +-
+>  drivers/devfreq/rk3399_dmc.c                  |  22 +--
+>  drivers/devfreq/tegra30-devfreq.c             |  21 +--
+>  drivers/gpu/drm/lima/lima_devfreq.c           |  45 +----
+>  drivers/gpu/drm/lima/lima_devfreq.h           |   2 -
+>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c         |   2 +-
+>  drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |   2 +-
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.c       |   2 +-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |  31 ++--
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h       |   2 -
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c              |  29 +--
+>  drivers/gpu/drm/msm/dp/dp_ctrl.h              |   1 -
+>  drivers/gpu/drm/msm/dp/dp_display.c           |   5 +-
+>  drivers/gpu/drm/msm/dsi/dsi_host.c            |  23 ++-
+>  drivers/gpu/drm/panfrost/panfrost_devfreq.c   |  34 +---
+>  drivers/gpu/drm/panfrost/panfrost_devfreq.h   |   1 -
+>  .../media/platform/qcom/venus/pm_helpers.c    |  22 +--
+>  drivers/memory/samsung/exynos5422-dmc.c       |  13 +-
+>  drivers/memory/tegra/tegra20-emc.c            |  29 +--
+>  drivers/memory/tegra/tegra30-emc.c            |  29 +--
+>  drivers/mmc/host/sdhci-msm.c                  |  27 ++-
+>  drivers/opp/core.c                            | 173 ++++++++++++++++++
+>  drivers/opp/of.c                              |  36 ++++
+>  drivers/spi/spi-geni-qcom.c                   |  23 ++-
+>  drivers/spi/spi-qcom-qspi.c                   |  25 ++-
+>  drivers/tty/serial/qcom_geni_serial.c         |  31 ++--
+>  include/linux/devfreq.h                       |  23 ---
+>  include/linux/pm_opp.h                        |  38 ++++
+>  include/linux/qcom-geni-se.h                  |   2 -
+>  32 files changed, 402 insertions(+), 428 deletions(-)
 > 
 
+Hello,
+
+Could you please add helper for dev_pm_opp_attach_genpd() and make
+cpufreq drivers to use the helpers?
+
+I'd also like to see a devm helper for
+dev_pm_opp_register_set_opp_helper(), which should become useful for
+Tegra drivers sometime soon.
