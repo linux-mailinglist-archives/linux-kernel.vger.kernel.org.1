@@ -2,89 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D65C2E8B48
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 08:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D445F2E8B47
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 08:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbhACHtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 02:49:25 -0500
-Received: from sonic316-48.consmr.mail.bf2.yahoo.com ([74.6.130.222]:43365
-        "EHLO sonic316-48.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725294AbhACHtY (ORCPT
+        id S1726306AbhACHsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 02:48:40 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13894 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725294AbhACHsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 02:49:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1609660117; bh=BaJajCBU7sQZX8y4X7Xtaz9qarJnuwTwb8hqNW3MfNs=; h=Date:From:Reply-To:Subject:References:From:Subject; b=G8oMSENc8zPCRhqevoW9qPKMci1NJVnrfCUgGbrwRdowJuUXz7w/x0ZCCTOMvhwjpmfd8j/jyyP6D2z3mpNzN++IL7kU0VtewbFnBZ51pd8raRR5Mys+W/GbGTJV3XHKP1QF7D6pXVSgaQzcgQssK8w0TIfLPOmyApI+GKb5mwbSGcOBRB1f1CqhPEnZK89DGEuYYlEj+4w+z0ExhM05YQYJf5i50UfLYGrAqu4fy6xYpB1EfrPAraP2sRrRUnWQlmfZh7GiHc/mZjHm0rqYE1oOO/O0W5HJOahGLmyFOdhCbaUHuPtxPZt6SpRHXc2C62fi4kuju+2DXDgW7AOGSA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1609660117; bh=ExOJ7rBkq2PGE+865hEl13MVZk9ejtSFKa3o4L1uUcm=; h=Date:From:Subject:From:Subject; b=F+iSuouCi7K1+wKAEOwDkMxgCOIpgt2U1VOoyu8mF66xGUQ3N9G2ya4OzV/0ZJfOodQfn/XyQ/9hS075stWgBYRDx9Ez+R6AZmplFSc6wNBPTE+bl/x3Dbt0LZ1Zr4R0gy7ocllzkzD8W0JeK+JjakmRl6+sZUDdkRmH7QwR+hJZFc48SLxzDaAVwhf4ZaOrugu5mYx+6U05KOBCKQ6WMvmPx+s3/Fo84aavz5PkUlIK8YPzZqFQqfshjXVN+kFzotmcwzAID63Rn5kIbq4CUIbM4GXKTLnkLd72h/J8PtjS1kDmbjNwkmz2CA9eyWxOI7vuQdjxEep99KmQOQYutA==
-X-YMail-OSG: Bb4zEREVM1naMd6eLp_a93figCRrkPUCnxdaJ7.RQrQs0BJ753kFCSJq0elODJ2
- pPBFFElgLyKGTgZCgoPuqPSF6r3N7NWzBuUCB1rqqJpqxT3EFhq8htyGdTAEidoGINBzaxyvWCqB
- buczTjlNSKPYiEv3D0fdUQlylS7X1.H4WnNDTn9pfhgIHBX28bC7LYjC_HqiV5cZ57FWIIqBv4yN
- a7usn9obW.TWZlA8dyqDybvZmF20i_OA0eX244B_Hd__JvN8fzoEPNxW8YX0XHHGcKNPHljIYV9S
- 88tQl3rf_KTY83QSTZoaqb_rXgRBWi3GtPQ0CyIEFDXW28fniYVvdWcJfJT3NYd_6neBZivXApB4
- ZFG5_oGzNqFFZmmqBlDiWW2twl8af2JU3SXaMZYo3awGWSxaWD7uITqj9hKAYNpQ5GviB8WhY2_b
- jJ4mpfPKhw8T0oYfqolgmHI.RwBcUoUFk.R3fimcHIhllAC_9BkdzinP52NWeDirhYfp4q62y_nV
- CIAoDNMCyFkAg9z96Ru2txYYUEibKcO3a89Lhfux.MzUY0K5HiTojqqtUX7DmCB2y1aFy1QqFGQE
- VD9kTZLnJ0bPLXVQrUvurubRIthy.8wsJQWyl4Ix5xrano3Jrccmhhb0.Ld0T_8uRRqAru1bSg8G
- rqAOThzjHI7RnwywznKxZ0G_FyOea9NCU.4EMT_P4wLkJMgyC5oijWuU.nznS.OjY5ckDNAJJp2k
- SX9.7laFXvwt3Pxu4PYe_NsC5Vzou7PPCydR6h_0P3Bt35Bfrhmz.PXxVCCHJa5NhOdNVMZaXTri
- BUf5zLyzU5EKAUVgJaNmScfROTv_D8WolaKi1u86Imm74xe0Bdh17OxBCi9qntRccV.gXx.YyGge
- zOIgA2tIDcE0PI7WJRCEJ4xzJRRH4H8AQ.6pSfOpr2jpqjWLJ1wWvUOQk4VSc9tZz7yb_wrL3qit
- VH269gFT5KORD4tb4gp45DoTaIgjLNAUuJqvG3vIZskgqUYzVcuRWdh_5Es0EKjkzNMaUNa_PzGA
- 6O5ITfKzXnknsEeHiC.z0Y_rGgSD8xIUzOlFXDZbwhYok4ThhYI9wf6uioVn9.wBRvvQ3Y5kRzhQ
- 2oHG63jFiVysFoGaRi6aFW29jlF0tElhWqENxkJfqg0C4VC.a9rI0uV0fz6yGjmpgKDy84m5mAGL
- MMsKyBZ.AgJWx2On3ZHygTaE5Yoq8udEouiJJ6PT9u.IjdWcqEnJFyg0UdhyTYQbKbpEHoBh81W8
- J7p0EyvyOzqOdaBthNHvRa952UZ3CApYTE5IWWat8Sh6XeFPfR8ypOC8fnToGdGij3TkZqgjlrAI
- PuTwFXPjrgtDZcw0nyJoJj7ddjKNopLialO3YlYBsZGmzjfrtTMdV2Rh3TuICDxDtUcG_ssH2J8c
- GYZxktjyfFJBThEdFuCFz_rN793eLHK1R3Pn07S33Ilv0eQZ__a0e.9kPKb6u6iPncu4wrGLqBGu
- CIB1UswJZKQfZRvNGXVp1vEBR5YDQD48_MAzXVAJvT7wOlNCA3JNJ4TDbZP7S..TbHedgneBVCKG
- MfdLO8ySBBmRRQ4abGvgmZYUpy.yHFSXzfiev0QaZH6.qNuWyb.3g79OZi4JqoZpgZDaP5jqNU46
- ShqcqV18GNkUf5TVfg7GOKsKSv4LXaM8_2COk0YxxyToaAfIyOTEsieIGVw4WiRyB9c3P8qUsCzr
- iXK_bTEZ8nqSRmb_4vaV2pE6GIcASgF8w5lN0w8TBoyO2uw2AXtVwOB5vTu24Nj7r3kE_h788CYP
- ciHKWXiSg9HzPZzgpGjzBGNYsekk.0YNtaymn69win.q4kx3BBndt0nYN.jq9XT.7fweQnsJgwsC
- 2z2kI1XB3BmSEYT6GBi0JnfohHb0C1B9fyyVK3mViKBVuVs4izi4zEybBvx5Wl6oyM6jTlAG.s7P
- xoVh6yRnzBbFWXjAtpaqndu2eqcU9wa3BoI79qYT.kW23hzCbQfzwV6.dwZqLuH7B4508UXCYGnY
- JdEQAIEbWiwid1tWVoKFoSlIiz6IDrqC84bJMUQHu1t8iwvRAfKyyGif9r6KY90UEIXuNsD8xY.q
- C95xmnihrxndU7M.qIdM0WOPGoR5xghVIB8s0R_yFiyq8Amtjw.5NWjKur.BIm6qQvZTUZkU1zV7
- KUq4xBQDUIP1CKXygDbPu926xlwoSh1YklW4lUDuJWaZqX.ZDEVRTjMAJ.0fZtFdJNnG8BlfWN7o
- TYa8i7oIB.E1YDxPDrQNqnwnSR4gYEvK2vAf.fBmf4DMJK.TmfmjM0Z_ECtOUn7gZATYVkkyJ1Me
- idIO.4.05n9qVBglFpYpd0vt.IbqiyRLzh_NekZDGofImpGkV7tV0Ys0KFPqi.x4GjNySMbUPQaa
- KGcz2z9cEojxn44GiBwn89kVoXnJU53FjKcxA4hVlwOzdKW9sP6iAlgBEIo1QfZGY94VmZZLPWvf
- ezoYtVmc4sqcLr.THpndIdTMEkv.RrbnBFLzsOgJt4mpxn3p_o5BtoOR4FSXOZuutYS0dlBYDh8C
- ig8ZPLW77wE41DvDx7pl3jOGWFipun_Ag7Fk4Poy6S5qxp8j5GnBWuPQq5BCzto52n2P3svrwhlz
- pCbfg0TBit9kqLnN5x90AunvNvdEG.fROnsrYDlzhiHWGPoe2idtnRmvfpSoBBr.bFrd4Tt101LI
- YsZloTJWloj1mdNlAG9LimBysgQLROR9jkhDAFVXcdX9._9eiDO3DXqp1eBQRQ58whVyyIgYiryP
- qqE49zCq5WaLStu2rL7BqRvCMYG9GdkQoSkWYkhmnucpRGABgJUOBrRLZ21dCq4hN9YRS5dcBCvg
- M0Kmz8o8twGD.bgwCF6K7kuCra4ndQFVzaMyvOdYtubmOpO7rggPJtju_9dKKRzNLMKBWGT8j4g_
- 6XtVyguDInQGHOoWgJZp3vEM_.VsfDF0S2clgd9CNKxC5bH8E2TGce1UzgqHjAIQxvoSmpXIXQfx
- If2PYgevBtYmdk0YGLySjZwZ3CPutzrV6MukDkSElMdcz_5396B2dLSJQ_ResumABF.sNWTygHaG
- agRXwWBBznhRpnqCRK74JcVbbyG6oyUA92o4_cVw2JW5VNOCvRlO0Schha1UkRG8mUIpWuI4gO8S
- 9iuGjUjQVKg5._rQm6B8CqAdvqHZF42M7Oy1XZDUn6lqNFU8gaSuCUvMHIQe5DxHy9eYvDPDZpKk
- MyyH5ErkxHAjYHbZbHKW_pPKnlN0Dro6_.0X57IC5kYMrm38t_BY2oPhz9zRkbJ0PX1auvhokesY
- oKNg9apIVndykDQ_AJcCDV007KEyMKH9EGJLgsaflwPsolJAHhlIodRPnT6oOq8JmMrOmkINIaXH
- igb_IEPZQqAm6jhPGclhUfvEkQK_VfvVxgz5TrsC_z.hM3Y0bx4LB3.ja68ZU94RZlQn049oVojn
- c0GwHJ3tpY_Bhu1ZvrYGK9GKQLgChYgc5YCAfm4krA5NuLxiue6tJ7gxJcqOfmwBm2Me7keH7.Cf
- 2_9mlZq1h82hWAG.D9eMh.jc.OYqreZ9BcGuLXTar3gRncKvGALowGsMncEagat.iO.hFKrtc5sI
- bV1R5xthrly4Fff_G2qtYNmmbhqkZswA3M.83uDmJc1kAoecw5Y1CEyvkrwWuR3DkP66P3mowm7_
- 09pqktiarB.dbimjxdRRcaFDMsAoYxoTlcuvgjUWMiPHIvNN4xQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.bf2.yahoo.com with HTTP; Sun, 3 Jan 2021 07:48:37 +0000
-Date:   Sun, 3 Jan 2021 07:46:36 +0000 (UTC)
-From:   Stephen <stp05@ghxlo.in>
-Reply-To: listephen573@gmail.com
-Message-ID: <531168079.3990362.1609659996944@mail.yahoo.com>
-Subject: Greetings
+        Sun, 3 Jan 2021 02:48:40 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 1037WeQ7117493;
+        Sun, 3 Jan 2021 02:47:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=1TZF1yrMdKF0cI6gv6RLrazxFj21gnJjIEytObv3dA4=;
+ b=SFtyyEZ8vxIMgRVs4r7FfggyoHDBqkgB/qiebpa/IYkpivc5UH36t7hHSPSRTzVNDaXX
+ 1jYVifpMqX6CetxWxM+5YrV4k359AYiofW1HRgv6mQa13/W+fHDBGaMUdOelQRiA0h+2
+ qziWyW83zT7j3qkommGkSlragOxOGaZC+MDxn+YBE09nm7/0p6E2S7MMC+UODYmWQVEZ
+ RIBXgSk4bkyirnMrLQcaH91Ef+J372F+8iRCrSKlx9KdfBi/C4cJSshxRpyXd+UdIeUB
+ alnRShLMIeBcBfFeGqWgtHWG+EbQDWSO0/tIwYOjY47xH64i3msDS9lZ6363v0+cx7eh +w== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35u817sfcf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 03 Jan 2021 02:47:58 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1037S3iP022420;
+        Sun, 3 Jan 2021 07:47:56 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 35tgf7rdqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 03 Jan 2021 07:47:56 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1037lsgF41681252
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 3 Jan 2021 07:47:54 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F320AE045;
+        Sun,  3 Jan 2021 07:47:54 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 264D4AE057;
+        Sun,  3 Jan 2021 07:47:54 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun,  3 Jan 2021 07:47:54 +0000 (GMT)
+Received: from [9.206.161.160] (unknown [9.206.161.160])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id CF1CD609AF;
+        Sun,  3 Jan 2021 18:47:52 +1100 (AEDT)
+Subject: Re: [ANNOUNCE] [CFP] Call for Sessions - linux.conf.au Online 2021
+ Kernel Miniconf
+From:   Andrew Donnellan <ajd@linux.ibm.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     lwn@lwn.net
+References: <f43afd8c-5ce6-c505-3f4c-bd8f130ff904@linux.ibm.com>
+Message-ID: <626b30c1-0546-2abd-90eb-6681fbc3e25c@linux.ibm.com>
+Date:   Sun, 3 Jan 2021 18:47:45 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <f43afd8c-5ce6-c505-3f4c-bd8f130ff904@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-References: <531168079.3990362.1609659996944.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.17278 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0
-To:     unlisted-recipients:; (no To-header on input)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-02_13:2020-12-31,2021-01-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ mlxscore=0 bulkscore=0 mlxlogscore=999 clxscore=1015 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101030043
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 30/11/20 1:45 pm, Andrew Donnellan wrote:
+> LCA2021 Kernel Miniconf - Online - 2021-01-23
+> ---------------------------------------------
+> 
+> LCA Kernel Miniconf submissions now open! (Ever wanted to present at 
+> LCA, but couldn't justify flying to Australia? Well, 2021 is your chance 
+> - we're going online-only for reasons you're probably aware of.)
+> 
+> Submissions close: 2020-12-18, 23:59 AoE/UTC-12
+> Submissions: https://linux.conf.au/proposals/submit/kernel-miniconf/
+> More info: https://lca-kernel.ozlabs.org/2021-cfs.html
 
+The deadline has been extended until January 7 - we're looking for talks 
+on a broad range of kernel topics, so please feel free to submit a 
+proposal about anything kernel-related!
 
-Greetings
-I was searching through a local business directory when I found your
-profile. I am Soliciting On-Behalf of my private client who is interested in given out big loans to high profile individuals who are interested in a serious business investment or has a valid business, investment or project he/she wants to pump more cash into, as we know the pandemic has destroyed so many finances so if you are interested in needing any loan get to me for more details. Your swift response is highly needed. Please Contact Email: listephen573@gmail.com
+> 
+> ***************************************************************************
+> 
+> linux.conf.au 2021 will be held at the Australian National University, 
+> Canberra^W^W^W^W^W^Win the comfort of your own homes, by the magic of 
+> the internet, from 23-25 January 2021.
+> 
+> The Kernel Miniconf is a single-day miniconf track, held on Saturday 23 
+> January, about everything related to the kernel and low-level systems 
+> programming.
+> 
+> The Kernel Miniconf will focus on a variety of kernel-related topics - 
+> technical presentations on up-and-coming kernel developments, the future 
+> direction of the kernel, and kernel development community and process 
+> matters. Past Kernel Miniconfs have included technical talks on topics 
+> such as memory management, RCU, scheduling and filesystems, as well as 
+> talks on Linux kernel community topics such as licensing and Linux 
+> kernel development process.
+> 
+> We invite submissions on anything related to kernel and low-level 
+> systems programming. We welcome submissions from developers of all 
+> levels of experience in the kernel community, covering a broad range of 
+> topics. The focus of the miniconf will primarily be on Linux, however 
+> non-Linux talks of sufficient interest to a primarily Linux audience 
+> will be considered.
+> 
 
-Sincerely
-Stephen Li
+-- 
+Andrew Donnellan              OzLabs, ADL Canberra
+ajd@linux.ibm.com             IBM Australia Limited
