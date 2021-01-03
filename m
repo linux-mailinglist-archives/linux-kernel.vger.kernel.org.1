@@ -2,91 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9792E8A15
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 04:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4702E8A19
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 04:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbhACDJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 22:09:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
+        id S1726365AbhACD1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 22:27:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbhACDJS (ORCPT
+        with ESMTP id S1725786AbhACD1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 22:09:18 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52274C061573
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Jan 2021 19:08:38 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id b5so8339678pjk.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 19:08:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=MPFL5H9ZSVilaIsjC1NaXD0wkAu+/ivoFybzBOXrt1Q=;
-        b=bdXaJyq9jjG91N0oU5j26ZdioUt/s/Td0bzl6bUbj52ou5yDywZ9hFCTn1HoM+KC/4
-         9EzJ6m5B4Cd+NK90VtD8WFo6LfERg+x7Ikcj+6TnCYK+VP1eUtIHZAUfC+8dCKMvJx2l
-         eoEe0b1CzhoHHyYSeXZPpFK5FJV13NDFveZYSz0Rhn5znMnLIpiiZrzwm2IOgXy40Bhs
-         CWACUihfWL0RUKhHm4NDcmpmZprInO9E1kS3Bfel/mEWonfHGyFHWILYXEVVd51xkQpF
-         j5t0MqcwBvuvkUUilRWgeJwUoA61LCBGfrwqQks3JkEcVq1xq8wwRxheBP3V05+xS749
-         XjSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=MPFL5H9ZSVilaIsjC1NaXD0wkAu+/ivoFybzBOXrt1Q=;
-        b=APYFyHXtHKBeES/hzV+K+Cd3bS09jgnWKa+FGsIz89WcfE1GD92fDgcEACwSW0RI5M
-         6FVqP62TCEQUKe606iiWBjbgU1RVMo+d6/97/SKAIrbgkYUdYmwqIc44z+mXPGrTF9AL
-         3iFC9G30fyyNAPoXVPsiblpLqpcw5y8F+UCJnhV50DW0UN5jvqXG0/EZwQ8/0ldcMNyK
-         xEahaPxZsvRKC8zS7BKo+HtCjG5Vecp+2n1TWen/imdmCWei5SFk+th/AvRR3XdQs/gJ
-         zVW79JNm/3mgna7SFLVSmBH3/NDKc6gk3dNDlnEMuyq3WE7OuPxGIJWtGr9pVxOE4bks
-         acIg==
-X-Gm-Message-State: AOAM530F+kAjys4p210gFSKRVgVC8VgzLqAyDVx/oPc37cHqERN/6/Ra
-        BjaydgK5lpeN0vBy61Dnt3o=
-X-Google-Smtp-Source: ABdhPJxmFPzG8YfwLBpnABwecIW4Gs2carG706Epep2PQmxx7jOMkViaQ5y0oQhzUJONWVpQnBvpGQ==
-X-Received: by 2002:a17:902:d893:b029:da:72d4:8343 with SMTP id b19-20020a170902d893b02900da72d48343mr39594669plz.84.1609643317872;
-        Sat, 02 Jan 2021 19:08:37 -0800 (PST)
-Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
-        by smtp.gmail.com with ESMTPSA id c3sm49191144pfi.135.2021.01.02.19.08.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Jan 2021 19:08:37 -0800 (PST)
-Date:   Sun, 3 Jan 2021 03:08:34 +0000
-From:   Hao Lee <haolee.swjtu@gmail.com>
-To:     tglx@linutronix.de
-Cc:     mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, alexandre.chartre@oracle.com,
-        linux-kernel@vger.kernel.org, haolee.swjtu@gmail.com
-Subject: [PATCH] x86/entry: Remove deprecated do_IRQ declaration
-Message-ID: <20210103030834.GA15432@haolee.github.io>
+        Sat, 2 Jan 2021 22:27:16 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C9AC061573;
+        Sat,  2 Jan 2021 19:26:35 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id D20E11F4050B
+Received: by earth.universe (Postfix, from userid 1000)
+        id AE3113C0C94; Sun,  3 Jan 2021 04:26:31 +0100 (CET)
+Date:   Sun, 3 Jan 2021 04:26:31 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v4 5/7] power: reset: Add poweroff driver for ATC260x
+ PMICs
+Message-ID: <20210103032631.k6ls5k2bnxmlhlhv@earth.universe>
+References: <cover.1609258905.git.cristian.ciocaltea@gmail.com>
+ <eef6e5a4e0fc5f20da235a3a4124ba81eebfe2ca.1609258905.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="auttkguxzhd5q6k7"
 Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <eef6e5a4e0fc5f20da235a3a4124ba81eebfe2ca.1609258905.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_IRQ has been replaced by common_interrupt in
-commit fa5e5c409213 ("x86/entry: Use idtentry for interrupts")
 
-Remove its declaration.
+--auttkguxzhd5q6k7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
----
- arch/x86/include/asm/irq.h | 2 --
- 1 file changed, 2 deletions(-)
+Hi,
 
-diff --git a/arch/x86/include/asm/irq.h b/arch/x86/include/asm/irq.h
-index 528c8a71fe7f..76d389691b5b 100644
---- a/arch/x86/include/asm/irq.h
-+++ b/arch/x86/include/asm/irq.h
-@@ -40,8 +40,6 @@ extern void native_init_IRQ(void);
- 
- extern void __handle_irq(struct irq_desc *desc, struct pt_regs *regs);
- 
--extern __visible void do_IRQ(struct pt_regs *regs, unsigned long vector);
--
- extern void init_ISA_irqs(void);
- 
- extern void __init init_IRQ(void);
--- 
-2.24.1
+On Tue, Dec 29, 2020 at 07:31:20PM +0200, Cristian Ciocaltea wrote:
+> This driver provides poweroff and reboot support for a system through
+> the ATC2603C and ATC2609A chip variants of the Actions Semi ATC260x
+> family of PMICs.
+>=20
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> ---
+> Changes in v4:
+>  - None
+>=20
+> Changes in v3:
+>  - Removed the unnecessary driver compatibles
+>=20
+>  drivers/power/reset/Kconfig            |   8 +-
+>  drivers/power/reset/Makefile           |   1 +
+>  drivers/power/reset/atc260x-poweroff.c | 263 +++++++++++++++++++++++++
+>  3 files changed, 271 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/power/reset/atc260x-poweroff.c
+>=20
+> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+> index b22c4fdb2561..1737e227b16e 100644
+> --- a/drivers/power/reset/Kconfig
+> +++ b/drivers/power/reset/Kconfig
+> @@ -39,6 +39,13 @@ config POWER_RESET_AT91_SAMA5D2_SHDWC
+>  	  This driver supports the alternate shutdown controller for some Atmel
+>  	  SAMA5 SoCs. It is present for example on SAMA5D2 SoC.
+> =20
+> +config POWER_RESET_ATC260X
+> +	tristate "Actions Semi ATC260x PMIC power-off driver"
+> +	depends on MFD_ATC260X
+> +	help
+> +	  This driver provides power-off and restart support for a system
+> +	  through Actions Semi ATC260x series PMICs.
+> +
+>  config POWER_RESET_AXXIA
+>  	bool "LSI Axxia reset driver"
+>  	depends on ARCH_AXXIA
+> @@ -292,4 +299,3 @@ config NVMEM_REBOOT_MODE
+>  	  action according to the mode.
+> =20
+>  endif
+> -
+> diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+> index 9dc49d3a57ff..b4601c0a96ed 100644
+> --- a/drivers/power/reset/Makefile
+> +++ b/drivers/power/reset/Makefile
+> @@ -3,6 +3,7 @@ obj-$(CONFIG_POWER_RESET_AS3722) +=3D as3722-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_AT91_POWEROFF) +=3D at91-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_AT91_RESET) +=3D at91-reset.o
+>  obj-$(CONFIG_POWER_RESET_AT91_SAMA5D2_SHDWC) +=3D at91-sama5d2_shdwc.o
+> +obj-$(CONFIG_POWER_RESET_ATC260X) +=3D atc260x-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_AXXIA) +=3D axxia-reset.o
+>  obj-$(CONFIG_POWER_RESET_BRCMKONA) +=3D brcm-kona-reset.o
+>  obj-$(CONFIG_POWER_RESET_BRCMSTB) +=3D brcmstb-reboot.o
+> diff --git a/drivers/power/reset/atc260x-poweroff.c b/drivers/power/reset=
+/atc260x-poweroff.c
+> new file mode 100644
+> index 000000000000..81b050f99302
+> --- /dev/null
+> +++ b/drivers/power/reset/atc260x-poweroff.c
+> @@ -0,0 +1,263 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Poweroff & reset driver for Actions Semi ATC260x PMICs
+> + *
+> + * Copyright (c) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/mfd/atc260x/core.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
 
+There is no DT code in this driver?
+
+> +#include <linux/platform_device.h>
+> +#include <linux/power_supply.h>
+
+power_supply.h? That's for chargers and battery fuel gauges.
+
+> +#include <linux/reboot.h>
+> +#include <linux/regmap.h>
+
+> [...]
+
+Otherwise LGTM. I suppose I can cherry-pick this patch into
+my tree, or did I miss some dependencies?
+
+-- Sebastian
+
+--auttkguxzhd5q6k7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/xOWMACgkQ2O7X88g7
++poyiA/+IJ9TtjwGKUynnHBFNMG0SXvbxnAZeRSlALvJBTlOnr7ENbEhN4ouUcCI
+WJw2ClTRUZvOcNLr5/ZR/U5lFVvxMmsVlYpFsBov/LDyZUVi7KyLWieLU0k6ZR3Z
+ZZzAHVOue9pmwggb9B9idJ+Z1t1qfN/t8XR+zGkzSXIxKbXOJLQB3ixTQOJRkDt4
+TlqAQ/ypHgQId54dysPIXCpeq/TkLninuctMa3WE1ytkO7fjHn0xp07xWSsvAKul
+g2/1cZEu/itDACLoAGMjtmCpZrOaR3901Od3SmKMCDSYRFBvUKAQzuh9vW9P0Pz4
+sYwusC/izNeanTuGUz9p2XKHb9B9fNPcyoDLzklJkPzTDuU4ClvuL2aT9qhFAALm
+TKyLlLED2UxqAt3XtkzC3UAL8gHf0hv0cmaLlhOUpoqScQTa6lCKT4+D10y5yFv9
+MoVK8POUMezAudfzhGneRcNJYRQHaIHAztSgPKitXONX2ve4ITue/AoRGx6X/OPJ
+THg3QZO6VqUJGiSv4q7Tlo0dNK659CuGO6jmASqmpjv2BfbivbIi1jllurns7GV7
+ldy8ZznbKCx65cni5r6OKybdbUwHkd1Jvb6gOHYrFuQ6l4iJo3edRLyP4RQGO0hA
+O30CQlCuXIA0MO9/XI3y0gLNFRFvb3QBCwqFzJVTGEGyoiJcYlI=
+=UCwu
+-----END PGP SIGNATURE-----
+
+--auttkguxzhd5q6k7--
