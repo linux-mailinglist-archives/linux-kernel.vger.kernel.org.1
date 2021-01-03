@@ -2,151 +2,611 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEAB2E8E9A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3262E8E9C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727494AbhACVz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 16:55:58 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62334 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727368AbhACVz5 (ORCPT
+        id S1727520AbhACV6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 16:58:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726525AbhACV6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 16:55:57 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 103LpM28016101;
-        Sun, 3 Jan 2021 13:55:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=9cS/bPS8mzJpHeHHyS2WoTh3L1uOJd3Z+IgNuHzfufM=;
- b=THyGULTLWLEMGMSTlj2V+S4OVMFG2q+cKoBqcQn40Xxld1WNG1IJVO0vakThi/MtH+aF
- r57LeNCDrhfGAl2K31gN+TRN8Zee5M8DrBiCOO4omd4P2ZiN0yD8WnE1eab/HYZpDuWV
- pJPK8VnLEbbpyS0ZqhuH/XWKsfP6JNTsqpo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35u9ruhfac-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 03 Jan 2021 13:55:11 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 3 Jan 2021 13:55:09 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fEWjN9xVDk37spaCtdFr9OO5jcPl4gSf0J4apSMzSE++9xor8M2plEmpacf4yMwm2+j4SG/yYri4tCHP29Wq3uI9V4ckcXKhO84v5B6We/ZL71vEbrKRk553zD5VQuKfyJGCagkOvAAgiINvpSu/1YoEuKnEnOMcy7AR+rlh5spRwrnDAIisGaA+/Y3QBER4T8oaNoCzhyxG+N6CyVd3smPItUmLuQ8VdNJ+E1sqGzmODBFth31hGkqbQbK3/v1HlcKU1/bM5Vl01jqB6JTCSYyoy/gzSIZ3RlUXmjGkD6A/KjDqWSDlOb1+462lbAxjgv9SwSuPyzW4sNX2dyLZhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9cS/bPS8mzJpHeHHyS2WoTh3L1uOJd3Z+IgNuHzfufM=;
- b=GClKkHJkgDcDCGoCI/Cr1qubcd9G6/kFhqSReZvrNBPUI3jdH1FnKpfcLVch6jYCojIaG2kDHxBsLyc2dRPWg38lLpSrdbfR5OslYi/6YpibFKBgzzmCeoKhdFlh4vnogj9j8voNXafThcGAUD86fBJL6ja9RIPv9rmoHmud2s8Ol411KV3C8Ot8J1OhQmDZvtZJWEUZO5Z3JZoysqvrgh0EyTfBChv6t2i1vkWiXiva4SQssyL47nrhklC02lnxAQ3z8h56kP7bwG/86K5L2BaycdzIKOuK7IOek0L44TiG21Bq51U/84NCsmlFJE4sYGOpyE0ZyVLt8siWkW+orQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9cS/bPS8mzJpHeHHyS2WoTh3L1uOJd3Z+IgNuHzfufM=;
- b=ensssRFCVi66l5k05VKCqXzoCwXSseHSU9zNE8B+yH9aLXL7T0OfdWu/E8M7KVKvgVnjCUorgVK1Qp1OREFZM70yetlBaV1M5WI967Dx/N6N82hkEl7jCJ9GShNYoXvDmKhos5J2RL1Sy6ObK9efMZ7BxgyteK1AU/I8z2hiylE=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB2566.namprd15.prod.outlook.com (2603:10b6:a03:150::24)
- by BYAPR15MB4119.namprd15.prod.outlook.com (2603:10b6:a02:cd::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.21; Sun, 3 Jan
- 2021 21:55:08 +0000
-Received: from BYAPR15MB2566.namprd15.prod.outlook.com
- ([fe80::684b:6f93:49d2:73eb]) by BYAPR15MB2566.namprd15.prod.outlook.com
- ([fe80::684b:6f93:49d2:73eb%6]) with mapi id 15.20.3721.024; Sun, 3 Jan 2021
- 21:55:08 +0000
-Subject: Re: [PATCH] lightnvm: select CONFIG_CRC32
-To:     Arnd Bergmann <arnd@kernel.org>, Matias Bjorling <mb@lightnvm.io>,
-        =?UTF-8?Q?Matias_Bj=c3=b8rling?= <matias@cnexlabs.com>,
-        =?UTF-8?Q?Javier_Gonz=c3=a1lez?= <jg@lightnvm.io>
-CC:     Arnd Bergmann <arnd@arndb.de>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210103214316.1997006-1-arnd@kernel.org>
-From:   Jens Axboe <axboe@fb.com>
-Message-ID: <89046687-b650-afbb-af14-0a3b0dc1a8d0@fb.com>
-Date:   Sun, 3 Jan 2021 14:55:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210103214316.1997006-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [66.219.217.173]
-X-ClientProxiedBy: SJ0PR03CA0062.namprd03.prod.outlook.com
- (2603:10b6:a03:331::7) To BYAPR15MB2566.namprd15.prod.outlook.com
- (2603:10b6:a03:150::24)
+        Sun, 3 Jan 2021 16:58:17 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5251C061573;
+        Sun,  3 Jan 2021 13:57:36 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id o13so60278598lfr.3;
+        Sun, 03 Jan 2021 13:57:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/Pq5sbU8BF49DDG/JssIh+YGz0vHa+xobOtTqwvprwI=;
+        b=X2mpdjF8uPsuY/VH55RxBw7BmzU4tZWHJFRgMOrVs3kBL8pC32nfM66pdsULk/yURw
+         81cQM9Qe2VO+BT9odJPUKxUcK/tTSqPZgEVukeQni08x0tjfCM4RvP/TmuGDmNXCH5ji
+         yrPGAMHuvSqRhOsaQhiaz1wvor1zCTjrr2zAuSNDfp2UEx4+PNA6nzNZ/1oLEKnH2SC1
+         8h8NqxwfrtDc8WQvReABezPcupbM2DOQ8lYlwbs3gFa14Wc3GLs/TPuEd++TDXC/3TkD
+         2o5JNA/rcdOtDqpKW4wFAn6b2wmXzVk51YoJ4gFD+MDd8OHe6KRL3VrEfaENCyamrB29
+         XgvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/Pq5sbU8BF49DDG/JssIh+YGz0vHa+xobOtTqwvprwI=;
+        b=my0arn2fPTs/RP0tmpzjFyXX84LusC+oV/DRSLopGfEy8Uq7UcvH+V1zMpOopEtKnS
+         bOOA8g7gC0UNZb2iRkM40811BfGtkIar4q7j53bRbrCCB5LaZLa/3C4VFxzSIus3s/qL
+         +Ud4epcCxnpw1t51ioxLr1XczqIPyks+EeS0c1+H2ivZm7WsQ147LCdAV7Y7zhnKVyFK
+         0LFOIqIUFNX0OXsTX1m34FrNLZr1Zaj9igobNK6Qaw+N/Q8aCTRpsr78g0/ncWKutoz+
+         d+t3T6xYCmd41iBW4qE0RMHX0YkVwEHHQfOb67h33F6qD29ZPpXOIWmAJ4h5Kc0XmlhD
+         mHyw==
+X-Gm-Message-State: AOAM533bE6wvjd2ydQTRfWFfxxCJ0pl5JRcNXn3pJGXZExPorRL3Kox6
+        6NMyQCWlRY4YfnofauPS77P7cPgwRhdQ6A==
+X-Google-Smtp-Source: ABdhPJxxb4CAuXqy7jwWYMSGMfdngNfIqm0fxbCtJWrT+iMA4a6nj7BRXZMAFxLoAer8m76eO3nlxw==
+X-Received: by 2002:a2e:95d5:: with SMTP id y21mr35742934ljh.477.1609711055101;
+        Sun, 03 Jan 2021 13:57:35 -0800 (PST)
+Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
+        by smtp.gmail.com with ESMTPSA id z14sm7116593lfd.283.2021.01.03.13.57.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 13:57:34 -0800 (PST)
+Date:   Sun, 3 Jan 2021 23:57:32 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com
+Subject: Re: [PATCH v17 04/10] fs/ntfs3: Add file operations and
+ implementation
+Message-ID: <20210103215732.vbgcrf42xnao6gw2@kari-VirtualBox>
+References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
+ <20201231152401.3162425-5-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.134] (66.219.217.173) by SJ0PR03CA0062.namprd03.prod.outlook.com (2603:10b6:a03:331::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19 via Frontend Transport; Sun, 3 Jan 2021 21:55:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1ba4f54c-7ca9-4d00-906b-08d8b0323cc6
-X-MS-TrafficTypeDiagnostic: BYAPR15MB4119:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB4119EB78FE34F983A7A30B5AC0D30@BYAPR15MB4119.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YZ8gfKluKpBOGljctwMHNzB6roe2LEp+JEyrDssAPrxW5D1q/GbJ+4R/bd95aJMkvgk/cyehya9KNlABpVIDMaEOTvgQaJBCzNKxZslKCMXFIzAAhf7oG9LyWQPDAWQ3F/eIBJ4aNDlYOPGVhpLyVwL0MfRaTroXMaMDkX7G/PvhRQzgaCVDQUAYvsTBKdmTeIu5hEd8cHCVfIpsWwwskuMKycv+S8zTRYggSrdubggbnc4rwuHyYw5wqqdpo5nLPlXWtRsmfbwONcmoc6PySohX1VOgWINwM/wp/hZA6FOjjZPWpRqUtUpUByefnkqTNhImVrqProAtFwxkuh5tBE2qwHCnF/cEJ5EYg4gQi0QEYXChTM+OLkOg6vjYyjez2ShSZbF4NFxlGPANrIC+fySJsbRHeqIIzBqd+rsSexX74iAr9bTTX6/sV8i0ZGo9XkUddW7qnm5rhnAQ7FDYfIpqTMyfhxtBca1OYm0j3rY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2566.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(376002)(396003)(136003)(366004)(2616005)(52116002)(478600001)(4326008)(16526019)(31686004)(186003)(31696002)(5660300002)(66556008)(66476007)(4744005)(66946007)(8676002)(956004)(36756003)(2906002)(8936002)(110136005)(53546011)(16576012)(316002)(6486002)(26005)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QUwyVUFVWFRmZE9JQkNVU0p5aTFuWW9LR1ZZSGtuQzdSSTFDR0dxdWVRZUVV?=
- =?utf-8?B?d1psNURoUytsRHRQWno5ZC9DbjdnRGd4RTJEU3pQMGw5cDAxVGFzcjhObGJv?=
- =?utf-8?B?T2FvYUp0cDNBWDB1UzNUWVd6OEQxaW5rZVo0dnhLYUk5Uld0N3Z0dU9EdS9n?=
- =?utf-8?B?clFLc3FsWVhTanJwSjdyejlpMkpSYzBDS29TVjluVkpoUnRxVkd0TmNCTlM4?=
- =?utf-8?B?ZUJ2OGMraWtjc2trTnJmS1YyNTBQMmFoN0pPd3h5anJyRlRHZ0dCSGZZdU4x?=
- =?utf-8?B?SG0wWnE5cTQ4UVh4N0lxc3Q1ZWc1WU81ZmdiclpUSEltNVVKUHhYVEVxZXFG?=
- =?utf-8?B?UnRDSTIyQlpuV2hpd3ZUNjN4YnE4QVFHdXlKRHhXU2FFbXpLcGUzbXpaYmZX?=
- =?utf-8?B?N3VEYW9FcUNlWjJiNEYvRVUzSnlSSzFPYkt4aFdTRm4wL3krNGxZWkdUSkta?=
- =?utf-8?B?MThRbGN5ZDBXbitYTjlJWC9zWjM3dlk4Y0RPRWVwcDlHM1pmZThOQmo4Q2tV?=
- =?utf-8?B?RlZDZzNmTTZ2T3pWKzZMM0diMlR1QnBaUUtGOVV1M3BjUjZaQVhUaW15MUhU?=
- =?utf-8?B?eDhyT2xHbjdIU1NhZWdoVjUzc3JuVG1zSlBQZUVxK2x3TUJhS3dLdjFaRG9w?=
- =?utf-8?B?YnFDck5aQ3QrZzYrY1gxZ0R5c3RwWlN5L040S1BPZzV6U0QzYXVwNkF6VGZj?=
- =?utf-8?B?ZkxpRE51SHhSZmlQTDNTam5zOGdMRHE5dXRuK1ZOd2hUeHRmSmJyMmVRRGM3?=
- =?utf-8?B?K2lZeTdqNlJVL2Mydi95K3dZNVNGcTVPdVZsRElqNlJwU3diTXZ2TDlyUjVk?=
- =?utf-8?B?NFRnMFl4Z3R0dzRSUlVUbjZzSE5aeENBVzJPeFBMTGNzQ09JWlIzRnJOeW5q?=
- =?utf-8?B?c3pZREJjVnN6alp5MkhSTFRra1hYcXNSeWtadDZYaDRrSTlEeEQ4Nkhnc2ZN?=
- =?utf-8?B?YjZ5WVdYKzdycWxVenVxMjVaSnFHNndpSzh1Qlo0VFlqdHVYWGwwYlNlYktZ?=
- =?utf-8?B?WlZVeHIzZU5FV0VockRSa0ZkNjVyZFp2R3V3TkxDRlZOM1p5c0pJd05aZWE3?=
- =?utf-8?B?VW9HNEVGU0lnVmdCa3pEaGVmK0dwd2xjNXhCM3VUTjBOZEk1OVU1RmVINmdR?=
- =?utf-8?B?UzZ6MlIrbG1ySDdHc2dMQUhkRnhhS2pjWGJqMGNMTElOTWcvdUJkQzR4c0dm?=
- =?utf-8?B?QkFMRU9JTXA0dWtRVUp0YVpzRnc0aUVkSStWbCsrZlZkODFWZFppZEJZR3Ez?=
- =?utf-8?B?WkdSQUxwNWd3T3l0cG5tZ2plSmhYQm5mTzQ3b2FORXoyN1orVk9mT01VUHpt?=
- =?utf-8?Q?yzClIWR46FYk4rKTO5lyVFKV2on+XLF249?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2566.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2021 21:55:08.6085
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ba4f54c-7ca9-4d00-906b-08d8b0323cc6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DGD+bmeLCo6+erZF6BzGQNopGzG6GaH0k87QS0NTpHWbfHiZuSOgBZ8Yz794F2zf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4119
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-03_15:2020-12-31,2021-01-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 malwarescore=0 suspectscore=0 adultscore=0
- clxscore=1011 impostorscore=0 priorityscore=1501 phishscore=0
- mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101030140
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201231152401.3162425-5-almaz.alexandrovich@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/3/21 2:43 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Dec 31, 2020 at 06:23:55PM +0300, Konstantin Komarov wrote:
+> This adds file operations and implementation
 > 
-> Without CRC32 support, this fails to link:
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/dir.c     |  570 ++++++++
+>  fs/ntfs3/file.c    | 1140 ++++++++++++++++
+>  fs/ntfs3/frecord.c | 3088 ++++++++++++++++++++++++++++++++++++++++++++
+>  fs/ntfs3/namei.c   |  590 +++++++++
+>  fs/ntfs3/record.c  |  614 +++++++++
+>  fs/ntfs3/run.c     | 1254 ++++++++++++++++++
+>  6 files changed, 7256 insertions(+)
+>  create mode 100644 fs/ntfs3/dir.c
+>  create mode 100644 fs/ntfs3/file.c
+>  create mode 100644 fs/ntfs3/frecord.c
+>  create mode 100644 fs/ntfs3/namei.c
+>  create mode 100644 fs/ntfs3/record.c
+>  create mode 100644 fs/ntfs3/run.c
 > 
-> arm-linux-gnueabi-ld: drivers/lightnvm/pblk-init.o: in function `pblk_init':
-> pblk-init.c:(.text+0x2654): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/lightnvm/pblk-init.o: in function `pblk_exit':
-> pblk-init.c:(.text+0x2a7c): undefined reference to `crc32_le'
+> diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
 
-Applied, thanks.
+> +int ntfs_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
+> +{
+> +	return generic_file_fsync(filp, start, end, datasync);
+> +}
 
--- 
-Jens Axboe
+Do we have a reson why we implement this if we just use generic. Isn't
+it more clear if we use generic fsync straight away?
 
+> +static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
+> +{
+
+> +	/* Return error if mode is not supported */
+> +	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
+> +		     FALLOC_FL_COLLAPSE_RANGE))
+> +		return -EOPNOTSUPP;
+
+> +
+> +	if (mode & FALLOC_FL_PUNCH_HOLE) {
+
+> +	} else if (mode & FALLOC_FL_COLLAPSE_RANGE) {
+
+> +	} else {
+> +		/*
+> +		 * normal file: allocate clusters, do not change 'valid' size
+> +		 */
+> +		err = ntfs_set_size(inode, max(end, i_size));
+> +		if (err)
+> +			goto out;
+> +
+> +		if (is_sparsed(ni) || is_compressed(ni)) {
+> +			CLST vcn_v = ni->i_valid >> sbi->cluster_bits;
+> +			CLST vcn = vbo >> sbi->cluster_bits;
+> +			CLST cend = bytes_to_cluster(sbi, end);
+> +			CLST lcn, clen;
+> +			bool new;
+> +
+> +			/*
+> +			 * allocate but not zero new clusters (see below comments)
+> +			 * this breaks security (one can read unused on-disk areas)
+> +			 * zeroing these clusters may be too long
+> +			 * may be we should check here for root rights?
+> +			 */
+> +			for (; vcn < cend; vcn += clen) {
+> +				err = attr_data_get_block(ni, vcn, cend - vcn,
+> +							  &lcn, &clen, &new);
+> +				if (err)
+> +					goto out;
+> +				if (!new || vcn >= vcn_v)
+> +					continue;
+> +
+> +				/*
+> +				 * Unwritten area
+> +				 * NTFS is not able to store several unwritten areas
+> +				 * Activate 'ntfs_sparse_cluster' to zero new allocated clusters
+> +				 *
+> +				 * Dangerous in case:
+> +				 * 1G of sparsed clusters + 1 cluster of data =>
+> +				 * valid_size == 1G + 1 cluster
+> +				 * fallocate(1G) will zero 1G and this can be very long
+> +				 * xfstest 016/086 will fail whithout 'ntfs_sparse_cluster'
+> +				 */
+> +				/*ntfs_sparse_cluster(inode, NULL, vcn,
+> +				 *		    min(vcn_v - vcn, clen));
+> +				 */
+> +			}
+> +		}
+> +
+> +		if (mode & FALLOC_FL_KEEP_SIZE) {
+
+Isn't this hole else already (mode & FALLOC_FL_KEEP_SIZE?
+
+> +			ni_lock(ni);
+> +			/*true - keep preallocated*/
+> +			err = attr_set_size(ni, ATTR_DATA, NULL, 0,
+> +					    &ni->file.run, i_size, &ni->i_valid,
+> +					    true, NULL);
+> +			ni_unlock(ni);
+> +		}
+> +	}
+> +
+> +	if (!err) {
+> +		inode->i_ctime = inode->i_mtime = current_time(inode);
+> +		mark_inode_dirty(inode);
+> +	}
+> +out:
+> +	if (err == -EFBIG)
+> +		err = -ENOSPC;
+> +
+> +	inode_unlock(inode);
+> +	return err;
+> +}
+
+> diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
+
+> +int mi_get(struct ntfs_sb_info *sbi, CLST rno, struct mft_inode **mi)
+> +{
+> +	int err;
+> +	struct mft_inode *m = ntfs_alloc(sizeof(struct mft_inode), 1);
+> +
+> +	if (!m)
+> +		return -ENOMEM;
+> +
+> +	err = mi_init(m, sbi, rno);
+
+If error happend should we just free end exit. Now we call mi_put() to
+clean up.
+
+> +	if (!err)
+> +		err = mi_read(m, false);
+> +
+> +	if (err) {
+> +		mi_put(m);
+> +		return err;
+> +	}
+> +
+> +	*mi = m;
+> +	return 0;
+> +}
+
+> +struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
+> +{
+> +	const struct MFT_REC *rec = mi->mrec;
+> +	u32 used = le32_to_cpu(rec->used);
+> +	u32 t32, off, asize;
+> +	u16 t16;
+> +
+> +	if (!attr) {
+> +		u32 total = le32_to_cpu(rec->total);
+> +
+> +		off = le16_to_cpu(rec->attr_off);
+> +
+> +		if (used > total)
+> +			goto out;
+> +
+> +		if (off >= used || off < MFTRECORD_FIXUP_OFFSET_1 ||
+> +		    !IsDwordAligned(off)) {
+> +			goto out;
+> +		}
+> +
+> +		/* Skip non-resident records */
+> +		if (!is_rec_inuse(rec))
+> +			goto out;
+> +
+> +		attr = Add2Ptr(rec, off);
+> +	} else {
+> +		/* Check if input attr inside record */
+> +		off = PtrOffset(rec, attr);
+> +		if (off >= used)
+> +			goto out;
+> +
+> +		asize = le32_to_cpu(attr->size);
+> +		if (asize < SIZEOF_RESIDENT)
+> +			goto out;
+> +
+> +		attr = Add2Ptr(attr, asize);
+> +		off += asize;
+> +	}
+> +
+> +	asize = le32_to_cpu(attr->size);
+> +
+> +	/* Can we use the first field (attr->type) */
+> +	if (off + 8 > used) {
+> +		static_assert(QuadAlign(sizeof(enum ATTR_TYPE)) == 8);
+> +		goto out;
+> +	}
+> +
+> +	if (attr->type == ATTR_END) {
+> +		if (used != off + 8)
+> +			goto out;
+
+This if is not needed if there is return NULL after. But return
+NULL might also be bug.
+
+> +		return NULL;
+> +	}
+> +
+> +	t32 = le32_to_cpu(attr->type);
+> +	if ((t32 & 0xf) || (t32 > 0x100))
+> +		goto out;
+> +
+> +	/* Check boundary */
+> +	if (off + asize > used)
+> +		goto out;
+> +
+> +	/* Check size of attribute */
+> +	if (!attr->non_res) {
+> +		if (asize < SIZEOF_RESIDENT)
+> +			goto out;
+> +
+> +		t16 = le16_to_cpu(attr->res.data_off);
+> +
+> +		if (t16 > asize)
+> +			goto out;
+> +
+> +		t32 = le32_to_cpu(attr->res.data_size);
+> +		if (t16 + t32 > asize)
+> +			goto out;
+> +
+> +		return attr;
+> +	}
+> +
+> +	/* Check some nonresident fields */
+> +	if (attr->name_len &&
+> +	    le16_to_cpu(attr->name_off) + sizeof(short) * attr->name_len >
+> +		    le16_to_cpu(attr->nres.run_off)) {
+> +		goto out;
+> +	}
+> +
+> +	if (attr->nres.svcn || !is_attr_ext(attr)) {
+> +		if (asize + 8 < SIZEOF_NONRESIDENT)
+> +			goto out;
+> +
+> +		if (attr->nres.c_unit)
+> +			goto out;
+> +	} else if (asize + 8 < SIZEOF_NONRESIDENT_EX)
+> +		goto out;
+> +
+> +	return attr;
+> +
+> +out:
+> +	return NULL;
+> +}
+
+> diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
+
+> +static inline int run_packed_size(const s64 *n)
+> +{
+> +#ifdef __BIG_ENDIAN
+
+These are whole functions with ifdef. It would be maybe more clear
+that there really is whole functions to both endiand.
+
+> +	const u8 *p = (const u8 *)n + sizeof(*n) - 1;
+> +
+> +	if (*n >= 0) {
+> +		if (p[-7] || p[-6] || p[-5] || p[-4])
+> +			p -= 4;
+> +		if (p[-3] || p[-2])
+> +			p -= 2;
+> +		if (p[-1])
+> +			p -= 1;
+> +		if (p[0] & 0x80)
+> +			p -= 1;
+> +	} else {
+> +		if (p[-7] != 0xff || p[-6] != 0xff || p[-5] != 0xff ||
+> +		    p[-4] != 0xff)
+> +			p -= 4;
+> +		if (p[-3] != 0xff || p[-2] != 0xff)
+> +			p -= 2;
+> +		if (p[-1] != 0xff)
+> +			p -= 1;
+> +		if (!(p[0] & 0x80))
+> +			p -= 1;
+> +	}
+> +	return (const u8 *)n + sizeof(*n) - p;
+
+}
+#else
+static inline int run_packed_size(const s64 *n)
+{
+
+Something like this.
+
+> +	const u8 *p = (const u8 *)n;
+> +
+> +	if (*n >= 0) {
+> +		if (p[7] || p[6] || p[5] || p[4])
+> +			p += 4;
+> +		if (p[3] || p[2])
+> +			p += 2;
+> +		if (p[1])
+> +			p += 1;
+> +		if (p[0] & 0x80)
+> +			p += 1;
+> +	} else {
+> +		if (p[7] != 0xff || p[6] != 0xff || p[5] != 0xff ||
+> +		    p[4] != 0xff)
+> +			p += 4;
+> +		if (p[3] != 0xff || p[2] != 0xff)
+> +			p += 2;
+> +		if (p[1] != 0xff)
+> +			p += 1;
+> +		if (!(p[0] & 0x80))
+> +			p += 1;
+> +	}
+> +
+> +	return 1 + p - (const u8 *)n;
+> +#endif
+> +}
+> +
+> +/*
+> + * run_pack
+> + *
+> + * packs runs into buffer
+> + * packed_vcns - how much runs we have packed
+> + * packed_size - how much bytes we have used run_buf
+> + */
+> +int run_pack(const struct runs_tree *run, CLST svcn, CLST len, u8 *run_buf,
+> +	     u32 run_buf_size, CLST *packed_vcns)
+> +{
+> +	CLST next_vcn, vcn, lcn;
+> +	CLST prev_lcn = 0;
+> +	CLST evcn1 = svcn + len;
+> +	int packed_size = 0;
+> +	size_t i;
+> +	bool ok;
+> +	s64 dlcn, len64;
+> +	int offset_size, size_size, t;
+> +	const u8 *p;
+> +
+> +	next_vcn = vcn = svcn;
+> +
+> +	*packed_vcns = 0;
+> +
+> +	if (!len)
+> +		goto out;
+> +
+> +	ok = run_lookup_entry(run, vcn, &lcn, &len, &i);
+> +
+> +	if (!ok)
+> +		goto error;
+> +
+> +	if (next_vcn != vcn)
+> +		goto error;
+> +
+> +	for (;;) {
+> +		/* offset of current fragment relatively to previous fragment */
+> +		dlcn = 0;
+
+This dlcn
+
+> +		next_vcn = vcn + len;
+> +
+> +		if (next_vcn > evcn1)
+> +			len = evcn1 - vcn;
+> +
+> +		/*
+> +		 * mirror of len, but signed, because run_packed_size()
+> +		 * works with signed int only
+> +		 */
+> +		len64 = len;
+> +
+> +		/* how much bytes is packed len64 */
+> +		size_size = run_packed_size(&len64);
+
+Does (s64 *)&len work just fine?
+
+> +
+> +		/* offset_size - how much bytes is packed dlcn */
+> +		if (lcn == SPARSE_LCN) {
+> +			offset_size = 0;
+
+dlcn might be better to live here?
+
+> +		} else {
+> +			/* NOTE: lcn can be less than prev_lcn! */
+> +			dlcn = (s64)lcn - prev_lcn;
+> +			offset_size = run_packed_size(&dlcn);
+> +			prev_lcn = lcn;
+> +		}
+> +
+> +		t = run_buf_size - packed_size - 2 - offset_size;
+> +		if (t <= 0)
+> +			goto out;
+> +
+> +		/* can we store this entire run */
+> +		if (t < size_size)
+> +			goto out;
+> +
+> +		if (run_buf) {
+> +			p = (u8 *)&len64;
+> +
+> +			/* pack run header */
+> +			run_buf[0] = ((u8)(size_size | (offset_size << 4)));
+> +			run_buf += 1;
+> +
+> +			/* Pack the length of run */
+> +			switch (size_size) {
+> +#ifdef __BIG_ENDIAN
+> +			case 8:
+> +				run_buf[7] = p[0];
+> +				fallthrough;
+> +			case 7:
+> +				run_buf[6] = p[1];
+> +				fallthrough;
+> +			case 6:
+> +				run_buf[5] = p[2];
+> +				fallthrough;
+> +			case 5:
+> +				run_buf[4] = p[3];
+> +				fallthrough;
+> +			case 4:
+> +				run_buf[3] = p[4];
+> +				fallthrough;
+> +			case 3:
+> +				run_buf[2] = p[5];
+> +				fallthrough;
+> +			case 2:
+> +				run_buf[1] = p[6];
+> +				fallthrough;
+> +			case 1:
+> +				run_buf[0] = p[7];
+> +#else
+> +			case 8:
+> +				run_buf[7] = p[7];
+> +				fallthrough;
+> +			case 7:
+> +				run_buf[6] = p[6];
+> +				fallthrough;
+> +			case 6:
+> +				run_buf[5] = p[5];
+> +				fallthrough;
+> +			case 5:
+> +				run_buf[4] = p[4];
+> +				fallthrough;
+> +			case 4:
+> +				run_buf[3] = p[3];
+> +				fallthrough;
+> +			case 3:
+> +				run_buf[2] = p[2];
+> +				fallthrough;
+> +			case 2:
+> +				run_buf[1] = p[1];
+> +				fallthrough;
+> +			case 1:
+> +				run_buf[0] = p[0];
+> +#endif
+> +			}
+
+Why is this not own function? We use this like 5 places. Also isn't
+little endian just memcopy()
+
+> +
+> +			run_buf += size_size;
+> +			p = (u8 *)&dlcn;
+
+I think that when we have function for that switch tmp p is not needed
+anymore.
+
+> +
+> +			/* Pack the offset from previous lcn */
+> +			switch (offset_size) {
+> +#ifdef __BIG_ENDIAN
+> +			case 8:
+> +				run_buf[7] = p[0];
+> +				fallthrough;
+> +			case 7:
+> +				run_buf[6] = p[1];
+> +				fallthrough;
+> +			case 6:
+> +				run_buf[5] = p[2];
+> +				fallthrough;
+> +			case 5:
+> +				run_buf[4] = p[3];
+> +				fallthrough;
+> +			case 4:
+> +				run_buf[3] = p[4];
+> +				fallthrough;
+> +			case 3:
+> +				run_buf[2] = p[5];
+> +				fallthrough;
+> +			case 2:
+> +				run_buf[1] = p[6];
+> +				fallthrough;
+> +			case 1:
+> +				run_buf[0] = p[7];
+> +#else
+> +			case 8:
+> +				run_buf[7] = p[7];
+> +				fallthrough;
+> +			case 7:
+> +				run_buf[6] = p[6];
+> +				fallthrough;
+> +			case 6:
+> +				run_buf[5] = p[5];
+> +				fallthrough;
+> +			case 5:
+> +				run_buf[4] = p[4];
+> +				fallthrough;
+> +			case 4:
+> +				run_buf[3] = p[3];
+> +				fallthrough;
+> +			case 3:
+> +				run_buf[2] = p[2];
+> +				fallthrough;
+> +			case 2:
+> +				run_buf[1] = p[1];
+> +				fallthrough;
+> +			case 1:
+> +				run_buf[0] = p[0];
+> +#endif
+> +			}
+
+> +int run_get_highest_vcn(CLST vcn, const u8 *run_buf, u64 *highest_vcn)
+> +{
+
+> +		/* skip size_size */
+> +		run += size_size;
+> +
+> +		if (!len)
+> +			goto error;
+> +
+> +		run += offset_size;
+
+Can this be straight
+run += size_size + offset_size;
+
+> +
+> +#ifdef NTFS3_64BIT_CLUSTER
+> +		if ((vcn >> 32) || (len >> 32))
+> +			goto error;
+> +#endif
+> +		vcn64 += len;
+> +	}
+> +
+> +	*highest_vcn = vcn64 - 1;
+> +	return 0;
+> +}
