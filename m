@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9AF2E8C5D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 14:56:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 267322E8C5E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 14:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbhACNxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 08:53:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34508 "EHLO mail.kernel.org"
+        id S1726840AbhACNyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 08:54:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726691AbhACNxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 08:53:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A2A52080D;
-        Sun,  3 Jan 2021 13:53:01 +0000 (UTC)
+        id S1726745AbhACNyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 08:54:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C417208C7;
+        Sun,  3 Jan 2021 13:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609681983;
-        bh=V7rDKYCFcuZSgAl1YWdvMaci7rDCqi0C/xM+NOOsOs8=;
+        s=k20201202; t=1609682012;
+        bh=RfD85uyAyXiT/UWv6+Zq6MnRrDYD8p+2jEiLShXKqnw=;
         h=From:To:Cc:Subject:Date:From;
-        b=VVuw7uHhdIvgtoItbkQWTUChPwiOgzAgG4fHHoRtyAE+15/dCHKFuHWLe0roznUJn
-         s5d0sSWRxv043pWfzTBDCH2VZU02AM1zSLkvuWNPRv+TiuNNay3FsN7IqPlwKY0cqW
-         /ADlrVqTh/zmPTogXVEP8D85CmfUVMd6Yc7bMceOdaIU9OK7x1c0eMIDlGBWJdbRA3
-         /uH/gC+mvPjhzFLoLxKIkdDLD545adVdgTH1EPbM8ug5YslUejWpJ8ycahCjMeDvrY
-         Bvq+2s2DWJBprRJi43FyiObZBqd1J2n04cTu5FXmB4+7mZCZIw557GQTvcETS2eEJO
-         LceL3fEdBEszA==
+        b=b5xNoNt2oqW1nFjz0hNJWeaDU9FkDI+xCSEveh9Ofia7TDzsKLy/X3gdXqadTSyc3
+         Z/v2pTuOzJqCnR6ZMPIE6B8ua+Zyti8cg3cEsWPseKwnW/oA/vfnPRflcFgm60Xlj7
+         qeCDI4W5KX1qAcUI6+JJcM6PmxRw8AHPcOhZWeNxgOl8adr0Vn6V2BR+hv3TDEK+36
+         iDZpS2kzPPlS8aPjVEB+zdS/wcxKQhbbtfK7Ugn+SP5KOXgKctsCGlKldqIp9SHM9y
+         EXMw2VtnmXFjG/tNDEO6NII6kUXfEI+UIfqRgaZe/wTShVOxsaBoRNM037Do4HNl2E
+         +VFo/3wdW3TZA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        sound-open-firmware@alsa-project.org
-Subject: [PATCH] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
-Date:   Sun,  3 Jan 2021 14:52:32 +0100
-Message-Id: <20210103135257.3611821-1-arnd@kernel.org>
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <festevam@gmail.com>,
+        Viorel Suman <viorel.suman@nxp.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_aud2htx: select SND_SOC_IMX_PCM_DMA
+Date:   Sun,  3 Jan 2021 14:53:17 +0100
+Message-Id: <20210103135327.3630973-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -46,77 +46,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The sof-pci-dev driver fails to link when built into the kernel
-and CONFIG_SND_INTEL_DSP_CONFIG is set to =m:
+The newly added driver requires DMA support and fails to build
+when that is disabled:
 
-arm-linux-gnueabi-ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
-sof-pci-dev.c:(.text+0x1c): undefined reference to `snd_intel_dsp_driver_probe'
+aarch64-linux-ld: sound/soc/fsl/fsl_aud2htx.o: in function `fsl_aud2htx_probe':
+fsl_aud2htx.c:(.text+0x3e0): undefined reference to `imx_pcm_dma_init'
 
-All other drivers using this interface already use a 'select
-SND_INTEL_DSP_CONFIG' statement to force the it to be present, so it
-seems reasonable to do the same here.
-
-The stub implementation in the header makes the problem harder to find,
-as it avoids the link error when SND_INTEL_DSP_CONFIG is completely
-disabled, without any obvious upsides. Remove these stubs to make it
-clearer that the driver is in fact needed here.
-
-Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
+Fixes: 8a24c834c053 ("ASoC: fsl_aud2htx: Add aud2htx module driver")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/sound/intel-dsp-config.h | 17 -----------------
- sound/soc/sof/Kconfig            |  2 ++
- 2 files changed, 2 insertions(+), 17 deletions(-)
+ sound/soc/fsl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/intel-dsp-config.h b/include/sound/intel-dsp-config.h
-index d4609077c258..94667e870029 100644
---- a/include/sound/intel-dsp-config.h
-+++ b/include/sound/intel-dsp-config.h
-@@ -18,24 +18,7 @@ enum {
- 	SND_INTEL_DSP_DRIVER_LAST = SND_INTEL_DSP_DRIVER_SOF
- };
- 
--#if IS_ENABLED(CONFIG_SND_INTEL_DSP_CONFIG)
--
- int snd_intel_dsp_driver_probe(struct pci_dev *pci);
- int snd_intel_acpi_dsp_driver_probe(struct device *dev, const u8 acpi_hid[ACPI_ID_LEN]);
- 
--#else
--
--static inline int snd_intel_dsp_driver_probe(struct pci_dev *pci)
--{
--	return SND_INTEL_DSP_DRIVER_ANY;
--}
--
--static inline
--int snd_intel_acpi_dsp_driver_probe(struct device *dev, const u8 acpi_hid[ACPI_ID_LEN])
--{
--	return SND_INTEL_DSP_DRIVER_ANY;
--}
--
--#endif
--
- #endif
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 031dad5fc4c7..051fd3d27047 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -12,6 +12,7 @@ if SND_SOC_SOF_TOPLEVEL
- config SND_SOC_SOF_PCI
- 	tristate "SOF PCI enumeration support"
- 	depends on PCI
-+	select SND_INTEL_DSP_CONFIG
- 	select SND_SOC_SOF
- 	select SND_SOC_ACPI if ACPI
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 84db0b7b9d59..d7f30036d434 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -108,6 +108,7 @@ config SND_SOC_FSL_XCVR
+ config SND_SOC_FSL_AUD2HTX
+ 	tristate "AUDIO TO HDMI TX module support"
+ 	depends on ARCH_MXC || COMPILE_TEST
++	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
  	help
-@@ -23,6 +24,7 @@ config SND_SOC_SOF_PCI
- config SND_SOC_SOF_ACPI
- 	tristate "SOF ACPI enumeration support"
- 	depends on ACPI || COMPILE_TEST
-+	select SND_INTEL_DSP_CONFIG
- 	select SND_SOC_SOF
- 	select SND_SOC_ACPI if ACPI
- 	select IOSF_MBI if X86 && PCI
+ 	  Say Y if you want to add AUDIO TO HDMI TX support for NXP.
+ 
 -- 
 2.29.2
 
