@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E792E8C6D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 495D12E8C6E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbhACN6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 08:58:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35262 "EHLO mail.kernel.org"
+        id S1727203AbhACN65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 08:58:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbhACN6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 08:58:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 632DE208C7;
-        Sun,  3 Jan 2021 13:57:41 +0000 (UTC)
+        id S1726303AbhACN64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 08:58:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7521B20782;
+        Sun,  3 Jan 2021 13:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609682262;
-        bh=w6s5kcebAimhgTVacPtTiUtHsUatLmTZP8NLc4JsnK4=;
+        s=k20201202; t=1609682296;
+        bh=GJ3TiDbcI7Vu/JRfRThabclQjLmoFf/NfkaYgzUh29A=;
         h=From:To:Cc:Subject:Date:From;
-        b=OJjp4WMn408IY0DKvguUQR/l+RzDopHMYgkO326QJjAwxCrvQcSEMEbN5lVDulUqy
-         qqLYkxW6kHrhJbdrkDpQr/VwVH1sdnXBZNXVs+34m2ccbRtVOZa362iV/v+i3FLQUh
-         YTJArNRhdXBW0G4PSHssB1Uk7lRrCiHA/EPSdfK5kWESbtv1eX+o1wQB6aalORtbVx
-         PAyPQtFhCIupKKirFvSW1L4Wpj+x+8zJHzFTlUWhGOmBYOcbY/NZVUQXTDPfxpceQN
-         MSTK8dZz/AkvmX5/mV3KtblrTYnlnM6RxXsgBrV0fxwpIZiYbdL0RgclXxhK+hNLjS
-         VQYGxV8y4LHKg==
+        b=XILYV6zSwLXgZzW2kxk7c5CgaTvvA9NqMcRtliWJ8emVmxcIHNTio8+2Cwqlmsr0x
+         HGjeo8uMQYAHzy4Kf7I2GDRgwztbb1EudBf+qCLlEKR2GQwzSNzwENeB6BSefyLszR
+         ImwG+2Y8EktwUuOUlc3p0C/6DUf5+M3BK9mD1b77oNviaUrBMqwXGOSrWzjIspIgU6
+         WYt79zuHJYKbzRJM7lvomLbg2L5gdejeC6J/w4TFboMNTJl+AFefMdC0Tt7ScuQtHV
+         +wVxC9DcPHtEMVgwabrHeucIO/4TwD3I7XQvYyA7x5DjLGLB3y/DCkMLEUYdjj6QVA
+         VdT2/fRnJbYyw==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: qcom: fix gpi undefined behavior
-Date:   Sun,  3 Jan 2021 14:57:29 +0100
-Message-Id: <20210103135738.3741123-1-arnd@kernel.org>
+To:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ryder Lee <ryder.lee@mediatek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Yiwei Chung <yiwei.chung@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mt76: mt7915: fix misplaced #ifdef
+Date:   Sun,  3 Jan 2021 14:57:55 +0100
+Message-Id: <20210103135811.3749775-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,38 +48,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-gcc points out an incorrect error handling loop:
+The lone '|' at the end of a line causes a build failure:
 
-drivers/dma/qcom/gpi.c: In function 'gpi_ch_init':
-drivers/dma/qcom/gpi.c:1254:15: error: iteration 2 invokes undefined behavior [-Werror=aggressive-loop-optimizations]
- 1254 |  struct gpii *gpii = gchan->gpii;
-      |               ^~~~
-drivers/dma/qcom/gpi.c:1951:2: note: within this loop
- 1951 |  for (i = i - 1; i >= 0; i++) {
-      |  ^~~
+drivers/net/wireless/mediatek/mt76/mt7915/init.c:47:2: error: expected expression before '}' token
 
-Change the loop to correctly walk backwards through the
-initialized fields rather than off into the woods.
+Replace the #ifdef with an equivalent IS_ENABLED() check.
 
-Fixes: 5d0c3533a19f ("dmaengine: qcom: Add GPI dma driver")
+Fixes: af901eb4ab80 ("mt76: mt7915: get rid of dbdc debugfs knob")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/dma/qcom/gpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/mt7915/init.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
-index 8d39d3e24686..9c211104ddbf 100644
---- a/drivers/dma/qcom/gpi.c
-+++ b/drivers/dma/qcom/gpi.c
-@@ -1948,7 +1948,7 @@ static int gpi_ch_init(struct gchan *gchan)
- 	return ret;
- 
- error_start_chan:
--	for (i = i - 1; i >= 0; i++) {
-+	for (i = i - 1; i >= 0; i--) {
- 		gpi_stop_chan(&gpii->gchan[i]);
- 		gpi_send_cmd(gpii, gchan, GPI_CH_CMD_RESET);
- 	}
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+index ed4635bd151a..f1fb3ae0f7f2 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+@@ -40,10 +40,9 @@ static const struct ieee80211_iface_limit if_limits[] = {
+ 		.types = BIT(NL80211_IFTYPE_ADHOC)
+ 	}, {
+ 		.max = 16,
+-		.types = BIT(NL80211_IFTYPE_AP) |
+-#ifdef CONFIG_MAC80211_MESH
+-			 BIT(NL80211_IFTYPE_MESH_POINT)
+-#endif
++		.types = BIT(NL80211_IFTYPE_AP)
++			 | IS_ENABLED(CONFIG_MAC80211_MESH) ?
++			   BIT(NL80211_IFTYPE_MESH_POINT) : 0
+ 	}, {
+ 		.max = MT7915_MAX_INTERFACES,
+ 		.types = BIT(NL80211_IFTYPE_STATION)
 -- 
 2.29.2
 
