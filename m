@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7F72E8D39
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 17:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44B02E8D3B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 17:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727458AbhACQfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 11:35:02 -0500
-Received: from mail-io1-f54.google.com ([209.85.166.54]:40211 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbhACQfB (ORCPT
+        id S1727483AbhACQig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 11:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbhACQig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 11:35:01 -0500
-Received: by mail-io1-f54.google.com with SMTP id r9so22869629ioo.7;
-        Sun, 03 Jan 2021 08:34:46 -0800 (PST)
+        Sun, 3 Jan 2021 11:38:36 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A73C0613C1;
+        Sun,  3 Jan 2021 08:37:55 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id l11so59138754lfg.0;
+        Sun, 03 Jan 2021 08:37:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cOkGKxHxGXmfZ4ZwImoRwnXf5N9OB5kLyoH5znKHHzI=;
+        b=c5pv6ZjnFoq0WEuGbhGmmFlHPkAXkN0uD6oScKSlye2DJoGCxluPIrHvHq0+AB1CSk
+         awrUX4bSCv4UKyMXsSmdL+ZtbApWulMU8gigdMSFWGU/iIkO5u24AyjiUmWYRNsOb+7U
+         yr+q3pcrGxakKQQQXrM1HYzey0TeSdS8a4YawLXaTV3wthIrVpZztN9C/A/xXxE8qvOT
+         p61uB7BP2wwShIEQQXAmtKa8NBtx4VhdQ9ZQpB1LVnUE/VKRZi6KiGrtK5Cg/7KmlKZL
+         4B+PssL6wJENSNiMqWM4P8yEcB4508GEwslky+03K7S5MI/LUQgT6C9t+4Z3brCYPQDy
+         KRtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lESNZu8ZguyyGzEbPXvK2r3c1oXq1tI69/4HjkrNEiI=;
-        b=irLxdMZevODzvSRbnq3hqvxgwgI+fwYoWTRBIriTtqKTrIAn9Jsy+bvD5TFUKxbI3T
-         /aSlH4HJY0b4CeM70USmGG7/Tv2XwR0rVgdUcspP+IKMd50Ztkw+IxvRh6+rhL/2lfdx
-         vAiF8Hw2/5l4COUTK1kxxrqrIxjMqQbNwP77w0MDacCorQ74wY8GM5/mN4yM2QhGn6s1
-         COrLBuLuOnyEpIMqMAVRHibvtyIxgSE9fljDGO4ZtQU1GjqWKJ9BVuQzK4WRSvfBPHXF
-         PGt8UJhvFJNr6sru7UyVqsS0yZ0nleuDTeq5rglx2EYkmAm+YyCcrqayhUit7DWoynTo
-         PzLA==
-X-Gm-Message-State: AOAM532GKPNUNzMVBqeiL3FZJ0Q0slVu3jw/Pp9jxXVW33vSVIQLWig5
-        snwQSDji9B1K9vs/tH2GiA==
-X-Google-Smtp-Source: ABdhPJz7K3c9R/fCWpG0iNos4Mc5ecieXixWMmhPTpnMWsFo3mOJnh2sSB0BRfeuRPDvEBm7cZckxg==
-X-Received: by 2002:a05:6638:3012:: with SMTP id r18mr58677111jak.13.1609691660361;
-        Sun, 03 Jan 2021 08:34:20 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id r11sm39150891ilg.39.2021.01.03.08.34.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 08:34:19 -0800 (PST)
-Received: (nullmailer pid 4002058 invoked by uid 1000);
-        Sun, 03 Jan 2021 16:34:14 -0000
-Date:   Sun, 3 Jan 2021 09:34:14 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
-        krzk@kernel.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        festevam@gmail.com, shawnguo@kernel.org,
-        devicetree@vger.kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de
-Subject: Re: [PATCH v9 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
- soc unique ID
-Message-ID: <20210103163414.GA4001998@robh.at.kernel.org>
-References: <20201222081057.26401-1-alice.guo@oss.nxp.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cOkGKxHxGXmfZ4ZwImoRwnXf5N9OB5kLyoH5znKHHzI=;
+        b=fjCAU5ZmfYRwt/AWgha496FPQFLbe3HzpiLoj/5t7Yn7N+adbdj++lT7/frf6lf04x
+         l/EoBzNcDasWXq/9pl1qaOYEhvLf5aShR4F64ydUT2T60QpDCT6qIpzDfNbWOxkNOjwQ
+         KlMWfPD3Mxt4HszGb5TGPwC4tWevO54PUpHYsxHiz6EP9WkWjaXYW9lMCNxx4KhfEw4H
+         N+2bnwgCcTKoyqC+pUCPo3Arw26OzqZwhuTHIJuptqWC+DxN1LnZ0HMxRLX1P6b0Gso2
+         QiSBn5JT3GPdT4cSsP3bEWBVEU9cAkClyAfGptrdyE3keXLH0RZ1MBHDEWIArkzlwSLL
+         E1Sw==
+X-Gm-Message-State: AOAM5310YvfMMeHAj2SninKVpFCL81wGVroIfcqIJaytIZ1gLkRLWVxl
+        7FVp5OTLXzWxOd1NNFkTtLQ=
+X-Google-Smtp-Source: ABdhPJw6bPQ7Xwlg883wRCu68eh56hY581wh0h1QTAaCtWdSu+iWwTtOfGzDrvTh0gcBETbVd/4SzA==
+X-Received: by 2002:ac2:561b:: with SMTP id v27mr29423517lfd.425.1609691874147;
+        Sun, 03 Jan 2021 08:37:54 -0800 (PST)
+Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id f3sm8408704ljp.114.2021.01.03.08.37.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Jan 2021 08:37:53 -0800 (PST)
+Subject: Re: [PATCH V2 1/3] dt-bindings: phy: brcm,brcmstb-usb-phy: convert to
+ the json-schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Al Cooper <alcooperx@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20201221052339.10100-1-zajec5@gmail.com>
+ <20210103162329.GA3961287@robh.at.kernel.org>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <85c07078-906b-0d70-2214-874925f45c6f@gmail.com>
+Date:   Sun, 3 Jan 2021 17:37:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222081057.26401-1-alice.guo@oss.nxp.com>
+In-Reply-To: <20210103162329.GA3961287@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Dec 2020 16:10:54 +0800, Alice Guo (OSS) wrote:
-> From: Alice Guo <alice.guo@nxp.com>
+On 03.01.2021 17:23, Rob Herring wrote:
+> On Mon, Dec 21, 2020 at 06:23:37AM +0100, Rafał Miłecki wrote:
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>>
+>> Changes that require mentioning:
+>> 1. interrupt-names
+>>     Name "wakeup" was changed to the "wake". It matches example and what
+>>     Linux driver looks for in the first place
+>> 2. brcm,ipp and brcm,ioc
+>>     Both were described as booleans with 0 / 1 values. In examples they
+>>     were integers and Linux driver checks for int as well.
+>>     I made both uint32 but that probably should be refactored later.
 > 
-> Add DT Binding doc for the Unique ID of i.MX 8M series.
-> 
-> Signed-off-by: Alice Guo <alice.guo@nxp.com>
-> ---
-> 
-> Changes for v9:
->  - add additionalProperties for "^soc@[0-9a-f]+$"
->  - add examples
-> Changes for v8:
->  - match soc node with regular expression
-> Changes for v7:
->  - change to a separate schema file
-> Changes for v6:
->  - none
-> Changes for v5:
->  - correct the error of using allOf
-> Changes for v4:
->  - use allOf to limit new version DTS files for i.MX8M to include
->    "fsl,imx8m*-soc", nvmem-cells and nvmem-cells-names
-> Changes for v3:
->  - put it into Documentation/devicetree/bindings/arm/fsl.yaml
->  - modify the description of nvmem-cells
->  - use "make ARCH=arm64 dtbs_check" to make sure it is right
-> Changes for v2:
->  - remove the subject prefix "LF-2571-1"
-> 
->  .../bindings/soc/imx/imx8m-soc.yaml           | 86 +++++++++++++++++++
->  1 file changed, 86 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> 
+> Why? You're stuck with that now.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+"Why?" refactor later? I thought it makes more sense for boolean-like
+settings to use boolean type. Just a slightly cleaner approach.
+
+If we care to, I believe I can do that without breaking backward
+compatibility. A simple value length check:
+length 1: treat 0 as false, treat 1 as true
+length 0: treat property existence as true
