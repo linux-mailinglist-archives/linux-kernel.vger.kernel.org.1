@@ -2,151 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6398C2E8CAC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AA42E8CB3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbhACOm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 09:42:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
+        id S1727209AbhACOz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 09:55:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbhACOm4 (ORCPT
+        with ESMTP id S1726687AbhACOz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 09:42:56 -0500
-X-Greylist: delayed 351 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 03 Jan 2021 06:42:16 PST
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8385DC061573;
-        Sun,  3 Jan 2021 06:42:16 -0800 (PST)
-Received: from localhost.localdomain (85-76-69-38-nat.elisa-mobile.fi [85.76.69.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jks)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 6C07D1B00447;
-        Sun,  3 Jan 2021 16:36:22 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1609684582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2D7sv07CaCANRKUEJ7jSGB4NI45E+OpFL+ReXHcGRkA=;
-        b=Z86JueFnIdLdvbFBIzXH8KznVY3kd+wLIeV61jfafwPkZeMZrRuGaQln0s4HHm690q3/cb
-        mkEVOd5dRUOIuHtLl8aa7nd8uopM0sxrHTHi8higglktutbH5HkAwbCBCP8z/9LR/DfOL1
-        KpKXeDAB6345oT43UZOD6zsG3uVWdFQj9KPZcEvtRBbZ55A72akgfWfoj0K9ceSTFpObVo
-        O4IlTOMVGCB970tXTEiDbfBZ1efo8F5tjcsKGr2JNRpkeVdF6x69YsozL0hp/oI1hqkJv/
-        xwdpPI+Qivehg+3Qj4YDz7ezgVvrM5ARw19NHnLOvKKiZrncsXKUV5BtPIQ1yA==
-From:   =?UTF-8?q?Jouni=20Sepp=C3=A4nen?= <jks@iki.fi>
-To:     Oliver Neukum <oliver@neukum.org>, linux-usb@vger.kernel.org
-Cc:     jks@iki.fi, =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Enrico Mioso <mrkiko.rs@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net,stable] net: cdc_ncm: correct overhead in delayed_ndp_size
-Date:   Sun,  3 Jan 2021 16:36:02 +0200
-Message-Id: <20210103143602.95343-1-jks@iki.fi>
-X-Mailer: git-send-email 2.29.2
+        Sun, 3 Jan 2021 09:55:26 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145FEC061573;
+        Sun,  3 Jan 2021 06:54:46 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id y19so58500488lfa.13;
+        Sun, 03 Jan 2021 06:54:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ye7D/hnHohKj9GZLla69A+dQLJx70g9063TQU2F31EQ=;
+        b=iK7SW3DQ4woGH0r0YdkZYArDkTd7Dgo+fY+pSD1WAxGTb/ctaTuF9N//N06ci7GyrH
+         YRW4NNm9t2SdeQwj9PbJtVEcdiHIHAAksx0rDAhQG/MXzC8GkMyfvmUD81hM7hMdf0rs
+         q7kqt+pYr0uGdSn8gBuCIiZfKcjSTnnsPYGo9y80zXt3Te0uuR3v/lQ/luD0fDRtNKIH
+         YcirTvnhc3ob0WLgwoZYMxL3VUSEaM+KyIft7dmOLvqnHgCzC2UNFMhlj4GyXddgBsle
+         hYOR265lHTcKwXSg8oSiqofnJhcQxgPLq0NIQxXBzuU71FTlGSsQwDcKwsHAZ9VibIWU
+         HBvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ye7D/hnHohKj9GZLla69A+dQLJx70g9063TQU2F31EQ=;
+        b=hLvJ3WDadyQor4/GbxdQC56+Woixra58oshF4ouLbWEc6dn5DYX4jyqSy0pA+7H1zu
+         rN3zmBFv2C6TaNcBrYkGF3jaAuJO54CjY3N2MTTpRnzSmrTPkZ091F9LL7Y37ucP1hG3
+         nT2FeN+BVn79CAfGjphv+IXz8Y77wE+9BoV85jkwqkpw9Sq9aEvmVs7bDMhcQczASQz9
+         pruc0EHiUdfq2Tgdh7O6gwokLtq0UXk6vRplpqFyRBpu6TSiiIewwBS85pQ6YFBYr0ra
+         P02ExHiwj3mdyElnufa7dyShEFolr8PfZO1cjbXYjT4SJZJqV3qmBKmQgr0mZQstC4uA
+         XKVQ==
+X-Gm-Message-State: AOAM531P4Nv0DJLSUjBdhqQAY5bZW2M5e2m/U5ZHULTcT+RGeqtFQvNv
+        nF07UmnEqSqwF6eHwIzJwc1/DfVjJkA=
+X-Google-Smtp-Source: ABdhPJwQC08Q7sWad01WVanKcVv8Jzsz/53jbuQT+p7kkrtY0pBwR5YN3ixi8BkFbzajTP1lOJoq0A==
+X-Received: by 2002:a05:651c:1129:: with SMTP id e9mr32718777ljo.135.1609685684178;
+        Sun, 03 Jan 2021 06:54:44 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id b11sm7033439lfi.174.2021.01.03.06.54.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Jan 2021 06:54:43 -0800 (PST)
+Subject: Re: [PATCH 00/31] Introduce devm_pm_opp_* API
+To:     Frank Lee <tiny.windzz@gmail.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>, yuq825@gmail.com,
+        airlied@linux.ie, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Rob Herring <robh@kernel.org>, tomeu.vizoso@collabora.com,
+        steven.price@arm.com, alyssa.rosenzweig@collabora.com,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        lukasz.luba@arm.com, Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        jirislaby@kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        jcrouse@codeaurora.org, hoegsberg@google.com, eric@anholt.net,
+        tzimmermann@suse.de, marijn.suijten@somainline.org,
+        gustavoars@kernel.org, emil.velikov@collabora.com,
+        Jonathan Marek <jonathan@marek.ca>, akhilpo@codeaurora.org,
+        smasetty@codeaurora.org, airlied@redhat.com, masneyb@onstation.org,
+        kalyan_t@codeaurora.org, tanmay@codeaurora.org,
+        ddavenport@chromium.org, jsanka@codeaurora.org,
+        rnayak@codeaurora.org, tongtiangen@huawei.com,
+        miaoqinglang@huawei.com, khsieh@codeaurora.org,
+        abhinavk@codeaurora.org, chandanu@codeaurora.org,
+        groeck@chromium.org, varar@codeaurora.org, mka@chromium.org,
+        harigovi@codeaurora.org, rikard.falkeborn@gmail.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        georgi.djakov@linaro.org, akashast@codeaurora.org,
+        parashar@codeaurora.org, Douglas Anderson <dianders@chromium.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-tegra@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lima@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-media@vger.kernel.org,
+        "open list:SECURE DIGITAL HO..." <linux-mmc@vger.kernel.org>,
+        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20210101165507.19486-1-tiny.windzz@gmail.com>
+ <819f4eaf-18e4-678d-84dd-e4ac9d88c414@gmail.com>
+ <CAEExFWuLtNkHBHqUXwRiZzoX32VUdPO5=8snyHoFZGYEjvvhmg@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0505ed5c-4ee9-9fc6-2358-bf964cc87c4e@gmail.com>
+Date:   Sun, 3 Jan 2021 17:54:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAEExFWuLtNkHBHqUXwRiZzoX32VUdPO5=8snyHoFZGYEjvvhmg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1609684582; a=rsa-sha256;
-        cv=none;
-        b=VJ7fKwKN1NeiVBHWK1d5OctF2gcF/NQEf1uiwL73eZyiSffw+NgKhkqV6qK4eoXfQXOFR2
-        oTH37AaSbrUyn9kMp2kKDDE5LJFBPYMnZHrOeqYSonmXjQBFW/676phAic3d3DhIA7pQ+O
-        TpRtyxAiromH/rJ+FmdWZrEmu1bYqsCjw8bo2KNlKzReCc9Ur+hO6SZP9uVtLzwaTLO6bS
-        iBivVF07+MgbGNdmxSs8RMWQrD0QdVz70PknVtOReK+TaNOQ+VTpMLWBeUu7kX/TYc9R9b
-        FoAMrcYPAVNMw2bple2+KQn7SdkDQTtwfCnCKsonnZmj5VDaGmgnCCRQkw9nDQ==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=jks smtp.mailfrom=jks@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1609684582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2D7sv07CaCANRKUEJ7jSGB4NI45E+OpFL+ReXHcGRkA=;
-        b=B7cBdfqRm93jIxXrsBwjkTs8IUeX2mO1Mm7fSOmEMGT5CLqm414PsmGGzxWxiKb4Pe9RmP
-        eIa7cnYaf8QClMOz4nEAATfsUWKpowCBV5JgquhhbeldYySee1/njGalpyXRAZe43Bsfm0
-        DArpsbQpjphtXVfEpMyN/CXi3Re8R/C0Z2/LUz14RLBh1wPo8seMf9RFRYn1sJraEiZRxD
-        iCT0Pei5+WN3+yvUt3Aje6A+v9qtkNm5+tCkZh0mWhbKxb1No99onmBLFhso1Nm7m/jgfB
-        vZUyDn5o4ScrW3toMizlsVJfAj9x55fTYOEVCXt+pQCfTXTa6zQavybxtfFY0g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jouni K. Seppänen <jks@iki.fi>
+03.01.2021 17:30, Frank Lee пишет:
+> HI,
+> 
+> On Sun, Jan 3, 2021 at 8:52 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> 01.01.2021 19:54, Yangtao Li пишет:
+>>> Hi,
+>>>
+>>> This patchset add devm_pm_opp_set_clkname, devm_pm_opp_put_clkname,
+>>> devm_pm_opp_set_regulators, devm_pm_opp_put_regulators,
+>>> devm_pm_opp_set_supported_hw, devm_pm_opp_of_add_table and
+>>> devm_pm_opp_register_notifier.
+>>>
+>>> Yangtao Li (31):
+>>>   opp: Add devres wrapper for dev_pm_opp_set_clkname and
+>>>     dev_pm_opp_put_clkname
+>>>   opp: Add devres wrapper for dev_pm_opp_set_regulators and
+>>>     dev_pm_opp_put_regulators
+>>>   opp: Add devres wrapper for dev_pm_opp_set_supported_hw
+>>>   opp: Add devres wrapper for dev_pm_opp_of_add_table
+>>>   opp: Add devres wrapper for dev_pm_opp_register_notifier
+>>>   serial: qcom_geni_serial: fix potential mem leak in
+>>>     qcom_geni_serial_probe()
+>>>   serial: qcom_geni_serial: convert to use devm_pm_opp_* API
+>>>   spi: spi-qcom-qspi: fix potential mem leak in spi_geni_probe()
+>>>   spi: spi-qcom-qspi: fix potential mem leak in spi_geni_probe()
+>>>   qcom-geni-se: remove opp_table
+>>>   mmc: sdhci-msm: fix potential mem leak in sdhci_msm_probe()
+>>>   mmc: sdhci-msm: convert to use devm_pm_opp_* API
+>>>   spi: spi-qcom-qspi: fix potential mem leak in qcom_qspi_probe()
+>>>   spi: spi-qcom-qspi: convert to use devm_pm_opp_* API
+>>>   drm/msm: fix potential mem leak
+>>>   drm/msm: convert to use devm_pm_opp_* API and remove dp_ctrl_put
+>>>   drm/lima: convert to use devm_pm_opp_* API
+>>>   drm/lima: remove unneeded devm_devfreq_remove_device()
+>>>   drm/panfrost: convert to use devm_pm_opp_* API
+>>>   media: venus: fix error check in core_get_v4()
+>>>   media: venus: convert to use devm_pm_opp_* API
+>>>   memory: samsung: exynos5422-dmc: fix return error in
+>>>     exynos5_init_freq_table
+>>>   memory: samsung: exynos5422-dmc: convert to use devm_pm_opp_* API
+>>>   memory: tegra20: convert to use devm_pm_opp_* API
+>>>   memory: tegra30: convert to use devm_pm_opp_* API
+>>>   PM / devfreq: tegra30: convert to use devm_pm_opp_* API
+>>>   PM / devfreq: rk3399_dmc: convert to use devm_pm_opp_* API
+>>>   PM / devfreq: imx8m-ddrc: convert to use devm_pm_opp_* API
+>>>   PM / devfreq: imx-bus: convert to use devm_pm_opp_* API
+>>>   PM / devfreq: exynos: convert to use devm_pm_opp_* API
+>>>   PM / devfreq: convert to devm_pm_opp_register_notifier and remove
+>>>     unused API
+>>>
+>>>  drivers/devfreq/devfreq.c                     |  66 +------
+>>>  drivers/devfreq/exynos-bus.c                  |  42 +----
+>>>  drivers/devfreq/imx-bus.c                     |  14 +-
+>>>  drivers/devfreq/imx8m-ddrc.c                  |  15 +-
+>>>  drivers/devfreq/rk3399_dmc.c                  |  22 +--
+>>>  drivers/devfreq/tegra30-devfreq.c             |  21 +--
+>>>  drivers/gpu/drm/lima/lima_devfreq.c           |  45 +----
+>>>  drivers/gpu/drm/lima/lima_devfreq.h           |   2 -
+>>>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c         |   2 +-
+>>>  drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |   2 +-
+>>>  drivers/gpu/drm/msm/adreno/adreno_gpu.c       |   2 +-
+>>>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |  31 ++--
+>>>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h       |   2 -
+>>>  drivers/gpu/drm/msm/dp/dp_ctrl.c              |  29 +--
+>>>  drivers/gpu/drm/msm/dp/dp_ctrl.h              |   1 -
+>>>  drivers/gpu/drm/msm/dp/dp_display.c           |   5 +-
+>>>  drivers/gpu/drm/msm/dsi/dsi_host.c            |  23 ++-
+>>>  drivers/gpu/drm/panfrost/panfrost_devfreq.c   |  34 +---
+>>>  drivers/gpu/drm/panfrost/panfrost_devfreq.h   |   1 -
+>>>  .../media/platform/qcom/venus/pm_helpers.c    |  22 +--
+>>>  drivers/memory/samsung/exynos5422-dmc.c       |  13 +-
+>>>  drivers/memory/tegra/tegra20-emc.c            |  29 +--
+>>>  drivers/memory/tegra/tegra30-emc.c            |  29 +--
+>>>  drivers/mmc/host/sdhci-msm.c                  |  27 ++-
+>>>  drivers/opp/core.c                            | 173 ++++++++++++++++++
+>>>  drivers/opp/of.c                              |  36 ++++
+>>>  drivers/spi/spi-geni-qcom.c                   |  23 ++-
+>>>  drivers/spi/spi-qcom-qspi.c                   |  25 ++-
+>>>  drivers/tty/serial/qcom_geni_serial.c         |  31 ++--
+>>>  include/linux/devfreq.h                       |  23 ---
+>>>  include/linux/pm_opp.h                        |  38 ++++
+>>>  include/linux/qcom-geni-se.h                  |   2 -
+>>>  32 files changed, 402 insertions(+), 428 deletions(-)
+>>>
+>>
+>> Hello,
+>>
+>> Could you please add helper for dev_pm_opp_attach_genpd() and make
+>> cpufreq drivers to use the helpers?
+> 
+> Thank you for reminding me. But we shouldn't use this for CPU devices
+> as the CPU device doesn't get bound to a driver, it is rather a fake platform
+> device which gets the cpufreq drivers probed.
 
-Aligning to tx_ndp_modulus is not sufficient because the next align
-call can be cdc_ncm_align_tail, which can add up to ctx->tx_modulus +
-ctx->tx_remainder - 1 bytes. This used to lead to occasional crashes
-on a Huawei 909s-120 LTE module as follows:
+Indeed, the CPU device exists seprately from cpufreq driver.
 
-- the condition marked /* if there is a remaining skb [...] */ is true
-  so the swaps happen
-- skb_out is set from ctx->tx_curr_skb
-- skb_out->len is exactly 0x3f52
-- ctx->tx_curr_size is 0x4000 and delayed_ndp_size is 0xac
-  (note that the sum of skb_out->len and delayed_ndp_size is 0x3ffe)
-- the for loop over n is executed once
-- the cdc_ncm_align_tail call marked /* align beginning of next frame */
-  increases skb_out->len to 0x3f56 (the sum is now 0x4002)
-- the condition marked /* check if we had enough room left [...] */ is
-  false so we break out of the loop
-- the condition marked /* If requested, put NDP at end of frame. */ is
-  true so the NDP is written into skb_out
-- now skb_out->len is 0x4002, so padding_count is minus two interpreted
-  as an unsigned number, which is used as the length argument to memset,
-  leading to a crash with various symptoms but usually including
+>> I'd also like to see a devm helper for
+>> dev_pm_opp_register_set_opp_helper(), which should become useful for
+>> Tegra drivers sometime soon.
+> 
+> For non-cpu devices?
 
-> Call Trace:
->  <IRQ>
->  cdc_ncm_fill_tx_frame+0x83a/0x970 [cdc_ncm]
->  cdc_mbim_tx_fixup+0x1d9/0x240 [cdc_mbim]
->  usbnet_start_xmit+0x5d/0x720 [usbnet]
+For DRM driver I'd want to use devm for both set_opp_helper() and
+opp_attach_genpd().
 
-The cdc_ncm_align_tail call first aligns on a ctx->tx_modulus
-boundary (adding at most ctx->tx_modulus-1 bytes), then adds
-ctx->tx_remainder bytes. Alternatively, the next alignment call can
-occur in cdc_ncm_ndp16 or cdc_ncm_ndp32, in which case at most
-ctx->tx_ndp_modulus-1 bytes are added.
-
-A similar problem has occurred before, and the code is nontrivial to
-reason about, so add a guard before the crashing call. By that time it
-is too late to prevent any memory corruption (we'll have written past
-the end of the buffer already) but we can at least try to get a warning
-written into an on-disk log by avoiding the hard crash caused by padding
-past the buffer with a huge number of zeros.
-
-Signed-off-by: Jouni K. Seppänen <jks@iki.fi>
-Fixes: 4a0e3e989d66 ("cdc_ncm: Add support for moving NDP to end of NCM frame")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209407
----
- drivers/net/usb/cdc_ncm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-index e04f588538cc..59f0711b1b63 100644
---- a/drivers/net/usb/cdc_ncm.c
-+++ b/drivers/net/usb/cdc_ncm.c
-@@ -1199,7 +1199,9 @@ cdc_ncm_fill_tx_frame(struct usbnet *dev, struct sk_buff *skb, __le32 sign)
- 	 * accordingly. Otherwise, we should check here.
- 	 */
- 	if (ctx->drvflags & CDC_NCM_FLAG_NDP_TO_END)
--		delayed_ndp_size = ALIGN(ctx->max_ndp_size, ctx->tx_ndp_modulus);
-+		delayed_ndp_size = ctx->max_ndp_size +
-+			max(ctx->tx_ndp_modulus,
-+			    ctx->tx_modulus + ctx->tx_remainder) - 1;
- 	else
- 		delayed_ndp_size = 0;
- 
-@@ -1410,7 +1412,8 @@ cdc_ncm_fill_tx_frame(struct usbnet *dev, struct sk_buff *skb, __le32 sign)
- 	if (!(dev->driver_info->flags & FLAG_SEND_ZLP) &&
- 	    skb_out->len > ctx->min_tx_pkt) {
- 		padding_count = ctx->tx_curr_size - skb_out->len;
--		skb_put_zero(skb_out, padding_count);
-+		if (!WARN_ON(padding_count > ctx->tx_curr_size))
-+			skb_put_zero(skb_out, padding_count);
- 	} else if (skb_out->len < ctx->tx_curr_size &&
- 		   (skb_out->len % dev->maxpacket) == 0) {
- 		skb_put_u8(skb_out, 0);	/* force short packet */
--- 
-2.20.1
-
+https://patchwork.ozlabs.org/project/linux-tegra/patch/20201217180638.22748-39-digetx@gmail.com/
