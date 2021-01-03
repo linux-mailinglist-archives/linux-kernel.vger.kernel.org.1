@@ -2,182 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B0B2E8EB7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8F12E8EB8
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727682AbhACWtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 17:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726610AbhACWtN (ORCPT
+        id S1727700AbhACWx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 17:53:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55363 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726019AbhACWxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 17:49:13 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA25C061573;
-        Sun,  3 Jan 2021 14:48:33 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id i5so17592492pgo.1;
-        Sun, 03 Jan 2021 14:48:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t0zu2rRiEVfRsaF3pV2UiBvQuBiFNssfwxgn5PC1iG4=;
-        b=E5ga9ng/7cLpzhS9xKIdS8M5Hl+oy53UodMpPe1r2iC3o7RAHJAa87ip72YSSfxoJk
-         +Yl2h7SnGDSrPXo8LJLaIlM/TlZl0aS43bqdZ/DgGXRM5aTbWfnm8KYKYanpcKMAgrC6
-         2oywl3mEYkoz/s/0KDRip1gu09Wg3/mI2zMTfBOfr2IgN9fouRv/uvpih6/eJp6K/Op+
-         us8H4YryuNRwqrPYTeRlwLlMJdqQc1E66StDQQ90ZeHHYGNsmx/vsAbmbllyH4xEbsRo
-         0lwH+XxMV3ByJa7pndXl7bY0g69iNY5nO2fRVX0jc+jpeQ6R6yFlVxyqNOk0laEAdwIN
-         rvFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t0zu2rRiEVfRsaF3pV2UiBvQuBiFNssfwxgn5PC1iG4=;
-        b=e8a5IRkSDh0GOokibL4xHsXxHxP2yNADZ/jJdqq+El4jdW6BCRFsI7b8tleXLWnzSh
-         vAbOUy5XZ9jXSm4hKHmaHAuqjE+QItn7Ds0zH6uVg+fsnhEfjLGZg1Kz4yMu+Rjb/S7z
-         bZfXLN7psa7jxx3fTrOBxZHGfMWzp120Sc/o1hln+EcKaAT81ym3SLjXRtit2XBW8Io4
-         Jq9EnMz6+9UddLfxFtd+omn0rA+ZQmx7q+zRZcNMSIo/OsrcFCJzy5JWpI2hnkvHeH9J
-         j0qc7f8A2xfmDz73jicfU0/HvZ44PnRI5pxlxIwKlMxtlUQ1whMnAD4PoaH5LaLbyWhM
-         PrHA==
-X-Gm-Message-State: AOAM53336Csbi8EXTijyTs7FZD/5Iunj2VY4P/ndQdpH0WtgETKyjjKm
-        vT0cFVD7mLgkoGsH8Gx68HM=
-X-Google-Smtp-Source: ABdhPJxWGBkwsAPpmUmNUo0go5BQh4HaA87kiku/T8uLxrcKGUD3dpMkiV0I0qGchgQuTuP3ixGy/Q==
-X-Received: by 2002:a62:644c:0:b029:1a1:f568:d2d9 with SMTP id y73-20020a62644c0000b02901a1f568d2d9mr64670051pfb.64.1609714112574;
-        Sun, 03 Jan 2021 14:48:32 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id b12sm24511144pgr.9.2021.01.03.14.48.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 14:48:31 -0800 (PST)
-Date:   Sun, 3 Jan 2021 14:48:29 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dtor@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rajat Jain <rajatja@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: input: cros-ec-keyb: Add a new property
-Message-ID: <X/JJvUobb7DtgFyC@google.com>
-References: <20201221174751.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
- <X+rKPhJrQaykPxri@google.com>
- <CA+cxXh=HH-UAt747OYRwaaABdJpT8r=TvrYcFah7PQ1vHqYutg@mail.gmail.com>
- <X/Df0uuclk1ZNOps@google.com>
- <CA+cxXhnY_TpnA1iR8XJ87xNeNsi2Ba89+VJEPtB7wJ-=8O=4ag@mail.gmail.com>
- <CA+cxXhkdZ2ifyCG=p3Fbxwnzu-8z3Q1jNzaBQ=MMfeJ3vqkfhw@mail.gmail.com>
+        Sun, 3 Jan 2021 17:53:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609714348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HbOe2bYAAuE9fhSTVX9AdEfAuXcyidg3sV/DLg0ptrQ=;
+        b=YYCpbsOYRtWRoqI0lYCnwS363orMjSosZD4O59CZQhtO2MJ9GwuqPTuHG5MGJXEBWHHXJU
+        0yp60JMH8PiOaaTvddQIC66nKEvk50Ilo2NWLaobsW9Kxnw9F/fw8CZpDQuxZJZTvNasts
+        AadF5ytNeltPJeVmQH/mV5oSY8uIvOY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-ch8GWXr7O9K4IHsjz2o_mQ-1; Sun, 03 Jan 2021 17:52:25 -0500
+X-MC-Unique: ch8GWXr7O9K4IHsjz2o_mQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 683FB107ACE4;
+        Sun,  3 Jan 2021 22:52:23 +0000 (UTC)
+Received: from krava (unknown [10.40.192.17])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E9AD21A8A3;
+        Sun,  3 Jan 2021 22:52:19 +0000 (UTC)
+Date:   Sun, 3 Jan 2021 23:52:19 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joe Mario <jmario@redhat.com>, David Ahern <dsahern@gmail.com>,
+        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
+        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/11] perf c2c: Sort cacheline with all loads
+Message-ID: <20210103225219.GA850408@krava>
+References: <20201213133850.10070-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+cxXhkdZ2ifyCG=p3Fbxwnzu-8z3Q1jNzaBQ=MMfeJ3vqkfhw@mail.gmail.com>
+In-Reply-To: <20201213133850.10070-1-leo.yan@linaro.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philip,
-
-On Sat, Jan 02, 2021 at 10:11:21PM -0800, Philip Chen wrote:
-> Hi Dmitry,
+On Sun, Dec 13, 2020 at 01:38:39PM +0000, Leo Yan wrote:
+> This patch set is to sort cache line for all load operations which hit
+> any cache levels.  For single cache line view, it shows the load
+> references for loads with cache hits and with cache misses respectively.
 > 
-> I have one more question below.
-> Could you take a look?
+> This series is a following for the old patch set "perf c2c: Sort
+> cacheline with LLC load" [1], in the old patch set it tries to sort
+> cache line with the load operations in last level cache (LLC), after
+> testing we found the trace data doesn't contain LLC events if the
+> platform isn't a NUMA system.  For this reason, this series refines the
+> implementation to sort on all cache levels hits of load operations; it's
+> reasonable for us to review the load and store opreations, if detects
+> any cache line is accessed by multi-threads, this hints that the cache
+> line is possible for false sharing.
 > 
-> On Sat, Jan 2, 2021 at 8:53 PM Philip Chen <philipchen@chromium.org> wrote:
-> >
-> > Hi Dmitry,
-> >
-> > I see.
-> > I'll update these patch sets shortly based on your suggestion.
-> > Thanks.
-> >
-> > On Sat, Jan 2, 2021 at 1:04 PM Dmitry Torokhov
-> > <dmitry.torokhov@gmail.com> wrote:
-> > >
-> > > On Sat, Jan 02, 2021 at 11:39:34AM -0800, Philip Chen wrote:
-> > > > Hi Dmitry,
-> > > >
-> > > > Thanks for reviewing my patch over the holiday season.
-> > > > Please check my CIL.
-> > > >
-> > > > On Mon, Dec 28, 2020 at 10:18 PM Dmitry Torokhov
-> > > > <dmitry.torokhov@gmail.com> wrote:
-> > > > >
-> > > > > Hi Philip,
-> > > > >
-> > > > > On Mon, Dec 21, 2020 at 05:47:57PM -0800, Philip Chen wrote:
-> > > > > > This patch adds a new property `google,custom-keyb-top-row` to the
-> > > > > > device tree for the custom keyboard top row design.
-> > > > >
-> > > > > Why don't we use the property we have for the same purpose in atkbd.c?
-> > > > > I.e. function-row-physmap?
-> > > > >
-> > > > Because this property serves a different purpose than function-row-physmap.
-> > > > `function-row-physmap` basically links the scancode to the physical
-> > > > position in the top row.
-> > > > `google,custom-keyb-top-row` aims at specifying the board-specific
-> > > > keyboard top row design associated with the action codes.
-> > > >
-> > > > In x86 path, the board-specific keyboard top row design associated
-> > > > with the action codes is exposed from coreboot to kernel through
-> > > > "linux,keymap" acpi table.
-> > > > When coreboot generates this acpi table, it asks EC to provide this
-> > > > information, since we add the board-specific top-row-design in EC
-> > > > codebase.
-> > > > (E.g. https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/main/board/jinlon/board.c#396)
-> > > >
-> > > > In ARM, we don't plan to involve EC in the vivaldi support stack.
-> > > > So `google,custom-keyb-top-row` DT property is our replacement for the
-> > > > board-specific top-row-design in x86 EC codebase.
-> > >
-> > > I disagree with this decision. We already have "linux,keymap" property
-> > > that is supposed to hold accurate keymap for the device in question,
-> > > there should be no need to introduce yet another property to adjust the
-> > > keymap to reflect the reality. If a device uses "non classic" ChromeOS
-> > > top row it should not be using the default keymap from
-> > > arch/arm/boot/dts/cros-ec-keyboard.dtsi but supply its own. You can
-> > > consider splitting the keymap into generic lower portion and the top row
-> > > and moving them into an .h file so they can be easily reused.
-> > >
-> > > >
-> > > > > Also, instead of specifying keycodes in this array we should use
-> > > > > combination of row and column identifying keys, like this:
-> > > > >
-> > > > >         function-row-physmap = <
-> > > > >                 MATRIX_KEY(0x00, 0x02, KEY_F1),
-> > > > >                 MATRIX_KEY(0x03, 0x02, KEY_F2),
-> > > > >                 ...
-> > > > >         >;
-> > > >
-> > > > This mapping between row/column to function keycode is fixed for all
-> > > > Chrome OS devices.
-> > >
-> > > *for now* The mapping for the rest of the keyboard has also stayed
-> > > static, but we still did not hardcode this information in the driver but
-> > > rather used DT property to pass it into the kernel.
-> > >
-> > > > So we don't really need to host this information in DT.
-> > > > Instead, I plan to hardcode this information in cros_ec_keyb.c.
-> > > > (Please see the array "top_row_key_pos[]" in my next patch: "[2/3]
-> > > > Input: cros_ec_keyb - Support custom top-row keys".)
-> > > >
-> > > > The only thing that could make the function-row-physmap file different
-> > > > among boards is the number of top row keys.
-> Given the reason above, can we just add `num-top-row-keys` property
-> instead of the whole `function-row-physmap`?
-> I think this is the only thing cros_ec_keyb needs to know to generate
-> the board-specific function-row-physmap file for the userspace.
+> This patch set is clearly applied on perf/core branch with the latest
+> commit db0ea13cc741 ("perf evlist: Use the right prefix for 'struct
+> evlist' record methods").  And the changes has been tested on x86 and
+> Arm64, the testing result is shown as below.
 
-This would mean that we need to hard-code the knowledge of the scan
-matrix in the driver and will not allow us to "skip" any keys in the top
-row. Given that we did not hard-code the keymap I do not see why we
-would want to do it differently with the top row. function-row-physmap
-provides greatest flexibility and I do not see any downsides.
+SNIP
 
-Thanks.
+> 
+> 
+>   [...]
+> 
+> Changes from v1:
+> * Changed from sorting on LLC to sorting on all loads with cache hits;
+> * Added patches 06/11, 07/11 for refactoring macros;
+> * Added patch 08/11 for refactoring node header, so can display "%loads"
+>   rather than "%hitms" in the header;
+> * Added patch 09/11 to add local pointers for pointing to output metrics
+>   string and sort string (Juri);
+> * Added warning in percent_hitm() for the display "all", which should
+>   never happen (Juri).
+> 
+> [1] https://lore.kernel.org/patchwork/cover/1321514/
+> 
+> 
+> Leo Yan (11):
+>   perf c2c: Add dimensions for total load hit
+>   perf c2c: Add dimensions for load hit
+>   perf c2c: Add dimensions for load miss
+>   perf c2c: Rename for shared cache line stats
+>   perf c2c: Refactor hist entry validation
+>   perf c2c: Refactor display filter macro
+>   perf c2c: Refactor node display macro
+>   perf c2c: Refactor node header
+>   perf c2c: Add local variables for output metrics
+>   perf c2c: Sort on all cache hit for load operations
+>   perf c2c: Update documentation for display option 'all'
+> 
+>  tools/perf/Documentation/perf-c2c.txt |  21 +-
+>  tools/perf/builtin-c2c.c              | 548 ++++++++++++++++++++++----
+>  2 files changed, 487 insertions(+), 82 deletions(-)
 
--- 
-Dmitry
+Joe might want to test it first, but it looks all good to me:
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
