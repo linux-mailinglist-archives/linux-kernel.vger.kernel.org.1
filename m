@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A987B2E8E18
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 21:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4780A2E8E19
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 21:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbhACU37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 15:29:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60472 "EHLO mail.kernel.org"
+        id S1727236AbhACUaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 15:30:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727143AbhACU36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 15:29:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E915207D1;
-        Sun,  3 Jan 2021 20:29:16 +0000 (UTC)
+        id S1726246AbhACU37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 15:29:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C80F207FB;
+        Sun,  3 Jan 2021 20:29:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609705757;
-        bh=zDt3iwuu9AYkKkBldQtOMaAcyfsi1A0DOfGTnYjHXh4=;
+        s=k20201202; t=1609705758;
+        bh=xyTq1ZFzk+HtL+V5RGAjgz1MBuiZzDZGzFQA1npBlv8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=utbm2JcPVQauR96saxsLaXd7P7VukROq3e8FaLOklS1ol3ko630HwE6iiJ4Y38h70
-         zkoKa37rC3gNIU9FQjA7hDfdzYlKz2tGY5HNOAmuSoi2+VXXRcHF1SbjLpz5kYEPex
-         cD3iIW4qqw/I2YA2Ud768hhzjs1+czBZRj4KsXDoIC1+rRBuYwwBGv+Qdr8yd/n2oe
-         3Ubhd6OY+Jpcn4Wq0OIzYKJhTF26k4pvaIaY53ASZ91dSuHTQSJdgbfBR1cnk7KVMS
-         MYvG4d4cI6YkqC9qFfEzCDXuiqSWr9iCmK/YL5IO4CP92BFq7GD8oeugCSyKVRFwXU
-         qdnWaGvr5Z2gw==
+        b=GYRcyLerkKi+xkJErpnSMYJUwaQYlmNd9WInKNavx+ZdaUbhzEujZ3d+xjbDmf92X
+         v80A/9NfOEye0sFfKDaofTrU9+QpvXDEAXtwSpw+ehZIl9fNUGdSLGRPhkKVh3YGN1
+         eZQ5/Zc6z2IkPV1QKK5xDTQrrga9ZJ9VaEA2hRtdZEvsxOnPboDkuorMiopRX57L5t
+         5iTnf80q0l0DaTqxVEApgIMVCktNFv0fX2re/hI43tKue32LZojHGs6IAztzREiNZt
+         bDVyc1SKah84/sh278VccgnHrNwDRR0YMtQr3zYEdDYyFLhB+Xl5SBWRIcCo04a2c6
+         6qq5N7ef3I9GA==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 3/4] habanalabs: add driver support for internal cb scheduling
-Date:   Sun,  3 Jan 2021 22:29:08 +0200
-Message-Id: <20210103202909.243-3-ogabbay@kernel.org>
+Subject: [PATCH 4/4] habanalabs/gaudi: remove PCI access to SM block
+Date:   Sun,  3 Jan 2021 22:29:09 +0200
+Message-Id: <20210103202909.243-4-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210103202909.243-1-ogabbay@kernel.org>
 References: <20210103202909.243-1-ogabbay@kernel.org>
@@ -40,301 +40,369 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ofir Bitton <obitton@habana.ai>
 
-In order to support scnenarios in which driver needs access to
-HW components but it cannot access them directly, we add support for
-scheduling command buffers internally.
-These command buffers will be transmitted upon next user command
-submission context.
+due to HW limitation we must remove all direct access to SM
+registers, in order to do that we will access SM registers using
+the HW QMANS.
+When possible and no user context is present, we can directly access
+the HW QMANS, whenever there is an active user, driver will
+prepare a pending command buffer list which will be sent upon
+user submissions.
 
 Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- .../habanalabs/common/command_submission.c    | 141 ++++++++++++++++++
- drivers/misc/habanalabs/common/context.c      |   3 +
- drivers/misc/habanalabs/common/device.c       |   2 +
- drivers/misc/habanalabs/common/habanalabs.h   |  26 ++++
- 4 files changed, 172 insertions(+)
+ drivers/misc/habanalabs/gaudi/gaudi.c         | 246 ++++++++++++++++--
+ drivers/misc/habanalabs/gaudi/gaudiP.h        |   2 +
+ .../habanalabs/include/gaudi/gaudi_packets.h  |   3 +
+ 3 files changed, 225 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index 3affb350070c..2dd69d6d4782 100644
---- a/drivers/misc/habanalabs/common/command_submission.c
-+++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -585,6 +585,18 @@ void hl_cs_rollback_all(struct hl_device *hdev)
- 	}
- }
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index f9a99872a56e..611a691206f1 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -354,6 +354,10 @@ static int gaudi_send_job_on_qman0(struct hl_device *hdev,
+ 					struct hl_cs_job *job);
+ static int gaudi_memset_device_memory(struct hl_device *hdev, u64 addr,
+ 					u32 size, u64 val);
++static int gaudi_memset_registers(struct hl_device *hdev, u64 reg_base,
++					u32 num_regs, u32 val);
++static int gaudi_schedule_register_memset(struct hl_device *hdev,
++		u32 hw_queue_id, u64 reg_base, u32 num_regs, u32 val);
+ static int gaudi_run_tpc_kernel(struct hl_device *hdev, u64 tpc_kernel,
+ 				u32 tpc_id);
+ static int gaudi_mmu_clear_pgt_range(struct hl_device *hdev);
+@@ -913,11 +917,17 @@ static void gaudi_sob_group_hw_reset(struct kref *ref)
+ 	struct gaudi_hw_sob_group *hw_sob_group =
+ 		container_of(ref, struct gaudi_hw_sob_group, kref);
+ 	struct hl_device *hdev = hw_sob_group->hdev;
+-	int i;
++	u64 base_addr;
++	int rc;
  
-+void hl_pending_cb_rollback_all(struct hl_device *hdev)
-+{
-+	struct hl_pending_cb *pending_cb, *tmp;
+-	for (i = 0 ; i < NUMBER_OF_SOBS_IN_GRP ; i++)
+-		WREG32(mmSYNC_MNGR_W_S_SYNC_MNGR_OBJS_SOB_OBJ_0 +
+-				(hw_sob_group->base_sob_id + i) * 4, 0);
++	base_addr = CFG_BASE + mmSYNC_MNGR_W_S_SYNC_MNGR_OBJS_SOB_OBJ_0 +
++			hw_sob_group->base_sob_id * 4;
++	rc = gaudi_schedule_register_memset(hdev, hw_sob_group->queue_id,
++			base_addr, NUMBER_OF_SOBS_IN_GRP, 0);
++	if (rc)
++		dev_err(hdev->dev,
++			"failed resetting sob group - sob base %u, count %u",
++			hw_sob_group->base_sob_id, NUMBER_OF_SOBS_IN_GRP);
+ 
+ 	kref_init(&hw_sob_group->kref);
+ }
+@@ -1008,6 +1018,8 @@ static void gaudi_collective_master_init_job(struct hl_device *hdev,
+ 		cprop->hw_sob_group[sob_group_offset].base_sob_id;
+ 	master_monitor = prop->collective_mstr_mon_id[0];
+ 
++	cprop->hw_sob_group[sob_group_offset].queue_id = queue_id;
 +
-+	list_for_each_entry_safe(pending_cb, tmp,
-+			&hdev->kernel_ctx->pending_cb_list, cb_node) {
-+		list_del(&pending_cb->cb_node);
-+		hl_cb_put(pending_cb->cb);
-+		kfree(pending_cb);
-+	}
-+}
-+
- static void job_wq_completion(struct work_struct *work)
- {
- 	struct hl_cs_job *job = container_of(work, struct hl_cs_job,
-@@ -954,6 +966,131 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 	dev_dbg(hdev->dev,
+ 		"Generate master wait CBs, sob %d (mask %#x), val:0x%x, mon %u, q %d\n",
+ 		master_sob_base, cprop->mstr_sob_mask[0],
+@@ -5582,31 +5594,204 @@ static int gaudi_memset_device_memory(struct hl_device *hdev, u64 addr,
  	return rc;
  }
  
-+static int pending_cb_create_job(struct hl_device *hdev, struct hl_ctx *ctx,
-+		struct hl_cs *cs, struct hl_cb *cb, u32 size, u32 hw_queue_id)
+-static void gaudi_restore_sm_registers(struct hl_device *hdev)
++static int gaudi_memset_registers(struct hl_device *hdev, u64 reg_base,
++					u32 num_regs, u32 val)
 +{
-+	struct hw_queue_properties *hw_queue_prop;
-+	struct hl_cs_counters_atomic *cntr;
++	struct packet_msg_long *pkt;
 +	struct hl_cs_job *job;
++	u32 cb_size, ctl;
++	struct hl_cb *cb;
++	int i, rc;
 +
-+	hw_queue_prop = &hdev->asic_prop.hw_queues_props[hw_queue_id];
-+	cntr = &hdev->aggregated_cs_counters;
++	cb_size = (sizeof(*pkt) * num_regs) + sizeof(struct packet_msg_prot);
 +
-+	job = hl_cs_allocate_job(hdev, hw_queue_prop->type, true);
-+	if (!job) {
-+		atomic64_inc(&ctx->cs_counters.out_of_mem_drop_cnt);
-+		atomic64_inc(&cntr->out_of_mem_drop_cnt);
-+		dev_err(hdev->dev, "Failed to allocate a new job\n");
++	if (cb_size > SZ_2M) {
++		dev_err(hdev->dev, "CB size must be smaller than %uMB", SZ_2M);
 +		return -ENOMEM;
 +	}
 +
++	cb = hl_cb_kernel_create(hdev, cb_size, false);
++	if (!cb)
++		return -EFAULT;
++
++	pkt = cb->kernel_address;
++
++	ctl = FIELD_PREP(GAUDI_PKT_LONG_CTL_OP_MASK, 0); /* write the value */
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_OPCODE_MASK, PACKET_MSG_LONG);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_EB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_RB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_MB_MASK, 1);
++
++	for (i = 0; i < num_regs ; i++, pkt++) {
++		pkt->ctl = cpu_to_le32(ctl);
++		pkt->value = cpu_to_le32(val);
++		pkt->addr = cpu_to_le64(reg_base + (i * 4));
++	}
++
++	job = hl_cs_allocate_job(hdev, QUEUE_TYPE_EXT, true);
++	if (!job) {
++		dev_err(hdev->dev, "Failed to allocate a new job\n");
++		rc = -ENOMEM;
++		goto release_cb;
++	}
++
 +	job->id = 0;
-+	job->cs = cs;
 +	job->user_cb = cb;
 +	atomic_inc(&job->user_cb->cs_cnt);
-+	job->user_cb_size = size;
-+	job->hw_queue_id = hw_queue_id;
++	job->user_cb_size = cb_size;
++	job->hw_queue_id = GAUDI_QUEUE_ID_DMA_0_0;
 +	job->patched_cb = job->user_cb;
-+	job->job_cb_size = job->user_cb_size;
-+
-+	/* increment refcount as for external queues we get completion */
-+	cs_get(cs);
-+
-+	cs->jobs_in_queue_cnt[job->hw_queue_id]++;
-+
-+	list_add_tail(&job->cs_node, &cs->job_list);
++	job->job_cb_size = cb_size;
 +
 +	hl_debugfs_add_job(hdev, job);
 +
-+	return 0;
-+}
++	rc = gaudi_send_job_on_qman0(hdev, job);
++	hl_debugfs_remove_job(hdev, job);
++	kfree(job);
++	atomic_dec(&cb->cs_cnt);
 +
-+static int hl_submit_pending_cb(struct hl_fpriv *hpriv)
-+{
-+	struct hw_queue_properties *hw_queue_prop;
-+	struct hl_device *hdev = hpriv->hdev;
-+	struct hl_ctx *ctx = hpriv->ctx;
-+	struct hl_pending_cb *pending_cb, *tmp;
-+	struct list_head local_cb_list;
-+	struct hl_cs *cs;
-+	struct hl_cb *cb;
-+	u32 hw_queue_id;
-+	u32 cb_size;
-+	int process_list, rc = 0;
-+
-+	if (list_empty(&ctx->pending_cb_list))
-+		return 0;
-+
-+	process_list = atomic_cmpxchg(&ctx->thread_pending_cb_token, 1, 0);
-+
-+	/* Only a single thread is allowed to process the list */
-+	if (!process_list)
-+		return 0;
-+
-+	if (list_empty(&ctx->pending_cb_list))
-+		goto free_pending_cb_token;
-+
-+	/* move all list elements to a local list */
-+	INIT_LIST_HEAD(&local_cb_list);
-+	spin_lock(&ctx->pending_cb_lock);
-+	list_for_each_entry_safe(pending_cb, tmp, &ctx->pending_cb_list,
-+								cb_node)
-+		list_move_tail(&pending_cb->cb_node, &local_cb_list);
-+	spin_unlock(&ctx->pending_cb_lock);
-+
-+	rc = allocate_cs(hdev, ctx, CS_TYPE_DEFAULT, &cs);
-+	if (rc)
-+		goto add_list_elements;
-+
-+	hl_debugfs_add_cs(cs);
-+
-+	/* Iterate through pending cb list, create jobs and add to CS */
-+	list_for_each_entry(pending_cb, &local_cb_list, cb_node) {
-+		cb = pending_cb->cb;
-+		cb_size = pending_cb->cb_size;
-+		hw_queue_id = pending_cb->hw_queue_id;
-+		hw_queue_prop = &hdev->asic_prop.hw_queues_props[hw_queue_id];
-+
-+		rc = pending_cb_create_job(hdev, ctx, cs, cb, cb_size,
-+								hw_queue_id);
-+		if (rc)
-+			goto free_cs_object;
-+	}
-+
-+	rc = hl_hw_queue_schedule_cs(cs);
-+	if (rc) {
-+		if (rc != -EAGAIN)
-+			dev_err(hdev->dev,
-+				"Failed to submit CS %d.%llu (%d)\n",
-+				ctx->asid, cs->sequence, rc);
-+		goto free_cs_object;
-+	}
-+
-+	/* pending cb was scheduled successfully */
-+	list_for_each_entry_safe(pending_cb, tmp, &local_cb_list, cb_node) {
-+		list_del(&pending_cb->cb_node);
-+		kfree(pending_cb);
-+	}
-+
-+	cs_put(cs);
-+
-+	goto free_pending_cb_token;
-+
-+free_cs_object:
-+	cs_rollback(hdev, cs);
-+	cs_put(cs);
-+add_list_elements:
-+	spin_lock(&ctx->pending_cb_lock);
-+	list_for_each_entry_safe_reverse(pending_cb, tmp, &local_cb_list,
-+								cb_node)
-+		list_move(&pending_cb->cb_node, &ctx->pending_cb_list);
-+	spin_unlock(&ctx->pending_cb_lock);
-+free_pending_cb_token:
-+	atomic_set(&ctx->thread_pending_cb_token, 1);
++release_cb:
++	hl_cb_put(cb);
++	hl_cb_destroy(hdev, &hdev->kernel_cb_mgr, cb->id << PAGE_SHIFT);
 +
 +	return rc;
 +}
 +
- static int hl_cs_ctx_switch(struct hl_fpriv *hpriv, union hl_cs_args *args,
- 				u64 *cs_seq)
++static int gaudi_schedule_register_memset(struct hl_device *hdev,
++		u32 hw_queue_id, u64 reg_base, u32 num_regs, u32 val)
  {
-@@ -1353,6 +1490,10 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
- 	if (rc)
- 		goto out;
++	struct hl_ctx *ctx = hdev->compute_ctx;
++	struct hl_pending_cb *pending_cb;
++	struct packet_msg_long *pkt;
++	u32 cb_size, ctl;
++	struct hl_cb *cb;
+ 	int i;
  
-+	rc = hl_submit_pending_cb(hpriv);
-+	if (rc)
-+		goto out;
+-	for (i = 0 ; i < NUM_OF_SOB_IN_BLOCK << 2 ; i += 4) {
+-		WREG32(mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_SOB_OBJ_0 + i, 0);
+-		WREG32(mmSYNC_MNGR_E_S_SYNC_MNGR_OBJS_SOB_OBJ_0 + i, 0);
+-		WREG32(mmSYNC_MNGR_W_N_SYNC_MNGR_OBJS_SOB_OBJ_0 + i, 0);
++	/* If no compute context available memset registers directly */
++	if (!ctx)
++		return gaudi_memset_registers(hdev, reg_base, num_regs, val);
 +
- 	cs_type = hl_cs_get_cs_type(args->in.cs_flags &
- 					~HL_CS_FLAGS_FORCE_RESTORE);
- 	chunks = (void __user *) (uintptr_t) args->in.chunks_execute;
-diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
-index 3d86b83f4ca6..a5003461b577 100644
---- a/drivers/misc/habanalabs/common/context.c
-+++ b/drivers/misc/habanalabs/common/context.c
-@@ -142,8 +142,11 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
- 	kref_init(&ctx->refcount);
++	cb_size = (sizeof(*pkt) * num_regs) +
++			sizeof(struct packet_msg_prot) * 2;
++
++	if (cb_size > SZ_2M) {
++		dev_err(hdev->dev, "CB size must be smaller than %uMB", SZ_2M);
++		return -ENOMEM;
+ 	}
  
- 	ctx->cs_sequence = 1;
-+	INIT_LIST_HEAD(&ctx->pending_cb_list);
-+	spin_lock_init(&ctx->pending_cb_lock);
- 	spin_lock_init(&ctx->cs_lock);
- 	atomic_set(&ctx->thread_ctx_switch_token, 1);
-+	atomic_set(&ctx->thread_pending_cb_token, 1);
- 	ctx->thread_ctx_switch_wait_token = 0;
- 	ctx->cs_pending = kcalloc(hdev->asic_prop.max_pending_cs,
- 				sizeof(struct hl_fence *),
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 9ef77a2a34ec..66ca8bd8fc70 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -998,6 +998,7 @@ int hl_device_reset(struct hl_device *hdev, bool hard_reset,
+-	for (i = 0 ; i < NUM_OF_MONITORS_IN_BLOCK << 2 ; i += 4) {
+-		WREG32(mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_STATUS_0 + i, 0);
+-		WREG32(mmSYNC_MNGR_E_S_SYNC_MNGR_OBJS_MON_STATUS_0 + i, 0);
+-		WREG32(mmSYNC_MNGR_W_N_SYNC_MNGR_OBJS_MON_STATUS_0 + i, 0);
++	pending_cb = kzalloc(sizeof(*pending_cb), GFP_KERNEL);
++	if (!pending_cb)
++		return -ENOMEM;
++
++	cb = hl_cb_kernel_create(hdev, cb_size, false);
++	if (!cb) {
++		kfree(pending_cb);
++		return -EFAULT;
+ 	}
  
- 	/* Go over all the queues, release all CS and their jobs */
- 	hl_cs_rollback_all(hdev);
-+	hl_pending_cb_rollback_all(hdev);
+-	i = GAUDI_FIRST_AVAILABLE_W_S_SYNC_OBJECT * 4;
++	pkt = cb->kernel_address;
++
++	ctl = FIELD_PREP(GAUDI_PKT_LONG_CTL_OP_MASK, 0); /* write the value */
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_OPCODE_MASK, PACKET_MSG_LONG);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_EB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_RB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_MB_MASK, 1);
++
++	for (i = 0; i < num_regs ; i++, pkt++) {
++		pkt->ctl = cpu_to_le32(ctl);
++		pkt->value = cpu_to_le32(val);
++		pkt->addr = cpu_to_le64(reg_base + (i * 4));
++	}
  
- kill_processes:
- 	if (hard_reset) {
-@@ -1519,6 +1520,7 @@ void hl_device_fini(struct hl_device *hdev)
+-	for (; i < NUM_OF_SOB_IN_BLOCK << 2 ; i += 4)
+-		WREG32(mmSYNC_MNGR_W_S_SYNC_MNGR_OBJS_SOB_OBJ_0 + i, 0);
++	hl_cb_destroy(hdev, &hdev->kernel_cb_mgr, cb->id << PAGE_SHIFT);
  
- 	/* Go over all the queues, release all CS and their jobs */
- 	hl_cs_rollback_all(hdev);
-+	hl_pending_cb_rollback_all(hdev);
+-	i = GAUDI_FIRST_AVAILABLE_W_S_MONITOR * 4;
++	pending_cb->cb = cb;
++	pending_cb->cb_size = cb_size;
++	/* The queue ID MUST be an external queue ID. Otherwise, we will
++	 * have undefined behavior
++	 */
++	pending_cb->hw_queue_id = hw_queue_id;
  
- 	/* Kill processes here after CS rollback. This is because the process
- 	 * can't really exit until all its CSs are done, which is what we
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 537545df531a..c4ca55467bdd 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -1016,6 +1016,20 @@ struct hl_cs_counters_atomic {
- 	atomic64_t validation_drop_cnt;
+-	for (; i < NUM_OF_MONITORS_IN_BLOCK << 2 ; i += 4)
+-		WREG32(mmSYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_STATUS_0 + i, 0);
++	spin_lock(&ctx->pending_cb_lock);
++	list_add_tail(&pending_cb->cb_node, &ctx->pending_cb_list);
++	spin_unlock(&ctx->pending_cb_lock);
++
++	return 0;
++}
++
++static int gaudi_restore_sm_registers(struct hl_device *hdev)
++{
++	u64 base_addr;
++	u32 num_regs;
++	int rc;
++
++	base_addr = CFG_BASE + mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_SOB_OBJ_0;
++	num_regs = NUM_OF_SOB_IN_BLOCK;
++	rc = gaudi_memset_registers(hdev, base_addr, num_regs, 0);
++	if (rc) {
++		dev_err(hdev->dev, "failed resetting SM registers");
++		return -ENOMEM;
++	}
++
++	base_addr = CFG_BASE +  mmSYNC_MNGR_E_S_SYNC_MNGR_OBJS_SOB_OBJ_0;
++	num_regs = NUM_OF_SOB_IN_BLOCK;
++	rc = gaudi_memset_registers(hdev, base_addr, num_regs, 0);
++	if (rc) {
++		dev_err(hdev->dev, "failed resetting SM registers");
++		return -ENOMEM;
++	}
++
++	base_addr = CFG_BASE +  mmSYNC_MNGR_W_N_SYNC_MNGR_OBJS_SOB_OBJ_0;
++	num_regs = NUM_OF_SOB_IN_BLOCK;
++	rc = gaudi_memset_registers(hdev, base_addr, num_regs, 0);
++	if (rc) {
++		dev_err(hdev->dev, "failed resetting SM registers");
++		return -ENOMEM;
++	}
++
++	base_addr = CFG_BASE +  mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_STATUS_0;
++	num_regs = NUM_OF_MONITORS_IN_BLOCK;
++	rc = gaudi_memset_registers(hdev, base_addr, num_regs, 0);
++	if (rc) {
++		dev_err(hdev->dev, "failed resetting SM registers");
++		return -ENOMEM;
++	}
++
++	base_addr = CFG_BASE +  mmSYNC_MNGR_E_S_SYNC_MNGR_OBJS_MON_STATUS_0;
++	num_regs = NUM_OF_MONITORS_IN_BLOCK;
++	rc = gaudi_memset_registers(hdev, base_addr, num_regs, 0);
++	if (rc) {
++		dev_err(hdev->dev, "failed resetting SM registers");
++		return -ENOMEM;
++	}
++
++	base_addr = CFG_BASE +  mmSYNC_MNGR_W_N_SYNC_MNGR_OBJS_MON_STATUS_0;
++	num_regs = NUM_OF_MONITORS_IN_BLOCK;
++	rc = gaudi_memset_registers(hdev, base_addr, num_regs, 0);
++	if (rc) {
++		dev_err(hdev->dev, "failed resetting SM registers");
++		return -ENOMEM;
++	}
++
++	base_addr = CFG_BASE +  mmSYNC_MNGR_W_S_SYNC_MNGR_OBJS_SOB_OBJ_0 +
++			(GAUDI_FIRST_AVAILABLE_W_S_SYNC_OBJECT * 4);
++	num_regs = NUM_OF_SOB_IN_BLOCK - GAUDI_FIRST_AVAILABLE_W_S_SYNC_OBJECT;
++	rc = gaudi_memset_registers(hdev, base_addr, num_regs, 0);
++	if (rc) {
++		dev_err(hdev->dev, "failed resetting SM registers");
++		return -ENOMEM;
++	}
++
++	base_addr = CFG_BASE +  mmSYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_STATUS_0 +
++			(GAUDI_FIRST_AVAILABLE_W_S_MONITOR * 4);
++	num_regs = NUM_OF_MONITORS_IN_BLOCK - GAUDI_FIRST_AVAILABLE_W_S_MONITOR;
++	rc = gaudi_memset_registers(hdev, base_addr, num_regs, 0);
++	if (rc) {
++		dev_err(hdev->dev, "failed resetting SM registers");
++		return -ENOMEM;
++	}
++
++	return 0;
+ }
+ 
+ static void gaudi_restore_dma_registers(struct hl_device *hdev)
+@@ -5663,18 +5848,23 @@ static void gaudi_restore_qm_registers(struct hl_device *hdev)
+ 	}
+ }
+ 
+-static void gaudi_restore_user_registers(struct hl_device *hdev)
++static int gaudi_restore_user_registers(struct hl_device *hdev)
+ {
+-	gaudi_restore_sm_registers(hdev);
++	int rc;
++
++	rc = gaudi_restore_sm_registers(hdev);
++	if (rc)
++		return rc;
++
+ 	gaudi_restore_dma_registers(hdev);
+ 	gaudi_restore_qm_registers(hdev);
++
++	return 0;
+ }
+ 
+ static int gaudi_context_switch(struct hl_device *hdev, u32 asid)
+ {
+-	gaudi_restore_user_registers(hdev);
+-
+-	return 0;
++	return gaudi_restore_user_registers(hdev);
+ }
+ 
+ static int gaudi_mmu_clear_pgt_range(struct hl_device *hdev)
+@@ -8202,12 +8392,16 @@ static u32 gaudi_gen_wait_cb(struct hl_device *hdev,
+ static void gaudi_reset_sob(struct hl_device *hdev, void *data)
+ {
+ 	struct hl_hw_sob *hw_sob = (struct hl_hw_sob *) data;
++	int rc;
+ 
+ 	dev_dbg(hdev->dev, "reset SOB, q_idx: %d, sob_id: %d\n", hw_sob->q_idx,
+ 		hw_sob->sob_id);
+ 
+-	WREG32(mmSYNC_MNGR_W_S_SYNC_MNGR_OBJS_SOB_OBJ_0 + hw_sob->sob_id * 4,
+-		0);
++	rc = gaudi_schedule_register_memset(hdev, hw_sob->q_idx,
++			CFG_BASE + mmSYNC_MNGR_W_S_SYNC_MNGR_OBJS_SOB_OBJ_0 +
++			hw_sob->sob_id * 4, 1, 0);
++	if (rc)
++		dev_err(hdev->dev, "failed resetting sob %u", hw_sob->sob_id);
+ 
+ 	kref_init(&hw_sob->kref);
+ }
+diff --git a/drivers/misc/habanalabs/gaudi/gaudiP.h b/drivers/misc/habanalabs/gaudi/gaudiP.h
+index a7ab2d7e57d4..78830443341d 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudiP.h
++++ b/drivers/misc/habanalabs/gaudi/gaudiP.h
+@@ -251,11 +251,13 @@ enum gaudi_nic_mask {
+  * @hdev: habanalabs device structure.
+  * @kref: refcount of this SOB group. group will reset once refcount is zero.
+  * @base_sob_id: base sob id of this SOB group.
++ * @queue_id: id of the queue that waits on this sob group
+  */
+ struct gaudi_hw_sob_group {
+ 	struct hl_device	*hdev;
+ 	struct kref		kref;
+ 	u32			base_sob_id;
++	u32			queue_id;
  };
  
-+/**
-+ * struct hl_pending_cb - pending command buffer structure
-+ * @cb_node: cb node in pending cb list
-+ * @cb: command buffer to send in next submission
-+ * @cb_size: command buffer size
-+ * @hw_queue_id: destination queue id
-+ */
-+struct hl_pending_cb {
-+	struct list_head	cb_node;
-+	struct hl_cb		*cb;
-+	u32			cb_size;
-+	u32			hw_queue_id;
-+};
-+
- /**
-  * struct hl_ctx - user/kernel context.
-  * @mem_hash: holds mapping from virtual address to virtual memory area
-@@ -1031,6 +1045,8 @@ struct hl_cs_counters_atomic {
-  * @mmu_lock: protects the MMU page tables. Any change to the PGT, modifying the
-  *            MMU hash or walking the PGT requires talking this lock.
-  * @debugfs_list: node in debugfs list of contexts.
-+ * pending_cb_list: list of pending command buffers waiting to be sent upon
-+ *                  next user command submission context.
-  * @cs_counters: context command submission counters.
-  * @cb_va_pool: device VA pool for command buffers which are mapped to the
-  *              device's MMU.
-@@ -1039,11 +1055,17 @@ struct hl_cs_counters_atomic {
-  *			index to cs_pending array.
-  * @dram_default_hops: array that holds all hops addresses needed for default
-  *                     DRAM mapping.
-+ * @pending_cb_lock: spinlock to protect pending cb list
-  * @cs_lock: spinlock to protect cs_sequence.
-  * @dram_phys_mem: amount of used physical DRAM memory by this context.
-  * @thread_ctx_switch_token: token to prevent multiple threads of the same
-  *				context	from running the context switch phase.
-  *				Only a single thread should run it.
-+ * @thread_pending_cb_token: token to prevent multiple threads from processing
-+ *				the pending CB list. Only a single thread should
-+ *				process the list since it is protected by a
-+ *				spinlock and we don't want to halt the entire
-+ *				command submission sequence.
-  * @thread_ctx_switch_wait_token: token to prevent the threads that didn't run
-  *				the context switch phase from moving to their
-  *				execution phase before the context switch phase
-@@ -1062,13 +1084,16 @@ struct hl_ctx {
- 	struct mutex			mem_hash_lock;
- 	struct mutex			mmu_lock;
- 	struct list_head		debugfs_list;
-+	struct list_head		pending_cb_list;
- 	struct hl_cs_counters_atomic	cs_counters;
- 	struct gen_pool			*cb_va_pool;
- 	u64				cs_sequence;
- 	u64				*dram_default_hops;
-+	spinlock_t			pending_cb_lock;
- 	spinlock_t			cs_lock;
- 	atomic64_t			dram_phys_mem;
- 	atomic_t			thread_ctx_switch_token;
-+	atomic_t			thread_pending_cb_token;
- 	u32				thread_ctx_switch_wait_token;
- 	u32				asid;
- 	u32				handle;
-@@ -2143,6 +2168,7 @@ int hl_cb_va_pool_init(struct hl_ctx *ctx);
- void hl_cb_va_pool_fini(struct hl_ctx *ctx);
+ #define NUM_SOB_GROUPS (HL_RSVD_SOBS * QMAN_STREAMS)
+diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_packets.h b/drivers/misc/habanalabs/include/gaudi/gaudi_packets.h
+index 784b5bc8d0ba..6e097ace2e96 100644
+--- a/drivers/misc/habanalabs/include/gaudi/gaudi_packets.h
++++ b/drivers/misc/habanalabs/include/gaudi/gaudi_packets.h
+@@ -78,6 +78,9 @@ struct packet_wreg_bulk {
+ 	__le64 values[0]; /* data starts here */
+ };
  
- void hl_cs_rollback_all(struct hl_device *hdev);
-+void hl_pending_cb_rollback_all(struct hl_device *hdev);
- struct hl_cs_job *hl_cs_allocate_job(struct hl_device *hdev,
- 		enum hl_queue_type queue_type, bool is_kernel_allocated_cb);
- void hl_sob_reset_error(struct kref *ref);
++#define GAUDI_PKT_LONG_CTL_OP_SHIFT		20
++#define GAUDI_PKT_LONG_CTL_OP_MASK		0x00300000
++
+ struct packet_msg_long {
+ 	__le32 value;
+ 	__le32 ctl;
 -- 
 2.25.1
 
