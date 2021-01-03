@@ -2,93 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EF02E8D8F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 040CC2E8DA3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbhACRNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 12:13:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
+        id S1727476AbhACRVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 12:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727760AbhACRNe (ORCPT
+        with ESMTP id S1726026AbhACRVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 12:13:34 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B315DC0617B9
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 09:13:02 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id h186so14915407pfe.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 09:13:02 -0800 (PST)
+        Sun, 3 Jan 2021 12:21:16 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FA8C061573;
+        Sun,  3 Jan 2021 09:20:36 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id cm17so24839702edb.4;
+        Sun, 03 Jan 2021 09:20:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DJN/Pu+8mLKZ+B4Z+Om7De+VUDyUCro4rXn59AnfrE4=;
-        b=GJ5A/1auzoduEeasEqtvu6hr2Gs+drY4Z01k6WXJ2D0EaD0TxZpf80iuC/SBcfu7Kb
-         hXyPC3xEMoHL/mgBh6vg/GZfWEibhw/I4yDdJRXQ8Yt9oW/rFji7DYEgtbvRlAKYL4By
-         b/gJD/6JFcbSBIpVUjlL6DhJ5fhxZTR7Sla9lgdVXU1mMNFIKRm5anKzzOVNDwfXX1XU
-         gCDzb2f6wfp4r9vsDorKGW3kakon1w2NTvb/PUjFtuPv+ghU1N5U9Dcn6V+zl7GFCwr5
-         9myPOPcGdnFPuk9yF/SSMGbjOnj0N29Z3+HjPDhCf05bEwLSdjP3BpbLNi0UnIHBwFf6
-         zePQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TPZpW7pct701YIH5FuP3dTS3Jfc1HQ3AViBuw4vIpVw=;
+        b=KpDIKzd0QNs+tFLglFXhTlNhH87RN1WHs0GMssPqxlowtK2vIRfH+9XlGjXvzeNPI1
+         S29QNdVLrH0Aeapxug7YZKljkgbP7IUfLYmkoJFmCIhsc9B6+93zj5+rd1ZZkkCLjBii
+         ktdP2+vfQaIdTHsyn+SqLCqIuV6bf9oN4+hcxGsXxCw7f3dMSV0vzqqumc4jQMNLBrXr
+         A6iNenfKNWMx3g/lwuYhv0co8zsTctF6DdrZEYUIE0Clrnx8GVZyC9Z8mG4xIWM9z1Iv
+         LGqZutqzHh2HiFtyN0RucV8p0u6gbc1eK/I41LmKxEW3EB8CQaH9CUQmQmX5o703B+Yv
+         Z+nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DJN/Pu+8mLKZ+B4Z+Om7De+VUDyUCro4rXn59AnfrE4=;
-        b=HwG9pFP1NPvGqqUcyIK72xtU1hn9+B4+lS2HxEsadpjSit08T7flV5xJ9KS+Mmx3ho
-         nzKzL2Hq+EKc92o4iAB7yR/UDdy09VtQxg16LRsLYt8pPqPzmJ4zUR96eVD1M7HaggYs
-         z/XmuH5pJsFDEAqu7PwusQcz9u+wE85SzrZ8kVRqUDN06vP4B4ux+UG5N5vQshiFUOM+
-         /+3Xd22md6A5rrhd2z1fN8KFKHtig2uXo0b+yRMuiNGywsBzeeTKrnhhbWOP3FOnkmgX
-         X2z1cU4NDd9LsouMQuuQQSxfYJk6uq74e9jmdanDly50lQhNDG+yP63AJl9SE1pFYcUg
-         UuEA==
-X-Gm-Message-State: AOAM530QY0WS1rrorVkswAiJv5DrLUWZ1EE8+vIfYo4pMUiaMWRCjJD4
-        HNOddXQD8E0vUQkH9BUpdqvJXSzs/ng=
-X-Google-Smtp-Source: ABdhPJyrjwRxNiXYf74ApoL/95Jw1Unu7nMqfXQ+KrD97MJV6r4/uJZcqZdl4vapaCluE9JG/ag4iQ==
-X-Received: by 2002:aa7:86d5:0:b029:1a3:61b6:9c1 with SMTP id h21-20020aa786d50000b02901a361b609c1mr61911995pfo.55.1609693982185;
-        Sun, 03 Jan 2021 09:13:02 -0800 (PST)
-Received: from localhost.localdomain (61-230-37-4.dynamic-ip.hinet.net. [61.230.37.4])
-        by smtp.gmail.com with ESMTPSA id y3sm19771657pjb.18.2021.01.03.09.12.58
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TPZpW7pct701YIH5FuP3dTS3Jfc1HQ3AViBuw4vIpVw=;
+        b=nJZExDhPq+NocFJGXIDRBM7qamqDzTIp1sWKVfFo7ThqSATeCUBoMY3hHkOasNGmke
+         Bjwyd0GdhjGX6FKxPyNwWV/LPKXqwdQp6z0o/YGQGUgh2PC0eEg+GyliJa+mVplFw6dW
+         aQUR9xla5uw5ocOhhhfZ0KS2K6PUyVNAsT3obrJKoElTfOnLzQCy40FmWN4cz5MWhcZ5
+         jtO/fhaDABzZ61bTl89angSzzIcpUrd46eBx+eKBKVetCbLN7dHOm0kQ+q6TUHXAIZPt
+         aXSWuSLqwSbmIvf27GT7eJT4jHHtkRFX6sTmqkVzcBrbsc2PuKtx/6R8uklgiVS8W8GX
+         mp4Q==
+X-Gm-Message-State: AOAM5317s7G0jajBL0AawKqteRxjfT84/sz18wb0q7b+o3Tz+zc8bxN6
+        GulUt5LFjz0xMwQ0yQ+tBTo=
+X-Google-Smtp-Source: ABdhPJyva/cWisJ5YFH14niBryPIxYZJ37WhmcWvlWK2gcYUJWtQ8rn5AaeDvhYBERw0R2aeEJ6CaA==
+X-Received: by 2002:a50:d888:: with SMTP id p8mr15608690edj.147.1609694434829;
+        Sun, 03 Jan 2021 09:20:34 -0800 (PST)
+Received: from BV030612LT ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id l14sm42732692edq.35.2021.01.03.09.20.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 09:13:01 -0800 (PST)
-From:   Lecopzer Chen <lecopzer@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org
-Cc:     dan.j.williams@intel.com, aryabinin@virtuozzo.com,
-        glider@google.com, dvyukov@google.com, akpm@linux-foundation.org,
-        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
-        will@kernel.org, catalin.marinas@arm.com,
-        Lecopzer Chen <lecopzer@gmail.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>
-Subject: [PATCH 3/3] arm64: Kconfig: support CONFIG_KASAN_VMALLOC
-Date:   Mon,  4 Jan 2021 01:11:37 +0800
-Message-Id: <20210103171137.153834-4-lecopzer@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210103171137.153834-1-lecopzer@gmail.com>
-References: <20210103171137.153834-1-lecopzer@gmail.com>
+        Sun, 03 Jan 2021 09:20:34 -0800 (PST)
+Date:   Sun, 3 Jan 2021 19:20:31 +0200
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v4 5/7] power: reset: Add poweroff driver for ATC260x
+ PMICs
+Message-ID: <20210103172031.GA268987@BV030612LT>
+References: <cover.1609258905.git.cristian.ciocaltea@gmail.com>
+ <eef6e5a4e0fc5f20da235a3a4124ba81eebfe2ca.1609258905.git.cristian.ciocaltea@gmail.com>
+ <20210103032631.k6ls5k2bnxmlhlhv@earth.universe>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210103032631.k6ls5k2bnxmlhlhv@earth.universe>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now I have no device to test for HW_TAG, so keep it not selected
-until someone can test this.
+Hi Sebastian,
 
-Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
----
- arch/arm64/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+On Sun, Jan 03, 2021 at 04:26:31AM +0100, Sebastian Reichel wrote:
+> Hi,
+> 
+> On Tue, Dec 29, 2020 at 07:31:20PM +0200, Cristian Ciocaltea wrote:
+> > This driver provides poweroff and reboot support for a system through
+> > the ATC2603C and ATC2609A chip variants of the Actions Semi ATC260x
+> > family of PMICs.
+> > 
+> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > ---
+> > Changes in v4:
+> >  - None
+> > 
+> > Changes in v3:
+> >  - Removed the unnecessary driver compatibles
+> > 
+> > [...]
+> > +#include <linux/delay.h>
+> > +#include <linux/mfd/atc260x/core.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of.h>
+> 
+> There is no DT code in this driver?
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 05e17351e4f3..29ab35aab59e 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -136,6 +136,7 @@ config ARM64
- 	select HAVE_ARCH_JUMP_LABEL
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
- 	select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
-+	select HAVE_ARCH_KASAN_VMALLOC if (HAVE_ARCH_KASAN && !KASAN_HW_TAGS)
- 	select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
- 	select HAVE_ARCH_KASAN_HW_TAGS if (HAVE_ARCH_KASAN && ARM64_MTE)
- 	select HAVE_ARCH_KGDB
--- 
-2.25.1
+Right, this line is not needed anymore, I will drop it and submit a new
+patch revision.
+
+> > +#include <linux/platform_device.h>
+> > +#include <linux/power_supply.h>
+> 
+> power_supply.h? That's for chargers and battery fuel gauges.
+
+That is only used for checking if the S4 mode is available - which
+involves calling 'power_supply_is_system_supplied()'.
+
+> > +#include <linux/reboot.h>
+> > +#include <linux/regmap.h>
+> 
+> > [...]
+> 
+> Otherwise LGTM. I suppose I can cherry-pick this patch into
+> my tree, or did I miss some dependencies?
+
+I'm not really sure what is the recommended approach (if any) for
+merging MFD drivers.
+
+The only dependency is the PMIC core driver in patch 3/7, which is
+handled in Kconfig through 'depends on MFD_ATC260X'.
+
+So far, Mark applied the regulator driver patch to his tree, while
+Dmitry suggested to merge the onkey driver through MFD. So I think both
+approaches are fine.
+
+@Lee: Do you have any preference or recommendation for handling this?
+
+> -- Sebastian
+
+Thanks for the review,
+Cristi
 
