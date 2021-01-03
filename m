@@ -2,97 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78152E8D2A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 17:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847DD2E8D32
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 17:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727413AbhACQaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 11:30:46 -0500
-Received: from mail-io1-f45.google.com ([209.85.166.45]:42060 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbhACQaq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 11:30:46 -0500
-Received: by mail-io1-f45.google.com with SMTP id q137so22824920iod.9;
-        Sun, 03 Jan 2021 08:30:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=86i+Dk92lWWCyD4iVoVNNMNzfrvFDGHE0Q+u7Pv1tAg=;
-        b=BnshLM5DI3x/zFyh+cH8bnbsKOENfPM2CYRv/VA96kBxLGuJod5/N6OTxEvNP4xKwV
-         MLtthZXDotLtN4Isj4iAMROJZKVdP1/VXuysbe/eK5f/rW0Nm4kWZejQ0aja/kGCvNdw
-         ATDlBI/Su9fORTQZqFli1pD+C65VGzfpIEGVuC31t1Sbj6S/BrYN1F/Spv5pEJLdRziT
-         /0hH566TznW2v3lKCZhec7c8x4RYc80p9fxTVOMZCUsz2FbiN7rAfSvK5LTJoXpWCT98
-         LA+MppjOmmZ5P1urVrSPQDIwKBs2QrxqLtyWp/YkUblLDC2OaInWimY1dXIBnAd/6rah
-         8kWA==
-X-Gm-Message-State: AOAM533kUJi4yntfHuUAtl+JS1YpCrKhWY9677w3FnVWjx0UUNyZd6ll
-        YvJKKnPb2+WtWpx19wn2pRydX3rVHw==
-X-Google-Smtp-Source: ABdhPJwbqg/++dfS2HqoOG718/oumLOl4T5g1ipEFEAmCd+vT/JgXsxqDnYrVQNU3eFKCHV9q4arbw==
-X-Received: by 2002:a02:9f8b:: with SMTP id a11mr60036063jam.108.1609691404905;
-        Sun, 03 Jan 2021 08:30:04 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id 9sm41318898iob.28.2021.01.03.08.30.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 08:30:03 -0800 (PST)
-Received: (nullmailer pid 3994326 invoked by uid 1000);
-        Sun, 03 Jan 2021 16:30:00 -0000
-Date:   Sun, 3 Jan 2021 09:30:00 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, lars@metafoo.de, linux-fpga@vger.kernel.org,
-        mdf@kernel.org, dragos.bogdan@analog.com
-Subject: Re: [PATCH 2/2] dt-bindings: clock: adi,axi-clkgen: add Zynq &
- ZynqMP compatible strings
-Message-ID: <20210103163000.GA3986534@robh.at.kernel.org>
-References: <20201221144224.50814-1-alexandru.ardelean@analog.com>
- <20201221144224.50814-2-alexandru.ardelean@analog.com>
+        id S1727432AbhACQdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 11:33:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726733AbhACQdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 11:33:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDB97207FB;
+        Sun,  3 Jan 2021 16:32:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609691564;
+        bh=vH8svvwB/ZjYxW92qiP/AzA1tZNCSuSCSmv0MITZxak=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ks5xsAzaYDsAg7uYTRoQRa22Tn1+WMOyi9upG81x11iTblBTiPmgxUUykLlugitiw
+         v8t3chU1Qn6rSfRAsumNcOahk99dyeQkZYuCfdvQCHigBdoibWdprGse73Gw6ggRPE
+         r8wcI5gJV+WBZX3Q1/XOuYjBqAx6u82otDuAEYP1ch7NAQJiHXGBtLneDz0FFr+E3A
+         LnSvwKqUVjau3vmaye/8hiZ5AO/lBk7uBJoPenN53S2cBmJYPsX+fxSGF1dF3JwJ8G
+         +2D3rzftchx9LFd6kQYbQhwXZ6aPOttolACCOG2eemotATU65Ybbr0swaadOscgNsr
+         Hb0Y0LqgEOEXw==
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, linux-pm@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: (subset) [PATCH v6 1/8] extcon: max8997: Add CHGINS and CHGRM interrupt handling
+Date:   Sun,  3 Jan 2021 17:32:38 +0100
+Message-Id: <160969149109.67322.9352237387856786036.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201230205139.1812366-1-timon.baetz@protonmail.com>
+References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201221144224.50814-2-alexandru.ardelean@analog.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 04:42:24PM +0200, Alexandru Ardelean wrote:
-> The axi-clkgen driver now supports ZynqMP (UltraScale) as well, however the
-> driver needs to use different PFD & VCO limits.
-> 
-> For ZynqMP, these needs to be selected by using the
-> 'adi,zynqmp-axi-clkgen-2.00.a' string. For consistency a
-> 'adi,zynq-axi-clkgen-2.00.a' has been added which should behave as the
-> original compatible string (i.e. 'adi,axi-clkgen-2.00.a').
+On Wed, 30 Dec 2020 20:51:53 +0000, Timon Baetz wrote:
+> This allows the MAX8997 charger to set the current limit depending on
+> the detected extcon charger type.
 
-Version numbers and SoC are kind of rendundant.
+Applied, thanks!
 
-Does 'adi,axi-clkgen-2.00.a' apply to anything other than Zynq? If not, 
-you don't really need a new string. If so, you really want it to be:
+[7/8] ARM: dts: exynos: Fix charging regulator voltage and current for I9100
+      commit: 4a928b3b7c0f8a2ae382c3db3a78898877567786
 
-compatible = "adi,zynq-axi-clkgen-2.00.a", "adi,axi-clkgen-2.00.a";
-
-To be forwards and backwards compatible.
-
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml b/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
-> index 0d06387184d6..398954ec6767 100644
-> --- a/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
-> +++ b/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
-> @@ -20,6 +20,8 @@ properties:
->    compatible:
->      enum:
->        - adi,axi-clkgen-2.00.a
-> +      - adi,zynq-axi-clkgen-2.00.a
-> +      - adi,zynqmp-axi-clkgen-2.00.a
->  
->    clocks:
->      description:
-> -- 
-> 2.17.1
-> 
+Best regards,
+-- 
+Krzysztof Kozlowski <krzk@kernel.org>
