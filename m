@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF7F2E8CEB
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078BA2E8CEE
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbhACPgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 10:36:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
+        id S1727239AbhACPgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 10:36:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbhACPgF (ORCPT
+        with ESMTP id S1726210AbhACPgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 10:36:05 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEBCC061573
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 07:35:24 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id i24so24641400edj.8
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 07:35:24 -0800 (PST)
+        Sun, 3 Jan 2021 10:36:23 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F220C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 07:35:43 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id p22so24629017edu.11
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 07:35:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=M8EUldjyvk2v6GO3easV/bDTItJ4f4U6mdfimtYJN0A=;
-        b=q2bVdZYxjyewijLVutaGwahEKegFtWwpymOP0F5g/i8xSQ0JiaL/ZF4wv+B/pS11uK
-         HvLyXrsT2pry1T6a6JH+hDV3gLfwy7Nis7v9HuqtANuRfi9xoygFJN7OQgh/OH+fL3sz
-         tL793KWxUj3my5HtSRDrhGBwwf/mS3kT3PRathvluF0LZBaLnWujU8qEbPJTibHYzsXP
-         G2YO3mbzAWLnFyK0sf648uvhmD08m3CRgrDOWuXVWe3EpSnt+pjVtQRB+8ZwRfPYO8Hq
-         PTCJ3xO0TaZANWPpKuX6tFsfYMKwm3uV9B4Rlkl71ujSFgy+/7mfN+ksoefrKbRJS0lu
-         B1GA==
+        bh=FAsNHJ04qXj7NOFemNU/AVYo7sQyesbZ2/ZS+gTz3yY=;
+        b=JYStzbrcOZUug6PTnGMSalnVKB1OTR2Wn9Fk4lykj36+spy/fvNmamuH0Qp7qr5v26
+         sWOVY/wrLndB6durZ3aP1Cr1CwKksyviRJZFbBatqyxBxje1As3qeBB0OOqX6dPGetIY
+         xoCF6ZPGFGCM9aEcmtoKUisOuSU5vqkhwAxQhNmlMv6BCzRnEV3gXlH/Lazo4T8x6uc4
+         vudyTLLvpYMHqqveOQDukY3FI8/L+B8Od4+LNHVOrmVCNJsv+oV9HGmhhlHh1ldsairv
+         Fy5jpMRJJNlyeSrpwGJCyUI79AYxtQEPeYAYd/bBDp4RTtpuiQU1/46TnkGpW59jGwKV
+         TN3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=M8EUldjyvk2v6GO3easV/bDTItJ4f4U6mdfimtYJN0A=;
-        b=sLhjt+rWvgKBLCPnliZb8NkJ05TSvHSCTtxeHG+B4AFihZUzNCDz9jGg13iksAqRiX
-         jsh8m4TfEkUum8qVau6XizOvRJ+hgWI/R0+/6rEpAlhfxXh158GBdToEWZAql3g8cEpq
-         qKQQZlthIyGp1nBbDOBdXTK4Ht8nN1Gu1FColukUDdbYw+mVsM863hHJAgqBNjV8NLoy
-         CTSKyYrsXXcpe70SCSC9g3YUmaZDOrI0VX/cZv1snc1mpemGBOmX+OQaO+vxuvwGNgth
-         Mp/yAgkZT7wC1wGVjDUMCCIrWuOBFWsBvMFbdR3cwuEtCS74TuA5ge14xKKenJXuDNgg
-         fhbg==
-X-Gm-Message-State: AOAM530cREMxcxBTuCSgDTx1aT/IR5FR+2NT7/mRXbDSQSjuMq6OuH8V
-        uZ+BWOjoBlT82Qe53tTHTAzAopfWPqq9hRY0JdtvOw==
-X-Google-Smtp-Source: ABdhPJzb4qlEP8bfOaM0fyTZxQzF/OvPUzBT2H3LyWrVjHiIFgsjX7PH+TJnpC5tCIRreernulsyYuhCUhVSMQ75rDg=
-X-Received: by 2002:a05:6402:14c5:: with SMTP id f5mr66332936edx.232.1609688123457;
- Sun, 03 Jan 2021 07:35:23 -0800 (PST)
+        bh=FAsNHJ04qXj7NOFemNU/AVYo7sQyesbZ2/ZS+gTz3yY=;
+        b=H7xvdenOCEyI5zP8AxCT9oNpbA4Ta4wTka9nE0fRVKR8HSbbwIgKgLi4RrGWFdLZC5
+         wYPy8oV+B/fMQwwrPNE+J1H9ov9QCwa1SruW1pklYZpLzqqcUei1Nrq3GjIXZ3rcbGQG
+         TbzrZn5pr7RzAtWZoOluy7s8NXABWC70oavzI61mTXjXzPzejgXrLUyWeCdzaU8uwXpw
+         slyLe2e5mTQS8d8ImJ+b4bODijF6GQarTBJphTq5vsNMWOFk+WzkOQvWxTGcKWRrW0Yg
+         UwGwdtiRSGBPe6KaklFCkaGr++dzksDw7nEjYo8fYdJWhAO4ca5Ykgde6TxmYl5dxgbq
+         jj3w==
+X-Gm-Message-State: AOAM532VjAGjwB+0FKyY6hsuuTm94uqZ+8oiVM67z6vOYa+ddAvd2f9z
+        IILZSz+sJMjr9h9PTfNKDLOGU8+J73C1WNQjw/9Vmg==
+X-Google-Smtp-Source: ABdhPJwMxYwOmRsYhEgHHAaq5bYOroyFT1dvvvSwJvL5M5H2WicUW0Grw8JRya7+wEu/oYgstGvX/9+D0eKgQk01NFg=
+X-Received: by 2002:aa7:cc15:: with SMTP id q21mr67477267edt.213.1609688142047;
+ Sun, 03 Jan 2021 07:35:42 -0800 (PST)
 MIME-Version: 1.0
 References: <1608888807-3117-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1608888807-3117-7-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-In-Reply-To: <1608888807-3117-7-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1608888807-3117-9-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+In-Reply-To: <1608888807-3117-9-git-send-email-yoshihiro.shimoda.uh@renesas.com>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Sun, 3 Jan 2021 16:35:12 +0100
-Message-ID: <CAMpxmJWsipPumbROrfas+Ldwh47wnZxORUWr0RjY-=0-B2pELA@mail.gmail.com>
-Subject: Re: [PATCH v8 06/12] gpio: bd9571mwv: Use the SPDX license identifier
+Date:   Sun, 3 Jan 2021 16:35:31 +0100
+Message-ID: <CAMpxmJUYqprKrihc=0=MRbYh-nV+QS16jWxK95sxUPzt9Y6_tA@mail.gmail.com>
+Subject: Re: [PATCH v8 08/12] gpio: bd9571mwv: Add BD9574MWF support
 To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 Cc:     marek.vasut+renesas@gmail.com, Lee Jones <lee.jones@linaro.org>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
@@ -70,37 +70,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Fri, Dec 25, 2020 at 10:33 AM Yoshihiro Shimoda
 <yoshihiro.shimoda.uh@renesas.com> wrote:
 >
-> Use the SPDX license identifier instead of a local description.
+> Add support for BD9574MWF which is similar chip with BD9571MWV.
+> Note that BD9574MWF has additional features "RECOV_GPOUT",
+> "FREQSEL" and "RTC_IN", but supports GPIO function only.
 >
 > Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 > ---
->  drivers/gpio/gpio-bd9571mwv.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
+>  drivers/gpio/gpio-bd9571mwv.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 >
 > diff --git a/drivers/gpio/gpio-bd9571mwv.c b/drivers/gpio/gpio-bd9571mwv.c
-> index c0abc9c..abb622c 100644
+> index 0e5395f..df6102b 100644
 > --- a/drivers/gpio/gpio-bd9571mwv.c
 > +++ b/drivers/gpio/gpio-bd9571mwv.c
-> @@ -1,17 +1,9 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
 >  /*
->   * ROHM BD9571MWV-M GPIO driver
+> - * ROHM BD9571MWV-M GPIO driver
+> + * ROHM BD9571MWV-M and BD9574MWF-M GPIO driver
 >   *
 >   * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
 >   *
-> - * This program is free software; you can redistribute it and/or
-> - * modify it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed "as is" WITHOUT ANY WARRANTY of any
-> - * kind, whether expressed or implied; without even the implied warranty
-> - * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> - * GNU General Public License version 2 for more details.
-> - *
->   * Based on the TPS65086 driver
->   *
->   * NOTE: Interrupts are not supported yet.
+> @@ -10,6 +10,7 @@
+>   */
+>
+>  #include <linux/gpio/driver.h>
+> +#include <linux/mfd/rohm-generic.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>
+> @@ -118,7 +119,8 @@ static int bd9571mwv_gpio_probe(struct platform_device *pdev)
+>  }
+>
+>  static const struct platform_device_id bd9571mwv_gpio_id_table[] = {
+> -       { "bd9571mwv-gpio", },
+> +       { "bd9571mwv-gpio", ROHM_CHIP_TYPE_BD9571 },
+> +       { "bd9574mwf-gpio", ROHM_CHIP_TYPE_BD9574 },
+>         { /* sentinel */ }
+>  };
+>  MODULE_DEVICE_TABLE(platform, bd9571mwv_gpio_id_table);
 > --
 > 2.7.4
 >
