@@ -2,87 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08782E8EA6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 418E92E8EA7
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727158AbhACWHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 17:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
+        id S1727354AbhACWIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 17:08:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbhACWHs (ORCPT
+        with ESMTP id S1727178AbhACWIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 17:07:48 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17088C061573;
-        Sun,  3 Jan 2021 14:07:08 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D8CXn60Svz9sVr;
-        Mon,  4 Jan 2021 09:07:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1609711626;
-        bh=8XWTuTPPy/pY+/KbO9pp3kdEaIP3ZBqqAIW0O/fjsEE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IkNEuxx1acpMx6Q4gbPWw8XCj8QRKfnpbdSQYPAqzqzED1/BM3+AwrQveY4uNzpTv
-         H75L5KD71Ic03NBhuiql+ON3kxXzDsDNtl4RT3dv8cjGheVfVjYvNDqipJYmilgNIn
-         P275q+bGgDJuglPiCXXLSC527spV7VVJjiCSw6cZw3kuH0G/kOmynAzo2VyWflF+sY
-         PCQN9RsoYlp+Ki5H5N6kLrOPKO9/PCpkhRlDS9X+7getRnWb5Cy++z7MkI9WcUed5D
-         d2uFRz9Iy/C9ETKzrXChnngW7U0OZildKbzQX4g9yKRu3vtR7CI1z3Q7uD/SKmJ9Xb
-         8rttXqBHfEX5w==
-Date:   Mon, 4 Jan 2021 09:07:04 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning in Linus' tree
-Message-ID: <20210104090704.3601e1ba@canb.auug.org.au>
+        Sun, 3 Jan 2021 17:08:24 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1661C0613CF;
+        Sun,  3 Jan 2021 14:07:43 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id o19so60325045lfo.1;
+        Sun, 03 Jan 2021 14:07:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iIGt/9zpbYpG6wzXWtXdyQg2ktAIzGOKEGAmeFmpvRg=;
+        b=ZWVFggDpWHLYGN7D+phAIvoSpc716LmaO+EBAYcfKzeGscBeaZcSwYAgT10co1BLlk
+         7/2WasNQI8ysauoXkvSAbPiaRQP90om287P3OZ5fDtwU6Z/q2TMnXPtKXPB5MGKJBxIG
+         iGozzcRneCPnxPQrDigW3jfBjJrLEMyvUhpRlrVn4rYP1AytyvHECnv0iE4+I5wSIhNE
+         vknuKXUmVUcyXK805rwU85FbepFk3n9acVh/ebKo7csKRpcV3z2nNDx9qmmjB3Na7p4A
+         XLpPlFT3W/MQEW2fNi2Dpw+lXVG6BZhT6qaZj17QKibTJzw6qzlf3JH49g9OXt0h/Wip
+         Fh4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iIGt/9zpbYpG6wzXWtXdyQg2ktAIzGOKEGAmeFmpvRg=;
+        b=l8vl5oUV7+YjpG7kNj3s7GOMNzhwz3jGsZ8skPILA0bZqN9XT7iXHDSpY3Z9qDkp1k
+         0Yf/1lHhW86hCVgHTGsasKG2RYOKSPEhU4zm3do/43Yy2HE0Re0bivsdD/MmkFf8bYlP
+         BDNQPXs4b+pXIPKGifR4EcYh9WMvNQza7Zq9gIm2ZC9y8skKiycCTUyqeYaO3zNa2FlY
+         jbq81AsZBRO7QvKbub8P2pq6iTlwIWk56BGLlNFt78J9waDD5NOsREg2Z3JcAaVrcTwk
+         wHdLxHFZr7lNLcoAEtw9aUBuX0Uf3Y8u41WTxknWbEAOHiNOMunu+cMEv5lzv09GNC9j
+         OlQg==
+X-Gm-Message-State: AOAM530surzuAKVMhtJPBtJbX3eAi0jr2qBaAgiCWcTssuvcgD78PkoT
+        1kT7N6GFxO6BIGY8M8EvWXHVLiCzHc5rBg==
+X-Google-Smtp-Source: ABdhPJyBOTNRTyOCBerwLXvB8C0DG5CIj1T1Ii1iriOBFi17B/jVs4BMmb8uOwbdo2W1KQUgazeDlA==
+X-Received: by 2002:ac2:44ba:: with SMTP id c26mr29339438lfm.132.1609711662388;
+        Sun, 03 Jan 2021 14:07:42 -0800 (PST)
+Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
+        by smtp.gmail.com with ESMTPSA id m8sm7054382lfg.134.2021.01.03.14.07.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 14:07:41 -0800 (PST)
+Date:   Mon, 4 Jan 2021 00:07:39 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com
+Subject: Re: [PATCH v17 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
+Message-ID: <20210103220739.2gkh6gy3iatv4fog@kari-VirtualBox>
+References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
+ <20201231152401.3162425-9-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nFrKHp_yQHVWovhAa5DMG.x";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201231152401.3162425-9-almaz.alexandrovich@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nFrKHp_yQHVWovhAa5DMG.x
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Dec 31, 2020 at 06:23:59PM +0300, Konstantin Komarov wrote:
+> This adds Kconfig, Makefile and doc
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  Documentation/filesystems/ntfs3.rst | 107 ++++++++++++++++++++++++++++
+>  fs/ntfs3/Kconfig                    |  41 +++++++++++
+>  fs/ntfs3/Makefile                   |  31 ++++++++
 
-Hi all,
+Also Documentation/filesystems/index.rst should contain ntfs3.
 
-While building Linus' tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
+>  3 files changed, 179 insertions(+)
+>  create mode 100644 Documentation/filesystems/ntfs3.rst
+>  create mode 100644 fs/ntfs3/Kconfig
+>  create mode 100644 fs/ntfs3/Makefile
+> 
 
-drivers/pinctrl/nomadik/pinctrl-nomadik.c: In function 'nmk_gpio_dbg_show_o=
-ne':
-drivers/pinctrl/nomadik/pinctrl-nomadik.c:952:8: warning: unused variable '=
-wake' [-Wunused-variable]
-  952 |   bool wake;
-      |        ^~~~
+> diff --git a/fs/ntfs3/Kconfig b/fs/ntfs3/Kconfig
+> new file mode 100644
+> index 000000000000..f9b732f4a5a0
+> --- /dev/null
+> +++ b/fs/ntfs3/Kconfig
+> @@ -0,0 +1,41 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +config NTFS3_FS
+> +	tristate "NTFS Read-Write file system support"
+> +	select NLS
+> +	help
+> +	  Windows OS native file system (NTFS) support up to NTFS version 3.1.
+> +
+> +	  Y or M enables the NTFS3 driver with full features enabled (read,
+> +	  write, journal replaying, sparse/compressed files support).
+> +	  File system type to use on mount is "ntfs3". Module name (M option)
+> +	  is also "ntfs3".
+> +
+> +	  Documentation: <file:Documentation/filesystems/ntfs3.rst>
+> +
+> +config NTFS3_64BIT_CLUSTER
+> +	bool "64 bits per NTFS clusters"
+> +	depends on NTFS3_FS && 64BIT
+> +	help
+> +	  Windows implementation of ntfs.sys uses 32 bits per clusters.
+> +	  If activated 64 bits per clusters you will be able to use 4k cluster
+> +	  for 16T+ volumes. Windows will not be able to mount such volumes.
+> +
+> +	  It is recommended to say N here.
+> +
+> +config NTFS3_LZX_XPRESS
+> +	bool "activate support of external compressions lzx/xpress"
+> +	depends on NTFS3_FS
+> +	help
+> +	  In Windows 10 one can use command "compact" to compress any files.
+> +	  4 possible variants of compression are: xpress4k, xpress8k, xpress16 and lzx.
+> +	  To read such "compacted" files say Y here.
 
-Introduced by commit
+It would be nice that we tell what is recommend. I think that this is recommend.
+Of course if this use lot's of resource that is different story but I do not
+think that is the case.
 
-  f3925032d7fd ("pinctrl: nomadik: Use irq_has_action()")
+> +
+> +config NTFS3_POSIX_ACL
+> +	bool "NTFS POSIX Access Control Lists"
+> +	depends on NTFS3_FS
+> +	select FS_POSIX_ACL
+> +	help
+> +	  POSIX Access Control Lists (ACLs) support additional access rights
+> +	  for users and groups beyond the standard owner/group/world scheme,
+> +	  and this option selects support for ACLs specifically for ntfs
+> +	  filesystems.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/nFrKHp_yQHVWovhAa5DMG.x
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/yQAgACgkQAVBC80lX
-0Gwy4Af+LdA7Enl+BpS4EOiSHQBwbgCactbeYoEejrcjKe5QKSnqIaZeQL2ZFMky
-lNXClBO9+h+ocxOKEoxqMUle2DWIxLwsmZqfz4U03+N5o/3EBfZjiVRhNdwhelq5
-XJnBfH6pcLhAc/+c3G2uZlQOaOFsYQ89holsRZc4rCP5N0VxL8NKY9ggPkSwbmtU
-QKX8Vswzur/sEQS2qE8TWDUdsyKSNu51N+Bb4ZK5w8lmNmDefwsRJGzBG5NpO2un
-TT/lbW7VLE/nYtsKFfN/Fib0J2+BFnaBIlQPsqxELUksKARyHQMRe3Fm8GYd5hb5
-OEWxAt6nPgNlrhuCXSutSe5kk9vacg==
-=GDjp
------END PGP SIGNATURE-----
-
---Sig_/nFrKHp_yQHVWovhAa5DMG.x--
+Same here. Let's suggest what user should do. Is this recommend if we wan't 
+to use volume also in Windows?
