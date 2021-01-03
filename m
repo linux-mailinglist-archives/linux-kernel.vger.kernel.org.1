@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59332E8CCD
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4234B2E8CDD
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbhACPZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 10:25:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725819AbhACPZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 10:25:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2991820DD4;
-        Sun,  3 Jan 2021 15:24:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609687472;
-        bh=PkxCfVAK1mU9lAnzMRgUnNY+tZkM5cdrGKVYeYeZQfs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nM14NocJIXjCDAv/WeYZnCRvMV4nYFr2+7NmbfdggtjczPtgf2Ayq6IZyepf6Pzgi
-         PWlrLWgKb3QG0A7UItK7dGRcWVEBTgsepnQDJBBSzBPXIJhMdJ5qD0skAvbK0TbxNl
-         j6jYtvxyL5tzCCdH46oOK66vN5ckBb6uYlybOOkQ8DBBixPffdOdFK70zA+yMDylDA
-         RtUIZ5IrBBW2Us3oirA6FU1Ls7yS7YJepZdpebRuVFR5ovC56ElMdrzhozwpbrJFKx
-         Z552BFUfof2noaGECiCIXOb48sfPdn5TT/nSWOET6AKyRBKWe+SI6ioHmQy99/0Wo4
-         PrWVEdihyhP7A==
-Received: by mail-ot1-f46.google.com with SMTP id x13so23778267oto.8;
-        Sun, 03 Jan 2021 07:24:32 -0800 (PST)
-X-Gm-Message-State: AOAM531MkSJCSjAE8ZdhKp6uQUuOC14aO7txaivsFZr7N8PTbzqFOVyo
-        gWi56QIneE5sKtvyXo3h+OGDpVpFnNSbzEpKucI=
-X-Google-Smtp-Source: ABdhPJz95Zoo7hs0fgWSGuBSw4TFIHrMmsws3bDhs/4QvBOJqa2tGLYNJbcBF3Y/CRnqXiQFFzx7ry43uZ8TpAz/2vI=
-X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr50123366otr.210.1609687471466;
- Sun, 03 Jan 2021 07:24:31 -0800 (PST)
+        id S1727319AbhACP31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 10:29:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726949AbhACP3Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 10:29:25 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399D4C0613C1
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 07:28:45 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id cm17so24647062edb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 07:28:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CKbkg9XEl5Cdq3/4L/h6uPiBAUaQfHC57itqiZ9bJr0=;
+        b=u+iMP0CXalv9utqd5ZD2+mn8twLDr3xzPi8vmIWcFXVI+sfdbcLrGk3gUc1C89iS7T
+         2Zwu/jxux3tiVrKXUQ/RAG860Rho3AuyWkGp/gJTdUvHngpeKSqAjSIkMfhUrEpLDSxJ
+         wQw2xMREbkj/lMvBZiUCkwM9LfOfggI+umT7uAOXPhEfcRdKVNS8Mp9g4r1hNM+0+eFH
+         FOcfRvVkWnL5yY923moEFO7K7rw4QSFYpwNuN2OgCmh49C3Rqpry01X38sRNo18M2Nqw
+         rx1XHAuH0i6V/CO3ke+WTFtt/5KBDgSgT40wFTmbqo/bwLPB0KljSGSSX5IqhXCL5cH/
+         naJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CKbkg9XEl5Cdq3/4L/h6uPiBAUaQfHC57itqiZ9bJr0=;
+        b=A0pTMTOl8d9dJWVnCa+xoMXnBgW1FepgdKvSakFjUtk6vl3Yhxr96XpiWDEJSnnuaQ
+         n2j82Oe2lVt+A/6wSFAjwcTq2ByM4qogVWtOaaoXaeskBbR9ZRh3MYfrsQVq+clBMSdB
+         GkQK7EsEc0FxcJhaL/+f42eqXHNzpB4DrlgtPOn31Dy+XqRsa5X/tCB6k5wanIbPVuzR
+         k1EYQAzL1swxRNIx3KTPp8EWms5mqxzkRDmQ0tfF0HGpfoD9GM+zxa+w311xxNcU0IUE
+         zJspkZtzbKXP5p6FIh1STxNYUwC/8A8csSVP2A7fBMqoAXVYuf5ZwpUudeJkha7e592/
+         Kuzw==
+X-Gm-Message-State: AOAM531bWW+ND7rlVb0nJllXnGxktinXhLcmy1K2zOeyItbGlbedb+UA
+        Trcp/Nz77zeT+eFPbf+smbRouXjs/rPO3WfFA5Onr4i0t6Q=
+X-Google-Smtp-Source: ABdhPJyfawFbl1Zu0fBq4KyAq33ha2UbUR3DbWgPLPfHN88VLCs6KDLSFdTvEgCk/q/IU27938Bt0kW/3uZS9hbuZNE=
+X-Received: by 2002:a50:bac4:: with SMTP id x62mr66180717ede.59.1609687723765;
+ Sun, 03 Jan 2021 07:28:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20210103140407.3917405-1-arnd@kernel.org> <202101032327.9BXJpAn8-lkp@intel.com>
-In-Reply-To: <202101032327.9BXJpAn8-lkp@intel.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 3 Jan 2021 16:24:15 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3jUQs6c5tESSNMbqfuymewj9FhqRizyHcfOXf8Rgy-nA@mail.gmail.com>
-Message-ID: <CAK8P3a3jUQs6c5tESSNMbqfuymewj9FhqRizyHcfOXf8Rgy-nA@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/a6xx: add CONFIG_QCOM_LLCC dependency
-To:     kernel test robot <lkp@intel.com>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        kbuild-all@lists.01.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tanmay Shah <tanmay@codeaurora.org>
+References: <20210101204325.998256-1-j.neuschaefer@gmx.net>
+In-Reply-To: <20210101204325.998256-1-j.neuschaefer@gmx.net>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Sun, 3 Jan 2021 16:28:32 +0100
+Message-ID: <CAMpxmJUVm+N=1WArb9hnV1BtsTfL5kH+_NkF3+iLmR17SiZjzA@mail.gmail.com>
+Subject: Re: [PATCH] docs: gpio: intro: Improve HTML formatting
+To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-doc <linux-doc@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 3, 2021 at 4:09 PM kernel test robot <lkp@intel.com> wrote:
+On Fri, Jan 1, 2021 at 9:43 PM Jonathan Neusch=C3=A4fer
+<j.neuschaefer@gmx.net> wrote:
 >
-> Hi Arnd,
+> Currently the HTML output for Documentation/driver-api/gpio/intro.rst
+> doesn't look right. The lines that start with LOW or HIGH are formatted
+> in bold, while the next line after each is not bold.
 >
-> I love your patch! Yet something to improve:
+> With this patch, the HTML looks better.
 >
-> [auto build test ERROR on linus/master]
-> [also build test ERROR on v5.11-rc1 next-20201223]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
+> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+> ---
+>  Documentation/driver-api/gpio/intro.rst | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> url:    https://github.com/0day-ci/linux/commits/Arnd-Bergmann/drm-msm-a6xx-add-CONFIG_QCOM_LLCC-dependency/20210103-220704
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3516bd729358a2a9b090c1905bd2a3fa926e24c6
-> config: i386-randconfig-m021-20210103 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://github.com/0day-ci/linux/commit/7d8b8d7954012e210a5e6c77103e52382c6b5503
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Arnd-Bergmann/drm-msm-a6xx-add-CONFIG_QCOM_LLCC-dependency/20210103-220704
->         git checkout 7d8b8d7954012e210a5e6c77103e52382c6b5503
->         # save the attached .config to linux build tree
->         make W=1 ARCH=i386
+> diff --git a/Documentation/driver-api/gpio/intro.rst b/Documentation/driv=
+er-api/gpio/intro.rst
+> index 74591489d0b55..94dd7185e76eb 100644
+> --- a/Documentation/driver-api/gpio/intro.rst
+> +++ b/Documentation/driver-api/gpio/intro.rst
+> @@ -106,11 +106,11 @@ don't. When you need open drain signaling but your =
+hardware doesn't directly
+>  support it, there's a common idiom you can use to emulate it with any GP=
+IO pin
+>  that can be used as either an input or an output:
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> - LOW:  gpiod_direction_output(gpio, 0) ... this drives the signal and ov=
+errides
+> -       the pullup.
+> + **LOW**: ``gpiod_direction_output(gpio, 0)`` ... this drives the signal=
+ and
+> + overrides the pullup.
 >
-> All errors (new ones prefixed by >>):
+> - HIGH: gpiod_direction_input(gpio) ... this turns off the output, so the=
+ pullup
+> -       (or some other device) controls the signal.
+> + **HIGH**: ``gpiod_direction_input(gpio)`` ... this turns off the output=
+, so
+> + the pullup (or some other device) controls the signal.
 >
-> >> drivers/gpu/drm/Kconfig:74:error: recursive dependency detected!
->    drivers/gpu/drm/Kconfig:74: symbol DRM_KMS_HELPER is selected by DRM_MSM
->    drivers/gpu/drm/msm/Kconfig:3: symbol DRM_MSM depends on QCOM_COMMAND_DB
->    drivers/soc/qcom/Kconfig:19: symbol QCOM_COMMAND_DB depends on OF_RESERVED_MEM
->    drivers/of/Kconfig:80: symbol OF_RESERVED_MEM default is visible depending on DMA_CMA
->    kernel/dma/Kconfig:109: symbol DMA_CMA is selected by FB_HYPERV
->    drivers/video/fbdev/Kconfig:2182: symbol FB_HYPERV depends on FB
->    drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
->    drivers/gpu/drm/Kconfig:80: symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
->    For a resolution refer to Documentation/kbuild/kconfig-language.rst
->    subsection "Kconfig recursive dependency limitations"
+>  The same logic can be applied to emulate open source signaling, by drivi=
+ng the
+>  high signal and configuring the GPIO as input for low. This open drain/o=
+pen
+> --
+> 2.29.2
+>
 
-Ah, this depends on another patch of mine that I have in my randconfig tree, to
-replace the 'select FB' in DRM_KMS_FB_HELPER with 'depends on FB'.
+Applied, thanks!
 
-Should I resend that patch, or would someone suggest a different fix for
-the CONFIG_QCOM_LLCC dependency issue?
-
-       Arnd
+Bartosz
