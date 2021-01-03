@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DE72E8BA9
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 11:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3439A2E8BAE
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 11:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbhACKcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 05:32:11 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:35237 "EHLO
+        id S1726551AbhACKbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 05:31:50 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:45179 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726606AbhACKcK (ORCPT
+        by vger.kernel.org with ESMTP id S1725889AbhACKbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 05:32:10 -0500
+        Sun, 3 Jan 2021 05:31:49 -0500
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3E1A95803BC;
+        by mailnew.nyi.internal (Postfix) with ESMTP id 0948F5803B9;
         Sun,  3 Jan 2021 05:31:04 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
   by compute5.internal (MEProxy); Sun, 03 Jan 2021 05:31:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=Xhy6XK2W2yjtu
-        pgG0yoTOpphFN3j79/GvvTT2Ki2qs4=; b=ZxuExiMuKyMl11ucqijdyg1JDTX9i
-        xTf+Xqw737/KZwhmEOBza/kWYSk6Feev5RGCz9ndAX398nABjAImpaNHzMRrWUrE
-        3whS/RwPu1bw3Qw5S2Bi4+nOW7FQwekM379EkIxREb6zEVLS2aZMrjFo5OansV1J
-        4eXH4aitY4mBe/ArEowytovebELo+ipuOJ1152lQC/xSwAIrMjj9oEwau/s/v9Cv
-        HKy6OK3ZrFItQuuarLmW0ZqGPKJ7IDMqMGrommN4yNmPRQf73wfeXepki7a2Oms6
-        X8M6MjAenVe4nduKO4czu6Vqw6EEBlIvYt3ivTUsotah6ITf7P90Ye8Bg==
+        :mime-version:content-transfer-encoding; s=fm1; bh=qtCpKCua/JMCg
+        qQMUNFRQptKxdAQZ5qnuZ6O8CnTxWQ=; b=aloildomtOaGUcbzMv+/4nyvsCsOv
+        HSbodpxK05XxoAR7xLw4X4VKz98TArhHzeYCF1EDifbvNYgpNtZ1gxRUXnQWYgp5
+        1jwEMIBpeVPD6cSYjv78EFbHOJf0rehFpvP7ohFthnktJQ0ax3TYQeCWd1vbftOv
+        8ShSUkSTiagh+UCp0jEYqy93UpQeuVvWSTsaCjAdbMABKd3UAstHPhjeQKznPV17
+        QoeHBJTj3WsZA5o0A4U912sBX+PsZEc1Ff2kRgllgpRvszAC+ptvvxSa6ZT05ucH
+        6jn8lKZdHdry56a/Fy3iAmYnSkgeG6didaKE9cv/+trieVwujLQ8DB5/g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=Xhy6XK2W2yjtupgG0yoTOpphFN3j79/GvvTT2Ki2qs4=; b=kjbwVmAG
-        eEhPzD++igxa2qM2C5nmLlQe04gciTAyPoqLWk3T8PST1/IQ0S/SiQgeI8XIj8pS
-        7APH0M6TJVDhTyWWFmK7qWmJK6MIDgHov9j8GKrygb/L/KEg099giiQl/rfqnkIN
-        oeomG/ATSMwUMP4PO7M53Svwi3X9Qc+8YaLwMmM3/UzZGsBR5eEIdnGzdCichVYX
-        8LoWGfPaZQraIHJj2USS8yogx/c3nNoj6S2/TtllCzXASWfCtNoQQ05sPQcK2mva
-        R9CUq7/I9IPk7Zi6eaBu2I8aQbBbdsMCEmI0aGA1OurlxBxmQWJlyMAZPjpJieMS
-        oCMmzB6ls+teeQ==
-X-ME-Sender: <xms:55zxX-cpyDs4BplVu9ySwMaCkDACPJ_99bkHIibXzCd8WyoxgG4UBQ>
-    <xme:55zxX4N9yYQZqNUPUYhbjVT6q-mEj_fWccfX1Zye-_0vP6ELJnFAet4cE8EIJmQQA
-    RCnLr_aCPe9tFCMYQ>
+        fm1; bh=qtCpKCua/JMCgqQMUNFRQptKxdAQZ5qnuZ6O8CnTxWQ=; b=En+oUeC/
+        KBHQlyfTaiseygZEmhsuC87n3o8SH4W9zjngnrRo5bK1mMn1NEJHAV4MimazKCrw
+        Y5P6JEh9Boir5V8Xm/qliTw9yW2kmiNgz2dwdsLqG+UJjeN9bldhrnDPTaNtea2V
+        oYdY4Q3HcZ+DKZM/9QCjiCCwTeZApJtC/uLsyH9jaxieexnqLH8/05XKweg4e9VI
+        5HiZIp1Xgx5ddkpnaK0dbzWCGP+S8eDWwEp69uLdMKpVoord8OCEtJ53DSRwGbYt
+        /J15JcjaMkPnuES1zVVnoq+TsQWh4Y8HmP7pA0OdHXui2jrqH/Fkqvos8KQ7Z33w
+        vNrruPx3XCeBOA==
+X-ME-Sender: <xms:55zxXz16krd2PS71LsZmboZGIztt8YTFjmntBGv4LlC_hlI0AsViHg>
+    <xme:55zxXyH2YqFtdN3rGHL22qKfGjO535uEATGg6ivBKwPUkugoHp4oeWdnmlvFguFv4
+    EVy8k99APCPSQVr-A>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefuddgudejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
     lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpeelueelgeettdfggfeuffevkefhuddtteeigfevhfdtffdtjefgteeg
-    leeggedvudenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecukfhppeejtd
-    drudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:55zxX_h6stakaLzg6NlBgjiscKdK6KQinJOZ-kV6z2J3n3spxs1wbQ>
-    <xmx:55zxX7-X_HXXOp_74yUYIEzE5TwZVd9AllDjJCzJE6EX2jYpX6bkyg>
-    <xmx:55zxX6v6Oe_GUEDAW6uc6nQ1DIvpIkZRT8uyKtcVOIbDU7fg-gQkPQ>
-    <xmx:6JzxX7EV-uNVd_3vytkWeDJ1KyXryLP3Uz912NtTuGFW_27YondU3g>
+    frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
+    gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
+    ugdrohhrgh
+X-ME-Proxy: <xmx:55zxXz7KEBz3I1HKvLSPiPY_3mQcpdoEWCLVcB3LlQp7bhcFRmPcEA>
+    <xmx:55zxX4085YKApPZAsXjBwOAzTO4UaUMR6zqjeYBrf4rOHQQ9_i0YYw>
+    <xmx:55zxX2E6QQQxBTgl7HPoR-KfHAhjt6KvsC9G1YtbUjQ8ENvJseNg8Q>
+    <xmx:6JzxX9cI83HHp3if4Kwm2_I9k6EugCroT40dGeK5Hbz4ewUO1hX_4A>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7059B108005C;
-        Sun,  3 Jan 2021 05:31:02 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0B1A81080067;
+        Sun,  3 Jan 2021 05:31:03 -0500 (EST)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>,
@@ -69,9 +69,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
 Cc:     Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v3 01/10] dt-bindings: irq: sun6i-r: Split the binding from sun7i-nmi
-Date:   Sun,  3 Jan 2021 04:30:52 -0600
-Message-Id: <20210103103101.33603-2-samuel@sholland.org>
+Subject: [PATCH v3 02/10] dt-bindings: irq: sun6i-r: Add a compatible for the H3
+Date:   Sun,  3 Jan 2021 04:30:53 -0600
+Message-Id: <20210103103101.33603-3-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210103103101.33603-1-samuel@sholland.org>
 References: <20210103103101.33603-1-samuel@sholland.org>
@@ -81,123 +81,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The R_INTC in the A31 and newer sun8i/sun50i SoCs has additional
-functionality compared to the sun7i/sun9i NMI controller. Among other
-things, it multiplexes up to 128 interrupts corresponding to (and in
-parallel to) the first 128 GIC SPIs. This means the NMI is no longer the
-lowest-numbered interrupt, since it is SPI 32 or 96 (depending on SoC).
-
-To allow access to all multiplexed IRQs, the R_INTC requires a new
-binding where the interrupt number matches the GIC interrupt number.
-For simplicity, copy the three-cell GIC binding; this disambiguates
-interrupt 0 in the old binding (the NMI) from interrupt 0 in the new
-binding (SPI 0) by the number of cells.
+The Allwinner H3 SoC contains an R_INTC that is, as far as we know,
+compatible with the R_INTC present in other sun8i/sun50i SoCs starting
+with the A31. Since the R_INTC hardware is undocumented, introduce a new
+compatible for the R_INTC variant in this SoC, in case there turns out
+to be some difference.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- .../allwinner,sun6i-a31-r-intc.yaml           | 64 +++++++++++++++++++
- .../allwinner,sun7i-a20-sc-nmi.yaml           | 10 ---
- 2 files changed, 64 insertions(+), 10 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/allwinner,sun6i-a31-r-intc.yaml
+ .../interrupt-controller/allwinner,sun6i-a31-r-intc.yaml         | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun6i-a31-r-intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun6i-a31-r-intc.yaml
-new file mode 100644
-index 000000000000..18805b6555c2
---- /dev/null
+index 18805b6555c2..9de1fb2a63d1 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun6i-a31-r-intc.yaml
 +++ b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun6i-a31-r-intc.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/allwinner,sun6i-a31-r-intc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Allwinner A31 NMI/Wakeup Interrupt Controller Device Tree Bindings
-+
-+maintainers:
-+  - Chen-Yu Tsai <wens@csie.org>
-+  - Maxime Ripard <mripard@kernel.org>
-+
-+allOf:
-+  - $ref: /schemas/interrupt-controller.yaml#
-+
-+properties:
-+  "#interrupt-cells":
-+    const: 3
-+    description:
-+      The first cell is GIC_SPI (0), the second cell is the IRQ number, and
-+      the third cell is the trigger type as defined in interrupt.txt in this
-+      directory.
-+
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - allwinner,sun8i-a83t-r-intc
-+              - allwinner,sun50i-a64-r-intc
-+              - allwinner,sun50i-h6-r-intc
-+          - const: allwinner,sun6i-a31-r-intc
-+      - const: allwinner,sun6i-a31-r-intc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+required:
-+  - "#interrupt-cells"
-+  - compatible
-+  - reg
-+  - interrupts
-+  - interrupt-controller
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    r_intc: interrupt-controller@1f00c00 {
-+            compatible = "allwinner,sun50i-a64-r-intc",
-+                         "allwinner,sun6i-a31-r-intc";
-+            interrupt-controller;
-+            #interrupt-cells = <3>;
-+            reg = <0x01f00c00 0x400>;
-+            interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
-index 8acca0ae3129..f34ecc8c7093 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
-@@ -22,23 +22,13 @@ properties:
- 
-   compatible:
-     oneOf:
--      - const: allwinner,sun6i-a31-r-intc
-       - const: allwinner,sun6i-a31-sc-nmi
-         deprecated: true
-       - const: allwinner,sun7i-a20-sc-nmi
--      - items:
--          - const: allwinner,sun8i-a83t-r-intc
--          - const: allwinner,sun6i-a31-r-intc
-       - const: allwinner,sun9i-a80-nmi
--      - items:
--          - const: allwinner,sun50i-a64-r-intc
--          - const: allwinner,sun6i-a31-r-intc
+@@ -26,6 +26,7 @@ properties:
        - items:
-           - const: allwinner,sun50i-a100-nmi
-           - const: allwinner,sun9i-a80-nmi
--      - items:
--          - const: allwinner,sun50i-h6-r-intc
--          - const: allwinner,sun6i-a31-r-intc
- 
-   reg:
-     maxItems: 1
+           - enum:
+               - allwinner,sun8i-a83t-r-intc
++              - allwinner,sun8i-h3-r-intc
+               - allwinner,sun50i-a64-r-intc
+               - allwinner,sun50i-h6-r-intc
+           - const: allwinner,sun6i-a31-r-intc
 -- 
 2.26.2
 
