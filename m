@@ -2,233 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3D42E8E6F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F6B2E8E73
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbhACV1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 16:27:53 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55676 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727391AbhACV1w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 16:27:52 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 103LQFho079029;
-        Sun, 3 Jan 2021 15:26:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1609709175;
-        bh=LzUKQIdtUxP3VT9n+rTF31A9EZWe/TWaIB53rZGrNTY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=DPB+qve0s8heRhSIjLgjb8mCzQS6nrRBZtS6gnhzNNrkacXzb2GgmodhGi0xfG3iq
-         +MPyv5QRvPf5RwejlcdO/t45mDVZgcFNyrL8cr+yzfG6ycFnRXAxJke3+BPHJgb4P8
-         zYpmkA1vvOafGis9PDkzcXfNVtHCnvt14AK2SLEY=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 103LQE4v016396
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 3 Jan 2021 15:26:14 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 3 Jan
- 2021 15:26:14 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sun, 3 Jan 2021 15:26:14 -0600
-Received: from [10.250.79.43] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 103LQEGo126039;
-        Sun, 3 Jan 2021 15:26:14 -0600
-Subject: Re: [EXTERNAL] Re: [PATCH v7 2/2] power: supply: bq256xx: Introduce
- the BQ256XX charger driver
-To:     Sebastian Reichel <sre@kernel.org>
-CC:     <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dmurphy@ti.com>
-References: <20201230230116.29697-1-r-rivera-matos@ti.com>
- <20201230230116.29697-3-r-rivera-matos@ti.com>
- <20210103012610.exkkwoqz3745bh2u@earth.universe>
-From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Message-ID: <a31160cd-6023-236b-ff6f-4c9703bf937d@ti.com>
-Date:   Sun, 3 Jan 2021 15:26:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727717AbhACVha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 16:37:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726924AbhACVh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 16:37:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E83B020780;
+        Sun,  3 Jan 2021 21:36:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609709809;
+        bh=qVglGCnEzhllmV9UmCv6wplmqZDMihZ1DsBawNGAj1Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=t97m8l/wX34nha4xhO5OFUsTyxNjRL+k6TA+/SHdqduWF2umxVbiScd40qxIuT6ut
+         RtKZjzmHLLy4X0SRkFTBtgcqUoiZG8J+Mu8jioOSsJ5YMbHJOlAQ/+A/kp+i7t23ca
+         jSw68Ypp1vU41B9uiRuQShBCi9Z4p0+0OS85O5JBzwLQeZg5E5vUExAGyymWPAPlCJ
+         K7ZJZadhaMuCLHHiofhLtOc9nSdLITaeP2fGwJN50tPM5Jrki+K8/wOJsJibIJZcp4
+         dwW9kXQvBb50pGntV+bjk/0yCTuzP53GPZUp752OcGHOa85TCgZvjHol9bATjw2ThA
+         TJQCLdhswNlag==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Mintz, Yuval" <Yuval.Mintz@cavium.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/7] qed: select CONFIG_CRC32
+Date:   Sun,  3 Jan 2021 22:36:17 +0100
+Message-Id: <20210103213645.1994783-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210103012610.exkkwoqz3745bh2u@earth.universe>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian
+From: Arnd Bergmann <arnd@arndb.de>
 
-On 1/2/21 7:26 PM, Sebastian Reichel wrote:
-> Hi Ricardo,
->
-> On Wed, Dec 30, 2020 at 05:01:16PM -0600, Ricardo Rivera-Matos wrote:
->> The BQ256XX family of devices are highly integrated buck chargers
->> for single cell batteries.
->>
->> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
->>
->> v5 - adds power_supply_put_battery_info() and devm_add_action_or_rest() calls
->>
->> v6 - implements bq256xx_remove function
->>
->> v7 - applies various fixes
->>
->>     - implements clamp() API
->>
->>     - implements memcmp() API
->>
->>     - changes cache_type to REGACHE_FLAT
->>
->>     - changes bq256xx_probe to properly unregister device
->>
->> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
->> ---
-> Thanks, looks mostly good now.
-Cool :)
->
->>   drivers/power/supply/Kconfig           |   11 +
->>   drivers/power/supply/Makefile          |    1 +
->>   drivers/power/supply/bq256xx_charger.c | 1747 ++++++++++++++++++++++++
->>   3 files changed, 1759 insertions(+)
->>   create mode 100644 drivers/power/supply/bq256xx_charger.c
->>
->> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
->> index 44d3c8512fb8..87d852914bc2 100644
->> --- a/drivers/power/supply/Kconfig
->> +++ b/drivers/power/supply/Kconfig
->> @@ -618,6 +618,17 @@ config CHARGER_BQ25890
->>   	help
->>   	  Say Y to enable support for the TI BQ25890 battery charger.
->>   
->> +config CHARGER_BQ256XX
->> +	tristate "TI BQ256XX battery charger driver"
->> +	depends on I2C
->> +	depends on GPIOLIB || COMPILE_TEST
->> +	select REGMAP_I2C
->> +	help
->> +	  Say Y to enable support for the TI BQ256XX battery chargers. The
->> +	  BQ256XX family of devices are highly-integrated, switch-mode battery
->> +	  charge management and system power path management devices for single
->> +	  cell Li-ion and Li-polymer batteries.
->> +
->>   config CHARGER_SMB347
->>   	tristate "Summit Microelectronics SMB347 Battery Charger"
->>   	depends on I2C
-> Please rebase to current power-supply for-next branch, Kconfig and
-> Makefile diff does not apply because of one additional BQ device.
-ACK
->
->> [...]
->> +static void bq256xx_usb_work(struct work_struct *data)
->> +{
->> +	struct bq256xx_device *bq =
->> +			container_of(data, struct bq256xx_device, usb_work);
->> +
->> +	switch (bq->usb_event) {
->> +	case USB_EVENT_ID:
->> +		break;
->> +
-> spurious newline, please remove!
-ACK
->
->> +	case USB_EVENT_NONE:
->> +		power_supply_changed(bq->charger);
->> +		break;
->> +	default:
->> +		dev_err(bq->dev, "Error switching to charger mode.\n");
->> +		break;
->> +	}
->> +}
->> +
->> [...]
->> +static int bq256xx_hw_init(struct bq256xx_device *bq)
->> +{
->> +	struct power_supply_battery_info bat_info = { };
->> +	int wd_reg_val = BQ256XX_WATCHDOG_DIS;
->> +	int ret = 0;
->> +	int i;
->> +
->> +	for (i = 0; i < BQ256XX_NUM_WD_VAL; i++) {
->> +		if (bq->watchdog_timer > bq256xx_watchdog_time[i] &&
->> +		    bq->watchdog_timer < bq256xx_watchdog_time[i + 1])
->> +			wd_reg_val = i;
->> +	}
->> +	ret = regmap_update_bits(bq->regmap, BQ256XX_CHARGER_CONTROL_1,
->> +				 BQ256XX_WATCHDOG_MASK, wd_reg_val <<
->> +						BQ256XX_WDT_BIT_SHIFT);
->> +
->> +	ret = power_supply_get_battery_info(bq->charger, &bat_info);
->> +	if (ret) {
->> +		dev_warn(bq->dev, "battery info missing, default values will be applied\n");
->> +
->> +		bat_info.constant_charge_current_max_ua =
->> +				bq->chip_info->bq256xx_def_ichg;
->> +
->> +		bat_info.constant_charge_voltage_max_uv =
->> +				bq->chip_info->bq256xx_def_vbatreg;
->> +
->> +		bat_info.precharge_current_ua =
->> +				bq->chip_info->bq256xx_def_iprechg;
->> +
->> +		bat_info.charge_term_current_ua =
->> +				bq->chip_info->bq256xx_def_iterm;
->> +
->> +		bq->init_data.ichg_max =
->> +				bq->chip_info->bq256xx_max_ichg;
->> +
->> +		bq->init_data.vbatreg_max =
->> +				bq->chip_info->bq256xx_max_vbatreg;
->> +	} else {
->> +		bq->init_data.ichg_max =
->> +			bat_info.constant_charge_current_max_ua;
->> +
->> +		bq->init_data.vbatreg_max =
->> +			bat_info.constant_charge_voltage_max_uv;
->> +	}
->> +
->> +	ret = bq->chip_info->bq256xx_set_vindpm(bq, bq->init_data.vindpm);
->> +	if (ret)
->> +		goto err_out;
->> +
->> +	ret = bq->chip_info->bq256xx_set_iindpm(bq, bq->init_data.iindpm);
->> +	if (ret)
->> +		goto err_out;
->> +
->> +	ret = bq->chip_info->bq256xx_set_ichg(bq,
->> +				bat_info.constant_charge_current_max_ua);
->> +	if (ret)
->> +		goto err_out;
->> +
->> +	ret = bq->chip_info->bq256xx_set_iprechg(bq,
->> +				bat_info.precharge_current_ua);
->> +	if (ret)
->> +		goto err_out;
->> +
->> +	ret = bq->chip_info->bq256xx_set_vbatreg(bq,
->> +				bat_info.constant_charge_voltage_max_uv);
->> +	if (ret)
->> +		goto err_out;
->> +
->> +	ret = bq->chip_info->bq256xx_set_iterm(bq,
->> +				bat_info.charge_term_current_ua);
->> +	if (ret)
->> +		goto err_out;
->> +
->> +	power_supply_put_battery_info(bq->charger, &bat_info);
->> +
->> +	return 0;
->> +
->> +err_out:
->> +	return ret;
-> please return error code directly instead of adding this useless
-> goto.
-ACK
->
->> [...]
-> -- Sebastian
-Ricardo
+Without this, the driver fails to link:
+
+lpc_eth.c:(.text+0x1934): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/net/ethernet/qlogic/qed/qed_debug.o: in function `qed_grc_dump':
+qed_debug.c:(.text+0x4068): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/net/ethernet/qlogic/qed/qed_debug.o: in function `qed_idle_chk_dump':
+qed_debug.c:(.text+0x51fc): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/net/ethernet/qlogic/qed/qed_debug.o: in function `qed_mcp_trace_dump':
+qed_debug.c:(.text+0x6000): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/net/ethernet/qlogic/qed/qed_debug.o: in function `qed_dbg_reg_fifo_dump':
+qed_debug.c:(.text+0x66cc): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/net/ethernet/qlogic/qed/qed_debug.o:qed_debug.c:(.text+0x6aa4): more undefined references to `crc32_le' follow
+
+Fixes: 7a4b21b7d1f0 ("qed: Add nvram selftest")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/qlogic/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/qlogic/Kconfig b/drivers/net/ethernet/qlogic/Kconfig
+index 4366c7a8de95..6b5ddb07ee83 100644
+--- a/drivers/net/ethernet/qlogic/Kconfig
++++ b/drivers/net/ethernet/qlogic/Kconfig
+@@ -78,6 +78,7 @@ config QED
+ 	depends on PCI
+ 	select ZLIB_INFLATE
+ 	select CRC8
++	select CRC32
+ 	select NET_DEVLINK
+ 	help
+ 	  This enables the support for Marvell FastLinQ adapters family.
+-- 
+2.29.2
+
