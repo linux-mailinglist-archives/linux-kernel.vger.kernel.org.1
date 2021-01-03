@@ -2,55 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1294A2E89DA
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 02:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2186F2E89E3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 02:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbhACBcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 20:32:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58366 "EHLO
+        id S1726962AbhACBhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 20:37:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726904AbhACBcA (ORCPT
+        with ESMTP id S1726694AbhACBhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 20:32:00 -0500
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF31EC0613C1
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Jan 2021 17:31:19 -0800 (PST)
-Received: from [192.168.1.101] (abac131.neoplus.adsl.tpnet.pl [83.6.166.131])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Sat, 2 Jan 2021 20:37:06 -0500
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BCDC061573;
+        Sat,  2 Jan 2021 17:36:26 -0800 (PST)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 934011F4AC;
-        Sun,  3 Jan 2021 02:30:19 +0100 (CET)
-Subject: Re: [PATCH] drm/msm: Fix MSM_INFO_GET_IOVA with carveout
-To:     Iskren Chernev <iskren.chernev@gmail.com>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210102202437.1630365-1-iskren.chernev@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <63647a5d-e621-b2ce-fb2c-587b5a49f697@somainline.org>
-Date:   Sun, 3 Jan 2021 02:30:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4D7hDF28NyzQlWg;
+        Sun,  3 Jan 2021 02:35:57 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
+        t=1609637754;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WAdMaJwjcc2yfaR82pX6X65vm+J+1jLuYf/duIFxcp4=;
+        b=kWcnHrO0AU/XnF5sS207eTiljYP53E/Tu79Kd+QqBF0WevubkFx16epDLhfR9V3KWcKO9Z
+        b4JuhKKZANRUord+nPm8F3wX5JhF1j7v9ZUf/JBk1SAeqgGrrsOGqJR1roKn1ivhCE3AYW
+        DHQOxbRNNXqtvCqG7U+uSjUkffuI2ytMI8SLUArlFvWvKY3WPuPXsHwDHY1UtVhJArZdOF
+        Eb5cft3iAcWjjFffhHSgD7EU9s7Cm8gDydaB/MoZOcDO8hqUTnp2iNvtHck245OEcoosmq
+        cDBRbhN/ukyOi+w8YU79tkPKtUEu6+X97X0GXN0khr3lpmzHOSnzKFgcRjewaQ==
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
+        with ESMTP id xl50MIJRqUhf; Sun,  3 Jan 2021 02:35:52 +0100 (CET)
+Subject: Re: [PATCH 1/2] net: dsa: lantiq_gswip: Enable GSWIP_MII_CFG_EN also
+ for internal PHYs
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        netdev@vger.kernel.org
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20210103012544.3259029-1-martin.blumenstingl@googlemail.com>
+ <20210103012544.3259029-2-martin.blumenstingl@googlemail.com>
+From:   Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <41f43642-d4a6-01fa-4427-50fa695df594@hauke-m.de>
+Date:   Sun, 3 Jan 2021 02:35:50 +0100
 MIME-Version: 1.0
-In-Reply-To: <20210102202437.1630365-1-iskren.chernev@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210103012544.3259029-2-martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -5.50 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 0E05B17DD
+X-Rspamd-UID: ff18dc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kind reminder that MSM8974, 8994, 8992 and friends are held back by the lack of IOMMU support upstream. There has been an attempt back in 2014(!) [1], but it was either overlooked or forgotten about ever since. I'd be more than happy to see someone look into this, as I have some other bits (almost) ready for both 8974 and 94, but MMUs aren't something I understand well enough yet.
+On 1/3/21 2:25 AM, Martin Blumenstingl wrote:
+> Enable GSWIP_MII_CFG_EN also for internal PHYs to make traffic flow.
+> Without this the PHY link is detected properly and ethtool statistics
+> for TX are increasing but there's no RX traffic coming in.
+> 
+> Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+> Cc: stable@vger.kernel.org
+> Suggested-by: Hauke Mehrtens <hauke@hauke-m.de>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-Konrad
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
 
-
-[1] https://lists.linuxfoundation.org/pipermail/iommu/2014-June/008993.html
-
+> ---
+>   drivers/net/dsa/lantiq_gswip.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+> index 09701c17f3f6..5d378c8026f0 100644
+> --- a/drivers/net/dsa/lantiq_gswip.c
+> +++ b/drivers/net/dsa/lantiq_gswip.c
+> @@ -1541,9 +1541,7 @@ static void gswip_phylink_mac_link_up(struct dsa_switch *ds, int port,
+>   {
+>   	struct gswip_priv *priv = ds->priv;
+>   
+> -	/* Enable the xMII interface only for the external PHY */
+> -	if (interface != PHY_INTERFACE_MODE_INTERNAL)
+> -		gswip_mii_mask_cfg(priv, 0, GSWIP_MII_CFG_EN, port);
+> +	gswip_mii_mask_cfg(priv, 0, GSWIP_MII_CFG_EN, port);
+>   }
+>   
+>   static void gswip_get_strings(struct dsa_switch *ds, int port, u32 stringset,
+> 
 
