@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5B42E8D0B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 17:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB842E8D10
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 17:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbhACQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 11:11:48 -0500
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:35975 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbhACQLs (ORCPT
+        id S1726999AbhACQRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 11:17:18 -0500
+Received: from mail-io1-f44.google.com ([209.85.166.44]:36612 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbhACQRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 11:11:48 -0500
-Received: by mail-wr1-f50.google.com with SMTP id t16so28479890wra.3;
-        Sun, 03 Jan 2021 08:11:31 -0800 (PST)
+        Sun, 3 Jan 2021 11:17:17 -0500
+Received: by mail-io1-f44.google.com with SMTP id u26so20150783iof.3;
+        Sun, 03 Jan 2021 08:17:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=LoifgCsUDIwflzPuXwDuBrp+Q41jOLu3pS1GGq+9N7E=;
-        b=BBHI5rdwSf2WqCehtMbvkRZTX/01NiMk7fJ9AXheT7PQy3T6OxcMEMHh6QxPHfeVHJ
-         /Y0op89Mhih+KhFYsFJszeRZSu3UumyFbex6JTLY/ba6+/3YMMqqDFD8tPjchzEO48bC
-         lfgFvkBNBag4UKkOZ5/5dKJov0Xb1TV3Iq60sx9VlmkQcb1c8Jw0imwitgo/FXVavJfd
-         0FP/x8hpynHXWXFNV64rzr3cIfP+QArUvcdKA7bd1P21yfpbuAN5LumW5QjyQSnWGbI3
-         AnfuBtQGG4G/AbUB27FBf+9bBbpb+gFASiqJjZ2bK7SFh6CwzHCmrtsgopuQhr4o8/yZ
-         gxkw==
-X-Gm-Message-State: AOAM532PPxwE4Bv3k6onL3Qza0sIhAewukcDMXaD8NtjQBAwP8gNiKDK
-        LonkbFX1z0AYrwp0xop3dB0=
-X-Google-Smtp-Source: ABdhPJwK1Vq17lYOO/eXKz6RZzHQZ/wg2vlqJdnkoA1y8NgsTvP5rj0hbhdN0RtXD63f/YP7QCJZlw==
-X-Received: by 2002:a5d:4a06:: with SMTP id m6mr79601546wrq.189.1609690265883;
-        Sun, 03 Jan 2021 08:11:05 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id c10sm90453622wrb.92.2021.01.03.08.11.04
+        bh=MLD+EZewrLbaWCLExHGTczXjOb1vPGkfTuYMAwGL1ik=;
+        b=ZOahjPbmJ0byghcRAsrXNFU7adn5H/Hf0dgOhGOBKlwPVCUUj8Pa7pkyX4hu1hs3Yh
+         Ckso3uXxHKUJ6nV43CVnI2ZspTX9Tjg6yok6dle1+7t9/98jiasA05Tb0uGg58+JLjn0
+         +17wba2grRjlgUfkcm8B1Tag6qva2bUPrrT2jMQfHtzq0hLirt1UZOiHNqZdMuUiN+Fx
+         bPY7KZlvOck9USWyXkV6gEGM840MOff1p5a3DYynYtcvs9d3H0IHQCGYCjg8kUBtnUaL
+         lreXYKSsw/9T3ajNQhKEna5u3gLy9ahRRKCZb/cDA8cZXOq4rK8TRqmYg7xAVOqTYDx2
+         MK9w==
+X-Gm-Message-State: AOAM531jRO0wXLe4OdcnTEUhHNM8/T4+hciep2SesqQvefhPP1hgSn/D
+        3I633NJhfKZvUewcdd7iUg==
+X-Google-Smtp-Source: ABdhPJyc0JoUpUvR/zYc0zoCYmpZ4Vkk8wTWqUmP5uUOt5Kab8Ra0bY81Vs354t6bo5sZe5p64pKJg==
+X-Received: by 2002:a02:ce2c:: with SMTP id v12mr58941999jar.60.1609690596661;
+        Sun, 03 Jan 2021 08:16:36 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id e1sm41109004iod.17.2021.01.03.08.16.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 08:11:04 -0800 (PST)
-Date:   Sun, 3 Jan 2021 17:11:03 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sylwester Nawrocki <snawrocki@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Pankaj Dubey <pankaj.dubey@samsung.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] soc: samsung: exynos-asv: handle reading revision
- register error
-Message-ID: <20210103161103.GB7799@kozik-lap>
-References: <20201207190517.262051-1-krzk@kernel.org>
- <20201207190517.262051-3-krzk@kernel.org>
+        Sun, 03 Jan 2021 08:16:35 -0800 (PST)
+Received: (nullmailer pid 3960611 invoked by uid 1000);
+        Sun, 03 Jan 2021 16:16:32 -0000
+Date:   Sun, 3 Jan 2021 09:16:32 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     linux-kernel@vger.kernel.org, phil@raspberrypi.com,
+        tim.gover@raspberrypi.com, catalin.marinas@arm.com,
+        srinivas.kandagatla@linaro.org, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        Frank Rowand <frowand.list@gmail.com>, linux@armlinux.org.uk,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, will@kernel.org
+Subject: Re: [PATCH v2 2/5] nvmem: Add driver to expose reserved memory as
+ nvmem
+Message-ID: <20210103161632.GA3960550@robh.at.kernel.org>
+References: <20201218154320.28368-1-nsaenzjulienne@suse.de>
+ <20201218154320.28368-3-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207190517.262051-3-krzk@kernel.org>
+In-Reply-To: <20201218154320.28368-3-nsaenzjulienne@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 08:05:15PM +0100, Krzysztof Kozlowski wrote:
-> If regmap_read() fails, the product_id local variable will contain
-> random value from the stack.  Do not try to parse such value and fail
-> the ASV driver probe.
+On Fri, 18 Dec 2020 16:43:17 +0100, Nicolas Saenz Julienne wrote:
+> Firmware/co-processors might use reserved memory areas in order to pass
+> data stemming from an nvmem device otherwise non accessible to Linux.
+> For example an EEPROM memory only physically accessible to firmware, or
+> data only accessible early at boot time.
 > 
-> Fixes: 5ea428595cc5 ("soc: samsung: Add Exynos Adaptive Supply Voltage driver")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> In order to expose this data to other drivers and user-space, the driver
+> models the reserved memory area as an nvmem device.
+> 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> 
 > ---
->  drivers/soc/samsung/exynos-asv.c | 8 +++++++-
+> 
+> Changes since v1:
+>  - Remove reserved memory phandle indirection by directly creating a
+>    platform device from the reserved memory DT node
+>  - Only map memory upon reading it to avoid corruption
+>  - Small cosmetic cleanups
+> 
+>  drivers/nvmem/Kconfig  |  8 ++++
+>  drivers/nvmem/Makefile |  2 +
+>  drivers/nvmem/rmem.c   | 97 ++++++++++++++++++++++++++++++++++++++++++
+>  drivers/of/platform.c  |  1 +
+>  4 files changed, 108 insertions(+)
+>  create mode 100644 drivers/nvmem/rmem.c
+> 
 
-Applied.
-
-Best regards,
-Krzysztof
-
+Reviewed-by: Rob Herring <robh@kernel.org>
