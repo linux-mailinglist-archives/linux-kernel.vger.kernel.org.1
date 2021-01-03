@@ -2,203 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9292E8EB2
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0782E8EB3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbhACWg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 17:36:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726744AbhACWg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 17:36:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C20A20773;
-        Sun,  3 Jan 2021 22:35:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609713346;
-        bh=Me9+yYviHjIqHiUfSr0k4Que8xDqOAdBoV6RaYMLcWE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YNWdRMaIm4Ofh6VhIgM3VmR3x8tkW1KwbN5VnJUm+e3IO1xls5OFE6FvKXCa7B0gm
-         /gMI1NMdFF95Lx6Dadb5Fu2JRbADMF2F6zcGhbILdWJ4uM47yaOJFIZoIpQKrRt0G6
-         pWDkimBgOqdKzRWL6oglNFxA3AR4t+5eMYRycpeanr5fySfQmaEWdid+qxD95BqC3M
-         gTTurWEqJ9oGVm53kWjBVcixhEydLMj2o4Dr4tsjG9m94k7mt/JbxVXL/yo1cxyDsC
-         8YBak95rcld9TFYWnLmapAHJRx6+mMaUJgGUOWzQdk2/4VIvSpnfQZA7addD+/KSNN
-         fiZNGtQF1pmaw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Coiby Xu <coiby.xu@gmail.com>, greybus-dev@lists.linaro.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] staging: greybus: fix stack size warning with UBSAN
-Date:   Sun,  3 Jan 2021 23:35:32 +0100
-Message-Id: <20210103223541.2790855-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S1727570AbhACWsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 17:48:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726610AbhACWsU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 17:48:20 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD10C061573;
+        Sun,  3 Jan 2021 14:47:40 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id y19so60206913lfa.13;
+        Sun, 03 Jan 2021 14:47:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=87RUIw64Kr1A5OliwMJO/pfdIRcRUQAtOYF9J54FhFc=;
+        b=R/1h1w3CLjy283V6oGtpIoG1Q3tLeo2fn53+eC1YwCEqKLEFXFGLAqt8u+HgEcM2y2
+         pDJw2mk8uRs2GlW/WHf2OJNXPkE5rggyNItKfJKVA0kqq5qbiRWFJrOmQ15FEPE+iDRU
+         TE5q6RPjuuHIXzV7C0yJ91mjOy+/R7ZOTc/847mTrDZrObKDo3D4yx6/vqKXl2FUXAky
+         6tZ/n2T+UIgCBkFxqwQT/DLnmokz9lkteidCq9xlzSoX2Z8kVdjMpSs7y/SCC00TYjyi
+         hxnYNMuBdxJ1rzw0xmj8jA/g4pdH/eL/nxULesRToDb6X3S4Xc06jhiwEpAyT4EOQKTl
+         yXCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=87RUIw64Kr1A5OliwMJO/pfdIRcRUQAtOYF9J54FhFc=;
+        b=CANhiv4TgnF/liBvpOGPLVDVr2599jZ0tnaH6MO8dTXJl/gKLV2sDfpTbjPKqgOlPk
+         S1YAIBoXnP7TWECHt8Gr12IifUllFl2JivvtUAbQNO0wTZJObeRHCohZt8NEBs3eLbLz
+         rhZyD1NOGhNsWzQmv7BUWEgCP7NWDnLaOplhmuALyuT/pQ2Nim2MDb/9A3jSZ8Egfje3
+         ontszsfvStHvAlXGHYqi0od1cCo69ZR5tGZ3BEbKmtrGyXYVpboWtK8SwgPhBw230gj3
+         bVR1hpcUEufwWWutNRCX7U66VqjRLSybPNSsngyNsOU6xXtOyyGf98c+h9GCxbBPG3/O
+         WISg==
+X-Gm-Message-State: AOAM530tbtC5vo4kO0cHp2kUo5LiGWmKT2kAsaLSmt0v7zlD+gfogWPi
+        zxVxGVitk1In5tzkGT7wDEs=
+X-Google-Smtp-Source: ABdhPJxgZE7Fua+oorVTutxvrhFL61TMXKPZjfQDeihCiOf41/1uIS8p4sX7RhggqGKOwgIFs0bGzw==
+X-Received: by 2002:a2e:909a:: with SMTP id l26mr33223108ljg.182.1609714058543;
+        Sun, 03 Jan 2021 14:47:38 -0800 (PST)
+Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
+        by smtp.gmail.com with ESMTPSA id k11sm7095916lfd.3.2021.01.03.14.47.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 14:47:37 -0800 (PST)
+Date:   Mon, 4 Jan 2021 00:47:35 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com
+Subject: Re: [PATCH v17 07/10] fs/ntfs3: Add NTFS journal
+Message-ID: <20210103224735.gtirbmcpkdsietrl@kari-VirtualBox>
+References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
+ <20201231152401.3162425-8-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201231152401.3162425-8-almaz.alexandrovich@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Dec 31, 2020 at 06:23:58PM +0300, Konstantin Komarov wrote:
+> This adds NTFS journal
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/fslog.c | 5220 ++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 5220 insertions(+)
+>  create mode 100644 fs/ntfs3/fslog.c
+> 
+> diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
 
-clang warns about excessive stack usage in this driver when
-UBSAN is enabled:
+> +static int read_log_page(struct ntfs_log *log, u32 vbo,
+> +			 struct RECORD_PAGE_HDR **buffer, bool allow_errors,
+> +			 bool ignore_usa_error, bool *usa_error)
 
-drivers/staging/greybus/audio_topology.c:977:12: error: stack frame size of 1836 bytes in function 'gbaudio_tplg_create_widget' [-Werror,-Wframe-larger-than=]
+Allow_errors does nothing. I also think that no need for
+ignore_usa_error. We can just check usa_error if we need
+it. We just never raise return error for usa_error. And
+then caller can decide if want's to use it. 
 
-Rework this code to no longer use compound literals for
-initializing the structure in each case, but instead keep
-the common bits in a preallocated constant array and copy
-them as needed.
+> +{
+> +	int err = 0;
+> +	u32 page_idx = vbo >> log->page_bits;
+> +	u32 page_off = vbo & log->page_mask;
+> +	u32 bytes = log->page_size - page_off;
+> +	void *to_free = NULL;
+> +	u32 page_vbo = page_idx << log->page_bits;
+> +	struct RECORD_PAGE_HDR *page_buf;
+> +	struct ntfs_inode *ni = log->ni;
+> +	bool bBAAD;
+> +
+> +	if (vbo >= log->l_size)
+> +		return -EINVAL;
+> +
+> +	if (!*buffer) {
+> +		to_free = ntfs_alloc(bytes, 0);
+> +		if (!to_free)
+> +			return -ENOMEM;
+> +		*buffer = to_free;
+> +	}
+> +
+> +	page_buf = page_off ? log->one_page_buf : *buffer;
+> +
+> +	err = ntfs_read_run_nb(ni->mi.sbi, &ni->file.run, page_vbo, page_buf,
+> +			       log->page_size, NULL);
+> +	if (err)
+> +		goto out;
+> +
+> +	if (page_buf->rhdr.sign != NTFS_FFFF_SIGNATURE)
+> +		ntfs_fix_post_read(&page_buf->rhdr, PAGE_SIZE, false);
+> +
+> +	if (page_buf != *buffer)
+> +		memcpy(*buffer, Add2Ptr(page_buf, page_off), bytes);
+> +
+> +	bBAAD = page_buf->rhdr.sign == NTFS_BAAD_SIGNATURE;
+> +
+> +	/* Check that the update sequence array for this page is valid */
+> +	if (bBAAD) {
+> +		/* If we don't allow errors, raise an error status */
+> +		if (!ignore_usa_error) {
+> +			err = -EINVAL;
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	if (usa_error)
+> +		*usa_error = bBAAD;
+> +
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/staging/greybus/audio_topology.c | 106 ++++++++++-------------
- 1 file changed, 47 insertions(+), 59 deletions(-)
+So here we can just
+	delete if(bBAAD)
+and use
+	if (usa_error)
+		*usa_error = page_buf->rhdr.sign == NTFS_BAAD_SIGNATURE;
 
-diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
-index 96b8b29fe899..c03873915c20 100644
---- a/drivers/staging/greybus/audio_topology.c
-+++ b/drivers/staging/greybus/audio_topology.c
-@@ -974,6 +974,44 @@ static int gbaudio_widget_event(struct snd_soc_dapm_widget *w,
- 	return ret;
- }
+> +out:
+> +	if (err && to_free) {
+> +		ntfs_free(to_free);
+> +		*buffer = NULL;
+> +	}
+> +
+> +	return err;
+> +}
+
+> +/*
+> + * last_log_lsn
+> + *
+> + * This routine walks through the log pages for a file, searching for the
+> + * last log page written to the file
+> + */
+> +static int last_log_lsn(struct ntfs_log *log)
+> +{
+
+> +	struct RECORD_PAGE_HDR *first_tail = NULL;
+> +	struct RECORD_PAGE_HDR *second_tail = NULL;
+
+> +next_tail:
+> +	/* Read second tail page (at pos 3/0x12000) */
+> +	if (read_log_page(log, second_off, &second_tail, true, true,
+> +			  &usa_error) ||
+> +	    usa_error || second_tail->rhdr.sign != NTFS_RCRD_SIGNATURE) {
+> +		ntfs_free(second_tail);
+> +		second_tail = NULL;
+> +		second_file_off = 0;
+> +		lsn2 = 0;
+> +	} else {
+> +		second_file_off = hdr_file_off(log, second_tail);
+> +		lsn2 = le64_to_cpu(second_tail->record_hdr.last_end_lsn);
+> +	}
+
+What will happend if we get -ENOMEM from read_log_page(). Log page
+might still be valid we will just ignore it. This doesn't sound 
+right. 
+
+This same thing happens many place with read_log_page().
+
+> +
+> +	/* Read first tail page (at pos 2/0x2000 ) */
+> +	if (read_log_page(log, final_off, &first_tail, true, true,
+> +			  &usa_error) ||
+> +	    usa_error || first_tail->rhdr.sign != NTFS_RCRD_SIGNATURE) {
+> +		ntfs_free(first_tail);
+> +		first_tail = NULL;
+> +		first_file_off = 0;
+> +		lsn1 = 0;
+> +	} else {
+> +		first_file_off = hdr_file_off(log, first_tail);
+> +		lsn1 = le64_to_cpu(first_tail->record_hdr.last_end_lsn);
+> +	}
+
+> +	if (first_tail && second_tail) {
+> +		if (best_lsn1 > best_lsn2) {
+> +			best_lsn = best_lsn1;
+> +			best_page = first_tail;
+> +			this_off = first_file_off;
+> +		} else {
+> +			best_lsn = best_lsn2;
+> +			best_page = second_tail;
+> +			this_off = second_file_off;
+> +		}
+> +	} else if (first_tail) {
+> +		best_lsn = best_lsn1;
+> +		best_page = first_tail;
+> +		this_off = first_file_off;
+> +	} else if (second_tail) {
+> +		best_lsn = best_lsn2;
+> +		best_page = second_tail;
+> +		this_off = second_file_off;
+> +	} else {
+> +		goto free_and_tail_read;
+
+Can't we just use straight tail_read here? 
+
+> +	}
+> +
+> +	best_page_pos = le16_to_cpu(best_page->page_pos);
+
+> +	} else {
+> +free_and_tail_read:
+> +		ntfs_free(first_tail);
+> +		ntfs_free(second_tail);
+> +		goto tail_read;
+> +	}
+> +
+> +	ntfs_free(first_tail_prev);
+> +	first_tail_prev = first_tail;
+> +	final_off_prev = first_file_off;
+> +	first_tail = NULL;
+> +
+> +	ntfs_free(second_tail_prev);
+> +	second_tail_prev = second_tail;
+> +	second_off_prev = second_file_off;
+> +	second_tail = NULL;
+> +
+> +	final_off += log->page_size;
+> +	second_off += log->page_size;
+> +
+> +	if (tails < 0x10)
+> +		goto next_tail;
+> +tail_read:
+> +	first_tail = first_tail_prev;
+> +	final_off = final_off_prev;
+
+> +int log_replay(struct ntfs_inode *ni)
+> +{
+
+> +	/* Now we need to walk through looking for the last lsn */
+> +	err = last_log_lsn(log);
+> +	if (err == -EROFS)
+> +		goto out;
+> +
+
+No need for this if below is whole err check.
+
+> +	if (err)
+> +		goto out;
  
-+static const struct snd_soc_dapm_widget gbaudio_widgets[] = {
-+	[snd_soc_dapm_spk]	= SND_SOC_DAPM_SPK("spk", gbcodec_event_spk),
-+	[snd_soc_dapm_hp]	= SND_SOC_DAPM_HP("hp", gbcodec_event_hp),
-+	[snd_soc_dapm_mic]	= SND_SOC_DAPM_MIC("mic", gbcodec_event_int_mic),
-+	[snd_soc_dapm_output]	= SND_SOC_DAPM_OUTPUT("output"),
-+	[snd_soc_dapm_input]	= SND_SOC_DAPM_INPUT("input"),
-+	[snd_soc_dapm_switch]	= SND_SOC_DAPM_SWITCH_E("switch", SND_SOC_NOPM,
-+					0, 0, NULL,
-+					gbaudio_widget_event,
-+					SND_SOC_DAPM_PRE_PMU |
-+					SND_SOC_DAPM_POST_PMD),
-+	[snd_soc_dapm_pga]	= SND_SOC_DAPM_PGA_E("pga", SND_SOC_NOPM,
-+					0, 0, NULL, 0,
-+					gbaudio_widget_event,
-+					SND_SOC_DAPM_PRE_PMU |
-+					SND_SOC_DAPM_POST_PMD),
-+	[snd_soc_dapm_mixer]	= SND_SOC_DAPM_MIXER_E("mixer", SND_SOC_NOPM,
-+					0, 0, NULL, 0,
-+					gbaudio_widget_event,
-+					SND_SOC_DAPM_PRE_PMU |
-+					SND_SOC_DAPM_POST_PMD),
-+	[snd_soc_dapm_mux]	= SND_SOC_DAPM_MUX_E("mux", SND_SOC_NOPM,
-+					0, 0, NULL,
-+					gbaudio_widget_event,
-+					SND_SOC_DAPM_PRE_PMU |
-+					SND_SOC_DAPM_POST_PMD),
-+	[snd_soc_dapm_aif_in]	= SND_SOC_DAPM_AIF_IN_E("aif_in", NULL, 0,
-+					SND_SOC_NOPM, 0, 0,
-+					gbaudio_widget_event,
-+					SND_SOC_DAPM_PRE_PMU |
-+					SND_SOC_DAPM_POST_PMD),
-+	[snd_soc_dapm_aif_out]	= SND_SOC_DAPM_AIF_OUT_E("aif_out", NULL, 0,
-+					SND_SOC_NOPM, 0, 0,
-+					gbaudio_widget_event,
-+					SND_SOC_DAPM_PRE_PMU |
-+					SND_SOC_DAPM_POST_PMD),
-+};
-+
- static int gbaudio_tplg_create_widget(struct gbaudio_module_info *module,
- 				      struct snd_soc_dapm_widget *dw,
- 				      struct gb_audio_widget *w, int *w_size)
-@@ -1050,78 +1088,28 @@ static int gbaudio_tplg_create_widget(struct gbaudio_module_info *module,
- 	strlcpy(temp_name, w->name, NAME_SIZE);
- 	snprintf(w->name, NAME_SIZE, "GB %d %s", module->dev_id, temp_name);
- 
-+	if (w->type > ARRAY_SIZE(gbaudio_widgets)) {
-+		ret = -EINVAL;
-+		goto error;
-+	}
-+	*dw = gbaudio_widgets[w->type];
-+	dw->name = w->name;
-+
- 	switch (w->type) {
- 	case snd_soc_dapm_spk:
--		*dw = (struct snd_soc_dapm_widget)
--			SND_SOC_DAPM_SPK(w->name, gbcodec_event_spk);
- 		module->op_devices |= GBAUDIO_DEVICE_OUT_SPEAKER;
- 		break;
- 	case snd_soc_dapm_hp:
--		*dw = (struct snd_soc_dapm_widget)
--			SND_SOC_DAPM_HP(w->name, gbcodec_event_hp);
- 		module->op_devices |= (GBAUDIO_DEVICE_OUT_WIRED_HEADSET
--					| GBAUDIO_DEVICE_OUT_WIRED_HEADPHONE);
-+					| GBAUDIO_DEVICE_OUT_WIRED_HEADPHONE),
- 		module->ip_devices |= GBAUDIO_DEVICE_IN_WIRED_HEADSET;
- 		break;
- 	case snd_soc_dapm_mic:
--		*dw = (struct snd_soc_dapm_widget)
--			SND_SOC_DAPM_MIC(w->name, gbcodec_event_int_mic);
- 		module->ip_devices |= GBAUDIO_DEVICE_IN_BUILTIN_MIC;
- 		break;
--	case snd_soc_dapm_output:
--		*dw = (struct snd_soc_dapm_widget)SND_SOC_DAPM_OUTPUT(w->name);
--		break;
--	case snd_soc_dapm_input:
--		*dw = (struct snd_soc_dapm_widget)SND_SOC_DAPM_INPUT(w->name);
--		break;
--	case snd_soc_dapm_switch:
--		*dw = (struct snd_soc_dapm_widget)
--			SND_SOC_DAPM_SWITCH_E(w->name, SND_SOC_NOPM, 0, 0,
--					      widget_kctls,
--					      gbaudio_widget_event,
--					      SND_SOC_DAPM_PRE_PMU |
--					      SND_SOC_DAPM_POST_PMD);
--		break;
--	case snd_soc_dapm_pga:
--		*dw = (struct snd_soc_dapm_widget)
--			SND_SOC_DAPM_PGA_E(w->name, SND_SOC_NOPM, 0, 0, NULL, 0,
--					   gbaudio_widget_event,
--					   SND_SOC_DAPM_PRE_PMU |
--					   SND_SOC_DAPM_POST_PMD);
--		break;
--	case snd_soc_dapm_mixer:
--		*dw = (struct snd_soc_dapm_widget)
--			SND_SOC_DAPM_MIXER_E(w->name, SND_SOC_NOPM, 0, 0, NULL,
--					     0, gbaudio_widget_event,
--					     SND_SOC_DAPM_PRE_PMU |
--					     SND_SOC_DAPM_POST_PMD);
--		break;
--	case snd_soc_dapm_mux:
--		*dw = (struct snd_soc_dapm_widget)
--			SND_SOC_DAPM_MUX_E(w->name, SND_SOC_NOPM, 0, 0,
--					   widget_kctls, gbaudio_widget_event,
--					   SND_SOC_DAPM_PRE_PMU |
--					   SND_SOC_DAPM_POST_PMD);
--		break;
- 	case snd_soc_dapm_aif_in:
--		*dw = (struct snd_soc_dapm_widget)
--			SND_SOC_DAPM_AIF_IN_E(w->name, w->sname, 0,
--					      SND_SOC_NOPM,
--					      0, 0, gbaudio_widget_event,
--					      SND_SOC_DAPM_PRE_PMU |
--					      SND_SOC_DAPM_POST_PMD);
--		break;
- 	case snd_soc_dapm_aif_out:
--		*dw = (struct snd_soc_dapm_widget)
--			SND_SOC_DAPM_AIF_OUT_E(w->name, w->sname, 0,
--					       SND_SOC_NOPM,
--					       0, 0, gbaudio_widget_event,
--					       SND_SOC_DAPM_PRE_PMU |
--					       SND_SOC_DAPM_POST_PMD);
--		break;
--	default:
--		ret = -EINVAL;
--		goto error;
-+		dw->sname = w->sname;
- 	}
- 
- 	dev_dbg(module->dev, "%s: widget of type %d created\n", dw->name,
--- 
-2.29.2
-
