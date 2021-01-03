@@ -2,88 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ADE2E8A0D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 03:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1E12E8A14
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 04:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbhACCup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 21:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725786AbhACCuo (ORCPT
+        id S1726418AbhACDEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 22:04:54 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:44339 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725786AbhACDEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 21:50:44 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C22C061573;
-        Sat,  2 Jan 2021 18:50:04 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id c12so14238047pfo.10;
-        Sat, 02 Jan 2021 18:50:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=p6iRhZ/uYPqRIQIFRU+QWQNN/PsTmWN2Q1BgTb5rkC4=;
-        b=kmjT0+e+DXnGVq/NU58+KkWaJnAxIdBusxYqE/mjp9QJVLIDZ8pbW6u3Jpw1yh3wLI
-         WGhq9ab+bgq5iWnCOvOZaX0/Mu7XPz4CBQ5tcx2m4aLgssWPsebKfcSQKJ4A0JZIjznz
-         vs7vT+Wb+6ZjaJfKoDZbWnedxzEfQ8h/ywWRq3dsqwUTfT/rvEXQgCMzb/8p5s7djCS1
-         dPW8+KAMCSc4ujNuYaqMU8ykLEkl46MuYXZ8CHmZN3VQZlDJfx43aKgW4JxnXY9+ib7R
-         f3oX0/MlSGCXJEocqvyriKJtYskKkjq7twPLMotJtfcD3Z2ZLPrdfe1MQ5LsIoEqGQSq
-         VGyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=p6iRhZ/uYPqRIQIFRU+QWQNN/PsTmWN2Q1BgTb5rkC4=;
-        b=svo3NWnHz2/UpnAM6kYAXdBEjaJhwu3qo35IjyDGsMvuiDKUrwFXTnZ2Q+Gc4n0Pj4
-         KrZBxB8H5oYx2WmV2uudFUS9kVwNG9hoNc0ePqQ+pESKjvpIeyqY8pU3eTmOH8ZlNLc0
-         uOx3fAN7q3BLWlwD8+qX5cpvdNHEqSEq6zY6CPSkyO91NRFOshJpY7tCmHclQ+qoodyn
-         QdOXWkzPMFgwHG0CevAU6rFLjmqbltvdwkMux+uxWjb4GsssmpZXhtqUFNheytSXD4TP
-         4bco9z4DS6gHy6hozQ9qiyYJqUN6AmaQsA2LFKTEsOXCv94I19MBXWku09FhPeSGdqPO
-         KhZA==
-X-Gm-Message-State: AOAM531mxcO4vbQIdx7f18Y+2zix2snKzqKsQgcigfvA56BsAtWFGMez
-        bX1ZF6nUD61gJOtJlA5xLR4=
-X-Google-Smtp-Source: ABdhPJyejemM8Q9mdxTKugp4+eoWRPt5lN/UsVlyn+1Nll1s5Dp3arwyuTDx2u8pXxAmhgCcPIi8Ow==
-X-Received: by 2002:a63:c80e:: with SMTP id z14mr65630856pgg.435.1609642203964;
-        Sat, 02 Jan 2021 18:50:03 -0800 (PST)
-Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
-        by smtp.gmail.com with ESMTPSA id er23sm16522048pjb.12.2021.01.02.18.50.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Jan 2021 18:50:03 -0800 (PST)
-Date:   Sun, 3 Jan 2021 02:50:01 +0000
-From:   Hao Lee <haolee.swjtu@gmail.com>
-To:     tj@kernel.org
-Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, haolee.swjtu@gmail.com
-Subject: [PATCH] cgroup: Remove unnecessary call to strstrip()
-Message-ID: <20210103024846.GA15337@haolee.github.io>
+        Sat, 2 Jan 2021 22:04:53 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 63F21580300;
+        Sat,  2 Jan 2021 22:03:47 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sat, 02 Jan 2021 22:03:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=34DA642wIHVqOSnPLGDFVK5mdJ
+        RElXLDheOtXgf+oEQ=; b=ffYAd7eZNCSOxKrBZq07D6PvrDNyihf43Q5gFJAwYW
+        FhcCXyLBXfBE792kb8/AWc3QM0Cs7vBUMMoqyLuSiDEkhuNK/mU9Ic+wIPgy0Kux
+        /h0NobUwclq7B3TXdaKXzIOHgtX/V5d5qc+yiejuoIb6kybCVp7vW6pUm+uRzAzd
+        ZFqprZ9Qrlo9yJBruB76gXhULhkW0LnOqnajC7uw/PrK2jPg/RLvR9LN+AbSBMhD
+        xmNKQONp1vHQbjRGZnsf1hiSG3IsCOoTVsn9vtObbYzkJu9Lm3TV4YDPcA98YvXV
+        0ctNAIE+S4ILydDWpl8yAHLBrrgErl9JRhtJjGyGOE9Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=34DA642wIHVqOSnPL
+        GDFVK5mdJRElXLDheOtXgf+oEQ=; b=GMuyjLsmOyh2umDyQK0HVarSHbWdH3pij
+        XIJoex0K/XV6XEp5K3y/QhMeLYPXwx/24bmoWSnnvVcmO+6XQJcjBzL0sHtDB86/
+        QR4tavNcdwaRN8F7+B4LFIouQTMKrL1ZjabTj8h3opTtf62F/uTvHmh22ijBk7bY
+        hE7qwkVNBuqXmBfshEfLjiLkLTcV4dQMitLAfokzAfH22qvhdp0ai9kPgN+bOpCW
+        Afpx1mUsIu/bsEIBN4jaRNKzgTJKy07DcuL7bvlCfUTtM9DtVwFqBDeKs92OHFJl
+        mahq/8cf/dMAukSDzj4QtfHi+Lk4yQ7atcX5vT4DzpqpKTlWKzPDw==
+X-ME-Sender: <xms:ETTxX15gcYPWMVlAR60x2PobIaItK8V12XS3NNOJiy_28HdDLdDGbg>
+    <xme:ETTxXy6YeHbXNuiLLOwD7ew81zwMScL7LGyXXEweK69smH3DVxsNIPqbcu0rskJfO
+    i_R9QHAiG-c5ZDbPxM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeftddgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflihgrgihunhcu
+    jggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecuggftrf
+    grthhtvghrnhephfejtdektdeuhedtieefteekveffteejteefgeekveegffetvddugfel
+    iefhtddunecukfhppedukeefrdduheejrdefvddruddtudenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhih
+    ghhorghtrdgtohhm
+X-ME-Proxy: <xmx:ETTxX8d32u_q9DJpKVD6ONTB-BK_4ySga-wywdzAf3JIJkE4tthyHA>
+    <xmx:ETTxX-I1-alLNQ3qDFFIVcpPJEAE7vEyMRIOvLGnCffmSZ5iFryt4w>
+    <xmx:ETTxX5LBICr2SSeJSqYhmW_FhTrE5o9q3uAclNf_uxqCG0WWpU8B1w>
+    <xmx:EjTxX50ML_lH0uHvz6mKIBUx_RWPCHxbf8gxIWwedJpYhedrA8sKzw>
+Received: from strike.202.net.flygoat.com (unknown [183.157.32.101])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5A64824005C;
+        Sat,  2 Jan 2021 22:03:41 -0500 (EST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     platform-driver-x86@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org,
+        Ike Panhc <ike.pan@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH fixes v2] platform/x86: ideapad-laptop: Disable touchpad_switch for ELAN0634
+Date:   Sun,  3 Jan 2021 11:03:32 +0800
+Message-Id: <20210103030332.34185-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The string buf will be stripped in cgroup_procs_write_start() before it
-is converted to int, so remove this unnecessary call to strstrip().
+Newer ideapads (e.g.: Yoga 14s, 720S 14) come with ELAN0634 touchpad do not
+use EC to switch touchpad.
 
-Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
+Reading VPCCMD_R_TOUCHPAD will return zero thus touchpad may be blocked
+unexpectedly.
+Writing VPCCMD_W_TOUCHPAD may cause a spurious key press.
+
+Add has_touchpad_switch to workaround these machines.
+
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: stable@vger.kernel.org # 5.4+
+--
+v2: Specify touchpad to ELAN0634
 ---
- kernel/cgroup/cgroup.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/platform/x86/ideapad-laptop.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 5e9cb81c088a..8b3554c1113a 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4774,8 +4774,6 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
- 	ssize_t ret;
- 	bool locked;
+diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+index 7598cd46cf60..3bd29eb956d2 100644
+--- a/drivers/platform/x86/ideapad-laptop.c
++++ b/drivers/platform/x86/ideapad-laptop.c
+@@ -92,6 +92,7 @@ struct ideapad_private {
+ 	struct dentry *debug;
+ 	unsigned long cfg;
+ 	bool has_hw_rfkill_switch;
++	bool has_touchpad_switch;
+ 	const char *fnesc_guid;
+ };
  
--	buf = strstrip(buf);
--
- 	dst_cgrp = cgroup_kn_lock_live(of->kn, false);
- 	if (!dst_cgrp)
- 		return -ENODEV;
+@@ -535,7 +536,9 @@ static umode_t ideapad_is_visible(struct kobject *kobj,
+ 	} else if (attr == &dev_attr_fn_lock.attr) {
+ 		supported = acpi_has_method(priv->adev->handle, "HALS") &&
+ 			acpi_has_method(priv->adev->handle, "SALS");
+-	} else
++	} else if (attr == &dev_attr_touchpad.attr)
++		supported = priv->has_touchpad_switch;
++	else
+ 		supported = true;
+ 
+ 	return supported ? attr->mode : 0;
+@@ -867,6 +870,9 @@ static void ideapad_sync_touchpad_state(struct ideapad_private *priv)
+ {
+ 	unsigned long value;
+ 
++	if (!priv->has_touchpad_switch)
++		return;
++
+ 	/* Without reading from EC touchpad LED doesn't switch state */
+ 	if (!read_ec_data(priv->adev->handle, VPCCMD_R_TOUCHPAD, &value)) {
+ 		/* Some IdeaPads don't really turn off touchpad - they only
+@@ -989,6 +995,9 @@ static int ideapad_acpi_add(struct platform_device *pdev)
+ 	priv->platform_device = pdev;
+ 	priv->has_hw_rfkill_switch = dmi_check_system(hw_rfkill_list);
+ 
++	/* Most ideapads with ELAN0634 touchpad don't use EC touchpad switch */
++	priv->has_touchpad_switch = acpi_dev_present("PNP0C50", "ELAN0634", -1);
++
+ 	ret = ideapad_sysfs_init(priv);
+ 	if (ret)
+ 		return ret;
+@@ -1006,6 +1015,10 @@ static int ideapad_acpi_add(struct platform_device *pdev)
+ 	if (!priv->has_hw_rfkill_switch)
+ 		write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
+ 
++	/* The same for Touchpad */
++	if (!priv->has_touchpad_switch)
++		write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
++
+ 	for (i = 0; i < IDEAPAD_RFKILL_DEV_NUM; i++)
+ 		if (test_bit(ideapad_rfk_data[i].cfgbit, &priv->cfg))
+ 			ideapad_register_rfkill(priv, i);
 -- 
-2.24.1
+2.30.0
 
