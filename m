@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362612E8CE8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7183A2E8CEA
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbhACPeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 10:34:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45590 "EHLO
+        id S1727106AbhACPfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 10:35:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbhACPeV (ORCPT
+        with ESMTP id S1726744AbhACPfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 10:34:21 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A8BC061573;
-        Sun,  3 Jan 2021 07:33:41 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id a6so14921152wmc.2;
-        Sun, 03 Jan 2021 07:33:41 -0800 (PST)
+        Sun, 3 Jan 2021 10:35:18 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10319C0613C1
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 07:34:38 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id x16so33622476ejj.7
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 07:34:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O7ICa8ac8XZ0cgukQ7IpzlBT35xOowy7T29HqXh6Bz4=;
-        b=SnSdWnwCWkbxAa1ltHiK8xlsxSH9KsE8xp58Tn4sQwgDzUvOGmV7ixnwOeyUgASc8T
-         aytFbfiNpS6GdGILR/7v8g9yiRceW416jmobVvwUVYilD93pI7l8Sfj04GYYvIPfqNIF
-         rniDqx8dBbsJ19Kd7ViPBsJvwL8KVIkeAEo8DTz0ZMS6eAQxp0kqslaps20Ls4lHAEX+
-         4c+OA8jotel+ItGS1bsdTIq2rod0rMg2cGKxP4DE1NOSu97LFon4fUQrZPLZNvU8q2ae
-         f2LQIht3mAqSlZJco3mmD9WfkwrkCz4fU5tILtBLjboEjJehHiqiahiaoOf5wo6q5Qe+
-         9ijA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7VJSS2MRhdrAHE2InrIaRduFq4J8wRHwKfn5ZoOtFPA=;
+        b=ggcpMrMpfWXy42E72xoUF2jN3tEZjFxxPk6R9lutWT1Jlbd+kwg/a6ylIDueRCaCHs
+         ZCUm+2XSy0YquBeHfSdBnC3Fk0/MXOW/1yGNp+1E2/+VGE+VHe6H4Nm/5nOKU4+gzDE4
+         BrhW3PwpIYi1LAlj/jwj68LO/i95Q+ZdDv5SuWyVt3WmpOZY/kjxkw3MhPdyB4pgMZ40
+         nMl+8HFlXXe4YiGrxalFdwIRV6Jbf5cTB6MXcIHkqSTs440jBCBQATmz1V/mfoV3AA5d
+         YoG1wBHgyTlpwQar5NXxuGjnAzJy+ywWo3yfPC7fSzFJO9tkshpGP/T2R7hKiRMgFM4E
+         +U2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O7ICa8ac8XZ0cgukQ7IpzlBT35xOowy7T29HqXh6Bz4=;
-        b=iczOZgFIVm7294MAL9W8qJNuI0ATeABoiriQ3918JSqmAZqNT6ON9uytQ1DEFfvs5z
-         WyfYxGrK6TEitiIe/gaP+HcTJGCMz86YjO3oijw9Znfa1ocHW4izPEf9JrBLGZ6Tcgf7
-         p3ucXO4bZVUEzvekq6j/e7re2744SgZOrXHZ7JZj3jAKZaY8txbsgf26vA4EmBTDOiDY
-         dd4Oct4FyecVo/WYGaPeqRdBhJCQB1nV8zUxuk+Dr7zzGb4b5UPkrZvpt0pAY6UqDdPz
-         Jv8L0Nq5f9L+6nih2dnjbm0QNRlDZeWbtAB2inNQxjSkLC+v3+UVB5U049g2Ihd7tAsn
-         rYbg==
-X-Gm-Message-State: AOAM533tM47S/R0moju981laeLGpfWF7YLngD4yZLKbD1KQUCHua7RQ7
-        L30hHh1EC+7nGcsjRroQ/1NwRtvcmJs=
-X-Google-Smtp-Source: ABdhPJzbkoBtea/8cv76+DoK0lhA+VzUs41XQJL7oyiIT+vzSvhWKykrijxm88LC7wDB/xMBbHAnEg==
-X-Received: by 2002:a7b:c8da:: with SMTP id f26mr24159757wml.155.1609688019585;
-        Sun, 03 Jan 2021 07:33:39 -0800 (PST)
-Received: from [192.168.2.202] (pd9e5a32f.dip0.t-ipconnect.de. [217.229.163.47])
-        by smtp.gmail.com with ESMTPSA id x13sm88983933wrp.80.2021.01.03.07.33.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Jan 2021 07:33:38 -0800 (PST)
-Subject: Re: [PATCH] platform/surface: mark PM functions as __maybe_unused
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210103140429.3929810-1-arnd@kernel.org>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <14ab487e-f80e-4dea-49c1-fdbf0bd059f3@gmail.com>
-Date:   Sun, 3 Jan 2021 16:33:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7VJSS2MRhdrAHE2InrIaRduFq4J8wRHwKfn5ZoOtFPA=;
+        b=JkpAchtttuIBAYqQHTCsHxHvcKPQfS8dq7Wl+RMM/6vZYACLqg6+LLd9xe3aZalq6u
+         G54W8dZvY1299jUzYotmJ1b+/nfwHnEIHqEEUjLKGPMhtislIu08FpKt943MhmJL19F+
+         lYYqhsXnX8Ojq7EglpfpF9G0BVVo0kqSYmxE/tBHirWLhSiyF/h1iiuMygrWKhzOt0zd
+         ww1U4Qc0X5CuHU9TLOqiGiPA6+7n/4byZ9MKZ7lt+2t8JzXwMpPKE54EiQrqjF26G1f6
+         Q1Z35HFQVvwEYUinazQ+ll0FWrsmDCW6ux4HVThHTbzwmy66t4Bczii0ZGqHzWxRnoua
+         mKbw==
+X-Gm-Message-State: AOAM530WyEXw5WtsqiIc8Q/POtFScBQ2IpTFnfiaOsiH4DA3keL0ligo
+        868YnbXhF1VC0gg3mXjawXkzWukTnRtxNZ8TM1dqhg==
+X-Google-Smtp-Source: ABdhPJwvngco/r9xFm5sTplUpavbxwsWcVbxihKIf/+1h09Ybaw+QKj4aeWfzeTil+SwvSPf2Oa9WGgRS2D7zARYlwM=
+X-Received: by 2002:a17:907:b09:: with SMTP id h9mr64879642ejl.155.1609688076771;
+ Sun, 03 Jan 2021 07:34:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210103140429.3929810-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201227161040.1645545-1-warthog618@gmail.com> <CACRpkdYk9U_=AOyy7NSKL9+Aoe0+qCdZVN9EXWLn7NUcUajipQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYk9U_=AOyy7NSKL9+Aoe0+qCdZVN9EXWLn7NUcUajipQ@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Sun, 3 Jan 2021 16:34:26 +0100
+Message-ID: <CAMpxmJVQ3AfQsXc0g-BigiS03ddP0FcZOWB7vtP1rHX5jFCzcg@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: cdev: fix frame size warning in gpio_ioctl()
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/3/21 3:04 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When CONFIG_PM is disabled, the compiler produces harmless warnings:
-> 
-> drivers/platform/surface/surface_gpe.c:184:12: error: unused function 'surface_gpe_suspend' [-Werror,-Wunused-function]
-> static int surface_gpe_suspend(struct device *dev)
-> drivers/platform/surface/surface_gpe.c:189:12: error: unused function 'surface_gpe_resume' [-Werror,-Wunused-function]
-> static int surface_gpe_resume(struct device *dev)
-> 
-> Mark these as __maybe_unused to shut up the warning.
-> 
-> Fixes: 274335f1c557 ("platform/surface: Add Driver to set up lid GPEs on MS Surface device")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/platform/surface/surface_gpe.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/surface/surface_gpe.c b/drivers/platform/surface/surface_gpe.c
-> index e49e5d6d5d4e..86f6991b1215 100644
-> --- a/drivers/platform/surface/surface_gpe.c
-> +++ b/drivers/platform/surface/surface_gpe.c
-> @@ -181,12 +181,12 @@ static int surface_lid_enable_wakeup(struct device *dev, bool enable)
->   	return 0;
->   }
->   
-> -static int surface_gpe_suspend(struct device *dev)
-> +static int __maybe_unused surface_gpe_suspend(struct device *dev)
->   {
->   	return surface_lid_enable_wakeup(dev, true);
->   }
->   
-> -static int surface_gpe_resume(struct device *dev)
-> +static int __maybe_unused surface_gpe_resume(struct device *dev)
->   {
->   	return surface_lid_enable_wakeup(dev, false);
->   }
-> 
+On Sun, Dec 27, 2020 at 10:37 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Sun, Dec 27, 2020 at 5:11 PM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> > The kernel test robot reports the following warning in [1]:
+> >
+> >  drivers/gpio/gpiolib-cdev.c: In function 'gpio_ioctl':
+> >  >>drivers/gpio/gpiolib-cdev.c:1437:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> >
+> > Refactor gpio_ioctl() to handle each ioctl in its own helper function
+> > and so reduce the variables stored on the stack to those explicitly
+> > required to service the ioctl at hand.
+> >
+> > The lineinfo_get_v1() helper handles both the GPIO_GET_LINEINFO_IOCTL
+> > and GPIO_GET_LINEINFO_WATCH_IOCTL, as per the corresponding v2
+> > implementation - lineinfo_get().
+> >
+> > [1] https://lore.kernel.org/lkml/202012270910.VW3qc1ER-lkp@intel.com/
+> >
+> > Fixes: aad955842d1c ("gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and GPIO_V2_GET_LINEINFO_WATCH_IOCTL")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Kent Gibson <warthog618@gmail.com>
+>
+> That's an interesting regression.
+> Anyway the kernel look better after than before the patch, so
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Bartosz will pick patches for Torvalds this kernel cycle.
+>
+> Yours,
+> Linus Walleij
 
-Hi,
+Applied with Linus' tag, thanks!
 
-a patch doing this exact thing has already been submitted, but has yet to
-be picked up:
-
-   https://www.spinics.net/lists/platform-driver-x86/msg23888.html
-
-Thanks,
-Max
+Bart
