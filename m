@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7183A2E8CEA
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF7F2E8CEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbhACPfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 10:35:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
+        id S1727192AbhACPgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 10:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726744AbhACPfS (ORCPT
+        with ESMTP id S1726008AbhACPgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 10:35:18 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10319C0613C1
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 07:34:38 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id x16so33622476ejj.7
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 07:34:37 -0800 (PST)
+        Sun, 3 Jan 2021 10:36:05 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEBCC061573
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 07:35:24 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id i24so24641400edj.8
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 07:35:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7VJSS2MRhdrAHE2InrIaRduFq4J8wRHwKfn5ZoOtFPA=;
-        b=ggcpMrMpfWXy42E72xoUF2jN3tEZjFxxPk6R9lutWT1Jlbd+kwg/a6ylIDueRCaCHs
-         ZCUm+2XSy0YquBeHfSdBnC3Fk0/MXOW/1yGNp+1E2/+VGE+VHe6H4Nm/5nOKU4+gzDE4
-         BrhW3PwpIYi1LAlj/jwj68LO/i95Q+ZdDv5SuWyVt3WmpOZY/kjxkw3MhPdyB4pgMZ40
-         nMl+8HFlXXe4YiGrxalFdwIRV6Jbf5cTB6MXcIHkqSTs440jBCBQATmz1V/mfoV3AA5d
-         YoG1wBHgyTlpwQar5NXxuGjnAzJy+ywWo3yfPC7fSzFJO9tkshpGP/T2R7hKiRMgFM4E
-         +U2w==
+        bh=M8EUldjyvk2v6GO3easV/bDTItJ4f4U6mdfimtYJN0A=;
+        b=q2bVdZYxjyewijLVutaGwahEKegFtWwpymOP0F5g/i8xSQ0JiaL/ZF4wv+B/pS11uK
+         HvLyXrsT2pry1T6a6JH+hDV3gLfwy7Nis7v9HuqtANuRfi9xoygFJN7OQgh/OH+fL3sz
+         tL793KWxUj3my5HtSRDrhGBwwf/mS3kT3PRathvluF0LZBaLnWujU8qEbPJTibHYzsXP
+         G2YO3mbzAWLnFyK0sf648uvhmD08m3CRgrDOWuXVWe3EpSnt+pjVtQRB+8ZwRfPYO8Hq
+         PTCJ3xO0TaZANWPpKuX6tFsfYMKwm3uV9B4Rlkl71ujSFgy+/7mfN+ksoefrKbRJS0lu
+         B1GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7VJSS2MRhdrAHE2InrIaRduFq4J8wRHwKfn5ZoOtFPA=;
-        b=JkpAchtttuIBAYqQHTCsHxHvcKPQfS8dq7Wl+RMM/6vZYACLqg6+LLd9xe3aZalq6u
-         G54W8dZvY1299jUzYotmJ1b+/nfwHnEIHqEEUjLKGPMhtislIu08FpKt943MhmJL19F+
-         lYYqhsXnX8Ojq7EglpfpF9G0BVVo0kqSYmxE/tBHirWLhSiyF/h1iiuMygrWKhzOt0zd
-         ww1U4Qc0X5CuHU9TLOqiGiPA6+7n/4byZ9MKZ7lt+2t8JzXwMpPKE54EiQrqjF26G1f6
-         Q1Z35HFQVvwEYUinazQ+ll0FWrsmDCW6ux4HVThHTbzwmy66t4Bczii0ZGqHzWxRnoua
-         mKbw==
-X-Gm-Message-State: AOAM530WyEXw5WtsqiIc8Q/POtFScBQ2IpTFnfiaOsiH4DA3keL0ligo
-        868YnbXhF1VC0gg3mXjawXkzWukTnRtxNZ8TM1dqhg==
-X-Google-Smtp-Source: ABdhPJwvngco/r9xFm5sTplUpavbxwsWcVbxihKIf/+1h09Ybaw+QKj4aeWfzeTil+SwvSPf2Oa9WGgRS2D7zARYlwM=
-X-Received: by 2002:a17:907:b09:: with SMTP id h9mr64879642ejl.155.1609688076771;
- Sun, 03 Jan 2021 07:34:36 -0800 (PST)
+        bh=M8EUldjyvk2v6GO3easV/bDTItJ4f4U6mdfimtYJN0A=;
+        b=sLhjt+rWvgKBLCPnliZb8NkJ05TSvHSCTtxeHG+B4AFihZUzNCDz9jGg13iksAqRiX
+         jsh8m4TfEkUum8qVau6XizOvRJ+hgWI/R0+/6rEpAlhfxXh158GBdToEWZAql3g8cEpq
+         qKQQZlthIyGp1nBbDOBdXTK4Ht8nN1Gu1FColukUDdbYw+mVsM863hHJAgqBNjV8NLoy
+         CTSKyYrsXXcpe70SCSC9g3YUmaZDOrI0VX/cZv1snc1mpemGBOmX+OQaO+vxuvwGNgth
+         Mp/yAgkZT7wC1wGVjDUMCCIrWuOBFWsBvMFbdR3cwuEtCS74TuA5ge14xKKenJXuDNgg
+         fhbg==
+X-Gm-Message-State: AOAM530cREMxcxBTuCSgDTx1aT/IR5FR+2NT7/mRXbDSQSjuMq6OuH8V
+        uZ+BWOjoBlT82Qe53tTHTAzAopfWPqq9hRY0JdtvOw==
+X-Google-Smtp-Source: ABdhPJzb4qlEP8bfOaM0fyTZxQzF/OvPUzBT2H3LyWrVjHiIFgsjX7PH+TJnpC5tCIRreernulsyYuhCUhVSMQ75rDg=
+X-Received: by 2002:a05:6402:14c5:: with SMTP id f5mr66332936edx.232.1609688123457;
+ Sun, 03 Jan 2021 07:35:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20201227161040.1645545-1-warthog618@gmail.com> <CACRpkdYk9U_=AOyy7NSKL9+Aoe0+qCdZVN9EXWLn7NUcUajipQ@mail.gmail.com>
-In-Reply-To: <CACRpkdYk9U_=AOyy7NSKL9+Aoe0+qCdZVN9EXWLn7NUcUajipQ@mail.gmail.com>
+References: <1608888807-3117-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1608888807-3117-7-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+In-Reply-To: <1608888807-3117-7-git-send-email-yoshihiro.shimoda.uh@renesas.com>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Sun, 3 Jan 2021 16:34:26 +0100
-Message-ID: <CAMpxmJVQ3AfQsXc0g-BigiS03ddP0FcZOWB7vtP1rHX5jFCzcg@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: cdev: fix frame size warning in gpio_ioctl()
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
+Date:   Sun, 3 Jan 2021 16:35:12 +0100
+Message-ID: <CAMpxmJWsipPumbROrfas+Ldwh47wnZxORUWr0RjY-=0-B2pELA@mail.gmail.com>
+Subject: Re: [PATCH v8 06/12] gpio: bd9571mwv: Use the SPDX license identifier
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     marek.vasut+renesas@gmail.com, Lee Jones <lee.jones@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        khiem.nguyen.xt@renesas.com, linux-power@fi.rohmeurope.com,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 10:37 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+On Fri, Dec 25, 2020 at 10:33 AM Yoshihiro Shimoda
+<yoshihiro.shimoda.uh@renesas.com> wrote:
 >
-> On Sun, Dec 27, 2020 at 5:11 PM Kent Gibson <warthog618@gmail.com> wrote:
+> Use the SPDX license identifier instead of a local description.
 >
-> > The kernel test robot reports the following warning in [1]:
-> >
-> >  drivers/gpio/gpiolib-cdev.c: In function 'gpio_ioctl':
-> >  >>drivers/gpio/gpiolib-cdev.c:1437:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> >
-> > Refactor gpio_ioctl() to handle each ioctl in its own helper function
-> > and so reduce the variables stored on the stack to those explicitly
-> > required to service the ioctl at hand.
-> >
-> > The lineinfo_get_v1() helper handles both the GPIO_GET_LINEINFO_IOCTL
-> > and GPIO_GET_LINEINFO_WATCH_IOCTL, as per the corresponding v2
-> > implementation - lineinfo_get().
-> >
-> > [1] https://lore.kernel.org/lkml/202012270910.VW3qc1ER-lkp@intel.com/
-> >
-> > Fixes: aad955842d1c ("gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and GPIO_V2_GET_LINEINFO_WATCH_IOCTL")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/gpio/gpio-bd9571mwv.c | 10 +---------
+>  1 file changed, 1 insertion(+), 9 deletions(-)
 >
-> That's an interesting regression.
-> Anyway the kernel look better after than before the patch, so
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> diff --git a/drivers/gpio/gpio-bd9571mwv.c b/drivers/gpio/gpio-bd9571mwv.c
+> index c0abc9c..abb622c 100644
+> --- a/drivers/gpio/gpio-bd9571mwv.c
+> +++ b/drivers/gpio/gpio-bd9571mwv.c
+> @@ -1,17 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+>  /*
+>   * ROHM BD9571MWV-M GPIO driver
+>   *
+>   * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
+>   *
+> - * This program is free software; you can redistribute it and/or
+> - * modify it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+> - * kind, whether expressed or implied; without even the implied warranty
+> - * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> - * GNU General Public License version 2 for more details.
+> - *
+>   * Based on the TPS65086 driver
+>   *
+>   * NOTE: Interrupts are not supported yet.
+> --
+> 2.7.4
 >
-> Bartosz will pick patches for Torvalds this kernel cycle.
->
-> Yours,
-> Linus Walleij
 
-Applied with Linus' tag, thanks!
-
-Bart
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
