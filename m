@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A762E8D69
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CF22E8D6C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727726AbhACREz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 12:04:55 -0500
-Received: from mail.pqgruber.com ([52.59.78.55]:57830 "EHLO mail.pqgruber.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726952AbhACREy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 12:04:54 -0500
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 1EE9DC68B88;
-        Sun,  3 Jan 2021 18:04:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1609693452;
-        bh=5dqq/DsJwfVHsgRwxYYIC0zb6W8E9Tab6yx3XUhiPgk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZrhMgvCZoiIvHxr4i0+l4IoL7AL5J4mPkOi9NXMdTEW92fVjRmNmhO8DMvVOmeNAa
-         DE4GKX1Mzy8vPzwj3OKG6dHGCiKpsUdlkJGEhfzlf0iVrPcMuJsy4Wd06LMYUcQ1g6
-         HFFLguxQModKdMFhZXKgGPDRSo/EXQBObus0il/k=
-Date:   Sun, 3 Jan 2021 18:04:10 +0100
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <X/H5CqcRHelg5M4p@workstation.tuxnet>
-References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
- <20201216125320.5277-2-clemens.gruber@pqgruber.com>
- <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
- <X9uYqGboZg5DuEtf@workstation.tuxnet>
- <CAGngYiUYOL6EF3VTGwcwTuN4EmE26ML3ye7689FTEpowjEcU2w@mail.gmail.com>
+        id S1727632AbhACRGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 12:06:24 -0500
+Received: from mail-il1-f180.google.com ([209.85.166.180]:41919 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbhACRGY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 12:06:24 -0500
+Received: by mail-il1-f180.google.com with SMTP id w17so23172424ilj.8;
+        Sun, 03 Jan 2021 09:06:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8dbx7uvDjUYEbSF2o6RUpLKMOlSlVXzjNJHUrK9HnTc=;
+        b=kVyU3SViE+yg4KG5uJNgp1u2Ooft/BcIIURYsDzU+yBFpCvmxiWE2lMCI6yzX1VjxD
+         H3KeDt31x/m3iPLrLhDlt3yVBGlrogk7NsCIwO4WO0khbQurMa30B+ekHIwhgjINXWqq
+         83fkt8arL3mz4M9i7vOJenCK4XE4lrYtp81meOVx8ICId5SR05+eqOgOMPsQ3BxhITNZ
+         CZBva8bYD7X+QNROBxNAgsQP3mZvd4aX2204s24phMn12TECp/wJTj2UHcR0zSODFDJZ
+         J3qlPWx/Hd+ZD6H4l6FCj658G2P3v9ZTD8PsVMC+oNAgCDnCb8Nvz5LclZ3IRk2vmsCp
+         4hqA==
+X-Gm-Message-State: AOAM5316ImJtWQ5iwGfnErX97pWZ0hUll2YKsWkDGl6j69zooHW/xvj/
+        QY3vi9OXlA8wnkIJWnXIG47RmtL+sg==
+X-Google-Smtp-Source: ABdhPJxie0sVU6tn06mMtSZxEWumvvVVD9jjOBHN9qyb0/wSW1VlfRNeUOP4TRHLIOtmVPTh3aebnw==
+X-Received: by 2002:a92:8e46:: with SMTP id k6mr54636577ilh.235.1609693543193;
+        Sun, 03 Jan 2021 09:05:43 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id d5sm38720317ilf.33.2021.01.03.09.05.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 09:05:42 -0800 (PST)
+Received: (nullmailer pid 4060134 invoked by uid 1000);
+        Sun, 03 Jan 2021 17:05:40 -0000
+Date:   Sun, 3 Jan 2021 10:05:40 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Linu Cherian <lcherian@marvell.com>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 11/11] dts: bindings: Document device tree binding for
+ Arm TRBE
+Message-ID: <20210103170540.GA4055084@robh.at.kernel.org>
+References: <1608717823-18387-1-git-send-email-anshuman.khandual@arm.com>
+ <1608717823-18387-12-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGngYiUYOL6EF3VTGwcwTuN4EmE26ML3ye7689FTEpowjEcU2w@mail.gmail.com>
+In-Reply-To: <1608717823-18387-12-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
-
-happy new year, hope you are all well!
-
-On Thu, Dec 17, 2020 at 12:52:42PM -0500, Sven Van Asbroeck wrote:
-> On Thu, Dec 17, 2020 at 12:43 PM Clemens Gruber
-> <clemens.gruber@pqgruber.com> wrote:
-> > >
-> > > Conclusion: .get_state() will always return "pwm disabled", so why do we
-> > > bother reading out the h/w?
-> >
-> > If there are no plans for the PWM core to call .get_state more often in
-> > the future, we could just read out the period and return 0 duty and
-> > disabled.
+On Wed, Dec 23, 2020 at 03:33:43PM +0530, Anshuman Khandual wrote:
+> This patch documents the device tree binding in use for Arm TRBE.
 > 
-> I'm not sure why we should even read out the period?
-> When a channel is disabled, the period is not externally visible,
-> therefore it's meaningless ?
+> Cc: devicetree@vger.kernel.org
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> Changes in V1:
 > 
-> As far as I can tell, we can use this for .get_state():
-> memset(&pwm->state, 0, sizeof(pwm_state));
+> - TRBE DT entry has been renamed as 'arm, trace-buffer-extension'
 > 
-> >
-> > Thierry, Uwe, what's your take on this?
-
-I will continue working on this series in the upcoming weeks.
-Feedback on the .get_state issue would be greatly appreciated.
-
-To summarize:
-Is it OK for a driver to expect the chip->ops->get_state function to be
-only called from the place in pwm core it is currently called from?
-(Namely in pwm_device_request after chip->ops->request)
-
-If yes, we could always return a 0 duty cycle and disabled state,
-because this is the state we left it in after .probe (and .free).
-
-However, if in the future, the pwm core adds additional calls to
-chip->ops->get_state in other places, this could lead to problems.
-
---
-
-Another point is the period: Sven suggested we do not read out the
-period at all, as the PWM is disabled anyway (see above).
-Is this acceptable?
-
-And, if we never return anything but 0 in .get_state, should it be
-implemented at all?
-
-> >
-> > > Of course, if we choose to leave the pwm enabled after .free(), then
-> > > .get_state() can even be left out! Do we want that? Genuine question, I do
-> > > not know the answer.
-> >
-> > I do not think we should leave it enabled after free. It is less
-> > complicated if we know that unrequested channels are not in use.
-> >
+>  Documentation/devicetree/bindings/arm/trbe.txt | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/trbe.txt
 > 
-> Good point, I agree with you.
+> diff --git a/Documentation/devicetree/bindings/arm/trbe.txt b/Documentation/devicetree/bindings/arm/trbe.txt
+> new file mode 100644
+> index 0000000..001945d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/trbe.txt
+> @@ -0,0 +1,20 @@
+> +* Trace Buffer Extension (TRBE)
+> +
+> +Trace Buffer Extension (TRBE) is used for collecting trace data generated
+> +from a corresponding trace unit (ETE) using an in memory trace buffer.
+> +
+> +** TRBE Required properties:
+> +
+> +- compatible : should be one of:
+> +	       "arm,trace-buffer-extension"
+> +
+> +- interrupts : Exactly 1 PPI must be listed. For heterogeneous systems where
+> +	       TRBE is only supported on a subset of the CPUs, please consult
+> +	       the arm,gic-v3 binding for details on describing a PPI partition.
+> +
+> +** Example:
+> +
+> +trbe {
+> +	compatible = "arm,trace-buffer-extension";
+> +	interrupts = <GIC_PPI 15 IRQ_TYPE_LEVEL_HIGH>;
 
-Thanks and best regards,
-Clemens
+If only an interrupt, then could just be part of ETE? If not, how is 
+this hardware block accessed? An interrupt alone is not enough unless 
+there's some architected way to access.
+
+Rob
