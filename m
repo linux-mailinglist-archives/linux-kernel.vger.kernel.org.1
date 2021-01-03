@@ -2,268 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E932E8CC3
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59332E8CCD
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727317AbhACPLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 10:11:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727261AbhACPLH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 10:11:07 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAB2C0613D3;
-        Sun,  3 Jan 2021 07:10:27 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id g3so13073917plp.2;
-        Sun, 03 Jan 2021 07:10:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8/hDJ6nVM+7UzPC808WfJ3MnlE/12HzLh4p00BC3vEk=;
-        b=RFsVnd7sXoYfWdzPGejWjOF0J809wJQTaS0TiXYmTI+MAMcFQv+rV8769H5Gj20yfi
-         2yjkVRsGMeTIOg0DB/+8jKr9EjbpsajsCXvf9PHFt//OgCPM79+48LxQrZqE4hz2Iruu
-         5mifkkL3sIvrDVMZspMk5Zs8t3touy57BtLJgWDzOPbE0XWuwgxNaoGNMY0uq+cViYzL
-         HGmJlzVJcIrUMEOnp3tDOvG45chd8K7OkD0FVINTqdwCxisL7C64TdOXeN7T+RlazMdq
-         ZIXncnsDDm4rHs/BsCV4iflslkimJLp+eZVR3KBWgDfPTCoJbIIVFnMbZAQ8MixgjoP1
-         JEjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8/hDJ6nVM+7UzPC808WfJ3MnlE/12HzLh4p00BC3vEk=;
-        b=OifI03JCeWkQB/6G5x/HH/QBbBsOenafubiiNmNDemqW2eiqJy9GKTDUl/NinKXiuk
-         cTvwbT5GJFTtG41n4i8Yh87tNtsZ5g4VpkMobuaFk1a2OFuXtzA/9LLAzp5+SRFuDJ4s
-         jZOgLWJZ44c9AGQyoJaQW4h3X/mfPxdvkVZNWJ3A+CrE/+JmJqY9V+9YsS96HyB2eB/M
-         u1YdeEnuBfq8dK5XiSdlBRt+ClM6t4gV8VHImYfDUnl//2Ymr03ip41HDQSMp4qs1acl
-         kDdfAsHHntMxrF7gi2JqiiyMR+ZoHDmOp516TakuZxyBeSTHQJ4oIl9/xsQnjyxqDLHx
-         lb7A==
-X-Gm-Message-State: AOAM532KyEU+gc8FquiFsG5Ce/UG2x/6pgRo60RJHh2q9E4ZaSw33Zid
-        5sUHnlxMlTSXN1e8TLAvcs9ycR0dK6Xh9DSEITgDioEoLxDc0S/H
-X-Google-Smtp-Source: ABdhPJwzmRYfgxGWTQVdJRv4F1eTZZjRAEcNsniv9bvSpkEgWc7sXLE91cpD2Mgs+i8K47srpqaSKVG7GNKuIV3m09s=
-X-Received: by 2002:a17:90a:1050:: with SMTP id y16mr26299767pjd.181.1609686627086;
- Sun, 03 Jan 2021 07:10:27 -0800 (PST)
+        id S1726924AbhACPZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 10:25:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725819AbhACPZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 10:25:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2991820DD4;
+        Sun,  3 Jan 2021 15:24:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609687472;
+        bh=PkxCfVAK1mU9lAnzMRgUnNY+tZkM5cdrGKVYeYeZQfs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nM14NocJIXjCDAv/WeYZnCRvMV4nYFr2+7NmbfdggtjczPtgf2Ayq6IZyepf6Pzgi
+         PWlrLWgKb3QG0A7UItK7dGRcWVEBTgsepnQDJBBSzBPXIJhMdJ5qD0skAvbK0TbxNl
+         j6jYtvxyL5tzCCdH46oOK66vN5ckBb6uYlybOOkQ8DBBixPffdOdFK70zA+yMDylDA
+         RtUIZ5IrBBW2Us3oirA6FU1Ls7yS7YJepZdpebRuVFR5ovC56ElMdrzhozwpbrJFKx
+         Z552BFUfof2noaGECiCIXOb48sfPdn5TT/nSWOET6AKyRBKWe+SI6ioHmQy99/0Wo4
+         PrWVEdihyhP7A==
+Received: by mail-ot1-f46.google.com with SMTP id x13so23778267oto.8;
+        Sun, 03 Jan 2021 07:24:32 -0800 (PST)
+X-Gm-Message-State: AOAM531MkSJCSjAE8ZdhKp6uQUuOC14aO7txaivsFZr7N8PTbzqFOVyo
+        gWi56QIneE5sKtvyXo3h+OGDpVpFnNSbzEpKucI=
+X-Google-Smtp-Source: ABdhPJz95Zoo7hs0fgWSGuBSw4TFIHrMmsws3bDhs/4QvBOJqa2tGLYNJbcBF3Y/CRnqXiQFFzx7ry43uZ8TpAz/2vI=
+X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr50123366otr.210.1609687471466;
+ Sun, 03 Jan 2021 07:24:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20210102022949.92304-1-warthog618@gmail.com> <20210102022949.92304-2-warthog618@gmail.com>
- <CAHp75VdMs1mP7pK46qKqJbjfyrcKhSGvtyzQpTRsehMz6o=Jpg@mail.gmail.com> <20210103021725.GA6622@sol>
-In-Reply-To: <20210103021725.GA6622@sol>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 3 Jan 2021 17:10:10 +0200
-Message-ID: <CAHp75VfONKY7VS0q=GkSX14i--g0=jfBg4RFBoMk4DxJPMHJFg@mail.gmail.com>
-Subject: Re: [PATCH 1/7] selftests: gpio: rework and simplify test implementation
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>
+References: <20210103140407.3917405-1-arnd@kernel.org> <202101032327.9BXJpAn8-lkp@intel.com>
+In-Reply-To: <202101032327.9BXJpAn8-lkp@intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sun, 3 Jan 2021 16:24:15 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3jUQs6c5tESSNMbqfuymewj9FhqRizyHcfOXf8Rgy-nA@mail.gmail.com>
+Message-ID: <CAK8P3a3jUQs6c5tESSNMbqfuymewj9FhqRizyHcfOXf8Rgy-nA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/a6xx: add CONFIG_QCOM_LLCC dependency
+To:     kernel test robot <lkp@intel.com>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        kbuild-all@lists.01.org, Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tanmay Shah <tanmay@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 3, 2021 at 4:17 AM Kent Gibson <warthog618@gmail.com> wrote:
-> On Sun, Jan 03, 2021 at 12:20:26AM +0200, Andy Shevchenko wrote:
-> > On Sat, Jan 2, 2021 at 4:32 AM Kent Gibson <warthog618@gmail.com> wrote:
-
-...
-
-> > > +#include <linux/gpio.h>
-> >
-> > Perhaps include it after system headers?
+On Sun, Jan 3, 2021 at 4:09 PM kernel test robot <lkp@intel.com> wrote:
 >
-> hehe, I blindly sorted them.
-> Should it matter?
-
-I would include more particular headers later.
-Btw system headers can not always be in order because of dependencies.
-
-...
-
-> > > +       local platform=`cat $SYSFS/kernel/debug/gpio | grep "$chip:" | tr -d ',' | awk '{print $5}'`
-> >
-> > Besides useless use of cat (and tr + awk can be simplified) why are
+> Hi Arnd,
 >
-> What do you suggest for the tr/awk simplification?
-
-You have `awk`, you can easily switch the entire pipeline to a little
-awk scriptlet.
-
-> > you simply not using
-> > /sys/bus/gpio/devices/$chip ?
+> I love your patch! Yet something to improve:
 >
-> Cos that shows all the gpiochips, not just the ones created by gpio-mockup.
-
-I didn't get this. What is the content of $chip in your case?
-
-> And I certainly don't want to go messing with real hardware.
-> The default tests should still run on real hardware - but only
-> accessing the mockup devices.
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on v5.11-rc1 next-20201223]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 >
-> Got a better way to filter out real hardware?
-
-I probably have to understand what is the input and what is the
-expected output. It's possible I missed something here.
-
-> > > +       # e.g. /sys/class/gpio/gpiochip508/device/gpiochip0/dev
-> > > +       local syschip=`ls -d $GPIO_SYSFS/gpiochip*/device/$chip/dev`
-> >
-> > ls -d is fragile, better to use `find ...`
+> url:    https://github.com/0day-ci/linux/commits/Arnd-Bergmann/drm-msm-a6xx-add-CONFIG_QCOM_LLCC-dependency/20210103-220704
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 3516bd729358a2a9b090c1905bd2a3fa926e24c6
+> config: i386-randconfig-m021-20210103 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://github.com/0day-ci/linux/commit/7d8b8d7954012e210a5e6c77103e52382c6b5503
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Arnd-Bergmann/drm-msm-a6xx-add-CONFIG_QCOM_LLCC-dependency/20210103-220704
+>         git checkout 7d8b8d7954012e210a5e6c77103e52382c6b5503
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=i386
 >
-> OK
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 >
-> > > +       syschip=${syschip#$GPIO_SYSFS}
-> > > +       syschip=${syschip%/device/$chip/dev}
-> >
-> > How does this handle more than one gpiochip listed?
+> All errors (new ones prefixed by >>):
 >
-> It is filtered by $chip so there can only be one.
-> Or is that a false assumption?
+> >> drivers/gpu/drm/Kconfig:74:error: recursive dependency detected!
+>    drivers/gpu/drm/Kconfig:74: symbol DRM_KMS_HELPER is selected by DRM_MSM
+>    drivers/gpu/drm/msm/Kconfig:3: symbol DRM_MSM depends on QCOM_COMMAND_DB
+>    drivers/soc/qcom/Kconfig:19: symbol QCOM_COMMAND_DB depends on OF_RESERVED_MEM
+>    drivers/of/Kconfig:80: symbol OF_RESERVED_MEM default is visible depending on DMA_CMA
+>    kernel/dma/Kconfig:109: symbol DMA_CMA is selected by FB_HYPERV
+>    drivers/video/fbdev/Kconfig:2182: symbol FB_HYPERV depends on FB
+>    drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
+>    drivers/gpu/drm/Kconfig:80: symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
+>    For a resolution refer to Documentation/kbuild/kconfig-language.rst
+>    subsection "Kconfig recursive dependency limitations"
 
-When you have glob() in use it may return any number of results
-(starting from 0) and your script should be prepared for that.
+Ah, this depends on another patch of mine that I have in my randconfig tree, to
+replace the 'select FB' in DRM_KMS_FB_HELPER with 'depends on FB'.
 
-> > Also, can you consider optimizing these to get whatever you want easily?
->
-> Sadly that IS my optimized way - I don't know of an easier way to find
-> the sysfs GPIO number given the gpiochip and offset :-(.
-> Happy to learn of any alternative.
+Should I resend that patch, or would someone suggest a different fix for
+the CONFIG_QCOM_LLCC dependency issue?
 
-I'm talking about getting $syschip. I think there is a way to get it
-without all those shell substitutions from somewhere else.
-
-> > > +       sysfs_nr=`cat $SYSFS/devices/$platform/gpio/$syschip/base`
-> >
-> > (It's probably fine here, but this doesn't work against PCI bus, for
-> > example, see above for the fix)
->
-> Not sure what you mean here.
-
-When GPIO is a PCI device the above won't give a proper path.
-If we wish to give an example to somebody, it would be better to have
-it good enough.
-
-> > > +       sysfs_nr=$(($sysfs_nr + $offset))
-> > > +       sysfs_ldir=$GPIO_SYSFS/gpio$sysfs_nr
-> > >  }
-
-...
-
-> > > +set_line()
-> > >  {
-> > > +       if [ -z "$sysfs_nr" ]; then
-> > > +               find_sysfs_nr
-> > > +               echo $sysfs_nr > $GPIO_SYSFS/export
-> > >         fi
-> >
-> > It sounds like a separate function (you have release_line(), perhaps
-> > acquire_line() is good to have).
-> >
->
-> The cdev implementation has to release and re-acquire in the background
-> as there is no simple way to perform a set_config on a requested line
-> from shell - just holding the requested line for a set is painful enough,
-> and the goal here was to keep the tests simple.
->
-> I didn't want to make line acquisition/release explicit in the gpio-mockup
-> tests, as that would make them needlessly complicated, so the acquire is
-> bundled into the set_line - and anywhere else the uAPI implementation
-> needs it.  There is an implicit assumption that a set_line will always
-> be called before a get_line, but that is always true - there is no
-> "as-is" being tested here.
->
-> Of course you still need the release_line at the end of the test, so
-> that is still there.
-
-Yes and to me logically correct to distinguish acquire_line() with set_line().
-Then wherever you need to set_line(), you may call acquire_line()
-which should be idempotent (the same way as release_line() call).
-
-> > > +release_line()
-> > >  {
-> > > +       [ -z "$sysfs_nr" ] && return
-> > > +       echo $sysfs_nr > $GPIO_SYSFS/unexport
-> > > +       sysfs_nr=
-> > > +       sysfs_ldir=
-> > >  }
-
-...
-
-> > > +skip()
-> > >  {
-> >
-> > > +       echo $* >&2
-> >
-> > In all cases better to use "$*" (note surrounding double quotes).
-> >
->
-> Agreed - except where
->
->         for option in $*; do
->
-> is used to parse parameters.
-
-Exactly! And "" helps with that.
-
-If I put parameters as `a b c "d e"`, your case will take them wrongly.
-
-> > > +       echo GPIO $module test SKIP
-> > > +       exit $ksft_skip
-> > >  }
-> >
-> > ...
-> >
-> > > +        [ ! which modprobe > /dev/null 2>&1 ] && skip "need modprobe installed"
-> >
-> > AFAIR `which` can be optional on some systems.
-> >
->
-> That is how other selftests check for availability of modprobe.
-> e.g. selftests/kmod/kmod.sh and selftests/vm/test_hmm.sh, so I assumed
-> it was acceptable.
->
-> Is there an alternative?
-
-OK. Just replace it with a dropped useless test call.
-which ... || skip ...
-
-...
-
-> > P.S. Also you may use `#!/bin/sh -efu` as shebang and fix other problems.
->
-> A shebang or a `set -efu`?
-
-Shebang. The difference is that with shebang you don't need to edit
-the script each time you want to change that.
-sh -x /path/to/the/script will give different results.
-
-> I don't see shebang options used anywhere in the selftest scripts, but I
-> agree with a set.
-
-Because shell scripts in the kernel are really badly written (so does
-Python ones).
-Again, even senior developers can't get shell right (including me).
-
-> Either way I am unsure what the shebang should be.
-> The majority of the selftest scripts use bash as the shebang, with the
-> remainder using plain sh.
-> These scripts do use some bash extensions, and it was originally bash, so
-> I left it as that.
-> My test setups mainly use busybox, and don't have bash, so they complain
-> about the bash shebang - though the ash(??) busybox is using still runs
-> the script fine.
-
-I'm using busybox on an everyday basis and mentioned shebang works
-there if I'm not mistaken.
-Because all flags are listed in the standard.
-https://pubs.opengroup.org/onlinepubs/007904875/utilities/sh.html
-
-> Thanks again for the review - always a learning experience.
-
--- 
-With Best Regards,
-Andy Shevchenko
+       Arnd
