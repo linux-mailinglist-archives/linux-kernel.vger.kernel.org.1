@@ -2,157 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2752E8E13
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 21:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D72FE2E8E10
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 21:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbhACUYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 15:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        id S1726827AbhACUYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 15:24:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbhACUYg (ORCPT
+        with ESMTP id S1726504AbhACUYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 15:24:36 -0500
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B9AC0613CF;
-        Sun,  3 Jan 2021 12:23:56 -0800 (PST)
-Received: from localhost.localdomain (85-76-35-137-nat.elisa-mobile.fi [85.76.35.137])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jks)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id EF7FA1B00046;
-        Sun,  3 Jan 2021 22:23:51 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1609705432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XuWtHAg8pQmQvAeL5ZZFdRZmioRZVXk2EYjGIzkzIz0=;
-        b=vX3K9LgzVuFAM786J2H2jKoyD5xbhuiQP3UE655q+JvV5C8cQX1kauzzhprUoqiH1P6GK4
-        kYS3m6LTY0nEIBjIIlmsFqQLI8OCcIVB3uaSKsf3WFoSl2ydtPuC+g2qGf5YmGw2t8vweB
-        f2HhVDHIcq6+bEMzJxKcAvbmJeNhbrQegoJioQlNB9zfyg0Tn4aPB2revxQ3hWH+4dXTJX
-        YhoTiAB1Wff6LxsNsSie7OJq90Q0SytBqt4vf0Y2IPdq5/oF2mO1kiNJhmEp34WYu32+qy
-        G/PeKAJ3/r7+X1ppG65XqwNid7sYoYMCpLMZYNKCxepNHKfiSDGq6RhMmoKYNA==
-From:   =?UTF-8?q?Jouni=20Sepp=C3=A4nen?= <jks@iki.fi>
-To:     Oliver Neukum <oliver@neukum.org>, linux-usb@vger.kernel.org
-Cc:     jks@iki.fi, =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Enrico Mioso <mrkiko.rs@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH net,stable v2] net: cdc_ncm: correct overhead in delayed_ndp_size
-Date:   Sun,  3 Jan 2021 22:23:09 +0200
-Message-Id: <20210103202309.1201-1-jks@iki.fi>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210103143602.95343-1-jks@iki.fi>
-References: <20210103143602.95343-1-jks@iki.fi>
+        Sun, 3 Jan 2021 15:24:03 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B57C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 12:23:22 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id i5so17451986pgo.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 12:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e1xBR8UornTwqH6fVhOXEbzOOGDBOFbaaWz/gve1ZB4=;
+        b=eAgQ/Hy8aNE92XFuJLB7JF8fLfZAZWcsb1P42ypm9pIxHWcoYtjFeKB37vbO8VcEn4
+         7HN0q0c1G3HlSehM17AyTtNaovhaG5sSNkpHiaLUIkNG8Vi4PUImFdEvRPCCUF1jMyiq
+         +SLSThbytPByKI0BBl5AQlTaPbghPdmOIUArRzEhwvebCJD3LCN7G4LmCNQeSi9tad57
+         b8RJ3bGT/k64ySODuPRP96JdK9RaX58RxytLfu+n2P5RKTPSCuM3LllyUdiB/5d+soN9
+         ZJ+5mciEhiSKW6obZ9B2qeMA1LE2Wmrk2M/Nbk99CNgSLyEMsBQJyUHhfROE577xpkyy
+         HVDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e1xBR8UornTwqH6fVhOXEbzOOGDBOFbaaWz/gve1ZB4=;
+        b=G8g9yBnHHUbaRudsgo/DoD1DfdzgIxBuSr5mGUROKqmaFLStRgbnSEB+tXPe8CA47X
+         TVos7Qc6CPkeXgCsuTkdvsI/FG79j5f8ZceMR+lYehing3JbqfVsCo3gltu1HZX13gXw
+         qvXB6mcC+qMchXDRlpfcyLG5ww6A670IH2+7vdyq+1eSQMyj1XCSTPhMo4P2ow6nx0LV
+         uD81gGSvX0YHQOpbvoIeHd/CTzQOrcKjASXl1xCfgrxA6ZEDwfFfrunq8/LhGTr/JZtc
+         0X+NgBKMRv5z8TXlHWRipz3s+RwGIkryZbXqYQC6MuqrFwSL3gbUcrVgMzyvkCqj9tm6
+         kg+w==
+X-Gm-Message-State: AOAM530bQ6L1L7I6uNt/i9orwDXXph+J2qjMd2hKw0LvioTl2EdVuE2e
+        O1Z9Tl/JieJfRzAQemDfitUN2w==
+X-Google-Smtp-Source: ABdhPJyqVu2NCWCxorYPgh0U50FWU5nfkQ2WUDd8qg3Vg0EVXFLQgx70XG5MzHhfqblZyUpOxcBwvQ==
+X-Received: by 2002:a63:520e:: with SMTP id g14mr20496306pgb.378.1609705402142;
+        Sun, 03 Jan 2021 12:23:22 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:8efb:42a0:32b:a51d])
+        by smtp.gmail.com with ESMTPSA id p9sm19446293pjb.3.2021.01.03.12.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 12:23:21 -0800 (PST)
+Date:   Sun, 3 Jan 2021 12:23:19 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Pantelis Antoniou <pantelis.antoniou@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: Re: [RFC PATCH v2] pinctrl: add helper to expose pinctrl state in
+ debugfs
+Message-ID: <20210103202319.GA973266@x1>
+References: <20201218045134.4158709-1-drew@beagleboard.org>
+ <CAHp75Vfwb+f3k2+mAj+jB=XsKFX-hCxx61A_PCmwz6y-YKHMcg@mail.gmail.com>
+ <20201224203603.GA59600@x1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1609705432; a=rsa-sha256;
-        cv=none;
-        b=ViOe36nCQJCgADzBDmeuuzTb9jqLHfgkk+C2f+XM+uilYnzCehXihV37ozS2XgNW4AxUc0
-        G9UO6/N2YwPreSNB1eprNE4qncRo90UDZ3IHcGnYB/yzclhKO17TXIFMIcbwdXnC3hRiEZ
-        J1/Uos1lFpGNStUmQ2+wswYnacstS1DVtsiSuluDcABB2k70MPe2FeU5p0lZ3Sq86winQc
-        d32jDwaJc/Det9yllhXVZx/YjUaU2UinoskRWA8mgBIx3bomzc0/o51vj8FYYBYzC9xadD
-        mjtGdyM0Ns3/PeiI0aPwqH8fT0MFDqqhw5zLUDqqvjQ+RWDkyKvuWKhy2EbkNg==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=jks smtp.mailfrom=jks@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1609705432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XuWtHAg8pQmQvAeL5ZZFdRZmioRZVXk2EYjGIzkzIz0=;
-        b=EB19L5FvFUJAGse8c2BjCfHUNvUJirEYOATsbBpP0ViNVoro2ToIskFWVXekng+IMtS/g0
-        NmS0ceFQAm3jPCxyrLz5bcFm+OavqttmZTRuSb29O1Wqtyyd861MgsScFljMHFZMwyd/pw
-        DJttRJLWZWh+XuGtxDbxOXGvg2lUN2IMQXuFg26hqwWI7jzlyttgZS8Ya0RpO7/X+VEsbz
-        vcVa3CE1L/6wQQE0xSL7Z0GWF+6q2y8rFP6SNBak4/bTOwmhMY/o3Z5dKHhS8n2SxijMM5
-        4BIlhB5XUHDWX1OD6sPejbtU470JAdMv/saoBQx7rPaiq9UAPMNf/QBmfsZgHg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201224203603.GA59600@x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jouni K. Seppänen <jks@iki.fi>
+On Thu, Dec 24, 2020 at 02:36:03PM -0600, Drew Fustini wrote:
+> On Fri, Dec 18, 2020 at 06:01:25PM +0200, Andy Shevchenko wrote:
+> > On Fri, Dec 18, 2020 at 6:52 AM Drew Fustini <drew@beagleboard.org> wrote:
+> > >
+> > > BeagleBoard.org [0] currently uses an out-of-tree driver called
+> > > bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
+> > > The driver assists users of our BeagleBone and PocketBeagle boards in
+> > > rapid prototyping by allowing them to change at run-time between defined
+> > > set of pinctrl states [3] for each pin on the expansion connectors [4].
+> > > This is achieved by exposing a 'state' file in sysfs for each pin which
+> > > is used by our 'config-pin' utility [5].
+> > >
+> > > Our goal is to eliminate all out-of-tree drivers for BeagleBoard.org
+> > > boards and thus I have been working to replace bone-pinmux-helper with a
+> > > new driver that could be acceptable upstream. My understanding is that
+> > > debugfs, unlike sysfs, could be the appropriate mechanism to expose such
+> > > functionality.
+> > 
+> > No objections here.
+> > 
+> > > I used the compatible string "pinctrl,state-helper" but would appreciate
+> > > advice on how to best name this. Should I create a new vendor prefix?
+> > 
+> > Here is the first concern. Why does this require to be a driver with a
+> > compatible string?
+> 
+> I have not been able to figure out how to have different active pinctrl
+> states for each header pins (for example P2 header pin 3) unless they
+> are represented as DT nodes with their own compatible for this helper
+> driver such as:
+> 
+> &ocp {
+> 	P2_03_pinmux {
+> 		compatible = "pinctrl,state-helper";
+> 		pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "gpio_input", "pwm";
+> 		pinctrl-0 = <&P2_03_default_pin>;
+> 		pinctrl-1 = <&P2_03_gpio_pin>;
+> 		pinctrl-2 = <&P2_03_gpio_pu_pin>;
+> 		pinctrl-3 = <&P2_03_gpio_pd_pin>;
+> 		pinctrl-4 = <&P2_03_gpio_input_pin>;
+> 		pinctrl-5 = <&P2_03_pwm_pin>;
+> 	};
+> }
+> 
+> I can assign pinctrl states in the pin controller DT node which has
+> compatible pinctrl-single (line 301 arch/arm/boot/dts/am33xx-l4.dtsi):
+> 
+> &am33xx_pinmux {
+> 
+>         pinctrl-names = "default", "gpio", "pwm";
+>         pinctrl-0 =   < &P2_03_default_pin &P1_34_default_pin &P2_19_default_pin &P2_24_default_pin
+>                         &P2_33_default_pin &P2_22_default_pin &P2_18_default_pin &P2_10_default_pin
+>                         &P2_06_default_pin &P2_04_default_pin &P2_02_default_pin &P2_08_default_pin
+>                         &P2_17_default_pin >;
+>         pinctrl-1 =   < &P2_03_gpio_pin &P1_34_gpio_pin &P2_19_gpio_pin &P2_24_gpio_pin
+>                         &P2_33_gpio_pin &P2_22_gpio_pin &P2_18_gpio_pin &P2_10_gpio_pin
+>                         &P2_06_gpio_pin &P2_04_gpio_pin &P2_02_gpio_pin &P2_08_gpio_pin
+>                         &P2_17_gpio_pin >;
+>         pinctrl-2 =   < &P2_03_pwm &P1_34_pwm &P2_19_pwm &P2_24_pwm
+>                         &P2_33_pwm &P2_22_pwm &P2_18_pwm &P2_10_pwm
+>                         &P2_06_pwm &P2_04_pwm &P2_02_pwm &P2_08_pwm
+>                         &P2_17_pwm >;
+> 
+> }
+> 
+> However, there is no way to later select "gpio" for P2.03 and select
+> "pwm" for P1.34 at the same time.  Thus, I can not figure out a way to
+> select independent states per pin unless I make a node for each pin that
+> binds to a helper driver.
+> 
+> It feels like there may be a simpler soluation but I can't see to figure
+> it out.  Suggestions welcome!
+> 
+> > 
+> > > The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
+> > > The driver would create the corresponding pinctrl state file in debugfs
+> > > for the pin.  Here is an example of how the state can be read and
+> > > written from userspace:
+> > >
+> > > root@beaglebone:~# cat /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
+> > > default
+> > > root@beaglebone:~# echo pwm > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
+> > > root@beaglebone:~# cat /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
+> > > pwm
+> > >
+> > > I would very much appreciate feedback on both this general concept, and
+> > > also specific areas in which the code should be changed to be acceptable
+> > > upstream.
+> > 
+> > Two more concerns:
+> >  - why is it OF only?
+> 
+> I am open to figuring out a more general solution but I am really only
+> familiar with Device Tree.  Is there a way to represent the possible
+> pinctrl states in ACPI?
+> 
+> >  - why has it been separated from pin control per device debug folder?
+> 
+> >From the v1 thread, I see what you mean that there could be a combined
+> state file for each pinctrl device where one would echo '<pin>
+> <state-name>' such as 'P2_03 pwm'.  I will attempt to implement that.
 
-Aligning to tx_ndp_modulus is not sufficient because the next align
-call can be cdc_ncm_align_tail, which can add up to ctx->tx_modulus +
-ctx->tx_remainder - 1 bytes. This used to lead to occasional crashes
-on a Huawei 909s-120 LTE module as follows:
+I have tried creating a single state file:
+/sys/kernel/debug/pinctrl/pinctrl_state
 
-- the condition marked /* if there is a remaining skb [...] */ is true
-  so the swaps happen
-- skb_out is set from ctx->tx_curr_skb
-- skb_out->len is exactly 0x3f52
-- ctx->tx_curr_size is 0x4000 and delayed_ndp_size is 0xac
-  (note that the sum of skb_out->len and delayed_ndp_size is 0x3ffe)
-- the for loop over n is executed once
-- the cdc_ncm_align_tail call marked /* align beginning of next frame */
-  increases skb_out->len to 0x3f56 (the sum is now 0x4002)
-- the condition marked /* check if we had enough room left [...] */ is
-  false so we break out of the loop
-- the condition marked /* If requested, put NDP at end of frame. */ is
-  true so the NDP is written into skb_out
-- now skb_out->len is 0x4002, so padding_count is minus two interpreted
-  as an unsigned number, which is used as the length argument to memset,
-  leading to a crash with various symptoms but usually including
+where one can write into it:
 
-> Call Trace:
->  <IRQ>
->  cdc_ncm_fill_tx_frame+0x83a/0x970 [cdc_ncm]
->  cdc_mbim_tx_fixup+0x1d9/0x240 [cdc_mbim]
->  usbnet_start_xmit+0x5d/0x720 [usbnet]
+<device-name> <pinctrl-state-name>
 
-The cdc_ncm_align_tail call first aligns on a ctx->tx_modulus
-boundary (adding at most ctx->tx_modulus-1 bytes), then adds
-ctx->tx_remainder bytes. Alternatively, the next alignment call can
-occur in cdc_ncm_ndp16 or cdc_ncm_ndp32, in which case at most
-ctx->tx_ndp_modulus-1 bytes are added.
+such as:
 
-A similar problem has occurred before, and the code is nontrivial to
-reason about, so add a guard before the crashing call. By that time it
-is too late to prevent any memory corruption (we'll have written past
-the end of the buffer already) but we can at least try to get a warning
-written into an on-disk log by avoiding the hard crash caused by padding
-past the buffer with a huge number of zeros.
+ocp:P9_14_pinmux gpio
 
-Signed-off-by: Jouni K. Seppänen <jks@iki.fi>
-Fixes: 4a0e3e989d66 ("cdc_ncm: Add support for moving NDP to end of NCM frame")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209407
-Reported-by: kernel test robot <lkp@intel.com>
----
-v2: cast arguments to max() to the same type because integer promotion can
-    result in different types; reported by the kernel test robot
+However, I can not figure out a way for this to work.
 
- drivers/net/usb/cdc_ncm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+I create the pinctrl_state file in pinctrl_state_helper_init() and store
+the dentry in a global variable.
 
-diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-index e04f588538cc..4d8a1f50190c 100644
---- a/drivers/net/usb/cdc_ncm.c
-+++ b/drivers/net/usb/cdc_ncm.c
-@@ -1199,7 +1199,9 @@ cdc_ncm_fill_tx_frame(struct usbnet *dev, struct sk_buff *skb, __le32 sign)
- 	 * accordingly. Otherwise, we should check here.
- 	 */
- 	if (ctx->drvflags & CDC_NCM_FLAG_NDP_TO_END)
--		delayed_ndp_size = ALIGN(ctx->max_ndp_size, ctx->tx_ndp_modulus);
-+		delayed_ndp_size = ctx->max_ndp_size +
-+			max((u32)ctx->tx_ndp_modulus,
-+			    (u32)ctx->tx_modulus + ctx->tx_remainder) - 1;
- 	else
- 		delayed_ndp_size = 0;
+pinctrl_state_helper_probe() still runs for each Px_0y_pinmux device
+tree entry with compatible "pinctrl,state-helper" but there is no
+per-device file created.
 
-@@ -1410,7 +1412,8 @@ cdc_ncm_fill_tx_frame(struct usbnet *dev, struct sk_buff *skb, __le32 sign)
- 	if (!(dev->driver_info->flags & FLAG_SEND_ZLP) &&
- 	    skb_out->len > ctx->min_tx_pkt) {
- 		padding_count = ctx->tx_curr_size - skb_out->len;
--		skb_put_zero(skb_out, padding_count);
-+		if (!WARN_ON(padding_count > ctx->tx_curr_size))
-+			skb_put_zero(skb_out, padding_count);
- 	} else if (skb_out->len < ctx->tx_curr_size &&
- 		   (skb_out->len % dev->maxpacket) == 0) {
- 		skb_put_u8(skb_out, 0);	/* force short packet */
---
-2.20.1
+The problem comes in pinctrl_state_write().  I use this to extract the
+device_name and state_name:
+
+	ret = sscanf(buf, "%s %s", device_name, state_name);
+
+This does work okay but I don't know what to do with the device_name
+string, such as "ocp:P9_14_pinmux".  Previously, the device was saved
+in the private info:
+
+        sfile = file->private_data;
+        priv = sfile->private;
+        p = devm_pinctrl_get(priv->dev); // use device_name instead?
+	state = pinctrl_lookup_state(p, state_name);
+
+But I don't know how to look up a device based on its name.
+
+Any suggestions as to how to handle that?
+
+
+Thanks and happy new year!
+Drew
+
+> 
+> > 
+> > 
+> > > [0] http://beagleboard.org/latest-images
+> > > [1] https://github.com/beagleboard/linux/blob/5.4/drivers/misc/cape/beaglebone/bone-pinmux-helper.c
+> > > [2] https://github.com/RobertCNelson/linux-dev/blob/master/patches/drivers/ti/gpio/0001-BeagleBone-pinmux-helper.patch
+> > > [3] https://github.com/beagleboard/BeagleBoard-DeviceTrees/blob/v5.4.x-ti-overlays/src/arm/am335x-bone-common-univ.dtsi#L2084
+> > > [4] https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#section-7-1
+> > > [5] https://github.com/beagleboard/bb.org-overlays/blob/master/tools/beaglebone-universal-io/config-pin
+> > 
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
+> 
+> Thanks for reviewing,
+> Drew
