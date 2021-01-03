@@ -2,110 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0AF2E8D5E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5C82E8D61
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbhACRBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 12:01:47 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27196 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727471AbhACRBr (ORCPT
+        id S1727713AbhACRDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 12:03:01 -0500
+Received: from mail-il1-f179.google.com ([209.85.166.179]:46644 "EHLO
+        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727440AbhACRDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 12:01:47 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 103GVVUX064786;
-        Sun, 3 Jan 2021 12:00:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=JaYwZjj+N1TBPFfLo+tdnAXQJ2UtAmbmjAg6urTItNE=;
- b=q9JoDwdjwG1VrLov4dtul/vmiXs8gfIJRDy/PVHunmXi6gsvsLks/BVmNDrwkhOfXuCA
- J2Hfd3k5vPmC7D/zyWfNen75NiJT7/ODhSyM1TtzU5TxglY14B016Mvg3JN731qwqUiq
- ebSJxevAM1KJhKab67oqg0vA5dxf2Z3mS/pKT3BR09idAlfL5AuAKgYUBMIQQA2Da8wm
- HtCYTppjau/MXGeZpyQs2FzY9+UIMDpkuqvy8jreOkLbyH1ToZ7RmAFpgIUIM0wLTbNZ
- GnryiB3AJbml4ts4FdE4DA7LI3X60TnTdkI2Onk6Mqh5FHivvdZOhBowb7b0dXcDH8SW Pw== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35ubk3csmv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 03 Jan 2021 12:00:52 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 103GvF7A016715;
-        Sun, 3 Jan 2021 17:00:51 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma01wdc.us.ibm.com with ESMTP id 35tgf8gvjm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 03 Jan 2021 17:00:51 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 103H0oOA20578790
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 3 Jan 2021 17:00:50 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7B61378064;
-        Sun,  3 Jan 2021 17:00:50 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D6E878060;
-        Sun,  3 Jan 2021 17:00:46 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.172.80])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sun,  3 Jan 2021 17:00:46 +0000 (GMT)
-Message-ID: <739a3639944f099a76d145eb119b77701f13444d.camel@linux.ibm.com>
-Subject: Re: [PATCH 2/3] scsi: megaraid_sas: check user-provided offsets
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Arnd Bergmann <arnd@kernel.org>, Phil Oester <kernel@linuxace.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Anand Lodnoor <anand.lodnoor@broadcom.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Sun, 03 Jan 2021 09:00:45 -0800
-In-Reply-To: <CAK8P3a0_WORgd4Wvd3n+59oR=-rrESwg_MgpDJN4xPo_e6ir5Q@mail.gmail.com>
-References: <20200908213715.3553098-1-arnd@arndb.de>
-         <20200908213715.3553098-2-arnd@arndb.de>
-         <20201231001553.GB16945@home.linuxace.com>
-         <CAK8P3a0_WORgd4Wvd3n+59oR=-rrESwg_MgpDJN4xPo_e6ir5Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Sun, 3 Jan 2021 12:03:00 -0500
+Received: by mail-il1-f179.google.com with SMTP id 75so23139944ilv.13;
+        Sun, 03 Jan 2021 09:02:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9nMWmrazoNH+sZVNzRiin5iySioX1ydc8fDj4HD1wZ0=;
+        b=LRroyV+whRkKmBDYnDFmfyNDphv4j7rcPlAAh9AaAe9R4mXMVOP4azikJlNjdnrW+g
+         wPQRbznoTd/HSQFSpEaueVColtbVfvql/40NXbsd8hwHcfc2t+LCZKH5wfJe8nzYZJQc
+         3o2FB96R74zmt6BlD3ElnNGsh/GQrKE+vp3T29DruvmpzqkAnUaZDHEE/ZYOlsTT0VBF
+         IcLrMZeVr9Geh9ONI/RDcObUirHNsnCaid/T0+pz5+8GPzVuf4LeUakYmhztzodsXv80
+         +KbzTWBx9ke/ELfJWUihokLa2kNqPp1v2BQwqcGR/BhEEZMkkR99TfaIxMqXSzsZotl7
+         D1Kw==
+X-Gm-Message-State: AOAM5311caZdaWCsGYb0kVptRX7/LJ8/TnHWOPTblZVbsmv0lNrPuQmI
+        heZ4L87xc5G8fch1/sLDYA==
+X-Google-Smtp-Source: ABdhPJx1DjfVEyAZrfCk6bihMZFNKKLUMcZ3aXMuFEqQsSV9gqprllvyCxBe7WDaFPMWhUKneQ5xqw==
+X-Received: by 2002:a92:d151:: with SMTP id t17mr69055226ilg.108.1609693339654;
+        Sun, 03 Jan 2021 09:02:19 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id o7sm41163123iov.1.2021.01.03.09.02.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 09:02:18 -0800 (PST)
+Received: (nullmailer pid 4053640 invoked by uid 1000);
+        Sun, 03 Jan 2021 17:02:16 -0000
+Date:   Sun, 3 Jan 2021 10:02:16 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Linu Cherian <lcherian@marvell.com>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 06/11] dts: bindings: Document device tree bindings for
+ ETE
+Message-ID: <20210103170216.GA4048658@robh.at.kernel.org>
+References: <1608717823-18387-1-git-send-email-anshuman.khandual@arm.com>
+ <1608717823-18387-7-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-03_07:2020-12-31,2021-01-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- malwarescore=0 impostorscore=0 bulkscore=0 priorityscore=1501
- clxscore=1011 lowpriorityscore=0 mlxscore=0 phishscore=0 mlxlogscore=854
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101030101
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608717823-18387-7-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-01-03 at 17:26 +0100, Arnd Bergmann wrote:
-[...]
-> @@ -8209,7 +8208,7 @@ megasas_mgmt_fw_ioctl(struct megasas_instance
-> *instance,
->                 if (instance->consistent_mask_64bit)
->                         put_unaligned_le64(sense_handle, sense_ptr);
->                 else
-> -                       put_unaligned_le32(sense_handle, sense_ptr);
-> +                       put_unaligned_le64(sense_handle, sense_ptr);
->         }
+On Wed, Dec 23, 2020 at 03:33:38PM +0530, Anshuman Khandual wrote:
+> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> 
+> Document the device tree bindings for Embedded Trace Extensions.
+> ETE can be connected to legacy coresight components and thus
+> could optionally contain a connection graph as described by
+> the CoreSight bindings.
+> 
+> Cc: devicetree@vger.kernel.org
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Rob Herring <robh@kernel.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  Documentation/devicetree/bindings/arm/ete.txt | 41 +++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/ete.txt
 
-This hunk can't be right.  It effectively means removing the if.
-However, the if is needed because sense_handle is a dma_addr_t which
-can be either 32 or 64 bit.  What about changing the if to 
+Bindings are in schema format now, please convert this.
 
-if (sizeof(dma_addr_t) == 8)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/ete.txt b/Documentation/devicetree/bindings/arm/ete.txt
+> new file mode 100644
+> index 0000000..b52b507
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/ete.txt
+> @@ -0,0 +1,41 @@
+> +Arm Embedded Trace Extensions
+> +
+> +Arm Embedded Trace Extensions (ETE) is a per CPU trace component that
+> +allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
+> +architecture and has extended support for future architecture changes.
+> +The trace generated by the ETE could be stored via legacy CoreSight
+> +components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
+> +Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
+> +legacy CoreSight components, a node must be listed per instance, along
+> +with any optional connection graph as per the coresight bindings.
+> +See bindings/arm/coresight.txt.
+> +
+> +** ETE Required properties:
+> +
+> +- compatible : should be one of:
+> +	"arm,embedded-trace-extensions"
+> +
+> +- cpu : the CPU phandle this ETE belongs to.
 
-instead?
+If this is 1:1 with CPUs, then perhaps it should be a child node of the 
+CPU nodes.
 
-James
-
-
+> +
+> +** Optional properties:
+> +- CoreSight connection graph, see bindings/arm/coresight.txt.
+> +
+> +** Example:
+> +
+> +ete_0 {
+> +	compatible = "arm,embedded-trace-extension";
+> +	cpu = <&cpu_0>;
+> +};
+> +
+> +ete_1 {
+> +	compatible = "arm,embedded-trace-extension";
+> +	cpu = <&cpu_1>;
+> +
+> +	out-ports {	/* legacy CoreSight connection */
+> +		port {
+> +			ete1_out_port: endpoint@0 {
+> +				remote-endpoint = <&funnel_in_port0>;
+> +			};
+> +		};
+> +	};
+> +};
+> -- 
+> 2.7.4
+> 
