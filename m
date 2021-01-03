@@ -2,238 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F052E8A60
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 04:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021572E8A6C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 05:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbhACD6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 22:58:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726844AbhACD6G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 22:58:06 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01232C061573;
-        Sat,  2 Jan 2021 19:57:26 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id i5so16611634pgo.1;
-        Sat, 02 Jan 2021 19:57:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=bOqOQLWJhyl2a577YM0GR4m7krtGGKspJhBDUdooXQs=;
-        b=LG0ARZRkjmTXrJorhu/jihm0Mi+5yzddGgU9D1bfoBGcEAyoou58vPzfDIyONWYqDI
-         /4OAqr7Z/zf9ER+L2uOc24kSRn+qLmG4BY+JodzoFQF/B1c2wZHJyb4kvhKxgU+izRHv
-         8MRgEhNgPrZuxzSLQRqYfuvGfcvCuVUoshvt9sl0r4QAtutdKDW05rcIQ9dBdwIO5K0F
-         2hKHfKf0/Qu+0Hr5NyOotRE7Lw4UCKOU9MJ5nHdb3S33C4V0d4YDfF8LqHdXhsI1aUWM
-         ZsJ6w1waDejbsq3kHUW0bKB81kH8ze/DhP8Yctb91F8FeL2e5BM/CTjg2bOh51mUiQqc
-         m2ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=bOqOQLWJhyl2a577YM0GR4m7krtGGKspJhBDUdooXQs=;
-        b=ChWckxCNeaxl6Pkr0XxM9neBeoSWK54vivbigGU8hSaO7oWfjvsVTXndvZVyfo8RUS
-         BMd3x1rUSJWMeLg/2Qs1XSAqwZalGFVLrqkbcPOWcemx18RMd3SynajrBmNfzbbfh67+
-         TeFm9QBfqE91TUOLscR7otxqKGBm9WallJ3uxgBg9n8bi6Fmyyc1JPiIu25UhH7GbtcB
-         /EhNxY/ZI4Tr8z4YpuwBv8UpxjOahQQ5U3jm2wX1HpmOZqUkV5QYFwSg+uDO2ONa4sVe
-         hiCrmI3cgDH30LQYnoTXM2v/825rGO4E5lbMW/8GxEa+xR0TPtAIv7vOKZmKfTZf9RNQ
-         7uIA==
-X-Gm-Message-State: AOAM530RBq+FYr2kEU1dL+hKz0uI46DooLW8dhc0dCtEklTROoI22+sT
-        edMZJJVEEqLSk/2J46WRCYo=
-X-Google-Smtp-Source: ABdhPJz6zhBwhrRUfur/KM3Xc29SF2oYTEQF68P1OftsFEJ1idogWYGRJDx/+HEraVeVhoNlpuXM5Q==
-X-Received: by 2002:a63:db54:: with SMTP id x20mr52218787pgi.200.1609646245532;
-        Sat, 02 Jan 2021 19:57:25 -0800 (PST)
-Received: from localhost.localdomain ([43.255.31.23])
-        by smtp.gmail.com with ESMTPSA id h12sm55934950pgs.7.2021.01.02.19.57.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Jan 2021 19:57:24 -0800 (PST)
-From:   Yangtao Li <tiny.windzz@gmail.com>
-To:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, krzk@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, digetx@gmail.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
-        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        lukasz.luba@arm.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
-        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
-        marijn.suijten@somainline.org, gustavoars@kernel.org,
-        emil.velikov@collabora.com, jonathan@marek.ca,
-        akhilpo@codeaurora.org, smasetty@codeaurora.org,
-        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, tiny.windzz@gmail.com,
-        ddavenport@chromium.org, jsanka@codeaurora.org,
-        rnayak@codeaurora.org, tongtiangen@huawei.com,
-        miaoqinglang@huawei.com, khsieh@codeaurora.org,
-        abhinavk@codeaurora.org, chandanu@codeaurora.org,
-        groeck@chromium.org, varar@codeaurora.org, mka@chromium.org,
-        harigovi@codeaurora.org, rikard.falkeborn@gmail.com,
-        natechancellor@gmail.com, georgi.djakov@linaro.org,
-        akashast@codeaurora.org, parashar@codeaurora.org,
-        dianders@chromium.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH 31/31] PM / devfreq: convert to devm_pm_opp_register_notifier and remove unused API
-Date:   Sun,  3 Jan 2021 03:57:06 +0000
-Message-Id: <20210103035706.24168-1-tiny.windzz@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726418AbhACEJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 23:09:47 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:64730 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725827AbhACEJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 23:09:46 -0500
+Received: by ajax-webmail-mail-app3 (Coremail) ; Sun, 3 Jan 2021 12:08:31
+ +0800 (GMT+08:00)
+X-Originating-IP: [222.205.25.254]
+Date:   Sun, 3 Jan 2021 12:08:31 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Lu Baolu" <baolu.lu@linux.intel.com>
+Cc:     kjlu@umn.edu, "David Woodhouse" <dwmw2@infradead.org>,
+        "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
+        "Jiang Liu" <jiang.liu@linux.intel.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] iommu/intel: Fix memleak in
+ intel_irq_remapping_alloc
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <18add30d-a830-c531-6fd2-58a1898b157f@linux.intel.com>
+References: <20210102095029.29053-1-dinghao.liu@zju.edu.cn>
+ <18add30d-a830-c531-6fd2-58a1898b157f@linux.intel.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Message-ID: <50870a42.15f1a.176c66eaf92.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cC_KCgDnjw0_Q_FfeFRHAA--.14395W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgIOBlZdtRzYgwAAsx
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Use devm_pm_opp_* API to simplify code.
-
-Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
----
- drivers/devfreq/devfreq.c | 66 +--------------------------------------
- include/linux/devfreq.h   | 23 --------------
- 2 files changed, 1 insertion(+), 88 deletions(-)
-
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index 6aa10de792b3..f593f30529ec 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -2004,40 +2004,6 @@ struct dev_pm_opp *devfreq_recommended_opp(struct device *dev,
- }
- EXPORT_SYMBOL(devfreq_recommended_opp);
- 
--/**
-- * devfreq_register_opp_notifier() - Helper function to get devfreq notified
-- *				     for any changes in the OPP availability
-- *				     changes
-- * @dev:	The devfreq user device. (parent of devfreq)
-- * @devfreq:	The devfreq object.
-- */
--int devfreq_register_opp_notifier(struct device *dev, struct devfreq *devfreq)
--{
--	return dev_pm_opp_register_notifier(dev, &devfreq->nb);
--}
--EXPORT_SYMBOL(devfreq_register_opp_notifier);
--
--/**
-- * devfreq_unregister_opp_notifier() - Helper function to stop getting devfreq
-- *				       notified for any changes in the OPP
-- *				       availability changes anymore.
-- * @dev:	The devfreq user device. (parent of devfreq)
-- * @devfreq:	The devfreq object.
-- *
-- * At exit() callback of devfreq_dev_profile, this must be included if
-- * devfreq_recommended_opp is used.
-- */
--int devfreq_unregister_opp_notifier(struct device *dev, struct devfreq *devfreq)
--{
--	return dev_pm_opp_unregister_notifier(dev, &devfreq->nb);
--}
--EXPORT_SYMBOL(devfreq_unregister_opp_notifier);
--
--static void devm_devfreq_opp_release(struct device *dev, void *res)
--{
--	devfreq_unregister_opp_notifier(dev, *(struct devfreq **)res);
--}
--
- /**
-  * devm_devfreq_register_opp_notifier() - Resource-managed
-  *					  devfreq_register_opp_notifier()
-@@ -2047,40 +2013,10 @@ static void devm_devfreq_opp_release(struct device *dev, void *res)
- int devm_devfreq_register_opp_notifier(struct device *dev,
- 				       struct devfreq *devfreq)
- {
--	struct devfreq **ptr;
--	int ret;
--
--	ptr = devres_alloc(devm_devfreq_opp_release, sizeof(*ptr), GFP_KERNEL);
--	if (!ptr)
--		return -ENOMEM;
--
--	ret = devfreq_register_opp_notifier(dev, devfreq);
--	if (ret) {
--		devres_free(ptr);
--		return ret;
--	}
--
--	*ptr = devfreq;
--	devres_add(dev, ptr);
--
--	return 0;
-+	return devm_pm_opp_register_notifier(dev, &devfreq->nb);
- }
- EXPORT_SYMBOL(devm_devfreq_register_opp_notifier);
- 
--/**
-- * devm_devfreq_unregister_opp_notifier() - Resource-managed
-- *					    devfreq_unregister_opp_notifier()
-- * @dev:	The devfreq user device. (parent of devfreq)
-- * @devfreq:	The devfreq object.
-- */
--void devm_devfreq_unregister_opp_notifier(struct device *dev,
--					 struct devfreq *devfreq)
--{
--	WARN_ON(devres_release(dev, devm_devfreq_opp_release,
--			       devm_devfreq_dev_match, devfreq));
--}
--EXPORT_SYMBOL(devm_devfreq_unregister_opp_notifier);
--
- /**
-  * devfreq_register_notifier() - Register a driver with devfreq
-  * @devfreq:	The devfreq object.
-diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-index b6d3bae1c74d..aca2cc4f4fa4 100644
---- a/include/linux/devfreq.h
-+++ b/include/linux/devfreq.h
-@@ -230,14 +230,8 @@ int update_devfreq(struct devfreq *devfreq);
- /* Helper functions for devfreq user device driver with OPP. */
- struct dev_pm_opp *devfreq_recommended_opp(struct device *dev,
- 				unsigned long *freq, u32 flags);
--int devfreq_register_opp_notifier(struct device *dev,
--				struct devfreq *devfreq);
--int devfreq_unregister_opp_notifier(struct device *dev,
--				struct devfreq *devfreq);
- int devm_devfreq_register_opp_notifier(struct device *dev,
- 				struct devfreq *devfreq);
--void devm_devfreq_unregister_opp_notifier(struct device *dev,
--				struct devfreq *devfreq);
- int devfreq_register_notifier(struct devfreq *devfreq,
- 				struct notifier_block *nb,
- 				unsigned int list);
-@@ -355,29 +349,12 @@ static inline struct dev_pm_opp *devfreq_recommended_opp(struct device *dev,
- 	return ERR_PTR(-EINVAL);
- }
- 
--static inline int devfreq_register_opp_notifier(struct device *dev,
--					struct devfreq *devfreq)
--{
--	return -EINVAL;
--}
--
--static inline int devfreq_unregister_opp_notifier(struct device *dev,
--					struct devfreq *devfreq)
--{
--	return -EINVAL;
--}
--
- static inline int devm_devfreq_register_opp_notifier(struct device *dev,
- 					struct devfreq *devfreq)
- {
- 	return -EINVAL;
- }
- 
--static inline void devm_devfreq_unregister_opp_notifier(struct device *dev,
--					struct devfreq *devfreq)
--{
--}
--
- static inline int devfreq_register_notifier(struct devfreq *devfreq,
- 					struct notifier_block *nb,
- 					unsigned int list)
--- 
-2.25.1
-
+PiBIaSwKPiAKPiBPbiAyMDIxLzEvMiAxNzo1MCwgRGluZ2hhbyBMaXUgd3JvdGU6Cj4gPiBXaGVu
+IGlycV9kb21haW5fZ2V0X2lycV9kYXRhKCkgb3IgaXJxZF9jZmcoKSBmYWlscwo+ID4gbWVhbndo
+aWxlIGkgPT0gMCwgZGF0YSBhbGxvY2F0ZWQgYnkga3phbGxvYygpIGhhcyBub3QKPiA+IGJlZW4g
+ZnJlZWQgYmVmb3JlIHJldHVybmluZywgd2hpY2ggbGVhZHMgdG8gbWVtbGVhay4KPiA+IAo+ID4g
+Rml4ZXM6IGIxMDZlZTYzYWJjY2IgKCJpcnFfcmVtYXBwaW5nL3Z0LWQ6IEVuaGFuY2UgSW50ZWwg
+SVIgZHJpdmVyIHRvIHN1cHBvcnQgaGllcmFyY2hpY2FsIGlycWRvbWFpbnMiKQo+ID4gU2lnbmVk
+LW9mZi1ieTogRGluZ2hhbyBMaXUgPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+Cj4gPiAtLS0KPiA+
+ICAgZHJpdmVycy9pb21tdS9pbnRlbC9pcnFfcmVtYXBwaW5nLmMgfCAyICsrCj4gPiAgIDEgZmls
+ZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+aW9tbXUvaW50ZWwvaXJxX3JlbWFwcGluZy5jIGIvZHJpdmVycy9pb21tdS9pbnRlbC9pcnFfcmVt
+YXBwaW5nLmMKPiA+IGluZGV4IGFlZmZkYTkyYjEwYi4uY2RhZWVkMzY3NTBmIDEwMDY0NAo+ID4g
+LS0tIGEvZHJpdmVycy9pb21tdS9pbnRlbC9pcnFfcmVtYXBwaW5nLmMKPiA+ICsrKyBiL2RyaXZl
+cnMvaW9tbXUvaW50ZWwvaXJxX3JlbWFwcGluZy5jCj4gPiBAQCAtMTM1NCw2ICsxMzU0LDggQEAg
+c3RhdGljIGludCBpbnRlbF9pcnFfcmVtYXBwaW5nX2FsbG9jKHN0cnVjdCBpcnFfZG9tYWluICpk
+b21haW4sCj4gPiAgIAkJaXJxX2NmZyA9IGlycWRfY2ZnKGlycV9kYXRhKTsKPiA+ICAgCQlpZiAo
+IWlycV9kYXRhIHx8ICFpcnFfY2ZnKSB7Cj4gPiAgIAkJCXJldCA9IC1FSU5WQUw7Cj4gPiArCQkJ
+a2ZyZWUoZGF0YSk7Cj4gPiArCQkJZGF0YSA9IE5VTEw7Cj4gCj4gRG8geW91IG5lZWQgdG8gY2hl
+Y2sgKGkgPT0gMCkgaGVyZT8gQGRhdGEgd2lsbCBub3QgYmUgdXNlZCBhbnltb3JlIGFzIGl0Cj4g
+Z29lcyB0byBvdXQgYnJhbmNoLCB3aHkgc2V0dGluZyBpdCB0byBOVUxMIGhlcmU/Cj4gCgpkYXRh
+IHdpbGwgYmUgcGFzc2VkIHRvIGlyZV9kYXRhLT5jaGlwX2RhdGEgd2hlbiBpID09IDAgYW5kIApp
+bnRlbF9mcmVlX2lycV9yZXNvdXJjZXMoKSB3aWxsIGZyZWUgaXQgb24gZmFpbHVyZS4gVGh1cyBJ
+CnNldCBpdCB0byBOVUxMIHRvIHByZXZlbnQgZG91YmxlLWZyZWUuIEhvd2V2ZXIsIGlmIHdlIGFk
+ZCAKYSBjaGVjayAoaSA9PSAwKSBoZXJlLCB3ZSB3aWxsIG5vdCBuZWVkIHRvIHNldCBpdCB0byBO
+VUxMLgpJZiB0aGlzIGlzIGJldHRlciwgSSB3aWxsIHJlc2VuZCBhIG5ldyBwYXRjaCBzb29uLgoK
+UmVnYXJkcywKRGluZ2hhbyA=
