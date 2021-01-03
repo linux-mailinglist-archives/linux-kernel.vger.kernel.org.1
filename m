@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C432E8D85
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1DF2E8D8A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727722AbhACRNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 12:13:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
+        id S1727758AbhACRNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 12:13:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727676AbhACRNU (ORCPT
+        with ESMTP id S1727739AbhACRN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 12:13:20 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC75C0613C1
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 09:12:32 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id n25so17260321pgb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 09:12:32 -0800 (PST)
+        Sun, 3 Jan 2021 12:13:28 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0455AC0617A7
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 09:12:48 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id lb18so8352228pjb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 09:12:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P/GeiIxcJ64ZQ6SmObKp07RN0gB/xHVcCELrAtFy6J8=;
-        b=j9nC8spDRsbKIqITtcFVK5qfNVqGd72bWGhC3L39q82R8010SlWb58g4xtF50sisUa
-         CfMxfvTnGgeJKwMLbxYvaE5kCZi0IvGeR3BidI8+fAl8OE1m9ex3PjGA7l5UqpCdsT8S
-         CClk/1SFkcl8k97Jxq7SWRUVMGeCADSH2ApMpuinr1XvsQiYSvwvzasCmOh+FDJUp0Om
-         TodXjnTwaBrW6MTUzvvXn9BG1fUoJ7hC0QKUOPOOXCdJtwB3gmstUWRzTpxCBS6Pdftp
-         tj0cJiWF3qGNKeBorCQmV3YLO1jiIhCt7sTf6RH4bjvwmI5zU4UBNxMvwPLlw0T5wOYt
-         PsUg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+qF0SijNFO/T+7vPigxBwLWfcVu8oPsZO7isaPG+ku8=;
+        b=OMdVh9zxiZv9azAo9+0yvKEkkHlQiRNekWETEHuEwCBvQ/iy+NnfWuO6Su8nvxl4TR
+         sVszfeEmM3v6ig7Bfge2C/f8TMwms22mkgt/r+S1gm5pQD30UUMNB1ccdgcJe+m94I5t
+         J15E8JULz9YMpwuHH0YoR8QOJTPyYKmqYBUcuJIUOFiTqlTiqFCwcJhW5+bclo1I1bHh
+         xSrS1+tkxQklhB+96h6QdMKFDflPTJ8CCmoRsXLd3RrPWQf+NVhZwQFHDjjueJLgPXkC
+         s6/eYfDfshOnGDGGwAocvHfl7zfhoVnfeXVVnTl77GfSS2IZjeyhhVx+kDPivmTfxEFY
+         NCow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P/GeiIxcJ64ZQ6SmObKp07RN0gB/xHVcCELrAtFy6J8=;
-        b=o4AA8E1uHkNYKZj18e6gAxtyoFbvpKQB5ZwoS5t7Pkw3z94q4yR1lGFwDcgj6k/9uU
-         AcldvE8n3RjU1MoYt7XQBSFd1oZhIobJRwSWEM6OC2mtM44yEg0HmdhCF9Y97n+tFZEC
-         +bdogh6kB8I3a8+l/ReSs/hq6e04YYPpzlk/PeOGE3+KvUWSAt6022cVLTImRQ+T5wt6
-         iMxVkCbt1K2wdmBqVaIKgFQppuHOlrp6AUf0P0m+89muy+EhlT6W3jgko5F4pU4WJKG9
-         3ZRbTq1qc0BK4gxX2nO+5Z/wLZkYdZPVmXhinkN4wP+iViNdAg0ZIhU2s8kPrBInwypk
-         E8yQ==
-X-Gm-Message-State: AOAM533IqjmeOBOnIrU0xC5Lt5o+OgKkJbjKECoDD1uUhbP6EfnEY/WE
-        iNdY44/WGko7STh6rVztTi/C+vkOZrA=
-X-Google-Smtp-Source: ABdhPJwVkKI1/s0n073MJPATBjaxsZ36JasEetjbvlDaf7VaG92vb5iUjgmHPzD5NvQlqz5H++LpZA==
-X-Received: by 2002:aa7:9619:0:b029:1ae:33b2:780f with SMTP id q25-20020aa796190000b02901ae33b2780fmr7380595pfg.26.1609693951614;
-        Sun, 03 Jan 2021 09:12:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+qF0SijNFO/T+7vPigxBwLWfcVu8oPsZO7isaPG+ku8=;
+        b=OIIiV186NkP9YiD4Qk7Cbbzs6enh8e5g/5w/JAmjgisbkCETkmflOBN8cpNr4cI1Nu
+         AVcVLGMauzzXOVXX8jQMMO1kf3NnxvS5ogIfiWeqsxUVeVQzTtc5NY8CnugC++AqNXuH
+         dsd6I/3T9SCO20auzvpO73YFYc6YhWL0Mm895NpFti4MNQVw2BZp9+0O/qGLM81lv/vn
+         mIdfCy5zRzc5Ja9/fcbf8i/DBjfCKYC3y0L42UJwPGHibM9qsoJYbaOG5hF1hP2XI7CN
+         yx4bJxjeTcAn0a/s629DsPxVzMytto3CJ+LYoAEZv57IJmEivrIeOQtUATV3W8CSv4aV
+         NS7A==
+X-Gm-Message-State: AOAM532dQSpuUkVSWZlECSM1t7ugILx574/AiQmK3jdRolDbKVoycLXa
+        eEgbhd0srzz+HtlijmDgcqle4pIyrgs=
+X-Google-Smtp-Source: ABdhPJw3OQwhq9OxHmMcioQgHt+p48eMqxA1ZNlpDr311WozdKIFyTrL8TttCW0PNA95g+ifOua7dw==
+X-Received: by 2002:a17:902:7207:b029:da:fd0c:521a with SMTP id ba7-20020a1709027207b02900dafd0c521amr68665365plb.45.1609693967387;
+        Sun, 03 Jan 2021 09:12:47 -0800 (PST)
 Received: from localhost.localdomain (61-230-37-4.dynamic-ip.hinet.net. [61.230.37.4])
-        by smtp.gmail.com with ESMTPSA id y3sm19771657pjb.18.2021.01.03.09.12.27
+        by smtp.gmail.com with ESMTPSA id y3sm19771657pjb.18.2021.01.03.09.12.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 09:12:31 -0800 (PST)
+        Sun, 03 Jan 2021 09:12:46 -0800 (PST)
 From:   Lecopzer Chen <lecopzer@gmail.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org
@@ -57,48 +57,80 @@ Cc:     dan.j.williams@intel.com, aryabinin@virtuozzo.com,
         will@kernel.org, catalin.marinas@arm.com,
         Lecopzer Chen <lecopzer@gmail.com>,
         Lecopzer Chen <lecopzer.chen@mediatek.com>
-Subject: [PATCH 0/3] arm64: kasan: support CONFIG_KASAN_VMALLOC
-Date:   Mon,  4 Jan 2021 01:11:34 +0800
-Message-Id: <20210103171137.153834-1-lecopzer@gmail.com>
+Subject: [PATCH 1/3] arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
+Date:   Mon,  4 Jan 2021 01:11:35 +0800
+Message-Id: <20210103171137.153834-2-lecopzer@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210103171137.153834-1-lecopzer@gmail.com>
+References: <20210103171137.153834-1-lecopzer@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+Linux support KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
 ("kasan: support backing vmalloc space with real shadow memory")
 
-Acroding to how x86 ported it [1], they early allocated p4d and pgd,
-but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
-by not to populate the vmalloc area except for kimg address.
-
-Test environment:
-    4G and 8G Qemu virt, 
-    39-bit VA + 4k PAGE_SIZE with 3-level page table,
-    test by lib/test_kasan.ko and lib/test_kasan_module.ko
-
-It also works in Kaslr with CONFIG_RANDOMIZE_MODULE_REGION_FULL,
-but not test for HW_TAG(I have no proper device), thus keep
-HW_TAG and KASAN_VMALLOC mutual exclusion until confirming
-the functionality.
-
-
-[1]: commit 0609ae011deb41c ("x86/kasan: support KASAN_VMALLOC")
+Like how the MODULES_VADDR does now, just not to early populate
+the VMALLOC_START between VMALLOC_END.
+similarly, the kernel code mapping is now in the VMALLOC area and
+should keep these area populated.
 
 Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+---
+ arch/arm64/mm/kasan_init.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-
-Lecopzer Chen (3):
-  arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
-  arm64: kasan: abstract _text and _end to KERNEL_START/END
-  arm64: Kconfig: support CONFIG_KASAN_VMALLOC
-
- arch/arm64/Kconfig         |  1 +
- arch/arm64/mm/kasan_init.c | 29 +++++++++++++++++++++--------
- 2 files changed, 22 insertions(+), 8 deletions(-)
-
+diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+index d8e66c78440e..d7ad3f1e9c4d 100644
+--- a/arch/arm64/mm/kasan_init.c
++++ b/arch/arm64/mm/kasan_init.c
+@@ -214,6 +214,7 @@ static void __init kasan_init_shadow(void)
+ {
+ 	u64 kimg_shadow_start, kimg_shadow_end;
+ 	u64 mod_shadow_start, mod_shadow_end;
++	u64 vmalloc_shadow_start, vmalloc_shadow_end;
+ 	phys_addr_t pa_start, pa_end;
+ 	u64 i;
+ 
+@@ -223,6 +224,9 @@ static void __init kasan_init_shadow(void)
+ 	mod_shadow_start = (u64)kasan_mem_to_shadow((void *)MODULES_VADDR);
+ 	mod_shadow_end = (u64)kasan_mem_to_shadow((void *)MODULES_END);
+ 
++	vmalloc_shadow_start = (u64)kasan_mem_to_shadow((void *)VMALLOC_START);
++	vmalloc_shadow_end = (u64)kasan_mem_to_shadow((void *)VMALLOC_END);
++
+ 	/*
+ 	 * We are going to perform proper setup of shadow memory.
+ 	 * At first we should unmap early shadow (clear_pgds() call below).
+@@ -241,12 +245,21 @@ static void __init kasan_init_shadow(void)
+ 
+ 	kasan_populate_early_shadow(kasan_mem_to_shadow((void *)PAGE_END),
+ 				   (void *)mod_shadow_start);
+-	kasan_populate_early_shadow((void *)kimg_shadow_end,
+-				   (void *)KASAN_SHADOW_END);
++	if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
++		kasan_populate_early_shadow((void *)vmalloc_shadow_end,
++					   (void *)KASAN_SHADOW_END);
++		if (vmalloc_shadow_start > mod_shadow_end)
++			kasan_populate_early_shadow((void *)mod_shadow_end,
++						    (void *)vmalloc_shadow_start);
++
++	}	else {
++		kasan_populate_early_shadow((void *)kimg_shadow_end,
++					   (void *)KASAN_SHADOW_END);
++		if (kimg_shadow_start > mod_shadow_end)
++			kasan_populate_early_shadow((void *)mod_shadow_end,
++						    (void *)kimg_shadow_start);
++	}
+ 
+-	if (kimg_shadow_start > mod_shadow_end)
+-		kasan_populate_early_shadow((void *)mod_shadow_end,
+-					    (void *)kimg_shadow_start);
+ 
+ 	for_each_mem_range(i, &pa_start, &pa_end) {
+ 		void *start = (void *)__phys_to_virt(pa_start);
 -- 
 2.25.1
 
