@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574FE2E8C26
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 13:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 934A92E8C28
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 13:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbhACMih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 07:38:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46090 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726061AbhACMig (ORCPT
+        id S1727054AbhACMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 07:44:19 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:51113 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727030AbhACMoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 07:38:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609677430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QxdY5ocqcwDXMcWxyyfbMa+hKNGU2Zi10xyvQjqxw7U=;
-        b=Iwa8JBXW7OCvRF5L+KH4kVAg0F5GSiJMMpABJB6zrjiLjaXhFsol6z9fw6jM4hu1cTt1Gb
-        /f4gsDdkspWhDPG+2+PMfXwTpBgGTprbhu7aNn06UfyW6gsBbBz6ssYcCJmVjHMmz16B/k
-        L5Ba0fWfyzEys6cdS5CalsDBOkiRWJI=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-MPAjF10oN0yiAfeHAKzoJw-1; Sun, 03 Jan 2021 07:37:08 -0500
-X-MC-Unique: MPAjF10oN0yiAfeHAKzoJw-1
-Received: by mail-wm1-f71.google.com with SMTP id h21so8537248wmq.7
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 04:37:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QxdY5ocqcwDXMcWxyyfbMa+hKNGU2Zi10xyvQjqxw7U=;
-        b=AweNa7HW+bPk5d830JVQN5w36d2QBYdsb01tDcrm6++GhEN+8dHrjpkiuxSsYAsLt6
-         +Djg7YV4Ds2yMTM22xeRzK+Ar84/IBPobHKXS2OwwWmkjOA64gPKXJaxLGOg62nPcKIG
-         urpTYex/FfL7MjVpuG/cHVjgs3e+c/r6pdgms2XkY47rif0jYJAQ8+2x6QiOt5k2oZ02
-         IsfiFvFvEzMNPcjmuUIfbVUAWMq/N8hZeWu+HxEkjzEiAMzcGbtQpdPvJVVcyvd01Xth
-         xj5Cy+72nivd91IwdjKmcfARhEVZszTgf1cLmKvv3S9D+Mrf9fzI1VhPOcfsvee8ZbdC
-         pqDQ==
-X-Gm-Message-State: AOAM531JLvM8cJ+RjucM0Be4SbndmWCfYaigHUjzIqiTIGmnOnU9LjvE
-        JYIfl9qv5/XbTWzxLTv3IF4eJwdDp6Lh2cFSIxR+NnL/sPezZmIk7SA2dqSeOdFPamp/stZOnAn
-        w9pMby8gFhi07XxfJDuXTdYlT
-X-Received: by 2002:a1c:6689:: with SMTP id a131mr22858988wmc.33.1609677426760;
-        Sun, 03 Jan 2021 04:37:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz2rN+sNM5f2IdvomcUNGysJYX2pHs14Av12FmnC39k+PwITABTuPqJ7gBxvMFumZmxKXYMtg==
-X-Received: by 2002:a1c:6689:: with SMTP id a131mr22858976wmc.33.1609677426627;
-        Sun, 03 Jan 2021 04:37:06 -0800 (PST)
-Received: from redhat.com (bzq-79-178-32-166.red.bezeqint.net. [79.178.32.166])
-        by smtp.gmail.com with ESMTPSA id e16sm94661103wra.94.2021.01.03.04.37.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 04:37:05 -0800 (PST)
-Date:   Sun, 3 Jan 2021 07:37:02 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, shahafs@mellanox.com
-Subject: Re: [PATCH V2 00/19] vDPA driver for virtio-pci device
-Message-ID: <20210103073629-mutt-send-email-mst@kernel.org>
-References: <20201204040353.21679-1-jasowang@redhat.com>
- <3a3fa2f5-d5d8-e8dd-71d1-cb81a3276658@redhat.com>
+        Sun, 3 Jan 2021 07:44:18 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9ED1F580422;
+        Sun,  3 Jan 2021 07:43:32 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 03 Jan 2021 07:43:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=E
+        QudM2IkgCNnrANuZ5EqosYh8eVwyuFNr39cKDL8pQI=; b=YbcPVeaR6FIG1ljHU
+        ziUoqI+Y6pV6GNKSFNBVOYDertVRmgAdDeT0xOgvZP8hUssCSrWTvG0+lvYU36a+
+        vhBqv2ozeG+JoRuwyo+aZYMXTXmBa5Pk/SVfx/4splQ/jZ1pgvxzDYWF4iEzeYHc
+        N8WntfuLBOH8U08G+8nbNKsN8pFTXewtvjU6fG7q3M4M91E6lFMwoLBcewcIwbQM
+        K5mJUNcJzS9wtAe4EhhJUhjUSLrbVqmZHRc9k28xu6VuH1bjinllsE50Adq4kNfh
+        8s1t2nIe4rV2QJWMQjCk9cUdUExcJ+1DT9Lgg/XwyP+Eol2it3TJdKwNpeKc8D9G
+        S0/UA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=EQudM2IkgCNnrANuZ5EqosYh8eVwyuFNr39cKDL8p
+        QI=; b=CwzpY95tW8/SM1wgieUitIwNOv3rfPQqkTkl5Y8T7IwXrywMX4V9Doabn
+        lxXALtVax5EoIoDr628+oyVzx9mL3NQOQjdJfZVqsDLI2f2DH2+ITCzmUUi8/cns
+        S4ynlbjT2x/D0UBZfxdBNlxv71tSHaCSK9fE15UP0T13rocbrUrrp7gYJIz3f3iO
+        +kEhCxH8OBHIEef2N4f0aFTNgFh01IY1KCblXuXM7UJsTQceUfh+QftxVg3NoQTc
+        sePwOuII3FcGXNcQf85Ua3g+euN+iTSxzjH0bUWi0ZdS4SjvrK5YmdIShA1DQf0s
+        Nmb1epjYD5cRJ9I0lttkSgNoqZzww==
+X-ME-Sender: <xms:87vxX2vDP2i_1i0ghcSB--vpQi59oh6CGH0TCtYezsAOTv3ZU0ssxA>
+    <xme:87vxX7dyUuX0-tilg8SwHdN_olQ6WVDdT6JFcxtx9srIus8mCKVIUM13n4Uwg7cp6
+    r1bihGtG8aa5JEpZw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefuddggeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
+    uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+    nhgurdhorhhg
+X-ME-Proxy: <xmx:87vxXxyaPyF6_WAjP7o-mHChN9tYNJ1xmBuLgGIn1mb3OQ7h12aL3Q>
+    <xmx:87vxXxMyPeshUq0BEazhOm6PgKib3507ZjcvON6e2NhwmZ8ZCtrAaA>
+    <xmx:87vxX28o0wMbapswVJqn4bXD1XQ7C_t2SAIhGtT82GFGIGxzav0jXg>
+    <xmx:9LvxX320oCFQGxsqieVDBsXVfuHVYOCdMMHALClA-vMleWLH8nivbA>
+Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9220A108005B;
+        Sun,  3 Jan 2021 07:43:30 -0500 (EST)
+Subject: Re: [PATCH v3 00/10] sunxi: Support IRQ wakeup from deep sleep
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210103103101.33603-1-samuel@sholland.org>
+ <874kjykyg0.wl-maz@kernel.org>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <7d867708-c8c2-c248-46c9-eedfdf955408@sholland.org>
+Date:   Sun, 3 Jan 2021 06:43:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <874kjykyg0.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3a3fa2f5-d5d8-e8dd-71d1-cb81a3276658@redhat.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 11:52:14AM +0800, Jason Wang wrote:
+On 1/3/21 6:16 AM, Marc Zyngier wrote:
+> [dropped linux-sunxi@googlegroups.com, which seems to be a closed ML]
 > 
-> On 2020/12/4 下午12:03, Jason Wang wrote:
-> > Hi all:
-> > 
-> > This series tries to implement a vDPA driver for virtio-pci device
-> > which will bridge between vDPA bus and virtio-pci device.
-> > 
-> > This could be used for future feature prototyping and testing.
-> > 
-> > Please review
-> > 
-> > Changes from V2:
-> > 
-> > - don't try to use devres for virtio-pci core
-> > - tweak the commit log
-> > - split the patches furtherly to ease the reviewing
-> > 
-> > Changes from V1:
-> > 
-> > - Split common codes from virito-pci and share it with vDPA driver
-> > - Use dynamic id in order to be less confusing with virtio-pci driver
-> > - No feature whitelist, supporting any features (mq, config etc)
-> > 
-> > Thanks
+> On Sun, 03 Jan 2021 10:30:51 +0000,
+> Samuel Holland <samuel@sholland.org> wrote:
+>>
+>> Allwinner sun6i/sun8i/sun50i SoCs (A31 and newer) have two interrupt
+>> controllers: GIC and R_INTC. GIC does not support wakeup. R_INTC handles
+>> the external NMI pin, and provides 32+ IRQs to the ARISC. The first 16
+>> of these correspond 1:1 to a block of GIC IRQs starting with the NMI.
+>> The last 13-16 multiplex the first (up to) 128 GIC SPIs.
+>>
+>> This series replaces the existing chained irqchip driver that could only
+>> control the NMI, with a stacked irqchip driver that also provides wakeup
+>> capability for those multiplexed SPI IRQs. The idea is to preconfigure
+>> the ARISC's IRQ controller, and then the ARISC firmware knows to wake up
+>> as soon as it receives an IRQ. It can also decide how deep it can
+>> suspend based on the selected wakeup IRQs.
 > 
-> 
-> Michael, any comment for this series?
-> 
-> It's needed for testing doorbell mapping and config interrupt support.
-> 
-> Thanks
+> Out of curiosity, how do you plan to communicate dynamic configuration
+> of IRQs to the ARISC? We recently went through this with some TI
+> stuff, and the result a bit awkward (the arm64 side configures
+> interrupts that are not visible to the kernel, but only to the
+> co-processors).
 
-I saw you got some comments back in december so was expecting another
-version. If you'd rather I reviewed this one, let me know.
+Assuming by "dynamic" you mean while Linux is running, I don't plan to
+communicate anything. As far as I'm concerned, the driver is feature-complete
+after this patch series. The ARISC firmware does not use the interrupt
+controller (or any other shared peripherals) while Linux is running. It sits in
+a tight loop polling its side of the mailbox, waiting for a
+hotplug/suspend/poweroff/reboot command.
 
--- 
-MST
+> I wondered whether you had other ideas...
+
+Sorry, I guess not. We tried to avoid using the ARISC for long enough that
+anything that can have a native Linux driver has one. So the ARISC firmware has
+nothing to do while Linux is running. (This is in comparison to the vendor BSP,
+where some peripherals are only accessed through their firmware.)
+
+Samuel
+
+> Thanks,
+> 
+> 	M.
+> 
 
