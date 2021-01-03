@@ -2,170 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5472E8EE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 00:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AECD92E8EFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 00:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbhACXO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 18:14:26 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:64216 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728010AbhACXOV (ORCPT
+        id S1727217AbhACXSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 18:18:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbhACXSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 18:14:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1609715661; x=1641251661;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=ab0kb5LZ+w9RwFWSB55qvoKF9JDyVMoDbVEAnL2FQLY=;
-  b=O5cX3HDMlgWR4KOHMSzQVG/xe1D+H/5TWG4WFLcph+tjYbgYc5RnND+J
-   8x6fXtaAKUGLjb2NHwt9R3tJlBSCASdmoU4WOby6fZoDPWJd/+ZREusSb
-   rdCVFaMYywl4fVRq9y0yS7WqpaEFbhswB5CCeOplkcWp1SMYAFOwbE19s
-   j/T9dxMFS9z1OhuZ2DNCLdPvzKBtKxfp62US/CbHURX0q0ZylyqkrLYpP
-   Rq8ufvpokclFImum18e1jLMcnGFIW5mLdPcODtJpt44x48lSXOrJR7xp6
-   +qTJXAIc1tyvf2iAkRuucGJdCHuISlaVJv5x+kz9ZYuLk6pRkHjJnV19u
-   w==;
-IronPort-SDR: ix4I4ViaQhlRwSbxKpQr155lohJS61922tKx59scDaTCELuhUFQg68aQe9K/O5kO9/JwzZI6et
- H3CKRS/pODO+rwu/bNBAPGfK4JYTBwErY5f/AWLcSojl//AdzRFfM07vPzqCHggVwHAsCgzWpu
- JHSDy69QylAHgERp2wb//QvsRzPHNuig6C0p+rlbaCZoIKX+V5wFBY2eZrJ/rVyUosueCK03z7
- 90RmCSYMy/vxrmM5GaTjNSlkRorDzNoPW1hJw41Ccc0s22LbgkZ44SfsipEBIwgHtt98BTGPjP
- Jb8=
-X-IronPort-AV: E=Sophos;i="5.78,472,1599494400"; 
-   d="scan'208";a="157644129"
-Received: from mail-dm6nam12lp2176.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.176])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Jan 2021 07:13:14 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cInmzeP2RcBsonSuqMUWCuDpy2zdnzCWCIG9dtL1Kygw8cROPeupCMvUodCvbR8yMTd2ZR9DwwCQfQy+V2wdFTVBUNio4KiqBwuOhMj5Dt7ArkrKbPAYHeIjtjBzbUc6hjTV3uK6gBz05isGbmZOwTQMgSkRkui0HsdpqKiReyE0JTf3+tDU6yhqmu/8Rp5L9VmMgX6Mx2rJhVrpP23kmBbUiWGoc3/Fc0mVFszNVbuvzDQ3wCQhqVqYuCbJpIngIfVdZxN6rLnjBnk8Ym3tGIhWYSsIsVKAaG70cfNov8lTcgXPi8ooY9RlgX+rrfanA6SpbjU/ZCUXfLvByk+Vfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jzqZ/iiwg19MsdDZX1w1G3URkGbEFlUzZ7S5VxGsSE0=;
- b=V12T3aybJKd6WjEh2vzZtgvSJ2V1qNfq5BQWLm+7CORjC7evJ6xzYhsbhQovTZHHWA4+ER8hDn9aZ1vF5/v2acR3vCKG/hHUA/zyjU8pSiy/AcKSf1NgKlvWg2T7RsZQZW6z1HSDLnv1xaSodCGTNWOz0ELiyPmK74FMjS+4orrlFDT4BAN7CfZvVuV2xpb+d9U8x2H7TX15TvwYWJ4+JoTRxSBlEe6yBQeeffz6m2csCUJs8Jr6kvy5h1BAAkLSvlT4b1X4hnXQ5yhinEoO9viJWZm9iVF+Cqx9Sw4YoSH/v80u/Upx9exjFGHxdyGhZt7LBzkDo7yStxtWQ+LIMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Sun, 3 Jan 2021 18:18:40 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EEBC061573;
+        Sun,  3 Jan 2021 15:17:59 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id h22so60557554lfu.2;
+        Sun, 03 Jan 2021 15:17:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jzqZ/iiwg19MsdDZX1w1G3URkGbEFlUzZ7S5VxGsSE0=;
- b=0JVU4Ga2ZxtFr/owbWfmEUsm4yy+bdLHNvP+XKl1OdEaGSWSKiIaKrxLfiL6Uykfr4EWVTojbxSDa2ARSFJzaCRwTl/TvazNOFvaUrkgVD8ImPEjCHJ7hd/rFUcxLMhIe3BuQqPViZPGgNkRHJZEGzau+rSqUdksvWTdcD9PvWU=
-Received: from BL0PR04MB6514.namprd04.prod.outlook.com (2603:10b6:208:1ca::23)
- by BL0PR04MB4643.namprd04.prod.outlook.com (2603:10b6:208:4c::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19; Sun, 3 Jan
- 2021 23:13:12 +0000
-Received: from BL0PR04MB6514.namprd04.prod.outlook.com
- ([fe80::2dbb:7e01:f076:eca0]) by BL0PR04MB6514.namprd04.prod.outlook.com
- ([fe80::2dbb:7e01:f076:eca0%9]) with mapi id 15.20.3721.024; Sun, 3 Jan 2021
- 23:13:12 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Arnd Bergmann <arnd@kernel.org>, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        Song Liu <song@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Hannes Reinecke <hare@suse.com>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dm zoned: select CONFIG_CRC32
-Thread-Topic: [PATCH] dm zoned: select CONFIG_CRC32
-Thread-Index: AQHW4hk3MoWMUn1z2kOBENbDHLE7zw==
-Date:   Sun, 3 Jan 2021 23:13:12 +0000
-Message-ID: <BL0PR04MB651478B53B0D808BC1C557ABE7D30@BL0PR04MB6514.namprd04.prod.outlook.com>
-References: <20210103214129.1996037-1-arnd@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:4d2:96cc:b27d:4f9]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: dcf0a944-d935-4b7c-104f-08d8b03d24ae
-x-ms-traffictypediagnostic: BL0PR04MB4643:
-x-microsoft-antispam-prvs: <BL0PR04MB4643BB72E81F068A8D3EB216E7D30@BL0PR04MB4643.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2276;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AVpDQq84GWyrVmbEU/odaPd3bOKQeaIqI19nDgM1MNX9mlE1X6e+b62JMrL/i3BdN0w8zp0BkHha+1j+2g7TUHFIHROmww0SI+8xdgkQbj/WJFGniFBFo4FT8VdD9fILrlJRBaIZLShaxNSQzOZ/CotCGLFWz01IEza3yTt1QK7xTpW+qKeHifBvbmesWiEdpHCQ/jw/I8R52AmVLphxZThKuDmEgZrs0fcL1KbbdjUA7YBKrPPtE/ZyzhYkBRKkFe1K3c8uirXEoreaeNVQG5uXS4GY8oSHvgRhKssPkEPYVmCDPS/qWMQnWLR9phxzmZ0zDenIyidWFtVX5LEloF+OwRhjoAt2meA7c58kw19daQqt5TVC+XHPU69Uu2gMFlKD4uSLY28gBGNBh+a/Mw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB6514.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(346002)(376002)(366004)(396003)(316002)(52536014)(64756008)(66476007)(110136005)(5660300002)(8936002)(7696005)(66946007)(76116006)(6506007)(53546011)(2906002)(91956017)(66556008)(7416002)(86362001)(66446008)(54906003)(186003)(33656002)(8676002)(55016002)(9686003)(4326008)(478600001)(83380400001)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XuBcuqftDGm4qs+Nt1qGUa9lQGRW/x66oQRiR8bfYij4ut3G3KbEfMOPb3YA?=
- =?us-ascii?Q?y4mK+htE4QuA7nUf1syxYObydmbYG96vmZaQLm/kW+vbQ9851Rde3fbZEIyd?=
- =?us-ascii?Q?aVzIh+7LBPYwDwnCryTL8Kx8tpg2/p5LfBn4W+M7Ko6SLPZaJK38mr1e1DBe?=
- =?us-ascii?Q?GwQjTAvpogEoxHkZiXm1ihTDeQSqcPQRkOJ2lQ3fYc0hOyoNc00MOd0yy6pW?=
- =?us-ascii?Q?kVk+edEVsLsLzNexcWTIVB5C0xKedn/vEIO0DUptM5RIJN99KehGY0DnbXq5?=
- =?us-ascii?Q?64e+Ru9LvqpR5rCzA1xwMrB/C/0bffGVoPQpz9DXx5siilJ4uAi9Q+1zSc6F?=
- =?us-ascii?Q?niwfxrdGxXJnnzWJZbGyNtwF5sEK5fBxsed01hnsnSjjXXbxnrfZo+SZUo3L?=
- =?us-ascii?Q?Xzyqpaf2UPUiSZ/dVyT7YmF7IuflzKCFoRAwMeKBqMcCN2FNmYTJjIF8sefP?=
- =?us-ascii?Q?ZiSvE1dmxgsgoyumaddhTkUA/7BxcVS9hKNWR3dTfTnEVchY47fOFZ47Ak1l?=
- =?us-ascii?Q?e6/zX9G8bHbMi6ZHn2/8edEgfZPIt030H0yXcrSkx0YX0hV6WquzzzcbDIuA?=
- =?us-ascii?Q?lc2WqeSe1R4In3tRNGbS0efX+N3HyR24/+OvJGTPt8BhtTqmQgLRjUGGfb6w?=
- =?us-ascii?Q?NH2FhoVWdMyQcAEIYP4T++vZCJrpNzzkKfmR+8u6saND8bw7T+wZ0QMu0lBG?=
- =?us-ascii?Q?YswigN6zLZN1uBUxnLnFdtpUj4SkWiDvYetGifTJcaY4zy3kUhqG8REc/r5n?=
- =?us-ascii?Q?Y9ahDpnvI6vl7R2lybRfwpJ8BbsGUsaF/vHGIDVg2WF66qjtygnXf/BHg+pd?=
- =?us-ascii?Q?/1ZJGqQAmY/sVSCjAJhRs4wi1+kGgNtpa7sv5gmHB6kwXIdvesqL49iyaFtf?=
- =?us-ascii?Q?Ow8p4zL3RQ/NMrCOPde8RRhEgzVUbVtVmCorjkLDxKP/pSzHdual3s1Yg4Ll?=
- =?us-ascii?Q?sASLpbcKiriX8ztzjuJQPoD7MpLBu7vVi61RL0YjU+L947H1Fo4Tawba6glN?=
- =?us-ascii?Q?jc1uObxW5e/U9thzxS19SxzGLS2xsmVNV7Z2hhXFnEs5PRknm+aHsPLP8W2E?=
- =?us-ascii?Q?UukPQhzW?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BAvAQQ+kFb6MYxJyXY6rcBWKb+4Ftoc7s8FLX1WY9Gs=;
+        b=gynPkt3ezVczKuRJ8Of69KnuHHieIGlemh74sSHl1iekRBAqH7UgnMfYovP15R/cBf
+         Ejnu+46GhT0oMsiEUb49KAOTtBZQlmFh84nl3w3GRKpn7waLfhcYLoXX8rpsLthgBucM
+         PzNeGXthBqE4S8b3vZOF1p7uGIaONaeurCgTjpWfZFF1sXu2WFkSO2xnIpuILx77DSyt
+         SJMkW+4dHVqmFc9HCwuHAIe5wtKF7c8EpzM2tUOJdEXvdfJtxlOj2qDexwwXZKySMnBr
+         MRKOxboObO9eJ+e05IvHpe8cJSFP5pwcgQ4qRLuSbPCOWszxKGjr36v1IzI+eRKq6caI
+         YHjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BAvAQQ+kFb6MYxJyXY6rcBWKb+4Ftoc7s8FLX1WY9Gs=;
+        b=JNX0birjO0K65kRoJQ8W8lb5VoeqZ2liELFi2LlGozPyO87Bt//i1wsb/Y8jITxTA5
+         MVwtT3JkJdz4o93Q6nifXkgFZCVIcPRsBpL0ov7gxAHXRS/0u74xuEs4iNR706/Gem/p
+         PaWDv3tsr7KgZ6PFQ7j1y6ch8mBhiBdCq7opZkjAhGa2Vq9jrM5bdaMuJ2gq+FzFZTaL
+         HqbU80Xs4LIJ9FT1SG0Ng6Y0H3HP91Uc0RUSqd1R/7nlfkjcSMgrdD6K7/lYxyQ+90QF
+         Qj7nd8ysirlabADpkq7Q3A+sgtVlcfP4ITMyaU8Vd+xSsZRFHRFsy89ISXsD14dF2Sg/
+         jHNQ==
+X-Gm-Message-State: AOAM530HTx/WjLaZv7HDyLI+RLvtJ80rUxjUvpN/5KOnB+F9dlKP/8zO
+        JNeZ9Dc4EHhVqLl2FjcmaNI=
+X-Google-Smtp-Source: ABdhPJzX1PcNnVbkJVDLB865DWzaUFjzCANnvqsk8a3Ro+ia0/OP7x2mrIwcWTXg1ziTWziZmzXFRw==
+X-Received: by 2002:a2e:8695:: with SMTP id l21mr36488941lji.151.1609715878235;
+        Sun, 03 Jan 2021 15:17:58 -0800 (PST)
+Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
+        by smtp.gmail.com with ESMTPSA id c142sm7132529lfg.309.2021.01.03.15.17.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 15:17:57 -0800 (PST)
+Date:   Mon, 4 Jan 2021 01:17:55 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com
+Subject: Re: [PATCH v17 01/10] fs/ntfs3: Add headers and misc files
+Message-ID: <20210103231755.bcmyalz3maq4ama2@kari-VirtualBox>
+References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
+ <20201231152401.3162425-2-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6514.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dcf0a944-d935-4b7c-104f-08d8b03d24ae
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jan 2021 23:13:12.6511
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oW+Xs+2hgAMM+c/LEG4Jw049dHHjNgf0gc4rq7vK8Wny8tCCsTLOMv2bpWvluYBQRkz3/1TBWulrdEst7b0gOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR04MB4643
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201231152401.3162425-2-almaz.alexandrovich@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/01/04 6:41, Arnd Bergmann wrote:=0A=
-> From: Arnd Bergmann <arnd@arndb.de>=0A=
-> =0A=
-> Without crc32 support, this driver fails to link:=0A=
-> =0A=
-> arm-linux-gnueabi-ld: drivers/md/dm-zoned-metadata.o: in function `dmz_wr=
-ite_sb':=0A=
-> dm-zoned-metadata.c:(.text+0xe98): undefined reference to `crc32_le'=0A=
-> arm-linux-gnueabi-ld: drivers/md/dm-zoned-metadata.o: in function `dmz_ch=
-eck_sb':=0A=
-> dm-zoned-metadata.c:(.text+0x7978): undefined reference to `crc32_le'=0A=
-> =0A=
-> Fixes: 3b1a94c88b79 ("dm zoned: drive-managed zoned block device target")=
-=0A=
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>=0A=
-> ---=0A=
->  drivers/md/Kconfig | 1 +=0A=
->  1 file changed, 1 insertion(+)=0A=
-> =0A=
-> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig=0A=
-> index b7e2d9666614..a67b9ed3ca89 100644=0A=
-> --- a/drivers/md/Kconfig=0A=
-> +++ b/drivers/md/Kconfig=0A=
-> @@ -622,6 +622,7 @@ config DM_ZONED=0A=
->  	tristate "Drive-managed zoned block device target support"=0A=
->  	depends on BLK_DEV_DM=0A=
->  	depends on BLK_DEV_ZONED=0A=
-> +	select CRC32=0A=
->  	help=0A=
->  	  This device-mapper target takes a host-managed or host-aware zoned=0A=
->  	  block device and exposes most of its capacity as a regular block=0A=
-> =0A=
-=0A=
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>=0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+On Thu, Dec 31, 2020 at 06:23:52PM +0300, Konstantin Komarov wrote:
+
+> diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
+
+> +/*
+> + * Logging macros ( thanks Joe Perches <joe@perches.com> for implementation )
+> + */
+> +
+> +#define ntfs_err(sb, fmt, ...)  ntfs_printk(sb, KERN_ERR fmt, ##__VA_ARGS__)
+> +#define ntfs_warn(sb, fmt, ...) ntfs_printk(sb, KERN_WARNING fmt, ##__VA_ARGS__)
+> +#define ntfs_info(sb, fmt, ...) ntfs_printk(sb, KERN_INFO fmt, ##__VA_ARGS__)
+> +#define ntfs_notice(sb, fmt, ...)                                              \
+> +	ntfs_printk(sb, KERN_NOTICE fmt, ##__VA_ARGS__)
+> +
+> +#define ntfs_inode_err(inode, fmt, ...)                                        \
+> +	ntfs_inode_printk(inode, KERN_ERR fmt, ##__VA_ARGS__)
+> +#define ntfs_inode_warn(inode, fmt, ...)                                       \
+> +	ntfs_inode_printk(inode, KERN_WARNING fmt, ##__VA_ARGS__)
+> +
+> +#define ntfs_alloc(s, z)	kmalloc(s, (z) ? (GFP_NOFS | __GFP_ZERO) : GFP_NOFS)
+
+kmalloc with __GFP_ZERO is just kzalloc. So why we even need ntfs_alloc(). We
+will be much happier if we straight away see
+
+kzalloc( , GFP_NOFS) or kmalloc( , GFP_NOFS)
+
+That way it will be easier to remove GFP_NOFS flag when not needed.
+I have not knowledge but I have read that even with filesystems it
+is not good pratice to always use that flag. Another point is that
+we will get these defines deleted from debug.h. Atleast to me this
+is strange place for them. And also this not even save line space
+much.
+
+kzalloc( , GFP_NOFS)
+ntfs_alloc( , 0)
+
+ntfs_free()
+kree()
+
+I can send patch fror this if you prefer this way. And nobady not
+nack about it.
+
+> +#define ntfs_free(p)		kfree(p)
+> +#define ntfs_memdup(src, len)	kmemdup(src, len, GFP_NOFS)
+
+> diff --git a/fs/ntfs3/upcase.c b/fs/ntfs3/upcase.c
+
+> +static inline u16 upcase_unicode_char(const u16 *upcase, u16 chr)
+> +{
+> +	if (chr < 'a')
+> +		return chr;
+> +
+> +	if (chr <= 'z')
+> +		return chr - ('a' - 'A');
+> +
+> +	return upcase[chr];
+> +}
+> +
+> +int ntfs_cmp_names(const __le16 *s1, size_t l1, const __le16 *s2, size_t l2,
+> +		   const u16 *upcase)
+> +{
+> +	int diff;
+> +	size_t len = l1 < l2 ? l1 : l2;
+> +
+> +	if (upcase) {
+> +		while (len--) {
+> +			diff = upcase_unicode_char(upcase, le16_to_cpu(*s1++)) -
+> +			       upcase_unicode_char(upcase, le16_to_cpu(*s2++));
+> +			if (diff)
+> +				return diff;
+> +		}
+> +	} else {
+> +		while (len--) {
+> +			diff = le16_to_cpu(*s1++) - le16_to_cpu(*s2++);
+> +			if (diff)
+> +				return diff;
+> +		}
+> +	}
+> +
+> +	return (int)(l1 - l2);
+> +}
+
+I notice that these functions might call both ignore case and upcase in a row.
+record.c - compare_attr()
+index.c - cmp_fnames()
+
+So maybe we can add bool bothcases.
+
+int ntfs_cmp_names(const __le16 *s1, size_t l1, const __le16 *s2, size_t l2,
+		   const u16 *upcase, bool bothcase)
+{
+	int diff1 = 0;
+	int diff2;
+	size_t len = l1 < l2 ? l1 : l2;
+
+	if (!bothcase && upcase)
+		goto case_insentive;
+
+	for (; len; s1++, s2++, len--) {
+		diff1 = le16_to_cpu(*s1) - le16_to_cpu(*s2);
+		if (diff1) {
+			if (bothcase && upcase)
+				goto case_insentive;
+
+			return diff1;
+		}
+	}
+	return l1 - l2;
+
+case_insentive:
+	for (; len; s1++, s2++, len--) {
+		diff2 = upcase_unicode_char(upcase, le16_to_cpu(*s1)) -
+			 upcase_unicode_char(upcase, le16_to_cpu(*s2));
+		if (diff2)
+			return diff2;
+	}
+
+	if (bothcase && diff1)
+		return diff1;
+
+	return l1 - l2;
+}
+
+This is not tested. I can send patch for this also if you like idea.
+cmp_fnames() and compare_attr() will clean up alot with this.
+
+> +
+> +int ntfs_cmp_names_cpu(const struct cpu_str *uni1, const struct le_str *uni2,
+> +		       const u16 *upcase)
+> +{
+> +	const u16 *s1 = uni1->name;
+> +	const __le16 *s2 = uni2->name;
+> +	size_t l1 = uni1->len;
+> +	size_t l2 = uni2->len;
+> +	size_t len = l1 < l2 ? l1 : l2;
+> +	int diff;
+> +
+> +	if (upcase) {
+> +		while (len--) {
+> +			diff = upcase_unicode_char(upcase, *s1++) -
+> +			       upcase_unicode_char(upcase, le16_to_cpu(*s2++));
+> +			if (diff)
+> +				return diff;
+> +		}
+> +	} else {
+> +		while (len--) {
+> +			diff = *s1++ - le16_to_cpu(*s2++);
+> +			if (diff)
+> +				return diff;
+> +		}
+> +	}
+> +
+> +	return l1 - l2;
+> +}
