@@ -2,187 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD782E8A0A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 03:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ADE2E8A0D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 03:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbhACCmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 21:42:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725786AbhACCmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 21:42:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E6D62078E;
-        Sun,  3 Jan 2021 02:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609641695;
-        bh=OIRQ8L/we+SotlMv36OaCAMsNhkIZQAfoUawiglqwVI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cP066k1RjF1vxGqU7F2YvP6ND6FxJZATllmm3xgfFguS6QEwsJqnmGYy8dtC5gFUo
-         XvfABqX005dKyai/pL/c5SuJCLWgz61qajCXuagkrYe1brj+5jYr4bToctZGGJ7sGo
-         hFgguCDduKwm1FK8IvZ4VjRzHkchBYVmymhMWJyde0yfbrK4vY8551vJOrPGMuKdBm
-         fC65ayWFfXIRW0DvRlR5Ex58AWKJ44ruuRtf/zOAx813zL2JvakRJUGlZecnF/rZeM
-         9eAYdRPzWQUwxggcHoKGiwYukgf+6ntKv4jGYkgeGqChgPGfrwugcB+QpNXxQOPKqp
-         EqKYcoJgrZfkQ==
-Received: by pali.im (Postfix)
-        id C273C1293; Sun,  3 Jan 2021 03:41:32 +0100 (CET)
-Date:   Sun, 3 Jan 2021 03:41:32 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Thomas Schreiber <tschreibe@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <20210103024132.fpvjumilazrxiuzj@pali>
-References: <20201230170546.GU1551@shell.armlinux.org.uk>
- <X+y1K21tp01GpvMy@lunn.ch>
- <20201230174307.lvehswvj5q6c6vk3@pali>
- <20201230190958.GW1551@shell.armlinux.org.uk>
- <20201231121410.2xlxtyqjelrlysd2@pali>
- <X+3ume1+wz8HXHEf@lunn.ch>
- <20201231170039.zkoa6mij3q3gt7c6@pali>
- <X+4GwpFnJ0Asq/Yj@lunn.ch>
- <20210102014955.2xv27xla65eeqyzz@pali>
- <CALQZrspktLr3SfVRhBrVK2zhjFzJMm9tQjWXU_07zjwJytk7Cg@mail.gmail.com>
+        id S1726419AbhACCup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 21:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725786AbhACCuo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 21:50:44 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C22C061573;
+        Sat,  2 Jan 2021 18:50:04 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id c12so14238047pfo.10;
+        Sat, 02 Jan 2021 18:50:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=p6iRhZ/uYPqRIQIFRU+QWQNN/PsTmWN2Q1BgTb5rkC4=;
+        b=kmjT0+e+DXnGVq/NU58+KkWaJnAxIdBusxYqE/mjp9QJVLIDZ8pbW6u3Jpw1yh3wLI
+         WGhq9ab+bgq5iWnCOvOZaX0/Mu7XPz4CBQ5tcx2m4aLgssWPsebKfcSQKJ4A0JZIjznz
+         vs7vT+Wb+6ZjaJfKoDZbWnedxzEfQ8h/ywWRq3dsqwUTfT/rvEXQgCMzb/8p5s7djCS1
+         dPW8+KAMCSc4ujNuYaqMU8ykLEkl46MuYXZ8CHmZN3VQZlDJfx43aKgW4JxnXY9+ib7R
+         f3oX0/MlSGCXJEocqvyriKJtYskKkjq7twPLMotJtfcD3Z2ZLPrdfe1MQ5LsIoEqGQSq
+         VGyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=p6iRhZ/uYPqRIQIFRU+QWQNN/PsTmWN2Q1BgTb5rkC4=;
+        b=svo3NWnHz2/UpnAM6kYAXdBEjaJhwu3qo35IjyDGsMvuiDKUrwFXTnZ2Q+Gc4n0Pj4
+         KrZBxB8H5oYx2WmV2uudFUS9kVwNG9hoNc0ePqQ+pESKjvpIeyqY8pU3eTmOH8ZlNLc0
+         uOx3fAN7q3BLWlwD8+qX5cpvdNHEqSEq6zY6CPSkyO91NRFOshJpY7tCmHclQ+qoodyn
+         QdOXWkzPMFgwHG0CevAU6rFLjmqbltvdwkMux+uxWjb4GsssmpZXhtqUFNheytSXD4TP
+         4bco9z4DS6gHy6hozQ9qiyYJqUN6AmaQsA2LFKTEsOXCv94I19MBXWku09FhPeSGdqPO
+         KhZA==
+X-Gm-Message-State: AOAM531mxcO4vbQIdx7f18Y+2zix2snKzqKsQgcigfvA56BsAtWFGMez
+        bX1ZF6nUD61gJOtJlA5xLR4=
+X-Google-Smtp-Source: ABdhPJyejemM8Q9mdxTKugp4+eoWRPt5lN/UsVlyn+1Nll1s5Dp3arwyuTDx2u8pXxAmhgCcPIi8Ow==
+X-Received: by 2002:a63:c80e:: with SMTP id z14mr65630856pgg.435.1609642203964;
+        Sat, 02 Jan 2021 18:50:03 -0800 (PST)
+Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
+        by smtp.gmail.com with ESMTPSA id er23sm16522048pjb.12.2021.01.02.18.50.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Jan 2021 18:50:03 -0800 (PST)
+Date:   Sun, 3 Jan 2021 02:50:01 +0000
+From:   Hao Lee <haolee.swjtu@gmail.com>
+To:     tj@kernel.org
+Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, haolee.swjtu@gmail.com
+Subject: [PATCH] cgroup: Remove unnecessary call to strstrip()
+Message-ID: <20210103024846.GA15337@haolee.github.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALQZrspktLr3SfVRhBrVK2zhjFzJMm9tQjWXU_07zjwJytk7Cg@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+The string buf will be stripped in cgroup_procs_write_start() before it
+is converted to int, so remove this unnecessary call to strstrip().
 
-On Sunday 03 January 2021 03:25:23 Thomas Schreiber wrote:
-> Hi Pali,
-> I have a CarlitoxxPro module and I reported an issue about RX_LOS pin
-> to the manufacturer.
-> It looks to me that the module asserts "inverted LOS" through EEPROM
-> but does not implement it.
+Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
+---
+ kernel/cgroup/cgroup.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-So, it is broken :-( But I'm not surprised.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 5e9cb81c088a..8b3554c1113a 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4774,8 +4774,6 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 	ssize_t ret;
+ 	bool locked;
+ 
+-	buf = strstrip(buf);
+-
+ 	dst_cgrp = cgroup_kn_lock_live(of->kn, false);
+ 	if (!dst_cgrp)
+ 		return -ENODEV;
+-- 
+2.24.1
 
-Anyway, I think you could be interested in this discussion about my
-patch series, but I forgot to CC you on the first patch/cover letter.
-You can read whole discussion on public archive available at:
-
-https://lore.kernel.org/netdev/20201230154755.14746-1-pali@kernel.org/t/#u
-
-If you have any comments, let me know so I can fix it for V2.
-
-Those RTL8672/RTL9601C SFP are extremely broken and I do not think that
-"rebrander" CarlitoxxPro would do anything with it.
-
-> Consequently, the SFP state machine of my
-> host router stays in check los state and link is not set up for the
-> host interface.
-
-So link does not work at all?
-
-> Below is a dump of the module's EEPROM:
-> 
-> [root@clearfog-gt-8k ~]# ethtool -m eth0
-> Identifier                                : 0x03 (SFP)
-> Extended identifier                       : 0x04 (GBIC/SFP defined by
-> 2-wire interface ID)
-> Connector                                 : 0x01 (SC)
-> Transceiver codes                         : 0x00 0x00 0x00 0x00 0x00
-> 0x00 0x00 0x00 0x00
-> Encoding                                  : 0x03 (NRZ)
-> BR, Nominal                               : 1200MBd
-> Rate identifier                           : 0x00 (unspecified)
-> Length (SMF,km)                           : 20km
-> Length (SMF)                              : 20000m
-> Length (50um)                             : 0m
-> Length (62.5um)                           : 0m
-> Length (Copper)                           : 0m
-> Length (OM3)                              : 0m
-> Laser wavelength                          : 1310nm
-> Vendor name                               : VSOL
-> Vendor OUI                                : 00:00:00
-> Vendor PN                                 : V2801F
-> Vendor rev                                : 1.0
-> Option values                             : 0x00 0x1c
-> Option                                    : RX_LOS implemented, inverted
-> Option                                    : TX_FAULT implemented
-> Option                                    : TX_DISABLE implemented
-> BR margin, max                            : 0%
-> BR margin, min                            : 0%
-> Vendor SN                                 : CP202003180377
-> Date code                                 : 200408
-> Optical diagnostics support               : Yes
-> Laser bias current                        : 0.000 mA
-> Laser output power                        : 0.0000 mW / -inf dBm
-> Receiver signal average optical power     : 0.0000 mW / -inf dBm
-> Module temperature                        : 31.00 degrees C / 87.80 degrees F
-> Module voltage                            : 0.0000 V
-> Alarm/warning flags implemented           : Yes
-> Laser bias current high alarm             : Off
-> Laser bias current low alarm              : On
-> Laser bias current high warning           : Off
-> Laser bias current low warning            : Off
-> Laser output power high alarm             : Off
-> Laser output power low alarm              : On
-> Laser output power high warning           : Off
-> Laser output power low warning            : Off
-> Module temperature high alarm             : Off
-> Module temperature low alarm              : Off
-> Module temperature high warning           : Off
-> Module temperature low warning            : Off
-> Module voltage high alarm                 : Off
-> Module voltage low alarm                  : Off
-> Module voltage high warning               : Off
-> Module voltage low warning                : Off
-> Laser rx power high alarm                 : Off
-> Laser rx power low alarm                  : Off
-> Laser rx power high warning               : Off
-> Laser rx power low warning                : Off
-> Laser bias current high alarm threshold   : 74.752 mA
-> Laser bias current low alarm threshold    : 0.000 mA
-> Laser bias current high warning threshold : 0.000 mA
-> Laser bias current low warning threshold  : 0.000 mA
-> Laser output power high alarm threshold   : 0.0000 mW / -inf dBm
-> Laser output power low alarm threshold    : 0.0000 mW / -inf dBm
-> Laser output power high warning threshold : 0.0000 mW / -inf dBm
-> Laser output power low warning threshold  : 0.0000 mW / -inf dBm
-> Module temperature high alarm threshold   : 90.00 degrees C / 194.00 degrees F
-> Module temperature low alarm threshold    : 0.00 degrees C / 32.00 degrees F
-> Module temperature high warning threshold : 0.00 degrees C / 32.00 degrees F
-> Module temperature low warning threshold  : 0.00 degrees C / 32.00 degrees F
-> Module voltage high alarm threshold       : 0.0000 V
-> Module voltage low alarm threshold        : 0.0000 V
-> Module voltage high warning threshold     : 0.0000 V
-> Module voltage low warning threshold      : 0.0000 V
-> Laser rx power high alarm threshold       : 0.1536 mW / -8.14 dBm
-> Laser rx power low alarm threshold        : 0.0000 mW / -inf dBm
-> Laser rx power high warning threshold     : 0.0000 mW / -inf dBm
-> Laser rx power low warning threshold      : 0.0000 mW / -inf dBm
-> 
-> 
-> Le sam. 2 janv. 2021 à 02:49, Pali Rohár <pali@kernel.org> a écrit :
-> >
-> > On Thursday 31 December 2020 18:13:38 Andrew Lunn wrote:
-> > > > > Looking at sfp_module_info(), adding a check for i2c_block_size < 2
-> > > > > when determining what length to return. ethtool should do the right
-> > > > > thing, know that the second page has not been returned to user space.
-> > > >
-> > > > But if we limit length of eeprom then userspace would not be able to
-> > > > access those TX_DISABLE, LOS and other bits from byte 110 at address A2.
-> > >
-> > > Have you tested these bits to see if they actually work? If they don't
-> > > work...
-> >
-> > On Ubiquiti module that LOS bit does not work.
-> >
-> > I think that on CarlitoxxPro module LOS bit worked. But I cannot test it
-> > right now as I do not have access to testing OLT unit.
-> >
-> > Adding Thomas to loop. Can you check if CarlitoxxPro GPON ONT module
-> > supports LOS or other bits at byte offset 110 at address A2?
