@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8596E2E8B4D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 08:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383962E8B54
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 09:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbhACHvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 02:51:48 -0500
-Received: from mx-rz-2.rrze.uni-erlangen.de ([131.188.11.21]:51769 "EHLO
-        mx-rz-2.rrze.uni-erlangen.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726485AbhACHvr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 02:51:47 -0500
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4D7rY52XgJzPjlR;
-        Sun,  3 Jan 2021 08:51:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2013;
-        t=1609660265; bh=QzvSaay1vpBL4uNH05Tptc9ZyPGke0vS50orSu+D3Q4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
-         Subject;
-        b=nN86xNYf26eIZDbbRPKHuX5a0jHZ915tQn1KpZll7aV0xpHU5UvxRWI9ZXLCX0yZD
-         BS51rvHYMQQ/wsEvmu5avr+WYw3NDUFSZojRGfn+t1V3Mq/gdyLzOCFeiiize0PfXY
-         Sr77cMeFhFUQcRFlsFtra/CFI0oybn016E1p0mKBMyMNruXSf6NZ5CrW3zz5qGtGeG
-         G5BqqhT7RkIlENEwiTeKEJg24F2rrg0XJ7oPt1mcp6VacCtS/o6yUV+WGs3qDIKYQN
-         F+KGoSyLKnQPqULcLbYVVqwHqzJkeA86Fmq5fFuo1ozZZ2FRL8OACBDySPA3HitDS+
-         ghecvoijKiqAg==
-X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 172.17.10.69
-Received: from localhost.localdomain (rat69.ratnet.stw.uni-erlangen.de [172.17.10.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: U2FsdGVkX1/QjcoyQGWNye7Tyj5c5+djQEmW9gyJkNM=)
-        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4D7rXy1pz1zPjhV;
-        Sun,  3 Jan 2021 08:50:58 +0100 (CET)
-From:   Nicolai Fischer <nicolai.fischer@fau.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     joe@perches.com, apw@canonical.com, akpm@linux-foundation.org,
-        nicolai.fischer@fau.de, johannes.czekay@fau.de,
-        linux-kernel@i4.cs.fau.de
-Subject: [PATCH v3 5/5] checkpatch: kconfig: enforce block indentation
-Date:   Sun,  3 Jan 2021 08:50:15 +0100
-Message-Id: <20210103075015.23946-6-nicolai.fischer@fau.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210103075015.23946-1-nicolai.fischer@fau.de>
-References: <20201226140511.662368-1-nicolai.fischer@fau.de>
- <20210103075015.23946-1-nicolai.fischer@fau.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726380AbhACIKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 03:10:11 -0500
+Received: from mail.zju.edu.cn ([61.164.42.155]:16078 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725829AbhACIKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 03:10:11 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app4 (Coremail) with SMTP id cS_KCgB3XzuLe_FfqzJNAA--.49917S4;
+        Sun, 03 Jan 2021 16:08:47 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: ixgbe: Fix memleak in ixgbe_configure_clsu32
+Date:   Sun,  3 Jan 2021 16:08:42 +0800
+Message-Id: <20210103080843.25914-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgB3XzuLe_FfqzJNAA--.49917S4
+X-Coremail-Antispam: 1UD129KBjvdXoWruw47Xw4DurWDXrykAFyDGFg_yoWkurX_C3
+        4fXF4qyw45CryruFs8tr13Aasagrs8Xr93uFsrKrWfJr1UGrWxGwn5XrWfJr47Ww45uFyD
+        AFsrKw1Iya4UAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
+        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0OBlZdtRzbxwABs4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a new warning to checkpatch in case a new Kconfig block
-is not indented one sigle tab more than the keyword which
-starts it.
+When ixgbe_fdir_write_perfect_filter_82599() fails,
+input allocated by kzalloc() has not been freed,
+which leads to memleak.
 
-Co-developed-by: Johannes Czekay <johannes.czekay@fau.de>
-Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
-Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- scripts/checkpatch.pl | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 805b5870803f..8a82ea5c2eb3 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3306,7 +3306,8 @@ sub process {
- 		    # 'choice' is usually the last thing on the line (though
- 		    # Kconfig supports named choices), so use a word boundary
- 		    # (\b) rather than a whitespace character (\s)
--		    $line =~ /^\+\s*(?:config|menuconfig|choice)\b/) {
-+		    $line =~ /^\+(\s*)(?:config|menuconfig|choice)\b/) {
-+			my $base_indent = $1;
- 			my $length = 0;
- 			my $cnt = $realcnt;
- 			my $ln = $linenr + 1;
-@@ -3315,6 +3316,7 @@ sub process {
- 			my $is_end = 0;
- 			my $help_indent;
- 			my $help_stat_real;
-+			my $block_stat_real;
- 			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
- 				$f = $lines[$ln - 1];
- 				$cnt-- if ($lines[$ln - 1] !~ /^-/);
-@@ -3323,7 +3325,10 @@ sub process {
- 				next if ($f =~ /^-/);
- 				last if (!$file && $f =~ /^\@\@/);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 393d1c2cd853..e9c2d28efc81 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -9582,8 +9582,10 @@ static int ixgbe_configure_clsu32(struct ixgbe_adapter *adapter,
+ 	ixgbe_atr_compute_perfect_hash_82599(&input->filter, mask);
+ 	err = ixgbe_fdir_write_perfect_filter_82599(hw, &input->filter,
+ 						    input->sw_idx, queue);
+-	if (!err)
+-		ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
++	if (err)
++		goto err_out_w_lock;
++
++	ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
+ 	spin_unlock(&adapter->fdir_perfect_lock);
  
--				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|int|hex|string|prompt)\s*(?:["'].*)?$/) {
-+				if ($lines[$ln - 1] =~ /^\+(\s*)(?:bool|tristate|int|hex|string|prompt)\s*(?:["'].*)?$/) {
-+					if ($1 !~ /^$base_indent\t$/) {
-+						$block_stat_real = get_stat_real($linenr, $ln);
-+					}
- 					$is_start = 1;
- 				} elsif ($lines[$ln - 1] =~ /^\+(\s*)help$/) {
- 					$help_indent = $1;
-@@ -3358,6 +3363,10 @@ sub process {
- 				WARN("CONFIG_DESCRIPTION",
- 				     "please write a paragraph ($length/$min_conf_desc_length lines) that describes the config symbol fully\n" . $herecurr);
- 			}
-+			if ($is_start && $is_end && defined $block_stat_real) {
-+				WARN("CONFIG_DESCRIPTION",
-+				     "please indent the block a single tab more than the start\n" . "$here\n$block_stat_real\n");
-+			}
- 			if ($is_start && $is_end && defined $help_stat_real) {
- 				WARN("CONFIG_DESCRIPTION",
- 				     "please indent the help text two spaces more than the keyword\n" . "$here\n$help_stat_real\n");
+ 	if ((uhtid != 0x800) && (adapter->jump_tables[uhtid]))
 -- 
-2.29.2
+2.17.1
 
