@@ -2,670 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35562E8EEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 00:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5472E8EE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 00:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728082AbhACXOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 18:14:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728067AbhACXOb (ORCPT
+        id S1728051AbhACXO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 18:14:26 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:64216 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728010AbhACXOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 18:14:31 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093E5C0617A6;
-        Sun,  3 Jan 2021 15:13:15 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id y23so17212346wmi.1;
-        Sun, 03 Jan 2021 15:13:14 -0800 (PST)
+        Sun, 3 Jan 2021 18:14:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1609715661; x=1641251661;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=ab0kb5LZ+w9RwFWSB55qvoKF9JDyVMoDbVEAnL2FQLY=;
+  b=O5cX3HDMlgWR4KOHMSzQVG/xe1D+H/5TWG4WFLcph+tjYbgYc5RnND+J
+   8x6fXtaAKUGLjb2NHwt9R3tJlBSCASdmoU4WOby6fZoDPWJd/+ZREusSb
+   rdCVFaMYywl4fVRq9y0yS7WqpaEFbhswB5CCeOplkcWp1SMYAFOwbE19s
+   j/T9dxMFS9z1OhuZ2DNCLdPvzKBtKxfp62US/CbHURX0q0ZylyqkrLYpP
+   Rq8ufvpokclFImum18e1jLMcnGFIW5mLdPcODtJpt44x48lSXOrJR7xp6
+   +qTJXAIc1tyvf2iAkRuucGJdCHuISlaVJv5x+kz9ZYuLk6pRkHjJnV19u
+   w==;
+IronPort-SDR: ix4I4ViaQhlRwSbxKpQr155lohJS61922tKx59scDaTCELuhUFQg68aQe9K/O5kO9/JwzZI6et
+ H3CKRS/pODO+rwu/bNBAPGfK4JYTBwErY5f/AWLcSojl//AdzRFfM07vPzqCHggVwHAsCgzWpu
+ JHSDy69QylAHgERp2wb//QvsRzPHNuig6C0p+rlbaCZoIKX+V5wFBY2eZrJ/rVyUosueCK03z7
+ 90RmCSYMy/vxrmM5GaTjNSlkRorDzNoPW1hJw41Ccc0s22LbgkZ44SfsipEBIwgHtt98BTGPjP
+ Jb8=
+X-IronPort-AV: E=Sophos;i="5.78,472,1599494400"; 
+   d="scan'208";a="157644129"
+Received: from mail-dm6nam12lp2176.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.176])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Jan 2021 07:13:14 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cInmzeP2RcBsonSuqMUWCuDpy2zdnzCWCIG9dtL1Kygw8cROPeupCMvUodCvbR8yMTd2ZR9DwwCQfQy+V2wdFTVBUNio4KiqBwuOhMj5Dt7ArkrKbPAYHeIjtjBzbUc6hjTV3uK6gBz05isGbmZOwTQMgSkRkui0HsdpqKiReyE0JTf3+tDU6yhqmu/8Rp5L9VmMgX6Mx2rJhVrpP23kmBbUiWGoc3/Fc0mVFszNVbuvzDQ3wCQhqVqYuCbJpIngIfVdZxN6rLnjBnk8Ym3tGIhWYSsIsVKAaG70cfNov8lTcgXPi8ooY9RlgX+rrfanA6SpbjU/ZCUXfLvByk+Vfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jzqZ/iiwg19MsdDZX1w1G3URkGbEFlUzZ7S5VxGsSE0=;
+ b=V12T3aybJKd6WjEh2vzZtgvSJ2V1qNfq5BQWLm+7CORjC7evJ6xzYhsbhQovTZHHWA4+ER8hDn9aZ1vF5/v2acR3vCKG/hHUA/zyjU8pSiy/AcKSf1NgKlvWg2T7RsZQZW6z1HSDLnv1xaSodCGTNWOz0ELiyPmK74FMjS+4orrlFDT4BAN7CfZvVuV2xpb+d9U8x2H7TX15TvwYWJ4+JoTRxSBlEe6yBQeeffz6m2csCUJs8Jr6kvy5h1BAAkLSvlT4b1X4hnXQ5yhinEoO9viJWZm9iVF+Cqx9Sw4YoSH/v80u/Upx9exjFGHxdyGhZt7LBzkDo7yStxtWQ+LIMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EwkhEI/FPvHA9p3mjBU+cyB+dP2HFE9vzG+mhbcoDRo=;
-        b=C0R6cG7mRaH5fmCVYj2r51mZsZVf0tBjnQnPO4PDNLUI39/KM3kL/xEDyku7R+DrN2
-         J9qsgPLEMyOFTGs6OGLibyuPzq8Y1K6zCoZG/W+XtWR4Rmvy5PyibFstEmrDI8V5udEu
-         0NnwQJ3g2OVh3Oc7POQrTph4r5tdRdhV+PcLS47xj8OnJ4amSLJiYjthRDX+0NT7BW/n
-         AJ428cvjDUD8J2OZ28LvgCcPZtkpjQHzKSEmvg/qsmjlFpDq2wEtxTRjF8VWtoEFYZiH
-         rpp9GdfqHX6DmCbjhOp70j4jaS2Gmxsr1yzb4dQYcwt8ugCiqlOvpSuhmLP/TSgeBx5F
-         Dy5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EwkhEI/FPvHA9p3mjBU+cyB+dP2HFE9vzG+mhbcoDRo=;
-        b=uigLyLLdfMrYeL2pAngueZeD8KugI5F4LLjTcDaEJqK9o7eeWo14nuaUMRjvoK6zJ7
-         6eX14YyPFQZgjF1pA2Q5qkGhN8H6LN7coqIt/qphq7yX2osaflwGseTjb6YXpMTRzYXO
-         8vvQcZ1o4Nx0jO3W9OQJN7ouaWcB1UvJ7WcSl+mwvt1HFZazj4CCFo3uwYEo3Ry8c+vX
-         VqM/E/TxX5Rbzcp3ARPvbJRoCSQeR/wjZyPMhgXfEDq7DJSBwGSG17Euvx3a61jwybgC
-         3PeavTH8XkLKb+TGpBNBeAfwrCUb7wSBZiqTL+BIaREmYxJjIteOJ/ln+DvQy05axYrO
-         IvxQ==
-X-Gm-Message-State: AOAM530/+efs2MAemoVTqEmq2YSlrdvBtSb3EbsSrDFvodGord9wMlpC
-        UtItaUW3lxTDVG4ffWKos5U5hEGYCh+1c/pA
-X-Google-Smtp-Source: ABdhPJy0NG0hq2zY4DBGcG3e/DW4NzsttITt2vwkKijFGdm6TjkMlp8Itm27JetWEdztYkVBl7VM1A==
-X-Received: by 2002:a1c:2b46:: with SMTP id r67mr24378722wmr.162.1609715593688;
-        Sun, 03 Jan 2021 15:13:13 -0800 (PST)
-Received: from valhalla.home ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id h9sm32571018wme.11.2021.01.03.15.13.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 15:13:13 -0800 (PST)
-From:   Daniel Scally <djrscally@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org,
-        gregkh@linuxfoundation.org, rjw@rjwysocki.net,
-        sergey.senozhatsky@gmail.com, mchehab@kernel.org
-Cc:     lenb@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
-        niklas.soderlund+renesas@ragnatech.se, slongerbeam@gmail.com,
-        heikki.krogerus@linux.intel.com, linus.walleij@linaro.org,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v4 15/15] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-Date:   Sun,  3 Jan 2021 23:12:35 +0000
-Message-Id: <20210103231235.792999-16-djrscally@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210103231235.792999-1-djrscally@gmail.com>
-References: <20210103231235.792999-1-djrscally@gmail.com>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jzqZ/iiwg19MsdDZX1w1G3URkGbEFlUzZ7S5VxGsSE0=;
+ b=0JVU4Ga2ZxtFr/owbWfmEUsm4yy+bdLHNvP+XKl1OdEaGSWSKiIaKrxLfiL6Uykfr4EWVTojbxSDa2ARSFJzaCRwTl/TvazNOFvaUrkgVD8ImPEjCHJ7hd/rFUcxLMhIe3BuQqPViZPGgNkRHJZEGzau+rSqUdksvWTdcD9PvWU=
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com (2603:10b6:208:1ca::23)
+ by BL0PR04MB4643.namprd04.prod.outlook.com (2603:10b6:208:4c::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19; Sun, 3 Jan
+ 2021 23:13:12 +0000
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::2dbb:7e01:f076:eca0]) by BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::2dbb:7e01:f076:eca0%9]) with mapi id 15.20.3721.024; Sun, 3 Jan 2021
+ 23:13:12 +0000
+From:   Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     Arnd Bergmann <arnd@kernel.org>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        Song Liu <song@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Hannes Reinecke <hare@suse.com>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] dm zoned: select CONFIG_CRC32
+Thread-Topic: [PATCH] dm zoned: select CONFIG_CRC32
+Thread-Index: AQHW4hk3MoWMUn1z2kOBENbDHLE7zw==
+Date:   Sun, 3 Jan 2021 23:13:12 +0000
+Message-ID: <BL0PR04MB651478B53B0D808BC1C557ABE7D30@BL0PR04MB6514.namprd04.prod.outlook.com>
+References: <20210103214129.1996037-1-arnd@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2400:2411:43c0:6000:4d2:96cc:b27d:4f9]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: dcf0a944-d935-4b7c-104f-08d8b03d24ae
+x-ms-traffictypediagnostic: BL0PR04MB4643:
+x-microsoft-antispam-prvs: <BL0PR04MB4643BB72E81F068A8D3EB216E7D30@BL0PR04MB4643.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2276;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AVpDQq84GWyrVmbEU/odaPd3bOKQeaIqI19nDgM1MNX9mlE1X6e+b62JMrL/i3BdN0w8zp0BkHha+1j+2g7TUHFIHROmww0SI+8xdgkQbj/WJFGniFBFo4FT8VdD9fILrlJRBaIZLShaxNSQzOZ/CotCGLFWz01IEza3yTt1QK7xTpW+qKeHifBvbmesWiEdpHCQ/jw/I8R52AmVLphxZThKuDmEgZrs0fcL1KbbdjUA7YBKrPPtE/ZyzhYkBRKkFe1K3c8uirXEoreaeNVQG5uXS4GY8oSHvgRhKssPkEPYVmCDPS/qWMQnWLR9phxzmZ0zDenIyidWFtVX5LEloF+OwRhjoAt2meA7c58kw19daQqt5TVC+XHPU69Uu2gMFlKD4uSLY28gBGNBh+a/Mw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB6514.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(346002)(376002)(366004)(396003)(316002)(52536014)(64756008)(66476007)(110136005)(5660300002)(8936002)(7696005)(66946007)(76116006)(6506007)(53546011)(2906002)(91956017)(66556008)(7416002)(86362001)(66446008)(54906003)(186003)(33656002)(8676002)(55016002)(9686003)(4326008)(478600001)(83380400001)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XuBcuqftDGm4qs+Nt1qGUa9lQGRW/x66oQRiR8bfYij4ut3G3KbEfMOPb3YA?=
+ =?us-ascii?Q?y4mK+htE4QuA7nUf1syxYObydmbYG96vmZaQLm/kW+vbQ9851Rde3fbZEIyd?=
+ =?us-ascii?Q?aVzIh+7LBPYwDwnCryTL8Kx8tpg2/p5LfBn4W+M7Ko6SLPZaJK38mr1e1DBe?=
+ =?us-ascii?Q?GwQjTAvpogEoxHkZiXm1ihTDeQSqcPQRkOJ2lQ3fYc0hOyoNc00MOd0yy6pW?=
+ =?us-ascii?Q?kVk+edEVsLsLzNexcWTIVB5C0xKedn/vEIO0DUptM5RIJN99KehGY0DnbXq5?=
+ =?us-ascii?Q?64e+Ru9LvqpR5rCzA1xwMrB/C/0bffGVoPQpz9DXx5siilJ4uAi9Q+1zSc6F?=
+ =?us-ascii?Q?niwfxrdGxXJnnzWJZbGyNtwF5sEK5fBxsed01hnsnSjjXXbxnrfZo+SZUo3L?=
+ =?us-ascii?Q?Xzyqpaf2UPUiSZ/dVyT7YmF7IuflzKCFoRAwMeKBqMcCN2FNmYTJjIF8sefP?=
+ =?us-ascii?Q?ZiSvE1dmxgsgoyumaddhTkUA/7BxcVS9hKNWR3dTfTnEVchY47fOFZ47Ak1l?=
+ =?us-ascii?Q?e6/zX9G8bHbMi6ZHn2/8edEgfZPIt030H0yXcrSkx0YX0hV6WquzzzcbDIuA?=
+ =?us-ascii?Q?lc2WqeSe1R4In3tRNGbS0efX+N3HyR24/+OvJGTPt8BhtTqmQgLRjUGGfb6w?=
+ =?us-ascii?Q?NH2FhoVWdMyQcAEIYP4T++vZCJrpNzzkKfmR+8u6saND8bw7T+wZ0QMu0lBG?=
+ =?us-ascii?Q?YswigN6zLZN1uBUxnLnFdtpUj4SkWiDvYetGifTJcaY4zy3kUhqG8REc/r5n?=
+ =?us-ascii?Q?Y9ahDpnvI6vl7R2lybRfwpJ8BbsGUsaF/vHGIDVg2WF66qjtygnXf/BHg+pd?=
+ =?us-ascii?Q?/1ZJGqQAmY/sVSCjAJhRs4wi1+kGgNtpa7sv5gmHB6kwXIdvesqL49iyaFtf?=
+ =?us-ascii?Q?Ow8p4zL3RQ/NMrCOPde8RRhEgzVUbVtVmCorjkLDxKP/pSzHdual3s1Yg4Ll?=
+ =?us-ascii?Q?sASLpbcKiriX8ztzjuJQPoD7MpLBu7vVi61RL0YjU+L947H1Fo4Tawba6glN?=
+ =?us-ascii?Q?jc1uObxW5e/U9thzxS19SxzGLS2xsmVNV7Z2hhXFnEs5PRknm+aHsPLP8W2E?=
+ =?us-ascii?Q?UukPQhzW?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6514.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dcf0a944-d935-4b7c-104f-08d8b03d24ae
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jan 2021 23:13:12.6511
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oW+Xs+2hgAMM+c/LEG4Jw049dHHjNgf0gc4rq7vK8Wny8tCCsTLOMv2bpWvluYBQRkz3/1TBWulrdEst7b0gOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR04MB4643
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently on platforms designed for Windows, connections between CIO2 and
-sensors are not properly defined in DSDT. This patch extends the ipu3-cio2
-driver to compensate by building software_node connections, parsing the
-connection properties from the sensor's SSDB buffer.
-
-Suggested-by: Jordan Hand <jorhand@linux.microsoft.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Daniel Scally <djrscally@gmail.com>
----
-Changes in v4:
-
-	- Added local definition of CIO2_MAX_LANES
-	- Added some includes to cio2-bridge.h
-	- Moved the inner loop of cio2_bridge_connect_sensors() to a
-	  standalone function
-	- Altered macros to make explicit assignments to members rather
-	  than relying on position
-	- A couple of minor format changes, mostly line wrapping
-
- MAINTAINERS                                   |   1 +
- drivers/media/pci/intel/ipu3/Kconfig          |  18 ++
- drivers/media/pci/intel/ipu3/Makefile         |   1 +
- drivers/media/pci/intel/ipu3/cio2-bridge.c    | 302 ++++++++++++++++++
- drivers/media/pci/intel/ipu3/cio2-bridge.h    | 125 ++++++++
- drivers/media/pci/intel/ipu3/ipu3-cio2-main.c |  33 ++
- drivers/media/pci/intel/ipu3/ipu3-cio2.h      |   6 +
- 7 files changed, 486 insertions(+)
- create mode 100644 drivers/media/pci/intel/ipu3/cio2-bridge.c
- create mode 100644 drivers/media/pci/intel/ipu3/cio2-bridge.h
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 16b544624577..e7784b4bc8ea 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8943,6 +8943,7 @@ INTEL IPU3 CSI-2 CIO2 DRIVER
- M:	Yong Zhi <yong.zhi@intel.com>
- M:	Sakari Ailus <sakari.ailus@linux.intel.com>
- M:	Bingbu Cao <bingbu.cao@intel.com>
-+M:	Dan Scally <djrscally@gmail.com>
- R:	Tianshu Qiu <tian.shu.qiu@intel.com>
- L:	linux-media@vger.kernel.org
- S:	Maintained
-diff --git a/drivers/media/pci/intel/ipu3/Kconfig b/drivers/media/pci/intel/ipu3/Kconfig
-index 82d7f17e6a02..96a2231b16ad 100644
---- a/drivers/media/pci/intel/ipu3/Kconfig
-+++ b/drivers/media/pci/intel/ipu3/Kconfig
-@@ -16,3 +16,21 @@ config VIDEO_IPU3_CIO2
- 	  Say Y or M here if you have a Skylake/Kaby Lake SoC with MIPI CSI-2
- 	  connected camera.
- 	  The module will be called ipu3-cio2.
-+
-+config CIO2_BRIDGE
-+	bool "IPU3 CIO2 Sensors Bridge"
-+	depends on VIDEO_IPU3_CIO2
-+	help
-+	  This extension provides an API for the ipu3-cio2 driver to create
-+	  connections to cameras that are hidden in the SSDB buffer in ACPI.
-+	  It can be used to enable support for cameras in detachable / hybrid
-+	  devices that ship with Windows.
-+
-+	  Say Y here if your device is a detachable / hybrid laptop that comes
-+	  with Windows installed by the OEM, for example:
-+
-+		- Microsoft Surface models (except Surface Pro 3)
-+		- The Lenovo Miix line (for example the 510, 520, 710 and 720)
-+		- Dell 7285
-+
-+	  If in doubt, say N here.
-diff --git a/drivers/media/pci/intel/ipu3/Makefile b/drivers/media/pci/intel/ipu3/Makefile
-index 429d516452e4..933777e6ea8a 100644
---- a/drivers/media/pci/intel/ipu3/Makefile
-+++ b/drivers/media/pci/intel/ipu3/Makefile
-@@ -2,3 +2,4 @@
- obj-$(CONFIG_VIDEO_IPU3_CIO2) += ipu3-cio2.o
- 
- ipu3-cio2-y += ipu3-cio2-main.o
-+ipu3-cio2-$(CONFIG_CIO2_BRIDGE) += cio2-bridge.o
-diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-new file mode 100644
-index 000000000000..3a7bedb08f66
---- /dev/null
-+++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-@@ -0,0 +1,302 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Author: Dan Scally <djrscally@gmail.com> */
-+
-+#include <linux/acpi.h>
-+#include <linux/device.h>
-+#include <linux/pci.h>
-+#include <linux/property.h>
-+#include <media/v4l2-fwnode.h>
-+
-+#include "cio2-bridge.h"
-+
-+/*
-+ * Extend this array with ACPI Hardware IDs of devices known to be working
-+ * plus the number of link-frequencies expected by their drivers, along with
-+ * the frequency values in hertz. This is somewhat opportunistic way of adding
-+ * support for this for now in the hopes of a better source for the information
-+ * (possibly some encoded value in the SSDB buffer that we're unaware of)
-+ * becoming apparent in the future.
-+ *
-+ * Do not add an entry for a sensor that is not actually supported.
-+ */
-+static const struct cio2_sensor_config cio2_supported_sensors[] = {
-+	CIO2_SENSOR_CONFIG("INT33BE", 0),
-+	CIO2_SENSOR_CONFIG("OVTI2680", 0),
-+};
-+
-+static const struct cio2_property_names prop_names = {
-+	.clock_frequency = "clock-frequency",
-+	.rotation = "rotation",
-+	.bus_type = "bus-type",
-+	.data_lanes = "data-lanes",
-+	.remote_endpoint = "remote-endpoint",
-+	.link_frequencies = "link-frequencies",
-+};
-+
-+static int cio2_bridge_read_acpi_buffer(struct acpi_device *adev, char *id,
-+					void *data, u32 size)
-+{
-+	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-+	union acpi_object *obj;
-+	acpi_status status;
-+	int ret = 0;
-+
-+	status = acpi_evaluate_object(adev->handle, id, NULL, &buffer);
-+	if (ACPI_FAILURE(status))
-+		return -ENODEV;
-+
-+	obj = buffer.pointer;
-+	if (!obj) {
-+		dev_err(&adev->dev, "Couldn't locate ACPI buffer\n");
-+		return -ENODEV;
-+	}
-+
-+	if (obj->type != ACPI_TYPE_BUFFER) {
-+		dev_err(&adev->dev, "Not an ACPI buffer\n");
-+		ret = -ENODEV;
-+		goto out_free_buff;
-+	}
-+
-+	if (obj->buffer.length > size) {
-+		dev_err(&adev->dev, "Given buffer is too small\n");
-+		ret = -EINVAL;
-+		goto out_free_buff;
-+	}
-+
-+	memcpy(data, obj->buffer.pointer, obj->buffer.length);
-+
-+out_free_buff:
-+	kfree(buffer.pointer);
-+	return ret;
-+}
-+
-+static void cio2_bridge_create_fwnode_properties(
-+	struct cio2_sensor *sensor,
-+	const struct cio2_sensor_config *cfg)
-+{
-+	unsigned int i;
-+
-+	sensor->prop_names = prop_names;
-+
-+	for (i = 0; i < CIO2_MAX_LANES; i++)
-+		sensor->data_lanes[i] = i + 1;
-+
-+	sensor->local_ref[0].node = &sensor->swnodes[SWNODE_CIO2_ENDPOINT];
-+	sensor->remote_ref[0].node = &sensor->swnodes[SWNODE_SENSOR_ENDPOINT];
-+
-+	sensor->dev_properties[0] = PROPERTY_ENTRY_U32(
-+					sensor->prop_names.clock_frequency,
-+					sensor->ssdb.mclkspeed);
-+	sensor->dev_properties[1] = PROPERTY_ENTRY_U8(
-+					sensor->prop_names.rotation,
-+					sensor->ssdb.degree);
-+
-+	sensor->ep_properties[0] = PROPERTY_ENTRY_U32(
-+					sensor->prop_names.bus_type,
-+					V4L2_FWNODE_BUS_TYPE_CSI2_DPHY);
-+	sensor->ep_properties[1] = PROPERTY_ENTRY_U32_ARRAY_LEN(
-+					sensor->prop_names.data_lanes,
-+					sensor->data_lanes,
-+					sensor->ssdb.lanes);
-+	sensor->ep_properties[2] = PROPERTY_ENTRY_REF_ARRAY(
-+					sensor->prop_names.remote_endpoint,
-+					sensor->local_ref);
-+
-+	if (cfg->nr_link_freqs > 0)
-+		sensor->ep_properties[3] = PROPERTY_ENTRY_U64_ARRAY_LEN(
-+						sensor->prop_names.link_frequencies,
-+						cfg->link_freqs,
-+						cfg->nr_link_freqs);
-+
-+	sensor->cio2_properties[0] = PROPERTY_ENTRY_U32_ARRAY_LEN(
-+					sensor->prop_names.data_lanes,
-+					sensor->data_lanes,
-+					sensor->ssdb.lanes);
-+	sensor->cio2_properties[1] = PROPERTY_ENTRY_REF_ARRAY(
-+					sensor->prop_names.remote_endpoint,
-+					sensor->remote_ref);
-+}
-+
-+static void cio2_bridge_init_swnode_names(struct cio2_sensor *sensor)
-+{
-+	snprintf(sensor->node_names.remote_port,
-+		 sizeof(sensor->node_names.remote_port),
-+		 SWNODE_GRAPH_PORT_NAME_FMT, sensor->ssdb.link);
-+	snprintf(sensor->node_names.port,
-+		 sizeof(sensor->node_names.port),
-+		 SWNODE_GRAPH_PORT_NAME_FMT, 0); /* Always port 0 */
-+	snprintf(sensor->node_names.endpoint,
-+		 sizeof(sensor->node_names.endpoint),
-+		 SWNODE_GRAPH_ENDPOINT_NAME_FMT, 0); /* And endpoint 0 */
-+}
-+
-+static void cio2_bridge_create_connection_swnodes(struct cio2_bridge *bridge,
-+						  struct cio2_sensor *sensor)
-+{
-+	struct software_node *nodes = sensor->swnodes;
-+
-+	cio2_bridge_init_swnode_names(sensor);
-+
-+	nodes[SWNODE_SENSOR_HID] = NODE_SENSOR(sensor->name,
-+					       sensor->dev_properties);
-+	nodes[SWNODE_SENSOR_PORT] = NODE_PORT(sensor->node_names.port,
-+					      &nodes[SWNODE_SENSOR_HID]);
-+	nodes[SWNODE_SENSOR_ENDPOINT] = NODE_ENDPOINT(
-+						sensor->node_names.endpoint,
-+						&nodes[SWNODE_SENSOR_PORT],
-+						sensor->ep_properties);
-+	nodes[SWNODE_CIO2_PORT] = NODE_PORT(sensor->node_names.remote_port,
-+					    &bridge->cio2_hid_node);
-+	nodes[SWNODE_CIO2_ENDPOINT] = NODE_ENDPOINT(
-+						sensor->node_names.endpoint,
-+						&nodes[SWNODE_CIO2_PORT],
-+						sensor->cio2_properties);
-+}
-+
-+static void cio2_bridge_unregister_sensors(struct cio2_bridge *bridge)
-+{
-+	struct cio2_sensor *sensor;
-+	unsigned int i;
-+
-+	for (i = 0; i < bridge->n_sensors; i++) {
-+		sensor = &bridge->sensors[i];
-+		software_node_unregister_nodes(sensor->swnodes);
-+		acpi_dev_put(sensor->adev);
-+	}
-+}
-+
-+static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
-+				      struct cio2_bridge *bridge,
-+				      struct pci_dev *cio2)
-+{
-+	struct fwnode_handle *fwnode;
-+	struct cio2_sensor *sensor;
-+	struct acpi_device *adev;
-+	int ret;
-+
-+	for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
-+		if (bridge->n_sensors >= CIO2_NUM_PORTS) {
-+			dev_err(&cio2->dev, "Exceeded available CIO2 ports\n");
-+			cio2_bridge_unregister_sensors(bridge);
-+			ret = -EINVAL;
-+			goto err_out;
-+		}
-+
-+		if (!adev->status.enabled)
-+			continue;
-+
-+		sensor = &bridge->sensors[bridge->n_sensors];
-+		sensor->adev = adev;
-+		strscpy(sensor->name, cfg->hid, sizeof(sensor->name));
-+
-+		ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
-+						   &sensor->ssdb,
-+						   sizeof(sensor->ssdb));
-+		if (ret)
-+			goto err_put_adev;
-+
-+		if (sensor->ssdb.lanes > CIO2_MAX_LANES) {
-+			dev_err(&adev->dev,
-+				"Number of lanes in SSDB is invalid\n");
-+			ret = -EINVAL;
-+			goto err_put_adev;
-+		}
-+
-+		cio2_bridge_create_fwnode_properties(sensor, cfg);
-+		cio2_bridge_create_connection_swnodes(bridge, sensor);
-+
-+		ret = software_node_register_nodes(sensor->swnodes);
-+		if (ret)
-+			goto err_put_adev;
-+
-+		fwnode = software_node_fwnode(&sensor->swnodes[SWNODE_SENSOR_HID]);
-+		if (!fwnode) {
-+			ret = -ENODEV;
-+			goto err_free_swnodes;
-+		}
-+
-+		adev->fwnode.secondary = fwnode;
-+
-+		dev_info(&cio2->dev, "Found supported sensor %s\n",
-+			 acpi_dev_name(adev));
-+
-+		bridge->n_sensors++;
-+	}
-+
-+	return 0;
-+
-+err_free_swnodes:
-+	software_node_unregister_nodes(sensor->swnodes);
-+err_put_adev:
-+	acpi_dev_put(sensor->adev);
-+err_out:
-+	return ret;
-+}
-+
-+static int cio2_bridge_connect_sensors(struct cio2_bridge *bridge,
-+				       struct pci_dev *cio2)
-+{
-+	unsigned int i;
-+	int ret;
-+
-+	for (i = 0; i < ARRAY_SIZE(cio2_supported_sensors); i++) {
-+		const struct cio2_sensor_config *cfg = &cio2_supported_sensors[i];
-+
-+		ret = cio2_bridge_connect_sensor(cfg, bridge, cio2);
-+		if (ret)
-+			goto err_unregister_sensors;
-+	}
-+
-+	return 0;
-+
-+err_unregister_sensors:
-+	cio2_bridge_unregister_sensors(bridge);
-+	return ret;
-+}
-+
-+int cio2_bridge_init(struct pci_dev *cio2)
-+{
-+	struct device *dev = &cio2->dev;
-+	struct fwnode_handle *fwnode;
-+	struct cio2_bridge *bridge;
-+	int ret;
-+
-+	bridge = kzalloc(sizeof(*bridge), GFP_KERNEL);
-+	if (!bridge)
-+		return -ENOMEM;
-+
-+	strscpy(bridge->cio2_node_name, CIO2_HID, sizeof(bridge->cio2_node_name));
-+	bridge->cio2_hid_node.name = bridge->cio2_node_name;
-+
-+	ret = software_node_register(&bridge->cio2_hid_node);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to register the CIO2 HID node\n");
-+		goto err_free_bridge;
-+	}
-+
-+	ret = cio2_bridge_connect_sensors(bridge, cio2);
-+	if (ret || bridge->n_sensors == 0)
-+		goto err_unregister_cio2;
-+
-+	dev_info(dev, "Connected %d cameras\n", bridge->n_sensors);
-+
-+	fwnode = software_node_fwnode(&bridge->cio2_hid_node);
-+	if (!fwnode) {
-+		dev_err(dev, "Error getting fwnode from cio2 software_node\n");
-+		ret = -ENODEV;
-+		goto err_unregister_sensors;
-+	}
-+
-+	set_secondary_fwnode(dev, fwnode);
-+
-+	return 0;
-+
-+err_unregister_sensors:
-+	cio2_bridge_unregister_sensors(bridge);
-+err_unregister_cio2:
-+	software_node_unregister(&bridge->cio2_hid_node);
-+err_free_bridge:
-+	kfree(bridge);
-+
-+	return ret;
-+}
-diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.h b/drivers/media/pci/intel/ipu3/cio2-bridge.h
-new file mode 100644
-index 000000000000..3ec4ed44aced
---- /dev/null
-+++ b/drivers/media/pci/intel/ipu3/cio2-bridge.h
-@@ -0,0 +1,125 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Author: Dan Scally <djrscally@gmail.com> */
-+#ifndef __CIO2_BRIDGE_H
-+#define __CIO2_BRIDGE_H
-+
-+#include <linux/property.h>
-+#include <linux/types.h>
-+
-+#include "ipu3-cio2.h"
-+
-+#define CIO2_HID				"INT343E"
-+#define CIO2_MAX_LANES				4
-+#define MAX_NUM_LINK_FREQS			3
-+
-+#define CIO2_SENSOR_CONFIG(_HID, _NR, ...)	\
-+	{					\
-+		.hid = _HID,			\
-+		.nr_link_freqs = _NR,		\
-+		.link_freqs = { __VA_ARGS__ }	\
-+	}
-+
-+#define NODE_SENSOR(_HID, _PROPS)		\
-+	((const struct software_node) {		\
-+		.name = _HID,			\
-+		.properties = _PROPS,		\
-+	})
-+
-+#define NODE_PORT(_PORT, _SENSOR_NODE)		\
-+	((const struct software_node) {		\
-+		.name = _PORT,			\
-+		.parent = _SENSOR_NODE,		\
-+	})
-+
-+#define NODE_ENDPOINT(_EP, _PORT, _PROPS)	\
-+	((const struct software_node) {		\
-+		.name = _EP,			\
-+		.parent = _PORT,		\
-+		.properties = _PROPS,		\
-+	})
-+
-+enum cio2_sensor_swnodes {
-+	SWNODE_SENSOR_HID,
-+	SWNODE_SENSOR_PORT,
-+	SWNODE_SENSOR_ENDPOINT,
-+	SWNODE_CIO2_PORT,
-+	SWNODE_CIO2_ENDPOINT,
-+	SWNODE_COUNT
-+};
-+
-+/* Data representation as it is in ACPI SSDB buffer */
-+struct cio2_sensor_ssdb {
-+	u8 version;
-+	u8 sku;
-+	u8 guid_csi2[16];
-+	u8 devfunction;
-+	u8 bus;
-+	u32 dphylinkenfuses;
-+	u32 clockdiv;
-+	u8 link;
-+	u8 lanes;
-+	u32 csiparams[10];
-+	u32 maxlanespeed;
-+	u8 sensorcalibfileidx;
-+	u8 sensorcalibfileidxInMBZ[3];
-+	u8 romtype;
-+	u8 vcmtype;
-+	u8 platforminfo;
-+	u8 platformsubinfo;
-+	u8 flash;
-+	u8 privacyled;
-+	u8 degree;
-+	u8 mipilinkdefined;
-+	u32 mclkspeed;
-+	u8 controllogicid;
-+	u8 reserved1[3];
-+	u8 mclkport;
-+	u8 reserved2[13];
-+} __packed;
-+
-+struct cio2_property_names {
-+	char clock_frequency[16];
-+	char rotation[9];
-+	char bus_type[9];
-+	char data_lanes[11];
-+	char remote_endpoint[16];
-+	char link_frequencies[17];
-+};
-+
-+struct cio2_node_names {
-+	char port[7];
-+	char endpoint[11];
-+	char remote_port[7];
-+};
-+
-+struct cio2_sensor_config {
-+	const char *hid;
-+	const u8 nr_link_freqs;
-+	const u64 link_freqs[MAX_NUM_LINK_FREQS];
-+};
-+
-+struct cio2_sensor {
-+	char name[ACPI_ID_LEN];
-+	struct acpi_device *adev;
-+
-+	struct software_node swnodes[6];
-+	struct cio2_node_names node_names;
-+
-+	u32 data_lanes[4];
-+	struct cio2_sensor_ssdb ssdb;
-+	struct cio2_property_names prop_names;
-+	struct property_entry ep_properties[5];
-+	struct property_entry dev_properties[3];
-+	struct property_entry cio2_properties[3];
-+	struct software_node_ref_args local_ref[1];
-+	struct software_node_ref_args remote_ref[1];
-+};
-+
-+struct cio2_bridge {
-+	char cio2_node_name[ACPI_ID_LEN];
-+	struct software_node cio2_hid_node;
-+	unsigned int n_sensors;
-+	struct cio2_sensor sensors[CIO2_NUM_PORTS];
-+};
-+
-+#endif
-diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-index 36e354ecf71e..50c7ea467795 100644
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-@@ -1702,11 +1702,28 @@ static void cio2_queues_exit(struct cio2_device *cio2)
- 		cio2_queue_exit(cio2, &cio2->queue[i]);
- }
- 
-+static bool cio2_check_fwnode_graph(struct fwnode_handle *fwnode)
-+{
-+	struct fwnode_handle *endpoint;
-+
-+	if (IS_ERR_OR_NULL(fwnode))
-+		return false;
-+
-+	endpoint = fwnode_graph_get_next_endpoint(fwnode, NULL);
-+	if (endpoint) {
-+		fwnode_handle_put(endpoint);
-+		return true;
-+	}
-+
-+	return cio2_check_fwnode_graph(fwnode->secondary);
-+}
-+
- /**************** PCI interface ****************/
- 
- static int cio2_pci_probe(struct pci_dev *pci_dev,
- 			  const struct pci_device_id *id)
- {
-+	struct fwnode_handle *fwnode = dev_fwnode(&pci_dev->dev);
- 	struct cio2_device *cio2;
- 	int r;
- 
-@@ -1715,6 +1732,22 @@ static int cio2_pci_probe(struct pci_dev *pci_dev,
- 		return -ENOMEM;
- 	cio2->pci_dev = pci_dev;
- 
-+	/*
-+	 * On some platforms no connections to sensors are defined in firmware,
-+	 * if the device has no endpoints then we can try to build those as
-+	 * software_nodes parsed from SSDB.
-+	 */
-+	if (!cio2_check_fwnode_graph(fwnode)) {
-+		if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary)) {
-+			dev_err(&pci_dev->dev, "fwnode graph has no endpoints connected\n");
-+			return -EINVAL;
-+		}
-+
-+		r = cio2_bridge_init(pci_dev);
-+		if (r)
-+			return r;
-+	}
-+
- 	r = pcim_enable_device(pci_dev);
- 	if (r) {
- 		dev_err(&pci_dev->dev, "failed to enable device (%d)\n", r);
-diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.h b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-index 62187ab5ae43..dc3e343a37fb 100644
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-@@ -455,4 +455,10 @@ static inline struct cio2_queue *vb2q_to_cio2_queue(struct vb2_queue *vq)
- 	return container_of(vq, struct cio2_queue, vbq);
- }
- 
-+#if IS_ENABLED(CONFIG_CIO2_BRIDGE)
-+int cio2_bridge_init(struct pci_dev *cio2);
-+#else
-+int cio2_bridge_init(struct pci_dev *cio2) { return 0; }
-+#endif
-+
- #endif
--- 
-2.25.1
-
+On 2021/01/04 6:41, Arnd Bergmann wrote:=0A=
+> From: Arnd Bergmann <arnd@arndb.de>=0A=
+> =0A=
+> Without crc32 support, this driver fails to link:=0A=
+> =0A=
+> arm-linux-gnueabi-ld: drivers/md/dm-zoned-metadata.o: in function `dmz_wr=
+ite_sb':=0A=
+> dm-zoned-metadata.c:(.text+0xe98): undefined reference to `crc32_le'=0A=
+> arm-linux-gnueabi-ld: drivers/md/dm-zoned-metadata.o: in function `dmz_ch=
+eck_sb':=0A=
+> dm-zoned-metadata.c:(.text+0x7978): undefined reference to `crc32_le'=0A=
+> =0A=
+> Fixes: 3b1a94c88b79 ("dm zoned: drive-managed zoned block device target")=
+=0A=
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>=0A=
+> ---=0A=
+>  drivers/md/Kconfig | 1 +=0A=
+>  1 file changed, 1 insertion(+)=0A=
+> =0A=
+> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig=0A=
+> index b7e2d9666614..a67b9ed3ca89 100644=0A=
+> --- a/drivers/md/Kconfig=0A=
+> +++ b/drivers/md/Kconfig=0A=
+> @@ -622,6 +622,7 @@ config DM_ZONED=0A=
+>  	tristate "Drive-managed zoned block device target support"=0A=
+>  	depends on BLK_DEV_DM=0A=
+>  	depends on BLK_DEV_ZONED=0A=
+> +	select CRC32=0A=
+>  	help=0A=
+>  	  This device-mapper target takes a host-managed or host-aware zoned=0A=
+>  	  block device and exposes most of its capacity as a regular block=0A=
+> =0A=
+=0A=
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>=0A=
+=0A=
+=0A=
+-- =0A=
+Damien Le Moal=0A=
+Western Digital Research=0A=
