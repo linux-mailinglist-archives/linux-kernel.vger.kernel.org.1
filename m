@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4472E8C76
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2DB2E8C7E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727230AbhACOCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 09:02:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727017AbhACOCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 09:02:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F04C20DD4;
-        Sun,  3 Jan 2021 14:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609682496;
-        bh=uUni1/Aqw9CBQn9Kex9LuQx8WFY9zqEj+5DF5sCkPKU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Q++ihx9m/buJ6ab1NZY0gl95lUr2f/n3xg1b25LhzX2JPlM3wHE1dvl65Jbwt9w4H
-         YXMEnIeBqhtjsIs6kku0AOFp+T+4Q/vcLiNJvcSqrJ9SPOddDFzVaZX1us9GI0QghC
-         ENk2ql5AZpHnny2SdAn+7qzPJcinFxWtvVp7OGmCvE6UCMmXRsYE3zQZFtbvwEoi+Y
-         /GiCQrKf57ZKN8FSRa5p+U2RbtSnpQ/dbIDh3CpunkuPKObSVHqvS1GkTQLwYfymMq
-         xEhxk3AmGrQps3tCCtUs+0mjOTpadT/uY88DZ/VS9DNPAaQnNsPLCS9slaq1x+NyYo
-         3H7T/a3Qnz6vA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Karen Xie <kxie@chelsio.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tom Seewald <tseewald@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] cxgb4: fix TLS dependencies again
-Date:   Sun,  3 Jan 2021 15:01:26 +0100
-Message-Id: <20210103140132.3866665-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S1726744AbhACODU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 3 Jan 2021 09:03:20 -0500
+Received: from mail.fireflyinternet.com ([77.68.26.236]:51564 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725765AbhACODT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 09:03:19 -0500
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23489600-1500050 
+        for multiple; Sun, 03 Jan 2021 14:01:59 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210103135158.3591442-1-arnd@kernel.org>
+References: <20210103135158.3591442-1-arnd@kernel.org>
+Subject: Re: [PATCH] [v2] i915: fix shift warning
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Dave Airlie <airlied@redhat.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+To:     Arnd Bergmann <arnd@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Date:   Sun, 03 Jan 2021 14:01:59 +0000
+Message-ID: <160968251911.30283.15581575287166640028@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
-
-A previous patch tried to avoid a build failure, but missed one case
-that Kconfig warns about:
-
-WARNING: unmet direct dependencies detected for CHELSIO_T4
-  Depends on [m]: NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_CHELSIO [=y] && PCI [=y] && (IPV6 [=y] || IPV6 [=y]=n) && (TLS [=m] || TLS [=m]=n)
-  Selected by [y]:
-  - SCSI_CXGB4_ISCSI [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && PCI [=y] && INET [=y] && (IPV6 [=y] || IPV6 [=y]=n) && ETHERNET [=y]
-x86_64-linux-ld: drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.o: in function `cxgb_select_queue':
-cxgb4_main.c:(.text+0xf5df): undefined reference to `tls_validate_xmit_skb'
-
-When any of the dependencies of CHELSIO_T4 are not met, then
-SCSI_CXGB4_ISCSI must not 'select' it either.
-
-Fix it by mirroring the network driver dependencies on the iscsi
-driver. A more invasive but also more reliable alternative would
-be to use 'depends on CHELSIO_T4' instead.
-
-Fixes: 659fbdcf2f14 ("cxgb4: Fix build failure when CONFIG_TLS=m")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/scsi/cxgbi/cxgb4i/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/cxgbi/cxgb4i/Kconfig b/drivers/scsi/cxgbi/cxgb4i/Kconfig
-index 8b0deece9758..2af88a55fbca 100644
---- a/drivers/scsi/cxgbi/cxgb4i/Kconfig
-+++ b/drivers/scsi/cxgbi/cxgb4i/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config SCSI_CXGB4_ISCSI
- 	tristate "Chelsio T4 iSCSI support"
--	depends on PCI && INET && (IPV6 || IPV6=n)
-+	depends on PCI && INET && (IPV6 || IPV6=n) && (TLS || TLS=n)
- 	depends on THERMAL || !THERMAL
- 	depends on ETHERNET
- 	depends on TLS || TLS=n
--- 
-2.29.2
-
+Quoting Arnd Bergmann (2021-01-03 13:51:44)
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Randconfig builds on 32-bit machines show lots of warnings for
+> the i915 driver for passing a 32-bit value into __const_hweight64():
+> 
+> drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2584:9: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
+>         return hweight64(VDBOX_MASK(&i915->gt));
+>                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from macro 'hweight64'
+>  #define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) : __arch_hweight64(w))
+> 
+> Change it to hweight_long() to avoid the warning.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by:: Chris Wilson <chris@chris-wilson.co.uk>
+-Chris
