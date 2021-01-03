@@ -2,100 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0FC2E8E64
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9592E8E67
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbhACVTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 16:19:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
+        id S1727632AbhACVVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 16:21:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727459AbhACVTa (ORCPT
+        with ESMTP id S1727483AbhACVVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 16:19:30 -0500
-Received: from forward100j.mail.yandex.net (forward100j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B72C061573;
-        Sun,  3 Jan 2021 13:18:49 -0800 (PST)
-Received: from myt5-e5be2b47c7a3.qloud-c.yandex.net (myt5-e5be2b47c7a3.qloud-c.yandex.net [IPv6:2a02:6b8:c00:2583:0:640:e5be:2b47])
-        by forward100j.mail.yandex.net (Yandex) with ESMTP id F2CF250E1201;
-        Mon,  4 Jan 2021 00:18:46 +0300 (MSK)
-Received: from myt4-ee976ce519ac.qloud-c.yandex.net (myt4-ee976ce519ac.qloud-c.yandex.net [2a02:6b8:c00:1da4:0:640:ee97:6ce5])
-        by myt5-e5be2b47c7a3.qloud-c.yandex.net (mxback/Yandex) with ESMTP id 7Um83cj7X1-IkEKS9P2;
-        Mon, 04 Jan 2021 00:18:46 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1609708726;
-        bh=/09hiXrWBDEpRbuWT3AYbPbd36CF9zxIC8Go8TuFXi8=;
-        h=In-Reply-To:From:To:Subject:Message-ID:Cc:Date:References;
-        b=eJlyBt83Zh3O+wgnsiTxPgh02qkTLFZqcsm54Y+e8dhmPajog55K/ZKEZcZ6T8+q0
-         7gq7Z1La44K/xbPNkvrYPccf4nVKBMVUxQQzHH0BV9C2HusLIHdcXDXgK7o2JVgaSA
-         RG0TBl/ap+PRrYCHhwSoua2ec4GO1xI7/nzAlFus=
-Authentication-Results: myt5-e5be2b47c7a3.qloud-c.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by myt4-ee976ce519ac.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id uKXDdlGSmJ-IjIGUj2v;
-        Mon, 04 Jan 2021 00:18:45 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH 0/5] virtio/vsock: introduce SOCK_SEQPACKET support.
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Arseniy Krasnov <oxffffaa@gmail.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210103195454.1954169-1-arseny.krasnov@kaspersky.com>
-From:   stsp <stsp2@yandex.ru>
-Message-ID: <b93e36c7-fd0b-6c5c-f598-234520b9fe01@yandex.ru>
-Date:   Mon, 4 Jan 2021 00:18:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 3 Jan 2021 16:21:07 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD9AC061573;
+        Sun,  3 Jan 2021 13:20:26 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D8BVt2MXSz9sVt;
+        Mon,  4 Jan 2021 08:20:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1609708823;
+        bh=KlM+36PQz4NTdWguPvkM0+JtxdGWYSUUBKeTjm23H4c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=r5lSIT7n+y8qhd/V7va4brj1cjqPmrt9gvaam6+9c01kXZXTMqSA6iaLdUqsTAiDg
+         BO4VPGOB5z45vW3p82+UMbKbBaMb0tt9/PwlgaMBptkQLBjgWCnOofTsYKTD++1kQU
+         CCFC5IaNBBJyatR8oy1N80FaSkHhYKrwdgB6+IYztixbBhEy9te9kV7QehbQU+/Is8
+         Uitc4W0xnJdr1HDXVlGGAB9VRVrm0NX86A7je7o2wdAmnviN88edjl4iup1Kdm1a4R
+         gD3UTrefKIoEoLlrpSe7pBFSBni5vNRu8TwM6voat6MaaiJzO77GElfTDoKTaMaILY
+         vwddszffUyzeA==
+Date:   Mon, 4 Jan 2021 08:20:20 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: error while fetching the i3c-fixes tree
+Message-ID: <20210104082020.1590f366@canb.auug.org.au>
+In-Reply-To: <20210103142343.GC382945@piout.net>
+References: <20210103223217.478bc238@canb.auug.org.au>
+        <20210103151855.5d25ee80@collabora.com>
+        <20210103142343.GC382945@piout.net>
 MIME-Version: 1.0
-In-Reply-To: <20210103195454.1954169-1-arseny.krasnov@kaspersky.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/65_bztiW=H=TOao_aCGM0Y.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arseny, thanks for your work on this!
+--Sig_/65_bztiW=H=TOao_aCGM0Y.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I did a small review in a hope it helps.
-Also it may be cool to have the driver feature
-for that (so that the host can see if its supported).
-But I guess this was already said by Michael. :)
+Hi all,
 
-03.01.2021 22:54, Arseny Krasnov пишет:
-> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
-> do it, new packet operation was added: it marks start of record (with
-> record length in header). To send record, packet with start marker is
-> sent first, then all data is transmitted as 'RW' packets. On receiver's
-> side, length of record is known from packet with start record marker.
-> Now as  packets of one socket are not reordered neither on vsock nor on
-> vhost transport layers, these marker allows to restore original record
-> on receiver's side. When each 'RW' packet is inserted to rx queue of
-> receiver, user is woken up, data is copied to user's buffer and credit
-> update message is sent. If there is no user waiting for data, credit
-> won't be updated and sender will wait. Also,  if user's buffer is full,
-> and record is bigger, all unneeded data will be dropped (with sending of
-> credit update message).
-> 	'MSG_EOR' flag is implemented with special value of 'flags' field
-> in packet header. When record is received with such flags, 'MSG_EOR' is
-> set in 'recvmsg()' flags. 'MSG_TRUNC' flag is also supported.
-> 	In this implementation maximum length of datagram is not limited
-> as in stream socket.
+On Sun, 3 Jan 2021 15:23:43 +0100 Alexandre Belloni <alexandre.belloni@boot=
+lin.com> wrote:
 >
->   drivers/vhost/vsock.c                   |   6 +-
->   include/linux/virtio_vsock.h            |   7 +
->   include/net/af_vsock.h                  |   4 +
->   include/uapi/linux/virtio_vsock.h       |   9 +
->   net/vmw_vsock/af_vsock.c                | 457 +++++++++++++++++++-----
->   net/vmw_vsock/virtio_transport.c        |   3 +
->   net/vmw_vsock/virtio_transport_common.c | 323 ++++++++++++++---
->   7 files changed, 673 insertions(+), 136 deletions(-)
->
+> On 03/01/2021 15:18:55+0100, Boris Brezillon wrote:
+> > +Alexandre, the new I3C maintainer. You should probably flag him as the
+> > person to contact if you have problem with the I3C tree in the future.
+> >=20
+> > On Sun, 3 Jan 2021 22:32:17 +1100
+> > Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >  =20
+> > > Fetching the i3c-fixes tree
+> > > (git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git#master)
+> > > produces this error:
+> > >=20
+> > > fatal: couldn't find remote ref refs/heads/master
+> > >=20
+> > > Should I maybe use the i3c/fixes branch instead? =20
+> >=20
+> > Oops, I thought you were using that branch already. I guess I never
+> > noticed because I didn't use the fixes branch much and kept the master
+> > one around.
+>=20
+> Yes, please use the i3c/fixes branch. I did indeed remove the master
+> branch as this was not used anyway.
 
+Updated branch and contact from today.
+
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--Sig_/65_bztiW=H=TOao_aCGM0Y.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/yNRQACgkQAVBC80lX
+0Gw5Wgf8CNQiLSei3Wn5IPz+SMcDCm+cEp2wQErPW48n5YOf26F9NI+5j5xJ3ajC
+1vkF3WgX1BL3+iEnm1DQ0C+HgeoXr9kg/kSZ/Lwb7lh/US5wi+SMLAzoQZ7m1kWK
+9XYDoLxBt/Uv8cf77VdFSObat385vUy6UOo44E7GLyAZZLApIpHiMxaQHbHMgvAW
+89phzon8B1hkXarw0VTMjBsVzD8s6mQl+ARQQhVQZBEe6q7WaVCr9sTO3NeczE4E
+UbRCnX7ZpGFTJzllQv9KcDrBuCVscV7GUqBaVy3hCqvGdfOiRgWyrLlcJo2KCJd5
+ued5hUzMJ0rqa36BiX4ToQbB2/1egQ==
+=aeJc
+-----END PGP SIGNATURE-----
+
+--Sig_/65_bztiW=H=TOao_aCGM0Y.--
