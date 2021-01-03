@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E73A2E8E85
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A14342E8E88
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbhACVlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 16:41:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37490 "EHLO mail.kernel.org"
+        id S1727907AbhACVmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 16:42:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726596AbhACVlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 16:41:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99523207C9;
-        Sun,  3 Jan 2021 21:40:37 +0000 (UTC)
+        id S1726166AbhACVmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 16:42:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B4D2207C9;
+        Sun,  3 Jan 2021 21:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609710039;
-        bh=X0Qnf29HvUG5MVRglG62WSELeOBBKlggCIn7y1gKqAQ=;
+        s=k20201202; t=1609710093;
+        bh=cD2FnRzoEeOnyRkbvnTXdlKJd3Z9weaquM8Zry7ePpA=;
         h=From:To:Cc:Subject:Date:From;
-        b=euCS7wCByJf2ytbpHmzliXnBAPCBP+kng8zlCoMHX8V2iMaVOVb/jNKR41/xt4ibs
-         9SqDPlUGxJ7e54/jv7UoUC3+cEAW+HgYL/s915ai8k18SudPCIhD+GY0aJp3Npco8r
-         H1M2BvxONrw47E3dUPxXrGPhO7Ml/rgLG7icmZjjZzuQhe+uKstj5C/aTSN4XO1VcQ
-         2C1qZriJ8ernUuXTNQvpOtBNB9cE5BHItZOYRdZUO4ExtqUR203svEjxib5yeO7AFp
-         o2oOUPhTDPRUL9JLAgwQiRDPYGY2LI7KSAZbyTZ4bm3Mjkbwl86hJ5/8n43+zmqwAW
-         EMgz6LI0ZSpIA==
+        b=mFFi6lFv6f2HyUqZcfVyiHZiJFwPC/57VYz8bcP6aYgi1hBL3ujOZyN9JfTQMSGXy
+         FCSTZsd1sN+gtf/Z5OLFzkHfHUXMbl49kscW1f46cP6eWZ58dAMpZoAwrfyERFxFJd
+         YdZ09Grwddh/CDP9NbvSxH/mY9IwB2moOHPYZfGexvLu0gnZxZxCNoHlTTMRXymX8F
+         c2tJ2oKtAkABXkte1+o2Jk7bgEeA4opxxIgG0l8hpNcDCLZjz9SgRLA1j4YOYaEbzS
+         cHLsVResKArOQLGg1a051YmuzvPqotrjBVTYg5gWcFO8GXn0QnVK/ro88oRHzvvGHQ
+         BHyIwqvVuda6A==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl819x: select CONFIG_CRC32
-Date:   Sun,  3 Jan 2021 22:40:28 +0100
-Message-Id: <20210103214034.1995821-1-arnd@kernel.org>
+To:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Song Liu <song@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Hannes Reinecke <hare@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dm zoned: select CONFIG_CRC32
+Date:   Sun,  3 Jan 2021 22:40:51 +0100
+Message-Id: <20210103214129.1996037-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,42 +44,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Without crc32 support, the drivers fail to link:
+Without crc32 support, this driver fails to link:
 
-ERROR: modpost: "crc32_le" [drivers/staging/rtl8192e/rtllib_crypt_wep.ko] undefined!
-ERROR: modpost: "crc32_le" [drivers/staging/rtl8192e/rtllib_crypt_tkip.ko] undefined!
-ERROR: modpost: "crc32_le" [drivers/staging/rtl8192u/r8192u_usb.ko] undefined!
+arm-linux-gnueabi-ld: drivers/md/dm-zoned-metadata.o: in function `dmz_write_sb':
+dm-zoned-metadata.c:(.text+0xe98): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/md/dm-zoned-metadata.o: in function `dmz_check_sb':
+dm-zoned-metadata.c:(.text+0x7978): undefined reference to `crc32_le'
 
+Fixes: 3b1a94c88b79 ("dm zoned: drive-managed zoned block device target")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/staging/rtl8192e/Kconfig | 1 +
- drivers/staging/rtl8192u/Kconfig | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/md/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
-index 03fcc23516fd..963a2ffbc1fb 100644
---- a/drivers/staging/rtl8192e/Kconfig
-+++ b/drivers/staging/rtl8192e/Kconfig
-@@ -3,6 +3,7 @@ config RTLLIB
- 	tristate "Support for rtllib wireless devices"
- 	depends on WLAN && m
- 	select LIB80211
+diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+index b7e2d9666614..a67b9ed3ca89 100644
+--- a/drivers/md/Kconfig
++++ b/drivers/md/Kconfig
+@@ -622,6 +622,7 @@ config DM_ZONED
+ 	tristate "Drive-managed zoned block device target support"
+ 	depends on BLK_DEV_DM
+ 	depends on BLK_DEV_ZONED
 +	select CRC32
  	help
- 	  If you have a wireless card that uses rtllib, say
- 	  Y. Currently the only card is the rtl8192e.
-diff --git a/drivers/staging/rtl8192u/Kconfig b/drivers/staging/rtl8192u/Kconfig
-index ef883d462d3d..f3b112a058ca 100644
---- a/drivers/staging/rtl8192u/Kconfig
-+++ b/drivers/staging/rtl8192u/Kconfig
-@@ -5,6 +5,7 @@ config RTL8192U
- 	depends on m
- 	select WIRELESS_EXT
- 	select WEXT_PRIV
-+	select CRC32
- 	select CRYPTO
- 	select CRYPTO_AES
- 	select CRYPTO_CCM
+ 	  This device-mapper target takes a host-managed or host-aware zoned
+ 	  block device and exposes most of its capacity as a regular block
 -- 
 2.29.2
 
