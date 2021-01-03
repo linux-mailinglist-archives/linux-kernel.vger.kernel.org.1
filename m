@@ -2,121 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249152E8CE4
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 362612E8CE8
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 16:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727353AbhACPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 10:30:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
+        id S1726825AbhACPeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 10:34:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727336AbhACPa0 (ORCPT
+        with ESMTP id S1725765AbhACPeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 10:30:26 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF235C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 07:29:45 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id qw4so33576243ejb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 07:29:45 -0800 (PST)
+        Sun, 3 Jan 2021 10:34:21 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A8BC061573;
+        Sun,  3 Jan 2021 07:33:41 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id a6so14921152wmc.2;
+        Sun, 03 Jan 2021 07:33:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QVR3QQVTATVRnPc00Pw9QhaKce8QLhd0JoT9CxmbxsM=;
-        b=HjhkAN35KRKoGFBhwvriiUGjdFo7LS0iI/HPw1kkLUmdTbsiaMoWYCGZPVcfqb/MbQ
-         0F2la0TeOtNMygS5AGmfq8BFOAVrTSG1SFG8Cvzo0bXm+rLImUsH746SmEtOMuqVkOTY
-         8J7FdgY/KWynSrQwthSA3hdeLUA5h3C1nVk3fO+Rtqz3V/brlr+I2D7XqoMF1o08jD3Q
-         xQUR9ncKWpLOeBkQC0iA+c+c5lrf7tiNzEM0jTmy7FQaCfUz4AbqagUx+gdZkVTHQTSg
-         YkBOGUuM8LjbG8we9ZMcYWGxjS0v5a/GK49CEKd3vNpj6rm/tIDr6sbcMC5T1yern3ni
-         5+yA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=O7ICa8ac8XZ0cgukQ7IpzlBT35xOowy7T29HqXh6Bz4=;
+        b=SnSdWnwCWkbxAa1ltHiK8xlsxSH9KsE8xp58Tn4sQwgDzUvOGmV7ixnwOeyUgASc8T
+         aytFbfiNpS6GdGILR/7v8g9yiRceW416jmobVvwUVYilD93pI7l8Sfj04GYYvIPfqNIF
+         rniDqx8dBbsJ19Kd7ViPBsJvwL8KVIkeAEo8DTz0ZMS6eAQxp0kqslaps20Ls4lHAEX+
+         4c+OA8jotel+ItGS1bsdTIq2rod0rMg2cGKxP4DE1NOSu97LFon4fUQrZPLZNvU8q2ae
+         f2LQIht3mAqSlZJco3mmD9WfkwrkCz4fU5tILtBLjboEjJehHiqiahiaoOf5wo6q5Qe+
+         9ijA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QVR3QQVTATVRnPc00Pw9QhaKce8QLhd0JoT9CxmbxsM=;
-        b=HMUWffYSFCR2OgTFI2UkpCq2Mt0q4v144c0QV2upxvoiCY/NxfCoaqbo/RIV5v26Xj
-         n/EAUHuJ0zNm2hYDie4gBmjs9kEV23mX4qXcyDy5i1hmR3URbEA9gILKcC6ZTG3Hvdxd
-         eNa71egq74ISk+7whRhOWTprWiAm7UzCzkVdqt0qwtLpU3cdS2NMllx5NkLNs4wIFgsI
-         nlFUH/10hJbDptyMTY+1mKuNIx29le0WP8SxUcBJLmgv6GErCPyJMudZr0rqF5llCU3F
-         2aDONuJbCXHTLKAz+gmJwoRqyv7KwEUMcOPidNOwtWxZziTY+cZ8LytDI4eKWHxyTOlM
-         0Bsg==
-X-Gm-Message-State: AOAM532kUWf7+LPZJe8AXHPje2kZIjRbcTPS21codZnFcRVkNPI3McHu
-        gsRGpHudIQ7o9GB+n0qpgPKyc3fn8ADhwgOTQLm/cVOYHRk=
-X-Google-Smtp-Source: ABdhPJyl0A7ZV4rGfkHC/DymAFo+BP1JJQaYfvVG7751yWsFsqOmVR7dK7EkNEmOsd2jjtqTz0M4NPz824sMjzwLroM=
-X-Received: by 2002:a17:906:3513:: with SMTP id r19mr62727164eja.445.1609687784668;
- Sun, 03 Jan 2021 07:29:44 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=O7ICa8ac8XZ0cgukQ7IpzlBT35xOowy7T29HqXh6Bz4=;
+        b=iczOZgFIVm7294MAL9W8qJNuI0ATeABoiriQ3918JSqmAZqNT6ON9uytQ1DEFfvs5z
+         WyfYxGrK6TEitiIe/gaP+HcTJGCMz86YjO3oijw9Znfa1ocHW4izPEf9JrBLGZ6Tcgf7
+         p3ucXO4bZVUEzvekq6j/e7re2744SgZOrXHZ7JZj3jAKZaY8txbsgf26vA4EmBTDOiDY
+         dd4Oct4FyecVo/WYGaPeqRdBhJCQB1nV8zUxuk+Dr7zzGb4b5UPkrZvpt0pAY6UqDdPz
+         Jv8L0Nq5f9L+6nih2dnjbm0QNRlDZeWbtAB2inNQxjSkLC+v3+UVB5U049g2Ihd7tAsn
+         rYbg==
+X-Gm-Message-State: AOAM533tM47S/R0moju981laeLGpfWF7YLngD4yZLKbD1KQUCHua7RQ7
+        L30hHh1EC+7nGcsjRroQ/1NwRtvcmJs=
+X-Google-Smtp-Source: ABdhPJzbkoBtea/8cv76+DoK0lhA+VzUs41XQJL7oyiIT+vzSvhWKykrijxm88LC7wDB/xMBbHAnEg==
+X-Received: by 2002:a7b:c8da:: with SMTP id f26mr24159757wml.155.1609688019585;
+        Sun, 03 Jan 2021 07:33:39 -0800 (PST)
+Received: from [192.168.2.202] (pd9e5a32f.dip0.t-ipconnect.de. [217.229.163.47])
+        by smtp.gmail.com with ESMTPSA id x13sm88983933wrp.80.2021.01.03.07.33.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Jan 2021 07:33:38 -0800 (PST)
+Subject: Re: [PATCH] platform/surface: mark PM functions as __maybe_unused
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210103140429.3929810-1-arnd@kernel.org>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <14ab487e-f80e-4dea-49c1-fdbf0bd059f3@gmail.com>
+Date:   Sun, 3 Jan 2021 16:33:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201231153842.25782-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <TYBPR01MB53095D8BBF8E17AB824243F786D50@TYBPR01MB5309.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYBPR01MB53095D8BBF8E17AB824243F786D50@TYBPR01MB5309.jpnprd01.prod.outlook.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Sun, 3 Jan 2021 16:29:33 +0100
-Message-ID: <CAMpxmJVBAE=mh+ZapJ430sYjnwNh-kyMt0P=FjQ=vqjozb7zVA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: Kconfig: Update help description for GPIO_RCAR
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210103140429.3929810-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 1, 2021 at 6:07 PM Biju Das <biju.das.jz@bp.renesas.com> wrote:
->
-> Hi Prabhakar,
->
-> > -----Original Message-----
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Sent: 31 December 2020 15:39
-> > To: Linus Walleij <linus.walleij@linaro.org>; Bartosz Golaszewski
-> > <bgolaszewski@baylibre.com>; Geert Uytterhoeven <geert+renesas@glider.be>
-> > Cc: linux-gpio@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> > renesas-soc@vger.kernel.org; Prabhakar <prabhakar.csengg@gmail.com>;
-> > Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Subject: [PATCH] gpio: Kconfig: Update help description for GPIO_RCAR
-> >
-> > The gpio-rcar driver supports R-Car Gen{1,2,3} and RZ/G{1,2} SoC's, update
-> > the description to reflect this.
->
-> Not sure we need to make this generic by  dropping {1,2,3}/{1,2} and use R-Car and RZ/G SoC's instead ???
->
+On 1/3/21 3:04 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When CONFIG_PM is disabled, the compiler produces harmless warnings:
+> 
+> drivers/platform/surface/surface_gpe.c:184:12: error: unused function 'surface_gpe_suspend' [-Werror,-Wunused-function]
+> static int surface_gpe_suspend(struct device *dev)
+> drivers/platform/surface/surface_gpe.c:189:12: error: unused function 'surface_gpe_resume' [-Werror,-Wunused-function]
+> static int surface_gpe_resume(struct device *dev)
+> 
+> Mark these as __maybe_unused to shut up the warning.
+> 
+> Fixes: 274335f1c557 ("platform/surface: Add Driver to set up lid GPEs on MS Surface device")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/platform/surface/surface_gpe.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/surface/surface_gpe.c b/drivers/platform/surface/surface_gpe.c
+> index e49e5d6d5d4e..86f6991b1215 100644
+> --- a/drivers/platform/surface/surface_gpe.c
+> +++ b/drivers/platform/surface/surface_gpe.c
+> @@ -181,12 +181,12 @@ static int surface_lid_enable_wakeup(struct device *dev, bool enable)
+>   	return 0;
+>   }
+>   
+> -static int surface_gpe_suspend(struct device *dev)
+> +static int __maybe_unused surface_gpe_suspend(struct device *dev)
+>   {
+>   	return surface_lid_enable_wakeup(dev, true);
+>   }
+>   
+> -static int surface_gpe_resume(struct device *dev)
+> +static int __maybe_unused surface_gpe_resume(struct device *dev)
+>   {
+>   	return surface_lid_enable_wakeup(dev, false);
+>   }
+> 
 
-This looks better IMO - if Geert is OK with that, then let's change it.
+Hi,
 
-Bart
+a patch doing this exact thing has already been submitted, but has yet to
+be picked up:
 
-> Regards,
-> Biju
->
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  drivers/gpio/Kconfig | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig index
-> > c70f46e80a3b..47e545d71df1 100644
-> > --- a/drivers/gpio/Kconfig
-> > +++ b/drivers/gpio/Kconfig
-> > @@ -486,11 +486,12 @@ config GPIO_PXA
-> >         Say yes here to support the PXA GPIO device
-> >
-> >  config GPIO_RCAR
-> > -     tristate "Renesas R-Car GPIO"
-> > +     tristate "Renesas R-Car Gen{1,2,3} and RZ/G{1,2} GPIO support"
-> >       depends on ARCH_RENESAS || COMPILE_TEST
-> >       select GPIOLIB_IRQCHIP
-> >       help
-> > -       Say yes here to support GPIO on Renesas R-Car SoCs.
-> > +       Say yes here to support GPIO on Renesas R-Car Gen{1,2,3} and
-> > +       RZ/G{1,2} SoCs.
-> >
-> >  config GPIO_RDA
-> >       bool "RDA Micro GPIO controller support"
-> > --
-> > 2.17.1
->
+   https://www.spinics.net/lists/platform-driver-x86/msg23888.html
+
+Thanks,
+Max
