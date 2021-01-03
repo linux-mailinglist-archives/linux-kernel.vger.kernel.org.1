@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A761A2E8E16
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 21:30:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314FC2E8E17
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 21:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbhACU34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 15:29:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60462 "EHLO mail.kernel.org"
+        id S1727148AbhACU35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 15:29:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726246AbhACU3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 15:29:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D605520780;
-        Sun,  3 Jan 2021 20:29:13 +0000 (UTC)
+        id S1726246AbhACU34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 15:29:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FFFF207C9;
+        Sun,  3 Jan 2021 20:29:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609705754;
-        bh=oQGIgV/H6wrkBUA2S35RTQkgGejmTkSBTYtV62nHBbA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rEV4XlJbWuGqje85a2fGio8WYGPZCTt8vOqcAB55vPu6cqXY9PzJgET4tBoR6k1Mi
-         6qtuV77zjpg8gmYAqLdgKApYqJgvtZvx+zFPlDzraPN1lhqViCYaopQ0iYUpSv99H3
-         ls2nSchzUdePf+GQ4si29qJBOIYAv0w1QnDiUzJMK2T7SLaD6P4p4DzsaVQN3jsCWu
-         /1699fLBMgcjeHwzjybR6/EcLZhgZD93GgO/cZ+yD0GBzSqiO6n7FN3LDqiDlvoHab
-         H7eXQEJOtq1btCCGfXqQSJm8qzOzIZhA2JrTFJDhzo/QV5kplk1CJn9m2IEvJeKgVW
-         +EqQapLYMQdpw==
+        s=k20201202; t=1609705755;
+        bh=pFunUICnNr36Fr7XgxKIBT9QGuGjARlSp169vt7rVog=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=s4FqAGOzIk7wqIXUe0ko3F+54MkrSP32T4Ah9hzY5CcCufjW5qVAb1Ovz7+gygmcb
+         xuFXFyy4sNslUhE6qREzrtQ/+6ZIbgFDj0Sh/5uSU/ESo061aBCQCxkQ2ATzfsQbU6
+         075mMlhKowxBoVG/npQGk66IJAVvJhVmT/Xn0rina1PW0j1g2RzsdvjSEKYALENznh
+         HMM7TVOzu0LFgUzb+zCcrPIk31Jr/9E39E1Q1fuR0I4tudFHmHd7g7W8Vb5R8qG48X
+         sbZzi/1va1Ke3b1MlRitU5vQMjPuWL48igRBecqzuZLWHaGJTZLES2aiU3yptpD+i2
+         ySVUSl8pq257A==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 1/4] habanalabs: separate common code to dedicated folders
-Date:   Sun,  3 Jan 2021 22:29:06 +0200
-Message-Id: <20210103202909.243-1-ogabbay@kernel.org>
+Subject: [PATCH 2/4] habanalabs: increment ctx ref from within a cs allocation
+Date:   Sun,  3 Jan 2021 22:29:07 +0200
+Message-Id: <20210103202909.243-2-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210103202909.243-1-ogabbay@kernel.org>
+References: <20210103202909.243-1-ogabbay@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -38,113 +40,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ofir Bitton <obitton@habana.ai>
 
-We separate some of the common code source files to different
-folders for a better maintainability and testability.
+A CS must increment the relevant context reference count.
+We want to increment the reference inside the CS allocation function
+as opposed for today where we increment it outside.
+This is logical since we want to avoid explicitly incrementing
+the context every time we call the CS allocate function.
 
 Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/Makefile           | 10 ++++++++--
- drivers/misc/habanalabs/common/mmu/Makefile       |  2 ++
- drivers/misc/habanalabs/common/{ => mmu}/mmu.c    |  2 +-
- drivers/misc/habanalabs/common/{ => mmu}/mmu_v1.c |  4 ++--
- drivers/misc/habanalabs/common/pci/Makefile       |  2 ++
- drivers/misc/habanalabs/common/{ => pci}/pci.c    |  4 ++--
- 6 files changed, 17 insertions(+), 7 deletions(-)
- create mode 100644 drivers/misc/habanalabs/common/mmu/Makefile
- rename drivers/misc/habanalabs/common/{ => mmu}/mmu.c (99%)
- rename drivers/misc/habanalabs/common/{ => mmu}/mmu_v1.c (99%)
- create mode 100644 drivers/misc/habanalabs/common/pci/Makefile
- rename drivers/misc/habanalabs/common/{ => pci}/pci.c (99%)
+ .../misc/habanalabs/common/command_submission.c   | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/Makefile b/drivers/misc/habanalabs/common/Makefile
-index eccd8c7dc62d..5d8b48288cf4 100644
---- a/drivers/misc/habanalabs/common/Makefile
-+++ b/drivers/misc/habanalabs/common/Makefile
-@@ -1,7 +1,13 @@
- # SPDX-License-Identifier: GPL-2.0-only
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index f7fac82ac41d..3affb350070c 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -479,6 +479,9 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		return -ENOMEM;
+ 	}
+ 
++	/* increment refcnt for context */
++	hl_ctx_get(hdev, ctx);
 +
-+include $(src)/common/mmu/Makefile
-+habanalabs-y += $(HL_COMMON_MMU_FILES)
-+
-+include $(src)/common/pci/Makefile
-+habanalabs-y += $(HL_COMMON_PCI_FILES)
-+
- HL_COMMON_FILES := common/habanalabs_drv.o common/device.o common/context.o \
- 		common/asid.o common/habanalabs_ioctl.o \
- 		common/command_buffer.o common/hw_queue.o common/irq.o \
- 		common/sysfs.o common/hwmon.o common/memory.o \
--		common/command_submission.o common/mmu.o common/mmu_v1.o \
--		common/firmware_if.o common/pci.o
-+		common/command_submission.o common/firmware_if.o
-diff --git a/drivers/misc/habanalabs/common/mmu/Makefile b/drivers/misc/habanalabs/common/mmu/Makefile
-new file mode 100644
-index 000000000000..d852c3874658
---- /dev/null
-+++ b/drivers/misc/habanalabs/common/mmu/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+HL_COMMON_MMU_FILES := common/mmu/mmu.o common/mmu/mmu_v1.o
-diff --git a/drivers/misc/habanalabs/common/mmu.c b/drivers/misc/habanalabs/common/mmu/mmu.c
-similarity index 99%
-rename from drivers/misc/habanalabs/common/mmu.c
-rename to drivers/misc/habanalabs/common/mmu/mmu.c
-index ec11111aee8a..105d556e3028 100644
---- a/drivers/misc/habanalabs/common/mmu.c
-+++ b/drivers/misc/habanalabs/common/mmu/mmu.c
-@@ -7,7 +7,7 @@
+ 	cs->ctx = ctx;
+ 	cs->submitted = false;
+ 	cs->completed = false;
+@@ -550,6 +553,7 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	kfree(cs_cmpl);
+ free_cs:
+ 	kfree(cs);
++	hl_ctx_put(ctx);
+ 	return rc;
+ }
  
- #include <linux/slab.h>
+@@ -827,14 +831,9 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 	if (rc)
+ 		goto out;
  
--#include "habanalabs.h"
-+#include "../habanalabs.h"
+-	/* increment refcnt for context */
+-	hl_ctx_get(hdev, hpriv->ctx);
+-
+ 	rc = allocate_cs(hdev, hpriv->ctx, CS_TYPE_DEFAULT, &cs);
+-	if (rc) {
+-		hl_ctx_put(hpriv->ctx);
++	if (rc)
+ 		goto free_cs_chunk_array;
+-	}
  
- static bool is_dram_va(struct hl_device *hdev, u64 virt_addr)
- {
-diff --git a/drivers/misc/habanalabs/common/mmu_v1.c b/drivers/misc/habanalabs/common/mmu/mmu_v1.c
-similarity index 99%
-rename from drivers/misc/habanalabs/common/mmu_v1.c
-rename to drivers/misc/habanalabs/common/mmu/mmu_v1.c
-index 2ce6ea89d4fa..9d37ac9bf316 100644
---- a/drivers/misc/habanalabs/common/mmu_v1.c
-+++ b/drivers/misc/habanalabs/common/mmu/mmu_v1.c
-@@ -5,8 +5,8 @@
-  * All Rights Reserved.
-  */
+ 	cs->timestamp = !!(flags & HL_CS_FLAGS_TIMESTAMP);
+ 	*cs_seq = cs->sequence;
+@@ -1276,15 +1275,11 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 		}
+ 	}
  
--#include "habanalabs.h"
--#include "../include/hw_ip/mmu/mmu_general.h"
-+#include "../habanalabs.h"
-+#include "../../include/hw_ip/mmu/mmu_general.h"
- 
- #include <linux/slab.h>
- 
-diff --git a/drivers/misc/habanalabs/common/pci/Makefile b/drivers/misc/habanalabs/common/pci/Makefile
-new file mode 100644
-index 000000000000..dc922a686683
---- /dev/null
-+++ b/drivers/misc/habanalabs/common/pci/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+HL_COMMON_PCI_FILES := common/pci/pci.o
-diff --git a/drivers/misc/habanalabs/common/pci.c b/drivers/misc/habanalabs/common/pci/pci.c
-similarity index 99%
-rename from drivers/misc/habanalabs/common/pci.c
-rename to drivers/misc/habanalabs/common/pci/pci.c
-index b4725e6101f6..c56ec1574127 100644
---- a/drivers/misc/habanalabs/common/pci.c
-+++ b/drivers/misc/habanalabs/common/pci/pci.c
-@@ -5,8 +5,8 @@
-  * All Rights Reserved.
-  */
- 
--#include "habanalabs.h"
--#include "../include/hw_ip/pci/pci_general.h"
-+#include "../habanalabs.h"
-+#include "../../include/hw_ip/pci/pci_general.h"
- 
- #include <linux/pci.h>
+-	/* increment refcnt for context */
+-	hl_ctx_get(hdev, ctx);
+-
+ 	rc = allocate_cs(hdev, ctx, cs_type, &cs);
+ 	if (rc) {
+ 		if (cs_type == CS_TYPE_WAIT ||
+ 			cs_type == CS_TYPE_COLLECTIVE_WAIT)
+ 			hl_fence_put(sig_fence);
+-		hl_ctx_put(ctx);
+ 		goto free_cs_chunk_array;
+ 	}
  
 -- 
 2.25.1
