@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348BF2E8B2D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 07:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817292E8B31
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 07:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbhACGcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 01:32:22 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:34119 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbhACGcV (ORCPT
+        id S1726124AbhACGkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 01:40:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725294AbhACGkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 01:32:21 -0500
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 1036V9GQ027664;
-        Sun, 3 Jan 2021 15:31:09 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 1036V9GQ027664
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1609655469;
-        bh=f5iEqiep2UuWsTl/6wtQ4qnhwNXKGbskFSoikG9gKU8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1Woh/nj/aACSW/QexxoC56oqet3p1u70XpbRAJCB4uyUsnSaqFClgj4ZCIPBxm46F
-         oNluJb93CKGM8a/uw1WknI1qqDjev0+BdSg9H/VbUIaEUnL4adqPoeaebKcdbBj7Kq
-         x/LVLT9hcjyxoxuDmPzWTVgWcqtotTChlBpljgaVbXbqpa++hvNy34eFqt9crP9Hrf
-         n/KFOThELqefgZ8QpKzB75nibswzw3VW6kL4ByEjF8SJ5yuP/iekYrERJx3Ld2urHR
-         k77U+m5/4ZPnpMqG8IUnzUTLobKUmNk9p961oX+UVpFvThF8qsHereXSjK9R4PtBb7
-         NeQQtsV04fZCg==
-X-Nifty-SrcIP: [209.85.215.174]
-Received: by mail-pg1-f174.google.com with SMTP id n10so16703099pgl.10;
-        Sat, 02 Jan 2021 22:31:09 -0800 (PST)
-X-Gm-Message-State: AOAM533nqUpAZQg9PaswAZj1BEawfJAgAVH6oJGWn1iHlOEvE/PxriT0
-        zwhv/u0E8G1NLS1Q8KdOu7BT+8d/GL3yLFo3AOs=
-X-Google-Smtp-Source: ABdhPJz/Rzhb8CoOVcfVjcQ1tOCOkkVEDVjbzVXkHGdYs2JmaD+p7VY4c2umwEM+71O3b93K4bKy9U5FoL5DFkPFswk=
-X-Received: by 2002:a63:1f1d:: with SMTP id f29mr7612800pgf.47.1609655468397;
- Sat, 02 Jan 2021 22:31:08 -0800 (PST)
+        Sun, 3 Jan 2021 01:40:01 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED94C061573
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Jan 2021 22:39:21 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id w1so4224465pjc.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 22:39:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Y92qT875d3aESyjMGQPzSpXc2nldV50acl7AIHo37A=;
+        b=aJfunVgtA594mdIlnY6+iNnEoN8EeUnwfZM2aPkYdnvOHH3TsUErBI7Jz/aEHkeKAg
+         YDO24SvnsuqBYzWNWs/o4U1ECjAbxvGMehUJtorDvy66YtT6dn/1QpCHDIm7dYQyl0Gm
+         kAFEWoKiLQQ33guOh+kaEgieAX3+hQtAlDZVVuGnxYueMxr5VYFOKMM8LKbOlkzvc4PT
+         bTzVtJWh7+ZLEyR7HS2thgQPNaZzEV/FlqfNRV1dikf53koxYtgnx4kXyDObxjdQJM2N
+         SDhi8evkkV/JdmzVSig6oB6Hk45tNP7VNaD5ac4/MEXgPOdNat+tMpNRHWzPrdJrQgws
+         eePQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Y92qT875d3aESyjMGQPzSpXc2nldV50acl7AIHo37A=;
+        b=DjWXXuoBFkjb2trEgw7ZfsSgCWeY3G1HZ4oZ7kywRbsivvF26dlUxq3MmX8W2WdlBn
+         cjE+CtTMt0dHkMUvDdtIH0ksCMebu3q8sR3xdmsDpumIbyxwEUprkoznbs/QkfgbjJrV
+         rZdMOf96oc6gLeiU1mGJB2sNbybhnQQakVSmSvViNsCePR7pIimLZc6XSQEDHKEfdV3Y
+         3kYV+6n0ayKm/UB8KNFhBgTwGbFVgGp3WYFvxkNBNEpwv4qLYTs9RbfXlzku4DuIXrE9
+         pu4edeRbCDeUH8A5wHUhg5sdLmj3YSQf2Obh/xTSU2S1DKQujW6iDxUE2utJmC3gyRFK
+         oP/A==
+X-Gm-Message-State: AOAM533k/+o6oHuLSw8NNG3sPrRJo49ZcHIA3+/Q4W4dxuMnXTpRA3uR
+        1dTg757kldvr9p/nJC9PtF47RZwbllI=
+X-Google-Smtp-Source: ABdhPJzeGlVBHkODqjkK4saYepzEvXvy7uhk/R/nKknl9QnM1AvPAV/LHqngdTo1FSJyLwE8Wz/Stg==
+X-Received: by 2002:a17:902:7086:b029:dc:8d:feab with SMTP id z6-20020a1709027086b02900dc008dfeabmr67602599plk.22.1609655960535;
+        Sat, 02 Jan 2021 22:39:20 -0800 (PST)
+Received: from localhost.localdomain (61-230-37-4.dynamic-ip.hinet.net. [61.230.37.4])
+        by smtp.gmail.com with ESMTPSA id 73sm45465993pga.26.2021.01.02.22.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Jan 2021 22:39:19 -0800 (PST)
+From:   Lecopzer Chen <lecopzer@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com
+Cc:     dan.j.williams@intel.com, aryabinin@virtuozzo.com,
+        glider@google.com, dvyukov@google.com, akpm@linux-foundation.org,
+        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
+        Lecopzer Chen <lecopzer@gmail.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>
+Subject: [PATCH] kasan: fix incorrect arguments passing in kasan_add_zero_shadow
+Date:   Sun,  3 Jan 2021 14:38:47 +0800
+Message-Id: <20210103063847.5963-1-lecopzer@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <16871.1609618487@turing-police>
-In-Reply-To: <16871.1609618487@turing-police>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 3 Jan 2021 15:30:30 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQU61eccDfh_jX_cnZHnyxfbfgBGu1845QM8XbBTJPnsw@mail.gmail.com>
-Message-ID: <CAK7LNAQU61eccDfh_jX_cnZHnyxfbfgBGu1845QM8XbBTJPnsw@mail.gmail.com>
-Subject: Re: Kconfig, DEFAULT_NETSCH, and shooting yourself in the foot..
-To:     =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 3, 2021 at 5:14 AM Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.e=
-du> wrote:
->
-> Consider the following own goal I just discovered I scored:
->
-> [~] zgrep -i fq_codel /proc/config.gz
-> CONFIG_NET_SCH_FQ_CODEL=3Dm
-> CONFIG_DEFAULT_FQ_CODEL=3Dy
-> CONFIG_DEFAULT_NET_SCH=3D"fq_codel"
->
-> Obviously, fq_codel didn't get set as the default, because that happens
-> before the module gets loaded (which may never happen if the sysadmin
-> thinks the DEFAULT_NET_SCH already made it happen)
->
-> Whoops. My bad, probably - but....
->
-> The deeper question, part 1:
->
-> There's this chunk in net/sched/Kconfig:
->
-> config DEFAULT_NET_SCH
->         string
->         default "pfifo_fast" if DEFAULT_PFIFO_FAST
->         default "fq" if DEFAULT_FQ
->         default "fq_codel" if DEFAULT_FQ_CODEL
->         default "fq_pie" if DEFAULT_FQ_PIE
->         default "sfq" if DEFAULT_SFQ
->         default "pfifo_fast"
-> endif
->
-> (And a similar chunk right above it with a similar issue)
->
-> Should those be "if (foo=3Dy)" so =3Dm can't be chosen? (I'll be
-> happy to write the patch if that's what we want)
->
-> Deeper question, part 2:
->
-> Should there be a way in the Kconfig language to ensure that
-> these two chunks can't accidentally get out of sync?  There's other
-> places in the kernel where similar issues arise - a few days ago I was
-> chasing a CPU governor issue where it looked like it was possible
-> to set a default that was a module and thus possibly not actually loaded.
->
+kasan_remove_zero_shadow() shall use original virtual address, start
+and size, instead of shadow address.
 
+Fixes: 0207df4fa1a86 ("kernel/memremap, kasan: make ZONE_DEVICE with work with KASAN")
+Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+---
+ mm/kasan/init.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-If there is a restriction where a modular discipline cannot be the default,
-I think you can add 'depends on FOO =3D y'.
+diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+index bc0ad208b3a7..67051cfae41c 100644
+--- a/mm/kasan/init.c
++++ b/mm/kasan/init.c
+@@ -481,7 +481,6 @@ int kasan_add_zero_shadow(void *start, unsigned long size)
+ 
+ 	ret = kasan_populate_early_shadow(shadow_start, shadow_end);
+ 	if (ret)
+-		kasan_remove_zero_shadow(shadow_start,
+-					size >> KASAN_SHADOW_SCALE_SHIFT);
++		kasan_remove_zero_shadow(start, size);
+ 	return ret;
+ }
+-- 
+2.25.1
 
-
-
-For example,
-
-
-choice
-           prompt "Default"
-
-           config DEFAULT_FOO
-                  bool "Use foo for default"
-                  depends on FOO =3D y
-
-           config DEFAULT_BAR
-                  bool "Use bar for default"
-                  depends on BAR =3D y
-
-           config DEFAULT_FALLBACK
-                  bool "fallback when nothing else is builtin"
-
-endchoice
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
