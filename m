@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8C22E8C4C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 14:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D032E8C52
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 14:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbhACNbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 08:31:09 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:43803 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbhACNbI (ORCPT
+        id S1726505AbhACNkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 08:40:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbhACNks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 08:31:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1609680667; x=1641216667;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2xhwRXanK/i/CgEZSHgyYCytHzT0rGYxDNhCQisJU7U=;
-  b=FnYOreZYxjbw5WgLk0zNbC4n8LemhfJuo7OnhF5NCYQAbSJCLZ66+KMK
-   d5zjZpCVpu9VNmat0F7aaLsm3dSeFW60W3LdopNIPHX/68J3N6i4S5ZdI
-   gl4FMeaTSGMQpOracTDZUeaymFBE6Nxs+zdO0UHGoINWZlAICIlElhnG+
-   KV/jGdNDjNgAY9B0dWANYNA0t/o8pRJKLA6iGxyfqafjhBNJST6zgUs6e
-   FNNvCSRUgWsoeWx0xzXxwYSv7bUsD/xiY/4oiXIpf1L5mPG6UDuPS/n3q
-   XRrqkNmYqQ888pNXjccinJ+Q2bi8dcusYspheXjMJNsZDFVp7OoMV4xGM
-   A==;
-IronPort-SDR: J4JX1EmVSuUKw3HTuCwO6yaQSrDj9oRudX3J0VRyWKCspIIM9+We3udRRR73MX6nhr2kt2Kax8
- U3JU+1mLDxebAoLoIQTJCYIkWueRVuMBQF6rgTpQ3Ij6sqcDk4DxPov3Su7oZ0moPOTPxrbqe9
- 8sCQjgWkBbwPvd2XUUctqd1ONXM6dsind0aq+yfTPUnq7e5B3sOvImo2W5urYb8GKZWy9wobj8
- FEfWHMuoUWoqEgTtqj8aaAjAj8PnsxZ2AcU8efC50737WW9I1tOu7M1PgjxaL/ecYCu3+LMgW8
- 3W8=
-X-IronPort-AV: E=Sophos;i="5.78,471,1599548400"; 
-   d="scan'208";a="109610295"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Jan 2021 06:29:51 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 3 Jan 2021 06:29:51 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Sun, 3 Jan 2021 06:29:51 -0700
-Date:   Sun, 3 Jan 2021 14:29:50 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net 1/2] net: mrp: fix definitions of MRP test packets
-Message-ID: <20210103132950.khcn3kzmwrai5fxx@soft-dev3.localdomain>
-References: <20201223144533.4145-1-rasmus.villemoes@prevas.dk>
- <20201223144533.4145-2-rasmus.villemoes@prevas.dk>
- <20201228142411.1c752b2e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Sun, 3 Jan 2021 08:40:48 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D38CC061573;
+        Sun,  3 Jan 2021 05:40:08 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id f6so23519693ybq.13;
+        Sun, 03 Jan 2021 05:40:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OqFx3RyXeCdVwZ8JzFgbuWfyGDN5YxTyYy25TVRpT/Q=;
+        b=Vi7q+Xx5nDXVMEimDrNdo6lph7Kv2fo2ui3axn9v1ddli7Ik/hjEIw3HOEGHgJw+J6
+         w0cW5cSBjkyO20fKayAeE3QW7PuAra6vgvMIh0PUcl72in8ICDNGaCEwAqpztS1t17zT
+         bSvvig8cqDodbOyofgJOICtCnd5Nm79h13OzhgzaI3sU7mAbHn3+57F4j3iWN2LdpXbT
+         aC43g9IAZLjeKuPU3OxQj9oW0zurfCBJhFX81SXIhVi4QqjWTBF0Dvu0UYtjXrZmXW1Z
+         mj50KJ3bXx8W5GurCr3cSKYBu5aiwBuMkfhpH5C6O0efndRfboMOJTqowTv/2jxgbrOk
+         WREg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OqFx3RyXeCdVwZ8JzFgbuWfyGDN5YxTyYy25TVRpT/Q=;
+        b=P6VBUeXyrwiHrmCfp5booH+bqggA58xM4qAUuCdp76D5oKEP1NSAZZg4wyKEJnuHwo
+         b8IOAhgC64yyTEWx9vJyFprKdugbMdsmEHXJPjv+ZM2tQeuG6whansbIuF5TXevdBNE0
+         VCOagricPZzHZ25iLtfpxTAv7jwM4skV0gHTDQWL5PS/qjWGrJLKBYetQj4YdOb63SbV
+         6aRO/dl5S7Iw+H4U3FFyBVEjysC3RyYjzFAA+Vp7y6pIz/HBox3JkLnMHRQr3ty/rDxP
+         BhHzz60+RG0F7yKEg5UjrrB3Ff2YiDQc3vQtsdGDhSmvxv0BIgsIW7DYXrntxay1JyYp
+         U2xA==
+X-Gm-Message-State: AOAM530kt4Invk4qrvLL+3w5HvRfCelUyot+Ioq1yUc2wMJoCzZQOjcP
+        cDYSRc6oZqezEQNQDRXMtUflYv4aQXrqlhXT0+OHaRBskQcNEg==
+X-Google-Smtp-Source: ABdhPJxjXgRNvSDJkRkkh9SCEaRxO9KDDs+YSVP/XbqSl8Uqbm1UtOUbJ+Bm5btMdzwM3ZBmxtHAhWpOUV1bUHxHgIo=
+X-Received: by 2002:a25:e048:: with SMTP id x69mr100847194ybg.353.1609681207099;
+ Sun, 03 Jan 2021 05:40:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20201228142411.1c752b2e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <CADxRZqwARwrMeJZTWLeUtGyjStuz=ze2dwNqov0EyfHkRBM1fw@mail.gmail.com>
+In-Reply-To: <CADxRZqwARwrMeJZTWLeUtGyjStuz=ze2dwNqov0EyfHkRBM1fw@mail.gmail.com>
+From:   Anatoly Pugachev <matorola@gmail.com>
+Date:   Sun, 3 Jan 2021 16:39:56 +0300
+Message-ID: <CADxRZqxLHUqf_Hj8bMgG=kMiZ75BbTgaqC+5rXjeGe5kzCQBWg@mail.gmail.com>
+Subject: Re: [sparc64] running stress-ng and a sparc64 hardware / kernel woes
+To:     Linux Kernel list <linux-kernel@vger.kernel.org>
+Cc:     Sparc kernel list <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 12/28/2020 14:24, Jakub Kicinski wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On Wed, 23 Dec 2020 15:45:32 +0100 Rasmus Villemoes wrote:
-> > Wireshark says that the MRP test packets cannot be decoded - and the
-> > reason for that is that there's a two-byte hole filled with garbage
-> > between the "transitions" and "timestamp" members.
-> >
-> > So Wireshark decodes the two garbage bytes and the top two bytes of
-> > the timestamp written by the kernel as the timestamp value (which thus
-> > fluctuates wildly), and interprets the lower two bytes of the
-> > timestamp as a new (type, length) pair, which is of course broken.
-> >
-> > While my copy of the MRP standard is still under way [*], I cannot
-> > imagine the standard specifying a two-byte hole here, and whoever
-> > wrote the Wireshark decoding code seems to agree with that.
-> >
-> > The struct definitions live under include/uapi/, but they are not
-> > really part of any kernel<->userspace API/ABI, so fixing the
-> > definitions by adding the packed attribute should not cause any
-> > compatibility issues.
-> >
-> > The remaining on-the-wire packet formats likely also don't contain
-> > holes, but pahole and manual inspection says the current definitions
-> > suffice. So adding the packed attribute to those is not strictly
-> > needed, but might be done for good measure.
-> >
-> > [*] I will never understand how something hidden behind a +1000$
-> > paywall can be called a standard.
-> >
-> > Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> > ---
-> >  include/uapi/linux/mrp_bridge.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/mrp_bridge.h b/include/uapi/linux/mrp_bridge.h
-> > index 6aeb13ef0b1e..d1d0cf65916d 100644
-> > --- a/include/uapi/linux/mrp_bridge.h
-> > +++ b/include/uapi/linux/mrp_bridge.h
-> > @@ -96,7 +96,7 @@ struct br_mrp_ring_test_hdr {
-> >       __be16 state;
-> >       __be16 transitions;
-> >       __be32 timestamp;
-> > -};
-> > +} __attribute__((__packed__));
-> >
-> >  struct br_mrp_ring_topo_hdr {
-> >       __be16 prio;
-> > @@ -141,7 +141,7 @@ struct br_mrp_in_test_hdr {
-> >       __be16 state;
-> >       __be16 transitions;
-> >       __be32 timestamp;
-> > -};
-> > +} __attribute__((__packed__));
-> >
-> >  struct br_mrp_in_topo_hdr {
-> >       __u8 sa[ETH_ALEN];
-> 
-> Can we use this opportunity to move the definitions of these structures
-> out of the uAPI to a normal kernel header?
+just to give you another sample:
 
-Or maybe we can just remove them, especially if they are not used by the
-kernel.
+running stress-ng in ssh session:
 
--- 
-/Horatiu
+stress-ng --opcode 1 --timeout 60 --metrics-brief
+
+get the following on the console:
+
+[  813.208349] Kernel unaligned access at TPC[4cf720] lock_acquire+0x100/0x200
+[  813.208378] Unable to handle kernel paging request in mna handler
+[  813.208419]  at virtual address 794b00a7d6fbfb37
+[  813.208460] current->{active_,}mm->context = 0000000000001774
+[  813.208483] current->{active_,}mm->pgd = fff800004a6cc000
+[  813.208506]               \|/ ____ \|/
+[  813.208506]               "@'/ .. \`@"
+[  813.208506]               /_| \__/ |_\
+[  813.208506]                  \__U_/
+[  813.208555] stress-ng-opcod(5955): Oops [#1]
+[  813.208577] CPU: 0 PID: 5955 Comm: stress-ng-opcod Tainted: G
+     E     5.11.0-rc1-00073-g3516bd729358 #173
+[  813.208618] TSTATE: 0000000080e01602 TPC: 00000000004cf720 TNPC:
+00000000004cf724 Y: 00000000    Tainted: G            E
+[  813.208659] TPC: <lock_acquire+0x100/0x200>
+[  813.208680] g0: 0000000000000000 g1: 0000000000000001 g2:
+0000000000004023 g3: 0000000001502400
+[  813.208712] g4: fff800004a9faf80 g5: 794b00a7d5ede977 g6:
+fff800004071c000 g7: 00000000ffffffff
+[  813.208744] o0: 0000000000000007 o1: 0000000000dd6070 o2:
+fff800004058bb30 o3: 0000000000000000
+[  813.208779] o4: 0000000000000034 o5: 000000000000000b sp:
+fff800004058aaf1 ret_pc: 000000000042aa84
+[  813.208812] RPC: <sun4v_do_mna+0x24/0xa0>
+[  813.208836] l0: 00000000010e11c0 l1: 0000000000edbc78 l2:
+000000000048f2c0 l3: 0000000000000020
+[  813.208869] l4: 794b00a7d6fbfb37 l5: 00000000000e0000 l6:
+fff800004071c000 l7: 0000000080001002
+[  813.208901] i0: 0000000000f737a8 i1: 0000000000000000 i2:
+0000000000000000 i3: 0000000000000002
+[  813.208933] i4: 00000000010e11c0 i5: 0000000000000000 i6:
+fff800004058abc1 i7: 000000000048f2f0
+[  813.208966] I7: <atomic_notifier_call_chain+0x30/0xc0>
+[  813.208993] Call Trace:
+[  813.209008] Disabling lock debugging due to kernel taint
+[  813.209016] Instruction DUMP:
+[  813.209019]  21004384
+[  813.209025]  a01421c0
+[  813.209031]  b8100010
+[  813.209037] <c2070005>
+[  813.209043]  80a06000
+[  813.209049]  1240001d
+[  813.209054]  01000000
+[  813.209060]  c2012874
+[  813.209065]  80a06000
+[  813.209071]
+[  813.209142] CPU[0]: Args were cnt(1) cpulist_pa(34c4a000)
+mondo_block_pa(3040d680)
+[  813.209160] Kernel panic - not syncing: Unexpected SUN4V mondo error 6
+[  813.210744] sun4v_cpu_stop() failed err=6
+[  813.211316] Press Stop-A (L1-A) from sun keyboard or send break
+[  813.211316] twice on console to return to the boot prom
+[  813.211327] ---[ end Kernel panic - not syncing: Unexpected SUN4V
+mondo error 6 ]---
