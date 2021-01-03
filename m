@@ -2,141 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B782E8D4F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 17:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B702E8D53
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 17:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727633AbhACQwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 11:52:50 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12630 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726008AbhACQwu (ORCPT
+        id S1727651AbhACQ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 11:56:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbhACQ4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 11:52:50 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 103GVosu166020;
-        Sun, 3 Jan 2021 11:51:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=rd017k6Pof1ZGuLaMQhs2YaGZrs3MPqmJDfcCVWDomU=;
- b=OoYa7IpY0QfZvLHTHTTpN+AxVU2bOPx3/Wv5pPuSuPjBXXmHvAmlnkSc3LodvdATymAX
- u3ahleTOtqigEWTkMPqsstPMkAqVR/2ahDFSGuAG0hhsTR713vDhMmAhrpan0Mb92Xiw
- 3CDZJLko/OmkU2L1EfqsdC+hTTm5YZsgkp2EgPO1n2GXkOiJ10c0LUSLVF3tdRT6wgY2
- nyN8vjDvS1jrRryBHFonoq0D2mcgJ2QWCJD3b0BbKF7WtuthfkKNrHfv0ngfJscr04gx
- XGDeKZsmCQyNByMK1Olmm+o+i/IR/xL7z9v4qIHc6TfNp5MNDNXJVu0G5bav1TwHmdUD vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35ug4y99a2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 03 Jan 2021 11:51:56 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 103GWVif167071;
-        Sun, 3 Jan 2021 11:51:56 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35ug4y99a0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 03 Jan 2021 11:51:56 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 103GoScS012378;
-        Sun, 3 Jan 2021 16:51:55 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma02wdc.us.ibm.com with ESMTP id 35tgf8guyv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 03 Jan 2021 16:51:55 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 103GpsUv26280296
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 3 Jan 2021 16:51:54 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 806ED7805C;
-        Sun,  3 Jan 2021 16:51:54 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09FA07805E;
-        Sun,  3 Jan 2021 16:51:51 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.172.80])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sun,  3 Jan 2021 16:51:51 +0000 (GMT)
-Message-ID: <75ecb62269cf425164d0fb6f2717d1d0136f43cd.camel@linux.ibm.com>
-Subject: Re: [PATCH] cxgb4: fix TLS dependencies again
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Arnd Bergmann <arnd@kernel.org>, Karen Xie <kxie@chelsio.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tom Seewald <tseewald@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 03 Jan 2021 08:51:50 -0800
-In-Reply-To: <20210103140132.3866665-1-arnd@kernel.org>
-References: <20210103140132.3866665-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Sun, 3 Jan 2021 11:56:40 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EBEC061573
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 08:55:59 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id q75so15685437wme.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 08:55:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k1aRDcbBG3mRHaeKBTVSperXXNk6AyaNqHYz5R0wfuo=;
+        b=LMC2ROl0E7632rImDC/83Favg9udu1eiIshM+zGX05kjPOGA1p9hul1OqyY8gaVS8e
+         O3/52rWPjP8nx7NX0vB5cqZfLQhtUrypHHniBA0XGcTvgZpJY8OieKjQkoBQJz/dWU59
+         lAtDO7yWU5F1wSyTjkyPjprBkPrstkJbFOsG1S/tQhg5JoDQZzqVCd+8qE0M+IWEKLyL
+         0FFwYcLH0OoR66O4VyFObgM3UywFvio72+JLSO7rJAPm35PczL+DVewHyPt+tl6U2dSK
+         jwLfbjAz4Hz90A1MzRo5XeJMJU9pd6hPC1WALu9+edtK0GYIUy6kkEcsWZQuPCnMxsVD
+         hNNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k1aRDcbBG3mRHaeKBTVSperXXNk6AyaNqHYz5R0wfuo=;
+        b=h48dWbwtHlYboLSeuCCna9oi42vBaa8Uszr9q7hOytohMiRJzKNubajINfx3INNMAm
+         xKEKgqPVU/XSOQ6CHnf+VYXeYPmJ+N1unNOkQ5GSUNM4Kkjc/IW8DS1hkfx+Dp4z0VyR
+         asjiWvC//ZXglJtuPJN5+JvqmRRoddscVyG4AIC7mczH8dXUBtCxuP5qUO18ZjvWlemq
+         ahZKVqlDHGPSu00bj21zJjw3Bgf9jowxmGuLx9PvlukWgmkzUooaicZQ72n2154QWwBd
+         RPRJnw0zQOsxk70Zi+kdXpdtzY7slDBtJS83+Lh08oPiDBoCrFoEfkOXYse8fFxKGum/
+         K1KQ==
+X-Gm-Message-State: AOAM531tx8aQSHq7oqVqk8FriHtwhcVO6kNtaeJSRimGjWELqwGQL7Di
+        f3v81A3ZReJTVvecElvfd5HRYvLZhRPSa47x
+X-Google-Smtp-Source: ABdhPJxiAH70Jdw6Of/xd8FUHQ3AAT1+JeYgaRSLHDE69F/PDjxHmNXNURyfdirtze681LG7Xh5eBA==
+X-Received: by 2002:a1c:1bcd:: with SMTP id b196mr23556335wmb.70.1609692957675;
+        Sun, 03 Jan 2021 08:55:57 -0800 (PST)
+Received: from valhalla.home ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id h9sm31223695wme.11.2021.01.03.08.55.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 08:55:57 -0800 (PST)
+From:   Daniel Scally <djrscally@gmail.com>
+To:     linux-kernel@vger.kernel.org, broonie@kernel.org,
+        lgirdwood@gmail.com
+Subject: [PATCH] regulator: core.c: Replace references to non-existent function
+Date:   Sun,  3 Jan 2021 16:55:41 +0000
+Message-Id: <20210103165541.784360-1-djrscally@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-03_07:2020-12-31,2021-01-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- impostorscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- clxscore=1011 mlxscore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101030101
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-01-03 at 15:01 +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A previous patch tried to avoid a build failure, but missed one case
-> that Kconfig warns about:
-> 
-> WARNING: unmet direct dependencies detected for CHELSIO_T4
->   Depends on [m]: NETDEVICES [=y] && ETHERNET [=y] &&
-> NET_VENDOR_CHELSIO [=y] && PCI [=y] && (IPV6 [=y] || IPV6 [=y]=n) &&
-> (TLS [=m] || TLS [=m]=n)
->   Selected by [y]:
->   - SCSI_CXGB4_ISCSI [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && PCI
-> [=y] && INET [=y] && (IPV6 [=y] || IPV6 [=y]=n) && ETHERNET [=y]
-> x86_64-linux-ld: drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.o: in
-> function `cxgb_select_queue':
-> cxgb4_main.c:(.text+0xf5df): undefined reference to
-> `tls_validate_xmit_skb'
-> 
-> When any of the dependencies of CHELSIO_T4 are not met, then
-> SCSI_CXGB4_ISCSI must not 'select' it either.
-> 
-> Fix it by mirroring the network driver dependencies on the iscsi
-> driver. A more invasive but also more reliable alternative would
-> be to use 'depends on CHELSIO_T4' instead.
-> 
-> Fixes: 659fbdcf2f14 ("cxgb4: Fix build failure when CONFIG_TLS=m")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/scsi/cxgbi/cxgb4i/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/cxgbi/cxgb4i/Kconfig
-> b/drivers/scsi/cxgbi/cxgb4i/Kconfig
-> index 8b0deece9758..2af88a55fbca 100644
-> --- a/drivers/scsi/cxgbi/cxgb4i/Kconfig
-> +++ b/drivers/scsi/cxgbi/cxgb4i/Kconfig
-> @@ -1,7 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  config SCSI_CXGB4_ISCSI
->  	tristate "Chelsio T4 iSCSI support"
-> -	depends on PCI && INET && (IPV6 || IPV6=n)
-> +	depends on PCI && INET && (IPV6 || IPV6=n) && (TLS || TLS=n)
->  	depends on THERMAL || !THERMAL
->  	depends on ETHERNET
->  	depends on TLS || TLS=n
+The function regulator_set_device_supply() is referenced a few times in
+comments in regulator/core.c; however this function was removed a long
+time ago by commit a5766f11cfd3 ("regulator: core - Rework machine API to
+remove string based functions."). Update those references to point to
+set_consumer_device_supply(), which replaced the old function.
 
-I thought all separated depends statements were the equivalent of && in
-a single statement.  If so, how does repeating TLS || TLS=n twice fix
-the problem?  This sounds more like we have some sort of bug in our
-Kconfig apparatus.
+Signed-off-by: Daniel Scally <djrscally@gmail.com>
+---
+ drivers/regulator/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-James
-
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index ca03d8e70bd1..fee924158091 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -2020,7 +2020,7 @@ struct regulator *_regulator_get(struct device *dev, const char *id,
+  * Returns a struct regulator corresponding to the regulator producer,
+  * or IS_ERR() condition containing errno.
+  *
+- * Use of supply names configured via regulator_set_device_supply() is
++ * Use of supply names configured via set_consumer_device_supply() is
+  * strongly encouraged.  It is recommended that the supply name used
+  * should match the name used for the supply and/or the relevant
+  * device pins in the datasheet.
+@@ -2047,7 +2047,7 @@ EXPORT_SYMBOL_GPL(regulator_get);
+  * regulator off for correct operation of the hardware they are
+  * controlling.
+  *
+- * Use of supply names configured via regulator_set_device_supply() is
++ * Use of supply names configured via set_consumer_device_supply() is
+  * strongly encouraged.  It is recommended that the supply name used
+  * should match the name used for the supply and/or the relevant
+  * device pins in the datasheet.
+@@ -2073,7 +2073,7 @@ EXPORT_SYMBOL_GPL(regulator_get_exclusive);
+  * disrupting the operation of drivers that can handle absent
+  * supplies.
+  *
+- * Use of supply names configured via regulator_set_device_supply() is
++ * Use of supply names configured via set_consumer_device_supply() is
+  * strongly encouraged.  It is recommended that the supply name used
+  * should match the name used for the supply and/or the relevant
+  * device pins in the datasheet.
+-- 
+2.25.1
 
