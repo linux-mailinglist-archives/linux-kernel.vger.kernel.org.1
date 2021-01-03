@@ -2,375 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99C52E8A02
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 03:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454E92E8A03
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 03:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbhACCSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 21:18:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
+        id S1726487AbhACC0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 21:26:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725786AbhACCSN (ORCPT
+        with ESMTP id S1725786AbhACC0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 21:18:13 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A993C061573;
-        Sat,  2 Jan 2021 18:17:33 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id z12so7778370pjn.1;
-        Sat, 02 Jan 2021 18:17:33 -0800 (PST)
+        Sat, 2 Jan 2021 21:26:15 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799F1C061573;
+        Sat,  2 Jan 2021 18:25:35 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id r17so22104743ilo.11;
+        Sat, 02 Jan 2021 18:25:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lDlbZEoJDK5UwVeuX4/+2MiHOoyLTpzb5+AaeM3gP94=;
-        b=LOZ2SfAMcDCA1TXAv/l9pht1zk2qFw8pXqH+H1SsDSD8xwkySgES8CvYaADyLxYZBY
-         TEIws4xfVuqZa/gMGtY7wk04UhuGa/7ocZpX4qumKk5tZvAxP3BBMkGynvlVvzEuQboX
-         q95X0lhN96X2ppugWOAxv9BAzokcQGXJ2GOociDlABJDAPzV2DRkte00j0EUv2L+TxMb
-         /X31rnXHx/MgLcyugWXM61CwRHLhnlFzGlUU8Nq6TtjLNIiTwuNmnmSzobnzP0Ddhjpf
-         S0SYKZE8X2si0sJA6Ldf/bSLVXG4qxLmRSjFYI6/zxfdIR/JRKMIhrVCi+qp6BzYhPIS
-         /mvg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0jnY7stFhm9t4TjU9Aq4Io3pgb+YBt5XgxkVKWhc1Ak=;
+        b=i+hPiT72YyRU02aWOTP77TDM6vYagiL/+6dTQ2nXGJ1Rz7cQC+LZhqWH+LNiTkTbMY
+         cEC0nvGDZSvZ8yxEZ39K1jlQ2srSbcU8jIf5eiE8iBTi2JnrrZTn2Rt6RKWZWHLKAidR
+         CrbKaX42kYZuaX4FUmdoFj/WPofqbI7SsurzXtu51Xc4vJPXi3eXvNujYbg31HLwPHhH
+         ftJ8W1ZUzJoRr01UxMQ11+OsGfx0Qo4JbvNLAuShpbpncD7JFPdXodMzJIeYkMutswqn
+         cOPnTKsr7z0Rjs0pQXEUohO4bqhXzKfMJOmcfJttR4BLseMCl3pa3WLFGhOwGVI2Q398
+         bAqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lDlbZEoJDK5UwVeuX4/+2MiHOoyLTpzb5+AaeM3gP94=;
-        b=R0hUbo4JEdBRdeIbsBzl4PGm27vX/T30ScD15qugcv/67gQXqZwHw54bz1h2rp/3E9
-         4QnfCmaBbd+mxImuSRM/mmsEMnePyYTt3AuNsfZflz/zQkB3kKyCBHssuhfsJrDu6dyr
-         YGoQ6+zyeDHAwUeHrV2abcw94QpKlziB9HBPMqRAe5hN6q749yGxU6UtsvmeW/hDCmwL
-         Azg+Z8JFsmKroSlUNJUwbzXE+U7L1oVClBS81uOwBIlhn3uGqswEUHnomq3YsHLnIDDT
-         1Bj981wa7WEANeXZRkHr1MzU3Wx1E0xfkBh7QPCX7ArXIbY2+EXkqvmg53r+1mC1e49B
-         7SKw==
-X-Gm-Message-State: AOAM5326ySuveJZAcQemaDAS+30RG9MwALRpk1APV4SPiXIL0De9Wi3D
-        VphN7Ko/Z8r0uV/TydK/BJM=
-X-Google-Smtp-Source: ABdhPJwM83TXV4dPCheshYNW4qWDtDdZsVcRlw9hubLZTkwH6Ok3vLB8Cpj9DDtQkaJ97zym04vd/Q==
-X-Received: by 2002:a17:903:230d:b029:dc:8ac6:98aa with SMTP id d13-20020a170903230db02900dc8ac698aamr6616791plh.4.1609640252431;
-        Sat, 02 Jan 2021 18:17:32 -0800 (PST)
-Received: from sol (106-69-181-20.dyn.iinet.net.au. [106.69.181.20])
-        by smtp.gmail.com with ESMTPSA id a2sm26174425pfg.203.2021.01.02.18.17.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Jan 2021 18:17:31 -0800 (PST)
-Date:   Sun, 3 Jan 2021 10:17:25 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>
-Subject: Re: [PATCH 1/7] selftests: gpio: rework and simplify test
- implementation
-Message-ID: <20210103021725.GA6622@sol>
-References: <20210102022949.92304-1-warthog618@gmail.com>
- <20210102022949.92304-2-warthog618@gmail.com>
- <CAHp75VdMs1mP7pK46qKqJbjfyrcKhSGvtyzQpTRsehMz6o=Jpg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0jnY7stFhm9t4TjU9Aq4Io3pgb+YBt5XgxkVKWhc1Ak=;
+        b=pTK1vXk53X+AsjmiU2T/HeGA47gQe++0AGc76+9fmWXV74xU63XE7YBgsLFkU8hGwi
+         blN0k20wBpsFk/rddXBa/qbn7Mlji054ipkStzSJlFGqBQO/Q7u2z/6GSGmJWPcUSV/r
+         FFRtNp2STOUR9eh74vPe/xT/TBBpHI+pXSGMTouYHzQV13zT/tLT3Rb11ILVQMuO8dYR
+         tXCFTk6nWmEeTUiTCXZa1IA/WtYm7NfTnuXOTvkU1FZgDDKufOg1Q37vqcCeAxam9mhQ
+         UHyHOiaEVjkVp4x6SRn6gkznopLkCHhKJo/uPqv4kBBdeR9iSJshUUt3xOQvWEPaByR/
+         8kUQ==
+X-Gm-Message-State: AOAM5312mZKdywJCL0JQEkf5jXdqy/RJnQy16YUx6nbZQdIdNm4WcSzh
+        NJk/f9jR1e802Kp6eiHZSvyV2NZCky5UQ8uWHD3I+JSPSmpbyA==
+X-Google-Smtp-Source: ABdhPJzi8z1dvmgepVDhZETqtwu9iVbjrbMU5rPIxJbH0R50f9WS4FEJREbHYWG4IQrOOyfX3t32jVC3EuT32koHCWg=
+X-Received: by 2002:a92:7f02:: with SMTP id a2mr54601602ild.204.1609640734572;
+ Sat, 02 Jan 2021 18:25:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdMs1mP7pK46qKqJbjfyrcKhSGvtyzQpTRsehMz6o=Jpg@mail.gmail.com>
+References: <20201230161036.GR1551@shell.armlinux.org.uk> <20201230165634.c4ty3mw6djezuyq6@pali>
+ <20201230170546.GU1551@shell.armlinux.org.uk> <X+y1K21tp01GpvMy@lunn.ch>
+ <20201230174307.lvehswvj5q6c6vk3@pali> <20201230190958.GW1551@shell.armlinux.org.uk>
+ <20201231121410.2xlxtyqjelrlysd2@pali> <X+3ume1+wz8HXHEf@lunn.ch>
+ <20201231170039.zkoa6mij3q3gt7c6@pali> <X+4GwpFnJ0Asq/Yj@lunn.ch> <20210102014955.2xv27xla65eeqyzz@pali>
+In-Reply-To: <20210102014955.2xv27xla65eeqyzz@pali>
+From:   Thomas Schreiber <tschreibe@gmail.com>
+Date:   Sun, 3 Jan 2021 03:25:23 +0100
+Message-ID: <CALQZrspktLr3SfVRhBrVK2zhjFzJMm9tQjWXU_07zjwJytk7Cg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
+ RTL9601C chips
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 03, 2021 at 12:20:26AM +0200, Andy Shevchenko wrote:
-> On Sat, Jan 2, 2021 at 4:32 AM Kent Gibson <warthog618@gmail.com> wrote:
+Hi Pali,
+I have a CarlitoxxPro module and I reported an issue about RX_LOS pin
+to the manufacturer.
+It looks to me that the module asserts "inverted LOS" through EEPROM
+but does not implement it. Consequently, the SFP state machine of my
+host router stays in check los state and link is not set up for the
+host interface.
+
+Below is a dump of the module's EEPROM:
+
+[root@clearfog-gt-8k ~]# ethtool -m eth0
+Identifier                                : 0x03 (SFP)
+Extended identifier                       : 0x04 (GBIC/SFP defined by
+2-wire interface ID)
+Connector                                 : 0x01 (SC)
+Transceiver codes                         : 0x00 0x00 0x00 0x00 0x00
+0x00 0x00 0x00 0x00
+Encoding                                  : 0x03 (NRZ)
+BR, Nominal                               : 1200MBd
+Rate identifier                           : 0x00 (unspecified)
+Length (SMF,km)                           : 20km
+Length (SMF)                              : 20000m
+Length (50um)                             : 0m
+Length (62.5um)                           : 0m
+Length (Copper)                           : 0m
+Length (OM3)                              : 0m
+Laser wavelength                          : 1310nm
+Vendor name                               : VSOL
+Vendor OUI                                : 00:00:00
+Vendor PN                                 : V2801F
+Vendor rev                                : 1.0
+Option values                             : 0x00 0x1c
+Option                                    : RX_LOS implemented, inverted
+Option                                    : TX_FAULT implemented
+Option                                    : TX_DISABLE implemented
+BR margin, max                            : 0%
+BR margin, min                            : 0%
+Vendor SN                                 : CP202003180377
+Date code                                 : 200408
+Optical diagnostics support               : Yes
+Laser bias current                        : 0.000 mA
+Laser output power                        : 0.0000 mW / -inf dBm
+Receiver signal average optical power     : 0.0000 mW / -inf dBm
+Module temperature                        : 31.00 degrees C / 87.80 degrees=
+ F
+Module voltage                            : 0.0000 V
+Alarm/warning flags implemented           : Yes
+Laser bias current high alarm             : Off
+Laser bias current low alarm              : On
+Laser bias current high warning           : Off
+Laser bias current low warning            : Off
+Laser output power high alarm             : Off
+Laser output power low alarm              : On
+Laser output power high warning           : Off
+Laser output power low warning            : Off
+Module temperature high alarm             : Off
+Module temperature low alarm              : Off
+Module temperature high warning           : Off
+Module temperature low warning            : Off
+Module voltage high alarm                 : Off
+Module voltage low alarm                  : Off
+Module voltage high warning               : Off
+Module voltage low warning                : Off
+Laser rx power high alarm                 : Off
+Laser rx power low alarm                  : Off
+Laser rx power high warning               : Off
+Laser rx power low warning                : Off
+Laser bias current high alarm threshold   : 74.752 mA
+Laser bias current low alarm threshold    : 0.000 mA
+Laser bias current high warning threshold : 0.000 mA
+Laser bias current low warning threshold  : 0.000 mA
+Laser output power high alarm threshold   : 0.0000 mW / -inf dBm
+Laser output power low alarm threshold    : 0.0000 mW / -inf dBm
+Laser output power high warning threshold : 0.0000 mW / -inf dBm
+Laser output power low warning threshold  : 0.0000 mW / -inf dBm
+Module temperature high alarm threshold   : 90.00 degrees C / 194.00 degree=
+s F
+Module temperature low alarm threshold    : 0.00 degrees C / 32.00 degrees =
+F
+Module temperature high warning threshold : 0.00 degrees C / 32.00 degrees =
+F
+Module temperature low warning threshold  : 0.00 degrees C / 32.00 degrees =
+F
+Module voltage high alarm threshold       : 0.0000 V
+Module voltage low alarm threshold        : 0.0000 V
+Module voltage high warning threshold     : 0.0000 V
+Module voltage low warning threshold      : 0.0000 V
+Laser rx power high alarm threshold       : 0.1536 mW / -8.14 dBm
+Laser rx power low alarm threshold        : 0.0000 mW / -inf dBm
+Laser rx power high warning threshold     : 0.0000 mW / -inf dBm
+Laser rx power low warning threshold      : 0.0000 mW / -inf dBm
+
+
+Le sam. 2 janv. 2021 =C3=A0 02:49, Pali Roh=C3=A1r <pali@kernel.org> a =C3=
+=A9crit :
+>
+> On Thursday 31 December 2020 18:13:38 Andrew Lunn wrote:
+> > > > Looking at sfp_module_info(), adding a check for i2c_block_size < 2
+> > > > when determining what length to return. ethtool should do the right
+> > > > thing, know that the second page has not been returned to user spac=
+e.
+> > >
+> > > But if we limit length of eeprom then userspace would not be able to
+> > > access those TX_DISABLE, LOS and other bits from byte 110 at address =
+A2.
 > >
-> > The GPIO mockup selftests are overly complicated with separate
-> > implementations of the tests for sysfs and cdev uAPI, and with the cdev
-> > implementation being dependent on tools/gpio and libmount.
-> >
-> > Rework the test implementation to provide a common test suite with a
-> > simplified pluggable uAPI interface.  The cdev implementation utilises
-> > the GPIO uAPI directly to remove the dependence on tools/gpio.
-> > The simplified uAPI interface removes the need for any file system mount
-> > checks in C, and so removes the dependence on libmount.
-> >
-> > The rework also fixes the sysfs test implementation which has been broken
-> > since the device created in the multiple gpiochip case was split into
-> > separate devices.
-> 
-> Okay, I commented something, not sure if everything is correct, needs
-> double checking.
-> Shell is quite a hard programming language. Everyday I found something
-> new about it.
-> 
-
-You are telling me - there are about six million ways to do even the
-most trivial tasks.  Makes you appreciate more constrained languages.
-
-> ...
-> 
-> > +#include <linux/gpio.h>
-> 
-> Perhaps include it after system headers?
-> 
-
-hehe, I blindly sorted them.
-Should it matter?
-
-> > +#include <signal.h>
-> > +#include <stdint.h>
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +#include <string.h>
-> > +#include <sys/ioctl.h>
-> > +#include <unistd.h>
-> 
-> ...
-> 
-> > +SYSFS=`mount -t sysfs | head -1 | awk '{ print $3 }'`
-> 
-> Oh, would below be better?
->   grep -w sysfs /proc/mounts | cut -f2 -d' '
-> 
-
-That looks good - the other is a carry over from the old gpio-mockup.sh.
-
-> ...
-> 
-> > +[ ! -d "$SYSFS" ] && skip "sysfs is not mounted"
-> 
-> [ -d ... ] || skip "..."
-> 
-
-Yeah, those were if [ .. ]; then fi originally. I did the first step
-of simplification and missed the second :-(.
-
-> ...
-> 
-> > +[ ! -d "$GPIO_SYSFS" ] && skip "CONFIG_GPIO_SYSFS is not selected"
-> 
-> Ditto.
-> 
-> ...
-> 
-> > +       local platform=`cat $SYSFS/kernel/debug/gpio | grep "$chip:" | tr -d ',' | awk '{print $5}'`
-> 
-> Besides useless use of cat (and tr + awk can be simplified) why are
-
-What do you suggest for the tr/awk simplification?
-
-> you simply not using
-> /sys/bus/gpio/devices/$chip ?
-> 
-
-Cos that shows all the gpiochips, not just the ones created by gpio-mockup.
-And I certainly don't want to go messing with real hardware.
-The default tests should still run on real hardware - but only
-accessing the mockup devices.
-
-Got a better way to filter out real hardware?
-
-> > +       # e.g. /sys/class/gpio/gpiochip508/device/gpiochip0/dev
-> > +       local syschip=`ls -d $GPIO_SYSFS/gpiochip*/device/$chip/dev`
-> 
-> ls -d is fragile, better to use `find ...`
-> 
-
-OK 
-
-> > +       syschip=${syschip#$GPIO_SYSFS}
-> > +       syschip=${syschip%/device/$chip/dev}
-> 
-> How does this handle more than one gpiochip listed?
-
-It is filtered by $chip so there can only be one.
-Or is that a false assumption?
-
-> Also, can you consider optimizing these to get whatever you want easily?
-> 
-
-Sadly that IS my optimized way - I don't know of an easier way to find
-the sysfs GPIO number given the gpiochip and offset :-(.
-Happy to learn of any alternative.
-
-> > +       sysfs_nr=`cat $SYSFS/devices/$platform/gpio/$syschip/base`
-> 
-> (It's probably fine here, but this doesn't work against PCI bus, for
-> example, see above for the fix)
-> 
-
-Not sure what you mean here.
-
-> > +       sysfs_nr=$(($sysfs_nr + $offset))
-> > +       sysfs_ldir=$GPIO_SYSFS/gpio$sysfs_nr
-> >  }
-> 
-> ...
-> 
-> > +set_line()
-> >  {
-> > +       if [ -z "$sysfs_nr" ]; then
-> > +               find_sysfs_nr
-> > +               echo $sysfs_nr > $GPIO_SYSFS/export
-> >         fi
-> 
-> It sounds like a separate function (you have release_line(), perhaps
-> acquire_line() is good to have).
-> 
-
-The cdev implementation has to release and re-acquire in the background
-as there is no simple way to perform a set_config on a requested line
-from shell - just holding the requested line for a set is painful enough,
-and the goal here was to keep the tests simple.
-
-I didn't want to make line acquisition/release explicit in the gpio-mockup
-tests, as that would make them needlessly complicated, so the acquire is
-bundled into the set_line - and anywhere else the uAPI implementation
-needs it.  There is an implicit assumption that a set_line will always
-be called before a get_line, but that is always true - there is no
-"as-is" being tested here.
-
-Of course you still need the release_line at the end of the test, so
-that is still there.
-
-> > +release_line()
-> >  {
-> > +       [ -z "$sysfs_nr" ] && return
-> > +       echo $sysfs_nr > $GPIO_SYSFS/unexport
-> > +       sysfs_nr=
-> > +       sysfs_ldir=
-> >  }
-> 
-> ...
-> 
-> > +BASE=`dirname $0`
-> 
-> Can be used via shell substitutions.
-> 
-
-Yup
-
-> ...
-> 
-> > +skip()
-> >  {
-> 
-> > +       echo $* >&2
-> 
-> In all cases better to use "$*" (note surrounding double quotes).
-> 
-
-Agreed - except where
-
-	for option in $*; do
-
-is used to parse parameters.
-
-> > +       echo GPIO $module test SKIP
-> > +       exit $ksft_skip
-> >  }
-> 
-> ...
-> 
-> > +        [ ! which modprobe > /dev/null 2>&1 ] && skip "need modprobe installed"
-> 
-> AFAIR `which` can be optional on some systems.
-> 
-
-That is how other selftests check for availability of modprobe.
-e.g. selftests/kmod/kmod.sh and selftests/vm/test_hmm.sh, so I assumed
-it was acceptable.
-
-Is there an alternative?
-
-> ...
-> 
-> > +       DEBUGFS=`mount -t debugfs | head -1 | awk '{ print $3 }'`
-> > +       [ ! -d "$DEBUGFS" ] && skip "debugfs is not mounted"
-> 
-> Same as per sysfs in another script.
-> 
-> ...
-> 
-> > +try_insert_module()
-> > +{
-> > +       modprobe -q $module $1
-> > +       err=$?
-> > +       [ $err -ne 0 ] && fail "insert $module failed with error $err"
-> 
-> I guess it's as simple as `modprobe ... || fail "... $?"
-> 
-
-Yup
-
-> > +}
-> 
-> ...
-> 
-> > +       [ ! -e "$mock_line" ] && fail "missing line $chip:$offset"
-> 
-> [ -e ... ] || ...
-> 
-> ...
-> 
-> > +       local ranges=$1
-> > +       local gc=
-> > +       shift
-> 
-> I found that combination
->        local ranges=$1; shift
-> is better to read.
-> 
-
-Agreed - the gc certainly shouldn't be splitting the two.
-
-> ...
-> 
-> > +       gpiochip=`ls -d $DEBUGFS/$module/gpiochip* 2>/dev/null`
-> 
-> `find ...` is a better choice.
-> 
-> > +       for chip in $gpiochip; do
-> > +               gc=`basename $chip`
-> > +               [ -z "$1" ] && fail "unexpected chip - $gc"
-> > +               test_line $gc 0
-> 
-> > +               if [ "$random" ] && [ $1 -gt 2 ]; then
-> 
-> You call the test twice, while you may do it in one go.
-> 
-
-Ahh, replacing the && with -a. Good to know.
-
-> > +                       test_line $gc $((( RANDOM % ($1 - 2) + 1)))
-> > +               fi
-> > +               test_line $gc $(($1 - 1))
-> > +               test_no_line $gc $1
-> >                 shift
-> > +       done
-> > +       [ "$1" ] && fail "missing expected chip of width $1"
-> 
-> ...
-> 
-> > +# manual gpio allocation tests fail if a physical chip already exists
-> > +[ "$full_test" ] && [ -e "/dev/gpiochip0" ] && skip "full tests conflict with gpiochip0"
-> 
-> I guess it should be rather something like
-> 
-> [ "$full_test" = "true" -a -e "/dev/gpiochip0" ]
-> 
-
-I'm going with empty for false, so you can drop the = "true" here.
-
-> P.S. Also you may use `#!/bin/sh -efu` as shebang and fix other problems.
-> 
-
-A shebang or a `set -efu`?
-I don't see shebang options used anywhere in the selftest scripts, but I
-agree with a set.
-
-Either way I am unsure what the shebang should be.
-The majority of the selftest scripts use bash as the shebang, with the
-remainder using plain sh.
-These scripts do use some bash extensions, and it was originally bash, so
-I left it as that.
-My test setups mainly use busybox, and don't have bash, so they complain
-about the bash shebang - though the ash(??) busybox is using still runs
-the script fine.
-
-Thanks again for the review - always a learning experience.
-
-Cheers,
-Kent.
+> > Have you tested these bits to see if they actually work? If they don't
+> > work...
+>
+> On Ubiquiti module that LOS bit does not work.
+>
+> I think that on CarlitoxxPro module LOS bit worked. But I cannot test it
+> right now as I do not have access to testing OLT unit.
+>
+> Adding Thomas to loop. Can you check if CarlitoxxPro GPON ONT module
+> supports LOS or other bits at byte offset 110 at address A2?
