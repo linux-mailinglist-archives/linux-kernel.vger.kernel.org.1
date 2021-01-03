@@ -2,234 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB3D2E8B89
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 11:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9D82E8B9A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 11:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbhACKBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 05:01:05 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:56391 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726072AbhACKA6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 05:00:58 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9B6895803E8;
-        Sun,  3 Jan 2021 05:00:11 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sun, 03 Jan 2021 05:00:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=nVjtQEK9XaBpR
-        QQ15wkj2tc7GfDi4X4brxsvTseHVaQ=; b=gGVCtJkoVvQNimG4iaMquEqwuuliD
-        qu4pkYH5Rb8trCBAqbYv3Bt+pCh2iHFXPTIQY6wrJIP0DM7LPCmOiIX4eajjUVO7
-        eLgEoJsvtyfRbgxSVctzNFvjDMxgf4PjM86pGEdRuzRolv1JSKD6sJSUPglvcFUX
-        bCJW5Q1tnbGSo5QtdjVEa4ojAylhs2OUK+x7eFeZQMOa8KhQeMivpPZNkyAwD8Gc
-        LW5geK1QXAIHzXm3p9V4uqcYRZeYK3TB627LtgkrqImJdfF7j+rX4Nspg5LJdS1I
-        bzcd454qlv8freCrYwBcaRBuqlJaZWRWAp3nXqAUdRYeCTr9J096ahx1A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=nVjtQEK9XaBpRQQ15wkj2tc7GfDi4X4brxsvTseHVaQ=; b=dohiBUMJ
-        3NSkS1dRew3RGn54/7yz6k1tuYN9I5sn4Gh1UqmLCRAdb5KLR5mVNMHYI3oxmkdB
-        bpEHqq0+PmWUtfdw7Dewi916Dpj02Bgrz8JfqZOP8Uv4efXNH4R2mcQw3lUH3FmE
-        AwAlJloOmkfR1ico4uG8WwBjmVW3ar4woM4LKbSftrUFwbAOTlz2FboL762lcTpW
-        8d8QVIagd7KJGLUZ7XutBlR1NHUfgi+ZLEKEgy3hFoA4wvbZW/5cAawx7eWNxjZf
-        ZjBKmLVzII62qZo6aE7ijeauVauBaPKNIruMCkuRRPS0GFUy1orUVkb8khmuOJja
-        rmprdfaxrF6zlw==
-X-ME-Sender: <xms:q5XxX3vMXMUK9H_vCUiz7DzsCHJWDBynJ4y6Qp5l6wV9fm2lPS4AsQ>
-    <xme:q5XxX44FSMdmZsbecLeilc9_r4gEE2fsFbOzxeyKZYlZi6thUSuH-bn9AxBrG_CEV
-    lim5Wd29yP1gh4UIQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefuddguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
-    gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
-    ugdrohhrgh
-X-ME-Proxy: <xmx:q5XxX6hhczK25a-TBfIZo9fZIVBBtAmI04ljXMqY28l7PyDg--U8vQ>
-    <xmx:q5XxXylUTzJgo5r9SdTKojocCd2IOE3rNZkmnZTCzhCAuwLVs6bLZw>
-    <xmx:q5XxXxu22u9nyPDH4RTWm9erkNSyfGa302ctbw8qZpbG5dY5sdGXYg>
-    <xmx:q5XxX2u8wBGyCNRzdU3WmSJAKz3YikbeXYCnDOXgTwMn6ZD1u2cs4A>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id F1864108005F;
-        Sun,  3 Jan 2021 05:00:10 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 4/4] arm64: dts: allwinner: h6: Use RSB for AXP805 PMIC connection
-Date:   Sun,  3 Jan 2021 04:00:07 -0600
-Message-Id: <20210103100007.32867-5-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210103100007.32867-1-samuel@sholland.org>
-References: <20210103100007.32867-1-samuel@sholland.org>
+        id S1726694AbhACKEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 05:04:55 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:26130 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725889AbhACKEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 05:04:54 -0500
+Received: by ajax-webmail-mail-app2 (Coremail) ; Sun, 3 Jan 2021 18:03:47
+ +0800 (GMT+08:00)
+X-Originating-IP: [10.192.85.18]
+Date:   Sun, 3 Jan 2021 18:03:47 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Paul Menzel" <pmenzel@molgen.mpg.de>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, kjlu@umn.edu
+Subject: Re: Re: [Intel-wired-lan] [PATCH] net: ixgbe: Fix memleak in
+ ixgbe_configure_clsu32
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <aefe9de0-83b4-81b8-5d5b-674cb8ea97e8@molgen.mpg.de>
+References: <20210103080843.25914-1-dinghao.liu@zju.edu.cn>
+ <aefe9de0-83b4-81b8-5d5b-674cb8ea97e8@molgen.mpg.de>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <6d39129d.17f75.176c7b3f11b.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: by_KCgCHj+uDlvFfXhRSAA--.13514W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQOBlZdtRzi2AAAsW
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On boards where the only peripheral connected to PL0/PL1 is an X-Powers
-PMIC, configure the connection to use the RSB bus rather than the I2C
-bus. Compared to the I2C controller that shares the pins, the RSB
-controller allows a higher bus frequency, and it is more CPU-efficient.
-
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- .../dts/allwinner/sun50i-h6-beelink-gs1.dts   | 38 +++++++++----------
- .../dts/allwinner/sun50i-h6-orangepi-3.dts    | 14 +++----
- .../dts/allwinner/sun50i-h6-orangepi.dtsi     | 22 +++++------
- 3 files changed, 37 insertions(+), 37 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 7c9dbde645b5..3452add30cc4 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -150,12 +150,28 @@ &pio {
- 	vcc-pg-supply = <&reg_aldo1>;
- };
- 
--&r_i2c {
-+&r_ir {
-+	linux,rc-map-name = "rc-beelink-gs1";
-+	status = "okay";
-+};
-+
-+&r_pio {
-+	/*
-+	 * FIXME: We can't add that supply for now since it would
-+	 * create a circular dependency between pinctrl, the regulator
-+	 * and the RSB Bus.
-+	 *
-+	 * vcc-pl-supply = <&reg_aldo1>;
-+	 */
-+	vcc-pm-supply = <&reg_aldo1>;
-+};
-+
-+&r_rsb {
- 	status = "okay";
- 
--	axp805: pmic@36 {
-+	axp805: pmic@745 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
--		reg = <0x36>;
-+		reg = <0x745>;
- 		interrupt-parent = <&r_intc>;
- 		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
-@@ -273,22 +289,6 @@ sw {
- 	};
- };
- 
--&r_ir {
--	linux,rc-map-name = "rc-beelink-gs1";
--	status = "okay";
--};
--
--&r_pio {
--	/*
--	 * PL0 and PL1 are used for PMIC I2C
--	 * don't enable the pl-supply else
--	 * it will fail at boot
--	 *
--	 * vcc-pl-supply = <&reg_aldo1>;
--	 */
--	vcc-pm-supply = <&reg_aldo1>;
--};
--
- &rtc {
- 	clocks = <&ext_osc32k>;
- };
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-index 15c9dd8c4479..16702293ac0b 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-@@ -175,12 +175,16 @@ &pio {
- 	vcc-pg-supply = <&reg_vcc_wifi_io>;
- };
- 
--&r_i2c {
-+&r_ir {
-+	status = "okay";
-+};
-+
-+&r_rsb {
- 	status = "okay";
- 
--	axp805: pmic@36 {
-+	axp805: pmic@745 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
--		reg = <0x36>;
-+		reg = <0x745>;
- 		interrupt-parent = <&r_intc>;
- 		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
-@@ -291,10 +295,6 @@ sw {
- 	};
- };
- 
--&r_ir {
--	status = "okay";
--};
--
- &rtc {
- 	clocks = <&ext_osc32k>;
- };
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-index ebc120a9232f..23e3cb2ffd8d 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-@@ -112,12 +112,20 @@ &pio {
- 	vcc-pg-supply = <&reg_aldo1>;
- };
- 
--&r_i2c {
-+&r_ir {
-+	status = "okay";
-+};
-+
-+&r_pio {
-+	vcc-pm-supply = <&reg_bldo3>;
-+};
-+
-+&r_rsb {
- 	status = "okay";
- 
--	axp805: pmic@36 {
-+	axp805: pmic@745 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
--		reg = <0x36>;
-+		reg = <0x745>;
- 		interrupt-parent = <&r_intc>;
- 		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
-@@ -232,14 +240,6 @@ sw {
- 	};
- };
- 
--&r_ir {
--	status = "okay";
--};
--
--&r_pio {
--	vcc-pm-supply = <&reg_bldo3>;
--};
--
- &rtc {
- 	clocks = <&ext_osc32k>;
- };
--- 
-2.26.2
-
+PiBEZWFyIERpbmdoYW8sCj4gCj4gCj4gQW0gMDMuMDEuMjEgdW0gMDk6MDggc2NocmllYiBEaW5n
+aGFvIExpdToKPiA+IFdoZW4gaXhnYmVfZmRpcl93cml0ZV9wZXJmZWN0X2ZpbHRlcl84MjU5OSgp
+IGZhaWxzLAo+ID4gaW5wdXQgYWxsb2NhdGVkIGJ5IGt6YWxsb2MoKSBoYXMgbm90IGJlZW4gZnJl
+ZWQsCj4gPiB3aGljaCBsZWFkcyB0byBtZW1sZWFrLgo+IAo+IE5pY2UgZmluZC4gVGhhbmsgeW91
+IGZvciB5b3VyIHBhdGNoZXMuIE91dCBvZiBjdXJpb3NpdHksIGRvIHlvdSB1c2UgYW4gCj4gYW5h
+bHlzaXMgdG9vbCB0byBmaW5kIHRoZXNlIGlzc3Vlcz8KPiAKClllcywgdGhlc2UgYnVncyBhcmUg
+c3VnZ2VzdGVkIGJ5IG15IHN0YXRpYyBhbmFseXNpcyB0b29sLiAKCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBEaW5naGFvIExpdSA8ZGluZ2hhby5saXVAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4gICBkcml2
+ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9peGdiZS9peGdiZV9tYWluLmMgfCA2ICsrKystLQo+ID4g
+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+ID4gCj4g
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaXhnYmUvaXhnYmVfbWFp
+bi5jIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaXhnYmUvaXhnYmVfbWFpbi5jCj4gPiBp
+bmRleCAzOTNkMWMyY2Q4NTMuLmU5YzJkMjhlZmM4MSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMv
+bmV0L2V0aGVybmV0L2ludGVsL2l4Z2JlL2l4Z2JlX21haW4uYwo+ID4gKysrIGIvZHJpdmVycy9u
+ZXQvZXRoZXJuZXQvaW50ZWwvaXhnYmUvaXhnYmVfbWFpbi5jCj4gPiBAQCAtOTU4Miw4ICs5NTgy
+LDEwIEBAIHN0YXRpYyBpbnQgaXhnYmVfY29uZmlndXJlX2Nsc3UzMihzdHJ1Y3QgaXhnYmVfYWRh
+cHRlciAqYWRhcHRlciwKPiA+ICAgCWl4Z2JlX2F0cl9jb21wdXRlX3BlcmZlY3RfaGFzaF84MjU5
+OSgmaW5wdXQtPmZpbHRlciwgbWFzayk7Cj4gPiAgIAllcnIgPSBpeGdiZV9mZGlyX3dyaXRlX3Bl
+cmZlY3RfZmlsdGVyXzgyNTk5KGh3LCAmaW5wdXQtPmZpbHRlciwKPiA+ICAgCQkJCQkJICAgIGlu
+cHV0LT5zd19pZHgsIHF1ZXVlKTsKPiA+IC0JaWYgKCFlcnIpCj4gPiAtCQlpeGdiZV91cGRhdGVf
+ZXRodG9vbF9mZGlyX2VudHJ5KGFkYXB0ZXIsIGlucHV0LCBpbnB1dC0+c3dfaWR4KTsKPiA+ICsJ
+aWYgKGVycikKPiA+ICsJCWdvdG8gZXJyX291dF93X2xvY2s7Cj4gPiArCj4gPiArCWl4Z2JlX3Vw
+ZGF0ZV9ldGh0b29sX2ZkaXJfZW50cnkoYWRhcHRlciwgaW5wdXQsIGlucHV0LT5zd19pZHgpOwo+
+ID4gICAJc3Bpbl91bmxvY2soJmFkYXB0ZXItPmZkaXJfcGVyZmVjdF9sb2NrKTsKPiA+ICAgCj4g
+PiAgIAlpZiAoKHVodGlkICE9IDB4ODAwKSAmJiAoYWRhcHRlci0+anVtcF90YWJsZXNbdWh0aWRd
+KSkKPiAKPiBSZXZpZXdlZC1ieTogUGF1bCBNZW56ZWwgPHBtZW56ZWxAbW9sZ2VuLm1wZy5kZT4K
+PiAKPiBJIHdvbmRlciwgaW4gdGhlIG5vbi1lcnJvciBjYXNlLCBob3cgYGlucHV0YCBhbmQgYGp1
+bXBgIGFyZSBmcmVlZC4KPiAKCkknbSBub3Qgc3VyZSBpZiBrZnJlZShqdW1wKSB3aWxsIGludHJv
+ZHVjZSBidWcuIGp1bXAgaXMgYWxsb2NhdGVkIGluIGEgZm9yIApsb29wIGFuZCBoYXMgYmVlbiBw
+YXNzZWQgdG8gYWRhcHRlci0+anVtcF90YWJsZXMuIGlucHV0IGFuZCBtYXNrIGhhdmUgbmV3CmRl
+ZmluaXRpb25zIChremFsbG9jKSBhZnRlciB0aGlzIGxvb3AsIGl0J3MgcmVhc29uYWJsZSB0byBm
+cmVlIHRoZW0gb24gZmFpbHVyZS4KQnV0IGp1bXAgaXMgZGlmZmVyZW50LiBNYXliZSB3ZSBzaG91
+bGQgbm90IGZyZWUganVtcCBhZnRlciB0aGUgbG9vcD8KCj4gT2xkIGNvZGU6Cj4gCj4gPiAgICAg
+ICAgIGlmICghZXJyKQo+ID4gICAgICAgICAgICAgICAgIGl4Z2JlX3VwZGF0ZV9ldGh0b29sX2Zk
+aXJfZW50cnkoYWRhcHRlciwgaW5wdXQsIGlucHV0LT5zd19pZHgpOwo+ID4gICAgICAgICBzcGlu
+X3VubG9jaygmYWRhcHRlci0+ZmRpcl9wZXJmZWN0X2xvY2spOwo+ID4gCj4gPiAgICAgICAgIGlm
+ICgodWh0aWQgIT0gMHg4MDApICYmIChhZGFwdGVyLT5qdW1wX3RhYmxlc1t1aHRpZF0pKQo+ID4g
+ICAgICAgICAgICAgICAgIHNldF9iaXQobG9jIC0gMSwgKGFkYXB0ZXItPmp1bXBfdGFibGVzW3Vo
+dGlkXSktPmNoaWxkX2xvY19tYXApOwo+ID4gCj4gPiAgICAgICAgIGtmcmVlKG1hc2spOwo+ID4g
+ICAgICAgICByZXR1cm4gZXJyOwo+IAo+IFNob3VsZCB0aGVzZSB0d28gbGluZXMgYmUgcmVwbGFj
+ZWQgd2l0aCBgZ290byBlcnJfb3V0YD8gKFRob3VnaCB0aGUgbmFtZSAKPiBpcyBjb25mdXNpbmcg
+dGhlbiwgYXMgaXTigJlzIHRoZSBub24tZXJyb3IgY2FzZS4pCj4gCgpUaGlzIGFsc28gbWFrZXMg
+bWUgY29uZnVzZWQuIEl0IHNlZW1zIHRoYXQgdGhlIGNoZWNrIGFnYWluc3QgdW50aWVkIGlzIG5v
+dCBlcnJvcgpoYW5kbGluZyBjb2RlLCBidXQgdGhlcmUgaXMgYSBrZnJlZShtYXNrKSBhZnRlciBp
+dC4gRnJlZWluZyBhbGxvY2F0ZWQgZGF0YSBvbgpzdWNjZXNzIGlzIG5vdCByZWFzb25hYmxlLiAK
+ClJlZ2FyZHMsCkRpbmdoYW8KCj4gPiBlcnJfb3V0X3dfbG9jazoKPiA+ICAgICAgICAgc3Bpbl91
+bmxvY2soJmFkYXB0ZXItPmZkaXJfcGVyZmVjdF9sb2NrKTsKPiA+IGVycl9vdXQ6Cj4gPiAgICAg
+ICAgIGtmcmVlKG1hc2spOwo+ID4gZnJlZV9pbnB1dDoKPiA+ICAgICAgICAga2ZyZWUoaW5wdXQp
+Owo+ID4gZnJlZV9qdW1wOgo+ID4gICAgICAgICBrZnJlZShqdW1wKTsKPiA+ICAgICAgICAgcmV0
+dXJuIGVycjsKPiA+IH0KPiAKPiBLaW5kIHJlZ2FyZHMsCj4gCj4gUGF1bAo=
