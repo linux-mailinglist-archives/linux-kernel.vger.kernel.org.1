@@ -2,48 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F892E8DAB
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A802E8DAC
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727502AbhACRlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 12:41:31 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35489 "EHLO
+        id S1727628AbhACRq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 12:46:57 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:34452 "EHLO
         eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726487AbhACRlb (ORCPT
+        by vger.kernel.org with ESMTP id S1726129AbhACRq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 12:41:31 -0500
+        Sun, 3 Jan 2021 12:46:56 -0500
 Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
  TLS) by relay.mimecast.com with ESMTP id
- uk-mta-191-SEkvrg5vNi2DwVOKN-8MHg-1; Sun, 03 Jan 2021 17:39:52 +0000
-X-MC-Unique: SEkvrg5vNi2DwVOKN-8MHg-1
+ uk-mta-131-JAaV3ng8Nlmb8bomw6Dr6A-1; Sun, 03 Jan 2021 17:45:17 +0000
+X-MC-Unique: JAaV3ng8Nlmb8bomw6Dr6A-1
 Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
  AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sun, 3 Jan 2021 17:39:51 +0000
+ Server (TLS) id 15.0.1347.2; Sun, 3 Jan 2021 17:45:16 +0000
 Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
  AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sun, 3 Jan 2021 17:39:51 +0000
+ Sun, 3 Jan 2021 17:45:16 +0000
 From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Bernd Petrovitsch' <bernd@petrovitsch.priv.at>,
-        "sedat.dilek@gmail.com" <sedat.dilek@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-CC:     Pavel Machek <pavel@ucw.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To:     'Ilkka Prusi' <ilkka.prusi@pp.inet.fi>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: RE: Linux 5.11-rc1
 Thread-Topic: Linux 5.11-rc1
-Thread-Index: AQHW4PeFLgQEBm/mQk6hoWV3rGbJe6oWKwGQ
-Date:   Sun, 3 Jan 2021 17:39:51 +0000
-Message-ID: <3f76e002f96b43de903133b5cd053012@AcuMS.aculab.com>
-References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
-         <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com>
-         <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
-         <20210101161435.GA344@duo.ucw.cz>
-         <CA+icZUXKXt3NfgVxZN+m+3d_dqBi+o0EyJH53h-sXU8buaUe7g@mail.gmail.com>
-         <CAK7LNASQZ7SWrAykdH71iq6SyLj=gG-EGhCy8SHkDz_bdq2BMw@mail.gmail.com>
-         <CA+icZUXyfv0sOP=UG6oeoxpHbEpOrufJzzUWb3ZOpE_TMQerwQ@mail.gmail.com>
- <b9d3c1063d4c3f9a0cb71442cc92ad77a859d438.camel@petrovitsch.priv.at>
-In-Reply-To: <b9d3c1063d4c3f9a0cb71442cc92ad77a859d438.camel@petrovitsch.priv.at>
+Thread-Index: AQHW4WEoJT4Edzv6Kku1OzETXl8sF6oWLXSQ
+Date:   Sun, 3 Jan 2021 17:45:16 +0000
+Message-ID: <1930c2a3f18440ccb4890b7b01a33b94@AcuMS.aculab.com>
+References: <0e0e5e88-1ff2-ef57-cfc3-a53c5a0f76c8@pp.inet.fi>
+In-Reply-To: <0e0e5e88-1ff2-ef57-cfc3-a53c5a0f76c8@pp.inet.fi>
 Accept-Language: en-GB, en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
@@ -61,22 +49,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQmVybmQgUGV0cm92aXRzY2gNCj4gU2VudDogMDIgSmFudWFyeSAyMDIxIDExOjA1DQo+
-IA0KPiBPbiBTYXQsIDIwMjEtMDEtMDIgYXQgMTA6MTMgKzAxMDAsIFNlZGF0IERpbGVrIHdyb3Rl
-Og0KPiBbLi4uXQ0KPiA+IFRvIGJlIGhvbmVzdCBJIHdvbmRlcmVkIHdoeSB0aGVyZSB3ZXJlIG5v
-IG1vcmUgcmVwb3J0cyBvbiB0aGlzLg0KPiANCj4gUGVyaGFwcyBJJ20gbm90IHRoZSBvbmx5IG9u
-ZSB3aG8gaGFzIC9zYmluIGFuZCAvdXNyL3NiaW4gaW4gdGhlDQo+ICRQQVRIIG9mIG5vcm1hbCBh
-Y2NvdW50cyB0b28gKGFuZCBpZGsgd2hhdCdzIHRoZSBkZWZhdWx0DQo+IGJlaGF2aW91ciBvZiBk
-aXN0cmlidXRpb25zIGlzIC0gbXkgLmJhc2hyYyAiZml4ZXMiIHRoZQ0KPiAkUEFUSCkuDQoNClll
-cCwgSSd2ZSBwcmV0dHkgbXVjaCBhbHdheXMgYWRkZWQgc2JpbiB0byBteSBub24tcm9vdCAkUEFU
-SA0KZm9yIG1vc3Qgb2YgdGhlIGxhc3QgMzArIHllYXJzLg0KVG9vIG11Y2ggc3R1ZmYgdGhhdCBh
-ICd0ZWNoaWUnIHdhbnRzIHRvIHJ1biBub24tcm9vdCBpcyBpbiB0aGVyZS4NCg0KL3Vzci9iaW4s
-IC91c3Ivc2JpbiBhbmQgL3Vzci9saWIgc2hvdWxkIGhhdmUgZ290IHJlbW92ZWQgb25jZQ0KZGlz
-a3MgZ290IGxhcmdlIGVub3VnaCB0aGF0IHRoZSBib290IGRpc2sgKGFrYSAvKSBkaWRuJ3Qgb3Zl
-cmZsb3cNCnJlcXVpcmVkIHNvbWUgc3lzdGVtIGZpbGVzIGJlIG1vdmVkIGludG8gdGhlICd1c2Vy
-JyBkaXNrLg0KKFRoZSBsYXN0IGRpc2tzIHRoYXQgd2VyZW4ndCByZWFsbHkgYmlnIGVub3VnaCB3
-ZXJlIHRoZSA2MDBNQiBvbmVzLg0KVGhlIHVzZXIncyBob21lIGRpcmVjdG9yaWVzIGNvdWxkIGdv
-IGludG8gL3VzciB3aGVyZSB0aGV5IGJlbG9uZy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
-QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
-LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+RnJvbTogSWxra2EgUHJ1c2kNCj4gU2VudDogMDIgSmFudWFyeSAyMDIxIDIzOjI3DQo+IA0KPiA+
+IFBBVEggZm9yIHRoZSByb290IG9uIERlYmlhbiBpcw0KPiA+IC91c3IvbG9jYWwvc2JpbjovdXNy
+L2xvY2FsL2JpbjovdXNyL3NiaW46L3Vzci9iaW46L3NiaW46L2Jpbg0KPiA+DQo+IA0KPiBOb3Rl
+IHRoYXQgL3NiaW4gaXMgbm93IGp1c3QgYSBzeW1saW5rIHRvIC91c3Ivc2JpbiBvbiBEZWJpYW4g
+c2luY2UgMTAgKEJ1c3RlcikgYXMgcGVyIEZIU1sxXVsyXS4NCj4gDQo+IFsxXSBodHRwczovL3dp
+a2kubGludXhmb3VuZGF0aW9uLm9yZy9sc2IvZmhzDQo+IFsyXSBodHRwczovL2Fyc3RlY2huaWNh
+LmNvbS9pbmZvcm1hdGlvbi10ZWNobm9sb2d5LzIwMTkvMDkvZGViaWFuLTEwLXBsYXlpbmctY2F0
+Y2gtdXAtd2l0aC10aGUtcmVzdC0NCj4gb2YtdGhlLWxpbnV4LXdvcmxkLXRoYXRzLWEtZ29vZC10
+aGluZy8NCg0KV2hpY2ggaXMgZXhhY3RseSAxMDAlIGJhY2t3YXJkcyA6LSkNCg0KCURhdmlkDQoN
+Ci0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJt
+LCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChX
+YWxlcykNCg==
 
