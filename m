@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238862E8EA2
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08782E8EA6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbhACWGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 17:06:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
+        id S1727158AbhACWHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 17:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbhACWGd (ORCPT
+        with ESMTP id S1726042AbhACWHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 17:06:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3842FC061573;
-        Sun,  3 Jan 2021 14:05:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IPkgGX+SKWseAA881v8oRHr85WnU1YqvzzzJRMs/71c=; b=BdIKsHNTHDDRsSDH1FUIo5CixW
-        fHX/00nq5Thq2nVnXzL0YbgDHkdY/qDUQrsPMorvAXhHt5f1BNttlCATeR6jkTV0FQt9Ad0tTyx81
-        iaVc1Rav9ITLT5mVkawRsEsFACWkTUbVDvimQn3bx9NuKS9lGDdN2ZBIx7H0CMQaEigliabbWS3us
-        MKtaOat9jms2jhHciwkXUhmGybyhT5rwm8RZqZLCE3lP0T13hvvW3rGT+R84cDbKfF16v4UPY22bV
-        F7/McCtkUNeatMVFJXU/p1VsxkWYmcYc8j5afI+Gup+JbRXBxgjTv3BRlZDWwfpRW02m2hWNJ09S9
-        yYFmplGw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1kwBUS-000Ogt-2m; Sun, 03 Jan 2021 22:05:04 +0000
-Date:   Sun, 3 Jan 2021 22:04:44 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, rdunlap@infradead.org, joe@perches.com,
-        mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com
-Subject: Re: [PATCH v17 04/10] fs/ntfs3: Add file operations and
- implementation
-Message-ID: <20210103220444.GA28414@casper.infradead.org>
-References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
- <20201231152401.3162425-5-almaz.alexandrovich@paragon-software.com>
- <20210103215732.vbgcrf42xnao6gw2@kari-VirtualBox>
+        Sun, 3 Jan 2021 17:07:48 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17088C061573;
+        Sun,  3 Jan 2021 14:07:08 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D8CXn60Svz9sVr;
+        Mon,  4 Jan 2021 09:07:05 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1609711626;
+        bh=8XWTuTPPy/pY+/KbO9pp3kdEaIP3ZBqqAIW0O/fjsEE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IkNEuxx1acpMx6Q4gbPWw8XCj8QRKfnpbdSQYPAqzqzED1/BM3+AwrQveY4uNzpTv
+         H75L5KD71Ic03NBhuiql+ON3kxXzDsDNtl4RT3dv8cjGheVfVjYvNDqipJYmilgNIn
+         P275q+bGgDJuglPiCXXLSC527spV7VVJjiCSw6cZw3kuH0G/kOmynAzo2VyWflF+sY
+         PCQN9RsoYlp+Ki5H5N6kLrOPKO9/PCpkhRlDS9X+7getRnWb5Cy++z7MkI9WcUed5D
+         d2uFRz9Iy/C9ETKzrXChnngW7U0OZildKbzQX4g9yKRu3vtR7CI1z3Q7uD/SKmJ9Xb
+         8rttXqBHfEX5w==
+Date:   Mon, 4 Jan 2021 09:07:04 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning in Linus' tree
+Message-ID: <20210104090704.3601e1ba@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210103215732.vbgcrf42xnao6gw2@kari-VirtualBox>
+Content-Type: multipart/signed; boundary="Sig_/nFrKHp_yQHVWovhAa5DMG.x";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 03, 2021 at 11:57:32PM +0200, Kari Argillander wrote:
-> > +		/*
-> > +		 * mirror of len, but signed, because run_packed_size()
-> > +		 * works with signed int only
-> > +		 */
-> > +		len64 = len;
-> > +
-> > +		/* how much bytes is packed len64 */
-> > +		size_size = run_packed_size(&len64);
-> 
-> Does (s64 *)&len work just fine?
+--Sig_/nFrKHp_yQHVWovhAa5DMG.x
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-No.  run_packed_size() is going to load/store eight bytes to/from that
-pointer.  You can't just cast a pointer to a different size and expect
-it to work (it might happen to work, particularly on little-endian,
-but big-endian is going to get completely the wrong value).
+Hi all,
 
+While building Linus' tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
+
+drivers/pinctrl/nomadik/pinctrl-nomadik.c: In function 'nmk_gpio_dbg_show_o=
+ne':
+drivers/pinctrl/nomadik/pinctrl-nomadik.c:952:8: warning: unused variable '=
+wake' [-Wunused-variable]
+  952 |   bool wake;
+      |        ^~~~
+
+Introduced by commit
+
+  f3925032d7fd ("pinctrl: nomadik: Use irq_has_action()")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/nFrKHp_yQHVWovhAa5DMG.x
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/yQAgACgkQAVBC80lX
+0Gwy4Af+LdA7Enl+BpS4EOiSHQBwbgCactbeYoEejrcjKe5QKSnqIaZeQL2ZFMky
+lNXClBO9+h+ocxOKEoxqMUle2DWIxLwsmZqfz4U03+N5o/3EBfZjiVRhNdwhelq5
+XJnBfH6pcLhAc/+c3G2uZlQOaOFsYQ89holsRZc4rCP5N0VxL8NKY9ggPkSwbmtU
+QKX8Vswzur/sEQS2qE8TWDUdsyKSNu51N+Bb4ZK5w8lmNmDefwsRJGzBG5NpO2un
+TT/lbW7VLE/nYtsKFfN/Fib0J2+BFnaBIlQPsqxELUksKARyHQMRe3Fm8GYd5hb5
+OEWxAt6nPgNlrhuCXSutSe5kk9vacg==
+=GDjp
+-----END PGP SIGNATURE-----
+
+--Sig_/nFrKHp_yQHVWovhAa5DMG.x--
