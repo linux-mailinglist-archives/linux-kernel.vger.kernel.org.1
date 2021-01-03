@@ -2,36 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0A12E8C81
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF8F2E8C83
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbhACOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 09:04:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35946 "EHLO mail.kernel.org"
+        id S1727290AbhACOEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 09:04:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726829AbhACOEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 09:04:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 118712080D;
-        Sun,  3 Jan 2021 14:03:21 +0000 (UTC)
+        id S1726558AbhACOEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 09:04:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 482862080D;
+        Sun,  3 Jan 2021 14:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609682603;
-        bh=dqHNyAKkpwyLmYZD5yeeB+ZjQZwdnDmtsYc8E0Z0vfE=;
+        s=k20201202; t=1609682652;
+        bh=Ey75tATsrR5FQShYsC5Hg0ZFtsB2bV+9NEouqmN89Mk=;
         h=From:To:Cc:Subject:Date:From;
-        b=NFIcH122ai3m5hUWP6QvxVgAMGxb3kIkIh5Jo6RtGsYshsvv9Uv2VdnZh0eOrNAsk
-         vdfwiOo0oSAnXnTYxqUd0vWaguhpijijj53zJm9UHhNqr7WKFR9N9sMBb12Cj+I7Zf
-         NZ0PEDa2Z43xVBt7pc10EUh9nqxfq8P/8GLnRbPxrQNqhBK597h5Co+VCvVHstxjjc
-         b+msh48wSdGPavmQTrZeHOJaEluzzN9QimIfYUcD0XWPLDqQx0BGBmKXmMuDkgp+ky
-         ZU0XZSAJ1jJxZvethaiUIUjZvOX2d7aFmvkurB4TsCZEaEneCzfKvQ6BuFcmPjCDiS
-         Y+r1Ff7/94beA==
+        b=RZUXyJwUA7NZie53rvyZdBbLFeSOxzKQZcfBmOgFC1JdnjSEuG7vVqfXdibnm8r22
+         /i4uB58bksBlp/Akb0hPM9PREYz7jCCpie9NAm7Knm7LpxUfIEGOnWCtoX3wJjqMSL
+         k98kEZKTBsncR8Mpt0Me0o9xfr5GvtV2QtBB6P1NMuIsS7ik144KP4OhQzQnqk9AkR
+         KsGCNEiv0YFb37qFQi1EDWX6kzGT3PP+ACn6oHR5g7ZgujyS5cHIkZb7jibkR5FLKk
+         M/bQ9lB4ysFAm8rxLl/uQ0DQvr/O47V194vJp3jiIFwcLwiy9zfzT1wTZBxUB4B84h
+         ihgqW17Saqxrw==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Tero Kristo <t-kristo@ti.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: omap-sham - Fix link error without crypto-engine
-Date:   Sun,  3 Jan 2021 15:03:04 +0100
-Message-Id: <20210103140318.3902174-1-arnd@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/a6xx: add CONFIG_QCOM_LLCC dependency
+Date:   Sun,  3 Jan 2021 15:03:45 +0100
+Message-Id: <20210103140407.3917405-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,40 +49,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The driver was converted to use the crypto engine helper
-but is missing the corresponding Kconfig statement to ensure
-it is available:
+When LLCC support is in a loadable module, the adreno support
+cannot be built-in:
 
-arm-linux-gnueabi-ld: drivers/crypto/omap-sham.o: in function `omap_sham_probe':
-omap-sham.c:(.text+0x374): undefined reference to `crypto_engine_alloc_init'
-arm-linux-gnueabi-ld: omap-sham.c:(.text+0x384): undefined reference to `crypto_engine_start'
-arm-linux-gnueabi-ld: omap-sham.c:(.text+0x510): undefined reference to `crypto_engine_exit'
-arm-linux-gnueabi-ld: drivers/crypto/omap-sham.o: in function `omap_sham_finish_req':
-omap-sham.c:(.text+0x98c): undefined reference to `crypto_finalize_hash_request'
-arm-linux-gnueabi-ld: omap-sham.c:(.text+0x9a0): undefined reference to `crypto_transfer_hash_request_to_engine'
-arm-linux-gnueabi-ld: drivers/crypto/omap-sham.o: in function `omap_sham_update':
-omap-sham.c:(.text+0xf24): undefined reference to `crypto_transfer_hash_request_to_engine'
-arm-linux-gnueabi-ld: drivers/crypto/omap-sham.o: in function `omap_sham_final':
-omap-sham.c:(.text+0x1020): undefined reference to `crypto_transfer_hash_request_to_engine'
+aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in function `a6xx_gpu_init':
+a6xx_gpu.c:(.text+0xe0): undefined reference to `llcc_slice_getd'
+a6xx_gpu.c:(.text+0xe0): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `llcc_slice_getd'
+aarch64-linux-ld: a6xx_gpu.c:(.text+0xec): undefined reference to `llcc_slice_getd'
+a6xx_gpu.c:(.text+0xec): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `llcc_slice_getd'
+aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in function `a6xx_destroy':
+a6xx_gpu.c:(.text+0x274): undefined reference to `llcc_slice_putd'
+a6xx_gpu.c:(.text+0x274): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `llcc_slice_putd'
+aarch64-linux-ld: a6xx_gpu.c:(.text+0x27c): undefined reference to `llcc_slice_putd'
 
-Fixes: 133c3d434d91 ("crypto: omap-sham - convert to use crypto engine")
+Add a Kconfig dependency that disallows the broken configuration
+but allows all working ones.
+
+Fixes: 474dadb8b0d5 ("drm/msm/a6xx: Add support for using system cache(LLC)")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/crypto/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/msm/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 8fa6d71a6da1..21abeb19f1eb 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -368,6 +368,7 @@ if CRYPTO_DEV_OMAP
- config CRYPTO_DEV_OMAP_SHAM
- 	tristate "Support for OMAP MD5/SHA1/SHA2 hw accelerator"
- 	depends on ARCH_OMAP2PLUS
-+	select CRYPTO_ENGINE
- 	select CRYPTO_SHA1
- 	select CRYPTO_MD5
- 	select CRYPTO_SHA256
+diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+index dabb4a1ccdcf..b8e02859fd92 100644
+--- a/drivers/gpu/drm/msm/Kconfig
++++ b/drivers/gpu/drm/msm/Kconfig
+@@ -7,6 +7,8 @@ config DRM_MSM
+ 	depends on IOMMU_SUPPORT
+ 	depends on OF && COMMON_CLK
+ 	depends on QCOM_OCMEM || QCOM_OCMEM=n
++	depends on QCOM_LLCC || QCOM_LLCC=n
++	depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
+ 	select IOMMU_IO_PGTABLE
+ 	select QCOM_MDT_LOADER if ARCH_QCOM
+ 	select REGULATOR
+@@ -15,7 +17,6 @@ config DRM_MSM
+ 	select SHMEM
+ 	select TMPFS
+ 	select QCOM_SCM if ARCH_QCOM
+-	select QCOM_COMMAND_DB if ARCH_QCOM
+ 	select WANT_DEV_COREDUMP
+ 	select SND_SOC_HDMI_CODEC if SND_SOC
+ 	select SYNC_FILE
 -- 
 2.29.2
 
