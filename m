@@ -2,85 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ACE2E8DB6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 19:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8804E2E8DBB
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 19:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbhACSQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 13:16:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
+        id S1727781AbhACSVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 13:21:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbhACSQV (ORCPT
+        with ESMTP id S1727041AbhACSVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 13:16:21 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1710C0613C1
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 10:15:41 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id v19so17273508pgj.12
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 10:15:41 -0800 (PST)
+        Sun, 3 Jan 2021 13:21:01 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082CFC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 10:20:20 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id b5so8990177pjl.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 10:20:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=waGowa0FtUQXfzT4adOsmLs9T/6QK5vr6HCcoxT4PQo=;
-        b=tVgBEoM7045AKWVnj071upgZvLNTCb8RMz9CMoXFhf3cd2hIsjpcLqEyZ103uuQrL/
-         cQBuvsFJnPZPXrCbuX7xyve4n4Dp9OXi2oCejxFYu8tRcBkkQi0D3Kv60rhloghzszLL
-         2w7pgFBeKwQVq2SaRt6+GOdUoJHE/gVswXLKFdqTpp1qeXG2x7fTThJVYYh0iObmZDUb
-         OsF4uT5jtVG49aJu4Z+fiUvcK94vxKCVdJ1w33cW7QWIG6WvHg2+/cs7zfz10heFD6vY
-         +gPFy4x9cF7UeEDxW3uV588Bxd9MEt4cIQnbu7QJQnkSH7ZivScyvGE+d26NmgzsPT8F
-         mgcQ==
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=apUPhe8XGFmm+Bi43EU6C/xYFjQp2KMTqbnzxE/Prgo=;
+        b=Hx7USmsWC6rsYBwFOAOs3KB4jnSIdXfa1hxNJgxQnIRTiKPsNOQ20ub3xbGhGtvFFe
+         z4CAxghIGF+Dyi+skjVLYGw5M0fFf/ZuTfVHrBUQ8QWPXBZOfrsxUPXGLutzXg0y1yr7
+         AV/0FK2Kd2eRm/wjnygRqY+I8zTGl/FfBf+z+4osxlnEXR5j7jTrNCoz7MIkcblT1hm0
+         t5nszwGrARVOMQfo3yyZEKytwP56uVdLirCgrS4YfYEBd4IbMpTZIOBXAs5oKFoZUmkd
+         iVOhAjMd5ZXVvrrYWDwi8ygUfGz5jrhS2y+ilw/9Ij8t2Qy2mJKOo2xwypqdr/plcI/y
+         Sh8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=waGowa0FtUQXfzT4adOsmLs9T/6QK5vr6HCcoxT4PQo=;
-        b=t+td1FwSMn4fdVl8XJaK163OTjiENnSFw5OQT+zwNNDsuYkLlr/3vbbXoup1QhmPit
-         zxeij6PIE0t9Abr8Rxa4+MK9OcH/05SdECnGM+MDc7jtW+YQ8fuEeSxR+S2bbRkiUk6T
-         G5ZSevAdFssblzoBtCMKKC2jpCDRLZFPzHyupxY9Kbgc8DInqDuKEMNESwB3nfkK3ZnJ
-         OoYeOhbiO2qNCpOnPN62QIzcGWihhKRTgn8xkoZVGNwTqYvnM3KwsUhgQm68/zrSL4tp
-         pFxUBcfbt7ctz4747ErrJtpPuyp656TH8s4f8bihxW2IXkNRM/1KQHis6vOgHVF78MBl
-         Xgng==
-X-Gm-Message-State: AOAM533cZceG67xYdJ4kaBxPRcDxDIR8vy6w0BxrwQxoqEYgHKOysHQg
-        sOyeca41PTyDV1ExOEnqcZIHtbuZ5v98Vw==
-X-Google-Smtp-Source: ABdhPJyKM0mUtKxSmTJiYR8vTOfM23/ZX6k1LtMsY/K64o6H/xEW1HWWHyeWnqis5IZ2VIp5DEWgFA==
-X-Received: by 2002:a63:7503:: with SMTP id q3mr11823621pgc.318.1609697740789;
-        Sun, 03 Jan 2021 10:15:40 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id cl23sm18307308pjb.23.2021.01.03.10.15.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Jan 2021 10:15:40 -0800 (PST)
-Subject: Re: [PATCH RESEND] ide/falconide: Fix module unload
-To:     Finn Thain <fthain@telegraphics.com.au>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=apUPhe8XGFmm+Bi43EU6C/xYFjQp2KMTqbnzxE/Prgo=;
+        b=K28v+vbXt0miFkSWjkzjPXbDvJpfFn1sXjK9FQCltRLsVBjdwDG1wJiKUg95WL704N
+         IhITqx4oOR6q8eEc3Pz4X3rN2UcxhwMA5xdSITgxRKPajqD91X0CcNM1AdxddDBsPTWz
+         7LTaK3/uOcWpIzZHrrTeevgJytyfidHub2cqQBysCR4ELbfz1iUgYSByXid8qAoOSvpd
+         or9KKgPcuPVnTWT8VdTnQ7fD/dfpih6yGfcfOsk43fOkdsLq0nCjn97Oq3tYdsf7y6T5
+         Y0KWEy+4v9ypegAwZeATtCuA/YVTsyGyIRZ63lwWBJBnXldQb9jWbmtqRAjqmHZyQJau
+         ld5Q==
+X-Gm-Message-State: AOAM531ejvz5HDP8I3dtoVosFri8Em4GA50m/vXRbnCgfq3nAwPvoi8U
+        xk/+EksHZfnVkEVuElfW628W3g==
+X-Google-Smtp-Source: ABdhPJwXW4yEo4w8egwTb3K4A3pdigp+VHONUW2bOiDCwEGCqE724OK97nQ+XP6vrLf2zgic7GYmug==
+X-Received: by 2002:a17:90a:d790:: with SMTP id z16mr26805961pju.88.1609698020326;
+        Sun, 03 Jan 2021 10:20:20 -0800 (PST)
+Received: from hermes.local (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id f64sm55342846pfb.146.2021.01.03.10.20.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 10:20:19 -0800 (PST)
+Date:   Sun, 3 Jan 2021 10:20:11 -0800
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Valdis =?UTF-8?B?S2zEk3RuaWVrcw==?= <valdis.kletnieks@vt.edu>,
+        Michal Marek <michal.lkml@markovi.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <63369c9b96673442a4bd653fe92acda99172123a.1605847196.git.fthain@telegraphics.com.au>
- <alpine.LNX.2.23.453.2101031017290.12@nippy.intranet>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <5d7fd7bb-1bb8-a21c-61d8-4d1046f92ca8@kernel.dk>
-Date:   Sun, 3 Jan 2021 11:15:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Networking <netdev@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Kconfig, DEFAULT_NETSCH, and shooting yourself in the foot..
+Message-ID: <20210103102011.444ecaa4@hermes.local>
+In-Reply-To: <CAK7LNAQU61eccDfh_jX_cnZHnyxfbfgBGu1845QM8XbBTJPnsw@mail.gmail.com>
+References: <16871.1609618487@turing-police>
+        <CAK7LNAQU61eccDfh_jX_cnZHnyxfbfgBGu1845QM8XbBTJPnsw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.23.453.2101031017290.12@nippy.intranet>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/2/21 4:29 PM, Finn Thain wrote:
-> Hi All,
-> 
-> This patch was sent in September and subsequently resent in November. I've 
-> since learned that the maintainer has been ill. What's the best way 
-> forward for fixes like this?
+On Sun, 3 Jan 2021 15:30:30 +0900
+Masahiro Yamada <masahiroy@kernel.org> wrote:
 
-I can queue it up.
+> On Sun, Jan 3, 2021 at 5:14 AM Valdis Kl=C4=93tnieks <valdis.kletnieks@vt=
+.edu> wrote:
+> >
+> > Consider the following own goal I just discovered I scored:
+> >
+> > [~] zgrep -i fq_codel /proc/config.gz
+> > CONFIG_NET_SCH_FQ_CODEL=3Dm
+> > CONFIG_DEFAULT_FQ_CODEL=3Dy
+> > CONFIG_DEFAULT_NET_SCH=3D"fq_codel"
+> >
+> > Obviously, fq_codel didn't get set as the default, because that happens
+> > before the module gets loaded (which may never happen if the sysadmin
+> > thinks the DEFAULT_NET_SCH already made it happen)
+> >
+> > Whoops. My bad, probably - but....
+> >
+> > The deeper question, part 1:
+> >
+> > There's this chunk in net/sched/Kconfig:
+> >
+> > config DEFAULT_NET_SCH
+> >         string
+> >         default "pfifo_fast" if DEFAULT_PFIFO_FAST
+> >         default "fq" if DEFAULT_FQ
+> >         default "fq_codel" if DEFAULT_FQ_CODEL
+> >         default "fq_pie" if DEFAULT_FQ_PIE
+> >         default "sfq" if DEFAULT_SFQ
+> >         default "pfifo_fast"
+> > endif
+> >
+> > (And a similar chunk right above it with a similar issue)
+> >
+> > Should those be "if (foo=3Dy)" so =3Dm can't be chosen? (I'll be
+> > happy to write the patch if that's what we want)
+> >
+> > Deeper question, part 2:
+> >
+> > Should there be a way in the Kconfig language to ensure that
+> > these two chunks can't accidentally get out of sync?  There's other
+> > places in the kernel where similar issues arise - a few days ago I was
+> > chasing a CPU governor issue where it looked like it was possible
+> > to set a default that was a module and thus possibly not actually loade=
+d.
+> > =20
+>=20
+>=20
+> If there is a restriction where a modular discipline cannot be the defaul=
+t,
+> I think you can add 'depends on FOO =3D y'.
+>=20
+>=20
+>=20
+> For example,
+>=20
+>=20
+> choice
+>            prompt "Default"
+>=20
+>            config DEFAULT_FOO
+>                   bool "Use foo for default"
+>                   depends on FOO =3D y
+>=20
+>            config DEFAULT_BAR
+>                   bool "Use bar for default"
+>                   depends on BAR =3D y
+>=20
+>            config DEFAULT_FALLBACK
+>                   bool "fallback when nothing else is builtin"
+>=20
+> endchoice
+>=20
+>=20
+>=20
+>=20
+>=20
 
--- 
-Jens Axboe
-
+You can use a qdisc that is a module, it just has to be available when devi=
+ce
+is loaded. Typically that means putting it in initramfs.
