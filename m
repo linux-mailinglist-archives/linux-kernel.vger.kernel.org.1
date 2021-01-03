@@ -2,88 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A07B2E8B36
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 07:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F472E8B3B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 08:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbhACGs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 01:48:26 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19846 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbhACGsZ (ORCPT
+        id S1726434AbhACG7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 01:59:53 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:55224 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725294AbhACG7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 01:48:25 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff168910000>; Sat, 02 Jan 2021 22:47:45 -0800
-Received: from [10.25.98.34] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 3 Jan
- 2021 06:47:26 +0000
-Subject: Re: [PATCH] PCI:tegra:Correct typo for PCIe endpoint mode in Tegra194
-To:     Wesley Sheng <wesley.sheng@amd.com>, <lorenzo.pieralisi@arm.com>,
-        <robh@kernel.org>, <bhelgaas@google.com>,
-        <gustavo.pimentel@synopsys.com>, <andriy.shevchenko@intel.com>,
-        <treding@nvidia.com>, <eswara.kota@linux.intel.com>,
-        <hayashi.kunihiko@socionext.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <wesleyshenggit@sina.com>, <wesley.sheng@microchip.com>,
-        <wesley.sheng@microsemi.com>
-References: <20201231032539.22322-1-wesley.sheng@amd.com>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <4902626c-0ea4-4fba-4b37-70481ef61bbf@nvidia.com>
-Date:   Sun, 3 Jan 2021 12:17:19 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Sun, 3 Jan 2021 01:59:52 -0500
+Received: by mail-il1-f198.google.com with SMTP id z8so24261807ilq.21
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Jan 2021 22:59:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=SKFTyH6GpSngEjt28zWqwVmWACXNO7dXtaBjX92qW1o=;
+        b=mbwpbtqbUhKChSGWI99M3/YOGFuZ9Wef+sAbj7juFFvFfU2MAAcyxsr8yD6Q8bU5HB
+         UbLdzRvIahZDp59Eu7VpNv5lFu3zF+pcC7QIiZZGOnEJ3ydSOeM2KcmyJJYPF/4ko4d7
+         0KMzS6TesXDVmtwP9yyQdr6QqdJ/ZepJUhQMjZMolwrwNiG78RrM/6KqFkeIoRefd2yN
+         OZOsOuMQAxLJ9im3LGszwuLEp+g1c5UAV7wlWamh5I7Ork4aRPyV250SDHXjdwJe9FfL
+         esre6ly5l/uYZo88dn3h10G/WoeCgeanKiGhle8j80Bo/SKv+JHE26JaFjEAIucczv7h
+         +kjQ==
+X-Gm-Message-State: AOAM531KjYRkPPCCcaITu0HGQwbdFlk8pWswxsnwAhCQ9ocD41ecv6Oi
+        BbX5z8IsAHrx7MugcjFu7Pb+Jds59o+NfYI3cAgmdXuTCsgi
+X-Google-Smtp-Source: ABdhPJx9lgYc0IRnirJhJY5Y5hI/5Ca36a+lcRmG6EQgu7U40hbcm6w6qQUyPvFIIs3dP+vaHTZfQWP6jPqge1KMaDSPN/Q5XZpz
 MIME-Version: 1.0
-In-Reply-To: <20201231032539.22322-1-wesley.sheng@amd.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609656465; bh=WfV8lKNcP8RsbSU6029xxYIm5NbHIuXoGoEQ5XB/OXY=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=ajqJ8A+oB5onl+gslHiHFncrt28jJTpsICHbeTuysZQdjpLMervgi2aeul2AohL9X
-         MowKXiIS54mbp4bqkt2rik0qy0BUyNR0cr459WM+0/GOd5ggwCj5VvtdOoFXJYYSrL
-         mxUp33GDGf3zA4iSat3jRXPBs16rZuiFo/vXR/WfKZMh82vZCA9ZDjNEGN0eaucrEV
-         cDbChyO5tYuLBkGr5jCdLPyLPm8flVQVRtjMnavO8RUKqOlKWKfCb+ZlKQ4q9aKf8F
-         Zpz6+n2dNQzuvcgNo7kQRr0Y4yYHiXA8no+1R9LZ6oHacp6Uvv+a+GkuhR1lKSPTjW
-         C0YF5T22O0opw==
+X-Received: by 2002:a6b:3f54:: with SMTP id m81mr53996917ioa.113.1609657151611;
+ Sat, 02 Jan 2021 22:59:11 -0800 (PST)
+Date:   Sat, 02 Jan 2021 22:59:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bb654d05b7f98286@google.com>
+Subject: KMSAN: uninit-value in xfrm_user_rcv_msg_compat
+From:   syzbot <syzbot+f00248cacdd6d71ea79c@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com,
+        herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the patch.
+Hello,
 
-Acked-by: Vidya Sagar <vidyas@nvidia.com>
+syzbot found the following issue on:
 
-On 12/31/2020 8:55 AM, Wesley Sheng wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> In config PCIE_TEGRA194_EP the mode incorrectly referred to
-> host mode.
-> 
-> Signed-off-by: Wesley Sheng <wesley.sheng@amd.com>
-> ---
->   drivers/pci/controller/dwc/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> index 044a3761c44f..6960babe6161 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -273,7 +273,7 @@ config PCIE_TEGRA194_EP
->          select PCIE_TEGRA194
->          help
->            Enables support for the PCIe controller in the NVIDIA Tegra194 SoC to
-> -         work in host mode. There are two instances of PCIe controllers in
-> +         work in endpoint mode. There are two instances of PCIe controllers in
->            Tegra194. This controller can work either as EP or RC. In order to
->            enable host-specific features PCIE_TEGRA194_HOST must be selected and
->            in order to enable device-specific features PCIE_TEGRA194_EP must be
-> --
-> 2.16.2
-> 
+HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e7a0eb500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
+dashboard link: https://syzkaller.appspot.com/bug?extid=f00248cacdd6d71ea79c
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f00248cacdd6d71ea79c@syzkaller.appspotmail.com
+
+netlink: 8 bytes leftover after parsing attributes in process `syz-executor.3'.
+=====================================================
+BUG: KMSAN: uninit-value in xfrm_user_rcv_msg_compat+0x1c7b/0x1ec0 net/xfrm/xfrm_compat.c:562
+CPU: 0 PID: 12365 Comm: syz-executor.3 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ xfrm_user_rcv_msg_compat+0x1c7b/0x1ec0 net/xfrm/xfrm_compat.c:562
+ xfrm_user_rcv_msg+0x489/0xf20 net/xfrm/xfrm_user.c:2714
+ netlink_rcv_skb+0x70a/0x820 net/netlink/af_netlink.c:2494
+ xfrm_netlink_rcv+0xb2/0xf0 net/xfrm/xfrm_user.c:2764
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x11da/0x14b0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x173c/0x1840 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x6d5/0x830 net/socket.c:2440
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f10549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f550a0cc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000020000100
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Local variable ----attrs@xfrm_user_rcv_msg_compat created at:
+ xfrm_user_rcv_msg_compat+0xf7/0x1ec0 net/xfrm/xfrm_compat.c:539
+ xfrm_user_rcv_msg_compat+0xf7/0x1ec0 net/xfrm/xfrm_compat.c:539
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
