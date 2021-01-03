@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE9B2E8C74
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4472E8C76
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 15:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbhACOBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 09:01:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35662 "EHLO mail.kernel.org"
+        id S1727230AbhACOCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 09:02:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725765AbhACOBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 09:01:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC5B20C56;
-        Sun,  3 Jan 2021 14:01:06 +0000 (UTC)
+        id S1727017AbhACOCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 09:02:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F04C20DD4;
+        Sun,  3 Jan 2021 14:01:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609682468;
-        bh=HTypC30TDtap+wwyfZ7D+lF6Xf783015Cd+73+IGuD4=;
+        s=k20201202; t=1609682496;
+        bh=uUni1/Aqw9CBQn9Kex9LuQx8WFY9zqEj+5DF5sCkPKU=;
         h=From:To:Cc:Subject:Date:From;
-        b=hoqjBQMsL0M+WFOYBk/RiHhGD0f3wf3zgivimzkWaIaHRZOWHhvs83ko3/UIquXZr
-         JzoqCqv6D9c/Fs0qO9HcPRSZhUeaK7hTX7nusmqp7/8KzhcSKESrTsXLEcXz1ZOQlS
-         cEnm+L7eF5Z+DvzLuA5H/BSN7W03A7AVtgOn/C0pXKUKoYGIiu6agHFaw4HAxCwfdW
-         zm+Onu/34tJwWr922C7vUUj17Z7fHIkAn2AVRg43mru0Mm8oiqBSmq5SE/NDYVPPdc
-         R0jrFiHjUunynrXGv3FTaJtSzqzrAXH1gxUAS1TTAo51C9df5wOlKUNlFNFLrk/6cI
-         ErsZZbvoLRxbA==
+        b=Q++ihx9m/buJ6ab1NZY0gl95lUr2f/n3xg1b25LhzX2JPlM3wHE1dvl65Jbwt9w4H
+         YXMEnIeBqhtjsIs6kku0AOFp+T+4Q/vcLiNJvcSqrJ9SPOddDFzVaZX1us9GI0QghC
+         ENk2ql5AZpHnny2SdAn+7qzPJcinFxWtvVp7OGmCvE6UCMmXRsYE3zQZFtbvwEoi+Y
+         /GiCQrKf57ZKN8FSRa5p+U2RbtSnpQ/dbIDh3CpunkuPKObSVHqvS1GkTQLwYfymMq
+         xEhxk3AmGrQps3tCCtUs+0mjOTpadT/uY88DZ/VS9DNPAaQnNsPLCS9slaq1x+NyYo
+         3H7T/a3Qnz6vA==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Scull <ascull@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: arm64: remove incorrect __init annotation
-Date:   Sun,  3 Jan 2021 15:00:50 +0100
-Message-Id: <20210103140104.3853922-1-arnd@kernel.org>
+To:     Karen Xie <kxie@chelsio.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tom Seewald <tseewald@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] cxgb4: fix TLS dependencies again
+Date:   Sun,  3 Jan 2021 15:01:26 +0100
+Message-Id: <20210103140132.3866665-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -48,42 +45,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When hyp_cpu_pm_exit() is not inlined, it causes a link time warning:
+A previous patch tried to avoid a build failure, but missed one case
+that Kconfig warns about:
 
-WARNING: modpost: vmlinux.o(.text+0x39974): Section mismatch in reference from the function kvm_arch_init() to the function .init.text:hyp_cpu_pm_exit()
-The function kvm_arch_init() references
-the function __init hyp_cpu_pm_exit().
-This is often because kvm_arch_init lacks a __init
-annotation or the annotation of hyp_cpu_pm_exit is wrong.
+WARNING: unmet direct dependencies detected for CHELSIO_T4
+  Depends on [m]: NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_CHELSIO [=y] && PCI [=y] && (IPV6 [=y] || IPV6 [=y]=n) && (TLS [=m] || TLS [=m]=n)
+  Selected by [y]:
+  - SCSI_CXGB4_ISCSI [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && PCI [=y] && INET [=y] && (IPV6 [=y] || IPV6 [=y]=n) && ETHERNET [=y]
+x86_64-linux-ld: drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.o: in function `cxgb_select_queue':
+cxgb4_main.c:(.text+0xf5df): undefined reference to `tls_validate_xmit_skb'
 
-This is not only called at boot time, so remove the annotation
-to prevent undefined behavior in case it gets called after being
-freed.
+When any of the dependencies of CHELSIO_T4 are not met, then
+SCSI_CXGB4_ISCSI must not 'select' it either.
 
+Fix it by mirroring the network driver dependencies on the iscsi
+driver. A more invasive but also more reliable alternative would
+be to use 'depends on CHELSIO_T4' instead.
+
+Fixes: 659fbdcf2f14 ("cxgb4: Fix build failure when CONFIG_TLS=m")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm64/kvm/arm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/cxgbi/cxgb4i/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 6e637d2b4cfb..71a49eae9ea0 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1574,12 +1574,12 @@ static struct notifier_block hyp_init_cpu_pm_nb = {
- 	.notifier_call = hyp_init_cpu_pm_notifier,
- };
- 
--static void __init hyp_cpu_pm_init(void)
-+static void hyp_cpu_pm_init(void)
- {
- 	if (!is_protected_kvm_enabled())
- 		cpu_pm_register_notifier(&hyp_init_cpu_pm_nb);
- }
--static void __init hyp_cpu_pm_exit(void)
-+static void hyp_cpu_pm_exit(void)
- {
- 	if (!is_protected_kvm_enabled())
- 		cpu_pm_unregister_notifier(&hyp_init_cpu_pm_nb);
+diff --git a/drivers/scsi/cxgbi/cxgb4i/Kconfig b/drivers/scsi/cxgbi/cxgb4i/Kconfig
+index 8b0deece9758..2af88a55fbca 100644
+--- a/drivers/scsi/cxgbi/cxgb4i/Kconfig
++++ b/drivers/scsi/cxgbi/cxgb4i/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config SCSI_CXGB4_ISCSI
+ 	tristate "Chelsio T4 iSCSI support"
+-	depends on PCI && INET && (IPV6 || IPV6=n)
++	depends on PCI && INET && (IPV6 || IPV6=n) && (TLS || TLS=n)
+ 	depends on THERMAL || !THERMAL
+ 	depends on ETHERNET
+ 	depends on TLS || TLS=n
 -- 
 2.29.2
 
