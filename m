@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFEC2E8E91
+	by mail.lfdr.de (Postfix) with ESMTP id 89E672E8E92
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 22:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727320AbhACVoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 16:44:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37876 "EHLO mail.kernel.org"
+        id S1727943AbhACVon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 16:44:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726694AbhACVoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 16:44:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79570207FB;
-        Sun,  3 Jan 2021 21:43:42 +0000 (UTC)
+        id S1726681AbhACVom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 16:44:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEC6A208BA;
+        Sun,  3 Jan 2021 21:44:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609710224;
-        bh=Ge39luDM854fXY9ZGcVEffZJp6kHxicqbvRBsJ3y/Gk=;
+        s=k20201202; t=1609710242;
+        bh=NUvOstWAZ2abHlSEN0ENegwqm1Zl/PfYh383yi9X/Ac=;
         h=From:To:Cc:Subject:Date:From;
-        b=XArNpHaly7WeCgyBAxLEM40cH4twtbhEMu8wxYbASRwdXgDE4ruvzVKPb0OUAWaeW
-         7iEgKZaxyrTQJsmRWfOT+K9Q2mx3rVuScGXKkVW4sTHwuhSrOwvFAsDisiBQYL5V3n
-         gXEYhst4Ln9wT/A1CsZpyOlEgZoC5qY0huX9AMmnapPO8sBMQDOHBgaJsj0s57vLOW
-         CxJvf+tC7slX9j1YpOQw2KI+BzevtXY+GG9vkH79VHKO0MUdu2e+1jUFPeL5hIPr05
-         doeNUMAl9QCV2g0uFeFBgK6BvOzyxONjjEr6iQMpS3qYbXgKV6Je3oeFr9plZvaouH
-         yYsJboyEoBsPA==
+        b=XYbJ6QMdOKMEVEVLwSZu+iTicaUyoczacElYeThoJdWw6td5isOyboGGmYrnaoBE5
+         H6gdfJWFFvHtGjvFmyoU354BTHM49ojP5QCnAgoOU4ZviATxr7NJI1wvd/LOteK/Jy
+         8mLmXoAw3HWoCIvDTTagFGYFNDGayJDwh4q/E9Ty6weWO23fTaMQ2XkypNhVhMZC3V
+         9MICdwi3B19rhFs6FL0wEwGJkF+hkzEkWQcjiRB2JA8Ek3qM1wbTRl9olAUaiHf+7Q
+         bNs1hEXOR41dMwxlabzq4fSQ+Qr+pR0Ft/xgov9OCfa0gwJ+u1Fe7BDxKTsoGysDsn
+         izRgQstWP1USQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jacob Keller <jacob.e.keller@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] pldmfw: select CONFIG_CRC32
-Date:   Sun,  3 Jan 2021 22:43:28 +0100
-Message-Id: <20210103214339.1997223-1-arnd@kernel.org>
+To:     Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Dave Chinner <dchinner@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Johannes Thumshirn <jth@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] zonefs: select CONFIG_CRC32
+Date:   Sun,  3 Jan 2021 22:43:52 +0100
+Message-Id: <20210103214358.1997428-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,27 +41,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Without CRC32, pldmfw fails to link:
+When CRC32 is disabled, zonefs cannot be linked:
 
-arm-linux-gnueabi-ld: lib/pldmfw/pldmfw.o: in function `pldmfw_flash_image':
-(.text+0x1028): undefined reference to `crc32_le'
+ld: fs/zonefs/super.o: in function `zonefs_fill_super':
 
-Fixes: b8265621f488 ("Add pldmfw library for PLDM firmware update")
+Add a Kconfig 'select' statement for it.
+
+Fixes: 8dcc1a9d90c1 ("fs: New zonefs file system")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- lib/Kconfig | 1 +
+ fs/zonefs/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/lib/Kconfig b/lib/Kconfig
-index 46806332a8cc..86dc0dcd6e0b 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -691,4 +691,5 @@ config GENERIC_LIB_DEVMEM_IS_ALLOWED
- 
- config PLDMFW
- 	bool
+diff --git a/fs/zonefs/Kconfig b/fs/zonefs/Kconfig
+index ef2697b78820..827278f937fe 100644
+--- a/fs/zonefs/Kconfig
++++ b/fs/zonefs/Kconfig
+@@ -3,6 +3,7 @@ config ZONEFS_FS
+ 	depends on BLOCK
+ 	depends on BLK_DEV_ZONED
+ 	select FS_IOMAP
 +	select CRC32
- 	default n
+ 	help
+ 	  zonefs is a simple file system which exposes zones of a zoned block
+ 	  device (e.g. host-managed or host-aware SMR disk drives) as files.
 -- 
 2.29.2
 
