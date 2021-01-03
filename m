@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E9B2E8D71
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C432E8D85
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727743AbhACRHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 12:07:25 -0500
-Received: from mail-io1-f54.google.com ([209.85.166.54]:33340 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727582AbhACRHY (ORCPT
+        id S1727722AbhACRNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 12:13:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727676AbhACRNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 12:07:24 -0500
-Received: by mail-io1-f54.google.com with SMTP id w18so22974446iot.0;
-        Sun, 03 Jan 2021 09:07:09 -0800 (PST)
+        Sun, 3 Jan 2021 12:13:20 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC75C0613C1
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 09:12:32 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id n25so17260321pgb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 09:12:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P/GeiIxcJ64ZQ6SmObKp07RN0gB/xHVcCELrAtFy6J8=;
+        b=j9nC8spDRsbKIqITtcFVK5qfNVqGd72bWGhC3L39q82R8010SlWb58g4xtF50sisUa
+         CfMxfvTnGgeJKwMLbxYvaE5kCZi0IvGeR3BidI8+fAl8OE1m9ex3PjGA7l5UqpCdsT8S
+         CClk/1SFkcl8k97Jxq7SWRUVMGeCADSH2ApMpuinr1XvsQiYSvwvzasCmOh+FDJUp0Om
+         TodXjnTwaBrW6MTUzvvXn9BG1fUoJ7hC0QKUOPOOXCdJtwB3gmstUWRzTpxCBS6Pdftp
+         tj0cJiWF3qGNKeBorCQmV3YLO1jiIhCt7sTf6RH4bjvwmI5zU4UBNxMvwPLlw0T5wOYt
+         PsUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WgP/Z7iP0iTUvzMj6+3xsjpKTpM0CQL2NDyZVdTnzec=;
-        b=riOeOvcEgaUbboCdcmRDTEr/NHwakpCSOZE1HRCuNKE8Nd33wjfVMR3hYkMjqrXBVD
-         gVIgaS+A/Xfm+7+ZmHsEah5FOexvMRWenuzswhQn0bcuYuvYq+hKMr18er+9v/95Jn8r
-         sYiq9AHaRKS8vEv0inKW5EFqjYHNxg6FOe1KGSbfvB8FvThu+uUg/t7YAC7+bNIR24K7
-         kusEPdwgEcPWDuTybD7rzlLxGejn+Ld7DkFX0EJnk+gYHQL7qvHkkYWJV182SPhYMjub
-         XUiInm6wjNgjy+E+gaP1C9PKGjBNLWjqZW4quEBXUL7CY7WqX0+rOFAEUcLQDTNC2iQU
-         Dtrw==
-X-Gm-Message-State: AOAM532Yl3KnTsrEfmvDqcnp8IovVKbhSvPlpxoDUGdW2Qupx/mUgRiQ
-        5YZ9gdKrGHfqBN1WS3oxTg==
-X-Google-Smtp-Source: ABdhPJxAdY7IBVRWTPfatdv3W3jktnhKIp1SChlxMEqbqW/CYyx9rS4OfLZH0Qivf7OEns/oR4eqeQ==
-X-Received: by 2002:a05:6602:2207:: with SMTP id n7mr57272285ion.130.1609693603975;
-        Sun, 03 Jan 2021 09:06:43 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id t18sm38759053ils.16.2021.01.03.09.06.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P/GeiIxcJ64ZQ6SmObKp07RN0gB/xHVcCELrAtFy6J8=;
+        b=o4AA8E1uHkNYKZj18e6gAxtyoFbvpKQB5ZwoS5t7Pkw3z94q4yR1lGFwDcgj6k/9uU
+         AcldvE8n3RjU1MoYt7XQBSFd1oZhIobJRwSWEM6OC2mtM44yEg0HmdhCF9Y97n+tFZEC
+         +bdogh6kB8I3a8+l/ReSs/hq6e04YYPpzlk/PeOGE3+KvUWSAt6022cVLTImRQ+T5wt6
+         iMxVkCbt1K2wdmBqVaIKgFQppuHOlrp6AUf0P0m+89muy+EhlT6W3jgko5F4pU4WJKG9
+         3ZRbTq1qc0BK4gxX2nO+5Z/wLZkYdZPVmXhinkN4wP+iViNdAg0ZIhU2s8kPrBInwypk
+         E8yQ==
+X-Gm-Message-State: AOAM533IqjmeOBOnIrU0xC5Lt5o+OgKkJbjKECoDD1uUhbP6EfnEY/WE
+        iNdY44/WGko7STh6rVztTi/C+vkOZrA=
+X-Google-Smtp-Source: ABdhPJwVkKI1/s0n073MJPATBjaxsZ36JasEetjbvlDaf7VaG92vb5iUjgmHPzD5NvQlqz5H++LpZA==
+X-Received: by 2002:aa7:9619:0:b029:1ae:33b2:780f with SMTP id q25-20020aa796190000b02901ae33b2780fmr7380595pfg.26.1609693951614;
+        Sun, 03 Jan 2021 09:12:31 -0800 (PST)
+Received: from localhost.localdomain (61-230-37-4.dynamic-ip.hinet.net. [61.230.37.4])
+        by smtp.gmail.com with ESMTPSA id y3sm19771657pjb.18.2021.01.03.09.12.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 09:06:42 -0800 (PST)
-Received: (nullmailer pid 4062305 invoked by uid 1000);
-        Sun, 03 Jan 2021 17:06:40 -0000
-Date:   Sun, 3 Jan 2021 10:06:40 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        devicetree@vger.kernel.org, Will Deacon <will@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-amarula@amarulasolutions.com,
-        Fabio Estevam <festevam@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 5/6] dt-bindings: arm: fsl: Add Engicam i.Core MX8M
- Mini EDIMM2.2 Starter Kit
-Message-ID: <20210103170640.GA4062272@robh.at.kernel.org>
-References: <20201223110343.126638-1-jagan@amarulasolutions.com>
- <20201223110343.126638-6-jagan@amarulasolutions.com>
+        Sun, 03 Jan 2021 09:12:31 -0800 (PST)
+From:   Lecopzer Chen <lecopzer@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org
+Cc:     dan.j.williams@intel.com, aryabinin@virtuozzo.com,
+        glider@google.com, dvyukov@google.com, akpm@linux-foundation.org,
+        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
+        will@kernel.org, catalin.marinas@arm.com,
+        Lecopzer Chen <lecopzer@gmail.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>
+Subject: [PATCH 0/3] arm64: kasan: support CONFIG_KASAN_VMALLOC
+Date:   Mon,  4 Jan 2021 01:11:34 +0800
+Message-Id: <20210103171137.153834-1-lecopzer@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201223110343.126638-6-jagan@amarulasolutions.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020 16:33:42 +0530, Jagan Teki wrote:
-> i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini from Engicam.
-> 
-> EDIMM2.2 Starter Kit is an EDIMM 2.2 Form Factor Capacitive Evaluation
-> Board from Engicam.
-> 
-> i.Core MX8M Mini needs to mount on top of this Evaluation board for
-> creating complete i.Core MX8M Mini EDIMM2.2 Starter Kit.
-> 
-> Add bindings for it.
-> 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
-> Changes for v3:
-> - fix dt-bindings
-> Changes for v2:
-> - update commit message
-> 
->  Documentation/devicetree/bindings/arm/fsl.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+("kasan: support backing vmalloc space with real shadow memory")
 
-Acked-by: Rob Herring <robh@kernel.org>
+Acroding to how x86 ported it [1], they early allocated p4d and pgd,
+but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
+by not to populate the vmalloc area except for kimg address.
+
+Test environment:
+    4G and 8G Qemu virt, 
+    39-bit VA + 4k PAGE_SIZE with 3-level page table,
+    test by lib/test_kasan.ko and lib/test_kasan_module.ko
+
+It also works in Kaslr with CONFIG_RANDOMIZE_MODULE_REGION_FULL,
+but not test for HW_TAG(I have no proper device), thus keep
+HW_TAG and KASAN_VMALLOC mutual exclusion until confirming
+the functionality.
+
+
+[1]: commit 0609ae011deb41c ("x86/kasan: support KASAN_VMALLOC")
+
+Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+
+
+Lecopzer Chen (3):
+  arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
+  arm64: kasan: abstract _text and _end to KERNEL_START/END
+  arm64: Kconfig: support CONFIG_KASAN_VMALLOC
+
+ arch/arm64/Kconfig         |  1 +
+ arch/arm64/mm/kasan_init.c | 29 +++++++++++++++++++++--------
+ 2 files changed, 22 insertions(+), 8 deletions(-)
+
+-- 
+2.25.1
+
