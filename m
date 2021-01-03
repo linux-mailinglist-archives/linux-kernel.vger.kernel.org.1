@@ -2,139 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12982E89CA
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 02:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A172E89D0
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 02:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbhACB0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Jan 2021 20:26:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbhACB0n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Jan 2021 20:26:43 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C5FC0613CF;
-        Sat,  2 Jan 2021 17:26:02 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id 6so32206676ejz.5;
-        Sat, 02 Jan 2021 17:26:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4u5lr4vS/zwS7CdImn9JUDlJYsBMsJtACqSfVPiryf4=;
-        b=t5qQCW6RQIm7EoZOy4p4dtL7x4eSeX4Hr9m7ECEcwNyHuGXCEY4twhhx56mnsCJ0JL
-         6WnsIQB+bmcCiWHbEhT6V+PfjAfW+C08tKFDZRCSTKPMIuXaLVkrJrPAIbjLKQ2BLTCu
-         D6GwRg2i9BkSLdZ1DU0I0m/0nSoBmg03SNlcAst3KE4RZKdquwp9S7JnMa99ndxTrnEX
-         YN1OAw8VsbVsNsB4/0F8qmfStGh1/Q2K39ar/hT4o00TElPP05Xms2m98NiEgyhFPM8E
-         Twn2fZDe4V5E8PioZUB4gXNrudC+OT3frT3b6BBTIHKWvXVbFMJGlhWe0Egzx6Sc4+yf
-         qjvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4u5lr4vS/zwS7CdImn9JUDlJYsBMsJtACqSfVPiryf4=;
-        b=mNquTOYjoi4nA8shdJ0WqH76AvWg3h2Xp4ScjHEcmSiJgwogobYYg6VFQiNPVv+TNn
-         djyKsaE+rRto6YUO2n9+kBAUHCqNbZju+4vG2+KB4+pfp+v0FMNGOruODmQwzI/iF5qA
-         PXF+kczEUaUg6aPSkaG5c3qlHKlk+N68PsRCi/iz0eEsIUdk5jtCgMU1cfg06y7sW1z2
-         NDNHc6LGauy74U4STVPOOzavhIT+EK9YzPgYxzeCTmOKpD32Qy7WftY+AYADd06KDFHY
-         HXK+p1OzPsrw1DQQ+9B4TKqMiI1h8jnzSS5hbFwV/v6F+8/P7R6ykRcZ5OEmF8OO/9Wz
-         msFw==
-X-Gm-Message-State: AOAM531cFu8nWcW0E3zk3CZ0ShJcwWehrtBxrxcorhX75OJdEnbdgjLQ
-        nBZBxBg9o5DBjAysAXgejm0=
-X-Google-Smtp-Source: ABdhPJyU/2gBLOXYt+eFDT6eljqckfEe4KnMTelSHcwUtFIAW9LppVviEdleSjVof1gekovk/9M3xw==
-X-Received: by 2002:a17:906:3d62:: with SMTP id r2mr63425558ejf.295.1609637160795;
-        Sat, 02 Jan 2021 17:26:00 -0800 (PST)
-Received: from localhost.localdomain (p200300f13724fd00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3724:fd00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id op5sm22118006ejb.43.2021.01.02.17.25.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Jan 2021 17:26:00 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     hauke@hauke-m.de, netdev@vger.kernel.org
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH 2/2] net: dsa: lantiq_gswip: Fix GSWIP_MII_CFG(p) register access
-Date:   Sun,  3 Jan 2021 02:25:44 +0100
-Message-Id: <20210103012544.3259029-3-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210103012544.3259029-1-martin.blumenstingl@googlemail.com>
-References: <20210103012544.3259029-1-martin.blumenstingl@googlemail.com>
+        id S1727200AbhACB0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Jan 2021 20:26:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726785AbhACB0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Jan 2021 20:26:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 979E32078E;
+        Sun,  3 Jan 2021 01:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609637172;
+        bh=Bz8jQoVntb6d51Z+BpALkIUssMtnAukuyDITFqTtLIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H/cWgRmmz6VkdU49oww8gqmMzUnVmslKhklOIyLbmkx8ZsLFL0mDBdp31IawXZzCl
+         coaRADY2GkKufP1rmueky8DWbmi0gXcCku4n89VuAMOeoS9V0YWPriszz8YiqobeKI
+         1uDbtK8gB8gD5pLAp/A/bZB38S21nlCuXyM5lkF+nIOgkUp/Cg6dy7OJMp3DXeL56q
+         rekRFIcCzGP7u16yq0TMsrtONhDj6gypl2DttA2KHWf/QN++r/Y3JmITOG3nxB65zt
+         CLbCnZx7iiM4IcJIKViNb04GSKN5VWenqQlvWQWPpjOytXXSkycZO918zzIq0tFdq6
+         7eI9JEr3pwQAA==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 9E8D73C0C94; Sun,  3 Jan 2021 02:26:10 +0100 (CET)
+Date:   Sun, 3 Jan 2021 02:26:10 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Cc:     robh+dt@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmurphy@ti.com
+Subject: Re: [PATCH v7 2/2] power: supply: bq256xx: Introduce the BQ256XX
+ charger driver
+Message-ID: <20210103012610.exkkwoqz3745bh2u@earth.universe>
+References: <20201230230116.29697-1-r-rivera-matos@ti.com>
+ <20201230230116.29697-3-r-rivera-matos@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kregzxwqskd3mmqq"
+Content-Disposition: inline
+In-Reply-To: <20201230230116.29697-3-r-rivera-matos@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is one GSWIP_MII_CFG register for each switch-port except the CPU
-port. The register offset for the first port is 0x0, 0x02 for the
-second, 0x04 for the third and so on.
 
-Update the driver to not only restrict the GSWIP_MII_CFG registers to
-ports 0, 1 and 5. Handle ports 0..5 instead but skip the CPU port. This
-means we are not overwriting the configuration for the third port (port
-two since we start counting from zero) with the settings for the sixth
-port (with number five) anymore.
+--kregzxwqskd3mmqq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The GSWIP_MII_PCDU(p) registers are not updated because there's really
-only three (one for each of the following ports: 0, 1, 5).
+Hi Ricardo,
 
-Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-Cc: stable@vger.kernel.org
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/net/dsa/lantiq_gswip.c | 23 ++++++-----------------
- 1 file changed, 6 insertions(+), 17 deletions(-)
+On Wed, Dec 30, 2020 at 05:01:16PM -0600, Ricardo Rivera-Matos wrote:
+> The BQ256XX family of devices are highly integrated buck chargers
+> for single cell batteries.
+>=20
+> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+>=20
+> v5 - adds power_supply_put_battery_info() and devm_add_action_or_rest() c=
+alls
+>=20
+> v6 - implements bq256xx_remove function
+>=20
+> v7 - applies various fixes
+>=20
+>    - implements clamp() API
+>=20
+>    - implements memcmp() API
+>=20
+>    - changes cache_type to REGACHE_FLAT
+>=20
+>    - changes bq256xx_probe to properly unregister device
+>=20
+> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+> ---
 
-diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
-index 5d378c8026f0..4b36d89bec06 100644
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -92,9 +92,7 @@
- 					 GSWIP_MDIO_PHY_FDUP_MASK)
- 
- /* GSWIP MII Registers */
--#define GSWIP_MII_CFG0			0x00
--#define GSWIP_MII_CFG1			0x02
--#define GSWIP_MII_CFG5			0x04
-+#define GSWIP_MII_CFGp(p)		(0x2 * (p))
- #define  GSWIP_MII_CFG_EN		BIT(14)
- #define  GSWIP_MII_CFG_LDCLKDIS		BIT(12)
- #define  GSWIP_MII_CFG_MODE_MIIP	0x0
-@@ -392,17 +390,9 @@ static void gswip_mii_mask(struct gswip_priv *priv, u32 clear, u32 set,
- static void gswip_mii_mask_cfg(struct gswip_priv *priv, u32 clear, u32 set,
- 			       int port)
- {
--	switch (port) {
--	case 0:
--		gswip_mii_mask(priv, clear, set, GSWIP_MII_CFG0);
--		break;
--	case 1:
--		gswip_mii_mask(priv, clear, set, GSWIP_MII_CFG1);
--		break;
--	case 5:
--		gswip_mii_mask(priv, clear, set, GSWIP_MII_CFG5);
--		break;
--	}
-+	/* There's no MII_CFG register for the CPU port */
-+	if (!dsa_is_cpu_port(priv->ds, port))
-+		gswip_mii_mask(priv, clear, set, GSWIP_MII_CFGp(port));
- }
- 
- static void gswip_mii_mask_pcdu(struct gswip_priv *priv, u32 clear, u32 set,
-@@ -822,9 +812,8 @@ static int gswip_setup(struct dsa_switch *ds)
- 	gswip_mdio_mask(priv, 0xff, 0x09, GSWIP_MDIO_MDC_CFG1);
- 
- 	/* Disable the xMII link */
--	gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, 0);
--	gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, 1);
--	gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, 5);
-+	for (i = 0; i < priv->hw_info->max_ports; i++)
-+		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, i);
- 
- 	/* enable special tag insertion on cpu port */
- 	gswip_switch_mask(priv, 0, GSWIP_FDMA_PCTRL_STEN,
--- 
-2.30.0
+Thanks, looks mostly good now.
 
+>  drivers/power/supply/Kconfig           |   11 +
+>  drivers/power/supply/Makefile          |    1 +
+>  drivers/power/supply/bq256xx_charger.c | 1747 ++++++++++++++++++++++++
+>  3 files changed, 1759 insertions(+)
+>  create mode 100644 drivers/power/supply/bq256xx_charger.c
+>=20
+> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+> index 44d3c8512fb8..87d852914bc2 100644
+> --- a/drivers/power/supply/Kconfig
+> +++ b/drivers/power/supply/Kconfig
+> @@ -618,6 +618,17 @@ config CHARGER_BQ25890
+>  	help
+>  	  Say Y to enable support for the TI BQ25890 battery charger.
+> =20
+> +config CHARGER_BQ256XX
+> +	tristate "TI BQ256XX battery charger driver"
+> +	depends on I2C
+> +	depends on GPIOLIB || COMPILE_TEST
+> +	select REGMAP_I2C
+> +	help
+> +	  Say Y to enable support for the TI BQ256XX battery chargers. The
+> +	  BQ256XX family of devices are highly-integrated, switch-mode battery
+> +	  charge management and system power path management devices for single
+> +	  cell Li-ion and Li-polymer batteries.
+> +
+>  config CHARGER_SMB347
+>  	tristate "Summit Microelectronics SMB347 Battery Charger"
+>  	depends on I2C
+
+Please rebase to current power-supply for-next branch, Kconfig and
+Makefile diff does not apply because of one additional BQ device.
+
+> [...]
+> +static void bq256xx_usb_work(struct work_struct *data)
+> +{
+> +	struct bq256xx_device *bq =3D
+> +			container_of(data, struct bq256xx_device, usb_work);
+> +
+> +	switch (bq->usb_event) {
+> +	case USB_EVENT_ID:
+> +		break;
+> +
+
+spurious newline, please remove!
+
+> +	case USB_EVENT_NONE:
+> +		power_supply_changed(bq->charger);
+> +		break;
+> +	default:
+> +		dev_err(bq->dev, "Error switching to charger mode.\n");
+> +		break;
+> +	}
+> +}
+> +
+
+> [...]
+
+> +static int bq256xx_hw_init(struct bq256xx_device *bq)
+> +{
+> +	struct power_supply_battery_info bat_info =3D { };
+> +	int wd_reg_val =3D BQ256XX_WATCHDOG_DIS;
+> +	int ret =3D 0;
+> +	int i;
+> +
+> +	for (i =3D 0; i < BQ256XX_NUM_WD_VAL; i++) {
+> +		if (bq->watchdog_timer > bq256xx_watchdog_time[i] &&
+> +		    bq->watchdog_timer < bq256xx_watchdog_time[i + 1])
+> +			wd_reg_val =3D i;
+> +	}
+> +	ret =3D regmap_update_bits(bq->regmap, BQ256XX_CHARGER_CONTROL_1,
+> +				 BQ256XX_WATCHDOG_MASK, wd_reg_val <<
+> +						BQ256XX_WDT_BIT_SHIFT);
+> +
+> +	ret =3D power_supply_get_battery_info(bq->charger, &bat_info);
+> +	if (ret) {
+> +		dev_warn(bq->dev, "battery info missing, default values will be applie=
+d\n");
+> +
+> +		bat_info.constant_charge_current_max_ua =3D
+> +				bq->chip_info->bq256xx_def_ichg;
+> +
+> +		bat_info.constant_charge_voltage_max_uv =3D
+> +				bq->chip_info->bq256xx_def_vbatreg;
+> +
+> +		bat_info.precharge_current_ua =3D
+> +				bq->chip_info->bq256xx_def_iprechg;
+> +
+> +		bat_info.charge_term_current_ua =3D
+> +				bq->chip_info->bq256xx_def_iterm;
+> +
+> +		bq->init_data.ichg_max =3D
+> +				bq->chip_info->bq256xx_max_ichg;
+> +
+> +		bq->init_data.vbatreg_max =3D
+> +				bq->chip_info->bq256xx_max_vbatreg;
+> +	} else {
+> +		bq->init_data.ichg_max =3D
+> +			bat_info.constant_charge_current_max_ua;
+> +
+> +		bq->init_data.vbatreg_max =3D
+> +			bat_info.constant_charge_voltage_max_uv;
+> +	}
+> +
+> +	ret =3D bq->chip_info->bq256xx_set_vindpm(bq, bq->init_data.vindpm);
+> +	if (ret)
+> +		goto err_out;
+> +
+> +	ret =3D bq->chip_info->bq256xx_set_iindpm(bq, bq->init_data.iindpm);
+> +	if (ret)
+> +		goto err_out;
+> +
+> +	ret =3D bq->chip_info->bq256xx_set_ichg(bq,
+> +				bat_info.constant_charge_current_max_ua);
+> +	if (ret)
+> +		goto err_out;
+> +
+> +	ret =3D bq->chip_info->bq256xx_set_iprechg(bq,
+> +				bat_info.precharge_current_ua);
+> +	if (ret)
+> +		goto err_out;
+> +
+> +	ret =3D bq->chip_info->bq256xx_set_vbatreg(bq,
+> +				bat_info.constant_charge_voltage_max_uv);
+> +	if (ret)
+> +		goto err_out;
+> +
+> +	ret =3D bq->chip_info->bq256xx_set_iterm(bq,
+> +				bat_info.charge_term_current_ua);
+> +	if (ret)
+> +		goto err_out;
+> +
+> +	power_supply_put_battery_info(bq->charger, &bat_info);
+> +
+> +	return 0;
+> +
+> +err_out:
+> +	return ret;
+
+please return error code directly instead of adding this useless
+goto.
+
+> [...]
+
+-- Sebastian
+
+--kregzxwqskd3mmqq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/xHS4ACgkQ2O7X88g7
++ppMaw/+LL/6dRFRi5RSXmt4yxDjFQuDRvP0Fa2mXCW8NDxS9y9QP9UrM8uGGbVW
+V45cqW0T8h18zJD6oe0mFLO7E1XTUe5+O51ZGtskVdjt4eYjkZr3CxvQfkGswDsG
+Azumr60smGHo+XIvlOscPMg5/SbVxee8qkCUM3vSUsArYGWYazxviQFfHFeanypQ
+2sG600HAzaY7AEQluNE0AOokUhV5mgixu3qhgopFFTyUoHOB+YSI2vMG7TdBL5E9
++YT5C1KjNt2sF2DaP2x+CtJU8xIAREjLUGPECzQJGkZCoruO/qLgSOW0iS+u3iqy
+SbFCvyOjZwJQv5jun7aUjmsZlpgvk++2SHmEFwqYcu85TAS/mII72T1zPLpwaT7k
+qioNSSy56RtsF7HKbRKWzmyCjWif/SFQS/2PNkjwqJDZX2Ql5Gq01LmQ4r+1ch/K
+h7ZZBoWbf4oxhGgPRWmrbOERWuE4Vn4ZSRzEgKr6BQ3L8E5Hosdue8+sBeZIsjhT
+xFIvHrTh7dZMVmDiwdTLbHCXdTksw53OqfGBhJ7z97FPHqEL87fOHmx3TQN86P70
+oaimLTDS8tqbLPUeNQVwweROmXEvu/OQKIdc90Aodc9U8sJ75f0V2DyMW2PoFjX6
+32Q4i6sph1oC/l/SXQNwN7ceHKL6G9uPeK4hY5+Z75l54qA8eYs=
+=LPL1
+-----END PGP SIGNATURE-----
+
+--kregzxwqskd3mmqq--
