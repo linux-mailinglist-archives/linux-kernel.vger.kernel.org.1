@@ -2,63 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A802E8DAC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 18:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9632E8DB0
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 19:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727628AbhACRq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 12:46:57 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:34452 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726129AbhACRq4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 12:46:56 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-131-JAaV3ng8Nlmb8bomw6Dr6A-1; Sun, 03 Jan 2021 17:45:17 +0000
-X-MC-Unique: JAaV3ng8Nlmb8bomw6Dr6A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sun, 3 Jan 2021 17:45:16 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sun, 3 Jan 2021 17:45:16 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Ilkka Prusi' <ilkka.prusi@pp.inet.fi>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: Linux 5.11-rc1
-Thread-Topic: Linux 5.11-rc1
-Thread-Index: AQHW4WEoJT4Edzv6Kku1OzETXl8sF6oWLXSQ
-Date:   Sun, 3 Jan 2021 17:45:16 +0000
-Message-ID: <1930c2a3f18440ccb4890b7b01a33b94@AcuMS.aculab.com>
-References: <0e0e5e88-1ff2-ef57-cfc3-a53c5a0f76c8@pp.inet.fi>
-In-Reply-To: <0e0e5e88-1ff2-ef57-cfc3-a53c5a0f76c8@pp.inet.fi>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1727681AbhACSA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 13:00:57 -0500
+Received: from vps5.brixit.nl ([192.81.221.234]:44708 "EHLO vps5.brixit.nl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbhACSA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 13:00:57 -0500
+Received: from [192.168.20.102] (unknown [77.239.252.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by vps5.brixit.nl (Postfix) with ESMTPSA id 10F7160815;
+        Sun,  3 Jan 2021 18:00:12 +0000 (UTC)
+Subject: Re: [PATCH] drm/msm: Fix MSM_INFO_GET_IOVA with carveout
+To:     Iskren Chernev <iskren.chernev@gmail.com>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210102202437.1630365-1-iskren.chernev@gmail.com>
+From:   Alexey Minnekhanov <alexeymin@postmarketos.org>
+Message-ID: <d2333f2e-1227-3f37-ac22-4a2a0a02acb4@postmarketos.org>
+Date:   Sun, 3 Jan 2021 21:01:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20210102202437.1630365-1-iskren.chernev@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSWxra2EgUHJ1c2kNCj4gU2VudDogMDIgSmFudWFyeSAyMDIxIDIzOjI3DQo+IA0KPiA+
-IFBBVEggZm9yIHRoZSByb290IG9uIERlYmlhbiBpcw0KPiA+IC91c3IvbG9jYWwvc2JpbjovdXNy
-L2xvY2FsL2JpbjovdXNyL3NiaW46L3Vzci9iaW46L3NiaW46L2Jpbg0KPiA+DQo+IA0KPiBOb3Rl
-IHRoYXQgL3NiaW4gaXMgbm93IGp1c3QgYSBzeW1saW5rIHRvIC91c3Ivc2JpbiBvbiBEZWJpYW4g
-c2luY2UgMTAgKEJ1c3RlcikgYXMgcGVyIEZIU1sxXVsyXS4NCj4gDQo+IFsxXSBodHRwczovL3dp
-a2kubGludXhmb3VuZGF0aW9uLm9yZy9sc2IvZmhzDQo+IFsyXSBodHRwczovL2Fyc3RlY2huaWNh
-LmNvbS9pbmZvcm1hdGlvbi10ZWNobm9sb2d5LzIwMTkvMDkvZGViaWFuLTEwLXBsYXlpbmctY2F0
-Y2gtdXAtd2l0aC10aGUtcmVzdC0NCj4gb2YtdGhlLWxpbnV4LXdvcmxkLXRoYXRzLWEtZ29vZC10
-aGluZy8NCg0KV2hpY2ggaXMgZXhhY3RseSAxMDAlIGJhY2t3YXJkcyA6LSkNCg0KCURhdmlkDQoN
-Ci0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJt
-LCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChX
-YWxlcykNCg==
+I've tested all recent GPU bring-up patches on msm8974pro samsung-klte 
+(a330v2) and with this patch everything is OK. But without this we're 
+getting the following in dmesg while running kmscube (which is rendering 
+nothing except black screen):
 
+[   94.969272] msm fd900000.mdss: [drm:hangcheck_handler [msm]] *ERROR* 
+A330: hangcheck detected gpu lockup rb 0!
+[   94.970184] msm fd900000.mdss: [drm:hangcheck_handler [msm]] *ERROR* 
+A330:     completed fence: 0
+[   94.970873] msm fd900000.mdss: [drm:hangcheck_handler [msm]] *ERROR* 
+A330:     submitted fence: 1
+[   94.971600] msm fd900000.mdss: [drm:recover_worker [msm]] *ERROR* 
+A330: hangcheck recover!
+[   94.972329] msm fd900000.mdss: [drm:recover_worker [msm]] *ERROR* 
+A330: offending task: kmscube (kmscube)
+[   94.974101] revision: 330 (3.3.0.2)
+[   94.974117] rb 0: fence:    0/1
+[   94.974129] rptr:     36
+[   94.974139] rb wptr:  36
+[   94.974148] CP_SCRATCH_REG0: 0
+[   94.974159] CP_SCRATCH_REG1: 0
+[   94.974169] CP_SCRATCH_REG2: 0
+[   94.974178] CP_SCRATCH_REG3: 0
+[   94.974188] CP_SCRATCH_REG4: 0
+[   94.974198] CP_SCRATCH_REG5: 0
+[   94.974208] CP_SCRATCH_REG6: 10
+[   94.974218] CP_SCRATCH_REG7: 12
+
+So indeed partial revert of "if" condition fixes gpu at least on msm8974.
+
+Tested-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
+
+On 1/2/21 11:24 PM, Iskren Chernev wrote:
+> The msm_gem_get_iova should be guarded with gpu != NULL and not aspace
+> != NULL, because aspace is NULL when using vram carveout.
+> 
+> Fixes: 933415e24bd0d ("drm/msm: Add support for private address space instances")
+> 
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+> ---
+>   drivers/gpu/drm/msm/msm_drv.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> index c5e61cb3356df..c1953fb079133 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -775,9 +775,10 @@ static int msm_ioctl_gem_info_iova(struct drm_device *dev,
+>   		struct drm_file *file, struct drm_gem_object *obj,
+>   		uint64_t *iova)
+>   {
+> +	struct msm_drm_private *priv = dev->dev_private;
+>   	struct msm_file_private *ctx = file->driver_priv;
+>   
+> -	if (!ctx->aspace)
+> +	if (!priv->gpu)
+>   		return -EINVAL;
+>   
+>   	/*
+> 
