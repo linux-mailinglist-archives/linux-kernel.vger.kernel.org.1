@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8F12E8EB8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3FD2E8EBA
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Jan 2021 23:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727700AbhACWx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 17:53:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55363 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726019AbhACWxz (ORCPT
+        id S1727726AbhACWyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 17:54:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbhACWyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 17:53:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609714348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HbOe2bYAAuE9fhSTVX9AdEfAuXcyidg3sV/DLg0ptrQ=;
-        b=YYCpbsOYRtWRoqI0lYCnwS363orMjSosZD4O59CZQhtO2MJ9GwuqPTuHG5MGJXEBWHHXJU
-        0yp60JMH8PiOaaTvddQIC66nKEvk50Ilo2NWLaobsW9Kxnw9F/fw8CZpDQuxZJZTvNasts
-        AadF5ytNeltPJeVmQH/mV5oSY8uIvOY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-ch8GWXr7O9K4IHsjz2o_mQ-1; Sun, 03 Jan 2021 17:52:25 -0500
-X-MC-Unique: ch8GWXr7O9K4IHsjz2o_mQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 683FB107ACE4;
-        Sun,  3 Jan 2021 22:52:23 +0000 (UTC)
-Received: from krava (unknown [10.40.192.17])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E9AD21A8A3;
-        Sun,  3 Jan 2021 22:52:19 +0000 (UTC)
-Date:   Sun, 3 Jan 2021 23:52:19 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joe Mario <jmario@redhat.com>, David Ahern <dsahern@gmail.com>,
-        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
-        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/11] perf c2c: Sort cacheline with all loads
-Message-ID: <20210103225219.GA850408@krava>
-References: <20201213133850.10070-1-leo.yan@linaro.org>
+        Sun, 3 Jan 2021 17:54:00 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86849C061573;
+        Sun,  3 Jan 2021 14:53:20 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id 11so15209337pfu.4;
+        Sun, 03 Jan 2021 14:53:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ymeEgVIsGAnwle6DLFWvtFFHTPVZNvHeXxoZmrm44x8=;
+        b=rcEJCe81EbFlYaSiglWQSLNHt2LlNVF1mwt9660PB9wFBsVCxZq0MCbeEoxmKQWthL
+         +FqYZXrsSmxwWZpmx84qaZIMXHFNU3iMH6yLrwdgUSI8mc68JWv2kg0Pwl1MZgm10RyK
+         DmXjbj25zBsEylofPfSNGVqLOcGKJJsFD437ndyu9yLtzNCw8dP1XlteNwpEgCOIU+n4
+         JtOENE8iAfnMree8utP/Re2+lfvxf233PggsZ8ZUg93kM4swrE+aovacswbI+E96k3MQ
+         pn+h1SWYTE2H0r1Q5uaZf7yfRSmOYwl++XE63iEnXxhU6En3WhiI+LIKR0AvOL2T8gQj
+         2nhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ymeEgVIsGAnwle6DLFWvtFFHTPVZNvHeXxoZmrm44x8=;
+        b=HbrxDo72XXmAzhN4v+Pez6fUM9ZKkOQrqwd74OgV6x2FIDj7wROa8E/ftq8nxzMI/6
+         xIM8mMmNK63yAi9zeGidPSI0RDdi6h1iYEQ0w9iA/XRE6YYLI6x4L/wCisdIz7TFb8QY
+         QrXEYOWjVapDTPW/cLUMix1o8v6cVPBr7siYU/pNbKqL5la6768dPDrW+II/0xYH7jSi
+         FUVHvzSoHyaF0ZXSiYAlJ3HsYwRu75XR0FZ4QwI0tZARmlbfarRyyefB7COUFIZbt1ZX
+         d7mMim9uVManQ0d1UXgVF0WhrkIqgpnhE+NkY206jzEuqKXBhMpQYdrhTQA38VwRU1qw
+         sP+w==
+X-Gm-Message-State: AOAM531xJhwL8/qm4bKLb1mwS2Mm+4ZAMGzOXt+B6nAb35cA5c7vQtO7
+        RuFsFqqX+sayPG7AfUFjpn8=
+X-Google-Smtp-Source: ABdhPJx8CST0aV44lPiSNPVt+WY38H5JA3mMSjebNOdFPApwYTF7Dr4ro2GJhjDBYYoka5c+hV1dnA==
+X-Received: by 2002:a63:cf06:: with SMTP id j6mr26997123pgg.195.1609714400056;
+        Sun, 03 Jan 2021 14:53:20 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id z10sm54689877pfr.204.2021.01.03.14.53.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jan 2021 14:53:19 -0800 (PST)
+Date:   Sun, 3 Jan 2021 14:53:17 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Ondrej Jirman <megous@megous.com>
+Subject: Re: [PATCH] input: sun4i-lradc-keys -  Add wakup support
+Message-ID: <X/JK3ffFV3s5BigQ@google.com>
+References: <20210103105446.33923-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201213133850.10070-1-leo.yan@linaro.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210103105446.33923-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 01:38:39PM +0000, Leo Yan wrote:
-> This patch set is to sort cache line for all load operations which hit
-> any cache levels.  For single cache line view, it shows the load
-> references for loads with cache hits and with cache misses respectively.
-> 
-> This series is a following for the old patch set "perf c2c: Sort
-> cacheline with LLC load" [1], in the old patch set it tries to sort
-> cache line with the load operations in last level cache (LLC), after
-> testing we found the trace data doesn't contain LLC events if the
-> platform isn't a NUMA system.  For this reason, this series refines the
-> implementation to sort on all cache levels hits of load operations; it's
-> reasonable for us to review the load and store opreations, if detects
-> any cache line is accessed by multi-threads, this hints that the cache
-> line is possible for false sharing.
-> 
-> This patch set is clearly applied on perf/core branch with the latest
-> commit db0ea13cc741 ("perf evlist: Use the right prefix for 'struct
-> evlist' record methods").  And the changes has been tested on x86 and
-> Arm64, the testing result is shown as below.
+Hi Samuel,
 
-SNIP
+On Sun, Jan 03, 2021 at 04:54:46AM -0600, Samuel Holland wrote:
+> From: Ondrej Jirman <megous@megous.com>
+> 
+> Allow the driver to wake up the system on key press. Since using the
+> LRADC as a wakeup source requires keeping on an additional power domain,
+> disable the wakeup source by default.
 
-> 
-> 
->   [...]
-> 
-> Changes from v1:
-> * Changed from sorting on LLC to sorting on all loads with cache hits;
-> * Added patches 06/11, 07/11 for refactoring macros;
-> * Added patch 08/11 for refactoring node header, so can display "%loads"
->   rather than "%hitms" in the header;
-> * Added patch 09/11 to add local pointers for pointing to output metrics
->   string and sort string (Juri);
-> * Added warning in percent_hitm() for the display "all", which should
->   never happen (Juri).
-> 
-> [1] https://lore.kernel.org/patchwork/cover/1321514/
-> 
-> 
-> Leo Yan (11):
->   perf c2c: Add dimensions for total load hit
->   perf c2c: Add dimensions for load hit
->   perf c2c: Add dimensions for load miss
->   perf c2c: Rename for shared cache line stats
->   perf c2c: Refactor hist entry validation
->   perf c2c: Refactor display filter macro
->   perf c2c: Refactor node display macro
->   perf c2c: Refactor node header
->   perf c2c: Add local variables for output metrics
->   perf c2c: Sort on all cache hit for load operations
->   perf c2c: Update documentation for display option 'all'
-> 
->  tools/perf/Documentation/perf-c2c.txt |  21 +-
->  tools/perf/builtin-c2c.c              | 548 ++++++++++++++++++++++----
->  2 files changed, 487 insertions(+), 82 deletions(-)
+Why isn't this controlled via DT property? wakeup-source?
 
-Joe might want to test it first, but it looks all good to me:
+Thanks.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
-
+-- 
+Dmitry
