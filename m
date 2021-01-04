@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624CD2E93D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D19C52E93D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbhADK7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:59:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
+        id S1726503AbhADLBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 06:01:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbhADK7y (ORCPT
+        with ESMTP id S1726176AbhADLBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:59:54 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70253C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 02:59:14 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id i24so26867108edj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 02:59:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e2XTKO07RkHiN0jB+08Hz0QNSOJZsUf68U5bg9AP9cs=;
-        b=u3Al1M7Wsh5+XczAi/pOAVxGnzkXUFMCkcxICIuYrz595GUTSAOZkoZvXz9tDIxAKt
-         wqP3enhqv/unLZ6A3QVuN+L8+bnKO/HXnzLfMy0YMUVCsh0403c4sELYb7FEI7l70aZJ
-         suxf6zZE4qw0gmPQ+G4J0fHkHlGAmWcaEHTszviYghZqCFJlISUjczqI2i442VkT+xzx
-         YmzhfLEjXWl9LOC9ijsf7yRvU5U5pcgGd3+N2nRxWkRoL26NkLI1MCflaFGfbN0rSwlC
-         DgpU6cFKd3uIkryUdxlilFNPCh1DlL0hhThGbzDvk3xLh8lgSJU2G+bnivZPkB6QXy/F
-         g8fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e2XTKO07RkHiN0jB+08Hz0QNSOJZsUf68U5bg9AP9cs=;
-        b=VLPH5qQHTd8Ek6kceAme5PvHj2lUyn7837tMwlxBMTVoD1JNojyEix+E8+Aq3Fs8Mc
-         ugWdmVlTl5E0sN6MFx8rLaPxY4dTvnOf475l+ADVST1R+u0V8A0wlZjiMFjiEhAVl6HT
-         k//pjD6w+3+x/p3dyaSBGJtnmo4kxw0uKekY1k9ueFYoutAObp3gPnm4n04u9awp5WUO
-         VYp7kJ2vAq1Ikdvbj5uIdGe7Y6TDiEpHbqMKPQA++MM3VPkfd2hS4WDVCgt9ld6ey/CU
-         KiznOozOxCfLxLPnzUyTz+AT6/ucGmIQlvF1rB27P7XHsmQrKyJJqNoMwFRALcoIpPmy
-         klmA==
-X-Gm-Message-State: AOAM531LhKT65tDz8bszdf+r2DNCNnzTkCjlx/oKRp4Lt/TjlTpPbf7w
-        b+Q3xMxIZw/NpjEDVUWaLZwBrdIMEj2NQGolGUgcHA==
-X-Google-Smtp-Source: ABdhPJxEDCzGN8lF8s7Zq1HSgD41i43NfdbGXKwtZzJex9SqO6eZU3I/GnlTV4KTo8Zi829rcprET0w/CP+iAlxzf3g=
-X-Received: by 2002:a05:6402:229b:: with SMTP id cw27mr69366993edb.23.1609757953078;
- Mon, 04 Jan 2021 02:59:13 -0800 (PST)
+        Mon, 4 Jan 2021 06:01:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23217C061574;
+        Mon,  4 Jan 2021 03:00:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mhrOwaAhI1UDmmcXdIWUBJdkLN1PFDKL46QLbpMb4OE=; b=t7EcSy1/+qFRoVVLaSlSHi7QsH
+        7zXfhq5/F/jyb/cnYAdtGAaot76mgGHhyRfjNmuwi9kx84+M9lAiYQ7LceCnCL+iJhif3nYzv5szz
+        Iju7r9DWrtyZjEse7Xkf3GX5YLe7nT56D5HWyN9nEkR9nIGGuWqPoy5NAPd2sXHEpzhp4UN6S68Em
+        K4kCHuMnlcag11zob/PH40je2+u18joRj/YGJI1GFVRIB/isA8rkC+ojFljAbHJd+37OepLnz1wVc
+        8kkqmMp2j+Yb27/zhbqoB2uApubThXl1y3Ro9RrkW4ir5bdPh41ENvtjOkmhPQsshwq7fcbmiLSiZ
+        r4iuKmug==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kwNZq-0000Rm-Pa; Mon, 04 Jan 2021 10:59:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E961F30377D;
+        Mon,  4 Jan 2021 11:59:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CC6BB20298581; Mon,  4 Jan 2021 11:59:04 +0100 (CET)
+Date:   Mon, 4 Jan 2021 11:59:04 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        David Daney <david.daney@cavium.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Archer Yan <ayan@wavecomp.com>, x86@kernel.org
+Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
+ traces from user-space with perf
+Message-ID: <20210104105904.GK3021@hirez.programming.kicks-ass.net>
+References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
+ <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-References: <CA+G9fYuNKqyvku1im6_zS5PjK9nG3Jf6qNwpQjaB8WRWO5BXzA@mail.gmail.com>
- <b516dd0d-787e-96bc-0f0d-3811c4be1642@physik.fu-berlin.de>
-In-Reply-To: <b516dd0d-787e-96bc-0f0d-3811c4be1642@physik.fu-berlin.de>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 4 Jan 2021 16:28:59 +0530
-Message-ID: <CA+G9fYtpsoKjHR3Fr-so4SFopMUH+5m=RR9py2Uc9NKTmvm5Eg@mail.gmail.com>
-Subject: Re: [sh] smp-shx3.c: error: ignoring return value of 'request_irq',
- declared with attribute warn_unused_result
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     open list <linux-kernel@vger.kernel.org>, linux-sh@vger.kernel.org,
-        lkft-triage@lists.linaro.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Jan 2021 at 20:18, John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
->
-> Hello Naresh!
->
-> On 12/9/20 6:26 PM, Naresh Kamboju wrote:
-> > Linux next 20201209 tag the arch 'sh' defconfig build failed to build with
-> > gcc-8, gcc-9 and gcc-10.
-> >
-> > arch/sh/kernel/cpu/sh4a/smp-shx3.c: In function 'shx3_prepare_cpus':
-> > arch/sh/kernel/cpu/sh4a/smp-shx3.c:76:3: error: ignoring return value
-> > of 'request_irq', declared with attribute warn_unused_result
-> > [-Werror=unused-result]
-> >    request_irq(104 + i, ipi_interrupt_handler,
-> >    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >         IRQF_PERCPU, "IPI", (void *)(long)i);
-> >         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->
-> I can't reproduce this issue on Linus' current tree as of today.
->
-> Maybe the issue has been fixed in the meantime?
+On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
+> +u64 perf_reg_abi(struct task_struct *tsk)
+> +{
+> +	if (test_tsk_thread_flag(tsk, TIF_32BIT_REGS))
+> +		return PERF_SAMPLE_REGS_ABI_32;
+> +	else
+> +		return PERF_SAMPLE_REGS_ABI_64;
+> +}
 
-Seems like this has been fixed in the meantime.
+So we recently changed this on x86 to not rely on TIF flags. IIRC the
+problem is that on x86 you can change the mode of a task without the
+kernel being aware of it. Is something like that possible on MIPS as
+well?
 
-- Naresh
+The thing x86 does today is look at it's pt_regs state to determine the
+actual state.
