@@ -2,166 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91752E9702
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF96B2E9704
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727244AbhADOSc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 09:18:32 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:57357 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbhADOSc (ORCPT
+        id S1726733AbhADOSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726246AbhADOSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:18:32 -0500
-X-Originating-IP: 90.89.98.255
-Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr [90.89.98.255])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id AA3D42000C;
-        Mon,  4 Jan 2021 14:17:47 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 15:17:46 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH 1/1] mtd: spinand: add support for Foresee FS35ND01G
-Message-ID: <20210104151746.21cdde24@xps13>
-In-Reply-To: <20201229055059.2255021-2-daniel@0x0f.com>
-References: <20201229055059.2255021-1-daniel@0x0f.com>
-        <20201229055059.2255021-2-daniel@0x0f.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 4 Jan 2021 09:18:38 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1ABC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:17:58 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id j16so27487681edr.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:17:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S3YGJhKq0HHQGucgmozYpZHntxUmH5DmRwVgK8AwGuI=;
+        b=v/GwiUgY4h1BjISOPH1/5Py5SLZxxMO5Oord6HX0IddfyiNTi/HqwkJ/9E7XmNPAdk
+         nbcogLlSkct4rDD8cIGy4NXm3riFpNhQCuQsmhFgxIz1x6/Ug0ZUH1wL2ilZQ+V2DGsq
+         vDgAaIaRXLLIweV9TmZ2EzpWIn53U8XhcyoPugzLudsGo+8Csx7Mlj1QDQL2i7TdNPAC
+         CW4KqQCQ6ZhODerecqYLHs88o/K5mUew7G/Pt2zH+gy+MUA3HO39622EhjhhPXnVDGXp
+         c1yGzJZb7wuOfOM55fOH/cEPA1eCXAJkcykuM7BnPFoP2MnbO6BkJnGLWk8p0cEbGr4p
+         c+tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S3YGJhKq0HHQGucgmozYpZHntxUmH5DmRwVgK8AwGuI=;
+        b=MN7zzYJSRtoX6R8S46qsRmTBxQv78FgOu2peHbLEyO3MhG/TIbEAGk+qMS5RL0ygG9
+         jFy6bU5gHat/g9ZRkqfDfETCIc1ujntGBiUvEX1Y4SSwL7rElq0VaSehaSIv4FUSrGDC
+         wbNVfr7gHNd3ZFcIzYmir3ovPZQH77U2/J7viYpqXgZs40KpbLobkmWVV9mmftslh/4r
+         ekvHWmN/gByo2yDDeexp/5BXNkbkB9X+2PKd8NdTmGiCNGjvCRM5agggwUjhejFd/9Np
+         DDSLA1wasN+aHxYOn5LxLGrcBEThiLnoIFE2GttKRRZXe8kmgR8lSFJ1zljeO+VvX1mc
+         bUlQ==
+X-Gm-Message-State: AOAM530XHLOnbotktHHR7DLKrqCNjFlb/BDDTZaG0UkuuChjipvKamfv
+        PzkI/uU0q6roExr7oMVJ+KKr/+IV0x9F2UpNzScj5w==
+X-Google-Smtp-Source: ABdhPJwKAwnuVOSXfrGZtt7PjGMtlUob47gHSBwlgW4likWCOsuVJtIKI7KiyyrRrNAuyD7juRrBNmtE7FtcJZev5Qw=
+X-Received: by 2002:a50:bac4:: with SMTP id x62mr69994137ede.59.1609769876975;
+ Mon, 04 Jan 2021 06:17:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201224112203.7174-1-nikita.shubin@maquefel.me>
+ <20201224112203.7174-3-nikita.shubin@maquefel.me> <CACRpkdadUVHefag4d42BJiOraAmHrXDcK7gzjZrLXn371rMwOA@mail.gmail.com>
+In-Reply-To: <CACRpkdadUVHefag4d42BJiOraAmHrXDcK7gzjZrLXn371rMwOA@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 4 Jan 2021 15:17:46 +0100
+Message-ID: <CAMpxmJU-j93c8qUduehGKdHigswYcnAkhXKx8NmQjPqO7ibJjw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] gpio: ep93xx: drop to_irq binding
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Sun, Dec 27, 2020 at 10:21 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Thu, Dec 24, 2020 at 12:22 PM Nikita Shubin
+> <nikita.shubin@maquefel.me> wrote:
+>
+> > As ->to_irq is redefined in gpiochip_add_irqchip, having it defined in
+> > driver is useless, so let's drop it.
+> >
+> > Also i think it is worth to give a gentle warning in
+> > gpiochip_add_irqchip, to prevent people relying on to_irq.
+> >
+> > For example
+> >
+> > WARN_ON_ONCE(gc->to_irq,
+> > "to_irq is redefined in gpiochip_add_irqchip" \
+> > "and you shouldn't rely on it\n");
+> >
+> > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Take out the suggestion in the commit message and implement it,
+> but I think WARN_ON is too nasty, just use dev_err().
+>
+> Yours,
+> Linus Walleij
 
-Daniel Palmer <daniel@0x0f.com> wrote on Tue, 29 Dec 2020 14:50:59
-+0900:
+This depends on patch 1/3 so I'll wait until you resend with issues addressed.
 
-> Add support for the Foresee FS35ND01G manufactured by Longsys.
-
-Thanks for contributing this back!
-
-Perhaps giving the link of the datasheet here makes sense.
-
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> ---
->  drivers/mtd/nand/spi/Makefile  |  2 +-
->  drivers/mtd/nand/spi/core.c    |  1 +
->  drivers/mtd/nand/spi/longsys.c | 45 ++++++++++++++++++++++++++++++++++
->  include/linux/mtd/spinand.h    |  1 +
->  4 files changed, 48 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/nand/spi/longsys.c
-> 
-> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-> index 9662b9c1d5a9..1d6819022e43 100644
-> --- a/drivers/mtd/nand/spi/Makefile
-> +++ b/drivers/mtd/nand/spi/Makefile
-> @@ -1,3 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
-> +spinand-objs := core.o gigadevice.o longsys.o macronix.o micron.o paragon.o toshiba.o winbond.o
->  obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 8ea545bb924d..bdc9cd45d232 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -856,6 +856,7 @@ static const struct nand_ops spinand_ops = {
->  
->  static const struct spinand_manufacturer *spinand_manufacturers[] = {
->  	&gigadevice_spinand_manufacturer,
-> +	&longsys_spinand_manufacturer,
->  	&macronix_spinand_manufacturer,
->  	&micron_spinand_manufacturer,
->  	&paragon_spinand_manufacturer,
-> diff --git a/drivers/mtd/nand/spi/longsys.c b/drivers/mtd/nand/spi/longsys.c
-> new file mode 100644
-> index 000000000000..f18271f8e9d2
-> --- /dev/null
-> +++ b/drivers/mtd/nand/spi/longsys.c
-> @@ -0,0 +1,45 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2020 Daniel Palmer <daniel@thingy.jp>
-> + *
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mtd/spinand.h>
-> +
-> +#define SPINAND_MFR_LONGSYS		0xcd
-
-Nitpick: I personally prefer uppercase hex numbers.
-
-> +
-> +static SPINAND_OP_VARIANTS(read_cache_variants,
-> +		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(write_cache_variants,
-> +		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(update_cache_variants,
-> +		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-> +
-> +static const struct spinand_info longsys_spinand_table[] = {
-> +	SPINAND_INFO("FS35ND01G",
-> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xea, 0x11),
-
-Ditto
-
-> +		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-> +		     NAND_ECCREQ(4, 512),
-> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> +					      &write_cache_variants,
-> +					      &update_cache_variants),
-
-This device probably supports more variants (especially dual/quad
-ones) but I guess it's not a problem to not have them here right now.
-
-> +		     SPINAND_HAS_QE_BIT,
-> +		     SPINAND_ECCINFO(NULL,
-> +				     NULL)),
-
-You should define the ->ecc and ->free hooks of the
-mtd_ooblayout_ops structure and point to it here. It defines the free
-OOB bytes and bytes used by the on-die ECC engine. You should find this
-in the datasheet. You may look at other manufacturer drivers for
-examples of how it should be implemented. It is the way to tell the
-upper layers that eg. "byte 2 to 17 are ECC bytes, 18 until the end are
-free to use".
-
-> +};
-> +
-> +static const struct spinand_manufacturer_ops longsys_spinand_manuf_ops = {
-> +};
-> +
-> +const struct spinand_manufacturer longsys_spinand_manufacturer = {
-> +	.id = SPINAND_MFR_LONGSYS,
-> +	.name = "Longsys",
-> +	.chips = longsys_spinand_table,
-> +	.nchips = ARRAY_SIZE(longsys_spinand_table),
-> +	.ops = &longsys_spinand_manuf_ops,
-> +};
-> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index 6bb92f26833e..8651e63a2f8a 100644
-> --- a/include/linux/mtd/spinand.h
-> +++ b/include/linux/mtd/spinand.h
-> @@ -239,6 +239,7 @@ struct spinand_manufacturer {
->  
->  /* SPI NAND manufacturers */
->  extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
-> +extern const struct spinand_manufacturer longsys_spinand_manufacturer;
->  extern const struct spinand_manufacturer macronix_spinand_manufacturer;
->  extern const struct spinand_manufacturer micron_spinand_manufacturer;
->  extern const struct spinand_manufacturer paragon_spinand_manufacturer;
-
-Looks fine otherwise :)
-
-Thanks,
-Miquèl
+Bartosz
