@@ -2,55 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29D12E95A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FF62E95A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbhADNLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:11:52 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34854 "EHLO
+        id S1726707AbhADNN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:13:56 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35252 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbhADNLu (ORCPT
+        with ESMTP id S1725830AbhADNNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:11:50 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104DAA0o108165;
-        Mon, 4 Jan 2021 07:10:10 -0600
+        Mon, 4 Jan 2021 08:13:55 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104DD2hh108940;
+        Mon, 4 Jan 2021 07:13:02 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1609765810;
-        bh=SOzw7oqesURduuxYIP473jLBIjYb0f3NxPP2APP4Wm4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=sS3mY6+sp3LdsfyaP1LGaYmJqLTB32TYYTR0pXiTiAZ1q5sNMfhKCucM2DWhbdCNj
-         2GCXGdRyOtRjRAoT6fuDAsuwjZkrwqQcNTSiJzGB28iobvvm1pmarY9Kb2C3uidxXt
-         6Ru7bCfVPVspksEYh11Gcq332Or6SaWHyyQkEfPw=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104DAAlf120312
+        s=ti-com-17Q1; t=1609765982;
+        bh=PniDc9QWWr+VJ0de9ADs3ktmUYpcGrHXEordESznxd8=;
+        h=From:Subject:To:CC:References:Date:In-Reply-To;
+        b=AeSxBlvH+CO76UEm/uFeQBDGOEOW3/LMnpglLZBKb2IRH/Hl2uFVnr8YZJJmiQutx
+         fOSY936VSiRI8aKbKsx+KDfrnu1Kx4HeETNPq+3swsuKxZcG6RgMbba1vGLqi/4/aU
+         OPkhzCdnR5P9l6my/QlQfSIoj93PWbgHbTnUgMjA=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104DD2Gd042173
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 Jan 2021 07:10:10 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 4 Jan 2021 07:13:02 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 Jan
- 2021 07:10:09 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ 2021 07:13:01 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 4 Jan 2021 07:10:09 -0600
+ Frontend Transport; Mon, 4 Jan 2021 07:13:01 -0600
 Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104DA7SW081281;
-        Mon, 4 Jan 2021 07:10:08 -0600
-Subject: Re: [PATCH v3 0/6] PCI: J7200/J721E PCIe bindings
-To:     Nishanth Menon <nm@ti.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210104122232.24071-1-kishon@ti.com>
- <20210104125910.qaf7vi3dx6vsne6t@backfield>
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104DCuxB085196;
+        Mon, 4 Jan 2021 07:12:57 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <465097c1-2d38-ad45-cc32-d92c385114c5@ti.com>
-Date:   Mon, 4 Jan 2021 18:40:06 +0530
+Subject: Re: [PATCH v8 11/18] PCI: cadence: Implement ->msi_map_irq() ops
+To:     Rob Herring <robh@kernel.org>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <linux-ntb@googlegroups.com>
+References: <20201111153559.19050-1-kishon@ti.com>
+ <20201111153559.19050-12-kishon@ti.com>
+ <CAL_Jsq+iUU0aR950fvQ7+uenBT5MVbCEU9cDg+vfyO=VugpTZA@mail.gmail.com>
+Message-ID: <992b5423-89a2-a03b-539d-a9b2822f598a@ti.com>
+Date:   Mon, 4 Jan 2021 18:42:55 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210104125910.qaf7vi3dx6vsne6t@backfield>
+In-Reply-To: <CAL_Jsq+iUU0aR950fvQ7+uenBT5MVbCEU9cDg+vfyO=VugpTZA@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -59,59 +69,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nishanth,
+Hi Rob,
 
-On 04/01/21 6:29 pm, Nishanth Menon wrote:
-> On 17:52-20210104, Kishon Vijay Abraham I wrote:
->> Patch series adds DT nodes in order to get PCIe working in J7200.
->> Also includes couple of fixes for J721e.
+On 15/12/20 9:31 pm, Rob Herring wrote:
+> On Wed, Nov 11, 2020 at 9:37 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
 >>
->> v1 of the patch series can be found @ [1]
->> v2 of the patch series can be found @ [2]
+>> Implement ->msi_map_irq() ops in order to map physical address to
+>> MSI address and return MSI data.
 >>
->> Changes from v2:
->> 1) Moved serdes_refclk node out of interconnect node and also replaced
->>    "_" with "-"
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  .../pci/controller/cadence/pcie-cadence-ep.c  | 53 +++++++++++++++++++
+>>  1 file changed, 53 insertions(+)
 >>
->> Changes from v1:
->> 1) Include only the device tree patches here (the binding patch is sent
->> separately)
->> 2) Include couple of patches that fixes J721E DTS.
+>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+>> index 84cc58dc8512..1fe6b8baca97 100644
+>> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+>> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+>> @@ -382,6 +382,57 @@ static int cdns_pcie_ep_send_msi_irq(struct cdns_pcie_ep *ep, u8 fn,
+>>         return 0;
+>>  }
 >>
->> [1] -> http://lore.kernel.org/r/20201102101154.13598-1-kishon@ti.com
->> [2] -> http://lore.kernel.org/r/20201210130747.25436-1-kishon@ti.com
->>
->> Kishon Vijay Abraham I (6):
->>   arm64: dts: ti: k3-j721e-main: Fix supported max outbound regions
->>   arm64: dts: ti: k3-j721e-main: Remove "syscon" nodes added for
->>     pcieX_ctrl
->>   arm64: dts: ti: k3-j7200-main: Add SERDES and WIZ device tree node
->>   arm64: dts: ti: k3-j7200-main: Add PCIe device tree node
->>   arm64: dts: ti: k3-j7200-common-proc-board: Enable SERDES0
->>   arm64: dts: ti: k3-j7200-common-proc-board: Enable PCIe
->>
->>  .../dts/ti/k3-j7200-common-proc-board.dts     |  38 ++++++
->>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 111 ++++++++++++++++++
->>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     |  52 ++------
->>  3 files changed, 157 insertions(+), 44 deletions(-)
+>> +static int cdns_pcie_ep_map_msi_irq(struct pci_epc *epc, u8 fn,
+>> +                                   phys_addr_t addr, u8 interrupt_num,
+>> +                                   u32 entry_size, u32 *msi_data,
+>> +                                   u32 *msi_addr_offset)
+>> +{
+>> +       struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
+>> +       u32 cap = CDNS_PCIE_EP_FUNC_MSI_CAP_OFFSET;
+>> +       struct cdns_pcie *pcie = &ep->pcie;
+>> +       u64 pci_addr, pci_addr_mask = 0xff;
+>> +       u16 flags, mme, data, data_mask;
+>> +       u8 msi_count;
+>> +       int ret;
+>> +       int i;
+>> +
 > 
 > 
-> A bit confused on the dependency here. is there something merged into
-> next-20210104 that makes this series ready for pickup? is there a way
-> I can get a immutable tag for driver fixups to pull so that my dts
-> next is not broken for PCIe (I am assuming looking at the series that
-> this is probably not a backward compatible series?)?
+>> +       /* Check whether the MSI feature has been enabled by the PCI host. */
+>> +       flags = cdns_pcie_ep_fn_readw(pcie, fn, cap + PCI_MSI_FLAGS);
+>> +       if (!(flags & PCI_MSI_FLAGS_ENABLE))
+>> +               return -EINVAL;
+>> +
+>> +       /* Get the number of enabled MSIs */
+>> +       mme = (flags & PCI_MSI_FLAGS_QSIZE) >> 4;
+>> +       msi_count = 1 << mme;
+>> +       if (!interrupt_num || interrupt_num > msi_count)
+>> +               return -EINVAL;
+>> +
+>> +       /* Compute the data value to be written. */
+>> +       data_mask = msi_count - 1;
+>> +       data = cdns_pcie_ep_fn_readw(pcie, fn, cap + PCI_MSI_DATA_64);
+>> +       data = data & ~data_mask;
+>> +
+>> +       /* Get the PCI address where to write the data into. */
+>> +       pci_addr = cdns_pcie_ep_fn_readl(pcie, fn, cap + PCI_MSI_ADDRESS_HI);
+>> +       pci_addr <<= 32;
+>> +       pci_addr |= cdns_pcie_ep_fn_readl(pcie, fn, cap + PCI_MSI_ADDRESS_LO);
+>> +       pci_addr &= GENMASK_ULL(63, 2);
+> 
+> Wouldn't all of the above be the same code for any endpoint driver? We
+> just need endpoint config space accessors for the same 32-bit only
+> access issues. Not asking for that in this series, but if that's the
+> direction we should go.
 
-There are no driver changes for the basic J7200 PCIe support and the DT
-bindings are already merged [1].
+Do you mean "endpoint" variant of pci_generic_config_read() which takes
+function number and capability offset? That could be done but we have to
+add support to traverse the linked list of capabilities though the
+capabilities are going to be at a fixed location for a given IP.
 
-There are few errata fixes applicable for J721E which has to be removed
-for J7200 but that depends on other patches to be merged [1] but that
-doesn't impact j7200 functionality.
+Also in some cases, the writes are to a different register than the
+configuration space registers like vendor_id in Cadence EP should be
+written to Local Management register instead of the configuration space
+register.
 
-[1] ->
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml#n19
-[2] -> http://lore.kernel.org/r/20201230120515.2348-1-nadeem@cadence.com
-
-Thanks
+Thank You,
 Kishon
