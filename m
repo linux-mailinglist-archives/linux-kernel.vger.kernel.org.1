@@ -2,148 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155CB2E94D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 836C42E94DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbhADM2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:28:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
+        id S1726652AbhADM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:29:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbhADM2e (ORCPT
+        with ESMTP id S1726303AbhADM3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:28:34 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F0FC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 04:27:54 -0800 (PST)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4D8Zdz0LkCz9sVs; Mon,  4 Jan 2021 23:27:50 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1609763271;
-        bh=v8wG597noNfuWICjVdBWzSu8L6bYdzednOXuYaV8Bmo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LU8GC11/wUmEVJMoE/TpTt42hD46k3xmSL2ev+vxfx4xhmkw/xSKDNjqj0F1i7YFe
-         +e/Yp6p3hgJQASNp6cj66Cw8smUR5t8KpbJiiEIJELBPZfzC4KXmf58xIkcFDJnpVe
-         LnQd2wpMDbAzr/x3m7pUAtkszdFhOqt8QxFPHyXxI95TTxnIKQUFITP7RMbunZKFW2
-         I8H/ALbVUopEtdMrkdtYHnY2rNSiao3FnS6UhzGQhltClXoJ+hOpEFyJINBz7pF6Lt
-         17gtXMNy9WvBjDoJB6PP3ujxSxLXLpltGiwsDFk6wJiIwPBn16FLz6wGyb0Prtn6d4
-         WD7GPXYvpvVtA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     acme@redhat.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, yhs@fb.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@ozlabs.org, vt@altlinux.org
-Subject: [PATCH] tools headers UAPI: Sync linux/types.h with the kernel sources
-Date:   Mon,  4 Jan 2021 23:27:44 +1100
-Message-Id: <20210104122744.4095768-1-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.25.1
+        Mon, 4 Jan 2021 07:29:49 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B25C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 04:29:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aPOpPSwMVGvB0YgnVHYQLbIN4iJja9dP/akBIyla8Ds=; b=a7jfodKoGQgkSmFy+M5rC7N4f5
+        HSTenOWSmTK6DCeA8D/1XAnp8AVhMgtVE3w9t8m8aMBw8IgvQmpHY2H7+UMrN6xkWsCemiM5I32gh
+        8ulRMujciBGyI6RE2DxofOClbVO5j646EfbfZZB85LZ/A7DQW3vBiLFXSr5kgClNuPXnFY5/71948
+        JSMJLUfJ/RjOsR62xZj9nLBBwJ0DuMkYp7c1mc47/MtsjdJ0Xwomsg+7gFHNqzF95ll/Oa0+t5ILg
+        GjRqAxnbOcEwf7vjPz3Xor5Ndl43ZDiOxYkJHP3gnYzK7/Yss1HkybhixyebmKJuud3hM5dLmefWs
+        qwbLVEqA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kwOyH-00052o-VW; Mon, 04 Jan 2021 12:28:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 856763010D2;
+        Mon,  4 Jan 2021 13:28:25 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6F7C020CBF479; Mon,  4 Jan 2021 13:28:25 +0100 (CET)
+Date:   Mon, 4 Jan 2021 13:28:25 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH] kdev_t: Always inline major/minor helper functions
+Message-ID: <20210104122825.GM3021@hirez.programming.kicks-ass.net>
+References: <984353b44a4484d86ba9f73884b7306232e25e30.1608737428.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <984353b44a4484d86ba9f73884b7306232e25e30.1608737428.git.jpoimboe@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unlike the other headers in tools/include/uapi/linux, types.h has
-never been synced from the exported headers, instead it's been hand
-written over time. This means it doesn't match the exported headers
-which can cause build errors on some architectures.
+On Wed, Dec 23, 2020 at 09:30:48AM -0600, Josh Poimboeuf wrote:
+> Silly GCC doesn't always inline these trivial functions.
+> 
+> Fixes the following warning:
+> 
+>   arch/x86/kernel/sys_ia32.o: warning: objtool: cp_stat64()+0xd8: call to new_encode_dev() with UACCESS enabled
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-For example on powerpc, tools/bpf doesn't build:
+The alternative is something like:
 
-  $ make O=/build -C tools/bpf/
-  make: Entering directory '/linux/tools/bpf'
-
-  Auto-detecting system features:
-  ...                        libbfd: [ on  ]
-  ...        disassembler-four-args: [ on  ]
-
-    CC       /build/bpf_jit_disasm.o
-    LINK     /build/bpf_jit_disasm
-    CC       /build/bpf_dbg.o
-  In file included from /usr/include/powerpc64le-linux-gnu/asm/sigcontext.h:14,
-                   from /usr/include/powerpc64le-linux-gnu/bits/sigcontext.h:30,
-                   from /usr/include/signal.h:288,
-                   from /linux/tools/bpf/bpf_dbg.c:51:
-  /usr/include/powerpc64le-linux-gnu/asm/elf.h:160:9: error: unknown type name '__vector128'
-    160 | typedef __vector128 elf_vrreg_t;
-        |         ^~~~~~~~~~~
-  make: *** [Makefile:67: /build/bpf_dbg.o] Error 1
-
-This is because tools/include/uapi/linux/types.h doesn't include
-asm/types.h, where __vector128 is defined in the powerpc headers.
-
-We can fix it by syncing the tools header with the exported kernel
-header, as is done for the other headers in tools/include/uapi/linux.
-
-Reported-by: Vitaly Chikunov <vt@altlinux.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
-
-Earlier discussion: https://lore.kernel.org/netdev/20201024203040.4cjxnxrdy6qx557c@altlinux.org/
-
-Build tested on powerpc and x86.
----
- tools/include/uapi/linux/types.h | 41 ++++++++++++++++++++++++++------
- 1 file changed, 34 insertions(+), 7 deletions(-)
-
-diff --git a/tools/include/uapi/linux/types.h b/tools/include/uapi/linux/types.h
-index 91fa51a9c31d..999cb0fa88eb 100644
---- a/tools/include/uapi/linux/types.h
-+++ b/tools/include/uapi/linux/types.h
-@@ -1,11 +1,26 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _UAPI_LINUX_TYPES_H
--#define _UAPI_LINUX_TYPES_H
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _LINUX_TYPES_H
-+#define _LINUX_TYPES_H
- 
--#include <asm-generic/int-ll64.h>
-+#include <asm/types.h>
+diff --git a/arch/x86/kernel/sys_ia32.c b/arch/x86/kernel/sys_ia32.c
+index 6cf65397d225..6ca3da08dbcb 100644
+--- a/arch/x86/kernel/sys_ia32.c
++++ b/arch/x86/kernel/sys_ia32.c
+@@ -133,18 +133,23 @@ static int cp_stat64(struct stat64 __user *ubuf, struct kstat *stat)
+ {
+ 	typeof(ubuf->st_uid) uid = 0;
+ 	typeof(ubuf->st_gid) gid = 0;
++	u64 dev, rdev;
 +
-+#ifndef __ASSEMBLY__
+ 	SET_UID(uid, from_kuid_munged(current_user_ns(), stat->uid));
+ 	SET_GID(gid, from_kgid_munged(current_user_ns(), stat->gid));
++	dev = huge_encode_dev(stat->dev);
++	rdev = huge_encode_dev(stat->rdev);
 +
-+#include <linux/posix_types.h>
-+
-+
-+/*
-+ * Below are truly Linux-specific types that should never collide with
-+ * any application/library that wants linux/types.h.
-+ */
-+
-+#ifdef __CHECKER__
-+#define __bitwise__ __attribute__((bitwise))
-+#else
-+#define __bitwise__
-+#endif
-+#define __bitwise __bitwise__
- 
--/* copied from linux:include/uapi/linux/types.h */
--#define __bitwise
- typedef __u16 __bitwise __le16;
- typedef __u16 __bitwise __be16;
- typedef __u32 __bitwise __le32;
-@@ -16,8 +31,20 @@ typedef __u64 __bitwise __be64;
- typedef __u16 __bitwise __sum16;
- typedef __u32 __bitwise __wsum;
- 
-+/*
-+ * aligned_u64 should be used in defining kernel<->userspace ABIs to avoid
-+ * common 32/64-bit compat problems.
-+ * 64-bit values align to 4-byte boundaries on x86_32 (and possibly other
-+ * architectures) and to 8-byte boundaries on 64-bit architectures.  The new
-+ * aligned_64 type enforces 8-byte alignment so that structs containing
-+ * aligned_64 values have the same alignment on 32-bit and 64-bit architectures.
-+ * No conversions are necessary between 32-bit user-space and a 64-bit kernel.
-+ */
- #define __aligned_u64 __u64 __attribute__((aligned(8)))
- #define __aligned_be64 __be64 __attribute__((aligned(8)))
- #define __aligned_le64 __le64 __attribute__((aligned(8)))
- 
--#endif /* _UAPI_LINUX_TYPES_H */
-+typedef unsigned __bitwise __poll_t;
-+
-+#endif /*  __ASSEMBLY__ */
-+#endif /* _LINUX_TYPES_H */
--- 
-2.25.1
-
+ 	if (!user_write_access_begin(ubuf, sizeof(struct stat64)))
+ 		return -EFAULT;
+-	unsafe_put_user(huge_encode_dev(stat->dev), &ubuf->st_dev, Efault);
++	unsafe_put_user(dev, &ubuf->st_dev, Efault);
+ 	unsafe_put_user(stat->ino, &ubuf->__st_ino, Efault);
+ 	unsafe_put_user(stat->ino, &ubuf->st_ino, Efault);
+ 	unsafe_put_user(stat->mode, &ubuf->st_mode, Efault);
+ 	unsafe_put_user(stat->nlink, &ubuf->st_nlink, Efault);
+ 	unsafe_put_user(uid, &ubuf->st_uid, Efault);
+ 	unsafe_put_user(gid, &ubuf->st_gid, Efault);
+-	unsafe_put_user(huge_encode_dev(stat->rdev), &ubuf->st_rdev, Efault);
++	unsafe_put_user(rdev, &ubuf->st_rdev, Efault);
+ 	unsafe_put_user(stat->size, &ubuf->st_size, Efault);
+ 	unsafe_put_user(stat->atime.tv_sec, &ubuf->st_atime, Efault);
+ 	unsafe_put_user(stat->atime.tv_nsec, &ubuf->st_atime_nsec, Efault);
