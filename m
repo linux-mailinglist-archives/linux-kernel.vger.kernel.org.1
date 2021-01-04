@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F992E99EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C17E12E99EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729245AbhADQFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:05:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40938 "EHLO mail.kernel.org"
+        id S1728181AbhADQFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:05:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729147AbhADQDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:03:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF41F22515;
-        Mon,  4 Jan 2021 16:02:50 +0000 (UTC)
+        id S1728095AbhADQDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:03:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B86122516;
+        Mon,  4 Jan 2021 16:02:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776171;
-        bh=JSA62VsnU96+Dty+AHhPpa68tj5xroqoUHABd19Pqvw=;
+        s=korg; t=1609776173;
+        bh=TBFURPubX4lJg4Bp/uUQfXFe64zJLuJrE0DcFxmIhis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OPXnwJRzSdJn0+Z3Esr136IYL9QnypUs1b5bg2XkiMSWLit+icPU4w/xWRcC27XwV
-         HIhIqtDSDMAIplEoa8/zmcB8fGZW9UO9UIpMfuD2wLQqwdMaTORUDAoda7EuAF0MgV
-         SSsqtGZWoIpOHVSkQiO5sNqjieXwzskTXHw0pSnM=
+        b=ULQIIaa2watUVEbDzaf1+BE70vlxwGOTKPULJG2ghpIduIxdloeHjdE68CHBEytSY
+         jyaqVyd1tPDN34yB2sjusNIMsvoENeiLfZ9Ds1WRVAPAA6DzmuKjQVoLbaok6d9q3e
+         ZKm71xeIIaSOKc7MTQFYV8iCPuHUPs4/Kg+3wu1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christopher Obbard <chris.obbard@collabora.com>,
-        Martyn Welch <martyn@collabora.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 53/63] um: ubd: Submit all data segments atomically
-Date:   Mon,  4 Jan 2021 16:57:46 +0100
-Message-Id: <20210104155711.384092400@linuxfoundation.org>
+Subject: [PATCH 5.10 54/63] NFSv4.2: Dont error when exiting early on a READ_PLUS buffer overflow
+Date:   Mon,  4 Jan 2021 16:57:47 +0100
+Message-Id: <20210104155711.434974524@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
 References: <20210104155708.800470590@linuxfoundation.org>
@@ -44,432 +40,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit fc6b6a872dcd48c6f39c7975836d75113db67d37 ]
+[ Upstream commit 503b934a752f7e789a5f33217520e0a79f3096ac ]
 
-Internally, UBD treats each physical IO segment as a separate command to
-be submitted in the execution pipe.  If the pipe returns a transient
-error after a few segments have already been written, UBD will tell the
-block layer to requeue the request, but there is no way to reclaim the
-segments already submitted.  When a new attempt to dispatch the request
-is done, those segments already submitted will get duplicated, causing
-the WARN_ON below in the best case, and potentially data corruption.
+Expanding the READ_PLUS extents can cause the read buffer to overflow.
+If it does, then don't error, but just exit early.
 
-In my system, running a UML instance with 2GB of RAM and a 50M UBD disk,
-I can reproduce the WARN_ON by simply running mkfs.fvat against the
-disk on a freshly booted system.
-
-There are a few ways to around this, like reducing the pressure on
-the pipe by reducing the queue depth, which almost eliminates the
-occurrence of the problem, increasing the pipe buffer size on the host
-system, or by limiting the request to one physical segment, which causes
-the block layer to submit way more requests to resolve a single
-operation.
-
-Instead, this patch modifies the format of a UBD command, such that all
-segments are sent through a single element in the communication pipe,
-turning the command submission atomic from the point of view of the
-block layer.  The new format has a variable size, depending on the
-number of elements, and looks like this:
-
-+------------+-----------+-----------+------------
-| cmd_header | segment 0 | segment 1 | segment ...
-+------------+-----------+-----------+------------
-
-With this format, we push a pointer to cmd_header in the submission
-pipe.
-
-This has the advantage of reducing the memory footprint of executing a
-single request, since it allow us to merge some fields in the header.
-It is possible to reduce even further each segment memory footprint, by
-merging bitmap_words and cow_offset, for instance, but this is not the
-focus of this patch and is left as future work.  One issue with the
-patch is that for a big number of segments, we now perform one big
-memory allocation instead of multiple small ones, but I wasn't able to
-trigger any real issues or -ENOMEM because of this change, that wouldn't
-be reproduced otherwise.
-
-This was tested using fio with the verify-crc32 option, and by running
-an ext4 filesystem over this UBD device.
-
-The original WARN_ON was:
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 0 at lib/refcount.c:28 refcount_warn_saturate+0x13f/0x141
-refcount_t: underflow; use-after-free.
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.5.0-rc6-00002-g2a5bb2cf75c8 #346
-Stack:
- 6084eed0 6063dc77 00000009 6084ef60
- 00000000 604b8d9f 6084eee0 6063dcbc
- 6084ef40 6006ab8d e013d780 1c00000000
-Call Trace:
- [<600a0c1c>] ? printk+0x0/0x94
- [<6004a888>] show_stack+0x13b/0x155
- [<6063dc77>] ? dump_stack_print_info+0xdf/0xe8
- [<604b8d9f>] ? refcount_warn_saturate+0x13f/0x141
- [<6063dcbc>] dump_stack+0x2a/0x2c
- [<6006ab8d>] __warn+0x107/0x134
- [<6008da6c>] ? wake_up_process+0x17/0x19
- [<60487628>] ? blk_queue_max_discard_sectors+0x0/0xd
- [<6006b05f>] warn_slowpath_fmt+0xd1/0xdf
- [<6006af8e>] ? warn_slowpath_fmt+0x0/0xdf
- [<600acc14>] ? raw_read_seqcount_begin.constprop.0+0x0/0x15
- [<600619ae>] ? os_nsecs+0x1d/0x2b
- [<604b8d9f>] refcount_warn_saturate+0x13f/0x141
- [<6048bc8f>] refcount_sub_and_test.constprop.0+0x2f/0x37
- [<6048c8de>] blk_mq_free_request+0xf1/0x10d
- [<6048ca06>] __blk_mq_end_request+0x10c/0x114
- [<6005ac0f>] ubd_intr+0xb5/0x169
- [<600a1a37>] __handle_irq_event_percpu+0x6b/0x17e
- [<600a1b70>] handle_irq_event_percpu+0x26/0x69
- [<600a1bd9>] handle_irq_event+0x26/0x34
- [<600a1bb3>] ? handle_irq_event+0x0/0x34
- [<600a5186>] ? unmask_irq+0x0/0x37
- [<600a57e6>] handle_edge_irq+0xbc/0xd6
- [<600a131a>] generic_handle_irq+0x21/0x29
- [<60048f6e>] do_IRQ+0x39/0x54
- [...]
----[ end trace c6e7444e55386c0f ]---
-
-Cc: Christopher Obbard <chris.obbard@collabora.com>
-Reported-by: Martyn Welch <martyn@collabora.com>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Tested-by: Christopher Obbard <chris.obbard@collabora.com>
-Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/ubd_kern.c | 191 ++++++++++++++++++++++---------------
- 1 file changed, 115 insertions(+), 76 deletions(-)
+ fs/nfs/nfs42xdr.c | 36 +++++++++++++++++-------------------
+ 1 file changed, 17 insertions(+), 19 deletions(-)
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index eae8c83364f71..b12c1b0d3e1d0 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -47,18 +47,25 @@
- /* Max request size is determined by sector mask - 32K */
- #define UBD_MAX_REQUEST (8 * sizeof(long))
- 
-+struct io_desc {
-+	char *buffer;
-+	unsigned long length;
-+	unsigned long sector_mask;
-+	unsigned long long cow_offset;
-+	unsigned long bitmap_words[2];
-+};
-+
- struct io_thread_req {
- 	struct request *req;
- 	int fds[2];
- 	unsigned long offsets[2];
- 	unsigned long long offset;
--	unsigned long length;
--	char *buffer;
- 	int sectorsize;
--	unsigned long sector_mask;
--	unsigned long long cow_offset;
--	unsigned long bitmap_words[2];
- 	int error;
-+
-+	int desc_cnt;
-+	/* io_desc has to be the last element of the struct */
-+	struct io_desc io_desc[];
- };
- 
- 
-@@ -525,12 +532,7 @@ static void ubd_handler(void)
- 				blk_queue_max_write_zeroes_sectors(io_req->req->q, 0);
- 				blk_queue_flag_clear(QUEUE_FLAG_DISCARD, io_req->req->q);
- 			}
--			if ((io_req->error) || (io_req->buffer == NULL))
--				blk_mq_end_request(io_req->req, io_req->error);
--			else {
--				if (!blk_update_request(io_req->req, io_req->error, io_req->length))
--					__blk_mq_end_request(io_req->req, io_req->error);
--			}
-+			blk_mq_end_request(io_req->req, io_req->error);
- 			kfree(io_req);
- 		}
- 	}
-@@ -946,6 +948,7 @@ static int ubd_add(int n, char **error_out)
- 	blk_queue_write_cache(ubd_dev->queue, true, false);
- 
- 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
-+	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
- 	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, &ubd_gendisk[n]);
- 	if(err){
- 		*error_out = "Failed to register device";
-@@ -1289,37 +1292,74 @@ static void cowify_bitmap(__u64 io_offset, int length, unsigned long *cow_mask,
- 	*cow_offset += bitmap_offset;
+diff --git a/fs/nfs/nfs42xdr.c b/fs/nfs/nfs42xdr.c
+index 8432bd6b95f08..c078f88552695 100644
+--- a/fs/nfs/nfs42xdr.c
++++ b/fs/nfs/nfs42xdr.c
+@@ -1019,29 +1019,24 @@ static int decode_deallocate(struct xdr_stream *xdr, struct nfs42_falloc_res *re
+ 	return decode_op_hdr(xdr, OP_DEALLOCATE);
  }
  
--static void cowify_req(struct io_thread_req *req, unsigned long *bitmap,
-+static void cowify_req(struct io_thread_req *req, struct io_desc *segment,
-+		       unsigned long offset, unsigned long *bitmap,
- 		       __u64 bitmap_offset, __u64 bitmap_len)
+-static int decode_read_plus_data(struct xdr_stream *xdr, struct nfs_pgio_res *res,
+-				 uint32_t *eof)
++static int decode_read_plus_data(struct xdr_stream *xdr,
++				 struct nfs_pgio_res *res)
  {
--	__u64 sector = req->offset >> SECTOR_SHIFT;
-+	__u64 sector = offset >> SECTOR_SHIFT;
- 	int i;
+ 	uint32_t count, recvd;
+ 	uint64_t offset;
+ 	__be32 *p;
  
--	if (req->length > (sizeof(req->sector_mask) * 8) << SECTOR_SHIFT)
-+	if (segment->length > (sizeof(segment->sector_mask) * 8) << SECTOR_SHIFT)
- 		panic("Operation too long");
+ 	p = xdr_inline_decode(xdr, 8 + 4);
+-	if (unlikely(!p))
+-		return -EIO;
++	if (!p)
++		return 1;
  
- 	if (req_op(req->req) == REQ_OP_READ) {
--		for (i = 0; i < req->length >> SECTOR_SHIFT; i++) {
-+		for (i = 0; i < segment->length >> SECTOR_SHIFT; i++) {
- 			if(ubd_test_bit(sector + i, (unsigned char *) bitmap))
- 				ubd_set_bit(i, (unsigned char *)
--					    &req->sector_mask);
-+					    &segment->sector_mask);
-+		}
-+	} else {
-+		cowify_bitmap(offset, segment->length, &segment->sector_mask,
-+			      &segment->cow_offset, bitmap, bitmap_offset,
-+			      segment->bitmap_words, bitmap_len);
-+	}
-+}
-+
-+static void ubd_map_req(struct ubd *dev, struct io_thread_req *io_req,
-+			struct request *req)
-+{
-+	struct bio_vec bvec;
-+	struct req_iterator iter;
-+	int i = 0;
-+	unsigned long byte_offset = io_req->offset;
-+	int op = req_op(req);
-+
-+	if (op == REQ_OP_WRITE_ZEROES || op == REQ_OP_DISCARD) {
-+		io_req->io_desc[0].buffer = NULL;
-+		io_req->io_desc[0].length = blk_rq_bytes(req);
-+	} else {
-+		rq_for_each_segment(bvec, req, iter) {
-+			BUG_ON(i >= io_req->desc_cnt);
-+
-+			io_req->io_desc[i].buffer =
-+				page_address(bvec.bv_page) + bvec.bv_offset;
-+			io_req->io_desc[i].length = bvec.bv_len;
-+			i++;
-+		}
-+	}
-+
-+	if (dev->cow.file) {
-+		for (i = 0; i < io_req->desc_cnt; i++) {
-+			cowify_req(io_req, &io_req->io_desc[i], byte_offset,
-+				   dev->cow.bitmap, dev->cow.bitmap_offset,
-+				   dev->cow.bitmap_len);
-+			byte_offset += io_req->io_desc[i].length;
- 		}
-+
- 	}
--	else cowify_bitmap(req->offset, req->length, &req->sector_mask,
--			   &req->cow_offset, bitmap, bitmap_offset,
--			   req->bitmap_words, bitmap_len);
- }
+ 	p = xdr_decode_hyper(p, &offset);
+ 	count = be32_to_cpup(p);
+ 	recvd = xdr_align_data(xdr, res->count, count);
+ 	res->count += recvd;
  
--static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
--		u64 off, struct bio_vec *bvec)
-+static struct io_thread_req *ubd_alloc_req(struct ubd *dev, struct request *req,
-+					   int desc_cnt)
- {
--	struct ubd *dev = hctx->queue->queuedata;
- 	struct io_thread_req *io_req;
--	int ret;
-+	int i;
- 
--	io_req = kmalloc(sizeof(struct io_thread_req), GFP_ATOMIC);
-+	io_req = kmalloc(sizeof(*io_req) +
-+			 (desc_cnt * sizeof(struct io_desc)),
-+			 GFP_ATOMIC);
- 	if (!io_req)
--		return -ENOMEM;
-+		return NULL;
- 
- 	io_req->req = req;
- 	if (dev->cow.file)
-@@ -1327,26 +1367,41 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
- 	else
- 		io_req->fds[0] = dev->fd;
- 	io_req->error = 0;
--
--	if (bvec != NULL) {
--		io_req->buffer = page_address(bvec->bv_page) + bvec->bv_offset;
--		io_req->length = bvec->bv_len;
--	} else {
--		io_req->buffer = NULL;
--		io_req->length = blk_rq_bytes(req);
+-	if (count > recvd) {
+-		dprintk("NFS: server cheating in read reply: "
+-				"count %u > recvd %u\n", count, recvd);
+-		*eof = 0;
++	if (count > recvd)
+ 		return 1;
 -	}
 -
- 	io_req->sectorsize = SECTOR_SIZE;
- 	io_req->fds[1] = dev->fd;
--	io_req->cow_offset = -1;
--	io_req->offset = off;
--	io_req->sector_mask = 0;
-+	io_req->offset = (u64) blk_rq_pos(req) << SECTOR_SHIFT;
- 	io_req->offsets[0] = 0;
- 	io_req->offsets[1] = dev->cow.data_offset;
- 
--	if (dev->cow.file)
--		cowify_req(io_req, dev->cow.bitmap,
--			   dev->cow.bitmap_offset, dev->cow.bitmap_len);
-+	for (i = 0 ; i < desc_cnt; i++) {
-+		io_req->io_desc[i].sector_mask = 0;
-+		io_req->io_desc[i].cow_offset = -1;
-+	}
-+
-+	return io_req;
-+}
-+
-+static int ubd_submit_request(struct ubd *dev, struct request *req)
-+{
-+	int segs = 0;
-+	struct io_thread_req *io_req;
-+	int ret;
-+	int op = req_op(req);
-+
-+	if (op == REQ_OP_FLUSH)
-+		segs = 0;
-+	else if (op == REQ_OP_WRITE_ZEROES || op == REQ_OP_DISCARD)
-+		segs = 1;
-+	else
-+		segs = blk_rq_nr_phys_segments(req);
-+
-+	io_req = ubd_alloc_req(dev, req, segs);
-+	if (!io_req)
-+		return -ENOMEM;
-+
-+	io_req->desc_cnt = segs;
-+	if (segs)
-+		ubd_map_req(dev, io_req, req);
- 
- 	ret = os_write_file(thread_fd, &io_req, sizeof(io_req));
- 	if (ret != sizeof(io_req)) {
-@@ -1357,22 +1412,6 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
- 	return ret;
+ 	return 0;
  }
  
--static int queue_rw_req(struct blk_mq_hw_ctx *hctx, struct request *req)
--{
--	struct req_iterator iter;
--	struct bio_vec bvec;
--	int ret;
--	u64 off = (u64)blk_rq_pos(req) << SECTOR_SHIFT;
--
--	rq_for_each_segment(bvec, req, iter) {
--		ret = ubd_queue_one_vec(hctx, req, off, &bvec);
--		if (ret < 0)
--			return ret;
--		off += bvec.bv_len;
+@@ -1052,18 +1047,16 @@ static int decode_read_plus_hole(struct xdr_stream *xdr, struct nfs_pgio_res *re
+ 	__be32 *p;
+ 
+ 	p = xdr_inline_decode(xdr, 8 + 8);
+-	if (unlikely(!p))
+-		return -EIO;
++	if (!p)
++		return 1;
+ 
+ 	p = xdr_decode_hyper(p, &offset);
+ 	p = xdr_decode_hyper(p, &length);
+ 	recvd = xdr_expand_hole(xdr, res->count, length);
+ 	res->count += recvd;
+ 
+-	if (recvd < length) {
+-		*eof = 0;
++	if (recvd < length)
+ 		return 1;
 -	}
--	return 0;
--}
--
- static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
- 				 const struct blk_mq_queue_data *bd)
- {
-@@ -1385,17 +1424,12 @@ static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	spin_lock_irq(&ubd_dev->lock);
- 
- 	switch (req_op(req)) {
--	/* operations with no lentgth/offset arguments */
- 	case REQ_OP_FLUSH:
--		ret = ubd_queue_one_vec(hctx, req, 0, NULL);
--		break;
- 	case REQ_OP_READ:
- 	case REQ_OP_WRITE:
--		ret = queue_rw_req(hctx, req);
--		break;
- 	case REQ_OP_DISCARD:
- 	case REQ_OP_WRITE_ZEROES:
--		ret = ubd_queue_one_vec(hctx, req, (u64)blk_rq_pos(req) << 9, NULL);
-+		ret = ubd_submit_request(ubd_dev, req);
- 		break;
- 	default:
- 		WARN_ON_ONCE(1);
-@@ -1483,22 +1517,22 @@ static int map_error(int error_code)
-  * will result in unpredictable behaviour and/or crashes.
-  */
- 
--static int update_bitmap(struct io_thread_req *req)
-+static int update_bitmap(struct io_thread_req *req, struct io_desc *segment)
- {
- 	int n;
- 
--	if(req->cow_offset == -1)
-+	if (segment->cow_offset == -1)
- 		return map_error(0);
- 
--	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
--			  sizeof(req->bitmap_words), req->cow_offset);
--	if (n != sizeof(req->bitmap_words))
-+	n = os_pwrite_file(req->fds[1], &segment->bitmap_words,
-+			  sizeof(segment->bitmap_words), segment->cow_offset);
-+	if (n != sizeof(segment->bitmap_words))
- 		return map_error(-n);
- 
- 	return map_error(0);
+ 	return 0;
  }
  
--static void do_io(struct io_thread_req *req)
-+static void do_io(struct io_thread_req *req, struct io_desc *desc)
- {
- 	char *buf = NULL;
- 	unsigned long len;
-@@ -1513,21 +1547,20 @@ static void do_io(struct io_thread_req *req)
- 		return;
+@@ -1088,12 +1081,12 @@ static int decode_read_plus(struct xdr_stream *xdr, struct nfs_pgio_res *res)
+ 
+ 	for (i = 0; i < segments; i++) {
+ 		p = xdr_inline_decode(xdr, 4);
+-		if (unlikely(!p))
+-			return -EIO;
++		if (!p)
++			goto early_out;
+ 
+ 		type = be32_to_cpup(p++);
+ 		if (type == NFS4_CONTENT_DATA)
+-			status = decode_read_plus_data(xdr, res, &eof);
++			status = decode_read_plus_data(xdr, res);
+ 		else if (type == NFS4_CONTENT_HOLE)
+ 			status = decode_read_plus_hole(xdr, res, &eof);
+ 		else
+@@ -1102,12 +1095,17 @@ static int decode_read_plus(struct xdr_stream *xdr, struct nfs_pgio_res *res)
+ 		if (status < 0)
+ 			return status;
+ 		if (status > 0)
+-			break;
++			goto early_out;
  	}
  
--	nsectors = req->length / req->sectorsize;
-+	nsectors = desc->length / req->sectorsize;
- 	start = 0;
- 	do {
--		bit = ubd_test_bit(start, (unsigned char *) &req->sector_mask);
-+		bit = ubd_test_bit(start, (unsigned char *) &desc->sector_mask);
- 		end = start;
- 		while((end < nsectors) &&
--		      (ubd_test_bit(end, (unsigned char *)
--				    &req->sector_mask) == bit))
-+		      (ubd_test_bit(end, (unsigned char *) &desc->sector_mask) == bit))
- 			end++;
- 
- 		off = req->offset + req->offsets[bit] +
- 			start * req->sectorsize;
- 		len = (end - start) * req->sectorsize;
--		if (req->buffer != NULL)
--			buf = &req->buffer[start * req->sectorsize];
-+		if (desc->buffer != NULL)
-+			buf = &desc->buffer[start * req->sectorsize];
- 
- 		switch (req_op(req->req)) {
- 		case REQ_OP_READ:
-@@ -1567,7 +1600,8 @@ static void do_io(struct io_thread_req *req)
- 		start = end;
- 	} while(start < nsectors);
- 
--	req->error = update_bitmap(req);
-+	req->offset += len;
-+	req->error = update_bitmap(req, desc);
+ out:
+ 	res->eof = eof;
+ 	return 0;
++early_out:
++	if (unlikely(!i))
++		return -EIO;
++	res->eof = 0;
++	return 0;
  }
  
- /* Changed in start_io_thread, which is serialized by being called only
-@@ -1600,8 +1634,13 @@ int io_thread(void *arg)
- 		}
- 
- 		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
-+			struct io_thread_req *req = (*io_req_buffer)[count];
-+			int i;
-+
- 			io_count++;
--			do_io((*io_req_buffer)[count]);
-+			for (i = 0; !req->error && i < req->desc_cnt; i++)
-+				do_io(req, &(req->io_desc[i]));
-+
- 		}
- 
- 		written = 0;
+ static int decode_seek(struct xdr_stream *xdr, struct nfs42_seek_res *res)
 -- 
 2.27.0
 
