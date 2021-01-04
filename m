@@ -2,172 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAE82E9E02
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90DB2E9E0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbhADTOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 14:14:51 -0500
-Received: from mga09.intel.com ([134.134.136.24]:51898 "EHLO mga09.intel.com"
+        id S1726338AbhADTT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 14:19:57 -0500
+Received: from mga17.intel.com ([192.55.52.151]:29081 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbhADTOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 14:14:51 -0500
-IronPort-SDR: D22KAMuJPRSdeNmjyULV6QFHVFApkbWhRV45VCEX6T7qW4HdbhRIa7LX15xVud01e+H3NG/S6e
- 8rijYrGAX2eg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="177149537"
+        id S1725889AbhADTT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 14:19:56 -0500
+IronPort-SDR: Su5UJEbhGEaviem03a/Bz0oNH4BybaKUZAKuCb5noOe5lgSW4t2YDvRqCxiXYo8AUrlo/OFwuI
+ 2CkS905wQfvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156783306"
 X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="177149537"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 11:14:09 -0800
-IronPort-SDR: 43h9BjKxfIDW/FWeVJJcP7gONZ3kWtXF89uwnPKThBxKPjKfYh3ZhVQtXmB/ZTsssz73Rh+C3R
- Llzo4ANfonWA==
-X-ExtLoop1: 1
+   d="scan'208";a="156783306"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 11:19:15 -0800
+IronPort-SDR: KgSadHUemovhP1/W+oU86mb7s1oljRqAejaCR+PoagSVM26DWMxcwG6Ce5Hfk8fB9Ji5Qb4sU3
+ c/ikGxvHxkXA==
 X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="462046335"
-Received: from lkp-server02.sh.intel.com (HELO 4242b19f17ef) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Jan 2021 11:14:08 -0800
-Received: from kbuild by 4242b19f17ef with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kwVIt-0007iu-Uo; Mon, 04 Jan 2021 19:14:07 +0000
-Date:   Tue, 05 Jan 2021 03:13:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 300da924c996f9b727ddde11865fc0e098c34223
-Message-ID: <5ff368d1.0WooqglckxUeiUKx%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="360881592"
+Received: from trhudson-mobl.amr.corp.intel.com (HELO [10.213.162.49]) ([10.213.162.49])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 11:19:14 -0800
+Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page
+ allocation for __GFP_ZERO
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20201221163024.GA22532@open-light-1.localdomain>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0e8b6a2f-527d-7c77-efcf-04f21ef2a77c@intel.com>
+Date:   Mon, 4 Jan 2021 11:19:13 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201221163024.GA22532@open-light-1.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: 300da924c996f9b727ddde11865fc0e098c34223  Merge branch 'x86/microcode'
+On 12/21/20 8:30 AM, Liang Li wrote:
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -137,6 +137,9 @@ enum pageflags {
+>  #endif
+>  #ifdef CONFIG_64BIT
+>  	PG_arch_2,
+> +#endif
+> +#ifdef CONFIG_PREZERO_PAGE
+> +	PG_zero,
+>  #endif
+>  	__NR_PAGEFLAGS,
 
-elapsed time: 724m
+I don't think this is worth a generic page->flags bit.
 
-configs tested: 110
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                      pcm030_defconfig
-um                           x86_64_defconfig
-arm                             rpc_defconfig
-sh                             sh03_defconfig
-arm                       aspeed_g5_defconfig
-arm64                            alldefconfig
-arm                      pxa255-idp_defconfig
-h8300                               defconfig
-sh                           se7721_defconfig
-mips                           ip27_defconfig
-mips                           mtx1_defconfig
-sh                          r7785rp_defconfig
-arm                             ezx_defconfig
-sh                         ap325rxa_defconfig
-m68k                        mvme16x_defconfig
-arm                   milbeaut_m10v_defconfig
-mips                         mpc30x_defconfig
-arc                     nsimosci_hs_defconfig
-xtensa                  cadence_csp_defconfig
-arm                          prima2_defconfig
-powerpc                     sequoia_defconfig
-m68k                            mac_defconfig
-xtensa                  nommu_kc705_defconfig
-parisc                generic-32bit_defconfig
-arm                         lpc32xx_defconfig
-arm                         assabet_defconfig
-powerpc                       eiger_defconfig
-s390                                defconfig
-powerpc                     akebono_defconfig
-arm                       imx_v4_v5_defconfig
-mips                          ath79_defconfig
-arm                        mini2440_defconfig
-xtensa                          iss_defconfig
-m68k                        stmark2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210104
-x86_64               randconfig-a004-20210104
-x86_64               randconfig-a001-20210104
-x86_64               randconfig-a005-20210104
-x86_64               randconfig-a002-20210104
-x86_64               randconfig-a003-20210104
-i386                 randconfig-a005-20210104
-i386                 randconfig-a002-20210104
-i386                 randconfig-a003-20210104
-i386                 randconfig-a001-20210104
-i386                 randconfig-a006-20210104
-i386                 randconfig-a004-20210104
-i386                 randconfig-a016-20210104
-i386                 randconfig-a011-20210104
-i386                 randconfig-a013-20210104
-i386                 randconfig-a014-20210104
-i386                 randconfig-a015-20210104
-i386                 randconfig-a012-20210104
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a013-20210104
-x86_64               randconfig-a012-20210104
-x86_64               randconfig-a011-20210104
-x86_64               randconfig-a016-20210104
-x86_64               randconfig-a014-20210104
-x86_64               randconfig-a015-20210104
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+There's a ton of space in 'struct page' for pages that are in the
+allocator.  Can't we use some of that space?
