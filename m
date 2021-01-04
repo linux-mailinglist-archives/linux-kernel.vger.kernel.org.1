@@ -2,119 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEDF2E9C50
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DFC2E9C54
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbhADRoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:44:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727696AbhADRoU (ORCPT
+        id S1728009AbhADRob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:44:31 -0500
+Received: from mail-pg1-f172.google.com ([209.85.215.172]:44032 "EHLO
+        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727986AbhADRoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:44:20 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5781DC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 09:43:40 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id f132so32940625oib.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 09:43:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+LCXKPEB/hewuwkhbTWHVXw737PfQlWdNOWuhiAqpDA=;
-        b=l7y12RonbWR2q1Qs7ztSpcP5LZZ0x8UwDulHQLiRTc3az219ExEDau/Mn2zaVha/Iw
-         AOVDK1pU1/jAC1AKLZmjK2wI55qTltQ2F4N6+VytBa3a8EjO6WReDNKnujaOUBIJGlkl
-         uS0/DgSQC0U+uQdHmGa1LPwKU79xkvKeWzLMr91CZxI4Hg0f28GMocag7MlKCM2VLB03
-         UwhzzbpsCxzZSlE9IyR0YZNZTi7lKRouQOFAUGwuISSACnfSFpXl+/0jOit5pZXV02+M
-         7HgwBcJ8u4qjzXDr+gvdDbNOof5gWfn72IIPSoto4z7XmOS6e2pEWctcN8ve3FD2ZpPZ
-         PdjA==
+        Mon, 4 Jan 2021 12:44:30 -0500
+Received: by mail-pg1-f172.google.com with SMTP id p18so19486095pgm.11;
+        Mon, 04 Jan 2021 09:44:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+LCXKPEB/hewuwkhbTWHVXw737PfQlWdNOWuhiAqpDA=;
-        b=cEAdXdXxVtr0YF8ziYJYiA4KiPpSkI2sSEwLijA/MTW3e9GKvYceDv+0vWj43jl3Ca
-         yNQu41diCC6CgBQz5QFtinLjttXU7oxa1fWgTq0+23/pB9p654rAja8PYey+xQmxomp7
-         OeVOV5NEOkb0IX706x+UwzRURzkfTRcADioQopbYNfby4ndYuZsT/AtRMxSi+58iy0wK
-         IqAGnm6x1kA3QuOW1ndEW4vhkqzpzm22OT+iTfHutf9oEj1rXR7KD5hw6dujFT9zf6j6
-         AKqP+xrVaO3cNMDTKfyQ0uJ4CtaDbqPx7Uv9GGl9ehL65zE0gvyXpzcZ7w7ea010aXLm
-         2oEQ==
-X-Gm-Message-State: AOAM532j11fZAXpindULz5kCzeF6hJ0VobTPRoKAG2YHSV1EnxN3Css5
-        XB8aUmQsTBVeRYrHVYbpDNK2ZGAV5HyW8rGBH8soBi98hJjYu+wx
-X-Google-Smtp-Source: ABdhPJyZLPuzv5+r2HCT/0oWYyWV8Mp1n63c6IXTVAQEU/o1FUrnjCI6zAJLPn5xLIcW+OWcM+L2m0mnmlmy9H5FYj4=
-X-Received: by 2002:aca:a9c8:: with SMTP id s191mr12129oie.11.1609782219730;
- Mon, 04 Jan 2021 09:43:39 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W41s4SpHuFxfP2VmE7HCI4KFVMEE3WKx0iXTMwP7vnM=;
+        b=m9QJ1edukeXN241rEKi8gvQhMIRvwBhPUC7zH/aAtYY+56R9/lYmoGzvdNvs/lmklP
+         vdv9cAuBHMNOUwxlMhyjvvh8rvRRWQk11YxRUPal6o9TINKZCQSfjJP+vFaozUE5ntHz
+         HUzhxPWN+BFIEseiJt0Rf8yD2GPCNM0Q553RrLiTbNuvOk8P1J9P6XVURet1GSI5xKVh
+         2hUmJWsWDJiiHvXl1ccj+A1/ylb63H3EirNgDrQB2kTPiw3zKtg7muJXtLtTwEXzRILY
+         R+P5UIUOcodnRdxbrSroIrLFFh+yZmjyl3Of8yuX66pJMuvjhAMA8oj55xDh94tUF387
+         sNyw==
+X-Gm-Message-State: AOAM5331N0qVoolmrUyNx8+EsWp7af8fljZe3/WaJ00nadkn82655bt2
+        s6beDBZQwpdepzCcP42xngg=
+X-Google-Smtp-Source: ABdhPJwKTIkHd9jD106iNYsMCjlbG9ke8DsYiuUgJzn38bv0xFujzmC1vyllUPjkZAgfvXQ07hPHdg==
+X-Received: by 2002:a63:c1e:: with SMTP id b30mr71096758pgl.72.1609782229216;
+        Mon, 04 Jan 2021 09:43:49 -0800 (PST)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id b4sm10376pju.33.2021.01.04.09.43.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 09:43:48 -0800 (PST)
+Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Chris Boot <bootc@boo.tc>, linuxppc-dev@lists.ozlabs.org,
+        target-devel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Nicholas Bellinger <nab@linux-iscsi.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>
+References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com>
+ <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet>
+ <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc>
+ <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
+ <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc>
+ <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet>
+ <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org>
+ <alpine.LNX.2.22.394.2006171104540.11@nippy.intranet>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <e3b5ce6a-0152-01b8-89d2-80bcdb9c1c57@acm.org>
+Date:   Mon, 4 Jan 2021 09:43:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210104155703.375788488@linuxfoundation.org>
-In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
-From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Date:   Mon, 4 Jan 2021 11:43:28 -0600
-Message-ID: <CAEUSe78+F1Q9LFjpf8SQzQa6+Ak4wcPiiNcUVxEcv+KPdrYvBw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/35] 4.19.165-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <alpine.LNX.2.22.394.2006171104540.11@nippy.intranet>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On 6/16/20 7:07 PM, Finn Thain wrote:
+> On Tue, 16 Jun 2020, Bart Van Assche wrote:
+>> As far as I know the sbp driver only has had one user ever and that user 
+>> is no longer user the sbp driver.
+> 
+> So, you estimate the userbase at zero. Can you give a confidence level? 
+> Actual measurement is hard because when end users encounter breakage, they 
+> look for quick workarounds before they undertake post mortem, log 
+> collection, bug reporting, mailing list discussions, analysis etc.
 
-On Mon, 4 Jan 2021 at 09:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 4.19.165 release.
-> There are 35 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.165-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
-> -------------
-> Pseudo-Shortlog of commits:
->
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 4.19.165-rc1
-[...]
-> Peter Zijlstra <peterz@infradead.org>
->     mm/mmu_gather: invalidate TLB correctly on batch allocation failure a=
-nd flush
-[...]
+(replying to an e-mail from six months ago)
 
-This one fails to compile on the X15 (arm 32-bits) with:
-| /srv/oe/build/tmp-lkft-glibc/work-shared/am57xx-evm/kernel-source/mm/memo=
-ry.c:
-In function 'tlb_table_invalidate':
-| /srv/oe/build/tmp-lkft-glibc/work-shared/am57xx-evm/kernel-source/mm/memo=
-ry.c:342:6:
-error: implicit declaration of function 'tlb_needs_table_invalidate';
-did you mean 'tlb_table_invalidate'?
-[-Werror=3Dimplicit-function-declaration]
-|   if (tlb_needs_table_invalidate()) {
-|       ^~~~~~~~~~~~~~~~~~~~~~~~~~
-|       tlb_table_invalidate
+Hi Finn,
 
-Greetings!
+I am confident that my estimate is an accurate estimate since I have not
+seen any sbp support requests, sbp bug reports nor any sbp bug fixes since
+the sbp target driver has been accepted upstream.
 
-Daniel D=C3=ADaz
-daniel.diaz@linaro.org
+> Here's a different question: "Why remove it from the kernel tree?"
+> 
+> If maintaining this code is a burden, is it not the kind of tax that all 
+> developers/users pay to all developers/users? Does this driver impose an 
+> unreasonably high burden for some reason?
+
+Yes. If anyone wants to change the interface between SCSI target core and
+SCSI target drivers, all target drivers, including the sbp and FCoE target
+driver have to be retested. In other words, keeping unused target drivers
+inside the kernel tree involves a significant maintenance burden for anyone
+who wants to modify the interface between the SCSI target core and SCSI
+target drivers.
+
+Additionally, there is a good alternative available for the sbp driver.
+Every system I know of that is equipped with a Firewire port also has an
+Ethernet port. So users who want to provide SCSI target functionality on
+such systems can use any SCSI transport protocol that is compatible with
+Ethernet (iSCSI, iSER over soft-RoCE, SRP over soft-RoCE, ...).
+
+Thanks,
+
+Bart.
