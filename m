@@ -2,64 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88F92E9506
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 493EF2E950C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbhADMje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:39:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbhADMjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:39:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6173220770;
-        Mon,  4 Jan 2021 12:38:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609763933;
-        bh=f9vH4s6nGLOCyjCDAv3bQ9hxb7whPAr9ymDwtadt9rk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LQm8a3HrUId/o2cW49pQ6VhM2Vk4dbE7iycJPorBcaU1uIVWjaXrF9uHz5lIVuOja
-         0tm6U0LY1x/t4uyU7ciw1XYnT/h4/1NKfxysumdHRKPAR+nPUtBg9qShp6bwZakhzs
-         ULwD79jWVD8ogl/HOVnysperkJLaZovi9fslEyd+ODPrNDhqhrOlyFgAPXXL7hRXQk
-         PT2nq6OjJiCU5RyLf5qxMFNCY0Lng/tJ03rl4DuVEWE/cFNSqS2OsizOxtPkrkYx6H
-         fhVkDgmXwAO5EB5b63WOoC7zJRMpenhEYmgnnlIGMzm9bz9UnPzDSffoKvP/z0v079
-         9RdF8b3o5dI3g==
-Date:   Mon, 4 Jan 2021 18:08:48 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: qcom: fix gpi undefined behavior
-Message-ID: <20210104123848.GG120946@vkoul-mobl>
-References: <20210103135738.3741123-1-arnd@kernel.org>
+        id S1726875AbhADMkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:40:23 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:53710 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbhADMkW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 07:40:22 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104CTEac009645;
+        Mon, 4 Jan 2021 12:39:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=311J7ExI17gI4E01/u3Bz6RjSFkpttIOT+rLdcKkQwc=;
+ b=qD2/elOPYPjjaJhRBlc7+Kl0h8NbOaq5OPsLAWyn65Ah0259MVmBDfqn3CUPGT3Eb3Eq
+ ewE8KyAyR98grt1w91m5JJmBJjPwtxJmNNWrasHTo0eCOSRSH2Pi1/DFjzxiDkHL9FH2
+ xT9bViZ5o/wtDJ9CPcnhXkJAT46/nx9owxfGWLOXVWWYTLuKfpnRMCwpCpnV5rZABbpn
+ IadSuKkVDjZQFzeiyWsd0EwAYl8eGGsK/3NgpORs5vIPoXNHFPaiMgBnirjFU2TfN4Go
+ FRkj8BRbzb6Cey5FsA3Rg1jTx6+GGuk0UgkB1X5uY+sRR50jtY9oYF+UxfgvDvmG5Kl7 IA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 35tgskm2ek-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 04 Jan 2021 12:39:30 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104CW9gW017461;
+        Mon, 4 Jan 2021 12:39:29 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 35uxnr2xp8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Jan 2021 12:39:29 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 104CdSn7026032;
+        Mon, 4 Jan 2021 12:39:28 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 Jan 2021 04:39:27 -0800
+Date:   Mon, 4 Jan 2021 15:38:57 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        linux-mmc@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v3 09/24] wfx: add hwio.c/hwio.h
+Message-ID: <20210104123857.GO2809@kadam>
+References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
+ <87lfdp98rw.fsf@codeaurora.org>
+ <X+IQRct0Zsm87H4+@kroah.com>
+ <4279510.LvFx2qVVIh@pc-42>
+ <20210104123410.GN2809@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210103135738.3741123-1-arnd@kernel.org>
+In-Reply-To: <20210104123410.GN2809@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040083
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-01-21, 14:57, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc points out an incorrect error handling loop:
-> 
-> drivers/dma/qcom/gpi.c: In function 'gpi_ch_init':
-> drivers/dma/qcom/gpi.c:1254:15: error: iteration 2 invokes undefined behavior [-Werror=aggressive-loop-optimizations]
->  1254 |  struct gpii *gpii = gchan->gpii;
->       |               ^~~~
-> drivers/dma/qcom/gpi.c:1951:2: note: within this loop
->  1951 |  for (i = i - 1; i >= 0; i++) {
->       |  ^~~
-> 
-> Change the loop to correctly walk backwards through the
-> initialized fields rather than off into the woods.
+Of course, Smatch didn't trigger any warnings in the wfx driver.  I need
+to try re-write this check to use the cross function database so
+function pointers are handled.
 
-Applied, thanks
+regards,
+dan carpenter
 
--- 
-~Vinod
