@@ -2,208 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5382E9562
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EE42E9566
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbhADM67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:58:59 -0500
-Received: from mail-bn8nam12on2076.outbound.protection.outlook.com ([40.107.237.76]:6880
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725840AbhADM66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:58:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NM1X5+8RLoqvDbNIu7H+uXlc13OBxxSCSAVxnTeNbOMBHQnQcktWmBTQs8/f7ZyWXnElHE2PPv9HCNssrraz34zqjJnWZOV94iZO5Cz8t2M+K4pAIwx/zHk9qfnDt3wECGGoTDHO1T7A6lIsumS0IZjcSqtB8wmggezZ2gHQY9419lp0vEVT3S9Bc5MrZkCiVIWiOSY9+Z0E3OsO8S6pfKAPTfvrQenoyr5lvgeNdVbTxUu7MK7VPjq1ZmpiiZpUSYJbwDWz5hBZv8xKwmGRjv39aK6J9tEyfDl0ZgT3wet1g9pEFm8RxajtqrcaV7zU97EwNdq7IVcGsYVMlbTm2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gaJXmyM2Ry20MMOZkhYz0Uc1PtUHYT6Bw3PURcU15Zw=;
- b=V4zMqJsCbsN8edUWd/h/Cl11hawRxkUqOF715/N6ltTPGljvx7wRPA9+e+xTViT9ssfpKnbiXA+5JIpqkeQKbhbagVggvgkhTqXPiko7lDGYZhZlh+rmqG6T0iKVCmOfJ9e6qfQk0/GCfHVuKeujR2w9CrTpKhXK5+neItaOdHlwhN62gj8Zxc+QaYzvuW4IJaRAaqV6sZm0FhlXMHvAtv23QcNHMM0MkU9sxbHsulOzjSZzYkGECe/3NQF39lCYhJONbnqwAWoAQpM77vW9Kitw66L/ZG2eRTniRBSfeMHW1PCNLpIje+5Wjli9ODOgZa5MDDUjBxa9uPC4+D7grw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gaJXmyM2Ry20MMOZkhYz0Uc1PtUHYT6Bw3PURcU15Zw=;
- b=QjagjMhBoQ3QS6IS/KtS0DG3eWUrzX5od1GTq1nxKrnLLTPnWMNzLKDRIT71sdEsv2MmQC+J5fsDdpg7/SinqvI0UG9314KWoIzq9ipITp/MFc+PliCNbnFD9OJdaYLfybZxvJblxP4UtTo0qNfBhMZFhkjmM8iJZX3r3CjTkZ8=
-Received: from BN8PR12MB4770.namprd12.prod.outlook.com (2603:10b6:408:a1::30)
- by BN7PR12MB2593.namprd12.prod.outlook.com (2603:10b6:408:25::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Mon, 4 Jan
- 2021 12:58:00 +0000
-Received: from BN8PR12MB4770.namprd12.prod.outlook.com
- ([fe80::a440:d0d:9875:252]) by BN8PR12MB4770.namprd12.prod.outlook.com
- ([fe80::a440:d0d:9875:252%6]) with mapi id 15.20.3721.024; Mon, 4 Jan 2021
- 12:58:00 +0000
-From:   "Lin, Wayne" <Wayne.Lin@amd.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "Wentland, Harry" <Harry.Wentland@amd.com>,
-        "Li, Sun peng (Leo)" <Sunpeng.Li@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, "R, Bindu" <Bindu.R@amd.com>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        "Kazlauskas, Nicholas" <Nicholas.Kazlauskas@amd.com>,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
-        "Pillai, Aurabindo" <Aurabindo.Pillai@amd.com>,
-        "Wang, Chao-kai (Stylon)" <Stylon.Wang@amd.com>,
-        Simon Ser <contact@emersion.fr>,
-        "Brol, Eryk" <Eryk.Brol@amd.com>,
-        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
-        "Lakha, Bhawanpreet" <Bhawanpreet.Lakha@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] drm/amd/display: Fix unused variable warning
-Thread-Topic: [PATCH] drm/amd/display: Fix unused variable warning
-Thread-Index: AQHW4dkkpTQdEwPNtE2e5OslrfcQZqoXbUZA
-Date:   Mon, 4 Jan 2021 12:58:00 +0000
-Message-ID: <BN8PR12MB4770D2DD3E0A5ECF5EA9C55AFCD20@BN8PR12MB4770.namprd12.prod.outlook.com>
-References: <20210103140248.3889757-1-arnd@kernel.org>
-In-Reply-To: <20210103140248.3889757-1-arnd@kernel.org>
-Accept-Language: en-US, zh-TW
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ActionId=e13ab4c6-ac6b-45c2-8c2d-c33fd7128f5d;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ContentBits=0;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Enabled=true;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Method=Standard;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Name=Internal
- Use Only -
- Unrestricted;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SetDate=2021-01-04T12:52:40Z;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [36.238.154.142]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 9c5ed789-1d4d-4569-cbe5-08d8b0b05da9
-x-ms-traffictypediagnostic: BN7PR12MB2593:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN7PR12MB25933F45DF5957E6C11DA79BFCD20@BN7PR12MB2593.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:800;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LVzjsq2BSm3dA4L5bhBVg1TiNZD5thjMUnzHPE5ti+E1Yp46/77N3iZClknblXbMcnuNw+moMq+RohupnGiRLtzhsF/DVWX/XvCsa2UgOgZT8lFHyTZ4GAOiwFzojea983YzVROOmeHcrYlX51PzDvLoo34K1sELE+fqDmmqlZ0oW5xEvRQ1taDLZ/lzT0tvFgbDCqt0PlFJ9Hrh0HwuYsymAfOUV6CLuFB89OawP70SONRs4UG7GoMHVgwcptFAdHOGbAD2nUB6+I7VTB7Db6necnSOHt9CCIeE13Z9/wZ2tq4Ire9DRKAfnw6+WkMpeVrpOGBXgNhrjLSbM+C4sAW18iNMU0/3dtAga/jXDbKArdKOkqeYbRmSPRgtsg4/+hBjezFdToFmBFuC4X1v3xunbapYlMlPiom7dTwTGQ1bwh9PwHlU4smrDUGlUoZk
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB4770.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(346002)(366004)(136003)(316002)(186003)(921005)(5660300002)(86362001)(64756008)(8936002)(71200400001)(6506007)(478600001)(2906002)(66446008)(8676002)(110136005)(66476007)(66556008)(66946007)(76116006)(54906003)(55016002)(6636002)(52536014)(83380400001)(33656002)(4326008)(7696005)(53546011)(9686003)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?mgxun+rV4A7UASJmVDwRAgbMIaxYszlyQx3TeUe+oSWmCWUvSbOvGSZCMp26?=
- =?us-ascii?Q?BQOmBai6xZ6KvcJwVATu/QsqyolSU5jalFhpwfyBB6tP6QiWGBTFpjjCd7AV?=
- =?us-ascii?Q?Pb0L48wHGZb4PfuJK13TCSd/QNakYd6hlk6T1hhNFTDLNxARovgdy1LfM7rV?=
- =?us-ascii?Q?RubrImyReSLP+MYj984wFD+9NqyZU5uh8yx6Ey7erdb34LuH3wNjJ3jX3ppa?=
- =?us-ascii?Q?Ca2SPJyTGB9S09f3oz0XTj50+oSNB4Klzkc5Z3HaS7QnJ0TY5beL0MgdBDM0?=
- =?us-ascii?Q?mt4tmTpdfuTIjS8a+6JBpQrtf3pyQsRkPPoMqMPg/TVFQjlLJHt4K37gJ5rZ?=
- =?us-ascii?Q?jL61Z15hV4D8MHRbC6QzAVgGYRQ9Zhz1bP3KwcW/lGMdPJSNiqIhutjRN01y?=
- =?us-ascii?Q?lTyKsxeTzg+dlLKvydzjb1NQvGwgnCFnmfaQ6fmGOt5TSiMIU1ft1xmQTXII?=
- =?us-ascii?Q?j3+l9w7dS6kLrbkidGpltsszbOWab0CV2RKvW/rc3gZHivXAcJb++MqX2Fxv?=
- =?us-ascii?Q?+VSBUIH5r1sdB7vp34mzNuEnHdXpyUCs8UpPInum8V1rNZN0b/ddXJBvu3JD?=
- =?us-ascii?Q?i3Guqo0K7DefBJqQeemRk3bySCExb1C7NhJerLNdZRPOmeKJmqNnThobbpAT?=
- =?us-ascii?Q?TCn2UEklHvbs/p6bdO/szY3X11r6A5j/iT9vN8lyGmDBbkijzNXM2jKQvn+x?=
- =?us-ascii?Q?uAvH4gedO4XOL4dl+9rHAHQ7Df8CE0nSpaZ7bqvM521uEYF9svD5XqtbCfQv?=
- =?us-ascii?Q?5QZdCIcWFPxlCMjSEb/zxKRFvQyZrCXAsG5J1OTvkV1RoQVtiXIcBosGESGz?=
- =?us-ascii?Q?e3y4aCHeQrZ0aTjR6lBIt6mzOfSsQ6kQqHDlh9YZatBtXJLSv9paMgKJ25Dw?=
- =?us-ascii?Q?CSXFY4+Bma+kCc1eJLAsUVas+hjbKHuPWGlaOKmQazvVY3NoGXknGL2N/Mnn?=
- =?us-ascii?Q?VPl8hKHxsvBdvfInjatIaSSnivjx0de84yHvXPfRynk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726829AbhADM7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:59:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbhADM7W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 07:59:22 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D9FC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 04:58:41 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kwPRR-0007ws-09; Mon, 04 Jan 2021 13:58:33 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:7c68:1abb:22de:a098] (unknown [IPv6:2a03:f580:87bc:d400:7c68:1abb:22de:a098])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id B6D8B5B94CA;
+        Mon,  4 Jan 2021 12:58:30 +0000 (UTC)
+Subject: Re: [PATCH] MAINTAINERS: Update MCAN MMIO device driver maintainer
+To:     Sriram Dash <sriram.dash@samsung.com>, linux-kernel@vger.kernel.org
+Cc:     linux-can@vger.kernel.org, dmurphy@ti.com,
+        pankj.sharma@samsung.com, pankaj.dubey@samsung.com
+References: <CGME20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c@epcas5p3.samsung.com>
+ <20210104123134.16930-1-sriram.dash@samsung.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9b212ce7-51e6-f6a7-fa34-5a9118c56927@pengutronix.de>
+Date:   Mon, 4 Jan 2021 13:58:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB4770.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c5ed789-1d4d-4569-cbe5-08d8b0b05da9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2021 12:58:00.3407
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cKysLRTPo3sYsIVhsrJuPBHNCkC8U6qb5vYRR6KBMwerhIol9Pu7pGG404VRdmPrrIOdOdoUjyYf8/q7gl/cjw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2593
+In-Reply-To: <20210104123134.16930-1-sriram.dash@samsung.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="onRFLCdH3z4RNAtNZ9AQPxpe600pgE1Hi"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only - Internal Distribution Only]
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--onRFLCdH3z4RNAtNZ9AQPxpe600pgE1Hi
+Content-Type: multipart/mixed; boundary="GqofYe9QNbu5W2n0nmBeswKC2pcpuYQPL";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Sriram Dash <sriram.dash@samsung.com>, linux-kernel@vger.kernel.org
+Cc: linux-can@vger.kernel.org, dmurphy@ti.com, pankj.sharma@samsung.com,
+ pankaj.dubey@samsung.com
+Message-ID: <9b212ce7-51e6-f6a7-fa34-5a9118c56927@pengutronix.de>
+Subject: Re: [PATCH] MAINTAINERS: Update MCAN MMIO device driver maintainer
+References: <CGME20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c@epcas5p3.samsung.com>
+ <20210104123134.16930-1-sriram.dash@samsung.com>
+In-Reply-To: <20210104123134.16930-1-sriram.dash@samsung.com>
 
-Thanks Arnd.
+--GqofYe9QNbu5W2n0nmBeswKC2pcpuYQPL
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Wayne Lin <Wayne.Lin@amd.com>
+On 1/4/21 1:31 PM, Sriram Dash wrote:
+> Update Pankaj Sharma as maintainer for mcan mmio device driver as I
+> will be moving to a different role.
+>=20
+> Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
+> ---
 
------Original Message-----
-From: Arnd Bergmann <arnd@kernel.org>
-Sent: Sunday, January 3, 2021 10:03 PM
-To: Wentland, Harry <Harry.Wentland@amd.com>; Li, Sun peng (Leo) <Sunpeng.L=
-i@amd.com>; Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christi=
-an <Christian.Koenig@amd.com>; David Airlie <airlied@linux.ie>; Daniel Vett=
-er <daniel@ffwll.ch>; R, Bindu <Bindu.R@amd.com>; Lin, Wayne <Wayne.Lin@amd=
-.com>
-Cc: Arnd Bergmann <arnd@arndb.de>; Kazlauskas, Nicholas <Nicholas.Kazlauska=
-s@amd.com>; Siqueira, Rodrigo <Rodrigo.Siqueira@amd.com>; Pillai, Aurabindo=
- <Aurabindo.Pillai@amd.com>; Wang, Chao-kai (Stylon) <Stylon.Wang@amd.com>;=
- Simon Ser <contact@emersion.fr>; Brol, Eryk <Eryk.Brol@amd.com>; Bas Nieuw=
-enhuizen <bas@basnieuwenhuizen.nl>; Lakha, Bhawanpreet <Bhawanpreet.Lakha@a=
-md.com>; dri-devel@lists.freedesktop.org; linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/display: Fix unused variable warning
+Applied to linux-can/testing.
 
-From: Arnd Bergmann <arnd@arndb.de>
+Tnx,
+Marc
 
-Some of the newly added code is hidden inside of #ifdef blocks, but one var=
-iable is unused when debugfs is disabled:
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:8370:8: error: =
-unused variable 'configure_crc' [-Werror,-Wunused-variable]
 
-Change the #ifdef to an if(IS_ENABLED()) check to fix the warning and avoid=
- adding more #ifdefs.
+--GqofYe9QNbu5W2n0nmBeswKC2pcpuYQPL--
 
-Fixes: c920888c604d ("drm/amd/display: Expose new CRC window property")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c     | 4 +---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h | 2 +-
- 2 files changed, 2 insertions(+), 4 deletions(-)
+--onRFLCdH3z4RNAtNZ9AQPxpe600pgE1Hi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gp=
-u/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 42b0fdb72e7b..5071b55ad0f6 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -8379,8 +8379,7 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_a=
-tomic_state *state)
- acrtc->dm_irq_params.stream =3D dm_new_crtc_state->stream;
- manage_dm_interrupts(adev, acrtc, true);
- }
--#ifdef CONFIG_DEBUG_FS
--if (new_crtc_state->active &&
-+if (IS_ENABLED(CONFIG_DEBUG_FS) && new_crtc_state->active &&
- amdgpu_dm_is_valid_crc_source(dm_new_crtc_state->crc_src)) {
- /**
-  * Frontend may have changed so reapply the CRC capture @@ -8401,7 +8400,6=
- @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state=
-)
- amdgpu_dm_crtc_configure_crc_source(
- crtc, dm_new_crtc_state, dm_new_crtc_state->crc_src);
- }
--#endif
- }
+-----BEGIN PGP SIGNATURE-----
 
- for_each_new_crtc_in_state(state, crtc, new_crtc_state, j) diff --git a/dr=
-ivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h b/drivers/gpu/drm/amd/d=
-isplay/amdgpu_dm/amdgpu_dm_crc.h
-index 0235bfb246e5..eba2f1d35d07 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h
-@@ -46,13 +46,13 @@ static inline bool amdgpu_dm_is_valid_crc_source(enum a=
-mdgpu_dm_pipe_crc_source  }
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/zEPMACgkQqclaivrt
+76ml6Af/RopeNpC7LlxPdDV/RE88yTbmF3TnqKWzBN2ze7Pqj9q+WBipqXaa6d+g
+vt7tDIUTNswIN2SJtMXWZemU36NdJus2GP9PKkW+QZqt1FccVFUHoyMB0LJ/gYcd
+5AGzE7AwaA8KqGcNF3CUVOtX6hIxmpiGDcwaTJh6KFtexeHPzoTlGNyitlgdreNE
+kzwSYtyrT0/weu4MIVt9fH8apTMwelwndag+msUkybI/NY9Tm5gP4cgq0yXiexOa
+vbjKmtlR7acNMjAj16RxkUmceABGi/yejlgGrrSwqUjs1D+dG2WSfrey/ySZQCcp
+83+Uzf203WMDrhVwagxa2u1k5v06ow==
+=KLX9
+-----END PGP SIGNATURE-----
 
- /* amdgpu_dm_crc.c */
--#ifdef CONFIG_DEBUG_FS
- bool amdgpu_dm_crc_window_is_default(struct dm_crtc_state *dm_crtc_state);=
-  bool amdgpu_dm_crc_window_changed(struct dm_crtc_state *dm_new_crtc_state=
-,
- struct dm_crtc_state *dm_old_crtc_state);  int amdgpu_dm_crtc_configure_cr=
-c_source(struct drm_crtc *crtc,
- struct dm_crtc_state *dm_crtc_state,
- enum amdgpu_dm_pipe_crc_source source);
-+#ifdef CONFIG_DEBUG_FS
- int amdgpu_dm_crtc_set_crc_source(struct drm_crtc *crtc, const char *src_n=
-ame);  int amdgpu_dm_crtc_verify_crc_source(struct drm_crtc *crtc,
-      const char *src_name,
---
-2.29.2
-
+--onRFLCdH3z4RNAtNZ9AQPxpe600pgE1Hi--
