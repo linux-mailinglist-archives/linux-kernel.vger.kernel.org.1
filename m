@@ -2,81 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2A92EADCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 140AA2EADFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbhAEO6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:58:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbhAEO6e (ORCPT
+        id S1727402AbhAEPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:12:03 -0500
+Received: from [150.136.130.23] ([150.136.130.23]:13403 "EHLO
+        admissiondr.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726064AbhAEPMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:58:34 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A44C061574;
-        Tue,  5 Jan 2021 06:57:54 -0800 (PST)
-Received: from zn.tnic (p200300ec2f103700fcad5495733b9c88.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:3700:fcad:5495:733b:9c88])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 132071EC03C1;
-        Tue,  5 Jan 2021 15:57:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1609858671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=L0p013t6oFM6rcNLv48g180+KC0j1cgEpItZ13D4/5Y=;
-        b=iJ8HvaYnIG/gE4o2HHaoJ9Mx8lMaV0jLV4uIz99/ARXikVBKdOZXO4qdHFKbpX45hPutuB
-        IMypX8Rufi9LFHDOkPWZDejvDLSWBZo5ZNQLJIR79WMg3cwHZs5LhHypdcJ06GKUGXK7SE
-        E+uDYkGv5ItzqHB0gTVLMvYmrYUGwAc=
-Date:   Tue, 5 Jan 2021 15:57:49 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>
-Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
-Message-ID: <20210105145749.GF28649@zn.tnic>
-References: <20201216134920.21161-1-jarkko@kernel.org>
+        Tue, 5 Jan 2021 10:12:03 -0500
+X-Greylist: delayed 27222 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 Jan 2021 10:12:03 EST
+Received: from Shop01 (localhost [127.0.0.1])
+        by admissiondr.localdomain (Postfix) with SMTP id A997F48FE9E2;
+        Mon,  4 Jan 2021 18:56:22 +0000 (GMT)
+Received: from [41.36.32.128] by Shop01 for <leab@tuta.io>; Mon, 04 Jan 2021 19:52:32 +0100
+Message-ID: <0p17$55$164-t420a0m$x3q@3665nj35h.60fv>
+From:   "Relief Center" <mecfea@xcontrol.it>
+Reply-To: "Relief Center" <mecfea@xcontrol.it>
+To:     leab@tuta.io
+Subject: Covid-19 Relief F und
+Date:   Mon, 04 Jan 21 19:52:32 GMT
+X-Mailer: Microsoft Outlook Express 5.50.4133.2400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201216134920.21161-1-jarkko@kernel.org>
+Content-Type: multipart/alternative;
+        boundary="4464.E31_0BAF_7."
+X-Priority: 3
+X-MSMail-Priority: Normal
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 03:49:20PM +0200, Jarkko Sakkinen wrote:
-> Add synchronize_srcu_expedited() to sgx_encl_release() to catch a grace
-> period initiated by sgx_mmu_notifier_release().
-> 
-> A trivial example of a failing sequence with tasks A and B:
-> 
-> 1. A: -> sgx_release()
-> 2. B: -> sgx_mmu_notifier_release()
-> 3. B: -> list_del_rcu()
-> 3. A: -> sgx_encl_release()
-> 4. A: -> cleanup_srcu_struct()
-> 
-> The loop in sgx_release() observes an empty list because B has removed its
-> entry in the middle, and calls cleanup_srcu_struct() before B has a chance
-> to calls synchronize_srcu().
 
-Leading to what? NULL ptr?
+--4464.E31_0BAF_7.
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-https://lkml.kernel.org/r/X9e2jOWz1hfXVpQ5@google.com
+We know that this message may come to you as a surprise,You have been chos=
+en  to receive Covid-19 Relief Fund.
 
-already suggested that you should explain the bug better and add the
-splat but I'm still missing that explanation.
+Reply to    Mr. Rei  Hoffman,  for  the release of the fund  and further d=
+irection immediately via  this Email:  mecfea@xcontrol.it
 
-Thx.
+Thanks,
+Jeff  Lean
 
--- 
-Regards/Gruss,
-    Boris.
+--4464.E31_0BAF_7.--
 
-https://people.kernel.org/tglx/notes-about-netiquette
