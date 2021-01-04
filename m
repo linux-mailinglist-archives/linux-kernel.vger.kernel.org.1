@@ -2,44 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41FB2E9799
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4655A2E9798
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbhADOsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:48:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46524 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725840AbhADOs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:48:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9E91FACBA;
-        Mon,  4 Jan 2021 14:47:48 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 00399DA882; Mon,  4 Jan 2021 15:45:59 +0100 (CET)
-Date:   Mon, 4 Jan 2021 15:45:59 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 -next] btrfs: use DEFINE_MUTEX() for mutex lock
-Message-ID: <20210104144559.GF6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Zheng Yongjun <zhengyongjun3@huawei.com>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201224132217.30741-1-zhengyongjun3@huawei.com>
+        id S1727136AbhADOsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbhADOst (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 09:48:49 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DF7C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:48:09 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id h205so64860858lfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:48:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nG2AjKleZe/MMg/+l3MttP/gNqHREnKnr0A94onw/qQ=;
+        b=mrHPn2OLOi4YME7VPJwM1Rx1e/Q264762rjOvhewz3zu6B+GVeVIs+U9nhANj6GWXD
+         ENlFBRHOhRucQZ/S6Sxmimwn1/NHvCzrVeevg0idAbZb/4y2KFyunTGygGvuaPab7ANB
+         mJd5/YUzU8OgAa4X5X/mH5pRltea0sfjplVpNpAY8MVJZzhM8P5kYzR+gmnMh9HyCkoC
+         NA9lOioDiJtGUhRGK4o8OAOOicpcpstztggK6H5VeD8k2b2NgX/TN5IViM1rcEkVQl4j
+         Y0S5Sum0sXxTBKY5Gsep8+24gREX/IsNqxeQ3UJJruthO9rkeu4VoYKDGSYLYwqh6VR2
+         LKlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nG2AjKleZe/MMg/+l3MttP/gNqHREnKnr0A94onw/qQ=;
+        b=KwTP6+TEe/52gskXj8CX+jDWKAjSskSqSL0FxRsCzIo9GAgOx43EHtnwJeKT/8HsDz
+         Gv1e15pSfnCwjGjhmhuf2BEmB5DU2zPW3N4I7pbAFTf8rNcx6XB3kkepQMlAwfuZQsV9
+         o38WPxsF7O3gb2/6LvJrbO52ubpU/cQCW6Sbs1Vh1wzGkrKGb8GxgDtN9vBbNeYZglyq
+         kBFxHPna9pboq1gFlAjoLP4/lcc6KrZaLh+0CiTjiSpy5VLPVzda204R3YQW+PV/bxyg
+         YuzfptO3WeiJZmssPwmqwj5iD0JfCGEwm5hN8gFyupyBeECG2osm3+Y+jdGoANqvgb2w
+         nPLQ==
+X-Gm-Message-State: AOAM5327EIfgrE7lVK1GJiRoWRld9D4ypn8VRR3CLgqJBGqAbZqKLXRB
+        o+kK9bIgxEYgjdzrhF56bLBuQlAwMBy2ldvKBEiFuw==
+X-Google-Smtp-Source: ABdhPJxb6AkCuGsmhq0qIIX6WKbPdSm7r/t8ww3A8ZuDSPhv2/36r1RAxLqOm0mMjX17aL3Ia+ibXVc7QDRG9fW6qTk=
+X-Received: by 2002:a2e:9dc3:: with SMTP id x3mr37547603ljj.326.1609771687776;
+ Mon, 04 Jan 2021 06:48:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224132217.30741-1-zhengyongjun3@huawei.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20201212040157.3639864-1-icenowy@aosc.io> <20201212040430.3640418-2-icenowy@aosc.io>
+In-Reply-To: <20201212040430.3640418-2-icenowy@aosc.io>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 4 Jan 2021 15:47:57 +0100
+Message-ID: <CACRpkdaeOEFEf_sz4Gs-hobVopq2HUkS3F+22ca9VzQzVKAU=w@mail.gmail.com>
+Subject: Re: [RFC PATCH 05/12] pinctrl: sunxi: add pinctrl driver for V831/V833
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 09:22:17PM +0800, Zheng Yongjun wrote:
-> mutex lock can be initialized automatically with DEFINE_MUTEX()
-> rather than explicitly calling mutex_init().
+Hi Icenowy,
 
-And is there some reason why it should be done that way?
+On Sat, Dec 12, 2020 at 5:04 AM Icenowy Zheng <icenowy@aosc.io> wrote:
+
+> V831/V833 are new chips from Allwinner. They're the same die with
+> different package.
+>
+> Add a pinctrl driver for them.
+>
+> The difference between V831/V833 pinctrl is implemented based on the
+> user manual.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: linux-gpio@vger.kernel.org
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+
+Could you respin patches 4 & 5 with Maxime's comments
+addressed and include Rob's ACK on patch 4? Also please rebase on v5.11-rc1.
+
+I suppose these two patches are independent from the rest of the stuff
+in the series so it can be managed separately?
+
+Yours.
+Linus Walleij
