@@ -2,255 +2,489 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EE62E94FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00F62E94ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:36:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbhADMic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:38:32 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10542 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbhADMic (ORCPT
+        id S1726551AbhADMes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:34:48 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9953 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbhADMer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:38:32 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D8Zr60rDKzMFBV;
-        Mon,  4 Jan 2021 20:36:38 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 4 Jan 2021 20:37:38 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <maz@kernel.org>,
-        <kashyap.desai@broadcom.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH 2/2] scsi: hisi_sas: Expose HW queues for v2 hw
-Date:   Mon, 4 Jan 2021 20:33:42 +0800
-Message-ID: <1609763622-34119-3-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1609763622-34119-1-git-send-email-john.garry@huawei.com>
-References: <1609763622-34119-1-git-send-email-john.garry@huawei.com>
+        Mon, 4 Jan 2021 07:34:47 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D8Zm9499Mzj1mf;
+        Mon,  4 Jan 2021 20:33:13 +0800 (CST)
+Received: from [10.174.177.80] (10.174.177.80) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 4 Jan 2021 20:33:50 +0800
+Subject: Re: [PATCH v9 05/12] mm: HUGE_VMAP arch support cleanup
+To:     Nicholas Piggin <npiggin@gmail.com>, <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, Zefan Li <lizefan@huawei.com>,
+        "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20201205065725.1286370-1-npiggin@gmail.com>
+ <20201205065725.1286370-6-npiggin@gmail.com>
+From:   Ding Tianhong <dingtianhong@huawei.com>
+Message-ID: <c7eb5ba6-1187-d82f-d74c-0ca2c8ae8faf@huawei.com>
+Date:   Mon, 4 Jan 2021 20:33:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
+In-Reply-To: <20201205065725.1286370-6-npiggin@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.80]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a performance enhancement, make the completion queue interrupts managed.
+On 2020/12/5 14:57, Nicholas Piggin wrote:
+> This changes the awkward approach where architectures provide init
+> functions to determine which levels they can provide large mappings for,
+> to one where the arch is queried for each call.
+> 
+> This removes code and indirection, and allows constant-folding of dead
+> code for unsupported levels.
+> 
+> This also adds a prot argument to the arch query. This is unused
+> currently but could help with some architectures (e.g., some powerpc
+> processors can't map uncacheable memory with large pages).
+> 
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com> [arm64]
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>  arch/arm64/include/asm/vmalloc.h         |  8 +++
+>  arch/arm64/mm/mmu.c                      | 10 +--
+>  arch/powerpc/include/asm/vmalloc.h       |  8 +++
+>  arch/powerpc/mm/book3s64/radix_pgtable.c |  8 +--
+>  arch/x86/include/asm/vmalloc.h           |  7 ++
+>  arch/x86/mm/ioremap.c                    | 10 +--
+>  include/linux/io.h                       |  9 ---
+>  include/linux/vmalloc.h                  |  6 ++
+>  init/main.c                              |  1 -
+>  mm/ioremap.c                             | 88 +++++++++---------------
+>  10 files changed, 77 insertions(+), 78 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/vmalloc.h
+> index 2ca708ab9b20..597b40405319 100644
+> --- a/arch/arm64/include/asm/vmalloc.h
+> +++ b/arch/arm64/include/asm/vmalloc.h
+> @@ -1,4 +1,12 @@
+>  #ifndef _ASM_ARM64_VMALLOC_H
+>  #define _ASM_ARM64_VMALLOC_H
+>  
+> +#include <asm/page.h>
+> +
+> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> +bool arch_vmap_p4d_supported(pgprot_t prot);
+> +bool arch_vmap_pud_supported(pgprot_t prot);
+> +bool arch_vmap_pmd_supported(pgprot_t prot);
+> +#endif
+> +
+>  #endif /* _ASM_ARM64_VMALLOC_H */
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index ca692a815731..1b60079c1cef 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1315,12 +1315,12 @@ void *__init fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot)
+>  	return dt_virt;
+>  }
+>  
+> -int __init arch_ioremap_p4d_supported(void)
+> +bool arch_vmap_p4d_supported(pgprot_t prot)
+>  {
+> -	return 0;
+> +	return false;
+>  }
+>  
 
-In addition, in commit bf0beec0607d ("blk-mq: drain I/O when all CPUs in a
-hctx are offline"), CPU hotplug for MQ devices using managed interrupts
-is made safe. So expose HW queues to blk-mq to take advantage of this.
+I think you should put this function in the CONFIG_HAVE_ARCH_HUGE_VMAP, otherwise it may break the compile when disable the CONFIG_HAVE_ARCH_HUGE_VMAP, the same
+as the x86 and ppc.
 
-Flag Scsi_host.host_tagset is also set to ensure that the HBA is not sent
-more commands than it can handle. However the driver still does not use
-request tag for IPTT as there are many HW bugs means that special rules
-apply for IPTT allocation.
+Ding
 
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- drivers/scsi/hisi_sas/hisi_sas.h       |  4 ++
- drivers/scsi/hisi_sas/hisi_sas_main.c  | 11 +++++
- drivers/scsi/hisi_sas/hisi_sas_v2_hw.c | 66 +++++++++++++++++++++-----
- 3 files changed, 68 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/scsi/hisi_sas/hisi_sas.h b/drivers/scsi/hisi_sas/hisi_sas.h
-index 2b28dd405600..e821dd32dd28 100644
---- a/drivers/scsi/hisi_sas/hisi_sas.h
-+++ b/drivers/scsi/hisi_sas/hisi_sas.h
-@@ -14,6 +14,7 @@
- #include <linux/debugfs.h>
- #include <linux/dmapool.h>
- #include <linux/iopoll.h>
-+#include <linux/irq.h>
- #include <linux/lcm.h>
- #include <linux/libata.h>
- #include <linux/mfd/syscon.h>
-@@ -294,6 +295,7 @@ enum {
- 
- struct hisi_sas_hw {
- 	int (*hw_init)(struct hisi_hba *hisi_hba);
-+	int (*interrupt_preinit)(struct hisi_hba *hisi_hba);
- 	void (*setup_itct)(struct hisi_hba *hisi_hba,
- 			   struct hisi_sas_device *device);
- 	int (*slot_index_alloc)(struct hisi_hba *hisi_hba,
-@@ -393,6 +395,8 @@ struct hisi_hba {
- 	u32 refclk_frequency_mhz;
- 	u8 sas_addr[SAS_ADDR_SIZE];
- 
-+	int *irq_map; /* v2 hw */
-+
- 	int n_phy;
- 	spinlock_t lock;
- 	struct semaphore sem;
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
-index c34f60a600f1..ffb2b32fd35f 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_main.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
-@@ -2628,6 +2628,13 @@ static struct Scsi_Host *hisi_sas_shost_alloc(struct platform_device *pdev,
- 	return NULL;
- }
- 
-+static int hisi_sas_interrupt_preinit(struct hisi_hba *hisi_hba)
-+{
-+	if (hisi_hba->hw->interrupt_preinit)
-+		return hisi_hba->hw->interrupt_preinit(hisi_hba);
-+	return 0;
-+}
-+
- int hisi_sas_probe(struct platform_device *pdev,
- 		   const struct hisi_sas_hw *hw)
- {
-@@ -2685,6 +2692,10 @@ int hisi_sas_probe(struct platform_device *pdev,
- 		sha->sas_port[i] = &hisi_hba->port[i].sas_port;
- 	}
- 
-+	rc = hisi_sas_interrupt_preinit(hisi_hba);
-+	if (rc)
-+		goto err_out_ha;
-+
- 	rc = scsi_add_host(shost, &pdev->dev);
- 	if (rc)
- 		goto err_out_ha;
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
-index b57177b52fac..9adfdefef9ca 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
-@@ -3302,6 +3302,28 @@ static irq_handler_t fatal_interrupts[HISI_SAS_FATAL_INT_NR] = {
- 	fatal_axi_int_v2_hw
- };
- 
-+#define CQ0_IRQ_INDEX (96)
-+
-+static int hisi_sas_v2_interrupt_preinit(struct hisi_hba *hisi_hba)
-+{
-+	struct platform_device *pdev = hisi_hba->platform_dev;
-+	struct Scsi_Host *shost = hisi_hba->shost;
-+	struct irq_affinity desc = {
-+		.pre_vectors = CQ0_IRQ_INDEX,
-+		.post_vectors = 16,
-+	};
-+	int resv = desc.pre_vectors + desc.post_vectors, minvec = resv + 1, nvec;
-+
-+	nvec = devm_platform_get_irqs_affinity(pdev, &desc, minvec, 128,
-+					       &hisi_hba->irq_map);
-+	if (nvec < 0)
-+		return nvec;
-+
-+	shost->nr_hw_queues = hisi_hba->cq_nvecs = nvec - resv;
-+
-+	return 0;
-+}
-+
- /*
-  * There is a limitation in the hip06 chipset that we need
-  * to map in all mbigen interrupts, even if they are not used.
-@@ -3310,14 +3332,11 @@ static int interrupt_init_v2_hw(struct hisi_hba *hisi_hba)
- {
- 	struct platform_device *pdev = hisi_hba->platform_dev;
- 	struct device *dev = &pdev->dev;
--	int irq, rc = 0, irq_map[128];
-+	int irq, rc = 0;
- 	int i, phy_no, fatal_no, queue_no;
- 
--	for (i = 0; i < 128; i++)
--		irq_map[i] = platform_get_irq(pdev, i);
--
- 	for (i = 0; i < HISI_SAS_PHY_INT_NR; i++) {
--		irq = irq_map[i + 1]; /* Phy up/down is irq1 */
-+		irq = hisi_hba->irq_map[i + 1]; /* Phy up/down is irq1 */
- 		rc = devm_request_irq(dev, irq, phy_interrupts[i], 0,
- 				      DRV_NAME " phy", hisi_hba);
- 		if (rc) {
-@@ -3331,7 +3350,7 @@ static int interrupt_init_v2_hw(struct hisi_hba *hisi_hba)
- 	for (phy_no = 0; phy_no < hisi_hba->n_phy; phy_no++) {
- 		struct hisi_sas_phy *phy = &hisi_hba->phy[phy_no];
- 
--		irq = irq_map[phy_no + 72];
-+		irq = hisi_hba->irq_map[phy_no + 72];
- 		rc = devm_request_irq(dev, irq, sata_int_v2_hw, 0,
- 				      DRV_NAME " sata", phy);
- 		if (rc) {
-@@ -3343,7 +3362,7 @@ static int interrupt_init_v2_hw(struct hisi_hba *hisi_hba)
- 	}
- 
- 	for (fatal_no = 0; fatal_no < HISI_SAS_FATAL_INT_NR; fatal_no++) {
--		irq = irq_map[fatal_no + 81];
-+		irq = hisi_hba->irq_map[fatal_no + 81];
- 		rc = devm_request_irq(dev, irq, fatal_interrupts[fatal_no], 0,
- 				      DRV_NAME " fatal", hisi_hba);
- 		if (rc) {
-@@ -3354,24 +3373,22 @@ static int interrupt_init_v2_hw(struct hisi_hba *hisi_hba)
- 		}
- 	}
- 
--	for (queue_no = 0; queue_no < hisi_hba->queue_count; queue_no++) {
-+	for (queue_no = 0; queue_no < hisi_hba->cq_nvecs; queue_no++) {
- 		struct hisi_sas_cq *cq = &hisi_hba->cq[queue_no];
- 
--		cq->irq_no = irq_map[queue_no + 96];
-+		cq->irq_no = hisi_hba->irq_map[queue_no + 96];
- 		rc = devm_request_threaded_irq(dev, cq->irq_no,
- 					       cq_interrupt_v2_hw,
- 					       cq_thread_v2_hw, IRQF_ONESHOT,
- 					       DRV_NAME " cq", cq);
- 		if (rc) {
- 			dev_err(dev, "irq init: could not request cq interrupt %d, rc=%d\n",
--				irq, rc);
-+					cq->irq_no, rc);
- 			rc = -ENOENT;
- 			goto err_out;
- 		}
-+		cq->irq_mask = irq_get_affinity_mask(cq->irq_no);
- 	}
--
--	hisi_hba->cq_nvecs = hisi_hba->queue_count;
--
- err_out:
- 	return rc;
- }
-@@ -3529,6 +3546,26 @@ static struct device_attribute *host_attrs_v2_hw[] = {
- 	NULL
- };
- 
-+static int map_queues_v2_hw(struct Scsi_Host *shost)
-+{
-+	struct hisi_hba *hisi_hba = shost_priv(shost);
-+	struct blk_mq_queue_map *qmap = &shost->tag_set.map[HCTX_TYPE_DEFAULT];
-+	const struct cpumask *mask;
-+	unsigned int queue, cpu;
-+
-+	for (queue = 0; queue < qmap->nr_queues; queue++) {
-+		mask = irq_get_affinity_mask(hisi_hba->irq_map[96 + queue]);
-+		if (!mask)
-+			continue;
-+
-+		for_each_cpu(cpu, mask)
-+			qmap->mq_map[cpu] = qmap->queue_offset + queue;
-+	}
-+
-+	return 0;
-+
-+}
-+
- static struct scsi_host_template sht_v2_hw = {
- 	.name			= DRV_NAME,
- 	.proc_name		= DRV_NAME,
-@@ -3553,10 +3590,13 @@ static struct scsi_host_template sht_v2_hw = {
- #endif
- 	.shost_attrs		= host_attrs_v2_hw,
- 	.host_reset		= hisi_sas_host_reset,
-+	.map_queues		= map_queues_v2_hw,
-+	.host_tagset		= 1,
- };
- 
- static const struct hisi_sas_hw hisi_sas_v2_hw = {
- 	.hw_init = hisi_sas_v2_init,
-+	.interrupt_preinit = hisi_sas_v2_interrupt_preinit,
- 	.setup_itct = setup_itct_v2_hw,
- 	.slot_index_alloc = slot_index_alloc_quirk_v2_hw,
- 	.alloc_dev = alloc_dev_quirk_v2_hw,
--- 
-2.26.2
+> -int __init arch_ioremap_pud_supported(void)
+> +bool arch_vmap_pud_supported(pgprot_t prot);
+>  {
+>  	/*
+>  	 * Only 4k granule supports level 1 block mappings.
+> @@ -1330,9 +1330,9 @@ int __init arch_ioremap_pud_supported(void)
+>  	       !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
+>  }
+>  
+> -int __init arch_ioremap_pmd_supported(void)
+> +bool arch_vmap_pmd_supported(pgprot_t prot)
+>  {
+> -	/* See arch_ioremap_pud_supported() */
+> +	/* See arch_vmap_pud_supported() */
+>  	return !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
+>  }
+>  
+> diff --git a/arch/powerpc/include/asm/vmalloc.h b/arch/powerpc/include/asm/vmalloc.h
+> index b992dfaaa161..105abb73f075 100644
+> --- a/arch/powerpc/include/asm/vmalloc.h
+> +++ b/arch/powerpc/include/asm/vmalloc.h
+> @@ -1,4 +1,12 @@
+>  #ifndef _ASM_POWERPC_VMALLOC_H
+>  #define _ASM_POWERPC_VMALLOC_H
+>  
+> +#include <asm/page.h>
+> +
+> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> +bool arch_vmap_p4d_supported(pgprot_t prot);
+> +bool arch_vmap_pud_supported(pgprot_t prot);
+> +bool arch_vmap_pmd_supported(pgprot_t prot);
+> +#endif
+> +
+>  #endif /* _ASM_POWERPC_VMALLOC_H */
+> diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
+> index 3adcf730f478..ab426fc0cd4b 100644
+> --- a/arch/powerpc/mm/book3s64/radix_pgtable.c
+> +++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
+> @@ -1121,13 +1121,13 @@ void radix__ptep_modify_prot_commit(struct vm_area_struct *vma,
+>  	set_pte_at(mm, addr, ptep, pte);
+>  }
+>  
+> -int __init arch_ioremap_pud_supported(void)
+> +bool arch_vmap_pud_supported(pgprot_t prot)
+>  {
+>  	/* HPT does not cope with large pages in the vmalloc area */
+>  	return radix_enabled();
+>  }
+>  
+> -int __init arch_ioremap_pmd_supported(void)
+> +bool arch_vmap_pmd_supported(pgprot_t prot)
+>  {
+>  	return radix_enabled();
+>  }
+> @@ -1221,7 +1221,7 @@ int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
+>  	return 1;
+>  }
+>  
+> -int __init arch_ioremap_p4d_supported(void)
+> +bool arch_vmap_p4d_supported(pgprot_t prot)
+>  {
+> -	return 0;
+> +	return false;
+>  }
+> diff --git a/arch/x86/include/asm/vmalloc.h b/arch/x86/include/asm/vmalloc.h
+> index 29837740b520..094ea2b565f3 100644
+> --- a/arch/x86/include/asm/vmalloc.h
+> +++ b/arch/x86/include/asm/vmalloc.h
+> @@ -1,6 +1,13 @@
+>  #ifndef _ASM_X86_VMALLOC_H
+>  #define _ASM_X86_VMALLOC_H
+>  
+> +#include <asm/page.h>
+>  #include <asm/pgtable_areas.h>
+>  
+> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> +bool arch_vmap_p4d_supported(pgprot_t prot);
+> +bool arch_vmap_pud_supported(pgprot_t prot);
+> +bool arch_vmap_pmd_supported(pgprot_t prot);
+> +#endif
+> +
+>  #endif /* _ASM_X86_VMALLOC_H */
+> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+> index 9e5ccc56f8e0..762b5ff4edad 100644
+> --- a/arch/x86/mm/ioremap.c
+> +++ b/arch/x86/mm/ioremap.c
+> @@ -481,21 +481,21 @@ void iounmap(volatile void __iomem *addr)
+>  }
+>  EXPORT_SYMBOL(iounmap);
+>  
+> -int __init arch_ioremap_p4d_supported(void)
+> +bool arch_vmap_p4d_supported(pgprot_t prot)
+>  {
+> -	return 0;
+> +	return false;
+>  }
+>  
+> -int __init arch_ioremap_pud_supported(void)
+> +bool arch_vmap_pud_supported(pgprot_t prot)
+>  {
+>  #ifdef CONFIG_X86_64
+>  	return boot_cpu_has(X86_FEATURE_GBPAGES);
+>  #else
+> -	return 0;
+> +	return false;
+>  #endif
+>  }
+>  
+> -int __init arch_ioremap_pmd_supported(void)
+> +bool arch_vmap_pmd_supported(pgprot_t prot)
+>  {
+>  	return boot_cpu_has(X86_FEATURE_PSE);
+>  }
+> diff --git a/include/linux/io.h b/include/linux/io.h
+> index 8394c56babc2..f1effd4d7a3c 100644
+> --- a/include/linux/io.h
+> +++ b/include/linux/io.h
+> @@ -31,15 +31,6 @@ static inline int ioremap_page_range(unsigned long addr, unsigned long end,
+>  }
+>  #endif
+>  
+> -#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> -void __init ioremap_huge_init(void);
+> -int arch_ioremap_p4d_supported(void);
+> -int arch_ioremap_pud_supported(void);
+> -int arch_ioremap_pmd_supported(void);
+> -#else
+> -static inline void ioremap_huge_init(void) { }
+> -#endif
+> -
+>  /*
+>   * Managed iomap interface
+>   */
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index 938eaf9517e2..b3218ba0904d 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -85,6 +85,12 @@ struct vmap_area {
+>  	};
+>  };
+>  
+> +#ifndef CONFIG_HAVE_ARCH_HUGE_VMAP
+> +static inline bool arch_vmap_p4d_supported(pgprot_t prot) { return false; }
+> +static inline bool arch_vmap_pud_supported(pgprot_t prot) { return false; }
+> +static inline bool arch_vmap_pmd_supported(pgprot_t prot) { return false; }
+> +#endif
+> +
+>  /*
+>   *	Highlevel APIs for driver use
+>   */
+> diff --git a/init/main.c b/init/main.c
+> index 20baced721ad..5bd2f4f41d30 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -833,7 +833,6 @@ static void __init mm_init(void)
+>  	pgtable_init();
+>  	debug_objects_mem_init();
+>  	vmalloc_init();
+> -	ioremap_huge_init();
+>  	/* Should be run before the first non-init thread is created */
+>  	init_espfix_bsp();
+>  	/* Should be run after espfix64 is set up. */
+> diff --git a/mm/ioremap.c b/mm/ioremap.c
+> index 3f4d36f9745a..c67f91164401 100644
+> --- a/mm/ioremap.c
+> +++ b/mm/ioremap.c
+> @@ -16,49 +16,16 @@
+>  #include "pgalloc-track.h"
+>  
+>  #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> -static int __read_mostly ioremap_p4d_capable;
+> -static int __read_mostly ioremap_pud_capable;
+> -static int __read_mostly ioremap_pmd_capable;
+> -static int __read_mostly ioremap_huge_disabled;
+> +static bool __ro_after_init iomap_max_page_shift = PAGE_SHIFT;
+>  
+>  static int __init set_nohugeiomap(char *str)
+>  {
+> -	ioremap_huge_disabled = 1;
+> +	iomap_max_page_shift = P4D_SHIFT;
+>  	return 0;
+>  }
+>  early_param("nohugeiomap", set_nohugeiomap);
+> -
+> -void __init ioremap_huge_init(void)
+> -{
+> -	if (!ioremap_huge_disabled) {
+> -		if (arch_ioremap_p4d_supported())
+> -			ioremap_p4d_capable = 1;
+> -		if (arch_ioremap_pud_supported())
+> -			ioremap_pud_capable = 1;
+> -		if (arch_ioremap_pmd_supported())
+> -			ioremap_pmd_capable = 1;
+> -	}
+> -}
+> -
+> -static inline int ioremap_p4d_enabled(void)
+> -{
+> -	return ioremap_p4d_capable;
+> -}
+> -
+> -static inline int ioremap_pud_enabled(void)
+> -{
+> -	return ioremap_pud_capable;
+> -}
+> -
+> -static inline int ioremap_pmd_enabled(void)
+> -{
+> -	return ioremap_pmd_capable;
+> -}
+> -
+> -#else	/* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+> -static inline int ioremap_p4d_enabled(void) { return 0; }
+> -static inline int ioremap_pud_enabled(void) { return 0; }
+> -static inline int ioremap_pmd_enabled(void) { return 0; }
+> +#else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+> +static const bool iomap_max_page_shift = PAGE_SHIFT;
+>  #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
+>  
+>  static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+> @@ -82,9 +49,13 @@ static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+>  }
+>  
+>  static int vmap_try_huge_pmd(pmd_t *pmd, unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot)
+> +			phys_addr_t phys_addr, pgprot_t prot,
+> +			unsigned int max_page_shift)
+>  {
+> -	if (!ioremap_pmd_enabled())
+> +	if (max_page_shift < PMD_SHIFT)
+> +		return 0;
+> +
+> +	if (!arch_vmap_pmd_supported(prot))
+>  		return 0;
+>  
+>  	if ((end - addr) != PMD_SIZE)
+> @@ -104,7 +75,7 @@ static int vmap_try_huge_pmd(pmd_t *pmd, unsigned long addr, unsigned long end,
+>  
+>  static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+>  			phys_addr_t phys_addr, pgprot_t prot,
+> -			pgtbl_mod_mask *mask)
+> +			unsigned int max_page_shift, pgtbl_mod_mask *mask)
+>  {
+>  	pmd_t *pmd;
+>  	unsigned long next;
+> @@ -115,7 +86,7 @@ static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+>  	do {
+>  		next = pmd_addr_end(addr, end);
+>  
+> -		if (vmap_try_huge_pmd(pmd, addr, next, phys_addr, prot)) {
+> +		if (vmap_try_huge_pmd(pmd, addr, next, phys_addr, prot, max_page_shift)) {
+>  			*mask |= PGTBL_PMD_MODIFIED;
+>  			continue;
+>  		}
+> @@ -127,9 +98,13 @@ static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+>  }
+>  
+>  static int vmap_try_huge_pud(pud_t *pud, unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot)
+> +			phys_addr_t phys_addr, pgprot_t prot,
+> +			unsigned int max_page_shift)
+>  {
+> -	if (!ioremap_pud_enabled())
+> +	if (max_page_shift < PUD_SHIFT)
+> +		return 0;
+> +
+> +	if (!arch_vmap_pud_supported(prot))
+>  		return 0;
+>  
+>  	if ((end - addr) != PUD_SIZE)
+> @@ -149,7 +124,7 @@ static int vmap_try_huge_pud(pud_t *pud, unsigned long addr, unsigned long end,
+>  
+>  static int vmap_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
+>  			phys_addr_t phys_addr, pgprot_t prot,
+> -			pgtbl_mod_mask *mask)
+> +			unsigned int max_page_shift, pgtbl_mod_mask *mask)
+>  {
+>  	pud_t *pud;
+>  	unsigned long next;
+> @@ -160,21 +135,25 @@ static int vmap_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
+>  	do {
+>  		next = pud_addr_end(addr, end);
+>  
+> -		if (vmap_try_huge_pud(pud, addr, next, phys_addr, prot)) {
+> +		if (vmap_try_huge_pud(pud, addr, next, phys_addr, prot, max_page_shift)) {
+>  			*mask |= PGTBL_PUD_MODIFIED;
+>  			continue;
+>  		}
+>  
+> -		if (vmap_pmd_range(pud, addr, next, phys_addr, prot, mask))
+> +		if (vmap_pmd_range(pud, addr, next, phys_addr, prot, max_page_shift, mask))
+>  			return -ENOMEM;
+>  	} while (pud++, phys_addr += (next - addr), addr = next, addr != end);
+>  	return 0;
+>  }
+>  
+>  static int vmap_try_huge_p4d(p4d_t *p4d, unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot)
+> +			phys_addr_t phys_addr, pgprot_t prot,
+> +			unsigned int max_page_shift)
+>  {
+> -	if (!ioremap_p4d_enabled())
+> +	if (max_page_shift < P4D_SHIFT)
+> +		return 0;
+> +
+> +	if (!arch_vmap_p4d_supported(prot))
+>  		return 0;
+>  
+>  	if ((end - addr) != P4D_SIZE)
+> @@ -194,7 +173,7 @@ static int vmap_try_huge_p4d(p4d_t *p4d, unsigned long addr, unsigned long end,
+>  
+>  static int vmap_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long end,
+>  			phys_addr_t phys_addr, pgprot_t prot,
+> -			pgtbl_mod_mask *mask)
+> +			unsigned int max_page_shift, pgtbl_mod_mask *mask)
+>  {
+>  	p4d_t *p4d;
+>  	unsigned long next;
+> @@ -205,19 +184,20 @@ static int vmap_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long end,
+>  	do {
+>  		next = p4d_addr_end(addr, end);
+>  
+> -		if (vmap_try_huge_p4d(p4d, addr, next, phys_addr, prot)) {
+> +		if (vmap_try_huge_p4d(p4d, addr, next, phys_addr, prot, max_page_shift)) {
+>  			*mask |= PGTBL_P4D_MODIFIED;
+>  			continue;
+>  		}
+>  
+> -		if (vmap_pud_range(p4d, addr, next, phys_addr, prot, mask))
+> +		if (vmap_pud_range(p4d, addr, next, phys_addr, prot, max_page_shift, mask))
+>  			return -ENOMEM;
+>  	} while (p4d++, phys_addr += (next - addr), addr = next, addr != end);
+>  	return 0;
+>  }
+>  
+>  static int vmap_range(unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot)
+> +			phys_addr_t phys_addr, pgprot_t prot,
+> +			unsigned int max_page_shift)
+>  {
+>  	pgd_t *pgd;
+>  	unsigned long start;
+> @@ -232,7 +212,7 @@ static int vmap_range(unsigned long addr, unsigned long end,
+>  	pgd = pgd_offset_k(addr);
+>  	do {
+>  		next = pgd_addr_end(addr, end);
+> -		err = vmap_p4d_range(pgd, addr, next, phys_addr, prot, &mask);
+> +		err = vmap_p4d_range(pgd, addr, next, phys_addr, prot, max_page_shift, &mask);
+>  		if (err)
+>  			break;
+>  	} while (pgd++, phys_addr += (next - addr), addr = next, addr != end);
+> @@ -248,7 +228,7 @@ static int vmap_range(unsigned long addr, unsigned long end,
+>  int ioremap_page_range(unsigned long addr,
+>  		       unsigned long end, phys_addr_t phys_addr, pgprot_t prot)
+>  {
+> -	return vmap_range(addr, end, phys_addr, prot);
+> +	return vmap_range(addr, end, phys_addr, prot, iomap_max_page_shift);
+>  }
+>  
+>  #ifdef CONFIG_GENERIC_IOREMAP
+> 
 
