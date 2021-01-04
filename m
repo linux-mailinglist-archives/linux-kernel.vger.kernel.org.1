@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232FF2E9176
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B053B2E9179
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbhADIJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 03:09:15 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:39005 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725468AbhADIJP (ORCPT
+        id S1726600AbhADIL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 03:11:57 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:51424 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726306AbhADIL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 03:09:15 -0500
-X-UUID: 0750e7d523494772b0c081eccd77bf58-20210104
-X-UUID: 0750e7d523494772b0c081eccd77bf58-20210104
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <argus.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1052649964; Mon, 04 Jan 2021 16:08:29 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 4 Jan 2021 16:08:28 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 4 Jan 2021 16:08:28 +0800
-From:   Argus Lin <argus.lin@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Michael Walle <michael@walle.cc>, <agx@sigxcpu.org>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        <argus.lin@mediatek.com>, <wsd_upstream@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 2/2] arm64: configs: Support pwrap on Mediatek MT6779 platform
-Date:   Mon, 4 Jan 2021 16:08:23 +0800
-Message-ID: <1609747703-27207-3-git-send-email-argus.lin@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1609747703-27207-1-git-send-email-argus.lin@mediatek.com>
-References: <1609747703-27207-1-git-send-email-argus.lin@mediatek.com>
+        Mon, 4 Jan 2021 03:11:56 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UKeYYmw_1609747872;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UKeYYmw_1609747872)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 04 Jan 2021 16:11:13 +0800
+Subject: Re: [PATCH] mm/memcontrol: fix warning in mem_cgroup_page_lruvec()
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hui Su <sh_def@163.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <alpine.LSU.2.11.2101032056260.1093@eggly.anvils>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <2c1083cb-53d6-1cd6-9e1b-14a501db6f9a@linux.alibaba.com>
+Date:   Mon, 4 Jan 2021 16:11:12 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 3DCB31C1B1B77694DC1B2B165066C09602E2E195E18C46C67D4FBD0BB5C939062000:8
-X-MTK:  N
+In-Reply-To: <alpine.LSU.2.11.2101032056260.1093@eggly.anvils>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support pwrap on Mediatek MT6779 platform by enabling CONFIG_MTK_PMIC_WRAP.
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-Signed-off-by: Argus Lin <argus.lin@mediatek.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 8383016..a2c926f 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -479,6 +479,7 @@ CONFIG_SPI_S3C64XX=y
- CONFIG_SPI_SH_MSIOF=m
- CONFIG_SPI_SUN6I=y
- CONFIG_SPI_SPIDEV=m
-+CONFIG_MTK_PMIC_WRAP=m
- CONFIG_SPMI=y
- CONFIG_PINCTRL_SINGLE=y
- CONFIG_PINCTRL_MAX77620=y
---
-1.8.1.1.dirty
-
+ÔÚ 2021/1/4 ÏÂÎç1:03, Hugh Dickins Ð´µÀ:
+> Boot a CONFIG_MEMCG=y kernel with "cgroup_disabled=memory" and you are
+> met by a series of warnings from the VM_WARN_ON_ONCE_PAGE(!memcg, page)
+> recently added to the inline mem_cgroup_page_lruvec().
+> 
+> An earlier attempt to place that warning, in mem_cgroup_lruvec(), had
+> been careful to do so after weeding out the mem_cgroup_disabled() case;
+> but was itself invalid because of the mem_cgroup_lruvec(NULL, pgdat) in
+> clear_pgdat_congested() and age_active_anon().
+> 
+> Warning in mem_cgroup_page_lruvec() was once useful in detecting a KSM
+> charge bug, so may be worth keeping: but skip if mem_cgroup_disabled().
+> 
+> Fixes: 9a1ac2288cf1 ("mm/memcontrol:rewrite mem_cgroup_page_lruvec()")
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> ---
+> 
+>  include/linux/memcontrol.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- 5.11-rc2/include/linux/memcontrol.h	2020-12-27 20:39:36.751923135 -0800
+> +++ linux/include/linux/memcontrol.h	2021-01-03 19:38:24.822978559 -0800
+> @@ -665,7 +665,7 @@ static inline struct lruvec *mem_cgroup_
+>  {
+>  	struct mem_cgroup *memcg = page_memcg(page);
+>  
+> -	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+> +	VM_WARN_ON_ONCE_PAGE(!memcg && !mem_cgroup_disabled(), page);
+>  	return mem_cgroup_lruvec(memcg, pgdat);
+>  }
+>  
+> 
