@@ -2,77 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05C22E95C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A662E95CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbhADNUU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 08:20:20 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:51687 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbhADNUT (ORCPT
+        id S1726961AbhADNWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:22:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34292 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726670AbhADNWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:20:19 -0500
-Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr [90.89.98.255])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id D0640240003;
-        Mon,  4 Jan 2021 13:19:33 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 14:19:32 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     vadivel.muruganx.ramuthevar@linux.intel.com,
-        linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: intel: remove broken code
-Message-ID: <20210104141932.1037f8e3@xps13>
-In-Reply-To: <CAFBinCDw_Zwwww88Vd2yU5sMZxYg-NQWHhLiuV7A5rhApeNroA@mail.gmail.com>
-References: <20201217221148.2877318-1-martin.blumenstingl@googlemail.com>
-        <20210104094849.1850c993@xps13>
-        <CAFBinCDw_Zwwww88Vd2yU5sMZxYg-NQWHhLiuV7A5rhApeNroA@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 4 Jan 2021 08:22:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609766466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vPrbs+ygK2nW6UXpFCX2PTOIhaEcotjknLDYayf1rbg=;
+        b=RR+t52c/ES0bgXN62OrfOtjjhLmMeMkufS98DPBRXA5g9l+rBb+QiyOfyxQisqKx0uxmtQ
+        3VlvqXta2VBHyOSRCx6Isg5nMZsQ1u9/kJd3iXt6wmy+5nDWPVqfg4u9pib2EHkMPXVNGv
+        mUDSiKXc81BwnOfOlZ57btbEyfCu4z0=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-skHsRw5jOvqfXn9Kyt7T3A-1; Mon, 04 Jan 2021 08:21:04 -0500
+X-MC-Unique: skHsRw5jOvqfXn9Kyt7T3A-1
+Received: by mail-wm1-f69.google.com with SMTP id s130so10590290wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 05:21:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vPrbs+ygK2nW6UXpFCX2PTOIhaEcotjknLDYayf1rbg=;
+        b=CPiTmON7VChO/DPxj0o0YHXDMQ7J8IyzrNs9GRJWGbOq3pO/kGkapU3qTMPkiWUPs6
+         JHjVul7aGG8si8cDOTrxMvODNqRGqnFafy/ff/IjyOq4wjpJpwVLPYf7gGtFZlZSL+9U
+         l41MTnfyDzDSDAhKPNo8n+o1Ua/NWU/PvVMMNAfZFMG4HqOTSmWdAlNhWplTw6ddQPgF
+         Q+Pf4O7yVWHnuOz43ykgwR+kOBhQpddhbqdGgEoUqGc3DXivEUEdX/st9BsHMz8yYwQI
+         EQ2tYfBUWcgfDmUhSk8Q2I1S/PzEa8LAzbSmKw6+POZZaURRoSI5hATXl45D13i92I6k
+         RaCQ==
+X-Gm-Message-State: AOAM533UfaKtV/3Ig16WIklsRDS6W38bM1hAD8Fyg36Vyh23l9A+giPR
+        HaCqC0KkPsnJ3K5uevcPZCI1Iru17H72RxFthtGZVsfyuo7CocKmZB9zQSwAOfIA7kxIIxUx5JR
+        bfPlhox+/1q7ElLIsLQPf2x4n5nrvS8uK9LksQsgM
+X-Received: by 2002:adf:e452:: with SMTP id t18mr76929197wrm.177.1609766463247;
+        Mon, 04 Jan 2021 05:21:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwyejyAsfaLxHqjg5lrewtBBFczMjR6pbLPXoTYYnr8a8cMlhhVl17ylXysIJXWiOsLQQV2XV28iok3dOsd31w=
+X-Received: by 2002:adf:e452:: with SMTP id t18mr76929177wrm.177.1609766463058;
+ Mon, 04 Jan 2021 05:21:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+ <20201216124726.2842197-1-kai.heng.feng@canonical.com> <s5h5z51oj12.wl-tiwai@suse.de>
+ <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
+ <s5hzh2dn3oa.wl-tiwai@suse.de> <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
+ <s5hsg85n2km.wl-tiwai@suse.de> <s5hmtydn0yg.wl-tiwai@suse.de>
+ <CAAd53p6MMFh=HCNF9pyrJc9hVMZWFe7_8MvBcBHVWARqHU_TTA@mail.gmail.com>
+ <s5h7dpfk06y.wl-tiwai@suse.de> <CAAd53p53w0H6tsb4JgQtFTkYinniicTYBs2uk7tc=heP2dM_Cw@mail.gmail.com>
+ <CAKb7UvjWX7xbwMKtnad5EVy16nY1M-A13YJeRWyUwHzemcVswA@mail.gmail.com> <CAAd53p4=bSX26QzsPyV1sxADiuVn2sowWyb5JFDoPZQ+ZYoCzA@mail.gmail.com>
+In-Reply-To: <CAAd53p4=bSX26QzsPyV1sxADiuVn2sowWyb5JFDoPZQ+ZYoCzA@mail.gmail.com>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Mon, 4 Jan 2021 14:20:52 +0100
+Message-ID: <CACO55tsPx_UC3OPf9Hq9sGdnZg9jH1+B0zOi6EAxTZ13E1tf7A@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH v2] ALSA: hda: Continue to probe when codec
+ probe fails
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Ilia Mirkin <imirkin@alum.mit.edu>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        nouveau <nouveau@lists.freedesktop.org>, tiwai@suse.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-
-Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote on Mon,
-4 Jan 2021 14:13:04 +0100:
-
-> Hi Miquel,
-> 
-> thank you for looking into this
-> 
-> On Mon, Jan 4, 2021 at 9:48 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> [...]
-> > >       nand_set_flash_node(&ebu_host->chip, dev->of_node);
-> > > -     if (!mtd->name) {
-> > > -             dev_err(ebu_host->dev, "NAND label property is mandatory\n");
-> > > -             return -EINVAL;
-> > > -     }  
+On Tue, Dec 22, 2020 at 3:50 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> On Tue, Dec 22, 2020 at 1:56 AM Ilia Mirkin <imirkin@alum.mit.edu> wrote:
 > >
-> > This is valid code, it's best to use a label = "my-storage"; property
-> > in your NAND DT node. Then mtd->name will be updated by
-> > nand_set_flash_node().  
-> so you suggest moving the check instead?
-> the original code flow was:
->   mtd = NULL;
->   if (!mtd->name)
->      return -EINVAL;
->   mtd = nand_to_mtd(&ebu_host->chip);
->   ...
-> 
-> by saying that the code itself is valid you're asking me to update the
-> flow to the following:
->   mtd = nand_to_mtd(&ebu_host->chip);
->   if (!mtd->name)
->      return -EINVAL;
+> > On Mon, Dec 21, 2020 at 11:33 AM Kai-Heng Feng
+> > <kai.heng.feng@canonical.com> wrote:
+> > >
+> > > [+Cc nouveau]
+> > >
+> > > On Fri, Dec 18, 2020 at 4:06 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > [snip]
+> > > > > Quite possibly the system doesn't power up HDA controller when there's
+> > > > > no external monitor.
+> > > > > So when it's connected to external monitor, it's still needed for HDMI audio.
+> > > > > Let me ask the user to confirm this.
+> > > >
+> > > > Yeah, it's the basic question whether the HD-audio is supposed to work
+> > > > on this machine at all.  If yes, the current approach we take makes
+> > > > less sense - instead we should rather make the HD-audio controller
+> > > > working.
+> > >
+> > > Yea, confirmed that the Nvidia HDA works when HDMI is connected prior boot.
+> > >
+> > > > > > - The second problem is that pci_enable_device() ignores the error
+> > > > > >   returned from pci_set_power_state() if it's -EIO.  And the
+> > > > > >   inaccessible access error returns -EIO, although it's rather a fatal
+> > > > > >   problem.  So the driver believes as the PCI device gets enabled
+> > > > > >   properly.
+> > > > >
+> > > > > This was introduced in 2005, by Alan's 11f3859b1e85 ("[PATCH] PCI: Fix
+> > > > > regression in pci_enable_device_bars") to fix UHCI controller.
+> > > > >
+> > > > > >
+> > > > > > - The third problem is that HD-audio driver blindly believes the
+> > > > > >   codec_mask read from the register even if it's a read failure as I
+> > > > > >   already showed.
+> > > > >
+> > > > > This approach has least regression risk.
+> > > >
+> > > > Yes, but it assumes that HD-audio is really non-existent.
+> > >
+> > > I really don't know any good approach to address this.
+> > > On Windows, HDA PCI is "hidden" until HDMI cable is plugged, then the
+> > > driver will flag the magic bit to make HDA audio appear on the PCI
+> > > bus.
+> > > IIRC the current approach is to make nouveau and device link work.
+> >
+> > I don't have the full context of this discussion, but the kernel
+> > force-enables the HDA subfunction nowadays, irrespective of nouveau or
+> > nvidia or whatever:
+>
+> That's the problem.
+>
+> The nvidia HDA controller on the affected system only gets its power
+> after HDMI cable plugged, so the probe on boot fails.
+>
 
-I actually missed the fact that mtd was used initialized, but yes that
-is exactly what I meant!
+it might be that the code to enable the sub function is a bit broken
+:/ but it should work. Maybe the quirk_nvidia_hda function needs to be
+called on more occasions? No idea.
 
-Thanks,
-Miquèl
+> Kai-Heng
+>
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/quirks.c?h=v5.10#n5267
+> >
+> > Cheers,
+> >
+> >   -ilia
+> _______________________________________________
+> Nouveau mailing list
+> Nouveau@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/nouveau
+>
+
