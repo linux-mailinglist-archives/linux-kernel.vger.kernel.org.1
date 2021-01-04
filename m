@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2A72EA0F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D3E2EA0F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbhADXfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:35:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727728AbhADXfc (ORCPT
+        id S1727235AbhADXgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:36:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43939 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726643AbhADXgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:35:32 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FD9C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 15:34:52 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id w79so25095898qkb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 15:34:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X97uCJbbPtgQJjHkz/WOFp2vCTZb6uVs/5ruurICYkw=;
-        b=ULBNjuLdpqWAZ2CmB4BzlMaaWd3wivYDUqf55ArdZL2bND/xzqNk6lG+FiPOQ3Cog7
-         8OWR2FOxNEmVvPShnwuw404/xjOdmYxarDoSwJ5MY1ZE15lsrphO2R+j9eTpWKU92j+x
-         uh9AqedpJvOh9AcrGi4jrr1n4V6JVblSeFnH+jRy19l0aDor/DRyet4C7CjxNvL/awm8
-         nhvCtaZfZbX9RMKvN/6jVUCEJOoM+KPJb4MVDSDNj1A+m99pgBRygkdHC3Ymff2D1VFH
-         r4yidWA26S7SANyIzmpf46wpvzaHPhDCTyZNRobFlFog5Tpt2v1Azok1+G7bLBrW1wPo
-         7+nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X97uCJbbPtgQJjHkz/WOFp2vCTZb6uVs/5ruurICYkw=;
-        b=R8OVPCcgW2jxtyPr2o0dmSczjhf8E7YoTvMjWsWMKaIgsX67DxGwbTUpHItxt1p/c9
-         938eAEfNjU4+PcYPj+Z1y9zeCKd2zP/l2q87a834PtXjPIN2UMS74dGKytbLy/7vhSGt
-         pCgqd3qSLu+xeIh3El20UKrujokeSSPyFmczmqMojbWJgCDwDA6tRVqSkYTVgNILs2i6
-         m+bBdr0piZubPihv3Ht244+955GgeIYUWsZINt+NYlf6lCJwOF1PG8Viy5xlMGc19Qin
-         PlvizCvBfP9q6lFQrcLAZ2AG2oZLXC8hMDo23JzLkdRvfX2gTFey9EFARHT54yxgJJM5
-         wCjw==
-X-Gm-Message-State: AOAM5336Axe5n/U4RefYbP1FUXbFbaupbHrUA2kEXLRUpa6wUctnT1Kj
-        NLICQ/4Pr5b7M8V8BXSguhw=
-X-Google-Smtp-Source: ABdhPJyTaA/4opdvLbW70FT+gxV6Bugiw2rykz38pBk31F7LC9wVf7OVz9/puIBVkWXDPMDPTLLe5A==
-X-Received: by 2002:a37:b4b:: with SMTP id 72mr74113122qkl.48.1609803291325;
-        Mon, 04 Jan 2021 15:34:51 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id a22sm37751757qkl.121.2021.01.04.15.34.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 15:34:50 -0800 (PST)
-Date:   Mon, 4 Jan 2021 16:34:49 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Marco Elver <elver@google.com>, Arnd Bergmann <arnd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        George Popescu <georgepope@android.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] ubsan: disable unsigned-integer-overflow sanitizer with
- clang
-Message-ID: <20210104233449.GA3382424@ubuntu-m3-large-x86>
-References: <20201230154749.746641-1-arnd@kernel.org>
- <CANpmjNNGmbgg_pFMC6X_6vZcj53jy7PsNyZAC88rOQC5zrOiFw@mail.gmail.com>
- <20210104223336.GA2562866@ubuntu-m3-large-x86>
- <20210104153333.4b6c7ae49edc4182d53bd17f@linux-foundation.org>
+        Mon, 4 Jan 2021 18:36:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609803323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yVDxwdUBGkQMs4znx48SVYeyk3m6+wNqj8IWaOnvkQE=;
+        b=G/Y67hDxxcV00WOh+bgyJZ/th4eNgXGJquW/DKAsclbs05SjxZDyEfu2GeO7bWHjbrs925
+        RVY1oEqwqO2NRP359MRfV1xzYX5sOEbO8pSliJ9zO50oDSooTWESfMGfCYg1feNdzN2T5E
+        7i5P3ALWaKFHoiUzMawWe2gcQoI/X5k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-44-ylFvUh_aPBKm5_1dbnK1wA-1; Mon, 04 Jan 2021 18:35:21 -0500
+X-MC-Unique: ylFvUh_aPBKm5_1dbnK1wA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59B7A8030A0;
+        Mon,  4 Jan 2021 23:35:20 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D05E31A7D9;
+        Mon,  4 Jan 2021 23:35:18 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>
+Cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] afs: Fix directory entry name handling
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210104153333.4b6c7ae49edc4182d53bd17f@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <313280.1609803317.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 04 Jan 2021 23:35:17 +0000
+Message-ID: <313281.1609803317@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 03:33:33PM -0800, Andrew Morton wrote:
-> On Mon, 4 Jan 2021 15:33:36 -0700 Nathan Chancellor <natechancellor@gmail.com> wrote:
-> 
-> > > > +++ b/lib/Kconfig.ubsan
-> > > > @@ -122,6 +122,8 @@ config UBSAN_SIGNED_OVERFLOW
-> > > >
-> > > >  config UBSAN_UNSIGNED_OVERFLOW
-> > > >         bool "Perform checking for unsigned arithmetic overflow"
-> > > > +       # clang hugely expands stack usage with -fsanitize=object-size
-> > > 
-> > > This is the first time -fsanitize=object-size is mentioned. Typo?
-> > 
-> > Copy and paste issue from CONFIG_UBSAN_OBJECT_SIZE
-> 
-> This?
+Hi Linus,
 
-Correct.
+Could you pull these two commits, assuming Daniel doesn't object?  The fir=
+st
+is the fix for the strnlen() array limit check and the second fixes the
+calculation of the number of dirent records used to represent any particul=
+ar
+filename length.
 
-> --- a/lib/Kconfig.ubsan~ubsan-disable-unsigned-integer-overflow-sanitizer-with-clang-fix
-> +++ a/lib/Kconfig.ubsan
-> @@ -122,7 +122,7 @@ config UBSAN_SIGNED_OVERFLOW
->  
->  config UBSAN_UNSIGNED_OVERFLOW
->  	bool "Perform checking for unsigned arithmetic overflow"
-> -	# clang hugely expands stack usage with -fsanitize=object-size
-> +	# clang hugely expands stack usage with -fsanitize=unsigned-integer-overflow
->  	depends on !CC_IS_CLANG
->  	depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
->  	help
-> _
-> 
+I've added Tested-bys for Marc Dionne into the branch, but otherwise the
+patches should be the same as have been on the branch since the 23rd (was
+commit 587f19fc90c1).
 
-Cheers,
-Nathan
+David
+---
+The following changes since commit a409ed156a90093a03fe6a93721ddf4c591eac8=
+7:
+
+  Merge tag 'gpio-v5.11-1' of git://git.kernel.org/pub/scm/linux/kernel/gi=
+t/linusw/linux-gpio (2020-12-17 18:07:20 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/afs-fixes-04012021
+
+for you to fetch changes up to 366911cd762db02c2dd32fad1be96b72a66f205d:
+
+  afs: Fix directory entry size calculation (2021-01-04 12:25:19 +0000)
+
+----------------------------------------------------------------
+AFS fixes
+
+----------------------------------------------------------------
+David Howells (2):
+      afs: Work around strnlen() oops with CONFIG_FORTIFIED_SOURCE=3Dy
+      afs: Fix directory entry size calculation
+
+ fs/afs/dir.c               | 49 ++++++++++++++++++++++++-----------------=
+-----
+ fs/afs/dir_edit.c          |  6 ++----
+ fs/afs/xdr_fs.h            | 25 +++++++++++++++++++----
+ include/trace/events/afs.h |  2 ++
+ 4 files changed, 51 insertions(+), 31 deletions(-)
+
