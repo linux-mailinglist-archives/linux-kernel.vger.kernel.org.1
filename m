@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2632E9CE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C295D2E9CEA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727341AbhADSSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:18:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726072AbhADSSK (ORCPT
+        id S1727566AbhADSTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 13:19:11 -0500
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:39292 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbhADSTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:18:10 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A732FC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 10:17:29 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id o13so66601972lfr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 10:17:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nxs/g6TU6k+3ccAxWF3RmI3wwmsghsbxSfcyPJnj/yE=;
-        b=aU3EveDTHVgrRuQoFlRYqzfsZL5PVBtqBHAghkzv90SxCacKkYgqK0oz8N2aFLuSWv
-         o9YlFu+tAfUMqjhpA9cSRvWsPTjus8T+Og3w33OQsA3aR8vIGht1AH7jvtAP8kPvzaS/
-         L86nkINnFDxWEccDGvypL8FSTXbiRq6Kack1Y=
+        Mon, 4 Jan 2021 13:19:10 -0500
+Received: by mail-wm1-f45.google.com with SMTP id 3so127537wmg.4;
+        Mon, 04 Jan 2021 10:18:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nxs/g6TU6k+3ccAxWF3RmI3wwmsghsbxSfcyPJnj/yE=;
-        b=gv7/tiNKYGw0KkFLX4M9U6pRWx0x7HnnUkX4EZH4jcob6J6uTX9IHLI1ysOlamKBn1
-         Lk5PlAEaE4KJytHSB3OL3C7etloicCyS8UEA6ZcaKrU2By1dSHzGbnHOCpDCCCUWfFXB
-         WyyBkkf2hRnWX0YQM4IAJP1kUq9jSdscXeEb4Oh6jJKhDAjArTrb5659s0OrGO+Bv9n5
-         /PPIKhdXpR8uU1GAy+RqBqklR9EAYGTxfJlaO0nlVF96xI0IYoQDCMMpdis7SKy7X7Zy
-         zU5qJGzh24w6EKdern6iuofHZDPo25YwNd+iZyUMpX21wVrlU0gheqL7REZ0wdWWNIBq
-         jcXw==
-X-Gm-Message-State: AOAM531Wm2PHpWILDjb3RZo6cmuUD+10yhdhV6DfxQ/JZT9nsD+ffVWO
-        SCdlRfoHbN/fMPTcvDfhY00aY5TDGl2Gkw==
-X-Google-Smtp-Source: ABdhPJwIXc0Lmju5P51dROxKNb5fK5zYNdcs2vxB6gAh+mTTngP8rX1t768D0W4GV6fFSMlemjpOCw==
-X-Received: by 2002:ac2:5c08:: with SMTP id r8mr32290024lfp.12.1609784247491;
-        Mon, 04 Jan 2021 10:17:27 -0800 (PST)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id v7sm7346883lfg.9.2021.01.04.10.17.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 10:17:26 -0800 (PST)
-Received: by mail-lf1-f49.google.com with SMTP id m12so66551677lfo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 10:17:26 -0800 (PST)
-X-Received: by 2002:a2e:9ad7:: with SMTP id p23mr34245988ljj.465.1609784245871;
- Mon, 04 Jan 2021 10:17:25 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y+NTvbLk4IzzMQK1/SZQ7lLpxAYEqAF6MOVXtS7spWg=;
+        b=AsMwAr/K7cyLetQtcPFpqs/NqKQabPftA/pVy0Wiu/KAq4PpwmK4msAZH1aN0QoBXN
+         ZXM7Xj/NFoZISFhjP46zxMksV+YTqZaxappTzgpZFjo+go83E1mEShg4Cy6895gIWdl2
+         q0kmq81inI8rw9rOPTlQhXEo/PMAs+rIcKr2Ov3a8zyfK5Bg9eY96uV9jdD8WaAm9ORH
+         9vUsQsAK0htmHmhBHAct6Qbh5DOF6DdHXS9TIlRnBreob3uQafRLMdDYgiI9fXZjTh36
+         G6EXatwzCzePU5sq+9P7TssECoiW+HrFbpFi7cLPcAfy0YQyLeoQkRTH3HJcNH2qj3iQ
+         +NTQ==
+X-Gm-Message-State: AOAM533Q57kutc8TeDN7MtU3TUl/n2XCVZDmstjqfK74m0/P1cf6fWCH
+        9cAS37TiYTowWykSDMxQtSI=
+X-Google-Smtp-Source: ABdhPJyxaw81/VsDm31di+CjRZDa5b043/h6CfX6p+2JizDxYrVRkfy8Dr09rKnqvDo/5ZkHa0Uyug==
+X-Received: by 2002:a1c:4483:: with SMTP id r125mr143991wma.80.1609784308269;
+        Mon, 04 Jan 2021 10:18:28 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id x7sm210739wmi.11.2021.01.04.10.18.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 10:18:27 -0800 (PST)
+Date:   Mon, 4 Jan 2021 19:18:25 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Timon Baetz <timon.baetz@protonmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
+ nodes
+Message-ID: <20210104181825.GB27043@kozik-lap>
+References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
+ <20201230205139.1812366-2-timon.baetz@protonmail.com>
+ <20210104135156.GB5645@sirena.org.uk>
 MIME-Version: 1.0
-References: <365031.1608567254@warthog.procyon.org.uk> <CAHk-=whRD1YakfPKE72htDBzTKA73x3aEwi44ngYFf4WCk+1kQ@mail.gmail.com>
- <257074.1609763562@warthog.procyon.org.uk>
-In-Reply-To: <257074.1609763562@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 4 Jan 2021 10:17:10 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjFom7xhs5SHcWi1toxrBDwmyhBmVmGOqn9e3g6+bf5sw@mail.gmail.com>
-Message-ID: <CAHk-=wjFom7xhs5SHcWi1toxrBDwmyhBmVmGOqn9e3g6+bf5sw@mail.gmail.com>
-Subject: Re: [RFC][PATCH] afs: Work around strnlen() oops with CONFIG_FORTIFIED_SOURCE=y
-To:     David Howells <dhowells@redhat.com>
-Cc:     Daniel Axtens <dja@axtens.net>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210104135156.GB5645@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 4:32 AM David Howells <dhowells@redhat.com> wrote:
->
-> How about the attached, then?  I
+On Mon, Jan 04, 2021 at 01:51:56PM +0000, Mark Brown wrote:
+> On Wed, Dec 30, 2020 at 08:52:07PM +0000, Timon Baetz wrote:
+> 
+> > +- charger: Node for configuring the charger driver.
+> > +  Required properties:
+> > +  - compatible: "maxim,max8997-battery"
+> > +  Optional properties:
+> > +  - extcon: extcon specifier for charging events
+> > +  - charger-supply: regulator node for charging current
+> > +
+> > +- muic: Node used only by extcon consumers.
+> > +  Required properties:
+> > +  - compatible: "maxim,max8997-muic"
+> 
+> Why do these need to appear in the DT binding?  We know these features
+> are there simply from knowing this is a max8997.
 
-That looks like the right thing, but I didn't check how the name[]
-array (or the overflow[] one) is actually used. But I assume you've
-tested this.
+If you refer to children nodes, then we do not know these entirely
+because the features could be disabled (pins not connected).  In such
+case these subnodes can be disabled and MFD framework will not
+instantiate children devices.
 
-Do you want me to apply the patch as-is, or will I be getting a pull
-request with this (and the number-of-slots calculation thing you
-mention in the commit message)?
+If you mean "the properties" like extcon or charger, then indeed it's a
+good question. In theory, wires still could be routed differently, e.g.
+different charging regulator used as a charger.
+In practice this is highly unlikely, however such DT design allows
+easier hooking up of different devices and even potential re-usage of
+kernel drivers (also unlikely...).
 
-               Linus
+Best regards,
+Krzysztof
+
