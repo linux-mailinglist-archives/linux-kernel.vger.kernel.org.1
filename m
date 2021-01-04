@@ -2,48 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3732E9BC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D892E9BD2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727755AbhADRMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:12:24 -0500
-Received: from verein.lst.de ([213.95.11.211]:58552 "EHLO verein.lst.de"
+        id S1726719AbhADRQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:16:46 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:48868 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727217AbhADRMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:12:24 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id EDAD168AFE; Mon,  4 Jan 2021 18:11:41 +0100 (CET)
-Date:   Mon, 4 Jan 2021 18:11:41 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Minwoo Im <minwoo.im.dev@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Subject: Re: [RFC PATCH V3 1/1] block: reject I/O for same fd if block size
- changed
-Message-ID: <20210104171141.GB27235@lst.de>
-References: <20210104130659.22511-1-minwoo.im.dev@gmail.com> <20210104130659.22511-2-minwoo.im.dev@gmail.com> <20210104171108.GA27235@lst.de>
+        id S1725840AbhADRQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 12:16:46 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kwTSV-00Fzlp-99; Mon, 04 Jan 2021 18:15:55 +0100
+Date:   Mon, 4 Jan 2021 18:15:55 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ioana Ciornei <ioana.ciornei@nxp.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] [RFC] net: phy: Fix reboot crash if CONFIG_IP_PNP is not
+ set
+Message-ID: <X/NNS3FUeSNxbqwo@lunn.ch>
+References: <20210104122415.1263541-1-geert+renesas@glider.be>
+ <20210104145331.tlwjwbzey5i4vgvp@skbuf>
+ <CAMuHMdUVsSuAur1wWkjs7FW5N-36XV9iXA6wmvst59eKoUFDHQ@mail.gmail.com>
+ <20210104170112.hn6t3kojhifyuaf6@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210104171108.GA27235@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210104170112.hn6t3kojhifyuaf6@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 06:11:08PM +0100, Christoph Hellwig wrote:
-> On Mon, Jan 04, 2021 at 10:06:59PM +0900, Minwoo Im wrote:
-> > +	if (q->backing_dev_info && q->backing_dev_info->owner &&
-> > +			limits->logical_block_size != size) {
-> > +		bdev = blkdev_get_no_open(q->backing_dev_info->owner->devt);
-> > +		bdev->bd_disk->flags |= GENHD_FL_BLOCK_SIZE_CHANGED;
-> > +		blkdev_put_no_open(bdev);
-> > +	}
+> Ok, so this does not have anything to do with interrupts explicitly but
+> rather with the fact that any PHY access will cause a crash when the
+> sh_eth device is powered down.
 > 
-> We really need the backpointer from the queue to the gendisk I've wanted
-> to add for a while.  Can we at least restrict this to a live gendisk?
+> If the device is powered-down before the actual .ndo_open() how is the
+> probe actually setting up the device? Or is the device returned to the
+> powered-down state after the probe and only powered-up at a subsequent
+> .ndo_open()?
+> 
+> Instead of the phy_is_started() call we could check if we had previously
+> enabled the interrupts on the PHY but this would mean that a basic
+> assumption of the PHY library is violated in that a registered PHY
+> device cannot access its regiters because the MDIO controller just
+> decided so.
+> 
+> Can't the MDIO bitbang driver callbacks just check if the device is
+> powered-down and if it is just power it back up temporarily?
 
-Alternatively we could make this request_queue QUEUE* flag for now.
+Is this runtime PM?
+
+I had problems with the FEC driver and its runtime PM. After probe, it
+would runtime power off its clocks, making the MDIO bus unusable. For
+a plain boring setup, this is not too much of a problem, but when you
+have a DSA switch on the bus, the DSA driver expects to be able to
+access the switch, and this failed. I had to make the MDIO bus driver
+in the FEC runtime PM aware, and turn the clocks back on again when an
+MDIO transaction occurred.
+
+The basic rules here should be, if the MDIO bus is registered, it is
+usable. There are things like PHY statistics, HWMON temperature
+sensors, etc, DSA switches, all which have a life cycle separate to
+the interface being up.
+
+    Andrew
