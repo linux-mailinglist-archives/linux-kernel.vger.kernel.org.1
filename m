@@ -2,270 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66772EA0DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8932EA0D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbhADXct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:32:49 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:51140 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbhADXcs (ORCPT
+        id S1727416AbhADXb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:31:29 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:37454 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727284AbhADXb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:32:48 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104NStH3180275;
-        Mon, 4 Jan 2021 23:31:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=vVs+eAl8TRmQb1+nM0NLAnLj6aIMlFfEaNzxzE8Ezkk=;
- b=WQgb+pNNwg38aDMDNPrvVtZr1vKf9l3QiM15noDQGizT5uAMZzhL4aDFBJ2aOmwp52Lc
- q1a+d8V+ZQiyTSnBL3n1665kXPBZ6SO0YCzHH3mSqoy6cptWqkz606ENRwrQJtIawyI2
- qi+xpdVXjs+cUsU60m/IlWmpr730sJgXlxgPANR5WWmyhD/Aju/ReXb/2AKyQQJwSEwt
- 1LkgiRe6cQ7G+hDYsuEzwx5BpBjXIgJ/1GPN+mD351UGVG1dFBLMYsWK22vfmN4Xh5i3
- oCXECrhx3bHN5zL4YmZ0CoCA+NXGV/32ybTpCvcU0TjlGJX10ZAaTnA/Dan/9Qe9jhA6 Mg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 35tebappsu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 04 Jan 2021 23:31:50 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104NVPbY056531;
-        Mon, 4 Jan 2021 23:31:49 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 35v1f7xgfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Jan 2021 23:31:49 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 104NM1eH026653;
-        Mon, 4 Jan 2021 23:22:01 GMT
-Received: from localhost (/10.159.152.204)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Jan 2021 15:22:00 -0800
-Date:   Mon, 4 Jan 2021 15:21:59 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
-        dan.j.williams@intel.com, david@fromorbit.com, hch@lst.de,
-        song@kernel.org, rgoldwyn@suse.de, qi.fuli@fujitsu.com,
-        y-goto@fujitsu.com
-Subject: Re: [PATCH 09/10] xfs: Implement ->corrupted_range() for XFS
-Message-ID: <20210104232159.GQ6918@magnolia>
-References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
- <20201230165601.845024-10-ruansy.fnst@cn.fujitsu.com>
+        Mon, 4 Jan 2021 18:31:29 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 1A58120B7192;
+        Mon,  4 Jan 2021 15:30:46 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1A58120B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1609803046;
+        bh=ciyRF8ztYZLvsI06NwUYXq6asYcrdgHazc91Umb4Pl4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZhmE01FCeU4crsNS8TLxkrNqkRRAtO1/Q9l2dBM0Qy3FZZjOriL0DH4tH/dSfDh2W
+         p0Zrr5ceQQIlavPo3HYjK1b0JzncD9eqadmLdwXYg3Gcrk+wULPnGpHxhdjAWyEliR
+         m8C+ghVhW1WMxsT24ayH6cryQxJJwhTGX5RaFUIc=
+Subject: Re: [PATCH v9 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+To:     Paul Moore <paul@paul-moore.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        sashal@kernel.org, James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201212180251.9943-1-tusharsu@linux.microsoft.com>
+ <20201212180251.9943-9-tusharsu@linux.microsoft.com>
+ <CAHC9VhSao7DGtskbDMax8hN+PhQr8homFXUGjm+c7NtEUCtKhg@mail.gmail.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <2dce2244-adbd-df2a-e890-271bbcc8f9f2@linux.microsoft.com>
+Date:   Mon, 4 Jan 2021 15:30:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230165601.845024-10-ruansy.fnst@cn.fujitsu.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101040142
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1015 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101040142
+In-Reply-To: <CAHC9VhSao7DGtskbDMax8hN+PhQr8homFXUGjm+c7NtEUCtKhg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 12:56:00AM +0800, Shiyang Ruan wrote:
-> This function is used to handle errors which may cause data lost in
-> filesystem.  Such as memory failure in fsdax mode.
-> 
-> In XFS, it requires "rmapbt" feature in order to query for files or
-> metadata which associated to the corrupted data.  Then we could call fs
-> recover functions to try to repair the corrupted data.(did not
-> implemented in this patchset)
-> 
-> After that, the memory failure also needs to notify the processes who
-> are using those files.
-> 
-> Only support data device.  Realtime device is not supported for now.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-> ---
->  fs/xfs/xfs_fsops.c |   5 +++
->  fs/xfs/xfs_mount.h |   1 +
->  fs/xfs/xfs_super.c | 107 +++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 113 insertions(+)
-> 
-> diff --git a/fs/xfs/xfs_fsops.c b/fs/xfs/xfs_fsops.c
-> index ef1d5bb88b93..0a2038875d32 100644
-> --- a/fs/xfs/xfs_fsops.c
-> +++ b/fs/xfs/xfs_fsops.c
-> @@ -501,6 +501,11 @@ xfs_do_force_shutdown(
->  "Corruption of in-memory data detected.  Shutting down filesystem");
->  		if (XFS_ERRLEVEL_HIGH <= xfs_error_level)
->  			xfs_stack_trace();
-> +	} else if (flags & SHUTDOWN_CORRUPT_META) {
-> +		xfs_alert_tag(mp, XFS_PTAG_SHUTDOWN_CORRUPT,
-> +"Corruption of on-disk metadata detected.  Shutting down filesystem");
-> +		if (XFS_ERRLEVEL_HIGH <= xfs_error_level)
-> +			xfs_stack_trace();
->  	} else if (logerror) {
->  		xfs_alert_tag(mp, XFS_PTAG_SHUTDOWN_LOGERROR,
->  			"Log I/O Error Detected. Shutting down filesystem");
-> diff --git a/fs/xfs/xfs_mount.h b/fs/xfs/xfs_mount.h
-> index dfa429b77ee2..8f0df67ffcc1 100644
-> --- a/fs/xfs/xfs_mount.h
-> +++ b/fs/xfs/xfs_mount.h
-> @@ -274,6 +274,7 @@ void xfs_do_force_shutdown(struct xfs_mount *mp, int flags, char *fname,
->  #define SHUTDOWN_LOG_IO_ERROR	0x0002	/* write attempt to the log failed */
->  #define SHUTDOWN_FORCE_UMOUNT	0x0004	/* shutdown from a forced unmount */
->  #define SHUTDOWN_CORRUPT_INCORE	0x0008	/* corrupt in-memory data structures */
-> +#define SHUTDOWN_CORRUPT_META	0x0010  /* corrupt metadata on device */
->  
->  /*
->   * Flags for xfs_mountfs
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index e3e229e52512..cbcad419bb9e 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -35,6 +35,11 @@
->  #include "xfs_refcount_item.h"
->  #include "xfs_bmap_item.h"
->  #include "xfs_reflink.h"
-> +#include "xfs_alloc.h"
-> +#include "xfs_rmap.h"
-> +#include "xfs_rmap_btree.h"
-> +#include "xfs_rtalloc.h"
-> +#include "xfs_bit.h"
->  
->  #include <linux/magic.h>
->  #include <linux/fs_context.h>
-> @@ -1103,6 +1108,107 @@ xfs_fs_free_cached_objects(
->  	return xfs_reclaim_inodes_nr(XFS_M(sb), sc->nr_to_scan);
->  }
->  
-> +static int
-> +xfs_corrupt_helper(
-> +	struct xfs_btree_cur		*cur,
-> +	struct xfs_rmap_irec		*rec,
-> +	void				*data)
-> +{
-> +	struct xfs_inode		*ip;
-> +	struct address_space		*mapping;
-> +	int				rc = 0;
-> +	int				*flags = data;
-> +
-> +	if (XFS_RMAP_NON_INODE_OWNER(rec->rm_owner) ||
-> +	    (rec->rm_flags & (XFS_RMAP_ATTR_FORK | XFS_RMAP_BMBT_BLOCK))) {
-> +		// TODO check and try to fix metadata
-> +		rc = -EFSCORRUPTED;
-> +	} else {
-> +		/*
-> +		 * Get files that incore, filter out others that are not in use.
-> +		 */
-> +		rc = xfs_iget(cur->bc_mp, cur->bc_tp, rec->rm_owner,
-> +			      XFS_IGET_INCORE, 0, &ip);
-> +		if (rc || !ip)
-> +			return rc;
-> +		if (!VFS_I(ip)->i_mapping)
-> +			goto out;
-> +
-> +		mapping = VFS_I(ip)->i_mapping;
-> +		if (IS_DAX(VFS_I(ip)))
-> +			rc = mf_dax_mapping_kill_procs(mapping, rec->rm_offset,
-> +						       *flags);
-> +		else
-> +			mapping_set_error(mapping, -EFSCORRUPTED);
+On 12/23/20 1:10 PM, Paul Moore wrote:
 
-Hm.  I don't know if EFSCORRUPTED is the right error code for corrupt
-file data, since we (so far) have only used it for corrupt metadata.
+Hi Paul,
 
-> +
-> +		// TODO try to fix data
-> +out:
-> +		xfs_irele(ip);
-> +	}
-> +
-> +	return rc;
-> +}
-> +
-> +static int
-> +xfs_fs_corrupted_range(
-> +	struct super_block	*sb,
-> +	struct block_device	*bdev,
-> +	loff_t			offset,
-> +	size_t			len,
-> +	void			*data)
-> +{
-> +	struct xfs_mount	*mp = XFS_M(sb);
-> +	struct xfs_trans	*tp = NULL;
-> +	struct xfs_btree_cur	*cur = NULL;
-> +	struct xfs_rmap_irec	rmap_low, rmap_high;
-> +	struct xfs_buf		*agf_bp = NULL;
-> +	xfs_fsblock_t		fsbno = XFS_B_TO_FSB(mp, offset);
-> +	xfs_filblks_t		bcnt = XFS_B_TO_FSB(mp, len);
-> +	xfs_agnumber_t		agno = XFS_FSB_TO_AGNO(mp, fsbno);
-> +	xfs_agblock_t		agbno = XFS_FSB_TO_AGBNO(mp, fsbno);
-> +	int			error = 0;
-> +
-> +	if (mp->m_rtdev_targp && mp->m_rtdev_targp->bt_bdev == bdev) {
-> +		xfs_warn(mp, "corrupted_range support not available for realtime device!");
-> +		return 0;
-> +	}
-> +	if (mp->m_logdev_targp && mp->m_logdev_targp->bt_bdev == bdev &&
-> +	    mp->m_logdev_targp != mp->m_ddev_targp) {
-> +		xfs_err(mp, "ondisk log corrupt, shutting down fs!");
-> +		xfs_force_shutdown(mp, SHUTDOWN_CORRUPT_META);
-> +		return 0;
-> +	}
-> +
-> +	if (!xfs_sb_version_hasrmapbt(&mp->m_sb)) {
-> +		xfs_warn(mp, "corrupted_range needs rmapbt enabled!");
-> +		return 0;
-> +	}
-> +
-> +	error = xfs_trans_alloc_empty(mp, &tp);
-> +	if (error)
-> +		return error;
-> +
-> +	error = xfs_alloc_read_agf(mp, tp, agno, 0, &agf_bp);
-> +	if (error)
-> +		return error;
-> +
-> +	cur = xfs_rmapbt_init_cursor(mp, tp, agf_bp, agno);
-> +
-> +	/* Construct a range for rmap query */
-> +	memset(&rmap_low, 0, sizeof(rmap_low));
-> +	memset(&rmap_high, 0xFF, sizeof(rmap_high));
-> +	rmap_low.rm_startblock = rmap_high.rm_startblock = agbno;
-> +	rmap_low.rm_blockcount = rmap_high.rm_blockcount = bcnt;
-> +
-> +	error = xfs_rmap_query_range(cur, &rmap_low, &rmap_high, xfs_corrupt_helper, data);
-> +	if (error == -EFSCORRUPTED)
-> +		xfs_force_shutdown(mp, SHUTDOWN_CORRUPT_META);
-> +
-> +	xfs_btree_del_cursor(cur, error);
-> +	xfs_trans_brelse(tp, agf_bp);
-
-The transaction needs to be committed (or cancelled) here, or else it
-leaks.
-
---D
-
-> +	return error;
-> +}
-> +
->  static const struct super_operations xfs_super_operations = {
->  	.alloc_inode		= xfs_fs_alloc_inode,
->  	.destroy_inode		= xfs_fs_destroy_inode,
-> @@ -1116,6 +1222,7 @@ static const struct super_operations xfs_super_operations = {
->  	.show_options		= xfs_fs_show_options,
->  	.nr_cached_objects	= xfs_fs_nr_cached_objects,
->  	.free_cached_objects	= xfs_fs_free_cached_objects,
-> +	.corrupted_range	= xfs_fs_corrupted_range,
->  };
->  
->  static int
-> -- 
-> 2.29.2
+> ...
 > 
+>> diff --git a/security/selinux/Makefile b/security/selinux/Makefile
+>> index 4d8e0e8adf0b..83d512116341 100644
+>> --- a/security/selinux/Makefile
+>> +++ b/security/selinux/Makefile
+>> @@ -16,6 +16,8 @@ selinux-$(CONFIG_NETLABEL) += netlabel.o
+>>
+>>   selinux-$(CONFIG_SECURITY_INFINIBAND) += ibpkey.o
+>>
+>> +selinux-$(CONFIG_IMA) += measure.o
 > 
+> Naming things is hard, I get that, but I would prefer if we just
+> called this file "ima.c" or something similar.  The name "measure.c"
+> implies a level of abstraction or general use which simply doesn't
+> exist here.  Let's help make it a bit more obvious what should belong
+> in this file.
+Agreed - I will rename the file to ima.c
+
 > 
+>> diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
+>> index 3cc8bab31ea8..18ee65c98446 100644
+>> --- a/security/selinux/include/security.h
+>> +++ b/security/selinux/include/security.h
+>> @@ -229,7 +229,8 @@ void selinux_policy_cancel(struct selinux_state *state,
+>>                          struct selinux_policy *policy);
+>>   int security_read_policy(struct selinux_state *state,
+>>                           void **data, size_t *len);
+>> -
+>> +int security_read_policy_kernel(struct selinux_state *state,
+>> +                               void **data, size_t *len);
+>>   int security_policycap_supported(struct selinux_state *state,
+>>                                   unsigned int req_cap);
+>>
+>> @@ -446,4 +447,12 @@ extern void ebitmap_cache_init(void);
+>>   extern void hashtab_cache_init(void);
+>>   extern int security_sidtab_hash_stats(struct selinux_state *state, char *page);
+>>
+>> +#ifdef CONFIG_IMA
+>> +extern void selinux_measure_state(struct selinux_state *selinux_state);
+>> +#else
+>> +static inline void selinux_measure_state(struct selinux_state *selinux_state)
+>> +{
+>> +}
+>> +#endif
+> 
+> If you are going to put the SELinux/IMA function(s) into a separate
+> source file, please put the function declarations into a separate
+> header file too.  For example, look at
+> security/selinux/include/{netif,netnode,netport,etc.}.h.
+
+I will create a new header file "security/selinux/include/ima.h" and 
+move the function declarations for IMA functions to that header.
+
+> 
+>> diff --git a/security/selinux/measure.c b/security/selinux/measure.c
+>> new file mode 100644
+>> index 000000000000..b7e24358e11d
+>> --- /dev/null
+>> +++ b/security/selinux/measure.c
+>> @@ -0,0 +1,79 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Measure SELinux state using IMA subsystem.
+>> + */
+>> +#include <linux/vmalloc.h>
+>> +#include <linux/ktime.h>
+>> +#include <linux/ima.h>
+>> +#include "security.h"
+>> +
+>> +/*
+>> + * This function creates a unique name by appending the timestamp to
+>> + * the given string. This string is passed as "event_name" to the IMA
+>> + * hook to measure the given SELinux data.
+>> + *
+>> + * The data provided by SELinux to the IMA subsystem for measuring may have
+>> + * already been measured (for instance the same state existed earlier).
+>> + * But for SELinux the current data represents a state change and hence
+>> + * needs to be measured again. To enable this, pass a unique "event_name"
+>> + * to the IMA hook so that IMA subsystem will always measure the given data.
+>> + *
+>> + * For example,
+>> + * At time T0 SELinux data to be measured is "foo". IMA measures it.
+>> + * At time T1 the data is changed to "bar". IMA measures it.
+>> + * At time T2 the data is changed to "foo" again. IMA will not measure it
+>> + * (since it was already measured) unless the event_name, for instance,
+>> + * is different in this call.
+>> + */
+>> +static char *selinux_event_name(const char *name_prefix)
+>> +{
+>> +       struct timespec64 cur_time;
+>> +
+>> +       ktime_get_real_ts64(&cur_time);
+>> +       return kasprintf(GFP_KERNEL, "%s-%lld:%09ld", name_prefix,
+>> +                        cur_time.tv_sec, cur_time.tv_nsec);
+>> +}
+> 
+> Why is this a separate function?  It's three lines long and only
+> called from selinux_measure_state().  Do you ever see the SELinux/IMA
+> code in this file expanding to the point where this function is nice
+> from a reuse standpoint?
+
+Earlier I had two measurements - one for SELinux configuration/state and 
+another for SELinux policy. selinux_event_name() was used to generate 
+event name for each of them.
+
+In this patch set I have included only one measurement - for SELinux 
+policy. I plan to add "SELinux configuration/state" measurement in a 
+separate patch - I can reuse selinux_event_name() in that patch.
+
+Also, I think the comment in the function header for 
+selinux_event_name() is useful.
+
+I prefer to have a separate function, if that's fine by you.
+
+> 
+> Also, I assume you are not concerned about someone circumventing the
+> IMA measurements by manipulating the time?  In most systems I would
+> expect the time to be a protected entity, but with many systems
+> getting their time from remote systems I thought it was worth
+> mentioning.
+I am using time function to generate a unique name for the IMA 
+measurement event, such as, "selinux-policy-hash-1609790281:860232824". 
+This is to ensure that state changes in SELinux data are always measured.
+
+If you think time manipulation can be an issue, please let me know a 
+better way to generate unique event names.
+
+> 
+>> +/*
+>> + * selinux_measure_state - Measure hash of the SELinux policy
+>> + *
+>> + * @state: selinux state struct
+>> + *
+>> + * NOTE: This function must be called with policy_mutex held.
+>> + */
+>> +void selinux_measure_state(struct selinux_state *state)
+> 
+> Similar to the name of this source file, let's make it clear this is
+> for IMA.  How about calling this selinux_ima_measure_state() or
+> similar?
+Sure - I will change the function name to selinux_ima_measure_state().
+
+> 
+>> +{
+>> +       void *policy = NULL;
+>> +       char *policy_event_name = NULL;
+>> +       size_t policy_len;
+>> +       int rc = 0;
+>> +       bool initialized = selinux_initialized(state);
+> 
+> Why bother with the initialized variable?  Unless I'm missing
+> something it is only used once in the code below.
+You are right - I will remove "initialized" variable and directly get 
+the state using selinux_initialized().
+
+> 
+>> +       /*
+>> +        * Measure SELinux policy only after initialization is completed.
+>> +        */
+>> +       if (!initialized)
+>> +               goto out;
+>> +
+>> +       policy_event_name = selinux_event_name("selinux-policy-hash");
+>> +       if (!policy_event_name) {
+>> +               pr_err("SELinux: %s: event name for policy not allocated.\n",
+>> +                      __func__);
+>> +               rc = -ENOMEM;
+> 
+> This function doesn't return an error code, why bother with setting
+> the rc variable here?
+Yes - it is not necessary. I will remove the line.
+
+> 
+>> +               goto out;
+>> +       }
+>> +
+>> +       rc = security_read_policy_kernel(state, &policy, &policy_len);
+>> +       if (rc) {
+>> +               pr_err("SELinux: %s: failed to read policy %d.\n", __func__, rc);
+>> +               goto out;
+>> +       }
+>> +
+>> +       ima_measure_critical_data("selinux", policy_event_name,
+>> +                                 policy, policy_len, true);
+>> +
+>> +       vfree(policy);
+>> +
+>> +out:
+>> +       kfree(policy_event_name);
+>> +}
+>> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+>> index 9704c8a32303..dfa2e00894ae 100644
+>> --- a/security/selinux/ss/services.c
+>> +++ b/security/selinux/ss/services.c
+>> @@ -2180,6 +2180,7 @@ static void selinux_notify_policy_change(struct selinux_state *state,
+>>          selinux_status_update_policyload(state, seqno);
+>>          selinux_netlbl_cache_invalidate();
+>>          selinux_xfrm_notify_policyload();
+>> +       selinux_measure_state(state);
+>>   }
+>>
+>>   void selinux_policy_commit(struct selinux_state *state,
+>> @@ -3875,8 +3876,33 @@ int security_netlbl_sid_to_secattr(struct selinux_state *state,
+>>   }
+>>   #endif /* CONFIG_NETLABEL */
+>>
+>> +/**
+>> + * security_read_selinux_policy - read the policy.
+>> + * @policy: SELinux policy
+>> + * @data: binary policy data
+>> + * @len: length of data in bytes
+>> + *
+>> + */
+>> +static int security_read_selinux_policy(struct selinux_policy *policy,
+>> +                                       void *data, size_t *len)
+> 
+> Let's just call this "security_read_policy()".
+There is another function in this file with the name security_read_policy().
+
+How about changing the above function name to "read_selinux_policy()" 
+since this is a local/static function.
+
+> 
+>> +{
+>> +       int rc;
+>> +       struct policy_file fp;
+>> +
+>> +       fp.data = data;
+>> +       fp.len = *len;
+>> +
+>> +       rc = policydb_write(&policy->policydb, &fp);
+>> +       if (rc)
+>> +               return rc;
+>> +
+>> +       *len = (unsigned long)fp.data - (unsigned long)data;
+>> +       return 0;
+>> +}
+>> +
+>>   /**
+>>    * security_read_policy - read the policy.
+>> + * @state: selinux_state
+>>    * @data: binary policy data
+>>    * @len: length of data in bytes
+>>    *
+>> @@ -3885,8 +3911,6 @@ int security_read_policy(struct selinux_state *state,
+>>                           void **data, size_t *len)
+>>   {
+>>          struct selinux_policy *policy;
+>> -       int rc;
+>> -       struct policy_file fp;
+>>
+>>          policy = rcu_dereference_protected(
+>>                          state->policy, lockdep_is_held(&state->policy_mutex));
+>> @@ -3898,14 +3922,43 @@ int security_read_policy(struct selinux_state *state,
+>>          if (!*data)> --
+>> 2.17.1
+>>
+> 
+>>                  return -ENOMEM;
+>>
+>> -       fp.data = *data;
+>> -       fp.len = *len;
+>> +       return security_read_selinux_policy(policy, *data, len);
+>> +}
+>>
+>> -       rc = policydb_write(&policy->policydb, &fp);
+>> -       if (rc)
+>> -               return rc;
+>> +/**
+>> + * security_read_policy_kernel - read the policy.
+>> + * @state: selinux_state
+>> + * @data: binary policy data
+>> + * @len: length of data in bytes
+>> + *
+>> + * Allocates kernel memory for reading SELinux policy.
+>> + * This function is for internal use only and should not
+>> + * be used for returning data to user space.
+>> + *
+>> + * This function must be called with policy_mutex held.
+>> + */
+>> +int security_read_policy_kernel(struct selinux_state *state,
+>> +                               void **data, size_t *len)
+> 
+> Let's call this "security_read_state_kernel()".
+Sure - I will rename the function.
+
+> 
+>> +{
+>> +       struct selinux_policy *policy;
+>> +       int rc = 0;
+> 
+> See below, the rc variable is not needed.
+> 
+>> -       *len = (unsigned long)fp.data - (unsigned long)*data;
+>> -       return 0;
+>> +       policy = rcu_dereference_protected(
+>> +                       state->policy, lockdep_is_held(&state->policy_mutex));
+>> +       if (!policy) {
+>> +               rc = -EINVAL;
+>> +               goto out;
+> 
+> Jumping to the out label is a little silly since it is just a return;
+> do a "return -EINVAL;" here instead.
+> 
+>> +       }
+>> +
+>> +       *len = policy->policydb.len;
+>> +       *data = vmalloc(*len);
+>> +       if (!*data) {
+>> +               rc = -ENOMEM;
+>> +               goto out;
+> 
+> Same as above, "return -ENOMEM;" please.
+> 
+>> +       }
+>>
+>> +       rc = security_read_selinux_policy(policy, *data, len);
+> 
+> You should be able to do "return security_read_selinux_policy(...);" here.
+
+I will remove the local variable "rc" and make the three changes you've 
+stated above.
+
+Thanks for reviewing the changes.
+
+  -lakshmi
+
+> 
+>> +
+>> +out:
+>> +       return rc;
+>>   }
+> 
+
