@@ -2,206 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB722E9C51
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38242E9C5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbhADRo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:44:27 -0500
-Received: from audible.transient.net ([24.143.126.66]:60256 "HELO
-        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1727696AbhADRo1 (ORCPT
+        id S1727720AbhADRtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:49:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727529AbhADRto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:44:27 -0500
-Received: (qmail 13789 invoked from network); 4 Jan 2021 17:43:46 -0000
-Received: from cucamonga.audible.transient.net (192.168.2.5)
-  by canarsie.audible.transient.net with QMQP; 4 Jan 2021 17:43:46 -0000
-Received: (nullmailer pid 6695 invoked by uid 1000);
-        Mon, 04 Jan 2021 17:43:46 -0000
-Date:   Mon, 4 Jan 2021 17:43:46 +0000
-From:   Jamie Heilman <jamie@audible.transient.net>
-To:     Karol Herbst <kherbst@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-Subject: Re: [Nouveau] nouveau regression post v5.8, still present in v5.10
-Message-ID: <X/NT0iN9KlSXQJJ7@audible.transient.net>
-Mail-Followup-To: Karol Herbst <kherbst@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-References: <X+WV8OiQzTIfLdgW@audible.transient.net>
- <CACO55tt9GbwBU6igAJ_8RjwzSZcDbu+_1wGWKiye3TosgoiHyw@mail.gmail.com>
- <X/NO9kAlCd/k8Di2@audible.transient.net>
+        Mon, 4 Jan 2021 12:49:44 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1612C061796
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:30 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id z21so19510988pgj.4
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxace-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=65owITg5bptvn1j++cmPjkA/zjpHPF/EDZomkuXKGqY=;
+        b=uY/UlD7z90jZJguSr4Qov6hTFwNsacX2P0geVNecyR5ZH7ZJamw0DXTNljsbMPh9PS
+         MFtO+9k1uqqfJPP4oxrzK1VHY59gJeN3JZOQsggZWLYox/RAcbwzjbXHZTbFVt/p2hXc
+         5PsPpT843IKgWkVa89xYlfbHBCRM9SdJW1eLo4vZRudTVCbP03yEes6Of/ssVlo1bwwD
+         lPisb7pbEW5ixCwrXhMykOxku5XX94zl1lW46mkndO08IyIeRjTZFa0pUxIpRkCFgRPq
+         ug5zNvBVQsrv3jFZjiOXLHjS9S5H7+LP8pFgaUWXRdyTsJ7CT9WbL3iRXfIFRSKMSDCy
+         Sh6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=65owITg5bptvn1j++cmPjkA/zjpHPF/EDZomkuXKGqY=;
+        b=PlqOSKaE2CGW/fmMxP6t8xQbfg9mqET3bf6dAYGYTxr8Za2XjRHLELxGbb5rtPx0sH
+         uiFQu00CJ8ldDceP2fobULoXxZlsBgGt5VpfJGJoL92Oz0+cKm0Y67TVcRHTOO3YMykg
+         eRNIEi0GiYYxV1pB8mCv4XiIA8/MuUJOLbjAXohDnLKKSIW+FgMJTcfUzKMZJZY5lsp4
+         3L2xWZKIu3NJ+qjlEOdagpq3K1DE95ZptmQuVG7vdTfsM/zWeQ+3NjKzdM4M+boXCcjP
+         CrciMWuSzKDciEKmI/Yg0/uCXWcjNiFPSeg50sDkW2AwXivyMlM8JHderDgNzvFZ3VOM
+         ++4A==
+X-Gm-Message-State: AOAM532najsnYSydkbQYvNFWVuFWE65+fkxLQGBaztGHYzI69kZxi84v
+        vSHDB7P9paPoOZ2U0gVOGLt5oQ==
+X-Google-Smtp-Source: ABdhPJzyl3JwJlJhdPc5Jfiknw7ZF3oAzN30Yms3O1ELx9wLiAGjFS0agKxHvleXTZGJgkZVtJCRqw==
+X-Received: by 2002:a63:520e:: with SMTP id g14mr24089127pgb.378.1609782510541;
+        Mon, 04 Jan 2021 09:48:30 -0800 (PST)
+Received: from home.linuxace.com (cpe-23-243-7-246.socal.res.rr.com. [23.243.7.246])
+        by smtp.gmail.com with ESMTPSA id p9sm34954pjb.3.2021.01.04.09.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 09:48:29 -0800 (PST)
+Date:   Mon, 4 Jan 2021 09:48:26 -0800
+From:   Phil Oester <kernel@linuxace.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Anand Lodnoor <anand.lodnoor@broadcom.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] scsi: megaraid_sas: check user-provided offsets
+Message-ID: <20210104174826.GA76610@home.linuxace.com>
+References: <20200908213715.3553098-1-arnd@arndb.de>
+ <20200908213715.3553098-2-arnd@arndb.de>
+ <20201231001553.GB16945@home.linuxace.com>
+ <CAK8P3a0_WORgd4Wvd3n+59oR=-rrESwg_MgpDJN4xPo_e6ir5Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/NO9kAlCd/k8Di2@audible.transient.net>
+In-Reply-To: <CAK8P3a0_WORgd4Wvd3n+59oR=-rrESwg_MgpDJN4xPo_e6ir5Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jamie Heilman wrote:
-> Karol Herbst wrote:
-> > do you think you'd be able to do a kernel bisect in order to pinpoint
-> > the actual commit causing it? Thanks
+On Sun, Jan 03, 2021 at 05:26:29PM +0100, Arnd Bergmann wrote:
+> Thank you for the report and bisecting the issue, and sorry this broke
+> your system!
 > 
-> No.  I can't reproduce it reliably.  I if I could, bisection wouldn't
-> be a problem but as I can't and as it can take weeks for the problem
-> to occur there's essentially no chance.  I know it regressed roughly
-> in 5.8-rc1 only because that's what I was running when the first event
-> occured.
-
-er, 5.9.0-rc1 rather
-
-> > On Sun, Dec 27, 2020 at 8:16 PM Jamie Heilman
-> > <jamie@audible.transient.net> wrote:
-> > >
-> > > Something between v5.8 and v5.9 has resulted in periodically losing video.
-> > > Unfortunately, I can't reliably reproduce it, it seems to happen every
-> > > once in a long while---I can go weeks without an occurance, but it
-> > > always seems to happen after my workstation has been idle long enough
-> > > to screen blank and put the monitor to sleep.  I'm using a single
-> > > display (Dell 2405FPW) connected via DVI, running X (Xorg 1.20.x from
-> > > Debian sid).  I don't really do anything fancy, xterms, a browser or
-> > > two, play the occasional video, but like I said, I can't reliably
-> > > reproduce this.  I've had it happen about 11 times since August.
-> > >
-> > > lspci -vv output is:
-> > >
-> > > 01:00.0 VGA compatible controller: NVIDIA Corporation G86 [Quadro NVS 290] (rev a1) (prog-if 00 [VGA controller])
-> > >         Subsystem: NVIDIA Corporation G86 [Quadro NVS 290]
-> > >         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-> > >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-> > >         Latency: 0, Cache Line Size: 64 bytes
-> > >         Interrupt: pin A routed to IRQ 28
-> > >         Region 0: Memory at fc000000 (32-bit, non-prefetchable) [size=16M]
-> > >         Region 1: Memory at d0000000 (64-bit, prefetchable) [size=256M]
-> > >         Region 3: Memory at fa000000 (64-bit, non-prefetchable) [size=32M]
-> > >         Region 5: I/O ports at dc80 [size=128]
-> > >         Expansion ROM at 000c0000 [disabled] [size=128K]
-> > >         Capabilities: [60] Power Management version 2
-> > >                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-> > >                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-> > >         Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
-> > >                 Address: 00000000fee01004  Data: 4023
-> > >         Capabilities: [78] Express (v1) Endpoint, MSI 00
-> > >                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <512ns, L1 <4us
-> > >                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 25.000W
-> > >                 DevCtl: CorrErr- NonFatalErr+ FatalErr+ UnsupReq-
-> > >                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
-> > >                         MaxPayload 128 bytes, MaxReadReq 512 bytes
-> > >                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-> > >                 LnkCap: Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
-> > >                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
-> > >                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-> > >                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-> > >                 LnkSta: Speed 2.5GT/s (ok), Width x16 (ok)
-> > >                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-> > >         Capabilities: [100 v1] Virtual Channel
-> > >                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
-> > >                 Arb:    Fixed- WRR32- WRR64- WRR128-
-> > >                 Ctrl:   ArbSelect=Fixed
-> > >                 Status: InProgress-
-> > >                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
-> > >                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
-> > >                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
-> > >                         Status: NegoPending- InProgress-
-> > >         Capabilities: [128 v1] Power Budgeting <?>
-> > >         Capabilities: [600 v1] Vendor Specific Information: ID=0001 Rev=1 Len=024 <?>
-> > >         Kernel driver in use: nouveau
-> > >
-> > > The last time this happened, this is what got logged:
-> > >
-> > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
-> > > nouveau 0000:01:00.0: disp: Base 1:
-> > > nouveau 0000:01:00.0: disp:        0084: 00000000
-> > > nouveau 0000:01:00.0: disp:        0088: 00000000
-> > > nouveau 0000:01:00.0: disp:        008c: 00000000
-> > > nouveau 0000:01:00.0: disp:        0090: 00000000
-> > > nouveau 0000:01:00.0: disp:        0094: 00000000
-> > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
-> > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
-> > > nouveau 0000:01:00.0: disp:        00c0: 00000000
-> > > nouveau 0000:01:00.0: disp:        00c4: 00000000
-> > > nouveau 0000:01:00.0: disp:        00c8: 00000000
-> > > nouveau 0000:01:00.0: disp:        00cc: 00000000
-> > > nouveau 0000:01:00.0: disp:        00e0: 40000000
-> > > nouveau 0000:01:00.0: disp:        00e4: 00000000
-> > > nouveau 0000:01:00.0: disp:        00e8: 00000000
-> > > nouveau 0000:01:00.0: disp:        00ec: 00000000
-> > > nouveau 0000:01:00.0: disp:        00fc: 00000000
-> > > nouveau 0000:01:00.0: disp:        0100: fffe0000
-> > > nouveau 0000:01:00.0: disp:        0104: 00000000
-> > > nouveau 0000:01:00.0: disp:        0110: 00000000
-> > > nouveau 0000:01:00.0: disp:        0114: 00000000
-> > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
-> > > nouveau 0000:01:00.0: disp:        0800: 00009500
-> > > nouveau 0000:01:00.0: disp:        0804: 00000000
-> > > nouveau 0000:01:00.0: disp:        0808: 04b00780
-> > > nouveau 0000:01:00.0: disp:        080c: 00007804
-> > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
-> > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
-> > > nouveau 0000:01:00.0: disp:        0c00: 00009500
-> > > nouveau 0000:01:00.0: disp:        0c04: 00000000
-> > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
-> > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
-> > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
-> > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
-> > > nouveau 0000:01:00.0: disp: Base 1:
-> > > nouveau 0000:01:00.0: disp:        0084: 00000000
-> > > nouveau 0000:01:00.0: disp:        0088: 00000000
-> > > nouveau 0000:01:00.0: disp:        008c: 00000000
-> > > nouveau 0000:01:00.0: disp:        0090: 00000000
-> > > nouveau 0000:01:00.0: disp:        0094: 00000000
-> > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
-> > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
-> > > nouveau 0000:01:00.0: disp:        00c0: 00000000
-> > > nouveau 0000:01:00.0: disp:        00c4: 00000000
-> > > nouveau 0000:01:00.0: disp:        00c8: 00000000
-> > > nouveau 0000:01:00.0: disp:        00cc: 00000000
-> > > nouveau 0000:01:00.0: disp:        00e0: 40000000
-> > > nouveau 0000:01:00.0: disp:        00e4: 00000000
-> > > nouveau 0000:01:00.0: disp:        00e8: 00000000
-> > > nouveau 0000:01:00.0: disp:        00ec: 00000000
-> > > nouveau 0000:01:00.0: disp:        00fc: 00000000
-> > > nouveau 0000:01:00.0: disp:        0100: fffe0000
-> > > nouveau 0000:01:00.0: disp:        0104: 00000000
-> > > nouveau 0000:01:00.0: disp:        0110: 00000000
-> > > nouveau 0000:01:00.0: disp:        0114: 00000000
-> > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
-> > > nouveau 0000:01:00.0: disp:        0800: 00009500
-> > > nouveau 0000:01:00.0: disp:        0804: 00000000
-> > > nouveau 0000:01:00.0: disp:        0808: 04b00780
-> > > nouveau 0000:01:00.0: disp:        080c: 00007804
-> > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
-> > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
-> > > nouveau 0000:01:00.0: disp:        0c00: 00009500
-> > > nouveau 0000:01:00.0: disp:        0c04: 00000000
-> > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
-> > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
-> > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
-> > > nouveau 0000:01:00.0: DRM: core notifier timeout
-> > > nouveau 0000:01:00.0: DRM: base-0: timeout
-> > >
-> > > I've got logs of all of this, if they help I can collect them.  The
-> > > timeout message are consistent the error messages a little less so.
-> > >
-> > > If there's more debugging I can do when this happens, I'd love to know
-> > > what it is.
-> > >
-> > > kernel config: http://audible.transient.net/~jamie/k/nouveau.config-5.10.0
-> > > dmesg at boot: http://audible.transient.net/~jamie/k/nouveau.dmesg
-> > >
-> > > --
-> > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > _______________________________________________
-> > > Nouveau mailing list
-> > > Nouveau@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/nouveau
-> > >
-> > 
+> Fortunately, the patch is fairly small, so there are only a limited number
+> of things that could go wrong. I haven't tried to analyze that message,
+> but I have two ideas:
 > 
-> -- 
-> Jamie Heilman                     http://audible.transient.net/~jamie/
+> a) The added ioc->sense_off check gets triggered and the code relies
+>   on the data being written outside of the structure
+> 
+> b) the address actually needs to always be written as a 64-bit value
+>     regardless of the instance->consistent_mask_64bit flag, as the
+>    driver did before. This looked like it was done in error.
+> 
+> Can you try the patch below instead of the revert and see if that
+> resolves the regression, and if it triggers the warning message I
+> add?
 
--- 
-Jamie Heilman                     http://audible.transient.net/~jamie/
+Thanks Arnd, I tried your patch and it resolves the regression.  It does not
+trigger the warning message you added.
+
+Phil
