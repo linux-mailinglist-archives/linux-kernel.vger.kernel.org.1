@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21CE2E990F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F112E9918
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727707AbhADPnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:43:47 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:50167 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727407AbhADPnr (ORCPT
+        id S1727247AbhADPpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:45:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28800 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726098AbhADPpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:43:47 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 2453A60005;
-        Mon,  4 Jan 2021 15:43:04 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 16:43:03 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH 1/2] rtc: goldfish: Remove GOLDFISH dependency
-Message-ID: <20210104154303.GD3313@piout.net>
-References: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
- <20201114130921.651882-2-jiaxun.yang@flygoat.com>
- <CAMuHMdXo9o9af-YBt5g53QHRhuLxdSy_C9n4wdEEh7yzDidr-w@mail.gmail.com>
- <20210104144841.GC3313@piout.net>
- <CAMuHMdWGnBcYvXLnydSnkxcmG6GksZLfq1aWADuWg8ibZ3V8Lg@mail.gmail.com>
+        Mon, 4 Jan 2021 10:45:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609775036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F64o4iIcbY4ifKBh0Jo3J+CYfbSeoigrg9hqqLOwqkU=;
+        b=dODK93bDmhDbC6RAwL+kOkoDNE3/DIUPsWZWtzz2PpDdA6Y5kQofVbQYgteAeohVMtDfkV
+        or+Rrx9Auyhzc/Nqsi9g2UQFzvA3eUd305NoW+D0h4c/Vn60TWO9kGQOEyGVHbHfuvccg+
+        6qb/Y34DJkT1zD44snc/JsqkZdXET24=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-pAlaefTrMouQlR9f8BSXzw-1; Mon, 04 Jan 2021 10:43:52 -0500
+X-MC-Unique: pAlaefTrMouQlR9f8BSXzw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 553FAC281;
+        Mon,  4 Jan 2021 15:43:51 +0000 (UTC)
+Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E95960BFA;
+        Mon,  4 Jan 2021 15:43:50 +0000 (UTC)
+Subject: Re: uninitialized pmem struct pages
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20210104100323.GC13207@dhcp22.suse.cz>
+ <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
+ <20210104142624.GI13207@dhcp22.suse.cz>
+ <23a4eea2-9fdb-fd1d-ee92-9cd8ac6e8f41@redhat.com>
+ <20210104151005.GK13207@dhcp22.suse.cz>
+ <26db2c3e-10c7-c6e3-23f7-21eb5101b31a@redhat.com>
+ <20210104153300.GL13207@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <bf26f568-79b3-67f9-832a-9d8ef3f72c43@redhat.com>
+Date:   Mon, 4 Jan 2021 16:43:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWGnBcYvXLnydSnkxcmG6GksZLfq1aWADuWg8ibZ3V8Lg@mail.gmail.com>
+In-Reply-To: <20210104153300.GL13207@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/01/2021 16:21:31+0100, Geert Uytterhoeven wrote:
-> Hi Alexandre,
+On 04.01.21 16:33, Michal Hocko wrote:
+> On Mon 04-01-21 16:15:23, David Hildenbrand wrote:
+>> On 04.01.21 16:10, Michal Hocko wrote:
+> [...]
+>> Do the physical addresses you see fall into the same section as boot
+>> memory? Or what's around these addresses?
 > 
-> On Mon, Jan 4, 2021 at 3:48 PM Alexandre Belloni
-> <alexandre.belloni@bootlin.com> wrote:
-> > On 04/01/2021 14:28:26+0100, Geert Uytterhoeven wrote:
-> > > On Sat, Nov 14, 2020 at 2:20 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
-> > > > Goldfish platform is covered with dust.
-> > > > However the goldfish-rtc had been used as virtualized RTC
-> > > > in QEMU for RISC-V virt hw and MIPS loongson3-virt hw, thus
-> > > > we can drop other parts of goldfish but leave goldfish-rtc here.
-> > > >
-> > > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > >
-> > > Thanks for your patch!
-> > >
-> > > > --- a/drivers/rtc/Kconfig
-> > > > +++ b/drivers/rtc/Kconfig
-> > > > @@ -1935,7 +1935,6 @@ config RTC_DRV_HID_SENSOR_TIME
-> > > >  config RTC_DRV_GOLDFISH
-> > > >         tristate "Goldfish Real Time Clock"
-> > > >         depends on OF && HAS_IOMEM
-> > > > -       depends on GOLDFISH || COMPILE_TEST
-> > > >         help
-> > > >           Say yes to enable RTC driver for the Goldfish based virtual platform.
-> > >
-> > > I was just looking to see if someone had already sent a patch to add
-> > > "depends on GOLDFISH || COMPILE_TEST", before sending one myself, when I
-> > > noticed your patch had removed it...
-> > >
-> > > What about
-> > >
-> > >     depends on CPU_LOONGSON64 || GOLDFISH || RISCV || COMPILE_TEST
-> > >
-> > > instead?
-> > >
-> >
-> > But this driver also works on ARM, is it really important to restrict to
-> > a few architectures ?
+> Yes I am getting a garbage for the first struct page belonging to the
+> pmem section [1]
+> [    0.020161] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x603fffffff]
+> [    0.020163] ACPI: SRAT: Node 4 PXM 4 [mem 0x6060000000-0x11d5fffffff] non-volatile
 > 
-> Is it used on ARM platforms?
-> qemu:hw/riscv/Kconfig selects GOLDFISH_RTC, but that's it?
-> 
+> The pfn without the initialized struct page is 0x6060000. This is a
+> first pfn in a section.
 
-My understanding is that this was used on the original ARM based goldfish
-android emulator but I don't think this was ever upstreamed.
+Okay, so we're not dealing with the "early section" mess I described,
+different story.
+
+Due to [1], is_mem_section_removable() called
+pfn_to_page(PHYS_PFN(0x6060000)). page_zone(page) made it crash, as not
+initialized.
+
+Let's assume this is indeed a reserved pfn in the altmap. What's the
+actual address of the memmap?
+
+I do wonder what hosts pfn_to_page(PHYS_PFN(0x6060000)) - is it actually
+part of the actual altmap (i.e. > 0x6060000) or maybe even self-hosted?
+
+If it's not self-hosted, initializing the relevant memmaps should work
+just fine I guess. Otherwise things get more complicated.
 
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Thanks,
+
+David / dhildenb
+
