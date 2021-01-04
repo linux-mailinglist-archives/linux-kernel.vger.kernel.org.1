@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7452E9D0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30CD2E9D12
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbhADSam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:30:42 -0500
-Received: from sauhun.de ([88.99.104.3]:60494 "EHLO pokefinder.org"
+        id S1727875AbhADSbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 13:31:37 -0500
+Received: from vern.gendns.com ([98.142.107.122]:38762 "EHLO vern.gendns.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726396AbhADSam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:30:42 -0500
-Received: from localhost (p54b33105.dip0.t-ipconnect.de [84.179.49.5])
-        by pokefinder.org (Postfix) with ESMTPSA id 0EE372C04DF;
-        Mon,  4 Jan 2021 19:30:00 +0100 (CET)
-Date:   Mon, 4 Jan 2021 19:29:59 +0100
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     qii.wang@mediatek.com
-Cc:     matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com
-Subject: Re: i2c: mediatek: Fix apdma and i2c hand-shake timeout
-Message-ID: <20210104182959.GC935@ninjato>
-References: <1608812767-3254-1-git-send-email-qii.wang@mediatek.com>
+        id S1727318AbhADSbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 13:31:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=vHOp9SccK0mfDJKqdnqjykG4G7mbS4+yCMHa+5JGryQ=; b=zMZqU27KDrzo1vdGSv7qgiG9p9
+        jSUrqvCbSTeUGPt562Pom0TTTZRyY+nOOv8T4ugCFg92k01nuE+pFclUAAokk1yvOd+yCniTeHWmA
+        e6m8dbXZK4+H74e9idLX7tzacblnyNAYjprbsddQpolgkrMUcHB7YS1lsAU2u8jGbF/+38R5MMCo7
+        ZFP/pKX/j0FpIy0zwAYAEvli6X+Ck1gG/s1KDDesGt2C6MzE15Ua1dfkqUe+HfYso9gycFIyqBFzu
+        gcZrg66La/ErVxZDvVaPa+IbIysmvuEMGPG8zBqFAfnPwVymQWi7YBacrcOBHAnMI11sTszBUQoyG
+        9Amr52Kg==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:51064 helo=freyr.lechnology.com)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kwUd0-0002rB-Sy; Mon, 04 Jan 2021 13:30:51 -0500
+From:   David Lechner <david@lechnology.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     David Lechner <david@lechnology.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Suman Anna <s-anna@ti.com>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Add support for TI AM18XX/OMAP-L138 PRUSS
+Date:   Mon,  4 Jan 2021 12:30:19 -0600
+Message-Id: <20210104183021.330112-1-david@lechnology.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uh9ZiVrAOUUm9fzH"
-Content-Disposition: inline
-In-Reply-To: <1608812767-3254-1-git-send-email-qii.wang@mediatek.com>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the first step for adding support for the PRUSS on TI AM18XX/OMAP-L138
+SoCs. This series adds support in the top-level PRUSS driver. (Patches for the
+interrupt controller and individual PRUs are independent of this change and
+will be submitted separately.)
 
---uh9ZiVrAOUUm9fzH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+David Lechner (2):
+  dt-bindings: soc: ti: ti,pruss: add ti,am1806-pruss
+  soc: ti: pruss: add support for AM18XX/OMAP-L138 PRUSS
 
-On Thu, Dec 24, 2020 at 08:26:07PM +0800, qii.wang@mediatek.com wrote:
-> From: Qii Wang <qii.wang@mediatek.com>
->=20
-> With the apdma remove hand-shake signal, it requirs special
-> operation timing to reset i2c manually, otherwise the interrupt
-> will not be triggered, i2c transmission will be timeout.
->=20
-> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+ .../devicetree/bindings/soc/ti/ti,pruss.yaml  |  2 +
+ drivers/soc/ti/Kconfig                        |  2 +-
+ drivers/soc/ti/pruss.c                        | 76 +++++++++++--------
+ 3 files changed, 47 insertions(+), 33 deletions(-)
 
-Applied to for-current, thanks!
+-- 
+2.25.1
 
-
---uh9ZiVrAOUUm9fzH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/zXqcACgkQFA3kzBSg
-KbZQ8w/8DE+WVtoHYrCXAHx91n4/N6jsfZxOi7xLlm9x3FX55Lo0eiHeNIRHjgXV
-puAT1I9S8RkBC7s2Sc9jDH0ZGXsGfSeeWxTJydK3RV1tq59EySpl6PZQ5GYjPRPJ
-VXf12AEDnFFKOHiN4K5N1uRFMkP+mp8lYnher8fJvEN3qOhtg+kQPw/JZVwoJ2yf
-uB4MxKGyYdKPGHgb9cVrJhNYg4wx0wfHGWt/wrai4jVqjcqezI74SiUmbvI9a3B5
-lFAwZkMKKQ44MKclF31Ctil+GRUTDp/ZrpuMKIJMX6zn2yTSS+M174NcvatScm5D
-jJBTOdjKOD7f4Yz1FWsJ+mKx7t+go8+ON5DguoEFxJBVqyjcw7FEgsZLP7f5yrgj
-QaJwdUx5v7E/+WPVAZTb7cnllHrPXrAihrRm4VSKlzbqWxUr0q5CDuIAQLKe4mKV
-EFbRol3wetWpT5y2YPEj9p3O3IZnhYQWMysrnwI9clNOdZ50ChlNRHKylugbBXxF
-V5LmyIHkFXDg6GqZulqaArUkp2kh4bavOejN0JPEZkPg0cGzqb1jd74R8CZuorHL
-JtdZ8hp3icd360VXxSZ3YWeIPOPUSeaBRxusMNnJqNiGS1+4qGeGNBEdY3wdufDh
-lRdyjCKQcIR3Ren+c/A3tbS+TRFQ8A1h9IBpznbaqgc/TQbzoAk=
-=L+pH
------END PGP SIGNATURE-----
-
---uh9ZiVrAOUUm9fzH--
