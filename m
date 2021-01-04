@@ -2,139 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630242E9B00
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082192E9AFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbhADQZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:25:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51197 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726616AbhADQZZ (ORCPT
+        id S1729311AbhADQYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:24:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727935AbhADQYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:25:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609777439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vnb+cRxFTp9jgAwyYpJAnJI7PWnz4qiNqMQb5deCY4A=;
-        b=hUqSiK6tKUhmY8v/aoJboELQBzmMtWry/YlXpe/gB9/J+Jt1T3cAt4RSq0fKxDGhvVkIqc
-        ZBS5lhWjVSuxxM8oR8y9Mni0GHuotnuEjfdQh7Wp1sNXSnoO2R4UUenLram7sqJh9sj1zx
-        U+HeLi8xvScSadH2KAPf8hgdaK8RYUw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-252-Nd8t6xyPMRG_Mq5LmxPa3A-1; Mon, 04 Jan 2021 11:23:57 -0500
-X-MC-Unique: Nd8t6xyPMRG_Mq5LmxPa3A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0FB06107ACE4;
-        Mon,  4 Jan 2021 16:23:56 +0000 (UTC)
-Received: from bfoster (ovpn-114-23.rdu2.redhat.com [10.10.114.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1B4BD71C88;
-        Mon,  4 Jan 2021 16:23:55 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 11:23:53 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Donald Buczek <buczek@molgen.mpg.de>, linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
-Message-ID: <20210104162353.GA254939@bfoster>
-References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
- <20201229235627.33289-1-buczek@molgen.mpg.de>
- <20201230221611.GC164134@dread.disaster.area>
+        Mon, 4 Jan 2021 11:24:39 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FACC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 08:23:59 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id n4so25494665iow.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 08:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wemsb37DzntpV4pW/5pI+u9gqkW7QMjVnMnmRP4qBjU=;
+        b=VqOisZ/CdyRKbpeOUNpOVoWM1FSRb/JGk/Vsduvzmxocz6bfVdqXFetPsa2RDZOEzI
+         FfL9LptnjKauZtfx0fmkWz9rDeQRbUHdx44EJv3lb7uYmhqvXYdO/aHxkjkI0XeuNgYb
+         DUCzJni0/ukMUvlXz5cAq4YIpRFgJGLSslhkM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wemsb37DzntpV4pW/5pI+u9gqkW7QMjVnMnmRP4qBjU=;
+        b=HEQBdO/jimqirkR/ex8MoB22jP7SCGLuTIYuCHpWFlZ+iEAYh82DCk/R5Qcrv/mh7O
+         GKwyqWHNlJqayKCkF/frRaDVeMTFUpsOyb+07UzYGar/k/SnZupyk6o9M0af3lfnlEU1
+         pHhv+HV7cP+GAfWVDIItCHW/lD5OQkZx+FFPllpu14xwH4cx1+vYLnsQxTmqPVMdrbdA
+         2V5bR3JJJS08fAiHeazhdz3BfIZw/rD5cIOSAtQUD2ucWI8g6RL3mVFBvaZSWzk7ZRj9
+         CUP6jlfILYAzEyhHIYPOHW1g4+3OSHr0VDM/A5sCsrLV6tmg7IKRDrJbf+u460Bi114N
+         Ae1g==
+X-Gm-Message-State: AOAM530PKLdDm68qCP3AivybLshnwGfOZWQ8pk1Gn7LV9JivlCnYQCRD
+        Cr0iyCAUm4xEUQsYp9ToI0zKaw==
+X-Google-Smtp-Source: ABdhPJxakEz6S0w0U3N0p+Y6Xti6huLJ6M//I6/UEgJPtyNIQkD8TtHQ4C+J2FRZQz47KQKtZhC1ig==
+X-Received: by 2002:a5d:9713:: with SMTP id h19mr59064409iol.14.1609777438759;
+        Mon, 04 Jan 2021 08:23:58 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n16sm41720610ilj.19.2021.01.04.08.23.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 08:23:58 -0800 (PST)
+Subject: Re: [PATCH] kunit: tool: Force the use of the 'tty' console for UML
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201222073900.3490607-1-davidgow@google.com>
+ <20201222111102.GC4077@smile.fi.intel.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <4ae7779c-15c5-0474-5840-44531dcf1d94@linuxfoundation.org>
+Date:   Mon, 4 Jan 2021 09:23:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230221611.GC164134@dread.disaster.area>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20201222111102.GC4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 09:16:11AM +1100, Dave Chinner wrote:
-> On Wed, Dec 30, 2020 at 12:56:27AM +0100, Donald Buczek wrote:
-> > Threads, which committed items to the CIL, wait in the xc_push_wait
-> > waitqueue when used_space in the push context goes over a limit. These
-> > threads need to be woken when the CIL is pushed.
-> > 
-> > The CIL push worker tries to avoid the overhead of calling wake_all()
-> > when there are no waiters waiting. It does so by checking the same
-> > condition which caused the waits to happen. This, however, is
-> > unreliable, because ctx->space_used can actually decrease when items are
-> > recommitted.
+On 12/22/20 4:11 AM, Andy Shevchenko wrote:
+> On Mon, Dec 21, 2020 at 11:39:00PM -0800, David Gow wrote:
+>> kunit_tool relies on the UML console outputting printk() output to the
+>> tty in order to get results. Since the default console driver could
+>> change, pass 'console=tty' to the kernel.
+>>
+>> This is triggered by a change[1] to use ttynull as a fallback console
+>> driver which -- by chance or by design -- seems to have changed the
+>> default console output on UML, breaking kunit_tool. While this may be
+>> fixed, we should be less fragile to such changes in the default.
+>>
+>> [1]:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=757055ae8dedf5333af17b3b5b4b70ba9bc9da4e
 > 
-> When does this happen?
-> 
-> Do you have tracing showing the operation where the relogged item
-> has actually gotten smaller? By definition, relogging in the CIL
-> should only grow the size of the object in the CIL because it must
-> relog all the existing changes on top of the new changed being made
-> to the object. Hence the CIL reservation should only ever grow.
-> 
-> IOWs, returning negative lengths from the formatting code is
-> unexpected and probably a bug and requires further investigation,
-> not papering over the occurrence with broadcast wakeups...
+> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
 
-I agree that this warrants a bit more explanation and analysis before
-changing the current code...
+Thank you all. Now in linux-kselftest kunit-fixes branch.
 
-> > If the value goes below the limit while some threads are
-> > already waiting but before the push worker gets to it, these threads are
-> > not woken.
-> > 
-> > Always wake all CIL push waiters. Test with waitqueue_active() as an
-> > optimization. This is possible, because we hold the xc_push_lock
-> > spinlock, which prevents additions to the waitqueue.
-> > 
-> > Signed-off-by: Donald Buczek <buczek@molgen.mpg.de>
-> > ---
-> >  fs/xfs/xfs_log_cil.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/xfs/xfs_log_cil.c b/fs/xfs/xfs_log_cil.c
-> > index b0ef071b3cb5..d620de8e217c 100644
-> > --- a/fs/xfs/xfs_log_cil.c
-> > +++ b/fs/xfs/xfs_log_cil.c
-> > @@ -670,7 +670,7 @@ xlog_cil_push_work(
-> >  	/*
-> >  	 * Wake up any background push waiters now this context is being pushed.
-> >  	 */
-> > -	if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))
-> > +	if (waitqueue_active(&cil->xc_push_wait))
-> >  		wake_up_all(&cil->xc_push_wait);
-> 
-> That just smells wrong to me. It *might* be correct, but this
-> condition should pair with the sleep condition, as space used by a
-> CIL context should never actually decrease....
-> 
+Will send this up for rc3.
 
-... but I'm a little confused by this assertion. The shadow buffer
-allocation code refers to the possibility of shadow buffers falling out
-that are smaller than currently allocated buffers. Further, the
-_insert_format_items() code appears to explicitly optimize for this
-possibility by reusing the active buffer, subtracting the old size/count
-values from the diff variables and then reformatting the latest
-(presumably smaller) item to the lv.
+Sorry for the delay - have been away from the keyboard for a
+bit.
 
-Of course this could just be implementation detail. I haven't dug into
-the details in the remainder of this thread and I don't have specific
-examples off the top of my head, but perhaps based on the ability of
-various structures to change formats and the ability of log vectors to
-shrink in size, shouldn't we expect the possibility of a CIL context to
-shrink in size as well? Just from poking around the CIL it seems like
-the surrounding code supports it (xlog_cil_insert_items() checks len > 0
-for recalculating split res as well)...
-
-Brian
-
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-> 
-
+thanks,
+-- Shuah
