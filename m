@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A76E2E9D15
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 970822E9D18
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727934AbhADScW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:32:22 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:54717 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727086AbhADScW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:32:22 -0500
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 04 Jan 2021 10:31:42 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Jan 2021 10:31:40 -0800
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 05 Jan 2021 00:01:23 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-        id 2200421860; Tue,  5 Jan 2021 00:01:23 +0530 (IST)
-From:   Md Sadre Alam <mdalam@codeaurora.org>
-To:     miquel.raynal@bootlin.com, manivannan.sadhasivam@linaro.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        boris.brezillon@collabora.com, vigneshr@ti.com
-Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
-Subject: [PATCH V2] mtd: rawnand: qcom: update last code word register
-Date:   Tue,  5 Jan 2021 00:01:18 +0530
-Message-Id: <1609785078-22310-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1727086AbhADScp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 13:32:45 -0500
+Received: from sauhun.de ([88.99.104.3]:60550 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbhADSco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 13:32:44 -0500
+Received: from localhost (p54b33105.dip0.t-ipconnect.de [84.179.49.5])
+        by pokefinder.org (Postfix) with ESMTPSA id ACDC52C04DF;
+        Mon,  4 Jan 2021 19:32:02 +0100 (CET)
+Date:   Mon, 4 Jan 2021 19:32:02 +0100
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     qii.wang@mediatek.com
+Cc:     matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        leilk.liu@mediatek.com
+Subject: Re: i2c: mediatek: Fix apdma and i2c hand-shake timeout
+Message-ID: <20210104183202.GD935@ninjato>
+References: <1608812767-3254-1-git-send-email-qii.wang@mediatek.com>
+ <20210104182959.GC935@ninjato>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tEFtbjk+mNEviIIX"
+Content-Disposition: inline
+In-Reply-To: <20210104182959.GC935@ninjato>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From QPIC version 2.0 onwards new register got added to
-read last codeword. This change will update the same.
 
-For first three code word READ_LOCATION_n register will be
-use.For last code wrod READ_LOCATION_LAST_CW_n register will be
-use.
+--tEFtbjk+mNEviIIX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
-[V2]
- * Fixed alignment for NAND_READ_LOCATION_LAST_CW_n reg macro
- * Changed number of register write to 1 when NAND_READ_LOCATION_LAST_CW_n register will use
- drivers/mtd/nand/raw/qcom_nandc.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On Mon, Jan 04, 2021 at 07:29:59PM +0100, Wolfram Sang wrote:
+> On Thu, Dec 24, 2020 at 08:26:07PM +0800, qii.wang@mediatek.com wrote:
+> > From: Qii Wang <qii.wang@mediatek.com>
+> >=20
+> > With the apdma remove hand-shake signal, it requirs special
+> > operation timing to reset i2c manually, otherwise the interrupt
+> > will not be triggered, i2c transmission will be timeout.
+> >=20
+> > Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+>=20
+> Applied to for-current, thanks!
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index eaef51d..9e89236 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -48,10 +48,10 @@
- #define	NAND_READ_LOCATION_1		0xf24
- #define	NAND_READ_LOCATION_2		0xf28
- #define	NAND_READ_LOCATION_3		0xf2c
--#define NAND_READ_LOCATION_LAST_CW_0    0xf40
--#define NAND_READ_LOCATION_LAST_CW_1    0xf44
--#define NAND_READ_LOCATION_LAST_CW_2    0xf48
--#define NAND_READ_LOCATION_LAST_CW_3    0xf4c
-+#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
-+#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
-+#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
-+#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
- 
- /* dummy register offsets, used by write_reg_dma */
- #define	NAND_DEV_CMD1_RESTORE		0xdead
-@@ -1125,7 +1125,7 @@ config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
- 	if (nandc->props->is_bam) {
- 		if (nandc->props->qpic_v2)
- 			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0,
--				      4, NAND_BAM_NEXT_SGL);
-+				      1, NAND_BAM_NEXT_SGL);
- 		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
- 			      NAND_BAM_NEXT_SGL);
- 	}
--- 
-2.7.4
+Any Fixes:-Tag we could add?
 
+
+--tEFtbjk+mNEviIIX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/zXyIACgkQFA3kzBSg
+KbZdEA/+P3rD8ApQef9W5LjRrab8KDgGqnMXQu09AfuzyQBnshelxTMu8B4MZqjI
+NhfB/xNdPXXc/FsG4tr+48/KERJh/QtQG8t+WvWzbHjNASse1qwKjAHX2iP0Wf5x
+PWj3Y63EVSX13vLLCqMnF1B1Cwn5LXgyAqoR1gPbt8SuT2TSyiE0/UMIEEkJE6AV
+4Ta+16BLmuYsi8F6e5gp6Gn+YjNbbJqzzUJ0OSWM/vjsLHyajYlvORwHgjMnVy3R
+GDMM3OEuFWEyFf1dZZqM6Ex7jq1huehNQH+9r/04XGHLatrw3J5nhcxgI8uVgkPw
+5DVzj8m8vGs9R8UgCFE49sFTZfqjyxThRKzeWOInwambhKfBwj+1PNcEQvTgDOLs
+ePpVhlBpbw3UxeV2ieit3PeEMiq2ULYMtdA7LxWHp2yFBjuY07nd/Nb3bu9lmtnH
+K0RED212ymkP1g+D6zc6LQvH+A+IvX9fXPNWFpHnllbrnqSwHuwAL+2sKaFXdPdl
+ok0rCMGRggqAEtorg2y/4ihytL/xtrmAkuNSc5NoandtWdHTMXT9nSOZvw/fQxEN
+NwEnhX9GmHa6DR7BoK81Pz0Gpn//d5w0FIQxS+8Xp8JXneNvyL40WC0+6rHVRCey
+QMCzjbg7igEfYR8J1x8mcHSIZyGVjdAQZ2236sG5OKVg8j6LnDU=
+=DbV2
+-----END PGP SIGNATURE-----
+
+--tEFtbjk+mNEviIIX--
