@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3962EA0C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 837C72EA0CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727466AbhADX00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:26:26 -0500
-Received: from mga01.intel.com ([192.55.52.88]:45467 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726475AbhADX0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:26:25 -0500
-IronPort-SDR: 2f5j21eV0ARNYkwYGxfe1LMBffcjcny67HN7JXClZS6RuGGiI878EzZvdGIhtbP/1wUTk6eDG9
- X2OS2hi7j1AA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="195549960"
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="195549960"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 15:24:39 -0800
-IronPort-SDR: yI2r0COXZcHlByG6Y1F4UGb2DUBpce+BvwiwcPVn41aWUAtM9xDumKy+jz5MrkTzTqb//Kl7/i
- s5vbAvBJRMtw==
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="395063174"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 15:24:36 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id CC52B206D0; Tue,  5 Jan 2021 01:24:31 +0200 (EET)
-Date:   Tue, 5 Jan 2021 01:24:31 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:56: warning:
- implicit conversion from 'unsigned long' to 'u16' (aka 'unsigned short')
- changes value from 131072 to 0
-Message-ID: <20210104232431.GN11878@paasikivi.fi.intel.com>
-References: <202101050732.JTRq3iK6-lkp@intel.com>
+        id S1727276AbhADX3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727030AbhADX3I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 18:29:08 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04760C061574;
+        Mon,  4 Jan 2021 15:28:28 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwZGy-006txU-Eh; Mon, 04 Jan 2021 23:28:24 +0000
+Date:   Mon, 4 Jan 2021 23:28:24 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the vfs tree
+Message-ID: <20210104232824.GQ3579531@ZenIV.linux.org.uk>
+References: <20210105093616.5712e36f@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202101050732.JTRq3iK6-lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210105093616.5712e36f@canb.auug.org.au>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 07:16:37AM +0800, kernel test robot wrote:
-> Hi Andy,
+On Tue, Jan 05, 2021 at 09:36:16AM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> FYI, the error/warning still remains.
+> After merging the vfs tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+> 
+> In file included from arch/x86/include/asm/elf.h:8,
+>                  from include/linux/elf.h:6,
+>                  from include/linux/elfcore-compat.h:5,
+>                  from fs/compat_binfmt_elf.c:17:
+> fs/binfmt_elf.c: In function 'fill_thread_core_info':
+> arch/x86/include/asm/elfcore-compat.h:23:20: error: 'TIF_X32' undeclared (first use in this function)
+>    23 |  (test_thread_flag(TIF_X32) \
+>       |                    ^~~~~~~
+> include/linux/thread_info.h:116:45: note: in definition of macro 'test_thread_flag'
+>   116 |  test_ti_thread_flag(current_thread_info(), flag)
+>       |                                             ^~~~
+> fs/binfmt_elf.c:1744:5: note: in expansion of macro 'PRSTATUS_SIZE'
+>  1744 |     PRSTATUS_SIZE, &t->prstatus);
+>       |     ^~~~~~~~~~~~~
+> arch/x86/include/asm/elfcore-compat.h:23:20: note: each undeclared identifier is reported only once for each function it appears in
+>    23 |  (test_thread_flag(TIF_X32) \
+>       |                    ^~~~~~~
+> include/linux/thread_info.h:116:45: note: in definition of macro 'test_thread_flag'
+>   116 |  test_ti_thread_flag(current_thread_info(), flag)
+>       |                                             ^~~~
+> fs/binfmt_elf.c:1744:5: note: in expansion of macro 'PRSTATUS_SIZE'
+>  1744 |     PRSTATUS_SIZE, &t->prstatus);
+>       |     ^~~~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   5a9b7f382248 ("binfmt_elf: partially sanitize PRSTATUS_SIZE and SET_PR_FPVALID")
+> 
+> or maybe commit
+> 
+>   9866fcab1c65 ("[elfcore-compat][amd64] clean PRSTATUS_SIZE/SET_PR_FPVALID up properly")
 
-The patch is in a pull request to Mauro now:
-
-<URL:https://lore.kernel.org/linux-media/20210104120612.GB850@valkosipuli.retiisi.org.uk/T/#t>
-
--- 
-Sakari Ailus
+Arrgh...  It's 8d71d2bf6efe ("x86: Reclaim TIF_IA32 and TIF_X32") in mainline, actually.
+Mea culpa ;-/
