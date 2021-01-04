@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B10E2E925E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCA12E9262
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbhADJMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 04:12:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38586 "EHLO
+        id S1726894AbhADJNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 04:13:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbhADJMw (ORCPT
+        with ESMTP id S1726505AbhADJNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:12:52 -0500
+        Mon, 4 Jan 2021 04:13:34 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A041BC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 01:12:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8F9C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 01:12:54 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kwLuF-0008Pw-IB; Mon, 04 Jan 2021 10:12:03 +0100
+        id 1kwLus-0000Db-Tu; Mon, 04 Jan 2021 10:12:43 +0100
 Received: from [IPv6:2a03:f580:87bc:d400:7c68:1abb:22de:a098] (unknown [IPv6:2a03:f580:87bc:d400:7c68:1abb:22de:a098])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 446705B8CF0;
-        Mon,  4 Jan 2021 09:11:56 +0000 (UTC)
-To:     kernel test robot <lkp@intel.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-References: <202012270307.H8cY6ALL-lkp@intel.com>
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4F54A5B8CF1;
+        Mon,  4 Jan 2021 09:12:40 +0000 (UTC)
+Subject: Re: [PATCH v2] can: rcar: Update help description for CAN_RCAR config
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20210104090327.6547-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -96,17 +101,15 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Subject: Re: net/can/isotp.c:1240:13: sparse: sparse: incorrect type in
- initializer (different address spaces)
-Message-ID: <3aee710f-b092-82e3-1a0d-1af3f153c00b@pengutronix.de>
-Date:   Mon, 4 Jan 2021 10:11:52 +0100
+Message-ID: <d324274e-2a0d-f56e-80e7-5eb46664a76e@pengutronix.de>
+Date:   Mon, 4 Jan 2021 10:12:37 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <202012270307.H8cY6ALL-lkp@intel.com>
+In-Reply-To: <20210104090327.6547-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="KDuQEWwczhs5CokB1viXC6DEWWWiyBLrO"
+ boundary="yNnuK6BXvd06C6rzZOLZtrvZ3e9MmMjjF"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -116,92 +119,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---KDuQEWwczhs5CokB1viXC6DEWWWiyBLrO
-Content-Type: multipart/mixed; boundary="ovQUPl2P4NScgDuIg8M3npzcV00a4R4DK";
+--yNnuK6BXvd06C6rzZOLZtrvZ3e9MmMjjF
+Content-Type: multipart/mixed; boundary="hebWY7dKvvdvsW8PnRldwjWoguqKeJ0jE";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: kernel test robot <lkp@intel.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- Linux-sh list <linux-sh@vger.kernel.org>
-Message-ID: <3aee710f-b092-82e3-1a0d-1af3f153c00b@pengutronix.de>
-Subject: Re: net/can/isotp.c:1240:13: sparse: sparse: incorrect type in
- initializer (different address spaces)
-References: <202012270307.H8cY6ALL-lkp@intel.com>
-In-Reply-To: <202012270307.H8cY6ALL-lkp@intel.com>
+To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Prabhakar <prabhakar.csengg@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>
+Message-ID: <d324274e-2a0d-f56e-80e7-5eb46664a76e@pengutronix.de>
+Subject: Re: [PATCH v2] can: rcar: Update help description for CAN_RCAR config
+References: <20210104090327.6547-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210104090327.6547-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 
---ovQUPl2P4NScgDuIg8M3npzcV00a4R4DK
+--hebWY7dKvvdvsW8PnRldwjWoguqKeJ0jE
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 12/26/20 8:29 PM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
-git master
-> head:   f838f8d2b694cf9d524dc4423e9dd2db13892f3f
-> commit: e057dd3fc20ffb3d7f150af46542a51b59b90127 can: add ISO 15765-2:2=
-016 transport protocol
-> date:   3 months ago
-> config: sh-randconfig-s032-20201225 (attached as .config)
-> compiler: sh4-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
-bin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-184-g1b896707-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linu=
-x.git/commit/?id=3De057dd3fc20ffb3d7f150af46542a51b59b90127
->         git remote add linus https://git.kernel.org/pub/scm/linux/kerne=
-l/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout e057dd3fc20ffb3d7f150af46542a51b59b90127
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-9.3.0 make.cr=
-oss C=3D1 CF=3D'-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=3Dsh=20
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->=20
->=20
-> "sparse warnings: (new ones prefixed by >>)"
->>> net/can/isotp.c:1240:13: sparse: sparse: incorrect type in initialize=
-r (different address spaces) @@     expected int const *__gu_addr @@     =
-got int [noderef] __user *optlen @@
->    net/can/isotp.c:1240:13: sparse:     expected int const *__gu_addr
->    net/can/isotp.c:1240:13: sparse:     got int [noderef] __user *optle=
-n
->>> net/can/isotp.c:1240:13: sparse: sparse: incorrect type in argument 1=
- (different address spaces) @@     expected void const volatile [noderef]=
- __user *ptr @@     got int const *__gu_addr @@
->    net/can/isotp.c:1240:13: sparse:     expected void const volatile [n=
-oderef] __user *ptr
->    net/can/isotp.c:1240:13: sparse:     got int const *__gu_addr
+On 1/4/21 10:03 AM, Lad Prabhakar wrote:
+> The rcar_can driver also supports RZ/G SoC's, update the description to=
 
-=46rom my point of view, it looks like the get_user() on the sh platform =
-is
-somehow different to the other platform, which all accept a __user pointe=
-r. IMHO
-this should be fixed in sh.
-
-> vim +1240 net/can/isotp.c
+> reflect this.
 >=20
->   1229=09
->   1230	static int isotp_getsockopt(struct socket *sock, int level, int =
-optname,
->   1231				    char __user *optval, int __user *optlen)
->   1232	{
->   1233		struct sock *sk =3D sock->sk;
->   1234		struct isotp_sock *so =3D isotp_sk(sk);
->   1235		int len;
->   1236		void *val;
->   1237=09
->   1238		if (level !=3D SOL_CAN_ISOTP)
->   1239			return -EINVAL;
->> 1240		if (get_user(len, optlen))
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-regards,
+applied to linux-can/testing
+
+Thanks,
 Marc
 
 --=20
@@ -211,23 +160,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---ovQUPl2P4NScgDuIg8M3npzcV00a4R4DK--
+--hebWY7dKvvdvsW8PnRldwjWoguqKeJ0jE--
 
---KDuQEWwczhs5CokB1viXC6DEWWWiyBLrO
+--yNnuK6BXvd06C6rzZOLZtrvZ3e9MmMjjF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/y29gACgkQqclaivrt
-76mrEQgAqSXabkMCqgcXS5kEDQn6olKe4rX01C5v+uqyWpVnHH8CHXr41gAOcHqi
-BAmAe1I9PSY7zggpJJQPSJ6mQP3nRoCzvWtpj9choasEHDKHGyg8XpODxV03rtlv
-JiTVC1m8bSHy2Aq/YJEopuHKaKTO2Jt6XNvxG60LyWj2LUFJFVqZGyDLJa7PqKSb
-8YUPcLCCt6Y2ulPZbF2MSLDpeK+dKWH8lAwPqpjDk5EBwpM9G0qzgaLf6HUSP9zM
-f3KOXIUYjb8LfOPLLQ5wqYkhVKNc+tIrwz2908C1f6Q5BL4TSvcK3JeSWIB09sFb
-N3ew7ToW1Kk1y4mUQAFf7gCy9wF6iA==
-=t6ZU
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/y3AUACgkQqclaivrt
+76kK6wf+M/kgVBk7CddpNBmK0ly3rmhe6MscwqjOpkAXQp9Z/AFoeP8r0ME/xMFX
+1mtvJSzqYorX8P6/8P+lY+cwKxfiqWwEXx3MtY8R530PfyTnGeex3IQIsAqxjKso
+s4uPlNBQkzIhww31gS0leUyo/TdS8h3nIp4ksaWFg24vuSOVvrMV5zWjqNtUElRX
+oybjvORx5OOA2eSC8VSQqwWnTClYhJvPPsqvPO1ve1dMOdT7PjNX//ur6rbZ4QeP
+uC4j4QYttyAdYfFdp+knaXBj1uTf3WsVmqUcDTkLXkXD8l8F5MUdZrz+Mjhz+haX
+GuafGhI28J2qRI+5CFiNzL80BqgNdQ==
+=F6Xd
 -----END PGP SIGNATURE-----
 
---KDuQEWwczhs5CokB1viXC6DEWWWiyBLrO--
+--yNnuK6BXvd06C6rzZOLZtrvZ3e9MmMjjF--
