@@ -2,103 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DA42E9864
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45162E9868
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727617AbhADPXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:23:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbhADPW7 (ORCPT
+        id S1727442AbhADPZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:25:02 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21854 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727225AbhADPZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:22:59 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AC6C061793;
-        Mon,  4 Jan 2021 07:22:19 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id r9so25299637ioo.7;
-        Mon, 04 Jan 2021 07:22:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ITJjjgGspK4Ymjoi4jR7CFPSAptFZU7ef58UxVF4dMU=;
-        b=VPcNk6lKj+n5ZeEkjc49tG/EqZm+hrAjsWLyzVvdLpam8+/LEHuP1Fa/1AbPF8x7xO
-         KC9To3qFWRmLoDa3Cwwx8+eUDZP2BSHWAy8Y7kyNr2UJ47ZrmeojBTzYIHphwyGvfQzb
-         2Z9Bo8lX0LhTx0ZRGKZI0l+Iqh6m2Y2nsekS+BLvFkTMV0aidJLKdL/aiczwP5mTrH9M
-         8pW+bGGPxY+kUDDi3XcWsq7GSfHt6V15Gk4HIA7Q86sBGOjSDHawmV6hq0BVB+foaCIC
-         BV6I+3FvyprqeedXtuGmMZOrFp/QHSQPwYWw43dg8yGPqy3wSAZipENesgtEnKLevwAZ
-         szPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ITJjjgGspK4Ymjoi4jR7CFPSAptFZU7ef58UxVF4dMU=;
-        b=im6Lwfzjj8u7ntIIiM8F2x7vjd3bm/ewwfk/SF3JIa1i8hpigU6MwJqxw6nH9r8yTN
-         8XPnDOQHYRXHWmg+uUdnqHHCzqOPrgr8TW+AmrCNs19/uAKgXsdwQouRVTOAcvu2KIvd
-         GCJSyuo9AkaZY+ukQHADQwUZFyS9GmtnqqBRsmnQdsqLzHG2JF0cfELNWVm6JKoZ66mr
-         5MUkNTNrZSRyL+bakjaiIG6yWxNTsBx0k0Rcry8g+xk3r9jm8AljLJQgi7W2fUWuQ/b2
-         rTgKmBB+illl/uV1di2SFwr8o6R8xTKVc4zhPmJwVDrHEPYFG/lEhlGAFnHO6VqLndzf
-         Nq4g==
-X-Gm-Message-State: AOAM533bIdQ8mzVcoSDQCQGYdhbYbzZyS/pNiV2mwnk11gRoWYU2vXxo
-        8yc6NkkCVf5JLIC0XN443wBbHwQi0Pays1hQWOY=
-X-Google-Smtp-Source: ABdhPJzNzTAdKo6eNVvLfbs3L1yit3juif7aqnqIiS4HJ5mDLnMJnLzR4H9ClF1fsfuXfZmFOL0gv1ohRI10e8ZXR+4=
-X-Received: by 2002:a6b:8e41:: with SMTP id q62mr59297909iod.5.1609773738488;
- Mon, 04 Jan 2021 07:22:18 -0800 (PST)
+        Mon, 4 Jan 2021 10:25:01 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 104F2AeE054555;
+        Mon, 4 Jan 2021 10:24:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=zxghkz7KN4TP63NXTpRrf4UWbVhYh7z0S3onnXQYjGQ=;
+ b=JMVfCZiMOgOxDlCupGquPsR0SBAsQUEHN6Rxgqy9BGX0AFfmBhKS253usby50lHFEEQV
+ TXtVVijovuON42LgLtIHZJvcowTVsSgRMvGHs25EUrC99UHAURAUGQ/oLNX7mxRPExaR
+ LFn/CWHIEJ8/xs499WkQZHOyIYpFtLwx2NOxHvfftaURa/EkeLNThc7kWGDx14hDdUmA
+ O7pTl1tkrjuZ37uHmK2z86LXWRzySO7xOEsId/XRmKhcwKEYuSc+pc/VVeKLCYzxF5V/
+ oYdl+ZHW5BQEm+Iib03kX3sHfJdfw5LJMtdZBDPaNg+4Yv+Fs1dvtMEgsRvNjv/Gxmx0 4g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35v3183w3q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Jan 2021 10:24:20 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 104F2U79055391;
+        Mon, 4 Jan 2021 10:24:20 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35v3183w2y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Jan 2021 10:24:19 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 104FBdcS003941;
+        Mon, 4 Jan 2021 15:24:18 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 35tgf8h182-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Jan 2021 15:24:18 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 104FOFiN42729806
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Jan 2021 15:24:15 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E4717A405F;
+        Mon,  4 Jan 2021 15:24:14 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7F0A8A405C;
+        Mon,  4 Jan 2021 15:24:14 +0000 (GMT)
+Received: from ibm-vm (unknown [9.145.0.177])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Jan 2021 15:24:14 +0000 (GMT)
+Date:   Mon, 4 Jan 2021 16:22:31 +0100
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v1 4/4] s390/kvm: VSIE: correctly handle MVPG when in
+ VSIE
+Message-ID: <20210104162231.4e56ab47@ibm-vm>
+In-Reply-To: <6836573a-a49d-9d9f-49e0-96b5aa479c52@redhat.com>
+References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
+        <20201218141811.310267-5-imbrenda@linux.ibm.com>
+        <6836573a-a49d-9d9f-49e0-96b5aa479c52@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20201221195055.35295-1-vgoyal@redhat.com> <20201221195055.35295-4-vgoyal@redhat.com>
- <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223185044.GQ874@casper.infradead.org> <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223200746.GR874@casper.infradead.org> <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223204428.GS874@casper.infradead.org> <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
- <20210104151424.GA63879@redhat.com>
-In-Reply-To: <20210104151424.GA63879@redhat.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 4 Jan 2021 17:22:07 +0200
-Message-ID: <CAOQ4uxgiC5Wm+QqD+vbmzkFvEqG6yvKYe_4sR7ZUVfu-=Ys9oQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chengguang Xu <cgxu519@mykernel.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-04_08:2021-01-04,2021-01-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 spamscore=0 clxscore=1015 bulkscore=0 malwarescore=0
+ impostorscore=0 mlxlogscore=999 phishscore=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101040095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Since Jeff's patch is minimal, I think that it should be the fix applied
-> > first and proposed for stable (with adaptations for non-volatile overlay).
->
-> Does stable fix has to be same as mainline fix. IOW, I think atleast in
-> mainline we should first fix it the right way and then think how to fix
-> it for stable. If fixes taken in mainline are not realistic for stable,
-> can we push a different small fix just for stable?
+On Sun, 20 Dec 2020 11:13:57 +0100
+David Hildenbrand <david@redhat.com> wrote:
 
-We can do a lot of things.
-But if we are able to create a series with minimal (and most critical) fixes
-followed by other fixes, it would be easier for everyone involved.
+> On 18.12.20 15:18, Claudio Imbrenda wrote:
+> > Correctly handle the MVPG instruction when issued by a VSIE guest.
+> >   
+> 
+> I remember that MVPG SIE documentation was completely crazy and full
+> of corner cases. :)
 
->
-> IOW, because we have to push a fix in stable, should not determine
-> what should be problem solution for mainline, IMHO.
->
+you remember correctly
 
-I find in this case there is a correlation between the simplest fix and the
-most relevant fix for stable.
+> Looking at arch/s390/kvm/intercept.c:handle_mvpg_pei(), I can spot
+> that
+> 
+> 1. "This interception can only happen for guests with DAT disabled
+> ..." 2. KVM does not make use of any mvpg state inside the SCB.
+> 
+> Can this be observed with Linux guests?
 
-> The porblem I have with Jeff's fix is that its only works for volatile
-> mounts. While I prefer a solution where syncfs() is fixed both for
-> volatile as well as non-volatile mount and then there is less confusion.
->
+a Linux guest will typically not run with DAT disabled
 
-I proposed a variation on Jeff's patch that covers both cases.
-Sargun is going to work on it.
+> Can I get some information on what information is stored at [0xc0,
+> 0xd) inside the SCB? I assume it's:
+> 
+> 0xc0: guest physical address of source PTE
+> 0xc8: guest physical address of target PTE
 
-Thanks,
-Amir.
+yes (plus 3 flags in the lower bits of each)
+
+> 
+> Also, which conditions have to be met such that we get a
+> ICPT_PARTEXEC:
+> 
+> a) State of guest DAT (I assume off?)
+> b) State of PTEs: What happens if there is no PTE (I assume we need
+> two PTEs, otherwise no such intercept)? I assume we get an intercept
+> if one of both PTEs is not present or the destination PTE is
+> protected. Correct?
+
+we get the intercept if the guest has DAT off, and at least one of the
+host PTEs is invalid (and I think if the destination is valid but
+protected)
+
+> So, when we (g1) get an intercept for g3, can we be sure 0xc0 and 0xc8
+> in the scb are both valid g1 addresses pointing at our PTE, and what
+> do we know about these PTEs (one not present or destination
+> protected)?
+
+we only know that at least one of the following holds true:
+* source invalid
+* destination invalid
+* destination protected
+
+there is a bit that tells us if the destination was protected (bit 62),
+but that does not exclude an invalid source
+
+> [...]
+> >  /*
+> >   * Run the vsie on a shadow scb and a shadow gmap, without any
+> > further
+> >   * sanity checks, handling SIE faults.
+> > @@ -1063,6 +1132,10 @@ static int do_vsie_run(struct kvm_vcpu
+> > *vcpu, struct vsie_page *vsie_page) if ((scb_s->ipa & 0xf000) !=
+> > 0xf000) scb_s->ipa += 0x1000;
+> >  		break;
+> > +	case ICPT_PARTEXEC:
+> > +		if (scb_s->ipa == 0xb254)  
+> 
+> Old code hat "/* MVPG only */" - why is this condition now necessary?
+
+old code was wrong ;)
+
+> > +			rc = vsie_handle_mvpg(vcpu, vsie_page);
+> > +		break;
+> >  	}
+> >  	return rc;
+> >  }
+> >   
+> 
+> 
+
