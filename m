@@ -2,131 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE9F2E9A72
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAB82E9AB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728610AbhADQJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:09:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24459 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727357AbhADQJt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:09:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609776503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iCAALDuWRacu50XtT51NThRS2gMEi63ytyilijXxcII=;
-        b=jSNM5EbXOg8GPmoT3sOy6nmW15d19VDct2yZucTXeC3s/v9+HK6kLjU6+8QMGXdp5K23my
-        jERgtJZZo8m0IKdzEgS6faJNWqrqQ2usQAsnHs+ejJJvL4Yc0dZksnbn1+eTJvEa2joLji
-        dmkm5FttVBMv8xYqw4bkaFs8S98ZgrE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-1_pgLx88Nra8cXTYwW6CHg-1; Mon, 04 Jan 2021 11:08:19 -0500
-X-MC-Unique: 1_pgLx88Nra8cXTYwW6CHg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23A73BBEEB;
-        Mon,  4 Jan 2021 16:08:18 +0000 (UTC)
-Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B9AC771C93;
-        Mon,  4 Jan 2021 16:08:16 +0000 (UTC)
-Subject: Re: [PATCH v1 4/4] s390/kvm: VSIE: correctly handle MVPG when in VSIE
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, stable@vger.kernel.org
-References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
- <20201218141811.310267-5-imbrenda@linux.ibm.com>
- <6836573a-a49d-9d9f-49e0-96b5aa479c52@redhat.com>
- <20210104162231.4e56ab47@ibm-vm>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <3376268b-7fd7-9fbe-b483-fe7471038a18@redhat.com>
-Date:   Mon, 4 Jan 2021 17:08:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1729976AbhADQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:13:31 -0500
+Received: from mga12.intel.com ([192.55.52.136]:58368 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729914AbhADQNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:13:17 -0500
+IronPort-SDR: 0DWrWzUEWLCNIS74p5n/erbSmXiSwqKzMc/9mRBvOJR/iq5c/wlmqwn2Eys+XrJkR0e6lPlpKq
+ JBQII0R+MDjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156167540"
+X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
+   d="scan'208";a="156167540"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:12:36 -0800
+IronPort-SDR: G4qPXJ/u5P7tzi0LQVR3bnnVjEt8/+JF5VfHTuJGXPNUaBkbM3EQCfJ8JGG7X1LE/P/0DsZhkr
+ CrUb9zAWHYxg==
+X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
+   d="scan'208";a="378471325"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:12:36 -0800
+Date:   Mon, 4 Jan 2021 08:12:36 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupts@synopsys.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org
+Subject: Re: [PATCH v2] fs/dax: include <asm/page.h> to fix build error on ARC
+Message-ID: <20210104161236.GE3097896@iweiny-DESK2.sc.intel.com>
+References: <20210101042914.5313-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210104162231.4e56ab47@ibm-vm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210101042914.5313-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.01.21 16:22, Claudio Imbrenda wrote:
-> On Sun, 20 Dec 2020 11:13:57 +0100
-> David Hildenbrand <david@redhat.com> wrote:
+On Thu, Dec 31, 2020 at 08:29:14PM -0800, Randy Dunlap wrote:
+> fs/dax.c uses copy_user_page() but ARC does not provide that interface,
+> resulting in a build error.
 > 
->> On 18.12.20 15:18, Claudio Imbrenda wrote:
->>> Correctly handle the MVPG instruction when issued by a VSIE guest.
->>>   
->>
->> I remember that MVPG SIE documentation was completely crazy and full
->> of corner cases. :)
+> Provide copy_user_page() in <asm/page.h> (beside copy_page()) and
+> add <asm/page.h> to fs/dax.c to fix the build error.
 > 
-> you remember correctly
+> ../fs/dax.c: In function 'copy_cow_page_dax':
+> ../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
 > 
->> Looking at arch/s390/kvm/intercept.c:handle_mvpg_pei(), I can spot
->> that
->>
->> 1. "This interception can only happen for guests with DAT disabled
->> ..." 2. KVM does not make use of any mvpg state inside the SCB.
->>
->> Can this be observed with Linux guests?
+> Fixes: cccbce671582 ("filesystem-dax: convert to dax_direct_access()")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+
+Looks reasonable
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+
+> Cc: Vineet Gupta <vgupta@synopsys.com>
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Acked-by: Vineet Gupta <vgupts@synopsys.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-nvdimm@lists.01.org
+> ---
+> v2: rebase, add more Cc:
 > 
-> a Linux guest will typically not run with DAT disabled
+>  arch/arc/include/asm/page.h |    1 +
+>  fs/dax.c                    |    1 +
+>  2 files changed, 2 insertions(+)
 > 
->> Can I get some information on what information is stored at [0xc0,
->> 0xd) inside the SCB? I assume it's:
->>
->> 0xc0: guest physical address of source PTE
->> 0xc8: guest physical address of target PTE
-> 
-> yes (plus 3 flags in the lower bits of each)
-
-Thanks! Do the flags tell us what the deal with the PTE was? If yes,
-what's the meaning of the separate flags?
-
-I assume something like "invalid, proteced, ??"
-
-I'm asking because I think we can handle this a little easier.
-
-> 
->> [...]
->>>  /*
->>>   * Run the vsie on a shadow scb and a shadow gmap, without any
->>> further
->>>   * sanity checks, handling SIE faults.
->>> @@ -1063,6 +1132,10 @@ static int do_vsie_run(struct kvm_vcpu
->>> *vcpu, struct vsie_page *vsie_page) if ((scb_s->ipa & 0xf000) !=
->>> 0xf000) scb_s->ipa += 0x1000;
->>>  		break;
->>> +	case ICPT_PARTEXEC:
->>> +		if (scb_s->ipa == 0xb254)  
->>
->> Old code hat "/* MVPG only */" - why is this condition now necessary?
-> 
-> old code was wrong ;)
-
-
-arch/s390/kvm/intercept.c:handle_partial_execution() we only seem to handle
-
-1. MVPG
-2. SIGP PEI
-
-The latter is only relevant for external calls. IIRC, this is only active
-with sigp interpretation - which is never active under vsie (ECA_SIGPI).
-
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+> --- lnx-511-rc1.orig/fs/dax.c
+> +++ lnx-511-rc1/fs/dax.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/sizes.h>
+>  #include <linux/mmu_notifier.h>
+>  #include <linux/iomap.h>
+> +#include <asm/page.h>
+>  #include <asm/pgalloc.h>
+>  
+>  #define CREATE_TRACE_POINTS
+> --- lnx-511-rc1.orig/arch/arc/include/asm/page.h
+> +++ lnx-511-rc1/arch/arc/include/asm/page.h
+> @@ -10,6 +10,7 @@
+>  #ifndef __ASSEMBLY__
+>  
+>  #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
+> +#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+>  #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
+>  
+>  struct vm_area_struct;
+> _______________________________________________
+> Linux-nvdimm mailing list -- linux-nvdimm@lists.01.org
+> To unsubscribe send an email to linux-nvdimm-leave@lists.01.org
