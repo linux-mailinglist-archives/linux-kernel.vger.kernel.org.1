@@ -2,122 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C212EA0C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DC22EA09B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbhADX02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:26:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        id S1727108AbhADXRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:17:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727473AbhADX01 (ORCPT
+        with ESMTP id S1726026AbhADXRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:26:27 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A119C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 15:25:47 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id h22so68504376lfu.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 15:25:47 -0800 (PST)
+        Mon, 4 Jan 2021 18:17:48 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A889C061796
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 15:17:07 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id c12so17294006pfo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 15:17:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bZYZtiZqtjiM5mTKJrFBVkfoUrE9/7TPDo+TfeeGsN0=;
-        b=SZ0tfQHLhsr9W1ajzZ39FhUzRaxy3x+zBWBSD+fu8SGm84RUr8oeAtTXXk34EIqT80
-         tDMqqZ6IdhqCS6JSANuPqibcoPCEoly7svMmOTZFAPM2+CsDRFNM7PDMeYhE+m7oeIxf
-         +8GSdXQNOjaF8R0tToPJnc0n0RUoTrRkrCGnHcNek2i5t/XbwHT1ZJH9ZFYOX5OQTl09
-         Tvhaup+6QcssSXygg5EhjaW6SkhdaAA9pFJYgBeZTethdmdHFkGzSKrHPaZpiN0srscY
-         HEcLktaEA2rc8qprUWbvJ1yVRNnuoYCACG9cGgQxBit2TOzM4VehHDRkZC0hFtdJysbt
-         4KKQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xliuBhcuCe3LSKs+KrKKbN9fo/wqGAuOpx2UNrHRZkk=;
+        b=JOnWYsRK4bSbUHEcEXNRkoDq9Fi70xM4vQ4N/H8RPYf5vGK1gSLM9RVTDbV63eyynl
+         6/Gts371aMJTQifFdsTT0+GBUW6Gx+CBHSMj7gCO5hCvWExi2ZMWIZ1EUqzdomzwnBVM
+         EEZb9bMVpaRXARkzuAx1qXMRtJEbYStZuuxRI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bZYZtiZqtjiM5mTKJrFBVkfoUrE9/7TPDo+TfeeGsN0=;
-        b=Pb7Zzk9LZAwvlk8hoQQR2GFvYRrgJaS3EPuwnM+lZIRfCEPT41fvFvYxS9cMM9XhkV
-         /cpgGQa2oUGJNzkOB3KaLpuRJjLLnr/iI6XogTWSuLPEIaYtxBZ6h/I7vAk6CV5nkViz
-         SkviQgGu9cSIdCzrV9+EqeqWZLVuN3Z22yDiTwJaP9EJdSmfKMlP2BT5p7zUvtNQP+bi
-         FG2bkixk4ROM7h3VO+QnV1mXF6t+7fcms30SOLql/0tPfhGWezXeajux67AsMFX6sLUJ
-         dPjX/LDOg3ZvkoVCklZggFuTv255NxAWP4uRDp3rtr6Cyv7vdlLn2BVNBLy+shQIosRH
-         5nmA==
-X-Gm-Message-State: AOAM531uer1PJIlBdVc4su0MCgdL27fr8bDaWHC5jmNgyxeaM6Emw2Zz
-        7YtSfmB7fz5Kp44wmc7B8QuRxCmY2IqN42k2saNyIUdTHF8=
-X-Google-Smtp-Source: ABdhPJxXfxM1BhY/5z030aM8G0Z4MMK7+AFboBuQ+Z7CQL9mSMsZkJ/4MtVxebNyRvqCTydGRunUvLgJHIogTDu1raY=
-X-Received: by 2002:a17:906:edb2:: with SMTP id sa18mr65644898ejb.264.1609799386671;
- Mon, 04 Jan 2021 14:29:46 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xliuBhcuCe3LSKs+KrKKbN9fo/wqGAuOpx2UNrHRZkk=;
+        b=A6AIupG9z/sH58Tr6SK2nHYxFYEMgjNQ/JvZPxdHGmte3Pf4lvDmyfRSkU7X0DnJMQ
+         VPJb0IzbEjIzlVFy4Gd0Tlz5A4Nbwu20+5NtxKQPEFlF8LBUZHvEeXjc1/xmbWQ+teWU
+         voDxkEqo0s6thrKkOmnJ1+Bn3bMijOXv1p/Pu8z50T9nzge8IE8AGUbR69rHV2Mo0Pbw
+         kKoSv0PyFHSmhlpJ6dyvpG46jpTzk0d5pXnGltgYIFHnNYboINRpZ9QdpnTCngLCynBs
+         e4HeAo0Z4W/1KTuT4vg8swoYwEET1q/JeFJHmkk7XCB3mXUBYLFCfD0C+8LhVGwFjKLi
+         bvtQ==
+X-Gm-Message-State: AOAM532z/SGlRUv0Vgi67Fdb98plLaFzjp3ZlECbeqVjrZ3QcaEaFpgp
+        rzr50uYTedt0TBEbw/41d5nbY+wJjseVNQ==
+X-Google-Smtp-Source: ABdhPJw5l29/rMCZWKLaxBlGZMOSAsBMwtjWdgHqylhZe6I6D8inwCVFRAk5Pxc13ZfvmnZmZdBLew==
+X-Received: by 2002:a65:458d:: with SMTP id o13mr34537142pgq.450.1609800938587;
+        Mon, 04 Jan 2021 14:55:38 -0800 (PST)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:a6ae:11ff:fe11:fd59])
+        by smtp.gmail.com with ESMTPSA id c18sm54951051pfj.200.2021.01.04.14.55.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 14:55:38 -0800 (PST)
+From:   Philip Chen <philipchen@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>, dmitry.torokhov@gmail.com
+Cc:     dianders@chromium.org, swboyd@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
+        linux-input@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: input: cros-ec-keyb: Add a new property
+Date:   Mon,  4 Jan 2021 14:55:31 -0800
+Message-Id: <20210104145523.v2.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <a5ba7bdf-8510-d0a0-9c22-ec1b81019982@intel.com> <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com>
-In-Reply-To: <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 4 Jan 2021 14:29:40 -0800
-Message-ID: <CAPcyv4hkAN1hz=9yJ2CRYfNQ3Tjwm6z+Fghti9QKZLN-ZfR5aQ@mail.gmail.com>
-Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page
- allocation for __GFP_ZERO
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 12:11 PM David Hildenbrand <david@redhat.com> wrote:
->
->
-> > Am 04.01.2021 um 20:52 schrieb Dave Hansen <dave.hansen@intel.com>:
-> >
-> > =EF=BB=BFOn 1/4/21 11:27 AM, Matthew Wilcox wrote:
-> >>> On Mon, Jan 04, 2021 at 11:19:13AM -0800, Dave Hansen wrote:
-> >>> On 12/21/20 8:30 AM, Liang Li wrote:
-> >>>> --- a/include/linux/page-flags.h
-> >>>> +++ b/include/linux/page-flags.h
-> >>>> @@ -137,6 +137,9 @@ enum pageflags {
-> >>>> #endif
-> >>>> #ifdef CONFIG_64BIT
-> >>>>    PG_arch_2,
-> >>>> +#endif
-> >>>> +#ifdef CONFIG_PREZERO_PAGE
-> >>>> +    PG_zero,
-> >>>> #endif
-> >>>>    __NR_PAGEFLAGS,
-> >>>
-> >>> I don't think this is worth a generic page->flags bit.
-> >>>
-> >>> There's a ton of space in 'struct page' for pages that are in the
-> >>> allocator.  Can't we use some of that space?
-> >>
-> >> I was going to object to that too, but I think the entire approach is
-> >> flawed and needs to be thrown out.  It just nukes the caches in extrem=
-ely
-> >> subtle and hard to measure ways, lowering overall system performance.
-> >
-> > Yeah, it certainly can't be the default, but it *is* useful for thing
-> > where we know that there are no cache benefits to zeroing close to wher=
-e
-> > the memory is allocated.
-> >
-> > The trick is opting into it somehow, either in a process or a VMA.
-> >
->
-> The patch set is mostly trying to optimize starting a new process. So pro=
-cess/vma doesn=E2=80=98t really work.
->
-> I still wonder if using tmpfs/shmem cannot somehow be used to cover the o=
-riginal use case of starting a new vm fast (or rebooting an existing one in=
-volving restarting the process).
+This patch adds a new property `function-row-physmap` to the
+device tree for the custom keyboard top row design.
 
-If it's rebooting a VM then file-backed should be able to skip the
-zeroing because the stale data exposure is only to itself. If the
-memory is being repurposed to a new VM then the file needs to be
-reallocated / re-zeroed just like the anonymous case.
+The property describes the rows/columns of the top row keys
+from left to right.
+
+Signed-off-by: Philip Chen <philipchen@chromium.org>
+---
+
+Changes in v2:
+- add `function-row-physmap` instead of `google,custom-keyb-top-row`
+
+ .../devicetree/bindings/input/google,cros-ec-keyb.yaml | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+index 8e50c14a9d778..7acdb33781d30 100644
+--- a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
++++ b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+@@ -31,6 +31,16 @@ properties:
+       if the EC does not have its own logic or hardware for this.
+     type: boolean
+ 
++  function-row-physmap:
++    $ref: '/schemas/types.yaml#/definitions/uint32-array'
++    description: |
++      An ordered u32 array describing the rows/columns (in the scan matrix)
++      of top row keys from physical left (KEY_F1) to right. Each entry
++      encodes the row/column as:
++      (((row) & 0xFF) << 24) | (((column) & 0xFF) << 16)
++      where the lower 16 bits are reserved. This property is specified only
++      when the keyboard has a custom design for the top row keys.
++
+ required:
+   - compatible
+ 
+-- 
+2.26.2
+
