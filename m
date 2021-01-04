@@ -2,50 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4692D2E944C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 205A02E9457
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbhADLuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 06:50:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51568 "EHLO mail.kernel.org"
+        id S1726485AbhADLvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 06:51:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:60512 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbhADLuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 06:50:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CBFF221F9;
-        Mon,  4 Jan 2021 11:49:36 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Will Deacon <will@kernel.org>, peng.fan@nxp.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: mm: Fix ARCH_LOW_ADDRESS_LIMIT when !CONFIG_ZONE_DMA
-Date:   Mon,  4 Jan 2021 11:49:34 +0000
-Message-Id: <160976092100.24483.16586418833088712176.b4-ty@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201218163307.10150-1-nsaenzjulienne@suse.de>
-References: <20201218163307.10150-1-nsaenzjulienne@suse.de>
+        id S1725830AbhADLva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 06:51:30 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F08B11FB;
+        Mon,  4 Jan 2021 03:50:44 -0800 (PST)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17E3F3F70D;
+        Mon,  4 Jan 2021 03:50:42 -0800 (PST)
+Date:   Mon, 4 Jan 2021 11:49:54 +0000
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/5] arm64: Add support for SMCCC TRNG entropy source
+Message-ID: <20210104114814.5e1fe218@slackpad.fritz.box>
+In-Reply-To: <20201211162612.GF4929@sirena.org.uk>
+References: <20201211160005.187336-1-andre.przywara@arm.com>
+        <20201211160005.187336-5-andre.przywara@arm.com>
+        <20201211162612.GF4929@sirena.org.uk>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 17:33:07 +0100, Nicolas Saenz Julienne wrote:
-> Systems configured with CONFIG_ZONE_DMA32, CONFIG_ZONE_NORMAL and
-> !CONFIG_ZONE_DMA will fail to properly setup ARCH_LOW_ADDRESS_LIMIT. The
-> limit will default to ~0ULL, effectively spanning the whole memory,
-> which is too high for a configuration that expects low memory to be
-> capped at 4GB.
+On Fri, 11 Dec 2020 16:26:12 +0000
+Mark Brown <broonie@kernel.org> wrote:
+
+> On Fri, Dec 11, 2020 at 04:00:04PM +0000, Andre Przywara wrote:
 > 
-> Fix ARCH_LOW_ADDRESS_LIMIT by falling back to arm64_dma32_phys_limit
-> when arm64_dma_phys_limit isn't set. arm64_dma32_phys_limit will honour
-> CONFIG_ZONE_DMA32, or span the entire memory when not enabled.
+> >  static inline bool __must_check arch_get_random_seed_long(unsigned
+> > long *v) {
+> > +	struct arm_smccc_res res;
+> > +
+> > +	/*
+> > +	 * We prefer the SMCCC call, since its semantics (return
+> > actual
+> > +	 * hardware backed entropy) is closer to the idea behind
+> > this
+> > +	 * function here than what even the RNDRSS register
+> > provides
+> > +	 * (the output of a pseudo RNG freshly seeded by a TRNG).
+> > +	 */  
+> 
+> This logic...
+> 
+> > @@ -77,10 +117,20 @@ arch_get_random_seed_long_early(unsigned long
+> > *v) {
+> >  	WARN_ON(system_state != SYSTEM_BOOTING);
+> >  
+> > -	if (!__early_cpu_has_rndr())
+> > -		return false;
+> > +	if (__early_cpu_has_rndr())
+> > +		return __arm64_rndr(v);
+> > +
+> > +	if (smccc_trng_available) {
+> > +		struct arm_smccc_res res;
+> >  
+> > -	return __arm64_rndr(v);
+> > +		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND64, 64,
+> > &res);
+> > +		if ((int)res.a0 >= 0) {
+> > +			*v = res.a3;
+> > +			return true;
+> > +		}
+> > +	}
+> > +
+> > +	return false;  
+> 
+> ...seems to also apply here but we prefer the RNDR instead of the
+> SMCC. We probably want to either do the same thing or add a comment
+> saying what's going on.
 
-Applied to arm64 (for-next/fixes), thanks!
+Argh, you are right, I missed to change this part as well.
 
-[1/1] arm64: mm: Fix ARCH_LOW_ADDRESS_LIMIT when !CONFIG_ZONE_DMA
-      https://git.kernel.org/arm64/c/095507dc1350
+Will send a fixed and rebased v5 ASAP.
 
--- 
-Catalin
+Cheers,
+Andre
+
 
