@@ -2,136 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35672E962A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8122E9627
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbhADNix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:38:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
+        id S1726871AbhADNik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:38:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbhADNiw (ORCPT
+        with ESMTP id S1726303AbhADNij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:38:52 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5910DC061574;
-        Mon,  4 Jan 2021 05:38:12 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id k4so25995947ybp.6;
-        Mon, 04 Jan 2021 05:38:12 -0800 (PST)
+        Mon, 4 Jan 2021 08:38:39 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FFEC061794;
+        Mon,  4 Jan 2021 05:37:59 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id x12so14539313plr.10;
+        Mon, 04 Jan 2021 05:37:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qpRCgkYiJRW1zoLfP+z+PbbYsKmRvUnyDb3fnDcUbxg=;
-        b=EtTC+EseNPWQLbbGnMKGiTYVWmr6GrHlxGoQW/Vvnt82VshXAirGEKUO1DP1H1cuud
-         zumPC64ENwDpU6KPY6y7wZdkPk2MYPPGTuhSMdMZh0seEZcfErdfGCK5Tk9pJe1ngLgh
-         GT2LNQVr/uOfrhacZDELGu+qZGVVOGiz0WZJ4LMzeFRsGFrmh9vOUiPUqkqYbx4J6A50
-         0oNJQZJJuohizTHMtYGkjFkvFN+Fx/PlVAinxTbTj1PFT1FPf+mf+sqvD88avkmHX0w3
-         6S4p3ttVrcWqkTdQjizmfFg9bKpqtuFtu7A2kyfG0MvLX4pTAaLQsS4hJ5dj39QXU91P
-         vrCg==
+        bh=K+CDCfA5PemkxKnAwCzf0wlF1tNUAK7fJ30n7xk8Eos=;
+        b=uePTtjoOc2coYDV9deOOVYGQB1/AH7to+N/S8Auz8QnywvItZd80oilByCOCt5hAfX
+         GDFLHWJJ31yNVUtaWWr/AgXo8eF7lHB3FC1fYYq+1+KDK94xFErDFEsD3osumFaDFgvY
+         DBgouQfpvJx53TY8gEcbYSVQNuJYBi84xq6Pq24DGJwQajR42XUBllcL7WCegYVtCFQC
+         krTYBh1U1Ci97Euk7MwAAr99JZvLyd20eDy/nIzaeAAdXth9Dp+k1mjmK+C153nlsJfM
+         FVpyq0WPMMFlbrYWhyUz0yNnBJV3kwidCzC5kwBE0XhA5t73N7aW7W56OwgZFjBbGjAE
+         4Rkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qpRCgkYiJRW1zoLfP+z+PbbYsKmRvUnyDb3fnDcUbxg=;
-        b=o0qDW4jgbLPgRA0c3d70gCzPHTg8mBzxJUg1z7bo+ao9invwNvAIlh7oKtQxmEOMda
-         oaRNn1BlUoNMp5d3GozpotpO2Zv0Tq1UPFCh+9VrPVhT4Tm6TxgH/7lJdBVE1T3ruk0p
-         MTnl784daMNAjQ0JSk+oRJ7SmIV1ibbWjL1gAHc/QB13+fXnqsvHsXLyPMxlX2UlpcR6
-         6Ix4YAhsvAdDEr7fVKEka+FdM38xExQalBoHV9XaaYsRee86VXC3tnq1CnZShu8C94Zj
-         x0gVLxLP01/yLvSqBtLrXSbsQO9JwcixHGrSF74oPPXDNHwpWwdnbQPchaJfiZatqW2w
-         d0SA==
-X-Gm-Message-State: AOAM53255nvGZVaPdjqt0YsTKsuOurprTKcG0IG04m9p2mYX2TEflSrD
-        f2LsRWZm2lEnR0kDdDs2Yks07mQ/MGIv8wCSUeE=
-X-Google-Smtp-Source: ABdhPJzybu+uVIT4FvFH8WDb6xwNtcsCHfIhCfYXnHgU7wDGy3SssXPVcjn1basAf7q4BSauxVsxliVPOm0Z9F3BqMQ=
-X-Received: by 2002:a25:94b:: with SMTP id u11mr108114685ybm.518.1609767491262;
- Mon, 04 Jan 2021 05:38:11 -0800 (PST)
+        bh=K+CDCfA5PemkxKnAwCzf0wlF1tNUAK7fJ30n7xk8Eos=;
+        b=edvpOJUlZFs79MhZeeI8taAStxtCq4My4L0svW+cUY4F+Tu9CsbQOic4SQI8mFF3E/
+         cNO2IKbdS97DfbibMa81S2dyZuwgdwBlFWJfM6IVbvjKwRfhhjdnJq+sna62aF1qxLy9
+         4awZsuGqW1voDGJ0fLfqQIhbbAyh9qf1KngwhUn0n/bX4CiW5ZHSLHFiBhQodzYed9J/
+         tj8s9A0X431Lzc8mbYsmxPwI3hyNy0MzLe8YDJoSnkaMF4d6UNY3ib4ao4UK0CAMsez7
+         QA6zaJP8aH3TZ3ncHqhEZW67Vh6ewdQj703yH5c3hLReiFtkHcU5JoCwNlVjhNQhvJgW
+         EtxQ==
+X-Gm-Message-State: AOAM5329aP9iObJbE+X4WqJT9CxzFKEQNw585L4J9kUZ2qJ4a0/TTg3a
+        ZeDjYur1vW7yQFwJsJsCWvH7cmm+++4p8TOQKuA=
+X-Google-Smtp-Source: ABdhPJzgoMjcEAl2pjB/Fd0EbpHaPeU2biYFz0h4TI3h789ORYJfBqqtqhv5AkMXxAby+Zk+iI+bVoL9q6HazNOjsJw=
+X-Received: by 2002:a17:90b:a17:: with SMTP id gg23mr30331114pjb.129.1609767478850;
+ Mon, 04 Jan 2021 05:37:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20201231155957.31165-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdX2ruikh4voRrHPmi=ti+eHVxXh6N05s1XH6+r5MeeqQw@mail.gmail.com>
-In-Reply-To: <CAMuHMdX2ruikh4voRrHPmi=ti+eHVxXh6N05s1XH6+r5MeeqQw@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 4 Jan 2021 13:37:45 +0000
-Message-ID: <CA+V-a8uzTWqOGxMVi+ZJwNWRfj9ANxzAqEhLaQLoDiVcwwCUWQ@mail.gmail.com>
-Subject: Re: [PATCH] can: rcar: Update help description for CAN_RCAR_CANFD config
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+References: <20210103231235.792999-1-djrscally@gmail.com> <20210103231235.792999-16-djrscally@gmail.com>
+ <20210104120905.GR4077@smile.fi.intel.com> <2f64873d-0413-3614-34e2-139b4a4d9da6@gmail.com>
+In-Reply-To: <2f64873d-0413-3614-34e2-139b4a4d9da6@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 4 Jan 2021 15:38:47 +0200
+Message-ID: <CAHp75VcU7DcRZD_eK+B1-CX7tVtsR5YLPdrA6oULk187xhApCw@mail.gmail.com>
+Subject: Re: [PATCH v4 15/15] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     Daniel Scally <djrscally@gmail.com>, Joe Perches <joe@perches.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Len Brown <lenb@kernel.org>, Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Mon, Jan 4, 2021 at 3:02 PM Daniel Scally <djrscally@gmail.com> wrote:
+> On 04/01/2021 12:09, Andy Shevchenko wrote:
+> > On Sun, Jan 03, 2021 at 11:12:35PM +0000, Daniel Scally wrote:
 
-Thank you for the review.
+...
 
-On Mon, Jan 4, 2021 at 10:51 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Thu, Dec 31, 2020 at 5:00 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > The rcar_canfd driver supports R-Car Gen3 and RZ/G2 SoC's, update the
-> > description to reflect this.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> > --- a/drivers/net/can/rcar/Kconfig
-> > +++ b/drivers/net/can/rcar/Kconfig
-> > @@ -10,13 +10,13 @@ config CAN_RCAR
-> >           be called rcar_can.
-> >
-> >  config CAN_RCAR_CANFD
-> > -       tristate "Renesas R-Car CAN FD controller"
-> > +       tristate "Renesas R-Car Gen3 and RZ/G2 CAN FD controller"
-> >         depends on ARCH_RENESAS || ARM
->
-> Not introduced by this patch, but the "|| ARM" looks strange to me.
-> Is this meant for compile-testing? Doesn't the driver compile on all
-> platforms (it does on m68k), so "|| COMPILE_TEST" is not appropriate?
-> Is the CAN FD controller present on some Renesas arm32 SoCs (but
-> not yet supported by this driver)?
->
-Good catch. "|| ARM" was probably copied from CAN_RCAR config and I
-can confirm CAN-FD controller doesn't exist on R-Car Gen2 and RZ/G2
-32bit SoC's (but with a bit of google search RZ/A2M supports CAN-FD I
-am not sure if its the same controller tough), but said that there
-shouldn't be any harm in replacing  "|| ARM" with "|| COMPILE_TEST"
-for both CAN_RCAR_CAN{FD}. What are your thoughts?
+> >> +#define NODE_SENSOR(_HID, _PROPS)           \
+> >> +    ((const struct software_node) {         \
+> >> +            .name = _HID,                   \
+> >> +            .properties = _PROPS,           \
+> >> +    })
+> >> +
+> >> +#define NODE_PORT(_PORT, _SENSOR_NODE)              \
+> >> +    ((const struct software_node) {         \
+> >> +            .name = _PORT,                  \
+> >> +            .parent = _SENSOR_NODE,         \
+> >> +    })
+> >> +
+> >> +#define NODE_ENDPOINT(_EP, _PORT, _PROPS)   \
+> >> +    ((const struct software_node) {         \
+> >> +            .name = _EP,                    \
+> >> +            .parent = _PORT,                \
+> >> +            .properties = _PROPS,           \
+> >> +    })
+> > In all three I didn't get why you need outer parentheses. Without them it will
+> > be well defined compound literal and should work as is.
+> The code works fine, but checkpatch complains that macros with complex
+> values should be enclosed in parentheses. I guess now that I'm more
+> familiar with the code I'd call that a false-positive though, as nowhere
+> else in the kernel that I've seen encloses them the same way.
 
-Cheers,
-Prabhakar
+I guess it is yet another false positive from checkpatch.
+I would ignore its complaints.
 
-
-
-> >         help
-> >           Say Y here if you want to use CAN FD controller found on
-> > -         Renesas R-Car SoCs. The driver puts the controller in CAN FD only
-> > -         mode, which can interoperate with CAN2.0 nodes but does not support
-> > -         dedicated CAN 2.0 mode.
-> > +         Renesas R-Car Gen3 and RZ/G2 SoCs. The driver puts the
-> > +         controller in CAN FD only mode, which can interoperate with
-> > +         CAN2.0 nodes but does not support dedicated CAN 2.0 mode.
-> >
-> >           To compile this driver as a module, choose M here: the module will
-> >           be called rcar_canfd.
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+-- 
+With Best Regards,
+Andy Shevchenko
