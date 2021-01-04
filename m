@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592E52E9C39
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5267E2E9C3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727318AbhADRk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:40:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36316 "EHLO mail.kernel.org"
+        id S1727831AbhADRlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:41:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbhADRk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:40:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63FF720679;
-        Mon,  4 Jan 2021 17:40:15 +0000 (UTC)
+        id S1727672AbhADRlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 12:41:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9980D206A4;
+        Mon,  4 Jan 2021 17:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609782015;
-        bh=V2oGYPbSi6aA3r4g30F2Mg4qcT0P4CxmiDuS2SFjEas=;
+        s=k20201202; t=1609782021;
+        bh=TdktIRetHITr1rQkVosDcvCOXEpiK2F9oh+Iey8UjR4=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=cuo94cEciJVUKipGgtXCAsrtR6QcFK8+YBI/6/W9JvUV6wyYKD+rJiZgJJFVlrOS7
-         l3U/ZYGqH+3RdoOB8jCoSSNkpWKNbIN9E0117GZk/r0vtuTbQGj4Ht4Fq6QeMiZDDQ
-         Y8s8DzDhDOxx4lJ+WsJFR76AkhlKrTy3MEJKGt6021RkzkUDZ3J9QmNkssAmiQH0D/
-         DLD4vhAl0z7U5oMrfh6md93+zOUNdXH3aL8yszHlYm8DdZTXmyPcBUsymc37msDYj4
-         QRdPhr8WSaCbtaWQNKXXb6dK8r13NuG5+0JXZr2C9yF5Rmop/WIB2iYRB65viBxivC
-         DdZnvblRHQnbg==
+        b=XVb0Nxi5lXFFYfDjuZaW1eha7r9nhpdKQwzq6nRNjJjtbSIgZS2IAH5iGhXywMnL+
+         +B/6KHXWVV710kQDBAukAUqXDc7PS9uenGBKifkqn0SiTzqXQTGCr7afxMA8M9DySC
+         HN7UK7NLhpBktpx/mvn1GUgzQzbrisN7bNnKvadw/9kfP7XCF+PK9NKlBuIFKZU3M8
+         9OhVjnXluL3OuPiW6TiIF7Tk6qpVfLmA/oyS1xCK+gXcqlxfzWLM8paeq2aZFyUn4Z
+         ERTq8jXbWGGVzXDmxeh9CLN+fVEuQaTHKMxK2HNaygFDEMhFG6LnIlpZw2C1EFBMnG
+         wb0wdxwRRWVFQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+To:     Adam Ford <aford173@gmail.com>, alsa-devel@alsa-project.org
+Cc:     aford@beaconembedded.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@kernel.org>
-Cc:     Viorel Suman <viorel.suman@nxp.com>, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20210103135327.3630973-1-arnd@kernel.org>
-References: <20210103135327.3630973-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_aud2htx: select SND_SOC_IMX_PCM_DMA
-Message-Id: <160978198913.14397.3806558309581636752.b4-ty@kernel.org>
+        Geert Uytterhoeven <geert@linux-m68k.org>
+In-Reply-To: <20201217162740.1452000-1-aford173@gmail.com>
+References: <20201217162740.1452000-1-aford173@gmail.com>
+Subject: Re: [PATCH] ASoC: wm8962: Add optional mclk device tree binding
+Message-Id: <160978198913.14397.16832958229666174829.b4-ty@kernel.org>
 Date:   Mon, 04 Jan 2021 17:39:49 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -46,12 +41,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 3 Jan 2021 14:53:17 +0100, Arnd Bergmann wrote:
-> The newly added driver requires DMA support and fails to build
-> when that is disabled:
-> 
-> aarch64-linux-ld: sound/soc/fsl/fsl_aud2htx.o: in function `fsl_aud2htx_probe':
-> fsl_aud2htx.c:(.text+0x3e0): undefined reference to `imx_pcm_dma_init'
+On Thu, 17 Dec 2020 10:27:40 -0600, Adam Ford wrote:
+> The driver can request an optional clock for mclk.
+> Update the txt file to reflect this.
 
 Applied to
 
@@ -59,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_aud2htx: select SND_SOC_IMX_PCM_DMA
-      commit: a1f31cc4e98e1833f53fd2c6e9a218d6b86f5388
+[1/1] ASoC: wm8962: Add optional mclk device tree binding
+      commit: e33c93b2206fedee35df756940e07af7b1f29768
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
