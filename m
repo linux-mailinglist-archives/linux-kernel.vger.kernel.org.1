@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DADA2E955A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5EA2E955F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbhADM5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:57:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbhADM5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:57:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19DA1207B1;
-        Mon,  4 Jan 2021 12:56:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609764991;
-        bh=MI++1bdO+nPC62h/WnOJfCwXl2nKAz5VwOY3jvxSDxk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kM/cifXUNn9i29s+dCPVb5xSVuloSe4hlgZmjVPt1UuuIVxLqttcjhc3ndORPYZQM
-         SzNCkbDYTeO3x+clwyLgmSc91EDA/z1c5Q1xb9XLGkfkwT6Wu8whnq56/0kv8S56Mn
-         xMS1iAqNiox/RpARiNlsap6act4xP9HQWT9rdGzIjPJY9YLULtIZureu76nbWiyRsM
-         ZI7Uv917L2SxxsfmNMVw1wyQn2pHdrE/B3t1YKI71ksMkl8JSuT0Lt8CBINVDYFeo7
-         FeXXHQ/bPh7lKngg42JYYYIQXRC2rAEOVKSK/XH7EagmA+CluemDGzI1jSO/5Ci+og
-         zEZNH33KV/tmQ==
-Date:   Mon, 4 Jan 2021 13:56:29 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rcu tree
-Message-ID: <20210104125629.GA32553@lothringen>
-References: <20210104113736.23ab7690@canb.auug.org.au>
+        id S1726733AbhADM6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:58:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726502AbhADM6T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 07:58:19 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DCCC061574;
+        Mon,  4 Jan 2021 04:57:38 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id d26so32018389wrb.12;
+        Mon, 04 Jan 2021 04:57:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=ggZkcYC9h5eVQbnMgWr/AEjs49D98jiYmnWX9w592LA=;
+        b=RthGD3EnZ0QY82azYylIrogBzOuAAMaMnijfhP1X2DdqXrhTEPiIcU5VrcujCuQL2q
+         DCZqVEgCC54uR3LGvnOpFgEiwvcn11L2tFFx2I0GPDi2TUH0RMMeAdxeHcu6zwt8JGnS
+         0YcdUq/y/Gp9AaGaNkMI755ZU5ZrLg54gSfaa8rzEaurBFDeuABmcUtMxq/Cq5cZXwd6
+         1LDeB9CrRVwxUsgOXI5/y2T89JyLiyz7yvAdDAoLz4eQ/uAnZJgCnKm8G/Zf34K5mXPH
+         6De2HngJjL8JhC2ku8v8oSb5pUQCfAcRJiWOcweeWqk9ueua30ZTSHvuordU73FUkKTE
+         tu7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ggZkcYC9h5eVQbnMgWr/AEjs49D98jiYmnWX9w592LA=;
+        b=Naqk4RitQDKG+S+EIsuL9m43TcKQv1j6JlsAbvHt9gC1PhltPs9f+OzCFGIe8AFI1V
+         2SucSP2NOYxo3KWAjDIWLs0E1ylNm2/3s8FxuxcDVw5Gu/uGkmi3aLXSDZ1eIrQfl/tU
+         xE26lRoGSggqDg3wuS9ay4Bl9LHcyGQz8fEOLVti+1rdfL7pEPMfTftVtasIjz+dWNgs
+         5qIX6PFVv+PW7BHtYSxboJlh+nohqPgVJZLN2Quv+dr4kppEyZjKLOUPpVoFj0fNzfPG
+         pO+yTH0SZ7ztsGITqR0Okkab6oZaCwyb9UtWg2Qfv9uPDl7BqP143pGoSupd3Vb8Y843
+         f0Kw==
+X-Gm-Message-State: AOAM5335z8iIus/83o8+i9tDqjj/bR09l3n+wl4fGG2Ma9spUwqknlb5
+        JmH9TBAZa+5Xk1hkdvfrBhw=
+X-Google-Smtp-Source: ABdhPJybuSzgoyfe7x0voEhgCYurOZwxvWtHX/XkD78yXa/Fkmh73V1dqnivY+FCfRVigb88QV50iA==
+X-Received: by 2002:a05:6000:144f:: with SMTP id v15mr65709613wrx.138.1609765056599;
+        Mon, 04 Jan 2021 04:57:36 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id i16sm87087466wrx.89.2021.01.04.04.57.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 04:57:36 -0800 (PST)
+Subject: Re: [PATCH v4 13/15] acpi: Add acpi_dev_get_next_match_dev() and
+ helper macro
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org,
+        gregkh@linuxfoundation.org, rjw@rjwysocki.net,
+        sergey.senozhatsky@gmail.com, mchehab@kernel.org, lenb@kernel.org,
+        yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        niklas.soderlund+renesas@ragnatech.se, slongerbeam@gmail.com,
+        heikki.krogerus@linux.intel.com, linus.walleij@linaro.org
+References: <20210103231235.792999-1-djrscally@gmail.com>
+ <20210103231235.792999-14-djrscally@gmail.com>
+ <20210104124228.GU4077@smile.fi.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <589d7078-60e6-ae2b-dbb2-bbe5b8ef7775@gmail.com>
+Date:   Mon, 4 Jan 2021 12:57:34 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210104113736.23ab7690@canb.auug.org.au>
+In-Reply-To: <20210104124228.GU4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 11:37:36AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the rcu tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
-> 
-> arch/arm/mach-imx/cpuidle-imx6q.c: In function 'imx6q_enter_wait':
-> arch/arm/mach-imx/cpuidle-imx6q.c:32:7: error: implicit declaration of function 'need_resched'; did you mean 'tif_need_resched'? [-Werror=implicit-function-declaration]
->    32 |  if (!need_resched())
->       |       ^~~~~~~~~~~~
->       |       tif_need_resched
-> 
-> Caused by commit
-> 
->   7ca83ec735ce ("ARM: imx6q: Fix missing need_resched() check after
->   rcu_idle_enter()")
-
-Thanks for the report, I'm checking that.
-
-> 
-> I have used the rcu tree from next-20201223 for today.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
+On 04/01/2021 12:42, Andy Shevchenko wrote:
+> On Sun, Jan 03, 2021 at 11:12:33PM +0000, Daniel Scally wrote:
+>> To ensure we handle situations in which multiple sensors of the same
+>> model (and therefore _HID) are present in a system, we need to be able
+>> to iterate over devices matching a known _HID but unknown _UID and _HRV
+>>  - add acpi_dev_get_next_match_dev() to accommodate that possibility and
+>> change acpi_dev_get_first_match_dev() to simply call the new function
+>> with a NULL starting point. Add an iterator macro for convenience.
+> I guess we need Rafael's blessing on this.
+For this one yes
