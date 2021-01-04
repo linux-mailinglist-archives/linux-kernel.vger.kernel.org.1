@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA5F2E9181
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F432E918B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbhADINE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 03:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
+        id S1726713AbhADINR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 03:13:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbhADIND (ORCPT
+        with ESMTP id S1726278AbhADINP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 03:13:03 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C796DC0617A5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 00:11:53 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id y8so14128831plp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 00:11:53 -0800 (PST)
+        Mon, 4 Jan 2021 03:13:15 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E845C0617AB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 00:11:59 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id p18so18582508pgm.11
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 00:11:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SajeAnD/bM3T+Qtfi1lyQyoeSgIHCjSTfGa4G04tdEU=;
-        b=d57p44xYkAfTKPD/W6X3/fJl0rjkV7I2LaLHztAPAVpf/QB99QozubH7hoAP5v9Co6
-         xjNWgCneY25yaMLkAWcJOI/7qictDJPROg78bCyW0Kw4PCI9vCS7mlqbGnlcEPytpyQ8
-         +eDAPxw9av0lUcETEduC/NziZeHr8HCRnoK1CGaREsg/+CdBAITprxPQM5z7Wm5icYEL
-         IliejGJ6DaP0vRdwapwweIdCN87ePnTs9zNUijeF6H4rNy387VRCmOO6fxT0uWCYBMxq
-         VWxVdi1XtOjyVZN7UBJtrgFb8+GRqbFXba+t2Hn+zpRb9QwAWsaDcV/YRoZ4yyw2jS84
-         m7zQ==
+        bh=9oCBXEeItNyLdmXrVsfC7b3QROxgUzyHxaMFoVN3rtU=;
+        b=hDEUNdAPJAtX++LhX22u+wNGUejjDE3QtoLzFGtKdF7HXXIxaXhOLHsrhp03rg5V/n
+         +IDIrrysw1k0ISM1TcTAJnTjp2xYV0krvwNYP+t7BR3o0KKzjJSqe3AJ/LWGIHAaJ2n7
+         boFOf0AvtZ3SQ2IY57IzUfM2k+Ve9sHwuaY9hDhB+abS5UHLpJtMnVew150/1chRYl4a
+         3qKWDVcwOcV6/4x6Px3+BS/DDZ26XSLZLN1LxJwo9D8I0LNIvVc0+jpCOfLQonbW4ycx
+         H18QB+NVqwx2N98Pkyq21hLHOKkVInAcux1eKarBboNmtBjyQjFlpjJCXvPcHBv+lEA4
+         Nejw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SajeAnD/bM3T+Qtfi1lyQyoeSgIHCjSTfGa4G04tdEU=;
-        b=ueEh3nADUDKtdL3vaaSz+C/tmFslEp2/nZlrEunUBox3yT0gegMGx1Dt8Vb17wpkMu
-         2NtE0SbvMC36O+LVW6DmcBrbL8+m93qrNSpJei5dHhTVKJswHgxIQzzciawVpZKfHPEd
-         KpQjiEa10rNP0xxWeAtCKN5/1QPRo3Yy/ktHX+9uKsZSglX2KPD8WxqS5gxbQn01JiRL
-         8oLcuxvhwmb4gXEa5a88TqDSjVLxCpnf0snrZXeJOWJca0XCesbQdixD45mVa6QR99mg
-         kTtHDiBHjKh0piqQcHV3+bh2QpgJV/FJopE2PlKKRM+8aefqzBVPRni4ePmSEFwdtTvU
-         GirQ==
-X-Gm-Message-State: AOAM532uLeUhIJFxSGZ5TMHnYJl+lSSbmJq+OO/3vwllIi0UMDTBorb0
-        ikpRiItoeqFTCHo5i+Wf1Pqt
-X-Google-Smtp-Source: ABdhPJxF5ORVTpxCWmZAbSGJk5tsy+dsR2IJF1AKqZAjyimmP80KE4lWYbJvVOQaAqNu7bprN0TOWQ==
-X-Received: by 2002:a17:90b:68e:: with SMTP id m14mr28507675pjz.228.1609747913323;
-        Mon, 04 Jan 2021 00:11:53 -0800 (PST)
+        bh=9oCBXEeItNyLdmXrVsfC7b3QROxgUzyHxaMFoVN3rtU=;
+        b=N9HMBVCmeNaOIKGHqZ2dR6IcMKvP/IKIDsL3/o/MlhAcmgRouTr+vAFqXs+X5B+Chm
+         fgYNfmQSCVOy54Apillhm8gbppV+ib/qjjlamWzmrQy6SvClboOJNiJiqhOVIyM/TrXo
+         vzsJZO2V9lRytmMZVy9Vzu/j7zO+CtMeYW/TeCu4SpaHAK/MxRzdDOe8cA5zFN0+Q6CN
+         gLOhQQWGrI1+5sa0iS/CtVBtEAcGPHdxJrPne/h8UWNrxWz8R36j0FZzak2g1E5kYAfn
+         Wa0SG1SpSiC7pNLm0EbOqO2TUhNc69DzmN+1A+ij/rOmF3ZoBPXR8+c1sD9AyeV1GGmx
+         KqNQ==
+X-Gm-Message-State: AOAM533c3Lq8av848Ee87wJrkJPT0QhOy4z+ytZp2Jp+T568kn3Qt9Qo
+        ZJxjH5pJlN2dNqLNqREV21Ht
+X-Google-Smtp-Source: ABdhPJwUHjiqIxuEhe8OSMHowC/PaOq86NbHf8v11huUtIh61+qm9ixhKtBb4F3zIAoAq8gyXSad7Q==
+X-Received: by 2002:a62:87c9:0:b029:1a5:9d56:7e24 with SMTP id i192-20020a6287c90000b02901a59d567e24mr64204861pfe.56.1609747918870;
+        Mon, 04 Jan 2021 00:11:58 -0800 (PST)
 Received: from localhost.localdomain ([103.77.37.160])
-        by smtp.gmail.com with ESMTPSA id n7sm55051339pfn.141.2021.01.04.00.11.48
+        by smtp.gmail.com with ESMTPSA id n7sm55051339pfn.141.2021.01.04.00.11.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 00:11:52 -0800 (PST)
+        Mon, 04 Jan 2021 00:11:58 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
         jassisinghbrar@gmail.com
@@ -56,9 +56,9 @@ Cc:     viresh.kumar@linaro.org, ulf.hansson@linaro.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 3/5] dt-bindings: clock: Add Qualcomm A7 PLL binding
-Date:   Mon,  4 Jan 2021 13:41:23 +0530
-Message-Id: <20210104081125.147300-4-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 4/5] clk: qcom: Add A7 PLL support
+Date:   Mon,  4 Jan 2021 13:41:24 +0530
+Message-Id: <20210104081125.147300-5-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104081125.147300-1-manivannan.sadhasivam@linaro.org>
 References: <20210104081125.147300-1-manivannan.sadhasivam@linaro.org>
@@ -68,72 +68,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree YAML binding for Cortex A7 PLL clock in Qualcomm
-platforms like SDX55.
+Add support for PLL found in Qualcomm SDX55 platforms which is used to
+provide clock to the Cortex A7 CPU via a mux. This PLL can provide high
+frequency clock to the CPU above 1GHz as compared to the other sources
+like GPLL0.
+
+In this driver, the power domain is attached to the cpudev. This is
+required for CPUFreq functionality and there seems to be no better place
+to do other than this driver (no dedicated CPUFreq driver).
 
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- .../devicetree/bindings/clock/qcom,a7pll.yaml | 51 +++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/qcom,a7pll.yaml
+ drivers/clk/qcom/Kconfig  |   8 +++
+ drivers/clk/qcom/Makefile |   1 +
+ drivers/clk/qcom/a7-pll.c | 100 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 109 insertions(+)
+ create mode 100644 drivers/clk/qcom/a7-pll.c
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,a7pll.yaml b/Documentation/devicetree/bindings/clock/qcom,a7pll.yaml
+diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+index d32bb12cd8d0..d6f4aee4427a 100644
+--- a/drivers/clk/qcom/Kconfig
++++ b/drivers/clk/qcom/Kconfig
+@@ -28,6 +28,14 @@ config QCOM_A53PLL
+ 	  Say Y if you want to support higher CPU frequencies on MSM8916
+ 	  devices.
+ 
++config QCOM_A7PLL
++	tristate "SDX55 A7 PLL"
++	help
++	  Support for the A7 PLL on SDX55 devices. It provides the CPU with
++	  frequencies above 1GHz.
++	  Say Y if you want to support higher CPU frequencies on SDX55
++	  devices.
++
+ config QCOM_CLK_APCS_MSM8916
+ 	tristate "MSM8916 APCS Clock Controller"
+ 	depends on QCOM_APCS_IPC || COMPILE_TEST
+diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+index 9e5e0e3cb7b4..e7e0ac382176 100644
+--- a/drivers/clk/qcom/Makefile
++++ b/drivers/clk/qcom/Makefile
+@@ -44,6 +44,7 @@ obj-$(CONFIG_MSM_MMCC_8974) += mmcc-msm8974.o
+ obj-$(CONFIG_MSM_MMCC_8996) += mmcc-msm8996.o
+ obj-$(CONFIG_MSM_MMCC_8998) += mmcc-msm8998.o
+ obj-$(CONFIG_QCOM_A53PLL) += a53-pll.o
++obj-$(CONFIG_QCOM_A7PLL) += a7-pll.o
+ obj-$(CONFIG_QCOM_CLK_APCS_MSM8916) += apcs-msm8916.o
+ obj-$(CONFIG_QCOM_CLK_APCC_MSM8996) += clk-cpu-8996.o
+ obj-$(CONFIG_QCOM_CLK_RPM) += clk-rpm.o
+diff --git a/drivers/clk/qcom/a7-pll.c b/drivers/clk/qcom/a7-pll.c
 new file mode 100644
-index 000000000000..8666e995725f
+index 000000000000..e171d3caf2cf
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/qcom,a7pll.yaml
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/qcom,a7pll.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/clk/qcom/a7-pll.c
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Qualcomm A7 PLL driver
++ *
++ * Copyright (c) 2020, Linaro Limited
++ * Author: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
++ */
 +
-+title: Qualcomm A7 PLL Binding
++#include <linux/clk-provider.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
 +
-+maintainers:
-+  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
++#include "clk-alpha-pll.h"
 +
-+description:
-+  The A7 PLL on the Qualcomm platforms like SDX55 is used to provide high
-+  frequency clock to the CPU.
++#define LUCID_PLL_OFF_L_VAL 0x04
 +
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,sdx55-a7pll
++static const struct pll_vco lucid_vco[] = {
++	{ 249600000, 2000000000, 0 },
++};
 +
-+  reg:
-+    maxItems: 1
++static struct clk_alpha_pll a7pll = {
++	.offset = 0x100,
++	.vco_table = lucid_vco,
++	.num_vco = ARRAY_SIZE(lucid_vco),
++	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
++	.clkr = {
++		.hw.init = &(struct clk_init_data){
++			.name = "a7pll",
++			.parent_data =  &(const struct clk_parent_data){
++				.fw_name = "bi_tcxo",
++			},
++			.num_parents = 1,
++			.ops = &clk_alpha_pll_lucid_ops,
++		},
++	},
++};
 +
-+  '#clock-cells':
-+    const: 0
++static const struct alpha_pll_config a7pll_config = {
++	.l = 0x39,
++	.config_ctl_val = 0x20485699,
++	.config_ctl_hi_val = 0x2261,
++	.config_ctl_hi1_val = 0x029A699C,
++	.user_ctl_val = 0x1,
++	.user_ctl_hi_val = 0x805,
++};
 +
-+  clocks:
-+    items:
-+      - description: board XO clock
++static const struct regmap_config a7pll_regmap_config = {
++	.reg_bits		= 32,
++	.reg_stride		= 4,
++	.val_bits		= 32,
++	.max_register		= 0x1000,
++	.fast_io		= true,
++};
 +
-+  clock-names:
-+    items:
-+      - const: bi_tcxo
++static int qcom_a7pll_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct regmap *regmap;
++	void __iomem *base;
++	u32 l_val;
++	int ret;
 +
-+required:
-+  - compatible
-+  - reg
-+  - '#clock-cells'
++	base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
 +
-+additionalProperties: false
++	regmap = devm_regmap_init_mmio(dev, base, &a7pll_regmap_config);
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
 +
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,rpmh.h>
-+    a7pll: clock@17808000 {
-+        compatible = "qcom,sdx55-a7pll";
-+        reg = <0x17808000 0x1000>;
-+        clocks = <&rpmhcc RPMH_CXO_CLK>;
-+        clock-names = "bi_tcxo";
-+        #clock-cells = <0>;
-+    };
++	/* Configure PLL only if the l_val is zero */
++	regmap_read(regmap, a7pll.offset + LUCID_PLL_OFF_L_VAL, &l_val);
++	if (!l_val)
++		clk_lucid_pll_configure(&a7pll, regmap, &a7pll_config);
++
++	ret = devm_clk_register_regmap(dev, &a7pll.clkr);
++	if (ret)
++		return ret;
++
++	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get,
++					   &a7pll.clkr.hw);
++}
++
++static const struct of_device_id qcom_a7pll_match_table[] = {
++	{ .compatible = "qcom,sdx55-a7pll" },
++	{ }
++};
++
++static struct platform_driver qcom_a7pll_driver = {
++	.probe = qcom_a7pll_probe,
++	.driver = {
++		.name = "qcom-a7pll",
++		.of_match_table = qcom_a7pll_match_table,
++	},
++};
++module_platform_driver(qcom_a7pll_driver);
++
++MODULE_DESCRIPTION("Qualcomm A7 PLL Driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.25.1
 
