@@ -2,171 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287A22E9605
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7744D2E95FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727303AbhADNaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727146AbhADNaF (ORCPT
+        id S1727269AbhADN3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:29:19 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:36877 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbhADN3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:30:05 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0CBC06179E;
-        Mon,  4 Jan 2021 05:29:17 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id m5so32122019wrx.9;
-        Mon, 04 Jan 2021 05:29:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=W3+FsMu1lbDQIio4q7FHNE16t5hT0RLiFsiQpXFdTmY=;
-        b=sqHg7vBu1o3BP2QxT91WFHqL2g78BS1u6AhfTN1DAkUWS/9BRZESyjjDNMxwDMnVyf
-         6h6WgnhWuLJysE321kCGfYiOs8lrr21ar0YGTec0NMno+kiNkA/+Pd3gXb6tBEmqtApu
-         n/CuH3vijrjaJTYWLSdTyZrIVYyiQr9u8ev/MQJDalyMxaUhwom/w45rR8ZmXWKmyh/r
-         Q7t4lJiexvj7GMPUg5mJjgwSD+E7nbahizVC/ypNXgl+F31hseHKX5vJsrCehEY+7pr+
-         TS4fHpgEe5UOhq1/S38ee4GQsvTRIy+RouigMdbidLUKavr640bEEgsyeth/inzAUupV
-         3zWA==
+        Mon, 4 Jan 2021 08:29:18 -0500
+Received: by mail-oi1-f178.google.com with SMTP id l207so32092168oib.4;
+        Mon, 04 Jan 2021 05:29:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=W3+FsMu1lbDQIio4q7FHNE16t5hT0RLiFsiQpXFdTmY=;
-        b=p6sYXuEskAfit0JyL6BPNHK1ZvRIb7dE/OLz++25P7aFSv7XcsqrKEDa/meWS/R0Mk
-         jBnkG4y8v6awQIIIZPM9sODBb+XfDllDUJ/Jk0IQgwu6Z5lB2iLj536HFAG/TFsVP5Mi
-         o70xG2NH0LEMG8G7smnJlM2Xfpfhp7X/uEZMpdNiL43ZE4pXs/eA66u+IfGrrgzQBT8e
-         OyQkiJe94H0FT3z9VZUn3x34eLjIX2IOX86L5u11Y30b/k7osA3j+LCuvV1cQskAeX8F
-         QWZBtU6v3/zfn8rMNzBBX3JHxC9BMo6n9UdnWSj3r12rBCWl4xmfWUdDJR/XRuG/YrZ4
-         a9Cg==
-X-Gm-Message-State: AOAM530JOxxFOfaQ48lLfH7EKhkh9RlZ1ZiK6FiPJCILt912uvG2Vz8C
-        7486bG+Xr6aN0t4zWpc+wjw=
-X-Google-Smtp-Source: ABdhPJwr2OufeuaiYtWIqCrZpai6io4a/I1J3LEe+4dG378mGHo/Cv0TSdnz6GxnNT8ny39ULqVJuQ==
-X-Received: by 2002:a5d:42d0:: with SMTP id t16mr80111924wrr.230.1609766956653;
-        Mon, 04 Jan 2021 05:29:16 -0800 (PST)
-Received: from localhost.localdomain (p200300f13724fd00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3724:fd00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id c4sm99916521wrw.72.2021.01.04.05.29.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 05:29:16 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 5/5] clk: meson: meson8b: add the vid_pll_lvds_en gate clock
-Date:   Mon,  4 Jan 2021 14:28:06 +0100
-Message-Id: <20210104132806.720558-6-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104132806.720558-1-martin.blumenstingl@googlemail.com>
-References: <20210104132806.720558-1-martin.blumenstingl@googlemail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6T4y+ecTYYYZDM41o/baqi/IkEVhIrJtoe7kFNSajtM=;
+        b=d3OGSDBlUP+1Sam+7Ckl/TZT0pxQessM5UYQUViK865476rnSsL8VurbISEPWHI7/W
+         0VUkpaYPHekOxwJblhnII79QH6Xhcs2/6T8+Z6w66Q0nCzqKGsPa6ip/2IIQVLbZEykK
+         GVGzd1BWFFVExTDjil38HZqyrvkcxpxk2Y6eXXXpIcgsUcSY0NqrpiZORSisTdodRf2x
+         cQwB8UVx6ihQ3OCmNeW2albV5HcFieI+QtrgIV8HWNIyHDYr2TMG2DRvL0lT2f9ge0XB
+         a8/r1i3RzLf+dEMSBFtCX/8i8CTFG43Vh56Nu7J5N1aWGe4jEzikvMNgNIJGXKWZ+9uh
+         i9aw==
+X-Gm-Message-State: AOAM530Hsefis+SNcCAl2C7LWQWLdCVbQP7tkZpL5sg/76NZvGnm45uu
+        5JLTsb9Fl65fHFng0a+Mj0qNEnxAWQ9L1P40S9gyL9gzjv0=
+X-Google-Smtp-Source: ABdhPJzWxDoDdBzpXC3HBt74lcMfT4hgBAR6jPj17GX1lTVdRegfSw2xQy1X8CwJYbTueBtkN9J6R9g7hLcyiq5h49g=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr17758048oia.148.1609766917308;
+ Mon, 04 Jan 2021 05:28:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201114130921.651882-1-jiaxun.yang@flygoat.com> <20201114130921.651882-2-jiaxun.yang@flygoat.com>
+In-Reply-To: <20201114130921.651882-2-jiaxun.yang@flygoat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Jan 2021 14:28:26 +0100
+Message-ID: <CAMuHMdXo9o9af-YBt5g53QHRhuLxdSy_C9n4wdEEh7yzDidr-w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] rtc: goldfish: Remove GOLDFISH dependency
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HHI_VID_DIVIDER_CNTL[11] must be enabled for the video clock tree to
-work. This bit is described as "LVDS_CLK_EN". It is not 100% clear where
-this bit has to be placed in the hierarchy. But since the "LVDS_OUT" of
-the HDMI PLL uses it's own set of registers it's more likely that this
-"LVDS_CLK_EN" bit actually enables the input of the "hdmi_pll_lvds_out"
-clock to the "vid_pll_in_sel" tree.
+Hi Jiaxun,
 
-Add a gate definition for this bit (which will not be exported) so that
-the kernel can manage all required bits to enable and disable the video
-clocks.
+On Sat, Nov 14, 2020 at 2:20 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> Goldfish platform is covered with dust.
+> However the goldfish-rtc had been used as virtualized RTC
+> in QEMU for RISC-V virt hw and MIPS loongson3-virt hw, thus
+> we can drop other parts of goldfish but leave goldfish-rtc here.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/clk/meson/meson8b.c | 23 ++++++++++++++++++++++-
- drivers/clk/meson/meson8b.h |  3 ++-
- 2 files changed, 24 insertions(+), 2 deletions(-)
+Thanks for your patch!
 
-diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-index 8061c11389a9..450579779de0 100644
---- a/drivers/clk/meson/meson8b.c
-+++ b/drivers/clk/meson/meson8b.c
-@@ -1068,6 +1068,23 @@ static struct clk_regmap meson8b_l2_dram_clk_gate = {
- 	},
- };
- 
-+/* also called LVDS_CLK_EN */
-+static struct clk_regmap meson8b_vid_pll_lvds_en = {
-+	.data = &(struct clk_regmap_gate_data){
-+		.offset = HHI_VID_DIVIDER_CNTL,
-+		.bit_idx = 11,
-+	},
-+	.hw.init = &(struct clk_init_data){
-+		.name = "vid_pll_lvds_en",
-+		.ops = &clk_regmap_gate_ro_ops,
-+		.parent_hws = (const struct clk_hw *[]) {
-+			&meson8b_hdmi_pll_lvds_out.hw
-+		},
-+		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
-+	},
-+};
-+
- static struct clk_regmap meson8b_vid_pll_in_sel = {
- 	.data = &(struct clk_regmap_mux_data){
- 		.offset = HHI_VID_DIVIDER_CNTL,
-@@ -1084,7 +1101,7 @@ static struct clk_regmap meson8b_vid_pll_in_sel = {
- 		 * Meson8m2: vid2_pll
- 		 */
- 		.parent_hws = (const struct clk_hw *[]) {
--			&meson8b_hdmi_pll_lvds_out.hw
-+			&meson8b_vid_pll_lvds_en.hw
- 		},
- 		.num_parents = 1,
- 		.flags = CLK_SET_RATE_PARENT,
-@@ -2954,6 +2971,7 @@ static struct clk_hw_onecell_data meson8_hw_onecell_data = {
- 		[CLKID_CTS_MCLK_I958_DIV]   = &meson8b_cts_mclk_i958_div.hw,
- 		[CLKID_CTS_MCLK_I958]	    = &meson8b_cts_mclk_i958.hw,
- 		[CLKID_CTS_I958]	    = &meson8b_cts_i958.hw,
-+		[CLKID_VID_PLL_LVDS_EN]	    = &meson8b_vid_pll_lvds_en.hw,
- 		[CLK_NR_CLKS]		    = NULL,
- 	},
- 	.num = CLK_NR_CLKS,
-@@ -3171,6 +3189,7 @@ static struct clk_hw_onecell_data meson8b_hw_onecell_data = {
- 		[CLKID_CTS_MCLK_I958_DIV]   = &meson8b_cts_mclk_i958_div.hw,
- 		[CLKID_CTS_MCLK_I958]	    = &meson8b_cts_mclk_i958.hw,
- 		[CLKID_CTS_I958]	    = &meson8b_cts_i958.hw,
-+		[CLKID_VID_PLL_LVDS_EN]	    = &meson8b_vid_pll_lvds_en.hw,
- 		[CLK_NR_CLKS]		    = NULL,
- 	},
- 	.num = CLK_NR_CLKS,
-@@ -3390,6 +3409,7 @@ static struct clk_hw_onecell_data meson8m2_hw_onecell_data = {
- 		[CLKID_CTS_MCLK_I958_DIV]   = &meson8b_cts_mclk_i958_div.hw,
- 		[CLKID_CTS_MCLK_I958]	    = &meson8b_cts_mclk_i958.hw,
- 		[CLKID_CTS_I958]	    = &meson8b_cts_i958.hw,
-+		[CLKID_VID_PLL_LVDS_EN]	    = &meson8b_vid_pll_lvds_en.hw,
- 		[CLK_NR_CLKS]		    = NULL,
- 	},
- 	.num = CLK_NR_CLKS,
-@@ -3588,6 +3608,7 @@ static struct clk_regmap *const meson8b_clk_regmaps[] = {
- 	&meson8b_cts_mclk_i958_div,
- 	&meson8b_cts_mclk_i958,
- 	&meson8b_cts_i958,
-+	&meson8b_vid_pll_lvds_en,
- };
- 
- static const struct meson8b_clk_reset_line {
-diff --git a/drivers/clk/meson/meson8b.h b/drivers/clk/meson/meson8b.h
-index b1a5074cf148..954d97cf6c5a 100644
---- a/drivers/clk/meson/meson8b.h
-+++ b/drivers/clk/meson/meson8b.h
-@@ -182,8 +182,9 @@
- #define CLKID_CTS_MCLK_I958_DIV	211
- #define CLKID_VCLK_EN		214
- #define CLKID_VCLK2_EN		215
-+#define CLKID_VID_PLL_LVDS_EN	216
- 
--#define CLK_NR_CLKS		216
-+#define CLK_NR_CLKS		217
- 
- /*
-  * include the CLKID and RESETID that have
+> --- a/drivers/rtc/Kconfig
+> +++ b/drivers/rtc/Kconfig
+> @@ -1935,7 +1935,6 @@ config RTC_DRV_HID_SENSOR_TIME
+>  config RTC_DRV_GOLDFISH
+>         tristate "Goldfish Real Time Clock"
+>         depends on OF && HAS_IOMEM
+> -       depends on GOLDFISH || COMPILE_TEST
+>         help
+>           Say yes to enable RTC driver for the Goldfish based virtual platform.
+
+I was just looking to see if someone had already sent a patch to add
+"depends on GOLDFISH || COMPILE_TEST", before sending one myself, when I
+noticed your patch had removed it...
+
+What about
+
+    depends on CPU_LOONGSON64 || GOLDFISH || RISCV || COMPILE_TEST
+
+instead?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.30.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
