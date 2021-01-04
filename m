@@ -2,144 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636992E90B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C88712E90C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbhADHDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 02:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbhADHDy (ORCPT
+        id S1726930AbhADHMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 02:12:39 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:45676 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725616AbhADHMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 02:03:54 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8962C061798
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 23:02:40 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id w1so4850550pjc.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 23:02:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dlLWZrIy6R69T+0RxdKISUof18f+oj7qL0+rpwclI9Q=;
-        b=RWiath2GV29Ceq29YV4Eo/YDxoleBkI6KhvmDVrM13P6i6WvXBHLB3NL03EuF0d5Ig
-         k3jN3V9R8TYaSIt0OajxpW6UaB9wqaf4kbP7YRvdeIkVNd/vE7mO5sxPJfWGQEcfV0TJ
-         gZMIffKXxGkcLQZpqzBpYXnzYhYnVd/wNwl9DW3PspXwbZWlquvU8ndq1l6zzm/9Z2Ms
-         jHlU/V+Cj9z2qjgPbAipggERD7vN+mLZJD88oCTUGrPBT9eVKuPbKuZBrtt01Y1UYPbg
-         OtJCP+3nernL266el36h94jVbwk98vXd2vQnjhu4QVdYXhTe+6c+dYRx2+Up2YsN7xvd
-         a9Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dlLWZrIy6R69T+0RxdKISUof18f+oj7qL0+rpwclI9Q=;
-        b=pzaqV6hU66O/fLbLwFlVmvjTPF0AoPs1cTpqf0s61N6SYlXefMbbrODj6h9TiC7Ikd
-         AkekZrKcFsDXG2+TfOgQs6LzIEz5Q3U4cZBphhsRlHb/M5a1VPtV5caAfgkhQvgNAC5K
-         g/fsN9qRfHGaWNlbmwcaLGzMCttZa99yP46aS0D/zkKN1iPq6pWvYI51dYC1PPTscMk8
-         Fhb+a7GnhSEZMTLPWCJ1zKllQuKALCsTujIvatC+nTF7efQD1aXw6jMHPpZW6kilX2wF
-         5yDwQbJ3CJnfQFxFQBG4mUft1u3Tqf+UWuv6y6/zCOWgqOdmyqzVAbzC+kcvdkZjNzSu
-         WnKw==
-X-Gm-Message-State: AOAM531kgi+/C9toig4Mp67DzXacbtH3F38Fg7VWZxzSoW4mymHEkvVY
-        cry7KKC2H3VSCCWpsygiOqlLEw==
-X-Google-Smtp-Source: ABdhPJxTIG1l0JLV+LUHEFjwB/9ntN9aIbvjRCJKn3vjHJRyQgMGHUy/WB5LS59Xy8aTKPshWnMfsA==
-X-Received: by 2002:a17:90b:14d3:: with SMTP id jz19mr28643076pjb.196.1609743760002;
-        Sun, 03 Jan 2021 23:02:40 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id n195sm55117950pfd.169.2021.01.03.23.02.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 03 Jan 2021 23:02:38 -0800 (PST)
-Date:   Mon, 4 Jan 2021 12:32:36 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Yangtao Li <tiny.windzz@gmail.com>
-Cc:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, krzk@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, digetx@gmail.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
-        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        lukasz.luba@arm.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
-        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
-        marijn.suijten@somainline.org, gustavoars@kernel.org,
-        emil.velikov@collabora.com, jonathan@marek.ca,
-        akhilpo@codeaurora.org, smasetty@codeaurora.org,
-        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, ddavenport@chromium.org,
-        jsanka@codeaurora.org, rnayak@codeaurora.org,
-        tongtiangen@huawei.com, miaoqinglang@huawei.com,
-        khsieh@codeaurora.org, abhinavk@codeaurora.org,
-        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
-        mka@chromium.org, harigovi@codeaurora.org,
-        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
-        georgi.djakov@linaro.org, akashast@codeaurora.org,
-        parashar@codeaurora.org, dianders@chromium.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH 06/31] serial: qcom_geni_serial: fix potential mem leak
- in qcom_geni_serial_probe()
-Message-ID: <20210104070236.mnnj3frjtxka7emu@vireshk-i7>
-References: <20210101165507.19486-1-tiny.windzz@gmail.com>
- <20210101165507.19486-7-tiny.windzz@gmail.com>
+        Mon, 4 Jan 2021 02:12:39 -0500
+X-UUID: 23a4b142db204ec3b95c3d4f009bd044-20210104
+X-UUID: 23a4b142db204ec3b95c3d4f009bd044-20210104
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <nick.fan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1098424318; Mon, 04 Jan 2021 15:11:52 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 4 Jan 2021 15:11:50 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 4 Jan 2021 15:11:50 +0800
+From:   Nick Fan <Nick.Fan@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <nick.fan@mediatek.com>,
+        Nick Fan <Nick.Fan@mediatek.com>
+Subject: [PATCH v1 1/2] dt-bindings: Convert Arm Mali Valhall GPU to DT schema
+Date:   Mon, 4 Jan 2021 15:11:13 +0800
+Message-ID: <20210104071114.23657-1-Nick.Fan@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210101165507.19486-7-tiny.windzz@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-01-21, 16:54, Yangtao Li wrote:
-> We should use dev_pm_opp_put_clkname() to free opp table each time
-> dev_pm_opp_of_add_table() got error.
-> 
-> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> ---
->  drivers/tty/serial/qcom_geni_serial.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-> index 291649f02821..5aada7ebae35 100644
-> --- a/drivers/tty/serial/qcom_geni_serial.c
-> +++ b/drivers/tty/serial/qcom_geni_serial.c
-> @@ -1438,9 +1438,12 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
->  		return PTR_ERR(port->se.opp_table);
->  	/* OPP table is optional */
->  	ret = dev_pm_opp_of_add_table(&pdev->dev);
-> -	if (ret && ret != -ENODEV) {
-> -		dev_err(&pdev->dev, "invalid OPP table in device tree\n");
-> -		goto put_clkname;
-> +	if (ret) {
-> +		dev_pm_opp_put_clkname(port->se.opp_table);
-> +		if (ret != -ENODEV) {
-> +			dev_err(&pdev->dev, "invalid OPP table in device tree\n");
-> +			return ret;
-> +		}
->  	}
->  
->  	port->private_data.drv = drv;
-> @@ -1482,7 +1485,6 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
->  	return 0;
->  err:
->  	dev_pm_opp_of_remove_table(&pdev->dev);
-> -put_clkname:
->  	dev_pm_opp_put_clkname(port->se.opp_table);
->  	return ret;
->  }
+Convert the Arm Valhall GPU binding to DT schema format.
 
-Since put_clkname is always done in remove(), I don't think there is
-any memleak here. Over that with your patch we will do put_clkname
-twice now, once in probe and once in remove. And that is a bug AFAICT.
+Define a compatible string for the Mali Valhall GPU
+for Mediatek's SoC platform.
 
+Signed-off-by: Nick Fan <Nick.Fan@mediatek.com>
+---
+ .../bindings/gpu/arm,mali-valhall.yaml        | 252 ++++++++++++++++++
+ 1 file changed, 252 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml
+
+diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml
+new file mode 100644
+index 000000000000..436294c032ff
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml
+@@ -0,0 +1,252 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (c) 2020 MediaTek Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpu/arm,mali-valhall.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ARM Mali Valhall GPU
++
++maintainers:
++  - Rob Herring <robh@kernel.org>
++
++properties:
++  $nodename:
++    pattern: '^gpu@[a-f0-9]+$'
++
++  compatible:
++    items:
++      - enum:
++          - mediatek,mt8192-mali
++      - const: arm,mali-valhall
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: GPU interrupt
++      - description: MMU interrupt
++      - description: Job interrupt
++
++  interrupt-names:
++    items:
++      - const: gpu
++      - const: mmu
++      - const: job
++
++  clocks:
++    minItems: 1
++
++  power-domains:
++    minItems: 1
++    maxItems: 5
++
++  mali-supply: true
++  sram-supply: true
++
++  operating-points-v2: true
++
++  "#cooling-cells":
++    const: 2
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-names
++  - clocks
++
++additionalProperties: false
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: mediatek,mt8192-mali
++    then:
++      properties:
++        sram-supply: true
++        power-domains:
++          description:
++            List of phandle and PM domain specifier as documented in
++            Documentation/devicetree/bindings/power/power_domain.txt
++          minItems: 5
++          maxItems: 5
++        power-domain-names:
++          items:
++            - const: core0
++            - const: core1
++            - const: core2
++            - const: core3
++            - const: core4
++
++      required:
++        - sram-supply
++        - power-domains
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    gpu@13000000 {
++           compatible = "mediatek,mt8192-mali", "arm,mali-valhall";
++           reg = <0x13000000 0x4000>;
++           interrupts =
++                   <GIC_SPI 363 IRQ_TYPE_LEVEL_HIGH 0>,
++                   <GIC_SPI 364 IRQ_TYPE_LEVEL_HIGH 0>,
++                   <GIC_SPI 365 IRQ_TYPE_LEVEL_HIGH 0>;
++           interrupt-names =
++                   "gpu",
++                   "mmu",
++                   "job";
++
++           clocks = <&mfgcfg 0>;
++
++           power-domains =
++                   <&scpsys 4>,
++                   <&scpsys 5>,
++                   <&scpsys 6>,
++                   <&scpsys 7>,
++                   <&scpsys 8>;
++
++           operating-points-v2 = <&gpu_opp_table>;
++           mali-supply = <&mt6315_7_vbuck1>;
++           sram-supply = <&mt6359_vsram_others_ldo_reg>;
++    };
++
++    gpu_opp_table: opp_table0 {
++      compatible = "operating-points-v2";
++      opp-shared;
++
++      opp-358000000 {
++              opp-hz = /bits/ 64 <358000000>;
++              opp-hz-real = /bits/ 64 <358000000>,
++                            /bits/ 64 <358000000>;
++              opp-microvolt = <606250>,
++                              <750000>;
++      };
++
++      opp-399000000 {
++              opp-hz = /bits/ 64 <399000000>;
++              opp-hz-real = /bits/ 64 <399000000>,
++                            /bits/ 64 <399000000>;
++              opp-microvolt = <618750>,
++                              <750000>;
++      };
++
++      opp-440000000 {
++              opp-hz = /bits/ 64 <440000000>;
++              opp-hz-real = /bits/ 64 <440000000>,
++                            /bits/ 64 <440000000>;
++              opp-microvolt = <631250>,
++                              <750000>;
++      };
++
++      opp-482000000 {
++              opp-hz = /bits/ 64 <482000000>;
++              opp-hz-real = /bits/ 64 <482000000>,
++                            /bits/ 64 <482000000>;
++              opp-microvolt = <643750>,
++                              <750000>;
++      };
++
++      opp-523000000 {
++              opp-hz = /bits/ 64 <523000000>;
++              opp-hz-real = /bits/ 64 <523000000>,
++                            /bits/ 64 <523000000>;
++              opp-microvolt = <656250>,
++                              <750000>;
++      };
++
++      opp-564000000 {
++              opp-hz = /bits/ 64 <564000000>;
++              opp-hz-real = /bits/ 64 <564000000>,
++                            /bits/ 64 <564000000>;
++              opp-microvolt = <668750>,
++                              <750000>;
++      };
++
++      opp-605000000 {
++              opp-hz = /bits/ 64 <605000000>;
++              opp-hz-real = /bits/ 64 <605000000>,
++                            /bits/ 64 <605000000>;
++              opp-microvolt = <681250>,
++                              <750000>;
++      };
++
++      opp-647000000 {
++              opp-hz = /bits/ 64 <647000000>;
++              opp-hz-real = /bits/ 64 <647000000>,
++                            /bits/ 64 <647000000>;
++              opp-microvolt = <693750>,
++                              <750000>;
++      };
++
++      opp-688000000 {
++              opp-hz = /bits/ 64 <688000000>;
++              opp-hz-real = /bits/ 64 <688000000>,
++                            /bits/ 64 <688000000>;
++              opp-microvolt = <706250>,
++                              <750000>;
++      };
++
++      opp-724000000 {
++              opp-hz = /bits/ 64 <724000000>;
++              opp-hz-real = /bits/ 64 <724000000>,
++                            /bits/ 64 <724000000>;
++              opp-microvolt = <725000>,
++                              <750000>;
++      };
++
++      opp-760000000 {
++              opp-hz = /bits/ 64 <760000000>;
++              opp-hz-real = /bits/ 64 <760000000>,
++                            /bits/ 64 <760000000>;
++              opp-microvolt = <743750>,
++                              <750000>;
++      };
++
++      opp-795000000 {
++              opp-hz = /bits/ 64 <795000000>;
++              opp-hz-real = /bits/ 64 <795000000>,
++                            /bits/ 64 <795000000>;
++              opp-microvolt = <762500>,
++                              <762500>;
++      };
++
++      opp-831000000 {
++              opp-hz = /bits/ 64 <831000000>;
++              opp-hz-real = /bits/ 64 <831000000>,
++                            /bits/ 64 <831000000>;
++              opp-microvolt = <781250>,
++                              <781250>;
++      };
++
++      opp-855000000 {
++              opp-hz = /bits/ 64 <855000000>;
++              opp-hz-real = /bits/ 64 <855000000>,
++                            /bits/ 64 <855000000>;
++              opp-microvolt = <793750>,
++                              <793750>;
++      };
++
++      opp-902000000 {
++              opp-hz = /bits/ 64 <902000000>;
++              opp-hz-real = /bits/ 64 <902000000>,
++                            /bits/ 64 <902000000>;
++              opp-microvolt = <818750>,
++                              <818750>;
++      };
++
++      opp-950000000 {
++              opp-hz = /bits/ 64 <950000000>;
++              opp-hz-real = /bits/ 64 <950000000>,
++                            /bits/ 64 <950000000>;
++              opp-microvolt = <843750>,
++                              <843750>;
++      };
++    };
++...
 -- 
-viresh
+2.18.0
+
