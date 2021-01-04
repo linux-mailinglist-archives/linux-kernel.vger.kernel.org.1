@@ -2,168 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45162E9868
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0061A2E9866
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727442AbhADPZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:25:02 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21854 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727225AbhADPZB (ORCPT
+        id S1726822AbhADPYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:24:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbhADPYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:25:01 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 104F2AeE054555;
-        Mon, 4 Jan 2021 10:24:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=zxghkz7KN4TP63NXTpRrf4UWbVhYh7z0S3onnXQYjGQ=;
- b=JMVfCZiMOgOxDlCupGquPsR0SBAsQUEHN6Rxgqy9BGX0AFfmBhKS253usby50lHFEEQV
- TXtVVijovuON42LgLtIHZJvcowTVsSgRMvGHs25EUrC99UHAURAUGQ/oLNX7mxRPExaR
- LFn/CWHIEJ8/xs499WkQZHOyIYpFtLwx2NOxHvfftaURa/EkeLNThc7kWGDx14hDdUmA
- O7pTl1tkrjuZ37uHmK2z86LXWRzySO7xOEsId/XRmKhcwKEYuSc+pc/VVeKLCYzxF5V/
- oYdl+ZHW5BQEm+Iib03kX3sHfJdfw5LJMtdZBDPaNg+4Yv+Fs1dvtMEgsRvNjv/Gxmx0 4g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35v3183w3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 10:24:20 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 104F2U79055391;
-        Mon, 4 Jan 2021 10:24:20 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35v3183w2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 10:24:19 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 104FBdcS003941;
-        Mon, 4 Jan 2021 15:24:18 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 35tgf8h182-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 15:24:18 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 104FOFiN42729806
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Jan 2021 15:24:15 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E4717A405F;
-        Mon,  4 Jan 2021 15:24:14 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7F0A8A405C;
-        Mon,  4 Jan 2021 15:24:14 +0000 (GMT)
-Received: from ibm-vm (unknown [9.145.0.177])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Jan 2021 15:24:14 +0000 (GMT)
-Date:   Mon, 4 Jan 2021 16:22:31 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v1 4/4] s390/kvm: VSIE: correctly handle MVPG when in
- VSIE
-Message-ID: <20210104162231.4e56ab47@ibm-vm>
-In-Reply-To: <6836573a-a49d-9d9f-49e0-96b5aa479c52@redhat.com>
-References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
-        <20201218141811.310267-5-imbrenda@linux.ibm.com>
-        <6836573a-a49d-9d9f-49e0-96b5aa479c52@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 4 Jan 2021 10:24:06 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A23C061574;
+        Mon,  4 Jan 2021 07:23:26 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id 11so16627248pfu.4;
+        Mon, 04 Jan 2021 07:23:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G8nosa3HmeTxWutD9E8tm0s7tb/P8NNzuyVaCnbWuyk=;
+        b=A4llXl+3wIiV+Oq9Y20Dc8axEyRRzmFLSeJhzN47+3nN6q0W6gkR9gTxnEUADLXQ6J
+         T3JVaAIwUA/hwzgq/pRKAF0NjCij9XBXa2NhZyURpjIFHjK8+H1WWB/65is3BhK5T+sQ
+         AdDKzDyN9jT7LYIarmmuLAhrMXc2Co31MhHRgK/hUDUjUWonFsjSbxHDn3cTaT4i3gUR
+         Y9QrqOTQlv73GFm0pvGN5PeITUlAcRFwbHD4SUPjHLd8UAIrXOVaOe55812NKvwV4DOG
+         +g8+OEJ14tjL8UtEUx7+oiwJ6xxl5FU4q6kU3uCfFiXgwH0gjiq2SdOQ7pd3hf1WiueY
+         Kezw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G8nosa3HmeTxWutD9E8tm0s7tb/P8NNzuyVaCnbWuyk=;
+        b=Lcpl0p1rleoaHIwQZ7/IsXa4BF2C4p01tx+jaWDKHRfsucp6RI/M6pHm8ZaJ46Snto
+         sHdGSAl4IyKDSH+0dsqrCQs+dZ9B2OFB72fngO0MnUQ+B+cWIQrqzPBrvzxkVZwY3qZw
+         ITbObmgluF5HJuKgYZoFTuQq7DUgQfuHU50P5T9V6/LQXld1gZfEgqLj4mHsGD4cJ0Jh
+         5dgJByX8ZXcRbHYOKU+Mex6a8WVR0zWiqe8XqMSDw/E+e8Sa1fQeClrmd4Ca/IGEbSUX
+         VM8J7qOkxQaSlQDH51i/hFx1pHgz4pw+ebDZ66S5JLQBq02Md67BUVjW7ALXp9xfiicH
+         nR9w==
+X-Gm-Message-State: AOAM531ReaneOlz0YhEmAvQK2UnQACPjfZCox33V4FnOKs2ns8eG3Dl4
+        LLhB8zSEBe9Tm/1Yc9Ic3jI=
+X-Google-Smtp-Source: ABdhPJyGA7VAmzl1o1sn62Q4T/s1NvRB4sS4yQ8j28DKQqXDwKtCJrpVQkBCdaS+xIVvojGuwaRKVA==
+X-Received: by 2002:a63:4644:: with SMTP id v4mr53315268pgk.440.1609773805947;
+        Mon, 04 Jan 2021 07:23:25 -0800 (PST)
+Received: from sol (106-69-181-20.dyn.iinet.net.au. [106.69.181.20])
+        by smtp.gmail.com with ESMTPSA id z10sm57240689pfr.204.2021.01.04.07.23.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 07:23:25 -0800 (PST)
+Date:   Mon, 4 Jan 2021 23:23:19 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>
+Subject: Re: [PATCH 1/7] selftests: gpio: rework and simplify test
+ implementation
+Message-ID: <20210104152319.GA854268@sol>
+References: <20210102022949.92304-1-warthog618@gmail.com>
+ <20210102022949.92304-2-warthog618@gmail.com>
+ <CAHp75VdMs1mP7pK46qKqJbjfyrcKhSGvtyzQpTRsehMz6o=Jpg@mail.gmail.com>
+ <20210103021725.GA6622@sol>
+ <CAHp75VfONKY7VS0q=GkSX14i--g0=jfBg4RFBoMk4DxJPMHJFg@mail.gmail.com>
+ <20210104015129.GA4939@sol>
+ <CAHp75Vdd6yC=j+m7OOdP=M1j8Eoaayq8HSLF2fjVXcA0wiu9kQ@mail.gmail.com>
+ <20210104150031.GA853645@sol>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-04_08:2021-01-04,2021-01-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 spamscore=0 clxscore=1015 bulkscore=0 malwarescore=0
- impostorscore=0 mlxlogscore=999 phishscore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101040095
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104150031.GA853645@sol>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 20 Dec 2020 11:13:57 +0100
-David Hildenbrand <david@redhat.com> wrote:
-
-> On 18.12.20 15:18, Claudio Imbrenda wrote:
-> > Correctly handle the MVPG instruction when issued by a VSIE guest.
-> >   
+On Mon, Jan 04, 2021 at 11:00:31PM +0800, Kent Gibson wrote:
+> On Mon, Jan 04, 2021 at 03:52:49PM +0200, Andy Shevchenko wrote:
+> > On Mon, Jan 4, 2021 at 3:51 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > On Sun, Jan 03, 2021 at 05:10:10PM +0200, Andy Shevchenko wrote:
+> > 
+> > ...
+> > 
+> > > In this example it is the 508:
+> > >
+> > > # e.g. gpiochip0: GPIOs 508-511, parent: platform/gpio-mockup.0, gpio-mockup-A:
+> > >
+> > > So I'll use that - unless it is unreliable for some reason?
+> > 
+> > debugfs is not an ABI and tomorrow this can be changed without notice.
+> > 
 > 
-> I remember that MVPG SIE documentation was completely crazy and full
-> of corner cases. :)
-
-you remember correctly
-
-> Looking at arch/s390/kvm/intercept.c:handle_mvpg_pei(), I can spot
-> that
-> 
-> 1. "This interception can only happen for guests with DAT disabled
-> ..." 2. KVM does not make use of any mvpg state inside the SCB.
-> 
-> Can this be observed with Linux guests?
-
-a Linux guest will typically not run with DAT disabled
-
-> Can I get some information on what information is stored at [0xc0,
-> 0xd) inside the SCB? I assume it's:
-> 
-> 0xc0: guest physical address of source PTE
-> 0xc8: guest physical address of target PTE
-
-yes (plus 3 flags in the lower bits of each)
-
-> 
-> Also, which conditions have to be met such that we get a
-> ICPT_PARTEXEC:
-> 
-> a) State of guest DAT (I assume off?)
-> b) State of PTEs: What happens if there is no PTE (I assume we need
-> two PTEs, otherwise no such intercept)? I assume we get an intercept
-> if one of both PTEs is not present or the destination PTE is
-> protected. Correct?
-
-we get the intercept if the guest has DAT off, and at least one of the
-host PTEs is invalid (and I think if the destination is valid but
-protected)
-
-> So, when we (g1) get an intercept for g3, can we be sure 0xc0 and 0xc8
-> in the scb are both valid g1 addresses pointing at our PTE, and what
-> do we know about these PTEs (one not present or destination
-> protected)?
-
-we only know that at least one of the following holds true:
-* source invalid
-* destination invalid
-* destination protected
-
-there is a bit that tells us if the destination was protected (bit 62),
-but that does not exclude an invalid source
-
-> [...]
-> >  /*
-> >   * Run the vsie on a shadow scb and a shadow gmap, without any
-> > further
-> >   * sanity checks, handling SIE faults.
-> > @@ -1063,6 +1132,10 @@ static int do_vsie_run(struct kvm_vcpu
-> > *vcpu, struct vsie_page *vsie_page) if ((scb_s->ipa & 0xf000) !=
-> > 0xf000) scb_s->ipa += 0x1000;
-> >  		break;
-> > +	case ICPT_PARTEXEC:
-> > +		if (scb_s->ipa == 0xb254)  
-> 
-> Old code hat "/* MVPG only */" - why is this condition now necessary?
-
-old code was wrong ;)
-
-> > +			rc = vsie_handle_mvpg(vcpu, vsie_page);
-> > +		break;
-> >  	}
-> >  	return rc;
-> >  }
-> >   
-> 
+> I had a bad feeling that might be the case, and all my current solutions
+> use debugfs one way or another, so back to the drawing board on that one.
 > 
 
+Hang on - the find approach that I was looking at previously only uses
+/sys/devices/platform, so I'll revert to that one - and add handling for
+multi-match.
+
+Cheers,
+Kent.
