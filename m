@@ -2,481 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FBE2E97C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 613542E97AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727434AbhADO4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:56:08 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:50106 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727219AbhADO4H (ORCPT
+        id S1726950AbhADOxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:53:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49403 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725889AbhADOxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:56:07 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104EsilD011292;
-        Mon, 4 Jan 2021 14:54:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=dnocVcTsgoPYnIHPldL769OdktMS5cDE6wAGV/6tBS0=;
- b=DOiqhhhGTBzi8XIy+mZ7zxs1yKUYl38bvcq4V9AYPJHbDxGQkMAMFxG/aRvqhW4LBiG2
- zqAfPb4fhgdtYEwluwbKiU2sKUcUdNT6GFofNmOt2jqXTvoW+is2W0Pf8gZG7UbskJR9
- 2x63uq+k8ojQZfECInbb9x2m8dlQCDgCFQUopEe3McG47aBhkMIntgxCflBWnIhkpnEM
- bMbX/uj+dQvgfUBcKxkcy2mDJWDbyPRtW1Ccjbg1Fb6l49uu5GPvn/kJn+OuqT6FoYRr
- N/hriICkUbnRHetOxVTiT1MO5KYNgrQNFhpobBXHbtTv/yiGoaoqQIQkH4+8r+zPxRfe qw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 35tebampjx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 04 Jan 2021 14:54:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104EqYAe162863;
-        Mon, 4 Jan 2021 14:52:45 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 35v2ax951u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Jan 2021 14:52:45 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 104Eoucl008997;
-        Mon, 4 Jan 2021 14:50:56 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Jan 2021 14:50:54 +0000
-Date:   Mon, 4 Jan 2021 17:50:39 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        devel@driverdev.osuosl.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Torsten Duwe <duwe@lst.de>, Sheng Pan <span@analogixsemi.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v1 2/2] drm/bridge: anx7625: add MIPI DPI input feature
- support
-Message-ID: <20210104145039.GT2809@kadam>
-References: <cover.1608883950.git.xji@analogixsemi.com>
- <ec0282f620ac472886d3e349bb6a09394b747edb.1608883950.git.xji@analogixsemi.com>
+        Mon, 4 Jan 2021 09:53:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609771900;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gxcfWJQksOjY0DyqWcZrS6xpnJ2DbSipm7BPCLqL/EU=;
+        b=SpClmOA/JKj7T1O4xV3x0X4Aeziedbnob5ihtEzuAAI38KT//o6syR2mvXkcDM2/QvfUNX
+        Tmgc4lAxFP2o0F3qkSaEvyqqY78E46yvzgJpQCwFOgGY+F+2YmBIEA3TrJ/716dZkuP+JQ
+        jJ/QQi7HFBGyJgLZTAl71jsGXMQx/as=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-370-DleNEs_zNJaPQVW8H-8F9w-1; Mon, 04 Jan 2021 09:51:38 -0500
+X-MC-Unique: DleNEs_zNJaPQVW8H-8F9w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9AAA3190D340;
+        Mon,  4 Jan 2021 14:51:37 +0000 (UTC)
+Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 498FE6F81E;
+        Mon,  4 Jan 2021 14:51:36 +0000 (UTC)
+Subject: Re: uninitialized pmem struct pages
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20210104100323.GC13207@dhcp22.suse.cz>
+ <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
+ <20210104142624.GI13207@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <23a4eea2-9fdb-fd1d-ee92-9cd8ac6e8f41@redhat.com>
+Date:   Mon, 4 Jan 2021 15:51:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec0282f620ac472886d3e349bb6a09394b747edb.1608883950.git.xji@analogixsemi.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 malwarescore=0 adultscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101040097
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1011 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101040098
+In-Reply-To: <20210104142624.GI13207@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 25, 2020 at 07:02:15PM +0800, Xin Ji wrote:
-> +static int anx7625_aux_dpcd_read(struct anx7625_data *ctx,
-> +				 u8 addrh, u8 addrm, u8 addrl,
-> +				 u8 len, u8 *buf)
-> +{
-> +	struct device *dev = &ctx->client->dev;
-> +	int ret;
-> +	u8 cmd;
-> +
-> +	if (len > MAX_DPCD_BUFFER_SIZE) {
-> +		DRM_DEV_ERROR(dev, "exceed aux buffer len.\n");
-> +		return -E2BIG;
+On 04.01.21 15:26, Michal Hocko wrote:
+> On Mon 04-01-21 11:45:39, David Hildenbrand wrote:
+>> On 04.01.21 11:03, Michal Hocko wrote:
+>>> Hi,
+>>> back in March [1] you have recommended 53cdc1cb29e8
+>>> ("drivers/base/memory.c: indicate all memory blocks as removable") to be
+>>> backported to stable trees and that has led to a more general discussion
+>>> about the current state of pfn walkers wrt. uninitialized pmem struct
+>>> pages. We haven't concluded any specific solution for that except for a
+>>> general sentiment that pfn_to_online_page should be able to catch those.
+>>> I might have missed any follow ups on that but I do not think we have
+>>> landed on any actual solution in the end. Have I just missed any followups?
+>>
+>> Thanks for raising this issue. It's still on my list of "broken and
+>> non-trivial to fix" things.
+>>
+>> So, as far as I recall, we still have the following two issues remaining:
+>>
+>> 1. pfn_to_online_page() false positives
+>>
+>> The semantics of pfn_to_online_page() were broken with sub-section
+>> hot-add in corner cases.
+>>
+>> If we have ZONE_DEVICE hot-added memory that overlaps in a section with
+>> boot memory, this memory section will contain parts ZONE_DEVICE memory
+>> and parts !ZONE_DEVICE memory. This can happen in sub-section
+>> granularity (2MB IIRC). pfn_to_online_page() will succeed on ZONE_DEVICE
+>> memory parts as the whole section is marked as online. Bad.
+> 
+> OK, I was not aware of this problem. Anyway, those pages should be still
+> allocated and their state should retain their last state. I would have
+> to double check but this shouldn't be harmfull. Or what would be an
+> actual problem?
+> 
+>> One instance where this is still an issue is
+>> mm/memory-failure.c:memory_failure() and
+>> mm/memory-failure.c:soft_offline_page(). I thought for a while about
+>> "fixing" these, but to me it felt like fixing pfn_to_online_page() is
+>> actually the right approach.
+>>
+>> But worse, before ZONE_DEVICE hot-add
+>> 1. The whole section memmap does already exist (early sections always
+>> have a full memmap for the whole section)
+>> 2. The whole section memmap is initialized (although eventually with
+>> dummy node/zone 0/0 for memory holes until that part is fixed) and might
+>> be accessed by pfn walkers.
+>>
+>> So when hotadding ZONE_DEVICE we are modifying already existing and
+>> visible memmaps. Bad.
+> 
+> Could you elaborate please?
 
-s/E2BIG/EINVAL/.  -E2BIG means something else.
+Simplistic example: Assume you have a VM with 64MB on x86-64.
 
-> +	}
-> +
-> +	cmd = ((len - 1) << 4) | 0x09;
-> +
-> +	/* Set command and length */
-> +	ret = anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +				AP_AUX_COMMAND, cmd);
-> +
-> +	/* Set aux access address */
-> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +				 AP_AUX_ADDR_7_0, addrl);
-> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +				 AP_AUX_ADDR_15_8, addrm);
-> +	ret |= anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
-> +				 AP_AUX_ADDR_19_16, addrh);
-> +
-> +	/* Enable aux access */
-> +	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
-> +				AP_AUX_CTRL_STATUS, AP_AUX_CTRL_OP_EN);
-> +
-> +	if (ret < 0) {
-> +		DRM_DEV_ERROR(dev, "cannot access aux related register.\n");
-> +		return -EIO;
-> +	}
-> +
-> +	usleep_range(2000, 2100);
-> +
-> +	ret = wait_aux_op_finish(ctx);
-> +	if (ret) {
-> +		DRM_DEV_ERROR(dev, "aux IO error: wait aux op finish.\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = anx7625_reg_block_read(ctx, ctx->i2c.rx_p0_client,
-> +				     AP_AUX_BUFF_START, len, buf);
-> +	if (ret < 0) {
-> +		DRM_DEV_ERROR(dev, "read dpcd register failed\n");
-> +		return -EIO;
->  	}
->  
-> -	return val;
-> +	return 0;
->  }
->  
->  static int anx7625_video_mute_control(struct anx7625_data *ctx,
-> @@ -595,6 +663,101 @@ static int anx7625_dsi_config(struct anx7625_data *ctx)
->  	return ret;
->  }
->  
-> +static int anx7625_api_dpi_config(struct anx7625_data *ctx)
-> +{
-> +	struct device *dev = &ctx->client->dev;
-> +	u16 freq = ctx->dt.pixelclock.min / 1000;
-> +	int ret;
-> +
-> +	/* configure pixel clock */
-> +	ret = anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +				PIXEL_CLOCK_L, freq & 0xFF);
-> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +				 PIXEL_CLOCK_H, (freq >> 8));
-> +
-> +	/* set DPI mode */
-> +	/* set to DPI PLL module sel */
-> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-> +				 MIPI_DIGITAL_PLL_9, 0x20);
-> +	/* power down MIPI */
-> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-> +				 MIPI_LANE_CTRL_10, 0x08);
-> +	/* enable DPI mode */
-> +	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-> +				 MIPI_DIGITAL_PLL_18, 0x1C);
-> +	/* set first edge */
-> +	ret |= anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
-> +				 VIDEO_CONTROL_0, 0x06);
-> +	if (ret < 0)
-> +		DRM_DEV_ERROR(dev, "IO error : dpi phy set failed.\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static int anx7625_dpi_config(struct anx7625_data *ctx)
-> +{
-> +	struct device *dev = &ctx->client->dev;
-> +	int ret;
-> +
-> +	DRM_DEV_DEBUG_DRIVER(dev, "config dpi\n");
-> +
-> +	/* DSC disable */
-> +	ret = anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
-> +				R_DSC_CTRL_0, ~DSC_EN);
-> +	if (ret < 0) {
-> +		DRM_DEV_ERROR(dev, "IO error : disable dsc failed.\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = anx7625_config_bit_matrix(ctx);
-> +	if (ret < 0) {
-> +		DRM_DEV_ERROR(dev, "config bit matrix failed.\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = anx7625_api_dpi_config(ctx);
-> +	if (ret < 0) {
-> +		DRM_DEV_ERROR(dev, "mipi phy(dpi) setup failed.\n");
-> +		return ret;
-> +	}
-> +
-> +	/* set MIPI RX EN */
-> +	ret = anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
-> +			       AP_AV_STATUS, AP_MIPI_RX_EN);
-> +	/* clear mute flag */
-> +	ret |= anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
-> +				 AP_AV_STATUS, (u8)~AP_MIPI_MUTE);
-> +	if (ret < 0)
-> +		DRM_DEV_ERROR(dev, "IO error : enable mipi rx failed.\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static int anx7625_hdcp_setting(struct anx7625_data *ctx)
-> +{
-> +	u8 bcap;
-> +	struct device *dev = &ctx->client->dev;
-> +
-> +	if (!(ctx->hdcp_support && ctx->hdcp_en)) {
+We need exactly one memory section (-> one memory block device). We
+allocate the memmap for a full section - an "early section". So we have
+a memmap for 128MB, while 64MB are actually in use, the other 64MB is
+initialized (like a memory hole). pfn_to_online_page() would return a
+valid struct page for the whole section memmap.
 
-Push the ! in and remove the parentheses.
+The remaining 64MB can later be used for hot-adding ZONE_DEVICE memory,
+essentially re-initializing that part of the already-existing memmap.
 
-	if (!ctx->hdcp_support || !ctx->hdcp_en) {
+See pfn_valid():
+
+/*
+ * Traditionally early sections always returned pfn_valid() for
+ * the entire section-sized span.
+ */
+return early_section(ms) || pfn_section_valid(ms, pfn);
 
 
-> +		DRM_DEV_DEBUG_DRIVER(dev, "hdcp_support(%d), hdcp_en(%d)\n",
-> +				     ctx->hdcp_support, ctx->hdcp_en);
-> +		DRM_DEV_DEBUG_DRIVER(dev, "disable HDCP by config\n");
-> +		return anx7625_write_and(ctx, ctx->i2c.rx_p1_client,
-> +					 0xee, 0x9f);
-> +	}
-> +
-> +	anx7625_aux_dpcd_read(ctx, 0x06, 0x80, 0x28, 1, &bcap);
-> +	if (!(bcap & 0x01)) {
-> +		DRM_WARN("downstream not support HDCP 1.4, cap(%x).\n", bcap);
-> +		return anx7625_write_and(ctx, ctx->i2c.rx_p1_client,
-> +					 0xee, 0x9f);
-> +	}
-> +
-> +	DRM_DEV_DEBUG_DRIVER(dev, "enable HDCP 1.4\n");
-> +
-> +	return anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xee, 0x20);
-> +}
-> +
->  static void anx7625_dp_start(struct anx7625_data *ctx)
->  {
->  	int ret;
-> @@ -605,9 +768,15 @@ static void anx7625_dp_start(struct anx7625_data *ctx)
->  		return;
->  	}
->  
-> +	/* HDCP config */
-> +	anx7625_hdcp_setting(ctx);
-> +
->  	anx7625_config_audio_input(ctx);
->  
-> -	ret = anx7625_dsi_config(ctx);
-> +	if (ctx->pdata.is_dpi)
-> +		ret = anx7625_dpi_config(ctx);
-> +	else
-> +		ret = anx7625_dsi_config(ctx);
->  
->  	if (ret < 0)
->  		DRM_DEV_ERROR(dev, "MIPI phy setup error.\n");
-> @@ -688,8 +857,53 @@ static int sp_tx_get_edid_block(struct anx7625_data *ctx)
->  	return c;
->  }
->  
-> -static int edid_read(struct anx7625_data *ctx,
-> -		     u8 offset, u8 *pblock_buf)
-> +static int check_hdcp_support(struct anx7625_data *ctx)
-> +{
-> +	int ret;
-> +	struct device *dev = &ctx->client->dev;
-> +
-> +	/* Select HDCP1.4 Key load */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, FLASH_SRAM_SEL, 0x12);
-> +	/* Select flash addr low byte */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, FLASH_ADDR_LOW, 0x91);
-> +	/* Select flash addr high byte */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, FLASH_ADDR_HIGH, 0xa0);
-> +	/* Select sram length high byte */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, SRAM_LEN_HIGH, 0x00);
-> +	/* Select sram length low byte */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, SRAM_LEN_LOW, 0x27);
-> +	/* Select flash length high byte */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, FLASH_LEN_HIGH, 0x02);
-> +	/* Select flash length low byte */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, FLASH_LEN_LOW, 0x70);
-> +	/* Select sram addr high byte */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, SRAM_ADDR_HIGH, 0x00);
-> +	/* Select sram addr low byte */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, SRAM_ADDR_LOW, 0x00);
-> +	/* Enable load with decrypt_en */
-> +	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client, FLASH_LOAD_STA, 0x03);
-> +
-> +	usleep_range(10000, 11000);
-> +
-> +	/* Check load status */
-> +	ret = anx7625_reg_read(ctx, ctx->i2c.rx_p0_client, FLASH_LOAD_STA);
-> +	if (ret < 0) {
-> +		DRM_DEV_ERROR(dev, "IO error : access flash load.\n");
-> +		return ret;
-> +	}
-> +
-> +	if ((ret & 0xF2) != 0xF2) {
-> +		ctx->hdcp_support = 0;
-> +		DRM_DEV_DEBUG_DRIVER(dev, "not support HDCP\n");
-> +	} else {
-> +		ctx->hdcp_support = 1;
-> +		DRM_DEV_DEBUG_DRIVER(dev, "support HDCP\n");
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int edid_read(struct anx7625_data *ctx, u8 offset, u8 *pblock_buf)
->  {
->  	int ret, cnt;
->  	struct device *dev = &ctx->client->dev;
-> @@ -718,6 +932,15 @@ static int edid_read(struct anx7625_data *ctx,
->  	return 0;
->  }
->  
-> +void hdcp_enable(struct anx7625_data *ctx, int en)
-> +{
-> +	struct device *dev = &ctx->client->dev;
-> +
-> +	DRM_DEV_DEBUG_DRIVER(dev, "en(%d)\n", en);
-> +
-> +	ctx->hdcp_en = !!en;
-> +}
-> +
->  static int segments_edid_read(struct anx7625_data *ctx,
->  			      u8 segment, u8 *buf, u8 offset)
->  {
-> @@ -992,8 +1215,10 @@ static void anx7625_chip_control(struct anx7625_data *ctx, int state)
->  
->  	if (state) {
->  		atomic_inc(&ctx->power_status);
-> -		if (atomic_read(&ctx->power_status) == 1)
-> +		if (atomic_read(&ctx->power_status) == 1) {
->  			anx7625_power_on_init(ctx);
-> +			check_hdcp_support(ctx);
-> +		}
->  	} else {
->  		if (atomic_read(&ctx->power_status)) {
->  			atomic_dec(&ctx->power_status);
-> @@ -1051,6 +1276,7 @@ static void anx7625_start_dp_work(struct anx7625_data *ctx)
->  		return;
->  	}
->  
-> +	ctx->hpd_status = 1;
->  	ctx->hpd_high_cnt++;
->  
->  	/* Not support HDCP */
-> @@ -1060,8 +1286,10 @@ static void anx7625_start_dp_work(struct anx7625_data *ctx)
->  	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xec, 0x10);
->  	/* Interrupt for DRM */
->  	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xff, 0x01);
-> -	if (ret < 0)
-> +	if (ret < 0) {
-> +		DRM_DEV_ERROR(dev, "fail to setting HDCP/auth\n");
->  		return;
-> +	}
->  
->  	ret = anx7625_reg_read(ctx, ctx->i2c.rx_p1_client, 0x86);
->  	if (ret < 0)
-> @@ -1080,6 +1308,10 @@ static void anx7625_hpd_polling(struct anx7625_data *ctx)
->  	int ret, val;
->  	struct device *dev = &ctx->client->dev;
->  
-> +	/* Interrupt mode, no need poll HPD status, just return */
-> +	if (ctx->pdata.intp_irq)
-> +		return;
-> +
->  	if (atomic_read(&ctx->power_status) != 1) {
->  		DRM_DEV_DEBUG_DRIVER(dev, "No need to poling HPD status.\n");
->  		return;
-> @@ -1130,6 +1362,22 @@ static void anx7625_remove_edid(struct anx7625_data *ctx)
->  	ctx->slimport_edid_p.edid_block_num = -1;
->  }
->  
-> +static void anx7625_dp_adjust_swing(struct anx7625_data *ctx)
-> +{
-> +	struct device *dev = &ctx->client->dev;
-> +	int i;
-> +
-> +	if (!ctx->pdata.reg_table_size)
-> +		return;
+Depending on the memory layout of the system, a pfn walker might just be
+about to stumble over this range getting re-initialized.
 
-No need for this check.  Just remove it and the for loop becomes a no-op.
-
-> +
-> +	DRM_DEV_DEBUG_DRIVER(dev, "adjust DP tx swing\n");
-
-Delete this debug statement and use ftrace for this information.
-
-> +
-> +	for (i = 0; i < ctx->pdata.reg_table_size; i++)
-> +		anx7625_reg_write(ctx, ctx->i2c.tx_p1_client,
-> +				  ctx->pdata.art[i].offset & 0xFF,
-> +				  ctx->pdata.art[i].data & 0xFF);
-> +}
-> +
->  static void dp_hpd_change_handler(struct anx7625_data *ctx, bool on)
->  {
->  	struct device *dev = &ctx->client->dev;
-> @@ -1145,9 +1393,8 @@ static void dp_hpd_change_handler(struct anx7625_data *ctx, bool on)
->  	} else {
->  		DRM_DEV_DEBUG_DRIVER(dev, " HPD high\n");
->  		anx7625_start_dp_work(ctx);
-> +		anx7625_dp_adjust_swing(ctx);
->  	}
-> -
-> -	ctx->hpd_status = 1;
->  }
 >  
->  static int anx7625_hpd_change_detect(struct anx7625_data *ctx)
-> @@ -1224,12 +1471,63 @@ static irqreturn_t anx7625_intr_hpd_isr(int irq, void *data)
->  	return IRQ_HANDLED;
->  }
->  
-> +static int anx7625_get_u32_value(struct device_node *np,
-> +				 const char *name,
-> +				 int start_pos,
-> +				 int *reg_data)
-> +{
-> +	int i, ret;
-> +
-> +	/* each slot has 2 cells */
-> +	for (i = 0; i < 2; i++) {
-> +		ret = of_property_read_u32_index(np, name,
-> +						 start_pos + i,
-> +						 &reg_data[i]);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int anx7625_parse_dt(struct device *dev,
->  			    struct anx7625_platform_data *pdata)
->  {
->  	struct device_node *np = dev->of_node;
->  	struct drm_panel *panel;
-> -	int ret;
-> +	int ret, i;
-> +	int reg_data[2];
-> +	int total_size, num_regs, start_pos;
-> +
-> +	if (of_get_property(dev->of_node, "anx,swing-setting", &total_size)) {
-> +		/* each slot has 2 cells */
-> +		num_regs = total_size / (sizeof(u32) * 2);
-> +		if (num_regs > MAX_REG_SIZE)
-> +			num_regs = MAX_REG_SIZE;
-> +
-> +		pdata->reg_table_size = num_regs;
-> +
-> +		for (i = 0; i < num_regs; i++) {
-> +			start_pos = i * 2;
-> +			ret = anx7625_get_u32_value(np, "anx,swing-setting",
-> +						    start_pos, reg_data);
-> +			if (ret) {
-> +				DRM_DEV_ERROR(dev, "get swing-setting at %d\n",
-> +					      start_pos);
-> +				return -ENODEV;
+>> 2. Deferred init of ZONE_DEVICE ranges
+>>
+>> memmap_init_zone_device() runs after the ZONE_DEVICE zone was resized
+>> and outside the memhp lock. I did not follow if the use of
+>> get_dev_pagemap() actually makes sure that memmap_init_zone_device() in
+>> pagemap_range() actually completed. I don't think it does.
+> 
+> So a pfn walker can see an unitialized struct page for a while, right?
+> 
+> The problem that I have encountered is that some zone device pages are
+> not initialized at all. That sounds like a different from those 2 above.
+> I am having hard time to track what kind of pages those are and why we
+> cannot initialized their zone/node and make them reserved at least.
 
-return ret;?
+And you are sure that these are in fact ZONE_DEVICE pages? Not memory
+holes e.g., tackled by
 
-regards,
-dan carpenter
+commit 4b094b7851bf4bf551ad456195d3f26e1c03bd74
+Author: David Hildenbrand <david@redhat.com>
+Date:   Mon Feb 3 17:33:55 2020 -0800
+
+    mm/page_alloc.c: initialize memmap of unavailable memory directly
+
+
+commit e822969cab48b786b64246aad1a3ba2a774f5d23
+Author: David Hildenbrand <david@redhat.com>
+Date:   Mon Feb 3 17:33:48 2020 -0800
+
+    mm/page_alloc.c: fix uninitialized memmaps on a partially populated
+last section
+
+
+(note there is currently an upstream discussion on improving this
+initialization, especially getting better node/zone information, mostly
+involving Andrea and Mike - but it only changes "how" these parts are
+initialized, not "if" or "when")
+
+---
+
+However, I do remember a discussion regarding "reserved altmap space"
+ZONE_DEVICE ranges, and whether to initialize them or leave them
+uninitialized. See comment in
+
+commit 77e080e7680e1e615587352f70c87b9e98126d03
+Author: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Date:   Fri Oct 18 20:19:39 2019 -0700
+
+    mm/memunmap: don't access uninitialized memmap in memunmap_pages()
+
+
+"With an altmap, the memmap falling into the reserved altmap space are
+not initialized and, therefore, contain a garbage NID and a garbage zone.".
+
+I think the issue is that the ZONE_DEVICE pages that *host* the memmap
+of other pages might be left uninitialized.
+
+Like pfn_to_page(VIRT_TO_PFN(pfn_to_page(zone_device_pfn))), which falls
+onto ZONE_DEVICE with an altmap, could be uninitialized. This is very
+similar to our Oscar's vmemmap-on-hotadded-memory approach, however,
+there we implicitly initialize the memmap of these pages just by the way
+the vmemmap is placed at the beginning of the memory block.
+
+If altmap-reserved space is placed partially into an early section that
+is marked as online (issue 1. I described), we have the same issue as
+1., just a little harder to fix :)
+
+> 
+>>> Is anybody working on that?
+>>>
+>>
+>> I believe Dan mentioned somewhere that he wants to see a real instance
+>> of this producing a BUG before actually moving forward with a fix. I
+>> might be wrong.
+> 
+> We have seen reports about those uninitialized struct pages on our 5.3
+> based kernels. Backporting 53cdc1cb29e8 helped for the particular report
+> but I still consider it a workaround rather than a fix. I do not have
+> any reports for other pfn walkers but we might be just lucky and I will
+> sleep better if I do not have rely on the luck.
+
+Yeah, I think we are now at 3 different but related problems.
+
+-- 
+Thanks,
+
+David / dhildenb
 
