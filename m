@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBC52E94A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FCC2E94A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbhADMSf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 07:18:35 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23205 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726236AbhADMSf (ORCPT
+        id S1726625AbhADMS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:18:58 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:28209 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbhADMS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:18:35 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-161-e-HVRhClO9mndLuADFhIAA-1; Mon, 04 Jan 2021 12:16:56 +0000
-X-MC-Unique: e-HVRhClO9mndLuADFhIAA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 4 Jan 2021 12:16:56 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 4 Jan 2021 12:16:56 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: in_compat_syscall() on x86
-Thread-Topic: in_compat_syscall() on x86
-Thread-Index: Adbikf8I52+Fp/HYSH2MXxqk00t/Og==
-Date:   Mon, 4 Jan 2021 12:16:56 +0000
-Message-ID: <e817cfdc2df3433bb7fb357db89d4d48@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 4 Jan 2021 07:18:57 -0500
+Date:   Mon, 04 Jan 2021 12:18:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1609762694; bh=QT+sTrOHmzw/IEhK4TpbxVslGv1eZAC9MAiDIkeRbwc=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=BmkAZgu6mvqIpaVT+KnbmBJsJL9ZQ8DxHQ8q9EMg+zxUSml7YCs2/v5Qm4vuImBjs
+         HMixK0no6LXT5zZ7U4YUlATCsuOG8UjDXeF515RIFfmOOoa4HUBN6NVdLKx70ozBGG
+         uXxcwDBeaNc4Y3pwQo8hxNF/qwOnLWRpL3f7mJciYMBNaX+HmdT32MvdbgzlylyIJ4
+         KqtQf4ww8efE7GEHgNuE0d23x435gn31SODZyGgwOHnmXJAwbFTEuAAPECgBrurht7
+         WiFgdAkRN67hl8Qelt+phwJEV3fBuRWF5re/8Q7ad38WP75N4K1BpXnrztCFqnBWTg
+         xl/TJM3zR39UQ==
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Alex Smith <alex.smith@imgtec.com>,
+        Markos Chandras <markos.chandras@imgtec.com>,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH mips-next 0/4] MIPS: vmlinux.lds.S sections fix & cleanup
+Message-ID: <20210104121729.46981-1-alobakin@pm.me>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On x86 in_compat_syscall() is defined as:
-    in_ia32_syscall() || in_x32_syscall()
+This series hunts the problems discovered after manual enabling of
+ARCH_WANT_LD_ORPHAN_WARN, notably the missing PAGE_ALIGNED_DATA()
+section affecting VDSO placement (marked for stable).
 
-Now in_ia32_syscall() is a simple check of the TS_COMPAT flag.
-However in_x32_syscall() is a horrid beast that has to indirect
-through to the original %eax value (ie the syscall number) and
-check for a bit there.
+Compile and runtime tested on MIPS32R2 CPS board with no issues.
 
-So on a kernel with x32 support (probably most distro kernels)
-the in_compat_syscall() check is rather more expensive than
-one might expect.
+Alexander Lobakin (4):
+  MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
+  MIPS: vmlinux.lds.S: add ".rel.dyn" to DISCARDS
+  MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
+  MIPS: select ARCH_WANT_LD_ORPHAN_WARN
 
-It would be muck better if both checks could be done together.
-I think this would require the syscall entry code to set a
-value in both the 64bit and x32 entry paths.
-(Can a process make both 64bit and x32 system calls?)
+ arch/mips/Kconfig              | 1 +
+ arch/mips/kernel/vmlinux.lds.S | 5 ++++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-To do this sensible (probably) requires a byte be allocated
-to hold the syscall type - rather than using flag bits
-in the 'status' field.
+--=20
+2.30.0
 
-Apart from the syscall entry, the exec code seems to change
-the syscall type to that of the binary being executed.
-I didn't spot anything else that changes the fields.
-
-But I failed to find the full list of allocated bits for
-the 'status' field.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
