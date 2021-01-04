@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0082E8FF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 06:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26CC2E902D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 06:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727732AbhADFYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 00:24:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
+        id S1727766AbhADFg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 00:36:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727676AbhADFYP (ORCPT
+        with ESMTP id S1725830AbhADFg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 00:24:15 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6BCC061574;
-        Sun,  3 Jan 2021 21:23:34 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id o13so61669828lfr.3;
-        Sun, 03 Jan 2021 21:23:34 -0800 (PST)
+        Mon, 4 Jan 2021 00:36:26 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CB7C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 21:35:46 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id b5so10110093pjl.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 21:35:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xtfLC+93w3itoyz4P7sF0tQMz1DxxHp2FUnJwDzp3Gk=;
-        b=BBT9h33S2l3iEDMxLrX0iowTroll+rFiqGgK8g9PRQ05cc9mznHyRXzPXIC+3QXoEm
-         46wwMyzAtc9RDHl4T/FDMJGYJ9KQnZn5AMgGHQKTnZOpEwIFr9etfrlhRFQUsI8almbB
-         TjXiMK0TOYr5+gMcoEkZrBD4XFmlSYjcVqBAFrHqCP4bzo6c1vDHVqOzVyYh16/tprEB
-         tp3Bu96D6W2BMPqJFppVzgrgk3ZL+qT7PXRJrpXrlKSSA+iu1fUz1d8R3qVP+VuW37GJ
-         Xz3CPn3fO3WWuwJQJNf3h5+CzdINSHZCjG7m/TVqAOjlIyTw9NUQiCbAIAf2kNv4BNsg
-         HPxA==
+        h=from:to:cc:subject:date:message-id;
+        bh=QaRVNSuYB7tYJ+gMxxTcDf08bRsBIt7K93REpdt1gfg=;
+        b=CAq6M1dxD6ZUxNuBH/0J5BzRysMtJItXfXCYon451y/008iCFh/H7O0GU0SN61OiOr
+         SZwifag2sAKtzUJC5r3wSbZB9DYO6Z+IT+bgZx6uTC8vyQo1DXQ8N4MIlF1ZkO3lKNo6
+         +dIg6+tgqf/m5pvt5sD1Xc8PdiJHQv0uKNStl09OhVTvroXQhReg32CUJvF1B9+ERG/o
+         OPm7TZdJxaKZNIUds0qiagBWMAsFN1J9ISa8Admcw7/JN0Xr4QjjhQ2luJqlLKDiFb+4
+         /aHEpSv336dWyaqDNqJR7D9ZZaCd1JcfxvxwojtyRmhnTqLlLHc6fOrK/we9ogGE2JN+
+         5hDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xtfLC+93w3itoyz4P7sF0tQMz1DxxHp2FUnJwDzp3Gk=;
-        b=iltADJ0eWW75yY/bzypSZMPAzTsb6B/mRe0ArvPc2YktHfu9U0oAmOPjbfyDEN9bxW
-         fVl1LPt0yFwsBgiJMm4/2iEj1v1dr6/3HujVabGFbjcF80TxpxXqyXdJONynRwlu6n0+
-         LjvzWKrEgGodTdryC/ymJUq6/dnW9d0eWrFiHztP8wRWIazqIG5fLjhquujqbsyYuBtx
-         fZLAMdZWLdo5djHotX0EGjGGCxkpGI7bievOC4CgiMepZxSxfY5ujloXVjmREirIbQCk
-         cmQLF48H49CrFAT/6xO5eU2qxmFDx9jnURjUr4lZ/ei73gaKw1vHJNdMgLf0zyMbMpjR
-         aduQ==
-X-Gm-Message-State: AOAM533Jctfa7nZqCiyuePxeymy32Uv4yTt42T8/C9wTTWFO0GvDPxSW
-        +AbePqeAZRmE+NAwH2BCZuh78bHpvI6PISbADhk=
-X-Google-Smtp-Source: ABdhPJzTsJPdDXn6X0wbuXnkMrIDfYV9Kilkr3ap5kA+nCCPq+/G9WMmgAthICTij9toii7SymCCdoHJewDn9yvXBPo=
-X-Received: by 2002:ac2:5c08:: with SMTP id r8mr31137914lfp.12.1609737811095;
- Sun, 03 Jan 2021 21:23:31 -0800 (PST)
-MIME-Version: 1.0
-References: <CAGyP=7cFM6BJE7X2PN9YUptQgt5uQYwM4aVmOiVayQPJg1pqaA@mail.gmail.com>
- <20210103123701.1500-1-hdanton@sina.com>
-In-Reply-To: <20210103123701.1500-1-hdanton@sina.com>
-From:   Palash Oswal <oswalpalash@gmail.com>
-Date:   Mon, 4 Jan 2021 10:53:20 +0530
-Message-ID: <CAGyP=7eJKvVXDK+qo9d-AmxC2=QCKPKeGrEJm1bcYNN9f4AKmg@mail.gmail.com>
-Subject: Re: INFO: task hung in __io_uring_task_cancel
-To:     Hillf Danton <hdanton@sina.com>, axboe@kernel.dk
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        viro@zeniv.linux.org.uk, will@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, mingo@redhat.com, mingo@kernel.org,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=QaRVNSuYB7tYJ+gMxxTcDf08bRsBIt7K93REpdt1gfg=;
+        b=Z5qFvLam8xjJn5CFtAS9NA/M/sYbhQpOSRi/P8MYv05DF9opFUz8Gk21UJa36xTRxf
+         AxXhfdCUcfAbOWWb9BGfmpsMUCsPmaMPa36ydF13doUqTwbGVl68ZqMUEn0qkrAJR23Y
+         FAMGJgzozCeMExEYgF2bVudfS1uFGGjfjNsyD36eJmHuPty+532X9k5CMTa5aRBnR9Bl
+         YLi1W6YSaYqBj0ImkS464rAEVxt97GZyAMV/cpiBRfpMk56VsIO3iZm/wfF84x21vuCG
+         wKmeNLxZMXqtF9/sVqMnLegw4YHZNqfI5wB51LVGZs+XAa8cl7hQDHpac2C9/F0Uubct
+         oIsQ==
+X-Gm-Message-State: AOAM5315Ob8qEfQ6CYFc3v+GJbakexFEHXW4Nglc+KB52MCPGNqL0aqm
+        7SosmiF0mUUObGebxJERKu0=
+X-Google-Smtp-Source: ABdhPJysaUy/Jzg9I9Tj77EVl0sByMcrQGxJMJWtaKb7HRcXmjWJyS/qSQ0Kc76uL6t+WtSEHlHajw==
+X-Received: by 2002:a17:90b:691:: with SMTP id m17mr28754895pjz.73.1609738545697;
+        Sun, 03 Jan 2021 21:35:45 -0800 (PST)
+Received: from tj10607pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id k18sm19102575pjz.26.2021.01.03.21.35.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 03 Jan 2021 21:35:45 -0800 (PST)
+From:   Louis Wang <liang26812@gmail.com>
+To:     linux@armlinux.org.uk
+Cc:     akpm@linux-foundation.org, rppt@kernel.org, geert@linux-m68k.org,
+        penberg@kernel.org, liang26812@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: ftrace: pause/unpause function graph tracer in cpu_suspend()
+Date:   Mon,  4 Jan 2021 13:35:34 +0800
+Message-Id: <1609738534-14369-1-git-send-email-liang26812@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hillf -
-> Can you reproduce it again against 5.11-rc1 with the tiny diff applied
-> to see if there is a missing wakeup in the mainline?
+From: "louis.wang1" <louis.wang1@unisoc.com>
 
-Hey Hillf, thanks for sharing the diff. It seems like the reproducer
-that I had sent did not work on 5.11-rc1 itself, so I'm trying to get
-an updated reproducer for that.
-I'm not well versed with the io_uring code yet, and therefore it'll
-take me longer to get the reproducer going for 5.11-rc1.
+Enabling function_graph tracer on ARM causes kernel panic, because the
+function graph tracer updates the "return address" of a function in order
+to insert a trace callback on function exit, it saves the function's
+original return address in a return trace stack, but cpu_suspend() may not
+return through the normal return path.
 
-Jens -
-> Can you see if this helps? The reproducer is pretty brutal, it'll fork
-> thousands of tasks with rings! But should work of course. I think this
-> one is pretty straight forward, and actually an older issue with the
-> poll rewaiting.
+cpu_suspend() will resume directly via the cpu_resume path, but the return
+trace stack has been set-up by the subfunctions of cpu_suspend(), which
+makes the "return address" inconsistent with cpu_suspend().
 
-Hey Jens, I applied your diff to 5.10.4 (
-b1313fe517ca3703119dcc99ef3bbf75ab42bcfb ), and unfortunately, I'm
-still seeing the task being hung. Here's the console log if this helps
-further -
-root@syzkaller:~# [  242.840696] INFO: task repro:395 blocked for more
-than 120 seconds.
-[  242.846353]       Not tainted 5.10.4+ #9
-[  242.849951] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-disables this message.
-[  242.857665] task:repro           state:D stack:    0 pid:  395
-ppid:   394 flags:0x00000004
-[  242.867346] Call Trace:
-[  242.870521]  __schedule+0x28d/0x7e0
-[  242.873597]  ? __percpu_counter_sum+0x75/0x90
-[  242.876794]  schedule+0x4f/0xc0
-[  242.878803]  __io_uring_task_cancel+0xad/0xf0
-[  242.880952]  ? wait_woken+0x80/0x80
-[  242.882330]  bprm_execve+0x67/0x8a0
-[  242.884142]  do_execveat_common+0x1d2/0x220
-[  242.885610]  __x64_sys_execveat+0x5d/0x70
-[  242.886708]  do_syscall_64+0x38/0x90
-[  242.887727]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  242.889298] RIP: 0033:0x7ffabedd6469
-[  242.890265] RSP: 002b:00007ffc56b8bc78 EFLAGS: 00000246 ORIG_RAX:
-0000000000000142
-[  242.892055] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ffabedd6469
-[  242.893776] RDX: 0000000000000000 RSI: 0000000020000180 RDI: 00000000ffffffff
-[  242.895400] RBP: 00007ffc56b8bc90 R08: 0000000000000000 R09: 00007ffc56b8bc90
-[  242.896879] R10: 0000000000000000 R11: 0000000000000246 R12: 0000559c19400bf0
-[  242.898335] R13: 00007ffc56b8bdb0 R14: 0000000000000000 R15: 0000000000000000
-[  363.691144] INFO: task repro:395 blocked for more than 241 seconds.
-[  363.693724]       Not tainted 5.10.4+ #9
-[  363.695513] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-disables this message.
-[  363.700543] task:repro           state:D stack:    0 pid:  395
-ppid:   394 flags:0x00000004
-[  363.705747] Call Trace:
-[  363.707359]  __schedule+0x28d/0x7e0
-[  363.709603]  ? __percpu_counter_sum+0x75/0x90
-[  363.712900]  schedule+0x4f/0xc0
-[  363.715002]  __io_uring_task_cancel+0xad/0xf0
-[  363.718026]  ? wait_woken+0x80/0x80
-[  363.720137]  bprm_execve+0x67/0x8a0
-[  363.721992]  do_execveat_common+0x1d2/0x220
-[  363.723997]  __x64_sys_execveat+0x5d/0x70
-[  363.725857]  do_syscall_64+0x38/0x90
-[  363.727501]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  363.729510] RIP: 0033:0x7ffabedd6469
-[  363.730913] RSP: 002b:00007ffc56b8bc78 EFLAGS: 00000246 ORIG_RAX:
-0000000000000142
-[  363.733747] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ffabedd6469
-[  363.736138] RDX: 0000000000000000 RSI: 0000000020000180 RDI: 00000000ffffffff
-[  363.738431] RBP: 00007ffc56b8bc90 R08: 0000000000000000 R09: 00007ffc56b8bc90
-[  363.740504] R10: 0000000000000000 R11: 0000000000000246 R12: 0000559c19400bf0
-[  363.742560] R13: 00007ffc56b8bdb0 R14: 0000000000000000 R15: 0000000000000000
+This patch refers to Commit de818bd4522c40ea02a81b387d2fa86f989c9623
+("arm64: kernel: pause/unpause function graph tracer in cpu_suspend()"),
+fixes the issue by pausing/resuming the function graph tracer on the thread
+executing cpu_suspend(), so that the function graph tracer state is kept
+consistent across functions that enter power down states and never return
+by effectively disabling graph tracer while they are executing.
+
+Signed-off-by: louis.wang1 <louis.wang1@unisoc.com>
+---
+ arch/arm/kernel/suspend.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/kernel/suspend.c b/arch/arm/kernel/suspend.c
+index 24bd205..43f0a3e 100644
+--- a/arch/arm/kernel/suspend.c
++++ b/arch/arm/kernel/suspend.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/ftrace.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/mm_types.h>
+@@ -26,12 +27,22 @@ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
+ 		return -EINVAL;
+ 
+ 	/*
++	 * Function graph tracer state gets incosistent when the kernel
++	 * calls functions that never return (aka suspend finishers) hence
++	 * disable graph tracing during their execution.
++	 */
++	pause_graph_tracing();
++
++	/*
+ 	 * Provide a temporary page table with an identity mapping for
+ 	 * the MMU-enable code, required for resuming.  On successful
+ 	 * resume (indicated by a zero return code), we need to switch
+ 	 * back to the correct page tables.
+ 	 */
+ 	ret = __cpu_suspend(arg, fn, __mpidr);
++
++	unpause_graph_tracing();
++
+ 	if (ret == 0) {
+ 		cpu_switch_mm(mm->pgd, mm);
+ 		local_flush_bp_all();
+@@ -45,7 +56,13 @@ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
+ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
+ {
+ 	u32 __mpidr = cpu_logical_map(smp_processor_id());
+-	return __cpu_suspend(arg, fn, __mpidr);
++	int ret;
++
++	pause_graph_tracing();
++	ret = __cpu_suspend(arg, fn, __mpidr);
++	unpause_graph_tracing();
++
++	return ret;
+ }
+ #define	idmap_pgd	NULL
+ #endif
+-- 
+2.7.4
+
