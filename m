@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32B02E9BE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B542E9BEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727679AbhADRUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:20:10 -0500
-Received: from mga04.intel.com ([192.55.52.120]:15532 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726664AbhADRUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:20:08 -0500
-IronPort-SDR: QJnv9YlHPQCxa7QJjv4ACP5cRrzYJ+kXX0pj3j/vMJVPt7vWsaGMJt1PCq4yAShH0++Z0zk4gr
- 1tG7pI5UZUOw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="174404779"
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="174404779"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 09:19:28 -0800
-IronPort-SDR: y/A9Sk543anZLT1cUUWEcLx1DezZg5ViK0aQ4HXtuGxmuGwmUo2vm6VLVPW63KQfbNrOj2eV/n
- aUlvmklYO0Kw==
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="462012498"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.212.151.18])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 09:19:27 -0800
-Subject: Re: [PATCH v5 2/2] Documentation: fpga: dfl: Add description for DFL
- UIO support
-To:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com
-References: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
- <1609557182-20787-3-git-send-email-yilun.xu@intel.com>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <0f5c3f7c-f367-086f-cd43-d8b23f9a833e@intel.com>
-Date:   Mon, 4 Jan 2021 09:19:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727276AbhADRXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:23:43 -0500
+Received: from mail-pj1-f49.google.com ([209.85.216.49]:37357 "EHLO
+        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726246AbhADRXn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 12:23:43 -0500
+Received: by mail-pj1-f49.google.com with SMTP id b5so11287166pjk.2;
+        Mon, 04 Jan 2021 09:23:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aaCze6rOG6V8xW6QgrG1xAQcbBBXMOXnWQjQZEaeHTc=;
+        b=TR/qJFeXJBBzXhFAkxxtKOkzS0UIkcx9vBTezoLvOwFbvyYlwbGTdz1GKtei3KnYQ5
+         6lydX8MbkIbOjVuAka6h82gL+a/7cJORpXlO3hK7gbjHDs+o6H05kBiPH8SDJBznk1sF
+         qwaQ40SwPEOc8r47PxrBbR0rCrried4ozwhZSnOTAyzk8OziMISz6gma6UpMipGG6GVL
+         VIj2MAC7/t1u8Olx8XSW5ittDYilJzhJOvatWy1BPa+vk9Y0rRakPd/Z6+xnL6UORfOh
+         VQlggI+kX7l0pfToWGDTwxoV+BU/EnxoUEQjMoAWCRtPf89BpLBqbixIk1iDDnns3vaO
+         FOrA==
+X-Gm-Message-State: AOAM533A33wcN6hGiTIgF4LGQiz1z4Pm8tCq/BpkGBivqR01nTR+FxVL
+        ORXXH4/jEqFhoMw/i2MFm3w=
+X-Google-Smtp-Source: ABdhPJyik6y4UjjCKaIYS/0ox0YBh5IUwGyRXO8LkwUcB64qa6cVUeXgTv1dJJxYjxhkXYhlrkLTbg==
+X-Received: by 2002:a17:902:fe07:b029:dc:43e4:fcbf with SMTP id g7-20020a170902fe07b02900dc43e4fcbfmr49981957plj.63.1609780982301;
+        Mon, 04 Jan 2021 09:23:02 -0800 (PST)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id z125sm53314933pfz.121.2021.01.04.09.23.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 09:23:01 -0800 (PST)
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
+        ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@lst.de, hare@suse.de, kashyap.desai@broadcom.com,
+        linuxarm@huawei.com
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+ <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+ <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
+ <31de2806-bbc1-dcc3-b9eb-ce9257420432@acm.org>
+ <b2edab2b-8af7-816d-9da2-4720d19b96f8@huawei.com>
+ <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
+ <f98fd31e-89d4-523f-df70-4bd5f39ccbd5@huawei.com>
+ <33e41110-b3b2-ac16-f131-de1679ce8238@acm.org>
+ <7bdd562d-b258-43a2-0de0-966091086cff@huawei.com>
+ <e56e8831-4a74-8411-6c04-3a65aff855f4@huawei.com>
+ <0ab85ab8-c5c7-01aa-6b39-da731b3db829@acm.org>
+ <d22efcd3-274a-15c5-9e4a-248037789c4d@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <c0d127a9-9320-6e1c-4e8d-412aa9ea9ca6@acm.org>
+Date:   Mon, 4 Jan 2021 09:22:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <1609557182-20787-3-git-send-email-yilun.xu@intel.com>
+In-Reply-To: <d22efcd3-274a-15c5-9e4a-248037789c4d@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/4/21 7:33 AM, John Garry wrote:
+> On 23/12/2020 15:47, Bart Van Assche wrote:
+>> I propose to change the order in which blk_mq_sched_free_requests(q) and
+>> blk_mq_debugfs_unregister(q) are called. Today blk_mq_sched_free_requests(q)
+>> is called by blk_cleanup_queue() before blk_put_queue() is called.
+>> blk_put_queue() calls blk_release_queue() if the last reference is dropped.
+>> blk_release_queue() calls blk_mq_debugfs_unregister(). I prefer removing the
+>> debugfs attributes earlier over modifying the tag iteration functions
+>> because I think removing the debugfs attributes earlier is less risky.
+> 
+> But don't we already have this following path to remove the per-hctx debugfs
+> dir earlier than blk_mq_sched_free_requests() or blk_release_queue():
+> 
+> blk_cleanup_queue() -> blk_mq_exit_queue() -> blk_mq_exit_hw_queues() ->
+> blk_mq_debugfs_unregister_hctx() ->
+> blk_mq_debugfs_unregister_hctx(hctx->debugfs_dir)
+> 
+> Having said that, I am not sure how this is related directly to the problem
+> I mentioned. In that problem, above, we trigger the
+> blk_mq_tagset_busy_iter() from the SCSI host sysfs file, and the
+> use-after-free comes about from disabling the elevator (and freeing the
+> sched requests) in parallel.
 
+Hi John,
 
-On 1/1/21 7:13 PM, Xu Yilun wrote:
-> This patch adds description for UIO support for dfl devices on DFL
-> bus.
->
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> ---
-> v2: no doc in v1, add it for v2.
-> v3: some documentation fixes.
-> v4: documentation change since the driver matching is changed.
-> v5: no change.
-> ---
->  Documentation/fpga/dfl.rst | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-> index 0404fe6..b8497f3 100644
-> --- a/Documentation/fpga/dfl.rst
-> +++ b/Documentation/fpga/dfl.rst
-> @@ -7,6 +7,7 @@ Authors:
->  - Enno Luebbers <enno.luebbers@intel.com>
->  - Xiao Guangrong <guangrong.xiao@linux.intel.com>
->  - Wu Hao <hao.wu@intel.com>
-> +- Xu Yilun <yilun.xu@intel.com>
->  
->  The Device Feature List (DFL) FPGA framework (and drivers according to
->  this framework) hides the very details of low layer hardwares and provides
-> @@ -502,6 +503,29 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
->  could be a reference.
->  
->  
-> +UIO support for DFL devices
-> +===========================
-> +The purpose of an FPGA is to be reprogrammed with newly developed hardware
-> +components. New hardware can instantiate a new private feature in the DFL, and
-> +then get a DFL device in their system. In some cases users may need a userspace
-> +driver for the DFL device:
-> +
-> +* Users may need to run some diagnostic test for their hardwares.
-> +* Users may prototype the kernel driver in user space.
-> +* Some hardware is designed for specific purposes and does not fit into one of
-> +  the standard kernel subsystems.
-> +
-> +This requires the direct access to the MMIO space and interrupt handling in
-This may be better stated as:
+Right, what I proposed is unrelated to the use-after-free triggered by
+disabling I/O scheduling.
 
-"This requires direct access to MMIO space and interrupt handling from userspace."
+Regarding the races triggered by disabling I/O scheduling: can these be
+fixed by quiescing all request queues associated with a tag set before
+changing the I/O scheduler instead of only the request queue for which the
+I/O scheduler is changed? I think we already do this before updating the
+number of hardware queues.
 
-- Russ
+Thanks,
 
-> +userspace. The dfl-uio-pdev module exposes the UIO device interfaces for this
-> +purpose. It adds the uio_pdrv_genirq platform device with the resources of
-> +the DFL feature, and lets the generic UIO platform device driver provide UIO
-> +support to userspace.
-> +
-> +FPGA_DFL_UIO_PDEV should be selected to enable the dfl-uio-pdev module driver.
-> +To support a new DFL feature been directly accessed via UIO, its feature id
-> +should be added to the driver's id_table.
-> +
-> +
->  Open discussion
->  ===============
->  FME driver exports one ioctl (DFL_FPGA_FME_PORT_PR) for partial reconfiguration
-
+Bart.
