@@ -2,56 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9AA2E99F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5853B2E99E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728655AbhADQFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:05:24 -0500
-Received: from foss.arm.com ([217.140.110.172]:39330 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729119AbhADQD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:03:28 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DED7101E;
-        Mon,  4 Jan 2021 08:02:43 -0800 (PST)
-Received: from bogus (unknown [10.57.35.27])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 64B793F719;
-        Mon,  4 Jan 2021 08:02:21 -0800 (PST)
-Date:   Mon, 4 Jan 2021 16:02:14 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:SYSTEM CONTROL & POWER/MANAGEMENT INTERFACE Mes..." 
+        id S1729198AbhADQES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:04:18 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:33814 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727833AbhADQEM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:04:12 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 104FvlpW020449;
+        Mon, 4 Jan 2021 17:03:23 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=w4/gjtHkd2EK3mGDJKe3DGUgymeWaM5SmaC+6x8gEuY=;
+ b=anOltMjWWldvqZeeYDe7HesNOJ9BjpnqAX0M1drUPPTlvTdkTeMkKMrr0O+lidWx4NSs
+ OKtckD58hKAIJtuH+yz9JeEPwnLLs4FeyMN99IbyKGPrPKE9l7IpjfacP0bH2yIsnaWO
+ sBJsgJ6lnv4V0l/U/g3bykYWxIhjXyn/Ea+XcuzzdFw3LLlx4q/S+mxw43QUCYU/velK
+ nESCaleMkWQXKzz0FoisWMkYYDsQde8u1b9XACdhNFm96X5QHVpxmZfo8ePeex3X2b3/
+ XDEiHITN6dH5v5AVPo4tQaxWfaAqhjSnDbiSTMdmR1I+6R2ByH5ShiUN1Bgyz1JBnmgo Nw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35tgkmjuyf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Jan 2021 17:03:23 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B5BD510002A;
+        Mon,  4 Jan 2021 17:03:22 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9CF94225ED1;
+        Mon,  4 Jan 2021 17:03:22 +0100 (CET)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 4 Jan 2021 17:03:22
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/2] firmware: arm_scmi: Augment SMC/HVC to allow
- optional interrupt
-Message-ID: <20210104160214.a6zu7nnzutygdr4v@bogus>
-References: <20201222145603.40192-1-jim2101024@gmail.com>
- <CANCKTBtJ2N2N8tKDo1X8Q0rkDZD_RcSL=KqnwnCd0Wg98ELDsw@mail.gmail.com>
+        <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Subject: [PATCH 1/1] mfd: stmfx: remove .of_compatible from stmfx_cells for idd and ts
+Date:   Mon, 4 Jan 2021 17:03:21 +0100
+Message-ID: <20210104160321.31403-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANCKTBtJ2N2N8tKDo1X8Q0rkDZD_RcSL=KqnwnCd0Wg98ELDsw@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-04_10:2021-01-04,2021-01-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 09:57:31AM -0500, Jim Quinlan wrote:
-> Hi Sudeep,
-> 
-> Since RobH has reviewed  patch 1/.2 and Florian has acked it, can you
-> please accept patches 1 & 2?
-> 
+idd and ts features are not described in stmfx bindings. Remove the
+.of_compatible field from relative mfd_cells to avoid having to add
+corresponding disabled node in device trees using stmfx:
+		stmfx_idd: idd {
+			compatible = "st,stmfx-0300-idd";
+			status = "disabled";
+		};
+		stmfx_ts: stmfx_ts {
+			compatible = "st,stmfx-0300-ts";
+			status = "disabled";
+		};
+The warning "Failed to locate of_node [id: -1]" won't appear anymore.
+.of_compatible could be added as soon as idd or ts bindings are described
+and drivers available.
 
-Sure, will start queuing patches later this week, will let you know when
-I apply. Thanks.
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ drivers/mfd/stmfx.c | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
+index e095a3930142..b411d2958c18 100644
+--- a/drivers/mfd/stmfx.c
++++ b/drivers/mfd/stmfx.c
+@@ -81,13 +81,11 @@ static struct mfd_cell stmfx_cells[] = {
+ 		.num_resources = ARRAY_SIZE(stmfx_pinctrl_resources),
+ 	},
+ 	{
+-		.of_compatible = "st,stmfx-0300-idd",
+ 		.name = "stmfx-idd",
+ 		.resources = stmfx_idd_resources,
+ 		.num_resources = ARRAY_SIZE(stmfx_idd_resources),
+ 	},
+ 	{
+-		.of_compatible = "st,stmfx-0300-ts",
+ 		.name = "stmfx-ts",
+ 		.resources = stmfx_ts_resources,
+ 		.num_resources = ARRAY_SIZE(stmfx_ts_resources),
 -- 
-Regards,
-Sudeep
+2.17.1
+
