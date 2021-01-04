@@ -2,241 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EB62EA023
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA28F2EA02C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbhADWqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 17:46:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20684 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726504AbhADWqW (ORCPT
+        id S1726504AbhADWvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 17:51:02 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58732 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbhADWvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 17:46:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609800295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/DWUYY4paJGpoEUp4OUeGMhlHKwV3cu6CkyK0l0C8TE=;
-        b=MELGGdgT2k3q8R7qvmWPW9SnIpIo/8ryNwn+IwihTSrXbIb3UCe8aRkewEh+4u7pfvOfOm
-        TclC5g591XQmv7y2gdda9xW5fmupFqIyVRZZvaAlfo4TQhVgswQGRAer12hyYuDyaUPR/d
-        D2uqgRngc7z5753OoFKm9Y9j91fjWFQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-pWvSCnITP3WxgW-snT8KDQ-1; Mon, 04 Jan 2021 17:44:51 -0500
-X-MC-Unique: pWvSCnITP3WxgW-snT8KDQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7D6610054FF;
-        Mon,  4 Jan 2021 22:44:48 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-2.rdu2.redhat.com [10.10.115.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E792710023B2;
-        Mon,  4 Jan 2021 22:44:47 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 7246C220BCF; Mon,  4 Jan 2021 17:44:47 -0500 (EST)
-Date:   Mon, 4 Jan 2021 17:44:47 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chengguang Xu <cgxu519@mykernel.net>
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-Message-ID: <20210104224447.GG63879@redhat.com>
-References: <20201223185044.GQ874@casper.infradead.org>
- <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223200746.GR874@casper.infradead.org>
- <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223204428.GS874@casper.infradead.org>
- <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
- <20210104151424.GA63879@redhat.com>
- <CAOQ4uxgiC5Wm+QqD+vbmzkFvEqG6yvKYe_4sR7ZUVfu-=Ys9oQ@mail.gmail.com>
- <20210104154015.GA73873@redhat.com>
- <CAOQ4uxhYXeUt2iggM3oubdgr91QPNhUg2PdN128gRvR3rQoy1Q@mail.gmail.com>
+        Mon, 4 Jan 2021 17:51:02 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 8F2BB282AD;
+        Mon,  4 Jan 2021 17:50:15 -0500 (EST)
+Date:   Tue, 5 Jan 2021 09:50:14 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Bart Van Assche <bvanassche@acm.org>
+cc:     Chris Boot <bootc@boo.tc>, linuxppc-dev@lists.ozlabs.org,
+        target-devel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Nicholas Bellinger <nab@linux-iscsi.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
+In-Reply-To: <e3b5ce6a-0152-01b8-89d2-80bcdb9c1c57@acm.org>
+Message-ID: <alpine.LNX.2.23.453.2101050840010.6@nippy.intranet>
+References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com> <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet> <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc> <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
+ <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc> <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet> <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org> <alpine.LNX.2.22.394.2006171104540.11@nippy.intranet> <e3b5ce6a-0152-01b8-89d2-80bcdb9c1c57@acm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxhYXeUt2iggM3oubdgr91QPNhUg2PdN128gRvR3rQoy1Q@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 11:42:51PM +0200, Amir Goldstein wrote:
-> On Mon, Jan 4, 2021 at 5:40 PM Vivek Goyal <vgoyal@redhat.com> wrote:
-> >
-> > On Mon, Jan 04, 2021 at 05:22:07PM +0200, Amir Goldstein wrote:
-> > > > > Since Jeff's patch is minimal, I think that it should be the fix applied
-> > > > > first and proposed for stable (with adaptations for non-volatile overlay).
-> > > >
-> > > > Does stable fix has to be same as mainline fix. IOW, I think atleast in
-> > > > mainline we should first fix it the right way and then think how to fix
-> > > > it for stable. If fixes taken in mainline are not realistic for stable,
-> > > > can we push a different small fix just for stable?
-> > >
-> > > We can do a lot of things.
-> > > But if we are able to create a series with minimal (and most critical) fixes
-> > > followed by other fixes, it would be easier for everyone involved.
-> >
-> > I am not sure this is really critical. writeback error reporting for
-> > overlayfs are broken since the beginning for regular mounts. There is no
-> > notion of these errors being reported to user space. If that did not
-> > create a major issue, then why suddenly volatile mounts make it
-> > a critical issue.
-> >
+On Mon, 4 Jan 2021, Bart Van Assche wrote:
+
+> On 6/16/20 7:07 PM, Finn Thain wrote:
+> > On Tue, 16 Jun 2020, Bart Van Assche wrote:
+> >> As far as I know the sbp driver only has had one user ever and that 
+> >> user is no longer user the sbp driver.
+> > 
+> > So, you estimate the userbase at zero. Can you give a confidence 
+> > level? Actual measurement is hard because when end users encounter 
+> > breakage, they look for quick workarounds before they undertake post 
+> > mortem, log collection, bug reporting, mailing list discussions, 
+> > analysis etc.
 > 
-> Volatile mounts didn't make this a critical issue.
-> But this discussion made us notice a mildly serious issue.
-> It is not surprising to me that users did not report this issue.
-> Do you know what it takes for a user to notice that writeback had failed,
-> but an application did fsync and error did not get reported?
-> Filesystem durability guaranties are hard to prove especially with so
-> many subsystem layers and with fsync that does return an error correctly.
-> I once found a durability bug in fsync of xfs that existed for 12 years.
-> That fact does not at all make it any less critical.
+> (replying to an e-mail from six months ago)
 > 
-> > To me we should fix the issue properly which is easy to maintain
-> > down the line and then worry about doing a stable fix if need be.
-> >
-> > >
-> > > >
-> > > > IOW, because we have to push a fix in stable, should not determine
-> > > > what should be problem solution for mainline, IMHO.
-> > > >
-> > >
-> > > I find in this case there is a correlation between the simplest fix and the
-> > > most relevant fix for stable.
-> > >
-> > > > The porblem I have with Jeff's fix is that its only works for volatile
-> > > > mounts. While I prefer a solution where syncfs() is fixed both for
-> > > > volatile as well as non-volatile mount and then there is less confusion.
-> > > >
-> > >
-> > > I proposed a variation on Jeff's patch that covers both cases.
-> > > Sargun is going to work on it.
-> >
-> > What's the problem with my patches which fixes syncfs() error reporting
-> > for overlayfs both for volatile and non-volatile mount?
-> >
+> Hi Finn,
 > 
-> - mount 1000 overlays
-> - 1 writeback error recorded in upper sb
-> - syncfs (new fd) inside each of the 1000 containers
+> I am confident that my estimate is an accurate estimate since I have not 
+> seen any sbp support requests, sbp bug reports nor any sbp bug fixes 
+> since the sbp target driver has been accepted upstream.
 > 
-> With your patch 3/3 only one syncfs will report an error for
-> both volatile and non-volatile cases. Right?
 
-Right. If you don't have an old fd open in each container, then only
-one container will see the error. If you want to see error in each
-container, then one fd needs to be kept opened in each container
-before error hapens and call syncfs() on that fd, and then each
-container should see the error.
+That suggests to me that the code that you're hoping to remove 1) has no 
+bugs, or 2) has no reported bugs, or 3) has no users at present.
 
+I am confident that your evidence does not support your conclusion (i.e. 
+the code will never be used again).
+
+Sometimes, users only appear after the unreported bugs get fixed. I've 
+seen it happen.
+
+> > Here's a different question: "Why remove it from the kernel tree?"
+> > 
+> > If maintaining this code is a burden, is it not the kind of tax that 
+> > all developers/users pay to all developers/users? Does this driver 
+> > impose an unreasonably high burden for some reason?
 > 
-> What I would rather see is:
-> - Non-volatile: first syncfs in every container gets an error (nice to have)
+> Yes. If anyone wants to change the interface between SCSI target core 
+> and SCSI target drivers, all target drivers, including the sbp and FCoE 
+> target driver have to be retested.
 
-I am not sure why are we making this behavior per container. This should
-be no different from current semantics we have for syncfs() on regular
-filesystem. And that will provide what you are looking for. If you
-want single error to be reported in all ovleray mounts, then make
-sure you have one fd open in each mount after mount, then call syncfs()
-on that fd.
+I'm unaware of such an obligation. API changes happen often. When they do, 
+we see good test coverage of commercially viable hardware, some 
+best-effort testing of common hardware, and some perfunctory build 
+testing.
 
-Not sure why overlayfs behavior/semantics should be any differnt
-than what regular filessytems like ext4/xfs are offering. Once we
-get page cache sharing sorted out with xfs reflink, then people
-will not even need overlayfs and be able to launch containers
-just using xfs reflink and share base image. In that case also
-they will need to keep an fd open per container they want to
-see an error in.
+But that is missing the point, which was about a particular driver, not 
+about development process. You have not shown how the target API is 
+special, to support your claim that this driver imposes an unreasonable 
+burden.
 
-So my patches exactly provide that. syncfs() behavior is same with
-overlayfs as application gets it on other filesystems. And to me
-its important to keep behavior same.
+In the interests of making forward progress in this discussion, shall we 
+discuss the kind of SCSI Target API changes that you anticipate?
 
-> - Volatile: every syncfs and every fsync in every container gets an error
->   (important IMO)
-
-For volatile mounts, I agree that we need to fail overlayfs instance
-as soon as first error is detected since mount. And this applies to
-not only syncfs()/fsync() but to read/write and other operations too.
-
-For that we will need additional patches which are floating around
-to keep errseq sample in overlay and check for errors in all
-paths syncfs/fsync/read/write/.... and fail fs. But these patches
-build on top of my patches. My patches don't solve this problem of
-failing overlay mount for the volatile mount case.
-
+> In other words, keeping unused target drivers inside the kernel tree 
+> involves a significant maintenance burden for anyone who wants to modify 
+> the interface between the SCSI target core and SCSI target drivers.
 > 
-> This is why I prefer to sample upper sb error on mount and propagate
-> new errors to overlayfs sb (Jeff's patch).
 
-Ok, I think this is one of the key points of the whole discussion. What
-mechanism should be used to propagate writeback errors through overlayfs.
+Keeping _any_ driver in the kernel involves a maintenance burden. There 
+are two good ways to address that.
 
-A. Propagate errors from upper sb to overlay sb.
-B. Leave overlay sb alone and use upper sb for error checks.
+Firstly, by improving the development process. For example, an API change 
+is mostly mechanical work that lends itself to automated refactoring.
+Secondly, by involving all interested parties, so that the burden is 
+shared.
 
-We don't have good model to propagate errors between super blocks,
-so Jeff preferred not to do error propagation between super blocks
-for regular mounts.
+Of course, there are other ways. E.g. "don't ship code when doing so won't 
+turn a profit". That, by the way, was the policy that gave us 10 billion 
+Android devices (or more) that don't function with a mainline kernel.
 
-https://lore.kernel.org/linux-fsdevel/bff90dfee3a3392d67a4f3516ab28989e87fa25f.camel@kernel.org/
-
-If we are not defining new semantics for syncfs() for overlayfs, then
-I can't see what's the advantage of coming up with new mechanism to
-propagate errors to overlay sb. Approach B should work just fine and
-provide the syncfs() semantics we want for overlayfs (Same semantics
-as other filesystems).
-
-Having said that, I am open to the idea of propagating errors if that
-makes implementation better. Its just an implementation detail to
-me and user visible behavior should remain same.
-
+> Additionally, there is a good alternative available for the sbp driver. 
+> Every system I know of that is equipped with a Firewire port also has an 
+> Ethernet port. So users who want to provide SCSI target functionality on 
+> such systems can use any SCSI transport protocol that is compatible with 
+> Ethernet (iSCSI, iSER over soft-RoCE, SRP over soft-RoCE, ...).
 > 
-> I am very much in favor of your patch 1/3 and I am not against the concept
-> of patches 2-3/3. Just think that ovl_errseq_check_advance() is not the
-> implementation that gives the most desirable result.
 
-I think this is the key point of contention. You seem to expecting
-a different syncfs() behavior only for overlayfs and tying it to 
-the notion of container. And I am wondering why it should be any
-different from any other filesystem. And those who want to see
-upper_sb error in each mounted overlay instance, they should keep
-one fd open in overlay after mount.
+Ethernet is not always an alternative. That was already discussed in this 
+thread. But let's assume for a moment that you can migrate any and all 
+users of this driver over to an ethernet driver.
 
-So lets sort that out this syncfs() behavior part first before we
-get to implementation details.
+Why would the maintainers of that ethernet driver and its API accept that 
+plan, if adding users would extend their maintenance and testing 
+obligations? Do you think those maintainers should pay the "kind of tax 
+that all developers/users pay to all developers/users?"
 
-Thanks
-Vivek
-
-> 
-> If people do accept my point of view that proxying the stacked error check
-> is preferred over "passthrough" to upper sb error check, then as a by-product,
-> the new ->check_error() method is not going to make much of a difference for
-> overlayfs. Maybe it can be used to fine tune some corner cases.
-> I am not sure.
-> If we do agree on the propagate error concept then IMO all other use
-> cases for not consuming the unseen error from upper fs are nice-to-have.
-> 
-> Before we continue to debate on the implementation, let's first try
-> to agree on the desired behavior, what is a must vs. what is nice to have.
-> Without consensus on this, it will be quite hard to converge.
-> 
-> Another thing, to help everyone, I think it is best that any patch on ovl_syncfs
-> "solutions" will include detailed description of the use cases it solves and
-> the use cases that it leaves unsolved.
-> 
 > Thanks,
-> Amir.
 > 
-
+> Bart.
+> 
