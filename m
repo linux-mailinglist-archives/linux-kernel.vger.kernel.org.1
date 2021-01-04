@@ -2,215 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C62B2E93C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065BA2E93C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbhADKzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:55:31 -0500
-Received: from foss.arm.com ([217.140.110.172]:58888 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726492AbhADKzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:55:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07EDDED1;
-        Mon,  4 Jan 2021 02:54:45 -0800 (PST)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1DA843F70D;
-        Mon,  4 Jan 2021 02:54:43 -0800 (PST)
-Subject: Re: [PATCH v2 4/4] arm64: dts: allwinner: h6: Use RSB for AXP805 PMIC
- connection
-To:     Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
+        id S1726759AbhADKzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:55:24 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:49010 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726026AbhADKzY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 05:55:24 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 104AmOjj027438;
+        Mon, 4 Jan 2021 04:54:33 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=rIAbe0Jjmcjbx92aWb/vQZbVIa87rMdJCoAHcZSLa9Q=;
+ b=fpXi588JBFSESd2ZmxUOStrmceX/gfIae/USlZvnwWhehbVgdis8BYc79KYgpyaPDBSy
+ pH257Sd4j7FFPfF2woLxr9y0FxYvvA4kfNCe8F/0+FJNC8VqO5tGjCp6/PkS954YwodX
+ JBuLPI1SGTHg9bKlGVsUL656hSSEYi9G5iTLrOEQirWM8tV85bLW+oYmFIs5xhn4Uc+H
+ MQ/0qaLKVzyVQd99LeAEveOL2MEFRgNQTkPNwp7gxChM3ljTHcuwKjYmpBctzhD71LZM
+ B7vyf4svn95c4b7T2Kei4P28fTMGxa3pWQ5WHnfqwslOETNyMLQp/mK7qJmH3TdBOU+X wg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 35tp4thbnu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 04 Jan 2021 04:54:33 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 4 Jan 2021
+ 10:54:31 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 4 Jan 2021 10:54:31 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C1BC811CB;
+        Mon,  4 Jan 2021 10:54:31 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 10:54:31 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Adam Ford <aford173@gmail.com>
+CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <aford@beaconembedded.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-References: <20210103100007.32867-1-samuel@sholland.org>
- <20210103100007.32867-5-samuel@sholland.org>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Organization: ARM Ltd.
-Message-ID: <a6c2eac4-7e98-ecb4-ee8a-d67a7f1b6871@arm.com>
-Date:   Mon, 4 Jan 2021 10:54:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] ASoC: wm8962: Add optional mclk device tree binding
+Message-ID: <20210104105431.GR9673@ediswmail.ad.cirrus.com>
+References: <20201217162740.1452000-1-aford173@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210103100007.32867-5-samuel@sholland.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201217162740.1452000-1-aford173@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=930
+ adultscore=0 spamscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
+ mlxscore=0 bulkscore=0 impostorscore=0 clxscore=1011 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/01/2021 10:00, Samuel Holland wrote:
-> On boards where the only peripheral connected to PL0/PL1 is an X-Powers
-> PMIC, configure the connection to use the RSB bus rather than the I2C
-> bus. Compared to the I2C controller that shares the pins, the RSB
-> controller allows a higher bus frequency, and it is more CPU-efficient.
-
-But is it really necessary to change the DTs for those boards in this
-way? It means those newer DTs now become incompatible with older
-kernels, and I don't know if those reasons above really justify this.
-
-I understand that we officially don't care about "newer DTs on older
-kernels", but do we really need to break this deliberately, for no
-pressing reasons?
-
-Cheers,
-Andre
-
-P.S. I am fine with supporting RSB on H6, and even using it on new DTs,
-just want to avoid breaking existing ones.
-
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  .../dts/allwinner/sun50i-h6-beelink-gs1.dts   | 38 +++++++++----------
->  .../dts/allwinner/sun50i-h6-orangepi-3.dts    | 14 +++----
->  .../dts/allwinner/sun50i-h6-orangepi.dtsi     | 22 +++++------
->  3 files changed, 37 insertions(+), 37 deletions(-)
+On Thu, Dec 17, 2020 at 10:27:40AM -0600, Adam Ford wrote:
+> The driver can request an optional clock for mclk.
+> Update the txt file to reflect this.
 > 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> index 7c9dbde645b5..3452add30cc4 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> @@ -150,12 +150,28 @@ &pio {
->  	vcc-pg-supply = <&reg_aldo1>;
->  };
->  
-> -&r_i2c {
-> +&r_ir {
-> +	linux,rc-map-name = "rc-beelink-gs1";
-> +	status = "okay";
-> +};
-> +
-> +&r_pio {
-> +	/*
-> +	 * FIXME: We can't add that supply for now since it would
-> +	 * create a circular dependency between pinctrl, the regulator
-> +	 * and the RSB Bus.
-> +	 *
-> +	 * vcc-pl-supply = <&reg_aldo1>;
-> +	 */
-> +	vcc-pm-supply = <&reg_aldo1>;
-> +};
-> +
-> +&r_rsb {
->  	status = "okay";
->  
-> -	axp805: pmic@36 {
-> +	axp805: pmic@745 {
->  		compatible = "x-powers,axp805", "x-powers,axp806";
-> -		reg = <0x36>;
-> +		reg = <0x745>;
->  		interrupt-parent = <&r_intc>;
->  		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
->  		interrupt-controller;
-> @@ -273,22 +289,6 @@ sw {
->  	};
->  };
->  
-> -&r_ir {
-> -	linux,rc-map-name = "rc-beelink-gs1";
-> -	status = "okay";
-> -};
-> -
-> -&r_pio {
-> -	/*
-> -	 * PL0 and PL1 are used for PMIC I2C
-> -	 * don't enable the pl-supply else
-> -	 * it will fail at boot
-> -	 *
-> -	 * vcc-pl-supply = <&reg_aldo1>;
-> -	 */
-> -	vcc-pm-supply = <&reg_aldo1>;
-> -};
-> -
->  &rtc {
->  	clocks = <&ext_osc32k>;
->  };
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-> index 15c9dd8c4479..16702293ac0b 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-> @@ -175,12 +175,16 @@ &pio {
->  	vcc-pg-supply = <&reg_vcc_wifi_io>;
->  };
->  
-> -&r_i2c {
-> +&r_ir {
-> +	status = "okay";
-> +};
-> +
-> +&r_rsb {
->  	status = "okay";
->  
-> -	axp805: pmic@36 {
-> +	axp805: pmic@745 {
->  		compatible = "x-powers,axp805", "x-powers,axp806";
-> -		reg = <0x36>;
-> +		reg = <0x745>;
->  		interrupt-parent = <&r_intc>;
->  		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
->  		interrupt-controller;
-> @@ -291,10 +295,6 @@ sw {
->  	};
->  };
->  
-> -&r_ir {
-> -	status = "okay";
-> -};
-> -
->  &rtc {
->  	clocks = <&ext_osc32k>;
->  };
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-> index ebc120a9232f..23e3cb2ffd8d 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-> @@ -112,12 +112,20 @@ &pio {
->  	vcc-pg-supply = <&reg_aldo1>;
->  };
->  
-> -&r_i2c {
-> +&r_ir {
-> +	status = "okay";
-> +};
-> +
-> +&r_pio {
-> +	vcc-pm-supply = <&reg_bldo3>;
-> +};
-> +
-> +&r_rsb {
->  	status = "okay";
->  
-> -	axp805: pmic@36 {
-> +	axp805: pmic@745 {
->  		compatible = "x-powers,axp805", "x-powers,axp806";
-> -		reg = <0x36>;
-> +		reg = <0x745>;
->  		interrupt-parent = <&r_intc>;
->  		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
->  		interrupt-controller;
-> @@ -232,14 +240,6 @@ sw {
->  	};
->  };
->  
-> -&r_ir {
-> -	status = "okay";
-> -};
-> -
-> -&r_pio {
-> -	vcc-pm-supply = <&reg_bldo3>;
-> -};
-> -
->  &rtc {
->  	clocks = <&ext_osc32k>;
->  };
-> 
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
