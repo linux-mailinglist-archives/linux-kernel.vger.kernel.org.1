@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC832E9A9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BB12E99D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729698AbhADQMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:12:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37142 "EHLO mail.kernel.org"
+        id S1727863AbhADQDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:03:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728203AbhADQAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 302BE21D93;
-        Mon,  4 Jan 2021 15:58:50 +0000 (UTC)
+        id S1728560AbhADQDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:03:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A36222509;
+        Mon,  4 Jan 2021 16:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775930;
-        bh=3tqmlEopHF5693Gx9TDEZtslMfY3JJfYKPA1NqRF2r0=;
+        s=korg; t=1609776206;
+        bh=Rpl5XNX4S2+Z7AcpERuwFeSEjczuuFk6ejVvwNWPCVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QFTQO7NATn63qq7qyy5vFRwL1mzKb0kiJyJPhKNNaW/XeBMsmxrbb+gYB61HZIjDf
-         leIs4jd1OBLCeashOIbzgJqIPYMx37Rue2ZW548LfFkDW6V52A7/A5egU9E/DCG4QA
-         BhsUJ2SENKEIbiCh59gzWTXokw8/ZXavb8JOAh80=
+        b=RA6sM0WukEYlj1tONRQ5lnPw5/4GP23Ny8wkXbsD2TeT/66q6GnnNzUNJ6szmpSAa
+         dIrdlSAXByg3xIEWWXgRu5wi1HYjfU/mVKIJEX5NBZkvzgy2IGOADfEUWX68Nktrep
+         7cQP44cRLiALIQTp/aw19bSlUvBLT8ng3llP/o3I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
         Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 30/35] quota: Dont overflow quota file offsets
-Date:   Mon,  4 Jan 2021 16:57:33 +0100
-Message-Id: <20210104155704.850131442@linuxfoundation.org>
+Subject: [PATCH 5.10 41/63] quota: Dont overflow quota file offsets
+Date:   Mon,  4 Jan 2021 16:57:34 +0100
+Message-Id: <20210104155710.813536202@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
-References: <20210104155703.375788488@linuxfoundation.org>
+In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
+References: <20210104155708.800470590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,10 +58,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/fs/quota/quota_tree.c b/fs/quota/quota_tree.c
-index bb3f59bcfcf5b..656f9ff63edda 100644
+index a6f856f341dc7..c5562c871c8be 100644
 --- a/fs/quota/quota_tree.c
 +++ b/fs/quota/quota_tree.c
-@@ -61,7 +61,7 @@ static ssize_t read_blk(struct qtree_mem_dqinfo *info, uint blk, char *buf)
+@@ -62,7 +62,7 @@ static ssize_t read_blk(struct qtree_mem_dqinfo *info, uint blk, char *buf)
  
  	memset(buf, 0, info->dqi_usable_bs);
  	return sb->s_op->quota_read(sb, info->dqi_type, buf,
@@ -70,7 +70,7 @@ index bb3f59bcfcf5b..656f9ff63edda 100644
  }
  
  static ssize_t write_blk(struct qtree_mem_dqinfo *info, uint blk, char *buf)
-@@ -70,7 +70,7 @@ static ssize_t write_blk(struct qtree_mem_dqinfo *info, uint blk, char *buf)
+@@ -71,7 +71,7 @@ static ssize_t write_blk(struct qtree_mem_dqinfo *info, uint blk, char *buf)
  	ssize_t ret;
  
  	ret = sb->s_op->quota_write(sb, info->dqi_type, buf,
@@ -79,7 +79,7 @@ index bb3f59bcfcf5b..656f9ff63edda 100644
  	if (ret != info->dqi_usable_bs) {
  		quota_error(sb, "dquota write failed");
  		if (ret >= 0)
-@@ -283,7 +283,7 @@ static uint find_free_dqentry(struct qtree_mem_dqinfo *info,
+@@ -284,7 +284,7 @@ static uint find_free_dqentry(struct qtree_mem_dqinfo *info,
  			    blk);
  		goto out_buf;
  	}
@@ -88,7 +88,7 @@ index bb3f59bcfcf5b..656f9ff63edda 100644
  			sizeof(struct qt_disk_dqdbheader) +
  			i * info->dqi_entry_size;
  	kfree(buf);
-@@ -558,7 +558,7 @@ static loff_t find_block_dqentry(struct qtree_mem_dqinfo *info,
+@@ -559,7 +559,7 @@ static loff_t find_block_dqentry(struct qtree_mem_dqinfo *info,
  		ret = -EIO;
  		goto out_buf;
  	} else {
