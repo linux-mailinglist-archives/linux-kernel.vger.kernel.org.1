@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D202E92BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492A12E92C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbhADJlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 04:41:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
+        id S1726606AbhADJo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 04:44:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbhADJll (ORCPT
+        with ESMTP id S1726176AbhADJo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:41:41 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C59DC061574;
-        Mon,  4 Jan 2021 01:41:01 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id h22so62917427lfu.2;
-        Mon, 04 Jan 2021 01:41:00 -0800 (PST)
+        Mon, 4 Jan 2021 04:44:26 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DC8C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 01:43:45 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id x16so36000459ejj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 01:43:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OHZHM+kRFdG223NS2eR7v7jqwBdYWtuAly4gGYaAomk=;
-        b=RikCPw4A/akfu966sM6AxZPOpnBace4zpl6logtwXF7fr1XUhKEYm+LTLi8MV6wLuK
-         MaIXBURN+IdueYf86bTmMBCSKWyvXWTwP4lUkCrILOESeRb4TpmDjxRYO+sTwSeakOII
-         1Nz/GCIJrmDDaNg48Lk5W9APeCu1qefVNQQYJ07wTXVV8B1VCXma/RmMMNbMY/C6pHET
-         sjsd8Lw73zhz/7118877wLQunOCRlTT24Z1d8U2fucK2m5htBmZ0IADTow/uX/C/Yd9G
-         nizBbWCzdqd2yeIebl8aEZDl2mrybm0BPDmFf5zEFnnvsl9/EdFDrX07dBhdZmZhM31G
-         kWjA==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uJuIYYwoE287hbbRthIn2gLK/51W7Mu+HB+BN/G4lP4=;
+        b=0mSQFd2JziCGzEoWCmFl6JEC0Q23Na1lEuc1RCadqex0lCr9azthWKy87TMGa9s88i
+         Zn5bNJUqoc0z9hyZcZLEZRfifbu/W1e2e/guFgKnV1AMbxF5X74Yz9TbDERKuKVGQa9t
+         wLthqSybMavH6SQyOByADlaZ7yXQLU89cps6wbG5rDmy0zHcyWE3ohfk5FZVPikBz9Q7
+         U12nFyx8y6ReAz0QmvFheuzp6gx/tfraKtDhz5E6Qy6BwIhsbl2o45yoIoiomRI/g7Do
+         1P0k0AumL3iprXnffVf40r+3aNaMktRoqMuby1TxikIkuTMqUTDnoUHYNzU9sUPqc0Uf
+         a8Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OHZHM+kRFdG223NS2eR7v7jqwBdYWtuAly4gGYaAomk=;
-        b=KwNMpJ3rJKuDQ/PtgS3oIDiYX2PVQL3V5mwp+6aTv/8DwOtHrg8weiC7OYLe9Pg2f4
-         cKX1AWidxF5szRHi2WeTKT0M568O3z8br88ZPV3nCY9XJ19scU0eySGu1rh52FIa5P5Z
-         LhblrPgFny6sOwCN9nntw++EN8KQYKoZT/2MGGDn/4g0a14S+tFxBwDKhN6IPrTImS/G
-         /N1lOW0t3Lvr1vZVAUsczkVEnncAs7MQASROH5dCy8co6tFr1F2X+FDSZx/vBQRXi7j+
-         957ZG++ACi0MJY8VLkDWZW9sR5a95HDDdYqfOXes8Ma47CaZ80oKh1S0tw6F+IKvHuV2
-         s5vA==
-X-Gm-Message-State: AOAM531JNTFgv6HOqtHYsdEltAtXeGaUAfQggJgPYgw5tfqtWLpBNyEB
-        ELQxj2wbss23EDSk1nk/R3ifnMmyQPD3ORKPO0FC6jce5KppKNH+
-X-Google-Smtp-Source: ABdhPJyC7e5FpObyXe93kKe73TNcg2UGQkmuqvCYioPd4bf9WeMdtkd6y+pEn3zt8vfFZ7QNCwkWYibqbuEbtXrQA7s=
-X-Received: by 2002:a2e:b5d9:: with SMTP id g25mr36639429ljn.471.1609753259430;
- Mon, 04 Jan 2021 01:40:59 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uJuIYYwoE287hbbRthIn2gLK/51W7Mu+HB+BN/G4lP4=;
+        b=Q23lVPwcWXhmq7hBFmBmL/Y+r23lokLj37NqnfiR+8LqkUdbk6Sqo0iXEtrHyxCz2F
+         O1Y/k4e1JKjtkA4gVlfwwnNSEsgtMSzfcC1510m3qMmwux6y+5uMyCuWtSkQ4WdvNdps
+         Nzeql80tp6CsLwqvtggem92Te/uDrWIHpwCw9ixnI0PfwMegYpDWAMEZE4ovq2cb+vzG
+         V3EJKG5WPVAJGveIQAKjCCQ5CHgrr+h8PheDbvTobrhaiuQHcCV7Ubcy3xJhLkDUHeOw
+         SNTv9xrzP/JDufq1GUxtri1AjHAq+sfG7EtHef2YUVLuoT2tSFPEKUIkdfc/6XVV0TFj
+         gv7g==
+X-Gm-Message-State: AOAM530UG6+0tCWRhx0O2W9eRcbzm1g7utATh89VU0WUGAjbCIZVrVY7
+        x7kfNmhNr7Cbo6vcOuZYTQWLnOFvy8nuefv8
+X-Google-Smtp-Source: ABdhPJwdegxWYTA2k4+J7Tl8lGvb5AWmZSYUyfgNWSbnIBu/YFo/4XPBGxHhJkADX5StpLnVYsH8zA==
+X-Received: by 2002:a17:906:b04f:: with SMTP id bj15mr63892693ejb.383.1609753424266;
+        Mon, 04 Jan 2021 01:43:44 -0800 (PST)
+Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id j7sm44418898edp.52.2021.01.04.01.43.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 01:43:43 -0800 (PST)
+Subject: Re: [PATCH] microblaze: do not select TRACING_SUPPORT directly
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20201223152947.698744-1-masahiroy@kernel.org>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <bf6e0579-c403-8e82-9672-eb0f55c042c2@monstr.eu>
+Date:   Mon, 4 Jan 2021 10:43:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <CAGyP=7cFM6BJE7X2PN9YUptQgt5uQYwM4aVmOiVayQPJg1pqaA@mail.gmail.com>
- <20210103123701.1500-1-hdanton@sina.com> <CAGyP=7eJKvVXDK+qo9d-AmxC2=QCKPKeGrEJm1bcYNN9f4AKmg@mail.gmail.com>
- <20210104065231.2579-1-hdanton@sina.com>
-In-Reply-To: <20210104065231.2579-1-hdanton@sina.com>
-From:   Palash Oswal <oswalpalash@gmail.com>
-Date:   Mon, 4 Jan 2021 15:10:48 +0530
-Message-ID: <CAGyP=7dQP_b066kgDjeUCs1RUNvkOwoxirHsubL2yG2ZyjwsqA@mail.gmail.com>
-Subject: Re: INFO: task hung in __io_uring_task_cancel
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Pavel Begunkov <asml.silence@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201223152947.698744-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 12:22 PM Hillf Danton <hdanton@sina.com> wrote:
-> It is now updated.
-
-Hello Hilf,
-
-Thanks for the new diff. I tested by applying the diff on 5.10.4 with
-the original reproducer, and the issue still persists.
-
-root@syzkaller:~# [  242.925799] INFO: task repro:416 blocked for more
-than 120 seconds.
-[  242.928095]       Not tainted 5.10.4+ #12
-[  242.929034] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-disables this message.
-[  242.930825] task:repro           state:D stack:    0 pid:  416
-ppid:   415 flags:0x00000004
-[  242.933404] Call Trace:
-[  242.934365]  __schedule+0x28d/0x7e0
-[  242.935199]  ? __percpu_counter_sum+0x75/0x90
-[  242.936265]  schedule+0x4f/0xc0
-[  242.937159]  __io_uring_task_cancel+0xc0/0xf0
-[  242.938340]  ? wait_woken+0x80/0x80
-[  242.939380]  bprm_execve+0x67/0x8a0
-[  242.940163]  do_execveat_common+0x1d2/0x220
-[  242.941090]  __x64_sys_execveat+0x5d/0x70
-[  242.942056]  do_syscall_64+0x38/0x90
-[  242.943088]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  242.944511] RIP: 0033:0x7fd0b781e469
-[  242.945422] RSP: 002b:00007fffda20e9c8 EFLAGS: 00000246 ORIG_RAX:
-0000000000000142
-[  242.947289] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd0b781e469
-[  242.949031] RDX: 0000000000000000 RSI: 0000000020000180 RDI: 00000000ffffffff
-[  242.950683] RBP: 00007fffda20e9e0 R08: 0000000000000000 R09: 00007fffda20e9e0
-[  242.952450] R10: 0000000000000000 R11: 0000000000000246 R12: 0000556068200bf0
-[  242.954045] R13: 00007fffda20eb00 R14: 0000000000000000 R15: 0000000000000000
 
 
-linux git:(b1313fe517ca)  git diff
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 0fcd065baa76..e0c5424e28b1 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1867,8 +1867,7 @@ static void __io_free_req(struct io_kiocb *req)
-     io_dismantle_req(req);
+On 23. 12. 20 16:29, Masahiro Yamada wrote:
+> Microblaze is the only architecture that selects TRACING_SUPPORT.
+> 
+> In my understanding, it is computed by kernel/trace/Kconfig:
+> 
+>   config TRACING_SUPPORT
+>           bool
+>           depends on TRACE_IRQFLAGS_SUPPORT
+>           depends on STACKTRACE_SUPPORT
+>           default y
+> 
+> Microblaze enables both TRACE_IRQFLAGS_SUPPORT and STACKTRACE_SUPPORT,
+> so there is no change in the resulted configuration.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  arch/microblaze/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+> index a0e0c43a2852..acd6d0e68089 100644
+> --- a/arch/microblaze/Kconfig
+> +++ b/arch/microblaze/Kconfig
+> @@ -39,7 +39,6 @@ config MICROBLAZE
+>  	select OF_EARLY_FLATTREE
+>  	select PCI_DOMAINS_GENERIC if PCI
+>  	select PCI_SYSCALL if PCI
+> -	select TRACING_SUPPORT
+>  	select VIRT_TO_BUS
+>  	select CPU_NO_EFFICIENT_FFS
+>  	select MMU_GATHER_NO_RANGE
+> 
 
-     percpu_counter_dec(&tctx->inflight);
--    if (atomic_read(&tctx->in_idle))
--        wake_up(&tctx->wait);
-+    wake_up(&tctx->wait);
-     put_task_struct(req->task);
+make sense.
 
-     if (likely(!io_is_fallback_req(req)))
-@@ -8853,12 +8852,11 @@ void __io_uring_task_cancel(void)
-          * If we've seen completions, retry. This avoids a race where
-          * a completion comes in before we did prepare_to_wait().
-          */
--        if (inflight != tctx_inflight(tctx))
--            continue;
--        schedule();
-+        if (inflight == tctx_inflight(tctx))
-+            schedule();
-+        finish_wait(&tctx->wait, &wait);
-     } while (1);
+Applied.
 
--    finish_wait(&tctx->wait, &wait);
-     atomic_dec(&tctx->in_idle);
- }
+Thanks,
+Michal
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
