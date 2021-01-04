@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EE12E9EDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1317F2E9EE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbhADU3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:29:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44326 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726396AbhADU3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:29:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609792076;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZyoiIpH6kZDHPl7NK/RSNTGczl9VjVr3GWY2olZ3kOk=;
-        b=dhW+hnJT28dPbn646/0TWsFLRonF44sPUCiu6RXF9muG4HQDzVGN62mmAl0ughTg/M9GmW
-        4RirvGq42M5fE47tR1V/uKRKkdekhRUkYx/FGCn9vHRD6HnuxH6IuqcZ6tpBfEQOYwPeNt
-        pmoLEcPETA5dYip6NtUlPxK1yaaci5c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-51-BigQOZF4NlqZ0XWu9Z0Xnw-1; Mon, 04 Jan 2021 15:27:55 -0500
-X-MC-Unique: BigQOZF4NlqZ0XWu9Z0Xnw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2AC6B10054FF;
-        Mon,  4 Jan 2021 20:27:54 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A86B517250;
-        Mon,  4 Jan 2021 20:27:50 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 15:27:50 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Defang Bo <bodefang@126.com>
-Cc:     agk@redhat.com, linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: Re: dm snap : add sanity checks to snapshot_ctr
-Message-ID: <20210104202749.GA3721@redhat.com>
-References: <1608878926-2283057-1-git-send-email-bodefang@126.com>
+        id S1728014AbhADUcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 15:32:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726680AbhADUcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 15:32:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84BE12245C;
+        Mon,  4 Jan 2021 20:31:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609792298;
+        bh=8D2TcfjNu1vAY7Hcupcy3ILO+TJDeUSwz62nJSdF59s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dXW3oMotNTGJH0XWaSehUbu8S97Hi6dCOiWaOkOZ0vhnnGBdHkttN7RKStZXssZ5t
+         ptS0QxCDJUV8eSd5d6JhQChvbxeZJCc3RQ4Dd5I+mkjJXiVtsXAqFO8d9zLRcmBcAc
+         UV6ic4FEhcZr8IlS1EqPRpj38b77HC/l/pKjvh3xTK3jSfxeXh5+vOqpTtNKkwMChB
+         g9MPUIZFVPOi5ZbJt9G0Iwwoy0TZcYJuvToPbGhQgmyx+ZRBwdPvjayYmyI9sFvtl7
+         DeG61/p27ilsxh64RoD3dzqF2MH7BXUDKiA8vVtuP0Jc3t6DoBGuW5N6DyXhfoMlXE
+         u0sxsFLaNYS0w==
+Received: by mail-ed1-f43.google.com with SMTP id dk8so28792521edb.1;
+        Mon, 04 Jan 2021 12:31:38 -0800 (PST)
+X-Gm-Message-State: AOAM5311QXZ8lLXfhGAoBUXKNVr92ATg8TPHGPaWrhASLMkuztQrL2Yz
+        ggmjY09JE4n1KNybVmrixRy4gtB7bKZX+XCE9g==
+X-Google-Smtp-Source: ABdhPJw/DtnTMlZfg/e7v430OBON7LhidDGoWSo4DCfzLAizx9wQwg1z+WE7uViintBlIVq3z2VyXY8gFN18lSjUZbs=
+X-Received: by 2002:a50:e78b:: with SMTP id b11mr71904806edn.165.1609792297081;
+ Mon, 04 Jan 2021 12:31:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608878926-2283057-1-git-send-email-bodefang@126.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <1608717823-18387-1-git-send-email-anshuman.khandual@arm.com>
+ <1608717823-18387-7-git-send-email-anshuman.khandual@arm.com>
+ <20210103170216.GA4048658@robh.at.kernel.org> <9d19b169-b037-20b1-7c00-b2ba2194addd@arm.com>
+ <20210104181549.GB2702940@xps15>
+In-Reply-To: <20210104181549.GB2702940@xps15>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 4 Jan 2021 13:31:24 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+oBrfZrJAcg40gScAi2X4XTaskKD=qk+QvacYY=NTr7w@mail.gmail.com>
+Message-ID: <CAL_Jsq+oBrfZrJAcg40gScAi2X4XTaskKD=qk+QvacYY=NTr7w@mail.gmail.com>
+Subject: Re: [PATCH 06/11] dts: bindings: Document device tree bindings for ETE
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Linu Cherian <lcherian@marvell.com>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 25 2020 at  1:48am -0500,
-Defang Bo <bodefang@126.com> wrote:
+On Mon, Jan 4, 2021 at 11:15 AM Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> On Mon, Jan 04, 2021 at 02:42:08PM +0000, Suzuki K Poulose wrote:
+> > Hi Rob,
+> >
+> > On 1/3/21 5:02 PM, Rob Herring wrote:
+> > > On Wed, Dec 23, 2020 at 03:33:38PM +0530, Anshuman Khandual wrote:
+> > > > From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > >
+> > > > Document the device tree bindings for Embedded Trace Extensions.
+> > > > ETE can be connected to legacy coresight components and thus
+> > > > could optionally contain a connection graph as described by
+> > > > the CoreSight bindings.
+> > > >
+> > > > Cc: devicetree@vger.kernel.org
+> > > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > > Cc: Mike Leach <mike.leach@linaro.org>
+> > > > Cc: Rob Herring <robh@kernel.org>
+> > > > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > > ---
+> > > >   Documentation/devicetree/bindings/arm/ete.txt | 41 +++++++++++++++++++++++++++
+> > > >   1 file changed, 41 insertions(+)
+> > > >   create mode 100644 Documentation/devicetree/bindings/arm/ete.txt
+> > >
+> > > Bindings are in schema format now, please convert this.
+> > >
+> >
+> > Sure, will do that.
+> >
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/arm/ete.txt b/Documentation/devicetree/bindings/arm/ete.txt
+> > > > new file mode 100644
+> > > > index 0000000..b52b507
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/arm/ete.txt
+> > > > @@ -0,0 +1,41 @@
+> > > > +Arm Embedded Trace Extensions
+> > > > +
+> > > > +Arm Embedded Trace Extensions (ETE) is a per CPU trace component that
+> > > > +allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
+> > > > +architecture and has extended support for future architecture changes.
+> > > > +The trace generated by the ETE could be stored via legacy CoreSight
+> > > > +components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
+> > > > +Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
+> > > > +legacy CoreSight components, a node must be listed per instance, along
+> > > > +with any optional connection graph as per the coresight bindings.
+> > > > +See bindings/arm/coresight.txt.
+> > > > +
+> > > > +** ETE Required properties:
+> > > > +
+> > > > +- compatible : should be one of:
+> > > > + "arm,embedded-trace-extensions"
+> > > > +
+> > > > +- cpu : the CPU phandle this ETE belongs to.
+> > >
+> > > If this is 1:1 with CPUs, then perhaps it should be a child node of the
+> > > CPU nodes.
+> >
+> > Yes, it is 1:1 with the CPUs. I have tried to keep this aligned with that of
+> > "coresight-etm4x". The same driver handles both. The only reason why this
+> > was separated from the "coresight.txt" is to describe the new configurations
+> > possible (read, TRBE).
+>
+> Would it be possible to keep the CPU handle rather than moving things under the
+> CPU nodes?  ETMv3.x and ETMv4.x are using a handle and as Suzuki points out ETE
+> and ETMv4.x are sharing the same driver.  Proceeding differently for the ETE
+> would be terribly confusing.
 
-> Similar to commit<70de2cbd>,there should be a check for argc and argv to prevent Null pointer dereferencing
-> when the dm_get_device invoked twice on the same device path with differnt mode.
-> 
-> Signed-off-by: Defang Bo <bodefang@126.com>
-> ---
->  drivers/md/dm-snap.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/md/dm-snap.c b/drivers/md/dm-snap.c
-> index 4668b2c..dccce8b 100644
-> --- a/drivers/md/dm-snap.c
-> +++ b/drivers/md/dm-snap.c
-> @@ -1258,6 +1258,13 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
->  
->  	as.argc = argc;
->  	as.argv = argv;
-> +
-> +	if (!strcmp(argv[0], argv[1])) {
-> +		ti->error = "Error setting metadata or data device";
-> +		r = -EINVAL;
-> +		goto bad;
-> +	}
-> +
->  	dm_consume_args(&as, 4);
->  	r = parse_snapshot_features(&as, s, ti);
->  	if (r)
-> -- 
-> 2.7.4
-> 
+Yeah, no problem.
 
-We already have this later in snapshot_ctr:
-
-        if (cow_dev && cow_dev == origin_dev) {
-                ti->error = "COW device cannot be the same as origin device";
-                r = -EINVAL;
-                goto bad_cow;
-        }
-
-Which happens before the 2nd dm_get_device() for the cow device.  So
-I'm not seeing how you could experience the NULL pointer you say is
-possible.
-
-Mike
-
+Rob
