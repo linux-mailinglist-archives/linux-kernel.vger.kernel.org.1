@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19692E9035
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 06:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A702E903D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 06:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727866AbhADFm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 00:42:58 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:54325 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbhADFm6 (ORCPT
+        id S1727902AbhADFoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 00:44:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727876AbhADFoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 00:42:58 -0500
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 03 Jan 2021 21:42:17 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Jan 2021 21:42:16 -0800
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 04 Jan 2021 11:12:03 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 7B12D214AD; Mon,  4 Jan 2021 11:12:02 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v4 2/2] venus: venc : Add support for priority ID control.
-Date:   Mon,  4 Jan 2021 11:11:54 +0530
-Message-Id: <1609738914-22769-3-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609738914-22769-1-git-send-email-dikshita@codeaurora.org>
-References: <1609738914-22769-1-git-send-email-dikshita@codeaurora.org>
+        Mon, 4 Jan 2021 00:44:46 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BFEC061574
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 21:44:05 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id o11so25063522ote.4
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 21:44:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kt1M/ynVaCrBy4bUG8dbX69hdMW01aGM4CaNYhUhdpM=;
+        b=FLqE6jiXowzgMP4GH7Xv6ZcS7S6iThN80zqyvlTa+l7FmIELG4FNqZuWapSfjvRB8D
+         es4DlowG5MaUcPllm5//iqYd/v0hmMSpkCHH7hZzihbz7C3Yn5qC3j54l7yEIRVUEknY
+         QFN6ev0lIPbRgv3kxxL+CPYNEyvX8Jjw1IXZ4YAjcMyfi9vv1tTFHyX9QTwlmZnn8JkI
+         Nh7Cad1zHbvSWFvuVPZNggffvyPgRc2t3CHhAfkdh7w/5UjBmzKXFCRkHKcxziSnq0Mu
+         qAQAayE14boIYOoeRcpAqVX0NuwLT5TmvxKxKrk0og/Mjv66cuhrHlw4iASoOqtYJb01
+         SU+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kt1M/ynVaCrBy4bUG8dbX69hdMW01aGM4CaNYhUhdpM=;
+        b=idWXEJ0r2F9+LUkfI2thTW5Mwq9QoOhisX/A+WrBGPHoSP/iDaIKIhq5XT/i5or18s
+         2XZQsGIT1dDXIn3XTvC21It5yMkZp6r3kTkY3eTsrtcsj1xO2+qyWCcIQvC2J9fbkAXl
+         TL0fmKcLqiIR6QGgg5rH5l9H+3D87jeNLiWC8DC/uZjeSTLuGh7ZP2PuD83IXQFzLtaL
+         /IaVnmCZ5oB6gzFIxfXjxT+HrVV4JBG4nwPseJoMdyEmxPasx1UXKmb0c9qSFvqGLDB8
+         31BN8EVGbtdJruJ8cFEybQKYIFr+EHnJO0mddLfxFUGX45Y1JsIx0FmUN/Tru7RgKdxG
+         Ibfw==
+X-Gm-Message-State: AOAM532q/JP0NpHbi+V3/DFls3EoMJDx8dV0r3l7U2ioj/SIANTl2afE
+        KVMdR7PUyR8V2ywRauLlG+xWmkL55N1lf6Iiwt8=
+X-Google-Smtp-Source: ABdhPJyAbAZwtZn4YjrMTLj3XTNFWx/7IisbpiJXSPsbL428ayXQlssmKy1arLj7kDgbpt0H5gHbH6el2vCPI1nFT40=
+X-Received: by 2002:a9d:7504:: with SMTP id r4mr43330373otk.245.1609739045420;
+ Sun, 03 Jan 2021 21:44:05 -0800 (PST)
+MIME-Version: 1.0
+References: <20201223062412.343-1-zhenzhong.duan@gmail.com> <20201230070244.GA22022@zn.tnic>
+In-Reply-To: <20201230070244.GA22022@zn.tnic>
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Date:   Mon, 4 Jan 2021 13:43:53 +0800
+Message-ID: <CAFH1YnMDqmOayVU8gahmndCgZtVic2JBqfoH5VQCcyya0UfCLQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/iommu: Fix two minimal issues in check_iommu_entries()
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, zhongjiang@huawei.com,
+        joe@perches.com, konrad.wilk@oracle.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        iommu@lists.linux-foundation.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for base layer priority ID control in
-encoder.
-This is a preparation patch to support v6.
+On Wed, Dec 30, 2020 at 3:02 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Dec 23, 2020 at 02:24:12PM +0800, Zhenzhong Duan wrote:
+> > check_iommu_entries() checks for cyclic dependency in iommu entries
+> > and fixes the cyclic dependency by setting x->depend to NULL. But
+> > this repairing isn't correct if q is in front of p, there will be
+> > "EXECUTION ORDER INVALID!" report following. Fix it by NULLing
+> > whichever in the front.
+>
+> When does "q is in front of p" happen? How does it happen?
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/core.h       | 2 ++
- drivers/media/platform/qcom/venus/venc_ctrls.c | 9 ++++++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+Sorry, just realized it never happen.
+>
+> > The second issue is about the report of exectuion order reverse,
+> > the order is reversed incorrectly in the report, fix it.
+>
+> I have no clue what that means.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 54c42a3..a346ddc 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -274,6 +274,8 @@ struct venc_controls {
- 		u32 hevc;
- 		u32 vp9;
- 	} level;
-+
-+	u32 base_priority_id;
- };
- 
- struct venus_buffer {
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index 7d010d8..3ead51c 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -294,6 +294,9 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 			return ret;
- 		}
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID:
-+		ctr->base_priority_id = ctrl->val;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -309,7 +312,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 53);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 54);
- 	if (ret)
- 		return ret;
- 
-@@ -523,6 +526,10 @@ int venc_ctrl_init(struct venus_inst *inst)
- 			  V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX, 0,
- 			  (MAX_LTR_FRAME_COUNT - 1), 1, 0);
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID, 0,
-+			  6, 1, 0);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret)
- 		goto err;
--- 
-2.7.4
+I mean if p depends on q, then q->detect should be called before p->detect.
+The message generated by printk() is wrong.
 
+Regards
+Zhenzhong
