@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86052E96F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8562E96FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbhADOQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:16:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
+        id S1727166AbhADOR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:17:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727164AbhADOP7 (ORCPT
+        with ESMTP id S1726396AbhADOR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:15:59 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF64C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:15:19 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id b73so27456991edf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:15:19 -0800 (PST)
+        Mon, 4 Jan 2021 09:17:27 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC5FC061574;
+        Mon,  4 Jan 2021 06:16:47 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id m25so64568952lfc.11;
+        Mon, 04 Jan 2021 06:16:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CCxd/PUSwUofs28XjI+jmkN/DEXzfHZxj/dT0gyHcnk=;
-        b=VHjNnt2s4dQeSW9LopBNt9rWpaKMF9XN+LBbbACmtxwZnGiBIurK/5FsVB5AzmS+Mc
-         0yRYeWtNDGAsC+owrj+8qKPfsDTGYhutapyGAfMsAgmECMtKlzJm+pHQsK8Aic1qNvRs
-         SkrqF2XydKJz3jDPCOeh23IfQvNWOVSvMRbKwGy+nMbEEHGjPs9W7AolHvo//KUmxFpa
-         X4Cj/5PEqiCdYomqICsT63KOwTqLdyNK/i/gISskuKBd+lkcO6CmGiNzgja5MC7xCxiZ
-         L+yUkxqYre2hA515uEllcPlA853IVtamqZMKAUWWXVzWEmIz/v076EAhiwlGmhHHmz/J
-         nC/w==
+        bh=i5CNFkVFgsA9BzNgX/I+jI3gR5jn/LsiIfWVngBWCIo=;
+        b=lrB/U4f+X00uogk3MEbesYfb4TzdSeycj7JvT0MRsMg5ipEeIJPTYY0FHeLrcjCKmK
+         NEQnEIhA4BnBFtjxZ2FBPaz2Jn7zj1CVD7xmcTjU9L3Y9W8CBrMhPi1Rnp9bzoKbcBQI
+         5Ax5RINcChzD9QF0oJzx147Evo+dV2/qx3W36Sz08uqf4aI9DkCKRSxQZtDY86NZRBUM
+         2xha5Cxl5mpL3Y8YgkA2GSnQ83nE8tgtGgoyx9W+n/5yYqIBa85ZTrv4wu/VjAo3DdVh
+         omkJOCzU4iy814/Ltl6aqvFXaRhWk6l8rLdf+XU9ohcrhL5B7zCS+gyI2BtbeLZCZWIa
+         k1tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CCxd/PUSwUofs28XjI+jmkN/DEXzfHZxj/dT0gyHcnk=;
-        b=ljNs3UMW4z1df9peIdPLmRp0BlZw5kh8ACRzQo6fWXLOG66tbBvJmYaFwqlULiI5St
-         ycHQ0Sokqz8bvu+AaNtRMjESmZ/mFQmwsykMVwZ4S4aaAQaDMVKgfF0aIkIkar7uJ0st
-         tULnzqjLHQMkHcQfTd3jAt8E8ndWwk8xftLF8jatE1LBgxRXiVyzNGA5YvfeIyHPUnR6
-         xwU23fJbD3wpNf5CdRJd8K/2/4LxVdlxQ4muIgIQxS+GAMxr+XR04xe/a1mNeWbhcq27
-         S7PlXcL1kBk2dVvw3SmJOQ/MdtKQTkVJSpcy+QeIcjh3SsB3kfo1WTFCjS3MZtpMrTZc
-         TjAQ==
-X-Gm-Message-State: AOAM533aZpLAkH0sDpeh8FafO75XN25TSwKF2wYePN6OXH3wDDbiGFkQ
-        LiiAGIUpWfD9psCEv8hzDTPFOxB/Hgg5ZZJvspgOoQ==
-X-Google-Smtp-Source: ABdhPJz0E/ceV53tnHAH+mJe21UbyhmOoq/FdVVavN6bd1kaBMjWKHYRGo2gMkT45CeYjc24r4lPRbQOZ0OZdkh2UiA=
-X-Received: by 2002:a50:b742:: with SMTP id g60mr70299542ede.113.1609769718075;
- Mon, 04 Jan 2021 06:15:18 -0800 (PST)
+        bh=i5CNFkVFgsA9BzNgX/I+jI3gR5jn/LsiIfWVngBWCIo=;
+        b=I8vZdre3ZFo/zcv1djmODHPXx8Ttmqs+HiS0Yc2ppvimg1pri5HYhmmGQJ4eXDHxjn
+         yEH3P2eBN8O+UynZRB37mVb2z0FGxSZuCgwtRcV8+ig7250l0YLfG035V8HoH31jdGcE
+         NVLEF92ur4uHp7plsoeL9q0DsoG68mFK6hPRVwzTRc0Z4WrD5LyeBTHTfqwGQRMQJSAc
+         d8SWkpOPnaG4+PaoIi3hFjy6xAr3eFA1mUqW30/2BPhBDTEF6aScW85I37+PwC80oOpy
+         ci5fZRbQgx7BFZUirE+RKgai0Kz6g/eyEVH8qsUnmJ5Uy0SIsSz2dFoPaYWwFLVJ9sgj
+         o3bA==
+X-Gm-Message-State: AOAM533QbbYZke7zpHPW6IuKnYeDodDEOLWp/OmoXu3Ojb0h3hQEUszD
+        5y23H+Nn78uteBKUeWPyuCyVdVPlwSEbHnQ6Smg=
+X-Google-Smtp-Source: ABdhPJzV+OL02hsKvA1TOJWU4Gy1IzHRylhUKjGeqk11Tj716Nv+esf0Z5CuhVen+kgAlLcnhWSejv/zrCoo+UlkDWw=
+X-Received: by 2002:a05:651c:200a:: with SMTP id s10mr34175031ljo.492.1609769805661;
+ Mon, 04 Jan 2021 06:16:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
-In-Reply-To: <20201228150052.2633-1-nikita.shubin@maquefel.me>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 4 Jan 2021 15:15:07 +0100
-Message-ID: <CAMpxmJVN8bH5KJ1-W76Ac6MOH3fy5Xo_B1ozsWkLVacJhxOHsA@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: warning on gpiochip->to_irq defined
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Thierry Reding <treding@nvidia.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201219000616.197585-1-stephen.s.brennan@oracle.com> <20201219000616.197585-2-stephen.s.brennan@oracle.com>
+In-Reply-To: <20201219000616.197585-2-stephen.s.brennan@oracle.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Mon, 4 Jan 2021 09:16:34 -0500
+Message-ID: <CAEjxPJ4bUxSp3hMV9k5Z5Zpev=ravd6EJheC1Rdg+_72eUiNLA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] proc: ensure security hook is called after exec
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 4:02 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+On Fri, Dec 18, 2020 at 7:06 PM Stephen Brennan
+<stephen.s.brennan@oracle.com> wrote:
 >
-> gpiochip->to_irq method is redefined in gpiochip_add_irqchip.
+> Smack needs its security_task_to_inode() hook to be called when a task
+> execs a new executable. Store the self_exec_id of the task and call the
+> hook via pid_update_inode() whenever the exec_id changes.
 >
-> A lot of gpiod driver's still define ->to_irq method, let's give
-> a gentle warning that they can no longer rely on it, so they can remove
-> it on ocassion.
->
-> Fixes: e0d8972898139 ("gpio: Implement tighter IRQ chip integration")
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
->  drivers/gpio/gpiolib.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 5ce0c14c637b..44538d1a771a 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -1489,6 +1489,9 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
->                 type = IRQ_TYPE_NONE;
->         }
->
-> +       if (gc->to_irq)
-> +               chip_err(gc, "to_irq is redefined in %s and you shouldn't rely on it\n", __func__);
-> +
->         gc->to_irq = gpiochip_to_irq;
->         gc->irq.default_type = type;
->         gc->irq.lock_key = lock_key;
-> --
-> 2.29.2
->
+> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
 
-I know Linus suggested using chip_err() here but since this doesn't
-cause the function to fail, I'd say this should be chip_warn().
-
-Unless Linus has any objections, please change it.
-
-Bartosz
+Sorry to be late in responding, but the proc inode security structure
+needs to be updated not only upon a context-changing exec but also
+upon a setcon(3) aka write to /proc/self/attr/current just like the
+uid/gid needs to be updated not only upon a setuid exec but also upon
+a setuid(2).  I'm also unclear as to why you can't call
+security_task_to_inode during RCU lookup; it doesn't block/sleep
+AFAICT.
+All it does is take a spinlock and update a few fields.
