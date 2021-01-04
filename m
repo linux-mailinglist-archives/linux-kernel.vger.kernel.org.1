@@ -2,41 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D022E971B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 792162E96EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727169AbhADOVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:21:37 -0500
-Received: from n7.nabble.com ([162.253.133.57]:51460 "EHLO n7.nabble.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725921AbhADOVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:21:36 -0500
-X-Greylist: delayed 635 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Jan 2021 09:21:36 EST
-Received: from n7.nabble.com (localhost [127.0.0.1])
-        by n7.nabble.com (Postfix) with ESMTP id BEBB61CC945F6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 07:11:41 -0700 (MST)
-Date:   Mon, 4 Jan 2021 07:11:41 -0700 (MST)
-From:   Avi Nehori <anehori@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Message-ID: <1609769501778-0.post@n7.nabble.com>
-In-Reply-To: <alpine.DEB.2.02.1405130156550.10293@dtop>
-References: <alpine.DEB.2.10.1401171720560.15759@dinf> <1390027758.31367.505.camel@edumazet-glaptop2.roam.corp.google.com> <1390028976.31367.512.camel@edumazet-glaptop2.roam.corp.google.com> <alpine.DEB.2.10.1401172313530.18419@dinf> <CAADnVQKQFQh2JewwmXWBkyB86rOJs1mXHrgECikaMxGqFW3axA@mail.gmail.com> <alpine.DEB.2.02.1401211735170.20572@dtop> <alpine.DEB.2.02.1401212008010.20572@dtop> <CAADnVQ+MNHFKmCSS7m42s7gz68sCwNUY4U571R5XVH0sU0=ffQ@mail.gmail.com> <CAADnVQ+nmc3_8yt=WxWpQ1vKe8kh+mCFTi6-iSn11drPpqFiDg@mail.gmail.com> <alpine.DEB.2.02.1405130156550.10293@dtop>
-Subject: Re: ipv4_dst_destroy panic regression after 3.10.15
+        id S1727310AbhADOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:12:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726603AbhADOMd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 09:12:33 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A94C061793;
+        Mon,  4 Jan 2021 06:11:53 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id lb18so10140222pjb.5;
+        Mon, 04 Jan 2021 06:11:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EUUxZnLp9iwqwD5hGCnTbWs9va3dDEmsYPYTCboDkgM=;
+        b=X8aqmXMB5tiHFzrniLVTktDAFx9GPxoKYC/VERRRccElLhRt5O3imXB3TuJseco+VB
+         6+IOagth86OcC79TdClqwAmmMuGeNj8/ODoiV94dlOOheowFAPPguDf7eM3Kbnum/qEd
+         FsLcu6pedYoofU9BK0ErFQgL7AnvPpDreqrzLCid0zT+0YFgRYRYI9qnR1OnXWeDDU4a
+         rq5h0PmyevPSwS38mhjy5/qei5hp8DMW5F2siQQNiPt3X99wAGlAxe2yHINXJaY2XdaX
+         s+y0Jw8fJJQZHc6T7MgeJ+CNNyPReKkcZT+mgQAUtqpGNd/l9vI1rRpwptE9A7xhZEq1
+         nm8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EUUxZnLp9iwqwD5hGCnTbWs9va3dDEmsYPYTCboDkgM=;
+        b=UXFKLdMEf+im46prrMZvTz65vHcH5h47NmAfEqRh47I/KWWkJLMM+vnbRaeI+9MebV
+         hDTc8sk5rizAS8ffvvnJy77M8Ud2kggDfc86GKAVIQS5AqMedwyMXZff47UU66Kkhg5b
+         yx7dgp6/YtVyw7w4qtOKpWxk3d5xsIQU9zuC2OeR5z+gMBkqKIwPj0MHm+Wl7EN5/SgL
+         FYmXpfHMS7TQ/T6zyzgLgwqAaRCAW8wVInmhyhHhmCgfq0j19UuLY2sETkx/Dahig+pT
+         WLF4YagqaJcg2dH4HAQ/xEYPZBlgQtwtmJadZw26Nc1V7mE8XVkziBwzK/63TY6lOIoS
+         D+LA==
+X-Gm-Message-State: AOAM5328TQVYq8KU7oy9MA58UEqezHNpxLVum8kci0M3i6w/PIZW5PjB
+        7DbF8M3/njjEkDqL1PDtZJhq2eY5aJSxqPj+yzxXGTO+m40=
+X-Google-Smtp-Source: ABdhPJz6ehqJDINMSa6fja9yTp967LimGY8Equ3PqbXvrPklGwWlCUj94mtpfF0BG/sS7aRFOYJzqN3YqyiM9CLOAFA=
+X-Received: by 2002:a17:90b:a17:: with SMTP id gg23mr30462729pjb.129.1609769512562;
+ Mon, 04 Jan 2021 06:11:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210103231235.792999-1-djrscally@gmail.com> <20210103231235.792999-16-djrscally@gmail.com>
+ <3d881e2b-747f-dcd7-a0cf-e7309419914b@ideasonboard.com> <9026519f-1f33-9df0-de18-0881069f7aaa@gmail.com>
+In-Reply-To: <9026519f-1f33-9df0-de18-0881069f7aaa@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 4 Jan 2021 16:12:41 +0200
+Message-ID: <CAHp75Vf6Z_qhw54jUu5tt85XxjZncaQFCNpYx=tqGTS9LsVPOg@mail.gmail.com>
+Subject: Re: [PATCH v4 15/15] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Len Brown <lenb@kernel.org>, Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
-i am having similar crash on 3.10 , can you please share your conclusion ?
-is there a patch for the issue ?
+On Mon, Jan 4, 2021 at 3:55 PM Daniel Scally <djrscally@gmail.com> wrote:
+> On 04/01/2021 13:35, Kieran Bingham wrote:
 
-Thanks.
+...
 
+> +static const struct cio2_sensor_config cio2_supported_sensors[] = {
+> +       /* Sensor OVTI5693 */
+> +       CIO2_SENSOR_CONFIG("INT33BE", 0),
+> +       /* Sensor OVTI2680 */
+> +       CIO2_SENSOR_CONFIG("OVTI2680", 0),
+>
+> As an inline comment won't fit for the sensors that we know link-frequencies for. That sound ok?
 
+At least to me it looks okay.
 
+It seems for v5 we need Rafael's blessing on a few patches (driver
+properties / swnode / ACPI) and we are fine.
 
---
-Sent from: http://linux-kernel.2935.n7.nabble.com/
+-- 
+With Best Regards,
+Andy Shevchenko
