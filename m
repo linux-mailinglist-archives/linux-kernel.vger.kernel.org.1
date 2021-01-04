@@ -2,52 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8F02E9373
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEE12E9374
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbhADKgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:36:43 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:45945 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbhADKgm (ORCPT
+        id S1726700AbhADKgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:36:50 -0500
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:48395 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbhADKgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:36:42 -0500
+        Mon, 4 Jan 2021 05:36:50 -0500
 X-Originating-IP: 90.89.98.255
 Received: from localhost.localdomain (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr [90.89.98.255])
         (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 195A36003C;
-        Mon,  4 Jan 2021 10:35:59 +0000 (UTC)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 1223CFF80C;
+        Mon,  4 Jan 2021 10:36:07 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Sean Nyekjaer <sean@geanix.com>, Han Xu <han.xu@nxp.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     =?utf-8?q?Martin_Hundeb=C3=B8ll?= <martin@geanix.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: gpmi: fix dst bit offset when extracting raw payload
-Date:   Mon,  4 Jan 2021 11:35:58 +0100
-Message-Id: <20210104103558.9035-1-miquel.raynal@bootlin.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        miquel.raynal@bootlin.com, vigneshr@ti.com
+Cc:     richard@nod.at, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mtd: nand: raw: convert comma to semicolon
+Date:   Mon,  4 Jan 2021 11:36:06 +0100
+Message-Id: <20210104103606.9252-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201221100013.2715675-1-sean@geanix.com>
+In-Reply-To: <20201211090055.3250-1-zhengyongjun3@huawei.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: d1879af7ce7618e3580fbd89bf4f2fefe4175e6d
-Content-Type: text/plain; charset=UTF-8
+X-linux-mtd-patch-commit: 63f559d3412b8bcfa24040e16de6dae27fafd4af
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-21 at 10:00:13 UTC, Sean Nyekjaer wrote:
-> Re-add the multiply by 8 to "step * eccsize" to correct the destination bit offset
-> when extracting the data payload in gpmi_ecc_read_page_raw().
+On Fri, 2020-12-11 at 09:00:55 UTC, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
 > 
-> Fixes: e5e5631cc889 ("mtd: rawnand: gpmi: Use nand_extract_bits()")
-> Cc: stable@vger.kernel.org
-> Reported-by: Martin Hundebøll <martin@geanix.com>
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
