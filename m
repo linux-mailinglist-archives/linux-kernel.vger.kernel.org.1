@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BE32E9976
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEE32E9A1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728205AbhADQAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:00:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36558 "EHLO mail.kernel.org"
+        id S1728183AbhADQAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:00:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728163AbhADQAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728164AbhADQAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Jan 2021 11:00:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DC93224DF;
-        Mon,  4 Jan 2021 15:59:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7309322507;
+        Mon,  4 Jan 2021 15:59:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775972;
-        bh=DK+GjoiDKYtNH/n2j3QAqOOcFpT8NO9ECbL/nYYFxrM=;
+        s=korg; t=1609775974;
+        bh=wnUQKLxohvRGyTmXR07pj6xB9AmiF50wiB7wPUNxG6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NFICP6Dw5nQRtqScX9MFq9jGoZeqo4A62EKy3EAuWRUuJs0IIHAcL+uUV7MplBVcK
-         NdSiHsdeBgNWzzjk5Fij0C8yYseDcO8GQB3OPyu76PLcx1ECPo8EIjQQxY8N85mvVC
-         D/yx1OXdTHpyrPXee6ER7GwxuOC8EPEHxNr67ykM=
+        b=JsXpqkeck7BGTAX1dXbGS0vcthLAs227xdVf/Lh3XGM0X434vpmlKyL4+V8hho0vr
+         EE2ILUJ0FIsiWgFnV3bEQ3JcD+dAaKBmLhBrykMB+wHCqDUd3zVsN2EUnsgUhZ4ZWn
+         J/k/6QOl+2AYuvLF2yhUK1BMxsu+jAB78RTrOTJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Vigor <kvigor@gmail.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH 5.4 02/47] md/raid10: initialize r10_bio->read_slot before use.
-Date:   Mon,  4 Jan 2021 16:57:01 +0100
-Message-Id: <20210104155705.863822994@linuxfoundation.org>
+        stable@vger.kernel.org, Zhuguangqing <zhuguangqing@xiaomi.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 5.4 03/47] thermal/drivers/cpufreq_cooling: Update cpufreq_state only if state has changed
+Date:   Mon,  4 Jan 2021 16:57:02 +0100
+Message-Id: <20210104155705.912483575@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
 References: <20210104155705.740576914@linuxfoundation.org>
@@ -39,46 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Vigor <kvigor@gmail.com>
+From: Zhuguangqing <zhuguangqing@xiaomi.com>
 
-commit 93decc563637c4288380912eac0eb42fb246cc04 upstream.
+commit 236761f19a4f373354f1dcf399b57753f1f4b871 upstream.
 
-In __make_request() a new r10bio is allocated and passed to
-raid10_read_request(). The read_slot member of the bio is not
-initialized, and the raid10_read_request() uses it to index an
-array. This leads to occasional panics.
+If state has not changed successfully and we updated cpufreq_state,
+next time when the new state is equal to cpufreq_state (not changed
+successfully last time), we will return directly and miss a
+freq_qos_update_request() that should have been.
 
-Fix by initializing the field to invalid value and checking for
-valid value in raid10_read_request().
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Kevin Vigor <kvigor@gmail.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Fixes: 5130802ddbb1 ("thermal: cpu_cooling: Switch to QoS requests for freq limits")
+Cc: v5.4+ <stable@vger.kernel.org> # v5.4+
+Signed-off-by: Zhuguangqing <zhuguangqing@xiaomi.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20201106092243.15574-1-zhuguangqing83@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-
 ---
- drivers/md/raid10.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/thermal/cpu_cooling.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/md/raid10.c
-+++ b/drivers/md/raid10.c
-@@ -1145,7 +1145,7 @@ static void raid10_read_request(struct m
- 	struct md_rdev *err_rdev = NULL;
- 	gfp_t gfp = GFP_NOIO;
+--- a/drivers/thermal/cpu_cooling.c
++++ b/drivers/thermal/cpu_cooling.c
+@@ -320,6 +320,7 @@ static int cpufreq_set_cur_state(struct
+ 				 unsigned long state)
+ {
+ 	struct cpufreq_cooling_device *cpufreq_cdev = cdev->devdata;
++	int ret;
  
--	if (r10_bio->devs[slot].rdev) {
-+	if (slot >= 0 && r10_bio->devs[slot].rdev) {
- 		/*
- 		 * This is an error retry, but we cannot
- 		 * safely dereference the rdev in the r10_bio,
-@@ -1510,6 +1510,7 @@ static void __make_request(struct mddev
- 	r10_bio->mddev = mddev;
- 	r10_bio->sector = bio->bi_iter.bi_sector;
- 	r10_bio->state = 0;
-+	r10_bio->read_slot = -1;
- 	memset(r10_bio->devs, 0, sizeof(r10_bio->devs[0]) * conf->copies);
+ 	/* Request state should be less than max_level */
+ 	if (WARN_ON(state > cpufreq_cdev->max_level))
+@@ -329,10 +330,12 @@ static int cpufreq_set_cur_state(struct
+ 	if (cpufreq_cdev->cpufreq_state == state)
+ 		return 0;
  
- 	if (bio_data_dir(bio) == READ)
+-	cpufreq_cdev->cpufreq_state = state;
++	ret = freq_qos_update_request(&cpufreq_cdev->qos_req,
++			cpufreq_cdev->freq_table[state].frequency);
++	if (ret > 0)
++		cpufreq_cdev->cpufreq_state = state;
+ 
+-	return freq_qos_update_request(&cpufreq_cdev->qos_req,
+-				cpufreq_cdev->freq_table[state].frequency);
++	return ret;
+ }
+ 
+ /**
 
 
