@@ -2,135 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6DD2E95C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8264F2E95AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726745AbhADNWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:22:18 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:17656 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbhADNWR (ORCPT
+        id S1726834AbhADNOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:14:34 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:46889 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726512AbhADNOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:22:17 -0500
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210104132134epoutp045bafc89c62e30741dbb4ce27cb41c813~XChkOqpNh1261512615epoutp04b
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 13:21:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210104132134epoutp045bafc89c62e30741dbb4ce27cb41c813~XChkOqpNh1261512615epoutp04b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1609766494;
-        bh=qwG/j1MHx/rjwSSqKo3StoXAwxtWZaTDQyXZEk/i8oQ=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=WEiX7j+6+IL4hhWpQud78htnHuTxv1RO5tFCWPB/0n+mqCcHxWBKCkYBlyCrCYL2c
-         aReHlaGRRzZ+qlCpT2Yfb9X5d7XNnIgEfo0qXg3F13hWgwqVhV5cdGwFVd9BIPfBCd
-         DSRnhDo8joccEHLbQanb9tVrr+vVbaBAPwdABFFg=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210104132133epcas5p143c57181d2139fcb6aa51fa2a211c9c6~XChjnW_MF1178411784epcas5p1k;
-        Mon,  4 Jan 2021 13:21:33 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        83.81.50652.D5613FF5; Mon,  4 Jan 2021 22:21:33 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210104131306epcas5p169b135d79ee4576ed00735351982fead~XCaLfhcTb2442124421epcas5p1v;
-        Mon,  4 Jan 2021 13:13:06 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210104131306epsmtrp24163279d19f869c7d8b29eb661c8656a~XCaLe34ga3247232472epsmtrp2u;
-        Mon,  4 Jan 2021 13:13:06 +0000 (GMT)
-X-AuditID: b6c32a4a-6c9ff7000000c5dc-35-5ff3165d3426
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BC.75.08745.26413FF5; Mon,  4 Jan 2021 22:13:06 +0900 (KST)
-Received: from pankjsharma02 (unknown [107.122.12.50]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210104131305epsmtip17800888b93c48b756eabf9a55f04b8ec~XCaKQcWVo2273822738epsmtip16;
-        Mon,  4 Jan 2021 13:13:05 +0000 (GMT)
-From:   "pankj.sharma" <pankj.sharma@samsung.com>
-To:     "'Marc Kleine-Budde'" <mkl@pengutronix.de>,
-        "'Sriram Dash'" <sriram.dash@samsung.com>,
-        <linux-kernel@vger.kernel.org>
-Cc:     <linux-can@vger.kernel.org>, <dmurphy@ti.com>,
-        <pankaj.dubey@samsung.com>
-In-Reply-To: <9b212ce7-51e6-f6a7-fa34-5a9118c56927@pengutronix.de>
-Subject: RE: [PATCH] MAINTAINERS: Update MCAN MMIO device driver maintainer
-Date:   Mon, 4 Jan 2021 18:43:04 +0530
-Message-ID: <159001d6e29b$576344a0$0629cde0$@samsung.com>
+        Mon, 4 Jan 2021 08:14:34 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kwPgA-0002YP-Sd; Mon, 04 Jan 2021 13:13:47 +0000
+Date:   Mon, 4 Jan 2021 14:13:42 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Wen Yang <wenyang@linux.alibaba.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Howells <dhowells@redhat.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Andy Lutomirsky <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
+Subject: Re: [PATCH 01/10] clone: add CLONE_PIDFD
+Message-ID: <20210104131342.avhphyfxthtrj6vj@wittgenstein>
+References: <20201203183204.63759-1-wenyang@linux.alibaba.com>
+ <20201203183204.63759-2-wenyang@linux.alibaba.com>
+ <X/MSEjmCeWHR65gL@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJhQyIlwhM5RMBPM0HYr/vXunjykwIQwDY9AR7ZsHao6TMK0A==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIKsWRmVeSWpSXmKPExsWy7bCmpm6s2Od4g60fjCy6T29htVj1fSqz
-        xeVdc9gs1i+awmKxaOsXdosb69kd2Dz6/xp49G1Zxehx/MZ2Jo/Pm+QCWKK4bFJSczLLUov0
-        7RK4Mla+PMlccIS94nBLL3MD4w/WLkZODgkBE4lDa8+C2UICuxklzj036GLkArI/MUoc7p8J
-        lfjMKNE33Qum4f6HbWwQRbsYJbY9mM8O4bxmlNi+7zk7SBWbgL7ElKa/LCC2iEC1RG/fU2YQ
-        m1nAX+LJ/Q9gcU4BJ4ney5+ZQGxhAW+JyU3LGEFsFgEViXsnuoA2cHDwClhKPOkIBAnzCghK
-        nJz5hAVijLbEsoWvmSEOUpD4+XQZK8QqJ4lDjzdB1YhLvDx6BOw2CYFGDonVazYzQTS4SKw/
-        eoIdwhaWeHV8C5QtJfH53V42CDtbYuHufhaQGyQEKiTaZghDhO0lDlyZAxZmFtCUWL9LHyIs
-        KzH11DomiLV8Er2/n0Bt4pXYMQ/GVpOY+vQdI4QtI3Hn0Wa2CYxKs5B8NgvJZ7OQfDALYdsC
-        RpZVjJKpBcW56anFpgVGeanlesWJucWleel6yfm5mxjBqUbLawfjwwcf9A4xMnEwHmKU4GBW
-        EuGtuPAhXog3JbGyKrUoP76oNCe1+BCjNAeLkjjvDoMH8UIC6YklqdmpqQWpRTBZJg5OqQam
-        ZNVV3DEtEv1yp0y37ztf4qosXzG/2iRi2yIRg+fbpaddVO/KXLOavzZvrdXs0/Pdi+doXvyr
-        cdN+isQJn5nWXBGrfvwKj7mQUb7A8/UXm6Y1X2/9vbx9zZ1DNgqch3UX+xSq2ObvYTC6tVEj
-        izNRu9nD7s8yucIw9+tdbW19Omrblh/pWVjyP3Hjq1SfqdXhC/IfJk3SbL0Y1cR97MYc2W8v
-        LrTav4zcwyB5Zz5XvA7T59iONQuj2md/EDoaypy8OXpa/CYG4T9rN127t2P36ZOGB2X+tzX2
-        W4f8b72/WNB2j9gM3nmWBXeUct8F1WqZfuTYdJg5yLSCgZs51VXnlkiRlMXhsLqCfe+/rGlR
-        YinOSDTUYi4qTgQAca1aQ6QDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSnG6SyOd4g09XjS26T29htVj1fSqz
-        xeVdc9gs1i+awmKxaOsXdosb69kd2Dz6/xp49G1Zxehx/MZ2Jo/Pm+QCWKK4bFJSczLLUov0
-        7RK4Mr4daGQqWMVecfZfJ2MD4z3WLkZODgkBE4n7H7axdTFycQgJ7GCUuLrgCnMXIwdQQkZi
-        8edqiBphiZX/nrND1LwEqln5hQUkwSagLzGl6S+YLSJQK3Fl+y9mEJtZIFBi7s0XrBANRxgl
-        Fh1dwg6S4BRwkui9/JkJxBYW8JaY3LSMEcRmEVCRuHeiiw1kMa+ApcSTjkCQMK+AoMTJmU9Y
-        IGZqS/Q+bGWEsZctfM0McZyCxM+ny1ghbnCSOPR4E1S9uMTLo0fYJzAKz0IyahaSUbOQjJqF
-        pGUBI8sqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzgqNHS2sG4Z9UHvUOMTByMhxgl
-        OJiVRHgrLnyIF+JNSaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyWiYNT
-        qoEp1feW6InT5jGCWavPd186uO5IG+eE0NjkoBvVVveZZ8owT5zvn6cr46Qgdlr4kkVNzaUD
-        Yq3t3U8mMyqrBf1epn1z86pv54QbUxN4sl8+0sl46VSZFOy1VS1A1HN9/Lv49G0XheX+F6pe
-        4pizeeftva828xVzdGZMFmO39Y6LlZr88nNRqioX602hf82CDrmtGWf/vdYy/6/oU2ktEJHJ
-        1N367PeRqRmFNoueb7dcUPgsrDDwTPr/i+y9VU5ZW9hN1gVZnaxoa3GwXj23TMDi37ZwL/st
-        SdEH4is5uNaLev8QrHJpzmIWOM+/VzXh4+Ujtg4259xl0u82MnwPF7iUE/u5lMchbBLj9LfN
-        SizFGYmGWsxFxYkAvqXbdgkDAAA=
-X-CMS-MailID: 20210104131306epcas5p169b135d79ee4576ed00735351982fead
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c
-References: <CGME20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c@epcas5p3.samsung.com>
-        <20210104123134.16930-1-sriram.dash@samsung.com>
-        <9b212ce7-51e6-f6a7-fa34-5a9118c56927@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <X/MSEjmCeWHR65gL@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Marc Kleine-Budde <mkl=40pengutronix.de>
-> Subject: Re: =5BPATCH=5D MAINTAINERS: Update MCAN MMIO device driver
-> maintainer
->=20
-> On 1/4/21 1:31 PM, Sriram Dash wrote:
-> > Update Pankaj Sharma as maintainer for mcan mmio device driver as I
-> > will be moving to a different role.
-
-Acked-by: Pankaj Sharma <pankj.sharma=40samsung.com>
-
-> >
-> > Signed-off-by: Sriram Dash <sriram.dash=40samsung.com>
+On Mon, Jan 04, 2021 at 02:03:14PM +0100, Greg Kroah-Hartman wrote:
+> On Fri, Dec 04, 2020 at 02:31:55AM +0800, Wen Yang wrote:
+> > From: Christian Brauner <christian@brauner.io>
+> > 
+> > [ Upstream commit b3e5838252665ee4cfa76b82bdf1198dca81e5be ]
+> > 
+> > This patchset makes it possible to retrieve pid file descriptors at
+> > process creation time by introducing the new flag CLONE_PIDFD to the
+> > clone() system call.  Linus originally suggested to implement this as a
+> > new flag to clone() instead of making it a separate system call.  As
+> > spotted by Linus, there is exactly one bit for clone() left.
+> > 
+> > CLONE_PIDFD creates file descriptors based on the anonymous inode
+> > implementation in the kernel that will also be used to implement the new
+> > mount api.  They serve as a simple opaque handle on pids.  Logically,
+> > this makes it possible to interpret a pidfd differently, narrowing or
+> > widening the scope of various operations (e.g. signal sending).  Thus, a
+> > pidfd cannot just refer to a tgid, but also a tid, or in theory - given
+> > appropriate flag arguments in relevant syscalls - a process group or
+> > session. A pidfd does not represent a privilege.  This does not imply it
+> > cannot ever be that way but for now this is not the case.
+> > 
+> > A pidfd comes with additional information in fdinfo if the kernel supports
+> > procfs.  The fdinfo file contains the pid of the process in the callers
+> > pid namespace in the same format as the procfs status file, i.e. "Pid:\t%d".
+> > 
+> > As suggested by Oleg, with CLONE_PIDFD the pidfd is returned in the
+> > parent_tidptr argument of clone.  This has the advantage that we can
+> > give back the associated pid and the pidfd at the same time.
+> > 
+> > To remove worries about missing metadata access this patchset comes with
+> > a sample program that illustrates how a combination of CLONE_PIDFD, and
+> > pidfd_send_signal() can be used to gain race-free access to process
+> > metadata through /proc/<pid>.  The sample program can easily be
+> > translated into a helper that would be suitable for inclusion in libc so
+> > that users don't have to worry about writing it themselves.
+> > 
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Christian Brauner <christian@brauner.io>
+> > Co-developed-by: Jann Horn <jannh@google.com>
+> > Signed-off-by: Jann Horn <jannh@google.com>
+> > Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: David Howells <dhowells@redhat.com>
+> > Cc: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+> > Cc: Andy Lutomirsky <luto@kernel.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Aleksa Sarai <cyphar@cyphar.com>
+> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Cc: <stable@vger.kernel.org> # 4.9.x
+> > (clone: fix up cherry-pick conflicts for b3e583825266)
+> > Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
 > > ---
->=20
-> Applied to linux-can/testing.
->=20
-> Tnx,
-> Marc
->=20
-> --
-> Pengutronix e.K.                 =7C Marc Kleine-Budde           =7C
-> Embedded Linux                   =7C https://protect2.fireeye.com/v1/url?=
-k=3D8b005a7e-
-> d49b6343-8b01d131-0cc47a31309a-1e7ada642c78a62f&q=3D1&e=3D7d13a30c-
-> d7d8-4a74-aa6c-6beb64121cd7&u=3Dhttps%3A%2F%2Fwww.pengutronix.de%2F
-> =7C
-> Vertretung West/Dortmund         =7C Phone: +49-231-2826-924     =7C
-> Amtsgericht Hildesheim, HRA 2686 =7C Fax:   +49-5121-206917-5555 =7C
+> >  include/linux/pid.h        |   1 +
+> >  include/uapi/linux/sched.h |   1 +
+> >  kernel/fork.c              | 119 +++++++++++++++++++++++++++++++++++++++++++--
+> >  3 files changed, 117 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/include/linux/pid.h b/include/linux/pid.h
+> > index 97b745d..7599a78 100644
+> > --- a/include/linux/pid.h
+> > +++ b/include/linux/pid.h
+> > @@ -73,6 +73,7 @@ struct pid_link
+> >  	struct hlist_node node;
+> >  	struct pid *pid;
+> >  };
+> > +extern const struct file_operations pidfd_fops;
+> >  
+> >  static inline struct pid *get_pid(struct pid *pid)
+> >  {
+> > diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+> > index 5f0fe01..ed6e31d 100644
+> > --- a/include/uapi/linux/sched.h
+> > +++ b/include/uapi/linux/sched.h
+> > @@ -9,6 +9,7 @@
+> >  #define CLONE_FS	0x00000200	/* set if fs info shared between processes */
+> >  #define CLONE_FILES	0x00000400	/* set if open files shared between processes */
+> >  #define CLONE_SIGHAND	0x00000800	/* set if signal handlers and blocked signals shared */
+> > +#define CLONE_PIDFD	0x00001000	/* set if a pidfd should be placed in parent */
+> >  #define CLONE_PTRACE	0x00002000	/* set if we want to let tracing continue on the child too */
+> >  #define CLONE_VFORK	0x00004000	/* set if the parent wants the child to wake it up on mm_release */
+> >  #define CLONE_PARENT	0x00008000	/* set if we want to have the same parent as the cloner */
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index b64efec..076297a 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -11,7 +11,22 @@
+> >   * management can be a bitch. See 'mm/memory.c': 'copy_page_range()'
+> >   */
+> >  
+> > +#include <linux/anon_inodes.h>
+> >  #include <linux/slab.h>
+> > +#if 0
+> > +#include <linux/sched/autogroup.h>
+> > +#include <linux/sched/mm.h>
+> > +#include <linux/sched/coredump.h>
+> > +#include <linux/sched/user.h>
+> > +#include <linux/sched/numa_balancing.h>
+> > +#include <linux/sched/stat.h>
+> > +#include <linux/sched/task.h>
+> > +#include <linux/sched/task_stack.h>
+> > +#include <linux/sched/cputime.h>
+> > +#include <linux/seq_file.h>
+> > +#include <linux/rtmutex.h>
+> > +>>>>>>> b3e58382... clone: add CLONE_PIDFD
+> > +#endif
+> 
+> That looks odd :(
+> 
+> Can you please refresh this patch series, and make sure it is correct
+> and resend it?
 
+Uhm, this patch series has been merged at least a year ago so this looks
+like an accidental send.
+This probably isn't meant for upstream but for some alibaba specific
+kernel I'd reckon.
 
+Thanks!
+Christian
