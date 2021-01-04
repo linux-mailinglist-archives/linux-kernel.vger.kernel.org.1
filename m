@@ -2,109 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABBC2E9396
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B412E93AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbhADKr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:47:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbhADKrZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:47:25 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CA5C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 02:46:44 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id c5so31673001wrp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 02:46:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5cnKwGKMAW2uD7Mf320R7/SnXF3WX1LG6Qh3O1drZ/Q=;
-        b=hmCCGppBxS67+7BXqQG7Lw+tVho3R1OcBqp3hz5toxuy0QJeDKHzxhOHn/OPB9LuaB
-         TyRcrHvXbhdEl/+7VTeQDe1BX1fDZqTBfmYqeTSRNKfY8Iel4EnMnLHyDDkN8fNQTZtv
-         qoS7n7uPI/VlCfls/vUHdmk8+niCQIE8MyIRw9AQTPN4XlxsFdX3SEVmmoWUZ6B2JsXX
-         oPUpO1OI7PdcZphmKDlODxsyJmOXS6kmQx8Un4U4NBdwvlb7DtInP/gWNfpmZ3GTCCyu
-         yR1UNiR2nUC8UDLCULzVX+XQX/zN9uGPjEAuBM07HcHQbZ/gd9AtQbYGnTUXxCHq7nqR
-         zvew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5cnKwGKMAW2uD7Mf320R7/SnXF3WX1LG6Qh3O1drZ/Q=;
-        b=t5yJIGKvYIuF90HjNBIF+pPVQAnwsATgWd7su0PAEBVgqG1b5h/VLl9sjiev2kkg9Y
-         DNcvTC6LL1pVsJRXeoLAhrAc82AckH7KrAaMqlBq6Onlx1E6wJqYZzUB4GGuBbqGqYmt
-         zdzDHhHQUUaJI6wWxl1q8MpozQONBWILUp7at1qWpZbWcNtR5ik3VwFKWeCILH99cmvr
-         1YR2O33EoSgmfXeyNVfK75T8qGRn0zYUQBqHVXW1u0S/OT5t/KHHEWg606hhO4V0zT+z
-         rDgXj+wLMfARhlMTvgcPx1RpJ4OBLycaKiX2GVL82GozNpku/GP/MZ/Ul7AUt527xxjQ
-         gjuA==
-X-Gm-Message-State: AOAM5337Fp+i1OjakULq4tNxzdqqtQeg21F2k/SYTPj51hzcW8SK+bJd
-        ehH02uKarTGVJTSHxabXmP18Uw==
-X-Google-Smtp-Source: ABdhPJxLg9y2ii+HtYdwO5mHHkoRyLpzpRo5RBXbyYGGjZWmmsW9YQQWIhm9fV2y95zhm1wlI5iR0Q==
-X-Received: by 2002:adf:e452:: with SMTP id t18mr76358986wrm.177.1609757203325;
-        Mon, 04 Jan 2021 02:46:43 -0800 (PST)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id o23sm95805633wro.57.2021.01.04.02.46.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 02:46:42 -0800 (PST)
-Date:   Mon, 4 Jan 2021 10:46:40 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     lee.jones@linaro.org, jingoohan1@gmail.com,
-        b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 -next] video: backlight: use DEFINE_MUTEX() for mutex
- lock
-Message-ID: <20210104104640.2fe5lmi6hljb6rgr@holly.lan>
-References: <20201224132601.31791-1-zhengyongjun3@huawei.com>
+        id S1726485AbhADKuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:50:09 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:33416 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726029AbhADKuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 05:50:08 -0500
+Received: from zn.tnic (p200300ec2f086c001ffa80bfe662d8cb.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6c00:1ffa:80bf:e662:d8cb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 85FEC1EC0328;
+        Mon,  4 Jan 2021 11:49:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609757367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=lkN29uoBdOYjwTyM5F4PVlcAPVOpujdb0ZRueOiNzcQ=;
+        b=Ba6T6lDsI2DkmbhOQdPvYVhmBjLPdt8B+/tPcMuSdIUTLk4mDsypHXsZ+t6PhytogOw01A
+        hFiF6kdhlwM0HvZKkrfZPuQhJS0Tkc1wsCnVyQAduCbK9QZbsD8iDJQwHBQMorQJ/Rs1dH
+        H8qEeiwqjKuLcMR94QUzMLl3h7iKYX0=
+Date:   Mon, 4 Jan 2021 11:49:26 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
+Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: PROBLEM: CPU hotplug leads to NULL pointer dereference with RAPL
+ enabled on AMD 2990WX
+Message-ID: <20210104104926.GC32151@zn.tnic>
+References: <151f54e9-5b45-5624-681c-754224b6c263@gmx.at>
+ <20210104095010.GA32151@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201224132601.31791-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210104095010.GA32151@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 09:26:01PM +0800, Zheng Yongjun wrote:
-> mutex lock can be initialized automatically with DEFINE_MUTEX()
-> rather than explicitly calling mutex_init().
+On Mon, Jan 04, 2021 at 10:50:10AM +0100, Borislav Petkov wrote:
+> On Mon, Jan 04, 2021 at 12:02:44AM +0100, Johnathan Smithinovic wrote:
+> > CPU hotplug leads to NULL pointer dereference with RAPL enabled on AMD 2990WX
+> > 
+> > 
+> > When hot-plugging CPUs (e.g. manually or on suspend) I get a NULL
+> > pointer dereference in rapl_cpu_offline() for CPUs 16 and 24.
+> > It *seems* to me that this has to do with commit
+> > 700d098acec5271161606f3c0086b71695ea2ef8
+> > ("x86/CPU/AMD: Save AMD NodeId as cpu_die_id").
+> > When reverting said commit hotplug works again.
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/video/backlight/backlight.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/backlight.c b/drivers/video/backlight/backlight.c
-> index 537fe1b376ad..d7a09c422547 100644
-> --- a/drivers/video/backlight/backlight.c
-> +++ b/drivers/video/backlight/backlight.c
-> @@ -64,7 +64,7 @@
->   */
->  
->  static struct list_head backlight_dev_list;
-> -static struct mutex backlight_dev_list_mutex;
-> +static DEFINE_MUTEX(backlight_dev_list_mutex);
->  static struct blocking_notifier_head backlight_notifier;
+> Yeah, known issue and I'm working on it.
 
-Why do we want to convert one of these variables to use a
-static initializers but leave the other two unchanged? Surely they
-should all be changed.
+I can't get my box to generate the topology config yours has so can you
+run the debug patch below on your system on latest Linus tree, offline
+cores (it should prevent the oops so that you can catch dmesg) and then
+send me a full dmesg, private mail's fine too.
 
+Thx.
 
-Daniel.
+---
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index 7dbbeaacd995..19563faa58ae 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -139,10 +139,13 @@ static unsigned int rapl_cntr_mask;
+ static u64 rapl_timer_ms;
+ static struct perf_msr *rapl_msrs;
+ 
+-static inline struct rapl_pmu *cpu_to_rapl_pmu(unsigned int cpu)
++static inline struct rapl_pmu *cpu_to_rapl_pmu(unsigned int cpu, bool dbg)
+ {
+ 	unsigned int dieid = topology_logical_die_id(cpu);
+ 
++	if (dbg)
++		pr_info("%s: CPU%d, dieid: %d\n", __func__, cpu, dieid);
++
+ 	/*
+ 	 * The unsigned check also catches the '-1' return value for non
+ 	 * existent mappings in the topology map.
+@@ -360,7 +363,7 @@ static int rapl_pmu_event_init(struct perf_event *event)
+ 		return -EINVAL;
+ 
+ 	/* must be done before validate_group */
+-	pmu = cpu_to_rapl_pmu(event->cpu);
++	pmu = cpu_to_rapl_pmu(event->cpu, false);
+ 	if (!pmu)
+ 		return -EINVAL;
+ 	event->cpu = pmu->cpu;
+@@ -543,13 +546,16 @@ static struct perf_msr amd_rapl_msrs[PERF_RAPL_MAX] = {
+ 
+ static int rapl_cpu_offline(unsigned int cpu)
+ {
+-	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu);
++	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu, true);
+ 	int target;
+ 
+ 	/* Check if exiting cpu is used for collecting rapl events */
+ 	if (!cpumask_test_and_clear_cpu(cpu, &rapl_cpu_mask))
+ 		return 0;
+ 
++	if (WARN_ON(!pmu))
++		return -1;
++
+ 	pmu->cpu = -1;
+ 	/* Find a new cpu to collect rapl events */
+ 	target = cpumask_any_but(topology_die_cpumask(cpu), cpu);
+@@ -565,7 +571,7 @@ static int rapl_cpu_offline(unsigned int cpu)
+ 
+ static int rapl_cpu_online(unsigned int cpu)
+ {
+-	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu);
++	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu, true);
+ 	int target;
+ 
+ 	if (!pmu) {
+@@ -682,6 +688,8 @@ static int __init init_rapl_pmus(void)
+ 	int maxdie = topology_max_packages() * topology_max_die_per_package();
+ 	size_t size;
+ 
++	pr_info("%s: maxdie: %d\n", __func__, maxdie);
++
+ 	size = sizeof(*rapl_pmus) + maxdie * sizeof(struct rapl_pmu *);
+ 	rapl_pmus = kzalloc(size, GFP_KERNEL);
+ 	if (!rapl_pmus)
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 8ca66af96a54..20343682aace 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -319,6 +319,11 @@ int topology_phys_to_logical_die(unsigned int die_id, unsigned int cur_cpu)
+ 	for_each_possible_cpu(cpu) {
+ 		struct cpuinfo_x86 *c = &cpu_data(cpu);
+ 
++		pr_info("%s: init: %d, cpu %d, cur_cpu: %d, cpu_die_id: %d, die_id: %d, "
++			"phys_proc_id: %d, proc_id: %d, logical_die_id: %d\n",
++			__func__, c->initialized, cpu, cur_cpu, c->cpu_die_id, die_id,
++			c->phys_proc_id, proc_id, c->logical_die_id);
++
+ 		if (c->initialized && c->cpu_die_id == die_id &&
+ 		    c->phys_proc_id == proc_id)
+ 			return c->logical_die_id;
 
+-- 
+Regards/Gruss,
+    Boris.
 
->  
->  static const char *const backlight_types[] = {
-> @@ -757,7 +757,6 @@ static int __init backlight_class_init(void)
->  	backlight_class->dev_groups = bl_device_groups;
->  	backlight_class->pm = &backlight_class_dev_pm_ops;
->  	INIT_LIST_HEAD(&backlight_dev_list);
-> -	mutex_init(&backlight_dev_list_mutex);
->  	BLOCKING_INIT_NOTIFIER_HEAD(&backlight_notifier);
->  
->  	return 0;
-> -- 
-> 2.22.0
-> 
+https://people.kernel.org/tglx/notes-about-netiquette
