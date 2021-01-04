@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB762E996C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0862E99AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728033AbhADP7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:59:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36472 "EHLO mail.kernel.org"
+        id S1728881AbhADQCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:02:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727973AbhADP7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:59:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB43C22515;
-        Mon,  4 Jan 2021 15:58:36 +0000 (UTC)
+        id S1728856AbhADQCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:02:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 764BD2250F;
+        Mon,  4 Jan 2021 16:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775917;
-        bh=R6lmCwaW2N7KE9H1bzMYEhfthcrG8lvKYtIKO8RDEs0=;
+        s=korg; t=1609776113;
+        bh=aObhzQXyl4ClD4RR7jZU7S8yJ1Qko2cM27BCVnVDKy0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qRmcXg5MwPQ59pxI02rrTP/AB47XnOSOQ1lRpbDomwDTsH3Le+/o6ES+eKn/9vB8J
-         utX0BM+nMxHEP+FuAjAo5Ze8pc9yu9WhH8h2z0vcpu50gMLsUaUGrR+DFRLG8NW+uc
-         kMlxmUhUUSgNcPNjID203rQ6dzpKmvA+aoKIG0MA=
+        b=GGuOlL7TGEsfgRLRVHgD6S+3hLde/5PWQS08SP3n6Kk69MLgYQAq1NKab6X4m+A9p
+         RgbosT1c1u+8LtjA4aC+tV92aKeXnFxoD8TANXQlrZgfrHtVzuKc0r97hK8krq33AS
+         0Sk5h9UhbJrPyAj/Ox4R54LXk/wBnxZs9lrAAeQY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will.deacon@arm.com>,
-        Santosh Sivaraj <santosh@fossix.org>
-Subject: [PATCH 4.19 16/35] asm-generic/tlb: Track which levels of the page tables have been cleared
-Date:   Mon,  4 Jan 2021 16:57:19 +0100
-Message-Id: <20210104155704.197670503@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 5.10 27/63] Bluetooth: hci_h5: close serdev device and free hu in h5_close
+Date:   Mon,  4 Jan 2021 16:57:20 +0100
+Message-Id: <20210104155710.140204212@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
-References: <20210104155703.375788488@linuxfoundation.org>
+In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
+References: <20210104155708.800470590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,181 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will.deacon@arm.com>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-commit a6d60245d6d9b1caf66b0d94419988c4836980af upstream
+commit 70f259a3f4276b71db365b1d6ff1eab805ea6ec3 upstream.
 
-It is common for architectures with hugepage support to require only a
-single TLB invalidation operation per hugepage during unmap(), rather than
-iterating through the mapping at a PAGE_SIZE increment. Currently,
-however, the level in the page table where the unmap() operation occurs
-is not stored in the mmu_gather structure, therefore forcing
-architectures to issue additional TLB invalidation operations or to give
-up and over-invalidate by e.g. invalidating the entire TLB.
+When h5_close() gets called, the memory allocated for the hu gets
+freed only if hu->serdev doesn't exist. This leads to a memory leak.
+So when h5_close() is requested, close the serdev device instance and
+free the memory allocated to the hu entirely instead.
 
-Ideally, we could add an interval rbtree to the mmu_gather structure,
-which would allow us to associate the correct mapping granule with the
-various sub-mappings within the range being invalidated. However, this
-is costly in terms of book-keeping and memory management, so instead we
-approximate by keeping track of the page table levels that are cleared
-and provide a means to query the smallest granule required for invalidation.
-
-Signed-off-by: Will Deacon <will.deacon@arm.com>
-Cc: <stable@vger.kernel.org> # 4.19
-Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
-[santosh: prerequisite for upcoming tlbflush backports]
+Fixes: https://syzkaller.appspot.com/bug?extid=6ce141c55b2f7aafd1c4
+Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/asm-generic/tlb.h |   58 +++++++++++++++++++++++++++++++++++++++-------
- mm/memory.c               |    4 ++-
- 2 files changed, 53 insertions(+), 9 deletions(-)
 
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -114,6 +114,14 @@ struct mmu_gather {
- 	 */
- 	unsigned int		freed_tables : 1;
+---
+ drivers/bluetooth/hci_h5.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -251,8 +251,12 @@ static int h5_close(struct hci_uart *hu)
+ 	if (h5->vnd && h5->vnd->close)
+ 		h5->vnd->close(h5);
  
-+	/*
-+	 * at which levels have we cleared entries?
-+	 */
-+	unsigned int		cleared_ptes : 1;
-+	unsigned int		cleared_pmds : 1;
-+	unsigned int		cleared_puds : 1;
-+	unsigned int		cleared_p4ds : 1;
+-	if (!hu->serdev)
+-		kfree(h5);
++	if (hu->serdev)
++		serdev_device_close(hu->serdev);
 +
- 	struct mmu_gather_batch *active;
- 	struct mmu_gather_batch	local;
- 	struct page		*__pages[MMU_GATHER_BUNDLE];
-@@ -148,6 +156,10 @@ static inline void __tlb_reset_range(str
- 		tlb->end = 0;
- 	}
- 	tlb->freed_tables = 0;
-+	tlb->cleared_ptes = 0;
-+	tlb->cleared_pmds = 0;
-+	tlb->cleared_puds = 0;
-+	tlb->cleared_p4ds = 0;
++	kfree_skb(h5->rx_skb);
++	kfree(h5);
++	h5 = NULL;
+ 
+ 	return 0;
  }
- 
- static inline void tlb_flush_mmu_tlbonly(struct mmu_gather *tlb)
-@@ -197,6 +209,25 @@ static inline void tlb_remove_check_page
- }
- #endif
- 
-+static inline unsigned long tlb_get_unmap_shift(struct mmu_gather *tlb)
-+{
-+	if (tlb->cleared_ptes)
-+		return PAGE_SHIFT;
-+	if (tlb->cleared_pmds)
-+		return PMD_SHIFT;
-+	if (tlb->cleared_puds)
-+		return PUD_SHIFT;
-+	if (tlb->cleared_p4ds)
-+		return P4D_SHIFT;
-+
-+	return PAGE_SHIFT;
-+}
-+
-+static inline unsigned long tlb_get_unmap_size(struct mmu_gather *tlb)
-+{
-+	return 1UL << tlb_get_unmap_shift(tlb);
-+}
-+
- /*
-  * In the case of tlb vma handling, we can optimise these away in the
-  * case where we're doing a full MM flush.  When we're doing a munmap,
-@@ -230,13 +261,19 @@ static inline void tlb_remove_check_page
- #define tlb_remove_tlb_entry(tlb, ptep, address)		\
- 	do {							\
- 		__tlb_adjust_range(tlb, address, PAGE_SIZE);	\
-+		tlb->cleared_ptes = 1;				\
- 		__tlb_remove_tlb_entry(tlb, ptep, address);	\
- 	} while (0)
- 
--#define tlb_remove_huge_tlb_entry(h, tlb, ptep, address)	     \
--	do {							     \
--		__tlb_adjust_range(tlb, address, huge_page_size(h)); \
--		__tlb_remove_tlb_entry(tlb, ptep, address);	     \
-+#define tlb_remove_huge_tlb_entry(h, tlb, ptep, address)	\
-+	do {							\
-+		unsigned long _sz = huge_page_size(h);		\
-+		__tlb_adjust_range(tlb, address, _sz);		\
-+		if (_sz == PMD_SIZE)				\
-+			tlb->cleared_pmds = 1;			\
-+		else if (_sz == PUD_SIZE)			\
-+			tlb->cleared_puds = 1;			\
-+		__tlb_remove_tlb_entry(tlb, ptep, address);	\
- 	} while (0)
- 
- /**
-@@ -250,6 +287,7 @@ static inline void tlb_remove_check_page
- #define tlb_remove_pmd_tlb_entry(tlb, pmdp, address)			\
- 	do {								\
- 		__tlb_adjust_range(tlb, address, HPAGE_PMD_SIZE);	\
-+		tlb->cleared_pmds = 1;					\
- 		__tlb_remove_pmd_tlb_entry(tlb, pmdp, address);		\
- 	} while (0)
- 
-@@ -264,6 +302,7 @@ static inline void tlb_remove_check_page
- #define tlb_remove_pud_tlb_entry(tlb, pudp, address)			\
- 	do {								\
- 		__tlb_adjust_range(tlb, address, HPAGE_PUD_SIZE);	\
-+		tlb->cleared_puds = 1;					\
- 		__tlb_remove_pud_tlb_entry(tlb, pudp, address);		\
- 	} while (0)
- 
-@@ -289,7 +328,8 @@ static inline void tlb_remove_check_page
- #define pte_free_tlb(tlb, ptep, address)			\
- 	do {							\
- 		__tlb_adjust_range(tlb, address, PAGE_SIZE);	\
--		tlb->freed_tables = 1;			\
-+		tlb->freed_tables = 1;				\
-+		tlb->cleared_pmds = 1;				\
- 		__pte_free_tlb(tlb, ptep, address);		\
- 	} while (0)
- #endif
-@@ -298,7 +338,8 @@ static inline void tlb_remove_check_page
- #define pmd_free_tlb(tlb, pmdp, address)			\
- 	do {							\
- 		__tlb_adjust_range(tlb, address, PAGE_SIZE);	\
--		tlb->freed_tables = 1;			\
-+		tlb->freed_tables = 1;				\
-+		tlb->cleared_puds = 1;				\
- 		__pmd_free_tlb(tlb, pmdp, address);		\
- 	} while (0)
- #endif
-@@ -308,7 +349,8 @@ static inline void tlb_remove_check_page
- #define pud_free_tlb(tlb, pudp, address)			\
- 	do {							\
- 		__tlb_adjust_range(tlb, address, PAGE_SIZE);	\
--		tlb->freed_tables = 1;			\
-+		tlb->freed_tables = 1;				\
-+		tlb->cleared_p4ds = 1;				\
- 		__pud_free_tlb(tlb, pudp, address);		\
- 	} while (0)
- #endif
-@@ -319,7 +361,7 @@ static inline void tlb_remove_check_page
- #define p4d_free_tlb(tlb, pudp, address)			\
- 	do {							\
- 		__tlb_adjust_range(tlb, address, PAGE_SIZE);	\
--		tlb->freed_tables = 1;			\
-+		tlb->freed_tables = 1;				\
- 		__p4d_free_tlb(tlb, pudp, address);		\
- 	} while (0)
- #endif
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -279,8 +279,10 @@ void arch_tlb_finish_mmu(struct mmu_gath
- {
- 	struct mmu_gather_batch *batch, *next;
- 
--	if (force)
-+	if (force) {
-+		__tlb_reset_range(tlb);
- 		__tlb_adjust_range(tlb, start, end - start);
-+	}
- 
- 	tlb_flush_mmu(tlb);
- 
 
 
