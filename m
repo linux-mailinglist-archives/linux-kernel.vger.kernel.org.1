@@ -2,128 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA28F2EA02C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9292EA03D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbhADWvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 17:51:02 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58732 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbhADWvC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 17:51:02 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 8F2BB282AD;
-        Mon,  4 Jan 2021 17:50:15 -0500 (EST)
-Date:   Tue, 5 Jan 2021 09:50:14 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Bart Van Assche <bvanassche@acm.org>
-cc:     Chris Boot <bootc@boo.tc>, linuxppc-dev@lists.ozlabs.org,
-        target-devel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Nicholas Bellinger <nab@linux-iscsi.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
-In-Reply-To: <e3b5ce6a-0152-01b8-89d2-80bcdb9c1c57@acm.org>
-Message-ID: <alpine.LNX.2.23.453.2101050840010.6@nippy.intranet>
-References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com> <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet> <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc> <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
- <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc> <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet> <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org> <alpine.LNX.2.22.394.2006171104540.11@nippy.intranet> <e3b5ce6a-0152-01b8-89d2-80bcdb9c1c57@acm.org>
+        id S1726502AbhADW7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 17:59:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726026AbhADW7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 17:59:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B234220784;
+        Mon,  4 Jan 2021 22:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609801109;
+        bh=McSVoja0FAYaCdm3f5ezz5kbVb5dnoFzHZXUMiu8atE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b5v+cQy7U6BA7piielZd5VBOqth4tomTvnzukdSPjlmQ+dtJh84B2J711LvADEkAa
+         bfMZ3/AfXlYniDNz/lgFsUq9PUy22uFMRKaM83AzMIeRR4TBbaNJ4S1hkBOwP7pbsx
+         1YAncTFUex3AgHCXBAarND3Oi3558huFcey0X6B6v0cEnXwvahRyZnHlfBHN7nsZ52
+         5v40Ph1Ala+HvX/dBux6aow3FPVryt3s6VU3qBK2MD1dHYMJ10TS8Xcc7xRBOw3UnY
+         wlkuH+2C2Q4BIR9PQMIMeRSjdRZ4gWcVJNP+Zo1wLzulWmF3ddSHSYbx2gCb6mGkwL
+         DwrCNkc0VsFRQ==
+Date:   Mon, 4 Jan 2021 17:58:27 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com,
+        Davide Caratti <dcaratti@redhat.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 5.10 01/63] net/sched: sch_taprio: reset child qdiscs
+ before freeing them
+Message-ID: <20210104225827.GF3665355@sasha-vm>
+References: <20210104155708.800470590@linuxfoundation.org>
+ <20210104155708.875695855@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210104155708.875695855@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Jan 2021, Bart Van Assche wrote:
+On Mon, Jan 04, 2021 at 04:56:54PM +0100, Greg Kroah-Hartman wrote:
+>From: Davide Caratti <dcaratti@redhat.com>
+>
+>[ Upstream commit 44d4775ca51805b376a8db5b34f650434a08e556 ]
+>
+>syzkaller shows that packets can still be dequeued while taprio_destroy()
+>is running. Let sch_taprio use the reset() function to cancel the advance
+>timer and drop all skbs from the child qdiscs.
+>
+>Fixes: 5a781ccbd19e ("tc: Add support for configuring the taprio scheduler")
+>Link: https://syzkaller.appspot.com/bug?id=f362872379bf8f0017fb667c1ab158f2d1e764ae
+>Reported-by: syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com
+>Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+>Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+>Link: https://lore.kernel.org/r/63b6d79b0e830ebb0283e020db4df3cdfdfb2b94.1608142843.git.dcaratti@redhat.com
+>Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+>Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-> On 6/16/20 7:07 PM, Finn Thain wrote:
-> > On Tue, 16 Jun 2020, Bart Van Assche wrote:
-> >> As far as I know the sbp driver only has had one user ever and that 
-> >> user is no longer user the sbp driver.
-> > 
-> > So, you estimate the userbase at zero. Can you give a confidence 
-> > level? Actual measurement is hard because when end users encounter 
-> > breakage, they look for quick workarounds before they undertake post 
-> > mortem, log collection, bug reporting, mailing list discussions, 
-> > analysis etc.
-> 
-> (replying to an e-mail from six months ago)
-> 
-> Hi Finn,
-> 
-> I am confident that my estimate is an accurate estimate since I have not 
-> seen any sbp support requests, sbp bug reports nor any sbp bug fixes 
-> since the sbp target driver has been accepted upstream.
-> 
+I noticed that there's a fix for this patch going through netdev (but
+not yet in Linus's tree). The fix reads to me like it fixes a missed
+corner case by this patch rather than this patch being incorrect, so
+I'll leave this patch in. If anyone disagrees please speak up :)
 
-That suggests to me that the code that you're hoping to remove 1) has no 
-bugs, or 2) has no reported bugs, or 3) has no users at present.
-
-I am confident that your evidence does not support your conclusion (i.e. 
-the code will never be used again).
-
-Sometimes, users only appear after the unreported bugs get fixed. I've 
-seen it happen.
-
-> > Here's a different question: "Why remove it from the kernel tree?"
-> > 
-> > If maintaining this code is a burden, is it not the kind of tax that 
-> > all developers/users pay to all developers/users? Does this driver 
-> > impose an unreasonably high burden for some reason?
-> 
-> Yes. If anyone wants to change the interface between SCSI target core 
-> and SCSI target drivers, all target drivers, including the sbp and FCoE 
-> target driver have to be retested.
-
-I'm unaware of such an obligation. API changes happen often. When they do, 
-we see good test coverage of commercially viable hardware, some 
-best-effort testing of common hardware, and some perfunctory build 
-testing.
-
-But that is missing the point, which was about a particular driver, not 
-about development process. You have not shown how the target API is 
-special, to support your claim that this driver imposes an unreasonable 
-burden.
-
-In the interests of making forward progress in this discussion, shall we 
-discuss the kind of SCSI Target API changes that you anticipate?
-
-> In other words, keeping unused target drivers inside the kernel tree 
-> involves a significant maintenance burden for anyone who wants to modify 
-> the interface between the SCSI target core and SCSI target drivers.
-> 
-
-Keeping _any_ driver in the kernel involves a maintenance burden. There 
-are two good ways to address that.
-
-Firstly, by improving the development process. For example, an API change 
-is mostly mechanical work that lends itself to automated refactoring.
-Secondly, by involving all interested parties, so that the burden is 
-shared.
-
-Of course, there are other ways. E.g. "don't ship code when doing so won't 
-turn a profit". That, by the way, was the policy that gave us 10 billion 
-Android devices (or more) that don't function with a mainline kernel.
-
-> Additionally, there is a good alternative available for the sbp driver. 
-> Every system I know of that is equipped with a Firewire port also has an 
-> Ethernet port. So users who want to provide SCSI target functionality on 
-> such systems can use any SCSI transport protocol that is compatible with 
-> Ethernet (iSCSI, iSER over soft-RoCE, SRP over soft-RoCE, ...).
-> 
-
-Ethernet is not always an alternative. That was already discussed in this 
-thread. But let's assume for a moment that you can migrate any and all 
-users of this driver over to an ethernet driver.
-
-Why would the maintainers of that ethernet driver and its API accept that 
-plan, if adding users would extend their maintenance and testing 
-obligations? Do you think those maintainers should pay the "kind of tax 
-that all developers/users pay to all developers/users?"
-
-> Thanks,
-> 
-> Bart.
-> 
+-- 
+Thanks,
+Sasha
