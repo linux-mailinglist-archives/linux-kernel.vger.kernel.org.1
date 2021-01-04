@@ -2,71 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134932E9FA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 22:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029752E9FAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 22:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbhADVuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 16:50:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbhADVut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 16:50:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id CF7082225E;
-        Mon,  4 Jan 2021 21:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609797008;
-        bh=ktLasPF5LL+xB2S/z9EYKk/ANhzEOT2Nf8DBtMLtWA0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=X9rjNaXl/h3uKSt29dhMvZkMqdzS3nv51t1zei1JuoJmQXCBewd7lSZy7WpT7x1Qa
-         x9A8V6MzNS9Cn2jMKVUeEgqot/ei1XrAFbC8tjOewsRb1ui+1f5t60pSFLl1ZIVAJi
-         pvu3L2M2+WDUpuN6UdUcEVbCBpFJ3SN2FTGchD/o9x1y+Ud83kq8Zy8o6pHDgW2aEL
-         5jjtQvRHIYPsGAfN+ZRwBKo12CIsvYcJW/D/K8lJOFMHf02B04GEHELd+9di6J0AYV
-         /XPkAlM6sq4fffMvKT8O+E7Tvmnaaezh3AjbdOcECc26FVpl0TXJ1KgvNMPRFTPBHr
-         jggjMLEOO7EXQ==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id BCD7C600F6;
-        Mon,  4 Jan 2021 21:50:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1726735AbhADVzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 16:55:41 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:24909 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbhADVzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 16:55:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1609797166;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:
+        Subject:Sender;
+        bh=6fGapvYj1KUbHyiUaqLugayVcLwc8fLHw2DuUxRIf1I=;
+        b=hcK3OdZMDu8zpW8aN0nE/iFwmK5lcCvdCdgOluBtyU8bdTnaLKFTdxpg0G8VyGVVRR
+        /o70fjd0XkTIawbKbOMwJOizwukyuFgRkODAC+BcDZg36NhHEO23rD2GZR7lW4AomGNb
+        F/kVJfOFeqCvM/soIjCAXJwRYy/i2C21hcz6Fb+uumOSQCoAskFjQ9kMpnLexZph0/Lt
+        Mh0pCujzWadjYoZC+34aDzJnv3nmXecrrVu4pY0p+SNtuY66TlANfYsRuDMjPYPZILBf
+        O6rmuAW8CH4K3Mlpfp60f7wbv/g+S3i9jzL1FXxvaafiHlxdJgtiomShKaRf0ntCQDdO
+        RFIw==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSZFqc="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 47.10.7 DYNA|AUTH)
+        with ESMTPSA id h02bd9x04LqhxfJ
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 4 Jan 2021 22:52:43 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        mathew.j.martineau@linux.intel.com, dhowells@redhat.com
+Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org
+Subject: [PATCH 5/5] fs: use HKDF implementation from kernel crypto API
+Date:   Mon, 04 Jan 2021 22:50:49 +0100
+Message-ID: <7857050.T7Z3S40VBb@positron.chronox.de>
+In-Reply-To: <4616980.31r3eYUQgx@positron.chronox.de>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: lapb: Decrease the refcount of "struct lapb_cb" in
- lapb_device_event
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160979700876.8172.3140864000017286214.git-patchwork-notify@kernel.org>
-Date:   Mon, 04 Jan 2021 21:50:08 +0000
-References: <20201231174331.64539-1-xie.he.0141@gmail.com>
-In-Reply-To: <20201231174331.64539-1-xie.he.0141@gmail.com>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ms@dev.tdt.de
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+As the kernel crypto API implements HKDF, replace the
+file-system-specific HKDF implementation with the generic HKDF
+implementation.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+---
+ fs/crypto/Kconfig           |   2 +-
+ fs/crypto/fscrypt_private.h |   4 +-
+ fs/crypto/hkdf.c            | 108 +++++++++---------------------------
+ 3 files changed, 30 insertions(+), 84 deletions(-)
 
-On Thu, 31 Dec 2020 09:43:31 -0800 you wrote:
-> In lapb_device_event, lapb_devtostruct is called to get a reference to
-> an object of "struct lapb_cb". lapb_devtostruct increases the refcount
-> of the object and returns a pointer to it. However, we didn't decrease
-> the refcount after we finished using the pointer. This patch fixes this
-> problem.
-> 
-> Fixes: a4989fa91110 ("net/lapb: support netdev events")
-> Cc: Martin Schiller <ms@dev.tdt.de>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
-> 
-> [...]
+diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+index a5f5c30368a2..9450e958f1d1 100644
+--- a/fs/crypto/Kconfig
++++ b/fs/crypto/Kconfig
+@@ -2,7 +2,7 @@
+ config FS_ENCRYPTION
+ 	bool "FS Encryption (Per-file encryption)"
+ 	select CRYPTO
+-	select CRYPTO_HASH
++	select CRYPTO_HKDF
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_LIB_SHA256
+ 	select KEYS
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 3fa965eb3336..0d6871838099 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -304,7 +304,7 @@ struct fscrypt_hkdf {
+ 	struct crypto_shash *hmac_tfm;
+ };
+ 
+-int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
++int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, u8 *master_key,
+ 		      unsigned int master_key_size);
+ 
+ /*
+@@ -323,7 +323,7 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+ #define HKDF_CONTEXT_INODE_HASH_KEY	7 /* info=<empty>		*/
+ 
+ int fscrypt_hkdf_expand(const struct fscrypt_hkdf *hkdf, u8 context,
+-			const u8 *info, unsigned int infolen,
++			u8 *info, unsigned int infolen,
+ 			u8 *okm, unsigned int okmlen);
+ 
+ void fscrypt_destroy_hkdf(struct fscrypt_hkdf *hkdf);
+diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
+index e0ec21055505..f837cb8ec0a5 100644
+--- a/fs/crypto/hkdf.c
++++ b/fs/crypto/hkdf.c
+@@ -9,7 +9,7 @@
+  * Copyright 2019 Google LLC
+  */
+ 
+-#include <crypto/hash.h>
++#include <crypto/hkdf.h>
+ #include <crypto/sha2.h>
+ 
+ #include "fscrypt_private.h"
+@@ -37,34 +37,25 @@
+  * unnecessarily long master keys.  Thus fscrypt still does HKDF-Extract.  No
+  * salt is used, since fscrypt master keys should already be pseudorandom and
+  * there's no way to persist a random salt per master key from kernel mode.
+- */
+-
+-/* HKDF-Extract (RFC 5869 section 2.2), unsalted */
+-static int hkdf_extract(struct crypto_shash *hmac_tfm, const u8 *ikm,
+-			unsigned int ikmlen, u8 prk[HKDF_HASHLEN])
+-{
+-	static const u8 default_salt[HKDF_HASHLEN];
+-	int err;
+-
+-	err = crypto_shash_setkey(hmac_tfm, default_salt, HKDF_HASHLEN);
+-	if (err)
+-		return err;
+-
+-	return crypto_shash_tfm_digest(hmac_tfm, ikm, ikmlen, prk);
+-}
+-
+-/*
++ *
+  * Compute HKDF-Extract using the given master key as the input keying material,
+  * and prepare an HMAC transform object keyed by the resulting pseudorandom key.
+  *
+  * Afterwards, the keyed HMAC transform object can be used for HKDF-Expand many
+  * times without having to recompute HKDF-Extract each time.
+  */
+-int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
++int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, u8 *master_key,
+ 		      unsigned int master_key_size)
+ {
++	/* HKDF-Extract (RFC 5869 section 2.2), unsalted */
++	const struct kvec seed[] = { {
++		.iov_base = NULL,
++		.iov_len = 0
++	}, {
++		.iov_base = master_key,
++		.iov_len = master_key_size
++	} };
+ 	struct crypto_shash *hmac_tfm;
+-	u8 prk[HKDF_HASHLEN];
+ 	int err;
+ 
+ 	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, 0);
+@@ -74,16 +65,12 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+ 		return PTR_ERR(hmac_tfm);
+ 	}
+ 
+-	if (WARN_ON(crypto_shash_digestsize(hmac_tfm) != sizeof(prk))) {
++	if (WARN_ON(crypto_shash_digestsize(hmac_tfm) != HKDF_HASHLEN)) {
+ 		err = -EINVAL;
+ 		goto err_free_tfm;
+ 	}
+ 
+-	err = hkdf_extract(hmac_tfm, master_key, master_key_size, prk);
+-	if (err)
+-		goto err_free_tfm;
+-
+-	err = crypto_shash_setkey(hmac_tfm, prk, sizeof(prk));
++	err = crypto_hkdf_setkey(hmac_tfm, seed, ARRAY_SIZE(seed));
+ 	if (err)
+ 		goto err_free_tfm;
+ 
+@@ -93,7 +80,6 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+ err_free_tfm:
+ 	crypto_free_shash(hmac_tfm);
+ out:
+-	memzero_explicit(prk, sizeof(prk));
+ 	return err;
+ }
+ 
+@@ -109,65 +95,25 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+  * accidentally repeat an info string when using HKDF for different purposes.)
+  */
+ int fscrypt_hkdf_expand(const struct fscrypt_hkdf *hkdf, u8 context,
+-			const u8 *info, unsigned int infolen,
++			u8 *info, unsigned int infolen,
+ 			u8 *okm, unsigned int okmlen)
+ {
+-	SHASH_DESC_ON_STACK(desc, hkdf->hmac_tfm);
+-	u8 prefix[9];
+-	unsigned int i;
+-	int err;
+-	const u8 *prev = NULL;
+-	u8 counter = 1;
+-	u8 tmp[HKDF_HASHLEN];
+-
+-	if (WARN_ON(okmlen > 255 * HKDF_HASHLEN))
+-		return -EINVAL;
+-
+-	desc->tfm = hkdf->hmac_tfm;
+-
+-	memcpy(prefix, "fscrypt\0", 8);
+-	prefix[8] = context;
+-
+-	for (i = 0; i < okmlen; i += HKDF_HASHLEN) {
++	const struct kvec info_iov[] = { {
++		.iov_base = "fscrypt\0",
++		.iov_len = 8,
++	}, {
++		.iov_base = &context,
++		.iov_len = 1,
++	}, {
++		.iov_base = info,
++		.iov_len = infolen,
++	} };
++	int err = crypto_hkdf_generate(hkdf->hmac_tfm,
++				       info_iov, ARRAY_SIZE(info_iov),
++				       okm, okmlen);
+ 
+-		err = crypto_shash_init(desc);
+-		if (err)
+-			goto out;
+-
+-		if (prev) {
+-			err = crypto_shash_update(desc, prev, HKDF_HASHLEN);
+-			if (err)
+-				goto out;
+-		}
+-
+-		err = crypto_shash_update(desc, prefix, sizeof(prefix));
+-		if (err)
+-			goto out;
+-
+-		err = crypto_shash_update(desc, info, infolen);
+-		if (err)
+-			goto out;
+-
+-		BUILD_BUG_ON(sizeof(counter) != 1);
+-		if (okmlen - i < HKDF_HASHLEN) {
+-			err = crypto_shash_finup(desc, &counter, 1, tmp);
+-			if (err)
+-				goto out;
+-			memcpy(&okm[i], tmp, okmlen - i);
+-			memzero_explicit(tmp, sizeof(tmp));
+-		} else {
+-			err = crypto_shash_finup(desc, &counter, 1, &okm[i]);
+-			if (err)
+-				goto out;
+-		}
+-		counter++;
+-		prev = &okm[i];
+-	}
+-	err = 0;
+-out:
+ 	if (unlikely(err))
+ 		memzero_explicit(okm, okmlen); /* so caller doesn't need to */
+-	shash_desc_zero(desc);
+ 	return err;
+ }
+ 
+-- 
+2.26.2
 
-Here is the summary with links:
-  - [net] net: lapb: Decrease the refcount of "struct lapb_cb" in lapb_device_event
-    https://git.kernel.org/netdev/net/c/b40f97b91a3b
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
