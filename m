@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B63A2E9601
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B01DC2E9604
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbhADN34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:29:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
+        id S1727158AbhADNaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:30:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbhADN3y (ORCPT
+        with ESMTP id S1726098AbhADN34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:29:54 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F606C061795;
-        Mon,  4 Jan 2021 05:29:14 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id n16so7707281wmc.0;
-        Mon, 04 Jan 2021 05:29:14 -0800 (PST)
+        Mon, 4 Jan 2021 08:29:56 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7436FC061796;
+        Mon,  4 Jan 2021 05:29:15 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id y17so32160059wrr.10;
+        Mon, 04 Jan 2021 05:29:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=N0ICd7gjWpI+u44o7fGulyQewlvcHmYQ4mPyDcl0N/Y=;
-        b=KYr5DfgA5liPJkd48Mrj1k+lb8ObI4YW8MoTs/LZJSQY1rQkG5bQuKaPlkHHq/2WdC
-         Uz4QdeAVD43drFI2JM32/IE/V0IgPHiI0yI7H5Nnd2cUk3LiLtB3kYk+dAMNZVErqt0Z
-         WIsDVjV1229ydaJNNxe27vSHnLa6SdUW38jlpTTBm+ElH+mhieunnn3xO5M5oiM0zppP
-         2fDAYZZPc33b5kH5CbUew073VctIkaL3zwyKY5z00NXmacvlWXkmqSmJAeiIlpOTrTtE
-         Io3rotHVY1oDq0/Bqw7KzUg48kRlw3ToWBgS5mInL0mTVTfsXw9VhyGPdxEqbjvSPBlb
-         gecA==
+        bh=ju+fvznWpdnqKgL0XY4kkDus/LAK39t8IpQPOIIruIQ=;
+        b=McBUAzMdLiwYXD5jLCbq0wTAXfCoJ093gSi/QpaxlQr0YZKpvEOIWm95LBuOwPAWMo
+         cFTd/0EBuKZP2EKuzGxry+pOeCmeXVoqYjwImBgDg7+lAdgeL6ZFqICN1eoNwbwIASVa
+         yRQWBi6E5ghBLs6J81QGYsdYfteZGCY5KAjMmeHseB8hjVqYxWEgDCq5OYdrNY3/Gmfg
+         YM2QkFqj4c2qHqnr7Pg2/N70/kffN/Uv3LaA/pfsFVVD+XsQgDXcZ+BECc8UWUw/fFS9
+         5D/qd3KjxpYfMn6qG4zl7o9zcfF1pS8K6EXYt32LNIuCNZ6ssIIXKFLiTvj76STyxO3R
+         j8QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=N0ICd7gjWpI+u44o7fGulyQewlvcHmYQ4mPyDcl0N/Y=;
-        b=sBbTqJjSrLGT40eOAIWOIKdpZZ44MYWVQV6h35bNMCWU2K4dZY6vbqoObvZxL3ra6e
-         XLskUrwi7Nm5sKLO7Oo8wrzqTejgq/WDa66h/vkca4Hsemh74EiM523oOJhB8pgZmKSL
-         9lkFPQ6IqC2HaR04jEmhBqhk1IFPkhdvxAp5VwXCynQ2H8t3xagBqYgmlWiTbJBlykok
-         3G0keKpYHBrSVwGHSwQXW6oKIBXiGQMC/FhWdyXyxoyuq51ynSPkRwbGsXHKNHhLmOE/
-         zgK8tUjHltCUXR+1D0Vsb3YSVKkc/5Y6i94y4zHfQ0asp91gQmUzhqU9a35IRWskU29P
-         NFIA==
-X-Gm-Message-State: AOAM532sZJ+QjDubQ88cOx4xPepGzTvgfamxsTuk5qlU/4vMaO8UiCUd
-        yM3DISKWrDwO2cBUTUk5mWY=
-X-Google-Smtp-Source: ABdhPJywuE2u9mR3LAhtBrTJHq+1D8WBmP3LHVUQJhGBFbugfODpsKR6wzD1kLMNzPlpsdtU8xmBMw==
-X-Received: by 2002:a1c:ba07:: with SMTP id k7mr27284102wmf.34.1609766952936;
-        Mon, 04 Jan 2021 05:29:12 -0800 (PST)
+        bh=ju+fvznWpdnqKgL0XY4kkDus/LAK39t8IpQPOIIruIQ=;
+        b=toPu6+l+RFEy07RDReqgGhbyTdIiWhT8e+05aLgwAycNPB2UWfJHi2OAqiXS/a0fAi
+         lrQnktz2T2NvXTFxDYTefWnfcGCRgmEK4rSow3WtqVDM89GYJoqtLX03QbPyY4kDUEwy
+         U6EBZpUBTkGAskmzRD+5Y7CI7hejjHa7+p2KXuU9ToeMyA0eAyBw9ojz/m/wQjnnrZP8
+         wmmoSkVdGrN5tOn+z8cehrtZiQl3uFT1ipYaFutdlwIkgj7TkCrjgbjaonpJxtEPgaL0
+         1H2YjsrnwFxtMa91/Vtpxj71O4utkHHd78B+gjVvGzd7Gn3CMoe8eG/EB7HbGk+tQWHx
+         Y6Nw==
+X-Gm-Message-State: AOAM533lzXpFEdVBWjCVBD/S/6Z26oBPgheESWL0Ek7UJLIcjDOK/uAa
+        X3hgU+Sw3fM3DaI/HPbimtg=
+X-Google-Smtp-Source: ABdhPJy587NnvO7AefdsF/KjjG1iHKv9GXok92rFrI/AXc+PCpiFAKZ+4KV++7y69fgEPyBWbaMgNQ==
+X-Received: by 2002:adf:fbc5:: with SMTP id d5mr79255592wrs.82.1609766953904;
+        Mon, 04 Jan 2021 05:29:13 -0800 (PST)
 Received: from localhost.localdomain (p200300f13724fd00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3724:fd00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id c4sm99916521wrw.72.2021.01.04.05.29.12
+        by smtp.googlemail.com with ESMTPSA id c4sm99916521wrw.72.2021.01.04.05.29.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 05:29:12 -0800 (PST)
+        Mon, 04 Jan 2021 05:29:13 -0800 (PST)
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org
 Cc:     mturquette@baylibre.com, sboyd@kernel.org,
         linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 1/5] clk: meson: meson8b: don't use MPLL1 as parent of vclk_in_sel
-Date:   Mon,  4 Jan 2021 14:28:02 +0100
-Message-Id: <20210104132806.720558-2-martin.blumenstingl@googlemail.com>
+Subject: [PATCH 2/5] clk: meson: meson8b: define the rate range for the hdmi_pll_dco clock
+Date:   Mon,  4 Jan 2021 14:28:03 +0100
+Message-Id: <20210104132806.720558-3-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210104132806.720558-1-martin.blumenstingl@googlemail.com>
 References: <20210104132806.720558-1-martin.blumenstingl@googlemail.com>
@@ -66,38 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MPLL1 is needed for audio output. Drop it from the vclk_in_sel parent
-list so we only use the (mutable) vid_pll_final_div tree or one of the
-(fixed) FCLK_DIV{3,4,5} clocks.
+According to the public S805 datasheet the HDMI PLL VCO frequency has to
+be between 1.2GHz and 3.0GHz. Add this range in our driver so we won't
+get too low (which means the PLL won't lock) or too high.
 
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/clk/meson/meson8b.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/clk/meson/meson8b.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-index a844d35b553a..f8bd211db720 100644
+index f8bd211db720..16ab595ab1a4 100644
 --- a/drivers/clk/meson/meson8b.c
 +++ b/drivers/clk/meson/meson8b.c
-@@ -1154,6 +1154,10 @@ static struct clk_regmap meson8b_vid_pll_final_div = {
- 	},
- };
+@@ -3781,6 +3781,11 @@ static void __init meson8b_clkc_init_common(struct device_node *np,
+ 		return;
+ 	}
  
-+/*
-+ * parent 0x6 is meson8b_mpll1 but we don't use it here because it's reserved
-+ * for the audio outputs.
-+ */
- static const struct clk_hw *meson8b_vclk_mux_parent_hws[] = {
- 	&meson8b_vid_pll_final_div.hw,
- 	&meson8b_fclk_div4.hw,
-@@ -1161,7 +1165,6 @@ static const struct clk_hw *meson8b_vclk_mux_parent_hws[] = {
- 	&meson8b_fclk_div5.hw,
- 	&meson8b_vid_pll_final_div.hw,
- 	&meson8b_fclk_div7.hw,
--	&meson8b_mpll1.hw,
- };
- 
- static struct clk_regmap meson8b_vclk_in_sel = {
++	/* The HDMI PLL VCO is limited to 1.2G~3.0GHz */
++	clk_hw_set_rate_range(clk_hw_onecell_data->hws[CLKID_HDMI_PLL_DCO],
++			      1200 * 1000UL * 1000UL,
++			      3000 * 1000UL * 1000UL);
++
+ 	ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get,
+ 				     clk_hw_onecell_data);
+ 	if (ret)
 -- 
 2.30.0
 
