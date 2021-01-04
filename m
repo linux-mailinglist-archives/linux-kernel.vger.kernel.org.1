@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377E62E9979
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDEF2E995D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbhADQAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:00:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36580 "EHLO mail.kernel.org"
+        id S1727741AbhADP6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:58:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728190AbhADQAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAF702250E;
-        Mon,  4 Jan 2021 15:59:38 +0000 (UTC)
+        id S1727694AbhADP6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:58:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4A3D207AE;
+        Mon,  4 Jan 2021 15:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775979;
-        bh=BgeNQdmkgpkJZC347Vao4KQP4a/gxWQMI42B7T6bj4k=;
+        s=korg; t=1609775884;
+        bh=iVFB+GZCwJ/BkBhCbVB1SZVFE5aUB1+vU0lDPw6bRIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bzlo989+BX+K7LfpDlmY7Moy2lctN8iN9/6tdp4e0iQY0eKaS0eAwpJXtPuJE1CLY
-         qAWUd60Up+btwicP4lWxnxKusq5CqrYe9XMbjnOVrNq/2Kii8yvubwsJHDBzuBvYkS
-         XievafPqtzqeU+2Ij7H2wJISLnmldmV13GofDaKw=
+        b=cWLk9ctpTTCIZOC3XNiaBd2p4mHyj/a0h27P+bAohiqAGBo8pPikIp9JsTpfTWNA/
+         E+wPpilFDld7xVQzuENcS6xRklIElWR5t8ZrO8D/WSZAKHHtXctz/2KWo/XugIoSJt
+         3o24OA5ScO+O/ONTcSWjdE/e0CiPwOj0XvEE7pwc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 5.4 05/47] ubifs: prevent creating duplicate encrypted filenames
+        stable@vger.kernel.org, Kevin Vigor <kvigor@gmail.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH 4.19 01/35] md/raid10: initialize r10_bio->read_slot before use.
 Date:   Mon,  4 Jan 2021 16:57:04 +0100
-Message-Id: <20210104155706.010260573@linuxfoundation.org>
+Message-Id: <20210104155703.451071310@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
-References: <20210104155705.740576914@linuxfoundation.org>
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -38,86 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Kevin Vigor <kvigor@gmail.com>
 
-commit 76786a0f083473de31678bdb259a3d4167cf756d upstream.
+commit 93decc563637c4288380912eac0eb42fb246cc04 upstream.
 
-As described in "fscrypt: add fscrypt_is_nokey_name()", it's possible to
-create a duplicate filename in an encrypted directory by creating a file
-concurrently with adding the directory's encryption key.
+In __make_request() a new r10bio is allocated and passed to
+raid10_read_request(). The read_slot member of the bio is not
+initialized, and the raid10_read_request() uses it to index an
+array. This leads to occasional panics.
 
-Fix this bug on ubifs by rejecting no-key dentries in ubifs_create(),
-ubifs_mkdir(), ubifs_mknod(), and ubifs_symlink().
+Fix by initializing the field to invalid value and checking for
+valid value in raid10_read_request().
 
-Note that ubifs doesn't actually report the duplicate filenames from
-readdir, but rather it seems to replace the original dentry with a new
-one (which is still wrong, just a different effect from ext4).
-
-On ubifs, this fixes xfstest generic/595 as well as the new xfstest I
-wrote specifically for this bug.
-
-Fixes: f4f61d2cc6d8 ("ubifs: Implement encrypted filenames")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201118075609.120337-5-ebiggers@kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Kevin Vigor <kvigor@gmail.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ubifs/dir.c |   17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/md/raid10.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -278,6 +278,15 @@ done:
- 	return d_splice_alias(inode, dentry);
- }
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -1138,7 +1138,7 @@ static void raid10_read_request(struct m
+ 	struct md_rdev *err_rdev = NULL;
+ 	gfp_t gfp = GFP_NOIO;
  
-+static int ubifs_prepare_create(struct inode *dir, struct dentry *dentry,
-+				struct fscrypt_name *nm)
-+{
-+	if (fscrypt_is_nokey_name(dentry))
-+		return -ENOKEY;
-+
-+	return fscrypt_setup_filename(dir, &dentry->d_name, 0, nm);
-+}
-+
- static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
- 			bool excl)
- {
-@@ -301,7 +310,7 @@ static int ubifs_create(struct inode *di
- 	if (err)
- 		return err;
+-	if (r10_bio->devs[slot].rdev) {
++	if (slot >= 0 && r10_bio->devs[slot].rdev) {
+ 		/*
+ 		 * This is an error retry, but we cannot
+ 		 * safely dereference the rdev in the r10_bio,
+@@ -1547,6 +1547,7 @@ static void __make_request(struct mddev
+ 	r10_bio->mddev = mddev;
+ 	r10_bio->sector = bio->bi_iter.bi_sector;
+ 	r10_bio->state = 0;
++	r10_bio->read_slot = -1;
+ 	memset(r10_bio->devs, 0, sizeof(r10_bio->devs[0]) * conf->copies);
  
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	err = ubifs_prepare_create(dir, dentry, &nm);
- 	if (err)
- 		goto out_budg;
- 
-@@ -961,7 +970,7 @@ static int ubifs_mkdir(struct inode *dir
- 	if (err)
- 		return err;
- 
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	err = ubifs_prepare_create(dir, dentry, &nm);
- 	if (err)
- 		goto out_budg;
- 
-@@ -1046,7 +1055,7 @@ static int ubifs_mknod(struct inode *dir
- 		return err;
- 	}
- 
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	err = ubifs_prepare_create(dir, dentry, &nm);
- 	if (err) {
- 		kfree(dev);
- 		goto out_budg;
-@@ -1130,7 +1139,7 @@ static int ubifs_symlink(struct inode *d
- 	if (err)
- 		return err;
- 
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	err = ubifs_prepare_create(dir, dentry, &nm);
- 	if (err)
- 		goto out_budg;
- 
+ 	if (bio_data_dir(bio) == READ)
 
 
