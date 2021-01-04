@@ -2,94 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EAF2E94CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841FC2E94D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbhADMYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:24:31 -0500
-Received: from mga09.intel.com ([134.134.136.24]:53212 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726612AbhADMY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:24:29 -0500
-IronPort-SDR: 8JBYUxhD4F2/DZZ6fcKx0XpOulnEer3jQnMyB4paDaNNrWvkMAKyiKAhGARn2d4K6B6bMY7scE
- Xss2r+DXT20A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9853"; a="177099736"
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="177099736"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 04:22:43 -0800
-IronPort-SDR: U9CdSW3Q94B1mqKfQnByXYxpD/CtaH6Lcno5kdxHa9IjFTLJcCFfQ4rNNG7PDc8LLMTGlN6u9z
- j6caAS+HDCyQ==
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="397387626"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 04:22:41 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kwOtj-001Z8n-P0; Mon, 04 Jan 2021 14:23:43 +0200
-Date:   Mon, 4 Jan 2021 14:23:43 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Moody Salem <moody@uniswap.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] ACPI / scan: Don't create platform device for INT3515
- ACPI nodes
-Message-ID: <20210104122343.GT4077@smile.fi.intel.com>
-References: <20201223143644.33341-1-heikki.krogerus@linux.intel.com>
- <ae94a191-4273-0000-deda-4859034343b8@redhat.com>
+        id S1727035AbhADMZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:25:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbhADMZC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 07:25:02 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6ADC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 04:24:21 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id CcQG2400w4C55Sk01cQGKE; Mon, 04 Jan 2021 13:24:18 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kwOuG-00169y-EN; Mon, 04 Jan 2021 13:24:16 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kwOuF-005IiT-Vv; Mon, 04 Jan 2021 13:24:15 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] [RFC] net: phy: Fix reboot crash if CONFIG_IP_PNP is not set
+Date:   Mon,  4 Jan 2021 13:24:15 +0100
+Message-Id: <20210104122415.1263541-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae94a191-4273-0000-deda-4859034343b8@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 12:59:39PM +0100, Hans de Goede wrote:
-> On 12/23/20 3:36 PM, Heikki Krogerus wrote:
-> > There are several reports about the tps6598x causing
-> > interrupt flood on boards with the INT3515 ACPI node, which
-> > then causes instability. There appears to be several
-> > problems with the interrupt. One problem is that the
-> > I2CSerialBus resources do not always map to the Interrupt
-> > resource with the same index, but that is not the only
-> > problem. We have not been able to come up with a solution
-> > for all the issues, and because of that disabling the device
-> > for now.
-> > 
-> > The PD controller on these platforms is autonomous, and the
-> > purpose for the driver is primarily to supply status to the
-> > userspace, so this will not affect any functionality.
-> > 
-> > Reported-by: Moody Salem <moody@uniswap.org>
-> > Fixes: a3dd034a1707 ("ACPI / scan: Create platform device for INT3515 ACPI nodes")
-> > Cc: stable@vger.kernel.org
-> > Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1883511
-> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> 
-> Thank you for your patch, I've applied this patch to my review-hans 
-> branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-> 
-> Note it will show up in my review-hans branch once I've pushed my
-> local branch there, which might take a while.
-> 
-> Once I've run some tests on this branch the patches there will be
-> added to the platform-drivers-x86/for-next branch and eventually
-> will be included in the pdx86 pull-request to Linus for the next
-> merge-window.
+Wolfram reports that his R-Car H2-based Lager board can no longer be
+rebooted in v5.11-rc1, as it crashes with an imprecise external abort.
+The issue can be reproduced on other boards (e.g. Koelsch with R-Car
+M2-W) too, if CONFIG_IP_PNP is disabled:
 
-I'm wondering if my reply has been seen...
+    Unhandled fault: imprecise external abort (0x1406) at 0x00000000
+    pgd = (ptrval)
+    [00000000] *pgd=422b6835, *pte=00000000, *ppte=00000000
+    Internal error: : 1406 [#1] ARM
+    Modules linked in:
+    CPU: 0 PID: 1105 Comm: init Tainted: G        W         5.10.0-rc1-00402-ge2f016cf7751 #1048
+    Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
+    PC is at sh_mdio_ctrl+0x44/0x60
+    LR is at sh_mmd_ctrl+0x20/0x24
+    ...
+    Backtrace:
+    [<c0451f30>] (sh_mdio_ctrl) from [<c0451fd4>] (sh_mmd_ctrl+0x20/0x24)
+     r7:0000001f r6:00000020 r5:00000002 r4:c22a1dc4
+    [<c0451fb4>] (sh_mmd_ctrl) from [<c044fc18>] (mdiobb_cmd+0x38/0xa8)
+    [<c044fbe0>] (mdiobb_cmd) from [<c044feb8>] (mdiobb_read+0x58/0xdc)
+     r9:c229f844 r8:c0c329dc r7:c221e000 r6:00000001 r5:c22a1dc4 r4:00000001
+    [<c044fe60>] (mdiobb_read) from [<c044c854>] (__mdiobus_read+0x74/0xe0)
+     r7:0000001f r6:00000001 r5:c221e000 r4:c221e000
+    [<c044c7e0>] (__mdiobus_read) from [<c044c9d8>] (mdiobus_read+0x40/0x54)
+     r7:0000001f r6:00000001 r5:c221e000 r4:c221e458
+    [<c044c998>] (mdiobus_read) from [<c044d678>] (phy_read+0x1c/0x20)
+     r7:ffffe000 r6:c221e470 r5:00000200 r4:c229f800
+    [<c044d65c>] (phy_read) from [<c044d94c>] (kszphy_config_intr+0x44/0x80)
+    [<c044d908>] (kszphy_config_intr) from [<c044694c>] (phy_disable_interrupts+0x44/0x50)
+     r5:c229f800 r4:c229f800
+    [<c0446908>] (phy_disable_interrupts) from [<c0449370>] (phy_shutdown+0x18/0x1c)
+     r5:c229f800 r4:c229f804
+    [<c0449358>] (phy_shutdown) from [<c040066c>] (device_shutdown+0x168/0x1f8)
+    [<c0400504>] (device_shutdown) from [<c013de44>] (kernel_restart_prepare+0x3c/0x48)
+     r9:c22d2000 r8:c0100264 r7:c0b0d034 r6:00000000 r5:4321fedc r4:00000000
+    [<c013de08>] (kernel_restart_prepare) from [<c013dee0>] (kernel_restart+0x1c/0x60)
+    [<c013dec4>] (kernel_restart) from [<c013e1d8>] (__do_sys_reboot+0x168/0x208)
+     r5:4321fedc r4:01234567
+    [<c013e070>] (__do_sys_reboot) from [<c013e2e8>] (sys_reboot+0x18/0x1c)
+     r7:00000058 r6:00000000 r5:00000000 r4:00000000
+    [<c013e2d0>] (sys_reboot) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
 
-https://lore.kernel.org/platform-driver-x86/ae94a191-4273-0000-deda-4859034343b8@redhat.com/T/#m30308ca22cd0ce266aa6913ab7ef1fc56b3279de
+Calling phy_disable_interrupts() unconditionally means that the PHY
+registers may be accessed while the device is suspended, causing
+undefined behavior, which may crash the system.
 
+Fix this by calling phy_disable_interrupts() only when the PHY has been
+started.
 
+Reported-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Fixes: e2f016cf775129c0 ("net: phy: add a shutdown procedure")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Marked RFC as I do not know if this change breaks the use case fixed by
+the faulty commit.  Alternatively, the device may have to be started
+explicitly first.
+---
+ drivers/net/phy/phy_device.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 80c2e646c0934311..5985061b00128f8a 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -2962,7 +2962,8 @@ static void phy_shutdown(struct device *dev)
+ {
+ 	struct phy_device *phydev = to_phy_device(dev);
+ 
+-	phy_disable_interrupts(phydev);
++	if (phy_is_started(phydev))
++		phy_disable_interrupts(phydev);
+ }
+ 
+ /**
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
