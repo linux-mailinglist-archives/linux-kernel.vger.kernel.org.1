@@ -2,142 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0242E948A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB522E948E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbhADMHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:07:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52962 "EHLO mx2.suse.de"
+        id S1726512AbhADMJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:09:42 -0500
+Received: from mga04.intel.com ([192.55.52.120]:9446 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725840AbhADMHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:07:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 05641AD1E;
-        Mon,  4 Jan 2021 12:06:27 +0000 (UTC)
-Subject: Re: [PATCH] drm/hisilicon: Use simple encoder
-To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
-References: <1609140936-57002-1-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <b17c2bfc-44b1-991c-9d85-0d4b76e44409@suse.de>
-Date:   Mon, 4 Jan 2021 13:06:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726148AbhADMJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 07:09:41 -0500
+IronPort-SDR: xZTo9WKylRjwsJw5Wy1ieLSpPy/NXIq4V3nC3RivSkT3oNrNIXDGthu/vt7oldAfYLOQsJ6rXP
+ iOzkAHeUpdKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9853"; a="174367452"
+X-IronPort-AV: E=Sophos;i="5.78,473,1599548400"; 
+   d="scan'208";a="174367452"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 04:07:55 -0800
+IronPort-SDR: AljENoK4bHv16eucz7sir0b2XFg4vUGszlWhlXIDJ2uePSu+ZLzdmB9wT9pCaoJGYaexvuOdAg
+ Xxrq3wDbAzNA==
+X-IronPort-AV: E=Sophos;i="5.78,473,1599548400"; 
+   d="scan'208";a="345880335"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 04:07:52 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id DAB59206FD; Mon,  4 Jan 2021 14:07:49 +0200 (EET)
+Date:   Mon, 4 Jan 2021 14:07:49 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com,
+        =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>
+Subject: Re: [PATCH v4 2/3] media: i2c: Add support for the OV8865 image
+ sensor
+Message-ID: <20210104120749.GK11878@paasikivi.fi.intel.com>
+References: <20201231142702.3095260-1-paul.kocialkowski@bootlin.com>
+ <20201231142702.3095260-3-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <1609140936-57002-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="RcKsmR2MQPtOUTxZ5J5DRotL5LML8QcO4"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201231142702.3095260-3-paul.kocialkowski@bootlin.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---RcKsmR2MQPtOUTxZ5J5DRotL5LML8QcO4
-Content-Type: multipart/mixed; boundary="ZU0tHU16DKjjR6xEEjtT14n4ZpFECqYz0";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
- kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- linux-kernel@vger.kernel.org
-Message-ID: <b17c2bfc-44b1-991c-9d85-0d4b76e44409@suse.de>
-Subject: Re: [PATCH] drm/hisilicon: Use simple encoder
-References: <1609140936-57002-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1609140936-57002-1-git-send-email-tiantao6@hisilicon.com>
+Hi Paul,
 
---ZU0tHU16DKjjR6xEEjtT14n4ZpFECqYz0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On Thu, Dec 31, 2020 at 03:27:01PM +0100, Paul Kocialkowski wrote:
+> The OV8865 is a 8 Mpx CMOS image sensor producing 3264x2448 at 30 fps.
+> Other modes (including some with sub-sampling) are available too.
+> It outputs 10-bit bayer CFA data through a MIPI CSI-2 interface with
+> up to 4 lanes supported.
 
-Hi
+I've added the patches to a pull request to Mauro; there appear to still be
+some checkpatch.pl issues in both of the drivers.
 
-Am 28.12.20 um 08:35 schrieb Tian Tao:
-> The hibmc driver uses empty implementations for its encoders. Replace
-> the code with the generic simple encoder.
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+I don't mind the warnings on the assignment or the mutex though. Could you
+address these in additional patches, please?
 
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+-- 
+Kind regards,
 
-Thanks for the patch.
-
-> ---
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 8 ++------
->   1 file changed, 2 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers=
-/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> index d35548d..c76f996 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> @@ -14,6 +14,7 @@
->   #include <drm/drm_atomic_helper.h>
->   #include <drm/drm_probe_helper.h>
->   #include <drm/drm_print.h>
-> +#include <drm/drm_simple_kms_helper.h>
->  =20
->   #include "hibmc_drm_drv.h"
->   #include "hibmc_drm_regs.h"
-> @@ -90,10 +91,6 @@ static const struct drm_encoder_helper_funcs hibmc_e=
-ncoder_helper_funcs =3D {
->   	.mode_set =3D hibmc_encoder_mode_set,
->   };
->  =20
-> -static const struct drm_encoder_funcs hibmc_encoder_funcs =3D {
-> -	.destroy =3D drm_encoder_cleanup,
-> -};
-> -
->   int hibmc_vdac_init(struct hibmc_drm_private *priv)
->   {
->   	struct drm_device *dev =3D &priv->dev;
-> @@ -109,8 +106,7 @@ int hibmc_vdac_init(struct hibmc_drm_private *priv)=
-
->   	}
->  =20
->   	encoder->possible_crtcs =3D 0x1;
-> -	ret =3D drm_encoder_init(dev, encoder, &hibmc_encoder_funcs,
-> -			       DRM_MODE_ENCODER_DAC, NULL);
-> +	ret =3D drm_simple_encoder_init(dev, encoder, DRM_MODE_ENCODER_DAC);
->   	if (ret) {
->   		drm_err(dev, "failed to init encoder: %d\n", ret);
->   		return ret;
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---ZU0tHU16DKjjR6xEEjtT14n4ZpFECqYz0--
-
---RcKsmR2MQPtOUTxZ5J5DRotL5LML8QcO4
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/zBMEFAwAAAAAACgkQlh/E3EQov+BM
-8Q//cEaWhEx6bGrzmsVKIYruBlRbIrGdvVXOQtREZ085r7ayn8EOL0pqiMMKAopGuEpv0jnYYoFG
-PKqq2z3acJ1+fC/ws21CpS4mz79r7g/LVW58cK4uoZ30uSTTXGHSz5MNI00aqBcO442DeiqFa4SE
-wJ40qJ/q6s//ZsNq0VnsT9qMHGJoUeUhRwH4HzjfoPn138U5lJWSO9CO31JxcDpNk5dUEKFq3Gsy
-3VoGo2AphKfVNp5ZRF0NDhmMzpsJ4AYnDUdUDLaL/KLUnmycrjLcBQcYF8AbI16Vr2y4GA5E7FzO
-++aHDsi0Sam0FxSKdrTPTMbQ4f4CcBM04R+FZ1iZXO4gt5I/Tf7D0lqgFAsvMvZsbjgdESt1GnnH
-bE7Gx6KgsmHcJge8JICzBXV9okUvUDh8soWYrMjBxFWSaquMoTlQs4/4BTV+9Ixx+Fo/SUXG5WmJ
-A+uliMKNtFh0misYsPqJd2eVAECNN2KOxZ3WmJzmbxN0IZU/z5lXOhyBT7zdezyWh2Wqd4ZsRsdm
-AOgt6zfTkiEgUDLKlayCiiEIvXRELRPDyotwS70+FEGGT0/V80J71hIF2MgsWux7t7kT2eCUAbch
-mfbTXHYROGRGSZhpnaKMOvzb0OIIurosvYOXA1IClOyqIttbP0VyDLRpLtfpOlLbLzTzZ81JMFLO
-iZA=
-=v8Wn
------END PGP SIGNATURE-----
-
---RcKsmR2MQPtOUTxZ5J5DRotL5LML8QcO4--
+Sakari Ailus
