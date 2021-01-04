@@ -2,53 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B572E92EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E62532E92A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbhADJxP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 04:53:15 -0500
-Received: from post.dks.ru ([194.226.89.161]:56215 "EHLO post.dks.ru"
+        id S1726469AbhADJdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 04:33:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbhADJxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:53:14 -0500
-X-Greylist: delayed 1716 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Jan 2021 04:53:11 EST
-Received: from ksmg.dks.lan (unknown [172.17.112.11])
-        by post.dks.ru (Postfix) with ESMTP id C1144270841;
-        Mon,  4 Jan 2021 12:21:38 +0300 (MSK)
-Received: from [192.168.88.237] (unknown [212.154.23.124])
-        (Authenticated sender: zapros@dks.ru)
-        by post.dks.ru (Postfix) with ESMTP id 6520D270852;
-        Mon,  4 Jan 2021 12:21:35 +0300 (MSK)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726026AbhADJdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 04:33:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 686C021D79;
+        Mon,  4 Jan 2021 09:33:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609752790;
+        bh=5n7vJCpQwW8zSmDr93dZa9kN4blfmo8jxJGKpx5U5Hs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ftoL/c1zbxvRqYOhI6xG9lR6Zd8xQrcIdkz21Bod+Eobw5xzXnq8lJZhQqQnqbZwQ
+         lVj/vjSUMIsVwWbtXNUW60C3IuJ7KZGOwA0oIfJ7HklKAEgM9JBR4+Q7oTzyS8uDBc
+         v6dgpKp4qKB05yh2INfdD2sJD7dpemaIxsiuFOPQ55/n7DU/bFF9BiWlXZD/xCMzqJ
+         b1bHhuWTzZs5l+bkGEcJW8V7TXrrtwMr8bBbHClUFyNvoxWzJz1KPYMyTKcW/k1+l0
+         S0d7cfLN2XIfwG8pGt8IJEngpGTZ9GKzjXU4IHBP8xu/PH/pkDYZ3mWjxl4SzCIKxC
+         6/zq5OVpFTZFA==
+Received: by mail-ot1-f50.google.com with SMTP id b24so25471500otj.0;
+        Mon, 04 Jan 2021 01:33:10 -0800 (PST)
+X-Gm-Message-State: AOAM530852ciU5J6jvG9qCBuFeEGkI1Wq2BNc0rYazF6EjJdgB9SaPQQ
+        zoIXx1eUt2CEXbvmREC8d2B3EJWDaKQiWW58pXA=
+X-Google-Smtp-Source: ABdhPJyvdjWMT5twGvJHH6XoUBUHgxZe3u552CGxz2czq0O52xp1FBCMoMRuQcdfPTQIS7jtnngPTRPudqMRlUqi1l0=
+X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr51940100otm.305.1609752789802;
+ Mon, 04 Jan 2021 01:33:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOUR URGENT RESPONSE !!!!
-To:     Recipients <zapros@dks.ru>
-From:   "Mr. Kim Leang" <zapros@dks.ru>
-Date:   Mon, 04 Jan 2021 01:22:01 -0800
-Reply-To: kimleang575@yahoo.com
-Message-Id: <20210104092135.6520D270852@post.dks.ru>
-X-KLMS-Rule-ID: 7
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/01/04 08:40:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/04 05:34:00 #16008269
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <20210104085806.4176886-1-arnd@kernel.org> <ad54481b-15da-e795-0c1a-bd54d3e8ab87@physik.fu-berlin.de>
+In-Reply-To: <ad54481b-15da-e795-0c1a-bd54d3e8ab87@physik.fu-berlin.de>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 4 Jan 2021 10:32:53 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3zDB5wh-bdg+fq6nvg9gHrESFhhgss4f47VJ1JOvoE1Q@mail.gmail.com>
+Message-ID: <CAK8P3a3zDB5wh-bdg+fq6nvg9gHrESFhhgss4f47VJ1JOvoE1Q@mail.gmail.com>
+Subject: Re: [PATCH] ia64: fix xchg() warning
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-ia64@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greeting!
+On Mon, Jan 4, 2021 at 10:06 AM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+>
+> Hi Arnd!
+>
+> On 1/4/21 9:58 AM, Arnd Bergmann wrote:
+> > Change it to a compound expression like the other architectures have
+> > to get a clean defconfig build.
+>
+> Slightly OT: Has your other fix for the timer regression on ia64 already been
+> merged? I can test this patch later today.
 
-I am contacting you to receive and share with me an abandoned fund ( $21,537.000.00 ) left in our bank by a deceased customer. I was going through the Internet search when I found your email address. My name is Mr. Kim Leang.
+I have not received any reply from the ia64 maintainers, I assume they were
+both out of office for Christmas.
 
-I want to utilize this opportunity and make use of this fund if I should present your name to the bank to stand as his business associate/ trustee for the fund to be released to you via Visa card for easy withdrawals in any VISA ATM machine anywhere in the World.
-
-The bank will also give you international online transfer options. With these you can transfer the funds without any risk.
-
-Should you be interested in working with me in this project? Please reply back and let's benefit from this golden opportunity.You are my first contact. I shall wait a few days and if I do not hear from you, I shall look for another person.
-
-Thanks and have a nice day,
-Mr. Kim Leang
+      Arnd
