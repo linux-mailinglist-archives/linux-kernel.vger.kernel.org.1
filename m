@@ -2,141 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C7B2E9B8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A86C62E9B87
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbhADRA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:00:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53576 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727711AbhADRA4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:00:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609779569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hnWpyzaa+3BkwI6qgtfvvLYUKPIP+O6CaC4kfzPWIhM=;
-        b=MyxmurhfNKZCz8TzZZ1Kyt158AxYlef+Y0aB3g7VZ5xNGhTWsLuUxtnqsXSWQyBXLSXzoF
-        SyV1mwmHNVYEUfc51CuDjQ0YhlYljMPqy2I0lBxUQisq0f+NL7fANj8MaOhera0t5Z4RSB
-        2+3kyZNckF9D/0P3mIDidrPYqJN+SBc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-q12-ymt6PU6WSViBwJWOCw-1; Mon, 04 Jan 2021 11:59:25 -0500
-X-MC-Unique: q12-ymt6PU6WSViBwJWOCw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F017100C605;
-        Mon,  4 Jan 2021 16:59:22 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-2.rdu2.redhat.com [10.10.115.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AA67C60BE5;
-        Mon,  4 Jan 2021 16:59:21 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 43460220BCF; Mon,  4 Jan 2021 11:59:21 -0500 (EST)
-Date:   Mon, 4 Jan 2021 11:59:21 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chengguang Xu <cgxu519@mykernel.net>
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-Message-ID: <20210104165921.GB73873@redhat.com>
-References: <20201223185044.GQ874@casper.infradead.org>
- <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223200746.GR874@casper.infradead.org>
- <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223204428.GS874@casper.infradead.org>
- <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
- <20201224121352.GT874@casper.infradead.org>
- <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
- <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
- <20201228155618.GA6211@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201228155618.GA6211@casper.infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        id S1728016AbhADRAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:00:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44046 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727792AbhADRAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 12:00:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 62BAEAA35;
+        Mon,  4 Jan 2021 16:59:53 +0000 (UTC)
+Date:   Mon, 04 Jan 2021 17:59:53 +0100
+Message-ID: <s5hturw7i46.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Joe Perches <joe@perches.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>
+Subject: Re: [PATCH] sound: Convert strlcpy to strscpy when return value is unused
+In-Reply-To: <58a84d03b714f71d231f9cac04af09a6b97c6f04.camel@perches.com>
+References: <58a84d03b714f71d231f9cac04af09a6b97c6f04.camel@perches.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 03:56:18PM +0000, Matthew Wilcox wrote:
-> On Mon, Dec 28, 2020 at 08:25:50AM -0500, Jeff Layton wrote:
-> > To be clear, the main thing you'll lose with the method above is the
-> > ability to see an unseen error on a newly opened fd, if there was an
-> > overlayfs mount using the same upper sb before your open occurred.
-> > 
-> > IOW, consider two overlayfs mounts using the same upper layer sb:
-> > 
-> > ovlfs1				ovlfs2
-> > ----------------------------------------------------------------------
-> > mount
-> > open fd1
-> > write to fd1
-> > <writeback fails>
-> > 				mount (upper errseq_t SEEN flag marked)
-> > open fd2
-> > syncfs(fd2)
-> > syncfs(fd1)
-> > 
-> > 
-> > On a "normal" (non-overlay) fs, you'd get an error back on both syncfs
-> > calls. The first one has a sample from before the error occurred, and
-> > the second one has a sample of 0, due to the fact that the error was
-> > unseen at open time.
-> > 
-> > On overlayfs, with the intervening mount of ovlfs2, syncfs(fd1) will
-> > return an error and syncfs(fd2) will not. If we split the SEEN flag into
-> > two, then we can ensure that they both still get an error in this
-> > situation.
+On Thu, 31 Dec 2020 20:04:50 +0100,
+Joe Perches wrote:
 > 
-> But do we need to?  If the inode has been evicted we also lose the errno.
+> strlcpy is deprecated.  see: Documentation/process/deprecated.rst
+> 
+> Change the calls that do not use the strlcpy return value to the
+> preferred strscpy.
+> 
+> Done with cocci script:
+> 
+> @@
+> expression e1, e2, e3;
+> @@
+> 
+> -	strlcpy(
+> +	strscpy(
+> 	e1, e2, e3);
+> 
+> This cocci script leaves the instances where the return value is
+> used unchanged.
+> 
+> After this patch, sound/ has 3 uses of strlcpy() that need to be
+> manually inspected for conversion and changed one day.
+> 
+> $ git grep -w strlcpy sound/
+> sound/usb/card.c:               len = strlcpy(card->longname, s, sizeof(card->longname));
+> sound/usb/mixer.c:      return strlcpy(buf, p->name, buflen);
+> sound/usb/mixer.c:                      return strlcpy(buf, p->names[index], buflen);
+> 
+> Miscellenea:
+> 
+> o Remove trailing whitespace in conversion of sound/core/hwdep.c
+> 
+> Link: https://lore.kernel.org/lkml/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-That's for the case of fsync(), right? For the case of syncfs() we will
-not lose error as its stored in super_block.
-
-Even for the case of fsync(), inode can be evicted only if no other
-fd is opened for the file. So in above example, fd1 is opened so
-inode can't be evicted, that means we will see error on syncfs(fd2)
-and not lose it.
-
-So if we start consuming upper fs on overlay mount(), it will be a
-change of behavior for applications using same upper fs. So far
-overlay mount() does not consume unseen error and even if an fd
-is opened after the error, application will see error on super
-block. If we consume error on mount(), we change behavior.
-
-I am not saying that's necessarily bad, I am just trying to point
-out that its a user space visible behavior change and worried
-if somebody starts calling it a regression.
-
-Anyway, I looks like two problems got mixed into same thread. One
-problem we need to solve is that syncfs() on overlayfs should
-report back writeback errors (as well as other errors) to applications.
-And that's what this patch series is solving.
-
-And then second issue is detecting writeback errors over remount
-for volatile mounts. And that's where this question comes whether
-we should split seen flag or we should simply consume error on
-mount. So this can be further discussed when patches for this
-changes are posted again.
-
-For now, I will focus on trying to fix first issue and post patches
-for that again after more testing.
-
-Vivek
+Could you resubmit to alsa-devel ML?
 
 
-> The guarantee we provide is that a fd that was open before the error
-> occurred will see the error.  An fd that's opened after the error occurred
-> may or may not see the error.
+thanks,
 
+Takashi
