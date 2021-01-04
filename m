@@ -2,59 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5291B2E9711
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BFC2E9718
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbhADOTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:19:44 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:48636 "EHLO vps0.lunn.ch"
+        id S1726908AbhADOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:21:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726692AbhADOTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:19:44 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kwQh9-00FyJt-0D; Mon, 04 Jan 2021 15:18:51 +0100
-Date:   Mon, 4 Jan 2021 15:18:50 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v3] net: macb: Correct usage of MACB_CAPS_CLK_HW_CHG
- flag
-Message-ID: <X/MjyvgHJZrhYQw3@lunn.ch>
-References: <20210104103802.13091-1-ckeepax@opensource.cirrus.com>
+        id S1725921AbhADOV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 09:21:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51C0D20784;
+        Mon,  4 Jan 2021 14:20:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609770046;
+        bh=cx/RKMatwM2OwlH8Re5yHYBI7WUVFqOnWvP2MtRW//k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V3cf50d1aagCZotHVA4dgXCUvfplv6p4sVhPX/lNJZRn7xQbmygnAB6FqEuHWu0H/
+         GL3Y0iI1g9+n/xvf3N9UtEe6Nug2Nw46OOalfV/5lmTZh93EJXmttiSnwIPH8tqElR
+         yyoSzPeRy4nIKkcaTzHBPm6cly6gcaYpRjgu+HnO9zr5doEnr8vIS1c5nrqbZk0a/Q
+         Pm2hWT1qtw6au4gaV2hJBF9Vbyny2YfPdSzYvyzIg0daWWt81st+1DiDyesFoMfudw
+         4tckZ7ZiuyZEvEpF7QYRO3x51oeapjPOgk39HcmjMOJ2xtY6sYAL8iNhxe2W3D7GHZ
+         8qf10EUgaYHWg==
+Date:   Mon, 4 Jan 2021 09:20:44 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Daniel Rosenberg <drosen@google.com>
+Subject: Re: [f2fs-dev] [PATCH AUTOSEL 5.10 10/31] f2fs: Handle casefolding
+ with Encryption
+Message-ID: <20210104142044.GA3665355@sasha-vm>
+References: <20201230130314.3636961-1-sashal@kernel.org>
+ <20201230130314.3636961-10-sashal@kernel.org>
+ <X+zAlEu+0JSvXaMu@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210104103802.13091-1-ckeepax@opensource.cirrus.com>
+In-Reply-To: <X+zAlEu+0JSvXaMu@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 10:38:02AM +0000, Charles Keepax wrote:
-> A new flag MACB_CAPS_CLK_HW_CHG was added and all callers of
-> macb_set_tx_clk were gated on the presence of this flag.
-> 
-> -   if (!clk)
-> + if (!bp->tx_clk || !(bp->caps & MACB_CAPS_CLK_HW_CHG))
-> 
-> However the flag was not added to anything other than the new
-> sama7g5_gem, turning that function call into a no op for all other
-> systems. This breaks the networking on Zynq.
-> 
-> The commit message adding this states: a new capability so that
-> macb_set_tx_clock() to not be called for IPs having this
-> capability
-> 
-> This strongly implies that present of the flag was intended to skip
-> the function not absence of the flag. Update the if statement to
-> this effect, which repairs the existing users.
-> 
-> Fixes: daafa1d33cc9 ("net: macb: add capability to not set the clock rate")
-> Suggested-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+On Wed, Dec 30, 2020 at 10:01:56AM -0800, Eric Biggers wrote:
+>On Wed, Dec 30, 2020 at 08:02:52AM -0500, Sasha Levin wrote:
+>> From: Daniel Rosenberg <drosen@google.com>
+>>
+>> [ Upstream commit 7ad08a58bf67594057362e45cbddd3e27e53e557 ]
+>>
+>> Expand f2fs's casefolding support to include encrypted directories.  To
+>> index casefolded+encrypted directories, we use the SipHash of the
+>> casefolded name, keyed by a key derived from the directory's fscrypt
+>> master key.  This ensures that the dirhash doesn't leak information
+>> about the plaintext filenames.
+>>
+>> Encryption keys are unavailable during roll-forward recovery, so we
+>> can't compute the dirhash when recovering a new dentry in an encrypted +
+>> casefolded directory.  To avoid having to force a checkpoint when a new
+>> file is fsync'ed, store the dirhash on-disk appended to i_name.
+>>
+>> This patch incorporates work by Eric Biggers <ebiggers@google.com>
+>> and Jaegeuk Kim <jaegeuk@kernel.org>.
+>>
+>> Co-developed-by: Eric Biggers <ebiggers@google.com>
+>> Signed-off-by: Eric Biggers <ebiggers@google.com>
+>> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+>> Reviewed-by: Eric Biggers <ebiggers@google.com>
+>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>Please don't backport this to the LTS kernels.  This is a new feature, not a
+>fix, and you missed prerequisite patches...
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Sure, I'l drop it. Thanks!
 
-    Andrew
+-- 
+Thanks,
+Sasha
