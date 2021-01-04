@@ -2,52 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4726A2EA0BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3962EA0C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbhADXYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:24:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55618 "EHLO mail.kernel.org"
+        id S1727466AbhADX00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:26:26 -0500
+Received: from mga01.intel.com ([192.55.52.88]:45467 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726168AbhADXYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:24:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBE31206F8;
-        Mon,  4 Jan 2021 23:23:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1609802638;
-        bh=/J9lOmW1YaeKRhNVv8DZ4Ehhw7//zHi8b0Ji/4NfsR4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=P4dNs6DhpupKwWDgq6M18i+ydv9hR1ncOpcGuAPA1AqQwa7R/N0dql+dW/xi1HMH8
-         XR6acxwKb2N/cl2Jxpl5NAye2BP62lqyIFJbPqWvERy9f025hqUp1GgQTjI6WFS13v
-         /nvqnFLn5C5ZFs1fV638Y6NEyvj0nOw7YVdGXl3U=
-Date:   Mon, 4 Jan 2021 15:23:57 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hui Su <sh_def@163.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH] mm/page_alloc: remove the static for local variable
- node_order
-Message-Id: <20210104152357.d56d10e0443bae984a174f18@linux-foundation.org>
-In-Reply-To: <20201230124233.GE28221@casper.infradead.org>
-References: <20201230114014.GA1934427@ubuntu-A520I-AC>
-        <20201230124233.GE28221@casper.infradead.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726475AbhADX0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 18:26:25 -0500
+IronPort-SDR: 2f5j21eV0ARNYkwYGxfe1LMBffcjcny67HN7JXClZS6RuGGiI878EzZvdGIhtbP/1wUTk6eDG9
+ X2OS2hi7j1AA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="195549960"
+X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
+   d="scan'208";a="195549960"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 15:24:39 -0800
+IronPort-SDR: yI2r0COXZcHlByG6Y1F4UGb2DUBpce+BvwiwcPVn41aWUAtM9xDumKy+jz5MrkTzTqb//Kl7/i
+ s5vbAvBJRMtw==
+X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
+   d="scan'208";a="395063174"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 15:24:36 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id CC52B206D0; Tue,  5 Jan 2021 01:24:31 +0200 (EET)
+Date:   Tue, 5 Jan 2021 01:24:31 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:56: warning:
+ implicit conversion from 'unsigned long' to 'u16' (aka 'unsigned short')
+ changes value from 131072 to 0
+Message-ID: <20210104232431.GN11878@paasikivi.fi.intel.com>
+References: <202101050732.JTRq3iK6-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202101050732.JTRq3iK6-lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Dec 2020 12:42:33 +0000 Matthew Wilcox <willy@infradead.org> wrote:
-
-> On Wed, Dec 30, 2020 at 07:40:14PM +0800, Hui Su wrote:
-> > local variable node_order do not need the static here.
+On Tue, Jan 05, 2021 at 07:16:37AM +0800, kernel test robot wrote:
+> Hi Andy,
 > 
-> It bloody well does.  It can be up to 2^10 entries on x86 (and larger
-> on others) That's 4kB which you've now moved onto the stack.
+> FYI, the error/warning still remains.
 
-That being said, could we kmalloc the scratch area in
-__build_all_zonelists()?  And maybe remove that static spinlock?
+The patch is in a pull request to Mauro now:
 
-(what blocks node and cpu hotplug in there??)
+<URL:https://lore.kernel.org/linux-media/20210104120612.GB850@valkosipuli.retiisi.org.uk/T/#t>
+
+-- 
+Sakari Ailus
