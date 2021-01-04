@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF4E2E8FBD
+	by mail.lfdr.de (Postfix) with ESMTP id 97AF22E8FBE
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 05:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbhADENN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 23:13:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48730 "EHLO
+        id S1727720AbhADENO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 23:13:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727571AbhADENI (ORCPT
+        with ESMTP id S1727319AbhADENL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 23:13:08 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E1CC06179F
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 20:11:55 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id g3so13831272plp.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 20:11:55 -0800 (PST)
+        Sun, 3 Jan 2021 23:13:11 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62165C0617A2
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 20:11:59 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id j1so13833028pld.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 20:11:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LtzJNG/ybBQAKeE9SVe1i2pD24AqKDwuHMdBBu5YoUw=;
-        b=Pjq/zlDhQU52ec2VtPWznvDEY3x/Pg2EJpOnTPWJua91GPipl2FzaaAqLy6u4hELFm
-         u3UilYsYaE1X/pf7JeiG+w0khUQmi0u08V2KFJNOxyCpgyuSmSJ+0MTQKdpAGdE55f7T
-         ccHf3NlUWEvU+U0/rNkZxiry2Uf9QkqtPhUATjnFWWgX/POHQR/E1PUTSzy+WkgHhXaF
-         atQkAqo3PTWqyjFQJv/ILMRNvtsqc8K+i3Jd298LHDetTeWogt1VJRX3oN5L7LpblFG7
-         AJ8mZ4niSwfGaYGiQg2XgopKGxNDeev5bdhfNlotl0tAoZXCrGZa8otC+MAGN3wTUw0g
-         R7dA==
+        bh=icXjVyLr8ROGK9HCrfmW24KYFfrqOe76+5Eys2pUaYc=;
+        b=MUCjeC0n9Jzu3Ybx2+wYVVQZHu+be4Ab/JPXX+mx10mppyE8coiYJHLOQtIFIiWFDu
+         tBlRN12//WUM+lgkJ6PgC9GzcdK4GHlrAIP6kx+aY7vfmCUtpostUbWZCfZpQ12UkCNd
+         YILCpHW+eidapdhkVCU2wnGb7ghd0CWy99a5KDahC2HjtHvatBy24V9XvqkEw13tpddq
+         pYhhyexGjqX5E197g6JPx9sSYsm66uBLzbGojSD10uk6mLqL8umyT4wb09EKzPZPCZiq
+         UxNrEFHQLeF5GjsYB/5icUIISqQFUxKDglWMdt8qNdZ5GPbR3ipp8tlvgXKgx4Jpab5X
+         NTlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LtzJNG/ybBQAKeE9SVe1i2pD24AqKDwuHMdBBu5YoUw=;
-        b=m9fJ5hMuSs8AGHBH/xxHOlMk/2pKAJQ8wN1NwBKSQ/3XXjBAjGRzCiw+l44w8OA+Qb
-         u1j0/mxGIS5PHRwcsZhN0LCB0833YninN061Be85n0CfmLL+zcdRwGMTn2wR0NZ5Rbri
-         uGAJ+cAUNvm5mGh0zWHhmQtIg43yarjdQYwy0EiA/kklIk2Uh2nnuzv45H0WTnSzwKW+
-         6s3reCM4TMY2iG21eDDm1CYIAbK7udOdmBTnzbY6b4ICKRVjyeDCUvVN68ZvQCLBLatk
-         tTzESxt6rw/eULaLzvta40qckudwXtsynALrwHtjLFnoVRHoCFXUs3iCMPTBxEwl2+6p
-         UEWw==
-X-Gm-Message-State: AOAM531Os6xC/ADtowDe2pSXVkW8tUR9ySuZwZmOFEaarVjrJ4L1YlUr
-        WGz1NYENWt4glSW3NzPxgGqy3ofxiTxl
-X-Google-Smtp-Source: ABdhPJxKkCb9ii0QJCo6/tAnzJ9CckUe6NnYMhqJDC3aM5prsjEkCquJldoJd9v+JQgqBrMZZ7z6BQ==
-X-Received: by 2002:a17:90a:2e82:: with SMTP id r2mr27192058pjd.46.1609733514616;
-        Sun, 03 Jan 2021 20:11:54 -0800 (PST)
+        bh=icXjVyLr8ROGK9HCrfmW24KYFfrqOe76+5Eys2pUaYc=;
+        b=tvnVN7IHL+VO7rhv9M9/22R+I6OcpLwPUkzbaMA2K3qQ0QO8GR+GRfCpvagK+v6Z4d
+         gjWJ+uAa8u/JhXRczpISKOTe8lBmWsLArj26dK7dxjAEGd16zot9az5fFmAAUHmfCABY
+         Ygrzh1iVX48TdTWzNbTsQf5rv7u0w5qWWXBXn2NtqjYplZSTOVkm1QWcHm0CEXoMhca1
+         9p71Rna1KoNb+uYqiZa1FZE0tQAvpjiJlkrU63eufDlo1IA3RX4aKyagvYVPBFl1Kv7p
+         T5mp+bYWuQZO/oxI44B6iz59JO/+YU28lK/NZWHfgC7ckrhk5YchszEk17zra+Bj6+58
+         qt2Q==
+X-Gm-Message-State: AOAM531LRbMprh5DxGXKLkK2t0cELtocLw/Swh7A/oP+5WeEoYx7tMQK
+        18T4T6ZFemqS4x5N6U+hU4uh
+X-Google-Smtp-Source: ABdhPJwWuQlC9C42p7YriHVAU0fLFuzmlbs1I6A7poFZx8dMn5NBsQ8KChaZkRch5Lf4CybfrDMhpQ==
+X-Received: by 2002:a17:902:6bca:b029:dc:34e1:26b1 with SMTP id m10-20020a1709026bcab02900dc34e126b1mr52162525plt.52.1609733518888;
+        Sun, 03 Jan 2021 20:11:58 -0800 (PST)
 Received: from localhost.localdomain ([103.77.37.160])
-        by smtp.gmail.com with ESMTPSA id x22sm54899930pfc.19.2021.01.03.20.11.50
+        by smtp.gmail.com with ESMTPSA id x22sm54899930pfc.19.2021.01.03.20.11.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 20:11:54 -0800 (PST)
+        Sun, 03 Jan 2021 20:11:58 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
         robh+dt@kernel.org
@@ -55,9 +55,9 @@ Cc:     bjorn.andersson@linaro.org, linux-mtd@lists.infradead.org,
         devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v4 2/4] mtd: parsers: Add Qcom SMEM parser
-Date:   Mon,  4 Jan 2021 09:41:35 +0530
-Message-Id: <20210104041137.113075-3-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v4 3/4] mtd: rawnand: qcom: Add support for Qcom SMEM parser
+Date:   Mon,  4 Jan 2021 09:41:36 +0530
+Message-Id: <20210104041137.113075-4-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104041137.113075-1-manivannan.sadhasivam@linaro.org>
 References: <20210104041137.113075-1-manivannan.sadhasivam@linaro.org>
@@ -67,219 +67,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NAND based Qualcomm platforms have the partition table populated in the
-Shared Memory (SMEM). Hence, add a parser for parsing the partitions
-from it.
+Add support for using Qualcomm SMEM based flash partition parser in
+Qualcomm NAND controller.
 
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/mtd/parsers/Kconfig        |   8 ++
- drivers/mtd/parsers/Makefile       |   1 +
- drivers/mtd/parsers/qcomsmempart.c | 170 +++++++++++++++++++++++++++++
- 3 files changed, 179 insertions(+)
- create mode 100644 drivers/mtd/parsers/qcomsmempart.c
+ drivers/mtd/nand/raw/qcom_nandc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index e72354322f62..d90c30229052 100644
---- a/drivers/mtd/parsers/Kconfig
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -160,3 +160,11 @@ config MTD_REDBOOT_PARTS_READONLY
- 	  'FIS directory' images, enable this option.
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 667e4bfe369f..fd4c318b520f 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2821,6 +2821,8 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ 	return 0;
+ }
  
- endif # MTD_REDBOOT_PARTS
++static const char * const probes[] = { "qcomsmem", NULL };
 +
-+config MTD_QCOMSMEM_PARTS
-+	tristate "Qualcomm SMEM NAND flash partition parser"
-+	depends on MTD_NAND_QCOM || COMPILE_TEST
-+	depends on QCOM_SMEM
-+	help
-+	  This provides support for parsing partitions from Shared Memory (SMEM)
-+	  for NAND flash on Qualcomm platforms.
-diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-index b0c5f62f9e85..50eb0b0a2210 100644
---- a/drivers/mtd/parsers/Makefile
-+++ b/drivers/mtd/parsers/Makefile
-@@ -9,3 +9,4 @@ obj-$(CONFIG_MTD_AFS_PARTS)		+= afs.o
- obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
- obj-$(CONFIG_MTD_SHARPSL_PARTS)		+= sharpslpart.o
- obj-$(CONFIG_MTD_REDBOOT_PARTS)		+= redboot.o
-+obj-$(CONFIG_MTD_QCOMSMEM_PARTS)	+= qcomsmempart.o
-diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
-new file mode 100644
-index 000000000000..808cb33d71f8
---- /dev/null
-+++ b/drivers/mtd/parsers/qcomsmempart.c
-@@ -0,0 +1,170 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Qualcomm SMEM NAND flash partition parser
-+ *
-+ * Copyright (C) 2020, Linaro Ltd.
-+ */
-+
-+#include <linux/ctype.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/slab.h>
-+#include <linux/soc/qcom/smem.h>
-+
-+#define SMEM_AARM_PARTITION_TABLE	9
-+#define SMEM_APPS			0
-+
-+#define SMEM_FLASH_PART_MAGIC1		0x55ee73aa
-+#define SMEM_FLASH_PART_MAGIC2		0xe35ebddb
-+#define SMEM_FLASH_PTABLE_V3		3
-+#define SMEM_FLASH_PTABLE_V4		4
-+#define SMEM_FLASH_PTABLE_MAX_PARTS_V3	16
-+#define SMEM_FLASH_PTABLE_MAX_PARTS_V4	48
-+#define SMEM_FLASH_PTABLE_HDR_LEN	(4 * sizeof(u32))
-+#define SMEM_FLASH_PTABLE_NAME_SIZE	16
-+
-+/**
-+ * struct smem_flash_pentry - SMEM Flash partition entry
-+ * @name: Name of the partition
-+ * @offset: Offset in blocks
-+ * @length: Length of the partition in blocks
-+ * @attr: Flags for this partition
-+ */
-+struct smem_flash_pentry {
-+	char name[SMEM_FLASH_PTABLE_NAME_SIZE];
-+	__le32 offset;
-+	__le32 length;
-+	u8 attr;
-+} __packed __aligned(4);
-+
-+/**
-+ * struct smem_flash_ptable - SMEM Flash partition table
-+ * @magic1: Partition table Magic 1
-+ * @magic2: Partition table Magic 2
-+ * @version: Partition table version
-+ * @numparts: Number of partitions in this ptable
-+ * @pentry: Flash partition entries belonging to this ptable
-+ */
-+struct smem_flash_ptable {
-+	__le32 magic1;
-+	__le32 magic2;
-+	__le32 version;
-+	__le32 numparts;
-+	struct smem_flash_pentry pentry[SMEM_FLASH_PTABLE_MAX_PARTS_V4];
-+} __packed __aligned(4);
-+
-+static int parse_qcomsmem_part(struct mtd_info *mtd,
-+			       const struct mtd_partition **pparts,
-+			       struct mtd_part_parser_data *data)
-+{
-+	struct smem_flash_pentry *pentry;
-+	struct smem_flash_ptable *ptable;
-+	size_t len = SMEM_FLASH_PTABLE_HDR_LEN;
-+	struct mtd_partition *parts;
-+	int ret, i, numparts;
-+	char *name, *c;
-+
-+	pr_debug("Parsing partition table info from SMEM\n");
-+	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
-+	if (IS_ERR(ptable)) {
-+		pr_err("Error reading partition table header\n");
-+		return PTR_ERR(ptable);
-+	}
-+
-+	/* Verify ptable magic */
-+	if (le32_to_cpu(ptable->magic1) != SMEM_FLASH_PART_MAGIC1 ||
-+	    le32_to_cpu(ptable->magic2) != SMEM_FLASH_PART_MAGIC2) {
-+		pr_err("Partition table magic verification failed\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Ensure that # of partitions is less than the max we have allocated */
-+	numparts = le32_to_cpu(ptable->numparts);
-+	if (numparts > SMEM_FLASH_PTABLE_MAX_PARTS_V4) {
-+		pr_err("Partition numbers exceed the max limit\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Find out length of partition data based on table version */
-+	if (le32_to_cpu(ptable->version) <= SMEM_FLASH_PTABLE_V3) {
-+		len = SMEM_FLASH_PTABLE_HDR_LEN + SMEM_FLASH_PTABLE_MAX_PARTS_V3 *
-+			sizeof(struct smem_flash_pentry);
-+	} else if (le32_to_cpu(ptable->version) == SMEM_FLASH_PTABLE_V4) {
-+		len = SMEM_FLASH_PTABLE_HDR_LEN + SMEM_FLASH_PTABLE_MAX_PARTS_V4 *
-+			sizeof(struct smem_flash_pentry);
-+	} else {
-+		pr_err("Unknown ptable version (%d)", le32_to_cpu(ptable->version));
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Now that the partition table header has been parsed, verified
-+	 * and the length of the partition table calculated, read the
-+	 * complete partition table
-+	 */
-+	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
-+	if (IS_ERR_OR_NULL(ptable)) {
-+		pr_err("Error reading partition table\n");
-+		return PTR_ERR(ptable);
-+	}
-+
-+	parts = kcalloc(numparts, sizeof(*parts), GFP_KERNEL);
-+	if (!parts)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < numparts; i++) {
-+		pentry = &ptable->pentry[i];
-+		if (pentry->name[0] == '\0')
-+			continue;
-+
-+		name = kstrdup(pentry->name, GFP_KERNEL);
-+		if (!name) {
-+			ret = -ENOMEM;
-+			goto out_free_parts;
-+		}
-+
-+		/* Convert name to lower case */
-+		for (c = name; *c != '\0'; c++)
-+			*c = tolower(*c);
-+
-+		parts[i].name = name;
-+		parts[i].offset = le32_to_cpu(pentry->offset) * mtd->erasesize;
-+		parts[i].mask_flags = pentry->attr;
-+		parts[i].size = le32_to_cpu(pentry->length) * mtd->erasesize;
-+		pr_debug("%d: %s offs=0x%08x size=0x%08x attr:0x%08x\n",
-+			 i, pentry->name, le32_to_cpu(pentry->offset),
-+			 le32_to_cpu(pentry->length), pentry->attr);
-+	}
-+
-+	pr_debug("SMEM partition table found: ver: %d len: %d\n",
-+		 le32_to_cpu(ptable->version), numparts);
-+	*pparts = parts;
-+
-+	return numparts;
-+
-+out_free_parts:
-+	while (--i >= 0)
-+		kfree(parts[i].name);
-+	kfree(parts);
-+	*pparts = NULL;
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id qcomsmem_of_match_table[] = {
-+	{ .compatible = "qcom,smem-part" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, qcomsmem_of_match_table);
-+
-+static struct mtd_part_parser mtd_parser_qcomsmem = {
-+	.parse_fn = parse_qcomsmem_part,
-+	.name = "qcomsmem",
-+	.of_match_table = qcomsmem_of_match_table,
-+};
-+module_mtd_part_parser(mtd_parser_qcomsmem);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>");
-+MODULE_DESCRIPTION("Qualcomm SMEM NAND flash partition parser");
+ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 					    struct qcom_nand_host *host,
+ 					    struct device_node *dn)
+@@ -2884,7 +2886,7 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 		}
+ 	}
+ 
+-	ret = mtd_device_register(mtd, NULL, 0);
++	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+ 	if (ret)
+ 		nand_cleanup(chip);
+ 
 -- 
 2.25.1
 
