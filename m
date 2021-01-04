@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981DA2E9D47
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D62EF2E9D4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbhADSoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:44:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726330AbhADSoa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:44:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B15D21D1B;
-        Mon,  4 Jan 2021 18:43:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609785829;
-        bh=GylU2VtkYsBj1SJe+f/YDhcp84RMGLIp50WYd8oU+uk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Jmmz/bZfEAzWJkm5bA3KblGdEIESV5oR+BF5aSgTeXrwOMRbg5Zn93I/3dSqyKrSd
-         Vy5UXlcI9Hg3vtMSzrR1NUyrhazNegiC49xhfKOgHW0W5BY4fOMMdIw2Z6B/7M/DLg
-         iZxrI8Q3gA6vapS6RWOblEI0guafRHgU8GxF0ii97ra05XO3NH2VYejp9lMlittVPo
-         t+OTCU8CeZCORDC3fMbY89Qb6Ogrb3w41ejqu+HqdJ5VVbDI29IiPe/4BE2Er0OXpv
-         zvK8yOy9JZnkM6UnkgFlOxTuGebZkpoClVbLVbj1/PULKKXG638N/HBCNAjFIHC79A
-         /h5yxAKUzw4dg==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sargun@sargun.me, amir73il@gmail.com, vgoyal@redhat.com
-Subject: [PATCH][RESEND] vfs: serialize updates to file->f_sb_err with f_lock
-Date:   Mon,  4 Jan 2021 13:43:47 -0500
-Message-Id: <20210104184347.90598-1-jlayton@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S1726323AbhADSpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 13:45:35 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2290 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbhADSpe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 13:45:34 -0500
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4D8kwt13g2z67SPh;
+        Tue,  5 Jan 2021 02:41:18 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 4 Jan 2021 19:44:52 +0100
+Received: from [10.47.2.42] (10.47.2.42) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 4 Jan 2021
+ 18:44:51 +0000
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>, <hare@suse.de>, <kashyap.desai@broadcom.com>,
+        <linuxarm@huawei.com>
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+ <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+ <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
+ <31de2806-bbc1-dcc3-b9eb-ce9257420432@acm.org>
+ <b2edab2b-8af7-816d-9da2-4720d19b96f8@huawei.com>
+ <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
+ <f98fd31e-89d4-523f-df70-4bd5f39ccbd5@huawei.com>
+ <33e41110-b3b2-ac16-f131-de1679ce8238@acm.org>
+ <7bdd562d-b258-43a2-0de0-966091086cff@huawei.com>
+ <e56e8831-4a74-8411-6c04-3a65aff855f4@huawei.com>
+ <0ab85ab8-c5c7-01aa-6b39-da731b3db829@acm.org>
+ <d22efcd3-274a-15c5-9e4a-248037789c4d@huawei.com>
+ <c0d127a9-9320-6e1c-4e8d-412aa9ea9ca6@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <1bcc1d9e-6a32-1e00-0d32-f5b7325b2f8c@huawei.com>
+Date:   Mon, 4 Jan 2021 18:43:51 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <c0d127a9-9320-6e1c-4e8d-412aa9ea9ca6@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.2.42]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I added the ability for syncfs to report writeback errors, I
-neglected to adequately protect file->f_sb_err. While changes to
-sb->s_wb_err don't require locking, we do need to protect the errseq_t
-cursor in file->f_sb_err.
+On 04/01/2021 17:22, Bart Van Assche wrote:
+> On 1/4/21 7:33 AM, John Garry wrote:
+>> On 23/12/2020 15:47, Bart Van Assche wrote:
+>>> I propose to change the order in which blk_mq_sched_free_requests(q) and
+>>> blk_mq_debugfs_unregister(q) are called. Today blk_mq_sched_free_requests(q)
+>>> is called by blk_cleanup_queue() before blk_put_queue() is called.
+>>> blk_put_queue() calls blk_release_queue() if the last reference is dropped.
+>>> blk_release_queue() calls blk_mq_debugfs_unregister(). I prefer removing the
+>>> debugfs attributes earlier over modifying the tag iteration functions
+>>> because I think removing the debugfs attributes earlier is less risky.
+>> But don't we already have this following path to remove the per-hctx debugfs
+>> dir earlier than blk_mq_sched_free_requests() or blk_release_queue():
+>>
+>> blk_cleanup_queue() -> blk_mq_exit_queue() -> blk_mq_exit_hw_queues() ->
+>> blk_mq_debugfs_unregister_hctx() ->
+>> blk_mq_debugfs_unregister_hctx(hctx->debugfs_dir)
+>>
+>> Having said that, I am not sure how this is related directly to the problem
+>> I mentioned. In that problem, above, we trigger the
+>> blk_mq_tagset_busy_iter() from the SCSI host sysfs file, and the
+>> use-after-free comes about from disabling the elevator (and freeing the
+>> sched requests) in parallel.
+> Hi John,
 
-We could have racing updates to that value if two tasks are issuing
-syncfs() on the same fd at the same time, possibly causing an error to
-be reported twice or not at all.
+Hi Bart,
 
-Fix this by protecting the f_sb_err field with the file->f_lock.
+> 
+> Right, what I proposed is unrelated to the use-after-free triggered by
+> disabling I/O scheduling.
+> 
+> Regarding the races triggered by disabling I/O scheduling: can these be
+> fixed by quiescing all request queues associated with a tag set before
+> changing the I/O scheduler instead of only the request queue for which the
+> I/O scheduler is changed? I think we already do this before updating the
+> number of hardware queues.
 
-Fixes: 735e4ae5ba28 ("vfs: track per-sb writeback errors and report them to syncfs")
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/sync.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+For changing the number of HW queues, I figure that we have no choice 
+but to quiesce all request queues associated.
 
-Al, could you pick up this patch for v5.11 or v5.12? I sent the original
-version about a month ago, but it didn't get picked up.
+But maybe there is still some locking we could use to avoid that here.
 
-In the original posting I marked this for stable, but I'm not sure it
-really qualifies since it's a pretty unlikely race with an oddball
-use-case (overlapping syncfs() calls on the same fd).
+Please let me consider it a bit more.
 
-diff --git a/fs/sync.c b/fs/sync.c
-index 1373a610dc78..3be26ff72431 100644
---- a/fs/sync.c
-+++ b/fs/sync.c
-@@ -162,7 +162,7 @@ SYSCALL_DEFINE1(syncfs, int, fd)
- {
- 	struct fd f = fdget(fd);
- 	struct super_block *sb;
--	int ret, ret2;
-+	int ret, ret2 = 0;
- 
- 	if (!f.file)
- 		return -EBADF;
-@@ -172,7 +172,12 @@ SYSCALL_DEFINE1(syncfs, int, fd)
- 	ret = sync_filesystem(sb);
- 	up_read(&sb->s_umount);
- 
--	ret2 = errseq_check_and_advance(&sb->s_wb_err, &f.file->f_sb_err);
-+	if (errseq_check(&sb->s_wb_err, f.file->f_sb_err)) {
-+		/* Something changed, must use slow path */
-+		spin_lock(&f.file->f_lock);
-+		ret2 = errseq_check_and_advance(&sb->s_wb_err, &f.file->f_sb_err);
-+		spin_unlock(&f.file->f_lock);
-+	}
- 
- 	fdput(f);
- 	return ret ? ret : ret2;
--- 
-2.29.2
+Thanks,
+John
 
