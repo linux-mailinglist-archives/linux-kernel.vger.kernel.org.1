@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364EC2E9226
+	by mail.lfdr.de (Postfix) with ESMTP id A2AE92E9227
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbhADIs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 03:48:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48386 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbhADIs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 03:48:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609750060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lqG4UmkZPkzR4Zi5SXqaX9O4JmxRq0adZPH7D9loI+Y=;
-        b=Fl8muME5yB3vL19zQ0uF80xGhufGuQs0GG9x52XThP/w+In1WyVlOJzi2DYH4SXQbHSDrN
-        gOtPAQmKSICkk7DK2rotycPHYpr0p5QYVwIvwLAwH7ard5gD2Qla8MiaEkj9HYlsRS2Rx+
-        EYzPVl9h83dFnWHYsDYPA1QxUszb920=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 64AF3ACBA;
-        Mon,  4 Jan 2021 08:47:40 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 09:47:39 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <smuchun@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Hui Su <sh_def@163.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/page_alloc: remove the static for local variable
- node_order
-Message-ID: <20210104084739.GB13207@dhcp22.suse.cz>
-References: <20201230114014.GA1934427@ubuntu-A520I-AC>
- <20201230124233.GE28221@casper.infradead.org>
- <CAPSr9jHa8nT=Y1R2w9v7UUFJNXhCFohwDGwyv7WOWjKADZEchw@mail.gmail.com>
+        id S1726737AbhADIte convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 03:49:34 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:54095 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726333AbhADItd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 03:49:33 -0500
+X-Originating-IP: 90.89.98.255
+Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr [90.89.98.255])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id EF2E3240010;
+        Mon,  4 Jan 2021 08:48:50 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 09:48:49 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     vadivel.muruganx.ramuthevar@linux.intel.com,
+        linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: intel: remove broken code
+Message-ID: <20210104094849.1850c993@xps13>
+In-Reply-To: <20201217221148.2877318-1-martin.blumenstingl@googlemail.com>
+References: <20201217221148.2877318-1-martin.blumenstingl@googlemail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPSr9jHa8nT=Y1R2w9v7UUFJNXhCFohwDGwyv7WOWjKADZEchw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30-12-20 21:41:30, Muchun Song wrote:
-> On Wed, Dec 30, 2020 at 8:45 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Wed, Dec 30, 2020 at 07:40:14PM +0800, Hui Su wrote:
-> > > local variable node_order do not need the static here.
-> >
-> > It bloody well does.  It can be up to 2^10 entries on x86 (and larger
-> > on others) That's 4kB which you've now moved onto the stack.
+Hi Martin,
+
+Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote on Thu,
+17 Dec 2020 23:11:48 +0100:
+
+> Drop the check for mtd->name as it's executed while the mtd variable is
+> always NULL. If some MTD name is needed then it should be validated by
+> the MTD core.
 > 
-> This is not the first time I have seen similar changes. So what
-> do you think about adding a comment here to avoid another one
-> do this in the feature?
+> While here, also drop the NULL assignment to the mtd variable as it's
+> overwritten later on anyways and the NULL value is never read.
+> 
+> Fixes: 0b1039f016e8a3 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+> I found this by looking at the new driver. This patch is compile-tested
+> only.
+> 
+> 
+>  drivers/mtd/nand/raw/intel-nand-controller.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+> index fdb112e8a90d..398de6ec68d7 100644
+> --- a/drivers/mtd/nand/raw/intel-nand-controller.c
+> +++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+> @@ -579,7 +579,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct ebu_nand_controller *ebu_host;
+>  	struct nand_chip *nand;
+> -	struct mtd_info *mtd = NULL;
+> +	struct mtd_info *mtd;
+>  	struct resource *res;
+>  	char *resname;
+>  	int ret;
+> @@ -647,10 +647,6 @@ static int ebu_nand_probe(struct platform_device *pdev)
+>  	       ebu_host->ebu + EBU_ADDR_SEL(cs));
+>  
+>  	nand_set_flash_node(&ebu_host->chip, dev->of_node);
+> -	if (!mtd->name) {
+> -		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
+> -		return -EINVAL;
+> -	}
 
-Well, this is not an unusual technieque to reduce the stack space. I am
-not really sure we really need to put an explicit comment about that.  I
-would appreciate much more if patch submitters took an extra step when
-creating seemingly trivial patches and either consult the history of the
-respective code or look for a similar pattern elsewhere before sending
-them.
+This is valid code, it's best to use a label = "my-storage"; property
+in your NAND DT node. Then mtd->name will be updated by
+nand_set_flash_node().
 
-I do agree with Willy that mm code is usually not a great place to
-search for trivial patches. First of all most people tend to be pretty
-busy with other reviewes and the code has grown rather delicate and
-tricky so each review is non trivial.
--- 
-Michal Hocko
-SUSE Labs
+Thanks,
+Miquèl
