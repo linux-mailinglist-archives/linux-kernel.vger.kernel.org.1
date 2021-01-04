@@ -2,133 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5122E9D89
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5F02E9D85
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbhADS4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:56:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727434AbhADSz6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727760AbhADSz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 4 Jan 2021 13:55:58 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A172C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 10:55:18 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id b24so27032322otj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 10:55:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HCHUr50eCN2Mq1BFEjsYp3XRTEkB08z4GhkrFu84N5o=;
-        b=MjK0591SdWSZ9DLSVpf0BxQENcnVdirWQsQ7aDl6SyoT5QHmyA95wA785FtmQXb4eS
-         kalXUkp+oEIy1oKVvEwQb747gpJ/vNJAP/sksy9Q7KnNyGNmzOlvCGW5cXwd4sbfJ8U5
-         N+0Nc5AFrEkuxtm0bCRm3uB1KbagVWrJ1d+uH4o95u0HT3CAa7V0Tbapga2pBgY1KNNn
-         PGnZiHKUt+CiQUzoZugw3/kBILSrkuo3avoJyYzLtjZggUou0EAVDUKaxyAyU6KwjlRn
-         ofG3WBujQoLydHQJZtcYadoIeYkN7X7nzm0JducjXJZwBdo9J9PyEcVL2nfk16HgQr1q
-         ragQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HCHUr50eCN2Mq1BFEjsYp3XRTEkB08z4GhkrFu84N5o=;
-        b=GHbQwQonYe7rFcdA1UBsZy8/N/M3HsN8LGM6M3RM3qFiSc6G4geRbklhZZtY1N1+2G
-         FNtyM9AvrL0DeOrmLywbA1t/J3X4CwfFnFeOelt+W9xvT7+RmxpUjnfAKDl9rm177Ndw
-         dQvax4oz9nbSbE4Z+b7R+R+UzXPvNMWqATVOBLbiaoGCiLzuiR4gSgCzrmpEK7hcfE9O
-         RjzJHvlBlLuHXL30UMT+mJQcbhQq/rpiT+SkWVY36QItsRwuYzWtZyvRLvnQYkekWfkY
-         rEnLZ8L7SY2hexM/2aZZX7skt4WmO+Et0k9nDK69E1fcAqSWN0pHO6gwieAHg37Y+fJV
-         nvkQ==
-X-Gm-Message-State: AOAM531kOmT5+uuTB2hgwDckH5NhosnmYUxvL+cdAkYPu+0YXhr2FTVm
-        r4NMOjZgmadvX12oFGMk+cGmkA==
-X-Google-Smtp-Source: ABdhPJynIT9V4QDAnYlHEj69tBxT9FlrJStSU7PSfvdY1dZKE/6gjjiShTwSh2OmegYcv02AXOLbBw==
-X-Received: by 2002:a05:6830:1e41:: with SMTP id e1mr54050557otj.143.1609786517769;
-        Mon, 04 Jan 2021 10:55:17 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t19sm14625846otp.36.2021.01.04.10.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 10:55:16 -0800 (PST)
-Date:   Mon, 4 Jan 2021 12:55:14 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ziqi Chen <ziqichen@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, cang@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
- violation
-Message-ID: <X/NkktFnWI48XNcp@builder.lan>
-References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
- <e8980753-fa48-7862-e5ce-0d756d5d97a6@intel.com>
+Received: from mail.kernel.org ([198.145.29.99]:49646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726330AbhADSz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 13:55:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48B2121D1B;
+        Mon,  4 Jan 2021 18:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609786517;
+        bh=MpFc3N5sadh45HXZYPKekhePp7BQUpn3XZfR02GWyfg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ucvmp3lUBV56HNYQtbhj2Qbgf7LWzLtjhc9G0GFdCGTefXE76a6rgCaUF1wLwDwMH
+         ojryTtKX9sQavzDnaXkztQ658g6CV2CzJo8WYW+Ui/rhdxiLt12gvhA9gvEghLFCHG
+         828NFWjf6PVM+eoy+9mtf5syGUcsbrfpKaSKrr0z3XH3x76oqXnRh5CMpUaSF8sKwE
+         7IRIguR0lOlYN2M3kKm+b8P6yOfm0hmN+yZz+NnmiN/hVOgr/9BmphrMuR1YBt9bWG
+         zusE8QL4VRm/6X3fc/DdW/fLB1n6W+SRvQ1Nzr/R/8U88edLi5S8Y/ojsp5TXoi5c9
+         58WYprSuKZyWw==
+Date:   Mon, 4 Jan 2021 10:55:15 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] vfs: don't unnecessarily clone write access for
+ writable fds
+Message-ID: <X/Nkk4rlS43W90TV@sol.localdomain>
+References: <20200922164418.119184-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e8980753-fa48-7862-e5ce-0d756d5d97a6@intel.com>
+In-Reply-To: <20200922164418.119184-1-ebiggers@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04 Jan 03:15 CST 2021, Adrian Hunter wrote:
-
-> On 22/12/20 3:49 pm, Ziqi Chen wrote:
-> > As per specs, e.g, JESD220E chapter 7.2, while powering
-> > off/on the ufs device, RST_N signal and REF_CLK signal
-> > should be between VSS(Ground) and VCCQ/VCCQ2.
-> > 
-> > To flexibly control device reset line, refactor the function
-> > ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
-> > vops_device_reset(sturct ufs_hba *hba, bool asserted). The
-> > new parameter "bool asserted" is used to separate device reset
-> > line pulling down from pulling up.
+On Tue, Sep 22, 2020 at 09:44:18AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> This patch assumes the power is controlled by voltage regulators, but for us
-> it is controlled by firmware (ACPI), so it is not correct to change RST_n
-> for all host controllers as you are doing.
+> There's no need for mnt_want_write_file() to increment mnt_writers when
+> the file is already open for writing, provided that
+> mnt_drop_write_file() is changed to conditionally decrement it.
 > 
-> Also we might need to use a firmware interface for device reset, in which
-> case the 'asserted' value doe not make sense.
+> We seem to have ended up in the current situation because
+> mnt_want_write_file() used to be paired with mnt_drop_write(), due to
+> mnt_drop_write_file() not having been added yet.  So originally
+> mnt_want_write_file() had to always increment mnt_writers.
 > 
+> But later mnt_drop_write_file() was added, and all callers of
+> mnt_want_write_file() were paired with it.  This makes the compatibility
+> between mnt_want_write_file() and mnt_drop_write() no longer necessary.
+> 
+> Therefore, make __mnt_want_write_file() and __mnt_drop_write_file() skip
+> incrementing mnt_writers on files already open for writing.  This
+> removes the only caller of mnt_clone_write(), so remove that too.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+> 
+> v3: added note to porting file.
+> v2: keep the check for emergency r/o remounts.
+> 
+>  Documentation/filesystems/porting.rst |  7 ++++
+>  fs/namespace.c                        | 53 ++++++++++-----------------
+>  include/linux/mount.h                 |  1 -
+>  3 files changed, 27 insertions(+), 34 deletions(-)
 
-Are you saying that the entire flip-flop-the-reset is a single firmware
-operation in your case? If you look at the Mediatek driver, the
-implementation of ufs_mtk_device_reset_ctrl() is a jump to firmware.
-
-
-But perhaps "asserted" isn't the appropriate English word for saying
-"the reset is in the resetting state"?
-
-I just wanted to avoid the use of "high"/"lo" as if you look at the
-Mediatek code they pass the expected line-level to the firmware, while
-in the Qualcomm code we pass the logical state to the GPIO code which is
-setup up as "active low" and thereby flip the meaning before hitting the
-pad.
-
-> Can we leave the device reset callback alone, and instead introduce a new
-> variant operation for setting RST_n to match voltage regulator power changes?
-
-Wouldn't this new function just have to look like the proposed patches?
-In which case for existing platforms we'd have both?
-
-How would you implement this, or would you simply skip implementing
-this?
-
-Regards,
-Bjorn
-
+Ping.
