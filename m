@@ -2,107 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DFC2E9C54
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB722E9C51
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbhADRob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:44:31 -0500
-Received: from mail-pg1-f172.google.com ([209.85.215.172]:44032 "EHLO
-        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727986AbhADRoa (ORCPT
+        id S1727975AbhADRo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:44:27 -0500
+Received: from audible.transient.net ([24.143.126.66]:60256 "HELO
+        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727696AbhADRo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:44:30 -0500
-Received: by mail-pg1-f172.google.com with SMTP id p18so19486095pgm.11;
-        Mon, 04 Jan 2021 09:44:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W41s4SpHuFxfP2VmE7HCI4KFVMEE3WKx0iXTMwP7vnM=;
-        b=m9QJ1edukeXN241rEKi8gvQhMIRvwBhPUC7zH/aAtYY+56R9/lYmoGzvdNvs/lmklP
-         vdv9cAuBHMNOUwxlMhyjvvh8rvRRWQk11YxRUPal6o9TINKZCQSfjJP+vFaozUE5ntHz
-         HUzhxPWN+BFIEseiJt0Rf8yD2GPCNM0Q553RrLiTbNuvOk8P1J9P6XVURet1GSI5xKVh
-         2hUmJWsWDJiiHvXl1ccj+A1/ylb63H3EirNgDrQB2kTPiw3zKtg7muJXtLtTwEXzRILY
-         R+P5UIUOcodnRdxbrSroIrLFFh+yZmjyl3Of8yuX66pJMuvjhAMA8oj55xDh94tUF387
-         sNyw==
-X-Gm-Message-State: AOAM5331N0qVoolmrUyNx8+EsWp7af8fljZe3/WaJ00nadkn82655bt2
-        s6beDBZQwpdepzCcP42xngg=
-X-Google-Smtp-Source: ABdhPJwKTIkHd9jD106iNYsMCjlbG9ke8DsYiuUgJzn38bv0xFujzmC1vyllUPjkZAgfvXQ07hPHdg==
-X-Received: by 2002:a63:c1e:: with SMTP id b30mr71096758pgl.72.1609782229216;
-        Mon, 04 Jan 2021 09:43:49 -0800 (PST)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id b4sm10376pju.33.2021.01.04.09.43.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 09:43:48 -0800 (PST)
-Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Chris Boot <bootc@boo.tc>, linuxppc-dev@lists.ozlabs.org,
-        target-devel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Nicholas Bellinger <nab@linux-iscsi.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>
-References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com>
- <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet>
- <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc>
- <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
- <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc>
- <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet>
- <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org>
- <alpine.LNX.2.22.394.2006171104540.11@nippy.intranet>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <e3b5ce6a-0152-01b8-89d2-80bcdb9c1c57@acm.org>
-Date:   Mon, 4 Jan 2021 09:43:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 4 Jan 2021 12:44:27 -0500
+Received: (qmail 13789 invoked from network); 4 Jan 2021 17:43:46 -0000
+Received: from cucamonga.audible.transient.net (192.168.2.5)
+  by canarsie.audible.transient.net with QMQP; 4 Jan 2021 17:43:46 -0000
+Received: (nullmailer pid 6695 invoked by uid 1000);
+        Mon, 04 Jan 2021 17:43:46 -0000
+Date:   Mon, 4 Jan 2021 17:43:46 +0000
+From:   Jamie Heilman <jamie@audible.transient.net>
+To:     Karol Herbst <kherbst@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nouveau <nouveau@lists.freedesktop.org>
+Subject: Re: [Nouveau] nouveau regression post v5.8, still present in v5.10
+Message-ID: <X/NT0iN9KlSXQJJ7@audible.transient.net>
+Mail-Followup-To: Karol Herbst <kherbst@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nouveau <nouveau@lists.freedesktop.org>
+References: <X+WV8OiQzTIfLdgW@audible.transient.net>
+ <CACO55tt9GbwBU6igAJ_8RjwzSZcDbu+_1wGWKiye3TosgoiHyw@mail.gmail.com>
+ <X/NO9kAlCd/k8Di2@audible.transient.net>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.22.394.2006171104540.11@nippy.intranet>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/NO9kAlCd/k8Di2@audible.transient.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/20 7:07 PM, Finn Thain wrote:
-> On Tue, 16 Jun 2020, Bart Van Assche wrote:
->> As far as I know the sbp driver only has had one user ever and that user 
->> is no longer user the sbp driver.
+Jamie Heilman wrote:
+> Karol Herbst wrote:
+> > do you think you'd be able to do a kernel bisect in order to pinpoint
+> > the actual commit causing it? Thanks
 > 
-> So, you estimate the userbase at zero. Can you give a confidence level? 
-> Actual measurement is hard because when end users encounter breakage, they 
-> look for quick workarounds before they undertake post mortem, log 
-> collection, bug reporting, mailing list discussions, analysis etc.
+> No.  I can't reproduce it reliably.  I if I could, bisection wouldn't
+> be a problem but as I can't and as it can take weeks for the problem
+> to occur there's essentially no chance.  I know it regressed roughly
+> in 5.8-rc1 only because that's what I was running when the first event
+> occured.
 
-(replying to an e-mail from six months ago)
+er, 5.9.0-rc1 rather
 
-Hi Finn,
-
-I am confident that my estimate is an accurate estimate since I have not
-seen any sbp support requests, sbp bug reports nor any sbp bug fixes since
-the sbp target driver has been accepted upstream.
-
-> Here's a different question: "Why remove it from the kernel tree?"
+> > On Sun, Dec 27, 2020 at 8:16 PM Jamie Heilman
+> > <jamie@audible.transient.net> wrote:
+> > >
+> > > Something between v5.8 and v5.9 has resulted in periodically losing video.
+> > > Unfortunately, I can't reliably reproduce it, it seems to happen every
+> > > once in a long while---I can go weeks without an occurance, but it
+> > > always seems to happen after my workstation has been idle long enough
+> > > to screen blank and put the monitor to sleep.  I'm using a single
+> > > display (Dell 2405FPW) connected via DVI, running X (Xorg 1.20.x from
+> > > Debian sid).  I don't really do anything fancy, xterms, a browser or
+> > > two, play the occasional video, but like I said, I can't reliably
+> > > reproduce this.  I've had it happen about 11 times since August.
+> > >
+> > > lspci -vv output is:
+> > >
+> > > 01:00.0 VGA compatible controller: NVIDIA Corporation G86 [Quadro NVS 290] (rev a1) (prog-if 00 [VGA controller])
+> > >         Subsystem: NVIDIA Corporation G86 [Quadro NVS 290]
+> > >         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+> > >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+> > >         Latency: 0, Cache Line Size: 64 bytes
+> > >         Interrupt: pin A routed to IRQ 28
+> > >         Region 0: Memory at fc000000 (32-bit, non-prefetchable) [size=16M]
+> > >         Region 1: Memory at d0000000 (64-bit, prefetchable) [size=256M]
+> > >         Region 3: Memory at fa000000 (64-bit, non-prefetchable) [size=32M]
+> > >         Region 5: I/O ports at dc80 [size=128]
+> > >         Expansion ROM at 000c0000 [disabled] [size=128K]
+> > >         Capabilities: [60] Power Management version 2
+> > >                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+> > >                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+> > >         Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
+> > >                 Address: 00000000fee01004  Data: 4023
+> > >         Capabilities: [78] Express (v1) Endpoint, MSI 00
+> > >                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <512ns, L1 <4us
+> > >                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 25.000W
+> > >                 DevCtl: CorrErr- NonFatalErr+ FatalErr+ UnsupReq-
+> > >                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
+> > >                         MaxPayload 128 bytes, MaxReadReq 512 bytes
+> > >                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
+> > >                 LnkCap: Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
+> > >                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
+> > >                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
+> > >                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+> > >                 LnkSta: Speed 2.5GT/s (ok), Width x16 (ok)
+> > >                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+> > >         Capabilities: [100 v1] Virtual Channel
+> > >                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
+> > >                 Arb:    Fixed- WRR32- WRR64- WRR128-
+> > >                 Ctrl:   ArbSelect=Fixed
+> > >                 Status: InProgress-
+> > >                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
+> > >                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
+> > >                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
+> > >                         Status: NegoPending- InProgress-
+> > >         Capabilities: [128 v1] Power Budgeting <?>
+> > >         Capabilities: [600 v1] Vendor Specific Information: ID=0001 Rev=1 Len=024 <?>
+> > >         Kernel driver in use: nouveau
+> > >
+> > > The last time this happened, this is what got logged:
+> > >
+> > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
+> > > nouveau 0000:01:00.0: disp: Base 1:
+> > > nouveau 0000:01:00.0: disp:        0084: 00000000
+> > > nouveau 0000:01:00.0: disp:        0088: 00000000
+> > > nouveau 0000:01:00.0: disp:        008c: 00000000
+> > > nouveau 0000:01:00.0: disp:        0090: 00000000
+> > > nouveau 0000:01:00.0: disp:        0094: 00000000
+> > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
+> > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
+> > > nouveau 0000:01:00.0: disp:        00c0: 00000000
+> > > nouveau 0000:01:00.0: disp:        00c4: 00000000
+> > > nouveau 0000:01:00.0: disp:        00c8: 00000000
+> > > nouveau 0000:01:00.0: disp:        00cc: 00000000
+> > > nouveau 0000:01:00.0: disp:        00e0: 40000000
+> > > nouveau 0000:01:00.0: disp:        00e4: 00000000
+> > > nouveau 0000:01:00.0: disp:        00e8: 00000000
+> > > nouveau 0000:01:00.0: disp:        00ec: 00000000
+> > > nouveau 0000:01:00.0: disp:        00fc: 00000000
+> > > nouveau 0000:01:00.0: disp:        0100: fffe0000
+> > > nouveau 0000:01:00.0: disp:        0104: 00000000
+> > > nouveau 0000:01:00.0: disp:        0110: 00000000
+> > > nouveau 0000:01:00.0: disp:        0114: 00000000
+> > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
+> > > nouveau 0000:01:00.0: disp:        0800: 00009500
+> > > nouveau 0000:01:00.0: disp:        0804: 00000000
+> > > nouveau 0000:01:00.0: disp:        0808: 04b00780
+> > > nouveau 0000:01:00.0: disp:        080c: 00007804
+> > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
+> > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
+> > > nouveau 0000:01:00.0: disp:        0c00: 00009500
+> > > nouveau 0000:01:00.0: disp:        0c04: 00000000
+> > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
+> > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
+> > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
+> > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
+> > > nouveau 0000:01:00.0: disp: Base 1:
+> > > nouveau 0000:01:00.0: disp:        0084: 00000000
+> > > nouveau 0000:01:00.0: disp:        0088: 00000000
+> > > nouveau 0000:01:00.0: disp:        008c: 00000000
+> > > nouveau 0000:01:00.0: disp:        0090: 00000000
+> > > nouveau 0000:01:00.0: disp:        0094: 00000000
+> > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
+> > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
+> > > nouveau 0000:01:00.0: disp:        00c0: 00000000
+> > > nouveau 0000:01:00.0: disp:        00c4: 00000000
+> > > nouveau 0000:01:00.0: disp:        00c8: 00000000
+> > > nouveau 0000:01:00.0: disp:        00cc: 00000000
+> > > nouveau 0000:01:00.0: disp:        00e0: 40000000
+> > > nouveau 0000:01:00.0: disp:        00e4: 00000000
+> > > nouveau 0000:01:00.0: disp:        00e8: 00000000
+> > > nouveau 0000:01:00.0: disp:        00ec: 00000000
+> > > nouveau 0000:01:00.0: disp:        00fc: 00000000
+> > > nouveau 0000:01:00.0: disp:        0100: fffe0000
+> > > nouveau 0000:01:00.0: disp:        0104: 00000000
+> > > nouveau 0000:01:00.0: disp:        0110: 00000000
+> > > nouveau 0000:01:00.0: disp:        0114: 00000000
+> > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
+> > > nouveau 0000:01:00.0: disp:        0800: 00009500
+> > > nouveau 0000:01:00.0: disp:        0804: 00000000
+> > > nouveau 0000:01:00.0: disp:        0808: 04b00780
+> > > nouveau 0000:01:00.0: disp:        080c: 00007804
+> > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
+> > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
+> > > nouveau 0000:01:00.0: disp:        0c00: 00009500
+> > > nouveau 0000:01:00.0: disp:        0c04: 00000000
+> > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
+> > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
+> > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
+> > > nouveau 0000:01:00.0: DRM: core notifier timeout
+> > > nouveau 0000:01:00.0: DRM: base-0: timeout
+> > >
+> > > I've got logs of all of this, if they help I can collect them.  The
+> > > timeout message are consistent the error messages a little less so.
+> > >
+> > > If there's more debugging I can do when this happens, I'd love to know
+> > > what it is.
+> > >
+> > > kernel config: http://audible.transient.net/~jamie/k/nouveau.config-5.10.0
+> > > dmesg at boot: http://audible.transient.net/~jamie/k/nouveau.dmesg
+> > >
+> > > --
+> > > Jamie Heilman                     http://audible.transient.net/~jamie/
+> > > _______________________________________________
+> > > Nouveau mailing list
+> > > Nouveau@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/nouveau
+> > >
+> > 
 > 
-> If maintaining this code is a burden, is it not the kind of tax that all 
-> developers/users pay to all developers/users? Does this driver impose an 
-> unreasonably high burden for some reason?
+> -- 
+> Jamie Heilman                     http://audible.transient.net/~jamie/
 
-Yes. If anyone wants to change the interface between SCSI target core and
-SCSI target drivers, all target drivers, including the sbp and FCoE target
-driver have to be retested. In other words, keeping unused target drivers
-inside the kernel tree involves a significant maintenance burden for anyone
-who wants to modify the interface between the SCSI target core and SCSI
-target drivers.
-
-Additionally, there is a good alternative available for the sbp driver.
-Every system I know of that is equipped with a Firewire port also has an
-Ethernet port. So users who want to provide SCSI target functionality on
-such systems can use any SCSI transport protocol that is compatible with
-Ethernet (iSCSI, iSER over soft-RoCE, SRP over soft-RoCE, ...).
-
-Thanks,
-
-Bart.
+-- 
+Jamie Heilman                     http://audible.transient.net/~jamie/
