@@ -2,262 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844C32E95BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A62E2E95C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbhADNTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:19:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
+        id S1726896AbhADNU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:20:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726930AbhADNTH (ORCPT
+        with ESMTP id S1726328AbhADNU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:19:07 -0500
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B48C061794
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 05:18:26 -0800 (PST)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kwPke-00BbtR-VY
-        for linux-kernel@vger.kernel.org; Mon, 04 Jan 2021 14:18:25 +0100
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
-        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kwPkL-00Bbr2-Gj; Mon, 04 Jan 2021 14:18:05 +0100
-Received: from bert by sumner.biot.com with local (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kwPkL-00CV2m-2e; Mon, 04 Jan 2021 14:18:05 +0100
-From:   Bert Vermeulen <bert@biot.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Birger Koblitz <mail@birger-koblitz.de>,
-        John Crispin <john@phrozen.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Bert Vermeulen <bert@biot.com>
-Subject: [PATCH v2 2/2] irqchip: Add support for Realtek RTL838x/RTL839x IRQ controller
-Date:   Mon,  4 Jan 2021 14:17:55 +0100
-Message-Id: <20210104131755.2979203-3-bert@biot.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210104131755.2979203-1-bert@biot.com>
-References: <20210104131755.2979203-1-bert@biot.com>
+        Mon, 4 Jan 2021 08:20:57 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A55FC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 05:20:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4vbh5rgk+lxV2PnusB2jyRkAlKCmIM48/QAFdRFOrH8=; b=i+ztVAJDR1PUo2Auesb/pU9qJF
+        /QJKHodz/kMeo8MZq7PiKdwjPHMMbkSgPPSbpZLakxvZ/KVvyoAYR75FSfUwgU7xGYkViAb+lsHTi
+        6adVwA+nftqqMdTX0zqw2ST9isV7SXGBFx9wwI0yXVBCTamf4kcFod9OWvxOAG82nrxcrMJR6yLpo
+        tsszYNEDLZn4jb6GpMTyQ35Jg9Oh6xycc4DdRaSYzUthh0ysPXjY02rI4hWlw6uNa+HfTLVaRdEQ6
+        zlVpH9e5IQVTtKm2xWRm8WjdYg+ng6FnCRdGzJthI4n2GA52/wRcKS2DxLrnxzG5981Ui5xI1qnwZ
+        3lVTFXFQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kwPlY-0007nW-FF; Mon, 04 Jan 2021 13:19:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 394E83013E5;
+        Mon,  4 Jan 2021 14:19:19 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 18C0320CBF483; Mon,  4 Jan 2021 14:19:19 +0100 (CET)
+Date:   Mon, 4 Jan 2021 14:19:19 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 06/19] perf/x86/intel/ds: Check insn_get_length()
+ retval
+Message-ID: <20210104131919.GN3021@hirez.programming.kicks-ass.net>
+References: <20201223174233.28638-1-bp@alien8.de>
+ <20201223174233.28638-7-bp@alien8.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201223174233.28638-7-bp@alien8.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a standard IRQ driver with only status and mask registers.
+On Wed, Dec 23, 2020 at 06:42:20PM +0100, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> intel_pmu_pebs_fixup_ip() needs only the insn length so use the
+> appropriate helper instead of a full decode. A full decode differs only
+> in running insn_complete() on the decoded insn but that is not needed
+> here.
+> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  arch/x86/events/intel/ds.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+> index 67dbc91bccfe..3786b4e07078 100644
+> --- a/arch/x86/events/intel/ds.c
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -1265,14 +1265,14 @@ static int intel_pmu_pebs_fixup_ip(struct pt_regs *regs)
+>  		is_64bit = kernel_ip(to) || any_64bit_mode(regs);
+>  #endif
+>  		insn_init(&insn, kaddr, size, is_64bit);
+> -		insn_get_length(&insn);
+> +
+>  		/*
+>  		 * Make sure there was not a problem decoding the
+>  		 * instruction and getting the length.  This is
+>  		 * doubly important because we have an infinite
+>  		 * loop if insn.length=0.
+>  		 */
+> -		if (!insn.length)
+> +		if (insn_get_length(&insn) || !insn.length)
 
-The mapping from SoC interrupts (18-31) to MIPS core interrupts is
-done via an interrupt-map in device tree.
-
-Signed-off-by: Bert Vermeulen <bert@biot.com>
----
- drivers/irqchip/Makefile          |   1 +
- drivers/irqchip/irq-realtek-rtl.c | 180 ++++++++++++++++++++++++++++++
- 2 files changed, 181 insertions(+)
- create mode 100644 drivers/irqchip/irq-realtek-rtl.c
-
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 0ac93bfaec61..4fc1086bed7e 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -113,3 +113,4 @@ obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
- obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
- obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
- obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
-+obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
-diff --git a/drivers/irqchip/irq-realtek-rtl.c b/drivers/irqchip/irq-realtek-rtl.c
-new file mode 100644
-index 000000000000..bafe9ee4a85a
---- /dev/null
-+++ b/drivers/irqchip/irq-realtek-rtl.c
-@@ -0,0 +1,180 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2006-2012 Tony Wu <tonywu@realtek.com>
-+ * Copyright (C) 2020 Birger Koblitz <mail@birger-koblitz.de>
-+ * Copyright (C) 2020 Bert Vermeulen <bert@biot.com>
-+ * Copyright (C) 2020 John Crispin <john@phrozen.org>
-+ */
-+
-+#include <linux/of_irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/spinlock.h>
-+#include <linux/of_address.h>
-+#include <linux/irqchip/chained_irq.h>
-+
-+/* Global Interrupt Mask Register */
-+#define RTL_ICTL_GIMR		0x00
-+/* Global Interrupt Status Register */
-+#define RTL_ICTL_GISR		0x04
-+/* Interrupt Routing Registers */
-+#define RTL_ICTL_IRR0		0x08
-+#define RTL_ICTL_IRR1		0x0c
-+#define RTL_ICTL_IRR2		0x10
-+#define RTL_ICTL_IRR3		0x14
-+
-+#define REG(x)		(realtek_ictl_base + x)
-+
-+static DEFINE_RAW_SPINLOCK(irq_lock);
-+static void __iomem *realtek_ictl_base;
-+
-+static void realtek_ictl_unmask_irq(struct irq_data *i)
-+{
-+	unsigned long flags;
-+	u32 value;
-+
-+	raw_spin_lock_irqsave(&irq_lock, flags);
-+
-+	value = readl(REG(RTL_ICTL_GIMR));
-+	value |= BIT(i->hwirq);
-+	writel(value, REG(RTL_ICTL_GIMR));
-+
-+	raw_spin_unlock_irqrestore(&irq_lock, flags);
-+}
-+
-+static void realtek_ictl_mask_irq(struct irq_data *i)
-+{
-+	unsigned long flags;
-+	u32 value;
-+
-+	raw_spin_lock_irqsave(&irq_lock, flags);
-+
-+	value = readl(REG(RTL_ICTL_GIMR));
-+	value &= ~BIT(i->hwirq);
-+	writel(value, REG(RTL_ICTL_GIMR));
-+
-+	raw_spin_unlock_irqrestore(&irq_lock, flags);
-+}
-+
-+static struct irq_chip realtek_ictl_irq = {
-+	.name = "realtek-rtl-intc",
-+	.irq_mask = realtek_ictl_mask_irq,
-+	.irq_unmask = realtek_ictl_unmask_irq,
-+};
-+
-+static int intc_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
-+{
-+	irq_set_chip_and_handler(hw, &realtek_ictl_irq, handle_level_irq);
-+
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops irq_domain_ops = {
-+	.map = intc_map,
-+	.xlate = irq_domain_xlate_onecell,
-+};
-+
-+static void realtek_irq_dispatch(struct irq_desc *desc)
-+{
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	struct irq_domain *domain;
-+	unsigned int pending;
-+
-+	chained_irq_enter(chip, desc);
-+	pending = readl(REG(RTL_ICTL_GIMR)) & readl(REG(RTL_ICTL_GISR));
-+	if (unlikely(!pending)) {
-+		spurious_interrupt();
-+		goto out;
-+	}
-+	domain = irq_desc_get_handler_data(desc);
-+	generic_handle_irq(irq_find_mapping(domain, __ffs(pending)));
-+
-+out:
-+	chained_irq_exit(chip, desc);
-+}
-+
-+/*
-+ * SoC interrupts are cascaded to MIPS CPU interrupts according to the
-+ * interrupt-map in the device tree. Each SoC interrupt gets 4 bits for
-+ * the CPU interrupt in an Interrupt Routing Register. Max 32 SoC interrupts
-+ * thus go into 4 IRRs.
-+ */
-+static int __init map_interrupts(struct device_node *node)
-+{
-+	struct device_node *cpu_ictl;
-+	const __be32 *imap;
-+	u32 imaplen, soc_int, cpu_int, tmp, regs[4];
-+	int ret, i, irr_regs[] = {
-+		RTL_ICTL_IRR3,
-+		RTL_ICTL_IRR2,
-+		RTL_ICTL_IRR1,
-+		RTL_ICTL_IRR0,
-+	};
-+
-+	ret = of_property_read_u32(node, "#address-cells", &tmp);
-+	if (ret || tmp)
-+		return -EINVAL;
-+
-+	imap = of_get_property(node, "interrupt-map", &imaplen);
-+	if (!imap || imaplen % 3)
-+		return -EINVAL;
-+
-+	memset(regs, 0, sizeof(regs));
-+	for (i = 0; i < imaplen; i += 3 * sizeof(u32)) {
-+		soc_int = be32_to_cpup(imap);
-+		if (soc_int > 31)
-+			return -EINVAL;
-+
-+		cpu_ictl = of_find_node_by_phandle(be32_to_cpup(imap + 1));
-+		if (!cpu_ictl)
-+			return -EINVAL;
-+		ret = of_property_read_u32(cpu_ictl, "#interrupt-cells", &tmp);
-+		if (ret || tmp != 1)
-+			return -EINVAL;
-+		of_node_put(cpu_ictl);
-+
-+		cpu_int = be32_to_cpup(imap + 2);
-+		if (cpu_int > 7)
-+			return -EINVAL;
-+
-+		regs[(soc_int * 4) / 32] |= cpu_int << (soc_int * 4) % 32;
-+		imap += 3;
-+	}
-+
-+	for (i = 0; i < 4; i++)
-+		writel(regs[i], REG(irr_regs[i]));
-+
-+	return 0;
-+}
-+
-+static int __init realtek_rtl_of_init(struct device_node *node, struct device_node *parent)
-+{
-+	struct irq_domain *domain;
-+	int ret;
-+
-+	domain = irq_domain_add_simple(node, 32, 0,
-+				       &irq_domain_ops, NULL);
-+	irq_set_chained_handler_and_data(2, realtek_irq_dispatch, domain);
-+	irq_set_chained_handler_and_data(3, realtek_irq_dispatch, domain);
-+	irq_set_chained_handler_and_data(4, realtek_irq_dispatch, domain);
-+	irq_set_chained_handler_and_data(5, realtek_irq_dispatch, domain);
-+
-+	realtek_ictl_base = of_iomap(node, 0);
-+	if (!realtek_ictl_base)
-+		return -ENXIO;
-+
-+	/* Disable all cascaded interrupts */
-+	writel(0, REG(RTL_ICTL_GIMR));
-+
-+	ret = map_interrupts(node);
-+	if (ret) {
-+		pr_err("invalid interrupt map\n");
-+		return ret;
-+	}
-+
-+	/* Clear timer interrupt */
-+	write_c0_compare(0);
-+
-+	return 0;
-+}
-+
-+IRQCHIP_DECLARE(realtek_rtl_intc, "realtek,rtl-intc", realtek_rtl_of_init);
--- 
-2.25.1
-
+Do we really still need the !insn.length? That is, it *should* be
+impossible to not fail insn_get_length() and still have a 0 length,
+seeing how x86 doesn't have 0 length instructions.
