@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837C72EA0CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF2D2EA10B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727276AbhADX3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:29:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
+        id S1727475AbhADXp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:45:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbhADX3I (ORCPT
+        with ESMTP id S1726762AbhADXp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:29:08 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04760C061574;
-        Mon,  4 Jan 2021 15:28:28 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwZGy-006txU-Eh; Mon, 04 Jan 2021 23:28:24 +0000
-Date:   Mon, 4 Jan 2021 23:28:24 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the vfs tree
-Message-ID: <20210104232824.GQ3579531@ZenIV.linux.org.uk>
-References: <20210105093616.5712e36f@canb.auug.org.au>
+        Mon, 4 Jan 2021 18:45:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D942C061574;
+        Mon,  4 Jan 2021 15:44:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YBgRGjn+yLmFC+9fNHoHRFsXeCxEkKsHezqEmQ36bEQ=; b=XIYp5yjtmgky7iNoVOQb+o3wZr
+        3L/KpsgoiU4PgUF/2JfxkJRLW1hcLCYXszkagaCvEljXe9Uz+u8+jE4+N39M+0neNh8AXn+EbgqWM
+        UAxR+Arf7ji2B/OFG3Uuzpv6oLlzE/WKH4NRTf2C5ZLJ22nsjlTWilnsqIdsGcypiK9aJg4IAg5lM
+        1g4r0kbHQm4M2Ktv1xQeCRGIRJ24dRRo5PufxYiZ9vMcYqdiYxSuk/oTaFj4aJIls1KwvNY3iTP+R
+        Trby8W4LwayqM2o9OfZDsuFaS3Xmo2k+k2H9fTJbw7qxTzxk44Reo+ivVA4pG6SNp99GU0kgCtR58
+        KvCbKeJQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kwWHJ-000VKI-Fy; Mon, 04 Jan 2021 20:17:08 +0000
+Date:   Mon, 4 Jan 2021 20:16:33 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupts@synopsys.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Subject: Re: [PATCH v2] fs/dax: include <asm/page.h> to fix build error on ARC
+Message-ID: <20210104201633.GE22407@casper.infradead.org>
+References: <20210101042914.5313-1-rdunlap@infradead.org>
+ <CAPcyv4jAiqyFg_BUHh_bJRG-BqzvOwthykijRapB_8i6VtwTmQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105093616.5712e36f@canb.auug.org.au>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <CAPcyv4jAiqyFg_BUHh_bJRG-BqzvOwthykijRapB_8i6VtwTmQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 09:36:16AM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Jan 04, 2021 at 12:13:02PM -0800, Dan Williams wrote:
+> On Thu, Dec 31, 2020 at 8:29 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> > +++ lnx-511-rc1/fs/dax.c
+> > @@ -25,6 +25,7 @@
+> >  #include <linux/sizes.h>
+> >  #include <linux/mmu_notifier.h>
+> >  #include <linux/iomap.h>
+> > +#include <asm/page.h>
 > 
-> After merging the vfs tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
-> 
-> In file included from arch/x86/include/asm/elf.h:8,
->                  from include/linux/elf.h:6,
->                  from include/linux/elfcore-compat.h:5,
->                  from fs/compat_binfmt_elf.c:17:
-> fs/binfmt_elf.c: In function 'fill_thread_core_info':
-> arch/x86/include/asm/elfcore-compat.h:23:20: error: 'TIF_X32' undeclared (first use in this function)
->    23 |  (test_thread_flag(TIF_X32) \
->       |                    ^~~~~~~
-> include/linux/thread_info.h:116:45: note: in definition of macro 'test_thread_flag'
->   116 |  test_ti_thread_flag(current_thread_info(), flag)
->       |                                             ^~~~
-> fs/binfmt_elf.c:1744:5: note: in expansion of macro 'PRSTATUS_SIZE'
->  1744 |     PRSTATUS_SIZE, &t->prstatus);
->       |     ^~~~~~~~~~~~~
-> arch/x86/include/asm/elfcore-compat.h:23:20: note: each undeclared identifier is reported only once for each function it appears in
->    23 |  (test_thread_flag(TIF_X32) \
->       |                    ^~~~~~~
-> include/linux/thread_info.h:116:45: note: in definition of macro 'test_thread_flag'
->   116 |  test_ti_thread_flag(current_thread_info(), flag)
->       |                                             ^~~~
-> fs/binfmt_elf.c:1744:5: note: in expansion of macro 'PRSTATUS_SIZE'
->  1744 |     PRSTATUS_SIZE, &t->prstatus);
->       |     ^~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   5a9b7f382248 ("binfmt_elf: partially sanitize PRSTATUS_SIZE and SET_PR_FPVALID")
-> 
-> or maybe commit
-> 
->   9866fcab1c65 ("[elfcore-compat][amd64] clean PRSTATUS_SIZE/SET_PR_FPVALID up properly")
+> I would expect this to come from one of the linux/ includes like
+> linux/mm.h. asm/ headers are implementation linux/ headers are api.
 
-Arrgh...  It's 8d71d2bf6efe ("x86: Reclaim TIF_IA32 and TIF_X32") in mainline, actually.
-Mea culpa ;-/
+It does indeed come from linux/mm.h already.  And a number of
+other random places, including linux/serial.h.  Our headers are a mess,
+but they shouldn't be made worse by adding _this_ include.  So I
+second Dan's objection here.
+
+> Once you drop that then the subject of this patch can just be "arc:
+> add a copy_user_page() implementation", and handled by the arc
+> maintainer (or I can take it with Vineet's ack).
+> 
+> >  #include <asm/pgalloc.h>
+> 
+> Yes, this one should have a linux/ api header to front it, but that's
+> a cleanup for another day.
+
+Definitely more involved.
+
