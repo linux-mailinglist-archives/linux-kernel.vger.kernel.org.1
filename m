@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C922E9A8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745042E9A84
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729528AbhADQLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:11:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37218 "EHLO mail.kernel.org"
+        id S1729279AbhADQKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:10:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728253AbhADQAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7CFF22573;
-        Mon,  4 Jan 2021 15:59:16 +0000 (UTC)
+        id S1728307AbhADQAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:00:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DA7420769;
+        Mon,  4 Jan 2021 16:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775957;
-        bh=mf2OZCsr1hT4C44vU3RJEfQi0oH2d53fQjELBwfXQUE=;
+        s=korg; t=1609776004;
+        bh=xG67Zm/Pub3LnzeGF+mtGQjupBLMb7U8Wk+xH/2uKM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dWyJNUgrLGYUqGGKsnv0DsZeEKmYudJq6Q9Jx5Ce9qjJX41Fr0TxszBKgyH8fwlvi
-         5ta9i+vUiIXl2F5hqxWEXVBhgezuAAtORflw+eDdDZaRoiHXqKXJYYxsakGd0yrfBQ
-         ePpBaYo9iatFrdFtK7dh+Z8cTcWPEWNo6d9meWxw=
+        b=HUOy3qTYNPGEb+VAq0Fmk/TATkJN8S72sIjUghFaYAIV6zamqMPeRfd7jJoAHFfbS
+         Ipc2vE3oGWSgHKHHsvKtMJ/uy0RijnQss/3qnivS6zG1Sa/PcQweIQb3CUVt8/lOMS
+         IhKhON1R+PwYzc6uZjIdL/giEYAx6IjGOBtyWHGI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com,
         Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Subject: [PATCH 4.19 23/35] misc: vmw_vmci: fix kernel info-leak by initializing dbells in vmci_ctx_get_chkpt_doorbells()
+Subject: [PATCH 5.4 27/47] misc: vmw_vmci: fix kernel info-leak by initializing dbells in vmci_ctx_get_chkpt_doorbells()
 Date:   Mon,  4 Jan 2021 16:57:26 +0100
-Message-Id: <20210104155704.537226842@linuxfoundation.org>
+Message-Id: <20210104155707.054036333@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
-References: <20210104155703.375788488@linuxfoundation.org>
+In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
+References: <20210104155705.740576914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,7 +60,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/misc/vmw_vmci/vmci_context.c
 +++ b/drivers/misc/vmw_vmci/vmci_context.c
-@@ -751,7 +751,7 @@ static int vmci_ctx_get_chkpt_doorbells(
+@@ -743,7 +743,7 @@ static int vmci_ctx_get_chkpt_doorbells(
  			return VMCI_ERROR_MORE_DATA;
  		}
  
