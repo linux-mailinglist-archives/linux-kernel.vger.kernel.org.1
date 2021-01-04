@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A192E9984
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8172E997B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727442AbhADQAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:00:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36514 "EHLO mail.kernel.org"
+        id S1728284AbhADQAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:00:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728430AbhADQAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECEDD21D93;
-        Mon,  4 Jan 2021 16:00:28 +0000 (UTC)
+        id S1728232AbhADQAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:00:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13B0A2253A;
+        Mon,  4 Jan 2021 15:58:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776029;
-        bh=V2Imo5LZn+YxBF+aA2Bqs5WS4RaXje0uYI8KxcWqzjM=;
+        s=korg; t=1609775939;
+        bh=lAXHsb70nJP+WYyBcH4Sr0dYyef1OZUZJDEgRu/5+Wg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bD/JDcqeZExdYTu5XodHcl/QBGY0ZYkilqpLemLB5omUaQBUU3YSAcWrLHA7M8xrU
-         9wc5s2yKLAObKvzqyHJFpJwHTx/XHTSbT4veLEDZDJxWWBKg3AiGOsekSuSO75w9We
-         wSI0ZLapbTYN93t/93uZs9bZsqjX4+tnMA1eoqNM=
+        b=eFu6V2j+g3BJ1DUaGPftgNk2MLxH50ZPe+Qz3wkpkQNMWuU0dUm12UTzQFqrfZ4hG
+         qy0eRbFpCvh0rJi9pJhWmwuDcCgJR2e5xn9gKsuao7mI2B0Eb2WzNdhAjo57Re+pTx
+         H6sZ9vvmAanZ+rwHnH6rL/fQhIbWPz3q0w+7FqdU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zheng Liang <zhengliang6@huawei.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 37/47] rtc: pl031: fix resource leak in pl031_probe
-Date:   Mon,  4 Jan 2021 16:57:36 +0100
-Message-Id: <20210104155707.529908805@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 34/35] ALSA: pcm: Clear the full allocated memory at hw_params
+Date:   Mon,  4 Jan 2021 16:57:37 +0100
+Message-Id: <20210104155705.038373022@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
-References: <20210104155705.740576914@linuxfoundation.org>
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Liang <zhengliang6@huawei.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 1eab0fea2514b269e384c117f5b5772b882761f0 ]
+[ Upstream commit 618de0f4ef11acd8cf26902e65493d46cc20cc89 ]
 
-When devm_rtc_allocate_device is failed in pl031_probe, it should release
-mem regions with device.
+The PCM hw_params core function tries to clear up the PCM buffer
+before actually using for avoiding the information leak from the
+previous usages or the usage before a new allocation.  It performs the
+memset() with runtime->dma_bytes, but this might still leave some
+remaining bytes untouched; namely, the PCM buffer size is aligned in
+page size for mmap, hence runtime->dma_bytes doesn't necessarily cover
+all PCM buffer pages, and the remaining bytes are exposed via mmap.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zheng Liang <zhengliang6@huawei.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20201112093139.32566-1-zhengliang6@huawei.com
+This patch changes the memory clearance to cover the all buffer pages
+if the stream is supposed to be mmap-ready (that guarantees that the
+buffer size is aligned in page size).
+
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+Link: https://lore.kernel.org/r/20201218145625.2045-3-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-pl031.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/core/pcm_native.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/rtc/rtc-pl031.c b/drivers/rtc/rtc-pl031.c
-index 180caebbd3552..9566958476dfc 100644
---- a/drivers/rtc/rtc-pl031.c
-+++ b/drivers/rtc/rtc-pl031.c
-@@ -379,8 +379,10 @@ static int pl031_probe(struct amba_device *adev, const struct amba_id *id)
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 7c12b0deb4eb5..db62dbe7eaa8a 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -753,8 +753,13 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		runtime->boundary *= 2;
  
- 	device_init_wakeup(&adev->dev, true);
- 	ldata->rtc = devm_rtc_allocate_device(&adev->dev);
--	if (IS_ERR(ldata->rtc))
--		return PTR_ERR(ldata->rtc);
-+	if (IS_ERR(ldata->rtc)) {
-+		ret = PTR_ERR(ldata->rtc);
-+		goto out;
+ 	/* clear the buffer for avoiding possible kernel info leaks */
+-	if (runtime->dma_area && !substream->ops->copy_user)
+-		memset(runtime->dma_area, 0, runtime->dma_bytes);
++	if (runtime->dma_area && !substream->ops->copy_user) {
++		size_t size = runtime->dma_bytes;
++
++		if (runtime->info & SNDRV_PCM_INFO_MMAP)
++			size = PAGE_ALIGN(size);
++		memset(runtime->dma_area, 0, size);
 +	}
  
- 	ldata->rtc->ops = ops;
- 
+ 	snd_pcm_timer_resolution_change(substream);
+ 	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
 -- 
 2.27.0
 
