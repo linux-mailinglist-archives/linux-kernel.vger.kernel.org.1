@@ -2,215 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C89B2EA082
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC792EA090
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727141AbhADXL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:11:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
+        id S1727724AbhADXN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbhADXLz (ORCPT
+        with ESMTP id S1727234AbhADXN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:11:55 -0500
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB90C061793;
-        Mon,  4 Jan 2021 15:11:14 -0800 (PST)
-Received: by mail-vs1-xe36.google.com with SMTP id h6so15420470vsr.6;
-        Mon, 04 Jan 2021 15:11:14 -0800 (PST)
+        Mon, 4 Jan 2021 18:13:56 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6687C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 15:13:15 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id t8so26560898iov.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 15:13:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=nZJG52DxHM8NxYEaACeWBEq/7egLrC9ZK8TAPAUC9Tw=;
-        b=bsAS2U5frW0z20sukfGBmeBZd50Frv6sTH0dmHyLmWie751Euilrw1VEXr+I4buBsY
-         CFmFofP7b47XSYyOCFHJvYbNcqUTVIbLHsYlxSaP6QGGipxwfMm9RZJ1Ns0X5Pf3oTol
-         JkuqIEf1PSfCUf00PRmuU60qMh1cDaP8jL/Z6B84dBXckskWxrHeFkRp7sTDsF3uRab3
-         i3Y7wGZG3YktDKV6qkIyoty6V7duCEKW7sWqriyl6JeFkw6HXBVrAuOj1svnOSOwjx8M
-         P/LvDVjbvYhm/77s8YLyDADC9G5l8Qm3DiIlVqBomOepwqDtiRQUv6zl/OrPV8y4kq5A
-         ckcw==
+        bh=G+1MVqQV4yHFgTMLgTDws1RowImJf6XP6VoJRtb5S+E=;
+        b=A8AMn+1UUhCRiytO8dsAJ2EE22k8/KqGTTOp23oPFa5n7oJLACVw0A/Kzht12QIDiW
+         PZj2L7RZkSmERf2UvNkn+QSrjUwO92g6Np5r26/pKKZ8KXU2kpY4HjPaeD4Ud8dWsHTl
+         Bf6zl/9PzFP9C1vBFFZvxOIwkbQu99UwY9Fsv70XhOhfkpAqP6s5QP/yUB4jxSSh+xm3
+         h1titWMzqdHcF1ULmEJv8Lev0gaHah5lAOFcG9uoUO920QrDmZYOM3/CokGnPnA5bShr
+         5TjLPEIpxeYuIh3d2sHVZo4JmIAuCcxW7nRASgBT5D7rxdF062ewVsKDf1P0uoPpCJLk
+         e5DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=nZJG52DxHM8NxYEaACeWBEq/7egLrC9ZK8TAPAUC9Tw=;
-        b=fXcWsPH4BMku64PKe1FyMbPJHMBYen66KU3WfSnJEJZYexQQs7I3iXH7Y1XGEM35Mt
-         QGEdC+PDZcsKper7vjRWPA+BaN+EaIb4QIe++m+QXs5+sPMMxV7/0wXEWI/Pm1hd3ABa
-         9l0NPThVrnvnaTkYMy+VVhj0AQYUDvsG3bNvJHCbTfIkEhOkao6dpBCKRTOuoh/fVo/v
-         bnNd7lPoM8OTPd2DQq2BadC4e7voEZ5XxS1XAy4ghBI6t8rmhdNVeCcn7NOUQyEsYELg
-         PMPXFjiDg8NGscyDnsQSCEp3pmkkYMpExo/1sAvATSFTPFK3tKVUGvMaWc1mPbuwq2mj
-         jLSg==
-X-Gm-Message-State: AOAM530VLrsBKcoW67t0jXjquff8im7mf3mGqC+QC0x9ixPJ+0vOf/d7
-        t/3PFnEJh1iaxgd2yyBZ4/RpcL/JnthrQg==
-X-Google-Smtp-Source: ABdhPJw751wkgYmEj0+hrixadDSPrbP+NJnOALKJQAU32Zzh0Xr5LV3XehzV4PEqUfmWRn635VdNnQ==
-X-Received: by 2002:a05:6214:20a7:: with SMTP id 7mr78391783qvd.59.1609798351740;
-        Mon, 04 Jan 2021 14:12:31 -0800 (PST)
+        bh=G+1MVqQV4yHFgTMLgTDws1RowImJf6XP6VoJRtb5S+E=;
+        b=RgOhz+I6KvHQR8JtpkZjxq03g0KjSVLQOhmjdOzBIGJgrFpbwt7CzWFQQdKWGsweTW
+         v1RwgfXehWrP3r7XLriYIj0f8o0Zsic/fIny1WpEqnlwyighWbA8g5fXFi+GP1lHddG7
+         lE/MjCg1zTM9Gch6Jt3nXxpeZnSm6+NrYSJ0ZMdHMTCoN2+o1Oow5mvMlM+ShnbM3ALe
+         mmyMGaZoDyHiqROa2xDgMC3mKW4RPQ4x+KaOA2IWH9fSyu04x2Sbls+dMnjwerXism7Q
+         eWH28ixRouuIoX9l8BdrFuBzd0uqc62WEGIGVHG5NSsH7ROzyKj0iakUGXoGglQVKDtb
+         SIPw==
+X-Gm-Message-State: AOAM533hwf7JO7p1kqz7Lq6Pz6GgKFXWXKvAG71ADVXbd239lvE55MBg
+        dGw+Gizh5fOl/QA9lYx3lbYYpxeleVE=
+X-Google-Smtp-Source: ABdhPJyJ/EHlu4TgUEE4Q0VJAMJNWZRECaTm1kQJaWbzP5MMGBqG7/o70hv5UM86qz0za2h9WdbALQ==
+X-Received: by 2002:ac8:6651:: with SMTP id j17mr74509403qtp.176.1609798569734;
+        Mon, 04 Jan 2021 14:16:09 -0800 (PST)
 Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id k19sm37992586qkh.6.2021.01.04.14.12.30
+        by smtp.gmail.com with ESMTPSA id f134sm37674597qke.23.2021.01.04.14.16.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 14:12:30 -0800 (PST)
-Date:   Mon, 4 Jan 2021 15:12:29 -0700
+        Mon, 04 Jan 2021 14:16:09 -0800 (PST)
+Date:   Mon, 4 Jan 2021 15:16:07 -0700
 From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        clang-built-linux@googlegroups.com,
-        Nick Clifton <nickc@redhat.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Changbin Du <changbin.du@intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] Kbuild: implement support for DWARF v5
-Message-ID: <20210104221229.GB1405526@ubuntu-m3-large-x86>
-References: <20201204011129.2493105-1-ndesaulniers@google.com>
- <20201204011129.2493105-2-ndesaulniers@google.com>
+To:     trix@redhat.com
+Cc:     dwmw2@infradead.org, richard@nod.at, ndesaulniers@google.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] jffs2: fix use after free in jffs2_sum_write_data()
+Message-ID: <20210104221607.GA1985645@ubuntu-m3-large-x86>
+References: <20201230145604.1586486-1-trix@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204011129.2493105-2-ndesaulniers@google.com>
+In-Reply-To: <20201230145604.1586486-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 05:11:27PM -0800, Nick Desaulniers wrote:
-> DWARF v5 is the latest standard of the DWARF debug info format.
+On Wed, Dec 30, 2020 at 06:56:04AM -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> Feature detection of DWARF5 is onerous, especially given that we've
-> removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-> support.  GNU `as` only recently gained support for specifying
-> -gdwarf-5.
+> clang static analysis reports this problem
 > 
-> The DWARF version of a binary can be validated with:
-> $ llvm-dwarfdump vmlinux | head -n 4 | grep version
-> or
-> $ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
+> fs/jffs2/summary.c:794:31: warning: Use of memory after it is freed
+>                 c->summary->sum_list_head = temp->u.next;
+>                                             ^~~~~~~~~~~~
 > 
-> DWARF5 wins significantly in terms of size when mixed with compression
-> (CONFIG_DEBUG_INFO_COMPRESSED).
+> In jffs2_sum_write_data(), in a loop summary data is handles a node at
+> a time.  When it has written out the node it is removed the summary list,
+> and the node is deleted.  In the corner case when a
+> JFFS2_FEATURE_RWCOMPAT_COPY is seen, a call is made to
+> jffs2_sum_disable_collecting().  jffs2_sum_disable_collecting() deletes
+> the whole list which conflicts with the loop's deleting the list by parts.
 > 
-> 363M    vmlinux.clang12.dwarf5.compressed
-> 434M    vmlinux.clang12.dwarf4.compressed
-> 439M    vmlinux.clang12.dwarf2.compressed
-> 457M    vmlinux.clang12.dwarf5
-> 536M    vmlinux.clang12.dwarf4
-> 548M    vmlinux.clang12.dwarf2
+> To preserve the old behavior of stopping the write midway, bail out of
+> the loop after disabling summary collection.
 > 
-> 515M    vmlinux.gcc10.2.dwarf5.compressed
-> 599M    vmlinux.gcc10.2.dwarf4.compressed
-> 624M    vmlinux.gcc10.2.dwarf2.compressed
-> 630M    vmlinux.gcc10.2.dwarf5
-> 765M    vmlinux.gcc10.2.dwarf4
-> 809M    vmlinux.gcc10.2.dwarf2
-> 
-> Though the quality of debug info is harder to quantify; size is not a
-> proxy for quality.
-> 
-> Jakub notes:
->   All [GCC] 5.1 - 6.x did was start accepting -gdwarf-5 as experimental
->   option that enabled some small DWARF subset (initially only a few
->   DW_LANG_* codes newly added to DWARF5 drafts).  Only GCC 7 (released
->   after DWARF 5 has been finalized) started emitting DWARF5 section
->   headers and got most of the DWARF5 changes in...
-> 
-> Version check GCC so that we don't need to worry about the difference in
-> command line args between GNU readelf and llvm-readelf/llvm-dwarfdump to
-> validate the DWARF Version in the assembler feature detection script.
-> 
-> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Jakub Jelinek <jakub@redhat.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Caroline Tice <cmtice@google.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> Fixes: 6171586a7ae5 ("[JFFS2] Correct handling of JFFS2_FEATURE_RWCOMPAT_COPY nodes.")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
 Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
 > ---
->  Makefile                          |  1 +
->  include/asm-generic/vmlinux.lds.h |  6 +++++-
->  lib/Kconfig.debug                 | 14 ++++++++++++++
->  scripts/test_dwarf5_support.sh    |  9 +++++++++
->  4 files changed, 29 insertions(+), 1 deletion(-)
->  create mode 100755 scripts/test_dwarf5_support.sh
+>  fs/jffs2/summary.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/Makefile b/Makefile
-> index 2430e1ee7c44..45231f6c1935 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -828,6 +828,7 @@ endif
+> diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
+> index be7c8a6a5748..4fe64519870f 100644
+> --- a/fs/jffs2/summary.c
+> +++ b/fs/jffs2/summary.c
+> @@ -783,6 +783,8 @@ static int jffs2_sum_write_data(struct jffs2_sb_info *c, struct jffs2_eraseblock
+>  					dbg_summary("Writing unknown RWCOMPAT_COPY node type %x\n",
+>  						    je16_to_cpu(temp->u.nodetype));
+>  					jffs2_sum_disable_collecting(c->summary);
+> +					/* The above call removes the list, nothing more to do */
+> +					goto bail_rwcompat;
+>  				} else {
+>  					BUG();	/* unknown node in summary information */
+>  				}
+> @@ -794,6 +796,7 @@ static int jffs2_sum_write_data(struct jffs2_sb_info *c, struct jffs2_eraseblock
 >  
->  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
->  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
->  DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
->  ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
->  # Binutils 2.35+ required for -gdwarf-4+ support.
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index b2b3d81b1535..76ce62c77029 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -829,7 +829,11 @@
->  		.debug_types	0 : { *(.debug_types) }			\
->  		/* DWARF 5 */						\
->  		.debug_macro	0 : { *(.debug_macro) }			\
-> -		.debug_addr	0 : { *(.debug_addr) }
-> +		.debug_addr	0 : { *(.debug_addr) }			\
-> +		.debug_line_str	0 : { *(.debug_line_str) }		\
-> +		.debug_loclists	0 : { *(.debug_loclists) }		\
-> +		.debug_rnglists	0 : { *(.debug_rnglists) }		\
-> +		.debug_str_offsets	0 : { *(.debug_str_offsets) }
+>  		c->summary->sum_num--;
+>  	}
+> + bail_rwcompat:
 >  
->  /* Stabs debugging sections. */
->  #define STABS_DEBUG							\
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 04719294a7a3..987815771ad6 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -274,6 +274,20 @@ config DEBUG_INFO_DWARF4
->  	  It makes the debug information larger, but it significantly
->  	  improves the success of resolving variables in gdb on optimized code.
+>  	jffs2_sum_reset_collected(c->summary);
 >  
-> +config DEBUG_INFO_DWARF5
-> +	bool "Generate DWARF Version 5 debuginfo"
-> +	depends on GCC_VERSION >= 70000 || CC_IS_CLANG
-> +	depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-> +	help
-> +	  Generate DWARF v5 debug info. Requires binutils 2.35, gcc 7.0+, and
-> +	  gdb 8.0+. Changes to the structure of debug info in Version 5 allow
-> +	  for around 15-18% savings in resulting image and debug info section sizes
-> +	  as compared to DWARF Version 4. DWARF Version 5 standardizes previous
-> +	  extensions such as accelerators for symbol indexing and the format for
-> +	  fission (.dwo/.dwp) files. Users may not want to select this config if
-> +	  they rely on tooling that has not yet been updated to support
-> +	  DWARF Version 5.
-> +
->  endchoice # "DWARF version"
->  
->  config DEBUG_INFO_BTF
-> diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-> new file mode 100755
-> index 000000000000..156ad5ec4274
-> --- /dev/null
-> +++ b/scripts/test_dwarf5_support.sh
-> @@ -0,0 +1,9 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +# Test that assembler accepts -gdwarf-5 and .file 0 directives, which were bugs
-> +# in binutils < 2.35.
-> +# https://sourceware.org/bugzilla/show_bug.cgi?id=25612
-> +# https://sourceware.org/bugzilla/show_bug.cgi?id=25614
-> +set -e
-> +echo '.file 0 "filename"' | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
 > -- 
-> 2.29.2.576.ga3fc446d84-goog
+> 2.27.0
 > 
