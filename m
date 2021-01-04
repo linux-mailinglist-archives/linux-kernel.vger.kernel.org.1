@@ -2,165 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682992EA08B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D820A2EA06A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727651AbhADXMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:12:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbhADXMm (ORCPT
+        id S1727347AbhADXGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:06:00 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:33744 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726026AbhADXF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:12:42 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C0BC061798
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 15:12:02 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id i7so20050179pgc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 15:12:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=qRuTB68VdASyyfYOcwRJv9bZzj+8O/NQLazmqFG6Ng8=;
-        b=LHA2cfDbMW2VfP3ixq+UaGJnbAG07fveHJCzSjkosIDoKKlwnBQfisT6WaSzkE1Wi1
-         uJGEKjJzEZymrTal9crf5IP0CcLsuZtu0QuaRBy2eqC7AmCqHCrQkRCMf0OwpXY1094V
-         5jRTQkMgDAe228cKh8O1HutyE3MPAHxgK78cf1XRsrHAk8kV8sPgPEIvv4ZLa5ItCRW6
-         G8TnBtgMbPXYaEMmSVa9d70RiD4oOr30ussOVWn6c9i6EDHWxanb44Mjwcm9VPwUEEeI
-         60QS6p2IFHrU2IPW4Dvr7xZWRF5kSPk0WfezKV/w7AXl5SMBLyKokp7fEN1MTF96iOyK
-         Hndg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=qRuTB68VdASyyfYOcwRJv9bZzj+8O/NQLazmqFG6Ng8=;
-        b=n+w/k5PvvE5qAtpA1e2tX09EiTeg1hgqGumbBComDgVMowxqLGzgZxMCWU+dljnqt8
-         ffWxf2CM+NwPOjb95KBmUfLM9GY8I5FcpkxpogWmjjk3YvlVT6STvhhfZzpqXNPuIbbk
-         Jjv7RlljDgKqk+k2nReKYY7Jo+62DqatO5uNzC7I3euoUGM1WJZzWzBvjWm0frrWWBWN
-         KNYcz1oiHQ6PsPPYerOKC3yk2MOC3y5mTUgZf47fj843dGwJjhOWOnGAQVAlic9zQ0E5
-         8pFZKcMvrUbqPVHQAGRNU1FO3fSIH2dgworBfALYVjX414HbkSUWLGf3tKBv0hkOLRkH
-         MEkw==
-X-Gm-Message-State: AOAM533LW1gpAVSh06SwcsC117MHDoG2jWop1rw28YBLXgh3Vn1H0FWD
-        Y0hxol/AHBqAyoyBOs4UffZ5+fB2luUTCA==
-X-Google-Smtp-Source: ABdhPJxq1nKULhFu/EIOtCrDLF5LtwhMTD/yD0b0lXYcLzL3Jo8VhI4qjrBz795s3H90brRRjHQE2Q==
-X-Received: by 2002:a62:ac09:0:b029:1a9:dd65:2f46 with SMTP id v9-20020a62ac090000b02901a9dd652f46mr50050225pfe.15.1609801443938;
-        Mon, 04 Jan 2021 15:04:03 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:5dc7:72fe:2549:4bff? ([2601:646:c200:1ef2:5dc7:72fe:2549:4bff])
-        by smtp.gmail.com with ESMTPSA id x5sm383473pjr.38.2021.01.04.15.04.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 15:04:03 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: in_compat_syscall() on x86
-Date:   Mon, 4 Jan 2021 15:04:01 -0800
-Message-Id: <091174F9-F6E4-468E-83F5-93706D83F9D2@amacapital.net>
-References: <fe2629460b4e4b44a120a8b56efe0ac1@AcuMS.aculab.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        X86 ML <x86@kernel.org>
-In-Reply-To: <fe2629460b4e4b44a120a8b56efe0ac1@AcuMS.aculab.com>
-To:     David Laight <David.Laight@aculab.com>
-X-Mailer: iPhone Mail (18B121)
+        Mon, 4 Jan 2021 18:05:59 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104N4kNh148330;
+        Mon, 4 Jan 2021 23:05:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : from :
+ subject : message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=R+Urid1nNCPc0SbRLStPFQ/ReLPBwhZsCxh99cL8MxU=;
+ b=XCNEPR7EhiqyL9p+u5iYcsX+QjlT0errClETLM9eNMXGae63WlwOuLCY5MuNKJwEHgob
+ jr9H8skv3ReBevs6yow9opM0Zo9RG3E3l8QQ4QABauMi0UI5je4mVcaxsuq9NM2goihl
+ igT/6hkwhMhoHlPpxrIhJ+iXdrfkdva0NvBVkEdf5MBZ7jBwG9pK5Uui01lgf3PzGZMf
+ U/nIIDXR6d8TtfS/1Se8vVDprWpdrhqGn1ZOWhvjfvKDiMscOAV7rsYXztBFsh6kYei9
+ 7p7WPbedS8bAxDgvud5tN0xdllWsPfG92poimjzJTcgJ+NDSsG0RQHJtX99qmoGLmI0y 6A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 35tebapn6s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 04 Jan 2021 23:05:11 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104MuMIc029624;
+        Mon, 4 Jan 2021 23:05:11 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 35uxnru5sh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Jan 2021 23:05:11 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 104N59ht015513;
+        Mon, 4 Jan 2021 23:05:09 GMT
+Received: from [192.168.1.3] (/89.66.140.113)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 Jan 2021 23:05:09 +0000
+To:     Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Xiao Guangrong <xiaoguangrong.eric"@gmail.com
+From:   "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+Subject: reproducible BUG() in kvm_mmu_get_root() in TDP MMU
+Message-ID: <4bf6fcae-20e7-3eae-83ec-51fb52110487@oracle.com>
+Date:   Tue, 5 Jan 2021 00:05:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: base64
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1011 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101040139
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> On Jan 4, 2021, at 2:36 PM, David Laight <David.Laight@aculab.com> wrote:
->=20
-> =EF=BB=BFFrom: Eric W. Biederman
->> Sent: 04 January 2021 20:41
->>=20
->> Al Viro <viro@zeniv.linux.org.uk> writes:
->>=20
->>> On Mon, Jan 04, 2021 at 12:16:56PM +0000, David Laight wrote:
->>>> On x86 in_compat_syscall() is defined as:
->>>>    in_ia32_syscall() || in_x32_syscall()
->>>>=20
->>>> Now in_ia32_syscall() is a simple check of the TS_COMPAT flag.
->>>> However in_x32_syscall() is a horrid beast that has to indirect
->>>> through to the original %eax value (ie the syscall number) and
->>>> check for a bit there.
->>>>=20
->>>> So on a kernel with x32 support (probably most distro kernels)
->>>> the in_compat_syscall() check is rather more expensive than
->>>> one might expect.
->>=20
->> I suggest you check the distro kernels.  I suspect they don't compile in
->> support for x32.  As far as I can tell x32 is an undead beast of a
->> subarchitecture that just enough people use that it can't be removed,
->> but few enough people use it likely has a few lurking scary bugs.
->=20
-> It is defined in the Ubuntu kernel configs I've got lurking:
-> Both 3.8.0-19_generic (Ubuntu 13.04) and 5.4.0-56_generic (probably 20.04)=
-.
-> Which is probably why it is in my test builds (I've just cut out
-> a lot of modules).
->=20
->>>> It would be muck better if both checks could be done together.
->>>> I think this would require the syscall entry code to set a
->>>> value in both the 64bit and x32 entry paths.
->>>> (Can a process make both 64bit and x32 system calls?)
->>>=20
->>> Yes, it bloody well can.
->>>=20
->>> And I see no benefit in pushing that logics into syscall entry,
->>> since anything that calls in_compat_syscall() more than once
->>> per syscall execution is doing the wrong thing.  Moreover,
->>> in quite a few cases we don't call the sucker at all, and for
->>> all of those pushing that crap into syscall entry logics is
->>> pure loss.
->>=20
->> The x32 system calls have their own system call table and it would be
->> trivial to set a flag like TS_COMPAT when looking up a system call from
->> that table.  I expect such a change would be purely in the noise.
->=20
-> Certainly a write of 0/1/2 into a dirtied cache line of 'current'
-> could easily cost absolutely nothing.
-> Especially if current has already been read.
->=20
-> I also wondered about resetting it to zero when an x32 system call
-> exits (rather than entry to a 64bit one).
->=20
-> For ia32 the flag is set (with |=3D) on every syscall entry.
-> Even though I'm pretty sure it can only change during exec.
-
-It can change for every syscall. I have tests that do this.
-
->=20
->>> What's the point, really?
->>=20
->> Before we came up with the current games with __copy_siginfo_to_user
->> and x32_copy_siginfo_to_user I was wondering if we should make such
->> a change.  The delivery of compat signal frames and core dumps which
->> do not go through the system call entry path could almost benefit from
->> a flag that could be set/tested when on those paths.
->=20
-> For signal delivery it should (probably) depend on the system call
-> that setup the signal handler.
-
-I think it has worked this way for some time now.
-
-> Although I'm sure I remember one kernel where some of it was done
-> in libc (with a single entrypoint for all hadlers).
->=20
->> The fact that only SIGCHLD (which can not trigger a coredump) is
->> different saves the coredump code from needing such a test.
->>=20
->> The fact that the signal frame code is simple enough it can directly
->> call x32_copy_siginfo_to_user or __copy_siginfo_to_user saves us there.
->>=20
->> So I don't think we have any cases where we actually need a flag that
->> is independent of the system call but we have come very close.
->=20
-> If a program can do both 64bit and x32 system calls you probably
-> need to generate a 64bit core dump if it has ever made a 64bit
-> system call??
-
-I think core dump should (and does) depend on the execution mode at the time=
- of the crash.
-
-It=E2=80=99s worth noting that GCC=E2=80=99s understanding of mixed bitness i=
-s horrible.
+SGksDQoNCkkgYW0gaGl0dGluZyBhIHJlcHJvZHVjaWJsZSBCVUcoKSB3aXRoIEtWTSBURFAg
+TU1VLg0KDQpUaGUgcmVwcm9kdWNlciBiYXNlZCBvbiBzZXRfbWVtb3J5X3JlZ2lvbl90ZXN0
+LmMgZnJvbSBLVk0gc2VsZnRlc3RzDQppcyBhdmFpbGFibGUgaGVyZToNCmh0dHBzOi8vZ2lz
+dC5naXRodWIuY29tL21hY2llanNzem1pZ2llcm8vODkwMjE4MTUxYzI0MmQ5OWY2M2VhMDgy
+NTMzNGM2YzANCg0KVGhlIHRlc3Qgc2ltcGx5IG1vdmVzIGEgbWVtc2xvdCBhIGJpdCBiYWNr
+IGFuZCBmb3J0aCBvbiB0aGUgaG9zdA0Kd2hpbGUgdGhlIGd1ZXN0IGlzIGNvbmN1cnJlbnRs
+eSB3cml0aW5nIGFyb3VuZCB0aGUgYXJlYSBiZWluZw0KbW92ZWQuDQoNClRoZSBjb2RlIHJ1
+bnMgZmluZSBvbiB0aGUgZGVmYXVsdCBLVk0gTU1VIGJ1dCB0cmlnZ2VycyBhIEJVRygpIHdo
+ZW4NClREUCBNTVUgaXMgZW5hYmxlZCBieSBhZGRpbmcgInRkcF9tbXU9MSIga3ZtIG1vZHVs
+ZSBwYXJhbWV0ZXIuDQoNClRoZSBiYWNrdHJhY2UgaXM6DQpbIDEzMDguNDU1MTIwXSBrZXJu
+ZWwgQlVHIGF0IGFyY2gveDg2L2t2bS9tbXUvbW11X2ludGVybmFsLmg6MTAwIQ0KWyAxMzA4
+LjUyNDk1MV0gaW52YWxpZCBvcGNvZGU6IDAwMDAgWyMxXSBTTVAgUFRJDQpbIDEzMDguNTc3
+MDgwXSBDUFU6IDkyIFBJRDogMTg2NzUgQ29tbTogbWVtc2xvdF9tb3ZlX3RlIE5vdCB0YWlu
+dGVkIDUuMTEuMC1yYzIrICM4MA0KWyAxMzA4LjY2NTYxN10gSGFyZHdhcmUgbmFtZTogT3Jh
+Y2xlIENvcnBvcmF0aW9uIE9SQUNMRSBTRVJWRVIgWDctMmMvU0VSVkVSIE1PRFVMRSBBU1NZ
+LCAsIEJJT1MgNDYwNzAzMDAgMTIvMjAvMjAxOQ0KWyAxMzA4Ljc4NzQzOF0gUklQOiAwMDEw
+Omt2bV90ZHBfbW11X2dldF92Y3B1X3Jvb3RfaHBhKzB4MTBjLzB4MTIwIFtrdm1dDQpbIDEz
+MDguODY0NTg3XSBDb2RlOiBkYiA3NCAxYyBiOCAwMCAwMCAwMCA4MCA0OCAwMyA0MyA0MCA3
+MiAxZSA0OCBjNyBjMiAwMCAwMCAwMCA4MCA0OCAyYiAxNSA5MiAwYSAxZCBkMyA0OCAwMSBk
+MCA1YiA0MSA1YyA0MSA1ZCA0MSA1ZSA0MSA1ZiA1ZCBjMyA8MGY+IDBiIDQ4IDhiIDE1IGVi
+IGU4IDNjIGQzIGViIGU3IDY2IDBmIDFmIDg0IDAwIDAwIDAwIDAwIDAwIDBmIDFmDQpbIDEz
+MDkuMDg5MzkzXSBSU1A6IDAwMTg6ZmZmZmE2NWFmZmE3M2QxMCBFRkxBR1M6IDAwMDEwMjQ2
+DQpbIDEzMDkuMTUxOTIyXSBSQVg6IDAwMDAwMDAwMDAwMDAwMDAgUkJYOiBmZmZmOWI0Njgy
+OWJhYzc4IFJDWDogMDAwMDAwMDAwMDAwMDAwMA0KWyAxMzA5LjIzNzMzNF0gUkRYOiAwMDAw
+MDAwMDAwMDAwMDAwIFJTSTogMDAwMDAwMDAwMDAwMDAwMCBSREk6IGZmZmZhNjVhZGExYmQw
+MDANClsgMTMwOS4zMjI3NDRdIFJCUDogZmZmZmE2NWFmZmE3M2QzOCBSMDg6IDAwMDAwMDAw
+MDAwMDAwMDAgUjA5OiBmZmZmOWI0NTRlNDQzMjAwDQpbIDEzMDkuNDA4MTU2XSBSMTA6IDAw
+MDAwMDAwMDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMDAxIFIxMjogMDAwMDAwMDAwMDAw
+MTc5NA0KWyAxMzA5LjQ5MzU2N10gUjEzOiBmZmZmYTY1YWRhMWJkMDAwIFIxNDogZmZmZjli
+NDU0ZTQ0MzA0MCBSMTU6IGZmZmZhNjVhZGExZDI0MTgNClsgMTMwOS41Nzg5NzddIEZTOiAg
+MDAwMDdmZGIwNDMwYjcwMCgwMDAwKSBHUzpmZmZmOWJhM2JmYTAwMDAwKDAwMDApIGtubEdT
+OjAwMDAwMDAwMDAwMDAwMDANClsgMTMwOS42NzU4MzNdIENTOiAgMDAxMCBEUzogMDAwMCBF
+UzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNClsgMTMwOS43NDQ2MDVdIENSMjogMDAw
+MDAwMDAwMDAwMDAwMCBDUjM6IDAwMDAwMDYwOTAwNDYwMDYgQ1I0OiAwMDAwMDAwMDAwNzcy
+NmUwDQpbIDEzMDkuODMwMDE4XSBEUjA6IDAwMDAwMDAwMDAwMDAwMDAgRFIxOiAwMDAwMDAw
+MDAwMDAwMDAwIERSMjogMDAwMDAwMDAwMDAwMDAwMA0KWyAxMzA5LjkxNTQyOF0gRFIzOiAw
+MDAwMDAwMDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZmMCBEUjc6IDAwMDAwMDAwMDAw
+MDA0MDANClsgMTMxMC4wMDA4MzddIFBLUlU6IDU1NTU1NTU0DQpbIDEzMTAuMDMzMTk5XSBD
+YWxsIFRyYWNlOg0KWyAxMzEwLjA2MjQ0NV0gIGt2bV9tbXVfbG9hZCsweDI5ZS8weDQ4MCBb
+a3ZtXQ0KWyAxMzEwLjExMjU0Ml0gIHZjcHVfZW50ZXJfZ3Vlc3QrMHgxMTJkLzB4MTViMCBb
+a3ZtXQ0KWyAxMzEwLjE2ODg2NV0gID8gdm14X3ZjcHVfbG9hZCsweDJlLzB4NDAgW2t2bV9p
+bnRlbF0NClsgMTMxMC4yMjYyMDFdICBrdm1fYXJjaF92Y3B1X2lvY3RsX3J1bisweGY5LzB4
+NTgwIFtrdm1dDQpbIDEzMTAuMjg2Njg1XSAga3ZtX3ZjcHVfaW9jdGwrMHgyNDcvMHg2MDAg
+W2t2bV0NClsgMTMxMC4zMzg4MzhdICA/IHRpY2tfcHJvZ3JhbV9ldmVudCsweDQ0LzB4NzAN
+ClsgMTMxMC4zODg4ODhdICA/IF9fYXVkaXRfc3lzY2FsbF9lbnRyeSsweGRkLzB4MTMwDQpb
+IDEzMTAuNDQzMTAxXSAgX194NjRfc3lzX2lvY3RsKzB4OTIvMHhkMA0KWyAxMzEwLjQ4Nzk0
+Nl0gIGRvX3N5c2NhbGxfNjQrMHgzNy8weDUwDQpbIDEzMTAuNTMwNzExXSAgZW50cnlfU1lT
+Q0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NDQvMHhhOQ0KWyAxMzEwLjU5MTE1OF0gUklQOiAw
+MDMzOjB4N2ZkYjQ0YTA2MzA3DQpbIDEzMTAuNjMzOTI1XSBDb2RlOiA0NCAwMCAwMCA0OCA4
+YiAwNSA2OSAxYiAyZCAwMCA2NCBjNyAwMCAyNiAwMCAwMCAwMCA0OCBjNyBjMCBmZiBmZiBm
+ZiBmZiBjMyA2NiAyZSAwZiAxZiA4NCAwMCAwMCAwMCAwMCAwMCBiOCAxMCAwMCAwMCAwMCAw
+ZiAwNSA8NDg+IDNkIDAxIGYwIGZmIGZmIDczIDAxIGMzIDQ4IDhiIDBkIDM5IDFiIDJkIDAw
+IGY3IGQ4IDY0IDg5IDAxIDQ4DQpbIDEzMTAuODU4NzI2XSBSU1A6IDAwMmI6MDAwMDdmZGIw
+NDMwYWU3OCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMDEwDQpb
+IDEzMTAuOTQ5MzM4XSBSQVg6IGZmZmZmZmZmZmZmZmZmZGEgUkJYOiAwMDAwMDAwMDAxOTY2
+MmYwIFJDWDogMDAwMDdmZGI0NGEwNjMwNw0KWyAxMzExLjAzNDc0N10gUkRYOiAwMDAwMDAw
+MDAwMDAwMDAwIFJTSTogMDAwMDAwMDAwMDAwYWU4MCBSREk6IDAwMDAwMDAwMDAwMDAwMDcN
+ClsgMTMxMS4xMjAxNTldIFJCUDogMDAwMDAwMDAwMTk2NTAwMCBSMDg6IDAwMDAwMDAwMDA0
+MGIyZmYgUjA5OiAwMDAwMDAwMDAwMDAwMDAwDQpbIDEzMTEuMjA1NTY3XSBSMTA6IDAwMDA3
+ZmRiMDQzMGEyYTAgUjExOiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDAwMDAwMDAwMDAw
+MA0KWyAxMzExLjI5MTczOF0gUjEzOiAwMDAwMDAwMDAxOTY1MDAwIFIxNDogMDAwMDAwMDAw
+MDAwMDAwMCBSMTU6IDAwMDA3ZmRiMDQzMGI3MDANClsgMTMxMS4zNzc4NzNdIE1vZHVsZXMg
+bGlua2VkIGluOiBrdm1faW50ZWwga3ZtIHh0X2NvbW1lbnQgeHRfb3duZXIgaXA2dF9ycGZp
+bHRlciBpcDZ0X1JFSkVDVCBuZl9yZWplY3RfaXB2NiBpcHRfUkVKRUNUIG5mX3JlamVjdF9p
+cHY0IHh0X2Nvbm50cmFjayBlYnRhYmxlX25hdCBlYnRhYmxlX2Jyb3V0ZSBpcDZ0YWJsZV9u
+YXQgaXA2dGFibGVfbWFuZ2xlIGlwNnRhYmxlX3NlY3VyaXR5IGlwNnRhYmxlX3JhdyBpcHRh
+YmxlX25hdCBuZl9uYXQgaXB0YWJsZV9tYW5nbGUgaXB0YWJsZV9zZWN1cml0eSBpcHRhYmxl
+X3JhdyBuZl9jb25udHJhY2sgbmZfZGVmcmFnX2lwdjYgbmZfZGVmcmFnX2lwdjQgaXBfc2V0
+IGVidGFibGVfZmlsdGVyIGVidGFibGVzIGlwNnRhYmxlX2ZpbHRlciBpcDZfdGFibGVzIGlw
+dGFibGVfZmlsdGVyIHJwY3JkbWEgaWJfaXNlcnQgaXNjc2lfdGFyZ2V0X21vZCBpYl9pc2Vy
+IGliX3NycHQgdGFyZ2V0X2NvcmVfbW9kIGliX3NycCBzY3NpX3RyYW5zcG9ydF9zcnAgaWJf
+aXBvaWIgcmRtYV91Y20gaWJfdW1hZCBpd19jeGdiNCByZG1hX2NtIGl3X2NtIGliX2NtIGlu
+dGVsX3JhcGxfbXNyIGludGVsX3JhcGxfY29tbW9uIHNreF9lZGFjIG5maXQgbGlibnZkaW1t
+IHg4Nl9wa2dfdGVtcF90aGVybWFsIGludGVsX3Bvd2VyY2xhbXAgY29yZXRlbXAgYm54dF9y
+ZSBpYl91dmVyYnMgbWdhZzIwMCBpYl9jb3JlIGRybV9rbXNfaGVscGVyIGNlYyBkcm0gaVRD
+T193ZHQgaVRDT192ZW5kb3Jfc3VwcG9ydCBzZyBpcnFieXBhc3MgcGNzcGtyIHN5c2NvcHlh
+cmVhIHN5c2ZpbGxyZWN0IHN5c2ltZ2JsdCBpMmNfaTgwMSBpb2F0ZG1hIGZiX3N5c19mb3Bz
+IGpveWRldiBpMmNfYWxnb19iaXQgaTJjX3NtYnVzIGxwY19pY2ggaW50ZWxfcGNoX3RoZXJt
+YWwgZGNhIGlwX3RhYmxlcyB2ZmF0IGZhdCB4ZnMgc2RfbW9kIHQxMF9waSBiZTJpc2NzaSBi
+bngyaSBjbmljIHVpbyBjeGdiNGkgY3hnYjQgdGxzIGN4Z2IzaSBjeGdiMyBtZGlvIGxpYmN4
+Z2JpDQpbIDEzMTEuMzc3OTUzXSAgbGliY3hnYiBxbGE0eHh4IGlzY3NpX2Jvb3Rfc3lzZnMg
+Y3JjdDEwZGlmX3BjbG11bCBjcmMzMl9wY2xtdWwgZ2hhc2hfY2xtdWxuaV9pbnRlbCBhZXNu
+aV9pbnRlbCBjcnlwdG9fc2ltZCBjcnlwdGQgZ2x1ZV9oZWxwZXIgYm54dF9lbiB3bWkgc3Vu
+cnBjIGRtX21pcnJvciBkbV9yZWdpb25faGFzaCBkbV9sb2cgZG1fbW9kIGlzY3NpX3RjcCBs
+aWJpc2NzaV90Y3AgbGliaXNjc2kgc2NzaV90cmFuc3BvcnRfaXNjc2kgW2xhc3QgdW5sb2Fk
+ZWQ6IGt2bV0NClsgMTMxMi43MTI5MTddIC0tLVsgZW5kIHRyYWNlIDQ3MTZjYzhmZDAzNzc4
+NGQgXS0tLQ0KWyAxMzEyLjg4NDY3Ml0gUklQOiAwMDEwOmt2bV90ZHBfbW11X2dldF92Y3B1
+X3Jvb3RfaHBhKzB4MTBjLzB4MTIwIFtrdm1dDQpbIDEzMTIuOTYyNjIyXSBDb2RlOiBkYiA3
+NCAxYyBiOCAwMCAwMCAwMCA4MCA0OCAwMyA0MyA0MCA3MiAxZSA0OCBjNyBjMiAwMCAwMCAw
+MCA4MCA0OCAyYiAxNSA5MiAwYSAxZCBkMyA0OCAwMSBkMCA1YiA0MSA1YyA0MSA1ZCA0MSA1
+ZSA0MSA1ZiA1ZCBjMyA8MGY+IDBiIDQ4IDhiIDE1IGViIGU4IDNjIGQzIGViIGU3IDY2IDBm
+IDFmIDg0IDAwIDAwIDAwIDAwIDAwIDBmIDFmDQpbIDEzMTMuMTg5MDAwXSBSU1A6IDAwMTg6
+ZmZmZmE2NWFmZmE3M2QxMCBFRkxBR1M6IDAwMDEwMjQ2DQpbIDEzMTMuMjUyMzIxXSBSQVg6
+IDAwMDAwMDAwMDAwMDAwMDAgUkJYOiBmZmZmOWI0NjgyOWJhYzc4IFJDWDogMDAwMDAwMDAw
+MDAwMDAwMA0KWyAxMzEzLjMzODUyMl0gUkRYOiAwMDAwMDAwMDAwMDAwMDAwIFJTSTogMDAw
+MDAwMDAwMDAwMDAwMCBSREk6IGZmZmZhNjVhZGExYmQwMDANClsgMTMxMy40MjQ3MjddIFJC
+UDogZmZmZmE2NWFmZmE3M2QzOCBSMDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiBmZmZmOWI0
+NTRlNDQzMjAwDQpbIDEzMTMuNTEwOTMyXSBSMTA6IDAwMDAwMDAwMDAwMDAwMDAgUjExOiAw
+MDAwMDAwMDAwMDAwMDAxIFIxMjogMDAwMDAwMDAwMDAwMTc5NA0KWyAxMzEzLjU5NzE0MF0g
+UjEzOiBmZmZmYTY1YWRhMWJkMDAwIFIxNDogZmZmZjliNDU0ZTQ0MzA0MCBSMTU6IGZmZmZh
+NjVhZGExZDI0MTgNClsgMTMxMy42ODMzNDNdIEZTOiAgMDAwMDdmZGIwNDMwYjcwMCgwMDAw
+KSBHUzpmZmZmOWJhM2JmYTAwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDANClsg
+MTMxMy43ODA5ODddIENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAw
+ODAwNTAwMzMNClsgMTMxMy44NTA1NTZdIENSMjogMDAwMDAwMDAwMDAwMDAwMCBDUjM6IDAw
+MDAwMDYwOTAwNDYwMDYgQ1I0OiAwMDAwMDAwMDAwNzcyNmUwDQpbIDEzMTMuOTM2NzU5XSBE
+UjA6IDAwMDAwMDAwMDAwMDAwMDAgRFIxOiAwMDAwMDAwMDAwMDAwMDAwIERSMjogMDAwMDAw
+MDAwMDAwMDAwMA0KWyAxMzE0LjAyMjk2NF0gRFIzOiAwMDAwMDAwMDAwMDAwMDAwIERSNjog
+MDAwMDAwMDBmZmZlMGZmMCBEUjc6IDAwMDAwMDAwMDAwMDA0MDANClsgMTMxNC4xMDkxNzFd
+IFBLUlU6IDU1NTU1NTU0DQpbIDEzMTQuMTQyMzI1XSBLZXJuZWwgcGFuaWMgLSBub3Qgc3lu
+Y2luZzogRmF0YWwgZXhjZXB0aW9uDQpbIDEzMTQuMjA1NzU1XSBLZXJuZWwgT2Zmc2V0OiAw
+eDExYTAwMDAwIGZyb20gMHhmZmZmZmZmZjgxMDAwMDAwIChyZWxvY2F0aW9uIHJhbmdlOiAw
+eGZmZmZmZmZmODAwMDAwMDAtMHhmZmZmZmZmZmJmZmZmZmZmKQ0KWyAxMzE1LjM2NzI1NF0g
+LS0tWyBlbmQgS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IEZhdGFsIGV4Y2VwdGlvbiBd
+LS0tDQoNCkl0IGxvb2tzIGxpa2UgdGhlcmUgbWlnaHQgYmUgYW4gaW5iYWxhbmNlIG9mIGt2
+bV9tbXVfZ2V0X3Jvb3QoKQ0KYW5kIGt2bV9tbXVfcHV0X3Jvb3QoKSBzb21ld2hlcmUgYnV0
+IEkgY291bGRuJ3QgcmVhbGx5IG5haWwgaXQgZG93bi4NCg0KSSd2ZSB0cmllZCB3aXRoIGFu
+ZCB3aXRob3V0ICJLVk06IHg4Ni9tbXU6IEJ1ZyBmaXhlcyBhbmQgY2xlYW51cHMgaW4NCmdl
+dF9tbWlvX3NwdGUoKSIgc2VyaWVzIGFwcGxpZWQsIGRvZXNuJ3QgbWFrZSBhbnkgZGlmZmVy
+ZW5jZS4NCg0KVGhhbmtzLA0KTWFjaWVqDQoNCg==
