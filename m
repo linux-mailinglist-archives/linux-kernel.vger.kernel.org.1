@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9422E96CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F0B2E96CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbhADOIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:08:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
+        id S1727147AbhADOI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:08:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbhADOIA (ORCPT
+        with ESMTP id S1726029AbhADOI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:08:00 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DAEC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:07:19 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id m12so64547614lfo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:07:19 -0800 (PST)
+        Mon, 4 Jan 2021 09:08:56 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7D1C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:08:16 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id n26so36919112eju.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:08:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Noy6r1/WTM/FuD2jphA2uWS50pb5obVRw55AkQ+95cI=;
-        b=LOnFTpkM+pp+xw2QIahN/58KTeXTmZmogfFOQDQZrae2dqqSUCXJi95ZHh+CGC80Za
-         CIzV1m3shttpaF2xef8iCMVq7PkWeaB0pov7RFanNH8+qpm+oFIrBxpBCv0yQnyriY0K
-         MRsXskenCYPZ/cvgb9XRtCDBB5RnpemEt5cRDLRPe9jkH7OvoIYjnOAJ2rnrcX5wWBhb
-         Ypag2OXD3vpswjnX+xhRsSGRDjvZ7/p6RFrekWVs6y12QPsLXSzT2qmgUbPgAQLH3I2u
-         Sg7g1oGOFo2V6Lx92H89iJCEROZmEGIqUCKS5HS3h1MemaMX4RRpFOZj1wnvzE0Py4BL
-         4/hw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=ONDjz5ciY9vROqc+40QcPHXcNj7vnSuJSUB6nVWh938=;
+        b=rI95mT2WrrOPFGLnvIYmdnh/hiOFPpiKvknNVQO+3kAVlmXH+XKbRr40QgJQnL9/MO
+         ZkxOa3TrY3NzVEdiCZfz9T/yAtDg+svkf3cfqMQQDXKCm+5DIr/JXETAWsVxUsIO453U
+         N8ka6bNI1n0Vj/B9t4kWWwRkwxSq0pH9ynmu21FPTJmfyocuxv9EqEy2NbH/FO7Sckct
+         YpbDPJk4VEGv7TCi0gR5l76CjSHsv6+pqiu3l/aOic1bff2ZJrGpG6kUd6RKliHgzzih
+         WhxxHIklIa+TwE4S70fX1FCtnhHquP0YcdWImUbgIAC78iUG2VqYJiFeXmCah0hSlCln
+         b80A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Noy6r1/WTM/FuD2jphA2uWS50pb5obVRw55AkQ+95cI=;
-        b=pvdAcZ4BkP5I4PwM4gFwaVN19qt7+ep1BCYTQoKBqtKJEu3FuHu90sfdVWJIhw7AND
-         hJdZdJhiKmCTrhXC2tB5ztiDD4ZRr3PivavVj1DUphj3rcI12SSPlkI4NpR/CmitvjZc
-         rkcDUlhOjZO1g8ELtFh9R1qPqMfTRyaDWnlvzLkS/4b1uYqtB+p7sw/3KkFBX0+PUMGz
-         3RVODO9bdRCMyZw9HyscDQd3D3xNtaYnt2vePuXGGkzQQfZR8ZFy4ZzhVaLKpANu4MfD
-         pU9HQ6qvHK7Ix1XDf+uUCkUsR14/9ce/ARv9JO9FPIS4FWJdza077VvZQ7KnC8V3cFsG
-         LWqQ==
-X-Gm-Message-State: AOAM531sw3axENRfUg3X4crWW88maK+zXfHjLdTlIYDknC2LFHcgGS39
-        7yhsnwtSoNSvZrS+/Q3iEYX0PrXy/cK2lTmryCc=
-X-Google-Smtp-Source: ABdhPJxmxsxVDFpbXZxv3wxt4WJzq5x+LhWqUBlh10IEtDlXJufp57gIWF5eSR7AeUPhDlbdZuI/azYJnM1F0ktp4MQ=
-X-Received: by 2002:a2e:154b:: with SMTP id 11mr34295269ljv.22.1609769238030;
- Mon, 04 Jan 2021 06:07:18 -0800 (PST)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=ONDjz5ciY9vROqc+40QcPHXcNj7vnSuJSUB6nVWh938=;
+        b=D4ufv51lKtu/gUZ6B3xmqBTGPUIg5FmnbZKZ7Ktx/t7qBCq/dfXkX2SgtNCjWx6CZr
+         QjlkwVSQIEMVI4rcnV+ZyCzq+zUNjGVDz/Yct0OsPkASlrcvCWZdkcK4icMyCH/WEB5X
+         Q89D9XO8snmV5vTYmOwU6k0I17pRsh48ee+0C7T5PT31BHMQelTTs+F/z30UHgvRCv9P
+         hThH/Ikhm+E/6KRU6fkcaLbheouMP+HAh28ENfiAIO4ZGpfZ562gwFRZ+o/FP2DcxglK
+         gmkplgMUDomfV3OXgVG6ggFwwZtlX8hBQdrbhmTWLcBS2q1BRIc0GoZh0CFak1GttogK
+         AhKA==
+X-Gm-Message-State: AOAM531tNT8XkLU8/7jkl4hSZVbvjwU8bbRpQjSecW3D/SZiaBzUTPev
+        WVoTIyX6CpAb1KiMUpZuJt/A0A==
+X-Google-Smtp-Source: ABdhPJwWleW0MXH3U76HBozLO17/P7prx/2nKrQvU/7WOFT18qrcg+F/uNDoWgAaedeAbgYIS7KMAQ==
+X-Received: by 2002:a17:906:ae14:: with SMTP id le20mr68611224ejb.451.1609769295055;
+        Mon, 04 Jan 2021 06:08:15 -0800 (PST)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id u2sm23681997ejb.65.2021.01.04.06.08.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 06:08:14 -0800 (PST)
+References: <20201221173531.215169-1-jbrunet@baylibre.com>
+ <20201221173531.215169-4-jbrunet@baylibre.com>
+ <X+nzWs3nOrcqu4F2@kroah.com>
+ <20201229222949.GC31406@jackp-linux.qualcomm.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Jack Pham <jackp@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] usb: gadget: u_audio: remove struct uac_req
+In-reply-to: <20201229222949.GC31406@jackp-linux.qualcomm.com>
+Message-ID: <1jr1n0x0aa.fsf@starbuckisacylon.baylibre.com>
+Date:   Mon, 04 Jan 2021 15:08:13 +0100
 MIME-Version: 1.0
-References: <20201221162519.GA22504@open-light-1.localdomain> <20210104125554.GE13207@dhcp22.suse.cz>
-In-Reply-To: <20210104125554.GE13207@dhcp22.suse.cz>
-From:   Liang Li <liliang324@gmail.com>
-Date:   Mon, 4 Jan 2021 22:07:05 +0800
-Message-ID: <CA+2MQi9iViYq7+apaJEymt8rZxUuo+9EJN4x3_RRydjr7-vwMQ@mail.gmail.com>
-Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Liang Li <liliang.opensource@gmail.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 8:56 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 21-12-20 11:25:22, Liang Li wrote:
-> [...]
-> > Security
-> > ========
-> > This is a weak version of "introduce init_on_alloc=1 and init_on_free=1
-> > boot options", which zero out page in a asynchronous way. For users can't
-> > tolerate the impaction of 'init_on_alloc=1' or 'init_on_free=1' brings,
-> > this feauture provide another choice.
->
-> Most of the usecases are about the start up time imporvemtns IIUC. Have
-> you tried to use init_on_free or this would be prohibitive for your
-> workloads?
->
-I have not tried yet. 'init_on_free' may help to shorten the start up time. In
-our use case,  we care about both the VM creation time and the VM reboot
-time[terminate QEMU process first and launch a new  one], 'init_on_free'
-will slow down the termination process and is not helpful for VM reboot.
-Our aim is to speed up 'VM start up' and not slow down 'VM shut down'.
 
-Thanks
-Liang
+On Tue 29 Dec 2020 at 23:30, Jack Pham <jackp@codeaurora.org> wrote:
+
+> Hi Greg and Jerome,
+>
+> On Mon, Dec 28, 2020 at 04:01:46PM +0100, Greg Kroah-Hartman wrote:
+>> On Mon, Dec 21, 2020 at 06:35:30PM +0100, Jerome Brunet wrote:
+>> > 'struct uac_req' purpose is to link 'struct usb_request' to the
+>> > corresponding 'struct uac_rtd_params'. However member req is never
+>> > used. Using the context of the usb request, we can keep track of the
+>> > corresponding 'struct uac_rtd_params' just as well, without allocating
+>> > extra memory.
+>> > 
+>> > Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>> > ---
+>> >  drivers/usb/gadget/function/u_audio.c | 58 ++++++++++++---------------
+>> >  1 file changed, 26 insertions(+), 32 deletions(-)
+>> 
+>> This patch doesn't apply, so I can't apply patches 3 or 4 of this series
+>> :(
+>> 
+>> Can you rebase against my usb-testing branch and resend?
+>
+> From the cover letter:
+>
+> On Mon, Dec 21, 2020 at 06:35:27PM +0100, Jerome Brunet wrote:
+>> The series depends on this fix [0] by Jack Pham to apply cleanly
+>> 
+>> [0]: https://lore.kernel.org/linux-usb/20201029175949.6052-1-jackp@codeaurora.org/
+>
+> My patch hadn't been picked up by Felipe, so it's not in your tree
+> either, Greg. Should I just resend it to you first?  Or shall I invite
+> Jerome to just include it in v2 of this series?
+
+Indeed. I rebased on usb-testing and the series applies cleanly with
+Jack's changes, as decribed in the cover-letter.
+
+If it is easier, I'm happy to include Jack's change in the v2, along
+with the fixed PATCH 2 fixed.
+
+Greg, would it be OK with you ?
+
+>
+> Thanks,
+> Jack
+
