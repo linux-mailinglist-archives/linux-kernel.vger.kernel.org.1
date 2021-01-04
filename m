@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5FC2E9A5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0472E9AAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729628AbhADQIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:08:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38872 "EHLO mail.kernel.org"
+        id S1728118AbhADP7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:59:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728613AbhADQBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:01:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AA52250F;
-        Mon,  4 Jan 2021 16:00:55 +0000 (UTC)
+        id S1727679AbhADP7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:59:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27E3B225A9;
+        Mon,  4 Jan 2021 15:59:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776056;
-        bh=hwUyeNb9NGkxfnDkBWhFxs4Fh1afjms4BVH6fV3Jk0I=;
+        s=korg; t=1609775961;
+        bh=0u/2AcnhmUltOpsdX2/8tyhxMNkbVKW3Q79Iurb2J6E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FRPHAbh0qcF/QmXrh68mRfOzO24txObziQDszhcHrfoC+5WZz6uPcc8C7NDp8onsC
-         qJA42t2hYyCLecnnFxcrV8eCnSQiXpnvCjiy79g8b3Mtmbw+XDnS/S0I0wGe2/QeA0
-         PmQky31o8SSFa5eRen0a2lOlcbYkLZ63UwMYtjpU=
+        b=xOwD8L72lzBn6YAVjHnSdxtLQS5BUSvTfXZnbVXvBES6YAlRPCSozC6yyRKOibtsX
+         gww2jpZotHmL0DXWYekio/01WclRQJ9r0/SAHXre4tAM5LDeHdtJ/iBptp+xcqBqN6
+         yVxXEmYX1Bi6T0GT4Z7rfY600o1i9H66vJzXJd/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Vorel <petr.vorel@gmail.com>,
-        Rich Felker <dalias@aerifal.cx>, Rich Felker <dalias@libc.org>,
-        Peter Korsgaard <peter@korsgaard.com>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Florian Weimer <fweimer@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 19/47] uapi: move constants from <linux/kernel.h> to <linux/const.h>
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Santosh Sivaraj <santosh@fossix.org>
+Subject: [PATCH 4.19 15/35] asm-generic/tlb: Track freeing of page-table directories in struct mmu_gather
 Date:   Mon,  4 Jan 2021 16:57:18 +0100
-Message-Id: <20210104155706.669474034@linuxfoundation.org>
+Message-Id: <20210104155704.147719067@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
-References: <20210104155705.740576914@linuxfoundation.org>
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,147 +40,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Vorel <petr.vorel@gmail.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit a85cbe6159ffc973e5702f70a3bd5185f8f3c38d upstream.
+commit 22a61c3c4f1379ef8b0ce0d5cb78baf3178950e2 upstream
 
-and include <linux/const.h> in UAPI headers instead of <linux/kernel.h>.
+Some architectures require different TLB invalidation instructions
+depending on whether it is only the last-level of page table being
+changed, or whether there are also changes to the intermediate
+(directory) entries higher up the tree.
 
-The reason is to avoid indirect <linux/sysinfo.h> include when using
-some network headers: <linux/netlink.h> or others -> <linux/kernel.h>
--> <linux/sysinfo.h>.
+Add a new bit to the flags bitfield in struct mmu_gather so that the
+architecture code can operate accordingly if it's the intermediate
+levels being invalidated.
 
-This indirect include causes on MUSL redefinition of struct sysinfo when
-included both <sys/sysinfo.h> and some of UAPI headers:
-
-    In file included from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/kernel.h:5,
-                     from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/netlink.h:5,
-                     from ../include/tst_netlink.h:14,
-                     from tst_crypto.c:13:
-    x86_64-buildroot-linux-musl/sysroot/usr/include/linux/sysinfo.h:8:8: error: redefinition of `struct sysinfo'
-     struct sysinfo {
-            ^~~~~~~
-    In file included from ../include/tst_safe_macros.h:15,
-                     from ../include/tst_test.h:93,
-                     from tst_crypto.c:11:
-    x86_64-buildroot-linux-musl/sysroot/usr/include/sys/sysinfo.h:10:8: note: originally defined here
-
-Link: https://lkml.kernel.org/r/20201015190013.8901-1-petr.vorel@gmail.com
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-Suggested-by: Rich Felker <dalias@aerifal.cx>
-Acked-by: Rich Felker <dalias@libc.org>
-Cc: Peter Korsgaard <peter@korsgaard.com>
-Cc: Baruch Siach <baruch@tkos.co.il>
-Cc: Florian Weimer <fweimer@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Will Deacon <will.deacon@arm.com>
+Cc: <stable@vger.kernel.org> # 4.19
+Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
+[santosh: prerequisite for tlbflush backports]
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- include/uapi/linux/const.h              |    5 +++++
- include/uapi/linux/ethtool.h            |    2 +-
- include/uapi/linux/kernel.h             |    9 +--------
- include/uapi/linux/lightnvm.h           |    2 +-
- include/uapi/linux/mroute6.h            |    2 +-
- include/uapi/linux/netfilter/x_tables.h |    2 +-
- include/uapi/linux/netlink.h            |    2 +-
- include/uapi/linux/sysctl.h             |    2 +-
- 8 files changed, 12 insertions(+), 14 deletions(-)
+ include/asm-generic/tlb.h |   31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
---- a/include/uapi/linux/const.h
-+++ b/include/uapi/linux/const.h
-@@ -28,4 +28,9 @@
- #define _BITUL(x)	(_UL(1) << (x))
- #define _BITULL(x)	(_ULL(1) << (x))
- 
-+#define __ALIGN_KERNEL(x, a)		__ALIGN_KERNEL_MASK(x, (typeof(x))(a) - 1)
-+#define __ALIGN_KERNEL_MASK(x, mask)	(((x) + (mask)) & ~(mask))
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -97,12 +97,22 @@ struct mmu_gather {
+ #endif
+ 	unsigned long		start;
+ 	unsigned long		end;
+-	/* we are in the middle of an operation to clear
+-	 * a full mm and can make some optimizations */
+-	unsigned int		fullmm : 1,
+-	/* we have performed an operation which
+-	 * requires a complete flush of the tlb */
+-				need_flush_all : 1;
++	/*
++	 * we are in the middle of an operation to clear
++	 * a full mm and can make some optimizations
++	 */
++	unsigned int		fullmm : 1;
 +
-+#define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
++	/*
++	 * we have performed an operation which
++	 * requires a complete flush of the tlb
++	 */
++	unsigned int		need_flush_all : 1;
 +
- #endif /* _UAPI_LINUX_CONST_H */
---- a/include/uapi/linux/ethtool.h
-+++ b/include/uapi/linux/ethtool.h
-@@ -14,7 +14,7 @@
- #ifndef _UAPI_LINUX_ETHTOOL_H
- #define _UAPI_LINUX_ETHTOOL_H
++	/*
++	 * we have removed page directories
++	 */
++	unsigned int		freed_tables : 1;
  
--#include <linux/kernel.h>
-+#include <linux/const.h>
- #include <linux/types.h>
- #include <linux/if_ether.h>
+ 	struct mmu_gather_batch *active;
+ 	struct mmu_gather_batch	local;
+@@ -137,6 +147,7 @@ static inline void __tlb_reset_range(str
+ 		tlb->start = TASK_SIZE;
+ 		tlb->end = 0;
+ 	}
++	tlb->freed_tables = 0;
+ }
  
---- a/include/uapi/linux/kernel.h
-+++ b/include/uapi/linux/kernel.h
-@@ -3,13 +3,6 @@
- #define _UAPI_LINUX_KERNEL_H
- 
- #include <linux/sysinfo.h>
--
--/*
-- * 'kernel.h' contains some often-used function prototypes etc
-- */
--#define __ALIGN_KERNEL(x, a)		__ALIGN_KERNEL_MASK(x, (typeof(x))(a) - 1)
--#define __ALIGN_KERNEL_MASK(x, mask)	(((x) + (mask)) & ~(mask))
--
--#define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
-+#include <linux/const.h>
- 
- #endif /* _UAPI_LINUX_KERNEL_H */
---- a/include/uapi/linux/lightnvm.h
-+++ b/include/uapi/linux/lightnvm.h
-@@ -21,7 +21,7 @@
- #define _UAPI_LINUX_LIGHTNVM_H
- 
- #ifdef __KERNEL__
--#include <linux/kernel.h>
-+#include <linux/const.h>
- #include <linux/ioctl.h>
- #else /* __KERNEL__ */
- #include <stdio.h>
---- a/include/uapi/linux/mroute6.h
-+++ b/include/uapi/linux/mroute6.h
-@@ -2,7 +2,7 @@
- #ifndef _UAPI__LINUX_MROUTE6_H
- #define _UAPI__LINUX_MROUTE6_H
- 
--#include <linux/kernel.h>
-+#include <linux/const.h>
- #include <linux/types.h>
- #include <linux/sockios.h>
- #include <linux/in6.h>		/* For struct sockaddr_in6. */
---- a/include/uapi/linux/netfilter/x_tables.h
-+++ b/include/uapi/linux/netfilter/x_tables.h
-@@ -1,7 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
- #ifndef _UAPI_X_TABLES_H
- #define _UAPI_X_TABLES_H
--#include <linux/kernel.h>
-+#include <linux/const.h>
- #include <linux/types.h>
- 
- #define XT_FUNCTION_MAXNAMELEN 30
---- a/include/uapi/linux/netlink.h
-+++ b/include/uapi/linux/netlink.h
-@@ -2,7 +2,7 @@
- #ifndef _UAPI__LINUX_NETLINK_H
- #define _UAPI__LINUX_NETLINK_H
- 
--#include <linux/kernel.h>
-+#include <linux/const.h>
- #include <linux/socket.h> /* for __kernel_sa_family_t */
- #include <linux/types.h>
- 
---- a/include/uapi/linux/sysctl.h
-+++ b/include/uapi/linux/sysctl.h
-@@ -23,7 +23,7 @@
- #ifndef _UAPI_LINUX_SYSCTL_H
- #define _UAPI_LINUX_SYSCTL_H
- 
--#include <linux/kernel.h>
-+#include <linux/const.h>
- #include <linux/types.h>
- #include <linux/compiler.h>
- 
+ static inline void tlb_flush_mmu_tlbonly(struct mmu_gather *tlb)
+@@ -278,6 +289,7 @@ static inline void tlb_remove_check_page
+ #define pte_free_tlb(tlb, ptep, address)			\
+ 	do {							\
+ 		__tlb_adjust_range(tlb, address, PAGE_SIZE);	\
++		tlb->freed_tables = 1;			\
+ 		__pte_free_tlb(tlb, ptep, address);		\
+ 	} while (0)
+ #endif
+@@ -285,7 +297,8 @@ static inline void tlb_remove_check_page
+ #ifndef pmd_free_tlb
+ #define pmd_free_tlb(tlb, pmdp, address)			\
+ 	do {							\
+-		__tlb_adjust_range(tlb, address, PAGE_SIZE);		\
++		__tlb_adjust_range(tlb, address, PAGE_SIZE);	\
++		tlb->freed_tables = 1;			\
+ 		__pmd_free_tlb(tlb, pmdp, address);		\
+ 	} while (0)
+ #endif
+@@ -295,6 +308,7 @@ static inline void tlb_remove_check_page
+ #define pud_free_tlb(tlb, pudp, address)			\
+ 	do {							\
+ 		__tlb_adjust_range(tlb, address, PAGE_SIZE);	\
++		tlb->freed_tables = 1;			\
+ 		__pud_free_tlb(tlb, pudp, address);		\
+ 	} while (0)
+ #endif
+@@ -304,7 +318,8 @@ static inline void tlb_remove_check_page
+ #ifndef p4d_free_tlb
+ #define p4d_free_tlb(tlb, pudp, address)			\
+ 	do {							\
+-		__tlb_adjust_range(tlb, address, PAGE_SIZE);		\
++		__tlb_adjust_range(tlb, address, PAGE_SIZE);	\
++		tlb->freed_tables = 1;			\
+ 		__p4d_free_tlb(tlb, pudp, address);		\
+ 	} while (0)
+ #endif
 
 
