@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6932E974B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F1A2E974D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbhADO3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:29:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726512AbhADO3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:29:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CE4D21D93;
-        Mon,  4 Jan 2021 14:29:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609770544;
-        bh=UnN6xmAfP5UnHkpYHMpUU7bWMo1VDBoysDL7NDElD5M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LvB3E/G+/vY0B/ZchZ3gSDMFER1Jen3/L5cjmb4b7dImV8pSsq0nJyg84fyzRhX24
-         mQ1NCpVD1pVAfI2S+stGM9nf0S7Mar7ZZBzI7iJmKE2jE1LBxAE6hRLF8Njp2LoyFC
-         SjOBo2idHwzfajpvYoRbrxx19g//dsM8eGb4ypihytml5ehcJiYIDCdtTITj6jA6Zf
-         p59ksMHmgzGU27lNO/RrNg2pMVZOkuzug1wphz3tgaD6yU1mxF8TUuN0L59riA85c7
-         b6ySrex6cgtaZuVslwEBzB6jeVYpXUFRai0djh+Il817o2lVzUn/4ZegZw2e9ZpoW9
-         Vl1PXMa4qyy2w==
-Date:   Mon, 4 Jan 2021 09:29:01 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux <rmk+kernel@armlinux.org.uk>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 5.10 01/31] ARM: 9014/2: Replace string mem*
- functions for KASan
-Message-ID: <20210104142901.GC3665355@sasha-vm>
-References: <20201230130314.3636961-1-sashal@kernel.org>
- <25b25571-41d6-9482-4c65-09fe88b200d5@pengutronix.de>
+        id S1727231AbhADOak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:30:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727177AbhADOaj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 09:30:39 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E99C4C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:29:58 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id x20so64694578lfe.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:29:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SfZPAjnuJrUl8K10B63FjuUD62a6oBY/w9PLuYoOe+8=;
+        b=EJQs+uOYf6CD8NokGZJY1K8XQFXN+5SfqUhwkl14ZcbkNhMJZrdTLgLKf766mzWB0a
+         /DrA5Kl3xG1unxJPDnN+Br2rhXuKkUV8fGevo4wEtaV/9S/x0pZszyjL+ZR0Mw63nQwn
+         W9VXgffKRybKyWAh7tE1hMK8TDJ02JJzIutU0dRCqGWFQCRUStEV75lgXlseVAmkfZ6K
+         y8l5IsjFqpY1PBypvkUKb1qLfuDLdRhcRhqQTQ0QUnBwc/KrM61k29jp6RF9gCQbloaw
+         SBiXcAMiJVs7haFrLtimMnvGP0o9Ni56dXt8nwpNOOGb5QMkXGZsvO+KzNpkoW7JHkUh
+         PUWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SfZPAjnuJrUl8K10B63FjuUD62a6oBY/w9PLuYoOe+8=;
+        b=pX1c7fzLL4M3lVHUcGdTQ4+qFDtIof+n9692tegHVxQ5+quFsUWULR0fq5Oeaf1Uqv
+         dv1iZxePsu5UK8Yxq3zihiXv/7OD52Do1NUz9GbyBWY9oGjO8xuD3z9GTfzzkE2ZHgM8
+         7db3I8hNkivTgRVK92JcfTpM1WiHd8oqCVD6y8jyLO446H29oVrHCmaKn3oWN31qd01i
+         2Ta+U+PCzvUX9XoNZeSILXLliAqabWDyi7mK7f5vx3qBgvGtwgR71l1apUci/8GJS2/7
+         BeAa3UPdrjgfBZGf9mZJbF73+LqejU0s/rbObSn7JiDzhL2vxwblWz4rnLAcKzVUkwYF
+         ocKA==
+X-Gm-Message-State: AOAM533kH3N8/Wx4TXBHk+vQGxC2cyOlJl2GGYCMaHJPQNXHFbt3Hln+
+        MC7DLXAj6S8EftEvUCLc133JlippnjLtAYBJDFrj9A==
+X-Google-Smtp-Source: ABdhPJx5c9nYTmCfGqr8Cx5BLwvCeDwET2wp+fGhwHM+T5DI/+OoyBU5IEuD6xRkd5eJ5Je5V1KY6JoUvatHv7EMt6k=
+X-Received: by 2002:a05:6512:3f3:: with SMTP id n19mr34324695lfq.586.1609770597495;
+ Mon, 04 Jan 2021 06:29:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <25b25571-41d6-9482-4c65-09fe88b200d5@pengutronix.de>
+References: <20201211084717.2371-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20201211084717.2371-1-zhengyongjun3@huawei.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 4 Jan 2021 15:29:46 +0100
+Message-ID: <CACRpkda4FuiP6x7mzgB-c_8DjOhzBtfiV46yQYzA9natp81MDQ@mail.gmail.com>
+Subject: Re: [PATCH -next] mediatek/pinctrl-paris: convert comma to semicolon
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 03:18:13PM +0100, Ahmad Fatoum wrote:
->Hello Sasha,
->
->On 30.12.20 14:02, Sasha Levin wrote:
->> From: Linus Walleij <linus.walleij@linaro.org>
->>
->> [ Upstream commit d6d51a96c7d63b7450860a3037f2d62388286a52 ]
->>
->> Functions like memset()/memmove()/memcpy() do a lot of memory
->> accesses.
->>
->> If a bad pointer is passed to one of these functions it is important
->> to catch this. Compiler instrumentation cannot do this since these
->> functions are written in assembly.
->>
->> KASan replaces these memory functions with instrumented variants.
->
->Unless someone actually wants this, I suggest dropping it.
->
->It's a prerequisite patch for KASan support on ARM32, which is new in
->v5.11-rc1. Backporting it on its own doesn't add any value IMO.
+On Fri, Dec 11, 2020 at 9:46 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
 
-I'll drop it, thanks.
+> Replace a comma between expression statements by a semicolon.
+>
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
--- 
-Thanks,
-Sasha
+Patch applied.
+
+Yours,
+Linus Walleij
