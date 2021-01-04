@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFA22E938E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7212E9390
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbhADKpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:45:03 -0500
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:33391 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbhADKpC (ORCPT
+        id S1726811AbhADKpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:45:45 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42780 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726313AbhADKpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:45:02 -0500
-Received: by mail-ot1-f48.google.com with SMTP id b24so25625951otj.0;
-        Mon, 04 Jan 2021 02:44:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JWBFzdltaHB2LmhJPr+3aAFk0bHyrG7NJiFKo6m3amQ=;
-        b=ODKXDySaK2XmdM22/lB0TxClTZMONoqzf1ndHeNap2odpyH4iFZjuPZdCl6Nk6d7OO
-         2Q0Kngc74MYNYMBdOv4rruGg4o5fxqrz6rq/rMAcEFdPYTuZsGbZBwqJGVWa+4KDG6g/
-         XEW9PqfEH5JPz/Wzkuvk6C1l+xzi01+Og04TMzYH3eX4quNWDGcxVYmx4GKjWSRM0AtW
-         nvPmLd07pMeutHatC0loRc7OBsBAb7aUi1grp+5HCUsphilhHCPXWWWSW4infQ9aI+Bi
-         YYmzeiRE7fGlJOsCP6sQ6g1clh9BZOEKx8LJW5WrD9xAD2y8WIfmQULjFb7Si5sferjO
-         fHug==
-X-Gm-Message-State: AOAM533pxxGpcp/2ta+ICqw829FxZlC+ZjB8fW1Oty4z1p8z2ydz9jqx
-        42oWoclHa4ermysmtBMchkb7uPcETvxJBDduK8U=
-X-Google-Smtp-Source: ABdhPJxpg8oSaA/PXZWgJ5sADKEXP+Zc/bvWcki5ZqDJMFgEPzbsdusImgckqNgKqbm0G/lCHkPu7UXFhv5w1Uci7+E=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr52177425otc.145.1609757061486;
- Mon, 04 Jan 2021 02:44:21 -0800 (PST)
+        Mon, 4 Jan 2021 05:45:44 -0500
+X-UUID: 64258abdd98a4ec791d81b5549e3519c-20210104
+X-UUID: 64258abdd98a4ec791d81b5549e3519c-20210104
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1790601655; Mon, 04 Jan 2021 18:44:59 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 4 Jan 2021 18:44:57 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 4 Jan 2021 18:44:57 +0800
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+Subject: [PATCH 0/2] Fixes for new SCPSYS power domains controller driver
+Date:   Mon, 4 Jan 2021 18:44:51 +0800
+Message-ID: <1609757093-30618-1-git-send-email-weiyi.lu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-References: <20201229170848.18482-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20201229170848.18482-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Jan 2021 11:44:10 +0100
-Message-ID: <CAMuHMdWkZWRo7S_HYTS-vWBR7gVv5Q+h+kO6LH8re7f74igdXg@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Drop PCIE_RCAR config option
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 6:09 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> All the defconfig files have replaced PCIE_RCAR config option with
-> PCIE_RCAR_HOST config option which built the same driver, so we can
-> now safely drop PCIE_RCAR config option.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+This patch is base on v5.10-rc1 and
+series "Add new driver for SCPSYS power domains controller"[1]
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=374013
 
-Gr{oetje,eeting}s,
+Weiyi Lu (2):
+  soc: mediatek: Add regulator control for MT8192 MFG power domain
+  soc: mediatek: Fix the clock prepared issue
 
-                        Geert
+ drivers/soc/mediatek/mt8192-pm-domains.h |  1 +
+ drivers/soc/mediatek/mtk-pm-domains.c    | 73 ++++++++++++++++--------
+ drivers/soc/mediatek/mtk-pm-domains.h    |  2 +
+ 3 files changed, 51 insertions(+), 25 deletions(-)
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
