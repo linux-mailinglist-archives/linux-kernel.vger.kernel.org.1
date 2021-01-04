@@ -2,225 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECD92E8EFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 00:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4810A2E8F02
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 01:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbhACXSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 18:18:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbhACXSk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 18:18:40 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EEBC061573;
-        Sun,  3 Jan 2021 15:17:59 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id h22so60557554lfu.2;
-        Sun, 03 Jan 2021 15:17:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BAvAQQ+kFb6MYxJyXY6rcBWKb+4Ftoc7s8FLX1WY9Gs=;
-        b=gynPkt3ezVczKuRJ8Of69KnuHHieIGlemh74sSHl1iekRBAqH7UgnMfYovP15R/cBf
-         Ejnu+46GhT0oMsiEUb49KAOTtBZQlmFh84nl3w3GRKpn7waLfhcYLoXX8rpsLthgBucM
-         PzNeGXthBqE4S8b3vZOF1p7uGIaONaeurCgTjpWfZFF1sXu2WFkSO2xnIpuILx77DSyt
-         SJMkW+4dHVqmFc9HCwuHAIe5wtKF7c8EpzM2tUOJdEXvdfJtxlOj2qDexwwXZKySMnBr
-         MRKOxboObO9eJ+e05IvHpe8cJSFP5pwcgQ4qRLuSbPCOWszxKGjr36v1IzI+eRKq6caI
-         YHjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BAvAQQ+kFb6MYxJyXY6rcBWKb+4Ftoc7s8FLX1WY9Gs=;
-        b=JNX0birjO0K65kRoJQ8W8lb5VoeqZ2liELFi2LlGozPyO87Bt//i1wsb/Y8jITxTA5
-         MVwtT3JkJdz4o93Q6nifXkgFZCVIcPRsBpL0ov7gxAHXRS/0u74xuEs4iNR706/Gem/p
-         PaWDv3tsr7KgZ6PFQ7j1y6ch8mBhiBdCq7opZkjAhGa2Vq9jrM5bdaMuJ2gq+FzFZTaL
-         HqbU80Xs4LIJ9FT1SG0Ng6Y0H3HP91Uc0RUSqd1R/7nlfkjcSMgrdD6K7/lYxyQ+90QF
-         Qj7nd8ysirlabADpkq7Q3A+sgtVlcfP4ITMyaU8Vd+xSsZRFHRFsy89ISXsD14dF2Sg/
-         jHNQ==
-X-Gm-Message-State: AOAM530HTx/WjLaZv7HDyLI+RLvtJ80rUxjUvpN/5KOnB+F9dlKP/8zO
-        JNeZ9Dc4EHhVqLl2FjcmaNI=
-X-Google-Smtp-Source: ABdhPJzX1PcNnVbkJVDLB865DWzaUFjzCANnvqsk8a3Ro+ia0/OP7x2mrIwcWTXg1ziTWziZmzXFRw==
-X-Received: by 2002:a2e:8695:: with SMTP id l21mr36488941lji.151.1609715878235;
-        Sun, 03 Jan 2021 15:17:58 -0800 (PST)
-Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
-        by smtp.gmail.com with ESMTPSA id c142sm7132529lfg.309.2021.01.03.15.17.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 15:17:57 -0800 (PST)
-Date:   Mon, 4 Jan 2021 01:17:55 +0200
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com
-Subject: Re: [PATCH v17 01/10] fs/ntfs3: Add headers and misc files
-Message-ID: <20210103231755.bcmyalz3maq4ama2@kari-VirtualBox>
-References: <20201231152401.3162425-1-almaz.alexandrovich@paragon-software.com>
- <20201231152401.3162425-2-almaz.alexandrovich@paragon-software.com>
+        id S1726662AbhADAHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 19:07:22 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:45651 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725840AbhADAHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 19:07:22 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D8GBl3DWMz9sVs;
+        Mon,  4 Jan 2021 11:06:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1609718799;
+        bh=2buozk71DBAmA2S54PmE5YchNFmgPUatMCxfjXrne8w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=AMezLuetydRrXmZ86Bgx64mDHv1RfslqUvgjor0/E1tZ70UYMpTN9Mdnn65MBK93c
+         V6baxXtmZ+JAjb4OeYBoqgV+8GGI71wWrmRmjSdT1Xif/pjjmFtIbf4eDgiNHhFSIc
+         Rqt4ePFzfgSvoGVyE1/XWepdpzjtVJY/HLmWW0MOJq+bzOC9yfT+6luBL3bQALpsUq
+         tnOqLHXzbQgC0F12VnlyFPEGQo6wyJYGhUp6A50VFDkknjcBzbXB4MRxizVv+/8RbW
+         ovwztLJHGjFxYgIbyQIwW4HWo3tGL5lPPwL9dgDg9thxjnISLQvZ142kwI7zFcB/WM
+         +Lp5/Tgg2j0EA==
+Date:   Mon, 4 Jan 2021 11:06:38 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the spi tree
+Message-ID: <20210104110638.50b7a9ee@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201231152401.3162425-2-almaz.alexandrovich@paragon-software.com>
+Content-Type: multipart/signed; boundary="Sig_/Ff1VBTuTO+UwR7qMn=qhujr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 06:23:52PM +0300, Konstantin Komarov wrote:
+--Sig_/Ff1VBTuTO+UwR7qMn=qhujr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
+Hi all,
 
-> +/*
-> + * Logging macros ( thanks Joe Perches <joe@perches.com> for implementation )
-> + */
-> +
-> +#define ntfs_err(sb, fmt, ...)  ntfs_printk(sb, KERN_ERR fmt, ##__VA_ARGS__)
-> +#define ntfs_warn(sb, fmt, ...) ntfs_printk(sb, KERN_WARNING fmt, ##__VA_ARGS__)
-> +#define ntfs_info(sb, fmt, ...) ntfs_printk(sb, KERN_INFO fmt, ##__VA_ARGS__)
-> +#define ntfs_notice(sb, fmt, ...)                                              \
-> +	ntfs_printk(sb, KERN_NOTICE fmt, ##__VA_ARGS__)
-> +
-> +#define ntfs_inode_err(inode, fmt, ...)                                        \
-> +	ntfs_inode_printk(inode, KERN_ERR fmt, ##__VA_ARGS__)
-> +#define ntfs_inode_warn(inode, fmt, ...)                                       \
-> +	ntfs_inode_printk(inode, KERN_WARNING fmt, ##__VA_ARGS__)
-> +
-> +#define ntfs_alloc(s, z)	kmalloc(s, (z) ? (GFP_NOFS | __GFP_ZERO) : GFP_NOFS)
+After merging the spi tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
-kmalloc with __GFP_ZERO is just kzalloc. So why we even need ntfs_alloc(). We
-will be much happier if we straight away see
+In file included from include/linux/device.h:15,
+                 from include/linux/dmaengine.h:8,
+                 from drivers/spi/spi-stm32.c:11:
+drivers/spi/spi-stm32.c: In function 'stm32_spi_prepare_msg':
+drivers/spi/spi-stm32.c:1030:20: warning: format '%d' expects argument of t=
+ype 'int', but argument 4 has type 'long unsigned int' [-Wformat=3D]
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
+   19 | #define dev_fmt(fmt) fmt
+      |                      ^~~
+drivers/spi/spi-stm32.c:1030:2: note: in expansion of macro 'dev_dbg'
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |  ^~~~~~~
+drivers/spi/spi-stm32.c:1030:27: note: format string is defined here
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |                          ~^
+      |                           |
+      |                           int
+      |                          %ld
+In file included from include/linux/device.h:15,
+                 from include/linux/dmaengine.h:8,
+                 from drivers/spi/spi-stm32.c:11:
+drivers/spi/spi-stm32.c:1030:20: warning: format '%d' expects argument of t=
+ype 'int', but argument 5 has type 'long unsigned int' [-Wformat=3D]
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
+   19 | #define dev_fmt(fmt) fmt
+      |                      ^~~
+drivers/spi/spi-stm32.c:1030:2: note: in expansion of macro 'dev_dbg'
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |  ^~~~~~~
+drivers/spi/spi-stm32.c:1030:35: note: format string is defined here
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |                                  ~^
+      |                                   |
+      |                                   int
+      |                                  %ld
+In file included from include/linux/device.h:15,
+                 from include/linux/dmaengine.h:8,
+                 from drivers/spi/spi-stm32.c:11:
+drivers/spi/spi-stm32.c:1030:20: warning: format '%d' expects argument of t=
+ype 'int', but argument 6 has type 'long unsigned int' [-Wformat=3D]
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
+   19 | #define dev_fmt(fmt) fmt
+      |                      ^~~
+drivers/spi/spi-stm32.c:1030:2: note: in expansion of macro 'dev_dbg'
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |  ^~~~~~~
+drivers/spi/spi-stm32.c:1030:48: note: format string is defined here
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |                                               ~^
+      |                                                |
+      |                                                int
+      |                                               %ld
+In file included from include/linux/device.h:15,
+                 from include/linux/dmaengine.h:8,
+                 from drivers/spi/spi-stm32.c:11:
+drivers/spi/spi-stm32.c:1030:20: warning: format '%d' expects argument of t=
+ype 'int', but argument 7 has type 'long unsigned int' [-Wformat=3D]
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
+   19 | #define dev_fmt(fmt) fmt
+      |                      ^~~
+drivers/spi/spi-stm32.c:1030:2: note: in expansion of macro 'dev_dbg'
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |  ^~~~~~~
+drivers/spi/spi-stm32.c:1030:59: note: format string is defined here
+ 1030 |  dev_dbg(spi->dev, "cpol=3D%d cpha=3D%d lsb_first=3D%d cs_high=3D%d=
+\n",
+      |                                                          ~^
+      |                                                           |
+      |                                                           int
+      |                                                          %ld
 
-kzalloc( , GFP_NOFS) or kmalloc( , GFP_NOFS)
+Introduced by commit
 
-That way it will be easier to remove GFP_NOFS flag when not needed.
-I have not knowledge but I have read that even with filesystems it
-is not good pratice to always use that flag. Another point is that
-we will get these defines deleted from debug.h. Atleast to me this
-is strange place for them. And also this not even save line space
-much.
+  f7005142dace ("spi: uapi: unify SPI modes into a single spi.h header")
 
-kzalloc( , GFP_NOFS)
-ntfs_alloc( , 0)
+--=20
+Cheers,
+Stephen Rothwell
 
-ntfs_free()
-kree()
+--Sig_/Ff1VBTuTO+UwR7qMn=qhujr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-I can send patch fror this if you prefer this way. And nobady not
-nack about it.
+-----BEGIN PGP SIGNATURE-----
 
-> +#define ntfs_free(p)		kfree(p)
-> +#define ntfs_memdup(src, len)	kmemdup(src, len, GFP_NOFS)
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/yXA4ACgkQAVBC80lX
+0Gwenwf6AjeKYO8Ifa/EXSgAyY/fEt7sl90UqJp9I0OBy/lxk2oPiyM42SxrXGU9
+TaX6e12Z1AXzPy5vfpYZNs7Nyw52ycb3EIZDE0171AgATAF6SgvBgpbJ5V/EA/0e
+Xj/7Kid55L+J0bBLglR3ScWy1OJezOBoV3d0nRDp6ZvJEeSFjRhmI6wDZLvWnmIR
+MuXytRM8zFUpi3oQdfnYEZ4zyi4K2XBg7/QOa6m25Lmi0gku1zuyUFZWdqxzKXgr
+gUXsu8jDWwYCAfpfLwWWYJHME5HZZFkxDVlU1Sz/Va2mZAbRNUKlb4Zqs9sKA6lo
+iuRzA8M0oZhj2p9/aNFy0Xfq6NUJwQ==
+=xV80
+-----END PGP SIGNATURE-----
 
-> diff --git a/fs/ntfs3/upcase.c b/fs/ntfs3/upcase.c
-
-> +static inline u16 upcase_unicode_char(const u16 *upcase, u16 chr)
-> +{
-> +	if (chr < 'a')
-> +		return chr;
-> +
-> +	if (chr <= 'z')
-> +		return chr - ('a' - 'A');
-> +
-> +	return upcase[chr];
-> +}
-> +
-> +int ntfs_cmp_names(const __le16 *s1, size_t l1, const __le16 *s2, size_t l2,
-> +		   const u16 *upcase)
-> +{
-> +	int diff;
-> +	size_t len = l1 < l2 ? l1 : l2;
-> +
-> +	if (upcase) {
-> +		while (len--) {
-> +			diff = upcase_unicode_char(upcase, le16_to_cpu(*s1++)) -
-> +			       upcase_unicode_char(upcase, le16_to_cpu(*s2++));
-> +			if (diff)
-> +				return diff;
-> +		}
-> +	} else {
-> +		while (len--) {
-> +			diff = le16_to_cpu(*s1++) - le16_to_cpu(*s2++);
-> +			if (diff)
-> +				return diff;
-> +		}
-> +	}
-> +
-> +	return (int)(l1 - l2);
-> +}
-
-I notice that these functions might call both ignore case and upcase in a row.
-record.c - compare_attr()
-index.c - cmp_fnames()
-
-So maybe we can add bool bothcases.
-
-int ntfs_cmp_names(const __le16 *s1, size_t l1, const __le16 *s2, size_t l2,
-		   const u16 *upcase, bool bothcase)
-{
-	int diff1 = 0;
-	int diff2;
-	size_t len = l1 < l2 ? l1 : l2;
-
-	if (!bothcase && upcase)
-		goto case_insentive;
-
-	for (; len; s1++, s2++, len--) {
-		diff1 = le16_to_cpu(*s1) - le16_to_cpu(*s2);
-		if (diff1) {
-			if (bothcase && upcase)
-				goto case_insentive;
-
-			return diff1;
-		}
-	}
-	return l1 - l2;
-
-case_insentive:
-	for (; len; s1++, s2++, len--) {
-		diff2 = upcase_unicode_char(upcase, le16_to_cpu(*s1)) -
-			 upcase_unicode_char(upcase, le16_to_cpu(*s2));
-		if (diff2)
-			return diff2;
-	}
-
-	if (bothcase && diff1)
-		return diff1;
-
-	return l1 - l2;
-}
-
-This is not tested. I can send patch for this also if you like idea.
-cmp_fnames() and compare_attr() will clean up alot with this.
-
-> +
-> +int ntfs_cmp_names_cpu(const struct cpu_str *uni1, const struct le_str *uni2,
-> +		       const u16 *upcase)
-> +{
-> +	const u16 *s1 = uni1->name;
-> +	const __le16 *s2 = uni2->name;
-> +	size_t l1 = uni1->len;
-> +	size_t l2 = uni2->len;
-> +	size_t len = l1 < l2 ? l1 : l2;
-> +	int diff;
-> +
-> +	if (upcase) {
-> +		while (len--) {
-> +			diff = upcase_unicode_char(upcase, *s1++) -
-> +			       upcase_unicode_char(upcase, le16_to_cpu(*s2++));
-> +			if (diff)
-> +				return diff;
-> +		}
-> +	} else {
-> +		while (len--) {
-> +			diff = *s1++ - le16_to_cpu(*s2++);
-> +			if (diff)
-> +				return diff;
-> +		}
-> +	}
-> +
-> +	return l1 - l2;
-> +}
+--Sig_/Ff1VBTuTO+UwR7qMn=qhujr--
