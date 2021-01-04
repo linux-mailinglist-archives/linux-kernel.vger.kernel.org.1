@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1192E965D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9832C2E9668
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbhADNuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbhADNug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:50:36 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734A8C061574;
-        Mon,  4 Jan 2021 05:49:56 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 30so14386218pgr.6;
-        Mon, 04 Jan 2021 05:49:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+DJZ244fWmm1Eu3AuZWtTvG/4qgtx5ebkDRnS934fwE=;
-        b=KNvpcfIuHglIYpeV2XoKyh7PP2hPT/N01s9VVO7BHOdFN5t7SA3yECdLD558utKc4Y
-         uMNyOz8qpMqJq41XG/HR9suOxw1LM12EpFoPFO1GWa3m9MqVUCSj4tITIkvSPVIS0gje
-         B8OrCdYuIzdK+GVU3dURuph0ggE9GZ+K2ediPWOB4WL4yt24S3zzHWVLXlqoH/0xU7GC
-         mP1oLTBFmlGd8xqhYURiNNKaobjfxAL0RKzj975tkyeR9oY8lLn535GArZWiZmgQgWTD
-         JUv9fFhbrLrjTH/HRfpoNKrCRtNEwQFd8h1RKbAB3gB1CvbAWEvVKrTTjyIqioF+1tMq
-         fGkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+DJZ244fWmm1Eu3AuZWtTvG/4qgtx5ebkDRnS934fwE=;
-        b=CJx+7HhDaIN3RJOiwH3drGcAEu3FIl9dUqsHyqwdPlpfQQA15Gl9sSjZ9qKs83chwd
-         bd0L7zsXMbUoodFe7JgLz0vT9/N8N7uisw/SI15BTfeja74ZwC3JKCRJcnuSO+mdGA/I
-         e9/1QZt6RnnxwSvQDC14DoklrAcHoji+7ph3PbaOXY5/5cIYpPNHuVjNIhp0vffmepWi
-         bmHxUrYALykv9NtHSW8Iu5JBXOWrV+fx/PSLeKuwJMtutgM1ZLenRrh4lcxHmh+kq7Gb
-         1OA1zrKXJPf9fKokWym89Yscpt76UYa5iTJzRHY8GipIzATYcs2ufwzIp+njXBagDiOB
-         V/eg==
-X-Gm-Message-State: AOAM531+nVW1gR4XPveP7wBRAnutPKpQ6/TIoKskQxNz9/RuNblLYzIv
-        +94FvmaAplTA3A2hN8awJnLZBkrMOf6yAmNM0Pc=
-X-Google-Smtp-Source: ABdhPJxqi8qDckN3jm/Qah53DZywTHfIi81ycD9UrvEU6ouSQLNhgM7OlLPtzLTUhoAq2snYcNXRpLt89kYbE7SI/5Q=
-X-Received: by 2002:a62:19cc:0:b029:19e:321b:a22e with SMTP id
- 195-20020a6219cc0000b029019e321ba22emr66235798pfz.73.1609768195997; Mon, 04
- Jan 2021 05:49:55 -0800 (PST)
+        id S1726979AbhADNxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:53:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726029AbhADNxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 08:53:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B481207B1;
+        Mon,  4 Jan 2021 13:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609768343;
+        bh=WGYF7SlhXlucOWrieoYG3cJVW6/AxFwCogu0WarBMJU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d/wYJk7SVuVVAtZC7qLGTgDaw11H1+rJfcvI8K7vJiAXWKIii/jsSsDFnpG/THXED
+         IpCeA+ZxKspqCrCBdzoGyZKXECvByHrrnOnbjTdxwuNGh+uQtOgAUE9IbKj1CL0Jve
+         /qo5lYEyKgBZIXIfacQtJHylkpBtSneFoFECP3NtfrbAD+0so+6R6GVw/KB652h0wy
+         RJU+FfEbpKXFWhbUSKk+iaTM/OPqmQH5ku9uZ4XbM4OiCUXYqhpRpVsRfzNcv5nvqE
+         VQvCb5PoQd6li7omJ45xXKfsFSGIq+fMLy55UWXTMteVy49YV7564ItNoSRTYuf3h4
+         xDaZEOb3D0SHw==
+Date:   Mon, 4 Jan 2021 13:51:56 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
+ nodes
+Message-ID: <20210104135156.GB5645@sirena.org.uk>
+References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
+ <20201230205139.1812366-2-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-References: <20210104085923.53705-1-alexandru.ardelean@analog.com>
-In-Reply-To: <20210104085923.53705-1-alexandru.ardelean@analog.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 4 Jan 2021 15:50:44 +0200
-Message-ID: <CAHp75VdsXDr8kAREiGhSF9-ffr05+LDHcqOzWnomfWTH2mN9Gw@mail.gmail.com>
-Subject: Re: [PATCH] spi: stm32: update dev_dbg() print format for SPI params
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uQr8t48UFsdbeI+V"
+Content-Disposition: inline
+In-Reply-To: <20201230205139.1812366-2-timon.baetz@protonmail.com>
+X-Cookie: Stupidity is its own reward.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 10:55 AM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
->
-> With the introduction of the 'include/uapi/linux/spi/spi.h' header, the
-> type of the macros are enforced to 'unsigned long int' via the _BITUL()
-> macro.
->
-> This causes some -Wformat warnings in the spi-stm32 driver.
-> This patch changes the printf() specifiers from '%d' to '%lu' to
-> accommodate for this change.
->
-> Fixes: f7005142dace ("spi: uapi: unify SPI modes into a single spi.h header")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
-LKP also reported this before.
+--uQr8t48UFsdbeI+V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-...
+On Wed, Dec 30, 2020 at 08:52:07PM +0000, Timon Baetz wrote:
 
-> -       dev_dbg(spi->dev, "cpol=%d cpha=%d lsb_first=%d cs_high=%d\n",
-> +       dev_dbg(spi->dev, "cpol=%lu cpha=%lu lsb_first=%lu cs_high=%lu\n",
->                 spi_dev->mode & SPI_CPOL,
->                 spi_dev->mode & SPI_CPHA,
->                 spi_dev->mode & SPI_LSB_FIRST,
+> +- charger: Node for configuring the charger driver.
+> +  Required properties:
+> +  - compatible: "maxim,max8997-battery"
+> +  Optional properties:
+> +  - extcon: extcon specifier for charging events
+> +  - charger-supply: regulator node for charging current
+> +
+> +- muic: Node used only by extcon consumers.
+> +  Required properties:
+> +  - compatible: "maxim,max8997-muic"
 
-Wouldn't the output be a bit awful with all these?
+Why do these need to appear in the DT binding?  We know these features
+are there simply from knowing this is a max8997.
 
-I think the proper fix is to add !! to each bit mask.
+--uQr8t48UFsdbeI+V
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-With Best Regards,
-Andy Shevchenko
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/zHXsACgkQJNaLcl1U
+h9Bpuwf+Lbwwbn3A88GywPIb5p6fVae+jvfJHuyrCmnosfLzRuc3P72FyihL2Ssk
+d8+57ttupGJ+sZqgJK+Ih9Eu4mMrsJbScy4O5WyFQfGJ3PQPpWlsHIq8DEUDlEy/
+Ltf5HzGezxfmsC2nhapHNzFE2cbnn+AKmeK+rN2DxeYvuHFlfXNEdWSdeNK/zDeF
+aUNAik0aInnufO7MOE1cqfgWfFxEnin6wxCGKOu2aCdcdli9aE536mwYz9WZc34j
+vNbTxOcLDqWo+dtNtp1aOuRqX3kMO+X1SCBEYPymOwwgqt5Yo9179LOZNvqMN2E9
+E+FL/m5IwwLbH06CDjp/ZT+aoF4psw==
+=tIIA
+-----END PGP SIGNATURE-----
+
+--uQr8t48UFsdbeI+V--
