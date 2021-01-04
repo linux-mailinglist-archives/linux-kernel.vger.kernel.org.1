@@ -2,103 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312942E9C64
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:52:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBDC2E9C70
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbhADRwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:52:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42096 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727696AbhADRwS (ORCPT
+        id S1726497AbhADR6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:58:38 -0500
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:43878 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbhADR6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:52:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609782652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EyPd+qpzU+/10OSeEC3y3BOPpK2qGL3ApwiEekrWJOI=;
-        b=ItvWawdpsJBHolSGIhmfeeSJbjiKG2gteUH3n30hD8B9Cfkds0pXYH0QegZyGB7nbO1RfV
-        2pFDtwdksFAB0b823GRYzun59s/7Sb0TIL8wdYYSnfoj/CNyaqZlg19f1PyJjVpexkzQ1F
-        ZGj5TSqUb6brSEbNXDR5BnJFgIF9CKY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-uXiYbQ41N5Sy3IKL4rtQGQ-1; Mon, 04 Jan 2021 12:50:50 -0500
-X-MC-Unique: uXiYbQ41N5Sy3IKL4rtQGQ-1
-Received: by mail-wm1-f72.google.com with SMTP id r5so10960467wma.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 09:50:50 -0800 (PST)
+        Mon, 4 Jan 2021 12:58:37 -0500
+Received: by mail-wr1-f47.google.com with SMTP id y17so33062381wrr.10;
+        Mon, 04 Jan 2021 09:58:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EyPd+qpzU+/10OSeEC3y3BOPpK2qGL3ApwiEekrWJOI=;
-        b=GoybyMSlO1Xa4JLsDpdsz7mPCROefo+Mk/808clL1aWYRHkuR/HuwCSk0mv4UDy5ZL
-         wvkRUVnBQGuSAFZt8Ma740/3BdFacZ+3y2XNDi0+nHholXFC85Fp47p2kYTLv0fXAnYn
-         B1TuHn8uftFY0CEmmUuio+4wzWh/lePX/3c0EoIvyJNYkEDuRcvAxIwwYWmtzExGMhqU
-         d1Pmbdium8xBRkOo4wuJfQIk4+Fy3CIzXTjX+TqLUx0/+WBfg8noA9h9LFmJrp0gK2hN
-         7QByzMJY1EOqSZp7n6GpjZjLq/6Wc7SehWsTldSmyGLwV9Aisfb47Be1hiyYBtVh2v7I
-         asxg==
-X-Gm-Message-State: AOAM532NDUhD0DojCn83hOmp1AC5/1umBL6+I2hyJPpr8i2/hsxml9K7
-        FXNfqbndSWtcdoNmvrqY3KnVKLR0ZcXbupYgDYqrM0xgCRaWZACZBKsxF86Dnpga1O28Xa68zy+
-        UfvthWRMNRhxgZ5ibgy+70Urp
-X-Received: by 2002:a5d:4112:: with SMTP id l18mr80442658wrp.116.1609782649358;
-        Mon, 04 Jan 2021 09:50:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzwhWcj4/2hOH3p5+AnFtCBEv1VKsACzYx5d2Pg+R8scgY1DHbRQL0PAgven2/ITKBXm+uRyw==
-X-Received: by 2002:a5d:4112:: with SMTP id l18mr80442648wrp.116.1609782649205;
-        Mon, 04 Jan 2021 09:50:49 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u205sm28871wme.42.2021.01.04.09.50.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 09:50:48 -0800 (PST)
-Subject: Re: [PATCH v5 27/34] KVM: SVM: Add support for booting APs for an
- SEV-ES guest
-To:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <cover.1607620209.git.thomas.lendacky@amd.com>
- <47d11ed1c1a48ab71858fc3cde766bf67a4612d1.1607620209.git.thomas.lendacky@amd.com>
- <8ed48a0f-d490-d74d-d10a-968b561a4f2e@redhat.com>
- <2fd11067-a04c-7ce6-3fe1-79a4658bdfe7@amd.com>
- <620a7760-2c4b-c8b9-51e1-8008bf29221d@amd.com>
- <d411beab-b8b2-a7c9-af5b-3722db037910@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1433c219-ef19-aa19-7f5c-e872beff7356@redhat.com>
-Date:   Mon, 4 Jan 2021 18:50:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zmPJ5e8163PgKunBmAEVCaIgenQTVsMEK+0mRPRp5Oo=;
+        b=J2OxTIl4jIJBOEyER19fOn9fyQsLsoUeBrrr3mgJYOnQTQsrBhr2+96LcNpUk9GEsq
+         5JbmwrAxwSJGIvdBu6HVJA+5I63br4dk38h/zeTGs1xtaTTambXKP0piTTsN4beoBuhz
+         J78djAhFMEAUHpQ/hEn7fgGRZH51wvFild5w2qtR0CVdXiJlIjqobmsND5uPKGmXwL+O
+         VXREUObCQsMCR5fG+IE25WtPJKJftvWwkMBc4y2gMp6ey3wIjK2z27E9RSZhbCdZU2Rp
+         0vpnVHTTcwAmKO+bDnoIC5jHyD20l6N/algD3f6cwcbDpMOS/nfzXk7fBYis7OOcfj8l
+         TkPQ==
+X-Gm-Message-State: AOAM532xxPSIlXDTgRXHnMT46yC8uCSzKRTbus/sxu3o/f5m9iHTyN9e
+        j+GUz11pdMRbGG2TrR587D0=
+X-Google-Smtp-Source: ABdhPJzSbBiG6yBgeDFASe3i6iURF8LEVVlmw6HGlrGuP2TSCXicp3GgFHrudVHFeaRLgBJYraNNyg==
+X-Received: by 2002:adf:e990:: with SMTP id h16mr83166214wrm.307.1609783075625;
+        Mon, 04 Jan 2021 09:57:55 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id b127sm65635wmc.45.2021.01.04.09.57.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 09:57:54 -0800 (PST)
+Date:   Mon, 4 Jan 2021 18:57:53 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 2/2] arm64: dts: imx8mm: Add Gateworks i.MX 8M Mini
+ Development Kits
+Message-ID: <20210104175753.GA25954@kozik-lap>
+References: <1609781807-15096-1-git-send-email-tharvey@gateworks.com>
+ <1609781807-15096-2-git-send-email-tharvey@gateworks.com>
 MIME-Version: 1.0
-In-Reply-To: <d411beab-b8b2-a7c9-af5b-3722db037910@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1609781807-15096-2-git-send-email-tharvey@gateworks.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/01/21 18:38, Tom Lendacky wrote:
->>
->> Paolo, is this something along the lines of what you were thinking, or am
->> I off base? I created kvm_emulate_ap_reset_hold() to keep the code
->> consolidated and remove the duplication, but can easily make those 
->> changes
->> local to sev.c. I'd also like to rename SVM_VMGEXIT_AP_HLT_LOOP to
->> SVM_VMGEXIT_AP_RESET_HOLD to more closely match the GHBC document, but
->> that can be done later (if possible, since it is already part of the uapi
->> include file).
+On Mon, Jan 04, 2021 at 09:36:47AM -0800, Tim Harvey wrote:
+> The Gateworks Venice GW71xx-0x/GW72xx-0x/GW73xx-0x are development
+> kits consisting of a GW700x SoM and a Baseboard. Future SoM's such
+> as the GW701x will create additional combinations.
 > 
-> Paolo, a quick ping after the holidays as to whether this is the 
-> approach you were thinking. I think there are a couple of places in 
-> x86.c to update (vcpu_block() and kvm_arch_vcpu_ioctl_get_mpstate()), also.
+> The GW700x SoM contains:
+>  - i.MX 8M Mini SoC
+>  - LPDDR4 DRAM
+>  - eMMC FLASH
+>  - Gateworks System Controller (eeprom/pushbutton/reset/voltage-monitor)
+>  - GbE PHY connected to the i.MX 8M Mini FEC
+>  - Power Management IC
+> 
+> The GW71xx Baseboard contains:
+>  - 1x MiniPCIe Socket with USB2.0, PCIe, and SIM
+>  - 1x RJ45 GbE (i.MX 8M Mini FEC)
+>  - I/O connector with 1x-SPI/1x-I2C/1x-UART/4x-GPIO signals
+>  - PCIe Clock generator
+>  - GPS and accelerometer
+>  - 1x USB 2.0 Front Panel connector
+>  - wide range power supply
+> 
+> The GW72xx Baseboard contains:
+>  - 2x MiniPCIe Socket with USB2.0, PCIe, and SIM
+>  - 2x RJ45 GbE (i.MX 8M Mini FEC and LAN743x)
+>  - 1x MicroSD connector
+>  - 1x USB 2.0 Front Panel connector
+>  - 1x SPI connector
+>  - 1x Serial connector supporting 2x-UART or 1x-UART configured as 1 of:
+>    RS232 w/ flow-control, RS485, RS422
+>  - PCIe Clock generator
+>  - GPS and accelerometer
+>  - Media Expansion connector (MIPI-CSI/MIPI-DSI/GPIO/I2S)
+>  - I/O connector with 2x-ADC,2x-GPIO,1x-UART,1x-I2C
+>  - wide range power supply
+> 
+> The GW73xx Baseboard contains:
+>  - 3x MiniPCIe Socket with USB2.0, PCIe, and SIM
+>  - 2x RJ45 GbE (i.MX 8M Mini FEC and LAN743x)
+>  - 1x MicroSD connector
+>  - 1x USB 2.0 Front Panel connector
+>  - 1x SPI connector
+>  - 1x Serial connector supporting 2x-UART or 1x-UART configured as 1 of:
+>    RS232 w/ flow-control, RS485, RS422
+>  - WiFi/BT
+>  - PCIe Clock generator
+>  - GPS and accelerometer
+>  - Media Expansion connector (MIPI-CSI/MIPI-DSI/GPIO/I2S)
+>  - I/O connector with 2x-ADC,2x-GPIO,1x-UART,1x-I2C
+>  - wide range power supply
+> 
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> ---
+> v5:
+>  - fixed typo/grammar in commit log (s/controll/control s/comprised/consisting/)
+>  - removed underscore from remaining node names
+>  - removed blank line in hoggrp
+>  - removed unused assigned-clocks and assigned-clock-rates node from usdhc nodes
+> 
 
-Yes, this is the basic idea.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Paolo
+Best regards,
+Krzysztof
 
