@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4464C2E8F84
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 04:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FAF2E8F93
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 04:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbhADDJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 22:09:32 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:43764 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726610AbhADDJc (ORCPT
+        id S1727476AbhADDYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 22:24:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21845 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726124AbhADDYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 22:09:32 -0500
-X-UUID: 77c606a8b6504466ad3539b8f42d1d85-20210104
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=FPK9ETN/EBdUIpqEXkfjhWCeHs6PHnTTo754Tn/L8j8=;
-        b=lPLmCKpnnNTHryJBkOdTMntgUW3zQec55YYxMIW/moUHzOxYOWyPqjEHTG4tX3i5V0FM9+Ui/2s/Fl0MaBbwXKz0TZJ+CEfFCok/X/aRp41WZBjsmsOBwRW3KPJFiGYDNQFByR84xX67ZrFjA3+zaSOGdmI/acVbLTAEiid2Geg=;
-X-UUID: 77c606a8b6504466ad3539b8f42d1d85-20210104
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 823065018; Mon, 04 Jan 2021 11:08:45 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs05n1.mediatek.inc
- (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 4 Jan
- 2021 11:08:44 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 4 Jan 2021 11:08:43 +0800
-Message-ID: <1609729722.1574.1.camel@mhfsdcap03>
-Subject: Re: [PATCH v3, 1/8] soc: mediatek: mmsys: create mmsys folder
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-CC:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 4 Jan 2021 11:08:42 +0800
-In-Reply-To: <CANMq1KCRBz-rY6y3nHp8yh_QSohkmaYS=DqNDSPzvwmq-a09DQ@mail.gmail.com>
-References: <1609144630-14721-1-git-send-email-yongqiang.niu@mediatek.com>
-         <1609144630-14721-2-git-send-email-yongqiang.niu@mediatek.com>
-         <CANMq1KCRBz-rY6y3nHp8yh_QSohkmaYS=DqNDSPzvwmq-a09DQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sun, 3 Jan 2021 22:24:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609730584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gZSEcMV6HrgwioULaRsP1a/F6QmzsKsD5eRpNgK39q0=;
+        b=ZCxf5enU6U0bGJR9lAOTuwn+ZSiz/Ges7n1Aerw8Hfp2vfRnJgIFdU1nyo6Tm4MLQCAXTT
+        m9NTUVWKK8Zhs3lI4ckug4VgqyZerzGZUcgCG4AagGSO5qeBFK3oiMDHqhFps66887mie3
+        qxJWTbnQiyKsxcj3+znKvaRssLMeLqM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-EPvtJQvVOqWZOgwKIvY9pw-1; Sun, 03 Jan 2021 22:23:02 -0500
+X-MC-Unique: EPvtJQvVOqWZOgwKIvY9pw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A886800D55;
+        Mon,  4 Jan 2021 03:23:01 +0000 (UTC)
+Received: from [10.72.13.221] (ovpn-13-221.pek2.redhat.com [10.72.13.221])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 572B16F7EB;
+        Mon,  4 Jan 2021 03:22:56 +0000 (UTC)
+Subject: Re: [PATCH V2 16/19] virtio-pci: introduce modern device module
+To:     Randy Dunlap <rdunlap@infradead.org>, mst@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     shahafs@mellanox.com
+References: <20201204040353.21679-1-jasowang@redhat.com>
+ <20201204040353.21679-17-jasowang@redhat.com>
+ <a325b57b-817f-b96e-76fc-dba4415fe6b0@infradead.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <9ea86f91-0ca5-bfd6-4489-93a726455c41@redhat.com>
+Date:   Mon, 4 Jan 2021 11:22:54 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <a325b57b-817f-b96e-76fc-dba4415fe6b0@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTEyLTMxIGF0IDA5OjIxICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
-DQo+IE9uIE1vbiwgRGVjIDI4LCAyMDIwIGF0IDQ6MzggUE0gWW9uZ3FpYW5nIE5pdQ0KPiA8eW9u
-Z3FpYW5nLm5pdUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gdGhlIG1tc3lzIHdpbGwg
-bW9yZSBhbmQgbW9yZSBjb21wbGljYXRlZCBhZnRlciBzdXBwb3J0DQo+ID4gbW9yZSBhbmQgbW9y
-ZSBTb0NzLCBhZGQgYW4gaW5kZXBlbmRlbnQgZm9sZGVyIHdpbGwgYmUNCj4gPiBtb3JlIGNsZWFy
-DQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1l
-ZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvTWFrZWZpbGUg
-ICAgICAgICAgfCAgIDIgKy0NCj4gPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbW1zeXMvTWFrZWZp
-bGUgICAgfCAgIDIgKw0KPiA+ICBkcml2ZXJzL3NvYy9tZWRpYXRlay9tbXN5cy9tdGstbW1zeXMu
-YyB8IDM4MCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgZHJpdmVycy9z
-b2MvbWVkaWF0ZWsvbXRrLW1tc3lzLmMgICAgICAgfCAzODAgLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tDQo+IA0KPiBJIHdvbmRlciB3aHkgdGhpcyBkb2Vzbid0IGdldCBkZXRlY3Rl
-ZCBhcyBhIHJlbmFtZT8NCg0KdGhlIHJlbmFtZSBtZXNzYWdlIGRpc3BsYXllZCB3aGVuIGdpdCBj
-b21taXQgLXMNCmdpdCBzaG93IHdpbGwgbm90IHNob3cgdGhlIHJlbmFtZSBpbmZvcm1hdGlvbg0K
-DQo+IA0KPiA+ICA0IGZpbGVzIGNoYW5nZWQsIDM4MyBpbnNlcnRpb25zKCspLCAzODEgZGVsZXRp
-b25zKC0pDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3NvYy9tZWRpYXRlay9tbXN5
-cy9NYWtlZmlsZQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zb2MvbWVkaWF0ZWsv
-bW1zeXMvbXRrLW1tc3lzLmMNCj4gPiAgZGVsZXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvc29jL21l
-ZGlhdGVrL210ay1tbXN5cy5jDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvbWVk
-aWF0ZWsvTWFrZWZpbGUgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9NYWtlZmlsZQ0KPiA+IGluZGV4
-IDAxZjlmODcuLmI1OTg3Y2EgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsv
-TWFrZWZpbGUNCj4gPiArKysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9NYWtlZmlsZQ0KPiA+IEBA
-IC0zLDQgKzMsNCBAQCBvYmotJChDT05GSUdfTVRLX0NNRFEpICs9IG10ay1jbWRxLWhlbHBlci5v
-DQo+ID4gIG9iai0kKENPTkZJR19NVEtfSU5GUkFDRkcpICs9IG10ay1pbmZyYWNmZy5vDQo+ID4g
-IG9iai0kKENPTkZJR19NVEtfUE1JQ19XUkFQKSArPSBtdGstcG1pYy13cmFwLm8NCj4gPiAgb2Jq
-LSQoQ09ORklHX01US19TQ1BTWVMpICs9IG10ay1zY3BzeXMubw0KPiA+IC1vYmotJChDT05GSUdf
-TVRLX01NU1lTKSArPSBtdGstbW1zeXMubw0KPiA+ICtvYmotJChDT05GSUdfTVRLX01NU1lTKSAr
-PSBtbXN5cy8NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbW1zeXMvTWFr
-ZWZpbGUgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tbXN5cy9NYWtlZmlsZQ0KPiA+IG5ldyBmaWxl
-IG1vZGUgMTAwNjQ0DQo+ID4gaW5kZXggMDAwMDAwMC4uNWQ5NzZkNw0KPiA+IC0tLSAvZGV2L251
-bGwNCj4gPiArKysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tbXN5cy9NYWtlZmlsZQ0KPiA+IEBA
-IC0wLDAgKzEsMiBAQA0KPiA+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9u
-bHkNCj4gPiArb2JqLSQoQ09ORklHX01US19NTVNZUykgKz0gbXRrLW1tc3lzLm8NCj4gPiBcIE5v
-IG5ld2xpbmUgYXQgZW5kIG9mIGZpbGUNCj4gDQo+IE5pdDogbmV3bGluZSBhdCBlbmQgb2YgZmls
-ZSBwbGVhc2UuDQoNCml0IHdpbGwgYmUgZml4ZWQgaW4gbmV4dCB2ZXJzaW9uDQoNCg==
+
+On 2020/12/5 上午1:10, Randy Dunlap wrote:
+> Hi Jason--
+>
+> On 12/3/20 8:03 PM, Jason Wang wrote:
+>> diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
+>> index 7b41130d3f35..d1a6bd2a975f 100644
+>> --- a/drivers/virtio/Kconfig
+>> +++ b/drivers/virtio/Kconfig
+>> @@ -12,6 +12,14 @@ config ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
+>>   	  This option is selected if the architecture may need to enforce
+>>   	  VIRTIO_F_ACCESS_PLATFORM
+>>   
+>> +config VIRTIO_PCI_MODERN
+>> +	tristate "Modern Virtio PCI Device"
+>> +	depends on PCI
+>> +	help
+>> +	  Modern PCI device implementation. This module implement the
+> 	                                                implements
+>
+>> +	  basic probe and control for devices which is based on modern
+> 	                                            are
+>
+>> +	  PCI device with possible vendor specific extensions.
+> 	      devices
+>> +
+>
+> cheers.
+
+
+All fixed.
+
+Thanks
+
 
