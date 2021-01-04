@@ -2,170 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BC62E9572
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 924302E9585
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbhADNCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:02:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbhADNC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:02:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2B86207B1;
-        Mon,  4 Jan 2021 13:01:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609765308;
-        bh=yzCJ7gttoK052lq2RlNPBiUyeQ/F04H5GVCbPkcutFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0BOqU0WPC4c1AgvQ+1KMCIzTCyQi7N4B1JrrcoX3MVgI86GgQisuNLQlUmZ9T4GQ9
-         55vGn45Gp+Lv7OK4SCbXb9qKJoClMHPhxknhAbSEu7CMwZ3YzxwnL+CcVZVALWlgRg
-         PzQRoua1gKktT3BXsRiQ5KqM4yIbC8pcVY96KmNk=
-Date:   Mon, 4 Jan 2021 14:03:14 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wen Yang <wenyang@linux.alibaba.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <christian@brauner.io>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        id S1726983AbhADNEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:04:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726236AbhADNEP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 08:04:15 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7109CC061796;
+        Mon,  4 Jan 2021 05:03:35 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id b8so14522524plx.0;
+        Mon, 04 Jan 2021 05:03:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=862T7hic/OMu7f7cJEh2FFoF3v3gS9+yRL0pxtDB4jE=;
+        b=cMEel9TKtloSoTHFocd8vnyoZ7T1Xx9Px4pFcxbVCIM2HhoA7hULRb8yJw9N7rQXnJ
+         Ro/USm9rd6j0D9D9CJa4dLd4hEKn+z0ouZCrNyCjDxiIKMTUmrt0MEisxBqCoIjhkFWW
+         tvxFR41Oky8F0+gkagdf2pJpifzQARDsIfIsVjKm3uGVZ2YXrIbX1T4vQ485dz99X9f3
+         ZoS4ZV1tjG+mJqA1TU57VEppZnc2rJi68VW2sRoA+XADE7dddM12Jv+QFOuEFxWYttnC
+         aSehdhuyVCLri8BzP3iBGQtmqtGv7KcWCk3GI5AZ8hirjJLH/cHqDCmRnDAK9okZbA7N
+         nhRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=862T7hic/OMu7f7cJEh2FFoF3v3gS9+yRL0pxtDB4jE=;
+        b=VJwo51+q0jjmGLJZRFEZb5kbckmVh+eYjYybsAjCFR6VgGfsyhniqXevjVdGl9+CHH
+         kANulYiUZNnEVZmE8d9n7I0Qi5cIKL72n+FBDgtjaCdWTwgzVIX9l2UXuk5TVM9aC2Tm
+         w8vz9CP3lrbW089eQ2M6wanvKNowkalNkx6fl3vVfZ4giQgwRwXnKsykq2LwiJQu8f29
+         CDG5WXbY++kZVSjcptLMy1Xkb3L80EEkAK1v65g0uDOsTVu5d2fIbaQtCKPgTv0HKJKI
+         DLYQaLNRPU8I8BXxuaIQ9L+KI1uf02y60mrDeMhBpjSWgApxa7RfoNDH7QkNmA3GO3Tt
+         ja5A==
+X-Gm-Message-State: AOAM532oy2cFUHpTjV+nk9nvlFaxHowotfjMW2bzvziE/Zw2qpUlwGm9
+        hesNYn7RFJvnCpdjdkuXkuG2TUa4IHo=
+X-Google-Smtp-Source: ABdhPJwe6TAxYKj3OChvtjsroGWbbF9IJd+DVOmcwIhnsQgjoLWhE5exnorFAbFY+MV0PVAKhNLmAQ==
+X-Received: by 2002:a17:902:59dc:b029:da:84c7:f175 with SMTP id d28-20020a17090259dcb02900da84c7f175mr49386727plj.75.1609765415000;
+        Mon, 04 Jan 2021 05:03:35 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id x23sm46993760pgk.14.2021.01.04.05.03.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 05:03:34 -0800 (PST)
+Date:   Mon, 4 Jan 2021 05:03:31 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        David Howells <dhowells@redhat.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Andy Lutomirsky <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
-Subject: Re: [PATCH 01/10] clone: add CLONE_PIDFD
-Message-ID: <X/MSEjmCeWHR65gL@kroah.com>
-References: <20201203183204.63759-1-wenyang@linux.alibaba.com>
- <20201203183204.63759-2-wenyang@linux.alibaba.com>
+        Stefan =?iso-8859-1?Q?S=F8rensen?= 
+        <stefan.sorensen@spectralink.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] phy: dp83640: select CONFIG_CRC32
+Message-ID: <20210104130331.GA27715@hoboy.vegasvil.org>
+References: <20210103213645.1994783-1-arnd@kernel.org>
+ <20210103213645.1994783-2-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201203183204.63759-2-wenyang@linux.alibaba.com>
+In-Reply-To: <20210103213645.1994783-2-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 02:31:55AM +0800, Wen Yang wrote:
-> From: Christian Brauner <christian@brauner.io>
+On Sun, Jan 03, 2021 at 10:36:18PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> [ Upstream commit b3e5838252665ee4cfa76b82bdf1198dca81e5be ]
+> Without crc32, this driver fails to link:
 > 
-> This patchset makes it possible to retrieve pid file descriptors at
-> process creation time by introducing the new flag CLONE_PIDFD to the
-> clone() system call.  Linus originally suggested to implement this as a
-> new flag to clone() instead of making it a separate system call.  As
-> spotted by Linus, there is exactly one bit for clone() left.
+> arm-linux-gnueabi-ld: drivers/net/phy/dp83640.o: in function `match':
+> dp83640.c:(.text+0x476c): undefined reference to `crc32_le'
 > 
-> CLONE_PIDFD creates file descriptors based on the anonymous inode
-> implementation in the kernel that will also be used to implement the new
-> mount api.  They serve as a simple opaque handle on pids.  Logically,
-> this makes it possible to interpret a pidfd differently, narrowing or
-> widening the scope of various operations (e.g. signal sending).  Thus, a
-> pidfd cannot just refer to a tgid, but also a tid, or in theory - given
-> appropriate flag arguments in relevant syscalls - a process group or
-> session. A pidfd does not represent a privilege.  This does not imply it
-> cannot ever be that way but for now this is not the case.
-> 
-> A pidfd comes with additional information in fdinfo if the kernel supports
-> procfs.  The fdinfo file contains the pid of the process in the callers
-> pid namespace in the same format as the procfs status file, i.e. "Pid:\t%d".
-> 
-> As suggested by Oleg, with CLONE_PIDFD the pidfd is returned in the
-> parent_tidptr argument of clone.  This has the advantage that we can
-> give back the associated pid and the pidfd at the same time.
-> 
-> To remove worries about missing metadata access this patchset comes with
-> a sample program that illustrates how a combination of CLONE_PIDFD, and
-> pidfd_send_signal() can be used to gain race-free access to process
-> metadata through /proc/<pid>.  The sample program can easily be
-> translated into a helper that would be suitable for inclusion in libc so
-> that users don't have to worry about writing it themselves.
-> 
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Christian Brauner <christian@brauner.io>
-> Co-developed-by: Jann Horn <jannh@google.com>
-> Signed-off-by: Jann Horn <jannh@google.com>
-> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-> Cc: Andy Lutomirsky <luto@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Aleksa Sarai <cyphar@cyphar.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: <stable@vger.kernel.org> # 4.9.x
-> (clone: fix up cherry-pick conflicts for b3e583825266)
-> Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-> ---
->  include/linux/pid.h        |   1 +
->  include/uapi/linux/sched.h |   1 +
->  kernel/fork.c              | 119 +++++++++++++++++++++++++++++++++++++++++++--
->  3 files changed, 117 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/pid.h b/include/linux/pid.h
-> index 97b745d..7599a78 100644
-> --- a/include/linux/pid.h
-> +++ b/include/linux/pid.h
-> @@ -73,6 +73,7 @@ struct pid_link
->  	struct hlist_node node;
->  	struct pid *pid;
->  };
-> +extern const struct file_operations pidfd_fops;
->  
->  static inline struct pid *get_pid(struct pid *pid)
->  {
-> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
-> index 5f0fe01..ed6e31d 100644
-> --- a/include/uapi/linux/sched.h
-> +++ b/include/uapi/linux/sched.h
-> @@ -9,6 +9,7 @@
->  #define CLONE_FS	0x00000200	/* set if fs info shared between processes */
->  #define CLONE_FILES	0x00000400	/* set if open files shared between processes */
->  #define CLONE_SIGHAND	0x00000800	/* set if signal handlers and blocked signals shared */
-> +#define CLONE_PIDFD	0x00001000	/* set if a pidfd should be placed in parent */
->  #define CLONE_PTRACE	0x00002000	/* set if we want to let tracing continue on the child too */
->  #define CLONE_VFORK	0x00004000	/* set if the parent wants the child to wake it up on mm_release */
->  #define CLONE_PARENT	0x00008000	/* set if we want to have the same parent as the cloner */
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index b64efec..076297a 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -11,7 +11,22 @@
->   * management can be a bitch. See 'mm/memory.c': 'copy_page_range()'
->   */
->  
-> +#include <linux/anon_inodes.h>
->  #include <linux/slab.h>
-> +#if 0
-> +#include <linux/sched/autogroup.h>
-> +#include <linux/sched/mm.h>
-> +#include <linux/sched/coredump.h>
-> +#include <linux/sched/user.h>
-> +#include <linux/sched/numa_balancing.h>
-> +#include <linux/sched/stat.h>
-> +#include <linux/sched/task.h>
-> +#include <linux/sched/task_stack.h>
-> +#include <linux/sched/cputime.h>
-> +#include <linux/seq_file.h>
-> +#include <linux/rtmutex.h>
-> +>>>>>>> b3e58382... clone: add CLONE_PIDFD
-> +#endif
+> Fixes: 539e44d26855 ("dp83640: Include hash in timestamp/packet matching")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-That looks odd :(
-
-Can you please refresh this patch series, and make sure it is correct
-and resend it?
-
-thanks,
-
-greg k-h
+Acked-by: Richard Cochran <richardcochran@gmail.com>
