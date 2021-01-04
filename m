@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9E62E99A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7E12E9970
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728804AbhADQCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:02:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39260 "EHLO mail.kernel.org"
+        id S1727155AbhADP7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:59:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728773AbhADQCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:02:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0290822515;
-        Mon,  4 Jan 2021 16:01:57 +0000 (UTC)
+        id S1728097AbhADP7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:59:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CD472253D;
+        Mon,  4 Jan 2021 15:59:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776118;
-        bh=EjAqTvqR5xGB0ysuOSu9sqTv7/TUJ9YORzCYjtD5m8s=;
+        s=korg; t=1609775950;
+        bh=zLIch3WnPocwUW2VqfbQGCTsktxSOInr7KQsuIKdzF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tm645glq3mEH1Ig948As/8evmaljT7Sb+Xd6aVeqTlBOD7KIdCsmAIRZhPwsGyfZ6
-         6O38zEyezpzAMAJrsgLYgs10LMmTE427xJ3R7Fpx8vR8tCBy5PlfEDjzy0GQEUR51v
-         j4xqsRzSyaKhdun5cQa0IFDDdKfKSo4odgZFiWr0=
+        b=uWug1xkL0J2DbBJxf7o1OwSoSZ7afKBcQ/G4dW6CbO/c30AtD1cmfo/u8tzgWxjJK
+         4qnSND7xWhbZP/vp4tEClklrSP1ObeVcXzfWgSt2yZaaEQLGkQORkJKQ/DNJe0WSma
+         PPKWokLhn2dCgnWR2vjLdyJX4PmKePsd7NHrQB/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        Jan Kara <jack@suse.cz>,
-        syzbot+83b6f7cf9922cae5c4d7@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 29/63] reiserfs: add check for an invalid ih_entry_count
-Date:   Mon,  4 Jan 2021 16:57:22 +0100
-Message-Id: <20210104155710.234806001@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Santosh Sivaraj <santosh@fossix.org>
+Subject: [PATCH 4.19 20/35] asm-generic/tlb: avoid potential double flush
+Date:   Mon,  4 Jan 2021 16:57:23 +0100
+Message-Id: <20210104155704.387218698@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
-References: <20210104155708.800470590@linuxfoundation.org>
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit d24396c5290ba8ab04ba505176874c4e04a2d53c upstream.
+commit 0758cd8304942292e95a0f750c374533db378b32 upstream.
 
-when directory item has an invalid value set for ih_entry_count it might
-trigger use-after-free or out-of-bounds read in bin_search_in_dir_item()
+Aneesh reported that:
 
-ih_entry_count * IH_SIZE for directory item should not be larger than
-ih_item_len
+	tlb_flush_mmu()
+	  tlb_flush_mmu_tlbonly()
+	    tlb_flush()			<-- #1
+	  tlb_flush_mmu_free()
+	    tlb_table_flush()
+	      tlb_table_invalidate()
+		tlb_flush_mmu_tlbonly()
+		  tlb_flush()		<-- #2
 
-Link: https://lore.kernel.org/r/20201101140958.3650143-1-rkovhaev@gmail.com
-Reported-and-tested-by: syzbot+83b6f7cf9922cae5c4d7@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=83b6f7cf9922cae5c4d7
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+does two TLBIs when tlb->fullmm, because __tlb_reset_range() will not
+clear tlb->end in that case.
+
+Observe that any caller to __tlb_adjust_range() also sets at least one of
+the tlb->freed_tables || tlb->cleared_p* bits, and those are
+unconditionally cleared by __tlb_reset_range().
+
+Change the condition for actually issuing TLBI to having one of those bits
+set, as opposed to having tlb->end != 0.
+
+Link: http://lkml.kernel.org/r/20200116064531.483522-4-aneesh.kumar@linux.ibm.com
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Reported-by: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc: <stable@vger.kernel.org>  # 4.19
+Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
+[santosh: backported to 4.19 stable]
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/reiserfs/stree.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ include/asm-generic/tlb.h |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/fs/reiserfs/stree.c
-+++ b/fs/reiserfs/stree.c
-@@ -454,6 +454,12 @@ static int is_leaf(char *buf, int blocks
- 					 "(second one): %h", ih);
- 			return 0;
- 		}
-+		if (is_direntry_le_ih(ih) && (ih_item_len(ih) < (ih_entry_count(ih) * IH_SIZE))) {
-+			reiserfs_warning(NULL, "reiserfs-5093",
-+					 "item entry count seems wrong %h",
-+					 ih);
-+			return 0;
-+		}
- 		prev_location = ih_location(ih);
- 	}
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -179,7 +179,12 @@ static inline void __tlb_reset_range(str
  
+ static inline void tlb_flush_mmu_tlbonly(struct mmu_gather *tlb)
+ {
+-	if (!tlb->end)
++	/*
++	 * Anything calling __tlb_adjust_range() also sets at least one of
++	 * these bits.
++	 */
++	if (!(tlb->freed_tables || tlb->cleared_ptes || tlb->cleared_pmds ||
++	      tlb->cleared_puds || tlb->cleared_p4ds))
+ 		return;
+ 
+ 	tlb_flush(tlb);
 
 
