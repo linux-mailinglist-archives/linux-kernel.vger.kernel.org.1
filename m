@@ -2,160 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55202E9BAE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A91332E9BB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbhADREp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:04:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727760AbhADREo (ORCPT
+        id S1726508AbhADRGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:06:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20181 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726198AbhADRGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:04:44 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FDCC061798
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 09:04:03 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id z12so10466334pjn.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 09:04:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IQcm30joQ1MOZvDbTDrRnopca1uhY1ndGDE9lkwCZAc=;
-        b=BCIixdhQz0ExCp0AmsUIvPZ18AUH+wiojlGbwoXezAz15MaThplttNDQc+MfKl32hG
-         poMMlEoNBcVwoo2GLpyhRxx+QcayT9nI80+Fxm0EQ4x3zlBoy4x5ELTyGx436AIvX7e7
-         KlCloSXe6Oz17jHhw4OHjPaiRUMUMBkGM09A7xe4dOJVXbKX4z91exkrSx2BfpDQhWl8
-         KVPZ8S3oZjRgI2GLlrPPQ9pjp8qFuzHr/YkvF/INPPsJfjIxV3g8L2rZCvZf5ZzacELL
-         4kVNGfLlsq7Drh3FHCDiG3C2pkZgynI97jj8wIrn6I9Hj/rmtSTl1dIK3rzXEijlsdwj
-         v4ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IQcm30joQ1MOZvDbTDrRnopca1uhY1ndGDE9lkwCZAc=;
-        b=BF07zJP96gWK4/XsxyoJ68Rs9Q3perAD0XrW29exsKDGTNGDqsqudvuec1+GYcSQ/V
-         1Bfbqg/pb0QOFOCl6u1yuevlzSCrhu1SKVxqV3YPcXo3dODBEgiNSvIxfiMtn/FOPWGT
-         UvSZDkhZZMWuaw1yfz3ZULQ8hn9hQsymgIR/Nf0KTPbHOnfoODuWKZ0ZV08mgWOzZGkR
-         7dpwJWTdY1YNfgYH4rRiQFLNd/kpJqyMgvaSu+c+ieDVu1UcujFtouVKaPj2qia/1mFi
-         YL8EH0DOg+2WLEYsGt/Dszscxubh7EzVjkfoZasgjsh7r6HYuUhWgjF//Ow69c1x31zg
-         HeCA==
-X-Gm-Message-State: AOAM5336ZBNwjlzu39oimJDqAvtJ63Y+e+FkjT61vBty38Dc0IijSjRS
-        ZZ8lZd4NuPYKUuADomdnU467
-X-Google-Smtp-Source: ABdhPJzstLU9i3O9N1V2w9aLZIwS7/jD4AeG4EenR1Mw3gYn+u7BY34odJUrymKTvSm7jCXshIi1LQ==
-X-Received: by 2002:a17:90a:454e:: with SMTP id r14mr31112408pjm.194.1609779843170;
-        Mon, 04 Jan 2021 09:04:03 -0800 (PST)
-Received: from work ([103.77.37.129])
-        by smtp.gmail.com with ESMTPSA id w63sm55114714pfc.20.2021.01.04.09.04.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 04 Jan 2021 09:04:02 -0800 (PST)
-Date:   Mon, 4 Jan 2021 22:33:59 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Carl Huang <cjhuang@codeaurora.org>
-Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
-Subject: Re: [PATCH v3] mhi: use irq_flags if controller driver configures it
-Message-ID: <20210104170359.GE2256@work>
-References: <20210104101128.8217-1-cjhuang@codeaurora.org>
+        Mon, 4 Jan 2021 12:06:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609779913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9h3z5LlCHcMQVpKavCUMhYApeAZMVwa2YCWREDiwFCo=;
+        b=K02HjKrFw3Hg2xk5XPh+U8vVZAHwqhXjrpflzz6KPFNQWomqghqL9dv3vRClGLJfnDZUcu
+        PTROQWei91+VZanqmTtiDKc924fLEC2iDNsXDS8X07RsvnV2Ifd2UiZn9086iRgYUfZwd9
+        ZnEHcM9O1F4ZZoSdP8z1+sGIypANfp0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-3mz7Dk5uO--KELV8SwwKQQ-1; Mon, 04 Jan 2021 12:05:11 -0500
+X-MC-Unique: 3mz7Dk5uO--KELV8SwwKQQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B75F19251A0;
+        Mon,  4 Jan 2021 17:05:09 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A3595D751;
+        Mon,  4 Jan 2021 17:05:02 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 104H51GA002921;
+        Mon, 4 Jan 2021 12:05:01 -0500
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 104H4xUR002896;
+        Mon, 4 Jan 2021 12:04:59 -0500
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Mon, 4 Jan 2021 12:04:59 -0500 (EST)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Ignat Korchagin <ignat@cloudflare.com>
+cc:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
+        dm-crypt@saout.de, linux-kernel@vger.kernel.org,
+        ebiggers@kernel.org, Damien.LeMoal@wdc.com,
+        herbert@gondor.apana.org.au, kernel-team@cloudflare.com,
+        nobuto.murata@canonical.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        mail@maciej.szmigiero.name
+Subject: Re: [PATCH v3 0/2] dm crypt: some fixes to support dm-crypt running
+ in softirq context
+In-Reply-To: <20210104145948.1857-1-ignat@cloudflare.com>
+Message-ID: <alpine.LRH.2.02.2101041204010.2157@file01.intranet.prod.int.rdu2.redhat.com>
+References: <20210104145948.1857-1-ignat@cloudflare.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210104101128.8217-1-cjhuang@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 06:11:28PM +0800, Carl Huang wrote:
-> If controller driver has specified the irq_flags, mhi uses this specified
-> irq_flags. Otherwise, mhi uses default irq_flags.
-> 
-> The purpose of this change is to support one MSI vector for QCA6390.
-> MHI will use one same MSI vector too in this scenario.
-> 
-> In case of one MSI vector, IRQ_NO_BALANCING is needed when irq handler
-> is requested. The reason is if irq migration happens, the msi_data may
-> change too. However, the msi_data is already programmed to QCA6390
-> hardware during initialization phase. This msi_data inconsistence will
-> result in crash in kernel.
-> 
-> Another issue is in case of one MSI vector, IRQF_NO_SUSPEND will trigger
-> WARNINGS because QCA6390 wants to disable the IRQ during the suspend.
-> 
-> To avoid above two issues, QCA6390 driver specifies the irq_flags in case
-> of one MSI vector when mhi_register_controller is called.
-> 
-> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Applied to mhi-next!
 
-Thanks,
-Mani
+On Mon, 4 Jan 2021, Ignat Korchagin wrote:
 
-> ---
-> v3:
-> - replace "client driver" with "controller driver"
-> - add Reviewed-by: Manivannan Sadhasivam 
+> Changes from v1:
+>   * 0001: handle memory allocation failure for GFP_ATOMIC
 > 
-> v2:
-> - document irq_flags added to mhi_controller
+> Changes from v2:
+>   * reordered patches
+>   * 0002: crypt_convert will be retried from a workqueue, when a crypto request
+>     allocation fails with GFP_ATOMIC instead of just returning an IO error to
+>     the user
 > 
->  drivers/bus/mhi/core/init.c | 9 +++++++--
->  include/linux/mhi.h         | 2 ++
->  2 files changed, 9 insertions(+), 2 deletions(-)
+> Ignat Korchagin (2):
+>   dm crypt: do not wait for backlogged crypto request completion in
+>     softirq
+>   dm crypt: use GFP_ATOMIC when allocating crypto requests from softirq
 > 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index 381fdea..37903a8 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -148,12 +148,17 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
->  {
->  	struct mhi_event *mhi_event = mhi_cntrl->mhi_event;
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> +	unsigned long irq_flags = IRQF_SHARED | IRQF_NO_SUSPEND;
->  	int i, ret;
->  
-> +	/* if controller driver has set irq_flags, use it */
-> +	if (mhi_cntrl->irq_flags)
-> +		irq_flags = mhi_cntrl->irq_flags;
-> +
->  	/* Setup BHI_INTVEC IRQ */
->  	ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
->  				   mhi_intvec_threaded_handler,
-> -				   IRQF_SHARED | IRQF_NO_SUSPEND,
-> +				   irq_flags,
->  				   "bhi", mhi_cntrl);
->  	if (ret)
->  		return ret;
-> @@ -171,7 +176,7 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
->  
->  		ret = request_irq(mhi_cntrl->irq[mhi_event->irq],
->  				  mhi_irq_handler,
-> -				  IRQF_SHARED | IRQF_NO_SUSPEND,
-> +				  irq_flags,
->  				  "mhi", mhi_event);
->  		if (ret) {
->  			dev_err(dev, "Error requesting irq:%d for ev:%d\n",
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index cb7cd54..77f1e3f 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -351,6 +351,7 @@ struct mhi_controller_config {
->   * @fbc_download: MHI host needs to do complete image transfer (optional)
->   * @pre_init: MHI host needs to do pre-initialization before power up
->   * @wake_set: Device wakeup set flag
-> + * @irq_flags: irq flags passed to request_irq (optional)
->   *
->   * Fields marked as (required) need to be populated by the controller driver
->   * before calling mhi_register_controller(). For the fields marked as (optional)
-> @@ -440,6 +441,7 @@ struct mhi_controller {
->  	bool fbc_download;
->  	bool pre_init;
->  	bool wake_set;
-> +	unsigned long irq_flags;
->  };
->  
->  /**
+>  drivers/md/dm-crypt.c | 138 +++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 123 insertions(+), 15 deletions(-)
+> 
 > -- 
-> 2.7.4
+> 2.20.1
 > 
+
+Acked-by: Mikulas Patocka <mpatocka@redhat.com>
+
