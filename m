@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D3C2EA01D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:42:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3D22EA021
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbhADWlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 17:41:07 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:40756 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726026AbhADWlG (ORCPT
+        id S1726837AbhADWoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 17:44:39 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:59441 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbhADWoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 17:41:06 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104MV3U4145356;
-        Mon, 4 Jan 2021 22:40:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=LixbOTy4EF+FNs39RrzUBWIvM+s7f+0XmxarmtWP29Q=;
- b=yjh+g0OSUpXwCRH2z563xoL/PwcarClS0Vz23CE7vnzhzNL4nb7AxfyRJKqXGx8q+69A
- t5WEq7wIjZaqxQcwWfkhQ2+HMDFQ/yO2Y64aCnpDTtejpAP7m2GpvfHe0aGoGZq4AC0s
- HjGq/KMx3dgxbD0L2NswSf4oG4WvIbZTKPBf2HR1mq3/dJ7yBNX824IU8rUwm2VB3qTR
- yPXZMfkmxBie4ZlIsm0PMxL53IcjGWJCuvQLiGSNboWhxvVoIuTNP2poUB1Iy6dtUdJZ
- O5mujCuXdA/4GHfht6zfwyXmB47MjX3QKBgv20FEDUxHmFbaA5OLNKTP7iynUPRDsYCX 9A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 35tg8qxggx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 04 Jan 2021 22:40:11 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104MXd5G031590;
-        Mon, 4 Jan 2021 22:38:10 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 35v4raq1ey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Jan 2021 22:38:10 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 104Mc4BC013030;
-        Mon, 4 Jan 2021 22:38:06 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Jan 2021 14:38:04 -0800
-Subject: Re: [PATCH 2/6] hugetlbfs: fix cannot migrate the fallocated HugeTLB
- page
-To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
-Cc:     hillf.zj@alibaba-inc.com, n-horiguchi@ah.jp.nec.com,
-        ak@linux.intel.com, yongjun_wei@trendmicro.com.cn, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210104065843.5658-1-songmuchun@bytedance.com>
- <20210104065843.5658-2-songmuchun@bytedance.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <09be227a-4e16-1960-c8e9-609c35a80ef5@oracle.com>
-Date:   Mon, 4 Jan 2021 14:38:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Mon, 4 Jan 2021 17:44:39 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609800256; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Date: Message-ID: Subject: From: Cc: To: Sender;
+ bh=zZUFznR+lb3g0Oh2iFAqK9DoirsGLwYKKznxswKYgIc=; b=k+4EdnIINJI2YlR0Efei5eVx4JWHl0zkhm9D8xonMjVkeJnZBp6dvKw2ybRd8HREvPKmNUnc
+ t6EnexgAW27uq3O3sBfebULQl83xRl8AkeknWJXS2yiQyt6U1iYXWUjpwH8f+NjbqLHa2GiK
+ WdY5BX9HHCBFrKbwabdfode3aUo=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ff39a233d84969114531a75 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Jan 2021 22:43:47
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5BF44C433ED; Mon,  4 Jan 2021 22:43:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4628BC433CA;
+        Mon,  4 Jan 2021 22:43:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4628BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+To:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     "psodagud@codeaurora.org" <psodagud@codeaurora.org>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Subject: PROBLEM: Firmware loader fallback mechanism no longer works with
+ sendfile
+Message-ID: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
+Date:   Mon, 4 Jan 2021 14:43:45 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210104065843.5658-2-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 bulkscore=0
- suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101040134
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 phishscore=0 bulkscore=0
- spamscore=0 impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101040134
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/3/21 10:58 PM, Muchun Song wrote:
-> Because we only can isolate a active page via isolate_huge_page()
-> and hugetlbfs_fallocate() forget to mark it as active, we cannot
-> isolate and migrate those pages.
-> 
-> Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  fs/hugetlbfs/inode.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+Hi all,
 
-Good catch.  This is indeed an issue.
+With the introduction of the filesystem change "fs: don't allow splice 
+read/write without explicit ops"[1] the fallback mechanism of the 
+firmware loader[2] no longer works when using sendfile[3] from the 
+userspace.
 
-> 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index b5c109703daa..2aceb085d202 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -737,10 +737,11 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
->  
->  		/*
->  		 * unlock_page because locked by add_to_page_cache()
-> -		 * page_put due to reference from alloc_huge_page()
-> +		 * put_page() (which is in the putback_active_hugepage())
-> +		 * due to reference from alloc_huge_page()
+Since the binary attributes don't support splice_{read,write} functions 
+the calls to splice_{read,write} used the default kernel_{read,write} 
+functions. With the above change this results in an -EINVAL return from 
+do_splice_from[4].
 
-Thanks for fixing the comment.
+This essentially means that sendfile will not work for any binary 
+attribute in the sysfs.
 
->  		 */
->  		unlock_page(page);
-> -		put_page(page);
-> +		putback_active_hugepage(page);
+Thanks,
+Siddharth
 
-I'm curious why you used putback_active_hugepage() here instead of simply
-calling set_page_huge_active() before the put_page()?
+[1]: 
+https://github.com/torvalds/linux/commit/36e2c7421f02a22f71c9283e55fdb672a9eb58e7#diff-70c49af2ed5805fc1406ed6e6532d6a029ada1abd90cca6442711b9cecd4d523
+[2]: 
+https://github.com/torvalds/linux/blob/master/drivers/base/firmware_loader/main.c#L831
+[3]: https://github.com/torvalds/linux/blob/master/fs/read_write.c#L1257
+[4]: https://github.com/torvalds/linux/blob/master/fs/splice.c#L753
 
-When the page was allocated, it was placed on the active list (alloc_huge_page).
-Therefore, the hugetlb_lock locking and list movement should not be necessary.
-
--- 
-Mike Kravetz
-
->  	}
->  
->  	if (!(mode & FALLOC_FL_KEEP_SIZE) && offset + len > inode->i_size)
-> 
