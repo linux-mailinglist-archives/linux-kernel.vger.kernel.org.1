@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC0F2E9A00
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE502E99FF
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729301AbhADQGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:06:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40346 "EHLO mail.kernel.org"
+        id S1729276AbhADQGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:06:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728948AbhADQC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:02:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A79522473;
-        Mon,  4 Jan 2021 16:02:15 +0000 (UTC)
+        id S1728958AbhADQC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:02:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD0B52245C;
+        Mon,  4 Jan 2021 16:02:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776136;
-        bh=Ny1A5XdaJPEyUXhWYxlde/SXbDrlL4EpOPW8Cwta6Lk=;
+        s=korg; t=1609776138;
+        bh=3Cv24Vu//k+9LqcI5Km3zQxhoyl+adOYlUF9njqT6t4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WqcRg1nN8BKruzYGWnDTvzp4ou7aPg415MP3A0csNGUwKfY2gc3mLni8SpZtvvwg5
-         1SNlTW0pZ5O7hzWmz3pVNR1Qy5744vTaZg/qIhpqSyYRwHm9BqlzH0xtvzXbtOvDMA
-         75BUn3aHtJxmaaQQXQWZvOEUPbxdOfXPxPjBaXPo=
+        b=wb3DrWAJKnHF3aZatQ+CFfriKhIWyskfxtL9Hf0NySLdkK2VyruXionv5uUaruimC
+         61mo9ELsLyhgS7k6mD7N6U1GtXNVLALD8i9KNDnNa1s3n7O+C7d6R0eMtcSG3CWC5Y
+         9jjsukpywN2pXNcoTk5kcmMTTiFEWquY+f/axvMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 07/63] io_uring: close a small race gap for files cancel
-Date:   Mon,  4 Jan 2021 16:57:00 +0100
-Message-Id: <20210104155709.164282473@linuxfoundation.org>
+        stable@vger.kernel.org, Jubin Zhong <zhongjubin@huawei.com>,
+        lizhe <lizhe67@huawei.com>, Richard Weinberger <richard@nod.at>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 08/63] jffs2: Allow setting rp_size to zero during remounting
+Date:   Mon,  4 Jan 2021 16:57:01 +0100
+Message-Id: <20210104155709.212682044@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
 References: <20210104155708.800470590@linuxfoundation.org>
@@ -39,51 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: lizhe <lizhe67@huawei.com>
 
-commit dfea9fce29fda6f2f91161677e0e0d9b671bc099 upstream.
+[ Upstream commit cd3ed3c73ac671ff6b0230ccb72b8300292d3643 ]
 
-The purpose of io_uring_cancel_files() is to wait for all requests
-matching ->files to go/be cancelled. We should first drop files of a
-request in io_req_drop_files() and only then make it undiscoverable for
-io_uring_cancel_files.
+Set rp_size to zero will be ignore during remounting.
 
-First drop, then delete from list. It's ok to leave req->id->files
-dangling, because it's not dereferenced by cancellation code, only
-compared against. It would potentially go to sleep and be awaken by
-following in io_req_drop_files() wake_up().
+The method to identify whether we input a remounting option of
+rp_size is to check if the rp_size input is zero. It can not work
+well if we pass "rp_size=0".
 
-Fixes: 0f2122045b946 ("io_uring: don't rely on weak ->files references")
-Cc: <stable@vger.kernel.org> # 5.5+
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch add a bool variable "set_rp_size" to fix this problem.
 
+Reported-by: Jubin Zhong <zhongjubin@huawei.com>
+Signed-off-by: lizhe <lizhe67@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/jffs2/jffs2_fs_sb.h | 1 +
+ fs/jffs2/super.c       | 7 +++++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5861,15 +5861,15 @@ static void io_req_drop_files(struct io_
- 	struct io_ring_ctx *ctx = req->ctx;
- 	unsigned long flags;
+diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
+index 778275f48a879..5a7091746f68b 100644
+--- a/fs/jffs2/jffs2_fs_sb.h
++++ b/fs/jffs2/jffs2_fs_sb.h
+@@ -38,6 +38,7 @@ struct jffs2_mount_opts {
+ 	 * users. This is implemented simply by means of not allowing the
+ 	 * latter users to write to the file system if the amount if the
+ 	 * available space is less then 'rp_size'. */
++	bool set_rp_size;
+ 	unsigned int rp_size;
+ };
  
-+	put_files_struct(req->work.identity->files);
-+	put_nsproxy(req->work.identity->nsproxy);
- 	spin_lock_irqsave(&ctx->inflight_lock, flags);
- 	list_del(&req->inflight_entry);
--	if (waitqueue_active(&ctx->inflight_wait))
--		wake_up(&ctx->inflight_wait);
- 	spin_unlock_irqrestore(&ctx->inflight_lock, flags);
- 	req->flags &= ~REQ_F_INFLIGHT;
--	put_files_struct(req->work.identity->files);
--	put_nsproxy(req->work.identity->nsproxy);
- 	req->work.flags &= ~IO_WQ_WORK_FILES;
-+	if (waitqueue_active(&ctx->inflight_wait))
-+		wake_up(&ctx->inflight_wait);
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 4fd297bdf0f3f..c523adaca79f3 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -88,7 +88,7 @@ static int jffs2_show_options(struct seq_file *s, struct dentry *root)
+ 
+ 	if (opts->override_compr)
+ 		seq_printf(s, ",compr=%s", jffs2_compr_name(opts->compr));
+-	if (opts->rp_size)
++	if (opts->set_rp_size)
+ 		seq_printf(s, ",rp_size=%u", opts->rp_size / 1024);
+ 
+ 	return 0;
+@@ -206,6 +206,7 @@ static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 		if (opt > c->mtd->size)
+ 			return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
+ 				      c->mtd->size / 1024);
++		c->mount_opts.set_rp_size = true;
+ 		c->mount_opts.rp_size = opt;
+ 		break;
+ 	default:
+@@ -225,8 +226,10 @@ static inline void jffs2_update_mount_opts(struct fs_context *fc)
+ 		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
+ 		c->mount_opts.compr = new_c->mount_opts.compr;
+ 	}
+-	if (new_c->mount_opts.rp_size)
++	if (new_c->mount_opts.set_rp_size) {
++		c->mount_opts.set_rp_size = new_c->mount_opts.set_rp_size;
+ 		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
++	}
+ 	mutex_unlock(&c->alloc_sem);
  }
  
- static void __io_clean_op(struct io_kiocb *req)
+-- 
+2.27.0
+
 
 
