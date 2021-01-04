@@ -2,285 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D392E90C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3FD2E90C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbhADHMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 02:12:38 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:45659 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725468AbhADHMh (ORCPT
+        id S1727217AbhADHMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 02:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbhADHMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 02:12:37 -0500
-X-UUID: 288678142bc64a98a659c31d51d5c4ac-20210104
-X-UUID: 288678142bc64a98a659c31d51d5c4ac-20210104
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <nick.fan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1535803569; Mon, 04 Jan 2021 15:11:52 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 4 Jan 2021 15:11:50 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 4 Jan 2021 15:11:50 +0800
-From:   Nick Fan <Nick.Fan@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <nick.fan@mediatek.com>,
-        Nick Fan <Nick.Fan@mediatek.com>
-Subject: [PATCH v1 2/2] arm64: dts: mt8192: Add node for the Mali GPU
-Date:   Mon, 4 Jan 2021 15:11:14 +0800
-Message-ID: <20210104071114.23657-2-Nick.Fan@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210104071114.23657-1-Nick.Fan@mediatek.com>
-References: <20210104071114.23657-1-Nick.Fan@mediatek.com>
+        Mon, 4 Jan 2021 02:12:50 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFC5C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 23:12:10 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kwK1x-00044f-Iy; Mon, 04 Jan 2021 08:11:53 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kwK1w-0000k2-1v; Mon, 04 Jan 2021 08:11:52 +0100
+Date:   Mon, 4 Jan 2021 08:11:52 +0100
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Fugang Duan <fugang.duan@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] clk: imx: enable the earlycon uart clocks by parsing
+ from dt
+Message-ID: <20210104071152.GA19063@pengutronix.de>
+References: <20201229145130.2680442-1-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229145130.2680442-1-aford173@gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 07:55:54 up 32 days, 19:22, 49 users,  load average: 0.13, 0.08,
+ 0.10
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a basic GPU node for mt8192.
+Hi Adam,
 
-Signed-off-by: Nick Fan <Nick.Fan@mediatek.com>
----
-This patch depends on Mediatek power and regulator support.
+On Tue, Dec 29, 2020 at 08:51:28AM -0600, Adam Ford wrote:
+> Remove the earlycon uart clocks that are hard cord in platforms
+> clock driver, instead of parsing the earlycon uart port from dt
 
-Listed as following.
+"instead parse the earlycon uart..."
 
-[1]https://lore.kernel.org/patchwork/patch/1336293/
-[2]https://patchwork.kernel.org/project/linux-mediatek/list/?series=374013
-[3]https://lore.kernel.org/patchwork/patch/1356037/
-[4]https://patchwork.kernel.org/project/linux-mediatek/list/?series=405777
-[5]https://lore.kernel.org/patchwork/patch/1356175/
-[6]https://patchwork.kernel.org/project/linux-mediatek/patch/1605700894-32699-6-git-send-email-hsin-hsiung.wang@mediatek.com/
-[7]https://patchwork.kernel.org/project/linux-mediatek/patch/1608104827-7937-10-git-send-email-hsin-hsiung.wang@mediatek.com/
----
----
- arch/arm64/boot/dts/mediatek/mt8192-evb.dts |   7 +
- arch/arm64/boot/dts/mediatek/mt8192.dtsi    | 176 ++++++++++++++++++++
- 2 files changed, 183 insertions(+)
+Otherwise it's confusing what you mean here.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-index 6c1e2b3e8a60..48c0e240dd92 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-@@ -5,6 +5,7 @@
-  */
- /dts-v1/;
- #include "mt8192.dtsi"
-+#include "mt6359.dtsi"
- 
- / {
- 	model = "MediaTek MT8192 evaluation board";
-@@ -70,6 +71,12 @@
- 	};
- };
- 
-+&gpu {
-+	supply-names = "mali","sram";
-+	mali-supply = <&mt6315_7_vbuck1>;
-+	sram-supply = <&mt6359_vsram_others_ldo_reg>;
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index d6a4ad242a33..de166ea750af 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -822,6 +822,182 @@
- 			#clock-cells = <1>;
- 		};
- 
-+		gpu: mali@13000000 {
-+			compatible = "mediatek,mt8192-mali", "arm,mali-valhall";
-+			reg = <0 0x13000000 0 0x4000>;
-+			interrupts =
-+				<GIC_SPI 363 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 364 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 365 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 366 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 367 IRQ_TYPE_LEVEL_HIGH 0>;
-+			interrupt-names =
-+				"GPU",
-+				"MMU",
-+				"JOB",
-+				"EVENT",
-+				"PWR";
-+
-+			clocks =
-+				<&apmixedsys CLK_APMIXED_MFGPLL>,
-+				<&topckgen CLK_TOP_MFG_PLL_SEL>,
-+				<&topckgen CLK_TOP_MFG_REF_SEL>,
-+				<&mfgcfg CLK_MFG_BG3D>;
-+			clock-names =
-+				"clk_main_parent",
-+				"clk_mux",
-+				"clk_sub_parent",
-+				"subsys_mfg_cg";
-+
-+			power-domains =
-+				<&scpsys MT8192_POWER_DOMAIN_MFG2>,
-+				<&scpsys MT8192_POWER_DOMAIN_MFG3>,
-+				<&scpsys MT8192_POWER_DOMAIN_MFG4>,
-+				<&scpsys MT8192_POWER_DOMAIN_MFG5>,
-+				<&scpsys MT8192_POWER_DOMAIN_MFG6>;
-+			power-domain-names = "core0",
-+					     "core1",
-+					     "core2",
-+					     "core3",
-+					     "core4";
-+
-+			operating-points-v2 = <&gpu_opp_table>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		gpu_opp_table: opp_table0 {
-+			compatible = "operating-points-v2";
-+			opp-shared;
-+
-+			opp-358000000 {
-+				opp-hz = /bits/ 64 <358000000>;
-+				opp-hz-real = /bits/ 64 <358000000>,
-+					      /bits/ 64 <358000000>;
-+				opp-microvolt = <606250>,
-+						<750000>;
-+			};
-+
-+			opp-399000000 {
-+				opp-hz = /bits/ 64 <399000000>;
-+				opp-hz-real = /bits/ 64 <399000000>,
-+					      /bits/ 64 <399000000>;
-+				opp-microvolt = <618750>,
-+						<750000>;
-+			};
-+
-+			opp-440000000 {
-+				opp-hz = /bits/ 64 <440000000>;
-+				opp-hz-real = /bits/ 64 <440000000>,
-+					      /bits/ 64 <440000000>;
-+				opp-microvolt = <631250>,
-+						<750000>;
-+			};
-+
-+			opp-482000000 {
-+				opp-hz = /bits/ 64 <482000000>;
-+				opp-hz-real = /bits/ 64 <482000000>,
-+					      /bits/ 64 <482000000>;
-+				opp-microvolt = <643750>,
-+						<750000>;
-+			};
-+
-+			opp-523000000 {
-+				opp-hz = /bits/ 64 <523000000>;
-+				opp-hz-real = /bits/ 64 <523000000>,
-+					      /bits/ 64 <523000000>;
-+				opp-microvolt = <656250>,
-+						<750000>;
-+			};
-+
-+			opp-564000000 {
-+				opp-hz = /bits/ 64 <564000000>;
-+				opp-hz-real = /bits/ 64 <564000000>,
-+					      /bits/ 64 <564000000>;
-+				opp-microvolt = <668750>,
-+						<750000>;
-+			};
-+
-+			opp-605000000 {
-+				opp-hz = /bits/ 64 <605000000>;
-+				opp-hz-real = /bits/ 64 <605000000>,
-+					      /bits/ 64 <605000000>;
-+				opp-microvolt = <681250>,
-+						<750000>;
-+			};
-+
-+			opp-647000000 {
-+				opp-hz = /bits/ 64 <647000000>;
-+				opp-hz-real = /bits/ 64 <647000000>,
-+					      /bits/ 64 <647000000>;
-+				opp-microvolt = <693750>,
-+						<750000>;
-+			};
-+
-+			opp-688000000 {
-+				opp-hz = /bits/ 64 <688000000>;
-+				opp-hz-real = /bits/ 64 <688000000>,
-+					      /bits/ 64 <688000000>;
-+				opp-microvolt = <706250>,
-+						<750000>;
-+			};
-+
-+			opp-724000000 {
-+				opp-hz = /bits/ 64 <724000000>;
-+				opp-hz-real = /bits/ 64 <724000000>,
-+					      /bits/ 64 <724000000>;
-+				opp-microvolt = <725000>,
-+						<750000>;
-+			};
-+
-+			opp-760000000 {
-+				opp-hz = /bits/ 64 <760000000>;
-+				opp-hz-real = /bits/ 64 <760000000>,
-+					      /bits/ 64 <760000000>;
-+				opp-microvolt = <743750>,
-+						<750000>;
-+			};
-+
-+			opp-795000000 {
-+				opp-hz = /bits/ 64 <795000000>;
-+				opp-hz-real = /bits/ 64 <795000000>,
-+					      /bits/ 64 <795000000>;
-+				opp-microvolt = <762500>,
-+						<762500>;
-+			};
-+
-+			opp-831000000 {
-+				opp-hz = /bits/ 64 <831000000>;
-+				opp-hz-real = /bits/ 64 <831000000>,
-+					      /bits/ 64 <831000000>;
-+				opp-microvolt = <781250>,
-+						<781250>;
-+			};
-+
-+			opp-855000000 {
-+				opp-hz = /bits/ 64 <855000000>;
-+				opp-hz-real = /bits/ 64 <855000000>,
-+					      /bits/ 64 <855000000>;
-+				opp-microvolt = <793750>,
-+						<793750>;
-+			};
-+
-+			opp-902000000 {
-+				opp-hz = /bits/ 64 <902000000>;
-+				opp-hz-real = /bits/ 64 <902000000>,
-+					      /bits/ 64 <902000000>;
-+				opp-microvolt = <818750>,
-+						<818750>;
-+			};
-+
-+			opp-950000000 {
-+				opp-hz = /bits/ 64 <950000000>;
-+				opp-hz-real = /bits/ 64 <950000000>,
-+					      /bits/ 64 <950000000>;
-+				opp-microvolt = <843750>,
-+						<843750>;
-+			};
-+		};
-+
- 		mfgcfg: syscon@13fbf000 {
- 			compatible = "mediatek,mt8192-mfgcfg", "syscon";
- 			reg = <0 0x13fbf000 0 0x1000>;
+> and enable these clocks from clock property in dt node.
+> 
+> Fixes: 9461f7b33d11c ("clk: fix CLK_SET_RATE_GATE with clock rate protection")
+> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> Based on NXP's code base and adapted for 5.11-rc1.
+> https://source.codeaurora.org/external/imx/linux-imx/commit/drivers/clk/imx/clk.c?h=imx_5.4.47_2.2.0&id=754ae82cc55b7445545fc2f092a70e0f490e9c1b
+> 
+> The original signed-off was retained.
+> Added the fixes tag.
+> ---
+>  drivers/clk/imx/clk.c | 43 +++++++++++++++++++++++++++++--------------
+>  1 file changed, 29 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
+> index 47882c51cb85..c32b46890945 100644
+> --- a/drivers/clk/imx/clk.c
+> +++ b/drivers/clk/imx/clk.c
+> @@ -148,7 +148,7 @@ void imx_cscmr1_fixup(u32 *val)
+>  
+>  #ifndef MODULE
+>  static int imx_keep_uart_clocks;
+> -static struct clk ** const *imx_uart_clocks;
+> +static bool imx_uart_clks_on;
+>  
+>  static int __init imx_keep_uart_clocks_param(char *str)
+>  {
+> @@ -161,25 +161,40 @@ __setup_param("earlycon", imx_keep_uart_earlycon,
+>  __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
+>  	      imx_keep_uart_clocks_param, 0);
+>  
+> -void imx_register_uart_clocks(struct clk ** const clks[])
+> +static void imx_earlycon_uart_clks_onoff(bool is_on)
+
+"is_on" sounds like it's the current state of the clock, but actually
+the variable is used for the desired state, so I suggest using plain
+"on" as name.
+
+>  {
+> -	if (imx_keep_uart_clocks) {
+> -		int i;
+> +	struct clk *uart_clk;
+> +	int i = 0;
+>  
+> -		imx_uart_clocks = clks;
+> -		for (i = 0; imx_uart_clocks[i]; i++)
+> -			clk_prepare_enable(*imx_uart_clocks[i]);
+> -	}
+> +	if (!imx_keep_uart_clocks || (!is_on && !imx_uart_clks_on))
+> +		return;
+> +
+> +	/* only support dt */
+> +	if (!of_stdout)
+> +		return;
+> +
+> +	do {
+> +		uart_clk = of_clk_get(of_stdout, i++);
+
+of_clk_get() allocates memory and gets you a reference to the clock. You
+have to release the clock with clk_put(). I think what you have to do
+here is to fill an array with clks when called from
+imx_register_uart_clocks() and when called from imx_clk_disable_uart()
+use that array to clk_disable_unprepare()/clk_put() the clocks.
+
+Sascha
+
+> +		if (IS_ERR(uart_clk))
+> +			break;
+> +
+> +		if (is_on)
+> +			clk_prepare_enable(uart_clk);
+> +		else
+> +			clk_disable_unprepare(uart_clk);
+> +	} while (true);
+> +
+> +	if (is_on)
+> +		imx_uart_clks_on = true;
+> +}
+> +void imx_register_uart_clocks(struct clk ** const clks[])
+> +{
+> +	imx_earlycon_uart_clks_onoff(true);
+>  }
+>  
+>  static int __init imx_clk_disable_uart(void)
+>  {
+> -	if (imx_keep_uart_clocks && imx_uart_clocks) {
+> -		int i;
+> -
+> -		for (i = 0; imx_uart_clocks[i]; i++)
+> -			clk_disable_unprepare(*imx_uart_clocks[i]);
+> -	}
+> +	imx_earlycon_uart_clks_onoff(false);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
+> 
+> 
+
 -- 
-2.18.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
