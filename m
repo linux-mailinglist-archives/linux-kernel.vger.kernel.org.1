@@ -2,137 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CD82E9334
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B062E9339
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbhADKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:20:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726026AbhADKUg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:20:36 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2978C061793;
-        Mon,  4 Jan 2021 02:19:55 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id y23so18788035wmi.1;
-        Mon, 04 Jan 2021 02:19:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cshuBm7yB0Z3cSiR7jcnuEYzCYnzDpnl22WbZG/ju9A=;
-        b=M3Ngc5/MMNzyhU8I5x5YBEM7KEyJ85Y0XLmLQEYrJWsFHN5N8VXe8Z5MPFYwnuMrMi
-         Hx/9Mpra2YpHPrZqELXd73hWlIY1XRevN88LOhXt/adUP5lVVlBhj5VnV87P+RePmuu3
-         /TxKZ1oCnspXNA+t3jR/wrELwh2BuSY7bWFn2E/79tRNqFoewT5tm7XidnRDq7zPg7Q2
-         khd0qeLDq3dGyBhVMs4alfzPYBZOOpeshQQ1oolYQHB4q8SS84uIKrKeG5sjd96cYb9M
-         3166FELfa+cTzCd1qV4jEU6jT4zvv7+XkmPr/gbsNiRm2SPSO8V58fKTXkJR8anaqW2Q
-         W6TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cshuBm7yB0Z3cSiR7jcnuEYzCYnzDpnl22WbZG/ju9A=;
-        b=j3+93wUe0snB+zLeb2wmZzy2h95ySsP17I62uZJbppXRRFkzD++bvPrwMvx59+j7i3
-         1WBa8oTy6FiFiu2j1Dl2VFq1w6LfTZNV9g8LbqWY5z1kADHNhSgGxa07wxKPW5Di2MLa
-         AroobeCy1yZfp4ihO9QRQ1wRKgaSEhE4acyfTTOFQ+j9Phti4bQHm4tfT2rGQT7lmgAU
-         SmtDcPiz85uOP2nPgd+4hhZe9pw7X3Qa2DM2oePPsaXGAWRr7uzFrerRgNGpPDY3FDxo
-         xGMfwrnqfWR3C6U34W5YX5UdBVay+Do6fehvw3m70s5CQ+aYNa6zUrLavqFZw2c809vG
-         15IA==
-X-Gm-Message-State: AOAM532rUC+qn8fcGwXFApt6OPfQHyqN4OpC7tFct46Y6cYieuK3PJik
-        NOJZZJMIjnKNKacRHJQxwkA=
-X-Google-Smtp-Source: ABdhPJwOuLImjmAuXi0UyWjGYMZg6gZNFDNyltiw/uCmka2l2gwaY0RUZ3EWHJG5F8u9t7/5Zt9cRw==
-X-Received: by 2002:a1c:e246:: with SMTP id z67mr26166545wmg.166.1609755594674;
-        Mon, 04 Jan 2021 02:19:54 -0800 (PST)
-Received: from localhost ([51.15.41.238])
-        by smtp.gmail.com with ESMTPSA id b9sm35686661wmd.32.2021.01.04.02.19.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 02:19:53 -0800 (PST)
-Date:   Mon, 4 Jan 2021 10:19:52 +0000
-From:   Stefan Hajnoczi <stefanha@gmail.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stefan Hajnoczi <stefanha@redhat.com>
-Subject: Re: [PATCH v2] vhost/vsock: add IOTLB API support
-Message-ID: <20210104101952.GA344891@stefanha-x1.localdomain>
-References: <20201223143638.123417-1-sgarzare@redhat.com>
+        id S1726512AbhADKX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:23:29 -0500
+Received: from mga14.intel.com ([192.55.52.115]:26569 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726303AbhADKX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 05:23:28 -0500
+IronPort-SDR: L/7JQyrEhHzOtuBZQ6MsQa9zro6nb5fOeHTc4xA8oSErf+9W+Xu6DLWCyF1hO5OlL1+jI5m+jw
+ lwWWUy/wfYMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9853"; a="176156295"
+X-IronPort-AV: E=Sophos;i="5.78,473,1599548400"; 
+   d="scan'208";a="176156295"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 02:21:43 -0800
+IronPort-SDR: lQQUhvUB/dAKJGyb5k4/6tJCMwUWCCy/Rt67aN7Q4vV2/kwo+KBbsQK7SdkzuqYp6WdTDPZnyc
+ xe+8aWVw24Zg==
+X-IronPort-AV: E=Sophos;i="5.78,473,1599548400"; 
+   d="scan'208";a="394827217"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 02:21:37 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kwN0Y-001Y0I-Bl; Mon, 04 Jan 2021 12:22:38 +0200
+Date:   Mon, 4 Jan 2021 12:22:38 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org,
+        gregkh@linuxfoundation.org, rjw@rjwysocki.net,
+        sergey.senozhatsky@gmail.com, mchehab@kernel.org, lenb@kernel.org,
+        yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        niklas.soderlund+renesas@ragnatech.se, slongerbeam@gmail.com,
+        heikki.krogerus@linux.intel.com, linus.walleij@linaro.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v4 08/15] software_node: Add support for fwnode_graph*()
+ family of functions
+Message-ID: <20210104102238.GQ4077@smile.fi.intel.com>
+References: <20210103231235.792999-1-djrscally@gmail.com>
+ <20210103231235.792999-9-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201223143638.123417-1-sgarzare@redhat.com>
+In-Reply-To: <20210103231235.792999-9-djrscally@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 03, 2021 at 11:12:28PM +0000, Daniel Scally wrote:
+> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> 
+> This implements the remaining .graph_*() callbacks in the fwnode
+> operations structure for the software nodes. That makes the
+> fwnode_graph_*() functions available in the drivers also when software
+> nodes are used.
+> 
+> The implementation tries to mimic the "OF graph" as much as possible, but
+> there is no support for the "reg" device property. The ports will need to
+> have the index in their  name which starts with "port@" (for example
+> "port@0", "port@1", ...) and endpoints will use the index of the software
+> node that is given to them during creation. The port nodes can also be
+> grouped under a specially named "ports" subnode, just like in DT, if
+> necessary.
+> 
+> The remote-endpoints are reference properties under the endpoint nodes
+> that are named "remote-endpoint".
 
---Q68bSM7Ycu6FN28Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Couple of nitpicks below (can be considered as follow up, depends on yours and
+maintainer wishes).
 
-On Wed, Dec 23, 2020 at 03:36:38PM +0100, Stefano Garzarella wrote:
-> This patch enables the IOTLB API support for vhost-vsock devices,
-> allowing the userspace to emulate an IOMMU for the guest.
->=20
-> These changes were made following vhost-net, in details this patch:
-> - exposes VIRTIO_F_ACCESS_PLATFORM feature and inits the iotlb
->   device if the feature is acked
-> - implements VHOST_GET_BACKEND_FEATURES and
->   VHOST_SET_BACKEND_FEATURES ioctls
-> - calls vq_meta_prefetch() before vq processing to prefetch vq
->   metadata address in IOTLB
-> - provides .read_iter, .write_iter, and .poll callbacks for the
->   chardev; they are used by the userspace to exchange IOTLB messages
->=20
-> This patch was tested specifying "intel_iommu=3Dstrict" in the guest
-> kernel command line. I used QEMU with a patch applied [1] to fix a
-> simple issue (that patch was merged in QEMU v5.2.0):
->     $ qemu -M q35,accel=3Dkvm,kernel-irqchip=3Dsplit \
->            -drive file=3Dfedora.qcow2,format=3Dqcow2,if=3Dvirtio \
->            -device intel-iommu,intremap=3Don,device-iotlb=3Don \
->            -device vhost-vsock-pci,guest-cid=3D3,iommu_platform=3Don,ats=
-=3Don
->=20
-> [1] https://lists.gnu.org/archive/html/qemu-devel/2020-10/msg09077.html
->=20
-> Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Co-developed-by: Daniel Scally <djrscally@gmail.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
 > ---
->=20
-> The patch is the same of v1, but I re-tested it with:
-> - QEMU v5.2.0-551-ga05f8ecd88
-> - Linux 5.9.15 (host)
-> - Linux 5.9.15 and 5.10.0 (guest)
-> Now, enabling 'ats' it works well, there are just a few simple changes.
->=20
-> v1: https://www.spinics.net/lists/kernel/msg3716022.html
-> v2:
-> - updated commit message about QEMU version and string used to test
-> - rebased on mst/vhost branch
->=20
-> Thanks,
-> Stefano
-> ---
->  drivers/vhost/vsock.c | 68 +++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 65 insertions(+), 3 deletions(-)
+> Changes in v4:
+> 
+> 	- Replaced the FWNODE_GRAPH_PORT_NAME_PREFIX_LEN macro with
+> 	  strlen("port@") throughout
+> 	- Added a check to software_node_graph_parse_endpoint() to ensure
+> 	  the name of the endpoint's parent matches the expected port@n
+> 	  format
+> 
+>  drivers/base/swnode.c | 116 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 115 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 1f43c51b431e..82f9d6326110 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -540,6 +540,116 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
+>  	return 0;
+>  }
+>  
+> +static struct fwnode_handle *
+> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
+> +			    struct fwnode_handle *port)
+> +{
+> +	struct fwnode_handle *old = port;
+> +
+> +	while ((port = software_node_get_next_child(parent, old))) {
+> +		/*
+> +		 * fwnode ports have naming style "port@", so we search for any
+> +		 * children that follow that convention.
+> +		 */
+> +		if (!strncmp(to_swnode(port)->node->name, "port@",
+> +			     strlen("port@")))
+> +			return port;
+> +		old = port;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static struct fwnode_handle *
+> +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
+> +				      struct fwnode_handle *endpoint)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	struct fwnode_handle *parent;
+> +	struct fwnode_handle *port;
+> +
+> +	if (!swnode)
+> +		return NULL;
+> +
+> +	if (endpoint) {
+> +		port = software_node_get_parent(endpoint);
+> +		parent = software_node_get_parent(port);
+> +	} else {
+> +		parent = software_node_get_named_child_node(fwnode, "ports");
+> +		if (!parent)
+> +			parent = software_node_get(&swnode->fwnode);
+> +
+> +		port = swnode_graph_find_next_port(parent, NULL);
+> +	}
+> +
+> +	for (; port; port = swnode_graph_find_next_port(parent, port)) {
+> +		endpoint = software_node_get_next_child(port, endpoint);
+> +		if (endpoint) {
+> +			fwnode_handle_put(port);
+> +			break;
+> +		}
+> +	}
+> +
+> +	fwnode_handle_put(parent);
+> +
+> +	return endpoint;
+> +}
+> +
+> +static struct fwnode_handle *
+> +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	const struct software_node_ref_args *ref;
+> +	const struct property_entry *prop;
+> +
+> +	if (!swnode)
+> +		return NULL;
+> +
+> +	prop = property_entry_get(swnode->node->properties, "remote-endpoint");
+> +	if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
+> +		return NULL;
+> +
+> +	ref = prop->pointer;
+> +
+> +	return software_node_get(software_node_fwnode(ref[0].node));
+> +}
+> +
+> +static struct fwnode_handle *
+> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +
+> +	swnode = swnode->parent;
+> +	if (swnode && !strcmp(swnode->node->name, "ports"))
+> +		swnode = swnode->parent;
+> +
+> +	return swnode ? software_node_get(&swnode->fwnode) : NULL;
+> +}
+> +
+> +static int
+> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
+> +				   struct fwnode_endpoint *endpoint)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	const char *parent_name = swnode->parent->node->name;
+> +	int ret;
+> +
+> +	if (!(strlen(parent_name) > strlen("port@")) ||
 
-Acked-by: Stefan Hajnoczi <stefanha@redhat.com>
+A nit:
 
---Q68bSM7Ycu6FN28Q
-Content-Type: application/pgp-signature; name="signature.asc"
+	if (strlen("port@") >= strlen(parent_name) ||
 
------BEGIN PGP SIGNATURE-----
+better to read
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl/y68gACgkQnKSrs4Gr
-c8jFlggAxynl8f/xErtZe/4q3P7uG8fRfOuje/XSlmzcxtlgQOv+t7r/vKjWzGwb
-ZJ52k6PN1dlbuQHyBf1TDre9nNqW17YteqL+em0hfvynsHV6WREOpJPLnVcbOWkF
-/vMadG9PxDkagfVN7ZOEzeLewJM4ZxAjYaZe9ADM2aq6MoxhiC4oCICmOK2UBbu3
-t/bVIhCL/cZs0nMO5cGfpz8u0ZenAiVPsXmbEiynMhhFd1pNWu1XsB6BGqJgZ4oJ
-1BvYrA3RWKmvq/EK15JIKzHJrNuP5mh0bGrWKXOj4ubUTRYnjVMWfwtfDpjKUlGB
-W77zh8Sm5xfKTDndtPmChInD+yd2iQ==
-=9iMg
------END PGP SIGNATURE-----
+> +	    strncmp(parent_name, "port@", strlen("port@")))
+> +		return -EINVAL;
+> +
+> +	/* Ports have naming style "port@n", we need to select the n */
+> +	ret = kstrtou32(parent_name + strlen("port@"),
+> +			10, &endpoint->port);
 
---Q68bSM7Ycu6FN28Q--
+A nit:
+
+	ret = kstrtou32(parent_name + strlen("port@"), 10, &endpoint->port);
+
+(perhaps you need to adjust your editor settings, this still fits 80)
+
+> +	if (ret)
+> +		return ret;
+> +
+> +	endpoint->id = swnode->id;
+> +	endpoint->local_fwnode = fwnode;
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct fwnode_operations software_node_ops = {
+>  	.get = software_node_get,
+>  	.put = software_node_put,
+> @@ -551,7 +661,11 @@ static const struct fwnode_operations software_node_ops = {
+>  	.get_parent = software_node_get_parent,
+>  	.get_next_child_node = software_node_get_next_child,
+>  	.get_named_child_node = software_node_get_named_child_node,
+> -	.get_reference_args = software_node_get_reference_args
+> +	.get_reference_args = software_node_get_reference_args,
+> +	.graph_get_next_endpoint = software_node_graph_get_next_endpoint,
+> +	.graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
+> +	.graph_get_port_parent = software_node_graph_get_port_parent,
+> +	.graph_parse_endpoint = software_node_graph_parse_endpoint,
+>  };
+>  
+>  /* -------------------------------------------------------------------------- */
+> -- 
+> 2.25.1
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
