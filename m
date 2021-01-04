@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9832C2E9668
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6B72E9665
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbhADNxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:53:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbhADNxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:53:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B481207B1;
-        Mon,  4 Jan 2021 13:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609768343;
-        bh=WGYF7SlhXlucOWrieoYG3cJVW6/AxFwCogu0WarBMJU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d/wYJk7SVuVVAtZC7qLGTgDaw11H1+rJfcvI8K7vJiAXWKIii/jsSsDFnpG/THXED
-         IpCeA+ZxKspqCrCBdzoGyZKXECvByHrrnOnbjTdxwuNGh+uQtOgAUE9IbKj1CL0Jve
-         /qo5lYEyKgBZIXIfacQtJHylkpBtSneFoFECP3NtfrbAD+0so+6R6GVw/KB652h0wy
-         RJU+FfEbpKXFWhbUSKk+iaTM/OPqmQH5ku9uZ4XbM4OiCUXYqhpRpVsRfzNcv5nvqE
-         VQvCb5PoQd6li7omJ45xXKfsFSGIq+fMLy55UWXTMteVy49YV7564ItNoSRTYuf3h4
-         xDaZEOb3D0SHw==
-Date:   Mon, 4 Jan 2021 13:51:56 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
- nodes
-Message-ID: <20210104135156.GB5645@sirena.org.uk>
-References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
- <20201230205139.1812366-2-timon.baetz@protonmail.com>
+        id S1726692AbhADNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:52:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbhADNwl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 08:52:41 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A94DC061574;
+        Mon,  4 Jan 2021 05:52:01 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id h186so16495489pfe.0;
+        Mon, 04 Jan 2021 05:52:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZbriYaIoB2gZ7KJStemV7yd1FR7KiYHvNufspjX4Jwo=;
+        b=BgnsVUosO0vjAtrbET+oqFJlIZZj+E8h4z6p2o0QsdvjoItoxN81Rqf7/JBCx4H35q
+         OFhwR/oLTcU5L+n2F3VduB4n2vcEmysZuPoAtvSy54hKhulCCe426+P1yb+JLuOFI4Rg
+         3ban+hudPMNqe7XcCZ/iRKdmzoYMiA0pqq8zUteoUFj9v4zl8R52y54xZVsqmXB4yyA/
+         SlCrey0KOcfbnisL2WE7G0l6VhpP2qLTdz0TzeD6uqc5jHoO0fbzrO1CcwygMeCeC+UJ
+         Nivlt0FLz8RmcnenxqC+X0F1Ep72YsGdU5qgaUtQqXqCwEutP/T67ypdWYCV1HHEq+Gn
+         cbgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZbriYaIoB2gZ7KJStemV7yd1FR7KiYHvNufspjX4Jwo=;
+        b=cRLG7bcTWD1PDHhJV3t2INWTr2oyfGZ84EVuZAuGh46U1gXSdQdcCTA+OTbKyWTFPg
+         pqkRXHoSARArLwVH5zpHC/IJjX2bwODLEnomrUXFUjTSoFO3sYa/c4QHT9TV8LgwuEAl
+         JUQyIITEfWiUxagDtDANwbib8AeWlnuVe65SXurg2aGlTHgRWrJQJeoPwQhXMX+ow9Oz
+         M9xy+u/EiKhofSnhrMo/NebsurIDjWj/cPKaf+fz/xeEYk+XyN+m1kcIRJtEKuDUOiHj
+         FxqAzPhD6i1Jx9Na/QdSN6wjAv6aG0VeUo6gIMP+P+ix6E20TQbktN153778bgdyMrRp
+         mfrw==
+X-Gm-Message-State: AOAM532a79S9kXV+aqe6vsc2wtir/fnEmJ3aWEljIsxzuEO8QrNaPFl1
+        06LOCz0AcqDHZJR9mkxFl9KBuoRfmXcqHVvLYYg=
+X-Google-Smtp-Source: ABdhPJzeJE1s5+lD8qK/cO6QfdppxqAMocPdroUzpVX6DJFhF5TYYx6n2Dr/rkDLfvKkezFWN9YJedSTGC9q/fmtcW8=
+X-Received: by 2002:a63:74b:: with SMTP id 72mr71354571pgh.4.1609768320749;
+ Mon, 04 Jan 2021 05:52:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uQr8t48UFsdbeI+V"
-Content-Disposition: inline
-In-Reply-To: <20201230205139.1812366-2-timon.baetz@protonmail.com>
-X-Cookie: Stupidity is its own reward.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210102022949.92304-1-warthog618@gmail.com> <20210102022949.92304-2-warthog618@gmail.com>
+ <CAHp75VdMs1mP7pK46qKqJbjfyrcKhSGvtyzQpTRsehMz6o=Jpg@mail.gmail.com>
+ <20210103021725.GA6622@sol> <CAHp75VfONKY7VS0q=GkSX14i--g0=jfBg4RFBoMk4DxJPMHJFg@mail.gmail.com>
+ <20210104015129.GA4939@sol>
+In-Reply-To: <20210104015129.GA4939@sol>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 4 Jan 2021 15:52:49 +0200
+Message-ID: <CAHp75Vdd6yC=j+m7OOdP=M1j8Eoaayq8HSLF2fjVXcA0wiu9kQ@mail.gmail.com>
+Subject: Re: [PATCH 1/7] selftests: gpio: rework and simplify test implementation
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 4, 2021 at 3:51 AM Kent Gibson <warthog618@gmail.com> wrote:
+> On Sun, Jan 03, 2021 at 05:10:10PM +0200, Andy Shevchenko wrote:
 
---uQr8t48UFsdbeI+V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+...
 
-On Wed, Dec 30, 2020 at 08:52:07PM +0000, Timon Baetz wrote:
+> In this example it is the 508:
+>
+> # e.g. gpiochip0: GPIOs 508-511, parent: platform/gpio-mockup.0, gpio-mockup-A:
+>
+> So I'll use that - unless it is unreliable for some reason?
 
-> +- charger: Node for configuring the charger driver.
-> +  Required properties:
-> +  - compatible: "maxim,max8997-battery"
-> +  Optional properties:
-> +  - extcon: extcon specifier for charging events
-> +  - charger-supply: regulator node for charging current
-> +
-> +- muic: Node used only by extcon consumers.
-> +  Required properties:
-> +  - compatible: "maxim,max8997-muic"
+debugfs is not an ABI and tomorrow this can be changed without notice.
 
-Why do these need to appear in the DT binding?  We know these features
-are there simply from knowing this is a max8997.
-
---uQr8t48UFsdbeI+V
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/zHXsACgkQJNaLcl1U
-h9Bpuwf+Lbwwbn3A88GywPIb5p6fVae+jvfJHuyrCmnosfLzRuc3P72FyihL2Ssk
-d8+57ttupGJ+sZqgJK+Ih9Eu4mMrsJbScy4O5WyFQfGJ3PQPpWlsHIq8DEUDlEy/
-Ltf5HzGezxfmsC2nhapHNzFE2cbnn+AKmeK+rN2DxeYvuHFlfXNEdWSdeNK/zDeF
-aUNAik0aInnufO7MOE1cqfgWfFxEnin6wxCGKOu2aCdcdli9aE536mwYz9WZc34j
-vNbTxOcLDqWo+dtNtp1aOuRqX3kMO+X1SCBEYPymOwwgqt5Yo9179LOZNvqMN2E9
-E+FL/m5IwwLbH06CDjp/ZT+aoF4psw==
-=tIIA
------END PGP SIGNATURE-----
-
---uQr8t48UFsdbeI+V--
+-- 
+With Best Regards,
+Andy Shevchenko
