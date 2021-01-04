@@ -2,200 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F083C2EA084
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 682992EA08B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:15:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbhADXMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55660 "EHLO
+        id S1727651AbhADXMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:12:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726323AbhADXMF (ORCPT
+        with ESMTP id S1727094AbhADXMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:12:05 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49628C061795
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 15:11:25 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id x13so27625798oto.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 15:11:25 -0800 (PST)
+        Mon, 4 Jan 2021 18:12:42 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C0BC061798
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 15:12:02 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id i7so20050179pgc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 15:12:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PQqz8iYh4JjR1R024ILlEO8eb3o6zDUF7NbI3cgZ5No=;
-        b=AAiSUFOgYQGBzGI2oru3BuvBQGFyXAW+J/5WeKu3/Im4RYrq6YBywGpqK8ZoGzhuk7
-         k6AWmL9NdCiLu/0cUJ0OTGdSuS65wF9maB8Ac2u4HBt0bdRcxm1PiXiUQ3L5U9ess6bq
-         BtdrVM1YkjGKd/ppINOHQntTYHZsk21O2vYMg2ugWHlSZ5zO+WcjPf1GRHAYgVcFKh83
-         1aA4lixO/jA5gBNReHsChXY5o+1fLl3iB1PE0VK6BuOcd3ljJ+mRiNUhCPdPQcSMNSmF
-         P3f7uCC/nOp6mk+18DNwnUVTndgLcnO47t2gTnjc8RftTmKKHPqEduKvRJhqIrN3ktGl
-         ykog==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=qRuTB68VdASyyfYOcwRJv9bZzj+8O/NQLazmqFG6Ng8=;
+        b=LHA2cfDbMW2VfP3ixq+UaGJnbAG07fveHJCzSjkosIDoKKlwnBQfisT6WaSzkE1Wi1
+         uJGEKjJzEZymrTal9crf5IP0CcLsuZtu0QuaRBy2eqC7AmCqHCrQkRCMf0OwpXY1094V
+         5jRTQkMgDAe228cKh8O1HutyE3MPAHxgK78cf1XRsrHAk8kV8sPgPEIvv4ZLa5ItCRW6
+         G8TnBtgMbPXYaEMmSVa9d70RiD4oOr30ussOVWn6c9i6EDHWxanb44Mjwcm9VPwUEEeI
+         60QS6p2IFHrU2IPW4Dvr7xZWRF5kSPk0WfezKV/w7AXl5SMBLyKokp7fEN1MTF96iOyK
+         Hndg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PQqz8iYh4JjR1R024ILlEO8eb3o6zDUF7NbI3cgZ5No=;
-        b=QCfvp0CAzK3eoeSXC7Kw99eL9TJT/LN4v5jfJTQFxTTwAKrLn3yAhVjGlsC7Ep5mcE
-         a0EdTMtrfec+pU1Nw0WkBy+p61svGVGgYJ6EZVRSNr8eKRcBSwdNqX6pO+++HfwYkd8o
-         wLk9BcBfRPVL8umjYg/gIcJwan+aMoqagWrZgbypwCLslTgHBRQt/m8sd2folSSNyL+Z
-         fXmcIGZy6b1a3t/Jt9F68qmnQLb0MXLkRlCDm4w6I9KG2TjArueysS7fyETKQnzlyzfi
-         d1Um06HCj0dKl++Njzya1TOCOQfyo97Cv972bp3ufWzdQ5197K/AGm6eJ8aSmDPvCMYz
-         toxg==
-X-Gm-Message-State: AOAM530kMVl21qAPOGtDlSDwqu3v+mruG32dx7zAWZmvE8S9IBoNkF8L
-        1jdDqJYE0nOHfah499t5kMImbor2nidJAQ==
-X-Google-Smtp-Source: ABdhPJw0jWCPgRx8zQF4M6NIie7Lh8JkBAQxRpc6r2RC+I9EUA2tZK8oqyXXTb+/6PiPPvzexUSEIg==
-X-Received: by 2002:a9d:4b17:: with SMTP id q23mr53766028otf.157.1609801401370;
-        Mon, 04 Jan 2021 15:03:21 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r15sm13529779oie.33.2021.01.04.15.03.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 15:03:20 -0800 (PST)
-Date:   Mon, 4 Jan 2021 17:03:19 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 00/16] introduce generic IOCTL interface for RPMsg
- channels management
-Message-ID: <X/Oet4lT9Hf14adx@builder.lan>
-References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=qRuTB68VdASyyfYOcwRJv9bZzj+8O/NQLazmqFG6Ng8=;
+        b=n+w/k5PvvE5qAtpA1e2tX09EiTeg1hgqGumbBComDgVMowxqLGzgZxMCWU+dljnqt8
+         ffWxf2CM+NwPOjb95KBmUfLM9GY8I5FcpkxpogWmjjk3YvlVT6STvhhfZzpqXNPuIbbk
+         Jjv7RlljDgKqk+k2nReKYY7Jo+62DqatO5uNzC7I3euoUGM1WJZzWzBvjWm0frrWWBWN
+         KNYcz1oiHQ6PsPPYerOKC3yk2MOC3y5mTUgZf47fj843dGwJjhOWOnGAQVAlic9zQ0E5
+         8pFZKcMvrUbqPVHQAGRNU1FO3fSIH2dgworBfALYVjX414HbkSUWLGf3tKBv0hkOLRkH
+         MEkw==
+X-Gm-Message-State: AOAM533LW1gpAVSh06SwcsC117MHDoG2jWop1rw28YBLXgh3Vn1H0FWD
+        Y0hxol/AHBqAyoyBOs4UffZ5+fB2luUTCA==
+X-Google-Smtp-Source: ABdhPJxq1nKULhFu/EIOtCrDLF5LtwhMTD/yD0b0lXYcLzL3Jo8VhI4qjrBz795s3H90brRRjHQE2Q==
+X-Received: by 2002:a62:ac09:0:b029:1a9:dd65:2f46 with SMTP id v9-20020a62ac090000b02901a9dd652f46mr50050225pfe.15.1609801443938;
+        Mon, 04 Jan 2021 15:04:03 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:5dc7:72fe:2549:4bff? ([2601:646:c200:1ef2:5dc7:72fe:2549:4bff])
+        by smtp.gmail.com with ESMTPSA id x5sm383473pjr.38.2021.01.04.15.04.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 15:04:03 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: in_compat_syscall() on x86
+Date:   Mon, 4 Jan 2021 15:04:01 -0800
+Message-Id: <091174F9-F6E4-468E-83F5-93706D83F9D2@amacapital.net>
+References: <fe2629460b4e4b44a120a8b56efe0ac1@AcuMS.aculab.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        X86 ML <x86@kernel.org>
+In-Reply-To: <fe2629460b4e4b44a120a8b56efe0ac1@AcuMS.aculab.com>
+To:     David Laight <David.Laight@aculab.com>
+X-Mailer: iPhone Mail (18B121)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22 Dec 04:57 CST 2020, Arnaud Pouliquen wrote:
 
-> This series is a restructuring of the RPMsg char driver, to create a generic
-> RPMsg ioctl interface for all rpmsg services.
-> 
-> The RPMsg char driver provides interfaces that:
-> - expose a char RPMsg device for communication with the remote processor,
-> - expose controls interface for applications to create and release endpoints.
-> 
-> The objective of this series is to decorrelate the two interfaces:
->   - Provide a char device for a RPMsg raw service in the rpmsg_char that can be
->     probed by a RPMsg bus on a ns announcement.
->   - Generalize the use of the ioctl for all RPMsg services by creating the
->     rpmsg_ctrl, but keep it compatibile with the legacy.
-> 
-> If the V1 create a new rpmsg_raw driver in addition to the rpmsg_ctrl this
-> version try to reuse the rpmsg_char driver by addapting QCOM GLINK and SMD
-> drivers.
-> So a goal of this version is to help to determine the best strategy to move
-> forward:
->   - reuse rpmsg_char.
->   - introduce a new driver and keep rpmsg_char as a legacy driver for a while.
-> 
-> Notice that SMD and GLINK patches have to be tested, only build has been tested.
-> 
-> 1) RPMsg control driver: rpmsg_ctrl.c
->   This driver is based on the control part of the RPMsg_char driver. 
->   On probe a /dev/rpmsg_ctrl<X> interface is created to allow to manage the
->   channels.
->   The principles are the following:
->   - The RPMsg service driver registers it's name and the associated service
->     using the rpmsg_ctrl_unregister_ctl API. The list of supported services
->     is defined in  include/uapi/linux/rpmsg.h and exposed to the
->     application thanks to a new field in rpmsg_endpoint_info struct.
->   - On the RPMsg bus probe(e.g virtio bus) an rpmsg_ctrl device is
->     registered that creates the control interface.
->   - The application can then create or release a channel by specifying:
->        - the name service
->        - the source address.
->        - the destination address.
+> On Jan 4, 2021, at 2:36 PM, David Laight <David.Laight@aculab.com> wrote:
+>=20
+> =EF=BB=BFFrom: Eric W. Biederman
+>> Sent: 04 January 2021 20:41
+>>=20
+>> Al Viro <viro@zeniv.linux.org.uk> writes:
+>>=20
+>>> On Mon, Jan 04, 2021 at 12:16:56PM +0000, David Laight wrote:
+>>>> On x86 in_compat_syscall() is defined as:
+>>>>    in_ia32_syscall() || in_x32_syscall()
+>>>>=20
+>>>> Now in_ia32_syscall() is a simple check of the TS_COMPAT flag.
+>>>> However in_x32_syscall() is a horrid beast that has to indirect
+>>>> through to the original %eax value (ie the syscall number) and
+>>>> check for a bit there.
+>>>>=20
+>>>> So on a kernel with x32 support (probably most distro kernels)
+>>>> the in_compat_syscall() check is rather more expensive than
+>>>> one might expect.
+>>=20
+>> I suggest you check the distro kernels.  I suspect they don't compile in
+>> support for x32.  As far as I can tell x32 is an undead beast of a
+>> subarchitecture that just enough people use that it can't be removed,
+>> but few enough people use it likely has a few lurking scary bugs.
+>=20
+> It is defined in the Ubuntu kernel configs I've got lurking:
+> Both 3.8.0-19_generic (Ubuntu 13.04) and 5.4.0-56_generic (probably 20.04)=
+.
+> Which is probably why it is in my test builds (I've just cut out
+> a lot of modules).
+>=20
+>>>> It would be muck better if both checks could be done together.
+>>>> I think this would require the syscall entry code to set a
+>>>> value in both the 64bit and x32 entry paths.
+>>>> (Can a process make both 64bit and x32 system calls?)
+>>>=20
+>>> Yes, it bloody well can.
+>>>=20
+>>> And I see no benefit in pushing that logics into syscall entry,
+>>> since anything that calls in_compat_syscall() more than once
+>>> per syscall execution is doing the wrong thing.  Moreover,
+>>> in quite a few cases we don't call the sucker at all, and for
+>>> all of those pushing that crap into syscall entry logics is
+>>> pure loss.
+>>=20
+>> The x32 system calls have their own system call table and it would be
+>> trivial to set a flag like TS_COMPAT when looking up a system call from
+>> that table.  I expect such a change would be purely in the noise.
+>=20
+> Certainly a write of 0/1/2 into a dirtied cache line of 'current'
+> could easily cost absolutely nothing.
+> Especially if current has already been read.
+>=20
+> I also wondered about resetting it to zero when an x32 system call
+> exits (rather than entry to a 64bit one).
+>=20
+> For ia32 the flag is set (with |=3D) on every syscall entry.
+> Even though I'm pretty sure it can only change during exec.
 
-Why is this useful?
+It can change for every syscall. I have tests that do this.
 
->   - The rpmsg_ctrl uses the same interface than the ns announcement to
->     create and release the associated channel but using the driver_override
->     field to force the service name.
->     The  "driver_override" allows to force the name service associated to
->     an RPMsg driver, bypassing the rpmsg_device_id based match check.
+>=20
+>>> What's the point, really?
+>>=20
+>> Before we came up with the current games with __copy_siginfo_to_user
+>> and x32_copy_siginfo_to_user I was wondering if we should make such
+>> a change.  The delivery of compat signal frames and core dumps which
+>> do not go through the system call entry path could almost benefit from
+>> a flag that could be set/tested when on those paths.
+>=20
+> For signal delivery it should (probably) depend on the system call
+> that setup the signal handler.
 
-You mean, the chinfo driver_override allows the ioctl to specify which
-driver should be bound to the device created for the newly registered
-endpoint?
+I think it has worked this way for some time now.
 
->   - At least for virtio bus, an associated ns announcement is sent to the
->     remote side.  
-> 
-> 2) rpmsg char driver: rpmsg_char.c
->     - The rpmsg class has not been removed. The associated attributes
->       are already available in /sys/bus/rpmsg/.
+> Although I'm sure I remember one kernel where some of it was done
+> in libc (with a single entrypoint for all hadlers).
+>=20
+>> The fact that only SIGCHLD (which can not trigger a coredump) is
+>> different saves the coredump code from needing such a test.
+>>=20
+>> The fact that the signal frame code is simple enough it can directly
+>> call x32_copy_siginfo_to_user or __copy_siginfo_to_user saves us there.
+>>=20
+>> So I don't think we have any cases where we actually need a flag that
+>> is independent of the system call but we have come very close.
+>=20
+> If a program can do both 64bit and x32 system calls you probably
+> need to generate a 64bit core dump if it has ever made a 64bit
+> system call??
 
-So today a rpmsg_device gets the same attributes both from the class and
-the bus? So the only difference is that there will no longer be a
-/sys/class/rpmsg ?
+I think core dump should (and does) depend on the execution mode at the time=
+ of the crash.
 
-Regards,
-Bjorn
-
->     - The eptdev device is now an RPMsg device probed by a RPMsg bus driver
->       (probed only by the ioctl in rpmsg_char driver).
-> 
-> Know current Limitations:
-> - Tested only with virtio RPMsg bus and for one vdev instance.
-> - The glink and smd drivers adaptations have not been tested (not able to test).
-> - To limit commit and not update the IOCT interface some features have been not
->   implemented in this first step:
->     - the NS announcement as not been updated, it is not possible to create an
->       endpoint with a destibnation address set to RPMSG_ADDR_ANY (-1),
->     - not possible to destroy the channel,
->     - only the "rpmsg-raw" service is supported.
-> 
-> This series can be applied in Bjorn's rpmsg-next branch on top of the
-> RPMsg_ns series(4c0943255805).
-> 
-> This series can be tested using rpmsgexport tools available here:
-> https://github.com/andersson/rpmsgexport.
-> ---
-> new from V1[1]:
-> - In V1 the rpmsg_char.c was not impacted, a rpmsg_raw.c has been created
->   instead.
-> - IOCTL interface as not been updated (to go by steps).
-> - smd and glink drivers has been updated to support channels creation and
->   release.
-> 
-> [1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=327277
-> 
-> Arnaud Pouliquen (16):
->   rpmsg: introduce RPMsg control driver for channel creation
->   rpmsg: add RPMsg control API to register service
->   rpmsg: add override field in channel info
->   rpmsg: ctrl: implement the ioctl function to create device
->   rpmsg: ns: initialize channel info override field
->   rpmsg: add helper to register the rpmsg ctrl device
->   rpmsg: char: clean up rpmsg class
->   rpmsg: char: make char rpmsg a rpmsg device without the control part
->   rpmsg: char: register RPMsg raw service to the ioctl interface.
->   rpmsg: char: allow only one endpoint per device
->   rpmsg: char: check destination address is not null
->   rpmsg: virtio: use the driver_override in channel creation ops
->   rpmsg: virtio: probe the rpmsg_ctl device
->   rpmsg: glink: add create and release rpmsg channel ops
->   rpmsg: smd: add create and release rpmsg channel ops
->   rpmsg: replace rpmsg_chrdev_register_device use
-> 
->  drivers/rpmsg/Kconfig             |   8 +
->  drivers/rpmsg/Makefile            |   1 +
->  drivers/rpmsg/qcom_glink_native.c |  96 +++++++--
->  drivers/rpmsg/qcom_smd.c          |  59 +++++-
->  drivers/rpmsg/rpmsg_char.c        | 246 ++++++-----------------
->  drivers/rpmsg/rpmsg_ctrl.c        | 320 ++++++++++++++++++++++++++++++
->  drivers/rpmsg/rpmsg_internal.h    |  14 --
->  drivers/rpmsg/rpmsg_ns.c          |   1 +
->  drivers/rpmsg/virtio_rpmsg_bus.c  |  38 +++-
->  include/linux/rpmsg.h             |  40 ++++
->  include/uapi/linux/rpmsg.h        |  14 ++
->  11 files changed, 606 insertions(+), 231 deletions(-)
->  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
-> 
-> -- 
-> 2.17.1
-> 
+It=E2=80=99s worth noting that GCC=E2=80=99s understanding of mixed bitness i=
+s horrible.
