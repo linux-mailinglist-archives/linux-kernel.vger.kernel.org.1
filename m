@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5071E2E996A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217C22E9A56
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbhADP7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:59:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36558 "EHLO mail.kernel.org"
+        id S1729009AbhADQIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:08:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727911AbhADP7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:59:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4DA22509;
-        Mon,  4 Jan 2021 15:58:25 +0000 (UTC)
+        id S1728637AbhADQBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:01:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B9E2251E;
+        Mon,  4 Jan 2021 16:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775906;
-        bh=9uabOt3IJz6vfocy9/UKNGALFASkXfczEZd3cN3lQ6M=;
+        s=korg; t=1609776087;
+        bh=jhm/B5OpPhNWdpC2OjByY/9D+qGhR18HHOvJ1eE8rEI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NM9KUqCNsMtswPHKDieDBBzg6Ky59g6Zxxbe3ia7w/px6jWSUvze0DgiTZngjCMna
-         vNp9RUTzlu0pyQ7vdqDUz6E3oyz2AFfzN/E+w9pS44noQoXGOs39RKI+pazMmnT400
-         poCgBcNggFMNazUbO/nyu3WY9qZErjdpEpvknQDk=
+        b=wNrpmi4qJJs9WJq/2gbyxxhyOrejmtwVsG4Z7cFYwo5H8RDB/PxK+3XK9c63VQF5U
+         Ou1YTmndSdL9VvydZGgNdXdU0cxywJqj1ZhVDuua6cPdHdZCsYBfLNmL3R6rvK1Xxo
+         TEu78Xsh8wzGrea+fEh1cPc72loJrxgCCaZ8kuCY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 06/35] vfio/pci: Move dummy_resources_list init in vfio_pci_probe()
+        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Mikhail Zaslonko <zaslonko@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 16/63] lib/zlib: fix inflating zlib streams on s390
 Date:   Mon,  4 Jan 2021 16:57:09 +0100
-Message-Id: <20210104155703.698976948@linuxfoundation.org>
+Message-Id: <20210104155709.601396478@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
-References: <20210104155703.375788488@linuxfoundation.org>
+In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
+References: <20210104155708.800470590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Auger <eric.auger@redhat.com>
+From: Ilya Leoshkevich <iii@linux.ibm.com>
 
-[ Upstream commit 16b8fe4caf499ae8e12d2ab1b1324497e36a7b83 ]
+commit f0bb29e8c4076444d32df00c8d32e169ceecf283 upstream.
 
-In case an error occurs in vfio_pci_enable() before the call to
-vfio_pci_probe_mmaps(), vfio_pci_disable() will  try to iterate
-on an uninitialized list and cause a kernel panic.
+Decompressing zlib streams on s390 fails with "incorrect data check"
+error.
 
-Lets move to the initialization to vfio_pci_probe() to fix the
-issue.
+Userspace zlib checks inflate_state.flags in order to byteswap checksums
+only for zlib streams, and s390 hardware inflate code, which was ported
+from there, tries to match this behavior.  At the same time, kernel zlib
+does not use inflate_state.flags, so it contains essentially random
+values.  For many use cases either zlib stream is zeroed out or checksum
+is not used, so this problem is masked, but at least SquashFS is still
+affected.
 
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
-Fixes: 05f0c03fbac1 ("vfio-pci: Allow to mmap sub-page MMIO BARs if the mmio page is exclusive")
-CC: Stable <stable@vger.kernel.org> # v4.7+
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix by always passing a checksum to and from the hardware as is, which
+matches zlib_inflate()'s expectations.
+
+Link: https://lkml.kernel.org/r/20201215155551.894884-1-iii@linux.ibm.com
+Fixes: 126196100063 ("lib/zlib: add s390 hardware support for kernel zlib_inflate")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Acked-by: Mikhail Zaslonko <zaslonko@linux.ibm.com>
+Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Mikhail Zaslonko <zaslonko@linux.ibm.com>
+Cc: <stable@vger.kernel.org>	[5.6+]
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/vfio/pci/vfio_pci.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ lib/zlib_dfltcc/dfltcc_inflate.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 5e23e4aa5b0a3..c48e1d84efb6b 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -118,8 +118,6 @@ static void vfio_pci_probe_mmaps(struct vfio_pci_device *vdev)
- 	int bar;
- 	struct vfio_pci_dummy_resource *dummy_res;
+--- a/lib/zlib_dfltcc/dfltcc_inflate.c
++++ b/lib/zlib_dfltcc/dfltcc_inflate.c
+@@ -125,7 +125,7 @@ dfltcc_inflate_action dfltcc_inflate(
+     param->ho = (state->write - state->whave) & ((1 << HB_BITS) - 1);
+     if (param->hl)
+         param->nt = 0; /* Honor history for the first block */
+-    param->cv = state->flags ? REVERSE(state->check) : state->check;
++    param->cv = state->check;
  
--	INIT_LIST_HEAD(&vdev->dummy_resources_list);
--
- 	for (bar = PCI_STD_RESOURCES; bar <= PCI_STD_RESOURCE_END; bar++) {
- 		res = vdev->pdev->resource + bar;
- 
-@@ -1522,6 +1520,7 @@ static int vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	mutex_init(&vdev->igate);
- 	spin_lock_init(&vdev->irqlock);
- 	mutex_init(&vdev->ioeventfds_lock);
-+	INIT_LIST_HEAD(&vdev->dummy_resources_list);
- 	INIT_LIST_HEAD(&vdev->ioeventfds_list);
- 	mutex_init(&vdev->vma_lock);
- 	INIT_LIST_HEAD(&vdev->vma_list);
--- 
-2.27.0
-
+     /* Inflate */
+     do {
+@@ -138,7 +138,7 @@ dfltcc_inflate_action dfltcc_inflate(
+     state->bits = param->sbb;
+     state->whave = param->hl;
+     state->write = (param->ho + param->hl) & ((1 << HB_BITS) - 1);
+-    state->check = state->flags ? REVERSE(param->cv) : param->cv;
++    state->check = param->cv;
+     if (cc == DFLTCC_CC_OP2_CORRUPT && param->oesc != 0) {
+         /* Report an error if stream is corrupted */
+         state->mode = BAD;
 
 
