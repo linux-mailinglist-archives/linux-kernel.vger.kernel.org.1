@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A4B2E9EA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F922E9EAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbhADULC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:11:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728011AbhADULC (ORCPT
+        id S1728202AbhADUMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 15:12:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41988 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727952AbhADUMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:11:02 -0500
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7944BC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 12:10:21 -0800 (PST)
-Received: from localhost (home.natalenko.name [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id DD8F19170DB;
-        Mon,  4 Jan 2021 21:10:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1609791017;
+        Mon, 4 Jan 2021 15:12:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609791072;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MLs4lOSwia7VVuKW2mZ/Q32qp8iJH2T1iJGlhcXRlsA=;
-        b=PnAE02r6UbSUII6M2v3mryUx4d+bRebvwUfSzi4RnFwd7uHTyz8DwdMHjuN1RJe6+NRDIS
-        IdWteI0aUMlI6Uj4aw+nGXCXIQpRe/Rd+lefzIsOgVWY58UXr3YO2vgQm8Cf80/XLfx6Yd
-        tUar3yyw+RGkD+LgUE+lLEnBVL8hezY=
-Date:   Mon, 4 Jan 2021 21:10:16 +0100
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Andre Tomt <andre@tomt.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Stylon Wang <stylon.wang@amd.com>
-Subject: Re: [PATCH 5.10 637/717] drm/amd/display: Fix memory leaks in S3
- resume
-Message-ID: <20210104201016.bncnhyq25zz2y76h@spock.localdomain>
-References: <20201228125020.963311703@linuxfoundation.org>
- <20201228125051.444911072@linuxfoundation.org>
- <e5d9703f-42a4-f154-cf13-55a3eba10859@tomt.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e5d9703f-42a4-f154-cf13-55a3eba10859@tomt.net>
+        bh=Uf7YcQ6j4//fvt+DAqWWp4t8Vqx45+iboex03SWw704=;
+        b=VVzQHwomINqndeVWIrDsG/0JWHHefKt6P13Weoug9Ph4lEgGsGeANBqjfa/qE+07UtgaLx
+        Cqn/jZgY2EqlQQEuunSka+T5EN0QDQXCPd1myL8vpFHUoyPkcN+2rWkp5mC48+M4pCcAnT
+        uUzpf74VrSWGFVe2b06kV2oxfaDQHaY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-fEFEYU35MASc6d604caeZw-1; Mon, 04 Jan 2021 15:11:11 -0500
+X-MC-Unique: fEFEYU35MASc6d604caeZw-1
+Received: by mail-wr1-f72.google.com with SMTP id 88so13689482wrc.17
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 12:11:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=Uf7YcQ6j4//fvt+DAqWWp4t8Vqx45+iboex03SWw704=;
+        b=j7k2ESGwkwk3AxZa2W/aK4aUHtLvgousar7nRhIUms3Uyfjw+Ccjf4w5iGK5XlHpjb
+         9DgocQYPt4gGULjv9Jk8fopJS5SS51cvF4Np40/2Xvz8p1xYW/McjHFGSgXT7bSLOXiN
+         wF4gI5laH3kvb00eK/ssL6ePrVXICZG527H4q2aozALa0Vy2ynY94w+zzONFuSXfx/lC
+         HfIzWaNVTQoy720Is6dQoItHP52uYmhbWA9pzELz0Rv78dqeGeYfMVB15/17HuO9NAWI
+         JiKlx1l2oe4dFRl6+6Ca1Zl/WzSCBsAgiZ6L/vgG30ErSYPLTSLoQXF9QQhLZJ4GWAHR
+         a+xg==
+X-Gm-Message-State: AOAM533f3gILm5oMNRhFqaZjE3zbjwHyQVWivLpY/8NXnJDIhx0aPCRD
+        1jkkl++de+nB4qMwpqotPdO0iBHL5PxgO3lmm630c67ZNpYLjLfXIhmH6eEnyZz0WAg15Fp602j
+        ug4eowudDEnSOR4o9hzB+5tOs
+X-Received: by 2002:adf:dcc5:: with SMTP id x5mr80661630wrm.167.1609791069110;
+        Mon, 04 Jan 2021 12:11:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzkdFEzyOlA3Y8Eyk0/ltCkVecx3CgLuE1hJOwodBehjEmZXochwhSLXoNLGXuGRBsrbBGEYg==
+X-Received: by 2002:adf:dcc5:: with SMTP id x5mr80661617wrm.167.1609791068978;
+        Mon, 04 Jan 2021 12:11:08 -0800 (PST)
+Received: from [192.168.3.108] (p5b0c69d7.dip0.t-ipconnect.de. [91.12.105.215])
+        by smtp.gmail.com with ESMTPSA id 138sm731389wma.41.2021.01.04.12.11.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 12:11:08 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page allocation for __GFP_ZERO
+Date:   Mon, 4 Jan 2021 21:11:07 +0100
+Message-Id: <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com>
+References: <a5ba7bdf-8510-d0a0-9c22-ec1b81019982@intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+In-Reply-To: <a5ba7bdf-8510-d0a0-9c22-ec1b81019982@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+X-Mailer: iPhone Mail (18C66)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 08:04:08PM +0100, Andre Tomt wrote:
-> On 28.12.2020 13:50, Greg Kroah-Hartman wrote:
-> > From: Stylon Wang <stylon.wang@amd.com>
-> > 
-> > commit a135a1b4c4db1f3b8cbed9676a40ede39feb3362 upstream.
-> > 
-> > EDID parsing in S3 resume pushes new display modes
-> > to probed_modes list but doesn't consolidate to actual
-> > mode list. This creates a race condition when
-> > amdgpu_dm_connector_ddc_get_modes() re-initializes the
-> > list head without walking the list and results in  memory leak.
-> 
-> This commit is causing me problems on 5.10.4: when I turn off the display (a
-> LG TV in this case), and turn it back on again later there is no video
-> output and I get the following in the kernel log:
-> 
-> [ 8245.259628] [drm:dm_restore_drm_connector_state [amdgpu]] *ERROR*
-> Restoring old state failed with -12
 
-Uh, it seems you've just saved me a ton of gray hair. I have the very
-same issue and I'm going to revert this patch now in order to check
-whether it makes any difference.
+> Am 04.01.2021 um 20:52 schrieb Dave Hansen <dave.hansen@intel.com>:
+>=20
+> =EF=BB=BFOn 1/4/21 11:27 AM, Matthew Wilcox wrote:
+>>> On Mon, Jan 04, 2021 at 11:19:13AM -0800, Dave Hansen wrote:
+>>> On 12/21/20 8:30 AM, Liang Li wrote:
+>>>> --- a/include/linux/page-flags.h
+>>>> +++ b/include/linux/page-flags.h
+>>>> @@ -137,6 +137,9 @@ enum pageflags {
+>>>> #endif
+>>>> #ifdef CONFIG_64BIT
+>>>>    PG_arch_2,
+>>>> +#endif
+>>>> +#ifdef CONFIG_PREZERO_PAGE
+>>>> +    PG_zero,
+>>>> #endif
+>>>>    __NR_PAGEFLAGS,
+>>>=20
+>>> I don't think this is worth a generic page->flags bit.
+>>>=20
+>>> There's a ton of space in 'struct page' for pages that are in the
+>>> allocator.  Can't we use some of that space?
+>>=20
+>> I was going to object to that too, but I think the entire approach is
+>> flawed and needs to be thrown out.  It just nukes the caches in extremely=
 
-Thanks!
+>> subtle and hard to measure ways, lowering overall system performance.
+>=20
+> Yeah, it certainly can't be the default, but it *is* useful for thing
+> where we know that there are no cache benefits to zeroing close to where
+> the memory is allocated.
+>=20
+> The trick is opting into it somehow, either in a process or a VMA.
+>=20
 
-> 
-> I've found another report on this commit as well:
-> https://bugzilla.kernel.org/show_bug.cgi?id=211033
-> 
-> And I suspect this is the same:
-> https://bugs.archlinux.org/task/69202
-> 
-> Reverting it from 5.10.4 makes things behave again.
-> 
-> Have not tested 5.4.86 or 5.11-rc.
-> 
-> I'm using a RX570 Polaris based card.
+The patch set is mostly trying to optimize starting a new process. So proces=
+s/vma doesn=E2=80=98t really work.
 
--- 
-  Oleksandr Natalenko (post-factum)
+I still wonder if using tmpfs/shmem cannot somehow be used to cover the orig=
+inal use case of starting a new vm fast (or rebooting an existing one involv=
+ing restarting the process).=
+
