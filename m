@@ -2,85 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6B72E9665
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A557D2E966F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbhADNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:52:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54010 "EHLO
+        id S1726662AbhADN4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:56:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbhADNwl (ORCPT
+        with ESMTP id S1725889AbhADN4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:52:41 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A94DC061574;
-        Mon,  4 Jan 2021 05:52:01 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id h186so16495489pfe.0;
-        Mon, 04 Jan 2021 05:52:01 -0800 (PST)
+        Mon, 4 Jan 2021 08:56:41 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8462AC061574;
+        Mon,  4 Jan 2021 05:56:00 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id i9so32258898wrc.4;
+        Mon, 04 Jan 2021 05:56:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZbriYaIoB2gZ7KJStemV7yd1FR7KiYHvNufspjX4Jwo=;
-        b=BgnsVUosO0vjAtrbET+oqFJlIZZj+E8h4z6p2o0QsdvjoItoxN81Rqf7/JBCx4H35q
-         OFhwR/oLTcU5L+n2F3VduB4n2vcEmysZuPoAtvSy54hKhulCCe426+P1yb+JLuOFI4Rg
-         3ban+hudPMNqe7XcCZ/iRKdmzoYMiA0pqq8zUteoUFj9v4zl8R52y54xZVsqmXB4yyA/
-         SlCrey0KOcfbnisL2WE7G0l6VhpP2qLTdz0TzeD6uqc5jHoO0fbzrO1CcwygMeCeC+UJ
-         Nivlt0FLz8RmcnenxqC+X0F1Ep72YsGdU5qgaUtQqXqCwEutP/T67ypdWYCV1HHEq+Gn
-         cbgw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=CCvC21o9OsNFmgIrFS9AYf7dFaGLBEiMu0yr8eIRMIU=;
+        b=DEupxNit6gyIpbepsZC6hVsP7vcOAq9v32qn8wJm32kcamwEXhOUXlhbl5L3BsuJK5
+         3v8YzfjiyohG0RsVSmPBFQCwgmJ4hh+tRLzxK3bvA776WIuBfoAoREaQcWMi7PDDJy+s
+         mqW44us/HCI2TQDxRaHafsCV2Lt0PZpp8FkWh1ep8URJ9JymJw64Rli8FRQ9P9jZd3Gw
+         R9rs3P6IWWSdwII3VHFwZx6ophrdcdv8kW+i9uZEj9qmNsoHoPHOidS+lKSII0vQuKQF
+         dXKNmDZbINRhc+FUKfjf6+nvvcjU5QJbiyoeIhRXIckGB5ZCz9NpRbCgpl9pKyCdMV7i
+         KNYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZbriYaIoB2gZ7KJStemV7yd1FR7KiYHvNufspjX4Jwo=;
-        b=cRLG7bcTWD1PDHhJV3t2INWTr2oyfGZ84EVuZAuGh46U1gXSdQdcCTA+OTbKyWTFPg
-         pqkRXHoSARArLwVH5zpHC/IJjX2bwODLEnomrUXFUjTSoFO3sYa/c4QHT9TV8LgwuEAl
-         JUQyIITEfWiUxagDtDANwbib8AeWlnuVe65SXurg2aGlTHgRWrJQJeoPwQhXMX+ow9Oz
-         M9xy+u/EiKhofSnhrMo/NebsurIDjWj/cPKaf+fz/xeEYk+XyN+m1kcIRJtEKuDUOiHj
-         FxqAzPhD6i1Jx9Na/QdSN6wjAv6aG0VeUo6gIMP+P+ix6E20TQbktN153778bgdyMrRp
-         mfrw==
-X-Gm-Message-State: AOAM532a79S9kXV+aqe6vsc2wtir/fnEmJ3aWEljIsxzuEO8QrNaPFl1
-        06LOCz0AcqDHZJR9mkxFl9KBuoRfmXcqHVvLYYg=
-X-Google-Smtp-Source: ABdhPJzeJE1s5+lD8qK/cO6QfdppxqAMocPdroUzpVX6DJFhF5TYYx6n2Dr/rkDLfvKkezFWN9YJedSTGC9q/fmtcW8=
-X-Received: by 2002:a63:74b:: with SMTP id 72mr71354571pgh.4.1609768320749;
- Mon, 04 Jan 2021 05:52:00 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=CCvC21o9OsNFmgIrFS9AYf7dFaGLBEiMu0yr8eIRMIU=;
+        b=b5VcgV777vXR5qmzmvlWZCdmVXHb33j89Ggtlf+xBv8IojBbxfVIR11DV30JGgFoLk
+         /qyxqJuDzbHjZABSaRNjqRpy/NQMXeMdOvesiFJ202wStoDBxZhwLjU8ZH9+LpvlIdpD
+         htOsRtrQ3vvdsRcrb8roVW3YX64jA/Ycy6IS2BDgA9hbv528D3GYFfr4PI7OKOqrhF8D
+         YwpEAu8uVelWN8u5H94Vpv6+wCVMrWPY1TCMdBiUcpVEnHT9njpD5VFOhMCreheE2Rnf
+         rnafL0XokcnBMFHRq3P4g5FzXv3Rhru5WayaPPQztIWQY3LHyqzUatqDxCB/uvZp7Lw+
+         3G0g==
+X-Gm-Message-State: AOAM532RDutEXULCBCd7WG9iyMrLtFJuP4MFxbSMZQtVR4Ag7FTrIe50
+        tM+YdGI7YH8dCpmP1Jc5HbY=
+X-Google-Smtp-Source: ABdhPJy2qULUem6CigST3WkOD65aKMFtRUq9Mxf6BDbNL0ehCvca8zkraANPX7kaKxUov6zg1eXB9g==
+X-Received: by 2002:a5d:464b:: with SMTP id j11mr80173026wrs.227.1609768559273;
+        Mon, 04 Jan 2021 05:55:59 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id k1sm90550691wrn.46.2021.01.04.05.55.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 05:55:58 -0800 (PST)
+Subject: Re: [PATCH v4 15/15] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     kieran.bingham+renesas@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org,
+        gregkh@linuxfoundation.org, rjw@rjwysocki.net,
+        sergey.senozhatsky@gmail.com, mchehab@kernel.org
+Cc:     lenb@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, hverkuil-cisco@xs4all.nl,
+        m.felsch@pengutronix.de, niklas.soderlund+renesas@ragnatech.se,
+        slongerbeam@gmail.com, heikki.krogerus@linux.intel.com,
+        linus.walleij@linaro.org,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20210103231235.792999-1-djrscally@gmail.com>
+ <20210103231235.792999-16-djrscally@gmail.com>
+ <3d881e2b-747f-dcd7-a0cf-e7309419914b@ideasonboard.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <9026519f-1f33-9df0-de18-0881069f7aaa@gmail.com>
+Date:   Mon, 4 Jan 2021 13:55:57 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210102022949.92304-1-warthog618@gmail.com> <20210102022949.92304-2-warthog618@gmail.com>
- <CAHp75VdMs1mP7pK46qKqJbjfyrcKhSGvtyzQpTRsehMz6o=Jpg@mail.gmail.com>
- <20210103021725.GA6622@sol> <CAHp75VfONKY7VS0q=GkSX14i--g0=jfBg4RFBoMk4DxJPMHJFg@mail.gmail.com>
- <20210104015129.GA4939@sol>
-In-Reply-To: <20210104015129.GA4939@sol>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 4 Jan 2021 15:52:49 +0200
-Message-ID: <CAHp75Vdd6yC=j+m7OOdP=M1j8Eoaayq8HSLF2fjVXcA0wiu9kQ@mail.gmail.com>
-Subject: Re: [PATCH 1/7] selftests: gpio: rework and simplify test implementation
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3d881e2b-747f-dcd7-a0cf-e7309419914b@ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 3:51 AM Kent Gibson <warthog618@gmail.com> wrote:
-> On Sun, Jan 03, 2021 at 05:10:10PM +0200, Andy Shevchenko wrote:
+Hi Kieran
 
-...
-
-> In this example it is the 508:
+On 04/01/2021 13:35, Kieran Bingham wrote:
+>> +/*
+>> + * Extend this array with ACPI Hardware IDs of devices known to be working
+>> + * plus the number of link-frequencies expected by their drivers, along with
+>> + * the frequency values in hertz. This is somewhat opportunistic way of adding
+>> + * support for this for now in the hopes of a better source for the information
+>> + * (possibly some encoded value in the SSDB buffer that we're unaware of)
+>> + * becoming apparent in the future.
+>> + *
+>> + * Do not add an entry for a sensor that is not actually supported.
+>> + */
+>> +static const struct cio2_sensor_config cio2_supported_sensors[] = {
+>> +	CIO2_SENSOR_CONFIG("INT33BE", 0),
+>> +	CIO2_SENSOR_CONFIG("OVTI2680", 0),
+> I don't know if these are expressed anywhere else but would it be
+> helpful to add a comment, or indicator as to what the actual sensor is
+> that is represented by this HID?
 >
-> # e.g. gpiochip0: GPIOs 508-511, parent: platform/gpio-mockup.0, gpio-mockup-A:
+> I can make an assumption about what an OVTI2680 might be, but the
+> INT33BE is quite opaque. It's not clear what support that adds.
 >
-> So I'll use that - unless it is unreliable for some reason?
+> Unless no one cares what the sensor is that is, but I would anticipate
+> anyone looking here to add a new sensor might want to investigate what
+> was already in the table?
 
-debugfs is not an ABI and tomorrow this can be changed without notice.
+Yeah good point. I'll probably alternate comment and entry then, like:
 
--- 
-With Best Regards,
-Andy Shevchenko
+
++static const struct cio2_sensor_config cio2_supported_sensors[] = {
++	/* Sensor OVTI5693 */
++	CIO2_SENSOR_CONFIG("INT33BE", 0),
++	/* Sensor OVTI2680 */
++	CIO2_SENSOR_CONFIG("OVTI2680", 0),
+
+As an inline comment won't fit for the sensors that we know link-frequencies for. That sound ok?
+
+>> +static void cio2_bridge_create_fwnode_properties(
+>> +	struct cio2_sensor *sensor,
+>> +	const struct cio2_sensor_config *cfg)
+>> +{
+>> +	unsigned int i;
+>> +
+>> +	sensor->prop_names = prop_names;
+>> +
+>> +	for (i = 0; i < CIO2_MAX_LANES; i++)
+>> +		sensor->data_lanes[i] = i + 1;
+> Does something support lane swapping somewhere?
+> I assume this is just mapping each lane directly through.
+
+I think Sakari said remapping isn't supported in the CIO2 - so yeah this
+is just mapping them directly
+
+> Otherwise, I'm quite looking forwards to all of this ;-)
+>
+> Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Thanks very much!
