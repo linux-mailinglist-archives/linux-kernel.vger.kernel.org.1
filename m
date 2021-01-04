@@ -2,128 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E125B2E92F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF062E92A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbhADJzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 04:55:54 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:12404 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726651AbhADJzw (ORCPT
+        id S1726749AbhADJeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 04:34:37 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:51894 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725468AbhADJeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:55:52 -0500
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210104095508epoutp04d691c7a263f5559608c060493cb154a3~W-tVD3eCT0557605576epoutp04e
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 09:55:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210104095508epoutp04d691c7a263f5559608c060493cb154a3~W-tVD3eCT0557605576epoutp04e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1609754108;
-        bh=J9y4WfkrJJpjdDAHbf5UjrzwkfiTUwuTADvbOK6+oas=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=LUVynedByR98TnZU7Mh2JGPOKv7Nqf5t578mmBRRh69XVM0HDRW7mOzQ74UcXEJ/k
-         Nd7Wk2PncrjFp/XZzI2xMPQeeS+mZ5VfaDakg7QvDL/jvjbLQXbLn0tqB2FAg0ys3h
-         HoI7lym8LeEd1WIIZWArUhRmMSSW5qEQxW559yFI=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210104095508epcas5p18200e5e0b1d3c613cec361ae54b61a0a~W-tUdg-oU0715207152epcas5p13;
-        Mon,  4 Jan 2021 09:55:08 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5D.E9.33964.BF5E2FF5; Mon,  4 Jan 2021 18:55:07 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210104082958epcas5p12c5c0e78dec7f106375b4f507a3b152b~W_i_JqgkC2401624016epcas5p1Y;
-        Mon,  4 Jan 2021 08:29:58 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210104082958epsmtrp2f321721ee08621439e49ac2f7a8d1b44~W_i_IzBcr3051030510epsmtrp2C;
-        Mon,  4 Jan 2021 08:29:58 +0000 (GMT)
-X-AuditID: b6c32a4b-ea1ff700000184ac-c9-5ff2e5fbbb43
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        69.1E.08745.602D2FF5; Mon,  4 Jan 2021 17:29:58 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210104082957epsmtip268279f441c9d4d6603773add86ecaaa1~W_i8rxK870201302013epsmtip2m;
-        Mon,  4 Jan 2021 08:29:57 +0000 (GMT)
-From:   Tamseel Shams <m.shams@samsung.com>
-To:     kgene@kernel.org, krzk@kernel.org, gregkh@linuxfoundation.org,
-        jslaby@suse.com
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        Tamseel Shams <m.shams@samsung.com>
-Subject: [PATCH] serial: samsung: Checks the return value of function
-Date:   Mon,  4 Jan 2021 14:05:51 +0530
-Message-Id: <20210104083551.1393-1-m.shams@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBIsWRmVeSWpSXmKPExsWy7bCmhu7vp5/iDe6stLZ4MG8bm0Xz4vVs
-        FlM2fGCy6H/8mtni/PkN7BabHl9jtbi8aw6bxYzz+5gszizuZbe427qY3YHLY9OqTjaP/XPX
-        sHtsXlLv0bdlFaPH+i1XWTw+b5ILYIvisklJzcksSy3St0vgypiy/AhbwSf2io6nB1kbGC+z
-        dTFyckgImEjs/TyRvYuRi0NIYDejRPeEWcwQzidGiQ+bN7BCOJ8ZJfZPnM/UxcgB1jL3Si1E
-        fBejxPWdqxghnBYmiUV/TrCDFLEJaEocP88NskJEIETi3dktYDXMAicZJfZubmABqREWcJX4
-        MIEXpIZFQFVi//6L7CA2r4C5xP1ti9khzpOXWL3hADOEfY5douOfNYTtIvH8xGsWCFtY4tXx
-        LVD1UhKf3+2Fei1fYv68VVC9FRIrL7yBsu0lDlyZA3YCM9CZ63fpQ4RlJaaeWscEYjML8En0
-        /n7CBBHnldgxD8ZWlPi/ux9qlbjEuxVTWCFB4iHxbloxSFhIIFbi9Y5FzBMYZWchLFjAyLiK
-        UTK1oDg3PbXYtMA4L7Vcrzgxt7g0L10vOT93EyM4MWh572B89OCD3iFGJg7GQ4wSHMxKIrwV
-        Fz7EC/GmJFZWpRblxxeV5qQWH2KU5mBREufdYfAgXkggPbEkNTs1tSC1CCbLxMEp1cCkzOqn
-        8fZ7A7/nIu7Y97+/fDW3nj9N977PlJdfLsrM0Io4YS0t3vxpN//X6428kw/1sh/ZELX0vvDe
-        +cre7A89FqYv/njz5qej06auvv0j4NcSKal+7ufvxZhOzr8ncTRWePeami2vV7od2yOUUa58
-        X6N21ZIWo91yXAZzF1d6f0iu27aiwzJVOiv3xGzLj6zNN2Y853r2r3B+5w6j7v92YY8/n2+x
-        Y7pe87Eg/uKt6ZcsWd74/zJ9otC9b+7e1Y4ZrnNfiK3jCDjw947ii/eh/T/apPUUmWdacBy0
-        SmMVzZ3FIjHNZ9uPU3b1gVNefGlUfRrixxR6QNTc4uCKkBucbBp9C04Wz5MwuB0axBXErcRS
-        nJFoqMVcVJwIAGBY5FF7AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnluLIzCtJLcpLzFFi42LZdlhJXpft0qd4gxWfDS0ezNvGZtG8eD2b
-        xZQNH5gs+h+/ZrY4f34Du8Wmx9dYLS7vmsNmMeP8PiaLM4t72S3uti5md+Dy2LSqk81j/9w1
-        7B6bl9R79G1ZxeixfstVFo/Pm+QC2KK4bFJSczLLUov07RK4MqYsP8JW8Im9ouPpQdYGxsts
-        XYwcHBICJhJzr9R2MXJxCAnsYJRY2HWFvYuREyguLjHt135GCFtYYuW/5+wQRU1MEgeXLmUG
-        aWYT0JQ4fp4bxBQRiJCY+bEGpIRZ4DyjxM7jq5lA4sICrhIfJvCCjGERUJXYv/8i2HheAXOJ
-        +9sWQ62Sl1i94QDzBEaeBYwMqxglUwuKc9Nziw0LjPJSy/WKE3OLS/PS9ZLzczcxgsNMS2sH
-        455VH/QOMTJxMB5ilOBgVhLhrbjwIV6INyWxsiq1KD++qDQntfgQozQHi5I474Wuk/FCAumJ
-        JanZqakFqUUwWSYOTqkGpnarPxMyMjutl++am7VxzmoBgRW1ZRxFl5cuNnyzzKJwTTNH3c8Z
-        PZpr+P7eeHuXoXGJzBOZv0k5s/fVdrEfe+t6z+fKs27uTfsEJZt2+Spl88f2etpfcH+0sGnx
-        4R39i9e0Ca7Ycnw3z/PsRfozQzq6VDes+Otz69KM7+zBO0Nfxx04tmiPk/FKDZ6/vwyPd79a
-        bVtuvNs4aZP1DB/1OXe3ck/7a8D5f0bk023OV14cSb/8yk0wYt7HJO/4u42HFu5mnrYqwWgH
-        53LxQttt/+KdDfvM7m0XUgsrNm42aw0N2e8dKpkzeVukgeGu6Ox2mey7332N96+bn/vkxt3P
-        BpsrJz/MkY5+YzTvLMOGuzeUWIozEg21mIuKEwFIILV/ogIAAA==
-X-CMS-MailID: 20210104082958epcas5p12c5c0e78dec7f106375b4f507a3b152b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210104082958epcas5p12c5c0e78dec7f106375b4f507a3b152b
-References: <CGME20210104082958epcas5p12c5c0e78dec7f106375b4f507a3b152b@epcas5p1.samsung.com>
+        Mon, 4 Jan 2021 04:34:37 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1049VT9T022442;
+        Mon, 4 Jan 2021 03:33:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=x5nlcZ8ESXAQAog5Zt2q0TU4/sxoun3EJYkVUSeIwAU=;
+ b=MQ1+aySOzmNBh2TLHsW0mHAdf81pbNp97hZ84FkF9cRJSgZo/JLiTqZqFI6S4ROVx0Jo
+ AHpjVcHvAb2S7zMUKGh3SF3d8iiVkC5D9DznwgMoJuCA4TuYiz2pXxT3TS58JOX1mXOh
+ IGDOcO1y3JfAyLocqTtSL11D4bsawJgvJanNTXUCTQbadRKWER7uUbJhOyoMVhcXJMBO
+ MMb8SWkXl7MQPl2+qnibgh4PH9PSb+QvXLIC/ZdQRNPJB3eMCjtx8FJDCJPLBqzQEBZn
+ 8yvyYz9ro4m5hH3tUaSudjTbQOl4HrhDUMl6Y45QB4E0x8PcmpM2ihwNDT9lFdBWxZWM +A== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 35tp4tha4v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 04 Jan 2021 03:33:46 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 4 Jan 2021
+ 09:18:42 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 4 Jan 2021 09:18:42 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 45E7E11CB;
+        Mon,  4 Jan 2021 09:18:42 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 09:18:42 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] net: macb: Correct usage of MACB_CAPS_CLK_HW_CHG flag
+Message-ID: <20210104091842.GQ9673@ediswmail.ad.cirrus.com>
+References: <20201230103309.8956-1-ckeepax@opensource.cirrus.com>
+ <X+yueZ4of+Ixr//E@lunn.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <X+yueZ4of+Ixr//E@lunn.ch>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=897
+ adultscore=0 spamscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
+ mlxscore=0 bulkscore=0 impostorscore=0 clxscore=1015 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"uart_add_one_port" function call may fail and return
-some error code, so adding a check for return value.
-If it is returning some error code, then displaying the
-result and returning back from there.
+On Wed, Dec 30, 2020 at 05:44:41PM +0100, Andrew Lunn wrote:
+> On Wed, Dec 30, 2020 at 10:33:09AM +0000, Charles Keepax wrote:
+> > A new flag MACB_CAPS_CLK_HW_CHG was added and all callers of
+> > macb_set_tx_clk were gated on the presence of this flag.
+> > 
+> > -   if (!clk)
+> > + if (!bp->tx_clk || !(bp->caps & MACB_CAPS_CLK_HW_CHG))
+> > 
+> > However the flag was not added to anything other than the new
+> > sama7g5_gem, turning that function call into a no op for all other
+> > systems. This breaks the networking on Zynq.
+> > 
+> > The commit message adding this states: a new capability so that
+> > macb_set_tx_clock() to not be called for IPs having this
+> > capability
+> > 
+> > This strongly implies that present of the flag was intended to skip
+> > the function not absence of the flag. Update the if statement to
+> > this effect, which repairs the existing users.
+> > 
+> > Fixes: daafa1d33cc9 ("net: macb: add capability to not set the clock rate")
+> > Suggested-by: Andrew Lunn <andrew@lunn.ch>
+> > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> 
+> Hi Charles
+> 
+> Since this is a fix, this should be based on the net tree. And you
+> indicate this in the subject line with [PATCH net]. If this applies
+> cleanly to net, Dave will probably just accept it, but please keep
+> this in mind for any more submissions you make to netdev.
+> 
 
-Signed-off-by: Tamseel Shams <m.shams@samsung.com>
----
- drivers/tty/serial/samsung_tty.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Is already based on the net tree, sorry wasn't aware I needed to add
+that into the subject line. Will do a respin today.
 
-diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-index 6ef614d8648c..a220ba166ffe 100644
---- a/drivers/tty/serial/samsung_tty.c
-+++ b/drivers/tty/serial/samsung_tty.c
-@@ -2072,7 +2072,11 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
- 	}
- 
- 	dev_dbg(&pdev->dev, "%s: adding port\n", __func__);
--	uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
-+	ret = uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Failed to add uart port, err %d\n", ret);
-+		return ret;
-+	}
- 	platform_set_drvdata(pdev, &ourport->port);
- 
- 	/*
--- 
-2.17.1
-
+Thanks,
+Charles
