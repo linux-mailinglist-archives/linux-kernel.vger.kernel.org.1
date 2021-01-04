@@ -2,299 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890962E9D83
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5122E9D89
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbhADSzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:55:35 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:25939 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbhADSze (ORCPT
+        id S1727802AbhADS4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 13:56:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727434AbhADSz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:55:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609786513; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=FxqPbIlgEjfAGgnPD1xLn92qP1L1FUWNHpE3mcaaX6Y=;
- b=RWJj7ukDDAuSCOICB07456N3uLmG+OD1/tL0CeaBDIB3mciM94IMxVK4LyAYJh28ZIwvOWOq
- IhFHqCclCRyHqP3PDtfx4KOExfskeFQ+FoHDYHHxdNmzGpRylXxRahWwv5u/OtiTavQPZ95v
- agzZkppjjHgY1+oy5SpgHi8NG+A=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5ff36478b4d9fe55c1142115 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Jan 2021 18:54:48
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4555BC43464; Mon,  4 Jan 2021 18:54:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 151A7C433CA;
-        Mon,  4 Jan 2021 18:54:46 +0000 (UTC)
+        Mon, 4 Jan 2021 13:55:58 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A172C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 10:55:18 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id b24so27032322otj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 10:55:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HCHUr50eCN2Mq1BFEjsYp3XRTEkB08z4GhkrFu84N5o=;
+        b=MjK0591SdWSZ9DLSVpf0BxQENcnVdirWQsQ7aDl6SyoT5QHmyA95wA785FtmQXb4eS
+         kalXUkp+oEIy1oKVvEwQb747gpJ/vNJAP/sksy9Q7KnNyGNmzOlvCGW5cXwd4sbfJ8U5
+         N+0Nc5AFrEkuxtm0bCRm3uB1KbagVWrJ1d+uH4o95u0HT3CAa7V0Tbapga2pBgY1KNNn
+         PGnZiHKUt+CiQUzoZugw3/kBILSrkuo3avoJyYzLtjZggUou0EAVDUKaxyAyU6KwjlRn
+         ofG3WBujQoLydHQJZtcYadoIeYkN7X7nzm0JducjXJZwBdo9J9PyEcVL2nfk16HgQr1q
+         ragQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HCHUr50eCN2Mq1BFEjsYp3XRTEkB08z4GhkrFu84N5o=;
+        b=GHbQwQonYe7rFcdA1UBsZy8/N/M3HsN8LGM6M3RM3qFiSc6G4geRbklhZZtY1N1+2G
+         FNtyM9AvrL0DeOrmLywbA1t/J3X4CwfFnFeOelt+W9xvT7+RmxpUjnfAKDl9rm177Ndw
+         dQvax4oz9nbSbE4Z+b7R+R+UzXPvNMWqATVOBLbiaoGCiLzuiR4gSgCzrmpEK7hcfE9O
+         RjzJHvlBlLuHXL30UMT+mJQcbhQq/rpiT+SkWVY36QItsRwuYzWtZyvRLvnQYkekWfkY
+         rEnLZ8L7SY2hexM/2aZZX7skt4WmO+Et0k9nDK69E1fcAqSWN0pHO6gwieAHg37Y+fJV
+         nvkQ==
+X-Gm-Message-State: AOAM531kOmT5+uuTB2hgwDckH5NhosnmYUxvL+cdAkYPu+0YXhr2FTVm
+        r4NMOjZgmadvX12oFGMk+cGmkA==
+X-Google-Smtp-Source: ABdhPJynIT9V4QDAnYlHEj69tBxT9FlrJStSU7PSfvdY1dZKE/6gjjiShTwSh2OmegYcv02AXOLbBw==
+X-Received: by 2002:a05:6830:1e41:: with SMTP id e1mr54050557otj.143.1609786517769;
+        Mon, 04 Jan 2021 10:55:17 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t19sm14625846otp.36.2021.01.04.10.55.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 10:55:16 -0800 (PST)
+Date:   Mon, 4 Jan 2021 12:55:14 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ziqi Chen <ziqichen@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, cang@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
+ violation
+Message-ID: <X/NkktFnWI48XNcp@builder.lan>
+References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
+ <e8980753-fa48-7862-e5ce-0d756d5d97a6@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Jan 2021 00:24:45 +0530
-From:   mdalam@codeaurora.org
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, boris.brezillon@collabora.com,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
-In-Reply-To: <20201231105303.GI7345@thinkpad>
-References: <1608213776-19584-1-git-send-email-mdalam@codeaurora.org>
- <20201231105303.GI7345@thinkpad>
-Message-ID: <84dbe5ba193e0da45add2f74d6787bb5@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e8980753-fa48-7862-e5ce-0d756d5d97a6@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-31 16:23, Manivannan Sadhasivam wrote:
-> On Thu, Dec 17, 2020 at 07:32:56PM +0530, Md Sadre Alam wrote:
->> From QPIC version 2.0 onwards new register got added to
->> read last codeword. This change will update the same.
->> 
->> For first three code word READ_LOCATION_n register will be
->> use.For last code wrod READ_LOCATION_LAST_CW_n register will be
->> use.
->> 
->> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
->> ---
->>  drivers/mtd/nand/raw/qcom_nandc.c | 79 
->> +++++++++++++++++++++++++++++++++------
->>  1 file changed, 67 insertions(+), 12 deletions(-)
->> 
->> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c 
->> b/drivers/mtd/nand/raw/qcom_nandc.c
->> index 667e4bf..eaef51d 100644
->> --- a/drivers/mtd/nand/raw/qcom_nandc.c
->> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
->> @@ -48,6 +48,10 @@
->>  #define	NAND_READ_LOCATION_1		0xf24
->>  #define	NAND_READ_LOCATION_2		0xf28
->>  #define	NAND_READ_LOCATION_3		0xf2c
->> +#define NAND_READ_LOCATION_LAST_CW_0    0xf40
->> +#define NAND_READ_LOCATION_LAST_CW_1    0xf44
->> +#define NAND_READ_LOCATION_LAST_CW_2    0xf48
->> +#define NAND_READ_LOCATION_LAST_CW_3    0xf4c
-> 
-> Please keep the alignment as before.
-> 
-  Fixed alignment in V2 patch
->> 
->>  /* dummy register offsets, used by write_reg_dma */
->>  #define	NAND_DEV_CMD1_RESTORE		0xdead
->> @@ -187,6 +191,12 @@ nandc_set_reg(nandc, 
->> NAND_READ_LOCATION_##reg,			\
->>  	      ((size) << READ_LOCATION_SIZE) |			\
->>  	      ((is_last) << READ_LOCATION_LAST))
->> 
->> +#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
->> +nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
->> +	      ((offset) << READ_LOCATION_OFFSET) |		\
->> +	      ((size) << READ_LOCATION_SIZE) |			\
->> +	      ((is_last) << READ_LOCATION_LAST))
->> +
->>  /*
->>   * Returns the actual register address for all NAND_DEV_ registers
->>   * (i.e. NAND_DEV_CMD0, NAND_DEV_CMD1, NAND_DEV_CMD2 and 
->> NAND_DEV_CMD_VLD)
->> @@ -316,6 +326,10 @@ struct nandc_regs {
->>  	__le32 read_location1;
->>  	__le32 read_location2;
->>  	__le32 read_location3;
->> +	__le32 read_location_last0;
->> +	__le32 read_location_last1;
->> +	__le32 read_location_last2;
->> +	__le32 read_location_last3;
->> 
->>  	__le32 erased_cw_detect_cfg_clr;
->>  	__le32 erased_cw_detect_cfg_set;
->> @@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct 
->> nandc_regs *regs, int offset)
->>  		return &regs->read_location2;
->>  	case NAND_READ_LOCATION_3:
->>  		return &regs->read_location3;
->> +	case NAND_READ_LOCATION_LAST_CW_0:
->> +		return &regs->read_location_last0;
->> +	case NAND_READ_LOCATION_LAST_CW_1:
->> +		return &regs->read_location_last1;
->> +	case NAND_READ_LOCATION_LAST_CW_2:
->> +		return &regs->read_location_last2;
->> +	case NAND_READ_LOCATION_LAST_CW_3:
->> +		return &regs->read_location_last3;
->>  	default:
->>  		return NULL;
->>  	}
->> @@ -719,9 +741,13 @@ static void update_rw_regs(struct qcom_nand_host 
->> *host, int num_cw, bool read)
->>  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
->>  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
->> 
->> -	if (read)
->> +	if (read) {
->> +		if (nandc->props->qpic_v2)
->> +			nandc_set_read_loc_last(nandc, 0, 0, host->use_ecc ?
->> +					host->cw_data : host->cw_size, 1);
-> 
-> Forgot to add else? Otherwise both NAND_READ_LOCATION_n and
-> NAND_READ_LOCATION_LAST_CW_n
-> will be used.
+On Mon 04 Jan 03:15 CST 2021, Adrian Hunter wrote:
 
-   Here else is not needed , because to read last code word we need to 
-configure
-   NAND_READ_LOCATION_LAST_CW_n register. Any way here we are doing only 
-register configuration.
-   for all the code words. Earlier version of QPIC we were using  
-nandc_set_read_loc()
-   for all the code words, but in qpic V2 onwards for last code word we 
-have to use
-   NAND_READ_LOCATION_LAST_CW_n register. So configuring here the same.
+> On 22/12/20 3:49 pm, Ziqi Chen wrote:
+> > As per specs, e.g, JESD220E chapter 7.2, while powering
+> > off/on the ufs device, RST_N signal and REF_CLK signal
+> > should be between VSS(Ground) and VCCQ/VCCQ2.
+> > 
+> > To flexibly control device reset line, refactor the function
+> > ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
+> > vops_device_reset(sturct ufs_hba *hba, bool asserted). The
+> > new parameter "bool asserted" is used to separate device reset
+> > line pulling down from pulling up.
+> 
+> This patch assumes the power is controlled by voltage regulators, but for us
+> it is controlled by firmware (ACPI), so it is not correct to change RST_n
+> for all host controllers as you are doing.
+> 
+> Also we might need to use a firmware interface for device reset, in which
+> case the 'asserted' value doe not make sense.
+> 
+
+Are you saying that the entire flip-flop-the-reset is a single firmware
+operation in your case? If you look at the Mediatek driver, the
+implementation of ufs_mtk_device_reset_ctrl() is a jump to firmware.
 
 
-> 
->>  		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
->>  				   host->cw_data : host->cw_size, 1);
->> +	}
->>  }
->> 
->>  /*
->> @@ -1096,9 +1122,13 @@ static void config_nand_page_read(struct 
->> qcom_nand_controller *nandc)
->>  static void
->>  config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
->>  {
->> -	if (nandc->props->is_bam)
->> +	if (nandc->props->is_bam) {
->> +		if (nandc->props->qpic_v2)
->> +			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0,
->> +				      4, NAND_BAM_NEXT_SGL);
->>  		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
->>  			      NAND_BAM_NEXT_SGL);
-> 
-> Don't you need to modify the number of registers to write? It can't be 
-> 4 all the
-> time if NAND_READ_LOCATION_LAST_CW_0 is used.
+But perhaps "asserted" isn't the appropriate English word for saying
+"the reset is in the resetting state"?
 
-   Changed number of registers to write from 4 to 1 in V2 patch for 
-register NAND_READ_LOCATION_LAST_CW_0 .
-> 
->> +	}
->> 
->>  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
->>  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
->> @@ -1633,16 +1663,28 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
->> struct nand_chip *chip,
->>  	}
->> 
->>  	if (nandc->props->is_bam) {
->> -		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
->> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
->> +			nandc_set_read_loc_last(nandc, 0, read_loc, data_size1, 0);
->> +		else
->> +			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
-> 
-> IIUC nandc_set_read_loc_last() is only needed to read the last codeword 
-> which is
-> handled by the last command in this function:
+I just wanted to avoid the use of "high"/"lo" as if you look at the
+Mediatek code they pass the expected line-level to the firmware, while
+in the Qualcomm code we pass the logical state to the GPIO code which is
+setup up as "active low" and thereby flip the meaning before hitting the
+pad.
 
-   Function qcom_nandc_read_cw_raw() is getting called for each code word 
-for raw read and its reading
-   one code word at a time. So to read last code word when condition cw 
-== (ecc->steps - 1) will match, we have
-   to configure NAND_READ_LOCATION_LAST_CW_n register. Because below 
-piece of code is doing one code word
-   read for first three code word so same logic will also apply for last 
-code word as well.
+> Can we leave the device reset callback alone, and instead introduce a new
+> variant operation for setting RST_n to match voltage regulator power changes?
 
-> 
-> nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
-> 
->>  		read_loc += data_size1;
->> 
->> -		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
->> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
->> +			nandc_set_read_loc_last(nandc, 1, read_loc, oob_size1, 0);
->> +		else
->> +			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
->>  		read_loc += oob_size1;
->> 
->> -		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
->> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
->> +			nandc_set_read_loc_last(nandc, 2, read_loc, data_size2, 0);
->> +		else
->> +			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
->>  		read_loc += data_size2;
->> 
->> -		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
->> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
->> +			nandc_set_read_loc_last(nandc, 3, read_loc, oob_size2, 0);
->> +		else
->> +			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
->>  	}
->> 
->>  	config_nand_cw_read(nandc, false);
->> @@ -1873,14 +1915,27 @@ static int read_page_ecc(struct qcom_nand_host 
->> *host, u8 *data_buf,
->> 
->>  		if (nandc->props->is_bam) {
->>  			if (data_buf && oob_buf) {
->> -				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
->> -				nandc_set_read_loc(nandc, 1, data_size,
->> -						   oob_size, 1);
->> +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1)) {
->> +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 0);
-> 
-> Why do you need this? Can't you use nandc_set_read_loc()? Same for 
-> below cases.
+Wouldn't this new function just have to look like the proposed patches?
+In which case for existing platforms we'd have both?
 
-   Here we are looping for all the code words and when we will do 
-configuration for last
-   code word we have to use NAND_READ_LOCATION_LAST_CW_n register that's 
-why i am using
-   nandc_set_read_loc_last() instead of nandc_set_read_loc().
-> 
-> Thanks,
-> Mani
-> 
->> +					nandc_set_read_loc_last(nandc, 1, data_size,
->> +								oob_size, 1);
->> +				} else {
->> +					nandc_set_read_loc(nandc, 0, 0, data_size, 0);
->> +					nandc_set_read_loc(nandc, 1, data_size,
->> +							   oob_size, 1);
->> +				}
->>  			} else if (data_buf) {
->> -				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
->> +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
->> +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 1);
->> +				else
->> +					nandc_set_read_loc(nandc, 0, 0, data_size, 1);
->>  			} else {
->> -				nandc_set_read_loc(nandc, 0, data_size,
->> -						   oob_size, 1);
->> +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
->> +					nandc_set_read_loc_last(nandc, 0, data_size,
->> +								oob_size, 1);
->> +				else
->> +					nandc_set_read_loc(nandc, 0, data_size,
->> +							   oob_size, 1);
->>  			}
->>  		}
->> 
->> --
->> 2.7.4
->> 
+How would you implement this, or would you simply skip implementing
+this?
+
+Regards,
+Bjorn
+
