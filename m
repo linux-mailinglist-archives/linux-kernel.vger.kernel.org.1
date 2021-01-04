@@ -2,107 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2E22E9BA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D55202E9BAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbhADRDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:03:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
+        id S1727789AbhADREp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726418AbhADRDv (ORCPT
+        with ESMTP id S1727760AbhADREo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:03:51 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB33C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 09:03:11 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id d189so32794864oig.11
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 09:03:11 -0800 (PST)
+        Mon, 4 Jan 2021 12:04:44 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FDCC061798
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 09:04:03 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id z12so10466334pjn.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 09:04:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bkfKIc8TYv8/nRpoPVoMEofElitz2KLsBoBEwufJSM0=;
-        b=iGIjA39XdTndy0R3+OqGy5LlHrdqOClBY1/FWEX5jyoMeg3HRVh87Ta21eQsaZnafO
-         j3v/KCXJ/0iGc8LDxzKuPWravYhZk0rczR5/b6B//M+D1COrM4LDB80FALGQWNQGXMCR
-         v0Qkxb70zsuujhkJJcLO/ungyAjilF5qjZf45da4Qb2ftbQpNpNHYMOZL0IfC9xJrCQT
-         qXmoU38fF+1t4Hu2NraVXvCe+X3FHiTSrSdXAWAhq1LbrZTRNlFtjYICJBc/Wmb5vaQB
-         mGxl/DIWqhVvUmpDJIRskxfFmckEGMfCz3qgS8jHz4talJtLXnj9eoq6DY88MJ2Sllaj
-         g3EQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IQcm30joQ1MOZvDbTDrRnopca1uhY1ndGDE9lkwCZAc=;
+        b=BCIixdhQz0ExCp0AmsUIvPZ18AUH+wiojlGbwoXezAz15MaThplttNDQc+MfKl32hG
+         poMMlEoNBcVwoo2GLpyhRxx+QcayT9nI80+Fxm0EQ4x3zlBoy4x5ELTyGx436AIvX7e7
+         KlCloSXe6Oz17jHhw4OHjPaiRUMUMBkGM09A7xe4dOJVXbKX4z91exkrSx2BfpDQhWl8
+         KVPZ8S3oZjRgI2GLlrPPQ9pjp8qFuzHr/YkvF/INPPsJfjIxV3g8L2rZCvZf5ZzacELL
+         4kVNGfLlsq7Drh3FHCDiG3C2pkZgynI97jj8wIrn6I9Hj/rmtSTl1dIK3rzXEijlsdwj
+         v4ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bkfKIc8TYv8/nRpoPVoMEofElitz2KLsBoBEwufJSM0=;
-        b=i63U6pUQs/lzNV/ofd2lGyXnY39cHOAfrudkenmS+WjUc4E4kfksja446AXXmaI/io
-         jHCUjyqzDUg6TATbiW51BwnLTutNG9IqyOTwspwVcQYjGAJx9N6V9PYQdNawxKl56GzF
-         gvRvTQZ+sN072TAfuwywzwGs40HfxCegMEwez1TfB1WcwVeriYcsOs2QXcFE1UCkeZ1a
-         +tGIxNjyYUKZA4KdLOQ9T6Ctj3lmf/H5KPygKImctBLFb81mdiYaQpoRZpSNUWxSqprV
-         P9U8aADz3GMQKtUR2RUs+JBxUj9vp+2tHCNal3yvyAL/ev3E/D0+7B0QRMwjGC+fgy0z
-         NXiw==
-X-Gm-Message-State: AOAM530UwPy55VS8j91vrj/CoQIGzTSMrb7rQwFekqOsIcQ4AcPbJmX+
-        h8qsjYcloy8kmV7dtYNjTe5YyBStPpf+g1i2L10=
-X-Google-Smtp-Source: ABdhPJxA/GM8cZ0BIWwtLaCo/AOxg5iblCGFiV28MHKxwkGcJDu7ZQLBuCsqx/yHA/FkZSq2MLM+ksDZ9eivPBKDDGM=
-X-Received: by 2002:aca:6202:: with SMTP id w2mr17652648oib.5.1609779790520;
- Mon, 04 Jan 2021 09:03:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IQcm30joQ1MOZvDbTDrRnopca1uhY1ndGDE9lkwCZAc=;
+        b=BF07zJP96gWK4/XsxyoJ68Rs9Q3perAD0XrW29exsKDGTNGDqsqudvuec1+GYcSQ/V
+         1Bfbqg/pb0QOFOCl6u1yuevlzSCrhu1SKVxqV3YPcXo3dODBEgiNSvIxfiMtn/FOPWGT
+         UvSZDkhZZMWuaw1yfz3ZULQ8hn9hQsymgIR/Nf0KTPbHOnfoODuWKZ0ZV08mgWOzZGkR
+         7dpwJWTdY1YNfgYH4rRiQFLNd/kpJqyMgvaSu+c+ieDVu1UcujFtouVKaPj2qia/1mFi
+         YL8EH0DOg+2WLEYsGt/Dszscxubh7EzVjkfoZasgjsh7r6HYuUhWgjF//Ow69c1x31zg
+         HeCA==
+X-Gm-Message-State: AOAM5336ZBNwjlzu39oimJDqAvtJ63Y+e+FkjT61vBty38Dc0IijSjRS
+        ZZ8lZd4NuPYKUuADomdnU467
+X-Google-Smtp-Source: ABdhPJzstLU9i3O9N1V2w9aLZIwS7/jD4AeG4EenR1Mw3gYn+u7BY34odJUrymKTvSm7jCXshIi1LQ==
+X-Received: by 2002:a17:90a:454e:: with SMTP id r14mr31112408pjm.194.1609779843170;
+        Mon, 04 Jan 2021 09:04:03 -0800 (PST)
+Received: from work ([103.77.37.129])
+        by smtp.gmail.com with ESMTPSA id w63sm55114714pfc.20.2021.01.04.09.04.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 04 Jan 2021 09:04:02 -0800 (PST)
+Date:   Mon, 4 Jan 2021 22:33:59 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Carl Huang <cjhuang@codeaurora.org>
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH v3] mhi: use irq_flags if controller driver configures it
+Message-ID: <20210104170359.GE2256@work>
+References: <20210104101128.8217-1-cjhuang@codeaurora.org>
 MIME-Version: 1.0
-References: <20201222133100.19470-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20201222133100.19470-1-zhengyongjun3@huawei.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 4 Jan 2021 12:02:59 -0500
-Message-ID: <CADnq5_M6a0LOS3UrteaMcPtZVApJQoV=fR8jizbVzk96VFTHrA@mail.gmail.com>
-Subject: Re: [PATCH -next] gpu/drm/radeon: use DIV_ROUND_UP macro to do calculation
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     Dave Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104101128.8217-1-cjhuang@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 2:06 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
->
-> Don't open-code DIV_ROUND_UP() kernel macro.
->
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+On Mon, Jan 04, 2021 at 06:11:28PM +0800, Carl Huang wrote:
+> If controller driver has specified the irq_flags, mhi uses this specified
+> irq_flags. Otherwise, mhi uses default irq_flags.
+> 
+> The purpose of this change is to support one MSI vector for QCA6390.
+> MHI will use one same MSI vector too in this scenario.
+> 
+> In case of one MSI vector, IRQ_NO_BALANCING is needed when irq handler
+> is requested. The reason is if irq migration happens, the msi_data may
+> change too. However, the msi_data is already programmed to QCA6390
+> hardware during initialization phase. This msi_data inconsistence will
+> result in crash in kernel.
+> 
+> Another issue is in case of one MSI vector, IRQF_NO_SUSPEND will trigger
+> WARNINGS because QCA6390 wants to disable the IRQ during the suspend.
+> 
+> To avoid above two issues, QCA6390 driver specifies the irq_flags in case
+> of one MSI vector when mhi_register_controller is called.
+> 
+> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Applied.  Thanks!
+Applied to mhi-next!
 
-Alex
-
+Thanks,
+Mani
 
 > ---
->  drivers/gpu/drm/radeon/r600_cs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/r600_cs.c
-> index 390a9621604a..a3aea5329712 100644
-> --- a/drivers/gpu/drm/radeon/r600_cs.c
-> +++ b/drivers/gpu/drm/radeon/r600_cs.c
-> @@ -219,7 +219,7 @@ int r600_fmt_get_nblocksx(u32 format, u32 w)
->         if (bw == 0)
->                 return 0;
->
-> -       return (w + bw - 1) / bw;
-> +       return DIV_ROUND_UP(w, bw);
->  }
->
->  int r600_fmt_get_nblocksy(u32 format, u32 h)
-> @@ -233,7 +233,7 @@ int r600_fmt_get_nblocksy(u32 format, u32 h)
->         if (bh == 0)
->                 return 0;
->
-> -       return (h + bh - 1) / bh;
-> +       return DIV_ROUND_UP(h, bh);
->  }
->
->  struct array_mode_checker {
-> --
-> 2.22.0
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> v3:
+> - replace "client driver" with "controller driver"
+> - add Reviewed-by: Manivannan Sadhasivam 
+> 
+> v2:
+> - document irq_flags added to mhi_controller
+> 
+>  drivers/bus/mhi/core/init.c | 9 +++++++--
+>  include/linux/mhi.h         | 2 ++
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 381fdea..37903a8 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -148,12 +148,17 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
+>  {
+>  	struct mhi_event *mhi_event = mhi_cntrl->mhi_event;
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+> +	unsigned long irq_flags = IRQF_SHARED | IRQF_NO_SUSPEND;
+>  	int i, ret;
+>  
+> +	/* if controller driver has set irq_flags, use it */
+> +	if (mhi_cntrl->irq_flags)
+> +		irq_flags = mhi_cntrl->irq_flags;
+> +
+>  	/* Setup BHI_INTVEC IRQ */
+>  	ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
+>  				   mhi_intvec_threaded_handler,
+> -				   IRQF_SHARED | IRQF_NO_SUSPEND,
+> +				   irq_flags,
+>  				   "bhi", mhi_cntrl);
+>  	if (ret)
+>  		return ret;
+> @@ -171,7 +176,7 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
+>  
+>  		ret = request_irq(mhi_cntrl->irq[mhi_event->irq],
+>  				  mhi_irq_handler,
+> -				  IRQF_SHARED | IRQF_NO_SUSPEND,
+> +				  irq_flags,
+>  				  "mhi", mhi_event);
+>  		if (ret) {
+>  			dev_err(dev, "Error requesting irq:%d for ev:%d\n",
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index cb7cd54..77f1e3f 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -351,6 +351,7 @@ struct mhi_controller_config {
+>   * @fbc_download: MHI host needs to do complete image transfer (optional)
+>   * @pre_init: MHI host needs to do pre-initialization before power up
+>   * @wake_set: Device wakeup set flag
+> + * @irq_flags: irq flags passed to request_irq (optional)
+>   *
+>   * Fields marked as (required) need to be populated by the controller driver
+>   * before calling mhi_register_controller(). For the fields marked as (optional)
+> @@ -440,6 +441,7 @@ struct mhi_controller {
+>  	bool fbc_download;
+>  	bool pre_init;
+>  	bool wake_set;
+> +	unsigned long irq_flags;
+>  };
+>  
+>  /**
+> -- 
+> 2.7.4
+> 
