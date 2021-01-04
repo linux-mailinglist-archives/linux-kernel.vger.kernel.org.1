@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0F62E98FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302562E98FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727155AbhADPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbhADPjZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:39:25 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8ABC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 07:38:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GMHVu2Yo3JicVvPIGq1d2qVQDfyOOOp6irhThspKv6I=; b=AHSYoRpe0/gg+nd/1ArLM4x6rc
-        q1YooVjkAK0JxmDV7UHPyERl95sXpeE74wdnZqhu5mTIm4z0dS3C3uGMpFvwwk0Et9/YPGl2wLjlk
-        gkyOzREYQwULChRB0PGzn50HxHLO8F/TyES8T4d2f4MeaOJCZgD1LnpIFEahfwJyxrmKYzAocQpA9
-        eNk6Mbeviznm0eNZkCuGowcDMuJxOx2HejmPkjW0wXuxlOIY6+mPsMZcvr2ZCi4c207wR+YUgLFaW
-        TnP0kdBU94c3KE6JscQ58ZKP4QnSOtpeQOex1MndJQ2sixLdMn9pt37Wmhmj+WMAg5kpx+d61wZ42
-        KvBPDTyQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwRwM-0008Qs-4F; Mon, 04 Jan 2021 15:38:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8BE66300446;
-        Mon,  4 Jan 2021 16:38:36 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6813F2072C989; Mon,  4 Jan 2021 16:38:36 +0100 (CET)
-Date:   Mon, 4 Jan 2021 16:38:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will.deacon@arm.com>,
-        linux-kernel@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH] locking/lockdep: Use local_irq_save() with call_rcu()
-Message-ID: <20210104153836.GS3021@hirez.programming.kicks-ass.net>
-References: <20201222225553.15642-1-longman@redhat.com>
+        id S1727489AbhADPkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:40:45 -0500
+Received: from mout.gmx.net ([212.227.15.18]:48041 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727373AbhADPko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:40:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609774730;
+        bh=IPu/zgiNgNmz3x4T6k4qp/trrTx8/3vL3KZym3IUYgM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:References:Date:In-Reply-To;
+        b=bjmwzx3x2+5Hbpu0hAS/j0nZ8jcsvPA6YBueWr6W6GcWhVd/GwmToYx+1J+ZdiZrL
+         2li0nnMry+twwADjFaltiZ6I8Em33C86GFRWqgFIcEHFEKFiVKfEYKymVNDkLApsCG
+         aHaLsO9metJYvnxPIbx5AH8xtGPVMJCH6jKQZPhg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from strobe-jhalfs ([188.109.198.166]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MrhUE-1kBEZa1qGC-00nf5J; Mon, 04
+ Jan 2021 16:38:50 +0100
+From:   Stephen Berman <stephen.berman@gmx.net>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
+References: <87blkbx1gt.fsf@gmx.net>
+        <CAJZ5v0j86pX_a4bSLP=sobLoYhfQYV9dWL8HHf2941kXgND79g@mail.gmail.com>
+        <CAJZ5v0j7i86twMS+csYMaetUkvqjof4FD2GRNoZ_AN=SBF7F1w@mail.gmail.com>
+        <9709109.MH8tSaV5v9@kreacher>
+Date:   Mon, 04 Jan 2021 16:38:43 +0100
+In-Reply-To: <9709109.MH8tSaV5v9@kreacher> (Rafael J. Wysocki's message of
+        "Thu, 31 Dec 2020 21:46:11 +0100")
+Message-ID: <87eej0iuf0.fsf@gmx.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222225553.15642-1-longman@redhat.com>
+Content-Type: text/plain
+X-Provags-ID: V03:K1:4zd9Fn9oxJThrxYFz8JbUXu+EVRcv/zeUM5ArdhvzN5kc2MnNti
+ EHIMMLRAVKsMTIyCftrJtWahKRhYdYbP4vsY2j4RPA/HcOcK5Xjd0zkRQOrouc9u8G89bxD
+ Iod/Rq5YRw732M3UVyHs8IWeHvR58ZbYscdFLwTQCA1Z4m0pIjPLASfsZS6LV5kMRaCWTLh
+ fHQLLJudLP2ZbsrwdQgWw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9/YFwp5L8E8=:Go3TnzrpE6IOCBiaoZ8oIs
+ 5egBHQyTJ3uMrDFWSVuOi+IZtzLBy1XDI2L1ve5ADViMLdWCmF1mwwT73rPGnw/YqS1JhMM28
+ tVbyoTEBRpy5NkrUxILKHRWA66w+sRIWyLOGyDGA924hcM3o3rxTapXNDRCP6lq3X9o3cyQUx
+ 72OQ+7lKMPa/AtL8xRYotIfI0xP+dakuBYY6aM5rh4lM/WSnTzYVTBAL/QrUVfS0gIAjW8ziY
+ d5IgISTDxEqPAM7v34YQnvTBJHlPnd7/TVmIu+V/5hBKUKj0Sif2Zca3l1qo0nBLaadIBph5s
+ ZPulj2PYlwfYIXcCnitAPFjD0SwpPBC/BjX3gh+WidxItLgkAQvZe81zuUlQSUExSwzN0F7D6
+ w4c5KrzYjpePnRzG6YmA2zcwfejjst18RW7jj//IK1BbtFHsLSX9b4vJqwIUYmCrrlDkoGC4K
+ 6MuB9v1mcS2buGnwnIFehhIAUAIWgbCt02a+dw3YDTFYRdnOeY98oGZ3K9nlXbebC7clTY4SX
+ 9rnYIrTxp8a1zppoBxA+06KVzqXMLIaTRZN8iKoCCG7beonzRjUoBAdTh4e2hMD+2Z4mT/d9S
+ dQ5oYfuK5aldGdsehe/+15S1plJDPDhHVwLMvQ/BlPOBB7nxgFRrROBwN1Koo7H3R8VNMfcc1
+ 8UoXM2kDKQNXy2mwh3c3yB5565cRT5NRrEFW29MYJl7NvkN2FKtT10qLMbU3QBEB+Xlg1UBNW
+ VfHYeJ6KpM5FfaaBRAx2tgtuPa4jO7ghmo+Nq/30+NGHJag/EVFrf5CDYBtaqzmKlWVhk5Evz
+ EMDoh2WjTy4+s/8YxLdvW2U6bw8OImu1J18IY7Qu9aX0UPidmAtt9qCitaceo5C5t42B2PdOZ
+ r0OUIvTIzgoyT+2K5SSw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 05:55:53PM -0500, Waiman Long wrote:
-> The following lockdep splat was hit:
-> 
->  [  560.638354] WARNING: CPU: 79 PID: 27458 at kernel/rcu/tree_plugin.h:1749 call_rcu+0x6dc/0xf00
->     :
->  [  560.647761] RIP: 0010:call_rcu+0x6dc/0xf00
->  [  560.647763] Code: 0f 8f 29 04 00 00 e8 93 da 1c 00 48 8b 3c 24 57 9d 0f 1f 44 00 00 e9 19 fa ff ff 65 8b 05 38 83 c4 49 85 c0 0f 84 cd fb ff ff <0f> 0b e9 c6 fb ff ff e8 b8 45 51 00 4c 89 f2 48 b8 00 00 00 00 00
->  [  560.647764] RSP: 0018:ff11001050097b58 EFLAGS: 00010002
->  [  560.647766] RAX: 0000000000000001 RBX: ffffffffbb1f3360 RCX: 0000000000000001
->  [  560.647766] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffb99bac9c
->  [  560.647767] RBP: 1fe220020a012f73 R08: 000000010004005c R09: dffffc0000000000
->  [  560.647768] R10: dffffc0000000000 R11: 0000000000000003 R12: ff1100105b7f70e1
->  [  560.647769] R13: ffffffffb635d8a0 R14: ff1100105b7f72d8 R15: ff1100105b7f7040
->  [  560.647770] FS:  00007fd9b3437080(0000) GS:ff1100105b600000(0000) knlGS:0000000000000000
->  [  560.647771] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  [  560.647772] CR2: 00007fd9b30112bc CR3: 000000105e898006 CR4: 0000000000761ee0
->  [  560.647773] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  [  560.647773] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  [  560.647774] PKRU: 55555554
->  [  560.647774] Call Trace:
->  [  560.647778]  ? invoke_rcu_core+0x180/0x180
->  [  560.647782]  ? __is_module_percpu_address+0xed/0x440
->  [  560.647787]  lockdep_unregister_key+0x2ab/0x5b0
->  [  560.647791]  destroy_workqueue+0x40b/0x610
->  [  560.647862]  xlog_dealloc_log+0x216/0x2b0 [xfs]
->     :
-> 
-> This splat is caused by the fact that lockdep_unregister_key() uses
-> raw_local_irq_save() which doesn't update the hardirqs_enabled
-> percpu flag.  The call_rcu() function, however, will call
-> lockdep_assert_irqs_disabled() to check the hardirqs_enabled flag which
-> remained set in this case.
-> 
-> Fix this problem by using local_irq_save()/local_irq_restore() pairs
-> whenever call_rcu() is being called.
+On Thu, 31 Dec 2020 21:46:11 +0100 "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
 
-I'm not sure I much like all this,.. :/
+> ATM, I'm tempted to do something like the patch below (with the rationale
+> that it shouldn't be necessary to read the temperature right after updating
+> the trip points if polling is in use, because the next update through polling
+> will cause it to be read anyway and it will trigger trip point actions as
+> needed).
+>
+> Stephen, can you give it a go, please?
 
-> I think raw_local_irq_save() function can be used if no external
-> function is being called except maybe printk() as it means another
-> lockdep problem exists.
+On Sat, 02 Jan 2021 12:03:17 +0100 "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
 
-The reason lockdep is using raw_local_irq_save() is to avoid calling
-into itself again, notably local_irq_restore() will end up in
-mark_held_locks().
+> There is one more way to address this, probably better: instead of checking the
+> temperature right away in acpi_thermal_notify(), queue that on acpi_thermal_pm_queue
+> and so only if another thermal check is not pending.
+>
+> This way there will be at most one temperature check coming from
+> acpi_thermal_notify() queued up at any time which should prevent the
+> build-up of work items from taking place.
+>
+> So something like this:
 
-> Fixes: a0b0fd53e1e67 ("locking/lockdep: Free lock classes that are no longer in use")
+Thanks for the patches.  I'll try them as soon as I can.
 
-Seems dubious, as the lockdep_assert_irqs_disabled() that triggered was
-added after that patch.
-
-I'm thinking another solution would be to increment the lockdep
-recursion count before calling RCU, because then we'll fail
-__lockdep_enabled and the assertion gets killed. Hmm?
+Steve Berman
