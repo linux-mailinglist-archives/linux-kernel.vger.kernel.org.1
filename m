@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C202E9256
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C782E9259
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbhADJGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 04:06:46 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56497 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726289AbhADJGp (ORCPT
+        id S1726810AbhADJJH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 04:09:07 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:52977 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbhADJJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:06:45 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id E6B575C0053;
-        Mon,  4 Jan 2021 04:05:38 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 04 Jan 2021 04:05:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=W/tjyQHZg/eDqynJBaRQjpcaU17
-        zR9G/rdfy1VBuGYE=; b=GRIOaGj1/CGmcVQaGRBnri83ncEJuW/CQ9RZ9BTlcYr
-        CGjx5waepgDhoZ620dutTAWPdvKktSKjQswWg8OdYdfqM6m+gSWfA3gJH2Z8p6R2
-        BiOGlCDLLV2MvdcKVjSXeWLyV+VCWVMX3SPBeW3YE3umVS3oYocMtQGLJCQkLp0v
-        IekWwLrcZuMQavzY4pGpgGoPJ9nDAbKapXjbKDbBLOQT+zMuYkfwjy9c2iYeF+AO
-        JaVyKgz6Uphb9WU41Wh0wmnd5mopZALADzWMzfy6nOHur1uc1Hx8P2kGv6mXBKKM
-        jPstKPNzT2Xdc/qnZZhCQ+UWKPfQhG0SDcPr6ZJOzXA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=W/tjyQ
-        HZg/eDqynJBaRQjpcaU17zR9G/rdfy1VBuGYE=; b=K1uwnrslsBk3qI2p2RBa90
-        niF583DbmhQQZm2XnuoONy+bT8DU9f0LydTzvXCKcaHx+N8L2xWwVG/cegYQs8T3
-        C+kJiB4dlgOu7rKBfCC+Moc+8nNOckxkwJR9G4j0hw40LIsv/GCM/U9IJkK7ls2D
-        czxKemNIj21w3YUUl5656lCh1+oBDaFVHFnhMWRqFHoY0ta0DZzh3rMrvbx3Rmld
-        3fiGMw88/ho1gXQO6UNx7QCqonJbSbKDLS9V+dKN4t67tZ3XMZ7qwCAoOg0GBNP2
-        MJwiWuYGUBwjqiz+2K0ZXDrykHKB38SdHyMhOEGUjDj1LUD/McD08n6GgnW9UjfA
-        ==
-X-ME-Sender: <xms:YNryX8ZqR5wQJFc5J6DxSuxycUGVSp-scoELK1WY6B3E8tLgYI43qA>
-    <xme:YNryX3Z21B4pZJSYoip2TC7_Ui0K2MZJbI74MwDHrhOfgkL5WVe5EV9mQvQnb8N7c
-    rgjomkTWtVLuA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeffecutefuodetggdotefrodftvfcurf
-    hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfmjfcu
-    oehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgfffgf
-    eivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedrkeei
-    rdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:YNryX2_MDINKnRxw5u5Nny6P8KTmekCqtEtEsdTYY4UZuf6Naw0sCg>
-    <xmx:YNryX2oxVkk8aCjtT7tWbG0drAPG6Dv040QdpG4lbfakHmTUBUH3Fw>
-    <xmx:YNryX3oKFGA6WP7jw85x4iTADkUeIgZkXc_pOSrqEL8O6xauuyp7hw>
-    <xmx:YtryX2UYHzcf984c5k11DfP2LcXs_aHZ_-fevnAaABF3FetApWWyuA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9D0F31080059;
-        Mon,  4 Jan 2021 04:05:36 -0500 (EST)
-Date:   Mon, 4 Jan 2021 10:07:04 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Song Chen <chensong_2000@189.cn>
-Cc:     linux-kernel@vger.kernel.org, geert@linux-m68k.org,
-        sfr@canb.auug.org.au, abbotti@mev.co.uk,
-        hsweeten@visionengravers.com
-Subject: Re: [PATCH v2] staging: board: Remove macro board_staging
-Message-ID: <X/LauHVX4EPvuzU4@kroah.com>
-References: <1609750546-17118-1-git-send-email-chensong_2000@189.cn>
+        Mon, 4 Jan 2021 04:09:06 -0500
+X-Originating-IP: 90.89.98.255
+Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr [90.89.98.255])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 4F7661BF215;
+        Mon,  4 Jan 2021 09:08:20 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 10:08:19 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Ian Goegebuer <goegebuer@google.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        "Ronald G . Minnich" <rminnich@google.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one
+ or more colons
+Message-ID: <20210104100819.1d623425@xps13>
+In-Reply-To: <20201223215630.1917891-1-goegebuer@google.com>
+References: <1887c783-7a80-a71c-949f-c07c83c2d0fe@ti.com>
+        <20201223215630.1917891-1-goegebuer@google.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1609750546-17118-1-git-send-email-chensong_2000@189.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 04:55:46PM +0800, Song Chen wrote:
-> Macro is not supposed to have flow control in it's
-> statement, remove.
+Hello Ian, 
+
+Ian Goegebuer <goegebuer@google.com> wrote on Wed, 23 Dec 2020 13:56:30
+-0800:
+
+> On Intel platforms, the usable SPI area is located several
+> MiB in from the start, to leave room for descriptors and
+> the Management Engine binary. Further, not all the remaining
+> space can be used, as the last 16 MiB contains firmware.
 > 
-> Signed-off-by: Song Chen <chensong_2000@189.cn>
+> To make the SPI usable for mtdblock and other devices,
+> it is necessary to enable command line partitions so the
+> middle usable region can be specified.
 > 
+> Add a part_probes array which includes only "cmdelineparts",
+> and change to mtd_device_parse_register to use this part_probes.
+
+The commit title seem to be taken from another patch and does not
+match the below change. Or am I missing something?
+
+> Signed-off-by: "Ronald G. Minnich" <rminnich@google.com>
+> Signed-off-by: Ian Goegebuer <goegebuer@google.com>
 > ---
-> Changes in v2:
-> 1, kzm9d_init and armadillo800eva_init are not compatible
-> with the definition of device_initcall, fixed.
+>  drivers/mtd/spi-nor/controllers/intel-spi.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> index b54a56a68100..9de38851c411 100644
+> --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
+> +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+> @@ -903,6 +903,8 @@ static const struct spi_nor_controller_ops intel_spi_controller_ops = {
+>  	.erase = intel_spi_erase,
+>  };
+>  
+> +static const char * const part_probes[] = { "cmdlinepart", NULL };
+> +
+>  struct intel_spi *intel_spi_probe(struct device *dev,
+>  	struct resource *mem, const struct intel_spi_boardinfo *info)
+>  {
+> @@ -950,7 +952,8 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+>  	if (!ispi->writeable || !writeable)
+>  		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
+>  
+> -	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
+> +	ret = mtd_device_parse_register(&ispi->nor.mtd, part_probes,
+> +					NULL, &part, 1);
+>  	if (ret)
+>  		return ERR_PTR(ret);
+>  
 
-I already applied v1, so what am I supposed to do here?
-
-thanks,
-
-greg k-h
+Thanks,
+Miquèl
