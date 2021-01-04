@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7412EA06C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066F72EA071
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727360AbhADXHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:07:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726776AbhADXHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:07:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20B4F207BC;
-        Mon,  4 Jan 2021 23:06:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609801603;
-        bh=Sfwx449nsHFdYh7noCwwAejhJk8gHAupfrB4AoBvnj0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=n5zc0OnswJ5YIFyS6i16MYGmMcerCOA4njm+GO7KmL6ZVx5qEkHCSAXo48IGadNXf
-         zg8AKqF2OAQyOtMl5sO3fDzn+iAHxDJ7wAsQqNJyfRmKbhy76wiHfJRC9G/HYE6tB1
-         FCw7LU32ZrVNlJvcbGplSGWeKc65s3MMsnmnp9++5r2kRGPfvjPckQt92WLzdiPJQk
-         xXsE5R3gO1Ok5LrSM+XwFdpa8oK0zVrNj+wr42mzL2jpeVhD2TB9d2C1vEAd6f1Z8s
-         A7fumhs1WHyNEKDE0psr4UKH8cXifcRQSH8MCKPAZbyeY3qrJBuSr9c29wauNuWGOB
-         WsmOAfnTSCNFQ==
-Date:   Mon, 4 Jan 2021 15:06:42 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com,
-        Davide Caratti <dcaratti@redhat.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Subject: Re: [PATCH 5.10 01/63] net/sched: sch_taprio: reset child qdiscs
- before freeing them
-Message-ID: <20210104150642.23546136@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210104225827.GF3665355@sasha-vm>
-References: <20210104155708.800470590@linuxfoundation.org>
-        <20210104155708.875695855@linuxfoundation.org>
-        <20210104225827.GF3665355@sasha-vm>
+        id S1727342AbhADXJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:09:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51465 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726163AbhADXJK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 18:09:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609801664;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5yhsPzKCS64Ym9MievqPZFkfrX4PHb4luBL7gT8eRhE=;
+        b=dyW/x3cu1+ypli8rIBbSWu6oiRmmWJYRRz8vPsoVo1IyJX9nMzEBHr68p/SJgwTaws4/6X
+        VbAjNiGZqs6jjljLUgW2pjPn9pXIhx0JMmAyS41Jlej2RdLsjW/4VJ3ZebNjuB4I59bz3k
+        7/OoSvwCqZ5SUkgqJDZ8Yqg6Z4TulF4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-543-rtRqDYBVNau_mGlI3AI-kg-1; Mon, 04 Jan 2021 18:07:40 -0500
+X-MC-Unique: rtRqDYBVNau_mGlI3AI-kg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D416801B33;
+        Mon,  4 Jan 2021 23:07:37 +0000 (UTC)
+Received: from treble (ovpn-113-48.rdu2.redhat.com [10.10.113.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 439575D9C6;
+        Mon,  4 Jan 2021 23:07:34 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 17:07:32 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Olof Johansson <olof@lixom.net>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Windsor <dwindsor@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
+        Rik van Riel <riel@surriel.com>,
+        George Spelvin <lkml@sdf.org>
+Subject: Re: [PATCH v2] bug: further enhance use of CHECK_DATA_CORRUPTION
+Message-ID: <20210104230426.ygzkhnonys4mtc7z@treble>
+References: <1491343938-75336-1-git-send-email-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1491343938-75336-1-git-send-email-keescook@chromium.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Jan 2021 17:58:27 -0500 Sasha Levin wrote:
-> On Mon, Jan 04, 2021 at 04:56:54PM +0100, Greg Kroah-Hartman wrote:
-> >From: Davide Caratti <dcaratti@redhat.com>
-> >
-> >[ Upstream commit 44d4775ca51805b376a8db5b34f650434a08e556 ]
-> >
-> >syzkaller shows that packets can still be dequeued while taprio_destroy()
-> >is running. Let sch_taprio use the reset() function to cancel the advance
-> >timer and drop all skbs from the child qdiscs.
-> >
-> >Fixes: 5a781ccbd19e ("tc: Add support for configuring the taprio scheduler")
-> >Link: https://syzkaller.appspot.com/bug?id=f362872379bf8f0017fb667c1ab158f2d1e764ae
-> >Reported-by: syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com
-> >Signed-off-by: Davide Caratti <dcaratti@redhat.com>
-> >Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-> >Link: https://lore.kernel.org/r/63b6d79b0e830ebb0283e020db4df3cdfdfb2b94.1608142843.git.dcaratti@redhat.com
-> >Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> >Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>  
+On Tue, Apr 04, 2017 at 03:12:11PM -0700, Kees Cook wrote:
+> This continues in applying the CHECK_DATA_CORRUPTION tests where
+> appropriate, and pulling similar CONFIGs under the same check. Most
+> notably, this adds the checks to refcount_t so that system builders can
+> Oops their kernels when encountering a potential refcounter attack. (And
+> so now the LKDTM tests for refcount issues pass correctly.)
 > 
-> I noticed that there's a fix for this patch going through netdev (but
-> not yet in Linus's tree). The fix reads to me like it fixes a missed
-> corner case by this patch rather than this patch being incorrect, so
-> I'll leave this patch in. If anyone disagrees please speak up :)
+> The series depends on the changes in -next made to lib/refcount.c,
+> so it might be easiest if this goes through the locking tree...
+> 
+> v2 is a rebase to -next and adjusts to using WARN_ONCE() instead of WARN().
+> 
+> -Kees
+> 
+> v1 was here: https://lkml.org/lkml/2017/3/6/720
 
-Right, the other fix is independent, it came up in review and we decided
-to address it separately.
+Ping?  Just wondering what ever happened to this 3+ year old series...
+
+-- 
+Josh
+
