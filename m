@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54042E9D30
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFCF2E9D2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbhADSiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:38:06 -0500
-Received: from vern.gendns.com ([98.142.107.122]:39606 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726163AbhADSiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:38:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=5BYF65U7qjLGCDhDXQ6WVMeSp4lcIaka2HzC0I24YYE=; b=ucSIWy1FxPCpTVUnyKMXLe6VIc
-        /BnMeex4D2LqzEpQP3I6uQDt0t2sZqvJpbRZVuxVW47bAi5gdbP75PNLzMBSn1Ny2+A+29xdDjDHg
-        bDTsuZIVuMBxu5eFJcQEYKA1TkeJesan4k2G/TQh+yXAeWL5UAnsXW3EZeWspQuJC5k1blCeQ3NCj
-        zIpDdYWWfMyI2Q6iUGcS2TMYDGwS/9hlfep8sZruFxn8kw05NGXG5+hhdv6WKRE2iEKRGgvh7n1BE
-        WByC5+XmVDxLpLbdV6RgkJ1RohqVPFTjOyMUJXeIx4UzAC7JPJAbZBNEAjXHNZjyIRRF+1WIVPu6c
-        QZRb31Kw==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:51220 helo=freyr.lechnology.com)
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1kwUjK-0004S9-28; Mon, 04 Jan 2021 13:37:22 -0500
-From:   David Lechner <david@lechnology.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Lechner <david@lechnology.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Suman Anna <s-anna@ti.com>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] irqchip/irq-pruss-intc: implement set_type() callback
-Date:   Mon,  4 Jan 2021 12:36:56 -0600
-Message-Id: <20210104183656.333256-1-david@lechnology.com>
-X-Mailer: git-send-email 2.25.1
+        id S1727896AbhADShv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 13:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726418AbhADShu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 13:37:50 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C576DC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 10:37:09 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id q25so33167431oij.10
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 10:37:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D0br3wkGScF5qbNK3FSimsSwz8m6L15tNlHZCr/gQ1E=;
+        b=xeWdQz/PuaexWTTzQl1bJT9cuC98+rdp2YshmMf1IvsDTs6pnBX6F4tzfHjYe2G51P
+         pEG3RHn129a1qPg9bUri2XChBaA9earXdW2YUEkiaqeAUjB1gzfreu6YQ1D+drImPoMZ
+         LrnO+KOCiGVmVsiZHwOExgOhDXirFn722+up51qABGixHpgVI83r+vZI7tdkVFLSE6z4
+         7yOcBIJU5lj+atKfj3iZ5otp+DZgf5a2NLsrwiav4qx1EwlujRyUmMr8F+KpUTuXpdsY
+         NDMwIf5SERQ1jM1HzL2xjSydXRuB8TAyocpRbDlHNmeAHRRHVVUgfB+3SibCUkOFhFg+
+         6C2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D0br3wkGScF5qbNK3FSimsSwz8m6L15tNlHZCr/gQ1E=;
+        b=YkYPQUTxZ67ONGivk+sGWK6gAI3IoJPQ4CJyXaRMC3uU51qLnIIMoFNj3I/DX5tOIe
+         ihg64sVLkAVp3wBzwIo4EQKMOPFE4Qrt89WRCf2AXdE2XShGs0LA/YbhEhrRY/XPkfh9
+         M4PXw5sVeryWmRd0Tq1u80lvhPXdQWxOehNS1AHaMtrkgZUzK0x+pQc0kJnpVoh8jZVR
+         NiXAY1W91GrWl7oXV/qjDV+xDjS+h3VSVJ9UTssMqdjTX3QVARjmiVnXoGhpCiPLBQo1
+         nfGhELIe+VBn+QTAGjgXIoJQjmFlvA0Q7HHZsny5qdKds1psoMIcoeaCL90LP/rrURd3
+         bzkg==
+X-Gm-Message-State: AOAM533Sp7L8UKb9h3QgFCHoiNXX2PXckr+UkLHZBUeiU0HHeET9kGEp
+        MKg0vv6RKJrtvPaoweXgMGaOUg==
+X-Google-Smtp-Source: ABdhPJwk5OyQVNrEWQj2HcRNSEsj5SteHD+WK+zbUk8xyIFouWIvjIDbz7gsJCyn0Xc5QcGcJCOIgg==
+X-Received: by 2002:a05:6808:7d0:: with SMTP id f16mr160921oij.109.1609785429256;
+        Mon, 04 Jan 2021 10:37:09 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g3sm12866008ooi.28.2021.01.04.10.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 10:37:08 -0800 (PST)
+Date:   Mon, 4 Jan 2021 12:37:06 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
+ bindings
+Message-ID: <X/NgUp/pm9T0JlTw@builder.lan>
+References: <20201208085748.3684670-1-vkoul@kernel.org>
+ <20201210135253.GA2405508@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210135253.GA2405508@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This implements the irqchip set_type() callback for the TI PRUSS
-interrupt controller. This is needed for cases where an event needs
-to be active low.
+On Thu 10 Dec 07:52 CST 2020, Rob Herring wrote:
 
-According to the technical reference manual, the polarity should always
-be set to high, however in practice, the polarity needs to be set low
-for the McASP Tx/Rx system event in conjunction with soft UART PRU
-firmware for TI AM18XX SoCs, otherwise it doesn't work.
+> On Tue, Dec 08, 2020 at 02:27:47PM +0530, Vinod Koul wrote:
+> > Add device tree binding Documentation details for Qualcomm SM8350
+> > pinctrl driver.
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> > 
+> > Changes since v1:
+> >   - Fix pins pattern
+> >   - Fix example indent
+> > 
+> >  .../bindings/pinctrl/qcom,sm8350-pinctrl.yaml | 151 ++++++++++++++++++
+> >  1 file changed, 151 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
+> > new file mode 100644
+> > index 000000000000..8ddb347c43da
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
+> > @@ -0,0 +1,151 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pinctrl/qcom,sm8350-pinctrl.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm Technologies, Inc. SM8350 TLMM block
+> > +
+> > +maintainers:
+> > +  - Vinod Koul <vkoul@kernel.org>
+> > +
+> > +description: |
+> > +  This binding describes the Top Level Mode Multiplexer block found in the
+> > +  SM8350 platform.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: qcom,sm8350-pinctrl
+> 
+> If this block is called TLMM, then I'd expect that to be in the 
+> compatible string. But I guess this is consistent with the others.
+> 
 
-Signed-off-by: David Lechner <david@lechnology.com>
----
- drivers/irqchip/irq-pruss-intc.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+This is my mistake 7 years ago and it bothers me every time we write a
+new one of these - in particular since we now support a few different
+"Qualcomm pinctrl" blocks.
 
-diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-intc.c
-index 5409016e6ca0..f882af8a7ded 100644
---- a/drivers/irqchip/irq-pruss-intc.c
-+++ b/drivers/irqchip/irq-pruss-intc.c
-@@ -334,6 +334,32 @@ static void pruss_intc_irq_unmask(struct irq_data *data)
- 	pruss_intc_write_reg(intc, PRU_INTC_EISR, hwirq);
- }
- 
-+static int pruss_intc_irq_set_type(struct irq_data *data, unsigned int type)
-+{
-+	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
-+	u32 reg, bit, val;
-+
-+	if (type & IRQ_TYPE_LEVEL_MASK) {
-+		/* polarity register */
-+		reg = PRU_INTC_SIPR(data->hwirq / 32);
-+		bit = BIT(data->hwirq % 32);
-+		val = pruss_intc_read_reg(intc, reg);
-+
-+		/*
-+		 * This check also ensures that IRQ_TYPE_DEFAULT will result
-+		 * in setting the level to high.
-+		 */
-+		if (type & IRQ_TYPE_LEVEL_HIGH)
-+			val |= bit;
-+		else
-+			val &= ~bit;
-+
-+		pruss_intc_write_reg(intc, reg, val);
-+	}
-+
-+	return 0;
-+}
-+
- static int pruss_intc_irq_reqres(struct irq_data *data)
- {
- 	if (!try_module_get(THIS_MODULE))
-@@ -389,6 +415,7 @@ static struct irq_chip pruss_irqchip = {
- 	.irq_ack		= pruss_intc_irq_ack,
- 	.irq_mask		= pruss_intc_irq_mask,
- 	.irq_unmask		= pruss_intc_irq_unmask,
-+	.irq_set_type		= pruss_intc_irq_set_type,
- 	.irq_request_resources	= pruss_intc_irq_reqres,
- 	.irq_release_resources	= pruss_intc_irq_relres,
- 	.irq_get_irqchip_state	= pruss_intc_irq_get_irqchip_state,
--- 
-2.25.1
+It would be ugly for a while, but I'm in favor of naming these
+"qcom,<platform>-tlmm" going forward.
 
+PS. And we can solve the ugliness by introducing the "proper" naming
+(and keeping the old one for backwards compatibility) as we migrate the
+binding documents to yaml.
+
+Regards,
+Bjorn
