@@ -2,107 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176DD2E931E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8982E9321
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbhADKIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:08:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726026AbhADKIk (ORCPT
+        id S1726248AbhADKMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:12:24 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:30456 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbhADKMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:08:40 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16092C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 02:08:00 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id e25so18771934wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 02:08:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=miG7CO4g5j20n9mrQMJx+RS21ZtCLqOgtOcLQw9KSDs=;
-        b=Lg7fUwr3AMMbu21IW1G8pugaRA5SNCJaW71dzVrsNi0eLfCFI6DLso9TPduv3Fwl+d
-         F8LBc9rpDsiZlgcDymsDqFXHeGQ9r79AQg0D8eJtYMk+fRn4gqtUSNEW4zSUb4/s4UjB
-         orcsSCCOenu3XQzjy1ErOHJIZAOdGEJ0t7uSFKz65w56ete2sthEifuLASHttKbuRRma
-         paMnaDaig0mM0Qmd536zabVBAHcl9UN2JmSKpMU5UGtvh/aQGTcL7X24uRO6mYjwJdwW
-         LQwH9V1M3c7Ky/qU9v0QCX1PAOJPuRZolAzh7zseO9iVcUu0SIVFcSPqQsWkkpbxubSu
-         Rzew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=miG7CO4g5j20n9mrQMJx+RS21ZtCLqOgtOcLQw9KSDs=;
-        b=Dj0Met4chED+KsB83mNQM5nkVgsG8ELqwa4tmoKgrsE1acfdzikZV9IlVSH4SFaGRk
-         wdah0supB+H+0cucwjneXkmWOOrutL61zVDCKcV5QWQEmdjQBG8G3rHHNSOanAwQLF5O
-         BSRHhXSuavQpQcDi2Apl25HKoOmYP7bQsNOFDZLziDYrJGgsp0eR9M6NXhPajVJQn0ZS
-         pz/qhZ9GlDX47AZrnQ2y1ivAzryIWCpUqu0EwKMTc+GYS7Wu+lAkO6htj75oi4BR1wM2
-         1elm4NR1rI3YEHrNgMEn9izLf+j3WjUesGaNDWLrDEwjpgTm1ZAcnP8I9m2L39Pdw7c9
-         9Kig==
-X-Gm-Message-State: AOAM5337yxbwqw1rKzCT15MZG36I9xCnh2NeHBqGVU5lklrRQ8xz2zNM
-        C8qXJNZ6+yBP0/JownYIbbHdYQ==
-X-Google-Smtp-Source: ABdhPJzf1aX815VmR6wjjt7zvuM5RGyRKlwUh6d84TKCy6s8zu4m42oY9tKbexlZo9VISvD5GidvuQ==
-X-Received: by 2002:a1c:7d58:: with SMTP id y85mr26041528wmc.50.1609754878758;
-        Mon, 04 Jan 2021 02:07:58 -0800 (PST)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id o23sm95611006wro.57.2021.01.04.02.07.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 02:07:58 -0800 (PST)
-Date:   Mon, 4 Jan 2021 10:07:56 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     lee.jones@linaro.org, jingoohan1@gmail.com,
-        b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] video: backlight: use DEFINE_MUTEX (and
- mutex_init() had been too late)
-Message-ID: <20210104100756.sjpzzchy4tklt2rd@holly.lan>
-References: <20201223141035.32178-1-zhengyongjun3@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201223141035.32178-1-zhengyongjun3@huawei.com>
+        Mon, 4 Jan 2021 05:12:23 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609755122; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=b1YdbSOxLE1TmKfcFnR94xmBHprCl+Qqt/okT9c2OCE=; b=GaoJnsyEi3uIiekNS+zPjb6mWSMZ6PDowzLM0kTbqaplQT8ZnYa+o3GMRlaJAAj5ScoR+i8/
+ YK7N5KKg6Ep+JA32rt0wvcw2S/IUJCHXWwIJCZ3ZlEk+ysid+dUlHDJZPMtMgrd2+Dg1ka0j
+ nf90952DwtNjU9466yZ2F+nwIjU=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5ff2e9d9cf8ceaa9eec0fa70 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Jan 2021 10:11:37
+ GMT
+Sender: cjhuang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B2417C433C6; Mon,  4 Jan 2021 10:11:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from cjhuang-Celadon-RN.qca.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: cjhuang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 663C1C433CA;
+        Mon,  4 Jan 2021 10:11:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 663C1C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cjhuang@codeaurora.org
+From:   Carl Huang <cjhuang@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
+Subject: [PATCH v3] mhi: use irq_flags if controller driver configures it
+Date:   Mon,  4 Jan 2021 18:11:28 +0800
+Message-Id: <20210104101128.8217-1-cjhuang@codeaurora.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 10:10:35PM +0800, Zheng Yongjun wrote:
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+If controller driver has specified the irq_flags, mhi uses this specified
+irq_flags. Otherwise, mhi uses default irq_flags.
 
-Can you explain the Subject for this patch in more detail?
+The purpose of this change is to support one MSI vector for QCA6390.
+MHI will use one same MSI vector too in this scenario.
 
-If this patch is required to correct a bug then it looks to me like it
-is incomplete.
+In case of one MSI vector, IRQ_NO_BALANCING is needed when irq handler
+is requested. The reason is if irq migration happens, the msi_data may
+change too. However, the msi_data is already programmed to QCA6390
+hardware during initialization phase. This msi_data inconsistence will
+result in crash in kernel.
 
+Another issue is in case of one MSI vector, IRQF_NO_SUSPEND will trigger
+WARNINGS because QCA6390 wants to disable the IRQ during the suspend.
 
-Daniel.
+To avoid above two issues, QCA6390 driver specifies the irq_flags in case
+of one MSI vector when mhi_register_controller is called.
 
+Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+v3:
+- replace "client driver" with "controller driver"
+- add Reviewed-by: Manivannan Sadhasivam 
 
-> ---
->  drivers/video/backlight/backlight.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/backlight.c b/drivers/video/backlight/backlight.c
-> index 537fe1b376ad..d7a09c422547 100644
-> --- a/drivers/video/backlight/backlight.c
-> +++ b/drivers/video/backlight/backlight.c
-> @@ -64,7 +64,7 @@
->   */
->  
->  static struct list_head backlight_dev_list;
-> -static struct mutex backlight_dev_list_mutex;
-> +static DEFINE_MUTEX(backlight_dev_list_mutex);
->  static struct blocking_notifier_head backlight_notifier;
->  
->  static const char *const backlight_types[] = {
-> @@ -757,7 +757,6 @@ static int __init backlight_class_init(void)
->  	backlight_class->dev_groups = bl_device_groups;
->  	backlight_class->pm = &backlight_class_dev_pm_ops;
->  	INIT_LIST_HEAD(&backlight_dev_list);
-> -	mutex_init(&backlight_dev_list_mutex);
->  	BLOCKING_INIT_NOTIFIER_HEAD(&backlight_notifier);
->  
->  	return 0;
-> -- 
-> 2.22.0
-> 
+v2:
+- document irq_flags added to mhi_controller
+
+ drivers/bus/mhi/core/init.c | 9 +++++++--
+ include/linux/mhi.h         | 2 ++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 381fdea..37903a8 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -148,12 +148,17 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
+ {
+ 	struct mhi_event *mhi_event = mhi_cntrl->mhi_event;
+ 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
++	unsigned long irq_flags = IRQF_SHARED | IRQF_NO_SUSPEND;
+ 	int i, ret;
+ 
++	/* if controller driver has set irq_flags, use it */
++	if (mhi_cntrl->irq_flags)
++		irq_flags = mhi_cntrl->irq_flags;
++
+ 	/* Setup BHI_INTVEC IRQ */
+ 	ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
+ 				   mhi_intvec_threaded_handler,
+-				   IRQF_SHARED | IRQF_NO_SUSPEND,
++				   irq_flags,
+ 				   "bhi", mhi_cntrl);
+ 	if (ret)
+ 		return ret;
+@@ -171,7 +176,7 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
+ 
+ 		ret = request_irq(mhi_cntrl->irq[mhi_event->irq],
+ 				  mhi_irq_handler,
+-				  IRQF_SHARED | IRQF_NO_SUSPEND,
++				  irq_flags,
+ 				  "mhi", mhi_event);
+ 		if (ret) {
+ 			dev_err(dev, "Error requesting irq:%d for ev:%d\n",
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index cb7cd54..77f1e3f 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -351,6 +351,7 @@ struct mhi_controller_config {
+  * @fbc_download: MHI host needs to do complete image transfer (optional)
+  * @pre_init: MHI host needs to do pre-initialization before power up
+  * @wake_set: Device wakeup set flag
++ * @irq_flags: irq flags passed to request_irq (optional)
+  *
+  * Fields marked as (required) need to be populated by the controller driver
+  * before calling mhi_register_controller(). For the fields marked as (optional)
+@@ -440,6 +441,7 @@ struct mhi_controller {
+ 	bool fbc_download;
+ 	bool pre_init;
+ 	bool wake_set;
++	unsigned long irq_flags;
+ };
+ 
+ /**
+-- 
+2.7.4
+
