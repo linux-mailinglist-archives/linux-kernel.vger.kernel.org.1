@@ -2,118 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB392E9F1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD832E9F41
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 22:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbhADU67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:58:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726074AbhADU67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:58:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE5C020776;
-        Mon,  4 Jan 2021 20:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609793898;
-        bh=rripTFNyW3VaYVp3Y8MDcqMe6Ie2kproK4WF45PJ+4M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZJKhiK9+tFzJMm2kqMFeYWb26UeMDIc+iJiKl7qZXymkkv77ZNi1mAXD6zZPRWedd
-         sthQ2beSx68Q0ZH7GwX9cWE/nJn01EY58rdY/lugXsiyPC4X2h6t6GwGWH2plisOYi
-         plHinXNjCts+vYdIQk7QAOoPNZte23vdJAk09y2j2KC0jnMBF6JdtBAs2TyYXXoVzU
-         gGjgAJCF7vCsEknyIYtjhSW9wLp4/k3peFt5rHz1UrY3fVVx1b37mex8TmHrFdKLwe
-         SN2NaMaHmHH1BXstCmLpQR2jvg7DA2UdpHdhKfliaQ6atnJIsnUkVPxYjs3L1yAPwG
-         t3Dw398hpUT2g==
-Date:   Mon, 4 Jan 2021 21:58:15 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     bugzilla-daemon@bugzilla.kernel.org, jdelvare@suse.de,
-        benjamin.tissoires@redhat.com, rui.zhang@intel.com,
-        tglx@linutronix.de, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Bug 202453] TRACE irq/18-i801_smb Tainted when enabled
- threadirqs in kernel commandline.
-Message-ID: <20210104205815.GA10328@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        bugzilla-daemon@bugzilla.kernel.org, jdelvare@suse.de,
-        benjamin.tissoires@redhat.com, rui.zhang@intel.com,
-        tglx@linutronix.de, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <bug-202453-19117@https.bugzilla.kernel.org/>
- <bug-202453-19117-0k1QQBMPTi@https.bugzilla.kernel.org/>
- <20201204201930.vtvitsq6xcftjj3o@spock.localdomain>
+        id S1726600AbhADVDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 16:03:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57315 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725921AbhADVDN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 16:03:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609794106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tY+Elpc7SnbmLCyNsKOB0BDPeVmtTALwwEA3Eq9XNRE=;
+        b=DnaD+MhYbWAfnWxp5A+YNQmci591L7pZMEQhoMU7Zi9+ZpozP2nyVUhmInEoR3iLFYboSK
+        WwK2NWOXc8BE+og4H6Mes70/wVulw/NiyPzwZJ6wKyHxKY4ljbpomQPAEJzoopevXT6JIk
+        tgturkGSk3bhi/pEzwVsy+j+G/WiDeU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-YFsE2j1KMd2hJeASdX9_TQ-1; Mon, 04 Jan 2021 16:01:44 -0500
+X-MC-Unique: YFsE2j1KMd2hJeASdX9_TQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDC9B107ACF6;
+        Mon,  4 Jan 2021 21:01:41 +0000 (UTC)
+Received: from mail (ovpn-112-76.rdu2.redhat.com [10.10.112.76])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BC9C85D9C6;
+        Mon,  4 Jan 2021 21:01:37 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 16:01:37 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
+ writeprotect
+Message-ID: <X/OCMalFYnDdGnch@redhat.com>
+References: <20201225092529.3228466-1-namit@vmware.com>
+ <20201225092529.3228466-2-namit@vmware.com>
+ <20210104122227.GL3021@hirez.programming.kicks-ass.net>
+ <X/NrdnoDHgFd0Ku1@redhat.com>
+ <A7AC77D2-6901-4225-911B-EDBF013DCA42@vmware.com>
+ <X/N4aqRgyxffhMSs@redhat.com>
+ <73EE9007-65AF-4416-9930-D992C74447A9@vmware.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201204201930.vtvitsq6xcftjj3o@spock.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <73EE9007-65AF-4416-9930-D992C74447A9@vmware.com>
+User-Agent: Mutt/2.0.4 (2020-12-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 04, 2021 at 08:39:37PM +0000, Nadav Amit wrote:
+> > On Jan 4, 2021, at 12:19 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> > 
+> > On Mon, Jan 04, 2021 at 07:35:06PM +0000, Nadav Amit wrote:
+> >>> On Jan 4, 2021, at 11:24 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> >>> 
+> >>> Hello,
+> >>> 
+> >>> On Mon, Jan 04, 2021 at 01:22:27PM +0100, Peter Zijlstra wrote:
+> >>>> On Fri, Dec 25, 2020 at 01:25:28AM -0800, Nadav Amit wrote:
+> >>>> 
+> >>>>> The scenario that happens in selftests/vm/userfaultfd is as follows:
+> >>>>> 
+> >>>>> cpu0				cpu1			cpu2
+> >>>>> ----				----			----
+> >>>>> 							[ Writable PTE
+> >>>>> 							  cached in TLB ]
+> >>>>> userfaultfd_writeprotect()
+> >>>>> [ write-*unprotect* ]
+> >>>>> mwriteprotect_range()
+> >>>>> mmap_read_lock()
+> >>>>> change_protection()
+> >>>>> 
+> >>>>> change_protection_range()
+> >>>>> ...
+> >>>>> change_pte_range()
+> >>>>> [ *clear* “write”-bit ]
+> >>>>> [ defer TLB flushes ]
+> >>>>> 				[ page-fault ]
+> >>>>> 				...
+> >>>>> 				wp_page_copy()
+> >>>>> 				 cow_user_page()
+> >>>>> 				  [ copy page ]
+> >>>>> 							[ write to old
+> >>>>> 							  page ]
+> >>>>> 				...
+> >>>>> 				 set_pte_at_notify()
+> >>>> 
+> >>>> Yuck!
+> >>> 
+> >>> Note, the above was posted before we figured out the details so it
+> >>> wasn't showing the real deferred tlb flush that caused problems (the
+> >>> one showed on the left causes zero issues).
+> >> 
+> >> Actually it was posted after (note that this is v2). The aforementioned
+> >> scenario that Peter regards to is the one that I actually encountered (not
+> >> the second scenario that is “theoretical”). This scenario that Peter regards
+> >> is indeed more “stupid” in the sense that we should just not write-protect
+> >> the PTE on userfaultfd write-unprotect.
+> >> 
+> >> Let me know if I made any mistake in the description.
+> > 
+> > I didn't say there is a mistake. I said it is not showing the real
+> > deferred tlb flush that cause problems.
+> > 
+> > The issue here is that we have a "defer tlb flush" that runs after
+> > "write to old page".
+> > 
+> > If you look at the above, you're induced to think the "defer tlb
+> > flush" that causes issues is the one in cpu0. It's not. That is
+> > totally harmless.
+> 
+> I do not understand what you say. The deferred TLB flush on cpu0 *is* the
+> the one that causes the problem. The PTE is write-protected (although it is
+> a userfaultfd unprotect operation), causing cpu1 to encounter a #PF, handle
+> the page-fault (and copy), while cpu2 keeps writing to the source page. If
+> cpu0 did not defer the TLB flush, this problem would not happen.
 
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Your argument "If cpu0 did not defer the TLB flush, this problem would
+not happen" is identical to "if the cpu0 has a small TLB size and the
+tlb entry is recycled, the problem would not happen".
 
+There are a multitude of factors that are unrelated to the real
+problematic deferred tlb flush that may happen and still won't cause
+the issue, including a parallel IPI.
 
-> Jean, Wolfram, Benjamin, or someone else, could you please check Thomas'
-> questions above and let us know what you think?
+The point is that we don't need to worry about the "defer TLB flushes"
+of the un-wrprotect, because you said earlier that deferring tlb
+flushes when you're doing "permission promotions" does not cause
+problems.
 
-Sending this message here again because Bugzilla didn't know about the
-mailing lists. Sorry for the noise!
+The only "deferred tlb flush" we need to worry about, not in the
+picture, is the one following the actual permission removal (the
+wrprotection).
 
-===
+> it shows the write that triggers the corruption instead of discussing
+> “windows”, which might be less clear. Running copy_user_page() with stale
 
-Okay, here is some context about HostNotify. It is a rarely used SMBus
-extension which allows clients to send a notification to the host. The
-host must be able to listen to the I2C address 0x08. The only host
-controller which has implemented this natively is the i801 because the
-hardware sets a bit when this happened. (Sidenote, the only clients I am
-aware of which send notifications are some touchscreen controllers.)
-This is why the i801 driver calls i2c_handle_smbus_host_notify()
-directly. And only that one, so far.
+I think showing exactly where the race window opens is key to
+understand the issue, but then that's the way I work and feel free to
+think it in any other way that may sound simpler.
 
-But recently, Alain Volmat got the idea that we can use the generic
-slave framework to make host controllers listen on address 0x08 and
-check for a valid HostNotification. This is why the generic
-i2c_slave_host_notify_cb() calls i2c_handle_smbus_host_notify(), too.
-This allows all I2C host controllers which select I2C_SLAVE to use
-HostNotify. Those are few currently, but their number is steadily
-increasing.
+I just worried people thinks the deferred tlb flush in your v2 trace
+is the one that causes problem when obviously it's not since it
+follows a permission promotion. Once that is clear, feel free to
+reject my trace.
 
-And as it looks to me, currently all drivers selecting I2C_SLAVE check
-their interrupts which handle the slave state (i.e. managing I2C address
-0x08) in a non-threaded context. But there is no guarantee for that.
-Unless we formulate one. However, my gut feeling is that option #3 might
-be not so much churn for this case, but I need to double check if I am
-overlooking something.
+All I care about is that performance don't regress from CPU-speed to
+disk I/O spindle speed, for soft dirty and uffd-wp.
 
-Given that only some touchscreen controllers send HostNotify and you
-need to enforce threaded irqs for this WARN, this might explain why it
-went unnoticed for 10 years.
+> I am not married to my description and if you (and others) insist I would
+> copy-paste your version.
 
-I hope this helps. Thank you everyone for the input provided so far!
+I definitely don't insist, I only wanted to clarify in case it may not
+have been clear the problematic deferred tlb flush wasn't part of your
+trace.
 
+> Are you talking about the first scenario (write-unprotect), the second one
+> (write-protect followed by write-unprotect), both? It seems to me that all
+> the deferred TLB flushes are mentioned at the point they are deferred. I can
+> add the point in which they are performed.
 
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
+The only case that has an issue for uffd-wp is in my trace and only
+ever happens if there's a wrprotect in flight, the deferred tlb flush
+of the wrprotect is deferred (and that's the problematic one that
+closes the window when it finally runs) and un-wrprotect runs. The
+window opens when the un-wrprotect unlocks the PT lock. The deferred
+tlb flush of un-wrprotect is as relevant for this race, as random tlb
+flushes from IPI or the TLB being small or none.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Andrea
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/zgWMACgkQFA3kzBSg
-KbbHXQ//RFAcUW5RK7i/luC/jUas52ktWPd734DzP+JcdZ4xhKun/a9hI4cgEOkV
-fT3eR1JafTkpI/ZyAFYX46qTuv6IDQLpeXxt/2FOpWMwd1R8vvtTuPHsw/T+7InG
-Np+COEbGc9QqlqWj8foYoAH9AiozOzmzxergTH1nYUIsZwiicq5aNLWFoq8zMuDM
-54aaBbI1xE84HmOk+PGahKjfMAdeY+DdDocvpaOwf4TcACnGlS8nn17pGuSFZGCm
-K73VMKBLWYeRBaFIFIQqgF66Nyh6Bv0Hbo1YlOQHLjLLHyU7mNgWG5YOwmep30uC
-f9jNQ7u1eBJxyFo9eCxy7KC9wPOd1mue/r3MPLxAxk7xoTw7mKh0FM4X0uktAhhU
-CZ7QqvuePHJS3a1AvLkrvTuvIl4N123zUJZ+GqKMRfWmVaWBqKWCZIrBg4wMNrxd
-wO6QwVChAmtEBUoCh2a72EztPL6diTjoxYQUCjxjcsa3mSrCbUtVv7pS7oHOBxOZ
-AYz16wqZOt9Xu6yo85u5nvlMZAvN2d++foHitiawAWJBooFP15FJvrl9Hn+tTqpj
-FDXsOcwzBB5CrwzYuMsED1cW2wGMfWC/gayLASLbMyWTks7QGvqjNcW5K/HovLLr
-uUGmagIjWFJImpCi6PFx31G6I/84c7c+A8LS/ZV3ArH/77oKQpU=
-=L6g/
------END PGP SIGNATURE-----
-
---x+6KMIRAuhnl3hBn--
