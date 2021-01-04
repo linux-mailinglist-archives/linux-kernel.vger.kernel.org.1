@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59152E9F90
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 22:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902FF2E9F86
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 22:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727172AbhADVbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 16:31:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40582 "EHLO mail.kernel.org"
+        id S1726618AbhADVas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 16:30:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbhADVbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 16:31:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A87221D93;
-        Mon,  4 Jan 2021 21:30:31 +0000 (UTC)
+        id S1726246AbhADVar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 16:30:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDFEC21919;
+        Mon,  4 Jan 2021 21:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609795832;
-        bh=CZGZG34DbWC5gsN2Vh0sggMMgMDglmyHaa/JpxJ4QFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aXBgzn1Wvhb9UmpKOLOwAJ0JpwUniCSSzHISpcQhcn4va9lsmoBys8Aw/jE3Zpfat
-         wYXcAai72ledErLlh79FgoSkGRmAziO1In6N5hXw5ad12tkP2sZNwiKEmYQH7dOL05
-         0J/JGc+oTex1kdN52OS0kSAuGpvSV2VS6MhJKuyTNgEvLHkTLg7I+H3w/Oa4LKoKhq
-         A7AnvYvFhcq2xpLL8XAAtlLHmO7sj+t7KWkKtjLoK2DLhmmMoHD/dUo5iMRYbblRpZ
-         ZJZ1avuw6bisMcp/lVX2KfTCQBBpkk5IJrwIDcUfY8MzWEMPCCJlymy9whFMgJp/Fl
-         UUAQUyHoN1rVw==
-Date:   Mon, 4 Jan 2021 21:30:05 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pavel Machek <pavel@denx.de>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jiri Kosina <trivial@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Chris Brandt <Chris.Brandt@renesas.com>
-Subject: Re: [PATCH 2/2] spi: rpc-if: Remove CONFIG_PM_SLEEP ifdefery
-Message-ID: <20210104213005.GK5645@sirena.org.uk>
-References: <20201230145708.28544-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201230145708.28544-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdVCD52-eTnEwftGz8ExMkZkJRyM=3M8zU11yhn1UNPxxA@mail.gmail.com>
- <CA+V-a8tHVkGxCECspfcV9c1UW81bod4N4YzRLJwU8zJ0+awJUw@mail.gmail.com>
+        s=k20201202; t=1609795807;
+        bh=H9RUiNpIWRm/wv7ST2Oq9S84uH9VPteE0U4ucsX6avA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P6MV5U+Bglr8KEmEnTFyrC5nZln7hmq9wyul6rjsaLtkyGfzGTQq8laytQoROjuLP
+         vIvn7h64wPLvr97NtbcvxBNfr+9AtJLWRGgI+JKVCMgRDPDA225FGCrqiKpodAr9Yo
+         OrTvho4lNAcKHX+hBxzm7ZLDWW3dgwewmPmObiug1DJADXr8C5A29knsU+eTCcX/qy
+         9XftsBrpJ+ymb2dQgqu8R4tQFvtg96VZUhO6h+3MpuUW+uiOoTExqLh1ZbPOTU0QnH
+         uQu6UeurNc51xsQZKm7VUh8weYfGpvf6wpGOWNAfi0Trdo7I4F7iTJNdsHaemb42zq
+         J+oeB1Wd5grIg==
+Date:   Mon, 4 Jan 2021 13:30:05 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v3] net: macb: Correct usage of MACB_CAPS_CLK_HW_CHG
+ flag
+Message-ID: <20210104133005.22c5488d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <X/MjyvgHJZrhYQw3@lunn.ch>
+References: <20210104103802.13091-1-ckeepax@opensource.cirrus.com>
+        <X/MjyvgHJZrhYQw3@lunn.ch>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vk/v8fjDPiDepTtA"
-Content-Disposition: inline
-In-Reply-To: <CA+V-a8tHVkGxCECspfcV9c1UW81bod4N4YzRLJwU8zJ0+awJUw@mail.gmail.com>
-X-Cookie: Stupidity is its own reward.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 4 Jan 2021 15:18:50 +0100 Andrew Lunn wrote:
+> On Mon, Jan 04, 2021 at 10:38:02AM +0000, Charles Keepax wrote:
+> > A new flag MACB_CAPS_CLK_HW_CHG was added and all callers of
+> > macb_set_tx_clk were gated on the presence of this flag.
+> > 
+> > -   if (!clk)
+> > + if (!bp->tx_clk || !(bp->caps & MACB_CAPS_CLK_HW_CHG))
+> > 
+> > However the flag was not added to anything other than the new
+> > sama7g5_gem, turning that function call into a no op for all other
+> > systems. This breaks the networking on Zynq.
+> > 
+> > The commit message adding this states: a new capability so that
+> > macb_set_tx_clock() to not be called for IPs having this
+> > capability
+> > 
+> > This strongly implies that present of the flag was intended to skip
+> > the function not absence of the flag. Update the if statement to
+> > this effect, which repairs the existing users.
+> > 
+> > Fixes: daafa1d33cc9 ("net: macb: add capability to not set the clock rate")
+> > Suggested-by: Andrew Lunn <andrew@lunn.ch>
+> > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>  
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
---vk/v8fjDPiDepTtA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 04, 2021 at 09:25:17PM +0000, Lad, Prabhakar wrote:
-
-> > >                 .name   = "rpc-if-spi",
-> > > -               .pm     = DEV_PM_OPS,
-> > > +               .pm     = &rpcif_spi_pm_ops,
-
-> > You're aware rpcif_spi_pm_ops is now always referenced and thus emitted,
-> > increasing kernel size by 92 bytes if CONFIG_PM_SLEEP=n?
-> > This may matter for RZ/A SoCs running from internal SRAM.
-
-> Hmm didn't realise this would be an issue on RZ/A.
-
-> Mark, could you please drop this patch from your branch.
-
-Please send an incremental patch with an appropriate changelog.
-
---vk/v8fjDPiDepTtA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/ziNwACgkQJNaLcl1U
-h9AiDQf+NWLL5kYwXv2qsnNIGJfyYBlpbr2ha6Uhdk6t8uVWUtRMGhrK2HrEN+qt
-bh7DXtD92HVLW/88Mzq7tW8IzVjpM63dA3V7DlY4PO+iRjHFXsHcjR7OuhMTDxti
-2Bra/G29guzIP2J703fbYq059L/uxAbhf2wMoiVvYSdf8V6O8dZrR4UMzdTLiHsF
-98dR+Jlp9hX9IWKfnBqqzSe6g0Nina62lAEzXyAJaaX3sBa2lTUSC4jlX5KVyo5z
-RLMqlxHrX6sOGrio6SMnYVlQ9RHUVLFn0Y6nojxanRG+blxRqCN68JwWNASLmZT3
-F5P9WDjT2FKJCc1ZhxrBW9vdzT2kZA==
-=tYtr
------END PGP SIGNATURE-----
-
---vk/v8fjDPiDepTtA--
+Applied, thanks!
