@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DD32E9A9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BE02E9980
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729707AbhADQMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:12:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37132 "EHLO mail.kernel.org"
+        id S1728408AbhADQAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:00:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728197AbhADQAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2EED207AE;
-        Mon,  4 Jan 2021 15:58:45 +0000 (UTC)
+        id S1728393AbhADQAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:00:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FA0F224D2;
+        Mon,  4 Jan 2021 16:00:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775926;
-        bh=HStfKwrmpAr5P2MqB/ZHorfFw3JQjsPXE9k4Orej4Mc=;
+        s=korg; t=1609776020;
+        bh=mtQPt8Uzwmc/6ANODzPvsmDmtJPeyUPnzbZaKro9OuM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a6y9j4Ij6haYN0/Td3HiEFdn/TBd2L7Wc6pN3PyUY+SBP2hgeIjnJWK7z6JGg1KzP
-         R8VD6iyRCZ0BN5SIQB964421k4G0OUKScMXPHYCin6k62pUtbpm4t3gH1T49r3zE8h
-         BgvmFwUlZmMJ1BoFC6+b64bl5Bu/3md2/3SBrrGI=
+        b=Xj4+o9ykQrLtDSqmrRQlBuSqW2Wq7eblTAacBeao+NiFkAqSa4KHKKPz88+1amA0c
+         e3tLWzvXDU5QG/7iCTrhKJaAIjiVhLDXEMK/uwYyaxPPysdpkU+M5LpdnbPMIJQKT0
+         Rul81z4DC4pJ0KzEe7PRaBBjSgW/TCvpmpJcLdtM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 28/35] rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
-Date:   Mon,  4 Jan 2021 16:57:31 +0100
-Message-Id: <20210104155704.766192222@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+22e87cdf94021b984aa6@syzkaller.appspotmail.com,
+        syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH 5.4 33/47] fcntl: Fix potential deadlock in send_sig{io, urg}()
+Date:   Mon,  4 Jan 2021 16:57:32 +0100
+Message-Id: <20210104155707.335126873@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
-References: <20210104155703.375788488@linuxfoundation.org>
+In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
+References: <20210104155705.740576914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,65 +42,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Boqun Feng <boqun.feng@gmail.com>
 
-[ Upstream commit 28d211919e422f58c1e6c900e5810eee4f1ce4c8 ]
+commit 8d1ddb5e79374fb277985a6b3faa2ed8631c5b4c upstream.
 
-When clk_hw_register_fixed_rate_with_accuracy() fails,
-clk_data should be freed. It's the same for the subsequent
-two error paths, but we should also unregister the already
-registered clocks in them.
+Syzbot reports a potential deadlock found by the newly added recursive
+read deadlock detection in lockdep:
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20201020061226.6572-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[...] ========================================================
+[...] WARNING: possible irq lock inversion dependency detected
+[...] 5.9.0-rc2-syzkaller #0 Not tainted
+[...] --------------------------------------------------------
+[...] syz-executor.1/10214 just changed the state of lock:
+[...] ffff88811f506338 (&f->f_owner.lock){.+..}-{2:2}, at: send_sigurg+0x1d/0x200
+[...] but this lock was taken by another, HARDIRQ-safe lock in the past:
+[...]  (&dev->event_lock){-...}-{2:2}
+[...]
+[...]
+[...] and interrupts could create inverse lock ordering between them.
+[...]
+[...]
+[...] other info that might help us debug this:
+[...] Chain exists of:
+[...]   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
+[...]
+[...]  Possible interrupt unsafe locking scenario:
+[...]
+[...]        CPU0                    CPU1
+[...]        ----                    ----
+[...]   lock(&f->f_owner.lock);
+[...]                                local_irq_disable();
+[...]                                lock(&dev->event_lock);
+[...]                                lock(&new->fa_lock);
+[...]   <Interrupt>
+[...]     lock(&dev->event_lock);
+[...]
+[...]  *** DEADLOCK ***
+
+The corresponding deadlock case is as followed:
+
+	CPU 0		CPU 1		CPU 2
+	read_lock(&fown->lock);
+			spin_lock_irqsave(&dev->event_lock, ...)
+					write_lock_irq(&filp->f_owner.lock); // wait for the lock
+			read_lock(&fown-lock); // have to wait until the writer release
+					       // due to the fairness
+	<interrupted>
+	spin_lock_irqsave(&dev->event_lock); // wait for the lock
+
+The lock dependency on CPU 1 happens if there exists a call sequence:
+
+	input_inject_event():
+	  spin_lock_irqsave(&dev->event_lock,...);
+	  input_handle_event():
+	    input_pass_values():
+	      input_to_handler():
+	        handler->event(): // evdev_event()
+	          evdev_pass_values():
+	            spin_lock(&client->buffer_lock);
+	            __pass_event():
+	              kill_fasync():
+	                kill_fasync_rcu():
+	                  read_lock(&fa->fa_lock);
+	                  send_sigio():
+	                    read_lock(&fown->lock);
+
+To fix this, make the reader in send_sigurg() and send_sigio() use
+read_lock_irqsave() and read_lock_irqrestore().
+
+Reported-by: syzbot+22e87cdf94021b984aa6@syzkaller.appspotmail.com
+Reported-by: syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/rtc/rtc-sun6i.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ fs/fcntl.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
-index 2cd5a7b1a2e30..e85abe8056064 100644
---- a/drivers/rtc/rtc-sun6i.c
-+++ b/drivers/rtc/rtc-sun6i.c
-@@ -232,7 +232,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node)
- 								300000000);
- 	if (IS_ERR(rtc->int_osc)) {
- 		pr_crit("Couldn't register the internal oscillator\n");
--		return;
-+		goto err;
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -779,9 +779,10 @@ void send_sigio(struct fown_struct *fown
+ {
+ 	struct task_struct *p;
+ 	enum pid_type type;
++	unsigned long flags;
+ 	struct pid *pid;
+ 	
+-	read_lock(&fown->lock);
++	read_lock_irqsave(&fown->lock, flags);
+ 
+ 	type = fown->pid_type;
+ 	pid = fown->pid;
+@@ -802,7 +803,7 @@ void send_sigio(struct fown_struct *fown
+ 		read_unlock(&tasklist_lock);
  	}
- 
- 	parents[0] = clk_hw_get_name(rtc->int_osc);
-@@ -248,7 +248,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node)
- 	rtc->losc = clk_register(NULL, &rtc->hw);
- 	if (IS_ERR(rtc->losc)) {
- 		pr_crit("Couldn't register the LOSC clock\n");
--		return;
-+		goto err_register;
- 	}
- 
- 	of_property_read_string_index(node, "clock-output-names", 1,
-@@ -259,7 +259,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node)
- 					  &rtc->lock);
- 	if (IS_ERR(rtc->ext_losc)) {
- 		pr_crit("Couldn't register the LOSC external gate\n");
--		return;
-+		goto err_register;
- 	}
- 
- 	clk_data->num = 2;
-@@ -268,6 +268,8 @@ static void __init sun6i_rtc_clk_init(struct device_node *node)
- 	of_clk_add_hw_provider(node, of_clk_hw_onecell_get, clk_data);
- 	return;
- 
-+err_register:
-+	clk_hw_unregister_fixed_rate(rtc->int_osc);
- err:
- 	kfree(clk_data);
+  out_unlock_fown:
+-	read_unlock(&fown->lock);
++	read_unlock_irqrestore(&fown->lock, flags);
  }
--- 
-2.27.0
-
+ 
+ static void send_sigurg_to_task(struct task_struct *p,
+@@ -817,9 +818,10 @@ int send_sigurg(struct fown_struct *fown
+ 	struct task_struct *p;
+ 	enum pid_type type;
+ 	struct pid *pid;
++	unsigned long flags;
+ 	int ret = 0;
+ 	
+-	read_lock(&fown->lock);
++	read_lock_irqsave(&fown->lock, flags);
+ 
+ 	type = fown->pid_type;
+ 	pid = fown->pid;
+@@ -842,7 +844,7 @@ int send_sigurg(struct fown_struct *fown
+ 		read_unlock(&tasklist_lock);
+ 	}
+  out_unlock_fown:
+-	read_unlock(&fown->lock);
++	read_unlock_irqrestore(&fown->lock, flags);
+ 	return ret;
+ }
+ 
 
 
