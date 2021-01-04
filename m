@@ -2,160 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172D92E9062
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 07:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB322E9064
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 07:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727745AbhADGS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 01:18:58 -0500
-Received: from foss.arm.com ([217.140.110.172]:53116 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727330AbhADGS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 01:18:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91CEEED1;
-        Sun,  3 Jan 2021 22:18:11 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFF7D3F719;
-        Sun,  3 Jan 2021 22:18:07 -0800 (PST)
-Subject: Re: [RFC 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-To:     David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Ellerman <michael@ellerman.id.au>
-References: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
- <1608621144-4001-2-git-send-email-anshuman.khandual@arm.com>
- <4b282848-d2d7-6156-4726-ce974b2dff41@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <75d0da03-204a-c2b2-aba9-f70d2f5b6e40@arm.com>
-Date:   Mon, 4 Jan 2021 11:48:18 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727937AbhADGUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 01:20:15 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9951 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726855AbhADGUO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 01:20:14 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D8QRv6GbkzhXvl;
+        Mon,  4 Jan 2021 14:18:35 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 4 Jan 2021 14:19:09 +0800
+Subject: ping //Re: [PATCH] proc_sysclt: fix oops caused by incorrect command
+ parameters.
+To:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
+        <keescook@chromium.org>, <yzaikin@google.com>,
+        <adobriyan@gmail.com>, <vbabka@suse.cz>,
+        <linux-fsdevel@vger.kernel.org>, <mhocko@suse.com>,
+        <mhiramat@kernel.org>
+CC:     <wangle6@huawei.com>
+References: <20201224074256.117413-1-nixiaoming@huawei.com>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <580d5d2a-399d-8bb0-f201-41b78a2e28c7@huawei.com>
+Date:   Mon, 4 Jan 2021 14:19:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-In-Reply-To: <4b282848-d2d7-6156-4726-ce974b2dff41@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20201224074256.117413-1-nixiaoming@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ping
 
-On 12/22/20 2:41 PM, David Hildenbrand wrote:
-> On 22.12.20 08:12, Anshuman Khandual wrote:
->> pfn_valid() validates a pfn but basically it checks for a valid struct page
->> backing for that pfn. It should always return positive for memory ranges
->> backed with struct page mapping. But currently pfn_valid() fails for all
->> ZONE_DEVICE based memory types even though they have struct page mapping.
->>
->> pfn_valid() asserts that there is a memblock entry for a given pfn without
->> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
->> that they do not have memblock entries. Hence memblock_is_map_memory() will
->> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
->> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
->> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
->> into the system via memremap_pages() called from a driver, their respective
->> memory sections will not have SECTION_IS_EARLY set.
->>
->> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
->> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
->> for firmware reserved memory regions. memblock_is_map_memory() can just be
->> skipped as its always going to be positive and that will be an optimization
->> for the normal hotplug memory. Like ZONE_DEVIE based memory, all hotplugged
->> normal memory too will not have SECTION_IS_EARLY set for their sections.
->>
->> Skipping memblock_is_map_memory() for all non early memory sections would
->> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
->> performance for normal hotplug memory as well.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Ard Biesheuvel <ardb@kernel.org>
->> Cc: Robin Murphy <robin.murphy@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/arm64/mm/init.c | 12 ++++++++++++
->>  1 file changed, 12 insertions(+)
->>
->> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
->> index 75addb36354a..ee23bda00c28 100644
->> --- a/arch/arm64/mm/init.c
->> +++ b/arch/arm64/mm/init.c
->> @@ -225,6 +225,18 @@ int pfn_valid(unsigned long pfn)
->>  
->>  	if (!valid_section(__pfn_to_section(pfn)))
->>  		return 0;
->> +
->> +	/*
->> +	 * ZONE_DEVICE memory does not have the memblock entries.
->> +	 * memblock_is_map_memory() check for ZONE_DEVICE based
->> +	 * addresses will always fail. Even the normal hotplugged
->> +	 * memory will never have MEMBLOCK_NOMAP flag set in their
->> +	 * memblock entries. Skip memblock search for all non early
->> +	 * memory sections covering all of hotplug memory including
->> +	 * both normal and ZONE_DEVIE based.
->> +	 */
->> +	if (!early_section(__pfn_to_section(pfn)))
->> +		return 1;
-> 
-> Actually, I think we want to check for partial present sections.
-> 
-> Maybe we can rather switch to generic pfn_valid() and tweak it to
-> something like
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index fb3bf696c05e..7b1fcce5bd5a 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -1382,9 +1382,13 @@ static inline int pfn_valid(unsigned long pfn)
->                 return 0;
->         /*
->          * Traditionally early sections always returned pfn_valid() for
-> -        * the entire section-sized span.
-> +        * the entire section-sized span. Some archs might have holes in
-> +        * early sections, so double check with memblock if configured.
->          */
-> -       return early_section(ms) || pfn_section_valid(ms, pfn);
-> +       if (early_section(ms))
-> +               return IS_ENABLED(CONFIG_EARLY_SECTION_MEMMAP_HOLES) ?
-> +                      memblock_is_map_memory(pfn << PAGE_SHIFT) : 1;
-> +       return pfn_section_valid(ms, pfn);
->  }
->  #endif
 
-Could not find CONFIG_EARLY_SECTION_MEMMAP_HOLES. Are you suggesting to
-create this config which could track platform scenarios where all early
-sections might not have mmap coverage such as arm64 ?
+On 2020/12/24 15:42, Xiaoming Ni wrote:
+> The process_sysctl_arg() does not check whether val is empty before
+>   invoking strlen(val). If the command line parameter () is incorrectly
+>   configured and val is empty, oops is triggered.
+> 
+> For example, "hung_task_panic=1" is incorrectly written as "hung_task_panic".
+> 
+> log:
+> 	Kernel command line: .... hung_task_panic
+> 	....
+> 	[000000000000000n] user address but active_mm is swapper
+> 	Internal error: Oops: 96000005 [#1] SMP
+> 	Modules linked in:
+> 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.1 #1
+> 	Hardware name: linux,dummy-virt (DT)
+> 	pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> 	pc : __pi_strlen+0x10/0x98
+> 	lr : process_sysctl_arg+0x1e4/0x2ac
+> 	sp : ffffffc01104bd40
+> 	x29: ffffffc01104bd40 x28: 0000000000000000
+> 	x27: ffffff80c0a4691e x26: ffffffc0102a7c8c
+> 	x25: 0000000000000000 x24: ffffffc01104be80
+> 	x23: ffffff80c22f0b00 x22: ffffff80c02e28c0
+> 	x21: ffffffc0109f9000 x20: 0000000000000000
+> 	x19: ffffffc0107c08de x18: 0000000000000003
+> 	x17: ffffffc01105d000 x16: 0000000000000054
+> 	x15: ffffffffffffffff x14: 3030253078413830
+> 	x13: 000000000000ffff x12: 0000000000000000
+> 	x11: 0101010101010101 x10: 0000000000000005
+> 	x9 : 0000000000000003 x8 : ffffff80c0980c08
+> 	x7 : 0000000000000000 x6 : 0000000000000002
+> 	x5 : ffffff80c0235000 x4 : ffffff810f7c7ee0
+> 	x3 : 000000000000043a x2 : 00bdcc4ebacf1a54
+> 	x1 : 0000000000000000 x0 : 0000000000000000
+> 	Call trace:
+> 	 __pi_strlen+0x10/0x98
+> 	 parse_args+0x278/0x344
+> 	 do_sysctl_args+0x8c/0xfc
+> 	 kernel_init+0x5c/0xf4
+> 	 ret_from_fork+0x10/0x30
+> 	Code: b200c3eb 927cec01 f2400c07 54000301 (a8c10c22)
+> 
+> Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
+>   from kernel command line")
+> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> ---
+>   fs/proc/proc_sysctl.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> index 317899222d7f..4516411a2b44 100644
+> --- a/fs/proc/proc_sysctl.c
+> +++ b/fs/proc/proc_sysctl.c
+> @@ -1757,6 +1757,9 @@ static int process_sysctl_arg(char *param, char *val,
+>   	loff_t pos = 0;
+>   	ssize_t wret;
+>   
+> +	if (!val)
+> +		return 0;
+> +
+>   	if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
+>   		param += sizeof("sysctl") - 1;
+>   
+> 
 
-> 
-> 
-> 
-> Which users are remaining that require us to add/remove memblocks when
-> hot(un)plugging memory
-> 
->  $ git grep KEEP_MEM | grep memory_hotplug
-> mm/memory_hotplug.c:    if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
-> mm/memory_hotplug.c:    if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
-> mm/memory_hotplug.c:    if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
-
-Did not follow, do we want to drop ARCH_KEEP_MEMBLOCK ? Without it arm64
-will not be able to track MEMBLOCK_NOMAP memory at runtime.
-
-> 
-> 
-> I think one user we would have to handle is
-> arch/arm64/mm/mmap.c:valid_phys_addr_range(). AFAIS, powerpc at least
-> does not rely on memblock_is_map_memory.
-
-memblock_is_map_memory() is currently used only on arm/arm64 platforms.
-Apart from the above example in valid_phys_addr_range(), there are some
-other memblock_is_map_memory() call sites as well. But then, we are not
-trying to completely drop memblock_is_map_memory() or are we ?
