@@ -2,65 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1DE2E9677
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB612E9676
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbhADN5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:57:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
+        id S1726822AbhADN5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbhADN5n (ORCPT
+        with ESMTP id S1725830AbhADN5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:57:43 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03DDC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 05:57:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BgK+tHIAID6FnwyvohuHOU0I3PpkqQNmrVg98TE0ETQ=; b=dWBxmjF9jwT4GAQBFonWa1cSRV
-        0OYJ3p4ypkH7Lpc/QzdG3Yh3orumStDYkiqkr+HlIk0/1dFjY3r+9gy9sKUw1xH/5j5iGNb130Oy6
-        jyd7dyi2BMh/3XEUW7G6F2iL/Z6Mfbz36hTqGn351U5f/OfX/wJYkPzzKZgmBqusGZ/rYC0MzFu5c
-        ttsrZCxUcug8wvVDMtvXOoV9k227T/YJqKyxsV7gWdoGg8zkpheQctc3yAhoVn+AP5UOUIzNxZEKM
-        HP8h9rO/J3pmkcBoqy4WxIpmu0bjHFGFsMKOuu6gCzfrKaIZsh1nSbo/Pz5zjKv3bEKS030/VmYT4
-        V9ecTZJA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwQLs-000732-FW; Mon, 04 Jan 2021 13:56:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3601C300446;
-        Mon,  4 Jan 2021 14:56:50 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F388920248726; Mon,  4 Jan 2021 14:56:49 +0100 (CET)
-Date:   Mon, 4 Jan 2021 14:56:49 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH -tip V3 3/8] workqueue: introduce wq_online_cpumask
-Message-ID: <20210104135649.GO3021@hirez.programming.kicks-ass.net>
-References: <20201226025117.2770-1-jiangshanlai@gmail.com>
- <20201226025117.2770-4-jiangshanlai@gmail.com>
+        Mon, 4 Jan 2021 08:57:33 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F866C061574;
+        Mon,  4 Jan 2021 05:56:52 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id m5so32206904wrx.9;
+        Mon, 04 Jan 2021 05:56:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=LyrRUhBkoqWcAGCYsSDBZgPQ6OfRjVUqBOc3wjEtEV8=;
+        b=peukgvMHKbc4pR8s8RYGql7/y3W5Zj3+lzKdEHPUnq/2rthPuY+XlF/7wfDu35DLAO
+         4oZQdkJ+kNUNNCGUD0tS37DTvWqFrRs+bWzt8/1xQlGWzD/e0NU++DskCK2qw2+LcjAl
+         PJeUWfGYPuTI23iTUYN2OieUZj2b/SqcZvLm+PYpK2BROpvvKDpaE0heezIxHQIlPDS3
+         iykoSUMAAuDxIq3ua2CuwrTP499STfiOqC2yUVbwLMrbU7jqSKoAbNZ73OE+kQTmPmob
+         oM96pSAWbunUPlhga4J70SugNYdWLhVDMlqQYfjLuXr1P+2Z3WLb9hYS7tXNQN5uoIpz
+         P+rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=LyrRUhBkoqWcAGCYsSDBZgPQ6OfRjVUqBOc3wjEtEV8=;
+        b=o0rRkiVbYEgKROQkuU2fsOSPya/RxinYKp5U6/IGH2dv6GMjVLGUQ68J+TTMYNoKa7
+         lN/aWMGKiFeoAo0jc3clu+HmYtzRW8zdWW4vQn6/luthffE/rDdpBqCeyrKwLUHzt0Wb
+         slDntIYrCbvNQXqcKfbJ0Dchk22zwG41kPA+I4vxPZb4JphGmk4jq+2JU8I1edHeAhtM
+         YLIBQEURSWDmm2UbOdfnClENE5GeOJtB/TrfqKAgNoB4q6RzcEexliSHI0Vjjic4mcDY
+         Ltdk3xjd0yTZn671RB4uFzvSeiTCUWCP/g0AP3+hmVI6Jtj+wMpKhoo19HEk1VjdsKyR
+         Okbg==
+X-Gm-Message-State: AOAM531srO/Xm7Y+zPM2/21kl9/mC6K2jGNYZeK2ks4oorjqYQ1EXZR0
+        eQETReWhIJVKhjKsDUaeIBs=
+X-Google-Smtp-Source: ABdhPJwpb88Cfo7Gp8j6dnF/Hw5fgGdPfsTA6M6ICjCrC6rfVw9+Y7Gog2Pg6F2shHFem2EIlh7Zig==
+X-Received: by 2002:adf:e9d2:: with SMTP id l18mr77835390wrn.179.1609768611288;
+        Mon, 04 Jan 2021 05:56:51 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id b12sm48311878wmj.2.2021.01.04.05.56.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 05:56:50 -0800 (PST)
+Subject: Re: [PATCH v4 15/15] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Joe Perches <joe@perches.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Len Brown <lenb@kernel.org>, Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20210103231235.792999-1-djrscally@gmail.com>
+ <20210103231235.792999-16-djrscally@gmail.com>
+ <20210104120905.GR4077@smile.fi.intel.com>
+ <2f64873d-0413-3614-34e2-139b4a4d9da6@gmail.com>
+ <CAHp75VcU7DcRZD_eK+B1-CX7tVtsR5YLPdrA6oULk187xhApCw@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <287cf1cc-0e96-7609-aecd-e00dedcd90d9@gmail.com>
+Date:   Mon, 4 Jan 2021 13:56:49 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201226025117.2770-4-jiangshanlai@gmail.com>
+In-Reply-To: <CAHp75VcU7DcRZD_eK+B1-CX7tVtsR5YLPdrA6oULk187xhApCw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 10:51:11AM +0800, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> wq_online_cpumask is the cached result of cpu_online_mask with the
-> going-down cpu cleared.
 
-You can't use cpu_active_mask ?
+On 04/01/2021 13:38, Andy Shevchenko wrote:
+> On Mon, Jan 4, 2021 at 3:02 PM Daniel Scally <djrscally@gmail.com> wrote:
+>> On 04/01/2021 12:09, Andy Shevchenko wrote:
+>>> On Sun, Jan 03, 2021 at 11:12:35PM +0000, Daniel Scally wrote:
+> ...
+>
+>>>> +#define NODE_SENSOR(_HID, _PROPS)           \
+>>>> +    ((const struct software_node) {         \
+>>>> +            .name = _HID,                   \
+>>>> +            .properties = _PROPS,           \
+>>>> +    })
+>>>> +
+>>>> +#define NODE_PORT(_PORT, _SENSOR_NODE)              \
+>>>> +    ((const struct software_node) {         \
+>>>> +            .name = _PORT,                  \
+>>>> +            .parent = _SENSOR_NODE,         \
+>>>> +    })
+>>>> +
+>>>> +#define NODE_ENDPOINT(_EP, _PORT, _PROPS)   \
+>>>> +    ((const struct software_node) {         \
+>>>> +            .name = _EP,                    \
+>>>> +            .parent = _PORT,                \
+>>>> +            .properties = _PROPS,           \
+>>>> +    })
+>>> In all three I didn't get why you need outer parentheses. Without them it will
+>>> be well defined compound literal and should work as is.
+>> The code works fine, but checkpatch complains that macros with complex
+>> values should be enclosed in parentheses. I guess now that I'm more
+>> familiar with the code I'd call that a false-positive though, as nowhere
+>> else in the kernel that I've seen encloses them the same way.
+> I guess it is yet another false positive from checkpatch.
+> I would ignore its complaints.
+Will do so then
