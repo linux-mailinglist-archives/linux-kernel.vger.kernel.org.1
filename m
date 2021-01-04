@@ -2,85 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D872E9440
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A19782E9444
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:46:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbhADLo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 06:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726500AbhADLo0 (ORCPT
+        id S1726603AbhADLpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 06:45:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53944 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726240AbhADLpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 06:44:26 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9A3C061796
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 03:43:45 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id 6so36396563ejz.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 03:43:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=s9b3G+1wnt0fqvQLZfc718wWCxYrFOqLj99ZBc9EiHo=;
-        b=N4K5zTpfvEf9GyU5JoMNLIDIR+zWfC22FxvyvteNXgVR4rh56MRqOLVSZtaMupaRQP
-         gIo3JpiGBYilVXPLMr/DWadV17ubcrqiOsqdkylrBeGCBRjrx2p2l+rOTSfRctypDTyQ
-         PSlGBmczgSBzk6oJ5c2BiMtozqaDqZUfUceiY0Gj48bEpdLY7MmiG1h20fRD7Tv7Y+8o
-         4jcb1kk53TO7c75op2kUmtSLN+wWfZPQRet16PevqVfSKjTMHPS189f0QAiPxRO3tA0N
-         kRyqQB4tYaGQSjRmWpEAV/8RLIbA5TSBiFW/Ikae3HP5KC8dAZsEvktm+ZXLuznoNTi2
-         av9g==
+        Mon, 4 Jan 2021 06:45:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609760663;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pPiMxxoNkQ6ZHTSM1btO2xUPHHtV2xXd0B6j0p3+I7w=;
+        b=hHxtKWnaqXTBxa+zi22DwnyaLF3oCoiXLQr1ZxXbzAG20ahd27gqtT/NdGhL8uV+iGO8Ap
+        Kn+RmTDpMDb0d1+PzV4A9gVWMBh4iTE4Hck4Ijq1qTc+hCgTbTUzHnGGpgQBZxDwNo3ZGA
+        B4En24Sk4MS8WyhWLYQ1L4UQ8pGmErM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-sc5XHAxtN_Ok0xSCmIWLbg-1; Mon, 04 Jan 2021 06:44:21 -0500
+X-MC-Unique: sc5XHAxtN_Ok0xSCmIWLbg-1
+Received: by mail-ed1-f69.google.com with SMTP id f19so12040876edq.20
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 03:44:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=s9b3G+1wnt0fqvQLZfc718wWCxYrFOqLj99ZBc9EiHo=;
-        b=l/mQtolG+FgK94YekIHqDDV+j8jqF/l+sYbf9o40Hfd33xTiwwcEN74jNkdZpF3TFU
-         wOZITu7KK211XtT4lO7OoeuPaHJA+CdcHKW1VSNpmYFCnZfoXAmKa3X7ud6627+iCJFa
-         YRGyifrt1uiPRr2ccvDdktSaZ9QRAAJDDcIW9B83pn3YhIvxUcN3sr40G5US1jqmjkTJ
-         R2sHNCXNtI8U7NJnxkY2T3uWx5C9IEmwjpFUvN9n98+1QzTgpddBiGZFI1sYGj6c2gR5
-         KoDK8EZgkMj5PhdAeUUiUcaP41ZDqd/3GKAtdFV7CKyi6vMz20020D56b7znDj/FDylL
-         YR3Q==
-X-Gm-Message-State: AOAM532Ge9o3dMFECeJkjUK0fYjzhqKrWG7/l044qK0qtKqKNieh7uoE
-        1xM+7IzxAcJ7y7n+S9hrRf+e6A==
-X-Google-Smtp-Source: ABdhPJwGvjTksyTEsh8ZsoIujwHjf6GyWgK9chy76WycbY1TeT6KTvHXkYeyko77ghZGFlgSLXZg9w==
-X-Received: by 2002:a17:906:b793:: with SMTP id dt19mr65969463ejb.120.1609760624753;
-        Mon, 04 Jan 2021 03:43:44 -0800 (PST)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id e10sm23445564ejl.70.2021.01.04.03.43.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 03:43:44 -0800 (PST)
-References: <20201221183624.932649-1-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] clk: meson8b: cleanup unused code
-In-reply-to: <20201221183624.932649-1-martin.blumenstingl@googlemail.com>
-Message-ID: <1jwnwtvseo.fsf@starbuckisacylon.baylibre.com>
-Date:   Mon, 04 Jan 2021 12:43:43 +0100
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pPiMxxoNkQ6ZHTSM1btO2xUPHHtV2xXd0B6j0p3+I7w=;
+        b=o9xK2DT5P2MDpQlw7ugyqULCqLwID8XJO1QD16aHg2Cm0xGalAQN2ksIoyDSUtYMv/
+         aDo4YVemipizko+3G5d93kdM1ewrW8sOunf0WkUZn32UpChqmlqKvNPwjKpctWjIsqli
+         GeBCw6cQ2nK7dqGnfBAko9xH14MpewL0bYw4qS2NjpxYk9oGRMWiAQfUdhXpsGjwtC4s
+         ayNHxyFLPB8AOlaygrtVJEe1/HMvnq4nFHPAd9mp5mMJ4cLlskrHT6oQtHYOM8Xs0Wur
+         rbGDpk7ufrrmromHbE8tMLT+sSZm6HbyxSDsD80i3iEds4eWplS92dVEZ7RHrIx4UdEu
+         PBKQ==
+X-Gm-Message-State: AOAM532/Zn/Jnizm3BMXSYS4o20ipEHG4HGfWnvYQbFC3Idue7Bl98hL
+        EpjkudmlQ6HqEm2YBnql7B8ALeOkuFwswn5aRO1kp2UauWL8ItyG9CaCz3hFgOrAZ3LUmNlgGKI
+        IvlkHx0PO5pGYwzxYcpcvddQb
+X-Received: by 2002:a17:906:17d5:: with SMTP id u21mr50809905eje.109.1609760660572;
+        Mon, 04 Jan 2021 03:44:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwS5cFYXDS2dnZf/FPMSarPHzP6kT1MrfLii3KZrmVND8GnmkwWpEQnJCsg3HblC8jkUnrzgQ==
+X-Received: by 2002:a17:906:17d5:: with SMTP id u21mr50809891eje.109.1609760660434;
+        Mon, 04 Jan 2021 03:44:20 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id ho34sm23097652ejc.13.2021.01.04.03.44.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 03:44:19 -0800 (PST)
+Subject: Re: [PATCH v2 -next] platform: surface: fix non-PM_SLEEP build
+ warnings
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        platform-driver-x86@vger.kernel.org
+References: <20201214233336.19782-1-rdunlap@infradead.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e85b0067-6128-b078-d9b4-843f5b2c1a54@redhat.com>
+Date:   Mon, 4 Jan 2021 12:44:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201214233336.19782-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On Mon 21 Dec 2020 at 19:36, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+On 12/15/20 12:33 AM, Randy Dunlap wrote:
+> Fix build warnings when CONFIG_PM_SLEEP is not enabled and these
+> functions are not used:
+> 
+> ../drivers/platform/surface/surface_gpe.c:189:12: warning: ‘surface_gpe_resume’ defined but not used [-Wunused-function]
+>  static int surface_gpe_resume(struct device *dev)
+>             ^~~~~~~~~~~~~~~~~~
+> ../drivers/platform/surface/surface_gpe.c:184:12: warning: ‘surface_gpe_suspend’ defined but not used [-Wunused-function]
+>  static int surface_gpe_suspend(struct device *dev)
+>             ^~~~~~~~~~~~~~~~~~~
+> 
+> Fixes: 274335f1c557 ("platform/surface: Add Driver to set up lid GPEs on MS Surface device")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Maximilian Luz <luzmaximilian@gmail.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: platform-driver-x86@vger.kernel.org
+> ---
+> v2: dropped Maximilian's RVB tag since the patch changed
+>     use preferred __maybe_unused instead of ifdeffery:
+>       https://lore.kernel.org/patchwork/patch/732981/
 
-> Hi Jerome,
->
-> these patches are two small cleanups for code we don't need anymore.
-> The first patch removes support for old .dtbs. I am not sure if the
-> "fallback" logic still works as I have not tried this in a long time.
->
->
-> Martin Blumenstingl (2):
->   clk: meson: meson8b: remove compatibility code for old .dtbs
->   dt-bindings: clock: meson8b: remove non-existing clock macros
->
->  drivers/clk/meson/meson8b.c              | 45 +++---------------------
->  include/dt-bindings/clock/meson8b-clkc.h |  2 --
->  2 files changed, 5 insertions(+), 42 deletions(-)
 
-Applied, Thx
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+> 
+>  drivers/platform/surface/surface_gpe.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- linux-next-20201214.orig/drivers/platform/surface/surface_gpe.c
+> +++ linux-next-20201214/drivers/platform/surface/surface_gpe.c
+> @@ -181,12 +181,12 @@ static int surface_lid_enable_wakeup(str
+>  	return 0;
+>  }
+>  
+> -static int surface_gpe_suspend(struct device *dev)
+> +static int __maybe_unused surface_gpe_suspend(struct device *dev)
+>  {
+>  	return surface_lid_enable_wakeup(dev, true);
+>  }
+>  
+> -static int surface_gpe_resume(struct device *dev)
+> +static int __maybe_unused surface_gpe_resume(struct device *dev)
+>  {
+>  	return surface_lid_enable_wakeup(dev, false);
+>  }
+> 
+
