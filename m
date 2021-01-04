@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265472E95FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422C22E960E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727244AbhADN3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:29:16 -0500
-Received: from mga07.intel.com ([134.134.136.100]:23250 "EHLO mga07.intel.com"
+        id S1727340AbhADNa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:30:29 -0500
+Received: from mga07.intel.com ([134.134.136.100]:23242 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726640AbhADN3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:29:15 -0500
-IronPort-SDR: KjHsI/8d0xRFiM95W0aL8rJCK24ciym7hn9Lwud3cRVe1UKsJ7rLzNIFXscPzWgN8Orwt6Tktf
- /bVu11FUyRqw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9853"; a="241034427"
+        id S1726666AbhADNa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 08:30:28 -0500
+IronPort-SDR: 0m1hGqyg//CUplEbGe58Ee4dysT23WHLgQ80lHgB3HaX72/ThfYZ8sDg/u2H+px/fk3jOG1h1x
+ DFBWT2u/MHzg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9853"; a="241034459"
 X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="241034427"
+   d="scan'208";a="241034459"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 05:22:46 -0800
-IronPort-SDR: eBxYjP/J05eFgqSvOMglKkiZj9IcYxsNkrm0tK07TIZTAVIPPpC1WDmuHzQI6/XJsUYunHzpj/
- 8rf1Nkp+gDdg==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 05:22:49 -0800
+IronPort-SDR: JocRUK8k8ASaPNfd+Pt3539+sNH+2EnMZDn4Mr51/hdscxbK30Rb/5xYht4apSanqajY8f+mBv
+ lFykmFgSMkXw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="461944683"
+   d="scan'208";a="461944689"
 Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Jan 2021 05:22:43 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 04 Jan 2021 05:22:46 -0800
 From:   Like Xu <like.xu@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
@@ -39,9 +39,9 @@ Cc:     Ingo Molnar <mingo@redhat.com>,
         Andi Kleen <andi@firstfloor.org>,
         Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
         luwei.kang@intel.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 14/17] KVM: vmx/pmu: Limit pebs_interrupt_threshold in the guest DS area
-Date:   Mon,  4 Jan 2021 21:15:39 +0800
-Message-Id: <20210104131542.495413-15-like.xu@linux.intel.com>
+Subject: [PATCH v3 15/17] KVM: vmx/pmu: Rewrite applicable_counters field in guest PEBS records
+Date:   Mon,  4 Jan 2021 21:15:40 +0800
+Message-Id: <20210104131542.495413-16-like.xu@linux.intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210104131542.495413-1-like.xu@linux.intel.com>
 References: <20210104131542.495413-1-like.xu@linux.intel.com>
@@ -51,189 +51,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the host counter X is scheduled to the guest PEBS counter Y,
-the guest ds pebs_interrupt_threshold field in guest DS area would
-be changed to only ONE record before vm-entry which helps KVM
-more easily and accurately handle the cross-mapping emulation
-when the PEBS overflow PMI is generated.
+The PEBS event counters scheduled by host may different to the counters
+required by guest. The host counter index will be leaked into the guest
+PEBS record and the guest driver will be confused by the counter indexes
+in the "Applicable Counters" field of the PEBS records and ignore them.
 
-In most cases, the guest counters would not be scheduled in a cross-mapped
-way which means there is no need to change guest DS
-pebs_interrupt_threshold and the applicable_counters fields in the guest
-PEBS records are naturally correct. PEBS facility writes multiple PEBS
-records into guest DS w/o interception and the performance is good.
+Before the guest PEBS overflow PMI is injected into the guest through
+global status, KVM needs to rewrite the "Applicable Counters" field with
+the right enabled guest pebs counter idx(s) in the guest PEBS records.
 
-AFAIK, we don't expect that changing the pebs_interrupt_threshold value
-from the KVM side will break any guest PEBS drivers.
-
+Co-developed-by: Luwei Kang <luwei.kang@intel.com>
+Signed-off-by: Luwei Kang <luwei.kang@intel.com>
 Signed-off-by: Like Xu <like.xu@linux.intel.com>
 ---
- arch/x86/include/asm/kvm_host.h |  3 ++
- arch/x86/kvm/pmu.c              | 17 +++-----
- arch/x86/kvm/pmu.h              | 11 +++++
- arch/x86/kvm/vmx/pmu_intel.c    | 77 +++++++++++++++++++++++++++++++++
- arch/x86/kvm/x86.c              |  1 +
- 5 files changed, 98 insertions(+), 11 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  2 +
+ arch/x86/kvm/pmu.c              |  1 +
+ arch/x86/kvm/vmx/pmu_intel.c    | 84 +++++++++++++++++++++++++++++++--
+ 3 files changed, 82 insertions(+), 5 deletions(-)
 
 diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 5de4c14cf526..ea204c628f45 100644
+index ea204c628f45..e6394ac54f81 100644
 --- a/arch/x86/include/asm/kvm_host.h
 +++ b/arch/x86/include/asm/kvm_host.h
-@@ -450,12 +450,15 @@ struct kvm_pmu {
- 	DECLARE_BITMAP(pmc_in_use, X86_PMC_IDX_MAX);
- 
+@@ -452,6 +452,7 @@ struct kvm_pmu {
  	u64 ds_area;
-+	u64 cached_ds_area;
-+	struct gfn_to_hva_cache ds_area_cache;
+ 	u64 cached_ds_area;
+ 	struct gfn_to_hva_cache ds_area_cache;
++	struct gfn_to_hva_cache pebs_buffer_base_cache;
  	u64 pebs_enable;
  	u64 pebs_enable_mask;
  	u64 pebs_data_cfg;
- 	u64 pebs_data_cfg_mask;
+@@ -459,6 +460,7 @@ struct kvm_pmu {
  
  	bool counter_cross_mapped;
-+	bool need_rewrite_ds_pebs_interrupt_threshold;
+ 	bool need_rewrite_ds_pebs_interrupt_threshold;
++	bool need_rewrite_pebs_records;
  
  	/*
  	 * The gate to release perf_events not marked in
 diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index e898da4699c9..c0f18b304933 100644
+index c0f18b304933..581653589108 100644
 --- a/arch/x86/kvm/pmu.c
 +++ b/arch/x86/kvm/pmu.c
-@@ -472,17 +472,6 @@ void kvm_pmu_init(struct kvm_vcpu *vcpu)
- 	kvm_pmu_refresh(vcpu);
- }
+@@ -77,6 +77,7 @@ static void kvm_perf_overflow_intr(struct perf_event *perf_event,
  
--static inline bool pmc_speculative_in_use(struct kvm_pmc *pmc)
--{
--	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
--
--	if (pmc_is_fixed(pmc))
--		return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
--			pmc->idx - INTEL_PMC_IDX_FIXED) & 0x3;
--
--	return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
--}
--
- /* Release perf_events for vPMCs that have been unused for a full time slice.  */
- void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
- {
-@@ -577,4 +566,10 @@ void kvm_pmu_counter_cross_mapped_check(struct kvm_vcpu *vcpu)
- 			break;
- 		}
- 	}
-+
-+	if (!pmu->counter_cross_mapped)
-+		return;
-+
-+	if (pmu->need_rewrite_ds_pebs_interrupt_threshold)
-+		kvm_make_request(KVM_REQ_PMU, pmc->vcpu);
- }
-diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
-index b1e52e33f08c..6cdc9fd03195 100644
---- a/arch/x86/kvm/pmu.h
-+++ b/arch/x86/kvm/pmu.h
-@@ -147,6 +147,17 @@ static inline u64 get_sample_period(struct kvm_pmc *pmc, u64 counter_value)
- 	return sample_period;
- }
- 
-+static inline bool pmc_speculative_in_use(struct kvm_pmc *pmc)
-+{
-+	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
-+
-+	if (pmc_is_fixed(pmc))
-+		return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
-+			pmc->idx - INTEL_PMC_IDX_FIXED) & 0x3;
-+
-+	return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
-+}
-+
- void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel);
- void reprogram_fixed_counter(struct kvm_pmc *pmc, u8 ctrl, int fixed_idx);
- void reprogram_counter(struct kvm_pmu *pmu, int pmc_idx);
+ 	if (!test_and_set_bit(pmc->idx, pmu->reprogram_pmi)) {
+ 		if (perf_event->attr.precise_ip) {
++			pmu->need_rewrite_pebs_records = pmu->counter_cross_mapped;
+ 			/* Indicate PEBS overflow PMI to guest. */
+ 			__set_bit(GLOBAL_STATUS_BUFFER_OVF_BIT,
+ 				(unsigned long *)&pmu->global_status);
 diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index 2a06f923fbc7..b69e7c47fb05 100644
+index b69e7c47fb05..4c095c31db38 100644
 --- a/arch/x86/kvm/vmx/pmu_intel.c
 +++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -211,6 +211,36 @@ static struct kvm_pmc *intel_msr_idx_to_pmc(struct kvm_vcpu *vcpu, u32 msr)
- 	return pmc;
+@@ -557,22 +557,96 @@ static int rewrite_ds_pebs_interrupt_threshold(struct kvm_vcpu *vcpu)
+ 	return ret;
  }
  
-+static void intel_pmu_pebs_setup(struct kvm_pmu *pmu)
-+{
-+	struct kvm_vcpu *vcpu = pmu_to_vcpu(pmu);
-+	struct kvm_pmc *pmc = NULL;
-+	int bit, idx;
-+	gpa_t gpa;
-+
-+	pmu->need_rewrite_ds_pebs_interrupt_threshold = false;
-+
-+	for_each_set_bit(bit, (unsigned long *)&pmu->pebs_enable, X86_PMC_IDX_MAX) {
-+		pmc = kvm_x86_ops.pmu_ops->pmc_idx_to_pmc(pmu, bit);
-+
-+		if (pmc && pmc_speculative_in_use(pmc)) {
-+			pmu->need_rewrite_ds_pebs_interrupt_threshold = true;
-+			break;
-+		}
-+	}
-+
-+	if (pmu->pebs_enable && pmu->cached_ds_area != pmu->ds_area) {
-+		idx = srcu_read_lock(&vcpu->kvm->srcu);
-+		gpa = kvm_mmu_gva_to_gpa_system(vcpu, pmu->ds_area, NULL);
-+		if (kvm_gfn_to_hva_cache_init(vcpu->kvm, &pmu->ds_area_cache,
-+				gpa, sizeof(struct debug_store)))
-+			goto out;
-+		pmu->cached_ds_area = pmu->ds_area;
-+out:
-+		srcu_read_unlock(&vcpu->kvm->srcu, idx);
-+	}
-+}
-+
- static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- {
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-@@ -287,6 +317,8 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			return 0;
- 		if (kvm_valid_perf_global_ctrl(pmu, data)) {
- 			global_ctrl_changed(pmu, data);
-+			if (pmu->global_ctrl & pmu->pebs_enable)
-+				intel_pmu_pebs_setup(pmu);
- 			return 0;
- 		}
- 		break;
-@@ -491,12 +523,57 @@ static void intel_pmu_reset(struct kvm_vcpu *vcpu)
- 		pmu->global_ovf_ctrl = 0;
- }
- 
-+static int rewrite_ds_pebs_interrupt_threshold(struct kvm_vcpu *vcpu)
++static int rewrite_ds_pebs_records(struct kvm_vcpu *vcpu)
 +{
 +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
++	struct kvm_pmc *pmc = NULL;
 +	struct debug_store *ds = NULL;
-+	u64 new_threshold, offset;
-+	int srcu_idx, ret = -ENOMEM;
++	gpa_t gpa;
++	u64 pebs_buffer_base, offset, buffer_base, status, new_status, format_size;
++	int srcu_idx, bit, ret = 0;
++
++	if (!pmu->counter_cross_mapped)
++		return ret;
 +
 +	ds = kmalloc(sizeof(struct debug_store), GFP_KERNEL);
 +	if (!ds)
-+		goto out;
++		return -ENOMEM;
 +
 +	ret = -EFAULT;
 +	srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
 +	if (kvm_read_guest_cached(vcpu->kvm, &pmu->ds_area_cache,
 +			ds, sizeof(struct debug_store)))
-+		goto unlock_out;
++		goto out;
 +
-+	/* Adding sizeof(struct pebs_basic) offset is enough to generate PMI. */
-+	new_threshold = ds->pebs_buffer_base + sizeof(struct pebs_basic);
-+	offset = offsetof(struct debug_store, pebs_interrupt_threshold);
-+	if (kvm_write_guest_offset_cached(vcpu->kvm, &pmu->ds_area_cache,
-+			&new_threshold, offset, sizeof(u64)))
-+		goto unlock_out;
++	if (ds->pebs_index <= ds->pebs_buffer_base)
++		goto out;
 +
-+	ret = 0;
++	pebs_buffer_base = ds->pebs_buffer_base;
++	offset = offsetof(struct pebs_basic, applicable_counters);
++	buffer_base = 0;
 +
-+unlock_out:
-+	srcu_read_unlock(&vcpu->kvm->srcu, srcu_idx);
++	gpa = kvm_mmu_gva_to_gpa_system(vcpu, pebs_buffer_base, NULL);
++	if (kvm_gfn_to_hva_cache_init(vcpu->kvm, &pmu->pebs_buffer_base_cache,
++			gpa, sizeof(struct pebs_basic)))
++		goto out;
++
++	do {
++		ret = -EFAULT;
++		if (kvm_read_guest_offset_cached(vcpu->kvm, &pmu->pebs_buffer_base_cache,
++				&status, buffer_base + offset, sizeof(u64)))
++			goto out;
++		if (kvm_read_guest_offset_cached(vcpu->kvm, &pmu->pebs_buffer_base_cache,
++				&format_size, buffer_base, sizeof(u64)))
++			goto out;
++
++		new_status = 0ull;
++		for_each_set_bit(bit, (unsigned long *)&pmu->pebs_enable, X86_PMC_IDX_MAX) {
++			pmc = kvm_x86_ops.pmu_ops->pmc_idx_to_pmc(pmu, bit);
++
++			if (!pmc || !pmc->perf_event)
++				continue;
++
++			if (test_bit(pmc->perf_event->hw.idx, (unsigned long *)&status))
++				new_status |= BIT_ULL(pmc->idx);
++		}
++		if (kvm_write_guest_offset_cached(vcpu->kvm, &pmu->pebs_buffer_base_cache,
++				&new_status, buffer_base + offset, sizeof(u64)))
++			goto out;
++
++		ret = 0;
++		buffer_base += format_size >> 48;
++	} while (pebs_buffer_base + buffer_base < ds->pebs_index);
 +
 +out:
++	srcu_read_unlock(&vcpu->kvm->srcu, srcu_idx);
 +	kfree(ds);
 +	return ret;
 +}
@@ -241,35 +179,34 @@ index 2a06f923fbc7..b69e7c47fb05 100644
  static void intel_pmu_handle_event(struct kvm_vcpu *vcpu)
  {
  	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-+	int ret;
+-	int ret;
++	int ret1, ret2;
++
++	if (pmu->need_rewrite_pebs_records) {
++		pmu->need_rewrite_pebs_records = false;
++		ret1 = rewrite_ds_pebs_records(vcpu);
++	}
  
  	if (!(pmu->global_ctrl & pmu->pebs_enable))
- 		return;
+-		return;
++		goto out;
+ 
+ 	if (pmu->counter_cross_mapped && pmu->need_rewrite_ds_pebs_interrupt_threshold) {
+-		ret = rewrite_ds_pebs_interrupt_threshold(vcpu);
+ 		pmu->need_rewrite_ds_pebs_interrupt_threshold = false;
++		ret2 = rewrite_ds_pebs_interrupt_threshold(vcpu);
+ 	}
+ 
+-	if (ret == -ENOMEM)
++out:
 +
-+	if (pmu->counter_cross_mapped && pmu->need_rewrite_ds_pebs_interrupt_threshold) {
-+		ret = rewrite_ds_pebs_interrupt_threshold(vcpu);
-+		pmu->need_rewrite_ds_pebs_interrupt_threshold = false;
-+	}
-+
-+	if (ret == -ENOMEM)
-+		pr_debug_ratelimited("%s: Fail to emulate guest PEBS due to OOM.", __func__);
-+	else if (ret == -EFAULT)
-+		pr_debug_ratelimited("%s: Fail to emulate guest PEBS due to GPA fault.", __func__);
++	if (ret1 == -ENOMEM || ret2 == -ENOMEM)
+ 		pr_debug_ratelimited("%s: Fail to emulate guest PEBS due to OOM.", __func__);
+-	else if (ret == -EFAULT)
++	else if (ret1 == -EFAULT || ret2 == -EFAULT)
+ 		pr_debug_ratelimited("%s: Fail to emulate guest PEBS due to GPA fault.", __func__);
  }
  
- struct kvm_pmu_ops intel_pmu_ops = {
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 4ab1ce26244d..118e6752b563 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5917,6 +5917,7 @@ gpa_t kvm_mmu_gva_to_gpa_system(struct kvm_vcpu *vcpu, gva_t gva,
- {
- 	return vcpu->arch.walk_mmu->gva_to_gpa(vcpu, gva, 0, exception);
- }
-+EXPORT_SYMBOL_GPL(kvm_mmu_gva_to_gpa_system);
- 
- static int kvm_read_guest_virt_helper(gva_t addr, void *val, unsigned int bytes,
- 				      struct kvm_vcpu *vcpu, u32 access,
 -- 
 2.29.2
 
