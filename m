@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BE02E9980
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E029B2E9AB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbhADQAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:00:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37060 "EHLO mail.kernel.org"
+        id S1728052AbhADP7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:59:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728393AbhADQAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FA0F224D2;
-        Mon,  4 Jan 2021 16:00:19 +0000 (UTC)
+        id S1728037AbhADP7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:59:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0307822518;
+        Mon,  4 Jan 2021 15:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776020;
-        bh=mtQPt8Uzwmc/6ANODzPvsmDmtJPeyUPnzbZaKro9OuM=;
+        s=korg; t=1609775928;
+        bh=6aoK4ekmIni/MV8SXsbkIAnDm06vg+awXmScef8Y1MM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xj4+o9ykQrLtDSqmrRQlBuSqW2Wq7eblTAacBeao+NiFkAqSa4KHKKPz88+1amA0c
-         e3tLWzvXDU5QG/7iCTrhKJaAIjiVhLDXEMK/uwYyaxPPysdpkU+M5LpdnbPMIJQKT0
-         Rul81z4DC4pJ0KzEe7PRaBBjSgW/TCvpmpJcLdtM=
+        b=0aNaNWUUO7PJ6tht6bDUSxu3gUOjXaWjm6rPT8QgrVyFiZqy+qt/bw3aKbBsMeWWH
+         h2e3bw13HX1tqNHbDGuurgyAMVvGpXYN25Kg7y1UpsrIGfJ1fLyucWJEO1tWsj2UJa
+         iRjhsCD0WfeVf7J7ztouRciyLqQVGSKqsBaK/2fQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+22e87cdf94021b984aa6@syzkaller.appspotmail.com,
-        syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: [PATCH 5.4 33/47] fcntl: Fix potential deadlock in send_sig{io, urg}()
+        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Jessica Yu <jeyu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 29/35] module: set MODULE_STATE_GOING state when a module fails to load
 Date:   Mon,  4 Jan 2021 16:57:32 +0100
-Message-Id: <20210104155707.335126873@linuxfoundation.org>
+Message-Id: <20210104155704.804938149@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
-References: <20210104155705.740576914@linuxfoundation.org>
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,127 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boqun Feng <boqun.feng@gmail.com>
+From: Miroslav Benes <mbenes@suse.cz>
 
-commit 8d1ddb5e79374fb277985a6b3faa2ed8631c5b4c upstream.
+[ Upstream commit 5e8ed280dab9eeabc1ba0b2db5dbe9fe6debb6b5 ]
 
-Syzbot reports a potential deadlock found by the newly added recursive
-read deadlock detection in lockdep:
+If a module fails to load due to an error in prepare_coming_module(),
+the following error handling in load_module() runs with
+MODULE_STATE_COMING in module's state. Fix it by correctly setting
+MODULE_STATE_GOING under "bug_cleanup" label.
 
-[...] ========================================================
-[...] WARNING: possible irq lock inversion dependency detected
-[...] 5.9.0-rc2-syzkaller #0 Not tainted
-[...] --------------------------------------------------------
-[...] syz-executor.1/10214 just changed the state of lock:
-[...] ffff88811f506338 (&f->f_owner.lock){.+..}-{2:2}, at: send_sigurg+0x1d/0x200
-[...] but this lock was taken by another, HARDIRQ-safe lock in the past:
-[...]  (&dev->event_lock){-...}-{2:2}
-[...]
-[...]
-[...] and interrupts could create inverse lock ordering between them.
-[...]
-[...]
-[...] other info that might help us debug this:
-[...] Chain exists of:
-[...]   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
-[...]
-[...]  Possible interrupt unsafe locking scenario:
-[...]
-[...]        CPU0                    CPU1
-[...]        ----                    ----
-[...]   lock(&f->f_owner.lock);
-[...]                                local_irq_disable();
-[...]                                lock(&dev->event_lock);
-[...]                                lock(&new->fa_lock);
-[...]   <Interrupt>
-[...]     lock(&dev->event_lock);
-[...]
-[...]  *** DEADLOCK ***
-
-The corresponding deadlock case is as followed:
-
-	CPU 0		CPU 1		CPU 2
-	read_lock(&fown->lock);
-			spin_lock_irqsave(&dev->event_lock, ...)
-					write_lock_irq(&filp->f_owner.lock); // wait for the lock
-			read_lock(&fown-lock); // have to wait until the writer release
-					       // due to the fairness
-	<interrupted>
-	spin_lock_irqsave(&dev->event_lock); // wait for the lock
-
-The lock dependency on CPU 1 happens if there exists a call sequence:
-
-	input_inject_event():
-	  spin_lock_irqsave(&dev->event_lock,...);
-	  input_handle_event():
-	    input_pass_values():
-	      input_to_handler():
-	        handler->event(): // evdev_event()
-	          evdev_pass_values():
-	            spin_lock(&client->buffer_lock);
-	            __pass_event():
-	              kill_fasync():
-	                kill_fasync_rcu():
-	                  read_lock(&fa->fa_lock);
-	                  send_sigio():
-	                    read_lock(&fown->lock);
-
-To fix this, make the reader in send_sigurg() and send_sigio() use
-read_lock_irqsave() and read_lock_irqrestore().
-
-Reported-by: syzbot+22e87cdf94021b984aa6@syzkaller.appspotmail.com
-Reported-by: syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fcntl.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ kernel/module.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -779,9 +779,10 @@ void send_sigio(struct fown_struct *fown
- {
- 	struct task_struct *p;
- 	enum pid_type type;
-+	unsigned long flags;
- 	struct pid *pid;
- 	
--	read_lock(&fown->lock);
-+	read_lock_irqsave(&fown->lock, flags);
- 
- 	type = fown->pid_type;
- 	pid = fown->pid;
-@@ -802,7 +803,7 @@ void send_sigio(struct fown_struct *fown
- 		read_unlock(&tasklist_lock);
- 	}
-  out_unlock_fown:
--	read_unlock(&fown->lock);
-+	read_unlock_irqrestore(&fown->lock, flags);
- }
- 
- static void send_sigurg_to_task(struct task_struct *p,
-@@ -817,9 +818,10 @@ int send_sigurg(struct fown_struct *fown
- 	struct task_struct *p;
- 	enum pid_type type;
- 	struct pid *pid;
-+	unsigned long flags;
- 	int ret = 0;
- 	
--	read_lock(&fown->lock);
-+	read_lock_irqsave(&fown->lock, flags);
- 
- 	type = fown->pid_type;
- 	pid = fown->pid;
-@@ -842,7 +844,7 @@ int send_sigurg(struct fown_struct *fown
- 		read_unlock(&tasklist_lock);
- 	}
-  out_unlock_fown:
--	read_unlock(&fown->lock);
-+	read_unlock_irqrestore(&fown->lock, flags);
- 	return ret;
- }
- 
+diff --git a/kernel/module.c b/kernel/module.c
+index d05e1bfdd3559..8dbe0ff22134e 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3841,6 +3841,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
+ 				     MODULE_STATE_GOING, mod);
+ 	klp_module_going(mod);
+  bug_cleanup:
++	mod->state = MODULE_STATE_GOING;
+ 	/* module_bug_cleanup needs module_mutex protection */
+ 	mutex_lock(&module_mutex);
+ 	module_bug_cleanup(mod);
+-- 
+2.27.0
+
 
 
