@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA7B2E9661
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1192E965D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbhADNvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:51:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
+        id S1726662AbhADNuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:50:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbhADNvY (ORCPT
+        with ESMTP id S1726396AbhADNug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:51:24 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C68BC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 05:50:44 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id e25so19397800wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 05:50:44 -0800 (PST)
+        Mon, 4 Jan 2021 08:50:36 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734A8C061574;
+        Mon,  4 Jan 2021 05:49:56 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 30so14386218pgr.6;
+        Mon, 04 Jan 2021 05:49:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uq26Gc5w+gqD65K8bo/iG2wfGwF0w57n87eHtRp+qh0=;
-        b=Y/NvzpVH7Z4+H4ta1a9zHQflIqnMjEZI24Fk6TRQuVKVdpwLubG8RLV4kbcT7i/fLE
-         12lVZpp+70ldwZly5P25mZjhb41Io2C/27+GyYRt4CwT60GlJGOeV46+h6YQB28pikuK
-         dOWUneGFKLqoflxoSiYT1JwsTquy88JX7hYNFzJoPV29S4kml/XJ5UxgqQeF1fC9Tmlh
-         KsMghX1QXTSdSZwXFEiXIk/3hANi2CIngRHy69q8KpC+uskOAnYb0oYebP8Mds63O6Xo
-         m5DbytI2FVdmxYXCCEZnUcpxR7inutp8OOdEiA1DZaEkQRIPiHoM6ewB2KrXC3uN3JBm
-         d2YA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+DJZ244fWmm1Eu3AuZWtTvG/4qgtx5ebkDRnS934fwE=;
+        b=KNvpcfIuHglIYpeV2XoKyh7PP2hPT/N01s9VVO7BHOdFN5t7SA3yECdLD558utKc4Y
+         uMNyOz8qpMqJq41XG/HR9suOxw1LM12EpFoPFO1GWa3m9MqVUCSj4tITIkvSPVIS0gje
+         B8OrCdYuIzdK+GVU3dURuph0ggE9GZ+K2ediPWOB4WL4yt24S3zzHWVLXlqoH/0xU7GC
+         mP1oLTBFmlGd8xqhYURiNNKaobjfxAL0RKzj975tkyeR9oY8lLn535GArZWiZmgQgWTD
+         JUv9fFhbrLrjTH/HRfpoNKrCRtNEwQFd8h1RKbAB3gB1CvbAWEvVKrTTjyIqioF+1tMq
+         fGkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uq26Gc5w+gqD65K8bo/iG2wfGwF0w57n87eHtRp+qh0=;
-        b=a5lQ3gFj7qQJvf999JIqhxvMCA/sVw3F9cebWc0kufglwMgrsuBqsD5ul3AnbInXTi
-         nbUoiSLwrqQQ5kjtaKoZ6ldBwc2t3Rf57rKzIHBIKe909ouDJAFud4aDWLiFxCVXadEL
-         8BRT6wti380F12CKWzELbuo7DF3ZogmG3xV/G8o/xmJvCWbUwNswwu7pL8rhr7cqrcG/
-         EA5W/PnLYnehkl/lK+vOqCx0FS/5fYCKTfK2hIs+FwR+kkAbqBIQCJDC8AdjSevhlCtY
-         0NoPPl8q5MP6uZXK8LwFbVRdrx1PrabYgzJ6LCeKEot/M+JOt1l5955OYreLS9tVpaVt
-         KX3w==
-X-Gm-Message-State: AOAM5314ISFbvlxqZq9ty9Ydp2VPsjwzg9bzqKo05a/6SfOeDak43zw8
-        E6T1WTgQXkQG9sj7IzVWwmdkyZR5D/nOFQ==
-X-Google-Smtp-Source: ABdhPJyPzUg9YuWft7Ethb7RktUR0dmf+AuCAu6BJoPfosCEjYUCcSgihfEVEN4I3FHwnURzwSmCxw==
-X-Received: by 2002:a7b:c930:: with SMTP id h16mr27039173wml.175.1609768242948;
-        Mon, 04 Jan 2021 05:50:42 -0800 (PST)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id 67sm36316421wmb.47.2021.01.04.05.50.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 Jan 2021 05:50:42 -0800 (PST)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, georgi.djakov@linaro.org
-Subject: [PATCH] MAINTAINERS: Update Georgi's email address
-Date:   Mon,  4 Jan 2021 15:50:43 +0200
-Message-Id: <20210104135043.31262-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.29.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+DJZ244fWmm1Eu3AuZWtTvG/4qgtx5ebkDRnS934fwE=;
+        b=CJx+7HhDaIN3RJOiwH3drGcAEu3FIl9dUqsHyqwdPlpfQQA15Gl9sSjZ9qKs83chwd
+         bd0L7zsXMbUoodFe7JgLz0vT9/N8N7uisw/SI15BTfeja74ZwC3JKCRJcnuSO+mdGA/I
+         e9/1QZt6RnnxwSvQDC14DoklrAcHoji+7ph3PbaOXY5/5cIYpPNHuVjNIhp0vffmepWi
+         bmHxUrYALykv9NtHSW8Iu5JBXOWrV+fx/PSLeKuwJMtutgM1ZLenRrh4lcxHmh+kq7Gb
+         1OA1zrKXJPf9fKokWym89Yscpt76UYa5iTJzRHY8GipIzATYcs2ufwzIp+njXBagDiOB
+         V/eg==
+X-Gm-Message-State: AOAM531+nVW1gR4XPveP7wBRAnutPKpQ6/TIoKskQxNz9/RuNblLYzIv
+        +94FvmaAplTA3A2hN8awJnLZBkrMOf6yAmNM0Pc=
+X-Google-Smtp-Source: ABdhPJxqi8qDckN3jm/Qah53DZywTHfIi81ycD9UrvEU6ouSQLNhgM7OlLPtzLTUhoAq2snYcNXRpLt89kYbE7SI/5Q=
+X-Received: by 2002:a62:19cc:0:b029:19e:321b:a22e with SMTP id
+ 195-20020a6219cc0000b029019e321ba22emr66235798pfz.73.1609768195997; Mon, 04
+ Jan 2021 05:49:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210104085923.53705-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20210104085923.53705-1-alexandru.ardelean@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 4 Jan 2021 15:50:44 +0200
+Message-ID: <CAHp75VdsXDr8kAREiGhSF9-ffr05+LDHcqOzWnomfWTH2mN9Gw@mail.gmail.com>
+Subject: Re: [PATCH] spi: stm32: update dev_dbg() print format for SPI params
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use my kernel.org email as main address to make things a bit easier
-for me to handle.
+On Mon, Jan 4, 2021 at 10:55 AM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
+>
+> With the introduction of the 'include/uapi/linux/spi/spi.h' header, the
+> type of the macros are enforced to 'unsigned long int' via the _BITUL()
+> macro.
+>
+> This causes some -Wformat warnings in the spi-stm32 driver.
+> This patch changes the printf() specifiers from '%d' to '%lu' to
+> accommodate for this change.
+>
+> Fixes: f7005142dace ("spi: uapi: unify SPI modes into a single spi.h header")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+LKP also reported this before.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 546aa66428c9..a15e306123ef 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9240,7 +9240,7 @@ F:	tools/testing/selftests/sgx/*
- K:	\bSGX_
- 
- INTERCONNECT API
--M:	Georgi Djakov <georgi.djakov@linaro.org>
-+M:	Georgi Djakov <djakov@kernel.org>
- L:	linux-pm@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/interconnect/
+...
+
+> -       dev_dbg(spi->dev, "cpol=%d cpha=%d lsb_first=%d cs_high=%d\n",
+> +       dev_dbg(spi->dev, "cpol=%lu cpha=%lu lsb_first=%lu cs_high=%lu\n",
+>                 spi_dev->mode & SPI_CPOL,
+>                 spi_dev->mode & SPI_CPHA,
+>                 spi_dev->mode & SPI_LSB_FIRST,
+
+Wouldn't the output be a bit awful with all these?
+
+I think the proper fix is to add !! to each bit mask.
+
+-- 
+With Best Regards,
+Andy Shevchenko
