@@ -2,117 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407A32E9589
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D21C2E958D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbhADNEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:04:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59702 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725840AbhADNEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:04:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609765438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vibaRJ3VEeCNwuYRgupkbYHsXd/lrAoVedXx0JmGMyw=;
-        b=AvzCZDX6SWN4RvUPRK1ZySQleecMLM8R6orz8os3JfH99EDKEGYuFkut7otZbLrf+jPlhr
-        M9x7JEihGX91WZZsj4ZAYcdIky2i16bDwj8RxqoxyNCotXu8Cy9Bpwlyb9DtfAcolhRq6n
-        hbe0hsgvtmCjOKCbkJWPilXMg8I/1ZA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 84C07AD19;
-        Mon,  4 Jan 2021 13:03:58 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 14:03:57 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, andi.kleen@intel.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
-        Roman Gushchin <guro@fb.com>
-Subject: Re: [PATCH 1/2] mm: page_counter: relayout structure to reduce false
- sharing
-Message-ID: <20210104130357.GF13207@dhcp22.suse.cz>
-References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
+        id S1726614AbhADNF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:05:56 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:46422 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbhADNF4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 08:05:56 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kwPXu-0001Z7-1B; Mon, 04 Jan 2021 13:05:14 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] power: supply: max8997_charger: fix spelling mistake "diconnected" -> "disconnected"
+Date:   Mon,  4 Jan 2021 13:05:13 +0000
+Message-Id: <20210104130513.35563-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 29-12-20 22:35:13, Feng Tang wrote:
-> When checking a memory cgroup related performance regression [1],
-> from the perf c2c profiling data, we found high false sharing for
-> accessing 'usage' and 'parent'.
-> 
-> On 64 bit system, the 'usage' and 'parent' are close to each other,
-> and easy to be in one cacheline (for cacheline size == 64+ B). 'usage'
-> is usally written, while 'parent' is usually read as the cgroup's
-> hierarchical counting nature.
-> 
-> So move the 'parent' to the end of the structure to make sure they
-> are in different cache lines.
+From: Colin Ian King <colin.king@canonical.com>
 
-Yes, parent is write-once field so having it away from other heavy RW
-fields makes sense to me.
+There is a spelling mistake in a dev_dbg message. Fix it.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/power/supply/max8997_charger.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/max8997_charger.c
+index 23df91ed2c72..321bd6b8ee41 100644
+--- a/drivers/power/supply/max8997_charger.c
++++ b/drivers/power/supply/max8997_charger.c
+@@ -124,7 +124,7 @@ static void max8997_battery_extcon_evt_worker(struct work_struct *work)
+ 		dev_dbg(charger->dev, "USB CDP charger is connected\n");
+ 		current_limit = 650000;
+ 	} else {
+-		dev_dbg(charger->dev, "USB charger is diconnected\n");
++		dev_dbg(charger->dev, "USB charger is disconnected\n");
+ 		current_limit = -1;
+ 	}
  
-> Following are some performance data with the patch, against
-> v5.11-rc1, on several generations of Xeon platforms. Most of the
-> results are improvements, with only one malloc case on one platform
-> shows a -4.0% regression. Each category below has several subcases
-> run on different platform, and only the worst and best scores are
-> listed:
-> 
-> fio:				 +1.8% ~  +8.3%
-> will-it-scale/malloc1:		 -4.0% ~  +8.9%
-> will-it-scale/page_fault1:	 no change
-> will-it-scale/page_fault2:	 +2.4% ~  +20.2%
-
-What is the second number? Std?
-
-> [1].https://lore.kernel.org/lkml/20201102091543.GM31092@shao2-debian/
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
-> Cc: Roman Gushchin <guro@fb.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  include/linux/page_counter.h | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-> index 85bd413..6795913 100644
-> --- a/include/linux/page_counter.h
-> +++ b/include/linux/page_counter.h
-> @@ -12,7 +12,6 @@ struct page_counter {
->  	unsigned long low;
->  	unsigned long high;
->  	unsigned long max;
-> -	struct page_counter *parent;
->  
->  	/* effective memory.min and memory.min usage tracking */
->  	unsigned long emin;
-> @@ -27,6 +26,14 @@ struct page_counter {
->  	/* legacy */
->  	unsigned long watermark;
->  	unsigned long failcnt;
-> +
-> +	/*
-> +	 * 'parent' is placed here to be far from 'usage' to reduce
-> +	 * cache false sharing, as 'usage' is written mostly while
-> +	 * parent is frequently read for cgroup's hierarchical
-> +	 * counting nature.
-> +	 */
-> +	struct page_counter *parent;
->  };
->  
->  #if BITS_PER_LONG == 32
-> -- 
-> 2.7.4
-> 
-
 -- 
-Michal Hocko
-SUSE Labs
+2.29.2
+
