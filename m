@@ -2,91 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7744D2E95FF
+	by mail.lfdr.de (Postfix) with ESMTP id E31A72E9600
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727269AbhADN3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:29:19 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:36877 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbhADN3S (ORCPT
+        id S1726707AbhADN3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:29:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbhADN3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:29:18 -0500
-Received: by mail-oi1-f178.google.com with SMTP id l207so32092168oib.4;
-        Mon, 04 Jan 2021 05:29:02 -0800 (PST)
+        Mon, 4 Jan 2021 08:29:52 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411B1C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 05:29:12 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id r7so32144337wrc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 05:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CeT1gpZAsO0ZqFeo+qXRWjnihFBZp/Zvxstr2M1W2a4=;
+        b=oEE8jU7gcio8gOy5LjnxQ6xWzkjlhrxcCm4c8u4CQ4YwD8wGQldewFZLoIx4WE+zJK
+         am8IqWqYyZH+RtR/caotqBCv0QWrMbFe6ycwi3Z/F8DtWutbF4WKc+SWEtiCd8jvkfTF
+         iqepCnDD/Qxo2CgI/kRvZf1J0scisOpYmhFHVU2/Hxdj3BobEPL1cii+WCi4CogBNcHX
+         7oO6UEN+pKEkY8j0MurK+FEHEoHUm5JWXGe/tzW3Sf9YphZwQ0PA7AH5QdnUZoXMbaCm
+         O8VS2S0runpdHO/uqbBQviRG9Ig8Vgc+bdmP05nbMO6INZgYL/km0WvXOHvDRcvLpLls
+         0+9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6T4y+ecTYYYZDM41o/baqi/IkEVhIrJtoe7kFNSajtM=;
-        b=d3OGSDBlUP+1Sam+7Ckl/TZT0pxQessM5UYQUViK865476rnSsL8VurbISEPWHI7/W
-         0VUkpaYPHekOxwJblhnII79QH6Xhcs2/6T8+Z6w66Q0nCzqKGsPa6ip/2IIQVLbZEykK
-         GVGzd1BWFFVExTDjil38HZqyrvkcxpxk2Y6eXXXpIcgsUcSY0NqrpiZORSisTdodRf2x
-         cQwB8UVx6ihQ3OCmNeW2albV5HcFieI+QtrgIV8HWNIyHDYr2TMG2DRvL0lT2f9ge0XB
-         a8/r1i3RzLf+dEMSBFtCX/8i8CTFG43Vh56Nu7J5N1aWGe4jEzikvMNgNIJGXKWZ+9uh
-         i9aw==
-X-Gm-Message-State: AOAM530Hsefis+SNcCAl2C7LWQWLdCVbQP7tkZpL5sg/76NZvGnm45uu
-        5JLTsb9Fl65fHFng0a+Mj0qNEnxAWQ9L1P40S9gyL9gzjv0=
-X-Google-Smtp-Source: ABdhPJzWxDoDdBzpXC3HBt74lcMfT4hgBAR6jPj17GX1lTVdRegfSw2xQy1X8CwJYbTueBtkN9J6R9g7hLcyiq5h49g=
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr17758048oia.148.1609766917308;
- Mon, 04 Jan 2021 05:28:37 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=CeT1gpZAsO0ZqFeo+qXRWjnihFBZp/Zvxstr2M1W2a4=;
+        b=hMfXswr8kJsdccOQnpzEwHAwJA34+bpi1uyY4UjdIUu96qVdiXhSuAEWcgyzVcxISu
+         gKLRZlGde6a1VAaK4/HSxRQdI+H53ldmX3xi98IeqxLucBTBxapRseEJYPQNSVZm5O7o
+         0freeOcEA9xLeJ+UGljcmtRyynwlfTVvZJSV9LYcXJtfb6FRzpJamhbFRLI3Kj3L5Uvk
+         rdUcVdjA3tiHwwoVu3IOUTZ9wtxLjZhp1ok0/CA+UV9SB3rjIoFQzdJIEpw2guE91IDB
+         QRWtAwVPR40tHylz1eLFcWOyccSDLhrNz5HTNLsPEcoTyTqaUSAZeJii69C5WM0uaDiH
+         tp9A==
+X-Gm-Message-State: AOAM532a5Q6Y72dBniVnq6gR+YgFjPXrlIjtaxZjhaGab1n+66pFcoe7
+        RURa+qYOe7GMTIeot2LPQdmU8nZm6SJcbSHs
+X-Google-Smtp-Source: ABdhPJwrOR+x0g02hObd9ySh3hZiz/yyh9pFuaUzGtXfgB8R8bMcCJj0xBPFnoqDUj8syvkdr+F1+Q==
+X-Received: by 2002:a5d:498a:: with SMTP id r10mr79337606wrq.238.1609766950793;
+        Mon, 04 Jan 2021 05:29:10 -0800 (PST)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:17a:9662:5ead:50af? ([2a01:e35:2ec0:82b0:17a:9662:5ead:50af])
+        by smtp.gmail.com with ESMTPSA id r15sm89538602wrq.1.2021.01.04.05.29.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 05:29:10 -0800 (PST)
+Subject: Re: discussion: re-structuring of the Amlogic Meson VPU DRM driver
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-amlogic@lists.infradead.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        airlied@linux.ie, daniel@ffwll.ch
+References: <CAFBinCA4EnbJZ5HnWzqP-LdLJE0FD_nGqA6PxdQaR5KfETgvTQ@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ ZaTUOEkgIor5losDrePdPgE=
+Organization: Baylibre
+Message-ID: <57a65a09-606a-8773-e1ff-4202e83779c8@baylibre.com>
+Date:   Mon, 4 Jan 2021 14:29:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201114130921.651882-1-jiaxun.yang@flygoat.com> <20201114130921.651882-2-jiaxun.yang@flygoat.com>
-In-Reply-To: <20201114130921.651882-2-jiaxun.yang@flygoat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Jan 2021 14:28:26 +0100
-Message-ID: <CAMuHMdXo9o9af-YBt5g53QHRhuLxdSy_C9n4wdEEh7yzDidr-w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] rtc: goldfish: Remove GOLDFISH dependency
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rtc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFBinCA4EnbJZ5HnWzqP-LdLJE0FD_nGqA6PxdQaR5KfETgvTQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiaxun,
+Hi,
 
-On Sat, Nov 14, 2020 at 2:20 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
-> Goldfish platform is covered with dust.
-> However the goldfish-rtc had been used as virtualized RTC
-> in QEMU for RISC-V virt hw and MIPS loongson3-virt hw, thus
-> we can drop other parts of goldfish but leave goldfish-rtc here.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Sorry for the delay...
 
-Thanks for your patch!
+On 31/12/2020 00:24, Martin Blumenstingl wrote:
+> Hi Neil and all interested people,
+> 
+> in the past there were concerns about how some of the components are
+> coupled in our Meson DRM driver(s).
+> With this discussion I would like to achieve four things:
+> 1. understand the current issues that we have> 2. come up with a TODO list of things that need to be tackled as well
+> as recommendations how to solve it (for example: "driver ABC function
+> ABC uses the recommended way - take that as reference")
+> 3. one by one work on the items on the TODO list
+> 4. add support for the 32-bit SoCs to the Meson VPU DRM driver
+> (without adding more "not recommended" code)
+> 
+> Disclaimer: I am not familiar with the DRM subsystem - so apologies if
+> the terminology is not correct.
+> 
+> drivers/gpu/drm/meson/meson_dw_hdmi.c currently serves four purposes:
+> 1. manage the TOP (glue) registers for the dw-hdmi IP
+> This is Amlogic specific and consists of things like HPD filtering,
+> some internal resets, etc.
+> In my opinion this part is supposed to stay in this driver
+Yep, it's tightly coupled to the DW-HDMI core
 
-> --- a/drivers/rtc/Kconfig
-> +++ b/drivers/rtc/Kconfig
-> @@ -1935,7 +1935,6 @@ config RTC_DRV_HID_SENSOR_TIME
->  config RTC_DRV_GOLDFISH
->         tristate "Goldfish Real Time Clock"
->         depends on OF && HAS_IOMEM
-> -       depends on GOLDFISH || COMPILE_TEST
->         help
->           Say yes to enable RTC driver for the Goldfish based virtual platform.
+> 
+> 2. load the driver for the dw-hdmi IP by calling dw_hdmi_probe()
+> I read somewhere that this is not recommended anymore and should be replaced.
+> Is my understanding correct and what is the recommended replacement?
+Yeah in fact the dw-hdmi glue should be a pure bridge, not a component anymore.
 
-I was just looking to see if someone had already sent a patch to add
-"depends on GOLDFISH || COMPILE_TEST", before sending one myself, when I
-noticed your patch had removed it...
+This means it should probe by itself entirely, should not use the component stuff.
 
-What about
+This also means all the VPU related part (mainly encoder and clock) should be moved
+out of this file as a bridge and built with the meson_drm driver,
+then find the "next bridge" like other drivers.
 
-    depends on CPU_LOONGSON64 || GOLDFISH || RISCV || COMPILE_TEST
+> 
+> 3. it manages the HDMI PHY registers in the HHI register area
+> For the 32-bit SoCs I will not follow this pattern and will create a
+> separate PHY instead.
+> As a long-term goal I think we should also move this into a dedicated
+> PHY driver.
 
-instead?
+I looked at it, and ... it's complex. For the 32-bit socs it's easy because
+you only have a single PHY setup, for the new gens you have to deal with the
+4k modes and co. This could be handle by adding a new parameters set to the
+phy_configure union, but what should we add in it to be super generic ?
 
-Gr{oetje,eeting}s,
+> 
+> 4. call back into VPU/VENC functions to set up these registers
+> This is a blocker for 32-bit SoC support as I would have to duplicate
+> this code if we don't make any changes. This includes things like
+> calculating (and setting) clock frequencies, calling
+> meson_venc_hdmi_mode_set for setting up the DVI pixel encoder, etc.
+> My understanding is that this part should not be part of the
+> meson_dw_hdmi driver, but "some other" driver. I don't understand
+> which driver that's supposed to be though and how things would be
+> wired up in the end.
 
-                        Geert
+Yep it should be a bridge. You can chain bridges, it's designed for such use case.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+We will have internal bridges for encoders, ENCL+ENCP grouped for HDMI and ENCL.
+CVBS can be handled separately without bridges.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I can have a try to move stuff if you can review/test on your side.
+Would it be a good start ?
+
+> 
+> In addition to HDMI my understanding is that for adding MIPI DSI
+> support you would
+> a) either have to follow the pattern from the meson_dw_hdmi driver or
+> b) also require some better way to achieve this
+
+With the cut I described before, we'll need a add a simple ENCL bridge
+in meson_drm and a standalone bridge for dw-mipi-dsi.
+
+> 
+> The biggest question marks for me are #2 and #4 from the list above.
+> Also is there anything I have missed?
+> Any input, feedback and questions are welcome!
+> 
+> PS: an additional topic on the TODO list will be "use the common clock
+> framework" for clock setup. it's currently not clear to me if that's
+> possible on the 64-bit SoCs in all cases.
+
+It's the same issue for 4k & co, the high freqs needs special PLL settings,
+not sure how this would be easily doable in the PLL driver.
+We may need to add a gx/g12 HDMI specific pll driver.
+
+> I will start a separate discussion for that topic after this one.
+> 
+> 
+> Best regards,
+> Martin
+> 
+
+Thanks for starting the thread !
+
+Neil
