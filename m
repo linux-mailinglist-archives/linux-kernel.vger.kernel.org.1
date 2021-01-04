@@ -2,54 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7732E93A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFA22E938E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbhADKtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:49:09 -0500
-Received: from elvis.franken.de ([193.175.24.41]:57206 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727032AbhADKtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:49:07 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kwNPU-0001xs-04; Mon, 04 Jan 2021 11:48:24 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9C4DEC0808; Mon,  4 Jan 2021 11:43:57 +0100 (CET)
-Date:   Mon, 4 Jan 2021 11:43:57 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     siyanteng@loongson.cn
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: loongson64: smp.c: Fix block comment coding style
-Message-ID: <20210104104357.GE4765@alpha.franken.de>
-References: <20201222083700.3651527-1-siyanteng@loongson.cn>
+        id S1726345AbhADKpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:45:03 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:33391 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726124AbhADKpC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 05:45:02 -0500
+Received: by mail-ot1-f48.google.com with SMTP id b24so25625951otj.0;
+        Mon, 04 Jan 2021 02:44:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JWBFzdltaHB2LmhJPr+3aAFk0bHyrG7NJiFKo6m3amQ=;
+        b=ODKXDySaK2XmdM22/lB0TxClTZMONoqzf1ndHeNap2odpyH4iFZjuPZdCl6Nk6d7OO
+         2Q0Kngc74MYNYMBdOv4rruGg4o5fxqrz6rq/rMAcEFdPYTuZsGbZBwqJGVWa+4KDG6g/
+         XEW9PqfEH5JPz/Wzkuvk6C1l+xzi01+Og04TMzYH3eX4quNWDGcxVYmx4GKjWSRM0AtW
+         nvPmLd07pMeutHatC0loRc7OBsBAb7aUi1grp+5HCUsphilhHCPXWWWSW4infQ9aI+Bi
+         YYmzeiRE7fGlJOsCP6sQ6g1clh9BZOEKx8LJW5WrD9xAD2y8WIfmQULjFb7Si5sferjO
+         fHug==
+X-Gm-Message-State: AOAM533pxxGpcp/2ta+ICqw829FxZlC+ZjB8fW1Oty4z1p8z2ydz9jqx
+        42oWoclHa4ermysmtBMchkb7uPcETvxJBDduK8U=
+X-Google-Smtp-Source: ABdhPJxpg8oSaA/PXZWgJ5sADKEXP+Zc/bvWcki5ZqDJMFgEPzbsdusImgckqNgKqbm0G/lCHkPu7UXFhv5w1Uci7+E=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr52177425otc.145.1609757061486;
+ Mon, 04 Jan 2021 02:44:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222083700.3651527-1-siyanteng@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201229170848.18482-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201229170848.18482-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Jan 2021 11:44:10 +0100
+Message-ID: <CAMuHMdWkZWRo7S_HYTS-vWBR7gVv5Q+h+kO6LH8re7f74igdXg@mail.gmail.com>
+Subject: Re: [PATCH] PCI: Drop PCIE_RCAR config option
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 04:37:00PM +0800, siyanteng@loongson.cn wrote:
-> From: siyanteng <siyanteng@loongson.cn>
-> 
-> This patch fixes:
-> "WARNING: Block comments use a trailing */ on a separate line"
-> by checkpatch.pl
-> 
-> Signed-off-by: siyanteng <siyanteng@loongson.cn>
-> ---
->  arch/mips/loongson64/smp.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+On Tue, Dec 29, 2020 at 6:09 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> All the defconfig files have replaced PCIE_RCAR config option with
+> PCIE_RCAR_HOST config option which built the same driver, so we can
+> now safely drop PCIE_RCAR config option.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-applied to mips-next.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Thomas.
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
