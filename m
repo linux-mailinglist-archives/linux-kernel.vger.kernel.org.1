@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11222E9C40
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B706D2E9C3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbhADRlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:41:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36614 "EHLO mail.kernel.org"
+        id S1727888AbhADRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:41:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727341AbhADRlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:41:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE7772068D;
-        Mon,  4 Jan 2021 17:41:13 +0000 (UTC)
+        id S1727341AbhADRlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 12:41:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCCC9206A4;
+        Mon,  4 Jan 2021 17:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609782074;
-        bh=k5ju6+jk760rADcHCAbaKDDu3K01ibNwMCfTBSegebw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=UEeEs2fTzuJEQCK9xvUncUjHa/XX7mUxS8/FFMMzOrEBgWI1sXZjfoEp8+6gr6A0o
-         zkwTFnvcO+Dvax87DLmZuxC+foGtidfmPDJDDisyUVc4rFUtlR3f7DSui3TAfSSTER
-         9LgUHbvRdF0k3N60eplPVPhtVJcAbq/f+Dzk5u2RBPnaGjeW51hqtb1emZXcYjciOY
-         OUvFxLatMRLDRQpQJo7U0TVNWtiWmrnjzMWOlvxX0daaL5zr36vOscoqj7jK6QUbrX
-         l6+wYIcHtRC+/h/lw1H6iQ0Ka5pjEROtFXPKh8sKA7N3hsgYo6eIc3Hqaun4uGykq6
-         zrcJrezT9jbfg==
+        s=k20201202; t=1609782069;
+        bh=kpsTHALVkfBJDu2JCXHzvLv++yXy1rO2x/VySKZPe2Q=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=ZDLZsRT1/HasZN03n0qC7MqTNZ/DUc+unriRciKwd56dD4Vst1cCYDzcTP/0NhmuU
+         jRw4QUVVceOQ96QBOBNM9FLr3ILrR31ObhZ15B2oa0++fnKG/7pDR1tgjnfrROANPb
+         mH/xEfaZbk3oYIKgJLlRbj3exWklHB3rHo11lL09DfAEV7vI2G2VHNwPAcTBMIgVzV
+         K8Tpf6t5i/WTTARriZ/Wsl6n3bqXU8hwhPLArwO/XWeCx876jQwKEWllrXVFqyAEmB
+         qcOtdd3leohXnYuJngbl1xcgV+ZCWBYV3jbS7LrRHNHXH/m8NfIS4awwxQpLnpjQCv
+         YDPN9xAF0DzLg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201231122348.637917-1-dmitry.baryshkov@linaro.org>
-References: <20201231122348.637917-1-dmitry.baryshkov@linaro.org>
-Subject: Re: [PATCH 0/4] regulator: fix pm8009 bindings on sm8250
-Message-Id: <160978203769.14485.17360727494427661134.b4-ty@kernel.org>
+To:     Daniel Scally <djrscally@gmail.com>, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210103165541.784360-1-djrscally@gmail.com>
+References: <20210103165541.784360-1-djrscally@gmail.com>
+Subject: Re: [PATCH] regulator: core.c: Replace references to non-existent function
+Message-Id: <160978203769.14485.1414576589830773531.b4-ty@kernel.org>
 Date:   Mon, 04 Jan 2021 17:40:37 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -43,12 +38,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Dec 2020 15:23:44 +0300, Dmitry Baryshkov wrote:
-> PM8009 has special revision (P=1), which is to be used for sm8250
-> platform. The major difference is the S2 regulator which supplies 0.95 V
-> instead of 2.848V. Declare regulators data to be used for this chip
-> revision. The datasheet calls the chip just pm8009-1, so use the same
-> name.
+On Sun, 3 Jan 2021 16:55:41 +0000, Daniel Scally wrote:
+> The function regulator_set_device_supply() is referenced a few times in
+> comments in regulator/core.c; however this function was removed a long
+> time ago by commit a5766f11cfd3 ("regulator: core - Rework machine API to
+> remove string based functions."). Update those references to point to
+> set_consumer_device_supply(), which replaced the old function.
 
 Applied to
 
@@ -56,14 +51,8 @@ Applied to
 
 Thanks!
 
-[1/4] dt-bindings: regulator: qcom,rpmh-regulator: add pm8009 revision
-      commit: 2bf3a72b08e7f6356a2db9e1571ca65f683510bb
-[2/4] regulator: qcom-rpmh-regulator: correct hfsmps515 definition
-      commit: df6b92fa40050e59ea89784294bf6d04c0c47705
-[3/4] regulator: qcom-rpmh-regulator: add pm8009-1 chip revision
-      commit: 951384cabc5dfb09251d440dbc26058eba86f97e
-[4/4] arm64: dts: qcom: qrb5165-rb5: fix pm8009 regulators
-      commit: c3da02421230639bf6ee5462b70b58f5b7f3b7c6
+[1/1] regulator: core.c: Replace references to non-existent function
+      commit: 90cf443d841e41af7fceb26aed6553e43670fe42
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
