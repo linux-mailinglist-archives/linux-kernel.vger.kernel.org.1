@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91922E91CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79D22E91C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbhADIgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 03:36:03 -0500
-Received: from ptr.189.cn ([183.61.185.102]:12617 "EHLO 189.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725616AbhADIgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 03:36:03 -0500
-HMM_SOURCE_IP: 172.27.8.53:49401.1510557771
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-123.150.8.42 (unknown [172.27.8.53])
-        by 189.cn (HERMES) with SMTP id 67190100896;
-        Mon,  4 Jan 2021 16:32:47 +0800 (CST)
-Received: from  ([123.150.8.42])
-        by SZ-WEBMAIL05 with ESMTP id 25eea934587e4f18bbd903edeb6bea94 for linux-next@vger.kernel.org;
-        Mon Jan  4 16:32:48 2021
-X-Transaction-ID: 25eea934587e4f18bbd903edeb6bea94
-X-filter-score: 
-X-Real-From: chensong_2000@189.cn
-X-Receive-IP: 123.150.8.42
-X-MEDUSA-Status: 0
-Sender: chensong_2000@189.cn
-Subject: Re: linux-next: build failures after merge of the staging tree
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Greg KH <greg@kroah.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210104122653.6f35b9bb@canb.auug.org.au>
- <CAMuHMdXWqO2WPKSxsfbr=-_rrXenEwJRW3rYko7VJCPwCnyeLA@mail.gmail.com>
-From:   "chensong_2000@189.cn" <chensong_2000@189.cn>
-Message-ID: <75a11414-fa59-a630-c025-7b232dc14be8@189.cn>
-Date:   Mon, 4 Jan 2021 16:32:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726644AbhADIeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 03:34:03 -0500
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:39962 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726173AbhADIeD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 03:34:03 -0500
+Received: by mail-lf1-f48.google.com with SMTP id m12so62455727lfo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 00:33:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F7F0NXeBBE9yzsU9XFVx+R85wt5xq0VZMqXDuSCoKlY=;
+        b=Lw8eETBpbT0dv9UdYWEnTfwQ4nbztq4seB3L1KYrEhUFkIUr9RBwOh4cQmjtwSj9cJ
+         MCHWWV6gJQEu6nMRobvnYcarq+5aH1Q9uU/Y1G9UjCW4DL0fb37k9xE174vzsZWqVN1P
+         XDqiKwENGfKk9K2IP/v0iMHLK7AR/Dv+tHdPbNmciB4RQpGN1glm6ta8KhxmWZg3M4FJ
+         ros87lH91xhVyE7vJ5n8Xk1EZALMVai+w/GcfjiTamLfbGpffUwXi4QhCimeGo1UR4TP
+         fX4u4FrHavScyn+Ua9mhxZSf2bkFSz/W/V4XzNmqz1IwoF+1TG870LYGgse4u0BLdPAx
+         dW9w==
+X-Gm-Message-State: AOAM530R3OkN7sJiN6cghALCYr0srSaYpOSHVcifIaF8/o1W8bpsjhA3
+        ckoAahJcOZEQBuMo5NGwG47aup+MquFGyg==
+X-Google-Smtp-Source: ABdhPJwg8jvMGLOzS76q3ETvOhMP1qI+UmGpQYSarxIGf9WpKPdj/uG6D7FqYyYgWVMpfPYsEszeKg==
+X-Received: by 2002:a19:2c4:: with SMTP id 187mr30221914lfc.391.1609749200634;
+        Mon, 04 Jan 2021 00:33:20 -0800 (PST)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id e27sm8564242ljb.6.2021.01.04.00.33.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 00:33:20 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id m12so62455633lfo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 00:33:20 -0800 (PST)
+X-Received: by 2002:a19:810:: with SMTP id 16mr34440045lfi.233.1609749199911;
+ Mon, 04 Jan 2021 00:33:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdXWqO2WPKSxsfbr=-_rrXenEwJRW3rYko7VJCPwCnyeLA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210103110635.34823-1-samuel@sholland.org>
+In-Reply-To: <20210103110635.34823-1-samuel@sholland.org>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 4 Jan 2021 16:33:08 +0800
+X-Gmail-Original-Message-ID: <CAGb2v6704ybnn2mOs_hGZm_ZM2bRAztDNZNx8CyASMJ8Z4GdCA@mail.gmail.com>
+Message-ID: <CAGb2v6704ybnn2mOs_hGZm_ZM2bRAztDNZNx8CyASMJ8Z4GdCA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] bus: sunxi-rsb: Implement power managment
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ondrej Jirman <megous@megous.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i will take care of this
+Hi,
 
-在 2021/1/4 下午4:27, Geert Uytterhoeven 写道:
-> On Mon, Jan 4, 2021 at 6:12 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->> After merging the staging tree, today's linux-next build (arm
->> multi_v7_defconfig) failed like this:
->>
->> In file included from include/linux/printk.h:6,
->>                   from include/linux/kernel.h:16,
->>                   from drivers/staging/board/kzm9d.c:4:
->> drivers/staging/board/kzm9d.c:28:17: error: initialization of 'initcall_t' {aka 'int (*)(void)'} from incompatible pointer type 'void (*)(void)' [-Werror=incompatible-pointer-types]
->>     28 | device_initcall(kzm9d_init);
->>        |                 ^~~~~~~~~~
->> include/linux/init.h:197:50: note: in definition of macro '___define_initcall'
->>    197 |   __attribute__((__section__(#__sec ".init"))) = fn;
->>        |                                                  ^~
->> include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
->>    229 | #define device_initcall(fn)  __define_initcall(fn, 6)
->>        |                              ^~~~~~~~~~~~~~~~~
->> drivers/staging/board/kzm9d.c:28:1: note: in expansion of macro 'device_initcall'
->>     28 | device_initcall(kzm9d_init);
->>        | ^~~~~~~~~~~~~~~
->> cc1: some warnings being treated as errors
->> In file included from include/linux/printk.h:6,
->>                   from include/linux/kernel.h:16,
->>                   from include/asm-generic/bug.h:20,
->>                   from arch/arm/include/asm/bug.h:60,
->>                   from include/linux/bug.h:5,
->>                   from include/linux/thread_info.h:12,
->>                   from include/asm-generic/current.h:5,
->>                   from ./arch/arm/include/generated/asm/current.h:1,
->>                   from include/linux/sched.h:12,
->>                   from include/linux/ratelimit.h:6,
->>                   from include/linux/dev_printk.h:16,
->>                   from include/linux/device.h:15,
->>                   from include/linux/dma-mapping.h:7,
->>                   from drivers/staging/board/armadillo800eva.c:12:
->> drivers/staging/board/armadillo800eva.c:90:17: error: initialization of 'initcall_t' {aka 'int (*)(void)'} from incompatible pointer type 'void (*)(void)' [-Werror=incompatible-pointer-types]
->>     90 | device_initcall(armadillo800eva_init);
->>        |                 ^~~~~~~~~~~~~~~~~~~~
->> include/linux/init.h:197:50: note: in definition of macro '___define_initcall'
->>    197 |   __attribute__((__section__(#__sec ".init"))) = fn;
->>        |                                                  ^~
->> include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
->>    229 | #define device_initcall(fn)  __define_initcall(fn, 6)
->>        |                              ^~~~~~~~~~~~~~~~~
->> drivers/staging/board/armadillo800eva.c:90:1: note: in expansion of macro 'device_initcall'
->>     90 | device_initcall(armadillo800eva_init);
->>        | ^~~~~~~~~~~~~~~
->>
->> Caused by commit
->>
->>    850c35bb28ec ("staging: board: Remove macro board_staging")
->>
->> I have used the staging tree from next-20201223 for today.
-> 
-> Note that a similar patch was (IMHO rightfully) rejected 3 years ago:
-> https://lore.kernel.org/lkml/20170220175506.GA30142@kroah.com/
-> 
-> So please drop it. Thanks!
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
-> 
+On Sun, Jan 3, 2021 at 7:06 PM Samuel Holland <samuel@sholland.org> wrote:
+>
+> This series adds system (complete power down) and runtime (clock gate)
+> PM hooks to the RSB controller driver. Tested on A64 and H6.
+>
+> Samuel Holland (4):
+>   bus: sunxi-rsb: Move OF match table
+>   bus: sunxi-rsb: Split out controller init/exit functions
+>   bus: sunxi-rsb: Implement suspend/resume/shutdown callbacks
+>   bus: sunxi-rsb: Implement runtime power management
+>
+>  drivers/bus/sunxi-rsb.c | 211 ++++++++++++++++++++++++++++------------
+>  1 file changed, 150 insertions(+), 61 deletions(-)
+
+Looks good to me.
+
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+
+I already queued them up locally, but I think it's best to give other
+people some time to review as well.
+
+ChenYu
