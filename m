@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493EF2E950C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F3B2E9531
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbhADMkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:40:23 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:53710 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbhADMkW (ORCPT
+        id S1727040AbhADMnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:43:43 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35032 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbhADMnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:40:22 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104CTEac009645;
-        Mon, 4 Jan 2021 12:39:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=311J7ExI17gI4E01/u3Bz6RjSFkpttIOT+rLdcKkQwc=;
- b=qD2/elOPYPjjaJhRBlc7+Kl0h8NbOaq5OPsLAWyn65Ah0259MVmBDfqn3CUPGT3Eb3Eq
- ewE8KyAyR98grt1w91m5JJmBJjPwtxJmNNWrasHTo0eCOSRSH2Pi1/DFjzxiDkHL9FH2
- xT9bViZ5o/wtDJ9CPcnhXkJAT46/nx9owxfGWLOXVWWYTLuKfpnRMCwpCpnV5rZABbpn
- IadSuKkVDjZQFzeiyWsd0EwAYl8eGGsK/3NgpORs5vIPoXNHFPaiMgBnirjFU2TfN4Go
- FRkj8BRbzb6Cey5FsA3Rg1jTx6+GGuk0UgkB1X5uY+sRR50jtY9oYF+UxfgvDvmG5Kl7 IA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35tgskm2ek-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 04 Jan 2021 12:39:30 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104CW9gW017461;
-        Mon, 4 Jan 2021 12:39:29 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 35uxnr2xp8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Jan 2021 12:39:29 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 104CdSn7026032;
-        Mon, 4 Jan 2021 12:39:28 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Jan 2021 04:39:27 -0800
-Date:   Mon, 4 Jan 2021 15:38:57 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        linux-mmc@vger.kernel.org,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v3 09/24] wfx: add hwio.c/hwio.h
-Message-ID: <20210104123857.GO2809@kadam>
-References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
- <87lfdp98rw.fsf@codeaurora.org>
- <X+IQRct0Zsm87H4+@kroah.com>
- <4279510.LvFx2qVVIh@pc-42>
- <20210104123410.GN2809@kadam>
+        Mon, 4 Jan 2021 07:43:41 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104Cfw1r015297;
+        Mon, 4 Jan 2021 06:41:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1609764118;
+        bh=PDv3Jixr3M5clZhrNBfpbXuxNLrgt8dzQxEDS9DO98o=;
+        h=From:To:CC:Subject:Date;
+        b=tRRjTbwSyKK0+5oE7u7H9YfV5/HTw+rmvgwcZYTgx0Aq7SqrYHIQKSbw0qU/ozBZf
+         qc16m6P7YryD3D+sOTS+XmGQmUxj7h0rZ70YQEmVA6HB8qCjijPWJFnwcKOJB4lc1q
+         zMgA9OOkL9yzeXRBMMoEf+ZNHtorMuCDmSsGSKYE=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104CfwMs129208
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 4 Jan 2021 06:41:58 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 Jan
+ 2021 06:41:08 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 4 Jan 2021 06:41:08 -0600
+Received: from a0393678-ssd.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104Cf3bg034579;
+        Mon, 4 Jan 2021 06:41:04 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nadeem Athani <nadeem@cadence.com>
+CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v2 0/4] AM64: Add PCIe bindings and driver support
+Date:   Mon, 4 Jan 2021 18:10:59 +0530
+Message-ID: <20210104124103.30930-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210104123410.GN2809@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101040083
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
- phishscore=0 impostorscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101040083
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Of course, Smatch didn't trigger any warnings in the wfx driver.  I need
-to try re-write this check to use the cross function database so
-function pointers are handled.
+AM64 uses the same PCIe controller as in J7200, however AM642 EVM
+doesn't have a clock generator (unlike J7200 base board). Here
+the clock from the SERDES has to be routed to the PCIE connector.
+This series provides an option for the pci-j721e.c driver to
+drive reference clock output to the connector.
 
-regards,
-dan carpenter
+v1 of the patch series can be found @ [1]
+
+Changes from v1:
+*) Fixed missing initialization of "ret" variable in the error path.
+
+[1] -> http://lore.kernel.org/r/20201224115658.2795-1-kishon@ti.com
+
+Kishon Vijay Abraham I (4):
+  dt-bindings: PCI: ti,j721e: Add binding to represent refclk to the
+    connector
+  dt-bindings: pci: ti,j721e: Add host mode dt-bindings for TI's AM64
+    SoC
+  dt-bindings: pci: ti,j721e: Add endpoint mode dt-bindings for TI's
+    AM64 SoC
+  PCI: j721e: Add support to provide refclk to PCIe connector
+
+ .../bindings/pci/ti,j721e-pci-ep.yaml         | 10 ++++---
+ .../bindings/pci/ti,j721e-pci-host.yaml       | 27 ++++++++++++++-----
+ drivers/pci/controller/cadence/pci-j721e.c    | 18 +++++++++++++
+ 3 files changed, 45 insertions(+), 10 deletions(-)
+
+-- 
+2.17.1
 
