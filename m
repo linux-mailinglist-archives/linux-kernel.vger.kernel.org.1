@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172242E91A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F11E2E91A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbhADIRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 03:17:45 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10102 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbhADIRp (ORCPT
+        id S1726579AbhADITg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 03:19:36 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:38121 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbhADITf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 03:17:45 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D8T3G2xDrzMF8d;
-        Mon,  4 Jan 2021 16:15:54 +0800 (CST)
-Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.184.196) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 4 Jan 2021 16:16:55 +0800
-From:   Shenming Lu <lushenming@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Eric Auger <eric.auger@redhat.com>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
-        <lushenming@huawei.com>
-Subject: [RFC PATCH v2 4/4] KVM: arm64: GICv4.1: Give a chance to save VLPI's pending state
-Date:   Mon, 4 Jan 2021 16:16:13 +0800
-Message-ID: <20210104081613.100-5-lushenming@huawei.com>
-X-Mailer: git-send-email 2.27.0.windows.1
-In-Reply-To: <20210104081613.100-1-lushenming@huawei.com>
-References: <20210104081613.100-1-lushenming@huawei.com>
+        Mon, 4 Jan 2021 03:19:35 -0500
+Received: by mail-oi1-f178.google.com with SMTP id x13so31352566oic.5;
+        Mon, 04 Jan 2021 00:19:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YMBiuedOOMmuXN5p23LzuCrx9oYV8zreF8EiRpvTu20=;
+        b=CmPU8/tK9WaGzSp7WZfijGuD/L4y/b5JLjISEA2+j8S2w+TKc0lxYZOhMun4B+0kxL
+         uwsyz4U4ku/ba889kW+eTXAlagFHA48Q7oxTgUtkbhtpivyAHKXyO2QjwRxWwqWMv0y0
+         +JZrIPAlN1zVzNV9pjen/xNgj6Cesh4Ylr+5sI7np33oDsrpvdgjyUwQ88Wnn+Dq6G1c
+         FRSCcVVTdpb9cMUDHOk4URAZxINpX4XCMl2bwUiTH6e3kYxE/ef2v/kp3p6FGZVjIAxd
+         kmsBM+M+dn3383RTmPPuf/MOQS2rPMCeJDscCDXtogdCoqK83bhhwUP7n+EfgB7qvwP4
+         PS8Q==
+X-Gm-Message-State: AOAM532iMf1a44Cx/6VMsDcsS1CYDsFxZOBtphLWoFSCNgb1yrbAmzSh
+        OTsHKSertPCPlGSrUSbkB7XNZdkI9zwU0kmIlaE=
+X-Google-Smtp-Source: ABdhPJw1ZOaTYVHBloO8Pcssm2LM7Af99V6DZ54pWqVH/AwulrzQyS7V6fcrgUwHfui2oKcs/Xug060l9zJMQ/biQbw=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr17093210oia.148.1609748334576;
+ Mon, 04 Jan 2021 00:18:54 -0800 (PST)
 MIME-Version: 1.0
+References: <CAJZ5v0gN3NfWyAHA7At=1ZG90vCJbDoUzF5ts2_t3GmunSbrMQ@mail.gmail.com>
+ <20201230153744.15612-1-daniel.lezcano@linaro.org>
+In-Reply-To: <20201230153744.15612-1-daniel.lezcano@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Jan 2021 09:18:43 +0100
+Message-ID: <CAMuHMdXCn-tKcaeAHTgdJu0Lg=YrF7cFnW8-tD4ZBfVPUb53NA@mail.gmail.com>
+Subject: Re: [PATCH] powercap/drivers/dtpm: Fix __udivdi3 and __aeabi_uldivmod
+ unresolved symbols
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.184.196]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before GICv4.1, we do not have direct access to the VLPI's pending
-state. So we simply let it fail early when encountering any VLPI.
+Hi Daniel,
 
-But now we don't have to return -EACCES directly if on GICv4.1. So
-let’s change the hard code and give a chance to save the VLPI's pending
-state (and preserve the UAPI).
+On Wed, Dec 30, 2020 at 4:39 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+> 32 bits architectures do not support u64 division, so the macro
+> DIV_ROUND_CLOSEST is not adequate as the compiler will replace the
+> call to an unexisting function for the platform, leading to an
+> unresolved symbols.
+>
+> Fix this by using the compatible macros:
+>
+> DIV64_U64_ROUND_CLOSEST and DIV_ROUND_CLOSEST_ULL.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-Signed-off-by: Shenming Lu <lushenming@huawei.com>
----
- Documentation/virt/kvm/devices/arm-vgic-its.rst | 2 +-
- arch/arm64/kvm/vgic/vgic-its.c                  | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Thanks for your patch!
 
-diff --git a/Documentation/virt/kvm/devices/arm-vgic-its.rst b/Documentation/virt/kvm/devices/arm-vgic-its.rst
-index 6c304fd2b1b4..d257eddbae29 100644
---- a/Documentation/virt/kvm/devices/arm-vgic-its.rst
-+++ b/Documentation/virt/kvm/devices/arm-vgic-its.rst
-@@ -80,7 +80,7 @@ KVM_DEV_ARM_VGIC_GRP_CTRL
-     -EFAULT  Invalid guest ram access
-     -EBUSY   One or more VCPUS are running
-     -EACCES  The virtual ITS is backed by a physical GICv4 ITS, and the
--	     state is not available
-+	     state is not available without GICv4.1
-     =======  ==========================================================
- 
- KVM_DEV_ARM_VGIC_GRP_ITS_REGS
-diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-index 40cbaca81333..ec7543a9617c 100644
---- a/arch/arm64/kvm/vgic/vgic-its.c
-+++ b/arch/arm64/kvm/vgic/vgic-its.c
-@@ -2218,10 +2218,10 @@ static int vgic_its_save_itt(struct vgic_its *its, struct its_device *device)
- 		/*
- 		 * If an LPI carries the HW bit, this means that this
- 		 * interrupt is controlled by GICv4, and we do not
--		 * have direct access to that state. Let's simply fail
--		 * the save operation...
-+		 * have direct access to that state without GICv4.1.
-+		 * Let's simply fail the save operation...
- 		 */
--		if (ite->irq->hw)
-+		if (ite->irq->hw && !kvm_vgic_global_state.has_gicv4_1)
- 			return -EACCES;
- 
- 		ret = vgic_its_save_ite(its, device, ite, gpa, ite_esz);
+> --- a/drivers/powercap/dtpm.c
+> +++ b/drivers/powercap/dtpm.c
+> @@ -99,8 +99,8 @@ static void __dtpm_rebalance_weight(struct dtpm *dtpm)
+>                 pr_debug("Setting weight '%d' for '%s'\n",
+>                          child->weight, child->zone.name);
+>
+> -               child->weight = DIV_ROUND_CLOSEST(child->power_max * 1024,
+> -                                                 dtpm->power_max);
+> +               child->weight = DIV64_U64_ROUND_CLOSEST(
+> +                       child->power_max * 1024, dtpm->power_max);
+
+Note that 64-by-64 divisions are expensive on 32-bit platforms.
+
+Does dtpm.power_max need to be u64?
+The (lack of) documentation for the dtpm structure does not say what is
+being stored there.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.19.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
