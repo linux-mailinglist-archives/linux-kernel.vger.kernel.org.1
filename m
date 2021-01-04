@@ -2,71 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9292EA03D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C254E2EA0B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbhADW7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 17:59:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726026AbhADW7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 17:59:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B234220784;
-        Mon,  4 Jan 2021 22:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609801109;
-        bh=McSVoja0FAYaCdm3f5ezz5kbVb5dnoFzHZXUMiu8atE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b5v+cQy7U6BA7piielZd5VBOqth4tomTvnzukdSPjlmQ+dtJh84B2J711LvADEkAa
-         bfMZ3/AfXlYniDNz/lgFsUq9PUy22uFMRKaM83AzMIeRR4TBbaNJ4S1hkBOwP7pbsx
-         1YAncTFUex3AgHCXBAarND3Oi3558huFcey0X6B6v0cEnXwvahRyZnHlfBHN7nsZ52
-         5v40Ph1Ala+HvX/dBux6aow3FPVryt3s6VU3qBK2MD1dHYMJ10TS8Xcc7xRBOw3UnY
-         wlkuH+2C2Q4BIR9PQMIMeRSjdRZ4gWcVJNP+Zo1wLzulWmF3ddSHSYbx2gCb6mGkwL
-         DwrCNkc0VsFRQ==
-Date:   Mon, 4 Jan 2021 17:58:27 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com,
-        Davide Caratti <dcaratti@redhat.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH 5.10 01/63] net/sched: sch_taprio: reset child qdiscs
- before freeing them
-Message-ID: <20210104225827.GF3665355@sasha-vm>
-References: <20210104155708.800470590@linuxfoundation.org>
- <20210104155708.875695855@linuxfoundation.org>
+        id S1727661AbhADXXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:23:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726168AbhADXXW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 18:23:22 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B3AC061574;
+        Mon,  4 Jan 2021 15:22:42 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id o144so27608775ybc.0;
+        Mon, 04 Jan 2021 15:22:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IHs0gNL0FYkfrPjV8CfFXH60XzdEKDMfQo9YOTLu8ng=;
+        b=crfcATRH8ZA7jh72kSOsnKPAdEsZJgta/Z1XwNRlB8h1RfHUTXK2s3+7Jeu+sUUppo
+         W+iQZRS+YLavlxBAibp8ISoWy+5kWCHwXM5LdYf/7biMfU+gNW8jg+vILXnN9dfgnR00
+         dHGzrDgykxhY7Q/Lei76JJ9ANzriPKRB48+3MtdHWRaGzBtp1xxDbKhsaMt+aH5fOnP9
+         wOo6fSRqeKmIS63qizWCL1h4nKGEaGB+J3BnO9fxesHPE81lUhZYRKXoJ3imVmfH5DI1
+         Ac8jJ9EA+huVshhjH3zLzPHQUaK8KILgY2LVL0kUny4ZpMfbb02Kp1XK1R+q4zwbZVpg
+         F9lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IHs0gNL0FYkfrPjV8CfFXH60XzdEKDMfQo9YOTLu8ng=;
+        b=a1Y1cjTWEzAc3W+llgItTNn93RBAd3HSEA4KubbEEKxgMB5M8sXMx06nPYo85it/uY
+         uLEg7l8rB3i3dYtsVFj+L6lX1qEZc0eYrMlOyPkSWAYFLVU6fpDHbjyUvmH4Me9w636U
+         +RaFuHkk1x0c8vhatd0AaINP0U/n73R9hCnsxq6o7yQ4FQ+wICYZ749/oQnEyUlaR1ET
+         wu18yJ5f+qdkO+fQinIDiwQqfy1XBwjjzpHzDz36SHIGMUhOGHqho6+e8iafhCZ+fSR+
+         k5GZl8tlcKUy18BErZ9MjK2tzoux8+u82RqqN+3U5laXhjVMr51p2sbPHoAPsniENCw0
+         i+tw==
+X-Gm-Message-State: AOAM5317D6S4ko0AVagbFKoYRF4VOiG+ssALfKLnKXrXSyceuxMgUpUF
+        0hCY2N1xMFJfT446JZKTEqc0F4q39s0x0y9LFwJqH3p6Wzo=
+X-Google-Smtp-Source: ABdhPJwzapJndxMAIfyntxa5BfSJmXKUOVwG2h9zBd4WWC1fcSntq1Nnz6Mx9IJ0ZZiHxdPaMxShVqGRRuqTz3uwM10=
+X-Received: by 2002:a25:5f07:: with SMTP id t7mr107189415ybb.395.1609795543692;
+ Mon, 04 Jan 2021 13:25:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210104155708.875695855@linuxfoundation.org>
+References: <20201230145708.28544-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201230145708.28544-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVCD52-eTnEwftGz8ExMkZkJRyM=3M8zU11yhn1UNPxxA@mail.gmail.com>
+In-Reply-To: <CAMuHMdVCD52-eTnEwftGz8ExMkZkJRyM=3M8zU11yhn1UNPxxA@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Mon, 4 Jan 2021 21:25:17 +0000
+Message-ID: <CA+V-a8tHVkGxCECspfcV9c1UW81bod4N4YzRLJwU8zJ0+awJUw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] spi: rpc-if: Remove CONFIG_PM_SLEEP ifdefery
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@denx.de>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jiri Kosina <trivial@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Chris Brandt <Chris.Brandt@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 04:56:54PM +0100, Greg Kroah-Hartman wrote:
->From: Davide Caratti <dcaratti@redhat.com>
->
->[ Upstream commit 44d4775ca51805b376a8db5b34f650434a08e556 ]
->
->syzkaller shows that packets can still be dequeued while taprio_destroy()
->is running. Let sch_taprio use the reset() function to cancel the advance
->timer and drop all skbs from the child qdiscs.
->
->Fixes: 5a781ccbd19e ("tc: Add support for configuring the taprio scheduler")
->Link: https://syzkaller.appspot.com/bug?id=f362872379bf8f0017fb667c1ab158f2d1e764ae
->Reported-by: syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com
->Signed-off-by: Davide Caratti <dcaratti@redhat.com>
->Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->Link: https://lore.kernel.org/r/63b6d79b0e830ebb0283e020db4df3cdfdfb2b94.1608142843.git.dcaratti@redhat.com
->Signed-off-by: Jakub Kicinski <kuba@kernel.org>
->Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hi Geert,
 
-I noticed that there's a fix for this patch going through netdev (but
-not yet in Linus's tree). The fix reads to me like it fixes a missed
-corner case by this patch rather than this patch being incorrect, so
-I'll leave this patch in. If anyone disagrees please speak up :)
+Thank you for the review.
 
--- 
-Thanks,
-Sasha
+On Mon, Jan 4, 2021 at 12:34 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Wed, Dec 30, 2020 at 4:00 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Use __maybe_unused for the suspend()/resume() hooks and get rid of
+> > the CONFIG_PM_SLEEP ifdefery to improve the code.
+> >
+> > Suggested-by: Pavel Machek <pavel@denx.de>
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Thanks for your patch!
+>
+> > --- a/drivers/spi/spi-rpc-if.c
+> > +++ b/drivers/spi/spi-rpc-if.c
+> > @@ -176,15 +176,14 @@ static int rpcif_spi_remove(struct platform_device *pdev)
+> >         return 0;
+> >  }
+> >
+> > -#ifdef CONFIG_PM_SLEEP
+> > -static int rpcif_spi_suspend(struct device *dev)
+> > +static int __maybe_unused rpcif_spi_suspend(struct device *dev)
+> >  {
+> >         struct spi_controller *ctlr = dev_get_drvdata(dev);
+> >
+> >         return spi_controller_suspend(ctlr);
+> >  }
+> >
+> > -static int rpcif_spi_resume(struct device *dev)
+> > +static int __maybe_unused rpcif_spi_resume(struct device *dev)
+> >  {
+> >         struct spi_controller *ctlr = dev_get_drvdata(dev);
+> >
+> > @@ -192,17 +191,13 @@ static int rpcif_spi_resume(struct device *dev)
+> >  }
+> >
+> >  static SIMPLE_DEV_PM_OPS(rpcif_spi_pm_ops, rpcif_spi_suspend, rpcif_spi_resume);
+> > -#define DEV_PM_OPS     (&rpcif_spi_pm_ops)
+> > -#else
+> > -#define DEV_PM_OPS     NULL
+> > -#endif
+> >
+> >  static struct platform_driver rpcif_spi_driver = {
+> >         .probe  = rpcif_spi_probe,
+> >         .remove = rpcif_spi_remove,
+> >         .driver = {
+> >                 .name   = "rpc-if-spi",
+> > -               .pm     = DEV_PM_OPS,
+> > +               .pm     = &rpcif_spi_pm_ops,
+>
+> You're aware rpcif_spi_pm_ops is now always referenced and thus emitted,
+> increasing kernel size by 92 bytes if CONFIG_PM_SLEEP=n?
+> This may matter for RZ/A SoCs running from internal SRAM.
+>
+Hmm didn't realise this would be an issue on RZ/A.
+
+Mark, could you please drop this patch from your branch.
+
+Cheers,
+Prabhakar
+
+> >         },
+> >  };
+> >  module_platform_driver(rpcif_spi_driver);
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
