@@ -2,48 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BCB2E9A0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFE12E9A93
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729321AbhADQHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:07:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39930 "EHLO mail.kernel.org"
+        id S1729615AbhADQLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:11:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728868AbhADQCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:02:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A9B9224D2;
-        Mon,  4 Jan 2021 16:01:55 +0000 (UTC)
+        id S1728238AbhADQAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:00:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D868322525;
+        Mon,  4 Jan 2021 15:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776116;
-        bh=kbXVDURpVO4n7IDAFIoO6qDrcqygc9gNZYFaaVWklug=;
+        s=korg; t=1609775948;
+        bh=peG35W7J9qcwZC3BhTAIHshIr61foowuaHAEtAufS6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lFtL3uPmD4C3SQbnOdYUnfyX0j9Uj1mCQG2kUVx52i1fLst7NvanZ6bTaYaP5s6lI
-         Y72UB7CFt3DQVf+ZsDe5tWeqZaM349hJoahlxd70rax7HC9yIZdx6lIz+2Rg3MuXkH
-         84vwWmI4FdIK9feDlx/C38m2dyrRdbgbGnyzIEHc=
+        b=TW2wQYb06MjWI9G9hGH5EZ5ClMl8r1RGzlRaXMv/drbWLSHbz24DqUM992Ysf6t9l
+         F6wfXB+AjCZ/NQlFocpa5f6k8HdXZDAXsmVtYFPCUsjLLYIeR8QS1B5sCC0zHLVL2F
+         ndXNEe6AZBxiXCGJ8cLN16RSv/qSZsbhpRJSIiPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ben Skeggs <bskeggs@redhat.com>, nouveau@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Peter Rosin <peda@axentia.se>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH 5.10 28/63] fbcon: Disable accelerated scrolling
-Date:   Mon,  4 Jan 2021 16:57:21 +0100
-Message-Id: <20210104155710.187945647@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Santosh Sivaraj <santosh@fossix.org>
+Subject: [PATCH 4.19 19/35] mm/mmu_gather: invalidate TLB correctly on batch allocation failure and flush
+Date:   Mon,  4 Jan 2021 16:57:22 +0100
+Message-Id: <20210104155704.344785469@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
-References: <20210104155708.800470590@linuxfoundation.org>
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,188 +40,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit 39aead8373b3c20bb5965c024dfb51a94e526151 upstream.
+commit 0ed1325967ab5f7a4549a2641c6ebe115f76e228 upstream.
 
-So ever since syzbot discovered fbcon, we have solid proof that it's
-full of bugs. And often the solution is to just delete code and remove
-features, e.g.  50145474f6ef ("fbcon: remove soft scrollback code").
+Architectures for which we have hardware walkers of Linux page table
+should flush TLB on mmu gather batch allocation failures and batch flush.
+Some architectures like POWER supports multiple translation modes (hash
+and radix) and in the case of POWER only radix translation mode needs the
+above TLBI.  This is because for hash translation mode kernel wants to
+avoid this extra flush since there are no hardware walkers of linux page
+table.  With radix translation, the hardware also walks linux page table
+and with that, kernel needs to make sure to TLB invalidate page walk cache
+before page table pages are freed.
 
-Now the problem is that most modern-ish drivers really only treat
-fbcon as an dumb kernel console until userspace takes over, and Oops
-printer for some emergencies. Looking at drm drivers and the basic
-vesa/efi fbdev drivers shows that only 3 drivers support any kind of
-acceleration:
+More details in commit d86564a2f085 ("mm/tlb, x86/mm: Support invalidating
+TLB caches for RCU_TABLE_FREE")
 
-- nouveau, seems to be enabled by default
-- omapdrm, when a DMM remapper exists using remapper rewriting for
-  y/xpanning
-- gma500, but that is getting deleted now for the GTT remapper trick,
-  and the accelerated copyarea never set the FBINFO_HWACCEL_COPYAREA
-  flag, so unused (and could be deleted already I think).
+The changes to sparc are to make sure we keep the old behavior since we
+are now removing HAVE_RCU_TABLE_NO_INVALIDATE.  The default value for
+tlb_needs_table_invalidate is to always force an invalidate and sparc can
+avoid the table invalidate.  Hence we define tlb_needs_table_invalidate to
+false for sparc architecture.
 
-No other driver supportes accelerated fbcon. And fbcon is the only
-user of this accel code (it's not exposed as uapi through ioctls),
-which means we could garbage collect fairly enormous amounts of code
-if we kill this.
-
-Plus because syzbot only runs on virtual hardware, and none of the
-drivers for that have acceleration, we'd remove a huge gap in testing.
-And there's no other even remotely comprehensive testing aside from
-syzbot.
-
-This patch here just disables the acceleration code by always
-redrawing when scrolling. The plan is that once this has been merged
-for well over a year in released kernels, we can start to go around
-and delete a lot of code.
-
-v2:
-- Drop a few more unused local variables, somehow I missed the
-compiler warnings (Sam)
-- Fix typo in comment (Jiri)
-- add a todo entry for the cleanup (Thomas)
-
-v3: Remove more unused variables (0day)
-
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: nouveau@lists.freedesktop.org
-Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc: Peilin Ye <yepeilin.cs@gmail.com>
-Cc: George Kennedy <george.kennedy@oracle.com>
-Cc: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Peter Rosin <peda@axentia.se>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201029132229.4068359-1-daniel.vetter@ffwll.ch
+Link: http://lkml.kernel.org/r/20200116064531.483522-3-aneesh.kumar@linux.ibm.com
+Fixes: a46cc7a90fd8 ("powerpc/mm/radix: Improve TLB/PWC flushes")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: <stable@vger.kernel.org>  # 4.19
+Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
+[santosh: backported to 4.19 stable]
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- Documentation/gpu/todo.rst       |   18 +++++++++++++++
- drivers/video/fbdev/core/fbcon.c |   45 ++++++---------------------------------
- 2 files changed, 26 insertions(+), 37 deletions(-)
+ arch/Kconfig                    |    3 ---
+ arch/powerpc/Kconfig            |    1 -
+ arch/powerpc/include/asm/tlb.h  |   11 +++++++++++
+ arch/sparc/Kconfig              |    1 -
+ arch/sparc/include/asm/tlb_64.h |    9 +++++++++
+ include/asm-generic/tlb.h       |   15 +++++++++++++++
+ mm/memory.c                     |   16 ++++++++--------
+ 7 files changed, 43 insertions(+), 13 deletions(-)
 
---- a/Documentation/gpu/todo.rst
-+++ b/Documentation/gpu/todo.rst
-@@ -273,6 +273,24 @@ Contact: Daniel Vetter, Noralf Tronnes
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -363,9 +363,6 @@ config HAVE_ARCH_JUMP_LABEL
+ config HAVE_RCU_TABLE_FREE
+ 	bool
  
- Level: Advanced
- 
-+Garbage collect fbdev scrolling acceleration
-+--------------------------------------------
-+
-+Scroll acceleration is disabled in fbcon by hard-wiring p->scrollmode =
-+SCROLL_REDRAW. There's a ton of code this will allow us to remove:
-+- lots of code in fbcon.c
-+- a bunch of the hooks in fbcon_ops, maybe the remaining hooks could be called
-+  directly instead of the function table (with a switch on p->rotate)
-+- fb_copyarea is unused after this, and can be deleted from all drivers
-+
-+Note that not all acceleration code can be deleted, since clearing and cursor
-+support is still accelerated, which might be good candidates for further
-+deletion projects.
-+
-+Contact: Daniel Vetter
-+
-+Level: Intermediate
-+
- idr_init_base()
- ---------------
- 
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -1033,7 +1033,7 @@ static void fbcon_init(struct vc_data *v
- 	struct vc_data *svc = *default_mode;
- 	struct fbcon_display *t, *p = &fb_display[vc->vc_num];
- 	int logo = 1, new_rows, new_cols, rows, cols, charcnt = 256;
--	int cap, ret;
-+	int ret;
- 
- 	if (WARN_ON(info_idx == -1))
- 	    return;
-@@ -1042,7 +1042,6 @@ static void fbcon_init(struct vc_data *v
- 		con2fb_map[vc->vc_num] = info_idx;
- 
- 	info = registered_fb[con2fb_map[vc->vc_num]];
--	cap = info->flags;
- 
- 	if (logo_shown < 0 && console_loglevel <= CONSOLE_LOGLEVEL_QUIET)
- 		logo_shown = FBCON_LOGO_DONTSHOW;
-@@ -1147,11 +1146,13 @@ static void fbcon_init(struct vc_data *v
- 
- 	ops->graphics = 0;
- 
--	if ((cap & FBINFO_HWACCEL_COPYAREA) &&
--	    !(cap & FBINFO_HWACCEL_DISABLED))
--		p->scrollmode = SCROLL_MOVE;
--	else /* default to something safe */
--		p->scrollmode = SCROLL_REDRAW;
-+	/*
-+	 * No more hw acceleration for fbcon.
-+	 *
-+	 * FIXME: Garbage collect all the now dead code after sufficient time
-+	 * has passed.
-+	 */
-+	p->scrollmode = SCROLL_REDRAW;
- 
- 	/*
- 	 *  ++guenther: console.c:vc_allocate() relies on initializing
-@@ -1961,45 +1962,15 @@ static void updatescrollmode(struct fbco
- {
- 	struct fbcon_ops *ops = info->fbcon_par;
- 	int fh = vc->vc_font.height;
--	int cap = info->flags;
--	u16 t = 0;
--	int ypan = FBCON_SWAP(ops->rotate, info->fix.ypanstep,
--				  info->fix.xpanstep);
--	int ywrap = FBCON_SWAP(ops->rotate, info->fix.ywrapstep, t);
- 	int yres = FBCON_SWAP(ops->rotate, info->var.yres, info->var.xres);
- 	int vyres = FBCON_SWAP(ops->rotate, info->var.yres_virtual,
- 				   info->var.xres_virtual);
--	int good_pan = (cap & FBINFO_HWACCEL_YPAN) &&
--		divides(ypan, vc->vc_font.height) && vyres > yres;
--	int good_wrap = (cap & FBINFO_HWACCEL_YWRAP) &&
--		divides(ywrap, vc->vc_font.height) &&
--		divides(vc->vc_font.height, vyres) &&
--		divides(vc->vc_font.height, yres);
--	int reading_fast = cap & FBINFO_READS_FAST;
--	int fast_copyarea = (cap & FBINFO_HWACCEL_COPYAREA) &&
--		!(cap & FBINFO_HWACCEL_DISABLED);
--	int fast_imageblit = (cap & FBINFO_HWACCEL_IMAGEBLIT) &&
--		!(cap & FBINFO_HWACCEL_DISABLED);
- 
- 	p->vrows = vyres/fh;
- 	if (yres > (fh * (vc->vc_rows + 1)))
- 		p->vrows -= (yres - (fh * vc->vc_rows)) / fh;
- 	if ((yres % fh) && (vyres % fh < yres % fh))
- 		p->vrows--;
+-config HAVE_RCU_TABLE_NO_INVALIDATE
+-	bool
 -
--	if (good_wrap || good_pan) {
--		if (reading_fast || fast_copyarea)
--			p->scrollmode = good_wrap ?
--				SCROLL_WRAP_MOVE : SCROLL_PAN_MOVE;
--		else
--			p->scrollmode = good_wrap ? SCROLL_REDRAW :
--				SCROLL_PAN_REDRAW;
--	} else {
--		if (reading_fast || (fast_copyarea && !fast_imageblit))
--			p->scrollmode = SCROLL_MOVE;
--		else
--			p->scrollmode = SCROLL_REDRAW;
--	}
+ config ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+ 	bool
+ 	help
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -217,7 +217,6 @@ config PPC
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_RCU_TABLE_FREE
+-	select HAVE_RCU_TABLE_NO_INVALIDATE	if HAVE_RCU_TABLE_FREE
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_RELIABLE_STACKTRACE		if PPC64 && CPU_LITTLE_ENDIAN
+ 	select HAVE_SYSCALL_TRACEPOINTS
+--- a/arch/powerpc/include/asm/tlb.h
++++ b/arch/powerpc/include/asm/tlb.h
+@@ -30,6 +30,17 @@
+ #define tlb_remove_check_page_size_change tlb_remove_check_page_size_change
+ 
+ extern void tlb_flush(struct mmu_gather *tlb);
++/*
++ * book3s:
++ * Hash does not use the linux page-tables, so we can avoid
++ * the TLB invalidate for page-table freeing, Radix otoh does use the
++ * page-tables and needs the TLBI.
++ *
++ * nohash:
++ * We still do TLB invalidate in the __pte_free_tlb routine before we
++ * add the page table pages to mmu gather table batch.
++ */
++#define tlb_needs_table_invalidate()	radix_enabled()
+ 
+ /* Get the generic bits... */
+ #include <asm-generic/tlb.h>
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -64,7 +64,6 @@ config SPARC64
+ 	select HAVE_KRETPROBES
+ 	select HAVE_KPROBES
+ 	select HAVE_RCU_TABLE_FREE if SMP
+-	select HAVE_RCU_TABLE_NO_INVALIDATE if HAVE_RCU_TABLE_FREE
+ 	select HAVE_MEMBLOCK_NODE_MAP
+ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+ 	select HAVE_DYNAMIC_FTRACE
+--- a/arch/sparc/include/asm/tlb_64.h
++++ b/arch/sparc/include/asm/tlb_64.h
+@@ -28,6 +28,15 @@ void flush_tlb_pending(void);
+ #define __tlb_remove_tlb_entry(tlb, ptep, address) do { } while (0)
+ #define tlb_flush(tlb)	flush_tlb_pending()
+ 
++/*
++ * SPARC64's hardware TLB fill does not use the Linux page-tables
++ * and therefore we don't need a TLBI when freeing page-table pages.
++ */
++
++#ifdef CONFIG_HAVE_RCU_TABLE_FREE
++#define tlb_needs_table_invalidate()	(false)
++#endif
++
+ #include <asm-generic/tlb.h>
+ 
+ #endif /* _SPARC64_TLB_H */
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -61,8 +61,23 @@ struct mmu_table_batch {
+ extern void tlb_table_flush(struct mmu_gather *tlb);
+ extern void tlb_remove_table(struct mmu_gather *tlb, void *table);
+ 
++/*
++ * This allows an architecture that does not use the linux page-tables for
++ * hardware to skip the TLBI when freeing page tables.
++ */
++#ifndef tlb_needs_table_invalidate
++#define tlb_needs_table_invalidate() (true)
++#endif
++
++#else
++
++#ifdef tlb_needs_table_invalidate
++#error tlb_needs_table_invalidate() requires HAVE_RCU_TABLE_FREE
+ #endif
+ 
++#endif /* CONFIG_HAVE_RCU_TABLE_FREE */
++
++
+ /*
+  * If we can't allocate a page to make a big batch of page pointers
+  * to work on, then just handle a few from the on-stack structure.
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -339,14 +339,14 @@ bool __tlb_remove_page_size(struct mmu_g
+  */
+ static inline void tlb_table_invalidate(struct mmu_gather *tlb)
+ {
+-#ifndef CONFIG_HAVE_RCU_TABLE_NO_INVALIDATE
+-	/*
+-	 * Invalidate page-table caches used by hardware walkers. Then we still
+-	 * need to RCU-sched wait while freeing the pages because software
+-	 * walkers can still be in-flight.
+-	 */
+-	tlb_flush_mmu_tlbonly(tlb);
+-#endif
++	if (tlb_needs_table_invalidate()) {
++		/*
++		 * Invalidate page-table caches used by hardware walkers. Then
++		 * we still need to RCU-sched wait while freeing the pages
++		 * because software walkers can still be in-flight.
++		 */
++		tlb_flush_mmu_tlbonly(tlb);
++	}
  }
  
- #define PITCH(w) (((w) + 7) >> 3)
+ static void tlb_remove_table_smp_sync(void *arg)
 
 
