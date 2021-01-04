@@ -2,88 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692FF2E9882
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B132E989D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbhADP3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:29:31 -0500
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:44450 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726300AbhADP3b (ORCPT
+        id S1727303AbhADPaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:30:19 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38472 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727083AbhADPaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:29:31 -0500
-Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 104FSAqY022528;
-        Mon, 4 Jan 2021 15:28:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=AVQahVYreNEK2Vi11CqdSHwDA2Hdtxm2MaBe4FwYlI8=;
- b=O5qEQ6UAoJ1kVi7bxCgrf2pfAD3imhJuo3RzADBDyQacBccCxMd/r7dDZTiUhf5Kh1ug
- 9fstrHPyvmKSETMi8wcLIqQ3/14I4D6nTgM7TlF2ufJuq+pVdwoTNGH3iuCSOveNgcA3
- /9kwdkVhP0l98NCVBkHLf9KWf4Ln77vMuG4/Btr/YnpwhFAOyOp3k/0N1WwVCuqe2DQV
- 8Eb9zgUzn6ZebrC2jwXXnVPAZQuB+RAsk1QIvMgnp7/EoXmKE2ruilUZYapxX4x5z2WQ
- j48uk4iiqqB3he7H7r8Wnd4uBH7SUUiqDusODy1Pj9ksS6lRhYSV+EFqwvScwNFGDU1z nw== 
-Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
-        by mx0a-002e3701.pphosted.com with ESMTP id 35u2xfyyfa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 15:28:40 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g4t3426.houston.hpe.com (Postfix) with ESMTP id D92D261;
-        Mon,  4 Jan 2021 15:28:39 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.214.160.247])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 4ACF448;
-        Mon,  4 Jan 2021 15:28:38 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 09:28:38 -0600
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     Zefan Li <lizefan@huawei.com>
-Cc:     Joe Perches <joe@perches.com>, Tejun Heo <tj@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Steve Wahl <steve.wahl@hpe.com>
-Subject: Re: [PATCH] cpuset: Remove stale URLs in the MAINTAINERS entry
-Message-ID: <20210104152838.GA144275@swahl-home.5wahls.com>
-References: <42668f2c-5ea1-da38-918e-ac4c86e3f03d@huawei.com>
- <2822d565280536f36ea6ddd521a7716813ef85a2.camel@perches.com>
- <39449cc4-15bf-4570-2bbd-dd47ea73b86c@huawei.com>
+        Mon, 4 Jan 2021 10:30:18 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104FTM2N028982;
+        Mon, 4 Jan 2021 09:29:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1609774162;
+        bh=GxfYDo4jCBSOXc1xcXo+8+SAEX8DQMPS/Eh7lOcxZuM=;
+        h=From:To:CC:Subject:Date;
+        b=dMJ3LAmWceeKonUIU6IiUa/pXOdRkep2EpWExgdZor0stFyEzAmRLYzu3ArOHqsJR
+         QaJ1AC+Zvm4XHNL8kJVckl63TQiASMRNC2xFD/ancZfdEN2Dg7GjsGvWD3NjJcqUvz
+         DbEiWQaU38eHK4VIgND3TIsQtuLMZ9ROAeHrTYGs=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104FTML4078272
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 4 Jan 2021 09:29:22 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 Jan
+ 2021 09:29:21 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 4 Jan 2021 09:29:21 -0600
+Received: from a0393678-ssd.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104FTFZ6093710;
+        Mon, 4 Jan 2021 09:29:16 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>
+Subject: [PATCH v9 00/17] Implement NTB Controller using multiple PCI EP
+Date:   Mon, 4 Jan 2021 20:58:52 +0530
+Message-ID: <20210104152909.22038-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <39449cc4-15bf-4570-2bbd-dd47ea73b86c@huawei.com>
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-04_10:2021-01-04,2021-01-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=828 mlxscore=0
- lowpriorityscore=0 phishscore=0 malwarescore=0 clxscore=1011 spamscore=0
- suspectscore=0 adultscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101040101
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 02:31:52PM +0800, Zefan Li wrote:
-> On 2020/12/28 14:01, Joe Perches wrote:
-> > On Mon, 2020-12-28 at 11:17 +0800, Zefan Li wrote:
-> >> Those URLs are no longer accessable.
-> > 
-> > The general argument to avoid removal of these no longer valid links
-> > is that they may still be available from archive.org.
-> > 
-> > ...
-> > 
-> > It may be appropriate to copy the content into a local Documentation
-> > file somewhere to avoid the need to lookup old reference links.
-> > 
-> 
-> I don't think the contents in those links provide valuable information about cpusets.
-> We have documents in Documentation/admin-guide/cgroup/ and man cpuset(7). So I think
-> we can just remove them.
+This series is about implementing SW defined Non-Transparent Bridge (NTB)
+using multiple endpoint (EP) instances. This series has been tested using
+2 endpoint instances in J7 connected to J7 board on one end and DRA7 board
+on the other end. However there is nothing platform specific for the NTB
+functionality.
 
-I agree, I did the archive.org lookup and it appeared that the current
-version of most of this information is already under the Documentation
-tree.
+This was presented in Linux Plumbers Conference. Link to presentation
+and video can be found @ [1]
+Created a video demo @ [9]
 
---> Steve
+RFC patch series can be found @ [2]
+v1 patch series can be found @ [3]
+v2 patch series can be found @ [4]
+v3 patch series can be found @ [5]
+v4 patch series can be found @ [6]
+v5 patch series can be found @ [7]
+v6 patch series can be found @ [8]
+v7 patch series can be found @ [10]
+v8 patch series can be found @ [11]
+
+Changes from v8:
+1) Do not use devm_request_irq/devm_free_irq as pci_free_irq_vectors()
+has to be used after free_irq
+2) Drop "NTB: tool: Enable the NTB/PCIe link on the local or remote side
+of bridge" as there is a debugfs entry to enable the link
+ 
+Changes from v7:
+1) Used values stored in ctrl_reg_bar, peer_spad_reg_bar and db_reg_bar
+   instead of hardcoded values in pci_iomap of ntb_hw_epf.c driver
+
+Changes from v6:
+1) Fixed issues when multiple NTB devices are creating using multiple
+   functions
+2) Fixed issue with writing scratchpad register
+3) Created a video demo @ [9]
+
+Changes from v5:
+1) Fixed a formatting issue in Kconfig pointed out by Randy
+2) Checked for Error or Null in pci_epc_add_epf()
+
+Changes from v4:
+1) Fixed error condition checks in pci_epc_add_epf()
+
+Changes from v3:
+1) Fixed Documentation edits suggested by Randy Dunlap <rdunlap@infradead.org>
+
+Changes from v2:
+1) Add support for the user to create sub-directory of 'EPF Device'
+   directory (for endpoint function specific configuration using
+   configfs).
+2) Add documentation for NTB specific attributes in configfs
+3) Check for PCI_CLASS_MEMORY_RAM (PCIe class) before binding ntb_hw_epf
+   driver
+4) Other documentation fixes
+
+Changes from v1:
+1) As per Rob's comment, removed support for creating NTB function
+   device from DT
+2) Add support to create NTB EPF device using configfs (added support in
+   configfs to associate primary and secondary EPC with EPF.
+
+Changes from RFC:
+1) Converted the DT binding patches to YAML schema and merged the
+   DT binding patches together
+2) NTB documentation is converted to .rst
+3) One HOST can now interrupt the other HOST using MSI-X interrupts
+4) Added support for teardown of memory window and doorbell
+   configuration
+5) Add support to provide support 64-bit memory window size from
+   DT
+
+[1] -> https://linuxplumbersconf.org/event/4/contributions/395/
+[2] -> http://lore.kernel.org/r/20190926112933.8922-1-kishon@ti.com
+[3] -> http://lore.kernel.org/r/20200514145927.17555-1-kishon@ti.com
+[4] -> http://lore.kernel.org/r/20200611130525.22746-1-kishon@ti.com
+[5] -> http://lore.kernel.org/r/20200904075052.8911-1-kishon@ti.com
+[6] -> http://lore.kernel.org/r/20200915042110.3015-1-kishon@ti.com
+[7] -> http://lore.kernel.org/r/20200918064227.1463-1-kishon@ti.com
+[8] -> http://lore.kernel.org/r/20200924092519.17082-1-kishon@ti.com
+[9] -> https://youtu.be/dLKKxrg5-rY
+[10] -> http://lore.kernel.org/r/20200930153519.7282-1-kishon@ti.com 
+[11] -> http://lore.kernel.org/r/20201111153559.19050-1-kishon@ti.com
+
+Kishon Vijay Abraham I (17):
+  Documentation: PCI: Add specification for the *PCI NTB* function
+    device
+  PCI: endpoint: Make *_get_first_free_bar() take into account 64 bit
+    BAR
+  PCI: endpoint: Add helper API to get the 'next' unreserved BAR
+  PCI: endpoint: Make *_free_bar() to return error codes on failure
+  PCI: endpoint: Remove unused pci_epf_match_device()
+  PCI: endpoint: Add support to associate secondary EPC with EPF
+  PCI: endpoint: Add support in configfs to associate two EPCs with EPF
+  PCI: endpoint: Add pci_epc_ops to map MSI irq
+  PCI: endpoint: Add pci_epf_ops for epf drivers to expose function
+    specific attrs
+  PCI: endpoint: Allow user to create sub-directory of 'EPF Device'
+    directory
+  PCI: cadence: Implement ->msi_map_irq() ops
+  PCI: cadence: Configure LM_EP_FUNC_CFG based on epc->function_num_map
+  PCI: endpoint: Add EP function driver to provide NTB functionality
+  PCI: Add TI J721E device to pci ids
+  NTB: Add support for EPF PCI-Express Non-Transparent Bridge
+  Documentation: PCI: Add configfs binding documentation for pci-ntb
+    endpoint function
+  Documentation: PCI: Add userguide for PCI endpoint NTB function
+
+ .../PCI/endpoint/function/binding/pci-ntb.rst |   38 +
+ Documentation/PCI/endpoint/index.rst          |    3 +
+ .../PCI/endpoint/pci-endpoint-cfs.rst         |   10 +
+ .../PCI/endpoint/pci-ntb-function.rst         |  351 +++
+ Documentation/PCI/endpoint/pci-ntb-howto.rst  |  160 ++
+ drivers/misc/pci_endpoint_test.c              |    1 -
+ drivers/ntb/hw/Kconfig                        |    1 +
+ drivers/ntb/hw/Makefile                       |    1 +
+ drivers/ntb/hw/epf/Kconfig                    |    6 +
+ drivers/ntb/hw/epf/Makefile                   |    1 +
+ drivers/ntb/hw/epf/ntb_hw_epf.c               |  754 ++++++
+ .../pci/controller/cadence/pcie-cadence-ep.c  |   60 +-
+ drivers/pci/endpoint/functions/Kconfig        |   12 +
+ drivers/pci/endpoint/functions/Makefile       |    1 +
+ drivers/pci/endpoint/functions/pci-epf-ntb.c  | 2114 +++++++++++++++++
+ drivers/pci/endpoint/functions/pci-epf-test.c |   13 +-
+ drivers/pci/endpoint/pci-ep-cfs.c             |  176 +-
+ drivers/pci/endpoint/pci-epc-core.c           |  130 +-
+ drivers/pci/endpoint/pci-epf-core.c           |  105 +-
+ include/linux/pci-epc.h                       |   39 +-
+ include/linux/pci-epf.h                       |   28 +-
+ include/linux/pci_ids.h                       |    1 +
+ 22 files changed, 3932 insertions(+), 73 deletions(-)
+ create mode 100644 Documentation/PCI/endpoint/function/binding/pci-ntb.rst
+ create mode 100644 Documentation/PCI/endpoint/pci-ntb-function.rst
+ create mode 100644 Documentation/PCI/endpoint/pci-ntb-howto.rst
+ create mode 100644 drivers/ntb/hw/epf/Kconfig
+ create mode 100644 drivers/ntb/hw/epf/Makefile
+ create mode 100644 drivers/ntb/hw/epf/ntb_hw_epf.c
+ create mode 100644 drivers/pci/endpoint/functions/pci-epf-ntb.c
 
 -- 
-Steve Wahl, Hewlett Packard Enterprise
+2.17.1
+
