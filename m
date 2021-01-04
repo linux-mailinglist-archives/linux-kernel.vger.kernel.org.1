@@ -2,59 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963112E9B48
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BD82E9B52
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbhADQqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:46:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbhADQqw (ORCPT
+        id S1727888AbhADQsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:48:04 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:26655 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725840AbhADQsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:46:52 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A9EC061793;
-        Mon,  4 Jan 2021 08:46:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=eL74fumxLANh2ZbcpNixBGA0B7
-        wUyoY7cx6gt+70I2bVOLeBRO12vHF35hZht208klkPxQ0nXhD3GmvFuIyJI7/JzS+ebdqoyhYi+Sd
-        04PS4QN0Rdf+elpvOf4TQHCYarAYPnwyXrunLBH0xJzkbG2IYJD0PimohfAyz+Ru+asjaJeGC2wOL
-        1EZvIWSA0SDMfrZP+vy+rLG+EdBNNlrBbk7olNqEGSVlfzOkiHOVpri+jJmavhRT1iZL8+41666Gv
-        wBIovUgnhoGz91BZypREIbtXCzgYB0OKuobSYsiNl8ihV1kuFMrPENNTL1BzE2jKx+OzD9CqqxeLS
-        JOzgupiA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1kwSzO-000JmV-Nc; Mon, 04 Jan 2021 16:45:52 +0000
-Date:   Mon, 4 Jan 2021 16:45:50 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] block/psi: remove PSI annotations from direct IO
-Message-ID: <20210104164550.GA75889@infradead.org>
-References: <cover.1609461359.git.asml.silence@gmail.com>
- <c77839347f1f3fdf917ac2bc251310f1c1f26044.1609461359.git.asml.silence@gmail.com>
+        Mon, 4 Jan 2021 11:48:03 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-235-IL2iOTcMOBSlpA7savvPuA-1; Mon, 04 Jan 2021 16:46:24 +0000
+X-MC-Unique: IL2iOTcMOBSlpA7savvPuA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 4 Jan 2021 16:46:24 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 4 Jan 2021 16:46:24 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     X86 ML <x86@kernel.org>
+Subject: RE: in_compat_syscall() on x86
+Thread-Topic: in_compat_syscall() on x86
+Thread-Index: Adbikf8I52+Fp/HYSH2MXxqk00t/OgAJxC1g
+Date:   Mon, 4 Jan 2021 16:46:24 +0000
+Message-ID: <cb9ca8138c664b8bacb26521e9a604fc@AcuMS.aculab.com>
+References: <e817cfdc2df3433bb7fb357db89d4d48@AcuMS.aculab.com>
+In-Reply-To: <e817cfdc2df3433bb7fb357db89d4d48@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c77839347f1f3fdf917ac2bc251310f1c1f26044.1609461359.git.asml.silence@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
+Q29weSB4ODZAa2VybmVsLm9yZw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZy
+b206IERhdmlkIExhaWdodCA8RGF2aWQuTGFpZ2h0QEFDVUxBQi5DT00+DQo+IFNlbnQ6IDA0IEph
+bnVhcnkgMjAyMSAxMjoxNw0KPiBUbzogQWwgVmlybyA8dmlyb0B6ZW5pdi5saW51eC5vcmcudWs+
+OyBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT47IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
+bC5vcmcNCj4gU3ViamVjdDogaW5fY29tcGF0X3N5c2NhbGwoKSBvbiB4ODYNCj4gDQo+IE9uIHg4
+NiBpbl9jb21wYXRfc3lzY2FsbCgpIGlzIGRlZmluZWQgYXM6DQo+ICAgICBpbl9pYTMyX3N5c2Nh
+bGwoKSB8fCBpbl94MzJfc3lzY2FsbCgpDQo+IA0KPiBOb3cgaW5faWEzMl9zeXNjYWxsKCkgaXMg
+YSBzaW1wbGUgY2hlY2sgb2YgdGhlIFRTX0NPTVBBVCBmbGFnLg0KPiBIb3dldmVyIGluX3gzMl9z
+eXNjYWxsKCkgaXMgYSBob3JyaWQgYmVhc3QgdGhhdCBoYXMgdG8gaW5kaXJlY3QNCj4gdGhyb3Vn
+aCB0byB0aGUgb3JpZ2luYWwgJWVheCB2YWx1ZSAoaWUgdGhlIHN5c2NhbGwgbnVtYmVyKSBhbmQN
+Cj4gY2hlY2sgZm9yIGEgYml0IHRoZXJlLg0KPiANCj4gU28gb24gYSBrZXJuZWwgd2l0aCB4MzIg
+c3VwcG9ydCAocHJvYmFibHkgbW9zdCBkaXN0cm8ga2VybmVscykNCj4gdGhlIGluX2NvbXBhdF9z
+eXNjYWxsKCkgY2hlY2sgaXMgcmF0aGVyIG1vcmUgZXhwZW5zaXZlIHRoYW4NCj4gb25lIG1pZ2h0
+IGV4cGVjdC4NCj4gDQo+IEl0IHdvdWxkIGJlIG11Y2sgYmV0dGVyIGlmIGJvdGggY2hlY2tzIGNv
+dWxkIGJlIGRvbmUgdG9nZXRoZXIuDQo+IEkgdGhpbmsgdGhpcyB3b3VsZCByZXF1aXJlIHRoZSBz
+eXNjYWxsIGVudHJ5IGNvZGUgdG8gc2V0IGENCj4gdmFsdWUgaW4gYm90aCB0aGUgNjRiaXQgYW5k
+IHgzMiBlbnRyeSBwYXRocy4NCj4gKENhbiBhIHByb2Nlc3MgbWFrZSBib3RoIDY0Yml0IGFuZCB4
+MzIgc3lzdGVtIGNhbGxzPykNCj4gDQo+IFRvIGRvIHRoaXMgc2Vuc2libGUgKHByb2JhYmx5KSBy
+ZXF1aXJlcyBhIGJ5dGUgYmUgYWxsb2NhdGVkDQo+IHRvIGhvbGQgdGhlIHN5c2NhbGwgdHlwZSAt
+IHJhdGhlciB0aGFuIHVzaW5nIGZsYWcgYml0cw0KPiBpbiB0aGUgJ3N0YXR1cycgZmllbGQuDQo+
+IA0KPiBBcGFydCBmcm9tIHRoZSBzeXNjYWxsIGVudHJ5LCB0aGUgZXhlYyBjb2RlIHNlZW1zIHRv
+IGNoYW5nZQ0KPiB0aGUgc3lzY2FsbCB0eXBlIHRvIHRoYXQgb2YgdGhlIGJpbmFyeSBiZWluZyBl
+eGVjdXRlZC4NCj4gSSBkaWRuJ3Qgc3BvdCBhbnl0aGluZyBlbHNlIHRoYXQgY2hhbmdlcyB0aGUg
+ZmllbGRzLg0KPiANCj4gQnV0IEkgZmFpbGVkIHRvIGZpbmQgdGhlIGZ1bGwgbGlzdCBvZiBhbGxv
+Y2F0ZWQgYml0cyBmb3INCj4gdGhlICdzdGF0dXMnIGZpZWxkLg0KPiANCj4gCURhdmlkDQo+IA0K
+PiAtDQo+IFJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
+YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KPiBSZWdpc3RyYXRpb24gTm86IDEzOTcz
+ODYgKFdhbGVzKQ0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9h
+ZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBO
+bzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
