@@ -2,167 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF742E9A87
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1BC2E999D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728868AbhADQLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:11:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54636 "EHLO mx2.suse.de"
+        id S1728717AbhADQB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:01:59 -0500
+Received: from mga02.intel.com ([134.134.136.20]:44997 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728289AbhADQAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609775972; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W2TfnFOGUvyeB9YoMIAEOhEsC9AvA3aFr1YVlOG6Ieo=;
-        b=VJgn/Eu4KPx87UZLuqWg8tmdI8kcJ/JImCeLXKaPdpc4JftuKTDkHlvTEqMsygz1D4fbaj
-        8j/i4kyaijW3kiNLgIIVEcVzTm0nqy0TQ7HiUwij9ePrn5ShGl5Q16LAkEQa4hBTfrdo0z
-        TucpSifh6L8nSmbrg1XfguYnfeU88HM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8CD29AE2B;
-        Mon,  4 Jan 2021 15:59:32 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 16:59:31 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: uninitialized pmem struct pages
-Message-ID: <20210104155931.GN13207@dhcp22.suse.cz>
-References: <20210104100323.GC13207@dhcp22.suse.cz>
- <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
- <20210104142624.GI13207@dhcp22.suse.cz>
- <23a4eea2-9fdb-fd1d-ee92-9cd8ac6e8f41@redhat.com>
- <20210104151005.GK13207@dhcp22.suse.cz>
- <26db2c3e-10c7-c6e3-23f7-21eb5101b31a@redhat.com>
- <20210104153300.GL13207@dhcp22.suse.cz>
- <bf26f568-79b3-67f9-832a-9d8ef3f72c43@redhat.com>
+        id S1728683AbhADQBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:01:53 -0500
+IronPort-SDR: ACJJGEXBjOByAb3abgwMrK/x3x6nGrI4rb/sfKLuZO8K6LXZM3t/YYWwDrvjUVYrElPH2eL88r
+ JWDkmc92bNHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="164038275"
+X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
+   d="scan'208";a="164038275"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:00:04 -0800
+IronPort-SDR: PqkjaAOZ05b3K0qgSSq2hTGyfPnWapxeQ+lDd91dYWVvuejuwPT2aJ3rvAsIBc60hsTfDTYyAL
+ StLhGcxbwSwQ==
+X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
+   d="scan'208";a="421411861"
+Received: from hnanjund-mobl.amr.corp.intel.com ([10.254.115.148])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:00:02 -0800
+Message-ID: <ad1fe7a86872026267b9ed74771e0c9561ffb5a6.camel@linux.intel.com>
+Subject: Re: [PATCH 1/2] hid: intel-ish-hid: ipc: finish power flow for EHL
+ OOB
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Zhang Lixu <lixu.zhang@intel.com>, jikos@kernel.org,
+        linux-input@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, benjamin.tissoires@redhat.com,
+        Najumon Ba <najumon.ba@intel.com>, Even Xu <even.xu@intel.com>
+Date:   Mon, 04 Jan 2021 07:59:58 -0800
+In-Reply-To: <20201216063640.4086068-2-lixu.zhang@intel.com>
+References: <20201216063640.4086068-1-lixu.zhang@intel.com>
+         <20201216063640.4086068-2-lixu.zhang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf26f568-79b3-67f9-832a-9d8ef3f72c43@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04-01-21 16:43:49, David Hildenbrand wrote:
-> On 04.01.21 16:33, Michal Hocko wrote:
-> > On Mon 04-01-21 16:15:23, David Hildenbrand wrote:
-> >> On 04.01.21 16:10, Michal Hocko wrote:
-> > [...]
-> >> Do the physical addresses you see fall into the same section as boot
-> >> memory? Or what's around these addresses?
-> > 
-> > Yes I am getting a garbage for the first struct page belonging to the
-> > pmem section [1]
-> > [    0.020161] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x603fffffff]
-> > [    0.020163] ACPI: SRAT: Node 4 PXM 4 [mem 0x6060000000-0x11d5fffffff] non-volatile
-> > 
-> > The pfn without the initialized struct page is 0x6060000. This is a
-> > first pfn in a section.
+On Wed, 2020-12-16 at 14:36 +0800, Zhang Lixu wrote:
+> The EHL (Elkhart Lake) based platforms provide a OOB (Out of band)
+> service, which allows wakup device when the system is in S5 (Soft-Off
+> state). This OOB service can be enabled/disabled from BIOS settings.
+> When
+> enabled, the ISH device gets PME wake capability. To enable PME
+> wakeup,
+> driver also needs to enable ACPI GPE bit.
 > 
-> Okay, so we're not dealing with the "early section" mess I described,
-> different story.
+> Once wakeup, BIOS will clear the wakeup bit to identify wakeup is
+> successful. So driver need to re-enable it in resume function to
+> keep the next wakeup capability.
 > 
-> Due to [1], is_mem_section_removable() called
-> pfn_to_page(PHYS_PFN(0x6060000)). page_zone(page) made it crash, as not
-> initialized.
+> Since this feature is only present on EHL, we use EHL PCI device id
+> to
+> enable this feature.
+> 
+> Co-developed-by: Najumon Ba <najumon.ba@intel.com>
+> Signed-off-by: Najumon Ba <najumon.ba@intel.com>
+> Signed-off-by: Even Xu <even.xu@intel.com>
+> Signed-off-by: Zhang Lixu <lixu.zhang@intel.com>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-Exactly!
+> ---
+>  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 48
+> +++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+> 
+> diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> index c6d48a8648b7..c9c5488e44cb 100644
+> --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> @@ -5,6 +5,7 @@
+>   * Copyright (c) 2014-2016, Intel Corporation.
+>   */
+>  
+> +#include <linux/acpi.h>
+>  #include <linux/module.h>
+>  #include <linux/moduleparam.h>
+>  #include <linux/kernel.h>
+> @@ -111,6 +112,42 @@ static inline bool ish_should_leave_d0i3(struct
+> pci_dev *pdev)
+>         return !pm_resume_via_firmware() || pdev->device ==
+> CHV_DEVICE_ID;
+>  }
+>  
+> +static int enable_gpe(struct device *dev)
+> +{
+> +#ifdef CONFIG_ACPI
+> +       acpi_status acpi_sts;
+> +       struct acpi_device *adev;
+> +       struct acpi_device_wakeup *wakeup;
+> +
+> +       adev = ACPI_COMPANION(dev);
+> +       if (!adev) {
+> +               dev_err(dev, "get acpi handle failed\n");
+> +               return -ENODEV;
+> +       }
+> +       wakeup = &adev->wakeup;
+> +
+> +       acpi_sts = acpi_enable_gpe(wakeup->gpe_device, wakeup-
+> >gpe_number);
+> +       if (ACPI_FAILURE(acpi_sts)) {
+> +               dev_err(dev, "enable ose_gpe failed\n");
+> +               return -EIO;
+> +       }
+> +
+> +       return 0;
+> +#else
+> +       return -ENODEV;
+> +#endif
+> +}
+> +
+> +static void enable_pme_wake(struct pci_dev *pdev)
+> +{
+> +       if ((pci_pme_capable(pdev, PCI_D0) ||
+> +            pci_pme_capable(pdev, PCI_D3hot) ||
+> +            pci_pme_capable(pdev, PCI_D3cold)) && !enable_gpe(&pdev-
+> >dev)) {
+> +               pci_pme_active(pdev, true);
+> +               dev_dbg(&pdev->dev, "ish ipc driver pme wake
+> enabled\n");
+> +       }
+> +}
+> +
+>  /**
+>   * ish_probe() - PCI driver probe callback
+>   * @pdev:      pci device
+> @@ -179,6 +216,10 @@ static int ish_probe(struct pci_dev *pdev, const
+> struct pci_device_id *ent)
+>         init_waitqueue_head(&ishtp->suspend_wait);
+>         init_waitqueue_head(&ishtp->resume_wait);
+>  
+> +       /* Enable PME for EHL */
+> +       if (pdev->device == EHL_Ax_DEVICE_ID)
+> +               enable_pme_wake(pdev);
+> +
+>         ret = ish_init(ishtp);
+>         if (ret)
+>                 return ret;
+> @@ -317,6 +358,13 @@ static int __maybe_unused ish_resume(struct
+> device *device)
+>         struct pci_dev *pdev = to_pci_dev(device);
+>         struct ishtp_device *dev = pci_get_drvdata(pdev);
+>  
+> +       /* add this to finish power flow for EHL */
+> +       if (dev->pdev->device == EHL_Ax_DEVICE_ID) {
+> +               pci_set_power_state(pdev, PCI_D0);
+> +               enable_pme_wake(pdev);
+> +               dev_dbg(dev->devc, "set power state to D0 for
+> ehl\n");
+> +       }
+> +
+>         ish_resume_device = device;
+>         dev->resume_flag = 1;
+>  
 
-> Let's assume this is indeed a reserved pfn in the altmap. What's the
-> actual address of the memmap?
 
-Not sure what exactly you are asking for but crash says
-crash> kmem -p 6060000
-      PAGE          PHYSICAL      MAPPING       INDEX CNT FLAGS
-fffff8c600181800     6060000                0        0  0 fffffc0000000
- 
-> I do wonder what hosts pfn_to_page(PHYS_PFN(0x6060000)) - is it actually
-> part of the actual altmap (i.e. > 0x6060000) or maybe even self-hosted?
-
-I am not really familiar with the pmem so I would need more assistance
-here. I've tried this (shot into the dark):
-crash> struct page.pgmap fffff8c600181800
-      pgmap = 0xfffff8c600181808
-crash> struct -x dev_pagemap 0xfffff8c600181808
-struct dev_pagemap {
-  altmap = {
-    base_pfn = 0xfffff8c600181808, 
-    end_pfn = 0xfffff8c600181808, 
-    reserve = 0x0, 
-    free = 0x0, 
-    align = 0x0, 
-    alloc = 0xffffffff
-  }, 
-  res = {
-    start = 0x0, 
-    end = 0xfffffc0000000, 
-    name = 0xfffff8c600181848 "H\030\030", 
-    flags = 0xfffff8c600181848, 
-    desc = 0x0, 
-    parent = 0x0, 
-    sibling = 0x0, 
-    child = 0xffffffff
-  }, 
-  ref = 0x0, 
-  internal_ref = {
-    count = {
-      counter = 0xfffffc0000000
-    }, 
-    percpu_count_ptr = 0xfffff8c600181888, 
-    release = 0xfffff8c600181888, 
-    confirm_switch = 0x0, 
-    force_atomic = 0x0, 
-    allow_reinit = 0x0, 
-    rcu = {
-      next = 0x0, 
-      func = 0xffffffff
-    }
-  }, 
-  done = {
-    done = 0x0, 
-    wait = {
-      lock = {
-        {
-          rlock = {
-            raw_lock = {
-              {
-                val = {
-                  counter = 0xc0000000
-                }, 
-                {
-                  locked = 0x0, 
-                  pending = 0x0
-                }, 
-                {
-                  locked_pending = 0x0, 
-                  tail = 0xc000
-                }
-              }
-            }
-          }
-        }
-      }, 
-      head = {
-        next = 0xfffff8c6001818c8, 
-        prev = 0xfffff8c6001818c8
-      }
-    }
-  }, 
-  dev = 0x0, 
-  type = 0, 
-  flags = 0x0, 
-  ops = 0x0
-}
-
-Not sure whether this is of any use.
- 
-> If it's not self-hosted, initializing the relevant memmaps should work
-> just fine I guess. Otherwise things get more complicated.
-
--- 
-Michal Hocko
-SUSE Labs
