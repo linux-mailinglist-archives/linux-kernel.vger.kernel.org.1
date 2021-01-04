@@ -2,237 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1394F2E983B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C7C2E9838
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727359AbhADPQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:16:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32965 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727042AbhADPQF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:16:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609773277;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YJPThqtFDgmgtyz6ou+H0RV68QeyqTC/g/rtEO/kauE=;
-        b=PJgKiNOigLEg/dz5rDtR14q4QSAxoIuWMDNL2qHGjUYZoZyBirbIc7pLVlZmrS22Uxcpar
-        TeQU7schROe7ztPFnBuPBIfJk3JRqzbaIDBLR0CAikZbwmmGuo5YFCfRLQeFRFL7Khrtn6
-        j2HYMN4ndGEPdrJcoUBZMtYwl/0UbzM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-gHrnaWdNPySuz2vPbPpomw-1; Mon, 04 Jan 2021 10:14:33 -0500
-X-MC-Unique: gHrnaWdNPySuz2vPbPpomw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5590E802B4C;
-        Mon,  4 Jan 2021 15:14:31 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-2.rdu2.redhat.com [10.10.115.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F03501001281;
-        Mon,  4 Jan 2021 15:14:29 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 7146E220BCF; Mon,  4 Jan 2021 10:14:24 -0500 (EST)
-Date:   Mon, 4 Jan 2021 10:14:24 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chengguang Xu <cgxu519@mykernel.net>
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-Message-ID: <20210104151424.GA63879@redhat.com>
-References: <20201221195055.35295-1-vgoyal@redhat.com>
- <20201221195055.35295-4-vgoyal@redhat.com>
- <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223185044.GQ874@casper.infradead.org>
- <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223200746.GR874@casper.infradead.org>
- <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223204428.GS874@casper.infradead.org>
- <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
+        id S1726908AbhADPP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:15:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725840AbhADPP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:15:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E15A2224D2;
+        Mon,  4 Jan 2021 15:15:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609773315;
+        bh=p8kP/U9QN951y10f76W6/BibIiCnI+P7NCIXYJzkvtA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KCalrsAuywRlNVcWsfH2hODWuxNImvpyP/tb41E8hbejJSCEGX2YZb7Hbi+M4easn
+         tSFuvo/suqLleLfbInN2O8QCzVOT4REzRNtCNaUH4RsIz5d7OnAljX/UX+cRJ2atvJ
+         A1S74gFoAERuk+5PKQWtXrDoAoBBJTSQrVhK0qF1pK9oEvTty3qAcsp6LuNL/9tIf8
+         HEpFzBtaIQ3dyzhd6bw90yPHYvc8dhwc8iJUtEInEDtn/+5Vbtpz+frF4eEtiZRZtw
+         0MdUpqWxbECaGXxcGwpB00v2Ph0x+khA0gBP4ndLQgr3QcKu8Nz++jpdMh8h9MEbiX
+         00/KxkhOu+F5g==
+Received: by mail-ej1-f50.google.com with SMTP id b9so37292377ejy.0;
+        Mon, 04 Jan 2021 07:15:14 -0800 (PST)
+X-Gm-Message-State: AOAM5326nJDTGBGEQ8UXi5WNAgWeDb45D/xWBqFg9E2yIH1WmKvrBV68
+        qnaMOvZWkMjWeW4ZOECokHPmSr3m/ZBOMhuJJA==
+X-Google-Smtp-Source: ABdhPJyf7uupoU6sG5geL91AdWoU3hK2Fsuphz6syrA8HdaQFK5xN86Vgte38FB6Zx87006bAm5QabMwd1PJXp2Y7v0=
+X-Received: by 2002:a17:906:31cb:: with SMTP id f11mr28583308ejf.468.1609773313402;
+ Mon, 04 Jan 2021 07:15:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20201111153559.19050-1-kishon@ti.com> <20201111153559.19050-12-kishon@ti.com>
+ <CAL_Jsq+iUU0aR950fvQ7+uenBT5MVbCEU9cDg+vfyO=VugpTZA@mail.gmail.com> <992b5423-89a2-a03b-539d-a9b2822f598a@ti.com>
+In-Reply-To: <992b5423-89a2-a03b-539d-a9b2822f598a@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 4 Jan 2021 08:15:00 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqKT8WUVy4qhQkRuYLuqkQa11=7JzXcVxvNRsB0KFj+qVQ@mail.gmail.com>
+Message-ID: <CAL_JsqKT8WUVy4qhQkRuYLuqkQa11=7JzXcVxvNRsB0KFj+qVQ@mail.gmail.com>
+Subject: Re: [PATCH v8 11/18] PCI: cadence: Implement ->msi_map_irq() ops
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-ntb@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 11:32:55AM +0200, Amir Goldstein wrote:
-> On Wed, Dec 23, 2020 at 10:44 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Mon, Jan 4, 2021 at 6:13 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>
+> Hi Rob,
+>
+> On 15/12/20 9:31 pm, Rob Herring wrote:
+> > On Wed, Nov 11, 2020 at 9:37 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+> >>
+> >> Implement ->msi_map_irq() ops in order to map physical address to
+> >> MSI address and return MSI data.
+> >>
+> >> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> >> ---
+> >>  .../pci/controller/cadence/pcie-cadence-ep.c  | 53 +++++++++++++++++++
+> >>  1 file changed, 53 insertions(+)
+> >>
+> >> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> >> index 84cc58dc8512..1fe6b8baca97 100644
+> >> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> >> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> >> @@ -382,6 +382,57 @@ static int cdns_pcie_ep_send_msi_irq(struct cdns_pcie_ep *ep, u8 fn,
+> >>         return 0;
+> >>  }
+> >>
+> >> +static int cdns_pcie_ep_map_msi_irq(struct pci_epc *epc, u8 fn,
+> >> +                                   phys_addr_t addr, u8 interrupt_num,
+> >> +                                   u32 entry_size, u32 *msi_data,
+> >> +                                   u32 *msi_addr_offset)
+> >> +{
+> >> +       struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
+> >> +       u32 cap = CDNS_PCIE_EP_FUNC_MSI_CAP_OFFSET;
+> >> +       struct cdns_pcie *pcie = &ep->pcie;
+> >> +       u64 pci_addr, pci_addr_mask = 0xff;
+> >> +       u16 flags, mme, data, data_mask;
+> >> +       u8 msi_count;
+> >> +       int ret;
+> >> +       int i;
+> >> +
 > >
-> > On Wed, Dec 23, 2020 at 08:21:41PM +0000, Sargun Dhillon wrote:
-> > > On Wed, Dec 23, 2020 at 08:07:46PM +0000, Matthew Wilcox wrote:
-> > > > On Wed, Dec 23, 2020 at 07:29:41PM +0000, Sargun Dhillon wrote:
-> > > > > On Wed, Dec 23, 2020 at 06:50:44PM +0000, Matthew Wilcox wrote:
-> > > > > > On Wed, Dec 23, 2020 at 06:20:27PM +0000, Sargun Dhillon wrote:
-> > > > > > > I fail to see why this is neccessary if you incorporate error reporting into the
-> > > > > > > sync_fs callback. Why is this separate from that callback? If you pickup Jeff's
-> > > > > > > patch that adds the 2nd flag to errseq for "observed", you should be able to
-> > > > > > > stash the first errseq seen in the ovl_fs struct, and do the check-and-return
-> > > > > > > in there instead instead of adding this new infrastructure.
-> > > > > >
-> > > > > > You still haven't explained why you want to add the "observed" flag.
-> > > > >
-> > > > >
-> > > > > In the overlayfs model, many users may be using the same filesystem (super block)
-> > > > > for their upperdir. Let's say you have something like this:
-> > > > >
-> > > > > /workdir [Mounted FS]
-> > > > > /workdir/upperdir1 [overlayfs upperdir]
-> > > > > /workdir/upperdir2 [overlayfs upperdir]
-> > > > > /workdir/userscratchspace
-> > > > >
-> > > > > The user needs to be able to do something like:
-> > > > > sync -f ${overlayfs1}/file
-> > > > >
-> > > > > which in turn will call sync on the the underlying filesystem (the one mounted
-> > > > > on /workdir), and can check if the errseq has changed since the overlayfs was
-> > > > > mounted, and use that to return an error to the user.
-> > > >
-> > > > OK, but I don't see why the current scheme doesn't work for this.  If
-> > > > (each instance of) overlayfs samples the errseq at mount time and then
-> > > > check_and_advances it at sync time, it will see any error that has occurred
-> > > > since the mount happened (and possibly also an error which occurred before
-> > > > the mount happened, but hadn't been reported to anybody before).
-> > > >
-> > >
-> > > If there is an outstanding error at mount time, and the SEEN flag is unset,
-> > > subsequent errors will not increment the counter, until the user calls sync on
-> > > the upperdir's filesystem. If overlayfs calls check_and_advance on the upperdir's
-> > > super block at any point, it will then set the seen block, and if the user calls
-> > > syncfs on the upperdir, it will not return that there is an outstanding error,
-> > > since overlayfs just cleared it.
 > >
-> > Your concern is this case:
+> >> +       /* Check whether the MSI feature has been enabled by the PCI host. */
+> >> +       flags = cdns_pcie_ep_fn_readw(pcie, fn, cap + PCI_MSI_FLAGS);
+> >> +       if (!(flags & PCI_MSI_FLAGS_ENABLE))
+> >> +               return -EINVAL;
+> >> +
+> >> +       /* Get the number of enabled MSIs */
+> >> +       mme = (flags & PCI_MSI_FLAGS_QSIZE) >> 4;
+> >> +       msi_count = 1 << mme;
+> >> +       if (!interrupt_num || interrupt_num > msi_count)
+> >> +               return -EINVAL;
+> >> +
+> >> +       /* Compute the data value to be written. */
+> >> +       data_mask = msi_count - 1;
+> >> +       data = cdns_pcie_ep_fn_readw(pcie, fn, cap + PCI_MSI_DATA_64);
+> >> +       data = data & ~data_mask;
+> >> +
+> >> +       /* Get the PCI address where to write the data into. */
+> >> +       pci_addr = cdns_pcie_ep_fn_readl(pcie, fn, cap + PCI_MSI_ADDRESS_HI);
+> >> +       pci_addr <<= 32;
+> >> +       pci_addr |= cdns_pcie_ep_fn_readl(pcie, fn, cap + PCI_MSI_ADDRESS_LO);
+> >> +       pci_addr &= GENMASK_ULL(63, 2);
 > >
-> > fs is mounted on /workdir
-> > /workdir/A is written to and then closed.
-> > writeback happens and -EIO happens, but there's nobody around to care.
-> > /workdir/upperdir1 becomes part of an overlayfs mount
-> > overlayfs samples the error
-> > a user writes to /workdir/B, another -EIO occurs, but nothing happens
-> > someone calls syncfs on /workdir/upperdir/A, gets the EIO.
-> > a user opens /workdir/B and calls syncfs, but sees no error
-> >
-> > do i have that right?  or is it something else?
-> 
-> IMO it is something else. Others may disagree.
-> IMO the level of interference between users accessing overlay and users
-> accessing upper fs directly is not well defined and it can stay this way.
-> 
-> Concurrent access to  /workdir/upperdir/A via overlay and underlying fs
-> is explicitly warranted against in Documentation/filesystems/overlayfs.rst#
-> Changes to underlying filesystems:
-> "Changes to the underlying filesystems while part of a mounted overlay
-> filesystem are not allowed.  If the underlying filesystem is changed,
-> the behavior of the overlay is undefined, though it will not result in
-> a crash or deadlock."
+> > Wouldn't all of the above be the same code for any endpoint driver? We
+> > just need endpoint config space accessors for the same 32-bit only
+> > access issues. Not asking for that in this series, but if that's the
+> > direction we should go.
+>
+> Do you mean "endpoint" variant of pci_generic_config_read() which takes
+> function number and capability offset? That could be done but we have to
+> add support to traverse the linked list of capabilities though the
+> capabilities are going to be at a fixed location for a given IP.
 
-I think people use same underlying filesystem both as upper for multiple
-overlayfs mounts as well as root filesystem. For example, when you
-run podman (or docker), they all share same filesystem for all containers
-as well as other non-containered apps use same filesystem.
+Well, the above code would call the equivalent of
+pci_bus_read_config_*() functions which then calls driver specific
+read/write ops like pci_generic_config_read().
 
-IIUC, what we meant to say is that lowerdir/workdir/upperdir being
-used for overlayfs mount should be left untouched. Right?
+Once we have common accessors, then functions to get the capability
+offsets would be common too. It shouldn't matter that they happen to
+be fixed, walking the linked list should work either way. Getting rid
+of fixed offsets for the host side drivers is something I've been
+doing too.
 
-What I am trying to say is that while discussing this problem and
-solution, we should assume that both a regular application might
-be using same upper fs as being used by overlayfs. It seems to
-be a very common operating model.
+> Also in some cases, the writes are to a different register than the
+> configuration space registers like vendor_id in Cadence EP should be
+> written to Local Management register instead of the configuration space
+> register.
 
-> 
-> The question is whether syncfs(open(/workdir/B)) is considered
-> "Changes to the underlying filesystems". Regardless of the answer,
-> this is not an interesting case IMO.
-> 
-> The real issue is with interference between overlays that share the
-> same upper fs, because this is by far and large the common use case
-> that is creating real problems for a lot of container users.
-> 
-> Workloads running inside containers (with overlayfs storage driver)
-> will never be as isolated as workloads running inside VMs, but it
-> doesn't mean we cannot try to improve.
-> 
-> In current master, syncfs() on any file by any container user will
-> result in full syncfs() of the upperfs, which is very bad for container
-> isolation. This has been partly fixed by Chengguang Xu [1] and I expect
-> his work will be merged soon. Overlayfs still does not do the writeback
-> and syncfs() in overlay still waits for all upper fs writeback to complete,
-> but at least syncfs() in overlay only kicks writeback for upper fs files
-> dirtied by this overlay.
-> 
-> [1] https://lore.kernel.org/linux-unionfs/CAJfpegsbb4iTxW8ZyuRFVNc63zg7Ku7vzpSNuzHASYZH-d5wWA@mail.gmail.com/
-> 
-> Sharing the same SEEN flag among thousands of containers is also
-> far from ideal, because effectively this means that any given workload
-> in any single container has very little chance of observing the SEEN flag.
-> 
-> To this end, I do agree with Matthew that overlayfs should sample errseq
-> and the best patchset to implement it so far IMO is Jeff's patchset [2].
-> This patch set was written to cater only "volatile" overlayfs mount, but
-> there is no reason not to use the same mechanism for regular overlay
-> mount. The only difference being that "volatile" overlay only checks for
-> error since mount on syncfs() (because "volatile" overlay does NOT
-> syncfs upper fs) and regular overlay checks and advances the overlay's
-> errseq sample on syncfs (and does syncfs upper fs).
-> 
-> Matthew, I hope that my explanation of the use case and Jeff's answer
-> is sufficient to understand why the split of the SEEN flag is needed.
-> 
-> [2] https://lore.kernel.org/linux-unionfs/20201213132713.66864-1-jlayton@kernel.org/
-> 
-> w.r.t Vivek's patchset (this one), I do not object to it at all, but it fixes
-> a problem that Jeff's patch had already solved with an ugly hack:
-> 
->   /* Propagate errors from upper to overlayfs */
->   ret = errseq_check(&upper_sb->s_wb_err, ofs->err_mark);
->   errseq_set(&sb->s_wb_err, ret);
-> 
-> Since Jeff's patch is minimal, I think that it should be the fix applied
-> first and proposed for stable (with adaptations for non-volatile overlay).
+We have the same issue on the host side as well. That just means we
+need to wrap the generic ops functions.
 
-Does stable fix has to be same as mainline fix. IOW, I think atleast in
-mainline we should first fix it the right way and then think how to fix
-it for stable. If fixes taken in mainline are not realistic for stable,
-can we push a different small fix just for stable?
-
-IOW, because we have to push a fix in stable, should not determine
-what should be problem solution for mainline, IMHO.
-
-The porblem I have with Jeff's fix is that its only works for volatile
-mounts. While I prefer a solution where syncfs() is fixed both for
-volatile as well as non-volatile mount and then there is less confusion.
-
-Thanks
-Vivek
-
-> 
-> I guess that Vivek's patch 1/3 from this series [3] is also needed to
-> complement the work that should go to stable.
-> 
-> Vivek, Sargun,
-> 
-> Do you understand my proposal?
-> Do you agree with it as a way forward to address the various syncfs
-> issues for volatile/non-volatile that both of you were trying to address?
-> 
-> Sargun, I know this all discussion has forked from your volatile re-use
-> patch set, but let's not confuse fsdevel forks more than we have to.
-> The way forward for volatile re-use from this proposal is straight forward.
-> 
-> Thanks,
-> Amir.
-> 
-
+Rob
