@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792162E96EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4AA2E96F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727310AbhADOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:12:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbhADOMd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:12:33 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A94C061793;
-        Mon,  4 Jan 2021 06:11:53 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id lb18so10140222pjb.5;
-        Mon, 04 Jan 2021 06:11:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EUUxZnLp9iwqwD5hGCnTbWs9va3dDEmsYPYTCboDkgM=;
-        b=X8aqmXMB5tiHFzrniLVTktDAFx9GPxoKYC/VERRRccElLhRt5O3imXB3TuJseco+VB
-         6+IOagth86OcC79TdClqwAmmMuGeNj8/ODoiV94dlOOheowFAPPguDf7eM3Kbnum/qEd
-         FsLcu6pedYoofU9BK0ErFQgL7AnvPpDreqrzLCid0zT+0YFgRYRYI9qnR1OnXWeDDU4a
-         rq5h0PmyevPSwS38mhjy5/qei5hp8DMW5F2siQQNiPt3X99wAGlAxe2yHINXJaY2XdaX
-         s+y0Jw8fJJQZHc6T7MgeJ+CNNyPReKkcZT+mgQAUtqpGNd/l9vI1rRpwptE9A7xhZEq1
-         nm8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EUUxZnLp9iwqwD5hGCnTbWs9va3dDEmsYPYTCboDkgM=;
-        b=UXFKLdMEf+im46prrMZvTz65vHcH5h47NmAfEqRh47I/KWWkJLMM+vnbRaeI+9MebV
-         hDTc8sk5rizAS8ffvvnJy77M8Ud2kggDfc86GKAVIQS5AqMedwyMXZff47UU66Kkhg5b
-         yx7dgp6/YtVyw7w4qtOKpWxk3d5xsIQU9zuC2OeR5z+gMBkqKIwPj0MHm+Wl7EN5/SgL
-         FYmXpfHMS7TQ/T6zyzgLgwqAaRCAW8wVInmhyhHhmCgfq0j19UuLY2sETkx/Dahig+pT
-         WLF4YagqaJcg2dH4HAQ/xEYPZBlgQtwtmJadZw26Nc1V7mE8XVkziBwzK/63TY6lOIoS
-         D+LA==
-X-Gm-Message-State: AOAM5328TQVYq8KU7oy9MA58UEqezHNpxLVum8kci0M3i6w/PIZW5PjB
-        7DbF8M3/njjEkDqL1PDtZJhq2eY5aJSxqPj+yzxXGTO+m40=
-X-Google-Smtp-Source: ABdhPJz6ehqJDINMSa6fja9yTp967LimGY8Equ3PqbXvrPklGwWlCUj94mtpfF0BG/sS7aRFOYJzqN3YqyiM9CLOAFA=
-X-Received: by 2002:a17:90b:a17:: with SMTP id gg23mr30462729pjb.129.1609769512562;
- Mon, 04 Jan 2021 06:11:52 -0800 (PST)
+        id S1726692AbhADOOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:14:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726258AbhADOOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 09:14:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95FB52245C;
+        Mon,  4 Jan 2021 14:13:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609769636;
+        bh=oqztWhFAZMPdxzyKlwb//7PmFe7TTLE83m1Z9TPVaEQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uKW/2yvAczC2Qcx4GHy0h6O1SUctibjcRTVbNo6njkQqeWBgZiGOx7D1o2b9E9Lrb
+         17Io8T0KmdQe7/tHWrbr5QrxAARe8pIrHV8krqfTUwos2pTTTlqbmtmLp5axckNM0C
+         G+MQKWwNq8XSLH0qyBJfTZYKL9WmXr91ozuo53y41S/2XFnaNbWUYeo98gLMbN/Bqd
+         aoSzUbYZRlUTl+XiWX9OwCqifIfzGjB2uZPTBXiJT5soWNqZblYqryLjwuosbIbUfD
+         sIuCQaXVGEx0jA5vwVBA/zJJOpEUwZBAl1pWaV4JYX0unGSkUMIdKf2Myiwg2SfCor
+         ZbUPKhIIDY6iw==
+Date:   Mon, 4 Jan 2021 14:13:29 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
+Message-ID: <20210104141329.GG5645@sirena.org.uk>
+References: <20210103135257.3611821-1-arnd@kernel.org>
+ <s5hk0ss94kr.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <20210103231235.792999-1-djrscally@gmail.com> <20210103231235.792999-16-djrscally@gmail.com>
- <3d881e2b-747f-dcd7-a0cf-e7309419914b@ideasonboard.com> <9026519f-1f33-9df0-de18-0881069f7aaa@gmail.com>
-In-Reply-To: <9026519f-1f33-9df0-de18-0881069f7aaa@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 4 Jan 2021 16:12:41 +0200
-Message-ID: <CAHp75Vf6Z_qhw54jUu5tt85XxjZncaQFCNpYx=tqGTS9LsVPOg@mail.gmail.com>
-Subject: Re: [PATCH v4 15/15] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Len Brown <lenb@kernel.org>, Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4eRLI4hEmsdu6Npr"
+Content-Disposition: inline
+In-Reply-To: <s5hk0ss94kr.wl-tiwai@suse.de>
+X-Cookie: Stupidity is its own reward.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 3:55 PM Daniel Scally <djrscally@gmail.com> wrote:
-> On 04/01/2021 13:35, Kieran Bingham wrote:
 
-...
+--4eRLI4hEmsdu6Npr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +static const struct cio2_sensor_config cio2_supported_sensors[] = {
-> +       /* Sensor OVTI5693 */
-> +       CIO2_SENSOR_CONFIG("INT33BE", 0),
-> +       /* Sensor OVTI2680 */
-> +       CIO2_SENSOR_CONFIG("OVTI2680", 0),
->
-> As an inline comment won't fit for the sensors that we know link-frequencies for. That sound ok?
+On Mon, Jan 04, 2021 at 03:09:24PM +0100, Takashi Iwai wrote:
 
-At least to me it looks okay.
+> IMO, the problem is rather the unconditional calls of
+> snd_intel_dsp_driver_probe() in snd-soc-sof-pci and snd-soc-sof-acpi
+> drivers.  Those calls should be done only if Intel drivers are
+> involved.  So, wrapping the call with ifdef
+> CONFIG_SND_SOC_SOF_INTEL_PCI or CONFIG_SND_SOC_SOF_INTEL_ACPI would
+> work better (although those are a bit uglier).
 
-It seems for v5 we need Rafael's blessing on a few patches (driver
-properties / swnode / ACPI) and we are fine.
+Or stubbing them which might be neater.
 
--- 
-With Best Regards,
-Andy Shevchenko
+--4eRLI4hEmsdu6Npr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/zIogACgkQJNaLcl1U
+h9Cs2gf+L8LA4jGPihc58O3+2gVfjpoTLwqR18RhrGsAJrQAhVjPb6+muvVH4rVw
+aKm648duaehQ4484pZXS/LUtyEw70+N8RHhchEfyfHu47SVF1Avku3rjsqSIZQF0
+qNe8HDF5kJ0npw2mazr/Iv+P1Uv7Yti9GVye63MmAaImJe5HPX9DmfQspj3zeIXu
+NMFycv6wLpMoo4L0P5qxFxCkVKVZXSjeJED7/uXQVrtpSJzcWhU+cUn7HI/J48gl
+Esu9cmu5UJLHzMbVpzhHxbH/L6GGljPGWxRfWoP9gP/GasEfv5q3gjBHeOLsPEgp
+YnyLj/Uegu5vdqyK+bVllUs1klgm3A==
+=HwUk
+-----END PGP SIGNATURE-----
+
+--4eRLI4hEmsdu6Npr--
