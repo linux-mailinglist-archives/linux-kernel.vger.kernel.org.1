@@ -2,125 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9AF2E9872
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6659C2E9874
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727373AbhADPZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:25:09 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40092 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727225AbhADPZE (ORCPT
+        id S1726664AbhADPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbhADPZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:25:04 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 104F3IYa143915;
-        Mon, 4 Jan 2021 10:24:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=gEHb6A/vGOso8qmb0RuqpTlFlNl4dVy8LYFVBRDNSyI=;
- b=lq+sC8ndCpsWAwK/33wKQqEodjv5O/cKkbBIAuX2zVlPV83/gzNVe/nlbLvXrw0ccJc0
- c9c/lzy2m+8G+W2tSWuoiKykEH0aH3C3t8BRGYctPqp4plVpaBxvCBJXJ2rjYmQZwPT0
- oob+UbIU/duyPyXPDH2G7u/Zui8ntbVkrEHS+Sd+J72NDVJH/5gxluVaUk1h4ZfwpANl
- GxTr7krxuaML+rRhr6d0yCstxCt3Qsaxv8IaHe0jwGnSVlsyYw+QlTDudIsgdW0FuoH6
- ldHEi3TNZS+abHP7ZBbBjeGnxh7HxtiLAbDXoCa+heIvhOpp1nbk7HFZ3LdF+zK43s+Q 0Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35v59krmu5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 10:24:23 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 104FLm8P047683;
-        Mon, 4 Jan 2021 10:24:22 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35v59krmtc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 10:24:22 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 104FCGJ1004432;
-        Mon, 4 Jan 2021 15:24:21 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 35tgf8a03r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 15:24:20 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 104FOIuR40436112
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Jan 2021 15:24:18 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 05B73A405B;
-        Mon,  4 Jan 2021 15:24:18 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA061A4054;
-        Mon,  4 Jan 2021 15:24:17 +0000 (GMT)
-Received: from ibm-vm (unknown [9.145.0.177])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Jan 2021 15:24:17 +0000 (GMT)
-Date:   Mon, 4 Jan 2021 16:23:57 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v1 0/4] s390/kvm: fix MVPG when in VSIE
-Message-ID: <20210104162357.6b85baf0@ibm-vm>
-In-Reply-To: <5947ede7-7f9f-cdaa-b827-75a5715e4f12@redhat.com>
-References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
- <5947ede7-7f9f-cdaa-b827-75a5715e4f12@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 4 Jan 2021 10:25:37 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43131C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 07:24:57 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id q18so32602872wrn.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 07:24:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IJsReUFErPDMdNE4pFsI26poYyvfDbRtPn9zSVIt8/0=;
+        b=BlQJfePcIHLDWx1dqvM/0YWSfeidEAdHBBS9Oi9zH+dVxOYGtIAGpOq2x1TXjiunrn
+         JI3g/CkLRqnzY2UHOQnJSKigS9LwL9EXMoK6tLMpEVrXTRw2MNiYNvjHZX9xaguSMN3M
+         8NY2ylMZLczGTUgPTz/CT8M7v83ydRkLSESyJqwY1EOT3jLZj3dYAp7mPo/tp5RNpAPJ
+         HfOpCUmoFiqSIEmoaZVa44GwpcCaBhkYndRMGH0rqg8i55bvZuYywj7Kz7NdWgBVElyS
+         cPugAvD8rXqnqHfgW2pDHH5iLum00/WhBbA5GPVAuiU4ppRiiGP+rARZko0IRWXgOygF
+         saGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IJsReUFErPDMdNE4pFsI26poYyvfDbRtPn9zSVIt8/0=;
+        b=o+Afz29eXVNq+n0BxLkrnZtFhr/zvWckkKvp9W6YH7wycuqkZKDDSy/9t91vdAgoFf
+         xZmFzx3NlG0wLBUz7VZabwf/XMREiw+lRFjilO8aZBPm9PF2tpP5CjEHWQAFma87bBmQ
+         UMJQzvn+7bcHKk00JBHzBOr7yUsDqnhWeOgYiB6UpR9ASOeh9rTg9QqfNIZHUjhh1tnp
+         bbIJyi9HFEBVyBmTHLnvr0Vu20Ab70oLQUKzqhAT15Tb2yzZnPJRC2TLg/GQVw6BH/et
+         /EAi5BiyZ6t587hnR1rhpM1hvqOK5bGFd4K07nIT2/cUKmZk+Dt+gK5S2JtnlneTwXKV
+         aWLQ==
+X-Gm-Message-State: AOAM530SqPAGlG1eJcmDNCdQxiiccuK1VN8tqEvzZk7WEgqEdzhSsj5/
+        TNRaP0rWHX4aDEUvoGpSIRw=
+X-Google-Smtp-Source: ABdhPJxVBne8FtNRL+IFINlrV2V2pALI5ujaiRJpJQPMCLhus1Xypuwg0D6XHgJEG9gvvfYtrkDxxw==
+X-Received: by 2002:adf:f60b:: with SMTP id t11mr81981893wrp.401.1609773896048;
+        Mon, 04 Jan 2021 07:24:56 -0800 (PST)
+Received: from [192.168.2.202] (pd9ea302d.dip0.t-ipconnect.de. [217.234.48.45])
+        by smtp.gmail.com with ESMTPSA id a14sm89944312wrn.3.2021.01.04.07.24.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 07:24:55 -0800 (PST)
+Subject: Re: drivers/platform/surface/surface3-wmi.c:60:14: warning: variable
+ 'status' set but not used
+To:     Hans de Goede <hdegoede@redhat.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <202012291140.j73hBz45-lkp@intel.com>
+ <184b4ec6-65f1-5a22-487b-20cc0fb1b587@redhat.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <1a749e41-86da-8607-ec39-c91cf4107a9f@gmail.com>
+Date:   Mon, 4 Jan 2021 16:24:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-04_10:2021-01-04,2021-01-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 impostorscore=0
- clxscore=1015 mlxlogscore=932 priorityscore=1501 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101040099
+In-Reply-To: <184b4ec6-65f1-5a22-487b-20cc0fb1b587@redhat.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 20 Dec 2020 10:40:27 +0100
-David Hildenbrand <david@redhat.com> wrote:
-
-> On 18.12.20 15:18, Claudio Imbrenda wrote:
-> > The current handling of the MVPG instruction when executed in a
-> > nested guest is wrong, and can lead to the nested guest hanging. =20
->=20
+On 1/4/21 3:52 PM, Hans de Goede wrote:
 > Hi,
->=20
-> thanks for spotting and debugging! Is this related to nested guests
-> hanging while migrating (mentioned by Janosch at some point)?
+> 
+> On 12/29/20 4:58 AM, kernel test robot wrote:
+>> Hi Maximilian,
+>>
+>> FYI, the error/warning still remains.
+>>
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   dea8dcf2a9fa8cc540136a6cd885c3beece16ec3
+>> commit: f23027ca3d48b6f93c5994069fb25b73539fdf34 platform/surface: Move Surface 3 WMI driver to platform/surface
+>> date:   9 weeks ago
+>> config: x86_64-randconfig-r001-20201221 (attached as .config)
+>> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+>> reproduce (this is a W=1 build):
+>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f23027ca3d48b6f93c5994069fb25b73539fdf34
+>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout f23027ca3d48b6f93c5994069fb25b73539fdf34
+>>          # save the attached .config to linux build tree
+>>          make W=1 ARCH=x86_64
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>     drivers/platform/surface/surface3-wmi.c: In function 's3_wmi_query_block':
+>>>> drivers/platform/surface/surface3-wmi.c:60:14: warning: variable 'status' set but not used [-Wunused-but-set-variable]
+>>        60 |  acpi_status status;
+>>           |              ^~~~~~
+> 
+> I guess fixing this would require something like this:
+> 
+> From: Hans de Goede <hdegoede@redhat.com>
+> Subject: [PATCH] platform/surface: surface3-wmi: Fix variable 'status' set but not used compiler warning
+> 
+> Explictly check the status rather then relying on output.pointer staying
+> NULL on an error. This silences the following compiler warning:
+> 
+> drivers/platform/surface/surface3-wmi.c:60:14: warning: variable 'status' set but not used [-Wunused-but-set-variable]
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>   drivers/platform/surface/surface3-wmi.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/platform/surface/surface3-wmi.c b/drivers/platform/surface/surface3-wmi.c
+> index 130b6f52a600..4b7f79c0b78e 100644
+> --- a/drivers/platform/surface/surface3-wmi.c
+> +++ b/drivers/platform/surface/surface3-wmi.c
+> @@ -63,6 +63,10 @@ static int s3_wmi_query_block(const char *guid, int instance, int *ret)
+>   
+>   	mutex_lock(&s3_wmi_lock);
+>   	status = wmi_query_block(guid, instance, &output);
+> +	if (ACPI_FAILURE(status)) {
+> +		error = -EIO;
+> +		goto out_free_unlock;
+> +	}
+>   
+>   	obj = output.pointer;
+>   
+> 
+> Maximilian, can you review and/or test this fix please ?
 
-no, it was found by running legacy tests in VSIE (I have written
-kvm-unit-tests for this now, I'll post them Soon=E2=84=A2)
+Ah, this was on my TODO list (among looking at some other things in this
+driver), sorry that I haven't gotten to it yet. I'd have proposed pretty
+much the exact same thing.
 
-> Or can this not be reproduced with actual Linux guests?
+One thing to note though: You should initialize obj with NULL. Keeping
+it uninitialized may mess with kfree() under out_free_unlock.
 
-Linux doesn't use MVPG, and gcc in general seems to avoid it, so we
-never really see this in the wild. Moreover Linux does not normally run
-with DAT disabled.
-=20
-> Thanks!
->=20
-> >=20
-> > This patchset fixes the behaviour to be more architecturally
-> > correct, and fixes the hangs observed.
-> >=20
-> > Claudio Imbrenda (4):
-> >   s390/kvm: VSIE: stop leaking host addresses
-> >   s390/kvm: extend guest_translate for MVPG interpretation
-> >   s390/kvm: add kvm_s390_vsie_mvpg_check needed for VSIE MVPG
-> >   s390/kvm: VSIE: correctly handle MVPG when in VSIE
-> >=20
-> >  arch/s390/kvm/gaccess.c | 88
-> > ++++++++++++++++++++++++++++++++++++++--- arch/s390/kvm/gaccess.h |
-> >  3 ++ arch/s390/kvm/vsie.c    | 78
-> > +++++++++++++++++++++++++++++++++--- 3 files changed, 159
-> > insertions(+), 10 deletions(-)=20
->=20
->=20
+Unfortunately I don't have access to a Surface 3 to test, but apart from
+not initializing obj, this patch looks good to me. You may add my
+reviewed-by tag once you've fixed that.
 
+Also note that drivers/platform/x86/msi-wmi.c suffers from the same
+problem in msi_wmi_query_block() and should receive a similar fix.
+
+Regards,
+Max
