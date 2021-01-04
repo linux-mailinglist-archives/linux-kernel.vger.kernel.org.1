@@ -2,107 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995392E94C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B36682E94C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbhADMYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:24:23 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52830 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbhADMYW (ORCPT
+        id S1726840AbhADMYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbhADMYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:24:22 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104CMfwi092606;
-        Mon, 4 Jan 2021 06:22:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1609762961;
-        bh=jGh02B5M1rvfYl69hvxasPDk9iriEgMEUYJWXaLhXmQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=b6+yRp584jslSbjl63Z38w08lNrluEhg754zrrpytqptztfteSKmFE3yP0tFao4ox
-         i+LqwARjRyGFu7DjgMWw98Xyol1JJNK8CQAAwIDku3dld0Ufgd3MIUzk2DaMckiX1G
-         jODYSNcvUDRzJxaxizLYXYAhHymv9WtEhML44cj8=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104CMfng054773
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 Jan 2021 06:22:41 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 Jan
- 2021 06:22:40 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 4 Jan 2021 06:22:40 -0600
-Received: from a0393678-ssd.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104CMZhN002211;
-        Mon, 4 Jan 2021 06:22:38 -0600
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 1/6] arm64: dts: ti: k3-j721e-main: Fix supported max outbound regions
-Date:   Mon, 4 Jan 2021 17:52:27 +0530
-Message-ID: <20210104122232.24071-2-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210104122232.24071-1-kishon@ti.com>
-References: <20210104122232.24071-1-kishon@ti.com>
+        Mon, 4 Jan 2021 07:24:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FF4C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 04:23:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=3RCmmiMt2hjnork/7M1G+NcD6b4PGitnpY8YIQ91D2M=; b=M+udqozSsQJ+BmdOB3yCZ/zy0H
+        0oZbbU4IfAxIXr9fgqnzfGl05YO2OKugF4uxYf/hBOzj9B7zPqGmYp2KxlHYBPMxbPJ6sjJC/tObW
+        XwUKvV/mmgeJbhfNUJgXgAxTlx3YJjGOdmVIBhLvdIJGR/x69l/twX9xDqG+KD4knS0Dr3RLmjyL5
+        BRQ58pg5sba5G9oW/IoLggGL7Q5mydQ/KFzKYOhaETVREXFwWqlDjvu4uSKiLo8EBTUAem0glRduV
+        WOERrP1lNTB/RAfl9UOF10LFG4oJPUXwPlig/PkRGr+49IUYJjAQ9DYOWBTbpWnjI0UFF0fS/QtOA
+        CiHn7oLQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kwOsY-0004gb-GP; Mon, 04 Jan 2021 12:22:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6E4DC307005;
+        Mon,  4 Jan 2021 13:22:27 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5106C20BEF814; Mon,  4 Jan 2021 13:22:27 +0100 (CET)
+Date:   Mon, 4 Jan 2021 13:22:27 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
+ writeprotect
+Message-ID: <20210104122227.GL3021@hirez.programming.kicks-ass.net>
+References: <20201225092529.3228466-1-namit@vmware.com>
+ <20201225092529.3228466-2-namit@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201225092529.3228466-2-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cadence IP in J721E supports a maximum of 32 outbound regions. However
-commit 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device
-tree nodes") incorrectly added this as 16 outbound regions. Now that
-"cdns,max-outbound-regions" is an optional property with default value
-as 32, remove "cdns,max-outbound-regions" from endpoint DT node.
+On Fri, Dec 25, 2020 at 01:25:28AM -0800, Nadav Amit wrote:
 
-Fixes: 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes")
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 4 ----
- 1 file changed, 4 deletions(-)
+> The scenario that happens in selftests/vm/userfaultfd is as follows:
+> 
+> cpu0				cpu1			cpu2
+> ----				----			----
+> 							[ Writable PTE
+> 							  cached in TLB ]
+> userfaultfd_writeprotect()
+> [ write-*unprotect* ]
+> mwriteprotect_range()
+> mmap_read_lock()
+> change_protection()
+> 
+> change_protection_range()
+> ...
+> change_pte_range()
+> [ *clear* “write”-bit ]
+> [ defer TLB flushes ]
+> 				[ page-fault ]
+> 				...
+> 				wp_page_copy()
+> 				 cow_user_page()
+> 				  [ copy page ]
+> 							[ write to old
+> 							  page ]
+> 				...
+> 				 set_pte_at_notify()
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-index b32df591c766..1c11da612c67 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-@@ -651,7 +651,6 @@
- 		power-domains = <&k3_pds 239 TI_SCI_PD_EXCLUSIVE>;
- 		clocks = <&k3_clks 239 1>;
- 		clock-names = "fck";
--		cdns,max-outbound-regions = <16>;
- 		max-functions = /bits/ 8 <6>;
- 		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
- 		dma-coherent;
-@@ -700,7 +699,6 @@
- 		power-domains = <&k3_pds 240 TI_SCI_PD_EXCLUSIVE>;
- 		clocks = <&k3_clks 240 1>;
- 		clock-names = "fck";
--		cdns,max-outbound-regions = <16>;
- 		max-functions = /bits/ 8 <6>;
- 		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
- 		dma-coherent;
-@@ -749,7 +747,6 @@
- 		power-domains = <&k3_pds 241 TI_SCI_PD_EXCLUSIVE>;
- 		clocks = <&k3_clks 241 1>;
- 		clock-names = "fck";
--		cdns,max-outbound-regions = <16>;
- 		max-functions = /bits/ 8 <6>;
- 		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
- 		dma-coherent;
-@@ -798,7 +795,6 @@
- 		power-domains = <&k3_pds 242 TI_SCI_PD_EXCLUSIVE>;
- 		clocks = <&k3_clks 242 1>;
- 		clock-names = "fck";
--		cdns,max-outbound-regions = <16>;
- 		max-functions = /bits/ 8 <6>;
- 		max-virtual-functions = /bits/ 16 <4 4 4 4 0 0>;
- 		dma-coherent;
--- 
-2.17.1
+Yuck!
 
+Isn't this all rather similar to the problem that resulted in the
+tlb_flush_pending mess?
+
+I still think that's all fundamentally buggered, the much saner solution
+(IMO) would've been to make things wait for the pending flush, instead
+of doing a local flush and fudging things like we do now.
+
+Then the above could be fixed by having wp_page_copy() wait for the
+pending invalidate (although a more fine-grained pending state would be
+awesome).
+
+The below probably doesn't compile and will probably cause massive
+header fail at the very least, but does show the general.
+
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 07d9acb5b19c..0210547ac424 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -649,7 +649,8 @@ static inline void dec_tlb_flush_pending(struct mm_struct *mm)
+ 	 *
+ 	 * Therefore we must rely on tlb_flush_*() to guarantee order.
+ 	 */
+-	atomic_dec(&mm->tlb_flush_pending);
++	if (atomic_dec_and_test(&mm->tlb_flush_pending))
++		wake_up_var(&mm->tlb_flush_pending);
+ }
+ 
+ static inline bool mm_tlb_flush_pending(struct mm_struct *mm)
+@@ -677,6 +678,12 @@ static inline bool mm_tlb_flush_nested(struct mm_struct *mm)
+ 	return atomic_read(&mm->tlb_flush_pending) > 1;
+ }
+ 
++static inline void wait_tlb_flush_pending(struct mm_struct *mm)
++{
++	wait_var_event(&mm->tlb_flush_pending,
++		       atomic_read(&mm->tlb_flush_pending) == 0);
++}
++
+ struct vm_fault;
+ 
+ /**
+diff --git a/mm/memory.c b/mm/memory.c
+index feff48e1465a..3c36bca2972a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3087,6 +3087,8 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+ 
++	wait_tlb_flush_pending(vma->vm_mm);
++
+ 	if (userfaultfd_pte_wp(vma, *vmf->pte)) {
+ 		pte_unmap_unlock(vmf->pte, vmf->ptl);
+ 		return handle_userfault(vmf, VM_UFFD_WP);
