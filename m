@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394A22E96C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9422E96CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727225AbhADOGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:06:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726762AbhADOGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:06:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E752D207BC;
-        Mon,  4 Jan 2021 14:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609769132;
-        bh=79TsA1bA8DKt3n7SY5XnXtm3knysfw0cfWKMLdkrzAc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iHN9zNRZrzzhE+ofXqwGY3v8yznfietvgJMSpIw+/Hb+3GY0GuhJL7mLLW9bt9kcZ
-         PxcqgpZD5FhAKNG8I5jGEXGBvLQpBmco8xGjMnaIc4EebNiLVje0BlJWOj45JL0/PB
-         vxtEJY5OhIuVTA6E/Lui4XNWCjztT9yf7D3//WPmqcmmDQBgRTjNFYUHE+LDDdYS2G
-         vDbXQowhqqzHV+4MYe0UswMc695n3mCySu0MBMSim5Ss3EsWmxmlkITnnS4eNLG3ZK
-         qcONCWIJbRc577IYCOT74XxUKKbK+estp/16xd1zq3Gyj1t5BuDxRAMQebZh9HQ2Px
-         ydgmSJ/nP9dUA==
-Date:   Mon, 4 Jan 2021 14:05:06 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Yangtao Li <tiny.windzz@gmail.com>
-Cc:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, krzk@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, digetx@gmail.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
-        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        lukasz.luba@arm.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        rjw@rjwysocki.net, jcrouse@codeaurora.org, hoegsberg@google.com,
-        eric@anholt.net, tzimmermann@suse.de,
-        marijn.suijten@somainline.org, gustavoars@kernel.org,
-        emil.velikov@collabora.com, jonathan@marek.ca,
-        akhilpo@codeaurora.org, smasetty@codeaurora.org,
-        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, ddavenport@chromium.org,
-        jsanka@codeaurora.org, rnayak@codeaurora.org,
-        tongtiangen@huawei.com, miaoqinglang@huawei.com,
-        khsieh@codeaurora.org, abhinavk@codeaurora.org,
-        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
-        mka@chromium.org, harigovi@codeaurora.org,
-        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
-        georgi.djakov@linaro.org, akashast@codeaurora.org,
-        parashar@codeaurora.org, dianders@chromium.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH 14/31] spi: spi-qcom-qspi: convert to use devm_pm_opp_*
- API
-Message-ID: <20210104140506.GF5645@sirena.org.uk>
-References: <20210101165507.19486-1-tiny.windzz@gmail.com>
- <20210101165507.19486-15-tiny.windzz@gmail.com>
+        id S1726762AbhADOIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:08:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726396AbhADOIA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 09:08:00 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DAEC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:07:19 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id m12so64547614lfo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:07:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Noy6r1/WTM/FuD2jphA2uWS50pb5obVRw55AkQ+95cI=;
+        b=LOnFTpkM+pp+xw2QIahN/58KTeXTmZmogfFOQDQZrae2dqqSUCXJi95ZHh+CGC80Za
+         CIzV1m3shttpaF2xef8iCMVq7PkWeaB0pov7RFanNH8+qpm+oFIrBxpBCv0yQnyriY0K
+         MRsXskenCYPZ/cvgb9XRtCDBB5RnpemEt5cRDLRPe9jkH7OvoIYjnOAJ2rnrcX5wWBhb
+         Ypag2OXD3vpswjnX+xhRsSGRDjvZ7/p6RFrekWVs6y12QPsLXSzT2qmgUbPgAQLH3I2u
+         Sg7g1oGOFo2V6Lx92H89iJCEROZmEGIqUCKS5HS3h1MemaMX4RRpFOZj1wnvzE0Py4BL
+         4/hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Noy6r1/WTM/FuD2jphA2uWS50pb5obVRw55AkQ+95cI=;
+        b=pvdAcZ4BkP5I4PwM4gFwaVN19qt7+ep1BCYTQoKBqtKJEu3FuHu90sfdVWJIhw7AND
+         hJdZdJhiKmCTrhXC2tB5ztiDD4ZRr3PivavVj1DUphj3rcI12SSPlkI4NpR/CmitvjZc
+         rkcDUlhOjZO1g8ELtFh9R1qPqMfTRyaDWnlvzLkS/4b1uYqtB+p7sw/3KkFBX0+PUMGz
+         3RVODO9bdRCMyZw9HyscDQd3D3xNtaYnt2vePuXGGkzQQfZR8ZFy4ZzhVaLKpANu4MfD
+         pU9HQ6qvHK7Ix1XDf+uUCkUsR14/9ce/ARv9JO9FPIS4FWJdza077VvZQ7KnC8V3cFsG
+         LWqQ==
+X-Gm-Message-State: AOAM531sw3axENRfUg3X4crWW88maK+zXfHjLdTlIYDknC2LFHcgGS39
+        7yhsnwtSoNSvZrS+/Q3iEYX0PrXy/cK2lTmryCc=
+X-Google-Smtp-Source: ABdhPJxmxsxVDFpbXZxv3wxt4WJzq5x+LhWqUBlh10IEtDlXJufp57gIWF5eSR7AeUPhDlbdZuI/azYJnM1F0ktp4MQ=
+X-Received: by 2002:a2e:154b:: with SMTP id 11mr34295269ljv.22.1609769238030;
+ Mon, 04 Jan 2021 06:07:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4VrXvz3cwkc87Wze"
-Content-Disposition: inline
-In-Reply-To: <20210101165507.19486-15-tiny.windzz@gmail.com>
-X-Cookie: Stupidity is its own reward.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201221162519.GA22504@open-light-1.localdomain> <20210104125554.GE13207@dhcp22.suse.cz>
+In-Reply-To: <20210104125554.GE13207@dhcp22.suse.cz>
+From:   Liang Li <liliang324@gmail.com>
+Date:   Mon, 4 Jan 2021 22:07:05 +0800
+Message-ID: <CA+2MQi9iViYq7+apaJEymt8rZxUuo+9EJN4x3_RRydjr7-vwMQ@mail.gmail.com>
+Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Liang Li <liliang.opensource@gmail.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 4, 2021 at 8:56 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 21-12-20 11:25:22, Liang Li wrote:
+> [...]
+> > Security
+> > ========
+> > This is a weak version of "introduce init_on_alloc=1 and init_on_free=1
+> > boot options", which zero out page in a asynchronous way. For users can't
+> > tolerate the impaction of 'init_on_alloc=1' or 'init_on_free=1' brings,
+> > this feauture provide another choice.
+>
+> Most of the usecases are about the start up time imporvemtns IIUC. Have
+> you tried to use init_on_free or this would be prohibitive for your
+> workloads?
+>
+I have not tried yet. 'init_on_free' may help to shorten the start up time. In
+our use case,  we care about both the VM creation time and the VM reboot
+time[terminate QEMU process first and launch a new  one], 'init_on_free'
+will slow down the termination process and is not helpful for VM reboot.
+Our aim is to speed up 'VM start up' and not slow down 'VM shut down'.
 
---4VrXvz3cwkc87Wze
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jan 01, 2021 at 04:54:50PM +0000, Yangtao Li wrote:
-> Use devm_pm_opp_* API to simplify code, and remove opp_table
-> from qcom_qspi.
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---4VrXvz3cwkc87Wze
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/zIJEACgkQJNaLcl1U
-h9DFeQf+IHePH8ftvRUXVVunMDt5ucIZpHjc+KGKU8AM3jyZ+Xyy7jpftefB54+O
-D0zp7MZ5qmBT4HlKD4cibZcvesuW18PPYrUMXVV3H8MuTBZMfvl+XDsWm0NvMjE+
-mG+w8bSqPUM9Mjo5wa7UN8bbEjHzNtPZt0lUNfN+k0NGXJ3XhN5WtH3eGXQAPaIn
-o5aKfPOue5R/hIy2XhK9W7VLqa8NwnhL7tCfYme/Eto/F4ygM/JVeTwdMOeKe3Gi
-SeDV7n7fe5oPecANOGYXE6gdO2c7oAcJl36gxh2rjpz/yGyCykjmHBxU/YdSV3Jk
-T8oGZSZjqmlT+HfPp7aRXPMXmf3ncQ==
-=ApdX
------END PGP SIGNATURE-----
-
---4VrXvz3cwkc87Wze--
+Thanks
+Liang
