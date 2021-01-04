@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C782E9259
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F22D2E925A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbhADJJH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 04:09:07 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:52977 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbhADJJG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:09:06 -0500
-X-Originating-IP: 90.89.98.255
-Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr [90.89.98.255])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 4F7661BF215;
-        Mon,  4 Jan 2021 09:08:20 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 10:08:19 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Ian Goegebuer <goegebuer@google.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        "Ronald G . Minnich" <rminnich@google.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one
- or more colons
-Message-ID: <20210104100819.1d623425@xps13>
-In-Reply-To: <20201223215630.1917891-1-goegebuer@google.com>
-References: <1887c783-7a80-a71c-949f-c07c83c2d0fe@ti.com>
-        <20201223215630.1917891-1-goegebuer@google.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726846AbhADJJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 04:09:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726173AbhADJJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 04:09:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A416321D79;
+        Mon,  4 Jan 2021 09:09:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609751347;
+        bh=q/nhawxLNc5Shs/4y+izVkXG0MR/QhpLQAscJnTvUJ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AJeC2WnUaEbjWCIPGIoxkhIyxI4eBKFT5f0TVzbP+GpYQsuSzNsh8s8CdnJ5GLuaV
+         X0LP/6UhlFnmLWmguKnLD9+jwKNcKRlzWQmo9pkgNinHFu6jl9JwC7//oFk82kCzoT
+         Z0A+XhFa9Fhl483kY2qWIkLkHtDNySwBK2peE+wWMMJA1IgDKB/M9ixObuBpLwKYPR
+         zQGyYNW8ovDckNQZm6KPEFtJa0Pa0PY4d1cdHQzFYPcCToGapjiIRXlj1hFax2co+J
+         G/qe33Jjdwl7+FwX10Y1GO7SIhneCjecjkEsPcYFdlNUiokGoY129J7uoSZfSVOKA4
+         q4dMUDWD9B6AA==
+Received: from johan by xi with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kwLrM-0005qF-2I; Mon, 04 Jan 2021 10:09:04 +0100
+Date:   Mon, 4 Jan 2021 10:09:04 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     zhangqiumiao1@huawei.com, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] tty: resolve loopback wait problem for aging serial
+ port
+Message-ID: <X/LbMCeNbjedkIiy@hovoldconsulting.com>
+References: <1609335929-13463-1-git-send-email-zhangqiumiao1@huawei.com>
+ <X+yHOr6Q5fsuQhSy@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X+yHOr6Q5fsuQhSy@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Ian, 
-
-Ian Goegebuer <goegebuer@google.com> wrote on Wed, 23 Dec 2020 13:56:30
--0800:
-
-> On Intel platforms, the usable SPI area is located several
-> MiB in from the start, to leave room for descriptors and
-> the Management Engine binary. Further, not all the remaining
-> space can be used, as the last 16 MiB contains firmware.
+On Wed, Dec 30, 2020 at 02:57:14PM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Dec 30, 2020 at 09:45:29PM +0800, zhangqiumiao1@huawei.com wrote:
+> > From: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+> > 
+> > Because serial port is low-speed device, serial port writing will be suspended
+> > when the buffer of driver layer is full due to serial port aging.
 > 
-> To make the SPI usable for mtdblock and other devices,
-> it is necessary to enable command line partitions so the
-> middle usable region can be specified.
+> What do you mean here exactly?  What is "serial port aging"?
 > 
-> Add a part_probes array which includes only "cmdelineparts",
-> and change to mtd_device_parse_register to use this part_probes.
-
-The commit title seem to be taken from another patch and does not
-match the below change. Or am I missing something?
-
-> Signed-off-by: "Ronald G. Minnich" <rminnich@google.com>
-> Signed-off-by: Ian Goegebuer <goegebuer@google.com>
-> ---
->  drivers/mtd/spi-nor/controllers/intel-spi.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> And since when is a serial port a low-speed device?  Compared to what?
 > 
-> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> index b54a56a68100..9de38851c411 100644
-> --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-> +++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-> @@ -903,6 +903,8 @@ static const struct spi_nor_controller_ops intel_spi_controller_ops = {
->  	.erase = intel_spi_erase,
->  };
->  
-> +static const char * const part_probes[] = { "cmdlinepart", NULL };
-> +
->  struct intel_spi *intel_spi_probe(struct device *dev,
->  	struct resource *mem, const struct intel_spi_boardinfo *info)
->  {
-> @@ -950,7 +952,8 @@ struct intel_spi *intel_spi_probe(struct device *dev,
->  	if (!ispi->writeable || !writeable)
->  		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
->  
-> -	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
-> +	ret = mtd_device_parse_register(&ispi->nor.mtd, part_probes,
-> +					NULL, &part, 1);
->  	if (ret)
->  		return ERR_PTR(ret);
->  
+> > The concrete
+> > representation is n_tty_write blocking in the process of wait_woken, the process
+> > of writing serial port exists without feedback, and becomes a zombie process.
+> 
+> I do not understand this sentance, sorry.  Can you rephrase it?
+> 
+> > So for serial port, set the timeout value of wait_woken function to 60s. Wake up
+> > and flush the buffer after timeout.
+> 
+> Where did the 60 second number come from?  Why that value and not any
+> other specific value?
+> 
+> 
+> > 
+> > Signed-off-by: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+> > ---
+> > v3:
+> >  add changes from v1 to v2
+> > 
+> > v2:
+> >  change to use "real name"
+> >  fix wrong expression in path description
+> >  remove config option
+> >  use driver type to judge tty device type
 
-Thanks,
-Miquèl
+Note that no mails from zhangqiumiao1@huawei.com appears to make it to
+the lists so anyone not in CC only sees your replies, Greg. 
+
+Qiumiao Zhang, you need to check your mail setup so that you can post to
+the lists.
+
+Johan
