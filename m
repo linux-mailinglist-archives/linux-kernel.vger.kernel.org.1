@@ -2,103 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1222E8F2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 02:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 854632E8F2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 02:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727148AbhADBZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 20:25:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51238 "EHLO
+        id S1727354AbhADB1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 20:27:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726026AbhADBZA (ORCPT
+        with ESMTP id S1726026AbhADB1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 20:25:00 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5353C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 17:24:19 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id g3so13585962plp.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 17:24:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ReCyuB6iT6jEYrceFC7R53dNfUpjsZRHDJqV6HxAgxg=;
-        b=QFupxU8pLGaGgSleLM/HvnYu/truly/dP2d8owcgD6JNHlG90yHOaC6VGAqZ9uBvgT
-         coW3EWJtGLDs8ERGbtiWavXbxPR5jSWpYCPjMarlavq5RiOXx+cPhlylltZqqV/wNs9Z
-         2HZdCNfOrj0VUZLV59OR8SZFEjkB+zQPYVCr7pp2ltBOApWxiSjW0cB2FzkQqLX3cXAO
-         CqwF/j2NPHHhJ2fMMfodf64jlUPtujMkhjt0YObGipgMC9HedvlvL1zlqx9PhjVCAT3y
-         w6yjRcISTaNwXjxG/RI/4sTh2DhIBCgB+HaNAO+kpOKlf+kjvMaGgmEKf5z130CX9VXZ
-         GaOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ReCyuB6iT6jEYrceFC7R53dNfUpjsZRHDJqV6HxAgxg=;
-        b=ck+sgW/y5qJtWH7D/SyCbtbPF5dapRc1aDJXnwZsnqI6rv9He1kYaToFKIj0UAT2oX
-         n5VN8YoKrSSpRxDVe+ZBRmse4XaxoaNPxChH+UOmf6Cgf6qI+YY6nwVSG+KXqTaOU9yJ
-         wKhys4CagJ/+GtXU3JCdi58foINP2gBCia2p+V2GNANN9QeFNB0MxDkL//YqEZt1npT3
-         xh0yQPOa6IVhcZV+HD1q2yGxbrn+FOmaE/FTx0sL0A0ORFUUsdNpltx+C6BRYA8T7hGi
-         ue4grD+aeG2TII0/X8i40nK+8n3/FjAlFFH5pI89rJ3LxxDfe635HHFmcwV4oO6NkazH
-         sXKA==
-X-Gm-Message-State: AOAM533ETVb5+vWt0SnQUS4pL8vyfV2bJQ7SOnlZwiE5MSB8IZY3jbWB
-        uPUYIme4SRZyx4kNWDRuI1IW8I1TCOsYAw==
-X-Google-Smtp-Source: ABdhPJyAQg451uM4KB2/JZAHzGWxSCbqFO7QyDWp1DEKwRwQfM4P28BEkyaMMH9xJxj19wfgdnDs9Q==
-X-Received: by 2002:a17:902:7d88:b029:db:7aa4:864c with SMTP id a8-20020a1709027d88b02900db7aa4864cmr47955011plm.34.1609723458988;
-        Sun, 03 Jan 2021 17:24:18 -0800 (PST)
-Received: from js1304-desktop ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id o14sm55101680pgr.44.2021.01.03.17.24.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 03 Jan 2021 17:24:18 -0800 (PST)
-Date:   Mon, 4 Jan 2021 10:24:10 +0900
-From:   Joonsoo Kim <js1304@gmail.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [mm/swap]  aae466b005:  vm-scalability.throughput -2.7%
- regression
-Message-ID: <20210104012356.GA5941@js1304-desktop>
-References: <20201230062412.GD22185@xsang-OptiPlex-9020>
+        Sun, 3 Jan 2021 20:27:39 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32355C061793;
+        Sun,  3 Jan 2021 17:26:59 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D8HzM6zlVz9sSs;
+        Mon,  4 Jan 2021 12:26:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1609723616;
+        bh=9Im/8Hv5Sd6bN9YMdRIX4JRbfRoWlIqqAPJgCz6l4l8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VB94TTohUqM0dvK5UyNgAS7TvMS+ryhv2TK1dNMP8hsAZa9Rz/2iREUyH+X/UXT+Y
+         gbO4AhleDnPYsgoo0qBnT191fK97buFIV28UG+/jSWdhpFqMYq0aw2TW2rVTmELs7i
+         yM9FHT8FkO44p0cY4CP9SXyQcuJn/VLpmeOFPJwxyXZ3DOKRmi9tz60aWKfupKLDSp
+         f/QQazz56Av2EVB7CVg597gwW5w84dDDIOThv14XSlRrt1S1xTt11svE+dnSvICKAl
+         KPnA7nXK3WCNNlpxMqsNprBgl+sWava/HiUpSFJz5VLrlJm7dsZ90uV9xZJNLWsk+W
+         lGLSEj6vK+B6Q==
+Date:   Mon, 4 Jan 2021 12:26:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     Song Chen <chensong_2000@189.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failures after merge of the staging tree
+Message-ID: <20210104122653.6f35b9bb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230062412.GD22185@xsang-OptiPlex-9020>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: multipart/signed; boundary="Sig_/ARPb/QYlp33ER/Q.8JmL.l2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 02:24:12PM +0800, kernel test robot wrote:
-> 
-> Greeting,
-> 
-> FYI, we noticed a -2.7% regression of vm-scalability.throughput due to commit:
-> 
-> 
-> commit: aae466b0052e1888edd1d7f473d4310d64936196 ("mm/swap: implement workingset detection for anonymous LRU")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+--Sig_/ARPb/QYlp33ER/Q.8JmL.l2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi all,
 
-Thanks for reporting.
+After merging the staging tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-This is a known issue to me. As you can see below, slight regression
-is found on only the random access workload. For pure random pattern,
-detecting workingset would not guarantee a good result since these
-pages doesn't accessed in the near future. Even worse, it causes small
-overhead to the system since we need to demote these activated page to
-the inactive list to reclaim. So, below result is natural to me.
+In file included from include/linux/printk.h:6,
+                 from include/linux/kernel.h:16,
+                 from drivers/staging/board/kzm9d.c:4:
+drivers/staging/board/kzm9d.c:28:17: error: initialization of 'initcall_t' =
+{aka 'int (*)(void)'} from incompatible pointer type 'void (*)(void)' [-Wer=
+ror=3Dincompatible-pointer-types]
+   28 | device_initcall(kzm9d_init);
+      |                 ^~~~~~~~~~
+include/linux/init.h:197:50: note: in definition of macro '___define_initca=
+ll'
+  197 |   __attribute__((__section__(#__sec ".init"))) =3D fn;
+      |                                                  ^~
+include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
+  229 | #define device_initcall(fn)  __define_initcall(fn, 6)
+      |                              ^~~~~~~~~~~~~~~~~
+drivers/staging/board/kzm9d.c:28:1: note: in expansion of macro 'device_ini=
+tcall'
+   28 | device_initcall(kzm9d_init);
+      | ^~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
+In file included from include/linux/printk.h:6,
+                 from include/linux/kernel.h:16,
+                 from include/asm-generic/bug.h:20,
+                 from arch/arm/include/asm/bug.h:60,
+                 from include/linux/bug.h:5,
+                 from include/linux/thread_info.h:12,
+                 from include/asm-generic/current.h:5,
+                 from ./arch/arm/include/generated/asm/current.h:1,
+                 from include/linux/sched.h:12,
+                 from include/linux/ratelimit.h:6,
+                 from include/linux/dev_printk.h:16,
+                 from include/linux/device.h:15,
+                 from include/linux/dma-mapping.h:7,
+                 from drivers/staging/board/armadillo800eva.c:12:
+drivers/staging/board/armadillo800eva.c:90:17: error: initialization of 'in=
+itcall_t' {aka 'int (*)(void)'} from incompatible pointer type 'void (*)(vo=
+id)' [-Werror=3Dincompatible-pointer-types]
+   90 | device_initcall(armadillo800eva_init);
+      |                 ^~~~~~~~~~~~~~~~~~~~
+include/linux/init.h:197:50: note: in definition of macro '___define_initca=
+ll'
+  197 |   __attribute__((__section__(#__sec ".init"))) =3D fn;
+      |                                                  ^~
+include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
+  229 | #define device_initcall(fn)  __define_initcall(fn, 6)
+      |                              ^~~~~~~~~~~~~~~~~
+drivers/staging/board/armadillo800eva.c:90:1: note: in expansion of macro '=
+device_initcall'
+   90 | device_initcall(armadillo800eva_init);
+      | ^~~~~~~~~~~~~~~
 
-For other access pattern, this patchset would result in positive
-effect.
+Caused by commit
 
-Thanks.
+  850c35bb28ec ("staging: board: Remove macro board_staging")
 
+I have used the staging tree from next-20201223 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ARPb/QYlp33ER/Q.8JmL.l2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/ybt0ACgkQAVBC80lX
+0GzhQAf+PgUCLpbnFS74afwRx4mVv0Wm6BXasSQOShYVYRR3xUcqdhefS0fD7KUy
+US71br1/RMAae5/P4TE/gW74a5+EoectI/YWjnTeLIb7rUPv8rrav+tPUrUDhhav
+vl9jxVswVXJbXwJTHeTz31RC/tUCvfo3ME2kUocCW8TcXr8/Sxkkr2AdgSKgbq0d
+f86m4Qb4Xm0niFkDPTTv3Sp8ndUH7gQL6ACzXSnWBphnGkErfejocCjtpKKaM6rc
+zB4In9sG2TtTsq7QbtuWA2qbqNTSAbsGPNo4x2Ra/HVqXKzZg6jTD6uDeD2q4O04
+cFNYS8XT49mCgF9ELB64Ahh6Xkp8lQ==
+=XJqI
+-----END PGP SIGNATURE-----
+
+--Sig_/ARPb/QYlp33ER/Q.8JmL.l2--
