@@ -2,171 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C683B2E9E14
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9B52E9E1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbhADT0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 14:26:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54959 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726163AbhADT0Q (ORCPT
+        id S1727783AbhADT0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 14:26:55 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:36448 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbhADT0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 14:26:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609788289;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3WFUsWXvGZlvYFGW5zLUZV3SAVOw5bpW8rc0isSU/ko=;
-        b=CLR+oaydS04gYgQioDafI6rsfT8MT+HXWyBA9lDrJJmReoAu5bcDq0JnJRWu7ZiQuqiCGY
-        gQRSmIzhm8YTi+tW7RHuJFKvy/BQjAhA8y4kCeXCBsHw0xXxLK1YHiup2pj47vUUrG9Zfg
-        wcKPxdtCwT6CPXzu6EIr4ywkUvV+Nx8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-yYcZ4XfAMSmZCEUQAMjNdA-1; Mon, 04 Jan 2021 14:24:45 -0500
-X-MC-Unique: yYcZ4XfAMSmZCEUQAMjNdA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E5E5801AC0;
-        Mon,  4 Jan 2021 19:24:43 +0000 (UTC)
-Received: from mail (ovpn-112-76.rdu2.redhat.com [10.10.112.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 55E2B5D756;
-        Mon,  4 Jan 2021 19:24:39 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 14:24:38 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nadav Amit <nadav.amit@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
- writeprotect
-Message-ID: <X/NrdnoDHgFd0Ku1@redhat.com>
-References: <20201225092529.3228466-1-namit@vmware.com>
- <20201225092529.3228466-2-namit@vmware.com>
- <20210104122227.GL3021@hirez.programming.kicks-ass.net>
+        Mon, 4 Jan 2021 14:26:53 -0500
+Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9F4E920B7192;
+        Mon,  4 Jan 2021 11:26:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9F4E920B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1609788371;
+        bh=X6xepQR/a6hyITmp95WEs6En6xUDxmjm72mMAUNI8Ek=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WucpphxoaH203ubZ7w7ypSa7Z+NmSdLJ9JtBVej6K2B+G1iUDu3DVXR/UQDfdQ2/F
+         A8RHcPm9E2IVVX3OIsoaDZas+9Cph+fPcCHLxtKubtH+NxpD1nP4KcMkzHauXlRhQT
+         ShguJROGDgv4Ypltg1uLK8lBnCMhT6FpDVIoBqOk=
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
+Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@vger.kernel.org
+Subject: [PATCH v14 0/6] Carry forward IMA measurement log on kexec on ARM64
+Date:   Mon,  4 Jan 2021 11:25:56 -0800
+Message-Id: <20210104192602.10131-1-nramas@linux.microsoft.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210104122227.GL3021@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On kexec file load Integrity Measurement Architecture (IMA) subsystem
+may verify the IMA signature of the kernel and initramfs, and measure
+it. The command line parameters passed to the kernel in the kexec call
+may also be measured by IMA. A remote attestation service can verify
+a TPM quote based on the TPM event log, the IMA measurement list, and
+the TPM PCR data. This can be achieved only if the IMA measurement log
+is carried over from the current kernel to the next kernel across
+the kexec call.
 
-On Mon, Jan 04, 2021 at 01:22:27PM +0100, Peter Zijlstra wrote:
-> On Fri, Dec 25, 2020 at 01:25:28AM -0800, Nadav Amit wrote:
-> 
-> > The scenario that happens in selftests/vm/userfaultfd is as follows:
-> > 
-> > cpu0				cpu1			cpu2
-> > ----				----			----
-> > 							[ Writable PTE
-> > 							  cached in TLB ]
-> > userfaultfd_writeprotect()
-> > [ write-*unprotect* ]
-> > mwriteprotect_range()
-> > mmap_read_lock()
-> > change_protection()
-> > 
-> > change_protection_range()
-> > ...
-> > change_pte_range()
-> > [ *clear* “write”-bit ]
-> > [ defer TLB flushes ]
-> > 				[ page-fault ]
-> > 				...
-> > 				wp_page_copy()
-> > 				 cow_user_page()
-> > 				  [ copy page ]
-> > 							[ write to old
-> > 							  page ]
-> > 				...
-> > 				 set_pte_at_notify()
-> 
-> Yuck!
-> 
+powerpc already supports carrying forward the IMA measurement log on
+kexec. This patch set adds support for carrying forward the IMA
+measurement log on kexec on ARM64. 
 
-Note, the above was posted before we figured out the details so it
-wasn't showing the real deferred tlb flush that caused problems (the
-one showed on the left causes zero issues).
+This patch set moves the platform independent code defined for powerpc
+such that it can be reused for other platforms as well. A chosen node
+"linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
+the address and the size of the memory reserved to carry
+the IMA measurement log.
 
-The problematic one not pictured is the one of the wrprotect that has
-to be running in another CPU which is also isn't picture above. More
-accurate traces are posted later in the thread.
+This patch set has been tested for ARM64 platform using QEMU.
+I would like help from the community for testing this change on powerpc.
+Thanks.
 
-> Isn't this all rather similar to the problem that resulted in the
-> tlb_flush_pending mess?
-> 
-> I still think that's all fundamentally buggered, the much saner solution
-> (IMO) would've been to make things wait for the pending flush, instead
+This patch set is based on
+commit a29a64445089 ("powerpc: Use common of_kexec_setup_new_fdt()")
+in https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git
+"dt/kexec" branch.
 
-How do intend you wait in PT lock while the writer also has to take PT
-lock repeatedly before it can do wake_up_var?
+Changelog:
 
-If you release the PT lock before calling wait_tlb_flush_pending it
-all falls apart again.
+v14
+  - Select CONFIG_HAVE_IMA_KEXEC for CONFIG_KEXEC_FILE, for powerpc
+    and arm64, if CONFIG_IMA is enabled.
+  - Use IS_ENABLED() macro instead of "#ifdef" in remove_ima_buffer(),
+    ima_get_kexec_buffer(), and ima_free_kexec_buffer().
+  - Call of_kexec_setup_new_fdt() from setup_new_fdt_ppc64() and
+    remove setup_new_fdt() in "arch/powerpc/kexec/file_load.c".
 
-This I guess explains why a local pte/hugepmd smp local invlpg is the
-only working solution for this issue, similarly to how it's done in rmap.
+v13
+  - Moved the arch independent functions to drivers/of/kexec.c
+    and then refactored the code.
+  - Moved arch_ima_add_kexec_buffer() to
+    security/integrity/ima/ima_kexec.c
 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 07d9acb5b19c..0210547ac424 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -649,7 +649,8 @@ static inline void dec_tlb_flush_pending(struct mm_struct *mm)
->  	 *
->  	 * Therefore we must rely on tlb_flush_*() to guarantee order.
->  	 */
-> -	atomic_dec(&mm->tlb_flush_pending);
-> +	if (atomic_dec_and_test(&mm->tlb_flush_pending))
-> +		wake_up_var(&mm->tlb_flush_pending);
->  }
->  
->  static inline bool mm_tlb_flush_pending(struct mm_struct *mm)
-> @@ -677,6 +678,12 @@ static inline bool mm_tlb_flush_nested(struct mm_struct *mm)
->  	return atomic_read(&mm->tlb_flush_pending) > 1;
->  }
->  
-> +static inline void wait_tlb_flush_pending(struct mm_struct *mm)
-> +{
-> +	wait_var_event(&mm->tlb_flush_pending,
-> +		       atomic_read(&mm->tlb_flush_pending) == 0);
-> +}
+v12
+  - Use fdt_appendprop_addrrange() in setup_ima_buffer()
+    to setup the IMA measurement list property in
+    the device tree.
+  - Moved architecture independent functions from
+    "arch/powerpc/kexec/ima.c" to "drivers/of/kexec."
+  - Deleted "arch/powerpc/kexec/ima.c" and
+    "arch/powerpc/include/asm/ima.h".
 
-I appreciate the effort in not regressing soft dirty and uffd-wp
-writeprotect to disk-I/O spindle bandwidth and not using mmap_sem for
-writing.
+v11
+  - Rebased the changes on the kexec code refactoring done by
+    Rob Herring in his "dt/kexec" branch
+  - Removed "extern" keyword in function declarations
+  - Removed unnecessary header files included in C files
+  - Updated patch descriptions per Thiago's comments
 
-At the same time what was posted so far wasn't clean enough but it
-wasn't even tested... if we abstract it in some clean way and we mark
-all connected points (soft dirty, uffd-wp, the wrprotect page fault),
-then I can be optimistic it will remain understandable when we look at
-it again a few years down the road.
+v10
+  - Moved delete_fdt_mem_rsv(), remove_ima_buffer(),
+    get_ima_kexec_buffer, and get_root_addr_size_cells()
+    to drivers/of/kexec.c
+  - Moved arch_ima_add_kexec_buffer() to
+    security/integrity/ima/ima_kexec.c
+  - Conditionally define IMA buffer fields in struct kimage_arch
 
-Or at the very least it can't get worse than the "tlb_flush_pending
-mess" you mentioned above.
+v9
+  - Moved delete_fdt_mem_rsv() to drivers/of/kexec_fdt.c
+  - Defined a new function get_ima_kexec_buffer() in
+    drivers/of/ima_kexec.c to replace do_get_kexec_buffer()
+  - Changed remove_ima_kexec_buffer() to the original function name
+    remove_ima_buffer()
+  - Moved remove_ima_buffer() to drivers/of/ima_kexec.c
+  - Moved ima_get_kexec_buffer() and ima_free_kexec_buffer()
+    to security/integrity/ima/ima_kexec.c
 
-flush_tlb_batched_pending() has to be orthogonally re-reviewed for
-those things Nadav pointed out. But I'd rather keep that review in a
-separate thread since any bug in that code has zero connection to this
-issue. The basic idea is similar but the methods and logic are
-different and our flush here will be granular and it's going to be
-only run if VM_SOFTDIRTY isn't set and soft dirty is compiled in, or
-if VM_UFFD_WP is set. The flush_tlb_batched_pending is mm wide,
-unconditional etc.. Pretty much all different.
+v8:
+  - Moved remove_ima_kexec_buffer(), do_get_kexec_buffer(), and
+    delete_fdt_mem_rsv() to drivers/of/fdt.c
+  - Moved ima_dump_measurement_list() and ima_add_kexec_buffer()
+    back to security/integrity/ima/ima_kexec.c
 
-Thanks,
-Andrea
+v7:
+  - Renamed remove_ima_buffer() to remove_ima_kexec_buffer() and moved
+    this function definition to kernel.
+  - Moved delete_fdt_mem_rsv() definition to kernel
+  - Moved ima_dump_measurement_list() and ima_add_kexec_buffer() to
+    a new file namely ima_kexec_fdt.c in IMA
+
+v6:
+  - Remove any existing FDT_PROP_IMA_KEXEC_BUFFER property in the device
+    tree and also its corresponding memory reservation in the currently
+    running kernel.
+  - Moved the function remove_ima_buffer() defined for powerpc to IMA
+    and renamed the function to ima_remove_kexec_buffer(). Also, moved
+    delete_fdt_mem_rsv() from powerpc to IMA.
+
+v5:
+  - Merged get_addr_size_cells() and do_get_kexec_buffer() into a single
+    function when moving the arch independent code from powerpc to IMA
+  - Reverted the change to use FDT functions in powerpc code and added
+    back the original code in get_addr_size_cells() and
+    do_get_kexec_buffer() for powerpc.
+  - Added fdt_add_mem_rsv() for ARM64 to reserve the memory for
+    the IMA log buffer during kexec.
+  - Fixed the warning reported by kernel test bot for ARM64
+    arch_ima_add_kexec_buffer() - moved this function to a new file
+    namely arch/arm64/kernel/ima_kexec.c
+
+v4:
+  - Submitting the patch series on behalf of the original author
+    Prakhar Srivastava <prsriva@linux.microsoft.com>
+  - Moved FDT_PROP_IMA_KEXEC_BUFFER ("linux,ima-kexec-buffer") to
+    libfdt.h so that it can be shared by multiple platforms.
+
+v3:
+Breakup patches further into separate patches.
+  - Refactoring non architecture specific code out of powerpc
+  - Update powerpc related code to use fdt functions
+  - Update IMA buffer read related code to use of functions
+  - Add support to store the memory information of the IMA
+    measurement logs to be carried forward.
+  - Update the property strings to align with documented nodes
+    https://github.com/devicetree-org/dt-schema/pull/46
+
+v2:
+  Break patches into separate patches.
+  - Powerpc related Refactoring
+  - Updating the docuemntation for chosen node
+  - Updating arm64 to support IMA buffer pass
+
+v1:
+  Refactoring carrying over IMA measuremnet logs over Kexec. This patch
+    moves the non-architecture specific code out of powerpc and adds to
+    security/ima.(Suggested by Thiago)
+  Add Documentation regarding the ima-kexec-buffer node in the chosen
+    node documentation
+
+v0:
+  Add a layer of abstraction to use the memory reserved by device tree
+    for ima buffer pass.
+  Add support for ima buffer pass using reserved memory for arm64 kexec.
+    Update the arch sepcific code path in kexec file load to store the
+    ima buffer in the reserved memory. The same reserved memory is read
+    on kexec or cold boot.
+
+Lakshmi Ramasubramanian (6):
+  ima: Move arch_ima_add_kexec_buffer() to ima
+  powerpc: Move arch independent ima kexec functions to
+    drivers/of/kexec.c
+  kexec: Use fdt_appendprop_addrrange() to add ima buffer to FDT
+  powerpc: Delete unused functions
+  arm64: Free DTB buffer if fdt_open_into() fails
+  arm64: Add IMA log information in kimage used for kexec
+
+ arch/arm64/Kconfig                     |   1 +
+ arch/arm64/include/asm/kexec.h         |   5 +
+ arch/arm64/kernel/machine_kexec_file.c |   4 +-
+ arch/powerpc/Kconfig                   |   2 +-
+ arch/powerpc/include/asm/ima.h         |  30 ----
+ arch/powerpc/include/asm/kexec.h       |   4 -
+ arch/powerpc/kexec/Makefile            |   7 -
+ arch/powerpc/kexec/file_load.c         |  67 --------
+ arch/powerpc/kexec/file_load_64.c      |   4 +-
+ arch/powerpc/kexec/ima.c               | 219 -------------------------
+ drivers/of/kexec.c                     | 193 ++++++++++++++++++++++
+ include/linux/of.h                     |   2 +
+ security/integrity/ima/ima.h           |   4 -
+ security/integrity/ima/ima_kexec.c     |  22 +++
+ 14 files changed, 230 insertions(+), 334 deletions(-)
+ delete mode 100644 arch/powerpc/include/asm/ima.h
+ delete mode 100644 arch/powerpc/kexec/ima.c
+
+-- 
+2.29.2
 
