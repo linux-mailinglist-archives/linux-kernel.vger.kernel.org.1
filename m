@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173EC2E9F04
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C714F2E9F1B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbhADUsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:48:17 -0500
-Received: from mail.archlinux.org ([95.216.189.61]:36628 "EHLO
-        mail.archlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbhADUsR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:48:17 -0500
-X-Greylist: delayed 8268 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Jan 2021 15:48:16 EST
-Received: from localhost.localdomain (unknown [IPv6:2001:8a0:f268:e600:5751:e3e4:7880:ec9c])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ffy00)
-        by mail.archlinux.org (Postfix) with ESMTPSA id 09AE234628A;
-        Mon,  4 Jan 2021 20:47:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
-        s=dkim-rsa; t=1609793255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DanZ7KA9e30QdP5VSJQu+TTKfCyvLVrxVqn9XY/B3GA=;
-        b=J3icIYhx8lI2B3w3cBpaJBNaVx83ih4OsxDwol4cms6RKVio7+UB3mdKzHSHRkMxv58+10
-        0x87V2kLUEBukPBvuvlPiR48WJtO34hk339XFtzgwXiqfnbxci2Ng7yyH7P+reJKnvqvac
-        iVxwZPWxn79NVeu2rHJpyYkgrmFZtn6XfD6wfuwzIJNebyNfV0qT3eaEjCfsivjJafIJMG
-        2U7RwODr2yTEyz+fLCU4dOYjxW462iR4XaHwBLIY/6+XAc3BCo/lFJq7mbchtFpT3v24sa
-        EeBFdEoiwrOgjzEwcBsF7dPYwUkD3KplHbZMnQQUdcqfckSgNMooBeoba4XLve2qAbT98a
-        cC0c5+FQuDCg95Ew0sCFtXdYye1eSdlVUqMqc3EXcn9dRrRaBHmeTl6nQRwEtPhsoP4M9N
-        BPUPt7nk+AaQzhc/dX01PYkZ8XElwrfpbertEHKpedqknR7tiK5T60vH2FLyFlYc/ky+YC
-        UCjb4YGCUT3NbVSXyU4S+ZqBtJyLzcUN/c4z1cuwIo9iTviUdWe4n2lkMrZDdlcxEWQGCj
-        vRQld5grdUiz4SkOFsOlJn24RzD8sFlxHxCyBnIpZybqBbTYecuHC1C6BxntcINaM84qXB
-        vIkmU49wGbi8Ge3axxnLG606TL3tZwge4Xe6tbVHxqhgUBVNvX+3M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
-        s=dkim-ed25519; t=1609793255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DanZ7KA9e30QdP5VSJQu+TTKfCyvLVrxVqn9XY/B3GA=;
-        b=DwCcOK874rhHyvYSPkp8jqqLmvTsG+oKcCbFvc/pqdskOWIkmPYAan53SOwPpSwzRrDN1L
-        B3HXlo7bwTE9B2Ag==
-From:   =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@archlinux.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@archlinux.org>
-Subject: [PATCH] HID: logitech-dj: add the G602 receiver
-Date:   Mon,  4 Jan 2021 20:47:17 +0000
-Message-Id: <20210104204717.2229315-1-lains@archlinux.org>
-X-Mailer: git-send-email 2.30.0
+        id S1726759AbhADU51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 15:57:27 -0500
+Received: from vern.gendns.com ([98.142.107.122]:53368 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbhADU50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 15:57:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=YmobwPTiuWw7JVPvr86bpoyIsLhY9YTw7XWLa259YL8=; b=k2VCTl1drOidf4pMHedSUiS1oQ
+        72XmA1QzurPSs+Ix0MHirIlpRxl5MpjYPuquIGGTggzQpcyhq9UbBjEd39T84raLBuC3TgmHXXh2h
+        KTqgPb/p3a3+6/S7ncblW4bkPRWuQiTUBL1nhgIdgpCoeDu44mIxBd1ceH+LhDeu8fxs8CSnFZHs/
+        C8CyFvdU2JgAwdspiv3CYD70L7aUISqW0hFOJhTuYFZ6Q74YvQm6epxBcC/kyw3e/MEnwCd66Wwre
+        U47QTogDkmKjvOs/OS6fEFInK543H8CtOgkMHfY8373K2+U/0mr84I2XgPZyAWRacaKgERIeio/Tb
+        NDTyRtJQ==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:55412 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kwWuB-0007Oy-6u; Mon, 04 Jan 2021 15:56:43 -0500
+From:   David Lechner <david@lechnology.com>
+Subject: Re: [PATCH v2 2/5] remoteproc: pru: Add APIs to get and put the PRU
+ cores
+To:     grzegorz.jaszczyk@linaro.org
+Cc:     bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, mathieu.poirier@linaro.org,
+        ohad@wizery.com, praneeth@ti.com, robh+dt@kernel.org,
+        rogerq@ti.com, s-anna@ti.com, ssantosh@kernel.org, t-kristo@ti.com
+References: <20201216165239.2744-3-grzegorz.jaszczyk@linaro.org>
+Message-ID: <4d3048fd-76be-e07d-b155-95a9600053eb@lechnology.com>
+Date:   Mon, 4 Jan 2021 14:56:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: mail.archlinux.org;
-        auth=pass smtp.auth=ffy00 smtp.mailfrom=lains@archlinux.org
+In-Reply-To: <20201216165239.2744-3-grzegorz.jaszczyk@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested. The device gets correctly exported to userspace and I can see
-mouse and keyboard events.
 
-Signed-off-by: Filipe Laíns <lains@archlinux.org>
----
- drivers/hid/hid-logitech-dj.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> 
+> @@ -706,14 +824,14 @@ static int pru_rproc_set_id(struct pru_rproc *pru)
+>  	case RTU0_IRAM_ADDR_MASK:
+>  		fallthrough;
+>  	case PRU0_IRAM_ADDR_MASK:
+> -		pru->id = 0;
+> +		pru->id = PRUSS_PRU0;
+>  		break;
+>  	case TX_PRU1_IRAM_ADDR_MASK:
+>  		fallthrough;
+>  	case RTU1_IRAM_ADDR_MASK:
+>  		fallthrough;
+>  	case PRU1_IRAM_ADDR_MASK:
+> -		pru->id = 1;
+> +		pru->id = PRUSS_PRU1;
+>  		break;
+>  	default:
+>  		ret = -EINVAL;
 
-diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
-index 1ffcfc9a1e03..45e7e0bdd382 100644
---- a/drivers/hid/hid-logitech-dj.c
-+++ b/drivers/hid/hid-logitech-dj.c
-@@ -1869,6 +1869,10 @@ static const struct hid_device_id logi_dj_receivers[] = {
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
- 		0xc531),
- 	 .driver_data = recvr_type_gaming_hidpp},
-+	{ /* Logitech G602 receiver (0xc537) */
-+	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
-+		0xc537),
-+	 .driver_data = recvr_type_gaming_hidpp},
- 	{ /* Logitech lightspeed receiver (0xc539) */
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
- 		USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1),
--- 
-2.30.0
 
+
+There is a similar opportunity for using PRUSS_PRU1 in pru_d_da_to_va()
