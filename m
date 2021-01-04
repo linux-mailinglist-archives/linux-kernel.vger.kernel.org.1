@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFD82E9E2A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E61B72E9E1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbhADT1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 14:27:38 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:36804 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728030AbhADT1e (ORCPT
+        id S1727997AbhADT1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 14:27:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbhADT1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 14:27:34 -0500
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D92AC20B6C45;
-        Mon,  4 Jan 2021 11:26:14 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D92AC20B6C45
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1609788375;
-        bh=FCu6sP1bcDlF9OaiyexlwuDb0Kzn6QXzfNaJvcH1L1U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UtFHy5rw9HKo0DNKwUq9Yxi4zH8SpP2pZaFBO2Dn9rEfgJSuXSbUsFtI3RndLIfRR
-         lndkSqacm7ZisdPXlJ9rJf5kHw7ifnbuNuSAT3m6SH7BrphF669/0XLfl2gKt/45Gq
-         ucjYvtokgPKTli4o47ZiBrnMenlOCOQhfnhyW7nA=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@vger.kernel.org
-Subject: [PATCH v14 6/6] arm64: Add IMA log information in kimage used for kexec
-Date:   Mon,  4 Jan 2021 11:26:02 -0800
-Message-Id: <20210104192602.10131-7-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210104192602.10131-1-nramas@linux.microsoft.com>
-References: <20210104192602.10131-1-nramas@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 4 Jan 2021 14:27:08 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A272C061793;
+        Mon,  4 Jan 2021 11:26:28 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id i24so28534334edj.8;
+        Mon, 04 Jan 2021 11:26:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=eCm0hfQBe7/fXrzS9sno54nypMrLNw0Aq9XOyj8UFeE=;
+        b=K7dHwLv7dQrgRPlljPBHm6LKdmnGjw+3C0DyRXHEZ70aa+HO66zVApdI/ZOZZvdlWq
+         WceOBx19io7565NS0LZExWcWmBjKizh2V47w/x96lvBFNy36KP8x23ayg93jpCn0DrFM
+         vTQIGAtDjuDDzjULMlZoJGCwPywhP5n6oBzkEeLnzhxhtq8csirMB/XsGIUKoxwN8e1z
+         yUhN4E8GTqjF0k1B3woaTCEMR10NBtCJPrqzAM/9PVvfJ725T+nebmER+lM+/xKjI+4h
+         zlKMNKPDXVAMj+5udXCsX6WDFhpS4FYRJ28l7UZXKLTkVnUqzjbD4OJOGNq/UHmrR6KO
+         Ly5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=eCm0hfQBe7/fXrzS9sno54nypMrLNw0Aq9XOyj8UFeE=;
+        b=saB44azkKEBwAOgk1yTP3JPmdQalXuXFsLkv4XqDvqL2pCS0kFprx5rlN4Nc6g9xGr
+         XyrzGNOsL38TkxlK7m+o4Ot/aKF8BqWBNqctpif8waXf20Nr0Moyce6pzsgWJklPCU0p
+         PqApNQJqumJeiQn2rZk/gT9PtbAPbjL7FQ6ERsHB1Y0tAEWwWEfQUodD0Ym0HT7rLqLw
+         rV+5M5lXNAvQY156RWiQWh0X613r8w96LHjRpAyQyVNyQgQLtSW0q4wctevR9dSFYg+5
+         Yo0F50MJ6ghO+je5Ixp375wmbAtNVouMVi3nbSMQT5Q6fkzsVPKSpX8feZyoVResD4yj
+         Mo7A==
+X-Gm-Message-State: AOAM531+VIPhBbNMH1duIQsGkk8VUdEJqsz/o10BKOrBgFybdU3Eet45
+        Wcfc4yPRik+gBTluoeg0iPM=
+X-Google-Smtp-Source: ABdhPJz/GRF1lYQDWKCehWb3I9LczXRsd3DjuPhxE0O1y/AhQhqR64mV2c+aO9bF+qcxSHEzPYKf4w==
+X-Received: by 2002:a50:b223:: with SMTP id o32mr73091919edd.79.1609788387225;
+        Mon, 04 Jan 2021 11:26:27 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfcff.dynamic.kabel-deutschland.de. [95.91.252.255])
+        by smtp.googlemail.com with ESMTPSA id ld2sm23922021ejb.73.2021.01.04.11.26.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 04 Jan 2021 11:26:26 -0800 (PST)
+Message-ID: <bcd28a2ff03797bb97f098f709e49d09a042d8dc.camel@gmail.com>
+Subject: Re: [PATCH v2 3/3] scsi: ufs: Let resume callback return -EBUSY
+ after ufshcd_shutdown
+From:   Bean Huo <huobean@gmail.com>
+To:     rjw@rjwysocki.net
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rjw@rjwysocki.net, alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Date:   Mon, 04 Jan 2021 20:26:25 +0100
+In-Reply-To: <20201224172010.10701-4-huobean@gmail.com>
+References: <20201224172010.10701-1-huobean@gmail.com>
+         <20201224172010.10701-4-huobean@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Address and size of the buffer containing the IMA measurement log need
-to be passed from the current kernel to the next kernel on kexec.
+Hi Rafael
 
-Any existing "linux,ima-kexec-buffer" property in the device tree
-needs to be removed and its corresponding memory reservation in
-the currently running kernel needs to be freed. The address and
-size of the current kernel's IMA measurement log need to be added
-to the device tree's IMA kexec buffer node and memory for the buffer
-needs to be reserved for the log to be carried over to the next kernel
-on the kexec call.
-
-Add address and size fields to "struct kimage_arch" for ARM64 platform
-to hold the address and size of the IMA measurement log buffer. Remove
-any existing "linux,ima-kexec-buffer" property in the device tree and
-free the corresponding memory reservation in the currently running
-kernel. Add "linux,ima-kexec-buffer" property to the device tree and
-reserve the memory for storing the IMA log that needs to be passed from
-the current kernel to the next one.
-
-Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
-that the IMA measurement log information is present in the device tree
-for ARM64.
-
-Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
----
- arch/arm64/Kconfig             | 1 +
- arch/arm64/include/asm/kexec.h | 5 +++++
- 2 files changed, 6 insertions(+)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index a6b5b7ef40ae..312b4d5ad232 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1095,6 +1095,7 @@ config KEXEC
- config KEXEC_FILE
- 	bool "kexec file based system call"
- 	select KEXEC_CORE
-+	select HAVE_IMA_KEXEC if IMA
- 	help
- 	  This is new version of kexec system call. This system call is
- 	  file based and takes file descriptors as system call argument
-diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-index d24b527e8c00..2bd19ccb6c43 100644
---- a/arch/arm64/include/asm/kexec.h
-+++ b/arch/arm64/include/asm/kexec.h
-@@ -100,6 +100,11 @@ struct kimage_arch {
- 	void *elf_headers;
- 	unsigned long elf_headers_mem;
- 	unsigned long elf_headers_sz;
-+
-+#ifdef CONFIG_IMA_KEXEC
-+	phys_addr_t ima_buffer_addr;
-+	size_t ima_buffer_size;
-+#endif
- };
+Would you please help to review this patch assoociated with PM resume
+callback implementation?
  
- extern const struct kexec_file_ops kexec_image_ops;
--- 
-2.29.2
+Original code that ufshcd_system/runtime_resume returns '0' in case
+resume failed due to the UFS device and UFS LINk are powered off(hba-
+>is_powered == false).
+
+In the patch 2/3 Add handling of the return value of
+pm_runtime_get_sync() is to fix race exists between shudown path and
+device access through sysfs node.
+
+
+
+Thanks,
+Bean
+
+
+On Thu, 2020-12-24 at 18:20 +0100, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> After ufshcd_shutdown(), both UFS device and UFS LINk are powered
+> off,
+> return '0' will mislead the upper PM layer since the device has not
+> been
+> successfully resumed yet. This will let pm_runtime_get_sync() caller
+> mistakenly believe the device/LINK has been resumed, which leads to
+> request processing timeout that was en-queued later.
+> 
+> To fix this, let ufshcd_system/runtimie_resume() return -EBUSY in
+> case of
+> hba->is_powered == false.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index e221add25a7e..e1bcac51c01f 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -8950,14 +8950,16 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+>  		return -EINVAL;
+>  	}
+>  
+> -	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
+> +	if (!hba->is_powered || pm_runtime_suspended(hba->dev)) {
+>  		/*
+>  		 * Let the runtime resume take care of resuming
+>  		 * if runtime suspended.
+>  		 */
+> +		ret = -EBUSY;
+>  		goto out;
+> -	else
+> +	} else {
+>  		ret = ufshcd_resume(hba, UFS_SYSTEM_PM);
+> +	}
+>  out:
+>  	trace_ufshcd_system_resume(dev_name(hba->dev), ret,
+>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+> @@ -9026,10 +9028,12 @@ int ufshcd_runtime_resume(struct ufs_hba
+> *hba)
+>  	if (!hba)
+>  		return -EINVAL;
+>  
+> -	if (!hba->is_powered)
+> +	if (!hba->is_powered) {
+> +		ret = -EBUSY;
+>  		goto out;
+> -	else
+> +	} else {
+>  		ret = ufshcd_resume(hba, UFS_RUNTIME_PM);
+> +	}
+>  out:
+>  	trace_ufshcd_runtime_resume(dev_name(hba->dev), ret,
+>  		ktime_to_us(ktime_sub(ktime_get(), start)),
 
