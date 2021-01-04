@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5D02E963F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DBD2E9645
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbhADNnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:43:47 -0500
-Received: from mail-ua1-f47.google.com ([209.85.222.47]:34363 "EHLO
-        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbhADNnq (ORCPT
+        id S1726921AbhADNqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbhADNqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:43:46 -0500
-Received: by mail-ua1-f47.google.com with SMTP id k47so9084859uad.1;
-        Mon, 04 Jan 2021 05:43:30 -0800 (PST)
+        Mon, 4 Jan 2021 08:46:11 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839EFC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 05:45:30 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id m12so64380549lfo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 05:45:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cjj6uZMAh4bwqWKMhZWRFG4e725F45DY+i8GEvjt0RE=;
+        b=dSG5hKrjTah0OQ6XYQ2SGfwkLcoZzvrowwwGGP1ej43f5r8iO6TJLsN+Ieu2YdVYPJ
+         xHJLjyQr8J/MQOiXOdBlDXYTnBg93WZz+qZDCGVE0OSFIzTH4V4zTfXvvmB53LtBt6CX
+         gYqgvzeMAm1UwkUzt1c2GR+vcCV5wv9C2bc1vyu+/tzU0wMeuWSDKSsaO9Uqf+K9PjKg
+         nnfHY53JCWoQS8/avWXfmDjmEjPTI/j0d3m8ns7eaoDKB3eGXGcca9ae7WNwxyaIMU+l
+         nEoClrvSUj/dsx1rqKSRR9jlDPokbQPRkxrf3wiXzlPBK4HMvypfA/F17cpnFl7zXI4h
+         Yn6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DWf6z2OIC+lTWIgt6fgK7fJgxdAn3XFKyGff4CPvkec=;
-        b=DmEEw1/UZsaY8+0sdoqdic+3nuLC8n7UF1KWyKUaVKIJFEzF9AB6qhMzBD98gFxKxO
-         Pqg5eTlLLEBfdjSiQ/ZI18SojKrJlCxGGTzCcg/VvPZH2vHoyEFf0uCsLoKMQWtzJcVo
-         ZD/w1Y1+WUewD8rhE2eZJVj9WQb3Z/H8W6VrPsrne89rgH8Uge+K8TtVBcgKMLcUadHN
-         MNPO4Sryc012yPh35ogPJeQ17MTqLGoW2Fq+DMs3hxvo3DNK02ipq7eXREXq+31ngfWF
-         VWGpqHq8YGfrlTORQoK6c5ETnJ3+lKS+OEI11XMZKROzy+5NzmSetWduM1OBEZ1ktZ29
-         11fA==
-X-Gm-Message-State: AOAM533EnJS00LTFBBmZJcO4k9hhP0uJ8icfV6d/vn128w1ivpK1+oXK
-        NqaHzO0e/TYS27SyWkHui0K99muJUU5Gkw==
-X-Google-Smtp-Source: ABdhPJwURuqUQQ13R/03kupporf20305BQ+I4bcbG49fQfqdKm/uq9ncyM2/La7E1TCsKk5PyXtHdw==
-X-Received: by 2002:ab0:2a01:: with SMTP id o1mr36318366uar.133.1609767783938;
-        Mon, 04 Jan 2021 05:43:03 -0800 (PST)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
-        by smtp.gmail.com with ESMTPSA id f1sm8526287vkb.46.2021.01.04.05.43.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 05:43:03 -0800 (PST)
-Received: by mail-ua1-f46.google.com with SMTP id 73so9078844uac.8;
-        Mon, 04 Jan 2021 05:43:02 -0800 (PST)
-X-Received: by 2002:ab0:6512:: with SMTP id w18mr43605161uam.55.1609767782501;
- Mon, 04 Jan 2021 05:43:02 -0800 (PST)
+        bh=Cjj6uZMAh4bwqWKMhZWRFG4e725F45DY+i8GEvjt0RE=;
+        b=JCwUoFwrcOvComY6YC1ykmChVyAjgg+5pZAFKmGcGT4qNDCv0Wbei89IiqHyQzKbYC
+         OFPj09uhVX4D94NObpCtf8KDUWctnijpxpyTMUFx/VkXxX0t8PHmJgChyzher7yN+Xtf
+         1IxOHoSzWajHiWf2CJ3xk8vHZb8GgLHfAwSXVpHhFVFdYbPnlQVRAABtx6DHuwGMpkKA
+         oijDJfkubqiXf5WKnodF5U93eejWPkXgAuBno3BBReLvZ6twwD0XDyFcr7IbGTB+8UvY
+         6x9f48cB2gMupo/WEgELGor9yxBdeIOjWGd6wZ2hlFv6VTkkpcxy9MGzC4AclU3PDgu6
+         OtSw==
+X-Gm-Message-State: AOAM5308HS3MbHNfy8y2PHMxip1bqFsVovEqNZK/OATLDqwVpvxsYPhR
+        EIoRoOS5u+9V4lQDME1hsOsifHXn/fI1f3TWm1A=
+X-Google-Smtp-Source: ABdhPJxrOCIQRY85pxpq3s2QrJ2pl7CAhLmIZRFBlKzXWqfUyFWtvbyBVa4uiC2Q7qFYavNPyc/W/hgqV+Atv99q+I4=
+X-Received: by 2002:a2e:154b:: with SMTP id 11mr34263557ljv.22.1609767929125;
+ Mon, 04 Jan 2021 05:45:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20210103111744.34989-1-samuel@sholland.org> <20210103111744.34989-3-samuel@sholland.org>
-In-Reply-To: <20210103111744.34989-3-samuel@sholland.org>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 4 Jan 2021 21:42:52 +0800
-X-Gmail-Original-Message-ID: <CAGb2v66j+xj-Pq5ijcb+HwLUf0TZkDDnpHcTjj20Q+M2UEtqUQ@mail.gmail.com>
-Message-ID: <CAGb2v66j+xj-Pq5ijcb+HwLUf0TZkDDnpHcTjj20Q+M2UEtqUQ@mail.gmail.com>
-Subject: Re: [PATCH net 2/4] net: stmmac: dwmac-sun8i: Balance internal PHY
- resource references
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Ondrej Jirman <megous@megous.com>,
-        netdev <netdev@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
+References: <20201221162519.GA22504@open-light-1.localdomain>
+ <20201222122312.GH874@casper.infradead.org> <CA+2MQi8GMLfSFN30G8EEeXXsC5M+Et2oRMnynUp==eRbY0Z2Wg@mail.gmail.com>
+ <20210104125122.GD13207@dhcp22.suse.cz>
+In-Reply-To: <20210104125122.GD13207@dhcp22.suse.cz>
+From:   Liang Li <liliang324@gmail.com>
+Date:   Mon, 4 Jan 2021 21:45:17 +0800
+Message-ID: <CA+2MQi9900FU9+=j7EM2YEH5=Dg0wH9-GvfZDhop6kGO_=a2Pw@mail.gmail.com>
+Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 3, 2021 at 7:17 PM Samuel Holland <samuel@sholland.org> wrote:
+> > Win or not depends on its effect. For our case, it solves the issue
+> > that we faced, so it can be thought as a win for us.  If others don't
+> > have the issue we faced, the result will be different, maybe they will
+> > be affected by the side effect of this feature. I think this is your
+> > concern behind the question. right? I will try to do more tests and
+> > provide more benchmark performance data.
 >
-> While stmmac_pltfr_remove calls sun8i_dwmac_exit, the sun8i_dwmac_init
-> and sun8i_dwmac_exit functions are also called by the stmmac_platform
-> suspend/resume callbacks. They may be called many times during the
-> device's lifetime and should not release resources used by the driver.
->
-> Furthermore, there was no error handling in case registering the MDIO
-> mux failed during probe, and the EPHY clock was never released at all.
->
-> Fix all of these issues by moving the deinitialization code to a driver
-> removal callback. Also ensure the EPHY is powered down before removal.
->
-> Fixes: 634db83b8265 ("net: stmmac: dwmac-sun8i: Handle integrated/external MDIOs")
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> Yes, zeroying memory does have a noticeable overhead but we cannot
+> simply allow tasks to spil over this overhead to all other users by
+> default. So if anything this would need to be an opt-in feature
+> configurable by administrator.
+> --
+> Michal Hocko
+> SUSE Labs
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+I know the overhead, so I add a switch in /sys/ to enable or disable
+it dynamically.
+
+Thanks
+Liang
