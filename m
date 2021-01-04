@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FBA2E938F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBDD2E9391
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbhADKpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:45:44 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:33223 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726396AbhADKpn (ORCPT
+        id S1726875AbhADKps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:45:48 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42795 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726129AbhADKpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:45:43 -0500
-X-UUID: 419299f87d4b4152abf484f9d78f3d7f-20210104
-X-UUID: 419299f87d4b4152abf484f9d78f3d7f-20210104
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        Mon, 4 Jan 2021 05:45:44 -0500
+X-UUID: 9b5385af24094c0ba70355af701a151c-20210104
+X-UUID: 9b5385af24094c0ba70355af701a151c-20210104
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
         (envelope-from <weiyi.lu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1837513500; Mon, 04 Jan 2021 18:44:59 +0800
+        with ESMTP id 2051912601; Mon, 04 Jan 2021 18:44:59 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
  15.0.1497.2; Mon, 4 Jan 2021 18:44:57 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
@@ -34,9 +34,9 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <srv_heupstream@mediatek.com>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         Weiyi Lu <weiyi.lu@mediatek.com>
-Subject: [PATCH 1/2] soc: mediatek: Add regulator control for MT8192 MFG power domain
-Date:   Mon, 4 Jan 2021 18:44:52 +0800
-Message-ID: <1609757093-30618-2-git-send-email-weiyi.lu@mediatek.com>
+Subject: [PATCH 2/2] soc: mediatek: Fix the clock prepared issue
+Date:   Mon, 4 Jan 2021 18:44:53 +0800
+Message-ID: <1609757093-30618-3-git-send-email-weiyi.lu@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1609757093-30618-1-git-send-email-weiyi.lu@mediatek.com>
 References: <1609757093-30618-1-git-send-email-weiyi.lu@mediatek.com>
@@ -47,160 +47,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add regulator control support and specific power domain name of
-MT8192 MFG power domain for regulator lookup.
-Also power domain name can fix the debugfs warning.
-(e.g. debugfs: Directory 'power-domain' with parent 'pm_genpd'
-already present!)
-However, not every domain with name need to get the regulator,
-if we just want to fix the debugfs warning log by adding names to
-power domains. Considering this case, lookup regulator by
-regulator_get_optional() instead of getting a dummy regulator from
-regulator_get() to operate.
+In this new power domain driver, when adding one power domain
+it will prepare the depenedent clocks at the same.
+So we only do clk_bulk_enable/disable control during power ON/OFF.
+When system suspend, the pm runtime framework will forcely power off
+power domains. However, the dependent clocks are disabled but kept
+preapred.
+
+In MediaTek clock drivers, PLL would be turned ON when we do
+clk_bulk_prepare control.
+
+Clock hierarchy:
+PLL -->
+       DIV_CK -->
+                 CLK_MUX
+                 (may be dependent clocks)
+                         -->
+                             SUBSYS_CG
+                             (may be dependent clocks)
+
+It will lead some unexpected clock states during system suspend.
+This patch will fix by doing prepare_enable/disable_unprepare on
+dependent clocks at the same time while we are going to power on/off
+any power domain.
 
 Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 ---
- drivers/soc/mediatek/mt8192-pm-domains.h |  1 +
- drivers/soc/mediatek/mtk-pm-domains.c    | 42 ++++++++++++++++++++++++++++++--
- drivers/soc/mediatek/mtk-pm-domains.h    |  2 ++
- 3 files changed, 43 insertions(+), 2 deletions(-)
+ drivers/soc/mediatek/mtk-pm-domains.c | 31 ++++++++-----------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/soc/mediatek/mt8192-pm-domains.h b/drivers/soc/mediatek/mt8192-pm-domains.h
-index 0fdf6dc..7db0ad3 100644
---- a/drivers/soc/mediatek/mt8192-pm-domains.h
-+++ b/drivers/soc/mediatek/mt8192-pm-domains.h
-@@ -49,6 +49,7 @@
- 		.ctl_offs = 0x0308,
- 		.sram_pdn_bits = GENMASK(8, 8),
- 		.sram_pdn_ack_bits = GENMASK(12, 12),
-+		.name = "mfg",
- 	},
- 	[MT8192_POWER_DOMAIN_MFG1] = {
- 		.sta_mask = BIT(3),
 diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
-index fb70cb3..a160800 100644
+index a160800..f0bcc84 100644
 --- a/drivers/soc/mediatek/mtk-pm-domains.c
 +++ b/drivers/soc/mediatek/mtk-pm-domains.c
-@@ -13,6 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/soc/mediatek/infracfg.h>
+@@ -216,7 +216,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ 	if (ret < 0)
+ 		return ret;
  
- #include "mt8173-pm-domains.h"
-@@ -40,6 +41,7 @@ struct scpsys_domain {
- 	struct clk_bulk_data *subsys_clks;
- 	struct regmap *infracfg;
- 	struct regmap *smi;
-+	struct regulator *supply;
- };
- 
- struct scpsys {
-@@ -187,6 +189,22 @@ static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
- 	return _scpsys_bus_protect_disable(pd->data->bp_infracfg, pd->infracfg);
- }
- 
-+static int scpsys_regulator_enable(struct scpsys_domain *pd)
-+{
-+	if (!pd->supply)
-+		return 0;
-+
-+	return regulator_enable(pd->supply);
-+}
-+
-+static int scpsys_regulator_disable(struct scpsys_domain *pd)
-+{
-+	if (!pd->supply)
-+		return 0;
-+
-+	return regulator_disable(pd->supply);
-+}
-+
- static int scpsys_power_on(struct generic_pm_domain *genpd)
- {
- 	struct scpsys_domain *pd = container_of(genpd, struct scpsys_domain, genpd);
-@@ -194,9 +212,13 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
- 	bool tmp;
- 	int ret;
- 
-+	ret = scpsys_regulator_enable(pd);
-+	if (ret < 0)
-+		return ret;
-+
- 	ret = clk_bulk_enable(pd->num_clks, pd->clks);
+-	ret = clk_bulk_enable(pd->num_clks, pd->clks);
++	ret = clk_bulk_prepare_enable(pd->num_clks, pd->clks);
  	if (ret)
--		return ret;
-+		goto err_disable_regulator;
+ 		goto err_disable_regulator;
  
- 	/* subsys power on */
- 	regmap_set_bits(scpsys->base, pd->data->ctl_offs, PWR_ON_BIT);
-@@ -232,6 +254,8 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
- 	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
+@@ -234,7 +234,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ 	regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_ISO_BIT);
+ 	regmap_set_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+ 
+-	ret = clk_bulk_enable(pd->num_subsys_clks, pd->subsys_clks);
++	ret = clk_bulk_prepare_enable(pd->num_subsys_clks, pd->subsys_clks);
+ 	if (ret)
+ 		goto err_pwr_ack;
+ 
+@@ -251,9 +251,9 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ err_disable_sram:
+ 	scpsys_sram_disable(pd);
+ err_disable_subsys_clks:
+-	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
++	clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
  err_pwr_ack:
- 	clk_bulk_disable(pd->num_clks, pd->clks);
-+err_disable_regulator:
-+	scpsys_regulator_disable(pd);
+-	clk_bulk_disable(pd->num_clks, pd->clks);
++	clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+ err_disable_regulator:
+ 	scpsys_regulator_disable(pd);
  	return ret;
- }
+@@ -274,7 +274,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+ 	if (ret < 0)
+ 		return ret;
  
-@@ -267,6 +291,10 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+-	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
++	clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
  
- 	clk_bulk_disable(pd->num_clks, pd->clks);
+ 	/* subsys power off */
+ 	regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+@@ -289,7 +289,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+ 	if (ret < 0)
+ 		return ret;
  
-+	ret = scpsys_regulator_disable(pd);
-+	if (ret < 0)
-+		return ret;
-+
- 	return 0;
- }
+-	clk_bulk_disable(pd->num_clks, pd->clks);
++	clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
  
-@@ -315,6 +343,16 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
- 	if (IS_ERR(pd->smi))
- 		return ERR_CAST(pd->smi);
- 
-+	if (pd->data->name) {
-+		pd->supply = devm_regulator_get_optional(scpsys->dev, pd->data->name);
-+		if (IS_ERR(pd->supply)) {
-+			if (PTR_ERR(pd->supply) == -ENODEV)
-+				pd->supply = NULL;
-+			else
-+				return ERR_CAST(pd->supply);
-+		}
-+	}
-+
- 	num_clks = of_clk_get_parent_count(node);
- 	if (num_clks > 0) {
- 		/* Calculate number of subsys_clks */
-@@ -397,7 +435,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
- 		goto err_unprepare_subsys_clocks;
+ 	ret = scpsys_regulator_disable(pd);
+ 	if (ret < 0)
+@@ -402,14 +402,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 		pd->subsys_clks[i].clk = clk;
  	}
  
--	pd->genpd.name = node->name;
-+	pd->genpd.name = pd->data->name ?: node->name;
- 	pd->genpd.power_off = scpsys_power_off;
- 	pd->genpd.power_on = scpsys_power_on;
+-	ret = clk_bulk_prepare(pd->num_clks, pd->clks);
+-	if (ret)
+-		goto err_put_subsys_clocks;
+-
+-	ret = clk_bulk_prepare(pd->num_subsys_clks, pd->subsys_clks);
+-	if (ret)
+-		goto err_unprepare_clocks;
+-
+ 	/*
+ 	 * Initially turn on all domains to make the domains usable
+ 	 * with !CONFIG_PM and to get the hardware in sync with the
+@@ -424,7 +416,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 		ret = scpsys_power_on(&pd->genpd);
+ 		if (ret < 0) {
+ 			dev_err(scpsys->dev, "%pOF: failed to power on domain: %d\n", node, ret);
+-			goto err_unprepare_clocks;
++			goto err_put_subsys_clocks;
+ 		}
+ 	}
  
-diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
-index a2f4d8f..58d72fb 100644
---- a/drivers/soc/mediatek/mtk-pm-domains.h
-+++ b/drivers/soc/mediatek/mtk-pm-domains.h
-@@ -81,6 +81,7 @@ struct scpsys_bus_prot_data {
-  * @caps: The flag for active wake-up action.
-  * @bp_infracfg: bus protection for infracfg subsystem
-  * @bp_smi: bus protection for smi subsystem
-+ * @name: specific power domain name for regulator lookup and debugfs
-  */
- struct scpsys_domain_data {
- 	u32 sta_mask;
-@@ -90,6 +91,7 @@ struct scpsys_domain_data {
- 	u8 caps;
- 	const struct scpsys_bus_prot_data bp_infracfg[SPM_MAX_BUS_PROT_DATA];
- 	const struct scpsys_bus_prot_data bp_smi[SPM_MAX_BUS_PROT_DATA];
-+	char *name;
- };
+@@ -432,7 +424,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 		ret = -EINVAL;
+ 		dev_err(scpsys->dev,
+ 			"power domain with id %d already exists, check your device-tree\n", id);
+-		goto err_unprepare_subsys_clocks;
++		goto err_put_subsys_clocks;
+ 	}
  
- struct scpsys_soc_data {
+ 	pd->genpd.name = pd->data->name ?: node->name;
+@@ -448,10 +440,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 
+ 	return scpsys->pd_data.domains[id];
+ 
+-err_unprepare_subsys_clocks:
+-	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+-err_unprepare_clocks:
+-	clk_bulk_unprepare(pd->num_clks, pd->clks);
+ err_put_subsys_clocks:
+ 	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
+ err_put_clocks:
+@@ -529,10 +517,7 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
+ 			"failed to remove domain '%s' : %d - state may be inconsistent\n",
+ 			pd->genpd.name, ret);
+ 
+-	clk_bulk_unprepare(pd->num_clks, pd->clks);
+ 	clk_bulk_put(pd->num_clks, pd->clks);
+-
+-	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+ 	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
+ }
+ 
 -- 
 1.8.1.1.dirty
 
