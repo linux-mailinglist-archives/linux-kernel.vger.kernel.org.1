@@ -2,134 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189222E9EFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2CB2E9EF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbhADUmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:42:39 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:34346 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbhADUmj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:42:39 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kwWfs-003ALS-Ha; Mon, 04 Jan 2021 13:41:56 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kwWfr-00AU8p-E8; Mon, 04 Jan 2021 13:41:56 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-References: <e817cfdc2df3433bb7fb357db89d4d48@AcuMS.aculab.com>
-        <20210104165827.GJ3579531@ZenIV.linux.org.uk>
-Date:   Mon, 04 Jan 2021 14:41:01 -0600
-In-Reply-To: <20210104165827.GJ3579531@ZenIV.linux.org.uk> (Al Viro's message
-        of "Mon, 4 Jan 2021 16:58:27 +0000")
-Message-ID: <87sg7gfnaa.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kwWfr-00AU8p-E8;;;mid=<87sg7gfnaa.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+scTNiGNXtrfeAZS1zmWGR6aBMcS6Ssb4=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3117]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Al Viro <viro@zeniv.linux.org.uk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 553 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 11 (1.9%), b_tie_ro: 9 (1.7%), parse: 1.11 (0.2%),
-         extract_message_metadata: 12 (2.1%), get_uri_detail_list: 1.71 (0.3%),
-         tests_pri_-1000: 4.4 (0.8%), tests_pri_-950: 1.22 (0.2%),
-        tests_pri_-900: 0.95 (0.2%), tests_pri_-90: 113 (20.4%), check_bayes:
-        111 (20.1%), b_tokenize: 6 (1.2%), b_tok_get_all: 8 (1.4%),
-        b_comp_prob: 2.4 (0.4%), b_tok_touch_all: 91 (16.5%), b_finish: 0.91
-        (0.2%), tests_pri_0: 238 (43.0%), check_dkim_signature: 0.54 (0.1%),
-        check_dkim_adsp: 2.2 (0.4%), poll_dns_idle: 155 (28.1%), tests_pri_10:
-        2.0 (0.4%), tests_pri_500: 167 (30.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: in_compat_syscall() on x86
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+        id S1728105AbhADUmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 15:42:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbhADUmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 15:42:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F066216C4;
+        Mon,  4 Jan 2021 20:41:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1609792914;
+        bh=oRUuEikXDLb/1+VQEWvgN1BTApFFJA3HjL79h09B9qo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=noHD54jr1B6nSKSmiURj189F8T/B92IXxZyt7HJKoumJuhc/zLUVoVOQC/HcyW8wj
+         JuBKTjJgDLeKGZpDAuyv4qHiPhAkAEcNZrwaHxTZAlmKixps953ysQ6vlP8FO34k2e
+         gzHT8e9oVwuN4K97amEVEJsYIiXvrCGCN5RJ7wHQ=
+Date:   Mon, 4 Jan 2021 12:41:53 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: kernel BUG at mm/page-writeback.c:LINE!
+Message-Id: <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org>
+In-Reply-To: <000000000000886dbd05b7ffa8db@google.com>
+References: <000000000000886dbd05b7ffa8db@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Al Viro <viro@zeniv.linux.org.uk> writes:
+On Sun, 03 Jan 2021 06:19:15 -0800 syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com> wrote:
 
-> On Mon, Jan 04, 2021 at 12:16:56PM +0000, David Laight wrote:
->> On x86 in_compat_syscall() is defined as:
->>     in_ia32_syscall() || in_x32_syscall()
->> 
->> Now in_ia32_syscall() is a simple check of the TS_COMPAT flag.
->> However in_x32_syscall() is a horrid beast that has to indirect
->> through to the original %eax value (ie the syscall number) and
->> check for a bit there.
->> 
->> So on a kernel with x32 support (probably most distro kernels)
->> the in_compat_syscall() check is rather more expensive than
->> one might expect.
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    139711f0 Merge branch 'akpm' (patches from Andrew)
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11648e93500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f3e74a3fb99ae2c2
+> dashboard link: https://syzkaller.appspot.com/bug?extid=2fc0712f8f8b8b8fa0ef
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com
+> 
+> kernel BUG at mm/page-writeback.c:2241!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 26311 Comm: syz-executor.2 Not tainted 5.11.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:write_cache_pages+0xd06/0x1190 mm/page-writeback.c:2241
+> Code: 02 00 00 e8 dc 6e da ff 48 c7 c6 80 64 54 89 4c 89 ef e8 0d 04 0b 00 0f 0b 49 c7 c4 c0 77 f7 8e e9 ce f9 ff ff e8 ba 6e da ff <0f> 0b e8 b3 6e da ff 49 8d 5c 24 ff e9 c5 f8 ff ff e8 a4 6e da ff
+> RSP: 0018:ffffc9000931f850 EFLAGS: 00010212
+> RAX: 000000000000ac05 RBX: 0000000000008000 RCX: ffffc9000d7c1000
+> RDX: 0000000000040000 RSI: ffffffff819805d6 RDI: 0000000000000003
+> RBP: 0000000000000000 R08: 0000000000000000 R09: ffffea0000c0ce07
+> R10: ffffffff8197fee3 R11: 0000000000000000 R12: ffffea0002762cc8
+> R13: ffffea0000c0ce00 R14: dffffc0000000000 R15: 0000000000000000
+> FS:  00007f653a526700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000000052e94c CR3: 0000000015251000 CR4: 0000000000350ee0
+> Call Trace:
+>  mpage_writepages+0xd8/0x230 fs/mpage.c:714
+>  do_writepages+0xec/0x290 mm/page-writeback.c:2352
+>  __filemap_fdatawrite_range+0x2a1/0x380 mm/filemap.c:422
+>  fat_cont_expand+0x169/0x230 fs/fat/file.c:235
+>  fat_setattr+0xac2/0xf40 fs/fat/file.c:501
+>  notify_change+0xb60/0x10a0 fs/attr.c:336
+>  do_truncate+0x134/0x1f0 fs/open.c:64
+>  do_sys_ftruncate+0x703/0x860 fs/open.c:195
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45e299
+> Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007f653a525c68 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+> RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 000000000045e299
+> RDX: 0000000000000000 RSI: 0000000000000800 RDI: 0000000000000003
+> RBP: 000000000119c060 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c034
+> R13: 00007fff76bf2e8f R14: 00007f653a5269c0 R15: 000000000119c034
+> Modules linked in:
+> ---[ end trace 23c7a881902c6de9 ]---
+> RIP: 0010:write_cache_pages+0xd06/0x1190 mm/page-writeback.c:2241
+> Code: 02 00 00 e8 dc 6e da ff 48 c7 c6 80 64 54 89 4c 89 ef e8 0d 04 0b 00 0f 0b 49 c7 c4 c0 77 f7 8e e9 ce f9 ff ff e8 ba 6e da ff <0f> 0b e8 b3 6e da ff 49 8d 5c 24 ff e9 c5 f8 ff ff e8 a4 6e da ff
+> RSP: 0018:ffffc9000931f850 EFLAGS: 00010212
+> RAX: 000000000000ac05 RBX: 0000000000008000 RCX: ffffc9000d7c1000
+> RDX: 0000000000040000 RSI: ffffffff819805d6 RDI: 0000000000000003
+> RBP: 0000000000000000 R08: 0000000000000000 R09: ffffea0000c0ce07
+> R10: ffffffff8197fee3 R11: 0000000000000000 R12: ffffea0002762cc8
+> R13: ffffea0000c0ce00 R14: dffffc0000000000 R15: 0000000000000000
+> FS:  00007f653a526700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b2f228000 CR3: 0000000015251000 CR4: 0000000000350ee0
 
-I suggest you check the distro kernels.  I suspect they don't compile in
-support for x32.  As far as I can tell x32 is an undead beast of a
-subarchitecture that just enough people use that it can't be removed,
-but few enough people use it likely has a few lurking scary bugs.
+Well that's exciting. write_cache_pages() does:
 
->> It would be muck better if both checks could be done together.
->> I think this would require the syscall entry code to set a
->> value in both the 64bit and x32 entry paths.
->> (Can a process make both 64bit and x32 system calls?)
->
-> Yes, it bloody well can.
->
-> And I see no benefit in pushing that logics into syscall entry,
-> since anything that calls in_compat_syscall() more than once
-> per syscall execution is doing the wrong thing.  Moreover,
-> in quite a few cases we don't call the sucker at all, and for
-> all of those pushing that crap into syscall entry logics is
-> pure loss.
+			if (PageWriteback(page)) {
+				if (wbc->sync_mode != WB_SYNC_NONE)
+					wait_on_page_writeback(page);
+				else
+					goto continue_unlock;
+			}
 
-The x32 system calls have their own system call table and it would be
-trivial to set a flag like TS_COMPAT when looking up a system call from
-that table.  I expect such a change would be purely in the noise.
-
-> What's the point, really?
-
-Before we came up with the current games with __copy_siginfo_to_user
-and x32_copy_siginfo_to_user I was wondering if we should make such
-a change.  The delivery of compat signal frames and core dumps which
-do not go through the system call entry path could almost benefit from
-a flag that could be set/tested when on those paths.
-
-The fact that only SIGCHLD (which can not trigger a coredump) is
-different saves the coredump code from needing such a test.
-
-The fact that the signal frame code is simple enough it can directly
-call x32_copy_siginfo_to_user or __copy_siginfo_to_user saves us there.
-
-So I don't think we have any cases where we actually need a flag that
-is independent of the system call but we have come very close.
+bang -->>		BUG_ON(PageWriteback(page));
 
 
-For people who want to optimize I suggest tracking down the handful of
-users of x32 and see if x32 can be made to just go away.
+and filemap_fdatawrite_range() passed WB_SYNC_ALL to
+__filemap_fdatawrite_range().
 
-Eric
+So either wait_on_page_writeback() simply failed to work (returned
+without waiting) or someone came in and unexpectedly set PG_writeback a
+second time.
 
+And because it isn't reproducible, we don't know if it's a -mm patch or
+it it's a mainline bug or whatever.  There isn't much material in -mm
+at present and I can't see any which would affect these things, so is
+it reasonable to suspect that this is a mainline bug?
+
+Linus, how confident are you in those wait_on_page_bit_common()
+changes?
