@@ -2,134 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854632E8F2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 02:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E59682E8F31
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 02:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbhADB1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 20:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51646 "EHLO
+        id S1727562AbhADB3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 20:29:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726026AbhADB1j (ORCPT
+        with ESMTP id S1727320AbhADB3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 20:27:39 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32355C061793;
-        Sun,  3 Jan 2021 17:26:59 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D8HzM6zlVz9sSs;
-        Mon,  4 Jan 2021 12:26:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1609723616;
-        bh=9Im/8Hv5Sd6bN9YMdRIX4JRbfRoWlIqqAPJgCz6l4l8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VB94TTohUqM0dvK5UyNgAS7TvMS+ryhv2TK1dNMP8hsAZa9Rz/2iREUyH+X/UXT+Y
-         gbO4AhleDnPYsgoo0qBnT191fK97buFIV28UG+/jSWdhpFqMYq0aw2TW2rVTmELs7i
-         yM9FHT8FkO44p0cY4CP9SXyQcuJn/VLpmeOFPJwxyXZ3DOKRmi9tz60aWKfupKLDSp
-         f/QQazz56Av2EVB7CVg597gwW5w84dDDIOThv14XSlRrt1S1xTt11svE+dnSvICKAl
-         KPnA7nXK3WCNNlpxMqsNprBgl+sWava/HiUpSFJz5VLrlJm7dsZ90uV9xZJNLWsk+W
-         lGLSEj6vK+B6Q==
-Date:   Mon, 4 Jan 2021 12:26:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Song Chen <chensong_2000@189.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failures after merge of the staging tree
-Message-ID: <20210104122653.6f35b9bb@canb.auug.org.au>
+        Sun, 3 Jan 2021 20:29:19 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E856C061574;
+        Sun,  3 Jan 2021 17:28:39 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id n7so17847414pgg.2;
+        Sun, 03 Jan 2021 17:28:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+zxFsWWYV9Z2Xr5M2Vh3JplDnIId4U3fI3Xozfok3+w=;
+        b=HBCtGtCOrF9NeQDLZaa3A2Jae5rofhorRpRDVR6MxE9TxlH7Xo5zRqN+0CxtHTLMqy
+         NqsgzNx7h3NGr4KDoKqaSzHEKiuqhWZGlcxMhCGluL4MrmpDzpYgsJKQkjoANGgSB4w9
+         wLQqGuDCgdDwFvimGBc+hkjfMF6DJ+SmVHnFy3Z7lwsPRw2KZtpax31moxgLo/j5ZcC9
+         oxQNwy+OHTlwXOKeDOKZrrL2EeGgUMsG4ZQZRimsikdGDIsM1JMGngOZqvnsDO1DCkbd
+         GsPkhx8M5jFuNROX6uGA72CFO0k8SrRBmbedXGDPNCCZX6gzxbDXME/nKvFuM2sxi4ZX
+         mXMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+zxFsWWYV9Z2Xr5M2Vh3JplDnIId4U3fI3Xozfok3+w=;
+        b=psHBjZggRYoAwWX/3sSxi5mXVNPzBV4608Qf8IcqH26ui6munXk19CZSzZn+uSyWYi
+         algwWOVN7P6aRnmo7ZIgBZW/x8OB4VVCwftGhW4s8BNKkKcDrOZp5Xm4zHULhub4jcM3
+         RmgYTUy8DKtpc7ydOYpp+7VSYnzYftRHD5Cj6vZe7icAmSqOlVtgqn8X1FofMTbuO1tq
+         MgninR0lt7xemHbEUzQiGbFVfYAJ6fpF4vi1X/7ZX9ydc75/njEZfS5gFvF1ND+lVRov
+         LLQL99QIN0LMegKetyEBvAQobvsETmKjpjpa8YYJgzYKIjhOYef4VZjPjtVZUeTWA03a
+         TkCg==
+X-Gm-Message-State: AOAM530egA7o9oKsytvY0TOBNhE2hEPU/0VsFmb+AzNSPW5j8eh6eP8K
+        lG5cVfYV9MA97faD5WbpBNk=
+X-Google-Smtp-Source: ABdhPJxknjWrYweGbs9hioPQrnNyVo+5IRkOgyVumkwbebNiMVrN5WNdBjxZQBIRkWQDEAJhpdQENg==
+X-Received: by 2002:a63:1f47:: with SMTP id q7mr8643146pgm.10.1609723719046;
+        Sun, 03 Jan 2021 17:28:39 -0800 (PST)
+Received: from localhost ([211.108.35.36])
+        by smtp.gmail.com with ESMTPSA id y6sm54199614pfn.145.2021.01.03.17.28.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 03 Jan 2021 17:28:38 -0800 (PST)
+Date:   Mon, 4 Jan 2021 10:28:36 +0900
+From:   Minwoo Im <minwoo.im.dev@gmail.com>
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+Cc:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC V2] block: reject I/O for same fd if block size changed
+Message-ID: <20210104012836.GA3873@localhost.localdomain>
+References: <20201230160129.23731-1-minwoo.im.dev@gmail.com>
+ <BYAPR04MB49659FFF1A820C9E7BBC1D0386D20@BYAPR04MB4965.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ARPb/QYlp33ER/Q.8JmL.l2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <BYAPR04MB49659FFF1A820C9E7BBC1D0386D20@BYAPR04MB4965.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ARPb/QYlp33ER/Q.8JmL.l2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 21-01-04 00:57:07, Chaitanya Kulkarni wrote:
+> On 12/30/20 08:03, Minwoo Im wrote:
+> > Let's say, for example of NVMe device, Format command to change out
+> > LBA format to another logical block size and BLKRRPART to re-read
+> > partition information with a same file descriptor like:
+> >
+> > 	fd = open("/dev/nvme0n1", O_RDONLY);
+> >
+> > 	nvme_format(fd, ...);
+> > 	if (ioctl(fd, BLKRRPART) < 0)
+> > 		..
+> >
+> > In this case, ioctl causes invalid Read operations which are triggered
+> > by buffer_head I/O path to re-read partition information.  This is
+> > because it's still playing around with i_blksize and i_blkbits.  So,
+> > 512 -> 4096 -> 512 logical block size changes will cause an under-flowed
+> > length of Read operations.
+> >
+> > Case for NVMe:
+> >   (LBAF 1 512B, LBAF 0 4K logical block size)
+> >
+> >   nvme format /dev/nvme0n1 --lbaf=1 --force  # to 512B LBA
+> >   nvme format /dev/nvme0n1 --lbaf=0 --force  # to 4096B LBA
+> >
+> > [dmesg-snip]
+> >   [   10.771740] blk_update_request: operation not supported error, dev nvme0n1, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+> >   [   10.780262] Buffer I/O error on dev nvme0n1, logical block 0, async page read
+> >
+> > [event-snip]
+> >   kworker/0:1H-56      [000] ....   913.456922: nvme_setup_cmd: nvme0: disk=nvme0n1, qid=1, cmdid=216, nsid=1, flags=0x0, meta=0x0, cmd=(nvme_cmd_read slba=0, len=65535, ctrl=0x0, dsmgmt=0, reftag=0)
+> >    ksoftirqd/0-9       [000] .Ns.   916.566351: nvme_complete_rq: nvme0: disk=nvme0n1, qid=1, cmdid=216, res=0x0, retries=0, flags=0x0, status=0x4002
+> >
+> > As the previous discussion [1], this patch introduced a gendisk flag
+> > to indicate that block size has been changed in the runtime.  This flag
+> > is set when logical block size is changed in the runtime in the block
+> > layer.  It will be cleared when the file descriptor for the
+> > block devie is opened again through __blkdev_get() which updates the block
+> > size via set_init_blocksize().
+> >
+> > This patch rejects I/O from the path of add_partitions() to avoid
+> > issuing invalid Read operations to device.  It also sets a flag to
+> > gendisk in blk_queue_logical_block_size to minimize caller-side updates.
+> >
+> > [1] https://lore.kernel.org/linux-nvme/20201223183143.GB13354@localhost.localdomain/T/#t
+> >
+> > Signed-off-by: Minwoo Im <minwoo.im.dev@gmail.com>
+> Rewrite the change-log similar to what we have in the repo and fix
+> the spelling mistakes. Add a cover-letter to explain the testcase
+> and the execution effect, also I'd move discussion link into
+> cover-letter.
 
-Hi all,
+Thanks for your time.  Will prepare V3 with proper change logs and cover
+letter to explain issue and testcase.
 
-After merging the staging tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
-
-In file included from include/linux/printk.h:6,
-                 from include/linux/kernel.h:16,
-                 from drivers/staging/board/kzm9d.c:4:
-drivers/staging/board/kzm9d.c:28:17: error: initialization of 'initcall_t' =
-{aka 'int (*)(void)'} from incompatible pointer type 'void (*)(void)' [-Wer=
-ror=3Dincompatible-pointer-types]
-   28 | device_initcall(kzm9d_init);
-      |                 ^~~~~~~~~~
-include/linux/init.h:197:50: note: in definition of macro '___define_initca=
-ll'
-  197 |   __attribute__((__section__(#__sec ".init"))) =3D fn;
-      |                                                  ^~
-include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
-  229 | #define device_initcall(fn)  __define_initcall(fn, 6)
-      |                              ^~~~~~~~~~~~~~~~~
-drivers/staging/board/kzm9d.c:28:1: note: in expansion of macro 'device_ini=
-tcall'
-   28 | device_initcall(kzm9d_init);
-      | ^~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
-In file included from include/linux/printk.h:6,
-                 from include/linux/kernel.h:16,
-                 from include/asm-generic/bug.h:20,
-                 from arch/arm/include/asm/bug.h:60,
-                 from include/linux/bug.h:5,
-                 from include/linux/thread_info.h:12,
-                 from include/asm-generic/current.h:5,
-                 from ./arch/arm/include/generated/asm/current.h:1,
-                 from include/linux/sched.h:12,
-                 from include/linux/ratelimit.h:6,
-                 from include/linux/dev_printk.h:16,
-                 from include/linux/device.h:15,
-                 from include/linux/dma-mapping.h:7,
-                 from drivers/staging/board/armadillo800eva.c:12:
-drivers/staging/board/armadillo800eva.c:90:17: error: initialization of 'in=
-itcall_t' {aka 'int (*)(void)'} from incompatible pointer type 'void (*)(vo=
-id)' [-Werror=3Dincompatible-pointer-types]
-   90 | device_initcall(armadillo800eva_init);
-      |                 ^~~~~~~~~~~~~~~~~~~~
-include/linux/init.h:197:50: note: in definition of macro '___define_initca=
-ll'
-  197 |   __attribute__((__section__(#__sec ".init"))) =3D fn;
-      |                                                  ^~
-include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
-  229 | #define device_initcall(fn)  __define_initcall(fn, 6)
-      |                              ^~~~~~~~~~~~~~~~~
-drivers/staging/board/armadillo800eva.c:90:1: note: in expansion of macro '=
-device_initcall'
-   90 | device_initcall(armadillo800eva_init);
-      | ^~~~~~~~~~~~~~~
-
-Caused by commit
-
-  850c35bb28ec ("staging: board: Remove macro board_staging")
-
-I have used the staging tree from next-20201223 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ARPb/QYlp33ER/Q.8JmL.l2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/ybt0ACgkQAVBC80lX
-0GzhQAf+PgUCLpbnFS74afwRx4mVv0Wm6BXasSQOShYVYRR3xUcqdhefS0fD7KUy
-US71br1/RMAae5/P4TE/gW74a5+EoectI/YWjnTeLIb7rUPv8rrav+tPUrUDhhav
-vl9jxVswVXJbXwJTHeTz31RC/tUCvfo3ME2kUocCW8TcXr8/Sxkkr2AdgSKgbq0d
-f86m4Qb4Xm0niFkDPTTv3Sp8ndUH7gQL6ACzXSnWBphnGkErfejocCjtpKKaM6rc
-zB4In9sG2TtTsq7QbtuWA2qbqNTSAbsGPNo4x2Ra/HVqXKzZg6jTD6uDeD2q4O04
-cFNYS8XT49mCgF9ELB64Ahh6Xkp8lQ==
-=XJqI
------END PGP SIGNATURE-----
-
---Sig_/ARPb/QYlp33ER/Q.8JmL.l2--
+Thanks,
