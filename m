@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160F62E955C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37BF2E9559
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbhADM51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:57:27 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:59606 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbhADM50 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:57:26 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104CtjVK102918;
-        Mon, 4 Jan 2021 06:55:45 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1609764945;
-        bh=JiZZQu6dpjhga2YUtT9K1Udslqr6GMyu4soFi9cIwio=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=DzSiSZOOp8QBit06iy4hBadl2Qx6H08H2GD6CShGiZryvShximoPKvgBbnsc7+svK
-         L89oWNvFUmbZ9Nq4MhUyk5XmCKT90qLrIE3JqQ7Jc3/Jzn7S+A6QT9y2RXgrngHaNQ
-         WlYs1GoPwD3xawTOsrZlVsULogFOYIUUVGMYaU8Y=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104CtjGO100189
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 Jan 2021 06:55:45 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 Jan
- 2021 06:55:44 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 4 Jan 2021 06:55:44 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104CtiPX093860;
-        Mon, 4 Jan 2021 06:55:44 -0600
-Date:   Mon, 4 Jan 2021 06:55:44 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/6] arm64: dts: ti: k3-j721e-main: Fix supported max
- outbound regions
-Message-ID: <20210104125544.arluqus2xbqwacez@curler>
-References: <20210104122232.24071-1-kishon@ti.com>
- <20210104122232.24071-2-kishon@ti.com>
+        id S1726265AbhADM4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:56:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54460 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726008AbhADM4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 07:56:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609764956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=msIW88wK00DoAnz9CIDN560ghwz+bPy+u/wMPHdrQPA=;
+        b=JccxXLpGBLoGDL28F8aGR/x0pglghkevXPipC+8umQI1PkJEXYxdzOYoAjVCActmCw3KDG
+        wAg4gMgIhGwbNtAqqTo/lYC00eLNaTb5SUafFV0fKu4BpLjNRl3GpenCkL4mw9kVGUcc0e
+        HQMsEDaQVMonsKFIqbcJLa5S7u/N7xU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4ED38AFEF;
+        Mon,  4 Jan 2021 12:55:56 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 13:55:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Liang Li <liliang.opensource@gmail.com>
+Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
+Message-ID: <20210104125554.GE13207@dhcp22.suse.cz>
+References: <20201221162519.GA22504@open-light-1.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210104122232.24071-2-kishon@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201221162519.GA22504@open-light-1.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17:52-20210104, Kishon Vijay Abraham I wrote:
-> Cadence IP in J721E supports a maximum of 32 outbound regions. However
-> commit 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device
-> tree nodes") incorrectly added this as 16 outbound regions. Now that
-> "cdns,max-outbound-regions" is an optional property with default value
-> as 32, remove "cdns,max-outbound-regions" from endpoint DT node.
-> 
-> Fixes: 4e5833884f66 ("arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes")
+On Mon 21-12-20 11:25:22, Liang Li wrote:
+[...]
+> Security
+> ========
+> This is a weak version of "introduce init_on_alloc=1 and init_on_free=1
+> boot options", which zero out page in a asynchronous way. For users can't
+> tolerate the impaction of 'init_on_alloc=1' or 'init_on_free=1' brings,
+> this feauture provide another choice.
 
-^^ Is this a backward compatible fixup. If I were to apply this on
-v5.10, wont we have a broken PCIe functionality? Drop the fixes if this
-is not backward compatible fixup (unless ofcourse the driver fixup is
-backported all the way back as well - I am assuming will be done in a
-manner to preserve compatibility with older dtb?)
-
-On master right now:
-$ git grep "cdns,max-outbound-regions" .
-Documentation/devicetree/bindings/pci/cdns,cdns-pcie-ep.yaml:                cdns,max-outbound-regions = <16>;
-Documentation/devicetree/bindings/pci/cdns-pcie-ep.yaml:  cdns,max-outbound-regions:
-Documentation/devicetree/bindings/pci/cdns-pcie-host.yaml:  cdns,max-outbound-regions:
-arch/arm64/boot/dts/ti/k3-j721e-main.dtsi:              cdns,max-outbound-regions = <16>;
-arch/arm64/boot/dts/ti/k3-j721e-main.dtsi:              cdns,max-outbound-regions = <16>;
-arch/arm64/boot/dts/ti/k3-j721e-main.dtsi:              cdns,max-outbound-regions = <16>;
-arch/arm64/boot/dts/ti/k3-j721e-main.dtsi:              cdns,max-outbound-regions = <16>;
-drivers/pci/controller/cadence/pcie-cadence-ep.c:       of_property_read_u32(np, "cdns,max-outbound-regions", &ep->max_regions);
-
-
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 4 ----
->  1 file changed, 4 deletions(-)
-> 
+Most of the usecases are about the start up time imporvemtns IIUC. Have
+you tried to use init_on_free or this would be prohibitive for your
+workloads?
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Michal Hocko
+SUSE Labs
