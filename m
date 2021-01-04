@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1082E93D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53622E93E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbhADLBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 06:01:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbhADLBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 06:01:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D185E207BC;
-        Mon,  4 Jan 2021 11:01:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609758067;
-        bh=FQj1a4rL7iltwr5MqltKp3e514hPbhBndFEkl5LtX3w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cy5n5Pj/MdtkAB+OCBYxr9O9TzdNMSCOoD/SphCZZnso0dbrt6j6KkAIWECtvOpZ3
-         mefMbVXMCQ0Z1o1X17FUcQ2t+wmyXl/i0O+5EbO7c8eAUUbMmwYXQwhWuL2ekE+CsA
-         wghPhcvMtDfBB3n4/W6iOFUQrw3Mu+D7/RxsL458=
-Date:   Mon, 4 Jan 2021 12:02:33 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tudor.Ambarus@microchip.com
-Cc:     pavel@ucw.cz, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dan.j.williams@intel.com, vkoul@kernel.org,
-        Ludovic.Desroches@microchip.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19] dmaengine: at_hdmac: Fix memory leak
-Message-ID: <X/L1yZgmni6KHsrL@kroah.com>
-References: <20200920082838.GA813@amd>
- <80065eac-7dce-aadf-51ef-9a290973b9ec@microchip.com>
- <d3a6fa19-0852-92d9-c434-40297edc625a@microchip.com>
+        id S1726871AbhADLDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 06:03:33 -0500
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:33913 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbhADLDc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 06:03:32 -0500
+Received: by mail-oo1-f46.google.com with SMTP id x23so6187376oop.1;
+        Mon, 04 Jan 2021 03:03:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vgz855DfWv71v/NUg42dMP6FV3P5LJ1Dp9oOf7gYED8=;
+        b=lsYYKFRMSBmXyUBKFBWQPzTxJXcIVtxTp2zZBcZ7SB5XQJOwr6WTRcgZ9r8iJ+JQfS
+         0EepbijIYcrRnk0xlBGH6jUJDKLdGHwd60eiOiEEltU7EQfhUIBCkSIfWzGHDaE13r2I
+         wfMj617x9d+269frPev3Ref27HZ9GTCXnDhOGH4eEJvPycTmVQQm4EvKA+aE4sLv/Kuq
+         7AIH40YwUKHy2KmmNlt1+nnX/3W7QBw1QZwQrVmMKivFl4esMxVm92Luy/CtMlLAb+2X
+         1cbLHnKauYtwmyP48P8pDx3jL7HEw//mX0OTx7g2glndDZe82I9KBm+ykrw5elbYIvyy
+         2dGg==
+X-Gm-Message-State: AOAM531BN/uflnC9zut7HkNhjStOnlXQuBhH2//jjB0TGoDEiWkBqjEI
+        puav115/wS3cuavg5LH6Rv+WbArM2YWCIbmjpEkcU5dU
+X-Google-Smtp-Source: ABdhPJzr1K2Am+N2Q/mJdEccKDCfyY216KRTVXuy/doErF2NeQJAnzf4Bso+QzcOdpp3/DpfE19LAUmx1c+nIkV1eh0=
+X-Received: by 2002:a4a:ca14:: with SMTP id w20mr48734783ooq.11.1609758171783;
+ Mon, 04 Jan 2021 03:02:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d3a6fa19-0852-92d9-c434-40297edc625a@microchip.com>
+References: <20210102115412.3402059-1-aford173@gmail.com> <20210102115412.3402059-2-aford173@gmail.com>
+In-Reply-To: <20210102115412.3402059-2-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Jan 2021 12:02:40 +0100
+Message-ID: <CAMuHMdXzK=d30RuWSDofR5uB2SmF5eiHMpQ0xakvUqDA7bWhOQ@mail.gmail.com>
+Subject: Re: [PATCH V2 2/4] memory: renesas rpc-if: Update Add RZ/G2 to
+ Kconfig description
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 08:19:18AM +0000, Tudor.Ambarus@microchip.com wrote:
-> On 9/23/20 11:13 AM, Tudor.Ambarus@microchip.com wrote:
-> > Hi, Pavel,
-> > 
-> > On 9/20/20 11:28 AM, Pavel Machek wrote:
-> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >>
-> >> This fixes memory leak in at_hdmac. Mainline does not have the same
-> >> problem.
-> >>
-> >> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> >>
-> >> diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-> >> index 86427f6ba78c..0847b2055857 100644
-> >> --- a/drivers/dma/at_hdmac.c
-> >> +++ b/drivers/dma/at_hdmac.c
-> >> @@ -1714,8 +1714,10 @@ static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
-> >>         atslave->dma_dev = &dmac_pdev->dev;
-> >>
-> >>         chan = dma_request_channel(mask, at_dma_filter, atslave);
-> >> -       if (!chan)
-> >> +       if (!chan) {
-> >> +               kfree(atslave);
-> >>                 return NULL;
-> >> +       }
-> > 
-> > Thanks for submitting this to stable. While the fix is good, you can instead
-> > cherry-pick the commit that hit upstream. In order to do that cleanly on top
-> > of v4.19.145, you have to pick two other fixes:
-> > 
-> > commit a6e7f19c9100 ("dmaengine: at_hdmac: Substitute kzalloc with kmalloc")
-> > commit 3832b78b3ec2 ("dmaengine: at_hdmac: add missing put_device() call in at_dma_xlate()")
-> > commit a6e7f19c9100 ("dmaengine: at_hdmac: Substitute kzalloc with kmalloc")
-> 
-> this last commit should have been
-> commit e097eb7473d9 ("dmaengine: at_hdmac: add missing kfree() call in at_dma_xlate()")
-> 
-> bad copy and paste :)
+On Sat, Jan 2, 2021 at 12:54 PM Adam Ford <aford173@gmail.com> wrote:
+>
+> The Renesas RPC-IF is present on the RZ/G2 Series.  Add that to
+> the description.
+>
+> Suggested-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-So are all 3 of those needed on both 5.4.y and 4.19.y to resolve this
-issue?
+Thanks for your patch!
 
-thanks,
+> --- a/drivers/memory/Kconfig
+> +++ b/drivers/memory/Kconfig
+> @@ -202,9 +202,9 @@ config RENESAS_RPCIF
+>         depends on ARCH_RENESAS || COMPILE_TEST
+>         select REGMAP_MMIO
+>         help
+> -         This supports Renesas R-Car Gen3 RPC-IF which provides either SPI
+> -         host or HyperFlash. You'll have to select individual components
+> -         under the corresponding menu.
+> +         This supports Renesas R-Car Gen3 of RZ/G2 RPC-IF which provides
 
-greg k-h
+s/of/or/
+
+> +         either SPI host or HyperFlash. You'll have to select individual
+> +         components under the corresponding menu.
+>
+>  config STM32_FMC2_EBI
+>         tristate "Support for FMC2 External Bus Interface on STM32MP SoCs"
+
+With the above fixed:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
