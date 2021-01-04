@@ -2,74 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0002E9C31
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 592E52E9C39
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbhADRk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:40:28 -0500
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:34941 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbhADRk1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:40:27 -0500
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id CB7662800B3CC;
-        Mon,  4 Jan 2021 18:39:44 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id C1A6450D7B; Mon,  4 Jan 2021 18:39:44 +0100 (CET)
-Date:   Mon, 4 Jan 2021 18:39:44 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kai Heng Feng <kai.heng.feng@canonical.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Time to re-enable Runtime PM per default for PCI devcies?
-Message-ID: <20210104173944.GA31187@wunner.de>
-References: <79940973-b631-90f9-dbc4-9579c6000816@gmail.com>
- <20201117163817.GA1397220@bjorn-Precision-5520>
- <CAJZ5v0ipMJ1gCB7okpROG_yAUi5Q8LknqeH+Jpdrjbb4D_vfuQ@mail.gmail.com>
- <9ca0fb46-9e65-31e2-103f-1c98ce8362c7@gmail.com>
- <20201231040735.GA2075@wunner.de>
- <4eb10092-e3f9-c9be-2dec-e6de8aeedf97@gmail.com>
+        id S1727318AbhADRk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:40:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726124AbhADRk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 12:40:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63FF720679;
+        Mon,  4 Jan 2021 17:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609782015;
+        bh=V2oGYPbSi6aA3r4g30F2Mg4qcT0P4CxmiDuS2SFjEas=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=cuo94cEciJVUKipGgtXCAsrtR6QcFK8+YBI/6/W9JvUV6wyYKD+rJiZgJJFVlrOS7
+         l3U/ZYGqH+3RdoOB8jCoSSNkpWKNbIN9E0117GZk/r0vtuTbQGj4Ht4Fq6QeMiZDDQ
+         Y8s8DzDhDOxx4lJ+WsJFR76AkhlKrTy3MEJKGt6021RkzkUDZ3J9QmNkssAmiQH0D/
+         DLD4vhAl0z7U5oMrfh6md93+zOUNdXH3aL8yszHlYm8DdZTXmyPcBUsymc37msDYj4
+         QRdPhr8WSaCbtaWQNKXXb6dK8r13NuG5+0JXZr2C9yF5Rmop/WIB2iYRB65viBxivC
+         DdZnvblRHQnbg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@kernel.org>
+Cc:     Viorel Suman <viorel.suman@nxp.com>, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20210103135327.3630973-1-arnd@kernel.org>
+References: <20210103135327.3630973-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_aud2htx: select SND_SOC_IMX_PCM_DMA
+Message-Id: <160978198913.14397.3806558309581636752.b4-ty@kernel.org>
+Date:   Mon, 04 Jan 2021 17:39:49 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4eb10092-e3f9-c9be-2dec-e6de8aeedf97@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 10:38:12AM +0100, Heiner Kallweit wrote:
-> On 31.12.2020 05:07, Lukas Wunner wrote:
-> > FWIW, if platform_pci_power_manageable() returns true, it can probably
-> > be assumed that allowing runtime PM by default is okay.  So as a first
-> > step, you may want to call that instead of adding a new callback.
+On Sun, 3 Jan 2021 14:53:17 +0100, Arnd Bergmann wrote:
+> The newly added driver requires DMA support and fails to build
+> when that is disabled:
 > 
-> I don't think that's sufficient. Most likely all the broken old systems
-> return true for platform_pci_power_manageable().
+> aarch64-linux-ld: sound/soc/fsl/fsl_aud2htx.o: in function `fsl_aud2htx_probe':
+> fsl_aud2htx.c:(.text+0x3e0): undefined reference to `imx_pcm_dma_init'
 
-platform_pci_power_manageable() is not a global flag, but rather
-a per-device flag whether the platform is capable of power-managing
-that device.  E.g. for the ACPI platform, it indicates that objects
-such as _PS0 or _PS3 are present in the device's namespace.
+Applied to
 
-My point is that if the platform can power-manage a device,
-then it ought to be safe to enable runtime PM by default for it.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-If you insist on a "big hammer" approach by turning on runtime PM
-by default for everything, you risk regressions.  You can avoid
-that by going for a smart approach which enables runtime PM in
-cases when it's safe.
+Thanks!
+
+[1/1] ASoC: fsl_aud2htx: select SND_SOC_IMX_PCM_DMA
+      commit: a1f31cc4e98e1833f53fd2c6e9a218d6b86f5388
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-
-Lukas
+Mark
