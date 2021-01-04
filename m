@@ -2,34 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8C62E9AC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3232E9A5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbhADP7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:59:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36516 "EHLO mail.kernel.org"
+        id S1729638AbhADQI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:08:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727871AbhADP7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:59:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D5A9224DF;
-        Mon,  4 Jan 2021 15:58:19 +0000 (UTC)
+        id S1728611AbhADQBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:01:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2025224D2;
+        Mon,  4 Jan 2021 16:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775899;
-        bh=gMsNqKJZDuk4ZcuwnLe9zXaIYdpN/cXIbf4pPVDIPbU=;
+        s=korg; t=1609776080;
+        bh=5Gfu3L59rdjO9CtMPxwCNS4CHfJnT5MFmlDci/a6xLE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yntCvpQGxawuQYt/HrcD7YaYuE8iuGko1pzW64kXBxcR2qWZjFhxRZiUDnPT3fMJd
-         CtFGBRtEhOGJBGdla8AqGGpxr1HA4EnusdavPEUqKRJVugz14Uw53mVWfzDQrBcXq7
-         YI1xurejWxV9m51JhUhmpdV0Xsd8+chYt3haT1qE=
+        b=AQWI4SnJ5sDb4ZVdT2npRXnLWx6KR45BuKghllcoHZHw0siH4SRpOAv/huKLOOIdY
+         37ADL3k7LMBaJeSG8h4e1uN6xPg+akeI2Dh6a/iBqpGMD6rzJQFSITiPTy5GE4dKss
+         qdnQV72cJUmEn1VX+qNBo982jlEdMw2OseFYzuIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 4.19 03/35] ext4: prevent creating duplicate encrypted filenames
+        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Can Guo <cang@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 13/63] scsi: block: Fix a race in the runtime power management code
 Date:   Mon,  4 Jan 2021 16:57:06 +0100
-Message-Id: <20210104155703.551280253@linuxfoundation.org>
+Message-Id: <20210104155709.457411783@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
-References: <20210104155703.375788488@linuxfoundation.org>
+In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
+References: <20210104155708.800470590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,40 +46,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-commit 75d18cd1868c2aee43553723872c35d7908f240f upstream.
+commit fa4d0f1992a96f6d7c988ef423e3127e613f6ac9 upstream.
 
-As described in "fscrypt: add fscrypt_is_nokey_name()", it's possible to
-create a duplicate filename in an encrypted directory by creating a file
-concurrently with adding the directory's encryption key.
+With the current implementation the following race can happen:
 
-Fix this bug on ext4 by rejecting no-key dentries in ext4_add_entry().
+ * blk_pre_runtime_suspend() calls blk_freeze_queue_start() and
+   blk_mq_unfreeze_queue().
 
-Note that the duplicate check in ext4_find_dest_de() sometimes prevented
-this bug.  However in many cases it didn't, since ext4_find_dest_de()
-doesn't examine every dentry.
+ * blk_queue_enter() calls blk_queue_pm_only() and that function returns
+   true.
 
-Fixes: 4461471107b7 ("ext4 crypto: enable filename encryption")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201118075609.120337-3-ebiggers@kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+ * blk_queue_enter() calls blk_pm_request_resume() and that function does
+   not call pm_request_resume() because the queue runtime status is
+   RPM_ACTIVE.
+
+ * blk_pre_runtime_suspend() changes the queue status into RPM_SUSPENDING.
+
+Fix this race by changing the queue runtime status into RPM_SUSPENDING
+before switching q_usage_counter to atomic mode.
+
+Link: https://lore.kernel.org/r/20201209052951.16136-2-bvanassche@acm.org
+Fixes: 986d413b7c15 ("blk-mq: Enable support for runtime power management")
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: stable <stable@vger.kernel.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Acked-by: Stanley Chu <stanley.chu@mediatek.com>
+Co-developed-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/ext4/namei.c |    3 +++
- 1 file changed, 3 insertions(+)
 
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2106,6 +2106,9 @@ static int ext4_add_entry(handle_t *hand
- 	if (!dentry->d_name.len)
- 		return -EINVAL;
+---
+ block/blk-pm.c |   15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+--- a/block/blk-pm.c
++++ b/block/blk-pm.c
+@@ -67,6 +67,10 @@ int blk_pre_runtime_suspend(struct reque
  
-+	if (fscrypt_is_nokey_name(dentry))
-+		return -ENOKEY;
+ 	WARN_ON_ONCE(q->rpm_status != RPM_ACTIVE);
+ 
++	spin_lock_irq(&q->queue_lock);
++	q->rpm_status = RPM_SUSPENDING;
++	spin_unlock_irq(&q->queue_lock);
 +
- 	retval = ext4_fname_setup_filename(dir, &dentry->d_name, 0, &fname);
- 	if (retval)
- 		return retval;
+ 	/*
+ 	 * Increase the pm_only counter before checking whether any
+ 	 * non-PM blk_queue_enter() calls are in progress to avoid that any
+@@ -89,15 +93,14 @@ int blk_pre_runtime_suspend(struct reque
+ 	/* Switch q_usage_counter back to per-cpu mode. */
+ 	blk_mq_unfreeze_queue(q);
+ 
+-	spin_lock_irq(&q->queue_lock);
+-	if (ret < 0)
++	if (ret < 0) {
++		spin_lock_irq(&q->queue_lock);
++		q->rpm_status = RPM_ACTIVE;
+ 		pm_runtime_mark_last_busy(q->dev);
+-	else
+-		q->rpm_status = RPM_SUSPENDING;
+-	spin_unlock_irq(&q->queue_lock);
++		spin_unlock_irq(&q->queue_lock);
+ 
+-	if (ret)
+ 		blk_clear_pm_only(q);
++	}
+ 
+ 	return ret;
+ }
 
 
