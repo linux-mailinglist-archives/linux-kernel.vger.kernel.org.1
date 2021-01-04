@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B092E9272
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632F42E9270
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbhADJRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 04:17:35 -0500
-Received: from mail-eopbgr150049.outbound.protection.outlook.com ([40.107.15.49]:1335
+        id S1726949AbhADJRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 04:17:31 -0500
+Received: from mail-eopbgr150070.outbound.protection.outlook.com ([40.107.15.70]:17957
         "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725830AbhADJRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:17:34 -0500
+        id S1725830AbhADJRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 04:17:31 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FQoI/lWZ52kJ/vdpbzO2Ppf/hA3YkXn6FnqQV66S5O0u42oWVDWOyf5xk5XK94Lc5xXHCOytGgHAIC0MN6eTMjmsVYqR/YxJ52eoeQL5hxeBJgs4yzoX2MMmwf3UAR4nuqYr1+McbQWJTswmmy8RVVC1j05Y2SAhffanqfCUBag5QrTBn48kjOesQz2QZ8EzlgMa8q3PEmTDD3Rh+5Grr3muX+rRZEwqT9KtV7UvW7cv00QXqeGoqBULfkpHdiRunJh/SKRugou+82p0uMX4vyN6I9AgzqWcR4oGsbZepRyAjaXbBY1Cv6JNxsqW6YRcfFcZ0qa/nZUs2IUuXoOYCQ==
+ b=AK9MTYuTUB889PyntxyUpJa8UEURqFCy++M5Juh6sfpkJ9NUQ1h4gFsAeykoTvqTGIUu3QuYsbZi816vMD1EeWkV9ffMTCM+fiw2aY9RxFJaBYs8FEHwAN5WK2dhNTASpf3np9h/l6IG1ExCrBUjphMo8wK3eyncZYrzpCHGvlNKnJYnkfnZXe4mIC5UWnH8MmqAZDTJX0E9jnmwLYTlsfi1fbl1QVIVDhcasK/Ca7jRoY8PVka7tKZB7PddwFlCzA3JbR8nrZYcE9NB9+nprhkiqZTZrgdmFonMt6I8twLLm5AtAJPe+dGbc8CKGi09of0uT+wU93f4TlAe765hHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K3f7aqQe90ej2t+fPyfc9NMr7vi7mmCsnTOLch5V/CE=;
- b=YaQ+AFNacNumpgfUL06f21nV3nQCRccxBrVAuOAJCwEQAGIhWvVooZlGWXZiHh17UDLkAVVV1OmMn7S8/SlDtQQo8Gm1dbzFIQuL2qTg3QAyP+xUfnYqmlFvG7hnzuwviLgl8YyIOIhq/3IRkv+Vp87Y2Pq4Od8NwROhjMa/gCh0xH3ijZYdS87KMcbVyaG6OLGZUkVKzgrLVfgwfFBJPUJwh2pl0f1ILosYEqJgrBazN/NZtJTfLhwmLtFVSgHypSZfnZT5W6CALnvi8pfjUdOnlCGeItAGnukz6UgXI1Si4tZborwTWw6F3s1tUDJkYgTVKwDi+qsdibuDnemkZQ==
+ bh=5o8mSJ8o8vcENoFFSYFrV6r/rBdZeRcso86IrP+5uC0=;
+ b=ZUPrYxkMX6wC8LblnLwMbvqG9xQBKQ857huCe6yRv5WJRaxBt5BjorHSGQHMXXyk40lZkjnFIbL00vITaODgyMZEbsvjKFpF6pdjfP9efkQ2XRhYEIYoPiCE/dyiUt3gEJ0dpc8+8xjIfeiGR7roBuS8+APFTIKC7NxHA4E+tZ2heqAkXCXH8xShhmk9IavowYxFfEcNb+mAzOnSFjTNXqCJJ///I86Ay802l57CgT2/WYCWDUbfOsK/msa6zUYpq/DgJr/T0tgUKxQb7Sk0lMWGas9oLldv47N7qyG4Gqx9M1FEAzrP6883xb0N6yxFIfbC9U1MrWE+JD73XPkkBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K3f7aqQe90ej2t+fPyfc9NMr7vi7mmCsnTOLch5V/CE=;
- b=jfIhuuEYo5X71IEmMa/EqYBjn4ZlFjEmJIMqXZZKLP3Ml0tFaUDTIa9Pr2O4iICUa+3NA10PxiAx/NSKagFK7ThQQa7/DbZ+MCCU5aEiNq7uLwCjuCBs7yS7vZYvzRH5u+Ud0sThrPplUuEMRSiwxW3k16uB4NaM86uFxnyzug4=
+ bh=5o8mSJ8o8vcENoFFSYFrV6r/rBdZeRcso86IrP+5uC0=;
+ b=fXGEqwc7RycnAIpRP7oY26h/DbhBQj/1Y6zR10IWfnnWtb2z6P0uHfri4YUVnGjdh4UNwC6tM7KjB6/3r42xRN5g8qIwbtAvjS55jKPL9HU4k+E1RofBvFSgKAI8p3IhFNyF0ZZe57HWQ/igrxVdkcsHX3nBJYwbliQ5f5aRwZc=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from AM6PR04MB6053.eurprd04.prod.outlook.com (2603:10a6:20b:b9::10)
- by AM7PR04MB6982.eurprd04.prod.outlook.com (2603:10a6:20b:dd::13) with
+ by AM6PR04MB5141.eurprd04.prod.outlook.com (2603:10a6:20b:c::26) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Mon, 4 Jan
- 2021 09:16:35 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.21; Mon, 4 Jan
+ 2021 09:16:41 +0000
 Received: from AM6PR04MB6053.eurprd04.prod.outlook.com
  ([fe80::78fe:9b7a:a2ac:9631]) by AM6PR04MB6053.eurprd04.prod.outlook.com
  ([fe80::78fe:9b7a:a2ac:9631%7]) with mapi id 15.20.3721.024; Mon, 4 Jan 2021
- 09:16:35 +0000
+ 09:16:41 +0000
 From:   "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
 To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         kernel@pengutronix.de, festevam@gmail.com, krzk@kernel.org
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: [PATCH v10 3/4] arm64: dts: imx8m: add NVMEM provider and consumer to read soc unique ID
-Date:   Mon,  4 Jan 2021 17:15:43 +0800
-Message-Id: <20210104091544.13972-3-alice.guo@oss.nxp.com>
+Subject: [PATCH v10 4/4] soc: imx8m: change to use platform driver
+Date:   Mon,  4 Jan 2021 17:15:44 +0800
+Message-Id: <20210104091544.13972-4-alice.guo@oss.nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210104091544.13972-1-alice.guo@oss.nxp.com>
 References: <20210104091544.13972-1-alice.guo@oss.nxp.com>
@@ -56,184 +56,273 @@ X-ClientProxiedBy: AM0PR10CA0055.EURPRD10.PROD.OUTLOOK.COM
  (2603:10a6:20b:b9::10)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nxf55104-OptiPlex-7060.ap.freescale.net (119.31.174.71) by AM0PR10CA0055.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20 via Frontend Transport; Mon, 4 Jan 2021 09:16:31 +0000
+Received: from nxf55104-OptiPlex-7060.ap.freescale.net (119.31.174.71) by AM0PR10CA0055.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20 via Frontend Transport; Mon, 4 Jan 2021 09:16:36 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: cdf0e8ab-061a-4e23-e758-08d8b0916f01
-X-MS-TrafficTypeDiagnostic: AM7PR04MB6982:
+X-MS-Office365-Filtering-Correlation-Id: 029f594e-f50b-4186-3a5b-08d8b0917281
+X-MS-TrafficTypeDiagnostic: AM6PR04MB5141:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR04MB69825A3BCA51378573435869A3D20@AM7PR04MB6982.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:663;
+X-Microsoft-Antispam-PRVS: <AM6PR04MB514178E7DBA8BBC20F900C30A3D20@AM6PR04MB5141.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IlrUm89FozV3mNA40OPq0a7hmb+4v3aDONGB4mtpyoaPqKEtdwIDoeetiTzCOYlxoFTOPYgIVHsGgEITpmsIRgZ/DbXf6UVBZdn4kIm8QPzctEaAfet+yOSJyikC8dWwQ51JWfBgR8ifz08BQEqS+jTmkKa8BURXb/BL/A6MQlkcR0W3tCUhC5nf+saQKMWzjsk/p5Ibm+2Np5TV2XTh0b5razSpdjc0egHG8L6jG5HFDuqIGhp3BeRmDzQstwNJsnh1VYLwRSoSDp5nXJL30M/FQEbB99JKLfZ4/8lU5D6aXY07IE6Cx65scThpiNl9rG+/FVrJ70I2afnjKQQXN2rOv7sumc+sDUQigCKYd+9bOPBUAQXfHxd5KkTIyJPDsqIn7LYinAsSwjQUpyt5wIBsRNmJxQBOPXOO8njM48fgT64I4zHCNAcVnGKjyUWi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(366004)(396003)(136003)(66476007)(66556008)(316002)(6512007)(6486002)(8936002)(8676002)(6666004)(1076003)(86362001)(2906002)(66946007)(4326008)(5660300002)(52116002)(16526019)(2616005)(6506007)(26005)(956004)(186003)(83380400001)(478600001)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vTlEG2ODZXWdUTI40XUrPlfT1FUkdUFzLP0p1Kh153uKyu/BT1456ghk4c5u?=
- =?us-ascii?Q?yH2PpeSpmmPUyjncher6SuFnI5NWZdUMBK0Xeqy2ZH+pxRwqTlOOeeESn6Op?=
- =?us-ascii?Q?vle8vwElBlhZsQu75LljmaSB7R+9H5kr/hdqOapxcQ6xqat+GggcYHevVCpK?=
- =?us-ascii?Q?JL/ybRuHU8AVXQ03wPsHNEF1KvOOQdKJy0vrv0mlStRY/hQbhRdZLSmV+XPY?=
- =?us-ascii?Q?9gwiq6S7m0iCqqiHq4J+ABdNNwHl6nYr4E3cHzI5RBlVmMtwRCgSRmhEiATm?=
- =?us-ascii?Q?qC2yUf/YL4HjVr6jDuxtk9MML3bUwUxsme5xIvjKG4GB0Qb3JOzLvuEL1VIB?=
- =?us-ascii?Q?8GI7P0MURCQpOkYvMw9cUtvPYKbw40+D2jzglF7KCTOCtAayfGhxbMRnEIoV?=
- =?us-ascii?Q?fAPWpfMtght2Y7lNFdXbXApmURi+Gnx13K63cqcYmzXDid1hl0uY+M2FxYil?=
- =?us-ascii?Q?fLRUiWrKSH953FfY7gIW92uZgsEFbLQvfmzURLbejh8BKB79nqXXqg3doA47?=
- =?us-ascii?Q?wln6augpkKnkwzD1nMEcwJvIL1wAkBVoSHs9RsDCMTQ37hp9mtpBJ0TyKJA5?=
- =?us-ascii?Q?P6n2ao6NiN0Cqn5FDkSvCduCSC1+4J5UYzh6hwkyqKt0W1ANlhUqUzsNLCZh?=
- =?us-ascii?Q?c384PBoEi7DVfhMpQMO/qSa/GwL+RNV0pFFSVh+/IPo26G9mtYrnI9d6eltw?=
- =?us-ascii?Q?OsG6kwqJWvxviQrq8uWE4pSOgQtg+ENzB0+Idna4z6ZgtvsdI3Vu3fI0kLw0?=
- =?us-ascii?Q?VpbDQyLv8yfRB6CBqLfyMXtqb1KNBEWJgbTG1mrpSXvQhvm8IYVDE56ti6H4?=
- =?us-ascii?Q?OVfqPDHccxMSjDUhKMgoN1pbxbxZpYOYmYPcYbICnKJBr3M2EO+BRm9ZYJYu?=
- =?us-ascii?Q?IKtJbZFVOk0uKKMFOOHkm0j0zFTiVWjpUSiD33PAszQx1/kJx7lvhqP71KEK?=
- =?us-ascii?Q?lsqzxjLQmYEfd2kf/Pg26gmbnwZr+RAmI/ZlkRo39hk59rD4yTFoQN46YlrM?=
- =?us-ascii?Q?hs05?=
+X-Microsoft-Antispam-Message-Info: vtSJb6G8B7TqYi0s5oquxb9dkyAjiKx4nPUqc4FrbryyCWltbD1oUEoOVb2rG1+5lvH7jCveP/rDcElIfUp32JjbLY2E1jrpCyaWA3trO9o6GaUrCDqAhsQZeaLBOb8ax4WfWNzdftGwnbPohfaxCznAmtyjoTbXSXLiUukbvelJDB+RnHqKHFbdzwXpknXZm4/37W2RmF3a/MqX8PvC2WdpiAVxydwKOHtOhlelvcDsioLyJTJHAZ00+Gc8G6wSS9hR2TDUyLp8B0luQUjHP7EaNjull01q+DmhjTP9dgXgW7yf2J6zSDxnAd/2sbv8KPUmEXFKO/sR42TnV25+BpQUhK2aoQruEHicrwz09yv3O9MMEsPeGAzJCjG4RAU0I+YcTuXYi0+r3Ua5zF+ojBEvNo/cvkMgeHavVkQun5gv9WcE+HC8S3IqWTeVwNPs
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(136003)(396003)(39860400002)(52116002)(66946007)(66476007)(2616005)(6506007)(6666004)(26005)(956004)(16526019)(186003)(66556008)(5660300002)(6486002)(2906002)(6512007)(86362001)(83380400001)(8676002)(316002)(1076003)(478600001)(4326008)(8936002)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Z5msBhModNfTuYA8oGBOIqfBWcH2ITlSwbMZUEvPp0sgrb26rEi9ashCKXsW?=
+ =?us-ascii?Q?ZqiGoXs33K/vn4aGRGOkui3zLRLr7ACprv9gIx0S2gEx2MEJFSpn35ckc2it?=
+ =?us-ascii?Q?gJQhBJEvXa+3p5B1tBniWST5X+VNz2DxrhlFn2QQ+zsu2zZuLjt3dejWwpa8?=
+ =?us-ascii?Q?1zP3Xzr+7iusNC4gwb8F67sAEwIbSu3XJRn3nhq+pBxaAEygusk0tL9kTfH+?=
+ =?us-ascii?Q?wq1GB88FG5W1DYQAet0Km2JGKU7QYDigCBQXFJ5ituFiUcBiF7nr8OvBGT+a?=
+ =?us-ascii?Q?FKi7R+jXExBcwtjc1Et8Ur75NzRfj22iFkPE1STmAxaftpgJmfdY9fsQ782J?=
+ =?us-ascii?Q?hJlXr9ctL2tcet2miYOKnqiktqZGkprzg6v+XFODAuSEV1n4jnti+6uKyOxX?=
+ =?us-ascii?Q?17m9daTQayiZtiiQ50nq4ziJ5tqTtp2m+qjjKUf8qmQvOxdUK/FOszPnYsDT?=
+ =?us-ascii?Q?A7vfcOuAr5cS1gUJX7EohRNnBZOxke0GmzIoggDWp5AEGFcXKPGdFgv/xcC7?=
+ =?us-ascii?Q?w/PekNmEDa6YOb3koBg6hXA+iBfW7S62EiTpsrJCjsekROGAvMFP6ZDNUUSP?=
+ =?us-ascii?Q?K3xj/hvqlGb/U50CBAvvLkC4GKuVZ07jqmqgEeeWs7P+swX3N5c8hGJ6vKV5?=
+ =?us-ascii?Q?zzGqhqHGVz5d50LfYbTVo+2+3JM+bDxpMwmKdKZO2Wr4vA03Z8+gHsdZlbsx?=
+ =?us-ascii?Q?VOc2vCXkmF/rw3i2KPzRabKTUToAuud9N2/bhMN/CnhPRwjzGItcF4Nsarsl?=
+ =?us-ascii?Q?35CiVwiczESM19hMYF1GO3/B/8V4cSYEo+P+ZutKruoSRDowvRDQFZ0Q1j6o?=
+ =?us-ascii?Q?I5/DMaXM4ihb/+zq3NrMhJfO5cCP1vFSBtGZOorKs/PQ6X1yEfOSKILlsFAc?=
+ =?us-ascii?Q?LNL01PJ9Rw9vyL6vcosajdltuJ+In90HxjlQO2Q6q2/Tsns738p4cslQfp/A?=
+ =?us-ascii?Q?XUfm91XbPBrDff0MqdQ6dRTzHLItDVdmgVCSnhznrHV7y603GYUUnnXZ2rJw?=
+ =?us-ascii?Q?WVsk?=
 X-OriginatorOrg: oss.nxp.com
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6053.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2021 09:16:35.1567
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2021 09:16:40.9394
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: cdf0e8ab-061a-4e23-e758-08d8b0916f01
+X-MS-Exchange-CrossTenant-Network-Message-Id: 029f594e-f50b-4186-3a5b-08d8b0917281
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6x0JyMBdR9NDGatFK5IiIALAWA513qh4ExxLsmBWJbdoWoCVDNKrJajorJNpbwgORTZn0gL9moueEfYnKn27qA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6982
+X-MS-Exchange-CrossTenant-UserPrincipalName: xyO9pJ9i4CmV92HEpDUMvmXtw9pOeDhcghmQIM920gyfagDewj1MNeOyc4HJcm4uulZS6kPPFxrntd99QgqFLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alice Guo <alice.guo@nxp.com>
 
-In order to be able to use NVMEM APIs to read soc unique ID, add the
-nvmem data cell and name for nvmem-cells to the "soc" node, and add a
-nvmem node which provides soc unique ID to efuse@30350000.
+Directly reading ocotp register depends on that bootloader enables ocotp
+clk, which is not always effective, so change to use nvmem API. Using
+nvmem API requires to support driver defer probe and thus change
+soc-imx8m.c to use platform driver.
+
+The other reason is that directly reading ocotp register causes kexec
+kernel hang because the 1st kernel running will disable unused clks
+after kernel boots up, and then ocotp clk will be disabled even if
+bootloader enables it. When kexec kernel, ocotp clk needs to be enabled
+before reading ocotp registers, and nvmem API with platform driver
+supported can accomplish this.
 
 Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Alice Guo <alice.guo@nxp.com>
 ---
 
 Changes for v10:
- - none
+ - do not initialize ret to 0
+ - return imx8_soc_info(NULL) directly
 Changes for v9:
  - re-add Reviewed-by because it was lost in v8
 Changes for v8:
  - lost Reviewed-by carelessly
 Changes for v7:
- - add Reviewed-by
+ - solve the problem "drivers/soc/imx/soc-imx8m.c:174:34: warning:
+   unused variable"
 Changes for v6:
  - leave only the changelog under '---'
 Changes for v5:
- - change underscore of device node to hyphen
+ - add cleanup part "of_node_put"
+ - add note to explain that why device_initcall still exists
 Changes for v4:
- - delete "stuff" in subject and commit message
- - add detailed description
+ - delete "__maybe_unused"
+ - delete MODULE_DEVICE_TABLE(of, imx8m_soc_match);
+ - rename match table
+   "fsl,imx8m*"is actually a machine compabile and "fsl,imx8m*-soc" is a
+   compabile of soc@0
+ - delete "flag" and change to determine whether the pointer is NULL
+ - ues of_find_matching_node_and_match()
+ - delete of_match_ptr()
 Changes for v3:
- - convert register addresses and sizes to hex
+ - keep the original way which uses device_initcall to read soc unique
+   ID
+ - add the other way which uses module_platform_driver and nvmem API, so
+   that it will not break the old version DTBs
 Changes for v2:
- - remove the subject prefix "LF-2571-3"
+ - remove the subject prefix "LF-2571-4"
 
- arch/arm64/boot/dts/freescale/imx8mm.dtsi | 6 ++++++
- arch/arm64/boot/dts/freescale/imx8mn.dtsi | 6 ++++++
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 6 ++++++
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 6 ++++++
- 4 files changed, 24 insertions(+)
+ drivers/soc/imx/soc-imx8m.c | 84 +++++++++++++++++++++++++++++++------
+ 1 file changed, 72 insertions(+), 12 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index d457ce815e68..9bee6f1889a4 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -261,6 +261,8 @@
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges = <0x0 0x0 0x0 0x3e000000>;
-+		nvmem-cells = <&imx8mm_uid>;
-+		nvmem-cell-names = "soc_unique_id";
+diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
+index cc57a384d74d..071e14496e4b 100644
+--- a/drivers/soc/imx/soc-imx8m.c
++++ b/drivers/soc/imx/soc-imx8m.c
+@@ -5,6 +5,8 @@
 
- 		aips1: bus@30000000 {
- 			compatible = "fsl,aips-bus", "simple-bus";
-@@ -518,6 +520,10 @@
- 				#address-cells = <1>;
- 				#size-cells = <1>;
+ #include <linux/init.h>
+ #include <linux/io.h>
++#include <linux/module.h>
++#include <linux/nvmem-consumer.h>
+ #include <linux/of_address.h>
+ #include <linux/slab.h>
+ #include <linux/sys_soc.h>
+@@ -29,7 +31,7 @@
 
-+				imx8mm_uid: unique-id@410 {
-+					reg = <0x4 0x8>;
-+				};
+ struct imx8_soc_data {
+ 	char *name;
+-	u32 (*soc_revision)(void);
++	u32 (*soc_revision)(struct device *dev);
+ };
+
+ static u64 soc_uid;
+@@ -50,7 +52,7 @@ static u32 imx8mq_soc_revision_from_atf(void)
+ static inline u32 imx8mq_soc_revision_from_atf(void) { return 0; };
+ #endif
+
+-static u32 __init imx8mq_soc_revision(void)
++static u32 __init imx8mq_soc_revision(struct device *dev)
+ {
+ 	struct device_node *np;
+ 	void __iomem *ocotp_base;
+@@ -75,9 +77,20 @@ static u32 __init imx8mq_soc_revision(void)
+ 			rev = REV_B1;
+ 	}
+
+-	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
+-	soc_uid <<= 32;
+-	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
++	if (dev) {
++		int ret;
 +
- 				cpu_speed_grade: speed-grade@10 {
- 					reg = <0x10 4>;
- 				};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index db50e6e01ac5..b344fdc16534 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -245,6 +245,8 @@
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges = <0x0 0x0 0x0 0x3e000000>;
-+		nvmem-cells = <&imx8mn_uid>;
-+		nvmem-cell-names = "soc_unique_id";
++		ret = nvmem_cell_read_u64(dev, "soc_unique_id", &soc_uid);
++		if (ret) {
++			iounmap(ocotp_base);
++			of_node_put(np);
++			return ret;
++		}
++	} else {
++		soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
++		soc_uid <<= 32;
++		soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
++	}
 
- 		aips1: bus@30000000 {
- 			compatible = "fsl,aips-bus", "simple-bus";
-@@ -531,6 +533,10 @@
- 				#address-cells = <1>;
- 				#size-cells = <1>;
+ 	iounmap(ocotp_base);
+ 	of_node_put(np);
+@@ -107,7 +120,7 @@ static void __init imx8mm_soc_uid(void)
+ 	of_node_put(np);
+ }
 
-+				imx8mn_uid: unique-id@410 {
-+					reg = <0x4 0x8>;
-+				};
+-static u32 __init imx8mm_soc_revision(void)
++static u32 __init imx8mm_soc_revision(struct device *dev)
+ {
+ 	struct device_node *np;
+ 	void __iomem *anatop_base;
+@@ -125,7 +138,15 @@ static u32 __init imx8mm_soc_revision(void)
+ 	iounmap(anatop_base);
+ 	of_node_put(np);
+
+-	imx8mm_soc_uid();
++	if (dev) {
++		int ret;
 +
- 				cpu_speed_grade: speed-grade@10 {
- 					reg = <0x10 4>;
- 				};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index ec6ac523ecfc..9401e92f1c84 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -222,6 +222,8 @@
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges = <0x0 0x0 0x0 0x3e000000>;
-+		nvmem-cells = <&imx8mp_uid>;
-+		nvmem-cell-names = "soc_unique_id";
++		ret = nvmem_cell_read_u64(dev, "soc_unique_id", &soc_uid);
++		if (ret)
++			return ret;
++	} else {
++		imx8mm_soc_uid();
++	}
 
- 		aips1: bus@30000000 {
- 			compatible = "fsl,aips-bus", "simple-bus";
-@@ -328,6 +330,10 @@
- 				#address-cells = <1>;
- 				#size-cells = <1>;
+ 	return rev;
+ }
+@@ -150,7 +171,7 @@ static const struct imx8_soc_data imx8mp_soc_data = {
+ 	.soc_revision = imx8mm_soc_revision,
+ };
 
-+				imx8mp_uid: unique-id@420 {
-+					reg = <0x8 0x8>;
-+				};
+-static __maybe_unused const struct of_device_id imx8_soc_match[] = {
++static __maybe_unused const struct of_device_id imx8_machine_match[] = {
+ 	{ .compatible = "fsl,imx8mq", .data = &imx8mq_soc_data, },
+ 	{ .compatible = "fsl,imx8mm", .data = &imx8mm_soc_data, },
+ 	{ .compatible = "fsl,imx8mn", .data = &imx8mn_soc_data, },
+@@ -158,12 +179,20 @@ static __maybe_unused const struct of_device_id imx8_soc_match[] = {
+ 	{ }
+ };
+
++static __maybe_unused const struct of_device_id imx8_soc_match[] = {
++	{ .compatible = "fsl,imx8mq-soc", .data = &imx8mq_soc_data, },
++	{ .compatible = "fsl,imx8mm-soc", .data = &imx8mm_soc_data, },
++	{ .compatible = "fsl,imx8mn-soc", .data = &imx8mn_soc_data, },
++	{ .compatible = "fsl,imx8mp-soc", .data = &imx8mp_soc_data, },
++	{ }
++};
 +
- 				cpu_speed_grade: speed-grade@10 {
- 					reg = <0x10 4>;
- 				};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 9b6d9307e5d7..a2a885f1a07a 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -291,6 +291,8 @@
- 		#size-cells = <1>;
- 		ranges = <0x0 0x0 0x0 0x3e000000>;
- 		dma-ranges = <0x40000000 0x0 0x40000000 0xc0000000>;
-+		nvmem-cells = <&imx8mq_uid>;
-+		nvmem-cell-names = "soc_unique_id";
+ #define imx8_revision(soc_rev) \
+ 	soc_rev ? \
+ 	kasprintf(GFP_KERNEL, "%d.%d", (soc_rev >> 4) & 0xf,  soc_rev & 0xf) : \
+ 	"unknown"
 
- 		bus@30000000 { /* AIPS1 */
- 			compatible = "fsl,aips-bus", "simple-bus";
-@@ -555,6 +557,10 @@
- 				#address-cells = <1>;
- 				#size-cells = <1>;
+-static int __init imx8_soc_init(void)
++static int imx8_soc_info(struct platform_device *pdev)
+ {
+ 	struct soc_device_attribute *soc_dev_attr;
+ 	struct soc_device *soc_dev;
+@@ -182,7 +211,10 @@ static int __init imx8_soc_init(void)
+ 	if (ret)
+ 		goto free_soc;
 
-+				imx8mq_uid: soc-uid@410 {
-+					reg = <0x4 0x8>;
-+				};
+-	id = of_match_node(imx8_soc_match, of_root);
++	if (pdev)
++		id = of_match_node(imx8_soc_match, pdev->dev.of_node);
++	else
++		id = of_match_node(imx8_machine_match, of_root);
+ 	if (!id) {
+ 		ret = -ENODEV;
+ 		goto free_soc;
+@@ -191,8 +223,16 @@ static int __init imx8_soc_init(void)
+ 	data = id->data;
+ 	if (data) {
+ 		soc_dev_attr->soc_id = data->name;
+-		if (data->soc_revision)
+-			soc_rev = data->soc_revision();
++		if (data->soc_revision) {
++			if (pdev) {
++				soc_rev = data->soc_revision(&pdev->dev);
++				ret = soc_rev;
++				if (ret < 0)
++					goto free_soc;
++			} else {
++				soc_rev = data->soc_revision(NULL);
++			}
++		}
+ 	}
+
+ 	soc_dev_attr->revision = imx8_revision(soc_rev);
+@@ -230,4 +270,24 @@ static int __init imx8_soc_init(void)
+ 	kfree(soc_dev_attr);
+ 	return ret;
+ }
 +
- 				cpu_speed_grade: speed-grade@10 {
- 					reg = <0x10 4>;
- 				};
++/* Retain device_initcall is for backward compatibility with DTS. */
++static int __init imx8_soc_init(void)
++{
++	if (of_find_matching_node_and_match(NULL, imx8_soc_match, NULL))
++		return 0;
++
++	return imx8_soc_info(NULL);
++}
+ device_initcall(imx8_soc_init);
++
++static struct platform_driver imx8_soc_info_driver = {
++	.probe = imx8_soc_info,
++	.driver = {
++		.name = "imx8_soc_info",
++		.of_match_table = imx8_soc_match,
++	},
++};
++
++module_platform_driver(imx8_soc_info_driver);
++MODULE_LICENSE("GPL v2");
 --
 2.17.1
 
