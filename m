@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942F22E9A17
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CC22E9A6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729330AbhADQHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:07:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39182 "EHLO mail.kernel.org"
+        id S1728317AbhADQJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:09:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728747AbhADQCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:02:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F65921D93;
-        Mon,  4 Jan 2021 16:01:51 +0000 (UTC)
+        id S1728519AbhADQBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:01:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA77F2250E;
+        Mon,  4 Jan 2021 16:00:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776111;
-        bh=w9ADJ7ntWksPmduVRPlLqtVyPk6nB5N/EXcp17a0jlk=;
+        s=korg; t=1609776058;
+        bh=HnNaHNJxfVxU+EAUPCD8OQpZsquJAgWFDNBE0aZ9X8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tqyhTrvYqd/ukAsVzCHllcRsf49Jm3RaITJCa/dI16Twg6k4hMnNJSxTTtR6crsJS
-         8LNK0TSoT/naLHYct8LYlul7GaATcPuz3VAUvYWIcItppzzN+AcZ/I4b3crXhnfqf/
-         uvPB/U+x5lyth7IbikYGshZo3UXWMY4m1SQjh5y0=
+        b=coP2M8UoqPsQeHhzA4Jsz9/HeH3N8jy9kI1FG+Ht9TmNchrTZrPK1cHeqQgsiwfMF
+         TxQu8zKe6g5Rl2uwdlTSf0GWPZkjqWLIqh9nlQmYwyZvMy6ZdLKgdZv3hf4Q73jha4
+         zP6+QtO+CF7onv53sqkznukZdM4W3KDGGY3Zbp6M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Karen Xie <kxie@chelsio.com>,
-        linux-scsi@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 5.10 26/63] scsi: cxgb4i: Fix TLS dependency
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Vorel <petr.vorel@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.4 20/47] tools headers UAPI: Sync linux/const.h with the kernel headers
 Date:   Mon,  4 Jan 2021 16:57:19 +0100
-Message-Id: <20210104155710.091363687@linuxfoundation.org>
+Message-Id: <20210104155706.716155976@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
-References: <20210104155708.800470590@linuxfoundation.org>
+In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
+References: <20210104155705.740576914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-commit cb5253198f10a4cd79b7523c581e6173c7d49ddb upstream.
+commit 7ddcdea5b54492f54700f427f58690cf1e187e5e upstream.
 
-SCSI_CXGB4_ISCSI selects CHELSIO_T4. The latter depends on TLS || TLS=n, so
-since 'select' does not check dependencies of the selected symbol,
-SCSI_CXGB4_ISCSI should also depend on TLS || TLS=n.
+To pick up the changes in:
 
-This prevents the following kconfig warning and restricts SCSI_CXGB4_ISCSI
-to 'm' whenever TLS=m.
+  a85cbe6159ffc973 ("uapi: move constants from <linux/kernel.h> to <linux/const.h>")
 
-WARNING: unmet direct dependencies detected for CHELSIO_T4
-  Depends on [m]: NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_CHELSIO [=y] && PCI [=y] && (IPV6 [=y] || IPV6 [=y]=n) && (TLS [=m] || TLS [=m]=n)
-  Selected by [y]:
-  - SCSI_CXGB4_ISCSI [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && PCI [=y] && INET [=y] && (IPV6 [=y] || IPV6 [=y]=n) && ETHERNET [=y]
+That causes no changes in tooling, just addresses this perf build
+warning:
 
-Link: https://lore.kernel.org/r/20201208220505.24488-1-rdunlap@infradead.org
-Fixes: 7b36b6e03b0d ("[SCSI] cxgb4i v5: iscsi driver")
-Cc: Karen Xie <kxie@chelsio.com>
-Cc: linux-scsi@vger.kernel.org
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+  Warning: Kernel ABI header at 'tools/include/uapi/linux/const.h' differs from latest version at 'include/uapi/linux/const.h'
+  diff -u tools/include/uapi/linux/const.h include/uapi/linux/const.h
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Petr Vorel <petr.vorel@gmail.com>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/cxgbi/cxgb4i/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ tools/include/uapi/linux/const.h |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/scsi/cxgbi/cxgb4i/Kconfig
-+++ b/drivers/scsi/cxgbi/cxgb4i/Kconfig
-@@ -4,6 +4,7 @@ config SCSI_CXGB4_ISCSI
- 	depends on PCI && INET && (IPV6 || IPV6=n)
- 	depends on THERMAL || !THERMAL
- 	depends on ETHERNET
-+	depends on TLS || TLS=n
- 	select NET_VENDOR_CHELSIO
- 	select CHELSIO_T4
- 	select CHELSIO_LIB
+--- a/tools/include/uapi/linux/const.h
++++ b/tools/include/uapi/linux/const.h
+@@ -28,4 +28,9 @@
+ #define _BITUL(x)	(_UL(1) << (x))
+ #define _BITULL(x)	(_ULL(1) << (x))
+ 
++#define __ALIGN_KERNEL(x, a)		__ALIGN_KERNEL_MASK(x, (typeof(x))(a) - 1)
++#define __ALIGN_KERNEL_MASK(x, mask)	(((x) + (mask)) & ~(mask))
++
++#define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
++
+ #endif /* _UAPI_LINUX_CONST_H */
 
 
