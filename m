@@ -2,210 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E5C2E9D98
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345142E9D9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbhADS7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:59:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        id S1727978AbhADTAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 14:00:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726427AbhADS7o (ORCPT
+        with ESMTP id S1727862AbhADTAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:59:44 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B32C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 10:59:04 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id q25so26980552otn.10
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 10:59:04 -0800 (PST)
+        Mon, 4 Jan 2021 14:00:00 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCEEC061795;
+        Mon,  4 Jan 2021 10:59:19 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id a12so66880289lfl.6;
+        Mon, 04 Jan 2021 10:59:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uT5KCgk/jZMHf7cRAZ3Gk/Wa2EphxQ+0xFsMXQbfN0o=;
-        b=bqRK3JFFGg93mU6uZPWaW5akXaVmSZlkgDvU5fw1iBZ9MPoMudZLGU9073yYQ2I/WZ
-         cb16w/QoLwHW5ornVsNvPjULH3bA32uPjZoZjugiNiukbEVLt+GLEmHTE9+UE+tLhtvM
-         AXMdawT4Yu4j3xMoZZQ85b6NjKCVhdBHlIAIQ9AhAm1LLKhJU7wxahlvbnL+qQMWpCC/
-         vDtbv36sm8UOZdgRztkXZmrxHRpqzojCcabpjbC/ifkhOQaclbEpTO++2yRuXHFf+hWT
-         p/U/K/nanu5TYDYAmuVlgx0gf+gLYTjDPYlWcwlEmgpEW0Gt80Y/rHv/ONIIdl8vIi9p
-         Seiw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ju7IWr2o7B0xcZ24vOgX7+9HeXjRtELbBEBKgfPgELY=;
+        b=p3I65vE2aSTlqyMTL5ONOD8taoZXaxjwji/bYM2hUegfEUMvhXPIEPQSwdmEYY0kUa
+         Zv0rTZ9npCaiAL3Xcx+yS7lkAuU3sbe6HeaDWI4nivjwNMUrXpgsHrAvYgvqWfKV8lV4
+         tV4zi1zFQPSjBjah2t/5e4MRXwi+uncDjgxWL+ATs3yibacBSEAQQpi72DG/W7DyNK9Q
+         32Xm2LGp0533lVObGfbcnz9CqAJaDjkSFYV2VKeQpZn1u+hFUieWQueaH4RrBdIIPdF3
+         2g/xDOG5F+HRfi/afwub2ZmXrbwM9NIB3H9YyuR6BIK8Wbu0SQ+8XhY26VDJ2rjMms9E
+         OIqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uT5KCgk/jZMHf7cRAZ3Gk/Wa2EphxQ+0xFsMXQbfN0o=;
-        b=IpJpItWfpR4UN6sqwmE0POd0JYZKFWRctqGLwJwCBiF+EMgc2pWq9L+qVxCzGMtmc1
-         FifH6VG4EF53VVmCQmm8+Nd24T6dqvf3mJJC0UuQEWuZVDRctW4jKz73ttythOYvFHjC
-         b3dXw/ncoCfF5DDzTA0eIqFE6OM1wLYFo7J/2dc4qTBcx0yzdpVTQTDxEcAXXGRmYQvz
-         fB/FAiU3yGmN5O7X0jLNrSCAnx2xXQOSdN33QgXsWhbCKbukRhIC2CPsQ54ALM8Phedh
-         kPM0ln1h2leRIULpNNQ3a2orcUUH8ejH2MoFTXx3Y5btWOb0FMmqBvA9e0cAZVNx6UKw
-         qrpw==
-X-Gm-Message-State: AOAM5310HzBX9Tx84Y6wMbuhuRMu+HD+xd3zW4BA6Y5VdT6yM1gGjWwE
-        ubhSGnm2oCBj1LE69nqSQ7lVuQ==
-X-Google-Smtp-Source: ABdhPJykDxuUHbhj9dk8p15JZDFShC0eDuWkVlmDxShYrt0cNWAckEn0sv1uwbialwYTBVLZAunxzA==
-X-Received: by 2002:a05:6830:1e16:: with SMTP id s22mr51369315otr.110.1609786743465;
-        Mon, 04 Jan 2021 10:59:03 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g12sm13323496oos.8.2021.01.04.10.59.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 10:59:02 -0800 (PST)
-Date:   Mon, 4 Jan 2021 12:59:00 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     Ziqi Chen <ziqichen@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        rnayak@codeaurora.org, vinholikatti@gmail.com,
-        jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, kwmad.kim@samsung.com,
-        stanley.chu@mediatek.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
- violation
-Message-ID: <X/NldGPnKeY0c2uO@builder.lan>
-References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
- <X+ob+FylvPfl3NR/@builder.lan>
- <4c3035c418d0a0c4344be84fb1919314@codeaurora.org>
- <182321abfc98e0cfca071d1ec1255f6d@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ju7IWr2o7B0xcZ24vOgX7+9HeXjRtELbBEBKgfPgELY=;
+        b=UACF6tJrzkkdP+lHT9JQylPsuo4C/3AqLiffGUSRvKKkyTCW5aKyDEbBSXACM5RBGP
+         ROyC1QrKUDh9YkvUXylW6UvZ3TgagTOuiZSvNUh0VGnR06RGnjmN+XllHyPvdaClTWV+
+         BecZKiKly99DbRb812NMy1+WCWLQ5K1QcmVo5vGJxeurUXHYQa4ZeSjVK4GyYCylLcvQ
+         6B9SQwlod9S4ULs/fNklPwQ7Yyelsh/v9twNZUndSaqjnoLO5C48yKNZ3q/x6nBpAe2e
+         dD941s1jquzcCXyNgMg+nP4Y+eIOkyJEuVVBNQsOgtMhDO2tvI5hhF/eFzG9SEb5CPzC
+         j/IA==
+X-Gm-Message-State: AOAM532rLmsnD3yhf3lQzhasweVDhzwTWsg0tf/t3KvdsTiF2ieR9fJQ
+        Bqi7b3UtnYdPEzmGasAkHNOtDjh0+WQe6Q+VZ7o8IuxgeBuv+Q==
+X-Google-Smtp-Source: ABdhPJxs9nhb8aFEeOyulkXeWFD+wTvkmzgJJkhnl+LIwlXTMui9K1+5Od+HTeCgRlRkglptzecYAn67//vUfnh8oco=
+X-Received: by 2002:ac2:43c1:: with SMTP id u1mr33606446lfl.38.1609786758153;
+ Mon, 04 Jan 2021 10:59:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <182321abfc98e0cfca071d1ec1255f6d@codeaurora.org>
+References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
+ <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
+ <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com> <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
+ <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com> <20200902135423.GB93959@lorien.usersys.redhat.com>
+ <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
+ <20200908131954.GA147026@lorien.usersys.redhat.com> <20210104182642.xglderapsfrop6pi@e107158-lin>
+In-Reply-To: <20210104182642.xglderapsfrop6pi@e107158-lin>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 4 Jan 2021 10:59:06 -0800
+Message-ID: <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
+To:     Qais Yousef <qais.yousef@arm.com>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Phil Auld <pauld@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        vincent.donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
+        vincent.guittot@linaro.org, LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 28 Dec 19:48 CST 2020, Can Guo wrote:
+On Mon, Jan 4, 2021 at 10:29 AM Qais Yousef <qais.yousef@arm.com> wrote:
+>
+> On 09/08/20 09:19, Phil Auld wrote:
+> > Hi Quais,
+> >
+> > On Mon, Sep 07, 2020 at 12:02:24PM +0100 Qais Yousef wrote:
+> > > On 09/02/20 09:54, Phil Auld wrote:
+> > > > >
+> > > > > I think this decoupling is not necessary. The natural place for those
+> > > > > scheduler trace_event based on trace_points extension files is
+> > > > > kernel/sched/ and here the internal sched.h can just be included.
+> > > > >
+> > > > > If someone really wants to build this as an out-of-tree module there is
+> > > > > an easy way to make kernel/sched/sched.h visible.
+> > > > >
+> > > >
+> > > > It's not so much that we really _want_ to do this in an external module.
+> > > > But we aren't adding more trace events and my (limited) knowledge of
+> > > > BPF let me to the conclusion that its raw tracepoint functionality
+> > > > requires full events.  I didn't see any other way to do it.
+> > >
+> > > I did have a patch that allowed that. It might be worth trying to upstream it.
+> > > It just required a new macro which could be problematic.
+> > >
+> > > https://github.com/qais-yousef/linux/commit/fb9fea29edb8af327e6b2bf3bc41469a8e66df8b
+> > >
+> > > With the above I could attach using bpf::RAW_TRACEPOINT mechanism.
+> > >
+> >
+> > Yeah, that could work. I meant there was no way to do it with what was there :)
+> >
+> > In our initial attempts at using BPF to get at nr_running (which I was not
+> > involved in and don't have all the details...) there were issues being able to
+> > keep up and losing events.  That may have been an implementation issue, but
+> > using the module and trace-cmd doesn't have that problem. Hopefully you don't
+> > see that using RAW_TRACEPOINTs.
+>
+> So I have a proper patch for that now, that actually turned out to be really
+> tiny once you untangle exactly what is missing.
+>
+> Peter, bpf programs aren't considered ABIs AFAIK, do you have concerns about
+> that?
+>
+> Thanks
+>
+> --
+> Qais Yousef
+>
+> -->8--
+>
+> From cf81de8c7db03d62730939aa902579339e2fc859 Mon Sep 17 00:00:00 2001
+> From: Qais Yousef <qais.yousef@arm.com>
+> Date: Wed, 30 Dec 2020 22:20:34 +0000
+> Subject: [PATCH] trace: bpf: Allow bpf to attach to bare tracepoints
+>
+> Some subsystems only have bare tracepoints (a tracepoint with no
+> associated trace event) to avoid the problem of trace events being an
+> ABI that can't be changed.
+>
+> From bpf presepective, bare tracepoints are what it calls
+> RAW_TRACEPOINT().
+>
+> Since bpf assumed there's 1:1 mapping, it relied on hooking to
+> DEFINE_EVENT() macro to create bpf mapping of the tracepoints. Since
+> bare tracepoints use DECLARE_TRACE() to create the tracepoint, bpf had
+> no knowledge about their existence.
+>
+> By teaching bpf_probe.h to parse DECLARE_TRACE() in a similar fashion to
+> DEFINE_EVENT(), bpf can find and attach to the new raw tracepoints.
+>
+> Enabling that comes with the contract that changes to raw tracepoints
+> don't constitute a regression if they break existing bpf programs.
+> We need the ability to continue to morph and modify these raw
+> tracepoints without worrying about any ABI.
+>
+> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> ---
+>  include/trace/bpf_probe.h | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+> index cd74bffed5c6..a23be89119aa 100644
+> --- a/include/trace/bpf_probe.h
+> +++ b/include/trace/bpf_probe.h
+> @@ -55,8 +55,7 @@
+>  /* tracepoints with more than 12 arguments will hit build error */
+>  #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+>
+> -#undef DECLARE_EVENT_CLASS
+> -#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
+> +#define __BPF_DECLARE_TRACE(call, proto, args)                         \
+>  static notrace void                                                    \
+>  __bpf_trace_##call(void *__data, proto)                                        \
+>  {                                                                      \
+> @@ -64,6 +63,10 @@ __bpf_trace_##call(void *__data, proto)                                      \
+>         CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+>  }
+>
+> +#undef DECLARE_EVENT_CLASS
+> +#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
+> +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
+> +
+>  /*
+>   * This part is compiled out, it is only here as a build time check
+>   * to make sure that if the tracepoint handling changes, the
+> @@ -111,6 +114,11 @@ __DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
+>  #define DEFINE_EVENT_PRINT(template, name, proto, args, print) \
+>         DEFINE_EVENT(template, name, PARAMS(proto), PARAMS(args))
+>
+> +#undef DECLARE_TRACE
+> +#define DECLARE_TRACE(call, proto, args)                               \
+> +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))          \
+> +       __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
+> +
+>  #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
 
-> On 2020-12-29 09:18, Can Guo wrote:
-> > On 2020-12-29 01:55, Bjorn Andersson wrote:
-> > > On Tue 22 Dec 07:49 CST 2020, Ziqi Chen wrote:
-> > > 
-> > > > As per specs, e.g, JESD220E chapter 7.2, while powering
-> > > > off/on the ufs device, RST_N signal and REF_CLK signal
-> > > > should be between VSS(Ground) and VCCQ/VCCQ2.
-> > > > 
-> > > > To flexibly control device reset line, refactor the function
-> > > > ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
-> > > > vops_device_reset(sturct ufs_hba *hba, bool asserted). The
-> > > > new parameter "bool asserted" is used to separate device reset
-> > > > line pulling down from pulling up.
-> > > > 
-> > > > Cc: Kiwoong Kim <kwmad.kim@samsung.com>
-> > > > Cc: Stanley Chu <stanley.chu@mediatek.com>
-> > > > Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
-> > > > ---
-> > > >  drivers/scsi/ufs/ufs-mediatek.c | 32
-> > > > ++++++++++++++++----------------
-> > > >  drivers/scsi/ufs/ufs-qcom.c     | 24 +++++++++++++++---------
-> > > >  drivers/scsi/ufs/ufshcd.c       | 36
-> > > > +++++++++++++++++++++++++-----------
-> > > >  drivers/scsi/ufs/ufshcd.h       |  8 ++++----
-> > > >  4 files changed, 60 insertions(+), 40 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/scsi/ufs/ufs-mediatek.c
-> > > > b/drivers/scsi/ufs/ufs-mediatek.c
-> > > > index 80618af..072f4db 100644
-> > > > --- a/drivers/scsi/ufs/ufs-mediatek.c
-> > > > +++ b/drivers/scsi/ufs/ufs-mediatek.c
-> > > > @@ -841,27 +841,27 @@ static int
-> > > > ufs_mtk_link_startup_notify(struct ufs_hba *hba,
-> > > >  	return ret;
-> > > >  }
-> > > > 
-> > > > -static int ufs_mtk_device_reset(struct ufs_hba *hba)
-> > > > +static int ufs_mtk_device_reset(struct ufs_hba *hba, bool asserted)
-> > > >  {
-> > > >  	struct arm_smccc_res res;
-> > > > 
-> > > > -	ufs_mtk_device_reset_ctrl(0, res);
-> > > > +	if (asserted) {
-> > > > +		ufs_mtk_device_reset_ctrl(0, res);
-> > > > 
-> > > > -	/*
-> > > > -	 * The reset signal is active low. UFS devices shall detect
-> > > > -	 * more than or equal to 1us of positive or negative RST_n
-> > > > -	 * pulse width.
-> > > > -	 *
-> > > > -	 * To be on safe side, keep the reset low for at least 10us.
-> > > > -	 */
-> > > > -	usleep_range(10, 15);
-> > > > -
-> > > > -	ufs_mtk_device_reset_ctrl(1, res);
-> > > > -
-> > > > -	/* Some devices may need time to respond to rst_n */
-> > > > -	usleep_range(10000, 15000);
-> > > > +		/*
-> > > > +		 * The reset signal is active low. UFS devices shall detect
-> > > > +		 * more than or equal to 1us of positive or negative RST_n
-> > > > +		 * pulse width.
-> > > > +		 *
-> > > > +		 * To be on safe side, keep the reset low for at least 10us.
-> > > > +		 */
-> > > > +		usleep_range(10, 15);
-> > > 
-> > > I see no point in allowing vendors to "tweak" the 1us->10us
-> > > adjustment.
-> > > The specification says 1us and we all agree that 10us gives us good
-> > > enough slack. I.e. this is common code.
-> > 
-> > Hi Bjron,
-> > 
-> > We tried, but Samsung fellows wanted 5us. We couldn't get a agreement
-> > on this delay in short term, so we chose to leave it in vops.
-> > 
-> > > 
-> > > > +	} else {
-> > > > +		ufs_mtk_device_reset_ctrl(1, res);
-> > > > 
-> > > > -	dev_info(hba->dev, "device reset done\n");
-> > > > +		/* Some devices may need time to respond to rst_n */
-> > > > +		usleep_range(10000, 15000);
-> > > 
-> > > The comment in both the Qualcomm and Mediatek drivers claim that
-> > > this is
-> > > sleep relates to the UFS device (not host), so why should it be
-> > > different?
-> > > 
-> > > What happens if I take the device that Mediatek see a need for a 10ms
-> > > delay and hook that up to a Qualcomm host? This really should go in
-> > > the
-> > > common code.
-> > > 
-> > 
-> > Agree, but Qualcomm host didn't have any problems with 10us yet, so if
-> > we put
-> > the 10ms delay to common code, Qualcomm host would suffer longer delay
-> > when
-> > device reset happens - both bootup and resume(xpm_lvl = 5/6) latency
-> > would
-> > be increased.
-> > 
-> > Regards,
-> > Can Guo.
-> > 
-> 
-> Besides, currently this device reset vops is only registered by ufs-qcom.c
-> and ufs-mediatek.c, meaning any delays that we put in the common code are
-> not
-> necessary for those who do not have this vops registered, i.e ufs-exynos.c,
-> ufs-hisi.c.
-> 
+The patch looks fine to me.
+Please add a few things:
+- selftests to make sure it gets routinely tested with bpf CI.
+- add a doc with contents from commit log.
+The "Does bpf make things into an abi ?" question keeps coming back
+over and over again.
+Everytime we have the same answer that No, bpf cannot bake things into abi.
+I think once it's spelled out somewhere in Documentation/ it would be easier to
+repeat this message.
+Also please tag future patches to bpf-next tree to make sure things
+keep being tested.
 
-Surely we can detect this in the common code and only sleep if the vops
-is implemented - and successfully deasserted the reset.
-
-Regards,
-Bjorn
+Thanks
