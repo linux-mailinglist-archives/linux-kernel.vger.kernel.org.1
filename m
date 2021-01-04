@@ -2,79 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294CB2E99E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9AA2E99F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727739AbhADQEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:04:36 -0500
-Received: from mga09.intel.com ([134.134.136.24]:37709 "EHLO mga09.intel.com"
+        id S1728655AbhADQFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:05:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:39330 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727902AbhADQDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:03:51 -0500
-IronPort-SDR: ZNpJmlhBpH7YiHYRn0WVx+CCN9Ms4iTUzdyjj0QL6mE/nbbUpkptBvXZ77p1vProMiUS6JCNbe
- yHNLLn5m8qgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="177125364"
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="177125364"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:01:42 -0800
-IronPort-SDR: Sat210pARWhhFDSGQ38Z9H/iJxxb+L7jzty0m3qiqd2GtmdR42YkGYraJgERu63QGl5LaKf1B7
- UBpmRy8lO1QQ==
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="345939499"
-Received: from hnanjund-mobl.amr.corp.intel.com ([10.254.115.148])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:01:40 -0800
-Message-ID: <7430c8b52fd49ded844da06b51056cb490cd7cfe.camel@linux.intel.com>
-Subject: Re: [PATCH 0/2] hid: intel-ish-hid: ipc: enable OOB support for EHL
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Jiri Kosina <jikos@kernel.org>, Zhang Lixu <lixu.zhang@intel.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        benjamin.tissoires@redhat.com
-Date:   Mon, 04 Jan 2021 08:01:36 -0800
-In-Reply-To: <nycvar.YFH.7.76.2101041612290.13752@cbobk.fhfr.pm>
-References: <20201216063640.4086068-1-lixu.zhang@intel.com>
-         <nycvar.YFH.7.76.2101041612290.13752@cbobk.fhfr.pm>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+        id S1729119AbhADQD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:03:28 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DED7101E;
+        Mon,  4 Jan 2021 08:02:43 -0800 (PST)
+Received: from bogus (unknown [10.57.35.27])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 64B793F719;
+        Mon,  4 Jan 2021 08:02:21 -0800 (PST)
+Date:   Mon, 4 Jan 2021 16:02:14 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SYSTEM CONTROL & POWER/MANAGEMENT INTERFACE Mes..." 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/2] firmware: arm_scmi: Augment SMC/HVC to allow
+ optional interrupt
+Message-ID: <20210104160214.a6zu7nnzutygdr4v@bogus>
+References: <20201222145603.40192-1-jim2101024@gmail.com>
+ <CANCKTBtJ2N2N8tKDo1X8Q0rkDZD_RcSL=KqnwnCd0Wg98ELDsw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANCKTBtJ2N2N8tKDo1X8Q0rkDZD_RcSL=KqnwnCd0Wg98ELDsw@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-01-04 at 16:12 +0100, Jiri Kosina wrote:
-> On Wed, 16 Dec 2020, Zhang Lixu wrote:
+On Mon, Jan 04, 2021 at 09:57:31AM -0500, Jim Quinlan wrote:
+> Hi Sudeep,
 > 
-> > The EHL (Elkhart Lake) based platforms provide a OOB (Out of band)
-> > service, which allows wakup device when the system is in S5 (Soft-
-> > Off
-> > state). This OOB service can be enabled/disabled from BIOS
-> > settings.
-> > 
-> > These two patches is to enable this feature for EHL platform.
-> > 
-> > We have tested these patches on both ISH platforms and EHL
-> > platforms,
-> > it works fine.
-> > 
-> > Zhang Lixu (2):
-> >   hid: intel-ish-hid: ipc: finish power flow for EHL OOB
-> >   hid: intel-ish-hid: ipc: Address EHL Sx resume issues
-> > 
-> >  drivers/hid/intel-ish-hid/ipc/hw-ish.h  |  1 +
-> >  drivers/hid/intel-ish-hid/ipc/ipc.c     | 27 +++++++++++++
-> >  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 54
-> > ++++++++++++++++++++++++-
-> >  3 files changed, 81 insertions(+), 1 deletion(-)
-> 
-> Srinivas, can I please get your Acked-by / Reviewed-by for this?
-Acked on individual patches.
-
-Thanks,
-Srinivas
-
-
-> Thanks,
+> Since RobH has reviewed  patch 1/.2 and Florian has acked it, can you
+> please accept patches 1 & 2?
 > 
 
+Sure, will start queuing patches later this week, will let you know when
+I apply. Thanks.
 
+-- 
+Regards,
+Sudeep
