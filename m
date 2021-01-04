@@ -2,109 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376D12E9486
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0242E948A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbhADMGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:06:00 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:46640 "EHLO inva021.nxp.com"
+        id S1726465AbhADMHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:07:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52962 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726026AbhADMGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:06:00 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BA36C201F31;
-        Mon,  4 Jan 2021 13:05:12 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id ACE1F200F26;
-        Mon,  4 Jan 2021 13:05:12 +0100 (CET)
-Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 98FA820347;
-        Mon,  4 Jan 2021 13:05:12 +0100 (CET)
-Date:   Mon, 4 Jan 2021 14:05:12 +0200
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Revert "clk: imx: fix composite peripheral flags"
-Message-ID: <20210104120512.gmi2zjz7dzhjussp@fsr-ub1664-175>
-References: <20201231142149.26062-1-martin.kepplinger@puri.sm>
- <CAOMZO5Bq5Qs90iZQTpouv5wW_xf0CQcP-i-+c-Jp-_Ftvhknnw@mail.gmail.com>
+        id S1725840AbhADMHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 07:07:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 05641AD1E;
+        Mon,  4 Jan 2021 12:06:27 +0000 (UTC)
+Subject: Re: [PATCH] drm/hisilicon: Use simple encoder
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+References: <1609140936-57002-1-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <b17c2bfc-44b1-991c-9d85-0d4b76e44409@suse.de>
+Date:   Mon, 4 Jan 2021 13:06:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5Bq5Qs90iZQTpouv5wW_xf0CQcP-i-+c-Jp-_Ftvhknnw@mail.gmail.com>
-User-Agent: NeoMutt/20180622
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <1609140936-57002-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="RcKsmR2MQPtOUTxZ5J5DRotL5LML8QcO4"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-12-31 17:33:40, Fabio Estevam wrote:
-> Hi Martin,
-> 
-> On Thu, Dec 31, 2020 at 11:22 AM Martin Kepplinger
-> <martin.kepplinger@puri.sm> wrote:
-> >
-> > This reverts commit 936c383673b9e3007432f17140ac62de53d87db9.
-> >
-> > It breaks clock reparenting via devfreq on the imx8mq used in the
-> > Librem 5 phone. When switching dram frequency (which worked before)
-> > the system now hangs after this where the dram_apb clock cannot be
-> > set:
-> >
-> > [  129.391755] imx8m-ddrc-devfreq 3d400000.memory-controller: failed to
-> > set dram_apb parent: -16
-> > [  129.391959] imx8m-ddrc-devfreq 3d400000.memory-controller: ddrc
-> > failed freq switch to 25000000 from 800000000: error -16. now at 25000000
-> > [  129.406133] imx8m-ddrc-devfreq 3d400000.memory-controller: failed to
-> > update frequency from PM QoS (-16)
-> 
-> I am wondering whether IMX8MQ_CLK_DRAM_ALT should also be marked as
-> CLK_IS_CRITICAL.
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--RcKsmR2MQPtOUTxZ5J5DRotL5LML8QcO4
+Content-Type: multipart/mixed; boundary="ZU0tHU16DKjjR6xEEjtT14n4ZpFECqYz0";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <b17c2bfc-44b1-991c-9d85-0d4b76e44409@suse.de>
+Subject: Re: [PATCH] drm/hisilicon: Use simple encoder
+References: <1609140936-57002-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1609140936-57002-1-git-send-email-tiantao6@hisilicon.com>
 
-Hmm, the way the DRAM clocks are right registered right now is a real mess.
-The DRAM clocks on i.MX8M are changed in TF-A, but the kernel still needs to
-register them to keep track of the clock tree.
+--ZU0tHU16DKjjR6xEEjtT14n4ZpFECqYz0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Martin, I already have a patchset waiting to be shipped which doesn't 
-only fix the 8MQ, but all the 8M platforms. Unfortunately, I haven't had the time
-to work on that in the last couple of weeks but I intend to switch back to it soon.
+Hi
 
-Fabio, marking the DRAM clocks as critical will not allow the set_parent to be done,
-as CLK_IS_CRITICAL flag and set_parent do not go together. As of now the devfreq
-tries to reparent to be consistent with TF-A configuration.
+Am 28.12.20 um 08:35 schrieb Tian Tao:
+> The hibmc driver uses empty implementations for its encoders. Replace
+> the code with the generic simple encoder.
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-My approach here was to make the DRAM clocks read-only. This means adding some 
-stuff in the clock core subsystem too.
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 
-> Could you please try the following change without the revert?
-> 
-> --- a/drivers/clk/imx/clk-imx8mq.c
-> +++ b/drivers/clk/imx/clk-imx8mq.c
-> @@ -458,7 +458,7 @@ static int imx8mq_clocks_probe(struct platform_device *pdev)
->          * Mark with GET_RATE_NOCACHE to always read div value from hardware
->          */
->         hws[IMX8MQ_CLK_DRAM_CORE] =
-> imx_clk_hw_mux2_flags("dram_core_clk", base + 0x9800, 24, 1,
-> imx8mq_dram_core_sels, ARRAY_SIZE(imx8mq_dram_core_sels),
-> CLK_IS_CRITICAL);
-> -       hws[IMX8MQ_CLK_DRAM_ALT] =
-> __imx8m_clk_hw_composite("dram_alt", imx8mq_dram_alt_sels, base +
-> 0xa000, CLK_GET_RATE_NOCACHE);
-> +       hws[IMX8MQ_CLK_DRAM_ALT] =
-> __imx8m_clk_hw_composite("dram_alt", imx8mq_dram_alt_sels, base +
-> 0xa000, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
->         hws[IMX8MQ_CLK_DRAM_APB] =
-> __imx8m_clk_hw_composite("dram_apb", imx8mq_dram_apb_sels, base +
-> 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
-> 
-> Thanks
+Thanks for the patch.
+
+> ---
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 8 ++------
+>   1 file changed, 2 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers=
+/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> index d35548d..c76f996 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> @@ -14,6 +14,7 @@
+>   #include <drm/drm_atomic_helper.h>
+>   #include <drm/drm_probe_helper.h>
+>   #include <drm/drm_print.h>
+> +#include <drm/drm_simple_kms_helper.h>
+>  =20
+>   #include "hibmc_drm_drv.h"
+>   #include "hibmc_drm_regs.h"
+> @@ -90,10 +91,6 @@ static const struct drm_encoder_helper_funcs hibmc_e=
+ncoder_helper_funcs =3D {
+>   	.mode_set =3D hibmc_encoder_mode_set,
+>   };
+>  =20
+> -static const struct drm_encoder_funcs hibmc_encoder_funcs =3D {
+> -	.destroy =3D drm_encoder_cleanup,
+> -};
+> -
+>   int hibmc_vdac_init(struct hibmc_drm_private *priv)
+>   {
+>   	struct drm_device *dev =3D &priv->dev;
+> @@ -109,8 +106,7 @@ int hibmc_vdac_init(struct hibmc_drm_private *priv)=
+
+>   	}
+>  =20
+>   	encoder->possible_crtcs =3D 0x1;
+> -	ret =3D drm_encoder_init(dev, encoder, &hibmc_encoder_funcs,
+> -			       DRM_MODE_ENCODER_DAC, NULL);
+> +	ret =3D drm_simple_encoder_init(dev, encoder, DRM_MODE_ENCODER_DAC);
+>   	if (ret) {
+>   		drm_err(dev, "failed to init encoder: %d\n", ret);
+>   		return ret;
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--ZU0tHU16DKjjR6xEEjtT14n4ZpFECqYz0--
+
+--RcKsmR2MQPtOUTxZ5J5DRotL5LML8QcO4
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/zBMEFAwAAAAAACgkQlh/E3EQov+BM
+8Q//cEaWhEx6bGrzmsVKIYruBlRbIrGdvVXOQtREZ085r7ayn8EOL0pqiMMKAopGuEpv0jnYYoFG
+PKqq2z3acJ1+fC/ws21CpS4mz79r7g/LVW58cK4uoZ30uSTTXGHSz5MNI00aqBcO442DeiqFa4SE
+wJ40qJ/q6s//ZsNq0VnsT9qMHGJoUeUhRwH4HzjfoPn138U5lJWSO9CO31JxcDpNk5dUEKFq3Gsy
+3VoGo2AphKfVNp5ZRF0NDhmMzpsJ4AYnDUdUDLaL/KLUnmycrjLcBQcYF8AbI16Vr2y4GA5E7FzO
+++aHDsi0Sam0FxSKdrTPTMbQ4f4CcBM04R+FZ1iZXO4gt5I/Tf7D0lqgFAsvMvZsbjgdESt1GnnH
+bE7Gx6KgsmHcJge8JICzBXV9okUvUDh8soWYrMjBxFWSaquMoTlQs4/4BTV+9Ixx+Fo/SUXG5WmJ
+A+uliMKNtFh0misYsPqJd2eVAECNN2KOxZ3WmJzmbxN0IZU/z5lXOhyBT7zdezyWh2Wqd4ZsRsdm
+AOgt6zfTkiEgUDLKlayCiiEIvXRELRPDyotwS70+FEGGT0/V80J71hIF2MgsWux7t7kT2eCUAbch
+mfbTXHYROGRGSZhpnaKMOvzb0OIIurosvYOXA1IClOyqIttbP0VyDLRpLtfpOlLbLzTzZ81JMFLO
+iZA=
+=v8Wn
+-----END PGP SIGNATURE-----
+
+--RcKsmR2MQPtOUTxZ5J5DRotL5LML8QcO4--
