@@ -2,63 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680E72E9B76
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C7B2E9B8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbhADQ7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:59:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727276AbhADQ7L (ORCPT
+        id S1728044AbhADRA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:00:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53576 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727711AbhADRA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:59:11 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CAEC061796
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 08:58:30 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwTBb-006pYa-1h; Mon, 04 Jan 2021 16:58:27 +0000
-Date:   Mon, 4 Jan 2021 16:58:27 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: in_compat_syscall() on x86
-Message-ID: <20210104165827.GJ3579531@ZenIV.linux.org.uk>
-References: <e817cfdc2df3433bb7fb357db89d4d48@AcuMS.aculab.com>
+        Mon, 4 Jan 2021 12:00:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609779569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hnWpyzaa+3BkwI6qgtfvvLYUKPIP+O6CaC4kfzPWIhM=;
+        b=MyxmurhfNKZCz8TzZZ1Kyt158AxYlef+Y0aB3g7VZ5xNGhTWsLuUxtnqsXSWQyBXLSXzoF
+        SyV1mwmHNVYEUfc51CuDjQ0YhlYljMPqy2I0lBxUQisq0f+NL7fANj8MaOhera0t5Z4RSB
+        2+3kyZNckF9D/0P3mIDidrPYqJN+SBc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-q12-ymt6PU6WSViBwJWOCw-1; Mon, 04 Jan 2021 11:59:25 -0500
+X-MC-Unique: q12-ymt6PU6WSViBwJWOCw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F017100C605;
+        Mon,  4 Jan 2021 16:59:22 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-2.rdu2.redhat.com [10.10.115.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AA67C60BE5;
+        Mon,  4 Jan 2021 16:59:21 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 43460220BCF; Mon,  4 Jan 2021 11:59:21 -0500 (EST)
+Date:   Mon, 4 Jan 2021 11:59:21 -0500
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Chengguang Xu <cgxu519@mykernel.net>
+Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
+Message-ID: <20210104165921.GB73873@redhat.com>
+References: <20201223185044.GQ874@casper.infradead.org>
+ <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223200746.GR874@casper.infradead.org>
+ <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223204428.GS874@casper.infradead.org>
+ <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
+ <20201224121352.GT874@casper.infradead.org>
+ <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
+ <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
+ <20201228155618.GA6211@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e817cfdc2df3433bb7fb357db89d4d48@AcuMS.aculab.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20201228155618.GA6211@casper.infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 12:16:56PM +0000, David Laight wrote:
-> On x86 in_compat_syscall() is defined as:
->     in_ia32_syscall() || in_x32_syscall()
+On Mon, Dec 28, 2020 at 03:56:18PM +0000, Matthew Wilcox wrote:
+> On Mon, Dec 28, 2020 at 08:25:50AM -0500, Jeff Layton wrote:
+> > To be clear, the main thing you'll lose with the method above is the
+> > ability to see an unseen error on a newly opened fd, if there was an
+> > overlayfs mount using the same upper sb before your open occurred.
+> > 
+> > IOW, consider two overlayfs mounts using the same upper layer sb:
+> > 
+> > ovlfs1				ovlfs2
+> > ----------------------------------------------------------------------
+> > mount
+> > open fd1
+> > write to fd1
+> > <writeback fails>
+> > 				mount (upper errseq_t SEEN flag marked)
+> > open fd2
+> > syncfs(fd2)
+> > syncfs(fd1)
+> > 
+> > 
+> > On a "normal" (non-overlay) fs, you'd get an error back on both syncfs
+> > calls. The first one has a sample from before the error occurred, and
+> > the second one has a sample of 0, due to the fact that the error was
+> > unseen at open time.
+> > 
+> > On overlayfs, with the intervening mount of ovlfs2, syncfs(fd1) will
+> > return an error and syncfs(fd2) will not. If we split the SEEN flag into
+> > two, then we can ensure that they both still get an error in this
+> > situation.
 > 
-> Now in_ia32_syscall() is a simple check of the TS_COMPAT flag.
-> However in_x32_syscall() is a horrid beast that has to indirect
-> through to the original %eax value (ie the syscall number) and
-> check for a bit there.
-> 
-> So on a kernel with x32 support (probably most distro kernels)
-> the in_compat_syscall() check is rather more expensive than
-> one might expect.
-> 
-> It would be muck better if both checks could be done together.
-> I think this would require the syscall entry code to set a
-> value in both the 64bit and x32 entry paths.
-> (Can a process make both 64bit and x32 system calls?)
+> But do we need to?  If the inode has been evicted we also lose the errno.
 
-Yes, it bloody well can.
+That's for the case of fsync(), right? For the case of syncfs() we will
+not lose error as its stored in super_block.
 
-And I see no benefit in pushing that logics into syscall entry,
-since anything that calls in_compat_syscall() more than once
-per syscall execution is doing the wrong thing.  Moreover,
-in quite a few cases we don't call the sucker at all, and for
-all of those pushing that crap into syscall entry logics is
-pure loss.
+Even for the case of fsync(), inode can be evicted only if no other
+fd is opened for the file. So in above example, fd1 is opened so
+inode can't be evicted, that means we will see error on syncfs(fd2)
+and not lose it.
 
-What's the point, really?
+So if we start consuming upper fs on overlay mount(), it will be a
+change of behavior for applications using same upper fs. So far
+overlay mount() does not consume unseen error and even if an fd
+is opened after the error, application will see error on super
+block. If we consume error on mount(), we change behavior.
+
+I am not saying that's necessarily bad, I am just trying to point
+out that its a user space visible behavior change and worried
+if somebody starts calling it a regression.
+
+Anyway, I looks like two problems got mixed into same thread. One
+problem we need to solve is that syncfs() on overlayfs should
+report back writeback errors (as well as other errors) to applications.
+And that's what this patch series is solving.
+
+And then second issue is detecting writeback errors over remount
+for volatile mounts. And that's where this question comes whether
+we should split seen flag or we should simply consume error on
+mount. So this can be further discussed when patches for this
+changes are posted again.
+
+For now, I will focus on trying to fix first issue and post patches
+for that again after more testing.
+
+Vivek
+
+
+> The guarantee we provide is that a fd that was open before the error
+> occurred will see the error.  An fd that's opened after the error occurred
+> may or may not see the error.
+
