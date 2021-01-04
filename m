@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2662E93AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AB92E93B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbhADKuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:50:54 -0500
-Received: from first.geanix.com ([116.203.34.67]:36860 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726536AbhADKux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:50:53 -0500
-Received: from [IPv6:2a06:4004:10df:1:da27:a6d2:5305:fd0a] (_gateway [172.21.0.1])
-        by first.geanix.com (Postfix) with ESMTPSA id 824154E083C;
-        Mon,  4 Jan 2021 10:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1609757410; bh=vzQBIiX2ZNmabReTeKi3DQ9XqK9ef5/p5TwmnrtLyjY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Oy0LrhR/kRG2/ccgCAqdunZl1RBGvyaB5W6RIiKu5yoZ+ayk+nVJDh5Olh4MC1meN
-         9MoX3u+2Vggt4S1GCIwtsKkF2H0X7ZEkITxKGi4V+BPWDWS2BDING6/4uzQCIxReSm
-         D6sIPWKtwZSbSuGvXlZn9DVmM62DYStkD95OPU0sXxM3GYfv1qa2y7DwnLxEiF9SMt
-         XYbRx1Jtd4XL357/DmHGUUr/N/vLK0elnhcTYjPIHW482MP585FyPJqWPEhjcxUl0N
-         +xbGFSsI/DZ6CqZE+Q5RA79Y7sUk4KnRSE3HzsFKBOdT7hS85I+eKTTDMCo6Picz5+
-         0L0p6vys4OMMQ==
-Subject: Re: [PATCH] mtd: rawnand: gpmi: fix dst bit offset when extracting
- raw payload
-To:     Miquel Raynal <miquel.raynal@bootlin.com>, Han Xu <han.xu@nxp.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210104103558.9035-1-miquel.raynal@bootlin.com>
-From:   Sean Nyekjaer <sean@geanix.com>
-Message-ID: <7db4b36e-23a6-6075-132c-214d043e78bd@geanix.com>
-Date:   Mon, 4 Jan 2021 11:50:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726810AbhADKwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:52:24 -0500
+Received: from mail-oo1-f45.google.com ([209.85.161.45]:34674 "EHLO
+        mail-oo1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbhADKwX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 05:52:23 -0500
+Received: by mail-oo1-f45.google.com with SMTP id x23so6181519oop.1;
+        Mon, 04 Jan 2021 02:52:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q0c1Y3LPa+ARd4G//BxkyHoz21dY5cJnRVsgk53Tbn0=;
+        b=W2qolnfRpSNOO2OPET4j501GZ6Fbc3ix9/s35u7f2ncBvczG8Kuep0IsneSeOvRgbM
+         LHJe1xNLSIF+3rPwk37OCQKnanEsCckhOJHRdFhCPgrOLruGpfZRBK9+GvxM/hkdmCfz
+         DkiIM1qGywXwkhOxgUzQgNZGJDHyoHsdlLjq4UYUNEcTmQCODczWIus72CpYNdOOO7vu
+         zFMEp0Juq80U/0fdPv7qtEN8yBLuRt0HlcDc6h8u5KiAtctNbqsQ9+3YEE6Ny/v/sSWt
+         uX8TC+ZW0nwJOVOrDkYKw5MT5mDYa7+aLW5O+JZX7cX7RrsisHeZhIzytloZvyaL8pj4
+         EPfw==
+X-Gm-Message-State: AOAM530a99uL6vF7UTuXVr4D0qYlWN2ocgbfSUT97D54nKcDX4MJ+C3k
+        aGzFRMG5vMAFmevVG2picUnPZR5K6MT+iXsLQkk=
+X-Google-Smtp-Source: ABdhPJzvxPnIglxjOoytlJMwE5oDPJlVBKkIU/bFGP9uDfDV7fCPuik4jToHwv9sqFHZKPyvpQob0nH+8q9/7XJ4cV4=
+X-Received: by 2002:a4a:ca14:: with SMTP id w20mr48712009ooq.11.1609757502401;
+ Mon, 04 Jan 2021 02:51:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210104103558.9035-1-miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Spam-Status: No, score=-3.4 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        URIBL_BLOCKED autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on ff3d05386fc5
+References: <20201231155957.31165-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201231155957.31165-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Jan 2021 11:51:31 +0100
+Message-ID: <CAMuHMdX2ruikh4voRrHPmi=ti+eHVxXh6N05s1XH6+r5MeeqQw@mail.gmail.com>
+Subject: Re: [PATCH] can: rcar: Update help description for CAN_RCAR_CANFD config
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Prabhakar,
 
-
-On 04/01/2021 11.35, Miquel Raynal wrote:
-> On Mon, 2020-12-21 at 10:00:13 UTC, Sean Nyekjaer wrote:
->> Re-add the multiply by 8 to "step * eccsize" to correct the destination bit offset
->> when extracting the data payload in gpmi_ecc_read_page_raw().
->>
->> Fixes: e5e5631cc889 ("mtd: rawnand: gpmi: Use nand_extract_bits()")
->> Cc: stable@vger.kernel.org
->> Reported-by: Martin Hundebøll <martin@geanix.com>
->> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+On Thu, Dec 31, 2020 at 5:00 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> The rcar_canfd driver supports R-Car Gen3 and RZ/G2 SoC's, update the
+> description to reflect this.
 >
-> Miquel
-Hi Miquel
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Will you please queue this for fixes? It's quite relevant for 5.10 LTS :)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Best regards
-Sean Nyekjaer
+> --- a/drivers/net/can/rcar/Kconfig
+> +++ b/drivers/net/can/rcar/Kconfig
+> @@ -10,13 +10,13 @@ config CAN_RCAR
+>           be called rcar_can.
+>
+>  config CAN_RCAR_CANFD
+> -       tristate "Renesas R-Car CAN FD controller"
+> +       tristate "Renesas R-Car Gen3 and RZ/G2 CAN FD controller"
+>         depends on ARCH_RENESAS || ARM
+
+Not introduced by this patch, but the "|| ARM" looks strange to me.
+Is this meant for compile-testing? Doesn't the driver compile on all
+platforms (it does on m68k), so "|| COMPILE_TEST" is not appropriate?
+Is the CAN FD controller present on some Renesas arm32 SoCs (but
+not yet supported by this driver)?
+
+>         help
+>           Say Y here if you want to use CAN FD controller found on
+> -         Renesas R-Car SoCs. The driver puts the controller in CAN FD only
+> -         mode, which can interoperate with CAN2.0 nodes but does not support
+> -         dedicated CAN 2.0 mode.
+> +         Renesas R-Car Gen3 and RZ/G2 SoCs. The driver puts the
+> +         controller in CAN FD only mode, which can interoperate with
+> +         CAN2.0 nodes but does not support dedicated CAN 2.0 mode.
+>
+>           To compile this driver as a module, choose M here: the module will
+>           be called rcar_canfd.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
