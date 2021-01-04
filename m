@@ -2,119 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191272E9536
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5422E94E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbhADMpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:45:52 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:34872 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726246AbhADMpv (ORCPT
+        id S1726480AbhADMeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:34:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26291 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726098AbhADMeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:45:51 -0500
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210104124508epoutp014a13f2da99b1fcaeb1a83edf452ec5bf~XCBwrFLy_0477404774epoutp01T
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 12:45:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210104124508epoutp014a13f2da99b1fcaeb1a83edf452ec5bf~XCBwrFLy_0477404774epoutp01T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1609764308;
-        bh=x6b3KVLk+Im71pnL1VPiZrNgTpY9lC8K9HNo23bglHw=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=h5ma4OlTgrCmdAJ6jn0aA3Uw/7ICFxcD4hv+nSWN58Srv3LyfONQZ4zIgRwgA1JMJ
-         ztAMOnU457KIQH0qibeo6GsCS4Ik7sPFpUHl7fZkk8p2Qi6r/l/G/Xie01fVxQnO1X
-         nyTrMEPCQBQiCREr/1lljwSwELejN6fOBqc4U0vU=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210104124508epcas5p1e3f4ae02e5d82f79615755bc55c0a393~XCBwF2ibW1495714957epcas5p1a;
-        Mon,  4 Jan 2021 12:45:08 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        44.81.15682.4DD03FF5; Mon,  4 Jan 2021 21:45:08 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c~XBxJxgrDj1662216622epcas5p3u;
-        Mon,  4 Jan 2021 12:26:07 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210104122607epsmtrp259fb06ed6e0f9e65f432d56d678917f4~XBxJw0sP21099410994epsmtrp2O;
-        Mon,  4 Jan 2021 12:26:07 +0000 (GMT)
-X-AuditID: b6c32a49-8bfff70000013d42-87-5ff30dd4a7e9
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EF.2F.13470.F5903FF5; Mon,  4 Jan 2021 21:26:07 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210104122606epsmtip1311e1a983de8d8c4ac2ecb62f5e948b2~XBxIpFs3A3129731297epsmtip1M;
-        Mon,  4 Jan 2021 12:26:06 +0000 (GMT)
-From:   Sriram Dash <sriram.dash@samsung.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-can@vger.kernel.org, mkl@pengutronix.de, dmurphy@ti.com,
-        pankj.sharma@samsung.com, pankaj.dubey@samsung.com,
-        Sriram Dash <sriram.dash@samsung.com>
-Subject: [PATCH] MAINTAINERS: Update MCAN MMIO device driver  maintainer
-Date:   Mon,  4 Jan 2021 18:01:34 +0530
-Message-Id: <20210104123134.16930-1-sriram.dash@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsWy7bCmpu4V3s/xBrtPslt0n97CarHq+1Rm
-        i8u75rBZrF80hcVi0dYv7BbLu+4zW9xYz+7A7tH/18Cjb8sqRo/jN7YzeXzeJBfAEsVlk5Ka
-        k1mWWqRvl8CVMfFYL1PBBtaKZ3PPMDcw7mfpYuTgkBAwkdg3w6qLkYtDSGA3o8Si0z9YIZxP
-        jBLPjl9ggXC+MUq8+PIJKMMJ1nH2fgM7RGIvo8SOzbOhWlqYJF5Ob2MDqWIT0JbY/OQiM4gt
-        IqAgsbn3GVgRs8ACRonfW1aDFQkLeEh8av/MBGKzCKhKbDg8nQnkKF4BG4k/fyQgtslLrN5w
-        gBmkV0JgEbvE4WmXoc5wkbj+7RgLhC0s8er4FnYIW0ri87u9bBB2tsTlvufMEHaJxIxXC6Hq
-        7SUOXJkDDgBmAU2J9bv0IcKyElNPrQM7h1mAT6L39xMmiDivxI55MLaqxKvbm6FWSUscWHsa
-        Ku4h8f3OP7DxQgKxEr8/HGScwCg7C2HDAkbGVYySqQXFuempxaYFhnmp5XrFibnFpXnpesn5
-        uZsYwbGu5bmD8e6DD3qHGJk4GA8xSnAwK4nwVlz4EC/Em5JYWZValB9fVJqTWnyIUZqDRUmc
-        d4fBg3ghgfTEktTs1NSC1CKYLBMHp1QD07LOIkdLW4c7+3WV7snvrQ05fDyj9ehThXfOaauX
-        /3Lo8P+i7iZ9b9/+avOS3+uOXw3ZosBxYuvPsC1y/l2ffFii7FTCX9tNtpTxlE/WvLrWzS30
-        ZkLrrr+99yZuWjt7lc6KH3mBB0L/ORrVHa2tk5B587zzxPZTLHMyxE9c2NVtpbTbcqqxSlb9
-        t8V8Hsvu/vzc+Kk750GoHcv3hfs9ylYtnGmdI7RVeqEFD7/2jujuGw+Di63uFAi8FTG53iNY
-        xJKX+zzX2vnSkcsKl8/0qngrbOifItO5Uc/V7cfbizP8+meLGeyXaIqRDVnMpbbNtS/Z3OlY
-        c0FWxtt1X99e21JUtuDbjKTu91+1bzR6KbEUZyQaajEXFScCAANASXFkAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGJMWRmVeSWpSXmKPExsWy7bCSnG485+d4g+4jUhbdp7ewWqz6PpXZ
-        4vKuOWwW6xdNYbFYtPULu8XyrvvMFjfWszuwe/T/NfDo27KK0eP4je1MHp83yQWwRHHZpKTm
-        ZJalFunbJXBlTDzWy1SwgbXi2dwzzA2M+1m6GDk5JARMJM7eb2DvYuTiEBLYzShxd9J7oAQH
-        UEJa4uddXYgaYYmV/55D1TQxScxYu5wZJMEmoC2x+clFMFtEQEFic+8zVhCbWWAZo8TK//Yg
-        trCAh8Sn9s9MIDaLgKrEhsPTmUDm8wrYSPz5IwExX15i9YYDzBMYeRYwMqxilEwtKM5Nzy02
-        LDDMSy3XK07MLS7NS9dLzs/dxAgOGi3NHYzbV33QO8TIxMF4iFGCg1lJhLfiwod4Id6UxMqq
-        1KL8+KLSnNTiQ4zSHCxK4rwXuk7GCwmkJ5akZqemFqQWwWSZODilGpimr2SUa1yoLNYma3r5
-        v3nSD5Gzqydv1MyRPdOzuyZ0o7h0tKecxZI7F+wsbrd4T1dZvSUgc793kV32PZffrQpyW/8w
-        nm6qOapy8HL8vmMBk0VtVpYnf75vrHU5bpM2q/PGE97nBNY7mckYr8zUSktdcv3xqZVaFo2n
-        DQ/u4z4yd0fwyrPlS2OqF3nw1kT37zQyjJQqvDJb9naX2ucr1zp5lq3Kq59oMMOnMMN7nVW6
-        GVO8pZ5m0Vq3E2+c+OUrT1+3KTGZXCe94voZZSdFHY1QHvYrIuFzN03kt8/4cpRzp+IHxTdt
-        O7RFv8dOe7VfJMiHO6/g6KWZ508KxjFk5V27tyE075zw02t57kE/7ZRYijMSDbWYi4oTAfst
-        azeJAgAA
-X-CMS-MailID: 20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c
-References: <CGME20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c@epcas5p3.samsung.com>
+        Mon, 4 Jan 2021 07:34:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609763568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PfXqInqm33cRUNjuA/gZ2uyf+NPRmgOZS4ZWMKwHtVo=;
+        b=B2aRK5retMBEJnJ4PsxNAKnCI2Fv6kgpJ9p6ULUH9HxgzFyFrG++QDViOWfNPatmsGJL6T
+        F1W8PDG1zHiW6PCb+KnAphdO4ehHDEjvJxdgjgIQfKSesdbAj/ffgJj+ypCOr1cpieQsbl
+        HfNTOelJSGrGLHmkF2FbOM0zaTitjmc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-o4KyHx2jMiC6ody5qiL7FA-1; Mon, 04 Jan 2021 07:32:46 -0500
+X-MC-Unique: o4KyHx2jMiC6ody5qiL7FA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8CC121005504;
+        Mon,  4 Jan 2021 12:32:44 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 22A8360853;
+        Mon,  4 Jan 2021 12:32:42 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=whRD1YakfPKE72htDBzTKA73x3aEwi44ngYFf4WCk+1kQ@mail.gmail.com>
+References: <CAHk-=whRD1YakfPKE72htDBzTKA73x3aEwi44ngYFf4WCk+1kQ@mail.gmail.com> <365031.1608567254@warthog.procyon.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>
+Cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH] afs: Work around strnlen() oops with CONFIG_FORTIFIED_SOURCE=y
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <257073.1609763562.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 04 Jan 2021 12:32:42 +0000
+Message-ID: <257074.1609763562@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update Pankaj Sharma as maintainer for mcan mmio device driver as I
-will be moving to a different role.
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
+> I htink the right fix would be to try to create a type that actually
+> describes that.
+
+How about the attached, then?  It's basically what you suggested.
+
+I realised whilst doing this that I'm not quite getting the extended-name
+handling correct, but I'll deal with that in a separate patch.
+
+David
 ---
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+commit 26982a89cad77c0efc1c0c79bee0e3d75e9281d4
+Author: David Howells <dhowells@redhat.com>
+Date:   Mon Dec 21 22:37:58 2020 +0000
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6eff4f7..45cea57 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10847,7 +10847,7 @@ F:	drivers/media/radio/radio-maxiradio*
- 
- MCAN MMIO DEVICE DRIVER
- M:	Dan Murphy <dmurphy@ti.com>
--M:	Sriram Dash <sriram.dash@samsung.com>
-+M:	Pankaj Sharma <pankj.sharma@samsung.com>
- L:	linux-can@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
--- 
-2.7.4
+    afs: Work around strnlen() oops with CONFIG_FORTIFIED_SOURCE=3Dy
+    =
+
+    AFS has a structured layout in its directory contents (AFS dirs are
+    downloaded as files and parsed locally by the client for lookup/readdi=
+r).
+    The slots in the directory are defined by union afs_xdr_dirent.  This,
+    however, only directly allows a name of a length that will fit into th=
+at
+    union.  To support a longer name, the next 1-8 contiguous entries are
+    annexed to the first one and the name flows across these.
+    =
+
+    afs_dir_iterate_block() uses strnlen(), limited to the space to the en=
+d of
+    the page, to find out how long the name is.  This worked fine until
+    6a39e62abbaf.  With that commit, the compiler determines the size of t=
+he
+    array and asserts that the string fits inside that array.  This is a
+    problem for AFS because we *expect* it to overflow one or more arrays.
+    =
+
+    A similar problem also occurs in afs_dir_scan_block() when a directory=
+ file
+    is being locally edited to avoid the need to redownload it.  There str=
+len()
+    was being used safely because each page has the last byte set to 0 whe=
+n the
+    file is downloaded and validated (in afs_dir_check_page()).
+    =
+
+    Fix this by changing the afs_xdr_dirent union name field to an
+    indeterminate-length array and dropping the overflow field.
+    =
+
+    (Note that whilst looking at this, I realised that the calculation of =
+the
+    number of slots a dirent used is non-standard and not quite right, but=
+ I'll
+    address that in a separate patch.)
+    =
+
+    The issue can be triggered by something like:
+    =
+
+            touch /afs/example.com/thisisaveryveryverylongname
+    =
+
+    and it generates a report that looks like:
+    =
+
+            detected buffer overflow in strnlen
+            ------------[ cut here ]------------
+            kernel BUG at lib/string.c:1149!
+            ...
+            RIP: 0010:fortify_panic+0xf/0x11
+            ...
+            Call Trace:
+             afs_dir_iterate_block+0x12b/0x35b
+             afs_dir_iterate+0x14e/0x1ce
+             afs_do_lookup+0x131/0x417
+             afs_lookup+0x24f/0x344
+             lookup_open.isra.0+0x1bb/0x27d
+             open_last_lookups+0x166/0x237
+             path_openat+0xe0/0x159
+             do_filp_open+0x48/0xa4
+             ? kmem_cache_alloc+0xf5/0x16e
+             ? __clear_close_on_exec+0x13/0x22
+             ? _raw_spin_unlock+0xa/0xb
+             do_sys_openat2+0x72/0xde
+             do_sys_open+0x3b/0x58
+             do_syscall_64+0x2d/0x3a
+             entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    =
+
+    Fixes: 6a39e62abbaf ("lib: string.h: detect intra-object overflow in f=
+ortified string functions")
+    Reported-by: Marc Dionne <marc.dionne@auristor.com>
+    Signed-off-by: David Howells <dhowells@redhat.com>
+    Tested-by: Marc Dionne <marc.dionne@auristor.com>
+    cc: Daniel Axtens <dja@axtens.net>
+
+diff --git a/fs/afs/xdr_fs.h b/fs/afs/xdr_fs.h
+index 94f1f398eefa..c926430fd08a 100644
+--- a/fs/afs/xdr_fs.h
++++ b/fs/afs/xdr_fs.h
+@@ -54,10 +54,15 @@ union afs_xdr_dirent {
+ 		__be16		hash_next;
+ 		__be32		vnode;
+ 		__be32		unique;
+-		u8		name[16];
+-		u8		overflow[4];	/* if any char of the name (inc
+-						 * NUL) reaches here, consume
+-						 * the next dirent too */
++		u8		name[];
++		/* When determining the number of dirent slots needed to
++		 * represent a directory entry, name should be assumed to be 16
++		 * bytes, due to a now-standardised (mis)calculation, but it is
++		 * in fact 20 bytes in size.
++		 *
++		 * For names longer than (16 or) 20 bytes, extra slots should
++		 * be annexed to this one using the extended_name format.
++		 */
+ 	} u;
+ 	u8			extended_name[32];
+ } __packed;
 
