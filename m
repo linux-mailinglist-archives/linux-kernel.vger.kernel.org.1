@@ -2,171 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EE42E9566
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F142E956A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbhADM7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:59:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbhADM7W (ORCPT
+        id S1726504AbhADNAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:00:51 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60506 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbhADNAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:59:22 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D9FC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 04:58:41 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kwPRR-0007ws-09; Mon, 04 Jan 2021 13:58:33 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:7c68:1abb:22de:a098] (unknown [IPv6:2a03:f580:87bc:d400:7c68:1abb:22de:a098])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id B6D8B5B94CA;
-        Mon,  4 Jan 2021 12:58:30 +0000 (UTC)
-Subject: Re: [PATCH] MAINTAINERS: Update MCAN MMIO device driver maintainer
-To:     Sriram Dash <sriram.dash@samsung.com>, linux-kernel@vger.kernel.org
-Cc:     linux-can@vger.kernel.org, dmurphy@ti.com,
-        pankj.sharma@samsung.com, pankaj.dubey@samsung.com
-References: <CGME20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c@epcas5p3.samsung.com>
- <20210104123134.16930-1-sriram.dash@samsung.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <9b212ce7-51e6-f6a7-fa34-5a9118c56927@pengutronix.de>
-Date:   Mon, 4 Jan 2021 13:58:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 4 Jan 2021 08:00:50 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104CxBO2104065;
+        Mon, 4 Jan 2021 06:59:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1609765151;
+        bh=m6JflzaZ8fMMyd1WgjaKh7Ot81GWXzuk0qkicK6RY64=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=fWveSOWB774rxDQ/IfgfgxQ0gQZZ2ByK0+m8ZcKLcSHI0/qJMnZICXq+394SFuFZz
+         lXIY55BrtGEuxM7a6v0YGbJVHDiyYoKEzP1W2ROHC/Vm1lzItvq3sR2jOG9UdrQz7i
+         WKJ6fmpveZp3h3KTh/YKPzcWaUDBn/DnfToiAuxU=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104CxBgc107541
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 4 Jan 2021 06:59:11 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 Jan
+ 2021 06:59:10 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 4 Jan 2021 06:59:10 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104CxAKL063893;
+        Mon, 4 Jan 2021 06:59:10 -0600
+Date:   Mon, 4 Jan 2021 06:59:10 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/6] PCI: J7200/J721E PCIe bindings
+Message-ID: <20210104125910.qaf7vi3dx6vsne6t@backfield>
+References: <20210104122232.24071-1-kishon@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210104123134.16930-1-sriram.dash@samsung.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="onRFLCdH3z4RNAtNZ9AQPxpe600pgE1Hi"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210104122232.24071-1-kishon@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---onRFLCdH3z4RNAtNZ9AQPxpe600pgE1Hi
-Content-Type: multipart/mixed; boundary="GqofYe9QNbu5W2n0nmBeswKC2pcpuYQPL";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Sriram Dash <sriram.dash@samsung.com>, linux-kernel@vger.kernel.org
-Cc: linux-can@vger.kernel.org, dmurphy@ti.com, pankj.sharma@samsung.com,
- pankaj.dubey@samsung.com
-Message-ID: <9b212ce7-51e6-f6a7-fa34-5a9118c56927@pengutronix.de>
-Subject: Re: [PATCH] MAINTAINERS: Update MCAN MMIO device driver maintainer
-References: <CGME20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c@epcas5p3.samsung.com>
- <20210104123134.16930-1-sriram.dash@samsung.com>
-In-Reply-To: <20210104123134.16930-1-sriram.dash@samsung.com>
-
---GqofYe9QNbu5W2n0nmBeswKC2pcpuYQPL
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 1/4/21 1:31 PM, Sriram Dash wrote:
-> Update Pankaj Sharma as maintainer for mcan mmio device driver as I
-> will be moving to a different role.
->=20
-> Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
-> ---
-
-Applied to linux-can/testing.
-
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+On 17:52-20210104, Kishon Vijay Abraham I wrote:
+> Patch series adds DT nodes in order to get PCIe working in J7200.
+> Also includes couple of fixes for J721e.
+> 
+> v1 of the patch series can be found @ [1]
+> v2 of the patch series can be found @ [2]
+> 
+> Changes from v2:
+> 1) Moved serdes_refclk node out of interconnect node and also replaced
+>    "_" with "-"
+> 
+> Changes from v1:
+> 1) Include only the device tree patches here (the binding patch is sent
+> separately)
+> 2) Include couple of patches that fixes J721E DTS.
+> 
+> [1] -> http://lore.kernel.org/r/20201102101154.13598-1-kishon@ti.com
+> [2] -> http://lore.kernel.org/r/20201210130747.25436-1-kishon@ti.com
+> 
+> Kishon Vijay Abraham I (6):
+>   arm64: dts: ti: k3-j721e-main: Fix supported max outbound regions
+>   arm64: dts: ti: k3-j721e-main: Remove "syscon" nodes added for
+>     pcieX_ctrl
+>   arm64: dts: ti: k3-j7200-main: Add SERDES and WIZ device tree node
+>   arm64: dts: ti: k3-j7200-main: Add PCIe device tree node
+>   arm64: dts: ti: k3-j7200-common-proc-board: Enable SERDES0
+>   arm64: dts: ti: k3-j7200-common-proc-board: Enable PCIe
+> 
+>  .../dts/ti/k3-j7200-common-proc-board.dts     |  38 ++++++
+>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 111 ++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     |  52 ++------
+>  3 files changed, 157 insertions(+), 44 deletions(-)
 
 
---GqofYe9QNbu5W2n0nmBeswKC2pcpuYQPL--
+A bit confused on the dependency here. is there something merged into
+next-20210104 that makes this series ready for pickup? is there a way
+I can get a immutable tag for driver fixups to pull so that my dts
+next is not broken for PCIe (I am assuming looking at the series that
+this is probably not a backward compatible series?)?
 
---onRFLCdH3z4RNAtNZ9AQPxpe600pgE1Hi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/zEPMACgkQqclaivrt
-76ml6Af/RopeNpC7LlxPdDV/RE88yTbmF3TnqKWzBN2ze7Pqj9q+WBipqXaa6d+g
-vt7tDIUTNswIN2SJtMXWZemU36NdJus2GP9PKkW+QZqt1FccVFUHoyMB0LJ/gYcd
-5AGzE7AwaA8KqGcNF3CUVOtX6hIxmpiGDcwaTJh6KFtexeHPzoTlGNyitlgdreNE
-kzwSYtyrT0/weu4MIVt9fH8apTMwelwndag+msUkybI/NY9Tm5gP4cgq0yXiexOa
-vbjKmtlR7acNMjAj16RxkUmceABGi/yejlgGrrSwqUjs1D+dG2WSfrey/ySZQCcp
-83+Uzf203WMDrhVwagxa2u1k5v06ow==
-=KLX9
------END PGP SIGNATURE-----
-
---onRFLCdH3z4RNAtNZ9AQPxpe600pgE1Hi--
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
