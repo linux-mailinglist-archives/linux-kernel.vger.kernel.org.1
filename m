@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19C52E93D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66382E93DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbhADLBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 06:01:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbhADLBL (ORCPT
+        id S1726672AbhADLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 06:02:17 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37542 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbhADLCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 06:01:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23217C061574;
-        Mon,  4 Jan 2021 03:00:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mhrOwaAhI1UDmmcXdIWUBJdkLN1PFDKL46QLbpMb4OE=; b=t7EcSy1/+qFRoVVLaSlSHi7QsH
-        7zXfhq5/F/jyb/cnYAdtGAaot76mgGHhyRfjNmuwi9kx84+M9lAiYQ7LceCnCL+iJhif3nYzv5szz
-        Iju7r9DWrtyZjEse7Xkf3GX5YLe7nT56D5HWyN9nEkR9nIGGuWqPoy5NAPd2sXHEpzhp4UN6S68Em
-        K4kCHuMnlcag11zob/PH40je2+u18joRj/YGJI1GFVRIB/isA8rkC+ojFljAbHJd+37OepLnz1wVc
-        8kkqmMp2j+Yb27/zhbqoB2uApubThXl1y3Ro9RrkW4ir5bdPh41ENvtjOkmhPQsshwq7fcbmiLSiZ
-        r4iuKmug==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kwNZq-0000Rm-Pa; Mon, 04 Jan 2021 10:59:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E961F30377D;
-        Mon,  4 Jan 2021 11:59:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CC6BB20298581; Mon,  4 Jan 2021 11:59:04 +0100 (CET)
-Date:   Mon, 4 Jan 2021 11:59:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        David Daney <david.daney@cavium.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Archer Yan <ayan@wavecomp.com>, x86@kernel.org
-Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
- traces from user-space with perf
-Message-ID: <20210104105904.GK3021@hirez.programming.kicks-ass.net>
-References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
- <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
+        Mon, 4 Jan 2021 06:02:16 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104B0lxi067821;
+        Mon, 4 Jan 2021 05:00:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1609758047;
+        bh=nU0QXzcYjxUXyNhlJEPsHs1vQHfjG7/yfEack7+6TUs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=GCZAMn6W6E9WSGxwUMj4InLxgkUAcf1wlFml6z59Ixk4e2MLou/UKaWdIZaIEJzob
+         8fUgL3JErRFNRl2ktPldoIbSwxAdPGYUtf0jrrTCKIQOmtf9scpNGE6wlKti9DyM0q
+         Qt51T27/JQJwvd4O8CwvhcWQKbri2vfsC6cMocYk=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104B0lfo081309
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 4 Jan 2021 05:00:47 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 Jan
+ 2021 05:00:47 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 4 Jan 2021 05:00:47 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104B0hxi030137;
+        Mon, 4 Jan 2021 05:00:44 -0600
+Subject: Re: [PATCH 4/4] PCI: j721e: Add support to provide refclk to PCIe
+ connector
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20201224115658.2795-1-kishon@ti.com>
+ <20201224115658.2795-5-kishon@ti.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <da620ca1-d72a-b086-f8a8-f5aede0d4c56@ti.com>
+Date:   Mon, 4 Jan 2021 16:30:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <20201224115658.2795-5-kishon@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
-> +u64 perf_reg_abi(struct task_struct *tsk)
-> +{
-> +	if (test_tsk_thread_flag(tsk, TIF_32BIT_REGS))
-> +		return PERF_SAMPLE_REGS_ABI_32;
-> +	else
-> +		return PERF_SAMPLE_REGS_ABI_64;
-> +}
+Hi,
 
-So we recently changed this on x86 to not rely on TIF flags. IIRC the
-problem is that on x86 you can change the mode of a task without the
-kernel being aware of it. Is something like that possible on MIPS as
-well?
+On 24/12/20 5:26 pm, Kishon Vijay Abraham I wrote:
+> Add support to provide refclk to PCIe connector.
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  drivers/pci/controller/cadence/pci-j721e.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> index dac1ac8a7615..8ec6d9c3e164 100644
+> --- a/drivers/pci/controller/cadence/pci-j721e.c
+> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> @@ -6,6 +6,7 @@
+>   * Author: Kishon Vijay Abraham I <kishon@ti.com>
+>   */
+>  
+> +#include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/io.h>
+> @@ -50,6 +51,7 @@ enum link_status {
+>  
+>  struct j721e_pcie {
+>  	struct device		*dev;
+> +	struct clk		*refclk;
+>  	u32			mode;
+>  	u32			num_lanes;
+>  	struct cdns_pcie	*cdns_pcie;
+> @@ -310,6 +312,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+>  	struct cdns_pcie_ep *ep;
+>  	struct gpio_desc *gpiod;
+>  	void __iomem *base;
+> +	struct clk *clk;
+>  	u32 num_lanes;
+>  	u32 mode;
+>  	int ret;
+> @@ -408,6 +411,19 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+>  			goto err_get_sync;
+>  		}
+>  
+> +		clk = devm_clk_get_optional(dev, "pcie_refclk");
+> +		if (IS_ERR(clk)) {
+> +			dev_err(dev, "failed to get pcie_refclk\n");
 
-The thing x86 does today is look at it's pt_regs state to determine the
-actual state.
+missed initializing "ret" here. Will fix this and re-send new version.
+
+Thanks
+Kishon
