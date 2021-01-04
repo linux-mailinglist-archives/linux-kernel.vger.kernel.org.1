@@ -2,173 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19CA2E8FB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 05:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8252E8FB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 05:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbhADEE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 23:04:59 -0500
-Received: from mail-co1nam11on2073.outbound.protection.outlook.com ([40.107.220.73]:64224
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726173AbhADEE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 23:04:58 -0500
+        id S1727494AbhADEJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 23:09:38 -0500
+Received: from mga11.intel.com ([192.55.52.93]:13736 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726163AbhADEJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Jan 2021 23:09:37 -0500
+IronPort-SDR: CpNCf7ERW0s2PV/Zi+6VHPmmly3fAwCBW+mpjm4wplDccbIljCjXWTURnaeOHzwEUUans/vJgB
+ ot92ghsvuzuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9853"; a="173400326"
+X-IronPort-AV: E=Sophos;i="5.78,473,1599548400"; 
+   d="scan'208";a="173400326"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2021 20:08:56 -0800
+IronPort-SDR: lcCwafBMoupLIWC4weJyDTowi0GMNy7kj+rRNrAyd8gUgpfPLVHJ1UJ7JoX8ZFjNSWD/SVMxRl
+ gEGOLniQlPJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,473,1599548400"; 
+   d="scan'208";a="421215185"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP; 03 Jan 2021 20:08:56 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 3 Jan 2021 20:08:55 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 3 Jan 2021 20:08:55 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Sun, 3 Jan 2021 20:08:55 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.175)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Sun, 3 Jan 2021 20:08:51 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dJ+l03+23opW5fJdp8cJGemc65AbVhiTJs8CJ3p0619yq6R4W3RBEGeP/8EBFseYgJvrk8JNpYwl3G7k+DlCCApv54H2JA7pPzpcecuuovYDWZEQbeSbtVAmXxsVoK72B8Uk9iFr0FcnvIwGjPaLNC5wWv/NDr8WKby3bDMnX2RUqrljHftIZp+fGzZEaWO/1yVakz76tQvvyly5hWJ4mhYH8HybJTsGrqKxc/aJxfe37Hpc9s6LvmP9jM3JSMWelqD7YNzY2NNeAJXNrMAZkiIEGWNYbo0WsaZNoNhXjaRhhkyY4P9pjjnT1J19cbo1w05dB12enBZeF+XqKONA5Q==
+ b=bIGThTGJoDYI37sh8nEXu5/9sYL7ZyO3HsaMR8IDpiFxtGuJDUUPDRQkreUXHzHA6Odgip9xbAUIYgMvrjPoBqJy9FSXb9Px3HaB2uG2vgOXZHUkStdL4KY5vJ7kjXFRlj51I+8+9Q+3l9Y7GJGQ4iJpqIIqqsCEchKEd6VXDctw/PlG+PKGmXtFK00mbH7jev6eroaa94+6KI8xKPYC2eKnE08w1wSVKWOxMulnfy0E9wxJ5S1qO9J6XBstA9CP8qb4K9eIjDBcYtPwrBrfc0Yco3RWE9D6ph/iH99o5p8gXPWtxGpo0l5mlmbwNbiqfPQd+1QikUjGTDFhb1N/cw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dx+WgPhNnbwATIHLTplogpDoJB4rc4Ayyas7ek3Dflc=;
- b=lgbqvbSPoavB0CRDuRIHGqvMd31LsXZwudPetm0W375gZiNA97hflEdjOptDoKW6eXV7o8ewoGRIo+u++vmM8d7nx/VKc7HQhzX4gAFKF9ebHyK0VYCtnb18H0R5usUpTkOGS8fc37wn4VOIrWkYJkj80gM3w03O22Lvhf73fakIUCC0KhrcQbDFG3RcysAvmmLBrRMUsJRulmy/qq/FPMI026zv7p17yfQI5HyVAoYscaTcBKbw2xYyn9SdefPvo7b36P8s+2OfJjogSZ7aDcvymYMZTJ232V3nZxePhWWYhf9N47s6dNta94hcbhrGR09iBH3omFy004e8pZYk1Q==
+ bh=xGj0HgFd/JSmSMqtyHmsq7PXtbdPS2d6iBkpyS1SzCU=;
+ b=Kkrdo7GB/qkk7yDzwlyvCHU8+pJb54Y+XaRq93o4mj3XAGe28cDKnSO8LnRT63c6FAG/MyengGK4OhDkYitJmj+8coilXGWoQjruGivOryaYrSDqxr1a28TFltMw2kDxj6GCviHYbtPmNf4jyKCbVL9gmNlTHjOHYlZUhACiYv4yR9DRiqp0FTUk7gyqmhuK61Uux7VBoTreLbfryLs40a9+dCKP52BErEd3agbFpdEGM9HSzxMHdKVj6yh8sjcnj1ungkznAIvEpj35/GUK3+C25IvKICX0RmqMqYdyGDYT7WqzQo4vhnvsZeEtF56yY5PfTqqTHLK878Mc04gHHQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
- dkim=pass header.d=labundy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dx+WgPhNnbwATIHLTplogpDoJB4rc4Ayyas7ek3Dflc=;
- b=cuQguy9DwsEPVMY+4BtwxDLfWU6vCEaCES5tp0havBCEcXvIzGOiKV6F+HuxNmqrrdJQXHb05MZLxwoZQlj16t8TwXSqpRkwoBW3ovEgBpcWbT/CQuoYwvHzHjflbZXZHOuPbT0Zxk0+rG3L07hty6HRJQzyEA8e3K3/IDC5ALw=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=labundy.com;
-Received: from SN6PR08MB5517.namprd08.prod.outlook.com (2603:10b6:805:fb::32)
- by SA1PR08MB7181.namprd08.prod.outlook.com (2603:10b6:806:185::14) with
+ bh=xGj0HgFd/JSmSMqtyHmsq7PXtbdPS2d6iBkpyS1SzCU=;
+ b=W1KhRhmmgEiuj+BZJfG9mV7P0aq7Rl0Y6ZYIVEIsU7IzNxis6g0wbALGXl0skVkGAW3yvCqu4KF1mZWynWN08Jrags7sQb9Y25jnSqOatd2Zaa4WmQZ90uyTr71Z8ZQXduBW3IEXvFQDuj4Qb6TjjHHcK4fEEjJHa8zow93k7NI=
+Received: from CO1PR11MB5026.namprd11.prod.outlook.com (2603:10b6:303:9c::13)
+ by MWHPR11MB1648.namprd11.prod.outlook.com (2603:10b6:301:e::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.24; Mon, 4 Jan
- 2021 04:04:04 +0000
-Received: from SN6PR08MB5517.namprd08.prod.outlook.com
- ([fe80::b568:46ab:17f2:c918]) by SN6PR08MB5517.namprd08.prod.outlook.com
- ([fe80::b568:46ab:17f2:c918%3]) with mapi id 15.20.3721.024; Mon, 4 Jan 2021
- 04:04:03 +0000
-Date:   Sun, 3 Jan 2021 22:03:59 -0600
-From:   Jeff LaBundy <jeff@labundy.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Roy Im <roy.im.opensource@diasemi.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Input: da7280 - protect OF match table with CONFIG_OF
-Message-ID: <20210104040359.GA18606@labundy.com>
-References: <X9xRLVPt9eBi0CT6@google.com>
- <AM6PR10MB1926A5AB8951B4DE62A96EE385C30@AM6PR10MB1926.EURPRD10.PROD.OUTLOOK.COM>
- <20201220020109.GA13501@labundy.com>
- <X/J2Ud24zs7ZJdTU@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/J2Ud24zs7ZJdTU@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [136.49.173.128]
-X-ClientProxiedBy: SN6PR16CA0054.namprd16.prod.outlook.com
- (2603:10b6:805:ca::31) To SN6PR08MB5517.namprd08.prod.outlook.com
- (2603:10b6:805:fb::32)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19; Mon, 4 Jan
+ 2021 04:08:50 +0000
+Received: from CO1PR11MB5026.namprd11.prod.outlook.com
+ ([fe80::4820:6e90:3d0e:3b5f]) by CO1PR11MB5026.namprd11.prod.outlook.com
+ ([fe80::4820:6e90:3d0e:3b5f%4]) with mapi id 15.20.3721.024; Mon, 4 Jan 2021
+ 04:08:50 +0000
+From:   "Sia, Jee Heng" <jee.heng.sia@intel.com>
+To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: RE: [PATCH v8 13/16] dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA
+ handshake
+Thread-Topic: [PATCH v8 13/16] dmaengine: dw-axi-dmac: Add Intel KeemBay
+ AxiDMA handshake
+Thread-Index: AQHW3aAioccw/TUNekO0DxIVg+IMXqoRJs68gAWp9KA=
+Date:   Mon, 4 Jan 2021 04:08:50 +0000
+Message-ID: <CO1PR11MB5026C99B44D055930A6EB63EDAD20@CO1PR11MB5026.namprd11.prod.outlook.com>
+References: <20201229044713.28464-1-jee.heng.sia@intel.com>,<20201229044713.28464-14-jee.heng.sia@intel.com>
+ <MWHPR1201MB00297BC4BB351FA85FE66A12DED60@MWHPR1201MB0029.namprd12.prod.outlook.com>
+In-Reply-To: <MWHPR1201MB00297BC4BB351FA85FE66A12DED60@MWHPR1201MB0029.namprd12.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: synopsys.com; dkim=none (message not signed)
+ header.d=none;synopsys.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.215]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a4e23e42-997c-4bd0-a725-08d8b066710e
+x-ms-traffictypediagnostic: MWHPR11MB1648:
+x-microsoft-antispam-prvs: <MWHPR11MB16489D09DA12288EF87A8F36DAD20@MWHPR11MB1648.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sDsx+jQjpD/QVrp/SxDnFEGwCPQlmxrqKfnD/eQJ//SP3nu362JWbtgJOdOP1eI1ByvuNnjStzPasOgvfuaH688lzNuM8gxPtu/XvdVyDkXS6iGpJkJRfiJUNsfqd5qPeX+0YI4BHgNOCLmcIfEUhrKbhJpLEDd7Q1DoWQtdGKvVO4InsxhOIDtCFw6tZomVan1V+x2fc8b+yxG2Zd+RKqjicoGmbT8k/Twgd7/lYBMpGr2qfzFwcdxvKQY3ZpJP/96SnRjHtHXflRnw8opM3K5/hGaMRjBp+Ssp3EENweymV3zm/8Ja43rX52SeIoqXrz7pALpSwpo9jmeVBLb3LJOWRkB5EfaOvqqAV/dZf6IuNoCJCoS7h5LvfGtG/RvNC7wIa5+vMEKZUOovJTfNMA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5026.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(346002)(136003)(396003)(376002)(478600001)(4326008)(33656002)(8676002)(55016002)(9686003)(83380400001)(71200400001)(52536014)(316002)(26005)(110136005)(5660300002)(66476007)(64756008)(66556008)(86362001)(186003)(66446008)(54906003)(76116006)(6506007)(53546011)(8936002)(7696005)(2906002)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?uLo16jwUpp7aIoyxY5Uz1ohymS3ObK9sjwPkEYMU7DD9OnVJ0ABGedUwZoai?=
+ =?us-ascii?Q?Y4xDxlb0BQsxUIo2BjNNYdRBOewfv52T1quSsDiZJGN9G9eLUBI6hiTxahxw?=
+ =?us-ascii?Q?C5LtQIwe/4a1sosP2dS7me7CsYbxsvVnHZ6rAU4eC5hIcydhnqEddC4gGZVO?=
+ =?us-ascii?Q?odnDYE/Sy9UMT/QLRUkkJRQ6PplTQ2ipIoHMJznBAuqXRNkqKyc3QmcJcpFt?=
+ =?us-ascii?Q?WaY1MF/lBTKlujdskW9HQNOeHGOyIlKJGJ23DxyhlHKOndDrr6BP9M5UL9MO?=
+ =?us-ascii?Q?SHyD+226ue2rZ+Z0TnSz3IGcTfg9QHP+Mmx6z7qbZ4x8wkWz8trMWIdw3rcA?=
+ =?us-ascii?Q?2JP2GfrrhIV1/Ozhk88c7QOp3LwokDLdKOvVy+j2LnOXFQzXN8bAjlyFcWcM?=
+ =?us-ascii?Q?u/9Mz0YChcDnJO+EssZo/fSM919NGLp4MyJ11T54UN788EhQ/e9DvUkYIO+N?=
+ =?us-ascii?Q?TMP7Hed+7v8NQOYRWXo8iLXFmhUpbphfElO4MBmbrV7bb3u2q3A/A8IPEB/B?=
+ =?us-ascii?Q?vzcRZT/JlyjrRbUlqGG22JdhUbJ+fxqGOKZGHdhIhjfEdz2B7CgIxLmuOIRq?=
+ =?us-ascii?Q?CmKZt45FkzwzI388IdwsSUnYciSpLk8Jqzy40PL1LHZNdpfiiJu7ySRHaIxL?=
+ =?us-ascii?Q?yi0epKs+uAhrq8PVjS8KmRO91LJORNmcCxgxAO9oWjb9wfkeS/2HZmoyl/3v?=
+ =?us-ascii?Q?FEC0tmkx6lVa7CYwf1PT1qL8vtEp5UosF7CyI4mNDEi3Z0p+Rwf5R8ia0ob/?=
+ =?us-ascii?Q?WcnGqBi0eqI1+dkxEubDg6ItikVkTuAR4L0L+kHCs5G5hPhtpHt+OPcxou0O?=
+ =?us-ascii?Q?fIdRmuuVQMIrcwXXL5NzVtE6hEmEWvcIUIm1wZac7h62VYK6QdGXVhAjSHlA?=
+ =?us-ascii?Q?fXvl3h2eZsTZKE3WlPsOkol70tGv13T6JPi4INO0ZPk+LO7o3m+dhCUetBP6?=
+ =?us-ascii?Q?oIUfRBl4kP2qb0CeXTzVgFtf3eaUCcEk3HhMd5O9bew=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from labundy.com (136.49.173.128) by SN6PR16CA0054.namprd16.prod.outlook.com (2603:10b6:805:ca::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19 via Frontend Transport; Mon, 4 Jan 2021 04:04:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c467562d-0737-47fa-a698-08d8b065c66c
-X-MS-TrafficTypeDiagnostic: SA1PR08MB7181:
-X-Microsoft-Antispam-PRVS: <SA1PR08MB7181D19724BA123B2B6FDC50D3D20@SA1PR08MB7181.namprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r+hhBDNwVPXgK1lNoIfJHO/6PseaR2TASmJqGcKQqOI8H83FsVjNKY5ISgAKMvJdLcSBxupp1LaVf7LyqFCrfv6PtIdnEPkvJLkYRTPoGfGB6mfeKovgXsT/+SbV5s+ZxHj0t0Bqx19pXr1i5gE/yeiwgtMAg1qh389ACzd3BJoMwQZtQLCcjHlv09f0rjj0rfDNc90B7BVVHNk3nBS1SHIQAObT6ggCTGNFpMEjw0SkKPWbNuE6ocGd+T4b9cy4aKnhNQM55ToKZAW6wmhBMl7sDc+8JBDAlAi2I5If/OMx37cpdTPHARvSMEsvB1gLThXEsLSfsRokmO2OLNsf9Hp5Co5ERH3TZWy/UAvDyYBlKPgJecyPCPOpTeJoqFXv3IPb90NK6v4NGXtJQN7GOw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR08MB5517.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(136003)(366004)(346002)(376002)(396003)(6666004)(26005)(5660300002)(4326008)(316002)(54906003)(1076003)(55016002)(6916009)(8676002)(36756003)(956004)(2616005)(8886007)(53546011)(186003)(86362001)(16526019)(2906002)(8936002)(478600001)(33656002)(52116002)(66946007)(66476007)(66556008)(7696005)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ftdEUfp0+cArpa9cAPN7gI//UwoFHHDeOpLvuk5J7lZw17JkybGaiDMH2Gy1?=
- =?us-ascii?Q?30bmbXPk/8RnfhIsKW0GF0rAOBMYInEVKV5dkybjiTYcxIy8t/mi26YV6M9x?=
- =?us-ascii?Q?0aO3wYzWOGO4HZ/yE/3p+BHCtwHVCIZwOC2IZnVhLYOEg9bX0YU0zfevPVM0?=
- =?us-ascii?Q?of7221Ku2yHN32+jTaiqL5jvWOlvgbUSmjYrNGaCWpBG1BZIYOAHatQFsudy?=
- =?us-ascii?Q?x6/IzVqbLSaVTAckf9ILqTLo5aWiDDnthKslIjav//+NlWdGo9+sh6RqTTc+?=
- =?us-ascii?Q?ND7l8I56z2pq8ypA5Un8qcGAFJ8a/PNlDFSRW5TJdu9dUA/lMTI0u5YrMALv?=
- =?us-ascii?Q?+kh2jBL87IAsKj7gnAPQehST0fZfRlpcudqdnyo7mEivmgSCVRjbX5J/KbUC?=
- =?us-ascii?Q?jZETI01whXe4zAIv+a3V62fe+D+DoT74Dt3w+xgMAb0xt8MPdQbbQ3U5+W8E?=
- =?us-ascii?Q?+FXgyD6mnAYXMkaLCdw+sO8mJTu45xHdmaqnChlFoAqOfvmtHA0xX6/5cDS1?=
- =?us-ascii?Q?n9WVUIevYdDq+MnJgBd7TB7o2RXHAxT1MXk2XuMgvo0wOiYu+90Pd4oFTx3h?=
- =?us-ascii?Q?Om7oSQM3S0efIYufAsK0ZDQcon9fpeaYKT6VH5E9k/0Wu/ntNVA58mfn15nY?=
- =?us-ascii?Q?Zhzi6/Q9e47tnKzHQi4/7qk/1QAbPALiegRO7JVslLpMuHy+mnDslTLSSTFG?=
- =?us-ascii?Q?MY96Rh25pQnGEElTZDv+Ehsoc8OptOAPgNyo2Z2+JWy6gPud6dCAqT0zjlwm?=
- =?us-ascii?Q?RaXd+Qh8dKPnAJqcr1yIT16BNrtCtbpGORqZzsAhMrIAU0JdE52MwtAMy8cN?=
- =?us-ascii?Q?aUtNtgG22evhjAVI4rLOb/dV6SfthjJuPdEfKPqGZNsQV7PPbGsV9WEp4NOq?=
- =?us-ascii?Q?1uokyRx+76IFFdOfU6+3O0GdA+8JkkwlDAToM74ZuQgGEXVUiqBUnLTIPcKG?=
- =?us-ascii?Q?eZsMCA2rAqfFKC8nzMYBnT2ViOuScAQj7ypDcVZxXnQaMTZDSLL3uOVzBGh0?=
- =?us-ascii?Q?giIh?=
-X-OriginatorOrg: labundy.com
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR08MB5517.namprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2021 04:04:03.8301
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5026.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4e23e42-997c-4bd0-a725-08d8b066710e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2021 04:08:50.1828
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
-X-MS-Exchange-CrossTenant-Network-Message-Id: c467562d-0737-47fa-a698-08d8b065c66c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VZvcddhBqkBq9pFnshEVKuGuUVm7h0uIyiGiBvkHYiHRa+2aRllNzIk4ILVKjqLqWPlL+2LIoVhqcQCKEKwFVQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR08MB7181
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ruurUJkG60g8hy8+VzYmP3SCAbg62e/SjJIB51pbYY+kDszB/DKTYQ1URxfqLpk7/jKA97Ll/nqomyYdQhFvZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1648
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
 
-On Sun, Jan 03, 2021 at 05:58:41PM -0800, Dmitry Torokhov wrote:
-> Hi Jeff,
-> 
-> On Sat, Dec 19, 2020 at 08:01:09PM -0600, Jeff LaBundy wrote:
-> > Hi Dmitry,
-> > 
-> > On Fri, Dec 18, 2020 at 04:49:48PM +0000, Roy Im wrote:
-> > > On Friday, December 18, 2020 3:50 PM, Dmitry Torokhov wrote:
-> > > 
-> > > > The OF match table is only used when OF is enabled.
-> > > > 
-> > > > Fixes: cd3f609823a5 ("Input: new da7280 haptic driver")
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > > > ---
-> > > >  drivers/input/misc/da7280.c | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/input/misc/da7280.c b/drivers/input/misc/da7280.c index 2f698a8c1d65..b08610d6e575 100644
-> > > > --- a/drivers/input/misc/da7280.c
-> > > > +++ b/drivers/input/misc/da7280.c
-> > > > @@ -1300,11 +1300,13 @@ static int __maybe_unused da7280_resume(struct device *dev)
-> > > >  	return retval;
-> > > >  }
-> > > > 
-> > > > +#ifdef CONFIG_OF
-> > > >  static const struct of_device_id da7280_of_match[] = {
-> > > >  	{ .compatible = "dlg,da7280", },
-> > > >  	{ }
-> > > >  };
-> > > >  MODULE_DEVICE_TABLE(of, da7280_of_match);
-> > > > +#endif
-> > 
-> > Just for my own understanding, would it not work just as well
-> > to include of_device.h? This includes mod_devicetable.h which
-> > in turn defines the of_device_id struct (even if CONFIG_OF is
-> > not set).
-> 
-> The issue here is not that the structure is undefined, but the variable
-> is unused. We could also fix this by not using of_match_ptr() when
-> assigning the match table to the driver structure, making the variable
-> referenced even if CONFIG_OF is off.
 
-ACK. The call to of_match_ptr() is what I was missing; the other
-drivers I was looking at do not use it which must be why the bot
-has not complained.
-
-> 
-> > 
-> > The reason for asking is because it seems many drivers do not
-> > include these guards.
-> 
-> It could be that they are either only compiled with OF, or they decided
-> it is not worth saving a few bytes, or maybe they are used on ACPI-based
-> systems with PRP0001 bindings in which case the match table in the
-> driver might still be needed.
-
-Makes perfect sense; thank you for the follow-up.
-
-> 
-> Thanks.
-> 
-> -- 
-> Dmitry
-
-Kind regards,
-Jeff LaBundy
+> -----Original Message-----
+> From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+> Sent: 31 December 2020 8:44 PM
+> To: Sia, Jee Heng <jee.heng.sia@intel.com>; Vinod Koul
+> <vkoul@kernel.org>
+> Cc: andriy.shevchenko@linux.intel.com; dmaengine@vger.kernel.org;
+> linux-kernel@vger.kernel.org; devicetree@vger.kernel.org;
+> robh+dt@kernel.org
+> Subject: Re: [PATCH v8 13/16] dmaengine: dw-axi-dmac: Add Intel
+> KeemBay AxiDMA handshake
+>=20
+> Hi Sia Jee Heng,
+>=20
+> see my comments inlined:
+>=20
+> > From: Sia Jee Heng <jee.heng.sia@intel.com>
+> > Sent: Tuesday, December 29, 2020 07:47
+> > To: vkoul@kernel.org; Eugeniy Paltsev; robh+dt@kernel.org
+> > Cc: andriy.shevchenko@linux.intel.com;
+> dmaengine@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; devicetree@vger.kernel.org
+> > Subject: [PATCH v8 13/16] dmaengine: dw-axi-dmac: Add Intel
+> KeemBay
+> > AxiDMA handshake
+> >
+> > Add support for Intel KeemBay AxiDMA device handshake
+> programming.
+> > Device handshake number passed in to the AxiDMA shall be written
+> to
+> > the Intel KeemBay AxiDMA hardware handshake registers before
+> DMA
+> > operations are started.
+> >
+> > Reviewed-by: Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com>
+> > Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
+> > ---
+> >  .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 52
+> +++++++++++++++++++
+> >  1 file changed, 52 insertions(+)
+> >
+> > diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > index 062d27c61983..5e77eb3d040f 100644
+> > --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+>  [snip]
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  /*
+> >   * If DW_axi_dmac sees CHx_CTL.ShadowReg_Or_LLI_Last bit of
+> the fetched LLI
+> >   * as 1, it understands that the current block is the final block in
+> > the @@ -626,6 +668,9 @@ dw_axi_dma_chan_prep_cyclic(struct
+> dma_chan *dchan, dma_addr_t dma_addr,
+> >                 llp =3D hw_desc->llp;
+> >         } while (num_periods);
+> >
+> > +       if (dw_axi_dma_set_hw_channel(chan->chip, chan-
+> >hw_handshake_num, true))
+> > +               goto err_desc_get;
+> > +
+>=20
+> In this implementation 'dw_axi_dma_chan_prep_cyclic' callback will
+> fail if we don't have APB registers which are only specific for KeemBay.
+> Looking for the code of 'dw_axi_dma_chan_prep_cyclic' I don't see
+> the reason why it shouldn't work for vanila DW AXI DMAC without this
+> extension. So, could you please change this so we wouldn't reject
+> dw_axi_dma_chan_prep_cyclic in case of APB registers are missed.
+[>>] OK, I can change the code in such a way that dw_axi_dma_set_hw_channel=
+() will be executed only if apb_reg is valid.
+>=20
+> >         return vchan_tx_prep(&chan->vc, &desc->vd, flags);
+> >
+> >  err_desc_get:
+> > @@ -684,6 +729,9 @@ dw_axi_dma_chan_prep_slave_sg(struct
+> dma_chan *dchan, struct scatterlist *sgl,
+> >                 llp =3D hw_desc->llp;
+> >         } while (sg_len);
+> >
+> > +       if (dw_axi_dma_set_hw_channel(chan->chip, chan-
+> >hw_handshake_num, true))
+> > +               goto err_desc_get;
+> > +
+>=20
+> Same here.
+[>>] Sure, same method described above will be used.
+>=20
+>=20
+> >         return vchan_tx_prep(&chan->vc, &desc->vd, flags);
+> >
+> >  err_desc_get:
+> > @@ -959,6 +1007,10 @@ static int dma_chan_terminate_all(struct
+> dma_chan *dchan)
+> >                 dev_warn(dchan2dev(dchan),
+> >                          "%s failed to stop\n", axi_chan_name(chan));
+> >
+> > +       if (chan->direction !=3D DMA_MEM_TO_MEM)
+> > +               dw_axi_dma_set_hw_channel(chan->chip,
+> > +                                         chan->hw_handshake_num,
+> > + false);
+> > +
+> >         spin_lock_irqsave(&chan->vc.lock, flags);
+> >
+> >         vchan_get_all_descriptors(&chan->vc, &head);
+> > --
+> > 2.18.0
+> >
