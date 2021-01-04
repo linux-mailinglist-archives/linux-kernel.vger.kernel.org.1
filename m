@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD8A2E99C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BCB2E9AA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729030AbhADQDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:03:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40050 "EHLO mail.kernel.org"
+        id S1729745AbhADQMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:12:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728175AbhADQDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:03:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6C7C22507;
-        Mon,  4 Jan 2021 16:02:48 +0000 (UTC)
+        id S1728169AbhADQAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:00:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2095A22516;
+        Mon,  4 Jan 2021 15:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776169;
-        bh=bgM8K8mfIxwMypr9yt9d+vSr1q/tvc+VRvHeeSHqAYU=;
+        s=korg; t=1609775919;
+        bh=0q8qmvE5+73hTUDZwLg/Tgkq28+KghNjI0B15Ui87Mw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=utMVXjaw055rXC1wVi+CHkvDsXdVYwcPSVO1RF6j/3fLn/0sJlORC+hcL+0l314q+
-         Ny4tkWUwDDxi9dORSWKHaQZ6gQyvdkP38xnKQpsSZoZeXBXAjoAGyiwMCijZZXp41p
-         3ywum51xntoRSiH70zCIzr/1ZG3EX6fyCLQLndVQ=
+        b=yXyxEdGLWW8eCNq22cSuFeZpQIkGv9rOFang+iHpUBt1UFjWYXjg2dvXw8V8EQBj6
+         q6LfXEol6U8vPpzIzAG5raMZlifm0fz7wJTLcds7xg3B80psnjQWJ5dP+G/QviXKLQ
+         wZWrTUPyN+fmjj4CRCJ6XbnLtR9/DApF5l7zPglg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 35/63] bfs: dont use WARNING: string when its just info.
+        syzbot+63cbe31877bb80ef58f5@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 25/35] ALSA: seq: Use bool for snd_seq_queue internal flags
 Date:   Mon,  4 Jan 2021 16:57:28 +0100
-Message-Id: <20210104155710.524201550@linuxfoundation.org>
+Message-Id: <20210104155704.625898947@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
-References: <20210104155708.800470590@linuxfoundation.org>
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit dc889b8d4a8122549feabe99eead04e6b23b6513 upstream.
+commit 4ebd47037027c4beae99680bff3b20fdee5d7c1e upstream.
 
-Make the printk() [bfs "printf" macro] seem less severe by changing
-"WARNING:" to "NOTE:".
+The snd_seq_queue struct contains various flags in the bit fields.
+Those are categorized to two different use cases, both of which are
+protected by different spinlocks.  That implies that there are still
+potential risks of the bad operations for bit fields by concurrent
+accesses.
 
-<asm-generic/bug.h> warns us about using WARNING or BUG in a format string
-other than in WARN() or BUG() family macros.  bfs/inode.c is doing just
-that in a normal printk() call, so change the "WARNING" string to be
-"NOTE".
+For addressing the problem, this patch rearranges those flags to be
+a standard bool instead of a bit field.
 
-Link: https://lkml.kernel.org/r/20201203212634.17278-1-rdunlap@infradead.org
-Reported-by: syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: "Tigran A. Aivazian" <aivazian.tigran@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: syzbot+63cbe31877bb80ef58f5@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20201206083456.21110-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/bfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/core/seq/seq_queue.h |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/fs/bfs/inode.c
-+++ b/fs/bfs/inode.c
-@@ -350,7 +350,7 @@ static int bfs_fill_super(struct super_b
+--- a/sound/core/seq/seq_queue.h
++++ b/sound/core/seq/seq_queue.h
+@@ -40,10 +40,10 @@ struct snd_seq_queue {
+ 	
+ 	struct snd_seq_timer *timer;	/* time keeper for this queue */
+ 	int	owner;		/* client that 'owns' the timer */
+-	unsigned int	locked:1,	/* timer is only accesibble by owner if set */
+-		klocked:1,	/* kernel lock (after START) */	
+-		check_again:1,
+-		check_blocked:1;
++	bool	locked;		/* timer is only accesibble by owner if set */
++	bool	klocked;	/* kernel lock (after START) */
++	bool	check_again;	/* concurrent access happened during check */
++	bool	check_blocked;	/* queue being checked */
  
- 	info->si_lasti = (le32_to_cpu(bfs_sb->s_start) - BFS_BSIZE) / sizeof(struct bfs_inode) + BFS_ROOT_INO - 1;
- 	if (info->si_lasti == BFS_MAX_LASTI)
--		printf("WARNING: filesystem %s was created with 512 inodes, the real maximum is 511, mounting anyway\n", s->s_id);
-+		printf("NOTE: filesystem %s was created with 512 inodes, the real maximum is 511, mounting anyway\n", s->s_id);
- 	else if (info->si_lasti > BFS_MAX_LASTI) {
- 		printf("Impossible last inode number %lu > %d on %s\n", info->si_lasti, BFS_MAX_LASTI, s->s_id);
- 		goto out1;
+ 	unsigned int flags;		/* status flags */
+ 	unsigned int info_flags;	/* info for sync */
 
 
