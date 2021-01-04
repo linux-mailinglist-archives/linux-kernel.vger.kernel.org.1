@@ -2,93 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0602E95A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6DD2E95C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbhADNN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbhADNN5 (ORCPT
+        id S1726745AbhADNWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:22:18 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:17656 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726124AbhADNWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:13:57 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D766C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 05:13:16 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id i24so27256956edj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 05:13:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LmTnOyvAWkf1ZR5nEt8hocUqB4bK0OOI3ZU75pn4B8g=;
-        b=rQ1aySv/Ai2QMmIOvi3obyVdHo4qx0sf1fjaXAS5KBnNL2y69Q3kw6Kt8L7cQLa39N
-         OsTifxBviupCByOdGhSZm6kp9sLkZCz0Y2yuBf8cM8XeC7qHdJt3WaDkxzQ8qA6KKUkZ
-         cf2ryOyKyRJluXcauzU6T3611yURcHWfKPyDwfg2zolvntSmEHLQOcD+tBFg9YUnXiRy
-         01RsItPbMhQ2wg7nMK9JaxWukpnOa5e09tKuSHB+JKN+jgT3nZfZK0dEswu4kXTwUAmt
-         p8f+miY70CWe2jdq/Rtwmg+d337ldJbMc4sJpOWYyUFBMbsZ3oCIdEk/AkbuXwUGX5K5
-         FVEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LmTnOyvAWkf1ZR5nEt8hocUqB4bK0OOI3ZU75pn4B8g=;
-        b=dyC8EofcmAz8vaDL7QhymFD27itPY9rXeMR9eWYi9c9WHbPW+Nn+enQUw5lV0FLLuu
-         BaeDEnTaEO9zSL742fEzAsQ/0BPga2TlMi4vCq3OvNennxa+CdNmwo0RSkEGwH7BEAM6
-         QlG5I4eB2vBgk0P8fb3OMfDRxeI63ySEcn8e9gZP9hnIDN2/kiCOkZZrNxOo4XiZucXu
-         9ackaFXYdGawW4OkgbBNfiYzzRI+nCVVSkaDl8xFj8v1K+DBxCmKv4U0mvBz7ftvhsQK
-         qkioWJgoF8RDofxjmD7gRJ7C3tyQVUm0jV5Jiizk3KmPccPPtxMk0NArZnUCxQ7uYF64
-         Wlbg==
-X-Gm-Message-State: AOAM533ByR4H1p6f9betLJEDsn2SBOxDCOxHDntAt1HX9jo3p4ZfC7en
-        4qwwebE6cvzjSCtFo5bMJ5TuT+6SNIuYMFUMlCz9xD3Jifc=
-X-Google-Smtp-Source: ABdhPJxCoesfWKWLGjDwujsOjYo8s+cdaJyZBKOpfJin4/auU3QNcr4Oqie33FxznE6OTDFJ6wuoJMoZXdFb1At8on4=
-X-Received: by 2002:aa7:de0f:: with SMTP id h15mr71508029edv.110.1609765995234;
- Mon, 04 Jan 2021 05:13:15 -0800 (PST)
+        Mon, 4 Jan 2021 08:22:17 -0500
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210104132134epoutp045bafc89c62e30741dbb4ce27cb41c813~XChkOqpNh1261512615epoutp04b
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 13:21:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210104132134epoutp045bafc89c62e30741dbb4ce27cb41c813~XChkOqpNh1261512615epoutp04b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1609766494;
+        bh=qwG/j1MHx/rjwSSqKo3StoXAwxtWZaTDQyXZEk/i8oQ=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=WEiX7j+6+IL4hhWpQud78htnHuTxv1RO5tFCWPB/0n+mqCcHxWBKCkYBlyCrCYL2c
+         aReHlaGRRzZ+qlCpT2Yfb9X5d7XNnIgEfo0qXg3F13hWgwqVhV5cdGwFVd9BIPfBCd
+         DSRnhDo8joccEHLbQanb9tVrr+vVbaBAPwdABFFg=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20210104132133epcas5p143c57181d2139fcb6aa51fa2a211c9c6~XChjnW_MF1178411784epcas5p1k;
+        Mon,  4 Jan 2021 13:21:33 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        83.81.50652.D5613FF5; Mon,  4 Jan 2021 22:21:33 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210104131306epcas5p169b135d79ee4576ed00735351982fead~XCaLfhcTb2442124421epcas5p1v;
+        Mon,  4 Jan 2021 13:13:06 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210104131306epsmtrp24163279d19f869c7d8b29eb661c8656a~XCaLe34ga3247232472epsmtrp2u;
+        Mon,  4 Jan 2021 13:13:06 +0000 (GMT)
+X-AuditID: b6c32a4a-6c9ff7000000c5dc-35-5ff3165d3426
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BC.75.08745.26413FF5; Mon,  4 Jan 2021 22:13:06 +0900 (KST)
+Received: from pankjsharma02 (unknown [107.122.12.50]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210104131305epsmtip17800888b93c48b756eabf9a55f04b8ec~XCaKQcWVo2273822738epsmtip16;
+        Mon,  4 Jan 2021 13:13:05 +0000 (GMT)
+From:   "pankj.sharma" <pankj.sharma@samsung.com>
+To:     "'Marc Kleine-Budde'" <mkl@pengutronix.de>,
+        "'Sriram Dash'" <sriram.dash@samsung.com>,
+        <linux-kernel@vger.kernel.org>
+Cc:     <linux-can@vger.kernel.org>, <dmurphy@ti.com>,
+        <pankaj.dubey@samsung.com>
+In-Reply-To: <9b212ce7-51e6-f6a7-fa34-5a9118c56927@pengutronix.de>
+Subject: RE: [PATCH] MAINTAINERS: Update MCAN MMIO device driver maintainer
+Date:   Mon, 4 Jan 2021 18:43:04 +0530
+Message-ID: <159001d6e29b$576344a0$0629cde0$@samsung.com>
 MIME-Version: 1.0
-References: <20201217221148.2877318-1-martin.blumenstingl@googlemail.com> <20210104094849.1850c993@xps13>
-In-Reply-To: <20210104094849.1850c993@xps13>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 4 Jan 2021 14:13:04 +0100
-Message-ID: <CAFBinCDw_Zwwww88Vd2yU5sMZxYg-NQWHhLiuV7A5rhApeNroA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: intel: remove broken code
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     vadivel.muruganx.ramuthevar@linux.intel.com,
-        linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJhQyIlwhM5RMBPM0HYr/vXunjykwIQwDY9AR7ZsHao6TMK0A==
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIKsWRmVeSWpSXmKPExsWy7bCmpm6s2Od4g60fjCy6T29htVj1fSqz
+        xeVdc9gs1i+awmKxaOsXdosb69kd2Dz6/xp49G1Zxehx/MZ2Jo/Pm+QCWKK4bFJSczLLUov0
+        7RK4Mla+PMlccIS94nBLL3MD4w/WLkZODgkBE4lDa8+C2UICuxklzj036GLkArI/MUoc7p8J
+        lfjMKNE33Qum4f6HbWwQRbsYJbY9mM8O4bxmlNi+7zk7SBWbgL7ElKa/LCC2iEC1RG/fU2YQ
+        m1nAX+LJ/Q9gcU4BJ4ney5+ZQGxhAW+JyU3LGEFsFgEViXsnuoA2cHDwClhKPOkIBAnzCghK
+        nJz5hAVijLbEsoWvmSEOUpD4+XQZK8QqJ4lDjzdB1YhLvDx6BOw2CYFGDonVazYzQTS4SKw/
+        eoIdwhaWeHV8C5QtJfH53V42CDtbYuHufhaQGyQEKiTaZghDhO0lDlyZAxZmFtCUWL9LHyIs
+        KzH11DomiLV8Er2/n0Bt4pXYMQ/GVpOY+vQdI4QtI3Hn0Wa2CYxKs5B8NgvJZ7OQfDALYdsC
+        RpZVjJKpBcW56anFpgVGeanlesWJucWleel6yfm5mxjBqUbLawfjwwcf9A4xMnEwHmKU4GBW
+        EuGtuPAhXog3JbGyKrUoP76oNCe1+BCjNAeLkjjvDoMH8UIC6YklqdmpqQWpRTBZJg5OqQam
+        ZNVV3DEtEv1yp0y37ztf4qosXzG/2iRi2yIRg+fbpaddVO/KXLOavzZvrdXs0/Pdi+doXvyr
+        cdN+isQJn5nWXBGrfvwKj7mQUb7A8/UXm6Y1X2/9vbx9zZ1DNgqch3UX+xSq2ObvYTC6tVEj
+        izNRu9nD7s8yucIw9+tdbW19Omrblh/pWVjyP3Hjq1SfqdXhC/IfJk3SbL0Y1cR97MYc2W8v
+        LrTav4zcwyB5Zz5XvA7T59iONQuj2md/EDoaypy8OXpa/CYG4T9rN127t2P36ZOGB2X+tzX2
+        W4f8b72/WNB2j9gM3nmWBXeUct8F1WqZfuTYdJg5yLSCgZs51VXnlkiRlMXhsLqCfe+/rGlR
+        YinOSDTUYi4qTgQAca1aQ6QDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSnG6SyOd4g09XjS26T29htVj1fSqz
+        xeVdc9gs1i+awmKxaOsXdosb69kd2Dz6/xp49G1Zxehx/MZ2Jo/Pm+QCWKK4bFJSczLLUov0
+        7RK4Mr4daGQqWMVecfZfJ2MD4z3WLkZODgkBE4n7H7axdTFycQgJ7GCUuLrgCnMXIwdQQkZi
+        8edqiBphiZX/nrND1LwEqln5hQUkwSagLzGl6S+YLSJQK3Fl+y9mEJtZIFBi7s0XrBANRxgl
+        Fh1dwg6S4BRwkui9/JkJxBYW8JaY3LSMEcRmEVCRuHeiiw1kMa+ApcSTjkCQMK+AoMTJmU9Y
+        IGZqS/Q+bGWEsZctfM0McZyCxM+ny1ghbnCSOPR4E1S9uMTLo0fYJzAKz0IyahaSUbOQjJqF
+        pGUBI8sqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzgqNHS2sG4Z9UHvUOMTByMhxgl
+        OJiVRHgrLnyIF+JNSaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyWiYNT
+        qoEp1feW6InT5jGCWavPd186uO5IG+eE0NjkoBvVVveZZ8owT5zvn6cr46Qgdlr4kkVNzaUD
+        Yq3t3U8mMyqrBf1epn1z86pv54QbUxN4sl8+0sl46VSZFOy1VS1A1HN9/Lv49G0XheX+F6pe
+        4pizeeftva828xVzdGZMFmO39Y6LlZr88nNRqioX602hf82CDrmtGWf/vdYy/6/oU2ktEJHJ
+        1N367PeRqRmFNoueb7dcUPgsrDDwTPr/i+y9VU5ZW9hN1gVZnaxoa3GwXj23TMDi37ZwL/st
+        SdEH4is5uNaLev8QrHJpzmIWOM+/VzXh4+Ujtg4259xl0u82MnwPF7iUE/u5lMchbBLj9LfN
+        SizFGYmGWsxFxYkAvqXbdgkDAAA=
+X-CMS-MailID: 20210104131306epcas5p169b135d79ee4576ed00735351982fead
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c
+References: <CGME20210104122607epcas5p3d63c769007bad3cfe00ff0fce99e082c@epcas5p3.samsung.com>
+        <20210104123134.16930-1-sriram.dash@samsung.com>
+        <9b212ce7-51e6-f6a7-fa34-5a9118c56927@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+> From: Marc Kleine-Budde <mkl=40pengutronix.de>
+> Subject: Re: =5BPATCH=5D MAINTAINERS: Update MCAN MMIO device driver
+> maintainer
+>=20
+> On 1/4/21 1:31 PM, Sriram Dash wrote:
+> > Update Pankaj Sharma as maintainer for mcan mmio device driver as I
+> > will be moving to a different role.
 
-thank you for looking into this
+Acked-by: Pankaj Sharma <pankj.sharma=40samsung.com>
 
-On Mon, Jan 4, 2021 at 9:48 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-[...]
-> >       nand_set_flash_node(&ebu_host->chip, dev->of_node);
-> > -     if (!mtd->name) {
-> > -             dev_err(ebu_host->dev, "NAND label property is mandatory\n");
-> > -             return -EINVAL;
-> > -     }
->
-> This is valid code, it's best to use a label = "my-storage"; property
-> in your NAND DT node. Then mtd->name will be updated by
-> nand_set_flash_node().
-so you suggest moving the check instead?
-the original code flow was:
-  mtd = NULL;
-  if (!mtd->name)
-     return -EINVAL;
-  mtd = nand_to_mtd(&ebu_host->chip);
-  ...
-
-by saying that the code itself is valid you're asking me to update the
-flow to the following:
-  mtd = nand_to_mtd(&ebu_host->chip);
-  if (!mtd->name)
-     return -EINVAL;
+> >
+> > Signed-off-by: Sriram Dash <sriram.dash=40samsung.com>
+> > ---
+>=20
+> Applied to linux-can/testing.
+>=20
+> Tnx,
+> Marc
+>=20
+> --
+> Pengutronix e.K.                 =7C Marc Kleine-Budde           =7C
+> Embedded Linux                   =7C https://protect2.fireeye.com/v1/url?=
+k=3D8b005a7e-
+> d49b6343-8b01d131-0cc47a31309a-1e7ada642c78a62f&q=3D1&e=3D7d13a30c-
+> d7d8-4a74-aa6c-6beb64121cd7&u=3Dhttps%3A%2F%2Fwww.pengutronix.de%2F
+> =7C
+> Vertretung West/Dortmund         =7C Phone: +49-231-2826-924     =7C
+> Amtsgericht Hildesheim, HRA 2686 =7C Fax:   +49-5121-206917-5555 =7C
 
 
-Best regards,
-Martin
