@@ -2,114 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90DB2E9E0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAE12E9E0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbhADTT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 14:19:57 -0500
-Received: from mga17.intel.com ([192.55.52.151]:29081 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725889AbhADTT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 14:19:56 -0500
-IronPort-SDR: Su5UJEbhGEaviem03a/Bz0oNH4BybaKUZAKuCb5noOe5lgSW4t2YDvRqCxiXYo8AUrlo/OFwuI
- 2CkS905wQfvA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156783306"
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="156783306"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 11:19:15 -0800
-IronPort-SDR: KgSadHUemovhP1/W+oU86mb7s1oljRqAejaCR+PoagSVM26DWMxcwG6Ce5Hfk8fB9Ji5Qb4sU3
- c/ikGxvHxkXA==
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="360881592"
-Received: from trhudson-mobl.amr.corp.intel.com (HELO [10.213.162.49]) ([10.213.162.49])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 11:19:14 -0800
-Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page
- allocation for __GFP_ZERO
-To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20201221163024.GA22532@open-light-1.localdomain>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <0e8b6a2f-527d-7c77-efcf-04f21ef2a77c@intel.com>
-Date:   Mon, 4 Jan 2021 11:19:13 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726329AbhADTYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 14:24:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24714 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725830AbhADTYR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 14:24:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609788170;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f5AU8C2ndHXKPm8KZ52wtigPYVZ0w+rsKIi7xnRp8eU=;
+        b=IDXBeoAl6QTnH3EoLSUQaZG82J2AJTihgbqF+y9c/gWVQhg54Ca2jHEkId+h9dWriP5vBm
+        xroI9DCEAespjU7xOXW2J9KOG54otKAlN1grWHLP/6WgImPr8gkgM27YY+PqaUAcKE0XGO
+        rkwZ+tQXBWNwc+ChuGG/54qNXrs/Yts=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-2uQJ2cTJMoqwP3MQmFRjaA-1; Mon, 04 Jan 2021 14:22:47 -0500
+X-MC-Unique: 2uQJ2cTJMoqwP3MQmFRjaA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 830F49CC03;
+        Mon,  4 Jan 2021 19:22:46 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-181.rdu2.redhat.com [10.10.117.181])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A431A71C8D;
+        Mon,  4 Jan 2021 19:22:45 +0000 (UTC)
+Subject: Re: [PATCH] locking/lockdep: Use local_irq_save() with call_rcu()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will.deacon@arm.com>,
+        linux-kernel@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+References: <20201222225553.15642-1-longman@redhat.com>
+ <20210104153836.GS3021@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <cbea5441-c85a-2e96-b0be-f5e5826d2475@redhat.com>
+Date:   Mon, 4 Jan 2021 14:22:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201221163024.GA22532@open-light-1.localdomain>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210104153836.GS3021@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/21/20 8:30 AM, Liang Li wrote:
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -137,6 +137,9 @@ enum pageflags {
->  #endif
->  #ifdef CONFIG_64BIT
->  	PG_arch_2,
-> +#endif
-> +#ifdef CONFIG_PREZERO_PAGE
-> +	PG_zero,
->  #endif
->  	__NR_PAGEFLAGS,
+On 1/4/21 10:38 AM, Peter Zijlstra wrote:
+> On Tue, Dec 22, 2020 at 05:55:53PM -0500, Waiman Long wrote:
+>> The following lockdep splat was hit:
+>>
+>>   [  560.638354] WARNING: CPU: 79 PID: 27458 at kernel/rcu/tree_plugin.h:1749 call_rcu+0x6dc/0xf00
+>>      :
+>>   [  560.647761] RIP: 0010:call_rcu+0x6dc/0xf00
+>>   [  560.647763] Code: 0f 8f 29 04 00 00 e8 93 da 1c 00 48 8b 3c 24 57 9d 0f 1f 44 00 00 e9 19 fa ff ff 65 8b 05 38 83 c4 49 85 c0 0f 84 cd fb ff ff <0f> 0b e9 c6 fb ff ff e8 b8 45 51 00 4c 89 f2 48 b8 00 00 00 00 00
+>>   [  560.647764] RSP: 0018:ff11001050097b58 EFLAGS: 00010002
+>>   [  560.647766] RAX: 0000000000000001 RBX: ffffffffbb1f3360 RCX: 0000000000000001
+>>   [  560.647766] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffb99bac9c
+>>   [  560.647767] RBP: 1fe220020a012f73 R08: 000000010004005c R09: dffffc0000000000
+>>   [  560.647768] R10: dffffc0000000000 R11: 0000000000000003 R12: ff1100105b7f70e1
+>>   [  560.647769] R13: ffffffffb635d8a0 R14: ff1100105b7f72d8 R15: ff1100105b7f7040
+>>   [  560.647770] FS:  00007fd9b3437080(0000) GS:ff1100105b600000(0000) knlGS:0000000000000000
+>>   [  560.647771] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>   [  560.647772] CR2: 00007fd9b30112bc CR3: 000000105e898006 CR4: 0000000000761ee0
+>>   [  560.647773] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>   [  560.647773] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>   [  560.647774] PKRU: 55555554
+>>   [  560.647774] Call Trace:
+>>   [  560.647778]  ? invoke_rcu_core+0x180/0x180
+>>   [  560.647782]  ? __is_module_percpu_address+0xed/0x440
+>>   [  560.647787]  lockdep_unregister_key+0x2ab/0x5b0
+>>   [  560.647791]  destroy_workqueue+0x40b/0x610
+>>   [  560.647862]  xlog_dealloc_log+0x216/0x2b0 [xfs]
+>>      :
+>>
+>> This splat is caused by the fact that lockdep_unregister_key() uses
+>> raw_local_irq_save() which doesn't update the hardirqs_enabled
+>> percpu flag.  The call_rcu() function, however, will call
+>> lockdep_assert_irqs_disabled() to check the hardirqs_enabled flag which
+>> remained set in this case.
+>>
+>> Fix this problem by using local_irq_save()/local_irq_restore() pairs
+>> whenever call_rcu() is being called.
+> I'm not sure I much like all this,.. :/
+>
+>> I think raw_local_irq_save() function can be used if no external
+>> function is being called except maybe printk() as it means another
+>> lockdep problem exists.
+> The reason lockdep is using raw_local_irq_save() is to avoid calling
+> into itself again, notably local_irq_restore() will end up in
+> mark_held_locks().
+>
+>> Fixes: a0b0fd53e1e67 ("locking/lockdep: Free lock classes that are no longer in use")
+> Seems dubious, as the lockdep_assert_irqs_disabled() that triggered was
+> added after that patch.
+>
+> I'm thinking another solution would be to increment the lockdep
+> recursion count before calling RCU, because then we'll fail
+> __lockdep_enabled and the assertion gets killed. Hmm?
+>
+Yes, you are right. Incrementing the lockdep recursion count should fix 
+the issue. I was missing the commit 43be4388e94b ("lockdep: Put graph 
+lock/unlock under lock_recursion protection"). This commit will properly 
+increment the percpu lockdep recursion count and disable the call_rcu 
+warning. So please ignore this patch.
 
-I don't think this is worth a generic page->flags bit.
+Thanks,
+Longman
 
-There's a ton of space in 'struct page' for pages that are in the
-allocator.  Can't we use some of that space?
