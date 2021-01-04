@@ -2,34 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828522E9966
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 427852E9A14
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbhADP7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:59:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36474 "EHLO mail.kernel.org"
+        id S1728752AbhADQCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:02:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727698AbhADP7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:59:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB722224D4;
-        Mon,  4 Jan 2021 15:58:14 +0000 (UTC)
+        id S1727897AbhADQCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:02:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3813207AE;
+        Mon,  4 Jan 2021 16:01:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775895;
-        bh=UOn/Io+TVSfmSAA3PKPPcakLs9XQZNQgh1scWALYtxc=;
+        s=korg; t=1609776109;
+        bh=q9Q+DvzxGEMeJy831KMmzBCzYUFwM4Mf+Q89Q/DnXnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VXWKLkUD7GbngwWSLEFlTrTUy3H2utoGrKNnImlWJ5xBEd/DqX1/ksFJ0ZgM5xMi3
-         hK6ubCAhIhNmpr5h5cf/dZXxzNkKDmsLhgBM/OITjWOdgQAmTs+tcKHaoIhJgYTxcz
-         Mehp/mepWMiY4+OaJtkC4yqSjB8R8EyflPeRSWEo=
+        b=z3O6TGq3LF1HvVLR9oVeKzWEP5AQH6MO+knnBeX0Q8xkwJFuOYF6cMP6Tqe3JqvTK
+         miaIxuPhz0NqlAB8rBolRnywsa3u3ya/SqhRcAnCRIH1/sHX67877k2xtWZjzmJfGx
+         ag4+/nbmkk5LMNk0A3+16aCGSEp1WAEoWYrCrUNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 14/35] of: fix linker-section match-table corruption
-Date:   Mon,  4 Jan 2021 16:57:17 +0100
-Message-Id: <20210104155704.098933120@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        "Acked-by: Ilya Leoshkevich" <iii@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Zaslonko Mikhail <zaslonko@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 25/63] zlib: move EXPORT_SYMBOL() and MODULE_LICENSE() out of dfltcc_syms.c
+Date:   Mon,  4 Jan 2021 16:57:18 +0100
+Message-Id: <20210104155710.042752544@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
-References: <20210104155703.375788488@linuxfoundation.org>
+In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
+References: <20210104155708.800470590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,66 +45,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 5812b32e01c6d86ba7a84110702b46d8a8531fe9 upstream.
+commit 605cc30dea249edf1b659e7d0146a2cf13cbbf71 upstream.
 
-Specify type alignment when declaring linker-section match-table entries
-to prevent gcc from increasing alignment and corrupting the various
-tables with padding (e.g. timers, irqchips, clocks, reserved memory).
+In commit 11fb479ff5d9 ("zlib: export S390 symbols for zlib modules"), I
+added EXPORT_SYMBOL()s to dfltcc_inflate.c but then Mikhail said that
+these should probably be in dfltcc_syms.c with the other
+EXPORT_SYMBOL()s.
 
-This is specifically needed on x86 where gcc (typically) aligns larger
-objects like struct of_device_id with static extent on 32-byte
-boundaries which at best prevents matching on anything but the first
-entry. Specifying alignment when declaring variables suppresses this
-optimisation.
+However, that is contrary to the current kernel style, which places
+EXPORT_SYMBOL() immediately after the function that it applies to, so
+move all EXPORT_SYMBOL()s to their respective function locations and
+drop the dfltcc_syms.c file.  Also move MODULE_LICENSE() from the
+deleted file to dfltcc.c.
 
-Here's a 64-bit example where all entries are corrupt as 16 bytes of
-padding has been inserted before the first entry:
+[rdunlap@infradead.org: remove dfltcc_syms.o from Makefile]
+  Link: https://lkml.kernel.org/r/20201227171837.15492-1-rdunlap@infradead.org
 
-	ffffffff8266b4b0 D __clk_of_table
-	ffffffff8266b4c0 d __of_table_fixed_factor_clk
-	ffffffff8266b5a0 d __of_table_fixed_clk
-	ffffffff8266b680 d __clk_of_table_sentinel
-
-And here's a 32-bit example where the 8-byte-aligned table happens to be
-placed on a 32-byte boundary so that all but the first entry are corrupt
-due to the 28 bytes of padding inserted between entries:
-
-	812b3ec0 D __irqchip_of_table
-	812b3ec0 d __of_table_irqchip1
-	812b3fa0 d __of_table_irqchip2
-	812b4080 d __of_table_irqchip3
-	812b4160 d irqchip_of_match_end
-
-Verified on x86 using gcc-9.3 and gcc-4.9 (which uses 64-byte
-alignment), and on arm using gcc-7.2.
-
-Note that there are no in-tree users of these tables on x86 currently
-(even if they are included in the image).
-
-Fixes: 54196ccbe0ba ("of: consolidate linker section OF match table declarations")
-Fixes: f6e916b82022 ("irqchip: add basic infrastructure")
-Cc: stable <stable@vger.kernel.org>     # 3.9
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20201123102319.8090-2-johan@kernel.org
-[ johan: adjust context to 5.4 ]
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lkml.kernel.org/r/20201219052530.28461-1-rdunlap@infradead.org
+Fixes: 11fb479ff5d9 ("zlib: export S390 symbols for zlib modules")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Zaslonko Mikhail <zaslonko@linux.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/of.h |    1 +
- 1 file changed, 1 insertion(+)
+ lib/zlib_dfltcc/Makefile         |    2 +-
+ lib/zlib_dfltcc/dfltcc.c         |    6 +++++-
+ lib/zlib_dfltcc/dfltcc_deflate.c |    3 +++
+ lib/zlib_dfltcc/dfltcc_syms.c    |   17 -----------------
+ 4 files changed, 9 insertions(+), 19 deletions(-)
 
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -1258,6 +1258,7 @@ static inline int of_get_available_child
- #define _OF_DECLARE(table, name, compat, fn, fn_type)			\
- 	static const struct of_device_id __of_table_##name		\
- 		__used __section(__##table##_of_table)			\
-+		__aligned(__alignof__(struct of_device_id))		\
- 		 = { .compatible = compat,				\
- 		     .data = (fn == (fn_type)NULL) ? fn : fn  }
- #else
+--- a/lib/zlib_dfltcc/Makefile
++++ b/lib/zlib_dfltcc/Makefile
+@@ -8,4 +8,4 @@
+ 
+ obj-$(CONFIG_ZLIB_DFLTCC) += zlib_dfltcc.o
+ 
+-zlib_dfltcc-objs := dfltcc.o dfltcc_deflate.o dfltcc_inflate.o dfltcc_syms.o
++zlib_dfltcc-objs := dfltcc.o dfltcc_deflate.o dfltcc_inflate.o
+--- a/lib/zlib_dfltcc/dfltcc.c
++++ b/lib/zlib_dfltcc/dfltcc.c
+@@ -1,7 +1,8 @@
+ // SPDX-License-Identifier: Zlib
+ /* dfltcc.c - SystemZ DEFLATE CONVERSION CALL support. */
+ 
+-#include <linux/zutil.h>
++#include <linux/export.h>
++#include <linux/module.h>
+ #include "dfltcc_util.h"
+ #include "dfltcc.h"
+ 
+@@ -53,3 +54,6 @@ void dfltcc_reset(
+     dfltcc_state->dht_threshold = DFLTCC_DHT_MIN_SAMPLE_SIZE;
+     dfltcc_state->param.ribm = DFLTCC_RIBM;
+ }
++EXPORT_SYMBOL(dfltcc_reset);
++
++MODULE_LICENSE("GPL");
+--- a/lib/zlib_dfltcc/dfltcc_deflate.c
++++ b/lib/zlib_dfltcc/dfltcc_deflate.c
+@@ -4,6 +4,7 @@
+ #include "dfltcc_util.h"
+ #include "dfltcc.h"
+ #include <asm/setup.h>
++#include <linux/export.h>
+ #include <linux/zutil.h>
+ 
+ /*
+@@ -34,6 +35,7 @@ int dfltcc_can_deflate(
+ 
+     return 1;
+ }
++EXPORT_SYMBOL(dfltcc_can_deflate);
+ 
+ static void dfltcc_gdht(
+     z_streamp strm
+@@ -277,3 +279,4 @@ again:
+         goto again; /* deflate() must use all input or all output */
+     return 1;
+ }
++EXPORT_SYMBOL(dfltcc_deflate);
+--- a/lib/zlib_dfltcc/dfltcc_syms.c
++++ /dev/null
+@@ -1,17 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * linux/lib/zlib_dfltcc/dfltcc_syms.c
+- *
+- * Exported symbols for the s390 zlib dfltcc support.
+- *
+- */
+-
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/zlib.h>
+-#include "dfltcc.h"
+-
+-EXPORT_SYMBOL(dfltcc_can_deflate);
+-EXPORT_SYMBOL(dfltcc_deflate);
+-EXPORT_SYMBOL(dfltcc_reset);
+-MODULE_LICENSE("GPL");
 
 
