@@ -2,222 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613542E97AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1912E97AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbhADOxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:53:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49403 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725889AbhADOxI (ORCPT
+        id S1727175AbhADOxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:53:20 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35766 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727030AbhADOxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:53:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609771900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gxcfWJQksOjY0DyqWcZrS6xpnJ2DbSipm7BPCLqL/EU=;
-        b=SpClmOA/JKj7T1O4xV3x0X4Aeziedbnob5ihtEzuAAI38KT//o6syR2mvXkcDM2/QvfUNX
-        Tmgc4lAxFP2o0F3qkSaEvyqqY78E46yvzgJpQCwFOgGY+F+2YmBIEA3TrJ/716dZkuP+JQ
-        jJ/QQi7HFBGyJgLZTAl71jsGXMQx/as=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-370-DleNEs_zNJaPQVW8H-8F9w-1; Mon, 04 Jan 2021 09:51:38 -0500
-X-MC-Unique: DleNEs_zNJaPQVW8H-8F9w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9AAA3190D340;
-        Mon,  4 Jan 2021 14:51:37 +0000 (UTC)
-Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 498FE6F81E;
-        Mon,  4 Jan 2021 14:51:36 +0000 (UTC)
-Subject: Re: uninitialized pmem struct pages
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20210104100323.GC13207@dhcp22.suse.cz>
- <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
- <20210104142624.GI13207@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <23a4eea2-9fdb-fd1d-ee92-9cd8ac6e8f41@redhat.com>
-Date:   Mon, 4 Jan 2021 15:51:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 4 Jan 2021 09:53:19 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104EpcLN061399;
+        Mon, 4 Jan 2021 08:51:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1609771898;
+        bh=HsuPNoLo8VM6yk6R7m7EpJMz+XW2jOU46ryH7hQW8SU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=PF6Iopj6BYpVrJxfEuYlXVzWwWfDtgV2gdUcIidGoGlELatc/xLpijgyODkhAQspH
+         veHGSFy6mP9EEceAXO02Eu7vO+7uoYqVPVWz6z3ToV0JADdPr7VmMQgdR/a4YKc7HE
+         BCiGO61BFSehjNklgOCOzKyq80zMWAU8K3mvnr0w=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104EpcIA020797
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 4 Jan 2021 08:51:38 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 Jan
+ 2021 08:51:37 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 4 Jan 2021 08:51:37 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104EpbJ5019184;
+        Mon, 4 Jan 2021 08:51:37 -0600
+Date:   Mon, 4 Jan 2021 08:51:37 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/6] PCI: J7200/J721E PCIe bindings
+Message-ID: <20210104145137.wmtppcvjzu374yly@kahuna>
+References: <20210104122232.24071-1-kishon@ti.com>
+ <20210104125910.qaf7vi3dx6vsne6t@backfield>
+ <465097c1-2d38-ad45-cc32-d92c385114c5@ti.com>
+ <20210104131642.m5rgpkhnrffq5nrx@circular>
+ <d50fa957-7371-090a-754c-816760b43a27@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210104142624.GI13207@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <d50fa957-7371-090a-754c-816760b43a27@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.01.21 15:26, Michal Hocko wrote:
-> On Mon 04-01-21 11:45:39, David Hildenbrand wrote:
->> On 04.01.21 11:03, Michal Hocko wrote:
->>> Hi,
->>> back in March [1] you have recommended 53cdc1cb29e8
->>> ("drivers/base/memory.c: indicate all memory blocks as removable") to be
->>> backported to stable trees and that has led to a more general discussion
->>> about the current state of pfn walkers wrt. uninitialized pmem struct
->>> pages. We haven't concluded any specific solution for that except for a
->>> general sentiment that pfn_to_online_page should be able to catch those.
->>> I might have missed any follow ups on that but I do not think we have
->>> landed on any actual solution in the end. Have I just missed any followups?
->>
->> Thanks for raising this issue. It's still on my list of "broken and
->> non-trivial to fix" things.
->>
->> So, as far as I recall, we still have the following two issues remaining:
->>
->> 1. pfn_to_online_page() false positives
->>
->> The semantics of pfn_to_online_page() were broken with sub-section
->> hot-add in corner cases.
->>
->> If we have ZONE_DEVICE hot-added memory that overlaps in a section with
->> boot memory, this memory section will contain parts ZONE_DEVICE memory
->> and parts !ZONE_DEVICE memory. This can happen in sub-section
->> granularity (2MB IIRC). pfn_to_online_page() will succeed on ZONE_DEVICE
->> memory parts as the whole section is marked as online. Bad.
+On 18:52-20210104, Kishon Vijay Abraham I wrote:
+> Nishanth,
 > 
-> OK, I was not aware of this problem. Anyway, those pages should be still
-> allocated and their state should retain their last state. I would have
-> to double check but this shouldn't be harmfull. Or what would be an
-> actual problem?
+> On 04/01/21 6:46 pm, Nishanth Menon wrote:
+> > On 18:40-20210104, Kishon Vijay Abraham I wrote:
+> >> Nishanth,
+> >>
+> >> On 04/01/21 6:29 pm, Nishanth Menon wrote:
+> >>> On 17:52-20210104, Kishon Vijay Abraham I wrote:
+> >>>> Patch series adds DT nodes in order to get PCIe working in J7200.
+> >>>> Also includes couple of fixes for J721e.
+> >>>>
+> >>>> v1 of the patch series can be found @ [1]
+> >>>> v2 of the patch series can be found @ [2]
+> >>>>
+> >>>> Changes from v2:
+> >>>> 1) Moved serdes_refclk node out of interconnect node and also replaced
+> >>>>    "_" with "-"
+> >>>>
+> >>>> Changes from v1:
+> >>>> 1) Include only the device tree patches here (the binding patch is sent
+> >>>> separately)
+> >>>> 2) Include couple of patches that fixes J721E DTS.
+> >>>>
+> >>>> [1] -> http://lore.kernel.org/r/20201102101154.13598-1-kishon@ti.com
+> >>>> [2] -> http://lore.kernel.org/r/20201210130747.25436-1-kishon@ti.com
+> >>>>
+> >>>> Kishon Vijay Abraham I (6):
+> >>>>   arm64: dts: ti: k3-j721e-main: Fix supported max outbound regions
+> >>>>   arm64: dts: ti: k3-j721e-main: Remove "syscon" nodes added for
+> >>>>     pcieX_ctrl
+> >>>>   arm64: dts: ti: k3-j7200-main: Add SERDES and WIZ device tree node
+> >>>>   arm64: dts: ti: k3-j7200-main: Add PCIe device tree node
+> >>>>   arm64: dts: ti: k3-j7200-common-proc-board: Enable SERDES0
+> >>>>   arm64: dts: ti: k3-j7200-common-proc-board: Enable PCIe
+> >>>>
+> >>>>  .../dts/ti/k3-j7200-common-proc-board.dts     |  38 ++++++
+> >>>>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 111 ++++++++++++++++++
+> >>>>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     |  52 ++------
+> >>>>  3 files changed, 157 insertions(+), 44 deletions(-)
+> >>>
+> >>>
+> >>> A bit confused on the dependency here. is there something merged into
+> >>> next-20210104 that makes this series ready for pickup? is there a way
+> >>> I can get a immutable tag for driver fixups to pull so that my dts
+> >>> next is not broken for PCIe (I am assuming looking at the series that
+> >>> this is probably not a backward compatible series?)?
+> >>
+> >> There are no driver changes for the basic J7200 PCIe support and the DT
+> >> bindings are already merged [1].
+> >>
+> >> There are few errata fixes applicable for J721E which has to be removed
+> >> for J7200 but that depends on other patches to be merged [1] but that
+> >> doesn't impact j7200 functionality.
+> >>
+> >> [1] ->
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml#n19
+> >> [2] -> http://lore.kernel.org/r/20201230120515.2348-1-nadeem@cadence.com
+> > 
+> > So, Dropping stuff like "cdns,max-outbound-regions" (change from 16 to
+> > 32) will work on older kernels? Could you do a quick sanity check on the
+> > couple of "fixes" patches in this thread is not breaking functionality
+> > introduced in the older stable kernels?
 > 
->> One instance where this is still an issue is
->> mm/memory-failure.c:memory_failure() and
->> mm/memory-failure.c:soft_offline_page(). I thought for a while about
->> "fixing" these, but to me it felt like fixing pfn_to_online_page() is
->> actually the right approach.
->>
->> But worse, before ZONE_DEVICE hot-add
->> 1. The whole section memmap does already exist (early sections always
->> have a full memmap for the whole section)
->> 2. The whole section memmap is initialized (although eventually with
->> dummy node/zone 0/0 for memory holes until that part is fixed) and might
->> be accessed by pfn walkers.
->>
->> So when hotadding ZONE_DEVICE we are modifying already existing and
->> visible memmaps. Bad.
-> 
-> Could you elaborate please?
+> Okay, the driver changes are done such that it works with both old DT
+> and new DT however the newer DT will not work with old kernel. So I
+> think I should drop the "Fixes" tag in the DT patches.
 
-Simplistic example: Assume you have a VM with 64MB on x86-64.
-
-We need exactly one memory section (-> one memory block device). We
-allocate the memmap for a full section - an "early section". So we have
-a memmap for 128MB, while 64MB are actually in use, the other 64MB is
-initialized (like a memory hole). pfn_to_online_page() would return a
-valid struct page for the whole section memmap.
-
-The remaining 64MB can later be used for hot-adding ZONE_DEVICE memory,
-essentially re-initializing that part of the already-existing memmap.
-
-See pfn_valid():
-
-/*
- * Traditionally early sections always returned pfn_valid() for
- * the entire section-sized span.
- */
-return early_section(ms) || pfn_section_valid(ms, pfn);
+If there is a specific stable kernel version you might like to use, you
+could use that as well for those stable tags (see [1])
 
 
-Depending on the memory layout of the system, a pfn walker might just be
-about to stumble over this range getting re-initialized.
-
->  
->> 2. Deferred init of ZONE_DEVICE ranges
->>
->> memmap_init_zone_device() runs after the ZONE_DEVICE zone was resized
->> and outside the memhp lock. I did not follow if the use of
->> get_dev_pagemap() actually makes sure that memmap_init_zone_device() in
->> pagemap_range() actually completed. I don't think it does.
-> 
-> So a pfn walker can see an unitialized struct page for a while, right?
-> 
-> The problem that I have encountered is that some zone device pages are
-> not initialized at all. That sounds like a different from those 2 above.
-> I am having hard time to track what kind of pages those are and why we
-> cannot initialized their zone/node and make them reserved at least.
-
-And you are sure that these are in fact ZONE_DEVICE pages? Not memory
-holes e.g., tackled by
-
-commit 4b094b7851bf4bf551ad456195d3f26e1c03bd74
-Author: David Hildenbrand <david@redhat.com>
-Date:   Mon Feb 3 17:33:55 2020 -0800
-
-    mm/page_alloc.c: initialize memmap of unavailable memory directly
-
-
-commit e822969cab48b786b64246aad1a3ba2a774f5d23
-Author: David Hildenbrand <david@redhat.com>
-Date:   Mon Feb 3 17:33:48 2020 -0800
-
-    mm/page_alloc.c: fix uninitialized memmaps on a partially populated
-last section
-
-
-(note there is currently an upstream discussion on improving this
-initialization, especially getting better node/zone information, mostly
-involving Andrea and Mike - but it only changes "how" these parts are
-initialized, not "if" or "when")
-
----
-
-However, I do remember a discussion regarding "reserved altmap space"
-ZONE_DEVICE ranges, and whether to initialize them or leave them
-uninitialized. See comment in
-
-commit 77e080e7680e1e615587352f70c87b9e98126d03
-Author: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Date:   Fri Oct 18 20:19:39 2019 -0700
-
-    mm/memunmap: don't access uninitialized memmap in memunmap_pages()
-
-
-"With an altmap, the memmap falling into the reserved altmap space are
-not initialized and, therefore, contain a garbage NID and a garbage zone.".
-
-I think the issue is that the ZONE_DEVICE pages that *host* the memmap
-of other pages might be left uninitialized.
-
-Like pfn_to_page(VIRT_TO_PFN(pfn_to_page(zone_device_pfn))), which falls
-onto ZONE_DEVICE with an altmap, could be uninitialized. This is very
-similar to our Oscar's vmemmap-on-hotadded-memory approach, however,
-there we implicitly initialize the memmap of these pages just by the way
-the vmemmap is placed at the beginning of the memory block.
-
-If altmap-reserved space is placed partially into an early section that
-is marked as online (issue 1. I described), we have the same issue as
-1., just a little harder to fix :)
-
-> 
->>> Is anybody working on that?
->>>
->>
->> I believe Dan mentioned somewhere that he wants to see a real instance
->> of this producing a BUG before actually moving forward with a fix. I
->> might be wrong.
-> 
-> We have seen reports about those uninitialized struct pages on our 5.3
-> based kernels. Backporting 53cdc1cb29e8 helped for the particular report
-> but I still consider it a workaround rather than a fix. I do not have
-> any reports for other pfn walkers but we might be just lucky and I will
-> sleep better if I do not have rely on the luck.
-
-Yeah, I think we are now at 3 different but related problems.
+[1] https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
