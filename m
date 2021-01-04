@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31912E9811
+	by mail.lfdr.de (Postfix) with ESMTP id 197032E980F
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbhADPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:06:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37306 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726762AbhADPGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:06:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609772703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HJCXspdx3i7XpaVupbHfC3QV0pRcOT5mdGPwTiDlwdE=;
-        b=U/StqKtLrEY6Sy1pRG+/Q5AbUGx98iGOE4uEX4B/ydubxLeaL4VXPQgxV8fXe5sfCAeIkG
-        SDRLe1vXmN42N/sz9aQYXao4hr2IMroHJkQiFr0JGZpBp67fZr1OShzSCdyK8zWaEcwEtF
-        k9Fy/FPUG6qdQf2bvOznuQJOi5mKyB8=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-7VnqYoeGOtyQ87mQgEWVgQ-1; Mon, 04 Jan 2021 10:05:00 -0500
-X-MC-Unique: 7VnqYoeGOtyQ87mQgEWVgQ-1
-Received: by mail-oo1-f70.google.com with SMTP id i16so17984568oos.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 07:05:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HJCXspdx3i7XpaVupbHfC3QV0pRcOT5mdGPwTiDlwdE=;
-        b=JaOd3g8wAaNquBVTbrVG1r18MAnERIop9Srnu9MdvO7D5V/bYIHFz5GwkMcTWM1osf
-         adQWMMfJHEMs8mVUpawgZ1Up7i1oxBGrsu7MMgXpFQC9c1FpRDSHo/wPzvMtPLO8V8aD
-         XrjMMw+n4EcQfBVtCue80iwSBBLZCIbRaahA+xZQmdPHCKHXM0AsphFNom0M/JXjfXzA
-         lPzICqikbwP/0jzgaLoJTys0xLf0POGidXH5hdUKk13Yq3TinNV0tN0/YiYwfYHw4oHy
-         8WfZvoEC6Ebt3VwlfNaLi591ZVR9U2WunvwVvMeWfJgoNVJnAp4XGHim1kVVI4arHz0q
-         oBgw==
-X-Gm-Message-State: AOAM532qubOzOrxiUJMC8zZh1NfGZAQriBF4jf5Ss881CBA/HsvqkgSt
-        DnO4LoY31YCt0bB0HtcF9YruxQZQPeSvnx3mLHzbQIUpIM1G1nCZnsVRALTVbPIMRRF6DzH3bQl
-        EKZuxzDeqaKVX3pa+sXFdjiYa
-X-Received: by 2002:a9d:64c1:: with SMTP id n1mr51855310otl.60.1609772699854;
-        Mon, 04 Jan 2021 07:04:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwRUyG0GxwJQKg/9AhApCUjQKPMjtQeX3Pa9tD8Ye6bDk9lTcVUwDMwWhwRkyqjr4LTotHyGQ==
-X-Received: by 2002:a9d:64c1:: with SMTP id n1mr51855294otl.60.1609772699720;
-        Mon, 04 Jan 2021 07:04:59 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id t186sm13461368oif.1.2021.01.04.07.04.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 07:04:59 -0800 (PST)
-Subject: Re: [PATCH] rxrpc: fix handling of an unsupported token type in
- rxrpc_read()
-To:     David Howells <dhowells@redhat.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, linux-afs@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20201229173916.1459499-1-trix@redhat.com>
- <259549.1609764646@warthog.procyon.org.uk>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <c2cc898d-171a-25da-c565-48f57d407777@redhat.com>
-Date:   Mon, 4 Jan 2021 07:04:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <259549.1609764646@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S1726579AbhADPFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:05:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57894 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725889AbhADPFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:05:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C8F47AE05;
+        Mon,  4 Jan 2021 15:05:09 +0000 (UTC)
+Date:   Mon, 04 Jan 2021 16:05:09 +0100
+Message-ID: <s5hble491zu.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Jaroslav Kysela <perex@perex.cz>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
+In-Reply-To: <3c19a5d5-8883-f917-a96a-f51bb188d115@perex.cz>
+References: <20210103135257.3611821-1-arnd@kernel.org>
+        <3c19a5d5-8883-f917-a96a-f51bb188d115@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 04 Jan 2021 16:00:05 +0100,
+Jaroslav Kysela wrote:
+> 
+> Dne 03. 01. 21 v 14:52 Arnd Bergmann napsal(a):
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > The sof-pci-dev driver fails to link when built into the kernel
+> > and CONFIG_SND_INTEL_DSP_CONFIG is set to =m:
+> > 
+> > arm-linux-gnueabi-ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
+> > sof-pci-dev.c:(.text+0x1c): undefined reference to `snd_intel_dsp_driver_probe'
+> > 
+> > All other drivers using this interface already use a 'select
+> > SND_INTEL_DSP_CONFIG' statement to force the it to be present, so it
+> > seems reasonable to do the same here.
+> > 
+> > The stub implementation in the header makes the problem harder to find,
+> > as it avoids the link error when SND_INTEL_DSP_CONFIG is completely
+> > disabled, without any obvious upsides. Remove these stubs to make it
+> > clearer that the driver is in fact needed here.
+> > 
+> > Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  include/sound/intel-dsp-config.h | 17 -----------------
+> >  sound/soc/sof/Kconfig            |  2 ++
+> >  2 files changed, 2 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/include/sound/intel-dsp-config.h b/include/sound/intel-dsp-config.h
+> > index d4609077c258..94667e870029 100644
+> > --- a/include/sound/intel-dsp-config.h
+> > +++ b/include/sound/intel-dsp-config.h
+> > @@ -18,24 +18,7 @@ enum {
+> >  	SND_INTEL_DSP_DRIVER_LAST = SND_INTEL_DSP_DRIVER_SOF
+> >  };
+> >  
+> > -#if IS_ENABLED(CONFIG_SND_INTEL_DSP_CONFIG)
+> 
+> The SOF drivers selects the DSP config code only when required (for specific
+> platforms - see sound/soc/sof/intel/Kconfig).
+> 
+> It seems that the above if should be modified as:
+> 
+> #if IS_BUILDIN(CONFIG_SND_INTEL_DSP_CONFIG) || (defined(MODULE) &&
+> IS_MODULE(CONFIG_SND_INTEL_DSP_CONFIG))
+> 
+> So the buildin drivers which do not require the DSP config probe can be
+> compiled without this dependency.
 
-On 1/4/21 4:50 AM, David Howells wrote:
-> trix@redhat.com wrote:
->
->> -		switch (token->security_index) {
->> -		case RXRPC_SECURITY_RXKAD:
->> ...
->> -		switch (token->security_index) {
->> -		case RXRPC_SECURITY_RXKAD:
-> These switches need to be kept.  There's another security type on the way.
-> See:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=rxrpc-rxgk
->
-> for example.  I'll have a look later.
+As I wrote in another post, a part of the problem is that SOF PCI and
+ACPI drivers call snd_intel_dsp_driver_probe() unconditionally, even
+if no Intel driver is bound.  So even if changing like the above (or
+better to use IS_REACHABLE() macro) works around the issue, the call
+pattern needs to be reconsidered.
 
-Yes, looks like more stuff is coming.
 
-Thanks!
+thanks,
 
-Tom
-
-> David
->
-
+Takashi
