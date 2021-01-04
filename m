@@ -2,188 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3A72E9217
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531722E91C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbhADIoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 03:44:04 -0500
-Received: from relay5.mymailcheap.com ([159.100.241.64]:51579 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbhADIoE (ORCPT
+        id S1726234AbhADIbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 03:31:45 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:48688 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbhADIbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 03:44:04 -0500
-Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [217.182.113.132])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 98B5B200FE;
-        Mon,  4 Jan 2021 08:43:10 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id A761A3ECDA;
-        Mon,  4 Jan 2021 09:41:37 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id EE97F2A17D;
-        Mon,  4 Jan 2021 03:41:36 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1609749697;
-        bh=02pZoPxGUkGGlnpsUzwf2J9rJXsJFhlWP+4v3O/yUSc=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=krEQ3M3UeoGAZbJOxuJj3IJ6WGTdRLU9nC3rUznPfEzEC1VbW1ZUGYTemCRCHXDa7
-         G99UdpPzqbGhOMllkLXry3TJfVC/g4SmdhEpmo5zYfNpZKw5/bNy++R38CzrKGtd7I
-         7ywcXpR259BTO627UFqjJnq3wlM6Vpox7vG6fjB8=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HmPz50ySWFyc; Mon,  4 Jan 2021 03:41:36 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Mon,  4 Jan 2021 03:41:36 -0500 (EST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 05C1B41F21;
-        Mon,  4 Jan 2021 08:41:35 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="kq0Fpzcy";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [10.172.12.132] (unknown [112.96.173.123])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id AF50941F21;
-        Mon,  4 Jan 2021 08:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1609749689; bh=02pZoPxGUkGGlnpsUzwf2J9rJXsJFhlWP+4v3O/yUSc=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=kq0Fpzcy61K8wu+y13LBIPrDDTKDUXyr+uldVtz1PAg/VACSiTP1RIBDomeztTRaQ
-         SYJGSY1epOInYaNne0kwETuNENJu3z3DjTO2BEhVgy8LCGymLAKMDnnSCUn6Az7Xhq
-         GQNyzx9PDCf1ra4MiTHjvKoWkkyjLGXvl7xdtvS0=
-Date:   Mon, 04 Jan 2021 16:14:12 +0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20210104072835.147843-1-icenowy@aosc.io>
-References: <20210104072835.147843-1-icenowy@aosc.io>
+        Mon, 4 Jan 2021 03:31:44 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1048P1eH110632;
+        Mon, 4 Jan 2021 08:30:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=nR2Q7mSO/Dz42tv8kKe3uN9e9+5MG7ulgrtXzjXMFLM=;
+ b=LFp/dCsikFIToalyY/a7GLg62Szw1DakdsP3PtGO9MQr8esylHrCZwoI9Zf1wAeZ9gxr
+ 3weW92hNyLQwfQ//IKNPV/HWjY9MS+6PjA5u34akUYY7AxICwxg2T0vmE7acArJ5XlYe
+ AAefa2H2XmKr3KPTiN4yo+55EdUmW2kHBbNZO8NJptQZ/AOYQMBewQe5GxVr0Vk+Oemk
+ /3vTQb7IiF4xi7TDNmoMZm9fuIN1II8M9/gOGUyYXibGn1j3d74Wm/2fOslb2/Dtw3ao
+ qwhyxdxBWLwWf7+ZhCY0J7/cbOYPRHziaUlrnbWPxAc8NhlHIhIHaQHq9TIUkYLh6+UJ lw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 35tebak8sa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 04 Jan 2021 08:30:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1048RJ9D186971;
+        Mon, 4 Jan 2021 08:30:59 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 35uwsyucq4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Jan 2021 08:30:59 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1048UwkR002047;
+        Mon, 4 Jan 2021 08:30:58 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 Jan 2021 08:30:07 +0000
+Date:   Mon, 4 Jan 2021 11:29:48 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jon Mason <jdmason@kudzu.us>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ntb@googlegroups.com
+Subject: Re: [GIT PULL] NTB bug fixes for v5.11
+Message-ID: <20210104082948.GR2831@kadam>
+References: <20201227141638.GA11393@athena.kudzu.us>
+ <CAHk-=wjxQzF3eWank1r7F6+EqSRsO+kvibPqDbzxjHv3wzZt0A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2] ovl: use a dedicated semaphore for dir upperfile caching
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>
-CC:     linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-From:   Icenowy Zheng <icenowy@aosc.io>
-Message-ID: <41A054BA-B955-4A17-BC19-31F8A0B2F1B3@aosc.io>
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[112.96.173.123:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         RCPT_COUNT_FIVE(0.00)[6];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         FREEMAIL_TO(0.00)[szeredi.hu,gmail.com,cn.fujitsu.com];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Queue-Id: 05C1B41F21
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjxQzF3eWank1r7F6+EqSRsO+kvibPqDbzxjHv3wzZt0A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ suspectscore=0 mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101040056
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1011 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101040056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-=E4=BA=8E 2021=E5=B9=B41=E6=9C=884=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=883:=
-28:35, Icenowy Zheng <icenowy@aosc=2Eio> =E5=86=99=E5=88=B0:
->The function ovl_dir_real_file() currently uses the semaphore of the
->inode to synchronize write to the upperfile cache field=2E
+On Sun, Dec 27, 2020 at 09:38:23AM -0800, Linus Torvalds wrote:
+> On Sun, Dec 27, 2020 at 6:16 AM Jon Mason <jdmason@kudzu.us> wrote:
+> >
+> > Wang Qing (1):
+> >       ntb: idt: fix error check in ntb_hw_idt.c
+> 
+> So this patch seems to be at least partially triggered by a smatch
+> warning that is a bit questionable.
+> 
+> This part:
+> 
+>      if (IS_ERR_OR_NULL(dbgfs_topdir)) {
+>          dev_info(&ndev->ntb.pdev->dev, "Top DebugFS directory absent");
+> -        return PTR_ERR(dbgfs_topdir);
+> +        return PTR_ERR_OR_ZERO(dbgfs_topdir);
+>      }
+> 
+> works, but is very non-optimal and unnecessary.
+> 
+> The thing is, "PTR_ERR()" works just fine on a IS_ERR_OR_NULL pointer.
+> It doesn't work on a _regular_ non-NULL and non-ERR pointer, and will
+> return random garbage for those. But if you've tested for
+> IS_ERR_OR_NULL(), then a regular PTR_ERR() is already fine.
+> 
+> And PTR_ERR_OR_ZERO() potentially generates an extraneous pointless
+> tests against zero (to check for the ERR case).
+> 
+> A compiler may be able to notice that the PTR_ERR_OR_ZERO() is
+> unnecessary and remove it (because of the IS_ERR_OR_NULL() checks),
+> but in general we should assume compilers are "not stupid" rather than
+> "really smart".
+> 
+> So while this patch isn't _wrong_, and I've already pulled it, the
+> fact that apparently some smatch test triggers these pointless and
+> potentially expensive patches is not a good idea.
+> 
+> I'm not sure what the smatch tests should be (NULL turns to 0, which
+> may be confusing), but I'm cc'ing Dan in case he has ideas.
 >
->However, this function will get called by ovl_ioctl_set_flags(), which
->utilizes the inode semaphore too=2E In this case ovl_dir_real_file() will
->try to claim a lock that is owned by a function in its call stack,
->which
->won't get released before ovl_dir_real_file() returns=2E
->
->Define a dedicated semaphore for the upperfile cache, so that the
->deadlock won't happen=2E
->
->Fixes: 61536bed2149 ("ovl: support [S|G]ETFLAGS and FS[S|G]ETXATTR
->ioctls for directories")
->Cc: stable@vger=2Ekernel=2Eorg # v5=2E10
->Signed-off-by: Icenowy Zheng <icenowy@aosc=2Eio>
->---
 
-Sorry for lack of changelog=2E
+The most common bug that this check finds is the other part of that same
+commit 91b8246de859 ("ntb: idt: fix error check in ntb_hw_idt.c"):
 
-A missing replacement of inode_lock() is added in v2=2E
+ 	/* Allocate the memory for IDT NTB device data */
+ 	ndev = idt_create_dev(pdev, id);
+-	if (IS_ERR_OR_NULL(ndev))
++	if (IS_ERR(ndev))
+ 		return PTR_ERR(ndev);
 
-> fs/overlayfs/readdir=2Ec | 10 +++++-----
-> 1 file changed, 5 insertions(+), 5 deletions(-)
->
->diff --git a/fs/overlayfs/readdir=2Ec b/fs/overlayfs/readdir=2Ec
->index 01620ebae1bd=2E=2Efa1844ff8db4 100644
->--- a/fs/overlayfs/readdir=2Ec
->+++ b/fs/overlayfs/readdir=2Ec
->@@ -56,6 +56,7 @@ struct ovl_dir_file {
-> 	struct list_head *cursor;
-> 	struct file *realfile;
-> 	struct file *upperfile;
->+	struct semaphore upperfile_sem;
-> };
->=20
->static struct ovl_cache_entry *ovl_cache_entry_from_node(struct rb_node
->*n)
->@@ -874,8 +875,6 @@ struct file *ovl_dir_real_file(const struct file
->*file, bool want_upper)
->	 * Need to check if we started out being a lower dir, but got copied
->up
-> 	 */
-> 	if (!od->is_upper) {
->-		struct inode *inode =3D file_inode(file);
->-
-> 		realfile =3D READ_ONCE(od->upperfile);
-> 		if (!realfile) {
-> 			struct path upperpath;
->@@ -883,10 +882,10 @@ struct file *ovl_dir_real_file(const struct file
->*file, bool want_upper)
-> 			ovl_path_upper(dentry, &upperpath);
-> 			realfile =3D ovl_dir_open_realfile(file, &upperpath);
->=20
->-			inode_lock(inode);
->+			down(&od->upperfile_sem);
-> 			if (!od->upperfile) {
-> 				if (IS_ERR(realfile)) {
->-					inode_unlock(inode);
->+					up(&od->upperfile_sem);
-> 					return realfile;
-> 				}
-> 				smp_store_release(&od->upperfile, realfile);
->@@ -896,7 +895,7 @@ struct file *ovl_dir_real_file(const struct file
->*file, bool want_upper)
-> 					fput(realfile);
-> 				realfile =3D od->upperfile;
-> 			}
->-			inode_unlock(inode);
->+			up(&od->upperfile_sem);
-> 		}
-> 	}
->=20
->@@ -959,6 +958,7 @@ static int ovl_dir_open(struct inode *inode, struct
->file *file)
-> 	od->realfile =3D realfile;
-> 	od->is_real =3D ovl_dir_is_real(file->f_path=2Edentry);
-> 	od->is_upper =3D OVL_TYPE_UPPER(type);
->+	sema_init(&od->upperfile_sem, 1);
-> 	file->private_data =3D od;
->=20
-> 	return 0;
+idt_create_dev() never returns NULL, but if it did then we don't want
+to return success.
+
+For the debugfs stuff, the caller doesn't check the return value anyway.
+Just make it a void function.  A lot of this debugfs code could be
+simplified.  It's not a bug to pass an error pointer or a NULL dbgfs_topdir
+pointer to debugfs_create_file().  There isn't any benefit in checking
+debugfs_initialized().
+
+diff --git a/drivers/ntb/hw/idt/ntb_hw_idt.c b/drivers/ntb/hw/idt/ntb_hw_idt.c
+index e7a4c2aa8baa..710c17b2a923 100644
+--- a/drivers/ntb/hw/idt/ntb_hw_idt.c
++++ b/drivers/ntb/hw/idt/ntb_hw_idt.c
+@@ -2504,28 +2504,14 @@ static ssize_t idt_dbgfs_info_read(struct file *filp, char __user *ubuf,
+  *
+  * Return: zero on success, otherwise a negative error number.
+  */
+-static int idt_init_dbgfs(struct idt_ntb_dev *ndev)
++static void idt_init_dbgfs(struct idt_ntb_dev *ndev)
+ {
+ 	char devname[64];
+ 
+-	/* If the top directory is not created then do nothing */
+-	if (IS_ERR_OR_NULL(dbgfs_topdir)) {
+-		dev_info(&ndev->ntb.pdev->dev, "Top DebugFS directory absent");
+-		return PTR_ERR_OR_ZERO(dbgfs_topdir);
+-	}
+-
+ 	/* Create the info file node */
+ 	snprintf(devname, 64, "info:%s", pci_name(ndev->ntb.pdev));
+ 	ndev->dbgfs_info = debugfs_create_file(devname, 0400, dbgfs_topdir,
+-		ndev, &idt_dbgfs_info_ops);
+-	if (IS_ERR(ndev->dbgfs_info)) {
+-		dev_dbg(&ndev->ntb.pdev->dev, "Failed to create DebugFS node");
+-		return PTR_ERR(ndev->dbgfs_info);
+-	}
+-
+-	dev_dbg(&ndev->ntb.pdev->dev, "NTB device DebugFS node created");
+-
+-	return 0;
++					       ndev, &idt_dbgfs_info_ops);
+ }
+ 
+ /*
+@@ -2792,7 +2778,7 @@ static int idt_pci_probe(struct pci_dev *pdev,
+ 		goto err_deinit_isr;
+ 
+ 	/* Initialize DebugFS info node */
+-	(void)idt_init_dbgfs(ndev);
++	idt_init_dbgfs(ndev);
+ 
+ 	/* IDT PCIe-switch NTB driver is finally initialized */
+ 	dev_info(&pdev->dev, "IDT NTB device is ready");
+@@ -2904,9 +2890,7 @@ static int __init idt_pci_driver_init(void)
+ {
+ 	pr_info("%s %s\n", NTB_DESC, NTB_VER);
+ 
+-	/* Create the top DebugFS directory if the FS is initialized */
+-	if (debugfs_initialized())
+-		dbgfs_topdir = debugfs_create_dir(KBUILD_MODNAME, NULL);
++	dbgfs_topdir = debugfs_create_dir(KBUILD_MODNAME, NULL);
+ 
+ 	/* Register the NTB hardware driver to handle the PCI device */
+ 	return pci_register_driver(&idt_pci_driver);
+-- 
+2.29.2
+
+
