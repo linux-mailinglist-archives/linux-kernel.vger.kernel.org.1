@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192C72E93F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C2F2E93FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbhADLQB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 06:16:01 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:38497 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbhADLQB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 06:16:01 -0500
-Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr [90.89.98.255])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id AE75620000C;
-        Mon,  4 Jan 2021 11:15:17 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 12:15:16 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Han Xu <han.xu@nxp.com>, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Martin =?UTF-8?B?SHVuZGViw7hsbA==?= <martin@geanix.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: gpmi: fix dst bit offset when extracting
- raw payload
-Message-ID: <20210104121516.3d50fb58@xps13>
-In-Reply-To: <7db4b36e-23a6-6075-132c-214d043e78bd@geanix.com>
-References: <20210104103558.9035-1-miquel.raynal@bootlin.com>
-        <7db4b36e-23a6-6075-132c-214d043e78bd@geanix.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726396AbhADLRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 06:17:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725840AbhADLRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 06:17:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D979E21D93;
+        Mon,  4 Jan 2021 11:16:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609759011;
+        bh=uMBEM1sBct3RdywsmPonApX/v+gWFaKH66WhG0tYHo0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rKCA3FxFwVrkONJGWdD30YVr8xvJ6+8FM5PJBOqETMPAkaO4uLxDQ5TBvptn7bW29
+         uKeVaD6XwKGA3IGegC4XAu91TOSOudhULm/IXI8VFXsUSsP/5oFOGoD/fHw7Kq5ViK
+         NoSVc5E/2OCw1bW5NzUAlG6AYRjUOSWI1JYVOjT6sIcq6Mbl0aflWQkk3cP1mdcWcA
+         3wFzee3cmEkd6AagD39M2h1nhcIn/4F/Gecr1niZRZ/gPYxe+4nnjFiFqeG2SizDVF
+         hbki3Gif3ki3V4ybA5dGH8x8mjYzx+FRbUna/wnT0617S5PJitl9PWRIXN26+3S0jO
+         Jqmw9DGAX89QQ==
+Received: by mail-ed1-f44.google.com with SMTP id h16so26903912edt.7;
+        Mon, 04 Jan 2021 03:16:50 -0800 (PST)
+X-Gm-Message-State: AOAM531I9xK0V7b3FJHjs+Qyp6UPZyQTSiZrJDlrmvyr4R9bUTtmjcU6
+        o6pnLhXt+cx+ZO2F9wBf+L+9l05DP/TQfJCnaYc=
+X-Google-Smtp-Source: ABdhPJyPIH882GUu/EUWEx2AKmMDKuflMAHIUbwC22Baw4r62pz5lztcMLZKWa93i6Qqm2usbqJ76cllwrXrlKQOX6c=
+X-Received: by 2002:a05:6402:1d3b:: with SMTP id dh27mr71532550edb.238.1609759009492;
+ Mon, 04 Jan 2021 03:16:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201228090425.2130569-1-hsinyi@chromium.org>
+In-Reply-To: <20201228090425.2130569-1-hsinyi@chromium.org>
+From:   Sean Wang <sean.wang@kernel.org>
+Date:   Mon, 4 Jan 2021 19:16:38 +0800
+X-Gmail-Original-Message-ID: <CAGp9LzqEaBNBzd2DhtWZ=Dv9C1u1MZzpFFofGGEprMOJCdUXHQ@mail.gmail.com>
+Message-ID: <CAGp9LzqEaBNBzd2DhtWZ=Dv9C1u1MZzpFFofGGEprMOJCdUXHQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: mediatek: Fix fallback call path
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+On Mon, Dec 28, 2020 at 5:04 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> Some SoCs, eg. mt8183, are using a pinconfig operation bias_set_combo.
+> The fallback path in mtk_pinconf_adv_pull_set() should also try this
+> operation.
+>
+> Fixes: cafe19db7751 ("pinctrl: mediatek: Backward compatible to previous Mediatek's bias-pull usage")
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-Sean Nyekjaer <sean@geanix.com> wrote on Mon, 4 Jan 2021 11:50:10 +0100:
+Acked-by: Sean Wang <sean.wang@kernel.org>
 
-> On 04/01/2021 11.35, Miquel Raynal wrote:
-> > On Mon, 2020-12-21 at 10:00:13 UTC, Sean Nyekjaer wrote:  
-> >> Re-add the multiply by 8 to "step * eccsize" to correct the destination bit offset
-> >> when extracting the data payload in gpmi_ecc_read_page_raw().
-> >>
-> >> Fixes: e5e5631cc889 ("mtd: rawnand: gpmi: Use nand_extract_bits()")
-> >> Cc: stable@vger.kernel.org
-> >> Reported-by: Martin Hundebøll <martin@geanix.com>
-> >> Signed-off-by: Sean Nyekjaer <sean@geanix.com>  
-> > Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
-> >
-> > Miquel  
-> Hi Miquel
-> 
-> Will you please queue this for fixes? It's quite relevant for 5.10 LTS :)
-
-Right, that will be quicker to have it in Linus' tree. I moved
-the patch to the mtd/next branch.
-
-Cheers,
-Miquèl
+> ---
+>  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> index 7aeb552d16ce9..72f17f26acd80 100644
+> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> @@ -920,6 +920,10 @@ int mtk_pinconf_adv_pull_set(struct mtk_pinctrl *hw,
+>                         err = hw->soc->bias_set(hw, desc, pullup);
+>                         if (err)
+>                                 return err;
+> +               } else if (hw->soc->bias_set_combo) {
+> +                       err = hw->soc->bias_set_combo(hw, desc, pullup, arg);
+> +                       if (err)
+> +                               return err;
+>                 } else {
+>                         return -ENOTSUPP;
+>                 }
+> --
+> 2.29.2.729.g45daf8777d-goog
+>
