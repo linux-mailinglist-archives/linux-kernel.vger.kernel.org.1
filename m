@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F6A2E90E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C052E90E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727676AbhADHXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 02:23:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        id S1727645AbhADHXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 02:23:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727571AbhADHX0 (ORCPT
+        with ESMTP id S1727570AbhADHX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Jan 2021 02:23:26 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB4BC061795
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 23:22:40 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id e2so18529974pgi.5
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 23:22:40 -0800 (PST)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59278C061796
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 23:22:46 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id s21so15926754pfu.13
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 23:22:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pXFP/mDtbX6rOKoKmCzMOZbkWkRy48BUP7gekqphCDg=;
-        b=brRLnzPM+VCNZQWtez6ENRPD5HNQEo3PCZwVieBiA/8lJWMIzQwXuVEHn8mV1qWFwT
-         RchZ0s9ml91okYiuwbNypm5R81tyH0IJvHjcDtf/A2n9yUnoXXbI2idHRh5AkIYu5xcU
-         6lnm//V+Xw2TZj6UeCN+mfzJoiMeLwkOTY4z3j94WyvkrbQaqNVhWe0WIGlMxHTGosCM
-         NJA8cUZkRfE1/GswcVV3MQH1/J9XSqFKfVEgkEdu6o5Z+gI+lRgbrClPNhahrLNH9v6N
-         tgO5AQ1svI4ULETEhCPyBWanET8p5m1hf8vFWM7I1nxh/Le58jZJsId/ZzhS60diHzy3
-         429g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Rmh+CTj/H1pwh1n20C+/KUGBokrzZ4wWICcJIDFC7P8=;
+        b=xngIJ8KP++ywSldcUlpFrRvAp2Q1AEGr363zzNiFvtV50BHnCG10elW8nA5ZadC4b0
+         XJmB7oQFH5rIPd5k68Tgf6SpejLgN+WpTNrtrjlHIUzfCoj7/W1cvHZAf72Cp7lwbktI
+         KYNclRE6daOvcKukDudcEBJVz9dARKnkn3Nazl+GgSHVK6pyscCBGCEfkfj9/mALa04Z
+         NUSVt/tNkVv/k8COXiuqYRxlMAmohZEx/h6J4ap7l8Bn5aR4Pvyv4Fo3iElGPgM+gayt
+         WUUND+RvjbXOhvT1Z5U9rXEv1w1Pam8KUqMYPePnWzzL+w87EIllEF9jszUu0knT3Uza
+         3MIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pXFP/mDtbX6rOKoKmCzMOZbkWkRy48BUP7gekqphCDg=;
-        b=g9L41eWwO/17FQpiUVQokTR/PEVnY+6jVnxr6C+pQSsjiFUtyTFwsXyBWAECzGRtDp
-         5KZ5tC65KJcs0vGy954kI6glp/QxI2csPLJP3M6zDU/Vq/YyP3CQQhe1VCiJU8M3n9Op
-         /XURqRoy5PrNHE3iyLnOIdKAQqk7Ay8WjqQKaQ703yYV8BZA7XTUBCqRXGDnulMe7zSd
-         K0VFByL3yTukfOD1kqTc/qvWbOYGrHYhsjcXgjMGJrgLyfWbrW4uRns+w33VeJDu3TCY
-         G9wioUQX04jhgkNOeF8d0LhEbHhjj1iRcEYkK45lmg5ky7yVm33E7j/VH5YAy1XZ+3LM
-         dpaw==
-X-Gm-Message-State: AOAM5323h5m88ft1vWqJ0OI/ukEU8mRO9mh+jOsh2EHVJb4XUC6YF96G
-        f/+BNzuaWvLwGUFWhsbIUMoc9nU1zC8d
-X-Google-Smtp-Source: ABdhPJz5zeJcaEXihwL5Z4D5OXRnNcKttdAONkI46PsJpNlLkxQ/qEihV7OsTSAl7yWZ+bxGIJfdSg==
-X-Received: by 2002:a63:1214:: with SMTP id h20mr46514167pgl.379.1609744960015;
-        Sun, 03 Jan 2021 23:22:40 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Rmh+CTj/H1pwh1n20C+/KUGBokrzZ4wWICcJIDFC7P8=;
+        b=lRx2WDPgHUXCoLVqNBPLSUsevH5cwQa9EwnPsBa47DbHJXuo769RjxB2Vzf68T41RT
+         gd957WqFgIBymxflQOTEpCaieoG49gspcRTtUITd7ok9oIA82u65MrwVDDTaOXLZv61h
+         T9zuo0p2xry0KmbuWXT1u/9qzNi0wxL61Hg2tvBstG9VQo73UpR7uYvGPmTggt3Rdva0
+         9UaGRzBHZymbCckeV4AEkEV6x6ttcmnHJjuisNvpp44jWa5shKpvbSxIUQbianmUaPip
+         aDVIj17k+Uq+FIHPiTrtAeg1aGT/u80OO7BEmoRB23AkGCvevfN4RtJMZd/aIfMHSdSs
+         0Oow==
+X-Gm-Message-State: AOAM531+skgUm4BRxsNaRqO0xugbYeqUNlBErNNMQmh/m7k6xozpnPTp
+        4AYe+gjtCqiEOFp/c3jxatNl
+X-Google-Smtp-Source: ABdhPJxHTLZwkhu6ZRf7m0yiaHgoOkOmM3qsLfPPBG/LTqKT35FQiMlN5nqjhs/GcFiv9TsuSp5cgw==
+X-Received: by 2002:aa7:8708:0:b029:19e:924:345a with SMTP id b8-20020aa787080000b029019e0924345amr41278800pfo.54.1609744965869;
+        Sun, 03 Jan 2021 23:22:45 -0800 (PST)
 Received: from localhost.localdomain ([103.77.37.160])
-        by smtp.gmail.com with ESMTPSA id h7sm56676668pfr.210.2021.01.03.23.22.34
+        by smtp.gmail.com with ESMTPSA id h7sm56676668pfr.210.2021.01.03.23.22.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Jan 2021 23:22:39 -0800 (PST)
+        Sun, 03 Jan 2021 23:22:45 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org
 Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 0/2] Add support for USB3 PHY on SDX55
-Date:   Mon,  4 Jan 2021 12:52:10 +0530
-Message-Id: <20210104072212.144960-1-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 1/2] dt-bindings: phy: qcom,qmp: Add SDX55 USB PHY binding
+Date:   Mon,  4 Jan 2021 12:52:11 +0530
+Message-Id: <20210104072212.144960-2-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210104072212.144960-1-manivannan.sadhasivam@linaro.org>
+References: <20210104072212.144960-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add devicetree YAML binding for Qualcomm QMP Super Speed (SS) PHY found
+in SDX55.
 
-This series adds USB3 PHY support for SDX55 platform. The USB3 PHY is of
-type QMP and revision 4.0.0. In this revision, "com_aux" clock is not
-utilized.
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-This series has been tested on SDX55-MTP along with the relevant DT node.
-
-Thanks,
-Mani
-
-Manivannan Sadhasivam (2):
-  dt-bindings: phy: qcom,qmp: Add SDX55 USB PHY binding
-  phy: qcom-qmp: Add support for SDX55 QMP PHY
-
- .../devicetree/bindings/phy/qcom,qmp-phy.yaml |  2 +
- drivers/phy/qualcomm/phy-qcom-qmp.c           | 83 +++++++++++++++++++
- 2 files changed, 85 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+index ec05db374645..390df23b82e7 100644
+--- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+@@ -34,6 +34,7 @@ properties:
+       - qcom,sm8250-qmp-gen3x1-pcie-phy
+       - qcom,sm8250-qmp-gen3x2-pcie-phy
+       - qcom,sm8250-qmp-modem-pcie-phy
++      - qcom,sdx55-qmp-usb3-uni-phy
+ 
+   reg:
+     items:
+@@ -109,6 +110,7 @@ allOf:
+           contains:
+             enum:
+               - qcom,sdm845-qmp-usb3-uni-phy
++              - qcom,sdx55-qmp-usb3-uni-phy
+     then:
+       properties:
+         clocks:
 -- 
 2.25.1
 
