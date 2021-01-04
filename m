@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A702E903D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 06:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321B82E903F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 06:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbhADFoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 00:44:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727876AbhADFoq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 00:44:46 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BFEC061574
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 21:44:05 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id o11so25063522ote.4
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 21:44:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kt1M/ynVaCrBy4bUG8dbX69hdMW01aGM4CaNYhUhdpM=;
-        b=FLqE6jiXowzgMP4GH7Xv6ZcS7S6iThN80zqyvlTa+l7FmIELG4FNqZuWapSfjvRB8D
-         es4DlowG5MaUcPllm5//iqYd/v0hmMSpkCHH7hZzihbz7C3Yn5qC3j54l7yEIRVUEknY
-         QFN6ev0lIPbRgv3kxxL+CPYNEyvX8Jjw1IXZ4YAjcMyfi9vv1tTFHyX9QTwlmZnn8JkI
-         Nh7Cad1zHbvSWFvuVPZNggffvyPgRc2t3CHhAfkdh7w/5UjBmzKXFCRkHKcxziSnq0Mu
-         qAQAayE14boIYOoeRcpAqVX0NuwLT5TmvxKxKrk0og/Mjv66cuhrHlw4iASoOqtYJb01
-         SU+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kt1M/ynVaCrBy4bUG8dbX69hdMW01aGM4CaNYhUhdpM=;
-        b=idWXEJ0r2F9+LUkfI2thTW5Mwq9QoOhisX/A+WrBGPHoSP/iDaIKIhq5XT/i5or18s
-         2XZQsGIT1dDXIn3XTvC21It5yMkZp6r3kTkY3eTsrtcsj1xO2+qyWCcIQvC2J9fbkAXl
-         TL0fmKcLqiIR6QGgg5rH5l9H+3D87jeNLiWC8DC/uZjeSTLuGh7ZP2PuD83IXQFzLtaL
-         /IaVnmCZ5oB6gzFIxfXjxT+HrVV4JBG4nwPseJoMdyEmxPasx1UXKmb0c9qSFvqGLDB8
-         31BN8EVGbtdJruJ8cFEybQKYIFr+EHnJO0mddLfxFUGX45Y1JsIx0FmUN/Tru7RgKdxG
-         Ibfw==
-X-Gm-Message-State: AOAM532q/JP0NpHbi+V3/DFls3EoMJDx8dV0r3l7U2ioj/SIANTl2afE
-        KVMdR7PUyR8V2ywRauLlG+xWmkL55N1lf6Iiwt8=
-X-Google-Smtp-Source: ABdhPJyAbAZwtZn4YjrMTLj3XTNFWx/7IisbpiJXSPsbL428ayXQlssmKy1arLj7kDgbpt0H5gHbH6el2vCPI1nFT40=
-X-Received: by 2002:a9d:7504:: with SMTP id r4mr43330373otk.245.1609739045420;
- Sun, 03 Jan 2021 21:44:05 -0800 (PST)
+        id S1727903AbhADFwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 00:52:32 -0500
+Received: from mga09.intel.com ([134.134.136.24]:30478 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725830AbhADFwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 00:52:31 -0500
+IronPort-SDR: oKb31h6wa6aheULMDFeAn+fCHx+JFgRah71k39ivNOIYzq9OiZyam0L5g+PmKEb+k/evHxmMjg
+ sKN9QAH+vSRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9853"; a="177069682"
+X-IronPort-AV: E=Sophos;i="5.78,473,1599548400"; 
+   d="scan'208";a="177069682"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2021 21:51:51 -0800
+IronPort-SDR: XDzgff0mVm6XiApff2SJJR+BJlp/nfXL92WO76UlpKpdFSagRS3ewPLxS6FdCfAi3vDIpAVvd4
+ BMN3AOD+aoDw==
+X-IronPort-AV: E=Sophos;i="5.78,473,1599548400"; 
+   d="scan'208";a="349772348"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.170.207]) ([10.249.170.207])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2021 21:51:49 -0800
+Subject: Re: [kbuild-all] Re: ERROR: ".crypto_skcipher_setkey" undefined!
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        kernel test robot <lkp@intel.com>
+Cc:     Eric Biggers <ebiggers@google.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <202101030238.zELW4VPr-lkp@intel.com>
+ <20210104052111.GA18507@gondor.apana.org.au>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <5896922a-5895-d240-e436-d3789f18cd58@intel.com>
+Date:   Mon, 4 Jan 2021 13:51:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20201223062412.343-1-zhenzhong.duan@gmail.com> <20201230070244.GA22022@zn.tnic>
-In-Reply-To: <20201230070244.GA22022@zn.tnic>
-From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Date:   Mon, 4 Jan 2021 13:43:53 +0800
-Message-ID: <CAFH1YnMDqmOayVU8gahmndCgZtVic2JBqfoH5VQCcyya0UfCLQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/iommu: Fix two minimal issues in check_iommu_entries()
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, zhongjiang@huawei.com,
-        joe@perches.com, konrad.wilk@oracle.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        iommu@lists.linux-foundation.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210104052111.GA18507@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 3:02 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Dec 23, 2020 at 02:24:12PM +0800, Zhenzhong Duan wrote:
-> > check_iommu_entries() checks for cyclic dependency in iommu entries
-> > and fixes the cyclic dependency by setting x->depend to NULL. But
-> > this repairing isn't correct if q is in front of p, there will be
-> > "EXECUTION ORDER INVALID!" report following. Fix it by NULLing
-> > whichever in the front.
->
-> When does "q is in front of p" happen? How does it happen?
 
-Sorry, just realized it never happen.
->
-> > The second issue is about the report of exectuion order reverse,
-> > the order is reversed incorrectly in the report, fix it.
->
-> I have no clue what that means.
 
-I mean if p depends on q, then q->detect should be called before p->detect.
-The message generated by printk() is wrong.
+On 1/4/2021 1:21 PM, Herbert Xu wrote:
+> On Sun, Jan 03, 2021 at 02:37:42AM +0800, kernel test robot wrote:
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     ERROR: ".kmem_cache_alloc" [net/nfc/nfc.ko] undefined!
+>>     ERROR: ".__ubsan_handle_type_mismatch_v1" [net/nfc/nfc.ko] undefined!
+>>     ERROR: ".find_next_zero_bit" [net/nfc/nfc.ko] undefined!
+> 
+> ...
+> 
+>>>> ERROR: ".crypto_skcipher_setkey" [net/ceph/libceph.ko] undefined!
+> 
+> This looks like a bug in lkp.  Could you please have a look?
 
-Regards
-Zhenzhong
+Hi Herbert,
+
+Sorry for the inconvenience, the bot is not smart enough, we'll
+optimize it to avoid such report.
+
+Best Regards,
+Rong Chen
+
+> 
+> Thanks,
+> 
