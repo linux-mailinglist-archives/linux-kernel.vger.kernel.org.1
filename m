@@ -2,178 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3FD2E90C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 460712E90D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbhADHMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 02:12:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        id S1727336AbhADHQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 02:16:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbhADHMu (ORCPT
+        with ESMTP id S1725921AbhADHQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 02:12:50 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFC5C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 23:12:10 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kwK1x-00044f-Iy; Mon, 04 Jan 2021 08:11:53 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kwK1w-0000k2-1v; Mon, 04 Jan 2021 08:11:52 +0100
-Date:   Mon, 4 Jan 2021 08:11:52 +0100
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] clk: imx: enable the earlycon uart clocks by parsing
- from dt
-Message-ID: <20210104071152.GA19063@pengutronix.de>
-References: <20201229145130.2680442-1-aford173@gmail.com>
+        Mon, 4 Jan 2021 02:16:56 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D050C06179A
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 23:15:35 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id w6so15944942pfu.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 23:15:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=x5qtGC03cGR6fBZ/P7WwG5L1MqF0Nj6bOUHj8Uj+kHE=;
+        b=OAaqSR5s9Ik5xFghIWI9hC6wEO4akfqQjR1AOd5DY6Xi6Mevb8NLfqSZDyR+1BWPVQ
+         0nbaAvHDIACvQtTkVUUyk4W1NyB8M+CTEIC4YreClD/ms9PJv6vmduZftbG4+VxGdOh4
+         M2KFQBwKG84Zx7cCdRv4veEdNPZJFPANKBuC2fDoeERuVv3Scp7X7O8hMrqZZS6srLBv
+         4klE090qhDFDneRddwMkgzplBW/qRn/Ef8pTZMWvv0IWo+yNujZjEzfyoQ9ES/u+JKZk
+         ZoZvpTEodAuDAUMYxGd05rAyu5Bd5sJ6rfBLxqikk+xkarbqtpsvSayBj5tVwYSPv/Z6
+         emVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=x5qtGC03cGR6fBZ/P7WwG5L1MqF0Nj6bOUHj8Uj+kHE=;
+        b=k9uK4hbOblVqGjxzvT3H/Dsios0fgYjZ3GuRGAQ3NhBbP/RfQ9GR5QBbwe+VRS6jCX
+         mwlKM0ugitY95dGIIYmAMeUMWLsxY/ZGT5N95TIwOFHrNPAgPGgOOi2K03Obc5Mz9uAO
+         Z2VIJpSqgTkyBkBkMue+z1LSWTewsZo2cXCcfYXKGHWRYu3gIQiVKCYa5A8rOMaRQc+m
+         puImYjV1VkKTZxxACqvnnAF24e3S0GjubgGzRRev9ysrWS3DdczubXq4jbFnoIk0M0pG
+         rZ3nSr1x2LyZvjxwGKkL3P8/4VEMBinh+LoA0JKAr4u00ilaOQRMVP3Oimdn6nEimwVe
+         xfFg==
+X-Gm-Message-State: AOAM532+S30hljiaeIYhaMXr20Rpxh8aK+1TsFBgGnoGb6G9pkyPHZAQ
+        7n66fzO2tvsaWWyZG5HUa72v8w==
+X-Google-Smtp-Source: ABdhPJxGFwAV2SQtVU4VNuP02uvq/Pafhur3RgVz2v7E9ia11SPp2CuAR1+kuobkLcHSmIraN1mtOQ==
+X-Received: by 2002:a65:4983:: with SMTP id r3mr71474424pgs.288.1609744534592;
+        Sun, 03 Jan 2021 23:15:34 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id 22sm20354596pjw.19.2021.01.03.23.15.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 03 Jan 2021 23:15:33 -0800 (PST)
+Date:   Mon, 4 Jan 2021 12:45:31 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Yangtao Li <tiny.windzz@gmail.com>
+Cc:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, krzk@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, digetx@gmail.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
+        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        lukasz.luba@arm.com, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
+        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
+        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
+        marijn.suijten@somainline.org, gustavoars@kernel.org,
+        emil.velikov@collabora.com, jonathan@marek.ca,
+        akhilpo@codeaurora.org, smasetty@codeaurora.org,
+        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, ddavenport@chromium.org,
+        jsanka@codeaurora.org, rnayak@codeaurora.org,
+        tongtiangen@huawei.com, miaoqinglang@huawei.com,
+        khsieh@codeaurora.org, abhinavk@codeaurora.org,
+        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
+        mka@chromium.org, harigovi@codeaurora.org,
+        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
+        georgi.djakov@linaro.org, akashast@codeaurora.org,
+        parashar@codeaurora.org, dianders@chromium.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 05/31] opp: Add devres wrapper for
+ dev_pm_opp_register_notifier
+Message-ID: <20210104071531.oyc64zgfot43gupv@vireshk-i7>
+References: <20210101165507.19486-1-tiny.windzz@gmail.com>
+ <20210101165507.19486-6-tiny.windzz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201229145130.2680442-1-aford173@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 07:55:54 up 32 days, 19:22, 49 users,  load average: 0.13, 0.08,
- 0.10
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210101165507.19486-6-tiny.windzz@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
-
-On Tue, Dec 29, 2020 at 08:51:28AM -0600, Adam Ford wrote:
-> Remove the earlycon uart clocks that are hard cord in platforms
-> clock driver, instead of parsing the earlycon uart port from dt
-
-"instead parse the earlycon uart..."
-
-Otherwise it's confusing what you mean here.
-
-> and enable these clocks from clock property in dt node.
+On 01-01-21, 16:54, Yangtao Li wrote:
+> Add devres wrapper for dev_pm_opp_register_notifier() to simplify driver
+> code.
 > 
-> Fixes: 9461f7b33d11c ("clk: fix CLK_SET_RATE_GATE with clock rate protection")
-> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
 > ---
-> Based on NXP's code base and adapted for 5.11-rc1.
-> https://source.codeaurora.org/external/imx/linux-imx/commit/drivers/clk/imx/clk.c?h=imx_5.4.47_2.2.0&id=754ae82cc55b7445545fc2f092a70e0f490e9c1b
+>  drivers/opp/core.c     | 38 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/pm_opp.h |  6 ++++++
+>  2 files changed, 44 insertions(+)
 > 
-> The original signed-off was retained.
-> Added the fixes tag.
-> ---
->  drivers/clk/imx/clk.c | 43 +++++++++++++++++++++++++++++--------------
->  1 file changed, 29 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
-> index 47882c51cb85..c32b46890945 100644
-> --- a/drivers/clk/imx/clk.c
-> +++ b/drivers/clk/imx/clk.c
-> @@ -148,7 +148,7 @@ void imx_cscmr1_fixup(u32 *val)
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 6b83e373f0d8..ef3544f8cecd 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -2599,6 +2599,44 @@ int dev_pm_opp_unregister_notifier(struct device *dev,
+>  }
+>  EXPORT_SYMBOL(dev_pm_opp_unregister_notifier);
 >  
->  #ifndef MODULE
->  static int imx_keep_uart_clocks;
-> -static struct clk ** const *imx_uart_clocks;
-> +static bool imx_uart_clks_on;
->  
->  static int __init imx_keep_uart_clocks_param(char *str)
->  {
-> @@ -161,25 +161,40 @@ __setup_param("earlycon", imx_keep_uart_earlycon,
->  __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
->  	      imx_keep_uart_clocks_param, 0);
->  
-> -void imx_register_uart_clocks(struct clk ** const clks[])
-> +static void imx_earlycon_uart_clks_onoff(bool is_on)
-
-"is_on" sounds like it's the current state of the clock, but actually
-the variable is used for the desired state, so I suggest using plain
-"on" as name.
-
->  {
-> -	if (imx_keep_uart_clocks) {
-> -		int i;
-> +	struct clk *uart_clk;
-> +	int i = 0;
->  
-> -		imx_uart_clocks = clks;
-> -		for (i = 0; imx_uart_clocks[i]; i++)
-> -			clk_prepare_enable(*imx_uart_clocks[i]);
-> -	}
-> +	if (!imx_keep_uart_clocks || (!is_on && !imx_uart_clks_on))
-> +		return;
-> +
-> +	/* only support dt */
-> +	if (!of_stdout)
-> +		return;
-> +
-> +	do {
-> +		uart_clk = of_clk_get(of_stdout, i++);
-
-of_clk_get() allocates memory and gets you a reference to the clock. You
-have to release the clock with clk_put(). I think what you have to do
-here is to fill an array with clks when called from
-imx_register_uart_clocks() and when called from imx_clk_disable_uart()
-use that array to clk_disable_unprepare()/clk_put() the clocks.
-
-Sascha
-
-> +		if (IS_ERR(uart_clk))
-> +			break;
-> +
-> +		if (is_on)
-> +			clk_prepare_enable(uart_clk);
-> +		else
-> +			clk_disable_unprepare(uart_clk);
-> +	} while (true);
-> +
-> +	if (is_on)
-> +		imx_uart_clks_on = true;
-> +}
-> +void imx_register_uart_clocks(struct clk ** const clks[])
+> +static void devm_pm_opp_notifier_release(struct device *dev, void *res)
 > +{
-> +	imx_earlycon_uart_clks_onoff(true);
->  }
->  
->  static int __init imx_clk_disable_uart(void)
->  {
-> -	if (imx_keep_uart_clocks && imx_uart_clocks) {
-> -		int i;
-> -
-> -		for (i = 0; imx_uart_clocks[i]; i++)
-> -			clk_disable_unprepare(*imx_uart_clocks[i]);
-> -	}
-> +	imx_earlycon_uart_clks_onoff(false);
->  
->  	return 0;
->  }
-> -- 
-> 2.25.1
-> 
-> 
+> +	struct notifier_block *nb = *(struct notifier_block **)res;
+> +
+> +	WARN_ON(dev_pm_opp_unregister_notifier(dev, nb));
+> +}
+> +
+> +/**
+> + * devm_pm_opp_register_notifier() - Register OPP notifier for the device
+> + * @dev:	Device for which notifier needs to be registered
+> + * @nb:		Notifier block to be registered
+> + *
+> + * Return: 0 on success or a negative error value.
+> + *
+> + * The notifier will be unregistered after the device is destroyed.
+> + */
+> +int devm_pm_opp_register_notifier(struct device *dev, struct notifier_block *nb)
+> +{
+> +	struct notifier_block **ptr;
+> +	int ret;
+> +
+> +	ptr = devres_alloc(devm_pm_opp_notifier_release, sizeof(*ptr), GFP_KERNEL);
+> +	if (!ptr)
+> +		return -ENOMEM;
+> +
+> +	ret = dev_pm_opp_register_notifier(dev, nb);
+> +	if (ret) {
+> +		devres_free(ptr);
+> +		return ret;
+> +	}
+> +
+> +	*ptr = nb;
+> +	devres_add(dev, ptr);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(devm_pm_opp_register_notifier);
+
+I am not in favor of this patch, and it only has one user, which makes
+it more unwanted.
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+viresh
