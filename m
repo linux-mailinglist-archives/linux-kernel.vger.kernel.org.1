@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D53B2E9D36
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9B62E9D39
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbhADSjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:39:07 -0500
-Received: from mail-wm1-f50.google.com ([209.85.128.50]:51683 "EHLO
-        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbhADSjG (ORCPT
+        id S1727727AbhADSlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 13:41:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727091AbhADSlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:39:06 -0500
-Received: by mail-wm1-f50.google.com with SMTP id v14so183768wml.1;
-        Mon, 04 Jan 2021 10:38:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C4a7e9iYEX7onVSgyKRCPpx3nNaq3txIA6JWld1n9j0=;
-        b=eyyMcAPwsTmWf8+t+qq/e7sKhnU3+foQwTOdhyMYW7mjVlUAXAOF2TLqDMdQwGIsgK
-         iH0GDO60Lcq/DThWOEUbt2PP8kbQSakaGE45ebYzA+T76TPOUuBCk7BLODyhdZAoBIS2
-         ncEPXNMT0TRR1kXxKu/0EP51ttvzHYzcmjzTIdSFWbH0Um2NbTiMLg8Sg7fgbuCfsp0l
-         MkrgIse8hAN6edMsM6mqq6Km38GhawePn5VW4rvWGf3vE32tEgNUergunJQ6JkwSEELU
-         m3e2MtUYp5OFi4fYaV79KfM7QRcWJAI7KM5XeQEX+3zALMq0fEwMOtWYRxriTsuBG35p
-         ClRg==
-X-Gm-Message-State: AOAM530MUM7e/GVF8R3r3mgvvbYi00jfFT+5CHR13SrPS74hQoxTuPNB
-        MPSS+tnAapsUvSf2+4xkWk0=
-X-Google-Smtp-Source: ABdhPJxuVINeQEEmLpcBzfvhhDMMJibveqWeEQXqTuW3zW0q5F/SVBHRglAB6rgQYS/uGqGQA2u20Q==
-X-Received: by 2002:a1c:2b46:: with SMTP id r67mr201271wmr.162.1609785503622;
-        Mon, 04 Jan 2021 10:38:23 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id b83sm274815wmd.48.2021.01.04.10.38.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 10:38:22 -0800 (PST)
-Date:   Mon, 4 Jan 2021 19:38:21 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Timon Baetz <timon.baetz@protonmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
- nodes
-Message-ID: <20210104183821.GA29033@kozik-lap>
-References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
- <20201230205139.1812366-2-timon.baetz@protonmail.com>
- <20210104135156.GB5645@sirena.org.uk>
- <20210104181825.GB27043@kozik-lap>
- <20210104182734.GH5645@sirena.org.uk>
+        Mon, 4 Jan 2021 13:41:36 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B670C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 10:40:56 -0800 (PST)
+Received: from zn.tnic (p200300ec2f086c00477cccdca46ad35a.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6c00:477c:ccdc:a46a:d35a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A03861EC0300;
+        Mon,  4 Jan 2021 19:40:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609785654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=1IrJEPqy47tJ8tj13J9znmWrNyKbcOQeWIwH/pLaAy0=;
+        b=b98vkCW4lphpmXn7AAy2SipqYXyWBfOrvGLU2niEkEwW7CcI8W+pW0TbGiPX8dcZcBH/D5
+        52Ogk5MxFviRL0Fz8YnWa1TmZDkQZh/En3jO5yd/pgPHiLVR7XlpnWkx0i1fWgDG+wbtlN
+        kWOpuUzO4C+DDb4ooWXd0+hsULCQOdM=
+Date:   Mon, 4 Jan 2021 19:40:51 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        David Miller <davem@davemloft.net>, x86@kernel.org
+Subject: Re: [PATCH -tip v2] x86/kprobes: Do not decode opcode in
+ resume_execution()
+Message-ID: <20210104184051.GG32151@zn.tnic>
+References: <20201218214432.b025656de019c64a8f4e2da5@kernel.org>
+ <160830072561.349576.3014979564448023213.stgit@devnote2>
+ <20201231160923.GB4504@zn.tnic>
+ <20210104124558.7c89fb6fa305507c098f0d85@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210104182734.GH5645@sirena.org.uk>
+In-Reply-To: <20210104124558.7c89fb6fa305507c098f0d85@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 06:27:34PM +0000, Mark Brown wrote:
-> On Mon, Jan 04, 2021 at 07:18:25PM +0100, Krzysztof Kozlowski wrote:
-> > On Mon, Jan 04, 2021 at 01:51:56PM +0000, Mark Brown wrote:
-> 
-> > > > +- charger: Node for configuring the charger driver.
-> > > > +  Required properties:
-> > > > +  - compatible: "maxim,max8997-battery"
-> 
-> > > > +  Optional properties:
-> > > > +  - extcon: extcon specifier for charging events
-> > > > +  - charger-supply: regulator node for charging current
-> 
-> > > > +- muic: Node used only by extcon consumers.
-> > > > +  Required properties:
-> > > > +  - compatible: "maxim,max8997-muic"
-> 
-> > > Why do these need to appear in the DT binding?  We know these features
-> > > are there simply from knowing this is a max8997.
-> 
-> > If you refer to children nodes, then we do not know these entirely
-> > because the features could be disabled (pins not connected).  In such
-> > case these subnodes can be disabled and MFD framework will not
-> > instantiate children devices.
-> 
-> We can indicate the presence of features without adding new compatible
-> strings, that's just encoding the way Linux currently divides things up
-> into the bindings.  For example having an extcon property seems like it
-> should be enough to figure out if we're using extcon.
+On Mon, Jan 04, 2021 at 12:45:58PM +0900, Masami Hiramatsu wrote:
+> Hrm, I meant setting the flags used in the resume_execution() afterwards.
+> Since the instruction itself (not only opcode but also oprands) was
+> also analyzed in other places, so I like the set_resume_flags() for it.
 
-It won't be enough because MFD will create device for extcon and bind
-the driver. The same for the charger. We have a board where max8997 is
-used only as PMIC (providing regulators) without battery and USB
-connectivity.
+Your call but I still think that set_resume_flags() is misleading. You
+even have in the comment above it:
 
-Another point, is that this reflects the real hardware. The same as we
-model entire SoC as multiple children of soc node (with their own
-properties), here we represent smaller chip which also has
-sub-components.
+"Analyze the opcode and set resume flags."
 
-Best regards,
-Krzysztof
+so it is doing some insn analysis and setting flags as a result.
+
+But I won't insist - you're the one who's going to be staring at that
+code.
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
