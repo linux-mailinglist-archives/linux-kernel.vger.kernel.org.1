@@ -2,153 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9923C2E99BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7D92E9AB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbhADQDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:03:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
+        id S1728021AbhADP7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:59:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728966AbhADQDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:03:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 260A6224DF;
-        Mon,  4 Jan 2021 16:02:20 +0000 (UTC)
+        id S1728008AbhADP7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:59:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B89AC22512;
+        Mon,  4 Jan 2021 15:58:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776140;
-        bh=G23dfkrAHPZhboxC+aXY8DzjP5Px6s/TVN7rP+2ICP4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K+ODs5tPda2fLEO5qHEQRNmcMR89KLR0ge1cDwzTAoYZPlVPiIhEL33+mB4Zt0t5c
-         JUVm7+OT1C4Rkk4Nla4D1epJfHzq+ee32/Nix1lCYeOJaacDQ9fUkgu+aRX5o7sMQA
-         bvyRIKj440T0E6no/zDCV5iA0oZhlmUBgS27P844=
+        s=korg; t=1609775915;
+        bh=SGOVRMRNvKErTgYG9p3g3gdZV5zW2OO6I1H9NJc0Lpw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RpYrvJJ4WvHuum7JDH+a9VtLr5rY8xvqgwDFkHjz9mbH0BqJO0CAG9IZKqLQFFWS0
+         hIP5fOHnmN+603oQffUxOXhDeLl7/D0TQKJ3zPaqJshN46Kr5oHPR3mlMrRnllvDBS
+         V4CWy7iEBPjUxKynvLeixQZE91zpiAJ5RjJxddaY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Jamie Iles <jamie@nuviainc.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 09/63] jffs2: Fix NULL pointer dereference in rp_size fs option parsing
-Date:   Mon,  4 Jan 2021 16:57:02 +0100
-Message-Id: <20210104155709.260418079@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.19 00/35] 4.19.165-rc1 review
+Date:   Mon,  4 Jan 2021 16:57:03 +0100
+Message-Id: <20210104155703.375788488@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
-References: <20210104155708.800470590@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.165-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.165-rc1
+X-KernelTest-Deadline: 2021-01-06T15:57+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jamie Iles <jamie@nuviainc.com>
+This is the start of the stable review cycle for the 4.19.165 release.
+There are 35 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-[ Upstream commit a61df3c413e49b0042f9caf774c58512d1cc71b7 ]
+Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
+Anything received after that time might be too late.
 
-syzkaller found the following JFFS2 splat:
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.165-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-  Unable to handle kernel paging request at virtual address dfffa00000000001
-  Mem abort info:
-    ESR = 0x96000004
-    EC = 0x25: DABT (current EL), IL = 32 bits
-    SET = 0, FnV = 0
-    EA = 0, S1PTW = 0
-  Data abort info:
-    ISV = 0, ISS = 0x00000004
-    CM = 0, WnR = 0
-  [dfffa00000000001] address between user and kernel address ranges
-  Internal error: Oops: 96000004 [#1] SMP
-  Dumping ftrace buffer:
-     (ftrace buffer empty)
-  Modules linked in:
-  CPU: 0 PID: 12745 Comm: syz-executor.5 Tainted: G S                5.9.0-rc8+ #98
-  Hardware name: linux,dummy-virt (DT)
-  pstate: 20400005 (nzCv daif +PAN -UAO BTYPE=--)
-  pc : jffs2_parse_param+0x138/0x308 fs/jffs2/super.c:206
-  lr : jffs2_parse_param+0x108/0x308 fs/jffs2/super.c:205
-  sp : ffff000022a57910
-  x29: ffff000022a57910 x28: 0000000000000000
-  x27: ffff000057634008 x26: 000000000000d800
-  x25: 000000000000d800 x24: ffff0000271a9000
-  x23: ffffa0001adb5dc0 x22: ffff000023fdcf00
-  x21: 1fffe0000454af2c x20: ffff000024cc9400
-  x19: 0000000000000000 x18: 0000000000000000
-  x17: 0000000000000000 x16: ffffa000102dbdd0
-  x15: 0000000000000000 x14: ffffa000109e44bc
-  x13: ffffa00010a3a26c x12: ffff80000476e0b3
-  x11: 1fffe0000476e0b2 x10: ffff80000476e0b2
-  x9 : ffffa00010a3ad60 x8 : ffff000023b70593
-  x7 : 0000000000000003 x6 : 00000000f1f1f1f1
-  x5 : ffff000023fdcf00 x4 : 0000000000000002
-  x3 : ffffa00010000000 x2 : 0000000000000001
-  x1 : dfffa00000000000 x0 : 0000000000000008
-  Call trace:
-   jffs2_parse_param+0x138/0x308 fs/jffs2/super.c:206
-   vfs_parse_fs_param+0x234/0x4e8 fs/fs_context.c:117
-   vfs_parse_fs_string+0xe8/0x148 fs/fs_context.c:161
-   generic_parse_monolithic+0x17c/0x208 fs/fs_context.c:201
-   parse_monolithic_mount_data+0x7c/0xa8 fs/fs_context.c:649
-   do_new_mount fs/namespace.c:2871 [inline]
-   path_mount+0x548/0x1da8 fs/namespace.c:3192
-   do_mount+0x124/0x138 fs/namespace.c:3205
-   __do_sys_mount fs/namespace.c:3413 [inline]
-   __se_sys_mount fs/namespace.c:3390 [inline]
-   __arm64_sys_mount+0x164/0x238 fs/namespace.c:3390
-   __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
-   invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
-   el0_svc_common.constprop.0+0x15c/0x598 arch/arm64/kernel/syscall.c:149
-   do_el0_svc+0x60/0x150 arch/arm64/kernel/syscall.c:195
-   el0_svc+0x34/0xb0 arch/arm64/kernel/entry-common.c:226
-   el0_sync_handler+0xc8/0x5b4 arch/arm64/kernel/entry-common.c:236
-   el0_sync+0x15c/0x180 arch/arm64/kernel/entry.S:663
-  Code: d2d40001 f2fbffe1 91002260 d343fc02 (38e16841)
-  ---[ end trace 4edf690313deda44 ]---
+thanks,
 
-This is because since ec10a24f10c8, the option parsing happens before
-fill_super and so the MTD device isn't associated with the filesystem.
-Defer the size check until there is a valid association.
+greg k-h
 
-Fixes: ec10a24f10c8 ("vfs: Convert jffs2 to use the new mount API")
-Cc: <stable@vger.kernel.org>
-Cc: David Howells <dhowells@redhat.com>
-Signed-off-by: Jamie Iles <jamie@nuviainc.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/jffs2/super.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+-------------
+Pseudo-Shortlog of commits:
 
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index c523adaca79f3..81ca58c10b728 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -202,12 +202,8 @@ static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 	case Opt_rp_size:
- 		if (result.uint_32 > UINT_MAX / 1024)
- 			return invalf(fc, "jffs2: rp_size unrepresentable");
--		opt = result.uint_32 * 1024;
--		if (opt > c->mtd->size)
--			return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
--				      c->mtd->size / 1024);
-+		c->mount_opts.rp_size = result.uint_32 * 1024;
- 		c->mount_opts.set_rp_size = true;
--		c->mount_opts.rp_size = opt;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -269,6 +265,10 @@ static int jffs2_fill_super(struct super_block *sb, struct fs_context *fc)
- 	c->mtd = sb->s_mtd;
- 	c->os_priv = sb;
- 
-+	if (c->mount_opts.rp_size > c->mtd->size)
-+		return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
-+			      c->mtd->size / 1024);
-+
- 	/* Initialize JFFS2 superblock locks, the further initialization will
- 	 * be done later */
- 	mutex_init(&c->alloc_sem);
--- 
-2.27.0
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.165-rc1
 
+Hyeongseok Kim <hyeongseok@gmail.com>
+    dm verity: skip verity work if I/O error when system is shutting down
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: pcm: Clear the full allocated memory at hw_params
+
+Jessica Yu <jeyu@kernel.org>
+    module: delay kobject uevent until after module init call
+
+Trond Myklebust <trond.myklebust@hammerspace.com>
+    NFSv4: Fix a pNFS layout related use-after-free race when freeing the inode
+
+Qinglang Miao <miaoqinglang@huawei.com>
+    powerpc: sysdev: add missing iounmap() on error in mpic_msgr_probe()
+
+Jan Kara <jack@suse.cz>
+    quota: Don't overflow quota file offsets
+
+Miroslav Benes <mbenes@suse.cz>
+    module: set MODULE_STATE_GOING state when a module fails to load
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
+
+Boqun Feng <boqun.feng@gmail.com>
+    fcntl: Fix potential deadlock in send_sig{io, urg}()
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: rawmidi: Access runtime->avail always in spinlock
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: seq: Use bool for snd_seq_queue internal flags
+
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+    media: gp8psk: initialize stats at power control logic
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    misc: vmw_vmci: fix kernel info-leak by initializing dbells in vmci_ctx_get_chkpt_doorbells()
+
+Rustam Kovhaev <rkovhaev@gmail.com>
+    reiserfs: add check for an invalid ih_entry_count
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    Bluetooth: hci_h5: close serdev device and free hu in h5_close
+
+Peter Zijlstra <peterz@infradead.org>
+    asm-generic/tlb: avoid potential double flush
+
+Peter Zijlstra <peterz@infradead.org>
+    mm/mmu_gather: invalidate TLB correctly on batch allocation failure and flush
+
+Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+    powerpc/mmu_gather: enable RCU_TABLE_FREE even for !SMP case
+
+Peter Zijlstra <peterz@infradead.org>
+    asm-generic/tlb, arch: Invert CONFIG_HAVE_RCU_TABLE_INVALIDATE
+
+Will Deacon <will.deacon@arm.com>
+    asm-generic/tlb: Track which levels of the page tables have been cleared
+
+Peter Zijlstra <peterz@infradead.org>
+    asm-generic/tlb: Track freeing of page-table directories in struct mmu_gather
+
+Johan Hovold <johan@kernel.org>
+    of: fix linker-section match-table corruption
+
+Damien Le Moal <damien.lemoal@wdc.com>
+    null_blk: Fix zone size initialization
+
+Souptick Joarder <jrdr.linux@gmail.com>
+    xen/gntdev.c: Mark pages as dirty
+
+Christophe Leroy <christophe.leroy@csgroup.eu>
+    powerpc/bitops: Fix possible undefined behaviour with fls() and fls64()
+
+Paolo Bonzini <pbonzini@redhat.com>
+    KVM: x86: reinstate vendor-agnostic check on SPEC_CTRL cpuid bits
+
+Paolo Bonzini <pbonzini@redhat.com>
+    KVM: SVM: relax conditions for allowing MSR_IA32_SPEC_CTRL accesses
+
+Petr Vorel <petr.vorel@gmail.com>
+    uapi: move constants from <linux/kernel.h> to <linux/const.h>
+
+Jan Kara <jack@suse.cz>
+    ext4: don't remount read-only with errors=continue on reboot
+
+Eric Auger <eric.auger@redhat.com>
+    vfio/pci: Move dummy_resources_list init in vfio_pci_probe()
+
+Eric Biggers <ebiggers@google.com>
+    ubifs: prevent creating duplicate encrypted filenames
+
+Eric Biggers <ebiggers@google.com>
+    f2fs: prevent creating duplicate encrypted filenames
+
+Eric Biggers <ebiggers@google.com>
+    ext4: prevent creating duplicate encrypted filenames
+
+Eric Biggers <ebiggers@google.com>
+    fscrypt: add fscrypt_is_nokey_name()
+
+Kevin Vigor <kvigor@gmail.com>
+    md/raid10: initialize r10_bio->read_slot before use.
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                     |   4 +-
+ arch/Kconfig                                 |   3 -
+ arch/powerpc/Kconfig                         |   2 +-
+ arch/powerpc/include/asm/bitops.h            |  23 +++++-
+ arch/powerpc/include/asm/book3s/32/pgalloc.h |   8 ---
+ arch/powerpc/include/asm/book3s/64/pgalloc.h |   2 -
+ arch/powerpc/include/asm/nohash/32/pgalloc.h |   8 ---
+ arch/powerpc/include/asm/nohash/64/pgalloc.h |   9 +--
+ arch/powerpc/include/asm/tlb.h               |  11 +++
+ arch/powerpc/mm/pgtable-book3s64.c           |   7 --
+ arch/powerpc/sysdev/mpic_msgr.c              |   2 +-
+ arch/sparc/include/asm/tlb_64.h              |   9 +++
+ arch/x86/Kconfig                             |   1 -
+ arch/x86/kvm/cpuid.h                         |  14 ++++
+ arch/x86/kvm/svm.c                           |   9 +--
+ arch/x86/kvm/vmx.c                           |   6 +-
+ drivers/block/null_blk_zoned.c               |  20 ++++--
+ drivers/bluetooth/hci_h5.c                   |   8 ++-
+ drivers/md/dm-verity-target.c                |  12 +++-
+ drivers/md/raid10.c                          |   3 +-
+ drivers/media/usb/dvb-usb/gp8psk.c           |   2 +-
+ drivers/misc/vmw_vmci/vmci_context.c         |   2 +-
+ drivers/rtc/rtc-sun6i.c                      |   8 ++-
+ drivers/vfio/pci/vfio_pci.c                  |   3 +-
+ drivers/xen/gntdev.c                         |  17 +++--
+ fs/crypto/hooks.c                            |  10 +--
+ fs/ext4/namei.c                              |   3 +
+ fs/ext4/super.c                              |  14 ++--
+ fs/f2fs/f2fs.h                               |   2 +
+ fs/fcntl.c                                   |  10 +--
+ fs/nfs/nfs4super.c                           |   2 +-
+ fs/nfs/pnfs.c                                |  33 ++++++++-
+ fs/nfs/pnfs.h                                |   5 ++
+ fs/quota/quota_tree.c                        |   8 +--
+ fs/reiserfs/stree.c                          |   6 ++
+ fs/ubifs/dir.c                               |  17 +++--
+ include/asm-generic/tlb.h                    | 103 +++++++++++++++++++++++----
+ include/linux/fscrypt_notsupp.h              |   5 ++
+ include/linux/fscrypt_supp.h                 |  29 ++++++++
+ include/linux/of.h                           |   1 +
+ include/uapi/linux/const.h                   |   5 ++
+ include/uapi/linux/ethtool.h                 |   2 +-
+ include/uapi/linux/kernel.h                  |   9 +--
+ include/uapi/linux/lightnvm.h                |   2 +-
+ include/uapi/linux/mroute6.h                 |   2 +-
+ include/uapi/linux/netfilter/x_tables.h      |   2 +-
+ include/uapi/linux/netlink.h                 |   2 +-
+ include/uapi/linux/sysctl.h                  |   2 +-
+ kernel/module.c                              |   6 +-
+ mm/memory.c                                  |  20 +++---
+ sound/core/pcm_native.c                      |   9 ++-
+ sound/core/rawmidi.c                         |  49 +++++++++----
+ sound/core/seq/seq_queue.h                   |   8 +--
+ 53 files changed, 398 insertions(+), 161 deletions(-)
 
 
