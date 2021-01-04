@@ -2,70 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F152E9379
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3B92E937C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbhADKiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:38:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbhADKiL (ORCPT
+        id S1726844AbhADKiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:38:55 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:35962 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726308AbhADKiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:38:11 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F53C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 02:37:30 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id h205so63169943lfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 02:37:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Irv4bODSEyX5XuG9TV4/17jq5rkGQP+jA8EeoSsmog0=;
-        b=yM/HspTPWUOUdDtGnjbz69E6rk8+MvJdzll4p3tIgPVeMhh46SvXxLeMZbDKiKHQAq
-         aWwOynY75uJHaxml4DYcMpEOav2D/ifRbOwPnCi1InYMRMBTlR5nZCSD8xuXs2GrueHo
-         cQ5Fw9+ypOODVbrOwTwgjg/Z6UZ+Jm7jIUX10Wwq0jtVYmhQz9PQ9tuD498wJSCaDCcR
-         NKSFfBl7OYIQMP3G8v8mJtv/lZp7DWHDTvrIT3OOMOB5Pbirxv+oqg86hQCyl1z7stKv
-         L2Bgo40CIw3cQCMl7Gf0T+WMDFdd//OmSgxeJ1c1JZctF6oOHd9167p+a1pFwDp1KYIm
-         U2eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Irv4bODSEyX5XuG9TV4/17jq5rkGQP+jA8EeoSsmog0=;
-        b=NhkHMISlSEsu6nOIl5JYyNXYPVgriDEs3Ue5Qj+kNdfJDiFGz5EMYfwoERIKHJEvkv
-         01RjqD4Z87edgb82OEj+SUjybfd+1SKh9DqHYI7pS5DFgTtWRA7bSQpoOtC8VBQg6R6z
-         ckSyFqjs26d4C+K717auWkeKg976uOlxnZ3ePSJH1g3k2V7OGeB1CY7EiEFcmVDUsrB2
-         +fam9rt/i3ZLgcjtHkEfrHJBM2L0KOaizt+PuRzUN0KMvI0xnTspOPvuk2gzNNd2MGxJ
-         vaDqnXRxgUoLp3+6HVEsGdqimIApKY840fMCUGGptDWhXEsfqe3RhllYShfh5VNhQ6mI
-         oisw==
-X-Gm-Message-State: AOAM532xBChvWWTTZ0yIGsbiuRA0H0V3ZkTXnffkYX0AosrVc6Edh9rl
-        brkVir47ae9YrlRXJdqqGOpOZgXoS1BbHfEFGO/3L5R7u24=
-X-Google-Smtp-Source: ABdhPJyCnxVWy/iIBCxCsmDOVLxJmjJwlmPAsbExyn0NTrsorfovm2BiIrmx2Nh9utTkaKG/wOKDmRD7Leg6ZImBQQI=
-X-Received: by 2002:a2e:586:: with SMTP id 128mr37945106ljf.273.1609756649236;
- Mon, 04 Jan 2021 02:37:29 -0800 (PST)
+        Mon, 4 Jan 2021 05:38:54 -0500
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 104AWLln003664;
+        Mon, 4 Jan 2021 04:38:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type;
+ s=PODMain02222019; bh=Uk9lYMm9ey65BqE/Wih2VZhcmr4l+5ucfmFMpGEBb/E=;
+ b=QPeQZqx6qc9a4sZwoeSI2nQaLuCT6WnUD7nqd8dNjuhZJtDxrefFqWFpmB0Ye7cb+nWQ
+ IUPYeUBSh2Wtg4UMdJ9xYiOKGQ9DyjBwr9Bgj7O6/DvYTcEifmxLueJnkp89vxdUla57
+ sNROnd0T0O0qBZu7OjhQQk+zLkFmyEtZg6U2OVqoKLgjsZLlqcx6yqp2DPoCbDA2JKGa
+ uST3kvHilv44wLY63yHzt3CCVHG5XAMQjUAK/vAfztAKGyYoY4KOw01eeLdLQunZTdST
+ 9qhBURCZAN+zYIx8eW7X8XHA+XHAFJbsSeFgUhZ/yZev0wfDM4UJlI2gnOrdQTo13vgD pA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 35tq479aq7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 04 Jan 2021 04:38:05 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 4 Jan 2021
+ 10:38:03 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 4 Jan 2021 10:38:03 +0000
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 06F052AB;
+        Mon,  4 Jan 2021 10:38:03 +0000 (UTC)
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <andrew@lunn.ch>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net v3] net: macb: Correct usage of MACB_CAPS_CLK_HW_CHG flag
+Date:   Mon, 4 Jan 2021 10:38:02 +0000
+Message-ID: <20210104103802.13091-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-References: <20201211084541.2318-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20201211084541.2318-1-zhengyongjun3@huawei.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 4 Jan 2021 11:37:18 +0100
-Message-ID: <CACRpkda9NMy9vPnnxQm-go+hK1D_JbiK0RJ3iLYnULnpV63GqA@mail.gmail.com>
-Subject: Re: [PATCH -next] pinctrl/pinctrl-at91: convert comma to semicolon
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 bulkscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
+ mlxscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 9:45 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+A new flag MACB_CAPS_CLK_HW_CHG was added and all callers of
+macb_set_tx_clk were gated on the presence of this flag.
 
-> Replace a comma between expression statements by a semicolon.
->
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+-   if (!clk)
++ if (!bp->tx_clk || !(bp->caps & MACB_CAPS_CLK_HW_CHG))
 
-Patch applied.
+However the flag was not added to anything other than the new
+sama7g5_gem, turning that function call into a no op for all other
+systems. This breaks the networking on Zynq.
 
-Yours,
-Linus Walleij
+The commit message adding this states: a new capability so that
+macb_set_tx_clock() to not be called for IPs having this
+capability
+
+This strongly implies that present of the flag was intended to skip
+the function not absence of the flag. Update the if statement to
+this effect, which repairs the existing users.
+
+Fixes: daafa1d33cc9 ("net: macb: add capability to not set the clock rate")
+Suggested-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+
+Changes since v1:
+ - Updated flag semantics to skip function, as appears to have been
+   intended by the initial commit.
+
+Changes since v2:
+ - Adding "net" to the subject line
+
+Thanks,
+Charles
+
+ drivers/net/ethernet/cadence/macb_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index d5d910916c2e8..814a5b10141d1 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -467,7 +467,7 @@ static void macb_set_tx_clk(struct macb *bp, int speed)
+ {
+ 	long ferr, rate, rate_rounded;
+ 
+-	if (!bp->tx_clk || !(bp->caps & MACB_CAPS_CLK_HW_CHG))
++	if (!bp->tx_clk || (bp->caps & MACB_CAPS_CLK_HW_CHG))
+ 		return;
+ 
+ 	switch (speed) {
+-- 
+2.11.0
+
