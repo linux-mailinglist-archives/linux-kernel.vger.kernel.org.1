@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E17B2E9A50
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 635412E9ABA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729573AbhADQIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:08:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38782 "EHLO mail.kernel.org"
+        id S1727994AbhADP7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:59:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728658AbhADQBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:01:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18169207AE;
-        Mon,  4 Jan 2021 16:01:30 +0000 (UTC)
+        id S1727971AbhADP7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:59:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F2662250F;
+        Mon,  4 Jan 2021 15:58:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776091;
-        bh=VeG+Jo+SVrDVThJun5BeCxAaps55b6Q6aE/VapoYbF0=;
+        s=korg; t=1609775910;
+        bh=hwUyeNb9NGkxfnDkBWhFxs4Fh1afjms4BVH6fV3Jk0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2GqK1O55UuSpZAJjafP9ePMW8BnaIt9Rix23RQkpy81GbzsoH+YHJuty9Pv56BR6V
-         nzx+NXokJJ1zOZA+8AI6CVEiU2NMjJOhY+SyxgSUWgCsquNHf+6lSkA6vVC95P6oDW
-         ZjdxOtSVJVgatNi8c+8rLVlCLmjEzBjIAksK1KNM=
+        b=Yfj3YR/FCoVLitocwoucsCup9+3vcDFKXaZzFF+kQ5VOib18orfHRpdUqIdoRS6kM
+         qCiT/ejTKPzNByU1DSMCRqnGGeUOBcKzGx4B5PwlX8hc8tMDzFjFO3RlQPgz6ionYI
+         lgrTS7UY8bhEb+Mz+gX0sPoIK8DxIah5PTyvzyRo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+1f4ba1e5520762c523c6@syzkaller.appspotmail.com,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 18/63] io_uring: use bottom half safe lock for fixed file data
+        stable@vger.kernel.org, Petr Vorel <petr.vorel@gmail.com>,
+        Rich Felker <dalias@aerifal.cx>, Rich Felker <dalias@libc.org>,
+        Peter Korsgaard <peter@korsgaard.com>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Florian Weimer <fweimer@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 08/35] uapi: move constants from <linux/kernel.h> to <linux/const.h>
 Date:   Mon,  4 Jan 2021 16:57:11 +0100
-Message-Id: <20210104155709.700408041@linuxfoundation.org>
+Message-Id: <20210104155703.796490875@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
-References: <20210104155708.800470590@linuxfoundation.org>
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,78 +44,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Petr Vorel <petr.vorel@gmail.com>
 
-commit ac0648a56c1ff66c1cbf735075ad33a26cbc50de upstream.
+commit a85cbe6159ffc973e5702f70a3bd5185f8f3c38d upstream.
 
-io_file_data_ref_zero() can be invoked from soft-irq from the RCU core,
-hence we need to ensure that the file_data lock is bottom half safe. Use
-the _bh() variants when grabbing this lock.
+and include <linux/const.h> in UAPI headers instead of <linux/kernel.h>.
 
-Reported-by: syzbot+1f4ba1e5520762c523c6@syzkaller.appspotmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+The reason is to avoid indirect <linux/sysinfo.h> include when using
+some network headers: <linux/netlink.h> or others -> <linux/kernel.h>
+-> <linux/sysinfo.h>.
+
+This indirect include causes on MUSL redefinition of struct sysinfo when
+included both <sys/sysinfo.h> and some of UAPI headers:
+
+    In file included from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/kernel.h:5,
+                     from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/netlink.h:5,
+                     from ../include/tst_netlink.h:14,
+                     from tst_crypto.c:13:
+    x86_64-buildroot-linux-musl/sysroot/usr/include/linux/sysinfo.h:8:8: error: redefinition of `struct sysinfo'
+     struct sysinfo {
+            ^~~~~~~
+    In file included from ../include/tst_safe_macros.h:15,
+                     from ../include/tst_test.h:93,
+                     from tst_crypto.c:11:
+    x86_64-buildroot-linux-musl/sysroot/usr/include/sys/sysinfo.h:10:8: note: originally defined here
+
+Link: https://lkml.kernel.org/r/20201015190013.8901-1-petr.vorel@gmail.com
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+Suggested-by: Rich Felker <dalias@aerifal.cx>
+Acked-by: Rich Felker <dalias@libc.org>
+Cc: Peter Korsgaard <peter@korsgaard.com>
+Cc: Baruch Siach <baruch@tkos.co.il>
+Cc: Florian Weimer <fweimer@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ include/uapi/linux/const.h              |    5 +++++
+ include/uapi/linux/ethtool.h            |    2 +-
+ include/uapi/linux/kernel.h             |    9 +--------
+ include/uapi/linux/lightnvm.h           |    2 +-
+ include/uapi/linux/mroute6.h            |    2 +-
+ include/uapi/linux/netfilter/x_tables.h |    2 +-
+ include/uapi/linux/netlink.h            |    2 +-
+ include/uapi/linux/sysctl.h             |    2 +-
+ 8 files changed, 12 insertions(+), 14 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7000,9 +7000,9 @@ static int io_sqe_files_unregister(struc
- 	if (!data)
- 		return -ENXIO;
+--- a/include/uapi/linux/const.h
++++ b/include/uapi/linux/const.h
+@@ -28,4 +28,9 @@
+ #define _BITUL(x)	(_UL(1) << (x))
+ #define _BITULL(x)	(_ULL(1) << (x))
  
--	spin_lock(&data->lock);
-+	spin_lock_bh(&data->lock);
- 	ref_node = data->node;
--	spin_unlock(&data->lock);
-+	spin_unlock_bh(&data->lock);
- 	if (ref_node)
- 		percpu_ref_kill(&ref_node->refs);
++#define __ALIGN_KERNEL(x, a)		__ALIGN_KERNEL_MASK(x, (typeof(x))(a) - 1)
++#define __ALIGN_KERNEL_MASK(x, mask)	(((x) + (mask)) & ~(mask))
++
++#define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
++
+ #endif /* _UAPI_LINUX_CONST_H */
+--- a/include/uapi/linux/ethtool.h
++++ b/include/uapi/linux/ethtool.h
+@@ -14,7 +14,7 @@
+ #ifndef _UAPI_LINUX_ETHTOOL_H
+ #define _UAPI_LINUX_ETHTOOL_H
  
-@@ -7385,7 +7385,7 @@ static void io_file_data_ref_zero(struct
- 	data = ref_node->file_data;
- 	ctx = data->ctx;
+-#include <linux/kernel.h>
++#include <linux/const.h>
+ #include <linux/types.h>
+ #include <linux/if_ether.h>
  
--	spin_lock(&data->lock);
-+	spin_lock_bh(&data->lock);
- 	ref_node->done = true;
+--- a/include/uapi/linux/kernel.h
++++ b/include/uapi/linux/kernel.h
+@@ -3,13 +3,6 @@
+ #define _UAPI_LINUX_KERNEL_H
  
- 	while (!list_empty(&data->ref_list)) {
-@@ -7397,7 +7397,7 @@ static void io_file_data_ref_zero(struct
- 		list_del(&ref_node->node);
- 		first_add |= llist_add(&ref_node->llist, &ctx->file_put_llist);
- 	}
--	spin_unlock(&data->lock);
-+	spin_unlock_bh(&data->lock);
+ #include <linux/sysinfo.h>
+-
+-/*
+- * 'kernel.h' contains some often-used function prototypes etc
+- */
+-#define __ALIGN_KERNEL(x, a)		__ALIGN_KERNEL_MASK(x, (typeof(x))(a) - 1)
+-#define __ALIGN_KERNEL_MASK(x, mask)	(((x) + (mask)) & ~(mask))
+-
+-#define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
++#include <linux/const.h>
  
- 	if (percpu_ref_is_dying(&data->refs))
- 		delay = 0;
-@@ -7520,9 +7520,9 @@ static int io_sqe_files_register(struct
- 	}
+ #endif /* _UAPI_LINUX_KERNEL_H */
+--- a/include/uapi/linux/lightnvm.h
++++ b/include/uapi/linux/lightnvm.h
+@@ -21,7 +21,7 @@
+ #define _UAPI_LINUX_LIGHTNVM_H
  
- 	file_data->node = ref_node;
--	spin_lock(&file_data->lock);
-+	spin_lock_bh(&file_data->lock);
- 	list_add_tail(&ref_node->node, &file_data->ref_list);
--	spin_unlock(&file_data->lock);
-+	spin_unlock_bh(&file_data->lock);
- 	percpu_ref_get(&file_data->refs);
- 	return ret;
- out_fput:
-@@ -7679,10 +7679,10 @@ static int __io_sqe_files_update(struct
+ #ifdef __KERNEL__
+-#include <linux/kernel.h>
++#include <linux/const.h>
+ #include <linux/ioctl.h>
+ #else /* __KERNEL__ */
+ #include <stdio.h>
+--- a/include/uapi/linux/mroute6.h
++++ b/include/uapi/linux/mroute6.h
+@@ -2,7 +2,7 @@
+ #ifndef _UAPI__LINUX_MROUTE6_H
+ #define _UAPI__LINUX_MROUTE6_H
  
- 	if (needs_switch) {
- 		percpu_ref_kill(&data->node->refs);
--		spin_lock(&data->lock);
-+		spin_lock_bh(&data->lock);
- 		list_add_tail(&ref_node->node, &data->ref_list);
- 		data->node = ref_node;
--		spin_unlock(&data->lock);
-+		spin_unlock_bh(&data->lock);
- 		percpu_ref_get(&ctx->file_data->refs);
- 	} else
- 		destroy_fixed_file_ref_node(ref_node);
+-#include <linux/kernel.h>
++#include <linux/const.h>
+ #include <linux/types.h>
+ #include <linux/sockios.h>
+ #include <linux/in6.h>		/* For struct sockaddr_in6. */
+--- a/include/uapi/linux/netfilter/x_tables.h
++++ b/include/uapi/linux/netfilter/x_tables.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+ #ifndef _UAPI_X_TABLES_H
+ #define _UAPI_X_TABLES_H
+-#include <linux/kernel.h>
++#include <linux/const.h>
+ #include <linux/types.h>
+ 
+ #define XT_FUNCTION_MAXNAMELEN 30
+--- a/include/uapi/linux/netlink.h
++++ b/include/uapi/linux/netlink.h
+@@ -2,7 +2,7 @@
+ #ifndef _UAPI__LINUX_NETLINK_H
+ #define _UAPI__LINUX_NETLINK_H
+ 
+-#include <linux/kernel.h>
++#include <linux/const.h>
+ #include <linux/socket.h> /* for __kernel_sa_family_t */
+ #include <linux/types.h>
+ 
+--- a/include/uapi/linux/sysctl.h
++++ b/include/uapi/linux/sysctl.h
+@@ -23,7 +23,7 @@
+ #ifndef _UAPI_LINUX_SYSCTL_H
+ #define _UAPI_LINUX_SYSCTL_H
+ 
+-#include <linux/kernel.h>
++#include <linux/const.h>
+ #include <linux/types.h>
+ #include <linux/compiler.h>
+ 
 
 
