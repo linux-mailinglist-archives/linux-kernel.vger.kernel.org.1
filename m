@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55492E8F0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 01:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CED582E8F11
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 01:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727368AbhADAiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Jan 2021 19:38:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727313AbhADAiZ (ORCPT
+        id S1727406AbhADAoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Jan 2021 19:44:00 -0500
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:40443 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727300AbhADAn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Jan 2021 19:38:25 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CE0C061574;
-        Sun,  3 Jan 2021 16:37:44 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D8GtT3wJpz9sSC;
-        Mon,  4 Jan 2021 11:37:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1609720657;
-        bh=QmGXt4zYYDhSnLBhT13xfyabQnhGs4VKS2lFA9Zk6EI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=l8TGNb1MFu60rMmwjmwJFGzqixfpTbXTGklwd8Xsj2IQIn1/TaP5X+2Mc3l52iLYy
-         r2DeqWsUJEuNHEKv/8PkzMjoTIzq62uefO9k9ZlsDmJf2SRg5vvFOCQy5ERrG2q/L1
-         EJrzeOhF3MnLZk5oTfytRsfIj/YINm++f+j3smt423U5q31Lj3Ldwu89TFgWrU0SN6
-         PXNVDfE9f1t3kSjs/UVVVE7mjUvrsrsAfz0s4alh4394giADifMuvyS5A/OR2nUCet
-         yscpmenWre8Isw/dDaQA/LVMnKHzDsHRdoUm6mveaVvNXeWcTID+MdPLHoacdG4qxV
-         t7Uax2CnncrgQ==
-Date:   Mon, 4 Jan 2021 11:37:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the rcu tree
-Message-ID: <20210104113736.23ab7690@canb.auug.org.au>
+        Sun, 3 Jan 2021 19:43:59 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 4AF1540004;
+        Mon,  4 Jan 2021 00:43:17 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Vladimir Zapolskiy <vz@mleia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH RESEND v2] ARM: dts: lpc32xx: Revert set default clock rate of HCLK PLL
+Date:   Mon,  4 Jan 2021 01:43:13 +0100
+Message-Id: <20210104004313.1633622-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6CDmntJ7A86DZ9OUKG_Ky0Z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6CDmntJ7A86DZ9OUKG_Ky0Z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This reverts commit c17e9377aa81664d94b4f2102559fcf2a01ec8e7.
 
-Hi all,
+The lpc32xx clock driver is not able to actually change the PLL rate as
+this would require reparenting ARM_CLK, DDRAM_CLK, PERIPH_CLK to SYSCLK,
+then stop the PLL, update the register, restart the PLL and wait for the
+PLL to lock and finally reparent ARM_CLK, DDRAM_CLK, PERIPH_CLK to HCLK
+PLL.
 
-After merging the rcu tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+Currently, the HCLK driver simply updates the registers but this has no
+real effect and all the clock rate calculation end up being wrong. This is
+especially annoying for the peripheral (e.g. UARTs, I2C, SPI).
 
-arch/arm/mach-imx/cpuidle-imx6q.c: In function 'imx6q_enter_wait':
-arch/arm/mach-imx/cpuidle-imx6q.c:32:7: error: implicit declaration of func=
-tion 'need_resched'; did you mean 'tif_need_resched'? [-Werror=3Dimplicit-f=
-unction-declaration]
-   32 |  if (!need_resched())
-      |       ^~~~~~~~~~~~
-      |       tif_need_resched
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Tested-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+Arnd,
 
-Caused by commit
+This is a very important fix that was sent back in may and october 2019 without
+any reply from the maintainers, please consider applying it so it can be
+backported on v5.10.
 
-  7ca83ec735ce ("ARM: imx6q: Fix missing need_resched() check after rcu_idl=
-e_enter()")
+ arch/arm/boot/dts/lpc32xx.dtsi | 3 ---
+ 1 file changed, 3 deletions(-)
 
-I have used the rcu tree from next-20201223 for today.
+diff --git a/arch/arm/boot/dts/lpc32xx.dtsi b/arch/arm/boot/dts/lpc32xx.dtsi
+index 3a5cfb0ddb20..c87066d6c995 100644
+--- a/arch/arm/boot/dts/lpc32xx.dtsi
++++ b/arch/arm/boot/dts/lpc32xx.dtsi
+@@ -326,9 +326,6 @@ clk: clock-controller@0 {
+ 
+ 					clocks = <&xtal_32k>, <&xtal>;
+ 					clock-names = "xtal_32k", "xtal";
+-
+-					assigned-clocks = <&clk LPC32XX_CLK_HCLK_PLL>;
+-					assigned-clock-rates = <208000000>;
+ 				};
+ 			};
+ 
+-- 
+2.29.2
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6CDmntJ7A86DZ9OUKG_Ky0Z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/yY1AACgkQAVBC80lX
-0GwPrwf9HtgvuPgmxPdyywoXo3ZXDjjOy9GwV7JE6U4Q200CPajNns3SuKyhxLAj
-2/advdjw0wSw8DZswWKoE/7fLJLRKOUxAPTl0q8RSXAVd+R+bko5qSDqo+LRZIzP
-KVxpzy86aJt2WaJPsFI0Bm19J6n5yx+gXpjmtY+m0AT9xzuo0WV2OBdgOXJ4I1UL
-D/iWO0qTUtLcqi3Y0cMtRcZm9BVvCDsqxXX1jiqUPRRigNC2UwfVjknxQHI5ySIl
-vFkclHX1RknNtcyGZXJHxYvJznhD8tLAwXuC3WATYYE/RgXSgWFfqYNCm6WaN2UO
-+BKUHwmgIFMdLF4GIvNyBzLmhsBh9g==
-=ynn9
------END PGP SIGNATURE-----
-
---Sig_/6CDmntJ7A86DZ9OUKG_Ky0Z--
