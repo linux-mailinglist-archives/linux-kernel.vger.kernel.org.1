@@ -2,221 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285CC2EA0AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75462EA049
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbhADXVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:21:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbhADXVx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:21:53 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E3AC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 15:21:12 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id p5so34025654oif.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 15:21:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JZOlQj0JLO6r78FAjqdLGe/A26q+7HZVrLl16AaDzeg=;
-        b=CdpERZg3rfH3oizVzPZrdaJBzWshww722TBp6ftNzokdkgMnu4wHbrlsRkjLPhxlXG
-         FJEQSp4mppvf37oWc5P6Wid9q7hFMHJ8yhSCagsHGsBeFXeiaXVPHkgxwSVyRod2kxAI
-         bYhlB/xNIddFkB+IOWFDimgg539IpYEVFNtes=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JZOlQj0JLO6r78FAjqdLGe/A26q+7HZVrLl16AaDzeg=;
-        b=jGiHmpG/+AdVGIkBbuwpJcH+dLUGXC65JNRpmZ2U3LsTK1NDZOLjRGGrMNdnvBfRgc
-         CxTgHCiSkaV2jVn/PYw1N1MPMH9u65J9AwxqEfUkVTCX1oV7sHOci3rGOjWlrHH3AX/f
-         5PV+UjiYfS/0r+rRtVoLdu+xyMhJrCQJn/pAe3UxbCEkp/7TzyVrFsJCEyhH9IUtXOaI
-         Bz8EgUSBV+4xUWZ4ONgrYvaI1L/Q1jYvGcM6jOMmB1IuFiA8Krwr77Xl5v/aGkQc925/
-         Ww5pxh07nfAucnJe5m6Pja5qRmP0lRKj9mGDkUGIPNxPajpryDmD8Y+WZjUVtPxXx6qz
-         mVBg==
-X-Gm-Message-State: AOAM530lsx/zYdYMX0BMjs61JKIZbvThQRKw8v7iAERwQKM5v20YERLz
-        TpO/0wVR2Yz9zdbCjYSurU+yOqDCUIl4Lg==
-X-Google-Smtp-Source: ABdhPJwSKAvbD4bhDGkhVibLnbKQLux/K3s7rmk67dw6xsu19NFT44XqApTwk4XprN2SLuF+IZjnlg==
-X-Received: by 2002:a17:90a:cb8b:: with SMTP id a11mr1062501pju.3.1609800941694;
-        Mon, 04 Jan 2021 14:55:41 -0800 (PST)
-Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:a6ae:11ff:fe11:fd59])
-        by smtp.gmail.com with ESMTPSA id c18sm54951051pfj.200.2021.01.04.14.55.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 14:55:41 -0800 (PST)
-From:   Philip Chen <philipchen@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>, dmitry.torokhov@gmail.com
-Cc:     dianders@chromium.org, swboyd@chromium.org,
-        Philip Chen <philipchen@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org
-Subject: [PATCH v2 2/2] Input: cros-ec-keyb - Expose function row physical map to userspace
-Date:   Mon,  4 Jan 2021 14:55:32 -0800
-Message-Id: <20210104145523.v2.2.Ibe7d7d53c5b4fe72c60de90111ff763b53f38dbb@changeid>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210104145523.v2.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
-References: <20210104145523.v2.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
+        id S1726894AbhADXBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:01:17 -0500
+Received: from mga05.intel.com ([192.55.52.43]:8938 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726026AbhADXBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 18:01:17 -0500
+IronPort-SDR: PDnr+WH4/78RAgv54kk4zUT6O9wFOMWZZe5OStncKdaRbXXbr0ScOKxF3cKpFvrjY0hd8jVLB2
+ 6MY6xRcePRcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="261784382"
+X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
+   d="scan'208";a="261784382"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 15:00:32 -0800
+IronPort-SDR: JTaMZyP7Q0sshosrow166L8VPmv8ZKWyp8gfmqrng2XLqpCfzo0trq7fUfGEIEhuJWMH6ZxjiG
+ 1P8FsDgu0FnA==
+X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
+   d="scan'208";a="360940055"
+Received: from trhudson-mobl.amr.corp.intel.com (HELO [10.213.162.49]) ([10.213.162.49])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 15:00:31 -0800
+Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page
+ allocation for __GFP_ZERO
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <a5ba7bdf-8510-d0a0-9c22-ec1b81019982@intel.com>
+ <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <6bfcc500-7c11-f66a-26ea-e8b8bcc79e28@intel.com>
+Date:   Mon, 4 Jan 2021 15:00:31 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The top-row keys in a keyboard usually have dual functionalities.
-E.g. A function key "F1" is also an action key "Browser back".
+On 1/4/21 12:11 PM, David Hildenbrand wrote:
+>> Yeah, it certainly can't be the default, but it *is* useful for
+>> thing where we know that there are no cache benefits to zeroing
+>> close to where the memory is allocated.
+>> 
+>> The trick is opting into it somehow, either in a process or a VMA.
+>> 
+> The patch set is mostly trying to optimize starting a new process. So
+> process/vma doesn‘t really work.
 
-Therefore, when an application receives an action key code from
-a top-row key press, the application needs to know how to correlate
-the action key code with the function key code and do the conversion
-whenever necessary.
+Let's say you have a system-wide tunable that says: pre-zero pages and
+keep 10GB of them around.  Then, you opt-in a process to being allowed
+to dip into that pool with a process-wide flag or an madvise() call.
+You could even have the flag be inherited across execve() if you wanted
+to have helper apps be able to set the policy and access the pool like
+how numactl works.
 
-Since the userpace already knows the key scanlines (row/column)
-associated with a received key code. Essentially, the userspace only
-needs a mapping between the key row/column and the matching physical
-location in the top row.
-
-This patch enhances the cros-ec-keyb driver to create such a mapping
-and expose it to userspace in the form of a function-row-physmap
-attribute. The attribute would be a space separated ordered list of
-row/column codes, for the keys in the function row, in a left-to-right
-order.
-
-The attribute will only be present when the device has a custom design
-for the top-row keys.
-
-Signed-off-by: Philip Chen <philipchen@chromium.org>
----
-
-Changes in v2:
-- create function-row-physmap file in sysfs by parsing
-  `function-row-physmap` property from DT
-- assume the device already has a correct keymap to reflect the custom
-  top-row keys (if they exist)
-
- drivers/input/keyboard/cros_ec_keyb.c | 72 +++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
-
-diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
-index b379ed7628781..06642e4ce9c63 100644
---- a/drivers/input/keyboard/cros_ec_keyb.c
-+++ b/drivers/input/keyboard/cros_ec_keyb.c
-@@ -27,6 +27,8 @@
- 
- #include <asm/unaligned.h>
- 
-+#define MAX_NUM_TOP_ROW_KEYS   15
-+
- /**
-  * struct cros_ec_keyb - Structure representing EC keyboard device
-  *
-@@ -35,6 +37,7 @@
-  * @row_shift: log2 or number of rows, rounded up
-  * @keymap_data: Matrix keymap data used to convert to keyscan values
-  * @ghost_filter: true to enable the matrix key-ghosting filter
-+ * @has_custom_top_row_keys: true if the keyboard has custom top row keys
-  * @valid_keys: bitmap of existing keys for each matrix column
-  * @old_kb_state: bitmap of keys pressed last scan
-  * @dev: Device pointer
-@@ -49,6 +52,7 @@ struct cros_ec_keyb {
- 	int row_shift;
- 	const struct matrix_keymap_data *keymap_data;
- 	bool ghost_filter;
-+	bool has_custom_top_row_keys;
- 	uint8_t *valid_keys;
- 	uint8_t *old_kb_state;
- 
-@@ -587,6 +591,65 @@ static int cros_ec_keyb_register_matrix(struct cros_ec_keyb *ckdev)
- 	return 0;
- }
- 
-+static ssize_t function_row_physmap_show(struct device *dev,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	ssize_t size = 0;
-+	u8 i;
-+	u16 code;
-+	u32 top_row_key_code[MAX_NUM_TOP_ROW_KEYS] = {0};
-+	struct cros_ec_keyb *ckdev = dev_get_drvdata(dev);
-+
-+	if (of_property_read_variable_u32_array(dev->of_node,
-+						"function-row-physmap",
-+						top_row_key_code,
-+						0,
-+						MAX_NUM_TOP_ROW_KEYS) > 0)
-+		return 0;
-+
-+	ckdev->has_custom_top_row_keys = true;
-+
-+	for (i = 0; i < MAX_NUM_TOP_ROW_KEYS; i++) {
-+		if (!top_row_key_code[i])
-+			break;
-+		code = MATRIX_SCAN_CODE(KEY_ROW(top_row_key_code[i]),
-+					KEY_COL(top_row_key_code[i]),
-+					ckdev->row_shift);
-+		size += scnprintf(buf + size, PAGE_SIZE - size, "%02X ", code);
-+	}
-+	size += scnprintf(buf + size, PAGE_SIZE - size, "\n");
-+
-+	return size;
-+}
-+
-+static DEVICE_ATTR_RO(function_row_physmap);
-+
-+static struct attribute *cros_ec_keyb_attrs[] = {
-+	&dev_attr_function_row_physmap.attr,
-+	NULL,
-+};
-+
-+static umode_t cros_ec_keyb_attr_is_visible(struct kobject *kobj,
-+					    struct attribute *attr,
-+					    int n)
-+{
-+	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct cros_ec_keyb *ckdev = dev_get_drvdata(dev);
-+
-+	if (attr == &dev_attr_function_row_physmap.attr &&
-+	    !ckdev->has_custom_top_row_keys)
-+		return 0;
-+
-+	return attr->mode;
-+}
-+
-+static const struct attribute_group cros_ec_keyb_attr_group = {
-+	.is_visible = cros_ec_keyb_attr_is_visible,
-+	.attrs = cros_ec_keyb_attrs,
-+};
-+
-+
- static int cros_ec_keyb_probe(struct platform_device *pdev)
- {
- 	struct cros_ec_device *ec = dev_get_drvdata(pdev->dev.parent);
-@@ -617,6 +680,12 @@ static int cros_ec_keyb_probe(struct platform_device *pdev)
- 		return err;
- 	}
- 
-+	err = sysfs_create_group(&dev->kobj, &cros_ec_keyb_attr_group);
-+	if (err) {
-+		dev_err(dev, "failed to create attributes. err=%d\n", err);
-+		return err;
-+	}
-+
- 	ckdev->notifier.notifier_call = cros_ec_keyb_work;
- 	err = blocking_notifier_chain_register(&ckdev->ec->event_notifier,
- 					       &ckdev->notifier);
-@@ -632,6 +701,9 @@ static int cros_ec_keyb_probe(struct platform_device *pdev)
- static int cros_ec_keyb_remove(struct platform_device *pdev)
- {
- 	struct cros_ec_keyb *ckdev = dev_get_drvdata(&pdev->dev);
-+	struct device *dev = &pdev->dev;
-+
-+	sysfs_remove_group(&dev->kobj, &cros_ec_keyb_attr_group);
- 
- 	blocking_notifier_chain_unregister(&ckdev->ec->event_notifier,
- 					   &ckdev->notifier);
--- 
-2.26.2
-
+Dan makes a very good point about using filesystems for this, though.
+It wouldn't be rocket science to set up a special tmpfs mount just for
+VM memory and pre-zero it from userspace.  For qemu, you'd need to teach
+the management layer to hand out zeroed files via mem-path=.  Heck, if
+you taught MADV_FREE how to handle tmpfs, you could even pre-zero *and*
+get the memory back quickly if those files ended up over-sized somehow.
