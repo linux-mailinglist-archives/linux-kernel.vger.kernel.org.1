@@ -2,50 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A764F2E93FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3B92E9400
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbhADLTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 06:19:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbhADLTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 06:19:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDF1420770;
-        Mon,  4 Jan 2021 11:18:51 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 11:18:48 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/smp: Remove unused 'irq' variable
-Message-ID: <20210104111847.GB28268@gaia>
-References: <20201230154516.680413-1-arnd@kernel.org>
+        id S1726602AbhADLUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 06:20:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726236AbhADLUx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 06:20:53 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B3A2C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 03:20:13 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id y24so26913378edt.10
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 03:20:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zokJI9v7bqGjxuN6FEkYnPOsXyma07z3X0FpcfMT+d0=;
+        b=iJJw9lxV9NGp+WOO5GbSZFd0sMseyIUhXbeRaJNjf4oysH5X1ARm/mxS0VyN4zT2af
+         ATt70lKD+K5THDvmypY710wfigodOEtl4rDAe8UI5ZE8XFDkyWfSCrE+JQU4GRb5Iy6i
+         ykioiwo+BDbuLLhj61m+8bpP4KZcPtR/pD+UvIF1MDgNnPLFDKme1kYRp66L9rNanqXa
+         pTY4SSAzaJUFdRvrynU61pgqwAHAADgrOVflDMt4IqB+y5gQskCAHfdDTXfaXqnC8/1k
+         gslesTrHrCRIKLu1VHlUSuuYEaEq6SlK0pfyBfcuaN97Xk0YnORy3y2dtCSWLJc2eQ5E
+         0qWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zokJI9v7bqGjxuN6FEkYnPOsXyma07z3X0FpcfMT+d0=;
+        b=Td7od5MIOQKy0vO2QvPj5/0qzi6FqyjJDitDCmjacRff/R79AInjTgCl38tQd2/Y/W
+         PD6LP4IFBpz+0K1Fx1PstIA3NmXFW3mkBkScBI9rrRrHI/7m/iF/YwCYvSCbebK4XTjI
+         NaYbJl+t+3RCEq1ntQQ+K33fq/m59lCHZLvYFNOxWjjAjPh+ykfWVLT/KCFtPC+gri/p
+         JJUbl77vOqzwGd3J/OuphFj0kmHq4+pwAXq3V/zTsO/jXPrdlr5npoWVwjXzS2eEFzn3
+         Is2XCTQsNbgHupAwuzqU+zzBm8EKUDVcOtBkYoUjBCJxGPdFWY3XT2paJfUyXOgnhjsj
+         uI5A==
+X-Gm-Message-State: AOAM5330U4Y1U+jtm/RTXOJDhvpfd+ATFNz87yQ3zBU/fSefLhYvS/rG
+        bCORwFjDnrWGsxFUrndMD9iQ1NXZccXA1YS/Hzac5w==
+X-Google-Smtp-Source: ABdhPJwnOtddilnv/GpQJf2I545mP0u4FrJ9Bj0LcUzUVpLO67OEv3/9lrJABwlJrTpaAQv0nK711kGjl5yrvcggYrI=
+X-Received: by 2002:aa7:cc15:: with SMTP id q21mr70622702edt.213.1609759212168;
+ Mon, 04 Jan 2021 03:20:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230154516.680413-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201231153141.25525-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdWs2sy9kwbyvw=Xe9rT9vynKb+hzzSSdniosfsiMEpFhA@mail.gmail.com>
+In-Reply-To: <CAMuHMdWs2sy9kwbyvw=Xe9rT9vynKb+hzzSSdniosfsiMEpFhA@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 4 Jan 2021 12:20:01 +0100
+Message-ID: <CAMpxmJV1-+7B_8PE+MX+a7vFRzjJ6Uukhw09E5YL1y+k6ozq6w@mail.gmail.com>
+Subject: Re: [PATCH] gpio: rcar: Remove redundant compatible values
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 04:45:04PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The only use of this variable was removed in a recent patch:
-> 
-> arch/arm64/kernel/smp.c:810:16: error: unused variable 'irq' [-Werror,-Wunused-variable]
->                 unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
-> 
-> Fixes: 5089bc51f81f ("arm64/smp: Use irq_desc_kstat_cpu() in arch_show_interrupts()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Mon, Jan 4, 2021 at 11:36 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Thu, Dec 31, 2020 at 4:31 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > The mandatory compatible values 'renesas,rcar-gen{1,2,3}-gpio' have been
+> > already added to all the respective R-Car Gen{1,2,3} SoC DTSI files,
+> > remove the redundant device specific values from the driver.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Thanks for your patch!
+>
+> > --- a/drivers/gpio/gpio-rcar.c
+> > +++ b/drivers/gpio/gpio-rcar.c
+> > @@ -392,33 +392,6 @@ static const struct gpio_rcar_info gpio_rcar_info_gen2 = {
+> >
+> >  static const struct of_device_id gpio_rcar_of_table[] = {
+> >         {
+> > -               .compatible = "renesas,gpio-r8a7743",
+> > -               /* RZ/G1 GPIO is identical to R-Car Gen2. */
+> > -               .data = &gpio_rcar_info_gen2,
+> > -       }, {
+> > -               .compatible = "renesas,gpio-r8a7790",
+> > -               .data = &gpio_rcar_info_gen2,
+> > -       }, {
+> > -               .compatible = "renesas,gpio-r8a7791",
+> > -               .data = &gpio_rcar_info_gen2,
+> > -       }, {
+> > -               .compatible = "renesas,gpio-r8a7792",
+> > -               .data = &gpio_rcar_info_gen2,
+> > -       }, {
+> > -               .compatible = "renesas,gpio-r8a7793",
+> > -               .data = &gpio_rcar_info_gen2,
+> > -       }, {
+> > -               .compatible = "renesas,gpio-r8a7794",
+> > -               .data = &gpio_rcar_info_gen2,
+> > -       }, {
+> > -               .compatible = "renesas,gpio-r8a7795",
+> > -               /* Gen3 GPIO is identical to Gen2. */
+> > -               .data = &gpio_rcar_info_gen2,
+> > -       }, {
+> > -               .compatible = "renesas,gpio-r8a7796",
+> > -               /* Gen3 GPIO is identical to Gen2. */
+> > -               .data = &gpio_rcar_info_gen2,
+> > -       }, {
+> >                 .compatible = "renesas,rcar-gen1-gpio",
+> >                 .data = &gpio_rcar_info_gen1,
+> >         }, {
+>
+> The reason the driver matches on these SoC-specific compatible values is
+> that originally the family-specific compatible values did not exist, and
+> the device nodes in the initial DTS files thus did not use them.  The
+> family-specific compatible values were added to the DTS files in v4.15.
+> However, as this was backported to all v4.14-based R-Car BSP releases
+> (3.6.0 and later), I think it is safe to apply this.
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 
-Thanks. I applied Geert's fix already.
+Patch applied, thanks!
 
--- 
-Catalin
+Bartosz
