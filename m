@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38242E9C5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 312942E9C64
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 18:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727720AbhADRtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 12:49:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727529AbhADRto (ORCPT
+        id S1727798AbhADRwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 12:52:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42096 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727696AbhADRwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:49:44 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1612C061796
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:30 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id z21so19510988pgj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxace-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=65owITg5bptvn1j++cmPjkA/zjpHPF/EDZomkuXKGqY=;
-        b=uY/UlD7z90jZJguSr4Qov6hTFwNsacX2P0geVNecyR5ZH7ZJamw0DXTNljsbMPh9PS
-         MFtO+9k1uqqfJPP4oxrzK1VHY59gJeN3JZOQsggZWLYox/RAcbwzjbXHZTbFVt/p2hXc
-         5PsPpT843IKgWkVa89xYlfbHBCRM9SdJW1eLo4vZRudTVCbP03yEes6Of/ssVlo1bwwD
-         lPisb7pbEW5ixCwrXhMykOxku5XX94zl1lW46mkndO08IyIeRjTZFa0pUxIpRkCFgRPq
-         ug5zNvBVQsrv3jFZjiOXLHjS9S5H7+LP8pFgaUWXRdyTsJ7CT9WbL3iRXfIFRSKMSDCy
-         Sh6w==
+        Mon, 4 Jan 2021 12:52:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609782652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EyPd+qpzU+/10OSeEC3y3BOPpK2qGL3ApwiEekrWJOI=;
+        b=ItvWawdpsJBHolSGIhmfeeSJbjiKG2gteUH3n30hD8B9Cfkds0pXYH0QegZyGB7nbO1RfV
+        2pFDtwdksFAB0b823GRYzun59s/7Sb0TIL8wdYYSnfoj/CNyaqZlg19f1PyJjVpexkzQ1F
+        ZGj5TSqUb6brSEbNXDR5BnJFgIF9CKY=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-uXiYbQ41N5Sy3IKL4rtQGQ-1; Mon, 04 Jan 2021 12:50:50 -0500
+X-MC-Unique: uXiYbQ41N5Sy3IKL4rtQGQ-1
+Received: by mail-wm1-f72.google.com with SMTP id r5so10960467wma.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 09:50:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=65owITg5bptvn1j++cmPjkA/zjpHPF/EDZomkuXKGqY=;
-        b=PlqOSKaE2CGW/fmMxP6t8xQbfg9mqET3bf6dAYGYTxr8Za2XjRHLELxGbb5rtPx0sH
-         uiFQu00CJ8ldDceP2fobULoXxZlsBgGt5VpfJGJoL92Oz0+cKm0Y67TVcRHTOO3YMykg
-         eRNIEi0GiYYxV1pB8mCv4XiIA8/MuUJOLbjAXohDnLKKSIW+FgMJTcfUzKMZJZY5lsp4
-         3L2xWZKIu3NJ+qjlEOdagpq3K1DE95ZptmQuVG7vdTfsM/zWeQ+3NjKzdM4M+boXCcjP
-         CrciMWuSzKDciEKmI/Yg0/uCXWcjNiFPSeg50sDkW2AwXivyMlM8JHderDgNzvFZ3VOM
-         ++4A==
-X-Gm-Message-State: AOAM532najsnYSydkbQYvNFWVuFWE65+fkxLQGBaztGHYzI69kZxi84v
-        vSHDB7P9paPoOZ2U0gVOGLt5oQ==
-X-Google-Smtp-Source: ABdhPJzyl3JwJlJhdPc5Jfiknw7ZF3oAzN30Yms3O1ELx9wLiAGjFS0agKxHvleXTZGJgkZVtJCRqw==
-X-Received: by 2002:a63:520e:: with SMTP id g14mr24089127pgb.378.1609782510541;
-        Mon, 04 Jan 2021 09:48:30 -0800 (PST)
-Received: from home.linuxace.com (cpe-23-243-7-246.socal.res.rr.com. [23.243.7.246])
-        by smtp.gmail.com with ESMTPSA id p9sm34954pjb.3.2021.01.04.09.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 09:48:29 -0800 (PST)
-Date:   Mon, 4 Jan 2021 09:48:26 -0800
-From:   Phil Oester <kernel@linuxace.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Anand Lodnoor <anand.lodnoor@broadcom.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] scsi: megaraid_sas: check user-provided offsets
-Message-ID: <20210104174826.GA76610@home.linuxace.com>
-References: <20200908213715.3553098-1-arnd@arndb.de>
- <20200908213715.3553098-2-arnd@arndb.de>
- <20201231001553.GB16945@home.linuxace.com>
- <CAK8P3a0_WORgd4Wvd3n+59oR=-rrESwg_MgpDJN4xPo_e6ir5Q@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EyPd+qpzU+/10OSeEC3y3BOPpK2qGL3ApwiEekrWJOI=;
+        b=GoybyMSlO1Xa4JLsDpdsz7mPCROefo+Mk/808clL1aWYRHkuR/HuwCSk0mv4UDy5ZL
+         wvkRUVnBQGuSAFZt8Ma740/3BdFacZ+3y2XNDi0+nHholXFC85Fp47p2kYTLv0fXAnYn
+         B1TuHn8uftFY0CEmmUuio+4wzWh/lePX/3c0EoIvyJNYkEDuRcvAxIwwYWmtzExGMhqU
+         d1Pmbdium8xBRkOo4wuJfQIk4+Fy3CIzXTjX+TqLUx0/+WBfg8noA9h9LFmJrp0gK2hN
+         7QByzMJY1EOqSZp7n6GpjZjLq/6Wc7SehWsTldSmyGLwV9Aisfb47Be1hiyYBtVh2v7I
+         asxg==
+X-Gm-Message-State: AOAM532NDUhD0DojCn83hOmp1AC5/1umBL6+I2hyJPpr8i2/hsxml9K7
+        FXNfqbndSWtcdoNmvrqY3KnVKLR0ZcXbupYgDYqrM0xgCRaWZACZBKsxF86Dnpga1O28Xa68zy+
+        UfvthWRMNRhxgZ5ibgy+70Urp
+X-Received: by 2002:a5d:4112:: with SMTP id l18mr80442658wrp.116.1609782649358;
+        Mon, 04 Jan 2021 09:50:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzwhWcj4/2hOH3p5+AnFtCBEv1VKsACzYx5d2Pg+R8scgY1DHbRQL0PAgven2/ITKBXm+uRyw==
+X-Received: by 2002:a5d:4112:: with SMTP id l18mr80442648wrp.116.1609782649205;
+        Mon, 04 Jan 2021 09:50:49 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u205sm28871wme.42.2021.01.04.09.50.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 09:50:48 -0800 (PST)
+Subject: Re: [PATCH v5 27/34] KVM: SVM: Add support for booting APs for an
+ SEV-ES guest
+To:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <cover.1607620209.git.thomas.lendacky@amd.com>
+ <47d11ed1c1a48ab71858fc3cde766bf67a4612d1.1607620209.git.thomas.lendacky@amd.com>
+ <8ed48a0f-d490-d74d-d10a-968b561a4f2e@redhat.com>
+ <2fd11067-a04c-7ce6-3fe1-79a4658bdfe7@amd.com>
+ <620a7760-2c4b-c8b9-51e1-8008bf29221d@amd.com>
+ <d411beab-b8b2-a7c9-af5b-3722db037910@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1433c219-ef19-aa19-7f5c-e872beff7356@redhat.com>
+Date:   Mon, 4 Jan 2021 18:50:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0_WORgd4Wvd3n+59oR=-rrESwg_MgpDJN4xPo_e6ir5Q@mail.gmail.com>
+In-Reply-To: <d411beab-b8b2-a7c9-af5b-3722db037910@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 03, 2021 at 05:26:29PM +0100, Arnd Bergmann wrote:
-> Thank you for the report and bisecting the issue, and sorry this broke
-> your system!
+On 04/01/21 18:38, Tom Lendacky wrote:
+>>
+>> Paolo, is this something along the lines of what you were thinking, or am
+>> I off base? I created kvm_emulate_ap_reset_hold() to keep the code
+>> consolidated and remove the duplication, but can easily make those 
+>> changes
+>> local to sev.c. I'd also like to rename SVM_VMGEXIT_AP_HLT_LOOP to
+>> SVM_VMGEXIT_AP_RESET_HOLD to more closely match the GHBC document, but
+>> that can be done later (if possible, since it is already part of the uapi
+>> include file).
 > 
-> Fortunately, the patch is fairly small, so there are only a limited number
-> of things that could go wrong. I haven't tried to analyze that message,
-> but I have two ideas:
-> 
-> a) The added ioc->sense_off check gets triggered and the code relies
->   on the data being written outside of the structure
-> 
-> b) the address actually needs to always be written as a 64-bit value
->     regardless of the instance->consistent_mask_64bit flag, as the
->    driver did before. This looked like it was done in error.
-> 
-> Can you try the patch below instead of the revert and see if that
-> resolves the regression, and if it triggers the warning message I
-> add?
+> Paolo, a quick ping after the holidays as to whether this is the 
+> approach you were thinking. I think there are a couple of places in 
+> x86.c to update (vcpu_block() and kvm_arch_vcpu_ioctl_get_mpstate()), also.
 
-Thanks Arnd, I tried your patch and it resolves the regression.  It does not
-trigger the warning message you added.
+Yes, this is the basic idea.
 
-Phil
+Paolo
+
