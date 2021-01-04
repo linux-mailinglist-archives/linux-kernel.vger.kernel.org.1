@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FF42E9A2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C99CE2E9A13
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbhADQAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:00:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37206 "EHLO mail.kernel.org"
+        id S1729324AbhADQHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:07:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728258AbhADQAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 400D52255F;
-        Mon,  4 Jan 2021 15:59:12 +0000 (UTC)
+        id S1728779AbhADQCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:02:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F1C9224D4;
+        Mon,  4 Jan 2021 16:02:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775952;
-        bh=Z5+aEPD2YmCXh7S722110kVIqhHKgKGlfjk88M+58vY=;
+        s=korg; t=1609776125;
+        bh=6klDzbX4FQiuaswtnqPILcKm00O72X6oRw8pRkFUjYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fwRO/Pp2jpGevRrZbe+pbFkw1g3ZOhWVPa1Iu5IQXKUtqsu79rVPQsIqR/2aooutM
-         8pYAw7geRC5QOFcT1WQZpJVz00bQO5KWFPp6g/vFJOEd2OVi/SPbjgrQgE2AotxlGw
-         tT+UyDP6M2NpBdQypuC7wwnN7tZ7ap3pAGSqkZ1Y=
+        b=mS5IcDqymtvPIu9NeOv9WwLRrb26Dd6cET6maoRSOG8kkkSVDS1GFHH3bOnsJWq83
+         2O1lt+oBy5Qj3IEmoPmYl5mDwm4K3gNzW4GdQhBgiSaDxJ/q5bEbLig28LAujvs+1S
+         +Sl6b3YGuuqgU23hwELLeUzyPBm+1v9kPj/6MMoY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 4.19 21/35] Bluetooth: hci_h5: close serdev device and free hu in h5_close
+        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.10 31/63] media: gp8psk: initialize stats at power control logic
 Date:   Mon,  4 Jan 2021 16:57:24 +0100
-Message-Id: <20210104155704.437760905@linuxfoundation.org>
+Message-Id: <20210104155710.330091955@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
-References: <20210104155703.375788488@linuxfoundation.org>
+In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
+References: <20210104155708.800470590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-commit 70f259a3f4276b71db365b1d6ff1eab805ea6ec3 upstream.
+commit d0ac1a26ed5943127cb0156148735f5f52a07075 upstream.
 
-When h5_close() gets called, the memory allocated for the hu gets
-freed only if hu->serdev doesn't exist. This leads to a memory leak.
-So when h5_close() is requested, close the serdev device instance and
-free the memory allocated to the hu entirely instead.
+As reported on:
+	https://lore.kernel.org/linux-media/20190627222020.45909-1-willemdebruijn.kernel@gmail.com/
 
-Fixes: https://syzkaller.appspot.com/bug?extid=6ce141c55b2f7aafd1c4
-Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+if gp8psk_usb_in_op() returns an error, the status var is not
+initialized. Yet, this var is used later on, in order to
+identify:
+	- if the device was already started;
+	- if firmware has loaded;
+	- if the LNBf was powered on.
+
+Using status = 0 seems to ensure that everything will be
+properly powered up.
+
+So, instead of the proposed solution, let's just set
+status = 0.
+
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Reported-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/bluetooth/hci_h5.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/media/usb/dvb-usb/gp8psk.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -263,8 +263,12 @@ static int h5_close(struct hci_uart *hu)
- 	if (h5->vnd && h5->vnd->close)
- 		h5->vnd->close(h5);
+--- a/drivers/media/usb/dvb-usb/gp8psk.c
++++ b/drivers/media/usb/dvb-usb/gp8psk.c
+@@ -182,7 +182,7 @@ out_rel_fw:
  
--	if (!hu->serdev)
--		kfree(h5);
-+	if (hu->serdev)
-+		serdev_device_close(hu->serdev);
-+
-+	kfree_skb(h5->rx_skb);
-+	kfree(h5);
-+	h5 = NULL;
+ static int gp8psk_power_ctrl(struct dvb_usb_device *d, int onoff)
+ {
+-	u8 status, buf;
++	u8 status = 0, buf;
+ 	int gp_product_id = le16_to_cpu(d->udev->descriptor.idProduct);
  
- 	return 0;
- }
+ 	if (onoff) {
 
 
