@@ -2,223 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31A72E9600
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382032E9614
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbhADN3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbhADN3w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:29:52 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411B1C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 05:29:12 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id r7so32144337wrc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 05:29:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CeT1gpZAsO0ZqFeo+qXRWjnihFBZp/Zvxstr2M1W2a4=;
-        b=oEE8jU7gcio8gOy5LjnxQ6xWzkjlhrxcCm4c8u4CQ4YwD8wGQldewFZLoIx4WE+zJK
-         am8IqWqYyZH+RtR/caotqBCv0QWrMbFe6ycwi3Z/F8DtWutbF4WKc+SWEtiCd8jvkfTF
-         iqepCnDD/Qxo2CgI/kRvZf1J0scisOpYmhFHVU2/Hxdj3BobEPL1cii+WCi4CogBNcHX
-         7oO6UEN+pKEkY8j0MurK+FEHEoHUm5JWXGe/tzW3Sf9YphZwQ0PA7AH5QdnUZoXMbaCm
-         O8VS2S0runpdHO/uqbBQviRG9Ig8Vgc+bdmP05nbMO6INZgYL/km0WvXOHvDRcvLpLls
-         0+9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=CeT1gpZAsO0ZqFeo+qXRWjnihFBZp/Zvxstr2M1W2a4=;
-        b=hMfXswr8kJsdccOQnpzEwHAwJA34+bpi1uyY4UjdIUu96qVdiXhSuAEWcgyzVcxISu
-         gKLRZlGde6a1VAaK4/HSxRQdI+H53ldmX3xi98IeqxLucBTBxapRseEJYPQNSVZm5O7o
-         0freeOcEA9xLeJ+UGljcmtRyynwlfTVvZJSV9LYcXJtfb6FRzpJamhbFRLI3Kj3L5Uvk
-         rdUcVdjA3tiHwwoVu3IOUTZ9wtxLjZhp1ok0/CA+UV9SB3rjIoFQzdJIEpw2guE91IDB
-         QRWtAwVPR40tHylz1eLFcWOyccSDLhrNz5HTNLsPEcoTyTqaUSAZeJii69C5WM0uaDiH
-         tp9A==
-X-Gm-Message-State: AOAM532a5Q6Y72dBniVnq6gR+YgFjPXrlIjtaxZjhaGab1n+66pFcoe7
-        RURa+qYOe7GMTIeot2LPQdmU8nZm6SJcbSHs
-X-Google-Smtp-Source: ABdhPJwrOR+x0g02hObd9ySh3hZiz/yyh9pFuaUzGtXfgB8R8bMcCJj0xBPFnoqDUj8syvkdr+F1+Q==
-X-Received: by 2002:a5d:498a:: with SMTP id r10mr79337606wrq.238.1609766950793;
-        Mon, 04 Jan 2021 05:29:10 -0800 (PST)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:17a:9662:5ead:50af? ([2a01:e35:2ec0:82b0:17a:9662:5ead:50af])
-        by smtp.gmail.com with ESMTPSA id r15sm89538602wrq.1.2021.01.04.05.29.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 05:29:10 -0800 (PST)
-Subject: Re: discussion: re-structuring of the Amlogic Meson VPU DRM driver
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-amlogic@lists.infradead.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        airlied@linux.ie, daniel@ffwll.ch
-References: <CAFBinCA4EnbJZ5HnWzqP-LdLJE0FD_nGqA6PxdQaR5KfETgvTQ@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <57a65a09-606a-8773-e1ff-4202e83779c8@baylibre.com>
-Date:   Mon, 4 Jan 2021 14:29:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727406AbhADNai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:30:38 -0500
+Received: from mga07.intel.com ([134.134.136.100]:23246 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725889AbhADNad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 08:30:33 -0500
+IronPort-SDR: 4tsIokbNkQToyEu5woAusd1wDCJcOnI/C4BR73NFWjcLztXYSV6ni9SGVyzMTxiaJ9fb0kCucm
+ bwSzI9D731Ng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9853"; a="241034492"
+X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
+   d="scan'208";a="241034492"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 05:22:53 -0800
+IronPort-SDR: gmWafp9ugMIA9HtjKXLJ/3I3gfVE0kZ6Cq5GPq4IeP2pUNm+BQ1DyXVIWqP9nNzvgTsoD9Lgnv
+ kbwBhTYe3BrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
+   d="scan'208";a="461944716"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Jan 2021 05:22:49 -0800
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 16/17] KVM: x86/pmu: Save guest pebs reset values when pebs is configured
+Date:   Mon,  4 Jan 2021 21:15:41 +0800
+Message-Id: <20210104131542.495413-17-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210104131542.495413-1-like.xu@linux.intel.com>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCA4EnbJZ5HnWzqP-LdLJE0FD_nGqA6PxdQaR5KfETgvTQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The guest pebs counter X may be cross mapped to the host counter Y.
+While the PEBS facility would reload the reset value once a PEBS record
+is written to guest DS and potentially continue to generate PEBS records
+before guest read the previous records.
 
-Sorry for the delay...
+KVM will adjust the guest DS pebs reset counter values for exactly mapped
+host counters but before that, it needs to save the original expected guest
+reset counter values right after the counter is fully enabled via a trap.
 
-On 31/12/2020 00:24, Martin Blumenstingl wrote:
-> Hi Neil and all interested people,
-> 
-> in the past there were concerns about how some of the components are
-> coupled in our Meson DRM driver(s).
-> With this discussion I would like to achieve four things:
-> 1. understand the current issues that we have> 2. come up with a TODO list of things that need to be tackled as well
-> as recommendations how to solve it (for example: "driver ABC function
-> ABC uses the recommended way - take that as reference")
-> 3. one by one work on the items on the TODO list
-> 4. add support for the 32-bit SoCs to the Meson VPU DRM driver
-> (without adding more "not recommended" code)
-> 
-> Disclaimer: I am not familiar with the DRM subsystem - so apologies if
-> the terminology is not correct.
-> 
-> drivers/gpu/drm/meson/meson_dw_hdmi.c currently serves four purposes:
-> 1. manage the TOP (glue) registers for the dw-hdmi IP
-> This is Amlogic specific and consists of things like HPD filtering,
-> some internal resets, etc.
-> In my opinion this part is supposed to stay in this driver
-Yep, it's tightly coupled to the DW-HDMI core
+We assume that every time the guest PEBS driver enables the counter for
+large PEBS, it will configure the DS reset counter values as Linux does.
 
-> 
-> 2. load the driver for the dw-hdmi IP by calling dw_hdmi_probe()
-> I read somewhere that this is not recommended anymore and should be replaced.
-> Is my understanding correct and what is the recommended replacement?
-Yeah in fact the dw-hdmi glue should be a pure bridge, not a component anymore.
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
+---
+ arch/x86/include/asm/kvm_host.h |  2 ++
+ arch/x86/kvm/vmx/pmu_intel.c    | 47 ++++++++++++++++++++++++++++++---
+ 2 files changed, 46 insertions(+), 3 deletions(-)
 
-This means it should probe by itself entirely, should not use the component stuff.
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index e6394ac54f81..1d17e51c5c8a 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -418,6 +418,7 @@ struct kvm_pmc {
+ 	enum pmc_type type;
+ 	u8 idx;
+ 	u64 counter;
++	u64 reset_counter;
+ 	u64 eventsel;
+ 	struct perf_event *perf_event;
+ 	struct kvm_vcpu *vcpu;
+@@ -461,6 +462,7 @@ struct kvm_pmu {
+ 	bool counter_cross_mapped;
+ 	bool need_rewrite_ds_pebs_interrupt_threshold;
+ 	bool need_rewrite_pebs_records;
++	bool need_save_reset_counter;
+ 
+ 	/*
+ 	 * The gate to release perf_events not marked in
+diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+index 4c095c31db38..4e6ed0e8bddf 100644
+--- a/arch/x86/kvm/vmx/pmu_intel.c
++++ b/arch/x86/kvm/vmx/pmu_intel.c
+@@ -219,12 +219,14 @@ static void intel_pmu_pebs_setup(struct kvm_pmu *pmu)
+ 	gpa_t gpa;
+ 
+ 	pmu->need_rewrite_ds_pebs_interrupt_threshold = false;
++	pmu->need_save_reset_counter = false;
+ 
+ 	for_each_set_bit(bit, (unsigned long *)&pmu->pebs_enable, X86_PMC_IDX_MAX) {
+ 		pmc = kvm_x86_ops.pmu_ops->pmc_idx_to_pmc(pmu, bit);
+ 
+ 		if (pmc && pmc_speculative_in_use(pmc)) {
+ 			pmu->need_rewrite_ds_pebs_interrupt_threshold = true;
++			pmu->need_save_reset_counter = true;
+ 			break;
+ 		}
+ 	}
+@@ -624,10 +626,44 @@ static int rewrite_ds_pebs_records(struct kvm_vcpu *vcpu)
+ 	return ret;
+ }
+ 
++static int save_ds_pebs_reset_values(struct kvm_vcpu *vcpu)
++{
++	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
++	struct kvm_pmc *pmc = NULL;
++	struct debug_store *ds = NULL;
++	int srcu_idx, bit, idx, ret;
++
++	ds = kmalloc(sizeof(struct debug_store), GFP_KERNEL);
++	if (!ds)
++		return -ENOMEM;
++
++	ret = -EFAULT;
++	srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
++	if (kvm_read_guest_cached(vcpu->kvm, &pmu->ds_area_cache,
++			ds, sizeof(struct debug_store)))
++		goto out;
++
++	for_each_set_bit(bit, (unsigned long *)&pmu->pebs_enable, X86_PMC_IDX_MAX) {
++		pmc = kvm_x86_ops.pmu_ops->pmc_idx_to_pmc(pmu, bit);
++
++		if (pmc) {
++			idx = (pmc->idx < INTEL_PMC_IDX_FIXED) ?
++				pmc->idx : (MAX_PEBS_EVENTS + pmc->idx - INTEL_PMC_IDX_FIXED);
++			pmc->reset_counter = ds->pebs_event_reset[idx];
++		}
++	}
++	ret = 0;
++
++out:
++	srcu_read_unlock(&vcpu->kvm->srcu, srcu_idx);
++	kfree(ds);
++	return ret;
++}
++
+ static void intel_pmu_handle_event(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+-	int ret1, ret2;
++	int ret1, ret2, ret3;
+ 
+ 	if (pmu->need_rewrite_pebs_records) {
+ 		pmu->need_rewrite_pebs_records = false;
+@@ -642,11 +678,16 @@ static void intel_pmu_handle_event(struct kvm_vcpu *vcpu)
+ 		ret2 = rewrite_ds_pebs_interrupt_threshold(vcpu);
+ 	}
+ 
++	if (pmu->need_save_reset_counter) {
++		pmu->need_save_reset_counter = false;
++		ret3 = save_ds_pebs_reset_values(vcpu);
++	}
++
+ out:
+ 
+-	if (ret1 == -ENOMEM || ret2 == -ENOMEM)
++	if (ret1 == -ENOMEM || ret2 == -ENOMEM || ret3 == -ENOMEM)
+ 		pr_debug_ratelimited("%s: Fail to emulate guest PEBS due to OOM.", __func__);
+-	else if (ret1 == -EFAULT || ret2 == -EFAULT)
++	else if (ret1 == -EFAULT || ret2 == -EFAULT || ret3 == -EFAULT)
+ 		pr_debug_ratelimited("%s: Fail to emulate guest PEBS due to GPA fault.", __func__);
+ }
+ 
+-- 
+2.29.2
 
-This also means all the VPU related part (mainly encoder and clock) should be moved
-out of this file as a bridge and built with the meson_drm driver,
-then find the "next bridge" like other drivers.
-
-> 
-> 3. it manages the HDMI PHY registers in the HHI register area
-> For the 32-bit SoCs I will not follow this pattern and will create a
-> separate PHY instead.
-> As a long-term goal I think we should also move this into a dedicated
-> PHY driver.
-
-I looked at it, and ... it's complex. For the 32-bit socs it's easy because
-you only have a single PHY setup, for the new gens you have to deal with the
-4k modes and co. This could be handle by adding a new parameters set to the
-phy_configure union, but what should we add in it to be super generic ?
-
-> 
-> 4. call back into VPU/VENC functions to set up these registers
-> This is a blocker for 32-bit SoC support as I would have to duplicate
-> this code if we don't make any changes. This includes things like
-> calculating (and setting) clock frequencies, calling
-> meson_venc_hdmi_mode_set for setting up the DVI pixel encoder, etc.
-> My understanding is that this part should not be part of the
-> meson_dw_hdmi driver, but "some other" driver. I don't understand
-> which driver that's supposed to be though and how things would be
-> wired up in the end.
-
-Yep it should be a bridge. You can chain bridges, it's designed for such use case.
-
-We will have internal bridges for encoders, ENCL+ENCP grouped for HDMI and ENCL.
-CVBS can be handled separately without bridges.
-
-I can have a try to move stuff if you can review/test on your side.
-Would it be a good start ?
-
-> 
-> In addition to HDMI my understanding is that for adding MIPI DSI
-> support you would
-> a) either have to follow the pattern from the meson_dw_hdmi driver or
-> b) also require some better way to achieve this
-
-With the cut I described before, we'll need a add a simple ENCL bridge
-in meson_drm and a standalone bridge for dw-mipi-dsi.
-
-> 
-> The biggest question marks for me are #2 and #4 from the list above.
-> Also is there anything I have missed?
-> Any input, feedback and questions are welcome!
-> 
-> PS: an additional topic on the TODO list will be "use the common clock
-> framework" for clock setup. it's currently not clear to me if that's
-> possible on the 64-bit SoCs in all cases.
-
-It's the same issue for 4k & co, the high freqs needs special PLL settings,
-not sure how this would be easily doable in the PLL driver.
-We may need to add a gx/g12 HDMI specific pll driver.
-
-> I will start a separate discussion for that topic after this one.
-> 
-> 
-> Best regards,
-> Martin
-> 
-
-Thanks for starting the thread !
-
-Neil
