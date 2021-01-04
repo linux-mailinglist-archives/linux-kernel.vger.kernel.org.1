@@ -2,157 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592F42EA135
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBD22EA10F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727851AbhADX6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:58:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        id S1727477AbhADXqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:46:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbhADX6v (ORCPT
+        with ESMTP id S1726026AbhADXp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:58:51 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB386C061794;
-        Mon,  4 Jan 2021 15:58:10 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id f6so27605143ybq.13;
-        Mon, 04 Jan 2021 15:58:10 -0800 (PST)
+        Mon, 4 Jan 2021 18:45:59 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B64C061795;
+        Mon,  4 Jan 2021 15:45:18 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id g24so19747298qtq.12;
+        Mon, 04 Jan 2021 15:45:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SHHD7A8wdQkjDrmLnfifNyaav1sJb/fGB9kAgRaskXg=;
-        b=OvaT9uMWLRmWGV1j/mZZyxM8SNQ1oUQ9MIzivoKEM0WaCvgG0i0dcHjxGyOIVkqwwh
-         af+s1rIuLcR0p7GaaiyYd9bp5w5lSFUqOUbzvfUOU1vIDhcG4bcUqNdCIHHLl5I4Jy0X
-         cVNZicTXpnG8lexF6wxembCFSg8Wps/26N5PVojs75lVDshmIHkcArIr6I17+FHJaBRC
-         yZEqd3jGYBVV0J2Y37wesYXgtSeU0jmLdJemnKfek513vUxTbTK4L38s21te1NGavmkU
-         omCnIqoYZs5/QIaccMDXSDzRKqsnBxkLOO1QuV0bdB4a67MAfxddNgY6AUE5T8HJ2Pho
-         166w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JKcn5FmVjtdLgYOASDjA00unBiKKTt/1fSkBmrjqn/k=;
+        b=smDa0LCh0CtK3FPXBCvVYU5au0IgoTV9ZqbIsKji2U3SNxrn/aj0vutIcewQymx3Mb
+         W9v07PzwjXozdxnqRC/vzLotXbn7UpdWsAlqyVWaOsad7bTyrpZF6EaqaPtH13HQ/edC
+         zA3oqeTdKchms0BLPbxq3o16nenTLV1mtSUsTBMFfl/MCNyFz+UU5aIt2h4SFQfg0ngU
+         LULvahbuuDaEQcgSbcKa2nVE8iksNlze9whsRw0u8g5Wr1SVh4Uel31twcrB0Eeyis4r
+         x93YTs/JwUzelq1tFE1g/cGEkMJhaZU/K0p/J9qAbw6nVnznpJDLUk6n1SPnh6aYX9Rd
+         t7EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SHHD7A8wdQkjDrmLnfifNyaav1sJb/fGB9kAgRaskXg=;
-        b=HpVk7aHBL4zTDGxzxnMLMQZ/MkefawHVDAtoIm9fbRBzqOZQ7KMKuSt+3p++RpTe4u
-         40p7c2GUj7xQv8ai7hY2VdPrQuRi2h64SePgkyFPa5LKniJ+DwnRAtpLovMbBN+I3WN6
-         GBkQxN+x6osGwslS2irNsU2eePKWrYgwkKQ/vzdSJ62VuAvZV2X7q6DSfDLHYPmi5lSI
-         gIMR1gBSRyu/EjERcK0hUAPKA0v3A7Rtkcjd52F9IJPjR7kYIxP7X3XHnrCAF28l8YvW
-         SLuDtnMpr6nFt+X/gObgr/Fjwq/9QtA+BtRXX4bjhk0RS/CbK365qQB2xJGEiwJKUfWg
-         D6iQ==
-X-Gm-Message-State: AOAM530HTS7/RFOduvZo9w8p2f4FidfDLI7ASySMXOWW/keFuOyhP3t0
-        nR3V7A3u/LCLu73ikuUwSraEk54przkrYiHCzjDiE5As
-X-Google-Smtp-Source: ABdhPJxLjZx2IGVa5mfQYarZ0yFS2xWmlmQ04KnJ6Keybd5QRNs7vUr6EBclhi/1nKAV89ShdUJ4jF5wKarjfs9sVGM=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr107283250ybe.403.1609793690747;
- Mon, 04 Jan 2021 12:54:50 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JKcn5FmVjtdLgYOASDjA00unBiKKTt/1fSkBmrjqn/k=;
+        b=f80bnQD6za7usciREDRNQ8e58tDZQouLjwzzAeuvDfsU1ViftSG5uM+Nc9yxHVqm2o
+         gGtuKOyDAKO3NmgtB5/KZFa4WFp2Fs0c4jB5ZVLMHUhk52QB4Tzz0SrSKLBOTT/KdU0K
+         o/a9JNMOqbdFKMRIbJibqoZL9C8Wp4To5cw8P61y/Sm9eE61VHdVGlosvOhCr9lnm4Tq
+         9OUMhEP7q+D0Ds9WTg5IOVlQzJgdF6xsJ+QI4BQMImp23grAR8V0H3pCRpb8rhwR687/
+         W8Ci2rZXFIfaNVsWRg3XkMmmp8fBL7PrA1bif4dQDTHyPx1QL2/fNKgbT74ERsxYz4iT
+         T3Ww==
+X-Gm-Message-State: AOAM532wYsHQ4c+LfNMmMe7IZ2qXC3Ez7kKkwbHlar+Gm+s3MLZwUliK
+        pMIrUjyXPwUx8iAE6bawpDFPa6fpCpI=
+X-Google-Smtp-Source: ABdhPJxIId7YInUzi9s1MpexjtDdKWYEXgaBPVTOj1ys7xu3LTGaj1flIjv6myZeew4CJ1r0mdSuhA==
+X-Received: by 2002:a05:620a:4db:: with SMTP id 27mr74435319qks.431.1609793854321;
+        Mon, 04 Jan 2021 12:57:34 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id a22sm37490512qkl.121.2021.01.04.12.57.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 12:57:33 -0800 (PST)
+Date:   Mon, 4 Jan 2021 13:57:32 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] powerpc: Handle .text.{hot,unlikely}.* in linker script
+Message-ID: <20210104205732.GA1398664@ubuntu-m3-large-x86>
+References: <20210104204850.990966-1-natechancellor@gmail.com>
+ <CA+icZUVe4AJoLWMqS3MEx700jcwDaJhw78tUgg8iD0dJvEmmYg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin> <20201229173401.GH450923@krava>
- <20201229232835.cbyfmja3bu3lx7we@e107158-lin> <20201230090333.GA577428@krava>
- <20201230132759.GB577428@krava> <CAEf4BzYbeQqzK2n9oz6wqysVj35k+VZC7DZrXFEtjUM6eiyvOA@mail.gmail.com>
- <20210102230654.GA732432@krava>
-In-Reply-To: <20210102230654.GA732432@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 4 Jan 2021 12:54:39 -0800
-Message-ID: <CAEf4BzbEoVHNw71XifTHm=dFU8ix+_+MdKBi+sT65+jj-mZQFA@mail.gmail.com>
-Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUVe4AJoLWMqS3MEx700jcwDaJhw78tUgg8iD0dJvEmmYg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 2, 2021 at 3:07 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Sat, Jan 02, 2021 at 02:25:34PM -0800, Andrii Nakryiko wrote:
->
-> SNIP
->
-> > >
-> > > so your .config has
-> > >   CONFIG_CRYPTO_DEV_BCM_SPU=y
-> > >
-> > > and that defines 'struct device_private' which
-> > > clashes with the same struct defined in drivers/base/base.h
-> > >
-> > > so several networking structs will be doubled, like net_device:
-> > >
-> > >         $ bpftool btf dump file ../vmlinux.config | grep net_device\' | grep STRUCT
-> > >         [2731] STRUCT 'net_device' size=2240 vlen=133
-> > >         [113981] STRUCT 'net_device' size=2240 vlen=133
-> > >
-> > > each is using different 'struct device_private' when it's unwinded
-> > >
-> > > and that will confuse BTFIDS logic, becase we have multiple structs
-> > > with the same name, and we can't be sure which one to pick
-> > >
-> > > perhaps we should check on this in pahole and warn earlier with
-> > > better error message.. I'll check, but I'm not sure if pahole can
-> > > survive another hastab ;-)
-> > >
-> > > Andrii, any ideas on this? ;-)
+On Mon, Jan 04, 2021 at 09:55:20PM +0100, Sedat Dilek wrote:
+> On Mon, Jan 4, 2021 at 9:49 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
 > >
-> > It's both unavoidable and correct from the C type system's
-> > perspective, so there is nothing for pahole to warn about. We used to
-> > have (for a long time) a similar clash with two completely different
-> > ring_buffer structs. Eventually they just got renamed to avoid
-> > duplication of related structs (task_struct and tons of other). But
-> > both BTF dedup and CO-RE relocation algorithms are designed to handle
-> > this correctly, ...
->
-> AFAIU it's all correctly dedulicated, but still all structs that
-> contain (at some point) 'struct device_private' will appear twice
-> in BTF data.. each with different 'struct device_private'
-
-it's correct from the type system perspective, right. Those two
-duplicates of struct device_private are parts of two different
-hierarchies of types. However inconvenient it is, C allows it,
-unfortunately :(
-
->
-> > ... so perhaps BTFIDS should be able to handle this as
-> > well?
->
-> hm, BTFIDS sees BTF data with two same struct names and has no
-> way to tell which one to use
->
-> unless we have some annotation data for BTF types I don't
-> see a way to handle this correctly.. but I think we can
-> detect this directly in BTFIDS and print more accurate error
-> message
->
-> as long as we dont see this on daily basis, I think that better
-> error message + following struct rename is good solution
-
-Perhaps warning and handling this gracefully is a bit better way to
-handle this. Renaming is definitely good, but shouldn't block the
-kernel build process. I don't remember the exact details for why
-duplicate struct would cause troubles for resolve_btfids, but maybe
-just picking the struct with minimal ID (out of 2+ duplicates) would
-be ok in practice most of the time. In any case, that's what most
-users (including libbpf) will do, when searching for the type by name.
-
->
+> > Commit eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input
+> > sections") added ".text.unlikely.*" and ".text.hot.*" due to an LLVM
+> > change [1].
 > >
-> > >
-> > > easy fix is the patch below that renames the bcm's structs,
-> > > it makes the kernel to compile.. but of course the new name
-> > > is probably wrong and we should push this through that code
-> > > authors
+> > After another LLVM change [2], these sections are seen in some PowerPC
+> > builds, where there is a orphan section warning then build failure:
 > >
-> > In this case, I think renaming generic device_private name is a good
-> > thing regardless.
->
-> ok, I'll send the change
->
+> 
+> Looks like you forgot to add your references/links to [1] and [2].
 
-great, thanks
+Indeed, thank you for pointing that out! v2 coming shortly.
 
-> jirka
->
+> Might be good to mention...?
+> 
+> With CONFIG_LD_ORPHAN_WARN=y is enabled
+
+Since this symbol is not user selectable, I do not really think it is
+worth mentioning, plus PowerPC has had this enabled for a while :)
+
+Cheers,
+Nathan
