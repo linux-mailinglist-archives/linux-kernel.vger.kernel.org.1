@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEE22E9FF0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E0A2E9FF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbhADWU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 17:20:26 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5474 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726026AbhADWUZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 17:20:25 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 104M1hkZ090494;
-        Mon, 4 Jan 2021 17:19:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YLZTq6zQr85wZXbJGTTCuDTBM//57T3a89Mn2kdJpXY=;
- b=DGOZNvc+9WF+nykk27UT9adptFlfO/2E/cOaLp3BTQla2FNso7BEk4G6x3CDoYVxtkJ0
- YrX+ZTHOdnVmgcnUcejTVFvudGfzX3RrDPxgCbzaQG6gTLSLO4nhfZPBJUiXCtgF2lc6
- apgBUw15+nTQOJCZa+KWNMsrbL8A+5aorMg2vFNRsLV5VRUC8XXgECbcT3BiM0BBeyuK
- FYLmdeao8aHkU5A/CX0eRyuJxJD0AAt0pwo+Za5XW4BG/n4M8jT78dE6CMMKGV4qfl9T
- mqnx8m81X++iKCtwRpilAwYibtNwQ0Ii4yGkyGO3YIvSphYISAUhuLB+QYV55bZuDm1+ Zg== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35vb5s0r5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 17:19:39 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 104MHgx4002800;
-        Mon, 4 Jan 2021 22:19:38 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 35tgf95nnu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 22:19:38 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 104MJb6f22937978
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Jan 2021 22:19:37 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 413BC6A047;
-        Mon,  4 Jan 2021 22:19:37 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4EA16A04F;
-        Mon,  4 Jan 2021 22:19:35 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.78.58])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Jan 2021 22:19:35 +0000 (GMT)
-Subject: Re: [PATCH 4/5 v2] ibmvfc: relax locking around ibmvfc_queuecommand
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, Brian King <brking@linux.vnet.ibm.com>
-References: <20201218231916.279833-5-tyreld@linux.ibm.com>
- <20210104221758.981302-1-tyreld@linux.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <bdcabd9f-ba27-18bf-eaa4-8570841f8e86@linux.ibm.com>
-Date:   Mon, 4 Jan 2021 14:19:34 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726935AbhADWVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 17:21:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726026AbhADWVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 17:21:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA9BA22513;
+        Mon,  4 Jan 2021 22:20:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609798841;
+        bh=NPEdMZ+d/qTgqDyyo/6zPi69bvufgrchjXGTLMaZlP0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MAzfwUcLYRgensQDf3eQfRYhYAi4qfyiOpyUafkPns2TK9eTnVBwZg2iLWutoLJqs
+         5BRxgvgxUfPmPFt6UIyQ9kY9pAMpsLMnGNU2VQ1EbdEggdDltua55J73G2SZJYBRy2
+         BJhzaX+3+J6W8qiZVVoTggHYCUqrjwMerzxP5cygSi+ct2SY0jwArBcHTTyCoOmTT2
+         CXDj9yktaUWCMcJMx0oEYZoBVzWB2RDR/0vRxFRCNRAZVe1O1kH/R2XjxhaHYbgbcM
+         Ej5Bsm+w609olzOnN4nY+R92Bnj8Ifjrl75XsW6TLYJadLyHH0iGRypsvvuOD5LNmr
+         0X930II45Br8A==
+Date:   Mon, 4 Jan 2021 14:20:39 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
+Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
+        dhowells@redhat.com, linux-crypto@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org
+Subject: Re: [PATCH 0/5] Add KDF implementations to crypto API
+Message-ID: <X/OUt7+wGGEPkWh8@sol.localdomain>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
 MIME-Version: 1.0
-In-Reply-To: <20210104221758.981302-1-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-04_14:2021-01-04,2021-01-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=858
- impostorscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxscore=0
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101040130
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4616980.31r3eYUQgx@positron.chronox.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/4/21 2:17 PM, Tyrel Datwyler wrote:
-> The drivers queuecommand routine is still wrapped to hold the host lock
-> for the duration of the call. This will become problematic when moving
-> to multiple queues due to the lock contention preventing asynchronous
-> submissions to mulitple queues. There is no real legatimate reason to
-> hold the host lock, and previous patches have insured proper protection
-> of moving ibmvfc_event objects between free and sent lists.
-> 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
-> ---
+On Mon, Jan 04, 2021 at 10:45:57PM +0100, Stephan Müller wrote:
+> The HKDF addition is used to replace the implementation in the filesystem
+> crypto extension. This code was tested by using an EXT4 encrypted file
+> system that was created and contains files written to by the current
+> implementation. Using the new implementation a successful read of the
+> existing files was possible and new files / directories were created
+> and read successfully. These newly added file system objects could be
+> successfully read using the current code. Yet if there is a test suite
+> to validate whether the invokcation of the HKDF calculates the same
+> result as the existing implementation, I would be happy to validate
+> the implementation accordingly.
 
-Ignore. This is the wrong updated patch.
+See https://www.kernel.org/doc/html/latest/filesystems/fscrypt.html#tests
+for how to run the fscrypt tests.  'kvm-xfstests -c ext4 generic/582' should be
+enough for this, though you could run all the tests if you want.
 
--Tyrel
+- Eric
