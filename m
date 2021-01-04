@@ -2,142 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8982E9321
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD0B2E9331
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbhADKMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:12:24 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:30456 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbhADKMX (ORCPT
+        id S1726380AbhADKUa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 05:20:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726026AbhADKUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:12:23 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609755122; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=b1YdbSOxLE1TmKfcFnR94xmBHprCl+Qqt/okT9c2OCE=; b=GaoJnsyEi3uIiekNS+zPjb6mWSMZ6PDowzLM0kTbqaplQT8ZnYa+o3GMRlaJAAj5ScoR+i8/
- YK7N5KKg6Ep+JA32rt0wvcw2S/IUJCHXWwIJCZ3ZlEk+ysid+dUlHDJZPMtMgrd2+Dg1ka0j
- nf90952DwtNjU9466yZ2F+nwIjU=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5ff2e9d9cf8ceaa9eec0fa70 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Jan 2021 10:11:37
- GMT
-Sender: cjhuang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B2417C433C6; Mon,  4 Jan 2021 10:11:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from cjhuang-Celadon-RN.qca.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Mon, 4 Jan 2021 05:20:30 -0500
+X-Greylist: delayed 336 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Jan 2021 02:19:49 PST
+Received: from posta.beun.edu.tr (posta.beun.edu.tr [IPv6:2001:a98:190::20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 973D0C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 02:19:49 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by posta.beun.edu.tr (Postfix) with ESMTP id B9E3C37EA1E5
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 13:13:37 +0300 (AST)
+Received: from posta.beun.edu.tr ([127.0.0.1])
+ by localhost (posta.beun.edu.tr [127.0.0.1]) (maiad, port 10024) with ESMTP
+ id 06935-01 for <linux-kernel@vger.kernel.org>;
+ Mon,  4 Jan 2021 13:13:37 +0300 (AST)
+Received: from [100.70.232.226] (unknown [117.97.227.174])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cjhuang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 663C1C433CA;
-        Mon,  4 Jan 2021 10:11:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 663C1C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cjhuang@codeaurora.org
-From:   Carl Huang <cjhuang@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
-Subject: [PATCH v3] mhi: use irq_flags if controller driver configures it
-Date:   Mon,  4 Jan 2021 18:11:28 +0800
-Message-Id: <20210104101128.8217-1-cjhuang@codeaurora.org>
-X-Mailer: git-send-email 2.17.1
+        (Authenticated sender: strateji@beun.edu.tr)
+        by posta.beun.edu.tr (Postfix) with ESMTPSA id 9451D37F0868;
+        Mon,  4 Jan 2021 13:13:30 +0300 (AST)
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?b?QVRFTkNJw5NO?=
+To:     Recipients <administrator@ancol.com>
+From:   administrador <administrator@ancol.com>
+Date:   Mon, 04 Jan 2021 15:43:26 +0530
+Reply-To: mailupgrade@mail2engineer.com
+Message-Id: <20210104101337.B9E3C37EA1E5@posta.beun.edu.tr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If controller driver has specified the irq_flags, mhi uses this specified
-irq_flags. Otherwise, mhi uses default irq_flags.
+ATENCIÓN;
 
-The purpose of this change is to support one MSI vector for QCA6390.
-MHI will use one same MSI vector too in this scenario.
+Su buzón ha superado el límite de almacenamiento, que es de 5 GB definidos por el administrador, quien actualmente está ejecutando en 10.9GB, no puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a validar su buzón de correo electrónico. Para revalidar su buzón de correo, envíe la siguiente información a continuación:
 
-In case of one MSI vector, IRQ_NO_BALANCING is needed when irq handler
-is requested. The reason is if irq migration happens, the msi_data may
-change too. However, the msi_data is already programmed to QCA6390
-hardware during initialization phase. This msi_data inconsistence will
-result in crash in kernel.
+nombre:
+Nombre de usuario:
+contraseña:
+Confirmar contraseña:
+E-mail:
+teléfono:
 
-Another issue is in case of one MSI vector, IRQF_NO_SUSPEND will trigger
-WARNINGS because QCA6390 wants to disable the IRQ during the suspend.
+Si usted no puede revalidar su buzón, el buzón se deshabilitará!
 
-To avoid above two issues, QCA6390 driver specifies the irq_flags in case
-of one MSI vector when mhi_register_controller is called.
+Disculpa las molestias.
+Código de verificación:666690opp4r56 es: 006524
+Correo Soporte Técnico © 2021
 
-Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
-v3:
-- replace "client driver" with "controller driver"
-- add Reviewed-by: Manivannan Sadhasivam 
-
-v2:
-- document irq_flags added to mhi_controller
-
- drivers/bus/mhi/core/init.c | 9 +++++++--
- include/linux/mhi.h         | 2 ++
- 2 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 381fdea..37903a8 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -148,12 +148,17 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
- {
- 	struct mhi_event *mhi_event = mhi_cntrl->mhi_event;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-+	unsigned long irq_flags = IRQF_SHARED | IRQF_NO_SUSPEND;
- 	int i, ret;
- 
-+	/* if controller driver has set irq_flags, use it */
-+	if (mhi_cntrl->irq_flags)
-+		irq_flags = mhi_cntrl->irq_flags;
-+
- 	/* Setup BHI_INTVEC IRQ */
- 	ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
- 				   mhi_intvec_threaded_handler,
--				   IRQF_SHARED | IRQF_NO_SUSPEND,
-+				   irq_flags,
- 				   "bhi", mhi_cntrl);
- 	if (ret)
- 		return ret;
-@@ -171,7 +176,7 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
- 
- 		ret = request_irq(mhi_cntrl->irq[mhi_event->irq],
- 				  mhi_irq_handler,
--				  IRQF_SHARED | IRQF_NO_SUSPEND,
-+				  irq_flags,
- 				  "mhi", mhi_event);
- 		if (ret) {
- 			dev_err(dev, "Error requesting irq:%d for ev:%d\n",
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index cb7cd54..77f1e3f 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -351,6 +351,7 @@ struct mhi_controller_config {
-  * @fbc_download: MHI host needs to do complete image transfer (optional)
-  * @pre_init: MHI host needs to do pre-initialization before power up
-  * @wake_set: Device wakeup set flag
-+ * @irq_flags: irq flags passed to request_irq (optional)
-  *
-  * Fields marked as (required) need to be populated by the controller driver
-  * before calling mhi_register_controller(). For the fields marked as (optional)
-@@ -440,6 +441,7 @@ struct mhi_controller {
- 	bool fbc_download;
- 	bool pre_init;
- 	bool wake_set;
-+	unsigned long irq_flags;
- };
- 
- /**
--- 
-2.7.4
-
+¡gracias
+Sistemas administrador
