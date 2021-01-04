@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDB02E97EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEB42E9800
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbhADPBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:01:01 -0500
-Received: from mail1.perex.cz ([77.48.224.245]:59796 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727042AbhADPBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:01:00 -0500
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 7CE2DA004B;
-        Mon,  4 Jan 2021 16:00:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 7CE2DA004B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1609772418; bh=NBYgMHbbqmHovG+sVQDGeTFC7J2tgqVlSOKHqgUroAs=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=4NVnHObBmMnXi9kIdZofTZIMaTWjRKdmxFDLrtTisQNP++VxeOZfx/477BTKV8sEL
-         uiHGnI5Bz9KUiUkxpvxDznI6ke+Vq5/PHun4AGzEh1tPgkk9UIqUcY+EA39BFN/aTF
-         WW8t/tazFj8FRS4LhysOWKNVjtC6RUcMRYdRJmN0=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Mon,  4 Jan 2021 16:00:06 +0100 (CET)
-Subject: Re: [PATCH] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        sound-open-firmware@alsa-project.org
-References: <20210103135257.3611821-1-arnd@kernel.org>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <3c19a5d5-8883-f917-a96a-f51bb188d115@perex.cz>
-Date:   Mon, 4 Jan 2021 16:00:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727571AbhADPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:01:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727431AbhADPBl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:01:41 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44426C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 07:00:24 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id b26so65003760lff.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 07:00:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tR4uUSuiT2yNCjy2l75xxGnO77PWcJQ+DtWty5i0rMc=;
+        b=LJ/AsciYj2BKHcnJ73UgKyavCV9Qw6QPv4rj+dpkZQo3YhzjsIYgubutakzgyTilOD
+         BP9w87saYt2mwvs7pZCpYcL045gJziDe+nWIOEIroRJOnA/6w6C3nho2eTCijDeSKdjt
+         PBqhmEKevTBMFjsa0IcaooKAmbg3t91gOMxVs09uohr1nFJay1Z1SsD25Pw+7ggP08aJ
+         5qjrV116BFU7LMFDr/xS64uW5vVHC3/z159BsSxs/JhDkCYSr0Lhd9QeDmh2c6lqrcBl
+         BvcUQtSkdSewYsZD9JVB7IA4M8OtwXfkhg1fq/nM+bJu/vwBI0RnGutIae+G/ZtFnR4+
+         UEZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tR4uUSuiT2yNCjy2l75xxGnO77PWcJQ+DtWty5i0rMc=;
+        b=msZ2euOWgbTmazfufxOmDVN7pSTK85AZjsZCvFz3cYs7CIlngBSX1sSRp0uRnGj2rr
+         IdCtIsQrgZG1lzPa85jkf7TD1aYdji1hWBEtEHmPARXZyVlMsd4Hk6j11/BZ96wrT8DR
+         1HGJunzb/WNxpvMOZ5dfgeGUbNPvRZZhTxJKUChIPiNNMUUwN5bvlwE2pI577WwqFIL8
+         GGNcvaG9LFOWPMF8Rjs6q5vt4i9ni1ffVa+eAhxVGhwg845Yg+mxlfcpaHETy/jCa5M7
+         s8Zkw+9QhlO+eHYVPKTa/K7KBJSuGSQDY5ON3jmKVZw/o9wxOcHLSN1rpn7zjmMFeXIt
+         IroA==
+X-Gm-Message-State: AOAM5324B9x7LxxcCxKutFxNoMFnJ47dw7XYaEDntSedkWsleudXCAf4
+        sMT8XLRH5DqFxjnke/6aKrPei4GGUwcoeCr2i37pXg==
+X-Google-Smtp-Source: ABdhPJw8BDy+1PA7BTXsFDKivU2qz6c7DgAaqRK4RmPbkQPgVpVra4mzO3RTstCIcQRAlI3tqm7JphEKl6JVoakBr3M=
+X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr34844158lfs.529.1609772422734;
+ Mon, 04 Jan 2021 07:00:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210103135257.3611821-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201217144338.3129140-1-nobuhiro1.iwamatsu@toshiba.co.jp> <20201217144338.3129140-5-nobuhiro1.iwamatsu@toshiba.co.jp>
+In-Reply-To: <20201217144338.3129140-5-nobuhiro1.iwamatsu@toshiba.co.jp>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 4 Jan 2021 16:00:11 +0100
+Message-ID: <CACRpkdb--GSy-0vnAFS9Pik4TjrNRTrYeZr2RBZD6SFM8zotyQ@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] arm: dts: visconti: Add DT support for Toshiba
+ Visconti5 GPIO driver
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        yuji2.ishikawa@toshiba.co.jp,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 03. 01. 21 v 14:52 Arnd Bergmann napsal(a):
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The sof-pci-dev driver fails to link when built into the kernel
-> and CONFIG_SND_INTEL_DSP_CONFIG is set to =m:
-> 
-> arm-linux-gnueabi-ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
-> sof-pci-dev.c:(.text+0x1c): undefined reference to `snd_intel_dsp_driver_probe'
-> 
-> All other drivers using this interface already use a 'select
-> SND_INTEL_DSP_CONFIG' statement to force the it to be present, so it
-> seems reasonable to do the same here.
-> 
-> The stub implementation in the header makes the problem harder to find,
-> as it avoids the link error when SND_INTEL_DSP_CONFIG is completely
-> disabled, without any obvious upsides. Remove these stubs to make it
-> clearer that the driver is in fact needed here.
-> 
-> Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/sound/intel-dsp-config.h | 17 -----------------
->  sound/soc/sof/Kconfig            |  2 ++
->  2 files changed, 2 insertions(+), 17 deletions(-)
-> 
-> diff --git a/include/sound/intel-dsp-config.h b/include/sound/intel-dsp-config.h
-> index d4609077c258..94667e870029 100644
-> --- a/include/sound/intel-dsp-config.h
-> +++ b/include/sound/intel-dsp-config.h
-> @@ -18,24 +18,7 @@ enum {
->  	SND_INTEL_DSP_DRIVER_LAST = SND_INTEL_DSP_DRIVER_SOF
->  };
->  
-> -#if IS_ENABLED(CONFIG_SND_INTEL_DSP_CONFIG)
+On Thu, Dec 17, 2020 at 6:45 AM Nobuhiro Iwamatsu
+<nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
 
-The SOF drivers selects the DSP config code only when required (for specific
-platforms - see sound/soc/sof/intel/Kconfig).
+> Add the GPIO node in Toshiba Visconti5 SoC-specific DT file.
+> And enable the GPIO node in TMPV7708 RM main board's board-specific DT file.
+>
+> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> Reviewed-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
 
-It seems that the above if should be modified as:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-#if IS_BUILDIN(CONFIG_SND_INTEL_DSP_CONFIG) || (defined(MODULE) &&
-IS_MODULE(CONFIG_SND_INTEL_DSP_CONFIG))
+Please funnel this patch through the ARM SoC tree.
 
-So the buildin drivers which do not require the DSP config probe can be
-compiled without this dependency.
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Yours,
+Linus Walleij
