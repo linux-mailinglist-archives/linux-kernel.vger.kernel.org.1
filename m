@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942B12E997C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD2D2E99B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbhADQAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:00:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37060 "EHLO mail.kernel.org"
+        id S1727865AbhADQCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:02:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728293AbhADQAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77DAF22517;
-        Mon,  4 Jan 2021 15:59:59 +0000 (UTC)
+        id S1728923AbhADQCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:02:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D137922507;
+        Mon,  4 Jan 2021 16:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609775999;
-        bh=jjeua5M+IGGlbZEcohTUUBN123JvFZUw5V6AFt76B5c=;
+        s=korg; t=1609776127;
+        bh=HIM2v6vI3cY74c/MGF1FQ3nkAj/6I+7FVjZptPJnY4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Y+5y3t9jD5IBFaCR3fQ0fdbqA3c+zZVvzZuj1W3ma8Rv6I5pX3uZFZwNp8JobXa/
-         HiDMXz3PumBCvoc7Ty1VjZh4WTxvqs8yVkw4nxoIlR4/s9wMRA/YaH+6ineV41qI2p
-         G6cLjn2MK/H77TGgVtb697qe0U9SQc5LRxVN65Wc=
+        b=yFE9mT3LDDuaE6Z9sZsVnHidKUxe/6d3CFgls4ZbT6HT5nfWYuaJN8AEZRSlYcpix
+         zaTlnYV1TDbKLkTkxDEJWOzAuIkBZ/cgiH8YyAacWXYdyhwzo4VZrjcKMNLnxQep47
+         6Cudx3JrRWqDrjZVrUn8EXAtSgqGxKaYSWBVqoCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
+        syzbot+ca9a785f8ac472085994@syzkaller.appspotmail.com,
         Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 5.4 25/47] Bluetooth: hci_h5: close serdev device and free hu in h5_close
-Date:   Mon,  4 Jan 2021 16:57:24 +0100
-Message-Id: <20210104155706.958633133@linuxfoundation.org>
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 5.10 32/63] f2fs: fix shift-out-of-bounds in sanity_check_raw_super()
+Date:   Mon,  4 Jan 2021 16:57:25 +0100
+Message-Id: <20210104155710.379545360@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
-References: <20210104155705.740576914@linuxfoundation.org>
+In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
+References: <20210104155708.800470590@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-commit 70f259a3f4276b71db365b1d6ff1eab805ea6ec3 upstream.
+commit e584bbe821229a3e7cc409eecd51df66f9268c21 upstream.
 
-When h5_close() gets called, the memory allocated for the hu gets
-freed only if hu->serdev doesn't exist. This leads to a memory leak.
-So when h5_close() is requested, close the serdev device instance and
-free the memory allocated to the hu entirely instead.
+syzbot reported a bug which could cause shift-out-of-bounds issue,
+fix it.
 
-Fixes: https://syzkaller.appspot.com/bug?extid=6ce141c55b2f7aafd1c4
-Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ sanity_check_raw_super fs/f2fs/super.c:2812 [inline]
+ read_raw_super_block fs/f2fs/super.c:3267 [inline]
+ f2fs_fill_super.cold+0x16c9/0x16f6 fs/f2fs/super.c:3519
+ mount_bdev+0x34d/0x410 fs/super.c:1366
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1496
+ do_new_mount fs/namespace.c:2896 [inline]
+ path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+ do_mount fs/namespace.c:3240 [inline]
+ __do_sys_mount fs/namespace.c:3448 [inline]
+ __se_sys_mount fs/namespace.c:3425 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Reported-by: syzbot+ca9a785f8ac472085994@syzkaller.appspotmail.com
 Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/bluetooth/hci_h5.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/f2fs/super.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -250,8 +250,12 @@ static int h5_close(struct hci_uart *hu)
- 	if (h5->vnd && h5->vnd->close)
- 		h5->vnd->close(h5);
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2744,7 +2744,6 @@ static int sanity_check_raw_super(struct
+ 	block_t total_sections, blocks_per_seg;
+ 	struct f2fs_super_block *raw_super = (struct f2fs_super_block *)
+ 					(bh->b_data + F2FS_SUPER_OFFSET);
+-	unsigned int blocksize;
+ 	size_t crc_offset = 0;
+ 	__u32 crc = 0;
  
--	if (!hu->serdev)
--		kfree(h5);
-+	if (hu->serdev)
-+		serdev_device_close(hu->serdev);
-+
-+	kfree_skb(h5->rx_skb);
-+	kfree(h5);
-+	h5 = NULL;
+@@ -2778,10 +2777,10 @@ static int sanity_check_raw_super(struct
+ 	}
  
- 	return 0;
- }
+ 	/* Currently, support only 4KB block size */
+-	blocksize = 1 << le32_to_cpu(raw_super->log_blocksize);
+-	if (blocksize != F2FS_BLKSIZE) {
+-		f2fs_info(sbi, "Invalid blocksize (%u), supports only 4KB",
+-			  blocksize);
++	if (le32_to_cpu(raw_super->log_blocksize) != F2FS_BLKSIZE_BITS) {
++		f2fs_info(sbi, "Invalid log_blocksize (%u), supports only %u",
++			  le32_to_cpu(raw_super->log_blocksize),
++			  F2FS_BLKSIZE_BITS);
+ 		return -EFSCORRUPTED;
+ 	}
+ 
 
 
