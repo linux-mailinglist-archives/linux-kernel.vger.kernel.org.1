@@ -2,95 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A43D2E90BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636992E90B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 08:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbhADHFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 02:05:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
+        id S1727785AbhADHDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 02:03:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbhADHFS (ORCPT
+        with ESMTP id S1726258AbhADHDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 02:05:18 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9088C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 23:04:37 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id b5so10261023pjl.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 23:04:37 -0800 (PST)
+        Mon, 4 Jan 2021 02:03:54 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8962C061798
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Jan 2021 23:02:40 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id w1so4850550pjc.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Jan 2021 23:02:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EISNFuU48YmH5mVT0GE+4yn3CQnSse+shUM8yzbBpaU=;
-        b=Xmgjt/nOSUnyWkfS8V2b6zGYX7FQPWtZlXXQ7l8c1xqvRCoxP1WJyxx6yRZgHZrNW9
-         FKgtJ/N/l8uSXO6qVfmgrUa8iZGRMmnithwfYa7bZ/vmHcu6QYCD+ksPXncP0yNug6eY
-         UV3Gf7fJfNBcBQpmN9xaNylvpe/6bxIYLrW4cKsg7J0OmLio0Ipyuzl6zGnCddM2wDSo
-         UMidatDFEY9JKZgpquEhsuVdTG7WVm7uIwkXPUqhA09KItm3Kyhoe1keIKuZJGjd/Q4J
-         Z5TxBks0c6M/mnN+AXgvJk1/m1UqJ4s/Q/hPRtwKPFVVM1bPPIJeP1xmKwtpZ8PwtoT1
-         5Esw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dlLWZrIy6R69T+0RxdKISUof18f+oj7qL0+rpwclI9Q=;
+        b=RWiath2GV29Ceq29YV4Eo/YDxoleBkI6KhvmDVrM13P6i6WvXBHLB3NL03EuF0d5Ig
+         k3jN3V9R8TYaSIt0OajxpW6UaB9wqaf4kbP7YRvdeIkVNd/vE7mO5sxPJfWGQEcfV0TJ
+         gZMIffKXxGkcLQZpqzBpYXnzYhYnVd/wNwl9DW3PspXwbZWlquvU8ndq1l6zzm/9Z2Ms
+         jHlU/V+Cj9z2qjgPbAipggERD7vN+mLZJD88oCTUGrPBT9eVKuPbKuZBrtt01Y1UYPbg
+         OtJCP+3nernL266el36h94jVbwk98vXd2vQnjhu4QVdYXhTe+6c+dYRx2+Up2YsN7xvd
+         a9Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EISNFuU48YmH5mVT0GE+4yn3CQnSse+shUM8yzbBpaU=;
-        b=ioRes5DoBk7BF40WKVnHRA66nmWG6C3e1eCKLnR+CJtI3rOCkbhTmE4k5Va1gzawgU
-         8fP7cBLPcWVDan71YzCNxx2CG3xflkOTGArYYWpFhbTFGhr1GfPNl1G7T039gykPOv/Y
-         eRpEXj2Si+mis5aJXOU/gvYohwALw8BTQvdBDqszaThFUx8gqIVQrC0EQLA20yFn5q+a
-         toz72MtMd98ToaD2RBjPCK4vYgZiiJuqMNJCjPkYCfuEPe5I8NtnOyE7VGzXH4nyJxMw
-         cJZeUzvYl0VBgL34UbGrDOu2+Q9FiCBMvfQq7T6W/HOoeWj00hvAIJyVNDCWBJPFUubo
-         5/xw==
-X-Gm-Message-State: AOAM5302Dc2UJjBxeKtEXK3/JdOmObuoccuTrCvIMq1AEl1CeeC7Qddx
-        kOA4jX1HLC/9ng5zAi1x35LBKA==
-X-Google-Smtp-Source: ABdhPJzXfcHe/DNDgrNLYCLPvvRR9GsslU5gGbg4vZuATckt8jlYAfPJ+tgaqY3zitTmNw/PBZ+wDQ==
-X-Received: by 2002:a17:90a:db4e:: with SMTP id u14mr27912006pjx.184.1609743877588;
-        Sun, 03 Jan 2021 23:04:37 -0800 (PST)
-Received: from localhost.localdomain ([240e:b1:e401:3::6])
-        by smtp.gmail.com with ESMTPSA id v1sm36306648pga.63.2021.01.03.23.04.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dlLWZrIy6R69T+0RxdKISUof18f+oj7qL0+rpwclI9Q=;
+        b=pzaqV6hU66O/fLbLwFlVmvjTPF0AoPs1cTpqf0s61N6SYlXefMbbrODj6h9TiC7Ikd
+         AkekZrKcFsDXG2+TfOgQs6LzIEz5Q3U4cZBphhsRlHb/M5a1VPtV5caAfgkhQvgNAC5K
+         g/fsN9qRfHGaWNlbmwcaLGzMCttZa99yP46aS0D/zkKN1iPq6pWvYI51dYC1PPTscMk8
+         Fhb+a7GnhSEZMTLPWCJ1zKllQuKALCsTujIvatC+nTF7efQD1aXw6jMHPpZW6kilX2wF
+         5yDwQbJ3CJnfQFxFQBG4mUft1u3Tqf+UWuv6y6/zCOWgqOdmyqzVAbzC+kcvdkZjNzSu
+         WnKw==
+X-Gm-Message-State: AOAM531kgi+/C9toig4Mp67DzXacbtH3F38Fg7VWZxzSoW4mymHEkvVY
+        cry7KKC2H3VSCCWpsygiOqlLEw==
+X-Google-Smtp-Source: ABdhPJxTIG1l0JLV+LUHEFjwB/9ntN9aIbvjRCJKn3vjHJRyQgMGHUy/WB5LS59Xy8aTKPshWnMfsA==
+X-Received: by 2002:a17:90b:14d3:: with SMTP id jz19mr28643076pjb.196.1609743760002;
+        Sun, 03 Jan 2021 23:02:40 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id n195sm55117950pfd.169.2021.01.03.23.02.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 03 Jan 2021 23:04:37 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     hillf.zj@alibaba-inc.com, n-horiguchi@ah.jp.nec.com,
-        ak@linux.intel.com, yongjun_wei@trendmicro.com.cn, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 6/6] mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
-Date:   Mon,  4 Jan 2021 14:58:43 +0800
-Message-Id: <20210104065843.5658-6-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210104065843.5658-1-songmuchun@bytedance.com>
-References: <20210104065843.5658-1-songmuchun@bytedance.com>
+        Sun, 03 Jan 2021 23:02:38 -0800 (PST)
+Date:   Mon, 4 Jan 2021 12:32:36 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Yangtao Li <tiny.windzz@gmail.com>
+Cc:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, krzk@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, digetx@gmail.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
+        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        lukasz.luba@arm.com, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
+        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
+        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
+        marijn.suijten@somainline.org, gustavoars@kernel.org,
+        emil.velikov@collabora.com, jonathan@marek.ca,
+        akhilpo@codeaurora.org, smasetty@codeaurora.org,
+        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, ddavenport@chromium.org,
+        jsanka@codeaurora.org, rnayak@codeaurora.org,
+        tongtiangen@huawei.com, miaoqinglang@huawei.com,
+        khsieh@codeaurora.org, abhinavk@codeaurora.org,
+        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
+        mka@chromium.org, harigovi@codeaurora.org,
+        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
+        georgi.djakov@linaro.org, akashast@codeaurora.org,
+        parashar@codeaurora.org, dianders@chromium.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 06/31] serial: qcom_geni_serial: fix potential mem leak
+ in qcom_geni_serial_probe()
+Message-ID: <20210104070236.mnnj3frjtxka7emu@vireshk-i7>
+References: <20210101165507.19486-1-tiny.windzz@gmail.com>
+ <20210101165507.19486-7-tiny.windzz@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210101165507.19486-7-tiny.windzz@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page_huge_active() can be called from scan_movable_pages() which
-do not hold a reference count to the HugeTLB page. So when we call
-page_huge_active() from scan_movable_pages(), the HugeTLB page can
-be freed parallel. Then we will trigger a BUG_ON which is in the
-page_huge_active() when CONFIG_DEBUG_VM is enabled. Just remove the
-VM_BUG_ON_PAGE.
+On 01-01-21, 16:54, Yangtao Li wrote:
+> We should use dev_pm_opp_put_clkname() to free opp table each time
+> dev_pm_opp_of_add_table() got error.
+> 
+> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+> ---
+>  drivers/tty/serial/qcom_geni_serial.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
+> index 291649f02821..5aada7ebae35 100644
+> --- a/drivers/tty/serial/qcom_geni_serial.c
+> +++ b/drivers/tty/serial/qcom_geni_serial.c
+> @@ -1438,9 +1438,12 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
+>  		return PTR_ERR(port->se.opp_table);
+>  	/* OPP table is optional */
+>  	ret = dev_pm_opp_of_add_table(&pdev->dev);
+> -	if (ret && ret != -ENODEV) {
+> -		dev_err(&pdev->dev, "invalid OPP table in device tree\n");
+> -		goto put_clkname;
+> +	if (ret) {
+> +		dev_pm_opp_put_clkname(port->se.opp_table);
+> +		if (ret != -ENODEV) {
+> +			dev_err(&pdev->dev, "invalid OPP table in device tree\n");
+> +			return ret;
+> +		}
+>  	}
+>  
+>  	port->private_data.drv = drv;
+> @@ -1482,7 +1485,6 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
+>  	return 0;
+>  err:
+>  	dev_pm_opp_of_remove_table(&pdev->dev);
+> -put_clkname:
+>  	dev_pm_opp_put_clkname(port->se.opp_table);
+>  	return ret;
+>  }
 
-Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/hugetlb.c | 1 -
- 1 file changed, 1 deletion(-)
+Since put_clkname is always done in remove(), I don't think there is
+any memleak here. Over that with your patch we will do put_clkname
+twice now, once in probe and once in remove. And that is a bug AFAICT.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 5c2f64f53177..4c8631114e88 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1360,7 +1360,6 @@ struct hstate *size_to_hstate(unsigned long size)
-  */
- bool page_huge_active(struct page *page)
- {
--	VM_BUG_ON_PAGE(!PageHuge(page), page);
- 	return PageHead(page) && PagePrivate(&page[1]);
- }
- 
 -- 
-2.11.0
-
+viresh
