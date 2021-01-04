@@ -2,126 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A152E9FBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 22:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8582E9FC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727310AbhADV6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 16:58:55 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:41566 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbhADV6y (ORCPT
+        id S1727085AbhADWBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 17:01:43 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:10396 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbhADWBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 16:58:54 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104Lt2kc096523;
-        Mon, 4 Jan 2021 21:58:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=V+CUrFr4mW/1XT7WQ/YgM8kb/PMEg0asCXwJnBfnzNo=;
- b=wwLoqCS+XRftPUX+Fveqar7Ub9ON00ewuHHSxjD//OUg8V8X7+5X76TiwDAsxnob2Bki
- L1IYSKazCgPptnExjAvgrkVP4a6q9qoViUilszR9uPuwTbsjxikmQrSm6twS9sFSf7bW
- GN3QH2UokSZ5+mIpha1rbHDl+6zqsZ9DzrZ5kfrWIGyljirlgbZELcXlVYCOlYCsoAOD
- NZNxSe6U97iS4hxQ4ezLvi6rMbUJeB/YTYOGDQKv5mulsbAV62QD3ULkAbSeYun9LWfJ
- BBg9TsptObqzLpiCEDT3bDMN+cn6wj7JGD34izgAAmT5e6Qacr62icHNMV0z3UGfNcs6 5w== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35tgskpcb0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 04 Jan 2021 21:58:07 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104LoJa7081307;
-        Mon, 4 Jan 2021 21:58:06 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 35uxnrsd2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Jan 2021 21:58:06 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 104Lw5XL018028;
-        Mon, 4 Jan 2021 21:58:05 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Jan 2021 13:58:05 -0800
-Date:   Mon, 4 Jan 2021 13:58:02 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: Fix freeze_bdev()/thaw_bdev() accounting of
- bd_fsfreeze_sb
-Message-ID: <20210104215802.GC6911@magnolia>
-References: <20201224044954.1349459-1-satyat@google.com>
+        Mon, 4 Jan 2021 17:01:42 -0500
+X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Jan 2021 17:01:41 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1609797530;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:
+        Subject:Sender;
+        bh=7m2tAgjw0olQMR4EnqbiK2mYFghGtcPIs/ldbj9WMRc=;
+        b=d9YH46k9T6BirSVAC6K/AIN3qp1OQ34JnWE/vumaQ5Pgp9eAW6RFxVn9lzXaVDCDrA
+        +24H6BAR3s+FThuihmdMQ8ej0NhlQMTfK+aWiL6H26FCFBpubSAEVRYtx10ZcwPWfX8k
+        NPmxejudRjNV4/AcPnRKihmYF3ijCXOTGaHbkuhIu8e6zbX4rWVSNfrb7cvo+Asb10qQ
+        b4hEQNwbCDXsnRkwAjHr+W1cxXNutAowz87wmlBDiTk00UVt4TmsL0bgRDwNeO/uajKL
+        Bm8nCT+RECs8uyhypJetFaetzlHgms2uu/LH7rmrD0Tv0CwTe+g6dTzYSwFEuTWdWbem
+        4QEQ==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSZFqc="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 47.10.7 DYNA|AUTH)
+        with ESMTPSA id h02bd9x04LqlxfN
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 4 Jan 2021 22:52:47 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        mathew.j.martineau@linux.intel.com, dhowells@redhat.com
+Cc:     linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org
+Subject: [PATCH 1/5] crypto: Add key derivation self-test support code
+Date:   Mon, 04 Jan 2021 22:47:06 +0100
+Message-ID: <2182726.ElGaqSPkdT@positron.chronox.de>
+In-Reply-To: <4616980.31r3eYUQgx@positron.chronox.de>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224044954.1349459-1-satyat@google.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101040131
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
- phishscore=0 impostorscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101040131
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 04:49:54AM +0000, Satya Tangirala wrote:
-> freeze/thaw_bdev() currently use bdev->bd_fsfreeze_count to infer
-> whether or not bdev->bd_fsfreeze_sb is valid (it's valid iff
-> bd_fsfreeze_count is non-zero). thaw_bdev() doesn't nullify
-> bd_fsfreeze_sb.
-> 
-> But this means a freeze_bdev() call followed by a thaw_bdev() call can
-> leave bd_fsfreeze_sb with a non-null value, while bd_fsfreeze_count is
-> zero. If freeze_bdev() is called again, and this time
-> get_active_super() returns NULL (e.g. because the FS is unmounted),
-> we'll end up with bd_fsfreeze_count > 0, but bd_fsfreeze_sb is
-> *untouched* - it stays the same (now garbage) value. A subsequent
-> thaw_bdev() will decide that the bd_fsfreeze_sb value is legitimate
-> (since bd_fsfreeze_count > 0), and attempt to use it.
-> 
-> Fix this by always setting bd_fsfreeze_sb to NULL when
-> bd_fsfreeze_count is successfully decremented to 0 in thaw_sb().
-> Alternatively, we could set bd_fsfreeze_sb to whatever
-> get_active_super() returns in freeze_bdev() whenever bd_fsfreeze_count
-> is successfully incremented to 1 from 0 (which can be achieved cleanly
-> by moving the line currently setting bd_fsfreeze_sb to immediately
-> after the "sync:" label, but it might be a little too subtle/easily
-> overlooked in future).
-> 
-> This fixes the currently panicking xfstests generic/085.
-> 
-> Fixes: 040f04bd2e82 ("fs: simplify freeze_bdev/thaw_bdev")
-> Signed-off-by: Satya Tangirala <satyat@google.com>
+As a preparation to add the key derivation implementations, the
+self-test data structure definition and the common test code is made
+available.
 
-I came up with the same solution to the same crash, so:
+The test framework follows the testing applied by the NIST CAVP test
+approach.
 
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+The structure of the test code follows the implementations found in
+crypto/testmgr.c|h. In case the KDF implementations will be made
+available via a kernel crypto API templates, the test code is intended
+to be merged into testmgr.c|h.
 
---D
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+---
+ include/crypto/internal/kdf_selftest.h | 68 ++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+ create mode 100644 include/crypto/internal/kdf_selftest.h
 
-> ---
->  fs/block_dev.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 9e56ee1f2652..12a811a9ae4b 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -606,6 +606,8 @@ int thaw_bdev(struct block_device *bdev)
->  		error = thaw_super(sb);
->  	if (error)
->  		bdev->bd_fsfreeze_count++;
-> +	else
-> +		bdev->bd_fsfreeze_sb = NULL;
->  out:
->  	mutex_unlock(&bdev->bd_fsfreeze_mutex);
->  	return error;
-> -- 
-> 2.29.2.729.g45daf8777d-goog
-> 
+diff --git a/include/crypto/internal/kdf_selftest.h b/include/crypto/internal/kdf_selftest.h
+new file mode 100644
+index 000000000000..c4f80d2cc61c
+--- /dev/null
++++ b/include/crypto/internal/kdf_selftest.h
+@@ -0,0 +1,68 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/*
++ * Copyright (C) 2020, Stephan Mueller <smueller@chronox.de>
++ */
++
++#ifndef _CRYPTO_KDF_SELFTEST_H
++#define _CRYPTO_KDF_SELFTEST_H
++
++#include <crypto/hash.h>
++#include <linux/uio.h>
++
++struct kdf_testvec {
++	struct kvec seed[2];
++	unsigned int seed_nvec;
++	struct kvec info;
++	unsigned char *expected;
++	size_t expectedlen;
++};
++
++static inline int
++kdf_test(const struct kdf_testvec *test, const char *name,
++	 int (*crypto_kdf_setkey)(struct crypto_shash *kmd,
++				  const struct kvec *seed,
++				  unsigned int seed_nvec),
++	 int (*crypto_kdf_generate)(struct crypto_shash *kmd,
++				    const struct kvec *info,
++				    unsigned int info_nvec,
++				    u8 *dst, unsigned int dlen))
++{
++	struct crypto_shash *kmd;
++	int ret;
++	u8 *buf = kzalloc(test->expectedlen, GFP_KERNEL);
++
++	if (!buf)
++		return -ENOMEM;
++
++	kmd = crypto_alloc_shash(name, 0, 0);
++	if (IS_ERR(kmd)) {
++		pr_err("alg: kdf: could not allocate cipher handle for %s\n",
++		       name);
++		kfree(buf);
++		return -ENOMEM;
++	}
++
++	ret = crypto_kdf_setkey(kmd, test->seed, test->seed_nvec);
++	if (ret) {
++		pr_err("alg: kdf: could not set key derivation key\n");
++		goto err;
++	}
++
++	ret = crypto_kdf_generate(kmd, &test->info, 1, buf, test->expectedlen);
++	if (ret) {
++		pr_err("alg: kdf: could not obtain key data\n");
++		goto err;
++	}
++
++	ret = memcmp(test->expected, buf, test->expectedlen);
++	if (ret)
++		ret = -EINVAL;
++
++err:
++	crypto_free_shash(kmd);
++	kfree(buf);
++	return ret;
++}
++
++#endif /* _CRYPTO_KDF_SELFTEST_H */
+-- 
+2.26.2
+
+
+
+
