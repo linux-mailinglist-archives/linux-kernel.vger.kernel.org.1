@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BB22E99D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5A22E9A9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728457AbhADQDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:03:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40524 "EHLO mail.kernel.org"
+        id S1729737AbhADQMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:12:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729138AbhADQD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:03:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5A4D21D93;
-        Mon,  4 Jan 2021 16:03:12 +0000 (UTC)
+        id S1728170AbhADQAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:00:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5394F20769;
+        Mon,  4 Jan 2021 15:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776193;
-        bh=IeqvedZQoajx3onpyRqj2gX75TbOTpThd76FhbG/QN4=;
+        s=korg; t=1609775921;
+        bh=Ja6Nmof6cTjnF9vNGiySTR5VyUJlmS2bqunHvGRawUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kBrRKnF2/ioxJWfpJYiVaxS3TuH7agORQLj9sMZ5hOmNSASFhXV+cdxpPBXWYw+7A
-         LYY8SMHQoAyIsgABNk3lRPVjRA2rvD3i9aAvyFv9Ar15bmvdYybAZ+Nm119Ljci0EA
-         +fugmAG9P9i8m2EvmFOuTDsqti1wOLhfCY5JRaj8=
+        b=QBZ3Y5ovU4Utb1+XKYPW6SmbdF4+4OBeOvCv2PQhfmo8w8v8aH46MFGi427CwhmM5
+         1DYPCvvvOoU4LfIwffY95k0/kRBdg3S6qnWKg7Jzc5uOiShfC9XC1xGO0azM9AYNKF
+         9DSCe0EQvJmh62gUVSl8KqRfnbwvTPUo9a8olBqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
-        syzbot+345b75652b1d24227443@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 36/63] ext4: check for invalid block size early when mounting a file system
+        stable@vger.kernel.org,
+        syzbot+a23a6f1215c84756577c@syzkaller.appspotmail.com,
+        syzbot+3d367d1df1d2b67f5c19@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 26/35] ALSA: rawmidi: Access runtime->avail always in spinlock
 Date:   Mon,  4 Jan 2021 16:57:29 +0100
-Message-Id: <20210104155710.573205321@linuxfoundation.org>
+Message-Id: <20210104155704.664830889@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
-References: <20210104155708.800470590@linuxfoundation.org>
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,89 +41,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit c9200760da8a728eb9767ca41a956764b28c1310 upstream.
+commit 88a06d6fd6b369d88cec46c62db3e2604a2f50d5 upstream.
 
-Check for valid block size directly by validating s_log_block_size; we
-were doing this in two places.  First, by calculating blocksize via
-BLOCK_SIZE << s_log_block_size, and then checking that the blocksize
-was valid.  And then secondly, by checking s_log_block_size directly.
+The runtime->avail field may be accessed concurrently while some
+places refer to it without taking the runtime->lock spinlock, as
+detected by KCSAN.  Usually this isn't a big problem, but for
+consistency and safety, we should take the spinlock at each place
+referencing this field.
 
-The first check is not reliable, and can trigger an UBSAN warning if
-s_log_block_size on a maliciously corrupted superblock is greater than
-22.  This is harmless, since the second test will correctly reject the
-maliciously fuzzed file system, but to make syzbot shut up, and
-because the two checks are duplicative in any case, delete the
-blocksize check, and move the s_log_block_size earlier in
-ext4_fill_super().
-
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Reported-by: syzbot+345b75652b1d24227443@syzkaller.appspotmail.com
+Reported-by: syzbot+a23a6f1215c84756577c@syzkaller.appspotmail.com
+Reported-by: syzbot+3d367d1df1d2b67f5c19@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20201206083527.21163-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/super.c |   40 ++++++++++++++++------------------------
- 1 file changed, 16 insertions(+), 24 deletions(-)
+ sound/core/rawmidi.c |   49 +++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 35 insertions(+), 14 deletions(-)
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4186,18 +4186,25 @@ static int ext4_fill_super(struct super_
- 	 */
- 	sbi->s_li_wait_mult = EXT4_DEF_LI_WAIT_MULT;
- 
--	blocksize = BLOCK_SIZE << le32_to_cpu(es->s_log_block_size);
--
--	if (blocksize == PAGE_SIZE)
--		set_opt(sb, DIOREAD_NOLOCK);
--
--	if (blocksize < EXT4_MIN_BLOCK_SIZE ||
--	    blocksize > EXT4_MAX_BLOCK_SIZE) {
-+	if (le32_to_cpu(es->s_log_block_size) >
-+	    (EXT4_MAX_BLOCK_LOG_SIZE - EXT4_MIN_BLOCK_LOG_SIZE)) {
- 		ext4_msg(sb, KERN_ERR,
--		       "Unsupported filesystem blocksize %d (%d log_block_size)",
--			 blocksize, le32_to_cpu(es->s_log_block_size));
-+			 "Invalid log block size: %u",
-+			 le32_to_cpu(es->s_log_block_size));
- 		goto failed_mount;
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -87,11 +87,21 @@ static inline unsigned short snd_rawmidi
  	}
-+	if (le32_to_cpu(es->s_log_cluster_size) >
-+	    (EXT4_MAX_CLUSTER_LOG_SIZE - EXT4_MIN_BLOCK_LOG_SIZE)) {
-+		ext4_msg(sb, KERN_ERR,
-+			 "Invalid log cluster size: %u",
-+			 le32_to_cpu(es->s_log_cluster_size));
-+		goto failed_mount;
-+	}
-+
-+	blocksize = EXT4_MIN_BLOCK_SIZE << le32_to_cpu(es->s_log_block_size);
-+
-+	if (blocksize == PAGE_SIZE)
-+		set_opt(sb, DIOREAD_NOLOCK);
+ }
  
- 	if (le32_to_cpu(es->s_rev_level) == EXT4_GOOD_OLD_REV) {
- 		sbi->s_inode_size = EXT4_GOOD_OLD_INODE_SIZE;
-@@ -4416,21 +4423,6 @@ static int ext4_fill_super(struct super_
- 	if (!ext4_feature_set_ok(sb, (sb_rdonly(sb))))
- 		goto failed_mount;
+-static inline int snd_rawmidi_ready(struct snd_rawmidi_substream *substream)
++static inline bool __snd_rawmidi_ready(struct snd_rawmidi_runtime *runtime)
++{
++	return runtime->avail >= runtime->avail_min;
++}
++
++static bool snd_rawmidi_ready(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_rawmidi_runtime *runtime = substream->runtime;
++	unsigned long flags;
++	bool ready;
  
--	if (le32_to_cpu(es->s_log_block_size) >
--	    (EXT4_MAX_BLOCK_LOG_SIZE - EXT4_MIN_BLOCK_LOG_SIZE)) {
--		ext4_msg(sb, KERN_ERR,
--			 "Invalid log block size: %u",
--			 le32_to_cpu(es->s_log_block_size));
--		goto failed_mount;
--	}
--	if (le32_to_cpu(es->s_log_cluster_size) >
--	    (EXT4_MAX_CLUSTER_LOG_SIZE - EXT4_MIN_BLOCK_LOG_SIZE)) {
--		ext4_msg(sb, KERN_ERR,
--			 "Invalid log cluster size: %u",
--			 le32_to_cpu(es->s_log_cluster_size));
--		goto failed_mount;
--	}
--
- 	if (le16_to_cpu(sbi->s_es->s_reserved_gdt_blocks) > (blocksize / 4)) {
- 		ext4_msg(sb, KERN_ERR,
- 			 "Number of reserved GDT blocks insanely large: %d",
+-	return runtime->avail >= runtime->avail_min;
++	spin_lock_irqsave(&runtime->lock, flags);
++	ready = __snd_rawmidi_ready(runtime);
++	spin_unlock_irqrestore(&runtime->lock, flags);
++	return ready;
+ }
+ 
+ static inline int snd_rawmidi_ready_append(struct snd_rawmidi_substream *substream,
+@@ -960,7 +970,7 @@ int snd_rawmidi_receive(struct snd_rawmi
+ 	if (result > 0) {
+ 		if (runtime->event)
+ 			schedule_work(&runtime->event_work);
+-		else if (snd_rawmidi_ready(substream))
++		else if (__snd_rawmidi_ready(runtime))
+ 			wake_up(&runtime->sleep);
+ 	}
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
+@@ -1039,7 +1049,7 @@ static ssize_t snd_rawmidi_read(struct f
+ 	result = 0;
+ 	while (count > 0) {
+ 		spin_lock_irq(&runtime->lock);
+-		while (!snd_rawmidi_ready(substream)) {
++		while (!__snd_rawmidi_ready(runtime)) {
+ 			wait_queue_entry_t wait;
+ 
+ 			if ((file->f_flags & O_NONBLOCK) != 0 || result > 0) {
+@@ -1056,9 +1066,11 @@ static ssize_t snd_rawmidi_read(struct f
+ 				return -ENODEV;
+ 			if (signal_pending(current))
+ 				return result > 0 ? result : -ERESTARTSYS;
+-			if (!runtime->avail)
+-				return result > 0 ? result : -EIO;
+ 			spin_lock_irq(&runtime->lock);
++			if (!runtime->avail) {
++				spin_unlock_irq(&runtime->lock);
++				return result > 0 ? result : -EIO;
++			}
+ 		}
+ 		spin_unlock_irq(&runtime->lock);
+ 		count1 = snd_rawmidi_kernel_read1(substream,
+@@ -1196,7 +1208,7 @@ int __snd_rawmidi_transmit_ack(struct sn
+ 	runtime->avail += count;
+ 	substream->bytes += count;
+ 	if (count > 0) {
+-		if (runtime->drain || snd_rawmidi_ready(substream))
++		if (runtime->drain || __snd_rawmidi_ready(runtime))
+ 			wake_up(&runtime->sleep);
+ 	}
+ 	return count;
+@@ -1363,9 +1375,11 @@ static ssize_t snd_rawmidi_write(struct
+ 				return -ENODEV;
+ 			if (signal_pending(current))
+ 				return result > 0 ? result : -ERESTARTSYS;
+-			if (!runtime->avail && !timeout)
+-				return result > 0 ? result : -EIO;
+ 			spin_lock_irq(&runtime->lock);
++			if (!runtime->avail && !timeout) {
++				spin_unlock_irq(&runtime->lock);
++				return result > 0 ? result : -EIO;
++			}
+ 		}
+ 		spin_unlock_irq(&runtime->lock);
+ 		count1 = snd_rawmidi_kernel_write1(substream, buf, NULL, count);
+@@ -1445,6 +1459,7 @@ static void snd_rawmidi_proc_info_read(s
+ 	struct snd_rawmidi *rmidi;
+ 	struct snd_rawmidi_substream *substream;
+ 	struct snd_rawmidi_runtime *runtime;
++	unsigned long buffer_size, avail, xruns;
+ 
+ 	rmidi = entry->private_data;
+ 	snd_iprintf(buffer, "%s\n\n", rmidi->name);
+@@ -1463,13 +1478,16 @@ static void snd_rawmidi_proc_info_read(s
+ 				    "  Owner PID    : %d\n",
+ 				    pid_vnr(substream->pid));
+ 				runtime = substream->runtime;
++				spin_lock_irq(&runtime->lock);
++				buffer_size = runtime->buffer_size;
++				avail = runtime->avail;
++				spin_unlock_irq(&runtime->lock);
+ 				snd_iprintf(buffer,
+ 				    "  Mode         : %s\n"
+ 				    "  Buffer size  : %lu\n"
+ 				    "  Avail        : %lu\n",
+ 				    runtime->oss ? "OSS compatible" : "native",
+-				    (unsigned long) runtime->buffer_size,
+-				    (unsigned long) runtime->avail);
++				    buffer_size, avail);
+ 			}
+ 		}
+ 	}
+@@ -1487,13 +1505,16 @@ static void snd_rawmidi_proc_info_read(s
+ 					    "  Owner PID    : %d\n",
+ 					    pid_vnr(substream->pid));
+ 				runtime = substream->runtime;
++				spin_lock_irq(&runtime->lock);
++				buffer_size = runtime->buffer_size;
++				avail = runtime->avail;
++				xruns = runtime->xruns;
++				spin_unlock_irq(&runtime->lock);
+ 				snd_iprintf(buffer,
+ 					    "  Buffer size  : %lu\n"
+ 					    "  Avail        : %lu\n"
+ 					    "  Overruns     : %lu\n",
+-					    (unsigned long) runtime->buffer_size,
+-					    (unsigned long) runtime->avail,
+-					    (unsigned long) runtime->xruns);
++					    buffer_size, avail, xruns);
+ 			}
+ 		}
+ 	}
 
 
