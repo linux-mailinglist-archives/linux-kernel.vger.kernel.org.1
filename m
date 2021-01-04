@@ -2,128 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C3F2EA126
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A692EA11F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727693AbhADXw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
+        id S1727673AbhADXuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:50:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbhADXwZ (ORCPT
+        with ESMTP id S1727191AbhADXuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:52:25 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E22C061793;
-        Mon,  4 Jan 2021 15:51:43 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id p12so13902773qvj.13;
-        Mon, 04 Jan 2021 15:51:43 -0800 (PST)
+        Mon, 4 Jan 2021 18:50:39 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B46C06179E;
+        Mon,  4 Jan 2021 15:49:45 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id c7so29212593edv.6;
+        Mon, 04 Jan 2021 15:49:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2E48a8501cvft0YkWjvJEBQif0+UmPCQbs5NE+bNygg=;
-        b=tXg34Bi0XOseVJr5UoJacS8ykQjH116YS2PcHbFf7A4BNICd57eoM9GkkMapVESLEM
-         0qyYb5kNnMdStYO1SumzKK9/kO7TfDnTgvLZkFLqCZ8GAAQYPTinJdAFvSXIvuO9tQ+c
-         fr+xBOLaSwuDD6MTs3thEIEP7yz/7sWFtyWDg6mYOrL5y0ICYC/jZIYwuO9vxA1MHOTG
-         LZvdoqgmGBu4SzNdlYvUu00yDNcEV85RQK1TZEO9t/jjoJuj0RN/10GKzCtzZDXq5UsV
-         KspcFYbezhp5H0e1I3PCjWcFD1KYB6RkWU1S6TgRkUVIgbv4kH84H+Awx0uVy7clx8RU
-         btOQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S8xDAiTMr1Y9Zjyz3Do+aLLflQJZ8HhbQKE//whXZB0=;
+        b=HdWcnf+rJPbz3CvbGkL8VSUBRqgAMeAJb1abAIDg6tZrGLnmp+3MB9uvt5AkvIcvQa
+         5NwIdPWul8TFJUKjVqTSBw+gCJN61TUJVnYbeDfl07Dz3Zdq1hBwjfzQjK/Th+TUAIcd
+         h2PaS9HEDS6wXfmLi2EDe6wfFThg6bSz31ij6t3YZzkkrqa7i0aqyf3RiCmY+Up2pYms
+         ZlYA3MmA4CKA51xhKudSTvH+hmd2AkUGFG+o1moudtxNXm4bzw/fB9nFay+SMbH0UTPR
+         amGIUDT/XUZ4warVRiNOn073AXAfmsHgqQ6iMmgBbwGxlb5nGa7VFxxtT+pgzDRtvnyp
+         Qkzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2E48a8501cvft0YkWjvJEBQif0+UmPCQbs5NE+bNygg=;
-        b=t9u3MexjSRGuKK8L99mlllQkun/bgpo9Sdou31IiIEC2equRjjcoSAUiwmwar0ggrZ
-         Rzg2e8lfIl3Nt+2U8Ls9ywSs15F0UfrfIol+x36mX3x01k3lkPTat+BPYd2LAq1l+GJr
-         TE6h81fmzOBxgGyaUYrqfgpuFDW3Pkswv3vDLmRRy5+N0cCoWja/5uIrNU6jAG1TuMwI
-         W7o6zD2+6WoWzWvOGD7LMMlbCLbOwLmxz5UjsGcmsqkC8oRQzgBMm0UlDePRwYs070K1
-         tx1bQ9E04ciKv9d5hgLhKhVCdCqTYI6F4IixYEgdpOtPwI2P+Y1UlRCFG1OLqkPYsd9E
-         cpCA==
-X-Gm-Message-State: AOAM533F2VVwqX+H6Xey5Gm9QjZOD9M4t71SShJU57Cie0Wsmwl3Qcc2
-        KZ+F/dV2MxGJFwvog0z9IxiAfh4NGig=
-X-Google-Smtp-Source: ABdhPJya+ZmAK68T/hIsH/3E7ve05TqDM/FCR3w6bx5agpPHLJHEg/P1bFvdRXc0DgqkFSXXIQ/bhg==
-X-Received: by 2002:ad4:4a70:: with SMTP id cn16mr77948768qvb.38.1609794013571;
-        Mon, 04 Jan 2021 13:00:13 -0800 (PST)
-Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id v145sm15509352qka.27.2021.01.04.13.00.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 13:00:12 -0800 (PST)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] powerpc: Handle .text.{hot,unlikely}.* in linker script
-Date:   Mon,  4 Jan 2021 13:59:53 -0700
-Message-Id: <20210104205952.1399409-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104204850.990966-1-natechancellor@gmail.com>
-References: <20210104204850.990966-1-natechancellor@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S8xDAiTMr1Y9Zjyz3Do+aLLflQJZ8HhbQKE//whXZB0=;
+        b=jIqfSjRK4KYkrAxcNPp1URW2UJ6b5PkbErnNNZoDRpmGgVchX57yypCc6dwAhgp0/N
+         L/yl4McihCEAphBhXPSnjy5h52GMtq8TEys66j6u7ojzeovVbFT0gtlQpHeGb+5pc85X
+         3UZmG7jkkvEO9rObC2clt4GXP5ju2u5sHwCTBc8QthiY5Kjr5Jdc0385fkIVQevg4kO3
+         EurkknPO49VCMIu4ebqihkaPP4H2C4PmEA89naR3YiIPc3sejkXpfMr2uobv7xk7mE21
+         ocb5diw+npy/AFu46a8Wt8esK2ZZ85TvUYrKpA/j+9aEaQlRa4lw0Y7Dehv8R0ZuyfqA
+         GivA==
+X-Gm-Message-State: AOAM531Fy2LzPW40HEE4kayQwtUn7M/hcZBiBRmQQecW6tLRiUurKvTG
+        xx6eVnYUFvqZbsePUuAyfsIDrKgLtibPEUUejntMoHK6
+X-Google-Smtp-Source: ABdhPJwNhzlDy62/8o57lYELVNQBOraP7Lpc1yowiWpZPGHgBSMoO4UviAtG/CoG3BiW1HjrFyl8N0ZYt1UnYS/9BXY=
+X-Received: by 2002:aa7:dd05:: with SMTP id i5mr72623237edv.223.1609794254808;
+ Mon, 04 Jan 2021 13:04:14 -0800 (PST)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <CGME20210104085750epcas2p1a5b22559d87df61ef3c8215ae0b470b5@epcas2p1.samsung.com>
+ <1609750005-115609-1-git-send-email-dseok.yi@samsung.com>
+In-Reply-To: <1609750005-115609-1-git-send-email-dseok.yi@samsung.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 4 Jan 2021 16:03:39 -0500
+Message-ID: <CAF=yD-+bDdYg7X+WpP14w3fbv+JewySpdCbjdwWXB-syCwQ9uQ@mail.gmail.com>
+Subject: Re: [PATCH net] net: fix use-after-free when UDP GRO with shared fraglist
+To:     Dongseok Yi <dseok.yi@samsung.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, namkyu78.kim@samsung.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input
-sections") added ".text.unlikely.*" and ".text.hot.*" due to an LLVM
-change [1].
+On Mon, Jan 4, 2021 at 4:00 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
+>
+> skbs in frag_list could be shared by pskb_expand_head() from BPF.
 
-After another LLVM change [2], these sections are seen in some PowerPC
-builds, where there is a orphan section warning then build failure:
+Can you elaborate on the BPF connection?
 
-$ make -skj"$(nproc)" \
-       ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- LLVM=1 O=out \
-       distclean powernv_defconfig zImage.epapr
-ld.lld: warning: kernel/built-in.a(panic.o):(.text.unlikely.) is being placed in '.text.unlikely.'
-...
-ld.lld: warning: address (0xc000000000009314) of section .text is not a multiple of alignment (256)
-...
-ERROR: start_text address is c000000000009400, should be c000000000008000
-ERROR: try to enable LD_HEAD_STUB_CATCH config option
-ERROR: see comments in arch/powerpc/tools/head_check.sh
-...
+> While tcpdump, sk_receive_queue of PF_PACKET has the original frag_list.
+> But the same frag_list is queued to PF_INET (or PF_INET6) as the fraglist
+> chain made by skb_segment_list().
+>
+> If the new skb (not frag_list) is queued to one of the sk_receive_queue,
+> multiple ptypes can see this. The skb could be released by ptypes and
+> it causes use-after-free.
 
-Explicitly handle these sections like in the main linker script so
-there is no more build failure.
+If I understand correctly, a udp-gro-list skb makes it up the receive
+path with one or more active packet sockets.
 
-[1]: https://reviews.llvm.org/D79600
-[2]: https://reviews.llvm.org/D92493
+The packet socket will call skb_clone after accepting the filter. This
+replaces the head_skb, but shares the skb_shinfo and thus frag_list.
 
-Cc: stable@vger.kernel.org
-Fixes: 83a092cf95f2 ("powerpc: Link warning for orphan sections")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1218
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
+udp_rcv_segment later converts the udp-gro-list skb to a list of
+regular packets to pass these one-by-one to udp_queue_rcv_one_skb.
+Now all the frags are fully fledged packets, with headers pushed
+before the payload. This does not change their refcount anymore than
+the skb_clone in pf_packet did. This should be 1.
 
-v1 -> v2:
+Eventually udp_recvmsg will call skb_consume_udp on each packet.
 
-* Add missing [1] and [2] references in commit message. Thanks to Sedat
-  Dilek for pointing it out!
+The packet socket eventually also frees its cloned head_skb, which triggers
 
- arch/powerpc/kernel/vmlinux.lds.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  kfree_skb_list(shinfo->frag_list)
+    kfree_skb
+      skb_unref
+        refcount_dec_and_test(&skb->users)
 
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index 0318ba436f34..8e0b1298bf19 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -85,7 +85,7 @@ SECTIONS
- 		ALIGN_FUNCTION();
- #endif
- 		/* careful! __ftr_alt_* sections need to be close to .text */
--		*(.text.hot TEXT_MAIN .text.fixup .text.unlikely .fixup __ftr_alt_* .ref.text);
-+		*(.text.hot .text.hot.* TEXT_MAIN .text.fixup .text.unlikely .text.unlikely.* .fixup __ftr_alt_* .ref.text);
- #ifdef CONFIG_PPC64
- 		*(.tramp.ftrace.text);
- #endif
+>
+> [ 4443.426215] ------------[ cut here ]------------
+> [ 4443.426222] refcount_t: underflow; use-after-free.
+> [ 4443.426291] WARNING: CPU: 7 PID: 28161 at lib/refcount.c:190
+> refcount_dec_and_test_checked+0xa4/0xc8
+> [ 4443.426726] pstate: 60400005 (nZCv daif +PAN -UAO)
+> [ 4443.426732] pc : refcount_dec_and_test_checked+0xa4/0xc8
+> [ 4443.426737] lr : refcount_dec_and_test_checked+0xa0/0xc8
+> [ 4443.426808] Call trace:
+> [ 4443.426813]  refcount_dec_and_test_checked+0xa4/0xc8
+> [ 4443.426823]  skb_release_data+0x144/0x264
+> [ 4443.426828]  kfree_skb+0x58/0xc4
+> [ 4443.426832]  skb_queue_purge+0x64/0x9c
+> [ 4443.426844]  packet_set_ring+0x5f0/0x820
+> [ 4443.426849]  packet_setsockopt+0x5a4/0xcd0
+> [ 4443.426853]  __sys_setsockopt+0x188/0x278
+> [ 4443.426858]  __arm64_sys_setsockopt+0x28/0x38
+> [ 4443.426869]  el0_svc_common+0xf0/0x1d0
+> [ 4443.426873]  el0_svc_handler+0x74/0x98
+> [ 4443.426880]  el0_svc+0x8/0xc
+>
+> Fixes: 3a1296a38d0c (net: Support GRO/GSO fraglist chaining.)
+> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> ---
+>  net/core/skbuff.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index f62cae3..1dcbda8 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -3655,7 +3655,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>         unsigned int delta_truesize = 0;
+>         unsigned int delta_len = 0;
+>         struct sk_buff *tail = NULL;
+> -       struct sk_buff *nskb;
+> +       struct sk_buff *nskb, *tmp;
+> +       int err;
+>
+>         skb_push(skb, -skb_network_offset(skb) + offset);
+>
+> @@ -3665,11 +3666,28 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>                 nskb = list_skb;
+>                 list_skb = list_skb->next;
+>
+> +               err = 0;
+> +               if (skb_shared(nskb)) {
 
-base-commit: d8a4f20584d5906093a8fc6aa06622102a501095
--- 
-2.30.0
+I must be missing something still. This does not square with my
+understanding that the two sockets are operating on clones, with each
+frag_list skb having skb->users == 1.
 
+Unless the packet socket patch previously also triggered an
+skb_unclone/pskb_expand_head, as that call skb_clone_fraglist, which
+calls skb_get on each frag_list skb.
+
+
+> +                       tmp = skb_clone(nskb, GFP_ATOMIC);
+> +                       if (tmp) {
+> +                               kfree_skb(nskb);
+> +                               nskb = tmp;
+> +                               err = skb_unclone(nskb, GFP_ATOMIC);
+> +                       } else {
+> +                               err = -ENOMEM;
+> +                       }
+> +               }
+> +
+>                 if (!tail)
+>                         skb->next = nskb;
+>                 else
+>                         tail->next = nskb;
+>
+> +               if (unlikely(err)) {
+> +                       nskb->next = list_skb;
+> +                       goto err_linearize;
+> +               }
+> +
+>                 tail = nskb;
+>
+>                 delta_len += nskb->len;
+> --
+> 2.7.4
+>
