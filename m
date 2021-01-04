@@ -2,117 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F092E9E36
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD60C2E9E35
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 20:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727728AbhADTcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 14:32:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726606AbhADTcg (ORCPT
+        id S1726600AbhADTcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 14:32:25 -0500
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:62230 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726246AbhADTcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 14:32:36 -0500
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9243C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 11:31:55 -0800 (PST)
-Received: from localhost.localdomain (abaf53.neoplus.adsl.tpnet.pl [83.6.169.53])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 1BCEA20014;
-        Mon,  4 Jan 2021 20:31:48 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dave Airlie <airlied@redhat.com>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm: Only enable A6xx LLCC code on A6xx
-Date:   Mon,  4 Jan 2021 20:30:41 +0100
-Message-Id: <20210104193044.80591-1-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.29.2
+        Mon, 4 Jan 2021 14:32:25 -0500
+Received: from pps.filterd (m0170396.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 104JSLhl017131;
+        Mon, 4 Jan 2021 14:31:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=pfd8/OBRjw4PZlEhzN0C+iwSn2NknCR79mcf2Kw8QTE=;
+ b=RxdxUrdmUyLQ7UnWNypUPJtutkjyhPsq8s8oG+tY04OKogMRFx0N+EI8cJlYozroh4qG
+ gaW0k1RLsUAPlRei+LnPo/e89VN09rR9P+30VhTe+8lEPThrbgFixKxh/i+VAgoXvLs5
+ 21d/q78KeC7gUiXBTCOX01bU/F7uNXO64f4w1RNj9S0QX7wVjtQGybGMjcs6xOSlNsqn
+ cfbVFJpNXdLFMOZJgB+GwG3Q7TMTCSIrRXXKsKeaDIm6IVPUgfbBKrMAwoiYALUWi9Gg
+ E9b43z2/PFjDysezsH7+X8KFPBnGktImlK1Q3E43VIMJYr4ee2CwhF0sf3EAX7XiMl38 7A== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0b-00154904.pphosted.com with ESMTP id 35tnj3x3ju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Jan 2021 14:31:21 -0500
+Received: from pps.filterd (m0142693.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 104JV2xF075191;
+        Mon, 4 Jan 2021 14:31:20 -0500
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+        by mx0a-00154901.pphosted.com with ESMTP id 35v8r60buk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Jan 2021 14:31:20 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HuEH83DJEE8tMW+0Uc0/M2zrSO/x47m84DtdJoP7dGFhBpRQ3EsZkjXwOxr6hWQonZ1QsvtmwT5ixqfW+10ojuYCl46WPLIFX881hWExMetA3eL8h7aZHQ3qpktI6KBJQ/YOv2Sl3RfWKyMI65qSbvp+qozJS0dwtbT4d3BAVT+ogIiObAFoChSGoa4a/6uOhXo/BYkU9wr+YT2e7hqy4sZ8+58/7Xk+Itf673W+4wmtPrtqCLRv4YM/9OuPjd1izMm5/kCSJ1mwxLPfVyE7SM3DQ2rA4VekqlXw2OdQSTUQkHn70onvbI0zmA6rhzVuYGWo7aInjablS9gfDtNhOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pfd8/OBRjw4PZlEhzN0C+iwSn2NknCR79mcf2Kw8QTE=;
+ b=l/aNVrC3YKC4brmcPp3u0x9o0M41wpKIWmsAO1d34Gg7ow1FUVsrM/XV9vFh193vwh/NeFH+h9vJqDZx2qORS2WLgdtbpIf7Zx/RbiLxBeYpCE0gxavnp669rHT1h3nC8nu3ArKPR6CeMoyEVCebKLFgzFZbcAT3knlpZ0n0XUt+1epnqojz9eM94Q2UOXweS1PAXwAw9Ge6VcLZCep8Wwv8HHVeNIw0KvnT3BZJghTZUFqMbIUGCVC5fyx2bxNyD+E7PzzT+8BO4F9XtXKZ/+5p6KM8ltNkqDZJOZNdOLMi5XfLEDo4c28yVmOgSQOG31ouF/zIiPsJ9U5ts7StLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
+ dkim=pass header.d=dell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
+ s=selector1-Dell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pfd8/OBRjw4PZlEhzN0C+iwSn2NknCR79mcf2Kw8QTE=;
+ b=qEJM2TpNtXVQp1S6Ki/cd48UhhLdQMhBbohDSSZOBK2OBzZdqpQLN4YhEHRCGUhbTGP0zozASlVgciqQrsxj1rddG28+lRfX0dp+ANQtdHW+2MRpUK0yrJ68OS/QCHvhkZ59kUySXYAUmlAVekGilSYFX9mw7bPC94ByqQ2tG7U=
+Received: from SA1PR19MB4926.namprd19.prod.outlook.com (2603:10b6:806:1a6::18)
+ by SA1PR19MB5183.namprd19.prod.outlook.com (2603:10b6:806:1a2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.22; Mon, 4 Jan
+ 2021 19:31:19 +0000
+Received: from SA1PR19MB4926.namprd19.prod.outlook.com
+ ([fe80::e14a:eb33:4847:6cba]) by SA1PR19MB4926.namprd19.prod.outlook.com
+ ([fe80::e14a:eb33:4847:6cba%3]) with mapi id 15.20.3721.024; Mon, 4 Jan 2021
+ 19:31:19 +0000
+From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
+To:     "Yuan, Perry" <Perry.Yuan@dell.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control support
+Thread-Topic: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control support
+Thread-Index: AQHW3R7JM+4Y3CMF4UaqpPGWNyPaH6oOBVuAgAkzNoCAAK0ucA==
+Date:   Mon, 4 Jan 2021 19:31:19 +0000
+Message-ID: <SA1PR19MB4926A0A6E5ACE68DAC8346EDFAD20@SA1PR19MB4926.namprd19.prod.outlook.com>
+References: <20201228133831.17464-1-Perry_Yuan@Dell.com>
+ <20201229124033.GC4786@sirena.org.uk>
+ <SJ0PR19MB4528A021F3C0528ABE5F324984D20@SJ0PR19MB4528.namprd19.prod.outlook.com>
+In-Reply-To: <SJ0PR19MB4528A021F3C0528ABE5F324984D20@SJ0PR19MB4528.namprd19.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2021-01-04T19:31:19.7293257Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=a5ead022-90a4-4dd1-92d8-5ed693366d6e;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+authentication-results: Dell.com; dkim=none (message not signed)
+ header.d=none;Dell.com; dmarc=none action=none header.from=Dell.com;
+x-originating-ip: [76.251.167.31]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1f9ca77d-8bd4-47dd-bc1d-08d8b0e74f98
+x-ms-traffictypediagnostic: SA1PR19MB5183:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA1PR19MB51837E26756881914E9695BBFAD20@SA1PR19MB5183.namprd19.prod.outlook.com>
+x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xG+c13AZgmUQ8OtvULsCFd3yN8jH72Blj7LKC44dtcjw74+1IqUvQhHbOQycP9IltOFEs/SrWSCEUqZg/v7m8OyH0y4jQXX9iC51cyL8BRXeepLueBuWMRfNnwxgkCR9BC5FJgm12PhTxNOSHCYD16V0T5WqKMwtoyBiNkcCKNTnLrzshML8OgSraWIZL0BU/lLdhm0VgaBKNXJED8fBOlNRGdSUKaEciN+agpAKy6xGWRUARAHJ+a57a1gqLWINppQWdkHovYcBSLxPhvKEzSkpGYGKww4TzDOLOMxMDtrukcnwFIuzMK+1YPJfLTzkmP4PFl855QBJX2uIZdYEPoaSKzTw3hW9aCXDBGu9OAyTAfJ8lsf7ObxUzQhQl0kl/C2N705oV/UquUjtv4zJTQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR19MB4926.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(346002)(396003)(136003)(376002)(316002)(8936002)(26005)(110136005)(54906003)(66946007)(786003)(4326008)(9686003)(55016002)(186003)(86362001)(7696005)(5660300002)(478600001)(83380400001)(6506007)(33656002)(66476007)(53546011)(76116006)(66446008)(66556008)(64756008)(2906002)(8676002)(71200400001)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?aOFFPnaJKA2fVop3t5j+Dy+0MAf5JHBjSbKN6WPPT7PP5toZeDAPo3xBgMxm?=
+ =?us-ascii?Q?98yw2miGg+NdbBznAIz7Fe+xqnjIKvGjIPSeJyBEJWB5oH0CA+m7jAlp+zpI?=
+ =?us-ascii?Q?D8YRRuY1lDkLmoDvtrdyLxMHVilzsLRw9ur+6meNvRay+mm/GQF/voc4wzMZ?=
+ =?us-ascii?Q?0eI+TQG1x9JTbn/dpjr5pQ7aHbOsKdWkReNqPPNWWLSnWx5OiQzWIXNDM8ke?=
+ =?us-ascii?Q?O8NGaPkIhisqDaxLdTR+85Yap4dF/t2UANhqQIlqZKHHNRJibey4e2wpZMjQ?=
+ =?us-ascii?Q?WkgaiomiVyKL6K5BGJxgmIp088RlOdJ2eI2WZJcYsvbL1BALRHEADBduL7Ax?=
+ =?us-ascii?Q?DGhJFn+W/Wn6r/u4sttANOOnEAVmQcQYnbwNGeSfY32QLKZFKxzpxnIkUObb?=
+ =?us-ascii?Q?vjaA7SejReGZpv/rMjq5RseUrNSNFE34sEBT/KtVL8UF8/cdo+gwQmkq/uDz?=
+ =?us-ascii?Q?5F4oqzpKIRsVyGfVLx7VPVl8ub1YGTiIg1NcUgoYUJXYdd0/rEpfaJ1m9BxY?=
+ =?us-ascii?Q?VWh739+RFhIF7Siapd7uCC+6yh7V2cC5zf7KIH2qiLafbcgKQK+akmCH4pZX?=
+ =?us-ascii?Q?NlMD7WpInOMv0tt4tKFcA1AXYFy6d/RFvbxZgqHdqxt4NgWeKZP2iR49w5pJ?=
+ =?us-ascii?Q?J+VcRpuzwJrxXeTGG9ODh0fKIUYeDeE9Any1M4j/mz2Yq69E/CAdMvIUHKjk?=
+ =?us-ascii?Q?9mBOgtL1srllofBnuuDjWAIZC17qgsy4hfqMBmtfi94Fm7lbXR8hHm3RWfp/?=
+ =?us-ascii?Q?ZsW0IRVZ3RnoHGpPi9cybhEnFh64OH3/UHnDPTr8jeK5+9OlBM/MwDIPd06Q?=
+ =?us-ascii?Q?5AsMCVed76/BPChJrh/a/K2o+HgZLvnTzROkD3njeJYNvQY/ypfHdi9NYFjT?=
+ =?us-ascii?Q?hG94nx+f9G17hbL7ju7SuEXYtliUSkvrDB48t5j6znWP4XKlhcb1fJ8qrDZw?=
+ =?us-ascii?Q?D4eFj2T9lDyMX3tcbmnP+760fNVFotPx6yEjM2QyjbI=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Dell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR19MB4926.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f9ca77d-8bd4-47dd-bc1d-08d8b0e74f98
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2021 19:31:19.1004
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EkwGkTFNnGk/aUljGYT/I1UIlf0Nm2eR0ehbQMKAV1x9csi+4UR+KliBXDZmjzNjOyan0ClXQKsnlj5ioTRehbYRMUV9EwgGMdztztv4PNo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR19MB5183
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-04_12:2021-01-04,2021-01-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 malwarescore=0 phishscore=0 mlxlogscore=812 bulkscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0 clxscore=1011
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101040123
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=924 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using this code on A5xx (and probably older too) causes a
-smmu bug.
+> -----Original Message-----
+> From: Yuan, Perry <Perry_Yuan@Dell.com>
+> Sent: Monday, January 4, 2021 3:10
+> To: Mark Brown
+> Cc: oder_chiou@realtek.com; perex@perex.cz; tiwai@suse.com;
+> lgirdwood@gmail.com; alsa-devel@alsa-project.org; linux-
+> kernel@vger.kernel.org; Limonciello, Mario
+> Subject: RE: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control support
+>=20
+> > -----Original Message-----
+> > From: Mark Brown <broonie@kernel.org>
+> > Sent: Tuesday, December 29, 2020 8:41 PM
+> > To: Yuan, Perry
+> > Cc: oder_chiou@realtek.com; perex@perex.cz; tiwai@suse.com;
+> > lgirdwood@gmail.com; alsa-devel@alsa-project.org; linux-
+> > kernel@vger.kernel.org; Limonciello, Mario
+> > Subject: Re: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control suppor=
+t
+> >
+> > On Mon, Dec 28, 2020 at 09:38:31PM +0800, Perry Yuan wrote:
+> > > From: Perry Yuan <perry_yuan@dell.com>
+> > >
+> > > Some new Dell system is going to support audio internal micphone
+> > > privacy setting from hardware level with micmute led state changing
+> >
+> > I'm missing patch 1 of this series - what's the story with dependencies=
+ and
+> so
+> > on?
+>=20
+> HI Mark:
+> Sorry to make this confused.
+> The two patches are not in the same module, I use different cc list for e=
+ach
+> patch.
+> I will send another v3 looping all the cc list and some new improvement.
+>=20
 
-Fixes: 474dadb8b0d5 ("drm/msm/a6xx: Add support for using system cache(LLC)")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- drivers/gpu/drm/msm/adreno/adreno_gpu.c | 21 ++++++++++++---------
- drivers/gpu/drm/msm/adreno/adreno_gpu.h |  5 +++++
- 2 files changed, 17 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index 6cf9975e951e..f09175698827 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -191,8 +191,6 @@ adreno_iommu_create_address_space(struct msm_gpu *gpu,
- 		struct platform_device *pdev)
- {
- 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
--	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
--	struct io_pgtable_domain_attr pgtbl_cfg;
- 	struct iommu_domain *iommu;
- 	struct msm_mmu *mmu;
- 	struct msm_gem_address_space *aspace;
-@@ -202,13 +200,18 @@ adreno_iommu_create_address_space(struct msm_gpu *gpu,
- 	if (!iommu)
- 		return NULL;
- 
--	/*
--	 * This allows GPU to set the bus attributes required to use system
--	 * cache on behalf of the iommu page table walker.
--	 */
--	if (!IS_ERR(a6xx_gpu->htw_llc_slice)) {
--		pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
--		iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG, &pgtbl_cfg);
-+
-+	if (adreno_is_a6xx(adreno_gpu)) {
-+		struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-+		struct io_pgtable_domain_attr pgtbl_cfg;
-+		/*
-+		* This allows GPU to set the bus attributes required to use system
-+		* cache on behalf of the iommu page table walker.
-+		*/
-+		if (!IS_ERR(a6xx_gpu->htw_llc_slice)) {
-+			pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
-+			iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG, &pgtbl_cfg);
-+		}
- 	}
- 
- 	mmu = msm_iommu_new(&pdev->dev, iommu);
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-index 4574d85c5680..08421fa54a50 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-@@ -226,6 +226,11 @@ static inline int adreno_is_a540(struct adreno_gpu *gpu)
- 	return gpu->revn == 540;
- }
- 
-+static inline bool adreno_is_a6xx(struct adreno_gpu *gpu)
-+{
-+	return ((gpu->revn < 700 && gpu->revn > 599));
-+}
-+
- static inline int adreno_is_a618(struct adreno_gpu *gpu)
- {
-        return gpu->revn == 618;
--- 
-2.29.2
-
+Since the patches span subsystems and have a dependency, once reviewers are=
+ happy I
+think we'll have to get an agreement of which subsystem to bring them throu=
+gh.  So
+yes, please keep all CC list the same for both patches for now when you sub=
+mit v3.
