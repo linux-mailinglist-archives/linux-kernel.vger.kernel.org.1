@@ -2,287 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A2F2E9D27
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C54042E9D30
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727520AbhADSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:36:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbhADSgp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:36:45 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE29C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 10:36:04 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id e25so197837wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 10:36:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:references:from:subject:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=VcMfSSwNdSOxEd5dJy/2gbjQYKroue8Hj5qE0mEd/LI=;
-        b=nLkvHP1hgzQdgENVXqsGNMFNdD1I9EHbRnziEi54DWLtNOZvie2eR4CU2sqag2LMwU
-         YZgqOU3yQcSVVjAnjvBDuhRljq7ay80IJ6Rvf7/I1o4JAlpJowNI7kwqEJaSdbDEhgR8
-         u9KFTfic/fAWKYzkLB26ypwxiq8MXhtY5UDeYlzSgts3Lw1/yJNkvuBJCstjrsWhSq1d
-         nmn3MJiw/sJZfCZYeE112MpcSVhWKlaHuAwmx+GYPdir6b5ks19ciFX9tBRdnE3xSoGc
-         GQlO6VBa1iFXwQu3Xa0eIz1yuLaIjyL7koGs8XUdZRUlrVQoeY/dcuEMZTqi//u2epx6
-         b3kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VcMfSSwNdSOxEd5dJy/2gbjQYKroue8Hj5qE0mEd/LI=;
-        b=WzQ9DGfJtUEWI1pdrn/u9vPDQVxVEi5IFa+5T4Sr33QWAEp15iw6cSnoDd8yFzi7cy
-         DhVJ4/ahpFNDyru2UwOZEjT+kCcBcMGFAxQjYozTCtm8Y/Ws8lQ3q5Rd7oLmr4zyFQoG
-         o69L9erS/4atizv563/C9UZ4QaAfIymGzAoaRtq+nZUhFX0s0+Fa8Chg67FmR+X/nC+G
-         yM6R2fsqjcd318Orz+XZJxZn4Fpxm6p4z8uFURop85n9MP7kLCEAw0CdSnn7vXJT3Wht
-         zkXQpiV48E+CstZ0xBGzbcRNm0gKFtH1bNTyADouniJ+WZ2YuJ5KUfy2G2wIeEqGUvLw
-         v4Jw==
-X-Gm-Message-State: AOAM530/G3moAZaYEXQSnheerknw+ctvwV3y2HnzIEKN7cMiQPaDlogT
-        t9YIGd4/HgieUZ2Q5Xkx5XAy6w==
-X-Google-Smtp-Source: ABdhPJzELvss8TLuNgoP16gx9BnAupDOxbh0Wn4nAypeRpHgDOw6kAZ1sZnbdXYevsvWrmsQ3sVmJg==
-X-Received: by 2002:a1c:9acb:: with SMTP id c194mr178273wme.43.1609785363181;
-        Mon, 04 Jan 2021 10:36:03 -0800 (PST)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id h184sm298255wmh.23.2021.01.04.10.36.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 10:36:02 -0800 (PST)
-To:     Henry Chen <henryc.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ryan Case <ryandcase@chromium.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Arvin Wang <arvin.wang@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <1608790134-27425-1-git-send-email-henryc.chen@mediatek.com>
- <1608790134-27425-9-git-send-email-henryc.chen@mediatek.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Subject: Re: [PATCH V6 08/13] interconnect: mediatek: Add interconnect
- provider driver
-Message-ID: <c8b951b0-6412-d905-99e1-6350283b57c1@linaro.org>
-Date:   Mon, 4 Jan 2021 20:36:04 +0200
+        id S1727943AbhADSiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 13:38:06 -0500
+Received: from vern.gendns.com ([98.142.107.122]:39606 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726163AbhADSiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 13:38:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=5BYF65U7qjLGCDhDXQ6WVMeSp4lcIaka2HzC0I24YYE=; b=ucSIWy1FxPCpTVUnyKMXLe6VIc
+        /BnMeex4D2LqzEpQP3I6uQDt0t2sZqvJpbRZVuxVW47bAi5gdbP75PNLzMBSn1Ny2+A+29xdDjDHg
+        bDTsuZIVuMBxu5eFJcQEYKA1TkeJesan4k2G/TQh+yXAeWL5UAnsXW3EZeWspQuJC5k1blCeQ3NCj
+        zIpDdYWWfMyI2Q6iUGcS2TMYDGwS/9hlfep8sZruFxn8kw05NGXG5+hhdv6WKRE2iEKRGgvh7n1BE
+        WByC5+XmVDxLpLbdV6RgkJ1RohqVPFTjOyMUJXeIx4UzAC7JPJAbZBNEAjXHNZjyIRRF+1WIVPu6c
+        QZRb31Kw==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:51220 helo=freyr.lechnology.com)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kwUjK-0004S9-28; Mon, 04 Jan 2021 13:37:22 -0500
+From:   David Lechner <david@lechnology.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Lechner <david@lechnology.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Suman Anna <s-anna@ti.com>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] irqchip/irq-pruss-intc: implement set_type() callback
+Date:   Mon,  4 Jan 2021 12:36:56 -0600
+Message-Id: <20210104183656.333256-1-david@lechnology.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1608790134-27425-9-git-send-email-henryc.chen@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/24/20 08:08, Henry Chen wrote:
-> Introduce Mediatek MT6873/MT8183/MT8192 specific provider driver
-> using the interconnect framework.
-> 
->               ICC provider         ICC Nodes
->                                ----          ----
->               ---------       |CPU |   |--- |VPU |
->      -----   |         |-----  ----    |     ----
->     |DRAM |--|DRAM     |       ----    |     ----
->     |     |--|scheduler|----- |GPU |   |--- |DISP|
->     |     |--|(EMI)    |       ----    |     ----
->     |     |--|         |       -----   |     ----
->      -----   |         |----- |MMSYS|--|--- |VDEC|
->               ---------        -----   |     ----
->                 /|\                    |     ----
->                  |change DRAM freq     |--- |VENC|
->               ----------               |     ----
->              |  DVFSR   |              |
->              |          |              |     ----
->               ----------               |--- |IMG |
->                                        |     ----
->                                        |     ----
->                                        |--- |CAM |
->                                              ----
-> 
-> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
-> ---
->   drivers/interconnect/Kconfig            |   1 +
->   drivers/interconnect/Makefile           |   1 +
->   drivers/interconnect/mediatek/Kconfig   |  13 ++
->   drivers/interconnect/mediatek/Makefile  |   3 +
->   drivers/interconnect/mediatek/mtk-emi.c | 330 ++++++++++++++++++++++++++++++++
->   5 files changed, 348 insertions(+)
->   create mode 100644 drivers/interconnect/mediatek/Kconfig
->   create mode 100644 drivers/interconnect/mediatek/Makefile
->   create mode 100644 drivers/interconnect/mediatek/mtk-emi.c
-> 
-> diff --git a/drivers/interconnect/Kconfig b/drivers/interconnect/Kconfig
-> index 5b7204e..e939f5a 100644
-> --- a/drivers/interconnect/Kconfig
-> +++ b/drivers/interconnect/Kconfig
-> @@ -13,5 +13,6 @@ if INTERCONNECT
->   
->   source "drivers/interconnect/imx/Kconfig"
->   source "drivers/interconnect/qcom/Kconfig"
-> +source "drivers/interconnect/mediatek/Kconfig"
+This implements the irqchip set_type() callback for the TI PRUSS
+interrupt controller. This is needed for cases where an event needs
+to be active low.
 
-Sort alphabetically please.
+According to the technical reference manual, the polarity should always
+be set to high, however in practice, the polarity needs to be set low
+for the McASP Tx/Rx system event in conjunction with soft UART PRU
+firmware for TI AM18XX SoCs, otherwise it doesn't work.
 
->   
->   endif
-> diff --git a/drivers/interconnect/Makefile b/drivers/interconnect/Makefile
-> index d203520..0643a24 100644
-> --- a/drivers/interconnect/Makefile
-> +++ b/drivers/interconnect/Makefile
-> @@ -6,3 +6,4 @@ icc-core-objs				:= core.o bulk.o
->   obj-$(CONFIG_INTERCONNECT)		+= icc-core.o
->   obj-$(CONFIG_INTERCONNECT_IMX)		+= imx/
->   obj-$(CONFIG_INTERCONNECT_QCOM)		+= qcom/
-> +obj-$(CONFIG_INTERCONNECT_MTK)		+= mediatek/
+Signed-off-by: David Lechner <david@lechnology.com>
+---
+ drivers/irqchip/irq-pruss-intc.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-Ditto.
+diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-intc.c
+index 5409016e6ca0..f882af8a7ded 100644
+--- a/drivers/irqchip/irq-pruss-intc.c
++++ b/drivers/irqchip/irq-pruss-intc.c
+@@ -334,6 +334,32 @@ static void pruss_intc_irq_unmask(struct irq_data *data)
+ 	pruss_intc_write_reg(intc, PRU_INTC_EISR, hwirq);
+ }
+ 
++static int pruss_intc_irq_set_type(struct irq_data *data, unsigned int type)
++{
++	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
++	u32 reg, bit, val;
++
++	if (type & IRQ_TYPE_LEVEL_MASK) {
++		/* polarity register */
++		reg = PRU_INTC_SIPR(data->hwirq / 32);
++		bit = BIT(data->hwirq % 32);
++		val = pruss_intc_read_reg(intc, reg);
++
++		/*
++		 * This check also ensures that IRQ_TYPE_DEFAULT will result
++		 * in setting the level to high.
++		 */
++		if (type & IRQ_TYPE_LEVEL_HIGH)
++			val |= bit;
++		else
++			val &= ~bit;
++
++		pruss_intc_write_reg(intc, reg, val);
++	}
++
++	return 0;
++}
++
+ static int pruss_intc_irq_reqres(struct irq_data *data)
+ {
+ 	if (!try_module_get(THIS_MODULE))
+@@ -389,6 +415,7 @@ static struct irq_chip pruss_irqchip = {
+ 	.irq_ack		= pruss_intc_irq_ack,
+ 	.irq_mask		= pruss_intc_irq_mask,
+ 	.irq_unmask		= pruss_intc_irq_unmask,
++	.irq_set_type		= pruss_intc_irq_set_type,
+ 	.irq_request_resources	= pruss_intc_irq_reqres,
+ 	.irq_release_resources	= pruss_intc_irq_relres,
+ 	.irq_get_irqchip_state	= pruss_intc_irq_get_irqchip_state,
+-- 
+2.25.1
 
-> diff --git a/drivers/interconnect/mediatek/Kconfig b/drivers/interconnect/mediatek/Kconfig
-> new file mode 100644
-> index 0000000..972d3bb
-> --- /dev/null
-> +++ b/drivers/interconnect/mediatek/Kconfig
-> @@ -0,0 +1,13 @@
-> +config INTERCONNECT_MTK
-> +	bool "Mediatek Network-on-Chip interconnect drivers"
-> +	depends on ARCH_MEDIATEK
-> +	help
-> +	  Support for Mediatek's Network-on-Chip interconnect hardware.
-> +
-> +config INTERCONNECT_MTK_EMI
-> +	tristate "Mediatek EMI interconnect driver"
-> +	depends on INTERCONNECT_MTK
-> +	depends on (MTK_DVFSRC && OF)
-
-Would it be possible to enable COMPILE_TEST?
-
-> +	help
-> +	  This is a driver for the Mediatek Network-on-Chip on DVFSRC-based
-> +	  platforms.
-> diff --git a/drivers/interconnect/mediatek/Makefile b/drivers/interconnect/mediatek/Makefile
-> new file mode 100644
-> index 0000000..353842b
-> --- /dev/null
-> +++ b/drivers/interconnect/mediatek/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +obj-$(CONFIG_INTERCONNECT_MTK_EMI) += mtk-emi.o
-> \ No newline at end of file
-> diff --git a/drivers/interconnect/mediatek/mtk-emi.c b/drivers/interconnect/mediatek/mtk-emi.c
-> new file mode 100644
-> index 0000000..9670077
-> --- /dev/null
-> +++ b/drivers/interconnect/mediatek/mtk-emi.c
-> @@ -0,0 +1,330 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-
-Just a reminder that the year should be updated when you re-submit.
-
-> + *
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/interconnect-provider.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/soc/mediatek/mtk_dvfsrc.h>
-> +#include <dt-bindings/interconnect/mtk,mt8183-emi.h>
-> +#include <dt-bindings/interconnect/mtk,mt6873-emi.h>
-
-Nit: Alphanumeric order please.
-
-[..]
-> +static int emi_icc_remove(struct platform_device *pdev);
-> +static int emi_icc_probe(struct platform_device *pdev)
-> +{
-> +	const struct of_device_id *match;
-> +	const struct mtk_icc_desc *desc;
-> +	struct device *dev = &pdev->dev;
-> +	struct icc_node *node;
-> +	struct icc_onecell_data *data;
-> +	struct icc_provider *provider;
-> +	struct mtk_icc_node **mnodes;
-> +	size_t num_nodes, i, j;
-> +	int ret;
-> +
-> +	match = of_match_node(emi_icc_of_match, dev->parent->of_node);
-> +
-> +	if (!match) {
-> +		dev_err(dev, "invalid compatible string\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	desc = match->data;
-> +	mnodes = desc->nodes;
-> +	num_nodes = desc->num_nodes;
-> +
-> +	provider = devm_kzalloc(dev, sizeof(*provider), GFP_KERNEL);
-> +	if (!provider)
-> +		return -ENOMEM;
-> +
-> +	data = devm_kzalloc(dev, struct_size(data, nodes, num_nodes),
-> +			    GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	provider->dev = pdev->dev.parent;
-> +	provider->set = emi_icc_set;
-> +	provider->aggregate = emi_icc_aggregate;
-> +	provider->xlate = of_icc_xlate_onecell;
-> +	INIT_LIST_HEAD(&provider->nodes);
-> +	provider->data = data;
-> +
-> +	ret = icc_provider_add(provider);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "error adding interconnect provider\n");
-> +		return ret;
-> +	}
-> +
-> +	for (i = 0; i < num_nodes; i++) {
-> +		node = icc_node_create(mnodes[i]->id);
-> +		if (IS_ERR(node)) {
-> +			ret = PTR_ERR(node);
-> +			goto err;
-> +		}
-> +
-> +		node->name = mnodes[i]->name;
-> +		node->data = mnodes[i];
-> +		icc_node_add(node, provider);
-> +
-> +		for (j = 0; j < mnodes[i]->num_links; j++)
-> +			icc_link_create(node, mnodes[i]->links[j]);
-> +
-> +		data->nodes[i] = node;
-> +	}
-> +	data->num_nodes = num_nodes;
-> +
-> +	platform_set_drvdata(pdev, provider);
-> +
-> +	return 0;
-> +err:
-> +	icc_nodes_remove(provider);
-
-Also call icc_provider_del() to restore the original state on error.
-
-Thanks,
-Georgi
-
-> +	return ret;
-> +}
-> +
-> +static int emi_icc_remove(struct platform_device *pdev)
-> +{
-> +	struct icc_provider *provider = platform_get_drvdata(pdev);
-> +
-> +	icc_nodes_remove(provider);
-> +	return icc_provider_del(provider);
-> +}
-> +
