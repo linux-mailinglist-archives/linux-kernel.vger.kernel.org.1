@@ -2,173 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FB32E9B26
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317132E9B27
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727753AbhADQhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:37:34 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46074 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726098AbhADQhd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:37:33 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 104GWbl1106944;
-        Mon, 4 Jan 2021 11:36:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=ZYz2tLgpgNEouiJcCAzBQncY9TnARviMIMG0lWR3eIA=;
- b=VPYVto0jP8mZjfycR2YSnR8SVc/d7SFzfWSC1kzRwhIl2U98p//g8GmhHAKm5IwPodUK
- t4guIW6TNOI3hwHfv/Y+nIXdnnAoa2x67rMhISbGJJkZ2RNUlpm6r/KLZDA6NdSDnvmt
- X1+KRkWL53PaI7EOknmxIpBiJQedtIZbvAIOI2USw62XygH+KOPV3TzpHWse5jSmYQ8y
- cNwK87NG0HkHtUoXp1iZOmpCmzVMCQ+XMPUiHa1k8+37yWVUne/k0DZTInqW6RSs3M4M
- K0mDtAR93dwcfpJNyrYzz2lCwlxNDk8XGpD17sVvB/2ctZ5yjbd13VJAslskwaDlvmZn ng== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35v4a14nkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 11:36:52 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 104GXcfq110464;
-        Mon, 4 Jan 2021 11:36:52 -0500
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35v4a14nk2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 11:36:52 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 104GWDKZ032124;
-        Mon, 4 Jan 2021 16:36:49 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 35tg3hh25c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 16:36:49 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 104GakeI43975082
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Jan 2021 16:36:46 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B249AE053;
-        Mon,  4 Jan 2021 16:36:46 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 26B66AE04D;
-        Mon,  4 Jan 2021 16:36:46 +0000 (GMT)
-Received: from ibm-vm (unknown [9.145.0.177])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Jan 2021 16:36:46 +0000 (GMT)
-Date:   Mon, 4 Jan 2021 17:36:44 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v1 4/4] s390/kvm: VSIE: correctly handle MVPG when in
- VSIE
-Message-ID: <20210104173644.2e6c8df4@ibm-vm>
-In-Reply-To: <3376268b-7fd7-9fbe-b483-fe7471038a18@redhat.com>
-References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
-        <20201218141811.310267-5-imbrenda@linux.ibm.com>
-        <6836573a-a49d-9d9f-49e0-96b5aa479c52@redhat.com>
-        <20210104162231.4e56ab47@ibm-vm>
-        <3376268b-7fd7-9fbe-b483-fe7471038a18@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1727858AbhADQhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:37:36 -0500
+Received: from mga14.intel.com ([192.55.52.115]:38050 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726098AbhADQhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:37:35 -0500
+IronPort-SDR: SlmnHzossjxN0MkA0zT5uunUOeTwfZyjAGxIUItGXXo2ba+U5I88Kxutqc/fSoCShOxCTuOQXj
+ 4WTzB4gKYEng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="176195116"
+X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
+   d="scan'208";a="176195116"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:36:54 -0800
+IronPort-SDR: N+mkhNAODPxP9UE0q46ZQnx1alHTCFQWhK0p/3ikPIMn8HhiciueGXhqwWEnSzo6VfuLYMrrtC
+ 441lse0j6A3A==
+X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
+   d="scan'208";a="421423006"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:36:54 -0800
+Date:   Mon, 4 Jan 2021 08:36:53 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Hao Li <lihao2018.fnst@cn.fujitsu.com>
+Cc:     corbet@lwn.net, davem@davemloft.net, gregkh@linuxfoundation.org,
+        alexander.deucher@amd.com, mchehab+huawei@kernel.org,
+        lee.jones@linaro.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation/dax: Update description of DAX policy
+ changing
+Message-ID: <20210104163653.GG3097896@iweiny-DESK2.sc.intel.com>
+References: <20210104024040.5381-1-lihao2018.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-04_10:2021-01-04,2021-01-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 mlxlogscore=737
- priorityscore=1501 adultscore=0 suspectscore=0 phishscore=0
- impostorscore=0 clxscore=1015 malwarescore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101040107
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104024040.5381-1-lihao2018.fnst@cn.fujitsu.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Jan 2021 17:08:15 +0100
-David Hildenbrand <david@redhat.com> wrote:
-
-> On 04.01.21 16:22, Claudio Imbrenda wrote:
-> > On Sun, 20 Dec 2020 11:13:57 +0100
-> > David Hildenbrand <david@redhat.com> wrote:
-> >   
-> >> On 18.12.20 15:18, Claudio Imbrenda wrote:  
-> >>> Correctly handle the MVPG instruction when issued by a VSIE guest.
-> >>>     
-> >>
-> >> I remember that MVPG SIE documentation was completely crazy and
-> >> full of corner cases. :)  
-> > 
-> > you remember correctly
-> >   
-> >> Looking at arch/s390/kvm/intercept.c:handle_mvpg_pei(), I can spot
-> >> that
-> >>
-> >> 1. "This interception can only happen for guests with DAT disabled
-> >> ..." 2. KVM does not make use of any mvpg state inside the SCB.
-> >>
-> >> Can this be observed with Linux guests?  
-> > 
-> > a Linux guest will typically not run with DAT disabled
-> >   
-> >> Can I get some information on what information is stored at [0xc0,
-> >> 0xd) inside the SCB? I assume it's:
-> >>
-> >> 0xc0: guest physical address of source PTE
-> >> 0xc8: guest physical address of target PTE  
-> > 
-> > yes (plus 3 flags in the lower bits of each)  
+On Mon, Jan 04, 2021 at 10:40:40AM +0800, Hao Li wrote:
+> After commit 77573fa310d9 ("fs: Kill DCACHE_DONTCACHE dentry even if
+> DCACHE_REFERENCED is set"), changes to DAX policy will take effect
+> as soon as all references to this file are gone.
 > 
-> Thanks! Do the flags tell us what the deal with the PTE was? If yes,
-> what's the meaning of the separate flags?
+> Update the documentation accordingly.
 > 
-> I assume something like "invalid, proteced, ??"
+> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+> ---
+>  Documentation/filesystems/dax.txt | 15 ++-------------
+>  1 file changed, 2 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+> index 8fdb78f3c6c9..a5af22831087 100644
+> --- a/Documentation/filesystems/dax.txt
+> +++ b/Documentation/filesystems/dax.txt
+> @@ -84,19 +84,8 @@ Summary
+>         described in 6) below.
+>  
+>   6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX flag,
+                                                                                  ^^
+                                                  I would delete this '.' as well.
 
-bit 61 indicates that the address is a region or segment table entry,
-when EDAT applies
-bit 62 is "protected" when the protected bit is set in the segment
-table entry (or region, if EDAT applies) 
-bit 63 is set when the operand was translated with a real-space ASCE
+> -    the change in behaviour for existing regular files may not occur
+> -    immediately.  If the change must take effect immediately, the administrator
+> -    needs to:
+> -
+> -    a) stop the application so there are no active references to the data set
+> -       the policy change will affect
+> -
+> -    b) evict the data set from kernel caches so it will be re-instantiated when
+> -       the application is restarted. This can be achieved by:
+> -
+> -       i. drop-caches
+> -       ii. a filesystem unmount and mount cycle
+> -       iii. a system reboot
+> +    the change to existing regular file won't take effect until the file is closed
+                                                                      ^^^^^
+                                                                      files
 
-but you can check if the PTE is valid just by dereferencing the
-pointers...
+> +    by all processes or all processes referencing the file are stopped.
 
-> I'm asking because I think we can handle this a little easier.
+So how about:
 
-what is your idea?
+   6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX
+      flag the change to existing regular files won't take effect until the file
+      is closed by all processes or all processes referencing the file are
+      stopped.
 
-> >   
-> >> [...]  
-> >>>  /*
-> >>>   * Run the vsie on a shadow scb and a shadow gmap, without any
-> >>> further
-> >>>   * sanity checks, handling SIE faults.
-> >>> @@ -1063,6 +1132,10 @@ static int do_vsie_run(struct kvm_vcpu
-> >>> *vcpu, struct vsie_page *vsie_page) if ((scb_s->ipa & 0xf000) !=
-> >>> 0xf000) scb_s->ipa += 0x1000;
-> >>>  		break;
-> >>> +	case ICPT_PARTEXEC:
-> >>> +		if (scb_s->ipa == 0xb254)    
-> >>
-> >> Old code hat "/* MVPG only */" - why is this condition now
-> >> necessary?  
-> > 
-> > old code was wrong ;)  
+I also feel like mentioning the stoppage of process' is redundant as users
+should know that will result in the closing of those FDs but I'm ok leaving it
+if others like it.
+
+Ira
+
+>  
+>  
+>  Details
+> -- 
+> 2.29.2
 > 
 > 
-> arch/s390/kvm/intercept.c:handle_partial_execution() we only seem to
-> handle
 > 
-> 1. MVPG
-> 2. SIGP PEI
-> 
-> The latter is only relevant for external calls. IIRC, this is only
-> active with sigp interpretation - which is never active under vsie
-> (ECA_SIGPI).
-
-I think putting an explicit check is better than just a jump in the
-dark.
-
