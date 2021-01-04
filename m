@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867692E997F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019F12E9988
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbhADQAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:00:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36552 "EHLO mail.kernel.org"
+        id S1727831AbhADQBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:01:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728380AbhADQAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:00:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6A9822519;
-        Mon,  4 Jan 2021 16:00:17 +0000 (UTC)
+        id S1728475AbhADQA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:00:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3236122509;
+        Mon,  4 Jan 2021 16:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776018;
-        bh=2ZOkTd456OM7SLNBptooNfNdw00cEIxAS6NzBICmrco=;
+        s=korg; t=1609776042;
+        bh=w6Hno2K9DY3O8fLTE90vo3WJp2IrIkb6EVherrkqf0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CueIDDT2liF7oJwdjIAF4veotO2IzrCjNgMwn46kqrudHs/0XU4zPcTN4yTExZrYJ
-         SOZkbpG66tWowSO+7iJBqUasEqzNz0IhFQpVDFxeqzk7YScyv2Rg6HlIrY63UPR6tH
-         Eztfw3wfOB45JBvruGambYbjWDPhDZNlV5o4ucZk=
+        b=iPc5ZZgwDlGvFmpm/K9QmcXywQRrmC1NAFK+7idK4JDWAqgmVmz/DdRKnLrGctyz7
+         6EmSYAPEAO0K2brKubBrRGSOwuI9WH7LWwL+RuWD3YZ6FDVlKJO+kWRubFajBOXAmF
+         ofEJYoi6L4D/0VRM40fTJJd9AVv/jE6tGVwYaFwI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Jubin Zhong <zhongjubin@huawei.com>,
+        lizhe <lizhe67@huawei.com>, Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 15/47] powerpc/bitops: Fix possible undefined behaviour with fls() and fls64()
-Date:   Mon,  4 Jan 2021 16:57:14 +0100
-Message-Id: <20210104155706.486779511@linuxfoundation.org>
+Subject: [PATCH 5.4 16/47] jffs2: Allow setting rp_size to zero during remounting
+Date:   Mon,  4 Jan 2021 16:57:15 +0100
+Message-Id: <20210104155706.528322192@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
 References: <20210104155705.740576914@linuxfoundation.org>
@@ -42,119 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: lizhe <lizhe67@huawei.com>
 
-[ Upstream commit 1891ef21d92c4801ea082ee8ed478e304ddc6749 ]
+[ Upstream commit cd3ed3c73ac671ff6b0230ccb72b8300292d3643 ]
 
-fls() and fls64() are using __builtin_ctz() and _builtin_ctzll().
-On powerpc, those builtins trivially use ctlzw and ctlzd power
-instructions.
+Set rp_size to zero will be ignore during remounting.
 
-Allthough those instructions provide the expected result with
-input argument 0, __builtin_ctz() and __builtin_ctzll() are
-documented as undefined for value 0.
+The method to identify whether we input a remounting option of
+rp_size is to check if the rp_size input is zero. It can not work
+well if we pass "rp_size=0".
 
-The easiest fix would be to use fls() and fls64() functions
-defined in include/asm-generic/bitops/builtin-fls.h and
-include/asm-generic/bitops/fls64.h, but GCC output is not optimal:
+This patch add a bool variable "set_rp_size" to fix this problem.
 
-00000388 <testfls>:
- 388:   2c 03 00 00     cmpwi   r3,0
- 38c:   41 82 00 10     beq     39c <testfls+0x14>
- 390:   7c 63 00 34     cntlzw  r3,r3
- 394:   20 63 00 20     subfic  r3,r3,32
- 398:   4e 80 00 20     blr
- 39c:   38 60 00 00     li      r3,0
- 3a0:   4e 80 00 20     blr
-
-000003b0 <testfls64>:
- 3b0:   2c 03 00 00     cmpwi   r3,0
- 3b4:   40 82 00 1c     bne     3d0 <testfls64+0x20>
- 3b8:   2f 84 00 00     cmpwi   cr7,r4,0
- 3bc:   38 60 00 00     li      r3,0
- 3c0:   4d 9e 00 20     beqlr   cr7
- 3c4:   7c 83 00 34     cntlzw  r3,r4
- 3c8:   20 63 00 20     subfic  r3,r3,32
- 3cc:   4e 80 00 20     blr
- 3d0:   7c 63 00 34     cntlzw  r3,r3
- 3d4:   20 63 00 40     subfic  r3,r3,64
- 3d8:   4e 80 00 20     blr
-
-When the input of fls(x) is a constant, just check x for nullity and
-return either 0 or __builtin_clz(x). Otherwise, use cntlzw instruction
-directly.
-
-For fls64() on PPC64, do the same but with __builtin_clzll() and
-cntlzd instruction. On PPC32, lets take the generic fls64() which
-will use our fls(). The result is as expected:
-
-00000388 <testfls>:
- 388:   7c 63 00 34     cntlzw  r3,r3
- 38c:   20 63 00 20     subfic  r3,r3,32
- 390:   4e 80 00 20     blr
-
-000003a0 <testfls64>:
- 3a0:   2c 03 00 00     cmpwi   r3,0
- 3a4:   40 82 00 10     bne     3b4 <testfls64+0x14>
- 3a8:   7c 83 00 34     cntlzw  r3,r4
- 3ac:   20 63 00 20     subfic  r3,r3,32
- 3b0:   4e 80 00 20     blr
- 3b4:   7c 63 00 34     cntlzw  r3,r3
- 3b8:   20 63 00 40     subfic  r3,r3,64
- 3bc:   4e 80 00 20     blr
-
-Fixes: 2fcff790dcb4 ("powerpc: Use builtin functions for fls()/__fls()/fls64()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/348c2d3f19ffcff8abe50d52513f989c4581d000.1603375524.git.christophe.leroy@csgroup.eu
+Reported-by: Jubin Zhong <zhongjubin@huawei.com>
+Signed-off-by: lizhe <lizhe67@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/bitops.h | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ fs/jffs2/jffs2_fs_sb.h | 1 +
+ fs/jffs2/super.c       | 7 +++++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/bitops.h b/arch/powerpc/include/asm/bitops.h
-index 603aed229af78..46338f2360046 100644
---- a/arch/powerpc/include/asm/bitops.h
-+++ b/arch/powerpc/include/asm/bitops.h
-@@ -217,15 +217,34 @@ static __inline__ void __clear_bit_unlock(int nr, volatile unsigned long *addr)
-  */
- static __inline__ int fls(unsigned int x)
- {
--	return 32 - __builtin_clz(x);
-+	int lz;
-+
-+	if (__builtin_constant_p(x))
-+		return x ? 32 - __builtin_clz(x) : 0;
-+	asm("cntlzw %0,%1" : "=r" (lz) : "r" (x));
-+	return 32 - lz;
+diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
+index 778275f48a879..5a7091746f68b 100644
+--- a/fs/jffs2/jffs2_fs_sb.h
++++ b/fs/jffs2/jffs2_fs_sb.h
+@@ -38,6 +38,7 @@ struct jffs2_mount_opts {
+ 	 * users. This is implemented simply by means of not allowing the
+ 	 * latter users to write to the file system if the amount if the
+ 	 * available space is less then 'rp_size'. */
++	bool set_rp_size;
+ 	unsigned int rp_size;
+ };
+ 
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 60636b2e35ea4..68ce77cbeed3b 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -88,7 +88,7 @@ static int jffs2_show_options(struct seq_file *s, struct dentry *root)
+ 
+ 	if (opts->override_compr)
+ 		seq_printf(s, ",compr=%s", jffs2_compr_name(opts->compr));
+-	if (opts->rp_size)
++	if (opts->set_rp_size)
+ 		seq_printf(s, ",rp_size=%u", opts->rp_size / 1024);
+ 
+ 	return 0;
+@@ -212,6 +212,7 @@ static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 		if (opt > c->mtd->size)
+ 			return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
+ 				      c->mtd->size / 1024);
++		c->mount_opts.set_rp_size = true;
+ 		c->mount_opts.rp_size = opt;
+ 		break;
+ 	default:
+@@ -231,8 +232,10 @@ static inline void jffs2_update_mount_opts(struct fs_context *fc)
+ 		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
+ 		c->mount_opts.compr = new_c->mount_opts.compr;
+ 	}
+-	if (new_c->mount_opts.rp_size)
++	if (new_c->mount_opts.set_rp_size) {
++		c->mount_opts.set_rp_size = new_c->mount_opts.set_rp_size;
+ 		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
++	}
+ 	mutex_unlock(&c->alloc_sem);
  }
  
- #include <asm-generic/bitops/builtin-__fls.h>
- 
-+/*
-+ * 64-bit can do this using one cntlzd (count leading zeroes doubleword)
-+ * instruction; for 32-bit we use the generic version, which does two
-+ * 32-bit fls calls.
-+ */
-+#ifdef CONFIG_PPC64
- static __inline__ int fls64(__u64 x)
- {
--	return 64 - __builtin_clzll(x);
-+	int lz;
-+
-+	if (__builtin_constant_p(x))
-+		return x ? 64 - __builtin_clzll(x) : 0;
-+	asm("cntlzd %0,%1" : "=r" (lz) : "r" (x));
-+	return 64 - lz;
- }
-+#else
-+#include <asm-generic/bitops/fls64.h>
-+#endif
- 
- #ifdef CONFIG_PPC64
- unsigned int __arch_hweight8(unsigned int w);
 -- 
 2.27.0
 
