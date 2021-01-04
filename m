@@ -2,96 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCDD2E97CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059CE2E97C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727498AbhADO42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727457AbhADO41 (ORCPT
+        id S1727454AbhADO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:56:12 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:53477 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727219AbhADO4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:56:27 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AA3C061795
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:55:47 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id r7so32431715wrc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:55:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:references:from:subject:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=spZiulz5vjIZKQGtmvUTqdX4a9LlbwiYNkUKafbbP1A=;
-        b=MX3x3t6aW5+9FTyLKWPjyQkoDzorLzEjkkO0RIRIUXOjYAwfquJVnsF1+16eaRDjp+
-         yU7wxbCFqT+dyVgOKYEsZZmbHlVFIWZM3dDWUaA5YhDpA0fLYTQwArvinzboJl0NQS6p
-         bv2SFD38cgQZhu/T2AQU0XuuVRJVcqHna4PTHh8viT4CwKWXT/+EpCPkFN/hkSSg1MLJ
-         /jGZJtiPhHpSGqJiXLMYyBCsH6O9uIJb6WDAawq5JipHwEkdlnyCPB5OaNlDqeK++jkH
-         u6stU3siocFeLOVwpVrHN7M7wPD3kfEeeJX8uL+Lvpo3u/IUw0hEPVt+BokOnSRvaBpz
-         2ayg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=spZiulz5vjIZKQGtmvUTqdX4a9LlbwiYNkUKafbbP1A=;
-        b=G7EMwIiwh2wqeTjHaulylNsIc479bI6S9zbipBRBCHv6eB1Ma98CXGog4wiaMrNdJo
-         2yhUcXIRmjdp+EJYfsUV+anirbaI/nuHoHSwjq+cu2TG4x9hplqd85JFsvP1nCsI79ao
-         avvqW3b/9vJfve0nwLgzWFaP6bj/5cDERuqFJU5jZcftKSSdb+h89pLf7WrxMdpn5N18
-         VH4xuL7yxO8EvbJwTPiAdk+I0sMFJs1lnjKBVEvnlYml8ZTj2qM3VVlXH1gVLJ0jm5KB
-         ix+I8UtkpDM4Eny/575yuJiJU64hz80DM9cjiw6Jcmmj1mDEQpAsAIgxxnery+459gdw
-         sVwg==
-X-Gm-Message-State: AOAM531WLZjRbiavP9JvW5qo6Q9E930iowRYlqNDVrhsKShqbH30l0HE
-        xSvpiGZDLOJG7oPMSD+rCyzzaw==
-X-Google-Smtp-Source: ABdhPJyx0l3teJNfd54KuUkWZsf8gyMx59sKUuHgRVfJeRc3X6RsVeUOH47cJL5XLpikGV1l3LK9Jw==
-X-Received: by 2002:adf:e552:: with SMTP id z18mr83249897wrm.29.1609772145956;
-        Mon, 04 Jan 2021 06:55:45 -0800 (PST)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id v1sm33258615wmj.31.2021.01.04.06.55.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 06:55:45 -0800 (PST)
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>, robh@kernel.org,
-        shawnguo@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
-        will@kernel.org, cdleonard@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20201210100906.18205-1-martin.kepplinger@puri.sm>
- <20201210100906.18205-7-martin.kepplinger@puri.sm>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Subject: Re: [PATCH v3 6/6] arm64: defconfig: Enable interconnect for imx8mq
-Message-ID: <14b3f927-cfe7-67bd-93a4-e869a68cdbfb@linaro.org>
-Date:   Mon, 4 Jan 2021 16:55:47 +0200
+        Mon, 4 Jan 2021 09:56:10 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 12659172D;
+        Mon,  4 Jan 2021 09:55:23 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 04 Jan 2021 09:55:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=AxARTzbgs463HULr+SRfRHOKnXs
+        /WKBB5ueaan5NvR4=; b=XA6SsbxWwBtGc9ezdlorudN4v4Tz6P6MCFaSgUe22Rm
+        73x2EV3Tij8sK5XAEs3tysrZbS1ynZTNsHS62qQTLA31E9uw9X7jkakukMNIhB/f
+        PxJacjJe/iG1R1mDrAWbaXE5PW8cruge7veKD5doUr8d4a5pV0DcT8HIZ0O5B5Ch
+        8mHycl86Rr0uuVcS99GpQwp6h+/N9WI+vCVVRL3JeeEMZRcX1xL0cRNdxJ30em10
+        xysHg7WNMQBK2VGkftFMjO/nx21U7mBTfWdNqY3sxzoisrb+YC3Ps8H/zCeX4hTZ
+        cgLvAat4h/dkOzDONVakVQR8sUuUQZVG5FhZpXvIX5w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=AxARTz
+        bgs463HULr+SRfRHOKnXs/WKBB5ueaan5NvR4=; b=ax9jWUPPSU17namfX3GEYR
+        rkCMMxawETTmd1Ql8Ln+Mu59jO1AYZy1Q1/ZBoGbTj3Kb/+eu1xFYj0grsQVYJj6
+        Z7TRZ75P2uEVrfr+mlIjLxXSqAguu4kkxczvUPtcRWCODhKvjdgpMGFHLlfGf/b2
+        zElvFdcfQ9OqjM0gqaPMpl6BlmCwasLCQswYU4/9vwlAFCxU4jq80Fw5KwV8pP5y
+        1C+MTjFjB9oGZGBvFGwR3cXf5gQshk32jouyxPN9c1OeyXO0/chOFpX1mYCl6Tod
+        nnYdXPF4Ce7GoSMOfg9uqA+7XYx6q3rKFiLSQnu2i77yBEQtAZUR/d/VDFwzoq4A
+        ==
+X-ME-Sender: <xms:WCzzXwY0RbuI9AwxDH5J-hJ02OdLhiFeQ3C-qj4cLcuiqZCgjN_06g>
+    <xme:WCzzX7amslpOfUWixOJXtJ29O1kvK1BKUcFVCx5XVdJXPRJ4SQtuHRMectS-gWmp2
+    cI7-AcuX0NIrQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeffedgjedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
+    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
+    rdgtohhm
+X-ME-Proxy: <xmx:WCzzX6_XAJusIT21SRFkpwY8-Ne3p-TG7OIKdAR-3OY6pEBXvHkrTA>
+    <xmx:WCzzX6p7Wp2vXJZHAX9KyXQmiLtZk4qCpxufRRZAG3JNwJpBdUvkSw>
+    <xmx:WCzzX7onnfNZq-ZfaSuBhzeMflCIemDMxEGJQCyStoIwl9Mpa3PeTw>
+    <xmx:WizzXy2ymwPnU-ruRpRSG4_qUBO-sCqtSOwFVSvNQgSsGfwbMXx_yg>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A35C924005C;
+        Mon,  4 Jan 2021 09:55:20 -0500 (EST)
+Date:   Mon, 4 Jan 2021 15:56:47 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Song Chen <chensong_2000@189.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failures after merge of the staging tree
+Message-ID: <X/Msr8Dqbxk3YO0v@kroah.com>
+References: <20210104122653.6f35b9bb@canb.auug.org.au>
+ <CAMuHMdXWqO2WPKSxsfbr=-_rrXenEwJRW3rYko7VJCPwCnyeLA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201210100906.18205-7-martin.kepplinger@puri.sm>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXWqO2WPKSxsfbr=-_rrXenEwJRW3rYko7VJCPwCnyeLA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 12:09, Martin Kepplinger wrote:
-> Enable INTERCONNECT_IMX8MQ in order to make interconnect more widely
-> available.
+On Mon, Jan 04, 2021 at 09:27:01AM +0100, Geert Uytterhoeven wrote:
+> On Mon, Jan 4, 2021 at 6:12 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > After merging the staging tree, today's linux-next build (arm
+> > multi_v7_defconfig) failed like this:
+> >
+> > In file included from include/linux/printk.h:6,
+> >                  from include/linux/kernel.h:16,
+> >                  from drivers/staging/board/kzm9d.c:4:
+> > drivers/staging/board/kzm9d.c:28:17: error: initialization of 'initcall_t' {aka 'int (*)(void)'} from incompatible pointer type 'void (*)(void)' [-Werror=incompatible-pointer-types]
+> >    28 | device_initcall(kzm9d_init);
+> >       |                 ^~~~~~~~~~
+> > include/linux/init.h:197:50: note: in definition of macro '___define_initcall'
+> >   197 |   __attribute__((__section__(#__sec ".init"))) = fn;
+> >       |                                                  ^~
+> > include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
+> >   229 | #define device_initcall(fn)  __define_initcall(fn, 6)
+> >       |                              ^~~~~~~~~~~~~~~~~
+> > drivers/staging/board/kzm9d.c:28:1: note: in expansion of macro 'device_initcall'
+> >    28 | device_initcall(kzm9d_init);
+> >       | ^~~~~~~~~~~~~~~
+> > cc1: some warnings being treated as errors
+> > In file included from include/linux/printk.h:6,
+> >                  from include/linux/kernel.h:16,
+> >                  from include/asm-generic/bug.h:20,
+> >                  from arch/arm/include/asm/bug.h:60,
+> >                  from include/linux/bug.h:5,
+> >                  from include/linux/thread_info.h:12,
+> >                  from include/asm-generic/current.h:5,
+> >                  from ./arch/arm/include/generated/asm/current.h:1,
+> >                  from include/linux/sched.h:12,
+> >                  from include/linux/ratelimit.h:6,
+> >                  from include/linux/dev_printk.h:16,
+> >                  from include/linux/device.h:15,
+> >                  from include/linux/dma-mapping.h:7,
+> >                  from drivers/staging/board/armadillo800eva.c:12:
+> > drivers/staging/board/armadillo800eva.c:90:17: error: initialization of 'initcall_t' {aka 'int (*)(void)'} from incompatible pointer type 'void (*)(void)' [-Werror=incompatible-pointer-types]
+> >    90 | device_initcall(armadillo800eva_init);
+> >       |                 ^~~~~~~~~~~~~~~~~~~~
+> > include/linux/init.h:197:50: note: in definition of macro '___define_initcall'
+> >   197 |   __attribute__((__section__(#__sec ".init"))) = fn;
+> >       |                                                  ^~
+> > include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
+> >   229 | #define device_initcall(fn)  __define_initcall(fn, 6)
+> >       |                              ^~~~~~~~~~~~~~~~~
+> > drivers/staging/board/armadillo800eva.c:90:1: note: in expansion of macro 'device_initcall'
+> >    90 | device_initcall(armadillo800eva_init);
+> >       | ^~~~~~~~~~~~~~~
+> >
+> > Caused by commit
+> >
+> >   850c35bb28ec ("staging: board: Remove macro board_staging")
+> >
+> > I have used the staging tree from next-20201223 for today.
 > 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> Note that a similar patch was (IMHO rightfully) rejected 3 years ago:
+> https://lore.kernel.org/lkml/20170220175506.GA30142@kroah.com/
+> 
+> So please drop it. Thanks!
 
-Acked-by: Georgi Djakov <georgi.djakov@linaro.org>
+Now reverted, thanks.
 
-> ---
->   arch/arm64/configs/defconfig | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index c8ca76751a34..f25748b0fa95 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -1074,6 +1074,8 @@ CONFIG_SLIM_QCOM_CTRL=m
->   CONFIG_SLIM_QCOM_NGD_CTRL=m
->   CONFIG_MUX_MMIO=y
->   CONFIG_INTERCONNECT=y
-> +CONFIG_INTERCONNECT_IMX=m
-> +CONFIG_INTERCONNECT_IMX8MQ=m
->   CONFIG_INTERCONNECT_QCOM=y
->   CONFIG_INTERCONNECT_QCOM_MSM8916=m
->   CONFIG_INTERCONNECT_QCOM_OSM_L3=m
-> 
+greg k-h
