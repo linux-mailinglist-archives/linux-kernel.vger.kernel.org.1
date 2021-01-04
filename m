@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37BF2E9559
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DADA2E955A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbhADM4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:56:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54460 "EHLO mx2.suse.de"
+        id S1726558AbhADM5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:57:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726008AbhADM4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:56:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609764956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=msIW88wK00DoAnz9CIDN560ghwz+bPy+u/wMPHdrQPA=;
-        b=JccxXLpGBLoGDL28F8aGR/x0pglghkevXPipC+8umQI1PkJEXYxdzOYoAjVCActmCw3KDG
-        wAg4gMgIhGwbNtAqqTo/lYC00eLNaTb5SUafFV0fKu4BpLjNRl3GpenCkL4mw9kVGUcc0e
-        HQMsEDaQVMonsKFIqbcJLa5S7u/N7xU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4ED38AFEF;
-        Mon,  4 Jan 2021 12:55:56 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 13:55:54 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Liang Li <liliang.opensource@gmail.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
-Message-ID: <20210104125554.GE13207@dhcp22.suse.cz>
-References: <20201221162519.GA22504@open-light-1.localdomain>
+        id S1726303AbhADM5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 07:57:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19DA1207B1;
+        Mon,  4 Jan 2021 12:56:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609764991;
+        bh=MI++1bdO+nPC62h/WnOJfCwXl2nKAz5VwOY3jvxSDxk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kM/cifXUNn9i29s+dCPVb5xSVuloSe4hlgZmjVPt1UuuIVxLqttcjhc3ndORPYZQM
+         SzNCkbDYTeO3x+clwyLgmSc91EDA/z1c5Q1xb9XLGkfkwT6Wu8whnq56/0kv8S56Mn
+         xMS1iAqNiox/RpARiNlsap6act4xP9HQWT9rdGzIjPJY9YLULtIZureu76nbWiyRsM
+         ZI7Uv917L2SxxsfmNMVw1wyQn2pHdrE/B3t1YKI71ksMkl8JSuT0Lt8CBINVDYFeo7
+         FeXXHQ/bPh7lKngg42JYYYIQXRC2rAEOVKSK/XH7EagmA+CluemDGzI1jSO/5Ci+og
+         zEZNH33KV/tmQ==
+Date:   Mon, 4 Jan 2021 13:56:29 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rcu tree
+Message-ID: <20210104125629.GA32553@lothringen>
+References: <20210104113736.23ab7690@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201221162519.GA22504@open-light-1.localdomain>
+In-Reply-To: <20210104113736.23ab7690@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21-12-20 11:25:22, Liang Li wrote:
-[...]
-> Security
-> ========
-> This is a weak version of "introduce init_on_alloc=1 and init_on_free=1
-> boot options", which zero out page in a asynchronous way. For users can't
-> tolerate the impaction of 'init_on_alloc=1' or 'init_on_free=1' brings,
-> this feauture provide another choice.
+On Mon, Jan 04, 2021 at 11:37:36AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the rcu tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+> 
+> arch/arm/mach-imx/cpuidle-imx6q.c: In function 'imx6q_enter_wait':
+> arch/arm/mach-imx/cpuidle-imx6q.c:32:7: error: implicit declaration of function 'need_resched'; did you mean 'tif_need_resched'? [-Werror=implicit-function-declaration]
+>    32 |  if (!need_resched())
+>       |       ^~~~~~~~~~~~
+>       |       tif_need_resched
+> 
+> Caused by commit
+> 
+>   7ca83ec735ce ("ARM: imx6q: Fix missing need_resched() check after
+>   rcu_idle_enter()")
 
-Most of the usecases are about the start up time imporvemtns IIUC. Have
-you tried to use init_on_free or this would be prohibitive for your
-workloads?
+Thanks for the report, I'm checking that.
 
--- 
-Michal Hocko
-SUSE Labs
+> 
+> I have used the rcu tree from next-20201223 for today.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+
+
