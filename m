@@ -2,42 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3232E9A5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6402E9A99
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729638AbhADQI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:08:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38464 "EHLO mail.kernel.org"
+        id S1729684AbhADQL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:11:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728611AbhADQBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:01:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2025224D2;
-        Mon,  4 Jan 2021 16:01:19 +0000 (UTC)
+        id S1728217AbhADQAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:00:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 743692250F;
+        Mon,  4 Jan 2021 15:59:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776080;
-        bh=5Gfu3L59rdjO9CtMPxwCNS4CHfJnT5MFmlDci/a6xLE=;
+        s=korg; t=1609775983;
+        bh=1EWEb1iXr1V32zzy4+C603sUjUw475m7Utdlem6Ti+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AQWI4SnJ5sDb4ZVdT2npRXnLWx6KR45BuKghllcoHZHw0siH4SRpOAv/huKLOOIdY
-         37ADL3k7LMBaJeSG8h4e1uN6xPg+akeI2Dh6a/iBqpGMD6rzJQFSITiPTy5GE4dKss
-         qdnQV72cJUmEn1VX+qNBo982jlEdMw2OseFYzuIs=
+        b=PYaeoU7XKuPSwsN1yEH0agTSvyZwg7m44m5eAfBM61ghs78JcqC6cjpVIEleWWY3j
+         9lrgCEDQM3cEnAbQ5UcHcjXwgk+ZM4kcGJR9Z4ANHz5Ym4hLNhCf+vVWIKA4U0E+rZ
+         Kye+75VFJMwJIy10sYPamwMdtw3lkk2qWFnLdCWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Can Guo <cang@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 13/63] scsi: block: Fix a race in the runtime power management code
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 5.4 07/47] fscrypt: add fscrypt_is_nokey_name()
 Date:   Mon,  4 Jan 2021 16:57:06 +0100
-Message-Id: <20210104155709.457411783@linuxfoundation.org>
+Message-Id: <20210104155706.102878430@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
-References: <20210104155708.800470590@linuxfoundation.org>
+In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
+References: <20210104155705.740576914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,80 +38,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Eric Biggers <ebiggers@google.com>
 
-commit fa4d0f1992a96f6d7c988ef423e3127e613f6ac9 upstream.
+commit 159e1de201b6fca10bfec50405a3b53a561096a8 upstream.
 
-With the current implementation the following race can happen:
+It's possible to create a duplicate filename in an encrypted directory
+by creating a file concurrently with adding the encryption key.
 
- * blk_pre_runtime_suspend() calls blk_freeze_queue_start() and
-   blk_mq_unfreeze_queue().
+Specifically, sys_open(O_CREAT) (or sys_mkdir(), sys_mknod(), or
+sys_symlink()) can lookup the target filename while the directory's
+encryption key hasn't been added yet, resulting in a negative no-key
+dentry.  The VFS then calls ->create() (or ->mkdir(), ->mknod(), or
+->symlink()) because the dentry is negative.  Normally, ->create() would
+return -ENOKEY due to the directory's key being unavailable.  However,
+if the key was added between the dentry lookup and ->create(), then the
+filesystem will go ahead and try to create the file.
 
- * blk_queue_enter() calls blk_queue_pm_only() and that function returns
-   true.
+If the target filename happens to already exist as a normal name (not a
+no-key name), a duplicate filename may be added to the directory.
 
- * blk_queue_enter() calls blk_pm_request_resume() and that function does
-   not call pm_request_resume() because the queue runtime status is
-   RPM_ACTIVE.
+In order to fix this, we need to fix the filesystems to prevent
+->create(), ->mkdir(), ->mknod(), and ->symlink() on no-key names.
+(->rename() and ->link() need it too, but those are already handled
+correctly by fscrypt_prepare_rename() and fscrypt_prepare_link().)
 
- * blk_pre_runtime_suspend() changes the queue status into RPM_SUSPENDING.
+In preparation for this, add a helper function fscrypt_is_nokey_name()
+that filesystems can use to do this check.  Use this helper function for
+the existing checks that fs/crypto/ does for rename and link.
 
-Fix this race by changing the queue runtime status into RPM_SUSPENDING
-before switching q_usage_counter to atomic mode.
-
-Link: https://lore.kernel.org/r/20201209052951.16136-2-bvanassche@acm.org
-Fixes: 986d413b7c15 ("blk-mq: Enable support for runtime power management")
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Acked-by: Stanley Chu <stanley.chu@mediatek.com>
-Co-developed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201118075609.120337-2-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- block/blk-pm.c |   15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ fs/crypto/hooks.c       |   10 +++++-----
+ include/linux/fscrypt.h |   34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+), 5 deletions(-)
 
---- a/block/blk-pm.c
-+++ b/block/blk-pm.c
-@@ -67,6 +67,10 @@ int blk_pre_runtime_suspend(struct reque
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -58,8 +58,8 @@ int __fscrypt_prepare_link(struct inode
+ 	if (err)
+ 		return err;
  
- 	WARN_ON_ONCE(q->rpm_status != RPM_ACTIVE);
+-	/* ... in case we looked up ciphertext name before key was added */
+-	if (dentry->d_flags & DCACHE_ENCRYPTED_NAME)
++	/* ... in case we looked up no-key name before key was added */
++	if (fscrypt_is_nokey_name(dentry))
+ 		return -ENOKEY;
  
-+	spin_lock_irq(&q->queue_lock);
-+	q->rpm_status = RPM_SUSPENDING;
-+	spin_unlock_irq(&q->queue_lock);
-+
- 	/*
- 	 * Increase the pm_only counter before checking whether any
- 	 * non-PM blk_queue_enter() calls are in progress to avoid that any
-@@ -89,15 +93,14 @@ int blk_pre_runtime_suspend(struct reque
- 	/* Switch q_usage_counter back to per-cpu mode. */
- 	blk_mq_unfreeze_queue(q);
+ 	if (!fscrypt_has_permitted_context(dir, inode))
+@@ -83,9 +83,9 @@ int __fscrypt_prepare_rename(struct inod
+ 	if (err)
+ 		return err;
  
--	spin_lock_irq(&q->queue_lock);
--	if (ret < 0)
-+	if (ret < 0) {
-+		spin_lock_irq(&q->queue_lock);
-+		q->rpm_status = RPM_ACTIVE;
- 		pm_runtime_mark_last_busy(q->dev);
--	else
--		q->rpm_status = RPM_SUSPENDING;
--	spin_unlock_irq(&q->queue_lock);
-+		spin_unlock_irq(&q->queue_lock);
+-	/* ... in case we looked up ciphertext name(s) before key was added */
+-	if ((old_dentry->d_flags | new_dentry->d_flags) &
+-	    DCACHE_ENCRYPTED_NAME)
++	/* ... in case we looked up no-key name(s) before key was added */
++	if (fscrypt_is_nokey_name(old_dentry) ||
++	    fscrypt_is_nokey_name(new_dentry))
+ 		return -ENOKEY;
  
--	if (ret)
- 		blk_clear_pm_only(q);
-+	}
- 
- 	return ret;
+ 	if (old_dir != new_dir) {
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -100,6 +100,35 @@ static inline void fscrypt_handle_d_move
+ 	dentry->d_flags &= ~DCACHE_ENCRYPTED_NAME;
  }
+ 
++/**
++ * fscrypt_is_nokey_name() - test whether a dentry is a no-key name
++ * @dentry: the dentry to check
++ *
++ * This returns true if the dentry is a no-key dentry.  A no-key dentry is a
++ * dentry that was created in an encrypted directory that hasn't had its
++ * encryption key added yet.  Such dentries may be either positive or negative.
++ *
++ * When a filesystem is asked to create a new filename in an encrypted directory
++ * and the new filename's dentry is a no-key dentry, it must fail the operation
++ * with ENOKEY.  This includes ->create(), ->mkdir(), ->mknod(), ->symlink(),
++ * ->rename(), and ->link().  (However, ->rename() and ->link() are already
++ * handled by fscrypt_prepare_rename() and fscrypt_prepare_link().)
++ *
++ * This is necessary because creating a filename requires the directory's
++ * encryption key, but just checking for the key on the directory inode during
++ * the final filesystem operation doesn't guarantee that the key was available
++ * during the preceding dentry lookup.  And the key must have already been
++ * available during the dentry lookup in order for it to have been checked
++ * whether the filename already exists in the directory and for the new file's
++ * dentry not to be invalidated due to it incorrectly having the no-key flag.
++ *
++ * Return: %true if the dentry is a no-key name
++ */
++static inline bool fscrypt_is_nokey_name(const struct dentry *dentry)
++{
++	return dentry->d_flags & DCACHE_ENCRYPTED_NAME;
++}
++
+ /* crypto.c */
+ extern void fscrypt_enqueue_decrypt_work(struct work_struct *);
+ extern struct fscrypt_ctx *fscrypt_get_ctx(gfp_t);
+@@ -290,6 +319,11 @@ static inline void fscrypt_handle_d_move
+ {
+ }
+ 
++static inline bool fscrypt_is_nokey_name(const struct dentry *dentry)
++{
++	return false;
++}
++
+ /* crypto.c */
+ static inline void fscrypt_enqueue_decrypt_work(struct work_struct *work)
+ {
 
 
