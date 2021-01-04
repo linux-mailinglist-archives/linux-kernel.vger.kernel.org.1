@@ -2,101 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5853B2E99E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 727322E99F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729198AbhADQES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:04:18 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:33814 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727833AbhADQEM (ORCPT
+        id S1728371AbhADQFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728349AbhADQF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:04:12 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 104FvlpW020449;
-        Mon, 4 Jan 2021 17:03:23 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=w4/gjtHkd2EK3mGDJKe3DGUgymeWaM5SmaC+6x8gEuY=;
- b=anOltMjWWldvqZeeYDe7HesNOJ9BjpnqAX0M1drUPPTlvTdkTeMkKMrr0O+lidWx4NSs
- OKtckD58hKAIJtuH+yz9JeEPwnLLs4FeyMN99IbyKGPrPKE9l7IpjfacP0bH2yIsnaWO
- sBJsgJ6lnv4V0l/U/g3bykYWxIhjXyn/Ea+XcuzzdFw3LLlx4q/S+mxw43QUCYU/velK
- nESCaleMkWQXKzz0FoisWMkYYDsQde8u1b9XACdhNFm96X5QHVpxmZfo8ePeex3X2b3/
- XDEiHITN6dH5v5AVPo4tQaxWfaAqhjSnDbiSTMdmR1I+6R2ByH5ShiUN1Bgyz1JBnmgo Nw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35tgkmjuyf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Jan 2021 17:03:23 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B5BD510002A;
-        Mon,  4 Jan 2021 17:03:22 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9CF94225ED1;
-        Mon,  4 Jan 2021 17:03:22 +0100 (CET)
-Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 4 Jan 2021 17:03:22
- +0100
-From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-Subject: [PATCH 1/1] mfd: stmfx: remove .of_compatible from stmfx_cells for idd and ts
-Date:   Mon, 4 Jan 2021 17:03:21 +0100
-Message-ID: <20210104160321.31403-1-amelie.delaunay@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 4 Jan 2021 11:05:27 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A67C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 08:04:47 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id c132so7997096pga.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 08:04:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=9ySUyqHnb2Bu/EFFSYUbKAOb0257YZr5FhrjovHluhE=;
+        b=kU9xnURePHBTQ0qBw8ozGrUHqPEPNFttdeAtwovYK4xhWiLpt4D8hM7rsrpTlAZIjJ
+         8nQkGcuj4GC9D8SLD3q4zMOwHBSbvmIufgzsiil8YqEB5nM7AbwvUt8Xe/7IidEV7oDS
+         30bCHIx3ZDmFXhAMnB98isUIpCAaFPn6ylbK7fQnWuXz73uHheMdqfi0U8bHloj0g53e
+         sGRAuxynNWHJfFGnXnT5yO6OmSf/PiT8t+k5EZFT+GEJZFoIcV8FIJm5SU/CYMn+ZDcv
+         SIrW8HwEoPE3jh0lgxHoOe5kjtikz0l7FL2JSqdSjxo1FL4lcAT96FFTnISp77QoYVYX
+         urYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=9ySUyqHnb2Bu/EFFSYUbKAOb0257YZr5FhrjovHluhE=;
+        b=edu3k6YWW2rnC1baX77UoiyalItyX46BYbmVD88pwiZZ/bVTNwsFkH+oVNSDs7VVhd
+         Df1LIBlqxouszn2/oU9519L3RpVSetc+/KvhSOA4eF74TAOOX0I7AEQnG9U+sR0scP8Z
+         xf5uOtsj3JaBTihRJL5OXqZ+BL8h1ZoNasKbA6wtwT3PLLT16C9H/zRhiVjnptIU2TJW
+         GTFtMoAyRX51k6GqbQOgW+Zz6k3nEb3JcRZqk0aEap4qc1fp7CkjsbXeWESOwcOGCQoa
+         En4bYIZjFK+mvCth2Prlc4iscoum6oJQm9uJ+FiPLum6YSqbBtnooA2XQCkJBNn68krP
+         5aEw==
+X-Gm-Message-State: AOAM532PKyCOmCk6fwc5vjjaX+Jp6AKneXVYvybYXw/qIoy8JRcly99I
+        1cwN7t0oQtgpzHjH9Z83jLvX3A==
+X-Google-Smtp-Source: ABdhPJyfm0XQK6gCh/zYHr7iLrA56OMUKYHCwQzIIk6uEgzKmzMiRH6PQOXJkaG3WVRmivsaUgoVSw==
+X-Received: by 2002:a63:445a:: with SMTP id t26mr71872848pgk.402.1609776286507;
+        Mon, 04 Jan 2021 08:04:46 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id ga12sm21696625pjb.48.2021.01.04.08.04.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 08:04:45 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: dts: meson: vim3: whitespace fixups
+In-Reply-To: <20201207095346.26297-2-jbrunet@baylibre.com>
+References: <20201207095346.26297-1-jbrunet@baylibre.com>
+ <20201207095346.26297-2-jbrunet@baylibre.com>
+Date:   Mon, 04 Jan 2021 08:04:45 -0800
+Message-ID: <7hy2h8n0wy.fsf@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-04_10:2021-01-04,2021-01-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-idd and ts features are not described in stmfx bindings. Remove the
-.of_compatible field from relative mfd_cells to avoid having to add
-corresponding disabled node in device trees using stmfx:
-		stmfx_idd: idd {
-			compatible = "st,stmfx-0300-idd";
-			status = "disabled";
-		};
-		stmfx_ts: stmfx_ts {
-			compatible = "st,stmfx-0300-ts";
-			status = "disabled";
-		};
-The warning "Failed to locate of_node [id: -1]" won't appear anymore.
-.of_compatible could be added as soon as idd or ts bindings are described
-and drivers available.
+Jerome Brunet <jbrunet@baylibre.com> writes:
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
----
- drivers/mfd/stmfx.c | 2 --
- 1 file changed, 2 deletions(-)
+> Spaces have been used to indent 2 nodes.
+> Replace those with tabs and remove one extra newline
+>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 
-diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
-index e095a3930142..b411d2958c18 100644
---- a/drivers/mfd/stmfx.c
-+++ b/drivers/mfd/stmfx.c
-@@ -81,13 +81,11 @@ static struct mfd_cell stmfx_cells[] = {
- 		.num_resources = ARRAY_SIZE(stmfx_pinctrl_resources),
- 	},
- 	{
--		.of_compatible = "st,stmfx-0300-idd",
- 		.name = "stmfx-idd",
- 		.resources = stmfx_idd_resources,
- 		.num_resources = ARRAY_SIZE(stmfx_idd_resources),
- 	},
- 	{
--		.of_compatible = "st,stmfx-0300-ts",
- 		.name = "stmfx-ts",
- 		.resources = stmfx_ts_resources,
- 		.num_resources = ARRAY_SIZE(stmfx_ts_resources),
--- 
-2.17.1
+Queued,
 
+Thanks.
+
+Kevin
