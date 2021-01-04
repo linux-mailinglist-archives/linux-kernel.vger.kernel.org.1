@@ -2,169 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE8C2E92E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643CA2E92F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbhADJwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 04:52:47 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58564 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726178AbhADJwr (ORCPT
+        id S1726485AbhADJ56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 04:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726258AbhADJ56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:52:47 -0500
-X-UUID: 505866cf11114a4c901b7f44555e4c66-20210104
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=sjTcMeyoXjN87Rhyg4qitaPKUaKrIT8FGe/kft/Q+nU=;
-        b=toVXNAnF4COoB0mfQAEUT8Mv6cV/aV5I5jC6T26v0ChYRLXXHRwVymM00aiOV1OmNz+KYiOIqMrzZsmMU1s8yiAB8JFiMASFdjCNAGLMQ2EhKjsvaaNeye+ejA8SRUBtVQy81tlODxBum6FqfJ30Nx3KBMLB4uinRCJoFx3HghU=;
-X-UUID: 505866cf11114a4c901b7f44555e4c66-20210104
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <roger.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 744153943; Mon, 04 Jan 2021 17:52:02 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 4 Jan 2021 17:52:00 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 4 Jan 2021 17:52:01 +0800
-Message-ID: <1609753920.7157.3.camel@mtksdaap41>
-Subject: Re: [PATCH v10 3/7] [v10, 3/7]: soc: mediatek: SVS: introduce MTK
- SVS engine
-From:   Roger Lu <roger.lu@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nishanth Menon <nm@ti.com>, Angus Lin <Angus.Lin@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        YT Lee <yt.lee@mediatek.com>, Fan Chen <fan.chen@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "HenryC Chen" <HenryC.Chen@mediatek.com>,
-        Charles Yang <Charles.Yang@mediatek.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 4 Jan 2021 17:52:00 +0800
-In-Reply-To: <CANMq1KDxVLo=JAAq-gjybke1WiX03COwNX7sHsZDMF9USzSECw@mail.gmail.com>
-References: <20201227105449.11452-1-roger.lu@mediatek.com>
-         <20201227105449.11452-4-roger.lu@mediatek.com>
-         <CANMq1KBNKy708Vz67WOc+n7V7ne4L1EZVkUVGj6abd5voxKjxA@mail.gmail.com>
-         <1609750266.20758.40.camel@mtksdaap41>
-         <CANMq1KDxVLo=JAAq-gjybke1WiX03COwNX7sHsZDMF9USzSECw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 4 Jan 2021 04:57:58 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA3AC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 01:57:17 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by baptiste.telenet-ops.be with bizsmtp
+        id CZxE2400B4C55Sk01ZxEWN; Mon, 04 Jan 2021 10:57:14 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kwMbx-0013YQ-PT
+        for linux-kernel@vger.kernel.org; Mon, 04 Jan 2021 10:57:13 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kwMbx-004IXo-98
+        for linux-kernel@vger.kernel.org; Mon, 04 Jan 2021 10:57:13 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-kernel@vger.kernel.org
+Subject: Build regressions/improvements in v5.11-rc2
+Date:   Mon,  4 Jan 2021 10:57:13 +0100
+Message-Id: <20210104095713.1024466-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTmljb2xhcywNCg0KT24gTW9uLCAyMDIxLTAxLTA0IGF0IDE3OjI3ICswODAwLCBOaWNvbGFz
-IEJvaWNoYXQgd3JvdGU6DQo+IE9uIE1vbiwgSmFuIDQsIDIwMjEgYXQgNDo1MSBQTSBSb2dlciBM
-dSA8cm9nZXIubHVAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+DQo+ID4gSGkgTmljb2xh
-cywNCj4gPg0KPiA+IFRoYW5rcyBmb3IgYWxsIHRoZSBhZHZpY2VzLg0KPiA+DQo+ID4gT24gVGh1
-LCAyMDIwLTEyLTMxIGF0IDEwOjEwICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6DQo+ID4g
-PiBPbiBTdW4sIERlYyAyNywgMjAyMCBhdCA2OjU1IFBNIFJvZ2VyIEx1IDxyb2dlci5sdUBtZWRp
-YXRlay5jb20+IHdyb3RlOg0KPiBbc25pcF0NCj4gPiA+ID4gK3N0YXRpYyBpbnQgc3ZzX2FkanVz
-dF9wbV9vcHBfdm9sdHMoc3RydWN0IHN2c19iYW5rICpzdnNiLCBib29sIGZvcmNlX3VwZGF0ZSkN
-Cj4gPiA+ID4gK3sNCj4gPiA+ID4gKyAgICAgICBpbnQgdHpvbmVfdGVtcCwgcmV0ID0gLUVQRVJN
-Ow0KPiA+ID4NCj4gPiA+IE5vIG5lZWQgdG8gaW5pdGlhbGl6ZSByZXQuDQo+ID4NCj4gPiBPaCwg
-ZXhjdXNlIG1lLCBzb21lIGNvZGluZyBjaGVjayB0b29sIHdhcm4gdGhhdCB0aGlzIGByZXRgIG1p
-Z2h0IHJldHVybg0KPiA+IHdpdGhvdXQgYmVpbmcgdW5pbml0aWFsaXplZC4gVGhlcmVmb3JlLCBJ
-J2xsIGtlZXAgdGhlIGluaXRpYWxpemF0aW9uLg0KPiANCj4gT2gsIHlvdSdyZSByaWdodCwgdGhl
-cmUgaXMgYSBwb3NzaWJsZSBwYXRoIHdoZXJlIHJldCBpcyBub3Qgc2V0LiBzZ3RtIHRoZW4uDQo+
-IA0KPiA+DQo+ID4gPg0KPiA+ID4gPiArICAgICAgIHUzMiBpLCBzdnNiX3ZvbHQsIG9wcF92b2x0
-LCB0ZW1wX29mZnNldCA9IDA7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICBtdXRleF9sb2Nr
-KCZzdnNiLT5sb2NrKTsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgIC8qDQo+ID4gPiA+ICsg
-ICAgICAgICogSWYgc3ZzIGJhbmsgaXMgc3VzcGVuZGVkLCBpdCBtZWFucyBzaWduZWQtb2ZmIHZv
-bHRhZ2VzIGFyZSBhcHBsaWVkLg0KPiA+ID4gPiArICAgICAgICAqIERvbid0IG5lZWQgdG8gdXBk
-YXRlIG9wcCB2b2x0YWdlIGFueW1vcmUuDQo+ID4gPiA+ICsgICAgICAgICovDQo+ID4gPiA+ICsg
-ICAgICAgaWYgKHN2c2ItPnN1c3BlbmRlZCAmJiAhZm9yY2VfdXBkYXRlKSB7DQo+ID4gPiA+ICsg
-ICAgICAgICAgICAgICBkZXZfbm90aWNlKHN2c2ItPmRldiwgImJhbmsgaXMgc3VzcGVuZGVkXG4i
-KTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIHJldCA9IC1FUEVSTTsNCj4gPiA+ID4gKyAgICAg
-ICAgICAgICAgIGdvdG8gdW5sb2NrX211dGV4Ow0KPiA+ID4gPiArICAgICAgIH0NCj4gPiA+ID4g
-Kw0KPiA+ID4gPiArICAgICAgIC8qIEdldCB0aGVybWFsIGVmZmVjdCAqLw0KPiA+ID4gPiArICAg
-ICAgIGlmIChzdnNiLT5waGFzZSA9PSBTVlNCX1BIQVNFX01PTikgew0KPiA+ID4gPiArICAgICAg
-ICAgICAgICAgaWYgKHN2c2ItPnRlbXAgPiBzdnNiLT50ZW1wX3VwcGVyX2JvdW5kICYmDQo+ID4g
-PiA+ICsgICAgICAgICAgICAgICAgICAgc3ZzYi0+dGVtcCA8IHN2c2ItPnRlbXBfbG93ZXJfYm91
-bmQpIHsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZGV2X3dhcm4oc3ZzYi0+ZGV2
-LCAic3ZzYiB0ZW1wID0gMHgleD9cbiIsIHN2c2ItPnRlbXApOw0KPiA+ID4gPiArICAgICAgICAg
-ICAgICAgICAgICAgICByZXQgPSAtRUlOVkFMOw0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAg
-ICAgICBnb3RvIHVubG9ja19tdXRleDsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIH0NCj4gPiA+
-ID4gKw0KPiA+ID4gPiArICAgICAgICAgICAgICAgcmV0ID0gc3ZzX2dldF9iYW5rX3pvbmVfdGVt
-cGVyYXR1cmUoc3ZzYi0+dHpvbmVfbmFtZSwNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZ0em9uZV90ZW1wKTsNCj4gPiA+ID4gKyAg
-ICAgICAgICAgICAgIGlmIChyZXQpIHsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ZGV2X2VycihzdnNiLT5kZXYsICJubyBcIiVzXCI/KCVkKT9cbiIsDQo+ID4gPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgc3ZzYi0+dHpvbmVfbmFtZSwgcmV0KTsNCj4gPiA+ID4g
-KyAgICAgICAgICAgICAgICAgICAgICAgZGV2X2VycihzdnNiLT5kZXYsICJzZXQgc2lnbmVkLW9m
-ZiB2b2x0YWdlXG4iKTsNCj4gPiA+DQo+ID4gPiBQbGVhc2UgbWVyZ2UgdGhlIGVycm9yIG1lc3Nh
-Z2UgaW4gb25lIGxpbmUgKEknbSBub3Qgc3VyZSB3aGF0ICJzZXQNCj4gPiA+IHNpZ25lZC1vZmYg
-dm9sdGFnZSIgbWVhbnMgaGVyZSkuDQo+ID4NCj4gPiAxLiBPaywgSSdsbCBtZXJnZSB0aGVtLiBU
-aGFua3MuDQo+ID4gMi4gc2lnbmVkLW9mZiB2b2x0YWdlcyBtZWFucyBDUFUgRFZGUyBkZWZhdWx0
-IHZvbHRhZ2VzDQo+IA0KPiBTbyBqdXN0IHdyaXRlICJkZWZhdWx0IHZvbHRhZ2VzIiB0aGVuPyAs
-LSkNCg0KT2ssIHRoYW5rcy4gOikNCg0KPiANCj4gPg0KPiA+ID4NCj4gW3NuaXBdDQo+ID4gPiA+
-ICtzdGF0aWMgaXJxcmV0dXJuX3Qgc3ZzX2lzcihpbnQgaXJxLCB2b2lkICpkYXRhKQ0KPiA+ID4g
-PiArew0KPiA+ID4gPiArICAgICAgIHN0cnVjdCBzdnNfcGxhdGZvcm0gKnN2c3AgPSAoc3RydWN0
-IHN2c19wbGF0Zm9ybSAqKWRhdGE7DQo+ID4gPg0KPiA+ID4gY2FzdCBub3QgbmVlZGVkLg0KPiA+
-DQo+ID4gT2ssIEknbGwgcmVtb3ZlIGl0LiBUaGFua3MuDQo+ID4NCj4gPiA+DQo+ID4gPiA+ICsg
-ICAgICAgc3RydWN0IHN2c19iYW5rICpzdnNiID0gTlVMTDsNCj4gPiA+ID4gKyAgICAgICB1bnNp
-Z25lZCBsb25nIGZsYWdzOw0KPiA+ID4gPiArICAgICAgIHUzMiBpZHgsIGludF9zdHMsIHN2c19l
-bjsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgIGZvciAoaWR4ID0gMDsgaWR4IDwgc3ZzcC0+
-YmFua19udW07IGlkeCsrKSB7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICBzdnNiID0gJnN2c3At
-PmJhbmtzW2lkeF07DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIHNwaW5fbG9j
-a19pcnFzYXZlKCZtdGtfc3ZzX2xvY2ssIGZsYWdzKTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAg
-IHN2c3AtPnBiYW5rID0gc3ZzYjsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgICAgICAgICAg
-LyogRmluZCBvdXQgd2hpY2ggc3ZzIGJhbmsgZmlyZXMgaW50ZXJydXB0ICovDQo+ID4gPiA+ICsg
-ICAgICAgICAgICAgICBpZiAoc3ZzYi0+aW50X3N0ICYgc3ZzX3JlYWRsKHN2c3AsIElOVFNUKSkg
-ew0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICBzcGluX3VubG9ja19pcnFyZXN0b3Jl
-KCZtdGtfc3ZzX2xvY2ssIGZsYWdzKTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
-Y29udGludWU7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICB9DQo+ID4gPiA+ICsNCj4gPiA+ID4g
-KyAgICAgICAgICAgICAgIGlmICghc3ZzYi0+c3VzcGVuZGVkKSB7DQo+ID4gPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgIHN2c19zd2l0Y2hfYmFuayhzdnNwKTsNCj4gPiA+ID4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgaW50X3N0cyA9IHN2c19yZWFkbChzdnNwLCBJTlRTVFMpOw0KPiA+ID4g
-PiArICAgICAgICAgICAgICAgICAgICAgICBzdnNfZW4gPSBzdnNfcmVhZGwoc3ZzcCwgU1ZTRU4p
-Ow0KPiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGlmIChpbnRfc3Rz
-ID09IFNWU0JfSU5UU1RTX0NPTVBMRVRFICYmDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAoKHN2c19lbiAmIFNWU0JfRU5fTUFTSykgPT0gU1ZTQl9FTl9JTklUMDEpKQ0KPiA+
-ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN2c19pbml0MDFfaXNyX2hhbmRs
-ZXIoc3ZzcCk7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGVsc2UgaWYgKChpbnRf
-c3RzID09IFNWU0JfSU5UU1RTX0NPTVBMRVRFKSAmJg0KPiA+ID4gPiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAoKHN2c19lbiAmIFNWU0JfRU5fTUFTSykgPT0gU1ZTQl9FTl9JTklU
-MDIpKQ0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN2c19pbml0MDJf
-aXNyX2hhbmRsZXIoc3ZzcCk7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGVsc2Ug
-aWYgKCEhKGludF9zdHMgJiBTVlNCX0lOVFNUU19NT05WT1ApKQ0KPiA+ID4NCj4gPiA+ICEhIGlz
-IG5vdCByZXF1aXJlZC4NCj4gPg0KPiA+IE9rLCBJJ2xsIHJlbW92ZSBpdC4gVGhhbmtzLg0KPiA+
-DQo+ID4gPg0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN2c19tb25f
-bW9kZV9pc3JfaGFuZGxlcihzdnNwKTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ZWxzZQ0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN2c19lcnJvcl9p
-c3JfaGFuZGxlcihzdnNwKTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIH0NCj4gPiA+ID4gKw0K
-PiA+ID4gPiArICAgICAgICAgICAgICAgc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmbXRrX3N2c19s
-b2NrLCBmbGFncyk7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICBicmVhazsNCj4gPiA+ID4gKyAg
-ICAgICB9DQo+ID4gPg0KPiA+ID4gVGhpcyB3aWxsIHBhbmljIGlmIHN2c2IgaXMgTlVMTCwgaXMg
-dGhhdCBvayBvciBkbyB5b3Ugd2FudCB0byBjYXRjaCB0aGF0Pw0KPiA+DQo+ID4gT2gsIGl0IGlz
-IGZpbmUuIFRoYW5rcyBmb3IgdGhlIGhlYWRzLXVwLg0KPiANCj4gSSBzaG91bGQgaGF2ZSBiZWVu
-IHN0cm9uZ2VyIGluIG15IHN0YXRlbWVudCwgSSB0aGluayB5b3Ugd2FudCB0byBhZGQgYQ0KPiBC
-VUdfT04oIXN2c2IpIHRvIGNyYXNoIGluIGEgc2xpZ2h0bHkgbW9yZSBwcmVkaWN0YWJsZSBtYW5u
-ZXIuDQoNCk9rLCBJJ2xsIGFkZCBCVUdfT04oIXN2c2IpIHRvIGdpdmUgYW4gZXZpZGVudCBoZWFk
-cy11cC4gVGhhbmtzLg0KDQo+IA0KPiBbc25pcF0NCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAg
-IHN2c3AtPnRlZnVzZSA9ICh1MzIgKiludm1lbV9jZWxsX3JlYWQoY2VsbCwgJnN2c3AtPnRlZnVz
-ZV9udW0pOw0KPiA+ID4NCj4gPiA+IENhc3Qgbm90IG5lZWRlZC4NCj4gPg0KPiA+IE9rLCBJJ2xs
-IHJlbW92ZSBpdCBpZiBidWlsZC90ZXN0IG9rLiBCZWNhdXNlIG52bWVtX2NlbGxfcmVhZCByZXR1
-cm5zDQo+ID4gKHZvaWQgKikuDQo+ID4NCj4gPiA+DQo+ID4gPiBBbHNvLCB0aGlzIG5lZWQgdG8g
-YmUgZnJlZWQgc29tZXdoZXJlIGluIHJlbW92ZSBjb2RlIChrZnJlZShzdnNwLT50ZWZ1c2UpKS4N
-Cj4gPiA+DQo+ID4gPiBBbmQgaXQgc2VlbXMgbGlrZSBzdnNwLT50ZWZ1c2UgaXMgb25seSB1c2Vk
-IGluIHRoaXMgZnVuY3Rpb24sIGNhbiB5b3UNCj4gPiA+IGp1c3QgYWxsb2NhdGUgaXQgaGVyZT8N
-Cj4gPg0KPiA+IE9oLCBzdnNwLT50ZWZ1c2Ugd2lsbCBiZSB1c2VkIGluIFNWUyBkZWJ1ZyBwYXRj
-aCBmb3IgZGVidWcgcHVycG9zZS4gU28sDQo+ID4gSSBuZWVkIHRvIHNhdmUgaXQgYXMgc3RydWN0
-IG1lbWJlci4NCj4gDQo+IE9oIEkgbWlzc2VkIHRoYXQsIHNndG0gdGhlbi4gVGhhbmtzLg0KPiAN
-Cj4gPg0KPiBbc25pcF0NCg0K
+Below is the list of build error/warning regressions/improvements in
+v5.11-rc2[1] compared to v5.10[2].
 
+Summarized:
+  - build errors: +3/-3
+  - build warnings: +23/-95
+
+JFYI, when comparing v5.11-rc2[1] to v5.11-rc1[3], the summaries are:
+  - build errors: +2/-0
+  - build warnings: +51/-0
+
+Happy fixing! ;-)
+
+Thanks to the linux-next team for providing the build service.
+
+[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62/ (all 192 configs)
+[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/2c85ebc57b3e1817b6ce1a6b703928e113a90442/ (all 192 configs)
+[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/5c8fe583cce542aa0b84adc939ce85293de36e5e/ (all 192 configs)
+
+
+*** ERRORS ***
+
+3 error regressions:
+  + /kisskb/src/include/linux/mmzone.h: error: #error Allocator MAX_ORDER exceeds SECTION_SIZE:  => 1156:2
+  + error: modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!:  => N/A
+  + error: rk3399_gru_sound.c: relocation truncated to fit: R_NDS32_WORD_9_PCREL_RELA against `.text':  => (.text+0x6a8)
+
+3 error improvements:
+  - /kisskb/src/arch/powerpc/platforms/powermac/smp.c: error: implicit declaration of function 'cleanup_cpu_mmu_context' [-Werror=implicit-function-declaration]: 914:2 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'disable_kernel_vsx' [-Werror=implicit-function-declaration]: 676:2 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'enable_kernel_vsx' [-Werror=implicit-function-declaration]: 640:2 => 
+
+
+*** WARNINGS ***
+
+23 warning regressions:
+  + .config: warning: override: reassigning to symbol GCC_PLUGIN_CYC_COMPLEXITY:  => 4498, 4524
+  + .config: warning: override: reassigning to symbol GCC_PLUGIN_LATENT_ENTROPY:  => 4526, 4500
+  + .config: warning: override: reassigning to symbol MIPS_CPS_NS16550_SHIFT: 12743, 12729 => 12879, 12896, 12883
+  + .config: warning: override: reassigning to symbol PPC_64K_PAGES:  => 13259
+  + /kisskb/src/arch/arm/mach-omap1/board-h2.c: warning: 'isp1301_gpiod_table' defined but not used [-Wunused-variable]:  => 347:34
+  + /kisskb/src/arch/arm64/kernel/smp.c: warning: unused variable 'irq' [-Wunused-variable]:  => 810:16
+  + /kisskb/src/arch/ia64/include/asm/sparsemem.h: warning: "PAGE_SHIFT" is not defined [-Wundef]:  => 14:40
+  + /kisskb/src/arch/sh/kernel/traps.c: warning: unused variable 'cpu' [-Wunused-variable]:  => 183:15
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: (near initialization for 'boot_options.bits') [-Wmissing-braces]:  => 326:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: missing braces around initializer [-Wmissing-braces]:  => 326:8
+  + /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: (near initialization for 'freq_info.output') [-Wmissing-braces]:  => 409:9
+  + /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: missing braces around initializer [-Wmissing-braces]:  => 409:9
+  + /kisskb/src/drivers/pinctrl/nomadik/pinctrl-nomadik.c: warning: unused variable 'wake' [-Wunused-variable]:  => 952:8
+  + /kisskb/src/drivers/rtc/rtc-rx6110.c: warning: 'rx6110_probe' defined but not used [-Wunused-function]:  => 314:12
+  + /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: (near initialization for 'req.service_path') [-Wmissing-braces]:  => 572:9
+  + /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: missing braces around initializer [-Wmissing-braces]:  => 572:9
+  + /kisskb/src/include/linux/minmax.h: warning: comparison of distinct pointer types lacks a cast:  => 18:28
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4200 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4224 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7432 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7440 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7456 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1348 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 2262:1
+
+95 warning improvements:
+  - /kisskb/src/arch/m68k/include/asm/cmpxchg.h: warning: value computed is not used [-Wunused-value]: 79:22, 122:3 => 
+  - /kisskb/src/arch/parisc/kernel/pci-dma.c: warning: 'proc_pcxl_dma_show' defined but not used [-Wunused-function]: 338:12 => 
+  - /kisskb/src/arch/s390/boot/mem_detect.c: warning: 'detect_memory' uses dynamic stack allocation: 175:1 => 
+  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2960 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 95:1, 51:1 => 
+  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2960 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 95:1 => 
+  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2976 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 51:1 => 
+  - /kisskb/src/block/genhd.c: warning: the frame size of 1688 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 1662:1 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: (near initialization for 'clock_table.DcfClocks') [-Wmissing-braces]: 846:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 846:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1795:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]: 1795:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 1279:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 1279:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1200:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]: 1200:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'dcn2_0_nv12_soc.clock_limits') [-Wmissing-braces]: 451:15 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: missing braces around initializer [-Wmissing-braces]: 451:15 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 258:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 258:9 => 
+  - /kisskb/src/drivers/media/pci/intel/ipu3/ipu3-cio2.h: warning: large integer implicitly truncated to unsigned type [-Woverflow]: 22:28 => 
+  - /kisskb/src/drivers/net/ethernet/aurora/nb8800.h: warning: "TCR_DIE" redefined: 92:0, 92 => 92
+  - /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation: 441:1 => 
+  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in conversion from 'long unsigned int' to 'int' changes value from '18446744073709551584' to '-32' [-Woverflow]: 760:2 => 
+  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in implicit constant conversion [-Woverflow]: 760:2 => 
+  - /kisskb/src/drivers/net/ethernet/neterion/vxge/vxge-config.c: warning: 'vxge_hw_device_hw_info_get' uses dynamic stack allocation: 1092:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_add_vlan_id' uses dynamic stack allocation: 317:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_del_vlan_id' uses dynamic stack allocation: 331:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_probe' uses dynamic stack allocation: 590:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_query_rgid' uses dynamic stack allocation: 216:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_register_dmb' uses dynamic stack allocation: 282:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_signal_ieq' uses dynamic stack allocation: 359:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_unregister_dmb' uses dynamic stack allocation: 303:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'query_info' uses dynamic stack allocation: 85:1 => 
+  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation: 482:1 => 
+  - /kisskb/src/drivers/target/iscsi/iscsi_target.c: warning: 'iscsit_send_datain' uses dynamic stack allocation: 2886:1 => 
+  - /kisskb/src/fs/nfs/super.c: warning: 'nfs_show_stats' uses dynamic stack allocation: 704:1 => 
+  - /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2192 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 1311:1 => 
+  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.14' uses dynamic stack allocation: 295:1 => 
+  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.24' uses dynamic stack allocation: 3667:1 => 
+  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_show_fdinfo' uses dynamic stack allocation: 1819:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_free_coherent' uses dynamic stack allocation: 1439:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_cpu' uses dynamic stack allocation: 1549:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_device' uses dynamic stack allocation: 1580:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_cpu' uses dynamic stack allocation: 1498:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_device' uses dynamic stack allocation: 1517:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_page' uses dynamic stack allocation: 1290:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_resource' uses dynamic stack allocation: 1480:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_sg' uses dynamic stack allocation: 1378:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: '___perf_sw_event' uses dynamic stack allocation: 9116:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_aux_event' uses dynamic stack allocation: 8303:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_bpf_output' uses dynamic stack allocation: 8600:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_cgroup_output' uses dynamic stack allocation: 7871:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_comm_output' uses dynamic stack allocation: 7649:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_ksymbol_output' uses dynamic stack allocation: 8511:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_mmap_output' uses dynamic stack allocation: 8012:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_namespaces_output' uses dynamic stack allocation: 7748:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_read_event' uses dynamic stack allocation: 7268:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_switch_output' uses dynamic stack allocation: 8395:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_task_output' uses dynamic stack allocation: 7555:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_text_poke_output' uses dynamic stack allocation: 8718:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_itrace_start' uses dynamic stack allocation: 8791:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_lost_samples' uses dynamic stack allocation: 8336:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_throttle' uses dynamic stack allocation: 8466:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_swevent_hrtimer' uses dynamic stack allocation: 10275:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_tp_event' uses dynamic stack allocation: 9430:1 => 
+  - /kisskb/src/kernel/rcu/tasks.h: warning: 'show_rcu_tasks_rude_gp_kthread' defined but not used [-Wunused-function]: 710:13 => 
+  - /kisskb/src/kernel/rseq.c: warning: '__rseq_handle_notify_resume' uses dynamic stack allocation: 281:1 => 
+  - /kisskb/src/kernel/rseq.c: warning: 'rseq_syscall' uses dynamic stack allocation: 300:1 => 
+  - /kisskb/src/kernel/smp.c: warning: 'smp_call_function_single' uses dynamic stack allocation: 517:1 => 
+  - /kisskb/src/lib/crypto/chacha20poly1305.c: warning: 'chacha20poly1305_crypt_sg_inplace' uses dynamic stack allocation: 331:1 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_partial.isra.29' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_none.isra.63' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_all.isra.49' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_partial.isra.41' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_partial.isra.17' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_zero.isra.9' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_partial' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_none' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_partial' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_partial' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_zero' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/mm/slub.c: warning: '___slab_alloc' uses dynamic stack allocation: 2759:1 => 
+  - /kisskb/src/mm/slub.c: warning: '__slab_free' uses dynamic stack allocation: 3073:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.60' uses dynamic stack allocation: 2295:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.59' uses dynamic stack allocation: 1992:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.58' uses dynamic stack allocation: 2363:1 => 
+  - /kisskb/src/net/bridge/netfilter/ebtables.c: warning: 'compat_copy_everything_to_user' uses dynamic stack allocation: 1767:1 => 
+  - /kisskb/src/net/sched/sch_cake.c: warning: the frame size of 1480 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 2942:1 => 
+  - warning: unmet direct dependencies detected for MFD_CORE: N/A => 
+  - warning: unmet direct dependencies detected for NEED_MULTIPLE_NODES: N/A => 
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
