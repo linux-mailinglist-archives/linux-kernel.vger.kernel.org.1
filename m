@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6442E9E9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A4B2E9EA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbhADUJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:09:10 -0500
-Received: from mga11.intel.com ([192.55.52.93]:35243 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725840AbhADUJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:09:10 -0500
-IronPort-SDR: s5K+C27vyajcSgtzMVnYrTLDOOpnV7CQ717Anbodlk4hEBc58Jr90+l/mVWCNKMVWVq+xu0vZ2
- i68jNCNbwLcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="173494318"
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="173494318"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 12:08:29 -0800
-IronPort-SDR: urpI8d5B4JN9RjNmAOAUe5lL7HXhD3ElEk+4b7L539xEbw5mo/rkDiYv+M0N4sNtH00csg4QQ/
- mzFVpqGchYdw==
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="360892786"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.103.116]) ([10.209.103.116])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 12:08:28 -0800
-Subject: Re: [PATCH v17 00/26] Control-flow Enforcement: Shadow Stack
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>, x86-patch-review@intel.com,
-        "Schlobohm, Bruce" <bruce.schlobohm@intel.com>
-References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <0a475c4c-58b0-0da7-8889-a0dbbc7d0fdc@intel.com>
-Date:   Mon, 4 Jan 2021 12:08:27 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728056AbhADULC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 15:11:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728011AbhADULC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 15:11:02 -0500
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7944BC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 12:10:21 -0800 (PST)
+Received: from localhost (home.natalenko.name [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id DD8F19170DB;
+        Mon,  4 Jan 2021 21:10:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1609791017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MLs4lOSwia7VVuKW2mZ/Q32qp8iJH2T1iJGlhcXRlsA=;
+        b=PnAE02r6UbSUII6M2v3mryUx4d+bRebvwUfSzi4RnFwd7uHTyz8DwdMHjuN1RJe6+NRDIS
+        IdWteI0aUMlI6Uj4aw+nGXCXIQpRe/Rd+lefzIsOgVWY58UXr3YO2vgQm8Cf80/XLfx6Yd
+        tUar3yyw+RGkD+LgUE+lLEnBVL8hezY=
+Date:   Mon, 4 Jan 2021 21:10:16 +0100
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Andre Tomt <andre@tomt.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>
+Subject: Re: [PATCH 5.10 637/717] drm/amd/display: Fix memory leaks in S3
+ resume
+Message-ID: <20210104201016.bncnhyq25zz2y76h@spock.localdomain>
+References: <20201228125020.963311703@linuxfoundation.org>
+ <20201228125051.444911072@linuxfoundation.org>
+ <e5d9703f-42a4-f154-cf13-55a3eba10859@tomt.net>
 MIME-Version: 1.0
-In-Reply-To: <20201229213053.16395-1-yu-cheng.yu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5d9703f-42a4-f154-cf13-55a3eba10859@tomt.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/29/2020 1:30 PM, Yu-cheng Yu wrote:
-> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
-> return/jump-oriented programming attacks.  Details are in "Intel 64 and
-> IA-32 Architectures Software Developer's Manual" [1].
+On Mon, Jan 04, 2021 at 08:04:08PM +0100, Andre Tomt wrote:
+> On 28.12.2020 13:50, Greg Kroah-Hartman wrote:
+> > From: Stylon Wang <stylon.wang@amd.com>
+> > 
+> > commit a135a1b4c4db1f3b8cbed9676a40ede39feb3362 upstream.
+> > 
+> > EDID parsing in S3 resume pushes new display modes
+> > to probed_modes list but doesn't consolidate to actual
+> > mode list. This creates a race condition when
+> > amdgpu_dm_connector_ddc_get_modes() re-initializes the
+> > list head without walking the list and results in  memory leak.
 > 
-> CET can protect applications and the kernel.  This series enables only
-> application-level protection, and has three parts:
+> This commit is causing me problems on 5.10.4: when I turn off the display (a
+> LG TV in this case), and turn it back on again later there is no video
+> output and I get the following in the kernel log:
 > 
->    - Shadow stack [2],
->    - Indirect branch tracking [3], and
->    - Selftests [4].
-> 
-> I have run tests on these patches for quite some time, and they have been
-> very stable.  Linux distributions with CET are available now, and Intel
-> processors with CET are already on the market.  It would be nice if CET
-> support can be accepted into the kernel.  I will be working to address any
-> issues should they come up.
-> 
-> Changes in v17:
-> - Rebase to v5.11-rc1.
+> [ 8245.259628] [drm:dm_restore_drm_connector_state [amdgpu]] *ERROR*
+> Restoring old state failed with -12
 
-Hi Reviewers,
+Uh, it seems you've just saved me a ton of gray hair. I have the very
+same issue and I'm going to revert this patch now in order to check
+whether it makes any difference.
 
-After a few revisions/re-bases, I have dropped some Reviewed-by tags. 
-This revision is only a re-base to the latest Linus tree.  Please kindly 
-comment if there are anything still not resolved, and I appreciate very 
-much Reviewed-by/Acked-by tags to satisfactory patches.
+Thanks!
 
---
-Thanks,
-Yu-cheng
+> 
+> I've found another report on this commit as well:
+> https://bugzilla.kernel.org/show_bug.cgi?id=211033
+> 
+> And I suspect this is the same:
+> https://bugs.archlinux.org/task/69202
+> 
+> Reverting it from 5.10.4 makes things behave again.
+> 
+> Have not tested 5.4.86 or 5.11-rc.
+> 
+> I'm using a RX570 Polaris based card.
+
+-- 
+  Oleksandr Natalenko (post-factum)
