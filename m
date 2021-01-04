@@ -2,53 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D952E9FC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867E42E9FD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 23:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbhADWBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 17:01:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726260AbhADWBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 17:01:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 827552225E;
-        Mon,  4 Jan 2021 22:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609797660;
-        bh=TH62U7AAYl3N+Fpl/0Ilxx+FrsIwbFee0Efw7bO6Z8Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rZBxi2Tr5SufDqER3yBoGKYALmEwZ6ZciiLcmJOWbbM4HsNXePO1isKKBp3rzdEVT
-         vch3kwYvWTRbHA+qZfqJqF/J5wRVNB4E7z/egEPH8Dcpj4QDN3nonmshKQQ8N+z7Q2
-         TEPwTUG4Swjg77fTer1PIEscPmwuFN2MsAs2vPLKYd5AUIc6Zyevq2DN0s4wP8d0gc
-         JHNDz1K+tAkSM/SnaN9/a24bzKSeCrmVEnwbZZgWStsCw9Fyme0md+o2EzqJ5xSysd
-         yd8HeS7FGJIKoQjLplN30HvrAk8YmoC/8HfCcC5utcBWM+wbl998l8uQx0LuTCc0Wn
-         E6PbwKops1ONA==
-Date:   Mon, 4 Jan 2021 14:00:58 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jouni =?UTF-8?B?U2VwcMOkbmVu?= <jks@iki.fi>
-Cc:     Oliver Neukum <oliver@neukum.org>, linux-usb@vger.kernel.org,
-        =?UTF-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Enrico Mioso <mrkiko.rs@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH net,stable v2] net: cdc_ncm: correct overhead in
- delayed_ndp_size
-Message-ID: <20210104140058.34cb4111@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210103202309.1201-1-jks@iki.fi>
-References: <20210103143602.95343-1-jks@iki.fi>
-        <20210103202309.1201-1-jks@iki.fi>
+        id S1726371AbhADWJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 17:09:54 -0500
+Received: from smtprelay0221.hostedemail.com ([216.40.44.221]:49896 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726026AbhADWJy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 17:09:54 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 34141100E7B46;
+        Mon,  4 Jan 2021 22:09:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3865:3866:3868:3870:3871:4321:5007:7652:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13095:13311:13357:13439:14181:14659:14721:21080:21433:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: year81_62173d2274d3
+X-Filterd-Recvd-Size: 1589
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  4 Jan 2021 22:09:11 +0000 (UTC)
+Message-ID: <0e8754d14cb5624704159ba85b18f8a6bb703b27.camel@perches.com>
+Subject: Re: [PATCH v3 3/5] checkpatch: kconfig: enforce help text
+ indentation
+From:   Joe Perches <joe@perches.com>
+To:     Nicolai Fischer <nicolai.fischer@fau.de>,
+        linux-kernel@vger.kernel.org
+Cc:     apw@canonical.com, akpm@linux-foundation.org,
+        johannes.czekay@fau.de, linux-kernel@i4.cs.fau.de
+Date:   Mon, 04 Jan 2021 14:09:10 -0800
+In-Reply-To: <20210103075015.23946-4-nicolai.fischer@fau.de>
+References: <20201226140511.662368-1-nicolai.fischer@fau.de>
+         <20210103075015.23946-1-nicolai.fischer@fau.de>
+         <20210103075015.23946-4-nicolai.fischer@fau.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  3 Jan 2021 22:23:09 +0200 Jouni Sepp=C3=A4nen wrote:
->  	if (ctx->drvflags & CDC_NCM_FLAG_NDP_TO_END)
-> -		delayed_ndp_size =3D ALIGN(ctx->max_ndp_size, ctx->tx_ndp_modulus);
-> +		delayed_ndp_size =3D ctx->max_ndp_size +
-> +			max((u32)ctx->tx_ndp_modulus,
-> +			    (u32)ctx->tx_modulus + ctx->tx_remainder) - 1;
+On Sun, 2021-01-03 at 08:50 +0100, Nicolai Fischer wrote:
+> Adds a new warning in case the indentation level of the
+> first line of a Kconfig help message is not at least two spaces
+> higher than the keyword itself.
+> Blank lines between the message and the help keyword
+> are ignored.
+> 
+> Co-developed-by: Johannes Czekay <johannes.czekay@fau.de>
+> Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
+> Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
+> ---
+> 
+> Now matches indentation of two or more spaces, instead of exactly two.
 
-Let's use max_t, like Bjorn suggested.
+No, this should match exactly 2 and warn on any other use.
+
+
