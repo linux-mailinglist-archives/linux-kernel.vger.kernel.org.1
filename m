@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAB82E9AB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B272E9ACE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729976AbhADQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:13:31 -0500
-Received: from mga12.intel.com ([192.55.52.136]:58368 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729914AbhADQNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:13:17 -0500
-IronPort-SDR: 0DWrWzUEWLCNIS74p5n/erbSmXiSwqKzMc/9mRBvOJR/iq5c/wlmqwn2Eys+XrJkR0e6lPlpKq
- JBQII0R+MDjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156167540"
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="156167540"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:12:36 -0800
-IronPort-SDR: G4qPXJ/u5P7tzi0LQVR3bnnVjEt8/+JF5VfHTuJGXPNUaBkbM3EQCfJ8JGG7X1LE/P/0DsZhkr
- CrUb9zAWHYxg==
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="378471325"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 08:12:36 -0800
-Date:   Mon, 4 Jan 2021 08:12:36 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Vineet Gupta <vgupts@synopsys.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org
-Subject: Re: [PATCH v2] fs/dax: include <asm/page.h> to fix build error on ARC
-Message-ID: <20210104161236.GE3097896@iweiny-DESK2.sc.intel.com>
-References: <20210101042914.5313-1-rdunlap@infradead.org>
+        id S1729992AbhADQOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:14:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729978AbhADQOC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:14:02 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7E0C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 08:13:22 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id h186so16710865pfe.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 08:13:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=XDfsTJvF8BHWT/MwLCJjoGuI8FbQRWjKjuVmDMQxU8M=;
+        b=mVSg0/91IdSUQNfDZ1CuvV95N73XydEpcMZEkS9cLA7xrpuWEiKRa2CwBZBPaqSQbf
+         ocOEQT2NMLlRGb0bYAlWV0tAEwWiBQT6oD0B3R2HBOzslWIJuKCKxOvRcA8YVg8RuZCJ
+         d+vXwIENA93kVBVD0o4HxoNca6TMZj6dR+MSqlqg3SsF3LCbMyiItxYf45L2Fx9mIXCT
+         EgYSdh8fowgKMvxdlF0b62BbRW/O/kTFqHWpWr2nu2pXEiS1+moU7WAnHxO4/Vxa9+fC
+         DCn11syJR9zxjIk3rNxjyZn4kIqPwvbR2yyRVqEYwC7dBZ1wEJnAMiB02GypqSDIEU8r
+         wvfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=XDfsTJvF8BHWT/MwLCJjoGuI8FbQRWjKjuVmDMQxU8M=;
+        b=SNGLkh+vLT3TbyqNNSaSU5zWB6s/MpKning6KZYRr2WsOOj7oeHpdThRLrAf1Ri6wM
+         ClzKeDEVG24GP3gGZ3Aj8oI3NYSzP3kDjLNQdrBxIOGXKEk6RKhhZFe90Kh8ICYT59bU
+         uAZIjxITnJBbr6zxBW4GZKjxYzPmxdk8/FwL6qwPMx6f9+7WRMnURfRWTx3gMeurN2Sa
+         xMoU2MM/Ig3H1gtCrAGvlw9AZjpu1SXdL/+TX8ZSHXAdiYQm4qK2V+p1SvY5b02JGnWD
+         ajqcj9IpoALUwm7BObeVT4lv/KxJb1acNRM6vGmkCFf/sY7xKTQzUCIZE9kKxQr7+jwe
+         q9WA==
+X-Gm-Message-State: AOAM531YlipzWJV9zOJMAict+mMJFqykyKSK6R7C/G5+YXE70bDdMwBC
+        0s7JmDibolUuP/2ztjXWuSBJsw==
+X-Google-Smtp-Source: ABdhPJxiSbquKtEEXiVFyDA3gyCmMk8WaU6Pzjy6k497zwZtHFZ3/TlUj90UnzII6zSWOz9L7Y+WYQ==
+X-Received: by 2002:a65:6659:: with SMTP id z25mr61934189pgv.427.1609776801878;
+        Mon, 04 Jan 2021 08:13:21 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id q23sm57413879pfg.18.2021.01.04.08.13.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 08:13:21 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Alexander Dahl <post@lespocky.de>, Rob Herring <robh+dt@kernel.org>
+Cc:     Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
+        Alexander Dahl <post@lespocky.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCH v9 4/4] arm64: dts: meson: Fix schema warnings for pwm-leds
+In-Reply-To: <20201228163217.32520-5-post@lespocky.de>
+References: <20201228163217.32520-1-post@lespocky.de>
+ <20201228163217.32520-5-post@lespocky.de>
+Date:   Mon, 04 Jan 2021 08:13:20 -0800
+Message-ID: <7hv9ccn0in.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210101042914.5313-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 08:29:14PM -0800, Randy Dunlap wrote:
-> fs/dax.c uses copy_user_page() but ARC does not provide that interface,
-> resulting in a build error.
-> 
-> Provide copy_user_page() in <asm/page.h> (beside copy_page()) and
-> add <asm/page.h> to fs/dax.c to fix the build error.
-> 
-> ../fs/dax.c: In function 'copy_cow_page_dax':
-> ../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
-> 
-> Fixes: cccbce671582 ("filesystem-dax: convert to dax_direct_access()")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Alexander Dahl <post@lespocky.de> writes:
 
-Looks reasonable
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> The node names for devices using the pwm-leds driver follow a certain
+> naming scheme (now).  Parent node name is not enforced, but recommended
+> by DT project.
+>
+> Signed-off-by: Alexander Dahl <post@lespocky.de>
+> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
 
-> Cc: Vineet Gupta <vgupta@synopsys.com>
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Acked-by: Vineet Gupta <vgupts@synopsys.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-nvdimm@lists.01.org
-> ---
-> v2: rebase, add more Cc:
-> 
->  arch/arc/include/asm/page.h |    1 +
->  fs/dax.c                    |    1 +
->  2 files changed, 2 insertions(+)
-> 
-> --- lnx-511-rc1.orig/fs/dax.c
-> +++ lnx-511-rc1/fs/dax.c
-> @@ -25,6 +25,7 @@
->  #include <linux/sizes.h>
->  #include <linux/mmu_notifier.h>
->  #include <linux/iomap.h>
-> +#include <asm/page.h>
->  #include <asm/pgalloc.h>
->  
->  #define CREATE_TRACE_POINTS
-> --- lnx-511-rc1.orig/arch/arc/include/asm/page.h
-> +++ lnx-511-rc1/arch/arc/include/asm/page.h
-> @@ -10,6 +10,7 @@
->  #ifndef __ASSEMBLY__
->  
->  #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
-> +#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
->  #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
->  
->  struct vm_area_struct;
-> _______________________________________________
-> Linux-nvdimm mailing list -- linux-nvdimm@lists.01.org
-> To unsubscribe send an email to linux-nvdimm-leave@lists.01.org
+Queued for 5.12,
+
+Thanks,
+
+Kevin
