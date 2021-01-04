@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75462EA049
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:03:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BB52EA0D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbhADXBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:01:17 -0500
-Received: from mga05.intel.com ([192.55.52.43]:8938 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726026AbhADXBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:01:17 -0500
-IronPort-SDR: PDnr+WH4/78RAgv54kk4zUT6O9wFOMWZZe5OStncKdaRbXXbr0ScOKxF3cKpFvrjY0hd8jVLB2
- 6MY6xRcePRcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="261784382"
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="261784382"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 15:00:32 -0800
-IronPort-SDR: JTaMZyP7Q0sshosrow166L8VPmv8ZKWyp8gfmqrng2XLqpCfzo0trq7fUfGEIEhuJWMH6ZxjiG
- 1P8FsDgu0FnA==
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="360940055"
-Received: from trhudson-mobl.amr.corp.intel.com (HELO [10.213.162.49]) ([10.213.162.49])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 15:00:31 -0800
-Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page
- allocation for __GFP_ZERO
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <a5ba7bdf-8510-d0a0-9c22-ec1b81019982@intel.com>
- <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <6bfcc500-7c11-f66a-26ea-e8b8bcc79e28@intel.com>
-Date:   Mon, 4 Jan 2021 15:00:31 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726766AbhADXaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:30:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbhADXaH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 18:30:07 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A989C061574;
+        Mon,  4 Jan 2021 15:29:27 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id r17so26901867ilo.11;
+        Mon, 04 Jan 2021 15:29:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wfic2K92ZXllRUefSx4aK3r1rxJzT1+EDUtALxKeyGw=;
+        b=sGDLOoHWZQHkQja3CIDZf11h1sz75fE1mfUH6FiH/sfL4+rwt/MP1oUerDN+G1DpTw
+         FUlayG9pZcBjd9wtQbHaND2g6DAp0NXIUpZmQPyosIP9SiHNtK64nm4NIp5To+V/i/d5
+         /y9w68GxK8vEfTei3MUbXmEAFWJ2P1QBmmK6zh++ECgF9rnEacxsE+PFJ0n9LPg2r71v
+         SS2vuzDldSs23FBesjCQqAe5aDf3AfYc0hcYScIR90NwzIqdSp22XcWAWdMf/IC1ACKZ
+         HS5Vn4BDlB8sykfuYLka5JErSIBL+V9lV/IoyHLf5bzNUjX8QkGLVI/wH0nd27ikX5xA
+         F1Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wfic2K92ZXllRUefSx4aK3r1rxJzT1+EDUtALxKeyGw=;
+        b=YP7AR2CDcWbtGnjOamvFWfMiKd68REQ2l+Dd0P4W5+3iMpwLE4X18nFwJchy2yXDZC
+         +h/FQP9CcohBjRgMvvhwlqdsBADsyRwsAMFov/fiW++lrpKsbGpAFgL1HUbuaO4UdzFy
+         4PyS3ZYGtPjSbNGZ/9IdBDm2qvjxRadaI1k1ucTP475nkY4Gch1UeeRIVD0yoQmn3cWi
+         Zvnssc9SPLhVpUxwlRzQsOhlK5JmtrHt+sZP9/SDQqELzNv7A/FLGnYPpjWKzoUNQ4JS
+         pqprxqbdaTs/t9tpgcr+Td0sdRAkIylVCXiOuLz+MtmVpQUJQn8GHPhg0JI66AqE3whJ
+         QoVg==
+X-Gm-Message-State: AOAM531JD/NFWNRkA7BN/pBkj7lMRfMbfdE9o1kJTtsyMZuOpKJonISZ
+        TmVvtSa/Uy9q4m9jE35ykjc/d6kzR3g=
+X-Google-Smtp-Source: ABdhPJw5Ux3bGVNWT1ajZZpxSxwcybODIkr6oq6d5fCHnxKZwzQ4/07/HZfpqrDYCoC4TZevY0uEAA==
+X-Received: by 2002:a63:2fc5:: with SMTP id v188mr72279520pgv.243.1609801282930;
+        Mon, 04 Jan 2021 15:01:22 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id ft19sm375829pjb.44.2021.01.04.15.01.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 15:01:22 -0800 (PST)
+Date:   Mon, 4 Jan 2021 15:01:19 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     tglx@linutronix.de, maz@kernel.org, gregkh@linuxfoundation.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@openeuler.org
+Subject: Re: [PATCH] genirq: add IRQF_NO_AUTOEN for request_irq
+Message-ID: <X/OePw97VgXtRBxj@google.com>
+References: <20210104222612.2708-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104222612.2708-1-song.bao.hua@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/4/21 12:11 PM, David Hildenbrand wrote:
->> Yeah, it certainly can't be the default, but it *is* useful for
->> thing where we know that there are no cache benefits to zeroing
->> close to where the memory is allocated.
->> 
->> The trick is opting into it somehow, either in a process or a VMA.
->> 
-> The patch set is mostly trying to optimize starting a new process. So
-> process/vma doesn‘t really work.
+On Tue, Jan 05, 2021 at 11:26:12AM +1300, Barry Song wrote:
+> This patch originated from the discussion with Dmitry in the below thread:
+> https://lore.kernel.org/linux-input/20210102042902.41664-1-song.bao.hua@hisilicon.com/
+> there are many drivers which don't want interrupts enabled automatically
+> due to request_irq().
+> So they are handling this issue by either way of the below two:
+> (1)
+> irq_set_status_flags(irq, IRQ_NOAUTOEN);
+> request_irq(dev, irq...);
+> (2)
+> request_irq(dev, irq...);
+> disable_irq(irq);
+> 
+> The code in the second way is silly and unsafe. In the small time gap
+> between request_irq and disable_irq, interrupts can still come.
+> The code in the first way is safe though we might be able to do it in
+> the generic irq code.
+> 
+> I guess Dmitry also prefers genirq handles this as he said
+> "What I would like to see is to allow passing something like IRQF_DISABLED
+> to request_irq() so that we would not need neither irq_set_status_flags()
+> nor disable_irq()" in the original email thread.
 
-Let's say you have a system-wide tunable that says: pre-zero pages and
-keep 10GB of them around.  Then, you opt-in a process to being allowed
-to dip into that pool with a process-wide flag or an madvise() call.
-You could even have the flag be inherited across execve() if you wanted
-to have helper apps be able to set the policy and access the pool like
-how numactl works.
+One of the reasons I dislike irq_set_status_flags() is that we have to
+call it before we actually granted our IRQ request...
 
-Dan makes a very good point about using filesystems for this, though.
-It wouldn't be rocket science to set up a special tmpfs mount just for
-VM memory and pre-zero it from userspace.  For qemu, you'd need to teach
-the management layer to hand out zeroed files via mem-path=.  Heck, if
-you taught MADV_FREE how to handle tmpfs, you could even pre-zero *and*
-get the memory back quickly if those files ended up over-sized somehow.
+> 
+> If this one is accepted, hundreds of drivers with this problem will be
+> handled afterwards.
+> 
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> ---
+>  include/linux/interrupt.h |  3 +++
+>  kernel/irq/manage.c       |  3 +++
+>  kernel/irq/settings.h     | 10 ++++++++++
+>  3 files changed, 16 insertions(+)
+> 
+> diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+> index bb8ff9083e7d..0f22d277078c 100644
+> --- a/include/linux/interrupt.h
+> +++ b/include/linux/interrupt.h
+> @@ -61,6 +61,8 @@
+>   *                interrupt handler after suspending interrupts. For system
+>   *                wakeup devices users need to implement wakeup detection in
+>   *                their interrupt handlers.
+> + * IRQF_NO_AUTOEN - Don't enable IRQ automatically when users request it. Users
+> + *                will enable it explicitly by enable_irq() later.
+>   */
+>  #define IRQF_SHARED		0x00000080
+>  #define IRQF_PROBE_SHARED	0x00000100
+> @@ -74,6 +76,7 @@
+>  #define IRQF_NO_THREAD		0x00010000
+>  #define IRQF_EARLY_RESUME	0x00020000
+>  #define IRQF_COND_SUSPEND	0x00040000
+> +#define IRQF_NO_AUTOEN		0x00080000
+>  
+>  #define IRQF_TIMER		(__IRQF_TIMER | IRQF_NO_SUSPEND | IRQF_NO_THREAD)
+>  
+> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+> index ab8567f32501..364e8b47d9ba 100644
+> --- a/kernel/irq/manage.c
+> +++ b/kernel/irq/manage.c
+> @@ -1693,6 +1693,9 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
+>  			irqd_set(&desc->irq_data, IRQD_NO_BALANCING);
+>  		}
+>  
+> +		if (new->flags & IRQF_NO_AUTOEN)
+> +			irq_settings_set_noautoen(desc);
+
+Can we make sure we refuse this request if the caller also specified
+IRQF_SHARED?
+
+Thanks.
+
+-- 
+Dmitry
