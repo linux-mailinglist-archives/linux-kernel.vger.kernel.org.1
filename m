@@ -2,97 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCE72E940C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E452E9412
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 12:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbhADLXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 06:23:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbhADLXG (ORCPT
+        id S1726176AbhADL1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 06:27:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22585 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726124AbhADL1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 06:23:06 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60D0C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 03:22:25 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id g20so36371752ejb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 03:22:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cjnWB/LtdlT+UGT85qWZFN60XbZuT4lCuZerawVF/Xc=;
-        b=CyW+ImSVfjlMexvn3IgKs3J4TmHhwAgUcb7SuxsPv7n4NdhR1VyBTeSEUwRbandZe5
-         JCxsCckwgAg7+NpCH47pepJl+esJUn6eRvRN2+WftDniWEL3axOiuMLULv7XWbseT99Q
-         4inWzIUuPQhOzBhgsimV9k1kXEj8jflpsy0G+DqLxFlukIV4u8X+IgVQI888IZnU+xYo
-         KTMHEUNkSDdZ8zzdV2sK/s0dbHgsZLKMa/hYLSyBXy3pmUnTGOGEqdsieM8P+lvbEHiM
-         SxS1WriwZ5EuNPlAWufmNpYVu83QWVCdfk+0I2iHfjjip4Lead2YWdGwtR1fFITO/SMF
-         J/Bg==
+        Mon, 4 Jan 2021 06:27:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609759571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nKgwCm2zSAXKJd/iEKhOToFdsR0fsLags0563ZkdwVY=;
+        b=VePab/o/YB6uD4gGxHB/S+Mp5OwcGMDxGlXf8jkkqKz75FTKAn4zybj/CDKJK9EwpVs+5t
+        W4P+Ik5jg08HqKSV1DNS5oyJrr31vlAb8aRycBbvjti4zG+kqPv/L1cQl0YctWcVErcKPX
+        ZT1mGVH4sqhBeOdBvdwlhvebmYYrq/A=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-ZfidqeWGM56V0flm8b01YA-1; Mon, 04 Jan 2021 06:26:10 -0500
+X-MC-Unique: ZfidqeWGM56V0flm8b01YA-1
+Received: by mail-ed1-f72.google.com with SMTP id z20so11969480edl.21
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 03:26:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cjnWB/LtdlT+UGT85qWZFN60XbZuT4lCuZerawVF/Xc=;
-        b=lUJxJNxZHenYwDzhhFhOL19cE33Qgx7WlraCERUAl9VAONzuRay3c4CUStIydt9xad
-         yX9ODiBSw4HfnDkkRgSGR/n6JoMuEKt5txSxInpVZm1Lt5WBXf5Bjsca7r3RNCZX5GrC
-         kkj431n9w0h/p7AEEW+TjRI+ESSDzgi+4heZ1FBqRJsKVw/zMxVJBT8A3CSq7WFT7VcD
-         SlHhckTdGap7wwMbTSQZs177hHjvWQ3L6TdQhxZ2tia4GZEm9QZInQMQVvMGLFPX3dMp
-         0adI7U4RMnNMwrFrSww0mD2NeSFlDB0iuZB15EAxmaUPhKn787evKZ1PVmoWeeHJcVDJ
-         R3GQ==
-X-Gm-Message-State: AOAM530iJmuv8b3sC/TyaabHbAg79DKxjTI7dG31wD6fDVisdx0Qt/Z+
-        fWmZuqoaVmiSnxfAz3d31iYFm4poYNCiDskJCQTrXA==
-X-Google-Smtp-Source: ABdhPJzsQl9Iiwof9GaC1C0Eu7oMHdOtbj1F9oyIs15bKx0N7zJSNXpIinwhPPSLXk5wufkmla/qUDdkc5w60sgnY68=
-X-Received: by 2002:a17:906:3953:: with SMTP id g19mr65406701eje.429.1609759344440;
- Mon, 04 Jan 2021 03:22:24 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nKgwCm2zSAXKJd/iEKhOToFdsR0fsLags0563ZkdwVY=;
+        b=elig0wZDSHIghYqmPkqlNdRdRLxZRcnhz2GH8kYOYnCo6oRwvpo8VFawx0shfpF625
+         cQmYhDUJSG8s3OJRW4UHFa+BYB1pLrX4fW0Ngcg9GwtylrMAbs8YM1rp2tFYBzOiwjPM
+         YpcleIwmkcMAK1Dp7nLbckdjx5Aw+vyME49bIcaIT5425oi2sgJEMSAtd0IkdyqSbw13
+         azp6P/HPS2a2RPxW8HMddLFcRDyhNi262knSTQYIkQ8a48Eg2gYtuntXq8g4Mg7zqT0r
+         lyc1f6xCU5lRbXGVRkx+ujuoVwe30ACm9UozfrCRiMyWa3vFAfMZQWm+xfD8RHttrJLq
+         dlXA==
+X-Gm-Message-State: AOAM531CfzGp+OI9EQH0g7P50Tgwn73XK4EDIkyPNd1Lb9PQwcQduK83
+        O42reOn1SpgeLCL6fqWJwisLv49Zmq8vytzjXmQ66exB+TcTErz2yGvE25frneYOGYJg88rp34i
+        Zn81piIKac6wfwVC0Laevlp/2PKqYsGPSktKefoztmIbnt9ksMSD/OM8BcjKsyZzK6BV+EF4d6o
+        1L
+X-Received: by 2002:a17:906:f8d4:: with SMTP id lh20mr67294166ejb.442.1609759568930;
+        Mon, 04 Jan 2021 03:26:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyzs1JhTYmWn2stYW6SCyG0HhOE1Myk+vcUFday74cPQV4R9ww1OTGd3Y4DADB3KzBKkTRPwg==
+X-Received: by 2002:a17:906:f8d4:: with SMTP id lh20mr67294142ejb.442.1609759568631;
+        Mon, 04 Jan 2021 03:26:08 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id r11sm43466767edt.58.2021.01.04.03.26.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 03:26:07 -0800 (PST)
+Subject: Re: [PATCH fixes v3] platform/x86: ideapad-laptop: Disable
+ touchpad_switch for ELAN0634
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     stable@vger.kernel.org, Ike Panhc <ike.pan@canonical.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20210103033651.47580-1-jiaxun.yang@flygoat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <60493709-e0f6-2079-7007-67e85445d2dc@redhat.com>
+Date:   Mon, 4 Jan 2021 12:26:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201216132657.15582-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20201216132657.15582-1-zhengyongjun3@huawei.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 4 Jan 2021 12:22:13 +0100
-Message-ID: <CAMpxmJXhidxE+it8rFG86Y1T2TL1FkUoTKQYQHwrwzexirSjig@mail.gmail.com>
-Subject: Re: [PATCH -next] gpio: convert comma to semicolon
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210103033651.47580-1-jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 2:26 PM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
->
-> Replace a comma between expression statements by a semicolon.
->
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/gpio/gpio-sl28cpld.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-sl28cpld.c b/drivers/gpio/gpio-sl28cpld.c
-> index 889b8f5622c2..52404736ac86 100644
-> --- a/drivers/gpio/gpio-sl28cpld.c
-> +++ b/drivers/gpio/gpio-sl28cpld.c
-> @@ -65,13 +65,13 @@ static int sl28cpld_gpio_irq_init(struct platform_device *pdev,
->         if (!irq_chip)
->                 return -ENOMEM;
->
-> -       irq_chip->name = "sl28cpld-gpio-irq",
-> +       irq_chip->name = "sl28cpld-gpio-irq";
->         irq_chip->irqs = sl28cpld_gpio_irqs;
->         irq_chip->num_irqs = ARRAY_SIZE(sl28cpld_gpio_irqs);
->         irq_chip->num_regs = 1;
->         irq_chip->status_base = base + GPIO_REG_IP;
->         irq_chip->mask_base = base + GPIO_REG_IE;
-> -       irq_chip->mask_invert = true,
-> +       irq_chip->mask_invert = true;
->         irq_chip->ack_base = base + GPIO_REG_IP;
->
->         ret = devm_regmap_add_irq_chip_fwnode(dev, dev_fwnode(dev),
+Hi,
+
+On 1/3/21 4:36 AM, Jiaxun Yang wrote:
+> Newer ideapads (e.g.: Yoga 14s, 720S 14) come with ELAN0634 touchpad do not
+> use EC to switch touchpad.
+> 
+> Reading VPCCMD_R_TOUCHPAD will return zero thus touchpad may be blocked
+> unexpectedly.
+> Writing VPCCMD_W_TOUCHPAD may cause a spurious key press.
+> 
+> Add has_touchpad_switch to workaround these machines.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Cc: stable@vger.kernel.org # 5.4+
 > --
-> 2.22.0
->
+> v2: Specify touchpad to ELAN0634
+> v3: Stupid missing ! in v2
+> ---
+>  drivers/platform/x86/ideapad-laptop.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+> index 7598cd46cf60..427970b3b0da 100644
+> --- a/drivers/platform/x86/ideapad-laptop.c
+> +++ b/drivers/platform/x86/ideapad-laptop.c
+> @@ -92,6 +92,7 @@ struct ideapad_private {
+>  	struct dentry *debug;
+>  	unsigned long cfg;
+>  	bool has_hw_rfkill_switch;
+> +	bool has_touchpad_switch;
+>  	const char *fnesc_guid;
+>  };
+>  
+> @@ -535,7 +536,9 @@ static umode_t ideapad_is_visible(struct kobject *kobj,
+>  	} else if (attr == &dev_attr_fn_lock.attr) {
+>  		supported = acpi_has_method(priv->adev->handle, "HALS") &&
+>  			acpi_has_method(priv->adev->handle, "SALS");
+> -	} else
+> +	} else if (attr == &dev_attr_touchpad.attr)
+> +		supported = priv->has_touchpad_switch;
+> +	else
+>  		supported = true;
+>  
+>  	return supported ? attr->mode : 0;
+> @@ -867,6 +870,9 @@ static void ideapad_sync_touchpad_state(struct ideapad_private *priv)
+>  {
+>  	unsigned long value;
+>  
+> +	if (!priv->has_touchpad_switch)
+> +		return;
+> +
+>  	/* Without reading from EC touchpad LED doesn't switch state */
+>  	if (!read_ec_data(priv->adev->handle, VPCCMD_R_TOUCHPAD, &value)) {
+>  		/* Some IdeaPads don't really turn off touchpad - they only
+> @@ -989,6 +995,9 @@ static int ideapad_acpi_add(struct platform_device *pdev)
+>  	priv->platform_device = pdev;
+>  	priv->has_hw_rfkill_switch = dmi_check_system(hw_rfkill_list);
+>  
+> +	/* Most ideapads with ELAN0634 touchpad don't use EC touchpad switch */
+> +	priv->has_touchpad_switch = !acpi_dev_present("PNP0C50", "ELAN0634", -1);
+> +
 
-Applied with a fixed commit message.
+That is not how acpi_dev_present works:
 
-Bartosz
+/**
+ * acpi_dev_present - Detect that a given ACPI device is present
+ * @hid: Hardware ID of the device.
+ * @uid: Unique ID of the device, pass NULL to not check _UID
+ * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
+ *
+ * Return %true if a matching device was present at the moment of invocation.
+...
+ */
+bool acpi_dev_present(const char *hid, const char *uid, s64 hrv);
+
+The second argument tests for the UID, which is typically "1", "2", "3",
+etc. and which is used when there are multiple devices with the same HID.
+
+For example the GPIO controllers on many Intel chipsets have so called south
+and north islands, which are separate devices with the same HID, but one
+has a UID of "1" and the other of "2".
+
+If you want to check for a device with a HID or CID of "ELAN0634" then you
+should do:
+
+	priv->has_touchpad_switch = !acpi_dev_present("ELAN0634", NULL, -1);
+
+Regards,
+
+Hans
+
+
+
+
+>  	ret = ideapad_sysfs_init(priv);
+>  	if (ret)
+>  		return ret;
+> @@ -1006,6 +1015,10 @@ static int ideapad_acpi_add(struct platform_device *pdev)
+>  	if (!priv->has_hw_rfkill_switch)
+>  		write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
+>  
+> +	/* The same for Touchpad */
+> +	if (!priv->has_touchpad_switch)
+> +		write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
+> +
+>  	for (i = 0; i < IDEAPAD_RFKILL_DEV_NUM; i++)
+>  		if (test_bit(ideapad_rfk_data[i].cfgbit, &priv->cfg))
+>  			ideapad_register_rfkill(priv, i);
+> 
+
