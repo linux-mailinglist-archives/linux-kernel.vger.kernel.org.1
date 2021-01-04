@@ -2,142 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BBE2E9EA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3136F2E9E73
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbhADUMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:12:13 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:14191 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728045AbhADUMM (ORCPT
+        id S1728038AbhADUAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 15:00:11 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:38652 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728008AbhADUAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:12:12 -0500
-X-Originating-IP: 90.112.190.212
-Received: from debian.home (lfbn-gre-1-231-212.w90-112.abo.wanadoo.fr [90.112.190.212])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 0044F240005;
-        Mon,  4 Jan 2021 20:11:27 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-efi@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [RFC PATCH 12/12] riscv: Improve virtual kernel memory layout dump
-Date:   Mon,  4 Jan 2021 14:58:40 -0500
-Message-Id: <20210104195840.1593-13-alex@ghiti.fr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210104195840.1593-1-alex@ghiti.fr>
-References: <20210104195840.1593-1-alex@ghiti.fr>
+        Mon, 4 Jan 2021 15:00:11 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 77DCD1C0B78; Mon,  4 Jan 2021 20:59:29 +0100 (CET)
+Date:   Mon, 4 Jan 2021 20:59:29 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/35] 4.19.165-rc1 review
+Message-ID: <20210104195929.GA5700@duo.ucw.cz>
+References: <20210104155703.375788488@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
+Content-Disposition: inline
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the arrival of sv48 and its large address space, it would be
-cumbersome to statically define the unit size to use to print the different
-portions of the virtual memory layout: instead, determine it dynamically.
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
- arch/riscv/mm/init.c  | 46 ++++++++++++++++++++++++++++++++++++-------
- include/linux/sizes.h |  3 ++-
- 2 files changed, 41 insertions(+), 8 deletions(-)
+--zYM0uCDKw75PZbzx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index f9a99cb1870b..f06c21985274 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -80,30 +80,62 @@ static void setup_zero_page(void)
- }
- 
- #if defined(CONFIG_MMU) && defined(CONFIG_DEBUG_VM)
-+
-+#define LOG2_SZ_1K  ilog2(SZ_1K)
-+#define LOG2_SZ_1M  ilog2(SZ_1M)
-+#define LOG2_SZ_1G  ilog2(SZ_1G)
-+#define LOG2_SZ_1T  ilog2(SZ_1T)
-+
- static inline void print_mlk(char *name, unsigned long b, unsigned long t)
- {
- 	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld kB)\n", name, b, t,
--		  (((t) - (b)) >> 10));
-+		  (((t) - (b)) >> LOG2_SZ_1K));
- }
- 
- static inline void print_mlm(char *name, unsigned long b, unsigned long t)
- {
- 	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld MB)\n", name, b, t,
--		  (((t) - (b)) >> 20));
-+		  (((t) - (b)) >> LOG2_SZ_1M));
-+}
-+
-+static inline void print_mlg(char *name, unsigned long b, unsigned long t)
-+{
-+	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld GB)\n", name, b, t,
-+		  (((t) - (b)) >> LOG2_SZ_1G));
-+}
-+
-+static inline void print_mlt(char *name, unsigned long b, unsigned long t)
-+{
-+	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld TB)\n", name, b, t,
-+		  (((t) - (b)) >> LOG2_SZ_1T));
-+}
-+
-+static inline void print_ml(char *name, unsigned long b, unsigned long t)
-+{
-+    unsigned long diff = t - b;
-+
-+    if ((diff >> LOG2_SZ_1T) >= 10)
-+        print_mlt(name, b, t);
-+    else if ((diff >> LOG2_SZ_1G) >= 10)
-+        print_mlg(name, b, t);
-+    else if ((diff >> LOG2_SZ_1M) >= 10)
-+        print_mlm(name, b, t);
-+    else
-+        print_mlk(name, b, t);
- }
- 
- static void print_vm_layout(void)
- {
- 	pr_notice("Virtual kernel memory layout:\n");
--	print_mlk("fixmap", (unsigned long)FIXADDR_START,
-+	print_ml("fixmap", (unsigned long)FIXADDR_START,
- 		  (unsigned long)FIXADDR_TOP);
--	print_mlm("pci io", (unsigned long)PCI_IO_START,
-+	print_ml("pci io", (unsigned long)PCI_IO_START,
- 		  (unsigned long)PCI_IO_END);
--	print_mlm("vmemmap", (unsigned long)VMEMMAP_START,
-+	print_ml("vmemmap", (unsigned long)VMEMMAP_START,
- 		  (unsigned long)VMEMMAP_END);
--	print_mlm("vmalloc", (unsigned long)VMALLOC_START,
-+	print_ml("vmalloc", (unsigned long)VMALLOC_START,
- 		  (unsigned long)VMALLOC_END);
--	print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
-+	print_ml("lowmem", (unsigned long)PAGE_OFFSET,
- 		  (unsigned long)high_memory);
- }
- #else
-diff --git a/include/linux/sizes.h b/include/linux/sizes.h
-index 9874f6f67537..9528b082873b 100644
---- a/include/linux/sizes.h
-+++ b/include/linux/sizes.h
-@@ -42,8 +42,9 @@
- 
- #define SZ_1G				0x40000000
- #define SZ_2G				0x80000000
--
- #define SZ_4G				_AC(0x100000000, ULL)
-+
-+#define SZ_1T				_AC(0x10000000000, ULL)
- #define SZ_64T				_AC(0x400000000000, ULL)
- 
- #endif /* __LINUX_SIZES_H__ */
--- 
-2.20.1
+Hi!
 
+> This is the start of the stable review cycle for the 4.19.165 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
+> Anything received after that time might be too late.
+>=20
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.16=
+5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git=
+ linux-4.19.y
+> and the diffstat can be found below.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--zYM0uCDKw75PZbzx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/NzoQAKCRAw5/Bqldv6
+8p+oAJ4vY1xhQWUMl532mtSnRZDY2Jd/ZwCfY/8d4hQKMoJZ//fA2WfJJRNM1sE=
+=jnp8
+-----END PGP SIGNATURE-----
+
+--zYM0uCDKw75PZbzx--
