@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649282E9775
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B9E2E977D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbhADOlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
+        id S1727207AbhADOmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:42:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbhADOlW (ORCPT
+        with ESMTP id S1726925AbhADOl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:41:22 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7A1C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:40:41 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id m25so64760914lfc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:40:41 -0800 (PST)
+        Mon, 4 Jan 2021 09:41:59 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35544C061794;
+        Mon,  4 Jan 2021 06:41:19 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id j13so10987585pjz.3;
+        Mon, 04 Jan 2021 06:41:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hCRXE92etGCL2gmwCYWtT//YdqZpTc6IMopsj3O+L2o=;
-        b=DFJNZxyYzkPuaf089zNAZ4YNE2NNDVLFrR6W0xAHY3bpZAWCnKSzziXh/XZaO7i+xV
-         bS8qg1Knn3qciPVqfh7Z7ANpLbVL7s2/cmtSXEOCbNH+NlrxNfrpTzpajLj15rmtcY8D
-         Nsdp6OO4gmgrLjB3lSbudhCtKHsVYKvDivJn0otdLkOBit/67eFk8hdPvR+W0hTi75GT
-         Yfy7YPr56s9kOi9TFDMO9CwHfX+/vWd9/exQhaY9hBWj5YuXL0qXmcyyzMJjE5UdAbKQ
-         3pVPVcyNcTA6MrGREmoJ6MreODrfKDSzG44xQ73UxtAD/FACPnEg/i/vyzVJ8KRv0+/e
-         koPQ==
+        bh=gXaJNX2Jskx5OEocIASLdr6b8/tqPfbVLLfBn2sa/P0=;
+        b=KdaqA3gz6Ai0xge8iuPiFSIphNs5pe5lz+PJp8K3TRcc+LrsabVL6IMVfULH/htJZ3
+         vYEriW2+VcS5qMMc1+MIt0idp7LoNpHFX9TZfJAtGTX0geg3btsljnGIfhmkPqpOJLAu
+         YP61V1kA/4/0zXtethM1kl4af1vHImO4EbHllMsTNXsELYXfZQuy1O4eEMZAi6ha7AVq
+         8qLEm4OjeXtrYSk1c/bl21roFhFnxaTegRj/oTTBgQUIyyzvmAv4LXz4t9H8e+Ia2qxb
+         qKJVkoQ0KtSMst0q9sVlTtU3+9B+zmuygPSZ0McWvOdcvD4SNWz4C07X3KPYl62/wiRW
+         IOyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hCRXE92etGCL2gmwCYWtT//YdqZpTc6IMopsj3O+L2o=;
-        b=T2aO35qsB6EPHSiImJwclNPbuRLTSDxU94NjFJy/S2IbcfjaaY44DU8PtaA6ll/ElC
-         9kQwBIFqxCfoNm/5u9l61AvOM5vV/SwXyZNMaP0ZqtB8ruSQvnqx/2ytLu63ttj4GVaz
-         xXMzuSC54PeyDq+yO0jYftAuh6qMke8CSsi0MhmUkipWPYnrJMF6KFtvNv+svzmH6hdK
-         NPkjCo0SLwO3VLrj+LjZM1wrIgVPlwwp4w29I2ws04eeeBFBGPWohEXL5kpmwUeyI7Kh
-         UETzt38IvgQc3u6Za0jiHSmUkJAqdMRAImfs9L9hhqtgl6kRU4Qal1B9erAcTsfQTTMX
-         v+rw==
-X-Gm-Message-State: AOAM5325krZDq8vYOTYTM5oSsBU5MZ5dYuE0clt+NIbVDDBhjsofhMoO
-        WlFAdbvKYxHMgKlvxNbZkL8KBSmcBElfYWjsKAyC2g==
-X-Google-Smtp-Source: ABdhPJwSxTZHoE0YHKrVOJRhTCVEKJ3/l4yakKuFALZQTQ8KZr8ogIa2nRbgS9IZXp2Uidm6S9SQXnCfABhu0Nw4EXw=
-X-Received: by 2002:a05:6512:3238:: with SMTP id f24mr31506177lfe.29.1609771240536;
- Mon, 04 Jan 2021 06:40:40 -0800 (PST)
+        bh=gXaJNX2Jskx5OEocIASLdr6b8/tqPfbVLLfBn2sa/P0=;
+        b=ZwFYD5tm3v3WEzf3fcS0Aw/CyaErE2xAGLznWlHF1dDTW04E3FQSrg9O/hKxxm494r
+         vpUXyoFySOH1nm8NE392Ikhc8ko6df+vw6x/T12pgcGBN5gZDzQZ4e9tw4pI9yE91JGO
+         BAC26f0gsUgjf5s4hthZ+sBdD2Zpib1EKRONiPRl4+GlZx0ido8nBfvAUkFTc1M5fDeV
+         4uPmtFi6PcHjRNdZ16+Axk414+jyiFm6AQqWQKt4jLrBFXytOQV42mfvlMLPk6lUtbnl
+         jlnL0oP9+Hq0luzEtbNChUnHvllT2GUfv1dJt3yuyM22SKRKeu/fBiFvd9rnUo4LyaOO
+         mksw==
+X-Gm-Message-State: AOAM532RiYSI08sARZqVCZGnf4ou5kmZ93zMYjDzojqmIbcxlKSKnA+x
+        EJ0SgupvcHKODweKuSrjRjl+Ip31kKv5rLxtw3A=
+X-Google-Smtp-Source: ABdhPJxpQJLinOmgjXNcmG/F9gQPqs7wkOS5EYRvUHZac1b5y3nEzUaH+KeKKquCejYrUsH2AshYgJHRP4Zcqyjc9WE=
+X-Received: by 2002:a17:90b:a17:: with SMTP id gg23mr30577197pjb.129.1609771278761;
+ Mon, 04 Jan 2021 06:41:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20201228064727.30098-1-sergio.paracuellos@gmail.com>
-In-Reply-To: <20201228064727.30098-1-sergio.paracuellos@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 4 Jan 2021 15:40:29 +0100
-Message-ID: <CACRpkdbC9=Vu1ODg+JLx+aRv1vVrJgTqEhZL3UAuqod6G6DPMQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: ralink: rt2880: fix '-Wmissing-prototypes' in
- init function
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jason Yan <yanaijie@huawei.com>, NeilBrown <neil@brown.name>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
+References: <20210104085923.53705-1-alexandru.ardelean@analog.com> <20210104143103.56510-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20210104143103.56510-1-alexandru.ardelean@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 4 Jan 2021 16:42:07 +0200
+Message-ID: <CAHp75VfjCK9=a1Hy1kJK85VFEPc0GhT=tGC3wOzsiR-e+6LVkQ@mail.gmail.com>
+Subject: Re: [PATCH v2] spi: stm32: update dev_dbg() print format for SPI params
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 7:47 AM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
-
-> Kernel test robot reported the following warning:
-> 'warning: no previous prototype for 'rt2880_pinmux_init''.
-> This function is the entry point for the platform driver and
-> it is private to this driver. Hence declare it 'static' which is
-> the correct thing to do fixing also this warning.
+On Mon, Jan 4, 2021 at 4:27 PM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
 >
+> With the introduction of the 'include/uapi/linux/spi/spi.h' header, the
+> type of the macros are enforced to 'unsigned long int' via the _BITUL()
+> macro.
+>
+> This causes some -Wformat warnings in the spi-stm32 driver.
+> This patch adds a double-negation operator to the bit-masks. Essentially,
+> the important values for debugging are 0 or 1, while masking them directly
+> would show 0 or BIT(x) values.
+> This way, the type of the arguments are automatically re-cast.
+
+Thanks!
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Fixes: f7005142dace ("spi: uapi: unify SPI modes into a single spi.h header")
 > Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>
+> Changelog v1 -> v2:
+> * revert to using '%d' specifiers
+> * add !! operatior to bit-masking; this way the types are automatically
+>   re-cast
+> * add 'Reported-by: kernel test robot <lkp@intel.com>'
+>
+>  drivers/spi/spi-stm32.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+> index 6017209c6d2f..be0fb169d7a7 100644
+> --- a/drivers/spi/spi-stm32.c
+> +++ b/drivers/spi/spi-stm32.c
+> @@ -1028,10 +1028,10 @@ static int stm32_spi_prepare_msg(struct spi_master *master,
+>                 clrb |= spi->cfg->regs->lsb_first.mask;
+>
+>         dev_dbg(spi->dev, "cpol=%d cpha=%d lsb_first=%d cs_high=%d\n",
+> -               spi_dev->mode & SPI_CPOL,
+> -               spi_dev->mode & SPI_CPHA,
+> -               spi_dev->mode & SPI_LSB_FIRST,
+> -               spi_dev->mode & SPI_CS_HIGH);
+> +               !!(spi_dev->mode & SPI_CPOL),
+> +               !!(spi_dev->mode & SPI_CPHA),
+> +               !!(spi_dev->mode & SPI_LSB_FIRST),
+> +               !!(spi_dev->mode & SPI_CS_HIGH));
+>
+>         spin_lock_irqsave(&spi->lock, flags);
+>
+> --
+> 2.17.1
+>
 
-Patch applied.
 
-Yours,
-Linus Walleij
+-- 
+With Best Regards,
+Andy Shevchenko
