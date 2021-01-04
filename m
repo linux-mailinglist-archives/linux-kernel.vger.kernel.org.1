@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035FD2E9306
+	by mail.lfdr.de (Postfix) with ESMTP id 7176D2E9307
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 11:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbhADKDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 05:03:23 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:44450 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726418AbhADKDW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 05:03:22 -0500
-Received: by mail-ot1-f43.google.com with SMTP id r9so25454113otk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 02:03:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X+QLQt9AMoTExNV2CFjcXfC/nhN+V4EBAqQVrUbB+kY=;
-        b=j0cT+l9+hA85ZL+ixm/P7CxkFFjUSptdW8AOh4EO4OStoxfkxUdwz5dXIKrybexCST
-         L8D3ECxjWFL6cLwxjYPlaV27HCTkHGzNRmQwSNdRui6uVwVWiCADaZFVPTq9O3mAQ2iq
-         i3PM86EXegwUQZsjLc3oAMHF46xdNmsbbaDy+AzLewo4VRHBskm22usDKGHJUFmsFEY4
-         /0ZrYTEQoL/iIVsAYSfCwM1S9GPt/LaEMwh53OV9EbYywyWklrsbKAOxsgm21vTCy4KM
-         fBy+TK7SrpeGby7Shereg6yYf2pP4OmwDtKt78HhGPxpwi+vDdCOtaqfwcyle7Mae6ry
-         O9XA==
-X-Gm-Message-State: AOAM533Vj/wnHOtSWW0VBLZG5NPnH44ahHKYOOA2dUT20LZ2RV359vES
-        zH5GDZJQfSPCEwqSaNq920t59L+nQ3I/RsAzXlWuC7iq35k=
-X-Google-Smtp-Source: ABdhPJwpCFyPdn5O4smo+qfY+AlcG3VGixuW+JWhtMeuCCiDzYBwYnmEdR02rhn4P9ans7JbzYu/6a9OHHmQuoVv5Qk=
-X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr52324880oth.250.1609754561777;
- Mon, 04 Jan 2021 02:02:41 -0800 (PST)
+        id S1726303AbhADKEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 05:04:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44176 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725830AbhADKEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 05:04:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609754605; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=XvxQL3uo22xOTWuEV8NxyovOsIbCf5mKq1Te0FZo3Bw=;
+        b=pCfhgPrgcnkR4WfgJRm8EFDbmJKccSO1JxSZxj4mXh9krJcUjo0z66jQP24eo3ca8PYsU+
+        Nk9DdyledQXBPQxA+SdKptXfmYlhg6QkublCdq/S5h+TfqUdpSc0PLAKS6Z1RTvWIHJX1a
+        rKe8oVOZRwL1A0ALQsypJdofTjAJcOQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E902AAD18;
+        Mon,  4 Jan 2021 10:03:24 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 11:03:23 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: uninitialized pmem struct pages
+Message-ID: <20210104100323.GC13207@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20210104095713.1024466-1-geert@linux-m68k.org>
-In-Reply-To: <20210104095713.1024466-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Jan 2021 11:02:31 +0100
-Message-ID: <CAMuHMdUxVNo8r9UJ1jX6YUDGQoikDV3-66taN2BEBwMLz-yODw@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.11-rc2
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 10:58 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.11-rc2[1] to v5.11-rc1[3], the summaries are:
->   - build errors: +2/-0
+Hi,
+back in March [1] you have recommended 53cdc1cb29e8
+("drivers/base/memory.c: indicate all memory blocks as removable") to be
+backported to stable trees and that has led to a more general discussion
+about the current state of pfn walkers wrt. uninitialized pmem struct
+pages. We haven't concluded any specific solution for that except for a
+general sentiment that pfn_to_online_page should be able to catch those.
+I might have missed any follow ups on that but I do not think we have
+landed on any actual solution in the end. Have I just missed any followups?
 
-  + error: modpost: "irq_check_status_bit"
-[drivers/perf/arm_spe_pmu.ko] undefined!:  => N/A
+Is anybody working on that?
 
-arm64-allmodconfig (fixes available)
+Also is there any reference explaining what those struct pages are and
+why we cannot initialize them? I am sorry if this has been explained to
+me but I really cannot find that in my notes anywhere. Most pmem pages
+should be initialized via memmap_init_zone_device, right?
 
-  + error: rk3399_gru_sound.c: relocation truncated to fit:
-R_NDS32_WORD_9_PCREL_RELA against `.text':  => (.text+0x6a8)
+I am asking mostly because we are starting to see these issues in
+production and while the only visible problem so far is a crash when
+reading sysfs (removable file) I am worried we are just lucky no other
+pfn walker stumble over this.
 
-nds32-allyesconfig
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62/ (all 192 configs)
-
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/5c8fe583cce542aa0b84adc939ce85293de36e5e/ (all 192 configs)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+[1] http://lkml.kernel.org/r/CAPcyv4jpdaNvJ67SkjyUJLBnBnXXQv686BiVW042g03FUmWLXw@mail.gmail.com
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Michal Hocko
+SUSE Labs
