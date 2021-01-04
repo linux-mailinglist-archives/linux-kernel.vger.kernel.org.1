@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9C52E9855
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0792E9860
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727512AbhADPWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:22:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727403AbhADPV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:21:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12A9722286;
-        Mon,  4 Jan 2021 15:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609773679;
-        bh=KnCcCfl5Ujo0xeLkI0m9dHw2QY6hrFRxzWMXtqAvrxY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bls+adfd/7XPttxskOXdd0DZvtCeb+LUIOhIrUhnEaaQmJZthY+QbmtdxKkRyJb+I
-         fyHgXJHGiLnaZUPKkncqdC+DMIKr/jmP8HGkD3HF2wIXB/mo5GODrv2rQYXNe5uV8U
-         BWsoQIyWNpF+zAhdDTz/OGLrSTmEwEG0azq+cNxd8aR4nQ1bhnobwYe51Z+6dIe9bm
-         CZsE1zUXnV7YNIq6PlYZuvRKJfHTUUtKACb8XzOh1bcOi8kIo+ldGmCAd42fEscmhq
-         PPrlWy/RTstaGbPRHfRLI3oIp+JL2GvrEneCuzUsFGmnYzF+QpkU5KPoXydmXTHKdR
-         KzBWkGcjahvsw==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 4/4] ACPI: processor: Fix missing need_resched() check after rcu_idle_enter()
-Date:   Mon,  4 Jan 2021 16:20:58 +0100
-Message-Id: <20210104152058.36642-5-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210104152058.36642-1-frederic@kernel.org>
-References: <20210104152058.36642-1-frederic@kernel.org>
+        id S1727556AbhADPWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:22:24 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:43702 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbhADPWX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:22:23 -0500
+Received: by mail-ot1-f41.google.com with SMTP id q25so26279568otn.10;
+        Mon, 04 Jan 2021 07:22:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g71kf7yD8PJahnkXWCoxNGftOUP20SKdOj2+oVmJTIo=;
+        b=G2YsDpt0ZLPmdFLjjSgULl/RDYsnDSynBYA2EF3a2X31E5IBufTB2LoVCPFbKX++a0
+         uiUCgyCQK5x8xLADy36sw/IdsS/ioaBOgOcTvlbmJTs3Mj8/5xPmfeTCPmEipV6B53GK
+         K/xoG6jvAj6Ow3TnEEWorvImb+kO6TNaoHZ9yYG845jw8NtYjZr5B9JUBiY7pfOx69vs
+         iKx1BzuS6u1mIp/dLNmf+4i/blsoAanMK4234G2WYOtuMeGQIQnmqr5I7790LuG4mRFf
+         KIqAtatAStuMoztuGl60dFfq/ClCm5y1holqAB/IQvOkyFOd5T24SMXaFGrWc7mTa5Cb
+         mlaA==
+X-Gm-Message-State: AOAM533JPVly/+HNW2NSgs5zVaCEUfim6h4dKh8Z3OfyVC7VPhiDEDfL
+        hLn42iTrlijY5oMS+SrT16I0hmur0XcBOLN+Nicn0uDPJO4=
+X-Google-Smtp-Source: ABdhPJzGrORLmJC2swKHaKs9mks9fB5/ewOYp63tukZ1EIQ6KkxpiSrebknvCn0uqVlazfyrFqmbt//ytxjIT6PKZ9E=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr37964112otr.107.1609773702385;
+ Mon, 04 Jan 2021 07:21:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
+ <20201114130921.651882-2-jiaxun.yang@flygoat.com> <CAMuHMdXo9o9af-YBt5g53QHRhuLxdSy_C9n4wdEEh7yzDidr-w@mail.gmail.com>
+ <20210104144841.GC3313@piout.net>
+In-Reply-To: <20210104144841.GC3313@piout.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Jan 2021 16:21:31 +0100
+Message-ID: <CAMuHMdWGnBcYvXLnydSnkxcmG6GksZLfq1aWADuWg8ibZ3V8Lg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] rtc: goldfish: Remove GOLDFISH dependency
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Entering RCU idle mode may cause a deferred wake up of an RCU NOCB_GP
-kthread (rcuog) to be serviced.
+Hi Alexandre,
 
-Usually a wake up happening while running the idle task is spotted in
-one of the need_resched() checks carefully placed within the idle loop
-that can break to the scheduler.
+On Mon, Jan 4, 2021 at 3:48 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+> On 04/01/2021 14:28:26+0100, Geert Uytterhoeven wrote:
+> > On Sat, Nov 14, 2020 at 2:20 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> > > Goldfish platform is covered with dust.
+> > > However the goldfish-rtc had been used as virtualized RTC
+> > > in QEMU for RISC-V virt hw and MIPS loongson3-virt hw, thus
+> > > we can drop other parts of goldfish but leave goldfish-rtc here.
+> > >
+> > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> >
+> > Thanks for your patch!
+> >
+> > > --- a/drivers/rtc/Kconfig
+> > > +++ b/drivers/rtc/Kconfig
+> > > @@ -1935,7 +1935,6 @@ config RTC_DRV_HID_SENSOR_TIME
+> > >  config RTC_DRV_GOLDFISH
+> > >         tristate "Goldfish Real Time Clock"
+> > >         depends on OF && HAS_IOMEM
+> > > -       depends on GOLDFISH || COMPILE_TEST
+> > >         help
+> > >           Say yes to enable RTC driver for the Goldfish based virtual platform.
+> >
+> > I was just looking to see if someone had already sent a patch to add
+> > "depends on GOLDFISH || COMPILE_TEST", before sending one myself, when I
+> > noticed your patch had removed it...
+> >
+> > What about
+> >
+> >     depends on CPU_LOONGSON64 || GOLDFISH || RISCV || COMPILE_TEST
+> >
+> > instead?
+> >
+>
+> But this driver also works on ARM, is it really important to restrict to
+> a few architectures ?
 
-Unfortunately within acpi_idle_enter_bm() the call to rcu_idle_enter()
-is already beyond the last generic need_resched() check. The cpu idle
-implementation happens to be ok because it ends up calling
-mwait_idle_with_hints() or acpi_safe_halt() which both perform their own
-need_resched() checks. But the suspend to idle implementation doesn't so
-it may suspend the CPU with a resched request unhandled, leaving the
-task hanging.
+Is it used on ARM platforms?
+qemu:hw/riscv/Kconfig selects GOLDFISH_RTC, but that's it?
 
-Fix this with performing a last minute need_resched() check after
-calling rcu_idle_enter().
+Gr{oetje,eeting}s,
 
-Reported-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Fixes: 1fecfdbb7acc (ACPI: processor: Take over RCU-idle for C3-BM idle)
-Cc: stable@vger.kernel.org
-Cc: Len Brown <lenb@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar<mingo@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- drivers/acpi/processor_idle.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+                        Geert
 
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index d93e400940a3..c4939c49d972 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -604,8 +604,14 @@ static int acpi_idle_enter_bm(struct cpuidle_driver *drv,
- 	}
- 
- 	rcu_idle_enter();
--
--	acpi_idle_do_entry(cx);
-+	/*
-+	 * Last need_resched() check must come after rcu_idle_enter()
-+	 * which may wake up RCU internal tasks. mwait_idle_with_hints()
-+	 * and acpi_safe_halt() have their own checks but s2idle
-+	 * implementation doesn't.
-+	 */
-+	if (!need_resched())
-+		acpi_idle_do_entry(cx);
- 
- 	rcu_idle_exit();
- 
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
