@@ -2,191 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A692EA11F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0472EA109
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:46:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727673AbhADXuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:50:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
+        id S1727376AbhADXoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:44:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727191AbhADXuj (ORCPT
+        with ESMTP id S1726163AbhADXoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:50:39 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B46C06179E;
-        Mon,  4 Jan 2021 15:49:45 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id c7so29212593edv.6;
-        Mon, 04 Jan 2021 15:49:45 -0800 (PST)
+        Mon, 4 Jan 2021 18:44:44 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA36C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 15:44:02 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id qw4so38993475ejb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 15:44:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=S8xDAiTMr1Y9Zjyz3Do+aLLflQJZ8HhbQKE//whXZB0=;
-        b=HdWcnf+rJPbz3CvbGkL8VSUBRqgAMeAJb1abAIDg6tZrGLnmp+3MB9uvt5AkvIcvQa
-         5NwIdPWul8TFJUKjVqTSBw+gCJN61TUJVnYbeDfl07Dz3Zdq1hBwjfzQjK/Th+TUAIcd
-         h2PaS9HEDS6wXfmLi2EDe6wfFThg6bSz31ij6t3YZzkkrqa7i0aqyf3RiCmY+Up2pYms
-         ZlYA3MmA4CKA51xhKudSTvH+hmd2AkUGFG+o1moudtxNXm4bzw/fB9nFay+SMbH0UTPR
-         amGIUDT/XUZ4warVRiNOn073AXAfmsHgqQ6iMmgBbwGxlb5nGa7VFxxtT+pgzDRtvnyp
-         Qkzg==
+        bh=1WyRnE3FCyMn5lEtFjWaRD8K2XDmf+b9oA3QV7CY8n0=;
+        b=SfyxRJvKNM1X28EwvAfTS7BZlF0oMAXEYwfZrBB9ih/I0v1qUWx2vTSSBmIPoIk3XN
+         NerrTiIAdGQ0ZfU8R/ib1aYHbkJUfxS9U3NvMz8uQQLInIzJlc+BTUBFWQucO5kHsibS
+         xgSpZ7zn5JJ1uoiJ9I0E3t4m6ycE+5i5MX4nw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=S8xDAiTMr1Y9Zjyz3Do+aLLflQJZ8HhbQKE//whXZB0=;
-        b=jIqfSjRK4KYkrAxcNPp1URW2UJ6b5PkbErnNNZoDRpmGgVchX57yypCc6dwAhgp0/N
-         L/yl4McihCEAphBhXPSnjy5h52GMtq8TEys66j6u7ojzeovVbFT0gtlQpHeGb+5pc85X
-         3UZmG7jkkvEO9rObC2clt4GXP5ju2u5sHwCTBc8QthiY5Kjr5Jdc0385fkIVQevg4kO3
-         EurkknPO49VCMIu4ebqihkaPP4H2C4PmEA89naR3YiIPc3sejkXpfMr2uobv7xk7mE21
-         ocb5diw+npy/AFu46a8Wt8esK2ZZ85TvUYrKpA/j+9aEaQlRa4lw0Y7Dehv8R0ZuyfqA
-         GivA==
-X-Gm-Message-State: AOAM531Fy2LzPW40HEE4kayQwtUn7M/hcZBiBRmQQecW6tLRiUurKvTG
-        xx6eVnYUFvqZbsePUuAyfsIDrKgLtibPEUUejntMoHK6
-X-Google-Smtp-Source: ABdhPJwNhzlDy62/8o57lYELVNQBOraP7Lpc1yowiWpZPGHgBSMoO4UviAtG/CoG3BiW1HjrFyl8N0ZYt1UnYS/9BXY=
-X-Received: by 2002:aa7:dd05:: with SMTP id i5mr72623237edv.223.1609794254808;
- Mon, 04 Jan 2021 13:04:14 -0800 (PST)
+        bh=1WyRnE3FCyMn5lEtFjWaRD8K2XDmf+b9oA3QV7CY8n0=;
+        b=BNShvnC2TOu9Ibvre7ULeh52/NY6tSpTi4/hpUljquSki8TZsQ5Mmw1Mx0hV1DHiQ5
+         BnE+yLOWi91fvZqPzatRp+NFkfu8V8DwbazTEMs5eoli3bY0eBFDzmW+LIDj/DwkDsPs
+         YuCUNZF5a50cm9zO8VglpB8dO/B6NXaXdU2kvksbhMRwC4ox/aX0IGSr+yudxrlMyvVQ
+         BddnWbrj9WAZJlLeAHDYfqz8hx77OKAxb6lPv4J4ruYxcpI/Q1wo4w0SH5qH//4MZl2k
+         T3c5MGGCbKUFJRoL0hRAIrzMvlVnFh6yUKzlQ9Ta5a+6EenkCp1iHtjOwhVCoeB8qpAG
+         B5ng==
+X-Gm-Message-State: AOAM53202fbcdZXXYTqI3jDz8xN71DKymQR3hTpShsfxhevRTQZvUEHG
+        VD/xJqF7VP63HXzgYuuzdyuSjG3sG+hHsg==
+X-Google-Smtp-Source: ABdhPJwaZ8wQiDjybKlpYlLht9lzKMaC9Dfz7yx05KZvZ1cc00eTJKV5Bok/VIxn391PeoQr/juypg==
+X-Received: by 2002:a05:651c:30d:: with SMTP id a13mr35722245ljp.238.1609797167151;
+        Mon, 04 Jan 2021 13:52:47 -0800 (PST)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id e25sm7569246lfc.40.2021.01.04.13.52.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 13:52:46 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id s26so67907998lfc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 13:52:46 -0800 (PST)
+X-Received: by 2002:a2e:b4af:: with SMTP id q15mr35051887ljm.507.1609797165713;
+ Mon, 04 Jan 2021 13:52:45 -0800 (PST)
 MIME-Version: 1.0
-References: <CGME20210104085750epcas2p1a5b22559d87df61ef3c8215ae0b470b5@epcas2p1.samsung.com>
- <1609750005-115609-1-git-send-email-dseok.yi@samsung.com>
-In-Reply-To: <1609750005-115609-1-git-send-email-dseok.yi@samsung.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 4 Jan 2021 16:03:39 -0500
-Message-ID: <CAF=yD-+bDdYg7X+WpP14w3fbv+JewySpdCbjdwWXB-syCwQ9uQ@mail.gmail.com>
-Subject: Re: [PATCH net] net: fix use-after-free when UDP GRO with shared fraglist
-To:     Dongseok Yi <dseok.yi@samsung.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, namkyu78.kim@samsung.com
+References: <000000000000886dbd05b7ffa8db@google.com> <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org>
+In-Reply-To: <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 4 Jan 2021 13:52:29 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi6hd8ATJ1W90goTxjgyvuoFsf0xZdAJmZ2c0dx5wcJSg@mail.gmail.com>
+Message-ID: <CAHk-=wi6hd8ATJ1W90goTxjgyvuoFsf0xZdAJmZ2c0dx5wcJSg@mail.gmail.com>
+Subject: Re: kernel BUG at mm/page-writeback.c:LINE!
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 4:00 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
+On Mon, Jan 4, 2021 at 12:41 PM Andrew Morton <akpm@linux-foundation.org> wrote:
 >
-> skbs in frag_list could be shared by pskb_expand_head() from BPF.
-
-Can you elaborate on the BPF connection?
-
-> While tcpdump, sk_receive_queue of PF_PACKET has the original frag_list.
-> But the same frag_list is queued to PF_INET (or PF_INET6) as the fraglist
-> chain made by skb_segment_list().
+> >
+> > kernel BUG at mm/page-writeback.c:2241!
+> > Call Trace:
+> >  mpage_writepages+0xd8/0x230 fs/mpage.c:714
+> >  do_writepages+0xec/0x290 mm/page-writeback.c:2352
+> >  __filemap_fdatawrite_range+0x2a1/0x380 mm/filemap.c:422
+> >  fat_cont_expand+0x169/0x230 fs/fat/file.c:235
+> >  fat_setattr+0xac2/0xf40 fs/fat/file.c:501
+> >  notify_change+0xb60/0x10a0 fs/attr.c:336
+> >  do_truncate+0x134/0x1f0 fs/open.c:64
+> >  do_sys_ftruncate+0x703/0x860 fs/open.c:195
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 >
-> If the new skb (not frag_list) is queued to one of the sk_receive_queue,
-> multiple ptypes can see this. The skb could be released by ptypes and
-> it causes use-after-free.
-
-If I understand correctly, a udp-gro-list skb makes it up the receive
-path with one or more active packet sockets.
-
-The packet socket will call skb_clone after accepting the filter. This
-replaces the head_skb, but shares the skb_shinfo and thus frag_list.
-
-udp_rcv_segment later converts the udp-gro-list skb to a list of
-regular packets to pass these one-by-one to udp_queue_rcv_one_skb.
-Now all the frags are fully fledged packets, with headers pushed
-before the payload. This does not change their refcount anymore than
-the skb_clone in pf_packet did. This should be 1.
-
-Eventually udp_recvmsg will call skb_consume_udp on each packet.
-
-The packet socket eventually also frees its cloned head_skb, which triggers
-
-  kfree_skb_list(shinfo->frag_list)
-    kfree_skb
-      skb_unref
-        refcount_dec_and_test(&skb->users)
-
+> Well that's exciting. write_cache_pages() does:
 >
-> [ 4443.426215] ------------[ cut here ]------------
-> [ 4443.426222] refcount_t: underflow; use-after-free.
-> [ 4443.426291] WARNING: CPU: 7 PID: 28161 at lib/refcount.c:190
-> refcount_dec_and_test_checked+0xa4/0xc8
-> [ 4443.426726] pstate: 60400005 (nZCv daif +PAN -UAO)
-> [ 4443.426732] pc : refcount_dec_and_test_checked+0xa4/0xc8
-> [ 4443.426737] lr : refcount_dec_and_test_checked+0xa0/0xc8
-> [ 4443.426808] Call trace:
-> [ 4443.426813]  refcount_dec_and_test_checked+0xa4/0xc8
-> [ 4443.426823]  skb_release_data+0x144/0x264
-> [ 4443.426828]  kfree_skb+0x58/0xc4
-> [ 4443.426832]  skb_queue_purge+0x64/0x9c
-> [ 4443.426844]  packet_set_ring+0x5f0/0x820
-> [ 4443.426849]  packet_setsockopt+0x5a4/0xcd0
-> [ 4443.426853]  __sys_setsockopt+0x188/0x278
-> [ 4443.426858]  __arm64_sys_setsockopt+0x28/0x38
-> [ 4443.426869]  el0_svc_common+0xf0/0x1d0
-> [ 4443.426873]  el0_svc_handler+0x74/0x98
-> [ 4443.426880]  el0_svc+0x8/0xc
+>                         if (PageWriteback(page)) {
+>                                 if (wbc->sync_mode != WB_SYNC_NONE)
+>                                         wait_on_page_writeback(page);
+>                                 else
+>                                         goto continue_unlock;
+>                         }
 >
-> Fixes: 3a1296a38d0c (net: Support GRO/GSO fraglist chaining.)
-> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> ---
->  net/core/skbuff.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
->
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index f62cae3..1dcbda8 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -3655,7 +3655,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
->         unsigned int delta_truesize = 0;
->         unsigned int delta_len = 0;
->         struct sk_buff *tail = NULL;
-> -       struct sk_buff *nskb;
-> +       struct sk_buff *nskb, *tmp;
-> +       int err;
->
->         skb_push(skb, -skb_network_offset(skb) + offset);
->
-> @@ -3665,11 +3666,28 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
->                 nskb = list_skb;
->                 list_skb = list_skb->next;
->
-> +               err = 0;
-> +               if (skb_shared(nskb)) {
+> bang -->>               BUG_ON(PageWriteback(page));
 
-I must be missing something still. This does not square with my
-understanding that the two sockets are operating on clones, with each
-frag_list skb having skb->users == 1.
+This is the same situation that was discussed earlier, and that we
+thought Hugh commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
+BUG_ON(PageWriteback)") should fix.
 
-Unless the packet socket patch previously also triggered an
-skb_unclone/pskb_expand_head, as that call skb_clone_fraglist, which
-calls skb_get on each frag_list skb.
+Basically, the theory was that the sequence
+
+                if (PageWriteback(page))
+                        wait_on_page_writeback(page);
+                BUG_ON(PageWriteback(page));
+
+could have the wake-up of the _previous_ owner of the page happen, and
+wake up the wait_on_page_writeback() waiter, but then a new owner of
+the page would re-allocate it and mark it for writeback.
+
+> So either wait_on_page_writeback() simply failed to work (returned
+> without waiting) or someone came in and unexpectedly set PG_writeback a
+> second time.
+
+So Hugh found at least _one_ way that that "someone came in and
+unexpectedly set PG_writeback a second time" could happen.
+
+But that fix by Hugh is already in that  HEAD commit that syzbot is
+now reporting, so there's something else going on.
+
+> Linus, how confident are you in those wait_on_page_bit_common()
+> changes?
+
+Pretty confident. The atomicity of the bitops themselves is fairly simple.
+
+But in the writeback bit? No. The old code would basically _loop_ if
+it was woken up and the writeback bit was set again, and would hide
+any problems with it.
+
+The new code basically goes "ok, the writeback bit was clear at one
+point, so I've waited enough".
+
+We could easily turn the "if ()" in wait_on_page_writeback() into a "while()".
+
+But honestly, it does smell to me like the bug is always in the caller
+not having serialized with whatever actually starts writeback. High
+figured out one such case.
+
+This code holds the page lock, but I don't see where
+set_page_writeback() would always be done with the page lock held. So
+what really protects against PG_writeback simply being set again?
+
+The whole BUG_ON() seems entirely buggy to me.
+
+In fact, even if you hold the page lock while doing
+set_page_writeback(), since the actual IO does *NOT* hold the page
+lock, the unlock happens without it. So even if every single case of
+setting the page writeback were to hold the page lock, what keeps this
+from happening:
+
+CPU1 = end previous writeback
+CPU2 = start new writeback under page lock
+CPU3 = write_cache_pages()
+
+  CPU1          CPU2            CPU3
+  ----          ----            ----
+
+  end_page_writeback()
+    test_clear_page_writeback(page)
+    ... delayed...
 
 
-> +                       tmp = skb_clone(nskb, GFP_ATOMIC);
-> +                       if (tmp) {
-> +                               kfree_skb(nskb);
-> +                               nskb = tmp;
-> +                               err = skb_unclone(nskb, GFP_ATOMIC);
-> +                       } else {
-> +                               err = -ENOMEM;
-> +                       }
-> +               }
-> +
->                 if (!tail)
->                         skb->next = nskb;
->                 else
->                         tail->next = nskb;
->
-> +               if (unlikely(err)) {
-> +                       nskb->next = list_skb;
-> +                       goto err_linearize;
-> +               }
-> +
->                 tail = nskb;
->
->                 delta_len += nskb->len;
-> --
-> 2.7.4
->
+                lock_page();
+                set_page_writeback()
+                unlock_page()
+
+
+                                lock_page()
+                                wait_on_page_writeback();
+
+    wake_up_page(page, PG_writeback);
+    .. wakes up CPU3 ..
+
+                                BUG_ON(PageWriteback(page));
+
+IOW, that BUG_ON() really feels entirely bogus to me. Notice how it
+wasn't actually serialized with the waking up of the _previous_ bit.
+
+Could we make the wait_on_page_writeback() just loop if it sees the
+page under writeback again? Sure.
+
+Could we make the wait_on_page_bit_common() code say "if this is
+PG_writeback, I won't wake it up after all, because the bit is set
+again?" Sure.
+
+But I feel it's really that end_page_writeback() itself is
+fundamentally buggy, because the "wakeup" is not atomic with the bit
+clearing _and_ it doesn't actually hold the page lock that is
+allegedly serializing this all.
+
+That raciness was what caused the "stale wakeup from previous owner"
+thing too. And I think that Hugh fixed the page re-use case, but the
+fundamental problem of end_page_writeback() kind of remained.
+
+And yes, I think this was all hidden by wait_on_page_writeback()
+effectively looping over the "PageWriteback(page)" test because of how
+wait_on_page_bit() worked.
+
+So the one-liner of changing the "if" to "while" in
+wait_on_page_writeback() should get us back to what we used to do.
+
+Except I still get the feeling that the bug really is not in
+wait_on_page_writeback(), but in the end_page_writeback() side.
+
+Comments? I'm perfectly happy doing the one-liner. I would just be
+_happier_ with end_page_writeback() having the serialization..
+
+The real problem is that "wake_up_page(page, bit)" is not the thing
+that actually clears the bit. So there's a fundamental race between
+clearing the bit and waking something up.
+
+Which makes me think that the best option would actually be to move
+the bit clearing _into_ wake_up_page(). But that looks like a very big
+change.
+
+                   Linus
