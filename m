@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455992E9A49
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C682E99AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729377AbhADQIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:08:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38872 "EHLO mail.kernel.org"
+        id S1728838AbhADQC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:02:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728691AbhADQBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:01:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB05F224D2;
-        Mon,  4 Jan 2021 16:01:37 +0000 (UTC)
+        id S1728808AbhADQCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:02:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B97722583;
+        Mon,  4 Jan 2021 16:01:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776098;
-        bh=dM5Mv6sIRfVrmAb6P2xDAxq9iPE1eI4jm2Z3Kndta5E=;
+        s=korg; t=1609776100;
+        bh=Xpl1Q/NMIvh0M97GEHMAJJY/CIV7rz9d9p7YjW4eqkY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HUY6OkQ8r2MY7SdAGnCWCVgh8EdA4hArLNZUabPRG/WtmaPPL5z8d+apRxfcVUMqD
-         U4Ehdjm1GEuiB+MMyDtWXqnoH7Ogi+Uue8pUjukP9qwfa2RQDEQV5I9+U3M5+gLnmA
-         n660Cck6WNs2IMuXzBLBC6y2QGdtYCqmQOv0NLX0=
+        b=2IiF6/bOTeQKi+RhcyQbYu1rH0qeZPR/vAtn7lDt4eHablgL1HFOh98KgEE9CUXW5
+         ZXDdMtwJlLG5VWVc77I16L5QKLRkrYN1oVQGbb5vRzcEQMYeq8H3Tys3GcZUDuD+dX
+         ITFOl0CQoM/k9eo130fMdrGD4HleJrdhyAQNB21U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 20/63] io_uring: fix io_sqe_files_unregister() hangs
-Date:   Mon,  4 Jan 2021 16:57:13 +0100
-Message-Id: <20210104155709.797363028@linuxfoundation.org>
+Subject: [PATCH 5.10 21/63] kernel/io_uring: cancel io_uring before task works
+Date:   Mon,  4 Jan 2021 16:57:14 +0100
+Message-Id: <20210104155709.846535201@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
 References: <20210104155708.800470590@linuxfoundation.org>
@@ -41,79 +41,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Begunkov <asml.silence@gmail.com>
 
-commit 1ffc54220c444774b7f09e6d2121e732f8e19b94 upstream.
+commit b1b6b5a30dce872f500dc43f067cba8e7f86fc7d upstream.
 
-io_sqe_files_unregister() uninterruptibly waits for enqueued ref nodes,
-however requests keeping them may never complete, e.g. because of some
-userspace dependency. Make sure it's interruptible otherwise it would
-hang forever.
+For cancelling io_uring requests it needs either to be able to run
+currently enqueued task_works or having it shut down by that moment.
+Otherwise io_uring_cancel_files() may be waiting for requests that won't
+ever complete.
 
-Cc: stable@vger.kernel.org # 5.6+
+Go with the first way and do cancellations before setting PF_EXITING and
+so before putting the task_work infrastructure into a transition state
+where task_work_run() would better not be called.
+
+Cc: stable@vger.kernel.org # 5.5+
 Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |   24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+ fs/file.c     |    2 --
+ kernel/exit.c |    2 ++
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -941,6 +941,10 @@ enum io_mem_account {
- 	ACCT_PINNED,
- };
+--- a/fs/file.c
++++ b/fs/file.c
+@@ -21,7 +21,6 @@
+ #include <linux/rcupdate.h>
+ #include <linux/close_range.h>
+ #include <net/sock.h>
+-#include <linux/io_uring.h>
  
-+static void destroy_fixed_file_ref_node(struct fixed_file_ref_node *ref_node);
-+static struct fixed_file_ref_node *alloc_fixed_file_ref_node(
-+			struct io_ring_ctx *ctx);
-+
- static void __io_complete_rw(struct io_kiocb *req, long res, long res2,
- 			     struct io_comp_state *cs);
- static void io_cqring_fill_event(struct io_kiocb *req, long res);
-@@ -7004,11 +7008,15 @@ static void io_sqe_files_set_node(struct
- static int io_sqe_files_unregister(struct io_ring_ctx *ctx)
- {
- 	struct fixed_file_data *data = ctx->file_data;
--	struct fixed_file_ref_node *ref_node = NULL;
-+	struct fixed_file_ref_node *backup_node, *ref_node = NULL;
- 	unsigned nr_tables, i;
-+	int ret;
+ unsigned int sysctl_nr_open __read_mostly = 1024*1024;
+ unsigned int sysctl_nr_open_min = BITS_PER_LONG;
+@@ -453,7 +452,6 @@ void exit_files(struct task_struct *tsk)
+ 	struct files_struct * files = tsk->files;
  
- 	if (!data)
- 		return -ENXIO;
-+	backup_node = alloc_fixed_file_ref_node(ctx);
-+	if (!backup_node)
-+		return -ENOMEM;
+ 	if (files) {
+-		io_uring_files_cancel(files);
+ 		task_lock(tsk);
+ 		tsk->files = NULL;
+ 		task_unlock(tsk);
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -63,6 +63,7 @@
+ #include <linux/random.h>
+ #include <linux/rcuwait.h>
+ #include <linux/compat.h>
++#include <linux/io_uring.h>
  
- 	spin_lock_bh(&data->lock);
- 	ref_node = data->node;
-@@ -7020,7 +7028,18 @@ static int io_sqe_files_unregister(struc
+ #include <linux/uaccess.h>
+ #include <asm/unistd.h>
+@@ -762,6 +763,7 @@ void __noreturn do_exit(long code)
+ 		schedule();
+ 	}
  
- 	/* wait for all refs nodes to complete */
- 	flush_delayed_work(&ctx->file_put_work);
--	wait_for_completion(&data->done);
-+	do {
-+		ret = wait_for_completion_interruptible(&data->done);
-+		if (!ret)
-+			break;
-+		ret = io_run_task_work_sig();
-+		if (ret < 0) {
-+			percpu_ref_resurrect(&data->refs);
-+			reinit_completion(&data->done);
-+			io_sqe_files_set_node(data, backup_node);
-+			return ret;
-+		}
-+	} while (1);
++	io_uring_files_cancel(tsk->files);
+ 	exit_signals(tsk);  /* sets PF_EXITING */
  
- 	__io_sqe_files_unregister(ctx);
- 	nr_tables = DIV_ROUND_UP(ctx->nr_user_files, IORING_MAX_FILES_TABLE);
-@@ -7031,6 +7050,7 @@ static int io_sqe_files_unregister(struc
- 	kfree(data);
- 	ctx->file_data = NULL;
- 	ctx->nr_user_files = 0;
-+	destroy_fixed_file_ref_node(backup_node);
- 	return 0;
- }
- 
+ 	/* sync mm's RSS info before statistics gathering */
 
 
