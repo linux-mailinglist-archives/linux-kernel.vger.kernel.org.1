@@ -2,489 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00F62E94ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40A22E94F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 13:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbhADMes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 07:34:48 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9953 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbhADMer (ORCPT
+        id S1726673AbhADMfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 07:35:39 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:56634 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbhADMfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 07:34:47 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D8Zm9499Mzj1mf;
-        Mon,  4 Jan 2021 20:33:13 +0800 (CST)
-Received: from [10.174.177.80] (10.174.177.80) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 4 Jan 2021 20:33:50 +0800
-Subject: Re: [PATCH v9 05/12] mm: HUGE_VMAP arch support cleanup
-To:     Nicholas Piggin <npiggin@gmail.com>, <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, Zefan Li <lizefan@huawei.com>,
-        "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20201205065725.1286370-1-npiggin@gmail.com>
- <20201205065725.1286370-6-npiggin@gmail.com>
-From:   Ding Tianhong <dingtianhong@huawei.com>
-Message-ID: <c7eb5ba6-1187-d82f-d74c-0ca2c8ae8faf@huawei.com>
-Date:   Mon, 4 Jan 2021 20:33:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Mon, 4 Jan 2021 07:35:38 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104CTUfo191806;
+        Mon, 4 Jan 2021 12:34:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=OZAIZZ+LOOMd8Q8EORWxprLVkOWQwkn33zW7h438YtU=;
+ b=pDh31UXUplxTwEIhg1ksfyfQ423ntLZFe/CeAQL2ERkCinvm6k2dUWamo0yYtTWvMqHg
+ W+69YGgsw1biRL8J0FdmxdjVclhE6/pTvr57yoE2anKvf+wwSQLZjSMhDSlFo41aN887
+ 4WkN98nB1sM1SlsxW0qgvU8xTDCDcTAVJzkxvI4r711ogB2IqIA9EWFyGXuMQnS/6V/N
+ a1lzIGHfCsx6DvvYqqPZizHGH4Iopqw1T6lBfLs3zBc4NFBSyS3vkPKkSMTWBq5gLJXt
+ urQ6Bdt0aViy+DPuj4ouCa5ZWkr/yAYuMS0HGl3K1G3KqBGfqYtrqDt7cXOvn6wnC841 ZA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 35tg8qv28y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 04 Jan 2021 12:34:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104CULL0124671;
+        Mon, 4 Jan 2021 12:34:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 35v23x1y71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Jan 2021 12:34:44 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 104CYgmp030126;
+        Mon, 4 Jan 2021 12:34:42 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 Jan 2021 04:34:40 -0800
+Date:   Mon, 4 Jan 2021 15:34:10 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-mmc@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3 09/24] wfx: add hwio.c/hwio.h
+Message-ID: <20210104123410.GN2809@kadam>
+References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
+ <87lfdp98rw.fsf@codeaurora.org>
+ <X+IQRct0Zsm87H4+@kroah.com>
+ <4279510.LvFx2qVVIh@pc-42>
 MIME-Version: 1.0
-In-Reply-To: <20201205065725.1286370-6-npiggin@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.80]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4279510.LvFx2qVVIh@pc-42>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040083
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 phishscore=0 bulkscore=0
+ spamscore=0 impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/5 14:57, Nicholas Piggin wrote:
-> This changes the awkward approach where architectures provide init
-> functions to determine which levels they can provide large mappings for,
-> to one where the arch is queried for each call.
+On Tue, Dec 22, 2020 at 10:02:09PM +0100, Jérôme Pouiller wrote:
+> On Tuesday 22 December 2020 16:27:01 CET Greg Kroah-Hartman wrote:
+> > 
+> > On Tue, Dec 22, 2020 at 05:10:11PM +0200, Kalle Valo wrote:
+> > > Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+> > >
+> > > > +/*
+> > > > + * Internal helpers.
+> > > > + *
+> > > > + * About CONFIG_VMAP_STACK:
+> > > > + * When CONFIG_VMAP_STACK is enabled, it is not possible to run DMA on stack
+> > > > + * allocated data. Functions below that work with registers (aka functions
+> > > > + * ending with "32") automatically reallocate buffers with kmalloc. However,
+> > > > + * functions that work with arbitrary length buffers let's caller to handle
+> > > > + * memory location. In doubt, enable CONFIG_DEBUG_SG to detect badly located
+> > > > + * buffer.
+> > > > + */
+> > >
+> > > This sounds very hacky to me, I have understood that you should never
+> > > use stack with DMA.
+> > 
+> > You should never do that because some platforms do not support it, so no
+> > driver should ever try to do that as they do not know what platform they
+> > are running on.
 > 
-> This removes code and indirection, and allows constant-folding of dead
-> code for unsupported levels.
+> Yes, I have learned this rule the hard way.
 > 
-> This also adds a prot argument to the arch query. This is unused
-> currently but could help with some architectures (e.g., some powerpc
-> processors can't map uncacheable memory with large pages).
+> There is no better way than a comment to warn the user that the argument
+> will be used with a DMA? A Sparse annotation, for example?
 > 
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com> [arm64]
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> ---
->  arch/arm64/include/asm/vmalloc.h         |  8 +++
->  arch/arm64/mm/mmu.c                      | 10 +--
->  arch/powerpc/include/asm/vmalloc.h       |  8 +++
->  arch/powerpc/mm/book3s64/radix_pgtable.c |  8 +--
->  arch/x86/include/asm/vmalloc.h           |  7 ++
->  arch/x86/mm/ioremap.c                    | 10 +--
->  include/linux/io.h                       |  9 ---
->  include/linux/vmalloc.h                  |  6 ++
->  init/main.c                              |  1 -
->  mm/ioremap.c                             | 88 +++++++++---------------
->  10 files changed, 77 insertions(+), 78 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/vmalloc.h
-> index 2ca708ab9b20..597b40405319 100644
-> --- a/arch/arm64/include/asm/vmalloc.h
-> +++ b/arch/arm64/include/asm/vmalloc.h
-> @@ -1,4 +1,12 @@
->  #ifndef _ASM_ARM64_VMALLOC_H
->  #define _ASM_ARM64_VMALLOC_H
->  
-> +#include <asm/page.h>
-> +
-> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +bool arch_vmap_p4d_supported(pgprot_t prot);
-> +bool arch_vmap_pud_supported(pgprot_t prot);
-> +bool arch_vmap_pmd_supported(pgprot_t prot);
-> +#endif
-> +
->  #endif /* _ASM_ARM64_VMALLOC_H */
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index ca692a815731..1b60079c1cef 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1315,12 +1315,12 @@ void *__init fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot)
->  	return dt_virt;
->  }
->  
-> -int __init arch_ioremap_p4d_supported(void)
-> +bool arch_vmap_p4d_supported(pgprot_t prot)
->  {
-> -	return 0;
-> +	return false;
->  }
->  
 
-I think you should put this function in the CONFIG_HAVE_ARCH_HUGE_VMAP, otherwise it may break the compile when disable the CONFIG_HAVE_ARCH_HUGE_VMAP, the same
-as the x86 and ppc.
+There is a Smatch warning for this, but I hadn't looked at the results
+in a while. :/  I'm not sure how many are valid.  Some kind of
+annotation would be nice.
 
-Ding
+regards,
+dan carpenter
 
-> -int __init arch_ioremap_pud_supported(void)
-> +bool arch_vmap_pud_supported(pgprot_t prot);
->  {
->  	/*
->  	 * Only 4k granule supports level 1 block mappings.
-> @@ -1330,9 +1330,9 @@ int __init arch_ioremap_pud_supported(void)
->  	       !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
->  }
->  
-> -int __init arch_ioremap_pmd_supported(void)
-> +bool arch_vmap_pmd_supported(pgprot_t prot)
->  {
-> -	/* See arch_ioremap_pud_supported() */
-> +	/* See arch_vmap_pud_supported() */
->  	return !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
->  }
->  
-> diff --git a/arch/powerpc/include/asm/vmalloc.h b/arch/powerpc/include/asm/vmalloc.h
-> index b992dfaaa161..105abb73f075 100644
-> --- a/arch/powerpc/include/asm/vmalloc.h
-> +++ b/arch/powerpc/include/asm/vmalloc.h
-> @@ -1,4 +1,12 @@
->  #ifndef _ASM_POWERPC_VMALLOC_H
->  #define _ASM_POWERPC_VMALLOC_H
->  
-> +#include <asm/page.h>
-> +
-> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +bool arch_vmap_p4d_supported(pgprot_t prot);
-> +bool arch_vmap_pud_supported(pgprot_t prot);
-> +bool arch_vmap_pmd_supported(pgprot_t prot);
-> +#endif
-> +
->  #endif /* _ASM_POWERPC_VMALLOC_H */
-> diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
-> index 3adcf730f478..ab426fc0cd4b 100644
-> --- a/arch/powerpc/mm/book3s64/radix_pgtable.c
-> +++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
-> @@ -1121,13 +1121,13 @@ void radix__ptep_modify_prot_commit(struct vm_area_struct *vma,
->  	set_pte_at(mm, addr, ptep, pte);
->  }
->  
-> -int __init arch_ioremap_pud_supported(void)
-> +bool arch_vmap_pud_supported(pgprot_t prot)
->  {
->  	/* HPT does not cope with large pages in the vmalloc area */
->  	return radix_enabled();
->  }
->  
-> -int __init arch_ioremap_pmd_supported(void)
-> +bool arch_vmap_pmd_supported(pgprot_t prot)
->  {
->  	return radix_enabled();
->  }
-> @@ -1221,7 +1221,7 @@ int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
->  	return 1;
->  }
->  
-> -int __init arch_ioremap_p4d_supported(void)
-> +bool arch_vmap_p4d_supported(pgprot_t prot)
->  {
-> -	return 0;
-> +	return false;
->  }
-> diff --git a/arch/x86/include/asm/vmalloc.h b/arch/x86/include/asm/vmalloc.h
-> index 29837740b520..094ea2b565f3 100644
-> --- a/arch/x86/include/asm/vmalloc.h
-> +++ b/arch/x86/include/asm/vmalloc.h
-> @@ -1,6 +1,13 @@
->  #ifndef _ASM_X86_VMALLOC_H
->  #define _ASM_X86_VMALLOC_H
->  
-> +#include <asm/page.h>
->  #include <asm/pgtable_areas.h>
->  
-> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +bool arch_vmap_p4d_supported(pgprot_t prot);
-> +bool arch_vmap_pud_supported(pgprot_t prot);
-> +bool arch_vmap_pmd_supported(pgprot_t prot);
-> +#endif
-> +
->  #endif /* _ASM_X86_VMALLOC_H */
-> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-> index 9e5ccc56f8e0..762b5ff4edad 100644
-> --- a/arch/x86/mm/ioremap.c
-> +++ b/arch/x86/mm/ioremap.c
-> @@ -481,21 +481,21 @@ void iounmap(volatile void __iomem *addr)
->  }
->  EXPORT_SYMBOL(iounmap);
->  
-> -int __init arch_ioremap_p4d_supported(void)
-> +bool arch_vmap_p4d_supported(pgprot_t prot)
->  {
-> -	return 0;
-> +	return false;
->  }
->  
-> -int __init arch_ioremap_pud_supported(void)
-> +bool arch_vmap_pud_supported(pgprot_t prot)
->  {
->  #ifdef CONFIG_X86_64
->  	return boot_cpu_has(X86_FEATURE_GBPAGES);
->  #else
-> -	return 0;
-> +	return false;
->  #endif
->  }
->  
-> -int __init arch_ioremap_pmd_supported(void)
-> +bool arch_vmap_pmd_supported(pgprot_t prot)
->  {
->  	return boot_cpu_has(X86_FEATURE_PSE);
->  }
-> diff --git a/include/linux/io.h b/include/linux/io.h
-> index 8394c56babc2..f1effd4d7a3c 100644
-> --- a/include/linux/io.h
-> +++ b/include/linux/io.h
-> @@ -31,15 +31,6 @@ static inline int ioremap_page_range(unsigned long addr, unsigned long end,
->  }
->  #endif
->  
-> -#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> -void __init ioremap_huge_init(void);
-> -int arch_ioremap_p4d_supported(void);
-> -int arch_ioremap_pud_supported(void);
-> -int arch_ioremap_pmd_supported(void);
-> -#else
-> -static inline void ioremap_huge_init(void) { }
-> -#endif
-> -
->  /*
->   * Managed iomap interface
->   */
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index 938eaf9517e2..b3218ba0904d 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -85,6 +85,12 @@ struct vmap_area {
->  	};
->  };
->  
-> +#ifndef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +static inline bool arch_vmap_p4d_supported(pgprot_t prot) { return false; }
-> +static inline bool arch_vmap_pud_supported(pgprot_t prot) { return false; }
-> +static inline bool arch_vmap_pmd_supported(pgprot_t prot) { return false; }
-> +#endif
-> +
->  /*
->   *	Highlevel APIs for driver use
->   */
-> diff --git a/init/main.c b/init/main.c
-> index 20baced721ad..5bd2f4f41d30 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -833,7 +833,6 @@ static void __init mm_init(void)
->  	pgtable_init();
->  	debug_objects_mem_init();
->  	vmalloc_init();
-> -	ioremap_huge_init();
->  	/* Should be run before the first non-init thread is created */
->  	init_espfix_bsp();
->  	/* Should be run after espfix64 is set up. */
-> diff --git a/mm/ioremap.c b/mm/ioremap.c
-> index 3f4d36f9745a..c67f91164401 100644
-> --- a/mm/ioremap.c
-> +++ b/mm/ioremap.c
-> @@ -16,49 +16,16 @@
->  #include "pgalloc-track.h"
->  
->  #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> -static int __read_mostly ioremap_p4d_capable;
-> -static int __read_mostly ioremap_pud_capable;
-> -static int __read_mostly ioremap_pmd_capable;
-> -static int __read_mostly ioremap_huge_disabled;
-> +static bool __ro_after_init iomap_max_page_shift = PAGE_SHIFT;
->  
->  static int __init set_nohugeiomap(char *str)
->  {
-> -	ioremap_huge_disabled = 1;
-> +	iomap_max_page_shift = P4D_SHIFT;
->  	return 0;
->  }
->  early_param("nohugeiomap", set_nohugeiomap);
-> -
-> -void __init ioremap_huge_init(void)
-> -{
-> -	if (!ioremap_huge_disabled) {
-> -		if (arch_ioremap_p4d_supported())
-> -			ioremap_p4d_capable = 1;
-> -		if (arch_ioremap_pud_supported())
-> -			ioremap_pud_capable = 1;
-> -		if (arch_ioremap_pmd_supported())
-> -			ioremap_pmd_capable = 1;
-> -	}
-> -}
-> -
-> -static inline int ioremap_p4d_enabled(void)
-> -{
-> -	return ioremap_p4d_capable;
-> -}
-> -
-> -static inline int ioremap_pud_enabled(void)
-> -{
-> -	return ioremap_pud_capable;
-> -}
-> -
-> -static inline int ioremap_pmd_enabled(void)
-> -{
-> -	return ioremap_pmd_capable;
-> -}
-> -
-> -#else	/* !CONFIG_HAVE_ARCH_HUGE_VMAP */
-> -static inline int ioremap_p4d_enabled(void) { return 0; }
-> -static inline int ioremap_pud_enabled(void) { return 0; }
-> -static inline int ioremap_pmd_enabled(void) { return 0; }
-> +#else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
-> +static const bool iomap_max_page_shift = PAGE_SHIFT;
->  #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
->  
->  static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
-> @@ -82,9 +49,13 @@ static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
->  }
->  
->  static int vmap_try_huge_pmd(pmd_t *pmd, unsigned long addr, unsigned long end,
-> -			phys_addr_t phys_addr, pgprot_t prot)
-> +			phys_addr_t phys_addr, pgprot_t prot,
-> +			unsigned int max_page_shift)
->  {
-> -	if (!ioremap_pmd_enabled())
-> +	if (max_page_shift < PMD_SHIFT)
-> +		return 0;
-> +
-> +	if (!arch_vmap_pmd_supported(prot))
->  		return 0;
->  
->  	if ((end - addr) != PMD_SIZE)
-> @@ -104,7 +75,7 @@ static int vmap_try_huge_pmd(pmd_t *pmd, unsigned long addr, unsigned long end,
->  
->  static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->  			phys_addr_t phys_addr, pgprot_t prot,
-> -			pgtbl_mod_mask *mask)
-> +			unsigned int max_page_shift, pgtbl_mod_mask *mask)
->  {
->  	pmd_t *pmd;
->  	unsigned long next;
-> @@ -115,7 +86,7 @@ static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->  	do {
->  		next = pmd_addr_end(addr, end);
->  
-> -		if (vmap_try_huge_pmd(pmd, addr, next, phys_addr, prot)) {
-> +		if (vmap_try_huge_pmd(pmd, addr, next, phys_addr, prot, max_page_shift)) {
->  			*mask |= PGTBL_PMD_MODIFIED;
->  			continue;
->  		}
-> @@ -127,9 +98,13 @@ static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->  }
->  
->  static int vmap_try_huge_pud(pud_t *pud, unsigned long addr, unsigned long end,
-> -			phys_addr_t phys_addr, pgprot_t prot)
-> +			phys_addr_t phys_addr, pgprot_t prot,
-> +			unsigned int max_page_shift)
->  {
-> -	if (!ioremap_pud_enabled())
-> +	if (max_page_shift < PUD_SHIFT)
-> +		return 0;
-> +
-> +	if (!arch_vmap_pud_supported(prot))
->  		return 0;
->  
->  	if ((end - addr) != PUD_SIZE)
-> @@ -149,7 +124,7 @@ static int vmap_try_huge_pud(pud_t *pud, unsigned long addr, unsigned long end,
->  
->  static int vmap_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
->  			phys_addr_t phys_addr, pgprot_t prot,
-> -			pgtbl_mod_mask *mask)
-> +			unsigned int max_page_shift, pgtbl_mod_mask *mask)
->  {
->  	pud_t *pud;
->  	unsigned long next;
-> @@ -160,21 +135,25 @@ static int vmap_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
->  	do {
->  		next = pud_addr_end(addr, end);
->  
-> -		if (vmap_try_huge_pud(pud, addr, next, phys_addr, prot)) {
-> +		if (vmap_try_huge_pud(pud, addr, next, phys_addr, prot, max_page_shift)) {
->  			*mask |= PGTBL_PUD_MODIFIED;
->  			continue;
->  		}
->  
-> -		if (vmap_pmd_range(pud, addr, next, phys_addr, prot, mask))
-> +		if (vmap_pmd_range(pud, addr, next, phys_addr, prot, max_page_shift, mask))
->  			return -ENOMEM;
->  	} while (pud++, phys_addr += (next - addr), addr = next, addr != end);
->  	return 0;
->  }
->  
->  static int vmap_try_huge_p4d(p4d_t *p4d, unsigned long addr, unsigned long end,
-> -			phys_addr_t phys_addr, pgprot_t prot)
-> +			phys_addr_t phys_addr, pgprot_t prot,
-> +			unsigned int max_page_shift)
->  {
-> -	if (!ioremap_p4d_enabled())
-> +	if (max_page_shift < P4D_SHIFT)
-> +		return 0;
-> +
-> +	if (!arch_vmap_p4d_supported(prot))
->  		return 0;
->  
->  	if ((end - addr) != P4D_SIZE)
-> @@ -194,7 +173,7 @@ static int vmap_try_huge_p4d(p4d_t *p4d, unsigned long addr, unsigned long end,
->  
->  static int vmap_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long end,
->  			phys_addr_t phys_addr, pgprot_t prot,
-> -			pgtbl_mod_mask *mask)
-> +			unsigned int max_page_shift, pgtbl_mod_mask *mask)
->  {
->  	p4d_t *p4d;
->  	unsigned long next;
-> @@ -205,19 +184,20 @@ static int vmap_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long end,
->  	do {
->  		next = p4d_addr_end(addr, end);
->  
-> -		if (vmap_try_huge_p4d(p4d, addr, next, phys_addr, prot)) {
-> +		if (vmap_try_huge_p4d(p4d, addr, next, phys_addr, prot, max_page_shift)) {
->  			*mask |= PGTBL_P4D_MODIFIED;
->  			continue;
->  		}
->  
-> -		if (vmap_pud_range(p4d, addr, next, phys_addr, prot, mask))
-> +		if (vmap_pud_range(p4d, addr, next, phys_addr, prot, max_page_shift, mask))
->  			return -ENOMEM;
->  	} while (p4d++, phys_addr += (next - addr), addr = next, addr != end);
->  	return 0;
->  }
->  
->  static int vmap_range(unsigned long addr, unsigned long end,
-> -			phys_addr_t phys_addr, pgprot_t prot)
-> +			phys_addr_t phys_addr, pgprot_t prot,
-> +			unsigned int max_page_shift)
->  {
->  	pgd_t *pgd;
->  	unsigned long start;
-> @@ -232,7 +212,7 @@ static int vmap_range(unsigned long addr, unsigned long end,
->  	pgd = pgd_offset_k(addr);
->  	do {
->  		next = pgd_addr_end(addr, end);
-> -		err = vmap_p4d_range(pgd, addr, next, phys_addr, prot, &mask);
-> +		err = vmap_p4d_range(pgd, addr, next, phys_addr, prot, max_page_shift, &mask);
->  		if (err)
->  			break;
->  	} while (pgd++, phys_addr += (next - addr), addr = next, addr != end);
-> @@ -248,7 +228,7 @@ static int vmap_range(unsigned long addr, unsigned long end,
->  int ioremap_page_range(unsigned long addr,
->  		       unsigned long end, phys_addr_t phys_addr, pgprot_t prot)
->  {
-> -	return vmap_range(addr, end, phys_addr, prot);
-> +	return vmap_range(addr, end, phys_addr, prot, iomap_max_page_shift);
->  }
->  
->  #ifdef CONFIG_GENERIC_IOREMAP
-> 
+drivers/staging/gdm724x/gdm_usb.c:69 request_mac_address() error: doing dma on the stack (buf)
+drivers/staging/rtl8192u/r8192U_core.c:1553 rtl8192_tx() error: doing dma on the stack (&zero)
+drivers/staging/comedi/drivers/dt9812.c:249 dt9812_read_info() error: doing dma on the stack (&cmd)
+drivers/staging/comedi/drivers/dt9812.c:273 dt9812_read_multiple_registers() error: doing dma on the stack (&cmd)
+drivers/staging/comedi/drivers/dt9812.c:299 dt9812_write_multiple_registers() error: doing dma on the stack (&cmd)
+drivers/staging/comedi/drivers/dt9812.c:318 dt9812_rmw_multiple_registers() error: doing dma on the stack (&cmd)
+drivers/staging/comedi/drivers/dt9812.c:330 dt9812_digital_in() error: doing dma on the stack (value)
+drivers/staging/comedi/drivers/dt9812.c:456 dt9812_analog_in() error: doing dma on the stack (val)
+drivers/staging/comedi/drivers/dt9812.c:692 dt9812_reset_device() error: doing dma on the stack (&tmp8)
+drivers/staging/comedi/drivers/dt9812.c:700 dt9812_reset_device() error: doing dma on the stack (&tmp8)
+drivers/staging/comedi/drivers/dt9812.c:711 dt9812_reset_device() error: doing dma on the stack (&tmp16)
+drivers/staging/comedi/drivers/dt9812.c:718 dt9812_reset_device() error: doing dma on the stack (&tmp16)
+drivers/staging/comedi/drivers/dt9812.c:725 dt9812_reset_device() error: doing dma on the stack (&tmp16)
+drivers/staging/comedi/drivers/dt9812.c:732 dt9812_reset_device() error: doing dma on the stack (&tmp32)
+drivers/usb/storage/alauda.c:498 alauda_check_status2() error: doing dma on the stack (command)
+drivers/usb/storage/alauda.c:503 alauda_check_status2() error: doing dma on the stack (data)
+drivers/usb/storage/alauda.c:527 alauda_get_redu_data() error: doing dma on the stack (command)
+drivers/usb/storage/alauda.c:702 alauda_erase_block() error: doing dma on the stack (command)
+drivers/usb/storage/alauda.c:707 alauda_erase_block() error: doing dma on the stack (buf)
+drivers/usb/storage/alauda.c:731 alauda_read_block_raw() error: doing dma on the stack (command)
+drivers/usb/storage/alauda.c:782 alauda_write_block() error: doing dma on the stack (command)
+drivers/usb/class/usblp.c:593 usblp_ioctl() error: doing dma on the stack (&newChannel)
+drivers/usb/serial/iuu_phoenix.c:542 iuu_uart_flush() error: doing dma on the stack (&rxcmd)
+drivers/firewire/core-device.c:565 read_config_rom() error: doing dma on the stack (&dummy)
+drivers/firewire/core-device.c:1111 reread_config_rom() error: doing dma on the stack (&q)
+drivers/media/usb/uvc/uvc_v4l2.c:910 uvc_ioctl_g_input() error: doing dma on the stack (&i)
+drivers/media/usb/uvc/uvc_v4l2.c:942 uvc_ioctl_s_input() error: doing dma on the stack (&i)
+drivers/media/usb/cx231xx/cx231xx-pcb-cfg.c:662 initialize_cx231xx() error: doing dma on the stack (data)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:90 uninitGPIO() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:1297 cx231xx_enable_i2c_port_3() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:1313 cx231xx_enable_i2c_port_3() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:1546 cx231xx_set_Colibri_For_LowIF() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2261 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2278 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2288 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2297 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2311 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2321 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2332 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2342 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2353 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2376 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2386 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2396 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2407 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2417 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2446 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2457 cx231xx_set_power_mode() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2469 cx231xx_power_suspend() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2481 cx231xx_power_suspend() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2497 cx231xx_start_stream() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2509 cx231xx_start_stream() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2523 cx231xx_stop_stream() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2534 cx231xx_stop_stream() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2591 cx231xx_initialize_stream_xfer() error: doing dma on the stack (val)
+drivers/media/usb/cx231xx/cx231xx-avcore.c:2599 cx231xx_initialize_stream_xfer() error: doing dma on the stack (val)
+drivers/media/usb/cx231xx/cx231xx-core.c:635 cx231xx_demod_reset() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-core.c:644 cx231xx_demod_reset() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-core.c:649 cx231xx_demod_reset() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-core.c:654 cx231xx_demod_reset() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-core.c:658 cx231xx_demod_reset() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-core.c:1253 cx231xx_stop_TS1() error: doing dma on the stack (val)
+drivers/media/usb/cx231xx/cx231xx-core.c:1260 cx231xx_stop_TS1() error: doing dma on the stack (val)
+drivers/media/usb/cx231xx/cx231xx-core.c:1272 cx231xx_start_TS1() error: doing dma on the stack (val)
+drivers/media/usb/cx231xx/cx231xx-core.c:1279 cx231xx_start_TS1() error: doing dma on the stack (val)
+drivers/media/usb/cx231xx/cx231xx-core.c:1533 cx231xx_mode_register() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-core.c:1546 cx231xx_mode_register() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-video.c:1236 cx231xx_g_register() error: doing dma on the stack (value)
+drivers/media/usb/cx231xx/cx231xx-video.c:1297 cx231xx_s_register() error: doing dma on the stack (data)
+drivers/media/usb/gspca/kinect.c:209 write_register() error: doing dma on the stack (reply)
+drivers/net/usb/rndis_host.c:129 rndis_command() error: doing dma on the stack (&notification)
 
