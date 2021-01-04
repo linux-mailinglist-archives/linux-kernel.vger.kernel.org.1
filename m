@@ -2,129 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFCF2E9D2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1112E9D32
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 19:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbhADShv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 13:37:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726418AbhADShu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 13:37:50 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C576DC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 10:37:09 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id q25so33167431oij.10
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 10:37:09 -0800 (PST)
+        id S1727997AbhADSiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 13:38:10 -0500
+Received: from mail-mw2nam12on2059.outbound.protection.outlook.com ([40.107.244.59]:43265
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726163AbhADSiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 13:38:07 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iUN0cItygBikG8/sHQQaHBW8Pi407qlTDQhhDuP0byn8DtZ8b0hQbW7m9Xn+jPh15f7gV0Zd/2T7j9+2x68ChNUtpu9gWAFnyju84e0cUCKUDvAYsDSFb5XcUT9syHv8nsiqrfL1cnWOtZ2eUhV+4PNNvYtbKmtDDJHR0ohbcC/rIe9nhpkoTrxcbQEL0vcteb7psb3vXgBWuw4Vbx8ZC2vnlrD4HfygFTuDtPT/fOqVaesjyACV+szwHPbUgnA9voQuRqj9QUKVEEcLwknEGp6kvXdLuiooUKrGvyWpMkQDjLpt33fIL2SuMFVM8oAh4Oo3fZCVFFOt5JTBGeMmoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sFPNBmh7H+GW99A/6FFYEUMexOY/4j3dkXMP1mhBuU8=;
+ b=AMQ365RP+xVtFjJPbkqbwCHMbocGraGFu2Z8te9JtTaWMc+Zitu938n7V8doiMucSojIuBubblzsc5nUnKT3eLrgps27TI0JM8ILI/y1ML6j7cbm6yZ8V1lwpq5ZMDcf8oSool5ydeNuuZ1m9hD6VcX6sxs8qRMbYwNb1vJ8sgS6b1zttFws6dLhEmahPekTWJXY2KqUL/YSa+QvNACxrieCY5Q4on15JYBlW/QLa9TVUWcDFanPYWhjqo8xM3AWZskxlsuhJsljKwcXbAntal8U9DLXAMKrw9qfNTG+jQZqSAEb9kIC7TcNAf39e3NbsxyH0bwoqOsmCDVPqQt7eQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D0br3wkGScF5qbNK3FSimsSwz8m6L15tNlHZCr/gQ1E=;
-        b=xeWdQz/PuaexWTTzQl1bJT9cuC98+rdp2YshmMf1IvsDTs6pnBX6F4tzfHjYe2G51P
-         pEG3RHn129a1qPg9bUri2XChBaA9earXdW2YUEkiaqeAUjB1gzfreu6YQ1D+drImPoMZ
-         LrnO+KOCiGVmVsiZHwOExgOhDXirFn722+up51qABGixHpgVI83r+vZI7tdkVFLSE6z4
-         7yOcBIJU5lj+atKfj3iZ5otp+DZgf5a2NLsrwiav4qx1EwlujRyUmMr8F+KpUTuXpdsY
-         NDMwIf5SERQ1jM1HzL2xjSydXRuB8TAyocpRbDlHNmeAHRRHVVUgfB+3SibCUkOFhFg+
-         6C2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D0br3wkGScF5qbNK3FSimsSwz8m6L15tNlHZCr/gQ1E=;
-        b=YkYPQUTxZ67ONGivk+sGWK6gAI3IoJPQ4CJyXaRMC3uU51qLnIIMoFNj3I/DX5tOIe
-         ihg64sVLkAVp3wBzwIo4EQKMOPFE4Qrt89WRCf2AXdE2XShGs0LA/YbhEhrRY/XPkfh9
-         M4PXw5sVeryWmRd0Tq1u80lvhPXdQWxOehNS1AHaMtrkgZUzK0x+pQc0kJnpVoh8jZVR
-         NiXAY1W91GrWl7oXV/qjDV+xDjS+h3VSVJ9UTssMqdjTX3QVARjmiVnXoGhpCiPLBQo1
-         nfGhELIe+VBn+QTAGjgXIoJQjmFlvA0Q7HHZsny5qdKds1psoMIcoeaCL90LP/rrURd3
-         bzkg==
-X-Gm-Message-State: AOAM533Sp7L8UKb9h3QgFCHoiNXX2PXckr+UkLHZBUeiU0HHeET9kGEp
-        MKg0vv6RKJrtvPaoweXgMGaOUg==
-X-Google-Smtp-Source: ABdhPJwk5OyQVNrEWQj2HcRNSEsj5SteHD+WK+zbUk8xyIFouWIvjIDbz7gsJCyn0Xc5QcGcJCOIgg==
-X-Received: by 2002:a05:6808:7d0:: with SMTP id f16mr160921oij.109.1609785429256;
-        Mon, 04 Jan 2021 10:37:09 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g3sm12866008ooi.28.2021.01.04.10.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 10:37:08 -0800 (PST)
-Date:   Mon, 4 Jan 2021 12:37:06 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
- bindings
-Message-ID: <X/NgUp/pm9T0JlTw@builder.lan>
-References: <20201208085748.3684670-1-vkoul@kernel.org>
- <20201210135253.GA2405508@robh.at.kernel.org>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sFPNBmh7H+GW99A/6FFYEUMexOY/4j3dkXMP1mhBuU8=;
+ b=JNVeaw9OqCSj3G/azsTZJKWNYb6AIQwajpYQBkxNtjfT/rBOliN8rVrc0eKNW+pXhJ15rjiKKyuVLzxI7uIQ5Pp7N8Gex49iuhgY9RcAeqkfbh4BKP0B4mjuw59GWraU1h9AYbkWXCCYMJO3ba2uR8lLN9AVC0cAUf7sgAa1CFw=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
+ by SN1PR12MB2382.namprd12.prod.outlook.com (2603:10b6:802:2e::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Mon, 4 Jan
+ 2021 18:37:14 +0000
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::8c0e:9a64:673b:4fff]) by SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::8c0e:9a64:673b:4fff%5]) with mapi id 15.20.3721.024; Mon, 4 Jan 2021
+ 18:37:14 +0000
+Subject: RE: [PATCH v2 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
+To:     Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kyung.min.park@intel.com" <kyung.min.park@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "Phillips, Kim" <kim.phillips@amd.com>,
+        "Huang2, Wei" <Wei.Huang2@amd.com>,
+        "jmattson@google.com" <jmattson@google.com>
+References: <160867624053.3471.7106539070175910424.stgit@bmoger-ubuntu>
+ <160867631505.3471.3808049369257008114.stgit@bmoger-ubuntu>
+ <20201230071501.GB22022@zn.tnic> <X+yl57S8vuU2pRil@google.com>
+From:   Babu Moger <babu.moger@amd.com>
+Message-ID: <8a392a10-9367-31ee-1a63-bc57a40ab82d@amd.com>
+Date:   Mon, 4 Jan 2021 12:37:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <X+yl57S8vuU2pRil@google.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SN4PR0201CA0024.namprd02.prod.outlook.com
+ (2603:10b6:803:2b::34) To SN1PR12MB2560.namprd12.prod.outlook.com
+ (2603:10b6:802:26::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210135253.GA2405508@robh.at.kernel.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.136] (165.204.77.1) by SN4PR0201CA0024.namprd02.prod.outlook.com (2603:10b6:803:2b::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19 via Frontend Transport; Mon, 4 Jan 2021 18:37:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 442a9bcf-5c71-48db-e14d-08d8b0dfc1c3
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2382:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB23823711FB98D3E29BFF204B95D20@SN1PR12MB2382.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nuAC3RPtPcV/iW/z72Hmi1EST+9DJfZ+/ypx96ahge4C25LD22BjATWANsWlrhJ4pvdMk3pYFCKM0eMpLYQLkvCiLwPGHtcAGHVGUyjvoaClwacmTlZrBakvCoIBCnmkjfI3u0eYldwyx1OMu2oE9RMTcfNSdrs0ayzY319PUUvXx+MkT0hA7N8jVRXDQ5mvdR1sMcMgJVW8C1p6mZXVmqZH0z50qnG6KZIMngiix5Ucg8xtnDDVoe4sBZQEscN+Nsxzm2RTm3VQJBaTUZ077CXK6zAK/9LtnEaOpbAL8zVBY+SwM4Ouq2/gD4xrgigFGlzrEaUUvlbXUZIQ42XFlHNei3kt+vKTRCEqqa1g6n0JAAlqJ+XCoj+0kYqLVHiWeisGQW4aknZav6dIgkzhuox2JhLYfTNp5PS2TD6xInoi10eV0/QHCCx4zSBUg88JijhzPHcGm7eu0pNqIMDMFVjAeC4GW5H8wxNCKWdBT9o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(396003)(39860400002)(136003)(44832011)(66556008)(31686004)(16526019)(478600001)(956004)(54906003)(2616005)(5660300002)(52116002)(186003)(66476007)(66946007)(16576012)(110136005)(83380400001)(36756003)(53546011)(8676002)(316002)(6486002)(8936002)(7416002)(31696002)(4326008)(86362001)(2906002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?QIzfxxzq+5c5Z1ORSsgT9DKSJA39HYbNb6EUb2pScC6ui9i3ME+Rd6lk?=
+ =?Windows-1252?Q?sQU2iY2qsBPpCbqBuf+cn53I/ZuFz302oGeRpNVao7cf284rT8XBG9t9?=
+ =?Windows-1252?Q?R3nIXYo1YsOPi45+rO0vAP4dJ7DwApGI8Lq5CwTMj7CMl5EY2OwEzJWT?=
+ =?Windows-1252?Q?aGJcbDvX0ymFytQDB3ggGVNxdGfUbb1gp07m/GsJfEoqLILAQ+iSKt3F?=
+ =?Windows-1252?Q?gZDSgRTrIJWuOkZ6IE1+jm3aSVj3GEw8aKTuKPocS8FlNU3kCfDwDHvD?=
+ =?Windows-1252?Q?IKf+dU4WLb+L+PIDEaFfs6AamiyPOk8+/1Jvd+x0YDE/SFHpyg+HRKSK?=
+ =?Windows-1252?Q?jnZCSOdQqs42smbNfKWUZNTBBFKBPUicp5/Jvl7d5R5VP9spau7iq4+K?=
+ =?Windows-1252?Q?xhWj5YZvDzofVcAX+i2zkSLa2znCt3UUeEVz6uGKjA5iTNctaV938Sic?=
+ =?Windows-1252?Q?mHw7i/xbOkR9kMvD7A1340UKgXU/EOxe5qfxsrxelcq4/O2Baj88JQ+r?=
+ =?Windows-1252?Q?ph6Oa7ZNW5PkowWyEDMXUWkgDUWd91IE6U3iNA1MLaKdF7Jv2DmIzyw/?=
+ =?Windows-1252?Q?6mHhLnL8nNf327O7lhpsxjL/SyU4hi55gymo/gMqGZTSt1uE1b+4j3uX?=
+ =?Windows-1252?Q?nIU4zPGXOzjjPoeAT93f60TxbFtlexmtrd4GwEbix0ski4PBzEZ7jfyH?=
+ =?Windows-1252?Q?RkX65dFhND5DtwRn/2OdFSGMDb+WQ5HPZhp6tC8zv5nEOmjx7Zdz0RaG?=
+ =?Windows-1252?Q?E2pl1Tu6b1xipBbUknuRiRKLhG6rk7CbyJPwX4dvsn3aLhsW7NZuq+Ej?=
+ =?Windows-1252?Q?eqVuhA6BtPMRa1vcdOvkntVIY1Rc3mvp1OV3skimCgw+RxbJhTcMX1zd?=
+ =?Windows-1252?Q?UkdMT/zcU+/e3GUUSZZohjN5hM02ltTC2O/2W5SvY6Z7NpGDiIJriFl9?=
+ =?Windows-1252?Q?iUf+pcO8WrmDzkHxEOZfzsamnNRZ5zmQNosFhLH/O0QcW8XCVJDtSo+P?=
+ =?Windows-1252?Q?0whmOOn5URgRN+cpU9XD+rv1Ty59XDaQN+KxUctXjY3NsfxLwrMrlXIV?=
+ =?Windows-1252?Q?Yr6NWxN/QPZORiUx?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2021 18:37:14.6811
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 442a9bcf-5c71-48db-e14d-08d8b0dfc1c3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MaZ6C3voWLRDBhC0UWB4RSYI7s2P/T2XOO+UjoNV1jCtoPYQSErVJ4daJlyFdkk4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2382
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10 Dec 07:52 CST 2020, Rob Herring wrote:
 
-> On Tue, Dec 08, 2020 at 02:27:47PM +0530, Vinod Koul wrote:
-> > Add device tree binding Documentation details for Qualcomm SM8350
-> > pinctrl driver.
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> > 
-> > Changes since v1:
-> >   - Fix pins pattern
-> >   - Fix example indent
-> > 
-> >  .../bindings/pinctrl/qcom,sm8350-pinctrl.yaml | 151 ++++++++++++++++++
-> >  1 file changed, 151 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
-> > new file mode 100644
-> > index 000000000000..8ddb347c43da
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
-> > @@ -0,0 +1,151 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/pinctrl/qcom,sm8350-pinctrl.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm Technologies, Inc. SM8350 TLMM block
-> > +
-> > +maintainers:
-> > +  - Vinod Koul <vkoul@kernel.org>
-> > +
-> > +description: |
-> > +  This binding describes the Top Level Mode Multiplexer block found in the
-> > +  SM8350 platform.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: qcom,sm8350-pinctrl
+
+> -----Original Message-----
+> From: Sean Christopherson <seanjc@google.com>
+> Sent: Wednesday, December 30, 2020 10:08 AM
+> To: Borislav Petkov <bp@alien8.de>
+> Cc: Moger, Babu <Babu.Moger@amd.com>; pbonzini@redhat.com;
+> tglx@linutronix.de; mingo@redhat.com; fenghua.yu@intel.com;
+> tony.luck@intel.com; wanpengli@tencent.com; kvm@vger.kernel.org;
+> Lendacky, Thomas <Thomas.Lendacky@amd.com>; peterz@infradead.org;
+> joro@8bytes.org; x86@kernel.org; kyung.min.park@intel.com; linux-
+> kernel@vger.kernel.org; krish.sadhukhan@oracle.com; hpa@zytor.com;
+> mgross@linux.intel.com; vkuznets@redhat.com; Phillips, Kim
+> <kim.phillips@amd.com>; Huang2, Wei <Wei.Huang2@amd.com>;
+> jmattson@google.com
+> Subject: Re: [PATCH v2 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
 > 
-> If this block is called TLMM, then I'd expect that to be in the 
-> compatible string. But I guess this is consistent with the others.
+> On Wed, Dec 30, 2020, Borislav Petkov wrote:
+> > On Tue, Dec 22, 2020 at 04:31:55PM -0600, Babu Moger wrote:
+> > > @@ -2549,7 +2559,10 @@ static int svm_get_msr(struct kvm_vcpu *vcpu,
+> struct msr_data *msr_info)
+> > >  		    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_SSBD))
+> > >  			return 1;
+> > >
+> > > -		msr_info->data = svm->spec_ctrl;
+> > > +		if (static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> > > +			msr_info->data = svm->vmcb->save.spec_ctrl;
+> > > +		else
+> > > +			msr_info->data = svm->spec_ctrl;
+> > >  		break;
+> > >  	case MSR_AMD64_VIRT_SPEC_CTRL:
+> > >  		if (!msr_info->host_initiated &&
+> > > @@ -2640,6 +2653,8 @@ static int svm_set_msr(struct kvm_vcpu *vcpu,
+> struct msr_data *msr)
+> > >  			return 1;
+> > >
+> > >  		svm->spec_ctrl = data;
+> > > +		if (static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> > > +			svm->vmcb->save.spec_ctrl = data;
+> > >  		if (!data)
+> > >  			break;
+> > >
+> >
+> > Are the get/set_msr() accessors such a fast path that they need
+> > static_cpu_has() ?
 > 
+> Nope, they can definitely use boot_cpu_has().
 
-This is my mistake 7 years ago and it bothers me every time we write a
-new one of these - in particular since we now support a few different
-"Qualcomm pinctrl" blocks.
-
-It would be ugly for a while, but I'm in favor of naming these
-"qcom,<platform>-tlmm" going forward.
-
-PS. And we can solve the ugliness by introducing the "proper" naming
-(and keeping the old one for backwards compatibility) as we migrate the
-binding documents to yaml.
-
-Regards,
-Bjorn
+With Tom's latest comment, this change may not be required.
+I will remove these changes.
+Thanks
+Babu
