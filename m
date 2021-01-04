@@ -2,138 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059CE2E97C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695EA2E97D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727454AbhADO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:56:12 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:53477 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727219AbhADO4K (ORCPT
+        id S1727182AbhADO5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:57:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726246AbhADO5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:56:10 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 12659172D;
-        Mon,  4 Jan 2021 09:55:23 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 04 Jan 2021 09:55:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=AxARTzbgs463HULr+SRfRHOKnXs
-        /WKBB5ueaan5NvR4=; b=XA6SsbxWwBtGc9ezdlorudN4v4Tz6P6MCFaSgUe22Rm
-        73x2EV3Tij8sK5XAEs3tysrZbS1ynZTNsHS62qQTLA31E9uw9X7jkakukMNIhB/f
-        PxJacjJe/iG1R1mDrAWbaXE5PW8cruge7veKD5doUr8d4a5pV0DcT8HIZ0O5B5Ch
-        8mHycl86Rr0uuVcS99GpQwp6h+/N9WI+vCVVRL3JeeEMZRcX1xL0cRNdxJ30em10
-        xysHg7WNMQBK2VGkftFMjO/nx21U7mBTfWdNqY3sxzoisrb+YC3Ps8H/zCeX4hTZ
-        cgLvAat4h/dkOzDONVakVQR8sUuUQZVG5FhZpXvIX5w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=AxARTz
-        bgs463HULr+SRfRHOKnXs/WKBB5ueaan5NvR4=; b=ax9jWUPPSU17namfX3GEYR
-        rkCMMxawETTmd1Ql8Ln+Mu59jO1AYZy1Q1/ZBoGbTj3Kb/+eu1xFYj0grsQVYJj6
-        Z7TRZ75P2uEVrfr+mlIjLxXSqAguu4kkxczvUPtcRWCODhKvjdgpMGFHLlfGf/b2
-        zElvFdcfQ9OqjM0gqaPMpl6BlmCwasLCQswYU4/9vwlAFCxU4jq80Fw5KwV8pP5y
-        1C+MTjFjB9oGZGBvFGwR3cXf5gQshk32jouyxPN9c1OeyXO0/chOFpX1mYCl6Tod
-        nnYdXPF4Ce7GoSMOfg9uqA+7XYx6q3rKFiLSQnu2i77yBEQtAZUR/d/VDFwzoq4A
-        ==
-X-ME-Sender: <xms:WCzzXwY0RbuI9AwxDH5J-hJ02OdLhiFeQ3C-qj4cLcuiqZCgjN_06g>
-    <xme:WCzzX7amslpOfUWixOJXtJ29O1kvK1BKUcFVCx5XVdJXPRJ4SQtuHRMectS-gWmp2
-    cI7-AcuX0NIrQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeffedgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
-    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
-    rdgtohhm
-X-ME-Proxy: <xmx:WCzzX6_XAJusIT21SRFkpwY8-Ne3p-TG7OIKdAR-3OY6pEBXvHkrTA>
-    <xmx:WCzzX6p7Wp2vXJZHAX9KyXQmiLtZk4qCpxufRRZAG3JNwJpBdUvkSw>
-    <xmx:WCzzX7onnfNZq-ZfaSuBhzeMflCIemDMxEGJQCyStoIwl9Mpa3PeTw>
-    <xmx:WizzXy2ymwPnU-ruRpRSG4_qUBO-sCqtSOwFVSvNQgSsGfwbMXx_yg>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A35C924005C;
-        Mon,  4 Jan 2021 09:55:20 -0500 (EST)
-Date:   Mon, 4 Jan 2021 15:56:47 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Song Chen <chensong_2000@189.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failures after merge of the staging tree
-Message-ID: <X/Msr8Dqbxk3YO0v@kroah.com>
-References: <20210104122653.6f35b9bb@canb.auug.org.au>
- <CAMuHMdXWqO2WPKSxsfbr=-_rrXenEwJRW3rYko7VJCPwCnyeLA@mail.gmail.com>
+        Mon, 4 Jan 2021 09:57:44 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40C2C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 06:57:03 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id a12so64974803lfl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 06:57:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mQ2i0L58d+7KMPuRIFLmZb/rPhz/cXFhasTrmyO6ho0=;
+        b=vnV8XwNWK0qie6n8I4m2kJy5lVVVwMO+ZIhY9foz8j29GaiwREa44CaFm6X2D7Yq4K
+         Nyxl7NLS5t+DPFVKCH0fxo2/BJW8Qx7leqSlb1wgOOdAjD6yKvAynNGItDYQ8FtK5k7t
+         sPY1jUUgULmT5iR2WF8lPCsCuAn09xNOMSRiHMZEJt19MBpJJAUTJUXP4BiXUy8ycXbj
+         QKFi04fS0fXVTgOSIG79AbPujgDTae1MpwCVGTg7AFreh3Bve9bRAZ5F2Qcw/fabJLGl
+         3cJrLLqwUSoPkBwq1WhzkEz5lSf3VgZ45Ls7jgbY9RvVtsdxpuGXwLJe/uSBx7s1oIIJ
+         8C3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mQ2i0L58d+7KMPuRIFLmZb/rPhz/cXFhasTrmyO6ho0=;
+        b=bzRnlNa9bbVPyshLdYJ5TzTAJsZzYv+krdzw6y1uSu9BaiLZGMt0+kkyH8q/lY9rG0
+         Q3vGfYrnWRyBy76sWmRkdgU9LpVq75DvLiX7VCVALf1xg+UPbT0LdPz74d90BSO0tNDf
+         2e3TOwoeL6z8Kt3gsz4I7eE4Ssf35NUwZoUlF9Gagelor7xnGXRqy61vqFd5dVUUXV/X
+         HcPnXenfwXDFRdBXHCctGXhTIqm1+m3Bh/zK8m7x29LDonmNAHocGTUkUo3kSWgnt2Z6
+         5cQ9VTTmkUmv0VNn4BRS3Hd2WqqyBa/cKJlFOJ452otk7GvQMIXVLQG5JXVwUKUopxDa
+         D3OQ==
+X-Gm-Message-State: AOAM530ioYa2AQqYkJnyhsjPuzqDreLWobdNkJFY1hbJr4sfuGC/GWTo
+        FhWSSYkA+sUaykrz+/CHB3kUuVs2B+AbsC7VgXipvQ==
+X-Google-Smtp-Source: ABdhPJxbKhcLoG0ToKxmRLd5mMBCUaRqmShc7RGPDLTlcebPHKMOO5TDocNfclO6tFaq25QQCEE9W5e4geThswLk1ps=
+X-Received: by 2002:a05:6512:3238:: with SMTP id f24mr31529927lfe.29.1609772222231;
+ Mon, 04 Jan 2021 06:57:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXWqO2WPKSxsfbr=-_rrXenEwJRW3rYko7VJCPwCnyeLA@mail.gmail.com>
+References: <20201217144338.3129140-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+In-Reply-To: <20201217144338.3129140-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 4 Jan 2021 15:56:51 +0100
+Message-ID: <CACRpkdZzy0a9n6NTxMj049=AFYg1UaCX+HYNqbLLXnpkhfP6nQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] gpio: visconti: Add Toshiba Visconti GPIO support
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        yuji2.ishikawa@toshiba.co.jp,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 09:27:01AM +0100, Geert Uytterhoeven wrote:
-> On Mon, Jan 4, 2021 at 6:12 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > After merging the staging tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> >
-> > In file included from include/linux/printk.h:6,
-> >                  from include/linux/kernel.h:16,
-> >                  from drivers/staging/board/kzm9d.c:4:
-> > drivers/staging/board/kzm9d.c:28:17: error: initialization of 'initcall_t' {aka 'int (*)(void)'} from incompatible pointer type 'void (*)(void)' [-Werror=incompatible-pointer-types]
-> >    28 | device_initcall(kzm9d_init);
-> >       |                 ^~~~~~~~~~
-> > include/linux/init.h:197:50: note: in definition of macro '___define_initcall'
-> >   197 |   __attribute__((__section__(#__sec ".init"))) = fn;
-> >       |                                                  ^~
-> > include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
-> >   229 | #define device_initcall(fn)  __define_initcall(fn, 6)
-> >       |                              ^~~~~~~~~~~~~~~~~
-> > drivers/staging/board/kzm9d.c:28:1: note: in expansion of macro 'device_initcall'
-> >    28 | device_initcall(kzm9d_init);
-> >       | ^~~~~~~~~~~~~~~
-> > cc1: some warnings being treated as errors
-> > In file included from include/linux/printk.h:6,
-> >                  from include/linux/kernel.h:16,
-> >                  from include/asm-generic/bug.h:20,
-> >                  from arch/arm/include/asm/bug.h:60,
-> >                  from include/linux/bug.h:5,
-> >                  from include/linux/thread_info.h:12,
-> >                  from include/asm-generic/current.h:5,
-> >                  from ./arch/arm/include/generated/asm/current.h:1,
-> >                  from include/linux/sched.h:12,
-> >                  from include/linux/ratelimit.h:6,
-> >                  from include/linux/dev_printk.h:16,
-> >                  from include/linux/device.h:15,
-> >                  from include/linux/dma-mapping.h:7,
-> >                  from drivers/staging/board/armadillo800eva.c:12:
-> > drivers/staging/board/armadillo800eva.c:90:17: error: initialization of 'initcall_t' {aka 'int (*)(void)'} from incompatible pointer type 'void (*)(void)' [-Werror=incompatible-pointer-types]
-> >    90 | device_initcall(armadillo800eva_init);
-> >       |                 ^~~~~~~~~~~~~~~~~~~~
-> > include/linux/init.h:197:50: note: in definition of macro '___define_initcall'
-> >   197 |   __attribute__((__section__(#__sec ".init"))) = fn;
-> >       |                                                  ^~
-> > include/linux/init.h:229:30: note: in expansion of macro '__define_initcall'
-> >   229 | #define device_initcall(fn)  __define_initcall(fn, 6)
-> >       |                              ^~~~~~~~~~~~~~~~~
-> > drivers/staging/board/armadillo800eva.c:90:1: note: in expansion of macro 'device_initcall'
-> >    90 | device_initcall(armadillo800eva_init);
-> >       | ^~~~~~~~~~~~~~~
-> >
-> > Caused by commit
-> >
-> >   850c35bb28ec ("staging: board: Remove macro board_staging")
-> >
-> > I have used the staging tree from next-20201223 for today.
-> 
-> Note that a similar patch was (IMHO rightfully) rejected 3 years ago:
-> https://lore.kernel.org/lkml/20170220175506.GA30142@kroah.com/
-> 
-> So please drop it. Thanks!
+On Thu, Dec 17, 2020 at 6:45 AM Nobuhiro Iwamatsu
+<nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
 
-Now reverted, thanks.
+> This series is the GPIO driver for Toshiba's ARM SoC, Visconti[0].
+> This provides DT binding documentation, device driver, MAINTAINER files, and updates to DT files.
 
-greg k-h
+This v5 version looks just perfect :)
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
