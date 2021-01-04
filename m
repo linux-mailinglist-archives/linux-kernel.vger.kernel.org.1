@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1317F2E9EE2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0891A2E9EE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbhADUcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:32:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbhADUcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:32:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84BE12245C;
-        Mon,  4 Jan 2021 20:31:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609792298;
-        bh=8D2TcfjNu1vAY7Hcupcy3ILO+TJDeUSwz62nJSdF59s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dXW3oMotNTGJH0XWaSehUbu8S97Hi6dCOiWaOkOZ0vhnnGBdHkttN7RKStZXssZ5t
-         ptS0QxCDJUV8eSd5d6JhQChvbxeZJCc3RQ4Dd5I+mkjJXiVtsXAqFO8d9zLRcmBcAc
-         UV6ic4FEhcZr8IlS1EqPRpj38b77HC/l/pKjvh3xTK3jSfxeXh5+vOqpTtNKkwMChB
-         g9MPUIZFVPOi5ZbJt9G0Iwwoy0TZcYJuvToPbGhQgmyx+ZRBwdPvjayYmyI9sFvtl7
-         DeG61/p27ilsxh64RoD3dzqF2MH7BXUDKiA8vVtuP0Jc3t6DoBGuW5N6DyXhfoMlXE
-         u0sxsFLaNYS0w==
-Received: by mail-ed1-f43.google.com with SMTP id dk8so28792521edb.1;
-        Mon, 04 Jan 2021 12:31:38 -0800 (PST)
-X-Gm-Message-State: AOAM5311QXZ8lLXfhGAoBUXKNVr92ATg8TPHGPaWrhASLMkuztQrL2Yz
-        ggmjY09JE4n1KNybVmrixRy4gtB7bKZX+XCE9g==
-X-Google-Smtp-Source: ABdhPJw/DtnTMlZfg/e7v430OBON7LhidDGoWSo4DCfzLAizx9wQwg1z+WE7uViintBlIVq3z2VyXY8gFN18lSjUZbs=
-X-Received: by 2002:a50:e78b:: with SMTP id b11mr71904806edn.165.1609792297081;
- Mon, 04 Jan 2021 12:31:37 -0800 (PST)
+        id S1726492AbhADUeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 15:34:21 -0500
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:41512 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbhADUeV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 15:34:21 -0500
+Received: by mail-oo1-f49.google.com with SMTP id q6so6586174ooo.8;
+        Mon, 04 Jan 2021 12:34:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jgrAU8KM4ELdBDdDZ1NUdXMOaBOszDUdOPw2PaPAN/Q=;
+        b=ivaojlV8macIYtOzqd2k5Lsq8T8JlGrP3kD4cJZ0vKp27jOKK/doHQ83LfaCH0o4M6
+         QSgSiFTa37+h4aRvMS29NjjRBk6TmCHJzBhyto83aBo5jWjsQOT3CJyXK9eLiwtwiWMZ
+         pN0yCfm81ekPAdaFhPSgadwFfjjapFmqZWHSTPgApmcgHER0AGRm3YPU1Gl4GD5v/1LR
+         lHdfBauLCFaQQjOiQhxig/Bo9scOPX4LUj/IysMiVciS1ioYFAEUr7m3A4I49gNkMcll
+         fld2e6AlYXkP+rjaIx/jrtcsXqjpfaTR5UJfJbogH5/U3kkkhWPzt80wP32DQm5JwJHm
+         94ZA==
+X-Gm-Message-State: AOAM530bqNgQn95aDaQpOkYAjfA3CHpFU371NJQnhpIt9LFL4VLXAWhY
+        3wdaNW1Cs3bMF6LfShtowl7e3D6B+JhLzd2dOE9V6PBT
+X-Google-Smtp-Source: ABdhPJxWQUW78fC8NkEHcU+eYt3Zk22BBKXj4QWGskzqaMAHH1IWs3/6cgRSWOAPEzInEQP0JY+UKUB6rStbt8K8+/Q=
+X-Received: by 2002:a4a:9873:: with SMTP id z48mr50521121ooi.44.1609792420022;
+ Mon, 04 Jan 2021 12:33:40 -0800 (PST)
 MIME-Version: 1.0
-References: <1608717823-18387-1-git-send-email-anshuman.khandual@arm.com>
- <1608717823-18387-7-git-send-email-anshuman.khandual@arm.com>
- <20210103170216.GA4048658@robh.at.kernel.org> <9d19b169-b037-20b1-7c00-b2ba2194addd@arm.com>
- <20210104181549.GB2702940@xps15>
-In-Reply-To: <20210104181549.GB2702940@xps15>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 4 Jan 2021 13:31:24 -0700
-X-Gmail-Original-Message-ID: <CAL_Jsq+oBrfZrJAcg40gScAi2X4XTaskKD=qk+QvacYY=NTr7w@mail.gmail.com>
-Message-ID: <CAL_Jsq+oBrfZrJAcg40gScAi2X4XTaskKD=qk+QvacYY=NTr7w@mail.gmail.com>
-Subject: Re: [PATCH 06/11] dts: bindings: Document device tree bindings for ETE
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Linu Cherian <lcherian@marvell.com>, devicetree@vger.kernel.org
+References: <20210101125629.20974-1-jiaxun.yang@flygoat.com> <35ac853a-266c-6944-6e5e-6286456865e3@redhat.com>
+In-Reply-To: <35ac853a-266c-6944-6e5e-6286456865e3@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 4 Jan 2021 21:33:28 +0100
+Message-ID: <CAJZ5v0jcCD3qWUJQcS+nFVJWSCQEbq2eN3i07mN8yFr3WZD9dg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] IdeaPad platform profile support
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Ike Panhc <ike.pan@canonical.com>,
+        Mark Pearson <markpearson@lenovo.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 11:15 AM Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
+On Mon, Jan 4, 2021 at 3:36 PM Hans de Goede <hdegoede@redhat.com> wrote:
 >
-> On Mon, Jan 04, 2021 at 02:42:08PM +0000, Suzuki K Poulose wrote:
-> > Hi Rob,
-> >
-> > On 1/3/21 5:02 PM, Rob Herring wrote:
-> > > On Wed, Dec 23, 2020 at 03:33:38PM +0530, Anshuman Khandual wrote:
-> > > > From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > > >
-> > > > Document the device tree bindings for Embedded Trace Extensions.
-> > > > ETE can be connected to legacy coresight components and thus
-> > > > could optionally contain a connection graph as described by
-> > > > the CoreSight bindings.
-> > > >
-> > > > Cc: devicetree@vger.kernel.org
-> > > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > > > Cc: Mike Leach <mike.leach@linaro.org>
-> > > > Cc: Rob Herring <robh@kernel.org>
-> > > > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > > > ---
-> > > >   Documentation/devicetree/bindings/arm/ete.txt | 41 +++++++++++++++++++++++++++
-> > > >   1 file changed, 41 insertions(+)
-> > > >   create mode 100644 Documentation/devicetree/bindings/arm/ete.txt
-> > >
-> > > Bindings are in schema format now, please convert this.
-> > >
-> >
-> > Sure, will do that.
-> >
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/arm/ete.txt b/Documentation/devicetree/bindings/arm/ete.txt
-> > > > new file mode 100644
-> > > > index 0000000..b52b507
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/arm/ete.txt
-> > > > @@ -0,0 +1,41 @@
-> > > > +Arm Embedded Trace Extensions
-> > > > +
-> > > > +Arm Embedded Trace Extensions (ETE) is a per CPU trace component that
-> > > > +allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
-> > > > +architecture and has extended support for future architecture changes.
-> > > > +The trace generated by the ETE could be stored via legacy CoreSight
-> > > > +components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
-> > > > +Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
-> > > > +legacy CoreSight components, a node must be listed per instance, along
-> > > > +with any optional connection graph as per the coresight bindings.
-> > > > +See bindings/arm/coresight.txt.
-> > > > +
-> > > > +** ETE Required properties:
-> > > > +
-> > > > +- compatible : should be one of:
-> > > > + "arm,embedded-trace-extensions"
-> > > > +
-> > > > +- cpu : the CPU phandle this ETE belongs to.
-> > >
-> > > If this is 1:1 with CPUs, then perhaps it should be a child node of the
-> > > CPU nodes.
-> >
-> > Yes, it is 1:1 with the CPUs. I have tried to keep this aligned with that of
-> > "coresight-etm4x". The same driver handles both. The only reason why this
-> > was separated from the "coresight.txt" is to describe the new configurations
-> > possible (read, TRBE).
+> Hi,
 >
-> Would it be possible to keep the CPU handle rather than moving things under the
-> CPU nodes?  ETMv3.x and ETMv4.x are using a handle and as Suzuki points out ETE
-> and ETMv4.x are sharing the same driver.  Proceeding differently for the ETE
-> would be terribly confusing.
+> On 1/1/21 1:56 PM, Jiaxun Yang wrote:
+> > Tested on Lenovo Yoga-14SARE Chinese Edition.
+> >
+> > Jiaxun Yang (2):
+> >   ACPI: platform-profile: Introduce data parameter to handler
+> >   platform/x86: ideapad-laptop: DYTC Platform profile support
+> >
+> >  drivers/acpi/platform_profile.c       |   4 +-
+> >  drivers/platform/x86/Kconfig          |   1 +
+> >  drivers/platform/x86/ideapad-laptop.c | 281 ++++++++++++++++++++++++++
+> >  include/linux/platform_profile.h      |   5 +-
+> >  4 files changed, 287 insertions(+), 4 deletions(-)
+>
+>
+> Thank you for your series, unfortunately the
+> "ACPI: platform-profile: Introduce data parameter to handler"
+> patch causes a conflict with the pending:
+> "[PATCH v8 3/3] platform/x86: thinkpad_acpi: Add platform profile support"
+> patch.
+>
+> But I do agree that adding that data parameter makes sense, so
+> it might be best to merge:
+>
+> "ACPI: platform-profile: Introduce data parameter to handler"
+>
+> First and then rebase the thinkpad_acpi patch on top.
+>
+> Rafael, do you think you could add:
+>
+> "ACPI: platform-profile: Introduce data parameter to handler"
+>
+> To the 2 ACPI: platform-profile patches which you already have pending for 5.11-rc# ?
 
-Yeah, no problem.
+I'm not sure why that patch is needed at all, because whoever
+registers a platform profile handler needs to have access to the
+original handler object anyway.
 
-Rob
+Also, on a somewhat related note, I'm afraid that it may not be a good
+idea to push this series for 5.11-rc in the face of recent objections
+against new material going in after the merge window.
+
+Cheers!
