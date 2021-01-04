@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0792E9860
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DA42E9864
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727556AbhADPWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:22:24 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:43702 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbhADPWX (ORCPT
+        id S1727617AbhADPXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:23:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbhADPW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:22:23 -0500
-Received: by mail-ot1-f41.google.com with SMTP id q25so26279568otn.10;
-        Mon, 04 Jan 2021 07:22:07 -0800 (PST)
+        Mon, 4 Jan 2021 10:22:59 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AC6C061793;
+        Mon,  4 Jan 2021 07:22:19 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id r9so25299637ioo.7;
+        Mon, 04 Jan 2021 07:22:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ITJjjgGspK4Ymjoi4jR7CFPSAptFZU7ef58UxVF4dMU=;
+        b=VPcNk6lKj+n5ZeEkjc49tG/EqZm+hrAjsWLyzVvdLpam8+/LEHuP1Fa/1AbPF8x7xO
+         KC9To3qFWRmLoDa3Cwwx8+eUDZP2BSHWAy8Y7kyNr2UJ47ZrmeojBTzYIHphwyGvfQzb
+         2Z9Bo8lX0LhTx0ZRGKZI0l+Iqh6m2Y2nsekS+BLvFkTMV0aidJLKdL/aiczwP5mTrH9M
+         8pW+bGGPxY+kUDDi3XcWsq7GSfHt6V15Gk4HIA7Q86sBGOjSDHawmV6hq0BVB+foaCIC
+         BV6I+3FvyprqeedXtuGmMZOrFp/QHSQPwYWw43dg8yGPqy3wSAZipENesgtEnKLevwAZ
+         szPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g71kf7yD8PJahnkXWCoxNGftOUP20SKdOj2+oVmJTIo=;
-        b=G2YsDpt0ZLPmdFLjjSgULl/RDYsnDSynBYA2EF3a2X31E5IBufTB2LoVCPFbKX++a0
-         uiUCgyCQK5x8xLADy36sw/IdsS/ioaBOgOcTvlbmJTs3Mj8/5xPmfeTCPmEipV6B53GK
-         K/xoG6jvAj6Ow3TnEEWorvImb+kO6TNaoHZ9yYG845jw8NtYjZr5B9JUBiY7pfOx69vs
-         iKx1BzuS6u1mIp/dLNmf+4i/blsoAanMK4234G2WYOtuMeGQIQnmqr5I7790LuG4mRFf
-         KIqAtatAStuMoztuGl60dFfq/ClCm5y1holqAB/IQvOkyFOd5T24SMXaFGrWc7mTa5Cb
-         mlaA==
-X-Gm-Message-State: AOAM533JPVly/+HNW2NSgs5zVaCEUfim6h4dKh8Z3OfyVC7VPhiDEDfL
-        hLn42iTrlijY5oMS+SrT16I0hmur0XcBOLN+Nicn0uDPJO4=
-X-Google-Smtp-Source: ABdhPJzGrORLmJC2swKHaKs9mks9fB5/ewOYp63tukZ1EIQ6KkxpiSrebknvCn0uqVlazfyrFqmbt//ytxjIT6PKZ9E=
-X-Received: by 2002:a9d:c01:: with SMTP id 1mr37964112otr.107.1609773702385;
- Mon, 04 Jan 2021 07:21:42 -0800 (PST)
+        bh=ITJjjgGspK4Ymjoi4jR7CFPSAptFZU7ef58UxVF4dMU=;
+        b=im6Lwfzjj8u7ntIIiM8F2x7vjd3bm/ewwfk/SF3JIa1i8hpigU6MwJqxw6nH9r8yTN
+         8XPnDOQHYRXHWmg+uUdnqHHCzqOPrgr8TW+AmrCNs19/uAKgXsdwQouRVTOAcvu2KIvd
+         GCJSyuo9AkaZY+ukQHADQwUZFyS9GmtnqqBRsmnQdsqLzHG2JF0cfELNWVm6JKoZ66mr
+         5MUkNTNrZSRyL+bakjaiIG6yWxNTsBx0k0Rcry8g+xk3r9jm8AljLJQgi7W2fUWuQ/b2
+         rTgKmBB+illl/uV1di2SFwr8o6R8xTKVc4zhPmJwVDrHEPYFG/lEhlGAFnHO6VqLndzf
+         Nq4g==
+X-Gm-Message-State: AOAM533bIdQ8mzVcoSDQCQGYdhbYbzZyS/pNiV2mwnk11gRoWYU2vXxo
+        8yc6NkkCVf5JLIC0XN443wBbHwQi0Pays1hQWOY=
+X-Google-Smtp-Source: ABdhPJzNzTAdKo6eNVvLfbs3L1yit3juif7aqnqIiS4HJ5mDLnMJnLzR4H9ClF1fsfuXfZmFOL0gv1ohRI10e8ZXR+4=
+X-Received: by 2002:a6b:8e41:: with SMTP id q62mr59297909iod.5.1609773738488;
+ Mon, 04 Jan 2021 07:22:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
- <20201114130921.651882-2-jiaxun.yang@flygoat.com> <CAMuHMdXo9o9af-YBt5g53QHRhuLxdSy_C9n4wdEEh7yzDidr-w@mail.gmail.com>
- <20210104144841.GC3313@piout.net>
-In-Reply-To: <20210104144841.GC3313@piout.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Jan 2021 16:21:31 +0100
-Message-ID: <CAMuHMdWGnBcYvXLnydSnkxcmG6GksZLfq1aWADuWg8ibZ3V8Lg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] rtc: goldfish: Remove GOLDFISH dependency
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rtc@vger.kernel.org
+References: <20201221195055.35295-1-vgoyal@redhat.com> <20201221195055.35295-4-vgoyal@redhat.com>
+ <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223185044.GQ874@casper.infradead.org> <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223200746.GR874@casper.infradead.org> <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223204428.GS874@casper.infradead.org> <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
+ <20210104151424.GA63879@redhat.com>
+In-Reply-To: <20210104151424.GA63879@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 4 Jan 2021 17:22:07 +0200
+Message-ID: <CAOQ4uxgiC5Wm+QqD+vbmzkFvEqG6yvKYe_4sR7ZUVfu-=Ys9oQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Chengguang Xu <cgxu519@mykernel.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
-
-On Mon, Jan 4, 2021 at 3:48 PM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
-> On 04/01/2021 14:28:26+0100, Geert Uytterhoeven wrote:
-> > On Sat, Nov 14, 2020 at 2:20 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
-> > > Goldfish platform is covered with dust.
-> > > However the goldfish-rtc had been used as virtualized RTC
-> > > in QEMU for RISC-V virt hw and MIPS loongson3-virt hw, thus
-> > > we can drop other parts of goldfish but leave goldfish-rtc here.
-> > >
-> > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/drivers/rtc/Kconfig
-> > > +++ b/drivers/rtc/Kconfig
-> > > @@ -1935,7 +1935,6 @@ config RTC_DRV_HID_SENSOR_TIME
-> > >  config RTC_DRV_GOLDFISH
-> > >         tristate "Goldfish Real Time Clock"
-> > >         depends on OF && HAS_IOMEM
-> > > -       depends on GOLDFISH || COMPILE_TEST
-> > >         help
-> > >           Say yes to enable RTC driver for the Goldfish based virtual platform.
-> >
-> > I was just looking to see if someone had already sent a patch to add
-> > "depends on GOLDFISH || COMPILE_TEST", before sending one myself, when I
-> > noticed your patch had removed it...
-> >
-> > What about
-> >
-> >     depends on CPU_LOONGSON64 || GOLDFISH || RISCV || COMPILE_TEST
-> >
-> > instead?
-> >
+> > Since Jeff's patch is minimal, I think that it should be the fix applied
+> > first and proposed for stable (with adaptations for non-volatile overlay).
 >
-> But this driver also works on ARM, is it really important to restrict to
-> a few architectures ?
+> Does stable fix has to be same as mainline fix. IOW, I think atleast in
+> mainline we should first fix it the right way and then think how to fix
+> it for stable. If fixes taken in mainline are not realistic for stable,
+> can we push a different small fix just for stable?
 
-Is it used on ARM platforms?
-qemu:hw/riscv/Kconfig selects GOLDFISH_RTC, but that's it?
+We can do a lot of things.
+But if we are able to create a series with minimal (and most critical) fixes
+followed by other fixes, it would be easier for everyone involved.
 
-Gr{oetje,eeting}s,
+>
+> IOW, because we have to push a fix in stable, should not determine
+> what should be problem solution for mainline, IMHO.
+>
 
-                        Geert
+I find in this case there is a correlation between the simplest fix and the
+most relevant fix for stable.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> The porblem I have with Jeff's fix is that its only works for volatile
+> mounts. While I prefer a solution where syncfs() is fixed both for
+> volatile as well as non-volatile mount and then there is less confusion.
+>
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I proposed a variation on Jeff's patch that covers both cases.
+Sargun is going to work on it.
+
+Thanks,
+Amir.
