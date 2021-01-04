@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69DE2EA103
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3632EA105
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727396AbhADXlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:41:02 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33560 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbhADXlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:41:02 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EE78A1C0B8C; Tue,  5 Jan 2021 00:40:18 +0100 (CET)
-Date:   Tue, 5 Jan 2021 00:40:18 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pavel Machek <pavel@denx.de>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jiri Kosina <trivial@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Chris Brandt <Chris.Brandt@renesas.com>
-Subject: Re: [PATCH 2/2] spi: rpc-if: Remove CONFIG_PM_SLEEP ifdefery
-Message-ID: <20210104234018.GA19909@amd>
-References: <20201230145708.28544-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201230145708.28544-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdVCD52-eTnEwftGz8ExMkZkJRyM=3M8zU11yhn1UNPxxA@mail.gmail.com>
- <CA+V-a8tHVkGxCECspfcV9c1UW81bod4N4YzRLJwU8zJ0+awJUw@mail.gmail.com>
- <20210104213005.GK5645@sirena.org.uk>
+        id S1727227AbhADXmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:42:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726026AbhADXmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 18:42:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFA442253A;
+        Mon,  4 Jan 2021 23:41:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609803702;
+        bh=HcjfSk9jtUTttCAPsHGyHCv++22UOGHXgsPS0pGqMi8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oGa41UtBkdLJEHhmfTD7zAyxVAeH4iZic7396UY70u8ZgQKlOwxDTa+ryHPcNItW5
+         tfQ4I9wwN1ygbMPMZsI8LJpA34tBt70mA8W+ZofJ+mJ6Du9IZWdB13l3ahwmfznFWR
+         dsVKcB/+qL+Cv24gCwLZQ5XujZwyZwEjEcFglyrhpLapIib6SJL1YMm/0HQTcnsCW3
+         2/PUlah9K+SU74ypbxHsGeXDbzSaXlyyUpp8fScArEG+dDUhcRtxvKahi3atvUSB+A
+         xGEWBHVgh7QTXURYgP+N+k7Rmtbgs51065dJ9g9tpDxDCw7R4Kx19XHt/EUmAX8Ua4
+         mVsFwKtjCdJ5g==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Phil Oester <kernel@linuxace.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        Anand Lodnoor <anand.lodnoor@broadcom.com>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: megaraid_sas: Fix MEGASAS_IOC_FIRMWARE regression
+Date:   Tue,  5 Jan 2021 00:41:04 +0100
+Message-Id: <20210104234137.438275-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
-Content-Disposition: inline
-In-Reply-To: <20210104213005.GK5645@sirena.org.uk>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Phil Oester reported that a fix for a possible buffer overrun that I
+sent caused a regression that manifests in this output:
 
-Hi!
+ Event Message: A PCI parity error was detected on a component at bus 0 device 5 function 0.
+ Severity: Critical
+ Message ID: PCI1308
 
-> > > >                 .name   =3D "rpc-if-spi",
-> > > > -               .pm     =3D DEV_PM_OPS,
-> > > > +               .pm     =3D &rpcif_spi_pm_ops,
->=20
-> > > You're aware rpcif_spi_pm_ops is now always referenced and thus emitt=
-ed,
-> > > increasing kernel size by 92 bytes if CONFIG_PM_SLEEP=3Dn?
-> > > This may matter for RZ/A SoCs running from internal SRAM.
->=20
-> > Hmm didn't realise this would be an issue on RZ/A.
->=20
-> > Mark, could you please drop this patch from your branch.
->=20
-> Please send an incremental patch with an appropriate changelog.
+The original code tried to handle the sense data pointer differently
+when using 32-bit 64-bit DMA addressing, which would lead to a 32-bit
+dma_addr_t value of 0x11223344 to get stored
 
-Let's fix this properly. I'm pretty sure we have some macros that can
-solve this without re-introducing the ifdefs...
+32-bit kernel:       44 33 22 11 ?? ?? ?? ??
+64-bit LE kernel:    44 33 22 11 00 00 00 00
+64-bit BE kernel:    00 00 00 00 44 33 22 11
 
-(Besides... 92 bytes. How big is kernel these days? 4MB? More? How
-much SRAM do you have?)
+or a 64-bit dma_addr_t value of 0x1122334455667788 to get stored as
 
-Best regards,
-								Pavel
+32-bit kernel:       88 77 66 55 ?? ?? ?? ??
+64-bit kernel:       88 77 66 55 44 33 22 11
 
+In my patch, I tried to ensure that the same value is used on both
+32-bit and 64-bit kernels, and picked what seemed to be the most sensible
+combination, storing 32-bit addresses in the first four bytes (as 32-bit
+kernels already did), and 64-bit addresses in eight consecutive bytes
+(as 64-bit kernels already did), but evidently this was incorrect.
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Always storing the dma_addr_t pointer as 64-bit little-endian,
+i.e. initializing the second four bytes to zero in case of 32-bit
+addressing, apparently solved the problem for Phil, and is consistent
+with what all 64-bit little-endian machines did before.
 
---LZvS9be/3tNcYl/X
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I also checked in the history that in previous versions of the code,
+the pointer was always in the first four bytes without padding, and that
+previous attempts to fix 64-bit user space, big-endian architectures
+and 64-bit DMA were clearly flawed and seem to have introduced made
+this worse.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Reported-by: Phil Oester <kernel@linuxace.com>
+Fixes: 381d34e376e3 ("scsi: megaraid_sas: Check user-provided offsets")
+Fixes: 107a60dd71b5 ("scsi: megaraid_sas: Add support for 64bit consistent DMA")
+Fixes: 94cd65ddf4d7 ("[SCSI] megaraid_sas: addded support for big endian architecture")
+Fixes: 7b2519afa1ab ("[SCSI] megaraid_sas: fix 64 bit sense pointer truncation")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/scsi/megaraid/megaraid_sas_base.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-iEYEARECAAYFAl/zp2IACgkQMOfwapXb+vIUvwCeNviCDHyH2Q1jICAEtksWQ/tu
-seIAoIyfFO9DveDWbCBw43VUCXnqmAMV
-=Q+pX
------END PGP SIGNATURE-----
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 6e4bf05c6d77..3b574c453414 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -8205,11 +8205,9 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
+ 			goto out;
+ 		}
+ 
++		/* always store 64 bits regardless of addressing */
+ 		sense_ptr = (void *)cmd->frame + ioc->sense_off;
+-		if (instance->consistent_mask_64bit)
+-			put_unaligned_le64(sense_handle, sense_ptr);
+-		else
+-			put_unaligned_le32(sense_handle, sense_ptr);
++		put_unaligned_le64(sense_handle, sense_ptr);
+ 	}
+ 
+ 	/*
+-- 
+2.29.2
 
---LZvS9be/3tNcYl/X--
