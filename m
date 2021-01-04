@@ -2,180 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DCD2E9599
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0922E959C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 14:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbhADNIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 08:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        id S1726925AbhADNJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 08:09:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbhADNIH (ORCPT
+        with ESMTP id S1726303AbhADNJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 08:08:07 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CB2C061794;
-        Mon,  4 Jan 2021 05:07:26 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id b5so10845600pjk.2;
-        Mon, 04 Jan 2021 05:07:26 -0800 (PST)
+        Mon, 4 Jan 2021 08:09:24 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B532C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 05:08:43 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id 14so4943973wmo.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 05:08:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=b1nywf6L60SmI9ZxVA0bUc4AidIu1KLiq6fBICYuXas=;
-        b=eoqPwHxa2w/HIdzENiSVcV9Fj0kFoNN99+KWTCjmPuACB1GmmKWDz4sq9kdd6tWlH5
-         PQUDWrFzOr892t//WfI44QVM/oM1PUYDkKAxSnpdRI9zr4eRhLtVKrebf2lOOeMJejEB
-         nZ10TX9rG9J0koa+xyrtihpFJhXkmhEpu5whkNw/ScnWLUFMj94RVva7TPYxCynHJwnd
-         Xz3cbudYvDB32ftkI14O/In+Wn9roqrMwiVnIbA8Hr3bYj24yOoGnORWNrHhRgqkUeJa
-         cDlQf1J8sEQzcj9+y18qnIZLNXlNcS/TL4D+MJthpqyu1Z0Io7DeZulAIPLpWaNgB+2o
-         2BEw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=4L00xbr85BzSZDrQcVSi8abHo1VhpZjBCyy/C5zqGwE=;
+        b=nH8T7gQCERdM9wRKWX4DEAqrp0kptl5k5BnEQzdeMjx7oO0rXj/NE+cZSF/mCPc0pm
+         zP6bmbTpvSQv2KbJuWGSmH9z+iwcDcJ6FEDYFFAx+JO/982XbnoOzT8SXid50w1xtj4m
+         TNaAol/5IOv2oyce8VJ4Dj6Z01z+YifW0eT4r+aPP6N2v8WbghgIJO8qxIxGTD1wjcWh
+         sOZufFgCoxqZT9jC8vXPJQh7gBq2Cg2c1styvvRkGBZzJT4+c3WQdnxjN+qdFvBKuzqU
+         XGFGYYXQaTLR6oOSYr6h38nrRfpxdE/0nD87NpMYlvADYGHz7R2HlugfFomf8ehhqDYr
+         8hYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=b1nywf6L60SmI9ZxVA0bUc4AidIu1KLiq6fBICYuXas=;
-        b=MKrU6OwujtCgt7Obn96PN0zot2n9CL8KLqCgOm2W2fblJB5YNPlX2NH5IZou8X4aIz
-         SlHoARNFCu8bNs+C694/uQniP6xi4L0oo+j5SYSImBdORnvR2x2UCNZrKCXAOYSwMY+4
-         N1zwDc8TvFT/FM5pAAznC9upoDBALaNM3FCA5LQYwzBA1QirMZU7NmTtPDf0/OFgJoh8
-         k3vd+JqCqXFXlanxtmBiDKIH8mYdlGtcIZyJYqOHHjZYPdAODNia7mwz3Nndk/mThTB/
-         aeEniLzXB65hLnPGpV2okmCl4RI+TywEGmAF1kj3ZukoIfiQsMxgKj5Ylsiemj6zMtwM
-         pFDw==
-X-Gm-Message-State: AOAM531eefQd5tym/vSL3GO+UlU31Yq2EkMDpmIY7213Er5q+uvkgmhV
-        mMdEw8lriJrL8ceB7tNlQOGY0Wy8wgk=
-X-Google-Smtp-Source: ABdhPJwnW1RvrcVODnW70uNtPrYbnrpCk9WOqcxhEq9h1Nv1rIwy4bvzp7Yhn53VtkNUphXFsu0vOg==
-X-Received: by 2002:a17:902:7b83:b029:db:d71b:2c4d with SMTP id w3-20020a1709027b83b02900dbd71b2c4dmr72142144pll.81.1609765646299;
-        Mon, 04 Jan 2021 05:07:26 -0800 (PST)
-Received: from localhost.localdomain ([211.108.35.36])
-        by smtp.gmail.com with ESMTPSA id b189sm55303786pfb.194.2021.01.04.05.07.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 05:07:25 -0800 (PST)
-From:   Minwoo Im <minwoo.im.dev@gmail.com>
-To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Minwoo Im <minwoo.im.dev@gmail.com>
-Subject: [RFC PATCH V3 1/1] block: reject I/O for same fd if block size changed
-Date:   Mon,  4 Jan 2021 22:06:59 +0900
-Message-Id: <20210104130659.22511-2-minwoo.im.dev@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210104130659.22511-1-minwoo.im.dev@gmail.com>
-References: <20210104130659.22511-1-minwoo.im.dev@gmail.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=4L00xbr85BzSZDrQcVSi8abHo1VhpZjBCyy/C5zqGwE=;
+        b=lNnpRT7QcBstckM0wz8gI0sscTNt+wiCizIT81ttu+XUrhscY/8D+I2cHSXOrXq8A1
+         Yg0ku3G499nzYBm7KqvHKkY6USz0EeuIDG2oyoB2J62lI5eJtbm7X+qxp10aPJvAKlCa
+         Xhu+nxw2StMp11sCi/DEw/h1FoipBAGJD15eKefpf0w6wPIboCKyTY5jzPR21BtJXsOW
+         FQibLGRm5oVMhxk2yfJX2LxfXUSR4LRRfm9I9wgbLWqI3oJhHPFL+NTsNa/OXfk5Qho1
+         571RJID0wsD0Z1gT4Tfy5EE0RzjK9RA8IwMY0dg9/xAMnLYYw18msZJupdHkfA+Z/mSn
+         fLyQ==
+X-Gm-Message-State: AOAM531MW4MiK5h2aVzsNPKjH1eVJLjagz9xtg5dscx7MJNtJN5jw4ty
+        Pq5NmLv2lsIganVVjv7T71l3YhHd7A==
+X-Google-Smtp-Source: ABdhPJwxp4QH8WQfBjJFX4ZDH9oYpUgEvBSxgpJLt62QKw9i4luO/TOxsk2Q7b93KQIs+K8QDf5eAsvS0Q==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+ (user=elver job=sendgmr) by 2002:a5d:69c2:: with SMTP id s2mr78387688wrw.36.1609765722195;
+ Mon, 04 Jan 2021 05:08:42 -0800 (PST)
+Date:   Mon,  4 Jan 2021 14:07:49 +0100
+Message-Id: <20210104130749.1768991-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH mm] kfence: fix potential deadlock due to wake_up()
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, akpm@linux-foundation.org
+Cc:     glider@google.com, dvyukov@google.com, jannh@google.com,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kasan-dev@googlegroups.com,
+        syzbot+8983d6d4f7df556be565@syzkaller.appspotmail.com,
+        Hillf Danton <hdanton@sina.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes I/O errors during BLKRRPART ioctl() behavior right
-after format operation that changed logical block size of the block
-device with a same file descriptor opened.
+Lockdep reports that we may deadlock when calling wake_up() in
+__kfence_alloc(), because we may already hold base->lock. This can
+happen if debug objects are enabled:
 
-This issue can be easily reproduced with a single format command in case
-of NVMe (logical block size 512B to 4096B).
+    ...
+    __kfence_alloc+0xa0/0xbc0 mm/kfence/core.c:710
+    kfence_alloc include/linux/kfence.h:108 [inline]
+    ...
+    kmem_cache_zalloc include/linux/slab.h:672 [inline]
+    fill_pool+0x264/0x5c0 lib/debugobjects.c:171
+    __debug_object_init+0x7a/0xd10 lib/debugobjects.c:560
+    debug_object_init lib/debugobjects.c:615 [inline]
+    debug_object_activate+0x32c/0x3e0 lib/debugobjects.c:701
+    debug_timer_activate kernel/time/timer.c:727 [inline]
+    __mod_timer+0x77d/0xe30 kernel/time/timer.c:1048
+    ...
 
-	nvme format /dev/nvme0n1 --lbaf=1 --force
+Therefore, switch to an open-coded wait loop. The difference to before
+is that the waiter wakes up and rechecks the condition after 1 jiffy;
+however, given the infrequency of kfence allocations, the difference is
+insignificant.
 
-This is because the application, nvme-cli format subcommand issues an
-admin command followed by BLKRRPART ioctl to re-read partition
-information without closing the file descriptor.  If file descriptor
-stays opened, __blkdev_get() will not be invoked at all even logical
-block size has been changed.
-
-It will cause I/O errors with invalid Read operations during the
-BLKRRPART ioctl due to i_blkbits mismatch. The invalid operations in
-BLKRRPART happens with under-flowed Number of LBA(NLB) values
-0xffff(65535) because i_blkbits is still set to 9 even the logical block
-size has been updated to 4096.  The BLKRRPART will lead buffer_head to
-hold 512B data which is less than the logical lock size of the block
-device.
-
-The root cause, which is because i_blkbits of inode of the block device
-is not updated, can be solved easily by re-opening file descriptor
-again from application.  But, that's just for application's business
-and kernel should reject invalid Read operations during the BLKRRPART
-ioctl.
-
-This patch rejects I/O from the path of add_partitions() to avoid
-issuing invalid Read operations to device.  It also sets a flag to
-gendisk in blk_queue_logical_block_size to minimize caller-side updates.
-
-Signed-off-by: Minwoo Im <minwoo.im.dev@gmail.com>
+Link: https://lkml.kernel.org/r/000000000000c0645805b7f982e4@google.com
+Reported-by: syzbot+8983d6d4f7df556be565@syzkaller.appspotmail.com
+Suggested-by: Hillf Danton <hdanton@sina.com>
+Signed-off-by: Marco Elver <elver@google.com>
 ---
- block/blk-settings.c    |  8 ++++++++
- block/partitions/core.c | 11 +++++++++++
- fs/block_dev.c          |  6 ++++++
- include/linux/genhd.h   |  1 +
- 4 files changed, 26 insertions(+)
+ mm/kfence/core.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index 43990b1d148b..84136ea4e2a4 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -328,6 +328,14 @@ EXPORT_SYMBOL(blk_queue_max_segment_size);
- void blk_queue_logical_block_size(struct request_queue *q, unsigned int size)
+diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+index 933b197b8634..f0816d5f5913 100644
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -94,9 +94,6 @@ DEFINE_STATIC_KEY_FALSE(kfence_allocation_key);
+ /* Gates the allocation, ensuring only one succeeds in a given period. */
+ static atomic_t allocation_gate = ATOMIC_INIT(1);
+ 
+-/* Wait queue to wake up allocation-gate timer task. */
+-static DECLARE_WAIT_QUEUE_HEAD(allocation_wait);
+-
+ /* Statistics counters for debugfs. */
+ enum kfence_counter_id {
+ 	KFENCE_COUNTER_ALLOCATED,
+@@ -586,6 +583,8 @@ late_initcall(kfence_debugfs_init);
+ static struct delayed_work kfence_timer;
+ static void toggle_allocation_gate(struct work_struct *work)
  {
- 	struct queue_limits *limits = &q->limits;
-+	struct block_device *bdev;
++	unsigned long end_wait;
 +
-+	if (q->backing_dev_info && q->backing_dev_info->owner &&
-+			limits->logical_block_size != size) {
-+		bdev = blkdev_get_no_open(q->backing_dev_info->owner->devt);
-+		bdev->bd_disk->flags |= GENHD_FL_BLOCK_SIZE_CHANGED;
-+		blkdev_put_no_open(bdev);
-+	}
+ 	if (!READ_ONCE(kfence_enabled))
+ 		return;
  
- 	limits->logical_block_size = size;
+@@ -596,7 +595,14 @@ static void toggle_allocation_gate(struct work_struct *work)
+ 	 * Await an allocation. Timeout after 1 second, in case the kernel stops
+ 	 * doing allocations, to avoid stalling this worker task for too long.
+ 	 */
+-	wait_event_timeout(allocation_wait, atomic_read(&allocation_gate) != 0, HZ);
++	end_wait = jiffies + HZ;
++	do {
++		set_current_state(TASK_UNINTERRUPTIBLE);
++		if (atomic_read(&allocation_gate) != 0)
++			break;
++		schedule_timeout(1);
++	} while (time_before(jiffies, end_wait));
++	__set_current_state(TASK_RUNNING);
  
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index e7d776db803b..5a0330c1b6f9 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -618,6 +618,17 @@ int blk_add_partitions(struct gendisk *disk, struct block_device *bdev)
- 	if (!disk_part_scan_enabled(disk))
- 		return 0;
+ 	/* Disable static key and reset timer. */
+ 	static_branch_disable(&kfence_allocation_key);
+@@ -707,7 +713,6 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+ 	 */
+ 	if (atomic_read(&allocation_gate) || atomic_inc_return(&allocation_gate) > 1)
+ 		return NULL;
+-	wake_up(&allocation_wait);
  
-+	/*
-+	 * Reject to check partition information if block size has been changed
-+	 * in the runtime.  If block size of a block device has been changed,
-+	 * the file descriptor should be opened agian to update the blkbits.
-+	 */
-+	if (disk->flags & GENHD_FL_BLOCK_SIZE_CHANGED) {
-+		pr_warn("%s: rejecting checking partition. fd should be opened again.\n",
-+				disk->disk_name);
-+		return -EBADFD;
-+	}
-+
- 	state = check_partition(disk, bdev);
- 	if (!state)
- 		return 0;
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 9293045e128c..c996de3d6084 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -131,6 +131,12 @@ EXPORT_SYMBOL(truncate_bdev_range);
- static void set_init_blocksize(struct block_device *bdev)
- {
- 	bdev->bd_inode->i_blkbits = blksize_bits(bdev_logical_block_size(bdev));
-+
-+	/*
-+	 * Allow I/O commands for this block device.  We can say that this
-+	 * block device has been set to a proper block size.
-+	 */
-+	bdev->bd_disk->flags &= ~GENHD_FL_BLOCK_SIZE_CHANGED;
- }
- 
- int set_blocksize(struct block_device *bdev, int size)
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index 809aaa32d53c..0e0e24917003 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -103,6 +103,7 @@ struct partition_meta_info {
- #define GENHD_FL_BLOCK_EVENTS_ON_EXCL_WRITE	0x0100
- #define GENHD_FL_NO_PART_SCAN			0x0200
- #define GENHD_FL_HIDDEN				0x0400
-+#define GENHD_FL_BLOCK_SIZE_CHANGED		0x0800
- 
- enum {
- 	DISK_EVENT_MEDIA_CHANGE			= 1 << 0, /* media changed */
+ 	if (!READ_ONCE(kfence_enabled))
+ 		return NULL;
 -- 
-2.17.1
+2.29.2.729.g45daf8777d-goog
 
