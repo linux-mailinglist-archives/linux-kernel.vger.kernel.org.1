@@ -2,182 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047BF2E9EB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5240C2E9EB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbhADUOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:14:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45693 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727408AbhADUOb (ORCPT
+        id S1727978AbhADUNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 15:13:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727698AbhADUNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:14:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609791184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E7AopbdliPzk094KL/6LdCyv8OyaZvzMKWpZI2pvt0I=;
-        b=JX6yvoNPK4KuM2C3UJ3T0GRsMwWwApMugHl22nVOnMyMbsvoxrC75bdcTuDdxuWdsnvwYb
-        IOwdRcG+YG+NEMIu+6J0oItYqetAZMUTyYHE98woQiuI+2gZq4PrTcru1nMEBElNMX/ogX
-        786IHf5XsP2xftOgIDCMA59I12BzKhw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-484-XK8bh5C6Mqia8LLOm3VUYA-1; Mon, 04 Jan 2021 15:13:03 -0500
-X-MC-Unique: XK8bh5C6Mqia8LLOm3VUYA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50F76107ACE3;
-        Mon,  4 Jan 2021 20:13:01 +0000 (UTC)
-Received: from omen.home (ovpn-112-183.phx2.redhat.com [10.3.112.183])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C8D227C20;
-        Mon,  4 Jan 2021 20:13:00 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 13:13:00 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Chiqijun <chiqijun@huawei.com>
-Cc:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yin.yinshi@huawei.com>,
-        <cloud.wangxiaoyun@huawei.com>,
-        <zengweiliang.zengweiliang@huawei.com>, <chenlizhong@huawei.com>
-Subject: Re: [v3] PCI: Add pci reset quirk for Huawei Intelligent NIC
- virtual function
-Message-ID: <20210104131300.62c83a1f@omen.home>
-In-Reply-To: <20201225092530.5728-1-chiqijun@huawei.com>
-References: <20201225092530.5728-1-chiqijun@huawei.com>
+        Mon, 4 Jan 2021 15:13:49 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDC4C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 12:13:09 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id w1so38391494ejf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 12:13:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7kOBICLhgLGGyrBsGRMV3d/XVZVOrn09qft6qb67hiE=;
+        b=b7+VQwx/HUQzT1Lln1PrW9cd3nW1D010dCcBMbiDuL8w8T2cMiST0QajPYCyO9SBTy
+         E+7xVOhLrFVJHR+eUx1Ij+VS2X57fazwKoDionRO4qDeMd7X03I234SRmEUAPqe2R5Xa
+         ILlc302XjgoH5Sb9Yqfte/wMcpHbdyYWLbrxXh4dys0bF7YG4zkHLzESiH5c7HdCyToB
+         1fXlQ/L7kIH37aSQ7TFVTIolgaJRkFT5ppz+EOR/Qk4YOCFsVgzztEwTaOK4xAnSZ/xw
+         nNEP6gn0mObJwoCPXe0QJbplu6Itl2Ty79I28i8dSDWE0XtVR5Sxh2PCd/D8T2JoHd3K
+         JLAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7kOBICLhgLGGyrBsGRMV3d/XVZVOrn09qft6qb67hiE=;
+        b=GUd+sB1BcXm2dBDKTCydlwHAHcSwWuFAX/8oY7oTDf1qqWJ0rLRRDoeov7shr4cuMO
+         +BrUvvx1ZkbZHrYG7hlHENbSHQSOjPUVqTnXTjHSIqFsOuUOOlo2xjqvLUdTfJpOSTYj
+         lsKCniNvdH/5zJ4xaWtcxj0ecN2dZRX4KWIjvWPYLJAZ9cUGxtMWioyllhLGP9pA18tQ
+         lx93Fyg/espkFOBkFIBQVY5BtPblrnaqfapBnr1OJp5kKX9xNbjuBbx6mx4qXeubnydk
+         jLUDS3C5OqDJH0hKIhoo/OGOg/51PAVRBc0q0i93tTXpjLGHQ2T3u92/VwmDQuYc/gUM
+         LKaA==
+X-Gm-Message-State: AOAM530LLxzE54HH1Enf/KUVBK+6/JC/1DcJ9nmehCBHrqs8fsAjz8nJ
+        KKyWsKj4NNVwJTrUnRlfvPG4i0ZkycbfUA7yMZpHFPLwrI8=
+X-Google-Smtp-Source: ABdhPJy+4iAG8xX6k5boBafJrxqqiEEzN3EesBcv4x2KpEgiPAMRNtZVgnB3PFS5lgHiTfJrc6ChogC2RZDjLmvXQ/E=
+X-Received: by 2002:a17:906:2707:: with SMTP id z7mr68530499ejc.418.1609791188031;
+ Mon, 04 Jan 2021 12:13:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210101042914.5313-1-rdunlap@infradead.org>
+In-Reply-To: <20210101042914.5313-1-rdunlap@infradead.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 4 Jan 2021 12:13:02 -0800
+Message-ID: <CAPcyv4jAiqyFg_BUHh_bJRG-BqzvOwthykijRapB_8i6VtwTmQ@mail.gmail.com>
+Subject: Re: [PATCH v2] fs/dax: include <asm/page.h> to fix build error on ARC
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupts@synopsys.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Dec 2020 17:25:30 +0800
-Chiqijun <chiqijun@huawei.com> wrote:
-
-> When multiple VFs do FLR at the same time, the firmware is
-> processed serially, resulting in some VF FLRs being delayed more
-> than 100ms, when the virtual machine restarts and the device
-> driver is loaded, the firmware is doing the corresponding VF
-> FLR, causing the driver to fail to load.
-> 
-> To solve this problem, add host and firmware status synchronization
-> during FLR.
-> 
-> Signed-off-by: Chiqijun <chiqijun@huawei.com>
+On Thu, Dec 31, 2020 at 8:29 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> fs/dax.c uses copy_user_page() but ARC does not provide that interface,
+> resulting in a build error.
+>
+> Provide copy_user_page() in <asm/page.h> (beside copy_page()) and
+> add <asm/page.h> to fs/dax.c to fix the build error.
+>
+> ../fs/dax.c: In function 'copy_cow_page_dax':
+> ../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
+>
+> Fixes: cccbce671582 ("filesystem-dax: convert to dax_direct_access()")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Vineet Gupta <vgupta@synopsys.com>
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Acked-by: Vineet Gupta <vgupts@synopsys.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-nvdimm@lists.01.org
 > ---
-> v3:
->  - The MSE bit in the VF configuration space is hardwired to zero,
->    remove the setting of PCI_COMMAND_MEMORY bit. Add comment for
->    set PCI_COMMAND register.
-> 
-> v2:
->  - Update comments
->  - Use the HINIC_VF_FLR_CAP_BIT_SHIFT and HINIC_VF_FLR_PROC_BIT_SHIFT
->    macro instead of the magic number
-> ---
->  drivers/pci/quirks.c | 77 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
+> v2: rebase, add more Cc:
+>
+>  arch/arc/include/asm/page.h |    1 +
+>  fs/dax.c                    |    1 +
+>  2 files changed, 2 insertions(+)
+>
+> --- lnx-511-rc1.orig/fs/dax.c
+> +++ lnx-511-rc1/fs/dax.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/sizes.h>
+>  #include <linux/mmu_notifier.h>
+>  #include <linux/iomap.h>
+> +#include <asm/page.h>
 
+I would expect this to come from one of the linux/ includes like
+linux/mm.h. asm/ headers are implementation linux/ headers are api.
 
-Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+Once you drop that then the subject of this patch can just be "arc:
+add a copy_user_page() implementation", and handled by the arc
+maintainer (or I can take it with Vineet's ack).
 
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index f70692ac79c5..9c310012ef19 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3912,6 +3912,81 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
->  	return 0;
->  }
->  
-> +#define PCI_DEVICE_ID_HINIC_VF      0x375E
-> +#define HINIC_VF_FLR_TYPE           0x1000
-> +#define HINIC_VF_FLR_CAP_BIT_SHIFT  6
-> +#define HINIC_VF_OP                 0xE80
-> +#define HINIC_VF_FLR_PROC_BIT_SHIFT 10
-> +#define HINIC_OPERATION_TIMEOUT     15000
-> +
-> +/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
-> +static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
-> +{
-> +	unsigned long timeout;
-> +	void __iomem *bar;
-> +	u16 command;
-> +	u32 val;
-> +
-> +	if (probe)
-> +		return 0;
-> +
-> +	bar = pci_iomap(pdev, 0, 0);
-> +	if (!bar)
-> +		return -ENOTTY;
-> +
-> +	/*
-> +	 * FLR cap bit bit30, FLR processing bit: bit18, to avoid big-endian
-> +	 * conversion the big-endian bit6, bit10 is directly operated here.
-> +	 *
-> +	 * Get and check firmware capabilities.
-> +	 */
-> +	val = readl(bar + HINIC_VF_FLR_TYPE);
-> +	if (!(val & (1UL << HINIC_VF_FLR_CAP_BIT_SHIFT))) {
-> +		pci_iounmap(pdev, bar);
-> +		return -ENOTTY;
-> +	}
-> +
-> +	/*
-> +	 * Set the processing bit for the start of FLR, which will be cleared
-> +	 * by the firmware after FLR is completed.
-> +	 */
-> +	val = readl(bar + HINIC_VF_OP);
-> +	val = val | (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT);
-> +	writel(val, bar + HINIC_VF_OP);
-> +
-> +	/* Perform the actual device function reset */
-> +	pcie_flr(pdev);
-> +
-> +	/*
-> +	 * The device must learn BDF after FLR in order to respond to BAR's
-> +	 * read request, therefore, we issue a configure write request to let
-> +	 * the device capture BDF.
-> +	 */
-> +	pci_read_config_word(pdev, PCI_COMMAND, &command);
-> +	pci_write_config_word(pdev, PCI_COMMAND, command);
-> +
-> +	/* Waiting for device reset complete */
-> +	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);
-> +	do {
-> +		val = readl(bar + HINIC_VF_OP);
-> +		if (!(val & (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT)))
-> +			goto reset_complete;
-> +		msleep(20);
-> +	} while (time_before(jiffies, timeout));
-> +
-> +	val = readl(bar + HINIC_VF_OP);
-> +	if (!(val & (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT)))
-> +		goto reset_complete;
-> +
-> +	pci_warn(pdev, "Reset dev timeout, flr ack reg: %x\n",
-> +		 be32_to_cpu(val));
-> +
-> +reset_complete:
-> +	pci_iounmap(pdev, bar);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
->  	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
->  		 reset_intel_82599_sfp_virtfn },
-> @@ -3923,6 +3998,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
->  	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
->  	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
->  		reset_chelsio_generic_dev },
-> +	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
-> +		reset_hinic_vf_dev },
->  	{ 0 }
->  };
->  
+>  #include <asm/pgalloc.h>
 
+Yes, this one should have a linux/ api header to front it, but that's
+a cleanup for another day.
+
+>
+>  #define CREATE_TRACE_POINTS
+> --- lnx-511-rc1.orig/arch/arc/include/asm/page.h
+> +++ lnx-511-rc1/arch/arc/include/asm/page.h
+> @@ -10,6 +10,7 @@
+>  #ifndef __ASSEMBLY__
+>
+>  #define clear_page(paddr)              memset((paddr), 0, PAGE_SIZE)
+> +#define copy_user_page(to, from, vaddr, pg)    copy_page(to, from)
+>  #define copy_page(to, from)            memcpy((to), (from), PAGE_SIZE)
+>
+>  struct vm_area_struct;
