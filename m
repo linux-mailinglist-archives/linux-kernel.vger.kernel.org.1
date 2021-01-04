@@ -2,220 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6333F2E9298
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E125B2E92F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbhADJ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 04:28:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbhADJ2m (ORCPT
+        id S1726832AbhADJzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 04:55:54 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:12404 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726651AbhADJzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:28:42 -0500
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6D0C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 01:28:01 -0800 (PST)
-Received: by mail-vs1-xe34.google.com with SMTP id e20so14137488vsr.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 01:28:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ExeHQWgqTKzH+DZSpsOqxVJU7/CNUO5Q/p82stk7PJg=;
-        b=X/Gi1auS3Z+zUYZURdGr75NeBrHpMm88ga/jDKcAnCz36LUKhNeJ0M3y88x8ecm4aW
-         jb4mF6EA6DYbILrCj8jk9pSE8WoyyMlSKbaZ7dPLlDioDHoVbnXORu5975RR0wGdbP/f
-         UiRWu0Iw93RxoFRjm8IrYO2fT7jyTbN6hNPks=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ExeHQWgqTKzH+DZSpsOqxVJU7/CNUO5Q/p82stk7PJg=;
-        b=sRU0T5GWOeD7O44Cz2nmJjbDa8uhoyh61j5syVPrvPOqO7xjQUIojCxfCrnNemgIgI
-         pYpu/MVrFxuWvxu41OmKL+g13quqyPh0oXDYaUWMg3VknnX910husAXgCTugt/HlNsjd
-         3jFHtHAqbEiU/FNA31JCNhq7/fD1+ovwrnCP4GvUWS58zigtEs3GCsO88+mLcJJyuZ32
-         rN6DJx6sS7ysfHhLclL9zJI/wmX8rpDCWuZJqGQZLlX/l4nb6rSlhsgnZaZaREevm5fz
-         aDCGl5YtrWsgo7tMpXRK3kjjoig4rVtGXM9mvUgbvFvoR6zGPfGyixpBKlcsjDbGdiAx
-         b2uA==
-X-Gm-Message-State: AOAM5324M3WN25JUAK1GKhj6QSMYq97PsDaA02gjC2DZnlelB8xpsRvN
-        Sr5kJiijQAS/YV7hPJIKtRpu4Z6s1+A0JZZmSFG9vQ==
-X-Google-Smtp-Source: ABdhPJyF2xBh5X4KryFT0WGdabrZwrmbRW9n5pz8Ld0ZfllL2ZL5QKd1r3/IEp7q8KkK01cJ6iv5O7LHMnae2yoQXKE=
-X-Received: by 2002:a67:5c03:: with SMTP id q3mr43046284vsb.47.1609752480656;
- Mon, 04 Jan 2021 01:28:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20201227105449.11452-1-roger.lu@mediatek.com> <20201227105449.11452-4-roger.lu@mediatek.com>
- <CANMq1KBNKy708Vz67WOc+n7V7ne4L1EZVkUVGj6abd5voxKjxA@mail.gmail.com> <1609750266.20758.40.camel@mtksdaap41>
-In-Reply-To: <1609750266.20758.40.camel@mtksdaap41>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Mon, 4 Jan 2021 17:27:49 +0800
-Message-ID: <CANMq1KDxVLo=JAAq-gjybke1WiX03COwNX7sHsZDMF9USzSECw@mail.gmail.com>
-Subject: Re: [PATCH v10 3/7] [v10, 3/7]: soc: mediatek: SVS: introduce MTK SVS engine
-To:     Roger Lu <roger.lu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nishanth Menon <nm@ti.com>, Angus Lin <Angus.Lin@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        YT Lee <yt.lee@mediatek.com>, Fan Chen <fan.chen@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        Charles Yang <Charles.Yang@mediatek.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 4 Jan 2021 04:55:52 -0500
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210104095508epoutp04d691c7a263f5559608c060493cb154a3~W-tVD3eCT0557605576epoutp04e
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 09:55:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210104095508epoutp04d691c7a263f5559608c060493cb154a3~W-tVD3eCT0557605576epoutp04e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1609754108;
+        bh=J9y4WfkrJJpjdDAHbf5UjrzwkfiTUwuTADvbOK6+oas=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=LUVynedByR98TnZU7Mh2JGPOKv7Nqf5t578mmBRRh69XVM0HDRW7mOzQ74UcXEJ/k
+         Nd7Wk2PncrjFp/XZzI2xMPQeeS+mZ5VfaDakg7QvDL/jvjbLQXbLn0tqB2FAg0ys3h
+         HoI7lym8LeEd1WIIZWArUhRmMSSW5qEQxW559yFI=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20210104095508epcas5p18200e5e0b1d3c613cec361ae54b61a0a~W-tUdg-oU0715207152epcas5p13;
+        Mon,  4 Jan 2021 09:55:08 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5D.E9.33964.BF5E2FF5; Mon,  4 Jan 2021 18:55:07 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210104082958epcas5p12c5c0e78dec7f106375b4f507a3b152b~W_i_JqgkC2401624016epcas5p1Y;
+        Mon,  4 Jan 2021 08:29:58 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210104082958epsmtrp2f321721ee08621439e49ac2f7a8d1b44~W_i_IzBcr3051030510epsmtrp2C;
+        Mon,  4 Jan 2021 08:29:58 +0000 (GMT)
+X-AuditID: b6c32a4b-ea1ff700000184ac-c9-5ff2e5fbbb43
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        69.1E.08745.602D2FF5; Mon,  4 Jan 2021 17:29:58 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210104082957epsmtip268279f441c9d4d6603773add86ecaaa1~W_i8rxK870201302013epsmtip2m;
+        Mon,  4 Jan 2021 08:29:57 +0000 (GMT)
+From:   Tamseel Shams <m.shams@samsung.com>
+To:     kgene@kernel.org, krzk@kernel.org, gregkh@linuxfoundation.org,
+        jslaby@suse.com
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        Tamseel Shams <m.shams@samsung.com>
+Subject: [PATCH] serial: samsung: Checks the return value of function
+Date:   Mon,  4 Jan 2021 14:05:51 +0530
+Message-Id: <20210104083551.1393-1-m.shams@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBIsWRmVeSWpSXmKPExsWy7bCmhu7vp5/iDe6stLZ4MG8bm0Xz4vVs
+        FlM2fGCy6H/8mtni/PkN7BabHl9jtbi8aw6bxYzz+5gszizuZbe427qY3YHLY9OqTjaP/XPX
+        sHtsXlLv0bdlFaPH+i1XWTw+b5ILYIvisklJzcksSy3St0vgypiy/AhbwSf2io6nB1kbGC+z
+        dTFyckgImEjs/TyRvYuRi0NIYDejRPeEWcwQzidGiQ+bN7BCOJ8ZJfZPnM/UxcgB1jL3Si1E
+        fBejxPWdqxghnBYmiUV/TrCDFLEJaEocP88NskJEIETi3dktYDXMAicZJfZubmABqREWcJX4
+        MIEXpIZFQFVi//6L7CA2r4C5xP1ti9khzpOXWL3hADOEfY5douOfNYTtIvH8xGsWCFtY4tXx
+        LVD1UhKf3+2Fei1fYv68VVC9FRIrL7yBsu0lDlyZA3YCM9CZ63fpQ4RlJaaeWscEYjML8En0
+        /n7CBBHnldgxD8ZWlPi/ux9qlbjEuxVTWCFB4iHxbloxSFhIIFbi9Y5FzBMYZWchLFjAyLiK
+        UTK1oDg3PbXYtMA4L7Vcrzgxt7g0L10vOT93EyM4MWh572B89OCD3iFGJg7GQ4wSHMxKIrwV
+        Fz7EC/GmJFZWpRblxxeV5qQWH2KU5mBREufdYfAgXkggPbEkNTs1tSC1CCbLxMEp1cCkzOqn
+        8fZ7A7/nIu7Y97+/fDW3nj9N977PlJdfLsrM0Io4YS0t3vxpN//X6428kw/1sh/ZELX0vvDe
+        +cre7A89FqYv/njz5qej06auvv0j4NcSKal+7ufvxZhOzr8ncTRWePeami2vV7od2yOUUa58
+        X6N21ZIWo91yXAZzF1d6f0iu27aiwzJVOiv3xGzLj6zNN2Y853r2r3B+5w6j7v92YY8/n2+x
+        Y7pe87Eg/uKt6ZcsWd74/zJ9otC9b+7e1Y4ZrnNfiK3jCDjw947ii/eh/T/apPUUmWdacBy0
+        SmMVzZ3FIjHNZ9uPU3b1gVNefGlUfRrixxR6QNTc4uCKkBucbBp9C04Wz5MwuB0axBXErcRS
+        nJFoqMVcVJwIAGBY5FF7AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnluLIzCtJLcpLzFFi42LZdlhJXpft0qd4gxWfDS0ezNvGZtG8eD2b
+        xZQNH5gs+h+/ZrY4f34Du8Wmx9dYLS7vmsNmMeP8PiaLM4t72S3uti5md+Dy2LSqk81j/9w1
+        7B6bl9R79G1ZxeixfstVFo/Pm+QC2KK4bFJSczLLUov07RK4MqYsP8JW8Im9ouPpQdYGxsts
+        XYwcHBICJhJzr9R2MXJxCAnsYJRY2HWFvYuREyguLjHt135GCFtYYuW/5+wQRU1MEgeXLmUG
+        aWYT0JQ4fp4bxBQRiJCY+bEGpIRZ4DyjxM7jq5lA4sICrhIfJvCCjGERUJXYv/8i2HheAXOJ
+        +9sWQ62Sl1i94QDzBEaeBYwMqxglUwuKc9Nziw0LjPJSy/WKE3OLS/PS9ZLzczcxgsNMS2sH
+        455VH/QOMTJxMB5ilOBgVhLhrbjwIV6INyWxsiq1KD++qDQntfgQozQHi5I474Wuk/FCAumJ
+        JanZqakFqUUwWSYOTqkGpnarPxMyMjutl++am7VxzmoBgRW1ZRxFl5cuNnyzzKJwTTNH3c8Z
+        PZpr+P7eeHuXoXGJzBOZv0k5s/fVdrEfe+t6z+fKs27uTfsEJZt2+Spl88f2etpfcH+0sGnx
+        4R39i9e0Ca7Ycnw3z/PsRfozQzq6VDes+Otz69KM7+zBO0Nfxx04tmiPk/FKDZ6/vwyPd79a
+        bVtuvNs4aZP1DB/1OXe3ck/7a8D5f0bk023OV14cSb/8yk0wYt7HJO/4u42HFu5mnrYqwWgH
+        53LxQttt/+KdDfvM7m0XUgsrNm42aw0N2e8dKpkzeVukgeGu6Ox2mey7332N96+bn/vkxt3P
+        BpsrJz/MkY5+YzTvLMOGuzeUWIozEg21mIuKEwFIILV/ogIAAA==
+X-CMS-MailID: 20210104082958epcas5p12c5c0e78dec7f106375b4f507a3b152b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210104082958epcas5p12c5c0e78dec7f106375b4f507a3b152b
+References: <CGME20210104082958epcas5p12c5c0e78dec7f106375b4f507a3b152b@epcas5p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 4:51 PM Roger Lu <roger.lu@mediatek.com> wrote:
->
->
-> Hi Nicolas,
->
-> Thanks for all the advices.
->
-> On Thu, 2020-12-31 at 10:10 +0800, Nicolas Boichat wrote:
-> > On Sun, Dec 27, 2020 at 6:55 PM Roger Lu <roger.lu@mediatek.com> wrote:
-[snip]
-> > > +static int svs_adjust_pm_opp_volts(struct svs_bank *svsb, bool force_update)
-> > > +{
-> > > +       int tzone_temp, ret = -EPERM;
-> >
-> > No need to initialize ret.
->
-> Oh, excuse me, some coding check tool warn that this `ret` might return
-> without being uninitialized. Therefore, I'll keep the initialization.
+"uart_add_one_port" function call may fail and return
+some error code, so adding a check for return value.
+If it is returning some error code, then displaying the
+result and returning back from there.
 
-Oh, you're right, there is a possible path where ret is not set. sgtm then.
+Signed-off-by: Tamseel Shams <m.shams@samsung.com>
+---
+ drivers/tty/serial/samsung_tty.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
->
-> >
-> > > +       u32 i, svsb_volt, opp_volt, temp_offset = 0;
-> > > +
-> > > +       mutex_lock(&svsb->lock);
-> > > +
-> > > +       /*
-> > > +        * If svs bank is suspended, it means signed-off voltages are applied.
-> > > +        * Don't need to update opp voltage anymore.
-> > > +        */
-> > > +       if (svsb->suspended && !force_update) {
-> > > +               dev_notice(svsb->dev, "bank is suspended\n");
-> > > +               ret = -EPERM;
-> > > +               goto unlock_mutex;
-> > > +       }
-> > > +
-> > > +       /* Get thermal effect */
-> > > +       if (svsb->phase == SVSB_PHASE_MON) {
-> > > +               if (svsb->temp > svsb->temp_upper_bound &&
-> > > +                   svsb->temp < svsb->temp_lower_bound) {
-> > > +                       dev_warn(svsb->dev, "svsb temp = 0x%x?\n", svsb->temp);
-> > > +                       ret = -EINVAL;
-> > > +                       goto unlock_mutex;
-> > > +               }
-> > > +
-> > > +               ret = svs_get_bank_zone_temperature(svsb->tzone_name,
-> > > +                                                   &tzone_temp);
-> > > +               if (ret) {
-> > > +                       dev_err(svsb->dev, "no \"%s\"?(%d)?\n",
-> > > +                               svsb->tzone_name, ret);
-> > > +                       dev_err(svsb->dev, "set signed-off voltage\n");
-> >
-> > Please merge the error message in one line (I'm not sure what "set
-> > signed-off voltage" means here).
->
-> 1. Ok, I'll merge them. Thanks.
-> 2. signed-off voltages means CPU DVFS default voltages
+diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+index 6ef614d8648c..a220ba166ffe 100644
+--- a/drivers/tty/serial/samsung_tty.c
++++ b/drivers/tty/serial/samsung_tty.c
+@@ -2072,7 +2072,11 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	dev_dbg(&pdev->dev, "%s: adding port\n", __func__);
+-	uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
++	ret = uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to add uart port, err %d\n", ret);
++		return ret;
++	}
+ 	platform_set_drvdata(pdev, &ourport->port);
+ 
+ 	/*
+-- 
+2.17.1
 
-So just write "default voltages" then? ,-)
-
->
-> >
-[snip]
-> > > +static irqreturn_t svs_isr(int irq, void *data)
-> > > +{
-> > > +       struct svs_platform *svsp = (struct svs_platform *)data;
-> >
-> > cast not needed.
->
-> Ok, I'll remove it. Thanks.
->
-> >
-> > > +       struct svs_bank *svsb = NULL;
-> > > +       unsigned long flags;
-> > > +       u32 idx, int_sts, svs_en;
-> > > +
-> > > +       for (idx = 0; idx < svsp->bank_num; idx++) {
-> > > +               svsb = &svsp->banks[idx];
-> > > +
-> > > +               spin_lock_irqsave(&mtk_svs_lock, flags);
-> > > +               svsp->pbank = svsb;
-> > > +
-> > > +               /* Find out which svs bank fires interrupt */
-> > > +               if (svsb->int_st & svs_readl(svsp, INTST)) {
-> > > +                       spin_unlock_irqrestore(&mtk_svs_lock, flags);
-> > > +                       continue;
-> > > +               }
-> > > +
-> > > +               if (!svsb->suspended) {
-> > > +                       svs_switch_bank(svsp);
-> > > +                       int_sts = svs_readl(svsp, INTSTS);
-> > > +                       svs_en = svs_readl(svsp, SVSEN);
-> > > +
-> > > +                       if (int_sts == SVSB_INTSTS_COMPLETE &&
-> > > +                           ((svs_en & SVSB_EN_MASK) == SVSB_EN_INIT01))
-> > > +                               svs_init01_isr_handler(svsp);
-> > > +                       else if ((int_sts == SVSB_INTSTS_COMPLETE) &&
-> > > +                                ((svs_en & SVSB_EN_MASK) == SVSB_EN_INIT02))
-> > > +                               svs_init02_isr_handler(svsp);
-> > > +                       else if (!!(int_sts & SVSB_INTSTS_MONVOP))
-> >
-> > !! is not required.
->
-> Ok, I'll remove it. Thanks.
->
-> >
-> > > +                               svs_mon_mode_isr_handler(svsp);
-> > > +                       else
-> > > +                               svs_error_isr_handler(svsp);
-> > > +               }
-> > > +
-> > > +               spin_unlock_irqrestore(&mtk_svs_lock, flags);
-> > > +               break;
-> > > +       }
-> >
-> > This will panic if svsb is NULL, is that ok or do you want to catch that?
->
-> Oh, it is fine. Thanks for the heads-up.
-
-I should have been stronger in my statement, I think you want to add a
-BUG_ON(!svsb) to crash in a slightly more predictable manner.
-
-[snip]
-> > > +
-> > > +       svsp->tefuse = (u32 *)nvmem_cell_read(cell, &svsp->tefuse_num);
-> >
-> > Cast not needed.
->
-> Ok, I'll remove it if build/test ok. Because nvmem_cell_read returns
-> (void *).
->
-> >
-> > Also, this need to be freed somewhere in remove code (kfree(svsp->tefuse)).
-> >
-> > And it seems like svsp->tefuse is only used in this function, can you
-> > just allocate it here?
->
-> Oh, svsp->tefuse will be used in SVS debug patch for debug purpose. So,
-> I need to save it as struct member.
-
-Oh I missed that, sgtm then. Thanks.
-
->
-[snip]
