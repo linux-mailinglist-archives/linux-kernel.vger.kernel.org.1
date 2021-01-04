@@ -2,144 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DB72EA092
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B81122EA096
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 00:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbhADXPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 18:15:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35478 "EHLO
+        id S1727302AbhADXQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 18:16:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44848 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726365AbhADXPp (ORCPT
+        by vger.kernel.org with ESMTP id S1727230AbhADXQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:15:45 -0500
+        Mon, 4 Jan 2021 18:16:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609802058;
+        s=mimecast20190719; t=1609802091;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qcr+V+ZzWmuyUiEv86hTgVkm+OX5/DeK7Xm8ydOFOHo=;
-        b=NuLHGLs73PBlAB4oBaiA++PRrWdPEFykA5BWa3QCOKt8Lx3uBfMAAuUoLiMEOlS5aJoajU
-        e5IG+nOj6DQZY3+lsjytNjSUGRcaUtnYeOl6LaBubadWVsFJFfo6YrXLQQ7YJrOlDOiKt8
-        JORUkRgVSZKiDsy3v7B6cYUwNnEWhXo=
+         in-reply-to:in-reply-to:references:references;
+        bh=4x3lXJdyPdQU4TGNRz3ba3RWfFt5IfZSTXq4TSow9u0=;
+        b=fAQWOwuo9WZrNbye1PAa5iWf3CGwtu1OQdkXKrfuOegahjhe3+e/2pMiByaWpdy3mYuwaG
+        1SlZ+zfDehYbcmG46IS7bi2z6+un7WQL/M5+qqeDzKBDtzT5V17RlnUx2Mthsny7kZTZ3p
+        /juECayu88s1sd2Ii2LDXzPAUgjjkIU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-kQ7xorzTMUOHBYFG6q1E_Q-1; Mon, 04 Jan 2021 18:14:15 -0500
-X-MC-Unique: kQ7xorzTMUOHBYFG6q1E_Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-566-QvYDd2EPO9WwA1FZ66iwlg-1; Mon, 04 Jan 2021 18:14:49 -0500
+X-MC-Unique: QvYDd2EPO9WwA1FZ66iwlg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E644F59;
-        Mon,  4 Jan 2021 23:14:13 +0000 (UTC)
-Received: from Ruby.lyude.net (ovpn-117-65.rdu2.redhat.com [10.10.117.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A4825C8AA;
-        Mon,  4 Jan 2021 23:14:12 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/ttm: Remove pinned bos from LRU in ttm_bo_move_to_lru_tail()
-Date:   Mon,  4 Jan 2021 18:13:58 -0500
-Message-Id: <20210104231358.154521-1-lyude@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62BF115720;
+        Mon,  4 Jan 2021 23:14:48 +0000 (UTC)
+Received: from treble (ovpn-113-48.rdu2.redhat.com [10.10.113.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9BEC21001281;
+        Mon,  4 Jan 2021 23:14:47 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 17:14:42 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        x86@kernel.org
+Subject: Re: [PATCH] x86/compat: Pull huge_encode_dev() outside of UACCESS
+Message-ID: <20210104231442.s4fdemacapnsqxse@treble>
+References: <984353b44a4484d86ba9f73884b7306232e25e30.1608737428.git.jpoimboe@redhat.com>
+ <20210104122825.GM3021@hirez.programming.kicks-ass.net>
+ <20210104153127.e44uchjhlgg3hq2g@treble>
+ <20210104155347.GC3040@hirez.programming.kicks-ass.net>
+ <20210104172423.guiqwovibivcrqum@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210104172423.guiqwovibivcrqum@treble>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently a regression was introduced which caused TTM's buffer eviction to
-attempt to evict already-pinned BOs, causing issues with buffer eviction
-under memory pressure along with suspend/resume:
+On Mon, Jan 04, 2021 at 11:24:23AM -0600, Josh Poimboeuf wrote:
+> On Mon, Jan 04, 2021 at 04:53:47PM +0100, Peter Zijlstra wrote:
+> > On Mon, Jan 04, 2021 at 09:31:27AM -0600, Josh Poimboeuf wrote:
+> > > Peter, care to submit a proper patch?
+> > 
+> > Here goes..
+> > 
+> > ---
+> > Subject: x86/compat: Pull huge_encode_dev() outside of UACCESS
+> > From: Peter Zijlstra <peterz@infradead.org>
+> > Date: Mon, 4 Jan 2021 13:28:25 +0100
+> > 
+> > Fixes the following warning:
+> > 
+> >   arch/x86/kernel/sys_ia32.o: warning: objtool: cp_stat64()+0xd8: call to new_encode_dev() with UACCESS enabled
+> > 
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 
+> Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-  nouveau 0000:1f:00.0: DRM: evicting buffers...
-  nouveau 0000:1f:00.0: DRM: Moving pinned object 00000000c428c3ff!
-  nouveau 0000:1f:00.0: fifo: fault 00 [READ] at 0000000000200000 engine 04
-  [BAR1] client 07 [HUB/HOST_CPU] reason 02 [PTE] on channel -1 [00ffeaa000
-  unknown]
-  nouveau 0000:1f:00.0: fifo: DROPPED_MMU_FAULT 00001000
-  nouveau 0000:1f:00.0: fifo: fault 01 [WRITE] at 0000000000020000 engine
-  0c [HOST6] client 07 [HUB/HOST_CPU] reason 02 [PTE] on channel 1
-  [00ffb28000 DRM]
-  nouveau 0000:1f:00.0: fifo: channel 1: killed
-  nouveau 0000:1f:00.0: fifo: runlist 0: scheduled for recovery
-  [TTM] Buffer eviction failed
-  nouveau 0000:1f:00.0: DRM: waiting for kernel channels to go idle...
-  nouveau 0000:1f:00.0: DRM: failed to idle channel 1 [DRM]
-  nouveau 0000:1f:00.0: DRM: resuming display...
+Actually the other patch was already merged into Linus' tree.
 
-After some bisection and investigation, it appears this resulted from the
-recent changes to ttm_bo_move_to_lru_tail(). Previously when a buffer was
-pinned, the buffer would be removed from the LRU once ttm_bo_unreserve
-to maintain the LRU list when pinning or unpinning BOs. However, since:
+Maybe add a revert of the other patch to this one?
 
-commit 3d1a88e1051f ("drm/ttm: cleanup LRU handling further")
-
-We've been exiting from ttm_bo_move_to_lru_tail() at the very beginning of
-the function if the bo we're looking at is pinned, resulting in the pinned
-BO never getting removed from the lru and as a result - causing issues when
-it eventually becomes time for eviction.
-
-So, let's fix this by calling ttm_bo_del_from_lru() from
-ttm_bo_move_to_lru_tail() in the event that we're dealing with a pinned
-buffer. As well, add back the hunks in ttm_bo_del_from_lru() that were
-removed which checked whether we want to call
-bdev->driver->del_from_lru_notify() or not. We do this last part to avoid
-calling the hook when the bo in question was already removed from the LRU.
-
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Fixes: 3d1a88e1051f ("drm/ttm: cleanup LRU handling further")
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Dave Airlie <airlied@redhat.com>
----
- drivers/gpu/drm/ttm/ttm_bo.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index 31e8b3da5563..0f373b78e7fa 100644
---- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -113,11 +113,18 @@ static struct kobj_type ttm_bo_glob_kobj_type  = {
- static void ttm_bo_del_from_lru(struct ttm_buffer_object *bo)
- {
- 	struct ttm_bo_device *bdev = bo->bdev;
-+	bool notify = false;
- 
--	list_del_init(&bo->swap);
--	list_del_init(&bo->lru);
-+	if (!list_empty(&bo->swap)) {
-+		notify = true;
-+		list_del_init(&bo->swap);
-+	}
-+	if (!list_empty(&bo->lru)) {
-+		notify = true;
-+		list_del_init(&bo->lru);
-+	}
- 
--	if (bdev->driver->del_from_lru_notify)
-+	if (notify && bdev->driver->del_from_lru_notify)
- 		bdev->driver->del_from_lru_notify(bo);
- }
- 
-@@ -138,8 +145,13 @@ void ttm_bo_move_to_lru_tail(struct ttm_buffer_object *bo,
- 
- 	dma_resv_assert_held(bo->base.resv);
- 
--	if (bo->pin_count)
-+	/* Pinned bos will have been added to the LRU before they were pinned, so make sure we
-+	 * always remove them here
-+	 */
-+	if (bo->pin_count) {
-+		ttm_bo_del_from_lru(bo);
- 		return;
-+	}
- 
- 	man = ttm_manager_type(bdev, mem->mem_type);
- 	list_move_tail(&bo->lru, &man->lru[bo->priority]);
 -- 
-2.29.2
+Josh
 
