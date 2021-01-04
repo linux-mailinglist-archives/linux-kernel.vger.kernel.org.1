@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BFC2E9718
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9B22E971F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbhADOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:21:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725921AbhADOV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:21:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51C0D20784;
-        Mon,  4 Jan 2021 14:20:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609770046;
-        bh=cx/RKMatwM2OwlH8Re5yHYBI7WUVFqOnWvP2MtRW//k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V3cf50d1aagCZotHVA4dgXCUvfplv6p4sVhPX/lNJZRn7xQbmygnAB6FqEuHWu0H/
-         GL3Y0iI1g9+n/xvf3N9UtEe6Nug2Nw46OOalfV/5lmTZh93EJXmttiSnwIPH8tqElR
-         yyoSzPeRy4nIKkcaTzHBPm6cly6gcaYpRjgu+HnO9zr5doEnr8vIS1c5nrqbZk0a/Q
-         Pm2hWT1qtw6au4gaV2hJBF9Vbyny2YfPdSzYvyzIg0daWWt81st+1DiDyesFoMfudw
-         4tckZ7ZiuyZEvEpF7QYRO3x51oeapjPOgk39HcmjMOJ2xtY6sYAL8iNhxe2W3D7GHZ
-         8qf10EUgaYHWg==
-Date:   Mon, 4 Jan 2021 09:20:44 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Daniel Rosenberg <drosen@google.com>
-Subject: Re: [f2fs-dev] [PATCH AUTOSEL 5.10 10/31] f2fs: Handle casefolding
- with Encryption
-Message-ID: <20210104142044.GA3665355@sasha-vm>
-References: <20201230130314.3636961-1-sashal@kernel.org>
- <20201230130314.3636961-10-sashal@kernel.org>
- <X+zAlEu+0JSvXaMu@sol.localdomain>
+        id S1727293AbhADOVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:21:50 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37452 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726616AbhADOVt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 09:21:49 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 104EKnxS015842;
+        Mon, 4 Jan 2021 15:20:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=EkPQnsrAn7KbIBVHzKphtBL1IOPfbYkV5St4CplonVQ=;
+ b=0/LPJSeBMZCoybnIv2NRfUEJ44KSFtBuQO3+R/zt3XlkGFuEKWIEAOZKjQG8EKxvSCmL
+ f3AyVwkT4vtMCbbznwEj9UaSBO5L8Xa0gjQ4TowCmbbHXyparqPfTv4MQ88oJVu9mXg7
+ 8VVR59bHQTRsXlzlHlkhhpxz2T7MV9nFC72wxiwPoTWj+db1DDwj4WZJBqrBihP3CEBs
+ Jx6Qp9o3460uC0MPcY4wEe0q5BR1O0AeQ6ljO7q+bVzPcAoQ+mCdqLGomTuBA0ZkPNgW
+ YpDSw841LCS91CjKz5Z2l0q3AfZ4XndVbnYBOKQil/+y9mFK8haox+n24pWSImVMdXYG 5g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35th25fp9e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Jan 2021 15:20:49 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 38457100038;
+        Mon,  4 Jan 2021 15:20:46 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 20E3021FEA8;
+        Mon,  4 Jan 2021 15:20:46 +0100 (CET)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 4 Jan 2021 15:20:45
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <dmaengine@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
+Subject: [PATCH 1/1] dmaengine: stm32-mdma: fix STM32_MDMA_VERY_HIGH_PRIORITY value
+Date:   Mon, 4 Jan 2021 15:20:45 +0100
+Message-ID: <20210104142045.25583-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <X+zAlEu+0JSvXaMu@sol.localdomain>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-04_08:2021-01-04,2021-01-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 10:01:56AM -0800, Eric Biggers wrote:
->On Wed, Dec 30, 2020 at 08:02:52AM -0500, Sasha Levin wrote:
->> From: Daniel Rosenberg <drosen@google.com>
->>
->> [ Upstream commit 7ad08a58bf67594057362e45cbddd3e27e53e557 ]
->>
->> Expand f2fs's casefolding support to include encrypted directories.  To
->> index casefolded+encrypted directories, we use the SipHash of the
->> casefolded name, keyed by a key derived from the directory's fscrypt
->> master key.  This ensures that the dirhash doesn't leak information
->> about the plaintext filenames.
->>
->> Encryption keys are unavailable during roll-forward recovery, so we
->> can't compute the dirhash when recovering a new dentry in an encrypted +
->> casefolded directory.  To avoid having to force a checkpoint when a new
->> file is fsync'ed, store the dirhash on-disk appended to i_name.
->>
->> This patch incorporates work by Eric Biggers <ebiggers@google.com>
->> and Jaegeuk Kim <jaegeuk@kernel.org>.
->>
->> Co-developed-by: Eric Biggers <ebiggers@google.com>
->> Signed-off-by: Eric Biggers <ebiggers@google.com>
->> Signed-off-by: Daniel Rosenberg <drosen@google.com>
->> Reviewed-by: Eric Biggers <ebiggers@google.com>
->> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->Please don't backport this to the LTS kernels.  This is a new feature, not a
->fix, and you missed prerequisite patches...
+STM32_MDMA_VERY_HIGH_PRIORITY is b11 not 0x11, so fix it with 0x3.
 
-Sure, I'l drop it. Thanks!
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ drivers/dma/stm32-mdma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
+index e4637ec786d3..36ba8b43e78d 100644
+--- a/drivers/dma/stm32-mdma.c
++++ b/drivers/dma/stm32-mdma.c
+@@ -199,7 +199,7 @@
+ #define STM32_MDMA_MAX_CHANNELS		63
+ #define STM32_MDMA_MAX_REQUESTS		256
+ #define STM32_MDMA_MAX_BURST		128
+-#define STM32_MDMA_VERY_HIGH_PRIORITY	0x11
++#define STM32_MDMA_VERY_HIGH_PRIORITY	0x3
+ 
+ enum stm32_mdma_trigger_mode {
+ 	STM32_MDMA_BUFFER,
 -- 
-Thanks,
-Sasha
+2.17.1
+
