@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD682E928E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 346ED2E9292
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 10:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbhADJZC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 04:25:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726606AbhADJZC (ORCPT
+        id S1727030AbhADJ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 04:26:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24687 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726918AbhADJ0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:25:02 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA0AC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 01:24:21 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kwM64-0001dG-65; Mon, 04 Jan 2021 10:24:16 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kwM61-0003Gi-GZ; Mon, 04 Jan 2021 10:24:13 +0100
-Message-ID: <48c8384b5bb91ec4028a9c0255e643153983fbaf.camel@pengutronix.de>
-Subject: Re: [PATCH -next] media/platform/coda: convert comma to semicolon
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 04 Jan 2021 10:24:13 +0100
-In-Reply-To: <20201216132123.15099-1-zhengyongjun3@huawei.com>
-References: <20201216132123.15099-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Mon, 4 Jan 2021 04:26:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609752294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DfRNv/JemPKRiSjvewhQQD9XRV8pm7xARBhqGfFCAQ=;
+        b=JRTD6Yz5JG6EzMj1pEZ8SUf5VIsD2HjguNRtcm1ID3F3JMBcZE0bQJ9KiufTTmKsu0QvgM
+        1oJA+NwRqxkVTg/fb6CVssi2jlAYCwYddziW0pQqIT6YYeLa9GYqx3AbIbmjj3Me2uWs80
+        x0QBF5vZgv4/uVI8ejiFh6OB/AWS4lI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-b_BmQ3-NM1iLbMLIAXTs5w-1; Mon, 04 Jan 2021 04:24:39 -0500
+X-MC-Unique: b_BmQ3-NM1iLbMLIAXTs5w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5CADB8110;
+        Mon,  4 Jan 2021 09:24:37 +0000 (UTC)
+Received: from T590 (ovpn-12-200.pek2.redhat.com [10.72.12.200])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B0116F99F;
+        Mon,  4 Jan 2021 09:24:31 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 17:24:25 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH] fs/buffer: try to submit writeback bio in unit of page
+Message-ID: <20210104092425.GA3587310@T590>
+References: <20201230000815.3448707-1-ming.lei@redhat.com>
+ <20210104084415.GA28741@lst.de>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104084415.GA28741@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-16 at 21:21 +0800, Zheng Yongjun wrote:
-> Replace a comma between expression statements by a semicolon.
+On Mon, Jan 04, 2021 at 09:44:15AM +0100, Christoph Hellwig wrote:
+> On Wed, Dec 30, 2020 at 08:08:15AM +0800, Ming Lei wrote:
+> > It is observed that __block_write_full_page() always submit bio with size of block size,
+> > which is often 512 bytes.
+> > 
+> > In case of sequential IO, or >=4k BS random/seq writeback IO, most of times IO
+> > represented by all buffer_head in each page can be done in single bio. It is actually
+> > done in single request IO by block layer's plug merge too.
+> > 
+> > So check if IO represented by buffer_head can be merged to single page
+> > IO, if yes, just submit single bio instead of submitting one bio for each buffer_head.
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/media/platform/coda/coda-common.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
-> index 87a2c706f747..547ad34b1424 100644
-> --- a/drivers/media/platform/coda/coda-common.c
-> +++ b/drivers/media/platform/coda/coda-common.c
-> @@ -2861,7 +2861,7 @@ static int coda_register_device(struct coda_dev *dev, int i)
->  	strscpy(vfd->name, dev->devtype->vdevs[i]->name, sizeof(vfd->name));
->  	vfd->fops	= &coda_fops;
->  	vfd->ioctl_ops	= &coda_ioctl_ops;
-> -	vfd->release	= video_device_release_empty,
-> +	vfd->release	= video_device_release_empty;
->  	vfd->lock	= &dev->dev_mutex;
->  	vfd->v4l2_dev	= &dev->v4l2_dev;
->  	vfd->vfl_dir	= VFL_DIR_M2M;
+> There is some very weird formatting in here.  From a very quick look
+> the changes look sensible, but I wonder if we should spend so much
+> time optimizing the legacy buffer_head I/O path, rather than switching
+> callers to saner helpers.
 
-Thank you,
+It may take long to convert fs code into iomap, and I understand fs/block_dev.c
+can't be converted to iomap until all FS removes buffer_head, correct me
+if it is wrong.
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-regards
-Philipp
+Thanks,
+Ming
+
