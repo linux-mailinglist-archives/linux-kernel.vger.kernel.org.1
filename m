@@ -2,61 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AA42E971C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE952E9724
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 15:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727255AbhADOVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 09:21:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726685AbhADOVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 09:21:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6BB6207BC;
-        Mon,  4 Jan 2021 14:21:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609770063;
-        bh=tsMKIDjmoUzgR1bptC6pCG0Pztx8eeE2sjessSaPVko=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i2kYhPizQZ3698zJNG/hbLbkozhzCS/YY6n6vw4yullXW5ffnXe3l0KrixuRJ77LE
-         AgldrW2/itJ0mBFerCr2hJ7+A7GzLUSoP9NvD1VT5L1eNO95qiowgpTtEAy7dB117q
-         lbHjEZ7wqpgJkQd2E5AJamcwlUkRhourFo4YLNYc+jAVMusRNHlAR6xvs7OWRiGJ6A
-         06P090F67sSpI5oSF+F1oPzzDWIImhRDTPxHzhLcokSoPOeY5vNzPniYs7mVIzXH9v
-         kF/JyD6xrtIpIIUIV5O6Qs/3Lg+m69KShysSSdh1/hq+m2VpOwdSg6UsPJV/ikbCtB
-         u5fnXDAGbW4QQ==
-Date:   Mon, 4 Jan 2021 09:21:00 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        linux-um@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 5.10 20/31] um: allocate a guard page to helper
- threads
-Message-ID: <20210104142100.GB3665355@sasha-vm>
-References: <20201230130314.3636961-1-sashal@kernel.org>
- <20201230130314.3636961-20-sashal@kernel.org>
- <d17899cc72a31f12da166de6223338b844ee2428.camel@sipsolutions.net>
+        id S1727352AbhADOXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 09:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727136AbhADOXP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 09:23:15 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95745C061793;
+        Mon,  4 Jan 2021 06:22:34 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id o13so64720527lfr.3;
+        Mon, 04 Jan 2021 06:22:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kXTFfeMRZQQpjX/bUjX/VUuqwPxBKyg8TYI+r24zwMc=;
+        b=bL9IjbB8aRoM2Bbdkox5AoGHJ7LmMDhG5X87RhacQffOkK4RDKh9GzBDzsLftnPqjg
+         sjV80SnDAn9HsjTEPA9YkwRPxUyVdnQBmUdeKBb/07ve4M5yhoiJkpnkolbCB1bB7yLF
+         4fIkPhcyWaaJmR3N99kkDhOhqel2j0sPbAgo9zH5cf3zqTnSF3E6HkO8dYrEZDfVrgtX
+         gDhvY0tDgHRPyUCGvBLSvEtKVY+nsdJCQTjGbY4qSfCx/Db8rW+TaQoVlZPjyrkfzeSc
+         n7HoTrR9GUEHLA+Ged8gOt/vkI8SWGZXUvdoC4ZYDH0yQ+Vph9fZX5iKRbus6nq3x+7I
+         EIxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kXTFfeMRZQQpjX/bUjX/VUuqwPxBKyg8TYI+r24zwMc=;
+        b=PCljmN9+XRc/74lw5nDuZN9IyJItbYtakmH3+ACqyXdxWOPSk3XxWybE+iUmy+Vhyp
+         vKSN7m8KmA/GAbZaS8HpZdA4HM09qjBv6P/8ihpU26oltpHJLyRqiX5UYtzgJGSmB6y8
+         +PyL6XyfFWMNfpUXSJi7hdoB+QBmvqNyxx3/+9uTHRVeagjpVljdcF8dYDje4tLC4Arf
+         TxWln3AGKP9yCQ9SZtXh36M5KL3FAkPJBHDfFJ02MLRtsAX7txbGBpBR4XTNLHY0lr8x
+         lZ9WURDAx2nO/RtS4pY2VA8h2pyPVaG2DKCoT55dmf4dvXeDNTZLkRZ3WgEuBLW2Gzm1
+         DxBw==
+X-Gm-Message-State: AOAM531vh05Sv1/5stTvVsV5vl8mGRzAQEeDqh5jMCRYPOCVtZ3wV1Kj
+        UmFzHnoazsGveylUV45Iwx79dtgaPYd9X4euxZ8=
+X-Google-Smtp-Source: ABdhPJytbIseJCFq7LhrJXQnsC4iBKXOUNOS6w9t+SOinAywUYi8J+1uiDqH+aTMStFRoDVoeD38KQIiVG21U4iPnlg=
+X-Received: by 2002:a19:c786:: with SMTP id x128mr35713651lff.323.1609770153039;
+ Mon, 04 Jan 2021 06:22:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <d17899cc72a31f12da166de6223338b844ee2428.camel@sipsolutions.net>
+References: <20201219000616.197585-1-stephen.s.brennan@oracle.com>
+ <20201219000616.197585-2-stephen.s.brennan@oracle.com> <CAEjxPJ4bUxSp3hMV9k5Z5Zpev=ravd6EJheC1Rdg+_72eUiNLA@mail.gmail.com>
+In-Reply-To: <CAEjxPJ4bUxSp3hMV9k5Z5Zpev=ravd6EJheC1Rdg+_72eUiNLA@mail.gmail.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Mon, 4 Jan 2021 09:22:22 -0500
+Message-ID: <CAEjxPJ6HBGaPVbWFBTYgDDpDX6duvpJvCinSJP863kM69=qWqg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] proc: ensure security hook is called after exec
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 03:48:57PM +0100, Johannes Berg wrote:
->On Wed, 2020-12-30 at 08:03 -0500, Sasha Levin wrote:
->>
->> We've been running into stack overflows in helper threads
->> corrupting memory
+On Mon, Jan 4, 2021 at 9:16 AM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
 >
->For the record, that was mostly referring to "while development", so
->while this change makes a few things a bit safer, I don't think there's
->all that much point in backporting to stable; presumably things are
->working OK there for people, and developers will (hopefully) be working
->on mainline anyway.
+> On Fri, Dec 18, 2020 at 7:06 PM Stephen Brennan
+> <stephen.s.brennan@oracle.com> wrote:
+> >
+> > Smack needs its security_task_to_inode() hook to be called when a task
+> > execs a new executable. Store the self_exec_id of the task and call the
+> > hook via pid_update_inode() whenever the exec_id changes.
+> >
+> > Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+>
+> Sorry to be late in responding, but the proc inode security structure
+> needs to be updated not only upon a context-changing exec but also
+> upon a setcon(3) aka write to /proc/self/attr/current just like the
+> uid/gid needs to be updated not only upon a setuid exec but also upon
+> a setuid(2).  I'm also unclear as to why you can't call
+> security_task_to_inode during RCU lookup; it doesn't block/sleep
+> AFAICT.
+> All it does is take a spinlock and update a few fields.
 
-I'll drop it, thanks!
-
--- 
-Thanks,
-Sasha
+You could also optimize this by comparing the sid similar to how the
+uid/gid are compared and only updating it within the hook if it has
+not yet been initialized or has changed since it was originally set.
