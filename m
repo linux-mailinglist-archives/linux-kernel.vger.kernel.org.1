@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17CA2E9ECA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B182E9ECD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 21:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbhADUYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 15:24:37 -0500
-Received: from mga14.intel.com ([192.55.52.115]:54162 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726599AbhADUYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 15:24:36 -0500
-IronPort-SDR: dLP1AfQ8zAxGTJCyMI77hXMD4+ln8Ht8/fMNYlIYBLBTukjdKM4zLDfWkC3QSAbd7cjn5+b1TP
- hS6+gAvUl3xg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="176222394"
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="176222394"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 12:22:50 -0800
-IronPort-SDR: iQr5yQm8p1XD6tguWyuBU3KSJJzbRg7VkZlLD1wAFmCadrILFeWn1Jf2d5FfyjfNqy58h66Qiv
- n17tEiU7NPyg==
-X-IronPort-AV: E=Sophos;i="5.78,474,1599548400"; 
-   d="scan'208";a="378562801"
-Received: from hhuan26-mobl1.amr.corp.intel.com (HELO mqcpg7oapc828.gar.corp.intel.com) ([10.209.116.234])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 04 Jan 2021 12:22:49 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     x86@kernel.org, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        "Sean Christopherson" <seanjc@google.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Jethro Beekman" <jethro@fortanix.com>
-Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
-References: <20201216134920.21161-1-jarkko@kernel.org>
-Date:   Mon, 04 Jan 2021 14:22:05 -0600
+        id S1726626AbhADUZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 15:25:38 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:50600 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbhADUZi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 15:25:38 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 104KOueN051111;
+        Mon, 4 Jan 2021 14:24:56 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1609791896;
+        bh=MWghvIFepX0UFLgJoOKcCzyDRAJI1cnuZmd4jVa4/H4=;
+        h=From:To:CC:Subject:Date;
+        b=KWaeCuu83FqW+wqGcujuCUNwLjXgXaQCLteMTUdsl+WdMwSomPBGgJrUaAW2+0RIX
+         HsPmAuUvDJoScWV0Jb0xb6wR9Vb1QT1+EYVn3crOVslIwlA+4W4mHe8w94IKxpy8kz
+         unrnB/tJ3JWKUjPctCa6LUmAAJMFu+k03ExKijh8=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 104KOu2Q067898
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 4 Jan 2021 14:24:56 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 Jan
+ 2021 14:24:55 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 4 Jan 2021 14:24:55 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 104KOtrb008443;
+        Mon, 4 Jan 2021 14:24:55 -0600
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+To:     <sre@kernel.org>, <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <dmurphy@ti.com>, Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Subject: [PATCH v8 0/2] Introduce the BQ256XX family of chargers
+Date:   Mon, 4 Jan 2021 14:24:48 -0600
+Message-ID: <20210104202450.9669-1-r-rivera-matos@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel Corp
-Message-ID: <op.0wppi8q8wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
-In-Reply-To: <20201216134920.21161-1-jarkko@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 07:49:20 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+Hello,
 
-> Add synchronize_srcu_expedited() to sgx_encl_release() to catch a grace
-> period initiated by sgx_mmu_notifier_release().
->
-> A trivial example of a failing sequence with tasks A and B:
->
-> 1. A: -> sgx_release()
-> 2. B: -> sgx_mmu_notifier_release()
-> 3. B: -> list_del_rcu()
-> 3. A: -> sgx_encl_release()
-> 4. A: -> cleanup_srcu_struct()
->
-> The loop in sgx_release() observes an empty list because B has removed  
-> its
-> entry in the middle, and calls cleanup_srcu_struct() before B has a  
-> chance
-> to calls synchronize_srcu().
->
-> Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Suggested-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
-> v3: Fine-tuned tags, and added missing change log for v2.
-> v2: Switch to synchronize_srcu_expedited().
->  arch/x86/kernel/cpu/sgx/encl.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.c  
-> b/arch/x86/kernel/cpu/sgx/encl.c
-> index ee50a5010277..fe7256db6e73 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.c
-> +++ b/arch/x86/kernel/cpu/sgx/encl.c
-> @@ -438,6 +438,12 @@ void sgx_encl_release(struct kref *ref)
->  	if (encl->backing)
->  		fput(encl->backing);
-> +	/*
-> +	 * Each sgx_mmu_notifier_release() starts a grace period. Therefore, an
-> +	 * additional sync is required here.
-> +	 */
-> +	synchronize_srcu_expedited(&encl->srcu);
-> +
->  	cleanup_srcu_struct(&encl->srcu);
-> 	WARN_ON_ONCE(!list_empty(&encl->mm_list));
+This patchset introduces the bq256xx family of charging ICs. The bq256xx
+ICs are highly integrated, buck, switching chargers intended for use in 
+smartphones, tablets, and portable electronics.
 
-Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
-Thanks
-Haitao
+Ricardo Rivera-Matos (2):
+  dt-bindings: power: Add the bq256xx dt bindings
+  power: supply: bq256xx: Introduce the BQ256XX charger driver
+
+ .../bindings/power/supply/bq256xx.yaml        |  110 ++
+ drivers/power/supply/Kconfig                  |   11 +
+ drivers/power/supply/Makefile                 |    1 +
+ drivers/power/supply/bq256xx_charger.c        | 1745 +++++++++++++++++
+ 4 files changed, 1867 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq256xx.yaml
+ create mode 100644 drivers/power/supply/bq256xx_charger.c
+
+-- 
+2.28.0
+
