@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365B72E9A05
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2CB2E9A2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 17:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729227AbhADQGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 11:06:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40012 "EHLO mail.kernel.org"
+        id S1728354AbhADQA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 11:00:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728898AbhADQCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 11:02:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CC4A22516;
-        Mon,  4 Jan 2021 16:02:02 +0000 (UTC)
+        id S1728276AbhADQAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 11:00:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38033224D4;
+        Mon,  4 Jan 2021 15:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609776122;
-        bh=xG67Zm/Pub3LnzeGF+mtGQjupBLMb7U8Wk+xH/2uKM4=;
+        s=korg; t=1609775997;
+        bh=w9ADJ7ntWksPmduVRPlLqtVyPk6nB5N/EXcp17a0jlk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BK5TzQFjrTcO0ttslxfRtZnIlUMKmo2it7YxkdFZeprVVrZaifTFB5M+K9hE0XvSd
-         cfoPu439iNBo7QvfgLQilb3SMqhAYN8/VRyzIsluvDEuq9IgdiJGO2QuTwwCMQuW0p
-         r9ymzDSCdJsw3kFPHzkF+WcFruKV0ZtJ71c2SId8=
+        b=If6i0WQV+8z8YkKqYNa6WNxWaNNu8+b8sKnN826e9DvKuPAj+K2/7h9U3fjYDUgu1
+         eBdV3e6kbo5qVTgYxIOZQIEPJ53J0ZKcC6GN0zUSMRiwHzWsrbfZVnLI2cD8YwIA7s
+         oIc2WJSKK798WJ1komasozcHfLb+KmSyXUmATe0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Subject: [PATCH 5.10 30/63] misc: vmw_vmci: fix kernel info-leak by initializing dbells in vmci_ctx_get_chkpt_doorbells()
+        stable@vger.kernel.org, Karen Xie <kxie@chelsio.com>,
+        linux-scsi@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH 5.4 24/47] scsi: cxgb4i: Fix TLS dependency
 Date:   Mon,  4 Jan 2021 16:57:23 +0100
-Message-Id: <20210104155710.281866429@linuxfoundation.org>
+Message-Id: <20210104155706.909767529@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
-References: <20210104155708.800470590@linuxfoundation.org>
+In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
+References: <20210104155705.740576914@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 31dcb6c30a26d32650ce134820f27de3c675a45a upstream.
+commit cb5253198f10a4cd79b7523c581e6173c7d49ddb upstream.
 
-A kernel-infoleak was reported by syzbot, which was caused because
-dbells was left uninitialized.
-Using kzalloc() instead of kmalloc() fixes this issue.
+SCSI_CXGB4_ISCSI selects CHELSIO_T4. The latter depends on TLS || TLS=n, so
+since 'select' does not check dependencies of the selected symbol,
+SCSI_CXGB4_ISCSI should also depend on TLS || TLS=n.
 
-Reported-by: syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com
-Tested-by: syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Link: https://lore.kernel.org/r/20201122224534.333471-1-anant.thazhemadam@gmail.com
+This prevents the following kconfig warning and restricts SCSI_CXGB4_ISCSI
+to 'm' whenever TLS=m.
+
+WARNING: unmet direct dependencies detected for CHELSIO_T4
+  Depends on [m]: NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_CHELSIO [=y] && PCI [=y] && (IPV6 [=y] || IPV6 [=y]=n) && (TLS [=m] || TLS [=m]=n)
+  Selected by [y]:
+  - SCSI_CXGB4_ISCSI [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && PCI [=y] && INET [=y] && (IPV6 [=y] || IPV6 [=y]=n) && ETHERNET [=y]
+
+Link: https://lore.kernel.org/r/20201208220505.24488-1-rdunlap@infradead.org
+Fixes: 7b36b6e03b0d ("[SCSI] cxgb4i v5: iscsi driver")
+Cc: Karen Xie <kxie@chelsio.com>
+Cc: linux-scsi@vger.kernel.org
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/misc/vmw_vmci/vmci_context.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/cxgbi/cxgb4i/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/misc/vmw_vmci/vmci_context.c
-+++ b/drivers/misc/vmw_vmci/vmci_context.c
-@@ -743,7 +743,7 @@ static int vmci_ctx_get_chkpt_doorbells(
- 			return VMCI_ERROR_MORE_DATA;
- 		}
- 
--		dbells = kmalloc(data_size, GFP_ATOMIC);
-+		dbells = kzalloc(data_size, GFP_ATOMIC);
- 		if (!dbells)
- 			return VMCI_ERROR_NO_MEM;
- 
+--- a/drivers/scsi/cxgbi/cxgb4i/Kconfig
++++ b/drivers/scsi/cxgbi/cxgb4i/Kconfig
+@@ -4,6 +4,7 @@ config SCSI_CXGB4_ISCSI
+ 	depends on PCI && INET && (IPV6 || IPV6=n)
+ 	depends on THERMAL || !THERMAL
+ 	depends on ETHERNET
++	depends on TLS || TLS=n
+ 	select NET_VENDOR_CHELSIO
+ 	select CHELSIO_T4
+ 	select CHELSIO_LIB
 
 
