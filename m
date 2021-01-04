@@ -2,189 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531722E91C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADDC2E91C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 09:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbhADIbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 03:31:45 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:48688 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbhADIbo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 03:31:44 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1048P1eH110632;
-        Mon, 4 Jan 2021 08:30:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=nR2Q7mSO/Dz42tv8kKe3uN9e9+5MG7ulgrtXzjXMFLM=;
- b=LFp/dCsikFIToalyY/a7GLg62Szw1DakdsP3PtGO9MQr8esylHrCZwoI9Zf1wAeZ9gxr
- 3weW92hNyLQwfQ//IKNPV/HWjY9MS+6PjA5u34akUYY7AxICwxg2T0vmE7acArJ5XlYe
- AAefa2H2XmKr3KPTiN4yo+55EdUmW2kHBbNZO8NJptQZ/AOYQMBewQe5GxVr0Vk+Oemk
- /3vTQb7IiF4xi7TDNmoMZm9fuIN1II8M9/gOGUyYXibGn1j3d74Wm/2fOslb2/Dtw3ao
- qwhyxdxBWLwWf7+ZhCY0J7/cbOYPRHziaUlrnbWPxAc8NhlHIhIHaQHq9TIUkYLh6+UJ lw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 35tebak8sa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 04 Jan 2021 08:30:59 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1048RJ9D186971;
-        Mon, 4 Jan 2021 08:30:59 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 35uwsyucq4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Jan 2021 08:30:59 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1048UwkR002047;
-        Mon, 4 Jan 2021 08:30:58 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Jan 2021 08:30:07 +0000
-Date:   Mon, 4 Jan 2021 11:29:48 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jon Mason <jdmason@kudzu.us>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ntb@googlegroups.com
-Subject: Re: [GIT PULL] NTB bug fixes for v5.11
-Message-ID: <20210104082948.GR2831@kadam>
-References: <20201227141638.GA11393@athena.kudzu.us>
- <CAHk-=wjxQzF3eWank1r7F6+EqSRsO+kvibPqDbzxjHv3wzZt0A@mail.gmail.com>
+        id S1726485AbhADIcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 03:32:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726258AbhADIcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 03:32:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3C9A20798;
+        Mon,  4 Jan 2021 08:31:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609749110;
+        bh=/l4LNgcZQuQKp8LjOcoiZ+3D5i2u+KxinFDst/ZT+Xw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bH9nLgUy6rQaKDLX1sw1beUf9Aq83lpTkkF5ADT9W2qKlL12x7qcISW2nja3aqI1Y
+         WzpG1HIteKGSrWtfL4/MJWWFZPBQZigPtLn7owPGJgh1SKwM/Z0NWd4326bSyG2UVp
+         cbtkAJ/BJ+ksAQAWS715qAMvFPntnXind4CHexEHnKoDA38+VGZGUq5N3KFvPcQKRJ
+         umggJKKxXJrxQebYyCNBK4D1yb/2Cva4LLilwnlwEgsxwCT0/1TdV5UeDY3sdvXAvG
+         TRTNprpXnycMUQpKcKL+L1jkCD7tuLfQvRYX6/z0/rd93m1CzYF32NtvmESwNcScE6
+         VCK/MmB55ljqQ==
+Received: by wens.tw (Postfix, from userid 1000)
+        id A190F5F823; Mon,  4 Jan 2021 16:31:48 +0800 (CST)
+Date:   Mon, 4 Jan 2021 16:31:48 +0800
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andre Przywara <andre.przywara@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [linux-sunxi] [PATCH v2 0/4] Allwinner H6 RSB support
+Message-ID: <X/LSdICpXl6vT65y@wens.csie.org>
+References: <20210103100007.32867-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjxQzF3eWank1r7F6+EqSRsO+kvibPqDbzxjHv3wzZt0A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101040056
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1011 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101040056
+In-Reply-To: <20210103100007.32867-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 09:38:23AM -0800, Linus Torvalds wrote:
-> On Sun, Dec 27, 2020 at 6:16 AM Jon Mason <jdmason@kudzu.us> wrote:
-> >
-> > Wang Qing (1):
-> >       ntb: idt: fix error check in ntb_hw_idt.c
-> 
-> So this patch seems to be at least partially triggered by a smatch
-> warning that is a bit questionable.
-> 
-> This part:
-> 
->      if (IS_ERR_OR_NULL(dbgfs_topdir)) {
->          dev_info(&ndev->ntb.pdev->dev, "Top DebugFS directory absent");
-> -        return PTR_ERR(dbgfs_topdir);
-> +        return PTR_ERR_OR_ZERO(dbgfs_topdir);
->      }
-> 
-> works, but is very non-optimal and unnecessary.
-> 
-> The thing is, "PTR_ERR()" works just fine on a IS_ERR_OR_NULL pointer.
-> It doesn't work on a _regular_ non-NULL and non-ERR pointer, and will
-> return random garbage for those. But if you've tested for
-> IS_ERR_OR_NULL(), then a regular PTR_ERR() is already fine.
-> 
-> And PTR_ERR_OR_ZERO() potentially generates an extraneous pointless
-> tests against zero (to check for the ERR case).
-> 
-> A compiler may be able to notice that the PTR_ERR_OR_ZERO() is
-> unnecessary and remove it (because of the IS_ERR_OR_NULL() checks),
-> but in general we should assume compilers are "not stupid" rather than
-> "really smart".
-> 
-> So while this patch isn't _wrong_, and I've already pulled it, the
-> fact that apparently some smatch test triggers these pointless and
-> potentially expensive patches is not a good idea.
-> 
-> I'm not sure what the smatch tests should be (NULL turns to 0, which
-> may be confusing), but I'm cc'ing Dan in case he has ideas.
->
+Hi,
 
-The most common bug that this check finds is the other part of that same
-commit 91b8246de859 ("ntb: idt: fix error check in ntb_hw_idt.c"):
+On Sun, Jan 03, 2021 at 04:00:03AM -0600, Samuel Holland wrote:
+> The Allwinner H6 SoC contains an RSB controller. It is almost completely
+> undocumented, so it was missed when doing the initial SoC bringup.
+> 
+> This series adds the clock/reset, pin configuration, and device tree
+> node needed to use the RSB controller. Since RSB is faster, simpler, and
+> generally more reliable than the I2C controller IP in the SoC, switch to
+> using it where possible.
+> 
+> This was tested on an Orange Pi 3 and a Pine H64 model B. This series
+> does not switch the Pine H64 to use RSB, as doing so would prevent
+> accessing the external RTC that shares the I2C bus.
+> 
+> Changes v1->v2:
+>   - Put the new values at the end of the DT binding headers
+> 
+> Samuel Holland (4):
+>   clk: sunxi-ng: h6-r: Add R_APB2_RSB clock and reset
+>   pinctrl: sunxi: h6-r: Add s_rsb pin functions
+>   arm64: dts: allwinner: h6: Add RSB controller node
+>   arm64: dts: allwinner: h6: Use RSB for AXP805 PMIC connection
 
- 	/* Allocate the memory for IDT NTB device data */
- 	ndev = idt_create_dev(pdev, id);
--	if (IS_ERR_OR_NULL(ndev))
-+	if (IS_ERR(ndev))
- 		return PTR_ERR(ndev);
+I queued up patches 1, 3, and 4 locally for v5.12. Obviously this won't
+work unless the pinctrl patch is also queued up, so they won't be pushed
+out until that happens.
 
-idt_create_dev() never returns NULL, but if it did then we don't want
-to return success.
+Regarding patch 3, I replaced the clock and reset macros with raw
+numbers to get rid of cross-tree dependencies. The following fix
+will be posted for v5.12 later on during its RC cycle.
 
-For the debugfs stuff, the caller doesn't check the return value anyway.
-Just make it a void function.  A lot of this debugfs code could be
-simplified.  It's not a bug to pass an error pointer or a NULL dbgfs_topdir
-pointer to debugfs_create_file().  There isn't any benefit in checking
-debugfs_initialized().
+------------------------ >8 ------------------------
 
-diff --git a/drivers/ntb/hw/idt/ntb_hw_idt.c b/drivers/ntb/hw/idt/ntb_hw_idt.c
-index e7a4c2aa8baa..710c17b2a923 100644
---- a/drivers/ntb/hw/idt/ntb_hw_idt.c
-+++ b/drivers/ntb/hw/idt/ntb_hw_idt.c
-@@ -2504,28 +2504,14 @@ static ssize_t idt_dbgfs_info_read(struct file *filp, char __user *ubuf,
-  *
-  * Return: zero on success, otherwise a negative error number.
-  */
--static int idt_init_dbgfs(struct idt_ntb_dev *ndev)
-+static void idt_init_dbgfs(struct idt_ntb_dev *ndev)
- {
- 	char devname[64];
- 
--	/* If the top directory is not created then do nothing */
--	if (IS_ERR_OR_NULL(dbgfs_topdir)) {
--		dev_info(&ndev->ntb.pdev->dev, "Top DebugFS directory absent");
--		return PTR_ERR_OR_ZERO(dbgfs_topdir);
--	}
--
- 	/* Create the info file node */
- 	snprintf(devname, 64, "info:%s", pci_name(ndev->ntb.pdev));
- 	ndev->dbgfs_info = debugfs_create_file(devname, 0400, dbgfs_topdir,
--		ndev, &idt_dbgfs_info_ops);
--	if (IS_ERR(ndev->dbgfs_info)) {
--		dev_dbg(&ndev->ntb.pdev->dev, "Failed to create DebugFS node");
--		return PTR_ERR(ndev->dbgfs_info);
--	}
--
--	dev_dbg(&ndev->ntb.pdev->dev, "NTB device DebugFS node created");
--
--	return 0;
-+					       ndev, &idt_dbgfs_info_ops);
- }
- 
- /*
-@@ -2792,7 +2778,7 @@ static int idt_pci_probe(struct pci_dev *pdev,
- 		goto err_deinit_isr;
- 
- 	/* Initialize DebugFS info node */
--	(void)idt_init_dbgfs(ndev);
-+	idt_init_dbgfs(ndev);
- 
- 	/* IDT PCIe-switch NTB driver is finally initialized */
- 	dev_info(&pdev->dev, "IDT NTB device is ready");
-@@ -2904,9 +2890,7 @@ static int __init idt_pci_driver_init(void)
- {
- 	pr_info("%s %s\n", NTB_DESC, NTB_VER);
- 
--	/* Create the top DebugFS directory if the FS is initialized */
--	if (debugfs_initialized())
--		dbgfs_topdir = debugfs_create_dir(KBUILD_MODNAME, NULL);
-+	dbgfs_topdir = debugfs_create_dir(KBUILD_MODNAME, NULL);
- 
- 	/* Register the NTB hardware driver to handle the PCI device */
- 	return pci_register_driver(&idt_pci_driver);
--- 
-2.29.2
+commit 0b4781666adc5e19c4d4fb4a2bff33883181cc39
+Author: Chen-Yu Tsai <wens@csie.org>
+Date:   Mon Jan 4 16:19:17 2021 +0800
 
+    arm64: dts: allwinner: h6: Switch to macros for RSB clock/reset indices
+    
+    The macros for the clock and reset indices for the RSB hardware block
+    were replaced with raw numbers when the RSB controller node was added.
+    This was done to avoid cross-tree dependencies.
+    
+    Now that both the clk and DT changes have been merged, we can switch
+    back to using the macros.
+    
+    Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index d897697849d6..b043beea8e6e 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -988,9 +988,9 @@ r_rsb: rsb@7083000 {
+ 			compatible = "allwinner,sun8i-a23-rsb";
+ 			reg = <0x07083000 0x400>;
+ 			interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&r_ccu 13>;
++			clocks = <&r_ccu CLK_R_APB2_RSB>;
+ 			clock-frequency = <3000000>;
+-			resets = <&r_ccu 7>;
++			resets = <&r_ccu RST_R_APB2_RSB>;
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&r_rsb_pins>;
+ 			status = "disabled";
+------------------------ >8 ------------------------
+
+> 
+>  .../dts/allwinner/sun50i-h6-beelink-gs1.dts   | 38 +++++++++----------
+>  .../dts/allwinner/sun50i-h6-orangepi-3.dts    | 14 +++----
+>  .../dts/allwinner/sun50i-h6-orangepi.dtsi     | 22 +++++------
+>  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 19 ++++++++++
+>  drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c        |  5 +++
+>  drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h        |  2 +-
+>  drivers/pinctrl/sunxi/pinctrl-sun50i-h6-r.c   |  2 +
+>  include/dt-bindings/clock/sun50i-h6-r-ccu.h   |  2 +
+>  include/dt-bindings/reset/sun50i-h6-r-ccu.h   |  1 +
+>  9 files changed, 67 insertions(+), 38 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20210103100007.32867-1-samuel%40sholland.org.
