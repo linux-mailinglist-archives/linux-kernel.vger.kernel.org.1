@@ -2,49 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D302E9826
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726C02E9825
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Jan 2021 16:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727397AbhADPNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 10:13:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42508 "EHLO mx2.suse.de"
+        id S1727363AbhADPNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 10:13:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbhADPNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:13:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2B1D5ACAF;
-        Mon,  4 Jan 2021 15:13:02 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 98DEBDA882; Mon,  4 Jan 2021 16:11:13 +0100 (CET)
-Date:   Mon, 4 Jan 2021 16:11:13 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Defang Bo <bodefang@126.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] fs/btrfs: avoid null pointer dereference if reloc
- control has not been initialized
-Message-ID: <20210104151113.GG6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Defang Bo <bodefang@126.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1609080931-4048864-1-git-send-email-bodefang@126.com>
+        id S1725830AbhADPNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:13:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C1A9207BC;
+        Mon,  4 Jan 2021 15:12:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609773174;
+        bh=y69n2uWL97se0ZNSzSAZ4xOBtGGeaTn9m/nFYsgbPuo=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=TftuA15pdcB5H/azkWExQ7NeYgK0W2S/8tFpROZlj/qRrlTw9RE1bGJLMQf/C0y3m
+         1ee5QGlvfntDnzI/z52yfJpvBufOVZS6TjZBljKNM+99hh5A7/rwHKYa8MPf7hBdsO
+         /+Kg7itGq8zOS2R4f08AQpI2U2B3vcWllMduq+7ubh/7wiiAqeMt6sOqA0SwZCmNb1
+         a+KL86e1JMWgetrNJ9LeDCKbBx7VZINmFxFkWjxq3zKmxLkXVXZVUQ3qh1R01D9dN0
+         RauTPdm6/hwgmzm61/BVFdZOh5SPuSqXnVAJC4YBypS7FXYuDzV6kpogTX9ZJXj1f2
+         VIksVt2bs1wsg==
+Date:   Mon, 4 Jan 2021 16:12:51 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Zhang Lixu <lixu.zhang@intel.com>
+cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srinivas.pandruvada@linux.intel.com, benjamin.tissoires@redhat.com
+Subject: Re: [PATCH 0/2] hid: intel-ish-hid: ipc: enable OOB support for
+ EHL
+In-Reply-To: <20201216063640.4086068-1-lixu.zhang@intel.com>
+Message-ID: <nycvar.YFH.7.76.2101041612290.13752@cbobk.fhfr.pm>
+References: <20201216063640.4086068-1-lixu.zhang@intel.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1609080931-4048864-1-git-send-email-bodefang@126.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 10:55:31PM +0800, Defang Bo wrote:
-> Similar to commmit<389305b2>,
+On Wed, 16 Dec 2020, Zhang Lixu wrote:
 
-Please use full commit reference like 389305b2aa68 ("btrfs: relocation:
-Only remove reloc rb_trees if reloc control has been initialized")
+> The EHL (Elkhart Lake) based platforms provide a OOB (Out of band)
+> service, which allows wakup device when the system is in S5 (Soft-Off
+> state). This OOB service can be enabled/disabled from BIOS settings.
+> 
+> These two patches is to enable this feature for EHL platform.
+> 
+> We have tested these patches on both ISH platforms and EHL platforms,
+> it works fine.
+> 
+> Zhang Lixu (2):
+>   hid: intel-ish-hid: ipc: finish power flow for EHL OOB
+>   hid: intel-ish-hid: ipc: Address EHL Sx resume issues
+> 
+>  drivers/hid/intel-ish-hid/ipc/hw-ish.h  |  1 +
+>  drivers/hid/intel-ish-hid/ipc/ipc.c     | 27 +++++++++++++
+>  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 54 ++++++++++++++++++++++++-
+>  3 files changed, 81 insertions(+), 1 deletion(-)
 
-> it turns out that fs_info::reloc_ctl can be NULL ,
+Srinivas, can I please get your Acked-by / Reviewed-by for this? Thanks,
 
-Please describe how the NULL can get there.
+-- 
+Jiri Kosina
+SUSE Labs
+
