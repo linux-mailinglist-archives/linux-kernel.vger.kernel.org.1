@@ -2,209 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989BB2EA7A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160192EA7B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbhAEJex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:34:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbhAEJeq (ORCPT
+        id S1728477AbhAEJfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:35:11 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:50434 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728304AbhAEJfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:34:46 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04871C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 01:34:06 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id g20so40431172ejb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 01:34:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lc40jslbH1xRRt0tOrq2I1ZmHYI3/bYLf9otRfEpUFk=;
-        b=rKpX+X0MWo5QydxMNyHcqd9s5JBAW647cOe8vtiCCX65S/9NSl0eg1QHLIt9bxoAJk
-         z3rrGpOkcPfm85NbQRhX0umHfyG1K6qdJLoIIf85eIVZVCN+Nn588np60lG1C3Ftm/+M
-         bj8DqBRCWncztjRWrU/H06CMC8lrA3FvvES8439LQGheiD3KZrYl7UVdhHyk6nUveo3Q
-         HRpUAozHBg2dO/9UTni1gaQKmTkfiURbV9eS7VOFsnjvgNMhnjihZyufzZ1FvndYzFpc
-         XC5qvyahSYwDTD0JRxw4WCWNBURBAbN+HcuoWd2Y7OuB16xxaQ/Wx3NCcgEQcFygkrIO
-         T2Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lc40jslbH1xRRt0tOrq2I1ZmHYI3/bYLf9otRfEpUFk=;
-        b=H+zzNzXkn3nhkM7qi7eQwGLqzVzNl9FZj21F5iwSajTrVgLHc80ZeEeNsQ3IkFF52D
-         4mXCny7todhvt71fDe/nPuvWTbwQm6laN21KlWZTljKuzy2dRDztpxpSAJoaYZMvoaiW
-         WsB9r6reUgrC0I5JH/6e2zGpP+NNCjyzqr9EQAUx8q68p4Alfe9/zA18mbn9KwlSSip4
-         VskDqVctRH8j2mIJzetD2rAMRB/hlpgPYGB/QlvvKlvoDUW4TkoZisix6HxcbwGC8rUT
-         /8t6+bG0APggc4LDsexHTxUYfBw0UngmZZw30n0q6wLoTszWAgE9oP+71UxlqwYEdtc9
-         wYtQ==
-X-Gm-Message-State: AOAM532Y48AEr65iGE4tOcsT/7WNtp0k1nc46F4FUwKYv5HkYjCmo+nw
-        xs6duUMjgxiyCbjCYHyInZSjFehpQ17fyoxpxsIDrbnm188=
-X-Google-Smtp-Source: ABdhPJz0s5USw1zthbkXSVgOudrPSW2c+rbE9kTkPDW2X9QGuBOTMQpJ9jn8HrLwqO5H9PAuCMzICwvXLawGabKz/Ms=
-X-Received: by 2002:a17:906:a29a:: with SMTP id i26mr69039772ejz.45.1609839244729;
- Tue, 05 Jan 2021 01:34:04 -0800 (PST)
+        Tue, 5 Jan 2021 04:35:09 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kwijS-0007eX-9w; Tue, 05 Jan 2021 09:34:26 +0000
+Subject: Re: [PATCH v2] f2fs: fix null page reference in redirty_blocks
+To:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+References: <20210105041630.1393157-1-daeho43@gmail.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <57be566b-89e2-04a1-9a8e-51e902fee96c@canonical.com>
+Date:   Tue, 5 Jan 2021 09:34:25 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210104100323.GC13207@dhcp22.suse.cz> <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
- <CAPcyv4h6mdKrwpqXfO0e_=sKjB-pY5KbP9ii+tQyFsK5bPkb=A@mail.gmail.com> <b5109800-a860-0f82-3e45-c0768cb1b038@redhat.com>
-In-Reply-To: <b5109800-a860-0f82-3e45-c0768cb1b038@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 5 Jan 2021 01:33:58 -0800
-Message-ID: <CAPcyv4jATooJTwXXGBvPrcCu57Ldt=6aBSEzaSqbwcHmczVaZg@mail.gmail.com>
-Subject: Re: uninitialized pmem struct pages
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210105041630.1393157-1-daeho43@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 1:25 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 05.01.21 06:17, Dan Williams wrote:
-> > On Mon, Jan 4, 2021 at 2:45 AM David Hildenbrand <david@redhat.com> wrote:
-> >>
-> >> On 04.01.21 11:03, Michal Hocko wrote:
-> >>> Hi,
-> >>> back in March [1] you have recommended 53cdc1cb29e8
-> >>> ("drivers/base/memory.c: indicate all memory blocks as removable") to be
-> >>> backported to stable trees and that has led to a more general discussion
-> >>> about the current state of pfn walkers wrt. uninitialized pmem struct
-> >>> pages. We haven't concluded any specific solution for that except for a
-> >>> general sentiment that pfn_to_online_page should be able to catch those.
-> >>> I might have missed any follow ups on that but I do not think we have
-> >>> landed on any actual solution in the end. Have I just missed any followups?
-> >>
-> >> Thanks for raising this issue. It's still on my list of "broken and
-> >> non-trivial to fix" things.
-> >>
-> >> So, as far as I recall, we still have the following two issues remaining:
-> >>
-> >> 1. pfn_to_online_page() false positives
-> >>
-> >> The semantics of pfn_to_online_page() were broken with sub-section
-> >> hot-add in corner cases.
-> >
-> > The motivation for that backport was for pre-subsection kernels. When
-> > onlining pmem that collides with the same section as System-RAM we may
-> > have a situation like:
-> >
-> > |--               SECTION                   -- |
-> > |-- System RAM      --        PMEM          -- |
-> > |-- pfn_valid()     --     PMEM metadata    -- |
-> >
-> > So problem 0. is just System RAM + PMEM collisions independent of
-> > sub-section support.
->
-> IIRC, you were not able to hot-add the PMEM device before sub-section
-> support (which was bad and fixed by sub-section hot-add). How was this a
-> problem before?
+On 05/01/2021 04:16, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Fixed null page reference when find_lock_page() fails in
+> redirty_blocks().
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> Reported-by: Colin Ian King <colin.king@canonical.com>
+> Fixes: 5fdb322ff2c2 ("f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE")
+> ---
+> v2: changed error value and break the loop when error occurs
+> ---
+>  fs/f2fs/file.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 9e5275716be8..d27173c24391 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -4060,8 +4060,10 @@ static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
+>  
+>  	for (i = 0; i < page_len; i++, redirty_idx++) {
+>  		page = find_lock_page(mapping, redirty_idx);
+> -		if (!page)
+> -			ret = -ENOENT;
+> +		if (!page) {
+> +			ret = -ENOMEM;
+> +			break;
+> +		}
+>  		set_page_dirty(page);
+>  		f2fs_put_page(page, 1);
+>  		f2fs_put_page(page, 0);
+> 
+Thanks, looks good to me.
 
-The details are in the subsection changelog but the tl;dr is that I
-clumsily hacked around it by throwing away PMEM, but that breaks when
-PMEM shifts around in physical address space from one boot to the
-next. The moving around is on 64MB granularity, so subsection hotplug
-lets those shifts be covered and enables smaller granularity /
-alignment support for smaller things like p2pdma mappings.
-
->
-> >
-> >>
-> >> If we have ZONE_DEVICE hot-added memory that overlaps in a section with
-> >> boot memory, this memory section will contain parts ZONE_DEVICE memory
-> >> and parts !ZONE_DEVICE memory. This can happen in sub-section
-> >> granularity (2MB IIRC). pfn_to_online_page() will succeed on ZONE_DEVICE
-> >> memory parts as the whole section is marked as online. Bad.
-> >>
-> >> One instance where this is still an issue is
-> >> mm/memory-failure.c:memory_failure() and
-> >> mm/memory-failure.c:soft_offline_page(). I thought for a while about
-> >> "fixing" these, but to me it felt like fixing pfn_to_online_page() is
-> >> actually the right approach.
-> >
-> > This is complicated by MEMORY_DEVICE_PRIVATE that I believe wants to
-> > say "yes" to pfn_to_online_page().
-> >
-> >>
-> >> But worse, before ZONE_DEVICE hot-add
-> >> 1. The whole section memmap does already exist (early sections always
-> >> have a full memmap for the whole section)
-> >> 2. The whole section memmap is initialized (although eventually with
-> >> dummy node/zone 0/0 for memory holes until that part is fixed) and might
-> >> be accessed by pfn walkers.
-> >>
-> >> So when hotadding ZONE_DEVICE we are modifying already existing and
-> >> visible memmaps. Bad.
-> >
-> > Where does the rewrite of a dummy page entry matter in practice? It
-> > would certainly be exceedingly Bad if in-use 'struct page' instances
-> > we're rewritten. You're only alleging the former, correct?
->
-> Yes, just another piece of the puzzle.
->
-> >> 2. Deferred init of ZONE_DEVICE ranges
-> >>
-> >> memmap_init_zone_device() runs after the ZONE_DEVICE zone was resized
-> >> and outside the memhp lock. I did not follow if the use of
-> >> get_dev_pagemap() actually makes sure that memmap_init_zone_device() in
-> >> pagemap_range() actually completed. I don't think it does.
-> >>
-> >>>
-> >>> Is anybody working on that?
-> >>>
-> >>
-> >> I believe Dan mentioned somewhere that he wants to see a real instance
-> >> of this producing a BUG before actually moving forward with a fix. I
-> >> might be wrong.
-> >
-> > I think I'm missing an argument for the user-visible effects of the
-> > "Bad." statements above. I think soft_offline_page() is a candidate
-> > for a local fix because mm/memory-failure.c already has a significant
-> > amount of page-type specific knowledge. So teaching it "yes" for
-> > MEMORY_DEVICE_PRIVATE-ZONE_DEVICE and "no" for other ZONE_DEVICE seems
-> > ok to me.
->
-> I am not completely against working around the issue we have in the code
-> but nobody stumbled over them. IMHO it's just error prone code and
-> handling we have here that will bite us in the long term. E.g., any pfn
-> walker/code that sticks to the current documentation of
-> pfn_to_online_page().
->
-> I am not sure it's the right thing to do for
-> MEMORY_DEVICE_PRIVATE-ZONE_DEVICE, that requires more discussion.
->
-> >> We might tackle 1. by:
->
-> [...]
-> >> d) fixed by not allowing ZONE_DEVICE and !ZONE_DEVICE within a single
-> >> section. In the worst case, don't add partially present sections that
-> >> have big holes in the beginning/end. Like, if there is a 128MB section
-> >> with 126MB of memory followed by a 2MB hole, don't add that memory to
-> >> Linux with CONFIG_ZONE_DEVICE. Might turn some memory unusable, but
-> >> well, it would be the price to pay for simplicity. Being able to hotadd
-> >> PMEM is more important than using each and every last MB of memory.
-> >
-> > The collisions that are out there in the wild are 64MB System RAM
-> > followed by 64MB of PMEM. If you're suggesting reducing System RAM
-> > that collides with PMEM that's a consideration. It can't go the other
-> > way because there are deployed configurations that have persistent
-> > data there. Reducing System RAM runs into the problem of how early
-> > does the kernel know that it's bordering ZONE_DEVICE. It's not just
-> > PMEM, it's also EFI_MEMORY_SP (Linux Soft Reserved) memory.
->
-> Yeah, obviously the first one. Being able to add+use PMEM is more
-> important than using each and every last MB of main memory.
->
-> I wonder if we can just stop adding any system RAM like
->
-> [     Memory Section    ]
-> [ RAM ] [      Hole     ]
->
-> When there could be the possibility that the hole might actually be
-> PMEM. (e.g., with CONFIG_ZONE_DEVICE and it being the last section in a
-> sequence of sections, not just a tiny hole)
-
-I like the simplicity of it... I worry that the capacity loss
-regression is easy to notice by looking at the output of free(1) from
-one kernel to the next and someone screams.
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
