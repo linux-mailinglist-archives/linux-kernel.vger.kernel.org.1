@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86E52EA9E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 490612EAA07
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729672AbhAEL0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:26:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728867AbhAEL0u (ORCPT
+        id S1729706AbhAELg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:36:29 -0500
+Received: from m15114.mail.126.com ([220.181.15.114]:37008 "EHLO
+        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727391AbhAELg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:26:50 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0756DC061574;
-        Tue,  5 Jan 2021 03:26:10 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id a12so71783013lfl.6;
-        Tue, 05 Jan 2021 03:26:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bCI7v7ANooZCULC72pLq7a1JFEmBmonJESDym+rY7Z0=;
-        b=kilbFJJ4OYIE0D+BFknpE97whwE5IBKi5Heur10Pn4D1M5BiDNIrIFgPYz7VDUf4ID
-         kT7HHoRZZgnUPi7BLC/uT6AODsEK3XmrxjGQrV+nDI5C6Wnh86Pgjq6mol0a8aB9vT2f
-         ooDNd8VF9JB7S045i7h0y0bqeoLvtlYW8vUU3ePMRT3bY1ZqvZH8RTtPmr/no9dQpgHZ
-         6E2qKw5PMO6JA4w/8BatG9+uccfLnOI76G2mEWpJsN/MsFz65oi96kYS2IQ0wJbRMSkA
-         Z5fD+uizH7ma3e171lZUYNaebVC3Y9mxQcB2ZzHolKVpnRkCio2Jsrb9tmpso4lQCzLj
-         Kr3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bCI7v7ANooZCULC72pLq7a1JFEmBmonJESDym+rY7Z0=;
-        b=c9NXrpPIQC5LCcd4XUho1AIMHtJbg1yPqkJSfKEqFdz4xI111CUVrkzAMPRk2CH6e6
-         1tfau3mUOGebpqA2wqOsjV+g+LYme7cJXRidpuvShei9+rtkILvWrdkjXEerKj6gQdfu
-         3O+xZxlquFiEhnGPdnIoB2bM1f7GTekM7mp5lnMt8r1jBfIJWPH/UNgo2xtRKzYD7XDF
-         2+1YhOtKzjiv7QHO53cmFm92hr5h5jP5Z2XX27TOJ6JNXGNrmwh0m+S1sK509RWCdcvy
-         e00Bib1rWA9BZncamvMj3broMPT+9ih6EInJ1O0JBZchetKh5cKn8SlaTwrP7MNZO/Gs
-         VYvQ==
-X-Gm-Message-State: AOAM530YuVTmM5/Bqq4Qfb6pptwSPezGUTlJF6yPh5mZ6rBavwHQaFDf
-        vq/5kgiW1NcUOT835bJtpP08HTov1f33Y/KQvDM=
-X-Google-Smtp-Source: ABdhPJz1pNvV0c53ivGzp8KpqTt+GxkWyu/+pbUtncis71sW0vKBdzFQgamfwFnjNKbapQcFu9z9QLihgXXP0eYzM5Y=
-X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr37155334lfs.529.1609845968585;
- Tue, 05 Jan 2021 03:26:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20210105104000.14545-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210105104000.14545-1-unixbhaskar@gmail.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Tue, 5 Jan 2021 22:25:57 +1100
-Message-ID: <CAGRGNgUsMPyKwv5_qQ14frXKyuudhDWZwZSXLnb8-c6Pk9f6vw@mail.gmail.com>
-Subject: Re: [PATCH] drivers: realtek: rtl8723be: Correct word presentation as
- defautly to de-faulty
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        zhengbin13@huawei.com, baijiaju1990@gmail.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 5 Jan 2021 06:36:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=15VgomEyshS/XXryYa
+        QwqIxLrVBEvq7TJjmDFxBZ2yU=; b=J8J0zIykqFObQbB2k5OBqQOuKRkj0RVYxU
+        vKnj8d+IuTficlDlbVcqF9zooJycwgUvBa/eRCo+Q6KFbC0BbMshp+ehulVofCvZ
+        bJvNiQc3XdFgou9ive4oIUbiEk+cQHhQl8AmajXO5v3kwXiLO79mfUhAttD/rFGh
+        AOQ1joNmE=
+Received: from localhost.localdomain (unknown [36.112.86.14])
+        by smtp7 (Coremail) with SMTP id DsmowACXmmoTFvRfq4zUMw--.32724S2;
+        Tue, 05 Jan 2021 15:32:37 +0800 (CST)
+From:   Defang Bo <bodefang@126.com>
+To:     airlied@linux.ie, daniel@ffwll.ch, christian.koenig@amd.com,
+        alexander.deucher@amd.com
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, Defang Bo <bodefang@126.com>
+Subject: [PATCH v2] drm/amdgpu:fix IH overflow on Cz
+Date:   Tue,  5 Jan 2021 15:32:21 +0800
+Message-Id: <1609831941-2277695-1-git-send-email-bodefang@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: DsmowACXmmoTFvRfq4zUMw--.32724S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tr15Cw4xXF4UZF48Zw18Xwb_yoW5JFyxpa
+        1Sg3s09r10yr1IyryfZ3Z7uFn8Aw4vgrWfCrsrAw12gF4jya4kWry5tayFqryUtFWSkF47
+        Kryaq3y5W34qvrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRF1vhUUUUU=
+X-Originating-IP: [36.112.86.14]
+X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbikhUR11pECIqqZgAAsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaskar,
+Similar to commit <b82175750131>("drm/amdgpu: fix IH overflow on Vega10 v2").
+When an ring buffer overflow happens the appropriate bit is set in the WPTR
+register which is also written back to memory. But clearing the bit in the
+WPTR doesn't trigger another memory writeback.
 
-On Tue, Jan 5, 2021 at 9:44 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
-> s/defautly/de-faulty/p
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c
-> index 5a7cd270575a..47886a19ed8c 100644
-> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c
-> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c
-> @@ -724,7 +724,7 @@ bool rtl8723be_is_tx_desc_closed(struct ieee80211_hw *hw,
->         u8 own = (u8)rtl8723be_get_desc(hw, entry, true, HW_DESC_OWN);
->
->         /*beacon packet will only use the first
-> -        *descriptor defautly,and the own may not
-> +        *descriptor de-faulty,and the own may not
+So what can happen is that we end up processing the buffer overflow over and
+over again because the bit is never cleared. Resulting in a random system
+lockup because of an infinite loop in an interrupt handler.
 
-Same comments here as the previous patches:
+Signed-off-by: Defang Bo <bodefang@126.com>
+---
+Changes since v1:
+- Modify the code and correct the wrong fix. 
+---
+---
+ drivers/gpu/drm/amd/amdgpu/cz_ih.c | 38 ++++++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
 
-"de-faultly" makes less sense than "defaultly". This comment needs to
-be re-written by someone who knows what's going on here.
-
-Thanks,
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/cz_ih.c b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+index 1dca0cabc326..45dd47f45fa2 100644
+--- a/drivers/gpu/drm/amd/amdgpu/cz_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+@@ -190,22 +190,32 @@ static u32 cz_ih_get_wptr(struct amdgpu_device *adev,
+ 			  struct amdgpu_ih_ring *ih)
+ {
+ 	u32 wptr, tmp;
+-
++
+ 	wptr = le32_to_cpu(*ih->wptr_cpu);
+ 
+-	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
+-		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
+-		/* When a ring buffer overflow happen start parsing interrupt
+-		 * from the last not overwritten vector (wptr + 16). Hopefully
+-		 * this should allow us to catchup.
+-		 */
+-		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
+-			wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
+-		ih->rptr = (wptr + 16) & ih->ptr_mask;
+-		tmp = RREG32(mmIH_RB_CNTL);
+-		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+-		WREG32(mmIH_RB_CNTL, tmp);
+-	}
++	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++		goto out;
++
++	wptr = RREG32(mmIH_RB_CNTL);
++
++	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++		goto out;
++
++	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
++
++	/* When a ring buffer overflow happen start parsing interrupt
++	 * from the last not overwritten vector (wptr + 16). Hopefully
++	 * this should allow us to catchup.
++	 */
++	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
++		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
++	ih->rptr = (wptr + 16) & ih->ptr_mask;
++	tmp = RREG32(mmIH_RB_CNTL);
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
++	WREG32(mmIH_RB_CNTL, tmp);
++
++
++out:
+ 	return (wptr & ih->ptr_mask);
+ }
+ 
 -- 
-Julian Calaby
+2.7.4
 
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
