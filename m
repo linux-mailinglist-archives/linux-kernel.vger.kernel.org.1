@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99C32EB1EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E152EB1F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730639AbhAESEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:04:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
+        id S1728860AbhAESFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbhAESEA (ORCPT
+        with ESMTP id S1726890AbhAESFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:04:00 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C438C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:03:19 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id 91so78887wrj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:03:19 -0800 (PST)
+        Tue, 5 Jan 2021 13:05:06 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9F8C061795
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:03:49 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id q5so491880ilc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:03:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ws0vqb3nu8teQwx1qQEsgnpEdt3w8/7o7zh9O8e6AXo=;
-        b=EbNAQMf27Cck1oTBODkRfjV6dMLs8dEI6liF5xvEMy0UnI/dF1zkkGT/X0EGT90eDQ
-         OKbjzzWKEqJazE19/4dfCurKSM6cJQn0gYeW0bDBCFDn/7WdQuxvChnFbzo8E6Yh+6mO
-         X2U1/PJOTCj8EB6J16HyqjGlHcSBSMG26DOplRaeHiNY4QqimEAt7TnWOM2qOIGdGpRG
-         TVhpmCjz8fV0UtZAzIlZ1vGa0MjZTgMlJrMooyABqdkQD5w2S1b/GRSFvreHIkq0wSKL
-         MvzIJiKF+ahX96bCcqUqOydZGNqX4YKARu+jDG7WEmqC5irBs4ERRadUeZWGCjKzO4s3
-         eNXg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Hqrt+PwCKLvidXgUzGrHqQMSJASmhipg5696ppeG5c0=;
+        b=CtCLXyNUtmtaow1eT+GTdhyEtXfzNZL9/CU7QY/upeZhPAk5e3mkRxdM5aRt8WEV84
+         +73v7eoUNrmy/Yo1f8SZ6qXMz+R7FMSXQj/tUY8Q6oqcPbSm459AF4sM+SytiopQ0o76
+         u0iGfBA2u28C3ZTCJbSXQ+PntXh6NgE/q1zQA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ws0vqb3nu8teQwx1qQEsgnpEdt3w8/7o7zh9O8e6AXo=;
-        b=XBLKI36s+wT5oJcAQughbbqSJ1AxXEIoLWEn7KqyofnEZh0azLfMM8OnYg7idqYr9x
-         l2847QWEwf6aMvnE8a71i+w/RTJTYEg0NlYNCS/Kdj6l4dNV6te5a5Z4PKtiForeRTqW
-         8+ODpOqq4uzC4YpuBxn8Z1oQQiCfjWFUjr0l9w7BbzgH8pwbaSsyyK2Yi0RHLFNfrVNG
-         VrXycUie2gTUWdaB2c2Oo+75t017wCb9/0j1X47ssgEM2HDqMXNtLNOhs7haYyp/fKvI
-         pYPSKAvYVvH84Szaa41UE4ap40RN7MS3YonCVjUJVU+buyauFAcAGGJPoMGEH29wzglB
-         ISoA==
-X-Gm-Message-State: AOAM531MsHTAEm5aEeu1nRmlo/sYo7K2KoZFR6FgDuDk61HHj5TqiwiQ
-        smkuMRdJRqXYih6F4d4mNrKGZA==
-X-Google-Smtp-Source: ABdhPJwOyRgOKRFUNsGt7WGsYJLaPhdCWGnjEn9sleYr/p15BFHvbdPo/S5K4vrhzaNDCLmb8nHxqw==
-X-Received: by 2002:adf:80d0:: with SMTP id 74mr775901wrl.110.1609869798055;
-        Tue, 05 Jan 2021 10:03:18 -0800 (PST)
-Received: from localhost ([2a01:4b00:8523:2d03:4957:71a5:7b5c:c94f])
-        by smtp.gmail.com with ESMTPSA id s20sm274550wmj.46.2021.01.05.10.03.16
+        bh=Hqrt+PwCKLvidXgUzGrHqQMSJASmhipg5696ppeG5c0=;
+        b=inOtv4m4eXHkVLibVHA7O9zLSNs28FxX5rxhOua8nAM08JnU7YIPtZODd1EDj9br6I
+         Rj8bSBSVVrq4WSKL2jkbKrS+GKS3m2k2WoBfxG1V2nKSGU9b0AQYidDCDPo/42GvoVzB
+         nklXOzqYoA3yM7mNqdHbZNTrlHl74u7U/oKJUjwA5ksERDmGVBX0O/1FMRtBj6ouOcHF
+         tWV1tl30Bmd8CK2DPtF1l1p1I0Z2W9zayEj/nBXz8gkNRfJIUTICQHCJSxP+tWFu4xqa
+         nfnBR8zsy5mIydEA6vxJDXiXJ4ACVHIhg4M5WXlIdI5IOpHK8ZA4tMzog9mNxuX0X208
+         XbKA==
+X-Gm-Message-State: AOAM533udv0Y3Cxsx55C/nVZyww2E77GrpxMZVTgXQIwympmnfPQLdt4
+        aMmEBAkV7FS2IfhWG48Qcnj5vA==
+X-Google-Smtp-Source: ABdhPJy6UW68+zLAd4n8vMeMjV1rLdBufYPU4lfZyLPJ7J5lwkXDbUT3YAmfgIvt27sS8hfw7AsFvw==
+X-Received: by 2002:a92:c561:: with SMTP id b1mr760977ilj.65.1609869829152;
+        Tue, 05 Jan 2021 10:03:49 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id m8sm35946ild.18.2021.01.05.10.03.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 10:03:16 -0800 (PST)
-From:   David Brazdil <dbrazdil@google.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH] arm64: Remove unused variable in arch_show_interrupts
-Date:   Tue,  5 Jan 2021 18:03:14 +0000
-Message-Id: <20210105180314.64613-1-dbrazdil@google.com>
-X-Mailer: git-send-email 2.30.0
+        Tue, 05 Jan 2021 10:03:48 -0800 (PST)
+Subject: Re: [PATCH] cpuidle_set accepts alpha numeric values for idle-set
+ operation
+To:     Brahadambal Srinivasan <latha@linux.vnet.ibm.com>,
+        shuah@kernel.org, trenn@suse.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210105122452.8687-1-latha@linux.vnet.ibm.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <e2234e38-e18e-e0d3-1a2a-7c8b136d8817@linuxfoundation.org>
+Date:   Tue, 5 Jan 2021 11:03:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210105122452.8687-1-latha@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5089bc51f81f ("arm64/smp: Use irq_desc_kstat_cpu() in
-arch_show_interrupts()") removed the only user of variable `irq`.
-Remove the unused variable.
+On 1/5/21 5:24 AM, Brahadambal Srinivasan wrote:
+> For both the d and e options in cpuidle_set, an atoi() conversion is
+> done without checking if the input argument is all numeric. So, an
+> atoi conversion is done on any character provided as input and the
+> CPU idle_set operation continues with that integer value, which may
+> not be what is intended or entirely correct.
+> 
+> A similar check is present for cpufreq-set already.
+> 
+> This patch adds a check to see that the idle_set value is all numeric
+> before doing a string-to-int conversion.
+> 
+> Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
+> ---
+>   tools/power/cpupower/utils/cpuidle-set.c | 39 +++++++++++++++++++++---
+>   1 file changed, 34 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/power/cpupower/utils/cpuidle-set.c b/tools/power/cpupower/utils/cpuidle-set.c
+> index 46158928f9ad..b3dec48e7141 100644
+> --- a/tools/power/cpupower/utils/cpuidle-set.c
+> +++ b/tools/power/cpupower/utils/cpuidle-set.c
+> @@ -21,6 +21,19 @@ static struct option info_opts[] = {
+>        { },
+>   };
+>   
+> +int is_number(char *arg)
+> +{
+> +	size_t len, i = 0;
+> +
+> +	len = strlen(arg);
+> +
+> +	for (i = 0; i < len; i++) {
+> +		if (!isdigit(arg[i]))
+> +			return 0;
+> +	}
+> +
+> +	return 1;
+> +}
+>   
 
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/kernel/smp.c | 1 -
- 1 file changed, 1 deletion(-)
+Any reason why you can't use isdigit()? Please see isdigit()
+usages examples in other tools and cpupower itself.
 
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 6bc3a3698c3d..376343d6f13a 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -807,7 +807,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
- 	unsigned int cpu, i;
- 
- 	for (i = 0; i < NR_IPI; i++) {
--		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
- 		seq_printf(p, "%*s%u:%s", prec - 1, "IPI", i,
- 			   prec >= 4 ? " " : "");
- 		for_each_online_cpu(cpu)
--- 
-2.29.2.729.g45daf8777d-goog
+thanks,
+-- Shuah
 
+thanks,
+-- Shuah
