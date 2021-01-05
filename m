@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39792EAB7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392E82EAB82
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730508AbhAENFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:05:07 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:35238 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbhAENFG (ORCPT
+        id S1730533AbhAENFT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Jan 2021 08:05:19 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:43373 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729829AbhAENFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:05:06 -0500
-Received: by mail-wr1-f51.google.com with SMTP id r3so36138853wrt.2;
-        Tue, 05 Jan 2021 05:04:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2a70v1CRlz5jGi+NyBGwYogijZjvjrwtQZGv4GAwSCM=;
-        b=DIvE9rKwJg0BhJKRfSPNevyEZuiMt2x3R8OKCLb2WBwDaHiJDlf0EjCVgzzid2SObd
-         nd93c2ORHvVHr+EgCpYwoD59AuS2Drapyd6H9lgWNW08dJoJda89L4XEevpizUVIH0Yw
-         XJKbLO3pypNdu0X47mmced840ZalEjqgCmBkOPJ3Bs9hPwUSpyInzA56h9Sr9UlF+8gg
-         5XkcchvEYbm89uL4E4cdoHKYJXwANYLkkFv8Ru63B0Itnx3itei06uRXrODmR/71NDmr
-         S4OoT+XZGjWJ9GL8fH/gpM5Lx9vBnOOZlz7ELTCtHXd7KtOnoPXHBGIj28FBAtz56VTS
-         5J7Q==
-X-Gm-Message-State: AOAM532midRTWL9BrgWuMV7BBY7PezPO+XwWeajZ8f92xnsYiIpJcSe2
-        DQRIk88GJon8hBV3Jy8tIX4=
-X-Google-Smtp-Source: ABdhPJylito1I3/9s4izujRHhJFeAzKUTu5cEdHXRWu9RDZ+H84YBiQqtPjE6BwO+t+9ExSYnbZQfw==
-X-Received: by 2002:a5d:4104:: with SMTP id l4mr86376822wrp.340.1609851864953;
-        Tue, 05 Jan 2021 05:04:24 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s13sm4041967wmj.28.2021.01.05.05.04.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 05:04:24 -0800 (PST)
-Date:   Tue, 5 Jan 2021 13:04:23 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-hyperv@vger.kernel.org,
-        mikelley@microsoft.com, wei.liu@kernel.org, vkuznets@redhat.com,
-        jwiesner@suse.com, ohering@suse.com, linux-kernel@vger.kernel.org,
-        sthemmin@microsoft.com, haiyangz@microsoft.com, kys@microsoft.com
-Subject: Re: [PATCH v2] x86/hyperv: Fix kexec panic/hang issues
-Message-ID: <20210105130423.nvxpsdvgn5zier4v@liuwe-devbox-debian-v2>
-References: <20201222065541.24312-1-decui@microsoft.com>
+        Tue, 5 Jan 2021 08:05:17 -0500
+Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr [90.89.98.255])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 82D77240008;
+        Tue,  5 Jan 2021 13:04:32 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 14:04:31 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     linux-mtd@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        richard@nod.at, vigneshr@ti.com
+Subject: Re: [PATCH 1/1] mtd: spinand: add support for Foresee FS35ND01G
+Message-ID: <20210105140431.185e8ce1@xps13>
+In-Reply-To: <CAFr9PXmPEQ2poQUTtaBH4CZ-S+sJjoUjJ5D_qA5aHZj7AASg7w@mail.gmail.com>
+References: <20201229055059.2255021-1-daniel@0x0f.com>
+        <20201229055059.2255021-2-daniel@0x0f.com>
+        <20210104151746.21cdde24@xps13>
+        <CAFr9PXmPEQ2poQUTtaBH4CZ-S+sJjoUjJ5D_qA5aHZj7AASg7w@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222065541.24312-1-decui@microsoft.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 10:55:41PM -0800, Dexuan Cui wrote:
-> Currently the kexec kernel can panic or hang due to 2 causes:
-> 
-> 1) hv_cpu_die() is not called upon kexec, so the hypervisor corrupts the
-> old VP Assist Pages when the kexec kernel runs. The same issue is fixed
-> for hibernation in commit 421f090c819d ("x86/hyperv: Suspend/resume the
-> VP assist page for hibernation"). Now fix it for kexec.
-> 
-> 2) hyperv_cleanup() is called too early. In the kexec path, the other CPUs
-> are stopped in hv_machine_shutdown() -> native_machine_shutdown(), so
-> between hv_kexec_handler() and native_machine_shutdown(), the other CPUs
-> can still try to access the hypercall page and cause panic. The workaround
-> "hv_hypercall_pg = NULL;" in hyperv_cleanup() is unreliabe. Move
-> hyperv_cleanup() to a better place.
-> 
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Hi Daniel,
 
-The code looks a bit intrusive. On the other hand, this does sound like
-something needs backporting for older stable kernels.
+Daniel Palmer <daniel@0x0f.com> wrote on Tue, 5 Jan 2021 21:18:21 +0900:
 
-On a more practical note, I need to decide whether to take it via
-hyperv-fixes or hyperv-next. What do you think?
+> Hi Miquel,
+> 
+> On Mon, 4 Jan 2021 at 23:17, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > Perhaps giving the link of the datasheet here makes sense.  
+> 
+> Noted. I'll put that into v2.
+> 
+> > > +#define SPINAND_MFR_LONGSYS          0xcd  
+> >
+> > Nitpick: I personally prefer uppercase hex numbers.
+> >  
+> 
+> Noted.
+> 
+> > > +                  NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+> > > +                  NAND_ECCREQ(4, 512),
+> > > +                  SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> > > +                                           &write_cache_variants,
+> > > +                                           &update_cache_variants),  
+> >
+> > This device probably supports more variants (especially dual/quad
+> > ones) but I guess it's not a problem to not have them here right now.  
+> 
+> Right now I can't really test dual or quad because my SPI driver
+> doesn't know to do dual or quad io.
+> I plan to add those in once I can validate they work.
+> 
+> > > +                  SPINAND_HAS_QE_BIT,
+> > > +                  SPINAND_ECCINFO(NULL,
+> > > +                                  NULL)),  
+> >
+> > You should define the ->ecc and ->free hooks of the
+> > mtd_ooblayout_ops structure and point to it here. It defines the free
+> > OOB bytes and bytes used by the on-die ECC engine. You should find this
+> > in the datasheet. You may look at other manufacturer drivers for
+> > examples of how it should be implemented. It is the way to tell the
+> > upper layers that eg. "byte 2 to 17 are ECC bytes, 18 until the end are
+> > free to use".  
+> 
+> Ok I'll add those in. Is there a way I can test that my implementation is right?
+> I.e. is writing something, reading it back and checking if the data is
+> correct a good enough test here?
+> I don't really want to make it look like this flash is supported and
+> break someone's data. :)
 
-Wei.
+You may try to use flash_erase/nandwrite/nanddump from the mtd-utils
+package. You may first use a dummy functions and declare the entire
+zone free (except for the bad block marker at the beginning).
+
+Then, you may write the entire OOB area in regular mode then read it in
+raw mode (-n). Sometimes the ECC bytes are not visible, in this case it
+may be worth trying writing the OOB area with known data and read it
+back and see what you get. But these information probably are in the
+datasheet.
+
+Good luck,
+Miquèl
