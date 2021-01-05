@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D2B2EA307
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D08322EA30D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbhAEBsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 20:48:50 -0500
-Received: from mail-pg1-f170.google.com ([209.85.215.170]:37962 "EHLO
-        mail-pg1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727511AbhAEBsu (ORCPT
+        id S1726734AbhAEBxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 20:53:19 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:53104 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726168AbhAEBxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 20:48:50 -0500
-Received: by mail-pg1-f170.google.com with SMTP id e2so20276664pgi.5;
-        Mon, 04 Jan 2021 17:48:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iUVK5navqb95pupmgd9YzX87VeG3u/6V7I7N2PejYtg=;
-        b=onWKYqFZHqCjJ6rKdtU+eY/1dWf79scDQwOR5rBBKS5RtgjthOjkPDnZx1NsyD2AeH
-         0MsAXbmNj6N3vUvCT+xnDEoSCLtn4YqXhduPJetgMnt+UECp74vn3l3kWGP9ylBzDsOg
-         S12gbmHit5E9Aa2FAuWP1HUOXfQAt+8FtQjodjHvbkjobAEovEPVt3UiMm0R5nptrH3h
-         pzGgE98S/syFlmNMk5hZzanCvAE8Z3br7pj4nBwDJI25RDE/aTZJ86KCPl+0agtXhNWS
-         Mo3JhZUHebxIAet4Q9zn8MRqXI/8gjn4+T5TuaeHnPIeTodwq0/Jw/OQ4E4UH0pZJUEJ
-         xgtA==
-X-Gm-Message-State: AOAM532UyNf5rALmy1E+lUEWnZZFUJlUx/SqE6GuufJpw/m+QLIC8zm4
-        rO326kHeKI79Q4PNk8G2lVI=
-X-Google-Smtp-Source: ABdhPJwzgRX+RGhlnQaIjfArrJuHlMKAMOxe4eTbuOyxNFW7vMhZmvmjR2h5swJDzjjpRU13PM4MEw==
-X-Received: by 2002:a63:5d7:: with SMTP id 206mr75322598pgf.384.1609811289105;
-        Mon, 04 Jan 2021 17:48:09 -0800 (PST)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id i7sm56827951pfc.50.2021.01.04.17.48.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 17:48:08 -0800 (PST)
-Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Chris Boot <bootc@boo.tc>, linuxppc-dev@lists.ozlabs.org,
-        target-devel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Nicholas Bellinger <nab@linux-iscsi.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>
-References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com>
- <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet>
- <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc>
- <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
- <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc>
- <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet>
- <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org>
- <alpine.LNX.2.22.394.2006171104540.11@nippy.intranet>
- <e3b5ce6a-0152-01b8-89d2-80bcdb9c1c57@acm.org>
- <alpine.LNX.2.23.453.2101050840010.6@nippy.intranet>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <9103b316-8848-2350-7c0d-b742c8d8c83c@acm.org>
-Date:   Mon, 4 Jan 2021 17:48:06 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 4 Jan 2021 20:53:18 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1051mppb106849;
+        Tue, 5 Jan 2021 01:52:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=wP2/tgNY1y3yvr51jY9l12/nWUPlGU24K0xLRpyonrU=;
+ b=y2qjuP84xbrYtpM84TJRojjql/GC8LmkVGAkzEXLU5ANIxe3wpq0EMbowsRfx4nENzvB
+ XY4I8AtbPYNm7RIa5WDhXqLBRElkpxm4UZxkLZJqZcJU+Ei86BJ7EqLW2hZeRNL1ZIfQ
+ stvxIeD+uQKzk/p2WsUPl9dOPJ3PsVgMjjfRdg5hdqbuKvf4jMlWfyyPAn2ihAWbtg+B
+ RLWDscFMTG1mjs1r3v/QCF5a7O9bW8BSo6/DeqCqS/LX8rCsLlOnGJODM3W8qtWwO+CD
+ eNpTDJ6iFr59lxug37Y2MAmgLYOTY1bXfP+9+UBCv3J/PCyMlKoyEUhrMfPIMKqIRRc7 1w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 35tgskpujb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 05 Jan 2021 01:52:24 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1051oNrA059571;
+        Tue, 5 Jan 2021 01:50:23 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 35v4rauevc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Jan 2021 01:50:23 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1051oBGL032101;
+        Tue, 5 Jan 2021 01:50:11 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 05 Jan 2021 01:50:11 +0000
+Subject: Re: [PATCH 6/6] mm: hugetlb: remove VM_BUG_ON_PAGE from
+ page_huge_active
+To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
+Cc:     hillf.zj@alibaba-inc.com, n-horiguchi@ah.jp.nec.com,
+        ak@linux.intel.com, yongjun_wei@trendmicro.com.cn, mhocko@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210104065843.5658-1-songmuchun@bytedance.com>
+ <20210104065843.5658-6-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <370dff8a-c26f-a585-46c5-9c0282772fb9@oracle.com>
+Date:   Mon, 4 Jan 2021 17:50:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.23.453.2101050840010.6@nippy.intranet>
+In-Reply-To: <20210104065843.5658-6-songmuchun@bytedance.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 bulkscore=0
+ suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101050008
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101050008
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/4/21 2:50 PM, Finn Thain wrote:
-> On Mon, 4 Jan 2021, Bart Van Assche wrote:
->> Additionally, there is a good alternative available for the sbp driver. 
->> Every system I know of that is equipped with a Firewire port also has an 
->> Ethernet port. So users who want to provide SCSI target functionality on 
->> such systems can use any SCSI transport protocol that is compatible with 
->> Ethernet (iSCSI, iSER over soft-RoCE, SRP over soft-RoCE, ...).
+On 1/3/21 10:58 PM, Muchun Song wrote:
+> The page_huge_active() can be called from scan_movable_pages() which
+> do not hold a reference count to the HugeTLB page. So when we call
+> page_huge_active() from scan_movable_pages(), the HugeTLB page can
+> be freed parallel. Then we will trigger a BUG_ON which is in the
+> page_huge_active() when CONFIG_DEBUG_VM is enabled. Just remove the
+> VM_BUG_ON_PAGE.
 > 
-> Ethernet is not always an alternative. That was already discussed in this 
-> thread. But let's assume for a moment that you can migrate any and all 
-> users of this driver over to an ethernet driver.
-> 
-> Why would the maintainers of that Ethernet driver and its API accept that 
-> plan, if adding users would extend their maintenance and testing 
-> obligations? Do you think those maintainers should pay the "kind of tax 
-> that all developers/users pay to all developers/users?"
+> Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/hugetlb.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-Hi Finn,
+Thanks!
 
-I cannot speak in the name of the iSCSI over TCP/IP or iSER driver
-maintainers. But since I maintain the SRP initiator and target kernel
-drivers myself, I can state that I would be happy to help SBP target users
-(if that driver has any users today) to switch from SCSI over Firewire to
-SCSI over SRP over RoCE or even NVMEoF over TCP.
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Thanks,
-
-Bart.
+-- 
+Mike Kravetz
