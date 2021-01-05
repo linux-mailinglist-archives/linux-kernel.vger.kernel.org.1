@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7F62EAF5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633232EAF63
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728983AbhAEPtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:49:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727992AbhAEPtF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:49:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 856B72070C;
-        Tue,  5 Jan 2021 15:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609861704;
-        bh=exjbVXJp44u+pVE6fQ5+LZ7JcUb4ur3YJ8VVpBtZA/E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gMRuCgsYekpNaoOTme7BOK9BV4pd7gsOFdyDiEVCa4L97sPaGG7c5xNcmISFOhh18
-         7WIEBCovZf9nMpVrKZafXj1Ch/Sd28l5gh/6wm4lpx5UIFhpicBXqmlG0v4GLpgAU2
-         zBoYOYkU8MfArhPNSyUt9B8Lfz78obrgmu5D9AHJi//KPeUIwkRm+xCaf9y0cceDrU
-         722lR8FPtXsRzLGu42WosALrUJO8pUaSBrtXM3mvtsHg6ERA/VLS06N9864Yn50r3K
-         ZZfLaM9sEJR+fSgby2mq9c6DgYi+khhvHYwdu1mUROSxvVwG5L+nI8JDQT2XJ5kJD2
-         Z9Q1LEZyyU+dg==
-Date:   Tue, 5 Jan 2021 15:47:56 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20210105154756.GF4487@sirena.org.uk>
-References: <20201218180310.GD5333@sirena.org.uk>
- <20201218184150.GY552508@nvidia.com>
- <20201218203211.GE5333@sirena.org.uk>
- <20201218205856.GZ552508@nvidia.com>
- <20201221185140.GD4521@sirena.org.uk>
- <20210104180831.GD552508@nvidia.com>
- <20210104211930.GI5645@sirena.org.uk>
- <20210105001341.GL552508@nvidia.com>
- <20210105134256.GA4487@sirena.org.uk>
- <20210105143627.GT552508@nvidia.com>
+        id S1729094AbhAEPtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:49:46 -0500
+Received: from mx-rz-3.rrze.uni-erlangen.de ([131.188.11.22]:51829 "EHLO
+        mx-rz-3.rrze.uni-erlangen.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728552AbhAEPtp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:49:45 -0500
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4D9H3h57vFz1xwK;
+        Tue,  5 Jan 2021 16:49:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2013;
+        t=1609861744; bh=SzSkb+YI+0MEGWompIIpTh635rOo+N38ZgyeyCSpX6Q=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From:To:CC:
+         Subject;
+        b=f9sXQTZYHiirDMJxGQd7nhMFtGAUCosJmagFrqyXuXqp6r23cBmGGIR5eIpFgxODR
+         Qm9L9bcIQbTuBc9EM/LCDSIh+py7mY7wANxCrYA9Zp1sS1XpxebDTTubHHgLL0HVxy
+         1BL0cuDqNpcVGbYDBeHiVnn5PmQ/BV1tNsIq/lpaGJCeuu1QWXLYU9GINwoPhJx3wS
+         FLHbHtv0ZfGcPe6UYUSM//K/JtwQu56jm0Y2TOD1ueML/ugutSzwy01L3+gWM0ySvC
+         V1tgxsrZes5RtZ+WToWYxBdh8KkJ/+SMUmUdbUd7Pw5YDpOsegGWlj0kaPuMNzlsPv
+         Lg4bvHMrGhqHA==
+X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 172.17.10.69
+Received: from [10.21.2.135] (rat69.ratnet.stw.uni-erlangen.de [172.17.10.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: U2FsdGVkX1/QfEQaj80QvMx6fpdX/07ImsnvYB2nMfg=)
+        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4D9H3f3DJrz1xxy;
+        Tue,  5 Jan 2021 16:49:02 +0100 (CET)
+Subject: Re: [PATCH v3 3/5] checkpatch: kconfig: enforce help text indentation
+To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
+Cc:     apw@canonical.com, akpm@linux-foundation.org,
+        johannes.czekay@fau.de, linux-kernel@i4.cs.fau.de
+References: <20201226140511.662368-1-nicolai.fischer@fau.de>
+ <20210103075015.23946-1-nicolai.fischer@fau.de>
+ <20210103075015.23946-4-nicolai.fischer@fau.de>
+ <0e8754d14cb5624704159ba85b18f8a6bb703b27.camel@perches.com>
+ <5f01770454d163605406265b1bf316e0452753cf.camel@perches.com>
+From:   Nicolai Fischer <nicolai.fischer@fau.de>
+Message-ID: <13db326d-0f63-402e-b475-8f3b2ceece13@fau.de>
+Date:   Tue, 5 Jan 2021 16:49:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Y1L3PTX8QE8cb2T+"
-Content-Disposition: inline
-In-Reply-To: <20210105143627.GT552508@nvidia.com>
-X-Cookie: I'm ANN LANDERS!!  I can SHOPLIFT!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5f01770454d163605406265b1bf316e0452753cf.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Y1L3PTX8QE8cb2T+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Jan 05, 2021 at 10:36:27AM -0400, Jason Gunthorpe wrote:
-> On Tue, Jan 05, 2021 at 01:42:56PM +0000, Mark Brown wrote:
+On Tue 05.01.21 09:57, Joe Perches wrote:
+> On Mon, 2021-01-04 at 14:09 -0800, Joe Perches wrote:
+>> On Sun, 2021-01-03 at 08:50 +0100, Nicolai Fischer wrote:
+>>> Adds a new warning in case the indentation level of the
+>>> first line of a Kconfig help message is not at least two spaces
+>>> higher than the keyword itself.
+>>> Blank lines between the message and the help keyword
+>>> are ignored.
+>>>
+>>> Co-developed-by: Johannes Czekay <johannes.czekay@fau.de>
+>>> Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
+>>> Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
+>>> ---
+>>>
+>>> Now matches indentation of two or more spaces, instead of exactly two.
+>>
+>> No, this should match exactly 2 and warn on any other use.
+> 
+> To clarify, only the first line after the help keyword needs to
+> have a 2 space indent more than the help keyword and the help
+> block may start with Kconfig keywords.
+>> Subsequent help block lines may have more than 2 chars.
 
-> > You're missing the point there.  I2C is enumerated by firmware in
-> > exactly the same way as the platform bus is, it's not discoverable from
-> > the hardware (and similarly for a bunch of other buses).  If we were to
+Okay, thank you for the clarification.
 
-> No, I understand how I2C works and I think it is fine as is because
-> the enumeration outcome is all standard. You always end up with a
-> stable I2C device address (the name) and you always end up with the
-> I2C programming API. So it doesn't matter how I2C gets enumerated, it
-> is always an I2C device.
+> 
+> The help block line count should end when the indent is less than
+> the help keyword indent and is a non-blank line.
 
-I don't follow this logic at all, sorry - whatever the platonic ideal of
-what a platform device actually turns out to be when we get down to
-using the hardware it's the same hardware which we interact with in the
-same way no matter how we figured out that it was present.
+We could do something like this
 
---Y1L3PTX8QE8cb2T+
-Content-Type: application/pgp-signature; name="signature.asc"
+  if (defined $help_indent) {
+    $lines[$ln - 1] =~ /^\+(\s*)\S+/;
+	if (length($1) < length($help_indent)) {
+	  is_end = 1; last;
+  }
 
------BEGIN PGP SIGNATURE-----
+as an extra patch after patch 3.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/0iisACgkQJNaLcl1U
-h9BB8wf+Nvnu4y6NJYvpzLoo2IgcymvT/prWQ1KEuyqHcAvdeu1xjdLu9OAfjsoy
-pMF/Jm/JOZ0IFRHxXoUZFJV9xvCMn872QTO0DcCPdR+fM5h77AYQK8rgtimD/Ub8
-EFDtt/K2ISvp4cA+YV9ERnZwi+LGpbUY9r5D9KYUJP4U+qJO1MgMq6YfXqrB2shL
-l1ZUB5CF1y5gsuHe4oIT7h510NcjGaOhz8heNjXlfVM2w4gyZjgXvitT9uIxmIzC
-TkqwF419JQgTFrNq6BsGB/19WH6AyMEokj987mDVEmeOJsvmZMRtExB4bL0UfgD/
-PA6KL84AFXMSXgjzqeapAd8MOcTBnw==
-=jQX1
------END PGP SIGNATURE-----
+Please clarify whether we should match for a smaller indent than the help
+keyword or the first non-blank line after the keyword.
 
---Y1L3PTX8QE8cb2T+--
+
+> 
+> This should be valid:
+> 
+> 	help
+> 	  line 1
+> 	    -- reason 1
+> 	    -- reason 2
+> 	       continuation
+> 	    -- reason 3
+> 
+> But this should warn only on line 1:
+> 
+> 	help
+> 	   line 1 has a 3 space indent
+> 	   -- reason 1
+> 	   -- reason 2
+> 	       continuation
+> 	   -- reason 3
+> 
+> 
+
+
