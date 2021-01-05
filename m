@@ -2,69 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FDE2EB245
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE592EB247
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730680AbhAESNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:13:24 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:45797 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727989AbhAESNY (ORCPT
+        id S1728005AbhAESOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:14:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727887AbhAESOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:13:24 -0500
-Received: by mail-oi1-f179.google.com with SMTP id f132so452814oib.12;
-        Tue, 05 Jan 2021 10:13:08 -0800 (PST)
+        Tue, 5 Jan 2021 13:14:04 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79F8C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:13:23 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id q25so527260otn.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:13:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GxkJo5g4V4czIVLT4j/kAOkJxRGEcQTcKpmMI8mFQbU=;
+        b=S1KTQA0hFGQnlkBt6vPEdxNuehUu3XeZgcYJmw5IVzuvvVi3rZIayqrqbki6LTknon
+         y7c6NGcqfYuX6D4zzOzO5fyVgqpiG/JgEZyY2p0p2ZaWzwO3aqVH7EJbn1mlVPQkp3Zq
+         Xi5k7qgxSHXAb6K0+Tyb1Vz6tCvCQwW87UCUs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G8/iSpkWTqT0hqWEMMWaDftZRaKY61rN9Q3XB1gDQ04=;
-        b=gzK4NEHOBqOfyn7PFZWP5PxbvONpyY2DzKyXBMxu0s3J4BCO3AVkOX/sqSabJcpj0S
-         kedhCaWhtOQnZz4ARYSu6nJBuFMuWt9ElBGyYbUQdGhs4sfuc8H3yHtzAYpXt9pwqW/E
-         4oZAxOzHd6G/WYA+0+XqO1Rf7+EPOJ+Lhvv9+CtWzw0OORkA+dbyILUB43BYqF/UX+l6
-         0IUUmwsSzFV/qqjwKHq4Sgf24lPXQdbyzm23+4/rNWHNwo9oir360IxytydROd+A4u/3
-         JTWY+4Al+PUPclaA9cIbdSkkhfLFKmdIXVemnAS+yzXIr3No8bh1AS7+8CseFBc4RVRg
-         R0Hw==
-X-Gm-Message-State: AOAM533EgpjnFXMCjl9xyihgNwSOvmFRpPMdmh7x/TWliW/PsFXdzk0D
-        AtWbIw4zaTlQZmpJslQAy4Wl3agdAvqK3dGbqf4=
-X-Google-Smtp-Source: ABdhPJzFa0+x63nGw/fV4bz/r5gujqFM4sa5vx0VFFsmqeu3eHSppNCbCNiMIVnO+RaeLc2RRRURz1JxzYpSt1st6VU=
-X-Received: by 2002:aca:ec09:: with SMTP id k9mr559858oih.153.1609870363113;
- Tue, 05 Jan 2021 10:12:43 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GxkJo5g4V4czIVLT4j/kAOkJxRGEcQTcKpmMI8mFQbU=;
+        b=M2SIXYXMGkPcLWCm2BSDmnWI3lM4QniLu3CGQXfoAFG258iVfIIFyCZqU//zfFfGej
+         9QR7Q6W47LohKIt+VxERhnAjo7BJ85/j2xj6dWpq7zrz1xSJJeIptLSfr+Ojq81QX0u/
+         bfRLquMzK0+4tJPi6+y24eoIFF5WEuvOvYa2wyaJTqDiYCgRHAszK4RtoPIOlTky4JX7
+         YKrlitJkN1IYLJQ4FJXkkLiZD/sxWeicN/Y1nSU+y326k9AwRx0rtM1XOzRU1Sxg8PSh
+         sdNTTQ9en2PIOtm0APFa+pVQOUzceQw1Uv5cGny5K6uZIZwads+MVXlSDFeczPnmq4h8
+         CwZg==
+X-Gm-Message-State: AOAM532DAeVRO8G3V4GN3GbUWZpoWw6vlQ0wYbwSJ7kp6S8lsMIReqqJ
+        pwEovH7qLxcm2oufaXSP/oJEqKHHlhKDJw==
+X-Google-Smtp-Source: ABdhPJyJOPa2iuR/DDqycjJ6gFVcvIOxDc6bpCNHPBbNd35njGXSiYkI1RHMAJWfHibjadg1BAhngw==
+X-Received: by 2002:a05:6830:403a:: with SMTP id i26mr511468ots.111.1609870403194;
+        Tue, 05 Jan 2021 10:13:23 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n16sm20932oop.9.2021.01.05.10.13.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 10:13:22 -0800 (PST)
+Subject: Re: [PATCH] cpuidle_set accepts alpha numeric values for idle-set
+ operation
+To:     Brahadambal Srinivasan <latha@linux.vnet.ibm.com>,
+        shuah@kernel.org, trenn@suse.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210105122452.8687-1-latha@linux.vnet.ibm.com>
+ <e2234e38-e18e-e0d3-1a2a-7c8b136d8817@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <b6060801-9477-a61b-abb5-b6eecf5940c9@linuxfoundation.org>
+Date:   Tue, 5 Jan 2021 11:13:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201228112715.14947-1-wsa+renesas@sang-engineering.com> <20201228112715.14947-3-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20201228112715.14947-3-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Jan 2021 19:12:32 +0100
-Message-ID: <CAMuHMdVzQVBvsUhpZF5A9qoijA=thVPq4tBiRnAVyFrX2aD+5w@mail.gmail.com>
-Subject: Re: [PATCH 2/6] arm64: dts: renesas: falcon: add SCIF0 nodes
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e2234e38-e18e-e0d3-1a2a-7c8b136d8817@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 12:27 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> SCIF0 has been enabled by the firmware, so it worked already. Still, add
-> the proper nodes to make it work in any case.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On 1/5/21 11:03 AM, Shuah Khan wrote:
+> On 1/5/21 5:24 AM, Brahadambal Srinivasan wrote:
+>> For both the d and e options in cpuidle_set, an atoi() conversion is
+>> done without checking if the input argument is all numeric. So, an
+>> atoi conversion is done on any character provided as input and the
+>> CPU idle_set operation continues with that integer value, which may
+>> not be what is intended or entirely correct.
+>>
+>> A similar check is present for cpufreq-set already.
+>>
+>> This patch adds a check to see that the idle_set value is all numeric
+>> before doing a string-to-int conversion.
+>>
+>> Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
+>> ---
+>>   tools/power/cpupower/utils/cpuidle-set.c | 39 +++++++++++++++++++++---
+>>   1 file changed, 34 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/tools/power/cpupower/utils/cpuidle-set.c 
+>> b/tools/power/cpupower/utils/cpuidle-set.c
+>> index 46158928f9ad..b3dec48e7141 100644
+>> --- a/tools/power/cpupower/utils/cpuidle-set.c
+>> +++ b/tools/power/cpupower/utils/cpuidle-set.c
+>> @@ -21,6 +21,19 @@ static struct option info_opts[] = {
+>>        { },
+>>   };
+>> +int is_number(char *arg)
+>> +{
+>> +    size_t len, i = 0;
+>> +
+>> +    len = strlen(arg);
+>> +
+>> +    for (i = 0; i < len; i++) {
+>> +        if (!isdigit(arg[i]))
+>> +            return 0;
+>> +    }
+>> +
+>> +    return 1;
+>> +}
+> 
+> Any reason why you can't use isdigit()? Please see isdigit()
+> usages examples in other tools and cpupower itself.
+> 
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Another thing. Please add "cpupower:" to identify what you are
+changing clearly.
 
-Gr{oetje,eeting}s,
+thanks,
+-- Shuah
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
