@@ -2,306 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99202EAE2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5864A2EAE33
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727895AbhAEPYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:24:42 -0500
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:42724 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbhAEPYl (ORCPT
+        id S1727489AbhAEP0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:26:06 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:34903 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbhAEP0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:24:41 -0500
-Received: by mail-lf1-f47.google.com with SMTP id b26so73478453lff.9;
-        Tue, 05 Jan 2021 07:24:23 -0800 (PST)
+        Tue, 5 Jan 2021 10:26:06 -0500
+Received: by mail-il1-f198.google.com with SMTP id p6so144291ilb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 07:25:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=EvIUlmcUi1h94ah6Wo1CJiYpyfNqQPjJ7OiVHY9liGE=;
-        b=L06daQqSdc0gvheBTkQrZGumX3+Wp9CsddR1+iljDg2oBmt7urClYa+Rfdh0dJQW/Q
-         Op4BtbMKMxWypvRm0qdq7Lq6nqBS04JZmGwPtBc863afH87TTVe6kjcR1gt9s5PYqiX4
-         rPoAi1oJMPF/q9EVSfnn9qA0U3XCvI+0ib6xaxQV3q64S/L5CvfTHkK/J0F+QYCdZPTG
-         tRgpFslLT9rE6pnWBj/aY+ZK4gJverO8daHl82+AWKqasNeHf39v0fHscREdw10Rirgy
-         LbPCQFZwDwiPnUsSvPpdRd7g865T5eU+xuU55VuqhuNYowyNRo5D1UPjfcp89OW7sgRP
-         VFGg==
-X-Gm-Message-State: AOAM530ZOOolZUEZHD8XQt98/XXBsIPSfJCgWChOh9muPBQwnhX/uvwA
-        Hw/sr1lhI+J1/hlQ7nLF/OY=
-X-Google-Smtp-Source: ABdhPJwld5rB84yii0oFf1F1xB9W8smbQGPEzMwTYcujATjxpY/kbO7mO8kGlxvLXgYTgjLtRwXMqw==
-X-Received: by 2002:a19:3f94:: with SMTP id m142mr9991085lfa.196.1609860237647;
-        Tue, 05 Jan 2021 07:23:57 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id r16sm7961ljk.93.2021.01.05.07.23.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 07:23:56 -0800 (PST)
-Date:   Tue, 5 Jan 2021 17:23:50 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-power@fi.rohmeurope.com, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] rtc: bd70528: Do not require parent data
-Message-ID: <20210105152350.GA3714833@localhost.localdomain>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wrmsr5GggqH+TghkirLZ6pImT91cR6dCRqhWUi9enro=;
+        b=eurfjOMcIl23YqQ2/vJ4NCsQqZtt+FynNcXbOetkpMnWplk+GWc+gj22mTx7WXMNjG
+         Z8JRAWT0wkZwwcqmCUqePpR9kvqdD2R81eaCAzA6JQFF3n1opKCEFnSV4VgNUBavakzj
+         7R7xyiqB/Tkhor/39vKdiInxVplc2VMkDhY/wFc4rzRwdYX8gjv9SgOBJrohm9p7Efnd
+         uc/uEPCeKYS1A6q6wKMExQiEqgRfmWOdLWqH/Z0FtjLFe0XoOsoqoERUb9QTZYIal3SC
+         kZL7AVCbka2fduswtatsPQzwfbnBWeAUFYXsxitTyDBo9D6Kgq1RDh4UR9Bpo/5tTOAI
+         04iQ==
+X-Gm-Message-State: AOAM532FqBopUStUPimgpveYf3e3yAaLnJnwVP616N/0/MA6YMYOiv5g
+        E4nrQysjKzujDcuKE+mLaG5e5kE3voS1hraAnFeGLuzVJA0o
+X-Google-Smtp-Source: ABdhPJycdNpl2toyalfRRsA2ioEtmD60eKrxNPmp14lkwxLLj19KViYyOvtMc4CIb25Hhc1CQgTPCYRl5DBRzpPE3bROyvg67Crl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6638:250e:: with SMTP id v14mr201090jat.41.1609860324579;
+ Tue, 05 Jan 2021 07:25:24 -0800 (PST)
+Date:   Tue, 05 Jan 2021 07:25:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c8dd4a05b828d04c@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run7
+From:   syzbot <syzbot+fad5d91c7158ce568634@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ROHM BD71828 and BD71815 RTC drivers only need the regmap
-pointer from parent. Regmap can be obtained via dev_get_regmap()
-so do not require parent to populate driver data for that.
+Hello,
 
-BD70528 on the other hand requires parent data to access the
-watchdog so leave the parent data for BD70528 here for now.
+syzbot found the following issue on:
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+HEAD commit:    00a279e4 selftests/bpf: Add tests for user- and non-CO-RE ..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11b1fc1f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2eb8bc0ec06304ce
+dashboard link: https://syzkaller.appspot.com/bug?extid=fad5d91c7158ce568634
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fad5d91c7158ce568634@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run7+0x48f/0x4a0 kernel/trace/bpf_trace.c:2130
+Read of size 8 at addr ffffc90000ca0030 by task syz-executor.2/10711
+
+CPU: 0 PID: 10711 Comm: syz-executor.2 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ __bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
+ bpf_trace_run7+0x48f/0x4a0 kernel/trace/bpf_trace.c:2130
+ __bpf_trace_percpu_alloc_percpu+0x1dc/0x220 include/trace/events/percpu.h:10
+ trace_percpu_alloc_percpu include/trace/events/percpu.h:10 [inline]
+ pcpu_alloc+0xbc4/0x17e0 mm/percpu.c:1844
+ perf_trace_event_reg kernel/trace/trace_event_perf.c:107 [inline]
+ perf_trace_event_init+0x35f/0xb20 kernel/trace/trace_event_perf.c:204
+ perf_trace_init+0x176/0x240 kernel/trace/trace_event_perf.c:228
+ perf_tp_event_init+0xa2/0x120 kernel/events/core.c:9563
+ perf_try_init_event+0x12a/0x570 kernel/events/core.c:11031
+ perf_init_event kernel/events/core.c:11083 [inline]
+ perf_event_alloc.part.0+0xe5b/0x3a40 kernel/events/core.c:11361
+ perf_event_alloc kernel/events/core.c:11740 [inline]
+ __do_sys_perf_event_open+0x647/0x2f30 kernel/events/core.c:11838
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e299
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f1784968c68 EFLAGS: 00000246
+ ORIG_RAX: 000000000000012a
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 000000000045e299
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000180
+RBP: 000000000119bfd0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffffffffffff R11: 0000000000000246 R12: 000000000119bf8c
+R13: 00007ffe18fb31bf R14: 00007f17849699c0 R15: 000000000119bf8c
+
+
+Memory state around the buggy address:
+ ffffc90000c9ff00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000c9ff80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>ffffc90000ca0000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                                     ^
+ ffffc90000ca0080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000ca0100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
+
+
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-As a side-note - I am unsure what is the fate of BD70528. Last time I
-checked this IC was not being in mass-production and decision how to
-proceed was not done. Currently I know only one board (done by the
-Embedded Artist) which uses the BD70528 - and there, as far as I know -
-the control towards PMIC is done from M4 core which is not running Linux.
-
-I will try to find out if BD70528 is going to fade away. *maybe* we
-can  soon just remove the BD70528 specific code branches. Oh, and
-if anybody who reads this is using the BD70528 driver - please yell :)
-
- drivers/rtc/rtc-bd70528.c | 67 ++++++++++++++++++---------------------
- 1 file changed, 31 insertions(+), 36 deletions(-)
-
-diff --git a/drivers/rtc/rtc-bd70528.c b/drivers/rtc/rtc-bd70528.c
-index 4492b770422c..a255aac6740a 100644
---- a/drivers/rtc/rtc-bd70528.c
-+++ b/drivers/rtc/rtc-bd70528.c
-@@ -52,6 +52,7 @@ struct bd70528_rtc_alm {
- 
- struct bd70528_rtc {
- 	struct rohm_regmap_dev *parent;
-+	struct regmap *regmap;
- 	struct device *dev;
- 	u8 reg_time_start;
- 	bool has_rtc_timers;
-@@ -234,9 +235,8 @@ static int bd71828_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	int ret;
- 	struct bd71828_rtc_alm alm;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
--	ret = regmap_bulk_read(parent->regmap, BD71828_REG_RTC_ALM_START,
-+	ret = regmap_bulk_read(r->regmap, BD71828_REG_RTC_ALM_START,
- 			       &alm, sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
-@@ -250,7 +250,7 @@ static int bd71828_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	else
- 		alm.alm_mask |= BD70528_MASK_ALM_EN;
- 
--	ret = regmap_bulk_write(parent->regmap, BD71828_REG_RTC_ALM_START,
-+	ret = regmap_bulk_write(r->regmap, BD71828_REG_RTC_ALM_START,
- 				&alm, sizeof(alm));
- 	if (ret)
- 		dev_err(dev, "Failed to set alarm time\n");
-@@ -265,17 +265,16 @@ static int bd70528_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	struct bd70528_rtc_alm alm;
- 	int ret;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
--	ret = regmap_bulk_read(parent->regmap, BD70528_REG_RTC_WAKE_START,
--			       &wake, sizeof(wake));
-+	ret = regmap_bulk_read(r->regmap, BD70528_REG_RTC_WAKE_START, &wake,
-+			       sizeof(wake));
- 	if (ret) {
- 		dev_err(dev, "Failed to read wake regs\n");
- 		return ret;
- 	}
- 
--	ret = regmap_bulk_read(parent->regmap, BD70528_REG_RTC_ALM_START,
--			       &alm, sizeof(alm));
-+	ret = regmap_bulk_read(r->regmap, BD70528_REG_RTC_ALM_START, &alm,
-+			       sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
- 		return ret;
-@@ -292,15 +291,14 @@ static int bd70528_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 		wake.ctrl &= ~BD70528_MASK_WAKE_EN;
- 	}
- 
--	ret = regmap_bulk_write(parent->regmap,
--				BD70528_REG_RTC_WAKE_START, &wake,
-+	ret = regmap_bulk_write(r->regmap, BD70528_REG_RTC_WAKE_START, &wake,
- 				sizeof(wake));
- 	if (ret) {
- 		dev_err(dev, "Failed to set wake time\n");
- 		return ret;
- 	}
--	ret = regmap_bulk_write(parent->regmap, BD70528_REG_RTC_ALM_START,
--				&alm, sizeof(alm));
-+	ret = regmap_bulk_write(r->regmap, BD70528_REG_RTC_ALM_START, &alm,
-+				sizeof(alm));
- 	if (ret)
- 		dev_err(dev, "Failed to set alarm time\n");
- 
-@@ -312,9 +310,8 @@ static int bd71828_read_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	int ret;
- 	struct bd71828_rtc_alm alm;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
--	ret = regmap_bulk_read(parent->regmap, BD71828_REG_RTC_ALM_START,
-+	ret = regmap_bulk_read(r->regmap, BD71828_REG_RTC_ALM_START,
- 			       &alm, sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
-@@ -336,10 +333,9 @@ static int bd70528_read_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	struct bd70528_rtc_alm alm;
- 	int ret;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
--	ret = regmap_bulk_read(parent->regmap, BD70528_REG_RTC_ALM_START,
--			       &alm, sizeof(alm));
-+	ret = regmap_bulk_read(r->regmap, BD70528_REG_RTC_ALM_START, &alm,
-+			       sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
- 		return ret;
-@@ -360,14 +356,12 @@ static int bd70528_set_time_locked(struct device *dev, struct rtc_time *t)
- 	int ret, tmpret, old_states;
- 	struct bd70528_rtc_data rtc_data;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
- 	ret = bd70528_disable_rtc_based_timers(r, &old_states);
- 	if (ret)
- 		return ret;
- 
--	tmpret = regmap_bulk_read(parent->regmap,
--				  r->reg_time_start, &rtc_data,
-+	tmpret = regmap_bulk_read(r->regmap, r->reg_time_start, &rtc_data,
- 				  sizeof(rtc_data));
- 	if (tmpret) {
- 		dev_err(dev, "Failed to read RTC time registers\n");
-@@ -375,8 +369,7 @@ static int bd70528_set_time_locked(struct device *dev, struct rtc_time *t)
- 	}
- 	tm2rtc(t, &rtc_data);
- 
--	tmpret = regmap_bulk_write(parent->regmap,
--				   r->reg_time_start, &rtc_data,
-+	tmpret = regmap_bulk_write(r->regmap, r->reg_time_start, &rtc_data,
- 				   sizeof(rtc_data));
- 	if (tmpret) {
- 		dev_err(dev, "Failed to set RTC time\n");
-@@ -410,13 +403,11 @@ static int bd70528_set_time(struct device *dev, struct rtc_time *t)
- static int bd70528_get_time(struct device *dev, struct rtc_time *t)
- {
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 	struct bd70528_rtc_data rtc_data;
- 	int ret;
- 
- 	/* read the RTC date and time registers all at once */
--	ret = regmap_bulk_read(parent->regmap,
--			       r->reg_time_start, &rtc_data,
-+	ret = regmap_bulk_read(r->regmap, r->reg_time_start, &rtc_data,
- 			       sizeof(rtc_data));
- 	if (ret) {
- 		dev_err(dev, "Failed to read RTC time (err %d)\n", ret);
-@@ -443,7 +434,7 @@ static int bd70528_alm_enable(struct device *dev, unsigned int enabled)
- 		dev_err(dev, "Failed to change wake state\n");
- 		goto out_unlock;
- 	}
--	ret = regmap_update_bits(r->parent->regmap, BD70528_REG_RTC_ALM_MASK,
-+	ret = regmap_update_bits(r->regmap, BD70528_REG_RTC_ALM_MASK,
- 				 BD70528_MASK_ALM_EN, enableval);
- 	if (ret)
- 		dev_err(dev, "Failed to change alarm state\n");
-@@ -462,7 +453,7 @@ static int bd71828_alm_enable(struct device *dev, unsigned int enabled)
- 	if (!enabled)
- 		enableval = 0;
- 
--	ret = regmap_update_bits(r->parent->regmap, BD71828_REG_RTC_ALM0_MASK,
-+	ret = regmap_update_bits(r->regmap, BD71828_REG_RTC_ALM0_MASK,
- 				 BD70528_MASK_ALM_EN, enableval);
- 	if (ret)
- 		dev_err(dev, "Failed to change alarm state\n");
-@@ -498,7 +489,6 @@ static int bd70528_probe(struct platform_device *pdev)
- {
- 	struct bd70528_rtc *bd_rtc;
- 	const struct rtc_class_ops *rtc_ops;
--	struct rohm_regmap_dev *parent;
- 	const char *irq_name;
- 	int ret;
- 	struct rtc_device *rtc;
-@@ -508,20 +498,25 @@ static int bd70528_probe(struct platform_device *pdev)
- 	u8 hour_reg;
- 	enum rohm_chip_type chip = platform_get_device_id(pdev)->driver_data;
- 
--	parent = dev_get_drvdata(pdev->dev.parent);
--	if (!parent) {
--		dev_err(&pdev->dev, "No MFD driver data\n");
--		return -EINVAL;
--	}
- 	bd_rtc = devm_kzalloc(&pdev->dev, sizeof(*bd_rtc), GFP_KERNEL);
- 	if (!bd_rtc)
- 		return -ENOMEM;
- 
--	bd_rtc->parent = parent;
-+	bd_rtc->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (!bd_rtc->regmap) {
-+		dev_err(&pdev->dev, "No regmap\n");
-+		return -EINVAL;
-+	}
-+
- 	bd_rtc->dev = &pdev->dev;
- 
- 	switch (chip) {
- 	case ROHM_CHIP_TYPE_BD70528:
-+		bd_rtc->parent = dev_get_drvdata(pdev->dev.parent);
-+		if (!bd_rtc->parent) {
-+			dev_err(&pdev->dev, "No MFD data\n");
-+			return -EINVAL;
-+		}
- 		irq_name = "bd70528-rtc-alm";
- 		bd_rtc->has_rtc_timers = true;
- 		bd_rtc->reg_time_start = BD70528_REG_RTC_START;
-@@ -547,7 +542,7 @@ static int bd70528_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, bd_rtc);
- 
--	ret = regmap_read(parent->regmap, hour_reg, &hr);
-+	ret = regmap_read(bd_rtc->regmap, hour_reg, &hr);
- 
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to reag RTC clock\n");
-@@ -595,7 +590,7 @@ static int bd70528_probe(struct platform_device *pdev)
- 	 *  from sub-registers when IRQ is disabled or freed.
- 	 */
- 	if (enable_main_irq) {
--		ret = regmap_update_bits(parent->regmap,
-+		ret = regmap_update_bits(bd_rtc->regmap,
- 				 BD70528_REG_INT_MAIN_MASK,
- 				 BD70528_INT_RTC_MASK, 0);
- 		if (ret) {
-
-base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
