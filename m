@@ -2,165 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF882EB1C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253712EB1CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730655AbhAERrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:47:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
+        id S1730581AbhAERuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:50:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730487AbhAERrf (ORCPT
+        with ESMTP id S1730375AbhAERuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:47:35 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4B3C061574;
-        Tue,  5 Jan 2021 09:46:55 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id z12so62181pjn.1;
-        Tue, 05 Jan 2021 09:46:55 -0800 (PST)
+        Tue, 5 Jan 2021 12:50:21 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DEEC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 09:49:41 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id r9so137921ioo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 09:49:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wNfVSm6HxPUnupahtDHY1O9QSvag3jH3hVWlPRNf1Q0=;
-        b=ZAuGY6RqjBuSKfi0uF4Mx+xxNP1qrslGlBbTs3Syrm2sOTntqassekGiY7YXXrcm5z
-         I2hLkCSRmDPWEMIdJyYDXlxdoKb8ffrZ2DtMiSIvf7Qw8zwBookr1PLJt/hnhrga3c+d
-         VUFY7EpaB0QkkeAnu8QtMW9KKUqAMh8Gy1TQ1eLEb4q1rf/2zgIBuA3+lFIDsKomNUR3
-         PZD/AGHqtQHq2pzRP6BGXsFlCyLwKCKd7+QitsyLRDMC1ATBZxECh6kd6JOOg1HolyTs
-         7o+fiLXeNFrrymdi/7z1MAe1UwXrXaPD3zlA26AlA9wbAhuspmW+1NcIhxqSVznZ/EHQ
-         iGew==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VEoq6SpKcaf4oGIFQBlJ5z/iF0pIoNjZWXAgQ3lJgnQ=;
+        b=EMIqbB2vSBW04avVjJGCjwUXtfQ7ZAFD9pBg3mYOHQgeddpIZ4+3n0+QA57L1lN168
+         HSDeittzOooM8PrKBEdrNLzEwZ4GtUqxGf3dvPG+nGGHq/GXWlsEMNnr0dGZdu0yqdxW
+         np+9pBDlDstoG5xaKdmUT52V9XuJDw05zK0FOgTUzjeX4nrU3AIr0LeMk/O9egBoZKdG
+         swGJeVm9Fn13VYEOV1JKHYV8M+j4Lv0auIH5P8sucGcfUOs0pWNoRfke6hO6WdvT81ZS
+         WLpmfRmVBhaa9fJZADlC/p+3b5zh4sHUALxQeBcocVa8QJOlAG0vhS6sBBUehUaeeThu
+         7Szw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wNfVSm6HxPUnupahtDHY1O9QSvag3jH3hVWlPRNf1Q0=;
-        b=AgskitYYGGuWgqD/4vajlDZkrxYItemQJdZ0E2E84+hhZl2VoqbbkuqOp9Qn4pooXd
-         xae4BeCpykldm1mnb4vTyzuoVLnOHM1GdqQL+2qdSvlgarOFvwT351j9Adgcc9ZbB481
-         61nh0BI+aAJ7TvdaYHK+QP0hFurbh69hBpcgoZN1s/u7ocQ6dXT/6qRhesXAePfuKWns
-         XhjtbvbFxWEVRwKwJ9HQ81Q9SJZgsQdos72CGAui7tYX3vaA98xHhfmpp72bGFzZwsTM
-         FfjXFEKbHLsBEFX0Wq5UXisYBJiIzFnF6q0m2uKqNUL88y2/OpKJA2U/FPssWVdewMEz
-         D18w==
-X-Gm-Message-State: AOAM530X8OBVI3yq5sdfyScicTiXrOXGJtmaOeZhZlXgzWmrwBCuMg2Y
-        j0pMdBHDkuchLiGBMrnn2HA=
-X-Google-Smtp-Source: ABdhPJzqQwkurMcq3XzdrtWWLBW+DraPr8ajz6EpoyFJ+hwOQ2w6j+tjvLMjjKoGr+rPGbRfuBwilg==
-X-Received: by 2002:a17:90b:3687:: with SMTP id mj7mr373312pjb.76.1609868815096;
-        Tue, 05 Jan 2021 09:46:55 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id w131sm45805pfc.46.2021.01.05.09.46.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 09:46:53 -0800 (PST)
-Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-To:     Wolfram Sang <wsa@kernel.org>,
-        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Cc:     Ray Jui <ray.jui@broadcom.com>,
-        Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lori Hikichi <lori.hikichi@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-References: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
- <1605316659-3422-1-git-send-email-dphadke@linux.microsoft.com>
- <CAHO=5PFzd9KTR93ntUvAX5dqzxqJQpVXEirs5uoXdvcnZ7hL4g@mail.gmail.com>
- <20201202143505.GA874@kunai>
- <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
- <CAHO=5PE=BRADou_Hn8qP3mgWiSwDezPCxDjuqa0v1MxMOJRyHQ@mail.gmail.com>
- <35541129-df37-fa6f-5dae-34eb34a78731@broadcom.com>
- <CAHO=5PFCsWQb7nv5Sg00DAX6XXTfV7V8BH-ithK-Scq8eFFVbA@mail.gmail.com>
- <20210105162145.GG1842@ninjato>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <b5e38606-6ca8-b52c-65cd-5f24411661d0@gmail.com>
-Date:   Tue, 5 Jan 2021 09:46:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VEoq6SpKcaf4oGIFQBlJ5z/iF0pIoNjZWXAgQ3lJgnQ=;
+        b=LffqYQTkJBSs2+nvYuNpfrXG8hZsIUyfEyA9wzwDDC8S4yi1kZ9Xsn0apgzcXDyJFX
+         /fVxdM7wr+IDvXeHxK04QMLs9m4VXoM+pIDIreieeRgyLeuKxlBY3in5TE0t6iA+8rlH
+         P56LEcZBoBjKBHhzm5mXUgOp3Ov9QGiA5NFhX3SLig6rBOIP8r/90ORrYy2MEgPqUY6k
+         G5Y994nDBdcTma7eQwGCE+dBE+7PqhaB6FBLYPpmnSpV2ih6iZ0osG6PMKGvnxRn7uvp
+         ECJj7+YwRV0QUC6Rg/OdRnUf2/GMnu27gaVvmN2mEzG9Tvh9KWw+kn0nfqSlvIvycAld
+         Wn7g==
+X-Gm-Message-State: AOAM530zq9f9U7Yv3Kn96sPZNajCXs2Ym/ohLx6v1wmiDANoCZWupTkN
+        Z3r+RH9PxVzlMee93OFa5x5e5BlxLhdPtD2xGB8xfQ==
+X-Google-Smtp-Source: ABdhPJyY7avdNmw9Vc26iDlzlt9ws9Z2nN1hQxkbK+J5R7PPKr8krPL6g63/yaosBVJkxDrLeXHuvmNtrWhshkH8hKM=
+X-Received: by 2002:a02:c9cf:: with SMTP id c15mr688468jap.57.1609868980308;
+ Tue, 05 Jan 2021 09:49:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210105162145.GG1842@ninjato>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <4bf6fcae-20e7-3eae-83ec-51fb52110487@oracle.com>
+ <8A352C2E-E7D2-4873-807F-635A595DCAEF@gmail.com> <CANgfPd_cbBxWHmPsw0x5NfKrMXzij3YAAiaq665zxn5nnraPGg@mail.gmail.com>
+In-Reply-To: <CANgfPd_cbBxWHmPsw0x5NfKrMXzij3YAAiaq665zxn5nnraPGg@mail.gmail.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 5 Jan 2021 09:49:29 -0800
+Message-ID: <CANgfPd8fFB6QM3bOhxQ0WPjw6f5FLqBm1ynCenAxymByq4Lz5g@mail.gmail.com>
+Subject: Re: reproducible BUG() in kvm_mmu_get_root() in TDP MMU
+To:     leohou1402 <leohou1402@gmail.com>
+Cc:     "maciej.szmigiero@oracle.com" <maciej.szmigiero@oracle.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "cannonmatthews@google.com" <cannonmatthews@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "pshier@google.com" <pshier@google.com>,
+        "pfeiner@google.com" <pfeiner@google.com>,
+        "junaids@google.com" <junaids@google.com>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "yulei.kernel@gmail.com" <yulei.kernel@gmail.com>,
+        "kernellwp@gmail.com" <kernellwp@gmail.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/5/21 8:21 AM, Wolfram Sang wrote:
-> 
->>> I think that makes sense, and I'm okay with these patches going in as
->>> they are now.
->>>
->>> Acked-by: Ray Jui <ray.jui@broadcom.com>
->>
->> Thank you.
-> 
-> Yes, thank you everyone.
-> 
-> All applied to for-next, thanks!
-> 
->> -- 
->> This electronic communication and the information and any files transmitted 
->> with it, or attached to it, are confidential and are intended solely for 
-> ...
-> 
-> Please remove this paragraph for mailing lists.
+I believe I've found the bug and it could happen on any platform, so
+the environment probably doesn't matter after all.
 
-We are working on it, but as you may expect with any large corporations
-it is "complicated".
--- 
-Florian
+There are several TDP MMU functions which follow this pattern:
+for_each_tdp_mmu_root(kvm, root) {
+        kvm_mmu_get_root(kvm, root);
+        <Do something, yield the MMU lock>
+        kvm_mmu_put_root(kvm, root);
+}
+
+In these cases the get and put root calls are there to ensure that the
+root is not freed while the function is running, however they do this
+too well. If the put root call reduces the root's root_count to 0, it
+should be removed from the roots list and freed before the MMU lock is
+released. However the above pattern never bothers to free the root.
+The following would fix this bug:
+
+-kvm_mmu_put_root(kvm, root);
++if (kvm_mmu_put_root(kvm, root))
++       kvm_tdp_mmu_free_root(kvm, root);
+
+The current code violates an (undocumented) invariant on the
+tdp_mmu_roots list that no root in the list should have a 0
+root_count. That invariant is checked by kvm_mmu_get_root but should
+probably also be in the comment on the field.
+
+Anyway, I'll write up a patch to fix this and send it out.
+Ben
+
+On Tue, Jan 5, 2021 at 9:01 AM Ben Gardon <bgardon@google.com> wrote:
+>
+> On Mon, Jan 4, 2021 at 6:37 PM leohou1402 <leohou1402@gmail.com> wrote:
+> >
+> >  On 1/5/2021 07:09=EF=BC=8CMaciej S. Szmigiero<maciej.szmigiero@oracle.=
+com> wrote=EF=BC=9A
+> >
+> > > Hi,
+> >
+> > > I am hitting a reproducible BUG() with KVM TDP MMU.
+> >
+> > > The reproducer based on set_memory_region_test.c from KVM selftests
+> > > is available here:
+> > > https://gist.github.com/maciejsszmigiero/890218151c242d99f63ea0825334=
+c6c0
+> >
+> > > The test simply moves a memslot a bit back and forth on the host
+> > > while the guest is concurrently writing around the area being
+> > > moved.
+> >
+> > > The code runs fine on the default KVM MMU but triggers a BUG() when
+> > > TDP MMU is enabled by adding "tdp_mmu=3D1" kvm module parameter.
+> >
+> > > The backtrace is:
+> > > [ 1308.455120] kernel BUG at arch/x86/kvm/mmu/mmu_internal.h:100!
+> > > [ 1308.524951] invalid opcode: 0000 [#1] SMP PTI
+> > > [ 1308.577080] CPU: 92 PID: 18675 Comm: memslot_move_te Not tainted 5=
+.11.0-rc2+ #80
+> > > [ 1308.665617] Hardware name: Oracle Corporation ORACLE SERVER X7-2c/=
+SERVER MODULE ASSY, , BIOS 46070300 12/20/2019
+> > > [ 1308.787438] RIP: 0010:kvm_tdp_mmu_get_vcpu_root_hpa+0x10c/0x120 [k=
+vm]
+> > > [ 1308.864587] Code: db 74 1c b8 00 00 00 80 48 03 43 40 72 1e 48 c7 =
+c2 00 00 00 80 48 2b 15 92 0a 1d d3 48 01 d0 5b 41 5c 41 5d 41 5e 41 5f 5d =
+c3 <0f> 0b > 48 8b 15 eb e8 3c d3 eb e7 66 0f 1f 84 00 00 00 00 00 0f 1f
+> > > [ 1309.089393] RSP: 0018:ffffa65affa73d10 EFLAGS: 00010246
+> > > [ 1309.151922] RAX: 0000000000000000 RBX: ffff9b46829bac78 RCX: 00000=
+00000000000
+> > > [ 1309.237334] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffa=
+65ada1bd000
+> > > [ 1309.322744] RBP: ffffa65affa73d38 R08: 0000000000000000 R09: ffff9=
+b454e443200
+> > > [ 1309.408156] R10: 0000000000000000 R11: 0000000000000001 R12: 00000=
+00000001794
+> > > [ 1309.493567] R13: ffffa65ada1bd000 R14: ffff9b454e443040 R15: ffffa=
+65ada1d2418
+> > > [ 1309.578977] FS:  00007fdb0430b700(0000) GS:ffff9ba3bfa00000(0000) =
+knlGS:0000000000000000
+> > > [ 1309.675833] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [ 1309.744605] CR2: 0000000000000000 CR3: 0000006090046006 CR4: 00000=
+000007726e0
+> > > [ 1309.830018] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000=
+00000000000
+> > > [ 1309.915428] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000=
+00000000400
+> > > [ 1310.000837] PKRU: 55555554
+> > > [ 1310.033199] Call Trace:
+> > > [ 1310.062445]  kvm_mmu_load+0x29e/0x480 [kvm]
+> > > [ 1310.112542]  vcpu_enter_guest+0x112d/0x15b0 [kvm]
+> > > [ 1310.168865]  ? vmx_vcpu_load+0x2e/0x40 [kvm_intel]
+> > > [ 1310.226201]  kvm_arch_vcpu_ioctl_run+0xf9/0x580 [kvm]
+> > > [ 1310.286685]  kvm_vcpu_ioctl+0x247/0x600 [kvm]
+> > > [ 1310.338838]  ? tick_program_event+0x44/0x70
+> > > [ 1310.388888]  ? __audit_syscall_entry+0xdd/0x130
+> > > [ 1310.443101]  __x64_sys_ioctl+0x92/0xd0
+> > > [ 1310.487946]  do_syscall_64+0x37/0x50
+> > > [ 1310.530711]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > [ 1310.591158] RIP: 0033:0x7fdb44a06307
+> > > [ 1310.633925] Code: 44 00 00 48 8b 05 69 1b 2d 00 64 c7 00 26 00 00 =
+00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f =
+05 <48> 3d 01 f0 > ff ff 73 01 c3 48 8b 0d 39 1b 2d 00 f7 d8 64 89 01 48
+> > > [ 1310.858726] RSP: 002b:00007fdb0430ae78 EFLAGS: 00000246 ORIG_RAX: =
+0000000000000010
+> > > [ 1310.949338] RAX: ffffffffffffffda RBX: 00000000019662f0 RCX: 00007=
+fdb44a06307
+> > > [ 1311.034747] RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 00000=
+00000000007
+> > > [ 1311.120159] RBP: 0000000001965000 R08: 000000000040b2ff R09: 00000=
+00000000000
+> > > [ 1311.205567] R10: 00007fdb0430a2a0 R11: 0000000000000246 R12: 00000=
+00000000000
+> > > [ 1311.291738] R13: 0000000001965000 R14: 0000000000000000 R15: 00007=
+fdb0430b700
+> > > [ 1311.377873] Modules linked in: kvm_intel kvm xt_comment xt_owner i=
+p6t_rpfilter ip6t_REJECT nf_reject_ipv6 ipt_REJECT nf_reject_ipv4 xt_conntr=
+ack ebtable_nat ebtable_broute ip6table_nat ip6table_mangle ip6table_securi=
+ty ip6table_raw iptable_nat nf_nat iptable_mangle iptable_security iptable_=
+raw nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set ebtable_filter ebtabl=
+es ip6table_filter ip6_tables iptable_filter rpcrdma ib_isert iscsi_target_=
+mod ib_iser ib_srpt target_core_mod ib_srp scsi_transport_srp ib_ipoib rdma=
+_ucm ib_umad iw_cxgb4 rdma_cm iw_cm ib_cm intel_rapl_msr intel_rapl_common =
+skx_edac nfit libnvdimm x86_pkg_temp_thermal intel_powerclamp coretemp bnxt=
+_re ib_uverbs mgag200 ib_core drm_kms_helper cec drm iTCO_wdt iTCO_vendor_s=
+upport sg irqbypass pcspkr syscopyarea sysfillrect sysimgblt i2c_i801 ioatd=
+ma fb_sys_fops joydev i2c_algo_bit i2c_smbus lpc_ich intel_pch_thermal dca =
+ip_tables vfat fat xfs sd_mod t10_pi be2iscsi bnx2i cnic uio cxgb4i cxgb4 t=
+ls cxgb3i cxgb3 mdio libcxgbi
+> > > [ 1311.377953]  libcxgb qla4xxx iscsi_boot_sysfs crct10dif_pclmul crc=
+32_pclmul ghash_clmulni_intel aesni_intel crypto_simd cryptd glue_helper bn=
+xt_en wmi sunrpc dm_mirror dm_region_hash dm_log dm_mod iscsi_tcp libiscsi_=
+tcp libiscsi scsi_transport_iscsi [last unloaded: kvm]
+> > > [ 1312.712917] ---[ end trace 4716cc8fd037784d ]---
+> > > [ 1312.884672] RIP: 0010:kvm_tdp_mmu_get_vcpu_root_hpa+0x10c/0x120 [k=
+vm]
+> > > [ 1312.962622] Code: db 74 1c b8 00 00 00 80 48 03 43 40 72 1e 48 c7 =
+c2 00 00 00 80 48 2b 15 92 0a 1d d3 48 01 d0 5b 41 5c 41 5d 41 5e 41 5f 5d =
+c3 <0f> 0b 48 8b 15 eb e8 3c d3 eb e7 66 0f 1f 84 00 00 00 00 00 0f 1f
+> > > [ 1313.189000] RSP: 0018:ffffa65affa73d10 EFLAGS: 00010246
+> > > [ 1313.252321] RAX: 0000000000000000 RBX: ffff9b46829bac78 RCX: 00000=
+00000000000
+> > > [ 1313.338522] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffa=
+65ada1bd000
+> > > [ 1313.424727] RBP: ffffa65affa73d38 R08: 0000000000000000 R09: ffff9=
+b454e443200
+> > > [ 1313.510932] R10: 0000000000000000 R11: 0000000000000001 R12: 00000=
+00000001794
+> > > [ 1313.597140] R13: ffffa65ada1bd000 R14: ffff9b454e443040 R15: ffffa=
+65ada1d2418
+> > > [ 1313.683343] FS:  00007fdb0430b700(0000) GS:ffff9ba3bfa00000(0000) =
+knlGS:0000000000000000
+> > > [ 1313.780987] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [ 1313.850556] CR2: 0000000000000000 CR3: 0000006090046006 CR4: 00000=
+000007726e0
+> > > [ 1313.936759] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000=
+00000000000
+> > > [ 1314.022964] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000=
+00000000400
+> > > [ 1314.109171] PKRU: 55555554
+> > > [ 1314.142325] Kernel panic - not syncing: Fatal exception
+> > > [ 1314.205755] Kernel Offset: 0x11a00000 from 0xffffffff81000000 (rel=
+ocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> > > [ 1315.367254] ---[ end Kernel panic - not syncing: Fatal exception ]=
+---
+> >
+> > > It looks like there might be an inbalance of kvm_mmu_get_root()
+> > > and kvm_mmu_put_root() somewhere but I couldn't really nail it down.
+> >
+> > > I've tried with and without "KVM: x86/mmu: Bug fixes and cleanups in
+> > > get_mmio_spte()" series applied, doesn't make any difference.
+> >
+> > > Thanks,
+> > > Maciej
+> >
+> > Hi, Maciej,
+> >
+> > I think you should post the environment of your hardware and software s=
+ystem, such as which distribution hostOS is, kernel version, CPU model, etc=
+ .
+> >
+> > Leo Hou
+>
+> Thanks for reporting this Maciej. I'll look into it this week. As Leo
+> Hou said, it would be helpful to know more about the environment you
+> ran this test on. Your theory about a get / put roots imbalance seems
+> like a good explanation. I'll see if I can find such an imbalance.
+> Ben
