@@ -2,110 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF4C2EB0AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7518A2EB0B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729628AbhAEQ4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:56:15 -0500
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:46150 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729334AbhAEQ4O (ORCPT
+        id S1730088AbhAEQ6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:58:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729993AbhAEQ6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:56:14 -0500
-Received: by mail-wr1-f45.google.com with SMTP id d13so36811715wrc.13;
-        Tue, 05 Jan 2021 08:55:58 -0800 (PST)
+        Tue, 5 Jan 2021 11:58:14 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9C2C061574;
+        Tue,  5 Jan 2021 08:57:34 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id 75so259674ilv.13;
+        Tue, 05 Jan 2021 08:57:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iHKfrdmGb3rVaABQiL4leDAaF/+A/efgwvhOJXFRbVk=;
+        b=HKDcS9mVwumW7RGCDwgL/8xlq/yh30Kws6isB3iZo8AZXQaxL3fXTgqv6PZ5VH1JyM
+         CM48/eYvX1//HtUqkuNk9+fhjLjPTXLX81zNbRCFmC87egaw2H6FX/mjfD4vYVP2eBEF
+         mw0XbTE4rMHLxlhloPT/WThprcdYg8zlUijV9yt5S6WiLm/r9lAAfGK3ewZWWhz8B9DB
+         KXt7Vsp7w8c5b1auYw1xHE8osUqNaKbivgqCm0lTLTsPsXLBfYiP74aA2OCk9XD5vRxj
+         uCZLM4xopfufN+Pljhe4lmfR5UtLo5oHxcUE9YYo6RtjhSOS3HIZ7RKxuH3TxS3Hlpv4
+         Acpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3lly2danYiTb182H8D8avthszPR0+tG65HNd1JQEsbI=;
-        b=HCkl2FtFY5FNxod7qZtBctkCHsuOzup68d7IP2GeF6z9dd+p5B2gmS978t4vzAGdIF
-         wDRoD1bZ0N5aUyl4SvgbjRIRreTxXj3kWZ06RZtvIR9Ce5ZA9cID5Ol+YTjKFD8aS7Ah
-         sPz2WPkqUDrLS+VItLsMWorYVw7h/dD543rk4hfdGLPvU9u7JsnfcU+UNi3o3ED7MRzo
-         hCD6lBZhA6M5DadzoVEdTA5XsFtZuniO/ltffwfC4sj3FxgwfTA5nWHHtu2UN23fYIHP
-         GJ9ccU2wsszmmcPQ8rQwSAUoAdYGRKsP8vBXGtpbAyAPl6GVbQ2YCY5TFLry43C+OJ+c
-         xTMg==
-X-Gm-Message-State: AOAM530BA+GYe+vJYSXYO6sFmnVkKIn1en5V5dwjeKJqa45Zucax/snP
-        +iS23rTZBxJ9GV/WYUhiGlc=
-X-Google-Smtp-Source: ABdhPJzX4fvNgU7hZQaXgWYzHyNSexu7jTttqQRxXT2CO39QS18z96tCMzayhO0xxYI//56QjYAo1A==
-X-Received: by 2002:adf:ec8c:: with SMTP id z12mr500791wrn.208.1609865732300;
-        Tue, 05 Jan 2021 08:55:32 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id o125sm118260wmo.30.2021.01.05.08.55.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 08:55:31 -0800 (PST)
-Date:   Tue, 5 Jan 2021 17:55:29 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Timon Baetz <timon.baetz@protonmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
- nodes
-Message-ID: <20210105165529.GB20401@kozik-lap>
-References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
- <20201230205139.1812366-2-timon.baetz@protonmail.com>
- <20210104135156.GB5645@sirena.org.uk>
- <20210104181825.GB27043@kozik-lap>
- <20210104182734.GH5645@sirena.org.uk>
- <20210104183821.GA29033@kozik-lap>
- <20210104212449.GJ5645@sirena.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iHKfrdmGb3rVaABQiL4leDAaF/+A/efgwvhOJXFRbVk=;
+        b=YQnI+V61Kf24GX7WMIxXwLmlcSk4RoxfGPdLvnReRmiBsYex1/nSkwLYcNAzWL1YD0
+         edCDz4Db6rbB2gOnOsWDYW+TAgJjwbEOIpC4E7nEJIK9ISRoXoNnucqrPjgC26xIiY53
+         Uvlv5wQwM0O6ZtAH2fx+J3tfkxtkECYXH1riZKu5pdVLhSV4AzZ4W2k8ZADUn0VjBd0j
+         aPukFYmXxa5emCButuWHbVqlk2KkiCIOetXvRoMgTfZ5WkCuzENv3B3mI2BKuT0G0nX2
+         rYI0VTDqxvTy0nFqmaP6/ZlXKwaQ5Q198HEqDL44R/Uw3mXbVDHg7mKzkj2qhV4uwKS7
+         NSUw==
+X-Gm-Message-State: AOAM532D5yi0VsaNjEnsxy5fFui+BYRi0Nb75iEgreysuLkPeo/HKBWR
+        Y3qaLaAhsioMYMlgbbCWSLNdEUrHdvU04kR9xFs=
+X-Google-Smtp-Source: ABdhPJzuCW3490l+lOhN3qAu1MGnFOT4SHr+S1Gmhqb3GmTBAo2fQE0OSunOAXCYbd30Thg3v7Z5UqAfYMjerqBul34=
+X-Received: by 2002:a92:6403:: with SMTP id y3mr565783ilb.72.1609865853320;
+ Tue, 05 Jan 2021 08:57:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210104212449.GJ5645@sirena.org.uk>
+References: <20201223200746.GR874@casper.infradead.org> <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223204428.GS874@casper.infradead.org> <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
+ <20210104151424.GA63879@redhat.com> <CAOQ4uxgiC5Wm+QqD+vbmzkFvEqG6yvKYe_4sR7ZUVfu-=Ys9oQ@mail.gmail.com>
+ <20210104154015.GA73873@redhat.com> <CAOQ4uxhYXeUt2iggM3oubdgr91QPNhUg2PdN128gRvR3rQoy1Q@mail.gmail.com>
+ <20210104224447.GG63879@redhat.com> <CAOQ4uxh07Rqj88PDNVqzq9D28rp+Z2aRtPvNoapeaH5iZWJr4Q@mail.gmail.com>
+ <20210105162646.GD3200@redhat.com>
+In-Reply-To: <20210105162646.GD3200@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 5 Jan 2021 18:57:21 +0200
+Message-ID: <CAOQ4uxgA96sDca3YWAqXjkMS8YKmFv259cFS7aWNvhfC6MtL6w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Chengguang Xu <cgxu519@mykernel.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 09:24:49PM +0000, Mark Brown wrote:
-> On Mon, Jan 04, 2021 at 07:38:21PM +0100, Krzysztof Kozlowski wrote:
-> > On Mon, Jan 04, 2021 at 06:27:34PM +0000, Mark Brown wrote:
-> 
-> > > We can indicate the presence of features without adding new compatible
-> > > strings, that's just encoding the way Linux currently divides things up
-> > > into the bindings.  For example having an extcon property seems like it
-> > > should be enough to figure out if we're using extcon.
-> 
-> > It won't be enough because MFD will create device for extcon and bind
-> > the driver. The same for the charger. We have a board where max8997 is
-> > used only as PMIC (providing regulators) without battery and USB
-> > connectivity.
-> 
-> I'm not sure I follow, sorry?  Either the core driver can parse the
-> bindings enough to know what children it has or (probably better) it can
-> instantiate the children unconditionally and then the function drivers
-> can figure out if they need to do anything.
+On Tue, Jan 5, 2021 at 6:26 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+>
+> On Tue, Jan 05, 2021 at 09:11:23AM +0200, Amir Goldstein wrote:
+> > > >
+> > > > What I would rather see is:
+> > > > - Non-volatile: first syncfs in every container gets an error (nice to have)
+> > >
+> > > I am not sure why are we making this behavior per container. This should
+> > > be no different from current semantics we have for syncfs() on regular
+> > > filesystem. And that will provide what you are looking for. If you
+> > > want single error to be reported in all ovleray mounts, then make
+> > > sure you have one fd open in each mount after mount, then call syncfs()
+> > > on that fd.
+> > >
+> >
+> > Ok.
+> >
+> > > Not sure why overlayfs behavior/semantics should be any differnt
+> > > than what regular filessytems like ext4/xfs are offering. Once we
+> > > get page cache sharing sorted out with xfs reflink, then people
+> > > will not even need overlayfs and be able to launch containers
+> > > just using xfs reflink and share base image. In that case also
+> > > they will need to keep an fd open per container they want to
+> > > see an error in.
+> > >
+> > > So my patches exactly provide that. syncfs() behavior is same with
+> > > overlayfs as application gets it on other filesystems. And to me
+> > > its important to keep behavior same.
+> > >
+> > > > - Volatile: every syncfs and every fsync in every container gets an error
+> > > >   (important IMO)
+> > >
+> > > For volatile mounts, I agree that we need to fail overlayfs instance
+> > > as soon as first error is detected since mount. And this applies to
+> > > not only syncfs()/fsync() but to read/write and other operations too.
+> > >
+> > > For that we will need additional patches which are floating around
+> > > to keep errseq sample in overlay and check for errors in all
+> > > paths syncfs/fsync/read/write/.... and fail fs.
+> >
+> > > But these patches build on top of my patches.
+> >
+> > Here we disagree.
+> >
+> > I don't see how Jeff's patch is "building on top of your patches"
+> > seeing that it is perfectly well contained and does not in fact depend
+> > on your patches.
+>
+> Jeff's patches are solving problem only for volatile mounts and they
+> are propagating error to overlayfs sb.
+>
+> My patches are solving the issue both for volatile mount as well as
+> non-volatile mounts and solve it using same method so there is no
+> confusion.
+>
+> So there are multiple pieces to this puzzle and IMHO, it probably
+> should be fixed in this order.
+>
+> A. First fix the syncfs() path to return error both for volatile as
+>    as well non-volatile mounts.
+>
+> B. And then add patches to fail filesystem for volatile mount as soon
+>    as first error is detected (either in syncfs path or in other paths
+>    like read/write/...). This probably will require to save errseq
+>    in ovl_fs, and then compare with upper_sb in critical paths and fail
+>    filesystem as soon as error is detected.
+>
+> C. Finally fix the issues related to mount/remount error detection which
+>    Sargun is wanting to fix. This will be largerly solved by B except
+>    saving errseq on disk.
+>
+> My patches should fix the first problem. And more patches can be
+> applied on top to fix issue B and issue C.
+>
+> Now if we agree with this, in this context I see that fixing problem
+> B and C is building on top of my patches which fixes problem A.
+>
 
-Currently the MFD parent/core driver will instantiate children
-unconditionally.  It would have to be adapted. With proposed bindings -
-nothing to change.  MFD core already does the thing.
+That order is fine by me.
 
-The point is that function drivers should not be even bound, should not
-start to probe. Otherwise if they probe and fail, they will pollute the
-dmesg/probe log with failure. With the failure coming from looking for
-missing of_node or any other condition from parent/core driver.
+> >
+> > And I do insist that the fix for volatile mounts syncfs/fsync error
+> > reporting should be applied before your patches or at the very least
+> > not heavily depend on them.
+>
+> I still don't understand that why volatile syncfs() error reporting
+> is more important than non-volatile syncfs(). But I will stop harping
+> on this point now.
+>
+> My issue with Jeff's patches is that syncfs() error reporting should
+> be dealt in same way both for volatile and non-volatile mount. That
+> is compare file->f_sb_err and upper_sb->s_wb_err to figure out if
+> there is an error to report to user space. Currently this patches
+> only solve the problem for volatile mounts and use propagation to
+> overlay sb which is conflicting for non-volatile mounts.
+>
+> IIUC, your primary concern with volatile mount is that you want to
+> detect as soon as writeback error happens, and flag it to container
+> manager so that container manager can stop container, throw away
+> upper layer and restart from scratch. If yes, what you want can
+> be solved by solving problem B and backporting it to LTS kernel.
+> I think patches for that will be well contained within overlayfs
+> (And no VFS) changes and should be relatively easy to backport.
+>
+> IOW, backportability to LTS kernel should not be a concern/blocker
+> for my patch series which fixes syncfs() issue for overlayfs.
+>
 
-> > Another point, is that this reflects the real hardware. The same as we
-> > model entire SoC as multiple children of soc node (with their own
-> > properties), here we represent smaller chip which also has
-> > sub-components.
-> 
-> Components we're calling things like "extcon"...
+That's all I wanted to know.
 
-I am rather thinking about charger, but yes, extcon as well. Either you
-have USB socket (and want to use associated logic) or not.
-
-Best regards,
-Krzysztof
-
-
+Thanks,
+Amir.
