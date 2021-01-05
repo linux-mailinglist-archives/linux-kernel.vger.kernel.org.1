@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149812EAE1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 270C72EAE23
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbhAEPUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:20:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:56048 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726020AbhAEPUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:20:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B9461FB;
-        Tue,  5 Jan 2021 07:20:00 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7CA8F3F70D;
-        Tue,  5 Jan 2021 07:19:59 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH] MAINTAINERS: Update ARM SCMI entry
-Date:   Tue,  5 Jan 2021 15:19:45 +0000
-Message-Id: <20210105151945.406093-1-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727832AbhAEPWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:22:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbhAEPWi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:22:38 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103D5C061793;
+        Tue,  5 Jan 2021 07:21:58 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id 15so41490pgx.7;
+        Tue, 05 Jan 2021 07:21:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=XVD1XX3XannWZQkiPFGE0hM1GlNO9UtMwgSsJNHwDMg=;
+        b=QKuUUVMX/n857o6VHwgDSqWTy/n713BPYakWBWEdURp4hpDi9/0heOFJb3AOmVCJ49
+         Qd/Opsl4xmFvFChH+s82FEABDhdC8JpYNN1PnEk9iU2X+gvSwODydEwyK/hOnBT1Cfy1
+         Os4FHV4TMfnWGxI/EIIL3rSEa8eE3CzyowquQwVG/7N+RFiU5YGeEqQ4+D8l2P17bJcj
+         QSleZT7aH2ClSLL1ZrlWJhmNGnAuUexMBTC0WZRTk56ywmEXqVYYNpMzGZEn57U1XypU
+         On3HozuwuAj9uE4e/LgIauJE2AyUUJ9LN/FVpwFsuDeRoBKgtGDiEkdvGYTPWJt6LPcS
+         svRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=XVD1XX3XannWZQkiPFGE0hM1GlNO9UtMwgSsJNHwDMg=;
+        b=ILwHH1Nn7KJSjvGiO2L+X1+GO/NMpq7VHqKFDK6b8fIlm46vzmLLxJm7aCAwFYbTFC
+         WK94mRr22jN+FZEguEI1o7hJO1oBnYh2p8HWsK9pVQa+ouPEXFzesQWkReEyeosAvkjf
+         U522D6+rrUga4vj0m5cDx3LOXVo1/ZSJu80RBxEGedx0i6ZnrjcbsaM1xTIXG2v9zWCV
+         biDjPczp4oq3BpofrLPFEbDZDQlvOXzYG8UQtk0IeivQF4U0PFOWLjYTWJaq0JjgCGn5
+         hKz2BQRmfEIMEw98xsdXsH4z5Px9nHffAk3E9VuZ/5tbPI2fm0nxsH3uPujiiuct6/VW
+         sljQ==
+X-Gm-Message-State: AOAM5312zcWwHmvVNsMXLI+/L5ttqLv1T9FAfVp51jdQHTguNP96mM58
+        PZfIATAK1yv1G9zAh+KRW9bzl7rwF0o=
+X-Google-Smtp-Source: ABdhPJwYw1QXF4XI/GYprpYoDV0KwnTx7v/DjcAXf+m06a2+DS1FV4Ptn6MjXrxKHRAZf9h4+G2k9A==
+X-Received: by 2002:a62:7693:0:b029:19d:92fb:4ec1 with SMTP id r141-20020a6276930000b029019d92fb4ec1mr47108934pfc.4.1609860117655;
+        Tue, 05 Jan 2021 07:21:57 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id b18sm15560pfi.173.2021.01.05.07.21.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 07:21:56 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     shuah@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        jamorris@linux.microsoft.com, dong.menglong@zte.com.cn,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/bpf: remove duplicate include in test_lsm
+Date:   Tue,  5 Jan 2021 07:20:47 -0800
+Message-Id: <20210105152047.6070-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cristian is actively developing new features and more involved than me.
-So add Cristian as a designated reviewer. Also add the newly added scmi
-regulator driver to the list.
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Cc: Cristian Marussi <cristian.marussi@arm.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+'unistd.h' included in 'selftests/bpf/prog_tests/test_lsm.c' is
+duplicated.
+
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 ---
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/test_lsm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6eff4f720c72..34e09b55f806 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17208,6 +17208,7 @@ F:	drivers/mfd/syscon.c
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+index 6ab29226c99b..2755e4f81499 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+@@ -10,7 +10,6 @@
+ #include <unistd.h>
+ #include <malloc.h>
+ #include <stdlib.h>
+-#include <unistd.h>
  
- SYSTEM CONTROL & POWER/MANAGEMENT INTERFACE (SCPI/SCMI) Message Protocol drivers
- M:	Sudeep Holla <sudeep.holla@arm.com>
-+R:	Cristian Marussi <cristian.marussi@arm.com>
- L:	linux-arm-kernel@lists.infradead.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/arm/arm,sc[mp]i.txt
-@@ -17215,6 +17216,7 @@ F:	drivers/clk/clk-sc[mp]i.c
- F:	drivers/cpufreq/sc[mp]i-cpufreq.c
- F:	drivers/firmware/arm_scmi/
- F:	drivers/firmware/arm_scpi.c
-+F:	drivers/regulator/scmi-regulator.c
- F:	drivers/reset/reset-scmi.c
- F:	include/linux/sc[mp]i_protocol.h
- F:	include/trace/events/scmi.h
+ #include "lsm.skel.h"
+ 
 -- 
-2.25.1
+2.17.1
 
