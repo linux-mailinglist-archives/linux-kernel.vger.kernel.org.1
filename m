@@ -2,138 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF0F2EA323
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8A22EA320
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbhAECBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:01:16 -0500
-Received: from mga12.intel.com ([192.55.52.136]:30392 "EHLO mga12.intel.com"
+        id S1727769AbhAEB6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 20:58:23 -0500
+Received: from mga07.intel.com ([134.134.136.100]:54516 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727134AbhAECBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:01:15 -0500
-IronPort-SDR: Gd4MNNWaAg7AJhpcopRaRyUbKSXcHWdEFEoE1Htd1GFK1th66P9xLThTuS6J3pKFDfT8NpBkJ9
- mU2YjR5kzg+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156230692"
+        id S1725921AbhAEB6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 20:58:22 -0500
+IronPort-SDR: 95q4cpkWdl4YH6IEj6k4SXXtgul562ng9BUboIGcMalVkWiN90VzY/4l8wdDNbOTjarTEjChy7
+ ytMy2waor2gw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="241120508"
 X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="156230692"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 17:59:30 -0800
-IronPort-SDR: Op2msTBlwNLPz07pYNPWll39t/VmwFkbbW+1+wSBDD7gaLf08oZ5Lk3wdkaNVHfXtXi5KZ0rDa
- vijOeRe91zSA==
+   d="scan'208";a="241120508"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 17:57:42 -0800
+IronPort-SDR: RzFnUniCMQS+L8wegfjIkTIGdnd+nrc4inTq/GU3op7iLcsKcGzqSlkjWPk14ir+qxpITzWoeL
+ EaSEqBv82+Og==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="462143879"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Jan 2021 17:59:27 -0800
-Cc:     baolu.lu@linux.intel.com, kjlu@umn.edu,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jiang Liu <jiang.liu@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/intel: Fix memleak in intel_irq_remapping_alloc
-To:     dinghao.liu@zju.edu.cn
-References: <20210102095029.29053-1-dinghao.liu@zju.edu.cn>
- <18add30d-a830-c531-6fd2-58a1898b157f@linux.intel.com>
- <50870a42.15f1a.176c66eaf92.Coremail.dinghao.liu@zju.edu.cn>
- <6e1ce9ac-ac17-2b16-84d3-a18c011768f2@linux.intel.com>
- <3b0b2129.17762.176c6e9114d.Coremail.dinghao.liu@zju.edu.cn>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <dda6e03a-147a-a482-4f31-f3dcb8aa47bd@linux.intel.com>
-Date:   Tue, 5 Jan 2021 09:51:31 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="421587472"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
+  by orsmga001.jf.intel.com with ESMTP; 04 Jan 2021 17:57:38 -0800
+Date:   Tue, 5 Jan 2021 09:57:38 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com
+Subject: Re: [PATCH 2/2] mm: memcg: add a new MEMCG_UPDATE_BATCH
+Message-ID: <20210105015738.GC101866@shbuild999.sh.intel.com>
+References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
+ <1609252514-27795-2-git-send-email-feng.tang@intel.com>
+ <20210104131540.GG13207@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <3b0b2129.17762.176c6e9114d.Coremail.dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104131540.GG13207@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/3/21 2:22 PM, dinghao.liu@zju.edu.cn wrote:
->> On 2021/1/3 12:08, dinghao.liu@zju.edu.cn wrote:
->>>> Hi,
->>>>
->>>> On 2021/1/2 17:50, Dinghao Liu wrote:
->>>>> When irq_domain_get_irq_data() or irqd_cfg() fails
->>>>> meanwhile i == 0, data allocated by kzalloc() has not
->>>>> been freed before returning, which leads to memleak.
->>>>>
->>>>> Fixes: b106ee63abccb ("irq_remapping/vt-d: Enhance Intel IR driver to support hierarchical irqdomains")
->>>>> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
->>>>> ---
->>>>>     drivers/iommu/intel/irq_remapping.c | 2 ++
->>>>>     1 file changed, 2 insertions(+)
->>>>>
->>>>> diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
->>>>> index aeffda92b10b..cdaeed36750f 100644
->>>>> --- a/drivers/iommu/intel/irq_remapping.c
->>>>> +++ b/drivers/iommu/intel/irq_remapping.c
->>>>> @@ -1354,6 +1354,8 @@ static int intel_irq_remapping_alloc(struct irq_domain *domain,
->>>>>     		irq_cfg = irqd_cfg(irq_data);
->>>>>     		if (!irq_data || !irq_cfg) {
->>>>>     			ret = -EINVAL;
->>>>> +			kfree(data);
->>>>> +			data = NULL;
->>>>
->>>> Do you need to check (i == 0) here? @data will not be used anymore as it
->>>> goes to out branch, why setting it to NULL here?
->>>>
->>>
->>> data will be passed to ire_data->chip_data when i == 0 and
->>> intel_free_irq_resources() will free it on failure. Thus I
->>
->> Isn't it going to "goto out_free_data"? If "i == 0", the allocated @data
->> won't be freed by intel_free_irq_resources(), hence memory leaking. Does
->> this patch aim to fix this?
->>
->> Best regards,
->> baolu
->>
+On Mon, Jan 04, 2021 at 02:15:40PM +0100, Michal Hocko wrote:
+> On Tue 29-12-20 22:35:14, Feng Tang wrote:
+> > When profiling memory cgroup involved benchmarking, status update
+> > sometimes take quite some CPU cycles. Current MEMCG_CHARGE_BATCH
+> > is used for both charging and statistics/events updating, and is
+> > set to 32, which may be good for accuracy of memcg charging, but
+> > too small for stats update which causes concurrent access to global
+> > stats data instead of per-cpu ones.
+> > 
+> > So handle them differently, by adding a new bigger batch number
+> > for stats updating, while keeping the value for charging (though
+> > comments in memcontrol.h suggests to consider a bigger value too)
+> > 
+> > The new batch is set to 512, which considers 2MB huge pages (512
+> > pages), as the check logic mostly is:
+> > 
+> >     if (x > BATCH), then skip updating global data
+> > 
+> > so it will save 50% global data updating for 2MB pages
 > 
-> Correct, this is what I mean. When i > 0, data has been passed to
-> irq_data->chip_data, which will be freed in intel_free_irq_resources()
-> on failure. So there is no memleak in this case. The memleak only occurs
-> on failure when i == 0 (data has not been passed to irq_data->chip_data).
+> Please note that there is a patch set to change THP accounting to be per
+> page based (http://lkml.kernel.org/r/20201228164110.2838-1-songmuchun@bytedance.com)
+> which will change the current behavior already.
 
-So how about
+Thanks for the note! Muchun also mentioned the extra overhead will
+be brought with his patchset, which may cause obvious performance
+changes.
 
-diff --git a/drivers/iommu/intel/irq_remapping.c 
-b/drivers/iommu/intel/irq_remapping.c
-index aeffda92b10b..685200a5cff0 100644
---- a/drivers/iommu/intel/irq_remapping.c
-+++ b/drivers/iommu/intel/irq_remapping.c
-@@ -1353,6 +1353,8 @@ static int intel_irq_remapping_alloc(struct 
-irq_domain *domain,
-                 irq_data = irq_domain_get_irq_data(domain, virq + i);
-                 irq_cfg = irqd_cfg(irq_data);
-                 if (!irq_data || !irq_cfg) {
-+                       if (!i)
-+                               kfree(data);
-                         ret = -EINVAL;
-                         goto out_free_data;
-                 }
+For the performance numbers in the commit log, they are not
+bound to huge pages, as the benchmarks don't involve many
+THPs (from vmstat). I tried 128, 256, 512, 1024 etc, which
+all show similar test results, and 512 is picked specifically
+for huge pages.
 
-> I set data to NULL after kfree() in this patch to prevent double-free
-> when the failure occurs at i > 0.
+> Our batch size (MEMCG_CHARGE_BATCH) is quite arbitrary. I do not think
+> anybody has ever seriously benchmarked the effect of the size. I am not
+> opposed to changing that but I have to say I dislike the charge to
+> diverge from counters in that respect. This just opens doors to weird
+> effects IMO. Those two are quite related already.
 
-if i>0, @data has been passed and will be freed by
-intel_free_irq_resources() on the failure path. No need to free or
-clear, right?
+Yes, separating to 2 batch number is the last method I can think of,
+to avoid hurting the accuracy of charging.
 
-Best regards,
-baolu
+Thanks,
+Feng
 
+> > Following are some performance data with the patch, against
+> > v5.11-rc1, on several generations of Xeon platforms. Each category
+> > below has several subcases run on different platform, and only the
+> > worst and best scores are listed:
+> > 
+> > fio:				 +2.0% ~  +6.8%
+> > will-it-scale/malloc:		 -0.9% ~  +6.2%
+> > will-it-scale/page_fault1:	 no change
+> > will-it-scale/page_fault2:	+13.7% ~ +26.2%
+> > 
+> > One thought is it could be dynamically calculated according to
+> > memcg limit and number of CPUs, and another is to add a periodic
+> > syncing of the data for accuracy reason similar to vmstat, as
+> > suggested by Ying.
+> > 
+> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> > Cc: Shakeel Butt <shakeelb@google.com>
+> > Cc: Roman Gushchin <guro@fb.com>
+> > ---
+> >  include/linux/memcontrol.h | 2 ++
+> >  mm/memcontrol.c            | 6 +++---
+> >  2 files changed, 5 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index d827bd7..d58bf28 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -335,6 +335,8 @@ struct mem_cgroup {
+> >   */
+> >  #define MEMCG_CHARGE_BATCH 32U
+> >  
+> > +#define MEMCG_UPDATE_BATCH 512U
+> > +
+> >  extern struct mem_cgroup *root_mem_cgroup;
+> >  
+> >  enum page_memcg_data_flags {
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 605f671..01ca85d 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -760,7 +760,7 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+> >   */
+> >  void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+> >  {
+> > -	long x, threshold = MEMCG_CHARGE_BATCH;
+> > +	long x, threshold = MEMCG_UPDATE_BATCH;
+> >  
+> >  	if (mem_cgroup_disabled())
+> >  		return;
+> > @@ -800,7 +800,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+> >  {
+> >  	struct mem_cgroup_per_node *pn;
+> >  	struct mem_cgroup *memcg;
+> > -	long x, threshold = MEMCG_CHARGE_BATCH;
+> > +	long x, threshold = MEMCG_UPDATE_BATCH;
+> >  
+> >  	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+> >  	memcg = pn->memcg;
+> > @@ -905,7 +905,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
+> >  		return;
+> >  
+> >  	x = count + __this_cpu_read(memcg->vmstats_percpu->events[idx]);
+> > -	if (unlikely(x > MEMCG_CHARGE_BATCH)) {
+> > +	if (unlikely(x > MEMCG_UPDATE_BATCH)) {
+> >  		struct mem_cgroup *mi;
+> >  
+> >  		/*
+> > -- 
+> > 2.7.4
+> > 
 > 
-> Regards,
-> Dinghao
-> 
->>> set it to NULL to prevent double-free. However, if we add
->>> a check (i == 0) here, we will not need to set it to NULL.
->>> If this is better, I will resend a new patch soon.
->>>
->>> Regards,
->>> Dinghao
->>>
+> -- 
+> Michal Hocko
+> SUSE Labs
