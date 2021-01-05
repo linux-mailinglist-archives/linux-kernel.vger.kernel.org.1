@@ -2,221 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9BB2EA13F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C439C2EA143
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbhAEADW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 19:03:22 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:43142 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbhAEADW (ORCPT
+        id S1727620AbhAEAFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 19:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726826AbhAEAFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:03:22 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104NtK3r034241;
-        Tue, 5 Jan 2021 00:02:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=yjmL1z8afkDj3V29IGaVoHqpiLI+uN3cU2BdAbj6NzY=;
- b=g2Kbr2cSfynMPGf7tn+ha097scMTAVgoJ8IV/db7NZgK3uJTaNLJ8UVWZiPq9upxapnf
- Yyu7EC/DV9ZrL5mUjyEsg8UK+MYsHjXcB8zy+5U8KnsNgO2kwweSCVBrh4aYJnrx5n8C
- vCpFClMjT+bEMes+Dwj5Y71XOidukj53EPs0zuYQua4/IYpx6X3QMSI3hwciJ7A4jMBG
- Q2W2rkNhOJQoItV7Kr3vaTVMFkkL8Dmt8ZDn3CHVekBGNu03iEHGPFX0EWokm3VgbjtD
- 91LP0rIU2G/LM38a7lu0lf0iFuGDcSgS+VrXy4fg9TN+UleoZhLos7ySAm17cWjaeMpt gQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 35tebaprvy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 05 Jan 2021 00:02:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 104NvCBx030340;
-        Tue, 5 Jan 2021 00:00:28 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 35v4ras3gh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Jan 2021 00:00:27 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10500OAx015090;
-        Tue, 5 Jan 2021 00:00:25 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Jan 2021 16:00:23 -0800
-Subject: Re: [PATCH 3/6] mm: hugetlb: fix a race between freeing and
- dissolving the page
-To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
-Cc:     hillf.zj@alibaba-inc.com, n-horiguchi@ah.jp.nec.com,
-        ak@linux.intel.com, yongjun_wei@trendmicro.com.cn, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210104065843.5658-1-songmuchun@bytedance.com>
- <20210104065843.5658-3-songmuchun@bytedance.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <b41d2f1d-da2c-07ae-6bd0-31022a3378ea@oracle.com>
-Date:   Mon, 4 Jan 2021 16:00:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Mon, 4 Jan 2021 19:05:23 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA809C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:04:42 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id h205so68589192lfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:04:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RIAu8uS5feNbhsyipiwLYRptnpa/P53/nDDHuTAmANU=;
+        b=Bg9iEFVIyFaOS5eu9+24tFOHTVbPYXmXuPa8fLOxoTJNvzX7lxDPyZ8FAgHgcuxGaB
+         rNhgDMM2EisQbSa2Aj0W4NSs3lhHF6a74Ql9LVu/WjaiGVHd7gE92eQZ0c/CRKtu4JzJ
+         t/mD5T/ww180To3bcVRi1WuBNjyUSBRo97HViY0FMmvBtDXhlUIIrTy/XTGz3fIwFHkK
+         kHiEZC0MaxBAUF8ROHsWr7rD5NvAzo4FTMeU+gGGXMJmHuv8bjr4kABJUaH6RTCw5DHh
+         /9K7UvN+ot87vJi5tatgaZ6zBm8NK9C6k3l1aHFojaY0KShox6iK0tzjrdDt0ysO/eRQ
+         41Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RIAu8uS5feNbhsyipiwLYRptnpa/P53/nDDHuTAmANU=;
+        b=egID+kh7l0rmgWZKw3lsLxCtUuMV39rxuyd+ZyJHm46lBZEr1NJKzc32gcSVFvk+aO
+         K74Xg10R+VT+djQPavWiY4M7TcY1D1PHm4eGinhs0Hp5oYeBLDHUyoPwm5bcMWEexKGk
+         UhM7Wa5nVKTEROIdnMz72NSWa8Mx+p5otzNfFYsPtLC3DOU4jLCzoRXY0veDkNX+XuQE
+         2lJwZpTOWGlmy3lGpXIHnobHDzdp66tQkf68qtx3FBMlfPURGeTYyDTD2g9snaJkVXn5
+         r/iYviCo4+yhjUcRTpPSUndZcKvpthxjg2XP3XXVPkGPQErBwUI7o2rMzKfybNt2JLWP
+         MZIA==
+X-Gm-Message-State: AOAM531CkkorPdF+Bf2u5wUdxnzcLzER53uhO9aP+XadJTWmUk9kE2B3
+        rl2O59uTbfB+bBTEEQI7HkvFqRpYbswdX8ohtQE=
+X-Google-Smtp-Source: ABdhPJzCBtNw3KUV+mj0Gs5HT7pcbktTyblGdVU5raqwsE0oZINcZDbSwiY7ga3F3OiSvTBdo312EebrkCkPF+R6x98=
+X-Received: by 2002:a19:301:: with SMTP id 1mr31231450lfd.67.1609805081256;
+ Mon, 04 Jan 2021 16:04:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210104065843.5658-3-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 bulkscore=0
- suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101040145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1015 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101040145
+References: <1acf4202-e5e6-f3fb-73c3-11bc965d3058@canonical.com>
+In-Reply-To: <1acf4202-e5e6-f3fb-73c3-11bc965d3058@canonical.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Tue, 5 Jan 2021 09:04:30 +0900
+Message-ID: <CACOAw_zqsY9u4t5zhh+yk-bNVVhZS2J3f6fyOX78tZBc19JeBg@mail.gmail.com>
+Subject: Re: [f2fs-dev] f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Daeho Jeong <daehojeong@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/3/21 10:58 PM, Muchun Song wrote:
-> There is a race condition between __free_huge_page()
-> and dissolve_free_huge_page().
-> 
-> CPU0:                         CPU1:
-> 
-> // page_count(page) == 1
-> put_page(page)
->   __free_huge_page(page)
->                               dissolve_free_huge_page(page)
->                                 spin_lock(&hugetlb_lock)
->                                 // PageHuge(page) && !page_count(page)
->                                 update_and_free_page(page)
->                                 // page is freed to the buddy
->                                 spin_unlock(&hugetlb_lock)
->     spin_lock(&hugetlb_lock)
->     clear_page_huge_active(page)
->     enqueue_huge_page(page)
->     // It is wrong, the page is already freed
->     spin_unlock(&hugetlb_lock)
-> 
-> The race windows is between put_page() and spin_lock() which
-> is in the __free_huge_page().
-> 
-> We should make sure that the page is already on the free list
-> when it is dissolved.
-> 
-> Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/hugetlb.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 1f3bf1710b66..72608008f8b4 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -79,6 +79,21 @@ DEFINE_SPINLOCK(hugetlb_lock);
->  static int num_fault_mutexes;
->  struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
->  
-> +static inline bool PageHugeFreed(struct page *head)
-> +{
-> +	return page_private(head) == -1UL;
+Hi Colin,
 
-	return page_private(head + 4) == -1UL;
+Thanks for notifying me. We need to just continue without
+set_page_dirty() and f2fs_put_page().
 
-> +}
-> +
-> +static inline void SetPageHugeFreed(struct page *head)
-> +{
-> +	set_page_private(head + 4, -1UL);
-> +}
-> +
-> +static inline void ClearPageHugeFreed(struct page *head)
-> +{
-> +	set_page_private(head + 4, 0);
-> +}
-
-It is unfortunate that we can not use some existing value like
-page_huge_active() to determine if dissolve_free_huge_page() should
-proceed with freeing the page to buddy.  If the existing check,
-
-	if (!page_count(page)) {
-
-was changed to
-
-	if (!page_count(page) && !page_huge_active(page)) {
-
-the race window would be shrunk.  However, the most straight forward
-way to fully close the window is with the approach taken here.
-
-> +
->  /* Forward declaration */
->  static int hugetlb_acct_memory(struct hstate *h, long delta);
->  
-> @@ -1028,6 +1043,7 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
->  	list_move(&page->lru, &h->hugepage_freelists[nid]);
->  	h->free_huge_pages++;
->  	h->free_huge_pages_node[nid]++;
-> +	SetPageHugeFreed(page);
->  }
->  
->  static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
-> @@ -1044,6 +1060,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
->  
->  		list_move(&page->lru, &h->hugepage_activelist);
->  		set_page_refcounted(page);
-> +		ClearPageHugeFreed(page);
->  		h->free_huge_pages--;
->  		h->free_huge_pages_node[nid]--;
->  		return page;
-> @@ -1504,6 +1521,7 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
->  	spin_lock(&hugetlb_lock);
->  	h->nr_huge_pages++;
->  	h->nr_huge_pages_node[nid]++;
-> +	ClearPageHugeFreed(page);
->  	spin_unlock(&hugetlb_lock);
->  }
->  
-> @@ -1770,6 +1788,36 @@ int dissolve_free_huge_page(struct page *page)
->  		int nid = page_to_nid(head);
->  		if (h->free_huge_pages - h->resv_huge_pages == 0)
->  			goto out;
-> +
-> +		/*
-> +		 * There is a race condition between __free_huge_page()
-> +		 * and dissolve_free_huge_page().
-> +		 *
-> +		 * CPU0:                         CPU1:
-> +		 *
-> +		 * // page_count(page) == 1
-> +		 * put_page(page)
-> +		 *   __free_huge_page(page)
-> +		 *                               dissolve_free_huge_page(page)
-> +		 *                                 spin_lock(&hugetlb_lock)
-> +		 *                                 // PageHuge(page) && !page_count(page)
-> +		 *                                 update_and_free_page(page)
-> +		 *                                 // page is freed to the buddy
-> +		 *                                 spin_unlock(&hugetlb_lock)
-> +		 *     spin_lock(&hugetlb_lock)
-> +		 *     enqueue_huge_page(page)
-> +		 *     // It is wrong, the page is already freed
-> +		 *     spin_unlock(&hugetlb_lock)
-> +		 *
-> +		 * The race window is between put_page() and spin_lock() which
-> +		 * is in the __free_huge_page().
-
-IMO, the description of the race condition in the commit message is
-sufficient.  It does not need to be here in the code.  The below comment
-should be sufficient.
-
--- 
-Mike Kravetz
-
-> +		 *
-> +		 * We should make sure that the page is already on the free list
-> +		 * when it is dissolved.
-> +		 */
-> +		if (unlikely(!PageHugeFreed(head)))
-> +			goto out;
-> +
->  		/*
->  		 * Move PageHWPoison flag from head page to the raw error page,
->  		 * which makes any subpages rather than the error page reusable.
-> 
+2021=EB=85=84 1=EC=9B=94 4=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 11:43, C=
+olin Ian King <colin.king@canonical.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
+=B1:
+>
+> Hi,
+>
+> Static analysis using Coverity has detected a potential null pointer
+> dereference after a null check in the following commit:
+>
+> commit 5fdb322ff2c2b4ad519f490dcb7ebb96c5439af7
+> Author: Daeho Jeong <daehojeong@google.com>
+> Date:   Thu Dec 3 15:56:15 2020 +0900
+>
+>     f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
+>
+> The analysis is as follows:
+>
+> 4025 static int redirty_blocks(struct inode *inode, pgoff_t page_idx,
+> int len)
+> 4026 {
+> 4027        DEFINE_READAHEAD(ractl, NULL, inode->i_mapping, page_idx);
+> 4028        struct address_space *mapping =3D inode->i_mapping;
+> 4029        struct page *page;
+> 4030        pgoff_t redirty_idx =3D page_idx;
+> 4031        int i, page_len =3D 0, ret =3D 0;
+> 4032
+> 4033        page_cache_ra_unbounded(&ractl, len, 0);
+> 4034
+>
+>     1. Condition i < len, taking true branch.
+>     4. Condition i < len, taking true branch.
+>
+> 4035        for (i =3D 0; i < len; i++, page_idx++) {
+> 4036                page =3D read_cache_page(mapping, page_idx, NULL, NUL=
+L);
+>
+>     2. Condition IS_ERR(page), taking false branch.
+>     5. Condition IS_ERR(page), taking true branch.
+>
+> 4037                if (IS_ERR(page)) {
+> 4038                        ret =3D PTR_ERR(page);
+>
+>     6. Breaking from loop.
+>
+> 4039                        break;
+> 4040                }
+> 4041                page_len++;
+>
+>     3. Jumping back to the beginning of the loop.
+>
+> 4042        }
+> 4043
+>
+>     7. Condition i < page_len, taking true branch.
+>
+> 4044        for (i =3D 0; i < page_len; i++, redirty_idx++) {
+> 4045                page =3D find_lock_page(mapping, redirty_idx);
+>
+>     8. Condition !page, taking true branch.
+>     9. var_compare_op: Comparing page to null implies that page might be
+> null.
+>
+> 4046                if (!page)
+> 4047                        ret =3D -ENOENT;
+>
+> Dereference after null check (FORWARD_NULL)
+>
+>    10. var_deref_model: Passing null pointer page to set_page_dirty,
+> which dereferences it.
+>
+> 4048                set_page_dirty(page);
+> 4049                f2fs_put_page(page, 1);
+> 4050                f2fs_put_page(page, 0);
+> 4051        }
+> 4052
+> 4053        return ret;
+> 4054 }
+>
+> The !page check on line 4046 sets ret appropriately but we have a
+> following call to set_page_dirty on a null page that causes the error.
+> Not sure how this should be fixed, should the check bail out immediately
+> or just avoid the following set_page_dirty anf f2fs_put_page calls?
+>
+> Colin
+>
+>
+>
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
