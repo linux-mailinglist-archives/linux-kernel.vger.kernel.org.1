@@ -2,74 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CEE2EA201
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B8F2EA207
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbhAEA7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 19:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbhAEA7x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:59:53 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D525BC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:59:12 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id q10so15494220vsr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:59:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kZxuuYiPtHc6s2Zy+bkt3Y3hl+3F1jPre2w81KvLQfw=;
-        b=bLCWFQwUTYyKbRkiIoiB0WKRGHiO3kAx3ufaAPHtT2TOxGQyZ+iwlCyGaHOVutCFt8
-         q5LeZvTxDacbRLXvM8hzOzxPxf7h3iqUKECM9t8nJPDIaLWVic/i3BKLA0AtVs2Q8Krc
-         wYCSvi9xrIo0R29+QXHGzBiJA5s6hrcffWLdU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kZxuuYiPtHc6s2Zy+bkt3Y3hl+3F1jPre2w81KvLQfw=;
-        b=TeF6BZPgGnvTjLbW2C6CQGJyBoYJ5yLfi/JLKDjy70nSO+OV3ShpALjrgBpuTX4EeE
-         it+HV8U5m5l6D54ZYYqPkLW1haxAqBn8wpToB33xgOvycrWKh3Ju+63tX/V8HVInib+X
-         SNCKWPoPc4nKhJa1TTImMtnoQzY7Znh8Tr006BYgIJat0DplMKghHxgcuWaT2kLIT+iL
-         EMzLaNC6XvzxXkfWZgXKL2bkK1ccUuTgPE48KQDdm8DJfZQAkwucLqSsV/GikdaNOk7g
-         17LN0RrBPQZsFvv6xWpDbAHjt8Trt7Cvxga2J+xvzgzjiq0Omr+cOSOQRUtqspCxv6f+
-         RaMg==
-X-Gm-Message-State: AOAM532Npm2/q9FHtqK4P+1d+H3Epv9QLaMk7J+hVOWybG+YivEp2QPu
-        kf6VYSlNVGUlvNv8Bp8NgqpjK+cSDJXMb0RpflFh0g==
-X-Google-Smtp-Source: ABdhPJzB/3Kn2M1TyHyXiaHLvCJYLcm7dAyGmWlRcLpFicTs5UuECGJOIcH1VSh+UbCaJXtfJZqxaSnDWiCRv2KQVsI=
-X-Received: by 2002:a67:ff03:: with SMTP id v3mr44806304vsp.48.1609808352096;
- Mon, 04 Jan 2021 16:59:12 -0800 (PST)
+        id S1727925AbhAEBAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 20:00:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726518AbhAEBAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 20:00:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97AF622581;
+        Tue,  5 Jan 2021 00:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609808360;
+        bh=p9/ot+8cguDCXR5x0/upe/u3QXAAv78RzEbKzbOalkY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=svheP+Tyk14UERaRZr5m5f8EgIKooDiM3f/1QjdqTZ71wMXiwjJTww/Ed3dAzlpih
+         Yvu2CNN382yrF2twrjy8PvntLMBcYJ56g6OBAJZYaHgwGRZ9t8Vcvrq8usI7pTjFaS
+         Zsl/dsVnoKCFXshPmEqg253oOOiGcFfdpP4OzeIrkAf2hxeVxPWpyCBpK8dt1ubRYN
+         o/zNpOr7nnq0bV7SUQcvG6K13LT29pbfs+FQg3l6eWJSro1mTX4R2bkrejOsfnphpC
+         VhZl7MrMjiWwEhAamZDZyYYSCVJzfHOYasWEPE97C3YSpA6u+um+JtpmVYbelX10NW
+         h1icjcjHqNHDQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Randall Huang <huangrandall@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Leo Liou <leoliou@google.com>,
+        Jaegeuk Kim <jaegeuk@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 03/17] scsi: ufs: Clear UAC for RPMB after ufshcd resets
+Date:   Mon,  4 Jan 2021 19:59:01 -0500
+Message-Id: <20210105005915.3954208-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210105005915.3954208-1-sashal@kernel.org>
+References: <20210105005915.3954208-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210105001119.2129559-1-drinkcat@chromium.org>
- <20210105081111.v6.3.I3af068abe30c9c85cabc4486385c52e56527a509@changeid> <20210105003430.GA5061@kevin>
-In-Reply-To: <20210105003430.GA5061@kevin>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Tue, 5 Jan 2021 08:59:01 +0800
-Message-ID: <CANMq1KCjucCWW+FE=JEegw_OmPPuEFRXPBLTmjrc-k7cpBrASQ@mail.gmail.com>
-Subject: Re: [PATCH v6 3/4] drm/panfrost: devfreq: Disable devfreq when
- num_supplies > 1
-To:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Cc:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, hoegsberg@chromium.org,
-        Fei Shao <fshao@chromium.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 8:34 AM Alyssa Rosenzweig
-<alyssa.rosenzweig@collabora.com> wrote:
->
-> > GPUs with more than a single regulator (e.g. G-57 on MT8183) will
->
-> G72
+From: Randall Huang <huangrandall@google.com>
 
-Duh, sorry, yes. I will fix that in v7.
+[ Upstream commit 1918651f2d7e8d58c9b7c49755c61e41ed655009 ]
+
+If RPMB is not provisioned, we may see RPMB failure after UFS
+suspend/resume.  Inject request_sense to clear uac in ufshcd reset flow.
+
+Link: https://lore.kernel.org/r/20201201041402.3860525-1-jaegeuk@kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Randall Huang <huangrandall@google.com>
+Signed-off-by: Leo Liou <leoliou@google.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index d7e9c4bc80478..ec7005bcf61d8 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -220,6 +220,7 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba);
+ static int ufshcd_eh_host_reset_handler(struct scsi_cmnd *cmd);
+ static int ufshcd_clear_tm_cmd(struct ufs_hba *hba, int tag);
+ static void ufshcd_hba_exit(struct ufs_hba *hba);
++static int ufshcd_clear_ua_wluns(struct ufs_hba *hba);
+ static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
+ static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+ 				 bool skip_ref_clk);
+@@ -6842,7 +6843,8 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+ 
+ 	/* Establish the link again and restore the device */
+ 	err = ufshcd_probe_hba(hba, false);
+-
++	if (!err)
++		ufshcd_clear_ua_wluns(hba);
+ out:
+ 	if (err)
+ 		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+@@ -8274,13 +8276,7 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
+ 	 * handling context.
+ 	 */
+ 	hba->host->eh_noresume = 1;
+-	if (hba->wlun_dev_clr_ua) {
+-		ret = ufshcd_send_request_sense(hba, sdp);
+-		if (ret)
+-			goto out;
+-		/* Unit attention condition is cleared now */
+-		hba->wlun_dev_clr_ua = false;
+-	}
++	ufshcd_clear_ua_wluns(hba);
+ 
+ 	cmd[4] = pwr_mode << 4;
+ 
+@@ -8301,7 +8297,7 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
+ 
+ 	if (!ret)
+ 		hba->curr_dev_pwr_mode = pwr_mode;
+-out:
++
+ 	scsi_device_put(sdp);
+ 	hba->host->eh_noresume = 0;
+ 	return ret;
+-- 
+2.27.0
+
