@@ -2,472 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A592EB4EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC2F2EB4FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731513AbhAEVhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 16:37:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53358 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbhAEVhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:37:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C5214AEC1;
-        Tue,  5 Jan 2021 21:36:41 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Paul Burton <paulburton@kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        James Hartley <james.hartley@sondrel.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] MIPS: Remove empty prom_free_prom_memory functions
-Date:   Tue,  5 Jan 2021 22:36:31 +0100
-Message-Id: <20210105213633.76912-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
+        id S1731543AbhAEVog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 16:44:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26609 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725828AbhAEVoe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 16:44:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609882987;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=45VfqpcohiVmcpJsrhmwiMtIV0TA5yv5gJG2CjfKxSo=;
+        b=Log45AwVsAIGkiTY6VgFtm+2ApCRRh7FpaZufmQwkp0/8Upu4xz799rS7xR0qiqv7soWXP
+        war40/UOH5nRGFERcuFqTcEvDbqcuCI2RLBN8BvCSprh1Msv85d/1XkY9XdS0WA8stbyAH
+        YmhaQgj4GwgBjxwUmCbXchQg1NxglWQ=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-578-TKj8xLN2P2-lGc8yeZVqqA-1; Tue, 05 Jan 2021 16:43:03 -0500
+X-MC-Unique: TKj8xLN2P2-lGc8yeZVqqA-1
+Received: by mail-qt1-f200.google.com with SMTP id v9so751267qtw.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 13:43:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=45VfqpcohiVmcpJsrhmwiMtIV0TA5yv5gJG2CjfKxSo=;
+        b=mmg6icsbpEVTwAuIZv/0geaapSnSNFOzlGXueg8MEDfND9l6NiHgEH6fbnTOqseYbX
+         /9vbEJXLLqayLMCnezsR/O+35qrFTJSPqqEf5rK1vhY1lHL4V4MSsqBJ47A9Yd9MOsZl
+         0oMqbxTVjw1L7kSdMqBuukJkrwk3Eg0wyLJHttDZGZWgnk5MB9QTmCYVNI3QXgDG/5BA
+         tQQCx2A6zOAQn0J5P+yeRUxU4yIhRngi3ZPi2/TWu4GWpDmoX0zEXtpHBwv/uaS4urZK
+         XTdlGZC3JIB11k/P2iWpIVdhpK2FosIMX1nlrNKqM+R/rT5opjt28nUGNUQpy4q/MQTe
+         MUbg==
+X-Gm-Message-State: AOAM531hPQVaIhT5Yuz04QZTyQ6iSeeuj6OsfwyoWkBZFWIkm6KhscHY
+        KtgNVjjGv4zH8CgcMV3SJE+d9wCVzBQv/yptU/Ep63rGcrweD6iNR8jxdl31rKVWFB/2bBy4rqN
+        pKpKVl4pL6nLHQVugBg5D+U+B
+X-Received: by 2002:aed:2183:: with SMTP id l3mr1424506qtc.75.1609882983346;
+        Tue, 05 Jan 2021 13:43:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxiipSQoGXaCt4060scNPWjbGWYRsUdMzJxQbwaboNuzaTu8Uqm6e3uy3sSB2pDS7Ux7Ed3ww==
+X-Received: by 2002:aed:2183:: with SMTP id l3mr1424493qtc.75.1609882983088;
+        Tue, 05 Jan 2021 13:43:03 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id f17sm224790qtv.68.2021.01.05.13.43.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 13:43:02 -0800 (PST)
+Date:   Tue, 5 Jan 2021 16:43:00 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Nadav Amit <namit@vmware.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
+ writeprotect
+Message-ID: <20210105214300.GG149908@xz-x1>
+References: <A7AC77D2-6901-4225-911B-EDBF013DCA42@vmware.com>
+ <X/N4aqRgyxffhMSs@redhat.com>
+ <73EE9007-65AF-4416-9930-D992C74447A9@vmware.com>
+ <X/OCMalFYnDdGnch@redhat.com>
+ <2844ACC1-8908-494C-B411-3C69B27A1730@vmware.com>
+ <X/SzzjREaoR9u7Ua@redhat.com>
+ <BABCB1DE-C41E-4C3E-90D1-5893585FB68A@vmware.com>
+ <X/TB6ztitnESl3qZ@redhat.com>
+ <91523A61-1AF8-48F9-8650-D313032E550C@vmware.com>
+ <X/TU04nu/WdFRS3m@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <X/TU04nu/WdFRS3m@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most of the prom_free_prom_memory functions are empty. With
-a new weak prom_free_prom_memory() we can remove all of them.
+On Tue, Jan 05, 2021 at 04:06:27PM -0500, Andrea Arcangeli wrote:
+> The postcopy live snapshoitting was the #1 use case so it's hard not
+> to mention it, but there's still other interesting userland use cases
+> of uffd-wp with various users already testing it in their apps, that
+> may ultimately become more prevalent, who knows.
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/alchemy/common/prom.c     | 4 ----
- arch/mips/ar7/memory.c              | 5 -----
- arch/mips/ath25/prom.c              | 4 ----
- arch/mips/ath79/prom.c              | 5 -----
- arch/mips/bcm47xx/prom.c            | 4 ----
- arch/mips/bcm63xx/prom.c            | 4 ----
- arch/mips/bmips/setup.c             | 4 ----
- arch/mips/cobalt/setup.c            | 5 -----
- arch/mips/fw/arc/memory.c           | 2 +-
- arch/mips/fw/sni/sniprom.c          | 4 ----
- arch/mips/generic/init.c            | 4 ----
- arch/mips/lantiq/prom.c             | 4 ----
- arch/mips/loongson2ef/common/init.c | 4 ----
- arch/mips/loongson32/common/prom.c  | 4 ----
- arch/mips/loongson64/init.c         | 4 ----
- arch/mips/mm/init.c                 | 5 +++++
- arch/mips/mti-malta/malta-memory.c  | 4 ----
- arch/mips/netlogic/xlp/setup.c      | 5 -----
- arch/mips/netlogic/xlr/setup.c      | 5 -----
- arch/mips/pic32/pic32mzda/init.c    | 4 ----
- arch/mips/pistachio/init.c          | 4 ----
- arch/mips/ralink/prom.c             | 4 ----
- arch/mips/rb532/prom.c              | 5 -----
- arch/mips/sgi-ip27/ip27-memory.c    | 5 -----
- arch/mips/sgi-ip32/ip32-memory.c    | 5 -----
- arch/mips/sibyte/common/cfe.c       | 5 -----
- arch/mips/txx9/generic/setup.c      | 4 ----
- arch/mips/vr41xx/common/init.c      | 4 ----
- 28 files changed, 6 insertions(+), 114 deletions(-)
+That's true.  AFAIU umap [1] uses uffd-wp for their computings already.  I
+didn't really measure how far it can go, but currently the library is highly
+concurrent, for example, there're quite a few macros that can tune the
+parallelism of the library [2]:
 
-diff --git a/arch/mips/alchemy/common/prom.c b/arch/mips/alchemy/common/prom.c
-index d910c0a64de9..b13d8adf3be4 100644
---- a/arch/mips/alchemy/common/prom.c
-+++ b/arch/mips/alchemy/common/prom.c
-@@ -143,7 +143,3 @@ int __init prom_get_ethernet_addr(char *ethernet_addr)
- 
- 	return 0;
- }
--
--void __init prom_free_prom_memory(void)
--{
--}
-diff --git a/arch/mips/ar7/memory.c b/arch/mips/ar7/memory.c
-index 787716c5e946..ce8024c1a54e 100644
---- a/arch/mips/ar7/memory.c
-+++ b/arch/mips/ar7/memory.c
-@@ -49,8 +49,3 @@ void __init prom_meminit(void)
- 	pages = memsize() >> PAGE_SHIFT;
- 	memblock_add(PHYS_OFFSET, pages << PAGE_SHIFT);
- }
--
--void __init prom_free_prom_memory(void)
--{
--	/* Nothing to free */
--}
-diff --git a/arch/mips/ath25/prom.c b/arch/mips/ath25/prom.c
-index edf82be8870d..4466e14feaa4 100644
---- a/arch/mips/ath25/prom.c
-+++ b/arch/mips/ath25/prom.c
-@@ -20,7 +20,3 @@
- void __init prom_init(void)
- {
- }
--
--void __init prom_free_prom_memory(void)
--{
--}
-diff --git a/arch/mips/ath79/prom.c b/arch/mips/ath79/prom.c
-index 25724b4e97fd..cc6dc5600677 100644
---- a/arch/mips/ath79/prom.c
-+++ b/arch/mips/ath79/prom.c
-@@ -32,8 +32,3 @@ void __init prom_init(void)
- 	}
- #endif
- }
--
--void __init prom_free_prom_memory(void)
--{
--	/* We do not have to prom memory to free */
--}
-diff --git a/arch/mips/bcm47xx/prom.c b/arch/mips/bcm47xx/prom.c
-index 3e2a8166377f..0a63721d0fbf 100644
---- a/arch/mips/bcm47xx/prom.c
-+++ b/arch/mips/bcm47xx/prom.c
-@@ -113,10 +113,6 @@ void __init prom_init(void)
- 	setup_8250_early_printk_port(CKSEG1ADDR(BCM47XX_SERIAL_ADDR), 0, 0);
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- #if defined(CONFIG_BCM47XX_BCMA) && defined(CONFIG_HIGHMEM)
- 
- #define EXTVBASE	0xc0000000
-diff --git a/arch/mips/bcm63xx/prom.c b/arch/mips/bcm63xx/prom.c
-index df69eaa453a1..c3a2ea62c5c3 100644
---- a/arch/mips/bcm63xx/prom.c
-+++ b/arch/mips/bcm63xx/prom.c
-@@ -94,7 +94,3 @@ void __init prom_init(void)
- 		 */
- 	}
- }
--
--void __init prom_free_prom_memory(void)
--{
--}
-diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
-index 19308df5f577..afc9d696bcb6 100644
---- a/arch/mips/bmips/setup.c
-+++ b/arch/mips/bmips/setup.c
-@@ -129,10 +129,6 @@ void __init prom_init(void)
- 	register_bmips_smp_ops();
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- const char *get_system_type(void)
- {
- 	return "Generic BMIPS kernel";
-diff --git a/arch/mips/cobalt/setup.c b/arch/mips/cobalt/setup.c
-index 46581e686882..2e099d55a564 100644
---- a/arch/mips/cobalt/setup.c
-+++ b/arch/mips/cobalt/setup.c
-@@ -117,8 +117,3 @@ void __init prom_init(void)
- 
- 	setup_8250_early_printk_port(CKSEG1ADDR(0x1c800000), 0, 0);
- }
--
--void __init prom_free_prom_memory(void)
--{
--	/* Nothing to do! */
--}
-diff --git a/arch/mips/fw/arc/memory.c b/arch/mips/fw/arc/memory.c
-index 37625ae5e35d..ef5fc1ca1b5d 100644
---- a/arch/mips/fw/arc/memory.c
-+++ b/arch/mips/fw/arc/memory.c
-@@ -173,7 +173,7 @@ void __weak __init prom_cleanup(void)
- {
- }
- 
--void __weak __init prom_free_prom_memory(void)
-+void __init prom_free_prom_memory(void)
- {
- 	int i;
- 
-diff --git a/arch/mips/fw/sni/sniprom.c b/arch/mips/fw/sni/sniprom.c
-index 8f6730376a42..74975e115950 100644
---- a/arch/mips/fw/sni/sniprom.c
-+++ b/arch/mips/fw/sni/sniprom.c
-@@ -87,10 +87,6 @@ void *prom_get_hwconf(void)
- 	return (void *)CKSEG1ADDR(hwconf);
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- /*
-  * /proc/cpuinfo system type
-  *
-diff --git a/arch/mips/generic/init.c b/arch/mips/generic/init.c
-index 66a19337d2ab..68763fcde1d0 100644
---- a/arch/mips/generic/init.c
-+++ b/arch/mips/generic/init.c
-@@ -202,7 +202,3 @@ void __init arch_init_irq(void)
- 
- 	irqchip_init();
- }
--
--void __init prom_free_prom_memory(void)
--{
--}
-diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
-index 51a218f04fe0..0eb1d276da3e 100644
---- a/arch/mips/lantiq/prom.c
-+++ b/arch/mips/lantiq/prom.c
-@@ -44,10 +44,6 @@ int ltq_soc_type(void)
- 	return soc_info.type;
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- static void __init prom_init_cmdline(void)
- {
- 	int argc = fw_arg0;
-diff --git a/arch/mips/loongson2ef/common/init.c b/arch/mips/loongson2ef/common/init.c
-index ce3f02f75e2a..088aa56d4ed1 100644
---- a/arch/mips/loongson2ef/common/init.c
-+++ b/arch/mips/loongson2ef/common/init.c
-@@ -46,7 +46,3 @@ void __init prom_init(void)
- 	prom_init_uart_base();
- 	board_nmi_handler_setup = mips_nmi_setup;
- }
--
--void __init prom_free_prom_memory(void)
--{
--}
-diff --git a/arch/mips/loongson32/common/prom.c b/arch/mips/loongson32/common/prom.c
-index c133b5adf34e..fc580a22748e 100644
---- a/arch/mips/loongson32/common/prom.c
-+++ b/arch/mips/loongson32/common/prom.c
-@@ -36,10 +36,6 @@ void __init prom_init(void)
- 	setup_8250_early_printk_port((unsigned long)uart_base, 0, 0);
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- void __init plat_mem_setup(void)
- {
- 	memblock_add(0x0, (memsize << 20));
-diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
-index e13f704bef80..87a4569972ae 100644
---- a/arch/mips/loongson64/init.c
-+++ b/arch/mips/loongson64/init.c
-@@ -115,10 +115,6 @@ void __init prom_init(void)
- 	board_nmi_handler_setup = mips_nmi_setup;
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- static int __init add_legacy_isa_io(struct fwnode_handle *fwnode, resource_size_t hw_start,
- 				    resource_size_t size)
- {
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index bc80893e5c0f..5cb73bf74a8b 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -495,6 +495,11 @@ void free_init_pages(const char *what, unsigned long begin, unsigned long end)
- 
- void (*free_init_pages_eva)(void *begin, void *end) = NULL;
- 
-+void __weak __init prom_free_prom_memory(void)
-+{
-+	/* nothing to do */
-+}
-+
- void __ref free_initmem(void)
- {
- 	prom_free_prom_memory();
-diff --git a/arch/mips/mti-malta/malta-memory.c b/arch/mips/mti-malta/malta-memory.c
-index 7c25a0a2345c..952018812885 100644
---- a/arch/mips/mti-malta/malta-memory.c
-+++ b/arch/mips/mti-malta/malta-memory.c
-@@ -37,10 +37,6 @@ void __init fw_meminit(void)
- 	free_init_pages_eva = eva ? free_init_pages_eva_malta : NULL;
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- phys_addr_t mips_cdmm_phys_base(void)
- {
- 	/* This address is "typically unused" */
-diff --git a/arch/mips/netlogic/xlp/setup.c b/arch/mips/netlogic/xlp/setup.c
-index 9adc0c1b4ffc..9fbaa1e5b340 100644
---- a/arch/mips/netlogic/xlp/setup.c
-+++ b/arch/mips/netlogic/xlp/setup.c
-@@ -130,11 +130,6 @@ const char *get_system_type(void)
- 	}
- }
- 
--void __init prom_free_prom_memory(void)
--{
--	/* Nothing yet */
--}
--
- void xlp_mmu_init(void)
- {
- 	u32 conf4;
-diff --git a/arch/mips/netlogic/xlr/setup.c b/arch/mips/netlogic/xlr/setup.c
-index 627e88101316..aa83d691df0f 100644
---- a/arch/mips/netlogic/xlr/setup.c
-+++ b/arch/mips/netlogic/xlr/setup.c
-@@ -89,11 +89,6 @@ unsigned int nlm_get_cpu_frequency(void)
- 	return (unsigned int)nlm_prom_info.cpu_frequency;
- }
- 
--void __init prom_free_prom_memory(void)
--{
--	/* Nothing yet */
--}
--
- void nlm_percpu_init(int hwcpuid)
- {
- 	if (hwcpuid % 4 == 0)
-diff --git a/arch/mips/pic32/pic32mzda/init.c b/arch/mips/pic32/pic32mzda/init.c
-index 50f376f058f4..d0b1429da656 100644
---- a/arch/mips/pic32/pic32mzda/init.c
-+++ b/arch/mips/pic32/pic32mzda/init.c
-@@ -91,10 +91,6 @@ void __init prom_init(void)
- 	pic32_init_cmdline((int)fw_arg0, (char **)fw_arg1);
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- void __init device_tree_init(void)
- {
- 	if (!initial_boot_params)
-diff --git a/arch/mips/pistachio/init.c b/arch/mips/pistachio/init.c
-index 558995ed6fe8..ddc0e84c13f5 100644
---- a/arch/mips/pistachio/init.c
-+++ b/arch/mips/pistachio/init.c
-@@ -118,10 +118,6 @@ void __init prom_init(void)
- 	pr_info("SoC Type: %s\n", get_system_type());
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- void __init device_tree_init(void)
- {
- 	if (!initial_boot_params)
-diff --git a/arch/mips/ralink/prom.c b/arch/mips/ralink/prom.c
-index 02e7878dc427..25728def3503 100644
---- a/arch/mips/ralink/prom.c
-+++ b/arch/mips/ralink/prom.c
-@@ -66,7 +66,3 @@ void __init prom_init(void)
- 
- 	prom_init_cmdline();
- }
--
--void __init prom_free_prom_memory(void)
--{
--}
-diff --git a/arch/mips/rb532/prom.c b/arch/mips/rb532/prom.c
-index a9d1f2019dc3..23ad8dd9aa5e 100644
---- a/arch/mips/rb532/prom.c
-+++ b/arch/mips/rb532/prom.c
-@@ -34,11 +34,6 @@ static struct resource ddr_reg[] = {
- 	}
- };
- 
--void __init prom_free_prom_memory(void)
--{
--	/* No prom memory to free */
--}
--
- static inline int match_tag(char *arg, const char *tag)
- {
- 	return strncmp(arg, tag, strlen(tag)) == 0;
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index d411e0a90a5b..87bb6945ec25 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -404,11 +404,6 @@ void __init prom_meminit(void)
- 	}
- }
- 
--void __init prom_free_prom_memory(void)
--{
--	/* We got nothing to free here ...  */
--}
--
- extern void setup_zero_pages(void);
- 
- void __init paging_init(void)
-diff --git a/arch/mips/sgi-ip32/ip32-memory.c b/arch/mips/sgi-ip32/ip32-memory.c
-index 0f53fed39da6..3fc8d0a0bdfa 100644
---- a/arch/mips/sgi-ip32/ip32-memory.c
-+++ b/arch/mips/sgi-ip32/ip32-memory.c
-@@ -40,8 +40,3 @@ void __init prom_meminit(void)
- 		memblock_add(base, size);
- 	}
- }
--
--
--void __init prom_free_prom_memory(void)
--{
--}
-diff --git a/arch/mips/sibyte/common/cfe.c b/arch/mips/sibyte/common/cfe.c
-index 89f7fca45152..a3323f8dcc1b 100644
---- a/arch/mips/sibyte/common/cfe.c
-+++ b/arch/mips/sibyte/common/cfe.c
-@@ -316,11 +316,6 @@ void __init prom_init(void)
- #endif
- }
- 
--void __init prom_free_prom_memory(void)
--{
--	/* Not sure what I'm supposed to do here.  Nothing, I think */
--}
--
- void prom_putchar(char c)
- {
- 	int ret;
-diff --git a/arch/mips/txx9/generic/setup.c b/arch/mips/txx9/generic/setup.c
-index 0ce49978a47e..20d3d27fcc8f 100644
---- a/arch/mips/txx9/generic/setup.c
-+++ b/arch/mips/txx9/generic/setup.c
-@@ -266,10 +266,6 @@ void __init prom_init(void)
- 	txx9_board_vec->prom_init();
- }
- 
--void __init prom_free_prom_memory(void)
--{
--}
--
- const char *get_system_type(void)
- {
- 	return txx9_system_type;
-diff --git a/arch/mips/vr41xx/common/init.c b/arch/mips/vr41xx/common/init.c
-index ca53ac3060ef..628dddf79a05 100644
---- a/arch/mips/vr41xx/common/init.c
-+++ b/arch/mips/vr41xx/common/init.c
-@@ -58,7 +58,3 @@ void __init prom_init(void)
- 			strlcat(arcs_cmdline, " ", COMMAND_LINE_SIZE);
- 	}
- }
--
--void __init prom_free_prom_memory(void)
--{
--}
+  UMAP_PAGE_FILLERS This is the number of worker threads that will perform read
+  operations from the backing store (including read-ahead) for a specific umap
+  region.
+
+  UMAP_PAGE_EVICTORS This is the number of worker threads that will perform
+  evictions of pages. Eviction includes writing to the backing store if the
+  page is dirty and telling the operating system that the page is no longer
+  needed.
+
+The write lock means at least all the evictor threads will be serialized,
+immediately makes UMAP_PAGE_EVICTORS meaningless... not to mention all the rest
+of read lock takers (filler threads, worker threads, etc.).  So if it happens,
+I bet LLNL will suddenly observe a drastic drop after upgrading the kernel..
+
+I don't know why umap didn't hit the tlb issue already.  It seems to me that
+issues may only trigger with COW right after a stalled tlb so COW is the only
+one affected (or, is it?) while umap may not use cow that lot by accident.  But
+I could be completely wrong on that.
+
+[1] https://github.com/LLNL/umap
+[2] https://llnl-umap.readthedocs.io/en/develop/environment_variables.html
+
 -- 
-2.29.2
+Peter Xu
 
