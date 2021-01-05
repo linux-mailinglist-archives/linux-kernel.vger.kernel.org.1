@@ -2,294 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7222EA8DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DCA2EA8DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbhAEKeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:34:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
+        id S1729284AbhAEKeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:34:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729205AbhAEKdH (ORCPT
+        with ESMTP id S1728572AbhAEKeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:33:07 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFE8C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 02:32:26 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id o13so71465605lfr.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 02:32:26 -0800 (PST)
+        Tue, 5 Jan 2021 05:34:01 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEE1C061574;
+        Tue,  5 Jan 2021 02:33:21 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id jx16so40523558ejb.10;
+        Tue, 05 Jan 2021 02:33:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BF/W0F7I0sQl/2SjY2Big80fEVdnu8HJD7TNcu3Hrw8=;
-        b=WcsCZMAW0WfLlax593niHcETCLihQaZabjx461xA4Ti/O0MiDUpIdz5hPMQTq2lTHg
-         RAlthd26x6VA2Lnk0DJI64jA+OPsQBFcDyldG8Mx+FHR5UrXjfCfizVgLPZcdZAgNpoJ
-         VKbV7aP53+6J1/BpVv8SF5+hLWKUIGw+Els+fY6EKjsiGgyWj/q7Y2sK/3v2RpopaR5J
-         q18bS/jYyDwlO6Zn6KYDDQa/vbN3bzUtqTsdWlDVDxFcyt0XkisCmfQZ2sy/UUiZrNiE
-         5I2taT7kfpLmnvD9z67zcyk+/0T1LWexOvRaSj6nIl305NxVerxlt37GUW/GUcFF0Hgs
-         J6Sw==
+        bh=Dq/maS4XldzpEIGlbDHKZApzDTOwZvZ/+2d1tQgalN8=;
+        b=WLK8B0dALXja7tR4ks/3hCp5JsNGM+rPQTjQxDrFPdm8FTFoLPr8YryEI1L+5A6vKU
+         3F6AD+dwWSEo3sVAv0TBq1rqFweDVbwuxNYhbTeo9rQUqzI0KPc2/GZtYkSaDCC9MHMG
+         6OcFI25x4oXa1FN3KXp8H9wpRmw9diiQyTLLFC2rWckiWevYEcDud+zt7q8JOXGsN+V4
+         IGvuzooTqiBzL27srKbL4OSYSAUV3a6zlsH9PLNhuIjN0MDLnhSvZ+CpXJ/DBeZisAtM
+         DIozd4mx4noxgpsdJ/lwmrgCp5U8hBKDxOtsor7s3fvHsgKdHmxTRih4TpCHaIyYtGyl
+         Fh3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BF/W0F7I0sQl/2SjY2Big80fEVdnu8HJD7TNcu3Hrw8=;
-        b=czR1kwXXRyMQPWrMESPDGfvAMqZyhxCVd0kYenqovGqJaysDhIEIujiSmYXb/TqsVW
-         wv6tU4stWLOWcwmUheoxw5sUDrTRCPjq6oa8e/Wn96VCGjRUuhXvVH7EZFSoXF4jUVk/
-         e7J9gGT10uO9EpNIqHTQRY6VzxEBxoqMotzdGIXXXFfgjJbMN+nWEVr4sisGewHX1J73
-         7kDla/iDxKidd4VWztSFcvKvpNm/Y/GfVdCLSQjnX1PxJdZnjCoHXwdjxW58Wj8UpAnL
-         7j+FRq2BgYuFbNVX+PfTD5sH43ZoV8aq3KjkqUbsABk/UGXVBrP3zOFOv5xr4mf4SclB
-         X0DA==
-X-Gm-Message-State: AOAM533xkyL3/H1gHKwhCQdib3mbt7wu1EREd6ODaip36ArGpeOcrctR
-        lo7S0/OHMMqw1eSH9IeQHT5nJKQv4xrMT3KAalaZsQ==
-X-Google-Smtp-Source: ABdhPJyB5nU8iG4ZiM1XgoAnMghgoieL6fH8RQ+kD7uMBYLEis/7X5njWUiXGyOyS4niD7D/ME/DrHT1/gKca48QMaE=
-X-Received: by 2002:a05:651c:1192:: with SMTP id w18mr35852534ljo.40.1609842745386;
- Tue, 05 Jan 2021 02:32:25 -0800 (PST)
+        bh=Dq/maS4XldzpEIGlbDHKZApzDTOwZvZ/+2d1tQgalN8=;
+        b=PSiDRzbP9bcl7iriH2H1AuguyQ+H1XkXE95fLayFEKL3Ka65tCU6nCGkaVJnHb9pAg
+         Ea7OfhQDI8BcjeDoL0W1g8JULCNbq2wKuNlRiK2XRP3qGsARUlu6T0lO+O8QoIMuH0sY
+         PBlYh4nc9hyhy78uGtHz/+XZpyC/c32B5ET5pPLpWCBw3PPhyKbm80a5vlo7cUxDIrg2
+         whsCDHogtsN+VivFbWJfxHZpERYgZMBn7t74bh3cWuc57bNwdhldxZwRBjKGNr+uJsNW
+         7cvaddgJcAX2ixIA+EvDDwxHRiNHHTeOM1nxruyvEGlUhsyj+RjP1d3VXhrFmgHHVhc+
+         n5uQ==
+X-Gm-Message-State: AOAM532I46k3izlMRWGznp0XMyyXI2bJwB1iQDfp3Sn6ge4NNxoTipZk
+        3S4qlDSw5vAqVYKNffOb4mjB2g3IT/t9KssxcEc=
+X-Google-Smtp-Source: ABdhPJw1IwoJvvz4E+71CPNwYvcxrEWRatNU1zEF3QU2DLXubK5dt1H79wfPg49In58VUpdywFPTICQ9yXUZfDnwO7k=
+X-Received: by 2002:a17:906:7f0b:: with SMTP id d11mr70752957ejr.7.1609842800032;
+ Tue, 05 Jan 2021 02:33:20 -0800 (PST)
 MIME-Version: 1.0
-References: <1604317487-14543-1-git-send-email-sumit.garg@linaro.org> <1604317487-14543-5-git-send-email-sumit.garg@linaro.org>
-In-Reply-To: <1604317487-14543-5-git-send-email-sumit.garg@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 5 Jan 2021 16:02:14 +0530
-Message-ID: <CAFA6WYNKmo6GgD1BDXGqF2b+2SdJ48=62J00agt67BKJq2an4Q@mail.gmail.com>
-Subject: Re: [PATCH v7 4/7] nmi: backtrace: Allow runtime arch specific override
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        mingo@redhat.com, mpe@ellerman.id.au,
-        Thomas Gleixner <tglx@linutronix.de>, bp@alien8.de,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, tsbogend@alpha.franken.de
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        "David S. Miller" <davem@davemloft.net>, x86@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        julien.thierry.kdev@gmail.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>
+References: <20210105101738.13072-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210105101738.13072-1-unixbhaskar@gmail.com>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Tue, 5 Jan 2021 21:33:08 +1100
+Message-ID: <CAGRGNgX-JSPW8LSmAUbm=2jkx+K4EYdntCq6P2i8td0TUk7Nww@mail.gmail.com>
+Subject: Re: [PATCH] drivers: net: wireless: realtek: Fix the word association
+ defautly de-faulty
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        zhengbin13@huawei.com, baijiaju1990@gmail.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arch maintainers,
+Hi Bhaskar,
 
-On Mon, 2 Nov 2020 at 17:16, Sumit Garg <sumit.garg@linaro.org> wrote:
+On Tue, Jan 5, 2021 at 9:19 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
 >
-> Add a boolean return to arch_trigger_cpumask_backtrace() to support a
-> use-case where a particular architecture detects at runtime if it supports
-> NMI backtrace or it would like to fallback to default implementation using
-> SMP cross-calls.
+> s/defautly/de-faulty/p
 >
-> Currently such an architecture example is arm64 supporting pseudo NMIs
-> feature which is only available on platforms which have support for GICv3
-> or later version.
 >
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->  arch/arm/include/asm/irq.h       |  2 +-
->  arch/arm/kernel/smp.c            |  3 ++-
->  arch/mips/include/asm/irq.h      |  2 +-
->  arch/mips/kernel/process.c       |  3 ++-
->  arch/powerpc/include/asm/nmi.h   |  2 +-
->  arch/powerpc/kernel/stacktrace.c |  3 ++-
->  arch/sparc/include/asm/irq_64.h  |  2 +-
->  arch/sparc/kernel/process_64.c   |  4 +++-
->  arch/x86/include/asm/irq.h       |  2 +-
->  arch/x86/kernel/apic/hw_nmi.c    |  3 ++-
->  include/linux/nmi.h              | 12 ++++--------
->  11 files changed, 20 insertions(+), 18 deletions(-)
+>  drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
+> index c948dafa0c80..7d02d8abb4eb 100644
+> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
+> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
+> @@ -814,7 +814,7 @@ bool rtl88ee_is_tx_desc_closed(struct ieee80211_hw *hw, u8 hw_queue, u16 index)
+>         u8 own = (u8)rtl88ee_get_desc(hw, entry, true, HW_DESC_OWN);
+>
+>         /*beacon packet will only use the first
+> -        *descriptor defautly,and the own may not
+> +        *descriptor de-faulty,and the own may not
 
-Do you have any comments here? It would be nice to have your ack here.
+Really? "de-faultly" isn't any better than "defaultly" and in fact
+it's even worse as it breaks up the word "default".
 
--Sumit
+This change doesn't make sense and the comment really needs to be
+completely re-written by someone who understands what's going on here
+as it barely makes sense.
 
->
-> diff --git a/arch/arm/include/asm/irq.h b/arch/arm/include/asm/irq.h
-> index 46d4114..54b0180 100644
-> --- a/arch/arm/include/asm/irq.h
-> +++ b/arch/arm/include/asm/irq.h
-> @@ -31,7 +31,7 @@ void handle_IRQ(unsigned int, struct pt_regs *);
->  void init_IRQ(void);
->
->  #ifdef CONFIG_SMP
-> -extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
-> +extern bool arch_trigger_cpumask_backtrace(const cpumask_t *mask,
->                                            bool exclude_self);
->  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
->  #endif
-> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-> index 48099c6e..bb20a43 100644
-> --- a/arch/arm/kernel/smp.c
-> +++ b/arch/arm/kernel/smp.c
-> @@ -856,7 +856,8 @@ static void raise_nmi(cpumask_t *mask)
->         __ipi_send_mask(ipi_desc[IPI_CPU_BACKTRACE], mask);
->  }
->
-> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
-> +bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
->  {
->         nmi_trigger_cpumask_backtrace(mask, exclude_self, raise_nmi);
-> +       return true;
->  }
-> diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
-> index c5d3517..34f3b42 100644
-> --- a/arch/mips/include/asm/irq.h
-> +++ b/arch/mips/include/asm/irq.h
-> @@ -78,7 +78,7 @@ extern int cp0_fdc_irq;
->
->  extern int get_c0_fdc_int(void);
->
-> -void arch_trigger_cpumask_backtrace(const struct cpumask *mask,
-> +bool arch_trigger_cpumask_backtrace(const struct cpumask *mask,
->                                     bool exclude_self);
->  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
->
-> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-> index 75ebd8d..d19e672 100644
-> --- a/arch/mips/kernel/process.c
-> +++ b/arch/mips/kernel/process.c
-> @@ -735,9 +735,10 @@ static void raise_backtrace(cpumask_t *mask)
->         }
->  }
->
-> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
-> +bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
->  {
->         nmi_trigger_cpumask_backtrace(mask, exclude_self, raise_backtrace);
-> +       return true;
->  }
->
->  int mips_get_process_fp_mode(struct task_struct *task)
-> diff --git a/arch/powerpc/include/asm/nmi.h b/arch/powerpc/include/asm/nmi.h
-> index 84b4cfe..a5eb3e2 100644
-> --- a/arch/powerpc/include/asm/nmi.h
-> +++ b/arch/powerpc/include/asm/nmi.h
-> @@ -9,7 +9,7 @@ static inline void arch_touch_nmi_watchdog(void) {}
->  #endif
->
->  #if defined(CONFIG_NMI_IPI) && defined(CONFIG_STACKTRACE)
-> -extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
-> +extern bool arch_trigger_cpumask_backtrace(const cpumask_t *mask,
->                                            bool exclude_self);
->  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
->  #endif
-> diff --git a/arch/powerpc/kernel/stacktrace.c b/arch/powerpc/kernel/stacktrace.c
-> index b644065..22b112a 100644
-> --- a/arch/powerpc/kernel/stacktrace.c
-> +++ b/arch/powerpc/kernel/stacktrace.c
-> @@ -264,8 +264,9 @@ static void raise_backtrace_ipi(cpumask_t *mask)
->         }
->  }
->
-> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
-> +bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
->  {
->         nmi_trigger_cpumask_backtrace(mask, exclude_self, raise_backtrace_ipi);
-> +       return true;
->  }
->  #endif /* defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_NMI_IPI) */
-> diff --git a/arch/sparc/include/asm/irq_64.h b/arch/sparc/include/asm/irq_64.h
-> index 4d748e9..35c01ff 100644
-> --- a/arch/sparc/include/asm/irq_64.h
-> +++ b/arch/sparc/include/asm/irq_64.h
-> @@ -87,7 +87,7 @@ static inline unsigned long get_softint(void)
->         return retval;
->  }
->
-> -void arch_trigger_cpumask_backtrace(const struct cpumask *mask,
-> +bool arch_trigger_cpumask_backtrace(const struct cpumask *mask,
->                                     bool exclude_self);
->  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
->
-> diff --git a/arch/sparc/kernel/process_64.c b/arch/sparc/kernel/process_64.c
-> index a75093b..9182001 100644
-> --- a/arch/sparc/kernel/process_64.c
-> +++ b/arch/sparc/kernel/process_64.c
-> @@ -248,7 +248,7 @@ static void __global_reg_poll(struct global_reg_snapshot *gp)
->         }
->  }
->
-> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
-> +bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
->  {
->         struct thread_info *tp = current_thread_info();
->         struct pt_regs *regs = get_irq_regs();
-> @@ -303,6 +303,8 @@ void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
->         memset(global_cpu_snapshot, 0, sizeof(global_cpu_snapshot));
->
->         spin_unlock_irqrestore(&global_cpu_snapshot_lock, flags);
-> +
-> +       return true;
->  }
->
->  #ifdef CONFIG_MAGIC_SYSRQ
-> diff --git a/arch/x86/include/asm/irq.h b/arch/x86/include/asm/irq.h
-> index 528c8a7..b7668e0 100644
-> --- a/arch/x86/include/asm/irq.h
-> +++ b/arch/x86/include/asm/irq.h
-> @@ -47,7 +47,7 @@ extern void init_ISA_irqs(void);
->  extern void __init init_IRQ(void);
->
->  #ifdef CONFIG_X86_LOCAL_APIC
-> -void arch_trigger_cpumask_backtrace(const struct cpumask *mask,
-> +bool arch_trigger_cpumask_backtrace(const struct cpumask *mask,
->                                     bool exclude_self);
->
->  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
-> diff --git a/arch/x86/kernel/apic/hw_nmi.c b/arch/x86/kernel/apic/hw_nmi.c
-> index 34a992e..e7dcd28 100644
-> --- a/arch/x86/kernel/apic/hw_nmi.c
-> +++ b/arch/x86/kernel/apic/hw_nmi.c
-> @@ -34,10 +34,11 @@ static void nmi_raise_cpu_backtrace(cpumask_t *mask)
->         apic->send_IPI_mask(mask, NMI_VECTOR);
->  }
->
-> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
-> +bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
->  {
->         nmi_trigger_cpumask_backtrace(mask, exclude_self,
->                                       nmi_raise_cpu_backtrace);
-> +       return true;
->  }
->
->  static int nmi_cpu_backtrace_handler(unsigned int cmd, struct pt_regs *regs)
-> diff --git a/include/linux/nmi.h b/include/linux/nmi.h
-> index 750c7f3..cedbfc1 100644
-> --- a/include/linux/nmi.h
-> +++ b/include/linux/nmi.h
-> @@ -143,26 +143,22 @@ static inline void touch_nmi_watchdog(void)
->  #ifdef arch_trigger_cpumask_backtrace
->  static inline bool trigger_all_cpu_backtrace(void)
->  {
-> -       arch_trigger_cpumask_backtrace(cpu_online_mask, false);
-> -       return true;
-> +       return arch_trigger_cpumask_backtrace(cpu_online_mask, false);
->  }
->
->  static inline bool trigger_allbutself_cpu_backtrace(void)
->  {
-> -       arch_trigger_cpumask_backtrace(cpu_online_mask, true);
-> -       return true;
-> +       return arch_trigger_cpumask_backtrace(cpu_online_mask, true);
->  }
->
->  static inline bool trigger_cpumask_backtrace(struct cpumask *mask)
->  {
-> -       arch_trigger_cpumask_backtrace(mask, false);
-> -       return true;
-> +       return arch_trigger_cpumask_backtrace(mask, false);
->  }
->
->  static inline bool trigger_single_cpu_backtrace(int cpu)
->  {
-> -       arch_trigger_cpumask_backtrace(cpumask_of(cpu), false);
-> -       return true;
-> +       return arch_trigger_cpumask_backtrace(cpumask_of(cpu), false);
->  }
->
->  /* generic implementation */
-> --
-> 2.7.4
->
+Thanks,
+
+-- 
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
