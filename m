@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74572EA619
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1F52EA61A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbhAEHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 02:40:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726097AbhAEHkY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 02:40:24 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233F6C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 23:39:44 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id c22so20710862pgg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 23:39:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qody2jCEDPoy5bjKSwnXJGXZoxBMsCIrdzCynOCmNlU=;
-        b=oq3fBBKmVQVQozpKqPhH/2XZWBNc8+cN4bbYtGX+YXzXx3XwUV+HfKRTT6o4OdTLQl
-         o1onvhoy7w5G9I+sfXuNay4Ez8YF0J7LLMolV111jFMx5pjqLmKSrfN3342dzuBFAQhp
-         0Zu2Sbk46ruW9o6ePdpnVqeKl544A0mafGKogLlZORZIWDWl1YlZx1OwoE63RBKlboB8
-         oO74UmcBqWY6+n6sJeNktbPMG+87Q/kSvSGufk0npne/7bvt3F1A0hwVknEyB/TPFk5m
-         Qr8dWAoJKy9b24nXUkde2DGeQSicI8dCG5rBwGWIog9BReUCW/2xjL1fXtKZwfRRwXH0
-         NbGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qody2jCEDPoy5bjKSwnXJGXZoxBMsCIrdzCynOCmNlU=;
-        b=fzFpTeWsT3QIdK+CDNXujYan24gUUCTMCUmy2VPRggMKtZZWLrQSdHcOsgyZ7MAPUt
-         RDCKBxVrl+xArJ4QnPcLrgLNpksv+6m/GEbaXj4P62Xs8fXPm5wmDhWk8ftFmZL1oeqJ
-         Lfy19JAKMrqB8v88Me9wpRK0j06YeUFTBk3Lbb0kF1+J2TVlnMcRmsMrf7t90Oe+TKfW
-         XSUHJ1Y8auqhvggYFS995KwEGpHNisai/aUWxmZFGeJ8u7qjh4jeY5/0fMcbwJV+Smlq
-         +kwqET8i3io9q/R8Kh9oEOVaqDEljMS4FJJnL53PVANE08CrusdB7ssxx41KBXbib7dI
-         LBMQ==
-X-Gm-Message-State: AOAM531qYsrxQXybeBsgNy/FM/u01iPrKpL9HpHr7xssZZuLq3ib+IOS
-        5nrZ3AcNy4N6Vb0n7rLJz5yP04qRnUZgFp+BungqnA==
-X-Google-Smtp-Source: ABdhPJyEkV+8qgmexPOtB9TgBL0q3t62sie0wd8yDjAlRGOOjzf+N1GAUIpo3hfMrt177jqbaVEw4pHMt3IW13Gq+E4=
-X-Received: by 2002:a62:61c5:0:b029:1a9:5a82:4227 with SMTP id
- v188-20020a6261c50000b02901a95a824227mr46633461pfb.61.1609832383369; Mon, 04
- Jan 2021 23:39:43 -0800 (PST)
+        id S1726984AbhAEHlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 02:41:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37162 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726029AbhAEHlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 02:41:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609832453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=P7COg91NEwnP/uoCOSBzJuMmSS7WoPNptWSZsUU3f/o=;
+        b=EgoV3I74xEMcKMjMn8KSvPeJlhAkzWHkNZaQLGiBRNeJIO6Alplk6EH2ruegnoHQvvBMgg
+        2Bqc9PoIiiuGaWSwqibh6awULQORFO22w9Za4LKdSFqgoiu0osr4d+0cdvodYvpqEHsLqx
+        iitl2vtvJ3rH85xTolJbWwD8ByKKRKU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5993AAA35;
+        Tue,  5 Jan 2021 07:40:53 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 08:40:52 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: uninitialized pmem struct pages
+Message-ID: <20210105074052.GQ13207@dhcp22.suse.cz>
+References: <20210104100323.GC13207@dhcp22.suse.cz>
+ <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
+ <20210104142624.GI13207@dhcp22.suse.cz>
+ <23a4eea2-9fdb-fd1d-ee92-9cd8ac6e8f41@redhat.com>
+ <20210104151005.GK13207@dhcp22.suse.cz>
+ <26db2c3e-10c7-c6e3-23f7-21eb5101b31a@redhat.com>
+ <20210104153300.GL13207@dhcp22.suse.cz>
+ <bf26f568-79b3-67f9-832a-9d8ef3f72c43@redhat.com>
+ <20210104155931.GN13207@dhcp22.suse.cz>
+ <CAPcyv4jGhvfDeFkY=R9+2QB3vZvRfJ=6s9o29U7msVemGhJjzw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210104121729.46981-1-alobakin@pm.me> <20210104122016.47308-1-alobakin@pm.me>
- <20210104122016.47308-2-alobakin@pm.me>
-In-Reply-To: <20210104122016.47308-2-alobakin@pm.me>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Mon, 4 Jan 2021 23:39:32 -0800
-Message-ID: <CAFP8O3LA87zyi8f64Sk5g+aLFdYhnZqsEbLC_uTsQk3+6Qus3A@mail.gmail.com>
-Subject: Re: [PATCH mips-next 2/4] MIPS: vmlinux.lds.S: add ".rel.dyn" to DISCARDS
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Alex Smith <alex.smith@imgtec.com>,
-        Markos Chandras <markos.chandras@imgtec.com>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jGhvfDeFkY=R9+2QB3vZvRfJ=6s9o29U7msVemGhJjzw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 4:21 AM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> GCC somehow manages to place some of the symbols from main.c into
-> .rel.dyn section:
->
-> mips-alpine-linux-musl-ld: warning: orphan section `.rel.dyn'
-> from `init/main.o' being placed in section `.rel.dyn'
->
-> I couldn't catch up the exact symbol, but seems like it's harmless
-> to discard it from the final vmlinux as kernel doesn't use or
-> support dynamic relocations.
->
-> Misc: sort DISCARDS section entries alphabetically.
->
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  arch/mips/kernel/vmlinux.lds.S | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
-> index 83e27a181206..1c3c2e903062 100644
-> --- a/arch/mips/kernel/vmlinux.lds.S
-> +++ b/arch/mips/kernel/vmlinux.lds.S
-> @@ -221,9 +221,10 @@ SECTIONS
->                 /* ABI crap starts here */
->                 *(.MIPS.abiflags)
->                 *(.MIPS.options)
-> +               *(.eh_frame)
->                 *(.options)
->                 *(.pdr)
->                 *(.reginfo)
-> -               *(.eh_frame)
-> +               *(.rel.dyn)
->         }
->  }
-> --
-> 2.30.0
->
->
+On Mon 04-01-21 21:33:06, Dan Williams wrote:
+> On Mon, Jan 4, 2021 at 7:59 AM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > Not sure what exactly you are asking for but crash says
+> > crash> kmem -p 6060000
+> >       PAGE          PHYSICAL      MAPPING       INDEX CNT FLAGS
+> > fffff8c600181800     6060000                0        0  0 fffffc0000000
+> >
+> > > I do wonder what hosts pfn_to_page(PHYS_PFN(0x6060000)) - is it actually
+> > > part of the actual altmap (i.e. > 0x6060000) or maybe even self-hosted?
+> >
+> > I am not really familiar with the pmem so I would need more assistance
+> > here. I've tried this (shot into the dark):
+> > crash> struct page.pgmap fffff8c600181800
+> >       pgmap = 0xfffff8c600181808
+> 
+> Does /proc/iomem show an active namespace in the range?
 
-(I don't know why I am on the CC list since I know little about
-mips... Anyway, I know the LLD linker's behavior in case that was the
-intention... )
+Any tips how I dig that out from the crash dump?
 
-I think it'd be good to know the reason why these dynamic relocations
-are produced and fix the root cause.
+> You should be
+> able to skip ahead to the first pfn in that namespace to find the
+> first dev_pagemap. I would have expected pfn_to_online_page() to have
+> saved you here. This address range is section aligned.
 
-arch/x86/kernel/vmlinux.lds.S asserts no dynamic relocation:
-ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations
-(.rela) detected!")
+Well, the affected code in this case was 
+	end_pfn = min(start_pfn + nr_pages,
+                        zone_end_pfn(page_zone(pfn_to_page(start_pfn))));
+where start_pfn was the first pfn of a memory section. This code was
+completely unaware of zone device or dev_pagemap like most others pfn
+walkers. It just wanted to get bounds for the zone but it stumbled over
+uninitialized zone/node.
+-- 
+Michal Hocko
+SUSE Labs
