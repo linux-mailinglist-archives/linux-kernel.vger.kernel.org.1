@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C556D2EB67A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 00:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B0F2EB68D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 00:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbhAEXuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 18:50:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
+        id S1725903AbhAEX4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 18:56:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbhAEXuS (ORCPT
+        with ESMTP id S1725813AbhAEX4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 18:50:18 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29777C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 15:49:38 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id 4so616635plk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 15:49:38 -0800 (PST)
+        Tue, 5 Jan 2021 18:56:13 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333E2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 15:55:33 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id p187so1075364iod.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 15:55:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=whc2U5gu5zwKqW7Z1BCd12zYqBfLakFsyLK0IzuWzP8=;
-        b=RSYt8aWDjjxG6udavDTUY19W7lHxifCi8492IhANNtipB66/pAWN4AWXhxP+tKJjzj
-         NAt6EZe3Zc49FsV8iZqgXQYgJhiyWJGhH2M+FU4a+hrkDhxcKleEPmDxC/dbtEfz1xUt
-         pCyc5Z1UjpWdgzYdXymMqBg4/iQss87JLDkc3GBlPcvhXS8glcjpf6uYvbc7H/RMDvu/
-         CFA768T2YFosp2nuzRHipHGrkO/FmljBtLCcy/EAk49H2eGvFNq+g4C5l8ia3GpKPluR
-         YyRYxluQN/pzIVaPgOrg0Aeix4rrrI4HowMzphddpO2W6+g+v6qwwgOxUHV7jgOodkf9
-         oyDA==
+        bh=P9cxczu5SWz8K1Y8wh3jbN1kCg9PCTdSsNoKF/csdlw=;
+        b=qmNvR6Y/mZMkV6xILKuddIBlO+MgpZ1uOjExFkQI7O3ZtG3D4htKuT+nhTw2Woju73
+         BBYSDSi1wgJNMcEDvZqYZlQjcfGA7YEPkNaoEUMHd7p4c/6F3XY4/+ED9arPqqvbVt92
+         A75zfWz4A3zw6/dB1NE09vYCvq+/WH1AWWmvASlOKfCeLGn5ROr6V9wLcKsGR7xJKyrY
+         BmDpRISIOchC7Ldtj6+DKjH6twXii0PxPzTJiLYF21W5ifrt3dCHR5YC3I2X0V/5d/1M
+         7f16lvU2pmb8vsnQlafiaMXfmlSWiXqc3K3LIMvzWwhSSTbbulHzapjjIMtOg/kEcxzB
+         xv2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=whc2U5gu5zwKqW7Z1BCd12zYqBfLakFsyLK0IzuWzP8=;
-        b=InyyujnaGFSWnXF9XMTIIbuAWv9wmXSbvxfpUx50+JsXyckbaOsNosdjcDbOGOEk4O
-         VkMmuF8u3M3ZAJgK3GRrySKKNDJz1vlsDIkL3IKfMC887oCCpZHwxKtyduXdlzNMRhzy
-         W6lT//hD7O8SU9ryKf10X0YNbKS8EjKOQHuzH/iMV6fMbDAY28HwCtKu1QvxDMWWfE07
-         w0xH2hOC1J23r5BNkq8plQjpW8/n987h81MLGJA72WWQeE2Ipt1b16b9rDgnTO0MBf41
-         Q9N61Dyua6UcX2kyRX6SRg4hL3KO0bpcylRiLRxfvQQOPBiPv6xobe6QS0ZyszhcmvG1
-         z41w==
-X-Gm-Message-State: AOAM530bgNln7mRCGne9wYXTe9ExzBaw/kswFHZV48ft8flWxkEmsCEm
-        ZWeOL8zQM1LxIBLc7ileWSPzW/N/PAk=
-X-Google-Smtp-Source: ABdhPJwL704VReSw6jgByR6yvKwqCTroZ13+bPc6/tofWoYLUxpY5mR6MoNopmnlk4n6HDG6LBwFJA==
-X-Received: by 2002:a17:902:b693:b029:da:e92c:fc23 with SMTP id c19-20020a170902b693b02900dae92cfc23mr1531675pls.55.1609890577267;
-        Tue, 05 Jan 2021 15:49:37 -0800 (PST)
-Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:a6ae:11ff:fe18:6ce2])
-        by smtp.gmail.com with ESMTPSA id 8sm285724pgx.48.2021.01.05.15.49.34
+        bh=P9cxczu5SWz8K1Y8wh3jbN1kCg9PCTdSsNoKF/csdlw=;
+        b=TomMDfmNVeAy/om6QCAqvzML4qsB/PF7G0jRZ+SmZv5rqzjDpQIgBNcnJeC9hnoR/p
+         Nj68pTNyYv0mKmXmT5ChpkvJA1ru8UquIONEsXjJqrZkxtQ+/185X4vx8Fceub+M2PMD
+         rI+I5uEQXPGQTtGXEhH/Of27XHiTiMawjLdzVPS5j1TvRe08gy8psEcYYutDBM/cjdk4
+         BD+WIuVSQqiyRYB0AbsvFdvjbURPBpTTtQmHnWXgbP8e81GPUII/SbX+1JVuvyVdsRmW
+         bX+7gdNU5KQ5mZ811sGeo2k6Sdud00eTk3aq0vzVTv2FIGAQKr7BOEwaVqzgpp69olbf
+         1HdQ==
+X-Gm-Message-State: AOAM533TOe5JEXoh8s8Ei1BBauOyAzTRFqSbFHrXlK35Vk67OuR4xd9T
+        J2nOD9EQenarbdpiv87lv9vCQQ==
+X-Google-Smtp-Source: ABdhPJzW0+1wnI9+dPf7LC4hQ8rzEpvmwauqfoEQSeWVbbF2/K0RUMfJbui7qv5jnsQNWqNZ6ZlyTw==
+X-Received: by 2002:a5d:959a:: with SMTP id a26mr1194505ioo.94.1609890932533;
+        Tue, 05 Jan 2021 15:55:32 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id a18sm543488ilt.52.2021.01.05.15.55.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 15:49:36 -0800 (PST)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [PATCH v2] f2fs: fix null page reference in redirty_blocks
-Date:   Wed,  6 Jan 2021 08:49:28 +0900
-Message-Id: <20210105234928.1598326-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+        Tue, 05 Jan 2021 15:55:31 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org, ohad@wizery.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] rpmsg: glink: add a header file
+Date:   Tue,  5 Jan 2021 17:55:28 -0600
+Message-Id: <20210105235528.32538-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+With an x86_64 architecture W=1 build, qcom_glink_ssr_notify() is
+reported as having no previous prototype.  The prototype is found in
+"qcom_glink.h", so we just need "qcom_glink_ssr.c" to include that
+file.
 
-By Colin's static analysis, we found out there is a null page reference
-under low memory situation in redirty_blocks. I've made the page finding
-loop stop immediately and return an error not to cause further memory
-pressure when we run into a failure to find a page under low memory
-condition.
-
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: 5fdb322ff2c2 ("f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE")
+Signed-off-by: Alex Elder <elder@linaro.org>
 ---
-v2: changed error value and quit the page finding loop immediately
-    when error occurs
----
- fs/f2fs/file.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/rpmsg/qcom_glink_ssr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 9e5275716be8..d27173c24391 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -4060,8 +4060,10 @@ static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
+diff --git a/drivers/rpmsg/qcom_glink_ssr.c b/drivers/rpmsg/qcom_glink_ssr.c
+index dcd1ce6169747..4da6c7d985568 100644
+--- a/drivers/rpmsg/qcom_glink_ssr.c
++++ b/drivers/rpmsg/qcom_glink_ssr.c
+@@ -8,6 +8,7 @@
+ #include <linux/module.h>
+ #include <linux/notifier.h>
+ #include <linux/rpmsg.h>
++#include <linux/rpmsg/qcom_glink.h>
+ #include <linux/remoteproc/qcom_rproc.h>
  
- 	for (i = 0; i < page_len; i++, redirty_idx++) {
- 		page = find_lock_page(mapping, redirty_idx);
--		if (!page)
--			ret = -ENOENT;
-+		if (!page) {
-+			ret = -ENOMEM;
-+			break;
-+		}
- 		set_page_dirty(page);
- 		f2fs_put_page(page, 1);
- 		f2fs_put_page(page, 0);
+ /**
 -- 
-2.29.2.729.g45daf8777d-goog
+2.20.1
 
