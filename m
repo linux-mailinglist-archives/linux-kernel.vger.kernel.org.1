@@ -2,257 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0522EA352
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481EC2EA358
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbhAECX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:23:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727713AbhAECX7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:23:59 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04098C061798
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 18:22:43 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id q4so15559173plr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 18:22:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Hn4C3X73ZRbSUEbsAMTPQXDD220zuLG8ISgW8JZ0kw8=;
-        b=ZVs0uBSCYstjUZV8aa/ghv2YMc+dygqubFe481E2kUOyqSeGsbK/5Qc0WkR5rdO/g3
-         iI0z/umCQgz+slespf0fQctD0eRL5U9sy135yBKjJiNKelx/Yu1HNuG6vASFloLKhWPc
-         aDW1tv05eLZ+ME0MfpTLFOvciysF5w/x46iaI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Hn4C3X73ZRbSUEbsAMTPQXDD220zuLG8ISgW8JZ0kw8=;
-        b=QQOFInOBX8DLdp3WQHb6vuw439asofRhUsZj7LBrWF9x3Q4yl5zT/6S6CeMakyp/c2
-         pt9Pnz7nCAF+hHocOLoNnd6/jiLw71Tey0F/8KWOLYo46afH3V9vNViDdERev7hvQZBJ
-         ZQnmBIuzptkuyjtsgKW/sKDst2PKEAzL8EWnxwhDUxdQYXZXlQvfnmxvsB9ubd9fdi2o
-         m5KaJlI3h6NrOPk0kwpsK6VKsjgBfnrthUs3ATrj3dqlPZam1ONC4FH7fA701YHJefrF
-         XneUrY0r88SnTDEB/jEN1M6TMvnJAWUl9O0CpzJZEIR5Damw68TT96l2+m4KaihCBpBI
-         XU4g==
-X-Gm-Message-State: AOAM531wNePS4MGOhOgUpW6XBlPr+tApSNgptHteKz9s6aTi26lVgl9B
-        IixH/FGjV8e972v+0HwvobcDwh11VYvR2g==
-X-Google-Smtp-Source: ABdhPJyWMHymXF4igTbKBfJVsA5Rb/egHmTti4iuRwMLoUXkwpt+7OHa4u095QBqwTrfCfVlMDhAHA==
-X-Received: by 2002:a17:90b:1b49:: with SMTP id nv9mr1740967pjb.112.1609813362409;
-        Mon, 04 Jan 2021 18:22:42 -0800 (PST)
-Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:a6ae:11ff:fe11:fd59])
-        by smtp.gmail.com with ESMTPSA id t23sm56732903pfc.0.2021.01.04.18.22.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 18:22:41 -0800 (PST)
-From:   Philip Chen <philipchen@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>, dmitry.torokhov@gmail.com
-Cc:     dianders@chromium.org, swboyd@chromium.org,
-        Philip Chen <philipchen@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rajat Jain <rajatja@google.com>, linux-input@vger.kernel.org
-Subject: [PATCH v3 2/2] Input: cros-ec-keyb - Expose function row physical map to userspace
-Date:   Mon,  4 Jan 2021 18:22:34 -0800
-Message-Id: <20210104182154.v3.2.Ibe7d7d53c5b4fe72c60de90111ff763b53f38dbb@changeid>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210104182154.v3.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
-References: <20210104182154.v3.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
+        id S1727098AbhAEC1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:27:11 -0500
+Received: from mout.gmx.net ([212.227.15.18]:51361 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726124AbhAEC1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 21:27:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609813479;
+        bh=KN/kuhbQ/Zqk3LPxC3QeQRjQrGG93v3t7qa9S71Qli4=;
+        h=X-UI-Sender-Class:From:Subject:To:Cc:References:Date:In-Reply-To;
+        b=dUNg7VQGiVHrFrCRH/ShQ2YsldfY6afbGIiQ8tdwFNEDON9WZCFPNQ/cmxN38z289
+         h8qeaDj1AvMv84APdiuLBKXJ7k1267lw5ELojJvuZC6E84937uh9J7S5Nzkw+9+So2
+         mQ/i13HwwGdBTAKoKC34vy0qc3iVCnc+FJtjj9Vg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.36] ([85.127.169.10]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MyKDe-1k4VsB0DNM-00yiOX; Tue, 05
+ Jan 2021 03:24:39 +0100
+From:   Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
+Subject: Re: [EXTERNAL] PROBLEM: commit f36a74b9345a leads to not booting
+ system with AMD 2990WX
+To:     David Woodhouse <dwmw2@infradead.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        iommu <iommu@lists.linux-foundation.org>
+References: <ed4be9b4-24ac-7128-c522-7ef359e8185d@gmx.at>
+ <8cfbd243321d91bad760117cc49f1770a7bd819c.camel@infradead.org>
+Message-ID: <b03b07db-2952-6e33-e9b7-93d674d024fc@gmx.at>
+Date:   Tue, 5 Jan 2021 03:24:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <8cfbd243321d91bad760117cc49f1770a7bd819c.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zuHmFm6Yjv5A7N8hRuT/T2zBtifYln9WK2TSvEj6Wdz9+zIHJih
+ JOEtZwSrhosjNKFtR3JBbBXQ+thv1vcnru0gEFLr0UDNMLhyfs66yhm+6+xsUxdhh5tCQzH
+ jRuhIQwCiBLiT0s+z85ogVD/0gbVPnT1vz7c8wBeuyRejvc4obKxP7q+4KfYFDycm9hYCkw
+ u6LaMaRV1FzlSbC+0MhxA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:enKILr0t1Y8=:V5lm5Iwp8Hv+M67WtS3eZG
+ 6VpDTWiuu8X1UFDk6T4T34YZ3aRH62EM0yPYP5BmGkDLbZdZF3Oh2eeS3aGzMLKI9j9H6W2on
+ 7J3quRUEip9I9pYWEgc2LYvNvbMyLn+VEx/jGvJfWO5HpJv1g5M2aiUbEnCA0NjwHNRW2UyAM
+ HaNNkMZB3TifNnKL6GqPpkSEoA07XMdB64IzzPsQkcoMOd+ZsuEuE4pp21jFvJuevRSylh5nx
+ z7uSHgntTXfx61PNARrsZX4LIoGZolrNYvI9nttxZk9FakFpSlTJkC+5X3UJ6tZzLGLCz3H3Y
+ +bSLi27dnaVCo4S8KCHSqf4MPrpN+MZnzGyJ9+Oh7cr7FIWTPrzgUjy3T9EEFCLUr1bRUftnN
+ qVf+Hmfy9M1MNrDVfKEoyHklXkr8QR3RqBvgEHW+DPm02zVl5k8k4eKfGBJD6QaUHUVPCLvtT
+ rghh1Kat7G0Yw8p1Cv0DmIqzF/1EXoN5xXRhLtbODo7FzovcXnN0YpS2ars1p4+tttGjymJmr
+ ev6XHWjxDeGGzArvZ4mkL1Hv6uqoSswmF6rU2ctPbWSm7VoKgYMgL2qtJAwZOHUBfvuyFmZBE
+ cKOo8ePCcIH1DL6do+QWS26CeTQLCK6nKEbFM3svymeNlWkAp25Xzi8FSMRLLh6oqcX8ZDWxk
+ KQ0SIYyOrSfdHd2VVrJ7JF4Vrq+N/MBd0a/gcLDRjPd4hrXguw7Jkjzh7QISTv7A4f3ZwbX5n
+ BnJ/S+zm6yExuow6/r0w9E5qx+IV6sb+m+Ai1nxZGynv5uMfEbes+DcqQ2iRVSRltFIoxqfXT
+ hmaBcNveX9wViAQ4TRoK9KteklbOnrcaJNSUBsyMAqTGtEy3X3gzEubZw2n2SpawT3oZ4e9xq
+ 8hj0gscfXURA6icZxBIoDkTAHgtnzuMO4dDahHSu4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The top-row keys in a keyboard usually have dual functionalities.
-E.g. A function key "F1" is also an action key "Browser back".
+On 05/01/2021 01:19, David Woodhouse wrote:
+> On Tue, 2021-01-05 at 00:05 +0100, Johnathan Smithinovic wrote:
+>> commit f36a74b9345a leads to not booting system with AMD 2990WX
+>>
+>>
+>
+> No problem, that was enough to reproduce it in qemu just by simulating
+> the same BIOS bug which causes it to *start* enabling, then abort, the
+> IRQ remapping. Thanks for the report.
+>
+> Does this fix it?
+>
 
-Therefore, when an application receives an action key code from
-a top-row key press, the application needs to know how to correlate
-the action key code with the function key code and do the conversion
-whenever necessary.
+Yes, the kernel now starts as usual, thanks a lot!
 
-Since the userpace already knows the key scanlines (row/column)
-associated with a received key code. Essentially, the userspace only
-needs a mapping between the key row/column and the matching physical
-location in the top row.
-
-This patch enhances the cros-ec-keyb driver to create such a mapping
-and expose it to userspace in the form of a function-row-physmap
-attribute. The attribute would be a space separated ordered list of
-row/column codes, for the keys in the function row, in a left-to-right
-order.
-
-The attribute will only be present when the device has a custom design
-for the top-row keys.
-
-Signed-off-by: Philip Chen <philipchen@chromium.org>
----
-
-Changes in v3:
-- parse `function-row-physmap` from DT earlier, when we probe
-  cros_ec_keyb, and then store the extracted info in struct cros_ec_keyb.
-
-Changes in v2:
-- create function-row-physmap file in sysfs by parsing
-  `function-row-physmap` property from DT
-- assume the device already has a correct keymap to reflect the custom
-  top-row keys (if they exist)
-
- drivers/input/keyboard/cros_ec_keyb.c | 82 +++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
-
-diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
-index b379ed7628781..d804430d384d6 100644
---- a/drivers/input/keyboard/cros_ec_keyb.c
-+++ b/drivers/input/keyboard/cros_ec_keyb.c
-@@ -27,6 +27,8 @@
- 
- #include <asm/unaligned.h>
- 
-+#define MAX_NUM_TOP_ROW_KEYS   15
-+
- /**
-  * struct cros_ec_keyb - Structure representing EC keyboard device
-  *
-@@ -42,6 +44,9 @@
-  * @idev: The input device for the matrix keys.
-  * @bs_idev: The input device for non-matrix buttons and switches (or NULL).
-  * @notifier: interrupt event notifier for transport devices
-+ * @function_row_physmap: An array of the encoded rows/columns for the top
-+ *                        row function keys, in an order from left to right
-+ * @num_function_row_keys: The number of top row keys in a custom keyboard
-  */
- struct cros_ec_keyb {
- 	unsigned int rows;
-@@ -49,6 +54,7 @@ struct cros_ec_keyb {
- 	int row_shift;
- 	const struct matrix_keymap_data *keymap_data;
- 	bool ghost_filter;
-+	bool has_custom_top_row_keys;
- 	uint8_t *valid_keys;
- 	uint8_t *old_kb_state;
- 
-@@ -58,6 +64,9 @@ struct cros_ec_keyb {
- 	struct input_dev *idev;
- 	struct input_dev *bs_idev;
- 	struct notifier_block notifier;
-+
-+	u16 function_row_physmap[MAX_NUM_TOP_ROW_KEYS];
-+	u8 num_function_row_keys;
- };
- 
- /**
-@@ -527,6 +536,8 @@ static int cros_ec_keyb_register_matrix(struct cros_ec_keyb *ckdev)
- 	struct input_dev *idev;
- 	const char *phys;
- 	int err;
-+	u32 top_row_key_pos[MAX_NUM_TOP_ROW_KEYS] = {0};
-+	u8 i;
- 
- 	err = matrix_keypad_parse_properties(dev, &ckdev->rows, &ckdev->cols);
- 	if (err)
-@@ -578,6 +589,22 @@ static int cros_ec_keyb_register_matrix(struct cros_ec_keyb *ckdev)
- 	ckdev->idev = idev;
- 	cros_ec_keyb_compute_valid_keys(ckdev);
- 
-+	if (of_property_read_variable_u32_array(dev->of_node,
-+						"function-row-physmap",
-+						top_row_key_pos,
-+						0,
-+						MAX_NUM_TOP_ROW_KEYS) > 0) {
-+		for (i = 0; i < MAX_NUM_TOP_ROW_KEYS; i++) {
-+			if (!top_row_key_pos[i])
-+				break;
-+			ckdev->function_row_physmap[i] = MATRIX_SCAN_CODE(
-+						KEY_ROW(top_row_key_pos[i]),
-+						KEY_COL(top_row_key_pos[i]),
-+						ckdev->row_shift);
-+		}
-+		ckdev->num_function_row_keys = i;
-+	}
-+
- 	err = input_register_device(ckdev->idev);
- 	if (err) {
- 		dev_err(dev, "cannot register input device\n");
-@@ -587,6 +614,52 @@ static int cros_ec_keyb_register_matrix(struct cros_ec_keyb *ckdev)
- 	return 0;
- }
- 
-+static ssize_t function_row_physmap_show(struct device *dev,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	ssize_t size = 0;
-+	u8 i;
-+	struct cros_ec_keyb *ckdev = dev_get_drvdata(dev);
-+
-+	if (!ckdev->num_function_row_keys)
-+		return 0;
-+
-+	for (i = 0; i < ckdev->num_function_row_keys; i++)
-+		size += scnprintf(buf + size, PAGE_SIZE - size, "%02X ",
-+				  ckdev->function_row_physmap[i]);
-+	size += scnprintf(buf + size, PAGE_SIZE - size, "\n");
-+
-+	return size;
-+}
-+
-+static DEVICE_ATTR_RO(function_row_physmap);
-+
-+static struct attribute *cros_ec_keyb_attrs[] = {
-+	&dev_attr_function_row_physmap.attr,
-+	NULL,
-+};
-+
-+static umode_t cros_ec_keyb_attr_is_visible(struct kobject *kobj,
-+					    struct attribute *attr,
-+					    int n)
-+{
-+	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct cros_ec_keyb *ckdev = dev_get_drvdata(dev);
-+
-+	if (attr == &dev_attr_function_row_physmap.attr &&
-+	    !ckdev->num_function_row_keys)
-+		return 0;
-+
-+	return attr->mode;
-+}
-+
-+static const struct attribute_group cros_ec_keyb_attr_group = {
-+	.is_visible = cros_ec_keyb_attr_is_visible,
-+	.attrs = cros_ec_keyb_attrs,
-+};
-+
-+
- static int cros_ec_keyb_probe(struct platform_device *pdev)
- {
- 	struct cros_ec_device *ec = dev_get_drvdata(pdev->dev.parent);
-@@ -617,6 +690,12 @@ static int cros_ec_keyb_probe(struct platform_device *pdev)
- 		return err;
- 	}
- 
-+	err = sysfs_create_group(&dev->kobj, &cros_ec_keyb_attr_group);
-+	if (err) {
-+		dev_err(dev, "failed to create attributes. err=%d\n", err);
-+		return err;
-+	}
-+
- 	ckdev->notifier.notifier_call = cros_ec_keyb_work;
- 	err = blocking_notifier_chain_register(&ckdev->ec->event_notifier,
- 					       &ckdev->notifier);
-@@ -632,6 +711,9 @@ static int cros_ec_keyb_probe(struct platform_device *pdev)
- static int cros_ec_keyb_remove(struct platform_device *pdev)
- {
- 	struct cros_ec_keyb *ckdev = dev_get_drvdata(&pdev->dev);
-+	struct device *dev = &pdev->dev;
-+
-+	sysfs_remove_group(&dev->kobj, &cros_ec_keyb_attr_group);
- 
- 	blocking_notifier_chain_unregister(&ckdev->ec->event_notifier,
- 					   &ckdev->notifier);
--- 
-2.26.2
-
+Kind regards
+John
