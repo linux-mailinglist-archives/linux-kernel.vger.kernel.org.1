@@ -2,162 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9782EAD73
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992232EAD76
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727155AbhAEOhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:37:54 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:51024 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726901AbhAEOhy (ORCPT
+        id S1727276AbhAEOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:38:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725813AbhAEOi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:37:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609857453; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=4DiNJfGzzRCDF2FL02HtG0SOdr7LDb46DzlmbUJfV6s=; b=Mc79uCTk8J+0zXYJOEpu98hPISZsRm++QulwcBbuRCceBLqVoLJsaYAQw+HFdA9q76CoFzZZ
- JcDFT2cjBScRSrBuVXJTD5KNcnzqBnk4NUTHa9osQLwqApbUVIHSM27AMqNIbsY0odQX8Mlj
- 5O8XwCd+j0gXFLRrU7V/N24JVnQ=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
- 5ff47988b73be0303d2da1cf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 14:36:56
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AF37CC433C6; Tue,  5 Jan 2021 14:36:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E3526C433CA;
-        Tue,  5 Jan 2021 14:36:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E3526C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     sumit.semwal@linaro.org, christian.koenig@amd.com, arnd@arndb.de
-Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>,
-        "# 5 . 4+" <stable@vger.kernel.org>
-Subject: [PATCH V2] dmabuf: fix use-after-free of dmabuf's file->f_inode
-Date:   Tue,  5 Jan 2021 20:06:39 +0530
-Message-Id: <1609857399-31549-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 5 Jan 2021 09:38:29 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8EDC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 06:37:49 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id i18so28383058ioa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 06:37:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RzjkvGxqKFDZ9F1xxafxOLJw55tsbmpo5NpSYZrEYiM=;
+        b=e/dJwo9uIHjIqdB08TWkA7h4892MwAMgjDseDxRVldNuy7oaX9KuTgLscSuqij69gH
+         vKHtuVeIzm3/tcugP4IRbRbO352YVBAKPS4r6WiRHFPK+LJSYvYxpqNsgw40AhU1V4Nx
+         sq8PUTetZjeLCoL9NvoUL5g79KCsCmy00yZq8eqJgxC6/1WIlZvDiWnAC2l42lgYwkCj
+         dxke3TS1PyDyAPP8/lCBza5nH3T2cKpCUDGsLLyLuD4lB7XeOxvwP6iiWhDYbUqkoeS/
+         RBBK5wssIDcRvGcl5MQB6/f76NPk0k9MXHUcSxdDsMrYVte1DK5oaq+lQU0YtdrWI7wX
+         bFnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RzjkvGxqKFDZ9F1xxafxOLJw55tsbmpo5NpSYZrEYiM=;
+        b=FSmEr7UURXu2Xz8ZWxwTcgw/J99G1fps8UO7jkGaiRFxok2v9zjJoFT+I55rugwUOa
+         eFod/wn95+O1hn8BrQSPKDp7OlKGY+Apb5sKCZByXPtCWiC87U+IoMxkrLP2Oa0fJ02i
+         gEDh3VIj8thpAITKMahPFlKokXbIVm6UNlsQ6jkVKa1fwROVL3VznJz4P0nilv+DbEO2
+         6VKQfcSYWG/5ItLsDkKUVJD9rJdOfTcJM7KP3aHol5Kw0GPyL830TUBO5OODHyqg5mns
+         ZNRDJet1RZQJZ2TsoN5yXJIEmDuavh7DxQkf2ZN/5thP+eseHhjxLuLgBOzDJZZRa5uT
+         K+4Q==
+X-Gm-Message-State: AOAM531H34/8O3BFBDfIeG0FDdnSjepIhX9S+wkv/qvc2odt/rZPjP5S
+        qI/U99NInRKGqCk+b/H8WmLM39Xz5MDB4oky8xurPFfkWU7Z0g==
+X-Google-Smtp-Source: ABdhPJwmIaNhbekbQXgTl1KaeGgSTZraKdKXU1oL14T9fjnquhzCcOtlf1v6eFykUR9Br3ttqUEDGW0Jsh2vmSIvIg4=
+X-Received: by 2002:a02:ccdc:: with SMTP id k28mr64673118jaq.137.1609857468705;
+ Tue, 05 Jan 2021 06:37:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201226025117.2770-1-jiangshanlai@gmail.com> <20201226025117.2770-4-jiangshanlai@gmail.com>
+ <20210104135649.GO3021@hirez.programming.kicks-ass.net> <CAJhGHyB_MUHG8GGANcN9sQbjY7M5m8WPHQgXp-PmkGK481M5Tg@mail.gmail.com>
+ <CAJhGHyCwyuzikMZAxub=rxn9oe-N2P5C8CEOmyigd9d55SV5YA@mail.gmail.com> <20210105131737.GH3040@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210105131737.GH3040@hirez.programming.kicks-ass.net>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Tue, 5 Jan 2021 22:37:37 +0800
+Message-ID: <CAJhGHyC1F5mcYpqKvmxwFrmJz_OsJKWe_Zbn9Hm=fx7-_bKq_Q@mail.gmail.com>
+Subject: Re: [PATCH -tip V3 3/8] workqueue: introduce wq_online_cpumask
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is observed 'use-after-free' on the dmabuf's file->f_inode with the
-race between closing the dmabuf file and reading the dmabuf's debug
-info.
+On Tue, Jan 5, 2021 at 9:17 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Jan 05, 2021 at 04:23:44PM +0800, Lai Jiangshan wrote:
+> > On Tue, Jan 5, 2021 at 10:41 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
+> > > On Mon, Jan 4, 2021 at 9:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > > On Sat, Dec 26, 2020 at 10:51:11AM +0800, Lai Jiangshan wrote:
+> > > > > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> > > > >
+> > > > > wq_online_cpumask is the cached result of cpu_online_mask with the
+> > > > > going-down cpu cleared.
+> > > >
+> > > > You can't use cpu_active_mask ?
+> > >
+> > > When a cpu is going out:
+> > > (cpu_active_mask is not protected by workqueue mutexs.)
+>
+> But it is protected by the hotplug lock, which is really all you need
+> afaict.
+>
+> If the worker thread gets spawned before workqueue_offline_cpu(), said
+> function will observe it and adjust the mask, if it gets spawned after
+> it, it must observe a 'reduced' cpu_active_mask.
 
-Consider the below scenario where P1 is closing the dma_buf file
-and P2 is reading the dma_buf's debug info in the system:
+Making the workqueue set workers' cpumask correctly is easy.
+The hard part is how to suppress the warning.
 
-P1						P2
-					dma_buf_debug_show()
-dma_buf_put()
-  __fput()
-    file->f_op->release()
-    dput()
-    ....
-      dentry_unlink_inode()
-        iput(dentry->d_inode)
-        (where the inode is freed)
-					mutex_lock(&db_list.lock)
-					read 'dma_buf->file->f_inode'
-					(the same inode is freed by P1)
-					mutex_unlock(&db_list.lock)
-      dentry->d_op->d_release()-->
-        dma_buf_release()
-          .....
-          mutex_lock(&db_list.lock)
-          removes the dmabuf from the list
-          mutex_unlock(&db_list.lock)
+It is true that said function will observe it and adjust the mask,
+but the warning is already issued.
 
-In the above scenario, when dma_buf_put() is called on a dma_buf, it
-first frees the dma_buf's file->f_inode(=dentry->d_inode) and then
-removes this dma_buf from the system db_list. In between P2 traversing
-the db_list tries to access this dma_buf's file->f_inode that was freed
-by P1 which is a use-after-free case.
+>
+> > >
+> > > create_worker() for unbound pool  |  cpu offlining
+> > > check cpu_active_mask             |
+> > check wq_online_cpumask
+> > >                                   |  remove bit from cpu_active_mask
+> > >                                   |  no cpu in pool->attrs->cpumask is active
+> > > set pool->attrs->cpumask to worker|
+> > > and hit the warning
+> >                                     |  remove bit from wq_online_cpumask
+> >
+> > Even with the help of wq_online_cpumask, the patchset can't silence
+> > the warning in __set_cpus_allowed_ptr() in this case.  It is indeed
+> > hard to suppress the warning for unbound pools.  Maybe we need something
+> > like this (outmost callback of CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
+> > so that workqueue can do preparation when offlining before AP_ACTIVE):
+> >
+> > diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+> > index 0042ef362511..ac2103deb20b 100644
+> > --- a/include/linux/cpuhotplug.h
+> > +++ b/include/linux/cpuhotplug.h
+> > @@ -20,6 +20,9 @@
+> >   *               |                               ^
+> >   *               v                               |
+> >   *              AP_ACTIVE                      AP_ACTIVE
+> > + *               |                               ^
+> > + *               v                               |
+> > + *              ONLINE                         ONLINE
+> >   */
+> >
+> >  enum cpuhp_state {
+> > @@ -194,6 +197,7 @@ enum cpuhp_state {
+> >         CPUHP_AP_X86_HPET_ONLINE,
+> >         CPUHP_AP_X86_KVM_CLK_ONLINE,
+> >         CPUHP_AP_ACTIVE,
+> > +       CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
+> >         CPUHP_ONLINE,
+> >  };
+> >
+>
+> That's waay to late, by then userspace is long running and expecting
+> things to 'just-work'.
 
-Since, __fput() calls f_op->release first and then later calls the
-d_op->d_release, move the dma_buf's db_list removal from d_release() to
-f_op->release(). This ensures that dma_buf's file->f_inode is not
-accessed after it is released.
+I don't like this way either, I just list three ways I can think of.
+I prefer the way that __set_cpus_allowed_ptr() doesn't warn
+for kworkers.
 
-Cc: <stable@vger.kernel.org> # 5.4+
-Fixes: 4ab59c3c638c ("dma-buf: Move dma_buf_release() from fops to dentry_ops")
-Acked-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
- V2: Resending with stable tags and Acks
+>
+> But afaict, things will mostly work for you when you use cpu_active_mask
+> on cpu-down and cpu_online_mask on cpu-up.
+>
+> But I think I see the problem, it is spawning a new worker after
+> workqueue_online_cpu() but before sched_cpu_activate(), right? That
+> wants to have the wider mask set.
+>
+> To solve that, the spawning of workers thing needs to know where we are
+> in the hotplug process, and it can track that using
+> workqueue_{on,off}line_cpu(). If it happens after offline, it needs to
+> use cpu_active_mask, if it happens after online cpu_online_mask is your
+> guy.
+>
+> Does that make sense?
 
- V1: https://lore.kernel.org/patchwork/patch/1360118/
+There are six stages we need to know when spawning a worker:
 
- drivers/dma-buf/dma-buf.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+stageA ap_deactive stageB workqueue_offline stageC
+stageD workqueue_online stageE ap_active stageF
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 0eb80c1..a14dcbb 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -76,10 +76,6 @@ static void dma_buf_release(struct dentry *dentry)
- 
- 	dmabuf->ops->release(dmabuf);
- 
--	mutex_lock(&db_list.lock);
--	list_del(&dmabuf->list_node);
--	mutex_unlock(&db_list.lock);
--
- 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
- 		dma_resv_fini(dmabuf->resv);
- 
-@@ -88,6 +84,22 @@ static void dma_buf_release(struct dentry *dentry)
- 	kfree(dmabuf);
- }
- 
-+static int dma_buf_file_release(struct inode *inode, struct file *file)
-+{
-+	struct dma_buf *dmabuf;
-+
-+	if (!is_dma_buf_file(file))
-+		return -EINVAL;
-+
-+	dmabuf = file->private_data;
-+
-+	mutex_lock(&db_list.lock);
-+	list_del(&dmabuf->list_node);
-+	mutex_unlock(&db_list.lock);
-+
-+	return 0;
-+}
-+
- static const struct dentry_operations dma_buf_dentry_ops = {
- 	.d_dname = dmabuffs_dname,
- 	.d_release = dma_buf_release,
-@@ -413,6 +425,7 @@ static void dma_buf_show_fdinfo(struct seq_file *m, struct file *file)
- }
- 
- static const struct file_operations dma_buf_fops = {
-+	.release	= dma_buf_file_release,
- 	.mmap		= dma_buf_mmap_internal,
- 	.llseek		= dma_buf_llseek,
- 	.poll		= dma_buf_poll,
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+I don't think create_worker()/worker_attach_to_pool() can know where
+it is in the hotplug process unless it uses get_online_cpus() so that
+it knows it is not in the hotplug process.  There is no way to maintain
+needed information since there are no workqueue callbacks in the proper
+stages in the hotplug process.
 
+Again, making the workqueue set workers' cpumask correctly is easy.
+But we can't distinguish stageA&B or stageE&F to suppress the warning
+in __set_cpus_allowed_ptr() for new unbound workers when pool->attr->cpumask
+has only one cpu online&!active since there is no way to keep
+cpu_active_mask stable except get_online_cpus().
