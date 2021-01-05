@@ -2,82 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A222EB54F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8204E2EB556
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbhAEWWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 17:22:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
+        id S1730039AbhAEWZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 17:25:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726306AbhAEWWG (ORCPT
+        with ESMTP id S1726306AbhAEWZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 17:22:06 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A51C061574;
-        Tue,  5 Jan 2021 14:21:25 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id t6so524560plq.1;
-        Tue, 05 Jan 2021 14:21:25 -0800 (PST)
+        Tue, 5 Jan 2021 17:25:08 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DDFC06179A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 14:23:55 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 23so2113490lfg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 14:23:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UdG2SC7kDwBcsA3Hnj9cpw6DXDt6rLi9pRoI/LYlp+Y=;
-        b=GEDZAZC/Ve5dK7dgu/OtLH3a5TFyYeajGf8O6AP5C1yHVx1pgvJY3rrU3oinarOqLG
-         9d2JLbzY+jPwVEdIuCT4TCE1p+DYwVn6VI/EsCYPrHlIZglHsCurJicfcbC1/kY6myGZ
-         dkdMUZBR1JDNA5Su62YneqSX/Qc24iKRAwf00tqKLdVw6Y+/dTsZdFGM10n4c1o+KDVY
-         PK0MoQChFIarvQtPqvItHYsePwPYel6ohOKYFFCPRefLPZPDJiurqsj/gKLhjuGUCTcy
-         UAXFEov6v2EZNS3t1FX2DjbHuwHVvE/lfRLdc31CnyL7uz4HtKasR7Umebyvvp2//8zA
-         lPkQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T4sAiyArUy52pWcai1J+mIoA8s+FFE+f9MM1+ahYCSU=;
+        b=gSstDj7kJ/OpDFDoqs1xPxaHEMvZpCbZScFn/j+wkKEi4397BOHzU/7uJJX7lav6Yp
+         9ujkJ1wuM6Kyj+DydTSui7f6ypRH4cbI8xcoUhuClYmgbFhcM2ODIzJO/ehvDuzYO8v4
+         5/eWwAW9lom4PDt7sp9cFxmXO3QlkfVhvgK5wsdxSMS0x1xyDoUbDMvp7UpAKoBv4MXQ
+         p9AUri7MKrrGYZI45OByNHyEzeh0imrWTVYiXc2E/Z2MrvVJJPS1ByEHNFqG1T1wJ6Ur
+         oUQBGk6HWzotNKjBzWK6ItnX0fnM5EL6LLGFhk4+uf2Ehuf+d8Ig/021w5EX2/+cCF7T
+         95BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UdG2SC7kDwBcsA3Hnj9cpw6DXDt6rLi9pRoI/LYlp+Y=;
-        b=c9cbonBBul4PrrWun0WoN+hsq9K2xDtp7LCiOoiNqag6pryCaa5tBYXgKmGB30Mvxa
-         IKuul0pBDAuTRhan9vRS4J6CzJIH2+Ruy0+5f7uPEjcfwr0+9ooWG9HJFLtIEgBtDTir
-         wS5YDVKApWlMWJJy6psWkp51aSVzQR1HNSqpiAioh0Xv457aAygkDGPrToXbQoCSPxqz
-         duBBSh/uFOigvnvF5gfAG61P4AXZ0oiO5Ez3TZ2muIKuTGYmtPNPNMBQ97D4z3Q6d3U1
-         RpvmoKWCuI2YshjmGdWQM83OfAdQrKcsFlxYxfVDdtKzdMFS4QLx1zlK2kxRumSBQ61J
-         VqOA==
-X-Gm-Message-State: AOAM530039+xQPi3D274BXZocvpyqc+tUD5E/yZHUG7wsNEGfpkYrh4c
-        AcOF9O755yLh5PGTgA7yeWY=
-X-Google-Smtp-Source: ABdhPJxQn1m7NqTw6ysIM+RrHWp4pPKEikNtONNvAaS5SYaxo+ZpewASW2T/RGhN/hkc2Q0iNbEi3A==
-X-Received: by 2002:a17:90a:8b8a:: with SMTP id z10mr1247004pjn.67.1609885285130;
-        Tue, 05 Jan 2021 14:21:25 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id fw12sm203527pjb.43.2021.01.05.14.21.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 14:21:24 -0800 (PST)
-Date:   Tue, 5 Jan 2021 14:21:22 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] dt-bindings: adc-keys.txt: clarify description
-Message-ID: <X/TmYvLivYJcFBkd@google.com>
-References: <20201222110815.24121-1-xypron.glpk@gmx.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T4sAiyArUy52pWcai1J+mIoA8s+FFE+f9MM1+ahYCSU=;
+        b=VwxJIQlFUaB9bwKQ/ivmdcKCVYNzHZZpW9wgysCuv8KO+ZZZNCpENNJ0wSyQjfGdTQ
+         QiwsWhnwPA3vtKoQMK+4dY5t4x0oRO7NvlyWzjNV/40Oq+l0ACF63kTHRCIVpbT0lWj2
+         VabaoHkFCPLRFwNHrilSISbYdR2y1hDyVaFxY9h4lxhao072Y4X5qn3oMxDCFBj776D0
+         t4mG/d2Z3NhIHM8j6ejj7KplpflNm/0AXWtYCw0UefI0iC5VtAQuPka70SafI1OcDzYk
+         bqJ+rf7+UK6gnWZRvNJJqmMu4vmDJZIZLCxWx+beqjmHNQH9X/C8HR+mez2BZTdt9ObW
+         buSA==
+X-Gm-Message-State: AOAM53252A/k7xXS3hCV/KrzspP4KD/9P4xV7uE475H0CdNhXIDqrw7i
+        uOTN80W/5hRcIWBMLgS6g6A2UDSLht1DyEatFKifwg==
+X-Google-Smtp-Source: ABdhPJxO4Z9b+ShG5jTz0D26Lj9xrsPscyospToUwxd20F05ow49opQ6EQWGJlHtNr59vnokxZTG9VLesox0NFc/mxg=
+X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr627702lfs.529.1609885434234;
+ Tue, 05 Jan 2021 14:23:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222110815.24121-1-xypron.glpk@gmx.de>
+References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com>
+ <20201004162908.3216898-4-martin.blumenstingl@googlemail.com>
+ <CACRpkdZo-U_cAhbKb4E+d+p+5FenXkGYW0RXxyk4M5uyEPCpzw@mail.gmail.com>
+ <CAFBinCCLubmDvxfabQHx2-ucgAsm1NArMUrtPx-UA2nX5xoFFA@mail.gmail.com> <CAFBinCAZXJ2=fTQuAUyW1hNeJDHY3_pxo4UhxUaOZC=i1bpFxw@mail.gmail.com>
+In-Reply-To: <CAFBinCAZXJ2=fTQuAUyW1hNeJDHY3_pxo4UhxUaOZC=i1bpFxw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 5 Jan 2021 23:23:43 +0100
+Message-ID: <CACRpkdbKQaT61w6r9Hx40Qvy+7qyLNm-fx-BpL_wdGcB=tmcqQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/3] gpio: ej1x8: Add GPIO driver for Etron Tech Inc. EJ168/EJ188/EJ198
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-usb <linux-usb@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 12:08:15PM +0100, Heinrich Schuchardt wrote:
-> The current description of ADC keys is not precise enough.
-> 
-> "when this key is pressed" leaves it open if a key is considered pressed
-> below or above the threshold. This has led to confusion:
-> drivers/input/keyboard/adc-keys.c ignores the meaning of thresholds and
-> sets the key that is closest to press-threshold-microvolt.
-> 
-> This patch nails down the definitions and provides an interpretation of the
-> supplied example.
-> 
-> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+On Mon, Dec 21, 2020 at 4:28 PM Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+> On Wed, Oct 7, 2020 at 9:44 PM Martin Blumenstingl
+> <martin.blumenstingl@googlemail.com> wrote:
+> [...]
+> > > As noted on the earlier patches I think this should be folded into the
+> > > existing XHCI USB driver in drivers/usb/host/xhci-pci.c or, if that
+> > > gets messy, as a separate bolt-on, something like
+> > > xhci-pci-gpio.[c|h] in the drivers/usb/host/* directory.
+> > > You can use a Kconfig symbol for the GPIO portions or not.
+> > OK, I will do that if there are no objections from other developers
+> > I am intending to place the relevant code in xhci-pci-etron.c, similar
+> > to what we already have with xhci-pci-renesas.c
+>
+> I tried this and unfortunately there's a catch.
+> the nice thing about having a separate GPIO driver means that the
+> xhci-pci driver doesn't need to know about it.
 
-Applied, thank you.
+Since PCI devices have device-wide power management and things
+like that I think that is a really dangerous idea.
 
--- 
-Dmitry
+What if the GPIO driver starts poking around in this PCI device
+when the main driver is also probed and has put the device
+into sleep state?
+
+This type of set-up needs to be discussed with
+the PCI maintainer to make sure it is safe.
+
+> I implemented xhci-pci-etron.c and gave it a Kconfig option.
+> xhci-pci is then calling into xhci-pci-etron (through some
+> etron_xhci_pci_probe function).
+
+This sounds about right.
+
+> unfortunately this means that xhci-pci now depends on xhci-pci-etron.
+> for xhci-pci-renesas this is fine (I think) because that part of the
+> code is needed to get the xHCI controller going
+> but for xhci-pci-etron this is a different story: the GPIO controller
+> is entirely optional and only used on few devices
+
+I might be naive but should it not be the other way around?
+That xhci-pci-etron is dependent on xhci-pci? I imagine
+it would be an optional add-on.
+
+> my goal is (at some point in the future) to have the GPIO driver in OpenWrt.
+> I am not sure if they would accept a patch where xhci-pci would then
+> pull in the dependencies for that Etron controller, even though most
+> boards don't need it.
+
+Make sure the etron part is an additional module that can be
+loaded after xhci-pci.
+
+OpenWrt support optional modules to be compiled per-system.
+
+Yours,
+Linus Walleij
