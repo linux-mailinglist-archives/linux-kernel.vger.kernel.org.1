@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7B72EA90E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D1C2EA911
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729311AbhAEKnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:43:17 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51692 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729278AbhAEKnQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:43:16 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 040721C0B7D; Tue,  5 Jan 2021 11:42:35 +0100 (CET)
-Date:   Tue, 5 Jan 2021 11:42:34 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Pavel Machek <pavel@denx.de>, Mark Brown <broonie@kernel.org>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jiri Kosina <trivial@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Chris Brandt <Chris.Brandt@renesas.com>
-Subject: Re: [PATCH 2/2] spi: rpc-if: Remove CONFIG_PM_SLEEP ifdefery
-Message-ID: <20210105104234.GA29908@amd>
-References: <20201230145708.28544-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201230145708.28544-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdVCD52-eTnEwftGz8ExMkZkJRyM=3M8zU11yhn1UNPxxA@mail.gmail.com>
- <CA+V-a8tHVkGxCECspfcV9c1UW81bod4N4YzRLJwU8zJ0+awJUw@mail.gmail.com>
- <20210104213005.GK5645@sirena.org.uk>
- <20210104234018.GA19909@amd>
- <CAMuHMdUjevJ+DgJGnPUN0+ctxm2ML1NYSTgYsjC4c8tDqjUkxQ@mail.gmail.com>
+        id S1728806AbhAEKoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:44:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727764AbhAEKoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 05:44:01 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FD5E22515;
+        Tue,  5 Jan 2021 10:43:20 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kwjo5-005Pae-Vx; Tue, 05 Jan 2021 10:43:18 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUjevJ+DgJGnPUN0+ctxm2ML1NYSTgYsjC4c8tDqjUkxQ@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Jan 2021 10:43:17 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        tsbogend@alpha.franken.de, mpe@ellerman.id.au,
+        "David S. Miller" <davem@davemloft.net>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        julien.thierry.kdev@gmail.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Subject: Re: [PATCH v7 0/7] arm64: Add framework to turn an IPI as NMI
+In-Reply-To: <CAFA6WYNn0+yxntkebqDVnOoq50gxY4Zvi1wGLAZTJyWGc7VLkw@mail.gmail.com>
+References: <1604317487-14543-1-git-send-email-sumit.garg@linaro.org>
+ <CAFA6WYNn0+yxntkebqDVnOoq50gxY4Zvi1wGLAZTJyWGc7VLkw@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <f1aae58230a81e63cd380d1a45d5a2ee@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sumit.garg@linaro.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, linux@armlinux.org.uk, tsbogend@alpha.franken.de, mpe@ellerman.id.au, davem@davemloft.net, mingo@redhat.com, bp@alien8.de, x86@kernel.org, mark.rutland@arm.com, julien.thierry.kdev@gmail.com, dianders@chromium.org, jason.wessel@windriver.com, msys.mizuma@gmail.com, ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, daniel.thompson@linaro.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-05 10:34, Sumit Garg wrote:
 
---6c2NcOVqGQ03X4Wi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Do you have any further feedback on this patch-set?
 
-Hi!
+None at the moment. We have tons of issues to solve with the arm64
+interrupt entry code vs instrumentation at the moment, so it is
+pretty much at the bottom of the priority list for now.
 
-> On Tue, Jan 5, 2021 at 12:40 AM Pavel Machek <pavel@denx.de> wrote:
-> > > > > >                 .name   =3D "rpc-if-spi",
-> > > > > > -               .pm     =3D DEV_PM_OPS,
-> > > > > > +               .pm     =3D &rpcif_spi_pm_ops,
-> > >
-> > > > > You're aware rpcif_spi_pm_ops is now always referenced and thus e=
-mitted,
-> > > > > increasing kernel size by 92 bytes if CONFIG_PM_SLEEP=3Dn?
-> > > > > This may matter for RZ/A SoCs running from internal SRAM.
-> > >
-> > > > Hmm didn't realise this would be an issue on RZ/A.
-> > >
-> > > > Mark, could you please drop this patch from your branch.
-> > >
-> > > Please send an incremental patch with an appropriate changelog.
-> >
-> > Let's fix this properly. I'm pretty sure we have some macros that can
-> > solve this without re-introducing the ifdefs...
->=20
-> There's pm_ptr(), but it uses CONFIG_PM as a selector, not CONFIG_PM_SLEE=
-P.
+Thanks,
 
-Okay; so we could introduce pm_sleep_ptr().
-
-Or we could just put single #ifdef CONFIG_PM_SLEEP around the .pm
-assignment? That would be improvement on the original, and still
-result in the same binary, right?
-
-> > (Besides... 92 bytes. How big is kernel these days? 4MB? More? How
-> > much SRAM do you have?)
->=20
-> 92 bytes is indeed not much (on 64-bit it would be doubled).
-> Still, it's good to make people think about innocent looking changes,
-> once in a while.
->=20
-> RZ/A1H and RZ/A1M have 10 resp. 5 MiB of SRAM.
-> RZ/A2 has 4 MiB SRAM, which is sufficient to run Linux when used with
-> XIP (requires a one-line Kconfig change rmk has been vetoing for
- > years).
-
-Aha, that is a bit smaller than I expected.
-
-Best regards,
-								Pavel
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---6c2NcOVqGQ03X4Wi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl/0QpoACgkQMOfwapXb+vKbWgCgptuU+iF7DWVlD/RG7ZKYXcgm
-SI8AoKMVB2V+RfTH4L+ahzlVFhP/HlNd
-=29YJ
------END PGP SIGNATURE-----
-
---6c2NcOVqGQ03X4Wi--
+         M.
+-- 
+Jazz is not dead. It just smells funny...
