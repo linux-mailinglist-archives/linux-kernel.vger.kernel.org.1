@@ -2,71 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884E02EA184
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E4B2EA188
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbhAEAfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 19:35:53 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:37140 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726631AbhAEAfx (ORCPT
+        id S1727200AbhAEAiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 19:38:02 -0500
+Received: from relay1.mymailcheap.com ([144.217.248.100]:47205 "EHLO
+        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbhAEAiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:35:53 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: alyssa)
-        with ESMTPSA id EC5471F44AC8
-Date:   Mon, 4 Jan 2021 19:35:01 -0500
-From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
-        hsinyi@chromium.org, hoegsberg@chromium.org, fshao@chromium.org,
-        boris.brezillon@collabora.com, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v6 4/4] drm/panfrost: Add mt8183-mali compatible string
-Message-ID: <20210105003501.GB5061@kevin>
-References: <20210105001119.2129559-1-drinkcat@chromium.org>
- <20210105081111.v6.4.I5f6b04431828ec9c3e41e65f3337cec6a127480d@changeid>
+        Mon, 4 Jan 2021 19:38:02 -0500
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 621733F201;
+        Tue,  5 Jan 2021 00:36:29 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id A76F92A510;
+        Tue,  5 Jan 2021 01:36:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1609806988;
+        bh=u52Z7siiARKrKV8QGDSAzgaEB7zsH3+a2x9YcbH+lVc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YAwE1tifxliaSfNtovv26jEmpZM7l52WAIjNCLY75kVk/+0J6xDl/VOMXgsFzjmXB
+         ++ixX9pWPJZ6YhsfVKb3wvNICpiihEY0ZRmysqfIrtGXSAtsz4bjK1EgtSMIARkux/
+         V2fH8j0Qpo484+Oh9m62J23RW0YE0mHkjoE9Vwtk=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 5dMdp0JIuI-9; Tue,  5 Jan 2021 01:36:27 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Tue,  5 Jan 2021 01:36:27 +0100 (CET)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 33DA541E9B;
+        Tue,  5 Jan 2021 00:36:26 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="j1xJ6SMM";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.162.91])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id E4F1941E9B;
+        Tue,  5 Jan 2021 00:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1609806983; bh=u52Z7siiARKrKV8QGDSAzgaEB7zsH3+a2x9YcbH+lVc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j1xJ6SMMut4ehrM1NlUnzBSF2ASNiuItNDaJqD6FwONK1CMzu7RLjXg9VqluKJKbV
+         Rv1GHdHjEveaenZhq3mlhpUNP2hZ1B9JqXUY69kp5oSd7W9xCv4SChuIdFPaacuFHF
+         5i4mk026UKvfBQWSkSuu46+t459WVWHKB5V96dOU=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>
+Cc:     linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Icenowy Zheng <icenowy@aosc.io>, stable@vger.kernel.org
+Subject: [PATCH v3] ovl: use a dedicated semaphore for dir upperfile caching
+Date:   Tue,  5 Jan 2021 08:36:11 +0800
+Message-Id: <20210105003611.194511-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LyciRD1jyfeSSjG0"
-Content-Disposition: inline
-In-Reply-To: <20210105081111.v6.4.I5f6b04431828ec9c3e41e65f3337cec6a127480d@changeid>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Result: default: False [4.90 / 20.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.162.91:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         R_MISSING_CHARSET(2.50)[];
+         MIME_GOOD(-0.10)[text/plain];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         DMARC_NA(0.00)[aosc.io];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MID_CONTAINS_FROM(1.00)[];
+         FREEMAIL_TO(0.00)[szeredi.hu,gmail.com,cn.fujitsu.com];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Queue-Id: 33DA541E9B
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The function ovl_dir_real_file() currently uses the semaphore of the
+inode to synchronize write to the upperfile cache field.
 
---LyciRD1jyfeSSjG0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+However, this function will get called by ovl_ioctl_set_flags(), which
+utilizes the inode semaphore too. In this case ovl_dir_real_file() will
+try to claim a lock that is owned by a function in its call stack, which
+won't get released before ovl_dir_real_file() returns.
 
-> Add support for MT8183's G-57 Bifrost.
+Define a dedicated semaphore for the upperfile cache, so that the
+deadlock won't happen.
 
-G72
+Fixes: 61536bed2149 ("ovl: support [S|G]ETFLAGS and FS[S|G]ETXATTR ioctls for directories")
+Cc: stable@vger.kernel.org # v5.10
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+---
+Changes in v2:
+- Fixed missing replacement in error handling path.
+Changes in v3:
+- Use mutex instead of semaphore.
 
---LyciRD1jyfeSSjG0
-Content-Type: application/pgp-signature; name="signature.asc"
+ fs/overlayfs/readdir.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEQ17gm7CvANAdqvY4/v5QWgr1WA0FAl/ztDQACgkQ/v5QWgr1
-WA2AdxAArG57a2smC1BqpcY/2qFinFJAiNzzzEHZaiFh89MTBkKz49V0yC5rs/PY
-dyXf1wapDtnDbsaFc4C6Lna6Gx6HFqzhvVEIT2iIQBoMNOnBkZzjiPIu/8O8xa8V
-VGgT+1H/PCLBdOwYZvHEJoooYSNJXRULSeubjUhxbsJ7oZZr81J5jPlE/fMKuiRn
-yUSvOQPVsC4eX5QlskHDGIaylRkmy7Nh+Nb0aTlY3zvMJUYtRgIp0aK3iukurDnD
-mI+TQPQ1WiTRwHGb23TUdbOPVDdDyvtfowI1QnqT7d2ULkevCvbsmJdl52Vg0Wpa
-e3UFe5GH41gMhXQR0h5Ey/sggKnEI63eq+nUwdkeiyV+sZVf1ZC6iKggOmUtw3vo
-CbxPvANIznLg/sa700BwVdwr1VPr132IzgNoLfPRGH2AyE4Yv5NFlQXqeFoTsA1x
-CjAXGl8gr42aeyg5q0KKXNzi1uYEb+mU2HGbvjcdSA/c4IN+/dpSJ6zcJYLQCewf
-sha63em98yGgTilRup2yqxImd1MvK2rZyeY4BeDrxeCQ4kUsyUNXAT+uWjProoTW
-uYH0l98CFSBvsFoD4Sn5LrMOc9mhuVBMLsSW6TwewOXL72KcoTDOlAyqZ4FWhISe
-Oa+r7uL+z9RConR+eIr1rHH9fBFO46S+kFls0a42L/L6OsjHFSk=
-=Q9kh
------END PGP SIGNATURE-----
-
---LyciRD1jyfeSSjG0--
+diff --git a/fs/overlayfs/readdir.c b/fs/overlayfs/readdir.c
+index 01620ebae1bd..3980f9982f34 100644
+--- a/fs/overlayfs/readdir.c
++++ b/fs/overlayfs/readdir.c
+@@ -56,6 +56,7 @@ struct ovl_dir_file {
+ 	struct list_head *cursor;
+ 	struct file *realfile;
+ 	struct file *upperfile;
++	struct mutex upperfile_mutex;
+ };
+ 
+ static struct ovl_cache_entry *ovl_cache_entry_from_node(struct rb_node *n)
+@@ -874,8 +875,6 @@ struct file *ovl_dir_real_file(const struct file *file, bool want_upper)
+ 	 * Need to check if we started out being a lower dir, but got copied up
+ 	 */
+ 	if (!od->is_upper) {
+-		struct inode *inode = file_inode(file);
+-
+ 		realfile = READ_ONCE(od->upperfile);
+ 		if (!realfile) {
+ 			struct path upperpath;
+@@ -883,10 +882,10 @@ struct file *ovl_dir_real_file(const struct file *file, bool want_upper)
+ 			ovl_path_upper(dentry, &upperpath);
+ 			realfile = ovl_dir_open_realfile(file, &upperpath);
+ 
+-			inode_lock(inode);
++			mutex_lock(&od->upperfile_mutex);
+ 			if (!od->upperfile) {
+ 				if (IS_ERR(realfile)) {
+-					inode_unlock(inode);
++					mutex_unlock(&od->upperfile_mutex);
+ 					return realfile;
+ 				}
+ 				smp_store_release(&od->upperfile, realfile);
+@@ -896,7 +895,7 @@ struct file *ovl_dir_real_file(const struct file *file, bool want_upper)
+ 					fput(realfile);
+ 				realfile = od->upperfile;
+ 			}
+-			inode_unlock(inode);
++			mutex_unlock(&od->upperfile_mutex);
+ 		}
+ 	}
+ 
+@@ -959,6 +958,7 @@ static int ovl_dir_open(struct inode *inode, struct file *file)
+ 	od->realfile = realfile;
+ 	od->is_real = ovl_dir_is_real(file->f_path.dentry);
+ 	od->is_upper = OVL_TYPE_UPPER(type);
++	mutex_init(&od->upperfile_mutex);
+ 	file->private_data = od;
+ 
+ 	return 0;
+-- 
+2.28.0
