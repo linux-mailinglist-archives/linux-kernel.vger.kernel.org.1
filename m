@@ -2,160 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B3C2EAAA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BA02EAAB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729112AbhAEMZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:25:57 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62004 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728862AbhAEMZy (ORCPT
+        id S1730098AbhAEM0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:26:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29091 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730081AbhAEM0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:25:54 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 105CI6sk174780;
-        Tue, 5 Jan 2021 07:25:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=4qVtH+jSjsW5NP/fGJ6PEX3HmzWMveU+fBxP99NEcHU=;
- b=dOZu/Iqt8TTWqdF/SX3RiIfS7tCPPjoPO9CvjXDk+ioO74uoEd6cCXgiTtwLrBpR8gZ9
- K1LjAd62604vyUs0dflCGM7TZi1/dhKgEOsBz7dkhAHlfAqqWQVNH3QkFz4h8Q0zjrrJ
- fd4JLywcZZyH6w0IJCy7rwqQUpJb2lq8v1F/dk46wrYN60nYlYFERwUc0nMmFY43QAXy
- +H7aznxUhUk5yPMCu5GwrE+8lf5+yBGhBxO0Kk1/4tTCOfCUocfgdXLoyhzFQSJXNYai
- w1V9RFFYlwxqBvy0s5T2bu0Li9PvkzSy84Yo8wuSpcxojdvYJmNTGOam3egwEOf3SI0z Gg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35vr05r4b7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jan 2021 07:25:08 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 105C86hE010528;
-        Tue, 5 Jan 2021 12:25:06 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 35tg3havea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jan 2021 12:25:06 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 105CP4Nx41484668
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Jan 2021 12:25:04 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93C96A4051;
-        Tue,  5 Jan 2021 12:25:04 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 69F43A405F;
-        Tue,  5 Jan 2021 12:25:03 +0000 (GMT)
-Received: from Brahadambals-MacBook-Pro-2.local.domain.name (unknown [9.85.95.140])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Jan 2021 12:25:03 +0000 (GMT)
-From:   Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
-To:     shuah@kernel.org, trenn@suse.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        latha@linux.vnet.ibm.com
-Subject: [PATCH] cpuidle_set accepts alpha numeric values for idle-set operation
-Date:   Tue,  5 Jan 2021 17:54:52 +0530
-Message-Id: <20210105122452.8687-1-latha@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Tue, 5 Jan 2021 07:26:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609849520;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C6qUNvQUkXdw/sySXAScAycZjE4SmiBEPqohhGFSYUA=;
+        b=KomL4aKOosNZMAAfh26/N/URFFo9/CK6dg5QcJYKYNe/1t0yhugyD8F2JYXWFUGhUAazLT
+        gQNJZir6QygeAD0AnaT1CrH5Su0GCg6wGLzAVm7/3AiBboMkofjn6jgh5JcGMBJj9l+iYA
+        Bv/u6/4Pw9lOdJ+PZ4svYKLE7bDojYY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-usPVvCzgM8ClSdydQXGTHA-1; Tue, 05 Jan 2021 07:25:18 -0500
+X-MC-Unique: usPVvCzgM8ClSdydQXGTHA-1
+Received: by mail-wr1-f72.google.com with SMTP id e12so14736146wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 04:25:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C6qUNvQUkXdw/sySXAScAycZjE4SmiBEPqohhGFSYUA=;
+        b=nRVfCo4vwOP+jCgHKcHsMVaecfBVpC5kF1vParZt3y4piPsmMZLujm2iMIMdtdHySu
+         p2Agnhs45nWUIF6qPyNCCWbxkbYFalwhR7WjgyllDXHSzmLHa6X/Ns1hY3EorUO3l+hv
+         5g0ebqLMWkGx7gFChZdNUGbcJQXuV8hnPwjnLJ/JFVcUQ4s4oC48xStXZDADj7oOQ8jx
+         ioz/osiNdZ9cFwX176hjVxt00ND7cVKV+LvMGrm1mAinSeyKmziAnkhEK0YfNsgkGmki
+         xFo/zVMtaID8YGbrKbce8lbqTaCTgvUSG20ebKjtXOInHJvu6GdmeDpsvgzUKbxS78xo
+         UUNw==
+X-Gm-Message-State: AOAM531/XY7vYyB/AjHrAC/cDtKY8+P/S7v/FQgkkwhk6Z8ARiNVcnQl
+        +W1IOh/shwSBD75ok9YtX9zzKJghzdevbTv2u6t7JA8/d9dicYlTjzeiOzLBu8dYDp1szbGyR11
+        w575YTB6ysZSKIsQGFgXMFT6b
+X-Received: by 2002:a7b:c052:: with SMTP id u18mr3219902wmc.139.1609849517012;
+        Tue, 05 Jan 2021 04:25:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz2goxvm/vsk8E0XbHSlB3QZqCWkZVDQXKjwx5I6g+NamkUIWMgQNyLV5/lPhj5fdUxvUxiqQ==
+X-Received: by 2002:a7b:c052:: with SMTP id u18mr3219882wmc.139.1609849516880;
+        Tue, 05 Jan 2021 04:25:16 -0800 (PST)
+Received: from redhat.com (bzq-79-178-32-166.red.bezeqint.net. [79.178.32.166])
+        by smtp.gmail.com with ESMTPSA id o83sm4030933wme.21.2021.01.05.04.25.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 04:25:16 -0800 (PST)
+Date:   Tue, 5 Jan 2021 07:25:11 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, dust.li@linux.alibaba.com,
+        tonylu@linux.alibaba.com, Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:VIRTIO CORE AND NET DRIVERS" 
+        <virtualization@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:XDP SOCKETS (AF_XDP)" <bpf@vger.kernel.org>
+Subject: Re: [PATCH netdev 0/5] virtio-net support xdp socket zero copy xmit
+Message-ID: <20210105072316-mutt-send-email-mst@kernel.org>
+References: <cover.1609837120.git.xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-05_01:2021-01-05,2021-01-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 clxscore=1011 impostorscore=0 mlxscore=0
- suspectscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050073
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1609837120.git.xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For both the d and e options in cpuidle_set, an atoi() conversion is
-done without checking if the input argument is all numeric. So, an
-atoi conversion is done on any character provided as input and the
-CPU idle_set operation continues with that integer value, which may
-not be what is intended or entirely correct.
+On Tue, Jan 05, 2021 at 05:11:38PM +0800, Xuan Zhuo wrote:
+> The first patch made some adjustments to xsk.
+> 
+> The second patch itself can be used as an independent patch to solve the problem
+> that XDP may fail to load when the number of queues is insufficient.
+> 
+> The third to last patch implements support for xsk in virtio-net.
+> 
+> A practical problem with virtio is that tx interrupts are not very reliable.
+> There will always be some missing or delayed tx interrupts.
 
-A similar check is present for cpufreq-set already.
+Would appreciate a bit more data on this one. Is this a host bug? Device bug?
+Can we limit the work around somehow?
 
-This patch adds a check to see that the idle_set value is all numeric
-before doing a string-to-int conversion.
-
-Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
----
- tools/power/cpupower/utils/cpuidle-set.c | 39 +++++++++++++++++++++---
- 1 file changed, 34 insertions(+), 5 deletions(-)
-
-diff --git a/tools/power/cpupower/utils/cpuidle-set.c b/tools/power/cpupower/utils/cpuidle-set.c
-index 46158928f9ad..b3dec48e7141 100644
---- a/tools/power/cpupower/utils/cpuidle-set.c
-+++ b/tools/power/cpupower/utils/cpuidle-set.c
-@@ -21,6 +21,19 @@ static struct option info_opts[] = {
-      { },
- };
- 
-+int is_number(char *arg)
-+{
-+	size_t len, i = 0;
-+
-+	len = strlen(arg);
-+
-+	for (i = 0; i < len; i++) {
-+		if (!isdigit(arg[i]))
-+			return 0;
-+	}
-+
-+	return 1;
-+}
- 
- int cmd_idle_set(int argc, char **argv)
- {
-@@ -47,7 +60,12 @@ int cmd_idle_set(int argc, char **argv)
- 				break;
- 			}
- 			param = ret;
--			idlestate = atoi(optarg);
-+			if (is_number(optarg))
-+				idlestate = atoi(optarg);
-+			else {
-+				printf(_("Bad idle_set value : %s. Integer expected\n"), optarg);
-+				exit(EXIT_FAILURE);
-+			}
- 			break;
- 		case 'e':
- 			if (param) {
-@@ -56,7 +74,12 @@ int cmd_idle_set(int argc, char **argv)
- 				break;
- 			}
- 			param = ret;
--			idlestate = atoi(optarg);
-+			if (is_number(optarg))
-+				idlestate = atoi(optarg);
-+			else {
-+				printf(_("Bad idle_set value : %s\n. Integer expected"), optarg);
-+				exit(EXIT_FAILURE);
-+			}
- 			break;
- 		case 'D':
- 			if (param) {
-@@ -65,9 +88,15 @@ int cmd_idle_set(int argc, char **argv)
- 				break;
- 			}
- 			param = ret;
--			latency = strtoull(optarg, &endptr, 10);
--			if (*endptr != '\0') {
--				printf(_("Bad latency value: %s\n"), optarg);
-+			if (is_number(optarg)) {
-+				latency = strtoull(optarg, &endptr, 10);
-+				if (*endptr != '\0') {
-+					printf(_("Bad latency value: %s. Integer expected\n"),
-+						optarg);
-+					exit(EXIT_FAILURE);
-+				}
-+			} else {
-+				printf(_("Bad latency value: %s. Integer expected\n"), optarg);
- 				exit(EXIT_FAILURE);
- 			}
- 			break;
--- 
-2.24.3 (Apple Git-128)
+> So I specially added
+> a point timer to solve this problem. Of course, considering performance issues,
+> The timer only triggers when the ring of the network card is full.
+> 
+> Regarding the issue of virtio-net supporting xsk's zero copy rx, I am also
+> developing it, but I found that the modification may be relatively large, so I
+> consider this patch set to be separated from the code related to xsk zero copy
+> rx.
+> 
+> Xuan Zhuo (5):
+>   xsk: support get page for drv
+>   virtio-net: support XDP_TX when not more queues
+>   virtio-net, xsk: distinguish XDP_TX and XSK XMIT ctx
+>   xsk, virtio-net: prepare for support xsk
+>   virtio-net, xsk: virtio-net support xsk zero copy tx
+> 
+>  drivers/net/virtio_net.c    | 643 +++++++++++++++++++++++++++++++++++++++-----
+>  include/linux/netdevice.h   |   1 +
+>  include/net/xdp_sock_drv.h  |  10 +
+>  include/net/xsk_buff_pool.h |   1 +
+>  net/xdp/xsk_buff_pool.c     |  10 +-
+>  5 files changed, 597 insertions(+), 68 deletions(-)
+> 
+> --
+> 1.8.3.1
 
