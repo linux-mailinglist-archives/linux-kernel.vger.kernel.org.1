@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3972EB50C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2535C2EB512
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729680AbhAEVwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 16:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727414AbhAEVwJ (ORCPT
+        id S1730470AbhAEVy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 16:54:28 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37314 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727414AbhAEVy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:52:09 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25497C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 13:51:29 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id n26so2499481eju.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 13:51:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=azp5R5sIE5akbR86AUgMTb7YlLtMSqlVoZhjPN7aS+Y=;
-        b=cMncgAy6pqzxztVl5zeqBEgkiWWCLXEErKCEI6UQIaRXZcyG2cz9MQvSJrclBYIOxn
-         2YPqPfCcc6iHayGMNjfpXQOmYSRuDcj/UGTDfYoaB71KOVEq+7uJ+qNGmbfq2RPd51lX
-         aCz0Jm5SeMLydFqfwz50JnLiiSB6lnJQsmaexF+qcYDT/1ZAJlFQDeMFQlfTtIsiNVUG
-         CvPGs26j1gRvSDfItMJ42fcL6bmPq+wLIYeSuzmXkilJ64+2VfPo0rt7DTRiPUUWo2Sw
-         t9ck3g6Xbryu+fFBxzsgmWNQrsCJcBcPTPHYtKdyer81Oo3piddVUeL6GEzgnKSvUQ1P
-         Fqaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=azp5R5sIE5akbR86AUgMTb7YlLtMSqlVoZhjPN7aS+Y=;
-        b=jKjNaPXHq7j9aY+lfAjhZHxJE/ymMUGbcEyUoOpHFa0ifS8G0Xc1BHxYz4onwfI/rV
-         eBOaeO1aTlBLoRVR1LiKYbKPd7gjc1ZI09971CUjliiiNYObNRZ48pD/86TcNx2wwp4M
-         OLnzsconwdDrJF93ScR6aHnhBF79WJzxUzpwBAVpqEMeBRA7nr6M7eYnW3C9WUWYWGPU
-         vFYlDS+kJfAwPSjWk2RsLlgbX35q0BqDa0oa6GAIzn5jPpKdgde7K2zMUHY5eyNMWSIq
-         OiBPFzdCh9A73jfupiDoiMYgDqWSHOIFEoWOUHKfEVa92yX9cfoVyaFY/VFXCaAW3Wzn
-         s8gA==
-X-Gm-Message-State: AOAM533AML09E1MYY9olgoiD2r1QlolIA2IKSsDdnCYSLM49qTS8InKY
-        e0EdWiJ33PhSLGe3edIdNNOIQoPKICpUsRV72sH07Q==
-X-Google-Smtp-Source: ABdhPJx8QYz7csacame+QxQgcDO5RpmJDEOdfNCEf8pC9F7z4ASIVRi3CHLdkUBGbdfW8UJt1nJ5RoEtMuMwUCIDiwg=
-X-Received: by 2002:a17:906:a29a:: with SMTP id i26mr914983ejz.45.1609883487897;
- Tue, 05 Jan 2021 13:51:27 -0800 (PST)
+        Tue, 5 Jan 2021 16:54:27 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 105LVVBI030036;
+        Tue, 5 Jan 2021 16:53:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=DyiP0RrmtBLEw+DXLTWXmJKvMB5vgP39H0eWDpcqFqY=;
+ b=eZraZRAhPJu7QWI3kCfZqvJnhzHux7ZY162mCAvAZl8wkesjT1LKWmvRU8U6hNxiZIIT
+ 1OV04RywWuuNUJRXCiZ30JF12xSG7sjhPk3YH4zM7/xMnj8c/sdAsKmz0UHggq+acK03
+ DC7nYDsQE+BXGO04dTuDsnNT8L6vbULjuqCAMl8Spe6/hrIgISBTbYK5Gkse2LPppv8l
+ 4KXAHuK4HdBNUc6gYF2TxSCh/LVRGntM2C9LZB0Y83p5c1N/tX6EiZQNLbC2McHJzNfl
+ fud/8oXLTXhdfrU6OjykJtAMR3O2yVvitDXmq+dBR/ehk0if8bx21oqhSzzfB9mBOnz1 Xg== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35vy231ytq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Jan 2021 16:53:34 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 105LmA0d004339;
+        Tue, 5 Jan 2021 21:53:33 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 35tgf89ph4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Jan 2021 21:53:32 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 105LrUJC15991070
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Jan 2021 21:53:30 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B9792A405C;
+        Tue,  5 Jan 2021 21:53:30 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63ECBA4054;
+        Tue,  5 Jan 2021 21:53:30 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Jan 2021 21:53:30 +0000 (GMT)
+Received: from [9.206.201.155] (unknown [9.206.201.155])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id EFBAA606F8;
+        Wed,  6 Jan 2021 08:53:28 +1100 (AEDT)
+Subject: Re: [PATCH v2 -next] misc: ocxl: use DEFINE_MUTEX() for mutex lock
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     fbarrat@linux.ibm.com, arnd@arndb.de, gregkh@linuxfoundation.org
+References: <20201224132446.31286-1-zhengyongjun3@huawei.com>
+From:   Andrew Donnellan <ajd@linux.ibm.com>
+Message-ID: <9cfa9da6-39e1-58f3-c11d-ac2b0f8ca2b1@linux.ibm.com>
+Date:   Wed, 6 Jan 2021 08:53:28 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <160988059854.2071197.11821323682102566548.stgit@dwillia2-desk3.amr.corp.intel.com>
- <3c31c3328f569f15f03de9eb8d1b6a9ae4862893.camel@intel.com>
-In-Reply-To: <3c31c3328f569f15f03de9eb8d1b6a9ae4862893.camel@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 5 Jan 2021 13:51:16 -0800
-Message-ID: <CAPcyv4jc3t8Vdes6Mu=HG=ro_Gg3nVck=_tWMPiOEPBm3M1qiw@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: NFIT: Fix flexible_array.cocci warnings
-To:     "Verma, Vishal L" <vishal.l.verma@intel.com>
-Cc:     "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "efremov@linux.com" <efremov@linux.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        lkp <lkp@intel.com>,
-        "julia.lawall@inria.fr" <julia.lawall@inria.fr>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201224132446.31286-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-05_07:2021-01-05,2021-01-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=909 malwarescore=0 impostorscore=0
+ clxscore=1011 bulkscore=0 priorityscore=1501 adultscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101050124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 1:28 PM Verma, Vishal L <vishal.l.verma@intel.com> wrote:
->
-> On Tue, 2021-01-05 at 13:03 -0800, Dan Williams wrote:
-> > Julia and 0day report:
-> >
-> >     Zero-length and one-element arrays are deprecated, see
-> >     Documentation/process/deprecated.rst
-> >     Flexible-array members should be used instead.
-> >
-> > However, a straight conversion to flexible arrays yields:
-> >
-> >     drivers/acpi/nfit/core.c:2276:4: error: flexible array member in a struct with no named members
-> >     drivers/acpi/nfit/core.c:2287:4: error: flexible array member in a struct with no named members
-> >
-> > Instead, just use plain arrays not embedded a flexible arrays.
->
-> This reads a bit awkwardly, maybe:
->
->   "Just use plain arrays instead of embedded flexible arrays."
+On 25/12/20 12:24 am, Zheng Yongjun wrote:
+> mutex lock can be initialized automatically with DEFINE_MUTEX()
+> rather than explicitly calling mutex_init().
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-yeah, umm, I left that extra "a" in there as a test... you passed! :)
+Acked-by: Andrew Donnellan <ajd@linux.ibm.com>
 
->
-> Other than that, the patch looks looks good:
-> Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
 
-Thanks.
+-- 
+Andrew Donnellan              OzLabs, ADL Canberra
+ajd@linux.ibm.com             IBM Australia Limited
