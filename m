@@ -2,118 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067A22EAA2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DE22EAA2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729802AbhAELs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:48:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27674 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729620AbhAELsz (ORCPT
+        id S1729790AbhAELtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbhAELti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:48:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609847248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ClUuOmIXrBPfDVSqFPOKOMOGcWLMSgCQAXE3Y+wG7Kk=;
-        b=ZWDD9FszUOnwQTKvzWU1znMZIiz+tnk7RF5XbM7effrG2DN3XjDobLYuxF52q7XH2RGvGQ
-        62SvimLkgbWHKG59ZxzQ5C6RAR5z80LdjIW36mz9yirum3kor3QlMsbel+cTTMItXzEAHA
-        r6htS17d+F1+TCFKPdkcYz9uTUL79VU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-W9CDSjZ9NaCr2yPgZyr9Rg-1; Tue, 05 Jan 2021 06:47:26 -0500
-X-MC-Unique: W9CDSjZ9NaCr2yPgZyr9Rg-1
-Received: by mail-wm1-f69.google.com with SMTP id w204so1155414wmb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 03:47:26 -0800 (PST)
+        Tue, 5 Jan 2021 06:49:38 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425BAC061574;
+        Tue,  5 Jan 2021 03:48:58 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id a6so2766011wmc.2;
+        Tue, 05 Jan 2021 03:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Twge5+L7oDbBtb/CTAgj15ANAWokc/RBpA9QwsjgCLc=;
+        b=md9SdpZcgVgmxOSVEUW+e111U5KMAb4o3553WNqmiUjxmVxGdkabEiZRP4O1oA4ozM
+         WLc8ASxn+1qISaf3Y8ZbudHm00AQyYYQxADE3pGS//AMKc93nhsuS28Duj+kMtF4WnRh
+         xh5AhKpJhz5olszd+7eb8BCSL1kHpz8rJ1a6zu0BthIdvdFbQL//W7aynEx1F9dHZ/Ll
+         k8piotF7WFDi6o2J1dq8hWzhk5eYRUqzpT/+edW4sDFiYrbkUhIlO+Raqq2380oOcsjr
+         5BIC3+/gF7yusjubUtGTt18qc2hBxrkGw0pugCs0nV2Gd13LQ4UEyNMXRW1XJ52EoG4Y
+         ac/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ClUuOmIXrBPfDVSqFPOKOMOGcWLMSgCQAXE3Y+wG7Kk=;
-        b=pP8CTPqTYyXz0sgssSIJboBKvhAQD/iol+HBRk83Ip0h8QFsZhLVoksN41f4y1Ybsa
-         hgJ34yShoNQHrmGl7uUsEPV6j4KOIY/91hhHVYYb0IG1W801ztIQl/xi7AnOcn5pDfrQ
-         M5mrfV4HOM289NaRdgG0xt2XMfpcboJGGzy2SUoNWIDhH+3QeUrrRBtPP/GOSxoP8737
-         7jiFzgix8g725fdmOUKLY4grjfxo/dcFqZX50aeXbUJCdWkCpZT52DR2ARSRkqlXbMB7
-         uIsr6B8D+xXFl2ybi4RMjjprERWlPx5/4PIGLpCDFFWo5Z6AqWCUocTb/YBLkbZ2mRu2
-         Cb0A==
-X-Gm-Message-State: AOAM533GV1O4fOn2Br0RuKubItJ9CZKLDubIrDS2drl0I+dk7lfgVpBs
-        jW3r2iZzD0OZ2z7iy7xp3rbvLGvO8mW1hBLFDjDTQMoNr9G0XBKFMq7yxrGVFV+X4mCA5BGHBtZ
-        GQCDOvmRm6o7jfrWXTuUoIBZC
-X-Received: by 2002:adf:f891:: with SMTP id u17mr85387374wrp.253.1609847245496;
-        Tue, 05 Jan 2021 03:47:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx9I904n6T6jfhAhM0sgcAhzqezyiAlcELO+BwqoCvvPl9Z7tOkscAOuPKTxJP3uSvTmSjxlw==
-X-Received: by 2002:adf:f891:: with SMTP id u17mr85387347wrp.253.1609847245243;
-        Tue, 05 Jan 2021 03:47:25 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f77sm3622230wmf.42.2021.01.05.03.47.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 03:47:24 -0800 (PST)
-Subject: Re: [PATCH 1/2] Enumerate AVX Vector Neural Network instructions
-To:     Yang Zhong <yang.zhong@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, bp@alien8.de
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        tony.luck@intel.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        kyung.min.park@intel.com, x86@kernel.org
-References: <20210105004909.42000-1-yang.zhong@intel.com>
- <20210105004909.42000-2-yang.zhong@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8fa46290-28d8-5f61-1ce4-8e83bf911106@redhat.com>
-Date:   Tue, 5 Jan 2021 12:47:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Twge5+L7oDbBtb/CTAgj15ANAWokc/RBpA9QwsjgCLc=;
+        b=Y1VTwBqUA7ifqmqUyMOImcC3ILRR9vs3vj7orUqdy/E37HYAjG9qtm0umF/q2g0CeP
+         yT1JJFR5RLAlNL3I2LYidCljOaKLScWpe4/cpZBz9kzALuvxuod010UWbwfZ+hYTvkuO
+         caqrOSgnG0LkHYHNKyeVnRCorubT96PD89AJTxPeNuuzAI5JsmUvEJT9hEgvKyZrzMVL
+         8FstnDR1tgINn58aV/2sQ7yUGIE42njipOPm4vGwxt74HuIuWJUY86m48RipGb5UG6zj
+         QrjFWBYvOuQYhT6IPeLV5xeRCnjbqqvTOF4vQIFLYiKJynOydHq1h1exhw4UqldC7JGU
+         LJYw==
+X-Gm-Message-State: AOAM531+lLfVxc97ktt4iAgc1qBVV1gWrOhrrUUI0A4RTqS8tOJuJ9VG
+        Wi4INkqn5lORg+3ygMm8ZfU=
+X-Google-Smtp-Source: ABdhPJxYxonwl7qIDdZ68yBBV0q/kPGICeSwLZseiszx1m6zzch8Q7iM+c/lTnazkDwfAgbDllfCYA==
+X-Received: by 2002:a7b:cbd0:: with SMTP id n16mr3174095wmi.162.1609847336485;
+        Tue, 05 Jan 2021 03:48:56 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id b7sm89464727wrv.47.2021.01.05.03.48.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 03:48:55 -0800 (PST)
+Date:   Tue, 5 Jan 2021 12:48:54 +0100
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: r8a77950-salvator-x does nto boot since
+ cfa7ede20f133cc81cef01dc3a516dda3a9721ee arm64: set TEXT_OFFSET to 0x0 in
+ preparation for removing it entirely
+Message-ID: <X/RSJvFAAbGWOuK4@Red>
+References: <X/Q21vZcui0RlYWK@Red>
+ <CAMuHMdUW+Z4YOVnob38BV8de4S9=bP7rekNWbaT0jaH1=Ru4yw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210105004909.42000-2-yang.zhong@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdUW+Z4YOVnob38BV8de4S9=bP7rekNWbaT0jaH1=Ru4yw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/01/21 01:49, Yang Zhong wrote:
-> From: Kyung Min Park <kyung.min.park@intel.com>
+Le Tue, Jan 05, 2021 at 11:13:03AM +0100, Geert Uytterhoeven a écrit :
+> Hi Corentin,
 > 
-> Add AVX version of the Vector Neural Network (VNNI) Instructions.
+> On Tue, Jan 5, 2021 at 10:52 AM Corentin Labbe
+> <clabbe.montjoie@gmail.com> wrote:
+> > Due to DTB renaming, salvatorX was not booted since a long time in kernelCI.
+> > Now the rename is handled, the board fail to boot.
+> >
+> > I have bisected the problem:
 > 
-> A processor supports AVX VNNI instructions if CPUID.0x07.0x1:EAX[4] is
-> present. The following instructions are available when this feature is
-> present.
->    1. VPDPBUS: Multiply and Add Unsigned and Signed Bytes
->    2. VPDPBUSDS: Multiply and Add Unsigned and Signed Bytes with Saturation
->    3. VPDPWSSD: Multiply and Add Signed Word Integers
->    4. VPDPWSSDS: Multiply and Add Signed Integers with Saturation
+> > # first bad commit: [cfa7ede20f133cc81cef01dc3a516dda3a9721ee] arm64: set TEXT_OFFSET to 0x0 in preparation for removing it entirely
+> >
+> > This is the interesting part of uboot log:
+> > [    0.000292] NOTI[    0.000292] NOTICE:  BL2: R-Car Gen3 Initial Program Loader(CA57) Rev.1.0.16
+> > [    0.005855] NOTICE:  BL2: PRR is R-Car H3 Ver1.1
+> > [    0.010437] NOTICE:  BL2: Board is Salvator-X Rev1.0
+> > [    0.015379] NOTICE:  BL2: Boot device is HyperFlash(80MHz)
+> > [    0.020804] NOTICE:  BL2: LCM state is CM
+> > [    0.024847] NOTICE:  BL2: AVS setting succeeded. DVFS_SetVID=0x53
+> > [    0.030891] NOTICE:  BL2: DDR1600(rev.0.27)NOTICE:  [COLD_BOOT]NOTICE:  ..0
+> > [    0.066311] NOTICE:  BL2: DRAM Split is 4ch
+> > [    0.070195] NOTICE:  BL2: QoS is default setting(rev.0.37)
+> > [    0.075697] NOTICE:  BL2: Lossy Decomp areas
+> > [    0.079872] NOTICE:       Entry 0: DCMPAREACRAx:0x80000540 DCMPAREACRBx:0x570
+> > [    0.086957] NOTICE:       Entry 1: DCMPAREACRAx:0x40000000 DCMPAREACRBx:0x0
+> > [    0.093869] NOTICE:       Entry 2: DCMPAREACRAx:0x20000000 DCMPAREACRBx:0x0
+> > [    0.100785] NOTICE:  BL2: v1.3(release):b330e0e
+> > [    0.105274] NOTICE:  BL2: Built : 15:26:51, Dec  6 2017
+> > [    0.110462] NOTICE:  BL2: Normal boot
+> > [    0.114103] NOTICE:  BL2: dst=0xe6320208 src=0x8180000 len=512(0x200)
+> > [    0.120652] NOTICE:  BL2: dst=0x43f00000 src=0x8180400 len=6144(0x1800)
+> > [    0.127110] NOTICE:  BL2: dst=0x44000000 src=0x81c0000 len=65536(0x10000)
+> > [    0.134336] NOTICE:  BL2: dst=0x44100000 src=0x8200000 len=524288(0x80000)
+> > [    0.144816] NOTICE:  BL2: dst=0x50000000 src=0x8640000 len=1048576(0x100000)
+> > U-Boot 2015.04 (Dec 06 2017 - 15:26:59)
+> > CPU: Renesas Electronics R8A7795 rev 1.1
+> > Board: Salvator-X
+> > I2C:   ready
+> > DRAM:  3.9 GiB
+> > MMC:   sh-sdhi: 0, sh-sdhi: 1, sh-sdhi: 2
+> > In:    serial
+> > Out:   serial
+> > Err:   serial
+> > Net:   ravb
+> >
+> > [...]
+> >
+> > booti 0x48080000 0x4a000000 0x48000000
+>              ^^^^^
+> I take it this is the problem?
 > 
-> The only in-kernel usage of this is kvm passthrough. The CPU feature
-> flag is shown as "avx_vnni" in /proc/cpuinfo.
+> For R-Car H3 ES1.0, I currently use the addresses below:
 > 
-> This instruction is currently documented in the latest "extensions"
-> manual (ISE). It will appear in the "main" manual (SDM) in the future.
+>     tftpboot 0x60000000 h3-salvator-x/Image
+>     tftpboot 0x68000000 h3-salvator-x/r8a77950-salvator-x.dtb
+>     booti 0x60000000 - 0x68000000
 > 
-> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
-> Signed-off-by: Yang Zhong <yang.zhong@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
->   arch/x86/include/asm/cpufeatures.h | 1 +
->   1 file changed, 1 insertion(+)
+> For R-Car H3 ES2.0 (and other R-Car Gen3 SoCs), I use other addresses:
 > 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index f5ef2d5b9231..d10d9962bd9b 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -293,6 +293,7 @@
->   #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
->   
->   /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
-> +#define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
->   #define X86_FEATURE_AVX512_BF16		(12*32+ 5) /* AVX512 BFLOAT16 instructions */
->   
->   /* AMD-defined CPU features, CPUID level 0x80000008 (EBX), word 13 */
+>     tftpboot 0x50000000 h3-salvator-xs/Image
+>     tftpboot 0x58000000 h3-salvator-xs/r8a77951-salvator-xs.dtb
+>     booti 0x50000000 - 0x58000000
+> 
+> The firmware on your H3 ES1.1 board (Rev.1.0.16) is newer than on my
+> ES1.0 board (Rev.1.0.12), so it's possible the second version works on
+> your board, too.
+> 
+> If these work for you, I'll update https://elinux.org/R-Car/Boards/Salvator-X[S]
 > 
 
-Boris, is it possible to have a topic branch for this patch?
+Hello
 
+Thanks, changing kernel/dtb address made it boot.
+when testing, I have also discovered that r8a7796-m3ulcb hit the same issue than the salvatorX and that thoses address made it boot.
+
+Regards
