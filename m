@@ -2,144 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC4F2EA500
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 06:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49F72EA4FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 06:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbhAEFnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 00:43:12 -0500
-Received: from mail-dm6nam11on2086.outbound.protection.outlook.com ([40.107.223.86]:46016
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726097AbhAEFnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 00:43:11 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MjI774eTYrjfHSzsSLd8kGM/vPAqtYdjLKMkW4kV3x2+BWHc9nJ+fHEtCWtaorSS+rdtH/MTw9DPXMvPVbJ0JzximmZCtcHrxpdiVxfYB4eCVanbSv/EHtGr3nB0y82TAV61ISXiQphdLDchDC1LcwwBL7Hc9/JuJORlFZdhk7PWXIQb5LK76/Eqn6rP20I6gqsPsNsMtiowOZXCDL7FPdyTAlUEFn0jPQy9CRutnfgM95rSh3fsZSRmuIskrFitf9KFX+vVqyBIbes+YozGPQOiknGLbUAV795nRnp7uGsHZttYCyehlQE6z0MS4fcYBLU4kmuHEW8Tslj2KWBt5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FVRrqxlGv6/vU6vZLkGqOlLYVsjEZMzOyqZ6LbkcHyM=;
- b=VZ0EkQ6P5dEPXVBK6yGOstQHTXGBkZz+YDubiYnwAN4lnmGnjYgP6uDhe+f54rLvxcOIq4tCOKzNoRzhoDyVhHUvK/LQuz3WmBQD0PVLU8Cs0BhWOpy6erDfa9vlG0QD0MaLdy18dUeTrNY6O7KI0GO4dYg3k5m6cK05i/nW1tnpIHRE1mxf79lX4NmTkRtdU+xfDvvk5g6OYJr+O+e9zEvnYbzIDjq1IkNNdV+XJaDUrBqNKXxWUNH01t0FwQSBXqQ6JqlFVF2P6nPDqsrpV6NIa9Ovw3Z6oz7qBZAc2qsEZ3Embvjvlw49GnclnpL8p9D/w5E5w8u4xP2+2wGC5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1726038AbhAEFnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 00:43:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbhAEFnE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 00:43:04 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A382C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 21:42:24 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id a12so69944643lfl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 21:42:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FVRrqxlGv6/vU6vZLkGqOlLYVsjEZMzOyqZ6LbkcHyM=;
- b=dpT6YIj82pWtxR+4c1rTY4ZCDan8M4Oqo/v3ENbrLB1Wtd0lSOrxINnuJlaMDMwVWiLUu8X/EUItKkSGEsDL0f2sr70NZK6bvwa7SFU+Rl3OVB+zVQyKYFOBBzmMoFM7kdH+pose2nktvtjUUl3Vjd0mbLtNZxV1Ikl/iuc0Pr0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from SJ0PR11MB5072.namprd11.prod.outlook.com (2603:10b6:a03:2db::18)
- by BYAPR11MB3336.namprd11.prod.outlook.com (2603:10b6:a03:1a::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.22; Tue, 5 Jan
- 2021 05:42:22 +0000
-Received: from SJ0PR11MB5072.namprd11.prod.outlook.com
- ([fe80::4934:bf21:e093:8c3e]) by SJ0PR11MB5072.namprd11.prod.outlook.com
- ([fe80::4934:bf21:e093:8c3e%6]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
- 05:42:22 +0000
-From:   Meng.Li@windriver.com
-To:     linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        james.quinlan@broadcom.com, Kexin.Hao@windriver.com,
-        meng.li@windriver.com
-Subject: [PATCH v2] drivers core: Free dma_range_map when driver probe failed
-Date:   Tue,  5 Jan 2021 13:41:48 +0800
-Message-Id: <20210105054148.13625-1-Meng.Li@windriver.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR04CA0064.apcprd04.prod.outlook.com
- (2603:1096:202:14::32) To SJ0PR11MB5072.namprd11.prod.outlook.com
- (2603:10b6:a03:2db::18)
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uXLwsUj+9SHYogPpWU4ZrdUyrYPv886okwQz1KMsq9w=;
+        b=wDtvANDPTisWmAm96waVwc+M+6OOYWZVunkJ6mWJoGOYkk5PXvxyffeGwW5Pcpp+7m
+         HsXfoDAFdoqwLWjAXO7ikeVFOVBwtDjj4AynRzIBOHmuj8HmOQqGKf9QhrTbpcMVW1VQ
+         NeTP+UP761Zf0kphyB98qtuFtFvmFXlr3QomZKYK0Zs0qR4hlCfR7G6QDR3vZ+ySZCxN
+         yzDeM/EBbzZlXb3aIm3nT8wh4b6/Sz/y8P0Hg0L00jTVC0e5pfI8INX8U8rr6RrF0zgV
+         aj1DVgq8/pOq7r1bCgeXznWy+sAC3e3ZYC5ej2tPoPI+bkP9RVKKbXIMHRy1kxAovApi
+         5MUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uXLwsUj+9SHYogPpWU4ZrdUyrYPv886okwQz1KMsq9w=;
+        b=oFZ9cIWISZSzDY2p905X8ShfOtPvZIEchAx9BRrK70p0bwM0mTPLKXdbxJQI8+m3P/
+         6xs271yt0c7oVKdhPV7Hwx9z216+bBjTSrasQJtcOSJiO74KPHRR1CxD39LD8a39ADA4
+         F+dXxOTZKaQ+Ci8lvWvsbxOXJocqe91dABJn79Alf2dQjWEZy1lKO8taOmlVlI+Ok+ZK
+         eWnouvTQwpa1y1TDJIUlHnPm7ohlFWm+P4YFnoVwJpJdqFPZ3r6fzgYE4cm3PkLwLJ7Y
+         wLGa6zFSsG8WPk2egMcOGJmvge5DUxn/BIm4KGGyQKtorkmW1J8yRva1GuC9m3UE7qd/
+         vv5g==
+X-Gm-Message-State: AOAM532M4RT93db0wb5YzJxZrtoazxl2DVtsshMUafKWN5Z56WSRpjqM
+        d5JK/S63YbVBn9RuXCtXRUECFCGvJfMGLJXjk5wV9Q==
+X-Google-Smtp-Source: ABdhPJwHBDaBvRmjpEFy7Wmamgk50Zc65jEZDqSNnqkW9SC2tSktaL8F2wuFbrKFgb8z7cHVPNR8PtFUmAmbP2y46Qo=
+X-Received: by 2002:a2e:b896:: with SMTP id r22mr35317270ljp.442.1609825342806;
+ Mon, 04 Jan 2021 21:42:22 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-mli1-d2.wrs.com (60.247.85.82) by HK2PR04CA0064.apcprd04.prod.outlook.com (2603:1096:202:14::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20 via Frontend Transport; Tue, 5 Jan 2021 05:42:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 925e0bf1-de34-4473-8a9e-08d8b13cacac
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3336:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR11MB3336CB5C4E3373521D0F8515F1D10@BYAPR11MB3336.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:268;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AyPmvMdzEhXIL0HCBN16LzEhwa1rtsbpJMw+DVemDJo084wDY4wctVgHBeQ2huuY+LUaz+p03WlGx1NFel8Ew2m2hIoyxxP2iDvKCwFAnySRIhZZ4NaAF897c+VMZncSSBSpinsRWLan1KzFbNQ1ktOQO0x6HOPIwo+Rn97WPdWMZs5I3RYm//Svh8u4JvYfJibkbKUWOFXSDVcK4r6qo3eqPIZztBOseaR5tMFwPiIXfbjoIEiPn3TivW0SaEYIFjrNGMBDuew6085ugQe/VYr7kmkiEp1daHTgKZdWoBhPlGB87rbh4O1cxvtmh9TdKJ06zM22kxsO6O18rAXEvDYizKbarXboNYR822Ol0PAAbPwz/ITaiGyBrwARzgeU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5072.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(366004)(376002)(39850400004)(6486002)(6666004)(5660300002)(6916009)(186003)(16526019)(83380400001)(107886003)(66476007)(9686003)(66946007)(6512007)(316002)(66556008)(956004)(36756003)(6506007)(4326008)(86362001)(8936002)(8676002)(26005)(2906002)(478600001)(2616005)(1076003)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ohWMvk3iLpQTsJSUnQB4c9K5P5lqvGIFbPWqU/tXX87Xaf2pVvkvFm1JHZM3?=
- =?us-ascii?Q?qM2NL6XgtX0WIH1ZAlRdBIn4n/EnoBFwKnQEl3/iXPzxd08156p9Uhjs3G0l?=
- =?us-ascii?Q?HF8lL8YAs5vni3rMwh8QfZLE+qLQuMbBBCExQNF3nWRel6cl9Im0n3N7pL6y?=
- =?us-ascii?Q?NFLRqP74V2k6RMeIrT2wIzbHxgd3CjFOphZyh5s60wigNulkmO7zFkpQLRn9?=
- =?us-ascii?Q?UYXwAjTJSlxE78gmnYrpvtP44zwp7YFR1058z8OBYDa4ZBeQuW24+Yrm8yMp?=
- =?us-ascii?Q?JtwvPmpraRHzSLqlOeg84J+JULK0eAgWUq2BynEojDJaXZlsL0s45F/+Ym+v?=
- =?us-ascii?Q?DHnoZISxZbr5jB2ZiWTpFqK6lG1gIF1paMvvsmm+7wDah6unMLAVwIM+7xB+?=
- =?us-ascii?Q?Inq8oUZ0S46DRa5gbTLLguHrwDWH48cgLFj62BpUOaj3izIMf/cMS7fRaqzX?=
- =?us-ascii?Q?hjh6nKMdnbbgPmCyuLY5La85Ow/zY0Ixud1Sq/i3Ro8/eUHowsiVTh00h6vr?=
- =?us-ascii?Q?EPrxXaSgWdohL8bReVM5Ou0WNbYHZKKfB08JIuQcwSC/BtKyBuYEkQu2q+Ho?=
- =?us-ascii?Q?OB4CxMJ1otyIkFsm3S3dJf22aKBYah1Wm4BnqnmC8J/cyArNMUBNqkPh3RL/?=
- =?us-ascii?Q?2d4UEjEs5Y2p6yTjUpTtIXXDmlLVEKQfqCPugKW9SYgPVbAxOS4bUVOlz5Y5?=
- =?us-ascii?Q?PZ35lMolK+ZsHwUUj2FXIcPYt7Zwwwn42GtjNEWf3aEYzZJCFZXdD6ygjVY4?=
- =?us-ascii?Q?HXG9P6NKcU5VV+hQWYGmDNuDQm1qbgWW1W32YBKt2lg3U8zU6KEKTgMozf7L?=
- =?us-ascii?Q?YVJVlNNjnowsHpfa4QDbtSHIq55gQM+YBg+YnfG6vJkwIuOGa16454yRb8QK?=
- =?us-ascii?Q?AUBSoUNuC4R6ZsDscrIFUZCmrWllkhQO8zOBH7RGGwutSXPVEL0GzN1B1y4o?=
- =?us-ascii?Q?6cwfuvpoRaEgTzz4yV14MaTQU5CcLyU+VLRT9ilolwCOLVVNj7HFc8Ltr38w?=
- =?us-ascii?Q?reEH?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5072.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2021 05:42:22.5430
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-Network-Message-Id: 925e0bf1-de34-4473-8a9e-08d8b13cacac
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Hw9pT+D4utCWMgTqdJl8Y2oVy0IvyGtCUOYv3e9hex3FP0hkbnQt3DHP7SsXVnHsl9P/WQoTTofSsCYo5m+Knw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3336
+References: <20200918174543.13108-1-r.czerwinski@pengutronix.de> <01000174c40f490b-67939192-6451-4675-b18f-14f200234196-000000@email.amazonses.com>
+In-Reply-To: <01000174c40f490b-67939192-6451-4675-b18f-14f200234196-000000@email.amazonses.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 5 Jan 2021 11:12:11 +0530
+Message-ID: <CAFA6WYOv61Q-MUuc587B1sZ0P1WZk0yzM97iiLEvqNQzJcxiVQ@mail.gmail.com>
+Subject: Re: [PATCH] tee: optee: replace might_sleep with cond_resched
+To:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Rouven Czerwinski <r.czerwinski@pengutronix.de>
+Cc:     op-tee@lists.trustedfirmware.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Limeng <Meng.Li@windriver.com>
+On Fri, 25 Sept 2020 at 12:29, Jens Wiklander via OP-TEE
+<op-tee@lists.trustedfirmware.org> wrote:
+>
+> On Fri, Sep 18, 2020 at 7:45 PM Rouven Czerwinski
+> <r.czerwinski@pengutronix.de> wrote:
+> >
+> > On Kernels with CONFIG_PREEMPT_NONE might_sleep() is not enough to force
+> > rescheduling, replace it with a resched check and cond_resched. Fixes
+> > the following stall:
+> >
+> >   [  572.945146] rcu: INFO: rcu_sched self-detected stall on CPU
+> >   [  572.949275] rcu:     0-....: (2099 ticks this GP) idle=572/1/0x40000002 softirq=7412/7412 fqs=974
+> >   [  572.957964]  (t=2100 jiffies g=10393 q=21)
+> >   [  572.962054] NMI backtrace for cpu 0
+> >   [  572.965540] CPU: 0 PID: 165 Comm: xtest Not tainted 5.8.7 #1
+> >   [  572.971188] Hardware name: STM32 (Device Tree Support)
+> >   [  572.976354] [<c011163c>] (unwind_backtrace) from [<c010b7f8>] (show_stack+0x10/0x14)
+> >   [  572.984080] [<c010b7f8>] (show_stack) from [<c0511e4c>] (dump_stack+0xc4/0xd8)
+> >   [  572.991300] [<c0511e4c>] (dump_stack) from [<c0519abc>] (nmi_cpu_backtrace+0x90/0xc4)
+> >   [  572.999130] [<c0519abc>] (nmi_cpu_backtrace) from [<c0519bdc>] (nmi_trigger_cpumask_backtrace+0xec/0x130)
+> >   [  573.008706] [<c0519bdc>] (nmi_trigger_cpumask_backtrace) from [<c01a5184>] (rcu_dump_cpu_stacks+0xe8/0x110)
+> >   [  573.018453] [<c01a5184>] (rcu_dump_cpu_stacks) from [<c01a4234>] (rcu_sched_clock_irq+0x7fc/0xa88)
+> >   [  573.027416] [<c01a4234>] (rcu_sched_clock_irq) from [<c01acdd0>] (update_process_times+0x30/0x8c)
+> >   [  573.036291] [<c01acdd0>] (update_process_times) from [<c01bfb90>] (tick_sched_timer+0x4c/0xa8)
+> >   [  573.044905] [<c01bfb90>] (tick_sched_timer) from [<c01adcc8>] (__hrtimer_run_queues+0x174/0x358)
+> >   [  573.053696] [<c01adcc8>] (__hrtimer_run_queues) from [<c01aea2c>] (hrtimer_interrupt+0x118/0x2bc)
+> >   [  573.062573] [<c01aea2c>] (hrtimer_interrupt) from [<c09ad664>] (arch_timer_handler_virt+0x28/0x30)
+> >   [  573.071536] [<c09ad664>] (arch_timer_handler_virt) from [<c0190f50>] (handle_percpu_devid_irq+0x8c/0x240)
+> >   [  573.081109] [<c0190f50>] (handle_percpu_devid_irq) from [<c018ab8c>] (generic_handle_irq+0x34/0x44)
+> >   [  573.090156] [<c018ab8c>] (generic_handle_irq) from [<c018b194>] (__handle_domain_irq+0x5c/0xb0)
+> >   [  573.098857] [<c018b194>] (__handle_domain_irq) from [<c052ac50>] (gic_handle_irq+0x4c/0x90)
+> >   [  573.107209] [<c052ac50>] (gic_handle_irq) from [<c0100b0c>] (__irq_svc+0x6c/0x90)
+> >   [  573.114682] Exception stack(0xd90dfcf8 to 0xd90dfd40)
+> >   [  573.119732] fce0:                                                       ffff0004 00000000
+> >   [  573.127917] fd00: 00000000 00000000 00000000 00000000 00000000 00000000 d93493cc ffff0000
+> >   [  573.136098] fd20: d2bc39c0 be926998 d90dfd58 d90dfd48 c09f3384 c01151f0 400d0013 ffffffff
+> >   [  573.144281] [<c0100b0c>] (__irq_svc) from [<c01151f0>] (__arm_smccc_smc+0x10/0x20)
+> >   [  573.151854] [<c01151f0>] (__arm_smccc_smc) from [<c09f3384>] (optee_smccc_smc+0x3c/0x44)
+> >   [  573.159948] [<c09f3384>] (optee_smccc_smc) from [<c09f4170>] (optee_do_call_with_arg+0xb8/0x154)
+> >   [  573.168735] [<c09f4170>] (optee_do_call_with_arg) from [<c09f4638>] (optee_invoke_func+0x110/0x190)
+> >   [  573.177786] [<c09f4638>] (optee_invoke_func) from [<c09f1ebc>] (tee_ioctl+0x10b8/0x11c0)
+> >   [  573.185879] [<c09f1ebc>] (tee_ioctl) from [<c029f62c>] (ksys_ioctl+0xe0/0xa4c)
+> >   [  573.193101] [<c029f62c>] (ksys_ioctl) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
+> >   [  573.200750] Exception stack(0xd90dffa8 to 0xd90dfff0)
+> >   [  573.205803] ffa0:                   be926bf4 be926a78 00000003 8010a403 be926908 004e3cf8
+> >   [  573.213987] ffc0: be926bf4 be926a78 00000000 00000036 be926908 be926918 be9269b0 bffdf0f8
+> >   [  573.222162] ffe0: b6d76fb0 be9268fc b6d66621 b6c7e0d8
+> >
+> > seen on STM32 DK2.
+> >
+> > Signed-off-by: Rouven Czerwinski <r.czerwinski@pengutronix.de>
+> > ---
+> >  drivers/tee/optee/call.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+> > index 20b6fd7383c5..83b73b1d52f0 100644
+> > --- a/drivers/tee/optee/call.c
+> > +++ b/drivers/tee/optee/call.c
+> > @@ -8,6 +8,7 @@
+> >  #include <linux/errno.h>
+> >  #include <linux/mm.h>
+> >  #include <linux/slab.h>
+> > +#include <linux/sched.h>
+> >  #include <linux/tee_drv.h>
+> >  #include <linux/types.h>
+> >  #include <linux/uaccess.h>
+> > @@ -148,7 +149,8 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
+> >                          */
+> >                         optee_cq_wait_for_completion(&optee->call_queue, &w);
+> >                 } else if (OPTEE_SMC_RETURN_IS_RPC(res.a0)) {
+> > -                       might_sleep();
+> > +                       if(need_resched())
+> > +                               cond_resched();
+>
+> This looks OK to me. But I'd prefer if someone else could confirm this too.
+>
 
-There will be memory leak if driver probe failed. Trace as below:
-  backtrace:
-    [<000000002415258f>] kmemleak_alloc+0x3c/0x50
-    [<00000000f447ebe4>] __kmalloc+0x208/0x530
-    [<0000000048bc7b3a>] of_dma_get_range+0xe4/0x1b0
-    [<0000000041e39065>] of_dma_configure_id+0x58/0x27c
-    [<000000006356866a>] platform_dma_configure+0x2c/0x40
-    ......
-    [<000000000afcf9b5>] ret_from_fork+0x10/0x3c
+Tested-by: Sumit Garg <sumit.garg@linaro.org>
 
-This issue is introduced by commit e0d072782c73("dma-mapping:
-introduce DMA range map, supplanting dma_pfn_offset "). It doesn't
-free dma_range_map when driver probe failed and cause above
-memory leak. So, add code to free it in error path.
+-Sumit
 
-v2:
-set dev->dma_range_map as NULL after memory free.
-
-Fixes: e0d072782c73("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset ")
-Cc: stable@vger.kernel.org
-Signed-off-by: Meng Li <Meng.Li@windriver.com>
----
- drivers/base/dd.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 148e81969e04..3c94ebc8d4bb 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -612,6 +612,8 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- 	else if (drv->remove)
- 		drv->remove(dev);
- probe_failed:
-+	kfree(dev->dma_range_map);
-+	dev->dma_range_map = NULL;
- 	if (dev->bus)
- 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
- 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
--- 
-2.17.1
-
+> Thanks,
+> Jens
+>
+> >                         param.a0 = res.a0;
+> >                         param.a1 = res.a1;
+> >                         param.a2 = res.a2;
+> > --
+> > 2.28.0
+> >
