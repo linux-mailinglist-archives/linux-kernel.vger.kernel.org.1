@@ -2,93 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C472EABB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0892EABA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728725AbhAENQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:16:35 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54833 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728502AbhAENQe (ORCPT
+        id S1727736AbhAENP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:15:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726018AbhAENP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:16:34 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CF5805803D8;
-        Tue,  5 Jan 2021 08:15:27 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 05 Jan 2021 08:15:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=ovzRNUOoirUfsc2LW7sL2wtDm5
-        7aYO8qZI0AlhpAeIA=; b=de5ituPcFvcJH+RYJx1y2IcsAgBv7O2w2ri+QmFJXI
-        L+U8Fz6keseJQzAVCGR4JyChzfcQBROW+sC6lhNINq1h3yzxmh1ev9t0UWKf37Ri
-        xDGGy9ajQ4VjfqaOyoOZAM31Mrc7sp342A2FwgLqeuKYTrmdl68k4wGN7M5b6Gyv
-        gVMpkBFp/xv1Z6/ctItDxSDcRlGE1P+b5hsSL2yzdVtJ0KjbeBHV/UlqfVUdzK6F
-        vjeI1C3n3msmOZc5ShZmezbr2zZq4TQVuFoIprySn63Xx/V4BYycgtFtDd5vKHFD
-        3FccYzGMXGjFy3QoMQzNuoyFdYvdHpf/IIYH7+0XmK/w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ovzRNUOoirUfsc2LW
-        7sL2wtDm57aYO8qZI0AlhpAeIA=; b=XLFtUSgfh9I4uIAz1wGOioZcRbRB1e2Hm
-        hgTV9/aSD0ubAGBz6dQEhbRTnhLz598llazSNNL5cOIXskPwlW12K1Ba7giEAoPx
-        pjCQKnBYdHRuXQ/5/La4XJIBc0ofXbpYDaEblg9I9Io3Nz/eX98YxBYSzKgI4MJi
-        +Fn+OrnnZ9RjtZB69u+ziWeXVwSbUIdBml6gy0qly6rLAZ3ycKSkahHpACcsIAn3
-        xbHhMUTewv2xJBYs+T5z3uutST71Zq7NAo23EpjGjDHsrXfFEIL8Nc7593wHwFM5
-        06IpO8fyeyi2jzUeLI1azhpbmuOhJHvggdJ81+phNbbjiloFeWe7w==
-X-ME-Sender: <xms:bmb0X_7lC1tnaKaXaNuMltEedRFC7Z4wbzU5kE79SqIMg9V0vC4QIA>
-    <xme:bmb0X0490QZHjY6JC6_YtbJzjfJuCdYJNTU7vxOO36RbM9Ki0OgD-p7vznv-XIMZi
-    HgXzGAh_csDgxrYlZM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefjedgudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflihgrgihunhcu
-    jggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecuggftrf
-    grthhtvghrnhephfejtdektdeuhedtieefteekveffteejteefgeekveegffetvddugfel
-    iefhtddunecukfhppedutddurdekgedrudekrddvudeknecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihg
-    ohgrthdrtghomh
-X-ME-Proxy: <xmx:bmb0X2eGcwNN6wNPxLhfPLZ0Dx4NFxdHIWCCA-P_5VCDZHaKydobvA>
-    <xmx:bmb0XwIwyMA9v-1ohX1l7rGKtcPOq-Ldgq9jP6PDKQk8Dj6RkgwdHg>
-    <xmx:bmb0XzIBeipVYh1Cn2hrJIwnUlcxJM6hGNel9MtT9csmkwov7w8o2g>
-    <xmx:b2b0X7_GVlgnN7HO6kiWlxsySd8GKkNd9GoS1BGDoLYB889R3eUoyA>
-Received: from localhost.localdomain (unknown [101.84.18.218])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B1AE324005A;
-        Tue,  5 Jan 2021 08:15:13 -0500 (EST)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     platform-driver-x86@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] IdeaPad platform profile support
-Date:   Tue,  5 Jan 2021 21:14:41 +0800
-Message-Id: <20210105131447.38036-1-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.30.0
+        Tue, 5 Jan 2021 08:15:26 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EB2C061793;
+        Tue,  5 Jan 2021 05:14:45 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id h22so72523151lfu.2;
+        Tue, 05 Jan 2021 05:14:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tQKbFrNJhZtnkQVAJYkn3GuvMlIvsBf16oBsGWuoFBg=;
+        b=Qgcs4Xx6lLq0YZhAP+b3iXdVigcYK/deCQAJeY+C1VNb9zFq0ywyeJXslL8S6zNt26
+         oMdstuxuBGDOvQ0f4VNaTt5aEQthq7vPE66VQkNdfu1+ugV5to9YzhrNTqZqRSfWY2xq
+         EoJQs2veM7c22hFQAPIVdYjXXKVTn/FG6Oo1qzfTPoHiu53wGXkauVd8ALaIynNN8BGc
+         yN74qQ2qBj8KGbxQOnpYfVO9y3fBiyZyUdU00YRMf45t1EAODcfDqMjvV38EzIIi6tK7
+         F7J/aBxnojloVN0+XEpes+OlJ4xXNXDr0jyglTcvTyOVXDiDbVtOXMn+C7gUfUkjHkFO
+         090Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tQKbFrNJhZtnkQVAJYkn3GuvMlIvsBf16oBsGWuoFBg=;
+        b=RzTwZ3CUrb1GpqJf5+FVKxHaasAWep8qxh1kzPBblCzRCqxYoE1mWnenZleG3IbPyR
+         NwYBRRn0ReDrCZbcnjuWJSHob3DSXB85WwdWP5ErkFIULyJQ+MkMW20XW/l2kQEO6P/W
+         sur1DMoocQGn5zRTc2lGX6dZFCh9ykMeprK9YGVtD9s4IvYxCuicHaEkw/n7wGjgvWCu
+         VUcc8jknefI42kNHAYLuhczYRi5XCuXqCVciJ27cxtQlyCIC2YXB3ktFG0OedbzhEY44
+         xyPJBPnISfxunSnZoKdh0Yuo8FqV68tN3yh+QaGcxjKcaTvNM+96fzwHLwJrqGwexP7M
+         NaYg==
+X-Gm-Message-State: AOAM532yY+b5Qqvnz/7y43pg9TxT4O+pR/F9BAFud7Dj8z78jor5k8G2
+        cznGV46kCXP1yK0jaUHsGkQ=
+X-Google-Smtp-Source: ABdhPJyeY24/g5kvCBsLLaTN+RDyjtpbSWCKqEnHATmX3nVrdhUp3hZJPi9Y5sxP84E4B53L/qOF6Q==
+X-Received: by 2002:a05:6512:3051:: with SMTP id b17mr30077247lfb.16.1609852484397;
+        Tue, 05 Jan 2021 05:14:44 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id t30sm7608665lft.266.2021.01.05.05.14.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 05:14:43 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 5 Jan 2021 14:14:41 +0100
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: kerneldoc warnings since commit 538fc2ee870a3 ("rcu: Introduce
+ kfree_rcu() single-argument macro")
+Message-ID: <20210105131441.GA2457@pc638.lan>
+References: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested on Lenovo Yoga-14S ARE Chinese Edition.
+Dear, Lukas.
 
-v2: Use another private data approach (Hans)
+> Dear Uladzislau,
+> 
+> in commit 538fc2ee870a3 ("rcu: Introduce kfree_rcu() single-argument
+> macro"), you have refactored the kfree_rcu macro.
+> 
+> Since then, make htmldocs warns:
+> 
+> ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> 'ptr' description in 'kfree_rcu'
+> ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> 'rhf' description in 'kfree_rcu'
+> 
+> As you deleted the two arguments in the macro definition, kerneldoc
+> cannot resolve the argument names in the macro's kerneldoc
+> documentation anymore and warns about that.
+> 
+> Probably, it is best to just turn the formal kerneldoc references to
+> the two arguments, which are not used in the macro definition anymore,
+> simply into two informal references in the documentation.
+> 
+Thanks for your suggestion. I am not sure if htmldocs supports something
+like "__maybe_unused", but tend to say that it does not. See below the
+patch:
 
-Jiaxun Yang (2):
-  ACPI: platform-profile: Introduce object pointers to callbacks
-  platform/x86: ideapad-laptop: DYTC Platform profile support
+<snip>
+From 65ecc7c58810c963c02e0596ce2e5758c54ef55d Mon Sep 17 00:00:00 2001
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Date: Tue, 5 Jan 2021 13:23:30 +0100
+Subject: [PATCH] rcu: fix kerneldoc warnings
 
- drivers/acpi/platform_profile.c       |   4 +-
- drivers/platform/x86/Kconfig          |   1 +
- drivers/platform/x86/ideapad-laptop.c | 289 ++++++++++++++++++++++++++
- include/linux/platform_profile.h      |   6 +-
- 4 files changed, 296 insertions(+), 4 deletions(-)
+After refactoring of the kfree_rcu(), it becomes possible to use
+the macro with one or two arguments. From the other hand, in the
+description there are two arguments in the macro definition expected.
+That is why the "htmldocs" emits a warning about it:
 
+<snip>
+./include/linux/rcupdate.h:882: warning: Excess function parameter
+'ptr' description in 'kfree_rcu'
+./include/linux/rcupdate.h:882: warning: Excess function parameter
+'rhf' description in 'kfree_rcu'
+<snip>
+
+Fix it by converting two parameters into informal references in the
+macro description.
+
+Fixes: 3d3d9ff077a9 ("rcu: Introduce kfree_rcu() single-argument macro")
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ include/linux/rcupdate.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index ebd8dcca4997..e678ce7f5ca2 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -854,8 +854,8 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+ 
+ /**
+  * kfree_rcu() - kfree an object after a grace period.
+- * @ptr: pointer to kfree for both single- and double-argument invocations.
+- * @rhf: the name of the struct rcu_head within the type of @ptr,
++ * ptr: pointer to kfree for both single- and double-argument invocations.
++ * rhf: the name of the struct rcu_head within the type of ptr,
+  *       but only for double-argument invocations.
+  *
+  * Many rcu callbacks functions just call kfree() on the base structure.
 -- 
-2.30.0
+2.20.1
+<snip>
 
+Paul, does it work for you?
+
+Thanks!
+
+--
+Vlad Rezki
