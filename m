@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36342EB210
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDBB2EB211
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730773AbhAESGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34640 "EHLO
+        id S1730784AbhAESGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:06:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730763AbhAESGt (ORCPT
+        with ESMTP id S1728291AbhAESGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:06:49 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C8EC0617A3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:06:08 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id a12so83196wrv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:06:08 -0800 (PST)
+        Tue, 5 Jan 2021 13:06:51 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE57C0617A4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:06:10 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id g25so1870141wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:06:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OlWNLkvu8os23nlNxmSq9Bz5E02cEWRlXUgN8SoW4qc=;
-        b=uiGccgbHmkHVH03l7PPlPzjM6OCn3VXs3LK6H2v5YAw7NErN+XLJ0zgvL0csQdRbxO
-         FOeRF9Usq9Ounr5UGTBl9EzTu0+3L43bAAQ14gaoCHgEZPMAlNUXD4tIX0OoWrLXfEgG
-         3u4q+cNrF1+912qcOlxkOUSvn1fW4O7wckI8e5TWOTdaQvPmFP57yZek27rVgMXOlaRr
-         rLybTGpLps9RgQxfGEuoguGngesdC5Zn7LmA9HmYjnpEJGFVMnDqM/i+qbfrzGCBdlEo
-         JdhpfkJyS4oT718a0VEuaP6A3JGDWLymHtHCCXhwjCABJpXapeQRhTYfAM0/uBdjbzAJ
-         E5Kg==
+        bh=Gbp0yeP9fLTV4dr+t+2KX9FiCtVVsbkdYRtcsAjBIrU=;
+        b=jFQIQrL34kPIQiwDILOVev4AaFi3ZoNyBOA8xZ6iS62BqlqSP7dEc+U5DcuueL5AZY
+         yms3fpksZn+wuTcHbIA6fAydqmWnIy6wQhjzueC1z9F2cSvxNRkbK6Bfm49JBV/+CSxy
+         f8uJYUJBM70p/Ehv4N2VR2lMw3RQWDHnZBNJ5bk9Kb3vjEfyL9DWHUjOedWgEasHZnm7
+         3hFhQehbUkyMB4YiRZO+AzqUb8zKtnU8W93R5RjuTCvMB7G68FdA1oQQ+m4nJYt7vZvR
+         rHJtRZJOaJR3iu30iN/W1uhb9mboTBcscGAA5bxlqXoSl6XfH2+T3TYVAtHp7W+aiA4p
+         OU1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OlWNLkvu8os23nlNxmSq9Bz5E02cEWRlXUgN8SoW4qc=;
-        b=EFDSWJANbgKWnsVA4/sybAVdPc0W0Ba5BoKwdmeq8nGQQfyrDTEsKS0aFvtGQ0Byux
-         pGlZV+ee9w9jml6ajornSqKngoZPYH7+mwDOIdor/OsKfUySePvQPWgoV0qIXtquA5zb
-         wPU4Jt4czT3vlNYb8DsRV/70/xjdY2/mXZMDqKkbrtBeE2ImkdYLIRHOnVE84/ogaxhM
-         tkqsdDaUtytmPOAA7gf6L8in+NTjTcCGQVW2sbpksmOOJz5iNGPnI0fw3Ofi0WglgDWu
-         SEah+vcq0eclTpbejhTyWMmT2BMaoLbQltRlUf7wphziWBJrqln0dLoKyYNi5szDzTq+
-         I9dg==
-X-Gm-Message-State: AOAM5322z0t8VCZSiCzfZV3GldIMwKAfIWOxOvLMRYaqGCiLesLsvkzN
-        7N8pP1RVu8ctRmfys2E7fHA6/w==
-X-Google-Smtp-Source: ABdhPJykPPGsPRvk5u16vzyumU8tD6czDOMIVrv06NmGFJ/zY/dEqModqSIRO58GD2prw5nLx9w35A==
-X-Received: by 2002:adf:94c7:: with SMTP id 65mr685725wrr.423.1609869967382;
-        Tue, 05 Jan 2021 10:06:07 -0800 (PST)
+        bh=Gbp0yeP9fLTV4dr+t+2KX9FiCtVVsbkdYRtcsAjBIrU=;
+        b=HjI0OexhFB1CND7VA56ynIQmRt/Qzf6lbuNOTXpUtz9n7ksVCBWNGjlEVivmqYLGcb
+         lV1xfIvmxIxDMMQq612q9R6di1pdDyo8gieE+5eEhhMDkIX56W1AX6U5UBI3ytWQ1/nd
+         0TLhvmTIwflH3F5U6Xnlcw2HuLYM+IGU8Alq52Q1c4pxHli41HgGVxe4vZsDuPQ8L4Mz
+         6bXx1afK1xLUX4yqhXF48cawhTdMPqAdhKgjhk66JHLTHxTtIRmBwi/ezPoIDUfjYlLF
+         W2hfchsjGURsfob6BlQ0hWY6t+YHmEPkuZDghCIdDhetUEGrptmdPCvZfJ8PCDOTzmlf
+         RM0g==
+X-Gm-Message-State: AOAM531VAubltedPv4TWlFVoEnb1WzPaYNQMv6naSnz4OiBlXbarBqbS
+        TAe82S5hEHTgjC3EPexs+cVk6w==
+X-Google-Smtp-Source: ABdhPJzPGG9RBoyhJQLzttz8EAAC11owesE8rsq+vvvfbhxoYZs+I3UtJZieKVfwRoMz686oJu0KDw==
+X-Received: by 2002:a1c:7d58:: with SMTP id y85mr347623wmc.50.1609869969348;
+        Tue, 05 Jan 2021 10:06:09 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:4957:71a5:7b5c:c94f])
-        by smtp.gmail.com with ESMTPSA id r82sm354256wma.18.2021.01.05.10.06.06
+        by smtp.gmail.com with ESMTPSA id l5sm658028wrv.44.2021.01.05.10.06.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 10:06:06 -0800 (PST)
+        Tue, 05 Jan 2021 10:06:08 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -59,9 +59,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v2 7/8] KVM: arm64: Remove patching of fn pointers in hyp
-Date:   Tue,  5 Jan 2021 18:05:40 +0000
-Message-Id: <20210105180541.65031-8-dbrazdil@google.com>
+Subject: [PATCH v2 8/8] KVM: arm64: Remove hyp_symbol_addr
+Date:   Tue,  5 Jan 2021 18:05:41 +0000
+Message-Id: <20210105180541.65031-9-dbrazdil@google.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210105180541.65031-1-dbrazdil@google.com>
 References: <20210105180541.65031-1-dbrazdil@google.com>
@@ -71,118 +71,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Storing a function pointer in hyp now generates relocation information
-used at early boot to convert the address to hyp VA. The existing
-alternative-based conversion mechanism is therefore obsolete. Remove it
-and simplify its users.
+Hyp code used the hyp_symbol_addr helper to force PC-relative addressing
+because absolute addressing results in kernel VAs due to the way hyp
+code is linked. This is not true anymore, so remove the helper and
+update all of its users.
 
 Acked-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/kvm_mmu.h   | 18 ------------------
- arch/arm64/kernel/image-vars.h     |  1 -
- arch/arm64/kvm/hyp/nvhe/hyp-main.c | 11 ++++-------
- arch/arm64/kvm/va_layout.c         |  6 ------
- 4 files changed, 4 insertions(+), 32 deletions(-)
+ arch/arm64/include/asm/kvm_asm.h         | 26 ------------------------
+ arch/arm64/kvm/hyp/include/hyp/switch.h  |  4 ++--
+ arch/arm64/kvm/hyp/nvhe/hyp-smp.c        |  4 ++--
+ arch/arm64/kvm/hyp/nvhe/psci-relay.c     | 24 +++++++++++-----------
+ arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c |  2 +-
+ 5 files changed, 17 insertions(+), 43 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index adadc468cc71..90873851f677 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -135,24 +135,6 @@ static __always_inline unsigned long __kern_hyp_va(unsigned long v)
+diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+index 8a33d83ea843..22d933e9b59e 100644
+--- a/arch/arm64/include/asm/kvm_asm.h
++++ b/arch/arm64/include/asm/kvm_asm.h
+@@ -199,32 +199,6 @@ extern void __vgic_v3_init_lrs(void);
  
- #define kern_hyp_va(v) 	((typeof(v))(__kern_hyp_va((unsigned long)(v))))
+ extern u32 __kvm_get_mdcr_el2(void);
  
--static __always_inline unsigned long __kimg_hyp_va(unsigned long v)
--{
--	unsigned long offset;
+-#if defined(GCC_VERSION) && GCC_VERSION < 50000
+-#define SYM_CONSTRAINT	"i"
+-#else
+-#define SYM_CONSTRAINT	"S"
+-#endif
 -
--	asm volatile(ALTERNATIVE_CB("movz %0, #0\n"
--				    "movk %0, #0, lsl #16\n"
--				    "movk %0, #0, lsl #32\n"
--				    "movk %0, #0, lsl #48\n",
--				    kvm_update_kimg_phys_offset)
--		     : "=r" (offset));
+-/*
+- * Obtain the PC-relative address of a kernel symbol
+- * s: symbol
+- *
+- * The goal of this macro is to return a symbol's address based on a
+- * PC-relative computation, as opposed to a loading the VA from a
+- * constant pool or something similar. This works well for HYP, as an
+- * absolute VA is guaranteed to be wrong. Only use this if trying to
+- * obtain the address of a symbol (i.e. not something you obtained by
+- * following a pointer).
+- */
+-#define hyp_symbol_addr(s)						\
+-	({								\
+-		typeof(s) *addr;					\
+-		asm("adrp	%0, %1\n"				\
+-		    "add	%0, %0, :lo12:%1\n"			\
+-		    : "=r" (addr) : SYM_CONSTRAINT (&s));		\
+-		addr;							\
+-	})
 -
--	return __kern_hyp_va((v - offset) | PAGE_OFFSET);
--}
--
--#define kimg_fn_hyp_va(v) 	((typeof(*v))(__kimg_hyp_va((unsigned long)(v))))
--
--#define kimg_fn_ptr(x)	(typeof(x) **)(x)
--
- /*
-  * We currently support using a VM-specified IPA size. For backward
-  * compatibility, the default IPA size is fixed to 40bits.
-diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index f676243abac6..23f1a557bd9f 100644
---- a/arch/arm64/kernel/image-vars.h
-+++ b/arch/arm64/kernel/image-vars.h
-@@ -64,7 +64,6 @@ __efistub__ctype		= _ctype;
- /* Alternative callbacks for init-time patching of nVHE hyp code. */
- KVM_NVHE_ALIAS(kvm_patch_vector_branch);
- KVM_NVHE_ALIAS(kvm_update_va_mask);
--KVM_NVHE_ALIAS(kvm_update_kimg_phys_offset);
- KVM_NVHE_ALIAS(kvm_get_kimage_voffset);
+ #define __KVM_EXTABLE(from, to)						\
+ 	"	.pushsection	__kvm_ex_table, \"a\"\n"		\
+ 	"	.align		3\n"					\
+diff --git a/arch/arm64/kvm/hyp/include/hyp/switch.h b/arch/arm64/kvm/hyp/include/hyp/switch.h
+index 84473574c2e7..54f4860cd87c 100644
+--- a/arch/arm64/kvm/hyp/include/hyp/switch.h
++++ b/arch/arm64/kvm/hyp/include/hyp/switch.h
+@@ -505,8 +505,8 @@ static inline void __kvm_unexpected_el2_exception(void)
+ 	struct exception_table_entry *entry, *end;
+ 	unsigned long elr_el2 = read_sysreg(elr_el2);
  
- /* Global kernel state accessed by nVHE hyp code. */
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-index a906f9e2ff34..f012f8665ecc 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-@@ -108,9 +108,9 @@ static void handle___vgic_v3_restore_aprs(struct kvm_cpu_context *host_ctxt)
+-	entry = hyp_symbol_addr(__start___kvm_ex_table);
+-	end = hyp_symbol_addr(__stop___kvm_ex_table);
++	entry = &__start___kvm_ex_table;
++	end = &__stop___kvm_ex_table;
  
- typedef void (*hcall_t)(struct kvm_cpu_context *);
+ 	while (entry < end) {
+ 		addr = (unsigned long)&entry->insn + entry->insn;
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+index 2997aa156d8e..879559057dee 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
++++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+@@ -33,8 +33,8 @@ unsigned long __hyp_per_cpu_offset(unsigned int cpu)
+ 	if (cpu >= ARRAY_SIZE(kvm_arm_hyp_percpu_base))
+ 		hyp_panic();
  
--#define HANDLE_FUNC(x)	[__KVM_HOST_SMCCC_FUNC_##x] = kimg_fn_ptr(handle_##x)
-+#define HANDLE_FUNC(x)	[__KVM_HOST_SMCCC_FUNC_##x] = (hcall_t)handle_##x
+-	cpu_base_array = (unsigned long *)hyp_symbol_addr(kvm_arm_hyp_percpu_base);
++	cpu_base_array = (unsigned long *)&kvm_arm_hyp_percpu_base;
+ 	this_cpu_base = kern_hyp_va(cpu_base_array[cpu]);
+-	elf_base = (unsigned long)hyp_symbol_addr(__per_cpu_start);
++	elf_base = (unsigned long)&__per_cpu_start;
+ 	return this_cpu_base - elf_base;
+ }
+diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+index e3947846ffcb..f254a425cb3a 100644
+--- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
++++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+@@ -134,8 +134,8 @@ static int psci_cpu_on(u64 func_id, struct kvm_cpu_context *host_ctxt)
+ 	if (cpu_id == INVALID_CPU_ID)
+ 		return PSCI_RET_INVALID_PARAMS;
  
--static const hcall_t *host_hcall[] = {
-+static const hcall_t host_hcall[] = {
- 	HANDLE_FUNC(__kvm_vcpu_run),
- 	HANDLE_FUNC(__kvm_flush_vm_context),
- 	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa),
-@@ -130,7 +130,6 @@ static const hcall_t *host_hcall[] = {
- static void handle_host_hcall(struct kvm_cpu_context *host_ctxt)
- {
- 	DECLARE_REG(unsigned long, id, host_ctxt, 0);
--	const hcall_t *kfn;
- 	hcall_t hfn;
+-	boot_args = per_cpu_ptr(hyp_symbol_addr(cpu_on_args), cpu_id);
+-	init_params = per_cpu_ptr(hyp_symbol_addr(kvm_init_params), cpu_id);
++	boot_args = per_cpu_ptr(&cpu_on_args, cpu_id);
++	init_params = per_cpu_ptr(&kvm_init_params, cpu_id);
  
- 	id -= KVM_HOST_SMCCC_ID(0);
-@@ -138,13 +137,11 @@ static void handle_host_hcall(struct kvm_cpu_context *host_ctxt)
- 	if (unlikely(id >= ARRAY_SIZE(host_hcall)))
- 		goto inval;
+ 	/* Check if the target CPU is already being booted. */
+ 	if (!try_acquire_boot_args(boot_args))
+@@ -146,7 +146,7 @@ static int psci_cpu_on(u64 func_id, struct kvm_cpu_context *host_ctxt)
+ 	wmb();
  
--	kfn = host_hcall[id];
--	if (unlikely(!kfn))
-+	hfn = host_hcall[id];
-+	if (unlikely(!hfn))
- 		goto inval;
+ 	ret = psci_call(func_id, mpidr,
+-			__hyp_pa(hyp_symbol_addr(kvm_hyp_cpu_entry)),
++			__hyp_pa(&kvm_hyp_cpu_entry),
+ 			__hyp_pa(init_params));
  
- 	cpu_reg(host_ctxt, 0) = SMCCC_RET_SUCCESS;
--
--	hfn = kimg_fn_hyp_va(kfn);
- 	hfn(host_ctxt);
+ 	/* If successful, the lock will be released by the target CPU. */
+@@ -165,8 +165,8 @@ static int psci_cpu_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
+ 	struct psci_boot_args *boot_args;
+ 	struct kvm_nvhe_init_params *init_params;
  
- 	return;
-diff --git a/arch/arm64/kvm/va_layout.c b/arch/arm64/kvm/va_layout.c
-index fee7dcd95d73..978301392d67 100644
---- a/arch/arm64/kvm/va_layout.c
-+++ b/arch/arm64/kvm/va_layout.c
-@@ -283,12 +283,6 @@ static void generate_mov_q(u64 val, __le32 *origptr, __le32 *updptr, int nr_inst
- 	*updptr++ = cpu_to_le32(insn);
+-	boot_args = this_cpu_ptr(hyp_symbol_addr(suspend_args));
+-	init_params = this_cpu_ptr(hyp_symbol_addr(kvm_init_params));
++	boot_args = this_cpu_ptr(&suspend_args);
++	init_params = this_cpu_ptr(&kvm_init_params);
+ 
+ 	/*
+ 	 * No need to acquire a lock before writing to boot_args because a core
+@@ -180,7 +180,7 @@ static int psci_cpu_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
+ 	 * point if it is a deep sleep state.
+ 	 */
+ 	return psci_call(func_id, power_state,
+-			 __hyp_pa(hyp_symbol_addr(kvm_hyp_cpu_resume)),
++			 __hyp_pa(&kvm_hyp_cpu_resume),
+ 			 __hyp_pa(init_params));
  }
  
--void kvm_update_kimg_phys_offset(struct alt_instr *alt,
--				 __le32 *origptr, __le32 *updptr, int nr_inst)
--{
--	generate_mov_q(kimage_voffset + PHYS_OFFSET, origptr, updptr, nr_inst);
--}
--
- void kvm_get_kimage_voffset(struct alt_instr *alt,
- 			    __le32 *origptr, __le32 *updptr, int nr_inst)
- {
+@@ -192,8 +192,8 @@ static int psci_system_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
+ 	struct psci_boot_args *boot_args;
+ 	struct kvm_nvhe_init_params *init_params;
+ 
+-	boot_args = this_cpu_ptr(hyp_symbol_addr(suspend_args));
+-	init_params = this_cpu_ptr(hyp_symbol_addr(kvm_init_params));
++	boot_args = this_cpu_ptr(&suspend_args);
++	init_params = this_cpu_ptr(&kvm_init_params);
+ 
+ 	/*
+ 	 * No need to acquire a lock before writing to boot_args because a core
+@@ -204,7 +204,7 @@ static int psci_system_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
+ 
+ 	/* Will only return on error. */
+ 	return psci_call(func_id,
+-			 __hyp_pa(hyp_symbol_addr(kvm_hyp_cpu_resume)),
++			 __hyp_pa(&kvm_hyp_cpu_resume),
+ 			 __hyp_pa(init_params), 0);
+ }
+ 
+@@ -213,12 +213,12 @@ asmlinkage void __noreturn kvm_host_psci_cpu_entry(bool is_cpu_on)
+ 	struct psci_boot_args *boot_args;
+ 	struct kvm_cpu_context *host_ctxt;
+ 
+-	host_ctxt = &this_cpu_ptr(hyp_symbol_addr(kvm_host_data))->host_ctxt;
++	host_ctxt = &this_cpu_ptr(&kvm_host_data)->host_ctxt;
+ 
+ 	if (is_cpu_on)
+-		boot_args = this_cpu_ptr(hyp_symbol_addr(cpu_on_args));
++		boot_args = this_cpu_ptr(&cpu_on_args);
+ 	else
+-		boot_args = this_cpu_ptr(hyp_symbol_addr(suspend_args));
++		boot_args = this_cpu_ptr(&suspend_args);
+ 
+ 	cpu_reg(host_ctxt, 0) = boot_args->r0;
+ 	write_sysreg_el2(boot_args->pc, SYS_ELR);
+diff --git a/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c b/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c
+index 8f0585640241..87a54375bd6e 100644
+--- a/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c
++++ b/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c
+@@ -64,7 +64,7 @@ int __vgic_v2_perform_cpuif_access(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	rd = kvm_vcpu_dabt_get_rd(vcpu);
+-	addr  = hyp_symbol_addr(kvm_vgic_global_state)->vcpu_hyp_va;
++	addr  = kvm_vgic_global_state.vcpu_hyp_va;
+ 	addr += fault_ipa - vgic->vgic_cpu_base;
+ 
+ 	if (kvm_vcpu_dabt_iswrite(vcpu)) {
 -- 
 2.29.2.729.g45daf8777d-goog
 
