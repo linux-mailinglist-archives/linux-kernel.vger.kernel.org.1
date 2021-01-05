@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE68D2EA7D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769282EA7D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728106AbhAEJow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:44:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34463 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727807AbhAEJov (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:44:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609839805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u/pf3MEGHy4BVUnm30O0L31xAu34MGBgOtsz0A/Rhcg=;
-        b=I9S5rONjo+1VTw6Kvhh4Vno1wNTtUlY1Ms9mWpyPagzILVwJ7BA+/eR7QThkZaQhmmNj+E
-        QuedpZsMQUyGGzuTxOROLowlDZWE724GqPbTFqldqa+MyuyhkHg8SgDqvdChsE/5fG9Iy1
-        JszKO6CfJQrY3ub/Vz0DuReLRB0o8pA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-eV-NK1QRM5yLiP4y727A1Q-1; Tue, 05 Jan 2021 04:43:23 -0500
-X-MC-Unique: eV-NK1QRM5yLiP4y727A1Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA59310054FF;
-        Tue,  5 Jan 2021 09:43:21 +0000 (UTC)
-Received: from yiche-home.usersys.redhat.com (ovpn-12-69.pek2.redhat.com [10.72.12.69])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C307E62463;
-        Tue,  5 Jan 2021 09:43:18 +0000 (UTC)
-From:   Yi Chen <yiche@redhat.com>
-To:     Chen Yi <yiche@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Leo <liuhangbin@gmail.com>
-Subject: [PATCHv2 net] selftests: netfilter: Pass the family parameter to conntrack tool
-Date:   Tue,  5 Jan 2021 17:43:16 +0800
-Message-Id: <20210105094316.23683-1-yiche@redhat.com>
-In-Reply-To: <20210104110723.43564-1-yiche@redhat.com>
-References: <20210104110723.43564-1-yiche@redhat.com>
+        id S1728250AbhAEJpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:45:11 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:26248 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727682AbhAEJpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:45:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1609839910;
+  x=1641375910;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=CeICFgPaITmi9nZ9tSZ1FQ/bbzfnJaESHlPO8SjV7sU=;
+  b=IjI+E8+Tgo9md3pRitg0ZJs4R1fWGYblmW4VsHgQEn+eRJdFCIfX3uxq
+   4f84YWjfrEyNyRyt12TkJq/UU95aXowtzpQ3EG+LyYwi6Uy2i4LTYx6DK
+   kyIKz3LopqrrAa3Imo3dWTqM+ueKpcMsRqEX/hQlOpHz62Wyb0sEDKLLl
+   WC0v3M986i/0GKufzsl5e85T2Mjo4i+RyfO4e2JT0P1yxVmq2FwJFVG1V
+   x1LNBq6WZ2UkyExmPJpuzi6FjFy1tYXW4pHFW/4yJXPJqazhjGTWMlFYc
+   NtlhPyKGydTFS7NVUfAZkJYj21jDDn4OD25qQF4fRhlRILlgJ25qyYT7d
+   A==;
+Subject: Re: [PATCH] spi: spidev: Fix so the module is autoloaded when built
+ as external
+To:     Mark Brown <broonie@kernel.org>,
+        Gustav Wiklander <gustav.wiklander@axis.com>
+CC:     <kernel@axis.com>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210104153436.20083-1-gustav.wiklander@axis.com>
+ <20210104213437.GM5645@sirena.org.uk>
+From:   Gustav Wiklander <gustavwi@axis.com>
+Message-ID: <124e3214-37b9-524b-7888-a31e8cb455da@axis.com>
+Date:   Tue, 5 Jan 2021 10:44:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210104213437.GM5645@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: XBOX03.axis.com (10.0.5.17) To XBOX01.axis.com (10.0.5.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yiche <yiche@redhat.com>
+On 1/4/21 10:34 PM, Mark Brown wrote:
+> On Mon, Jan 04, 2021 at 04:34:35PM +0100, Gustav Wiklander wrote:
+>> From: Gustav Wiklander <gustavwi@axis.com>
+>>
+>> The spi framework sets the modalias for the spi device to belong in
+>> either the acpi device table or the SPI device table. It can never
+>> be in the OF table. Therefore the spidev driver should populate the
+>> spi device table rather than the OF table.
+>>
+>> NOTE: platform drivers and i2c drivers support aliases in the
+>>        OF device table.
+> 
+> Why is this a good solution rather than ensuring the the OF IDs can be
+> used directly?
+> 
 
-Fixes: 619ae8e0697a6 ("selftests: netfilter: add test case for conntrack helper assignment")
+Hi Mark,
 
-Fix nft_conntrack_helper.sh fake fail:
-conntrack tool need "-f ipv6" parameter to show out ipv6 traffic items.
-sleep 1 second after background nc send packet, to make sure check
-is after this statement executed.
+You suggestion is of course a solid alternative forward. However, the 
+downside with supporting the OF device table for automatic module 
+loading is that a lot of spi device drivers must be updated. Also
+it is unclear what is the preferred way to do this in the kernel see
+this patch:
+https://lore.kernel.org/lkml/20190618052644.32446-1-bjorn.andersson@linaro.org/
 
-Signed-off-by: yiche <yiche@redhat.com>
----
- .../selftests/netfilter/nft_conntrack_helper.sh      | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+If adding support of OF device table the spi device drivers must now 
+include a MODULE_DEVICE_TABLE(of,...) as the spi device alias will no 
+longer match the alias in the module.
 
-diff --git a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
-index edf0a48da6bf..bf6b9626c7dd 100755
---- a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
-+++ b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
-@@ -94,7 +94,13 @@ check_for_helper()
- 	local message=$2
- 	local port=$3
- 
--	ip netns exec ${netns} conntrack -L -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
-+	if echo $message |grep -q 'ipv6';then
-+		local family="ipv6"
-+	else
-+		local family="ipv4"
-+	fi
-+
-+	ip netns exec ${netns} conntrack -L -f $family -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
- 	if [ $? -ne 0 ] ; then
- 		echo "FAIL: ${netns} did not show attached helper $message" 1>&2
- 		ret=1
-@@ -111,8 +117,8 @@ test_helper()
- 
- 	sleep 3 | ip netns exec ${ns2} nc -w 2 -l -p $port > /dev/null &
- 
--	sleep 1
- 	sleep 1 | ip netns exec ${ns1} nc -w 2 10.0.1.2 $port > /dev/null &
-+	sleep 1
- 
- 	check_for_helper "$ns1" "ip $msg" $port
- 	check_for_helper "$ns2" "ip $msg" $port
-@@ -128,8 +134,8 @@ test_helper()
- 
- 	sleep 3 | ip netns exec ${ns2} nc -w 2 -6 -l -p $port > /dev/null &
- 
--	sleep 1
- 	sleep 1 | ip netns exec ${ns1} nc -w 2 -6 dead:1::2 $port > /dev/null &
-+	sleep 1
- 
- 	check_for_helper "$ns1" "ipv6 $msg" $port
- 	check_for_helper "$ns2" "ipv6 $msg" $port
--- 
-2.26.2
+This command gives 186 spi device drivers.
+git grep "MODULE_DEVICE_TABLE(spi" | wc -l 
 
+186
+
+Best regards
+Gustav Wiklander
