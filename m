@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AFD2EB4BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5FB2EB4C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730153AbhAEVNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 16:13:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35594 "EHLO
+        id S1730541AbhAEVOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 16:14:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbhAEVNr (ORCPT
+        with ESMTP id S1725940AbhAEVOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:13:47 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A492C061574;
-        Tue,  5 Jan 2021 13:13:07 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwtdF-007AYs-Vb; Tue, 05 Jan 2021 21:12:46 +0000
-Date:   Tue, 5 Jan 2021 21:12:45 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
+        Tue, 5 Jan 2021 16:14:33 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16668C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 13:13:53 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id b24so1134348otj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 13:13:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=TyYwTxr/bbnMT2s7IdFCyHWoGv5IHohnF+0y9xw1Hc0=;
+        b=oYJOXj4hukhixP9Lp/YhX+mrGoOHmENKZCqb5QXf59taNEzoNQn4gNUnioiQnzAEap
+         TcggBrhAkzaXrtSTxORkZUQzkdbrNe56JJ3eNfUnwEYtex/25bhVgWYNGfXrb2R3wdQQ
+         lffdB8IQcpQ9rSRvbaAyp5aaobUey7vMJD6gO5gyACTZs5S1Tm8X6HG1xJ9m2UCcd9lb
+         CZTOVn+N5NDQWxiqwPRKnfPTsmZikOE68OO6wq61gOL7moVBG+YPuhXpaQRZMUPFzrjt
+         stvVct+vEbFTfkgN/WkeLklNqzJC/bokB+1fWDw78BKH6qw9a+FbAqeeRhiXUQYFJFhD
+         kmNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=TyYwTxr/bbnMT2s7IdFCyHWoGv5IHohnF+0y9xw1Hc0=;
+        b=NKehCHUsOo18XLQ1Ja1tzrYPhS+lIlS2bNvEOjgOsn5ftoHuWXLRHjrDgpJqc643VC
+         vyy+cfQwXtHtPjo6xpRykR7ugqVJiGfN26h2U0JPABlBh76kxlXCwNNU2GHlCDfFdyHQ
+         SKH41BanOhWUxwHsyvg/SlpvZG605TYRbfA1Dh1oNWS+hINwQNlSNMWm1qzDdmTwgm2O
+         iK9QfbcylERzlwWjVL6fXgyKtaAe6hH9ievwiatu6Au4edRbjRz1zdy/2JguyX2v2Q7s
+         NyitmRxwK9pFmT/GFeIbpYhxucgOvB4EF4yRIMnONZZcMKWJ3EuHa25XuGMC1kFVUUja
+         6i8w==
+X-Gm-Message-State: AOAM5331j+6tsycWKJMtsXdTP8XTyczyQ/D+q3CmliywMkDFqnpeWx1o
+        TkN7wBoV2DXlJ70DZgt7opABpA==
+X-Google-Smtp-Source: ABdhPJzOGDZpxf1G0r4cHJ2IbaH+Q/Dk5K73HNI5Jsp+DgiUBa1UsMa84YXwrZkQhLFfVPuTRFBurA==
+X-Received: by 2002:a9d:650f:: with SMTP id i15mr1013648otl.347.1609881232257;
+        Tue, 05 Jan 2021 13:13:52 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id i16sm87516otc.61.2021.01.05.13.13.51
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 05 Jan 2021 13:13:51 -0800 (PST)
+Date:   Tue, 5 Jan 2021 13:13:40 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
-        Stephen Brennan <stephen.s.brennan@oracle.com>
-Subject: Re: [PATCH v4] proc: Allow pid_revalidate() during LOOKUP_RCU
-Message-ID: <20210105211245.GY3579531@ZenIV.linux.org.uk>
-References: <20210104232123.31378-1-stephen.s.brennan@oracle.com>
- <20210105055935.GT3579531@ZenIV.linux.org.uk>
- <20210105165005.GV3579531@ZenIV.linux.org.uk>
- <20210105195937.GX3579531@ZenIV.linux.org.uk>
- <CAHk-=wiP9EAP=JHGKG5LUCusVjVzTQoPVyweJkrX5dP=T_NxXw@mail.gmail.com>
+        syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: kernel BUG at mm/page-writeback.c:LINE!
+In-Reply-To: <CAHk-=wh=5kDGukMs2sVZ8uHZJX4VL13oD5+xMAR4HvuY6QckLg@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2101051235500.5906@eggly.anvils>
+References: <000000000000886dbd05b7ffa8db@google.com> <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org> <CAHk-=wi6hd8ATJ1W90goTxjgyvuoFsf0xZdAJmZ2c0dx5wcJSg@mail.gmail.com> <alpine.LSU.2.11.2101041839440.3466@eggly.anvils>
+ <CAHk-=wi36CBggdRfdggACvf2hG+djM9kKnorrwsByN6uDvPExA@mail.gmail.com> <CAHk-=wh=5kDGukMs2sVZ8uHZJX4VL13oD5+xMAR4HvuY6QckLg@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiP9EAP=JHGKG5LUCusVjVzTQoPVyweJkrX5dP=T_NxXw@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 12:38:31PM -0800, Linus Torvalds wrote:
-
-> This whole thing isn't important enough to get the dentry lock. It's
-> more of a hint than anything else.
+On Tue, 5 Jan 2021, Linus Torvalds wrote:
+> On Tue, Jan 5, 2021 at 11:31 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> > On Mon, Jan 4, 2021 at 7:29 PM Hugh Dickins <hughd@google.com> wrote:
+> > >
+> > > > So the one-liner of changing the "if" to "while" in
+> > > > wait_on_page_writeback() should get us back to what we used to do.
+> > >
+> > > I think that is the realistic way to go.
+> >
+> > Yeah, that's what I'll do.
 > 
-> Why isn't the fix to just use READ_ONCE() of the name pointer, and do
-> it under RCU?
+> I took your "way to go" statement as an ack, and made it all be commit
+> c2407cf7d22d ("mm: make wait_on_page_writeback() wait for multiple
+> pending writebacks").
 
-Umm...  Take a look at audit_log_untrustedstring() - it really assumes
-that string is not changing under it.  It could be massaged to be
-resilent to such changes, and it's not even all that hard (copy the sucker
-byte-by-byte, checking them for prohibited characters, with fallback
-to hex dump if it finds one), but I really don't want to mess with
-that for -stable and TBH I don't see the point - if the system is
-spending enough time in spewing into audit for contention and/or
-cacheline pingpong to matter, you are FUBAR anyway.
+Great, thanks, I see it now.
 
-In this case dumber is better; sure, if it was just a string copy
-with the accuracy in face of concurrent renames not guaranteed,
-I'd be all for "let's see if we can just use %pd printf, or
-go for open-coded analogue of such".  But here the lack of
-whitespaces and quotes in the output is expected by userland
-tools and that's more sensitive than the accuracy...
+I was going to raise a question, whether you should now revert
+073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and BUG_ON(PageWriteback)"):
+which would not have gone in like that if c2407cf7d22d were already in.
 
-Again, if there's anybody seriously interested in analogue of
-%pd with that (or some other) form of quoting, it could be done.
-But I don't think it's a good idea for -stable and it obviously
-can be done on top of the minimal race fix.
+But if it were reverted, we'd need some other fix for the PageTail part
+of it; and I still cannot think of anywhere else where we knowingly
+operated on a struct page without holding a reference; and there have
+been no adverse reports on its extra get_page+put_page.
+
+So I think it's safest to leave it in.
+
+Hugh
