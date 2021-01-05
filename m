@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BF82EA8A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E872EA8CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbhAEK21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:28:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728070AbhAEK20 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:28:26 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D9EC061794;
-        Tue,  5 Jan 2021 02:27:46 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id q1so28137193ilt.6;
-        Tue, 05 Jan 2021 02:27:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=06leFnGIwZWTXa+9aYwJRfo3DhaEXdzqEroBMYOjBd0=;
-        b=aV6Ifn8nUdMOFZVbPeCtaLLo1n3NMKzV13YxYcALQ9yNnh63ZGBcz0yrsuMVbqdGN+
-         ESDInYfpGrzjGvaWjmLXxWJicgeb84Etua5GAKGnx6U23u2fhmzOrXO9PpX13dRUD+tV
-         An8sFeiUG4LWRRZR1UkXtFPmKb6oc9G+eq5/aRzhuqJNDzDt3FoZfQgPmkebU5dadCk2
-         X9pCDLP5oYX06OZeTG0uaBjSG/iPaFyxTOAPlbDZZmhja+AM5t4nAxhl0Z/lwqqFOYzG
-         KaUFG/KoUpVZdVcyU+jw2+RrS3MQkwJtsba0VfDrfYoAypeuQufhG9r4Ar/W01gjEO62
-         HHkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=06leFnGIwZWTXa+9aYwJRfo3DhaEXdzqEroBMYOjBd0=;
-        b=aIx6vGNJoHj/5wK0i8dwbDhlzRb0ebNPuEnGvfd1FX9d1RsM2OgLjl3koI7rnTV7FA
-         vOmLGgZSXKy5rvRi6xsK6K9zVJy85FBi0oSNdWdYHWLFOB5UpSx549ZpoVLxm1xaid1A
-         UuNn19A0omytNvAzlMBdWgRKsm87WG0eWx6Kk3U0BB5OkCwEnpFArZnjIfDBg+fh74Pa
-         ede9RuoeyStisNxLgktNzDFNRh2WMuA5MEDLdJPjOOHPGFtVOhbLc4/qjyc67YGuj+J2
-         Skr8/BBg4mM24nhyCP9TPiu69h6bZv5CTp5NvstdpSUZ+jOdBVS3NHe9qlNlJYMOQwA1
-         xTkg==
-X-Gm-Message-State: AOAM531igK8Mu1b+VnYJm1cQvT+2pU/9ya9NV/dtpFSYhecBUH821ojK
-        BrW1sp4IacsYB40z7hTE70E=
-X-Google-Smtp-Source: ABdhPJwR+m757T7Pq5kNO9i+0WLiQmzubbeAflBMnJdCJtnXAFx/wxlIZe27CtSZ/Vq0JjUvouFIEQ==
-X-Received: by 2002:a92:d44e:: with SMTP id r14mr74244168ilm.83.1609842465881;
-        Tue, 05 Jan 2021 02:27:45 -0800 (PST)
-Received: from localhost.localdomain ([156.146.37.136])
-        by smtp.gmail.com with ESMTPSA id p18sm43514830ile.27.2021.01.05.02.27.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 02:27:45 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, christophe.jaillet@wanadoo.fr,
-        Larry.Finger@lwfinger.net, baijiaju1990@gmail.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: wireless: rtlwifi: rtl8192ce: Fix construction of word rtl8192ce/trx.c
-Date:   Tue,  5 Jan 2021 15:57:51 +0530
-Message-Id: <20210105102751.21237-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1729189AbhAEKcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:32:19 -0500
+Received: from elvis.franken.de ([193.175.24.41]:59098 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728462AbhAEKcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 05:32:19 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kwjcm-0004XL-00; Tue, 05 Jan 2021 11:31:36 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 5A3EFC0808; Tue,  5 Jan 2021 11:20:30 +0100 (CET)
+Date:   Tue, 5 Jan 2021 11:20:30 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sander Vanheule <sander@svanheule.net>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] MIPS: Add Realtek RTL838x/RTL839x support as
+ generic MIPS system
+Message-ID: <20210105102030.GA7323@alpha.franken.de>
+References: <20201230212205.2605383-1-bert@biot.com>
+ <20201230212205.2605383-2-bert@biot.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230212205.2605383-2-bert@biot.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/defautly/de-faulty/p
+On Wed, Dec 30, 2020 at 10:22:03PM +0100, Bert Vermeulen wrote:
+> This is just enough system to boot the kernel with earlycon working.
+> 
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
+> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> ---
+>  arch/mips/Kconfig                       | 21 ++++++++++++++++++
+>  arch/mips/generic/Platform              |  1 +
+>  arch/mips/include/asm/realtek/ioremap.h | 29 +++++++++++++++++++++++++
+>  3 files changed, 51 insertions(+)
+>  create mode 100644 arch/mips/include/asm/realtek/ioremap.h
+> [..]
+> diff --git a/arch/mips/include/asm/realtek/ioremap.h b/arch/mips/include/asm/realtek/ioremap.h
+> new file mode 100644
+> index 000000000000..ea51af023e26
+> --- /dev/null
+> +++ b/arch/mips/include/asm/realtek/ioremap.h
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef _REALTEK_RTL_IOREMAP_H_
+> +#define _REALTEK_RTL_IOREMAP_H_
+> +
+> +static inline int is_rtl8380_internal_registers(phys_addr_t offset)
+> +{
+> +	/* IO Block */
+> +	if (offset >= 0xb8000000 && offset < 0xb9000000)
+> +		return 1;
+> +	/* Switch block */
+> +	if (offset >= 0xbb000000 && offset < 0xbc000000)
+> +		return 1;
+> +	return 0;
+> +}
+> +
+> +static inline void __iomem *plat_ioremap(phys_addr_t offset, unsigned long size,
+> +					 unsigned long flags)
+> +{
+> +	if (is_rtl8380_internal_registers(offset))
+> +		return (void __iomem *)offset;
+> +	return NULL;
+> +}
+> +
+> +static inline int plat_iounmap(const volatile void __iomem *addr)
+> +{
+> +	return is_rtl8380_internal_registers((unsigned long)addr);
+> +}
+> +
+> +#endif /* _REALTEK_RTL_IOREMAP_H_ */
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+this looks like papering over using KSEG1 addresses instead of
+physical addresses in your DT. You should be able to drop this file
+and use 0x18000000/0x1B000000 instead of 0xb8000000/0xbb000000
+in the DT file.
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c
-index 4165175cf5c0..d53397e7eb2e 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c
-@@ -671,7 +671,7 @@ bool rtl92ce_is_tx_desc_closed(struct ieee80211_hw *hw,
- 	u8 own = (u8)rtl92ce_get_desc(hw, entry, true, HW_DESC_OWN);
+Thomas.
 
- 	/*beacon packet will only use the first
--	 *descriptor defautly,and the own may not
-+	 *descriptor de-faulty,and the own may not
- 	 *be cleared by the hardware
- 	 */
- 	if (own)
---
-2.26.2
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
