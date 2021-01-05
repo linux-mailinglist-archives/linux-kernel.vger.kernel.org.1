@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097032EA2B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155C72EA2C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729010AbhAEBFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 20:05:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728576AbhAEBFk (ORCPT
+        id S1727473AbhAEBIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 20:08:17 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:47393 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727148AbhAEBIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 20:05:40 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2391C061574;
-        Mon,  4 Jan 2021 17:04:59 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id n3so546449pjm.1;
-        Mon, 04 Jan 2021 17:04:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1QNZU8co2AlXE0pm+2h1Yk0qrF1L4Gr1a0n9AALm2WI=;
-        b=GzlACI2zcTqvhcInD1FctS9DMxGJUvSirWYap4iPn/ptH3pHIedcKVKGNDFLYs4qzs
-         aLVHvpLzXdHkSaNu05fqxtXGd7h2QvC8WZfXy6ZeYJfWZdZs/UWRhUpjClpdg7B/+36f
-         l2+g6Mr6Eyq3WE2pWvms2F300gFYkg8y/ehqYI1//KESqLgG/mMo24jQW6TzUvCC1Og4
-         PzHG1zZjjdE1NQ4r3Atg/KmVeFTOlMlQ5jE94aD/ePNJpv8HXcbUrKQDzDqvuMQ3OyKr
-         sIx9XTgObQFtr2bXmvnozVjhM6MRVlW/e4joBuHOvL/FZLvIbCc7xwKQKp5/pLs+bPbM
-         wxsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1QNZU8co2AlXE0pm+2h1Yk0qrF1L4Gr1a0n9AALm2WI=;
-        b=f8TtGkdkOeQMgcdQ4wDVUHul+6mlKaQk6X2UXIcY/UTpDBhaJ4kiOez5jYpN5Oy1Gs
-         sg7mFOvMc7UuV3DMf9A9ej4pJMA8CK5R2UazULR74ZLnPEZDEq1+pcnv5ffRUq2S9sKL
-         K6YQILG9DoaZ68iazDFLWUYpNTItexNQscKbuBwvhJWS3YyckeM6pM7QpnBtDlZ/femj
-         GWljVv3LF7cHc6z7BZcGh1p7NCFM71BYwA6vD8B0ngQmRZLUrowsNhJnAZSYx7rlcjAa
-         kvpRhBZlMVidlMycO6uASMDeKawtZWvtGO4rJg0mOeL20DAZiUWEUnPVPHymlCT3EZ2i
-         ZPCg==
-X-Gm-Message-State: AOAM53354CrsBs53ZQQk4Iz1/U/JLK2bwc8oPrOzkHW8ddJQf9fjUVKg
-        qc8CrsZZBcLAnmiBCrDzy92xFshPf5E=
-X-Google-Smtp-Source: ABdhPJxD1Vsxt83d4M4eleUDaXcH86bZP59+mQP+nnFOwm81dTJGipUq68VFfx3PsaYC/gjZ3lLJKw==
-X-Received: by 2002:a17:90a:6809:: with SMTP id p9mr1490882pjj.112.1609808699244;
-        Mon, 04 Jan 2021 17:04:59 -0800 (PST)
-Received: from localhost ([211.108.35.36])
-        by smtp.gmail.com with ESMTPSA id t206sm52578539pgb.84.2021.01.04.17.04.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 04 Jan 2021 17:04:58 -0800 (PST)
-Date:   Tue, 5 Jan 2021 10:04:56 +0900
-From:   Minwoo Im <minwoo.im.dev@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Subject: Re: [RFC PATCH V3 1/1] block: reject I/O for same fd if block size
- changed
-Message-ID: <20210105010456.GA6454@localhost.localdomain>
-References: <20210104130659.22511-1-minwoo.im.dev@gmail.com>
- <20210104130659.22511-2-minwoo.im.dev@gmail.com>
- <20210104171108.GA27235@lst.de>
- <20210104171141.GB27235@lst.de>
+        Mon, 4 Jan 2021 20:08:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609808875; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=IUb+uoL2QPaHR3+XZA+O6oy7Xj6ruPwUwYDS5AvtzhE=;
+ b=fmIURB30ejkiaY7xtM6MPe8RNJi7fJGQPwiFRmZiXZDu/oP0sPAWoxC/H350ZajPcZ4aL/Bi
+ mC+uDXcORBFndxxETnumHVvE6FeFybIexxBdWvPkEtBEoywWNR8GSd8dhnBFq7O+fHJwpVAk
+ kijLQeRtGcqE6LcjTggPyzrJJYo=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5ff3bbce584481b01ba287e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 01:07:26
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4D690C4323B; Tue,  5 Jan 2021 01:07:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6007AC4346E;
+        Tue,  5 Jan 2021 01:07:24 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210104171141.GB27235@lst.de>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Jan 2021 09:07:24 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        rjw@rjwysocki.net, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Nitin Rawat <nitirawa@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] scsi: ufs: Protect PM ops and err_handler from user
+ access through sysfs
+In-Reply-To: <80a15afab8024d0b61d312b57585c9322ac91958.camel@gmail.com>
+References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
+ <1609595975-12219-3-git-send-email-cang@codeaurora.org>
+ <80a15afab8024d0b61d312b57585c9322ac91958.camel@gmail.com>
+Message-ID: <7d49c1dfc3f648c484076f3c3a7f4e1e@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Christoph,
-
-Thanks for your review.
-
-On 21-01-04 18:11:41, Christoph Hellwig wrote:
-> On Mon, Jan 04, 2021 at 06:11:08PM +0100, Christoph Hellwig wrote:
-> > On Mon, Jan 04, 2021 at 10:06:59PM +0900, Minwoo Im wrote:
-> > > +	if (q->backing_dev_info && q->backing_dev_info->owner &&
-> > > +			limits->logical_block_size != size) {
-> > > +		bdev = blkdev_get_no_open(q->backing_dev_info->owner->devt);
-> > > +		bdev->bd_disk->flags |= GENHD_FL_BLOCK_SIZE_CHANGED;
-> > > +		blkdev_put_no_open(bdev);
-> > > +	}
-> > 
-> > We really need the backpointer from the queue to the gendisk I've wanted
-> > to add for a while.  Can we at least restrict this to a live gendisk?
-
-It was a point that I really would like to ask by RFC whether we can
-have backpointer to the gendisk from the request_queue.  And I'd like to
-have it to simplify this routine and for future usages also.
-
-I will restrict this one by checking GENHD_FL_UP flag from the gendisk
-for the next patch.
-
+On 2021-01-05 04:05, Bean Huo wrote:
+> On Sat, 2021-01-02 at 05:59 -0800, Can Guo wrote:
+>> + * @shutting_down: flag to check if shutdown has been invoked
 > 
-> Alternatively we could make this request_queue QUEUE* flag for now.
+> I am not much sure if this flag is need, since once PM going in
+> shutdown path, what will be returnded by pm_runtime_get_sync()?
+> 
+> If pm_runtime_get_sync() will fail, just check its return.
+> 
 
-As this patch rejects I/O from the block layer partition code, can we
-have this flag in gendisk rather than request_queue ?
+That depends. During/after shutdown, for UFS's case only,
+pm_runtime_get_sync(hba->dev) will most likely return 0,
+because it is already RUNTIME_ACTIVE, pm_runtime_get_sync()
+will directly return 0... meaning you cannot count on it.
 
-Thanks,
+Check Stanley's change -
+https://lore.kernel.org/patchwork/patch/1341389/
+
+Can Guo.
+
+> Hi Rafael
+> would you please help us confirm this?
+> 
+> thanks,
+> Bean
+> 
+> 
+>> + * @host_sem: semaphore used to serialize concurrent contexts
+>>   * @eh_wq: Workqueue that eh_work works on
+>>   * @eh_work: Worker to handle UFS errors that require s/w attention
+>>   * @eeh_work: Worker to handle exception events
+>> @@ -751,7 +753,8 @@ struct ufs_hba {
+>>         u32 intr_mask;
+>>         u16 ee_ctrl_mask;
+>>         bool is_powered;
+>> -       struct semaphore eh_sem;
+>> +       bool shutting_down;
+>> +       struct semaphore host_sem;
