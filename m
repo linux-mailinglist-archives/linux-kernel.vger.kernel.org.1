@@ -2,130 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F332E2EADC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD552EADC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbhAEO5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:57:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbhAEO5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:57:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F57922B45;
-        Tue,  5 Jan 2021 14:56:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609858619;
-        bh=w1bEs4zhq0kpj3szSiXxBo4NuMk+DYW4Z7udcUjbIYo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IpxMDW8wAC8OgXtoUNezxGGAoUmUu+lUcJTGjKcVrulIQ1dIjOh73hfNEYseB2NWz
-         tlYvL46IAj718N94a9Yx9mkGZcA3/WCkUgpXkBocGedDSjk6qRrWBjK72Iagq2c8Y6
-         Khoc9De5b3Mu2h6FfhhhwmH+O1XCkdptbSURbA5rsEVbv1be40eJQcNQSjWHnK7S+1
-         P2lQEqFOcEQIIv7WOtRiaSzpfNXqYfsf65B+GmvM6QnjsEkoi5VQYvwhvf+uCJWR74
-         ezSrReyJFc5DYXWmWBT5NeffznXOQIS9XIhN1XLbw3VOfG3ZlLdJrco/CKP81ldJkn
-         OY95A0Xb2TW+w==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6337E3521C49; Tue,  5 Jan 2021 06:56:59 -0800 (PST)
-Date:   Tue, 5 Jan 2021 06:56:59 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: kerneldoc warnings since commit 538fc2ee870a3 ("rcu: Introduce
- kfree_rcu() single-argument macro")
-Message-ID: <20210105145659.GD17086@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
- <20210105131441.GA2457@pc638.lan>
+        id S1726587AbhAEO6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:58:22 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:36083 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbhAEO6W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:58:22 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609858676; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=fwDk5dE76SAgv9tzvvnt+zIDxcUrSDTT6CNPHI4UAzY=;
+ b=Qxsbn0Jt6YsG4gNDH58M5/tJaNRs/PtubfJyJuIWycOwY2hlEa5Ieeq11a1AcSCrLD4ygoAS
+ uIKHVXy1lhM21JxNnOVFgljnowu/tW6Xh/WsWgw+D2WblUGXUHJfvkQfsOHekYRrvOwIayeY
+ ZHvlKT6S9Xktv5UP/S6/0Yx0ijE=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ff47e583d84969114678fd2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 14:57:28
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B7D03C43463; Tue,  5 Jan 2021 14:57:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10819C433C6;
+        Tue,  5 Jan 2021 14:57:26 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105131441.GA2457@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Jan 2021 06:57:26 -0800
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, david@redhat.com
+Subject: Re: [PATCH] fs/buffer.c: Revoke LRU when trying to drop buffers
+In-Reply-To: <20201124153912.GC4327@casper.infradead.org>
+References: <cover.1606194703.git.cgoldswo@codeaurora.org>
+ <1fe5d53722407a2651eeeada3a422c117041bf1d.1606194703.git.cgoldswo@codeaurora.org>
+ <20201124153912.GC4327@casper.infradead.org>
+Message-ID: <fe8c287dcd131a573ae4b7a46a36825e@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 02:14:41PM +0100, Uladzislau Rezki wrote:
-> Dear, Lukas.
+On 2020-11-24 07:39, Matthew Wilcox wrote:
+> On Mon, Nov 23, 2020 at 10:49:38PM -0800, Chris Goldsworthy wrote:
+>> +static void __evict_bh_lru(void *arg)
+>> +{
+>> +	struct bh_lru *b = &get_cpu_var(bh_lrus);
+>> +	struct buffer_head *bh = arg;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < BH_LRU_SIZE; i++) {
+>> +		if (b->bhs[i] == bh) {
+>> +			brelse(b->bhs[i]);
+>> +			b->bhs[i] = NULL;
+>> +			goto out;
 > 
-> > Dear Uladzislau,
-> > 
-> > in commit 538fc2ee870a3 ("rcu: Introduce kfree_rcu() single-argument
-> > macro"), you have refactored the kfree_rcu macro.
-> > 
-> > Since then, make htmldocs warns:
-> > 
-> > ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> > 'ptr' description in 'kfree_rcu'
-> > ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> > 'rhf' description in 'kfree_rcu'
-> > 
-> > As you deleted the two arguments in the macro definition, kerneldoc
-> > cannot resolve the argument names in the macro's kerneldoc
-> > documentation anymore and warns about that.
-> > 
-> > Probably, it is best to just turn the formal kerneldoc references to
-> > the two arguments, which are not used in the macro definition anymore,
-> > simply into two informal references in the documentation.
-> > 
-> Thanks for your suggestion. I am not sure if htmldocs supports something
-> like "__maybe_unused", but tend to say that it does not. See below the
-> patch:
+> That's an odd way to spell 'break' ...
 > 
-> <snip>
-> >From 65ecc7c58810c963c02e0596ce2e5758c54ef55d Mon Sep 17 00:00:00 2001
-> From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> Date: Tue, 5 Jan 2021 13:23:30 +0100
-> Subject: [PATCH] rcu: fix kerneldoc warnings
+>> +		}
+>> +	}
+>> +out:
+>> +	put_cpu_var(bh_lrus);
+>> +}
 > 
-> After refactoring of the kfree_rcu(), it becomes possible to use
-> the macro with one or two arguments. From the other hand, in the
-> description there are two arguments in the macro definition expected.
-> That is why the "htmldocs" emits a warning about it:
+> ...
 > 
-> <snip>
-> ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> 'ptr' description in 'kfree_rcu'
-> ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> 'rhf' description in 'kfree_rcu'
-> <snip>
-> 
-> Fix it by converting two parameters into informal references in the
-> macro description.
-> 
-> Fixes: 3d3d9ff077a9 ("rcu: Introduce kfree_rcu() single-argument macro")
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  include/linux/rcupdate.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index ebd8dcca4997..e678ce7f5ca2 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -854,8 +854,8 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
->  
->  /**
->   * kfree_rcu() - kfree an object after a grace period.
-> - * @ptr: pointer to kfree for both single- and double-argument invocations.
-> - * @rhf: the name of the struct rcu_head within the type of @ptr,
-> + * ptr: pointer to kfree for both single- and double-argument invocations.
-> + * rhf: the name of the struct rcu_head within the type of ptr,
->   *       but only for double-argument invocations.
->   *
->   * Many rcu callbacks functions just call kfree() on the base structure.
-> -- 
-> 2.20.1
-> <snip>
-> 
-> Paul, does it work for you?
+>> @@ -3245,8 +3281,15 @@ drop_buffers(struct page *page, struct 
+>> buffer_head **buffers_to_free)
+>> 
+>>  	bh = head;
+>>  	do {
+>> -		if (buffer_busy(bh))
+>> -			goto failed;
+>> +		if (buffer_busy(bh)) {
+>> +			/*
+>> +			 * Check if the busy failure was due to an
+>> +			 * outstanding LRU reference
+>> +			 */
+>> +			evict_bh_lrus(bh);
+>> +			if (buffer_busy(bh))
+>> +				goto failed;
 
-If it works for the documentation generation, then it works for me.  ;-)
+Hi Matthew,
 
-							Thanx, Paul
+Apologies for the delayed response.
+
+> We might be better off just calling invalidate_bh_lrus() -- we'd flush
+> the entire LRU, but we'd only need to do it once, not once per buffer 
+> head.
+
+I'm concerned about emptying the cache, such that those who might 
+benefit
+from it would be left affected.
+
+> We could have a more complex 'evict' that iterates each busy buffer on 
+> a
+> page so transforming:
+> 
+> for_each_buffer
+> 	for_each_cpu
+> 		for_each_lru_entry
+> 
+> to:
+> 
+> for_each_cpu
+> 	for_each_buffer
+> 		for_each_lru_entry
+> 
+> (and i suggest that way because it's more expensive to iterate the 
+> buffers
+> than it is to iterate the lru entries)
+
+I've gone ahead and done this in a follow-up patch:
+
+https://lore.kernel.org/lkml/cover.1609829465.git.cgoldswo@codeaurora.org/
+
+There might be room for improvement in the data structure being used to
+track the used entries - using an xarray gives the cleanest code, but
+pre-allocating an array to hold up to page_size(page) / bh->b_size 
+entres
+might be faster, although it would be a bit uglier to do in a way that
+doesn't reduce the performance of the case when evict_bh_lru() doesn't
+need to be called.
+
+Regards,
+
+Chris.
+
+-- 
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
