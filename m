@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6B72EA9CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708E52EA9D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729534AbhAELZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:25:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
+        id S1729604AbhAEL0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:26:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbhAELZx (ORCPT
+        with ESMTP id S1729318AbhAELZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:25:53 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F946C06179E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 03:24:37 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id b8so16221808plx.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 03:24:37 -0800 (PST)
+        Tue, 5 Jan 2021 06:25:54 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBE7C0617A0;
+        Tue,  5 Jan 2021 03:24:46 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id o19so71804616lfo.1;
+        Tue, 05 Jan 2021 03:24:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RLWf2fFx1cy5EK+fZBXuAuxCvBkN0R7iJP0DH7tZe9g=;
-        b=zetW+zTjdJu12fd74lr5e4RRjfbmu8PI4SolhsR42pguy3d5gX/TVL0c8ZQ/idamFj
-         PFgv8cHzrOElJ/nz92E/bV4qYnvaBbHhi9aEky1qJTfxnjTVYtU0qJai53aiF4AsGVuB
-         f91DJvfGVaOfRgey9kMWdVOPU7uPocSLIUShslcHpfCu42LGi5HBQFi55nDPEV3atZE4
-         lCACEuFpsC24iNgT2E5rPJPCnnMVeslzwpaklNKYLz8/wBi7/Ftb+X26WLP5EgMoqclt
-         YH23CreRWMe/6ZA0EkZyLYYDo1I+5n49xDWw4/7JdyndjJDJ5kpNbtwJhzbROcnTgU2l
-         Ix8w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=d4x4cvcMmgFsYUGoF/1+2lvoQxmLVCLHQ/4xBidGdsM=;
+        b=s8plLUX0b1QAEl7yX2FujREg4nf3efVcgX2KaUa5RfSFArQL2X5xo9M4He1knpXyS3
+         BiwTQdKUaYvGVtem/nVvkQ4eXatNxB7G43aRo6WC2lXa36/zE2UYMpKgDPD9elEgmv+P
+         apwz7dbiRKb6ANajJE8PtBBNRZZeN2ppDea2p2dJwEtZ+ETOA+WAXLBEIkcgG45rk9Nk
+         oIHDCtUWiqkoDuAKcbzxnLLrj01n4a7RyGFo4eGVBLmkzSbEKnHZAU7CTVN77Ss1hldg
+         1mu9zHE3ngL2G4P6D0Pd7Yv4axOsRnLmD7TPN3CmhL8icokJQneHZs8Z/BX3dvCSDZH+
+         scQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RLWf2fFx1cy5EK+fZBXuAuxCvBkN0R7iJP0DH7tZe9g=;
-        b=gYbEWTFytWbzMIUG0ZHQDs79wiW7Chu0qaFKRoqXHVcXLTfHG6DVhG6gAXoc/Wq+Pr
-         ztvYopmZ1M/CFTjpMUjmsfJ1sEjD3IrTvO8P+wJQbwPMsDHvgV8ba9noHuVGowrYnP+M
-         hgFqffQ3PBIIiJosYeCmVqh+FXumx98zvGDmwpJ3hvF/NUe86TrviCazgC+E00dkW58D
-         uwXh6v8ZHsYsD+ZeWgMdh91n9kCv+Vw0vS2zzaK8J78aMm/yf4vgfwU9RR6l8XbPs3V9
-         UQNQa0OqqPY6uTkJ9v4Id69EVxJWoHtBdFl3N4GFq3MyEEOokqa50bUIeTwf0v/6EQPl
-         Itew==
-X-Gm-Message-State: AOAM533vzcjESJXsP3KnmOAI86OioFUOkRXZf7PuMVBLqnDLs0yIdpru
-        BuWqibX4WAMUOl42TgWOAelViTOYpTOU+w==
-X-Google-Smtp-Source: ABdhPJw02OCUGTpHRRYI2C9tQQQ1oADxysvci8SMJAXynHIlon/KDN7jgwDeIiAm+9EiUJJd9FHzQA==
-X-Received: by 2002:a17:902:a983:b029:dc:2564:91f2 with SMTP id bh3-20020a170902a983b02900dc256491f2mr48248465plb.46.1609845877204;
-        Tue, 05 Jan 2021 03:24:37 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id o123sm56762264pfd.197.2021.01.05.03.24.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Jan 2021 03:24:36 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
-Subject: [RFC 2/2] scripts: dtc: Handle outform dtbo
-Date:   Tue,  5 Jan 2021 16:54:17 +0530
-Message-Id: <7aa70809eff3f32d821761d2a763e4fb72ecc8fb.1609844956.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1609844956.git.viresh.kumar@linaro.org>
-References: <cover.1609844956.git.viresh.kumar@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=d4x4cvcMmgFsYUGoF/1+2lvoQxmLVCLHQ/4xBidGdsM=;
+        b=FVaNkaIYSokKAfvd0rNyYbXXLABoN5oyRROXtVsInzJKcZ51MQtcR0GNlI+c1pKbBh
+         3GksdB1okEzEo0wGkxMzZrva01B6lMeKtDUW5Eo6/gTQc0T8ZUs4xYVt/tqJN0d27QQj
+         4wjqqFJhsFKyNe3ARBRF1lo+fSi/X10mN4N2GYj78OE3k5QX2EHusZh/GHbQh1g/yE5h
+         LQxKVaLwTSMZc7Fy4GeeFyQ3jdYcatunjbkDDNMRzUHzwWrI7JqOLeepwb2q1vE1fKWd
+         vyA6sWAYq9oAbFwPh3jnhGdjUa59JlmeCkUnYPyzSPUwKyTHnWkR6IhtqgGDjU0MwSts
+         jskw==
+X-Gm-Message-State: AOAM5334SRK2p4z9Vf81zBHVuPGp8MLcZ0zmFaiRT7ucN+tZ0RyoJEsr
+        N1MYNnvfhLOmxq4Mcp+DfBaZSPEHXS6gDfjZs4Q=
+X-Google-Smtp-Source: ABdhPJzk5ZjwofTobePg/2X4lwegr74UEMdarc1pgxyms8aCO1/VljAkPrb4AMb8BnsxbmrWTdB/9qlmxwaw755Zjpw=
+X-Received: by 2002:a05:651c:1102:: with SMTP id d2mr35861266ljo.398.1609845884842;
+ Tue, 05 Jan 2021 03:24:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210105101738.13072-1-unixbhaskar@gmail.com> <CAGRGNgX-JSPW8LSmAUbm=2jkx+K4EYdntCq6P2i8td0TUk7Nww@mail.gmail.com>
+ <X/RD/pll4UoRJG0w@Gentoo>
+In-Reply-To: <X/RD/pll4UoRJG0w@Gentoo>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Tue, 5 Jan 2021 22:24:32 +1100
+Message-ID: <CAGRGNgVHcOjt4at+tzgrPxn=04_Y3b16pihDw6xucg4Eh1GFSA@mail.gmail.com>
+Subject: Re: [PATCH] drivers: net: wireless: realtek: Fix the word association
+ defautly de-faulty
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Julian Calaby <julian.calaby@gmail.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        zhengbin13@huawei.com, baijiaju1990@gmail.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update dtc compiler to accept dtbo as an outform.
+Hi Bhaskar,
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+On Tue, Jan 5, 2021 at 9:48 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+>
+> On 21:33 Tue 05 Jan 2021, Julian Calaby wrote:
+> >Hi Bhaskar,
+> >
+> >On Tue, Jan 5, 2021 at 9:19 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+> >>
+> >> s/defautly/de-faulty/p
+> >>
+> >>
+> >> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> >> ---
+> >>  drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
+> >> index c948dafa0c80..7d02d8abb4eb 100644
+> >> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
+> >> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
+> >> @@ -814,7 +814,7 @@ bool rtl88ee_is_tx_desc_closed(struct ieee80211_hw *hw, u8 hw_queue, u16 index)
+> >>         u8 own = (u8)rtl88ee_get_desc(hw, entry, true, HW_DESC_OWN);
+> >>
+> >>         /*beacon packet will only use the first
+> >> -        *descriptor defautly,and the own may not
+> >> +        *descriptor de-faulty,and the own may not
+> >
+> >Really? "de-faultly" isn't any better than "defaultly" and in fact
+> >it's even worse as it breaks up the word "default".
+> >
+> hey, it was written as "defautly" ...and that was simple spelling mistake ..
+> so,corrected it.
 
----
-I feel that this needs to go directly to
-https://git.kernel.org/pub/scm/utils/dtc/dtc.git
+Er, no, that isn't the correct replacement. They're using "default" as
+a verb and mean "by default".
 
-Right ? I will send it separately if the idea is accepted here.
----
- scripts/dtc/dtc.c | 2 ++
- 1 file changed, 2 insertions(+)
+The sentence makes no sense with "de-faulty" there instead.
 
-diff --git a/scripts/dtc/dtc.c b/scripts/dtc/dtc.c
-index bdb3f5945699..40fa7128b3d6 100644
---- a/scripts/dtc/dtc.c
-+++ b/scripts/dtc/dtc.c
-@@ -357,6 +357,8 @@ int main(int argc, char *argv[])
- #endif
- 	} else if (streq(outform, "dtb")) {
- 		dt_to_blob(outf, dti, outversion);
-+	} else if (streq(outform, "dtbo")) {
-+		dt_to_blob(outf, dti, outversion);
- 	} else if (streq(outform, "asm")) {
- 		dt_to_asm(outf, dti, outversion);
- 	} else if (streq(outform, "null")) {
+Ultimately though the entire comment barely makes sense, so the best
+way to fix this spelling mistake is to re-write the entire comment so
+it does. I would have suggested a new wording for it, but I don't know
+enough about what's going on here to parse the rest of it.
+
+So therefore someone who knows what's going on here needs to fix this
+and your change is just making this comment worse.
+
+Thanks,
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
+Julian Calaby
 
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
