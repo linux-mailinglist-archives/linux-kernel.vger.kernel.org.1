@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E8B2EA398
+	by mail.lfdr.de (Postfix) with ESMTP id A4E072EA399
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 04:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbhAEDAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 22:00:07 -0500
-Received: from mga17.intel.com ([192.55.52.151]:41800 "EHLO mga17.intel.com"
+        id S1728568AbhAEDAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 22:00:13 -0500
+Received: from mga17.intel.com ([192.55.52.151]:41794 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728515AbhAEDAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 22:00:05 -0500
-IronPort-SDR: D0EaBKEpWTTv7QrPNE/Plu8eDvrd9TTix5G19+pHXAkaairp7EeFO95S0KtfPjIZ1w+CWqBtIU
- ARGuYxuv/ipA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156827537"
+        id S1728503AbhAEDAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 22:00:11 -0500
+IronPort-SDR: 4Jz2csKrm4NCV0jkBTfBsGYyn9SeFP3/pRiwmIX6Qq/ExgnHCKdYtiX0+p/sKowEV/rRMy0GmD
+ fR4sqGoEb++A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156827539"
 X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="156827537"
+   d="scan'208";a="156827539"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 18:58:20 -0800
-IronPort-SDR: 5LpBP2McxVRrFyjtv2iDG0rkKl6VedWF8krCJeDGTVpSYBQ6doKBiQvfQNYMa4ZmaIvWgVvOwY
- TySFnH73b5Tw==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 18:58:21 -0800
+IronPort-SDR: Z5TjKEvOSFnKoaPkCH2T0uCz8lTbnoeZao5YUGj+nB6syX0Ps+8Y/IxvA3lKemNYOojSbf90ht
+ Rziu/4GtQyow==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="397632189"
+   d="scan'208";a="397632195"
 Received: from txasoft-yocto.an.intel.com ([10.123.72.192])
   by fmsmga002.fm.intel.com with ESMTP; 04 Jan 2021 18:58:20 -0800
 From:   Mike Ximing Chen <mike.ximing.chen@intel.com>
@@ -30,9 +30,9 @@ To:     linux-kernel@vger.kernel.org
 Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
         dan.j.williams@intel.com, pierre-louis.bossart@linux.intel.com,
         Gage Eads <gage.eads@intel.com>
-Subject: [PATCH v8 19/20] dlb: add queue unmap register operations
-Date:   Mon,  4 Jan 2021 20:58:38 -0600
-Message-Id: <20210105025839.23169-20-mike.ximing.chen@intel.com>
+Subject: [PATCH v8 20/20] dlb: queue map/unmap workqueue
+Date:   Mon,  4 Jan 2021 20:58:39 -0600
+Message-Id: <20210105025839.23169-21-mike.ximing.chen@intel.com>
 X-Mailer: git-send-email 2.13.6
 In-Reply-To: <20210105025839.23169-1-mike.ximing.chen@intel.com>
 References: <20210105025839.23169-1-mike.ximing.chen@intel.com>
@@ -43,329 +43,244 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the "dynamic" unmap procedure and associated register operations.
-Unmapping a load-balanced queue from a port removes that port from the
-queue's load-balancing candidates. If a queue unmap is requested after the
-domain is started, the driver must disable the requested queue and wait for
-it to quiesce before mapping it to the requested port.
+Add workqueue support for asynchronous queue map/unmap operations.
 
-Add the code to drain unmapped queues during domain reset. This consists of
-mapping a port to the queue, then calling the function to drain a mapped
-queue.
+When mapping or unmapped a queue, it's possible that the thread that
+requires the map/unmap is the same one which is responsible for doing the
+processing that would quiesce the queue/port, thus the driver may have to
+complete the operation asynchronously.
+
+To that end, the driver uses a workqueue that periodically checks whether
+any outstanding operations can be completed. This workqueue function is
+only scheduled when there is at least one outstanding map/unmap operation.
 
 Signed-off-by: Gage Eads <gage.eads@intel.com>
 Signed-off-by: Mike Ximing Chen <mike.ximing.chen@intel.com>
 Reviewed-by: Björn Töpel <bjorn.topel@intel.com>
 Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 ---
- drivers/misc/dlb/dlb_resource.c | 259 +++++++++++++++++++++++++++++++-
- 1 file changed, 255 insertions(+), 4 deletions(-)
+ drivers/misc/dlb/dlb_main.c     |   5 ++
+ drivers/misc/dlb/dlb_main.h     |   2 +
+ drivers/misc/dlb/dlb_resource.c | 110 +++++++++++++++++++++++++++++++-
+ drivers/misc/dlb/dlb_resource.h |   2 +
+ 4 files changed, 117 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/misc/dlb/dlb_main.c b/drivers/misc/dlb/dlb_main.c
+index 97aae4c880d2..2d96cff9223c 100644
+--- a/drivers/misc/dlb/dlb_main.c
++++ b/drivers/misc/dlb/dlb_main.c
+@@ -458,6 +458,9 @@ static int dlb_probe(struct pci_dev *pdev,
+ 
+ 	dlb->ops->init_hardware(dlb);
+ 
++	/* Initialize a workqueue for queue-port linking. */
++	dlb_init_work(dlb);
++
+ 	/*
+ 	 * Undo the 'get' operation by the PCI layer during probe and
+ 	 * (if PF) immediately suspend the device. Since the device is only
+@@ -617,6 +620,8 @@ static int __init dlb_init_module(void)
+ 
+ static void __exit dlb_exit_module(void)
+ {
++	flush_scheduled_work();
++
+ 	pci_unregister_driver(&dlb_pci_driver);
+ 
+ 	cdev_del(&dlb_cdev);
+diff --git a/drivers/misc/dlb/dlb_main.h b/drivers/misc/dlb/dlb_main.h
+index 28fef9897e40..35047a8d76ac 100644
+--- a/drivers/misc/dlb/dlb_main.h
++++ b/drivers/misc/dlb/dlb_main.h
+@@ -139,11 +139,13 @@ struct dlb {
+ 	 * hardware registers.
+ 	 */
+ 	struct mutex resource_mutex;
++	struct work_struct work;
+ 	enum dlb_device_type type;
+ 	int id;
+ 	u32 inode_cnt;
+ 	dev_t dev_number;
+ 	u8 domain_reset_failed;
++	u8 worker_launched;
+ };
+ 
+ int dlb_init_domain(struct dlb *dlb, u32 domain_id);
 diff --git a/drivers/misc/dlb/dlb_resource.c b/drivers/misc/dlb/dlb_resource.c
-index 776285ee92d7..6994fe90bb25 100644
+index 6994fe90bb25..f6dd500645d1 100644
 --- a/drivers/misc/dlb/dlb_resource.c
 +++ b/drivers/misc/dlb/dlb_resource.c
-@@ -2412,6 +2412,29 @@ static int dlb_ldb_port_set_has_work_bits(struct dlb_hw *hw,
+@@ -2602,6 +2602,61 @@ static int dlb_ldb_port_finish_map_qid_dynamic(struct dlb_hw *hw,
  	return 0;
  }
  
-+static void dlb_ldb_port_clear_has_work_bits(struct dlb_hw *hw,
-+					     struct dlb_ldb_port *port,
-+					     u8 slot)
++static unsigned int dlb_finish_unmap_qid_procedures(struct dlb_hw *hw);
++static unsigned int dlb_finish_map_qid_procedures(struct dlb_hw *hw);
++
++/*
++ * The workqueue callback runs until it completes all outstanding QID->CQ
++ * map and unmap requests. To prevent deadlock, this function gives other
++ * threads a chance to grab the resource mutex and configure hardware.
++ */
++static void dlb_complete_queue_map_unmap(struct work_struct *work)
 +{
-+	u32 ctrl = 0;
-+
-+	BITS_SET(ctrl, port->id.phys_id, LSP_LDB_SCHED_CTRL_CQ);
-+	BITS_SET(ctrl, slot, LSP_LDB_SCHED_CTRL_QIDIX);
-+	BIT_SET(ctrl, LSP_LDB_SCHED_CTRL_RLIST_HASWORK_V);
-+
-+	DLB_CSR_WR(hw, LSP_LDB_SCHED_CTRL, ctrl);
-+
-+	memset(&ctrl, 0, sizeof(ctrl));
-+
-+	BITS_SET(ctrl, port->id.phys_id, LSP_LDB_SCHED_CTRL_CQ);
-+	BITS_SET(ctrl, slot, LSP_LDB_SCHED_CTRL_QIDIX);
-+	BIT_SET(ctrl, LSP_LDB_SCHED_CTRL_NALB_HASWORK_V);
-+
-+	DLB_CSR_WR(hw, LSP_LDB_SCHED_CTRL, ctrl);
-+
-+	dlb_flush_csr(hw);
-+}
-+
- static void dlb_ldb_port_clear_queue_if_status(struct dlb_hw *hw,
- 					       struct dlb_ldb_port *port,
- 					       int slot)
-@@ -2673,6 +2696,88 @@ static int dlb_ldb_port_map_qid(struct dlb_hw *hw,
- 		return dlb_ldb_port_map_qid_static(hw, port, queue, prio);
- }
- 
-+static int dlb_ldb_port_unmap_qid(struct dlb_hw *hw,
-+				  struct dlb_ldb_port *port,
-+				  struct dlb_ldb_queue *queue)
-+{
-+	enum dlb_qid_map_state mapped, in_progress, pending_map, unmapped;
-+	u32 lsp_qid2cq2;
-+	u32 lsp_qid2cq;
-+	u32 atm_qid2cq;
-+	u32 cq2priov;
-+	u32 queue_id;
-+	u32 port_id;
-+	int i;
-+
-+	/* Find the queue's slot */
-+	mapped = DLB_QUEUE_MAPPED;
-+	in_progress = DLB_QUEUE_UNMAP_IN_PROG;
-+	pending_map = DLB_QUEUE_UNMAP_IN_PROG_PENDING_MAP;
-+
-+	if (!dlb_port_find_slot_queue(port, mapped, queue, &i) &&
-+	    !dlb_port_find_slot_queue(port, in_progress, queue, &i) &&
-+	    !dlb_port_find_slot_queue(port, pending_map, queue, &i)) {
-+		DLB_HW_ERR(hw,
-+			   "[%s():%d] Internal error: QID %d isn't mapped\n",
-+			   __func__, __LINE__, queue->id.phys_id);
-+		return -EFAULT;
-+	}
-+
-+	port_id = port->id.phys_id;
-+	queue_id = queue->id.phys_id;
-+
-+	/* Read-modify-write the priority and valid bit register */
-+	cq2priov = DLB_CSR_RD(hw, LSP_CQ2PRIOV(port_id));
-+
-+	cq2priov &= ~(1 << (i + LSP_CQ2PRIOV_V_LOC));
-+
-+	DLB_CSR_WR(hw, LSP_CQ2PRIOV(port_id), cq2priov);
-+
-+	atm_qid2cq = DLB_CSR_RD(hw, ATM_QID2CQIDIX(queue_id, port_id / 4));
-+
-+	lsp_qid2cq = DLB_CSR_RD(hw, LSP_QID2CQIDIX(queue_id, port_id / 4));
-+
-+	lsp_qid2cq2 = DLB_CSR_RD(hw, LSP_QID2CQIDIX2(queue_id, port_id / 4));
-+
-+	switch (port_id % 4) {
-+	case 0:
-+		atm_qid2cq &= ~(1 << (i + ATM_QID2CQIDIX_00_CQ_P0_LOC));
-+		lsp_qid2cq &= ~(1 << (i + LSP_QID2CQIDIX_00_CQ_P0_LOC));
-+		lsp_qid2cq2 &= ~(1 << (i + LSP_QID2CQIDIX2_00_CQ_P0_LOC));
-+		break;
-+
-+	case 1:
-+		atm_qid2cq &= ~(1 << (i + ATM_QID2CQIDIX_00_CQ_P1_LOC));
-+		lsp_qid2cq &= ~(1 << (i + LSP_QID2CQIDIX_00_CQ_P1_LOC));
-+		lsp_qid2cq2 &= ~(1 << (i + LSP_QID2CQIDIX2_00_CQ_P1_LOC));
-+		break;
-+
-+	case 2:
-+		atm_qid2cq &= ~(1 << (i + ATM_QID2CQIDIX_00_CQ_P2_LOC));
-+		lsp_qid2cq &= ~(1 << (i + LSP_QID2CQIDIX_00_CQ_P2_LOC));
-+		lsp_qid2cq2 &= ~(1 << (i + LSP_QID2CQIDIX2_00_CQ_P2_LOC));
-+		break;
-+
-+	case 3:
-+		atm_qid2cq &= ~(1 << (i + ATM_QID2CQIDIX_00_CQ_P3_LOC));
-+		lsp_qid2cq &= ~(1 << (i + LSP_QID2CQIDIX_00_CQ_P3_LOC));
-+		lsp_qid2cq2 &= ~(1 << (i + LSP_QID2CQIDIX2_00_CQ_P3_LOC));
-+		break;
-+	}
-+
-+	DLB_CSR_WR(hw, ATM_QID2CQIDIX(queue_id, port_id / 4), atm_qid2cq);
-+
-+	DLB_CSR_WR(hw, LSP_QID2CQIDIX(queue_id, port_id / 4), lsp_qid2cq);
-+
-+	DLB_CSR_WR(hw, LSP_QID2CQIDIX2(queue_id, port_id / 4), lsp_qid2cq2);
-+
-+	dlb_flush_csr(hw);
-+
-+	unmapped = DLB_QUEUE_UNMAPPED;
-+
-+	return dlb_port_slot_state_transition(hw, port, queue, i, unmapped);
-+}
-+
- static void
- dlb_log_create_sched_domain_args(struct dlb_hw *hw,
- 				 struct dlb_create_sched_domain_args *args,
-@@ -3188,11 +3293,86 @@ int dlb_hw_create_dir_port(struct dlb_hw *hw,
- 	return 0;
- }
- 
-+static void
-+dlb_domain_finish_unmap_port_slot(struct dlb_hw *hw,
-+				  struct dlb_hw_domain *domain,
-+				  struct dlb_ldb_port *port,
-+				  int slot)
-+{
-+	enum dlb_qid_map_state state;
-+	struct dlb_ldb_queue *queue;
-+
-+	queue = &hw->rsrcs.ldb_queues[port->qid_map[slot].qid];
-+
-+	state = port->qid_map[slot].state;
-+
-+	/* Update the QID2CQIDX and CQ2QID vectors */
-+	dlb_ldb_port_unmap_qid(hw, port, queue);
-+
-+	/*
-+	 * Ensure the QID will not be serviced by this {CQ, slot} by clearing
-+	 * the has_work bits
-+	 */
-+	dlb_ldb_port_clear_has_work_bits(hw, port, slot);
-+
-+	/* Reset the {CQ, slot} to its default state */
-+	dlb_ldb_port_set_queue_if_status(hw, port, slot);
-+
-+	/* Re-enable the CQ if it wasn't manually disabled by the user */
-+	if (port->enabled)
-+		dlb_ldb_port_cq_enable(hw, port);
-+
-+	/*
-+	 * If there is a mapping that is pending this slot's removal, perform
-+	 * the mapping now.
-+	 */
-+	if (state == DLB_QUEUE_UNMAP_IN_PROG_PENDING_MAP) {
-+		struct dlb_ldb_port_qid_map *map;
-+		struct dlb_ldb_queue *map_queue;
-+		u8 prio;
-+
-+		map = &port->qid_map[slot];
-+
-+		map->qid = map->pending_qid;
-+		map->priority = map->pending_priority;
-+
-+		map_queue = &hw->rsrcs.ldb_queues[map->qid];
-+		prio = map->priority;
-+
-+		dlb_ldb_port_map_qid(hw, domain, port, map_queue, prio);
-+	}
-+}
-+
- static bool dlb_domain_finish_unmap_port(struct dlb_hw *hw,
- 					 struct dlb_hw_domain *domain,
- 					 struct dlb_ldb_port *port)
- {
--	/* Placeholder */
-+	u32 infl_cnt;
-+	int i;
-+
-+	if (port->num_pending_removals == 0)
-+		return false;
-+
-+	/*
-+	 * The unmap requires all the CQ's outstanding inflights to be
-+	 * completed.
-+	 */
-+	infl_cnt = DLB_CSR_RD(hw, LSP_CQ_LDB_INFL_CNT(port->id.phys_id));
-+	if (BITS_GET(infl_cnt, LSP_CQ_LDB_INFL_CNT_COUNT) > 0)
-+		return false;
-+
-+	for (i = 0; i < DLB_MAX_NUM_QIDS_PER_LDB_CQ; i++) {
-+		struct dlb_ldb_port_qid_map *map;
-+
-+		map = &port->qid_map[i];
-+
-+		if (map->state != DLB_QUEUE_UNMAP_IN_PROG &&
-+		    map->state != DLB_QUEUE_UNMAP_IN_PROG_PENDING_MAP)
-+			continue;
-+
-+		dlb_domain_finish_unmap_port_slot(hw, domain, port, i);
-+	}
-+
- 	return true;
- }
- 
-@@ -3200,8 +3380,18 @@ static unsigned int
- dlb_domain_finish_unmap_qid_procedures(struct dlb_hw *hw,
- 				       struct dlb_hw_domain *domain)
- {
--	/* Placeholder */
--	return 0;
-+	struct dlb_ldb_port *port;
-+	int i;
-+
-+	if (!domain->configured || domain->num_pending_removals == 0)
-+		return 0;
-+
-+	for (i = 0; i < DLB_NUM_COS_DOMAINS; i++) {
-+		list_for_each_entry(port, &domain->used_ldb_ports[i], domain_list)
-+			dlb_domain_finish_unmap_port(hw, domain, port);
-+	}
-+
-+	return domain->num_pending_removals;
- }
- 
- static void dlb_domain_finish_map_port(struct dlb_hw *hw,
-@@ -4767,10 +4957,71 @@ static int dlb_domain_drain_mapped_queues(struct dlb_hw *hw,
- 	return 0;
- }
- 
-+static int dlb_domain_drain_unmapped_queue(struct dlb_hw *hw,
-+					   struct dlb_hw_domain *domain,
-+					   struct dlb_ldb_queue *queue)
-+{
-+	struct dlb_ldb_port *port = NULL;
-+	int ret, i;
-+
-+	/* If a domain has LDB queues, it must have LDB ports */
-+	for (i = 0; i < DLB_NUM_COS_DOMAINS; i++) {
-+		port = list_first_entry_or_null(&domain->used_ldb_ports[i],
-+						typeof(*port), domain_list);
-+		if (port)
-+			break;
-+	}
-+
-+	if (!port) {
-+		DLB_HW_ERR(hw,
-+			   "[%s()] Internal error: No configured LDB ports\n",
-+			   __func__);
-+		return -EFAULT;
-+	}
-+
-+	/* If necessary, free up a QID slot in this CQ */
-+	if (port->num_mappings == DLB_MAX_NUM_QIDS_PER_LDB_CQ) {
-+		struct dlb_ldb_queue *mapped_queue;
-+
-+		mapped_queue = &hw->rsrcs.ldb_queues[port->qid_map[0].qid];
-+
-+		ret = dlb_ldb_port_unmap_qid(hw, port, mapped_queue);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = dlb_ldb_port_map_qid_dynamic(hw, port, queue, 0);
-+	if (ret)
-+		return ret;
-+
-+	return dlb_domain_drain_mapped_queues(hw, domain);
-+}
-+
- static int dlb_domain_drain_unmapped_queues(struct dlb_hw *hw,
- 					    struct dlb_hw_domain *domain)
- {
--	/* Placeholder */
-+	struct dlb_ldb_queue *queue;
++	struct dlb *dlb = container_of(work, struct dlb, work);
 +	int ret;
 +
-+	/* If the domain hasn't been started, there's no traffic to drain */
-+	if (!domain->started)
-+		return 0;
++	mutex_lock(&dlb->resource_mutex);
 +
-+	/*
-+	 * Pre-condition: the unattached queue must not have any outstanding
-+	 * completions. This is ensured by calling dlb_domain_drain_ldb_cqs()
-+	 * prior to this in dlb_domain_drain_mapped_queues().
-+	 */
-+	list_for_each_entry(queue, &domain->used_ldb_queues, domain_list) {
-+		if (queue->num_mappings != 0 ||
-+		    dlb_ldb_queue_is_empty(hw, queue))
-+			continue;
++	ret = dlb_finish_unmap_qid_procedures(&dlb->hw);
++	ret += dlb_finish_map_qid_procedures(&dlb->hw);
 +
-+		ret = dlb_domain_drain_unmapped_queue(hw, domain, queue);
-+		if (ret)
-+			return ret;
++	if (ret != 0)
++		/*
++		 * Relinquish the CPU so the application can process its CQs,
++		 * so this function doesn't deadlock.
++		 */
++		schedule_work(&dlb->work);
++	else
++		dlb->worker_launched = false;
++
++	mutex_unlock(&dlb->resource_mutex);
++}
++
++void dlb_init_work(struct dlb *dlb)
++{
++	INIT_WORK(&dlb->work, dlb_complete_queue_map_unmap);
++}
++
++/**
++ * dlb_schedule_work() - launch a thread to process pending map and unmap work
++ * @hw: dlb_hw handle for a particular device.
++ *
++ * This function launches a kernel thread that will run until all pending
++ * map and unmap procedures are complete.
++ */
++static void dlb_schedule_work(struct dlb_hw *hw)
++{
++	struct dlb *dlb = container_of(hw, struct dlb, hw);
++
++	/* Nothing to do if the worker is already running */
++	if (dlb->worker_launched)
++		return;
++
++	schedule_work(&dlb->work);
++
++	dlb->worker_launched = true;
++}
++
+ /**
+  * dlb_ldb_port_map_qid_dynamic() - perform a "dynamic" QID->CQ mapping
+  * @hw: dlb_hw handle for a particular device.
+@@ -2654,8 +2709,16 @@ static int dlb_ldb_port_map_qid_dynamic(struct dlb_hw *hw,
+ 
+ 	infl_cnt = DLB_CSR_RD(hw, LSP_QID_LDB_INFL_CNT(queue->id.phys_id));
+ 
+-	if (BITS_GET(infl_cnt, LSP_QID_LDB_INFL_CNT_COUNT))
++	if (BITS_GET(infl_cnt, LSP_QID_LDB_INFL_CNT_COUNT)) {
++		/*
++		 * The queue is owed completions so it's not safe to map it
++		 * yet. Schedule a kernel thread to complete the mapping later,
++		 * once software has completed all the queue's inflight events.
++		 */
++		dlb_schedule_work(hw);
++
+ 		return 1;
 +	}
+ 
+ 	/*
+ 	 * Disable the affected CQ, and the CQs already mapped to the QID,
+@@ -2678,6 +2741,13 @@ static int dlb_ldb_port_map_qid_dynamic(struct dlb_hw *hw,
+ 
+ 		dlb_ldb_queue_enable_mapped_cqs(hw, domain, queue);
+ 
++		/*
++		 * The queue is owed completions so it's not safe to map it
++		 * yet. Schedule a kernel thread to complete the mapping later,
++		 * once software has completed all the queue's inflight events.
++		 */
++		dlb_schedule_work(hw);
 +
- 	return 0;
+ 		return 1;
+ 	}
+ 
+@@ -3394,6 +3464,20 @@ dlb_domain_finish_unmap_qid_procedures(struct dlb_hw *hw,
+ 	return domain->num_pending_removals;
  }
  
++static unsigned int dlb_finish_unmap_qid_procedures(struct dlb_hw *hw)
++{
++	int i, num = 0;
++
++	/* Finish queue unmap jobs for any domain that needs it */
++	for (i = 0; i < DLB_MAX_NUM_DOMAINS; i++) {
++		struct dlb_hw_domain *domain = &hw->domains[i];
++
++		num += dlb_domain_finish_unmap_qid_procedures(hw, domain);
++	}
++
++	return num;
++}
++
+ static void dlb_domain_finish_map_port(struct dlb_hw *hw,
+ 				       struct dlb_hw_domain *domain,
+ 				       struct dlb_ldb_port *port)
+@@ -3470,6 +3554,20 @@ dlb_domain_finish_map_qid_procedures(struct dlb_hw *hw,
+ 	return domain->num_pending_additions;
+ }
+ 
++static unsigned int dlb_finish_map_qid_procedures(struct dlb_hw *hw)
++{
++	int i, num = 0;
++
++	/* Finish queue map jobs for any domain that needs it */
++	for (i = 0; i < DLB_MAX_NUM_DOMAINS; i++) {
++		struct dlb_hw_domain *domain = &hw->domains[i];
++
++		num += dlb_domain_finish_map_qid_procedures(hw, domain);
++	}
++
++	return num;
++}
++
+ static void dlb_log_map_qid(struct dlb_hw *hw,
+ 			    u32 domain_id,
+ 			    struct dlb_map_qid_args *args,
+@@ -3750,6 +3848,7 @@ int dlb_hw_unmap_qid(struct dlb_hw *hw,
+ 	struct dlb_ldb_queue *queue;
+ 	enum dlb_qid_map_state st;
+ 	struct dlb_ldb_port *port;
++	bool unmap_complete;
+ 	int i, ret;
+ 
+ 	dlb_log_unmap_qid(hw, domain_id, args, vdev_req, vdev_id);
+@@ -3831,7 +3930,14 @@ int dlb_hw_unmap_qid(struct dlb_hw *hw,
+ 	 * outstanding inflights. If that's not the case, this will fail and
+ 	 * the unmapping will be completed at a later time.
+ 	 */
+-	dlb_domain_finish_unmap_port(hw, domain, port);
++	unmap_complete = dlb_domain_finish_unmap_port(hw, domain, port);
++
++	/*
++	 * If the unmapping couldn't complete immediately, launch the worker
++	 * thread (if it isn't already launched) to finish it later.
++	 */
++	if (!unmap_complete)
++		dlb_schedule_work(hw);
+ 
+ unmap_qid_done:
+ 	resp->status = 0;
+diff --git a/drivers/misc/dlb/dlb_resource.h b/drivers/misc/dlb/dlb_resource.h
+index 5fbc9d0b5e96..1f4c8efcfc28 100644
+--- a/drivers/misc/dlb/dlb_resource.h
++++ b/drivers/misc/dlb/dlb_resource.h
+@@ -120,4 +120,6 @@ void dlb_hw_enable_sparse_ldb_cq_mode(struct dlb_hw *hw);
+ 
+ void dlb_hw_enable_sparse_dir_cq_mode(struct dlb_hw *hw);
+ 
++void dlb_init_work(struct dlb *dlb);
++
+ #endif /* __DLB_RESOURCE_H */
 -- 
 2.17.1
 
