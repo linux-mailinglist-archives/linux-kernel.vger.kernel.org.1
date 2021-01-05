@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E671B2EB203
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D60F2EB1F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbhAESFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:05:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37291 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727404AbhAESFX (ORCPT
+        id S1729959AbhAESFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:05:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726890AbhAESFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:05:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609869837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tjij9xYMf6Y62hwh1O7GXaGMsMvqywzvQeHIvJ4Lc+s=;
-        b=SbEjl9w6eEmY+VCdEaVzFoyufe9vXicPhHXGdKGW23mX2iEwR8ouiYH9mJgle5X909JPoa
-        SJtINKopGqxvo2LP9UE65hRE080+p6rBqHIFxU1jkwQCmPJyF2QaWDWmj5XhmYhPpT4X8N
-        kccAuO7Xkk2flaIX+yudZBXxOlbTEuM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-156-Xh2GoTdcN1qQiXdJXLzRog-1; Tue, 05 Jan 2021 13:03:53 -0500
-X-MC-Unique: Xh2GoTdcN1qQiXdJXLzRog-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B25DA0CA0;
-        Tue,  5 Jan 2021 18:03:52 +0000 (UTC)
-Received: from mail (ovpn-112-76.rdu2.redhat.com [10.10.112.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D6DBB5E1B5;
-        Tue,  5 Jan 2021 18:03:48 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 13:03:48 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Yu Zhao <yuzhao@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X/SqBG7KDKZhSUHu@redhat.com>
-References: <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
- <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
- <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1>
- <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
- <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
- <20210105153727.GK3040@hirez.programming.kicks-ass.net>
+        Tue, 5 Jan 2021 13:05:07 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF58C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:04:27 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id b2so1583312edm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:04:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g9dWEenEa1Tbu2wF3XZKdyzz1Vq1iEFWmTgkC1pdmgE=;
+        b=gbHxkwq9CjvYKdpKPtd2ZRrJEAevgMtRmYOb22xACgeJQuGsT2kP/c6aINE2iyvqDh
+         tdJH1JdM40naCrddYIyMiMsUENx53xvhNMADzgLohYngGBuX0McumeV6/7gbDztyy67e
+         oWl8U90wipDPcVTOylJwuJSgvaDFkudEhEdKy0z85h+dvWIYq7TwqJjK1ZliE9r37x/P
+         Nf4fANZwZ4WLBw5I2MbWU9tvHHR6hqLH2dvzrurTCXvRUtgJojsDVF1GeWEzRPdTR+Gp
+         hOIQ3Is353X0KpdkYQhw8Amkqx+8xBUZcDw1Zb4JxHmT1787wDciaHU+koprkXTiO/cc
+         LzWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g9dWEenEa1Tbu2wF3XZKdyzz1Vq1iEFWmTgkC1pdmgE=;
+        b=oosAlngV3/Z6yMgUX0uf1uyN83QogfFui8CIVMz7MY07OW1yKUkA3dJJcIRb4bE3BI
+         pO4EN/TVoFoL55hoIN6yCKkrQbwdLzehq90/exczTxUdGUs+vQ8+PMkBPIuvlAMxElt+
+         TTV57C/0ePkMbjLi53hJfM/Rz+kCNvdn9uCYWtxfKzWp9WEdsJH0M0I+ozCUdZdQZ1VF
+         p29OjuiLEo/eMyWaDIuvLKdA2Cbwrt0i05JgwvFJwRYBGyMIBmpKU51rGX9lEKhPjjVh
+         uyVumJRIyfBk/ghHvgRQsvfcwcTRIn4WUU5Q62Jla+lMnIvFLToIGFDMwL+IvdTm3VPi
+         eY7Q==
+X-Gm-Message-State: AOAM531e1z+g73GH/pM5hNvsm336Qd7MuBD6yuk0MtRs/0MD7Tp4PQY0
+        2iBs4vS02wZYbkOv4xMGpgq2Qu0VSogCfyA4YLA=
+X-Google-Smtp-Source: ABdhPJy2q8y1vT9nVv1PXe/O7TiK+riynHFEQmh3eJty2cejYpnhb5xJ60LuQuiK08rsZfPpjTkqH1DQnwPYWgp75Ss=
+X-Received: by 2002:a05:6402:ca2:: with SMTP id cn2mr956808edb.137.1609869865933;
+ Tue, 05 Jan 2021 10:04:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105153727.GK3040@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210104065843.5658-1-songmuchun@bytedance.com> <d81664e1-bde0-4dcb-f602-6eb201ceada0@redhat.com>
+In-Reply-To: <d81664e1-bde0-4dcb-f602-6eb201ceada0@redhat.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 5 Jan 2021 10:04:13 -0800
+Message-ID: <CAHbLzko4BH6GOJsz33NEbwLTxJQJxVHH3qLzHzoM1LycT=ccbg@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mm: migrate: do not migrate HugeTLB page whose
+ refcount is one
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        hillf.zj@alibaba-inc.com,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        ak@linux.intel.com, yongjun_wei@trendmicro.com.cn, mhocko@suse.cz,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 04:37:27PM +0100, Peter Zijlstra wrote:
-> (your other email clarified this point; the COW needs to copy while
-> holding the PTL and we need TLBI under PTL if we're to change this)
+On Tue, Jan 5, 2021 at 8:58 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 04.01.21 07:58, Muchun Song wrote:
+> > If the refcount is one when it is migrated, it means that the page
+> > was freed from under us. So we are done and do not need to migrate.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/migrate.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/mm/migrate.c b/mm/migrate.c
+> > index 4385f2fb5d18..a6631c4eb6a6 100644
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+> >               return -ENOSYS;
+> >       }
+> >
+> > +     if (page_count(hpage) == 1) {
+> > +             /* page was freed from under us. So we are done. */
+> > +             putback_active_hugepage(hpage);
+> > +             return MIGRATEPAGE_SUCCESS;
+> > +     }
+> > +
+> >       new_hpage = get_new_page(hpage, private);
+> >       if (!new_hpage)
+> >               return -ENOMEM;
+> >
+>
+> This series seems to fix quite some important cases (thanks). Do we want
+> to cc stable some/all?
 
-The COW doesn't need to hold the PT lock, the TLBI broadcast doesn't
-need to be delivered under PT lock either.
+For this particular one, I don't think so IMHO. It is an optimization
+rather than a bug fix.
 
-Simply there need to be a TLBI broadcast before the copy. The patch I
-sent here https://lkml.kernel.org/r/X+QLr1WmGXMs33Ld@redhat.com that
-needs to be cleaned up with some abstraction and better commentary
-also misses a smp_mb() in the case flush_tlb_page is not called, but
-that's a small detail.
-
-> And I'm thinking the speculative page fault series steps right into all
-> this, it fundamentally avoids mmap_sem and entirely relies on the PTL.
-
-I thought about that but that only applies to some kind of "anon" page
-fault.
-
-Here the problem isn't just the page fault, the problem is not to
-regress clear_refs to block on page fault I/O, and all
-MAP_PRIVATE/MAP_SHARED filebacked faults bitting the disk to read
-/usr/ will still prevent clear_refs from running (and the other way
-around) if it has to take the mmap_sem for writing.
-
-I don't look at the speculative page fault for a while but last I
-checked there was nothing there that can tame the above major
-regression from CPU speed to disk I/O speed that would be inflicted on
-both clear_refs on huge mm and on uffd-wp.
-
-Thanks,
-Andrea
-
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+>
