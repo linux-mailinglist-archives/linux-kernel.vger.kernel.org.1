@@ -2,77 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063192EB1EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 157962EB248
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730671AbhAER7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:59:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726132AbhAER7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:59:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB20D22525;
-        Tue,  5 Jan 2021 17:58:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609869520;
-        bh=EJz0/nIQziaZvn0beEGIWrbtwUlfliHpdEOzvmzQYLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TjMmAsEMvhLWauuFavU3TLVdBlf01WNMZE29TUSdG0VSmZT6UVAqHUEjtTUQwEoLx
-         iFEy75LypDunskys4yvTNTb3h+I26dMZZ9S0Khu0f8yAzbH8cooRGOTdoaS6qFHDJE
-         HPxgshcvjxAZ4LusbrC4nMbNbmheGlzFw8nwAy9cHwwxG1haD6WXUCF8wC5uQflapc
-         hT/TjvA04h7hqD/0K2kV9jZoPs+kSrFuOhKYPMssZZ9f0KwEzs9i/E5aL6G5+kDlKc
-         7rOktSYm6rHXQfZYd9e7vs5HvCYIXgQ+AExLPoJeLK2yEiusqCTWw2eNxNltNfcsfL
-         VKtOjb7YaTKOg==
-Date:   Tue, 5 Jan 2021 17:58:12 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     marek.vasut+renesas@gmail.com, lee.jones@linaro.org,
-        matti.vaittinen@fi.rohmeurope.com, lgirdwood@gmail.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        khiem.nguyen.xt@renesas.com, linux-power@fi.rohmeurope.com,
-        linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 05/12] regulator: bd9571mwv: Add BD9574MWF support
-Message-ID: <20210105175812.GI4487@sirena.org.uk>
-References: <1608888807-3117-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1608888807-3117-6-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+        id S1730688AbhAESOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:14:09 -0500
+Received: from [150.109.110.231] ([150.109.110.231]:44946 "EHLO
+        mail.joius.com.tw" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1730237AbhAESNK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 13:13:10 -0500
+X-Greylist: delayed 475 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 Jan 2021 13:13:10 EST
+Received: from localhost (unknown [127.0.0.1])
+        by mail.joius.com.tw (Postfix) with ESMTP id 2A6BB6873;
+        Tue,  5 Jan 2021 18:03:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=joius.com.tw; h=
+        reply-to:date:date:from:from:to:subject:subject
+        :content-description:content-transfer-encoding:mime-version
+        :content-type:content-type; s=dkim; t=1609869792; x=1612461793;
+         bh=DvdaUwtDNroyCwqmelxPxJI1E0uJHa4rNWMxQ0Bb+94=; b=geXlJaqPbYYB
+        8YJE2WEDN3Ikalxvb84zA8pZukmtBi/YrvL9RlHMk+43SGmzlJkOKGa6Oa+P/wLX
+        UZTp8St1WYx2oXsXqR41inHNPgxquzfnG4VwD+mFgLoCnLKzVWH1rwxaYBxFGnw/
+        KEO/d4UKB/IdgVzMyaHs4g4lTsWciho=
+X-Virus-Scanned: amavisd-new at joius.com.tw
+Received: from mail.joius.com.tw ([127.0.0.1])
+        by localhost (mail.joius.com.tw [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id rRyYhhR2hMXL; Wed,  6 Jan 2021 02:03:12 +0800 (CST)
+Received: from DESKTOP-TO32L7N.homenet.telecomitalia.it (host-79-35-182-211.retail.telecomitalia.it [79.35.182.211])
+        by mail.joius.com.tw (Postfix) with ESMTPA id 00A7A65E8;
+        Wed,  6 Jan 2021 02:02:56 +0800 (CST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FUFe+yI/t+r3nyH4"
-Content-Disposition: inline
-In-Reply-To: <1608888807-3117-6-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-X-Cookie: I'm ANN LANDERS!!  I can SHOPLIFT!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Re: 05/01/2021
+To:     Recipients <test@joius.com.tw>
+From:   WARREN B FOUNDATION <test@joius.com.tw>
+Date:   Tue, 05 Jan 2021 18:58:16 +0100
+Reply-To: buffookj@gmail.com
+Message-Id: <20210105180313.2A6BB6873@mail.joius.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---FUFe+yI/t+r3nyH4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Dec 25, 2020 at 06:33:20PM +0900, Yoshihiro Shimoda wrote:
-> Add support for BD9574MWF which is similar chip with BD9571MWV.
-> Note that we don't support voltage rails VD{09,18,25,33} by this
-> driver on BD9574. The VD09 voltage could be read from PMIC but that
-> is not supported by this commit.
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---FUFe+yI/t+r3nyH4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/0qLMACgkQJNaLcl1U
-h9C8BQf/Z6e1brXkNCdk8ymaTUdOduDquKXG5scRDwDEypJIExDKZhQ9Mc5lLQ0a
-80WFJzic49FEV5A2TV0U6paWW/MFrotJTYhxwIF7BlqADHKhEjjnfJaDhDRWHAH7
-08trjF1yYI9u2rZVWqppfDdoaiA6PTPer367elwFenED7+36sOYCKsHOhGxtQtfh
-7r0qRDMa+Ui0rj7t7Ez6bUNk1M1SlvXKVxTWUVBCWfwfVhPoiMtbVsvRPYHY2B2d
-gzC2nwyMFHv+h3B6A35AsraqweVFGgP19eRIm+PuSqp6wY56TvnvP90MwE2sVVCA
-yO6NuUnmj3136EE447cX3vNrHbUpnQ==
-=3qVe
------END PGP SIGNATURE-----
-
---FUFe+yI/t+r3nyH4--
+Warren Buffett Foundation picked you for a $1 500, 000 donation. For more d=
+etails reply=20
