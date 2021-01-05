@@ -2,155 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E1B2EB5B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 00:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA952EB5BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 00:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731689AbhAEXAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 18:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727793AbhAEXAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 18:00:07 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21ACEC0617A4;
-        Tue,  5 Jan 2021 14:59:04 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id g3so567993plp.2;
-        Tue, 05 Jan 2021 14:59:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wnMlP5mohrX3bvCSvWrNTxzp8rn+yEf+Jg5XouhGMW8=;
-        b=VfKzNUjMJmuArEaHfpqnslSBVuqZOQjrYZbMQtPQjbs3dE0oYJ2cgQ1rN9OkzKriYB
-         QRfZgVB1tjfgE8Uu6nS6zawm4Dyax8d9B7r1Pu3S0Whtox5LxMYX9KD/hKUiE8dS8R9x
-         g777bezaoqX7KjKNgzsr4x6779qhSqO1hgrsYJb660FtfDvZMeKlOknsSkEMbZPfKhY8
-         qbZ5RQ2sw9+O/uMmWcXt4xZIqYTh+9+knsjziZgGeeMlsDCsaAj/SDSgLKN2hI0aMrch
-         0dYurd+5FU+W6D6aXK4OkteMVGsCGlVt8IaA4N2kzWj//PWKAVOXmJxOzcTbs7w6fy9N
-         XYxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wnMlP5mohrX3bvCSvWrNTxzp8rn+yEf+Jg5XouhGMW8=;
-        b=KN7PS8hhH/Mymx9UCQT7EigbgildMQJJHee0TofH13wCz3qVausYS1Tck3zRmPeOW/
-         xl3rNSmeWzmxglCV9pH+McuKjw1/mcgslzC7phiI76QsaF34PrwuV/7+r7ZQzhFGaGln
-         /k+RnOQgQBpFYXNFDS26DIZ4KJfsFjxiRWreH6DHrFoHJAbY8y+UGPuifBIQUGapa9Xn
-         JhAO/exWMbUpjxJEHgo+vVqqMenwTxPm9HnhA62e6vKFcp86Z/y2C8LDU8SFVobho1pM
-         /KUYk+VPuRkUMNnMqnYROjGT9jEQrOdn3re2bz0J7onsQLF+q21PyxF8ap8o9TcCr+9l
-         xnsg==
-X-Gm-Message-State: AOAM530VI8kESG59HShVR/pgLK9sCNJGkRpu5zf0z0X0bH5tjuSHQRZh
-        zpxnbaeHFpFigL8VyXcNMjs=
-X-Google-Smtp-Source: ABdhPJw7TMu00abpfLHlFdGgRt+lmRt41rnt1svrizMh0Lj4ti/rve6qS9uCxXYsPIfEIz31zFZbCw==
-X-Received: by 2002:a17:902:d90c:b029:da:9930:9da7 with SMTP id c12-20020a170902d90cb02900da99309da7mr1668658plz.85.1609887543779;
-        Tue, 05 Jan 2021 14:59:03 -0800 (PST)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id fw12sm244233pjb.43.2021.01.05.14.59.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 14:59:02 -0800 (PST)
-From:   Yang Shi <shy828301@gmail.com>
-To:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
-        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
-        akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [v3 PATCH 09/11] mm: vmscan: don't need allocate shrinker->nr_deferred for memcg aware shrinkers
-Date:   Tue,  5 Jan 2021 14:58:15 -0800
-Message-Id: <20210105225817.1036378-10-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210105225817.1036378-1-shy828301@gmail.com>
-References: <20210105225817.1036378-1-shy828301@gmail.com>
+        id S1731822AbhAEXAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 18:00:35 -0500
+Received: from mga18.intel.com ([134.134.136.126]:53703 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725838AbhAEXAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 18:00:30 -0500
+IronPort-SDR: v6XWlWdwfb6VdqxirSCKNnwZSsebHk7mCgTiM1rlQ8hmBjdMSatE4hkuMqMoEgxO9+IayuvxkJ
+ MdLljucxdb6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="164893376"
+X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
+   d="scan'208";a="164893376"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 14:59:34 -0800
+IronPort-SDR: zaGeZ6DUhwDGlzeJhDuodRMsEdN6w8IERv+VTNWQflrZXqe9pj0oVUm1oQc5w4I05MbRUBGH0N
+ eadbLv5Hxzdw==
+X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
+   d="scan'208";a="346432442"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.209.23.122])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 14:59:33 -0800
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v9 4/7] fpga: sec-mgr: expose sec-mgr update errors
+Date:   Tue,  5 Jan 2021 14:59:21 -0800
+Message-Id: <20210105225924.14573-5-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210105225924.14573-1-russell.h.weight@intel.com>
+References: <20210105225924.14573-1-russell.h.weight@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now nr_deferred is available on per memcg level for memcg aware shrinkers, so don't need
-allocate shrinker->nr_deferred for such shrinkers anymore.
+Extend the FPGA Security Manager class driver to include
+an update/error sysfs node that can be read for error
+information when a secure update fails.
 
-The prealloc_memcg_shrinker() would return -ENOSYS if !CONFIG_MEMCG or memcg is disabled
-by kernel command line, then shrinker's SHRINKER_MEMCG_AWARE flag would be cleared.
-This makes the implementation of this patch simpler.
-
-Signed-off-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+Reviewed-by: Tom Rix <trix@redhat.com>
 ---
- mm/vmscan.c | 33 ++++++++++++++++++---------------
- 1 file changed, 18 insertions(+), 15 deletions(-)
+v9:
+  - Updated Date and KernelVersion in ABI documentation
+v8:
+  - No change
+v7:
+  - Changed Date in documentation file to December 2020
+v6:
+  - No change
+v5:
+  - Use new function sysfs_emit() in the error_show() function
+v4:
+  - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+    and removed unnecessary references to "Intel".
+  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+v3:
+  - Use dev_err() for invalid error code in sec_error()
+v2:
+  - Bumped documentation date and version
+  - Added warning to sec_progress() for invalid progress status
+  - Added sec_error() function (similar to sec_progress())
+---
+ .../ABI/testing/sysfs-class-fpga-sec-mgr      | 17 ++++
+ drivers/fpga/fpga-sec-mgr.c                   | 83 ++++++++++++++++---
+ include/linux/fpga/fpga-sec-mgr.h             |  1 +
+ 3 files changed, 89 insertions(+), 12 deletions(-)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index f20ed8e928c2..d9795fb0f1c5 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -340,6 +340,9 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
- {
- 	int id, ret = -ENOMEM;
- 
-+	if (mem_cgroup_disabled())
-+		return -ENOSYS;
+diff --git a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+index 703e123a1d42..ee8552518f56 100644
+--- a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
++++ b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+@@ -27,3 +27,20 @@ Description:	Read-only. Returns a string describing the current
+ 		programming. Userspace code can poll on this file,
+ 		as it will be signaled by sysfs_notify() on each
+ 		state change.
 +
- 	down_write(&shrinker_rwsem);
- 	/* This may call shrinker, so it must use down_read_trylock() */
- 	id = idr_alloc(&shrinker_idr, SHRINKER_REGISTERING, 0, 0, GFP_KERNEL);
-@@ -424,7 +427,7 @@ static bool writeback_throttling_sane(struct scan_control *sc)
- #else
- static int prealloc_memcg_shrinker(struct shrinker *shrinker)
- {
--	return 0;
-+	return -ENOSYS;
++What: 		/sys/class/fpga_sec_mgr/fpga_secX/update/error
++Date:		January 2021
++KernelVersion:  5.12
++Contact:	Russ Weight <russell.h.weight@intel.com>
++Description:	Read-only. Returns a string describing the failure
++		of a secure update. This string will be in the form
++		of <STATUS>:<ERROR>, where <STATUS> will be one of
++		the status strings described for the status sysfs
++		file and <ERROR> will be one of the following:
++		hw-error, timeout, user-abort, device-busy,
++		invalid-file-size, read-write-error, flash-wearout,
++		file-read-error.  The error sysfs file is only
++		meaningful when the secure update engine is in the
++		idle state. If this file is read while a secure
++		update is in progress, then the read will fail with
++		EBUSY.
+diff --git a/drivers/fpga/fpga-sec-mgr.c b/drivers/fpga/fpga-sec-mgr.c
+index dd60014b7511..3bd89598cccd 100644
+--- a/drivers/fpga/fpga-sec-mgr.c
++++ b/drivers/fpga/fpga-sec-mgr.c
+@@ -32,10 +32,16 @@ static void update_progress(struct fpga_sec_mgr *smgr,
+ 	sysfs_notify(&smgr->dev.kobj, "update", "status");
  }
  
- static void unregister_memcg_shrinker(struct shrinker *shrinker)
-@@ -535,8 +538,20 @@ unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone
-  */
- int prealloc_shrinker(struct shrinker *shrinker)
++static void set_error(struct fpga_sec_mgr *smgr, enum fpga_sec_err err_code)
++{
++	smgr->err_state = smgr->progress;
++	smgr->err_code = err_code;
++}
++
+ static void fpga_sec_dev_error(struct fpga_sec_mgr *smgr,
+ 			       enum fpga_sec_err err_code)
  {
--	unsigned int size = sizeof(*shrinker->nr_deferred);
-+	unsigned int size;
-+	int err;
-+
-+	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
-+		err = prealloc_memcg_shrinker(shrinker);
-+		if (!err)
-+			return 0;
-+		if (err != -ENOSYS)
-+			return err;
-+
-+		shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
-+	}
- 
-+	size = sizeof(*shrinker->nr_deferred);
- 	if (shrinker->flags & SHRINKER_NUMA_AWARE)
- 		size *= nr_node_ids;
- 
-@@ -544,26 +559,14 @@ int prealloc_shrinker(struct shrinker *shrinker)
- 	if (!shrinker->nr_deferred)
- 		return -ENOMEM;
- 
--	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
--		if (prealloc_memcg_shrinker(shrinker))
--			goto free_deferred;
--	}
- 
- 	return 0;
--
--free_deferred:
--	kfree(shrinker->nr_deferred);
--	shrinker->nr_deferred = NULL;
--	return -ENOMEM;
+-	smgr->err_code = err_code;
++	set_error(smgr, err_code);
+ 	smgr->sops->cancel(smgr);
  }
  
- void free_prealloced_shrinker(struct shrinker *shrinker)
- {
--	if (!shrinker->nr_deferred)
--		return;
--
- 	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
--		unregister_memcg_shrinker(shrinker);
-+		return unregister_memcg_shrinker(shrinker);
+@@ -58,7 +64,7 @@ static void fpga_sec_mgr_update(struct work_struct *work)
  
- 	kfree(shrinker->nr_deferred);
- 	shrinker->nr_deferred = NULL;
+ 	get_device(&smgr->dev);
+ 	if (request_firmware(&fw, smgr->filename, &smgr->dev)) {
+-		smgr->err_code = FPGA_SEC_ERR_FILE_READ;
++		set_error(smgr, FPGA_SEC_ERR_FILE_READ);
+ 		goto idle_exit;
+ 	}
+ 
+@@ -66,7 +72,7 @@ static void fpga_sec_mgr_update(struct work_struct *work)
+ 	smgr->remaining_size = fw->size;
+ 
+ 	if (!try_module_get(smgr->dev.parent->driver->owner)) {
+-		smgr->err_code = FPGA_SEC_ERR_BUSY;
++		set_error(smgr, FPGA_SEC_ERR_BUSY);
+ 		goto release_fw_exit;
+ 	}
+ 
+@@ -128,24 +134,76 @@ static const char * const sec_mgr_prog_str[] = {
+ 	"programming"		/* FPGA_SEC_PROG_PROGRAMMING */
+ };
+ 
+-static ssize_t
+-status_show(struct device *dev, struct device_attribute *attr, char *buf)
++static const char * const sec_mgr_err_str[] = {
++	"none",			/* FPGA_SEC_ERR_NONE */
++	"hw-error",		/* FPGA_SEC_ERR_HW_ERROR */
++	"timeout",		/* FPGA_SEC_ERR_TIMEOUT */
++	"user-abort",		/* FPGA_SEC_ERR_CANCELED */
++	"device-busy",		/* FPGA_SEC_ERR_BUSY */
++	"invalid-file-size",	/* FPGA_SEC_ERR_INVALID_SIZE */
++	"read-write-error",	/* FPGA_SEC_ERR_RW_ERROR */
++	"flash-wearout",	/* FPGA_SEC_ERR_WEAROUT */
++	"file-read-error"	/* FPGA_SEC_ERR_FILE_READ */
++};
++
++static const char *sec_progress(struct device *dev, enum fpga_sec_prog prog)
+ {
+-	struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
+ 	const char *status = "unknown-status";
+-	enum fpga_sec_prog progress;
+ 
+-	progress = smgr->progress;
+-	if (progress < FPGA_SEC_PROG_MAX)
+-		status = sec_mgr_prog_str[progress];
++	if (prog < FPGA_SEC_PROG_MAX)
++		status = sec_mgr_prog_str[prog];
+ 	else
+ 		dev_err(dev, "Invalid status during secure update: %d\n",
+-			progress);
++			prog);
++
++	return status;
++}
++
++static const char *sec_error(struct device *dev, enum fpga_sec_err err_code)
++{
++	const char *error = "unknown-error";
++
++	if (err_code < FPGA_SEC_ERR_MAX)
++		error = sec_mgr_err_str[err_code];
++	else
++		dev_err(dev, "Invalid error code during secure update: %d\n",
++			err_code);
++
++	return error;
++}
++
++static ssize_t
++status_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
+ 
+-	return sysfs_emit(buf, "%s\n", status);
++	return sysfs_emit(buf, "%s\n", sec_progress(dev, smgr->progress));
+ }
+ static DEVICE_ATTR_RO(status);
+ 
++static ssize_t
++error_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
++	int ret;
++
++	mutex_lock(&smgr->lock);
++
++	if (smgr->progress != FPGA_SEC_PROG_IDLE)
++		ret = -EBUSY;
++	else if (!smgr->err_code)
++		ret = 0;
++	else
++		ret = sysfs_emit(buf, "%s:%s\n",
++				 sec_progress(dev, smgr->err_state),
++				 sec_error(dev, smgr->err_code));
++
++	mutex_unlock(&smgr->lock);
++
++	return ret;
++}
++static DEVICE_ATTR_RO(error);
++
+ static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
+ 			      const char *buf, size_t count)
+ {
+@@ -181,6 +239,7 @@ static DEVICE_ATTR_WO(filename);
+ static struct attribute *sec_mgr_update_attrs[] = {
+ 	&dev_attr_filename.attr,
+ 	&dev_attr_status.attr,
++	&dev_attr_error.attr,
+ 	NULL,
+ };
+ 
+diff --git a/include/linux/fpga/fpga-sec-mgr.h b/include/linux/fpga/fpga-sec-mgr.h
+index e03de72134d6..78f8dc51a508 100644
+--- a/include/linux/fpga/fpga-sec-mgr.h
++++ b/include/linux/fpga/fpga-sec-mgr.h
+@@ -71,6 +71,7 @@ struct fpga_sec_mgr {
+ 	const u8 *data;			/* pointer to update data */
+ 	u32 remaining_size;		/* size remaining to transfer */
+ 	enum fpga_sec_prog progress;
++	enum fpga_sec_prog err_state;	/* progress state at time of failure */
+ 	enum fpga_sec_err err_code;	/* security manager error code */
+ 	bool driver_unload;
+ 	void *priv;
 -- 
-2.26.2
+2.25.1
 
