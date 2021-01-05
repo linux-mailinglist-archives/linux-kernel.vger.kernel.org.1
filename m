@@ -2,116 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241192EB458
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EED2EB45C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbhAEUje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 15:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbhAEUjb (ORCPT
+        id S1729393AbhAEUlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 15:41:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33797 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729238AbhAEUlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 15:39:31 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0A1C061795
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 12:38:51 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id x20so1459839lfe.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 12:38:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7fg2ptfYhMp275EJ8aZPMAK34P1NI/LW/B7PJd9XCtM=;
-        b=XbqOfD/7D5bjtgFzF0RQNHSxNzsX0vBTIJAUlv110w8Ep1C+9bm8nFfgltldIE6Am5
-         8mrpdAMXEwDOuIO3/ajMYWKQuH7qEeNQ1YqyUYoseneP8Y3bDQmjNsFWvaTlILPhrgug
-         NsgsV3TmxKXugXsqWczid34qwfeDVB8UtgcMA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7fg2ptfYhMp275EJ8aZPMAK34P1NI/LW/B7PJd9XCtM=;
-        b=UOtZeUrvCohEOjA70ugRdz1mvYMW+CQ9agwNLc7UIEQ7Zg+1FNwses0cuAK0Q2n0lJ
-         phQTsKI7mMn35R7jcNaBv99cNiPmigbrHX2wWUR/QtqSrkcGwEO8vnO1f8soWiFBWGZC
-         EaitB6h7Nr5eVXObOxQ85058OXYvhDljuOQ6nqk08xJPPYtb4QhDtdmZle/LE0IEAdsh
-         VzZBVg45mWOZNEeXfaoKOHR3DB1n7ZtvYievmdctmbdMthHS1r8cFfoui+eD0Nz3+B7w
-         E9Q+YQ1nU3jM4nn8lGx5/mIeqKgJZJCTC6nJccFSVniJJppaG4I1Z3DyIFwG6Ggyai71
-         vi3A==
-X-Gm-Message-State: AOAM5310zCZbv6F2JE33a7cLkWr9RrD4cWBdnVioLmHXSYZDnjR9oC1T
-        81VWj5TqAtY0gQYfkSADsmLq8WFx5zqCzw==
-X-Google-Smtp-Source: ABdhPJzK0Z57jz5bGIrcm6TsPvXFYg98klJFiMIx2yIVHCWGGW16cRnD7A2Prn3boVOGbJC5oipikQ==
-X-Received: by 2002:a19:4ad8:: with SMTP id x207mr474234lfa.9.1609879128925;
-        Tue, 05 Jan 2021 12:38:48 -0800 (PST)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id d11sm27117lfe.115.2021.01.05.12.38.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 12:38:47 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id o13so1606395lfr.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 12:38:47 -0800 (PST)
-X-Received: by 2002:a05:6512:3048:: with SMTP id b8mr444303lfb.421.1609879127184;
- Tue, 05 Jan 2021 12:38:47 -0800 (PST)
+        Tue, 5 Jan 2021 15:41:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609879186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bHIi+l3FG0nhdsSSuK7zUGCj1PycEMR6ZGSMpfFshzU=;
+        b=Py/ZpJYzSS8D8czPFhNn4IoAUdWqEBFWmFqxLMJ4TyZMjLdAn6V7DCJlBN4i4c5eXlRi/v
+        Gj2Wi7hkRWe2HKlZyymGqAWsLkPrGUhxXqgH+b6RS4as0L3tdUClMqsh64Q9v3FEdXNCZM
+        M+BrNdBXbBsDRz+I2I9HPivfvAXJXYk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-lVsPWadQOce_OP8wMG30Qg-1; Tue, 05 Jan 2021 15:39:44 -0500
+X-MC-Unique: lVsPWadQOce_OP8wMG30Qg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 130B0800D62;
+        Tue,  5 Jan 2021 20:39:42 +0000 (UTC)
+Received: from mail (ovpn-112-76.rdu2.redhat.com [10.10.112.76])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CAD8171C9A;
+        Tue,  5 Jan 2021 20:39:35 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 15:39:35 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     linux-mm <linux-mm@kvack.org>, lkml <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH v2 2/2] fs/task_mmu: acquire mmap_lock for write on
+ soft-dirty cleanup
+Message-ID: <X/TOhyzggcBL64N2@redhat.com>
+References: <20201225092529.3228466-1-namit@vmware.com>
+ <20201225092529.3228466-3-namit@vmware.com>
+ <X/SuBxFfR+bncRhU@redhat.com>
+ <15758743-B8E3-48C4-A13B-DFFEBF8AF435@vmware.com>
 MIME-Version: 1.0
-References: <20210104232123.31378-1-stephen.s.brennan@oracle.com>
- <20210105055935.GT3579531@ZenIV.linux.org.uk> <20210105165005.GV3579531@ZenIV.linux.org.uk>
- <20210105195937.GX3579531@ZenIV.linux.org.uk>
-In-Reply-To: <20210105195937.GX3579531@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 5 Jan 2021 12:38:31 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiP9EAP=JHGKG5LUCusVjVzTQoPVyweJkrX5dP=T_NxXw@mail.gmail.com>
-Message-ID: <CAHk-=wiP9EAP=JHGKG5LUCusVjVzTQoPVyweJkrX5dP=T_NxXw@mail.gmail.com>
-Subject: Re: [PATCH v4] proc: Allow pid_revalidate() during LOOKUP_RCU
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Stephen Brennan <stephen.s.brennan@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <15758743-B8E3-48C4-A13B-DFFEBF8AF435@vmware.com>
+User-Agent: Mutt/2.0.4 (2020-12-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 12:00 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Tue, Jan 05, 2021 at 07:26:43PM +0000, Nadav Amit wrote:
+> > On Jan 5, 2021, at 10:20 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> > 
+> > On Fri, Dec 25, 2020 at 01:25:29AM -0800, Nadav Amit wrote:
+> >> Fixes: 0f8975ec4db2 ("mm: soft-dirty bits for user memory changes tracking")
+> > 
+> > Targeting a backport down to 2013 when nothing could wrong in practice
+> > with page_mapcount sounds backwards and unnecessarily risky.
+> > 
+> > In theory it was already broken and in theory
+> > 09854ba94c6aad7886996bfbee2530b3d8a7f4f4 is absolutely perfect and the
+> > previous code of 2013 is completely wrong, but in practice the code
+> > from 2013 worked perfectly until Aug 21 2020.
+> 
+> Well… If you consider the bug that Will recently fixed [1], then soft-dirty
+> was broken (for a different, yet related reason) since 0758cd830494
+> ("asm-generic/tlb: avoid potential double flush”).
+> 
+> This is not to say that I argue that the patch should be backported to 2013,
+> just to say that memory corruption bugs can be unnoticed.
+> 
+> [1] https://patchwork.kernel.org/project/linux-mm/patch/20201210121110.10094-2-will@kernel.org/
+
+Is this a fix or a cleanup?
+
+The above is precisely what I said earlier that tlb_gather had no
+reason to stay in clear_refs and it had to use inc_tlb_flush_pending
+as mprotect, but it's not a fix? Is it? I suggested it as a pure
+cleanup. So again no backport required. The commit says fix this but
+it means "clean this up".
+
+Now there are plenty of bugs can go unnoticed for decades, including
+dirtycow and the very bug that allowed the fork child to attack the
+parent with vmsplice that ultimately motivated the
+page_mapcount->page_count in do_wp_page in Aug 2020.
+
+Now let's take another example:
+7066f0f933a1fd707bb38781866657769cff7efc which also was found by
+source review only and never happened in practice, and unlike dirtycow
+and the vmsplice attack on parent was not reproducible even at will
+after it was found (even then it wouldn't be reproducible
+exploitable). So you can take 7066f0f933a1fd707bb38781866657769cff7efc
+as the example of theoretical issue that might still crash the kernel
+if unlucky. So before 7066f0f933a1fd707bb38781866657769cff7efc, things
+worked by luck but not reliably so.
+
+How are all those above relevant here?
+
+In my view none of the above is relevant.
+
+As I already stated this specific issue, for both uffd-wp and
+clear_refs wasn't even a theoretical bug before 2020 Aug, it is not
+like 7066f0f933a1fd707bb38781866657769cff7efc, and it's not like
+https://patchwork.kernel.org/project/linux-mm/patch/20201210121110.10094-2-will@kernel.org/
+which appears a pure cleanup and doesn't need backporting to any
+tree.
+
+The uffd-wp clear_refs corruption mathematically could not happen
+before Aug 2020, it worked by luck too, but unlike
+7066f0f933a1fd707bb38781866657769cff7efc reliably so.
+
+Philosophically I obviously agree the bug originated in 2013, but the
+stable trees don't feel research material that would care about such a
+intellectual detail.
+
+So setting a Fixes back to 2013 that would go mess with all stable
+tree by actively backporting a performance regressions to clear_refs
+that can break runtime performance to fix a philosophical issue that
+isn't even a theoretical issue, doesn't sound ideal to me.
+
+> To summarize my action items based your (and others) feedback on both
+> patches:
+> 
+> 1. I will break the first patch into two different patches, one with the
+> “optimization” for write-unprotect, based on your feedback. It will not
+> be backported.
 >
-> We are not guaranteed the locking environment that would prevent
-> dentry getting renamed right under us.  And it's possible for
-> old long name to be freed after rename, leading to UAF here.
+> 2. I will try to add a patch to avoid TLB flushes on
+> userfaultfd-writeunprotect. It will also not be backported.
 
-This whole thing isn't important enough to get the dentry lock. It's
-more of a hint than anything else.
+I think 1 and 2 above could be in the same patch. Mixing an uffd-wp optimization with the
+actual fix the memory corruption wasn't ideal, but doing the same
+optimization to both wrprotect and un-wrprotect in the same patch
+sounds ideal. The commit explanation would be identical and it can be
+de-duplicated this way.
 
-Why isn't the fix to just use READ_ONCE() of the name pointer, and do
-it under RCU?
+I'd suggest to coordinate with Peter on that, since I wasn't planning
+to work on this if somebody else offered to do it.
 
-That's what dentry_name() does for the much more complex case of
-actually even following parent data for a depth up to 4, much less
-just a single name.
+> 3. Let me know if you want me to use your version of testing
+> mm_tlb_flush_pending() and conditionally flushing, wait for new version fro
+> you or Peter or to go with taking mmap_lock for write.
 
-So instead of
+Yes, as you suggested, I'm trying to clean it up and send a new
+version.
 
-                       spin_lock(&dentry->d_lock);
-                       audit_log_untrustedstring(ab, dentry->d_name.name);
-                       spin_unlock(&dentry->d_lock);
+Ultimately my view is there are an huge number of cases where
+mmap_write_lock or some other heavy lock that will require
+occasionally to block on I/O is beyond impossible not to take. Even
+speculative page faults only attack the low hanging anon memory and
+there's still MADV_DONTNEED/FREE and other stuff that may have to run
+in parallel with UFFDIO_WRITEPROTECT and clear_refs, not just page
+faults.
 
-why not
+As a reminder: the only case when modifying the vmas is allowed under
+mmap_read_lock (I already tried once to make it safer by adding
+READ_ONCE/WRITE_ONCE but wasn't merged see
+https://www.spinics.net/lists/linux-mm/msg173420.html), is when
+updating vm_end/vm_start in growsdown/up, where the vma is extended
+down or up in the page fault under only mmap_read_lock.
 
-                       rcu_read_lock();
-                       audit_log_untrustedstring(ab,
-READ_ONCE(dentry->d_name.name));
-                       rcu_read_unlock();
+I'm doing all I can to document and make it more explicit the
+complexity we deal with in the code (as well as reducing the gcc
+dependency in emitting atomic writes to update vm_end/vm_start, as we
+should do in ptes as well in theory). As you may notice in the
+feedback from the above submission not all even realized that we're
+modifying vmas already under mmap_read_lock. So it'd be great to get
+help to merge that READ_ONCE/WRITE_ONCE cleanup that is still valid
+and pending for merge but it needs forward porting.
 
-which looks a lot more in line with the other dentry path functions.
+This one, for both soft dirty and uffd_wrprotect, is a walk in the
+park to optimize in comparison to the vma modifications.
 
-Maybe even have this as part of fs/d_path.c and try to get rid of
-magic internal dentry name knowledge from the audit code?
+From my point of view in fact, doing the tlb flush or the wait on the
+atomic to be released, does not increase kernel complexity compared to
+what we had until now.
 
-                  Linus
+I think we already had this complexity before Aug 2020, but we didn't
+realize it, and that's why thing then broke in clear_refs in Aug 2020
+because of an unrelated change that finally exposed the complexity.
+
+By handling the race so that we stop depending on an undocumented
+page_mapcount dependency, we won't be increasing complexity, we'll be
+merely documenting the complexity we already had to begin with, so
+that it'll be less likely to bite us again in the future if it's
+handled explicitly.
+
+Thanks,
+Andrea
+
