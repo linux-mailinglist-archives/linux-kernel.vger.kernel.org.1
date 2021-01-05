@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C382EB20F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581D02EB206
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730761AbhAESGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:06:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51361 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730743AbhAESGr (ORCPT
+        id S1730260AbhAESGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726890AbhAESGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:06:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609869920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 5 Jan 2021 13:06:02 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3983C061793;
+        Tue,  5 Jan 2021 10:05:21 -0800 (PST)
+Date:   Tue, 05 Jan 2021 18:05:18 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1609869919;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UESOViXeUqqgxTdJOAvu5P6aSrx26z1BgEX3o3McZLI=;
-        b=gK+EbbmoXYwl0CHUhBOylcDh+3rzbaCuvnZRg0d1qhkEeG+VgWaVxpYSt3A1NQjgv96nLt
-        am5CoOraNs2OZ+QKvXOHDT/dr92FMnsECaHlH9deUO2EElrxu+st7mknHZ9xkEwnAkFGZO
-        x0pBhPgPyNusRsOKyF/tusGvNACb1YY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-wVG8_QOEOE2lzpYxfpzJkw-1; Tue, 05 Jan 2021 13:05:18 -0500
-X-MC-Unique: wVG8_QOEOE2lzpYxfpzJkw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B4A984A5E0;
-        Tue,  5 Jan 2021 18:05:16 +0000 (UTC)
-Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C1A5D1F46F;
-        Tue,  5 Jan 2021 18:05:13 +0000 (UTC)
-Subject: Re: [PATCH 1/6] mm: migrate: do not migrate HugeTLB page whose
- refcount is one
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        hillf.zj@alibaba-inc.com,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        ak@linux.intel.com, yongjun_wei@trendmicro.com.cn, mhocko@suse.cz,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210104065843.5658-1-songmuchun@bytedance.com>
- <d81664e1-bde0-4dcb-f602-6eb201ceada0@redhat.com>
- <CAHbLzko4BH6GOJsz33NEbwLTxJQJxVHH3qLzHzoM1LycT=ccbg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <e6eb5ffa-403a-7012-db7e-f2e5a015f6de@redhat.com>
-Date:   Tue, 5 Jan 2021 19:05:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        bh=9+v5mLEInRf1Dnm3NFSWVVN0dQUTBpU53ZdB5qcd5go=;
+        b=yRTSFzAgucekhdmIxAVfE9Z5stKMuJTjQ+cWziwmtYHvfbz5wf6Qo54Tqlps8BxtRq1dcS
+        Z2RvC7DjBWaRzz1fQMPZv6klT9iagqBfdWQ1Dpgnau8nfq6vZm03K3GpOjVI1PfBoOLJgH
+        n9HvtwCfEpV2G1Bl1tvtf5c9AQEbWa+tLauTa0ZOa3WAPbmYC1/cLkN0fGYYVfjjTynZ57
+        5Amx0uX3/C+jcQQ0JCyLbaEE45boF2fs4vPEzc/Lrc7BIAWbyd35QnGhnwftX3vE7WFfNi
+        CJSWbRadFHhlGagGAfe1qt7Akxk7zjC27N+G1V+mbqbDFrq0GuijZhqPpE67gg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1609869919;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9+v5mLEInRf1Dnm3NFSWVVN0dQUTBpU53ZdB5qcd5go=;
+        b=rmqPYYRHdzarDpnRbZsFd9ZyUJNif435XwpGFR1NBUfGcq7QsiWhI0l3YI88PCOn8K9s5x
+        8UcSaQL8nQu75lDw==
+From:   "tip-bot2 for Peter Gonda" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/sev-es: Fix SEV-ES OUT/IN immediate opcode vc handling
+Cc:     Peter Gonda <pgonda@google.com>, Borislav Petkov <bp@suse.de>,
+        David Rientjes <rientjes@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210105163311.221490-1-pgonda@google.com>
+References: <20210105163311.221490-1-pgonda@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzko4BH6GOJsz33NEbwLTxJQJxVHH3qLzHzoM1LycT=ccbg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <160986991879.414.1361812669618654392.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.01.21 19:04, Yang Shi wrote:
-> On Tue, Jan 5, 2021 at 8:58 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 04.01.21 07:58, Muchun Song wrote:
->>> If the refcount is one when it is migrated, it means that the page
->>> was freed from under us. So we are done and do not need to migrate.
->>>
->>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->>> ---
->>>  mm/migrate.c | 6 ++++++
->>>  1 file changed, 6 insertions(+)
->>>
->>> diff --git a/mm/migrate.c b/mm/migrate.c
->>> index 4385f2fb5d18..a6631c4eb6a6 100644
->>> --- a/mm/migrate.c
->>> +++ b/mm/migrate.c
->>> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
->>>               return -ENOSYS;
->>>       }
->>>
->>> +     if (page_count(hpage) == 1) {
->>> +             /* page was freed from under us. So we are done. */
->>> +             putback_active_hugepage(hpage);
->>> +             return MIGRATEPAGE_SUCCESS;
->>> +     }
->>> +
->>>       new_hpage = get_new_page(hpage, private);
->>>       if (!new_hpage)
->>>               return -ENOMEM;
->>>
->>
->> This series seems to fix quite some important cases (thanks). Do we want
->> to cc stable some/all?
-> 
-> For this particular one, I don't think so IMHO. It is an optimization
-> rather than a bug fix.
+The following commit has been merged into the x86/urgent branch of tip:
 
-I'm rather referring to the actual fixes (I received no cover letter so
-I picked the first patch in the series)
+Commit-ID:     a8f7e08a81708920a928664a865208fdf451c49f
+Gitweb:        https://git.kernel.org/tip/a8f7e08a81708920a928664a865208fdf451c49f
+Author:        Peter Gonda <pgonda@google.com>
+AuthorDate:    Tue, 05 Jan 2021 08:33:11 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 05 Jan 2021 18:55:00 +01:00
 
+x86/sev-es: Fix SEV-ES OUT/IN immediate opcode vc handling
 
--- 
-Thanks,
+The IN and OUT instructions with port address as an immediate operand
+only use an 8-bit immediate (imm8). The current VC handler uses the
+entire 32-bit immediate value but these instructions only set the first
+bytes.
 
-David / dhildenb
+Cast the operand to an u8 for that.
 
+ [ bp: Massage commit message. ]
+
+Fixes: 25189d08e5168 ("x86/sev-es: Add support for handling IOIO exceptions")
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: David Rientjes <rientjes@google.com>
+Link: https://lkml.kernel.org/r/20210105163311.221490-1-pgonda@google.com
+---
+ arch/x86/kernel/sev-es-shared.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
+index 7d04b35..cdc04d0 100644
+--- a/arch/x86/kernel/sev-es-shared.c
++++ b/arch/x86/kernel/sev-es-shared.c
+@@ -305,14 +305,14 @@ static enum es_result vc_ioio_exitinfo(struct es_em_ctxt *ctxt, u64 *exitinfo)
+ 	case 0xe4:
+ 	case 0xe5:
+ 		*exitinfo |= IOIO_TYPE_IN;
+-		*exitinfo |= (u64)insn->immediate.value << 16;
++		*exitinfo |= (u8)insn->immediate.value << 16;
+ 		break;
+ 
+ 	/* OUT immediate opcodes */
+ 	case 0xe6:
+ 	case 0xe7:
+ 		*exitinfo |= IOIO_TYPE_OUT;
+-		*exitinfo |= (u64)insn->immediate.value << 16;
++		*exitinfo |= (u8)insn->immediate.value << 16;
+ 		break;
+ 
+ 	/* IN register opcodes */
