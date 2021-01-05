@@ -2,126 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C132EAC20
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F692EAC36
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730116AbhAENoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:44:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726076AbhAENoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:44:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DFD222BE9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 13:43:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609854214;
-        bh=EiuoZfhXsqgKt5omLL6GGtbH9zsizSgQXK7RGIvfpkk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mC+Xo8YbPCV+2rl6EA8BrpjyZIcJirSwv5a1LKmf7iCBWXRHNSyMRJLqRBkcYDKsY
-         tIf8T3f5YIqad2P3A5k3wjACrntdny7rlzk7cOd88QiEeUiikNVxYjirlkxE+wD7Rs
-         h7ULwFKKaf73POnaGEQyPVhqKnjIIx1nfGWHQgv0fdUmELhK5OQEEuZMPBxVrWWRFS
-         ouzXsPnC9S6l+wKvztYQt4n/IbV6vAVTLs25PobNRshU11zP2zIAEcJiKBnlYggVzO
-         Kvqpcv2CJiPDKuzfITyPPXGAayxrhH2WErKQ8AkEaF/J3RtTLDn6ve/fVt0UNXqeOM
-         dufk1cG434H9g==
-Received: by mail-ot1-f54.google.com with SMTP id i6so29301442otr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:43:34 -0800 (PST)
-X-Gm-Message-State: AOAM5334+k2feDL1ZpcPtDnlOUcFXHJyJ7tkvsGbZJeFHOPhOjfFTzXH
-        Q0Qn18pBUlNpOwtyOBwRlUgS4ZfX9FmXlbNoCdA=
-X-Google-Smtp-Source: ABdhPJzO01xuMyg90ioZEwJ1xUG44ShymQlC2JBZNSSKovRByhT+UIeWN7gbxD3FYJPhvU28mpdriKAGBKxdzLErsMo=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr58181727ots.251.1609854213337;
- Tue, 05 Jan 2021 05:43:33 -0800 (PST)
+        id S1730484AbhAENpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:45:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730222AbhAENpa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:45:30 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177A6C06179E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 05:44:30 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id t16so36240039wra.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:44:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MXWwO3xQMpsZXQIjSZeQSg/sLrhlY0LSBGkxq2KXeMs=;
+        b=qghb7Qegw2BRCYZjH32sXzyp9c3+eJc0vVu8Js8hrvKyMj2PjLP+g10K9+8yx8nP1J
+         y/JWW/8u4HaIo5N6CpWEUBYHRfCX9jEL2Se+HKIdl5XV+iwRXcgkcaJ/KBXWud3iA10q
+         mcRVC8dw03LVbdO1DM2L7nmIe301zmu8AEhE7s+brBqFS/2YfT4XI5j9/YAOz2H5JTwJ
+         sM+E9rmONSyRN7rjXRAh9JP2ImmMQjE2rxm0g3fpLCnhZSsMi5LwPtuCExZmp/0Yg5VQ
+         FN0V0OZiJciQTxKBZrQCufNgIBqHWwL4wE1f+kh9ETvn5qjoBI5pyV09kSA754eN9h+6
+         P+KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MXWwO3xQMpsZXQIjSZeQSg/sLrhlY0LSBGkxq2KXeMs=;
+        b=suEOsTwP8zZKUN2wMOuHgpKhjgzcKk/8OdCp5omiZN5oiGXNh3I4XmHYeNH6EGtHIM
+         WFQszmKc8yFR+6+wArIl4MulWwKt2fX+Gz40nUsI2rY9ls0prJ17o0WduJftQWZHikUW
+         G1UAnJc/oDXYnH2bWUIunX9QMcx/vQbWoKh/vZQqg4I5gsuecH+1/tkWaxBYmFII5h+4
+         nZLRMJ78+Bkg/BeU6rIXgugk6CW/mID95kVwQrw7a6XerhAZeAp0do1I8VnJsdvLIqci
+         nrqFl/+yyxOuin2IGQIIMqekATHpVyLuuEo2eHdr4PJPzuP1GPhmgooJLXeXxHdDjkJN
+         VRsg==
+X-Gm-Message-State: AOAM530FqaZgeKkwUBra/VxzFMULG54JflnD7KhVJ8JWoMrpnPFoodDi
+        Az+nQPgYhpvL5n22VP8FQwlwvQ==
+X-Google-Smtp-Source: ABdhPJybClqZS9KiB1ynCk/1tI9yl/cX6elGdTHsSDJ5TqLRsPoeYtviJgcO2KLU+PiVPw3GoOxVhw==
+X-Received: by 2002:a5d:4307:: with SMTP id h7mr85638796wrq.353.1609854268850;
+        Tue, 05 Jan 2021 05:44:28 -0800 (PST)
+Received: from localhost.localdomain (pop.92-184-112-247.mobile.abo.orange.fr. [92.184.112.247])
+        by smtp.gmail.com with ESMTPSA id h9sm93873772wre.24.2021.01.05.05.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 05:44:28 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-rtc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH] rtc: s5m: use devm_i2c_new_dummy_device()
+Date:   Tue,  5 Jan 2021 14:44:24 +0100
+Message-Id: <20210105134424.30632-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-References: <20210103135257.3611821-1-arnd@kernel.org> <3c19a5d5-8883-f917-a96a-f51bb188d115@perex.cz>
- <s5hble491zu.wl-tiwai@suse.de>
-In-Reply-To: <s5hble491zu.wl-tiwai@suse.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 5 Jan 2021 14:43:17 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1FZSfzu3TA6VMhqP+3H5OD3+BhH5W=vVYEkL+ExHqpMQ@mail.gmail.com>
-Message-ID: <CAK8P3a1FZSfzu3TA6VMhqP+3H5OD3+BhH5W=vVYEkL+ExHqpMQ@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        sound-open-firmware@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 4:05 PM Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 04 Jan 2021 16:00:05 +0100, Jaroslav Kysela wrote:
-> >
-> > Dne 03. 01. 21 v 14:52 Arnd Bergmann napsal(a):
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > The sof-pci-dev driver fails to link when built into the kernel
-> > > and CONFIG_SND_INTEL_DSP_CONFIG is set to =m:
-> > >
-> > > arm-linux-gnueabi-ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
-> > > sof-pci-dev.c:(.text+0x1c): undefined reference to `snd_intel_dsp_driver_probe'
-> > >
-> > > All other drivers using this interface already use a 'select
-> > > SND_INTEL_DSP_CONFIG' statement to force the it to be present, so it
-> > > seems reasonable to do the same here.
-> > >
-> > > The stub implementation in the header makes the problem harder to find,
-> > > as it avoids the link error when SND_INTEL_DSP_CONFIG is completely
-> > > disabled, without any obvious upsides. Remove these stubs to make it
-> > > clearer that the driver is in fact needed here.
-> > >
-> > > Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > ---
-> > >  include/sound/intel-dsp-config.h | 17 -----------------
-> > >  sound/soc/sof/Kconfig            |  2 ++
-> > >  2 files changed, 2 insertions(+), 17 deletions(-)
-> > >
-> > > diff --git a/include/sound/intel-dsp-config.h b/include/sound/intel-dsp-config.h
-> > > index d4609077c258..94667e870029 100644
-> > > --- a/include/sound/intel-dsp-config.h
-> > > +++ b/include/sound/intel-dsp-config.h
-> > > @@ -18,24 +18,7 @@ enum {
-> > >     SND_INTEL_DSP_DRIVER_LAST = SND_INTEL_DSP_DRIVER_SOF
-> > >  };
-> > >
-> > > -#if IS_ENABLED(CONFIG_SND_INTEL_DSP_CONFIG)
-> >
-> > The SOF drivers selects the DSP config code only when required (for specific
-> > platforms - see sound/soc/sof/intel/Kconfig).
-> >
-> > It seems that the above if should be modified as:
-> >
-> > #if IS_BUILDIN(CONFIG_SND_INTEL_DSP_CONFIG) || (defined(MODULE) &&
-> > IS_MODULE(CONFIG_SND_INTEL_DSP_CONFIG))
-> >
-> > So the buildin drivers which do not require the DSP config probe can be
-> > compiled without this dependency.
->
-> As I wrote in another post, a part of the problem is that SOF PCI and
-> ACPI drivers call snd_intel_dsp_driver_probe() unconditionally, even
-> if no Intel driver is bound.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Makes sense. Is there an existing Kconfig that could be used to
-decide whether the drivers use SND_INTEL_DSP_CONFIG or not?
-Could it be part of the device specific driver_data?
+Use the managed variant of i2c_new_dummy_device() to shrink code and
+remove the goto label.
 
-According to sof_pci_ids[], all PCI IDs are Intel specific, but I can't
-tell which ones need the DSP config.
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/rtc/rtc-s5m.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
-> So even if changing like the above (or
-> better to use IS_REACHABLE() macro) works around the issue, the call
-> pattern needs to be reconsidered.
+diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
+index eb9dde4095a9..3432c6213b4c 100644
+--- a/drivers/rtc/rtc-s5m.c
++++ b/drivers/rtc/rtc-s5m.c
+@@ -760,7 +760,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	info->i2c = i2c_new_dummy_device(s5m87xx->i2c->adapter, RTC_I2C_ADDR);
++	info->i2c = devm_i2c_new_dummy_device(&pdev->dev, s5m87xx->i2c->adapter,
++					      RTC_I2C_ADDR);
+ 	if (IS_ERR(info->i2c)) {
+ 		dev_err(&pdev->dev, "Failed to allocate I2C for RTC\n");
+ 		return PTR_ERR(info->i2c);
+@@ -768,10 +769,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+ 
+ 	info->regmap = devm_regmap_init_i2c(info->i2c, regmap_cfg);
+ 	if (IS_ERR(info->regmap)) {
+-		ret = PTR_ERR(info->regmap);
+ 		dev_err(&pdev->dev, "Failed to allocate RTC register map: %d\n",
+-				ret);
+-		goto err;
++			ret);
++		return PTR_ERR(info->regmap);
+ 	}
+ 
+ 	info->dev = &pdev->dev;
+@@ -781,10 +781,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+ 	if (s5m87xx->irq_data) {
+ 		info->irq = regmap_irq_get_virq(s5m87xx->irq_data, alarm_irq);
+ 		if (info->irq <= 0) {
+-			ret = -EINVAL;
+ 			dev_err(&pdev->dev, "Failed to get virtual IRQ %d\n",
+ 				alarm_irq);
+-			goto err;
++			return -EINVAL;
+ 		}
+ 	}
+ 
+@@ -797,10 +796,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+ 	info->rtc_dev = devm_rtc_device_register(&pdev->dev, "s5m-rtc",
+ 						 &s5m_rtc_ops, THIS_MODULE);
+ 
+-	if (IS_ERR(info->rtc_dev)) {
+-		ret = PTR_ERR(info->rtc_dev);
+-		goto err;
+-	}
++	if (IS_ERR(info->rtc_dev))
++		return PTR_ERR(info->rtc_dev);
+ 
+ 	if (!info->irq) {
+ 		dev_info(&pdev->dev, "Alarm IRQ not available\n");
+@@ -813,15 +810,10 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
+ 			info->irq, ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	return 0;
+-
+-err:
+-	i2c_unregister_device(info->i2c);
+-
+-	return ret;
+ }
+ 
+ static int s5m_rtc_remove(struct platform_device *pdev)
+-- 
+2.29.1
 
-If the callers are fixed to address this, then I would expect the
-IS_REACHABLE() or IS_ENABLED() to no longer be needed
-either.
-
-       Arnd
