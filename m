@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D242EAB60
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810082EAB62
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730410AbhAENCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:02:00 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:47075 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbhAENB6 (ORCPT
+        id S1730457AbhAENDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:03:11 -0500
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:38219 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbhAENDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:01:58 -0500
-Received: by mail-io1-f72.google.com with SMTP id a2so13874931iod.13
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:01:42 -0800 (PST)
+        Tue, 5 Jan 2021 08:03:10 -0500
+Received: by mail-lf1-f43.google.com with SMTP id h205so72347070lfd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:02:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ru5bjWzHIyRK6ZRwLgZl3qBHXsr7G9Z+i9Dvu4uenWc=;
-        b=FsVxK6bK/V0tAz7Fv51KSUbwoW/FmglebUg2IBKCLgN/DDn5n5yfQVJp0qfQaMuvQ5
-         jDB7lL6qVK1kO46D/y/TKQ10+P8AK+UHz3wNtPsXJhSWA282yvg/DgOyVbfTKN5c1Pxz
-         CXmrjHPQ4WctI+rgfUDBqFmaDwAy1qQzTr5Nj1yW6BpV3xLYhC7as0QOp0aOcIMnpsWN
-         n9R2ztEVY4/wn+UODyLZHe3Gs3TF5v8vOXEchyiXXTaKyu0Ccyh/MRslS9hFbVMKWg4n
-         TzQtI2QgyGsVtAN2U20miJtwc5pL+tC6awYflnYTUBTqwIzt9Qvbg+8bsjzvAPSoS0kn
-         0XWA==
-X-Gm-Message-State: AOAM533g2KEI24kURulqWoMmlU23AmOaNmBt32UAjUnPRG4iEMyYw+Sj
-        a/OExbMBMwG4VcB1dWEWEe4+Kzm3lDU3l/FAmXLCFhupVxor
-X-Google-Smtp-Source: ABdhPJyofSzreOMWmIpdQM3UdYWqIn4pvNONeOx8NKjjsHQTu404iL2qhxZHzn1yjb+vIpXIB1phN2pTmte+ML7V93JcD0QySR7J
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=tgtQajNQtfGYZ522ipxCMSmjS3sbg3o75nQBCkrCxw4=;
+        b=l5s3U54LQgi628fF8GpsiZCPImN64kVI4Njmg9UYIDWdmbwT3b+GCVyEm9ZhGEwZMn
+         LTT+k/y6rs+tEflLKtYhyy4O0m5Su54Imr1LrKumJoDCqcRSdhYFZzjfOLWepgl/bJfJ
+         eMMd64PPyv38nxWVf0xyR9Q8ukLsITxRb6jaLbHkI7n5YZKnv71PvnYc83Id19bz36j2
+         UdmCrSuM+XJ4mb4pK7NATJivFyJcqII8zYcvGLDZzoXY1zxA1y9GYxFn6QRIcUbGV02N
+         ZKmIWScgtMQqjbbb+f833zm3WQpRTGG633O5GTfmpyGtoy3N4woMg3V3zK1DDTqqmHyo
+         +2EQ==
+X-Gm-Message-State: AOAM531OatPuKvngybesOGr/FwL0aLNhtl2dQglNt2C7sNhHc0TqGSdr
+        hB5s4S5IwRYLeJg3UDfckjM=
+X-Google-Smtp-Source: ABdhPJwe+5igMUcL8ocUrqrmBqm+c66kGs/6TnkYR28GbWR8hggd0RGnu23wggvD2YTT4u3FN4l/pQ==
+X-Received: by 2002:a05:6512:3328:: with SMTP id l8mr37212970lfe.185.1609851748355;
+        Tue, 05 Jan 2021 05:02:28 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id c24sm6951959lfc.277.2021.01.05.05.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 05:02:27 -0800 (PST)
+Date:   Tue, 5 Jan 2021 15:02:21 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: ROHM bd7xxxx: Do not depend on parent driver data
+Message-ID: <20210105130221.GA3438042@localhost.localdomain>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cec3:: with SMTP id z3mr73680933ilq.256.1609851677209;
- Tue, 05 Jan 2021 05:01:17 -0800 (PST)
-Date:   Tue, 05 Jan 2021 05:01:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005c7c1005b826cd7f@google.com>
-Subject: UBSAN: division-overflow in netem_enqueue
-From:   syzbot <syzbot+c32f013ef7b11871dba6@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, stephen@networkplumber.org,
-        syzkaller-bugs@googlegroups.com, xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The ROHM PMIC regulator drivers only need the regmap pointer from
+the parent device. Regmap can be obtained via dev_get_regmap()
+so do not require parent to populate driver data for that.
 
-syzbot found the following issue on:
-
-HEAD commit:    3db1a3fa Merge tag 'staging-5.11-rc1' of git://git.kernel...
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1213cf60d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a6e6725884106332
-dashboard link: https://syzkaller.appspot.com/bug?extid=c32f013ef7b11871dba6
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c32f013ef7b11871dba6@syzkaller.appspotmail.com
-
-================================================================================
-UBSAN: division-overflow in net/sched/sch_netem.c:516:27
-division by zero
-CPU: 0 PID: 12279 Comm: syz-executor.4 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_divrem_overflow.cold+0x7c/0xd0 lib/ubsan.c:252
- netem_enqueue.cold+0x17/0xbc net/sched/sch_netem.c:516
- netem_enqueue+0x2095/0x34e0 net/sched/sch_netem.c:483
- __dev_xmit_skb net/core/dev.c:3789 [inline]
- __dev_queue_xmit+0x19ec/0x2ef0 net/core/dev.c:4101
- __netlink_deliver_tap_skb net/netlink/af_netlink.c:295 [inline]
- __netlink_deliver_tap net/netlink/af_netlink.c:313 [inline]
- netlink_deliver_tap+0x9cb/0xc00 net/netlink/af_netlink.c:326
- netlink_deliver_tap_kernel net/netlink/af_netlink.c:335 [inline]
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x5e5/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x907/0xe10 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xd3/0x130 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e219
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f735a38fc68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
-RDX: 0000000020000000 RSI: 0000000020000200 RDI: 0000000000000003
-RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffecded56ef R14: 00007f735a3909c0 R15: 000000000119bf8c
-================================================================================
-
-
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/regulator/bd70528-regulator.c | 11 +++--------
+ drivers/regulator/bd71828-regulator.c | 13 ++++---------
+ 2 files changed, 7 insertions(+), 17 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/regulator/bd70528-regulator.c b/drivers/regulator/bd70528-regulator.c
+index d44adf7e875a..1f5f9482b209 100644
+--- a/drivers/regulator/bd70528-regulator.c
++++ b/drivers/regulator/bd70528-regulator.c
+@@ -244,19 +244,14 @@ static const struct regulator_desc bd70528_desc[] = {
+ 
+ static int bd70528_probe(struct platform_device *pdev)
+ {
+-	struct rohm_regmap_dev *bd70528;
+ 	int i;
+ 	struct regulator_config config = {
+ 		.dev = pdev->dev.parent,
+ 	};
+ 
+-	bd70528 = dev_get_drvdata(pdev->dev.parent);
+-	if (!bd70528) {
+-		dev_err(&pdev->dev, "No MFD driver data\n");
+-		return -EINVAL;
+-	}
+-
+-	config.regmap = bd70528->regmap;
++	config.regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	if (!config.regmap)
++		return -ENODEV;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(bd70528_desc); i++) {
+ 		struct regulator_dev *rdev;
+diff --git a/drivers/regulator/bd71828-regulator.c b/drivers/regulator/bd71828-regulator.c
+index 85c0b9000963..6b12e963ed8f 100644
+--- a/drivers/regulator/bd71828-regulator.c
++++ b/drivers/regulator/bd71828-regulator.c
+@@ -749,19 +749,14 @@ static const struct bd71828_regulator_data bd71828_rdata[] = {
+ 
+ static int bd71828_probe(struct platform_device *pdev)
+ {
+-	struct rohm_regmap_dev *bd71828;
+ 	int i, j, ret;
+ 	struct regulator_config config = {
+ 		.dev = pdev->dev.parent,
+ 	};
+ 
+-	bd71828 = dev_get_drvdata(pdev->dev.parent);
+-	if (!bd71828) {
+-		dev_err(&pdev->dev, "No MFD driver data\n");
+-		return -EINVAL;
+-	}
+-
+-	config.regmap = bd71828->regmap;
++	config.regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	if (!config.regmap)
++		return -ENODEV;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(bd71828_rdata); i++) {
+ 		struct regulator_dev *rdev;
+@@ -777,7 +772,7 @@ static int bd71828_probe(struct platform_device *pdev)
+ 			return PTR_ERR(rdev);
+ 		}
+ 		for (j = 0; j < rd->reg_init_amnt; j++) {
+-			ret = regmap_update_bits(bd71828->regmap,
++			ret = regmap_update_bits(config.regmap,
+ 						 rd->reg_inits[j].reg,
+ 						 rd->reg_inits[j].mask,
+ 						 rd->reg_inits[j].val);
+
+base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
