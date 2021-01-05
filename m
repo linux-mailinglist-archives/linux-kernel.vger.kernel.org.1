@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0B12EA532
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6647C2EA53C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbhAEGHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 01:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
+        id S1728268AbhAEGIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 01:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbhAEGHX (ORCPT
+        with ESMTP id S1726519AbhAEGIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 01:07:23 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB52C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 22:06:42 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id 11so28304645oty.9
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 22:06:42 -0800 (PST)
+        Tue, 5 Jan 2021 01:08:39 -0500
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A509DC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 22:07:59 -0800 (PST)
+Received: by mail-oo1-xc32.google.com with SMTP id k7so6847398ooa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 22:07:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ov1BW2jrSogHx5WA00oTYWFFaSTIwzL0Iboyie4P7Y8=;
-        b=roTsOt06ODtm2Dtfmfti80j17SR6WoOHQzAXza1AVJFv0RlEEUrfzSllVUihzl11sf
-         K+JCZIM4/LVlZ3YDxUkTEMCEo2hnFY4IApRjQTrbs/mERB+WsOkNsiQb87B1TsVTjwbU
-         9BM2sKmEgmIanlxwaYg54TuXPdJ0apJrPwtokcsmQqnSyu5hRP2IxEed6gGOXV8BDPU8
-         UQCfOjXwnqHJLQIIRgSDqjvUiO/8VFu5jtlxHnJR8uqctxDeMNJrQcGaDkenXMMu5WsJ
-         emV4C+fFFCGPKBD40yEpLBKiykwYOTOD9AQC9FLhyEOXVS4zkErgPWkgUiAz6qIuzQW7
-         TeAA==
+        bh=tYMDLoLvQMkoSCOCUG01TjHV9H9vp7Q/U9Rhw7lDbYg=;
+        b=Pyg7kBgL9jNM1u+xQ1FZOZK90jvc3D2mkhoNz+wDBSLX23waqr5s4PwHme7iNogrpC
+         QAWZwnVbV9C93RhwySziY45zQzJtRwr/84g5BGhVCHxqg97JdrlQJ5lRNXHRGxladj75
+         3CkaxQOW2ga/pDMP94hKGadshNrsAYc/37I3ScT78yYxHd+bQ2R0wMykdkw1je7Mzxn/
+         BYPPmnAG0QMCZx/w5vI8BVQoyE73MnO82IA4pTG17UhaTZ0FVchcTPw4QAmb54WixgpV
+         k6lok4QsGH4qKOj651LpMVnwPsPAbTsj7IlBYg5Eg0ZYTZdoN6V1uYWgKhWTSi7Caec2
+         EpWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ov1BW2jrSogHx5WA00oTYWFFaSTIwzL0Iboyie4P7Y8=;
-        b=jj7dZye34k4n3OTwjDWQLc3ohgsmG4nvq9eFDmlqce213TfnUJLtyv7pkay4wj772q
-         Kaidy9VCcQZKz6cGjraGyk1jyyJzwXYwmNSnj5LV6XY5R/o+UTi8pPi1uyGnBuXj1oZC
-         W8JQLFk+4Ex+zAV198toZw0WX7cZRMwLl3ENKOSBaZb8196jly3qyA9b/D/TcEifX5Sn
-         Oa6lBA00cmkJgbo22lKCwJAJXuMfesDniHfAYAokzR6WLi6GyHlT+fO18EdIu9fGWIB/
-         Z6go+BQ5vEr/O5WFJ41Gysm+ijCX+3Hsti2y2zzHvSggApNQUqfjUr1KKTbolrgiMv51
-         xskA==
-X-Gm-Message-State: AOAM53049ue5PmHiiLBg55KEuOPtU8Eo3V3FCW5D2cUiKxeMlIMFSDks
-        qlGjlOH8EQk+jcBfo+l1NpUOWDcL4EzaUPSEta0=
-X-Google-Smtp-Source: ABdhPJx1sYejqOWDEftFo2DD5+NPWs9P44vt9wG+wHnleaHZI+B+5/LZG4X6vzLI0xmShKtdYqGMCw==
-X-Received: by 2002:a05:6830:10d2:: with SMTP id z18mr54715963oto.90.1609826802321;
-        Mon, 04 Jan 2021 22:06:42 -0800 (PST)
+        bh=tYMDLoLvQMkoSCOCUG01TjHV9H9vp7Q/U9Rhw7lDbYg=;
+        b=FxNPxXaTNiMGyYB1soXhjEiqXmC2HM0HbsalF0i0A178YM4VDLXunsJtPtqNCVireD
+         sI/jzDUS7uKNg/XUtOnIBW8jCcznQNzoiMzsYj2OzXEoJxYPygH4K7ZFRz1j4ce/fIkF
+         xgLVM7L9jKb0j3G/c3+F8QyApWtR5a52sNc4lE6kyDTsilIGdpcS2kSh1X+gBD99c/ox
+         EiNdpQ3F432GL3k3bIp0h6ANCAdOcShgbuSAnXAFfC/sejDTQMVi/WCDafHfR0Nt9y/e
+         OHQnN1khXE2t1Xmabz1IhjGBL+zxhzDSjQu8M0YTENJXNVVZXb6+7Rsl0G+3a5ROsyhO
+         1foQ==
+X-Gm-Message-State: AOAM532dkPWloJp4oSbdVmipPyemAVidqGthauaCKZc2AxeU5NTx0r1p
+        hU7FWSwqpP/DwJEfcY7gOPA52g==
+X-Google-Smtp-Source: ABdhPJx9C3sbA7NIuX8WPOVcneT3/1b/wpENscgstsZ5DxtgtOwOjeaq+9c7TBi3KK13Ss+19itOqw==
+X-Received: by 2002:a4a:751a:: with SMTP id j26mr51645638ooc.68.1609826879057;
+        Mon, 04 Jan 2021 22:07:59 -0800 (PST)
 Received: from [192.168.17.50] (CableLink-189-219-73-83.Hosts.InterCable.net. [189.219.73.83])
-        by smtp.gmail.com with ESMTPSA id x20sm13675682oov.33.2021.01.04.22.06.41
+        by smtp.gmail.com with ESMTPSA id i25sm13866630oto.56.2021.01.04.22.07.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 22:06:41 -0800 (PST)
-Subject: Re: [PATCH 5.10 00/63] 5.10.5-rc1 review
+        Mon, 04 Jan 2021 22:07:58 -0800 (PST)
+Subject: Re: [PATCH 5.4 00/47] 5.4.87-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     shuah@kernel.org, patches@kernelci.org,
         lkft-triage@lists.linaro.org, stable@vger.kernel.org,
         pavel@denx.de, akpm@linux-foundation.org,
         torvalds@linux-foundation.org, linux@roeck-us.net
-References: <20210104155708.800470590@linuxfoundation.org>
+References: <20210104155705.740576914@linuxfoundation.org>
 From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <d13294c0-84b8-38ee-d92c-4025b30929b9@linaro.org>
-Date:   Tue, 5 Jan 2021 00:06:40 -0600
+Message-ID: <7322d006-5030-cd2c-2114-a49efdfe1d8e@linaro.org>
+Date:   Tue, 5 Jan 2021 00:07:57 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
+In-Reply-To: <20210104155705.740576914@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -74,8 +74,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hello!
 
 On 1/4/21 9:56 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.5 release.
-> There are 63 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 5.4.87 release.
+> There are 47 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -83,9 +83,9 @@ On 1/4/21 9:56 AM, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.5-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.87-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
 > and the diffstat can be found below.
 > 
 > thanks,
@@ -100,18 +100,18 @@ Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 Summary
 ------------------------------------------------------------------------
 
-kernel: 5.10.5-rc1
+kernel: 5.4.87-rc1
 git repo: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-git branch: linux-5.10.y
-git commit: 18347c4f07814f2fef15f3b1518b6b8a88bae75a
-git describe: v5.10.4-64-g18347c4f0781
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.4-64-g18347c4f0781
+git branch: linux-5.4.y
+git commit: 01678c93fa9e3da85a53deb1510c25fdcd2e5d6d
+git describe: v5.4.86-48-g01678c93fa9e
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.86-48-g01678c93fa9e
 
-No regressions (compared to build v5.10.4)
+No regressions (compared to build v5.4.86)
 
-No fixes (compared to build v5.10.4)
+No fixes (compared to build v5.4.86)
 
-Ran 53801 total tests in the following environments and test suites.
+Ran 48522 total tests in the following environments and test suites.
 
 Environments
 --------------
@@ -130,7 +130,6 @@ Environments
 - qemu-arm-clang
 - qemu-arm64-clang
 - qemu-arm64-kasan
-- qemu-i386-clang
 - qemu-x86_64-clang
 - qemu-x86_64-kasan
 - qemu-x86_64-kcsan
@@ -157,7 +156,6 @@ Test Suites
 * kselftest
 * kselftest-vsyscall-mode-native
 * kselftest-vsyscall-mode-none
-* kunit
 * kvm-unit-tests
 * libhugetlbfs
 * linux-log-parser
