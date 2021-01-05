@@ -2,89 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6CF2EA7C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624F02EA7BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbhAEJjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:39:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24250 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727979AbhAEJjJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:39:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609839463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S1728045AbhAEJil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:38:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42126 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727260AbhAEJik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:38:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609839473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=JB+GylXXOsFZLBr2+X54dETYWqMoYOjPzlJVxocFmj4=;
-        b=ci5ly8OJFjKLEx/+EtTdaUJXIm8Am/QgtHAYqoaISOE/dFwnLU9v1q778yl+PyMu1KRW0J
-        1HnuFI1dNJLhIm6luZsAVH6uWHAue1ya+4prVpQn2nsx5/bsHztrdRZcdvH9E2kPAy0oac
-        QrDuZ/1/o9qbq1VWNvYNR2ltvCp5RKM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-kFtvb3y5P3arydwG1Nq_Jw-1; Tue, 05 Jan 2021 04:37:41 -0500
-X-MC-Unique: kFtvb3y5P3arydwG1Nq_Jw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B1821966320;
-        Tue,  5 Jan 2021 09:37:40 +0000 (UTC)
-Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A3A9722C1;
-        Tue,  5 Jan 2021 09:37:39 +0000 (UTC)
-Subject: Re: uninitialized pmem struct pages
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210104100323.GC13207@dhcp22.suse.cz>
- <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
- <CAPcyv4h6mdKrwpqXfO0e_=sKjB-pY5KbP9ii+tQyFsK5bPkb=A@mail.gmail.com>
- <b5109800-a860-0f82-3e45-c0768cb1b038@redhat.com>
- <CAPcyv4jATooJTwXXGBvPrcCu57Ldt=6aBSEzaSqbwcHmczVaZg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <dd49a67a-109e-b5c1-2010-572587fe4ed6@redhat.com>
-Date:   Tue, 5 Jan 2021 10:37:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        bh=Oj2LtwzNk4kVeZ7p1DI+PAGVBBVlsl2cCgQyscMgUtI=;
+        b=lcHFSZG/tHxYjJB4y3+ouF+b/MLQNIA9GI+Jn4p9bHowfeA7NNPcpXz/THrvfeT+CRPJoY
+        Y2YlCDgPDkj5EAnxnRH96eN8TUtyb1BSeXQAexmljutJjxf2VhP4lSA8efnhMulA+8rW7T
+        moMw8wJm1s/W1uPfLgymk6esFqN5+yE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8CF39AD0B;
+        Tue,  5 Jan 2021 09:37:53 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 10:37:52 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Laurence Oberman <loberman@redhat.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: 3cc3ef45b2: RIP:version_proc_show
+Message-ID: <X/QzcCw5/3xD4lgC@alley>
+References: <20201210160038.31441-8-pmladek@suse.com>
+ <20210103150323.GE30643@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4jATooJTwXXGBvPrcCu57Ldt=6aBSEzaSqbwcHmczVaZg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210103150323.GE30643@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Yeah, obviously the first one. Being able to add+use PMEM is more
->> important than using each and every last MB of main memory.
->>
->> I wonder if we can just stop adding any system RAM like
->>
->> [     Memory Section    ]
->> [ RAM ] [      Hole     ]
->>
->> When there could be the possibility that the hole might actually be
->> PMEM. (e.g., with CONFIG_ZONE_DEVICE and it being the last section in a
->> sequence of sections, not just a tiny hole)
+On Sun 2021-01-03 23:03:23, kernel test robot wrote:
 > 
-> I like the simplicity of it... I worry that the capacity loss
-> regression is easy to notice by looking at the output of free(1) from
-> one kernel to the next and someone screams.
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 3cc3ef45b202a39814f9ce979495d4cc130c2998 ("[PATCH v2 7/7] Test softlockup")
+> url: https://github.com/0day-ci/linux/commits/Petr-Mladek/watchdog-softlockup-Report-overall-time-and-some-cleanup/20201211-004447
+> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git a2f5ea9e314ba6778f885c805c921e9362ec0420
+> 
+> in testcase: will-it-scale
+> version: will-it-scale-x86_64-b695a1b-1_20201217
+> with following parameters:
+> 
+> 	nr_task: 16
+> 	mode: thread
+> 	test: dup1
+> 	cpufreq_governor: performance
+> 	ucode: 0x2006a08
+> 
+> test-description: Will It Scale takes a testcase and runs it from 1 through to n parallel copies to see if the testcase will scale. It builds both a process and threads based test in order to see any differences between the two.
+> test-url: https://github.com/antonblanchard/will-it-scale
+> 
+> 
+> on test machine: 104 threads Skylake with 192G memory
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> +----------------+------------+------------+
+> |                | 36cc821a5c | 3cc3ef45b2 |
+> +----------------+------------+------------+
+> | boot_successes | 7          | 0          |
+> +----------------+------------+------------+
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> 
+> [   71.563905] watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [perf:2556]
+> [   71.567713] watchdog: BUG: soft lockup - CPU#89 stuck for 26s! [perf:2463]
+> [   71.812209] CPU: 1 PID: 2556 Comm: perf Not tainted 5.10.0-rc7-g3cc3ef45b202 #1
+> [   71.814904]  acpi_power_meter ip_tables
+> [   71.817550] Hardware name: Intel Corporation S2600BT/S2600BT, BIOS SE5C620.86B.1D.01.0147.121320181755 12/13/2018
+> [   71.817559] RIP: 0010:version_proc_show+0x2f/0x6a
 
-Well, you can always make it configurable and then simply fail to add
-PMEM later if impossible (trying to sub-section hot-add into early
-section). It's in the hands of the sysadmin then ("max out system ram"
-vs. "support any PMEM device that could eventually be there at
-runtime"). Distros would go for the second.
+JFYI, it works as expected.
 
-I agree that it's not optimal, but sometimes simplicity has to win.
+This patch is not intended for upstream. It allows to test the
+rest of the patchset easily. And it causes exactly the above mentioned
+softlockup.
 
--- 
-Thanks,
-
-David / dhildenb
-
+Best Regards,
+Petr
