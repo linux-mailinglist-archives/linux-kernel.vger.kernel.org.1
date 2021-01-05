@@ -2,201 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35D02EB687
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 00:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C556D2EB67A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 00:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727618AbhAEXuZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Jan 2021 18:50:25 -0500
-Received: from aposti.net ([89.234.176.197]:33650 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726171AbhAEXuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 18:50:22 -0500
-Date:   Tue, 05 Jan 2021 23:49:18 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] dt-bindings: Add missing array size constraints
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-usb@vger.kernel.org, linux-iio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
-        dri-devel@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-ide@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        netdev@vger.kernel.org, linux-clk@vger.kernel.org,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Marc Zyngier <maz@kernel.org>, linux-riscv@lists.infradead.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, linux-media@vger.kernel.org,
-        Ohad Ben-Cohen <ohad@wizery.com>, linux-pm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Cameron <jic23@kernel.org>, s-anna@ti.com
-Message-Id: <6IJHMQ.19OBCF0P9Z4X2@crapouillou.net>
-In-Reply-To: <20210105232729.GA2864340@xps15>
-References: <20210104230253.2805217-1-robh@kernel.org>
-        <20210105232729.GA2864340@xps15>
+        id S1726694AbhAEXuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 18:50:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726215AbhAEXuS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 18:50:18 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29777C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 15:49:38 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id 4so616635plk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 15:49:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=whc2U5gu5zwKqW7Z1BCd12zYqBfLakFsyLK0IzuWzP8=;
+        b=RSYt8aWDjjxG6udavDTUY19W7lHxifCi8492IhANNtipB66/pAWN4AWXhxP+tKJjzj
+         NAt6EZe3Zc49FsV8iZqgXQYgJhiyWJGhH2M+FU4a+hrkDhxcKleEPmDxC/dbtEfz1xUt
+         pCyc5Z1UjpWdgzYdXymMqBg4/iQss87JLDkc3GBlPcvhXS8glcjpf6uYvbc7H/RMDvu/
+         CFA768T2YFosp2nuzRHipHGrkO/FmljBtLCcy/EAk49H2eGvFNq+g4C5l8ia3GpKPluR
+         YyRYxluQN/pzIVaPgOrg0Aeix4rrrI4HowMzphddpO2W6+g+v6qwwgOxUHV7jgOodkf9
+         oyDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=whc2U5gu5zwKqW7Z1BCd12zYqBfLakFsyLK0IzuWzP8=;
+        b=InyyujnaGFSWnXF9XMTIIbuAWv9wmXSbvxfpUx50+JsXyckbaOsNosdjcDbOGOEk4O
+         VkMmuF8u3M3ZAJgK3GRrySKKNDJz1vlsDIkL3IKfMC887oCCpZHwxKtyduXdlzNMRhzy
+         W6lT//hD7O8SU9ryKf10X0YNbKS8EjKOQHuzH/iMV6fMbDAY28HwCtKu1QvxDMWWfE07
+         w0xH2hOC1J23r5BNkq8plQjpW8/n987h81MLGJA72WWQeE2Ipt1b16b9rDgnTO0MBf41
+         Q9N61Dyua6UcX2kyRX6SRg4hL3KO0bpcylRiLRxfvQQOPBiPv6xobe6QS0ZyszhcmvG1
+         z41w==
+X-Gm-Message-State: AOAM530bgNln7mRCGne9wYXTe9ExzBaw/kswFHZV48ft8flWxkEmsCEm
+        ZWeOL8zQM1LxIBLc7ileWSPzW/N/PAk=
+X-Google-Smtp-Source: ABdhPJwL704VReSw6jgByR6yvKwqCTroZ13+bPc6/tofWoYLUxpY5mR6MoNopmnlk4n6HDG6LBwFJA==
+X-Received: by 2002:a17:902:b693:b029:da:e92c:fc23 with SMTP id c19-20020a170902b693b02900dae92cfc23mr1531675pls.55.1609890577267;
+        Tue, 05 Jan 2021 15:49:37 -0800 (PST)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:a6ae:11ff:fe18:6ce2])
+        by smtp.gmail.com with ESMTPSA id 8sm285724pgx.48.2021.01.05.15.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 15:49:36 -0800 (PST)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: [PATCH v2] f2fs: fix null page reference in redirty_blocks
+Date:   Wed,  6 Jan 2021 08:49:28 +0900
+Message-Id: <20210105234928.1598326-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Daeho Jeong <daehojeong@google.com>
 
-Le mar. 5 janv. 2021 à 16:27, Mathieu Poirier 
-<mathieu.poirier@linaro.org> a écrit :
-> Adding Suman and Paul - guys please have a look.
-> 
-> On Mon, Jan 04, 2021 at 04:02:53PM -0700, Rob Herring wrote:
->>  DT properties which can have multiple entries need to specify what 
->> the
->>  entries are and define how many entries there can be. In the case of
->>  only a single entry, just 'maxItems: 1' is sufficient.
->> 
->>  Add the missing entry constraints. These were found with a modified
->>  meta-schema. Unfortunately, there are a few cases where the size
->>  constraints are not defined such as common bindings, so the 
->> meta-schema
->>  can't be part of the normal checks.
->> 
->>  Cc: Jens Axboe <axboe@kernel.dk>
->>  Cc: Stephen Boyd <sboyd@kernel.org>
->>  Cc: Thierry Reding <thierry.reding@gmail.com>
->>  Cc: MyungJoo Ham <myungjoo.ham@samsung.com>
->>  Cc: Chanwoo Choi <cw00.choi@samsung.com>
->>  Cc: Linus Walleij <linus.walleij@linaro.org>
->>  Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>  Cc: Jonathan Cameron <jic23@kernel.org>
->>  Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
->>  Cc: Thomas Gleixner <tglx@linutronix.de>
->>  Cc: Marc Zyngier <maz@kernel.org>
->>  Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
->>  Cc: Chen-Yu Tsai <wens@csie.org>
->>  Cc: Ulf Hansson <ulf.hansson@linaro.org>
->>  Cc: "David S. Miller" <davem@davemloft.net>
->>  Cc: Jakub Kicinski <kuba@kernel.org>
->>  Cc: Sebastian Reichel <sre@kernel.org>
->>  Cc: Ohad Ben-Cohen <ohad@wizery.com>
->>  Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
->>  Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>  Signed-off-by: Rob Herring <robh@kernel.org>
->>  ---
->>  Cc: linux-arm-kernel@lists.infradead.org
->>  Cc: linux-ide@vger.kernel.org
->>  Cc: linux-clk@vger.kernel.org
->>  Cc: dri-devel@lists.freedesktop.org
->>  Cc: linux-gpio@vger.kernel.org
->>  Cc: linux-iio@vger.kernel.org
->>  Cc: linux-input@vger.kernel.org
->>  Cc: linux-media@vger.kernel.org
->>  Cc: linux-mmc@vger.kernel.org
->>  Cc: netdev@vger.kernel.org
->>  Cc: linux-pm@vger.kernel.org
->>  Cc: linux-remoteproc@vger.kernel.org
->>  Cc: linux-riscv@lists.infradead.org
->>  Cc: linux-serial@vger.kernel.org
->>  Cc: alsa-devel@alsa-project.org
->>  Cc: linux-spi@vger.kernel.org
->>  Cc: linux-usb@vger.kernel.org
-> 
->> 
->>  ---
->>   .../socionext,uniphier-system-cache.yaml      |  4 ++--
->>   .../bindings/ata/sata_highbank.yaml           |  1 +
->>   .../bindings/clock/canaan,k210-clk.yaml       |  1 +
->>   .../bindings/display/brcm,bcm2711-hdmi.yaml   |  1 +
->>   .../bindings/display/brcm,bcm2835-hdmi.yaml   |  1 +
->>   .../display/panel/jdi,lt070me05000.yaml       |  1 +
->>   .../display/panel/mantix,mlaf057we51-x.yaml   |  3 ++-
->>   .../display/panel/novatek,nt36672a.yaml       |  1 +
->>   .../devicetree/bindings/dsp/fsl,dsp.yaml      |  2 +-
->>   .../devicetree/bindings/eeprom/at25.yaml      |  3 +--
->>   .../bindings/extcon/extcon-ptn5150.yaml       |  2 ++
->>   .../bindings/gpio/gpio-pca95xx.yaml           |  1 +
->>   .../bindings/iio/adc/adi,ad7768-1.yaml        |  2 ++
->>   .../bindings/iio/adc/aspeed,ast2400-adc.yaml  |  1 +
->>   .../bindings/iio/adc/lltc,ltc2496.yaml        |  2 +-
->>   .../bindings/iio/adc/qcom,spmi-vadc.yaml      |  1 +
->>   .../bindings/iio/adc/st,stm32-adc.yaml        |  2 ++
->>   .../iio/magnetometer/asahi-kasei,ak8975.yaml  |  1 +
->>   .../iio/potentiometer/adi,ad5272.yaml         |  1 +
->>   .../input/touchscreen/elan,elants_i2c.yaml    |  1 +
->>   .../interrupt-controller/fsl,intmux.yaml      |  2 +-
->>   .../interrupt-controller/st,stm32-exti.yaml   |  2 ++
->>   .../allwinner,sun4i-a10-video-engine.yaml     |  1 +
->>   .../devicetree/bindings/media/i2c/imx219.yaml |  1 +
->>   .../memory-controllers/exynos-srom.yaml       |  2 ++
->>   .../bindings/misc/fsl,dpaa2-console.yaml      |  1 +
->>   .../bindings/mmc/mmc-controller.yaml          |  2 ++
->>   .../bindings/net/ti,k3-am654-cpsw-nuss.yaml   |  1 +
->>   .../bindings/net/ti,k3-am654-cpts.yaml        |  1 +
->>   .../phy/allwinner,sun4i-a10-usb-phy.yaml      |  2 ++
->>   .../phy/allwinner,sun50i-a64-usb-phy.yaml     |  2 ++
->>   .../phy/allwinner,sun50i-h6-usb-phy.yaml      |  2 ++
->>   .../phy/allwinner,sun5i-a13-usb-phy.yaml      |  2 ++
->>   .../phy/allwinner,sun6i-a31-usb-phy.yaml      |  2 ++
->>   .../phy/allwinner,sun8i-a23-usb-phy.yaml      |  2 ++
->>   .../phy/allwinner,sun8i-a83t-usb-phy.yaml     |  2 ++
->>   .../phy/allwinner,sun8i-h3-usb-phy.yaml       |  2 ++
->>   .../phy/allwinner,sun8i-r40-usb-phy.yaml      |  2 ++
->>   .../phy/allwinner,sun8i-v3s-usb-phy.yaml      |  2 ++
->>   .../phy/allwinner,sun9i-a80-usb-phy.yaml      | 19 
->> ++++++++-----------
->>   .../phy/socionext,uniphier-ahci-phy.yaml      |  2 +-
->>   .../phy/socionext,uniphier-pcie-phy.yaml      |  2 +-
->>   .../phy/socionext,uniphier-usb3hs-phy.yaml    |  2 +-
->>   .../phy/socionext,uniphier-usb3ss-phy.yaml    |  2 +-
->>   .../bindings/phy/ti,phy-gmii-sel.yaml         |  2 +-
->>   .../pinctrl/aspeed,ast2400-pinctrl.yaml       |  3 +--
->>   .../pinctrl/aspeed,ast2500-pinctrl.yaml       |  4 ++--
->>   .../bindings/power/supply/bq25980.yaml        |  1 +
->>   .../bindings/remoteproc/ingenic,vpu.yaml      |  2 +-
->>   .../remoteproc/ti,omap-remoteproc.yaml        |  3 +++
->>   .../bindings/riscv/sifive-l2-cache.yaml       |  1 +
->>   .../bindings/serial/renesas,hscif.yaml        |  2 ++
->>   .../bindings/serial/renesas,scif.yaml         |  2 ++
->>   .../bindings/serial/renesas,scifa.yaml        |  2 ++
->>   .../bindings/serial/renesas,scifb.yaml        |  2 ++
->>   .../sound/allwinner,sun4i-a10-codec.yaml      |  1 +
->>   .../bindings/sound/google,sc7180-trogdor.yaml |  1 +
->>   .../bindings/sound/samsung,aries-wm8994.yaml  |  3 +++
->>   .../bindings/sound/samsung,midas-audio.yaml   |  2 ++
->>   .../devicetree/bindings/sound/tas2562.yaml    |  2 ++
->>   .../devicetree/bindings/sound/tas2770.yaml    |  2 ++
->>   .../bindings/sound/tlv320adcx140.yaml         |  1 +
->>   .../devicetree/bindings/spi/renesas,rspi.yaml |  2 ++
->>   .../devicetree/bindings/sram/sram.yaml        |  2 ++
->>   .../timer/allwinner,sun4i-a10-timer.yaml      |  2 ++
->>   .../bindings/timer/intel,ixp4xx-timer.yaml    |  2 +-
->>   .../usb/allwinner,sun4i-a10-musb.yaml         |  2 +-
->>   .../bindings/usb/brcm,usb-pinmap.yaml         |  3 +++
->>   .../devicetree/bindings/usb/generic-ehci.yaml |  1 +
->>   .../devicetree/bindings/usb/generic-ohci.yaml |  1 +
->>   .../devicetree/bindings/usb/ingenic,musb.yaml |  2 +-
->>   .../bindings/usb/renesas,usbhs.yaml           |  1 +
->>   .../devicetree/bindings/usb/ti,j721e-usb.yaml |  3 ++-
->>   .../bindings/usb/ti,keystone-dwc3.yaml        |  2 ++
->>   74 files changed, 118 insertions(+), 33 deletions(-)
+By Colin's static analysis, we found out there is a null page reference
+under low memory situation in redirty_blocks. I've made the page finding
+loop stop immediately and return an error not to cause further memory
+pressure when we run into a failure to find a page under low memory
+condition.
 
-For bindings/remoteproc/ingenic,vpu.yaml and 
-devicetree/bindings/usb/ingenic,musb.yaml:
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 5fdb322ff2c2 ("f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE")
+---
+v2: changed error value and quit the page finding loop immediately
+    when error occurs
+---
+ fs/f2fs/file.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
-
-Cheers,
--Paul
-
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 9e5275716be8..d27173c24391 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -4060,8 +4060,10 @@ static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
+ 
+ 	for (i = 0; i < page_len; i++, redirty_idx++) {
+ 		page = find_lock_page(mapping, redirty_idx);
+-		if (!page)
+-			ret = -ENOENT;
++		if (!page) {
++			ret = -ENOMEM;
++			break;
++		}
+ 		set_page_dirty(page);
+ 		f2fs_put_page(page, 1);
+ 		f2fs_put_page(page, 0);
+-- 
+2.29.2.729.g45daf8777d-goog
 
