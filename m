@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0692EA36C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399FC2EA372
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbhAECmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbhAECmA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:42:00 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E389DC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 18:41:19 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id w18so26977958iot.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 18:41:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GcsC8lp175/RSBxacvCaBbl9ftLmbMsKR9zwf/ifHzg=;
-        b=SLcWXupBZc8HMhM+91+H2UlhEKcVksMphM8CG5/Q8gZUo+5VUDuaot1HWck411dKSg
-         ZZnjYMTwChIQ7K5y12TC4tkiEb4MWdUgtQ/gcByWPsQNRASSKNkA4mfNib1b6AJVQHdV
-         yH0WuXERXI/dWbY3dRON7zFZzTZzuVctpNQvzxZbP/N2TElc7PWkOvZj6tTOnV5fBWC2
-         OGUl5aepNIk831CToxOMhRH4YwcbKZiRFX+v/30037mtbBz1XzDj0yFoQNU7Ky6a+CW7
-         6eL9FFBzCTtp0bG7T3MBBeiwyCDErQnn64tbf3GFU79aSayd9iU0H/IMyUbnQUPHMoDF
-         n65w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GcsC8lp175/RSBxacvCaBbl9ftLmbMsKR9zwf/ifHzg=;
-        b=Y3NtVgY6idY9KBccs8mCBw5Hf1S+JjjL140/CkzoThc9cCmXkMguLpyCf4utG9wMvr
-         xwJz+nYz4ih7dye0grb9aQEz3FAu6ZhBO7rXHZdOxdyszaOwU0j8/cBv5N3l/qixRot0
-         BfthFk+u7tnN0Dx+b1fLRk/KKn4GAAFJVJy8oW7Zuvl/oU+5KEgFBoOY6YYBqUljJ+Vf
-         pXr1XnEo2h8cb3r83UVPQvOsz1xaucxX3Zux68PB+Kp1zsVWfZ1nFuaJeIg0aSzTbAvO
-         0dYF2jfG7NhkTM5xzOJ6NzN65q7dHiDIB+60ZlMFXgjhyy2wn2Bh2fR9vkTN4weuBcbo
-         r5oA==
-X-Gm-Message-State: AOAM532CCJfn7XTHuAJjOYKHzWUkyrfejkVGRRrmf7REwCPk9BLsdhbx
-        ihg2RC2LDAZjcuQZVegjt5DKwI6YAsNexiBOVOc=
-X-Google-Smtp-Source: ABdhPJw098+0w73Etaf/YEk5an/KfZ2f4rdPkMsKtsXMfSj6cyHJh3/2cMtaNszffXADxcbvrsO7JyHT8MbZFVJQ+HI=
-X-Received: by 2002:a02:ccdc:: with SMTP id k28mr62694993jaq.137.1609814478958;
- Mon, 04 Jan 2021 18:41:18 -0800 (PST)
+        id S1727911AbhAECsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:48:00 -0500
+Received: from mga05.intel.com ([192.55.52.43]:19906 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726239AbhAECsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 21:48:00 -0500
+IronPort-SDR: v41PRKSodv2AniJ7BJ0/R1l+8yzIBEBrd/YpLnuzWRkZ4MUKQP6bDj1veEvfotRTNG83023rQC
+ 9DlCrdH4M8JQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="261805012"
+X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
+   d="scan'208";a="261805012"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 18:47:19 -0800
+IronPort-SDR: 6J7RaPnEGhExRe4I0EMLCZJOWXGABHQ9Yn/gnRN+UzkCyF6xm/oALLEkHtW+XP6uAmo1qjlVN6
+ RnR+nDU5x5Dg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
+   d="scan'208";a="349727292"
+Received: from ipsg-l-lixuzha.sh.intel.com (HELO ipsg-l-lixuzha) ([10.239.153.22])
+  by orsmga006.jf.intel.com with ESMTP; 04 Jan 2021 18:47:18 -0800
+Date:   Tue, 5 Jan 2021 10:42:50 +0800
+From:   "Zhang, Lixu" <lixu.zhang@intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, benjamin.tissoires@redhat.com
+Subject: Re: [PATCH 0/2] hid: intel-ish-hid: ipc: enable OOB support for EHL
+Message-ID: <20210105024250.GA63988@ipsg-l-lixuzha>
+References: <20201216063640.4086068-1-lixu.zhang@intel.com>
+ <nycvar.YFH.7.76.2101041612290.13752@cbobk.fhfr.pm>
+ <7430c8b52fd49ded844da06b51056cb490cd7cfe.camel@linux.intel.com>
 MIME-Version: 1.0
-References: <20201226025117.2770-1-jiangshanlai@gmail.com> <20201226025117.2770-4-jiangshanlai@gmail.com>
- <20210104135649.GO3021@hirez.programming.kicks-ass.net>
-In-Reply-To: <20210104135649.GO3021@hirez.programming.kicks-ass.net>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Tue, 5 Jan 2021 10:41:07 +0800
-Message-ID: <CAJhGHyB_MUHG8GGANcN9sQbjY7M5m8WPHQgXp-PmkGK481M5Tg@mail.gmail.com>
-Subject: Re: [PATCH -tip V3 3/8] workqueue: introduce wq_online_cpumask
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7430c8b52fd49ded844da06b51056cb490cd7cfe.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 9:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Sat, Dec 26, 2020 at 10:51:11AM +0800, Lai Jiangshan wrote:
-> > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> >
-> > wq_online_cpumask is the cached result of cpu_online_mask with the
-> > going-down cpu cleared.
->
-> You can't use cpu_active_mask ?
+On Mon, Jan 04, 2021 at 08:01:36AM -0800, Srinivas Pandruvada wrote:
+> On Mon, 2021-01-04 at 16:12 +0100, Jiri Kosina wrote:
+> > On Wed, 16 Dec 2020, Zhang Lixu wrote:
+> > 
+> > > The EHL (Elkhart Lake) based platforms provide a OOB (Out of band)
+> > > service, which allows wakup device when the system is in S5 (Soft-
+> > > Off
+> > > state). This OOB service can be enabled/disabled from BIOS
+> > > settings.
+> > > 
+> > > These two patches is to enable this feature for EHL platform.
+> > > 
+> > > We have tested these patches on both ISH platforms and EHL
+> > > platforms,
+> > > it works fine.
+> > > 
+> > > Zhang Lixu (2):
+> > >   hid: intel-ish-hid: ipc: finish power flow for EHL OOB
+> > >   hid: intel-ish-hid: ipc: Address EHL Sx resume issues
+> > > 
+> > >  drivers/hid/intel-ish-hid/ipc/hw-ish.h  |  1 +
+> > >  drivers/hid/intel-ish-hid/ipc/ipc.c     | 27 +++++++++++++
+> > >  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 54
+> > > ++++++++++++++++++++++++-
+> > >  3 files changed, 81 insertions(+), 1 deletion(-)
+> > 
+> > Srinivas, can I please get your Acked-by / Reviewed-by for this?
+> Acked on individual patches.
+> 
+> Thanks,
+> Srinivas
+> 
+> 
+> > Thanks,
+> > 
+> 
+> 
 
-
-When a cpu is going out:
-(cpu_active_mask is not protected by workqueue mutexs.)
-
-create_worker() for unbound pool  |  cpu offlining
-check cpu_active_mask             |
-                                  |  remove bit from cpu_active_mask
-                                  |  no cpu in pool->attrs->cpumask is active
-set pool->attrs->cpumask to worker|
-and hit the warning
-
-
-And when a cpu is onlining, there may be some workers which were just created
-after the workqueue hotplug callback is finished but before cpu_active_mask
-was updated. workqueue has not call back after cpu_active_mask updated and
-these workers' cpumask is not updated.
-
-For percpu workers, these problems can be handled with the help of
-POOL_DISASSOCIATED which is protected by workqueue mutexs and the
-help of sched/core.c which doesn't warn when per-cpu-kthread.
-
-For unbound workers, the way to handle it without using wq_online_cpumask
-is much more complex when a cpu is going out.
+Thanks.
