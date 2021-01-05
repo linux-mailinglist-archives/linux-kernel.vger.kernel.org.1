@@ -2,115 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820F82EB4DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B152EB4E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731454AbhAEV1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 16:27:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726020AbhAEV1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:27:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 728A322D5A;
-        Tue,  5 Jan 2021 21:26:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609881993;
-        bh=0h2EnmcGyrtAyDKIV/nV5AQlooTxVMooHJEnIT20PW8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u/P6hBRVV4mtIfq5IHmonZDv3B5ECo0nGBqlJG7qOAnFzlfARclH1h/hDjkWIYVFU
-         do1VpSx/FZSMNiZj6XOSEnuTDK2rWRX23n4VI3JC3meTguoPw608V8QBBbLsZ9ylyk
-         xLpNQ4Wi8hF9AN6bgrz7p/YrWEhk0MY0gJxzxy38kPn5Qr59src6NpisU6VjzUL0C0
-         JTgjMvFlnKfyUnCUjTmPNTNQsi9kCICkxR4N49YqDBOSUSuYq042ixIwnKhKIRCaH1
-         7vTOIqkS8HSgPv0X5kTuZ7Q2u9R82LsQkKy88HrMjewoD2lK1fnwMkOCD3tu4dGmiE
-         d6zUH5/3WvagA==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 589323C0C94; Tue,  5 Jan 2021 22:26:31 +0100 (CET)
-Date:   Tue, 5 Jan 2021 22:26:31 +0100
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Cc:     robh+dt@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dmurphy@ti.com
-Subject: Re: [PATCH v9 2/2] power: supply: bq256xx: Introduce the BQ256XX
- charger driver
-Message-ID: <20210105212631.2meujp37e5jqp7eu@earth.universe>
-References: <20210105202949.14677-1-r-rivera-matos@ti.com>
- <20210105202949.14677-3-r-rivera-matos@ti.com>
+        id S1731455AbhAEV3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 16:29:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726020AbhAEV3T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 16:29:19 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565F2C061574;
+        Tue,  5 Jan 2021 13:28:39 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id 186so862981qkj.3;
+        Tue, 05 Jan 2021 13:28:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DJIWST9KinNPbLnh2UPAjV8WC1wtmvyxVwRAyl2BJww=;
+        b=sanHFk+uTvDMG57iYABh3HT7B9zRIKEF/2fUBwEWBWsFSmwhWkUtmZxcvQIuo8z4S7
+         Ockj0axdFNytyXZvhNwk5/euFUetEitBRMgTriCuSVMofltmriC2TlL1GcgGmt8YR2XV
+         vtMipNauuCZNhAs1XEZEgCFetLSM3ywYG7PoQfJM7xjilDjgtnI/uUgTv5mJirQhx2K2
+         pNzdBzVXA4qNX/VCq/EH1unS2EfkZgKDOCafrDK9JrgxPFckI+uuT7gqM3p8UI7jaZrC
+         s39ma7dzY+rWHOiPpFQeTzLCvdUAIj4Aok/j7OTADmR9WTCLNq9Wrx4MezhYC5tkAm53
+         krPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=DJIWST9KinNPbLnh2UPAjV8WC1wtmvyxVwRAyl2BJww=;
+        b=D74/JgAICiXPkDKBjpJr0TslfTDGGE+EVUz/yk+ciPBhMjyY0UVvaJUYMO7bzDZ2UG
+         t/EA9318WUqtWLdQUOiMqEQeVxl83KQOiuD48i2TobG4BeeFONTbbRV7p29Aqry58D93
+         kUGCaeXjqx//3GWtQ6uk5k4GY+YFEklQxpssy++I/2IYONaXH1PvdKOiFW98WoFZNAeJ
+         RqrmMVEVLGYrwKzZKHJAeAgdp6XjvHS0A9ajgJtS5XLJIbwcn3/jJe2eBpXPVzhSmMkb
+         3ZVLpPkIb8GNubExa+OEbpF+eEIN1IPXz1wrwOb05+VDZkbkD12BEzSZQo6MH4nAyt78
+         0BBQ==
+X-Gm-Message-State: AOAM531cEQ0KJ3WAWEn2cgVIW6xbZv91KjJNWsSGcJN6spkFL2d1U2Fj
+        itSOUuDLtNAsJWIkO9wRbqY=
+X-Google-Smtp-Source: ABdhPJzCmxWSIbCTRP2czGY6AmjGDWFXM4tLgBxbVrhlBvsnr4dCXrwN3GzYheg5JmnBjNnsgazlwg==
+X-Received: by 2002:a05:620a:804:: with SMTP id s4mr1585343qks.158.1609882118489;
+        Tue, 05 Jan 2021 13:28:38 -0800 (PST)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id k7sm211427qtg.65.2021.01.05.13.28.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 13:28:37 -0800 (PST)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 5 Jan 2021 16:28:36 -0500
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] x86/mm: Remove duplicate definition of
+ _PAGE_PAT_LARGE
+Message-ID: <X/TaBK3AnKJCbI3n@rani.riverdale.lan>
+References: <13073a85-24c1-6efa-578b-54218d21f49d@amd.com>
+ <20201111160946.147341-1-nivedita@alum.mit.edu>
+ <20201111160946.147341-2-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3arhu4mpg74a7e7k"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210105202949.14677-3-r-rivera-matos@ti.com>
+In-Reply-To: <20201111160946.147341-2-nivedita@alum.mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---3arhu4mpg74a7e7k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, Jan 05, 2021 at 02:29:49PM -0600, Ricardo Rivera-Matos wrote:
-> The BQ256XX family of devices are highly integrated buck chargers
-> for single cell batteries.
->=20
-> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
->=20
-> v9 - resolves two warnings issued by kernel test robot
-
-changelog needs to be below --- btw.
-(so that git am does not pick it up :))
-
+On Wed, Nov 11, 2020 at 11:09:46AM -0500, Arvind Sankar wrote:
+> _PAGE_PAT_LARGE is already defined next to _PAGE_PAT. Remove the
+> duplicate.
+> 
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Fixes: 4efb56649132 ("x86/mm: Tabulate the page table encoding definitions")
 > ---
-> [...]
-> +	ret =3D bq256xx_parse_dt(bq, psy_cfg, dev);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to read device tree properties%d\n", ret);
-> +		return ret;
-> +	}
-> [...]
+>  arch/x86/include/asm/pgtable_types.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+> index 394757ee030a..f24d7ef8fffa 100644
+> --- a/arch/x86/include/asm/pgtable_types.h
+> +++ b/arch/x86/include/asm/pgtable_types.h
+> @@ -177,8 +177,6 @@ enum page_cache_mode {
+>  #define __pgprot(x)		((pgprot_t) { (x) } )
+>  #define __pg(x)			__pgprot(x)
+>  
+> -#define _PAGE_PAT_LARGE		(_AT(pteval_t, 1) << _PAGE_BIT_PAT_LARGE)
+> -
+>  #define PAGE_NONE	     __pg(   0|   0|   0|___A|   0|   0|   0|___G)
+>  #define PAGE_SHARED	     __pg(__PP|__RW|_USR|___A|__NX|   0|   0|   0)
+>  #define PAGE_SHARED_EXEC     __pg(__PP|__RW|_USR|___A|   0|   0|   0|   0)
+> -- 
+> 2.26.2
+> 
 
-If you want to change psy_cfg, you need to pass it by reference
-and not by value (i.e. use &psy_cfg here and a pointer as argument
-of bq256xx_parse_dt). Providing psy_cfg like this creates a copy
-of the struct.
-
-Did you runtime test this version? It should crash when accessing
-the properties because of psy_cfg.drv_data being NULL.
-
-> [...]
-> +	ret =3D bq256xx_power_supply_init(bq, psy_cfg, dev);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to register power supply\n");
-> +		return ret;
-> +	}
-
-Here it's also better to just provide the address of psy_cfg
-(but not strictly necessary).
-
--- Sebastian
-
---3arhu4mpg74a7e7k
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/02YQACgkQ2O7X88g7
-+prDHRAAkb4EPnHdqNjOJuOVDe8q+gjbcmkrmVCuG5XEroOtaDsIfsirdgRBasIl
-aKm98jle9WyUZcRMTpyPrTPwN9Vpkp7kk19cCrEhwHC3AVc8BQTN50mcJRSUNqNy
-4golBeaqv2p+h3DpNYLXFwbftwGmMkwv1X3KjveteDFTv6ERse8i6pmqKPB7cSQk
-ITUXloAM0gQh2FNdF+VTUUVDy8x+y+EyhGBSuPFYS+WQjSGVh8sM2xD5vEDSoEIb
-li3ZJEJh5hvUjESuZxmgoMVityw0GK0yPHRqFoLy3n6qx906MmwIYGbEmaLXKGBb
-yLUwf9UYKITTqUaqAps4OQc8hMvIWgMXJOUIU5naVrlCAJfFQexDXctMONngU+1X
-FKzHogqHTvTo6P63DM7uyY3xrBfOWOYwkdSqAfcn7Q44tJcme98ThPFMxRz4jYax
-YBqo3UO8OrkchhJO/3+WgyaMWL6vdL0RNXf5BjhibjHTfk0HEo+nU6TqBWGEW0Ev
-PenTSoiHMYVqwQ7End2OnNgw3Se8ziy/jwNRNMnNpKQoG67HVSqQh4eCPozMvJQm
-w4vh4WwoMKdBHSfOv3jB7YROmtTpkVGMaG8Ox99EEw4J397TeLQynifw2AMDZpXk
-g9dQ5LzDYhTLcaRdJazUxPbXKQ/AzpJn+hYl7Yd/vYwdy34Fk40=
-=2tBC
------END PGP SIGNATURE-----
-
---3arhu4mpg74a7e7k--
+Ping
