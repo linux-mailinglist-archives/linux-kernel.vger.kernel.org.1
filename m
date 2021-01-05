@@ -2,149 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 874822EB090
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:51:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013722EB091
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730019AbhAEQvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729518AbhAEQu6 (ORCPT
+        id S1730067AbhAEQvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:51:02 -0500
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:41590 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbhAEQvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:50:58 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5E6C061793;
-        Tue,  5 Jan 2021 08:50:17 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwpX3-0076tQ-14; Tue, 05 Jan 2021 16:50:05 +0000
-Date:   Tue, 5 Jan 2021 16:50:05 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v4] proc: Allow pid_revalidate() during LOOKUP_RCU
-Message-ID: <20210105165005.GV3579531@ZenIV.linux.org.uk>
-References: <20210104232123.31378-1-stephen.s.brennan@oracle.com>
- <20210105055935.GT3579531@ZenIV.linux.org.uk>
+        Tue, 5 Jan 2021 11:51:00 -0500
+Received: by mail-wr1-f49.google.com with SMTP id a12so36806572wrv.8;
+        Tue, 05 Jan 2021 08:50:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lLUIZPdhJyI7Ixe1qtwbiCba4gGFdHD+uUjfkPW5clI=;
+        b=mlSFb75gcH0Quf3SLa+zpnuruSCUXumOs8m1uHoZ8sj7FIGdCkUZbRmFw8VZvwCwDP
+         T7YmrTwN8v/DeFh/5gwOgVHHRRtZ9xa1Z45i+8Di0bUZ6llRsWUurS7a4aKl5ERMPFxg
+         PiMKSiJBvdai5BnkHgsiJQM0/y/V3mmZdW0qHS2+zP4280bYG10cYnurHKjvnIzzcheE
+         CM3wvPj6dYPBYMZHrhKrPpu13HbWDGmtUG2utQNXye4r2gKZVrN4nd17j0Oui6rhV/Jn
+         F9lsGEuBJBH1S/Xp5ZDrdcNCTsKm3qfePy55UF+qeAeps8PEB8p8g8b+pPVKkldLmZdr
+         Ez9g==
+X-Gm-Message-State: AOAM532/Tg7rmFZdHciqmHuJJtxhqLelym/gFRnMECBNKFFBdeiTS2uW
+        KueIZLSmBJLo5zxzFdD8hZ8=
+X-Google-Smtp-Source: ABdhPJy/Hyyj8Y7g0dIdMoqDktZiaibgVFmbH+5N6vJXk+TSz0iY9tEJviXtWH0lGLa9O0x5ozq+pg==
+X-Received: by 2002:adf:fb05:: with SMTP id c5mr458903wrr.69.1609865417392;
+        Tue, 05 Jan 2021 08:50:17 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id h9sm136927wme.11.2021.01.05.08.50.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 08:50:16 -0800 (PST)
+Date:   Tue, 5 Jan 2021 17:50:14 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-rtc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH] rtc: s5m: use devm_i2c_new_dummy_device()
+Message-ID: <20210105165014.GA20401@kozik-lap>
+References: <20210105134424.30632-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210105055935.GT3579531@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210105134424.30632-1-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 05:59:35AM +0000, Al Viro wrote:
-
-> Umm...  I'm rather worried about the side effect you are removing here -
-> you are suddenly exposing a bunch of methods in there to RCU mode.
-> E.g. is proc_pid_permission() safe with MAY_NOT_BLOCK in the mask?
-> generic_permission() call in there is fine, but has_pid_permission()
-> doesn't even see the mask.  Is that thing safe in RCU mode?  AFAICS,
-> this
-> static int selinux_ptrace_access_check(struct task_struct *child,
->                                      unsigned int mode)
-> {
->         u32 sid = current_sid();
->         u32 csid = task_sid(child);
+On Tue, Jan 05, 2021 at 02:44:24PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
->         if (mode & PTRACE_MODE_READ)
->                 return avc_has_perm(&selinux_state,
->                                     sid, csid, SECCLASS_FILE, FILE__READ, NULL);
+> Use the managed variant of i2c_new_dummy_device() to shrink code and
+> remove the goto label.
 > 
->         return avc_has_perm(&selinux_state,
->                             sid, csid, SECCLASS_PROCESS, PROCESS__PTRACE, NULL);
-> }
-> is reachable and IIRC avc_has_perm() should *NOT* be called in RCU mode.
-> If nothing else, audit handling needs care...
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  drivers/rtc/rtc-s5m.c | 24 ++++++++----------------
+>  1 file changed, 8 insertions(+), 16 deletions(-)
 > 
-> And LSM-related stuff is only a part of possible issues here.  It does need
-> a careful code audit - you are taking a bunch of methods into the conditions
-> they'd never been tested in.  ->permission(), ->get_link(), ->d_revalidate(),
-> ->d_hash() and ->d_compare() instances for objects that subtree.  The last
-> two are not there in case of anything in /proc/<pid>, but the first 3 very
-> much are.
+> diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
+> index eb9dde4095a9..3432c6213b4c 100644
+> --- a/drivers/rtc/rtc-s5m.c
+> +++ b/drivers/rtc/rtc-s5m.c
+> @@ -760,7 +760,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+>  		return -ENODEV;
+>  	}
+>  
+> -	info->i2c = i2c_new_dummy_device(s5m87xx->i2c->adapter, RTC_I2C_ADDR);
+> +	info->i2c = devm_i2c_new_dummy_device(&pdev->dev, s5m87xx->i2c->adapter,
+> +					      RTC_I2C_ADDR);
+>  	if (IS_ERR(info->i2c)) {
+>  		dev_err(&pdev->dev, "Failed to allocate I2C for RTC\n");
+>  		return PTR_ERR(info->i2c);
+> @@ -768,10 +769,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+>  
+>  	info->regmap = devm_regmap_init_i2c(info->i2c, regmap_cfg);
+>  	if (IS_ERR(info->regmap)) {
+> -		ret = PTR_ERR(info->regmap);
+>  		dev_err(&pdev->dev, "Failed to allocate RTC register map: %d\n",
+> -				ret);
+> -		goto err;
+> +			ret);
+> +		return PTR_ERR(info->regmap);
+>  	}
+>  
+>  	info->dev = &pdev->dev;
+> @@ -781,10 +781,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+>  	if (s5m87xx->irq_data) {
+>  		info->irq = regmap_irq_get_virq(s5m87xx->irq_data, alarm_irq);
+>  		if (info->irq <= 0) {
+> -			ret = -EINVAL;
+>  			dev_err(&pdev->dev, "Failed to get virtual IRQ %d\n",
+>  				alarm_irq);
+> -			goto err;
+> +			return -EINVAL;
+>  		}
+>  	}
+>  
+> @@ -797,10 +796,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+>  	info->rtc_dev = devm_rtc_device_register(&pdev->dev, "s5m-rtc",
+>  						 &s5m_rtc_ops, THIS_MODULE);
+>  
+> -	if (IS_ERR(info->rtc_dev)) {
+> -		ret = PTR_ERR(info->rtc_dev);
+> -		goto err;
+> -	}
+> +	if (IS_ERR(info->rtc_dev))
+> +		return PTR_ERR(info->rtc_dev);
+>  
+>  	if (!info->irq) {
+>  		dev_info(&pdev->dev, "Alarm IRQ not available\n");
+> @@ -813,15 +810,10 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+>  	if (ret < 0) {
+>  		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
+>  			info->irq, ret);
+> -		goto err;
+> +		return ret;
+>  	}
+>  
+>  	return 0;
+> -
+> -err:
+> -	i2c_unregister_device(info->i2c);
+> -
+> -	return ret;
+>  }
+>  
+>  static int s5m_rtc_remove(struct platform_device *pdev)
 
-FWIW, after looking through the selinux and smack I started to wonder whether
-we really need that "return -ECHILD rather than audit and fail" in case of
-->inode_permission().
+Unbind should OOPS now.
 
-AFAICS, the reason we need it is that dump_common_audit_data() is not safe
-in RCU mode with LSM_AUDIT_DATA_DENTRY and even more so - with
-LSM_AUDIT_DATA_INODE (d_find_alias() + dput() there, and dput() can bloody well
-block).
-
-LSM_AUDIT_DATA_DENTRY is easy to handle - wrap
-                audit_log_untrustedstring(ab, a->u.dentry->d_name.name);
-into grabbing/dropping a->u.dentry->d_lock and we are done.  And as for
-the LSM_AUDIT_DATA_INODE...  How about this:
-
-/*
- * Caller *MUST* hold rcu_read_lock() and be guaranteed that inode itself
- * will be around until that gets dropped.
- */
-struct dentry *d_find_alias_rcu(struct inode *inode)
-{
-	struct hlist_head *l = &inode->i_dentry;
-        struct dentry *de = NULL;
-
-	spin_lock(&inode->i_lock);
-	// ->i_dentry and ->i_rcu are colocated, but the latter won't be
-	// used without having I_FREEING set, which means no aliases left
-	if (inode->i_state & I_FREEING) {
-		spin_unlock(&inode->i_lock);
-		return NULL;
-	}
-	// we can safely access inode->i_dentry
-        if (hlist_empty(p)) {
-		spin_unlock(&inode->i_lock);
-		return NULL;
-	}
-	if (S_ISDIR(inode->i_mode)) {
-		de = hlist_entry(l->first, struct dentry, d_u.d_alias);
-	} else hlist_for_each_entry(de, l, d_u.d_alias) {
-		if (d_unhashed(de))
-			continue;
-		// hashed + nonrcu really shouldn't be possible
-		if (WARN_ON(READ_ONCE(de->d_flags) & DCACE_NONRCU))
-			continue;
-		break;
-	}
-	spin_unlock(&inode->i_lock);
-        return de;
-}
-
-and have
-        case LSM_AUDIT_DATA_INODE: {
-                struct dentry *dentry;
-                struct inode *inode;
-
-		rcu_read_lock();
-                inode = a->u.inode;
-                dentry = d_find_alias_rcu(inode);
-                if (dentry) {
-                        audit_log_format(ab, " name=");
-			spin_lock(&dentry->d_lock);
-                        audit_log_untrustedstring(ab,
-                                         dentry->d_name.name);
-			spin_unlock(&dentry->d_lock);
-                }
-                audit_log_format(ab, " dev=");
-                audit_log_untrustedstring(ab, inode->i_sb->s_id);
-                audit_log_format(ab, " ino=%lu", inode->i_ino);
-		rcu_read_unlock();
-                break;
-        }
-in dump_common_audit_data().  Would that be enough to stop bothering
-with the entire AVC_NONBLOCKING thing or is there anything else
-involved?
+Best regards,
+Krzysztof
