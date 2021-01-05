@@ -2,62 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E922EAC5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8710A2EAC85
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727148AbhAENxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:53:39 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:10390 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbhAENxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:53:38 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D9DSc61chz7QY0;
-        Tue,  5 Jan 2021 21:52:00 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Tue, 5 Jan 2021
- 21:52:44 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <linus.walleij@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH] =?UTF-8?q?pinctrl:=20nomadik:=20remove=20unused=20variabl?= =?UTF-8?q?e=20=E2=80=98wake=E2=80=99=20in=20nmk=5Fgpio=5Fdbg=5Fshow=5Fone?=
-Date:   Tue, 5 Jan 2021 22:04:20 +0800
-Message-ID: <20210105140420.55841-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.16.2.dirty
+        id S1729645AbhAEN6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:58:52 -0500
+Received: from gofer.mess.org ([88.97.38.141]:45217 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726962AbhAEN6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:58:51 -0500
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id F2539C637E; Tue,  5 Jan 2021 13:58:08 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1609855089; bh=gH+Lz6nVQLvOPcvGmGMj2CJj4YjwnBzm+oF+wUpTKBo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gv6wjYb3gwZkeT1yOF/i+WCz0iHlLUILW8Lj+yeF6Pk7W3PCwposSzOrlgyfnt4CG
+         E6i7P7zI+sYpI6D8z1mvlxt04wejgD+qSO6ypv5yY83LUZyNyOJAL9ubzjjpCmjiUb
+         +UXOfU64U4P1e1bAw1/IA+BkBtKHYbjq0av9vodOXCc4QT1OGiu4nDsLGDlQ4jiSK3
+         FQPbpE9SaHQe5NuL+/WFUTGfsyxgj+1sSj9YM7a1RYmoChlTITvkmnfdDoB6QV3PoO
+         LVttg9P6ny4co6Peh016HnKUhyZnKDeHqfq+xnVxpyDMF79UOfsSvp1YsjBQxzpSYZ
+         /7ut9Xx1dJQKg==
+Date:   Tue, 5 Jan 2021 13:58:08 +0000
+From:   Sean Young <sean@mess.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] btf: support ints larger than 128 bits
+Message-ID: <20210105135808.GA13438@gofer.mess.org>
+References: <20201219163652.GA22049@gofer.mess.org>
+ <bf26fcc9-a2b5-9d6f-a2ac-e39a0b14d838@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf26fcc9-a2b5-9d6f-a2ac-e39a0b14d838@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix follow warning:
-drivers/pinctrl/nomadik/pinctrl-nomadik.c:952:8: warning: unused
-variable ‘wake’ [-Wunused-variable]
-   bool wake;
-           ^~~~
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- drivers/pinctrl/nomadik/pinctrl-nomadik.c | 1 -
- 1 file changed, 1 deletion(-)
+On Wed, Dec 30, 2020 at 10:21:09AM -0800, Yonghong Song wrote:
+> On 12/19/20 8:36 AM, Sean Young wrote:
+> > clang supports arbitrary length ints using the _ExtInt extension. This
+> > can be useful to hold very large values, e.g. 256 bit or 512 bit types.
+> > 
+> > Larger types (e.g. 1024 bits) are possible but I am unaware of a use
+> > case for these.
+> > 
+> > This requires the _ExtInt extension enabled in clang, which is under
+> > review.
+> > 
+> > Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
+> > Link: https://reviews.llvm.org/D93103
+> > 
+> > Signed-off-by: Sean Young <sean@mess.org>
+> > ---
+> > changes since v2:
+> >   - added tests as suggested by Yonghong Song
+> >   - added kernel pretty-printer
+> > 
+> >   Documentation/bpf/btf.rst                     |   4 +-
+> >   include/uapi/linux/btf.h                      |   2 +-
+> >   kernel/bpf/btf.c                              |  54 +-
+> >   tools/bpf/bpftool/btf_dumper.c                |  40 ++
+> >   tools/include/uapi/linux/btf.h                |   2 +-
+> >   tools/lib/bpf/btf.c                           |   2 +-
+> >   tools/testing/selftests/bpf/Makefile          |   3 +-
+> >   tools/testing/selftests/bpf/prog_tests/btf.c  |   3 +-
+> >   .../selftests/bpf/progs/test_btf_extint.c     |  50 ++
+> >   tools/testing/selftests/bpf/test_extint.py    | 535 ++++++++++++++++++
+> 
+> For easier review, maybe you can break this patch into a patch series like
+> below?
+>   patch 1 (kernel related changes and doc)
+>       kernel/bpf/btf.c, include/uapi/linux/btf.h,
+>       tools/include/uapi/linux/btf.h
+>       Documentation/bpf/btf.rst
+>   patch 2 (libbpf support)
+>       tools/lib/bpf/btf.c
+>   patch 3 (bpftool support)
+>       tools/bpf/bpftool/btf_dumper.c
+>   patch 4 (testing)
+>       rest files
 
-diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik.c b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-index d4ea10803fd9..abfe11c7b49f 100644
---- a/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-+++ b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-@@ -949,7 +949,6 @@ static void nmk_gpio_dbg_show_one(struct seq_file *s,
- 	} else {
- 		int irq = chip->to_irq(chip, offset);
- 		const int pullidx = pull ? 1 : 0;
--		bool wake;
- 		int val;
- 		static const char * const pulls[] = {
- 			"none        ",
--- 
-2.16.2.dirty
+That makes sense, I'll send out v3 shortly.
 
+Thanks,
+
+Sean
