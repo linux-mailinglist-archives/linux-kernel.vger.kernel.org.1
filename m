@@ -2,949 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3802EA365
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 070AE2EA367
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727830AbhAECgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:36:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56968 "EHLO mail.kernel.org"
+        id S1727950AbhAECjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:39:18 -0500
+Received: from mga17.intel.com ([192.55.52.151]:10750 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbhAECgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:36:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1644F2256F;
-        Tue,  5 Jan 2021 02:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609814123;
-        bh=eTXXypgqZYTaGVKjrLIv5aC3IDqfNBMfwBIDr69pDLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LucZpYEg/5ZHbuWLhqHZk3JTfRsUroIPZ94Y3R4r2WDq6BvGZAhmfe9HAG8OGuvOr
-         Owsx82X7XHsImcs5t38rjpZfFIgdRt/qXYXQDmx9Agnkcc3so4z0lKDZQvpKfydaq8
-         nJ0ylrGolkiN4xwVPv+KUlUoeRNWJ3Fd4IAT9vLfsv155J89p47Qu3cIIjWzE9HGAM
-         0bji6Yju0lMIef60AHzicm2bso4+uHba3bpYvMqdlEpeVt7r5QQ7JyTxx9Hw83/Ozm
-         9nShKAkD8TdYj0qY6YUWQeje89eEc2OKVSMCD6mcHn0Fs2ONnV55YSLGkEfeIsY3td
-         hhjdX2jHfMnaQ==
-Date:   Tue, 5 Jan 2021 10:35:17 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v2 2/2] ARM: dts: add Protonic MVT board
-Message-ID: <20210105023515.GH4142@dragon>
-References: <20201201074125.11806-1-o.rempel@pengutronix.de>
- <20201201074125.11806-3-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201074125.11806-3-o.rempel@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726391AbhAECjS (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 21:39:18 -0500
+IronPort-SDR: KK6qr/6Ah4NFIVr/lVIQl99x2HZCXnz2zr4DERM+3G3MwXHGIldKQvjEGYJyfJE0Vl2EZjoTwK
+ glfpR6Qyow/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156825929"
+X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
+   d="scan'208";a="156825929"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 18:37:32 -0800
+IronPort-SDR: 2/jvqHM0K80S/gzaKhqWgTgjnVFP3NZ17iwTyoX8sIV65GbRefLvOkRsbqt9elM7JQFC1Gwlz6
+ /NMcAo7ILrPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
+   d="scan'208";a="395110061"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga004.fm.intel.com with ESMTP; 04 Jan 2021 18:37:28 -0800
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, ying.huang@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v4] perf stat: Fix wrong skipping for per-die aggregation
+Date:   Tue,  5 Jan 2021 10:36:15 +0800
+Message-Id: <20210105023615.5761-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 08:41:25AM +0100, Oleksij Rempel wrote:
-> PRTMVT is the reference platform for Protonic industrial touchscreen terminals.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  arch/arm/boot/dts/Makefile          |   1 +
->  arch/arm/boot/dts/imx6dl-prtmvt.dts | 851 ++++++++++++++++++++++++++++
->  2 files changed, 852 insertions(+)
->  create mode 100644 arch/arm/boot/dts/imx6dl-prtmvt.dts
-> 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index b309420975a9..d15442a464a3 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -463,6 +463,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
->  	imx6dl-pico-pi.dtb \
->  	imx6dl-plybas.dtb \
->  	imx6dl-plym2m.dtb \
-> +	imx6dl-prtmvt.dtb \
->  	imx6dl-prtrvt.dtb \
->  	imx6dl-prtvt7.dtb \
->  	imx6dl-rex-basic.dtb \
-> diff --git a/arch/arm/boot/dts/imx6dl-prtmvt.dts b/arch/arm/boot/dts/imx6dl-prtmvt.dts
-> new file mode 100644
-> index 000000000000..f6a5e98a6fa7
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/imx6dl-prtmvt.dts
-> @@ -0,0 +1,851 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright (c) 2016 Protonic Holland
-> + * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-> + */
-> +
-> +/dts-v1/;
-> +#include <dt-bindings/display/sdtv-standards.h>
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/leds/common.h>
-> +#include <dt-bindings/media/tvp5150.h>
-> +#include <dt-bindings/sound/fsl-imx-audmux.h>
-> +#include "imx6dl.dtsi"
-> +
-> +/ {
-> +	model = "Protonic MVT board";
-> +	compatible = "prt,prtmvt", "fsl,imx6dl";
-> +
-> +	chosen {
-> +		stdout-path = &uart4;
-> +	};
-> +
-> +	backlight: backlight {
-> +		compatible = "pwm-backlight";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_backlight>;
-> +		pwms = <&pwm1 0 5000000 0>;
-> +		brightness-levels = <0 16 64 255>;
-> +		num-interpolated-steps = <16>;
-> +		default-brightness-level = <1>;
-> +		power-supply = <&reg_3v3>;
-> +		enable-gpios = <&gpio4 28 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
-> +	connector {
-> +		compatible = "composite-video-connector";
-> +		label = "Composite0";
-> +		sdtv-standards = <SDTV_STD_PAL_B>;
-> +
-> +		port {
-> +			comp0_out: endpoint {
-> +				remote-endpoint = <&tvp5150_comp0_in>;
-> +			};
-> +		};
-> +	};
-> +
-> +	gpio-keys {
-> +		compatible = "gpio-keys";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_gpiokeys>;
-> +		autorepeat;
-> +
-> +		power {
-> +			label = "Power Button";
-> +			gpios = <&gpio2 23 GPIO_ACTIVE_LOW>;
-> +			linux,code = <116>; /* KEY_POWER */
+Uncore becomes die-scope on Xeon Cascade Lake-AP and perf has supported
+--per-die aggregation yet.
 
-Why not just using defines?
+One issue is found in check_per_pkg() for uncore events running on
+AP system. On cascade Lake-AP, we have:
 
-> +			wakeup-source;
-> +		};
-> +
-> +		f1 {
-> +			label = "GPIO Key F1";
-> +			linux,code = <59>;
-> +			gpios = <&gpio_pca 0 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		f2 {
-> +			label = "GPIO Key F2";
-> +			linux,code = <60>;
-> +			gpios = <&gpio_pca 1 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		f3 {
-> +			label = "GPIO Key F3";
-> +			linux,code = <61>;
-> +			gpios = <&gpio_pca 2 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		f4 {
-> +			label = "GPIO Key F4";
-> +			linux,code = <62>;
-> +			gpios = <&gpio_pca 3 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		f5 {
-> +			label = "GPIO Key F5";
-> +			linux,code = <63>;
-> +			gpios = <&gpio_pca 4 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		cycle {
-> +			label = "GPIO Key CYCLE";
-> +			linux,code = <154>;
-> +			gpios = <&gpio_pca 5 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		esc {
-> +			label = "GPIO Key ESC";
-> +			linux,code = <1>;
-> +			gpios = <&gpio_pca 6 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		up {
-> +			label = "GPIO Key UP";
-> +			linux,code = <103>;
-> +			gpios = <&gpio_pca 7 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		down {
-> +			label = "GPIO Key DOWN";
-> +			linux,code = <108>;
-> +			gpios = <&gpio_pca 8 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		ok {
-> +			label = "GPIO Key OK";
-> +			linux,code = <0x160>;
-> +			gpios = <&gpio_pca 9 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		f6 {
-> +			label = "GPIO Key F6";
-> +			linux,code = <64>;
-> +			gpios = <&gpio_pca 10 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		f7 {
-> +			label = "GPIO Key F7";
-> +			linux,code = <65>;
-> +			gpios = <&gpio_pca 11 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		f8 {
-> +			label = "GPIO Key F8";
-> +			linux,code = <66>;
-> +			gpios = <&gpio_pca 12 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		f9 {
-> +			label = "GPIO Key F9";
-> +			linux,code = <67>;
-> +			gpios = <&gpio_pca 13 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		f10 {
-> +			label = "GPIO Key F10";
-> +			linux,code = <68>;
-> +			gpios = <&gpio_pca 14 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_leds>;
-> +
-> +		led-0 {
-> +			label = "debug0";
-> +			function = LED_FUNCTION_HEARTBEAT;
-> +			gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
-> +			linux,default-trigger = "heartbeat";
-> +		};
-> +
-> +		led-1 {
-> +			label = "debug1";
-> +			function = LED_FUNCTION_DISK;
-> +			gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;
-> +			linux,default-trigger = "disk-activity";
-> +		};
-> +
-> +		led-2 {
-> +			label = "power_led";
-> +			function = LED_FUNCTION_POWER;
-> +			gpios = <&gpio2 24 GPIO_ACTIVE_HIGH>;
-> +			default-state = "on";
-> +		};
-> +	};
-> +
-> +	panel {
-> +		compatible = "kyo,tcg070wvlq", "lg,lb070wv8";
+S0-D0
+S0-D1
+S1-D0
+S1-D1
 
-Why do you need two compatibles for a panel?  The first one seems
-undocumented.
+But in check_per_pkg(), S0-D1 and S1-D1 are skipped because the
+mask bits for S0 and S1 have been set for S0-D0 and S1-D0. It doesn't
+check die_id. So the counting for S0-D1 and S1-D1 are set to zero.
+That's not correct.
 
-> +		backlight = <&backlight>;
-> +		power-supply = <&reg_3v3>;
-> +
-> +		port {
-> +			panel_in: endpoint {
-> +				remote-endpoint = <&lvds0_out>;
-> +			};
-> +		};
-> +	};
-> +
-> +	clk50m_phy: phy-clock {
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <50000000>;
-> +	};
-> +
-> +	reg_1v8: regulator-1v8 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "1v8";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-> +
-> +	reg_3v3: regulator-3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "3v3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	reg_h1_vbus: regulator-h1-vbus {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "h1-vbus";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		gpio = <&gpio1 0 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +
-> +	reg_otg_vbus: regulator-otg-vbus {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "otg-vbus";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		gpio = <&gpio3 22 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +
-> +	sound {
-> +		compatible = "simple-audio-card";
-> +		simple-audio-card,name = "prti6q-sgtl5000";
-> +		simple-audio-card,format = "i2s";
-> +		simple-audio-card,widgets =
-> +			"Microphone", "Microphone Jack",
-> +			"Line", "Line In Jack",
-> +			"Headphone", "Headphone Jack",
-> +			"Speaker", "External Speaker";
-> +		simple-audio-card,routing =
-> +			"MIC_IN", "Microphone Jack",
-> +			"LINE_IN", "Line In Jack",
-> +			"Headphone Jack", "HP_OUT",
-> +			"External Speaker", "LINE_OUT";
-> +
-> +		simple-audio-card,cpu {
-> +			sound-dai = <&ssi1>;
-> +			system-clock-frequency = <0>;
-> +		};
-> +
-> +		simple-audio-card,codec {
-> +			sound-dai = <&codec>;
-> +			bitclock-master;
-> +			frame-master;
-> +		};
-> +	};
-> +};
-> +
-> +&audmux {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_audmux>;
-> +	status = "okay";
-> +
-> +	mux-ssi1 {
-> +		fsl,audmux-port = <0>;
-> +		fsl,port-config = <
-> +			IMX_AUDMUX_V2_PTCR_SYN		0
-> +			IMX_AUDMUX_V2_PTCR_TFSEL(2)	0
-> +			IMX_AUDMUX_V2_PTCR_TCSEL(2)	0
-> +			IMX_AUDMUX_V2_PTCR_TFSDIR	0
-> +			IMX_AUDMUX_V2_PTCR_TCLKDIR	IMX_AUDMUX_V2_PDCR_RXDSEL(2)
-> +		>;
-> +	};
-> +
-> +	mux-pins3 {
-> +		fsl,audmux-port = <2>;
-> +		fsl,port-config = <
-> +			IMX_AUDMUX_V2_PTCR_SYN		IMX_AUDMUX_V2_PDCR_RXDSEL(0)
-> +			0				IMX_AUDMUX_V2_PDCR_TXRXEN
-> +		>;
-> +	};
-> +};
-> +
-> +&can1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_can1>;
-> +	status = "okay";
-> +};
-> +
-> +&can2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_can2>;
-> +	status = "okay";
-> +};
-> +
-> +&clks {
-> +	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>;
-> +	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>;
-> +};
-> +
-> +&ecspi1 {
-> +	cs-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_ecspi1>;
-> +	status = "okay";
-> +
-> +	flash@0 {
-> +		compatible = "jedec,spi-nor";
-> +		reg = <0>;
-> +		spi-max-frequency = <20000000>;
-> +	};
-> +};
-> +
-> +&fec {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_enet>;
-> +	phy-mode = "rmii";
-> +	clocks = <&clks IMX6QDL_CLK_ENET>,
-> +		 <&clks IMX6QDL_CLK_ENET>,
-> +		 <&clk50m_phy>;
-> +	clock-names = "ipg", "ahb", "ptp";
-> +	phy-handle = <&rmii_phy>;
-> +	status = "okay";
-> +
-> +	mdio {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		/* Microchip KSZ8081RNA PHY */
-> +		rmii_phy: ethernet-phy@0 {
-> +			reg = <0>;
-> +			interrupts-extended = <&gpio4 30 IRQ_TYPE_LEVEL_LOW>;
-> +			reset-gpios = <&gpio4 26 GPIO_ACTIVE_LOW>;
-> +			reset-assert-us = <10000>;
-> +			reset-deassert-us = <3000>;
-> +		};
-> +	};
-> +};
-> +
-> +&gpio1 {
-> +	gpio-line-names =
-> +		"CAN1_TERM", "SD1_CD", "ITU656_RESET", "CAM1_MIRROR",
-> +			"CAM2_MIRROR", "", "", "SMBALERT",
-> +		"DEBUG_0", "DEBUG_1", "", "", "", "", "", "",
-> +		"SD1_DATA0", "SD1_DATA1", "SD1_CMD", "SD1_DATA2", "SD1_CLK",
-> +			"SD1_DATA3", "", "",
-> +		"", "", "", "", "", "", "", "";
-> +};
-> +
-> +&gpio2 {
-> +	gpio-line-names =
-> +		"", "", "", "", "", "", "", "",
-> +		"REV_ID0", "REV_ID1", "REV_ID2", "REV_ID3", "REV_ID4",
-> +			"BOARD_ID0", "BOARD_ID1", "BOARD_ID2",
-> +		"", "", "", "", "", "", "", "ON_SWITCH",
-> +		"POWER_LED", "", "", "", "", "", "", "";
-> +};
-> +
-> +&gpio3 {
-> +	gpio-line-names =
-> +		"", "", "", "", "", "", "", "",
-> +		"", "", "", "", "", "", "", "",
-> +		"ECSPI1_SCLK", "ECSPI1_MISO", "ECSPI1_MOSI", "ECSPI1_SS1",
-> +			"CPU_ON1_FB", "USB_EXT1_OC", "USB_EXT1_PWR", "YACO_IRQ",
-> +		"TSS_TXD", "TSS_RXD", "", "", "", "", "YACO_BOOT0",
-> +			"YACO_RESET";
-> +};
-> +
-> +&gpio4 {
-> +	gpio-line-names =
-> +		"", "", "", "", "", "", "", "",
-> +		"", "", "", "", "CAN1_SR", "CAN2_SR", "CAN2_TX", "CAN2_RX",
-> +		"", "", "DIP1_FB", "", "", "", "", "",
-> +		"CPU_LIGHT_ON", "", "ETH_RESET", "", "BL_EN",
-> +			"BL_PWM", "ETH_INTRP", "";
-> +};
-> +
-> +&gpio5 {
-> +	gpio-line-names =
-> +		"", "", "", "", "", "", "", "",
-> +		"", "", "", "", "", "", "", "",
-> +		"", "", "", "", "", "", "", "",
-> +		"I2S_LRCLK", "I2S_DIN", "I2C1_SDA", "I2C1_SCL", "YACO_AUX_RX",
-> +			"YACO_AUX_TX", "ITU656_D0", "ITU656_D1";
-> +};
-> +
-> +&i2c1 {
-> +	clock-frequency = <100000>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c1>;
-> +	status = "okay";
-> +
-> +	codec: audio-codec@a {
-> +		compatible = "fsl,sgtl5000";
-> +		reg = <0xa>;
-> +		#sound-dai-cells = <0>;
-> +		clocks = <&clks 201>;
-> +		VDDA-supply = <&reg_3v3>;
-> +		VDDIO-supply = <&reg_3v3>;
-> +		VDDD-supply = <&reg_1v8>;
-> +	};
-> +
-> +	video@5c {
-> +		compatible = "ti,tvp5150";
-> +		reg = <0x5c>;
-> +
+root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+     1.001460963 S0-D0           1            1317376 Bytes llc_misses.mem_read
+     1.001460963 S0-D1           1             998016 Bytes llc_misses.mem_read
+     1.001460963 S1-D0           1             970496 Bytes llc_misses.mem_read
+     1.001460963 S1-D1           1            1291264 Bytes llc_misses.mem_read
+     2.003488021 S0-D0           1            1082048 Bytes llc_misses.mem_read
+     2.003488021 S0-D1           1            1919040 Bytes llc_misses.mem_read
+     2.003488021 S1-D0           1             890752 Bytes llc_misses.mem_read
+     2.003488021 S1-D1           1            2380800 Bytes llc_misses.mem_read
+     3.005613270 S0-D0           1            1126080 Bytes llc_misses.mem_read
+     3.005613270 S0-D1           1            2898176 Bytes llc_misses.mem_read
+     3.005613270 S1-D0           1             870912 Bytes llc_misses.mem_read
+     3.005613270 S1-D1           1            3388608 Bytes llc_misses.mem_read
+     4.007627598 S0-D0           1            1124608 Bytes llc_misses.mem_read
+     4.007627598 S0-D1           1            3884416 Bytes llc_misses.mem_read
+     4.007627598 S1-D0           1             921088 Bytes llc_misses.mem_read
+     4.007627598 S1-D1           1            4451840 Bytes llc_misses.mem_read
+     5.001479927 S0-D0           1             963328 Bytes llc_misses.mem_read
+     5.001479927 S0-D1           1            4831936 Bytes llc_misses.mem_read
+     5.001479927 S1-D0           1             895104 Bytes llc_misses.mem_read
+     5.001479927 S1-D1           1            5496640 Bytes llc_misses.mem_read
 
-Unnecessary newline.
+From above output, we can see S0-D1 and S1-D1 don't report the interval
+values, they are continued to grow. That's because check_per_pkg() wrongly
+decides to use zero counts for S0-D1 and S1-D1.
 
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		port@0 {
-> +			reg = <0>;
+So in check_per_pkg(), we should use hashmap(socket,die) to decide if
+the cpu counts needs to skip. Only considering socket is not enough.
 
-Have a newline between properties and child node.
+Now with this patch,
 
-> +			tvp5150_comp0_in: endpoint {
-> +				remote-endpoint = <&comp0_out>;
-> +			};
-> +		};
-> +
-> +		/* Output port 2 is video output pad */
-> +		port@2 {
-> +			reg = <2>;
-> +			tvp5151_to_ipu1_csi0_mux: endpoint {
-> +				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
-> +			};
-> +		};
-> +	};
-> +
-> +	gpio_pca: gpio@74 {
-> +		#gpio-cells = <2>;
+root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+     1.001617187 S0-D0           1             952768 Bytes llc_misses.mem_read
+     1.001617187 S0-D1           1             849152 Bytes llc_misses.mem_read
+     1.001617187 S1-D0           1             854912 Bytes llc_misses.mem_read
+     1.001617187 S1-D1           1             948672 Bytes llc_misses.mem_read
+     2.004138021 S0-D0           1            1200256 Bytes llc_misses.mem_read
+     2.004138021 S0-D1           1             899840 Bytes llc_misses.mem_read
+     2.004138021 S1-D0           1             898752 Bytes llc_misses.mem_read
+     2.004138021 S1-D1           1            1039424 Bytes llc_misses.mem_read
+     3.006463971 S0-D0           1            1029056 Bytes llc_misses.mem_read
+     3.006463971 S0-D1           1             894336 Bytes llc_misses.mem_read
+     3.006463971 S1-D0           1             905088 Bytes llc_misses.mem_read
+     3.006463971 S1-D1           1            1042880 Bytes llc_misses.mem_read
+     4.008831441 S0-D0           1             920576 Bytes llc_misses.mem_read
+     4.008831441 S0-D1           1             877248 Bytes llc_misses.mem_read
+     4.008831441 S1-D0           1             883968 Bytes llc_misses.mem_read
+     4.008831441 S1-D1           1             967168 Bytes llc_misses.mem_read
+     5.001441349 S0-D0           1             864704 Bytes llc_misses.mem_read
+     5.001441349 S0-D1           1             827456 Bytes llc_misses.mem_read
+     5.001441349 S1-D0           1             829632 Bytes llc_misses.mem_read
+     5.001441349 S1-D1           1             925760 Bytes llc_misses.mem_read
 
-We usually begin with 'compatible'.  Can you move this line after
-'gpio-controller' maybe?
+On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+is not changed.
 
-Shawn
+Reported-by: Huang Ying <ying.huang@intel.com>
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+v4:
+ v3 used unnecessary bool allocatioin. v4 just uses the hash value '(void *)1'.
 
-> +		compatible = "nxp,pca9539";
-> +		reg = <0x74>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_pca9539>;
-> +		interrupt-parent = <&gpio4>;
-> +		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-> +		gpio-controller;
-> +	};
-> +
-> +	/* additional i2c devices are added automatically by the boot loader */
-> +};
-> +
-> +&i2c3 {
-> +	clock-frequency = <100000>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c3>;
-> +	status = "okay";
-> +
-> +	adc@49 {
-> +		compatible = "ti,ads1015";
-> +		reg = <0x49>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		channel@4 {
-> +			reg = <4>;
-> +			ti,gain = <3>;
-> +			ti,datarate = <3>;
-> +		};
-> +
-> +		channel@5 {
-> +			reg = <5>;
-> +			ti,gain = <3>;
-> +			ti,datarate = <3>;
-> +		};
-> +
-> +		channel@6 {
-> +			reg = <6>;
-> +			ti,gain = <3>;
-> +			ti,datarate = <3>;
-> +		};
-> +
-> +		channel@7 {
-> +			reg = <7>;
-> +			ti,gain = <3>;
-> +			ti,datarate = <3>;
-> +		};
-> +	};
-> +
-> +	rtc@51 {
-> +		compatible = "nxp,pcf8563";
-> +		reg = <0x51>;
-> +	};
-> +
-> +	temperature-sensor@70 {
-> +		compatible = "ti,tmp103";
-> +		reg = <0x70>;
-> +	};
-> +};
-> +
-> +&ipu1_csi0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_ipu1_csi0>;
-> +	status = "okay";
-> +};
-> +
-> +&ipu1_csi0_mux_from_parallel_sensor {
-> +	remote-endpoint = <&tvp5151_to_ipu1_csi0_mux>;
-> +};
-> +
-> +&ldb {
-> +	status = "okay";
-> +
-> +	lvds-channel@0 {
-> +		status = "okay";
-> +
-> +		port@4 {
-> +			reg = <4>;
-> +
-> +			lvds0_out: endpoint {
-> +				remote-endpoint = <&panel_in>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&pcie {
-> +	status = "okay";
-> +};
-> +
-> +&pwm1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm1>;
-> +	status = "okay";
-> +};
-> +
-> +&ssi1 {
-> +	#sound-dai-cells = <0>;
-> +	fsl,mode = "ac97-slave";
-> +	status = "okay";
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart1>;
-> +	status = "okay";
-> +};
-> +
-> +&uart2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart2>;
-> +	status = "okay";
-> +};
-> +
-> +&uart3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart3>;
-> +	status = "okay";
-> +};
-> +
-> +&uart4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart4>;
-> +	status = "okay";
-> +};
-> +
-> +&uart5 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart5>;
-> +	status = "okay";
-> +};
-> +
-> +&usbh1 {
-> +	vbus-supply = <&reg_h1_vbus>;
-> +	pinctrl-names = "default";
-> +	phy_type = "utmi";
-> +	dr_mode = "host";
-> +	status = "okay";
-> +};
-> +
-> +&usbotg {
-> +	vbus-supply = <&reg_otg_vbus>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usbotg>;
-> +	phy_type = "utmi";
-> +	dr_mode = "host";
-> +	disable-over-current;
-> +	status = "okay";
-> +};
-> +
-> +&usdhc1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usdhc1>;
-> +	cd-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-> +	no-1-8-v;
-> +	disable-wp;
-> +	cap-sd-highspeed;
-> +	no-mmc;
-> +	no-sdio;
-> +	status = "okay";
-> +};
-> +
-> +&usdhc3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usdhc3>;
-> +	bus-width = <8>;
-> +	no-1-8-v;
-> +	non-removable;
-> +	no-sd;
-> +	no-sdio;
-> +	status = "okay";
-> +};
-> +
-> +&iomuxc {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_hog>;
-> +
-> +	pinctrl_audmux: audmuxgrp {
-> +		fsl,pins = <
-> +			/* SGTL5000 sys_mclk */
-> +			MX6QDL_PAD_CSI0_MCLK__CCM_CLKO1			0x030b0
-> +			MX6QDL_PAD_CSI0_DAT7__AUD3_RXD			0x130b0
-> +			MX6QDL_PAD_CSI0_DAT4__AUD3_TXC			0x130b0
-> +			MX6QDL_PAD_CSI0_DAT5__AUD3_TXD			0x110b0
-> +			MX6QDL_PAD_CSI0_DAT6__AUD3_TXFS			0x130b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_backlight: backlightgrp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_DISP0_DAT7__GPIO4_IO28		0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_can1: can1grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_KEY_ROW2__FLEXCAN1_RX		0x1b000
-> +			MX6QDL_PAD_KEY_COL2__FLEXCAN1_TX		0x3008
-> +			/* CAN1_SR */
-> +			MX6QDL_PAD_KEY_COL3__GPIO4_IO12			0x13008
-> +			/* CAN1_TERM */
-> +			MX6QDL_PAD_GPIO_0__GPIO1_IO00			0x1b088
-> +		>;
-> +	};
-> +
-> +	pinctrl_can2: can2grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_KEY_ROW4__FLEXCAN2_RX		0x1b000
-> +			MX6QDL_PAD_KEY_COL4__FLEXCAN2_TX		0x3008
-> +			/* CAN2_SR */
-> +			MX6QDL_PAD_KEY_ROW3__GPIO4_IO13			0x13008
-> +		>;
-> +	};
-> +
-> +	pinctrl_ecspi1: ecspi1grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_EIM_D17__ECSPI1_MISO			0x100b1
-> +			MX6QDL_PAD_EIM_D18__ECSPI1_MOSI			0x100b1
-> +			MX6QDL_PAD_EIM_D16__ECSPI1_SCLK			0x100b1
-> +			/* CS */
-> +			MX6QDL_PAD_EIM_D19__GPIO3_IO19			0x000b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_enet: enetgrp {
-> +		fsl,pins = <
-> +			/* MX6QDL_ENET_PINGRP4 */
-> +			MX6QDL_PAD_ENET_MDC__ENET_MDC			0x1b0b0
-> +			MX6QDL_PAD_ENET_MDIO__ENET_MDIO			0x1b0b0
-> +			MX6QDL_PAD_ENET_RXD0__ENET_RX_DATA0		0x1b0b0
-> +			MX6QDL_PAD_ENET_RXD1__ENET_RX_DATA1		0x1b0b0
-> +			MX6QDL_PAD_ENET_RX_ER__ENET_RX_ER		0x1b0b0
-> +			MX6QDL_PAD_ENET_TX_EN__ENET_TX_EN		0x1b0b0
-> +			MX6QDL_PAD_ENET_TXD0__ENET_TX_DATA0		0x1b0b0
-> +			MX6QDL_PAD_ENET_TXD1__ENET_TX_DATA1		0x1b0b0
-> +			MX6QDL_PAD_ENET_CRS_DV__ENET_RX_EN		0x1b0b0
-> +			MX6QDL_PAD_GPIO_16__ENET_REF_CLK		0x1b0b0
-> +			/* Phy reset */
-> +			MX6QDL_PAD_DISP0_DAT5__GPIO4_IO26		0x1b0b0
-> +			/* nINTRP */
-> +			MX6QDL_PAD_DISP0_DAT9__GPIO4_IO30		0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_gpiokeys: gpiokeygrp {
-> +		fsl,pins = <
-> +			/* nON_SWITCH */
-> +			MX6QDL_PAD_EIM_CS0__GPIO2_IO23			0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_hog: hoggrp {
-> +		fsl,pins = <
-> +			/* ITU656_nRESET */
-> +			MX6QDL_PAD_GPIO_2__GPIO1_IO02			0x1b0b0
-> +			/* CAM1_MIRROR */
-> +			MX6QDL_PAD_GPIO_3__GPIO1_IO03			0x130b0
-> +			/* CAM2_MIRROR */
-> +			MX6QDL_PAD_GPIO_4__GPIO1_IO04			0x130b0
-> +			/* CAM_nDETECT */
-> +			MX6QDL_PAD_GPIO_17__GPIO7_IO12			0x1b0b0
-> +			/* ISB_IN1 */
-> +			MX6QDL_PAD_EIM_A16__GPIO2_IO22			0x130b0
-> +			/* ISB_nIN2 */
-> +			MX6QDL_PAD_EIM_A17__GPIO2_IO21			0x1b0b0
-> +			/* WARN_LIGHT */
-> +			MX6QDL_PAD_EIM_A19__GPIO2_IO19			0x100b0
-> +			/* ON2_FB */
-> +			MX6QDL_PAD_EIM_A25__GPIO5_IO02			0x100b0
-> +			/* YACO_nIRQ */
-> +			MX6QDL_PAD_EIM_D23__GPIO3_IO23			0x1b0b0
-> +			/* YACO_BOOT0 */
-> +			MX6QDL_PAD_EIM_D30__GPIO3_IO30			0x130b0
-> +			/* YACO_nRESET */
-> +			MX6QDL_PAD_EIM_D31__GPIO3_IO31			0x1b0b0
-> +			/* FORCE_ON1 */
-> +			MX6QDL_PAD_EIM_EB2__GPIO2_IO30			0x1b0b0
-> +			/* AUDIO_nRESET */
-> +			MX6QDL_PAD_CSI0_VSYNC__GPIO5_IO21		0x1f0b0
-> +			/* ITU656_nPDN */
-> +			MX6QDL_PAD_CSI0_DATA_EN__GPIO5_IO20		0x1b0b0
-> +
-> +			/* HW revision detect */
-> +			/* REV_ID0 */
-> +			MX6QDL_PAD_SD4_DAT0__GPIO2_IO08			0x1b0b0
-> +			/* REV_ID1 */
-> +			MX6QDL_PAD_SD4_DAT1__GPIO2_IO09			0x1b0b0
-> +			/* REV_ID2 */
-> +			MX6QDL_PAD_SD4_DAT2__GPIO2_IO10			0x1b0b0
-> +			/* REV_ID3 */
-> +			MX6QDL_PAD_SD4_DAT3__GPIO2_IO11			0x1b0b0
-> +			/* REV_ID4 */
-> +			MX6QDL_PAD_SD4_DAT4__GPIO2_IO12			0x1b0b0
-> +
-> +			/* New in HW revision 1 */
-> +			/* ON1_FB */
-> +			MX6QDL_PAD_EIM_D20__GPIO3_IO20			0x100b0
-> +			/* DIP1_FB */
-> +			MX6QDL_PAD_DI0_PIN2__GPIO4_IO18			0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c1: i2c1grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_CSI0_DAT8__I2C1_SDA		0x4001f8b1
-> +			MX6QDL_PAD_CSI0_DAT9__I2C1_SCL		0x4001f8b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c3: i2c3grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_GPIO_5__I2C3_SCL		0x4001b8b1
-> +			MX6QDL_PAD_GPIO_6__I2C3_SDA		0x4001b8b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_ipu1_csi0: ipu1csi0grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_CSI0_DAT12__IPU1_CSI0_DATA12		0x1b0b0
-> +			MX6QDL_PAD_CSI0_DAT13__IPU1_CSI0_DATA13		0x1b0b0
-> +			MX6QDL_PAD_CSI0_DAT14__IPU1_CSI0_DATA14		0x1b0b0
-> +			MX6QDL_PAD_CSI0_DAT15__IPU1_CSI0_DATA15		0x1b0b0
-> +			MX6QDL_PAD_CSI0_DAT16__IPU1_CSI0_DATA16		0x1b0b0
-> +			MX6QDL_PAD_CSI0_DAT17__IPU1_CSI0_DATA17		0x1b0b0
-> +			MX6QDL_PAD_CSI0_DAT18__IPU1_CSI0_DATA18		0x1b0b0
-> +			MX6QDL_PAD_CSI0_DAT19__IPU1_CSI0_DATA19		0x1b0b0
-> +			MX6QDL_PAD_CSI0_PIXCLK__IPU1_CSI0_PIXCLK	0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_leds: ledsgrp {
-> +		fsl,pins = <
-> +			/* DEBUG0 */
-> +			MX6QDL_PAD_DI0_DISP_CLK__GPIO4_IO16		0x1b0b0
-> +			/* DEBUG1 */
-> +			MX6QDL_PAD_DI0_PIN15__GPIO4_IO17		0x1b0b0
-> +			/* POWER_LED */
-> +			MX6QDL_PAD_EIM_CS1__GPIO2_IO24			0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_pca9539: pca9539 {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_GPIO_19__GPIO4_IO05			0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm1: pwm1grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_DISP0_DAT8__PWM1_OUT			0x1b0b0
-> +		>;
-> +	};
-> +
-> +	/* YaCO AUX Uart */
-> +	pinctrl_uart1: uart1grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_CSI0_DAT10__UART1_TX_DATA		0x1b0b1
-> +			MX6QDL_PAD_CSI0_DAT11__UART1_RX_DATA		0x1b0b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart2: uart2grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_EIM_D26__UART2_TX_DATA		0x1b0b1
-> +			MX6QDL_PAD_EIM_D27__UART2_RX_DATA		0x1b0b1
-> +		>;
-> +	};
-> +
-> +	/* YaCO Touchscreen UART */
-> +	pinctrl_uart3: uart3grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_EIM_D24__UART3_TX_DATA		0x1b0b1
-> +			MX6QDL_PAD_EIM_D25__UART3_RX_DATA		0x1b0b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart4: uart4grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_KEY_COL0__UART4_TX_DATA		0x1b0b1
-> +			MX6QDL_PAD_KEY_ROW0__UART4_RX_DATA		0x1b0b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart5: uart5grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_KEY_COL1__UART5_TX_DATA		0x1b0b1
-> +			MX6QDL_PAD_KEY_ROW1__UART5_RX_DATA		0x1b0b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_usbotg: usbotggrp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_EIM_D21__USB_OTG_OC			0x1b0b0
-> +			/* power enable, high active */
-> +			MX6QDL_PAD_EIM_D22__GPIO3_IO22			0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc1: usdhc1grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_SD1_CMD__SD1_CMD			0x170f9
-> +			MX6QDL_PAD_SD1_CLK__SD1_CLK			0x100f9
-> +			MX6QDL_PAD_SD1_DAT0__SD1_DATA0			0x170f9
-> +			MX6QDL_PAD_SD1_DAT1__SD1_DATA1			0x170f9
-> +			MX6QDL_PAD_SD1_DAT2__SD1_DATA2			0x170f9
-> +			MX6QDL_PAD_SD1_DAT3__SD1_DATA3			0x170f9
-> +			MX6QDL_PAD_GPIO_1__GPIO1_IO01			0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc3: usdhc3grp {
-> +		fsl,pins = <
-> +			MX6QDL_PAD_SD3_CMD__SD3_CMD			0x17099
-> +			MX6QDL_PAD_SD3_CLK__SD3_CLK			0x10099
-> +			MX6QDL_PAD_SD3_DAT0__SD3_DATA0			0x17099
-> +			MX6QDL_PAD_SD3_DAT1__SD3_DATA1			0x17099
-> +			MX6QDL_PAD_SD3_DAT2__SD3_DATA2			0x17099
-> +			MX6QDL_PAD_SD3_DAT3__SD3_DATA3			0x17099
-> +			MX6QDL_PAD_SD3_DAT4__SD3_DATA4			0x17099
-> +			MX6QDL_PAD_SD3_DAT5__SD3_DATA5			0x17099
-> +			MX6QDL_PAD_SD3_DAT6__SD3_DATA6			0x17099
-> +			MX6QDL_PAD_SD3_DAT7__SD3_DATA7			0x17099
-> +			MX6QDL_PAD_SD3_RST__SD3_RESET			0x1b0b1
-> +		>;
-> +	};
-> +};
-> -- 
-> 2.29.2
-> 
+ v4 is compiled ok with tmp.perf/core.
+ 
+v3:
+ Since for some cpumap functions, the return type is changed from 'int' to
+ 'struct aggr_cpu_id', the patch needs to be updated as well.
+
+ before:
+   d = cpu_map__get_die()
+
+ after:
+   d = cpu_map__get_die().die
+
+ v3 is compiled ok with tmp.perf/core.
+
+v2:
+ Use hashmap to check the used socket+die pair.
+
+ tools/perf/util/evsel.c |  4 +++-
+ tools/perf/util/evsel.h |  3 ++-
+ tools/perf/util/stat.c  | 41 ++++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 41 insertions(+), 7 deletions(-)
+
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index c26ea82220bd..9715ed9b03f6 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -45,6 +45,7 @@
+ #include "string2.h"
+ #include "memswap.h"
+ #include "util.h"
++#include "hashmap.h"
+ #include "../perf-sys.h"
+ #include "util/parse-branch-options.h"
+ #include <internal/xyarray.h>
+@@ -1377,7 +1378,8 @@ void evsel__exit(struct evsel *evsel)
+ 	zfree(&evsel->group_name);
+ 	zfree(&evsel->name);
+ 	zfree(&evsel->pmu_name);
+-	zfree(&evsel->per_pkg_mask);
++	hashmap__free(evsel->per_pkg_mask);
++	evsel->per_pkg_mask = NULL;
+ 	zfree(&evsel->metric_events);
+ 	perf_evsel__object.fini(evsel);
+ }
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index cd1d8dd43199..951628943fd0 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -17,6 +17,7 @@ struct cgroup;
+ struct perf_counts;
+ struct perf_stat_evsel;
+ union perf_event;
++struct hashmap;
+ 
+ typedef int (evsel__sb_cb_t)(union perf_event *event, void *data);
+ 
+@@ -110,7 +111,7 @@ struct evsel {
+ 	bool			merged_stat;
+ 	bool			reset_group;
+ 	bool			errored;
+-	unsigned long		*per_pkg_mask;
++	struct hashmap		*per_pkg_mask;
+ 	struct evsel		*leader;
+ 	struct list_head	config_terms;
+ 	int			err;
+diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+index 8ce1479c98f0..a658e0ffaf2a 100644
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -13,6 +13,7 @@
+ #include "evlist.h"
+ #include "evsel.h"
+ #include "thread_map.h"
++#include "hashmap.h"
+ #include <linux/zalloc.h>
+ 
+ void update_stats(struct stats *stats, u64 val)
+@@ -276,15 +277,29 @@ void evlist__save_aggr_prev_raw_counts(struct evlist *evlist)
+ static void zero_per_pkg(struct evsel *counter)
+ {
+ 	if (counter->per_pkg_mask)
+-		memset(counter->per_pkg_mask, 0, cpu__max_cpu());
++		hashmap__clear(counter->per_pkg_mask);
++}
++
++static size_t pkg_id_hash(const void *key, void *ctx __maybe_unused)
++{
++	int socket = (int64_t)key >> 32;
++
++	return socket;
++}
++
++static bool pkg_id_equal(const void *key1, const void *key2,
++			 void *ctx __maybe_unused)
++{
++	return (int64_t)key1 == (int64_t)key2;
+ }
+ 
+ static int check_per_pkg(struct evsel *counter,
+ 			 struct perf_counts_values *vals, int cpu, bool *skip)
+ {
+-	unsigned long *mask = counter->per_pkg_mask;
++	struct hashmap *mask = counter->per_pkg_mask;
+ 	struct perf_cpu_map *cpus = evsel__cpus(counter);
+-	int s;
++	int s, d, ret;
++	uint64_t key;
+ 
+ 	*skip = false;
+ 
+@@ -295,7 +310,7 @@ static int check_per_pkg(struct evsel *counter,
+ 		return 0;
+ 
+ 	if (!mask) {
+-		mask = zalloc(cpu__max_cpu());
++		mask = hashmap__new(pkg_id_hash, pkg_id_equal, NULL);
+ 		if (!mask)
+ 			return -ENOMEM;
+ 
+@@ -317,7 +332,23 @@ static int check_per_pkg(struct evsel *counter,
+ 	if (s < 0)
+ 		return -1;
+ 
+-	*skip = test_and_set_bit(s, mask) == 1;
++	/*
++	 * On multi-die system, 0 < die_id < 256. On no-die system, die_id = 0.
++	 * We use hashmap(socket, die) to check the used socket+die pair.
++	 */
++	d = cpu_map__get_die(cpus, cpu, NULL).die;
++	if (d < 0)
++		return -1;
++
++	key = (uint64_t)s << 32 | (d & 0xff);
++	if (hashmap__find(mask, (void *)key, NULL)) {
++		*skip = true;
++	} else {
++		ret = hashmap__add(mask, (void *)key, (void *)1);
++		if (ret)
++			return -1;
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
+
