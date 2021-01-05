@@ -2,144 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95E82EA934
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239992EA937
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729419AbhAEKuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728963AbhAEKue (ORCPT
+        id S1728889AbhAEKwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:52:17 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:4438 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728048AbhAEKwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:50:34 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CC6C061574;
-        Tue,  5 Jan 2021 02:49:54 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id m23so27848629ioy.2;
-        Tue, 05 Jan 2021 02:49:54 -0800 (PST)
+        Tue, 5 Jan 2021 05:52:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SZtcMCWcM95xhz6VJ/T22tr2CGPc3L3+n4XwdXE0LY0=;
-        b=s2v2ZMxzMup1cuYJnmn0CA0lOVqCXNl5BAWRg2eT9bwWHKBr1btQQt1BA0e8EH+V1H
-         Da4RTLOYxI71cGkPbJf9ak12/ByKw2hC7AQ3Q0XjU/v5i5cvz2w4ca9T7L26ykbqrSGA
-         f8JfSm7xPHxGW8ZZzCRvNRoacUxZfUG10ZjYz+4cvrW4ZSyS6fOIsYhLGF0LKgmVRrbu
-         TLdr2sbLOM5Db6p9xDKgOaPdwXOVQyhnnG3gqJDic6HHqbpTnm3+oVqEkHsfgWd+/ahl
-         S3IyKLInDaM5V+CiO+MsNBvdDRXvf3q7cTCp7TIF4grmkOlqqaDYb+3sC9bqh0U3xdPk
-         YjYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=SZtcMCWcM95xhz6VJ/T22tr2CGPc3L3+n4XwdXE0LY0=;
-        b=CryLWh7HLMayPPN62zSxWzSCm0U32VW/knO0VOkBGO9Fmmi9sHCjaJ1FCuwoTKimnb
-         c6IF6PWESKRbY5jYEbrMAIZ1J4wkPFxpTRUQ18wDCQ8EF78NfgzLAtB5L+MKlM9tAH++
-         AhVMfF+0WSlyD3QlO9OrD+wspzDy7geHJoKCiGOUZUVR5/ltDzv+XKSEvUGDFjoTWDsr
-         7SBna2XM6Ci6kEX3SEnu7zMWVUq5zA9v38T+/vx/+C8YwTvd+fbX1XA5NkKqSrbTTNbO
-         YsKoa5jf4sEhlSHCyKmTHI11KKxAt/xnA8W2Mk+nrYbQk020sGJjynq8ZEovGFLORTnn
-         Q6/Q==
-X-Gm-Message-State: AOAM530UHcaeb2uBrL0xfgYgCQS7hwGrCs3T3Sgw6/xi79bODQGHiV+S
-        iAfY1PJvtEuDEyg3koYgJn4=
-X-Google-Smtp-Source: ABdhPJz5gLH+sxI4EXIVR4ivcK9M3BTj6+lM/tQw2CYLMrYCzUZRRdZpPauS9BFs0ZktrXUGkgshAw==
-X-Received: by 2002:a5e:820c:: with SMTP id l12mr61678828iom.50.1609843793884;
-        Tue, 05 Jan 2021 02:49:53 -0800 (PST)
-Received: from Gentoo ([156.146.37.136])
-        by smtp.gmail.com with ESMTPSA id a7sm43634349iln.0.2021.01.05.02.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 02:49:53 -0800 (PST)
-Date:   Tue, 5 Jan 2021 16:20:02 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Julian Calaby <julian.calaby@gmail.com>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        baijiaju1990@gmail.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drivers: wireless: rtlwifi: rtl8192ce: Fix construction
- of word rtl8192ce/trx.c
-Message-ID: <X/REWkSdWaoXdLxA@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Julian Calaby <julian.calaby@gmail.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Larry Finger <Larry.Finger@lwfinger.net>, baijiaju1990@gmail.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210105102751.21237-1-unixbhaskar@gmail.com>
- <CAGRGNgWfHb=5jS_Dg0pKw7q_K9mkd8S2o70OCBEnWmaJY+5V9w@mail.gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1609843937; x=1641379937;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=VTy5ZAV4gN8Vc803pdXcbifQcOM+i5GU7QrT5KV5nQk=;
+  b=Yyo76unenFE0kkpXL+lGusJTlOLeWvlXrXS4cZTyXkygxZTqT1mxdf1c
+   fTPz5JyDzlB5zLEzS5TIgpMcwVwPFoLcTmhSIrn+0+2T4Ml4IQ4NkDw2c
+   AjC5NQUFv/QB3tEhOROtp7qDDpPCnqHxbk+K1jLIi/t+QKTY/8qJaTIXH
+   E=;
+X-IronPort-AV: E=Sophos;i="5.78,476,1599523200"; 
+   d="scan'208";a="108306680"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 05 Jan 2021 10:51:30 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id 11F1CA065D;
+        Tue,  5 Jan 2021 10:51:29 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.68) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 Jan 2021 10:51:22 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     SeongJae Park <sjpark@amazon.com>, <stable@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.de>, <doebel@amazon.de>,
+        <aams@amazon.de>, <mku@amazon.de>, <jgross@suse.com>,
+        <julien@xen.org>, <wipawel@amazon.de>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/5] Backport of patch series for stable 4.4 branch
+Date:   Tue, 5 Jan 2021 11:51:07 +0100
+Message-ID: <20210105105107.3564-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <X/RC3ghc7u4uPIjT@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="EbciqnUOLbvDbSPl"
-Content-Disposition: inline
-In-Reply-To: <CAGRGNgWfHb=5jS_Dg0pKw7q_K9mkd8S2o70OCBEnWmaJY+5V9w@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.68]
+X-ClientProxiedBy: EX13D22UWB003.ant.amazon.com (10.43.161.76) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 5 Jan 2021 11:43:42 +0100 Greg KH <gregkh@linuxfoundation.org> wrote:
 
---EbciqnUOLbvDbSPl
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+> On Tue, Jan 05, 2021 at 11:37:02AM +0100, SeongJae Park wrote:
+> > Hi Greg,
+> > 
+> > On Mon, 28 Dec 2020 12:29:11 +0100 Greg KH <gregkh@linuxfoundation.org> wrote:
+> > 
+> > > On Thu, Dec 17, 2020 at 05:03:57PM +0100, SeongJae Park wrote:
+> > > > From: SeongJae Park <sjpark@amazon.de>
+> > > > 
+> > > > Changes from v2
+> > > > (https://lore.kernel.org/stable/20201217130501.12702-1-sjpark@amazon.com/)
+> > > > - Move 'nr_pending' increase from 5th patch to 4th patch
+> > > > 
+> > > > Changes from v1
+> > > > (https://lore.kernel.org/stable/20201217081727.8253-1-sjpark@amazon.com/)
+> > > > - Remove wrong 'Signed-off-by' lines for 'Author Redacted'
+> > > 
+> > > All now queued up, but you also need a series of this for the 4.9.y tree
+> > > as well.
+> > 
+> > Thank you for your efforts!
+> > 
+> > However, I was able to cherry-pick this series, which is already merged in
+> > 4.4.y, to 4.9.y without conflicts.
+> > 
+> >     $ git checkout stable/linux-4.9.y -b xsa349_4.9
+> >     $ git cherry-pick d8b0d52e408ca..3c71d2f637c8
+> >     warning: inexact rename detection was skipped due to too many files.
+> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+> >     [xsa349_4.9 51b4cb3db28a] xen/xenbus: Allow watches discard events before queueing
+> >      Date: Mon Dec 14 10:02:45 2020 +0100
+> >      4 files changed, 16 insertions(+), 1 deletion(-)
+> >     warning: inexact rename detection was skipped due to too many files.
+> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+> >     [xsa349_4.9 3242225d9645] xen/xenbus: Add 'will_handle' callback support in xenbus_watch_path()
+> >      Date: Mon Dec 14 10:04:18 2020 +0100
+> >      6 files changed, 17 insertions(+), 7 deletions(-)
+> >     warning: inexact rename detection was skipped due to too many files.
+> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+> >     [xsa349_4.9 10d6c1301412] xen/xenbus/xen_bus_type: Support will_handle watch callback
+> >      Date: Mon Dec 14 10:05:47 2020 +0100
+> >      2 files changed, 4 insertions(+), 1 deletion(-)
+> >     warning: inexact rename detection was skipped due to too many files.
+> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+> >     [xsa349_4.9 3875703f1e6b] xen/xenbus: Count pending messages for each watch
+> >      Date: Mon Dec 14 10:07:13 2020 +0100
+> >      2 files changed, 21 insertions(+), 12 deletions(-)
+> >     warning: inexact rename detection was skipped due to too many files.
+> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+> >     [xsa349_4.9 40e3b315cd18] xenbus/xenbus_backend: Disallow pending watch messages
+> >      Date: Mon Dec 14 10:08:40 2020 +0100
+> >      1 file changed, 7 insertions(+)
+> > 
+> > Seems you tried to merge the series for upstream in 4.9.y:
+> > 
+> >     https://lore.kernel.org/stable/1609154834239118@kroah.com/
+> > 
+> > This must because I didn't test this series with v4.9 and mention it.  Sorry
+> > for making a confusion.  Could you please check this again?
+> 
+> I can't do anything with a set of git cherry-picks like above, can you
+> please send the patches as a series so that I can apply them cleanly?
 
-On 21:34 Tue 05 Jan 2021, Julian Calaby wrote:
->Hi Bhaskar,
->
->On Tue, Jan 5, 2021 at 9:32 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->>
->> s/defautly/de-faulty/p
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>  drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c
->> index 4165175cf5c0..d53397e7eb2e 100644
->> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c
->> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192ce/trx.c
->> @@ -671,7 +671,7 @@ bool rtl92ce_is_tx_desc_closed(struct ieee80211_hw *hw,
->>         u8 own = (u8)rtl92ce_get_desc(hw, entry, true, HW_DESC_OWN);
->>
->>         /*beacon packet will only use the first
->> -        *descriptor defautly,and the own may not
->> +        *descriptor de-faulty,and the own may not
->
->Same comments here as the previous patch:
->
->"de-faultly" makes less sense than "defaultly". This comment needs to
->be re-written by someone who knows what's going on here.
->
-Again, it was written "defautly" ..which is a wrong spelling , it has got
-nothing do with other thing.
->Thanks,
->
->--
->Julian Calaby
->
->Email: julian.calaby@gmail.com
->Profile: http://www.google.com/profiles/julian.calaby/
+Sure, I will post it soon.
 
---EbciqnUOLbvDbSPl
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> And I don't remember what happened with that failure, sorry, dealing
+> with hundreds of patches a week makes them all blur together...
 
------BEGIN PGP SIGNATURE-----
+I understand.  No problem at all.
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl/0RFoACgkQsjqdtxFL
-KRWrSAf7BOkYm/u93t//q7LmVGhbtZLS54NjoHN9u7mwJ7a41kKRkbJiWhHEFOwm
-CaAgAV2sBGFDsFUi8EAxpBks8XclVqpMBvG6Kf5D/CjESQUCEJoJj2Mh2ct/h8I6
-58z/7EamuuNo5A6se75m4d3KQ8wcQbaQMYZeTqcht46IvBK6SiUrrWAau1DFYWkZ
-RplWJvnSGTwBVxgoJ9ORPVB0iE8bSUbFw6K7UtMy+BOfXq9fBtEB9bJBdcdvZ8iH
-N9drl855n0NpwBeTZ2WMHo7CPYjOuulB+oBKLxEh3Th9cuqxzleGuCmnBbMG1G5n
-YTBPSz7m9NcHZMwYdI9Wn6nXFHbY0A==
-=znz5
------END PGP SIGNATURE-----
 
---EbciqnUOLbvDbSPl--
+Thanks,
+SeongJae Park
