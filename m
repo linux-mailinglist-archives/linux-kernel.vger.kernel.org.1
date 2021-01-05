@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8710A2EAC85
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 920A72EAC92
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729645AbhAEN6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:58:52 -0500
-Received: from gofer.mess.org ([88.97.38.141]:45217 "EHLO gofer.mess.org"
+        id S1728972AbhAEOCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:02:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726962AbhAEN6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:58:51 -0500
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id F2539C637E; Tue,  5 Jan 2021 13:58:08 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1609855089; bh=gH+Lz6nVQLvOPcvGmGMj2CJj4YjwnBzm+oF+wUpTKBo=;
+        id S1728034AbhAEOCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:02:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0EAC22AAB;
+        Tue,  5 Jan 2021 14:01:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609855316;
+        bh=ASplVFuNkPaZ936Orl5wWvFQMIR51qVCfXTsdj5Q8Uc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gv6wjYb3gwZkeT1yOF/i+WCz0iHlLUILW8Lj+yeF6Pk7W3PCwposSzOrlgyfnt4CG
-         E6i7P7zI+sYpI6D8z1mvlxt04wejgD+qSO6ypv5yY83LUZyNyOJAL9ubzjjpCmjiUb
-         +UXOfU64U4P1e1bAw1/IA+BkBtKHYbjq0av9vodOXCc4QT1OGiu4nDsLGDlQ4jiSK3
-         FQPbpE9SaHQe5NuL+/WFUTGfsyxgj+1sSj9YM7a1RYmoChlTITvkmnfdDoB6QV3PoO
-         LVttg9P6ny4co6Peh016HnKUhyZnKDeHqfq+xnVxpyDMF79UOfsSvp1YsjBQxzpSYZ
-         /7ut9Xx1dJQKg==
-Date:   Tue, 5 Jan 2021 13:58:08 +0000
-From:   Sean Young <sean@mess.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] btf: support ints larger than 128 bits
-Message-ID: <20210105135808.GA13438@gofer.mess.org>
-References: <20201219163652.GA22049@gofer.mess.org>
- <bf26fcc9-a2b5-9d6f-a2ac-e39a0b14d838@fb.com>
+        b=lWcB9rYOjo3v/q7hy/2jXAAJmAJKNcWXzgaf/a8Kz8yvhK/1jF17ndDs8aMoLFjLg
+         0GOh9ayC59rH8FVaUND2G3Axlymnx0vHGuug2q4h5Azprqa6yaABFNwoVRcZcMFAZN
+         411H8B7g2C1hr1s96q2o65tyiYbVz8/P5Ki2YmLR5+FYOnc5dwDvGJNvEw1QiUzk9n
+         0+AMaDah3es210bjQI+R2qgTjPqaGOOuHcTbG1iAGhx7/7IU11UbomszOWQMz07iUc
+         T8OtsUpmWtH5EVKVlf0Ww0iOcELRNHQvjz8REtrHOOZNWDb7eeY4yBXRA6zgIQXYtd
+         g5m7EAYu8o3EQ==
+Date:   Tue, 5 Jan 2021 14:01:28 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
+ voltage regulators
+Message-ID: <20210105140128.GC4487@sirena.org.uk>
+References: <20201130211145.3012-1-james.quinlan@broadcom.com>
+ <20201130211145.3012-2-james.quinlan@broadcom.com>
+ <20201209140122.GA331678@robh.at.kernel.org>
+ <CANCKTBsFALwF8Hy-=orH8D-nd-qyXqFDopATmKCvbqPbUTC7Sw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="GPJrCs/72TxItFYR"
 Content-Disposition: inline
-In-Reply-To: <bf26fcc9-a2b5-9d6f-a2ac-e39a0b14d838@fb.com>
+In-Reply-To: <CANCKTBsFALwF8Hy-=orH8D-nd-qyXqFDopATmKCvbqPbUTC7Sw@mail.gmail.com>
+X-Cookie: I'm ANN LANDERS!!  I can SHOPLIFT!!
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 10:21:09AM -0800, Yonghong Song wrote:
-> On 12/19/20 8:36 AM, Sean Young wrote:
-> > clang supports arbitrary length ints using the _ExtInt extension. This
-> > can be useful to hold very large values, e.g. 256 bit or 512 bit types.
-> > 
-> > Larger types (e.g. 1024 bits) are possible but I am unaware of a use
-> > case for these.
-> > 
-> > This requires the _ExtInt extension enabled in clang, which is under
-> > review.
-> > 
-> > Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
-> > Link: https://reviews.llvm.org/D93103
-> > 
-> > Signed-off-by: Sean Young <sean@mess.org>
-> > ---
-> > changes since v2:
-> >   - added tests as suggested by Yonghong Song
-> >   - added kernel pretty-printer
-> > 
-> >   Documentation/bpf/btf.rst                     |   4 +-
-> >   include/uapi/linux/btf.h                      |   2 +-
-> >   kernel/bpf/btf.c                              |  54 +-
-> >   tools/bpf/bpftool/btf_dumper.c                |  40 ++
-> >   tools/include/uapi/linux/btf.h                |   2 +-
-> >   tools/lib/bpf/btf.c                           |   2 +-
-> >   tools/testing/selftests/bpf/Makefile          |   3 +-
-> >   tools/testing/selftests/bpf/prog_tests/btf.c  |   3 +-
-> >   .../selftests/bpf/progs/test_btf_extint.c     |  50 ++
-> >   tools/testing/selftests/bpf/test_extint.py    | 535 ++++++++++++++++++
-> 
-> For easier review, maybe you can break this patch into a patch series like
-> below?
->   patch 1 (kernel related changes and doc)
->       kernel/bpf/btf.c, include/uapi/linux/btf.h,
->       tools/include/uapi/linux/btf.h
->       Documentation/bpf/btf.rst
->   patch 2 (libbpf support)
->       tools/lib/bpf/btf.c
->   patch 3 (bpftool support)
->       tools/bpf/bpftool/btf_dumper.c
->   patch 4 (testing)
->       rest files
 
-That makes sense, I'll send out v3 shortly.
+--GPJrCs/72TxItFYR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
+On Mon, Jan 04, 2021 at 05:12:11PM -0500, Jim Quinlan wrote:
 
-Sean
+> For us, the supplies are for the EP chip's power.  We have the PCIe
+> controller turning them "on" for power-on/resume and "off" for
+> power-off/suspend.  We need the "xxx-supply" property in the
+> controller's DT node because of the chicken-and-egg situation: if the
+> property was in the EP's DT node, the RC  will never discover the EP
+> to see that there is a regulator to turn on.   We would be happy with
+> a single supply name, something like "ep-power".  We would be ecstatic
+> to have two (ep0-power, ep1-power).
+
+Why can't the controller look at the nodes describing devices for
+standard properties?
+
+--GPJrCs/72TxItFYR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/0cTcACgkQJNaLcl1U
+h9DIbwf+NHMTbyBOhHAFuUOWo4I6SmPq9+RsD3YDgS59K1pPy618QRiBt/+c2TSw
+lV5lD8CiHXjlbVytAV+iw2xwmzsRI78YTuYz4o0GwKp2bKz23NQbGaCd8KN5oIEA
+ToNd53+zPtoRXHP61UC3DOJbDHVdAmYo7vHWh+VFrwl4V2Z/97MokfQ1CL6uIdRh
+NMwgaP2Hw8v6spI4q9rdpqEbzSaik7OkuNpFzDRRN2d/fB+NFv561M+lDAN7Ukyk
+CZbPC5l01SLY2dO6JugfEvf9lduKTU+QCfIQ2+BVOPA1C5r7Idrbg/s+ZSEoaX3L
+kGbxqKu3ifqx3n4xjDya93k/Ftrt/Q==
+=cqQe
+-----END PGP SIGNATURE-----
+
+--GPJrCs/72TxItFYR--
