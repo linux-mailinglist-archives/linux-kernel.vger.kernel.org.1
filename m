@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EC72EA583
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDFA2EA595
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbhAEGj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 01:39:56 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:45869 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725290AbhAEGjz (ORCPT
+        id S1726328AbhAEGsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 01:48:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbhAEGsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 01:39:55 -0500
-Received: by mail-il1-f198.google.com with SMTP id x10so29839291ilq.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 22:39:40 -0800 (PST)
+        Tue, 5 Jan 2021 01:48:33 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A34C061793;
+        Mon,  4 Jan 2021 22:47:53 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id w17so27625888ilj.8;
+        Mon, 04 Jan 2021 22:47:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WEIUrnV7kwpRZdk2n4ViOS8PBMynqQODHepR4XVRnjk=;
+        b=cPtGkacRM9TDsxMA69xv6SLX5aOxuxGEIUHQAJVGf7GagmC2jPQrT5B37Ammol18iN
+         HwhGtLcp2If7zovIDMUIKPWphP80vQLCXTW9F4sT7aWSml+M2OSp9fbV70OsjzdS4Jnl
+         AbvXYfpEfmMEqePbuKlsuOydIaftuyD8/Lvjif/rNXuAeBB1f0uOSL231+zvvU+GV4Bk
+         WTvwHAaKlLW5TLVrieAEBxiTHFXomTITNs3bK4re0GyXLY2qZJ47/WK5NP+YODofOnTW
+         r7zzcnfdtRPg7tttz2w1uLJShrCyJuxCdFirf4pPG9mVaJT10ojS0QEWDlLwBHWKIbwX
+         qXvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=07g5Su3wVkEtBIc4bVk48l6HEb0Q5sYjwp4ioRKi5hU=;
-        b=V5Gpv+Sdvan/D6q86mVJEgGtJY7wqnfsD4fdUZm0m43AEDWvXmaNM1nwWb7LpTjgvw
-         imx90oo6Pxu6YTWOhaFyZG0IGJDMqkajvm1ZLKSkzl2pNFruTLqn12eiKuDDAx5fz4wu
-         D5401vE911bE0IRDOD5Wz3mLr0Ta0anHzcTH5cyooioTLOShOtV34adVBBtZJ697dOV2
-         y9fSEnGqR71Ch73IHGPm8uusTdohV0yh5QPql/H1FTEvqwqCqrfkt9/XdsHLH9suBNoA
-         r7zvareaQp4lDG97CKskSy87eQuasNsgie9hUlU5iehQW5vDNGUkRkATIjisSOOjlOaY
-         5SBw==
-X-Gm-Message-State: AOAM531gTXb8h4lf+T6Ny01QdpIx84pUeTy5/wFmYKlrcX+w4lR/B/Jy
-        oW1+GvAxge6PJdvsCAIyEVuOsivAyFOllQ8KjMWXs2w4sasf
-X-Google-Smtp-Source: ABdhPJx6D4Y5MFZZgTa+u1b2RKy1Qkv6OSZnadFTIxD+EgipGtewdV8XpNS0QheuDtwOGODD8lKq/sWaHb64Z+MiK2fBR111gudL
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WEIUrnV7kwpRZdk2n4ViOS8PBMynqQODHepR4XVRnjk=;
+        b=JL8oSI2cCc3wgcqcy+zWrgtd1xHrRluYpdoB3rx5f368SUiZZy+xaUPPTqsXaaCNRc
+         lZgXvfKDKni6z431ujEmZ9oJGAqVaLXDcNYrw5qcT0C9fcs4wYhMunV4HFSN3TvaG4vv
+         GKQLoUmLTt9pP5lYrvPt6lh1ywOzdKdPjAYC7Av6qwHNnCp0NtXk3c8vix8xN82+SKLw
+         ejRS2g6IPJT4SuxB7ORIgY0bL1F1BWCqz90akaqcJnUMUzMqhs6L2cdcPSfYWnyIPpYZ
+         1ztXtG+qRicyM4HrzHQ3lSpbiHUrzv6B/1XUQqOlTlh8kU7ewRH0GULEvz3obsvxy4Xa
+         0Zqw==
+X-Gm-Message-State: AOAM532pCyGpF2IJeKW7t2RWS4vJctjX0UgRGKD9AdVBfwkgYehktt4s
+        tjN7lnYtAnjHYBF4fOjMP8MpqUNb8/LI3KYk6G9V9EiDFgI=
+X-Google-Smtp-Source: ABdhPJwKiwaQfeoCWzR0lPATVutk08oY9xuYHYL6tMf6GYLD46UDJggODg6tov1r5nlami5e3qeJemwtr7l7heUD0ko=
+X-Received: by 2002:a92:6403:: with SMTP id y3mr72656126ilb.72.1609829272565;
+ Mon, 04 Jan 2021 22:47:52 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c986:: with SMTP id y6mr51391451iln.57.1609828754796;
- Mon, 04 Jan 2021 22:39:14 -0800 (PST)
-Date:   Mon, 04 Jan 2021 22:39:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000014357e05b82177c8@google.com>
-Subject: kernel BUG at fs/ext4/ext4.h:LINE!
-From:   syzbot <syzbot+b2947dd3e8c72dbe609b@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
+References: <20210105003611.194511-1-icenowy@aosc.io>
+In-Reply-To: <20210105003611.194511-1-icenowy@aosc.io>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 5 Jan 2021 08:47:41 +0200
+Message-ID: <CAOQ4uxiFoQhrMbs91ZUNXqbJUXb5XRBgRrcq1rmChLKQGKg5xg@mail.gmail.com>
+Subject: Re: [PATCH v3] ovl: use a dedicated semaphore for dir upperfile caching
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Jan 5, 2021 at 2:36 AM Icenowy Zheng <icenowy@aosc.io> wrote:
+>
+> The function ovl_dir_real_file() currently uses the semaphore of the
+> inode to synchronize write to the upperfile cache field.
 
-syzbot found the following issue on:
+Although the inode lock is a rw_sem it is referred to as the "inode lock"
+and you also left semaphore in the commit subject.
+No need to re-post. This can be fixed on commit.
 
-HEAD commit:    f6e1ea19 Merge tag 'ceph-for-5.11-rc2' of git://github.com..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1364b1a3500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2455d075a1c4afa8
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2947dd3e8c72dbe609b
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+>
+> However, this function will get called by ovl_ioctl_set_flags(), which
+> utilizes the inode semaphore too. In this case ovl_dir_real_file() will
+> try to claim a lock that is owned by a function in its call stack, which
+> won't get released before ovl_dir_real_file() returns.
+>
+> Define a dedicated semaphore for the upperfile cache, so that the
+> deadlock won't happen.
+>
+> Fixes: 61536bed2149 ("ovl: support [S|G]ETFLAGS and FS[S|G]ETXATTR ioctls for directories")
+> Cc: stable@vger.kernel.org # v5.10
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> ---
+> Changes in v2:
+> - Fixed missing replacement in error handling path.
+> Changes in v3:
+> - Use mutex instead of semaphore.
+>
+>  fs/overlayfs/readdir.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/overlayfs/readdir.c b/fs/overlayfs/readdir.c
+> index 01620ebae1bd..3980f9982f34 100644
+> --- a/fs/overlayfs/readdir.c
+> +++ b/fs/overlayfs/readdir.c
+> @@ -56,6 +56,7 @@ struct ovl_dir_file {
+>         struct list_head *cursor;
+>         struct file *realfile;
+>         struct file *upperfile;
+> +       struct mutex upperfile_mutex;
 
-Unfortunately, I don't have any reproducer for this issue yet.
+That's a very specific name.
+This mutex protects members of struct ovl_dir_file, which could evolve
+into struct ovl_file one day (because no reason to cache only dir upper file),
+so I would go with a more generic name, but let's leave it to Miklos to decide.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b2947dd3e8c72dbe609b@syzkaller.appspotmail.com
+He could have a different idea altogether for fixing this bug.
 
-------------[ cut here ]------------
-kernel BUG at fs/ext4/ext4.h:3221!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 12285 Comm: syz-executor.5 Not tainted 5.11.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3221 [inline]
-RIP: 0010:ext4_get_group_info+0x340/0x3a0 fs/ext4/ext4.h:3216
-Code: ff 48 c7 c2 c0 03 5f 89 be 83 02 00 00 48 c7 c7 a0 ff 5e 89 c6 05 6c 40 d2 0a 01 e8 f9 59 aa 06 e9 e4 fd ff ff e8 20 9e 69 ff <0f> 0b e8 c9 31 ac ff e9 16 fd ff ff e8 bf 31 ac ff e9 50 fd ff ff
-RSP: 0018:ffffc90002ddfc58 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000ffff75e0 RCX: 0000000000000000
-RDX: ffff88806a563780 RSI: ffffffff8208d670 RDI: 0000000000000003
-RBP: ffff888021ef0000 R08: 0000000000000010 R09: 0000000000000000
-R10: ffffffff8208d3a0 R11: 0000000000000000 R12: ffff888021eee000
-R13: 0000000000000010 R14: ffff888021eee678 R15: ffffc90002ddfd60
-FS:  0000000002296940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005643b7305d18 CR3: 000000002b612000 CR4: 0000000000350ee0
-Call Trace:
- ext4_mb_load_buddy_gfp+0xc6/0x1350 fs/ext4/mballoc.c:1156
- ext4_discard_preallocations+0x8c6/0xea0 fs/ext4/mballoc.c:4400
- ext4_release_file+0x2f0/0x370 fs/ext4/file.c:150
- __fput+0x283/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
- exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x417b71
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 a4 1a 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffe30828230 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000417b71
-RDX: 0000000000000000 RSI: ffffffff88edf75e RDI: 0000000000000004
-RBP: 0000000000000001 R08: ffffffff8128f848 R09: 0000000006ccd617
-R10: 00007ffe30828310 R11: 0000000000000293 R12: 000000000119ca00
-R13: 000000000119ca00 R14: 00000000000003e8 R15: 000000000119c0dc
-Modules linked in:
----[ end trace 321f8951b9d369a1 ]---
-RIP: 0010:ext4_get_group_info fs/ext4/ext4.h:3221 [inline]
-RIP: 0010:ext4_get_group_info+0x340/0x3a0 fs/ext4/ext4.h:3216
-Code: ff 48 c7 c2 c0 03 5f 89 be 83 02 00 00 48 c7 c7 a0 ff 5e 89 c6 05 6c 40 d2 0a 01 e8 f9 59 aa 06 e9 e4 fd ff ff e8 20 9e 69 ff <0f> 0b e8 c9 31 ac ff e9 16 fd ff ff e8 bf 31 ac ff e9 50 fd ff ff
-RSP: 0018:ffffc90002ddfc58 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000ffff75e0 RCX: 0000000000000000
-RDX: ffff88806a563780 RSI: ffffffff8208d670 RDI: 0000000000000003
-RBP: ffff888021ef0000 R08: 0000000000000010 R09: 0000000000000000
-R10: ffffffff8208d3a0 R11: 0000000000000000 R12: ffff888021eee000
-R13: 0000000000000010 R14: ffff888021eee678 R15: ffffc90002ddfd60
-FS:  0000000002296940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Amir.
