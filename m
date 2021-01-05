@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A261C2EAE22
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3292EAE2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727750AbhAEPWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:22:38 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:43330 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727155AbhAEPWi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:22:38 -0500
-Received: by mail-oi1-f181.google.com with SMTP id q25so36328257oij.10;
-        Tue, 05 Jan 2021 07:22:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SyJz6levXME/UC68QYJ+4uWzdWFE5a0wg54YwkbqupA=;
-        b=sFr/tVBKMYMXmvM59hcEeuqJM/4x9aYYEe+YCnLFwj5OiuNJvNTavTALsQhEbzA41q
-         e5DTvZsocWnPoydSPVrji+JGfbp3JSHIukjOgZ2NuKMdbyzhDsHJr+nf4d3AaydGrjOR
-         CTjE9SvKyimO+TPg+h8sByWjXz8qyMiDZ09I9hjcvIzbqGwdG/3TYtiI0GneBRm9KKR1
-         3jAp0GYhJh1z9eSY7/VeETslz/j3NTfpg+O5ZhL12lnKNnPkDzwkqn1zKaOPoJZQZDAE
-         TjL1TuhLGgNkWjuYPd21s3Lx4rxjp9/QlLg7gy7emzIIo2cOMvCZlvQw+kBIdAbu++ai
-         yiAg==
-X-Gm-Message-State: AOAM531bQ38XdoKCdR2xggok27yTeAiurHzKrsNAsh+FF8IUrkrzU+kN
-        QeaGOVCyhuaDV0M57aS9TneXa8rc7Jt+vQ3+bTA=
-X-Google-Smtp-Source: ABdhPJzkhKmVXnk0Pj461vV/IRhT+3JmtzHyPQ5LcBcKlrPuJ0N6+JVymPrMth8UpJzTmbW/WgwN/RKozZ0duOtuXg8=
-X-Received: by 2002:aca:3cc5:: with SMTP id j188mr39452oia.54.1609860117189;
- Tue, 05 Jan 2021 07:21:57 -0800 (PST)
+        id S1727471AbhAEPXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:23:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725792AbhAEPXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:23:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5F1622B49;
+        Tue,  5 Jan 2021 15:23:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609860182;
+        bh=26Lu8Y1KwcsryytQMRnbB2efHh103hoNJOBRXR3UfEs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WhsjtFoaxgZCJPGLvcnfpQXhT2MvWT3p74jUOTuh7yI5zjv0LmkGmTpcXOANcFXep
+         s51y//vLkbN7Ky9ss2IAwHV8ogPkv5fiqNwbkkhgZ6tOZfDYyswzzJpSRYo5IgZXML
+         +JCaoWgd3IkuXSzx2mDuDGOGpV2O0h90L23A/IdF2UhU+AoZpK+zWe4NnnmPMGSd2k
+         5gbB6oWIcPg5if7wyx62FV2jzkgJ0iLs21MBoX4wbmK6CPZFx1Pv78/EpTO8P/0vW3
+         CtZTWid0SSLKTJeO5OZziFRUbH3S2fo6rV+0SFwGxeueNJ5TjPn6iOtCZnWOIStJGY
+         grIG+2wxlUXKw==
+Date:   Tue, 5 Jan 2021 16:22:52 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        pyarlaga@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH V7 1/2] i2c: i2c-qcom-geni: Store DMA mapping data in
+ geni_i2c_dev struct
+Message-ID: <20210105152252.GA1842@ninjato>
+References: <20201221123801.26643-1-rojay@codeaurora.org>
+ <20201221123801.26643-2-rojay@codeaurora.org>
 MIME-Version: 1.0
-References: <20201227130407.10991-1-wsa+renesas@sang-engineering.com> <20201227130407.10991-3-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20201227130407.10991-3-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Jan 2021 16:21:46 +0100
-Message-ID: <CAMuHMdXaOQRjp1vMwRDKK2ckBKX9BpLrqSfzGXRMnbXyKzSygQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] clk: renesas: r8a779a0: add clocks for RAVB
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
+Content-Disposition: inline
+In-Reply-To: <20201221123801.26643-2-rojay@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
 
-On Sun, Dec 27, 2020 at 2:04 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your patch!
+On Mon, Dec 21, 2020 at 06:08:00PM +0530, Roja Rani Yarubandi wrote:
+> Store DMA mapping data in geni_i2c_dev struct to enhance DMA mapping
+> data scope. For example during shutdown callback to unmap DMA mapping,
+> this stored DMA mapping data can be used to call geni_se_tx_dma_unprep
+> and geni_se_rx_dma_unprep functions.
+>=20
+> Add two helper functions geni_i2c_rx_msg_cleanup and
+> geni_i2c_tx_msg_cleanup to unwrap the things after rx/tx FIFO/DMA
+> transfers, so that the same can be used in geni_i2c_stop_xfer()
+> function during shutdown callback.
+>=20
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
 
-> --- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-> +++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-> @@ -148,6 +148,12 @@ static const struct cpg_core_clk r8a779a0_core_clks[] __initconst = {
->  };
->
->  static const struct mssr_mod_clk r8a779a0_mod_clks[] __initconst = {
-> +       DEF_MOD("avb0",         211,    R8A779A0_CLK_S3D1),
-> +       DEF_MOD("avb1",         212,    R8A779A0_CLK_S3D1),
-> +       DEF_MOD("avb2",         213,    R8A779A0_CLK_S3D1),
-> +       DEF_MOD("avb3",         214,    R8A779A0_CLK_S3D1),
-> +       DEF_MOD("avb4",         215,    R8A779A0_CLK_S3D1),
-> +       DEF_MOD("avb5",         216,    R8A779A0_CLK_S3D1),
+Applied to for-next, thanks!
 
-For all other SoCs, we used the HP clock (S3D2 on R-Car V3U) instead
-of the ZS clock as the parent clock of the EtherAVB module clocks.
-Hence I think we should be consequent and use S3D2 here.
 
->         DEF_MOD("csi40",        331,    R8A779A0_CLK_CSI0),
->         DEF_MOD("csi41",        400,    R8A779A0_CLK_CSI0),
->         DEF_MOD("csi42",        401,    R8A779A0_CLK_CSI0),
+--17pEHd4RhPHOinZp
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Gr{oetje,eeting}s,
+-----BEGIN PGP SIGNATURE-----
 
-                        Geert
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/0hEgACgkQFA3kzBSg
+KbZAIxAAr6ON6sRM0AIDU6gtWzCUU8IbeiOr5solqqptjvfZxSab7xG5idCpkI0z
+lkzBA17KicyFJ9IdpIMXc0PtWC0qNlE/kUSKkEXAbGMFyY3vXQvaw8XPAncuwrqt
+c1yGASBJmU7+lB3DbjAQjHz8i0g4q022fH6H6wAreogpnlo4mSRBt3Lccm7Mo9Bp
+cECCM3SHjSkRExT/OBzCAaK1ZP1zMwnwdd75M5VyTZE5XgONzVMgtQ/O+POXYZRl
+T/d23YAPAti5eIUqM0brJgCT9/AmADmn3O7V1aP66bSmqvZmdLHMuWevAgbuY94K
+o8ox9BJjTZiWZL8ftp2Sh8ZpVLN0nd0wCGghWPfsIxHIHrzEueTsKC27XGkahgS+
+gnHy981lU0hP9RDVCqjsgZDj5F4Rvp5asGcaAOhdOym8beY8U978eiOPtFzhtbxE
+7gaDb7Q9/qikyGABT0tEQwVHOEXiB3F4keDCBUc0saH5T1HHKJ73779DoPw3wXgV
+1D98KfVceZc1EvVTNxn6Bq69hwu91sE9sSEg/o9QiInUDv1pKbSS7KxnDqVi1Fto
+T4YOah5GSvb7PoivBU+YZy0JZ9xjZvubeyjyEFlQk0WvvmtVD/XiL0TZEgGbfQ8m
+zmitcnRtofrgOsxHfAuNtWgldCOkPtFeA/6y0fz2BR5MxpGrY68=
+=h+QZ
+-----END PGP SIGNATURE-----
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--17pEHd4RhPHOinZp--
