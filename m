@@ -2,65 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5932EA5EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1A42EA5F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbhAEHZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 02:25:51 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:12449 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725855AbhAEHZv (ORCPT
+        id S1726606AbhAEH2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 02:28:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32794 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726212AbhAEH2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 02:25:51 -0500
-X-UUID: 00b9807406e44507a71142604aa08bf2-20210105
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=iNJ8pMFepiraeDCLGRX8PhqklWQesO7XeNlg6qJmjj0=;
-        b=lH+5NPmAaoiplE2yO8HyiAHykaEhlZuVh9S7hkDfCq/Fduj4jBzKmaMy9qQB9IQCFiH0xj2BaR+HbpvY+l68jV/HWCWDrpjCDsV7e3UiFU0YVi0aBO5dxjvL2MuBf0NTPEnep5tWlzGNFZ9z2Ml30moMH0ZdQdwWhrrTTB7umTk=;
-X-UUID: 00b9807406e44507a71142604aa08bf2-20210105
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 136633279; Tue, 05 Jan 2021 15:25:01 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 5 Jan
- 2021 15:24:57 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 5 Jan 2021 15:24:56 +0800
-Message-ID: <1609831496.23685.7.camel@mhfsdcap03>
-Subject: Re: i2c: mediatek: Fix apdma and i2c hand-shake timeout
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     Wolfram Sang <wsa@the-dreams.de>
-CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
-Date:   Tue, 5 Jan 2021 15:24:56 +0800
-In-Reply-To: <20210104183202.GD935@ninjato>
-References: <1608812767-3254-1-git-send-email-qii.wang@mediatek.com>
-         <20210104182959.GC935@ninjato> <20210104183202.GD935@ninjato>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 5 Jan 2021 02:28:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609831639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yLi+sRfWovFP4SWZkCDhE0WXKSyNbBNcSRSqglRIET0=;
+        b=JeGiTqhI1IWrv8wWlrrr9J6xM/SkfzJPlGb5mR7oGuQwDLASsa2+32aqPfQdHBlM4rgRa6
+        qedxme74zQQom0sC7G5wDVsWTS9OTFPtz6CWQQOWAiWJfDradcJpZI5tsb5gFmuBAK1iOt
+        LuUALQbjWZBwdrU+mOHGXGUxQlZzzLw=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-VIVQkWoUOPK77BKA0CsRFg-1; Tue, 05 Jan 2021 02:27:16 -0500
+X-MC-Unique: VIVQkWoUOPK77BKA0CsRFg-1
+Received: by mail-wm1-f70.google.com with SMTP id z12so862511wmf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 23:27:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yLi+sRfWovFP4SWZkCDhE0WXKSyNbBNcSRSqglRIET0=;
+        b=H4IBFXoS7fcMbxuNU1p1h0PA2s0Fdu8N9+wTd27RG1xnO6LCoSc6ScIGOUFd5mIrbJ
+         BDSK/haKW1Q29Fhg5jiz0dE3beat9d9MpNmgwem0A4k1zcdAJbh27qfdOgZy13Njr4Mv
+         BJK4UInQOxDeeVAsfSGcjqp6v+sNGisUwdiAdGxzHEDCrXoO3Uq1jUDAh1KxsCTY9O68
+         VsQQBUwvzBV3jNyS65NngWc0m1KeVyXAf16Ku5RAHdvb+N9T9F76qdPgYHM1v877o8VB
+         0nwzCVwaifDCa4LyjwcSakUJdG2Pj8O5y9IVDJ2oFIYi3Ou1IBKTPk3l82upc3jAOvsw
+         FHLA==
+X-Gm-Message-State: AOAM533fMtRT54UxwtdCHYHZM7xwXKBHi3O4Qzvm706q/tA6XPVu3mE6
+        IuI7fpADF9TgfGBnlQBiXPhEprHOMTBP8c9iBJVjFglmCWVjczxUI5O3L09ctctbYSTOSYzsM6H
+        SxtNKg+YYMgWaJYIkYH0ynO31
+X-Received: by 2002:a5d:674c:: with SMTP id l12mr82014910wrw.399.1609831635482;
+        Mon, 04 Jan 2021 23:27:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwXOvkNcqBuyy0EkHXdQlPxr86w8if4j/0XYHqZCidCHd3pSnhLPYbVcoCMZxikKIYvl6WJdw==
+X-Received: by 2002:a5d:674c:: with SMTP id l12mr82014894wrw.399.1609831635230;
+        Mon, 04 Jan 2021 23:27:15 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id r20sm2685257wmh.15.2021.01.04.23.27.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 23:27:14 -0800 (PST)
+Subject: Re: Possible regression in cpuacct.stats system time
+To:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, alexandre.chartre@oracle.com,
+        peterz@infradead.org, w90p710@gmail.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com
+References: <12a1b9d4-8534-e23a-6bbd-736474928e6b@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <49664b8e-8b14-eb5c-f25c-da604b7c077b@redhat.com>
+Date:   Tue, 5 Jan 2021 08:27:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 8622BB2201912994D94D12F5823443A0F8E2910C300CEAE4236ECE2AE31BE4892000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <12a1b9d4-8534-e23a-6bbd-736474928e6b@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTAxLTA0IGF0IDE5OjMyICswMTAwLCBXb2xmcmFtIFNhbmcgd3JvdGU6DQo+
-IE9uIE1vbiwgSmFuIDA0LCAyMDIxIGF0IDA3OjI5OjU5UE0gKzAxMDAsIFdvbGZyYW0gU2FuZyB3
-cm90ZToNCj4gPiBPbiBUaHUsIERlYyAyNCwgMjAyMCBhdCAwODoyNjowN1BNICswODAwLCBxaWku
-d2FuZ0BtZWRpYXRlay5jb20gd3JvdGU6DQo+ID4gPiBGcm9tOiBRaWkgV2FuZyA8cWlpLndhbmdA
-bWVkaWF0ZWsuY29tPg0KPiA+ID4gDQo+ID4gPiBXaXRoIHRoZSBhcGRtYSByZW1vdmUgaGFuZC1z
-aGFrZSBzaWduYWwsIGl0IHJlcXVpcnMgc3BlY2lhbA0KPiA+ID4gb3BlcmF0aW9uIHRpbWluZyB0
-byByZXNldCBpMmMgbWFudWFsbHksIG90aGVyd2lzZSB0aGUgaW50ZXJydXB0DQo+ID4gPiB3aWxs
-IG5vdCBiZSB0cmlnZ2VyZWQsIGkyYyB0cmFuc21pc3Npb24gd2lsbCBiZSB0aW1lb3V0Lg0KPiA+
-ID4gDQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBRaWkgV2FuZyA8cWlpLndhbmdAbWVkaWF0ZWsuY29t
-Pg0KPiA+IA0KPiA+IEFwcGxpZWQgdG8gZm9yLWN1cnJlbnQsIHRoYW5rcyENCj4gDQo+IEFueSBG
-aXhlczotVGFnIHdlIGNvdWxkIGFkZD8NCj4gDQoNCkNvdWxkIHlvdSBoZWxwIG1lIGFkZDoNCglG
-aXhlczogODQyNmZlNzBjZmE0KCJpMmM6IG1lZGlhdGVrOiBBZGQgYXBkbWEgc3luYyBpbiBpMmMg
-ZHJpdmVyIikNClRoYW5rcw0K
+On 04/01/21 22:24, Nitesh Narayan Lal wrote:
+> Hi,
+> 
+> Last year I reported an issue of "suspicious RCU usage" [1] with the debug
+> kernel which was fixed with the patch:
+> 
+>      87fa7f3e98 "x86/kvm: Move context tracking where it belongs"
+> 
+> Recently I have come across a possible regression because of this
+> patch in the cpuacct.stats system time.
+> 
+> With the latest upstream kernel (5.11-rc2) when we set up a VM and start
+> observing the system time value from cpuacct.stat then it is significantly
+> higher than value reported with the kernel that doesn't have the
+> previously mentioned patch.
+> 
+> FWIU the reason behind this increase is the moving of guest_exit_irqoff()
+> to its proper location (near vmexit). This leads to the accounting
+> of instructions that were previously accounted into the guest context as a
+> part of the system time.
+> 
+> IMO this should be an expected behavior after the previously mentioned
+> change. Is that a right conclusion or I am missing something here?
+
+Yes it's expected and I think it's more precise, since this is host 
+overhead rather than guest operation .
+
+> Another question that I have is about the patch
+> 
+>      d7a08882a0 "KVM: x86: Unconditionally enable irqs in guest context"
+> 
+> considering we are enabling irqs early now in the code path, do we still
+> need this patch?
+
+No, we don't.  Since the code is a bit simpler without it, feel free to 
+send a revert.
+
+Thanks,
+
+Paolo
+
+> 
+> [1] https://lore.kernel.org/lkml/ece36eb1-253a-8ec6-c183-309c10bb35d5@redhat.com/
+> 
+> --
+> Thanks
+> Nitesh
+> 
 
