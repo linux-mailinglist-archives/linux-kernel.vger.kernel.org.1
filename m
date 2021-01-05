@@ -2,186 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84932EAA32
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9572EAA3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729852AbhAELvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:51:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729673AbhAELvf (ORCPT
+        id S1729784AbhAELzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:55:21 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:36924 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbhAELzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:51:35 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11CEC061795
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 03:50:54 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id o19so71960379lfo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 03:50:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GMWcCJQk+Rc106f6w1tIJLqayhhWxkXCtH/PhYMDIiI=;
-        b=L3N8vC83TqKzTctV7E2OtqvdyhBreaCwsrCVeTMeMHIp3o8wHSirwAyY+z1QMf5Kot
-         jyoi43+zd2SYr2QQp8ASbJnV933WljNMOdRmltzU+Ndf5utJaqn2sBcmbSS1F+ahZ857
-         7SQLwE4R77jOBz1HxEWTHuFOY0BlEidUklbFQUpcP7V38t/q/w45Wu7WXos820LA5GWt
-         E96qrzRO8yB6mwe8AK+6agZs8HOGr8d4LMjRKdeDtrRRshDGUxvJL00HnRrIH/uvpNZP
-         lguIh/lvVc4wOn4ulFhPuVfb/tfqAHddtb4VPjoGwyvVjI00EbhQ2yInvspX1/QUf1dY
-         h2bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GMWcCJQk+Rc106f6w1tIJLqayhhWxkXCtH/PhYMDIiI=;
-        b=dUgtOsAjrblU8QBYtUNMh2LBdyT4XlmjpVy9ltH2x7YpTgdEtGidsNxHt2qnMTuK2/
-         3MPpypEp3DAqf904r2xckw2h5ozlRr1PGky0Ztaus7uxpn8gRvR9wiiX83UV57CmG/VR
-         m9xr1RFlBGAbogMSK0qlil/out0YCfobs+17Q0KF3ER8ughve8kmXsHQptNXMwf3Y/+h
-         W4YhydMlVTq8QmRF38eEsEEt4dRQ5a+ZthKwcCi/mWOG3RiMEAXkXZbSzvKO4WIzTftJ
-         1f8fHm0OMSoyfIMvlxOrRdmq2NHqjDelMyDYpCFFCmsXbZ9m73SkSwM2Ersc/p400x6h
-         yAxw==
-X-Gm-Message-State: AOAM530l+ZQkMj0lzcpP+elTuJEsWu97zan3KimyTbrjblcMpxWJBHh7
-        ZehP2ZbJ5AHgBVEfOzv8RoZy3/g+92HVzrpR9CcqFg==
-X-Google-Smtp-Source: ABdhPJwIJ4Eri51uGtG/aVqVtz2LvPh0hXyL/E8bZpYX6Ob5yGscIPGvWXzqG3VUE1KwxJiPW4lZiwft1o2i16OsuXw=
-X-Received: by 2002:a2e:8e98:: with SMTP id z24mr35256172ljk.83.1609847453386;
- Tue, 05 Jan 2021 03:50:53 -0800 (PST)
+        Tue, 5 Jan 2021 06:55:21 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105BmrfW133587;
+        Tue, 5 Jan 2021 11:54:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=M2bss34iyTdCgUkE9jjRxCz2msDHPu7nsOY5jZS56zo=;
+ b=ujc08EEk2LVWLRROByqfoV2LYYrtWBgWA7Nv8xADzivMG1khtH49K3U89wIP9VucFsk4
+ z+kvjM5DcU6GKAqLgyRl/QqXVFuIU7iAniTdx1ltNlfj9xmyyMTtwconIsqacXd/VBgd
+ NpTePkAycZa7De8JPcB7QkiDk0A1NNI6LwRUydPJoufapSwEHd+YbBlAAVRGYx2Y+PbI
+ JeC2eM2zXCtX/S4DsOdBEHuNRUqbFimZWdNxLJbeMDs2Ug/z31XWaNTanTZftluWa5kX
+ Y4s7H55MYMkB8LEswJKoBdVFXWRDgEABFDjoNPiuJ7k+UI5qmDeN0Vhvq+h65lfYLiGA iA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 35tgskre9r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 05 Jan 2021 11:54:29 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105BoLLF056623;
+        Tue, 5 Jan 2021 11:54:29 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 35uxnsj6ht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Jan 2021 11:54:28 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 105BsRbV018087;
+        Tue, 5 Jan 2021 11:54:27 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 05 Jan 2021 11:54:26 +0000
+Date:   Tue, 5 Jan 2021 14:52:33 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     jovin555 <jovin555@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Todd Kjos <tkjos@android.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        Christian Brauner <christian@brauner.io>
+Subject: Re: [PATCH] staging: android: ashmem: Declared file operation with
+ const keyword
+Message-ID: <20210105115233.GA2809@kadam>
+References: <20201228051301.14983-1-jovin555@gmail.com>
 MIME-Version: 1.0
-References: <20210104195840.1593-1-alex@ghiti.fr> <20210104195840.1593-3-alex@ghiti.fr>
-In-Reply-To: <20210104195840.1593-3-alex@ghiti.fr>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 5 Jan 2021 17:20:42 +0530
-Message-ID: <CAAhSdy0WpPg-=+NMGFORfrd+Rgq0kwKu7Z3ioMAEfxj+J+KPjw@mail.gmail.com>
-Subject: Re: [RFC PATCH 02/12] riscv: Protect the kernel linear mapping
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Zong Li <zong.li@sifive.com>, Christoph Hellwig <hch@lst.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201228051301.14983-1-jovin555@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=940 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101050075
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 bulkscore=0 clxscore=1011 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=964
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101050075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 1:31 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
->
-> The kernel is now mapped at the end of the address space and it should
-> be accessed through this mapping only: so map the whole kernel in the
-> linear mapping as read only.
->
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> ---
->  arch/riscv/include/asm/page.h |  9 ++++++++-
->  arch/riscv/mm/init.c          | 29 +++++++++++++++++++++--------
->  2 files changed, 29 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> index 98188e315e8d..a93e35aaa717 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -102,8 +102,15 @@ extern unsigned long pfn_base;
->  extern unsigned long max_low_pfn;
->  extern unsigned long min_low_pfn;
->  extern unsigned long kernel_virt_addr;
-> +extern uintptr_t load_pa, load_sz;
-> +
-> +#define linear_mapping_pa_to_va(x)     ((void *)((unsigned long)(x) + va_pa_offset))
-> +#define kernel_mapping_pa_to_va(x)     \
-> +       ((void *)((unsigned long) (x) + va_kernel_pa_offset))
-> +#define __pa_to_va_nodebug(x)                          \
-> +       ((x >= load_pa && x < load_pa + load_sz) ?      \
-> +               kernel_mapping_pa_to_va(x): linear_mapping_pa_to_va(x))
+On Mon, Dec 28, 2020 at 12:13:00AM -0500, jovin555 wrote:
+> Warning found by checkpatch.pl script.
+> 
+> Signed-off-by: jovin555 <jovin555@gmail.com>
 
-This change should be part of PATCH1
+Your Mama didn't name you "jovin555".  You need to use your real name
+like signing a legal document.  Same for the "From:" header.
 
->
-> -#define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
->  #define linear_mapping_va_to_pa(x)     ((unsigned long)(x) - va_pa_offset)
->  #define kernel_mapping_va_to_pa(x)     \
->         ((unsigned long)(x) - va_kernel_pa_offset)
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 9d06ff0e015a..7b87c14f1d24 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -159,8 +159,6 @@ void __init setup_bootmem(void)
->  {
->         phys_addr_t mem_start = 0;
->         phys_addr_t start, end = 0;
-> -       phys_addr_t vmlinux_end = __pa_symbol(&_end);
-> -       phys_addr_t vmlinux_start = __pa_symbol(&_start);
+regards,
+dan carpenter
 
-This as well.
-
->         u64 i;
->
->         /* Find the memory region containing the kernel */
-> @@ -168,7 +166,7 @@ void __init setup_bootmem(void)
->                 phys_addr_t size = end - start;
->                 if (!mem_start)
->                         mem_start = start;
-> -               if (start <= vmlinux_start && vmlinux_end <= end)
-> +               if (start <= load_pa && (load_pa + load_sz) <= end)
->                         BUG_ON(size == 0);
->         }
->
-> @@ -179,8 +177,13 @@ void __init setup_bootmem(void)
->          */
->         memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
->
-> -       /* Reserve from the start of the kernel to the end of the kernel */
-> -       memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
-> +       /*
-> +        * Reserve from the start of the kernel to the end of the kernel
-> +        * and make sure we align the reservation on PMD_SIZE since we will
-> +        * map the kernel in the linear mapping as read-only: we do not want
-> +        * any allocation to happen between _end and the next pmd aligned page.
-> +        */
-> +       memblock_reserve(load_pa, (load_sz + PMD_SIZE - 1) & ~(PMD_SIZE - 1));
->
->         max_pfn = PFN_DOWN(memblock_end_of_DRAM());
->         max_low_pfn = max_pfn;
-> @@ -438,7 +441,9 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
->  #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
->  #endif
->
-> -static uintptr_t load_pa, load_sz;
-> +uintptr_t load_pa, load_sz;
-> +EXPORT_SYMBOL(load_pa);
-> +EXPORT_SYMBOL(load_sz);
-
-I think all changes till here should be in PATCH1.
-
-Only the changes here onwards seems to be as-per PATCH description.
-
->
->  static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
->  {
-> @@ -596,9 +601,17 @@ static void __init setup_vm_final(void)
->
->                 map_size = best_map_size(start, end - start);
->                 for (pa = start; pa < end; pa += map_size) {
-> -                       va = (uintptr_t)__va(pa);
-> +                       pgprot_t prot = PAGE_KERNEL;
-> +
-> +                       /* Protect the kernel mapping that lies in the linear mapping */
-> +                       if (pa >= __pa(_start) && pa < __pa(_end))
-> +                               prot = PAGE_KERNEL_READ;
-> +
-> +                       /* Make sure we get virtual addresses in the linear mapping */
-> +                       va = (uintptr_t)linear_mapping_pa_to_va(pa);
-> +
->                         create_pgd_mapping(swapper_pg_dir, va, pa,
-> -                                          map_size, PAGE_KERNEL);
-> +                                          map_size, prot);
->                 }
->         }
->
-> --
-> 2.20.1
->
-
-Regards,
-Anup
