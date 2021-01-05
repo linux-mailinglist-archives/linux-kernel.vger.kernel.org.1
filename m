@@ -2,150 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646202EA7B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3782EA7B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbhAEJfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:35:13 -0500
-Received: from mga17.intel.com ([192.55.52.151]:51517 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728460AbhAEJfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:35:11 -0500
-IronPort-SDR: FTVBKLBiFPlr4X3pFTV6W0XCD5ttzSthT7xiBxftPQyMsslaii9JEJgWxnrf9IbQwcSePATmx6
- CJBSCYgY3S3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156864101"
-X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
-   d="scan'208";a="156864101"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 01:34:15 -0800
-IronPort-SDR: Q9PolnMbw6qWmNGPTsXyTZCh0/LqSeTD7l8tWk5VSeg289HhseqCxMN1VcQteUTVr6rngkeAdm
- 4B3at3xF1lpA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
-   d="scan'208";a="569665187"
-Received: from host.sh.intel.com ([10.239.154.115])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Jan 2021 01:34:13 -0800
-From:   Ye Xiang <xiang.ye@intel.com>
-To:     jikos@kernel.org, jic23@kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
-Subject: [PATCH 6/6] iio: hid-sensor-rotation: Add timestamp channel
-Date:   Tue,  5 Jan 2021 17:35:15 +0800
-Message-Id: <20210105093515.19135-7-xiang.ye@intel.com>
+        id S1728620AbhAEJgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:36:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727260AbhAEJgo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:36:44 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3EBC061574;
+        Tue,  5 Jan 2021 01:36:03 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id c5so35454581wrp.6;
+        Tue, 05 Jan 2021 01:36:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=CBEgq3lGKdv8uL6EZCtDkPUPdtOI/LvqjfEie+xNIH4=;
+        b=HJiFrO0cyFUE3EdhkZ9ieByRFQCmu2tX+0L8OoIw4Wob2ig1rJoDxLCjxIQnyLdkES
+         SioIrCKKqRUCdIYJRnHHT7DH2PlW/UdIRpSfWuZwCmLdKhc/OUZpvSuRfBlbneWGJyz7
+         ZpTpMHZr6MH21FebXJKTorOtdY/31zxbsf5Oig5Tf7niL6jH0Jca7W5tA9EZaHf7eFrf
+         s8GfCy82KvLI/Z3W+VmSKjwi6MWD0zldc+X9455cJLoiLVNFmAuolk+7rC2oCndiGKB2
+         dSf4ivxSDbGtUAPA+FpgOuqJARYz4fUdzftUMx+JZT7jv1z3acWwet08NEa4KajaJGVY
+         ua/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CBEgq3lGKdv8uL6EZCtDkPUPdtOI/LvqjfEie+xNIH4=;
+        b=WIpM7WD9q9hXlBAPvdZY4Ye7JhmXUtjBbt/LSz+jpJseNDF/33i/zLe4q6c8Y8fJXO
+         +xQnSi/xBAhPKVe+JZaWOdCgoNlzpmJ9IukvUcKI4/YhyenUBtr6shgh8VwC29Eww12X
+         a2i3daHDaUFRW+Xtu9mZyYuuuk5PlkLITumYNyb/WYfdoVu0FWy5T2RLKJ1WO5XZ/axI
+         2kj5DwrOhuW7LliaLNLfKwoM86LDk23pmuXFIRlPz7FH6zOTBTjA1PQ5cnEKMb0lS+nS
+         CQ67WytgHHwDAMxIO0W58UKVSUlyWPqrUm2HI5efh8JAwmoJBpeQ3rz+NeXTbmlqfa0P
+         heaw==
+X-Gm-Message-State: AOAM533ki9cTmSRAdSw4rMEBDwz9c/GWU6E1ukAi52QxSoiQnfzyXK/A
+        5OiwhUJiAGl9NaRPf5CU0c0=
+X-Google-Smtp-Source: ABdhPJzbwhnvkmHNN5DP1N2v4XP1Us0fHF241cvauNZBE+WGFQnXleX6Na2ODfxxGTIz0yr5/IiMsg==
+X-Received: by 2002:adf:e512:: with SMTP id j18mr83068277wrm.52.1609839361280;
+        Tue, 05 Jan 2021 01:36:01 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d99:1a00:4199:29a0:95cf:5dfe])
+        by smtp.gmail.com with ESMTPSA id j10sm3532540wmj.7.2021.01.05.01.36.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 01:36:00 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     George Cherian <george.cherian@marvell.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha Sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] docs: octeontx2: tune rst markup
+Date:   Tue,  5 Jan 2021 10:35:53 +0100
+Message-Id: <20210105093553.31879-1-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210105093515.19135-1-xiang.ye@intel.com>
-References: <20210105093515.19135-1-xiang.ye@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each sample has a timestamp field with this change. This timestamp may
-be from the sensor hub when present or local kernel timestamp. And the
-unit of timestamp is nanosecond.
+Commit 80b9414832a1 ("docs: octeontx2: Add Documentation for NPA health
+reporters") added new documentation with improper formatting for rst, and
+caused a few new warnings for make htmldocs in octeontx2.rst:169--202.
 
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+Tune markup and formatting for better presentation in the HTML view.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/iio/orientation/hid-sensor-rotation.c | 46 +++++++++++--------
- 1 file changed, 26 insertions(+), 20 deletions(-)
+applies cleanly on current master (v5.11-rc2) and next-20201205
 
-diff --git a/drivers/iio/orientation/hid-sensor-rotation.c b/drivers/iio/orientation/hid-sensor-rotation.c
-index 665ccf3673cc..b0245b3b7ffc 100644
---- a/drivers/iio/orientation/hid-sensor-rotation.c
-+++ b/drivers/iio/orientation/hid-sensor-rotation.c
-@@ -20,11 +20,15 @@ struct dev_rot_state {
- 	struct hid_sensor_hub_callbacks callbacks;
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info quaternion;
--	u32 sampled_vals[4];
-+	struct {
-+		u32 sampled_vals[4] __aligned(16);
-+		u64 timestamp __aligned(8);
-+	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
- 	int scale_precision;
- 	int value_offset;
-+	s64 timestamp;
- };
- 
- static const u32 rotation_sensitivity_addresses[] = {
-@@ -42,8 +46,10 @@ static const struct iio_chan_spec dev_rot_channels[] = {
- 		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
- 					BIT(IIO_CHAN_INFO_OFFSET) |
- 					BIT(IIO_CHAN_INFO_SCALE) |
--					BIT(IIO_CHAN_INFO_HYSTERESIS)
--	}
-+					BIT(IIO_CHAN_INFO_HYSTERESIS),
-+		.scan_index = 0
-+	},
-+	IIO_CHAN_SOFT_TIMESTAMP(1)
- };
- 
- /* Adjust channel real bits based on report descriptor */
-@@ -75,7 +81,7 @@ static int dev_rot_read_raw(struct iio_dev *indio_dev,
- 	case IIO_CHAN_INFO_RAW:
- 		if (size >= 4) {
- 			for (i = 0; i < 4; ++i)
--				vals[i] = rot_state->sampled_vals[i];
-+				vals[i] = rot_state->scan.sampled_vals[i];
- 			ret_type = IIO_VAL_INT_MULTIPLE;
- 			*val_len =  4;
- 		} else
-@@ -137,15 +143,6 @@ static const struct iio_info dev_rot_info = {
- 	.write_raw = &dev_rot_write_raw,
- };
- 
--/* Function to push data to buffer */
--static void hid_sensor_push_data(struct iio_dev *indio_dev, u8 *data, int len)
--{
--	dev_dbg(&indio_dev->dev, "hid_sensor_push_data >>\n");
--	iio_push_to_buffers(indio_dev, (u8 *)data);
--	dev_dbg(&indio_dev->dev, "hid_sensor_push_data <<\n");
--
--}
--
- /* Callback handler to send event after all samples are received and captured */
- static int dev_rot_proc_event(struct hid_sensor_hub_device *hsdev,
- 				unsigned usage_id,
-@@ -155,10 +152,15 @@ static int dev_rot_proc_event(struct hid_sensor_hub_device *hsdev,
- 	struct dev_rot_state *rot_state = iio_priv(indio_dev);
- 
- 	dev_dbg(&indio_dev->dev, "dev_rot_proc_event\n");
--	if (atomic_read(&rot_state->common_attributes.data_ready))
--		hid_sensor_push_data(indio_dev,
--				(u8 *)rot_state->sampled_vals,
--				sizeof(rot_state->sampled_vals));
-+	if (atomic_read(&rot_state->common_attributes.data_ready)) {
-+		if (!rot_state->timestamp)
-+			rot_state->timestamp = iio_get_time_ns(indio_dev);
+George, please ack.
+Jonathan, please pick this minor formatting clean-up patch.
+
+ .../ethernet/marvell/octeontx2.rst            | 59 +++++++++++--------
+ 1 file changed, 34 insertions(+), 25 deletions(-)
+
+diff --git a/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst b/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
+index d3fcf536d14e..00bdc10fe2b8 100644
+--- a/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
++++ b/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
+@@ -165,45 +165,54 @@ Devlink health reporters
+ NPA Reporters
+ -------------
+ The NPA reporters are responsible for reporting and recovering the following group of errors
 +
-+		iio_push_to_buffers_with_timestamp(indio_dev, &rot_state->scan,
-+						   rot_state->timestamp);
+ 1. GENERAL events
 +
-+		rot_state->timestamp = 0;
-+	}
- 
- 	return 0;
- }
-@@ -173,10 +175,14 @@ static int dev_rot_capture_sample(struct hid_sensor_hub_device *hsdev,
- 	struct dev_rot_state *rot_state = iio_priv(indio_dev);
- 
- 	if (usage_id == HID_USAGE_SENSOR_ORIENT_QUATERNION) {
--		memcpy(rot_state->sampled_vals, raw_data,
--					sizeof(rot_state->sampled_vals));
-+		memcpy(&rot_state->scan.sampled_vals, raw_data,
-+		       sizeof(rot_state->scan.sampled_vals));
+    - Error due to operation of unmapped PF.
+    - Error due to disabled alloc/free for other HW blocks (NIX, SSO, TIM, DPI and AURA).
 +
- 		dev_dbg(&indio_dev->dev, "Recd Quat len:%zu::%zu\n", raw_len,
--					sizeof(rot_state->sampled_vals));
-+			sizeof(rot_state->scan.sampled_vals));
-+	} else if (usage_id == HID_USAGE_SENSOR_TIME_TIMESTAMP) {
-+		rot_state->timestamp = hid_sensor_convert_timestamp(&rot_state->common_attributes,
-+								    *(s64 *)raw_data);
- 	}
+ 2. ERROR events
++
+    - Fault due to NPA_AQ_INST_S read or NPA_AQ_RES_S write.
+    - AQ Doorbell Error.
++
+ 3. RAS events
++
+    - RAS Error Reporting for NPA_AQ_INST_S/NPA_AQ_RES_S.
++
+ 4. RVU events
++
+    - Error due to unmapped slot.
  
- 	return 0;
+-Sample Output
+--------------
+-~# devlink health
+-pci/0002:01:00.0:
+-  reporter hw_npa_intr
+-      state healthy error 2872 recover 2872 last_dump_date 2020-12-10 last_dump_time 09:39:09 grace_period 0 auto_recover true auto_dump true
+-  reporter hw_npa_gen
+-      state healthy error 2872 recover 2872 last_dump_date 2020-12-11 last_dump_time 04:43:04 grace_period 0 auto_recover true auto_dump true
+-  reporter hw_npa_err
+-      state healthy error 2871 recover 2871 last_dump_date 2020-12-10 last_dump_time 09:39:17 grace_period 0 auto_recover true auto_dump true
+-   reporter hw_npa_ras
+-      state healthy error 0 recover 0 last_dump_date 2020-12-10 last_dump_time 09:32:40 grace_period 0 auto_recover true auto_dump true
++Sample Output::
++
++	~# devlink health
++	pci/0002:01:00.0:
++	  reporter hw_npa_intr
++	      state healthy error 2872 recover 2872 last_dump_date 2020-12-10 last_dump_time 09:39:09 grace_period 0 auto_recover true auto_dump true
++	  reporter hw_npa_gen
++	      state healthy error 2872 recover 2872 last_dump_date 2020-12-11 last_dump_time 04:43:04 grace_period 0 auto_recover true auto_dump true
++	  reporter hw_npa_err
++	      state healthy error 2871 recover 2871 last_dump_date 2020-12-10 last_dump_time 09:39:17 grace_period 0 auto_recover true auto_dump true
++	   reporter hw_npa_ras
++	      state healthy error 0 recover 0 last_dump_date 2020-12-10 last_dump_time 09:32:40 grace_period 0 auto_recover true auto_dump true
+ 
+ Each reporter dumps the
+  - Error Type
+  - Error Register value
+  - Reason in words
+ 
+-For eg:
+-~# devlink health dump show  pci/0002:01:00.0 reporter hw_npa_gen
+- NPA_AF_GENERAL:
+-         NPA General Interrupt Reg : 1
+-         NIX0: free disabled RX
+-~# devlink health dump show  pci/0002:01:00.0 reporter hw_npa_intr
+- NPA_AF_RVU:
+-         NPA RVU Interrupt Reg : 1
+-         Unmap Slot Error
+-~# devlink health dump show  pci/0002:01:00.0 reporter hw_npa_err
+- NPA_AF_ERR:
+-        NPA Error Interrupt Reg : 4096
+-        AQ Doorbell Error
++For eg::
++
++	~# devlink health dump show  pci/0002:01:00.0 reporter hw_npa_gen
++	 NPA_AF_GENERAL:
++	         NPA General Interrupt Reg : 1
++	         NIX0: free disabled RX
++	~# devlink health dump show  pci/0002:01:00.0 reporter hw_npa_intr
++	 NPA_AF_RVU:
++	         NPA RVU Interrupt Reg : 1
++	         Unmap Slot Error
++	~# devlink health dump show  pci/0002:01:00.0 reporter hw_npa_err
++	 NPA_AF_ERR:
++	        NPA Error Interrupt Reg : 4096
++	        AQ Doorbell Error
 -- 
 2.17.1
 
