@@ -2,145 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7AD2EA362
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0692EA36C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727584AbhAECfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:35:38 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10544 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbhAECfi (ORCPT
+        id S1727824AbhAECmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:42:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbhAECmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:35:38 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D8xQ161GfzMDtm;
-        Tue,  5 Jan 2021 10:33:45 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 5 Jan 2021 10:34:45 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] net: qrtr: fix null-ptr-deref in qrtr_ns_remove
-Date:   Tue, 5 Jan 2021 10:40:51 +0800
-Message-ID: <20210105024051.150451-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 4 Jan 2021 21:42:00 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E389DC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 18:41:19 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id w18so26977958iot.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 18:41:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GcsC8lp175/RSBxacvCaBbl9ftLmbMsKR9zwf/ifHzg=;
+        b=SLcWXupBZc8HMhM+91+H2UlhEKcVksMphM8CG5/Q8gZUo+5VUDuaot1HWck411dKSg
+         ZZnjYMTwChIQ7K5y12TC4tkiEb4MWdUgtQ/gcByWPsQNRASSKNkA4mfNib1b6AJVQHdV
+         yH0WuXERXI/dWbY3dRON7zFZzTZzuVctpNQvzxZbP/N2TElc7PWkOvZj6tTOnV5fBWC2
+         OGUl5aepNIk831CToxOMhRH4YwcbKZiRFX+v/30037mtbBz1XzDj0yFoQNU7Ky6a+CW7
+         6eL9FFBzCTtp0bG7T3MBBeiwyCDErQnn64tbf3GFU79aSayd9iU0H/IMyUbnQUPHMoDF
+         n65w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GcsC8lp175/RSBxacvCaBbl9ftLmbMsKR9zwf/ifHzg=;
+        b=Y3NtVgY6idY9KBccs8mCBw5Hf1S+JjjL140/CkzoThc9cCmXkMguLpyCf4utG9wMvr
+         xwJz+nYz4ih7dye0grb9aQEz3FAu6ZhBO7rXHZdOxdyszaOwU0j8/cBv5N3l/qixRot0
+         BfthFk+u7tnN0Dx+b1fLRk/KKn4GAAFJVJy8oW7Zuvl/oU+5KEgFBoOY6YYBqUljJ+Vf
+         pXr1XnEo2h8cb3r83UVPQvOsz1xaucxX3Zux68PB+Kp1zsVWfZ1nFuaJeIg0aSzTbAvO
+         0dYF2jfG7NhkTM5xzOJ6NzN65q7dHiDIB+60ZlMFXgjhyy2wn2Bh2fR9vkTN4weuBcbo
+         r5oA==
+X-Gm-Message-State: AOAM532CCJfn7XTHuAJjOYKHzWUkyrfejkVGRRrmf7REwCPk9BLsdhbx
+        ihg2RC2LDAZjcuQZVegjt5DKwI6YAsNexiBOVOc=
+X-Google-Smtp-Source: ABdhPJw098+0w73Etaf/YEk5an/KfZ2f4rdPkMsKtsXMfSj6cyHJh3/2cMtaNszffXADxcbvrsO7JyHT8MbZFVJQ+HI=
+X-Received: by 2002:a02:ccdc:: with SMTP id k28mr62694993jaq.137.1609814478958;
+ Mon, 04 Jan 2021 18:41:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+References: <20201226025117.2770-1-jiangshanlai@gmail.com> <20201226025117.2770-4-jiangshanlai@gmail.com>
+ <20210104135649.GO3021@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210104135649.GO3021@hirez.programming.kicks-ass.net>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Tue, 5 Jan 2021 10:41:07 +0800
+Message-ID: <CAJhGHyB_MUHG8GGANcN9sQbjY7M5m8WPHQgXp-PmkGK481M5Tg@mail.gmail.com>
+Subject: Re: [PATCH -tip V3 3/8] workqueue: introduce wq_online_cpumask
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A null-ptr-deref bug is reported by Hulk Robot like this:
---------------
-KASAN: null-ptr-deref in range [0x0000000000000128-0x000000000000012f]
-Call Trace:
-qrtr_ns_remove+0x22/0x40 [ns]
-qrtr_proto_fini+0xa/0x31 [qrtr]
-__x64_sys_delete_module+0x337/0x4e0
-do_syscall_64+0x34/0x80
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x468ded
---------------
+On Mon, Jan 4, 2021 at 9:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Sat, Dec 26, 2020 at 10:51:11AM +0800, Lai Jiangshan wrote:
+> > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> >
+> > wq_online_cpumask is the cached result of cpu_online_mask with the
+> > going-down cpu cleared.
+>
+> You can't use cpu_active_mask ?
 
-When qrtr_ns_init fails in qrtr_proto_init, qrtr_ns_remove which would
-be called later on would raise a null-ptr-deref because qrtr_ns.workqueue
-has been destroyed.
 
-Fix it by making qrtr_ns_init have a return value and adding a check in
-qrtr_proto_init.
+When a cpu is going out:
+(cpu_active_mask is not protected by workqueue mutexs.)
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- net/qrtr/ns.c   |  7 ++++---
- net/qrtr/qrtr.c | 14 +++++++++++---
- net/qrtr/qrtr.h |  2 +-
- 3 files changed, 16 insertions(+), 7 deletions(-)
+create_worker() for unbound pool  |  cpu offlining
+check cpu_active_mask             |
+                                  |  remove bit from cpu_active_mask
+                                  |  no cpu in pool->attrs->cpumask is active
+set pool->attrs->cpumask to worker|
+and hit the warning
 
-diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
-index 56aaf8cb6..8d00dfe81 100644
---- a/net/qrtr/ns.c
-+++ b/net/qrtr/ns.c
-@@ -755,7 +755,7 @@ static void qrtr_ns_data_ready(struct sock *sk)
- 	queue_work(qrtr_ns.workqueue, &qrtr_ns.work);
- }
- 
--void qrtr_ns_init(void)
-+int qrtr_ns_init(void)
- {
- 	struct sockaddr_qrtr sq;
- 	int ret;
-@@ -766,7 +766,7 @@ void qrtr_ns_init(void)
- 	ret = sock_create_kern(&init_net, AF_QIPCRTR, SOCK_DGRAM,
- 			       PF_QIPCRTR, &qrtr_ns.sock);
- 	if (ret < 0)
--		return;
-+		return ret;
- 
- 	ret = kernel_getsockname(qrtr_ns.sock, (struct sockaddr *)&sq);
- 	if (ret < 0) {
-@@ -797,12 +797,13 @@ void qrtr_ns_init(void)
- 	if (ret < 0)
- 		goto err_wq;
- 
--	return;
-+	return 0;
- 
- err_wq:
- 	destroy_workqueue(qrtr_ns.workqueue);
- err_sock:
- 	sock_release(qrtr_ns.sock);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(qrtr_ns_init);
- 
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index f4ab3ca6d..95533e451 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -1288,12 +1288,20 @@ static int __init qrtr_proto_init(void)
- 
- 	rc = sock_register(&qrtr_family);
- 	if (rc) {
--		proto_unregister(&qrtr_proto);
--		return rc;
-+		goto err_proto;
- 	}
- 
--	qrtr_ns_init();
-+	rc = qrtr_ns_init();
-+	if (rc) {
-+		goto err_sock;
-+	}
- 
-+	return 0;
-+
-+err_sock:
-+	sock_unregister(qrtr_family.family);
-+err_proto:
-+	proto_unregister(&qrtr_proto);
- 	return rc;
- }
- postcore_initcall(qrtr_proto_init);
-diff --git a/net/qrtr/qrtr.h b/net/qrtr/qrtr.h
-index dc2b67f17..3f2d28696 100644
---- a/net/qrtr/qrtr.h
-+++ b/net/qrtr/qrtr.h
-@@ -29,7 +29,7 @@ void qrtr_endpoint_unregister(struct qrtr_endpoint *ep);
- 
- int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len);
- 
--void qrtr_ns_init(void);
-+int qrtr_ns_init(void);
- 
- void qrtr_ns_remove(void);
- 
--- 
-2.23.0
 
+And when a cpu is onlining, there may be some workers which were just created
+after the workqueue hotplug callback is finished but before cpu_active_mask
+was updated. workqueue has not call back after cpu_active_mask updated and
+these workers' cpumask is not updated.
+
+For percpu workers, these problems can be handled with the help of
+POOL_DISASSOCIATED which is protected by workqueue mutexs and the
+help of sched/core.c which doesn't warn when per-cpu-kthread.
+
+For unbound workers, the way to handle it without using wq_online_cpumask
+is much more complex when a cpu is going out.
