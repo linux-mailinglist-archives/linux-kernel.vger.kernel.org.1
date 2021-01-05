@@ -2,63 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4E12EB446
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 677B52EB455
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731316AbhAEUbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 15:31:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729608AbhAEUba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 15:31:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6D6AF22D6F;
-        Tue,  5 Jan 2021 20:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609878649;
-        bh=6jk8LUNkuT6UT8V2dIEIEAvshdN5ynbOq0LyAdOZGpU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=cXNqYD3Jl5xmhbqwcfTJjHXnpuSewQOLL2CPf8AkLn5d/Ql9SkeC59rFeJeRJSe4P
-         7uONjAVS9250/s/uwKDeDL/eN01W1Uj5v1phDbaCL1ZQQnALgx+90nJA1iA7GDhgij
-         FaUWagEBJutDPdVlmjMcPZxapbE2PD/mJ3KUHRr0HVMYSuIOFL0FSwURUTwysB3Ed8
-         56/Uhg5QL/BBSwN8xaSHuG3LJ08DpjgyTy+x+AEPlzM6cxLZlViWKys4LvXQzv2fIj
-         B1ZHFlgi+1juqNeIQLjx4Sup036yLtQXwNJogOFv1Q4T8LGM+Txr5v8kcFWmWM8Fv0
-         zNvdGci0WAd3g==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 5F35560158;
-        Tue,  5 Jan 2021 20:30:49 +0000 (UTC)
-Subject: Re: [GIT PULL] afs: Fix directory entry name handling
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <313281.1609803317@warthog.procyon.org.uk>
-References: <313281.1609803317@warthog.procyon.org.uk>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <313281.1609803317@warthog.procyon.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-fixes-04012021
-X-PR-Tracked-Commit-Id: 366911cd762db02c2dd32fad1be96b72a66f205d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6207214a70bfaec7b41f39502353fd3ca89df68c
-Message-Id: <160987864937.17840.510598651603746746.pr-tracker-bot@kernel.org>
-Date:   Tue, 05 Jan 2021 20:30:49 +0000
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>, dhowells@redhat.com,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1728422AbhAEUfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 15:35:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727645AbhAEUfn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 15:35:43 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D7CC061574;
+        Tue,  5 Jan 2021 12:35:02 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id z9so696795qtn.4;
+        Tue, 05 Jan 2021 12:35:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fxhczrrnewt21nxO1uR6gSDuR5cXjQC5Qv2bp8P5/qA=;
+        b=gF1bawSTcWA+rJwICZ7lUWmT9+5jRJi3jGLujo+qeOBAWsbBYhBl8TVaJHQn5w3S1A
+         WaKOnf8Lfy+8QpyJKupaoGR2XHkjYrQwsSGMb8fuS7GRN1dUEu+jezfgxmwnW2h8Sw97
+         hucRwNNyydGbH+q8Ie+i8H5Q4Yd8ulSjYikC8CqrTkYNMCsXyK4/ootDH20h4oThjMMJ
+         lVoiSjAegvE3Z6NoeQq461p/ohTSJFF274TqHjKCO0Zv2k2rArCma7rxT5B+HxfUgzIE
+         Yf0wsyFbJAGdgTxx/0c6oDpLfr0AT5KLH1x7P+XcHOZAAISqT8SKImFUWFk5HSpE1e3w
+         1c4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fxhczrrnewt21nxO1uR6gSDuR5cXjQC5Qv2bp8P5/qA=;
+        b=KkxpkvTPh1LQSQa4EUJCpJZIvedyXabiG77qBi6nIiYIEPbbRPzKr8tksiJNu3ABv2
+         FfoPx+TFVvhjvrfmvFEq+cH7UDmDQJLOQ8kc5NifIaGxqhI/9yT1/odBuzw0N2rfFTg5
+         wIitj6nLCTrI6NJSLLzb0dVi1cbrY0Eehz/LtYlsZmhox++oV540gKONkp27dMyM8MSU
+         Jr0/oLczc7iEMny5pCKMSlwtYqoqoJ4UyMkrJ//R6uVLhMv+PMp4UgEmslEZtHI5SPzN
+         i570y3QmUHL3jiWuBzgGPqTn/DmuIYbROjWJp4KxCY7ur+4xYPmWxt5huuNW0fdj4fGj
+         HbHw==
+X-Gm-Message-State: AOAM532h924ilQAODGNK9FGcM1r2oSxSfEpkw2HMc0ZCcFUhBl9VIiO+
+        u28aLYh8j1OtbFNbePVKe2p45cc2/mWIsg==
+X-Google-Smtp-Source: ABdhPJwW1aJo52Yl0DPsjJAhW/Z5FpmrgOBNMQJLOE91bt+gl2ARHixqc2f0weTNnI101TG1cobAnQ==
+X-Received: by 2002:ac8:4e87:: with SMTP id 7mr1238831qtp.310.1609878901673;
+        Tue, 05 Jan 2021 12:35:01 -0800 (PST)
+Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id u65sm259481qkb.58.2021.01.05.12.35.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 12:35:01 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] MIPS: c-r4k: Fix section mismatch for loongson2_sc_init
+Date:   Tue,  5 Jan 2021 13:34:56 -0700
+Message-Id: <20210105203456.98148-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 04 Jan 2021 23:35:17 +0000:
+When building with clang, the following section mismatch warning occurs:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-fixes-04012021
+WARNING: modpost: vmlinux.o(.text+0x24490): Section mismatch in
+reference from the function r4k_cache_init() to the function
+.init.text:loongson2_sc_init()
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6207214a70bfaec7b41f39502353fd3ca89df68c
+This should have been fixed with commit ad4fddef5f23 ("mips: fix Section
+mismatch in reference") but it was missed. Remove the improper __init
+annotation like that commit did.
 
-Thank you!
+Fixes: 078a55fc824c ("MIPS: Delete __cpuinit/__CPUINIT usage from MIPS code")
+Link: https://github.com/ClangBuiltLinux/linux/issues/787
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ arch/mips/mm/c-r4k.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 4f976d687ab0..f67297b3175f 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -1593,7 +1593,7 @@ static int probe_scache(void)
+ 	return 1;
+ }
+ 
+-static void __init loongson2_sc_init(void)
++static void loongson2_sc_init(void)
+ {
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+ 
+
+base-commit: 36bbbd0e234d817938bdc52121a0f5473b3e58f5
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.30.0
+
