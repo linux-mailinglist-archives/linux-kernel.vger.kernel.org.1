@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831882EADFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2562EAE0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbhAEPN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:13:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbhAEPN1 (ORCPT
+        id S1727514AbhAEPQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:16:08 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40006 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbhAEPQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:13:27 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBB1C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 07:12:47 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id h22so73419346lfu.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 07:12:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HAo7Bv8+PRfdj2CkpolJ7sGIND+KAsBMkBthX9wMOnQ=;
-        b=nXF6LTFHUiPWNbgpQptFaoHNu6rHv9aA3WymgaGg/q+kGwRrWGC330+8keVqxiYXvw
-         8OxtMqcGn7pGNNYNc1GnZUnhAhmFUsiSWYwAHO5Ha/WeLIp//8jODUIqr29NmBMc9N6h
-         ygl40qgc7bbLz8r7YFTPktCZXywfUGW32RjEVXxc3BL/Gbx3wWv/7lKfyTWQIgXj7sk7
-         xajddhsmIjpkSsAXUYilUh7XRAoZFogMtOBpuiP7yqBsPqiao8B4XXYg1CYjuLBaRx4T
-         GjBWx4hi3xydwviiGo329KgYLzymsV5Z83rYK3FUdh2q634jWeA36oc2wufTQrQYJm/6
-         Snhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HAo7Bv8+PRfdj2CkpolJ7sGIND+KAsBMkBthX9wMOnQ=;
-        b=gPmlurrPy8TBqoKecV2IskTdyk4lkBTtTIPfvSpwbKh3uhWvehJ0dOpQMAiIAleFMK
-         R4rtWRFRPY7WExJRVa9rZjlb/vUup+UIfGu6GjRNMrlhL2hFgj0fz4WGFE/XWPDzSwN4
-         HHhxS8AhlrQE8JN9Htd1gS7pGHOuqM2ZMYN7NIp5ofqMPHuMojz4ZP0NBN5zqxNLEuJi
-         2gsMIHpVRrj9nZvzCALole/wmcRMta1lRXhXk6cu2DBHY8pAINtW+qcSKyFsfpImUrdh
-         NUYd9LuP1HlDHGM4PNo1avLtRqlpWEns2bxN7+dmbFn6oYtvhrNnBE4jphLHShJXBhri
-         Q+Yg==
-X-Gm-Message-State: AOAM531AXivpOAeehBUEeusgibb1HatvRSZHm0OZFHwNCHJp8L2s0RNP
-        Dmv1z1q82LFoXUFDuF85QkKOGwM//cbWxuzfT2KZrg==
-X-Google-Smtp-Source: ABdhPJyZuUP0iw3fFjsWvuN4pAS3grsapRCgenHPfDpKKx2GUzTe777FefXfEueNs7vyvRC8ZS65a9Cqc11DWHr89nU=
-X-Received: by 2002:a19:8bc6:: with SMTP id n189mr33151500lfd.291.1609859565763;
- Tue, 05 Jan 2021 07:12:45 -0800 (PST)
+        Tue, 5 Jan 2021 10:16:08 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 105FETW6012746;
+        Tue, 5 Jan 2021 09:14:29 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1609859669;
+        bh=nuX80bf/fKM0rAVHKejrKdp4IPPhNW6wiM5mhLEB56I=;
+        h=From:To:CC:Subject:Date;
+        b=ny8HljZ6dA8lPRvfSgcOTWDKGNlIUs9e2XMl54A74WcSb/zUrnQnB/ZI/FQQ7CptC
+         MLZLr2lFINqYi1EySUUGMFY82ZKNK3ogg5X/bU5iO0oH2joHJjPD/VwHva1ji0w1ua
+         0wisH9hvlNpEFB3eU2xciBqk3h0flJij9raVzTF8=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 105FETFA098336
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 5 Jan 2021 09:14:29 -0600
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 5 Jan
+ 2021 09:14:29 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 5 Jan 2021 09:14:29 -0600
+Received: from a0393678-ssd.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 105FEPOC005961;
+        Tue, 5 Jan 2021 09:14:26 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/6] PCI: J7200/J721E PCIe bindings
+Date:   Tue, 5 Jan 2021 20:44:15 +0530
+Message-ID: <20210105151421.23237-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201229102235.29550-1-brgl@bgdev.pl>
-In-Reply-To: <20201229102235.29550-1-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 5 Jan 2021 16:12:35 +0100
-Message-ID: <CACRpkdYUgokeO7EhoRY9EVZhM0vUNAertgGatHz8HTHy-fW1Eg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3 0/4] configfs: implement committable items and
- add sample code
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 11:22 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+Patch series adds DT nodes in order to get PCIe working in J7200.
+Also includes couple of fixes for J721e.
 
- Committable items in configfs are well defined and documented but unfortunately
-> so far never implemented.
->
-> The use-case we have over at the GPIO subsystem is using configfs in
-> conjunction with sysfs to replace our current gpio-mockup testing module
-> with one that will be much more flexible and will allow complete coverage
-> of the GPIO uAPI.
->
-> The current gpio-mockup module is controlled using module parameters which
-> forces the user to reload it everytime they need to change the chip
-> configuration or layout and makes it difficult to extend its functionality.
->
-> Testing module based on configfs would allow fine-grained control over dummy
-> GPIO chips but since GPIO devices must be configured before they are
-> instantiated, we need committable items.
->
-> This implements them and adds code examples to configfs_sample module. The
-> first two patches are just cosmetic.
->
-> v1 -> v2:
-> - fix a 'set but not used' build warning reported by kernel test robot
->
-> v2 -> v3:
-> - use (1UL << bit) instead of BIT() in patch 2/4
-> - extend configfs_dump_one() to make it print the new flags
-> - clear the CONFIGFS_USET_DIR bit on the live group dirent
->
-> Rebased on top of v5.11-rc1.
+v1 of the patch series can be found @ [1]
+v2 of the patch series can be found @ [2]
+v3 of the patch series can be found @ [3]
 
-This patch set makes a lot of sense to me.
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Changes from v3:
+1) Removed Fixes tag as the patches doesn't have to be backported
 
-Yours,
-Linus Walleij
+Changes from v2:
+1) Moved serdes_refclk node out of interconnect node and also replaced
+   "_" with "-"
+
+Changes from v1:
+1) Include only the device tree patches here (the binding patch is sent
+separately)
+2) Include couple of patches that fixes J721E DTS.
+
+[1] -> http://lore.kernel.org/r/20201102101154.13598-1-kishon@ti.com
+[2] -> http://lore.kernel.org/r/20201210130747.25436-1-kishon@ti.com
+[3] -> http://lore.kernel.org/r/20210104122232.24071-1-kishon@ti.com
+
+Kishon Vijay Abraham I (6):
+  arm64: dts: ti: k3-j721e-main: Fix supported max outbound regions
+  arm64: dts: ti: k3-j721e-main: Remove "syscon" nodes added for
+    pcieX_ctrl
+  arm64: dts: ti: k3-j7200-main: Add SERDES and WIZ device tree node
+  arm64: dts: ti: k3-j7200-main: Add PCIe device tree node
+  arm64: dts: ti: k3-j7200-common-proc-board: Enable SERDES0
+  arm64: dts: ti: k3-j7200-common-proc-board: Enable PCIe
+
+ .../dts/ti/k3-j7200-common-proc-board.dts     |  38 ++++++
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 111 ++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     |  52 ++------
+ 3 files changed, 157 insertions(+), 44 deletions(-)
+
+-- 
+2.17.1
+
