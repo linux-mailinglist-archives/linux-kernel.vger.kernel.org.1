@@ -2,98 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D322EA72B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E392EA72E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbhAEJSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:18:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22412 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725880AbhAEJSE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:18:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609838198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3/mNj4FXntJ6f+kqOYOdyOb/PeZxp46sguDuCB5Sa8g=;
-        b=gVAwIwT3y1cQ3XjFOnay0M81TKVpLO5CebapgXkgSYEtWf/BYPq/xVgbDAX/aGGjkh+Hnq
-        yx4BGTDg8limHuB/q1ZZzmglvi/2lsVDPPZnjeDvdIb8sVjavW2Rh8otC1ukBG/HaNIWFa
-        CnT1yKZ5HPqqGNp3sExywGsqhMQ1Ey4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-67LHksxIP_6SrGcjPnQ5tw-1; Tue, 05 Jan 2021 04:16:36 -0500
-X-MC-Unique: 67LHksxIP_6SrGcjPnQ5tw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2863800D62;
-        Tue,  5 Jan 2021 09:16:34 +0000 (UTC)
-Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F0FD060873;
-        Tue,  5 Jan 2021 09:16:33 +0000 (UTC)
-Subject: Re: uninitialized pmem struct pages
-To:     Michal Hocko <mhocko@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20210104100323.GC13207@dhcp22.suse.cz>
- <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
- <CAPcyv4h6mdKrwpqXfO0e_=sKjB-pY5KbP9ii+tQyFsK5bPkb=A@mail.gmail.com>
- <20210105075028.GS13207@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <5fa1ff35-71f3-2526-6819-34c1ee959295@redhat.com>
-Date:   Tue, 5 Jan 2021 10:16:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727556AbhAEJUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:20:33 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:33284 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725876AbhAEJUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:20:32 -0500
+Received: from localhost.localdomain (unknown [112.20.112.14])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxTzYxL_RfPGYKAA--.726S2;
+        Tue, 05 Jan 2021 17:19:46 +0800 (CST)
+From:   siyanteng@loongson.cn
+To:     Harry Wei <harryxiyou@gmail.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Yanteng Si <siyanteng@loongson.cn>
+Subject: [PATCH] docs/zh_CN: add Chinese booting and index file
+Date:   Tue,  5 Jan 2021 17:19:42 +0800
+Message-Id: <20210105091942.812515-1-siyanteng@loongson.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210105075028.GS13207@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxTzYxL_RfPGYKAA--.726S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr48AF4rKrWxtr4rAr13urg_yoW7Jw17pr
+        s3GryfKa1UA342vrWfKF1UJr1rJr4fGFWUJ3Wktw1kXrn7AF18JrnFyry0yry7Kry8uFW2
+        vrWUKrWjkr1Yk3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUva14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lw4CEc2x0rVAKj4xx
+        MxkIecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
+        uYvjfUntxhDUUUU
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.01.21 08:50, Michal Hocko wrote:
-> On Mon 04-01-21 21:17:43, Dan Williams wrote:
->> On Mon, Jan 4, 2021 at 2:45 AM David Hildenbrand <david@redhat.com> wrote:
-> [...]
->>> I believe Dan mentioned somewhere that he wants to see a real instance
->>> of this producing a BUG before actually moving forward with a fix. I
->>> might be wrong.
->>
->> I think I'm missing an argument for the user-visible effects of the
->> "Bad." statements above. I think soft_offline_page() is a candidate
->> for a local fix because mm/memory-failure.c already has a significant
->> amount of page-type specific knowledge. So teaching it "yes" for
->> MEMORY_DEVICE_PRIVATE-ZONE_DEVICE and "no" for other ZONE_DEVICE seems
->> ok to me.
-> 
-> I believe we do not want to teach _every_ pfn walker about zone device
-> pages. This would be quite error prone. Especially when a missig check
-> could lead to a silently broken data or BUG_ON with debugging enabled
-> (which is not the case for many production users). Or are we talking
-> about different bugs here?
+From: Yanteng Si <siyanteng@loongson.cn>
 
-I'd like us to stick to the documentation, e.g., include/linux/mmzone.h
+This is the Chinese version of booting and index file
 
+Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
+---
+ .../translations/zh_CN/mips/booting.rst       | 47 +++++++++++++++++++
+ .../translations/zh_CN/mips/index.rst         | 45 ++++++++++++++++++
+ 2 files changed, 92 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/mips/booting.rst
+ create mode 100644 Documentation/translations/zh_CN/mips/index.rst
 
-"
-pfn_valid() is meant to be able to tell if a given PFN has valid memmap
-associated with it or not. This means that a struct page exists for this
-pfn. The caller cannot assume the page is fully initialized in general.
-Hotplugable pages might not have been onlined yet. pfn_to_online_page()
-will ensure the struct page is fully online and initialized. Special
-pages (e.g. ZONE_DEVICE) are never onlined and should be treated
-accordingly.
-"
-
+diff --git a/Documentation/translations/zh_CN/mips/booting.rst b/Documentation/translations/zh_CN/mips/booting.rst
+new file mode 100644
+index 000000000000..12e0aa76b485
+--- /dev/null
++++ b/Documentation/translations/zh_CN/mips/booting.rst
+@@ -0,0 +1,47 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++Chinese translated version of Documentation/mips/booting.rst
++
++If you have any comment or update to the content, please contact the
++original document maintainer directly.  However, if you have a problem
++communicating in English you can also ask the Chinese maintainer for
++help.  Contact the Chinese maintainer if this translation is outdated
++or if there is a problem with the translation.
++
++Chinese maintainer: Yanteng Si <siyanteng@loongson.cn>
++---------------------------------------------------------------------
++Documentation/mips/booting.rst 的中文翻译
++
++如果想评论或更新本文的内容，请直接联系原文档的维护者。如果你使用英文
++交流有困难的话，也可以向中文版维护者求助。如果本翻译更新不及时或者翻
++译存在问题，请联系中文版维护者。
++
++中文版维护者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
++中文版翻译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
++中文版校译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
++
++以下为正文
++---------------------------------------------------------------------
++
++BMIPS设备树引导
++------------------------
++
++  一些bootloaders只支持在内核镜像开始地址处的单一入口点。而其它
++  bootloaders将跳转到ELF的开始地址处。两种方案都被支持的；因为
++  CONFIG_BOOT_RAW=y and CONFIG_NO_EXCEPT_FILL=y, 所以第一条指令
++  会立即跳转到kernel_entry()入口处执行。
++
++  与arch/arm情况(b)类似，dt感知的引导加载程序需要设置以下寄存器:
++
++         a0 : 0
++
++         a1 : 0xffffffff
++
++         a2 : RAM中指向设备树块的物理指针(在chapterII中定义)。
++              设备树可以位于前512MB物理地址空间(0x00000000 -
++              0x1fffffff)的任何位置，以64位边界对齐。
++
++  legacy bootloaders不会使用这样的约定，并且它们不传入DT块。
++  在这种情况下，Linux将通过选中CONFIG_DT_*查找DTB。
++
++  这个约定只在32位系统中定义，因为目前没有任何64位的BMIPS实现。
+diff --git a/Documentation/translations/zh_CN/mips/index.rst b/Documentation/translations/zh_CN/mips/index.rst
+new file mode 100644
+index 000000000000..244b16b7ef51
+--- /dev/null
++++ b/Documentation/translations/zh_CN/mips/index.rst
+@@ -0,0 +1,45 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++Chinese translated version of Documentation/mips/index.rst
++
++If you have any comment or update to the content, please contact the
++original document maintainer directly.  However, if you have a problem
++communicating in English you can also ask the Chinese maintainer for
++help.  Contact the Chinese maintainer if this translation is outdated
++or if there is a problem with the translation.
++
++Chinese maintainer: Yanteng Si <siyanteng@loongson.cn>
++---------------------------------------------------------------------
++Documentation/mips/index.rst 的中文翻译
++
++如果想评论或更新本文的内容，请直接联系原文档的维护者。如果你使用英文
++交流有困难的话，也可以向中文版维护者求助。如果本翻译更新不及时或者翻
++译存在问题，请联系中文版维护者。
++
++中文版维护者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
++中文版翻译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
++中文版校译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
++
++以下为正文
++---------------------------------------------------------------------
++
++
++===========================
++MIPS特性文档
++===========================
++
++.. toctree::
++   :maxdepth: 2
++   :numbered:
++
++   booting
++   ingenic-tcu
++
++   features
++
++.. only::  subproject and html
++
++   Indices
++   =======
++
++   * :ref:`genindex`
 -- 
-Thanks,
-
-David / dhildenb
+2.27.0
 
