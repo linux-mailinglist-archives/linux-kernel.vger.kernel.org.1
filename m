@@ -2,181 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12AAF2EA5C8
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7BE2EA5C9
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbhAEHRm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Jan 2021 02:17:42 -0500
-Received: from smtp.h3c.com ([60.191.123.50]:48855 "EHLO h3cspam02-ex.h3c.com"
+        id S1726525AbhAEHR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 02:17:59 -0500
+Received: from mga09.intel.com ([134.134.136.24]:40879 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbhAEHRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 02:17:42 -0500
-Received: from DAG2EX08-IDC.srv.huawei-3com.com ([10.8.0.71])
-        by h3cspam02-ex.h3c.com with ESMTP id 1057EJp3068645;
-        Tue, 5 Jan 2021 15:14:19 +0800 (GMT-8)
-        (envelope-from gao.yanB@h3c.com)
-Received: from DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) by
- DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 5 Jan 2021 15:14:21 +0800
-Received: from DAG2EX08-IDC.srv.huawei-3com.com ([fe80::81d1:43f5:5563:4c58])
- by DAG2EX08-IDC.srv.huawei-3com.com ([fe80::81d1:43f5:5563:4c58%10]) with
- mapi id 15.01.2106.002; Tue, 5 Jan 2021 15:14:21 +0800
-From:   Gaoyan <gao.yanB@h3c.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ppp@vger.kernel.org" <linux-ppp@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH] [v2]net:ppp: remove disc_data_lock in ppp line discipline
-Thread-Topic: [PATCH] [v2]net:ppp: remove disc_data_lock in ppp line
- discipline
-Thread-Index: AdbgF4nu3oTHId93RmKcCrU29a4qZwC+8wyA
-Date:   Tue, 5 Jan 2021 07:14:21 +0000
-Message-ID: <1eb0a5f2eb524fbe83eac2349132e09d@h3c.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.161.27]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1725939AbhAEHR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 02:17:58 -0500
+IronPort-SDR: rxbnynCdOMmcaghjfo9jMnTK4yHs8tIgvhwssnyrVBWqzfR58AqWa8sBxgVnNIeRZGnSg2W65D
+ lb/oRUYoCZBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="177217348"
+X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
+   d="scan'208";a="177217348"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 23:17:17 -0800
+IronPort-SDR: HLSXPmG/ebpymc5Cm5QUhu0Wx8yLFzlA89q0sMQI7czP2tHmZe4zZ//NvWy5o34vKgqefzg161
+ uinHppj4AHOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
+   d="scan'208";a="462210163"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Jan 2021 23:17:09 -0800
+Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
+ violation
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Ziqi Chen <ziqichen@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, cang@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
+ <e8980753-fa48-7862-e5ce-0d756d5d97a6@intel.com>
+ <X/NkktFnWI48XNcp@builder.lan>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <b82dd5f1-179c-6834-9d8f-88005b74ce51@intel.com>
+Date:   Tue, 5 Jan 2021 09:16:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 1057EJp3068645
+In-Reply-To: <X/NkktFnWI48XNcp@builder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg KH:
-
-On Fri, 1 Jan 2021 09:18:48 +0100, Greg KH wrote:
->On Fri, Jan 01, 2021 at 11:37:18AM +0800, Gao Yan wrote:
->> In tty layer, it provides tty->ldisc_sem to protect all tty_ldisc_ops
->> including ppp_sync_ldisc. So I think tty->ldisc_sem can also protect
->> tty->disc_data, and the disc_data_lock is not necessary.
+On 4/01/21 8:55 pm, Bjorn Andersson wrote:
+> On Mon 04 Jan 03:15 CST 2021, Adrian Hunter wrote:
+> 
+>> On 22/12/20 3:49 pm, Ziqi Chen wrote:
+>>> As per specs, e.g, JESD220E chapter 7.2, while powering
+>>> off/on the ufs device, RST_N signal and REF_CLK signal
+>>> should be between VSS(Ground) and VCCQ/VCCQ2.
+>>>
+>>> To flexibly control device reset line, refactor the function
+>>> ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
+>>> vops_device_reset(sturct ufs_hba *hba, bool asserted). The
+>>> new parameter "bool asserted" is used to separate device reset
+>>> line pulling down from pulling up.
 >>
->> Signed-off-by: Gao Yan <gao.yanB@h3c.com>
->> ---
->>  drivers/net/ppp/ppp_async.c   | 11 ++---------
->>  drivers/net/ppp/ppp_synctty.c | 12 ++----------
->>  2 files changed, 4 insertions(+), 19 deletions(-)
->
->What changed from v1?
+>> This patch assumes the power is controlled by voltage regulators, but for us
+>> it is controlled by firmware (ACPI), so it is not correct to change RST_n
+>> for all host controllers as you are doing.
+>>
+>> Also we might need to use a firmware interface for device reset, in which
+>> case the 'asserted' value doe not make sense.
+>>
+> 
+> Are you saying that the entire flip-flop-the-reset is a single firmware
+> operation in your case?
 
-just change some description.
+Yes
 
->And how did you test this?  Why remove this lock, is it causing problems somewhere for it to be here?
+>                         If you look at the Mediatek driver, the
+> implementation of ufs_mtk_device_reset_ctrl() is a jump to firmware.
+> 
+> 
+> But perhaps "asserted" isn't the appropriate English word for saying
+> "the reset is in the resetting state"?
+> 
+> I just wanted to avoid the use of "high"/"lo" as if you look at the
+> Mediatek code they pass the expected line-level to the firmware, while
+> in the Qualcomm code we pass the logical state to the GPIO code which is
+> setup up as "active low" and thereby flip the meaning before hitting the
+> pad.
+> 
+>> Can we leave the device reset callback alone, and instead introduce a new
+>> variant operation for setting RST_n to match voltage regulator power changes?
+> 
+> Wouldn't this new function just have to look like the proposed patches?
+> In which case for existing platforms we'd have both?
+> 
+> How would you implement this, or would you simply skip implementing
+> this?
 
-Somedays ago, There is a problem of 4.14 kernel in n_tty line discipline. Specific description is here:
-Link: https://lkml.org/lkml/2020/12/9/339
+Functionally, doing a device reset is not the same as adjusting signal
+levels to meet power up/off ramp requirements.  However, the issue is that
+we do not use regulators, so the power is not necessarily being changed at
+those points, and we definitely do not want to reset instead of entering
+DeepSleep for example.
 
-At the beginning I tried to add a lock in the layer of n_tty, until I find the patch that helps me a lot.
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.9-rc4&id=83d817f41070c48bc3eb7ec18e43000a548fca5c
-About the patch, Specific description is here:
-Link: https://lkml.org/lkml/2018/8/29/555
-
-So after referring to the previous patch, it is unnecessary to add a lock to protect disc_data in n_tty_close and n_tty_flush_buffer. And 
-I think it is the same with ppp line discipline.
-
-More detailed explanation:
-We have a potential race on dereferencing tty->disc_data, so we should use some locks to avoid the competition.
-In the current version, it defines disc_data_lock to protect the race of ppp_asynctty_receive and ppp_asynctty_close.
-However, I think when cpu A is running ppp_asynctty_receive, another cpu B will not run ppp_asynctty_close at the same time.
-The reasons are as follows:
-
-Cpu A will hold tty->ldisc_sem before running ppp_asynctty_receive. If cpu B wants to run ppp_asynctty_close,
-it must wait until cpu A release tty->ldisc_sem after ppp_asynctty_receive.
-
-So I think tty->ldisc_sem already can protect the tty->disc_data in ppp line discipline just like n_tty line discipline.
-
-Thanks.
-Gao Yan
-
->Signed-off-by: Gao Yan <gao.yanB@h3c.com>
->---
-> drivers/net/ppp/ppp_async.c   | 11 ++---------
-> drivers/net/ppp/ppp_synctty.c | 12 ++----------
-> 2 files changed, 4 insertions(+), 19 deletions(-)
->
->diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
->index 29a0917a8..20b50facd 100644
->--- a/drivers/net/ppp/ppp_async.c
->+++ b/drivers/net/ppp/ppp_async.c
->@@ -127,17 +127,13 @@ static const struct ppp_channel_ops async_ops = {
->  * FIXME: this is no longer true. The _close path for the ldisc is
->  * now guaranteed to be sane.
->  */
->-static DEFINE_RWLOCK(disc_data_lock);
->
-> static struct asyncppp *ap_get(struct tty_struct *tty)
-> {
->-   struct asyncppp *ap;
->+   struct asyncppp *ap = tty->disc_data;
->
->-   read_lock(&disc_data_lock);
->-   ap = tty->disc_data;
->    if (ap != NULL)
->        refcount_inc(&ap->refcnt);
->-   read_unlock(&disc_data_lock);
->    return ap;
-> }
->
->@@ -214,12 +210,9 @@ ppp_asynctty_open(struct tty_struct *tty)
-> static void
-> ppp_asynctty_close(struct tty_struct *tty)
-> {
->-   struct asyncppp *ap;
->+   struct asyncppp *ap = tty->disc_data;
->
->-   write_lock_irq(&disc_data_lock);
->-   ap = tty->disc_data;
->    tty->disc_data = NULL;
->-   write_unlock_irq(&disc_data_lock);
->    if (!ap)
->        return;
->
->diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
->index 0f338752c..53fb68e29 100644
->--- a/drivers/net/ppp/ppp_synctty.c
->+++ b/drivers/net/ppp/ppp_synctty.c
->@@ -129,17 +129,12 @@ ppp_print_buffer (const char *name, const __u8 *buf, int count)
->  *
->  * FIXME: Fixed in tty_io nowadays.
->  */
->-static DEFINE_RWLOCK(disc_data_lock);
->-
-> static struct syncppp *sp_get(struct tty_struct *tty)
-> {
->-   struct syncppp *ap;
->+   struct syncppp *ap = tty->disc_data;
->
->-   read_lock(&disc_data_lock);
->-   ap = tty->disc_data;
->    if (ap != NULL)
->        refcount_inc(&ap->refcnt);
->-   read_unlock(&disc_data_lock);
->    return ap;
-> }
->
->@@ -213,12 +208,9 @@ ppp_sync_open(struct tty_struct *tty)
-> static void
-> ppp_sync_close(struct tty_struct *tty)
-> {
->-   struct syncppp *ap;
->+   struct syncppp *ap = tty->disc_data;
->
->-   write_lock_irq(&disc_data_lock);
->-   ap = tty->disc_data;
->    tty->disc_data = NULL;
->-   write_unlock_irq(&disc_data_lock);
->    if (!ap)
->        return;
->
->--
->2.17.1
->
+Off the top of my head, I imagine something like a callback called
+ufshcd_vops_prepare_power_ramp(hba, bool on) which is called only if
+hba->vreg_info->vcc is not NULL.
