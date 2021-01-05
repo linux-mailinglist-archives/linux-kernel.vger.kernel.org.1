@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7A12EAAEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145542EAAB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730406AbhAEMaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:30:35 -0500
-Received: from mga06.intel.com ([134.134.136.31]:61562 "EHLO mga06.intel.com"
+        id S1730112AbhAEM06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:26:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728748AbhAEMab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:30:31 -0500
-IronPort-SDR: 6gVfW9dDPwV8naYPN2hqhZfXbuPpuNvGkUThigIzs+tyxSDR8Q0/RhQEwiSP0GQxV51HP3LDwZ
- hGCS54KHVbAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="238648483"
-X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
-   d="scan'208";a="238648483"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 04:28:44 -0800
-IronPort-SDR: oV0oLDcpmc1m6hLknczWLIBVxARy3d03mwwTfWBlVhQoOM/I6mJq083EN/khUPNLvtl4oJx7Te
- lk5+boiVwd/w==
-X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
-   d="scan'208";a="378851997"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 04:28:40 -0800
-Date:   Tue, 5 Jan 2021 14:25:43 +0200 (EET)
-From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-cc:     pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
-        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
-        daniel.baluta@nxp.com, Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Keyon Jie <yang.jie@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Marcin Rajwa <marcin.rajwa@linux.intel.com>,
-        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
-        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
-        <sound-open-firmware@alsa-project.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] ASoC: SOF: Intel: hda: Avoid checking jack on
- system suspend
-In-Reply-To: <20210104140853.228448-3-kai.heng.feng@canonical.com>
-Message-ID: <alpine.DEB.2.22.394.2101051354300.864696@eliteleevi.tm.intel.com>
-References: <20210104140853.228448-1-kai.heng.feng@canonical.com> <20210104140853.228448-3-kai.heng.feng@canonical.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+        id S1730084AbhAEM0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 07:26:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B39522AAA;
+        Tue,  5 Jan 2021 12:26:05 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     kernel-team <kernel-team@android.com>,
+        "kernelci . org bot" <bot@kernelci.org>,
+        linux-arm-kernel@lists.infradead.org,
+        =?UTF-8?q?F=C4=81ng-ru=C3=AC=20S=C3=B2ng?= <maskray@google.com>,
+        Alan Modra <amodra@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Smith <Peter.Smith@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH v2] arm64: link with -z norelro for LLD or aarch64-elf
+Date:   Tue,  5 Jan 2021 12:26:03 +0000
+Message-Id: <160984952218.5069.304716966175823056.b4-ty@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201218002432.788499-1-ndesaulniers@google.com>
+References: <CAKwvOd=LZHzR11kuhT2EjFnUdFwu5hQmxiwqeLB2sKC0hWFY=g@mail.gmail.com> <20201218002432.788499-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+On Thu, 17 Dec 2020 16:24:32 -0800, Nick Desaulniers wrote:
+> With GNU binutils 2.35+, linking with BFD produces warnings for vmlinux:
+> aarch64-linux-gnu-ld: warning: -z norelro ignored
+> 
+> BFD can produce this warning when the target emulation mode does not
+> support RELRO program headers, and -z relro or -z norelro is passed.
+> 
+> Alan Modra clarifies:
+>   The default linker emulation for an aarch64-linux ld.bfd is
+>   -maarch64linux, the default for an aarch64-elf linker is
+>   -maarch64elf.  They are not equivalent.  If you choose -maarch64elf
+>   you get an emulation that doesn't support -z relro.
+> 
+> [...]
 
-On Mon, 4 Jan 2021, Kai-Heng Feng wrote:
+Applied to arm64 (for-next/fixes), thanks!
 
-> System takes a very long time to suspend after commit 215a22ed31a1
-> ("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
-> [   90.065964] PM: suspend entry (s2idle)
+[1/1] arm64: link with -z norelro for LLD or aarch64-elf
+      https://git.kernel.org/arm64/c/311bea3cb9ee
 
-the patch itself looks good, but can you explain a bit more in what 
-conditions you hit the delay?
+Also added the second Fixes tag with a cc stable.
 
-I tried to reproduce the delay on multiple systems (with tip of 
-tiwai/master), but with no luck. I can see hda_jackpoll_work() called, but 
-at this point runtime pm has been disabled already (via 
-__device_suspend()) and snd_hdac_is_power_on() will return true even when 
-pm_runtime_suspended() is true as well (which is expected as runtime-pm is 
-disabled at this point for system suspend). End result is codec is not 
-powered up in hda_jackpoll_work() and suspend is not delayed.
+-- 
+Catalin
 
-The patch still seems correct. You would hit the problem you describe if 
-jackpoll_interval was set to a non-zero value (not the case on most 
-systems supported by SOF, but still a possibility). I'm still curious how 
-you hit the problem. At minimum, we are missing a scenario in our testing.
-
-Br, Kai
