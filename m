@@ -2,148 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57682EAC1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB342EAC1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730265AbhAENnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:43:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        id S1730304AbhAENnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:43:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726076AbhAENnX (ORCPT
+        with ESMTP id S1730268AbhAENnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:43:23 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B53EC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 05:42:43 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id j12so29235169ota.7
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:42:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=v8NfrJK/tS8m2kNLcoCN7Or0wTdHUEN4ErmAkpamh3A=;
-        b=S2a/Yo1bVTTqrNmdI4ArtmZd8AnNwnsHEUx5XHOgxWLBE6AZ3R9sTA+h74iL6jgLqi
-         1WoNFobLvOpyQq82H3oTpZue563zh5eyHsaNe4nb6eESYfogWik0SI1uKur15rUfU2sV
-         UEm6HeTOQpiu2tsTUNPAdKkHyCKMveNB9FQrXzW5D8UnnrczSYR+OAcRLzBQEhtEoX97
-         x+2crfW97vMa0RtFbF61ZYBcgbClMAYLKyUXVgpOhlDZxtdi08jA8qO76Q5m03qs7W7p
-         ++VfTfsJL5FrmE+nctoMKxpwJfL5v7FcmHp4UsZe5tqTzZVvtG1n0q7D5pdE9Bi7irPh
-         2Z3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=v8NfrJK/tS8m2kNLcoCN7Or0wTdHUEN4ErmAkpamh3A=;
-        b=muCoRzrLHfyjBFzzGz51K82/lQP+r2XxrHTrtaSoBimWQUaWjTTfEyLLECFroVEuMo
-         lCT5z1d7Mcisr5PHrMlVvLJV/wtH+SIS1YBICCN6uTZAtxFhQZacEmVeAA3ECDXBsKYu
-         dD0mM1MobrMt4P+A/GQzeWZovP32wO5U3Qq5zqnueB3lTcUG0tl8Wyvb4ndRC5RInSUN
-         /CTqFKsIksGChiNJ9t7qiF5l12HcIozNbueZhORcNj3gBxA5845V0drw9M4PWgLBuzrq
-         Yr3UO1l4QaQIBXNgQc/oqBK+fV+h0df4HOwel1II62rG9hfF2ZUo59PXfuwMcg/Gi5Gp
-         u9OQ==
-X-Gm-Message-State: AOAM530StiyYJPP4cPQk/rS+s3nV5ZOHiLZNS6gGfCae6WHoXHktvePr
-        LUWRpz5jQy3E+FTjEUddWodxSsdfKUauGiIBie11I+ZnBGcOBw==
-X-Google-Smtp-Source: ABdhPJwM1Hwd0R7YlHFHPNerBxCJ368MvSO2KVCwOH4kBaClxct+rMU6qAeKqeswzAZqlFHor353tQ8uP0DVmHKFrG0=
-X-Received: by 2002:a9d:19c8:: with SMTP id k66mr21161530otk.89.1609854162565;
- Tue, 05 Jan 2021 05:42:42 -0800 (PST)
+        Tue, 5 Jan 2021 08:43:31 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3625C061795;
+        Tue,  5 Jan 2021 05:42:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+euDtxcGipU8q+U8BbJ2JReGBO3U7/zwdT6b3FGSnPY=; b=sn2God1DiTyvt/Xakejls2197D
+        AtaU+rRl4bMkTxGXmvu96Yu8SsTSfftIky0jfQ9vysJLFWj1MkuAyI0aHyAw1EuNrilBUAD6vCvzw
+        vAaSLruZhxBIIy+ActXuZ++ciZom9mr/W1GQ+So4KfPtUPZQmTxZ7eI2zAyF9+z8ugny5M8yhX+t0
+        4BVeLWCohvdkGgc31SiIpNK6Gn12JToW2sI9I4fAe8oAJYwcGo9DjBYLv8xnx1ZTIPmqn7+uRAMqK
+        OQAHh4YLRVl8ghOp0uCwjP3VyIMoR7UbBA305fQChny26NzVqohc6x+L6/9nSYVFgFfgGTH71M3c4
+        Ud8HQdPg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwmba-0007aK-0c; Tue, 05 Jan 2021 13:42:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E7A430015A;
+        Tue,  5 Jan 2021 14:42:32 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 16893200C641B; Tue,  5 Jan 2021 14:42:32 +0100 (CET)
+Date:   Tue, 5 Jan 2021 14:42:32 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix dynticks_nmi_nesting underflow check in
+ rcu_is_cpu_rrupt_from_idle
+Message-ID: <20210105134232.GI3040@hirez.programming.kicks-ass.net>
+References: <1608712777-1769-1-git-send-email-neeraju@codeaurora.org>
+ <20201223151231.GC2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-From:   Tom Cook <tom.k.cook@gmail.com>
-Date:   Tue, 5 Jan 2021 13:42:31 +0000
-Message-ID: <CAFSh4UwMr7t+R9mWUCjdecadJL6=_7jdgagAQK6Y1Yj0+Eu0sg@mail.gmail.com>
-Subject: cBPF socket filters failing - inexplicably?
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201223151231.GC2657@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the course of tracking down a defect in some existing software,
-I've found the failure demonstrated by the short program below.
-Essentially, a cBPF program that just rejects every frame (ie always
-returns zero) and is attached to a socket using setsockopt(SOL_SOCKET,
-SO_ATTACH_FILTER, ...) still occasionally lets frames through to
-userspace.
+On Wed, Dec 23, 2020 at 07:12:31AM -0800, Paul E. McKenney wrote:
+> On Wed, Dec 23, 2020 at 02:09:37PM +0530, Neeraj Upadhyay wrote:
+> > For the smp_call_function() optimization, where callbacks can run from
+> > idle context, in commit 806f04e9fd2c ("rcu: Allow for smp_call_function()
+> > running callbacks from idle"), an additional check is added in
+> > rcu_is_cpu_rrupt_from_idle(), for dynticks_nmi_nesting value being 0,
+> > for these smp_call_function() callbacks running from idle loop.
+> > However, this commit missed updating a preexisting underflow check
+> > of dynticks_nmi_nesting, which checks for a non zero positive value.
+> > Fix this warning and while at it, read the counter only once.
+> > 
+> > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > ---
+> > 
+> > Hi,
+> > 
+> > I was not able to get this warning, with scftorture.
+> > 
+> >   RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
+> >     "RCU dynticks_nmi_nesting counter underflow/zero!");
+> > 
+> > Not sure if idle loop smp_call_function() optimization is already present
+> > in mainline?
+> 
+> Now that you mention it, I don't see it.
 
-The code is based on the first example in
-Documentation/networking/filter.txt, except that I've changed the
-content of the filter program and added a timeout on the socket.
+kernel/sched/idle.c:do_idle() calls flush_smp_call_function_from_idle().
 
-To reproduce the problem:
+(nothing x86 specific about it)
 
-# gcc test.c -o test
-# sudo ./test
-... and in another console start a large network operation.
+> > Another thing, which I am not sure of is, maybe lockdep gets disabled
+> > in the idle loop contexts, where rcu_is_cpu_rrupt_from_idle() is called?
+> > Was this the original intention, to keep the lockdep based
+> > RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0
+> > check separate from idle task context nesting value
+> > WARN_ON_ONCE(!nesting && !is_idle_task(current)) check?
+> 
+> An easy way to test lockdep is to create a pair of locks, acquire them
+> in one order then release them both, and finally acquire them in the
+> other order and then release them both.  If lockdep is configured and
+> enabled, it will complain.
 
-In my case, I copied a ~300MB core file I had lying around to another
-host on the LAN.  The test code should print the string "Failed to
-read from socket" 100 times.  In practice, it produces about 10%
-"Received packet with ethertype..." messages.
+IIRC (and this is after not staring at the computer for 2 weeks) lockdep
+should work just fine in idle, except of course that RCU will be stopped
+so actually taking locks will scream bloody murder due to tracing etc..
 
-I've observed the same result on Ubuntu amd64 glibc system running a
-5.9.0 kernel and also on Alpine arm64v8 muslc system running a 4.9.1
-kernel.  I've written test code in both C and Python.  I'm fairly sure
-this is not something I'm doing wrong - but very keen to have things
-thrown at me if it is.
+> The only reason I used RCU_LOCKDEP_WARN() was that people were complaining
+> to me about idle-entry overhead back at that time.  So without lockdep,
+> there is zero overhead.  Maybe people have become more tolerant of idle
+> delays, or perhaps they are not so worried about an extra check of a
+> cache-hot quantity.
 
-Regards,
-Tom Cook
+Not having checks also saves on $I and branches, in general I think
+having checks depend on DEBUG features, esp. those we don't really
+expect to trigger is still sane.
 
+> I am tempted to pull this in as is, given the current logical
+> inconsistency in the checks.  Thoughts?
 
-#include <stdio.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <arpa/inet.h>
-#include <linux/if_ether.h>
-#include <linux/filter.h>
-#include <stdint.h>
-#include <unistd.h>
-
-struct sock_filter code[] = {
-    { 0x06,    0,    0,    0x00 }  /* BPF_RET | BPF_K   0   0   0 */
-};
-
-struct sock_fprog bpf = {
-    .len = 1,
-    .filter = code,
-};
-
-void test() {
-    uint8_t buf[2048];
-
-    int sock = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-    if (sock < 0) {
-        printf("Failed to open socket\n");
-        return;
-    }
-    int ret = setsockopt(sock, SOL_SOCKET, SO_ATTACH_FILTER, &bpf, sizeof(bpf));
-    if (ret < 0) {
-        printf("Failed to set socket filter\n");
-        return;
-    }
-    struct timeval tv = {
-        .tv_sec = 1
-    };
-
-    ret = setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-    if (ret < 0) {
-        printf("Failed to set socket timeout\n");
-        return;
-    }
-
-    ssize_t count = recv(sock, buf, 2048, 0);
-    if (count <= 0) {
-        printf("Failed to read from socket\n");
-        return;
-    }
-
-    close(sock);
-
-    uint16_t *ethertype = (short*)(buf + 12);
-    uint8_t *proto = (unsigned char *)(buf + 23);
-    uint16_t *dport = (uint16_t *)(buf + 14 + 20);
-
-    printf("Received packet with ethertype 0x%04hu, protocol 0x%02hhu
-and dport 0x%04hu\n", *ethertype, *proto, *dport);
-}
-
-int main() {
-    for (size_t ii = 0; ii < 100; ++ii) {
-        test();
-    }
-}
+Patch looks ok, although I've seen compilers do CSE on
+__this_cpu_read() (on x86).
