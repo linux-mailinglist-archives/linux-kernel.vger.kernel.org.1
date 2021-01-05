@@ -2,199 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32A72EA722
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34CB2EA724
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbhAEJOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:14:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727658AbhAEJOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:14:23 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728000AbhAEJP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:15:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28338 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727357AbhAEJPZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:15:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609838038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0tVgVm9ERhGM+faIGD3yPwpNPlIvWSFb/daofZLGTNQ=;
+        b=ey7Wg7qyRalWBbV5HutCVYIdF2Faqtyj57w/wkL9d7fNcwKcthVk5adQ4q2kJXdCtcISqQ
+        r2SWXaBqTeNQK9BeJkaOuZeClV64T3jNLYXJs7GQaDT93VR+mWgzjiLztziQGTvU23fY9P
+        BAl4zxCZ76IHsNtJ6BwJXCfzdTXk9nI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-2kyxpG64M5yfvRiACPLlhw-1; Tue, 05 Jan 2021 04:13:53 -0500
+X-MC-Unique: 2kyxpG64M5yfvRiACPLlhw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3756C225AC;
-        Tue,  5 Jan 2021 09:13:42 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kwiPL-005OSj-R8; Tue, 05 Jan 2021 09:13:39 +0000
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 15370100C604;
+        Tue,  5 Jan 2021 09:13:52 +0000 (UTC)
+Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F73260BE5;
+        Tue,  5 Jan 2021 09:13:50 +0000 (UTC)
+Subject: Re: uninitialized pmem struct pages
+To:     Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20210104151005.GK13207@dhcp22.suse.cz>
+ <26db2c3e-10c7-c6e3-23f7-21eb5101b31a@redhat.com>
+ <20210104153300.GL13207@dhcp22.suse.cz>
+ <bf26f568-79b3-67f9-832a-9d8ef3f72c43@redhat.com>
+ <6106ca7f-3247-0916-3e1e-ad6af17272ea@redhat.com>
+ <20210105080057.GT13207@dhcp22.suse.cz>
+ <20210105081654.GU13207@dhcp22.suse.cz>
+ <CAPcyv4jKKWqjgdpi3yiPCaFdfHYzPDrgAc1YvELEPogD3go2PA@mail.gmail.com>
+ <20210105084224.GV13207@dhcp22.suse.cz>
+ <CAPcyv4jYJdmRRhDCaT1j-s2pij3OnML7muWjgJRe9s65ujjZFw@mail.gmail.com>
+ <20210105090513.GX13207@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5df25819-b79c-1db1-8ec3-691bd8d8554a@redhat.com>
+Date:   Tue, 5 Jan 2021 10:13:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 05 Jan 2021 09:13:39 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v2 2/4] KVM: arm64: GICv4.1: Try to save hw pending
- state in save_pending_tables
-In-Reply-To: <20210104081613.100-3-lushenming@huawei.com>
-References: <20210104081613.100-1-lushenming@huawei.com>
- <20210104081613.100-3-lushenming@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <b0f0b2544f8e231ebb5b5545be226164@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lushenming@huawei.com, eric.auger@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, alex.williamson@redhat.com, cohuck@redhat.com, lorenzo.pieralisi@arm.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <20210105090513.GX13207@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-04 08:16, Shenming Lu wrote:
-> After pausing all vCPUs and devices capable of interrupting, in order
-> to save the information of all interrupts, besides flushing the pending
-> states in kvm’s vgic, we also try to flush the states of VLPIs in the
-> virtual pending tables into guest RAM, but we need to have GICv4.1 and
-> safely unmap the vPEs first.
+On 05.01.21 10:05, Michal Hocko wrote:
+> On Tue 05-01-21 00:57:43, Dan Williams wrote:
+>> On Tue, Jan 5, 2021 at 12:42 AM Michal Hocko <mhocko@suse.com> wrote:
+>>>
+>>> On Tue 05-01-21 00:27:34, Dan Williams wrote:
+>>>> On Tue, Jan 5, 2021 at 12:17 AM Michal Hocko <mhocko@suse.com> wrote:
+>>>>>
+>>>>> On Tue 05-01-21 09:01:00, Michal Hocko wrote:
+>>>>>> On Mon 04-01-21 16:44:52, David Hildenbrand wrote:
+>>>>>>> On 04.01.21 16:43, David Hildenbrand wrote:
+>>>>>>>> On 04.01.21 16:33, Michal Hocko wrote:
+>>>>>>>>> On Mon 04-01-21 16:15:23, David Hildenbrand wrote:
+>>>>>>>>>> On 04.01.21 16:10, Michal Hocko wrote:
+>>>>>>>>> [...]
+>>>>>>>>>> Do the physical addresses you see fall into the same section as boot
+>>>>>>>>>> memory? Or what's around these addresses?
+>>>>>>>>>
+>>>>>>>>> Yes I am getting a garbage for the first struct page belonging to the
+>>>>>>>>> pmem section [1]
+>>>>>>>>> [    0.020161] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x603fffffff]
+>>>>>>>>> [    0.020163] ACPI: SRAT: Node 4 PXM 4 [mem 0x6060000000-0x11d5fffffff] non-volatile
+>>>>>>>>>
+>>>>>>>>> The pfn without the initialized struct page is 0x6060000. This is a
+>>>>>>>>> first pfn in a section.
+>>>>>>>>
+>>>>>>>> Okay, so we're not dealing with the "early section" mess I described,
+>>>>>>>> different story.
+>>>>>>>>
+>>>>>>>> Due to [1], is_mem_section_removable() called
+>>>>>>>> pfn_to_page(PHYS_PFN(0x6060000)). page_zone(page) made it crash, as not
+>>>>>>>> initialized.
+>>>>>>>>
+>>>>>>>> Let's assume this is indeed a reserved pfn in the altmap. What's the
+>>>>>>>> actual address of the memmap?
+>>>>>>>>
+>>>>>>>> I do wonder what hosts pfn_to_page(PHYS_PFN(0x6060000)) - is it actually
+>>>>>>>> part of the actual altmap (i.e. > 0x6060000) or maybe even self-hosted?
+>>>>>>>>
+>>>>>>>> If it's not self-hosted, initializing the relevant memmaps should work
+>>>>>>>> just fine I guess. Otherwise things get more complicated.
+>>>>>>>
+>>>>>>> Oh, I forgot: pfn_to_online_page() should at least in your example make
+>>>>>>> sure other pfn walkers are safe. It was just an issue of
+>>>>>>> is_mem_section_removable().
+>>>>>>
+>>>>>> Hmm, I suspect you are right. I haven't put this together, thanks! The memory
+>>>>>> section is indeed marked offline so pfn_to_online_page would indeed bail
+>>>>>> out:
+>>>>>> crash> p (0x6060000>>15)
+>>>>>> $3 = 3084
+>>>>>> crash> p mem_section[3084/128][3084 & 127]
+>>>>>> $4 = {
+>>>>>>   section_mem_map = 18446736128020054019,
+>>>>>>   usage = 0xffff902dcf956680,
+>>>>>>   page_ext = 0x0,
+>>>>>>   pad = 0
+>>>>>> }
+>>>>>> crash> p 18446736128020054019 & (1UL<<2)
+>>>>>> $5 = 0
+>>>>>>
+>>>>>> That makes it considerably less of a problem than I thought!
+>>>>>
+>>>>> Forgot to add that those who are running kernels without 53cdc1cb29e8
+>>>>> ("drivers/base/memory.c: indicate all memory blocks as removable") for
+>>>>> some reason can fix the crash by the following simple patch.
+>>>>>
+>>>>> Index: linux-5.3-users_mhocko_SLE15-SP2_for-next/drivers/base/memory.c
+>>>>> ===================================================================
+>>>>> --- linux-5.3-users_mhocko_SLE15-SP2_for-next.orig/drivers/base/memory.c
+>>>>> +++ linux-5.3-users_mhocko_SLE15-SP2_for-next/drivers/base/memory.c
+>>>>> @@ -152,9 +152,14 @@ static ssize_t removable_show(struct dev
+>>>>>                 goto out;
+>>>>>
+>>>>>         for (i = 0; i < sections_per_block; i++) {
+>>>>> -               if (!present_section_nr(mem->start_section_nr + i))
+>>>>> +               unsigned long nr = mem->start_section_nr + i;
+>>>>> +               if (!present_section_nr(nr))
+>>>>>                         continue;
+>>>>> -               pfn = section_nr_to_pfn(mem->start_section_nr + i);
+>>>>> +               if (!online_section_nr()) {
+>>>>
+>>>> I assume that's onlince_section_nr(nr) in the version that compiles?
+>>>
+>>> Yup.
+>>>
+>>>> This makes sense because the memory block size is larger than the
+>>>> section size. I suspect you have 1GB memory block size on this system,
+>>>> but since the System RAM and PMEM collide at a 512MB alignment in a
+>>>> memory block you end up walking the back end of the last 512MB of the
+>>>> System RAM memory block and run into the offline PMEM section.
+>>>
+>>> Sections are 128MB and memory blocks are 2GB on this system.
+>>>
+>>>> So, I don't think it's pfn_to_online_page that necessarily needs to
+>>>> know how to disambiguate each page, it's things that walk sections and
+>>>> memory blocks and expects them to be consistent over the span.
+>>>
+>>> Well, memory hotplug code is hard wired to sparse memory model so in
+>>> this particular case asking about the section is ok. But pfn walkers
+>>> shouldn't really care and only rely on pfn_to_online_page. But that will
+>>> do the right thing here. So we are good as long as the section is marked
+>>> properly. But this would become a problem as soon as the uninitialized
+>>> pages where sharing the same memory section as David pointed out.
+>>> pfn_to_online_page would then return something containing garbage. So we
+>>> should still think of a way to either initialize all those pages or make
+>>> sure pfn_to_online_page recognizes them. The former is preferred IMHO.
+>>
+>> The former would not have saved the crash in this case because
+>> pfn_to_online_page() is not used in v5.3:removable_show() that I can
+>> see, nor some of the other paths that might walk pfns and the wrong
+>> thing with ZONE_DEVICE.
 > 
-> Signed-off-by: Shenming Lu <lushenming@huawei.com>
-> ---
->  arch/arm64/kvm/vgic/vgic-v3.c | 58 +++++++++++++++++++++++++++++++----
->  1 file changed, 52 insertions(+), 6 deletions(-)
+> If the page was initialized properly, and by that I mean also have it
+> reserved, then the old code would have properly reported is as not
+> removable.
 > 
-> diff --git a/arch/arm64/kvm/vgic/vgic-v3.c 
-> b/arch/arm64/kvm/vgic/vgic-v3.c
-> index 9cdf39a94a63..a58c94127cb0 100644
-> --- a/arch/arm64/kvm/vgic/vgic-v3.c
-> +++ b/arch/arm64/kvm/vgic/vgic-v3.c
-> @@ -1,6 +1,8 @@
->  // SPDX-License-Identifier: GPL-2.0-only
+>> However, I do think pfn_to_online_page() should be reliable, and I
+>> prefer to just brute force add a section flag to indicate whether the
+>> section might be ZONE_DEVICE polluted and fallback to the
+>> get_dev_pagemap() slow-path in that case.
 > 
->  #include <linux/irqchip/arm-gic-v3.h>
-> +#include <linux/irq.h>
-> +#include <linux/irqdomain.h>
->  #include <linux/kvm.h>
->  #include <linux/kvm_host.h>
->  #include <kvm/arm_vgic.h>
-> @@ -356,6 +358,38 @@ int vgic_v3_lpi_sync_pending_status(struct kvm
-> *kvm, struct vgic_irq *irq)
->  	return 0;
->  }
+> Do we have some spare room to hold that flag in a section?
 > 
-> +/*
-> + * The deactivation of the doorbell interrupt will trigger the
-> + * unmapping of the associated vPE.
-> + */
-> +static void unmap_all_vpes(struct vgic_dist *dist)
-> +{
-> +	struct irq_desc *desc;
-> +	int i;
-> +
-> +	if (!kvm_vgic_global_state.has_gicv4_1)
-> +		return;
-> +
-> +	for (i = 0; i < dist->its_vm.nr_vpes; i++) {
-> +		desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
-> +		irq_domain_deactivate_irq(irq_desc_get_irq_data(desc));
-> +	}
-> +}
-> +
-> +static void map_all_vpes(struct vgic_dist *dist)
-> +{
-> +	struct irq_desc *desc;
-> +	int i;
-> +
-> +	if (!kvm_vgic_global_state.has_gicv4_1)
-> +		return;
-> +
-> +	for (i = 0; i < dist->its_vm.nr_vpes; i++) {
-> +		desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
-> +		irq_domain_activate_irq(irq_desc_get_irq_data(desc), false);
-> +	}
-> +}
-> +
->  /**
->   * vgic_v3_save_pending_tables - Save the pending tables into guest 
-> RAM
->   * kvm lock and all vcpu lock must be held
-> @@ -365,14 +399,18 @@ int vgic_v3_save_pending_tables(struct kvm *kvm)
->  	struct vgic_dist *dist = &kvm->arch.vgic;
->  	struct vgic_irq *irq;
->  	gpa_t last_ptr = ~(gpa_t)0;
-> -	int ret;
-> +	int ret = 0;
->  	u8 val;
+>> ...but it would still require hunting to find the places where
+>> pfn_to_online_page() is missing for assumptions like this crash which
+>> assumed memblock-online + section-present == section-online.
 > 
-> +	/* As a preparation for getting any VLPI states. */
-> +	unmap_all_vpes(dist);
+> Yes, but most users should be using pfn_to_online_page already.
+> 
 
-What if the VPEs are not mapped yet? Is it possible to snapshot a VM
-that has not run at all?
+Quite honestly, let's not hack around this issue and just fix it
+properly - make pfn_to_online_page() only ever return an initialized,
+online (buddy) page, just as documented.
 
-> +
->  	list_for_each_entry(irq, &dist->lpi_list_head, lpi_list) {
->  		int byte_offset, bit_nr;
->  		struct kvm_vcpu *vcpu;
->  		gpa_t pendbase, ptr;
->  		bool stored;
-> +		bool is_pending = irq->pending_latch;
-> 
->  		vcpu = irq->target_vcpu;
->  		if (!vcpu)
-> @@ -387,24 +425,32 @@ int vgic_v3_save_pending_tables(struct kvm *kvm)
->  		if (ptr != last_ptr) {
->  			ret = kvm_read_guest_lock(kvm, ptr, &val, 1);
->  			if (ret)
-> -				return ret;
-> +				goto out;
->  			last_ptr = ptr;
->  		}
-> 
->  		stored = val & (1U << bit_nr);
-> -		if (stored == irq->pending_latch)
-> +
-> +		if (irq->hw)
-> +			vgic_v4_get_vlpi_state(irq, &is_pending);
+What speaks against not adding early sections in case they have a
+relevant hole at the end, besides wasting some MB? Relevant setups most
+probably just don't care. Print a warning.
 
-You don't check the return value here, so I wonder why the checks
-in vgic_v4_get_vlpi_state().
-
-Another thing that worries me is that vgic_v4_get_vlpi_state() doesn't
-have any cache invalidation, and can end-up hitting in the CPU cache
-(there is no guarantee of coherency between the GIC and the CPU, only
-that the GIC will have flushed its caches).
-
-I'd expect this to happen at unmap time, though, in order to avoid
-repeated single byte invalidations.
-
-> +
-> +		if (stored == is_pending)
->  			continue;
-> 
-> -		if (irq->pending_latch)
-> +		if (is_pending)
->  			val |= 1 << bit_nr;
->  		else
->  			val &= ~(1 << bit_nr);
-> 
->  		ret = kvm_write_guest_lock(kvm, ptr, &val, 1);
->  		if (ret)
-> -			return ret;
-> +			goto out;
->  	}
-> -	return 0;
-> +
-> +out:
-> +	map_all_vpes(dist);
-> +
-> +	return ret;
->  }
-> 
->  /**
-
+-- 
 Thanks,
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+David / dhildenb
+
