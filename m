@@ -2,109 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E152EB519
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5F72EB51C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731543AbhAEV5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 16:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbhAEV5h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:57:37 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC8BC061793;
-        Tue,  5 Jan 2021 13:56:56 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id c7so2463993edv.6;
-        Tue, 05 Jan 2021 13:56:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MHZ5REDjpJle5lrFl8ZV+4dbNhskDGBx1n4v2d4wOt8=;
-        b=vAlAGBCO028G9ebUwvBeJT+o7F2l7DQuT+/8DVshecRijRjJxIIGENpWzcTGS2oX3g
-         /QDRvziufmtisnBbjazGJHhMvuq2rBjVBewSSfUV0NLwZrex7eqgr8t5oxN55GRzT7Od
-         Ji2hF6y0oAECJBqcjX1LsAn9Rq3xdVx8nRl9v/Wqh0Vint3i8EnfzhrSUa5mXJXzZdJl
-         K9rjioaQP0qkqaZQ50vtrTCV7ibSYDz2h4HkO44aSb9VBidplpw4rayhDUqNTQ0SUkj0
-         sK6rBdY/PO8iQosMOqHwpwMVPDPSJuHTe+T0EJXV8vb9YEUxo+gMoq8zoABTVsxyQ0Xl
-         WB6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MHZ5REDjpJle5lrFl8ZV+4dbNhskDGBx1n4v2d4wOt8=;
-        b=MJNwbyLvND7jbLXBFEPP79QGR2y8lu1DmKAICMZLEr1IcaVsWbsVeup+qXWKRiJhCs
-         XVcbrvHbRwVvkLyno57wgc2syakrCk4/JgqJjtMfQUm3mkBQKmLGylPe0fhz2rddz1fz
-         EVku0OwvKW9fyGFeSuaMsjBGixxCyfgMQDJLy0bgsD8oJeKuzmENx7rUtf0ss37q0Nu3
-         TteMSx6dXvmN1T14mDCbePY6QecOjp+QlcpZEj7id8Hn2ACGlh2f/rJk9YARyjQdAJGx
-         1R+zewLSmwey23gA8EXD7KF8AK4Q7fDEM0EPt5Go1IbJlPKGxWwd/bVQIOqhQWZCMtUS
-         k7Aw==
-X-Gm-Message-State: AOAM531hwEm3zjf5np4HMNUOwoIsl8xLHBZH4LqeDtughdoev1hPBL/4
-        vs5rEOZG6BY6NGLcZwZPLoR5unq2kyjR/SYhekc=
-X-Google-Smtp-Source: ABdhPJwSgE91gOnwTmR6BAb6Bin3o2zlwCrqfeBR+xxpMkTHrBvlIByFFbhZm2F1QC5AGD2asd+xt4WwiIzn6sDCYFc=
-X-Received: by 2002:a05:6402:1a54:: with SMTP id bf20mr1814665edb.65.1609883815286;
- Tue, 05 Jan 2021 13:56:55 -0800 (PST)
+        id S1729419AbhAEWB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 17:01:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725828AbhAEWB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 17:01:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 158AE22D74;
+        Tue,  5 Jan 2021 22:01:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609884076;
+        bh=I1TNPuuArW9XmxExKkKICQUAVr9gn+sfdMgKhrRyXqo=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=LRfAIfWZ2ZnvkULNDNiN8hAu72pRjux+VEury0gSD/yO9oQ7U8eN2h8PRNqTe6L/n
+         2ytrjZZ4wtQk6rElakdLmLPPnVa5GP3B/dEfkHzXcXqYlzibhP+5MY0pwIEFuof8zQ
+         obtMqGJOin2PRrf3/FfMyR5tFcPs9Y/TKg9c2jOKjbxd5aYADkxdUjE4hAclxS7Soa
+         4TW7ssRn2zcJqiJBy13cH07zCkzqejRhJXKdLc2LhPVl2qqn8t/icgha17RwltLoyG
+         5RiWIB2CDQO2Izj6/HMrMKhTv6GzpX06PwtHGNg2WB2uJhxwttzH2hrUMtE3JufpPG
+         yLOPgyYq3knTA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D23DC3522A62; Tue,  5 Jan 2021 14:01:15 -0800 (PST)
+Date:   Tue, 5 Jan 2021 14:01:15 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        valentin.schneider@arm.com, bristot@redhat.com, frederic@kernel.org
+Subject: lockdep splat in v5.11-rc1 involving console_sem and rq locks
+Message-ID: <20210105220115.GA27357@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-References: <CGME20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51@epcms2p5>
- <20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51@epcms2p5>
-In-Reply-To: <20201231015213epcms2p5ef76aa6b26ab74e045a86f6a13b31d51@epcms2p5>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Tue, 5 Jan 2021 13:56:43 -0800
-Message-ID: <CAD+ocbwjVsiPNnp3RShN7eRDm5ZRDMwgk5uPO1at-KeX-osyqg@mail.gmail.com>
-Subject: Re: [PATCH] ext4: Change list_for_each to list_for_each_entry
-To:     daejun7.park@samsung.com
-Cc:     "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good to me, thanks!
+Hello!
 
-Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+The RUDE01 rcutorture scenario (and less often, the TASKS01 scenario)
+results in occasional lockdep splats on v5.11-rc1 on x86.  This failure
+is probabalistic, sometimes happening as much as 30% of the time, but
+sometimes happening quite a bit less frequently.  (And yes, this did
+result in a false bisection.  Why do you ask?)  The problem seems to
+happen more frequently shortly after boot, so for fastest reproduction
+run lots of 10-minute RUDE01 runs, which did eventually result in a
+good bisection.  (Yes, I did hammer the last good commit for awhile.)
 
-On Wed, Dec 30, 2020 at 5:56 PM Daejun Park <daejun7.park@samsung.com> wrote:
->
-> list_for_each + list_entry can be changed to list_for_each_entry
-> It reduces number of variables and lines.
->
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
->  fs/ext4/fast_commit.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 5b6bb3ef0f33..dc58471971db 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -915,13 +915,11 @@ static int ext4_fc_submit_inode_data_all(journal_t *journal)
->         struct super_block *sb = (struct super_block *)(journal->j_private);
->         struct ext4_sb_info *sbi = EXT4_SB(sb);
->         struct ext4_inode_info *ei;
-> -       struct list_head *pos;
->         int ret = 0;
->
->         spin_lock(&sbi->s_fc_lock);
->         ext4_set_mount_flag(sb, EXT4_MF_FC_COMMITTING);
-> -       list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
-> -               ei = list_entry(pos, struct ext4_inode_info, i_fc_list);
-> +       list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
->                 ext4_set_inode_state(&ei->vfs_inode, EXT4_STATE_FC_COMMITTING);
->                 while (atomic_read(&ei->i_fc_updates)) {
->                         DEFINE_WAIT(wait);
-> @@ -1099,8 +1097,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
->                 goto out;
->         }
->
-> -       list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
-> -               iter = list_entry(pos, struct ext4_inode_info, i_fc_list);
-> +       list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
->                 inode = &iter->vfs_inode;
->                 if (!ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
->                         continue;
-> --
-> 2.25.1
->
+The first bad commit is 1cf12e08bc4d ("sched/hotplug: Consolidate task
+migration on CPU unplug").  An example splat is shown below.
+
+Thoughts?
+
+							Thanx, Paul
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0-rc1+ #835 Not tainted
+------------------------------------------------------
+migration/1/14 is trying to acquire lock:
+ffffffffb014ed38 ((console_sem).lock){-.-.}-{2:2}, at: down_trylock+0xa/0x30
+
+but task is already holding lock:
+ffff92a1df52b158 (&rq->lock){-.-.}-{2:2}, at: sched_cpu_dying+0x2b/0xe0
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&rq->lock){-.-.}-{2:2}:
+       lock_acquire+0xc7/0x3a0
+       _raw_spin_lock+0x2a/0x40
+       task_fork_fair+0x39/0x150
+       sched_fork+0x109/0x210
+       copy_process+0x9b7/0x1da0
+       kernel_clone+0x98/0x6d0
+       kernel_thread+0x50/0x70
+       rest_init+0x1d/0x236
+       start_kernel+0x535/0x55a
+       secondary_startup_64_no_verify+0xb8/0xbb
+
+-> #1 (&p->pi_lock){-.-.}-{2:2}:
+       lock_acquire+0xc7/0x3a0
+       _raw_spin_lock_irqsave+0x33/0x50
+       try_to_wake_up+0x5a/0x760
+       up+0x3b/0x50
+       __up_console_sem+0x29/0x60
+       console_unlock+0x31e/0x550
+       vprintk_emit+0x1c5/0x2d0
+       printk+0x53/0x6a
+       rcu_torture_read_exit.cold.36+0x5b/0x7f
+       kthread+0x13b/0x160
+       ret_from_fork+0x22/0x30
+
+-> #0 ((console_sem).lock){-.-.}-{2:2}:
+       validate_chain+0x8b4/0x1c20
+       __lock_acquire+0x576/0xaf0
+       lock_acquire+0xc7/0x3a0
+       _raw_spin_lock_irqsave+0x33/0x50
+       down_trylock+0xa/0x30
+       __down_trylock_console_sem+0x23/0x90
+       console_trylock+0xe/0x50
+       vprintk_emit+0xcb/0x2d0
+       printk+0x53/0x6a
+       report_bug.cold.4+0xc/0x4c
+       handle_bug+0x44/0x80
+       exc_invalid_op+0x13/0x60
+       asm_exc_invalid_op+0x12/0x20
+       sched_cpu_dying+0xd2/0xe0
+       cpuhp_invoke_callback+0x9e/0x890
+       take_cpu_down+0x62/0xa0
+       multi_cpu_stop+0x5e/0x100
+       cpu_stopper_thread+0x8a/0x130
+       smpboot_thread_fn+0x193/0x230
+       kthread+0x13b/0x160
+       ret_from_fork+0x22/0x30
+
+other info that might help us debug this:
+
+Chain exists of:
+  (console_sem).lock --> &p->pi_lock --> &rq->lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&rq->lock);
+                               lock(&p->pi_lock);
+                               lock(&rq->lock);
+  lock((console_sem).lock);
+
+ *** DEADLOCK ***
+
+1 lock held by migration/1/14:
+ #0: ffff92a1df52b158 (&rq->lock){-.-.}-{2:2}, at: sched_cpu_dying+0x2b/0xe0
+
+stack backtrace:
+CPU: 1 PID: 14 Comm: migration/1 Not tainted 5.10.0-rc1+ #835
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.11.0-2.el7 04/01/2014
+Stopper: multi_cpu_stop+0x0/0x100 <- 0x0
+Call Trace:
+ dump_stack+0x77/0x97
+ check_noncircular+0xfe/0x110
+ validate_chain+0x8b4/0x1c20
+ __lock_acquire+0x576/0xaf0
+ lock_acquire+0xc7/0x3a0
+ ? down_trylock+0xa/0x30
+ ? vprintk_emit+0xcb/0x2d0
+ _raw_spin_lock_irqsave+0x33/0x50
+ ? down_trylock+0xa/0x30
+ down_trylock+0xa/0x30
+ __down_trylock_console_sem+0x23/0x90
+ console_trylock+0xe/0x50
+ vprintk_emit+0xcb/0x2d0
+ printk+0x53/0x6a
+ ? sched_cpu_dying+0xd2/0xe0
+ report_bug.cold.4+0xc/0x4c
+ handle_bug+0x44/0x80
+ exc_invalid_op+0x13/0x60
+ asm_exc_invalid_op+0x12/0x20
+RIP: 0010:sched_cpu_dying+0xd2/0xe0
+Code: c0 41 5c 41 5d 41 5e 41 5f 5d c3 f0 48 01 05 b5 ff 00 02 eb c9 48 89 df e8 db 10 06 00 31 c0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b 0f 0b 66 2e 0f 1f 84 00 00 00 00 00 53 48 89 fb e8 a7 72 02
+RSP: 0000:ffff9c0740087db0 EFLAGS: 00010002
+RAX: ffff92a1c1063000 RBX: ffff92a1df52b140 RCX: 00000000000b71b0
+RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff92a1df52b140
+RBP: ffff9c0740087dd8 R08: ffff92a1c105d094 R09: ffff92a1c118db00
+R10: ffff9c0740087bc8 R11: ffff92a1c118e400 R12: 0000000000000001
+R13: ffff92a1df52b158 R14: 0000000000000082 R15: 000000000000b319
+ ? sched_cpu_wait_empty+0x80/0x80
+ cpuhp_invoke_callback+0x9e/0x890
+ ? hpet_assign_irq+0x90/0x90
+ take_cpu_down+0x62/0xa0
+ multi_cpu_stop+0x5e/0x100
+ ? stop_machine_yield+0x10/0x10
+ cpu_stopper_thread+0x8a/0x130
+ ? sort_range+0x20/0x20
+ smpboot_thread_fn+0x193/0x230
+ kthread+0x13b/0x160
+ ? kthread_insert_work_sanity_check+0x50/0x50
+ ret_from_fork+0x22/0x30
