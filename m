@@ -2,88 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0E82EAAF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA932EAAFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbhAEMbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:31:34 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:40268 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727725AbhAEMbc (ORCPT
+        id S1728525AbhAEMkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:40:18 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:44150 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbhAEMkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:31:32 -0500
-Received: by mail-oi1-f172.google.com with SMTP id p5so35776748oif.7;
-        Tue, 05 Jan 2021 04:31:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=12r0Bw4nS6BbOFWAUi5UOySbS/NhH/yJzSZDxReb0mc=;
-        b=YGRRjcWTRcrLlo7fzVd4yx/Rp3pF59DdlemgZMj15fHVt+bOyZAlVZbnb+yKjWmTCs
-         SFxcR87PA7pHplh+4zAAm0D9uf3nkpIsJqbUlCoaUqiHquF0w6g1ExAb6zS8D6ozXX4K
-         knRLXYODaD7xNm2527PaqdUICFOBGB9puifeKdTz9UPwcdWOA0vpkMRa5R2bQDLK21eV
-         y19iVqSBAzBwcrmKaB53PhOcHj0xobmN5Ke438MUbmGIp/mIUOXSAuVghfhZyevWZw2i
-         OaxHBeP16BOcI3WGOFsgPfSCE+AhKo8ww+Ph+rCwKA6z2SFoGjByIY3dUvv9UOM2Twva
-         uVyQ==
-X-Gm-Message-State: AOAM531jXh8hHj8D0Wo2Nj8lT9qSy6dXRmGiBNSWJz8hOorKFH7guOGc
-        H2PEIidZOXdy0jqtbjlIHYq9taYbKiVUW7kw+JI=
-X-Google-Smtp-Source: ABdhPJxhfYcB3nGeskK2H/0rnXAFgFKmRJsoddbw4QCk8GH9dI0Itm4pwCPMMe046eNRfR7hZ/AgHUvnwrFtDA9WrG4=
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr2403452oia.148.1609849851249;
- Tue, 05 Jan 2021 04:30:51 -0800 (PST)
+        Tue, 5 Jan 2021 07:40:17 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: benjamin.gaignard)
+        with ESMTPSA id 69EED1F44F69
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH] drm/agpsupport: Fix warning in functions documentation
+Date:   Tue,  5 Jan 2021 13:39:05 +0100
+Message-Id: <20210105123905.90330-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201223172505.34736-1-wsa+renesas@sang-engineering.com> <20201223172505.34736-2-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20201223172505.34736-2-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Jan 2021 13:30:40 +0100
-Message-ID: <CAMuHMdVKmb8tCGQUQtCOfkjB3VxbVtwuA3u9kh2XuxQumKhekg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] dt-bindings: i2c: renesas,i2c: add r8a779a0 (V3U) support
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 6:27 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Fix the warnings reported in functions documentation when compiling with W=1
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+---
+ drivers/gpu/drm/drm_agpsupport.c | 111 ++++++++++++++++---------------
+ 1 file changed, 59 insertions(+), 52 deletions(-)
 
-> --- a/Documentation/devicetree/bindings/i2c/renesas,i2c.txt
-> +++ b/Documentation/devicetree/bindings/i2c/renesas,i2c.txt
-> @@ -26,6 +26,7 @@ Required properties:
->         "renesas,i2c-r8a77980" if the device is a part of a R8A77980 SoC.
->         "renesas,i2c-r8a77990" if the device is a part of a R8A77990 SoC.
->         "renesas,i2c-r8a77995" if the device is a part of a R8A77995 SoC.
-> +       "renesas,i2c-r8a779a0" if the device is a part of a R8A779A0 SoC.
->         "renesas,rcar-gen1-i2c" for a generic R-Car Gen1 compatible device.
->         "renesas,rcar-gen2-i2c" for a generic R-Car Gen2 or RZ/G1 compatible
->                                 device.
-
-Note that this doesn't say anything about (in)compatibility with generic
-R-Car Gen3 compatible devices (hint: yaml conversion?).
-
-New features:
-  - Slave Clock Stretch Select,
-  - Fast Mode+ Enable,
-  - Enhanced First Bit Setup Cycle configuration.
-
-Looks like the R-Car V3U variant can be treated as a generic R-Car Gen3
-variant (lacking the new features, of course).
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/gpu/drm/drm_agpsupport.c b/drivers/gpu/drm/drm_agpsupport.c
+index 4c7ad46fdd21..db610db9303c 100644
+--- a/drivers/gpu/drm/drm_agpsupport.c
++++ b/drivers/gpu/drm/drm_agpsupport.c
+@@ -46,16 +46,16 @@
+ #include "drm_legacy.h"
+ 
+ /**
+- * Get AGP information.
++ * drm_agp_info - Get AGP information.
+  *
+- * \param inode device inode.
+- * \param file_priv DRM file private.
+- * \param cmd command.
+- * \param arg pointer to a (output) drm_agp_info structure.
+- * \return zero on success or a negative number on failure.
++ * @dev: DRM device
++ * @info: drm_agp_info structure to be fill
+  *
+  * Verifies the AGP device has been initialized and acquired and fills in the
+  * drm_agp_info structure with the information in drm_agp_head::agp_info.
++ *
++ * Returns:
++ * zero on success or a negative number on failure.
+  */
+ int drm_agp_info(struct drm_device *dev, struct drm_agp_info *info)
+ {
+@@ -93,13 +93,15 @@ int drm_agp_info_ioctl(struct drm_device *dev, void *data,
+ }
+ 
+ /**
+- * Acquire the AGP device.
++ * drm_agp_acquire - Acquire the AGP device.
+  *
+- * \param dev DRM device that is to acquire AGP.
+- * \return zero on success or a negative number on failure.
++ * @dev: DRM device that is to acquire AGP.
+  *
+  * Verifies the AGP device hasn't been acquired before and calls
+  * \c agp_backend_acquire.
++ *
++ * Returns:
++ * zero on success or a negative number on failure.
+  */
+ int drm_agp_acquire(struct drm_device *dev)
+ {
+@@ -116,16 +118,17 @@ int drm_agp_acquire(struct drm_device *dev)
+ EXPORT_SYMBOL(drm_agp_acquire);
+ 
+ /**
+- * Acquire the AGP device (ioctl).
++ * drm_agp_acquire_ioctl - Acquire the AGP device (ioctl).
+  *
+- * \param inode device inode.
+- * \param file_priv DRM file private.
+- * \param cmd command.
+- * \param arg user argument.
+- * \return zero on success or a negative number on failure.
++ * @dev: DRM device
++ * @data: private data
++ * @file_priv: DRM file private.
+  *
+  * Verifies the AGP device hasn't been acquired before and calls
+  * \c agp_backend_acquire.
++ *
++ * Returns:
++ * zero on success or a negative number on failure.
+  */
+ int drm_agp_acquire_ioctl(struct drm_device *dev, void *data,
+ 			  struct drm_file *file_priv)
+@@ -134,12 +137,14 @@ int drm_agp_acquire_ioctl(struct drm_device *dev, void *data,
+ }
+ 
+ /**
+- * Release the AGP device.
++ * drm_agp_release - Release the AGP device.
+  *
+- * \param dev DRM device that is to release AGP.
+- * \return zero on success or a negative number on failure.
++ * @dev: DRM device that is to release AGP.
+  *
+  * Verifies the AGP device has been acquired and calls \c agp_backend_release.
++ *
++ * Returns:
++ * zero on success or a negative number on failure.
+  */
+ int drm_agp_release(struct drm_device *dev)
+ {
+@@ -158,14 +163,16 @@ int drm_agp_release_ioctl(struct drm_device *dev, void *data,
+ }
+ 
+ /**
+- * Enable the AGP bus.
++ * drm_agp_enable - Enable the AGP bus.
+  *
+- * \param dev DRM device that has previously acquired AGP.
+- * \param mode Requested AGP mode.
+- * \return zero on success or a negative number on failure.
++ * @dev: DRM device that has previously acquired AGP.
++ * @mode: Requested AGP mode.
+  *
+  * Verifies the AGP device has been acquired but not enabled, and calls
+  * \c agp_enable.
++ *
++ * Returns:
++ * zero on success or a negative number on failure.
+  */
+ int drm_agp_enable(struct drm_device *dev, struct drm_agp_mode mode)
+ {
+@@ -188,16 +195,16 @@ int drm_agp_enable_ioctl(struct drm_device *dev, void *data,
+ }
+ 
+ /**
+- * Allocate AGP memory.
++ * drm_agp_alloc - Allocate AGP memory.
+  *
+- * \param inode device inode.
+- * \param file_priv file private pointer.
+- * \param cmd command.
+- * \param arg pointer to a drm_agp_buffer structure.
+- * \return zero on success or a negative number on failure.
++ * @dev: DRM device
++ * @request: memory allocation request
+  *
+  * Verifies the AGP device is present and has been acquired, allocates the
+  * memory via agp_allocate_memory() and creates a drm_agp_mem entry for it.
++ *
++ * Returns:
++ * zero on success or a negative number on failure.
+  */
+ int drm_agp_alloc(struct drm_device *dev, struct drm_agp_buffer *request)
+ {
+@@ -243,13 +250,14 @@ int drm_agp_alloc_ioctl(struct drm_device *dev, void *data,
+ }
+ 
+ /**
+- * Search for the AGP memory entry associated with a handle.
++ * drm_agp_lookup_entry - Search for the AGP memory entry associated with a handle.
+  *
+- * \param dev DRM device structure.
+- * \param handle AGP memory handle.
+- * \return pointer to the drm_agp_mem structure associated with \p handle.
++ * @dev: DRM device structure.
++ * @handle: AGP memory handle.
+  *
+  * Walks through drm_agp_head::memory until finding a matching handle.
++ *
++ * Returns: pointer to the drm_agp_mem structure associated with \p handle.
+  */
+ static struct drm_agp_mem *drm_agp_lookup_entry(struct drm_device *dev,
+ 						unsigned long handle)
+@@ -264,16 +272,15 @@ static struct drm_agp_mem *drm_agp_lookup_entry(struct drm_device *dev,
+ }
+ 
+ /**
+- * Unbind AGP memory from the GATT (ioctl).
++ * drm_agp_unbind - Unbind AGP memory from the GATT (ioctl).
+  *
+- * \param inode device inode.
+- * \param file_priv DRM file private.
+- * \param cmd command.
+- * \param arg pointer to a drm_agp_binding structure.
+- * \return zero on success or a negative number on failure.
++ * @dev: DRM device structure.
++ * @request: binding request
+  *
+  * Verifies the AGP device is present and acquired, looks-up the AGP memory
+  * entry and passes it to the unbind_agp() function.
++ *
++ * Returns: zero on success or a negative number on failure.
+  */
+ int drm_agp_unbind(struct drm_device *dev, struct drm_agp_binding *request)
+ {
+@@ -302,17 +309,16 @@ int drm_agp_unbind_ioctl(struct drm_device *dev, void *data,
+ }
+ 
+ /**
+- * Bind AGP memory into the GATT (ioctl)
++ * drm_agp_bind- Bind AGP memory into the GATT (ioctl)
+  *
+- * \param inode device inode.
+- * \param file_priv DRM file private.
+- * \param cmd command.
+- * \param arg pointer to a drm_agp_binding structure.
+- * \return zero on success or a negative number on failure.
++ * @dev: DRM device structure.
++ * @request: binding request
+  *
+  * Verifies the AGP device is present and has been acquired and that no memory
+  * is currently bound into the GATT. Looks-up the AGP memory entry and passes
+  * it to bind_agp() function.
++ *
++ * Returns: zero on success or a negative number on failure.
+  */
+ int drm_agp_bind(struct drm_device *dev, struct drm_agp_binding *request)
+ {
+@@ -346,18 +352,17 @@ int drm_agp_bind_ioctl(struct drm_device *dev, void *data,
+ }
+ 
+ /**
+- * Free AGP memory (ioctl).
++ * drm_agp_free - Free AGP memory (ioctl).
+  *
+- * \param inode device inode.
+- * \param file_priv DRM file private.
+- * \param cmd command.
+- * \param arg pointer to a drm_agp_buffer structure.
+- * \return zero on success or a negative number on failure.
++ * @dev: DRM device structure.
++ * @request: memory request to be released
+  *
+  * Verifies the AGP device is present and has been acquired and looks up the
+  * AGP memory entry. If the memory is currently bound, unbind it via
+  * unbind_agp(). Frees it via free_agp() as well as the entry itself
+  * and unlinks from the doubly linked list it's inserted in.
++ *
++ * Returns: zero on success or a negative number on failure.
+  */
+ int drm_agp_free(struct drm_device *dev, struct drm_agp_buffer *request)
+ {
+@@ -389,9 +394,9 @@ int drm_agp_free_ioctl(struct drm_device *dev, void *data,
+ }
+ 
+ /**
+- * Initialize the AGP resources.
++ * drm_agp_init - Initialize the AGP resources.
+  *
+- * \return pointer to a drm_agp_head structure.
++ * @dev: DRM device structure.
+  *
+  * Gets the drm_agp_t structure which is made available by the agpgart module
+  * via the inter_module_* functions. Creates and initializes a drm_agp_head
+@@ -399,6 +404,8 @@ int drm_agp_free_ioctl(struct drm_device *dev, void *data,
+  *
+  * Note that final cleanup of the kmalloced structure is directly done in
+  * drm_pci_agp_destroy.
++ *
++ * Returns: pointer to a drm_agp_head structure.
+  */
+ struct drm_agp_head *drm_agp_init(struct drm_device *dev)
+ {
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
