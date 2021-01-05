@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0100E2EADF1
+	by mail.lfdr.de (Postfix) with ESMTP id E489B2EADF3
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbhAEPKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:10:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S1727126AbhAEPKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:10:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbhAEPKN (ORCPT
+        with ESMTP id S1726499AbhAEPKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:10:13 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3578DC061574;
-        Tue,  5 Jan 2021 07:09:33 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id t22so18515968pfl.3;
-        Tue, 05 Jan 2021 07:09:33 -0800 (PST)
+        Tue, 5 Jan 2021 10:10:39 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC96C061796
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 07:09:58 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id a12so73351535lfl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 07:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=B59L1dFJQpmm6U2tlwyxFjjl6hJUIu0OW27SvrE0oos=;
-        b=oyOckUZXtx9AQwQBWUKccCcj191MuBzPQolSutSz9Y0Ul6GN0HMi1jPI/YhgvLMVcC
-         roCrsWzfLsPny8VDJ4eMsf5jIy1/RHJZtLO1jGQvr8yvrUrvT7O+trHihvOFEufE3feN
-         +xcEm8yyOSxtcRzUQ/WVN56XdjvXE+7a7IF/VH4Iav5Y6si4+D8vXRqpg/0XUCaHeoSi
-         xvs5ACLF2pQUuF82kYz3VJqUzlzUv/MEaDEa3TVOpLRZ2y4r7m7P439pEmWDQh4kems2
-         pI+Yf7F3mill4iq22IrKtL5YDQW8m0DKVONOfQubm/kScpHP78doSKJCBcrIHKxcwQ0s
-         PXiw==
+        bh=Hpiie2eScIu2s/uuXEyv9UhVbNMVnQLt+9qP9Zzdslg=;
+        b=SNXGbPp2no06aMPooUZfjhBv2yx8ZCRuuzOVgMeXO747C//2P3yIp3cZGMWM+h340l
+         7V+UCfmLDjwfv/uPVx1mloSd6IjRQf1kwRE3dEImVTGiDO8aiAAtV6zxa75B5k6rp2Wo
+         tGq3SchCZJ4KkTLse10V+yp6Sv/I0aO/iLhSiiNGC2HzUq9PALGqJK9/w0g39IdstPw/
+         KvWbVRujx/bbX6a7yC6bmNE5cKgbS16lH+F9vv72taKgtvHbXpSSwrGyDf1F/Vf2kT10
+         eyv/DElect6IgOyBhwK989ccFDKsFR519M8b0qk58ZEBZmZ3M2Vz6DwvsI0u5dndwWYb
+         ieBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B59L1dFJQpmm6U2tlwyxFjjl6hJUIu0OW27SvrE0oos=;
-        b=QPFdZP4PFXel36OxqWfrcXXiboDBVVf9p/eAc/xh/OYE3u8CT4jylGLkm8VPbYHsVx
-         NXccqNphK5H1ZuZAIZcs5j5gU07x0n3GAoVkzCxO2CdnoRRJgdQEu4TYek/EW4SG4oZc
-         M3EsCe5r/7lTTsIF345PMQBN7cN9p0DLQLxarGWkPlAwQxHr6u1IF3XlkF/blNek6/QV
-         ZCbZ+jafOghpZCG0fWVEa12gXmo0hW0idY1//q4+uFu/7S9vQ66sF5Y6yML1hLy95xkJ
-         HahIQWrgA0H8GLvyetGEZeLJ0gXzcNITXZiASpp9lTXRMD4bKDUsT3mXA+v8+jZf1VZT
-         BINA==
-X-Gm-Message-State: AOAM533Nojtcc8PascuM2OiIDjJjnVg+V66q1McR1E+VZfidGPQr5qvg
-        XFBSvraDJoxi1ZvKib7HSg8pwvCj+ZpccUtXyDg=
-X-Google-Smtp-Source: ABdhPJwfp6jodFZyv1Neb9BHMx5OCcTv9aS6Lx3BAZWVHMmeKBXVbLxSxZ012O4y0PyTpRqMolmxj+eTfkMAL9APlp8=
-X-Received: by 2002:a62:528c:0:b029:19e:4a39:d9ea with SMTP id
- g134-20020a62528c0000b029019e4a39d9eamr65120pfb.20.1609859372655; Tue, 05 Jan
- 2021 07:09:32 -0800 (PST)
+        bh=Hpiie2eScIu2s/uuXEyv9UhVbNMVnQLt+9qP9Zzdslg=;
+        b=nYg7akBAizQbxykiShO4Pqa/ZBBlrFVTBRw/2T3BvNDuP9G2YF19gHnx0ujTd71dAP
+         ltHWfm24QkK9vIpuxb2SNvHLkv+pcw0gn1Igaa2Z270y7cytdkVFhMznzDWvTWIEfjVd
+         EJfxQRBlFT7Fq7AMWYu6HWw5gf8LVLxIqL7eAy51Fs9MOjo4ISQuK46lLBbKq+r+l26X
+         C6wBt6kYs8jcEduSEz8mnXCgnQREuWR7zUjMFj8rt2hviq7iswJEK3HwcXo0znq5D8DJ
+         oTk/0f9092nERYU7DV4lKM991VjpgX0e2/kz8SF8vQANC74oRf/rlCkUllcZVZZI5+nR
+         UyQw==
+X-Gm-Message-State: AOAM533Aes7W5yvwfCeV/yYFRk0OVIP+53TNVgiKMj655mtlY1F7lmO7
+        BSrGkYz2+HZoZ9WzZZyi3YrQQb4zbtlGHYGx7j/2qA==
+X-Google-Smtp-Source: ABdhPJyGva5zXeaOmIEQqoYoJer37k5jmHl9i/j6Dhp6JIYx4Yofcosj36VXFcf+6bmITwznEOHzyR4VGrfsU18QvDc=
+X-Received: by 2002:a19:495d:: with SMTP id l29mr33226699lfj.465.1609859397331;
+ Tue, 05 Jan 2021 07:09:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201130211145.3012-1-james.quinlan@broadcom.com>
- <20201130211145.3012-2-james.quinlan@broadcom.com> <20201209140122.GA331678@robh.at.kernel.org>
- <CANCKTBsFALwF8Hy-=orH8D-nd-qyXqFDopATmKCvbqPbUTC7Sw@mail.gmail.com> <20210105140128.GC4487@sirena.org.uk>
-In-Reply-To: <20210105140128.GC4487@sirena.org.uk>
-From:   Jim Quinlan <jim2101024@gmail.com>
-Date:   Tue, 5 Jan 2021 10:09:21 -0500
-Message-ID: <CANCKTBtNgyBTNwwtbtMkR9nFwq+AZyAZmGX9XXfhwf27zwjG_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
- voltage regulators
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <X98NP6NFK1Afzrgd@manjaro>
+In-Reply-To: <X98NP6NFK1Afzrgd@manjaro>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 5 Jan 2021 16:09:46 +0100
+Message-ID: <CACRpkdbLtcPY++DZv2LLkGrW=T83ByqeB+fx3Li0E=TJMYfLCA@mail.gmail.com>
+Subject: Re: [PATCH v3] pinctrl: remove empty lines in pinctrl subsystem
+To:     Zhaoyu Liu <zackary.liu.pro@gmail.com>
+Cc:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Patrice CHOTARD <patrice.chotard@st.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 9:01 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Jan 04, 2021 at 05:12:11PM -0500, Jim Quinlan wrote:
->
-> > For us, the supplies are for the EP chip's power.  We have the PCIe
-> > controller turning them "on" for power-on/resume and "off" for
-> > power-off/suspend.  We need the "xxx-supply" property in the
-> > controller's DT node because of the chicken-and-egg situation: if the
-> > property was in the EP's DT node, the RC  will never discover the EP
-> > to see that there is a regulator to turn on.   We would be happy with
-> > a single supply name, something like "ep-power".  We would be ecstatic
-> > to have two (ep0-power, ep1-power).
->
-> Why can't the controller look at the nodes describing devices for
-> standard properties?
-Hi Mark,
+On Sun, Dec 20, 2020 at 9:37 AM Zhaoyu Liu <zackary.liu.pro@gmail.com> wrote:
 
-It just feels wrong for the driver (RC) of one DT node to be acting on
-a property of another driver's (EP) node, even though it is a subnode.
-There is also the possibility of the EP driver acting upon the
-property simultaneously; we don't really have control of what EP
-device and drivers are paired with our SOCs.
-In addition, this just pushes the binding name issue down a level --
-what should these power supplies be called?  They are not slot power
-supplies.  Can the  Broadcom STB PCIe RC driver's binding document
-specify and define the properties of EP sub-nodes?
+> Remove all empty lines at the end of functions in pinctrl subsystem,
+> and make the code neat.
+>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Zhaoyu Liu <zackaryliu@yeah.net>
 
-Regards,
-Jim Quinlan
-Broadcom STB
+Patch applied.
+
+Yours,
+Linus Walleij
