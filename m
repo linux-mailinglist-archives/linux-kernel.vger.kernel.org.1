@@ -2,126 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7672EB394
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651B22EB397
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730823AbhAETmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 14:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        id S1730872AbhAETnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 14:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730570AbhAETmO (ORCPT
+        with ESMTP id S1730570AbhAETnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:42:14 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253A6C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 11:41:34 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2so340805pfq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:41:34 -0800 (PST)
+        Tue, 5 Jan 2021 14:43:11 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBFAC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 11:42:30 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id o13so1231392lfr.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:42:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TMFOAFZFlYW+eUre2PkHe1D8HJjsKx5wuGAw4VigT/k=;
-        b=PYhRu3fodzwT3SmYBMkpVuB+dfW7fvTvp8+QoF5yCIBs0egWnRrypiB5bFIxjUAfnH
-         XkwDQjlATI1N1MIZ8ueqtkUl2y3iV6ysXr60bCnNRCo6vq8igHsXORFf+6SdI924zbxy
-         /83HmwpIlV7icwC6HyMDaBGO0g2BOIw30xVgw67YGpL23IIXDvGI2QBIaC+porCc8hCS
-         neiD6owyzEGK7qNgHuaeYmUNpMX7RAMbDZLBK1L2rbcPnpjPbzzdrawZsoKNaZDl+Bdv
-         UCbOcdJur+iUcfxh/BwARd84J7eFYy/El0qlWbdyENjKOW6msBrh2ZcF9oySrmYZcayH
-         c1dg==
+        bh=BYoTEEasTGTbeUe5rO0NOqcMl/OsWURt/XrVYO9iiBE=;
+        b=rVAYvv/W3AwJm3e7hsUlb8tsPHpuRmS/tGCKqISerYJWmOpDfpfLStFg/yt9KJ3NzY
+         frYYOWAAhLCirAwpOFpfKhI0lQFcrlM09zdnx3qQB7hHP9q4UbS7puMB9aspXQEy0e8d
+         zz9wv4iUHWToHSIzzBGMePeHDDgU1rE2Ht6ZPfI11hgEOVmAXNsOGOe1Aqve1moPjF+t
+         NkZs2cwjbhTFbvDuPaL3B+nRfnWpxyL3AdhvzqUPYFzRTRuFezyJ+/QwgrMJ9ouaOaKV
+         xvMywi3uY/4gUz8dAvH36AgEtNQR+U302+0NYCbx0xmZb61kb9M1pKqdn+AshRwIZMj+
+         a2Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TMFOAFZFlYW+eUre2PkHe1D8HJjsKx5wuGAw4VigT/k=;
-        b=X8o/z3KBgIgKnE4pReLJyDOkGG3c8h8LrlPAdpmaQhLjUogI84ZRHNvi6j2kKQEa8I
-         s1DDE1DgxE+oGZoASwRE2ZmLtGv9JVgtnIY900N3bdIYfV7EpE8muYkUi9YWxJpepYwq
-         1iYs22sLo2qREHM3TZOmozpVvYB70LJPS6ZfsaVTjzsZR/kwRk5W5bey5DwgxUIbyeH4
-         gCZx7PLOpBr/bsouhp5dJKU3Ra+77JfTLMn/Vy21dMHazTljVvhb5kLYTcDWStbRpygY
-         cWnynDEzPep1IzEcFxK0XOmSA/060QjTuCbWgwqGh4GUXUYH35q0rBq7QRubU2ZsVjNi
-         eNvA==
-X-Gm-Message-State: AOAM531vCec2/EOxYgw4gakeapA0obyqYs/UShZLG01m1d5n7REe+7Nt
-        PIaOV6F7g+qX7LAFSdjtQ6W70bA7a2zeOab9d/MLrQ==
-X-Google-Smtp-Source: ABdhPJzZaj54e0rqEqOprP4a9mEFCCyzuXKeSYX7ix+zANye147fcj5ZIWekkh9+e/KR+LQ6BaXoGywjQE/GTDeFSCQ=
-X-Received: by 2002:a62:7c4a:0:b029:19d:b7bc:2c51 with SMTP id
- x71-20020a627c4a0000b029019db7bc2c51mr631636pfc.30.1609875693171; Tue, 05 Jan
- 2021 11:41:33 -0800 (PST)
+        bh=BYoTEEasTGTbeUe5rO0NOqcMl/OsWURt/XrVYO9iiBE=;
+        b=LHjIUQJgRslmJLdxnvDaAoEKDYGQ/aawfc/QZU3Wdulxu3MBw/H3b0ge2jSqZ/AOWE
+         SyTFVEhvsvBnmNNrk9qpum5SC1sKFgOi4BXvV6jywCaCzPthCRu+NaaN3KXJMduRzyAV
+         tGWspkzDTKUMx9ARlA8g2clf4I+2SJws+LYnT8Ak+78L8fjmrZYRwbyjCz4sSyuD33jO
+         uSwdnda1jEBVwNGbC1jZcxmjRXZeIAKkpc7D5Qsaa3k1ZQEwgjpvKdyGAP8YEAg48mVF
+         1I7dnG3H729LzYuRVkfrLaFAs1WBI4XfJ8IV74Su8UjliR5VtVEkb+xYVR0G7TBsTImZ
+         0AJQ==
+X-Gm-Message-State: AOAM532U42oEDVPdwBadFxkTV9RhWuU+MfjOJvgDr+6RxUPzvibYwW9D
+        dsNUVKB0VPGR96kDidUak6T3iDtLYnlf480Iab4DuA==
+X-Google-Smtp-Source: ABdhPJx/+k688ShdldqheuNW9q3B3igGtUsLNim+goYWXcvTrFNPoh8S6h0MdE29Sjhy0iwjyhdyppnpI1tlclKVhuA=
+X-Received: by 2002:ac2:47e7:: with SMTP id b7mr343986lfp.117.1609875748867;
+ Tue, 05 Jan 2021 11:42:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20201222184425.7028-7-p.yadav@ti.com> <202012291151.fApnPO6i-lkp@intel.com>
- <20201229091806.eyrakehdxo6762sg@ti.com>
-In-Reply-To: <20201229091806.eyrakehdxo6762sg@ti.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 5 Jan 2021 11:41:25 -0800
-Message-ID: <CAKwvOdnNeAXUsNQnSmVmODT9C4_J9cX7prRaYTs+R588=JW7LA@mail.gmail.com>
-Subject: Re: [PATCH 6/7] spi: cadence-quadspi: Wait at least 500 ms for direct reads
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     kernel test robot <lkp@intel.com>, Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-spi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com> <aebcdd933df3abad378aeafc1a07dfe9bbb25548.camel@redhat.com>
+In-Reply-To: <aebcdd933df3abad378aeafc1a07dfe9bbb25548.camel@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 5 Jan 2021 11:42:18 -0800
+Message-ID: <CALvZod448Ebw7YE-HVCNXNSbtvTcTvQx+_EqcyxTVd_SZ4ATBA@mail.gmail.com>
+Subject: Re: [PATCH v21 00/19] per memcg lru lock
+To:     Qian Cai <qcai@redhat.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kernel test robot <lkp@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        alexander.duyck@gmail.com,
+        kernel test robot <rong.a.chen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <shy828301@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 1:18 AM 'Pratyush Yadav' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
+On Tue, Jan 5, 2021 at 11:30 AM Qian Cai <qcai@redhat.com> wrote:
 >
-> On 29/12/20 11:29AM, kernel test robot wrote:
-> > Hi Pratyush,
+> On Thu, 2020-11-05 at 16:55 +0800, Alex Shi wrote:
+> > This version rebase on next/master 20201104, with much of Johannes's
+> > Acks and some changes according to Johannes comments. And add a new patch
+> > v21-0006-mm-rmap-stop-store-reordering-issue-on-page-mapp.patch to support
+> > v21-0007.
 > >
-> > Thank you for the patch! Perhaps something to improve:
+> > This patchset followed 2 memcg VM_WARN_ON_ONCE_PAGE patches which were
+> > added to -mm tree yesterday.
 > >
-> > [auto build test WARNING on spi/for-next]
-> > [also build test WARNING on v5.11-rc1 next-20201223]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch]
-> >
-> > url:    https://github.com/0day-ci/linux/commits/Pratyush-Yadav/spi-cadence-quadspi-Add-Octal-DTR-support/20201223-025328
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-> > config: arm-randconfig-r006-20201221 (attached as .config)
-> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project cee1e7d14f4628d6174b33640d502bff3b54ae45)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # install arm cross compiling tool for clang build
-> >         # apt-get install binutils-arm-linux-gnueabi
-> >         # https://github.com/0day-ci/linux/commit/04a7bcbc449363e5d6f498376c69116567b49d7d
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review Pratyush-Yadav/spi-cadence-quadspi-Add-Octal-DTR-support/20201223-025328
-> >         git checkout 04a7bcbc449363e5d6f498376c69116567b49d7d
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> > >> drivers/spi/spi-cadence-quadspi.c:966:24: warning: comparison of distinct pointer types ('typeof (len) *' (aka 'unsigned int *') and 'typeof (500UL) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
-> >                                             msecs_to_jiffies(max(len, 500UL)))) {
-> >                                                              ^~~~~~~~~~~~~~~
-> >    include/linux/minmax.h:58:19: note: expanded from macro 'max'
-> >    #define max(x, y)       __careful_cmp(x, y, >)
-> >                            ^~~~~~~~~~~~~~~~~~~~~~
-> >    include/linux/minmax.h:42:24: note: expanded from macro '__careful_cmp'
-> >            __builtin_choose_expr(__safe_cmp(x, y), \
-> >                                  ^~~~~~~~~~~~~~~~
-> >    include/linux/minmax.h:32:4: note: expanded from macro '__safe_cmp'
-> >                    (__typecheck(x, y) && __no_side_effects(x, y))
-> >                     ^~~~~~~~~~~~~~~~~
-> >    include/linux/minmax.h:18:28: note: expanded from macro '__typecheck'
-> >            (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-> >                       ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
-> >    1 warning generated.
+> > Many thanks for line by line review by Hugh Dickins, Alexander Duyck and
+> > Johannes Weiner.
 >
-> On arm64 size_t is defined as unsigned long and on arm is it defined as
-> unsigned int. So using 500U would generate the same warning on 64-bit
-> platforms. Maybe the fix is to do something like: max(len, (size_t)500).
-> Any better ideas?
+> Given the troublesome history of this patchset, and had been put into linux-next
+> recently, as well as it touched both THP and mlock. Is it a good idea to suspect
+> this patchset introducing some races and a spontaneous crash with some mlock
+> memory presume?
 
-SGTM
-
--- 
-Thanks,
-~Nick Desaulniers
+This has already been merged into the linus tree. Were you able to get
+a similar crash on the latest upstream kernel as well?
