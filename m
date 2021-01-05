@@ -2,55 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E692EA52E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0B12EA532
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbhAEGG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 01:06:29 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9955 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727234AbhAEGG2 (ORCPT
+        id S1728226AbhAEGHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 01:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbhAEGHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 01:06:28 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D925p10F3zj2f2;
-        Tue,  5 Jan 2021 14:05:02 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 5 Jan 2021
- 14:05:37 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix null page reference in
- redirty_blocks
-To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-CC:     Colin Ian King <colin.king@canonical.com>,
-        Daeho Jeong <daehojeong@google.com>
-References: <20210105041630.1393157-1-daeho43@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <f27c3ea8-f6d7-db27-9dc3-14e0be08e5fc@huawei.com>
-Date:   Tue, 5 Jan 2021 14:05:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 5 Jan 2021 01:07:23 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB52C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 22:06:42 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id 11so28304645oty.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 22:06:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ov1BW2jrSogHx5WA00oTYWFFaSTIwzL0Iboyie4P7Y8=;
+        b=roTsOt06ODtm2Dtfmfti80j17SR6WoOHQzAXza1AVJFv0RlEEUrfzSllVUihzl11sf
+         K+JCZIM4/LVlZ3YDxUkTEMCEo2hnFY4IApRjQTrbs/mERB+WsOkNsiQb87B1TsVTjwbU
+         9BM2sKmEgmIanlxwaYg54TuXPdJ0apJrPwtokcsmQqnSyu5hRP2IxEed6gGOXV8BDPU8
+         UQCfOjXwnqHJLQIIRgSDqjvUiO/8VFu5jtlxHnJR8uqctxDeMNJrQcGaDkenXMMu5WsJ
+         emV4C+fFFCGPKBD40yEpLBKiykwYOTOD9AQC9FLhyEOXVS4zkErgPWkgUiAz6qIuzQW7
+         TeAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ov1BW2jrSogHx5WA00oTYWFFaSTIwzL0Iboyie4P7Y8=;
+        b=jj7dZye34k4n3OTwjDWQLc3ohgsmG4nvq9eFDmlqce213TfnUJLtyv7pkay4wj772q
+         Kaidy9VCcQZKz6cGjraGyk1jyyJzwXYwmNSnj5LV6XY5R/o+UTi8pPi1uyGnBuXj1oZC
+         W8JQLFk+4Ex+zAV198toZw0WX7cZRMwLl3ENKOSBaZb8196jly3qyA9b/D/TcEifX5Sn
+         Oa6lBA00cmkJgbo22lKCwJAJXuMfesDniHfAYAokzR6WLi6GyHlT+fO18EdIu9fGWIB/
+         Z6go+BQ5vEr/O5WFJ41Gysm+ijCX+3Hsti2y2zzHvSggApNQUqfjUr1KKTbolrgiMv51
+         xskA==
+X-Gm-Message-State: AOAM53049ue5PmHiiLBg55KEuOPtU8Eo3V3FCW5D2cUiKxeMlIMFSDks
+        qlGjlOH8EQk+jcBfo+l1NpUOWDcL4EzaUPSEta0=
+X-Google-Smtp-Source: ABdhPJx1sYejqOWDEftFo2DD5+NPWs9P44vt9wG+wHnleaHZI+B+5/LZG4X6vzLI0xmShKtdYqGMCw==
+X-Received: by 2002:a05:6830:10d2:: with SMTP id z18mr54715963oto.90.1609826802321;
+        Mon, 04 Jan 2021 22:06:42 -0800 (PST)
+Received: from [192.168.17.50] (CableLink-189-219-73-83.Hosts.InterCable.net. [189.219.73.83])
+        by smtp.gmail.com with ESMTPSA id x20sm13675682oov.33.2021.01.04.22.06.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 22:06:41 -0800 (PST)
+Subject: Re: [PATCH 5.10 00/63] 5.10.5-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
+        pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <20210104155708.800470590@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <d13294c0-84b8-38ee-d92c-4025b30929b9@linaro.org>
+Date:   Tue, 5 Jan 2021 00:06:40 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210105041630.1393157-1-daeho43@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <20210104155708.800470590@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/5 12:16, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> Fixed null page reference when find_lock_page() fails in
-> redirty_blocks().
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> Reported-by: Colin Ian King <colin.king@canonical.com>
-> Fixes: 5fdb322ff2c2 ("f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE")
+Hello!
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+On 1/4/21 9:56 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.5 release.
+> There are 63 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Thanks,
+Results from Linaro’s test farm.
+No regressions detected.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.10.5-rc1
+git repo: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+git branch: linux-5.10.y
+git commit: 18347c4f07814f2fef15f3b1518b6b8a88bae75a
+git describe: v5.10.4-64-g18347c4f0781
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.4-64-g18347c4f0781
+
+No regressions (compared to build v5.10.4)
+
+No fixes (compared to build v5.10.4)
+
+Ran 53801 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fs-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
