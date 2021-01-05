@@ -2,235 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6192EAC7B
+	by mail.lfdr.de (Postfix) with ESMTP id 529492EAC7A
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728960AbhAEN5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:57:18 -0500
-Received: from mga18.intel.com ([134.134.136.126]:59030 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726707AbhAEN5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:57:16 -0500
-IronPort-SDR: xhQR7ni/tXEa+7jTEGFvIHb14n+MkyKUmKhpyT//W3Y1wQWTOCkT1+0rGJ+VTo+9K4BTIuIHt7
- YHPJeHgSUB/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="164808793"
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="164808793"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 05:55:30 -0800
-IronPort-SDR: wNwm/Z/QSI0P+s1OCoJY3ZN/mogxeMpYRV7iN5RIZyc4YzcPbN0+VOTBkytcIgOVaZapE3lD3H
- f/S0QhiAKmng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="462303870"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP; 05 Jan 2021 05:55:29 -0800
-Received: from [10.255.229.128] (kliang2-MOBL.ccr.corp.intel.com [10.255.229.128])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id BD2F25808B7;
-        Tue,  5 Jan 2021 05:55:28 -0800 (PST)
-Subject: Re: [PATCH V3 5/9] perf mem: Support data page size
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     mingo@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
-        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
-References: <20201216185805.9981-1-kan.liang@linux.intel.com>
- <20201216185805.9981-6-kan.liang@linux.intel.com>
- <20201219205639.GB363602@kernel.org>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <52ba235a-93b9-c556-ca7a-7dd2caf3333c@linux.intel.com>
-Date:   Tue, 5 Jan 2021 08:55:27 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728747AbhAEN5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:57:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbhAEN5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:57:09 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DCEC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 05:56:29 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id r3so36296461wrt.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:56:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QvgsfPRwrrfjVEJ2UatG4ysYY2qO90ZN+qbflKAlwaI=;
+        b=MUCGc12vaYoAV6vDCddsbGxIXU/aX5CGurXVVFSlKeXqLaJePFEEoFEiuYummNawZS
+         OfT5N1TKBT0+3UjToyMQxq4nVJbhY4NouQHZPJAiulQO/ZwJkja3BFPeUcfbD55zxiSf
+         z71peECidTkbi/rSDlWcBuor3XlqxTqnvzhrykK7vu8JQvWmb9At07Sh5fZL0akltZOv
+         eTxxiaFGqY0ZYm0YL+GC7x7kLrP0fziJgVtXNksclUH33mjRcvLeY+K1MvqKeVT7rq+0
+         5hWUPZZVy2hDM7Uf1GoFl0otOAmmAYi/kvciupq+c8/HYY6fHsSlPYFe3ik0juhk0HNo
+         Ag0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QvgsfPRwrrfjVEJ2UatG4ysYY2qO90ZN+qbflKAlwaI=;
+        b=KuiqrCYe9B3kTd+jLvB5SK1uqpYfunBdk0OD/1506WB2Wo5gRg+6NGQxol+syqNYEp
+         WZFkHWhLeeE0TedfTG43VyDMmACtNsOZiWiYS7atSGJKMCOSxbEgsF1yqs4/t43Ie/Nj
+         CV39kjjYvO+XNSN6ZnQB/zAuB07kGm9FtLsQHqgiT/M9GqjnrANiSqP7NN9Ees4YtlHR
+         vWRaHWxrQ9tFp9sRfkAM042uMFb16XPd9jX3R2MfeqNp1QpqqVkSkTut/hueEBIRkPs1
+         SaGv3RX9coz6mwgdgSHbdX6YgMtXKCxjrV3FBbDDlbo55yKFRc3cM6K/FpIe7mUDkUUd
+         8lqw==
+X-Gm-Message-State: AOAM533ekmTM0GcwSo3NYLZFIcB0FKMbnDdy67V8PgjpsI7m1UGjVymR
+        HqCpSFHG7dxalz1ZxPubHUJak1QlEOUOUw==
+X-Google-Smtp-Source: ABdhPJwWQobe1NUocF4pm7TjN/4OZV+R+dEWSS7fCKMBZvfjdKb0KQKJ0H7qf4mYAxVd+luDNRAXqg==
+X-Received: by 2002:adf:a3ca:: with SMTP id m10mr84567516wrb.228.1609854988317;
+        Tue, 05 Jan 2021 05:56:28 -0800 (PST)
+Received: from localhost.localdomain (pop.92-184-112-247.mobile.abo.orange.fr. [92.184.112.247])
+        by smtp.gmail.com with ESMTPSA id r20sm107358547wrg.66.2021.01.05.05.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 05:56:27 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <marc.zyngier@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH] irq/irq_sim: shrink devm_irq_domain_create_sim()
+Date:   Tue,  5 Jan 2021 14:56:14 +0100
+Message-Id: <20210105135614.32104-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-In-Reply-To: <20201219205639.GB363602@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
+We don't have to use a custom devres structure if all we manage is a
+single pointer - we can use devm_add_action_or_reset() for that and
+shrink the code a bit.
 
-On 12/19/2020 3:56 PM, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Dec 16, 2020 at 10:58:01AM -0800, kan.liang@linux.intel.com escreveu:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> Add option --data-page-size in "perf mem" to record/report data page
->> size.
->>
->> Here are some examples.
->> perf mem --phys-data --data-page-size report -D
-> 
-> So I stopped at this cset, it isn't applying to my tree, I'll test what
-> I have, which is up to the patch before this one and push to Linus, as
-> the window is closing.
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ kernel/irq/irq_sim.c | 31 ++++++++++++-------------------
+ 1 file changed, 12 insertions(+), 19 deletions(-)
 
-Hi Arnaldo,
+diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
+index 48006608baf0..6e935d4d1ec5 100644
+--- a/kernel/irq/irq_sim.c
++++ b/kernel/irq/irq_sim.c
+@@ -24,10 +24,6 @@ struct irq_sim_irq_ctx {
+ 	struct irq_sim_work_ctx	*work_ctx;
+ };
+ 
+-struct irq_sim_devres {
+-	struct irq_domain	*domain;
+-};
+-
+ static void irq_sim_irqmask(struct irq_data *data)
+ {
+ 	struct irq_sim_irq_ctx *irq_ctx = irq_data_get_irq_chip_data(data);
+@@ -216,11 +212,11 @@ void irq_domain_remove_sim(struct irq_domain *domain)
+ }
+ EXPORT_SYMBOL_GPL(irq_domain_remove_sim);
+ 
+-static void devm_irq_domain_release_sim(struct device *dev, void *res)
++static void devm_irq_domain_remove_sim(void *data)
+ {
+-	struct irq_sim_devres *this = res;
++	struct irq_domain *domain = data;
+ 
+-	irq_domain_remove_sim(this->domain);
++	irq_domain_remove_sim(domain);
+ }
+ 
+ /**
+@@ -238,20 +234,17 @@ struct irq_domain *devm_irq_domain_create_sim(struct device *dev,
+ 					      struct fwnode_handle *fwnode,
+ 					      unsigned int num_irqs)
+ {
+-	struct irq_sim_devres *dr;
++	struct irq_domain *domain;
++	int ret;
+ 
+-	dr = devres_alloc(devm_irq_domain_release_sim,
+-			  sizeof(*dr), GFP_KERNEL);
+-	if (!dr)
+-		return ERR_PTR(-ENOMEM);
++	domain = irq_domain_create_sim(fwnode, num_irqs);
++	if (IS_ERR(domain))
++		return domain;
+ 
+-	dr->domain = irq_domain_create_sim(fwnode, num_irqs);
+-	if (IS_ERR(dr->domain)) {
+-		devres_free(dr);
+-		return dr->domain;
+-	}
++	ret = devm_add_action_or_reset(dev, devm_irq_domain_remove_sim, domain);
++	if (ret)
++		return ERR_PTR(ret);
+ 
+-	devres_add(dev, dr);
+-	return dr->domain;
++	return domain;
+ }
+ EXPORT_SYMBOL_GPL(devm_irq_domain_create_sim);
+-- 
+2.29.1
 
-Sorry for the late response. I was on vacation.
-
-I will rebase the rest of the patches on top of your perf/core branch 
-and send them out shortly.
-
-Thanks,
-Kan
-
-> 
-> - Arnaldo
->   
->>   # PID, TID, IP, ADDR, PHYS ADDR, DATA PAGE SIZE, LOCAL WEIGHT, DSRC,
->>   # SYMBOL
->> 20134 20134 0xffffffffb5bd2fd0 0x016ffff9a274e96a308 0x000000044e96a308
->> 4K  1168 0x5080144
->> /lib/modules/4.18.0-rc7+/build/vmlinux:perf_ctx_unlock
->> 20134 20134 0xffffffffb63f645c 0xffffffffb752b814 0xcfb52b814 2M 225
->> 0x26a100142 /lib/modules/4.18.0-rc7+/build/vmlinux:_raw_spin_lock
->> 20134 20134 0xffffffffb660300c 0xfffffe00016b8bb0 0x0 4K 0 0x5080144
->> /lib/modules/4.18.0-rc7+/build/vmlinux:__x86_indirect_thunk_rax
->>
->> perf mem --phys-data --data-page-size report --stdio
->>
->>   # To display the perf.data header info, please use
->>   # --header/--header-only options.
->>   #
->>   #
->>   # Total Lost Samples: 0
->>   #
->>   # Samples: 5K of event 'cpu/mem-loads,ldlat=30/P'
->>   # Total weight : 281234
->>   # Sort order   :
->>   # mem,sym,dso,symbol_daddr,dso_daddr,tlb,locked,phys_daddr,data_page_size
->>   #
->>   # Overhead       Samples  Memory access             Symbol
->>   # Shared Object     Data Symbol                                  Data
->>   # Object              TLB access              Locked  Data Physical
->>   # Address   Data Page Size
->>   # ........  ............  ........................
->>   # ................................  ................
->>   # ...........................................  .......................
->>   # ......................  ......  ......................
->>   # ......................
->>   #
->>      28.54%          1826  L1 or L1 hit              [k]
->> __x86_indirect_thunk_rax      [kernel.vmlinux]  [k] 0xffffb0df31b0ff28
->> [unknown]                L1 or L2 hit            No      [k]
->> 0000000000000000    4K
->>       6.02%           256  L1 or L1 hit              [.] touch_buffer
->> dtlb              [.] 0x00007ffd50109da8                       [stack]
->> L1 or L2 hit            No      [.] 0x000000042454ada8  4K
->>       3.23%             5  L1 or L1 hit              [k] clear_huge_page
->> [kernel.vmlinux]  [k] 0xffff9a2753b8ce60                       [unknown]
->> L1 or L2 hit            No      [k] 0x0000000453b8ce60  2M
->>       2.98%             4  L1 or L1 hit              [k] clear_page_erms
->> [kernel.vmlinux]  [k] 0xffffb0df31b0fd00                       [unknown]
->> L1 or L2 hit            No      [k] 0000000000000000    4K
->>
->> Acked-by: Namhyung Kim <namhyung@kernel.org>
->> Acked-by: Jiri Olsa <jolsa@redhat.com>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> ---
->>   tools/perf/Documentation/perf-mem.txt |  3 +++
->>   tools/perf/builtin-mem.c              | 20 +++++++++++++++++++-
->>   2 files changed, 22 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/perf/Documentation/perf-mem.txt b/tools/perf/Documentation/perf-mem.txt
->> index 199ea0f0a6c0..66177511c5c4 100644
->> --- a/tools/perf/Documentation/perf-mem.txt
->> +++ b/tools/perf/Documentation/perf-mem.txt
->> @@ -63,6 +63,9 @@ OPTIONS
->>   --phys-data::
->>   	Record/Report sample physical addresses
->>   
->> +--data-page-size::
->> +	Record/Report sample data address page size
->> +
->>   RECORD OPTIONS
->>   --------------
->>   -e::
->> diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
->> index 7d6ee2208709..f3aac85aa9d4 100644
->> --- a/tools/perf/builtin-mem.c
->> +++ b/tools/perf/builtin-mem.c
->> @@ -30,6 +30,7 @@ struct perf_mem {
->>   	bool			dump_raw;
->>   	bool			force;
->>   	bool			phys_addr;
->> +	bool			data_page_size;
->>   	int			operation;
->>   	const char		*cpu_list;
->>   	DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
->> @@ -124,6 +125,9 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
->>   	if (mem->phys_addr)
->>   		rec_argv[i++] = "--phys-data";
->>   
->> +	if (mem->data_page_size)
->> +		rec_argv[i++] = "--data-page-size";
->> +
->>   	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
->>   		e = perf_mem_events__ptr(j);
->>   		if (!e->record)
->> @@ -173,6 +177,7 @@ dump_raw_samples(struct perf_tool *tool,
->>   	struct perf_mem *mem = container_of(tool, struct perf_mem, tool);
->>   	struct addr_location al;
->>   	const char *fmt, *field_sep;
->> +	char str[PAGE_SIZE_NAME_LEN];
->>   
->>   	if (machine__resolve(machine, &al, sample) < 0) {
->>   		fprintf(stderr, "problem processing %d event, skipping it.\n",
->> @@ -209,6 +214,12 @@ dump_raw_samples(struct perf_tool *tool,
->>   			symbol_conf.field_sep);
->>   	}
->>   
->> +	if (mem->data_page_size) {
->> +		printf("%s%s",
->> +			get_page_size_name(sample->data_page_size, str),
->> +			symbol_conf.field_sep);
->> +	}
->> +
->>   	if (field_sep)
->>   		fmt = "%"PRIu64"%s0x%"PRIx64"%s%s:%s\n";
->>   	else
->> @@ -273,6 +284,9 @@ static int report_raw_events(struct perf_mem *mem)
->>   	if (mem->phys_addr)
->>   		printf("PHYS ADDR, ");
->>   
->> +	if (mem->data_page_size)
->> +		printf("DATA PAGE SIZE, ");
->> +
->>   	printf("LOCAL WEIGHT, DSRC, SYMBOL\n");
->>   
->>   	ret = perf_session__process_events(session);
->> @@ -283,7 +297,7 @@ static int report_raw_events(struct perf_mem *mem)
->>   }
->>   static char *get_sort_order(struct perf_mem *mem)
->>   {
->> -	bool has_extra_options = mem->phys_addr ? true : false;
->> +	bool has_extra_options = (mem->phys_addr | mem->data_page_size) ? true : false;
->>   	char sort[128];
->>   
->>   	/*
->> @@ -302,6 +316,9 @@ static char *get_sort_order(struct perf_mem *mem)
->>   	if (mem->phys_addr)
->>   		strcat(sort, ",phys_daddr");
->>   
->> +	if (mem->data_page_size)
->> +		strcat(sort, ",data_page_size");
->> +
->>   	return strdup(sort);
->>   }
->>   
->> @@ -447,6 +464,7 @@ int cmd_mem(int argc, const char **argv)
->>   		   " between columns '.' is reserved."),
->>   	OPT_BOOLEAN('f', "force", &mem.force, "don't complain, do it"),
->>   	OPT_BOOLEAN('p', "phys-data", &mem.phys_addr, "Record/Report sample physical addresses"),
->> +	OPT_BOOLEAN(0, "data-page-size", &mem.data_page_size, "Record/Report sample data address page size"),
->>   	OPT_END()
->>   	};
->>   	const char *const mem_subcommands[] = { "record", "report", NULL };
->> -- 
->> 2.17.1
->>
-> 
