@@ -2,153 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0892EABA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1B32EABAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727736AbhAENP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbhAENP0 (ORCPT
+        id S1728475AbhAENQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:16:26 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33801 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728153AbhAENQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:15:26 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EB2C061793;
-        Tue,  5 Jan 2021 05:14:45 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id h22so72523151lfu.2;
-        Tue, 05 Jan 2021 05:14:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tQKbFrNJhZtnkQVAJYkn3GuvMlIvsBf16oBsGWuoFBg=;
-        b=Qgcs4Xx6lLq0YZhAP+b3iXdVigcYK/deCQAJeY+C1VNb9zFq0ywyeJXslL8S6zNt26
-         oMdstuxuBGDOvQ0f4VNaTt5aEQthq7vPE66VQkNdfu1+ugV5to9YzhrNTqZqRSfWY2xq
-         EoJQs2veM7c22hFQAPIVdYjXXKVTn/FG6Oo1qzfTPoHiu53wGXkauVd8ALaIynNN8BGc
-         yN74qQ2qBj8KGbxQOnpYfVO9y3fBiyZyUdU00YRMf45t1EAODcfDqMjvV38EzIIi6tK7
-         F7J/aBxnojloVN0+XEpes+OlJ4xXNXDr0jyglTcvTyOVXDiDbVtOXMn+C7gUfUkjHkFO
-         090Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tQKbFrNJhZtnkQVAJYkn3GuvMlIvsBf16oBsGWuoFBg=;
-        b=RzTwZ3CUrb1GpqJf5+FVKxHaasAWep8qxh1kzPBblCzRCqxYoE1mWnenZleG3IbPyR
-         NwYBRRn0ReDrCZbcnjuWJSHob3DSXB85WwdWP5ErkFIULyJQ+MkMW20XW/l2kQEO6P/W
-         sur1DMoocQGn5zRTc2lGX6dZFCh9ykMeprK9YGVtD9s4IvYxCuicHaEkw/n7wGjgvWCu
-         VUcc8jknefI42kNHAYLuhczYRi5XCuXqCVciJ27cxtQlyCIC2YXB3ktFG0OedbzhEY44
-         xyPJBPnISfxunSnZoKdh0Yuo8FqV68tN3yh+QaGcxjKcaTvNM+96fzwHLwJrqGwexP7M
-         NaYg==
-X-Gm-Message-State: AOAM532yY+b5Qqvnz/7y43pg9TxT4O+pR/F9BAFud7Dj8z78jor5k8G2
-        cznGV46kCXP1yK0jaUHsGkQ=
-X-Google-Smtp-Source: ABdhPJyeY24/g5kvCBsLLaTN+RDyjtpbSWCKqEnHATmX3nVrdhUp3hZJPi9Y5sxP84E4B53L/qOF6Q==
-X-Received: by 2002:a05:6512:3051:: with SMTP id b17mr30077247lfb.16.1609852484397;
-        Tue, 05 Jan 2021 05:14:44 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id t30sm7608665lft.266.2021.01.05.05.14.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 05:14:43 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 5 Jan 2021 14:14:41 +0100
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: kerneldoc warnings since commit 538fc2ee870a3 ("rcu: Introduce
- kfree_rcu() single-argument macro")
-Message-ID: <20210105131441.GA2457@pc638.lan>
-References: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
+        Tue, 5 Jan 2021 08:16:25 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 77ADA5803E1;
+        Tue,  5 Jan 2021 08:15:39 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 05 Jan 2021 08:15:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=ETwu6CPGMYAhT
+        xVZhEromat1wLEp52aBdndvKeYkzEA=; b=1BWqdd1cDOIRw4ZZynCPGZvO//5Vb
+        mlr1o+fHPg8evYSzUqkSErwahM9zIKJv1JBXA0V17owU4t3+txl2C8RUxHG4+xV0
+        HFDhHDLD3NvhPkvAaRpOXrJ1effVE1DKobEL49XItkz3QD053t3S3t4w4tV5dSlM
+        gZ4mQs3bStXQb1SWMtgrfvnr7NPWZJhkbelofwaQrAQ2it2+/0TdYI+XnYdUxlgh
+        rn5H3G1ld/AKYE7MRaTq24F+yFb70FULgZQQNQe0dURCt6+20a2lp4h4QPAXO6wY
+        pMVVmn7CgTwemA5Y4WmRINb79elJ6mxKlhG/Zsmj1o1mxWllmO5G4IqPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=ETwu6CPGMYAhTxVZhEromat1wLEp52aBdndvKeYkzEA=; b=KpDmntg+
+        Cq/UQGbIsVASQgszF7mZTfayxfXdiN20f6hDL1vwEDJivC41563O92CMZ/bEf0hn
+        KwHLsbRpd5ltzOx4dMrtXJMxaGbg8orctj4Wx6fvkZWlLQ8tBT8N4Jp0HLifYM49
+        Pa/rt06exVU3JPr812R2BALHBrFP9IFaGZAUWbkeYPx3qdir79dWoN7Mrn0Cl0q8
+        Y5HcyYT+eu5wO8I6P4SgtJl5fiPJhyzYkSW/KcBaQ/kmri+gq0NJLP4BcVkxblCs
+        3wDM/EGh2JWIf/L1llxBHidI/e14Izmd2uDx5Yvoa8zD/HPEI0cQls1bl078qG7u
+        K3dmfrzWpTIR4A==
+X-ME-Sender: <xms:emb0X0C-I6ukmwV4SkB2HroEEmOPtFlwP4kzZtmozQt8kxvwQBwePA>
+    <xme:emb0X4jsR1pm6IGCDxRvvnrBKYWLSI6YWKdbrUKUOx-kgMbCnGypwas1r853nA7vq
+    AzBFzls-gbc_6axSuU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefjedgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeflihgrgihu
+    nhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecugg
+    ftrfgrthhtvghrnhepjeeihffgteelkeelffdukedtheevudejvdegkeekjeefhffhhfet
+    udetgfdtffeunecukfhppedutddurdekgedrudekrddvudeknecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
+    hihgohgrthdrtghomh
+X-ME-Proxy: <xmx:emb0Xw9n93TtsISlCni8UtF06yJKNgO8-2w9enFT16ddx43GA5zk6w>
+    <xmx:emb0X89Q57ir1J-JNdGppg1A5MdaYpCO91o5Ib-9-C2sLW1xUxkQTA>
+    <xmx:emb0XxBPlk_ViiO3HVv4ufRvdaqgHzFF2N1VT02niu7OiBlwzpqelw>
+    <xmx:e2b0X9N3eOdriRO1ySW9v4W5NHfBKUjmUSsvLFah8abhPw2b98yRZg>
+Received: from localhost.localdomain (unknown [101.84.18.218])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EA3FF24005B;
+        Tue,  5 Jan 2021 08:15:31 -0500 (EST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     platform-driver-x86@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Ike Panhc <ike.pan@canonical.com>,
+        Mark Pearson <markpearson@lenovo.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] ACPI: platform-profile: Introduce object pointers to callbacks
+Date:   Tue,  5 Jan 2021 21:14:42 +0800
+Message-Id: <20210105131447.38036-2-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210105131447.38036-1-jiaxun.yang@flygoat.com>
+References: <20210105131447.38036-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear, Lukas.
+Add a object pointer to handler callbacks to avoid having
+global variables everywhere.
 
-> Dear Uladzislau,
-> 
-> in commit 538fc2ee870a3 ("rcu: Introduce kfree_rcu() single-argument
-> macro"), you have refactored the kfree_rcu macro.
-> 
-> Since then, make htmldocs warns:
-> 
-> ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> 'ptr' description in 'kfree_rcu'
-> ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> 'rhf' description in 'kfree_rcu'
-> 
-> As you deleted the two arguments in the macro definition, kerneldoc
-> cannot resolve the argument names in the macro's kerneldoc
-> documentation anymore and warns about that.
-> 
-> Probably, it is best to just turn the formal kerneldoc references to
-> the two arguments, which are not used in the macro definition anymore,
-> simply into two informal references in the documentation.
-> 
-Thanks for your suggestion. I am not sure if htmldocs supports something
-like "__maybe_unused", but tend to say that it does not. See below the
-patch:
-
-<snip>
-From 65ecc7c58810c963c02e0596ce2e5758c54ef55d Mon Sep 17 00:00:00 2001
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Date: Tue, 5 Jan 2021 13:23:30 +0100
-Subject: [PATCH] rcu: fix kerneldoc warnings
-
-After refactoring of the kfree_rcu(), it becomes possible to use
-the macro with one or two arguments. From the other hand, in the
-description there are two arguments in the macro definition expected.
-That is why the "htmldocs" emits a warning about it:
-
-<snip>
-./include/linux/rcupdate.h:882: warning: Excess function parameter
-'ptr' description in 'kfree_rcu'
-./include/linux/rcupdate.h:882: warning: Excess function parameter
-'rhf' description in 'kfree_rcu'
-<snip>
-
-Fix it by converting two parameters into informal references in the
-macro description.
-
-Fixes: 3d3d9ff077a9 ("rcu: Introduce kfree_rcu() single-argument macro")
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Suggested-by: Hans de Goede <hdegoede@redhat.com>
 ---
- include/linux/rcupdate.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/acpi/platform_profile.c  | 4 ++--
+ include/linux/platform_profile.h | 6 ++++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index ebd8dcca4997..e678ce7f5ca2 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -854,8 +854,8 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+diff --git a/drivers/acpi/platform_profile.c b/drivers/acpi/platform_profile.c
+index 91be50a32cc8..bb4d7b0fe2ac 100644
+--- a/drivers/acpi/platform_profile.c
++++ b/drivers/acpi/platform_profile.c
+@@ -64,7 +64,7 @@ static ssize_t platform_profile_show(struct device *dev,
+ 		return -ENODEV;
+ 	}
  
- /**
-  * kfree_rcu() - kfree an object after a grace period.
-- * @ptr: pointer to kfree for both single- and double-argument invocations.
-- * @rhf: the name of the struct rcu_head within the type of @ptr,
-+ * ptr: pointer to kfree for both single- and double-argument invocations.
-+ * rhf: the name of the struct rcu_head within the type of ptr,
-  *       but only for double-argument invocations.
-  *
-  * Many rcu callbacks functions just call kfree() on the base structure.
+-	err = cur_profile->profile_get(&profile);
++	err = cur_profile->profile_get(cur_profile, &profile);
+ 	mutex_unlock(&profile_lock);
+ 	if (err)
+ 		return err;
+@@ -104,7 +104,7 @@ static ssize_t platform_profile_store(struct device *dev,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+-	err = cur_profile->profile_set(i);
++	err = cur_profile->profile_set(cur_profile, i);
+ 	mutex_unlock(&profile_lock);
+ 	if (err)
+ 		return err;
+diff --git a/include/linux/platform_profile.h b/include/linux/platform_profile.h
+index 3623d7108421..43f4583b5259 100644
+--- a/include/linux/platform_profile.h
++++ b/include/linux/platform_profile.h
+@@ -28,8 +28,10 @@ enum platform_profile_option {
+ 
+ struct platform_profile_handler {
+ 	unsigned long choices[BITS_TO_LONGS(PLATFORM_PROFILE_LAST)];
+-	int (*profile_get)(enum platform_profile_option *profile);
+-	int (*profile_set)(enum platform_profile_option profile);
++	int (*profile_get)(struct platform_profile_handler *pprof,
++				enum platform_profile_option *profile);
++	int (*profile_set)(struct platform_profile_handler *pprof,
++				enum platform_profile_option profile);
+ };
+ 
+ int platform_profile_register(const struct platform_profile_handler *pprof);
 -- 
-2.20.1
-<snip>
+2.30.0
 
-Paul, does it work for you?
-
-Thanks!
-
---
-Vlad Rezki
