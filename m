@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399FC2EA372
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FB72EA36F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbhAECsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:48:00 -0500
-Received: from mga05.intel.com ([192.55.52.43]:19906 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726239AbhAECsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:48:00 -0500
-IronPort-SDR: v41PRKSodv2AniJ7BJ0/R1l+8yzIBEBrd/YpLnuzWRkZ4MUKQP6bDj1veEvfotRTNG83023rQC
- 9DlCrdH4M8JQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="261805012"
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="261805012"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 18:47:19 -0800
-IronPort-SDR: 6J7RaPnEGhExRe4I0EMLCZJOWXGABHQ9Yn/gnRN+UzkCyF6xm/oALLEkHtW+XP6uAmo1qjlVN6
- RnR+nDU5x5Dg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="349727292"
-Received: from ipsg-l-lixuzha.sh.intel.com (HELO ipsg-l-lixuzha) ([10.239.153.22])
-  by orsmga006.jf.intel.com with ESMTP; 04 Jan 2021 18:47:18 -0800
-Date:   Tue, 5 Jan 2021 10:42:50 +0800
-From:   "Zhang, Lixu" <lixu.zhang@intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, benjamin.tissoires@redhat.com
-Subject: Re: [PATCH 0/2] hid: intel-ish-hid: ipc: enable OOB support for EHL
-Message-ID: <20210105024250.GA63988@ipsg-l-lixuzha>
-References: <20201216063640.4086068-1-lixu.zhang@intel.com>
- <nycvar.YFH.7.76.2101041612290.13752@cbobk.fhfr.pm>
- <7430c8b52fd49ded844da06b51056cb490cd7cfe.camel@linux.intel.com>
+        id S1727757AbhAECpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:45:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726124AbhAECpz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 21:45:55 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFB9C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 18:45:14 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id v1so826265pjr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 18:45:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4yUElh54ziqvnaYw/lR3NMZ3F3Mtb4o6tzGU6Ylom2Q=;
+        b=DujKVO3d2mCQEEZxErsU9lpPFJgvhxlKBJ+QIpDglKDdEb0504AGv46al434FwKvWo
+         A1Y/U4gAZ0ByNCedkRGfgxHw1BZyF51U/YBbBqVXKMizT1Qtt+mPGhB2BMZtDLZ2qUz5
+         XbYCqYULiAag0MDrcQpee67LsH9LZHnTKohm5f40wL7eKWe8l9ZekWJOOO4HRMTM9bMw
+         sd54braeYGnSOBqAsl3g2Vx0ZmV739Y61uOBE48JqpJy7bmLo4svzcKc9M08QsUWJhCk
+         tgiIiYKy9STr1M/LDjrVSifX2xnxhnehe/QXJdHadbbq9MvdCJ0pFfnkNqUv6eZnR/gW
+         uwiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4yUElh54ziqvnaYw/lR3NMZ3F3Mtb4o6tzGU6Ylom2Q=;
+        b=UzwhvK3FSd1JzRVtiuOaiYaO5GBMrPXAVMdznNE4BFRWJhH1xmYNwUzGX73BfNgaN3
+         TJC9sOW/g/t2VEoS+o0BI56Ajt4MEJbb+SXd7uPLGdkneMxbVhWiUg4rJdZCwssA6Liw
+         HHgMc4NE++wEwtsdZeyvNgcp/oG7q7bDP26fwK+Bq6Kht4cqmVHZRHuijAh5RtUmEup8
+         0YFD/tJBUy1gky89iqLkaenEogj/446SJ1qFBbMgpJNvd9cstVyRE3prRGM1fkKEmzSW
+         hF8o4wCQw+oSoWATS5u0PbuzmfJX8kxPNUc81+gXXb3w0/dpQ0R/SvyPEbAAmfa6ZsFq
+         kZ7g==
+X-Gm-Message-State: AOAM53001Fv0EQ/lz+l1v9bthormRtpUvpGFiWtWwep6idpdWYQnD+6W
+        OGpJGi8637L5uacKTA80QWCfkSizG8VxdWWD00wtZg==
+X-Google-Smtp-Source: ABdhPJz9xOghcVpQzvTTeiTfKR7cGivJL60nU4siI92Q6vDRRcW64XOS/SIVpSgSGNE5LBraooDw69ZDRa02nwo0cYE=
+X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr1948803pjh.13.1609814714345;
+ Mon, 04 Jan 2021 18:45:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7430c8b52fd49ded844da06b51056cb490cd7cfe.camel@linux.intel.com>
+References: <20210104065843.5658-1-songmuchun@bytedance.com>
+ <20210104065843.5658-2-songmuchun@bytedance.com> <09be227a-4e16-1960-c8e9-609c35a80ef5@oracle.com>
+In-Reply-To: <09be227a-4e16-1960-c8e9-609c35a80ef5@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 5 Jan 2021 10:44:35 +0800
+Message-ID: <CAMZfGtXApP2k5AWK5ff5TWh+nkY1bHKbMimj4faFC8u6bUzMCQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 2/6] hugetlbfs: fix cannot migrate the
+ fallocated HugeTLB page
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 08:01:36AM -0800, Srinivas Pandruvada wrote:
-> On Mon, 2021-01-04 at 16:12 +0100, Jiri Kosina wrote:
-> > On Wed, 16 Dec 2020, Zhang Lixu wrote:
-> > 
-> > > The EHL (Elkhart Lake) based platforms provide a OOB (Out of band)
-> > > service, which allows wakup device when the system is in S5 (Soft-
-> > > Off
-> > > state). This OOB service can be enabled/disabled from BIOS
-> > > settings.
-> > > 
-> > > These two patches is to enable this feature for EHL platform.
-> > > 
-> > > We have tested these patches on both ISH platforms and EHL
-> > > platforms,
-> > > it works fine.
-> > > 
-> > > Zhang Lixu (2):
-> > >   hid: intel-ish-hid: ipc: finish power flow for EHL OOB
-> > >   hid: intel-ish-hid: ipc: Address EHL Sx resume issues
-> > > 
-> > >  drivers/hid/intel-ish-hid/ipc/hw-ish.h  |  1 +
-> > >  drivers/hid/intel-ish-hid/ipc/ipc.c     | 27 +++++++++++++
-> > >  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 54
-> > > ++++++++++++++++++++++++-
-> > >  3 files changed, 81 insertions(+), 1 deletion(-)
-> > 
-> > Srinivas, can I please get your Acked-by / Reviewed-by for this?
-> Acked on individual patches.
-> 
-> Thanks,
-> Srinivas
-> 
-> 
-> > Thanks,
-> > 
-> 
-> 
+On Tue, Jan 5, 2021 at 6:40 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 1/3/21 10:58 PM, Muchun Song wrote:
+> > Because we only can isolate a active page via isolate_huge_page()
+> > and hugetlbfs_fallocate() forget to mark it as active, we cannot
+> > isolate and migrate those pages.
+> >
+> > Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  fs/hugetlbfs/inode.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> Good catch.  This is indeed an issue.
+>
+> >
+> > diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> > index b5c109703daa..2aceb085d202 100644
+> > --- a/fs/hugetlbfs/inode.c
+> > +++ b/fs/hugetlbfs/inode.c
+> > @@ -737,10 +737,11 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+> >
+> >               /*
+> >                * unlock_page because locked by add_to_page_cache()
+> > -              * page_put due to reference from alloc_huge_page()
+> > +              * put_page() (which is in the putback_active_hugepage())
+> > +              * due to reference from alloc_huge_page()
+>
+> Thanks for fixing the comment.
+>
+> >                */
+> >               unlock_page(page);
+> > -             put_page(page);
+> > +             putback_active_hugepage(page);
+>
+> I'm curious why you used putback_active_hugepage() here instead of simply
+> calling set_page_huge_active() before the put_page()?
+>
+> When the page was allocated, it was placed on the active list (alloc_huge_page).
+> Therefore, the hugetlb_lock locking and list movement should not be necessary.
+
+I agree with you. Because set_page_huge_active is not exported (static
+function). Only exporting set_page_huge_active seems strange (leaving
+clear_page_huge_active not export). This is just my opinion. What's
+yours, Mike?
 
 Thanks.
+
+>
+> --
+> Mike Kravetz
+>
+> >       }
+> >
+> >       if (!(mode & FALLOC_FL_KEEP_SIZE) && offset + len > inode->i_size)
+> >
