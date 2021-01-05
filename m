@@ -2,176 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417F42EAFE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0A22EAFE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbhAEQVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:21:41 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:37588 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbhAEQVl (ORCPT
+        id S1727414AbhAEQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:21:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbhAEQVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:21:41 -0500
-Received: by mail-oi1-f179.google.com with SMTP id l207so107294oib.4;
-        Tue, 05 Jan 2021 08:21:25 -0800 (PST)
+        Tue, 5 Jan 2021 11:21:34 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF198C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 08:20:53 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id h186so50229pfe.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 08:20:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=YY+00AIRRtxJBsSmjelg+ZTD3PBDsqcfuNjtpAy6QDo=;
+        b=B4eaIy0X/gcJ+6Vfog9DvYrA5lzlSG1wkFyLGirBvNF++rcgXb/U/8jhqrKJZpN6Ff
+         0c8/ST4Y+qwjFXVzERQhJpi6yTRl3MeWGI52OW0gJiRDmDyMS9lrtLx5MMYGnO6m9nDj
+         sJO8YD5Q0cHMp9+vJ7cFvE/kzbIMKBbVsXltojydDYvFaFlO4AT7V7PpJ8O7vDfqxTNv
+         pX5bMba8hKh/rsPyD87PZAOoUfCCsdQzHoHE+jnjagNvEPIoUjiM2GyEikkEjDoZMdhr
+         +I8KLgCyCzMrGsrIpyqBQr2zTMwcxmWNZzNXEWomxCEFyBeKPYoBx7R8MHsoobR+fvSI
+         x3MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qPiqP3Lv6c+AAT30BoSKGDWtBOYr0gNlxMkgG1vPS+g=;
-        b=SWKo0Vn5MI7SKAbLx3Egxb82sH9oBjWxlNr0FLF4fYrbmSQ+yy5j3HK4yRWu2uGtbe
-         t37k/sv0CN8OTpBKdrA8ycy+MO9jNwvsHN++qN7IpzWeLt0i+XEshLtibLPkwBr4v94y
-         kHtW1Xr4D001ykEuEpbJHaGGgiBws8mwizRS5Q+djShmhJzKNq9QUGbuYo6mRmk1095x
-         ESc6L5TqBrCIAJNNquRgTIErISiGEJ9vhzMwrTh5h1hhd4Sx4/oWJqeYxR9+wpsYSCQN
-         /Mbbb+vJrlLWPOk4EU8PLy6E/PzoqzbIaTIRydzsA+rh9eePV0MUyzI4Ip4HP2h8tvhD
-         UMvQ==
-X-Gm-Message-State: AOAM532L9jBfym6wDjnj4IkbRe7SvnPRV23+CUlI+DzUYu76SfGYbL0l
-        CAgCtuVnwUtGA/eaQ7TMw4DhhLIO83UomB/J14k=
-X-Google-Smtp-Source: ABdhPJzKeiHygcjJT1k7Mhyr7MP4DEtsx88pBRnKEvamWmZWxnefwC1XNDpcOKWAcmdRFmo6BO3+CfONu3n+fqNcogU=
-X-Received: by 2002:aca:ec09:: with SMTP id k9mr178613oih.153.1609863660062;
- Tue, 05 Jan 2021 08:21:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20201227130407.10991-1-wsa+renesas@sang-engineering.com> <20201227130407.10991-5-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20201227130407.10991-5-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Jan 2021 17:20:49 +0100
-Message-ID: <CAMuHMdWSZ7Fw2fX6aYhqavDDV01qkYJmXrAUWv8Rud9hKVEBZQ@mail.gmail.com>
-Subject: Re: [PATCH 4/5] arm64: dts: renesas: falcon: Add Ethernet-AVB support
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Tho Vu <tho.vu.wh@renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=YY+00AIRRtxJBsSmjelg+ZTD3PBDsqcfuNjtpAy6QDo=;
+        b=QEsXrb1vOO4XvoOO+CqIV+v1L0EZmew8lqRBMJGEsDAdvwf1IoG/cXhLnI06DuGMqK
+         OeUWEMixEoQs+ijJJ9dQ4nM9ubgoq77ZQgpAZy5VOvVlYgXI4BQp/m3Vyu7NEL3yNCAW
+         PRAp8u8unKpSXje3x8Z1FEwbAGD+yCuRNdkFc+OP+aJKQCbDAh3KITR6JnJo9LdjaugJ
+         GNCk4P1lJ/7lVxhuZobV15nH44t8PR1xL3p/FSocgetwTg8I+lSRf4qaYdltgUAaxRJx
+         QDTzT9/vvaI4UsMWUJQvl9sMYavlV3IcEpWbRe2DCGFmimvtvSzOmReU2sFb54m5ethl
+         42qw==
+X-Gm-Message-State: AOAM532DXYa5mY1JK3KNCz9AZA/iRvd/yHexAq6NJsyt1U4TCwkniMiG
+        YAQFs/meaYSDBCLKSARoUhcQpg==
+X-Google-Smtp-Source: ABdhPJxa5mdRi43w+JAj2QFqGTiJMOhmPhoSZTCD5EpNlZP1Ra7Be1Mha7b3xYN6GHbxzVuUSGXQhg==
+X-Received: by 2002:aa7:954b:0:b029:19e:cb57:f3c with SMTP id w11-20020aa7954b0000b029019ecb570f3cmr253102pfq.51.1609863653323;
+        Tue, 05 Jan 2021 08:20:53 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:1960:9abe:3fe9:fd99? ([2601:646:c200:1ef2:1960:9abe:3fe9:fd99])
+        by smtp.gmail.com with ESMTPSA id y27sm131408pfr.78.2021.01.05.08.20.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 08:20:52 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+Date:   Tue, 5 Jan 2021 08:20:51 -0800
+Message-Id: <7BFAB97C-1949-46A3-A1E2-DFE108DC7D5E@amacapital.net>
+References: <20210105132623.GB11108@willie-the-truck>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        X86 ML <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        stable <stable@vger.kernel.org>
+In-Reply-To: <20210105132623.GB11108@willie-the-truck>
+To:     Will Deacon <will@kernel.org>
+X-Mailer: iPhone Mail (18B121)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
 
-Thanks for your patch!
 
-On Sun, Dec 27, 2020 at 2:04 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> From: Tho Vu <tho.vu.wh@renesas.com>
->
-> Define the Falcon board dependent part of the Ethernet-AVB device nodes.
-> Only AVB0 was tested because it was the only port with a PHY on current
-> hardware.
+> On Jan 5, 2021, at 5:26 AM, Will Deacon <will@kernel.org> wrote:
+>=20
+> =EF=BB=BFHi Andy,
+>=20
+> Sorry for the slow reply, I was socially distanced from my keyboard.
+>=20
+>> On Mon, Dec 28, 2020 at 04:36:11PM -0800, Andy Lutomirski wrote:
+>> On Mon, Dec 28, 2020 at 4:11 PM Nicholas Piggin <npiggin@gmail.com> wrote=
+:
+>>>> +static inline void membarrier_sync_core_before_usermode(void)
+>>>> +{
+>>>> +     /*
+>>>> +      * XXX: I know basically nothing about powerpc cache management.
+>>>> +      * Is this correct?
+>>>> +      */
+>>>> +     isync();
+>>>=20
+>>> This is not about memory ordering or cache management, it's about
+>>> pipeline management. Powerpc's return to user mode serializes the
+>>> CPU (aka the hardware thread, _not_ the core; another wrongness of
+>>> the name, but AFAIKS the HW thread is what is required for
+>>> membarrier). So this is wrong, powerpc needs nothing here.
+>>=20
+>> Fair enough.  I'm happy to defer to you on the powerpc details.  In
+>> any case, this just illustrates that we need feedback from a person
+>> who knows more about ARM64 than I do.
+>=20
+> I think we're in a very similar boat to PowerPC, fwiw. Roughly speaking:
+>=20
+>  1. SYNC_CORE does _not_ perform any cache management; that is the
+>     responsibility of userspace, either by executing the relevant
+>     maintenance instructions (arm64) or a system call (arm32). Crucially,
+>     the hardware will ensure that this cache maintenance is broadcast
+>     to all other CPUs.
 
-I'm a bit confused: according to the schematics, AVB0 is wired by
-default to a KSZ9031 PHY connected to an RJ45 connector on the
-breakout-board, while AVB1-5 are wired to 88Q2110 PHYs connected to a
-5port MATEnet connector on the Ethernet sub board.  So all PHYs are
-present?
+Is this guaranteed regardless of any aliases?  That is, if I flush from one C=
+PU at one VA and then execute the same physical address from another CPU at a=
+ different VA, does this still work?
 
-(The alternative wiring for AVB0 is to a 88Q2110 PHY connected to a
-1000Base-T1/TE MATEnet connector on the Ethernet sub board)
+>=20
+>  2. Even with all the cache maintenance in the world, a CPU could have
+>     speculatively fetched stale instructions into its "pipeline" ahead of
+>     time, and these are _not_ flushed by the broadcast maintenance instruc=
+tions
+>     in (1). SYNC_CORE provides a means for userspace to discard these stal=
+e
+>     instructions.
+>=20
+>  3. The context synchronization event on exception entry/exit is
+>     sufficient here. The Arm ARM isn't very good at describing what it
+>     does, because it's in denial about the existence of a pipeline, but
+>     it does have snippets such as:
+>=20
+>    (s/PE/CPU/)
+>       | For all types of memory:
+>       | The PE might have fetched the instructions from memory at any time=
 
->
-> Signed-off-by: Tho Vu <tho.vu.wh@renesas.com>
-> [wsa: rebased]
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+>       | since the last Context synchronization event on that PE.
+>=20
+>     Interestingly, the architecture recently added a control bit to remove=
 
-> --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-> +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-> @@ -7,6 +7,7 @@
->
->  /dts-v1/;
->  #include "r8a779a0-falcon-cpu.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
->
->  / {
->         model = "Renesas Falcon CPU and Breakout boards based on r8a779a0";
+>     this synchronisation from exception return, so if we set that then we'=
+d
+>     have a problem with SYNC_CORE and adding an ISB would be necessary (an=
+d
+>     we could probable then make kernel->kernel returns cheaper, but I
+>     suspect we're relying on this implicit synchronisation in other places=
 
-Missing ethernet0 alias, preventing U-Boot from finding the device-node
-and adding an appropriate "local-mac-address" property.
+>     too).
+>=20
 
-> @@ -21,6 +22,97 @@ chosen {
->         };
->  };
->
-> +&avb0 {
-> +       pinctrl-0 = <&avb0_pins>;
-> +       pinctrl-names = "default";
-> +       phy-handle = <&phy0>;
-> +       phy-mode = "rgmii-txid";
+Is ISB just a context synchronization event or does it do more?
 
-As the default wiring of AVB0 is similar to Salvator-XS, I think the
-default phy-mode of "rgmii" in the base .dtsi should be fine, but
-"tx-internal-delay-ps" should be overridden to <2000>.
+On x86, it=E2=80=99s very hard to tell that MFENCE does any more than LOCK, b=
+ut it=E2=80=99s much slower.  And we have LFENCE, which, as documented, does=
+n=E2=80=99t appear to have any semantics at all.  (Or at least it didn=E2=80=
+=99t before Spectre.)
 
-> +       status = "okay";
-> +
-> +       phy0: ethernet-phy@0 {
-> +               rxc-skew-ps = <1500>;
-> +               reg = <0>;
-> +               interrupt-parent = <&gpio4>;
-> +               interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
-> +               reset-gpios = <&gpio4 15 GPIO_ACTIVE_LOW>;
-> +       };
-> +};
-> +
-> +&avb1 {
-> +       pinctrl-0 = <&avb1_pins>;
-> +       pinctrl-names = "default";
-> +       phy-handle = <&phy1>;
-> +       phy-mode = "rgmii-txid";
-> +
-> +       phy1: ethernet-phy@1 {
+> Are you seeing a problem in practice, or did this come up while trying to
+> decipher the semantics of SYNC_CORE?
 
-Why not @0?
-As the PHYs are present, why not set "status" to "okay"?
+It came up while trying to understand the code and work through various bugs=
+ in it.  The code was written using something approximating x86 terminology,=
+ but it was definitely wrong on x86 (at least if you believe the SDM, and I h=
+aven=E2=80=99t convinced any architects to say otherwise).
 
-> +               rxc-skew-ps = <1500>;
+Thanks!
 
-This property is only supported by the Micrel PHY driver, not by
-the Marvell PHY driver.
-
-> +               reg = <0>;
-> +               interrupt-parent = <&gpio5>;
-> +               interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
-> +               reset-gpios = <&gpio5 15 GPIO_ACTIVE_LOW>;
-> +       };
-> +};
-
-Same questions and comments for all instances below.
-Perhaps we should postpone adding avb1-5 until they can be tested?
-
-> @@ -78,6 +170,109 @@ &i2c6 {
->  };
->
->  &pfc {
-> +       avb0_pins: avb0 {
-> +               mux {
-> +                       groups = "avb0_link", "avb0_mdio", "avb0_rgmii", "avb0_txcrefclk";
-> +                       function = "avb0";
-> +               };
-> +
-> +               pins_mdio {
-> +                       groups = "avb0_mdio";
-> +                       drive-strength = <21>;
-> +               };
-> +
-> +               pins_mii_tx {
-
-Strange node name, as the "avb0_rgmii" group includes rx pins.
-
-> +                       groups = "avb0_rgmii";
-> +                       drive-strength = <21>;
-
-I can't comment on the drive-strength values.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>=20
+> Will
