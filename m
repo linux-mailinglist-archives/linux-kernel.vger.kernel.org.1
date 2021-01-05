@@ -2,170 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8A22EA320
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD162EA322
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727769AbhAEB6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 20:58:23 -0500
-Received: from mga07.intel.com ([134.134.136.100]:54516 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725921AbhAEB6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 20:58:22 -0500
-IronPort-SDR: 95q4cpkWdl4YH6IEj6k4SXXtgul562ng9BUboIGcMalVkWiN90VzY/4l8wdDNbOTjarTEjChy7
- ytMy2waor2gw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="241120508"
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="241120508"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 17:57:42 -0800
-IronPort-SDR: RzFnUniCMQS+L8wegfjIkTIGdnd+nrc4inTq/GU3op7iLcsKcGzqSlkjWPk14ir+qxpITzWoeL
- EaSEqBv82+Og==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="421587472"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by orsmga001.jf.intel.com with ESMTP; 04 Jan 2021 17:57:38 -0800
-Date:   Tue, 5 Jan 2021 09:57:38 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, andi.kleen@intel.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com
-Subject: Re: [PATCH 2/2] mm: memcg: add a new MEMCG_UPDATE_BATCH
-Message-ID: <20210105015738.GC101866@shbuild999.sh.intel.com>
-References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
- <1609252514-27795-2-git-send-email-feng.tang@intel.com>
- <20210104131540.GG13207@dhcp22.suse.cz>
+        id S1727867AbhAEB7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 20:59:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbhAEB7J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 20:59:09 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8143EC061574;
+        Mon,  4 Jan 2021 17:58:29 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id 15so34422040oix.8;
+        Mon, 04 Jan 2021 17:58:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/ZspWML+E0uBeFiEmg76lyX7x+cFAo7/PGsMsUl58OE=;
+        b=MzFSHiM5iwJFqdBXzfXwg9qKtpxEu/mGLC+W2w+s23R7xwp/VDIYTNwo0kVc5Ae32/
+         GeyfPBWKjZqn77JVUbbfI3WY8rSqhW8T6y8FUzIv//TleG6/brkDbAs2YqeT/BsLjIKa
+         vgtmK6z6t3duT9t7wkqpDJiqTM0Sp46wJLmDfH/oKRQn8d46SnMvb9SAZ2TZbPpIV6YX
+         fnMEIVZ/erYiyCgjJGQ27nUxJ+Owo4YVyp+SjcekP50Uplyrl1cmdI4OpLw9zl1fCZlG
+         WjFvDe5N/rXU/lALezGK0aZfFRftrHwu6KvfViOs4LAi7pqgfcapCLGqeqDAf715doo+
+         VkAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=/ZspWML+E0uBeFiEmg76lyX7x+cFAo7/PGsMsUl58OE=;
+        b=W4+TmzgbvptBwueBdOGtbCsObvu73X/LAEYrncOVAOVB2mgGuH9nHdhKEFjp7p+FRO
+         6wY9ualyKK3zxXe3JMk+wHziiCJcH+0HV0QgzmJglzofTJGrrKJIVsgROIJcWyL6lTNn
+         1zalNudRbIz8q9EahqAegq7yHYNEXsWGpOwwTjdvaJ8Qjz22tWfePLVghR+RGJMPlSvY
+         5BhtDCXmHIyPUzd6JrAZNpxcTEIxPdytMv5G9GIB+WdX6ptA5rVf+mjtvGp62XKAChZC
+         siro52BWxkWmC1qxeH67zNuInn+NhzXH0KKNNoN5nBZMg/DBtZ8tld28OSq6vn2igb8B
+         4PiA==
+X-Gm-Message-State: AOAM532PLL/0smHUH1bQvwg29OfYnQjGBlVxT6AHqgtoadF6xal6ghlo
+        yC65gGhXYz305GiB/R6XewXLjw7zrFM=
+X-Google-Smtp-Source: ABdhPJynLtMvhCFYPDq3Kg3PR5WHh/Bk9DmMu11Yf1dL7ZmXH5Srx4nF6oE9oQBq8xktOrCmP9Y+yQ==
+X-Received: by 2002:aca:3194:: with SMTP id x142mr1223983oix.82.1609811908696;
+        Mon, 04 Jan 2021 17:58:28 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x72sm13829264oia.16.2021.01.04.17.58.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 17:58:27 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 4.19 00/35] 4.19.165-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+References: <20210104155703.375788488@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <cff87cd2-8cd5-241e-3a05-a817b1a56b8c@roeck-us.net>
+Date:   Mon, 4 Jan 2021 17:58:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210104131540.GG13207@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 02:15:40PM +0100, Michal Hocko wrote:
-> On Tue 29-12-20 22:35:14, Feng Tang wrote:
-> > When profiling memory cgroup involved benchmarking, status update
-> > sometimes take quite some CPU cycles. Current MEMCG_CHARGE_BATCH
-> > is used for both charging and statistics/events updating, and is
-> > set to 32, which may be good for accuracy of memcg charging, but
-> > too small for stats update which causes concurrent access to global
-> > stats data instead of per-cpu ones.
-> > 
-> > So handle them differently, by adding a new bigger batch number
-> > for stats updating, while keeping the value for charging (though
-> > comments in memcontrol.h suggests to consider a bigger value too)
-> > 
-> > The new batch is set to 512, which considers 2MB huge pages (512
-> > pages), as the check logic mostly is:
-> > 
-> >     if (x > BATCH), then skip updating global data
-> > 
-> > so it will save 50% global data updating for 2MB pages
+On 1/4/21 7:57 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.165 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Please note that there is a patch set to change THP accounting to be per
-> page based (http://lkml.kernel.org/r/20201228164110.2838-1-songmuchun@bytedance.com)
-> which will change the current behavior already.
-
-Thanks for the note! Muchun also mentioned the extra overhead will
-be brought with his patchset, which may cause obvious performance
-changes.
-
-For the performance numbers in the commit log, they are not
-bound to huge pages, as the benchmarks don't involve many
-THPs (from vmstat). I tried 128, 256, 512, 1024 etc, which
-all show similar test results, and 512 is picked specifically
-for huge pages.
-
-> Our batch size (MEMCG_CHARGE_BATCH) is quite arbitrary. I do not think
-> anybody has ever seriously benchmarked the effect of the size. I am not
-> opposed to changing that but I have to say I dislike the charge to
-> diverge from counters in that respect. This just opens doors to weird
-> effects IMO. Those two are quite related already.
-
-Yes, separating to 2 batch number is the last method I can think of,
-to avoid hurting the accuracy of charging.
-
-Thanks,
-Feng
-
-> > Following are some performance data with the patch, against
-> > v5.11-rc1, on several generations of Xeon platforms. Each category
-> > below has several subcases run on different platform, and only the
-> > worst and best scores are listed:
-> > 
-> > fio:				 +2.0% ~  +6.8%
-> > will-it-scale/malloc:		 -0.9% ~  +6.2%
-> > will-it-scale/page_fault1:	 no change
-> > will-it-scale/page_fault2:	+13.7% ~ +26.2%
-> > 
-> > One thought is it could be dynamically calculated according to
-> > memcg limit and number of CPUs, and another is to add a periodic
-> > syncing of the data for accuracy reason similar to vmstat, as
-> > suggested by Ying.
-> > 
-> > Signed-off-by: Feng Tang <feng.tang@intel.com>
-> > Cc: Shakeel Butt <shakeelb@google.com>
-> > Cc: Roman Gushchin <guro@fb.com>
-> > ---
-> >  include/linux/memcontrol.h | 2 ++
-> >  mm/memcontrol.c            | 6 +++---
-> >  2 files changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index d827bd7..d58bf28 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -335,6 +335,8 @@ struct mem_cgroup {
-> >   */
-> >  #define MEMCG_CHARGE_BATCH 32U
-> >  
-> > +#define MEMCG_UPDATE_BATCH 512U
-> > +
-> >  extern struct mem_cgroup *root_mem_cgroup;
-> >  
-> >  enum page_memcg_data_flags {
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 605f671..01ca85d 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -760,7 +760,7 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
-> >   */
-> >  void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
-> >  {
-> > -	long x, threshold = MEMCG_CHARGE_BATCH;
-> > +	long x, threshold = MEMCG_UPDATE_BATCH;
-> >  
-> >  	if (mem_cgroup_disabled())
-> >  		return;
-> > @@ -800,7 +800,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-> >  {
-> >  	struct mem_cgroup_per_node *pn;
-> >  	struct mem_cgroup *memcg;
-> > -	long x, threshold = MEMCG_CHARGE_BATCH;
-> > +	long x, threshold = MEMCG_UPDATE_BATCH;
-> >  
-> >  	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> >  	memcg = pn->memcg;
-> > @@ -905,7 +905,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
-> >  		return;
-> >  
-> >  	x = count + __this_cpu_read(memcg->vmstats_percpu->events[idx]);
-> > -	if (unlikely(x > MEMCG_CHARGE_BATCH)) {
-> > +	if (unlikely(x > MEMCG_UPDATE_BATCH)) {
-> >  		struct mem_cgroup *mi;
-> >  
-> >  		/*
-> > -- 
-> > 2.7.4
-> > 
+> Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
+> Anything received after that time might be too late.
 > 
-> -- 
-> Michal Hocko
-> SUSE Labs
+
+For v4.19.164-36-g32d98dff91da:
+
+arm:axm55xx_defconfig, arm:keystone_defconfig:
+
+mm/memory.c: In function 'tlb_table_invalidate':
+mm/memory.c:342:6: error: implicit declaration of function 'tlb_needs_table_invalidate'
+
+All c6x, all h8300, m68k:allnoconfig, arm:allnoconfig, microblaze:nommu_defconfig
+and others:
+
+  CC      mm/oom_kill.o
+In file included from ./arch/c6x/include/asm/tlb.h:7,
+                 from mm/oom_kill.c:45:
+./include/asm-generic/tlb.h: In function 'tlb_get_unmap_shift':
+./include/asm-generic/tlb.h:237:10: error: 'PMD_SHIFT' undeclared
+./include/asm-generic/4level-fixup.h:8:21: error: 'PGDIR_SHIFT' undeclared
+
+Guenter
