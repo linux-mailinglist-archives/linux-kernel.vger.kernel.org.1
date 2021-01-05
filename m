@@ -2,70 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EF42EA32C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB812EA332
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbhAECGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:06:05 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10543 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbhAECGF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:06:05 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D8wlx5p3xzMFGD;
-        Tue,  5 Jan 2021 10:04:13 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 5 Jan 2021 10:05:06 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <nsaenzjulienne@suse.de>, <bcm-kernel-feedback-list@broadcom.com>,
-        <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>
-CC:     <gregkh@linuxfoundation.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH v3 -next] staging: vc04_services: use DEFINE_MUTEX() for mutex lock
-Date:   Tue, 5 Jan 2021 10:05:47 +0800
-Message-ID: <20210105020547.19042-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1727859AbhAECJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:09:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726391AbhAECJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 21:09:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE25A22573;
+        Tue,  5 Jan 2021 02:08:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609812502;
+        bh=dec///n8ZMLVHWY8v+++x2RI6qJjcxqMCtixy9ig1+Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cwDIbJhkZgyAgmlqqBG7Yv9Sn3Cnk+TYMttcIpz6CecuM9RlmjnQtc0rI/IEFUe2n
+         DPoGdiDRG1T5aWjIsa+7KOFbk/wl6LQpeP7amU7vXnHBfkXACbLIwuxR7rgCfFsoJ9
+         Qjz/IGV2eDhNhh0CIj+WtV7/ZKlbeEvFAyeCy1RY4U0hnXajQrD5Ay4RjeHTMZG6DS
+         TrtmHBNA8chFOffGaSRKRcqgvauylpeqvo/wIuAr6mFAgBKwIb3qPDQySlNO/qhZKm
+         PpHBXFnlcnaCeq2TySxz6NkdSjPQXKGM5ER++NXiH1cNnjx9JIj4DtupY3QZCItHQe
+         M3V4Wz2EKEOKw==
+Received: by mail-ej1-f45.google.com with SMTP id 6so39329649ejz.5;
+        Mon, 04 Jan 2021 18:08:21 -0800 (PST)
+X-Gm-Message-State: AOAM531A3TVK30jStFo8ZWBvplu65YBo1kqwu6YT0vFgh2YMhFSPcPAS
+        USCLIsLZZDdsMU1ymChtLu/hjXzxJaO/4abPyA==
+X-Google-Smtp-Source: ABdhPJwnubR3LrlUWyJOeUCu0SGdf/IcybIxySz3erxk7JJ9r/5zilydM52G3xMb+0s5stBOe5OPaNcVb6dqa1MAeC4=
+X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr66885041ejb.360.1609812500509;
+ Mon, 04 Jan 2021 18:08:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+References: <20201221144707.4a409618@gmail.com>
+In-Reply-To: <20201221144707.4a409618@gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 4 Jan 2021 19:08:08 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqLCeNVnjgYAHhMEiv79iX552EPC7LGgk7GBrt2JsSYo5Q@mail.gmail.com>
+Message-ID: <CAL_JsqLCeNVnjgYAHhMEiv79iX552EPC7LGgk7GBrt2JsSYo5Q@mail.gmail.com>
+Subject: Re: Is there a reason not to use -@ to compile devicetrees ?
+To:     Vincent Pelletier <plr.vincent@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mutex lock can be initialized automatically with DEFINE_MUTEX()
-rather than explicitly calling mutex_init().
+On Mon, Dec 21, 2020 at 7:47 AM Vincent Pelletier <plr.vincent@gmail.com> wrote:
+>
+> Hello,
+>
+> Distro: https://raspi.debian.net/ (sid)
+> Hardware: Raspberry Pi Zero W
+> Kernel version: 5.9.11 (linux-image-5.9.0-4-rpi)
+>
+> To access a device connected to my pi, I need the spi0 bus, and would
+> like to not be doing GPIO bit-banging when there are perfectly good
+> spi modules capable of using the SPI alternative mode of these pins.
+>
+> spi0 is declared in the vanilla devicetree for this device:
+> arch/arm/boot/dts/bcm2835-rpi-zero-w.dts ends up including
+> arch/arm/boot/dts/bcm283x.dtsi which contains:
+>                 spi: spi@7e204000 {
+>                         compatible = "brcm,bcm2835-spi";
+>                         reg = <0x7e204000 0x200>;
+>                         interrupts = <2 22>;
+>                         clocks = <&clocks BCM2835_CLOCK_VPU>;
+>                         #address-cells = <1>;
+>                         #size-cells = <0>;
+>                         status = "disabled";
+>                 };
+> To my new-to-devicetree eye, this looks like this is intended to be
+> overridden, at least with a
+>   status = "okay";
+> property (although a bit more is needed).
+> As I believe is the correct way, I wrote a devicetree overlay doing
+> this and a bit more in order to enable this bus and one of its device
+> (the one matching the chip-select monitored by the board I connected).
+>
+> To confirm that I had no typo in my symbol names I ran fdtoverlay with
+> the packaged device tree binary, plus my overlay, but could not get it
+> to work, until I took a closer look at the packaged device tree and
+> realised it lacks a __symbols__ section.
+> So I pulled the source, added "-@" to the cmd_dtc rule in
+> scripts/Makefile.lib, built the dtb, tested fdtoverlay against it and
+> voila, it worked. I could then reboot with this devicetree, load my
+> overlay and use spi0 with no further change.
+>
+> So now I wonder why this option is not enabled while there are these
+> sections which seem to not be usable without an overlay ?
+> And further, why it does not seem to be possible to enable with a
+> kernel config option ?
+>
+> I must be missing something obvious, but I'm still failing to see it.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- .../vc04_services/interface/vchiq_arm/vchiq_connected.c     | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Read the last time this came up:
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-index 79b75efa6868..938307f39b9c 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-@@ -12,15 +12,13 @@ static   int                        g_connected;
- static   int                        g_num_deferred_callbacks;
- static   VCHIQ_CONNECTED_CALLBACK_T g_deferred_callback[MAX_CALLBACKS];
- static   int                        g_once_init;
--static   struct mutex               g_connected_mutex;
-+static   DEFINE_MUTEX(g_connected_mutex);
- 
- /* Function to initialize our lock */
- static void connected_init(void)
- {
--	if (!g_once_init) {
--		mutex_init(&g_connected_mutex);
-+	if (!g_once_init)
- 		g_once_init = 1;
--	}
- }
- 
- /*
--- 
-2.22.0
-
+https://lore.kernel.org/linux-devicetree/71fb0ff289e84c55bd92ecd96bc9aa76@svr-chch-ex1.atlnz.lc/
