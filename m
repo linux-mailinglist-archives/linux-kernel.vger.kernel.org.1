@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551862EAEF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371602EAF23
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbhAEPlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:41:16 -0500
-Received: from mga12.intel.com ([192.55.52.136]:13272 "EHLO mga12.intel.com"
+        id S1728475AbhAEPo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:44:26 -0500
+Received: from mga11.intel.com ([192.55.52.93]:14527 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728829AbhAEPlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:41:14 -0500
-IronPort-SDR: L4JVVARU2oRSQDvU/0O/rUlt/yik0b8uxOSsUuOvCp7hPhNYeiBpMsS4goYltPpKnTf9pw8Puo
- 9OqyYDrkNX+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="156317545"
+        id S1727408AbhAEPoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:44:25 -0500
+IronPort-SDR: XCxwBew2cgsx7UWj1u/Ff0voOIC4ha5mrgEQB5kFqPawhgzfee6bHdy6C/7Ejkc4xeCrYyKvQ2
+ NJpNHCuiXfTg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="173614252"
 X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="156317545"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 07:39:28 -0800
-IronPort-SDR: KBKuzB25/x4N0+yH1po6kaizImwaseu1rCEDbEQP7S2kWMpqLh1xn6YHoeyvCJMR3TdfdbRnxq
- RG20AdXdbaiA==
-X-ExtLoop1: 1
+   d="scan'208";a="173614252"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 07:42:39 -0800
+IronPort-SDR: QWCWi2VymOqSN6LRoxlv4ex9o8a4DKmuJppeSYTQc20/GkcXeWOxjVNE+VLptIdH5kuQJ6H/Cc
+ qQ8hcGW/cGsA==
 X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="421813858"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 05 Jan 2021 07:39:27 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 7937C1C5; Tue,  5 Jan 2021 17:39:26 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1] mfd: intel-lpss: Add Intel Alder Lake PCH-P PCI IDs
-Date:   Tue,  5 Jan 2021 17:39:25 +0200
-Message-Id: <20210105153925.62283-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
+   d="scan'208";a="378909382"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 07:42:35 -0800
+Date:   Tue, 5 Jan 2021 17:39:39 +0200 (EET)
+From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To:     Arnd Bergmann <arnd@kernel.org>
+cc:     Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
+In-Reply-To: <CAK8P3a1FZSfzu3TA6VMhqP+3H5OD3+BhH5W=vVYEkL+ExHqpMQ@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2101051631320.864696@eliteleevi.tm.intel.com>
+References: <20210103135257.3611821-1-arnd@kernel.org> <3c19a5d5-8883-f917-a96a-f51bb188d115@perex.cz> <s5hble491zu.wl-tiwai@suse.de> <CAK8P3a1FZSfzu3TA6VMhqP+3H5OD3+BhH5W=vVYEkL+ExHqpMQ@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Intel Alder Lake LPSS PCI IDs.
+Hey,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mfd/intel-lpss-pci.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+On Tue, 5 Jan 2021, Arnd Bergmann wrote:
 
-diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
-index 9d6daa780df7..1522c8afc540 100644
---- a/drivers/mfd/intel-lpss-pci.c
-+++ b/drivers/mfd/intel-lpss-pci.c
-@@ -277,6 +277,19 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x4dea), (kernel_ulong_t)&bxt_i2c_info },
- 	{ PCI_VDEVICE(INTEL, 0x4deb), (kernel_ulong_t)&bxt_i2c_info },
- 	{ PCI_VDEVICE(INTEL, 0x4dfb), (kernel_ulong_t)&spt_info },
-+	/* ADL-P */
-+	{ PCI_VDEVICE(INTEL, 0x51a8), (kernel_ulong_t)&bxt_uart_info },
-+	{ PCI_VDEVICE(INTEL, 0x51a9), (kernel_ulong_t)&bxt_uart_info },
-+	{ PCI_VDEVICE(INTEL, 0x51aa), (kernel_ulong_t)&bxt_info },
-+	{ PCI_VDEVICE(INTEL, 0x51ab), (kernel_ulong_t)&bxt_info },
-+	{ PCI_VDEVICE(INTEL, 0x51c5), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x51c6), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x51c7), (kernel_ulong_t)&bxt_uart_info },
-+	{ PCI_VDEVICE(INTEL, 0x51e8), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x51e9), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x51ea), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x51eb), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x51fb), (kernel_ulong_t)&bxt_info },
- 	/* APL */
- 	{ PCI_VDEVICE(INTEL, 0x5aac), (kernel_ulong_t)&apl_i2c_info },
- 	{ PCI_VDEVICE(INTEL, 0x5aae), (kernel_ulong_t)&apl_i2c_info },
--- 
-2.29.2
+> On Mon, Jan 4, 2021 at 4:05 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > As I wrote in another post, a part of the problem is that SOF PCI and
+> > ACPI drivers call snd_intel_dsp_driver_probe() unconditionally, even
+> > if no Intel driver is bound.
+> 
+> Makes sense. Is there an existing Kconfig that could be used to
+> decide whether the drivers use SND_INTEL_DSP_CONFIG or not?
 
+no, unfortunately not. This is selected per platform in 
+sound/soc/sof/intel/Kconfig. CONFIG_SND_SOC_SOF_INTEL_PCI is close, but 
+there is at least one platform that does not use SND_INTEL_DSP_CONFIG.
+
+> According to sof_pci_ids[], all PCI IDs are Intel specific, but I can't
+> tell which ones need the DSP config.
+
+Indeed currently all the ids are Intel ones (and with exception of old 
+Merrifield, all use DSP config). But that's just how it is now.
+
+> Could it be part of the device specific driver_data? 
+
+This would certainly be a clean way and allow to remove the Intel-specific 
+calls from sof_pci_probe(). As a short-term solution, IS_REACHABLE() 
+seems ok as well.
+
+Br, Kai
