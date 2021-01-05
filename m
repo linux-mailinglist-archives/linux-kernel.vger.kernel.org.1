@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21772EAD56
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AC62EAD59
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbhAEOZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:25:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34168 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726651AbhAEOZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:25:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609856696; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oD8OhFiTFS91oSo/GxxMnZWrLGad6kBBv+IR7HZxg1Q=;
-        b=JP/nz1QiqHC4h0BO/jt/cnqiI07Z9EoE3GIgDqexKBUfc0T0Q57GZTpMpMn6nJ4KkV9Tkn
-        u+m9AIyTm8UNWZPxMO5ku3GMG5DprV0zr/mon1H3dTKJkoaLscfW+W9i+Fi9lhZXFBxS9G
-        VLXhzInzyruCVVvuW3P9Ve2PwytpzY8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9238FACC6;
-        Tue,  5 Jan 2021 14:24:56 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 15:24:54 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Jan Stancek <jstancek@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, ziy@nvidia.com,
-        shy828301@gmail.com, jack@suse.cz, willy@infradead.org,
-        mgorman@suse.de, songliubraving@fb.com, akpm@linux-foundation.org
-Subject: Re: [PATCH] mm: migrate: initialize err in do_migrate_pages
-Message-ID: <20210105142454.GH13207@dhcp22.suse.cz>
-References: <456a021c7ef3636d7668cec9dcb4a446a4244812.1609855564.git.jstancek@redhat.com>
+        id S1727369AbhAEO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:27:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727005AbhAEO1o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:27:44 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FC5C061795
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 06:27:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WPt4GbgvCJj/QsPuZwFr/Sd2QDQgrOU3f9zQkLRLZCE=; b=VshOaC0GH4R/GHWLsOrEaR8b2K
+        f1iVB2FdwmZspXhWCtXhYE0GQ+yD/lw0u3Gu3dCbCNz13IM4rb22OcMQwgeEUHxl59jRWfCCWdTLf
+        SG8aDNnaltBNlBEXR/znh11f4cffx+/uqrDDigCA60AwXTif2IMu9dTSIxq/oUf1nXwXXoUI5N0zU
+        WdXCQt6Z4Bl4Z8tlEQutzgQtBVXUgAUjNEPmQoXV3NO0bmwTyDvSS6l4ynZk1xvwrkVkdKU/bK5mg
+        6vqcdVrvcdmg+ulkaE5YZq7M5aACoMBNmaz0qBh27/+cI/0oEu5UOwR8sW0yodinZPb3sqVCFQLcC
+        WtDxcDsA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwnIR-0000DE-BP; Tue, 05 Jan 2021 14:26:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B3A4730377D;
+        Tue,  5 Jan 2021 15:26:48 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9EE9621210122; Tue,  5 Jan 2021 15:26:48 +0100 (CET)
+Date:   Tue, 5 Jan 2021 15:26:48 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
+ writeprotect
+Message-ID: <20210105142648.GJ3040@hirez.programming.kicks-ass.net>
+References: <20201225092529.3228466-1-namit@vmware.com>
+ <20201225092529.3228466-2-namit@vmware.com>
+ <20210104122227.GL3021@hirez.programming.kicks-ass.net>
+ <X/NrdnoDHgFd0Ku1@redhat.com>
+ <20210105081325.GD3040@hirez.programming.kicks-ass.net>
+ <C255B66E-C418-4B30-B363-76441266A0DC@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <456a021c7ef3636d7668cec9dcb4a446a4244812.1609855564.git.jstancek@redhat.com>
+In-Reply-To: <C255B66E-C418-4B30-B363-76441266A0DC@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05-01-21 15:14:20, Jan Stancek wrote:
-> After commit 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")',
-> do_migrate_pages can return uninitialized variable 'err' (which is
-> propagated to user-space as error) when 'from' and 'to' nodesets
-> are identical. This can be reproduced with LTP migrate_pages01,
-> which calls migrate_pages() with same set for both old/new_nodes.
+On Tue, Jan 05, 2021 at 12:52:48AM -0800, Nadav Amit wrote:
+> > On Jan 5, 2021, at 12:13 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > On Mon, Jan 04, 2021 at 02:24:38PM -0500, Andrea Arcangeli wrote:
+> >> The problematic one not pictured is the one of the wrprotect that has
+> >> to be running in another CPU which is also isn't picture above. More
+> >> accurate traces are posted later in the thread.
+> > 
+> > What thread? I don't seem to have discovered it yet, and the cover
+> > letter from Nadav doesn't seem to have a msgid linking it either.
 > 
-> Add 'err' initialization back.
+> Sorry for that:
 > 
-> Fixes: 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")
-> Cc: Zi Yan <ziy@nvidia.com>
-> Cc: Yang Shi <shy828301@gmail.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> https://lore.kernel.org/lkml/X+K7JMrTEC9SpVIB@google.com/T/
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Much reading later..
 
-Thanks!
-
-> ---
->  mm/mempolicy.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 8cf96bd21341..2c3a86502053 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -1111,7 +1111,7 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
->  		     const nodemask_t *to, int flags)
->  {
->  	int busy = 0;
-> -	int err;
-> +	int err = 0;
->  	nodemask_t tmp;
->  
->  	migrate_prep();
-> -- 
-> 2.18.1
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+OK, go with the write-lock for now.
