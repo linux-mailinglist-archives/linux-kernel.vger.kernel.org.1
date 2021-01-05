@@ -2,201 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC242EA2EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797AE2EA2EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727254AbhAEBhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 20:37:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbhAEBhE (ORCPT
+        id S1726799AbhAEBk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 20:40:56 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:46263 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbhAEBkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 20:37:04 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC35AC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 17:36:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LXlYJZ4cC3/R2uyhS4GACYOAeIwZs2wgdr0lWIojXfk=; b=skCdxAVRDH9FdroXKOhkpYLpnP
-        XWwLsluBiIz3Us25LJQeL3Zw3OelvTmDJ7Pn8yg9eM720DDHgYSvlSEvRAjQZV3Z5WVANJxUAuueq
-        PVaAM/6ULtTs/FMVALMaGnIh8YZ83D1dgyNzlz3vCQzsOeW32C26sWolDAcrQeKbGbQ58MA0M3hnG
-        GPg3KLaSk71k3SttlusmxyUUVR3etss2Ya6BWW0kwWSb+PdXnvIXdDytpfQfYkX8Ak1DC47rqKi8z
-        Bsv0Wuo0PIvDTFqvr4xEV1xb75Rn11eaH0k4oK1kHPiwZh4dtjHbMMR9Es8S01YGSUJ6uDwSewvdk
-        dCjfDUoQ==;
-Received: from 54-240-197-236.amazon.com ([54.240.197.236] helo=u3832b3a9db3152.ant.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwbGh-0005Cq-QV; Tue, 05 Jan 2021 01:36:16 +0000
-Message-ID: <04bbe8bca87f81a3cfa93ec4299e53f47e00e5b3.camel@infradead.org>
-Subject: [PATCH] iommu/amd: Stop irq_remapping_select() matching when
- remapping is disabled
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Johnathan Smithinovic <johnathan.smithinovic@gmx.at>,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        iommu <iommu@lists.linux-foundation.org>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>
-Date:   Tue, 05 Jan 2021 01:36:13 +0000
-In-Reply-To: <ed4be9b4-24ac-7128-c522-7ef359e8185d@gmx.at>
-References: <ed4be9b4-24ac-7128-c522-7ef359e8185d@gmx.at>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-KcSsUnzz2AZ4Sfkl+XJP"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+        Mon, 4 Jan 2021 20:40:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609810834; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=nwSmoERwazekI4PabcPVm39nxOXqa6nwGKWvYdJ/NMc=;
+ b=eBwa6uBb1Q9FQGwsNCPQGzk50FQj29NKH7H+prbVpReByQByUXrDTVWvDqsiGm3mBIkMKVAH
+ J68wBCeB2494c72eiEfcG4x3lqg2JGi9LxSAu2AsOFK1SR63C6xDPqTFaRMkjzWK7DOelhD+
+ UOGlTykW+My1JHJqI0NIMXSejCI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5ff3c373b4d9fe55c17221e9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 01:40:03
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0E8D4C43462; Tue,  5 Jan 2021 01:40:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8342CC433CA;
+        Tue,  5 Jan 2021 01:39:59 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Jan 2021 09:39:59 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Ziqi Chen <ziqichen@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        rnayak@codeaurora.org, vinholikatti@gmail.com,
+        jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, kwmad.kim@samsung.com,
+        stanley.chu@mediatek.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Satya Tangirala <satyat@google.com>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
+ violation
+In-Reply-To: <X/NlHkiNdZO1hvJ2@builder.lan>
+References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
+ <X+ob+FylvPfl3NR/@builder.lan>
+ <4c3035c418d0a0c4344be84fb1919314@codeaurora.org>
+ <X/NlHkiNdZO1hvJ2@builder.lan>
+Message-ID: <6474d14a3055fa645e1004391099ee00@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-05 02:57, Bjorn Andersson wrote:
+> On Mon 28 Dec 19:18 CST 2020, Can Guo wrote:
+> 
+>> On 2020-12-29 01:55, Bjorn Andersson wrote:
+>> > On Tue 22 Dec 07:49 CST 2020, Ziqi Chen wrote:
+>> >
+>> > > As per specs, e.g, JESD220E chapter 7.2, while powering
+>> > > off/on the ufs device, RST_N signal and REF_CLK signal
+>> > > should be between VSS(Ground) and VCCQ/VCCQ2.
+>> > >
+>> > > To flexibly control device reset line, refactor the function
+>> > > ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
+>> > > vops_device_reset(sturct ufs_hba *hba, bool asserted). The
+>> > > new parameter "bool asserted" is used to separate device reset
+>> > > line pulling down from pulling up.
+>> > >
+>> > > Cc: Kiwoong Kim <kwmad.kim@samsung.com>
+>> > > Cc: Stanley Chu <stanley.chu@mediatek.com>
+>> > > Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+>> > > ---
+>> > >  drivers/scsi/ufs/ufs-mediatek.c | 32 ++++++++++++++++----------------
+>> > >  drivers/scsi/ufs/ufs-qcom.c     | 24 +++++++++++++++---------
+>> > >  drivers/scsi/ufs/ufshcd.c       | 36
+>> > > +++++++++++++++++++++++++-----------
+>> > >  drivers/scsi/ufs/ufshcd.h       |  8 ++++----
+>> > >  4 files changed, 60 insertions(+), 40 deletions(-)
+>> > >
+>> > > diff --git a/drivers/scsi/ufs/ufs-mediatek.c
+>> > > b/drivers/scsi/ufs/ufs-mediatek.c
+>> > > index 80618af..072f4db 100644
+>> > > --- a/drivers/scsi/ufs/ufs-mediatek.c
+>> > > +++ b/drivers/scsi/ufs/ufs-mediatek.c
+>> > > @@ -841,27 +841,27 @@ static int ufs_mtk_link_startup_notify(struct
+>> > > ufs_hba *hba,
+>> > >  	return ret;
+>> > >  }
+>> > >
+>> > > -static int ufs_mtk_device_reset(struct ufs_hba *hba)
+>> > > +static int ufs_mtk_device_reset(struct ufs_hba *hba, bool asserted)
+>> > >  {
+>> > >  	struct arm_smccc_res res;
+>> > >
+>> > > -	ufs_mtk_device_reset_ctrl(0, res);
+>> > > +	if (asserted) {
+>> > > +		ufs_mtk_device_reset_ctrl(0, res);
+>> > >
+>> > > -	/*
+>> > > -	 * The reset signal is active low. UFS devices shall detect
+>> > > -	 * more than or equal to 1us of positive or negative RST_n
+>> > > -	 * pulse width.
+>> > > -	 *
+>> > > -	 * To be on safe side, keep the reset low for at least 10us.
+>> > > -	 */
+>> > > -	usleep_range(10, 15);
+>> > > -
+>> > > -	ufs_mtk_device_reset_ctrl(1, res);
+>> > > -
+>> > > -	/* Some devices may need time to respond to rst_n */
+>> > > -	usleep_range(10000, 15000);
+>> > > +		/*
+>> > > +		 * The reset signal is active low. UFS devices shall detect
+>> > > +		 * more than or equal to 1us of positive or negative RST_n
+>> > > +		 * pulse width.
+>> > > +		 *
+>> > > +		 * To be on safe side, keep the reset low for at least 10us.
+>> > > +		 */
+>> > > +		usleep_range(10, 15);
+>> >
+>> > I see no point in allowing vendors to "tweak" the 1us->10us adjustment.
+>> > The specification says 1us and we all agree that 10us gives us good
+>> > enough slack. I.e. this is common code.
+>> 
+>> Hi Bjron,
+>> 
+>> We tried, but Samsung fellows wanted 5us. We couldn't get a agreement
+>> on this delay in short term, so we chose to leave it in vops.
+>> 
+> 
+> I'm not able to find the code you're referring to.
 
---=-KcSsUnzz2AZ4Sfkl+XJP
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+static void exynos_ufs_dev_hw_reset(struct ufs_hba *hba)
+{
+         struct exynos_ufs *ufs = ufshcd_get_variant(hba);
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+         hci_writel(ufs, 0 << 0, HCI_GPIO_OUT);
+         udelay(5);
+         hci_writel(ufs, 1 << 0, HCI_GPIO_OUT);
+}
 
-The AMD IOMMU initialisation registers the IRQ remapping domain for
-each IOMMU before doing the final sanity check that every I/OAPIC is
-covered.
+> 
+>> >
+>> > > +	} else {
+>> > > +		ufs_mtk_device_reset_ctrl(1, res);
+>> > >
+>> > > -	dev_info(hba->dev, "device reset done\n");
+>> > > +		/* Some devices may need time to respond to rst_n */
+>> > > +		usleep_range(10000, 15000);
+>> >
+>> > The comment in both the Qualcomm and Mediatek drivers claim that this is
+>> > sleep relates to the UFS device (not host), so why should it be
+>> > different?
+>> >
+>> > What happens if I take the device that Mediatek see a need for a 10ms
+>> > delay and hook that up to a Qualcomm host? This really should go in the
+>> > common code.
+>> >
+>> 
+>> Agree, but Qualcomm host didn't have any problems with 10us yet, so if 
+>> we
+>> put
+>> the 10ms delay to common code, Qualcomm host would suffer longer delay 
+>> when
+>> device reset happens - both bootup and resume(xpm_lvl = 5/6) latency 
+>> would
+>> be increased.
+>> 
+> 
+> Okay, for the resume case I accept that this is a measurable 
+> difference.
+> I still believe this is a property of the device and not the platform
+> though.
+> 
 
-This means that the AMD irq_remapping_select() function gets invoked
-even when IRQ remapping has been disabled, eventually leading to a NULL
-pointer dereference in alloc_irq_table().
+True, I also wanted to make the codes simpler and universal for 
+everyone...
 
-Unfortunately, the IVRS isn't fully parsed early enough that the sanity
-check can be done in time to registering the IRQ domain altogether.
-Doing that would be nice, but is a larger and more error-prone task. The
-simple fix is just for irq_remapping_select() to refuse to report a
-match when IRQ remapping has disabled.
-
-Link: https://lore.kernel.org/lkml/ed4be9b4-24ac-7128-c522-7ef359e8185d@gmx=
-.at
-Fixes: a1a785b57242 ("iommu/amd: Implement select() method on remapping irq=
-domain")
-Reported-by: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- drivers/iommu/amd/iommu.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 7e2c445a1fae..f0adbc48fd17 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -3854,6 +3854,9 @@ static int irq_remapping_select(struct irq_domain *d,=
- struct irq_fwspec *fwspec,
- 	struct amd_iommu *iommu;
- 	int devid =3D -1;
-=20
-+	if (!amd_iommu_irq_remap)
-+		return 0;
-+
- 	if (x86_fwspec_is_ioapic(fwspec))
- 		devid =3D get_ioapic_devid(fwspec->param[0]);
- 	else if (x86_fwspec_is_hpet(fwspec))
---=20
-2.29.2
-
-
---=-KcSsUnzz2AZ4Sfkl+XJP
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
-MTA1MDEzNjEzWjAvBgkqhkiG9w0BCQQxIgQg8yO21tjjPUq2ypyt+LF0U9OszHpLHQoOv+1PouK3
-naMwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAIT6BxIJxI2SxfJJ2dMDO1DbHFM6zAad7EnLR/IKIod2Nl2Hb8myFKvSU3YPQHDm
-08a8qQk2y8Cu2Ww02EA4O/gIHyYn6eZ6im7osCAO018fDd+svrcBoNO5hLbT1PcJTdLbM776xo4r
-3GeTS3t+E2nVfSogHdbExk+vhJ/nblAU9CHqYnMn5YFyImLRM1hYtWIacBuKPkhxC/BgLabRd+SD
-UJzJJ8avFsOAqzYEvGQjKkW2FA9Avrav1WDR+7n0i46TxL+JtzYV96i/VV/cl7qlaD4fm5TCA44c
-aq7U0qPLhT/gYSTKmn25KXiO3aEmJsXUlYx5G3NoUD+b4gt3wJgAAAAAAAA=
-
-
---=-KcSsUnzz2AZ4Sfkl+XJP--
-
+> Regards,
+> Bjorn
+> 
+>> Regards,
+>> Can Guo.
+>> 
+>> >
+>> >
+>> > As such I really would prefer to see these delays in the common code!
+>> > You really shouldn't write code based on a speculation that one day
+>> > there might come someone who need other values - when that day come we
+>> > can just change the code, and if it never comes we're better off with
+>> > the cleaner implementation.
+>> >
+>> > Regards,
+>> > Bjorn
+>> >
+>> > > +	}
+>> > >
+>> > >  	return 0;
+>> > >  }
+>> > > diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+>> > > index 2206b1e..fed10e5 100644
+>> > > --- a/drivers/scsi/ufs/ufs-qcom.c
+>> > > +++ b/drivers/scsi/ufs/ufs-qcom.c
+>> > > @@ -1406,10 +1406,11 @@ static void ufs_qcom_dump_dbg_regs(struct
+>> > > ufs_hba *hba)
+>> > >  /**
+>> > >   * ufs_qcom_device_reset() - toggle the (optional) device reset line
+>> > >   * @hba: per-adapter instance
+>> > > + * @asserted: assert or deassert device reset line
+>> > >   *
+>> > >   * Toggles the (optional) reset line to reset the attached device.
+>> > >   */
+>> > > -static int ufs_qcom_device_reset(struct ufs_hba *hba)
+>> > > +static int ufs_qcom_device_reset(struct ufs_hba *hba, bool asserted)
+>> > >  {
+>> > >  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>> > >
+>> > > @@ -1417,15 +1418,20 @@ static int ufs_qcom_device_reset(struct
+>> > > ufs_hba *hba)
+>> > >  	if (!host->device_reset)
+>> > >  		return -EOPNOTSUPP;
+>> > >
+>> > > -	/*
+>> > > -	 * The UFS device shall detect reset pulses of 1us, sleep for 10us
+>> > > to
+>> > > -	 * be on the safe side.
+>> > > -	 */
+>> > > -	gpiod_set_value_cansleep(host->device_reset, 1);
+>> > > -	usleep_range(10, 15);
+>> > > +	if (asserted) {
+>> > > +		gpiod_set_value_cansleep(host->device_reset, 1);
+>> > >
+>> > > -	gpiod_set_value_cansleep(host->device_reset, 0);
+>> > > -	usleep_range(10, 15);
+>> > > +		/*
+>> > > +		 * The UFS device shall detect reset pulses of 1us, sleep for
+>> > > 10us to
+>> > > +		 * be on the safe side.
+>> > > +		 */
+>> > > +		usleep_range(10, 15);
+>> > > +	} else {
+>> > > +		gpiod_set_value_cansleep(host->device_reset, 0);
+>> > > +
+>> > > +		 /* Some devices may need time to respond to rst_n */
+>> > > +		usleep_range(10, 15);
+>> > > +	}
+>> > >
+>> > >  	return 0;
+>> > >  }
+>> > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> > > index e221add..f2daac2 100644
+>> > > --- a/drivers/scsi/ufs/ufshcd.c
+>> > > +++ b/drivers/scsi/ufs/ufshcd.c
+>> > > @@ -585,7 +585,13 @@ static void ufshcd_device_reset(struct ufs_hba
+>> > > *hba)
+>> > >  {
+>> > >  	int err;
+>> > >
+>> > > -	err = ufshcd_vops_device_reset(hba);
+>> > > +	err = ufshcd_vops_device_reset(hba, true);
+>> > > +	if (err) {
+>> > > +		dev_err(hba->dev, "asserting device reset failed: %d\n", err);
+>> > > +		return;
+>> > > +	}
+>> > > +
+>> > > +	err = ufshcd_vops_device_reset(hba, false);
+>> > >
+>> > >  	if (!err) {
+>> > >  		ufshcd_set_ufs_dev_active(hba);
+>> > > @@ -593,7 +599,11 @@ static void ufshcd_device_reset(struct ufs_hba
+>> > > *hba)
+>> > >  			hba->wb_enabled = false;
+>> > >  			hba->wb_buf_flush_enabled = false;
+>> > >  		}
+>> > > +		dev_dbg(hba->dev, "device reset done\n");
+>> > > +	} else {
+>> > > +		dev_err(hba->dev, "deasserting device reset failed: %d\n", err);
+>> > >  	}
+>> > > +
+>> > >  	if (err != -EOPNOTSUPP)
+>> > >  		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
+>> > >  }
+>> > > @@ -8686,8 +8696,6 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+>> > > enum ufs_pm_op pm_op)
+>> > >  	if (ret)
+>> > >  		goto set_dev_active;
+>> > >
+>> > > -	ufshcd_vreg_set_lpm(hba);
+>> > > -
+>> > >  disable_clks:
+>> > >  	/*
+>> > >  	 * Call vendor specific suspend callback. As these callbacks may
+>> > > access
+>> > > @@ -8703,6 +8711,9 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+>> > > enum ufs_pm_op pm_op)
+>> > >  	 */
+>> > >  	ufshcd_disable_irq(hba);
+>> > >
+>> > > +	if (ufshcd_is_link_off(hba))
+>> > > +		ufshcd_vops_device_reset(hba, true);
+>> > > +
+>> > >  	ufshcd_setup_clocks(hba, false);
+>> > >
+>> > >  	if (ufshcd_is_clkgating_allowed(hba)) {
+>> > > @@ -8711,6 +8722,8 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+>> > > enum ufs_pm_op pm_op)
+>> > >  					hba->clk_gating.state);
+>> > >  	}
+>> > >
+>> > > +	ufshcd_vreg_set_lpm(hba);
+>> > > +
+>> > >  	/* Put the host controller in low power mode if possible */
+>> > >  	ufshcd_hba_vreg_set_lpm(hba);
+>> > >  	goto out;
+>> > > @@ -8778,18 +8791,19 @@ static int ufshcd_resume(struct ufs_hba
+>> > > *hba, enum ufs_pm_op pm_op)
+>> > >  	old_link_state = hba->uic_link_state;
+>> > >
+>> > >  	ufshcd_hba_vreg_set_hpm(hba);
+>> > > +
+>> > > +	ret = ufshcd_vreg_set_hpm(hba);
+>> > > +	if (ret)
+>> > > +		goto out;
+>> > > +
+>> > >  	/* Make sure clocks are enabled before accessing controller */
+>> > >  	ret = ufshcd_setup_clocks(hba, true);
+>> > >  	if (ret)
+>> > > -		goto out;
+>> > > +		goto disable_vreg;
+>> > >
+>> > >  	/* enable the host irq as host controller would be active soon */
+>> > >  	ufshcd_enable_irq(hba);
+>> > >
+>> > > -	ret = ufshcd_vreg_set_hpm(hba);
+>> > > -	if (ret)
+>> > > -		goto disable_irq_and_vops_clks;
+>> > > -
+>> > >  	/*
+>> > >  	 * Call vendor specific resume callback. As these callbacks may
+>> > > access
+>> > >  	 * vendor specific host controller register space call them when the
+>> > > @@ -8797,7 +8811,7 @@ static int ufshcd_resume(struct ufs_hba *hba,
+>> > > enum ufs_pm_op pm_op)
+>> > >  	 */
+>> > >  	ret = ufshcd_vops_resume(hba, pm_op);
+>> > >  	if (ret)
+>> > > -		goto disable_vreg;
+>> > > +		goto disable_irq_and_vops_clks;
+>> > >
+>> > >  	/* For DeepSleep, the only supported option is to have the link
+>> > > off */
+>> > >  	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) &&
+>> > > !ufshcd_is_link_off(hba));
+>> > > @@ -8864,8 +8878,6 @@ static int ufshcd_resume(struct ufs_hba *hba,
+>> > > enum ufs_pm_op pm_op)
+>> > >  	ufshcd_link_state_transition(hba, old_link_state, 0);
+>> > >  vendor_suspend:
+>> > >  	ufshcd_vops_suspend(hba, pm_op);
+>> > > -disable_vreg:
+>> > > -	ufshcd_vreg_set_lpm(hba);
+>> > >  disable_irq_and_vops_clks:
+>> > >  	ufshcd_disable_irq(hba);
+>> > >  	if (hba->clk_scaling.is_allowed)
+>> > > @@ -8876,6 +8888,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+>> > > enum ufs_pm_op pm_op)
+>> > >  		trace_ufshcd_clk_gating(dev_name(hba->dev),
+>> > >  					hba->clk_gating.state);
+>> > >  	}
+>> > > +disable_vreg:
+>> > > +	ufshcd_vreg_set_lpm(hba);
+>> > >  out:
+>> > >  	hba->pm_op_in_progress = 0;
+>> > >  	if (ret)
+>> > > diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+>> > > index 9bb5f0e..d5fbaba 100644
+>> > > --- a/drivers/scsi/ufs/ufshcd.h
+>> > > +++ b/drivers/scsi/ufs/ufshcd.h
+>> > > @@ -319,7 +319,7 @@ struct ufs_pwr_mode_info {
+>> > >   * @resume: called during host controller PM callback
+>> > >   * @dbg_register_dump: used to dump controller debug information
+>> > >   * @phy_initialization: used to initialize phys
+>> > > - * @device_reset: called to issue a reset pulse on the UFS device
+>> > > + * @device_reset: called to assert or deassert device reset line
+>> > >   * @program_key: program or evict an inline encryption key
+>> > >   * @event_notify: called to notify important events
+>> > >   */
+>> > > @@ -350,7 +350,7 @@ struct ufs_hba_variant_ops {
+>> > >  	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
+>> > >  	void	(*dbg_register_dump)(struct ufs_hba *hba);
+>> > >  	int	(*phy_initialization)(struct ufs_hba *);
+>> > > -	int	(*device_reset)(struct ufs_hba *hba);
+>> > > +	int	(*device_reset)(struct ufs_hba *hba, bool asserted);
+>> > >  	void	(*config_scaling_param)(struct ufs_hba *hba,
+>> > >  					struct devfreq_dev_profile *profile,
+>> > >  					void *data);
+>> > > @@ -1216,10 +1216,10 @@ static inline void
+>> > > ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
+>> > >  		hba->vops->dbg_register_dump(hba);
+>> > >  }
+>> > >
+>> > > -static inline int ufshcd_vops_device_reset(struct ufs_hba *hba)
+>> > > +static inline int ufshcd_vops_device_reset(struct ufs_hba *hba,
+>> > > bool asserted)
+>> > >  {
+>> > >  	if (hba->vops && hba->vops->device_reset)
+>> > > -		return hba->vops->device_reset(hba);
+>> > > +		return hba->vops->device_reset(hba, asserted);
+>> > >
+>> > >  	return -EOPNOTSUPP;
+>> > >  }
+>> > > --
+>> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+>> > > Forum,
+>> > > a Linux Foundation Collaborative Project
+>> > >
