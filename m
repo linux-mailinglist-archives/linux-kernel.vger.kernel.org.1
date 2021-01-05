@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53CE2EAA1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991F02EAA21
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729817AbhAELnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:43:52 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:42534 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728822AbhAELnw (ORCPT
+        id S1728321AbhAELoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727384AbhAELoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:43:52 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105BZcc7032610;
-        Tue, 5 Jan 2021 11:43:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=zKOUk2wPIoowVZgO6OUhoYKIvVuPqMlNx5ZFBmqNXLI=;
- b=hcjsf/faB7pCmQtgOnJXSaPZL0kD+kFpj5eh4S6EY9RsiVc8VSVCkB1YYZSuhWA5Fkn6
- gSCgGN/A3L8wyAJdshpGos0FVwgmL2GbLiH0dZJQ6qKfhqnNAfwX5HDI96h2GRcDoA8h
- JJYH9TVIQwYaD+4lZXj9Pu0FXCfzcJp9E1E1v7aTz0Ov5HHXpA9lqKfIS97BLOiLH0ZB
- xS2cdOr3iYSa8Giu1NPJii7yrVgmAEvofjAfWCSoukVu2xv06CromB2K8LtU/Z7Xe+9E
- zHnCyZNKbg6ZvcMVpYt8IUYDrbvUF67JGQza0UZOWOA4NpcUniiOm3CTCXNyQlDglxjh XQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 35tg8r0ec2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 05 Jan 2021 11:43:08 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105BaKhj024144;
-        Tue, 5 Jan 2021 11:43:07 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 35uxnshxv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Jan 2021 11:43:07 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 105Bh6WS025417;
-        Tue, 5 Jan 2021 11:43:06 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 05 Jan 2021 11:43:05 +0000
-Date:   Tue, 5 Jan 2021 14:42:29 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Xiaolei Wang <xiaolei.wang@windriver.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] regmap: debugfs: Fix a reversed if statement in
- regmap_debugfs_init()
-Message-ID: <X/RQpfAwRdLg0GqQ@mwanda>
+        Tue, 5 Jan 2021 06:44:30 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9D2C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 03:43:49 -0800 (PST)
+Received: from zn.tnic (p200300ec2f103700516ef90d43f797fe.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:3700:516e:f90d:43f7:97fe])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5319A1EC03C1;
+        Tue,  5 Jan 2021 12:43:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609847028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=g/xf8hdoLpsGm0AJWHiHczuDrlihyCsQII90GMgmI3E=;
+        b=ogLy3w6Hs7og2FvvT3btBenp2HnFVmhtUVfNFK32nuNT6LUpHyj4Adn6j5aMvibHvGh7O5
+        nfcfpgBSkq8sqjJgZfgbEVZaebn9nl7xBVwI24qWO7LHl91HEvUk3HmtS2jJ4nyypd5C1j
+        l1QBlPEGEGpbrsNZKe7nzvoS1qoSl4w=
+Date:   Tue, 5 Jan 2021 12:43:51 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: 5.11-rc1 TTM list corruption
+Message-ID: <20210105114351.GD28649@zn.tnic>
+References: <20201231104020.GA4504@zn.tnic>
+ <e3bfa0a4-5d0a-bd68-6cc8-73db1d29f22c@amd.com>
+ <20210104105802.GD32151@zn.tnic>
+ <20210105041213.GA544780@hr-amd>
+ <20210105103138.GB28649@zn.tnic>
+ <20210105110852.GA1052081@hr-amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050073
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 phishscore=0 bulkscore=0
- spamscore=0 impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050073
+In-Reply-To: <20210105110852.GA1052081@hr-amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code will leak "map->debugfs_name" because the if statement is
-reversed so it only frees NULL pointers instead of non-NULL.  In
-fact the if statement is not required and should just be removed
-because kfree() accepts NULL pointers.
+On Tue, Jan 05, 2021 at 07:08:52PM +0800, Huang Rui wrote:
+> Ah, this asic is a bit old and still use radeon driver. So we didn't
+> reproduce it on amdgpu driver. I don't have such the old asic in my hand.
+> May we know whether this issue can be duplicated after SI which is used
+> amdgpu module (not sure whether you have recent APU or GPU)?
 
-Fixes: cffa4b2122f5 ("regmap: debugfs: Fix a memory leak when calling regmap_attach_dev")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/base/regmap/regmap-debugfs.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+The latest I have (I think it is the latest) is:
 
-diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
-index bf03cd343be2..ff2ee87987c7 100644
---- a/drivers/base/regmap/regmap-debugfs.c
-+++ b/drivers/base/regmap/regmap-debugfs.c
-@@ -594,9 +594,7 @@ void regmap_debugfs_init(struct regmap *map)
- 	}
- 
- 	if (!strcmp(name, "dummy")) {
--		if (!map->debugfs_name)
--			kfree(map->debugfs_name);
--
-+		kfree(map->debugfs_name);
- 		map->debugfs_name = kasprintf(GFP_KERNEL, "dummy%d",
- 						dummy_index);
- 		if (!map->debugfs_name)
+[    1.826102] [drm] initializing kernel modesetting (RENOIR 0x1002:0x1636 0x17AA:0x5099 0xD1).
+
+and so far that hasn't triggered it. Which makes sense because that
+thing uses amdgpu:
+
+[    1.810260] [drm] amdgpu kernel modesetting enabled.
+
+Thx.
+
 -- 
-2.29.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
