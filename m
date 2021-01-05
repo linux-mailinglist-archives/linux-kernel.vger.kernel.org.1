@@ -2,85 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40D62EA40C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 04:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 445982EA404
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 04:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbhAEDsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 22:48:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbhAEDsS (ORCPT
+        id S1728196AbhAEDqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 22:46:34 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:33351 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726168AbhAEDqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 22:48:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B67C061793;
-        Mon,  4 Jan 2021 19:47:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=xvxlCGowN31Xh/eMwMOxKX1sU7xQYvnwJjb9H7a7Qfg=; b=fCOcY9KPiE3XxHr3mGOAN9ApBw
-        xwhr9RFjdx/HiAqNsrqURth49nt/hE+aettEIsGIjhsfRhogSUvHCLPaWdYU/eCOxX8fUrverXQR8
-        QM0M9hbX5loFyoLA673vdQKUP3M7zwXBfTgQ2V1DLyX6sPuxTiHyJ+xYCMnjVE1MCNZRAcrGG2Gnc
-        zRIeawk6r+suf8O68gRuFKUqfWKXOgq2Oy7MZdYLDSIqEwu9DjMYRmU+175FCNyHZtVvVoACKzh+l
-        aWKp/kC+vglC9HQLKl5Bkfme1t4d6me6C2VlRHTHOsh2waxKdspw9XXAvAdJhapR7QfupQhWBM+kI
-        b+79Zuyg==;
-Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kwdHH-000pmb-BU; Tue, 05 Jan 2021 03:45:50 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org
-Subject: [PATCH v3] arch/arc: add copy_user_page() to <asm/page.h> to fix build error on ARC
-Date:   Mon,  4 Jan 2021 19:44:53 -0800
-Message-Id: <20210105034453.12629-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 4 Jan 2021 22:46:33 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A2ABA5805BF;
+        Mon,  4 Jan 2021 22:45:47 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 04 Jan 2021 22:45:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=P
+        MiPLucM+T3kSasa33zxfPFnbKWQr59tFvfm9X/a83o=; b=faVKBWBsrF3PX8bCy
+        r+beznNEDRLpbWYAlEA2Pv7SROrs8g8dkgpoIM8pm95Rx2AGpDSc1M7bx6Szp1Kk
+        qQMEvTfYHkxKR1z1P+x0jh9/bwGBbv8FD588apgeBSCRQRy8kJrXHwkK8FE8JdhH
+        6Sj+V6OKPU1Gw2JTT3xF7EmRRtJNQdBqwBfokZCxm/X2FmciW2iM3DMUkz/QvgWv
+        Qiz0ilsHoA3RXPy7bYSYPsEdI2bF+Gc5x6fdzO20DSLIN8Mc17N1QMxGLvmpDrUX
+        RlxLmAQn1nX1eGqIXaLdhdt2Q17XzyEuW58OB6QruwmxdMSzTNg8lIptZz6jvX+2
+        jFA0w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=PMiPLucM+T3kSasa33zxfPFnbKWQr59tFvfm9X/a8
+        3o=; b=Ad0RsPsiG7pnB1yvC2uBCgyJlSxJk44VfLhO9BrXE5KX4sNT4OE3zpbKD
+        AOJEhjV4yVSMB6BfDsnddGcDs7Zy6NrXTfzpBQ7AzJRgUUAIc+vA26v2m0b0Vtf3
+        HBh4Ul52ApT3fPC7tNtENfKd9btx1u1hmLNjXavKiliDnXQPdSj4pfXvweRwkN/P
+        NsipgGhoX64iTw/aorPPjIQFg4iPpL/XhI0khLskU+1IH3CH7StPpATj+djEkaey
+        bQI3IkPC1gTdBN0zkzLipBuBU6crRmxYR6g/c/vJRivX3Al7hNl3rR7TdqXTTBeb
+        RNWsJph9XNWFwyJgqQo502Hr/1JCg==
+X-ME-Sender: <xms:6eDzX6JQZfoKuoRvm4laf5LXOP5DqlhzRqTANsOpTbP4fu-RRjvCaA>
+    <xme:6eDzXyL94ryPO4B80e8tye_K6BuSgb_i5YAFbCN8Kw3QepZ2W84voAMi-O4tMtUkU
+    sk3C6yRz0mTkjJIHL8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefgedgieduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
+    jeeghefhueffvdenucfkphepgeehrdeffedrhedtrddvheegnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
+    hihgohgrthdrtghomh
+X-ME-Proxy: <xmx:6eDzX6uryirzT-6gOt8j-7aVAJRYv1M7J17Tq5yT33agipef7jsV9g>
+    <xmx:6eDzX_YlDh9qVIPFtfy0_MVw-On-Ywig2D74ZYB1L8vaa_pQULJRrA>
+    <xmx:6eDzXxbyLH5nW8SYVL2y0SkZOaxi4cuXuXZazuO23ny1tYBvE5uoJw>
+    <xmx:6-DzX1S9A26_3Xx6pobDg-xziHj-LskurATUbqq3I0FuCfATm1iuVUR_yDY>
+Received: from [0.0.0.0] (li1000-254.members.linode.com [45.33.50.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B0A3D1080059;
+        Mon,  4 Jan 2021 22:45:40 -0500 (EST)
+Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
+ traces from user-space with perf
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        David Daney <david.daney@cavium.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Archer Yan <ayan@wavecomp.com>, x86@kernel.org
+References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
+ <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
+ <20210104105904.GK3021@hirez.programming.kicks-ass.net>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <0712b131-715a-a83a-bc9e-61405824ff0e@flygoat.com>
+Date:   Tue, 5 Jan 2021 11:45:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20210104105904.GK3021@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fs/dax.c uses copy_user_page() but ARC does not provide that interface,
-resulting in a build error.
+ÔÚ 2021/1/4 ÏÂÎç6:59, Peter Zijlstra Ð´µÀ:
+> On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
+>> +u64 perf_reg_abi(struct task_struct *tsk)
+>> +{
+>> +	if (test_tsk_thread_flag(tsk, TIF_32BIT_REGS))
+>> +		return PERF_SAMPLE_REGS_ABI_32;
+>> +	else
+>> +		return PERF_SAMPLE_REGS_ABI_64;
+>> +}
+> So we recently changed this on x86 to not rely on TIF flags. IIRC the
+> problem is that on x86 you can change the mode of a task without the
+> kernel being aware of it. Is something like that possible on MIPS as
+> well?
 
-Provide copy_user_page() in <asm/page.h>.
+Hi all,
 
-../fs/dax.c: In function 'copy_cow_page_dax':
-../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
+In MIPS world it's impossible to raise a thread to 64bit without kernel 
+aware.
+Without STATUS.UX set it will trigger reserved instruction exception 
+when trying
+to run 64bit instructions.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: linux-snps-arc@lists.infradead.org
-Cc: Dan Williams <dan.j.williams@intel.com>
-#Acked-by: Vineet Gupta <vgupta@synopsys.com> # v1
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-nvdimm@lists.01.org
-#Reviewed-by: Ira Weiny <ira.weiny@intel.com> # v2
----
-v2: rebase, add more Cc:
-v3: add copy_user_page() to arch/arc/include/asm/page.h
+However it may be possible to run with 32bit ABI without TIF_32BIT_REGS 
+if user
+program didn't get ELF ABI right. I think that's out of our current 
+consideration.
 
- arch/arc/include/asm/page.h |    1 +
+> The thing x86 does today is look at it's pt_regs state to determine the
+> actual state.
+It is possible to look at pt_regs Status.UX bit on MIPS. But it seems 
+unnecessary
+as user can't change it.
 
---- lnx-511-rc1.orig/arch/arc/include/asm/page.h
-+++ lnx-511-rc1/arch/arc/include/asm/page.h
-@@ -10,6 +10,7 @@
- #ifndef __ASSEMBLY__
- 
- #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
-+#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
- 
- struct vm_area_struct;
+Thanks.
+
+- Jiaxun
+
+
+
+
