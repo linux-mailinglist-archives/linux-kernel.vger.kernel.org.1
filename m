@@ -2,134 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB5D2EA65F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7846A2EA68C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbhAEIRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 03:17:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57988 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbhAEIRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 03:17:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609834615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zYLn+vdZQ/DSl04YjE7uuZY8XIpP1A4GnWwXJuDBAco=;
-        b=cS8ev0d5S4LK7OsiiKLIWIoPz+jWMmhboAYLDPrCcXZS9NCBLHNjk/noR+dRBHtkC0wC6p
-        zcbOjwgXTLKHf0OtaN3kNnsrPaUlXe8HTIex62mnE8HK2NbQymUFTUNqyGc7xsy4GKU6dT
-        qv0qkuJOcz/jHhhcZSFs7UOzlRkp6Yw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 502FDAA35;
-        Tue,  5 Jan 2021 08:16:55 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 09:16:54 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: uninitialized pmem struct pages
-Message-ID: <20210105081654.GU13207@dhcp22.suse.cz>
-References: <20210104100323.GC13207@dhcp22.suse.cz>
- <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
- <20210104142624.GI13207@dhcp22.suse.cz>
- <23a4eea2-9fdb-fd1d-ee92-9cd8ac6e8f41@redhat.com>
- <20210104151005.GK13207@dhcp22.suse.cz>
- <26db2c3e-10c7-c6e3-23f7-21eb5101b31a@redhat.com>
- <20210104153300.GL13207@dhcp22.suse.cz>
- <bf26f568-79b3-67f9-832a-9d8ef3f72c43@redhat.com>
- <6106ca7f-3247-0916-3e1e-ad6af17272ea@redhat.com>
- <20210105080057.GT13207@dhcp22.suse.cz>
+        id S1727261AbhAEIXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 03:23:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbhAEIXo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 03:23:44 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162AEC061574;
+        Tue,  5 Jan 2021 00:23:04 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id a12so35246618wrv.8;
+        Tue, 05 Jan 2021 00:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=JtpG5y6lBKffq7UiWFtnl3/EfwEftB5IAC0Ubj5Tr7w=;
+        b=FC1F+AksFq3ueToz7y/Ho5P9j3hW0brKRWZMlZpKBYrbTk0fvJBh/r9Vgw2egmY11+
+         TwIyOiarwSTcJRfo8o97nMV8sXjbtmdOB092FWFjJWLoAJnsFGZ2mZ3PPbbFX8xk+/1C
+         RC61quQjV1wJL1MbA8lJ4gbW2MUJbktUYCGDaDK/ZUXZXPAqp5CsmwB42DnOue8QYFsO
+         D4kzWUKvgqfces9HL3ZvPey3uHr6uY0uwHOLo70d89+5bznFpMvkQLHDY/VVfLRp76AJ
+         wRyKXTU0Du5BZMm3PSPkCxOP3CoBo17yqsgWXVQOnCIaFNJm49yODU9SmHDmHEBjd8Ao
+         ijZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=JtpG5y6lBKffq7UiWFtnl3/EfwEftB5IAC0Ubj5Tr7w=;
+        b=c1koEdnREGKEDJTgGVaQ5BdgLUlHKSnfFDKFKqJb0FEMZo54KeumU9ykJk1icKw9gv
+         tXK58mGFvhZur04RgjnStMT/48z8BXZdmed1mCE1Lf03lx1rV1FkBow8H1gnpm6+DDgB
+         RlBJuxpa9TqhR8EaRieTZXBU+daaKGSRlbjMEqmy3sbwpMcVon9fHPGMYwrQrxwZDdWD
+         f+oBZW1vqTS6uT6vXo8z626e8kU4wguveMZvchI4i62ixopBicnHtE+lE4ha5z3isUe7
+         eHOlnSsUL+2u8Kr23s0CWuYXCqlImj68apFvuL2OzK6eE3EXFgvNMv09jk6+jRhFjZWz
+         nYrw==
+X-Gm-Message-State: AOAM530geNnWcYvR+Z2USw/5FW3IQ82AuS9dJa7Aho0S91LquCN/vDvt
+        Zim3M2LQEJsVH8+CR0C/x7g=
+X-Google-Smtp-Source: ABdhPJz29VFPnXexICzXGc+ePnPYId3YahHozpv9w7uYQR9w1dOWfWtfVw7Fykh3aq3IxrkhByovyQ==
+X-Received: by 2002:a5d:4682:: with SMTP id u2mr83557214wrq.265.1609834982682;
+        Tue, 05 Jan 2021 00:23:02 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id d9sm104672934wrc.87.2021.01.05.00.23.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 00:23:01 -0800 (PST)
+Subject: Re: [PATCH v4 15/15] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     kieran.bingham@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, gregkh@linuxfoundation.org, rjw@rjwysocki.net,
+        sergey.senozhatsky@gmail.com, mchehab@kernel.org
+Cc:     lenb@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, hverkuil-cisco@xs4all.nl,
+        m.felsch@pengutronix.de, niklas.soderlund+renesas@ragnatech.se,
+        slongerbeam@gmail.com, heikki.krogerus@linux.intel.com,
+        linus.walleij@linaro.org,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20210103231235.792999-1-djrscally@gmail.com>
+ <20210103231235.792999-16-djrscally@gmail.com>
+ <3d881e2b-747f-dcd7-a0cf-e7309419914b@ideasonboard.com>
+ <9026519f-1f33-9df0-de18-0881069f7aaa@gmail.com>
+ <249b8ad1-5616-596d-4ee6-efcfdda2ca64@ideasonboard.com>
+ <b85c0e71-6068-de43-1b80-97c519eeb9c4@gmail.com>
+ <b0a99dba-4176-009a-07c7-7ad6701c2b48@ideasonboard.com>
+ <03dc26d0-39d3-174d-f269-426dbc38e62e@gmail.com>
+ <68813554-c479-7354-26d4-df34f53dee32@ideasonboard.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <ce432d1e-6151-1a8b-1f97-f0c1b69b5656@gmail.com>
+Date:   Tue, 5 Jan 2021 08:22:59 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105080057.GT13207@dhcp22.suse.cz>
+In-Reply-To: <68813554-c479-7354-26d4-df34f53dee32@ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05-01-21 09:01:00, Michal Hocko wrote:
-> On Mon 04-01-21 16:44:52, David Hildenbrand wrote:
-> > On 04.01.21 16:43, David Hildenbrand wrote:
-> > > On 04.01.21 16:33, Michal Hocko wrote:
-> > >> On Mon 04-01-21 16:15:23, David Hildenbrand wrote:
-> > >>> On 04.01.21 16:10, Michal Hocko wrote:
-> > >> [...]
-> > >>> Do the physical addresses you see fall into the same section as boot
-> > >>> memory? Or what's around these addresses?
-> > >>
-> > >> Yes I am getting a garbage for the first struct page belonging to the
-> > >> pmem section [1]
-> > >> [    0.020161] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x603fffffff]
-> > >> [    0.020163] ACPI: SRAT: Node 4 PXM 4 [mem 0x6060000000-0x11d5fffffff] non-volatile
-> > >>
-> > >> The pfn without the initialized struct page is 0x6060000. This is a
-> > >> first pfn in a section.
-> > > 
-> > > Okay, so we're not dealing with the "early section" mess I described,
-> > > different story.
-> > > 
-> > > Due to [1], is_mem_section_removable() called
-> > > pfn_to_page(PHYS_PFN(0x6060000)). page_zone(page) made it crash, as not
-> > > initialized.
-> > > 
-> > > Let's assume this is indeed a reserved pfn in the altmap. What's the
-> > > actual address of the memmap?
-> > > 
-> > > I do wonder what hosts pfn_to_page(PHYS_PFN(0x6060000)) - is it actually
-> > > part of the actual altmap (i.e. > 0x6060000) or maybe even self-hosted?
-> > > 
-> > > If it's not self-hosted, initializing the relevant memmaps should work
-> > > just fine I guess. Otherwise things get more complicated.
-> > 
-> > Oh, I forgot: pfn_to_online_page() should at least in your example make
-> > sure other pfn walkers are safe. It was just an issue of
-> > is_mem_section_removable().
-> 
-> Hmm, I suspect you are right. I haven't put this together, thanks! The memory
-> section is indeed marked offline so pfn_to_online_page would indeed bail
-> out:
-> crash> p (0x6060000>>15)
-> $3 = 3084
-> crash> p mem_section[3084/128][3084 & 127]
-> $4 = {
->   section_mem_map = 18446736128020054019,
->   usage = 0xffff902dcf956680,
->   page_ext = 0x0,
->   pad = 0
-> }
-> crash> p 18446736128020054019 & (1UL<<2)
-> $5 = 0
-> 
-> That makes it considerably less of a problem than I thought!
+Morning Kieran
 
-Forgot to add that those who are running kernels without 53cdc1cb29e8
-("drivers/base/memory.c: indicate all memory blocks as removable") for
-some reason can fix the crash by the following simple patch.
-
-Index: linux-5.3-users_mhocko_SLE15-SP2_for-next/drivers/base/memory.c
-===================================================================
---- linux-5.3-users_mhocko_SLE15-SP2_for-next.orig/drivers/base/memory.c
-+++ linux-5.3-users_mhocko_SLE15-SP2_for-next/drivers/base/memory.c
-@@ -152,9 +152,14 @@ static ssize_t removable_show(struct dev
- 		goto out;
- 
- 	for (i = 0; i < sections_per_block; i++) {
--		if (!present_section_nr(mem->start_section_nr + i))
-+		unsigned long nr = mem->start_section_nr + i;
-+		if (!present_section_nr(nr))
- 			continue;
--		pfn = section_nr_to_pfn(mem->start_section_nr + i);
-+		if (!online_section_nr()) {
-+			ret = 0;
-+			break;
-+		}
-+		pfn = section_nr_to_pfn(nr);
- 		ret &= is_mem_section_removable(pfn, PAGES_PER_SECTION);
- 	}
- 
-
--- 
-Michal Hocko
-SUSE Labs
+On 05/01/2021 06:55, Kieran Bingham wrote:
+> Hi Dan,
+>
+> On 04/01/2021 22:02, Daniel Scally wrote:
+>>>>>> On 04/01/2021 13:35, Kieran Bingham wrote:
+>>>>>>>> +/*
+>>>>>>>> + * Extend this array with ACPI Hardware IDs of devices known to be working
+>>>>>>>> + * plus the number of link-frequencies expected by their drivers, along with
+>>>>>>>> + * the frequency values in hertz. This is somewhat opportunistic way of adding
+>>>>>>>> + * support for this for now in the hopes of a better source for the information
+>>>>>>>> + * (possibly some encoded value in the SSDB buffer that we're unaware of)
+>>>>>>>> + * becoming apparent in the future.
+>>>>>>>> + *
+>>>>>>>> + * Do not add an entry for a sensor that is not actually supported.
+>>>>>>>> + */
+>>>>>>>> +static const struct cio2_sensor_config cio2_supported_sensors[] = {
+>>>>>>>> +	CIO2_SENSOR_CONFIG("INT33BE", 0),
+>>>>>>>> +	CIO2_SENSOR_CONFIG("OVTI2680", 0),
+>>>>>>> I don't know if these are expressed anywhere else but would it be
+>>>>>>> helpful to add a comment, or indicator as to what the actual sensor is
+>>>>>>> that is represented by this HID?
+>>>>>>>
+>>>>>>> I can make an assumption about what an OVTI2680 might be, but the
+>>>>>>> INT33BE is quite opaque. It's not clear what support that adds.
+>>>>>>>
+>>>>>>> Unless no one cares what the sensor is that is, but I would anticipate
+>>>>>>> anyone looking here to add a new sensor might want to investigate what
+>>>>>>> was already in the table?
+>>>>>> Yeah good point. I'll probably alternate comment and entry then, like:
+>>>>>>
+>>>>>>
+>>>>>> +static const struct cio2_sensor_config cio2_supported_sensors[] = {
+>>>>>> +	/* Sensor OVTI5693 */
+>>>>>> +	CIO2_SENSOR_CONFIG("INT33BE", 0),
+>>>>>> +	/* Sensor OVTI2680 */
+>>>>>> +	CIO2_SENSOR_CONFIG("OVTI2680", 0),
+>>>>>>
+>>>>>> As an inline comment won't fit for the sensors that we know link-frequencies for. That sound ok?
+>>>>> I might put the whole vendor name in, and no need to prefix 'Sensor' IMO.
+>>>>>
+>>>>> +	/* Omnivision OV5693 */
+>>>>> +	CIO2_SENSOR_CONFIG("INT33BE", 0),
+>>>>> +	/* Omnivision OV2680 */
+>>>>> +	CIO2_SENSOR_CONFIG("OVTI2680", 0),
+>>>>>
+>>>>> but otherwise, yes a comment the line before works for me, as you are
+>>>>> right - at the end would not be practical.
+>>>> Works for me
+>>>>>>>> +static void cio2_bridge_create_fwnode_properties(
+>>>>>>>> +	struct cio2_sensor *sensor,
+>>>>>>>> +	const struct cio2_sensor_config *cfg)
+>>>>>>>> +{
+>>>>>>>> +	unsigned int i;
+>>>>>>>> +
+>>>>>>>> +	sensor->prop_names = prop_names;
+>>>>>>>> +
+>>>>>>>> +	for (i = 0; i < CIO2_MAX_LANES; i++)
+>>>>>>>> +		sensor->data_lanes[i] = i + 1;
+>>>>>>> Does something support lane swapping somewhere?
+>>>>>>> I assume this is just mapping each lane directly through.
+>>>>>> I think Sakari said remapping isn't supported in the CIO2 - so yeah this
+>>>>>> is just mapping them directly
+>>>>> So is this needed? Or is it some future compatibility thing?
+>>>>>
+>>>>> I haven't seen where it's used yet, but I'm not too worried about it
+>>>>> though, just not sure what value an array of [1, 2, 3, 4] gives if it's
+>>>>> constant...
+>>>> The endpoints need to have the data-lanes property which passes an array
+>>>> of data lanes, but there may well be a better way of doing this. I'm
+>>>> just using the lanes member of the ssdb data structure to tell the
+>>>> property how many members of the array to look at:
+>>>>
+>>>>
+>>>> +    sensor->cio2_properties[0] = PROPERTY_ENTRY_U32_ARRAY_LEN(
+>>>> +                    sensor->prop_names.data_lanes,
+>>>> +                    sensor->data_lanes,
+>>>> +                    sensor->ssdb.lanes);
+>>>>
+>>>>
+>>>> So if sensor->ssdb.lanes is 2, even though it's passed a pointer to the
+>>>> first member of an array of 4 members, the size calculation of that
+>>>> macro limits it to just those in use. I.E. if sensor->ssdb.lanes is 2
+>>>> then the property will be given the size 2 * sizeof(u32), and so when
+>>>> its parsed only [1, 2] will be read.
+>>>
+>>> Aha, I see, ok - so we are populating an array of [1, 2, 3, 4] for each
+>>> sensor that we add.
+>>>
+>>> What about creating the data_lanes once as a const static array and
+>>> mapping to that?
+>>>
+>>> /*
+>>>  * Map the lane arrangement, which is fixed for the IPU3.
+>>>  */
+>>> static const int data_lanes[CIO2_MAX_LANES] = { 1, 2, 3, 4 };
+>>
+>> Can't do exactly this; the bridge needs to store everything on heap
+>> incase the module is unloaded, but I could move the data_lanes array to
+>> the struct cio2_bridge instead of against each sensor and then we're
+>> only doing it once.
+> Ahh, yes I remember reading about that already.
+>
+> It maybe worth adding a comment about that in this file, to prevent
+> other people from 'optimising' things out in 5 years ...
+>
+> It probably doesn't make much difference in that case if it's per sensor
+> or per bridge. But indeed at least in the bridge it's only created once.
+Yep ok; I moved it there and I'll add a comment explaining why it's done
+a bit weird.
+> --
+> Kieran
+>
+>
+>>> ...
+>>>
+>>>    sensor->cio2_properties[0] = PROPERTY_ENTRY_U32_ARRAY_LEN(
+>>>                     sensor->prop_names.data_lanes,
+>>>                     data_lanes,
+>>>                     sensor->ssdb.lanes);
+>>> ...
+>>>
+>>> Then we don't need the loop to populate the array for each sensor
+>>> anymore, or the data_lanes in the sensor struct?
+>>>
