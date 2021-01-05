@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74062EA655
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 507B02EA65B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727246AbhAEIMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 03:12:03 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:39416 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725766AbhAEIMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 03:12:02 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 101E020082;
-        Tue,  5 Jan 2021 09:11:21 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hIQUkGXe1nHz; Tue,  5 Jan 2021 09:11:08 +0100 (CET)
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id E9B8C2006F;
-        Tue,  5 Jan 2021 09:11:08 +0100 (CET)
-Received: from mbx-dresden-01.secunet.de (10.53.40.199) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 5 Jan 2021 09:11:03 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-dresden-01.secunet.de
- (10.53.40.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Tue, 5 Jan 2021
- 09:11:03 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 66C7D3180C94; Tue,  5 Jan 2021 09:11:02 +0100 (CET)
-Date:   Tue, 5 Jan 2021 09:11:02 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Po-Hsu Lin <po-hsu.lin@canonical.com>
-CC:     <netdev@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <shuah@kernel.org>, <fw@strlen.de>
-Subject: Re: [PATCH] selftests: xfrm: fix test return value override issue in
- xfrm_policy.sh
-Message-ID: <20210105081102.GI3576117@gauss3.secunet.de>
-References: <20201230095204.21467-1-po-hsu.lin@canonical.com>
+        id S1727387AbhAEIO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 03:14:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbhAEIO1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 03:14:27 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F2FC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 00:13:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P9TYkqppwZM/jhjV499wBQy9lm5R97nXtaT3K8wh0k4=; b=cV0wyCH5p+SfmkI3UvRYn5WqG8
+        41nQmrQkZWPS418IkVIkZAmi1fjqYLhKX1r767cAyN2LAqMeXQKynDTeV4vYUh5q5/1eBwK9AmnM4
+        Px2oTUTgyXOGgwrgu4gVOGFCLR7SpBBW100T9/Jv1ORQpxkOKzF/Ld3x37YkbQUlNolb40QsTeVyD
+        z3F2H+D5JC+NJDJfMk8RWhY6d8u/vTMFzO6sogjwrEW00kyGgEMEwZWR5dSr2lDNYuTeBWWZtM4za
+        n7hxPa+Fhfmd7aMGpNT3x4SxylDRS+OhGujt1Fp2bS5LBOlY0GAaW1Jyac+EFTL6UazY6sF1CZ4BK
+        xTMew9vw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwhT7-00070O-2B; Tue, 05 Jan 2021 08:13:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5980C300446;
+        Tue,  5 Jan 2021 09:13:25 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3BCBA21213528; Tue,  5 Jan 2021 09:13:25 +0100 (CET)
+Date:   Tue, 5 Jan 2021 09:13:25 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Nadav Amit <nadav.amit@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
+ writeprotect
+Message-ID: <20210105081325.GD3040@hirez.programming.kicks-ass.net>
+References: <20201225092529.3228466-1-namit@vmware.com>
+ <20201225092529.3228466-2-namit@vmware.com>
+ <20210104122227.GL3021@hirez.programming.kicks-ass.net>
+ <X/NrdnoDHgFd0Ku1@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201230095204.21467-1-po-hsu.lin@canonical.com>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-dresden-01.secunet.de (10.53.40.199)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <X/NrdnoDHgFd0Ku1@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 05:52:04PM +0800, Po-Hsu Lin wrote:
-> When running this xfrm_policy.sh test script, even with some cases
-> marked as FAIL, the overall test result will still be PASS:
-> 
-> $ sudo ./xfrm_policy.sh
-> PASS: policy before exception matches
-> FAIL: expected ping to .254 to fail (exceptions)
-> PASS: direct policy matches (exceptions)
-> PASS: policy matches (exceptions)
-> FAIL: expected ping to .254 to fail (exceptions and block policies)
-> PASS: direct policy matches (exceptions and block policies)
-> PASS: policy matches (exceptions and block policies)
-> FAIL: expected ping to .254 to fail (exceptions and block policies after hresh changes)
-> PASS: direct policy matches (exceptions and block policies after hresh changes)
-> PASS: policy matches (exceptions and block policies after hresh changes)
-> FAIL: expected ping to .254 to fail (exceptions and block policies after hthresh change in ns3)
-> PASS: direct policy matches (exceptions and block policies after hthresh change in ns3)
-> PASS: policy matches (exceptions and block policies after hthresh change in ns3)
-> FAIL: expected ping to .254 to fail (exceptions and block policies after htresh change to normal)
-> PASS: direct policy matches (exceptions and block policies after htresh change to normal)
-> PASS: policy matches (exceptions and block policies after htresh change to normal)
-> PASS: policies with repeated htresh change
-> $ echo $?
-> 0
-> 
-> This is because the $lret in check_xfrm() is not a local variable.
-> Therefore when a test failed in check_exceptions(), the non-zero $lret
-> will later get reset to 0 when the next test calls check_xfrm().
-> 
-> With this fix, the final return value will be 1. Make it easier for
-> testers to spot this failure.
-> 
-> Fixes: 39aa6928d462d0 ("xfrm: policy: fix netlink/pf_key policy lookups")
-> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+On Mon, Jan 04, 2021 at 02:24:38PM -0500, Andrea Arcangeli wrote:
+> The problematic one not pictured is the one of the wrprotect that has
+> to be running in another CPU which is also isn't picture above. More
+> accurate traces are posted later in the thread.
 
-Applied to the ipsec tree, thanks!
+What thread? I don't seem to have discovered it yet, and the cover
+letter from Nadav doesn't seem to have a msgid linking it either.
