@@ -2,217 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224282EA550
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:14:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6D52EA556
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbhAEGNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 01:13:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725298AbhAEGNf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 01:13:35 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E63C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 22:12:55 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id c12so17776377pfo.10
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 22:12:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jWi8cw1qWlIxjtO30blJ1+kqTM+zKLfOAXDrjiZ/2r4=;
-        b=MJYCp2RWqiVgRL/UD9z2PVZZQMcTly8hOW3cgohu42eT1wvF6x5ZHLX9HaUmGelPWy
-         5RtiI5TMc5s4M49wj6e7ysioZLRV6ARTHYtJlI6vTWIhNixxvUpQNYMcR6Pm1JwC63wg
-         4Vzp6r2f/yhmcpXUf8hvhWhCqEwXd4FLOezTYwJtK0RESMbQ5Ho+yFTcgFPTPCMIBjOM
-         Un6VoH1DRgJjJ2CzGoFLQAGzpLrdRg1EI6uVsfOwvxFN1fwF9+wzC5fU4lDtVL41f4OQ
-         CDKKnaAnZtEG0wL+J1jJeW3GX49XIb+CYA8DtqaJsn3ObSPrswQ4seF91v5YToqixcpW
-         8X5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jWi8cw1qWlIxjtO30blJ1+kqTM+zKLfOAXDrjiZ/2r4=;
-        b=b1zriQwnMv7/IBWewZXynM6LpEi6dtMazRYrL4Kkwo1y1wVwondYyaDr6szMewANvi
-         by/c4t0zvdV06era4skl3bWltlAFydETTBSh6P3Ghj8HCdfqoAX92i7vaNwQZlFHadZb
-         ivMvSvTkzf2SoAJWxT/ZCBDkHarW/W30eSgvlzCrX1d0nZ2TcZSLwLFxfePFH/NpYFPE
-         ADFZo2oPddWFdcwlgSbeAPu/9gMMLc2AeEe0dVbUVkVHTQQUx9UyBO5azBk0BtY2NZvs
-         WcXpLNyyReNCeJlBcNBvKnXTgpPZsqAtxJvg5jycFSaV8O64RA/30KuwlWjkro34LXck
-         FhPw==
-X-Gm-Message-State: AOAM530oj8lRwihY3DzBiYbMpAq6Qhovh1Kpts4Jg+K0OsOFPmwA9M8n
-        RbP9w9Mzlh6fGCWoqZduY0wtaCoPxhUCZP54RrO3+Q==
-X-Google-Smtp-Source: ABdhPJzjWz4zKDMMh3np/qltfI8R8yx7wZLmQRDuZmltkV8Dzo4n5qhCZDiVfY7gjCgR6U1iPU9yD7SPf2q+dysi8B8=
-X-Received: by 2002:a63:480f:: with SMTP id v15mr60806345pga.341.1609827174665;
- Mon, 04 Jan 2021 22:12:54 -0800 (PST)
+        id S1728292AbhAEGPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 01:15:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbhAEGPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 01:15:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75B16227C3;
+        Tue,  5 Jan 2021 06:14:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609827260;
+        bh=CWbfPoQL9q63I1jQit0eAhiT55H+f8NCydgTEbCorC0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OJgt1iQ1EFlkrjdQPvqF6GMxBwbKTHcwGnsx5y1cr2I2yVgRzFEczkafsr9Xhhixb
+         gk+Iv714iiQ3lPzuXMUhOGVddNxTPUm+dkzY+mDLe4PwwUemHpKRgGtEj7lz+g8g0l
+         vrSpTwF74FgjLqFILStpOrTbvZKfGIxI2n2WFA8tfgU2M45js51zm/2D+3XdafXtlu
+         mk2hw6bPaXbafJ3VHYBYrS7Ho49s5QNrq8yiQ9NoFZzSfznrH//xsHTDvGcGlxcZSO
+         JKN+QZE7HPO4NxSEQXKSZVAO1gXbIm9sZVd5nJVn9PNVu+SMVeZ5TfHn5iG/sjNDPU
+         11O6szPkYDEGw==
+Date:   Tue, 5 Jan 2021 11:44:15 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
+ bindings
+Message-ID: <20210105061415.GA2771@vkoul-mobl>
+References: <20201208085748.3684670-1-vkoul@kernel.org>
+ <20201210135253.GA2405508@robh.at.kernel.org>
+ <X/NgUp/pm9T0JlTw@builder.lan>
 MIME-Version: 1.0
-References: <20210104065843.5658-1-songmuchun@bytedance.com>
- <20210104065843.5658-3-songmuchun@bytedance.com> <b41d2f1d-da2c-07ae-6bd0-31022a3378ea@oracle.com>
-In-Reply-To: <b41d2f1d-da2c-07ae-6bd0-31022a3378ea@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 5 Jan 2021 14:12:16 +0800
-Message-ID: <CAMZfGtUJmPbwO4cgLTe5b8vu9ELN5Y5t+ADaQcvQzTNiK2zmJg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 3/6] mm: hugetlb: fix a race between
- freeing and dissolving the page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/NgUp/pm9T0JlTw@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 8:02 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 1/3/21 10:58 PM, Muchun Song wrote:
-> > There is a race condition between __free_huge_page()
-> > and dissolve_free_huge_page().
-> >
-> > CPU0:                         CPU1:
-> >
-> > // page_count(page) == 1
-> > put_page(page)
-> >   __free_huge_page(page)
-> >                               dissolve_free_huge_page(page)
-> >                                 spin_lock(&hugetlb_lock)
-> >                                 // PageHuge(page) && !page_count(page)
-> >                                 update_and_free_page(page)
-> >                                 // page is freed to the buddy
-> >                                 spin_unlock(&hugetlb_lock)
-> >     spin_lock(&hugetlb_lock)
-> >     clear_page_huge_active(page)
-> >     enqueue_huge_page(page)
-> >     // It is wrong, the page is already freed
-> >     spin_unlock(&hugetlb_lock)
-> >
-> > The race windows is between put_page() and spin_lock() which
-> > is in the __free_huge_page().
-> >
-> > We should make sure that the page is already on the free list
-> > when it is dissolved.
-> >
-> > Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/hugetlb.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 48 insertions(+)
-> >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 1f3bf1710b66..72608008f8b4 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -79,6 +79,21 @@ DEFINE_SPINLOCK(hugetlb_lock);
-> >  static int num_fault_mutexes;
-> >  struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
-> >
-> > +static inline bool PageHugeFreed(struct page *head)
-> > +{
-> > +     return page_private(head) == -1UL;
->
->         return page_private(head + 4) == -1UL;
+On 04-01-21, 12:37, Bjorn Andersson wrote:
 
-Very thanks. It's my mistake when rebasing. Will
-update in the next version.
+> > > +properties:
+> > > +  compatible:
+> > > +    const: qcom,sm8350-pinctrl
+> > 
+> > If this block is called TLMM, then I'd expect that to be in the 
+> > compatible string. But I guess this is consistent with the others.
+> > 
+> 
+> This is my mistake 7 years ago and it bothers me every time we write a
+> new one of these - in particular since we now support a few different
+> "Qualcomm pinctrl" blocks.
+> 
+> It would be ugly for a while, but I'm in favor of naming these
+> "qcom,<platform>-tlmm" going forward.
+> 
+> PS. And we can solve the ugliness by introducing the "proper" naming
+> (and keeping the old one for backwards compatibility) as we migrate the
+> binding documents to yaml.
 
->
-> > +}
-> > +
-> > +static inline void SetPageHugeFreed(struct page *head)
-> > +{
-> > +     set_page_private(head + 4, -1UL);
-> > +}
-> > +
-> > +static inline void ClearPageHugeFreed(struct page *head)
-> > +{
-> > +     set_page_private(head + 4, 0);
-> > +}
->
-> It is unfortunate that we can not use some existing value like
-> page_huge_active() to determine if dissolve_free_huge_page() should
-> proceed with freeing the page to buddy.  If the existing check,
->
->         if (!page_count(page)) {
->
-> was changed to
->
->         if (!page_count(page) && !page_huge_active(page)) {
->
-> the race window would be shrunk.  However, the most straight forward
-> way to fully close the window is with the approach taken here.
->
-> > +
-> >  /* Forward declaration */
-> >  static int hugetlb_acct_memory(struct hstate *h, long delta);
-> >
-> > @@ -1028,6 +1043,7 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
-> >       list_move(&page->lru, &h->hugepage_freelists[nid]);
-> >       h->free_huge_pages++;
-> >       h->free_huge_pages_node[nid]++;
-> > +     SetPageHugeFreed(page);
-> >  }
-> >
-> >  static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
-> > @@ -1044,6 +1060,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
-> >
-> >               list_move(&page->lru, &h->hugepage_activelist);
-> >               set_page_refcounted(page);
-> > +             ClearPageHugeFreed(page);
-> >               h->free_huge_pages--;
-> >               h->free_huge_pages_node[nid]--;
-> >               return page;
-> > @@ -1504,6 +1521,7 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
-> >       spin_lock(&hugetlb_lock);
-> >       h->nr_huge_pages++;
-> >       h->nr_huge_pages_node[nid]++;
-> > +     ClearPageHugeFreed(page);
-> >       spin_unlock(&hugetlb_lock);
-> >  }
-> >
-> > @@ -1770,6 +1788,36 @@ int dissolve_free_huge_page(struct page *page)
-> >               int nid = page_to_nid(head);
-> >               if (h->free_huge_pages - h->resv_huge_pages == 0)
-> >                       goto out;
-> > +
-> > +             /*
-> > +              * There is a race condition between __free_huge_page()
-> > +              * and dissolve_free_huge_page().
-> > +              *
-> > +              * CPU0:                         CPU1:
-> > +              *
-> > +              * // page_count(page) == 1
-> > +              * put_page(page)
-> > +              *   __free_huge_page(page)
-> > +              *                               dissolve_free_huge_page(page)
-> > +              *                                 spin_lock(&hugetlb_lock)
-> > +              *                                 // PageHuge(page) && !page_count(page)
-> > +              *                                 update_and_free_page(page)
-> > +              *                                 // page is freed to the buddy
-> > +              *                                 spin_unlock(&hugetlb_lock)
-> > +              *     spin_lock(&hugetlb_lock)
-> > +              *     enqueue_huge_page(page)
-> > +              *     // It is wrong, the page is already freed
-> > +              *     spin_unlock(&hugetlb_lock)
-> > +              *
-> > +              * The race window is between put_page() and spin_lock() which
-> > +              * is in the __free_huge_page().
->
-> IMO, the description of the race condition in the commit message is
-> sufficient.  It does not need to be here in the code.  The below comment
-> should be sufficient.
->
-> --
-> Mike Kravetz
->
-> > +              *
-> > +              * We should make sure that the page is already on the free list
-> > +              * when it is dissolved.
-> > +              */
-> > +             if (unlikely(!PageHugeFreed(head)))
-> > +                     goto out;
-> > +
-> >               /*
-> >                * Move PageHWPoison flag from head page to the raw error page,
-> >                * which makes any subpages rather than the error page reusable.
-> >
+Okay I will update this one to qcom,sm8350-tlmm. Also we use
+sm8350_pinctrl few places in the driver, will update that to sm8350_tlmm
+as well
+
+Thanks
+-- 
+~Vinod
