@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A868D2EB398
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4EB2EB39D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730955AbhAETpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 14:45:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38215 "EHLO
+        id S1731001AbhAETrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 14:47:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48717 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730927AbhAETpB (ORCPT
+        by vger.kernel.org with ESMTP id S1728630AbhAETrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:45:01 -0500
+        Tue, 5 Jan 2021 14:47:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609875814;
+        s=mimecast20190719; t=1609875957;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JyQ8Yx6ecRcdkus2Q+iowXLy4MC41M17PpJ0LhrHNpk=;
-        b=iAI+/Q5WbyfUjWrrnVGsjguE7ysktIm57VVuZbPPXNESFyEz12BmmljMEtLffBEwBbgQyl
-        bQ9yfeRtWfLmdGwzKGK+qpS+TQfTgBorbR90NCUk+a9/rbxTa9MD4gLhuqQExpbrqVcYIa
-        IVy/Xv6g9JUpqTkGwIG9GZSjvSSu4OI=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-zJEKqUUVNSm2upNzcFyuXA-1; Tue, 05 Jan 2021 14:43:32 -0500
-X-MC-Unique: zJEKqUUVNSm2upNzcFyuXA-1
-Received: by mail-qv1-f69.google.com with SMTP id eb4so488543qvb.21
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:43:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JyQ8Yx6ecRcdkus2Q+iowXLy4MC41M17PpJ0LhrHNpk=;
-        b=THXicuEAERxexUqliupd7pn60sLbrHxKpxTCZIT7P2Re+m9fs9FzuJh58df+HkHIGO
-         9VPiQMkJiDGbIqqdGg8a2aFyF5Wi822Ig5oKQ6CnMjsn5QdQQf54lk/WOt12fDKT8qkB
-         gkh7wYwXooEadMb3Fh7HlTPrnn9hdjrM0PBzJ+kCO/UIGIzT8d/aGF8DBnPrnYMu2fdW
-         nuYbcmjmOXAM3ivFwXBgwSum1b74665j51x4D0LvWUcvcq5U33xIbL7fx7MxODyZ35DC
-         O8upqEmc4Ep/0ZS6UdDsCTXl/m5HzyV7kQPWg2OiszKdJPxEpJBFa5l6gQt/AXzMLgug
-         n11A==
-X-Gm-Message-State: AOAM531HTorOmym2oHYSKDS9AGccs2RWbeITMnhaN2zvVDTl44gplaZJ
-        WpPePVAC1ZbFm10fZMzGTEaGX/jbttmD23LynrLxOgyduxmrVsz0QJeNvAXpIxRbOC8eIN17KuI
-        OAaQtaFeKqXNjPRQX6Tm0eKnO
-X-Received: by 2002:a05:6214:4c7:: with SMTP id ck7mr1111273qvb.7.1609875812204;
-        Tue, 05 Jan 2021 11:43:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyekDcfWUxGQnFBPKSLKN8PBvaWikC0raWQa6ze3medUNTdPRfPM8cyuocGWhnfMQ4ih8L1zQ==
-X-Received: by 2002:a05:6214:4c7:: with SMTP id ck7mr1111250qvb.7.1609875811957;
-        Tue, 05 Jan 2021 11:43:31 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id w8sm36806qts.50.2021.01.05.11.43.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 11:43:31 -0800 (PST)
-Date:   Tue, 5 Jan 2021 14:43:29 -0500
-From:   Peter Xu <peterx@redhat.com>
+        bh=MDQ3f1Bz+DgAubnbVzGBFyj256LtO1Sf/sJvuZ9kXFY=;
+        b=aTpmULomtJwGFllyI4EKtN9piqLRb1qfqAskJ189t1FmV2e9NIw6swqKGFLOTSI3mVcq5y
+        pVKFRI8ts/m78Clj6tRhxUNFWTe6DUV8N/im7IRP2Eyvy1Xao0nSia0JgqHk+43mI7iYZ9
+        aACBJdh9jU3qVr8hcJTaNFCHzdnLGVU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-3jSJ7scBN7G90PU-NrNdHA-1; Tue, 05 Jan 2021 14:45:53 -0500
+X-MC-Unique: 3jSJ7scBN7G90PU-NrNdHA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D4203800D55;
+        Tue,  5 Jan 2021 19:45:51 +0000 (UTC)
+Received: from mail (ovpn-112-76.rdu2.redhat.com [10.10.112.76])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EF2145D6CF;
+        Tue,  5 Jan 2021 19:45:47 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 14:45:47 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
 To:     Nadav Amit <namit@vmware.com>
-Cc:     linux-mm <linux-mm@kvack.org>, lkml <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+Cc:     Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Pavel Emelyanov <xemul@openvz.org>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>,
         Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
+        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
 Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
  writeprotect
-Message-ID: <20210105194329.GF149908@xz-x1>
-References: <20201225092529.3228466-1-namit@vmware.com>
- <20201225092529.3228466-2-namit@vmware.com>
- <20210105150813.GB149908@xz-x1>
- <070CFD88-57A0-40FF-9614-6ED47B214301@vmware.com>
+Message-ID: <X/TB6ztitnESl3qZ@redhat.com>
+References: <20201225092529.3228466-2-namit@vmware.com>
+ <20210104122227.GL3021@hirez.programming.kicks-ass.net>
+ <X/NrdnoDHgFd0Ku1@redhat.com>
+ <A7AC77D2-6901-4225-911B-EDBF013DCA42@vmware.com>
+ <X/N4aqRgyxffhMSs@redhat.com>
+ <73EE9007-65AF-4416-9930-D992C74447A9@vmware.com>
+ <X/OCMalFYnDdGnch@redhat.com>
+ <2844ACC1-8908-494C-B411-3C69B27A1730@vmware.com>
+ <X/SzzjREaoR9u7Ua@redhat.com>
+ <BABCB1DE-C41E-4C3E-90D1-5893585FB68A@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <070CFD88-57A0-40FF-9614-6ED47B214301@vmware.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BABCB1DE-C41E-4C3E-90D1-5893585FB68A@vmware.com>
+User-Agent: Mutt/2.0.4 (2020-12-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 07:07:51PM +0000, Nadav Amit wrote:
-> > On Jan 5, 2021, at 7:08 AM, Peter Xu <peterx@redhat.com> wrote:
-> > 
-> > On Fri, Dec 25, 2020 at 01:25:28AM -0800, Nadav Amit wrote:
-> >> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> >> index ab709023e9aa..c08c4055b051 100644
-> >> --- a/mm/mprotect.c
-> >> +++ b/mm/mprotect.c
-> >> @@ -75,7 +75,8 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
-> >> 		oldpte = *pte;
-> >> 		if (pte_present(oldpte)) {
-> >> 			pte_t ptent;
-> >> -			bool preserve_write = prot_numa && pte_write(oldpte);
-> >> +			bool preserve_write = (prot_numa || uffd_wp_resolve) &&
-> >> +					      pte_write(oldpte);
-> > 
-> > Irrelevant of the other tlb issue, this is a standalone one and I commented in
-> > v1 about simply ignore the change if necessary; unluckily that seems to be
-> > ignored..  so I'll try again - would below be slightly better?
-> > 
-> >    if (uffd_wp_resolve && !pte_uffd_wp(oldpte))
-> >        continue;
-> > 
-> > Firstly, current patch is confusing at least to me, because "uffd_wp_resolve"
-> > means "unprotect the pte", whose write bit should mostly be cleared already
-> > when uffd_wp_resolve is applicable.  Then "preserve_write" for that pte looks
-> > odd already.
-> > 
-> > Meanwhile, if that really happens (when pte write bit set, but during a
-> > uffd_wp_resolve request) imho there is really nothing we can do, so we should
-> > simply avoid touching that at all, and also avoid ptep_modify_prot_start,
-> > pte_modify, ptep_modify_prot_commit, calls etc., which takes extra cost.
+On Tue, Jan 05, 2021 at 07:05:22PM +0000, Nadav Amit wrote:
+> > On Jan 5, 2021, at 10:45 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> > I just don't like to slow down a feature required in the future for
+> > implementing postcopy live snapshotting or other snapshots to userland
+> > processes (for the non-KVM case, also unprivileged by default if using
+> > bounce buffers to feed the syscalls) that can be used by open source
+> > hypervisors to beat proprietary hypervisors like vmware.
 > 
-> Sorry for missing your feedback before. What you suggest makes perfect
-> sense.
+> Ouch, that’s uncalled for. I am sure that you understand that I have no
+> hidden agenda and we all have the same goal.
 
-No problem.  I actually appreciated a lot for all your great works on these.
-The strange thing is the userfaultfd kselftest seems to be working always fine
-locally to me (probably another reason that I mostly test uffd-wp with
-umapsort), so I won't be able to reproduce some issue you (and Andrea) have
-encountered.  It's great you unveiled all these hard tlb problems and nailed
-them down so lives should be easier for all of us.
+Ehm I never said you had an hidden agenda, so I'm not exactly why
+you're accusing me of something I never said.
+
+I merely pointed out one relevant justification for increasing kernel
+complexity here by not slowing down clear_refs longstanding O(N)
+clear_refs/softdirty feature and the recent uffd-wp O(1) feature, is
+to be more competitive with proprietary software solutions, since
+at least for uffd-wp, postcopy live snapshotting that the #1 use
+case.
+
+I never questioned your contribution or your preference, to be even
+more explicit, it never crossed my mind that you have an hidden
+agenda.
+
+However since everyone already acked your patches and I'm not ok with
+your patches because they will give a hit to KVM postcopy live
+snapshotting and other container clear_refs users, I have to justify
+why I NAK your patches and remaining competitive with proprietary
+hypervisors is one of them, so I don't see what is wrong to state a
+tangible end goal here.
 
 Thanks,
-
--- 
-Peter Xu
+Andrea
 
