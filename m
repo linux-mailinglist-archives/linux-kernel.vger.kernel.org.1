@@ -2,120 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DC92EB2BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EFF2EB2C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729425AbhAESnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:43:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31315 "EHLO
+        id S1730066AbhAESrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:47:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53181 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726049AbhAESnH (ORCPT
+        by vger.kernel.org with ESMTP id S1726258AbhAESrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:43:07 -0500
+        Tue, 5 Jan 2021 13:47:09 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609872100;
+        s=mimecast20190719; t=1609872342;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=EwI51oteB1zNcM5usbv0yXWNl7lwzAeC8ISFtsCGyIc=;
-        b=YOrdPNJIurTAnVyMa2/7g0xdZJ1+0+YoGSMZkMwJ6VBTtYke5hvfFpcU2Xzr3dTabkh3yL
-        uhnQuwbFwMc/s+rNO5FM8nVKISavwYPtUlxpNkIIEK1ctSx1OWSY12zb8dlDbzBaFwUqux
-        +xbAREousO4AxSqgHxwdIKwwcjihL2A=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-gtbpVctmOAaPE8FcP7e3Vw-1; Tue, 05 Jan 2021 13:41:38 -0500
-X-MC-Unique: gtbpVctmOAaPE8FcP7e3Vw-1
-Received: by mail-qt1-f198.google.com with SMTP id h18so457873qtr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:41:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EwI51oteB1zNcM5usbv0yXWNl7lwzAeC8ISFtsCGyIc=;
-        b=OWDH0JXNwiqXWpXVdygZUQjckhGWaPi5/1GRbQgx9Udg7XzJn7h7OZ7+bMfPIhRdBC
-         0v7f7uFfZSMXeHepN3QU7Tr2OedTGzTfyayR6lSM5u6MupFCRFFiWD1WuboAicW72gTC
-         6v8zDn2VD01KL2sGimpiOc/R7PriLcEnc7SAvEpG+l+uThxdiB2smcjkN1wu0al6RDYY
-         Zag+oahsgNfb9qG1YAUXQI0Uqz2xmffIqi+WjKncjNyCn+7fnHkFg2Fd14Xr0n7WtDPN
-         mPynjZkjsZ8ZjZoARkTjJaOrYjkmudwQiHDloq1Pvr42XLHXEcvzpqQBHOxdEObCbF7y
-         /FFg==
-X-Gm-Message-State: AOAM532LjMnuOgMFC2NgagTpGi/iJrdebWlcOCoy5BJwDH1BlTy2jcDT
-        VYw1AmaMNBwkZ6Em12zA2WWe9oFU2175C0K1CFKG/rB89909Qyx6GnD4bGri/OZD5B8p0khTMbq
-        OXhpRjLMGo4bpZeCrQqkNhohV
-X-Received: by 2002:ac8:5b82:: with SMTP id a2mr788426qta.215.1609872096994;
-        Tue, 05 Jan 2021 10:41:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw9YFOrmm19T6QEMieBtVD2lNz6D99wYK0l0XUh/rbEAdM+XNbc0QrqMNjgU4em6as+taSqqw==
-X-Received: by 2002:ac8:5b82:: with SMTP id a2mr788401qta.215.1609872096643;
-        Tue, 05 Jan 2021 10:41:36 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id d2sm365817qtp.71.2021.01.05.10.41.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 10:41:35 -0800 (PST)
-Date:   Tue, 5 Jan 2021 13:41:34 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Nadav Amit <nadav.amit@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        bh=8NqIDdXSh85bSTJED9R3b+J4jB6hK4TgsX+QO5RGH1Q=;
+        b=BheIjQNTFlDF2/d9hroGp4T55KNVX6baqLShyR4Wro2tqnztxx2ZdFU75cC52Q9wJX/cfZ
+        phaGD2h5fUnXeCmqUmUfHvX74B4dDYK1sO7GyxkrsmS6nT6ZoADcoA7wC2C33CdhcK/Uii
+        rI77A8rOvX5Yt7KHGx4dIpHxuPoS4Bc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-GcXd1e0VOCKWNn2417F0Pg-1; Tue, 05 Jan 2021 13:45:40 -0500
+X-MC-Unique: GcXd1e0VOCKWNn2417F0Pg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30A53800050;
+        Tue,  5 Jan 2021 18:45:38 +0000 (UTC)
+Received: from mail (ovpn-112-76.rdu2.redhat.com [10.10.112.76])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0992D71CA4;
+        Tue,  5 Jan 2021 18:45:35 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 13:45:34 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
         Pavel Emelyanov <xemul@openvz.org>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>,
         Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
+        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
 Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
  writeprotect
-Message-ID: <20210105184134.GD149908@xz-x1>
+Message-ID: <X/SzzjREaoR9u7Ua@redhat.com>
 References: <20201225092529.3228466-1-namit@vmware.com>
  <20201225092529.3228466-2-namit@vmware.com>
- <20210105150813.GB149908@xz-x1>
- <X/SrMIz50alPOp6i@redhat.com>
+ <20210104122227.GL3021@hirez.programming.kicks-ass.net>
+ <X/NrdnoDHgFd0Ku1@redhat.com>
+ <A7AC77D2-6901-4225-911B-EDBF013DCA42@vmware.com>
+ <X/N4aqRgyxffhMSs@redhat.com>
+ <73EE9007-65AF-4416-9930-D992C74447A9@vmware.com>
+ <X/OCMalFYnDdGnch@redhat.com>
+ <2844ACC1-8908-494C-B411-3C69B27A1730@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/SrMIz50alPOp6i@redhat.com>
+In-Reply-To: <2844ACC1-8908-494C-B411-3C69B27A1730@vmware.com>
+User-Agent: Mutt/2.0.4 (2020-12-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 01:08:48PM -0500, Andrea Arcangeli wrote:
-> On Tue, Jan 05, 2021 at 10:08:13AM -0500, Peter Xu wrote:
-> > On Fri, Dec 25, 2020 at 01:25:28AM -0800, Nadav Amit wrote:
-> > > diff --git a/mm/mprotect.c b/mm/mprotect.c
-> > > index ab709023e9aa..c08c4055b051 100644
-> > > --- a/mm/mprotect.c
-> > > +++ b/mm/mprotect.c
-> > > @@ -75,7 +75,8 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
-> > >  		oldpte = *pte;
-> > >  		if (pte_present(oldpte)) {
-> > >  			pte_t ptent;
-> > > -			bool preserve_write = prot_numa && pte_write(oldpte);
-> > > +			bool preserve_write = (prot_numa || uffd_wp_resolve) &&
-> > > +					      pte_write(oldpte);
-> > 
-> > Irrelevant of the other tlb issue, this is a standalone one and I commented in
-> > v1 about simply ignore the change if necessary; unluckily that seems to be
-> > ignored..  so I'll try again - would below be slightly better?
-> > 
-> >     if (uffd_wp_resolve && !pte_uffd_wp(oldpte))
-> >         continue;
-> 
-> I posted the exact same code before seeing the above so I take it as a good
-> sign :). I'd suggest to add the reverse check to the uffd_wp too.
+On Mon, Jan 04, 2021 at 09:26:33PM +0000, Nadav Amit wrote:
+> I would feel more comfortable if you provide patches for uffd-wp. If you
+> want, I will do it, but I restate that I do not feel comfortable with this
+> solution (worried as it seems a bit ad-hoc and might leave out a scenario
+> we all missed or cause a TLB shootdown storm).
+>
+> As for soft-dirty, I thought that you said that you do not see a better
+> (backportable) solution for soft-dirty. Correct me if I am wrong.
 
-Agreed. I didn't mention uffd_wp check (which I actually mentioned in the reply
-to v1 patchset) here only because the uffd_wp check is pure optimization; while
-the uffd_wp_resolve check is more critical because it is potentially a fix of
-similar tlb flushing issue where we could have demoted the pte without being
-noticed, so I think it's indeed more important as Nadav wanted to fix in the
-same patch.
+I think they should use the same technique, since they deal with the
+exact same challenge. I will try to cleanup the patch in the meantime.
 
-It would be even nicer if we have both covered (all of them can be in
-unlikely() as Andrea suggested in the other email), then maybe nicer as a
-standalone patch, then mention about the difference of the two in the commit
-log (majorly, the resolving change will be more than optimization).
+I can also try to do the additional cleanups to clear_refs to
+eliminate the tlb_gather completely since it doesn't gather any page
+and it has no point in using it.
+
+> Anyhow, I will add your comments regarding the stale TLB window to make the
+> description clearer.
+
+Having the mmap_write_lock solution as backup won't hurt, but I think
+it's only for planB if planA doesn't work and the only stable tree
+that will have to apply this is v5.9.x. All previous don't need any
+change in this respect. So there's no worry of rejects.
+
+It worked by luck until Aug 2020, but it did so reliably or somebody
+would have noticed already. And it's not exploitable either, it just
+works stable, but it was prone to break if the kernel changed in some
+other way, and it eventually changed in Aug 2020 when an unrelated
+patch happened to the reuse logic.
+
+If you want to maintain the mmap_write_lock patch if you could drop
+the preserved_write and adjust the Fixes to target Aug 2020 it'd be
+ideal. The uffd-wp needs a different optimization that maybe Peter is
+already working on or I can include in the patchset for this, but
+definitely in a separate commit because it's orthogonal.
+
+It's great you noticed the W->RO transition of un-wprotect so we can
+optimize that too (it will have a positive runtime effect, it's not
+just theoretical since it's normal to unwrprotect a huge range once
+the postcopy snapshotting of the virtual machine is complete), I was
+thinking at the previous case discussed in the other thread.
+
+I just don't like to slow down a feature required in the future for
+implementing postcopy live snapshotting or other snapshots to userland
+processes (for the non-KVM case, also unprivileged by default if using
+bounce buffers to feed the syscalls) that can be used by open source
+hypervisors to beat proprietary hypervisors like vmware.
+
+The security concern of uffd-wp that allows to enlarge the window of
+use-after-free kernel bugs, is not as a concern as it is for regular
+processes. First the jailer model can obtain the uffd before dropping
+all caps and before firing up seccomp in the child, so it won't even
+require to lift the unprivileged_userfaultfd in the superior and
+cleaner monolithic jailer model.
+
+If the uffd and uffd-wp can only run in rust-vmm and qemu, that
+userland is system software to be trusted as the kernel from the guest
+point of view. It's similar to fuse, if somebody gets into the fuse
+process it can also stop the kernel initiated faults. From that
+respect fuse is also system software despite it runs in userland.
+
+In other words I think if there's a vm-escape that takes control of
+rust-vmm userland, the last worry is the fact it can stop kernel
+initiated page faults because the jailer took an uffd before drop privs.
 
 Thanks,
-
--- 
-Peter Xu
+Andrea
 
