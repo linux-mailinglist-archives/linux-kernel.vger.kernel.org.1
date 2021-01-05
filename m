@@ -2,132 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED2C2EA8C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FE72EA8D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbhAEKbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:31:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729107AbhAEKbg (ORCPT
+        id S1728981AbhAEKcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:32:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44815 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728135AbhAEKck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:31:36 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30D8C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 02:30:55 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id n7so21028605pgg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 02:30:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SOojekCLE+4Atuf8MN71Y5EpXTyBJ2znW4hlDZL8IH4=;
-        b=bKm0vL6L1Ve9NQJdR7LY/I+t1icUkSlPpuDCJ68FFziNnxO3wL5KGt1oHSpr9/NvhK
-         EuCp1xDs9/8i5XvMCY4PXlqwMFdKmM5g4wJMu9WykpzGbla6Th+Duh0GnKP5FGHrGT/A
-         L/MX/ft3iIQIuvytT6O5uGRSKnsJ2oHFQ4fyLFyfJTa6P6Qc7B33nKUXXSXDb1SYz6Rg
-         2uhILMYWi6XzeEfCMdAaCmpn5FtY9lgWGr09youhHJ/mrbwMlas9oNPqcSzsmTrjUiN/
-         EVQckCuc0hSxSSxbZI1KrD9VtNg03GF5PPWMa282c8rxFQfw7Br0we2h2uezCcFJ06w8
-         BwOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SOojekCLE+4Atuf8MN71Y5EpXTyBJ2znW4hlDZL8IH4=;
-        b=mh7nzM2sgGbneszoqUVe1iSmtRKAZ0OV6VkOJG/Jb5Z+mhCmUqSSz8tZJ/HImhg6JQ
-         EEBP5G4w8//C20hTFJ5QhhpGJCg2u9Y9Wc9yGp9yIuSUtyNwsk1hDRmH2y6kP4na58cw
-         sxulE9RyUEPE5VKPRSnePuvLmwfN/CKe+DkmN2z7tV+AT6ar1qNTt3cwu14KZeLYCxCq
-         2cmH/IdgGBaX9O0gnQrwJdsho7h3FPJYmIlYOb1XeTcJpAgcHgcHNi24dHJflCZAWVpe
-         dZ5P4BcFVeG2GyK0CMLzewn7zIoVJYBjbPZPko70/YGdUW1GjmDiKvaejfTeVtsZo7Yn
-         XYYQ==
-X-Gm-Message-State: AOAM530cLyZDCS3dRvPw+vjkXUQSQHnW1w49xlxNh6ohfqxq8LSSK2tJ
-        GmyRHMVjV92vE/far2Rb1QC89FouT4lu2+7I
-X-Google-Smtp-Source: ABdhPJwRcUvo+0ys1WB5CPikSOVzKFkWviWPT9C4p/hsmhIVroDtu2zJNL8mMsCwgUtnS0YboZRiqw==
-X-Received: by 2002:aa7:8811:0:b029:1ab:9e4f:b8ea with SMTP id c17-20020aa788110000b02901ab9e4fb8eamr65734067pfo.78.1609842655141;
-        Tue, 05 Jan 2021 02:30:55 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:9004:6064:97d:44da:5ae4:7c76])
-        by smtp.gmail.com with ESMTPSA id w1sm2284345pjt.23.2021.01.05.02.30.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 02:30:54 -0800 (PST)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     dwaipayanray1@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Subject: [PATCH] checkpatch: trivial style fixes
-Date:   Tue,  5 Jan 2021 16:00:44 +0530
-Message-Id: <20210105103044.40282-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 5 Jan 2021 05:32:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609842673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TCdWrkSxLou0I6q81I1C/gts0l+m7St/LyKjpTgDhNY=;
+        b=RABnb0R7pWETieRI1N3KnNwpOo+VWMMBKtb10jv8huirM0zeDKovNuF8AebdkV16MibW78
+        +nGgyFD87w58tH+zZ92GiHrFkg8Vreq3+r2UFE+lywDhbS1n/1LrC27LWMKCBcr66Fs/NJ
+        tIel5M5UXu0oaKKdcM07V1ioeeubxlU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-BTmzTlDvM8-rSTiBU-5qZA-1; Tue, 05 Jan 2021 05:31:11 -0500
+X-MC-Unique: BTmzTlDvM8-rSTiBU-5qZA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7159A803630;
+        Tue,  5 Jan 2021 10:31:10 +0000 (UTC)
+Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A78471CA2;
+        Tue,  5 Jan 2021 10:31:08 +0000 (UTC)
+Subject: Re: [PATCH v1 3/4] s390/kvm: add kvm_s390_vsie_mvpg_check needed for
+ VSIE MVPG
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, stable@vger.kernel.org
+References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
+ <20201218141811.310267-4-imbrenda@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <ae6f3ec4-773f-2527-6cb5-7aaf803f73bf@redhat.com>
+Date:   Tue, 5 Jan 2021 11:31:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201218141811.310267-4-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Indentations should use tabs wherever possible.
-Replace spaces by tabs for indents.
+On 18.12.20 15:18, Claudio Imbrenda wrote:
+> Add kvm_s390_vsie_mvpg_check to perform the necessary checks in case an
+> MVPG instruction intercepts in a VSIE guest.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> ---
+>  arch/s390/kvm/gaccess.c | 55 +++++++++++++++++++++++++++++++++++++++++
+>  arch/s390/kvm/gaccess.h |  3 +++
+>  2 files changed, 58 insertions(+)
+> 
+> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
+> index 8e256a233583..90e9baff6eac 100644
+> --- a/arch/s390/kvm/gaccess.c
+> +++ b/arch/s390/kvm/gaccess.c
+> @@ -1228,3 +1228,58 @@ int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *sg,
+>  	mmap_read_unlock(sg->mm);
+>  	return rc;
+>  }
+> +
+> +static int kvm_s390_mvpg_check_one(struct kvm_vcpu *vcpu, unsigned long *addr,
+> +			     const int edat, const union asce asce,
+> +			     const enum gacc_mode mode, unsigned long *pteptr)
+> +{
+> +	enum prot_type prot;
+> +	int rc;
+> +
+> +	rc = guest_translate(vcpu, *addr, addr, asce, mode, &prot, pteptr);
+> +	if (rc <= 0)
+> +		return rc;
+> +
+> +	switch (rc) {
+> +	case PGM_REGION_FIRST_TRANS:
+> +	case PGM_REGION_SECOND_TRANS:
+> +	case PGM_REGION_THIRD_TRANS:
+> +	case PGM_SEGMENT_TRANSLATION:
+> +		if (!edat)
+> +			return trans_exc(vcpu, rc, *addr, 0, mode, prot);
+> +		*pteptr |= 4;
 
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
- scripts/checkpatch.pl | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Hmmm, I wonder why that is necessary. Can't we set that in all relevant
+cases in guest_translate() just as you do via
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index e6857bdfcb2d..7a323ca8a177 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2974,7 +2974,7 @@ sub process {
- 				}
- 				if (!defined $lines[$linenr]) {
- 					WARN("BAD_SIGN_OFF",
--                                             "Co-developed-by: must be immediately followed by Signed-off-by:\n" . "$here\n" . $rawline);
-+					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . "$here\n" . $rawline);
- 				} elsif ($rawlines[$linenr] !~ /^\s*signed-off-by:\s*(.*)/i) {
- 					WARN("BAD_SIGN_OFF",
- 					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . "$here\n" . $rawline . "\n" .$rawlines[$linenr]);
-@@ -2997,8 +2997,8 @@ sub process {
- 			if (ERROR("GERRIT_CHANGE_ID",
- 			          "Remove Gerrit Change-Id's before submitting upstream\n" . $herecurr) &&
- 			    $fix) {
--                                fix_delete_line($fixlinenr, $rawline);
--                        }
-+				fix_delete_line($fixlinenr, $rawline);
-+			}
- 		}
- 
- # Check if the commit log is in a possible stack dump
-@@ -3240,10 +3240,10 @@ sub process {
- 				next if ($start_char =~ /^\S$/);
- 				next if (index(" \t.,;?!", $end_char) == -1);
- 
--                                # avoid repeating hex occurrences like 'ff ff fe 09 ...'
--                                if ($first =~ /\b[0-9a-f]{2,}\b/i) {
--                                        next if (!exists($allow_repeated_words{lc($first)}));
--                                }
-+				# avoid repeating hex occurrences like 'ff ff fe 09 ...'
-+				if ($first =~ /\b[0-9a-f]{2,}\b/i) {
-+					next if (!exists($allow_repeated_words{lc($first)}));
-+				}
- 
- 				if (WARN("REPEATED_WORD",
- 					 "Possible repeated word: '$first'\n" . $herecurr) &&
-@@ -4432,7 +4432,7 @@ sub process {
- 			WARN("STATIC_CONST_CHAR_ARRAY",
- 			     "char * array declaration might be better as static const\n" .
- 				$herecurr);
--               }
-+		}
- 
- # check for sizeof(foo)/sizeof(foo[0]) that could be ARRAY_SIZE(foo)
- 		if ($line =~ m@\bsizeof\s*\(\s*($Lval)\s*\)@) {
-@@ -5285,7 +5285,7 @@ sub process {
- 		    $lines[$linenr - 3] !~ /^[ +]\s*$Ident\s*:/) {
- 			WARN("RETURN_VOID",
- 			     "void function return statements are not generally useful\n" . $hereprev);
--               }
-+		}
- 
- # if statements using unnecessary parentheses - ie: if ((foo == bar))
- 		if ($perl_version_ok &&
+*entryptr |= dat_protection ? 6 : 4;
+
+
+Can you enlighten me? :)
+
+> +		fallthrough;
+> +	case PGM_PAGE_TRANSLATION:
+> +		return -ENOENT;
+> +	default:
+> +		return rc;
+> +	}
+> +}
+> +
+> +int kvm_s390_vsie_mvpg_check(struct kvm_vcpu *vcpu, unsigned long r1,
+> +			     unsigned long r2, void *gpei)
+> +{
+> +	unsigned long pei[2] = {0};
+> +	union ctlreg0 cr0;
+> +	union asce cr1;
+> +	int edat, rc1, rc2;
+> +
+> +	cr0.val = vcpu->arch.sie_block->gcr[0];
+> +	cr1.val = vcpu->arch.sie_block->gcr[1];
+> +	edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
+> +
+> +	rc1 = kvm_s390_mvpg_check_one(vcpu, &r1, edat, cr1, GACC_FETCH, pei);
+> +	rc2 = kvm_s390_mvpg_check_one(vcpu, &r2, edat, cr1, GACC_STORE, pei + 1);
+> +
+> +	if (rc1 == -ENOENT || rc2 == -ENOENT) {
+> +		memcpy(gpei, pei, sizeof(pei));
+
+I'd really prefer just passing two unsigned long pointers to
+kvm_s390_vsie_mvpg_check() and eventually directly forwarding them to
+kvm_s390_mvpg_check_one().
+
+> +		return -ENOENT;
+> +	}
+> +
+> +	if (rc2 < 0)
+> +		return rc2;
+> +	if (rc1 < 0)
+> +		return rc1;
+> +
+> +	return 0;
+> +}
+> diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
+> index f4c51756c462..2c53cee3b29f 100644
+> --- a/arch/s390/kvm/gaccess.h
+> +++ b/arch/s390/kvm/gaccess.h
+> @@ -166,6 +166,9 @@ int check_gva_range(struct kvm_vcpu *vcpu, unsigned long gva, u8 ar,
+>  int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
+>  		 unsigned long len, enum gacc_mode mode);
+>  
+> +int kvm_s390_vsie_mvpg_check(struct kvm_vcpu *vcpu, unsigned long r1,
+> +			     unsigned long r2, void *gpei);
+> +
+>  int access_guest_real(struct kvm_vcpu *vcpu, unsigned long gra,
+>  		      void *data, unsigned long len, enum gacc_mode mode);
+>  
+> 
+
+
 -- 
-2.27.0
+Thanks,
+
+David / dhildenb
 
