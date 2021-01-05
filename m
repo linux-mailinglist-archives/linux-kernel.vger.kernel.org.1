@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653DD2EB3CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F162EB3DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730937AbhAEUAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 15:00:19 -0500
-Received: from mga04.intel.com ([192.55.52.120]:12067 "EHLO mga04.intel.com"
+        id S1731101AbhAEUBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 15:01:36 -0500
+Received: from mga04.intel.com ([192.55.52.120]:12058 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728383AbhAEUAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 15:00:18 -0500
-IronPort-SDR: CYfNQNuNI0VfB6mKWxi8zl63DNLa1cXZ5307NlKxGXa/J59KM5Yg7lAC+QR+ptF4mGTEKJ6WWQ
- EzeoP47Jza7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="174594259"
+        id S1728383AbhAEUBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 15:01:35 -0500
+IronPort-SDR: 5pd2d+qOnRUxTTffWUNRbiF6PA/g9UL4A0QQTeaaZqoH0+7w4lTIk0hrj8ROTF2I7ikUc4h3h7
+ ZUM5iliUYvxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="174594265"
 X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="174594259"
+   d="scan'208";a="174594265"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 11:58:31 -0800
-IronPort-SDR: ToPpKPXfGfb8o5fpgdW9/CPz+tqj7yMfLeg7QRwr1zo8OTKkdEhFj+hPjw6euGBoTx4FDa8uXL
- dsHEW8Ww0fsA==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 11:58:32 -0800
+IronPort-SDR: fWLClAzmvrJkRD55wcAbd/9euO+pNnJN9nNhIn7UULeeYu4wNMaO43aKeISOFLdM+o1WRwQoqR
+ Dk1HE//X/PXQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="421901280"
+   d="scan'208";a="421901283"
 Received: from ssp-iclu-cdi187.jf.intel.com ([10.54.55.67])
-  by orsmga001.jf.intel.com with ESMTP; 05 Jan 2021 11:58:31 -0800
+  by orsmga001.jf.intel.com with ESMTP; 05 Jan 2021 11:58:32 -0800
 From:   kan.liang@linux.intel.com
 To:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org
 Cc:     jolsa@redhat.com, namhyung@kernel.org, eranian@google.com,
         ak@linux.intel.com, mark.rutland@arm.com, will@kernel.org,
         mpe@ellerman.id.au, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V4 2/6] perf mem: Support data page size
-Date:   Tue,  5 Jan 2021 11:57:48 -0800
-Message-Id: <20210105195752.43489-3-kan.liang@linux.intel.com>
+Subject: [PATCH V4 3/6] perf tools: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+Date:   Tue,  5 Jan 2021 11:57:49 -0800
+Message-Id: <20210105195752.43489-4-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210105195752.43489-1-kan.liang@linux.intel.com>
 References: <20210105195752.43489-1-kan.liang@linux.intel.com>
@@ -44,161 +44,177 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Add option --data-page-size in "perf mem" to record/report data page
-size.
+Adds the infrastructure to sample the code address page size.
 
-Here are some examples.
-perf mem --phys-data --data-page-size report -D
-
- # PID, TID, IP, ADDR, PHYS ADDR, DATA PAGE SIZE, LOCAL WEIGHT, DSRC,
- # SYMBOL
-20134 20134 0xffffffffb5bd2fd0 0x016ffff9a274e96a308 0x000000044e96a308
-4K  1168 0x5080144
-/lib/modules/4.18.0-rc7+/build/vmlinux:perf_ctx_unlock
-20134 20134 0xffffffffb63f645c 0xffffffffb752b814 0xcfb52b814 2M 225
-0x26a100142 /lib/modules/4.18.0-rc7+/build/vmlinux:_raw_spin_lock
-20134 20134 0xffffffffb660300c 0xfffffe00016b8bb0 0x0 4K 0 0x5080144
-/lib/modules/4.18.0-rc7+/build/vmlinux:__x86_indirect_thunk_rax
-
-perf mem --phys-data --data-page-size report --stdio
-
- # To display the perf.data header info, please use
- # --header/--header-only options.
- #
- #
- # Total Lost Samples: 0
- #
- # Samples: 5K of event 'cpu/mem-loads,ldlat=30/P'
- # Total weight : 281234
- # Sort order   :
- # mem,sym,dso,symbol_daddr,dso_daddr,tlb,locked,phys_daddr,data_page_size
- #
- # Overhead       Samples  Memory access             Symbol
- # Shared Object     Data Symbol                                  Data
- # Object              TLB access              Locked  Data Physical
- # Address   Data Page Size
- # ........  ............  ........................
- # ................................  ................
- # ...........................................  .......................
- # ......................  ......  ......................
- # ......................
- #
-    28.54%          1826  L1 or L1 hit              [k]
-__x86_indirect_thunk_rax      [kernel.vmlinux]  [k] 0xffffb0df31b0ff28
-[unknown]                L1 or L2 hit            No      [k]
-0000000000000000    4K
-     6.02%           256  L1 or L1 hit              [.] touch_buffer
-dtlb              [.] 0x00007ffd50109da8                       [stack]
-L1 or L2 hit            No      [.] 0x000000042454ada8  4K
-     3.23%             5  L1 or L1 hit              [k] clear_huge_page
-[kernel.vmlinux]  [k] 0xffff9a2753b8ce60                       [unknown]
-L1 or L2 hit            No      [k] 0x0000000453b8ce60  2M
-     2.98%             4  L1 or L1 hit              [k] clear_page_erms
-[kernel.vmlinux]  [k] 0xffffb0df31b0fd00                       [unknown]
-L1 or L2 hit            No      [k] 0000000000000000    4K
+Introduce a new --code-page-size option for perf record.
 
 Acked-by: Namhyung Kim <namhyung@kernel.org>
 Acked-by: Jiri Olsa <jolsa@redhat.com>
+Originally-by: Stephane Eranian <eranian@google.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- tools/perf/Documentation/perf-mem.txt |  3 +++
- tools/perf/builtin-mem.c              | 20 +++++++++++++++++++-
- 2 files changed, 22 insertions(+), 1 deletion(-)
+ tools/perf/Documentation/perf-record.txt  |  3 +++
+ tools/perf/builtin-record.c               |  2 ++
+ tools/perf/util/event.h                   |  1 +
+ tools/perf/util/evsel.c                   | 18 +++++++++++++++++-
+ tools/perf/util/evsel.h                   |  1 +
+ tools/perf/util/perf_event_attr_fprintf.c |  2 +-
+ tools/perf/util/record.h                  |  1 +
+ tools/perf/util/synthetic-events.c        |  8 ++++++++
+ 8 files changed, 34 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-mem.txt b/tools/perf/Documentation/perf-mem.txt
-index 199ea0f0a6c0..66177511c5c4 100644
---- a/tools/perf/Documentation/perf-mem.txt
-+++ b/tools/perf/Documentation/perf-mem.txt
-@@ -63,6 +63,9 @@ OPTIONS
- --phys-data::
- 	Record/Report sample physical addresses
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index 0042ff7f6f33..9087b223e324 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -296,6 +296,9 @@ OPTIONS
+ --data-page-size::
+ 	Record the sampled data address data page size.
  
-+--data-page-size::
-+	Record/Report sample data address page size
++--code-page-size::
++	Record the sampled code address (ip) page size
 +
- RECORD OPTIONS
- --------------
- -e::
-diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
-index 7d6ee2208709..f3aac85aa9d4 100644
---- a/tools/perf/builtin-mem.c
-+++ b/tools/perf/builtin-mem.c
-@@ -30,6 +30,7 @@ struct perf_mem {
- 	bool			dump_raw;
- 	bool			force;
- 	bool			phys_addr;
-+	bool			data_page_size;
- 	int			operation;
- 	const char		*cpu_list;
- 	DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
-@@ -124,6 +125,9 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 	if (mem->phys_addr)
- 		rec_argv[i++] = "--phys-data";
+ -T::
+ --timestamp::
+ 	Record the sample timestamps. Use it with 'perf report -D' to see the
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 7bb10e9863bd..7704c33bfe31 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -2477,6 +2477,8 @@ static struct option __record_options[] = {
+ 		    "Record the sample physical addresses"),
+ 	OPT_BOOLEAN(0, "data-page-size", &record.opts.sample_data_page_size,
+ 		    "Record the sampled data address data page size"),
++	OPT_BOOLEAN(0, "code-page-size", &record.opts.sample_code_page_size,
++		    "Record the sampled code address (ip) page size"),
+ 	OPT_BOOLEAN(0, "sample-cpu", &record.opts.sample_cpu, "Record the sample cpu"),
+ 	OPT_BOOLEAN_SET('T', "timestamp", &record.opts.sample_time,
+ 			&record.opts.sample_time_set,
+diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
+index ff403ea578e1..2afea7247dd3 100644
+--- a/tools/perf/util/event.h
++++ b/tools/perf/util/event.h
+@@ -136,6 +136,7 @@ struct perf_sample {
+ 	u64 data_src;
+ 	u64 phys_addr;
+ 	u64 data_page_size;
++	u64 code_page_size;
+ 	u64 cgroup;
+ 	u32 flags;
+ 	u16 insn_len;
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index dc0cfa5f2610..d1463d6c9336 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1193,6 +1193,9 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	if (opts->sample_data_page_size)
+ 		evsel__set_sample_bit(evsel, DATA_PAGE_SIZE);
  
-+	if (mem->data_page_size)
-+		rec_argv[i++] = "--data-page-size";
++	if (opts->sample_code_page_size)
++		evsel__set_sample_bit(evsel, CODE_PAGE_SIZE);
 +
- 	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
- 		e = perf_mem_events__ptr(j);
- 		if (!e->record)
-@@ -173,6 +177,7 @@ dump_raw_samples(struct perf_tool *tool,
- 	struct perf_mem *mem = container_of(tool, struct perf_mem, tool);
- 	struct addr_location al;
- 	const char *fmt, *field_sep;
-+	char str[PAGE_SIZE_NAME_LEN];
+ 	if (opts->record_switch_events)
+ 		attr->context_switch = track;
  
- 	if (machine__resolve(machine, &al, sample) < 0) {
- 		fprintf(stderr, "problem processing %d event, skipping it.\n",
-@@ -209,6 +214,12 @@ dump_raw_samples(struct perf_tool *tool,
- 			symbol_conf.field_sep);
+@@ -1875,7 +1878,12 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 	 * Must probe features in the order they were added to the
+ 	 * perf_event_attr interface.
+ 	 */
+-        if (!perf_missing_features.data_page_size &&
++	if (!perf_missing_features.code_page_size &&
++	    (evsel->core.attr.sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)) {
++		perf_missing_features.code_page_size = true;
++		pr_debug2_peo("Kernel has no PERF_SAMPLE_CODE_PAGE_SIZE support, bailing out\n");
++		goto out_close;
++	} else if (!perf_missing_features.data_page_size &&
+ 	    (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)) {
+ 		perf_missing_features.data_page_size = true;
+ 		pr_debug2_peo("Kernel has no PERF_SAMPLE_DATA_PAGE_SIZE support, bailing out\n");
+@@ -2371,6 +2379,12 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+ 		array++;
  	}
  
-+	if (mem->data_page_size) {
-+		printf("%s%s",
-+			get_page_size_name(sample->data_page_size, str),
-+			symbol_conf.field_sep);
++	data->code_page_size = 0;
++	if (type & PERF_SAMPLE_CODE_PAGE_SIZE) {
++		data->code_page_size = *array;
++		array++;
 +	}
 +
- 	if (field_sep)
- 		fmt = "%"PRIu64"%s0x%"PRIx64"%s%s:%s\n";
- 	else
-@@ -273,6 +284,9 @@ static int report_raw_events(struct perf_mem *mem)
- 	if (mem->phys_addr)
- 		printf("PHYS ADDR, ");
+ 	if (type & PERF_SAMPLE_AUX) {
+ 		OVERFLOW_CHECK_u64(array);
+ 		sz = *array++;
+@@ -2680,6 +2694,8 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+ 	"We found oprofile daemon running, please stop it and try again.");
+ 		break;
+ 	case EINVAL:
++		if (evsel->core.attr.sample_type & PERF_SAMPLE_CODE_PAGE_SIZE && perf_missing_features.code_page_size)
++			return scnprintf(msg, size, "Asking for the code page size isn't supported by this kernel.");
+ 		if (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE && perf_missing_features.data_page_size)
+ 			return scnprintf(msg, size, "Asking for the data page size isn't supported by this kernel.");
+ 		if (evsel->core.attr.write_backward && perf_missing_features.write_backward)
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index cd1d8dd43199..157d7c27d6e3 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -145,6 +145,7 @@ struct perf_missing_features {
+ 	bool branch_hw_idx;
+ 	bool cgroup;
+ 	bool data_page_size;
++	bool code_page_size;
+ };
  
-+	if (mem->data_page_size)
-+		printf("DATA PAGE SIZE, ");
-+
- 	printf("LOCAL WEIGHT, DSRC, SYMBOL\n");
- 
- 	ret = perf_session__process_events(session);
-@@ -283,7 +297,7 @@ static int report_raw_events(struct perf_mem *mem)
- }
- static char *get_sort_order(struct perf_mem *mem)
- {
--	bool has_extra_options = mem->phys_addr ? true : false;
-+	bool has_extra_options = (mem->phys_addr | mem->data_page_size) ? true : false;
- 	char sort[128];
- 
- 	/*
-@@ -302,6 +316,9 @@ static char *get_sort_order(struct perf_mem *mem)
- 	if (mem->phys_addr)
- 		strcat(sort, ",phys_daddr");
- 
-+	if (mem->data_page_size)
-+		strcat(sort, ",data_page_size");
-+
- 	return strdup(sort);
- }
- 
-@@ -447,6 +464,7 @@ int cmd_mem(int argc, const char **argv)
- 		   " between columns '.' is reserved."),
- 	OPT_BOOLEAN('f', "force", &mem.force, "don't complain, do it"),
- 	OPT_BOOLEAN('p', "phys-data", &mem.phys_addr, "Record/Report sample physical addresses"),
-+	OPT_BOOLEAN(0, "data-page-size", &mem.data_page_size, "Record/Report sample data address page size"),
- 	OPT_END()
+ extern struct perf_missing_features perf_missing_features;
+diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
+index 22b417f43470..1bd6cfd74257 100644
+--- a/tools/perf/util/perf_event_attr_fprintf.c
++++ b/tools/perf/util/perf_event_attr_fprintf.c
+@@ -35,7 +35,7 @@ static void __p_sample_type(char *buf, size_t size, u64 value)
+ 		bit_name(BRANCH_STACK), bit_name(REGS_USER), bit_name(STACK_USER),
+ 		bit_name(IDENTIFIER), bit_name(REGS_INTR), bit_name(DATA_SRC),
+ 		bit_name(WEIGHT), bit_name(PHYS_ADDR), bit_name(AUX),
+-		bit_name(CGROUP), bit_name(DATA_PAGE_SIZE),
++		bit_name(CGROUP), bit_name(DATA_PAGE_SIZE), bit_name(CODE_PAGE_SIZE),
+ 		{ .name = NULL, }
  	};
- 	const char *const mem_subcommands[] = { "record", "report", NULL };
+ #undef bit_name
+diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+index b996ce61fadd..68f471d9a88b 100644
+--- a/tools/perf/util/record.h
++++ b/tools/perf/util/record.h
+@@ -23,6 +23,7 @@ struct record_opts {
+ 	bool	      sample_address;
+ 	bool	      sample_phys_addr;
+ 	bool	      sample_data_page_size;
++	bool	      sample_code_page_size;
+ 	bool	      sample_weight;
+ 	bool	      sample_time;
+ 	bool	      sample_time_set;
+diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
+index 69688f20db11..3a898520f05c 100644
+--- a/tools/perf/util/synthetic-events.c
++++ b/tools/perf/util/synthetic-events.c
+@@ -1473,6 +1473,9 @@ size_t perf_event__sample_event_size(const struct perf_sample *sample, u64 type,
+ 	if (type & PERF_SAMPLE_DATA_PAGE_SIZE)
+ 		result += sizeof(u64);
+ 
++	if (type & PERF_SAMPLE_CODE_PAGE_SIZE)
++		result += sizeof(u64);
++
+ 	if (type & PERF_SAMPLE_AUX) {
+ 		result += sizeof(u64);
+ 		result += sample->aux_sample.size;
+@@ -1657,6 +1660,11 @@ int perf_event__synthesize_sample(union perf_event *event, u64 type, u64 read_fo
+ 		array++;
+ 	}
+ 
++	if (type & PERF_SAMPLE_CODE_PAGE_SIZE) {
++		*array = sample->code_page_size;
++		array++;
++	}
++
+ 	if (type & PERF_SAMPLE_AUX) {
+ 		sz = sample->aux_sample.size;
+ 		*array++ = sz;
 -- 
 2.25.1
 
