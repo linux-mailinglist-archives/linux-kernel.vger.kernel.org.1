@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A972EA615
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74572EA619
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbhAEHiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 02:38:51 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:43218 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbhAEHiu (ORCPT
+        id S1726929AbhAEHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 02:40:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbhAEHkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 02:38:50 -0500
-Received: by mail-ot1-f43.google.com with SMTP id q25so28462174otn.10;
-        Mon, 04 Jan 2021 23:38:35 -0800 (PST)
+        Tue, 5 Jan 2021 02:40:24 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233F6C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 23:39:44 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id c22so20710862pgg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 23:39:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qody2jCEDPoy5bjKSwnXJGXZoxBMsCIrdzCynOCmNlU=;
+        b=oq3fBBKmVQVQozpKqPhH/2XZWBNc8+cN4bbYtGX+YXzXx3XwUV+HfKRTT6o4OdTLQl
+         o1onvhoy7w5G9I+sfXuNay4Ez8YF0J7LLMolV111jFMx5pjqLmKSrfN3342dzuBFAQhp
+         0Zu2Sbk46ruW9o6ePdpnVqeKl544A0mafGKogLlZORZIWDWl1YlZx1OwoE63RBKlboB8
+         oO74UmcBqWY6+n6sJeNktbPMG+87Q/kSvSGufk0npne/7bvt3F1A0hwVknEyB/TPFk5m
+         Qr8dWAoJKy9b24nXUkde2DGeQSicI8dCG5rBwGWIog9BReUCW/2xjL1fXtKZwfRRwXH0
+         NbGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GsNvvjXAbzsv+FuZnPwVumTRC/6Ac/joNVlKb3haP0E=;
-        b=LdcHuWYc10jHSdiL2MPZmUXrqLBpNkZuoTEsENhRUO5xVeFunO2uD2u9gd43vaF6EQ
-         A2xCtzzaZTddw5za8nvy0dk3z6VzkHX08BXIAaPs+UIAh+w30+aF/39iONssZHQ4KeHR
-         WM8/2r2DNEgZwsK5kPkp6bYn/7i/XW/ZJYFl6uay9pUll3ruRfQ3sUTrjnsqxOdk20L2
-         6VAkGtSMJN1NLFSSHCWGOAIb8X3Q49vJ0puVk5UG69B6pU5glBWqi5LDF2Zm8JWpGEfT
-         7SvNyGOmuYoi91QRoQ3RMFD2EEWRuIrdZZ/BvX3YsUPyXdsD7MRoAyMZleLwbCn46cwb
-         wTgQ==
-X-Gm-Message-State: AOAM5335JzJ3ur4OpCawZQ8RU+rUNjlOCTEHBa1KKAZhV2rLgb3L18ZG
-        sZZOSXbqVQHFCX9kAlwYoXrjKo1KmDbJbCxjqkUUJJ52
-X-Google-Smtp-Source: ABdhPJwB+S8gEdiHn6ODfi9YxxQh9Cv4/z6wLqvckXr6+hvgNE+BXWFVrjwOj1L9L0d/aO9eztlGefYOck6oZBpJRno=
-X-Received: by 2002:a9d:c01:: with SMTP id 1mr40244802otr.107.1609832289668;
- Mon, 04 Jan 2021 23:38:09 -0800 (PST)
+        bh=qody2jCEDPoy5bjKSwnXJGXZoxBMsCIrdzCynOCmNlU=;
+        b=fzFpTeWsT3QIdK+CDNXujYan24gUUCTMCUmy2VPRggMKtZZWLrQSdHcOsgyZ7MAPUt
+         RDCKBxVrl+xArJ4QnPcLrgLNpksv+6m/GEbaXj4P62Xs8fXPm5wmDhWk8ftFmZL1oeqJ
+         Lfy19JAKMrqB8v88Me9wpRK0j06YeUFTBk3Lbb0kF1+J2TVlnMcRmsMrf7t90Oe+TKfW
+         XSUHJ1Y8auqhvggYFS995KwEGpHNisai/aUWxmZFGeJ8u7qjh4jeY5/0fMcbwJV+Smlq
+         +kwqET8i3io9q/R8Kh9oEOVaqDEljMS4FJJnL53PVANE08CrusdB7ssxx41KBXbib7dI
+         LBMQ==
+X-Gm-Message-State: AOAM531qYsrxQXybeBsgNy/FM/u01iPrKpL9HpHr7xssZZuLq3ib+IOS
+        5nrZ3AcNy4N6Vb0n7rLJz5yP04qRnUZgFp+BungqnA==
+X-Google-Smtp-Source: ABdhPJyEkV+8qgmexPOtB9TgBL0q3t62sie0wd8yDjAlRGOOjzf+N1GAUIpo3hfMrt177jqbaVEw4pHMt3IW13Gq+E4=
+X-Received: by 2002:a62:61c5:0:b029:1a9:5a82:4227 with SMTP id
+ v188-20020a6261c50000b02901a95a824227mr46633461pfb.61.1609832383369; Mon, 04
+ Jan 2021 23:39:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20201230145708.28544-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201230145708.28544-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdVCD52-eTnEwftGz8ExMkZkJRyM=3M8zU11yhn1UNPxxA@mail.gmail.com>
- <CA+V-a8tHVkGxCECspfcV9c1UW81bod4N4YzRLJwU8zJ0+awJUw@mail.gmail.com>
- <20210104213005.GK5645@sirena.org.uk> <20210104234018.GA19909@amd>
-In-Reply-To: <20210104234018.GA19909@amd>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Jan 2021 08:37:58 +0100
-Message-ID: <CAMuHMdUjevJ+DgJGnPUN0+ctxm2ML1NYSTgYsjC4c8tDqjUkxQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] spi: rpc-if: Remove CONFIG_PM_SLEEP ifdefery
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jiri Kosina <trivial@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Chris Brandt <Chris.Brandt@renesas.com>
+References: <20210104121729.46981-1-alobakin@pm.me> <20210104122016.47308-1-alobakin@pm.me>
+ <20210104122016.47308-2-alobakin@pm.me>
+In-Reply-To: <20210104122016.47308-2-alobakin@pm.me>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Mon, 4 Jan 2021 23:39:32 -0800
+Message-ID: <CAFP8O3LA87zyi8f64Sk5g+aLFdYhnZqsEbLC_uTsQk3+6Qus3A@mail.gmail.com>
+Subject: Re: [PATCH mips-next 2/4] MIPS: vmlinux.lds.S: add ".rel.dyn" to DISCARDS
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Alex Smith <alex.smith@imgtec.com>,
+        Markos Chandras <markos.chandras@imgtec.com>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
-
-On Tue, Jan 5, 2021 at 12:40 AM Pavel Machek <pavel@denx.de> wrote:
-> > > > >                 .name   = "rpc-if-spi",
-> > > > > -               .pm     = DEV_PM_OPS,
-> > > > > +               .pm     = &rpcif_spi_pm_ops,
-> >
-> > > > You're aware rpcif_spi_pm_ops is now always referenced and thus emitted,
-> > > > increasing kernel size by 92 bytes if CONFIG_PM_SLEEP=n?
-> > > > This may matter for RZ/A SoCs running from internal SRAM.
-> >
-> > > Hmm didn't realise this would be an issue on RZ/A.
-> >
-> > > Mark, could you please drop this patch from your branch.
-> >
-> > Please send an incremental patch with an appropriate changelog.
+On Mon, Jan 4, 2021 at 4:21 AM Alexander Lobakin <alobakin@pm.me> wrote:
 >
-> Let's fix this properly. I'm pretty sure we have some macros that can
-> solve this without re-introducing the ifdefs...
+> GCC somehow manages to place some of the symbols from main.c into
+> .rel.dyn section:
+>
+> mips-alpine-linux-musl-ld: warning: orphan section `.rel.dyn'
+> from `init/main.o' being placed in section `.rel.dyn'
+>
+> I couldn't catch up the exact symbol, but seems like it's harmless
+> to discard it from the final vmlinux as kernel doesn't use or
+> support dynamic relocations.
+>
+> Misc: sort DISCARDS section entries alphabetically.
+>
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+>  arch/mips/kernel/vmlinux.lds.S | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+> index 83e27a181206..1c3c2e903062 100644
+> --- a/arch/mips/kernel/vmlinux.lds.S
+> +++ b/arch/mips/kernel/vmlinux.lds.S
+> @@ -221,9 +221,10 @@ SECTIONS
+>                 /* ABI crap starts here */
+>                 *(.MIPS.abiflags)
+>                 *(.MIPS.options)
+> +               *(.eh_frame)
+>                 *(.options)
+>                 *(.pdr)
+>                 *(.reginfo)
+> -               *(.eh_frame)
+> +               *(.rel.dyn)
+>         }
+>  }
+> --
+> 2.30.0
+>
+>
 
-There's pm_ptr(), but it uses CONFIG_PM as a selector, not CONFIG_PM_SLEEP.
+(I don't know why I am on the CC list since I know little about
+mips... Anyway, I know the LLD linker's behavior in case that was the
+intention... )
 
-> (Besides... 92 bytes. How big is kernel these days? 4MB? More? How
-> much SRAM do you have?)
+I think it'd be good to know the reason why these dynamic relocations
+are produced and fix the root cause.
 
-92 bytes is indeed not much (on 64-bit it would be doubled).
-Still, it's good to make people think about innocent looking changes,
-once in a while.
-
-RZ/A1H and RZ/A1M have 10 resp. 5 MiB of SRAM.
-RZ/A2 has 4 MiB SRAM, which is sufficient to run Linux when used with
-XIP (requires a one-line Kconfig change rmk has been vetoing for years).
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+arch/x86/kernel/vmlinux.lds.S asserts no dynamic relocation:
+ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations
+(.rela) detected!")
