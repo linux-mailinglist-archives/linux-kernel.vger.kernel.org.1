@@ -2,85 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED412EAD7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2652EAD85
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbhAEOjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:39:48 -0500
-Received: from mga01.intel.com ([192.55.52.88]:57659 "EHLO mga01.intel.com"
+        id S1727970AbhAEOkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:40:55 -0500
+Received: from mga18.intel.com ([134.134.136.126]:62478 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726352AbhAEOjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:39:47 -0500
-IronPort-SDR: 76GgTXaTbOxZI+4owxucJxNXHQhGBNlK59dqgMCyfv/Qa1pkMGV17Az9DYXIgpOnmcTuApvpbo
- kRiDBnb25b4w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="195646550"
+        id S1726076AbhAEOky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:40:54 -0500
+IronPort-SDR: Gj7OrIdug6cxk3lHQMx8sgC6FkUpkjlQyp9F+EGZMwCuX2ZHCelc2X8p3nCfqSTXxQcAGUO/yN
+ ubRVF9P3fVBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="164815713"
 X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="195646550"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 06:38:26 -0800
-IronPort-SDR: ORfDRMZuZZIjtE6Ot4XA8E9TvMJhsJAUxJ1mx5ey/k3CoGP/FtoFSprpDMWbSJKdXdzmdZ3M8W
- V7uDqPgr1s2g==
+   d="scan'208";a="164815713"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 06:40:13 -0800
+IronPort-SDR: Kn8QwbefPJ5XPqoFYBUW0nTKHtZc67lODwp+8nmVmRmipfxboBe8IfmOHqRUN2MzAbi1yMv67Z
+ w9tVX5gP9Fvw==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="397844641"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 06:38:20 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kwnUX-002Cub-Lc; Tue, 05 Jan 2021 16:39:21 +0200
-Date:   Tue, 5 Jan 2021 16:39:21 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Robert Richter <rrichter@marvell.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "(Exiting) Amit Kucheria" <amit.kucheria@verdurent.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH 0/5] Introduce the for_each_set_clump macro
-Message-ID: <20210105143921.GL4077@smile.fi.intel.com>
-References: <cover.1608963094.git.syednwaris@gmail.com>
- <CACRpkdYZwMy5faNhUyiNnvdnMOf4ac7XWqjnf3f4jCJeE=p2Lw@mail.gmail.com>
- <CAMpxmJW46Oh2h7RrBNo5vACfYnWy63rZOO=Va=ppUDeaj5GpBg@mail.gmail.com>
+   d="scan'208";a="421794901"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by orsmga001.jf.intel.com with ESMTP; 05 Jan 2021 06:40:11 -0800
+Subject: Re: [PATCH] mmc: sdhci-msm: Fix possible NULL pointer exception
+To:     Md Sadre Alam <mdalam@codeaurora.org>, bjorn.andersson@linaro.org,
+        ulf.hansson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     sricharan@codeaurora.org
+References: <1608626913-16675-1-git-send-email-mdalam@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <a6210bb5-6f12-20a3-b404-f21081685b46@intel.com>
+Date:   Tue, 5 Jan 2021 16:39:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJW46Oh2h7RrBNo5vACfYnWy63rZOO=Va=ppUDeaj5GpBg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1608626913-16675-1-git-send-email-mdalam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 03:19:13PM +0100, Bartosz Golaszewski wrote:
-> On Sun, Dec 27, 2020 at 10:27 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> >
-> > On Sat, Dec 26, 2020 at 7:41 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
-> >
-> > > Since this patchset primarily affects GPIO drivers, would you like
-> > > to pick it up through your GPIO tree?
-> >
-> > Actually Bartosz is handling the GPIO patches for v5.12.
-> > I tried to merge the patch series before but failed for
-> > various reasons.
+On 22/12/20 10:48 am, Md Sadre Alam wrote:
+> of_device_get_match_data returns NULL when no match.
+> So add the NULL pointer check to avoid dereference.
+> 
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> ---
+>  drivers/mmc/host/sdhci-msm.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index 9c7927b..f20e424 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -2235,6 +2235,8 @@ static int sdhci_msm_probe(struct platform_device *pdev)
+>  	 * the data associated with the version info.
+>  	 */
+>  	var_info = of_device_get_match_data(&pdev->dev);
+> +	if (!var_info)
 
-> My info on this is a bit outdated - didn't Linus Torvalds reject these
-> patches from Andrew Morton's PR? Or am I confusing this series with
-> something else?
+Shouldn't you set ret to -ENODEV here?
 
-Linus T. told that it can be done inside GPIO realm. This version tries
-(badly in my opinion) to achieve that.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> +		goto pltfm_free;
+>  
+>  	msm_host->mci_removed = var_info->mci_removed;
+>  	msm_host->restore_dll_config = var_info->restore_dll_config;
+> 
 
