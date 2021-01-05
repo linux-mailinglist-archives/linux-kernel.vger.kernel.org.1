@@ -2,87 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90012EA862
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B022EA86A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728745AbhAEKQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:16:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728146AbhAEKQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:16:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31D0D20739;
-        Tue,  5 Jan 2021 10:15:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609841722;
-        bh=c/qWKwU3foC5cslHvysoiyySlD0Q/i38HTpYtr6CjsI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NvSDi36KrBi698Ne8DdM1rn5gS+fyI4ZsxqY9MAjB65ykGmmytd/o2lxJ1wDKK1Ny
-         qzXs2anYX2VX8pymMbe8aFcJogD1/tE8EnjXgxZlRlKaP7LN1GYs9GFGogvB4oWZkF
-         CVZcj0ERoKTirFl+wR23+RBKZk8CGYXcnZjogYP5Lb+o/zjrAdzN2t9nzjuBFjvRNH
-         xOYS1gF608aaFef6R3VkbUMyaI7pbiBXEGnYFtYfMG+ZrifWUY/RigSpEh5asECoxV
-         DzIdtkY5U6Uir+58cpf8LkKNYrtYa02AHS6yhBqMDu3Syb2dy6EVRIPp5CD+n1KmLF
-         lrgAeAfWluDqA==
-Date:   Tue, 5 Jan 2021 19:15:18 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests/ftrace: Disable multiple_kprobes test on
- powerpc
-Message-Id: <20210105191518.fc5e602cb10fb22ef1a2303d@kernel.org>
-In-Reply-To: <20210105190156.ada6ce0d46d7eada18b9ad76@kernel.org>
-References: <20210105065730.2634785-1-naveen.n.rao@linux.vnet.ibm.com>
-        <20210105190156.ada6ce0d46d7eada18b9ad76@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1728901AbhAEKSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:18:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23182 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728782AbhAEKSg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 05:18:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609841829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zAP8iYZeFWK+rDPt5xfMhF9Y6yvbIrq3xHNDaJv01T0=;
+        b=jFWV/iCH4daY8f7ghJdiWEhgM/dLqYTUZJ1JOt1sMgux1jL5y2G2YBOFHU5USClEATzpUV
+        TvlSwG0UI8Es3V4eNMNBv/en9BrVmH+j8WKyN6KXfz6ciByTG83+NNlgDaeqx6Wxq0WSfa
+        1oJWUtQiz6m9Krv2Nm1Iwl+RxrO/22E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-PovHZBsWMt68hH1xfWjC4Q-1; Tue, 05 Jan 2021 05:17:08 -0500
+X-MC-Unique: PovHZBsWMt68hH1xfWjC4Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0981800D53;
+        Tue,  5 Jan 2021 10:17:06 +0000 (UTC)
+Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2DAEF7771C;
+        Tue,  5 Jan 2021 10:17:05 +0000 (UTC)
+Subject: Re: [PATCH v1 4/4] s390/kvm: VSIE: correctly handle MVPG when in VSIE
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, stable@vger.kernel.org
+References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
+ <20201218141811.310267-5-imbrenda@linux.ibm.com>
+ <6836573a-a49d-9d9f-49e0-96b5aa479c52@redhat.com>
+ <20210104162231.4e56ab47@ibm-vm>
+ <3376268b-7fd7-9fbe-b483-fe7471038a18@redhat.com>
+ <20210104173644.2e6c8df4@ibm-vm>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <b3dbadf7-80a9-36de-9d32-f80005ee6dcf@redhat.com>
+Date:   Tue, 5 Jan 2021 11:17:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20210104173644.2e6c8df4@ibm-vm>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021 19:01:56 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> On Tue,  5 Jan 2021 12:27:30 +0530
-> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+On 04.01.21 17:36, Claudio Imbrenda wrote:
+> On Mon, 4 Jan 2021 17:08:15 +0100
+> David Hildenbrand <david@redhat.com> wrote:
 > 
-> > Not all symbols are blacklisted on powerpc. Disable multiple_kprobes
-> > test until that is sorted, so that rest of ftrace and kprobe selftests
-> > can be run.
+>> On 04.01.21 16:22, Claudio Imbrenda wrote:
+>>> On Sun, 20 Dec 2020 11:13:57 +0100
+>>> David Hildenbrand <david@redhat.com> wrote:
+>>>   
+>>>> On 18.12.20 15:18, Claudio Imbrenda wrote:  
+>>>>> Correctly handle the MVPG instruction when issued by a VSIE guest.
+>>>>>     
+>>>>
+>>>> I remember that MVPG SIE documentation was completely crazy and
+>>>> full of corner cases. :)  
+>>>
+>>> you remember correctly
+>>>   
+>>>> Looking at arch/s390/kvm/intercept.c:handle_mvpg_pei(), I can spot
+>>>> that
+>>>>
+>>>> 1. "This interception can only happen for guests with DAT disabled
+>>>> ..." 2. KVM does not make use of any mvpg state inside the SCB.
+>>>>
+>>>> Can this be observed with Linux guests?  
+>>>
+>>> a Linux guest will typically not run with DAT disabled
+>>>   
+>>>> Can I get some information on what information is stored at [0xc0,
+>>>> 0xd) inside the SCB? I assume it's:
+>>>>
+>>>> 0xc0: guest physical address of source PTE
+>>>> 0xc8: guest physical address of target PTE  
+>>>
+>>> yes (plus 3 flags in the lower bits of each)  
+>>
+>> Thanks! Do the flags tell us what the deal with the PTE was? If yes,
+>> what's the meaning of the separate flags?
+>>
+>> I assume something like "invalid, proteced, ??"
 > 
-> This looks good to me, but could you try to find the functions
-> which should be blocked from kprobes?
-> (Usually, the function which are involved in the sw-breakpoint
->  handling, including locks etc.)
+> bit 61 indicates that the address is a region or segment table entry,
+> when EDAT applies
+> bit 62 is "protected" when the protected bit is set in the segment
+> table entry (or region, if EDAT applies) 
+> bit 63 is set when the operand was translated with a real-space ASCE
 
-Ah, OK. 
-I wonder why CONFIG_KPROBE_EVENTS_ON_NOTRACE=n doesn't help, it
-was ignored if the arch doesn't support CONFIG_KPROBES_ON_FTRACE.
+Thanks!
 
-Naveen, could you try to run this test case with following patch
-on powerpc?
+> but you can check if the PTE is valid just by dereferencing the
+> pointers...
 
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index b911e9f6d9f5..241a55313476 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -433,7 +433,7 @@ static int disable_trace_kprobe(struct trace_event_call *call,
-        return 0;
- }
- 
--#if defined(CONFIG_KPROBES_ON_FTRACE) && \
-+#if defined(CONFIG_FUNCTION_TRACER) && \
-        !defined(CONFIG_KPROBE_EVENTS_ON_NOTRACE)
- static bool __within_notrace_func(unsigned long addr)
- {
+The pgtable might already have been unshadowed and repurposed I think.
+So for vSIE, the PTE content, therefore, is a little unreliable.
 
-Of course you need to enable CONFIG_FUNCTION_TRACER=y, but it may
-pass the test.
+We could, of course, try using them to make a guess.
 
-Thank you,
+"Likely valid"
+"Likely invalid"
+
+A rerun of the vSIE will fixup any wrong guess.
+
+> 
+>> I'm asking because I think we can handle this a little easier.
+> 
+> what is your idea?
+
+I was wondering if we can
+
+1. avoid essentially two translations per PTE, obtaining the information
+we need while tying to shadow. kvm_s390_shadow_fault() on steroids that
+
+a) gives us the last guest pte address (tricky for segment.region table
+I think ... will have to think about this)
+b) the final protection
+
+2. avoid faulting/shadowing in case we know an entry is not problematic.
+E.g., no need to shadow/fault the source in case the PTE is there and
+not invalid. "likely valid" case above.
+
+
+The idea would be to call the new kvm_s390_shadow_fault() two times (or
+only once due to our guesses) and either rerun the vsie, inject an
+interrupt, or create the partial intercept.
+
+Essentially avoiding kvm_s390_vsie_mvpg_check(). Will have to think
+about this.
+
+[...]
+>>
+>> arch/s390/kvm/intercept.c:handle_partial_execution() we only seem to
+>> handle
+>>
+>> 1. MVPG
+>> 2. SIGP PEI
+>>
+>> The latter is only relevant for external calls. IIRC, this is only
+>> active with sigp interpretation - which is never active under vsie
+>> (ECA_SIGPI).
+> 
+> I think putting an explicit check is better than just a jump in the
+> dark.
+
+Agreed, but that should then be called out somewhere why the change as
+done. (e.g., separate cleanup patch)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks,
+
+David / dhildenb
+
