@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981352EA880
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E985D2EA883
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728966AbhAEKVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:21:42 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:45106 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728373AbhAEKVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:21:42 -0500
-Received: from zn.tnic (p200300ec2f103700ba0c0ccd6fae6c32.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:3700:ba0c:ccd:6fae:6c32])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 31C911EC0324;
-        Tue,  5 Jan 2021 11:21:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1609842060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=EVz+m6gjXCXiRGpAA6hb4FVi0ebUcWmcTwsx9IcT4xo=;
-        b=JnGPYAnlDzMEVLWBbPU/lENeQXdyjPwSRwR7qYaKT5NT7lGBIhzD+Bi3NqtG1hbfAnLi40
-        cDXVyyU9CJzFP8acQfjIWZmwEsIy3R6NhThLIg4H3556Vqimi+caLoF2c+WoEhdqth6vYg
-        UtT01IKy62Nj3CCrnB65BhL6xV4yls0=
-Date:   Tue, 5 Jan 2021 11:20:56 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: Re: [PATCH] iommu/amd: Set iommu->int_enabled consistently when
- interrupts are set up
-Message-ID: <20210105102056.GA28649@zn.tnic>
-References: <20210104132250.GE32151@zn.tnic>
- <20210104232353.GJ32151@zn.tnic>
- <50cd5f55be8ead0937ac315cd2f5b89364f6a9a5.camel@infradead.org>
+        id S1728985AbhAEKVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728969AbhAEKVp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 05:21:45 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73D4C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 02:21:04 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id b5so1444333pjl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 02:21:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Xe2DWR863p/ehJmvzbGKL4NyY9ITEBhglpLpCkOqvTI=;
+        b=dAnoDGk67+jXOymkiM/3lzfn+vIj19sRrKZQgJtB070QMCs6aHQnMkIBc2SlSK4yRn
+         eoqV+5b4tj2MZ51CVT9bJT+HI3vHhPKD5/480tfJLjEJnWhIy/QWLK3ynrAFmTlE+Jw2
+         glBj7/6hSwgo1adAfKlgtalBN0qwVckG4YecrCA+Dyg3AfpEkDsPtgIiaMAlA0BW2BcA
+         thmAGHTyO4JdgCbOjqz97CuheLwg6JPKp9VOcgduN7i2UUldlg/EQq9Tb+fIKLywsiq/
+         sHUk/cNI5k0R71zpG85NAs/83ceesQHqRusBqoaZx4UAuQE49aAT0jKZv2Aqj25H8GvF
+         hbKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Xe2DWR863p/ehJmvzbGKL4NyY9ITEBhglpLpCkOqvTI=;
+        b=WSTWa9tpQwa9ZYIfn67E24DiD9DuCH1VTQShEy3Z2Slb3CU/oQalyfiJiAvAe7cqLL
+         v6/RbKjWYF519TIFVu4CzBRkfIzQjaGEVJGTgVHBiWE6SLV5rgNbWhmE/7ZepreDNMAJ
+         S+7h60f5tRYKWOBjSq3UovT867wVSZqahl+xJfQSblURctu8smuuy3YGB0sjppYtx+tL
+         JQvXfwinwzzME8lT1HoEfbkZ7DidDHDw6mXSoNzbclvilJs1igxqSM8ND0pU6SKEBErA
+         0Hf7qb/G9kTNZBpz17Zd+5lMVorYdW6Bmr2D5TQLHdfhc+XpNCuUhgDa3Hc8RyngVdB4
+         ksoA==
+X-Gm-Message-State: AOAM533EiaCCkeDZMob6xQ9W+KX/IvyiwCaU4VRlwBdsPSGoEnVWxdXN
+        35M8mAXB34D8kxfDNSRy+4DrZg==
+X-Google-Smtp-Source: ABdhPJyN+NE7fCLLM5l+9h0UEK4pikwYezv4FSBlWI57xzwoQk/6jMmP21onPESPO5+AWGZXovKpuw==
+X-Received: by 2002:a17:90a:fa8e:: with SMTP id cu14mr3458820pjb.140.1609842064423;
+        Tue, 05 Jan 2021 02:21:04 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id x28sm57891988pff.182.2021.01.05.02.21.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Jan 2021 02:21:03 -0800 (PST)
+Date:   Tue, 5 Jan 2021 15:51:01 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Stephen Warren <swarren@nvidia.com>, linux-pm@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][V3] cpufreq: powernow-k8: pass policy rather than use
+ cpufreq_cpu_get
+Message-ID: <20210105102101.y4jdqdmcru5ouec4@vireshk-i7>
+References: <20210105101957.59072-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <50cd5f55be8ead0937ac315cd2f5b89364f6a9a5.camel@infradead.org>
+In-Reply-To: <20210105101957.59072-1-colin.king@canonical.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 01:32:51AM +0000, David Woodhouse wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
+On 05-01-21, 10:19, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> When I made the INTCAPXT support stop gratuitously pretending to be MSI,
-> I missed the fact that iommu_setup_msi() also sets the ->int_enabled
-> flag. I missed this in the iommu_setup_intcapxt() code path, which means
-> that a resume from suspend will try to allocate the IRQ domains again,
-> accidentally re-enabling interrupts as it does, resulting in much sadness.
+> Currently there is an unlikely case where cpufreq_cpu_get returns a
+> null policy and this will cause a null pointer dereference later on.
+> Fix this by passing the policy to transition_frequency_fidvid from the
+> caller and hence eliminating the need for the cpufreq_cpu_get and
+> cpufreq_cpu_put.  Thanks to Viresh Kumar for suggesting the fix.
 > 
-> Lift out the bit which sets iommu->int_enabled into the iommu_init_irq()
-> function which is also where it gets checked.
-> 
-> Link: https://lore.kernel.org/r/20210104132250.GE32151@zn.tnic/
-> Fixes: d1adcfbb520c ("iommu/amd: Fix IOMMU interrupt generation in X2APIC mode")
-> Reported-by: Borislav Petkov <bp@alien8.de>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Addresses-Coverity: ("Dereference null return")
+> Fixes: b43a7ffbf33b ("cpufreq: Notify all policy->cpus in cpufreq_notify_transition()")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
-> There's a possibility we also need to ensure that the actual
-> MMIO_INTCAPXT_xxx_OFFSET registers are restored too. Unless you
-> actually trigger something to generate faults, you'll never know.
-> I don't see offhand how that was working in the pretend-to-be-MSI case
-> either.
 > 
->  drivers/iommu/amd/init.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> V2: pass the policy to transition_frequency_fidvid rather than add
+>     a null pointer check on the return from a cpufreq_cpu_get call.
+> V3: update subject line to match the fix
 > 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index f54cd79b43e4..6a1f7048dacc 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -1973,8 +1973,6 @@ static int iommu_setup_msi(struct amd_iommu *iommu)
->  		return r;
->  	}
->  
-> -	iommu->int_enabled = true;
-> -
->  	return 0;
->  }
->  
-> @@ -2169,6 +2167,7 @@ static int iommu_init_irq(struct amd_iommu *iommu)
->  	if (ret)
->  		return ret;
->  
-> +	iommu->int_enabled = true;
->  enable_faults:
->  	iommu_feature_enable(iommu, CONTROL_EVT_INT_EN);
->  
-> -- 
+> ---
+>  drivers/cpufreq/powernow-k8.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
 
-Tested-by: Borislav Petkov <bp@suse.de>
-
-Thx.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+viresh
