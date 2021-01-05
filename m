@@ -2,409 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FBB2EB37C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 623012EB382
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbhAETaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 14:30:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbhAETap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:30:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B21C422D6E;
-        Tue,  5 Jan 2021 19:30:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609875004;
-        bh=BhKpj39Fj7yK0MVg7DnWHxgm/2qoucXj9xZO5y/hFqc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lFr44gci3pEfvnrg5QIk04vFTrE1EB0KtGQm+jGUX3ozo/EFRgDATgKutygRBe7tk
-         UGdGisTEtQekF0ACk6n0dMWnuWOHNuZEPKscqSJqhcEroIijeRdim4KbCrmQMMVDWk
-         oZXAqfhI3qJQ0PBL+fiHiq6UqBEjzQFLir+rA8j3sVQI7Nn141NHok1zPVdC3B++L2
-         j4ACaeIaQtqk2sCqwcsCRT8TgESriEU/a/acUoG5jECF6YbFyka+rZUszuuKmwrSYw
-         E4j7AojDajkLCTzTcjXXJE+SJFynjX2jV5KfJRONwrZwqiQIfFBP05jvSs2lAjJofW
-         xl/KPeOJUpfPQ==
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     sboyd@kernel.org
-Cc:     dinguyen@kernel.org, mturquette@baylibre.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: socfpga: agilex: add clock driver for eASIC N5X platform
-Date:   Tue,  5 Jan 2021 13:29:56 -0600
-Message-Id: <20210105192956.2059505-1-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1730788AbhAETby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 14:31:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59305 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730456AbhAETby (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 14:31:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609875026;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FYLw5N+U/E6yggeoX+94IfSIBU6gHdaEvQjzfPKPjQk=;
+        b=ax/WGS+szsSHrQ0feluj6swAZ1P3lFtQwxvDIf9MU1KcE+8YtL5Rz6sRPxATZEuk0fHX+a
+        TkjpuoCrQRWZARHhxL/QlGp3yy9JsZ1vfDjGP4xwMyMaThNl/pZXvNb55HTbsqaNckuAqU
+        Awm0ZbQVSO4LTAO6X62J9vbdx90i9P8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-O1qkZ10_OiasS06j4Lf_fw-1; Tue, 05 Jan 2021 14:30:22 -0500
+X-MC-Unique: O1qkZ10_OiasS06j4Lf_fw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A42F8107ACE6;
+        Tue,  5 Jan 2021 19:30:18 +0000 (UTC)
+Received: from ovpn-115-104.rdu2.redhat.com (ovpn-115-104.rdu2.redhat.com [10.10.115.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5ACBC5D9CC;
+        Tue,  5 Jan 2021 19:30:14 +0000 (UTC)
+Message-ID: <aebcdd933df3abad378aeafc1a07dfe9bbb25548.camel@redhat.com>
+Subject: Re: [PATCH v21 00/19] per memcg lru lock
+From:   Qian Cai <qcai@redhat.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+Date:   Tue, 05 Jan 2021 14:30:13 -0500
+In-Reply-To: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for Intel's eASIC N5X platform. The clock manager driver for
-the N5X is very similar to the Agilex platform, we can re-use most of
-the Agilex clock driver.
+On Thu, 2020-11-05 at 16:55 +0800, Alex Shi wrote:
+> This version rebase on next/master 20201104, with much of Johannes's
+> Acks and some changes according to Johannes comments. And add a new patch
+> v21-0006-mm-rmap-stop-store-reordering-issue-on-page-mapp.patch to support
+> v21-0007.
+> 
+> This patchset followed 2 memcg VM_WARN_ON_ONCE_PAGE patches which were
+> added to -mm tree yesterday.
+>  
+> Many thanks for line by line review by Hugh Dickins, Alexander Duyck and
+> Johannes Weiner.
 
-This patch makes the necessary changes for the driver to differentiate
-between the Agilex and the N5X platforms.
+Given the troublesome history of this patchset, and had been put into linux-next 
+recently, as well as it touched both THP and mlock. Is it a good idea to suspect
+this patchset introducing some races and a spontaneous crash with some mlock
+memory presume?
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
- drivers/clk/socfpga/clk-agilex.c     | 88 +++++++++++++++++++++++++++-
- drivers/clk/socfpga/clk-periph-s10.c | 53 +++++++++++++++++
- drivers/clk/socfpga/clk-pll-s10.c    | 85 ++++++++++++++++++++++++++-
- drivers/clk/socfpga/stratix10-clk.h  | 15 +++++
- 4 files changed, 238 insertions(+), 3 deletions(-)
+[10392.154328][T23803] huge_memory: total_mapcount: 5, page_count(): 6
+[10392.154835][T23803] page:00000000eb7725ad refcount:6 mapcount:0 mapping:0000000000000000 index:0x7fff72a0 pfn:0x20023760
+[10392.154865][T23803] head:00000000eb7725ad order:5 compound_mapcount:0 compound_pincount:0
+[10392.154889][T23803] anon flags: 0x87fff800009000d(locked|uptodate|dirty|head|swapbacked)
+[10392.154908][T23803] raw: 087fff800009000d 5deadbeef0000100 5deadbeef0000122 c0002016ff5e0849
+[10392.154933][T23803] raw: 000000007fff72a0 0000000000000000 00000006ffffffff c0002014eb676000
+[10392.154965][T23803] page dumped because: total_mapcount(head) > 0
+[10392.154987][T23803] pages's memcg:c0002014eb676000
+[10392.155023][T23803] ------------[ cut here ]------------
+[10392.155042][T23803] kernel BUG at mm/huge_memory.c:2767!
+[10392.155064][T23803] Oops: Exception in kernel mode, sig: 5 [#1]
+[10392.155084][T23803] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=256 NUMA PowerNV
+[10392.155114][T23803] Modules linked in: loop kvm_hv kvm ip_tables x_tables sd_mod bnx2x ahci tg3 libahci mdio libphy libata firmware_class dm_mirror dm_region_hash dm_log dm_mod
+[10392.155185][T23803] CPU: 44 PID: 23803 Comm: ranbug Not tainted 5.11.0-rc2-next-20210105 #2
+[10392.155217][T23803] NIP:  c0000000003b5218 LR: c0000000003b5214 CTR: 0000000000000000
+[10392.155247][T23803] REGS: c00000001a8d6ee0 TRAP: 0700   Not tainted  (5.11.0-rc2-next-20210105)
+[10392.155279][T23803] MSR:  9000000002823033 <SF,HV,VEC,VSX,FP,ME,IR,DR,RI,LE>  CR: 28422222  XER: 00000000
+[10392.155314][T23803] CFAR: c0000000003135ac IRQMASK: 1 
+[10392.155314][T23803] GPR00: c0000000003b5214 c00000001a8d7180 c000000007f70b00 000000000000001e 
+[10392.155314][T23803] GPR04: c000000000eacd38 0000000000000004 0000000000000027 c000001ffe8a7218 
+[10392.155314][T23803] GPR08: 0000000000000023 0000000000000000 0000000000000000 c000000007eacfc8 
+[10392.155314][T23803] GPR12: 0000000000002000 c000001ffffcda00 0000000000000000 0000000000000001 
+[10392.155314][T23803] GPR16: c00c0008008dd808 0000000000040000 0000000000000000 0000000000000020 
+[10392.155314][T23803] GPR20: c00c0008008dd800 0000000000000020 0000000000000006 0000000000000001 
+[10392.155314][T23803] GPR24: 0000000000000005 ffffffffffffffff c0002016ff5e0848 0000000000000000 
+[10392.155314][T23803] GPR28: c0002014eb676e60 c00c0008008dd800 c00000001a8d73a8 c00c0008008dd800 
+[10392.155533][T23803] NIP [c0000000003b5218] split_huge_page_to_list+0xa38/0xa40
+[10392.155558][T23803] LR [c0000000003b5214] split_huge_page_to_list+0xa34/0xa40
+[10392.155579][T23803] Call Trace:
+[10392.155595][T23803] [c00000001a8d7180] [c0000000003b5214] split_huge_page_to_list+0xa34/0xa40 (unreliable)
+[10392.155630][T23803] [c00000001a8d7270] [c0000000002dd378] shrink_page_list+0x1568/0x1b00
+shrink_page_list at mm/vmscan.c:1251 (discriminator 1)
+[10392.155655][T23803] [c00000001a8d7380] [c0000000002df798] shrink_inactive_list+0x228/0x5e0
+[10392.155678][T23803] [c00000001a8d7450] [c0000000002e0858] shrink_lruvec+0x2b8/0x6f0
+shrink_lruvec at mm/vmscan.c:2462
+[10392.155710][T23803] [c00000001a8d7590] [c0000000002e0fd8] shrink_node+0x348/0x970
+[10392.155742][T23803] [c00000001a8d7660] [c0000000002e1728] do_try_to_free_pages+0x128/0x560
+[10392.155765][T23803] [c00000001a8d7710] [c0000000002e3b78] try_to_free_pages+0x198/0x500
+[10392.155780][T23803] [c00000001a8d77e0] [c000000000356f5c] __alloc_pages_slowpath.constprop.112+0x64c/0x1380
+[10392.155795][T23803] [c00000001a8d79c0] [c000000000358170] __alloc_pages_nodemask+0x4e0/0x590
+[10392.155830][T23803] [c00000001a8d7a50] [c000000000381fb8] alloc_pages_vma+0xb8/0x340
+[10392.155854][T23803] [c00000001a8d7ac0] [c000000000324fe8] handle_mm_fault+0xf38/0x1bd0
+[10392.155887][T23803] [c00000001a8d7ba0] [c000000000316cd4] __get_user_pages+0x434/0x7d0
+[10392.155920][T23803] [c00000001a8d7cb0] [c0000000003197d0] __mm_populate+0xe0/0x290
+__mm_populate at mm/gup.c:1459
+[10392.155952][T23803] [c00000001a8d7d20] [c00000000032d5a0] do_mlock+0x180/0x360
+do_mlock at mm/mlock.c:688
+[10392.155975][T23803] [c00000001a8d7d90] [c00000000032d954] sys_mlock+0x24/0x40
+[10392.155999][T23803] [c00000001a8d7db0] [c00000000002f510] system_call_exception+0x170/0x280
+[10392.156032][T23803] [c00000001a8d7e10] [c00000000000d7c8] system_call_common+0xe8/0x218
+[10392.156065][T23803] Instruction dump:
+[10392.156082][T23803] e93d0008 71290001 41820014 7fe3fb78 38800000 4bf5e36d 60000000 3c82f8b7 
+[10392.156121][T23803] 7fa3eb78 38846b70 4bf5e359 60000000 <0fe00000> 60000000 3c4c07bc 3842b8e0 
+[10392.156160][T23803] ---[ end trace 2e3423677d4f91f3 ]---
+[10392.312793][T23803] 
+[10393.312808][T23803] Kernel panic - not syncing: Fatal exception
+[10394.723608][T23803] ---[ end Kernel panic - not syncing: Fatal exception ]---
 
-diff --git a/drivers/clk/socfpga/clk-agilex.c b/drivers/clk/socfpga/clk-agilex.c
-index bb3e80928ebe..f9394ed8a41d 100644
---- a/drivers/clk/socfpga/clk-agilex.c
-+++ b/drivers/clk/socfpga/clk-agilex.c
-@@ -196,6 +196,17 @@ static const struct stratix10_pll_clock agilex_pll_clks[] = {
- 	  0, 0x9c},
- };
- 
-+static const struct n5x_perip_c_clock n5x_main_perip_c_clks[] = {
-+	{ AGILEX_MAIN_PLL_C0_CLK, "main_pll_c0", "main_pll", NULL, 1, 0, 0x54, 0},
-+	{ AGILEX_MAIN_PLL_C1_CLK, "main_pll_c1", "main_pll", NULL, 1, 0, 0x54, 8},
-+	{ AGILEX_MAIN_PLL_C2_CLK, "main_pll_c2", "main_pll", NULL, 1, 0, 0x54, 16},
-+	{ AGILEX_MAIN_PLL_C3_CLK, "main_pll_c3", "main_pll", NULL, 1, 0, 0x54, 24},
-+	{ AGILEX_PERIPH_PLL_C0_CLK, "peri_pll_c0", "periph_pll", NULL, 1, 0, 0xA8, 0},
-+	{ AGILEX_PERIPH_PLL_C1_CLK, "peri_pll_c1", "periph_pll", NULL, 1, 0, 0xA8, 8},
-+	{ AGILEX_PERIPH_PLL_C2_CLK, "peri_pll_c2", "periph_pll", NULL, 1, 0, 0xA8, 16},
-+	{ AGILEX_PERIPH_PLL_C3_CLK, "peri_pll_c3", "periph_pll", NULL, 1, 0, 0xA8, 24},
-+};
-+
- static const struct stratix10_perip_c_clock agilex_main_perip_c_clks[] = {
- 	{ AGILEX_MAIN_PLL_C0_CLK, "main_pll_c0", "main_pll", NULL, 1, 0, 0x58},
- 	{ AGILEX_MAIN_PLL_C1_CLK, "main_pll_c1", "main_pll", NULL, 1, 0, 0x5C},
-@@ -289,6 +300,25 @@ static const struct stratix10_gate_clock agilex_gate_clks[] = {
- 	  10, 0, 0, 0, 0, 0, 4},
- };
- 
-+static int n5x_clk_register_c_perip(const struct n5x_perip_c_clock *clks,
-+				       int nums, struct stratix10_clock_data *data)
-+{
-+	struct clk *clk;
-+	void __iomem *base = data->base;
-+	int i;
-+
-+	for (i = 0; i < nums; i++) {
-+		clk = n5x_register_periph(&clks[i], base);
-+		if (IS_ERR(clk)) {
-+			pr_err("%s: failed to register clock %s\n",
-+			       __func__, clks[i].name);
-+			continue;
-+		}
-+		data->clk_data.clks[clks[i].id] = clk;
-+	}
-+	return 0;
-+}
-+
- static int agilex_clk_register_c_perip(const struct stratix10_perip_c_clock *clks,
- 				       int nums, struct stratix10_clock_data *data)
- {
-@@ -367,6 +397,26 @@ static int agilex_clk_register_pll(const struct stratix10_pll_clock *clks,
- 	return 0;
- }
- 
-+static int n5x_clk_register_pll(const struct stratix10_pll_clock *clks,
-+				 int nums, struct stratix10_clock_data *data)
-+{
-+	struct clk *clk;
-+	void __iomem *base = data->base;
-+	int i;
-+
-+	for (i = 0; i < nums; i++) {
-+		clk = n5x_register_pll(&clks[i], base);
-+		if (IS_ERR(clk)) {
-+			pr_err("%s: failed to register clock %s\n",
-+			       __func__, clks[i].name);
-+			continue;
-+		}
-+		data->clk_data.clks[clks[i].id] = clk;
-+	}
-+
-+	return 0;
-+}
-+
- static struct stratix10_clock_data *__socfpga_agilex_clk_init(struct platform_device *pdev,
- 						    int nr_clks)
- {
-@@ -401,7 +451,7 @@ static struct stratix10_clock_data *__socfpga_agilex_clk_init(struct platform_de
- 	return clk_data;
- }
- 
--static int agilex_clkmgr_probe(struct platform_device *pdev)
-+static int agilex_clkmgr_init(struct platform_device *pdev)
- {
- 	struct stratix10_clock_data *clk_data;
- 
-@@ -423,9 +473,43 @@ static int agilex_clkmgr_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int n5x_clkmgr_init(struct platform_device *pdev)
-+{
-+	struct stratix10_clock_data *clk_data;
-+
-+	clk_data = __socfpga_agilex_clk_init(pdev, AGILEX_NUM_CLKS);
-+	if (IS_ERR(clk_data))
-+		return PTR_ERR(clk_data);
-+
-+	n5x_clk_register_pll(agilex_pll_clks, ARRAY_SIZE(agilex_pll_clks), clk_data);
-+
-+	n5x_clk_register_c_perip(n5x_main_perip_c_clks,
-+				 ARRAY_SIZE(n5x_main_perip_c_clks), clk_data);
-+
-+	agilex_clk_register_cnt_perip(agilex_main_perip_cnt_clks,
-+				   ARRAY_SIZE(agilex_main_perip_cnt_clks),
-+				   clk_data);
-+
-+	agilex_clk_register_gate(agilex_gate_clks, ARRAY_SIZE(agilex_gate_clks),
-+			      clk_data);
-+	return 0;
-+}
-+
-+static int agilex_clkmgr_probe(struct platform_device *pdev)
-+{
-+	int (*probe_func)(struct platform_device *);
-+
-+	probe_func = of_device_get_match_data(&pdev->dev);
-+	if (!probe_func)
-+		return -ENODEV;
-+	return	probe_func(pdev);;
-+}
-+
- static const struct of_device_id agilex_clkmgr_match_table[] = {
- 	{ .compatible = "intel,agilex-clkmgr",
--	  .data = agilex_clkmgr_probe },
-+	  .data = agilex_clkmgr_init },
-+	{ .compatible = "intel,n5x-clkmgr",
-+	  .data = n5x_clkmgr_init },
- 	{ }
- };
- 
-diff --git a/drivers/clk/socfpga/clk-periph-s10.c b/drivers/clk/socfpga/clk-periph-s10.c
-index 397b77b89b16..135581c41c05 100644
---- a/drivers/clk/socfpga/clk-periph-s10.c
-+++ b/drivers/clk/socfpga/clk-periph-s10.c
-@@ -15,6 +15,21 @@
- 
- #define to_periph_clk(p) container_of(p, struct socfpga_periph_clk, hw.hw)
- 
-+static unsigned long n5x_clk_peri_c_clk_recalc_rate(struct clk_hw *hwclk,
-+					     unsigned long parent_rate)
-+{
-+	struct socfpga_periph_clk *socfpgaclk = to_periph_clk(hwclk);
-+	unsigned long div;
-+	unsigned long shift = socfpgaclk->shift;
-+	u32 val;
-+
-+	val = readl(socfpgaclk->hw.reg);
-+	val &= (0x1F << shift);
-+	div = (val >> shift) + 1;
-+
-+	return parent_rate / div;
-+}
-+
- static unsigned long clk_peri_c_clk_recalc_rate(struct clk_hw *hwclk,
- 					     unsigned long parent_rate)
- {
-@@ -63,6 +78,11 @@ static u8 clk_periclk_get_parent(struct clk_hw *hwclk)
- 	return parent;
- }
- 
-+static const struct clk_ops n5x_peri_c_clk_ops = {
-+	.recalc_rate = n5x_clk_peri_c_clk_recalc_rate,
-+	.get_parent = clk_periclk_get_parent,
-+};
-+
- static const struct clk_ops peri_c_clk_ops = {
- 	.recalc_rate = clk_peri_c_clk_recalc_rate,
- 	.get_parent = clk_periclk_get_parent,
-@@ -107,6 +127,39 @@ struct clk *s10_register_periph(const struct stratix10_perip_c_clock *clks,
- 	return clk;
- }
- 
-+struct clk *n5x_register_periph(const struct n5x_perip_c_clock *clks,
-+				void __iomem *regbase)
-+{
-+	struct clk *clk;
-+	struct socfpga_periph_clk *periph_clk;
-+	struct clk_init_data init;
-+	const char *name = clks->name;
-+	const char *parent_name = clks->parent_name;
-+
-+	periph_clk = kzalloc(sizeof(*periph_clk), GFP_KERNEL);
-+	if (WARN_ON(!periph_clk))
-+		return NULL;
-+
-+	periph_clk->hw.reg = regbase + clks->offset;
-+	periph_clk->shift = clks->shift;
-+
-+	init.name = name;
-+	init.ops = &n5x_peri_c_clk_ops;
-+	init.flags = clks->flags;
-+
-+	init.num_parents = clks->num_parents;
-+	init.parent_names = parent_name ? &parent_name : NULL;
-+
-+	periph_clk->hw.hw.init = &init;
-+
-+	clk = clk_register(NULL, &periph_clk->hw.hw);
-+	if (WARN_ON(IS_ERR(clk))) {
-+		kfree(periph_clk);
-+		return NULL;
-+	}
-+	return clk;
-+}
-+
- struct clk *s10_register_cnt_periph(const struct stratix10_perip_cnt_clock *clks,
- 				    void __iomem *regbase)
- {
-diff --git a/drivers/clk/socfpga/clk-pll-s10.c b/drivers/clk/socfpga/clk-pll-s10.c
-index 4e268953b7da..4bdf64be3ed4 100644
---- a/drivers/clk/socfpga/clk-pll-s10.c
-+++ b/drivers/clk/socfpga/clk-pll-s10.c
-@@ -27,10 +27,37 @@
- #define SWCTRLBTCLKSEL_MASK		0x200
- #define SWCTRLBTCLKSEL_SHIFT		9
- 
-+#define SOCFPGA_N5X_PLLDIV_FDIV_MASK	GENMASK(16, 8)
-+#define SOCFPGA_N5X_PLLDIV_FDIV_SHIFT	8
-+#define SOCFPGA_N5X_PLLDIV_RDIV_MASK	GENMASK(5, 0)
-+#define SOCFPGA_N5X_PLLDIV_QDIV_MASK	GENMASK(26, 24)
-+#define SOCFPGA_N5X_PLLDIV_QDIV_SHIFT	24
-+
- #define SOCFPGA_BOOT_CLK		"boot_clk"
- 
- #define to_socfpga_clk(p) container_of(p, struct socfpga_pll, hw.hw)
- 
-+static unsigned long n5x_clk_pll_recalc_rate(struct clk_hw *hwclk,
-+						unsigned long parent_rate)
-+{
-+	struct socfpga_pll *socfpgaclk = to_socfpga_clk(hwclk);
-+	unsigned long fdiv, reg, rdiv, qdiv;
-+	u32 power = 1;
-+
-+	/* read VCO1 reg for numerator and denominator */
-+	reg = readl(socfpgaclk->hw.reg + 0x8);
-+	fdiv = (reg & SOCFPGA_N5X_PLLDIV_FDIV_MASK) >> SOCFPGA_N5X_PLLDIV_FDIV_SHIFT;
-+	rdiv = (reg & SOCFPGA_N5X_PLLDIV_RDIV_MASK);
-+	qdiv = (reg & SOCFPGA_N5X_PLLDIV_QDIV_MASK) >> SOCFPGA_N5X_PLLDIV_QDIV_SHIFT;
-+
-+	while (qdiv) {
-+		power *= 2;
-+		qdiv--;
-+	}
-+
-+	return ((parent_rate * 2 * (fdiv + 1)) / ((rdiv + 1) * power));
-+}
-+
- static unsigned long agilex_clk_pll_recalc_rate(struct clk_hw *hwclk,
- 						unsigned long parent_rate)
- {
-@@ -123,7 +150,26 @@ static int clk_pll_prepare(struct clk_hw *hwclk)
- 	return 0;
- }
- 
--static const struct clk_ops agilex_clk_pll_ops = {
-+static int n5x_clk_pll_prepare(struct clk_hw *hwclk)
-+{
-+	struct socfpga_pll *socfpgaclk = to_socfpga_clk(hwclk);
-+	u32 reg;
-+
-+	/* Bring PLL out of reset */
-+	reg = readl(socfpgaclk->hw.reg + 0x4);
-+	reg &= ~SOCFPGA_PLL_RESET_MASK;
-+	writel(reg, socfpgaclk->hw.reg + 0x4);
-+
-+	return 0;
-+}
-+
-+static struct clk_ops n5x_clk_pll_ops = {
-+	.recalc_rate = n5x_clk_pll_recalc_rate,
-+	.get_parent = clk_pll_get_parent,
-+	.prepare = n5x_clk_pll_prepare,
-+};
-+
-+static struct clk_ops agilex_clk_pll_ops = {
- 	.recalc_rate = agilex_clk_pll_recalc_rate,
- 	.get_parent = clk_pll_get_parent,
- 	.prepare = clk_pll_prepare,
-@@ -214,3 +260,40 @@ struct clk *agilex_register_pll(const struct stratix10_pll_clock *clks,
- 	}
- 	return clk;
- }
-+
-+struct clk *n5x_register_pll(const struct stratix10_pll_clock *clks,
-+			     void __iomem *reg)
-+{
-+	struct clk *clk;
-+	struct socfpga_pll *pll_clk;
-+	struct clk_init_data init;
-+	const char *name = clks->name;
-+
-+	pll_clk = kzalloc(sizeof(*pll_clk), GFP_KERNEL);
-+	if (WARN_ON(!pll_clk))
-+		return NULL;
-+
-+	pll_clk->hw.reg = reg + clks->offset;
-+
-+	if (streq(name, SOCFPGA_BOOT_CLK))
-+		init.ops = &clk_boot_ops;
-+	else
-+		init.ops = &n5x_clk_pll_ops;
-+
-+	init.name = name;
-+	init.flags = clks->flags;
-+
-+	init.num_parents = clks->num_parents;
-+	init.parent_names = NULL;
-+	init.parent_data = clks->parent_data;
-+	pll_clk->hw.hw.init = &init;
-+
-+	pll_clk->hw.bit_idx = SOCFPGA_PLL_POWER;
-+
-+	clk = clk_register(NULL, &pll_clk->hw.hw);
-+	if (WARN_ON(IS_ERR(clk))) {
-+		kfree(pll_clk);
-+		return NULL;
-+	}
-+	return clk;
-+}
-diff --git a/drivers/clk/socfpga/stratix10-clk.h b/drivers/clk/socfpga/stratix10-clk.h
-index f9d5d724c694..90441c990855 100644
---- a/drivers/clk/socfpga/stratix10-clk.h
-+++ b/drivers/clk/socfpga/stratix10-clk.h
-@@ -30,6 +30,17 @@ struct stratix10_perip_c_clock {
- 	unsigned long		offset;
- };
- 
-+struct n5x_perip_c_clock {
-+	unsigned int		id;
-+	const char		*name;
-+	const char		*parent_name;
-+	const char		*const *parent_names;
-+	u8			num_parents;
-+	unsigned long		flags;
-+	unsigned long		offset;
-+	unsigned long		shift;
-+};
-+
- struct stratix10_perip_cnt_clock {
- 	unsigned int		id;
- 	const char		*name;
-@@ -64,8 +75,12 @@ struct clk *s10_register_pll(const struct stratix10_pll_clock *,
- 			     void __iomem *);
- struct clk *agilex_register_pll(const struct stratix10_pll_clock *,
- 				void __iomem *);
-+struct clk *n5x_register_pll(const struct stratix10_pll_clock *,
-+			     void __iomem *);
- struct clk *s10_register_periph(const struct stratix10_perip_c_clock *,
- 				void __iomem *);
-+struct clk *n5x_register_periph(const struct n5x_perip_c_clock *,
-+				void __iomem *);
- struct clk *s10_register_cnt_periph(const struct stratix10_perip_cnt_clock *,
- 				    void __iomem *);
- struct clk *s10_register_gate(const struct stratix10_gate_clock *,
--- 
-2.30.0
+> 
+> So now this patchset includes 3 parts:
+> 1, some code cleanup and minimum optimization as a preparation. 
+> 2, use TestCleanPageLRU as page isolation's precondition.
+> 3, replace per node lru_lock with per memcg per node lru_lock.
+> 
+> Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
+> lru lists, but now we had moved the lru lists into memcg for long time. Still
+> using per node lru_lock is clearly unscalable, pages on each of memcgs have
+> to compete each others for a whole lru_lock. This patchset try to use per
+> lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
+> it scalable for memcgs and get performance gain.
+> 
+> Currently lru_lock still guards both lru list and page's lru bit, that's ok.
+> but if we want to use specific lruvec lock on the page, we need to pin down
+> the page's lruvec/memcg during locking. Just taking lruvec lock first may be
+> undermined by the page's memcg charge/migration. To fix this problem, we could
+> take out the page's lru bit clear and use it as pin down action to block the
+> memcg changes. That's the reason for new atomic func TestClearPageLRU.
+> So now isolating a page need both actions: TestClearPageLRU and hold the
+> lru_lock.
+> 
+> The typical usage of this is isolate_migratepages_block() in compaction.c
+> we have to take lru bit before lru lock, that serialized the page isolation
+> in memcg page charge/migration which will change page's lruvec and new 
+> lru_lock in it.
+> 
+> The above solution suggested by Johannes Weiner, and based on his new memcg 
+> charge path, then have this patchset. (Hugh Dickins tested and contributed
+> much
+> code from compaction fix to general code polish, thanks a lot!).
+> 
+> Daniel Jordan's testing show 62% improvement on modified readtwice case
+> on his 2P * 10 core * 2 HT broadwell box on v18, which has no much different
+> with this v20.
+> https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
+> 
+> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+> Mel Gorman, Shakeel Butt, Matthew Wilcox, Alexander Duyck etc.
+> 
+> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+> 
+> 
+> Alex Shi (16):
+>   mm/thp: move lru_add_page_tail func to huge_memory.c
+>   mm/thp: use head for head page in lru_add_page_tail
+>   mm/thp: Simplify lru_add_page_tail()
+>   mm/thp: narrow lru locking
+>   mm/vmscan: remove unnecessary lruvec adding
+>   mm/rmap: stop store reordering issue on page->mapping
+>   mm/memcg: add debug checking in lock_page_memcg
+>   mm/swap.c: fold vm event PGROTATED into pagevec_move_tail_fn
+>   mm/lru: move lock into lru_note_cost
+>   mm/vmscan: remove lruvec reget in move_pages_to_lru
+>   mm/mlock: remove lru_lock on TestClearPageMlocked
+>   mm/mlock: remove __munlock_isolate_lru_page
+>   mm/lru: introduce TestClearPageLRU
+>   mm/compaction: do page isolation first in compaction
+>   mm/swap.c: serialize memcg changes in pagevec_lru_move_fn
+>   mm/lru: replace pgdat lru_lock with lruvec lock
+> 
+> Alexander Duyck (1):
+>   mm/lru: introduce the relock_page_lruvec function
+> 
+> Hugh Dickins (2):
+>   mm: page_idle_get_page() does not need lru_lock
+>   mm/lru: revise the comments of lru_lock
+> 
+>  Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+>  Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
+>  Documentation/trace/events-kmem.rst                |   2 +-
+>  Documentation/vm/unevictable-lru.rst               |  22 +--
+>  include/linux/memcontrol.h                         | 110 +++++++++++
+>  include/linux/mm_types.h                           |   2 +-
+>  include/linux/mmzone.h                             |   6 +-
+>  include/linux/page-flags.h                         |   1 +
+>  include/linux/swap.h                               |   4 +-
+>  mm/compaction.c                                    |  94 +++++++---
+>  mm/filemap.c                                       |   4 +-
+>  mm/huge_memory.c                                   |  45 +++--
+>  mm/memcontrol.c                                    |  79 +++++++-
+>  mm/mlock.c                                         |  63 ++-----
+>  mm/mmzone.c                                        |   1 +
+>  mm/page_alloc.c                                    |   1 -
+>  mm/page_idle.c                                     |   4 -
+>  mm/rmap.c                                          |  11 +-
+>  mm/swap.c                                          | 208 ++++++++----------
+> ---
+>  mm/vmscan.c                                        | 207 ++++++++++----------
+>  mm/workingset.c                                    |   2 -
+>  21 files changed, 530 insertions(+), 372 deletions(-)
+> 
 
