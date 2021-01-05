@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F192EB013
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E013A2EB01C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbhAEQac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:30:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40682 "EHLO mail.kernel.org"
+        id S1729057AbhAEQdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:33:10 -0500
+Received: from mail1.ugh.no ([178.79.162.34]:58008 "EHLO mail1.ugh.no"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727036AbhAEQab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:30:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 705C422CA0;
-        Tue,  5 Jan 2021 16:29:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609864191;
-        bh=rntfB7C5mBvVXgliBl2U7ngampY/9LrSTvoo5JN6PHE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S88AqmoJInnEWhe9qFDxHx5FvAYHSp2+rb+N2gfbHNDqaltI/vzxj97J0i6Zl4ZSo
-         FrMnv1h7c5jq1+J/SA2CzP53dUx9Ic5a226yVsQDL87Z/TQTi0ydw0WX0Gj6bWEpff
-         Bpyl/Wv92pZ60y5kZU+mTkDBRRw0n5k3Pfp6MyjOURgVKFyTCYlDKpmW+92zkIrrio
-         AiabCKPbajE3T7uFKNjPkX05HK+As0UcALR8Cs2/Crq2Iy/CX0hUrt7kpGlUCUKYks
-         Y3fP0co3+5kMdsvFM/c9iGlnTGd3Eki1+zbIW6H6Q7OPVStS8Z9lIf0SRS6tjSj6fW
-         QaCVt0a72co2w==
-Date:   Tue, 5 Jan 2021 17:29:46 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 18/21] dt-bindings: allwinner: Add H616 compatible
- strings
-Message-ID: <20210105162946.GI1842@ninjato>
-References: <20201211011934.6171-1-andre.przywara@arm.com>
- <20201211011934.6171-19-andre.przywara@arm.com>
+        id S1728752AbhAEQdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:33:10 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail1.ugh.no (Postfix) with ESMTP id EB58D253956;
+        Tue,  5 Jan 2021 17:32:28 +0100 (CET)
+Received: from mail1.ugh.no ([127.0.0.1])
+        by localhost (catastrophix.ugh.no [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pfSrOnDksqq7; Tue,  5 Jan 2021 17:32:28 +0100 (CET)
+Received: from [IPv6:2a0a:2780:4d57:40:54fd:5612:86a2:2c2f] (unknown [IPv6:2a0a:2780:4d57:40:54fd:5612:86a2:2c2f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: andre@tomt.net)
+        by mail.ugh.no (Postfix) with ESMTPSA id 439CA253954;
+        Tue,  5 Jan 2021 17:32:28 +0100 (CET)
+Subject: Re: [PATCH 5.10 637/717] drm/amd/display: Fix memory leaks in S3
+ resume
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>
+References: <20201228125020.963311703@linuxfoundation.org>
+ <20201228125051.444911072@linuxfoundation.org>
+ <e5d9703f-42a4-f154-cf13-55a3eba10859@tomt.net> <X/QNCtpIiU5qzRp+@kroah.com>
+From:   Andre Tomt <andre@tomt.net>
+Message-ID: <8db47895-e7e4-ed9a-e996-c071b5c6f750@tomt.net>
+Date:   Tue, 5 Jan 2021 17:32:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WIIRZ1HQ6FgrlPgb"
-Content-Disposition: inline
-In-Reply-To: <20201211011934.6171-19-andre.przywara@arm.com>
+In-Reply-To: <X/QNCtpIiU5qzRp+@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05.01.2021 07:54, Greg Kroah-Hartman wrote:
+> On Mon, Jan 04, 2021 at 08:04:08PM +0100, Andre Tomt wrote:
+>> On 28.12.2020 13:50, Greg Kroah-Hartman wrote:
+>>> From: Stylon Wang <stylon.wang@amd.com>
+>>>
+>>> commit a135a1b4c4db1f3b8cbed9676a40ede39feb3362 upstream.
+>>>
+>>> EDID parsing in S3 resume pushes new display modes
+>>> to probed_modes list but doesn't consolidate to actual
+>>> mode list. This creates a race condition when
+>>> amdgpu_dm_connector_ddc_get_modes() re-initializes the
+>>> list head without walking the list and results in  memory leak.
+>>
+>> This commit is causing me problems on 5.10.4: when I turn off the display (a
+>> LG TV in this case), and turn it back on again later there is no video
+>> output and I get the following in the kernel log:
+>>
+>> [ 8245.259628] [drm:dm_restore_drm_connector_state [amdgpu]] *ERROR*
+>> Restoring old state failed with -12
+>>
+>> I've found another report on this commit as well:
+>> https://bugzilla.kernel.org/show_bug.cgi?id=211033
+>>
+>> And I suspect this is the same:
+>> https://bugs.archlinux.org/task/69202
+>>
+>> Reverting it from 5.10.4 makes things behave again.
+>>
+>> Have not tested 5.4.86 or 5.11-rc.
+>>
+>> I'm using a RX570 Polaris based card.
+> 
+> Can you test 5.11-rc to see if this issue is there as well?
 
---WIIRZ1HQ6FgrlPgb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just did, and have the same issue on 5.11-rc2. Reverting it also solves 
+the problem on 5.11-rc2, as it does on 5.10.4
 
-On Fri, Dec 11, 2020 at 01:19:31AM +0000, Andre Przywara wrote:
-> Add simple "allwinner,sun50i-h616-xxx" compatible names to existing
-> bindings, and pair them with an existing fallback compatible string,
-> as the devices are compatible.
-> This covers I2C, infrared, RTC and SPI.
->=20
-> Use enums to group all compatible devices together.
->=20
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-
-Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
-
-
---WIIRZ1HQ6FgrlPgb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/0k/oACgkQFA3kzBSg
-KbYcAA//fxeNSjKkeAsUP+tmVP+6UOmYGFWuzggJQKr5y0aThBUNYPfWWF/lDRa/
-wuzgurDJZhsKyb8BxhgY2Bc/EoPsxWZi30fz2l6YdTLi3NfYoky2LhUECl+JYGjV
-MgMCCNdVyLZ8uU39J/PuCBH4oN2gBcuLxmOsiVnXcfkbbWjI6c1DNOxRDJdXx9WU
-4YDBk98pbmW7Bxik+11pmF9nncF1HvMQ4MYU+Z7fDvQfwGV74dogLu4Psr0q30o+
-zNgU/BPvf/U7DLlkcTz18ChX+v9++OZe0AnEPKMtugTZW1rI28SYvNSGhE3QDXcW
-otfDp2FvmbilDX5CtK14mlIi+0mVqu0xx6o20pNVAmx4QTjuDr2zAh+EHJ11kP6O
-KEKQRZIP7Wj0NBbaSi/mAieeF/DvH8lK9FNKUFMj8108wNF05NB00KuZ4DFvhpDA
-M1IgSiSLqJOokZw9Kbw1coKROsYZcWuCrY4tCLVe3m7u0mE9wHIgXsnDtEKLajqL
-Vd7GLY60FVPoF9OMlz2Q2liy4D+gz/NIwKYsrFU87FrMag9Lw0JZQVeH9eqw1akl
-ACSHHN3JNDJUIH5g1Yiem+VGAOQSBrz4Lr0sTTHm+OAo6b9q8k7DJtyuwUrUajG9
-s26hNzxVo+c5AbLTltlCd9esoPiHr4/zia2oKz8kM6WYsDLwKMU=
-=9MjQ
------END PGP SIGNATURE-----
-
---WIIRZ1HQ6FgrlPgb--
+FWIW one easy way to reproduce seems to be unplugging and re-plugging 
+the HDMI.
