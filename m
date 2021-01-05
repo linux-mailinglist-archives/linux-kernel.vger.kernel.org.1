@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6192EAA8A
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0B22EAA89
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbhAEMSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:18:24 -0500
-Received: from mail.v3.sk ([167.172.186.51]:60940 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725789AbhAEMSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:18:23 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 52AEFE0987;
-        Tue,  5 Jan 2021 12:14:03 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id D5dhQFC0vdUF; Tue,  5 Jan 2021 12:14:02 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 67D2BE0968;
-        Tue,  5 Jan 2021 12:14:02 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id B-_uerC0PAmZ; Tue,  5 Jan 2021 12:14:01 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 7946AE0957;
-        Tue,  5 Jan 2021 12:14:01 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 13:17:32 +0100
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: mmp2: fix build without CONFIG_PM
-Message-ID: <20210105121732.GA811711@demiurge.local>
-References: <20210103135503.3668784-1-arnd@kernel.org>
+        id S1728147AbhAEMSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:18:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbhAEMSQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 07:18:16 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778D1C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 04:17:35 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id 22so26173715qkf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 04:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uHVyppheAtUsYWey0/FRVVlGWEXQunaZTKwgRTn10C4=;
+        b=PjXAeqXP4DYwIsAsQ2O4Wvyds0A/KBI/EsGeMQmaFHnc4wqH02GyXchj4HN8SUEolr
+         PHK27WI1BXuqv8NgDGDFiQwm2P9lHa2Kd3MJQxJ9FTGfphPfl+Dwb9fKBbqo7I9+CpWg
+         M+gOWEE/mSgmFe7pOxIwoo8FpAnQwxG+sDQXU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uHVyppheAtUsYWey0/FRVVlGWEXQunaZTKwgRTn10C4=;
+        b=U07I4jM0oqM3LqHOaRuxIcZKLHY2hfv7q2WbHl0noFoZxekNs24DFHHG0KCWhlv87T
+         Lv62s91/lqiV+jf2sb46TxH81ZNda5waP1yVJGZquJbEMsg7AowZNtYyRRsHdLcmdjlS
+         CbRtYf2Ii7IFGktU9YZpo5suudOrBGn8Y/P0mLh0T0+q99myjh6pcA/rY4UFECiFmiFF
+         +T+6QYbBJfKPHhXOa+Zu2NmMPSbx5KfMOgTiv6fvMX6sWYo1pcOAguNAf3FRcoP/l9d2
+         3Wj3j14CQd/m3/tajVBM1jZDAETW0y3VrjlayaApC8RGn4J+lItyfRke9xrRkVUM74d2
+         eclA==
+X-Gm-Message-State: AOAM532BQjGufKUBYDD+rx7VQPfHwBS0hCpANkaBWA8gYFxkULsePbqy
+        Cd3ocvCsqCCyzdSHNJTJEKi1CHEJBLdbQEh+qD8TNQ==
+X-Google-Smtp-Source: ABdhPJy5tjzaibSH7lb3AbHXayPPYaReUKnA+qJZEoC40CBWlYyT/l9r2rHRDXectmH9clM8fVamvSEK+Fs2WH7cnQo=
+X-Received: by 2002:a37:2742:: with SMTP id n63mr77678787qkn.390.1609849054700;
+ Tue, 05 Jan 2021 04:17:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210103135503.3668784-1-arnd@kernel.org>
+References: <20201229055059.2255021-1-daniel@0x0f.com> <20201229055059.2255021-2-daniel@0x0f.com>
+ <20210104151746.21cdde24@xps13>
+In-Reply-To: <20210104151746.21cdde24@xps13>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Tue, 5 Jan 2021 21:18:21 +0900
+Message-ID: <CAFr9PXmPEQ2poQUTtaBH4CZ-S+sJjoUjJ5D_qA5aHZj7AASg7w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mtd: spinand: add support for Foresee FS35ND01G
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mtd@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        richard@nod.at, vigneshr@ti.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 03, 2021 at 02:54:53PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> pm_clk_suspend()/pm_clk_resume() are defined as NULL pointers rather than
-> empty inline stubs without CONFIG_PM:
-> 
-> drivers/clk/mmp/clk-audio.c:402:16: error: called object type 'void *' is not a function or function pointer
->         pm_clk_suspend(dev);
-> drivers/clk/mmp/clk-audio.c:411:15: error: called object type 'void *' is not a function or function pointer
->         pm_clk_resume(dev);
-> 
-> I tried redefining the helper functions, but that caused additional
-> problems. This is the simple solution of replacing the __maybe_unused
-> trick with an #ifdef.
-> 
-> Fixes: 725262d29139 ("clk: mmp2: Add audio clock controller driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi Miquel,
 
-Thank you.
+On Mon, 4 Jan 2021 at 23:17, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> Perhaps giving the link of the datasheet here makes sense.
 
-Acked-By: Lubomir Rintel <lkundrak@v3.sk>
+Noted. I'll put that into v2.
 
-> ---
->  drivers/clk/mmp/clk-audio.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/mmp/clk-audio.c b/drivers/clk/mmp/clk-audio.c
-> index eea69d498bd2..7aa7f4a9564f 100644
-> --- a/drivers/clk/mmp/clk-audio.c
-> +++ b/drivers/clk/mmp/clk-audio.c
-> @@ -392,7 +392,8 @@ static int mmp2_audio_clk_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -static int __maybe_unused mmp2_audio_clk_suspend(struct device *dev)
-> +#ifdef CONFIG_PM
-> +static int mmp2_audio_clk_suspend(struct device *dev)
->  {
->  	struct mmp2_audio_clk *priv = dev_get_drvdata(dev);
->  
-> @@ -404,7 +405,7 @@ static int __maybe_unused mmp2_audio_clk_suspend(struct device *dev)
->  	return 0;
->  }
->  
-> -static int __maybe_unused mmp2_audio_clk_resume(struct device *dev)
-> +static int mmp2_audio_clk_resume(struct device *dev)
->  {
->  	struct mmp2_audio_clk *priv = dev_get_drvdata(dev);
->  
-> @@ -415,6 +416,7 @@ static int __maybe_unused mmp2_audio_clk_resume(struct device *dev)
->  
->  	return 0;
->  }
-> +#endif
->  
->  static const struct dev_pm_ops mmp2_audio_clk_pm_ops = {
->  	SET_RUNTIME_PM_OPS(mmp2_audio_clk_suspend, mmp2_audio_clk_resume, NULL)
-> -- 
-> 2.29.2
-> 
+> > +#define SPINAND_MFR_LONGSYS          0xcd
+>
+> Nitpick: I personally prefer uppercase hex numbers.
+>
+
+Noted.
+
+> > +                  NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+> > +                  NAND_ECCREQ(4, 512),
+> > +                  SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> > +                                           &write_cache_variants,
+> > +                                           &update_cache_variants),
+>
+> This device probably supports more variants (especially dual/quad
+> ones) but I guess it's not a problem to not have them here right now.
+
+Right now I can't really test dual or quad because my SPI driver
+doesn't know to do dual or quad io.
+I plan to add those in once I can validate they work.
+
+> > +                  SPINAND_HAS_QE_BIT,
+> > +                  SPINAND_ECCINFO(NULL,
+> > +                                  NULL)),
+>
+> You should define the ->ecc and ->free hooks of the
+> mtd_ooblayout_ops structure and point to it here. It defines the free
+> OOB bytes and bytes used by the on-die ECC engine. You should find this
+> in the datasheet. You may look at other manufacturer drivers for
+> examples of how it should be implemented. It is the way to tell the
+> upper layers that eg. "byte 2 to 17 are ECC bytes, 18 until the end are
+> free to use".
+
+Ok I'll add those in. Is there a way I can test that my implementation is right?
+I.e. is writing something, reading it back and checking if the data is
+correct a good enough test here?
+I don't really want to make it look like this flash is supported and
+break someone's data. :)
+
+Thanks,
+
+Daniel
