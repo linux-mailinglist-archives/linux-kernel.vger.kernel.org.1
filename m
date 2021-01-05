@@ -2,221 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E662EB2A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 796952EB2A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730701AbhAESan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:30:43 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:57354 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726651AbhAESam (ORCPT
+        id S1728815AbhAESdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:33:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726671AbhAESdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:30:42 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105IMPPB017456;
-        Tue, 5 Jan 2021 18:29:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=zleZhLDJdlixTgQ8PwGfwy0XN/UPjFt/4pghSoy56Qc=;
- b=pWbkeA4AbyU5DAYZ6oi9cCS1sVIuc/0pjPFZj/8pzed31x4EhwSzClnMe3K0rEr5TdLj
- WcsFBmjYYxyVQIo1qezrnkGwmJdTCa75njypoy6h436wxzNZzmMhL8Pb3c9DAu2UJZv6
- u8IYbtGoUJSxwLRfCxf5yYm5p3lmkTjAy/0A8TuT97UWKM/H7KabJLULv8HlDc0nY7af
- 1QYdTouXwQtoga/oxE1EDmDB+sSkn5uJ2p/FC1Xl+zSwfuvzRapYVuVNMqO47+4xwjZI
- VN3oj5ZsTuZ8MAInU8akB8TjpuWjse9ClOucf/imiy9MpKnyTEkwwHr+kSsrn0Z6nX/C YA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 35tg8r25vk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 05 Jan 2021 18:29:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105IEl2n045646;
-        Tue, 5 Jan 2021 18:27:34 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 35v1f8wvcp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Jan 2021 18:27:34 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 105IRTPb015020;
-        Tue, 5 Jan 2021 18:27:29 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 05 Jan 2021 18:27:29 +0000
-Date:   Tue, 5 Jan 2021 10:27:28 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, Will Deacon <will@kernel.org>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Message-ID: <20210105182728.GG6908@magnolia>
-References: <20210105154726.GD1551@shell.armlinux.org.uk>
+        Tue, 5 Jan 2021 13:33:41 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF87C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:33:00 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id s21so215240pfu.13
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:33:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sX+Z5cinaGEHb+Rg680GNmulVNTwsny/hFmafIxttB0=;
+        b=cdYSFuaDv6z15vOKJG8UTD8B2nE6uiN1THjKL+OP7indqdfspz63FI4KPq0gb8rHmc
+         7lLzJbw+dHqcZbTaBloV0uVkJVS4mYL4Hb9bmL4RtLI7PxLYzjYfHfs47THpHI+ne7eb
+         sTeOsFkib02LmlglFpXuQIgDjFuBUHss+0A6ZfXJWnCc/t+X0XHvonF+npQmIJyQuwPC
+         Pd9sUxUNt+dFGcJiXFU76Pn8jOmj8e6o1eV2ezmLt8EyOP3bPR2hRcUnd2URvbpvMgq1
+         qa15eTZANrNsTFYb5QyRfPpkbhaDGYJ59/OXNEuqGjMTPU06wV58LFtDuSFOG+vaz1XG
+         qMtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sX+Z5cinaGEHb+Rg680GNmulVNTwsny/hFmafIxttB0=;
+        b=oqDOIv15r/x/zow36V2cHf6JWwBCXwEcc4kPeay8Uz8+it+YjMdK2Mu+chwkz2fQOt
+         Xxh4kPdjAj3sM/bfrEIW8QQEZCbvnLKJpV3/2z7WPHun4WsGfL1iSGi+RcSB95s+aojd
+         yGp1wn8M08F2dOY7r3jUWhW73eImxj/xUoE6vp5NVswl2haE3rKUcXAeVZs6n5QfSOGr
+         LpO3il+vfM+G09IZw5sLev5QQe8OKDvdzlBsMy7KZ7pgkG0X5JrOj5HqDAr9dSpMvOIu
+         NjBKB8npyvs6kNGmvFubLVsORAAsfPKJymPFjIExvCxsMr5jua7F2DnW/D5XpZySuR6Y
+         l83Q==
+X-Gm-Message-State: AOAM531OLgykX9VJ/h6dlkJ7ZnX8RVOo+phzcKli5UJ09bNt8Y8M3Gxj
+        hel10RIsPcA6Z2hlJ/ZwcszUGRNSc8kSvWDRCoM=
+X-Google-Smtp-Source: ABdhPJwxfiYXu8hgfCeL3Zsj4doaK0V6kvYxGc2L283ZS6KyDxscXZzpU1X0DtH1fVuL5V/6Uh8Itwqa95NM5ClGV80=
+X-Received: by 2002:a63:1f10:: with SMTP id f16mr584229pgf.111.1609871580342;
+ Tue, 05 Jan 2021 10:33:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105154726.GD1551@shell.armlinux.org.uk>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101050107
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 phishscore=0 bulkscore=0
- spamscore=0 impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050107
+References: <20201222145603.40192-1-jim2101024@gmail.com> <20201222145603.40192-3-jim2101024@gmail.com>
+ <e37cb2fc-14a3-b658-9df7-6f67a2c4d755@gmail.com> <20210105173526.yvjh2bxnofjzmc6n@bogus>
+ <CA+-6iNwnA+3kaHom3XRpTLOu_4QsHOmFiZ2M2=sA7Go-uADe1g@mail.gmail.com>
+In-Reply-To: <CA+-6iNwnA+3kaHom3XRpTLOu_4QsHOmFiZ2M2=sA7Go-uADe1g@mail.gmail.com>
+From:   Jim Quinlan <jim2101024@gmail.com>
+Date:   Tue, 5 Jan 2021 13:32:49 -0500
+Message-ID: <CANCKTBukX33YxVh8uuashC3grRVa1oZBig+-UD90YKgVUgSS=A@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] firmware: arm_scmi: Augment SMC/HVC to allow
+ optional interrupt
+To:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Cc:     bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:SYSTEM CONTROL & POWER/MANAGEMENT INTERFACE Mes..." 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 03:47:26PM +0000, Russell King - ARM Linux admin wrote:
-> Hi,
-> 
-> This is an update on where I am with this long standing issue at the
-> current time.
-> 
-> Since 5.4, I have been struggling with several of my ARM64 systems, of
-> different SoC vendors and differing filesystem media, were sporadically
-> reporting inode checksum failures on their root filesystems.  The time
-> taken to report this has been anything between a few hours and three
-> months of uptime, making the problem unrealistic to bisect.
+> From: Sudeep Holla <sudeep.holla@arm.com>
+> Date: Tue, Jan 5, 2021 at 12:35 PM
+> Subject: Re: [PATCH v4 2/2] firmware: arm_scmi: Augment SMC/HVC to allow =
+optional interrupt
+> To: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: Jim Quinlan <jim2101024@gmail.com>, Sudeep Holla <sudeep.holla@arm.co=
+m>, <bcm-kernel-feedback-list@broadcom.com>, <james.quinlan@broadcom.com>, =
+open list:SYSTEM CONTROL & POWER/MANAGEMENT INTERFACE Mes... <linux-arm-ker=
+nel@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>
+>
+>
+> On Tue, Dec 22, 2020 at 07:37:22PM -0800, Florian Fainelli wrote:
+> >
+> >
+> > On 12/22/2020 6:56 AM, Jim Quinlan wrote:
+> > > The SMC/HVC SCMI transport is modified to allow the completion of an =
+SCMI
+> > > message to be indicated by an interrupt rather than the return of the=
+ smc
+> > > call.  This accommodates the existing behavior of the BrcmSTB SCMI
+> > > "platform" whose SW is already out in the field and cannot be changed=
+.
+> > >
+> > > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> >
+> > This looks good to me, just one question below:
+> >
+> > [snip]
+> >
+> > > @@ -111,6 +145,8 @@ static int smc_send_message(struct scmi_chan_info=
+ *cinfo,
+> > >     shmem_tx_prepare(scmi_info->shmem, xfer);
+> > >
+> > >     arm_smccc_1_1_invoke(scmi_info->func_id, 0, 0, 0, 0, 0, 0, 0, &re=
+s);
+> > > +   if (scmi_info->irq)
+> > > +           wait_for_completion(&scmi_info->tx_complete);
+> >
+> > Do we need this to have a preceding call to reinit_completion()? It doe=
+s
+> > not look like this is going to make any practical difference but there
+> > are drivers doing that for correctness.
+>
+> Why do you think that might not cause any issue ? After first message
+> is completed and ISR is executed, the completion flag remains done for
+> ever.
+Hi Sudeep,
 
-Aha, I was wondering what happened to this bug report. :)
+I don't think that is the case;  the bottom routine,
+do_wait_for_common(), decrements the x->done after a completion (which
+does an increment).  Regardless, I think it is prudent to add the
+reinit patch you've provided below.
 
-> The issue was first seen on my SolidRun Clearfog CX LX2160A based
-> system, but was also subsequently noticed on my Armada 8040 based
-> systems running kernels 5.4 and later. Kernel 5.2 has proven stable
-> with 566 days of uptime with no issue.
-> 
-> It has taken a long time to get debugging in place to see what is going
-> on - and this is currently detailed on the front page of
-> www.armlinux.org.uk right now, which has formed a blog of this problem
-> - since almost no one has taken any interest in it.
-> 
-> However, over the last couple of days, a way to reproduce it has been
-> found, at least for the LX2160A based system.  Power down, leave the
-> machine powered off for some time. Power up, log in and run:
-> 
-> while :; do sleep 5; find /var /usr /bin /sbin -type f -print0 | \
-> 	xargs -0 md5sum >/dev/null; done
+BTW, one thing I could have done was incorporate the timeout value but
+I thought that since this is the "fast" call we shouldn't be timing
+out at all.
 
-Does that fill up the page cache enough to push memory reclaim?
+Thanks much,
+Jim Quinlan
+Broadcom STB
 
-> Within a few minutes it seems to have spat out an inode checksum
-> failure if the problem exists. However, testing for the problem _not_
-> existing is quite difficult - just because it doesn't appear in the
-> first few minutes does not mean it has been solved - see above where it
-> can take three months.
-> 
-> However, evidence is currently pointing towards commit 22ec71615d82
-> ("arm64: io: Relax implicit barriers in default I/O accessors") having
-> revealed this problem. Will is very certain that this change is
-> correct, and we feel that it may have exposed some other issue in the
-> Aarch64 code.
-> 
-> Further attempts seem to suggest that the problem is specifically the
-> barrier in __iormb(). Leaving __iowmb() untouched, and changing the
-> barrier in __iormb() from dma_rmb() to rmb() _appears_ to result in the
-> problem disappearing. "Appears" is stressed because further testing is
-> needed - and that is probably going to take many months before we know
-> for certain.
-> 
-> However, this suggests that there is a memory ordering bug with aarch64
-> somewhere. Will can follow up with his own thoughts to this email.
-> 
-> We don't know if it is:
-> - the kernel.
-> - the Cortex A72.
-> - the Cache coherent interconnect.
-> 
-> I don't think it's the CCI, as I believe the Armada 8040 uses Marvell's
-> own IP for that based around Aurora 2 (the functional spec doesn't make
-> it clear.) Remember, I'm seeing this problem on both Armada 8040 and
-> LX2160A. We don't know of any known errata for the A72 in this area.
-> So, we're down to something in the kernel.
-> 
-> It is possible that it could be compiler related, but I don't see that;
-> if the "dmb oshld" were strong enough, then it should mean that the
-> subsequent reads to checksum the inode data after the inode data has
-> been DMA'd into memory should be reading the correct values from memory
-> already - but they aren't. And if changing "dmb oshld" to "dsb ld" means
-> that the code can then read the right values, that to me points fairly
-> definitively to a hardware problem.
-> 
-> Now, ext4fs is pretty good at checksumming the metadata in the
-> filesystem - each inode is individually checksummed with CRC32C and two
-> 16-bit halves are stored in each inode. Directories are also
-> checksummed. ext4fs validates the inode checksum on every ext4_iget()
-> call. Do other filesystems do similar?
 
-XFS and ext4 both validate the ondisk csum when constructing their
-incore inodes, and set them when flushing the incore inode back to disk.
 
-I vaguely wonder if there's something else going on here, like ... a
-background memory reclaim thread running on one cpu writes out an inode
-core with new checksum (because reading the file bumped the atime), and
-then another cpu comes along and has to reconstitute the (just
-reclaimed) incore inode, but for whatever reason doesn't get the version
-that the other cpu just wrote?
-
-That's like 130% speculative though, and note that I have no idea what
-the "outer shareable" domain[1] is.
-
-[1] https://developer.arm.com/docs/ddi0597/h/base-instructions-alphabetic-order/dmb-data-memory-barrier
-
-> Anyway, here is the patch I'm currently running, which _seems_ so far
-> to be the minimal fix for my problems. Will thinks that this is hiding
-> the real problem by adding barriers, but I don't see there's much
-> choice but to apply this - I don't see what other debugging could be
-> done without the use of expensive hardware simulation, or detailed
-> hardware level tracing - the kind of which a silicon vendor or ARM Ltd
-> would have.
-
-(FWIW I haven't seen checksum errors on xfs or ext4 on arm64, though
-most of my testing is relegated to beating on a raspberry pi very
-slowly...)
-
-> I'm at the end of what I can do with this; I'm going to keep this patch
-> in my kernel, since it fixes it for me.
-
-Well if you've managed to hit this on multiple different machines after
-a long soak time, I wonder how many other people will trip over this too.
-It wouldn't be the first time a fs stunts performance to avoid
-corruption. ;)
-
-> Will would like a reliable reproducer - yes, that would be ideal, but
-> I'm afraid that's a mamoth task in itself. It's taken a year to find
-> this method of reproducing it.
-> 
-> There's also the matter that in one case I've seen, the ext4 checksum
-> has been wrong. The subsequent hexdump has been correct, and the post-
-> hexdump checksum recalculation has remained incorrect - and the same
-> value as the first incorrect checksum. However, the inode with the
-> _same_ checksum has subsequently validated correctly by the kernel and
-> by e2fsck. I can not explain this.
-
-Strange.  You're just using the same ext4_inode_csum() that everything
-else uses, right?
-
---D
-
-> 
-> diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
-> index ff50dd731852..be63c47aecc4 100644
-> --- a/arch/arm64/include/asm/io.h
-> +++ b/arch/arm64/include/asm/io.h
-> @@ -95,7 +95,7 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
->  ({									\
->  	unsigned long tmp;						\
->  									\
-> -	dma_rmb();								\
-> +	rmb();								\
->  									\
->  	/*								\
->  	 * Create a dummy control dependency from the IO read to any	\
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+So practically 2nd message onwards won't block in wait_for_completion
+> which means return from smc/hvc is actually completion too which is clear=
+ly
+> wrong or am I missing something ?
+>
+> Jim, please confirm either way. If you agree I can add the below snippet,
+> no need to repost.
+>
+> Regards,
+> Sudeep
+>
+> --
+> diff --git i/drivers/firmware/arm_scmi/smc.c w/drivers/firmware/arm_scmi/=
+smc.c
+> index fd41d436e34b..86eac0831d3c 100644
+> --- i/drivers/firmware/arm_scmi/smc.c
+> +++ w/drivers/firmware/arm_scmi/smc.c
+> @@ -144,6 +145,8 @@ static int smc_send_message(struct scmi_chan_info *ci=
+nfo,
+>
+>         shmem_tx_prepare(scmi_info->shmem, xfer);
+>
+> +       if (scmi_info->irq)
+> +               reinit_completion(&scmi_info->tx_complete);
+>         arm_smccc_1_1_invoke(scmi_info->func_id, 0, 0, 0, 0, 0, 0, 0, &re=
+s);
+>         if (scmi_info->irq)
+>                 wait_for_completion(&scmi_info->tx_complete);
+>
+>
+> This electronic communication and the information and any files transmitt=
+ed with it, or attached to it, are confidential and are intended solely for=
+ the use of the individual or entity to whom it is addressed and may contai=
+n information that is confidential, legally privileged, protected by privac=
+y laws, or otherwise restricted from disclosure to anyone else. If you are =
+not the intended recipient or the person responsible for delivering the e-m=
+ail to the intended recipient, you are hereby notified that any use, copyin=
+g, distributing, dissemination, forwarding, printing, or copying of this e-=
+mail is strictly prohibited. If you received this e-mail in error, please r=
+eturn the e-mail to the sender, delete it from your computer, and destroy a=
+ny printed copy of it.
