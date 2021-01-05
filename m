@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923222EAA83
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 849E82EAA85
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbhAEMPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:15:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726231AbhAEMPj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:15:39 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D4DC061574;
-        Tue,  5 Jan 2021 04:14:59 -0800 (PST)
-Received: from zn.tnic (p200300ec2f103700516ef90d43f797fe.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:3700:516e:f90d:43f7:97fe])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C4C81EC03CE;
-        Tue,  5 Jan 2021 13:14:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1609848897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=RF566gcx4bAK61IE/QfhQTdQnYQn1pp0i7xMLkNYktk=;
-        b=ATkefP+A8d3f/dc/yazlw9dUeXvMHJ//SfznAbr2iCTSm69LbcHbnIr9MD+MI4Ytqn+zCL
-        FCTQlQ/pOnrgOmEne7o/eGRcaoKaWN3GvBrjkw32SlivHh+7doVO6e4YvXCbzg42LJupJZ
-        YaM3AJxTXn24p+Z/A39HKMdC8KUXKWA=
-Date:   Tue, 5 Jan 2021 13:14:56 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Yang Zhong <yang.zhong@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, tony.luck@intel.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, kyung.min.park@intel.com, x86@kernel.org
-Subject: Re: [PATCH 1/2] Enumerate AVX Vector Neural Network instructions
-Message-ID: <20210105121456.GE28649@zn.tnic>
-References: <20210105004909.42000-1-yang.zhong@intel.com>
- <20210105004909.42000-2-yang.zhong@intel.com>
- <8fa46290-28d8-5f61-1ce4-8e83bf911106@redhat.com>
+        id S1727935AbhAEMQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:16:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726231AbhAEMQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 07:16:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C0552229C;
+        Tue,  5 Jan 2021 12:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609848928;
+        bh=0rbmmR3ReQPovsOtuTvxe8cg7v1K8KmXSbOOlTtcfns=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JdH+68mQjXlgLypOMEbUt6T4g0JvpINZgwGt5Im1IC+J3FbpEVd3xMQs0o92AEaBz
+         8ayThEF76lz768Jl+kr8OL+Po5G2LWNEemS0gXnp3xZeYvqxirGvC3SC0RRdzWYkl6
+         kv6w0WfiGNO5rn3VzWMLyH+MVKECv/AuIQSnzg9x/M/uPiEqXmHXSaDwFA+UYMcpOU
+         4vUdS502O1s1mIiyt3q1kAA2zfDYKc6F7CYKsY8JCTfIFgBC4gpTGcBVnOCWuX3iDi
+         QjMLh408xD64RIGTs1RI4o8wGxka4gN6T7PWhdDURHm51LMAyTmsXESLDPAMCjYVkx
+         BnBLiy3wRvJww==
+Date:   Tue, 5 Jan 2021 13:15:00 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Pavana Sharma <pavana.sharma@digi.com>
+Cc:     kuba@kernel.org, andrew@lunn.ch, ashkan.boldaji@digi.com,
+        clang-built-linux@googlegroups.com, davem@davemloft.net,
+        devicetree@vger.kernel.org, f.fainelli@gmail.com,
+        gregkh@linuxfoundation.org, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        vivien.didelot@gmail.com
+Subject: Re: [net-next PATCH v12 4/4] net: dsa: mv88e6xxx: Add support for
+ mv88e6393x  family of Marvell
+Message-ID: <20210105131343.4d0fff05@nic.cz>
+In-Reply-To: <2c2bb4b92484ce21c0cf43076d6c7921bae7456a.1607685097.git.pavana.sharma@digi.com>
+References: <cover.1607685096.git.pavana.sharma@digi.com>
+        <2c2bb4b92484ce21c0cf43076d6c7921bae7456a.1607685097.git.pavana.sharma@digi.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8fa46290-28d8-5f61-1ce4-8e83bf911106@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 12:47:23PM +0100, Paolo Bonzini wrote:
-> On 05/01/21 01:49, Yang Zhong wrote:
-> > From: Kyung Min Park <kyung.min.park@intel.com>
-> > 
-> > Add AVX version of the Vector Neural Network (VNNI) Instructions.
-> > 
-> > A processor supports AVX VNNI instructions if CPUID.0x07.0x1:EAX[4] is
-> > present. The following instructions are available when this feature is
-> > present.
-> >    1. VPDPBUS: Multiply and Add Unsigned and Signed Bytes
-> >    2. VPDPBUSDS: Multiply and Add Unsigned and Signed Bytes with Saturation
-> >    3. VPDPWSSD: Multiply and Add Signed Word Integers
-> >    4. VPDPWSSDS: Multiply and Add Signed Integers with Saturation
-> > 
-> > The only in-kernel usage of this is kvm passthrough. The CPU feature
-> > flag is shown as "avx_vnni" in /proc/cpuinfo.
-> > 
-> > This instruction is currently documented in the latest "extensions"
-> > manual (ISE). It will appear in the "main" manual (SDM) in the future.
-> > 
-> > Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
-> > Signed-off-by: Yang Zhong <yang.zhong@intel.com>
-> > Reviewed-by: Tony Luck <tony.luck@intel.com>
-> > ---
-> >   arch/x86/include/asm/cpufeatures.h | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> > index f5ef2d5b9231..d10d9962bd9b 100644
-> > --- a/arch/x86/include/asm/cpufeatures.h
-> > +++ b/arch/x86/include/asm/cpufeatures.h
-> > @@ -293,6 +293,7 @@
-> >   #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
-> >   /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
-> > +#define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
-> >   #define X86_FEATURE_AVX512_BF16		(12*32+ 5) /* AVX512 BFLOAT16 instructions */
-> >   /* AMD-defined CPU features, CPUID level 0x80000008 (EBX), word 13 */
-> > 
-> 
-> Boris, is it possible to have a topic branch for this patch?
+On Fri, 11 Dec 2020 22:51:01 +1000
+Pavana Sharma <pavana.sharma@digi.com> wrote:
 
-Just take it through your tree pls.
+> +int mv88e6393x_serdes_irq_enable(struct mv88e6xxx_chip *chip, int port,
+> +				int lane, bool enable)
+> +{
+> +	u8 cmode = chip->ports[port].cmode;
+> +	int err = 0;
+> +
+> +	switch (cmode) {
+> +	case MV88E6XXX_PORT_STS_CMODE_SGMII:
+> +	case MV88E6XXX_PORT_STS_CMODE_1000BASEX:
+> +	case MV88E6XXX_PORT_STS_CMODE_2500BASEX:
+> +	case MV88E6XXX_PORT_STS_CMODE_5GBASER:
+> +	case MV88E6XXX_PORT_STS_CMODE_10GBASER:
+> +		err = mv88e6390_serdes_irq_enable_sgmii(chip, lane, enable);
+> +	}
 
-Acked-by: Borislav Petkov <bp@suse.de>
+This is wrong. IRQ for 5gbase-r and 10gbase-r is enabled differently.
+Please look at how I did it in my proposal
+https://www.mail-archive.com/netdev@vger.kernel.org/msg347854.html
+Please look at the following functions in that patch:
 
-Thx.
+   mv88e6393x_serdes_irq_enable_10g()
+   mv88e6393x_serdes_irq_enable()
+   mv88e6393x_serdes_irq_status_10g()
+   irqreturn_t mv88e6393x_serdes_irq_status()
 
--- 
-Regards/Gruss,
-    Boris.
+and also at the constants added to serdes.h in that patch
 
-https://people.kernel.org/tglx/notes-about-netiquette
+#define MV88E6393X_10G_INT_ENABLE      0x9000
+#define MV88E6393X_10G_INT_LINK_CHANGE BIT(2)
+#define MV88E6393X_10G_INT_STATUS      0x9001
