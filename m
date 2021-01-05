@@ -2,143 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B74D2EA89B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4855A2EA8A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729048AbhAEK0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:26:53 -0500
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:50733 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728012AbhAEK0x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:26:53 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id CAFD17EA;
-        Tue,  5 Jan 2021 05:25:45 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 05 Jan 2021 05:25:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=ubUqM9i9NxTd2MW29CzycCTtGoQ
-        nFRTNu4DW5sQ9V8A=; b=OCFhiGu5aW97oVEbzS8aV8mAAzlb/BNdtdj49bBheMg
-        awlpDSfq1nfENTTwj2lxU9tNvz7lbWZMhLW+k0Vz3HsWIvMm7oc7fJQrxY9hqylZ
-        Ek6hFu6k89RwdXWF94DG3ZLwrKaNoVMy/Ac0G/jFM1Cu6xgSsD1fbVxjNu5xM+w5
-        NhDvxvesHs782bzIOy9tGi2Blbjbtmw+z7Ms6u6JSyMWaJMORvZzTU9cYhha0a57
-        ALc6OvMJxfVCrZfVLNOSoO2DJZ7HDb5OPCtMVECYNPBTZvgHi8ermGcnhRiIH571
-        d1hbznT7pnNUFrMx1JI7Um/xbNI7/g1wq8+ThabAFAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ubUqM9
-        i9NxTd2MW29CzycCTtGoQnFRTNu4DW5sQ9V8A=; b=MUdo9PJFX2nLiJifQkGr+z
-        jjPHkYbzoyTsSIUKVo5VtPmGAw0RVOSArAoNa61jrxC5PfchEPZ0Gw0d14oox7fd
-        SQt56NEFdsGpoWTrmnH2h40x0vO9X8DIkg4q+KAryT3foCLKS5mdsBFPVudD11F7
-        17SqMOp6yU41iNyToPgqiLI2u7A3OL+ti6OJWQdgYqfLfnT0g4H77ED7rJc4QJoS
-        RCaij++jejvqpWQWe+1yeI2Jj7bLlLQVKO84eGwRY9PvKTuRDm8vOImjW2D5GEzh
-        57eD1RBzNiJk8tb5Jx4DLd0pD0rsJAZ4p2dT006QgEq/k+5qugAz+fTLiemZw5BQ
-        ==
-X-ME-Sender: <xms:qD70X4kmLYpX0d6tWU4glr3OCffBkGENjOcQzjUp6Nv0p4jWDTAoHw>
-    <xme:qD70X32aGgL1HHM5424EAj4h7x9IIrkQ6wcoL_flzVjAbdbIi6eMM5e63fsG3UH2n
-    LMLJd4Q_uNeOQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefhedgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:qD70X2ptvJQyydMcSwu696vvOhcnIoIXOe5-f0vkRgs_Q0LuGeQcAw>
-    <xmx:qD70X0k-I60T6E4rixSvjVMJ04uuWY0pJrsy4dIkMSPvfh9kxY-T9Q>
-    <xmx:qD70X23fhleG0yiGoBaxaTIcdRk2avJ6cphFsaxoYAGOP-41SFa2ag>
-    <xmx:qT70XwNfGMLgfSnj6QF--Gt0yIOKlxdDc-zV4hdntxNU5AtY9ynY-oegUPQ>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 99ACA24005C;
-        Tue,  5 Jan 2021 05:25:43 -0500 (EST)
-Date:   Tue, 5 Jan 2021 11:27:08 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] scsi: ufs-qcom: Add one sysfs node to monitor
- performance
-Message-ID: <X/Q+/MSk1d2SW3lA@kroah.com>
-References: <1609816552-16442-1-git-send-email-cang@codeaurora.org>
- <1609816552-16442-3-git-send-email-cang@codeaurora.org>
+        id S1729113AbhAEK23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:28:29 -0500
+Received: from mail-co1nam11on2042.outbound.protection.outlook.com ([40.107.220.42]:35912
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729099AbhAEK22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 05:28:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MglR6e6hJg89YKZ2CwKhARMfz96EUSJpU0uM5eWp5ajmXmcwU9l7DCqd3g8uSfjoqchFoBmRuKHFIzexAHSL07x9HXei8UTC6GXIrjA4zNI0iRZfAjhjwbJCml0xxa49Nr61H3nwbhY4Uxp+aTX0Zft2uv07cpUe/LdFc3Bsu0X03P5txZ/N8m9KRuo0x1F/vObpVrQ4YFmQfyPw+mmPxu3ROtBM3OCs3edAfVXSTUYJnJLX6w2l8aZPbYc99aHKtLeecuYW5joTBUZmA6E0GeeXvccJvYjZ3OU02HZnmnuhXGCmXKn6xtJTbMzQES9S118XDMduLRNZI7opiyt0lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Df/4GF+Pyrd4doSxXC2AtUplCDtBUVY3uTcEooSgyZ8=;
+ b=WQawHe+gXrh4e+L3z59wn+ljWT/5O2J46VBTJ42taASnLPmPTQwclvCkMANfiEQkcJjywIlhuP5sDuO4JOSXN9qLBFRvov7NilRyLLFAsWH8H1wzTSlFrjhdtlRBHs55X0vAmU5PHYcfGHn3Ab0xNPHQnT1OjBHsL2gfmk5PCiWx3P5m9Y6OtpFkCzo3up7jel/0TbmgEX/tueGBwdNnVAG14VFX/kdJkHdKQkfPZiyfsFfqxgRhCXH8EC943Aqz/dU8F/Z0wYUXpul5bNrzkPDQlH6Nfd5XzpYr6xcwTZSoIWUm1nHs07TH3kBjqt/4W6xt/QZAA2pGPWh7VeWMIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Df/4GF+Pyrd4doSxXC2AtUplCDtBUVY3uTcEooSgyZ8=;
+ b=tlLxChHURROGlboAtJnt0C5kjgbwEUh2c5t92bA1fvR58uonY9OEqoat2Ul3PS4tAFW72i1rV22uxllQbEw15gY+UobBpIZ7o20wxkeN9xxZUAiwHinhnctsXphMdsgYuMf3RPyJJJ3EFkG9NqNzMjsWxv01DeyKfO8qLu8ifaU=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB2451.namprd12.prod.outlook.com (2603:10b6:207:4e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19; Tue, 5 Jan
+ 2021 10:27:33 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3742.006; Tue, 5 Jan 2021
+ 10:27:32 +0000
+Subject: Re: [PATCH v2] drm/amdgpu:fix IH overflow on Cz
+To:     Defang Bo <bodefang@126.com>, airlied@linux.ie, daniel@ffwll.ch,
+        alexander.deucher@amd.com
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org
+References: <1609831941-2277695-1-git-send-email-bodefang@126.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <f03d6316-4dfe-4409-8ea1-d1bca8a16360@amd.com>
+Date:   Tue, 5 Jan 2021 11:27:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <1609831941-2277695-1-git-send-email-bodefang@126.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM9P193CA0010.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21e::15) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1609816552-16442-3-git-send-email-cang@codeaurora.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM9P193CA0010.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:21e::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20 via Frontend Transport; Tue, 5 Jan 2021 10:27:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: cfccc9a5-2765-4dba-6961-08d8b1648322
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2451:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB245157B4C07340EA59A3B71D83D10@BL0PR12MB2451.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:854;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RmJXzuMwFYe+BPRDpRFNrfjG7FfBuYtPLQ8P5sbHzoyepgMZjcBy3/foI3R5pcDvvwK4oLwtxdPZYSXeGoiPaEzLuWuAThxafzU+184QwdgafV1tcyQeflRclQ9eH1de98yDsF17Inf0/MQn1GcJ1Luy42KiFroirhT/eak87Y6do3srjHe/dUTl/bKdngsrbh2yEq+ZqArczbNNQL+SJKGd/URd2ANJvTMjTq/BacDi8KssyYsdKv4u8zjeqHrgfaijJBzbP5VN8GBh6jar3yVU7KXeyGuCOnV2nfxAEvX03lXbCI1qYGPJAoGMnuNHutqDvOjPmrfeiOk19OMSl6H/oNsc+/HdiHT/aaPUwwQ+oH9NGZrjfoR4PjLVRUTSq0M8CsvX1hPXCYvcP2QN36DrfeV7JCbx8D6GGFq5t7+UOdnW1CRVYuZjCdm14hycXtCwEp9z1GL2nrIFbXkVtXydjgj2OZ9aeVvNEqD/un9lqZw3lPv4koNWJ/4c8KWp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(346002)(396003)(136003)(8676002)(4326008)(6636002)(52116002)(316002)(6486002)(2616005)(8936002)(6666004)(31696002)(478600001)(5660300002)(36756003)(16526019)(186003)(83380400001)(66946007)(66556008)(66476007)(2906002)(31686004)(86362001)(525324002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V1p3dzU5YzlBcEIveG55Z0VOa203N1lOWE9aaE96N21NbEtlbE9uejN5ZE5T?=
+ =?utf-8?B?QTBoZnpsQ0dEMi9vQXBiMFZwdzdNN1NJMEt4emtYeUZtbTVxZzR6cStLQ2ll?=
+ =?utf-8?B?bk5aSmJtalF1cURrTVlPbkFtWEF2b3AzY000ZkdDaUduN2djQjVnNzc0OERN?=
+ =?utf-8?B?NGxSYkpFTGVLUGYzVjJvUFU2YVVvL3VERmhtRFEvMVd3bUoweEN5SUpjTndu?=
+ =?utf-8?B?VGJrVU5YZWVCbG9VSWlOcUZSUDBmZmxSTVlUa1VCUjM3Q0kyRVREbHpiOGdZ?=
+ =?utf-8?B?NTJOSHV2cUhnY3l5MVNOWmlIYkZjckZGSmhpV3VteTZYU0tuSkY2VWNkbVFF?=
+ =?utf-8?B?OC8zcmxnN1B0dUY2SmpqWTBJeDlwdUMwUVVoY2M1R1FobmtrTDJlcEpQY3ZN?=
+ =?utf-8?B?RVg4OGRLdkQ0QlVaQjArQk1lYlZ1NkYweG1TdmoybUZSc3BJQXJDbW0wZmdQ?=
+ =?utf-8?B?R2x4YlI4WlVCS3gybXdualkvbjhRUlhQREN1SWh1a0doY3hJLzk0em85Sytm?=
+ =?utf-8?B?VkNNdC96NG8zcUIxRGp1WDNrTjJyTFIwSkFWWkZmeFVxbzRTWTRHeFRWaVNV?=
+ =?utf-8?B?MTcvd1k1R1gxdnJEU243dEhMVXZZMWFnOVY2Ykkza0xjaDRoN3dlOVd1OTFJ?=
+ =?utf-8?B?QnU5UUFxTllLT2dqUkowcU56dnYxQmM3VGpRd2tVNEdSazNBTjE5TkY4VHRi?=
+ =?utf-8?B?SHFYekIzcWNoY3JPWDBvTnc4RkliTWJiN1pQZmRQUlJ4Wm81NFZYemQ5VW91?=
+ =?utf-8?B?T08xcyt3eTdRc1hhWUxvd21odzA2b09zcnhiY213a2dod0M0WGowQ09nMnhk?=
+ =?utf-8?B?a2szN3JVVUlzbHk1b1NHOG55QWpPNytiSjdNaG5XVXFLREFoN1hjZEU4blc2?=
+ =?utf-8?B?Y2ROYnBhU1FjTHhHY01tSjZ5eHpmREp2NFAvRTNQaUVqVzF1QTR4RU0rZnJl?=
+ =?utf-8?B?WnVVeHFYOXp6bEZseTNvdWdLYUo1bk5ZeU1kY2NRZ3A2Ly9KKzF2Ull0c1BO?=
+ =?utf-8?B?QW82aGp5TThPUjhkNjdTalpMVzNqVWxvV0hVcy9OaVVjSzNNT0ZPdnBBSkxk?=
+ =?utf-8?B?RTE0SU84QWxMb3A3cWJlL0lUT1FxT2p6NXp0a09MazRmNVRZdXd0WnJUYm13?=
+ =?utf-8?B?ei9XQUtFVCtTOUxBZFcrLzBkdUVvOHFRcElGanpPTjdZSWRuYzlWV24zeVFI?=
+ =?utf-8?B?UlMxTWwzYjMyZHlCSVJ6MGxIeDloeTNaQzFuY0tpUHEwekp0b0k3ZUJnZWZG?=
+ =?utf-8?B?TUx5M25ydE9RZUZJdk50aG03MlJSSXV1b3NCallYUTQraVJ0NVdTejRJQ3FE?=
+ =?utf-8?B?eWJVVWZTTVpUZ2FlTTd6aGh1a1JEVkxMWEQ5cHRaYWZJeDRUZkVKZnRZSitV?=
+ =?utf-8?B?NE5TSmpxbGdqeUVQMlFHYXFla3U2RkgvcUFSUkhMY3lQMUZwTFV2Z3I2bEFR?=
+ =?utf-8?Q?EWQXSNoL?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2021 10:27:32.5992
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: cfccc9a5-2765-4dba-6961-08d8b1648322
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1RlCTqQAG4uYd9SQUczkScWVbsydbp8ny0eX6hmlNR21b2CPYnj+117HjkVN47FW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2451
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, forgot the big problem that I noticed:
+Am 05.01.21 um 08:32 schrieb Defang Bo:
+> Similar to commit <b82175750131>("drm/amdgpu: fix IH overflow on Vega10 v2").
+> When an ring buffer overflow happens the appropriate bit is set in the WPTR
+> register which is also written back to memory. But clearing the bit in the
+> WPTR doesn't trigger another memory writeback.
+>
+> So what can happen is that we end up processing the buffer overflow over and
+> over again because the bit is never cleared. Resulting in a random system
+> lockup because of an infinite loop in an interrupt handler.
 
-On Mon, Jan 04, 2021 at 07:15:51PM -0800, Can Guo wrote:
-> +static ssize_t monitor_show(struct device *dev, struct device_attribute *attr,
-> +			    char *buf)
-> +{
-> +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> +	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	struct ufs_qcom_perf_monitor *mon = &host->monitor;
-> +	unsigned long nr_sec_rd, nr_sec_wr, busy_us_rd, busy_us_wr;
-> +	unsigned long lat_max_rd, lat_min_rd, lat_sum_rd, lat_avg_rd, nr_req_rd;
-> +	unsigned long lat_max_wr, lat_min_wr, lat_sum_wr, lat_avg_wr, nr_req_wr;
-> +	bool is_enabled;
+Really good point. I haven't had time to look into other generations 
+since fixing this for Vega.
+
+One major typo below which needs to be fixed.
+
+>
+> Signed-off-by: Defang Bo <bodefang@126.com>
+> ---
+> Changes since v1:
+> - Modify the code and correct the wrong fix.
+> ---
+> ---
+>   drivers/gpu/drm/amd/amdgpu/cz_ih.c | 38 ++++++++++++++++++++++++--------------
+>   1 file changed, 24 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/cz_ih.c b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+> index 1dca0cabc326..45dd47f45fa2 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+> @@ -190,22 +190,32 @@ static u32 cz_ih_get_wptr(struct amdgpu_device *adev,
+>   			  struct amdgpu_ih_ring *ih)
+>   {
+>   	u32 wptr, tmp;
+> -
 > +
-> +	/*
-> +	 * Don't lock the host lock since user needs to cat the entry very
-> +	 * frequently during performance test, otherwise it may impact the
-> +	 * performance.
+>   	wptr = le32_to_cpu(*ih->wptr_cpu);
+>   
+> -	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
+> -		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
+> -		/* When a ring buffer overflow happen start parsing interrupt
+> -		 * from the last not overwritten vector (wptr + 16). Hopefully
+> -		 * this should allow us to catchup.
+> -		 */
+> -		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
+> -			wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
+> -		ih->rptr = (wptr + 16) & ih->ptr_mask;
+> -		tmp = RREG32(mmIH_RB_CNTL);
+> -		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+> -		WREG32(mmIH_RB_CNTL, tmp);
+> -	}
+> +	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
+> +		goto out;
+> +
+> +	wptr = RREG32(mmIH_RB_CNTL);
+
+That's the wrong register, you need to read the write pointer and not 
+the control register.
+
+Same problem in all other patches.
+
+Regards,
+Christian.
+
+> +
+> +	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
+> +		goto out;
+> +
+> +	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
+> +
+> +	/* When a ring buffer overflow happen start parsing interrupt
+> +	 * from the last not overwritten vector (wptr + 16). Hopefully
+> +	 * this should allow us to catchup.
 > +	 */
-> +	is_enabled = mon->enabled;
-> +	if (!is_enabled)
-> +		goto print_usage;
+> +	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
+> +		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
+> +	ih->rptr = (wptr + 16) & ih->ptr_mask;
+> +	tmp = RREG32(mmIH_RB_CNTL);
+> +	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+> +	WREG32(mmIH_RB_CNTL, tmp);
 > +
-> +	nr_sec_rd = mon->nr_sec_rw[READ];
-> +	nr_sec_wr = mon->nr_sec_rw[WRITE];
-> +	busy_us_rd = ktime_to_us(mon->total_busy[READ]);
-> +	busy_us_wr = ktime_to_us(mon->total_busy[WRITE]);
 > +
-> +	nr_req_rd = mon->nr_req[READ];
-> +	lat_max_rd = ktime_to_us(mon->lat_max[READ]);
-> +	lat_min_rd = ktime_to_us(mon->lat_min[READ]);
-> +	lat_sum_rd = ktime_to_us(mon->lat_sum[READ]);
-> +	lat_avg_rd = lat_sum_rd / nr_req_rd;
-> +
-> +	nr_req_wr = mon->nr_req[WRITE];
-> +	lat_max_wr = ktime_to_us(mon->lat_max[WRITE]);
-> +	lat_min_wr = ktime_to_us(mon->lat_min[WRITE]);
-> +	lat_sum_wr = ktime_to_us(mon->lat_sum[WRITE]);
-> +	lat_avg_wr = lat_sum_wr / nr_req_wr;
-> +
-> +	return scnprintf(buf, PAGE_SIZE, "Read %lu %s %lu us, %lu %s max %lu | min %lu | avg %lu | sum %lu\nWrite %lu %s %lu us, %lu %s max %lu | min %lu | avg %lu | sum %lu\n",
-> +		 nr_sec_rd, "sectors (in 512 bytes) in ", busy_us_rd,
-> +		 nr_req_rd, "read reqs completed, latencies in us: ",
-> +		 lat_max_rd, lat_min_rd, lat_avg_rd, lat_sum_rd,
-> +		 nr_sec_wr, "sectors (in 512 bytes) in ", busy_us_wr,
-> +		 nr_req_wr, "write reqs completed, latencies in us: ",
-> +		 lat_max_wr, lat_min_wr, lat_avg_wr, lat_sum_wr);
+> +out:
+>   	return (wptr & ih->ptr_mask);
+>   }
+>   
 
-sysfs is one-value-per-file, not
-throw-everything-in-one-file-and-hope-userspace-can-parse-it.
-
-This is not acceptable at all.  Why not just use debugfs for stats like
-this?
-
-Also, use sysfs_emit() for any new sysfs files please.
-
-thanks,
-
-greg k-h
