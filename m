@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0AA2EB55A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B87D2EB55C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:27:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730429AbhAEW0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 17:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
+        id S1730697AbhAEW0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 17:26:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728623AbhAEW0M (ORCPT
+        with ESMTP id S1727914AbhAEW0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 17:26:12 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285EDC061795
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 14:25:32 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 23so2121715lfg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 14:25:32 -0800 (PST)
+        Tue, 5 Jan 2021 17:26:42 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D413C061574;
+        Tue,  5 Jan 2021 14:26:02 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id 7so978585qtp.1;
+        Tue, 05 Jan 2021 14:26:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FEMLTsW4Oythj14GTJ7jU31wZZ5hKMA2Ny2/8Kp+qyU=;
-        b=luuIkypBrdkLIJOh5VdpP1r6bU5h6/MvOS5HZ7fLbk9J2aQRLUvth1Jdm9+VVAqe8C
-         U0tkhXeOLewRlAW31feXuG4kPxjy636EfksbkExqGVKVtnX3mfstNWlZSril2qDUb2m6
-         GYMkDXMUc/v8/5D94qGgC8qghk3jlabOqKR7kENcAEnBo+nGa5seXF7H3OIVRagD0iBj
-         1fFNkZp0UWZABEoRQXFXxdjpDH9TDByAVEnmAyGVda65Ld1hB6f/BctcflMp0ofY3wKy
-         7FsivcyPTyk6KgwVfbozByw7W+vR8TliaSm4JBY6zYYJWulq0fDN1J4ziG4c0+BwQf/H
-         IEIw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=juELTIvRTW/b337nrNxecDrCQElvIPPbt17rQzuvz4Y=;
+        b=GWOTgxfTuwVusuw6FiZSg4Lg14sGKM28Wa5zwlqPf0jkJ/qh3SnmrsaYAYKAOzat3J
+         DyNe9gobWbe7Uyya1GgTAqbUvv/MnUfbytb0+Jv8QA0lgucsCY5DRgiFzwJAoB9W82dm
+         qQoizwtdGpUNtuI5zyW4/mC8O1Oj/+hqpZVnV1kijtwq2ehmPOXsGKN62+5zixBqcgoo
+         CoLMvbJkrLtMYqftrc1TmronQLD9An8u9svRo6B1hqWa+ZDtuFDSmM0CwmJVq6MdmjJn
+         TQoJqdqhfvwemWYmN+0uqfG2gq4aYaiCNoP6JTRlVwKU3haHxVvx3rGKkFPFjY2LN4tz
+         W0AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FEMLTsW4Oythj14GTJ7jU31wZZ5hKMA2Ny2/8Kp+qyU=;
-        b=KEq+eeNtnage/vLhFOGYIQpcHfG9L/ikbxyKlyRxsbgy8WuqG1XDfH1siwjGijhOqr
-         9WQ2kEa5hleMqSzCZTLfYtmHc5OOz/dbM2yUtLTvsELrHXoaHFbTLw+hp43VMqvh6Uqd
-         i6bZT4GoH0gm/VdU9mzV7i0/sDxQdwtggm6xRJi9G3X6br5OiZDSpBLhXIq0QjFH9RVf
-         rfbAxgVJq6KOx89DaDLfp+vCs0waaLu72o7eBn8kpGOcay7RSJ3sawp4Ol45TxC8pKp2
-         5m9/usQEdJ5AJHVI2DtBJ8jg2ZxBgjOxUceXaNRdO9QasBIYjvRXK+6IcSiimXKIBml+
-         sY0w==
-X-Gm-Message-State: AOAM531ULe95WEQtNuQrdT3v79nhFuU1W0dooyX7yXE+KEK526M4GfYM
-        EzwR6UzGwR6AHJ7/8590ZMWS8jjjqK9MIkCNRBYDqidTy2o=
-X-Google-Smtp-Source: ABdhPJzNspcIZCgj+WaYvpSErvdW9Yg+x+bmKacIit/Eo6Mpg+DwDxpilNb61mDmzj/m814bywHFeTHSXkOEdJyUmM0=
-X-Received: by 2002:a19:495d:: with SMTP id l29mr544766lfj.465.1609885530724;
- Tue, 05 Jan 2021 14:25:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=juELTIvRTW/b337nrNxecDrCQElvIPPbt17rQzuvz4Y=;
+        b=iSDHt+Sz+IVCGb3ug+m5hbJ/jQ9AfgQguv6XxkACPeXleVQbtdYBJJhEpdpXvAdpd3
+         9MYmMdfAP1avEMKRICk/WeECqWhYRYdB5L8CqEnY3fbRRHmP0laVo55afVbOI+YEorMe
+         FTEOBEewt4rVOqSeg4cmyHAsFSA6tEg5vKAlMST069giHsk+88MPGTsmbFxek0vZ9677
+         15SQW1Gkwf89XHrpBUmy/MzOJqJaut26z5l81J5Zc+s9HPUBqvZ1ioAECFThoZvJAjuC
+         oo3kdx8QdK8MBe7nblHIpHDiDWVnzoDehkwt8ui/s7VH5cq7vjhjbQs+pQnzQhsserIh
+         ek0A==
+X-Gm-Message-State: AOAM5300bKobX1SeufJmnJ5qGSZixvmUJlWrMHF/tuE1QX41o9TEcn+I
+        9YBB2pEfdYgH4QjiqN89Vmo=
+X-Google-Smtp-Source: ABdhPJzSHzxWG2wWCzL2MHtNEIci/KhpgKohC9VkZGWo+zE3s9cxhDKpa0mREieHj0kKOedz18nthA==
+X-Received: by 2002:aed:2b45:: with SMTP id p63mr1582005qtd.111.1609885561863;
+        Tue, 05 Jan 2021 14:26:01 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id n4sm330015qtl.22.2021.01.05.14.26.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 14:26:00 -0800 (PST)
+Date:   Tue, 5 Jan 2021 15:25:59 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     trix@redhat.com
+Cc:     sfrench@samba.org, ndesaulniers@google.com, aaptel@suse.com,
+        palcantara@suse.de, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] cifs: check pointer before freeing
+Message-ID: <20210105222559.GA4118247@ubuntu-m3-large-x86>
+References: <20210105202126.2879650-1-trix@redhat.com>
 MIME-Version: 1.0
-References: <20201230154624.714388-1-arnd@kernel.org>
-In-Reply-To: <20201230154624.714388-1-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 5 Jan 2021 23:25:19 +0100
-Message-ID: <CACRpkdbTsUtu-eow4iSiD-hWA_t_OAt41PqFMiG30eAfvcwrBA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: nomadik: remove an unused variable
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Halaney <ajhalaney@gmail.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Ding Xiang <dingxiang@cmss.chinamobile.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105202126.2879650-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 4:46 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Tue, Jan 05, 2021 at 12:21:26PM -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis reports this problem
+> 
+> dfs_cache.c:591:2: warning: Argument to kfree() is a constant address
+>   (18446744073709551614), which is not memory allocated by malloc()
+>         kfree(vi);
+>         ^~~~~~~~~
+> 
+> In dfs_cache_del_vol() the volume info pointer 'vi' being freed
+> is the return of a call to find_vol().  The large constant address
+> is find_vol() returning an error.
+> 
+> Add an error check to dfs_cache_del_vol() similar to the one done
+> in dfs_cache_update_vol().
+> 
+> Fixes: 54be1f6c1c37 ("cifs: Add DFS cache routines")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> A recent patch added a local variable twice:
->
-> drivers/pinctrl/nomadik/pinctrl-nomadik.c:953:8: error: unused variable 'wake' [-Werror,-Wunused-variable]
->
-> Remove the unused outer declaration
->
-> Fixes: f3925032d7fd ("pinctrl: nomadik: Use irq_has_action()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-I got an identical patch from Nathan Chancellor on dec 29 :D
-
-I'll add your reported-by and Andrews tags.
-
-Yours,
-Linus Walleij
+> ---
+>  fs/cifs/dfs_cache.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/cifs/dfs_cache.c b/fs/cifs/dfs_cache.c
+> index 6ad6ba5f6ebe..0fdb0de7ff86 100644
+> --- a/fs/cifs/dfs_cache.c
+> +++ b/fs/cifs/dfs_cache.c
+> @@ -1260,7 +1260,8 @@ void dfs_cache_del_vol(const char *fullpath)
+>  	vi = find_vol(fullpath);
+>  	spin_unlock(&vol_list_lock);
+>  
+> -	kref_put(&vi->refcnt, vol_release);
+> +	if (!IS_ERR(vi))
+> +		kref_put(&vi->refcnt, vol_release);
+>  }
+>  
+>  /**
+> -- 
+> 2.27.0
+> 
