@@ -2,156 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEDC2EA7C6
+	by mail.lfdr.de (Postfix) with ESMTP id 32C7F2EA7C5
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728262AbhAEJlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:41:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57434 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727871AbhAEJlI (ORCPT
+        id S1728066AbhAEJkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:40:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727725AbhAEJkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:41:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609839581;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a9GY3k7qYcAOAzWTuR5xc+9LJ5x2f7CmJLEuHkNfjAg=;
-        b=fe+L2nHDYdahbHU2z1b7UfeCzI78ytMDKMDIg6Mwh/dlbeKkrSSLb2cuOZfZTJYKa6748F
-        Da+5OX0F4V6cQmPxSIj62yNzPN9QIOruXG83m/aCD/4xSmPN3m+irvuebm1nGGlMR3hMFB
-        GsR2EYUvGn6iQWjPl8ng9wir/dCHuf8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-73-J0kE12EeOROLHktCQJ6qww-1; Tue, 05 Jan 2021 04:39:39 -0500
-X-MC-Unique: J0kE12EeOROLHktCQJ6qww-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0EB0800D62;
-        Tue,  5 Jan 2021 09:39:36 +0000 (UTC)
-Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 28F0E60873;
-        Tue,  5 Jan 2021 09:39:26 +0000 (UTC)
-Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
-To:     Liang Li <liliang324@gmail.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Tue, 5 Jan 2021 04:40:20 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A43C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 01:39:40 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id o17so71112569lfg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 01:39:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=i2OQSP8J84ALBsEAvjQwanW64SI0jNYanTtGLf4k6pk=;
+        b=HEGsym/m2D3XZVcE9neY09JeOa1OmfrRG+7sxaN4x4ohoDWwDRZhrAArDwLi1fwV4b
+         n7ARQzRJRBxeU9MGYfIaOUgtRVHULXYHuRsBrSNaFx2hoFpyN/mS6Ar/Fmxc/CnRVHM0
+         iYe3WEfAQ2ngN/QZ71I4wJSUA392S0RdXnP/SzoDDlfDsLw2fWw72J4b8+C/nC0zE8F4
+         4bBD9k5GX0teImtAHfy1NtKu0cRStrqyRN9hrubT6DcfI/UNEFT+pWW08AsqjyzIM865
+         fWXWogRlzqb8mKHNopuQoo4nz5yfhg+/b8VP9wN8R5kXtyzbYft+KEHFYGhasHWVkWOt
+         Tcpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=i2OQSP8J84ALBsEAvjQwanW64SI0jNYanTtGLf4k6pk=;
+        b=DUlNoFs2/8g+w/3eDWZ4/WJEs/hfXS44J0oKDfNkEVOoXJwiYIqhOXdW7hq5AXZvNQ
+         TkVNOLe59kBO0wjJ9G/VlAevxijwASCyrTFIRKcstfVlFuYiAM1aEJroqc9cAj1I0JeR
+         1PObkS1qnjjopDjjrOQTD1sDNesrmcZhyIBJ0zMkBmNqHEwq5ONhk0DV96AU4vK9pOf4
+         R0++GvIu+1b6HVMjYHk1pybE0QpZ/Y19wUbQ+b4+RYU//EnQPs26xc/urZdNUYNuFu92
+         wnQdqVMDM1CQ3/Ou3FjHzZEZXp5U4PX20ZhOMs2NRa1tE550Ex/L/lI3qY4gib5V6vm+
+         UCUA==
+X-Gm-Message-State: AOAM530sIHkD6uHt3iTfSRjo6lhSTqy52AzTyWt4etduNCJ44BK9Sw5d
+        ci2+XiORyrvVPHGAgBPM+uNZYjacMcuBBGzveFjShQlg
+X-Google-Smtp-Source: ABdhPJw3BgRE3gSvQc/Fh6/SsVhA0l3Jkse4uAPKN9VCXwMQx1yufbP7YdJ7cyJadCH5HsXqUASTq4WOcMkonn/2srY=
+X-Received: by 2002:a05:651c:22b:: with SMTP id z11mr36244037ljn.38.1609839578767;
+ Tue, 05 Jan 2021 01:39:38 -0800 (PST)
+MIME-Version: 1.0
+References: <a5ba7bdf-8510-d0a0-9c22-ec1b81019982@intel.com>
+ <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com> <6bfcc500-7c11-f66a-26ea-e8b8bcc79e28@intel.com>
+ <20210105092037.GY13207@dhcp22.suse.cz> <71953119-06ff-0bb8-1879-09e24bf80446@redhat.com>
+In-Reply-To: <71953119-06ff-0bb8-1879-09e24bf80446@redhat.com>
+From:   Liang Li <liliang324@gmail.com>
+Date:   Tue, 5 Jan 2021 17:39:27 +0800
+Message-ID: <CA+2MQi-9CmtRoPmOcjpfNt53wkAzF9JB=OE_fx8SARTVe_JR=w@mail.gmail.com>
+Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page
+ allocation for __GFP_ZERO
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
         Mel Gorman <mgorman@techsingularity.net>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Dan Williams <dan.j.williams@intel.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
         Liang Li <liliangleo@didiglobal.com>,
         linux-mm <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
         virtualization@lists.linux-foundation.org
-References: <CA+2MQi_C-PTqyrqBprhtGBAiDBnPQBzwu6hvyuk+QiKy0L3sHw@mail.gmail.com>
- <96BB0656-F234-4634-853E-E2A747B6ECDB@redhat.com>
- <CA+2MQi_O47B8zOa_TwZqzRsS0LFoPS77+61mUV=yT1U3sa6xQw@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <eea984f8-dbff-35d3-2c93-db8dc4b700c5@redhat.com>
-Date:   Tue, 5 Jan 2021 10:39:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <CA+2MQi_O47B8zOa_TwZqzRsS0LFoPS77+61mUV=yT1U3sa6xQw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.01.21 03:14, Liang Li wrote:
->>>>> In our production environment, there are three main applications have such
->>>>> requirement, one is QEMU [creating a VM with SR-IOV passthrough device],
->>>>> anther other two are DPDK related applications, DPDK OVS and SPDK vhost,
->>>>> for best performance, they populate memory when starting up. For SPDK vhost,
->>>>> we make use of the VHOST_USER_GET/SET_INFLIGHT_FD feature for
->>>>> vhost 'live' upgrade, which is done by killing the old process and
->>>>> starting a new
->>>>> one with the new binary. In this case, we want the new process started as quick
->>>>> as possible to shorten the service downtime. We really enable this feature
->>>>> to speed up startup time for them  :)
->>
->> Am I wrong or does using hugeltbfs/tmpfs ... i.e., a file not-deleted between shutting down the old instances and firing up the new instance just solve this issue?
-> 
-> You are right, it works for the SPDK vhost upgrade case.
-> 
->>
->>>>
->>>> Thanks for info on the use case!
->>>>
->>>> All of these use cases either already use, or could use, huge pages
->>>> IMHO. It's not your ordinary proprietary gaming app :) This is where
->>>> pre-zeroing of huge pages could already help.
->>>
->>> You are welcome.  For some historical reason, some of our services are
->>> not using hugetlbfs, that is why I didn't start with hugetlbfs.
->>>
->>>> Just wondering, wouldn't it be possible to use tmpfs/hugetlbfs ...
->>>> creating a file and pre-zeroing it from another process, or am I missing
->>>> something important? At least for QEMU this should work AFAIK, where you
->>>> can just pass the file to be use using memory-backend-file.
->>>>
->>> If using another process to create a file, we can offload the overhead to
->>> another process, and there is no need to pre-zeroing it's content, just
->>> populating the memory is enough.
->>
->> Right, if non-zero memory can be tolerated (e.g., for vms usually has to).
-> 
-> I mean there is no need to pre-zeroing the file content obviously in user space,
-> the kernel will do it when populating the memory.
-> 
->>> If we do it that way, then how to determine the size of the file? it depends
->>> on the RAM size of the VM the customer buys.
->>> Maybe we can create a file
->>> large enough in advance and truncate it to the right size just before the
->>> VM is created. Then, how many large files should be created on a host?
->>
->> That‘s mostly already existing scheduling logic, no? (How many vms can I put onto a specific machine eventually)
-> 
-> It depends on how the scheduling component is designed. Yes, you can put
-> 10 VMs with 4C8G(4CPU, 8G RAM) on a host and 20 VMs with 2C4G on
-> another one. But if one type of them, e.g. 4C8G are sold out, customers
-> can't by more 4C8G VM while there are some free 2C4G VMs, the resource
-> reserved for them can be provided as 4C8G VMs
-> 
+On Tue, Jan 5, 2021 at 5:30 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 05.01.21 10:20, Michal Hocko wrote:
+> > On Mon 04-01-21 15:00:31, Dave Hansen wrote:
+> >> On 1/4/21 12:11 PM, David Hildenbrand wrote:
+> >>>> Yeah, it certainly can't be the default, but it *is* useful for
+> >>>> thing where we know that there are no cache benefits to zeroing
+> >>>> close to where the memory is allocated.
+> >>>>
+> >>>> The trick is opting into it somehow, either in a process or a VMA.
+> >>>>
+> >>> The patch set is mostly trying to optimize starting a new process. So
+> >>> process/vma doesn=E2=80=98t really work.
+> >>
+> >> Let's say you have a system-wide tunable that says: pre-zero pages and
+> >> keep 10GB of them around.  Then, you opt-in a process to being allowed
+> >> to dip into that pool with a process-wide flag or an madvise() call.
+> >> You could even have the flag be inherited across execve() if you wante=
+d
+> >> to have helper apps be able to set the policy and access the pool like
+> >> how numactl works.
+> >
+> > While possible, it sounds quite heavy weight to me. Page allocator woul=
+d
+> > have to somehow maintain those pre-zeroed pages. This pool will also
+> > become a very scarce resource very soon because everybody just want to
+> > run faster. So this would open many more interesting questions.
+>
+> Agreed.
+>
+> >
+> > A global knob with all or nothing sounds like an easier to use and
+> > maintain solution to me.
+>
+> I mean, that brings me back to my original suggestion: just use
+> hugetlbfs and implement some sort of pre-zeroing there (worker thread,
+> whatsoever). Most vfio users should already be better of using hugepages.
+>
+> It's a "pool of pages" already. Selected users use it. I really don't
+> see a need to extend the buddy with something like that.
+>
 
-1. You can, just the startup time will be a little slower? E.g., grow
-pre-allocated 4G file to 8G.
+OK, since most people prefer hugetlbfs, I will send another revision for th=
+is.
 
-2. Or let's be creative: teach QEMU to construct a single
-RAMBlock/MemoryRegion out of multiple tmpfs files. Works as long as you
-don't go crazy on different VM sizes / size differences.
-
-3. In your example above, you can dynamically rebalance as VMs are
-getting sold, to make sure you always have "big ones" lying around you
-can shrink on demand.
-
-> 
-> You must know there are a lot of functions in the kernel which can
-> be done in userspace. e.g. Some of the device emulations like APIC,
-> vhost-net backend which has userspace implementation.   :)
-> Bad or not depends on the benefits the solution brings.
-> From the viewpoint of a user space application, the kernel should
-> provide high performance memory management service. That's why
-> I think it should be done in the kernel.
-
-As I expressed a couple of times already, I don't see why using
-hugetlbfs and implementing some sort of pre-zeroing there isn't sufficient.
-
-We really don't *want* complicated things deep down in the mm core if
-there are reasonable alternatives.
-
--- 
-Thanks,
-
-David / dhildenb
-
+Thanks
+Liang
