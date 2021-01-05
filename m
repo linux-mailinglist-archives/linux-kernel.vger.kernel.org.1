@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783932EA72A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CCF2EA6DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbhAEJRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:17:18 -0500
-Received: from m15111.mail.126.com ([220.181.15.111]:60472 "EHLO
-        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726602AbhAEJRR (ORCPT
+        id S1726982AbhAEJBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:01:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725952AbhAEJBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:17:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=D060oaWgS+D6xfgF0c
-        eaNFL97opPTlhJKxxlK74kGq0=; b=ejy+qPLncUfCRidg8RsJ5pVk9B8YHfZtw9
-        MVN/N4PnD48LoWNX4wr0wOqohsvtE97ddE1fuoY/g5mcQJbjN5xgeYNNrU94N0re
-        5dzCQ7Y20rRddO6DLUavaEWpmy4tmZqr8TeFOQpOR8lj2HPEpuGfhwSdSwri1gWx
-        +4KD0QjWU=
-Received: from localhost.localdomain (unknown [36.112.86.14])
-        by smtp1 (Coremail) with SMTP id C8mowACHykTbF_RfhyZlNQ--.58132S2;
-        Tue, 05 Jan 2021 15:40:11 +0800 (CST)
-From:   Defang Bo <bodefang@126.com>
-To:     airlied@linux.ie, daniel@ffwll.ch
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Defang Bo <bodefang@126.com>
-Subject: [PATCH] drm/amdgpu:fix IH overflow on Iceland
-Date:   Tue,  5 Jan 2021 15:40:01 +0800
-Message-Id: <1609832401-2281870-1-git-send-email-bodefang@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: C8mowACHykTbF_RfhyZlNQ--.58132S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr1rWF45XF1xurWDtFy7ZFb_yoW8Kw47pa
-        1Sq3s09r1Iyr12yryfZ3Z7uFn8Cw1vgFWfGryDJw12gF4UJa4vgry3Jayaqry5tFZakFW7
-        trZIg3y5W3sFqrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRO6pQUUUUU=
-X-Originating-IP: [36.112.86.14]
-X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbi6xsR11pD9eW2JgAAsv
+        Tue, 5 Jan 2021 04:01:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0241C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 01:00:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=zkGwQVpT36gCI4ARYhJdLse+sYnJDQpho9D+RW3CCPM=; b=BVW+TM2mvKNW1RESBNOXWft0Pg
+        9H3XdzAjO68uKY3mRqtw8+LDVgJ/qGl94Aw/ZY0QKKCyncZ/yg13G9OOwJpGD93a6qoEb4h+0NPjK
+        TsujGi532VRiW94THx0KaicmsBy5GOUEf/FjnO9CAlnxT3iMd1h/e+ma/UDjzbQJJExRPY+saJ4Hy
+        dbfoygpjwCz9wgjLRL1T26Sa9kLUOC13GJtRrG7aDjM5irv4W6mb/FPHV0DifcS9QrZoPZf5uBwza
+        El8swWSWu1wdaBS+6Eu1V+AqPGikkRmNQArslrVNRchFrIT/Tgklh8NHMcDavmyHYZbDCuHA33xAo
+        FDq/I7RA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kwiB8-0013NO-Lt; Tue, 05 Jan 2021 08:59:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 42181305815;
+        Tue,  5 Jan 2021 09:58:57 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2BB4B20CBF47D; Tue,  5 Jan 2021 09:58:57 +0100 (CET)
+Date:   Tue, 5 Jan 2021 09:58:57 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Nadav Amit <nadav.amit@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
+ writeprotect
+Message-ID: <20210105085857.GE3040@hirez.programming.kicks-ass.net>
+References: <20201225092529.3228466-1-namit@vmware.com>
+ <20201225092529.3228466-2-namit@vmware.com>
+ <20210104122227.GL3021@hirez.programming.kicks-ass.net>
+ <X/NrdnoDHgFd0Ku1@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <X/NrdnoDHgFd0Ku1@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to commit <b82175750131>("drm/amdgpu: fix IH overflow on Vega10 v2")
-When an ring buffer overflow happens the appropriate bit is set in the WPTR
-register which is also written back to memory. But clearing the bit in the
-WPTR doesn't trigger another memory writeback.
+On Mon, Jan 04, 2021 at 02:24:38PM -0500, Andrea Arcangeli wrote:
+> On Mon, Jan 04, 2021 at 01:22:27PM +0100, Peter Zijlstra wrote:
+> > On Fri, Dec 25, 2020 at 01:25:28AM -0800, Nadav Amit wrote:
+> > 
+> > > The scenario that happens in selftests/vm/userfaultfd is as follows:
+> > > 
+> > > cpu0				cpu1			cpu2
+> > > ----				----			----
+> > > 							[ Writable PTE
+> > > 							  cached in TLB ]
+> > > userfaultfd_writeprotect()
+> > > [ write-*unprotect* ]
+> > > mwriteprotect_range()
+> > > mmap_read_lock()
+> > > change_protection()
+> > > 
+> > > change_protection_range()
+> > > ...
+> > > change_pte_range()
+> > > [ *clear* “write”-bit ]
+> > > [ defer TLB flushes ]
+> > > 				[ page-fault ]
+> > > 				...
+> > > 				wp_page_copy()
+> > > 				 cow_user_page()
+> > > 				  [ copy page ]
+> > > 							[ write to old
+> > > 							  page ]
+> > > 				...
+> > > 				 set_pte_at_notify()
+> > 
+> > Yuck!
+> > 
+> 
+> Note, the above was posted before we figured out the details so it
+> wasn't showing the real deferred tlb flush that caused problems (the
+> one showed on the left causes zero issues).
+> 
+> The problematic one not pictured is the one of the wrprotect that has
+> to be running in another CPU which is also isn't picture above. More
+> accurate traces are posted later in the thread.
 
-So what can happen is that we end up processing the buffer overflow over and
-over again because the bit is never cleared. Resulting in a random system
-lockup because of an infinite loop in an interrupt handler.
+Lets assume CPU0 does a read-lock, W -> RO with deferred flush.
 
-Signed-off-by: Defang Bo <bodefang@126.com>
----
- drivers/gpu/drm/amd/amdgpu/iceland_ih.c | 37 +++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 13 deletions(-)
+> > Isn't this all rather similar to the problem that resulted in the
+> > tlb_flush_pending mess?
+> > 
+> > I still think that's all fundamentally buggered, the much saner solution
+> > (IMO) would've been to make things wait for the pending flush, instead
+> 
+> How do intend you wait in PT lock while the writer also has to take PT
+> lock repeatedly before it can do wake_up_var?
+> 
+> If you release the PT lock before calling wait_tlb_flush_pending it
+> all falls apart again.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
-index a13dd9a51149..d90f9000a445 100644
---- a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
-+++ b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
-@@ -193,19 +193,30 @@ static u32 iceland_ih_get_wptr(struct amdgpu_device *adev,
- 
- 	wptr = le32_to_cpu(*ih->wptr_cpu);
- 
--	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
--		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
--		/* When a ring buffer overflow happen start parsing interrupt
--		 * from the last not overwritten vector (wptr + 16). Hopefully
--		 * this should allow us to catchup.
--		 */
--		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
--			 wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
--		ih->rptr = (wptr + 16) & ih->ptr_mask;
--		tmp = RREG32(mmIH_RB_CNTL);
--		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
--		WREG32(mmIH_RB_CNTL, tmp);
--	}
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	wptr = RREG32(mmIH_RB_CNTL);
-+
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+
-+
-+	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
-+	/* When a ring buffer overflow happen start parsing interrupt
-+	 * from the last not overwritten vector (wptr + 16). Hopefully
-+	 * this should allow us to catchup.
-+	 */
-+	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
-+		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
-+	ih->rptr = (wptr + 16) & ih->ptr_mask;
-+	tmp = RREG32(mmIH_RB_CNTL);
-+	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
-+	WREG32(mmIH_RB_CNTL, tmp);
-+
-+
-+out:
- 	return (wptr & ih->ptr_mask);
- }
- 
--- 
-2.7.4
+I suppose you can check for pending, if found, release lock, wait for 0,
+and re-take the fault?
 
+> This I guess explains why a local pte/hugepmd smp local invlpg is the
+> only working solution for this issue, similarly to how it's done in rmap.
+
+In that case a local invalidate on CPU1 simply doesn't help anything.
+
+CPU1 needs to do a global invalidate or wait for the in-progress one to
+complete, such that CPU2 is sure to not have a W entry left before CPU1
+goes and copies the page.
