@@ -2,129 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239992EA937
+	by mail.lfdr.de (Postfix) with ESMTP id 901232EA938
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728889AbhAEKwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:52:17 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:4438 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728048AbhAEKwQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:52:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1609843937; x=1641379937;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=VTy5ZAV4gN8Vc803pdXcbifQcOM+i5GU7QrT5KV5nQk=;
-  b=Yyo76unenFE0kkpXL+lGusJTlOLeWvlXrXS4cZTyXkygxZTqT1mxdf1c
-   fTPz5JyDzlB5zLEzS5TIgpMcwVwPFoLcTmhSIrn+0+2T4Ml4IQ4NkDw2c
-   AjC5NQUFv/QB3tEhOROtp7qDDpPCnqHxbk+K1jLIi/t+QKTY/8qJaTIXH
-   E=;
-X-IronPort-AV: E=Sophos;i="5.78,476,1599523200"; 
-   d="scan'208";a="108306680"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 05 Jan 2021 10:51:30 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id 11F1CA065D;
-        Tue,  5 Jan 2021 10:51:29 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.68) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 Jan 2021 10:51:22 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     SeongJae Park <sjpark@amazon.com>, <stable@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, <doebel@amazon.de>,
-        <aams@amazon.de>, <mku@amazon.de>, <jgross@suse.com>,
-        <julien@xen.org>, <wipawel@amazon.de>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/5] Backport of patch series for stable 4.4 branch
-Date:   Tue, 5 Jan 2021 11:51:07 +0100
-Message-ID: <20210105105107.3564-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <X/RC3ghc7u4uPIjT@kroah.com>
+        id S1729225AbhAEKw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:52:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60328 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728919AbhAEKw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 05:52:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609843899; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ctvgyyVLZwmab3QcFSKJMVqA4L0pIOmLRRQPugBuOjA=;
+        b=dOi2ZlD73n5Gj8nhG2gCLg7GfoHsZIMlE565LwSspgL27LwmpOxKFHdOMUokOc2uQrQGLH
+        RdnY3l25/m5wlVlveEUJwV7JVBpJzDURvMOQcJDjiELHLWaUQz6JjIliO1FUn6QA/Y7DAW
+        BQJAUcC/RKKsdfsytrTGilDfrGGHUjA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 90025AD0B;
+        Tue,  5 Jan 2021 10:51:39 +0000 (UTC)
+Message-ID: <d09747d30bdb0a79daf9fa4bd381cc8deeb81d50.camel@suse.com>
+Subject: Re: =?UTF-8?Q?=E5=9B=9E=E5=A4=8D=3A?= KASAN: use-after-free Read in
+ service_outstanding_interrupt
+From:   Oliver Neukum <oneukum@suse.com>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        syzbot <syzbot+9e04e2df4a32fb661daf@syzkaller.appspotmail.com>,
+        "andreyknvl@google.com" <andreyknvl@google.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>,
+        "ingrassia@epigenesys.com" <ingrassia@epigenesys.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "penguin-kernel@I-love.SAKURA.ne.jp" 
+        <penguin-kernel@i-love.sakura.ne.jp>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+Date:   Tue, 05 Jan 2021 11:51:31 +0100
+In-Reply-To: <BYAPR11MB2632EDC88523D674D9C63E73FFD10@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <000000000000994d2a05b6b49959@google.com>
+        ,<6a56df508f597d38746878e80e1f159a556d3152.camel@suse.com>
+         <BYAPR11MB2632EDC88523D674D9C63E73FFD10@BYAPR11MB2632.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.68]
-X-ClientProxiedBy: EX13D22UWB003.ant.amazon.com (10.43.161.76) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021 11:43:42 +0100 Greg KH <gregkh@linuxfoundation.org> wrote:
-
-> On Tue, Jan 05, 2021 at 11:37:02AM +0100, SeongJae Park wrote:
-> > Hi Greg,
-> > 
-> > On Mon, 28 Dec 2020 12:29:11 +0100 Greg KH <gregkh@linuxfoundation.org> wrote:
-> > 
-> > > On Thu, Dec 17, 2020 at 05:03:57PM +0100, SeongJae Park wrote:
-> > > > From: SeongJae Park <sjpark@amazon.de>
-> > > > 
-> > > > Changes from v2
-> > > > (https://lore.kernel.org/stable/20201217130501.12702-1-sjpark@amazon.com/)
-> > > > - Move 'nr_pending' increase from 5th patch to 4th patch
-> > > > 
-> > > > Changes from v1
-> > > > (https://lore.kernel.org/stable/20201217081727.8253-1-sjpark@amazon.com/)
-> > > > - Remove wrong 'Signed-off-by' lines for 'Author Redacted'
-> > > 
-> > > All now queued up, but you also need a series of this for the 4.9.y tree
-> > > as well.
-> > 
-> > Thank you for your efforts!
-> > 
-> > However, I was able to cherry-pick this series, which is already merged in
-> > 4.4.y, to 4.9.y without conflicts.
-> > 
-> >     $ git checkout stable/linux-4.9.y -b xsa349_4.9
-> >     $ git cherry-pick d8b0d52e408ca..3c71d2f637c8
-> >     warning: inexact rename detection was skipped due to too many files.
-> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-> >     [xsa349_4.9 51b4cb3db28a] xen/xenbus: Allow watches discard events before queueing
-> >      Date: Mon Dec 14 10:02:45 2020 +0100
-> >      4 files changed, 16 insertions(+), 1 deletion(-)
-> >     warning: inexact rename detection was skipped due to too many files.
-> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-> >     [xsa349_4.9 3242225d9645] xen/xenbus: Add 'will_handle' callback support in xenbus_watch_path()
-> >      Date: Mon Dec 14 10:04:18 2020 +0100
-> >      6 files changed, 17 insertions(+), 7 deletions(-)
-> >     warning: inexact rename detection was skipped due to too many files.
-> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-> >     [xsa349_4.9 10d6c1301412] xen/xenbus/xen_bus_type: Support will_handle watch callback
-> >      Date: Mon Dec 14 10:05:47 2020 +0100
-> >      2 files changed, 4 insertions(+), 1 deletion(-)
-> >     warning: inexact rename detection was skipped due to too many files.
-> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-> >     [xsa349_4.9 3875703f1e6b] xen/xenbus: Count pending messages for each watch
-> >      Date: Mon Dec 14 10:07:13 2020 +0100
-> >      2 files changed, 21 insertions(+), 12 deletions(-)
-> >     warning: inexact rename detection was skipped due to too many files.
-> >     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-> >     [xsa349_4.9 40e3b315cd18] xenbus/xenbus_backend: Disallow pending watch messages
-> >      Date: Mon Dec 14 10:08:40 2020 +0100
-> >      1 file changed, 7 insertions(+)
-> > 
-> > Seems you tried to merge the series for upstream in 4.9.y:
-> > 
-> >     https://lore.kernel.org/stable/1609154834239118@kroah.com/
-> > 
-> > This must because I didn't test this series with v4.9 and mention it.  Sorry
-> > for making a confusion.  Could you please check this again?
+Am Dienstag, den 05.01.2021, 04:50 +0000 schrieb Zhang, Qiang:
 > 
-> I can't do anything with a set of git cherry-picks like above, can you
-> please send the patches as a series so that I can apply them cleanly?
-
-Sure, I will post it soon.
-
+> ________________________________________
+> 发件人: Oliver Neukum <oneukum@suse.com>
+> 发送时间: 2021年1月5日 0:28
+> 收件人: syzbot; andreyknvl@google.com; gregkh@linuxfoundation.org; gustavoars@kernel.org; ingrassia@epigenesys.com; lee.jones@linaro.org; linux-kernel@vger.kernel.org; linux-usb@vger.kernel.org; penguin-kernel@I-love.SAKURA.ne.jp; syzkaller-bugs@googlegroups.com
+> 主题: Re: KASAN: use-after-free Read in service_outstanding_interrupt
 > 
-> And I don't remember what happened with that failure, sorry, dealing
-> with hundreds of patches a week makes them all blur together...
+> Am Donnerstag, den 17.12.2020, 19:21 -0800 schrieb syzbot:
+> > syzbot has found a reproducer for the following issue on:
+> > 
+> > HEAD commit:    5e60366d Merge tag 'fallthrough-fixes-clang-5.11-rc1' of g..
+> > git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=12c5b623500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=5cea7506b7139727
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=9e04e2df4a32fb661daf
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175adf07500000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1672680f500000
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: >syzbot+9e04e2df4a32fb661daf@syzkaller.appspotmail.com
+> > 
+> > #syz test: https://github.com/google/kasan.git  5e60366d
+> > 
+> 
+>  Hello Oliver 
+>  
+>  this use-after-free still exists，It can be seen from calltrace that it is 
+>  usb_device's object  has been released when disconnect,
+>  can add a reference count to usb_device's object to avoid this problem 
 
-I understand.  No problem at all.
+Hi,
+
+thanks for your analysis. I think you are correct in your analysis, but
+I am afraid your fix is not correct. The driver is submitting an URB
+to a disconnected device. Your fix would prevent a crash, which is
+definitely good, but we still cannot do that, because the device may
+be owned by another driver or usbfs at that time.
+
+	Regards
+		Oliver
 
 
-Thanks,
-SeongJae Park
