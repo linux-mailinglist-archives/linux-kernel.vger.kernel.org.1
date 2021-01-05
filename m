@@ -2,145 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7272EAEF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED30E2EAEE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728927AbhAEPlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:41:17 -0500
-Received: from mail-mw2nam12on2059.outbound.protection.outlook.com ([40.107.244.59]:60544
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728831AbhAEPlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:41:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U1no0jcsHv7rn6ELJMZoxHII+q4q0Ktdd7MR9zberGdw151aQOckoqp1Wt1zi6DAgWuZs5hionxKg1v1y+P0slgZutLLVRB68QAupKQvEh5wi1/rghCcYA809LKnBi9z7SI6bglmEqe8KQVRKRYrZPRIqTMnu7Mu6hV+nZd8UJR7IE2TUWjzFwVcOPIILsm4IIaC1oKPEV2V/eRG6cLrqRh/hKKWYrKKN70u58uvjLSMXZcZfaS6Fj3LFFL+w4wUnb/FDqtHpU2QQd17bKCIj6KK475JjGTpPCd+xQuWJvTD11DiXKQIocC5Ae/DspHhrzTEsyXhKC9PawCi4qgTaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VrOzuZ8ntaI8UgXB9XMI1nbAqRMusMEBFYdeF0oReTU=;
- b=KA11ECOZOf09fj2L7DP8iTonIxSzcfJjfOua/D1GnZxv+ClTbMHz4eavi/bYgmlBhzNIjDX25TqB93UdOLHRb3OUMYumckNuVbb50K7uHwQaovkAe+JYgvrgI29syEYW6K+8BgASeXfW6RA6CjRL+RIrKUbd13ikFbuKgVSHPmFgtTA2IypAA72xQ4Ba2UPXwCnWWh4xh36GhXVFBGEC6mhFOginNYe7YXO7LkHdaYdOjw2TSKbjzx0/innA7e18/UUH9BpOF2GPlUAjA1EMxZHErNTMf9tAmYmLi+8fgXZrKC4TtW6FORo0rrcKPWjRiphKEgXIrK15xIU5n4b32g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VrOzuZ8ntaI8UgXB9XMI1nbAqRMusMEBFYdeF0oReTU=;
- b=G8xKKWk/KjK7mCr3K0mra5FHbyqUasvDWiB0zxFC4xnuvK8leSlKCia8SJUTOCCQde7V0/4wG1/4Hpa5FKfZwL3MDwzATJS5V7xd/edlQ7D1QgHTGkIbQo18orEkoFaJkwV9QhT/wDkYTUOmu6F2MIw3rEYSGypCwHhGWQeb6Fc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4392.namprd12.prod.outlook.com (2603:10b6:208:264::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Tue, 5 Jan
- 2021 15:40:21 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3742.006; Tue, 5 Jan 2021
- 15:40:21 +0000
-Subject: Re: 5.11-rc1 TTM list corruption
-To:     Huang Rui <ray.huang@amd.com>, Borislav Petkov <bp@alien8.de>
-Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <20201231104020.GA4504@zn.tnic>
- <e3bfa0a4-5d0a-bd68-6cc8-73db1d29f22c@amd.com>
- <20210104105802.GD32151@zn.tnic> <20210105041213.GA544780@hr-amd>
- <20210105103138.GB28649@zn.tnic> <20210105110852.GA1052081@hr-amd>
- <20210105114351.GD28649@zn.tnic> <20210105122026.GA227519@hr-amd>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <fa11e930-d8ee-a291-7d6a-6fdd6653ffa8@amd.com>
-Date:   Tue, 5 Jan 2021 16:40:16 +0100
+        id S1728725AbhAEPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:40:43 -0500
+Received: from mga07.intel.com ([134.134.136.100]:39111 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728256AbhAEPkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:40:42 -0500
+IronPort-SDR: mHcAJcg4LDC3/Dz0wYLajNBuUWO7ro4k0hTqpGxebJE7EpTCZM7U54WsW4UYGpVLGGxNmsHkbD
+ Rc9ncfZ51xxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="241206945"
+X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
+   d="scan'208";a="241206945"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 07:40:18 -0800
+IronPort-SDR: TqRN6KWifXOnd/vXHxcN354IsG7FzXBr53v6lAG3W2pj5QrA+MKq/SgZPDsNB1UYoWevdPllQe
+ ONLxW+lWFL3Q==
+X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
+   d="scan'208";a="496819339"
+Received: from mishravi-mobl3.amr.corp.intel.com (HELO [10.209.147.102]) ([10.209.147.102])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 07:40:17 -0800
+Subject: Re: [PATCH] x86/mm: Fix leak of pmd ptlock
+To:     Dan Williams <dan.j.williams@intel.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de
+Cc:     stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Yi Zhang <yi.zhang@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        willy@infradead.org
+References: <160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <df5209ad-e527-92ce-52a2-33e1aa9deaff@intel.com>
+Date:   Tue, 5 Jan 2021 07:40:16 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-In-Reply-To: <20210105122026.GA227519@hr-amd>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM3PR07CA0100.eurprd07.prod.outlook.com
- (2603:10a6:207:6::34) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM3PR07CA0100.eurprd07.prod.outlook.com (2603:10a6:207:6::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.4 via Frontend Transport; Tue, 5 Jan 2021 15:40:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 6da8ae6c-9a21-4876-add4-08d8b1903649
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4392:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB43929A0D57F7535570EFF94A83D10@MN2PR12MB4392.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9BKMog0C/UGUgm4oplabyLQqStV6tzC4MIKQsGKMpS/JYihhBkZOJg4230zIXCswFBkknv+JvlXh0bS5PiftbdLuQ4UNdzVTo1IFoYw1c5w/bg1mzxwHBOdbjDBO198DfkfmINIHe34ygIpgC7Qfsz1dnfSGqTTG30dKxgf+LJg2FBM6bR8wgE4IXq8JSfMwo+cICSoRWTJLhyfaSGrkyHuc4u9NR5fYiyCEsVHwpCXs8m27IpJqKFPBF7AMtxWdlDg558D4JpZBzTSvZ6ZDCGCd2BIH5YuL6/DwL6l8YgBP7hRWt426IHaJgVEuBZeD1cK97XFNgJzBpx2xbqtaOFkBtuIOtBqFWOMSJj4v1JOGrwxRUvDF1a2IlJsVeofWeTxAzuNr3sNDDGFDzjCwehBR6ESgWauZ9n2dzDTL+CrarQqNyp1bAn61tYrQ2UN1kKS87wfWQj10nv+5zjhvNDZQIV0vGURXKdhsk+EyQxw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(39830400003)(346002)(376002)(186003)(31696002)(83380400001)(16526019)(6666004)(4326008)(86362001)(2616005)(8936002)(478600001)(31686004)(8676002)(66556008)(5660300002)(110136005)(66476007)(66946007)(54906003)(316002)(52116002)(6486002)(36756003)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NnhCaERQYnp1OGFvT0pZUm0zbkdaL0RFcjNUaFIyUFJSNFZHQWY4K1h5d1ZG?=
- =?utf-8?B?WnRFRjNCNWhUMmlFM1RCNlJTdkZNMDMzQ1FjN2tjYXJPeWZqOHNuV1BnOXdY?=
- =?utf-8?B?Tk9TdHZReW1CM21XcUxsTHJRNnNmQ25lNmN6UUxOZGFqblh4U2hRaXUyWUwy?=
- =?utf-8?B?MGNOMjI4djNLcXhOUVlkblNteW5uWFZUZWkwUC9sRElYcXRkRU9EVnJHTHE1?=
- =?utf-8?B?c29rYkxLZEpZcDJJYmtnRW15ODE4RktZanlqbkNNVSs0QmVRY2k0SWpJRGdV?=
- =?utf-8?B?RXFGbk5qRWxNSlhVVWpnUHRkbmc3QmtIbE45ak1SSDBxYWI2ek4vTjZqV2Jv?=
- =?utf-8?B?K3J2bk9odG11Rlo3dFJlSUxjNmtTRzBnMDZvaDAzMDd0QVJRQTVZMU1yN2tM?=
- =?utf-8?B?RGpCQWV4T09heDRCN0JIaFNuV1AzcjN6cXlsUTJXVjBXemM2OFB5NlJ1ZTFW?=
- =?utf-8?B?RXBydjAvS3pVbUhBRUdBTEY5eWxuYjN4UVpYNlNEVWxTZ3YzbW1JL1Uyc015?=
- =?utf-8?B?OGFZNnJUS2EwdjRUS3ZQV1Q0OHlDS3lzekgzaDNicmV3T0h5cTZ2bVNBdUJp?=
- =?utf-8?B?T0d5bjF0VzE4S0lsa05tZUNseUU1eTdleHZXVHFkRHJrUE1sQU5zS05xK0Iz?=
- =?utf-8?B?VldLN2wrNlhSSHNvQUFGQnVPZ0k0Mmx4RFEwcUVrYXVEU1ZKNW5XRVFHS0sr?=
- =?utf-8?B?bzJURnBCN213WlIzdmc3K0NTbDRIdE05bE5LdEg3cXloYlJDUDVYWnVwNk5J?=
- =?utf-8?B?SHd5dExwUTZ1MVUxZG93QXFtbmFzU0dLazBWa3c5SFJWdTg3MnhLZXBub28z?=
- =?utf-8?B?TERhaWhzcExkVmN3RG5Ld2tVTWozSmRwTzhDejB0REd6RmhLb2N6MTBuYTZ3?=
- =?utf-8?B?aU1pOVVGQ1dQSHROUytOOGQrT3BWR1JFYXI4UDdhS2dDN1hpMHBVNzA2NHEr?=
- =?utf-8?B?Q1F2Z1VDOUtJcG9ZaHI4a1habTZSNTRNdUdmQzRBdVNsQWtDcmJKS2FjYmZU?=
- =?utf-8?B?TU1ycnNJNXRydWN3eXZHNjVFdFBLNXhyOTI2d3FnVmdSZlpnUG5xV2pMaXdZ?=
- =?utf-8?B?TWJ1Sm5FT0M3Rmt4azhCQm9jeE1CVHRZbmpmeEF6V3llQzVMUGRBdEc4d2hs?=
- =?utf-8?B?QWdZVEE3bG5DalVxNEE0TWRSQUZBeEZabEVPT2NwMSszL3QyQzJUZVpWRGlM?=
- =?utf-8?B?V0ZONndGUkJDWHZHa2JKYWY4SGplaG1oaTZGRDBSNklWcDJNcXAxMkRzZGp2?=
- =?utf-8?B?RVBBTUtkTzJpMmxwZmxaaGdPV3JzWlhRNytKZVEzdG9ObzNNbGZtc0R6WHZY?=
- =?utf-8?B?REhxbG40eEdoeHIyS0t4dWxweExJNnhML0RjeGVHY0toWWxaZ3R1RHFaS1dv?=
- =?utf-8?B?OS95ZnRqNG8vdEpieDdTVlNhZS82RW9MbGQyMytzUWpJdHZaSldUK1Q4UHhM?=
- =?utf-8?Q?iHUAn0tX?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2021 15:40:21.6131
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6da8ae6c-9a21-4876-add4-08d8b1903649
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qTQTVf8Jmo0qHOhpyv6G+ypNt8o1qS7lbNtbcPsVZYiWGKuzqSGY3n2Iy/0ozPU2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4392
+In-Reply-To: <160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 05.01.21 um 13:20 schrieb Huang Rui:
-> On Tue, Jan 05, 2021 at 07:43:51PM +0800, Borislav Petkov wrote:
->> On Tue, Jan 05, 2021 at 07:08:52PM +0800, Huang Rui wrote:
->>> Ah, this asic is a bit old and still use radeon driver. So we didn't
->>> reproduce it on amdgpu driver. I don't have such the old asic in my hand.
->>> May we know whether this issue can be duplicated after SI which is used
->>> amdgpu module (not sure whether you have recent APU or GPU)?
->> The latest I have (I think it is the latest) is:
->>
->> [    1.826102] [drm] initializing kernel modesetting (RENOIR 0x1002:0x1636 0x17AA:0x5099 0xD1).
->>
->> and so far that hasn't triggered it. Which makes sense because that
->> thing uses amdgpu:
->>
->> [    1.810260] [drm] amdgpu kernel modesetting enabled.
-> Yes! Renoir is late enough for amdgpu kernel module. :-)
-> Please let us know if you still encounter the issue.
+On 12/2/20 10:28 PM, Dan Williams wrote:
+> Commit 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
+> introduced a new location where a pmd was released, but neglected to run
+> the pmd page destructor. In fact, this happened previously for a
+> different pmd release path and was fixed by commit:
+> 
+> c283610e44ec ("x86, mm: do not leak page->ptl for pmd page tables").
+> 
+> This issue was hidden until recently because the failure mode is silent,
+> but commit:
 
-Thanks for the hints guys. You need a rather specific configuration, but 
-I can reproduce this now.
+Looks sane.  Thanks as always for the thorough changelog and the
+investigation into why we're suddenly seeing this now.
 
-Let's see what the problem is here.
+I agree that ridding ourselves of open-coded free_page()'s is a good
+idea, but this patch itself needs to be around for stable anyway.  So,
 
-Thanks,
-Christian.
-
->
-> Thanks,
-> Ray
-
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
