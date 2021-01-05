@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032C72EB54B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822E62EB54D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbhAEWRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 17:17:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41600 "EHLO mail.kernel.org"
+        id S1728694AbhAEWSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 17:18:07 -0500
+Received: from mga14.intel.com ([192.55.52.115]:63856 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726306AbhAEWRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 17:17:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A007322DFA;
-        Tue,  5 Jan 2021 22:16:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609884994;
-        bh=8nsD1cY7j4RI32huXupjNeC+ztbwkBuHR0P7SByRyVo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jZTKdkn6Trle1JstaGd6CGH7IkIqIRBp6RCiTFde/XdLuOXGDxgnlRh5mPAor2BkY
-         WGAh3OCEuBZmfCL8tVEQ5CDHn9FvaVr8RIV2heEr5IUx1E22nAVgjt13x7y/FuQQnB
-         zHxBF3mWb43JCbdKi020nstM1cEvbDgSJI6nKm39LB+lbrOyoif47Uuv5rQo8wrxh1
-         ZecGRB8xkzVFSWdQVPYTRJKE5axzttzKl6iwGdX9g0NNxSTnhAdWMiC+oizkNBqFNK
-         cgSkuXoKppkCX9HjZfRyGgCGCWBdkm6wLSO/jyOTOqHmg721MY8rSVPJ9joxkckVgQ
-         q2mu2238JzWGQ==
-Date:   Tue, 5 Jan 2021 22:16:29 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
+        id S1728228AbhAEWSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 17:18:06 -0500
+IronPort-SDR: zWEH3ZLwEAp2CA4Z74xbuND1Kcbznj/pT8Ifzphj9VZ1jv+I0SImy3dlDfulqkNCC3QDO6Aokh
+ JnY8Yqo1nyYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="176406625"
+X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
+   d="scan'208";a="176406625"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 14:17:25 -0800
+IronPort-SDR: q7peCkp/SdkLFC6uxgWZ1uDaVugFE3NQsHY+95gxj08JEcU+dAV6fDUAGt4vhKOm52QtPszQA7
+ W+yv59DH6zYg==
+X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
+   d="scan'208";a="397996669"
+Received: from mishravi-mobl3.amr.corp.intel.com (HELO [10.209.147.102]) ([10.209.147.102])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 14:17:25 -0800
+Subject: Re: [PATCH 2/2] x86/mm: Remove duplicate definition of
+ _PAGE_PAT_LARGE
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH v2 2/2] fs/task_mmu: acquire mmap_lock for write on
- soft-dirty cleanup
-Message-ID: <20210105221628.GA12854@willie-the-truck>
-References: <20201225092529.3228466-1-namit@vmware.com>
- <20201225092529.3228466-3-namit@vmware.com>
- <X/SuBxFfR+bncRhU@redhat.com>
- <15758743-B8E3-48C4-A13B-DFFEBF8AF435@vmware.com>
- <X/TOhyzggcBL64N2@redhat.com>
- <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <13073a85-24c1-6efa-578b-54218d21f49d@amd.com>
+ <20201111160946.147341-1-nivedita@alum.mit.edu>
+ <20201111160946.147341-2-nivedita@alum.mit.edu>
+ <X/TaBK3AnKJCbI3n@rani.riverdale.lan>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <a990cea4-00ad-007e-68bc-ca0ad9422bcd@intel.com>
+Date:   Tue, 5 Jan 2021 14:17:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <X/TaBK3AnKJCbI3n@rani.riverdale.lan>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 09:22:51PM +0000, Nadav Amit wrote:
-> > On Jan 5, 2021, at 12:39 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> > 
-> > On Tue, Jan 05, 2021 at 07:26:43PM +0000, Nadav Amit wrote:
-> >>> On Jan 5, 2021, at 10:20 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> >>> 
-> >>> On Fri, Dec 25, 2020 at 01:25:29AM -0800, Nadav Amit wrote:
-> >>>> Fixes: 0f8975ec4db2 ("mm: soft-dirty bits for user memory changes tracking")
-> >>> 
-> >>> Targeting a backport down to 2013 when nothing could wrong in practice
-> >>> with page_mapcount sounds backwards and unnecessarily risky.
-> >>> 
-> >>> In theory it was already broken and in theory
-> >>> 09854ba94c6aad7886996bfbee2530b3d8a7f4f4 is absolutely perfect and the
-> >>> previous code of 2013 is completely wrong, but in practice the code
-> >>> from 2013 worked perfectly until Aug 21 2020.
-> >> 
-> >> Well… If you consider the bug that Will recently fixed [1], then soft-dirty
-> >> was broken (for a different, yet related reason) since 0758cd830494
-> >> ("asm-generic/tlb: avoid potential double flush”).
-> >> 
-> >> This is not to say that I argue that the patch should be backported to 2013,
-> >> just to say that memory corruption bugs can be unnoticed.
-> >> 
-> >> [1] https://patchwork.kernel.org/project/linux-mm/patch/20201210121110.10094-2-will@kernel.org/
-> > 
-> > Is this a fix or a cleanup?
-> > 
-> > The above is precisely what I said earlier that tlb_gather had no
-> > reason to stay in clear_refs and it had to use inc_tlb_flush_pending
-> > as mprotect, but it's not a fix? Is it? I suggested it as a pure
-> > cleanup. So again no backport required. The commit says fix this but
-> > it means "clean this up".
-> 
-> It is actually a fix. I think the commit log is not entirely correct and
-> should include:
-> 
->   Fixes: 0758cd830494 ("asm-generic/tlb: avoid potential double flush”).
-> 
-> Since 0758cd830494, calling tlb_finish_mmu() without any previous call to
-> pte_free_tlb() and friends does not flush the TLB. The soft-dirty bug
-> producer that I sent fails without this patch of Will.
+On 1/5/21 1:28 PM, Arvind Sankar wrote:
+> diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+> index 394757ee030a..f24d7ef8fffa 100644
+> --- a/arch/x86/include/asm/pgtable_types.h
+> +++ b/arch/x86/include/asm/pgtable_types.h
+> @@ -177,8 +177,6 @@ enum page_cache_mode {
+>  #define __pgprot(x)		((pgprot_t) { (x) } )
+>  #define __pg(x)			__pgprot(x)
+>  
+> -#define _PAGE_PAT_LARGE		(_AT(pteval_t, 1) << _PAGE_BIT_PAT_LARGE)
 
-Yes, it's a fix, but I didn't rush it for 5.10 because I don't think rushing
-this sort of thing does anybody any favours. I agree that the commit log
-should be updated; I mentioned this report in the cover letter:
+Huh, I didn't realize that duplicate #defines were allowed.  Guess you
+learn something new every day.  This looks fine to me, it removes the
+exact dup that Ingo appears to have added.
 
-https://lore.kernel.org/linux-mm/CA+32v5zzFYJQ7eHfJP-2OHeR+6p5PZsX=RDJNU6vGF3hLO+j-g@mail.gmail.com/
-
-demonstrating that somebody has independently stumbled over the missing TLB
-invalidation in userspace, but it's not as bad as the other issues we've been
-discussing in this thread.
-
-Will
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
