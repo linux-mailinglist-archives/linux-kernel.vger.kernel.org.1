@@ -2,132 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4C32EB12B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521692EB12F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730431AbhAERPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:15:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbhAERPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:15:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1237E22CBE;
-        Tue,  5 Jan 2021 17:14:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609866891;
-        bh=ZBm+Do+2kpIYllhXGeLT1fi8UQ0K47P8KRqerz8BmBc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WGOaQyq6Gxu8cF+0m1fEt4Zq/BlRhG/B6xkErjztRNnP2Nae/r9fPIA3jWymFm1P0
-         d0A6UpJ+1LF7fJxDWvXDfHVz6FP1mpe20RqgpOCvF3BVOVLqc6LG0c9P+Lw9dFGxld
-         GLddJQIpGAJrQfLoqtTEdJbT65HFYmOogzX4IrFtmPtYow5XjiqHA5fu+0v+wNZHmt
-         5PjB7JUR4AXf3254LiS0SBSABhUD4Q4ZvaZWA56Q0+PW/HK1/JVp+jvHVRUehy6gIj
-         9oYs7Atp7/dCJCNf8QRn2nVL/eRZeANfffKJNZbp+/p23WYE4V7KBCV/H/6CuP4tIw
-         bMg/harw4paFw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C76BD3521C49; Tue,  5 Jan 2021 09:14:50 -0800 (PST)
-Date:   Tue, 5 Jan 2021 09:14:50 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix dynticks_nmi_nesting underflow check in
- rcu_is_cpu_rrupt_from_idle
-Message-ID: <20210105171450.GF17086@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <1608712777-1769-1-git-send-email-neeraju@codeaurora.org>
- <20201223151231.GC2657@paulmck-ThinkPad-P72>
- <20210105134232.GI3040@hirez.programming.kicks-ass.net>
+        id S1730369AbhAERRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:17:43 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:45969 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729893AbhAERRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 12:17:43 -0500
+Received: from [192.168.0.6] (ip5f5aea6a.dynamic.kabel-deutschland.de [95.90.234.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D261E20647DA3;
+        Tue,  5 Jan 2021 18:16:59 +0100 (CET)
+Subject: Re: [PATCH 2/2] ethernet: igb: e1000_phy: Check for
+ ops.force_speed_duplex existence
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jeffrey Townsend <jeffrey.townsend@bigswitch.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        John W Linville <linville@tuxdriver.com>
+References: <20201102231307.13021-1-pmenzel@molgen.mpg.de>
+ <20201102231307.13021-3-pmenzel@molgen.mpg.de>
+ <20201102161943.343586b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <36ce1f2e-843c-4995-8bb2-2c2676f01b9d@molgen.mpg.de>
+ <20201103103940.2ed27fa2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <c1ad26c6-a4a6-d161-1b18-476b380f4e58@molgen.mpg.de>
+Date:   Tue, 5 Jan 2021 18:16:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105134232.GI3040@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201103103940.2ed27fa2@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 02:42:32PM +0100, Peter Zijlstra wrote:
-> On Wed, Dec 23, 2020 at 07:12:31AM -0800, Paul E. McKenney wrote:
-> > On Wed, Dec 23, 2020 at 02:09:37PM +0530, Neeraj Upadhyay wrote:
-> > > For the smp_call_function() optimization, where callbacks can run from
-> > > idle context, in commit 806f04e9fd2c ("rcu: Allow for smp_call_function()
-> > > running callbacks from idle"), an additional check is added in
-> > > rcu_is_cpu_rrupt_from_idle(), for dynticks_nmi_nesting value being 0,
-> > > for these smp_call_function() callbacks running from idle loop.
-> > > However, this commit missed updating a preexisting underflow check
-> > > of dynticks_nmi_nesting, which checks for a non zero positive value.
-> > > Fix this warning and while at it, read the counter only once.
-> > > 
-> > > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> > > ---
-> > > 
-> > > Hi,
-> > > 
-> > > I was not able to get this warning, with scftorture.
-> > > 
-> > >   RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
-> > >     "RCU dynticks_nmi_nesting counter underflow/zero!");
-> > > 
-> > > Not sure if idle loop smp_call_function() optimization is already present
-> > > in mainline?
-> > 
-> > Now that you mention it, I don't see it.
+Dear Jakub, dear Greg,
+
+
+Am 03.11.20 um 19:39 schrieb Jakub Kicinski:
+> On Tue, 3 Nov 2020 08:35:09 +0100 Paul Menzel wrote:
+>> According to *Developer's Certificate of Origin 1.1* [3], it’s my
+>> understanding, that it is *not* required. The items (a), (b), and (c)
+>> are connected by an *or*.
+>>
+>>>          (b) The contribution is based upon previous work that, to the best
+>>>              of my knowledge, is covered under an appropriate open source
+>>>              license and I have the right under that license to submit that
+>>>              work with modifications, whether created in whole or in part
+>>>              by me, under the same open source license (unless I am
+>>>              permitted to submit under a different license), as indicated
+>>>              in the file; or
 > 
-> kernel/sched/idle.c:do_idle() calls flush_smp_call_function_from_idle().
+> Ack, but then you need to put yourself as the author, because it's
+> you certifying that the code falls under (b).
 > 
-> (nothing x86 specific about it)
+> At least that's my understanding.
 
-Got it, thank you!
+Greg, can you please clarify, if it’s fine, if I upstream a patch 
+authored by somebody else and distributed under the GPLv2? I put them as 
+the author and signed it off.
 
-The reason Neeraj was unable to trigger the problematic warning from
-scftorture is that its smp_call_function() handlers do not invoke
-rcu_is_cpu_rrupt_from_idle().  Without adding this to those handlers
-(which would be a good change to make), the only way to trigger this is
-for an expedited RCU grace period to IPI a CPU that goes idle while the
-IPI is in flight, which is not the easiest thing to make happen.
+(In this case the change, adding an if condition, is also trivial.)
 
-> > > Another thing, which I am not sure of is, maybe lockdep gets disabled
-> > > in the idle loop contexts, where rcu_is_cpu_rrupt_from_idle() is called?
-> > > Was this the original intention, to keep the lockdep based
-> > > RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0
-> > > check separate from idle task context nesting value
-> > > WARN_ON_ONCE(!nesting && !is_idle_task(current)) check?
-> > 
-> > An easy way to test lockdep is to create a pair of locks, acquire them
-> > in one order then release them both, and finally acquire them in the
-> > other order and then release them both.  If lockdep is configured and
-> > enabled, it will complain.
-> 
-> IIRC (and this is after not staring at the computer for 2 weeks) lockdep
-> should work just fine in idle, except of course that RCU will be stopped
-> so actually taking locks will scream bloody murder due to tracing etc..
 
-Fair enough...
+Kind regards,
 
-And I hope that the time off went well for you and yours!
-
-> > The only reason I used RCU_LOCKDEP_WARN() was that people were complaining
-> > to me about idle-entry overhead back at that time.  So without lockdep,
-> > there is zero overhead.  Maybe people have become more tolerant of idle
-> > delays, or perhaps they are not so worried about an extra check of a
-> > cache-hot quantity.
-> 
-> Not having checks also saves on $I and branches, in general I think
-> having checks depend on DEBUG features, esp. those we don't really
-> expect to trigger is still sane.
-
-OK, so should we convert the WARN_ON_ONCE() to RCU_LOCKDEP_WARN() while
-we are in the area?
-
-> > I am tempted to pull this in as is, given the current logical
-> > inconsistency in the checks.  Thoughts?
-> 
-> Patch looks ok, although I've seen compilers do CSE on
-> __this_cpu_read() (on x86).
-
-True, but the compilers might might have a harder time of this on other
-architectures.
-
-							Thanx, Paul
+Paul
