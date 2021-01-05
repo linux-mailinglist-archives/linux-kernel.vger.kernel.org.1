@@ -2,276 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67FD2EADD0
+	by mail.lfdr.de (Postfix) with ESMTP id 705592EADCF
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbhAEPAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726827AbhAEPAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 5 Jan 2021 10:00:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbhAEPAo (ORCPT
+        with ESMTP id S1725813AbhAEPAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Jan 2021 10:00:44 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFE5C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 07:00:04 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id z12so1838002pjn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 07:00:04 -0800 (PST)
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CFBC061574;
+        Tue,  5 Jan 2021 07:00:04 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id o11so29502422ote.4;
+        Tue, 05 Jan 2021 07:00:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=n7TlG8NN8jqja9Y8WW/SFKAXx/PSZJP7n6gKEltVpFU=;
-        b=eXHexYoCXgtAr+oro3RAi4gfVhK320MQZQrx7m30ZY0OxfQbvA00LFGYpOSQIOp6Zp
-         3JGi19GS54y/X/0a3KrwCKvSFWREaeD6E4R8M1aNXeHoB8hFtsLvQN6eb4VyiLfBvSu1
-         5UhFSCux5CuChplhG08+F1MTLE017f5ZigwMf4Rf1Oor/jJ3v7Ls4h3ET+Ks2ZAjLum0
-         NQh9vAiiyR0JyWVTN3fw6hTl/jb/oo2G3Q4SMrxjG4Z4nl31Rz2nWlfDovAYXQmNmwEf
-         xPoENgIUqO6eyVhZsjW3/8TI8VbH3eLl5MLsYSl4wH//StMZqSS+aguARmnipFZ2k+ye
-         CSfw==
+        h=sender:subject:to:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XGIUsDvo7WL/btexdYta+TWVo7yH7QS69njrSf9tUEE=;
+        b=hWRzHPxYIl2QvM6KQJ9WCePC2Wc31LSxs2JVNGUIPUOr42yFSjzoHrNOYjC5mekUrA
+         xsTju6UJER/7sQ+NR5YY8vs1OzeCxiGXQGxq0+SLogI0lZU7oU1HxtNoDVaOYW6vl93K
+         1dJhOY9OrLtkfHU2AqYLxlEFia069SYwzxrP6rjT9iMxk2YIXlAnCaOChH6sRImAfgV9
+         VVsJXEIlDhiWb8XLdAdf+ffNqO5pHzxrROhQENUgdDdESieQYiyPDqqMLfRTn1mM1+Os
+         oq5NnVSiNAoyqIL8YGUTlYlVAV2WSmzlIVRh/tKWkmZxVCmUITW16zsne0uy8Wscpc3s
+         XGHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=n7TlG8NN8jqja9Y8WW/SFKAXx/PSZJP7n6gKEltVpFU=;
-        b=osA/hCarGai4bLVQQGS0D7cDvFVuL1krXcstNYXEXsxcBWv/f12QJ2GVSpXGWQdtGg
-         mURO3TidlV6fl8wTCU8f/Tdd4859rNWeGvGIAsZV0DX/TTlwHjdxRyC0MWMqvAuFwW/g
-         XjKd/fcwAtE7cV2uUwD/KjOuN9nWFu+90Q21VGzmz0NWLxZCyGPgTjEvGN+aGyxHay+z
-         u3BJclMhbPTpoZrIQoHEn/VTVye5DUz1wwsCuBufTLu+w/n9PpiBrkGvNWiQfDCY1Cwy
-         hbm2/79Yn7qpf+QL5N8oNKMZK0/a5CZTF7Ns1UtFM1FZkWEwGEwG1CnIvIWWEgB6qbMz
-         AxVQ==
-X-Gm-Message-State: AOAM532NSeYEiWhK5NCzKJT6/lXHvHtH9K8oOmJ2fuYWTUJ+lxPpiFLC
-        j5vrUAXyYsgRYkUTU2YYi0s=
-X-Google-Smtp-Source: ABdhPJzt2J2xbYGa8V2kGsXoiPVNPLpxYJEqiOjOODtDuZUQdq7tB1tHlFrmXSkPHwXwOMX7QndZgw==
-X-Received: by 2002:a17:90a:e60d:: with SMTP id j13mr4560199pjy.52.1609858804291;
-        Tue, 05 Jan 2021 07:00:04 -0800 (PST)
-Received: from adolin ([49.207.206.190])
-        by smtp.gmail.com with ESMTPSA id nm6sm2956012pjb.25.2021.01.05.07.00.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=XGIUsDvo7WL/btexdYta+TWVo7yH7QS69njrSf9tUEE=;
+        b=bNEp7eQNCmSBZnQuqnpmdhacnP5WAI2LKbJn/FCAacMGCTLj1RtyWmcd+sfO+OufrU
+         MpmIxpb2KUW5VfOR9VSJyF0FSxYCvFaYOT5KOPh/mySuUyvIFNwURq6zqmLuLh5Nuhii
+         gAFIWL+CbwGVkkpatuD41NBnOKmLQN3XDe6J3w2uFmbBr8LIwTTFjjS+BxX8IDDPL1q+
+         eF6wYh6gaXL6C+Dmb2lw+tHjillkbUJ3b4H0WnUbakLJktTUeR+gtCV7WoSkBT403+M9
+         N+umKwm2pmul1swTET9o5suWXNjPqdLQAPZZgXoHpO/qcwKt62HA8A37tCRWNaxZXAdE
+         CXCg==
+X-Gm-Message-State: AOAM531E7wyU6HqHyy01mtEu3q+DOzhFTtdW3dy7tZ17mevB67fsfOBe
+        TtiR/l3hC82kAzef3MY/SHw=
+X-Google-Smtp-Source: ABdhPJz+TmHa+yxltlgEjO+dajpTRAK0O0Tmhgc4dSJIjWXqp6kHPWJo155UzE1wR1B4hBd/MJHdlg==
+X-Received: by 2002:a05:6830:22f9:: with SMTP id t25mr57121090otc.14.1609858803649;
         Tue, 05 Jan 2021 07:00:03 -0800 (PST)
-Date:   Tue, 5 Jan 2021 20:29:58 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     melissa.srw@gmail.com
-Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3] drm/vkms: Decouple config data for configfs
-Message-ID: <20210105145958.r5q553i6ji7fru6l@adolin>
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h26sm15181205ots.9.2021.01.05.06.59.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 07:00:02 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 01/10] MIPS: TX49xx: Drop support
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+ <20210105140305.141401-2-tsbogend@alpha.franken.de>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <4dfb9153-d130-7bbf-a016-45a630d1d0cd@roeck-us.net>
+Date:   Tue, 5 Jan 2021 06:59:58 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210105140305.141401-2-tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, data for the device instance is held by vkms_device.
-Add a separate type, vkms_config to contain configuration details
-for the device and various modes to be later used by configfs.
-This config data stays constant once the device is created.
+On 1/5/21 6:02 AM, Thomas Bogendoerfer wrote:
+> Looks like there are no boards with TX49xx CPUS other than reference
+> boards available. So it's time to drop Linux support for it.
+> 
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
 
-Accordingly, add vkms_create and vkms_destroy to initialize/destroy
-device through configfs. Currently, they are being called from vkms_init
-and vkms_exit, but will be evoked from configfs later on. When configfs
-is added, device configuration will be tracked by configfs and only vkms
-device lifetime will be handled by vkms_init and vkms_exit functions.
+>  drivers/watchdog/Kconfig                      |   2 +-
 
-Modify usage of enable_cursor feature to reflect the changes in
-relevant files.
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-Add enable_writeback_connector feature to vkms_config type.
-
-Co-developed-by: Daniel Vetter <danvet.vetter@ffwl.ch>
-Signed-off-by: Daniel Vetter <danvet.vetter@ffwl.ch>
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-
----
-Changes in v2:
-- add Co-developed-by tag
-
-Changes in v3:
-- correct usage of Co-developed by tag(Melissa)
-- add enable_writeback_feature(Melissa)
-- modify commit message(Melissa)
----
- drivers/gpu/drm/vkms/vkms_drv.c    | 45 ++++++++++++++++++++++++------
- drivers/gpu/drm/vkms/vkms_drv.h    | 12 ++++++--
- drivers/gpu/drm/vkms/vkms_output.c | 13 +++++----
- 3 files changed, 54 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-index aef29393b811..fab964900dce 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.c
-+++ b/drivers/gpu/drm/vkms/vkms_drv.c
-@@ -34,12 +34,16 @@
- #define DRIVER_MAJOR	1
- #define DRIVER_MINOR	0
- 
--static struct vkms_device *vkms_device;
-+static struct vkms_config *default_config;
- 
--bool enable_cursor = true;
-+static bool enable_cursor = true;
- module_param_named(enable_cursor, enable_cursor, bool, 0444);
- MODULE_PARM_DESC(enable_cursor, "Enable/Disable cursor support");
- 
-+static bool enable_writeback_connector = true;
-+module_param_named(enable_writeback_connector, enable_writeback_connector, bool, 0444);
-+MODULE_PARM_DESC(enable_writeback_connector, "Enable/Disable writeback connector support");
-+
- DEFINE_DRM_GEM_FOPS(vkms_driver_fops);
- 
- static void vkms_release(struct drm_device *dev)
-@@ -122,10 +126,11 @@ static int vkms_modeset_init(struct vkms_device *vkmsdev)
- 	return vkms_output_init(vkmsdev, 0);
- }
- 
--static int __init vkms_init(void)
-+static int vkms_create(struct vkms_config *config)
- {
- 	int ret;
- 	struct platform_device *pdev;
-+	struct vkms_device *vkms_device;
- 
- 	pdev = platform_device_register_simple(DRIVER_NAME, -1, NULL, 0);
- 	if (IS_ERR(pdev))
-@@ -143,6 +148,8 @@ static int __init vkms_init(void)
- 		goto out_devres;
- 	}
- 	vkms_device->platform = pdev;
-+	vkms_device->config = config;
-+	config->dev = vkms_device;
- 
- 	ret = dma_coerce_mask_and_coherent(vkms_device->drm.dev,
- 					   DMA_BIT_MASK(64));
-@@ -179,21 +186,43 @@ static int __init vkms_init(void)
- 	return ret;
- }
- 
--static void __exit vkms_exit(void)
-+static int __init vkms_init(void)
-+{
-+	struct vkms_config *config = kmalloc(sizeof(*config), GFP_KERNEL);
-+
-+	default_config = config;
-+
-+	config->cursor = enable_cursor;
-+	config->writeback = enable_writeback_connector;
-+
-+	return vkms_create(config);
-+}
-+
-+static void vkms_destroy(struct vkms_config *config)
- {
- 	struct platform_device *pdev;
- 
--	if (!vkms_device) {
-+	if (!config->dev) {
- 		DRM_INFO("vkms_device is NULL.\n");
- 		return;
- 	}
- 
--	pdev = vkms_device->platform;
-+	pdev = config->dev->platform;
- 
--	drm_dev_unregister(&vkms_device->drm);
--	drm_atomic_helper_shutdown(&vkms_device->drm);
-+	drm_dev_unregister(&config->dev->drm);
-+	drm_atomic_helper_shutdown(&config->dev->drm);
- 	devres_release_group(&pdev->dev, NULL);
- 	platform_device_unregister(pdev);
-+
-+	config->dev = NULL;
-+}
-+
-+static void __exit vkms_exit(void)
-+{
-+	if (default_config->dev)
-+		vkms_destroy(default_config);
-+
-+	kfree(default_config);
- }
- 
- module_init(vkms_init);
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-index 5ed91ff08cb3..caa1fafb6ca7 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.h
-+++ b/drivers/gpu/drm/vkms/vkms_drv.h
-@@ -19,8 +19,6 @@
- #define XRES_MAX  8192
- #define YRES_MAX  8192
- 
--extern bool enable_cursor;
--
- struct vkms_composer {
- 	struct drm_framebuffer fb;
- 	struct drm_rect src, dst;
-@@ -82,10 +80,18 @@ struct vkms_output {
- 	spinlock_t composer_lock;
- };
- 
-+struct vkms_device;
-+struct vkms_config {
-+	bool writeback;
-+	bool cursor;
-+	/* only set when instantiated */
-+	struct vkms_device *dev;
-+};
- struct vkms_device {
- 	struct drm_device drm;
- 	struct platform_device *platform;
- 	struct vkms_output output;
-+	const struct vkms_config *config;
- };
- 
- #define drm_crtc_to_vkms_output(target) \
-@@ -123,4 +129,4 @@ void vkms_set_composer(struct vkms_output *out, bool enabled);
- /* Writeback */
- int vkms_enable_writeback_connector(struct vkms_device *vkmsdev);
- 
--#endif /* _VKMS_DRV_H_ */
-+#endif /* _VKMS_DRV_H_ */
-\ No newline at end of file
-diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
-index 4a1848b0318f..f5f6f15c362c 100644
---- a/drivers/gpu/drm/vkms/vkms_output.c
-+++ b/drivers/gpu/drm/vkms/vkms_output.c
-@@ -41,12 +41,13 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
- 	struct drm_crtc *crtc = &output->crtc;
- 	struct drm_plane *primary, *cursor = NULL;
- 	int ret;
-+	int writeback;
- 
- 	primary = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_PRIMARY, index);
- 	if (IS_ERR(primary))
- 		return PTR_ERR(primary);
- 
--	if (enable_cursor) {
-+	if (vkmsdev->config->cursor) {
- 		cursor = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_CURSOR, index);
- 		if (IS_ERR(cursor)) {
- 			ret = PTR_ERR(cursor);
-@@ -80,9 +81,11 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
- 		goto err_attach;
- 	}
- 
--	ret = vkms_enable_writeback_connector(vkmsdev);
--	if (ret)
--		DRM_ERROR("Failed to init writeback connector\n");
-+	if (vkmsdev->config->writeback) {
-+		writeback = vkms_enable_writeback_connector(vkmsdev);
-+		if (writeback)
-+			DRM_ERROR("Failed to init writeback connector\n");
-+	}
- 
- 	drm_mode_config_reset(dev);
- 
-@@ -98,7 +101,7 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
- 	drm_crtc_cleanup(crtc);
- 
- err_crtc:
--	if (enable_cursor)
-+	if (vkmsdev->config->cursor)
- 		drm_plane_cleanup(cursor);
- 
- err_cursor:
--- 
-2.25.1
-
+Guenter
