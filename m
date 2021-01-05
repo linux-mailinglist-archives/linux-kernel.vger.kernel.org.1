@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7A52EA6B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFDD2EA6B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbhAEIon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 03:44:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbhAEIom (ORCPT
+        id S1727634AbhAEIpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 03:45:07 -0500
+Received: from smtprelay0041.hostedemail.com ([216.40.44.41]:56742 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726202AbhAEIpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 03:44:42 -0500
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456C5C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 00:44:02 -0800 (PST)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kwhwd-00Bkrf-R8
-        for linux-kernel@vger.kernel.org; Tue, 05 Jan 2021 09:44:00 +0100
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,HELO_MISC_IP,
-        RDNS_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [85.234.217.28] (helo=[10.0.1.5])
-        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kwhwd-00Bkrb-M4; Tue, 05 Jan 2021 09:43:59 +0100
-Subject: Re: [PATCH v3 1/2] dt-bindings: spi: Realtek RTL838x/RTL839x SPI
- controller
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Birger Koblitz <mail@birger-koblitz.de>,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        Tue, 5 Jan 2021 03:45:06 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BDF781801B771;
+        Tue,  5 Jan 2021 08:44:25 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2198:2199:2200:2393:2553:2559:2562:2691:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3874:4321:5007:7652:8603:10004:10249:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14659:21080:21324:21451:21627:21795:30051:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: print05_0a1526c274d7
+X-Filterd-Recvd-Size: 1900
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  5 Jan 2021 08:44:24 +0000 (UTC)
+Message-ID: <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: add a new check for strcpy/strlcpy uses
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
         linux-kernel@vger.kernel.org
-References: <20210101132432.2785663-1-bert@biot.com>
- <20210101132432.2785663-2-bert@biot.com>
- <20210104213131.GL5645@sirena.org.uk>
-From:   Bert Vermeulen <bert@biot.com>
-Message-ID: <121d9dc6-7993-d43b-291f-74dd943f4fc6@biot.com>
-Date:   Tue, 5 Jan 2021 09:43:59 +0100
+Date:   Tue, 05 Jan 2021 00:44:23 -0800
+In-Reply-To: <20210105082303.15310-1-dwaipayanray1@gmail.com>
+References: <20210105082303.15310-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20210104213131.GL5645@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/4/21 10:31 PM, Mark Brown wrote:
-> On Fri, Jan 01, 2021 at 02:24:31PM +0100, Bert Vermeulen wrote:
+On Tue, 2021-01-05 at 13:53 +0530, Dwaipayan Ray wrote:
+> strcpy() performs no bounds checking on the destination buffer.
+> This could result in linear overflows beyond the end of the buffer.
 > 
->> +  compatible:
->> +    const: realtek,rtl-spi
+> strlcpy() reads the entire source buffer first. This read
+> may exceed the destination size limit. This can be both inefficient
+> and lead to linear read overflows.
 > 
-> This is still just using rtl-spi as the compatible string, please
-> address the feedback on the previous version.
+> The safe replacement to both of these is to use strscpy() instead.
+> Add a new checkpatch warning which alerts the user on finding usage of
+> strcpy() or strlcpy().
 
-Mark,
+I do not believe that strscpy is preferred over strcpy.
 
-The rtl prefix really is as close as it gets. This is being developed on 
-RTL838x and RTL839x, but the driver very likely also works on RTL8196C and 
-RTL93xx series. There's no difference to the SPI block in those SoCs.
+When the size of the output buffer is known to be larger
+than the input, strcpy is faster.
 
-Do you really want a different per-series compatible when the "IP block" was 
-just copy-pasted between series in hardware?
+There are about 2k uses of strcpy.
+Is there a use where strcpy use actually matters?
+I don't know offhand...
+
+But I believe compilers do not optimize away the uses of strscpy
+to a simple memcpy like they do for strcpy with a const from
+
+	strcpy(foo, "bar");
+
+And lastly there is a existing strlcpy test in checkpatch.
+
+commit 5dbdb2d87c29 ("checkpatch: prefer strscpy to strlcpy")
 
 
--- 
-Bert Vermeulen
-bert@biot.com
