@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AC62EAD59
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E90C2EAD64
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbhAEO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbhAEO1o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:27:44 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FC5C061795
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 06:27:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WPt4GbgvCJj/QsPuZwFr/Sd2QDQgrOU3f9zQkLRLZCE=; b=VshOaC0GH4R/GHWLsOrEaR8b2K
-        f1iVB2FdwmZspXhWCtXhYE0GQ+yD/lw0u3Gu3dCbCNz13IM4rb22OcMQwgeEUHxl59jRWfCCWdTLf
-        SG8aDNnaltBNlBEXR/znh11f4cffx+/uqrDDigCA60AwXTif2IMu9dTSIxq/oUf1nXwXXoUI5N0zU
-        WdXCQt6Z4Bl4Z8tlEQutzgQtBVXUgAUjNEPmQoXV3NO0bmwTyDvSS6l4ynZk1xvwrkVkdKU/bK5mg
-        6vqcdVrvcdmg+ulkaE5YZq7M5aACoMBNmaz0qBh27/+cI/0oEu5UOwR8sW0yodinZPb3sqVCFQLcC
-        WtDxcDsA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwnIR-0000DE-BP; Tue, 05 Jan 2021 14:26:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B3A4730377D;
-        Tue,  5 Jan 2021 15:26:48 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9EE9621210122; Tue,  5 Jan 2021 15:26:48 +0100 (CET)
-Date:   Tue, 5 Jan 2021 15:26:48 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>, Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to
- writeprotect
-Message-ID: <20210105142648.GJ3040@hirez.programming.kicks-ass.net>
-References: <20201225092529.3228466-1-namit@vmware.com>
- <20201225092529.3228466-2-namit@vmware.com>
- <20210104122227.GL3021@hirez.programming.kicks-ass.net>
- <X/NrdnoDHgFd0Ku1@redhat.com>
- <20210105081325.GD3040@hirez.programming.kicks-ass.net>
- <C255B66E-C418-4B30-B363-76441266A0DC@gmail.com>
+        id S1726961AbhAEOe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:34:26 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:50230 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726396AbhAEOeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:34:25 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kwnOo-00GBBp-7X; Tue, 05 Jan 2021 15:33:26 +0100
+Date:   Tue, 5 Jan 2021 15:33:26 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc:     "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
+        "leoyang.li@nxp.com" <leoyang.li@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "murali.policharla@broadcom.com" <murali.policharla@broadcom.com>,
+        "vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "qiang.zhao@nxp.com" <qiang.zhao@nxp.com>
+Subject: Re: [PATCH 01/20] ethernet: ucc_geth: set dev->max_mtu to 1518
+Message-ID: <X/R4tqny72Bjt28b@lunn.ch>
+References: <20201205191744.7847-1-rasmus.villemoes@prevas.dk>
+ <20201205191744.7847-2-rasmus.villemoes@prevas.dk>
+ <20201210012502.GB2638572@lunn.ch>
+ <33816fa937efc8d4865d95754965e59ccfb75f2c.camel@infinera.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <C255B66E-C418-4B30-B363-76441266A0DC@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <33816fa937efc8d4865d95754965e59ccfb75f2c.camel@infinera.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 12:52:48AM -0800, Nadav Amit wrote:
-> > On Jan 5, 2021, at 12:13 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Jan 05, 2021 at 02:17:42PM +0000, Joakim Tjernlund wrote:
+> On Thu, 2020-12-10 at 02:25 +0100, Andrew Lunn wrote:
+> > On Sat, Dec 05, 2020 at 08:17:24PM +0100, Rasmus Villemoes wrote:
+> > > All the buffers and registers are already set up appropriately for an
+> > > MTU slightly above 1500, so we just need to expose this to the
+> > > networking stack. AFAICT, there's no need to implement .ndo_change_mtu
+> > > when the receive buffers are always set up to support the max_mtu.
+> > > 
+> > > This fixes several warnings during boot on our mpc8309-board with an
+> > > embedded mv88e6250 switch:
+> > > 
+> > > mv88e6085 mdio@e0102120:10: nonfatal error -34 setting MTU 1500 on port 0
+> > > ...
+> > > mv88e6085 mdio@e0102120:10: nonfatal error -34 setting MTU 1500 on port 4
+> > > ucc_geth e0102000.ethernet eth1: error -22 setting MTU to 1504 to include DSA overhead
+> > > 
+> > > The last line explains what the DSA stack tries to do: achieving an MTU
+> > > of 1500 on-the-wire requires that the master netdevice connected to
+> > > the CPU port supports an MTU of 1500+the tagging overhead.
+> > > 
+> > > Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
+> > > Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+> > > Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 > > 
-> > On Mon, Jan 04, 2021 at 02:24:38PM -0500, Andrea Arcangeli wrote:
-> >> The problematic one not pictured is the one of the wrprotect that has
-> >> to be running in another CPU which is also isn't picture above. More
-> >> accurate traces are posted later in the thread.
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 > > 
-> > What thread? I don't seem to have discovered it yet, and the cover
-> > letter from Nadav doesn't seem to have a msgid linking it either.
+> >     Andrew
 > 
-> Sorry for that:
-> 
-> https://lore.kernel.org/lkml/X+K7JMrTEC9SpVIB@google.com/T/
+> I don't see this in any kernel, seems stuck? Maybe because the series as a whole is not approved?
 
-Much reading later..
+Hi Joakim
 
-OK, go with the write-lock for now.
+When was it posted? If it was while netdev was closed during the merge
+window, you need to repost.
+
+You should be able to see the status in the netdev patchwork instance
+
+https://patchwork.kernel.org/project/netdevbpf/list/
+
+	Andrew
