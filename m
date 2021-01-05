@@ -2,181 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAF72EA160
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B582EA16B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbhAEAOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 19:14:32 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13656 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbhAEAOc (ORCPT
+        id S1727676AbhAEAUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 19:20:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726625AbhAEAUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:14:32 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff3af3e0002>; Mon, 04 Jan 2021 16:13:50 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 Jan
- 2021 00:13:47 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.57) by
- HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 5 Jan 2021 00:13:47 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GFK+FndG/cFiE3fxW/2iKBiUSK06fiuto1bMhKb1SnY3Ow6Pzp4sMp0afneZwshtZYDgXTcxsJ4vB3WXMDe4L4BrSbCK5vfgpIUgE/EccfnwkYWMdxrhTwMM/llBYq/VRIgJGeMaStWeq3XwQjAdP7tWHdLtttsHj4TFNfHC2S+xkanup04qZMw4uxsSo3PjjJAkNodQoIosfUQQwnqCTh7l6TfT1QxGiyR+R81dh5k9XGKEN5nSqgqH2aHgsRtpvOYcHKxLTJFJds6RuxBvHOnGgrJhBK3EYY05A3KgPbxFwGCXkLEkiC+6G/OzlYmSUIYK7GLBueZ2cmCSp5XNDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ouPoyixJhHTpwOQtyr0SENnRQLXTJ/B4V1AQwbdoQ+E=;
- b=LnwF3zFeGuDvJnOlUrzhDTXbUpIzYYq8LCCZMNwh675n58vYhgQHc+5blg+ISx7HGieYHgRRzilCxAc0H4ZGEqezulE8x/9CKB1LME2Cl9nMR9SXk3qeUb8XY4EG09bz6jWRp0GtLoJEjSYjdRMdKNY94m+Swc0G4Qk2bMSsojOMULMrVFib1dryCt8ZxnsB8DNfmuZPwcXxzBjBIBH4JVv1pETay2+gYDjvOJmMqNO0RSjPPAq3pa4hK3jmIyI+52RcWVFvbKPD9rjuNWflqWF3gfXSbhRI9aA1ckImr0pLVfOt2y4kLiV489aHFdHwsFk7dLT3we+TLvIbPTlOKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3212.namprd12.prod.outlook.com (2603:10b6:5:186::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Tue, 5 Jan
- 2021 00:13:44 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
- 00:13:44 +0000
-Date:   Mon, 4 Jan 2021 20:13:41 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Dave Ertman" <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, <lee.jones@linaro.org>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20210105001341.GL552508@nvidia.com>
-References: <20201218140854.GW552508@nvidia.com>
- <20201218155204.GC5333@sirena.org.uk> <20201218162817.GX552508@nvidia.com>
- <20201218180310.GD5333@sirena.org.uk> <20201218184150.GY552508@nvidia.com>
- <20201218203211.GE5333@sirena.org.uk> <20201218205856.GZ552508@nvidia.com>
- <20201221185140.GD4521@sirena.org.uk> <20210104180831.GD552508@nvidia.com>
- <20210104211930.GI5645@sirena.org.uk>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210104211930.GI5645@sirena.org.uk>
-X-ClientProxiedBy: MN2PR16CA0032.namprd16.prod.outlook.com
- (2603:10b6:208:134::45) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by MN2PR16CA0032.namprd16.prod.outlook.com (2603:10b6:208:134::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19 via Frontend Transport; Tue, 5 Jan 2021 00:13:43 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kwZyn-0025iE-PI; Mon, 04 Jan 2021 20:13:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609805630; bh=ouPoyixJhHTpwOQtyr0SENnRQLXTJ/B4V1AQwbdoQ+E=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=qxfuyl5g/kR9w+ajGwau+5FZEwAJtDvC3UMqi3WiBOPaC04QfVmiQzMDPbFJ+m9JB
-         dNii3ODMcuvXXz4jviuLyd6c3fi9BCdKLZpY5NkbNUlri4//6j3YbH2OW2I1nSjOi3
-         lwdRBqAyMSYnam0aBtD6Q28oSIClTZPqMc9v48sUe7jLtfbkBOOvRT3BMi9nomWXgV
-         Wh4dgL3DSJgliOtg7M8G8uieBzIUdhFDoBMzALvfyaW8DHBcAHJbwLCcqZxZlA0tq5
-         Yi8R8Gld3MeYkdl8TIaFTDI80CDVu7eAissXPabehYbkHDaWlHNaCACDa1aEfaOTTQ
-         40/FjwjJ31LMQ==
+        Mon, 4 Jan 2021 19:20:35 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1011C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:19:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=g+AOKhUeUTWFOIQpi32HsWBW7smluNeXtvDauD7RssY=; b=lsSswGwcdJdB0MrHcGsXuXG2fK
+        TUTGjVsSIwquBNERcSr9UsqkRc9K0QSb9xhRuEx1dEk8IZo3mNRPnWW2KEdmVLwLCIgWxgl0KMz3g
+        SCzfazEzpwc7qwK7rmcGjMRA3ilmofKJkSx0E4hLwM8dZzhneL+iEHt4NKYrKpZtvJSQ15JJBq7N6
+        HPd6R/R9iwDAJEJTo2xL4/tm+R7i9hDPGaPKE2ZuUTvm3r37BUHLuN4zcTt1Gqaxr0kzcAdfujupw
+        baHANIXGfYXnVWqsDBIYtoVH8VM9MIwJZygDD+xFvBz1sDqlsSaoq+PLeatJzUqKmcPVWkwHiEMkO
+        R/0PFHfw==;
+Received: from 54-240-197-236.amazon.com ([54.240.197.236] helo=u3832b3a9db3152.ant.amazon.com)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwa4b-0006qY-L2; Tue, 05 Jan 2021 00:19:41 +0000
+Message-ID: <8cfbd243321d91bad760117cc49f1770a7bd819c.camel@infradead.org>
+Subject: Re: [EXTERNAL] PROBLEM: commit f36a74b9345a leads to not booting
+ system with AMD 2990WX
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Johnathan Smithinovic <johnathan.smithinovic@gmx.at>,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        iommu <iommu@lists.linux-foundation.org>
+Date:   Tue, 05 Jan 2021 00:19:39 +0000
+In-Reply-To: <ed4be9b4-24ac-7128-c522-7ef359e8185d@gmx.at>
+References: <ed4be9b4-24ac-7128-c522-7ef359e8185d@gmx.at>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-GsywGdKVRXSjjbFDzZQz"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 09:19:30PM +0000, Mark Brown wrote:
+
+--=-GsywGdKVRXSjjbFDzZQz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 2021-01-05 at 00:05 +0100, Johnathan Smithinovic wrote:
+> commit f36a74b9345a leads to not booting system with AMD 2990WX
+>=20
+>=20
+> When trying to boot 5.11-rc2 as usual the messages of the bootloader stay=
+ on my
+> screen and not much appears to happen (fans run a bit slower than in GRUB=
+,
+> devices don't seem to get accessed). Without this commit everything seems=
+ to
+> work as usual.
+>=20
+> (In the hope that it is helpful I appended messages mentioning "IO APIC"
+> from 5.11-rc2 with the mentioned commit reverted (and the kernel paramete=
+r
+> apic=3Ddebug added).
+> I'm sorry that I can't provide more details: I'm unsure how I can gather
+> more information since my Motherboard (ASUS ROG ZENITH EXTREME) does not =
+have
+> any documented serial ports and USB devices don't seem to get turned on.)
+
+No problem, that was enough to reproduce it in qemu just by simulating
+the same BIOS bug which causes it to *start* enabling, then abort, the
+IRQ remapping. Thanks for the report.
+
+Does this fix it?
+
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 7e2c445a1fae..f0adbc48fd17 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -3854,6 +3854,9 @@ static int irq_remapping_select(struct irq_domain *d,=
+ struct irq_fwspec *fwspec,
+ 	struct amd_iommu *iommu;
+ 	int devid =3D -1;
+=20
++	if (!amd_iommu_irq_remap)
++		return 0;
++
+ 	if (x86_fwspec_is_ioapic(fwspec))
+ 		devid =3D get_ioapic_devid(fwspec->param[0]);
+ 	else if (x86_fwspec_is_hpet(fwspec))
 
 
-> > Regardless of the shortcut to make everything a struct
-> > platform_device, I think it was a mistake to put OF devices on
-> > platform_bus. Those should have remained on some of_bus even if they
-> 
-> Like I keep saying the same thing applies to all non-enumerable buses -
-> exactly the same considerations exist for all the other buses like I2C
-> (including the ACPI naming issue you mention below), and for that matter
-> with enumerable buses which can have firmware info.
+--=-GsywGdKVRXSjjbFDzZQz
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-And most busses do already have their own bus type. ACPI, I2C, PCI,
-etc. It is just a few that have been squished into platform, notably
-OF.
- 
-> > are represented by struct platform_device and fiddling in the core
-> > done to make that work OK.
-> 
-> What exactly is the fiddling in the core here, I'm a bit unclear?
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
+MTA1MDAxOTM5WjAvBgkqhkiG9w0BCQQxIgQgTfRM3Pl6GynIZI7YsB9XeI6YbQxP4yzs4oNeG+5q
+ddMwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAHo1qM7otYBRkgMrni6Mg3/BKdPxCtLRTUf5yY0QHlW/7q0umh+w2mKjXHa2wWAC
+lHj5V3DeQ9nPaTMEs6a8NqY/XfAUr8lt/Tu1wfWkDbRv2i8LA4wSK9donkihwE71yhq+NVtBJAcN
+djVCNB9UzexpsAjsSkEIHP6Vqe4JdxIsSniAukCJO+dHIf3+zPFMYhDF8QnkpkwONANFPdm/ADHy
+7o8+0Ku/sr7uxZtJ8hcWbrchA5QOKAtISXH4KUZ5cc4lyLpFaq0wfB9CiPVb0TF/fh2C8/Bd9Tdo
+KJtLpSAIoN13AB6+oU59DIOvZfIFbGjN6qyU3x8sGlA2di0CEBEAAAAAAAA=
 
-I'm not sure, but I bet there is a small fall out to making bus_type
-not 1:1 with the struct device type.. Would have to attempt it to see
 
-> > This feels like a good conference topic someday..
-> 
-> We should have this discussion *before* we get too far along with trying
-> to implement things, we should at least have some idea where we want to
-> head there.
+--=-GsywGdKVRXSjjbFDzZQz--
 
-Well, auxillary bus is clearly following the original bus model
-intention with a dedicated bus type with a controlled naming
-scheme. The debate here seems to be "what about platform bus" and
-"what to do with mfd"?
-
-> Those APIs all take a struct device for lookup so it's the same call for
-> looking things up regardless of the bus the device is on or what
-> firmware the system is using - where there are firmware specific lookup
-> functions they're generally historical and shouldn't be used for new
-> code.  It's generally something in the form
-> 
-> 	api_type *api_get(struct device *dev, const char *name);
-
-Well, that is a nice improvement since a few years back when I last
-worked on this stuff.
-
-But now it begs the question, why not push harder to make 'struct
-device' the generic universal access point and add some resource_get()
-API along these lines so even a platform_device * isn't needed?
-
-Then the path seems much clearer, add a multi-bus-type device_driver
-that has a probe(struct device *) and uses the 'universal api_get()'
-style interface to find the generic 'resources'.
-
-The actual bus types and bus structs can then be split properly
-without the boilerplate that caused them all to be merged to platform,
-even PCI could be substantially merged like this.
-
-Bonus points to replace the open coded method disptach:
-
-int gpiod_count(struct device *dev, const char *con_id)
-{
-	int count = -ENOENT;
-
-	if (IS_ENABLED(CONFIG_OF) && dev && dev->of_node)
-		count = of_gpio_get_count(dev, con_id);
-	else if (IS_ENABLED(CONFIG_ACPI) && dev && ACPI_HANDLE(dev))
-		count = acpi_gpio_count(dev, con_id);
-
-	if (count < 0)
-		count = platform_gpio_count(dev, con_id);
-
-With an actual bus specific virtual function:
-
-    return dev->bus->gpio_count(dev);
-
-> ...and then do the same thing for every other bus with firmware
-> bindings.  If it's about the firmware interfaces it really isn't a
-> platform bus specific thing.  It's not clear to me if that's what it is
-> though or if this is just some tangent.
-
-It should be split up based on the unique naming scheme and any bus
-specific API elements - like raw access to ACPI or OF data or what
-have you for other FW bus types.
-
-Jason
