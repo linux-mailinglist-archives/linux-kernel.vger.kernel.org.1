@@ -2,133 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F082EB581
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315592EB586
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730923AbhAEWpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 17:45:41 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:47320 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728058AbhAEWpk (ORCPT
+        id S1729220AbhAEWvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 17:51:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbhAEWvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 17:45:40 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105MOr0A022106;
-        Tue, 5 Jan 2021 22:44:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=EVuLtaEoqyVF8xI9Fk+aPgVK+nQKGqBw67gRTMEOd70=;
- b=0dlbbXl6u7/DpS6PcTRxA+F2SUcyX7kazCvwbWmflGJLlP4XOrhp/pkCNu579jTxJ3DF
- FbWthhLCqItmTvZQvOMYsKfPwlVnF///LgLEHHQaGYDzuFMaCdTuQRTsHm2y1PL702Yl
- cJTEsx2ynmpC9v4lWp4VUu5W4O+xffmwWPkT64PPUCN1/zR1aeOSz61jwBJ+y03TKoEa
- UBwYMQIdLuNGe4F1muPmQrQMGQcH+f+12HjN+zg3MNP9KE1vXWHrWLbkMqAmxtizYQ89
- Y/fHK1fbjVZsjurlCdgY4My5jmcLVBdXxMo6znt186TXFEwR5pVTcZwlIoc5pkhM/wxa ew== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 35tgsku31g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 05 Jan 2021 22:44:41 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105MPLL7186292;
-        Tue, 5 Jan 2021 22:44:40 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 35vct6funb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Jan 2021 22:44:40 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 105Micqj022028;
-        Tue, 5 Jan 2021 22:44:39 GMT
-Received: from dhcp-10-175-187-168.vpn.oracle.com (/10.175.187.168)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 05 Jan 2021 22:44:38 +0000
-Date:   Tue, 5 Jan 2021 22:44:29 +0000 (GMT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, yhs@fb.com,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?ISO-8859-15?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        jean-philippe@linaro.org, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next] ksnoop: kernel argument/return value
- tracing/display using BTF
-In-Reply-To: <CAM_iQpW5ajiTTW7HBZiK+n_F1MhGyzzD+OWExns1YbejHRsy5A@mail.gmail.com>
-Message-ID: <alpine.LRH.2.23.451.2101052209360.30305@localhost>
-References: <1609773991-10509-1-git-send-email-alan.maguire@oracle.com> <CAM_iQpW5ajiTTW7HBZiK+n_F1MhGyzzD+OWExns1YbejHRsy5A@mail.gmail.com>
+        Tue, 5 Jan 2021 17:51:23 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1F7C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 14:50:42 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id x12so533555plr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 14:50:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Jja6PGE5iwBpw1zqSo7xw/kvad9lr78jIVWxbJrx/30=;
+        b=REnWvtpsMjKjED+bZTapLRSuEuQztkNpcx2eiAa6TLISjOIkxFuVhCZuMP9Nls3I5j
+         +mwFUa8wfAJukwm+FiJn7evgt033UzSFH43wdAqLUUTo4UnmMXATDlb7cNgzbGhqCXhZ
+         2I/ONtGitmNKyMV8l3KmENqc6aEdteT1ih3WfAgChbz6EBQGZVJ07QHQCpL9eTwCModS
+         pqD+MdIyCCqOVW4wJ71lCIDuVZs3hAMqyESzdA2naIYKi3m3cGliaaU+0qlVKMmd/bGh
+         pQ7xXTXYMQhXvrvmCZ443IWWp6J4yUzo+yuMC9KjSFNz8gJVG+sprYsFIplKJxFKxnFj
+         wsiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jja6PGE5iwBpw1zqSo7xw/kvad9lr78jIVWxbJrx/30=;
+        b=BVtKM+SSIBJaOuVuDPA1Qlmt4MRhNSOSC6QI85f/L8hkI59wXh1aosASJOkRy0sV4H
+         PdGS2MOEEWEXSG+oHWDGSFddf0HE5tddZBZl6aNDZN+ceiWa1PXapnYw8As0li+pbzBs
+         HMjo20pFr+/125kqq7j0r6lCKvUJLerIix1+7uYMM0Y6M1n+NUw+dAVqR5rrwJUsINwQ
+         D9B29zrJiQJMSz7AbXT+Hgmif1GkAsMcQZzWYVhP0XLu3DWVDyQEQCuVr3X4Pm40TgDs
+         HygufZnBw2X69y+mhh6BB8mbcQR0JiKU6a2sJKYzsFt+Kn7+jJM6GCcCnmQAbcbcEvbP
+         v+kw==
+X-Gm-Message-State: AOAM532gvZCfErLztZccRp8smqSeVqSL5sr0HUqzL/5CkGUKtghF5a7Z
+        jHvy2esE3/Ls24tEYe+DJ7CRsg==
+X-Google-Smtp-Source: ABdhPJzPHusybky4jtjW5ghWRcVp++iKus2QtHrORCfwKKTGkWMoqvVEm8Qi0vgkltEnbmA7wB+dyA==
+X-Received: by 2002:a17:90b:1811:: with SMTP id lw17mr1337881pjb.105.1609887041345;
+        Tue, 05 Jan 2021 14:50:41 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:f693:9fff:fef4:fc72])
+        by smtp.gmail.com with ESMTPSA id x22sm395236pfc.19.2021.01.05.14.50.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 14:50:40 -0800 (PST)
+Date:   Tue, 5 Jan 2021 14:50:35 -0800
+From:   Benson Leung <bleung@google.com>
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
+Cc:     linux-kernel@vger.kernel.org, enric.balletbo@collabora.com,
+        pmalani@chromium.org, bleung@chromium.org,
+        heikki.krogerus@linux.intel.com, rajmohan.mani@intel.com
+Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Send mux
+ configuration acknowledgment to EC
+Message-ID: <X/TtO/HbYAKhznhg@google.com>
+References: <20201210060903.2205-1-utkarsh.h.patel@intel.com>
+ <20201210060903.2205-3-utkarsh.h.patel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101050129
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
- phishscore=0 impostorscore=0 bulkscore=0 clxscore=1011 priorityscore=1501
- lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050129
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/IjDMK6mAXs7fzYe"
+Content-Disposition: inline
+In-Reply-To: <20201210060903.2205-3-utkarsh.h.patel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--/IjDMK6mAXs7fzYe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 5 Jan 2021, Cong Wang wrote:
+Hi Utkarsh,
 
-> On Mon, Jan 4, 2021 at 7:29 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >
-> > BPF Type Format (BTF) provides a description of kernel data structures
-> > and of the types kernel functions utilize as arguments and return values.
-> >
-> > A helper was recently added - bpf_snprintf_btf() - that uses that
-> > description to create a string representation of the data provided,
-> > using the BTF id of its type.  For example to create a string
-> > representation of a "struct sk_buff", the pointer to the skb
-> > is provided along with the type id of "struct sk_buff".
-> >
-> > Here that functionality is utilized to support tracing kernel
-> > function entry and return using k[ret]probes.  The "struct pt_regs"
-> > context can be used to derive arguments and return values, and
-> > when the user supplies a function name we
-> >
-> > - look it up in /proc/kallsyms to find its address/module
-> > - look it up in the BTF kernel data to get types of arguments
-> >   and return value
-> > - store a map representation of the trace information, keyed by
-> >   instruction pointer
-> > - on function entry/return we look up the map to retrieve the BTF
-> >   ids of the arguments/return values and can call bpf_snprintf_btf()
-> >   with these argument/return values along with the type ids to store
-> >   a string representation in the map.
-> > - this is then sent via perf event to userspace where it can be
-> >   displayed.
-> >
-> > ksnoop can be used to show function signatures; for example:
-> 
-> This is definitely quite useful!
-> 
-> Is it possible to integrate this with bpftrace? That would save people
-> from learning yet another tool. ;)
-> 
+On Wed, Dec 09, 2020 at 10:09:03PM -0800, Utkarsh Patel wrote:
+> In some corner cases downgrade of the superspeed typec device(e.g. Dell
+> typec Dock, apple dongle) was seen because before the SOC mux configurati=
+on
+> finishes, EC starts configuring the next mux state.
+>=20
+> With this change, once the SOC mux is configured, kernel will send an
+> acknowledgment to EC via Host command EC_CMD_USB_PD_MUX_ACK [1].
+> After sending the host event EC will wait for the acknowledgment from
+> kernel before starting the PD negotiation for the next mux state. This
+> helps to have a framework to build better error handling along with the
+> synchronization of timing sensitive mux states.
+>=20
+> This change also brings in corresponding EC header updates from the EC co=
+de
+> base [1].
+>=20
+> [1]:
+> https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/mas=
+ter/include/ec_commands.h
+>=20
+> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+> ---
+>  drivers/platform/chrome/cros_ec_typec.c        | 16 ++++++++++++++++
+>  include/linux/platform_data/cros_ec_commands.h | 17 +++++++++++++++++
+>  2 files changed, 33 insertions(+)
+>=20
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/c=
+hrome/cros_ec_typec.c
+> index 650aa5332055..e6abe205890c 100644
 
-I'd imagine (and hope!) other tracing tools will do this, but right 
-now the aim is to make the task of tracing kernel data structures simpler, 
-so having a tool dedicated to just that can hopefully help those 
-discussions.  There's a bit more work to be done to simplify that task, for
-example  implementing Alexei's suggestion to support pretty-printing of 
-data structures using BTF in libbpf.
+I went ahead and staged this commit, but just for your information, applying
+this patch was problematic because the sha1 used here didn't match anything
+in the upstream kernel.
 
-My hope is that we can evolve this tool - or something like it - to the 
-point where we can solve that one problem easily, and that other more 
-general tracers can then make use of that solution.  I probably should
-have made all of this clearer in the patch submission, sorry about that.
+Here's the error when I try to apply this using git am:
+Applying: platform/chrome: cros_ec_typec: Send mux configuration acknowledg=
+ment to EC
+error: sha1 information is lacking or useless (drivers/platform/chrome/cros=
+_ec_typec.c).
+error: could not build fake ancestor
+Patch failed at 0001 platform/chrome: cros_ec_typec: Send mux configuration=
+ acknowledgment to EC
 
-Alan
+
+Please double check when you run git-format-patch that the branch you are
+working on comes from publicly available git repos, ideally, based on linus=
+'s
+tagged releases. This will ensure things apply cleanly on my side.
+
+I've gone ahead and staged this, but could you please sanity check that the
+result is as intended?
+
+https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git/c=
+ommit/?h=3Dcros-ec-typec-for-5.12&id=3D8553a979fcd03448a4096c7d431b7ee1a52b=
+fca3
+
+Thank you,
+Benson
+
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -74,6 +74,7 @@ struct cros_typec_data {
+>  	struct notifier_block nb;
+>  	struct work_struct port_work;
+>  	bool typec_cmd_supported;
+> +	bool needs_mux_ack;
+>  };
+> =20
+>  static int cros_typec_parse_port_props(struct typec_capability *cap,
+> @@ -503,6 +504,7 @@ static int cros_typec_configure_mux(struct cros_typec=
+_data *typec, int port_num,
+>  				struct ec_response_usb_pd_control_v2 *pd_ctrl)
+>  {
+>  	struct cros_typec_port *port =3D typec->ports[port_num];
+> +	struct ec_params_usb_pd_mux_ack mux_ack;
+>  	enum typec_orientation orientation;
+>  	int ret;
+> =20
+> @@ -543,6 +545,18 @@ static int cros_typec_configure_mux(struct cros_type=
+c_data *typec, int port_num,
+>  		ret =3D -ENOTSUPP;
+>  	}
+> =20
+> +	if (!typec->needs_mux_ack)
+> +		return ret;
+> +
+> +	/* Sending Acknowledgment to EC */
+> +	mux_ack.port =3D port_num;
+> +
+> +	if (cros_typec_ec_command(typec, 0, EC_CMD_USB_PD_MUX_ACK, &mux_ack,
+> +				  sizeof(mux_ack), NULL, 0) < 0)
+> +		dev_warn(typec->dev,
+> +			 "Failed to send Mux ACK to EC for port: %d\n",
+> +			 port_num);
+> +
+>  	return ret;
+>  }
+> =20
+> @@ -908,6 +922,8 @@ static int cros_typec_probe(struct platform_device *p=
+dev)
+> =20
+>  	typec->typec_cmd_supported =3D !!cros_typec_feature_supported(typec,
+>  					EC_FEATURE_TYPEC_CMD);
+> +	typec->needs_mux_ack =3D !!cros_typec_feature_supported(typec,
+> +					EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
+> =20
+>  	ret =3D cros_typec_ec_command(typec, 0, EC_CMD_USB_PD_PORTS, NULL, 0,
+>  				    &resp, sizeof(resp));
+> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/lin=
+ux/platform_data/cros_ec_commands.h
+> index 7f54fdcdd8cb..3b53e45cb5a0 100644
+> --- a/include/linux/platform_data/cros_ec_commands.h
+> +++ b/include/linux/platform_data/cros_ec_commands.h
+> @@ -1286,6 +1286,16 @@ enum ec_feature_code {
+>  	EC_FEATURE_ISH =3D 40,
+>  	/* New TCPMv2 TYPEC_ prefaced commands supported */
+>  	EC_FEATURE_TYPEC_CMD =3D 41,
+> +	/*
+> +	 * The EC will wait for direction from the AP to enter Type-C alternate
+> +	 * modes or USB4.
+> +	 */
+> +	EC_FEATURE_TYPEC_REQUIRE_AP_MODE_ENTRY =3D 42,
+> +	/*
+> +	 * The EC will wait for an acknowledge from the AP after setting the
+> +	 * mux.
+> +	 */
+> +	EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK =3D 43,
+>  };
+> =20
+>  #define EC_FEATURE_MASK_0(event_code) BIT(event_code % 32)
+> @@ -6054,6 +6064,13 @@ struct ec_params_charger_control {
+>  	uint8_t allow_charging;
+>  } __ec_align_size1;
+> =20
+> +/* Get ACK from the USB-C SS muxes */
+> +#define EC_CMD_USB_PD_MUX_ACK 0x0603
+> +
+> +struct ec_params_usb_pd_mux_ack {
+> +	uint8_t port; /* USB-C port number */
+> +} __ec_align1;
+> +
+>  /***********************************************************************=
+******/
+>  /*
+>   * Reserve a range of host commands for board-specific, experimental, or
+> --=20
+> 2.25.1
+>=20
+
+--=20
+Benson Leung
+Staff Software Engineer
+Chrome OS Kernel
+Google Inc.
+bleung@google.com
+Chromium OS Project
+bleung@chromium.org
+
+--/IjDMK6mAXs7fzYe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCX/TtOwAKCRBzbaomhzOw
+wnJTAQDtYmCUms19MJacR7vPU5uukzu3eG8uUGBKVEsITpt6egD/Q9fA7uzcinLn
+mJbnxWZ5WRELYs5CW0vK9SgBdTCM3A8=
+=havA
+-----END PGP SIGNATURE-----
+
+--/IjDMK6mAXs7fzYe--
