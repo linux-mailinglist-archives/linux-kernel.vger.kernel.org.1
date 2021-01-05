@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C4D2EA8F0
+	by mail.lfdr.de (Postfix) with ESMTP id 94B9B2EA8F1
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729343AbhAEKiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:38:13 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:41319 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729321AbhAEKiM (ORCPT
+        id S1729355AbhAEKiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:38:23 -0500
+Received: from smtprelay0027.hostedemail.com ([216.40.44.27]:32962 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729244AbhAEKiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:38:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1609843091; x=1641379091;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=mPgqYvT9twuHVMlI0OVkYcEKNKnwJB9l+TzR0S/ALmI=;
-  b=gjyVoJhIODft+iuPNHYQ4DyR10/g2rkqCJzRMk8iiyYZA/3a/z3eo/PI
-   QWgFdVegJQWBOf8Or/ne/7/+SPmlaflIAp2qg6IacPPc5G6xm2559sm6z
-   +RYdXBhIPzQGN8g5RESYwgMYwgyIAFjCuA+HNNp0+DYC1lvOUmveHWGNh
-   s=;
-X-IronPort-AV: E=Sophos;i="5.78,476,1599523200"; 
-   d="scan'208";a="75421730"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 05 Jan 2021 10:37:24 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 8E2D9A2255;
-        Tue,  5 Jan 2021 10:37:22 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.27) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 Jan 2021 10:37:16 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     SeongJae Park <sjpark@amazon.com>, <stable@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, <doebel@amazon.de>,
-        <aams@amazon.de>, <mku@amazon.de>, <jgross@suse.com>,
-        <julien@xen.org>, <wipawel@amazon.de>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/5] Backport of patch series for stable 4.4 branch
-Date:   Tue, 5 Jan 2021 11:37:02 +0100
-Message-ID: <20210105103702.15804-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <X+nBh/5nsI8QrWCg@kroah.com>
+        Tue, 5 Jan 2021 05:38:22 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 2516D182CF66C;
+        Tue,  5 Jan 2021 10:37:41 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:1801:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3870:3871:3874:4321:4362:4605:4823:5007:7514:7652:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12555:12740:12895:12986:13439:13894:14181:14659:14721:21080:21451:21627:21990:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: watch31_3a0e7d1274d8
+X-Filterd-Recvd-Size: 3854
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  5 Jan 2021 10:37:38 +0000 (UTC)
+Message-ID: <834383f004e107752d21ca8331add97808b3719d.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: trivial style fixes
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Tue, 05 Jan 2021 02:37:37 -0800
+In-Reply-To: <20210105103044.40282-1-dwaipayanray1@gmail.com>
+References: <20210105103044.40282-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.27]
-X-ClientProxiedBy: EX13D30UWC003.ant.amazon.com (10.43.162.122) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Tue, 2021-01-05 at 16:00 +0530, Dwaipayan Ray wrote:
+> Indentations should use tabs wherever possible.
+> Replace spaces by tabs for indents.
 
-On Mon, 28 Dec 2020 12:29:11 +0100 Greg KH <gregkh@linuxfoundation.org> wrote:
+Thanks.
 
-> On Thu, Dec 17, 2020 at 05:03:57PM +0100, SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Changes from v2
-> > (https://lore.kernel.org/stable/20201217130501.12702-1-sjpark@amazon.com/)
-> > - Move 'nr_pending' increase from 5th patch to 4th patch
-> > 
-> > Changes from v1
-> > (https://lore.kernel.org/stable/20201217081727.8253-1-sjpark@amazon.com/)
-> > - Remove wrong 'Signed-off-by' lines for 'Author Redacted'
+Acked-by: Joe Perches <joe@perches.com>
+
 > 
-> All now queued up, but you also need a series of this for the 4.9.y tree
-> as well.
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> ---
+>  scripts/checkpatch.pl | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index e6857bdfcb2d..7a323ca8a177 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -2974,7 +2974,7 @@ sub process {
+>  				}
+>  				if (!defined $lines[$linenr]) {
+>  					WARN("BAD_SIGN_OFF",
+> -                                             "Co-developed-by: must be immediately followed by Signed-off-by:\n" . "$here\n" . $rawline);
+> +					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . "$here\n" . $rawline);
+>  				} elsif ($rawlines[$linenr] !~ /^\s*signed-off-by:\s*(.*)/i) {
+>  					WARN("BAD_SIGN_OFF",
+>  					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . "$here\n" . $rawline . "\n" .$rawlines[$linenr]);
+> @@ -2997,8 +2997,8 @@ sub process {
+>  			if (ERROR("GERRIT_CHANGE_ID",
+>  			          "Remove Gerrit Change-Id's before submitting upstream\n" . $herecurr) &&
+>  			    $fix) {
+> -                                fix_delete_line($fixlinenr, $rawline);
+> -                        }
+> +				fix_delete_line($fixlinenr, $rawline);
+> +			}
+>  		}
+>  
+> 
+>  # Check if the commit log is in a possible stack dump
+> @@ -3240,10 +3240,10 @@ sub process {
+>  				next if ($start_char =~ /^\S$/);
+>  				next if (index(" \t.,;?!", $end_char) == -1);
+>  
+> 
+> -                                # avoid repeating hex occurrences like 'ff ff fe 09 ...'
+> -                                if ($first =~ /\b[0-9a-f]{2,}\b/i) {
+> -                                        next if (!exists($allow_repeated_words{lc($first)}));
+> -                                }
+> +				# avoid repeating hex occurrences like 'ff ff fe 09 ...'
+> +				if ($first =~ /\b[0-9a-f]{2,}\b/i) {
+> +					next if (!exists($allow_repeated_words{lc($first)}));
+> +				}
+>  
+> 
+>  				if (WARN("REPEATED_WORD",
+>  					 "Possible repeated word: '$first'\n" . $herecurr) &&
+> @@ -4432,7 +4432,7 @@ sub process {
+>  			WARN("STATIC_CONST_CHAR_ARRAY",
+>  			     "char * array declaration might be better as static const\n" .
+>  				$herecurr);
+> -               }
+> +		}
+>  
+> 
+>  # check for sizeof(foo)/sizeof(foo[0]) that could be ARRAY_SIZE(foo)
+>  		if ($line =~ m@\bsizeof\s*\(\s*($Lval)\s*\)@) {
+> @@ -5285,7 +5285,7 @@ sub process {
+>  		    $lines[$linenr - 3] !~ /^[ +]\s*$Ident\s*:/) {
+>  			WARN("RETURN_VOID",
+>  			     "void function return statements are not generally useful\n" . $hereprev);
+> -               }
+> +		}
+>  
+> 
+>  # if statements using unnecessary parentheses - ie: if ((foo == bar))
+>  		if ($perl_version_ok &&
 
-Thank you for your efforts!
 
-However, I was able to cherry-pick this series, which is already merged in
-4.4.y, to 4.9.y without conflicts.
-
-    $ git checkout stable/linux-4.9.y -b xsa349_4.9
-    $ git cherry-pick d8b0d52e408ca..3c71d2f637c8
-    warning: inexact rename detection was skipped due to too many files.
-    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-    [xsa349_4.9 51b4cb3db28a] xen/xenbus: Allow watches discard events before queueing
-     Date: Mon Dec 14 10:02:45 2020 +0100
-     4 files changed, 16 insertions(+), 1 deletion(-)
-    warning: inexact rename detection was skipped due to too many files.
-    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-    [xsa349_4.9 3242225d9645] xen/xenbus: Add 'will_handle' callback support in xenbus_watch_path()
-     Date: Mon Dec 14 10:04:18 2020 +0100
-     6 files changed, 17 insertions(+), 7 deletions(-)
-    warning: inexact rename detection was skipped due to too many files.
-    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-    [xsa349_4.9 10d6c1301412] xen/xenbus/xen_bus_type: Support will_handle watch callback
-     Date: Mon Dec 14 10:05:47 2020 +0100
-     2 files changed, 4 insertions(+), 1 deletion(-)
-    warning: inexact rename detection was skipped due to too many files.
-    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-    [xsa349_4.9 3875703f1e6b] xen/xenbus: Count pending messages for each watch
-     Date: Mon Dec 14 10:07:13 2020 +0100
-     2 files changed, 21 insertions(+), 12 deletions(-)
-    warning: inexact rename detection was skipped due to too many files.
-    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
-    [xsa349_4.9 40e3b315cd18] xenbus/xenbus_backend: Disallow pending watch messages
-     Date: Mon Dec 14 10:08:40 2020 +0100
-     1 file changed, 7 insertions(+)
-
-Seems you tried to merge the series for upstream in 4.9.y:
-
-    https://lore.kernel.org/stable/1609154834239118@kroah.com/
-
-This must because I didn't test this series with v4.9 and mention it.  Sorry
-for making a confusion.  Could you please check this again?
-
-
-Thanks,
-SeongJae Park
