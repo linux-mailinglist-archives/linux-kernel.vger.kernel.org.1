@@ -2,121 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3D82EB2CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A18622EB2CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730389AbhAESrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:47:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbhAESrg (ORCPT
+        id S1730521AbhAEStl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:49:41 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:33772 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729239AbhAEStk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:47:36 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11AFC061795
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:46:55 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id a109so692009otc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:46:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FQHYXsCfIUt8mD0gX69m0hlAumqmzATTTaH1ALT+r0M=;
-        b=hg7JludzVwRDPNyqVGsLQ0++/uCbJCFiHzBlSYXsiqMt6nkIP0+1DUtGXNfLdDGQ3y
-         YOu5K2thDC9v5BIynDMUdtAhtHxbKaRHpvw2PYgISnDPIXfeRCIseppO72AvngX/Dj8t
-         E+SutA4sZY+EYI+gClSMF2F7sXwooH+pDi2ij9ATHkx8gyRbFx9GKI/PhUyyYR/PC+7R
-         na8f5MujMn79vXpnV7yQpTAikd9Evv1ravJeVXSKiWqi02+TDt+iKpIyDwurwWQiBhiu
-         FqW8Ab4iZyspFrxKAatImrTfCEjSYOmzVia5hb41KguQvY+e/pLP3fvMLSAeAm33oVzG
-         h59Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FQHYXsCfIUt8mD0gX69m0hlAumqmzATTTaH1ALT+r0M=;
-        b=kORLghzCQOxJQPK8v0CbZCVEaxnPQcoKO2jCnRoA//m1WeJ+iLBbq0Ci07DOgxnJxa
-         bRKeCx1qMZAhy0RB4Tn1yDtO1UXeVlsmH+1JcTc8PhZlvI1FdTaKycfe348S8Bm5CoLa
-         rumOx8WWyDMYS3a1XzS3REx8y/HnXAmJxOouc1IGE0x+v0BjtTtsosiTXJsiXJNlbWnS
-         KywiKr7RaH55Ev7Ep5oFYSj7eJdW9bjts2p//lSLAvMJPLlERwjRsTXDp6x3R+QFpzVY
-         fBUxZ/V5OPvlwlnNxzYZJLk1u8+S/dPsJaxuNwXSBWB38/QNmsuE3FcydPxS1UEsLNoq
-         //PA==
-X-Gm-Message-State: AOAM533LM+t7J10cYTz+s0Kk1iGCeaJ4N3QGzp1aWn7gXs3+5crZ0lKh
-        c3ZCFgFvBfPWOung0zQJDdFdVfd6e24=
-X-Google-Smtp-Source: ABdhPJy2r7KyoYSkwjO89tdOY4o1eleC31KjqrVapGOI4xAFiboeCdHp1DkiB4Okd0BT8Q/Ypdsx1A==
-X-Received: by 2002:a05:6830:11d5:: with SMTP id v21mr622116otq.306.1609872415433;
-        Tue, 05 Jan 2021 10:46:55 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f201sm55555oig.21.2021.01.05.10.46.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 05 Jan 2021 10:46:54 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 5 Jan 2021 10:46:53 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.11-rc2
-Message-ID: <20210105184653.GA88051@roeck-us.net>
-References: <CAHk-=whS+rzNMSsU6vRoLMzrm0JPN-OVg+BxhybMet3NpqpR-Q@mail.gmail.com>
+        Tue, 5 Jan 2021 13:49:40 -0500
+Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 02E0720B7192;
+        Tue,  5 Jan 2021 10:48:57 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 02E0720B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1609872538;
+        bh=glv7G2z1VpNOhtyGvB3YH/k8N7WBP0RwOFTKWGcKF+8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VJgh8SXx2ay2k1IiA6nJ0Yn9ByBfv8BohzsbklfdNGBRZnzpcNM6Sh1Xbfdbz9VgS
+         hE11HgexzLpQ0+6WHLyDKJibdOI/JYYnWahWX9O55VTAKXISHMMrkzQ3NbaB3yxBby
+         Ykdh8HqiaFL7JQNhLIjBm2/3rghZ1AXbiv3RdF38=
+Subject: Re: [PATCH v9 1/8] IMA: generalize keyring specific measurement
+ constructs
+To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201212180251.9943-1-tusharsu@linux.microsoft.com>
+ <20201212180251.9943-2-tusharsu@linux.microsoft.com>
+ <acec2f96b5fa5ae8fb0e12e76f508cf6e7f7ec97.camel@linux.ibm.com>
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Message-ID: <1f5354ba-e68d-6e3c-9b7e-3ac7b522182e@linux.microsoft.com>
+Date:   Tue, 5 Jan 2021 10:48:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whS+rzNMSsU6vRoLMzrm0JPN-OVg+BxhybMet3NpqpR-Q@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <acec2f96b5fa5ae8fb0e12e76f508cf6e7f7ec97.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 03, 2021 at 04:13:08PM -0800, Linus Torvalds wrote:
-> Ok, let's be honest - not a lot has happened in the last week or two.
-> 
-> The merge window itself may not have been hugely impacted by the
-> holiday season, but that's because all the new code should already
-> have been ready before the merge window even opened, so the holidays
-> just didn't end up affecting things all that much.
-> 
-> But people have (rightly) mostly been offline since, presumably
-> over-eating and doing all the other traditional holiday things. And
-> just generally not being hugely active. That very much shows in a tiny
-> rc2 release.
-> 
-> I expect next week to slowly start ramping up fixes, but I know some
-> people are still on vacation or just in an extended food coma, and
-> there's a delay from testing to fixes, so we'll see. Maybe rc3 ends up
-> being fairly small too.
-> 
-> It's much too early to say whether this will then end up causing some
-> delays in the final release - it's possible, but with 5.11 not being a
-> particularly big release maybe it doesn't even matter that we had a
-> fairly quiet week or two in the early rc series.
-> 
-> Anyway, for whatever reasons, the few fixes we _do_ have in rc2 tend
-> to be mostly in SCSI and block devices. But there's a random
-> smattering of other things too. For once, the shortlog is so small
-> that you might as well just read it.
-> 
-> Time to slowly crawl out from under all the xmas wrapping paper piles
-> and go test...
-> 
-Build results:
-	total: 153 pass: 151 fail: 2
-Failed builds:
-	arm64:allmodconfig
-	ia64:defconfig
-Qemu test results:
-	total: 430 pass: 428 fail: 2
-Failed tests:
-	arm:raspi2:multi_v7_defconfig:bcm2836-rpi-2-b:initrd
-	arm:raspi2:multi_v7_defconfig:sd:bcm2836-rpi-2-b:rootfs
+Hello Mimi,
+Sorry for the late response. I was on vacation last week.
 
-arm64:allmodconfig:
+On 2020-12-24 5:06 a.m., Mimi Zohar wrote:
+> On Sat, 2020-12-12 at 10:02 -0800, Tushar Sugandhi wrote:
+>>
+>> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+>> index 68956e884403..e76ef4bfd0f4 100644
+>> --- a/security/integrity/ima/ima_main.c
+>> +++ b/security/integrity/ima/ima_main.c
+>> @@ -786,13 +786,13 @@ int ima_post_load_data(char *buf, loff_t size,
+>>    * @eventname: event name to be used for the buffer entry.
+>>    * @func: IMA hook
+>>    * @pcr: pcr to extend the measurement
+>> - * @keyring: keyring name to determine the action to be performed
+>> + * @func_data: private data specific to @func, can be NULL.
+> 
+> This can be simplified to "func specific data, may be NULL".   Please
+> update in all places.
+> 
+Ok, will do.
+>>    *
+>>    * Based on policy, the buffer is measured into the ima log.
+>>    */
+>>   void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>>   				const char *eventname, enum ima_hooks func,
+>> -				int pcr, const char *keyring)
+>> +				int pcr, const char *func_data)
+>>   {
+>>   	int ret = 0;
+>>   	const char *audit_cause = "ENOMEM";
+>> @@ -831,7 +831,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>>   	if (func) {
+>>   		security_task_getsecid(current, &secid);
+>>   		action = ima_get_action(inode, current_cred(), secid, 0, func,
+>> -					&pcr, &template, keyring);
+>> +					&pcr, &template, func_data);
+>>   		if (!(action & IMA_MEASURE))
+>>   			return;
+>>   	}
+>> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+>> index 823a0c1379cb..a09d1a41a290 100644
+>> --- a/security/integrity/ima/ima_policy.c
+>> +++ b/security/integrity/ima/ima_policy.c
+>> @@ -453,30 +453,41 @@ int ima_lsm_policy_change(struct notifier_block *nb, unsigned long event,
+>>   }
+>>   
+>>   /**
+>> - * ima_match_keyring - determine whether the keyring matches the measure rule
+>> - * @rule: a pointer to a rule
+>> - * @keyring: name of the keyring to match against the measure rule
+>> + * ima_match_rule_data - determine whether the given func_data matches
+>> + *			 the measure rule data
+> 
+> After the function_name is a brief description of the function, which
+> should not span multiple lines.  Refer to Documentation/doc-
+> guide/kernel-doc.rst for details.
+> 
+> Please trim the function description to:
+> determine whether func_data matches the policy rule
+> 
+Thanks, will do.
 
-ERROR: modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!
+>> + * @rule: IMA policy rule
+> 
+> This patch should be limited to renaming "keyring" to "func_data".   It
+> shouldn't make other changes, even simple ones like this.
+> 
+Agreed. I will revert the rule description to the old one.
+>> + * @func_data: data to match against the measure rule data
+>>    * @cred: a pointer to a credentials structure for user validation
+>>    *
+>> - * Returns true if keyring matches one in the rule, false otherwise.
+>> + * Returns true if func_data matches one in the rule, false otherwise.
+>>    */
+>> -static bool ima_match_keyring(struct ima_rule_entry *rule,
+>> -			      const char *keyring, const struct cred *cred)
+>> +static bool ima_match_rule_data(struct ima_rule_entry *rule,
+>> +				const char *func_data,
+>> +				const struct cred *cred)
+>>   {
+>> +	const struct ima_rule_opt_list *opt_list = NULL;
+>>   	bool matched = false;
+>>   	size_t i;
+>>   
+>>   	if ((rule->flags & IMA_UID) && !rule->uid_op(cred->uid, rule->uid))
+>>   		return false;
+>>   
+>> -	if (!rule->keyrings)
+>> -		return true;
+>> +	switch (rule->func) {
+>> +	case KEY_CHECK:
+>> +		if (!rule->keyrings)
+>> +			return true;
+>> +
+>> +		opt_list = rule->keyrings;
+>> +		break;
+>> +	default:
+>> +		return false;
+>> +	}
+>>   
+>> -	if (!keyring)
+>> +	if (!func_data)
+>>   		return false;
+>>   
+>> -	for (i = 0; i < rule->keyrings->count; i++) {
+>> -		if (!strcmp(rule->keyrings->items[i], keyring)) {
+>> +	for (i = 0; i < opt_list->count; i++) {
+>> +		if (!strcmp(opt_list->items[i], func_data)) {
+>>   			matched = true;
+>>   			break;
+>>   		}
+>> @@ -493,20 +504,20 @@ static bool ima_match_keyring(struct ima_rule_entry *rule,
+>>    * @secid: the secid of the task to be validated
+>>    * @func: LIM hook identifier
+>>    * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC)
+>> - * @keyring: keyring name to check in policy for KEY_CHECK func
+>> + * @func_data: private data specific to @func, can be NULL.
+> 
+> Update as previously suggested.
+> 
+Yes.
+>>    *
+>>    * Returns true on rule match, false on failure.
+>>    */
+>>   static bool ima_match_rules(struct ima_rule_entry *rule, struct inode *inode,
+>>   			    const struct cred *cred, u32 secid,
+>>   			    enum ima_hooks func, int mask,
+>> -			    const char *keyring)
+>> +			    const char *func_data)
+>>   {
+>>   	int i;
+>>   
+>>   	if (func == KEY_CHECK) {
+>>   		return (rule->flags & IMA_FUNC) && (rule->func == func) &&
+>> -		       ima_match_keyring(rule, keyring, cred);
+>> +			ima_match_rule_data(rule, func_data, cred);
+>>   	}
+>>   	if ((rule->flags & IMA_FUNC) &&
+>>   	    (rule->func != func && func != POST_SETATTR))
+>> @@ -610,8 +621,7 @@ static int get_subaction(struct ima_rule_entry *rule, enum ima_hooks func)
+>>    * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC)
+>>    * @pcr: set the pcr to extend
+>>    * @template_desc: the template that should be used for this rule
+>> - * @keyring: the keyring name, if given, to be used to check in the policy.
+>> - *           keyring can be NULL if func is anything other than KEY_CHECK.
+>> + * @func_data: private data specific to @func, can be NULL.
+> 
+> And again here.
+> 
+Yes.
+> thanks,
+> 
+> Mimi
+> 
 
-ia64:defconfig:
-
-include/linux/mmzone.h:1156:2: error: #error Allocator MAX_ORDER exceeds SECTION_SIZE
-
-arm:raspi2 boot tests stall during boot.
-
-Problems are as already reported against v5.11-rc1.
-
-Guenter
+Thanks,
+Tushar
