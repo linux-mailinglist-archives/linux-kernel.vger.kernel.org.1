@@ -2,207 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12B62EAA06
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D012EAA0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729695AbhAELgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727464AbhAELgU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:36:20 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6054C06179A;
-        Tue,  5 Jan 2021 03:35:06 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id n26so40764256eju.6;
-        Tue, 05 Jan 2021 03:35:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QsQ8cgVNV6Ccy3Hjl/4rCw6U/yBCmG9PQRHC4wbZ0sQ=;
-        b=r1HFfTQVOFjBuHWrjuqu+Lzn21SMtsBQjhBK7q3WhEuCa4u7BWLZaQ3KbTpoPWLTuL
-         JpfVgA1Sb3dxPawh9zM2VXcjb7TbwzJygoZ1MFwAIcDluWYxJSALhQUzpY+ALGyNj7if
-         DBMXFAsQx62dRDojGsWJzXKA+QhH9pVY6G0pdUpfIGOceswEIctkXqft2CrwJG63hxUN
-         1dSuLS0GnxE9Ph4xqHliKsYwb7phbcfU2LkGO2Nt1hia+gbQKINQIAx2Yf8axqqf6PJP
-         TpEaXuoip9UJp26wLb4e+g3uv6+xyRfknu/l7+WOpbmeKaKfC+DBGRMjSNU1bRCFV938
-         BCkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=QsQ8cgVNV6Ccy3Hjl/4rCw6U/yBCmG9PQRHC4wbZ0sQ=;
-        b=CbBctwvPKsXK8vJo/v9htCPkIIeuGcH3qNdjlIfi69Zzn/0+ZX3hfzxFxJnrtw2Fjs
-         XG9oS2K6kRAHHibSmZS9RoSyi3+bXjEyxT09zU/lgKvoeD3dZ9aI7U0ZvO0EJ16n7DwN
-         7DBt/rxdGa0AfkAiHQH3/QZuCnuqbHxtooy9RCbzsbnIKHLKFcQH2sUPu5h7vaEOFrE8
-         D+zNCupL8rwiDuUWrx0xATMrsRR88DNVyRm56zyMh7qrrLqpF0f9VH9/hSibLawJAc2W
-         hfC4dc2aGtiLYlyDAj2jjUTlYYQfUUJP/HU5X0AlHyA+d96qGQEtm5QTHYcQa/kcqDAn
-         J21w==
-X-Gm-Message-State: AOAM5302ei11v1XkXPnHyLHBloKFstHkHCc/6p6dF8QZYNp2SqGQjxyU
-        85G8vKZ4D4XmpKVxJAbql5E=
-X-Google-Smtp-Source: ABdhPJxEpH+SeXE2P+WlR2KJAUWYXSxNHqAB0H/h776V7B9g8/6x/tU0iokV8XWssL/3vExMaOTI8A==
-X-Received: by 2002:a17:907:204b:: with SMTP id pg11mr72356728ejb.192.1609846505539;
-        Tue, 05 Jan 2021 03:35:05 -0800 (PST)
-Received: from localhost.localdomain (ip5f5bfcff.dynamic.kabel-deutschland.de. [95.91.252.255])
-        by smtp.gmail.com with ESMTPSA id n17sm24640772ejh.49.2021.01.05.03.35.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 03:35:04 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, rostedt@goodmis.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 6/6] scsi: ufs: Make UPIU trace easier differentiate among CDB, OSF, and TM
-Date:   Tue,  5 Jan 2021 12:34:46 +0100
-Message-Id: <20210105113446.16027-7-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210105113446.16027-1-huobean@gmail.com>
-References: <20210105113446.16027-1-huobean@gmail.com>
+        id S1729014AbhAELiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:38:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:53176 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727391AbhAELiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 06:38:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C51A1FB;
+        Tue,  5 Jan 2021 03:38:05 -0800 (PST)
+Received: from [10.57.38.6] (unknown [10.57.38.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41CBC3F70D;
+        Tue,  5 Jan 2021 03:38:04 -0800 (PST)
+Subject: Re: [PATCH 10/11] coresight: sink: Add TRBE driver
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Linu Cherian <lcherian@marvell.com>
+References: <1608717823-18387-1-git-send-email-anshuman.khandual@arm.com>
+ <1608717823-18387-11-git-send-email-anshuman.khandual@arm.com>
+ <92b5ae56-df5d-3772-0206-b50ea4080c4f@arm.com>
+ <f5ab26f4-8cf2-b7cf-ad3a-53c98d488407@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <d909717f-c3e2-37cf-63e8-cdf2ac3bf069@arm.com>
+Date:   Tue, 5 Jan 2021 11:37:58 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <f5ab26f4-8cf2-b7cf-ad3a-53c98d488407@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On 1/5/21 9:29 AM, Anshuman Khandual wrote:
+> 
+> 
+> On 1/4/21 9:58 PM, Suzuki K Poulose wrote:
+>>
+>> Hi Anshuman,
+>>
+>> On 12/23/20 10:03 AM, Anshuman Khandual wrote:
+>>> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
+>>> accessible via the system registers. The TRBE supports different addressing
+>>> modes including CPU virtual address and buffer modes including the circular
+>>> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
+>>> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
+>>> access to the trace buffer could be prohibited by a higher exception level
+>>> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
+>>> private interrupt (PPI) on address translation errors and when the buffer
+>>> is full. Overall implementation here is inspired from the Arm SPE driver.
+>>>
+>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>
+>>>
+>>>    Documentation/trace/coresight/coresight-trbe.rst |  39 +
+>>>    arch/arm64/include/asm/sysreg.h                  |   2 +
+>>>    drivers/hwtracing/coresight/Kconfig              |  11 +
+>>>    drivers/hwtracing/coresight/Makefile             |   1 +
+>>>    drivers/hwtracing/coresight/coresight-trbe.c     | 925 +++++++++++++++++++++++
+>>>    drivers/hwtracing/coresight/coresight-trbe.h     | 248 ++++++
+>>>    6 files changed, 1226 insertions(+)
+>>>    create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
+>>>    create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
+>>>    create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
+>>>
 
-Transaction Specific Fields (TSF) in the UPIU package could be CDB
-(SCSI/UFS Command Descriptor Block), OSF (Opcode Specific Field), and
-TM I/O parameter (Task Management Input/Output Parameter). But, currently,
-we take all of these as CDB  in the UPIU trace. Thus makes user confuse
-among CDB, OSF, and TM message. So fix it with this patch.
+>>> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+>>> index e6962b1..2a9bfb7 100644
+>>> --- a/arch/arm64/include/asm/sysreg.h
+>>> +++ b/arch/arm64/include/asm/sysreg.h
+>>> @@ -97,6 +97,7 @@
+>>>    #define SET_PSTATE_UAO(x)        __emit_inst(0xd500401f | PSTATE_UAO | ((!!x) << PSTATE_Imm_shift))
+>>>    #define SET_PSTATE_SSBS(x)        __emit_inst(0xd500401f | PSTATE_SSBS | ((!!x) << PSTATE_Imm_shift))
+>>>    #define SET_PSTATE_TCO(x)        __emit_inst(0xd500401f | PSTATE_TCO | ((!!x) << PSTATE_Imm_shift))
+>>> +#define TSB_CSYNC            __emit_inst(0xd503225f)
+>>>      #define __SYS_BARRIER_INSN(CRm, op2, Rt) \
+>>>        __emit_inst(0xd5000000 | sys_insn(0, 3, 3, (CRm), (op2)) | ((Rt) & 0x1f))
+>>> @@ -869,6 +870,7 @@
+>>>    #define ID_AA64MMFR2_CNP_SHIFT        0
+>>>      /* id_aa64dfr0 */
+>>> +#define ID_AA64DFR0_TRBE_SHIFT        44
+>>>    #define ID_AA64DFR0_TRACE_FILT_SHIFT    40
+>>>    #define ID_AA64DFR0_DOUBLELOCK_SHIFT    36
+>>>    #define ID_AA64DFR0_PMSVER_SHIFT    32
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufs.h     |  7 +++++++
- drivers/scsi/ufs/ufshcd.c  |  9 +++++----
- include/trace/events/ufs.h | 18 +++++++++++++++---
- 3 files changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index ba24b504f85a..50f46f3bc8a2 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -554,6 +554,13 @@ enum ufs_trace_str_t {
- 	UFS_TM_SEND, UFS_TM_COMP, UFS_TM_ERR
- };
- 
-+/*
-+ * Transaction Specific Fields (TSF) type in the UPIU package, this enum is
-+ * used in include/trace/events/ufs.h for UFS command trace.
-+ */
-+enum ufs_trace_tsf_t {
-+	UFS_TSF_CDB, UFS_TSF_OSF, UFS_TSF_TM_INPUT, UFS_TSF_TM_OUTPUT
-+};
- 
- /**
-  * ufs_is_valid_unit_desc_lun - checks if the given LUN has a unit descriptor
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 4df17005e398..3be555e5410f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -312,7 +312,8 @@ static void ufshcd_add_cmd_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 	if (!trace_ufshcd_upiu_enabled())
- 		return;
- 
--	trace_ufshcd_upiu(dev_name(hba->dev), str_t, &rq->header, &rq->sc.cdb);
-+	trace_ufshcd_upiu(dev_name(hba->dev), str_t, &rq->header, &rq->sc.cdb,
-+			  UFS_TSF_CDB);
- }
- 
- static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
-@@ -329,7 +330,7 @@ static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 		rq_rsp = (struct utp_upiu_req *)hba->lrb[tag].ucd_rsp_ptr;
- 
- 	trace_ufshcd_upiu(dev_name(hba->dev), str_t, &rq_rsp->header,
--			  &rq_rsp->qr);
-+			  &rq_rsp->qr, UFS_TSF_OSF);
- }
- 
- static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
-@@ -343,10 +344,10 @@ static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 
- 	if (str_t == UFS_TM_SEND)
- 		trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->req_header,
--				  &descp->input_param1);
-+				  &descp->input_param1, UFS_TSF_TM_INPUT);
- 	else
- 		trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->rsp_header,
--				  &descp->output_param1);
-+				  &descp->output_param1, UFS_TSF_TM_OUTPUT);
- }
- 
- static void ufshcd_add_uic_command_trace(struct ufs_hba *hba,
-diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
-index 7613a5cd14de..e151477d645c 100644
---- a/include/trace/events/ufs.h
-+++ b/include/trace/events/ufs.h
-@@ -48,6 +48,12 @@
- 	EM(UFS_TM_COMP,		"tm_complete")			\
- 	EMe(UFS_TM_ERR,		"tm_complete_err")
- 
-+#define UFS_CMD_TRACE_TSF_TYPES					\
-+	EM(UFS_TSF_CDB,		"CDB")		                \
-+	EM(UFS_TSF_OSF,		"OSF")		                \
-+	EM(UFS_TSF_TM_INPUT,	"TM_INPUT")                     \
-+	EMe(UFS_TSF_TM_OUTPUT,	"TM_OUTPUT")
-+
- /* Enums require being exported to userspace, for user tool parsing */
- #undef EM
- #undef EMe
-@@ -58,6 +64,7 @@ UFS_LINK_STATES;
- UFS_PWR_MODES;
- UFSCHD_CLK_GATING_STATES;
- UFS_CMD_TRACE_STRINGS
-+UFS_CMD_TRACE_TSF_TYPES
- 
- /*
-  * Now redefine the EM() and EMe() macros to map the enums to the strings
-@@ -70,6 +77,8 @@ UFS_CMD_TRACE_STRINGS
- 
- #define show_ufs_cmd_trace_str(str_t)	\
- 				__print_symbolic(str_t, UFS_CMD_TRACE_STRINGS)
-+#define show_ufs_cmd_trace_tsf(tsf)	\
-+				__print_symbolic(tsf, UFS_CMD_TRACE_TSF_TYPES)
- 
- TRACE_EVENT(ufshcd_clk_gating,
- 
-@@ -311,15 +320,16 @@ TRACE_EVENT(ufshcd_uic_command,
- 
- TRACE_EVENT(ufshcd_upiu,
- 	TP_PROTO(const char *dev_name, enum ufs_trace_str_t str_t, void *hdr,
--		 void *tsf),
-+		 void *tsf, enum ufs_trace_tsf_t tsf_t),
- 
--	TP_ARGS(dev_name, str_t, hdr, tsf),
-+	TP_ARGS(dev_name, str_t, hdr, tsf, tsf_t),
- 
- 	TP_STRUCT__entry(
- 		__string(dev_name, dev_name)
- 		__field(enum ufs_trace_str_t, str_t)
- 		__array(unsigned char, hdr, 12)
- 		__array(unsigned char, tsf, 16)
-+		__field(enum ufs_trace_tsf_t, tsf_t)
- 	),
- 
- 	TP_fast_assign(
-@@ -327,12 +337,14 @@ TRACE_EVENT(ufshcd_upiu,
- 		__entry->str_t = str_t;
- 		memcpy(__entry->hdr, hdr, sizeof(__entry->hdr));
- 		memcpy(__entry->tsf, tsf, sizeof(__entry->tsf));
-+		__entry->tsf_t = tsf_t;
- 	),
- 
- 	TP_printk(
--		"%s: %s: HDR:%s, CDB:%s",
-+		"%s: %s: HDR:%s, %s:%s",
- 		show_ufs_cmd_trace_str(__entry->str_t), __get_str(dev_name),
- 		__print_hex(__entry->hdr, sizeof(__entry->hdr)),
-+		show_ufs_cmd_trace_tsf(__entry->tsf_t),
- 		__print_hex(__entry->tsf, sizeof(__entry->tsf))
- 	)
- );
--- 
-2.17.1
+>>> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+>>> index f20e357..d608165 100644
+>>> --- a/drivers/hwtracing/coresight/Makefile
+>>> +++ b/drivers/hwtracing/coresight/Makefile
+>>> @@ -21,5 +21,6 @@ obj-$(CONFIG_CORESIGHT_STM) += coresight-stm.o
+>>>    obj-$(CONFIG_CORESIGHT_CPU_DEBUG) += coresight-cpu-debug.o
+>>>    obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
+>>>    obj-$(CONFIG_CORESIGHT_CTI) += coresight-cti.o
+>>> +obj-$(CONFIG_CORESIGHT_TRBE) += coresight-trbe.o
+>>>    coresight-cti-y := coresight-cti-core.o    coresight-cti-platform.o \
+>>>               coresight-cti-sysfs.o
+>>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>>> new file mode 100644
+>>> index 0000000..ba280e6
+>>> --- /dev/null
+>>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+
+>>> +static void trbe_reset_local(void)
+>>> +{
+>>> +    trbe_disable_and_drain_local();
+>>> +    write_sysreg_s(0, SYS_TRBPTR_EL1);
+>>> +    write_sysreg_s(0, SYS_TRBBASER_EL1);
+>>> +    write_sysreg_s(0, SYS_TRBSR_EL1);
+>>> +    isb();
+>>> +}
+>>> +
+>>> +/*
+>>> + * TRBE Buffer Management
+>>> + *
+>>> + * The TRBE buffer spans from the base pointer till the limit pointer. When enabled,
+>>> + * it starts writing trace data from the write pointer onward till the limit pointer.
+>>> + * When the write pointer reaches the address just before the limit pointer, it gets
+>>> + * wrapped around again to the base pointer. This is called a TRBE wrap event which
+>>> + * is accompanied by an IRQ.
+>>
+>> This is true for one of the modes of operation, the WRAP mode, which could be specified
+>> in the comment. e.g,
+>>
+>> This is called a TRBE wrap event, which generates a maintenance interrupt when operated
+>> in WRAP mode.
+> 
+> Sure, will change.
+
+Sorry, correcting myself:
+
+s/when operated in WRAP mode/when operated in WRAP or STOP mode/
+
+...
+
+>>> +
+>>> +static unsigned long get_trbe_limit(struct perf_output_handle *handle)
+>>
+>> nit: The naming is a bit confusing with get_trbe_limit() and get_trbe_limit_pointer().
+>> One computes the TRBE buffer limit and the other reads the hardware Limit pointer.
+>> It would be good if follow a scheme for the namings.
+>>
+>> e.g, trbe_limit_pointer() , trbe_base_pointer(), trbe_<register>_<name> for anything
+>> that reads the hardware register.
+> 
+> The current scheme is in the form get_trbe_XXX() where XXX
+> is a TRBE hardware component e.g.
+> 
+> get_trbe_base_pointer()
+> get_trbe_limit_pointer()
+> get_trbe_write_pointer()
+> get_trbe_ec()
+> get_trbe_bsc()
+> get_trbe_address_align()
+> get_trbe_flag_update()
+> 
+>>
+>> Or may be rename the get_trbe_limit() to compute_trbe_buffer_limit()
+> 
+> This makes it clear, will change.
+> 
+>>
+>>> +{
+>>> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
+>>> +    unsigned long offset;
+>>> +
+>>> +    if (buf->snapshot)
+>>> +        offset = trbe_snapshot_offset(handle);
+>>> +    else
+>>> +        offset = trbe_normal_offset(handle);
+>>> +    return buf->trbe_base + offset;
+>>> +}
+>>> +
+>>> +static void clear_trbe_state(void)
+>>
+>> nit: The name doesn't give much clue about what it is doing, especially, given
+>> the following "set_trbe_state()" which does completely different from this "clear"
+>> operation.
+> 
+> I agree that these names could have been better.
+> 
+> s/clear_trbe_state/trbe_reset_perf_state  - Clears TRBE from current perf config
+> s/set_trbe_state/trbe_prepare_perf_state  - Prepares TRBE for the next perf config
+
+Please don't tie them to "perf". This is pure hardware configuration, not perf.
+
+Also, I wonder if we need a separate "set_trbe_state". Could we not initialize the LIMITR
+at one go ?
+
+i.e, do something like :
+
+set_trbe_limit_pointer(limit, mode) ?
+
+where it sets all the fields of limit pointer. Also, you may want to document the mode we
+choose for TRBE. i.e, FILL STOP mode for us to collect the trace.
+
+> 
+> 
+>>
+>> I would rather open code this with a write of 0 to trbsr in the caller.
+>>
+>>> +{
+>>> +    u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
+>>> +
+>>> +    WARN_ON(is_trbe_enabled());
+>>> +    trbsr &= ~TRBSR_IRQ;
+>>> +    trbsr &= ~TRBSR_TRG;
+>>> +    trbsr &= ~TRBSR_WRAP;
+>>> +    trbsr &= ~(TRBSR_EC_MASK << TRBSR_EC_SHIFT);
+>>> +    trbsr &= ~(TRBSR_BSC_MASK << TRBSR_BSC_SHIFT);
+>>> +    trbsr &= ~(TRBSR_FSC_MASK << TRBSR_FSC_SHIFT);
+>>
+>> BSC and FSC are the same fields under MSS, with their meanings determined by the EC field.
+> 
+> Could just drop the FSC part if required.
+> 
+>>
+>> Could we simply write 0 to the register ?
+> 
+> I would really like to avoid that. This function clearly enumerates all
+> individual bit fields being cleared for resetting as well as preparing
+> the TRBE for the next perf session. Converting this into a 0 write for
+> SYS_TRBSR_EL1 sounds excessive and the only thing it would save is the
+> register read.
+
+> 
+>>
+>>> +    write_sysreg_s(trbsr, SYS_TRBSR_EL1);
+>>> +}
+>>> +
+>>> +static void set_trbe_state(void)
+>>> +{
+>>> +    u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+>>> +
+>>> +    trblimitr &= ~TRBLIMITR_NVM;
+>>> +    trblimitr &= ~(TRBLIMITR_FILL_MODE_MASK << TRBLIMITR_FILL_MODE_SHIFT);
+>>> +    trblimitr &= ~(TRBLIMITR_TRIG_MODE_MASK << TRBLIMITR_TRIG_MODE_SHIFT);
+>>> +    trblimitr |= (TRBE_FILL_STOP & TRBLIMITR_FILL_MODE_MASK) << TRBLIMITR_FILL_MODE_SHIFT;
+>>> +    trblimitr |= (TRBE_TRIGGER_IGNORE & TRBLIMITR_TRIG_MODE_MASK) << TRBLIMITR_TRIG_MODE_SHIFT;
+>>> +    write_sysreg_s(trblimitr, SYS_TRBLIMITR_EL1);
+>>
+>> Do we need to read-copy-update here ? Could we simply write 0 ?
+>> Same as above comment, could we not simply opencode it at the caller ?
+>> Clearly the names don't help.
+> 
+> Will change the names as proposed or something better. But lets leave
+> these functions as is. Besides TRBE_TRIGGER_IGNORE also has a positive
+> value (i.e 3), writing all 0s into SYS_TRBLIMITR_EL1 will not be ideal.
+>
+
+The point is, we don't need to preserve the values for LIMITR. Also see my comment
+above, for folding this to set_trbe_limit_pointer(). In any case, I don't think
+we should rely on the values of fields we change. So it is safer and cleaner to
+set set all the bits for LIMITR, including the LIMIT address in one go, without
+ready-copy-update.
+
+
+>>
+>>> +}
+>>> +
+>>> +static void trbe_enable_hw(struct trbe_buf *buf)
+>>> +{
+>>> +    WARN_ON(buf->trbe_write < buf->trbe_base);
+>>> +    WARN_ON(buf->trbe_write >= buf->trbe_limit);
+>>> +    set_trbe_disabled();
+>>> +    clear_trbe_state();
+>>> +    set_trbe_state();
+>>> +    isb();
+>>> +    set_trbe_base_pointer(buf->trbe_base);
+>>> +    set_trbe_limit_pointer(buf->trbe_limit);
+>>> +    set_trbe_write_pointer(buf->trbe_write);
+>>
+>> Where do we set the fill mode ?
+> 
+> TRBE_FILL_STOP has already been configured in set_trbe_state().
+> 
+
+As mentioned above, this needs to be documented. It is not evident
+for someone who is looking at the code. e.g, I thought the set_trbe_state()
+was simply stopping the TRBE.
+
+Also, looking at the spec, I find the names of the fill modes confusing.
+The modes are FILL, WRAP and CIRCULAR BUFFER. Stop is just the behavior
+of FILL. So, please do not use STOP for the mode name.
+
+Also, please rename the mode symbols to :
+
+TRBE_FILL_MODE_FILL
+TRBE_FILL_MODE_WRAP
+TRBE_FILL_MODE_CIRCULAR_BUFFER
+
+to align with the spec.
+
+>>
+>>> +    isb();
+>>> +    set_trbe_running();
+>>> +    set_trbe_enabled();
+>>> +    set_trbe_flush();
+>>> +}
+>>> +
+
+
+>>> +
+>>> +static int arm_trbe_cpu_startup(unsigned int cpu, struct hlist_node *node)
+>>> +{
+>>> +    struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
+>>> +
+>>> +    if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
+>>> +        if (!per_cpu(csdev_sink, cpu) && (system_state == SYSTEM_RUNNING)) {
+>>
+>> Why is the system_state check relevant here ?
+> 
+> I had a concern regarding whether arm_trbe_probe_coresight_cpu() invocations
+> from arm_trbe_cpu_startup() might race with its invocations during boot from
+> arm_trbe_device_probe(). Checking for runtime system_state would ensure that
+> a complete TRBE probe on a given cpu is called only after the boot is complete.
+> But if the race condition is really never possible, can just drop this check.
+
+I don't think they should.
+
+Suzuki
 
