@@ -2,212 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E592EA8CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED2C2EA8C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729175AbhAEKbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:31:45 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:56066 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728249AbhAEKbp (ORCPT
+        id S1729165AbhAEKbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:31:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729107AbhAEKbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:31:45 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id A71D011F850;
-        Tue,  5 Jan 2021 11:31:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1609842662;
-        bh=MUjJfk9WqP/192z0Yhwfz2yDLEpbXsF5/dNm7cec5Qc=;
-        h=Date:From:To:Subject:From;
-        b=5GvGgbecUobd6zKEPXIp48h7ar+ES1N/egSVP1g8Bkfrj2/x87pkcXdh+7XKS5aHr
-         lbgkaATbXmANQrQtkSiT7+megamFgCgAZkznffwLXVIDoutUeV0q3j2MdfGfsNe1pW
-         w+OXQwewLTPFSjMLGCCL8b6OSTrhdIw/x5YdRs0ZwCtii4VoZDCbidlyIvGgp4KAkB
-         S7NdMybW0yc6irt9Khz+S4+eCqORpGHuXgAEZnq2edXywciVfoD7ROCx955A0ImURV
-         r3oSTN8B8vQnKCTkMFKXxFzprjHEgWpv2vCP7GhfBoYGd1A1OexKitXQPzX2bsrPcq
-         mzQaONha8VZeQ==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id r4ytmN6nC2QI; Tue,  5 Jan 2021 11:30:31 +0100 (CET)
-Received: from dev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 0211311F84E;
-        Tue,  5 Jan 2021 11:30:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1609842631;
-        bh=MUjJfk9WqP/192z0Yhwfz2yDLEpbXsF5/dNm7cec5Qc=;
-        h=Date:From:To:Subject:From;
-        b=rXnXbZKbdxOUGd9Oq+UTUvKIMI2fB6ZFprpsw6cJ+MDFe+BFUuNe07V68AdCrYzDR
-         miMAXsrIcazYnnhSWYufCXrRUoYp1hcljdetDZQwA/MH+FFz6LKukq2iUBQMfRNXqE
-         eHQz69cJuAqsVVfhsiGFhu3jCJNI61ajnpxi3xLXyrRWfUgoOoPvzlmctTSz4bW2Kp
-         6ECV8SdRUQBWHBVLirBdSQlNsZpLhRRxSF+gf54MDZb/EAem1L8Kx7I6AUoOfpOk+o
-         U7HUgmVkaiYQOxMG9O5j0etYVg0wUJvry+pEgZpMT0e1MG36R4rQMnE5wLXstwUFBd
-         mc6jLUB0/UZDg==
-Date:   Tue, 5 Jan 2021 10:30:29 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
-        'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        =?iso-8859-1?Q?'J=F3zsef_Horv=E1th'?= <info@ministro.hu>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7,2/2] dt: bindings: add silabs,si4455 schema
-Message-ID: <20210105103027.GA15137@dev>
+        Tue, 5 Jan 2021 05:31:36 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30D8C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 02:30:55 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id n7so21028605pgg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 02:30:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SOojekCLE+4Atuf8MN71Y5EpXTyBJ2znW4hlDZL8IH4=;
+        b=bKm0vL6L1Ve9NQJdR7LY/I+t1icUkSlPpuDCJ68FFziNnxO3wL5KGt1oHSpr9/NvhK
+         EuCp1xDs9/8i5XvMCY4PXlqwMFdKmM5g4wJMu9WykpzGbla6Th+Duh0GnKP5FGHrGT/A
+         L/MX/ft3iIQIuvytT6O5uGRSKnsJ2oHFQ4fyLFyfJTa6P6Qc7B33nKUXXSXDb1SYz6Rg
+         2uhILMYWi6XzeEfCMdAaCmpn5FtY9lgWGr09youhHJ/mrbwMlas9oNPqcSzsmTrjUiN/
+         EVQckCuc0hSxSSxbZI1KrD9VtNg03GF5PPWMa282c8rxFQfw7Br0we2h2uezCcFJ06w8
+         BwOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SOojekCLE+4Atuf8MN71Y5EpXTyBJ2znW4hlDZL8IH4=;
+        b=mh7nzM2sgGbneszoqUVe1iSmtRKAZ0OV6VkOJG/Jb5Z+mhCmUqSSz8tZJ/HImhg6JQ
+         EEBP5G4w8//C20hTFJ5QhhpGJCg2u9Y9Wc9yGp9yIuSUtyNwsk1hDRmH2y6kP4na58cw
+         sxulE9RyUEPE5VKPRSnePuvLmwfN/CKe+DkmN2z7tV+AT6ar1qNTt3cwu14KZeLYCxCq
+         2cmH/IdgGBaX9O0gnQrwJdsho7h3FPJYmIlYOb1XeTcJpAgcHgcHNi24dHJflCZAWVpe
+         dZ5P4BcFVeG2GyK0CMLzewn7zIoVJYBjbPZPko70/YGdUW1GjmDiKvaejfTeVtsZo7Yn
+         XYYQ==
+X-Gm-Message-State: AOAM530cLyZDCS3dRvPw+vjkXUQSQHnW1w49xlxNh6ohfqxq8LSSK2tJ
+        GmyRHMVjV92vE/far2Rb1QC89FouT4lu2+7I
+X-Google-Smtp-Source: ABdhPJwRcUvo+0ys1WB5CPikSOVzKFkWviWPT9C4p/hsmhIVroDtu2zJNL8mMsCwgUtnS0YboZRiqw==
+X-Received: by 2002:aa7:8811:0:b029:1ab:9e4f:b8ea with SMTP id c17-20020aa788110000b02901ab9e4fb8eamr65734067pfo.78.1609842655141;
+        Tue, 05 Jan 2021 02:30:55 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:6064:97d:44da:5ae4:7c76])
+        by smtp.gmail.com with ESMTPSA id w1sm2284345pjt.23.2021.01.05.02.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 02:30:54 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     dwaipayanray1@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Subject: [PATCH] checkpatch: trivial style fixes
+Date:   Tue,  5 Jan 2021 16:00:44 +0530
+Message-Id: <20210105103044.40282-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a device tree schema for serial port driver for
- Silicon Labs Si4455 Sub-GHz transciver.
+Indentations should use tabs wherever possible.
+Replace spaces by tabs for indents.
 
-Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
-
-Guide: https://github.com/dministro/linux-serial-si4455
-
-Signed-off-by: Jozsef Horvath <info@ministro.hu>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
+ scripts/checkpatch.pl | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-changes v1:
- - fixed: dt: bindings: rename sdn-gpios to shutdown-gpios
-
-changes v3:
- - fixed: dt: bindings: silabs,si4455: more detailed description
- - added: dt: bindings: silabs,si4455: properties silabs,package-size,
-   silabs,tx-channel, silabs,rx-channel, silabs,ez-config
-
-changes v4:
- - fixed: dt: bindings: silabs,si4455: $id
-   from http://devicetree.org/schemas/serial/silabs,si4455.yaml
-   to http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml
-
-changes v5:
- - fixed: dt: bindings: silabs,si4455: $id
-   from http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml
-   to http://devicetree.org/schemas/serial/silabs,si4455.yaml
- - fixed: dt: bindings: silabs,si4455: serial.yaml reference added
-
-changes v7:
- - added: dt: bindings: silabs,si4455: silabs,tx-timeout property definition
----
- .../bindings/serial/silabs,si4455.yaml        | 105 ++++++++++++++++++
- 1 file changed, 105 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/serial/silabs,si4455.yaml
-
-diff --git a/Documentation/devicetree/bindings/serial/silabs,si4455.yaml b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
-new file mode 100644
-index 000000000000..8ba4956064b4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
-@@ -0,0 +1,105 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/serial/silabs,si4455.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Silicon Labs Si4455 device tree bindings
-+
-+maintainers:
-+  - József Horváth <info@ministro.hu>
-+
-+description:
-+  This document is for describing the required device tree parameters for si4455 serial driver.
-+  The si4455 driver tries to represent the Silicon Labs Si4455 sub-GHz transceiver device
-+  like a serial port. The required parameters for proper operation are described below.
-+  https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
-+
-+allOf:
-+  - $ref: "serial.yaml#"
-+
-+properties:
-+  compatible:
-+    const: silabs,si4455
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    description: maximum clock frequency on SPI port
-+    maximum: 500000
-+
-+  shutdown-gpios:
-+    description: gpio pin for SDN
-+    maxItems: 1
-+
-+  silabs,package-size:
-+    description:
-+      Radio payload length, variable packet length is not supported by driver.
-+      This value should equal with EZConfig payload length.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 64
-+    minimum: 1
-+
-+  silabs,tx-channel:
-+    description:
-+      Radio transmit channel selection.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 255
-+    minimum: 0
-+
-+  silabs,rx-channel:
-+    description:
-+      Radio receive channel selection.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 255
-+    minimum: 0
-+
-+  silabs,tx-timeout:
-+    description:
-+      Radio transmit timeout(ms)
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 1000
-+    minimum: 1
-+
-+  firmware-name:
-+    description:
-+      Radio configuration data file name.
-+    $ref: /schemas/types.yaml#/definitions/string
-+    items:
-+      pattern: ^[0-9a-z\._\-]{1,255}$
-+
-+required:
-+  - reg
-+  - interrupts
-+  - spi-max-frequency
-+  - shutdown-gpios
-+  - silabs,package-size
-+  - silabs,tx-channel
-+  - silabs,rx-channel
-+  - firmware-name
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      si4455_0: serial@0 {
-+        compatible = "silabs,si4455";
-+        reg = <0>;
-+        interrupt-parent = <&gpio>;
-+        interrupts = <7 2>;
-+        shutdown-gpios = <&gpio 26 1>;
-+        spi-max-frequency = <300000>;
-+        silabs,package-size = <30>;
-+        silabs,tx-channel = <1>;
-+        silabs,rx-channel = <2>;
-+        firmware-name = "si4455_spi0_0.ez.bin";
-+      };
-+    };
-+...
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index e6857bdfcb2d..7a323ca8a177 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2974,7 +2974,7 @@ sub process {
+ 				}
+ 				if (!defined $lines[$linenr]) {
+ 					WARN("BAD_SIGN_OFF",
+-                                             "Co-developed-by: must be immediately followed by Signed-off-by:\n" . "$here\n" . $rawline);
++					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . "$here\n" . $rawline);
+ 				} elsif ($rawlines[$linenr] !~ /^\s*signed-off-by:\s*(.*)/i) {
+ 					WARN("BAD_SIGN_OFF",
+ 					     "Co-developed-by: must be immediately followed by Signed-off-by:\n" . "$here\n" . $rawline . "\n" .$rawlines[$linenr]);
+@@ -2997,8 +2997,8 @@ sub process {
+ 			if (ERROR("GERRIT_CHANGE_ID",
+ 			          "Remove Gerrit Change-Id's before submitting upstream\n" . $herecurr) &&
+ 			    $fix) {
+-                                fix_delete_line($fixlinenr, $rawline);
+-                        }
++				fix_delete_line($fixlinenr, $rawline);
++			}
+ 		}
+ 
+ # Check if the commit log is in a possible stack dump
+@@ -3240,10 +3240,10 @@ sub process {
+ 				next if ($start_char =~ /^\S$/);
+ 				next if (index(" \t.,;?!", $end_char) == -1);
+ 
+-                                # avoid repeating hex occurrences like 'ff ff fe 09 ...'
+-                                if ($first =~ /\b[0-9a-f]{2,}\b/i) {
+-                                        next if (!exists($allow_repeated_words{lc($first)}));
+-                                }
++				# avoid repeating hex occurrences like 'ff ff fe 09 ...'
++				if ($first =~ /\b[0-9a-f]{2,}\b/i) {
++					next if (!exists($allow_repeated_words{lc($first)}));
++				}
+ 
+ 				if (WARN("REPEATED_WORD",
+ 					 "Possible repeated word: '$first'\n" . $herecurr) &&
+@@ -4432,7 +4432,7 @@ sub process {
+ 			WARN("STATIC_CONST_CHAR_ARRAY",
+ 			     "char * array declaration might be better as static const\n" .
+ 				$herecurr);
+-               }
++		}
+ 
+ # check for sizeof(foo)/sizeof(foo[0]) that could be ARRAY_SIZE(foo)
+ 		if ($line =~ m@\bsizeof\s*\(\s*($Lval)\s*\)@) {
+@@ -5285,7 +5285,7 @@ sub process {
+ 		    $lines[$linenr - 3] !~ /^[ +]\s*$Ident\s*:/) {
+ 			WARN("RETURN_VOID",
+ 			     "void function return statements are not generally useful\n" . $hereprev);
+-               }
++		}
+ 
+ # if statements using unnecessary parentheses - ie: if ((foo == bar))
+ 		if ($perl_version_ok &&
 -- 
-2.17.1
+2.27.0
 
