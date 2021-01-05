@@ -2,176 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7EC2EB23E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9692EB24F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729239AbhAESMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:12:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726132AbhAESMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:12:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1791722D06;
-        Tue,  5 Jan 2021 18:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609870321;
-        bh=/reYBV40Ygz4hCARqF75dpeeGG0UhQDuHeRU1Mh/CCA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dz7ZYIQwZi2PGezSrfZYXMAyFlGgRS3XZShhWjyXT3ufXIdHDHMXjuLt80KX6GoPf
-         GG9vLFuw58bgfcX32hBzQHrbWIbM7IXR3efJsGv2iQnRdRw/2HGqFmSWyIJMZ/uav6
-         zW8xJU3VSIzNihZH289zC2LwLXOyr6xIMVOafDGE=
-Date:   Tue, 5 Jan 2021 19:13:25 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Add missing array size constraints
-Message-ID: <X/SsRVbYVXRX8Psq@kroah.com>
-References: <20210104230253.2805217-1-robh@kernel.org>
- <X/RjziK30y56uZUj@kroah.com>
- <20210105174008.GB1875909@robh.at.kernel.org>
+        id S1728073AbhAESRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:17:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727095AbhAESRB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 13:17:01 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B75DC061795
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:16:14 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id f132so465033oib.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:16:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eypK+a9k4AhqTQKBYAjt8ConurAUlnSiRNRuKWaLj9I=;
+        b=nD1251zserGTwVPNPOfHy6I7qh7rA5QHIuTn3KMZ0318EdA4m3b0gq8do1g6ZVkck8
+         Etg8yj0FCaUqkd0TcldOcDBVuemDC2zz1mJ2GSXsgh7DkfeCaK4zDa3JeCkpHWkEe6eE
+         5tl42mIPsr622GLRJHPF6cOHKId1Kl+0iyxLP/gO4BzifKOTYBmZVUDZm+UQ2y4hxwHQ
+         vGqlKoi8T1dm6I26e6yFaud94Ap6Fs2ypXOLKK5onfQ3nNqpZJeV9kVNkw9w4VTLuppB
+         McYaPKt4Jqcw1IujIP382SOonr9eIPf4PmKajtjvNxHK6Hbo8ysbCE8a/iXfRjLuoQt5
+         DctA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eypK+a9k4AhqTQKBYAjt8ConurAUlnSiRNRuKWaLj9I=;
+        b=nV7ocG5rI3Tw3QfGuDEQCbqZXFnYNLVrsPeFXYyY6p6jA1jKaIjbb6uGvyNn8fF+QZ
+         /3M4C8S81SHN+nz3sSYwPiqekRvjV7CxZlH9N3vCI7KHG9Kj1FhCKzgevUhhea7/CRXz
+         CIligE4h+nKKkPTSFs83SnPZKS2xUcBNvJiMi6lro4FEc/dj3dkdvsvynMucBjGEXwYH
+         AC+ExWJoQRA6CTdubwqe5z5j9R6iwVuQvs1zY2G5j29LE0kob0hVyv4FXouDNlBVXPPE
+         JuVkQ7pNlSp+ZeyxOPgYx9MvfD9iCaNNeiKXnXEWa2Z/lQjqub7ykgxV5nIcol1FXzZm
+         KctQ==
+X-Gm-Message-State: AOAM532741//HqOxVHSCI7u07ro3xQ4xww+zlRXOMX1+cTiChg8iHCLu
+        8fVKNNrFU2P+zyTcuNEDb0JwMfz0/Olmcw==
+X-Google-Smtp-Source: ABdhPJztol+v4E4HgB3l8tdDE/6CeJoLr8cVk5Zuyyssij8FW1qpWsVikjMQ5Ba1Om26Wc1b9By05g==
+X-Received: by 2002:a05:6808:91a:: with SMTP id w26mr564997oih.159.1609870573757;
+        Tue, 05 Jan 2021 10:16:13 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id x72sm37087oia.16.2021.01.05.10.16.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 10:16:13 -0800 (PST)
+Date:   Tue, 5 Jan 2021 12:16:11 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 18/18] ARM: dts: qcom: sdx55-mtp: Add regulator nodes
+Message-ID: <X/Ss6ycyQF87cYxx@builder.lan>
+References: <20210105122649.13581-1-manivannan.sadhasivam@linaro.org>
+ <20210105122649.13581-19-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105174008.GB1875909@robh.at.kernel.org>
+In-Reply-To: <20210105122649.13581-19-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 10:40:08AM -0700, Rob Herring wrote:
-> On Tue, Jan 05, 2021 at 02:04:14PM +0100, Greg Kroah-Hartman wrote:
-> > On Mon, Jan 04, 2021 at 04:02:53PM -0700, Rob Herring wrote:
-> > > DT properties which can have multiple entries need to specify what the
-> > > entries are and define how many entries there can be. In the case of
-> > > only a single entry, just 'maxItems: 1' is sufficient.
-> > > 
-> > > Add the missing entry constraints. These were found with a modified
-> > > meta-schema. Unfortunately, there are a few cases where the size
-> > > constraints are not defined such as common bindings, so the meta-schema
-> > > can't be part of the normal checks.
-> > > 
-> > > Cc: Jens Axboe <axboe@kernel.dk>
-> > > Cc: Stephen Boyd <sboyd@kernel.org>
-> > > Cc: Thierry Reding <thierry.reding@gmail.com>
-> > > Cc: MyungJoo Ham <myungjoo.ham@samsung.com>
-> > > Cc: Chanwoo Choi <cw00.choi@samsung.com>
-> > > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > > Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > Cc: Jonathan Cameron <jic23@kernel.org>
-> > > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > Cc: Marc Zyngier <maz@kernel.org>
-> > > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > > Cc: Chen-Yu Tsai <wens@csie.org>
-> > > Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> > > Cc: "David S. Miller" <davem@davemloft.net>
-> > > Cc: Jakub Kicinski <kuba@kernel.org>
-> > > Cc: Sebastian Reichel <sre@kernel.org>
-> > > Cc: Ohad Ben-Cohen <ohad@wizery.com>
-> > > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > 
-> > <snip>
-> > 
-> > > diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> > > index 247ef00381ea..f76b25f7fc7a 100644
-> > > --- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> > > +++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> > > @@ -83,6 +83,7 @@ properties:
-> > >        Phandle of a companion.
-> > >  
-> > >    phys:
-> > > +    maxItems: 1
-> > >      description: PHY specifier for the USB PHY
-> > >  
-> > >    phy-names:
-> > > diff --git a/Documentation/devicetree/bindings/usb/generic-ohci.yaml b/Documentation/devicetree/bindings/usb/generic-ohci.yaml
-> > > index 2178bcc401bc..8e2bd61f2075 100644
-> > > --- a/Documentation/devicetree/bindings/usb/generic-ohci.yaml
-> > > +++ b/Documentation/devicetree/bindings/usb/generic-ohci.yaml
-> > > @@ -71,6 +71,7 @@ properties:
-> > >        Overrides the detected port count
-> > >  
-> > >    phys:
-> > > +    maxItems: 1
-> > >      description: PHY specifier for the USB PHY
-> > >  
-> > >    phy-names:
-> > > diff --git a/Documentation/devicetree/bindings/usb/ingenic,musb.yaml b/Documentation/devicetree/bindings/usb/ingenic,musb.yaml
-> > > index 678396eeeb78..f506225a4d57 100644
-> > > --- a/Documentation/devicetree/bindings/usb/ingenic,musb.yaml
-> > > +++ b/Documentation/devicetree/bindings/usb/ingenic,musb.yaml
-> > > @@ -40,7 +40,7 @@ properties:
-> > >        - const: mc
-> > >  
-> > >    phys:
-> > > -    description: PHY specifier for the USB PHY
-> > > +    maxItems: 1
-> > >  
-> > >    usb-role-switch:
-> > >      type: boolean
-> > 
-> > Any reason you dropped the description for this entry, but not the other
-> > ones above?
-> 
-> No, I should have dropped those too. I dropped cases of genericish 
-> descriptions on common properties. There's nothing specific to this 
-> binding here really.
-> 
-> > 
-> > > diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > > index 388245b91a55..adce36e48bc9 100644
-> > > --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > > +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > > @@ -15,13 +15,14 @@ properties:
-> > >        - const: ti,j721e-usb
-> > >  
-> > >    reg:
-> > > -    description: module registers
-> > > +    maxItems: 1
-> > >  
-> > >    power-domains:
-> > >      description:
-> > >        PM domain provider node and an args specifier containing
-> > >        the USB device id value. See,
-> > >        Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
-> > > +    maxItems: 1
-> > >  
-> > >    clocks:
-> > >      description: Clock phandles to usb2_refclk and lpm_clk
-> > 
-> > Same here, why remove the description?
-> 
-> Really, the question is why keep 'description' on power-domains. Perhaps 
-> there's a little value in the reference to sci-pm-domain.txt, so I left 
-> it.
+On Tue 05 Jan 06:26 CST 2021, Manivannan Sadhasivam wrote:
 
-Ok, if you are fine with this, that's ok with me, just didn't look very
-consistent :)
+> From: Vinod Koul <vkoul@kernel.org>
+> 
+> This adds the regulators found on SDX55 MTP.
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  arch/arm/boot/dts/qcom-sdx55-mtp.dts | 179 +++++++++++++++++++++++++++
+>  1 file changed, 179 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/qcom-sdx55-mtp.dts b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
+> index 825cc7d0ba18..61e7d5d4bd48 100644
+> --- a/arch/arm/boot/dts/qcom-sdx55-mtp.dts
+> +++ b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
+> @@ -6,6 +6,7 @@
+>  
+>  /dts-v1/;
+>  
+> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>  #include "qcom-sdx55.dtsi"
+>  #include <arm64/qcom/pm8150b.dtsi>
+>  #include "qcom-pmx55.dtsi"
+> @@ -22,6 +23,184 @@ aliases {
+>  	chosen {
+>  		stdout-path = "serial0:115200n8";
+>  	};
+> +
+> +	vph_pwr: vph-pwr-regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vph_pwr";
+> +		regulator-min-microvolt = <3700000>;
+> +		regulator-max-microvolt = <3700000>;
+> +	};
+> +
+> +	vreg_bob_3p3: pmx55-bob {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vreg_bob_3p3";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +
+> +		vin-supply = <&vph_pwr>;
+> +	};
+> +
+> +	vreg_s7e_mx_0p752: pmx55-s7e {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vreg_s7e_mx_0p752";
+> +		regulator-min-microvolt = <752000>;
+> +		regulator-max-microvolt = <752000>;
+> +
+> +		vin-supply = <&vph_pwr>;
+> +	};
+> +
+> +	vreg_vddpx_2: vddpx-2 {
+
+Isn't this the name of the pad on the SoC, i.e. the consumer? Does the
+regulator output have a more suitable name?
+
+I don't see any references to this node and you got it "boot-on", what
+happens when the regulator core tuns it off? Or this isn't an issue
+until we actually try to support sdhci (guessing based on the voltages)?
+
+Regards,
+Bjorn
+
+> +		compatible = "regulator-gpio";
+> +		regulator-name = "vreg_vddpx_2";
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <2850000>;
+> +		enable-gpios = <&tlmm 98 GPIO_ACTIVE_HIGH>;
+> +		gpios = <&tlmm 100 GPIO_ACTIVE_HIGH>;
+> +		states = <1800000 0>, <2850000 1>;
+> +		startup-delay-us = <200000>;
+> +		enable-active-high;
+> +		regulator-boot-on;
+> +
+> +		vin-supply = <&vph_pwr>;
+> +	};
+> +};
+> +
+> +&apps_rsc {
+> +	pmx55-rpmh-regulators {
+> +		compatible = "qcom,pmx55-rpmh-regulators";
+> +		qcom,pmic-id = "e";
+> +
+> +		vdd-s1-supply = <&vph_pwr>;
+> +		vdd-s2-supply = <&vph_pwr>;
+> +		vdd-s3-supply = <&vph_pwr>;
+> +		vdd-s4-supply = <&vph_pwr>;
+> +		vdd-s5-supply = <&vph_pwr>;
+> +		vdd-s6-supply = <&vph_pwr>;
+> +		vdd-s7-supply = <&vph_pwr>;
+> +		vdd-l1-l2-supply = <&vreg_s2e_1p224>;
+> +		vdd-l3-l9-supply = <&vreg_s3e_0p824>;
+> +		vdd-l4-l12-supply = <&vreg_s4e_1p904>;
+> +		vdd-l5-l6-supply = <&vreg_s4e_1p904>;
+> +		vdd-l7-l8-supply = <&vreg_s3e_0p824>;
+> +		vdd-l10-l11-l13-supply = <&vreg_bob_3p3>;
+> +		vdd-l14-supply = <&vreg_s7e_mx_0p752>;
+> +		vdd-l15-supply = <&vreg_s2e_1p224>;
+> +		vdd-l16-supply = <&vreg_s4e_1p904>;
+> +
+> +		vreg_s2e_1p224: smps2 {
+> +			regulator-min-microvolt = <1280000>;
+> +			regulator-max-microvolt = <1400000>;
+> +		};
+> +
+> +		vreg_s3e_0p824: smps3 {
+> +			regulator-min-microvolt = <800000>;
+> +			regulator-max-microvolt = <1000000>;
+> +		};
+> +
+> +		vreg_s4e_1p904: smps4 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1960000>;
+> +		};
+> +
+> +		ldo1 {
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo2 {
+> +			regulator-min-microvolt = <1128000>;
+> +			regulator-max-microvolt = <1128000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo3 {
+> +			regulator-min-microvolt = <800000>;
+> +			regulator-max-microvolt = <800000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo4 {
+> +			regulator-min-microvolt = <872000>;
+> +			regulator-max-microvolt = <872000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo5 {
+> +			regulator-min-microvolt = <1704000>;
+> +			regulator-max-microvolt = <1900000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo6 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo7 {
+> +			regulator-min-microvolt = <480000>;
+> +			regulator-max-microvolt = <900000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo8 {
+> +			regulator-min-microvolt = <480000>;
+> +			regulator-max-microvolt = <900000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo9 {
+> +			regulator-min-microvolt = <800000>;
+> +			regulator-max-microvolt = <800000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo10 {
+> +			regulator-min-microvolt = <3088000>;
+> +			regulator-max-microvolt = <3088000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo11 {
+> +			regulator-min-microvolt = <1704000>;
+> +			regulator-max-microvolt = <2928000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo12 {
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo13 {
+> +			regulator-min-microvolt = <1704000>;
+> +			regulator-max-microvolt = <2928000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo14 {
+> +			regulator-min-microvolt = <600000>;
+> +			regulator-max-microvolt = <800000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo15 {
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +
+> +		ldo16 {
+> +			regulator-min-microvolt = <1704000>;
+> +			regulator-max-microvolt = <1904000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> +		};
+> +	};
+>  };
+>  
+>  &blsp1_uart3 {
+> -- 
+> 2.25.1
+> 
