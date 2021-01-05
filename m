@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EA82EA8EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DC12EA8EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729248AbhAEKgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728431AbhAEKgA (ORCPT
+        id S1729194AbhAEKhM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Jan 2021 05:37:12 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:41935 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728291AbhAEKhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:36:00 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5983BC061574;
-        Tue,  5 Jan 2021 02:35:20 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id n4so27749116iow.12;
-        Tue, 05 Jan 2021 02:35:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=60AIUV4Jg1QdrWGAn445MgDZhFfwHKWY+s8i6/NBKBU=;
-        b=jCV95JyANFiRlp6NDcE4707Vv5U1woOyRCb/FSUewRJhD3KRIGIoiEWAPJPZ2cem9e
-         EMPVmFUKWkCW2wpJLCH7PywnmGUTAAD76N+ReMlG8ED8/8k8YJMFNR4k67jKZRBO4Q7A
-         +VnmQgU1pCOoXfdx7EpMUmWQI5LGZPRr9pEQyE/92focAl2F/04tRklXDSk2gKbJm+/Z
-         IIm593JUGDQeKhAyrQEWbb8oMFsfguUWCnYnVn5zai0Z6LmTfqOHqagjSgbp9PuBIV1q
-         CzUHIyOauxK0CibgiyBg7Hn1iuBg/6wMbxKwXQWdnEsYnu97H426WVV7MZP7yOedm30o
-         fc2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=60AIUV4Jg1QdrWGAn445MgDZhFfwHKWY+s8i6/NBKBU=;
-        b=Iqzu5AB/RjmIiZfNvTtfs4c2HF8BJ+H5zHEXm0A2jgZ20qewRzWE4ChWsUpldh3Y5H
-         AvbN6dM5IAVtanC8B+1Zx79BKNY2wJDzxgaS7TsSM3YuCTYIMe9FyZgaiVES5JuOvNqy
-         /IDGO3HVB+DMVrcRbId2n4WHb8gdwroYfTdqCeODTK1/07XtXEd7sywo6PddcYQjWIrs
-         XGQpuEiZooL3HdInDWKsXJvjTfG9xmqPBgcERWwtzOr0Ttr32CE+Qg9+O8SCgec/xmSw
-         biPcTduAgv+GKjlh3sQpg5wAltCBjOuommAMB7NqlUt5/JIK2FKu0eRDeAeXdNZY1IEY
-         YsjA==
-X-Gm-Message-State: AOAM531joaxtbM4mzsUxiEnm8XgIBD5CjPcK3ueyuvBf9KY/Md236o1j
-        phJ/7oEQBow+bIt7iQg+EpqS0dV/UjRL1wKw
-X-Google-Smtp-Source: ABdhPJzu3JB9gA9Gcz17wryDh6pSt/WfoquSP+LPAaxzNkC/Acsp01pkY2F8T7eC5yWfmeCS3iCyRQ==
-X-Received: by 2002:a02:ccdc:: with SMTP id k28mr63881476jaq.137.1609842919849;
-        Tue, 05 Jan 2021 02:35:19 -0800 (PST)
-Received: from localhost.localdomain ([156.146.37.136])
-        by smtp.gmail.com with ESMTPSA id r3sm42589955ilt.76.2021.01.05.02.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 02:35:19 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, Larry.Finger@lwfinger.net,
-        christophe.jaillet@wanadoo.fr, zhengbin13@huawei.com,
-        baijiaju1990@gmail.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: rtlwifi: rtl8723ae: Fix word association in trx.c
-Date:   Tue,  5 Jan 2021 16:05:25 +0530
-Message-Id: <20210105103525.28159-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 5 Jan 2021 05:37:11 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-78-7QYeCnYBNmqiCO7SySjlkg-1; Tue, 05 Jan 2021 10:35:32 +0000
+X-MC-Unique: 7QYeCnYBNmqiCO7SySjlkg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 5 Jan 2021 10:35:31 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 5 Jan 2021 10:35:31 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+CC:     "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>
+Subject: RE: [PATCH] checkpatch: fix unescaped left braces
+Thread-Topic: [PATCH] checkpatch: fix unescaped left braces
+Thread-Index: AQHW40n3I32sBUugtEWF3xXGRvsfoqoY1Xyw
+Date:   Tue, 5 Jan 2021 10:35:31 +0000
+Message-ID: <027501cb2506426d9c05adf56d002781@AcuMS.aculab.com>
+References: <20210105093507.29297-1-dwaipayanray1@gmail.com>
+ <cf102ac77eb1f9e6424f30aef835f6c61dd03407.camel@perches.com>
+In-Reply-To: <cf102ac77eb1f9e6424f30aef835f6c61dd03407.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/net/wireless/realtek/rtlwifi/rtl8723ae/trx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+From: Joe Perches
+> Sent: 05 January 2021 10:01
+> 
+> On Tue, 2021-01-05 at 15:05 +0530, Dwaipayan Ray wrote:
+> > Perl 5.22 onwards require that "A literal "{" should now be
+> > escaped in a pattern".
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/trx.c
-index 340b3d68a54e..59e0a04b167d 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/trx.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/trx.c
-@@ -673,7 +673,7 @@ bool rtl8723e_is_tx_desc_closed(struct ieee80211_hw *hw,
+Sounds like a good reason to never use perl :-)
 
- 	/**
- 	 *beacon packet will only use the first
--	 *descriptor defautly,and the own may not
-+	 *descriptor de-faulty,and the own may not
- 	 *be cleared by the hardware
- 	 */
- 	if (own)
---
-2.26.2
+> Not quite correct.
+> 
+> > checkpatch contains several literal "{". Fix such instances
+> > by preceding them with a backslash.
+> 
+> Not all literal left braces need to be escaped.
+> https://www.perlmonks.org/?node_id=1191981
+> 
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -2036,7 +2036,7 @@ sub annotate_values {
+> >  			print "ASSIGN($1)\n" if ($dbg_values > 1);
+> >  			$type = 'N';
+> >
+> >
+> > -		} elsif ($cur =~/^(;|{|})/) {
+> > +		} elsif ($cur =~ /^(;|\{|\})/) {
+
+isn't (;|{|}) much the same as [;{}] ??
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
