@@ -2,107 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA762EA90C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC2A2EA91B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729160AbhAEKnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:43:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728135AbhAEKnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:43:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42A0222515;
-        Tue,  5 Jan 2021 10:42:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609843338;
-        bh=/Mi0VdD4O0BEfDHJdVHbcXWwRKnTOoFWLcr740Ec+SE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z6AYQsMDPD/ThjUIoSXjd2kjv8vCnamvBIBgcyks/Q1D3RhburWQZT5CVoTxvaNwj
-         GrklL2FP3RLwXcNncAOB5fXFY06DYngp7o0OfnTkVzLqiVWjNAAXFDc5xxQILwY4/v
-         A4fgnqjzJuYFAbIBc9obq1iqgQqWT6cyAKE0oyFA=
-Date:   Tue, 5 Jan 2021 11:43:42 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
-        doebel@amazon.de, aams@amazon.de, mku@amazon.de, jgross@suse.com,
-        julien@xen.org, wipawel@amazon.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] Backport of patch series for stable 4.4 branch
-Message-ID: <X/RC3ghc7u4uPIjT@kroah.com>
-References: <X+nBh/5nsI8QrWCg@kroah.com>
- <20210105103702.15804-1-sjpark@amazon.com>
+        id S1729269AbhAEKpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:45:05 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:58944 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728699AbhAEKpE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 05:45:04 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id F240E11F850;
+        Tue,  5 Jan 2021 11:44:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1609843462;
+        bh=MUjJfk9WqP/192z0Yhwfz2yDLEpbXsF5/dNm7cec5Qc=;
+        h=Date:From:To:Subject:From;
+        b=pNKaIDv3mH4tfXwMO3e2ns0/2uBc1WuMjOW7HUt2V0EMSd8e1MKvxkfLqeqdgIIAx
+         9B3aEoHB9qNBlpI5R3qV5baA1FkgTPD1kiFo0LirNvkMJ5vrisCvpP/CN0HuqOZTdo
+         J8FP4rlucCcfYTlghQSFm5c2zf/ntsLpAA196rhPG1iRlXWvnKQ9+uzLaW3fUCKQz4
+         IAY2Z4n3tPd0S+NK5cy/Y4UNnE3N87wSAGLYyOxXJCD60O90ZMuNnCnHO6i//kLjZ/
+         5msqBlMHp94aFCv8wHfbTFVjnB5hss3fPJWjydL9gSFoLu2RRKZ4bs7Pp4t44NPGri
+         aBjJMUiffhXTg==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 0SvJM_mBQCFY; Tue,  5 Jan 2021 11:43:52 +0100 (CET)
+Received: from dev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id 70DA011F84E;
+        Tue,  5 Jan 2021 11:43:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1609843432;
+        bh=MUjJfk9WqP/192z0Yhwfz2yDLEpbXsF5/dNm7cec5Qc=;
+        h=Date:From:To:Subject:From;
+        b=gl6sUBf9Hhf0AobIBw6c8dvq+V6+VT3buC2KAiZaKe7InKK+TGKncksVnQaaSCpPx
+         wYLqMppQsbP1palQBY907WeodxCZfGfDDFMhZ+ypHK7Tv1qiobDMXJI3qtVfkrRr/8
+         xcgcUOY4y6MGsuWgajwLkOF5zZ6r4ge7xMGNSDfTt9r2D4omQMf7wl3oyMvAgNfvGR
+         Fv0RKZ77lH182xMSWSNU1MSdj4zWYZQQCtHgHHvfD1bdqrKN/X6CGEfsEfx3m3Srv2
+         UJNgz03Z09AvQnKJIVloeKPGE8lsDHOTPVFFHeh9w+3x3KNIRNbk8KH9b+GKxp271C
+         03yvPD6RkVhqA==
+Date:   Tue, 5 Jan 2021 10:43:49 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
+        'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        =?iso-8859-1?Q?'J=F3zsef_Horv=E1th'?= <info@ministro.hu>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v7,2/2] Serial: silabs si4455 serial driver
+Message-ID: <20210105104347.GA18688@dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210105103702.15804-1-sjpark@amazon.com>
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 11:37:02AM +0100, SeongJae Park wrote:
-> Hi Greg,
-> 
-> On Mon, 28 Dec 2020 12:29:11 +0100 Greg KH <gregkh@linuxfoundation.org> wrote:
-> 
-> > On Thu, Dec 17, 2020 at 05:03:57PM +0100, SeongJae Park wrote:
-> > > From: SeongJae Park <sjpark@amazon.de>
-> > > 
-> > > Changes from v2
-> > > (https://lore.kernel.org/stable/20201217130501.12702-1-sjpark@amazon.com/)
-> > > - Move 'nr_pending' increase from 5th patch to 4th patch
-> > > 
-> > > Changes from v1
-> > > (https://lore.kernel.org/stable/20201217081727.8253-1-sjpark@amazon.com/)
-> > > - Remove wrong 'Signed-off-by' lines for 'Author Redacted'
-> > 
-> > All now queued up, but you also need a series of this for the 4.9.y tree
-> > as well.
-> 
-> Thank you for your efforts!
-> 
-> However, I was able to cherry-pick this series, which is already merged in
-> 4.4.y, to 4.9.y without conflicts.
-> 
->     $ git checkout stable/linux-4.9.y -b xsa349_4.9
->     $ git cherry-pick d8b0d52e408ca..3c71d2f637c8
->     warning: inexact rename detection was skipped due to too many files.
->     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
->     [xsa349_4.9 51b4cb3db28a] xen/xenbus: Allow watches discard events before queueing
->      Date: Mon Dec 14 10:02:45 2020 +0100
->      4 files changed, 16 insertions(+), 1 deletion(-)
->     warning: inexact rename detection was skipped due to too many files.
->     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
->     [xsa349_4.9 3242225d9645] xen/xenbus: Add 'will_handle' callback support in xenbus_watch_path()
->      Date: Mon Dec 14 10:04:18 2020 +0100
->      6 files changed, 17 insertions(+), 7 deletions(-)
->     warning: inexact rename detection was skipped due to too many files.
->     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
->     [xsa349_4.9 10d6c1301412] xen/xenbus/xen_bus_type: Support will_handle watch callback
->      Date: Mon Dec 14 10:05:47 2020 +0100
->      2 files changed, 4 insertions(+), 1 deletion(-)
->     warning: inexact rename detection was skipped due to too many files.
->     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
->     [xsa349_4.9 3875703f1e6b] xen/xenbus: Count pending messages for each watch
->      Date: Mon Dec 14 10:07:13 2020 +0100
->      2 files changed, 21 insertions(+), 12 deletions(-)
->     warning: inexact rename detection was skipped due to too many files.
->     warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
->     [xsa349_4.9 40e3b315cd18] xenbus/xenbus_backend: Disallow pending watch messages
->      Date: Mon Dec 14 10:08:40 2020 +0100
->      1 file changed, 7 insertions(+)
-> 
-> Seems you tried to merge the series for upstream in 4.9.y:
-> 
->     https://lore.kernel.org/stable/1609154834239118@kroah.com/
-> 
-> This must because I didn't test this series with v4.9 and mention it.  Sorry
-> for making a confusion.  Could you please check this again?
+This is a device tree schema for serial port driver for
+ Silicon Labs Si4455 Sub-GHz transciver.
 
-I can't do anything with a set of git cherry-picks like above, can you
-please send the patches as a series so that I can apply them cleanly?
+Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
 
-And I don't remember what happened with that failure, sorry, dealing
-with hundreds of patches a week makes them all blur together...
+Guide: https://github.com/dministro/linux-serial-si4455
 
-thanks,
+Signed-off-by: Jozsef Horvath <info@ministro.hu>
+---
 
-greg k-h
+changes v1:
+ - fixed: dt: bindings: rename sdn-gpios to shutdown-gpios
+
+changes v3:
+ - fixed: dt: bindings: silabs,si4455: more detailed description
+ - added: dt: bindings: silabs,si4455: properties silabs,package-size,
+   silabs,tx-channel, silabs,rx-channel, silabs,ez-config
+
+changes v4:
+ - fixed: dt: bindings: silabs,si4455: $id
+   from http://devicetree.org/schemas/serial/silabs,si4455.yaml
+   to http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml
+
+changes v5:
+ - fixed: dt: bindings: silabs,si4455: $id
+   from http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml
+   to http://devicetree.org/schemas/serial/silabs,si4455.yaml
+ - fixed: dt: bindings: silabs,si4455: serial.yaml reference added
+
+changes v7:
+ - added: dt: bindings: silabs,si4455: silabs,tx-timeout property definition
+---
+ .../bindings/serial/silabs,si4455.yaml        | 105 ++++++++++++++++++
+ 1 file changed, 105 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/serial/silabs,si4455.yaml
+
+diff --git a/Documentation/devicetree/bindings/serial/silabs,si4455.yaml b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
+new file mode 100644
+index 000000000000..8ba4956064b4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
+@@ -0,0 +1,105 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/serial/silabs,si4455.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Silicon Labs Si4455 device tree bindings
++
++maintainers:
++  - József Horváth <info@ministro.hu>
++
++description:
++  This document is for describing the required device tree parameters for si4455 serial driver.
++  The si4455 driver tries to represent the Silicon Labs Si4455 sub-GHz transceiver device
++  like a serial port. The required parameters for proper operation are described below.
++  https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
++
++allOf:
++  - $ref: "serial.yaml#"
++
++properties:
++  compatible:
++    const: silabs,si4455
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  spi-max-frequency:
++    description: maximum clock frequency on SPI port
++    maximum: 500000
++
++  shutdown-gpios:
++    description: gpio pin for SDN
++    maxItems: 1
++
++  silabs,package-size:
++    description:
++      Radio payload length, variable packet length is not supported by driver.
++      This value should equal with EZConfig payload length.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 64
++    minimum: 1
++
++  silabs,tx-channel:
++    description:
++      Radio transmit channel selection.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 255
++    minimum: 0
++
++  silabs,rx-channel:
++    description:
++      Radio receive channel selection.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 255
++    minimum: 0
++
++  silabs,tx-timeout:
++    description:
++      Radio transmit timeout(ms)
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 1000
++    minimum: 1
++
++  firmware-name:
++    description:
++      Radio configuration data file name.
++    $ref: /schemas/types.yaml#/definitions/string
++    items:
++      pattern: ^[0-9a-z\._\-]{1,255}$
++
++required:
++  - reg
++  - interrupts
++  - spi-max-frequency
++  - shutdown-gpios
++  - silabs,package-size
++  - silabs,tx-channel
++  - silabs,rx-channel
++  - firmware-name
++
++additionalProperties: false
++
++examples:
++  - |
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      si4455_0: serial@0 {
++        compatible = "silabs,si4455";
++        reg = <0>;
++        interrupt-parent = <&gpio>;
++        interrupts = <7 2>;
++        shutdown-gpios = <&gpio 26 1>;
++        spi-max-frequency = <300000>;
++        silabs,package-size = <30>;
++        silabs,tx-channel = <1>;
++        silabs,rx-channel = <2>;
++        firmware-name = "si4455_spi0_0.ez.bin";
++      };
++    };
++...
+-- 
+2.17.1
+
