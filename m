@@ -2,105 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DCA2EA8DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F0F2EA8DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729284AbhAEKeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48242 "EHLO
+        id S1729300AbhAEKeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:34:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728572AbhAEKeB (ORCPT
+        with ESMTP id S1729286AbhAEKeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:34:01 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEE1C061574;
-        Tue,  5 Jan 2021 02:33:21 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id jx16so40523558ejb.10;
-        Tue, 05 Jan 2021 02:33:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dq/maS4XldzpEIGlbDHKZApzDTOwZvZ/+2d1tQgalN8=;
-        b=WLK8B0dALXja7tR4ks/3hCp5JsNGM+rPQTjQxDrFPdm8FTFoLPr8YryEI1L+5A6vKU
-         3F6AD+dwWSEo3sVAv0TBq1rqFweDVbwuxNYhbTeo9rQUqzI0KPc2/GZtYkSaDCC9MHMG
-         6OcFI25x4oXa1FN3KXp8H9wpRmw9diiQyTLLFC2rWckiWevYEcDud+zt7q8JOXGsN+V4
-         IGvuzooTqiBzL27srKbL4OSYSAUV3a6zlsH9PLNhuIjN0MDLnhSvZ+CpXJ/DBeZisAtM
-         DIozd4mx4noxgpsdJ/lwmrgCp5U8hBKDxOtsor7s3fvHsgKdHmxTRih4TpCHaIyYtGyl
-         Fh3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dq/maS4XldzpEIGlbDHKZApzDTOwZvZ/+2d1tQgalN8=;
-        b=PSiDRzbP9bcl7iriH2H1AuguyQ+H1XkXE95fLayFEKL3Ka65tCU6nCGkaVJnHb9pAg
-         Ea7OfhQDI8BcjeDoL0W1g8JULCNbq2wKuNlRiK2XRP3qGsARUlu6T0lO+O8QoIMuH0sY
-         PBlYh4nc9hyhy78uGtHz/+XZpyC/c32B5ET5pPLpWCBw3PPhyKbm80a5vlo7cUxDIrg2
-         whsCDHogtsN+VivFbWJfxHZpERYgZMBn7t74bh3cWuc57bNwdhldxZwRBjKGNr+uJsNW
-         7cvaddgJcAX2ixIA+EvDDwxHRiNHHTeOM1nxruyvEGlUhsyj+RjP1d3VXhrFmgHHVhc+
-         n5uQ==
-X-Gm-Message-State: AOAM532I46k3izlMRWGznp0XMyyXI2bJwB1iQDfp3Sn6ge4NNxoTipZk
-        3S4qlDSw5vAqVYKNffOb4mjB2g3IT/t9KssxcEc=
-X-Google-Smtp-Source: ABdhPJw1IwoJvvz4E+71CPNwYvcxrEWRatNU1zEF3QU2DLXubK5dt1H79wfPg49In58VUpdywFPTICQ9yXUZfDnwO7k=
-X-Received: by 2002:a17:906:7f0b:: with SMTP id d11mr70752957ejr.7.1609842800032;
- Tue, 05 Jan 2021 02:33:20 -0800 (PST)
+        Tue, 5 Jan 2021 05:34:06 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7828C061793;
+        Tue,  5 Jan 2021 02:33:25 -0800 (PST)
+Date:   Tue, 05 Jan 2021 10:33:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1609842803;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xyHdgLBHIEj9JYFxRruai+YHlB2CHkyzn762qs1f/tA=;
+        b=wHhP6ZKt6AkmTtxWgdZZgmOhg2p2oRBMn0MT4+TRIQ05101dM7Or33kYwnhOXK2rMxtC9A
+        7ECvjz5tdBr5g/TX1uGNwqpRjtRxt63LcXRYfVrfOH8l5cjqjiHYgvqU3tSEVS9RzGpFeA
+        CRj8b1IE4u+h0sY/LqUrnkeJUOwnxuSoAuQ6Yl4OkuwQYH7xj36C+zGe2HoSZpj5sVA8Iw
+        fCacY8wbf1AHKbp0bs7BkiuZ94WceEiecwRhZO491DG2hJHVSQj6tlxL/7rqbFS6oCfiUd
+        eD+xWLgVQ8YZV9gOYoTvCn+7bA4Nfb1AojMFJaJJmA1QgiY8GZ14N+qrGEbyfQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1609842803;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xyHdgLBHIEj9JYFxRruai+YHlB2CHkyzn762qs1f/tA=;
+        b=32TRGuONYj0QDr0HnZ0avkZ9KJ7uQYsYU1yiSGfbHwU5DUgpPFHZZVb6rWJ/KNW5bhoZJ7
+        sb/LIpHe1gDnHhCA==
+From:   "tip-bot2 for Dan Williams" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/mm: Fix leak of pmd ptlock
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Borislav Petkov <bp@suse.de>, Yi Zhang <yi.zhang@redhat.com>,
+        <stable@vger.kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3C160697689204=2E605323=2E17629854984697045602=2Es?=
+ =?utf-8?q?tgit=40dwillia2-desk3=2Eamr=2Ecorp=2Eintel=2Ecom=3E?=
+References: =?utf-8?q?=3C160697689204=2E605323=2E17629854984697045602=2Est?=
+ =?utf-8?q?git=40dwillia2-desk3=2Eamr=2Ecorp=2Eintel=2Ecom=3E?=
 MIME-Version: 1.0
-References: <20210105101738.13072-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210105101738.13072-1-unixbhaskar@gmail.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Tue, 5 Jan 2021 21:33:08 +1100
-Message-ID: <CAGRGNgX-JSPW8LSmAUbm=2jkx+K4EYdntCq6P2i8td0TUk7Nww@mail.gmail.com>
-Subject: Re: [PATCH] drivers: net: wireless: realtek: Fix the word association
- defautly de-faulty
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        zhengbin13@huawei.com, baijiaju1990@gmail.com,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160984280139.414.600325623903793598.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaskar,
+The following commit has been merged into the x86/urgent branch of tip:
 
-On Tue, Jan 5, 2021 at 9:19 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
-> s/defautly/de-faulty/p
->
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
-> index c948dafa0c80..7d02d8abb4eb 100644
-> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
-> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
-> @@ -814,7 +814,7 @@ bool rtl88ee_is_tx_desc_closed(struct ieee80211_hw *hw, u8 hw_queue, u16 index)
->         u8 own = (u8)rtl88ee_get_desc(hw, entry, true, HW_DESC_OWN);
->
->         /*beacon packet will only use the first
-> -        *descriptor defautly,and the own may not
-> +        *descriptor de-faulty,and the own may not
+Commit-ID:     1bd3d9c593211e09771562b464028d3ab7e05b3a
+Gitweb:        https://git.kernel.org/tip/1bd3d9c593211e09771562b464028d3ab7e05b3a
+Author:        Dan Williams <dan.j.williams@intel.com>
+AuthorDate:    Wed, 02 Dec 2020 22:28:12 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 05 Jan 2021 11:17:21 +01:00
 
-Really? "de-faultly" isn't any better than "defaultly" and in fact
-it's even worse as it breaks up the word "default".
+x86/mm: Fix leak of pmd ptlock
 
-This change doesn't make sense and the comment really needs to be
-completely re-written by someone who understands what's going on here
-as it barely makes sense.
+Commit
 
-Thanks,
+  28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
 
--- 
-Julian Calaby
+introduced a new location where a pmd was released, but neglected to
+run the pmd page destructor. In fact, this happened previously for a
+different pmd release path and was fixed by commit:
 
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+  c283610e44ec ("x86, mm: do not leak page->ptl for pmd page tables").
+
+This issue was hidden until recently because the failure mode is silent,
+but commit:
+
+  b2b29d6d0119 ("mm: account PMD tables like PTE tables")
+
+turns the failure mode into this signature:
+
+ BUG: Bad page state in process lt-pmem-ns  pfn:15943d
+ page:000000007262ed7b refcount:0 mapcount:-1024 mapping:0000000000000000 index:0x0 pfn:0x15943d
+ flags: 0xaffff800000000()
+ raw: 00affff800000000 dead000000000100 0000000000000000 0000000000000000
+ raw: 0000000000000000 ffff913a029bcc08 00000000fffffbff 0000000000000000
+ page dumped because: nonzero mapcount
+ [..]
+  dump_stack+0x8b/0xb0
+  bad_page.cold+0x63/0x94
+  free_pcp_prepare+0x224/0x270
+  free_unref_page+0x18/0xd0
+  pud_free_pmd_page+0x146/0x160
+  ioremap_pud_range+0xe3/0x350
+  ioremap_page_range+0x108/0x160
+  __ioremap_caller.constprop.0+0x174/0x2b0
+  ? memremap+0x7a/0x110
+  memremap+0x7a/0x110
+  devm_memremap+0x53/0xa0
+  pmem_attach_disk+0x4ed/0x530 [nd_pmem]
+  ? __devm_release_region+0x52/0x80
+  nvdimm_bus_probe+0x85/0x210 [libnvdimm]
+
+Given this is a repeat occurrence it seemed prudent to look for other
+places where this destructor might be missing and whether a better
+helper is needed. try_to_free_pmd_page() looks like a candidate, but
+testing with setting up and tearing down pmd mappings via the dax unit
+tests is thus far not triggering the failure.
+
+As for a better helper pmd_free() is close, but it is a messy fit
+due to requiring an @mm arg. Also, ___pmd_free_tlb() wants to call
+paravirt_tlb_remove_table() instead of free_page(), so open-coded
+pgtable_pmd_page_dtor() seems the best way forward for now.
+
+Debugged together with Matthew Wilcox <willy@infradead.org>.
+
+Fixes: 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Yi Zhang <yi.zhang@redhat.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com
+---
+ arch/x86/mm/pgtable.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index dfd82f5..f6a9e2e 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -829,6 +829,8 @@ int pud_free_pmd_page(pud_t *pud, unsigned long addr)
+ 	}
+ 
+ 	free_page((unsigned long)pmd_sv);
++
++	pgtable_pmd_page_dtor(virt_to_page(pmd));
+ 	free_page((unsigned long)pmd);
+ 
+ 	return 1;
