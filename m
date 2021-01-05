@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0031D2EAB2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68E22EAB30
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbhAEMtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:49:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbhAEMtF (ORCPT
+        id S1726323AbhAEMu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:50:28 -0500
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:34342 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729070AbhAEMu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:49:05 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF44C061574;
-        Tue,  5 Jan 2021 04:48:25 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id q137so28033018iod.9;
-        Tue, 05 Jan 2021 04:48:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CCTyf1sf2ZU7h0cZkeoRQ1POMJK2PzlWyw0VjZ882R0=;
-        b=LNb2SJ/6IKS1JI2IAIJzBNognHzy8pNMScBDz392rTPu3OyZxNZStZXmpSq+K1/Fyh
-         v+kxUmGcDuPXpa4etSFLIBtXEkGYoO50D+wQyY6kDdF+FTSA8lQbRd6mozjFhAbSnFPC
-         q/U4FidfqfI7tRnsGMgJBlbVMwK7D6tKfkxgL7Iv1CTg5lpGY58UWh9x0JURGYTxi9FS
-         LVJmRQpPrz89l4m52Uq2w57e42C4bQXHmBPU0djON2BEj2i7BTvkv7QqKEo/1rRMH5N7
-         wWu7nFUmye2/of/14PWepW+MUV1q/6SmOXEJsJ9roV/gF0QEhzACt8qsRbx5g13GDdNx
-         Z/tw==
+        Tue, 5 Jan 2021 07:50:27 -0500
+Received: by mail-wm1-f53.google.com with SMTP id g25so1428893wmh.1;
+        Tue, 05 Jan 2021 04:50:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CCTyf1sf2ZU7h0cZkeoRQ1POMJK2PzlWyw0VjZ882R0=;
-        b=Cxc5ySq4t7oLKi6PivwJhf537yk7uhJDPVIgIzsSDzwSAU/14n807tLB+pS4dT9aYm
-         R9h5LRv7ZW95vrgFButkzrykDtbrKGDrKdJAFVScIK5MKzcqt1ZyGopBqvTR0J06tvHT
-         Ae3WTejOijfjW/MM9Nngiuzf/xxT3bIKqUT6ph9meASCM4JZDVVeiTDE5inSoIYMcU5G
-         2i3JmVxTFcS1MsdAgpZj3VytOXNrfF13au/hXXJNWx16Jh4M5TBOmDUfDSR9xNE4Z2SE
-         SwPDGdYKARNJ8zATnhCcvmuE/2fmmD7jV4HEbL6wZYYMftH7x7FYySkFuLUXwgZKv+lu
-         E/3g==
-X-Gm-Message-State: AOAM532nRILoOgL/32T6dZMcxN949t4iBzZCtBtR/085zm0J3tiz05tZ
-        XqLO0e9arU3u/hOUEgdIF+eowyOMTn3Zx/AJD1EgUm0X
-X-Google-Smtp-Source: ABdhPJyGOGrjcyejMcrDu5EvsuKeaTBNFVKHaU8l74qNkF/Xo02ZNxPPYfivkyFMT99aFuslZk2q/Ft5edW37rlxkKk=
-X-Received: by 2002:a5d:9a8e:: with SMTP id c14mr63948716iom.178.1609850904542;
- Tue, 05 Jan 2021 04:48:24 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0EZyGTkbcPKYFMYzBs6nzV7gzqDTgrLCohcmlMq4hEI=;
+        b=tUVXjXzxjbzWdV3DGqTjnF9bWlFPX2dLKA4jQFzh3pvWvtnFVkAALEGs3JLW/tPsjR
+         QObWbj92j5jmeCI+5tQu4Essy3rGyaR36/BgRsSE+svwRrtiOfw0r6iKnfjf6mwufqet
+         lJaeHVLKeBelJkCRshaV5W1z5bXCvzRWqv83RsC5kQuVs5ZqJm1wCBmn6bx1jYlzBQ5I
+         9ZNn7QWXKKWbmiZ0bem/1Vpotd1/YeaXMhq1y60m85mDAiXxYWC9F7dxq/u8cdoaXwRR
+         LaQRoNXg2QDpeWiJImk5mdyVSB9oOG1ZL8KvBriEEPqH7Mqp527PkkguUZPwp2erzY8x
+         QmDw==
+X-Gm-Message-State: AOAM530ddpijKfCnb0S+0pPxz/yU2CNMP93Ri2xbPHYJtCwJtHgcqWVI
+        BkPBbmjBFJBaQI0XmxTJbMI=
+X-Google-Smtp-Source: ABdhPJwVF9QsjoP9c6QsEyg8wGmoe0XVEaVCxQwg16LI6/ysVkwjGrIshpO1H1hZSY09vUDjY/ORhQ==
+X-Received: by 2002:a1c:bc88:: with SMTP id m130mr3440767wmf.82.1609850984936;
+        Tue, 05 Jan 2021 04:49:44 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id k1sm95366837wrn.46.2021.01.05.04.49.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 04:49:44 -0800 (PST)
+Date:   Tue, 5 Jan 2021 12:49:43 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>
+Subject: Re: [PATCH v3 0/6] Drivers: hv: vmbus: More VMBus-hardening changes
+Message-ID: <20210105124943.qaoqj76kb2qasaoq@liuwe-devbox-debian-v2>
+References: <20201209070827.29335-1-parri.andrea@gmail.com>
 MIME-Version: 1.0
-References: <20201202135950.22164-1-aford173@gmail.com> <20210105030308.GK4142@dragon>
-In-Reply-To: <20210105030308.GK4142@dragon>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Tue, 5 Jan 2021 06:48:13 -0600
-Message-ID: <CAHCN7xJV11LqTwsJ=3Xz9gxHAjRg0B37RnMWgcx3CWDT+DiJHg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mm-beacon: Fix WiFi Pinmuxing
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209070827.29335-1-parri.andrea@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 9:03 PM Shawn Guo <shawnguo@kernel.org> wrote:
->
-> On Wed, Dec 02, 2020 at 07:59:50AM -0600, Adam Ford wrote:
-> > The WiFi chip is capable of communication at SDR104 speeds, and
-> > the pinmux was configured to support this, but the sdhc1 controller
-> > didn't properly reference the pinmux.  Enable 100Mhz and 200MHz pinmux
-> > as was originally intended.
-> >
-> > Fixes: 593816fa2f35 ("arm64: dts: imx: Add Beacon i.MX8m-Mini development kit")
->
-> This looks more like an improvement than bug fix.
+On Wed, Dec 09, 2020 at 08:08:21AM +0100, Andrea Parri (Microsoft) wrote:
+> Integrating feedback from Juan, Michael and Wei. [1]  Changelogs are
+> inline/in the patches.
+> 
+> Thanks,
+>   Andrea
+> 
+> [1] https://lkml.kernel.org/r/20201202092214.13520-1-parri.andrea@gmail.com
+> 
+> Andrea Parri (Microsoft) (6):
+>   Drivers: hv: vmbus: Initialize memory to be sent to the host
+>   Drivers: hv: vmbus: Reduce number of references to message in
+>     vmbus_on_msg_dpc()
+>   Drivers: hv: vmbus: Copy the hv_message in vmbus_on_msg_dpc()
+>   Drivers: hv: vmbus: Avoid use-after-free in vmbus_onoffer_rescind()
+>   Drivers: hv: vmbus: Resolve race condition in vmbus_onoffer_rescind()
 
-Do you want me to resubmit without the fixes tag?
+I've applied the first five to hyperv-next.
 
-adam
->
-> Shawn
->
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-> > index 6de86a4f0ec4..90fd15e95798 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-> > @@ -217,8 +217,10 @@
-> >  &usdhc1 {
-> >       #address-cells = <1>;
-> >       #size-cells = <0>;
-> > -     pinctrl-names = "default";
-> > +     pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> >       pinctrl-0 = <&pinctrl_usdhc1>;
-> > +     pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
-> > +     pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
-> >       bus-width = <4>;
-> >       non-removable;
-> >       cap-power-off-card;
-> > --
-> > 2.17.1
-> >
+>   Drivers: hv: vmbus: Do not allow overwriting
+>     vmbus_connection.channels[]
+
+This one lacks a review-by tag.
+
+Wei.
+
+> 
+>  drivers/hv/channel.c      |  4 +--
+>  drivers/hv/channel_mgmt.c | 55 +++++++++++++++++++++++++++------------
+>  drivers/hv/hyperv_vmbus.h |  2 +-
+>  drivers/hv/vmbus_drv.c    | 43 ++++++++++++++++++------------
+>  include/linux/hyperv.h    |  1 +
+>  5 files changed, 69 insertions(+), 36 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
