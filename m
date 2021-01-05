@@ -2,59 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3986B2EAB58
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 287F12EAB5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730328AbhAENBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:01:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727149AbhAENBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:01:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 556CD229F0;
-        Tue,  5 Jan 2021 13:00:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609851639;
-        bh=bk2fAAGdKAI4pOGSvmoeukZB7mglz/IgYfjQa6DN3lM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bs6qCn4GcLAFliJpnskoTtdAj8carDljINO/ooxalWZ5xEhmY2eSMp1wEr+xehlWV
-         +QVq0NPz5LfWC/3vhH8UTMMCCkd0mfqZmHLqIzde/sRHFYB9j89405x5Skh44oruMX
-         5M212QQvKejFd2sP4OAyQdGTAYOJE7rEALV+J/Wx2SmsC4zhR+yriRTjeQK8T0AZtI
-         0DfEt0fPhFjFo7oI+shAYdWax6D1qIpSjdHUmMU3k/OM0xUMtaXrFrzpkMyFMEQY4K
-         8qj6TWzZVlNSc6lZy8kIWye41WHmx3rgCqGHQ1r/1O+2GZwe9vFUhG5+Vt+4vaCICC
-         onXlfvsQdO/kQ==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jim Baxter <jim_baxter@mentor.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: select CONFIG_CRC32
-In-Reply-To: <20210103214224.1996535-1-arnd@kernel.org>
-References: <20210103214224.1996535-1-arnd@kernel.org>
-Date:   Tue, 05 Jan 2021 15:00:35 +0200
-Message-ID: <87pn2jczd8.fsf@kernel.org>
+        id S1730299AbhAENB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:01:59 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:48576 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbhAENB6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:01:58 -0500
+Received: by mail-il1-f200.google.com with SMTP id f4so30520241ilu.15
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:01:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/MLmxfO00kG8Vz2FD5GixYYD/MCQqiaRhG+GjRUx0dw=;
+        b=NKeBUpjELtnpCe3XJeJKup/AwXsCTY7eQjiY/DVj8F5vmbvIvWByBsCgT0WGTNjMQb
+         LugSziSKMWHm74ZbE8B9/CEeHSjabLuS91RFsAuCYLvz2GxaI8AN+W9tLGo6AwCstw3a
+         PVQmndkRDbSyGghHseQN9YDPmJob7COR245wAedNVGeW4AyyW/8mvOSwSGmNIMj/QGqw
+         m7p6oG10gO+uqIFkLbxVjsBL72DscFkbu8UA1UbePFYaoK7rGBNZ/6ZOQA3g07ixauuQ
+         USmyb2c89QjNj3oBLvwsHPiT6EE8TV2ei2GBdnIf6B34obqRhxzHA/KV5usimCK4ZxT4
+         R3SA==
+X-Gm-Message-State: AOAM531O1E5diG1orULol7JXzqUY4NsSaW4I2isZW1t9W6BBpke11eK9
+        ltMYwkpe3SMgyAhj3E4ST0DOZcJk8t8bLrTwcjkEizgAq6oE
+X-Google-Smtp-Source: ABdhPJzpMzaz8sKKDn0AV8QoU1thqcOD4lAoiN7+cFrTHp8FA1YDc4R7RpHY4Ve/jJo2U4M6liMyQtKT9aa9OeRvcPrcqqGz2qHx
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a6b:920b:: with SMTP id u11mr62715438iod.191.1609851677004;
+ Tue, 05 Jan 2021 05:01:17 -0800 (PST)
+Date:   Tue, 05 Jan 2021 05:01:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000059589a05b826cdad@google.com>
+Subject: UBSAN: shift-out-of-bounds in diReadSpecial
+From:   syzbot <syzbot+d0d8d1bfd19a85de7703@syzkaller.appspotmail.com>
+To:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
+Hello,
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Without crc32 support, this driver fails to link:
->
-> arm-linux-gnueabi-ld: drivers/usb/gadget/function/f_eem.o: in function `eem_unwrap':
-> f_eem.c:(.text+0x11cc): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/usb/gadget/function/f_ncm.o:f_ncm.c:(.text+0x1e40):
-> more undefined references to `crc32_le' follow
->
-> Fixes: 6d3865f9d41f ("usb: gadget: NCM: Add transmit multi-frame.")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+syzbot found the following issue on:
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+HEAD commit:    614cb589 Merge tag 'acpi-5.11-rc1-2' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10e4ffbd500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bf519e1e96191576
+dashboard link: https://syzkaller.appspot.com/bug?extid=d0d8d1bfd19a85de7703
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
--- 
-balbi
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d0d8d1bfd19a85de7703@syzkaller.appspotmail.com
+
+================================================================================
+UBSAN: shift-out-of-bounds in fs/jfs/jfs_imap.c:445:7
+shift exponent -19 is negative
+CPU: 0 PID: 11254 Comm: syz-executor.2 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ diReadSpecial.cold+0x1b/0x3e fs/jfs/jfs_imap.c:445
+ jfs_mount+0x83/0x3d0 fs/jfs/jfs_mount.c:86
+ jfs_fill_super+0x5b1/0xbc0 fs/jfs/super.c:562
+ mount_bdev+0x34d/0x410 fs/super.c:1366
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1496
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x13ad/0x20c0 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount fs/namespace.c:3403 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3403
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x460b9a
+Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ad 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 8a 89 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007f2ed35f4a78 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f2ed35f4b10 RCX: 0000000000460b9a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f2ed35f4ad0
+RBP: 00007f2ed35f4ad0 R08: 00007f2ed35f4b10 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
+R13: 0000000020000100 R14: 0000000020000200 R15: 000000002006d200
+================================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
