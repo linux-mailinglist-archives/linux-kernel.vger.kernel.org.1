@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAA12EB542
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 032C72EB54B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729176AbhAEWLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 17:11:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727346AbhAEWLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 17:11:05 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAA4C061574;
-        Tue,  5 Jan 2021 14:10:24 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id jx16so2492991ejb.10;
-        Tue, 05 Jan 2021 14:10:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=46Sdw8vdtEjJ6/+ChVrH3OLu9DIh3HiQWxhcNj27i24=;
-        b=T7wMZo+anDWxGN0/m02t3B77fKqhZ29Q+VQkW4BCUbavkU0zbjEt/OZFqPxZboK45z
-         iG1gvai3jRVQIN5lY5dRU2XfUP02eJR4W8tONnP2gUMe+jJsElVxE4yF8DnTHWgBWb1L
-         aDSf9L+qC1dAJnDImSnIeE/RdDpfMHNqZh6ZAo5ksZFF8pmplgFfQjqelHYwCNzjU9h3
-         USeN5ojDVqSEyXFq9MlPfFhEjNGLeg9VZLLZ2QNxZcNBIwzEv0a9VACJSqDiYuvIJqn9
-         WBAnLAs6ykFAdOJwuZWjL4GY6Ar/8+C+Ttc8R0GgDTqLEl8lkDGbJ2t6K4J8y9H99w5X
-         MxIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=46Sdw8vdtEjJ6/+ChVrH3OLu9DIh3HiQWxhcNj27i24=;
-        b=AYNLJroUjSWcFxLCqxw1vayPYMdj+bHjaGENtVQbyCf7JhbcB/Zfz9N/7NhRfQrUSL
-         HndPLk8bb+991J84ePblbgZn4daIo5NiJ9InoCfmwLR4PQeUraTzI93n6l45kA6uKb40
-         V8m9HZN1kpuTkCBb3UsWJfir0aFxReyN9U9syqJaTvRrU0726oJEdOiz1vViYGTAvfvb
-         3HPM+Lrc6dka5vqo4PxvLny1LBH2S2oXy9GQDhlkes+Wb136ZgT5riYQN3M6Mp/lGW+j
-         M0M1AE8zCjP2tG1okC9fyPllNQ89rMdIdaJusS8TOopRWY2YrL1RSH269DbxDxclpeZo
-         YRWA==
-X-Gm-Message-State: AOAM533P8STELxBautG/LterPdvbK9GeSdm3Z9LK+SaoliaWMwwx+9YB
-        38wn7oWIYX0JgFYf867ecEv/3TbbIOKdqycJmchh014n8dk=
-X-Google-Smtp-Source: ABdhPJx1qUUEvPztnZcPzOLPbkdtZs/baDAEczgRiY/uFC6051ND0c7NtZmDNM200l9N9nVvG3M3BQSMo7pNmo98qhU=
-X-Received: by 2002:a17:906:4a47:: with SMTP id a7mr968382ejv.345.1609884623519;
- Tue, 05 Jan 2021 14:10:23 -0800 (PST)
+        id S1727387AbhAEWRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 17:17:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726306AbhAEWRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 17:17:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A007322DFA;
+        Tue,  5 Jan 2021 22:16:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609884994;
+        bh=8nsD1cY7j4RI32huXupjNeC+ztbwkBuHR0P7SByRyVo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jZTKdkn6Trle1JstaGd6CGH7IkIqIRBp6RCiTFde/XdLuOXGDxgnlRh5mPAor2BkY
+         WGAh3OCEuBZmfCL8tVEQ5CDHn9FvaVr8RIV2heEr5IUx1E22nAVgjt13x7y/FuQQnB
+         zHxBF3mWb43JCbdKi020nstM1cEvbDgSJI6nKm39LB+lbrOyoif47Uuv5rQo8wrxh1
+         ZecGRB8xkzVFSWdQVPYTRJKE5axzttzKl6iwGdX9g0NNxSTnhAdWMiC+oizkNBqFNK
+         cgSkuXoKppkCX9HjZfRyGgCGCWBdkm6wLSO/jyOTOqHmg721MY8rSVPJ9joxkckVgQ
+         q2mu2238JzWGQ==
+Date:   Tue, 5 Jan 2021 22:16:29 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH v2 2/2] fs/task_mmu: acquire mmap_lock for write on
+ soft-dirty cleanup
+Message-ID: <20210105221628.GA12854@willie-the-truck>
+References: <20201225092529.3228466-1-namit@vmware.com>
+ <20201225092529.3228466-3-namit@vmware.com>
+ <X/SuBxFfR+bncRhU@redhat.com>
+ <15758743-B8E3-48C4-A13B-DFFEBF8AF435@vmware.com>
+ <X/TOhyzggcBL64N2@redhat.com>
+ <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
 MIME-Version: 1.0
-References: <CGME20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a@epcms2p6>
- <20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a@epcms2p6>
-In-Reply-To: <20201230094851epcms2p6eeead8cc984379b37b2efd21af90fd1a@epcms2p6>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Tue, 5 Jan 2021 14:10:12 -0800
-Message-ID: <CAD+ocbyDV6CV2tF7kqJyyOKgrnPGLHyM4PA7w9UX3F+qXahmaw@mail.gmail.com>
-Subject: Re: [PATCH] ext4: Fix wrong list_splice in ext4_fc_cleanup
-To:     daejun7.park@samsung.com
-Cc:     "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks, that's a good catch!
+On Tue, Jan 05, 2021 at 09:22:51PM +0000, Nadav Amit wrote:
+> > On Jan 5, 2021, at 12:39 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> > 
+> > On Tue, Jan 05, 2021 at 07:26:43PM +0000, Nadav Amit wrote:
+> >>> On Jan 5, 2021, at 10:20 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> >>> 
+> >>> On Fri, Dec 25, 2020 at 01:25:29AM -0800, Nadav Amit wrote:
+> >>>> Fixes: 0f8975ec4db2 ("mm: soft-dirty bits for user memory changes tracking")
+> >>> 
+> >>> Targeting a backport down to 2013 when nothing could wrong in practice
+> >>> with page_mapcount sounds backwards and unnecessarily risky.
+> >>> 
+> >>> In theory it was already broken and in theory
+> >>> 09854ba94c6aad7886996bfbee2530b3d8a7f4f4 is absolutely perfect and the
+> >>> previous code of 2013 is completely wrong, but in practice the code
+> >>> from 2013 worked perfectly until Aug 21 2020.
+> >> 
+> >> Well… If you consider the bug that Will recently fixed [1], then soft-dirty
+> >> was broken (for a different, yet related reason) since 0758cd830494
+> >> ("asm-generic/tlb: avoid potential double flush”).
+> >> 
+> >> This is not to say that I argue that the patch should be backported to 2013,
+> >> just to say that memory corruption bugs can be unnoticed.
+> >> 
+> >> [1] https://patchwork.kernel.org/project/linux-mm/patch/20201210121110.10094-2-will@kernel.org/
+> > 
+> > Is this a fix or a cleanup?
+> > 
+> > The above is precisely what I said earlier that tlb_gather had no
+> > reason to stay in clear_refs and it had to use inc_tlb_flush_pending
+> > as mprotect, but it's not a fix? Is it? I suggested it as a pure
+> > cleanup. So again no backport required. The commit says fix this but
+> > it means "clean this up".
+> 
+> It is actually a fix. I think the commit log is not entirely correct and
+> should include:
+> 
+>   Fixes: 0758cd830494 ("asm-generic/tlb: avoid potential double flush”).
+> 
+> Since 0758cd830494, calling tlb_finish_mmu() without any previous call to
+> pte_free_tlb() and friends does not flush the TLB. The soft-dirty bug
+> producer that I sent fails without this patch of Will.
 
-Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Yes, it's a fix, but I didn't rush it for 5.10 because I don't think rushing
+this sort of thing does anybody any favours. I agree that the commit log
+should be updated; I mentioned this report in the cover letter:
 
-On Wed, Dec 30, 2020 at 1:53 AM Daejun Park <daejun7.park@samsung.com> wrote:
->
-> After full/fast commit, entries in staging queue are promoted to main
-> queue. In ext4_fs_cleanup function, it splice to staging queue to
-> staging queue.
->
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
->  fs/ext4/fast_commit.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 4fcc21c25e79..5b6bb3ef0f33 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -1268,7 +1268,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full)
->         list_splice_init(&sbi->s_fc_dentry_q[FC_Q_STAGING],
->                                 &sbi->s_fc_dentry_q[FC_Q_MAIN]);
->         list_splice_init(&sbi->s_fc_q[FC_Q_STAGING],
-> -                               &sbi->s_fc_q[FC_Q_STAGING]);
-> +                               &sbi->s_fc_q[FC_Q_MAIN]);
->
->         ext4_clear_mount_flag(sb, EXT4_MF_FC_COMMITTING);
->         ext4_clear_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
-> --
-> 2.25.1
->
+https://lore.kernel.org/linux-mm/CA+32v5zzFYJQ7eHfJP-2OHeR+6p5PZsX=RDJNU6vGF3hLO+j-g@mail.gmail.com/
+
+demonstrating that somebody has independently stumbled over the missing TLB
+invalidation in userspace, but it's not as bad as the other issues we've been
+discussing in this thread.
+
+Will
