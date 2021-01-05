@@ -2,146 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7E32EAD6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9782EAD73
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbhAEOhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:37:17 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2065 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbhAEOhR (ORCPT
+        id S1727155AbhAEOhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:37:54 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:51024 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726901AbhAEOhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:37:17 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff479740000>; Tue, 05 Jan 2021 06:36:36 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 Jan
- 2021 14:36:32 +0000
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.55) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 5 Jan 2021 14:36:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m41B1rp2qw3CGWjLE4HUj1kQIhulMVfj9wNR8TdK6Ew+PPi6T4t7dGWV7rCkdohsPwff3/QY6aKdTEZIY/na1rgYtPZ9YUU8KR4WpXHX7U/S5fCb0XEBQZzw4sxyQUEE2JmxVGgJG4yiYNsYjRxoQXo0vhXj665aswnsDpVbetzZfFDJ1NQ8kF97FKG26nTVkt3yhvybyOwS7NDgMweNc6YPcRCdPb/lQfJqTjy4rsSu+9cL+im4OojHJNmkXmN+gMKdUziFd2MAViFtFcRYbfa7c1fF+cc1yDCaWKUzsmSsq7nSRZ8X6U67l3vkimwbrMP6jDDWq4og3FR/7IO0KQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PAwrKySJQvQFPuf6e10AMprqTOhIvV+daRoILtUq4QM=;
- b=V+pmMd775DjQhFXf2SydKhowmJUav5ntBDIt2xnOZmqJRMCowTbTYPotex4urT12HmZL0gSIxMkR5XgNt7kZ4A6JNhe/A42VkSDRs8HqGDD+nLBthCqxB9uV74hYqFZAS6JU65Y9X3aRXaUFmrDigPHrzAEQ+kp5gPRTU/5tmAQXCdXhrcCkiv7WNfj1zopT9NDDXY0HE0cAtxHpJg246XCPiXoRc0LUTrv8heyly2b2BFxPn87R+iVP5apmUw115LZ6SfbaNlZ9YEem1WdktyW1H2ulbSiByuuE3oqR7hm2bYmKs3ucLwaWQLVrsblALaW/3XfcmJLCfnibFYioPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2440.namprd12.prod.outlook.com (2603:10b6:4:b6::39) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 5 Jan
- 2021 14:36:29 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
- 14:36:29 +0000
-Date:   Tue, 5 Jan 2021 10:36:27 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Dave Ertman" <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, <lee.jones@linaro.org>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20210105143627.GT552508@nvidia.com>
-References: <20201218162817.GX552508@nvidia.com>
- <20201218180310.GD5333@sirena.org.uk> <20201218184150.GY552508@nvidia.com>
- <20201218203211.GE5333@sirena.org.uk> <20201218205856.GZ552508@nvidia.com>
- <20201221185140.GD4521@sirena.org.uk> <20210104180831.GD552508@nvidia.com>
- <20210104211930.GI5645@sirena.org.uk> <20210105001341.GL552508@nvidia.com>
- <20210105134256.GA4487@sirena.org.uk>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210105134256.GA4487@sirena.org.uk>
-X-ClientProxiedBy: BL1PR13CA0140.namprd13.prod.outlook.com
- (2603:10b6:208:2bb::25) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Tue, 5 Jan 2021 09:37:54 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609857453; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=4DiNJfGzzRCDF2FL02HtG0SOdr7LDb46DzlmbUJfV6s=; b=Mc79uCTk8J+0zXYJOEpu98hPISZsRm++QulwcBbuRCceBLqVoLJsaYAQw+HFdA9q76CoFzZZ
+ JcDFT2cjBScRSrBuVXJTD5KNcnzqBnk4NUTHa9osQLwqApbUVIHSM27AMqNIbsY0odQX8Mlj
+ 5O8XwCd+j0gXFLRrU7V/N24JVnQ=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5ff47988b73be0303d2da1cf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 14:36:56
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AF37CC433C6; Tue,  5 Jan 2021 14:36:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E3526C433CA;
+        Tue,  5 Jan 2021 14:36:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E3526C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     sumit.semwal@linaro.org, christian.koenig@amd.com, arnd@arndb.de
+Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>,
+        "# 5 . 4+" <stable@vger.kernel.org>
+Subject: [PATCH V2] dmabuf: fix use-after-free of dmabuf's file->f_inode
+Date:   Tue,  5 Jan 2021 20:06:39 +0530
+Message-Id: <1609857399-31549-1-git-send-email-charante@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by BL1PR13CA0140.namprd13.prod.outlook.com (2603:10b6:208:2bb::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.4 via Frontend Transport; Tue, 5 Jan 2021 14:36:29 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kwnRj-002I0M-Hy; Tue, 05 Jan 2021 10:36:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609857397; bh=PAwrKySJQvQFPuf6e10AMprqTOhIvV+daRoILtUq4QM=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=CQa8SH9GIYMJA6nt71T+rpipSFvqRsSJhRmvYTKsGLjtFkpVJpee92z8jmi6+loVJ
-         qGYMM4abqJpYhpnynIZkqmwsl58T86E8dl2ONysMl8uBUsPc0haiUOhErMM40/kWd5
-         X5ScPjNlwA1sjqDAPJ0s61OCH4UtzNl2wXkdiNJQ9BCfRlhQMji6WgCBXOpLWZjR/a
-         bk403GxmonQ/QdEWS6KGmQicXEDL7QRJjthswRZ7dl5d5aBD18b6OJSluqw+3yBqTp
-         KY+fTysxhVoSGKyJ/II7IK7GPpuuDqOOJry7RyPHoSx29JLUegwMPFD31x/QubCQMg
-         7SwK2TAxk1lGQ==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 01:42:56PM +0000, Mark Brown wrote:
-> On Mon, Jan 04, 2021 at 08:13:41PM -0400, Jason Gunthorpe wrote:
-> > On Mon, Jan 04, 2021 at 09:19:30PM +0000, Mark Brown wrote:
-> 
-> > > Like I keep saying the same thing applies to all non-enumerable buses -
-> > > exactly the same considerations exist for all the other buses like I2C
-> > > (including the ACPI naming issue you mention below), and for that matter
-> > > with enumerable buses which can have firmware info.
-> 
-> > And most busses do already have their own bus type. ACPI, I2C, PCI,
-> > etc. It is just a few that have been squished into platform, notably
-> > OF.
-> 
-> You're missing the point there.  I2C is enumerated by firmware in
-> exactly the same way as the platform bus is, it's not discoverable from
-> the hardware (and similarly for a bunch of other buses).  If we were to
-> say that we need separate device types for platform devices enumerated
-> using firmware then by analogy we should do the same for devices on
-> these other buses that happen to be enumerated by firmware.
+It is observed 'use-after-free' on the dmabuf's file->f_inode with the
+race between closing the dmabuf file and reading the dmabuf's debug
+info.
 
-No, I understand how I2C works and I think it is fine as is because
-the enumeration outcome is all standard. You always end up with a
-stable I2C device address (the name) and you always end up with the
-I2C programming API. So it doesn't matter how I2C gets enumerated, it
-is always an I2C device.
+Consider the below scenario where P1 is closing the dma_buf file
+and P2 is reading the dma_buf's debug info in the system:
 
-PCI does this too, pci_device gets crossed over to the DT data, but it
-is still a pci_device.
+P1						P2
+					dma_buf_debug_show()
+dma_buf_put()
+  __fput()
+    file->f_op->release()
+    dput()
+    ....
+      dentry_unlink_inode()
+        iput(dentry->d_inode)
+        (where the inode is freed)
+					mutex_lock(&db_list.lock)
+					read 'dma_buf->file->f_inode'
+					(the same inode is freed by P1)
+					mutex_unlock(&db_list.lock)
+      dentry->d_op->d_release()-->
+        dma_buf_release()
+          .....
+          mutex_lock(&db_list.lock)
+          removes the dmabuf from the list
+          mutex_unlock(&db_list.lock)
 
-I see a big difference between attaching FW data to an existing
-subsystem's HW centric bus (and possibly guiding enumeration of a HW
-bus from FW data) and directly creating struct devices based on FW
-data unconnected to any existing subsystem.
+In the above scenario, when dma_buf_put() is called on a dma_buf, it
+first frees the dma_buf's file->f_inode(=dentry->d_inode) and then
+removes this dma_buf from the system db_list. In between P2 traversing
+the db_list tries to access this dma_buf's file->f_inode that was freed
+by P1 which is a use-after-free case.
 
-The latter case is where the enumerating FW should stay on its own
-bus_type because there is no standardized subsystem bus providing an
-API or naming rules, so the FW type should provide those rules
-instead.
+Since, __fput() calls f_op->release first and then later calls the
+d_op->d_release, move the dma_buf's db_list removal from d_release() to
+f_op->release(). This ensures that dma_buf's file->f_inode is not
+accessed after it is released.
 
-> > With an actual bus specific virtual function:
-> 
-> >     return dev->bus->gpio_count(dev);
-> 
-> That won't work, you might have a mix of enumeration types for a given
-> bus type in a single system so you'd need to do this per device. 
+Cc: <stable@vger.kernel.org> # 5.4+
+Fixes: 4ab59c3c638c ("dma-buf: Move dma_buf_release() from fops to dentry_ops")
+Acked-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+---
+ V2: Resending with stable tags and Acks
 
-I'm being very general here, probably what we want is a little more
-formal 'fw_type' concept, so a device is on a bus and also has a FW
-attachment which can provide this other data.
+ V1: https://lore.kernel.org/patchwork/patch/1360118/
 
-Jason
+ drivers/dma-buf/dma-buf.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 0eb80c1..a14dcbb 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -76,10 +76,6 @@ static void dma_buf_release(struct dentry *dentry)
+ 
+ 	dmabuf->ops->release(dmabuf);
+ 
+-	mutex_lock(&db_list.lock);
+-	list_del(&dmabuf->list_node);
+-	mutex_unlock(&db_list.lock);
+-
+ 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+ 		dma_resv_fini(dmabuf->resv);
+ 
+@@ -88,6 +84,22 @@ static void dma_buf_release(struct dentry *dentry)
+ 	kfree(dmabuf);
+ }
+ 
++static int dma_buf_file_release(struct inode *inode, struct file *file)
++{
++	struct dma_buf *dmabuf;
++
++	if (!is_dma_buf_file(file))
++		return -EINVAL;
++
++	dmabuf = file->private_data;
++
++	mutex_lock(&db_list.lock);
++	list_del(&dmabuf->list_node);
++	mutex_unlock(&db_list.lock);
++
++	return 0;
++}
++
+ static const struct dentry_operations dma_buf_dentry_ops = {
+ 	.d_dname = dmabuffs_dname,
+ 	.d_release = dma_buf_release,
+@@ -413,6 +425,7 @@ static void dma_buf_show_fdinfo(struct seq_file *m, struct file *file)
+ }
+ 
+ static const struct file_operations dma_buf_fops = {
++	.release	= dma_buf_file_release,
+ 	.mmap		= dma_buf_mmap_internal,
+ 	.llseek		= dma_buf_llseek,
+ 	.poll		= dma_buf_poll,
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
+
