@@ -2,106 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4D62EA75D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B312EA790
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728167AbhAEJ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:29:03 -0500
-Received: from smtprelay0207.hostedemail.com ([216.40.44.207]:57022 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727853AbhAEJ3C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:29:02 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 63E22100E7B46;
-        Tue,  5 Jan 2021 09:28:20 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2689:2691:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3874:4321:5007:7652:8603:10004:10249:10400:10471:10848:11026:11232:11473:11658:11783:11914:12043:12297:12438:12740:12895:13161:13229:13255:13439:13894:14181:14659:14721:21080:21324:21433:21627:21795:21939:30051:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: books34_27150c3274d7
-X-Filterd-Recvd-Size: 3489
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  5 Jan 2021 09:28:19 +0000 (UTC)
-Message-ID: <3ffe616d8c3fb54833bfc4d86cb73427cf6c7add.camel@perches.com>
-Subject: deprecated.rst: deprecated strcpy ? (was: [PATCH] checkpatch: add a
- new check for strcpy/strlcpy uses)
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 05 Jan 2021 01:28:18 -0800
-In-Reply-To: <CABJPP5DQ0Y42z9ej_j06+KaQevT3ztWcwGMkismj4qv5EHvnxA@mail.gmail.com>
-References: <20210105082303.15310-1-dwaipayanray1@gmail.com>
-         <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
-         <CABJPP5DQ0Y42z9ej_j06+KaQevT3ztWcwGMkismj4qv5EHvnxA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1728586AbhAEJb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:31:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49298 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728267AbhAEJ3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:29:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FF49229C9;
+        Tue,  5 Jan 2021 09:28:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609838903;
+        bh=bAm5usxoqqpSRrMl367qmr90fhRaTUQoL6oZ6bDBWRY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hNp5WiofF7jQex14r0WyyVP9rctXBL4J5zdgEJ92thJkQMv82FR9rchWjZXKT0Gp9
+         P0DPSGe+If2Y82ROwW0wPhL/z7UV36UEwak74IlLuTsAmQ1iWRjIiBaq8qxxgVVgfP
+         jIb7LtOwSQHbsl3k/uZG4qCR2aAXj4ruBhSewIXA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 4.19 02/29] fscrypt: add fscrypt_is_nokey_name()
+Date:   Tue,  5 Jan 2021 10:28:48 +0100
+Message-Id: <20210105090818.825725363@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210105090818.518271884@linuxfoundation.org>
+References: <20210105090818.518271884@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-05 at 14:29 +0530, Dwaipayan Ray wrote:
-> On Tue, Jan 5, 2021 at 2:14 PM Joe Perches <joe@perches.com> wrote:
-> > 
-> > On Tue, 2021-01-05 at 13:53 +0530, Dwaipayan Ray wrote:
-> > > strcpy() performs no bounds checking on the destination buffer.
-> > > This could result in linear overflows beyond the end of the buffer.
-> > > 
-> > > strlcpy() reads the entire source buffer first. This read
-> > > may exceed the destination size limit. This can be both inefficient
-> > > and lead to linear read overflows.
-> > > 
-> > > The safe replacement to both of these is to use strscpy() instead.
-> > > Add a new checkpatch warning which alerts the user on finding usage of
-> > > strcpy() or strlcpy().
-> > 
-> > I do not believe that strscpy is preferred over strcpy.
-> > 
-> > When the size of the output buffer is known to be larger
-> > than the input, strcpy is faster.
-> > 
-> > There are about 2k uses of strcpy.
-> > Is there a use where strcpy use actually matters?
-> > I don't know offhand...
-> > 
-> > But I believe compilers do not optimize away the uses of strscpy
-> > to a simple memcpy like they do for strcpy with a const from
-> > 
-> >         strcpy(foo, "bar");
-> > 
-> 
-> Yes the optimization here definitely helps. So in case the programmer
-> knows that the destination buffer is always larger, then strcpy() should be
-> preferred? I think the documentation might have been too strict about
-> strcpy() uses here:
-> 
-> Documentation/process/deprecated.rst:
-> "strcpy() performs no bounds checking on the destination buffer. This
-> could result in linear overflows beyond the end of the buffer, leading to
-> all kinds of misbehaviors. While `CONFIG_FORTIFY_SOURCE=y` and various
-> compiler flags help reduce the risk of using this function, there is
-> no good reason to add new uses of this function. The safe replacement
-> is strscpy(),..."
+From: Eric Biggers <ebiggers@google.com>
 
-Kees/Jonathan:
+commit 159e1de201b6fca10bfec50405a3b53a561096a8 upstream.
 
-Perhaps this text is overly restrictive.
+It's possible to create a duplicate filename in an encrypted directory
+by creating a file concurrently with adding the encryption key.
 
-There are ~2k uses of strcpy in the kernel.
+Specifically, sys_open(O_CREAT) (or sys_mkdir(), sys_mknod(), or
+sys_symlink()) can lookup the target filename while the directory's
+encryption key hasn't been added yet, resulting in a negative no-key
+dentry.  The VFS then calls ->create() (or ->mkdir(), ->mknod(), or
+->symlink()) because the dentry is negative.  Normally, ->create() would
+return -ENOKEY due to the directory's key being unavailable.  However,
+if the key was added between the dentry lookup and ->create(), then the
+filesystem will go ahead and try to create the file.
 
-About half of these are where the buffer length of foo is known and the
-use is 'strcpy(foo, "bar")' so the compiler converts/optimizes away the
-strcpy to memcpy and may not even put "bar" into the string table.
+If the target filename happens to already exist as a normal name (not a
+no-key name), a duplicate filename may be added to the directory.
 
-I believe strscpy uses do not have this optimization.
+In order to fix this, we need to fix the filesystems to prevent
+->create(), ->mkdir(), ->mknod(), and ->symlink() on no-key names.
+(->rename() and ->link() need it too, but those are already handled
+correctly by fscrypt_prepare_rename() and fscrypt_prepare_link().)
 
-Is there a case where the runtime costs actually matters?
-I expect so.
+In preparation for this, add a helper function fscrypt_is_nokey_name()
+that filesystems can use to do this check.  Use this helper function for
+the existing checks that fs/crypto/ does for rename and link.
+
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201118075609.120337-2-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/crypto/hooks.c               |   10 +++++-----
+ include/linux/fscrypt_notsupp.h |    5 +++++
+ include/linux/fscrypt_supp.h    |   29 +++++++++++++++++++++++++++++
+ 3 files changed, 39 insertions(+), 5 deletions(-)
+
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -58,8 +58,8 @@ int __fscrypt_prepare_link(struct inode
+ 	if (err)
+ 		return err;
+ 
+-	/* ... in case we looked up ciphertext name before key was added */
+-	if (dentry->d_flags & DCACHE_ENCRYPTED_NAME)
++	/* ... in case we looked up no-key name before key was added */
++	if (fscrypt_is_nokey_name(dentry))
+ 		return -ENOKEY;
+ 
+ 	if (!fscrypt_has_permitted_context(dir, inode))
+@@ -83,9 +83,9 @@ int __fscrypt_prepare_rename(struct inod
+ 	if (err)
+ 		return err;
+ 
+-	/* ... in case we looked up ciphertext name(s) before key was added */
+-	if ((old_dentry->d_flags | new_dentry->d_flags) &
+-	    DCACHE_ENCRYPTED_NAME)
++	/* ... in case we looked up no-key name(s) before key was added */
++	if (fscrypt_is_nokey_name(old_dentry) ||
++	    fscrypt_is_nokey_name(new_dentry))
+ 		return -ENOKEY;
+ 
+ 	if (old_dir != new_dir) {
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -24,6 +24,11 @@ static inline bool fscrypt_dummy_context
+ 	return false;
+ }
+ 
++static inline bool fscrypt_is_nokey_name(const struct dentry *dentry)
++{
++	return false;
++}
++
+ /* crypto.c */
+ static inline void fscrypt_enqueue_decrypt_work(struct work_struct *work)
+ {
+--- a/include/linux/fscrypt_supp.h
++++ b/include/linux/fscrypt_supp.h
+@@ -58,6 +58,35 @@ static inline bool fscrypt_dummy_context
+ 		inode->i_sb->s_cop->dummy_context(inode);
+ }
+ 
++/**
++ * fscrypt_is_nokey_name() - test whether a dentry is a no-key name
++ * @dentry: the dentry to check
++ *
++ * This returns true if the dentry is a no-key dentry.  A no-key dentry is a
++ * dentry that was created in an encrypted directory that hasn't had its
++ * encryption key added yet.  Such dentries may be either positive or negative.
++ *
++ * When a filesystem is asked to create a new filename in an encrypted directory
++ * and the new filename's dentry is a no-key dentry, it must fail the operation
++ * with ENOKEY.  This includes ->create(), ->mkdir(), ->mknod(), ->symlink(),
++ * ->rename(), and ->link().  (However, ->rename() and ->link() are already
++ * handled by fscrypt_prepare_rename() and fscrypt_prepare_link().)
++ *
++ * This is necessary because creating a filename requires the directory's
++ * encryption key, but just checking for the key on the directory inode during
++ * the final filesystem operation doesn't guarantee that the key was available
++ * during the preceding dentry lookup.  And the key must have already been
++ * available during the dentry lookup in order for it to have been checked
++ * whether the filename already exists in the directory and for the new file's
++ * dentry not to be invalidated due to it incorrectly having the no-key flag.
++ *
++ * Return: %true if the dentry is a no-key name
++ */
++static inline bool fscrypt_is_nokey_name(const struct dentry *dentry)
++{
++	return dentry->d_flags & DCACHE_ENCRYPTED_NAME;
++}
++
+ /* crypto.c */
+ extern void fscrypt_enqueue_decrypt_work(struct work_struct *);
+ extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
 
 
