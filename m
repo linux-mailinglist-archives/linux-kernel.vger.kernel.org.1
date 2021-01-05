@@ -2,154 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672FF2EA36D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7AD2EA362
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbhAECmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:42:06 -0500
-Received: from mga18.intel.com ([134.134.136.126]:18699 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728049AbhAECmF (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:42:05 -0500
-IronPort-SDR: Dpx/lcJzUpNBeVAJJziSTVuzSU8Xt0S68y7FXe4p8AUvC0x+17Wb2Bsh+eRLkzmYgFBglT4hL1
- 4EPS0FVnkuWw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="164742610"
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="164742610"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 18:40:19 -0800
-IronPort-SDR: 6ZdMQWZb2adVbzi/neRDymoOID2mVcchdMfi48V/Pito9Bl+sKWPN3KGSbPDQ0hDgwdJHPVzxo
- KM+nXjkDsL0A==
-X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="350181166"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 18:40:13 -0800
-Subject: Re: [PATCH v3] perf stat: Fix wrong skipping for per-die aggregation
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com, ying.huang@intel.com
-References: <20201225010409.29441-1-yao.jin@linux.intel.com>
- <20210104101504.GA878104@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <8de398fa-61c6-368c-33fc-a3fbfd25d881@linux.intel.com>
-Date:   Tue, 5 Jan 2021 10:40:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727584AbhAECfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:35:38 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10544 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726124AbhAECfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 21:35:38 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D8xQ161GfzMDtm;
+        Tue,  5 Jan 2021 10:33:45 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 5 Jan 2021 10:34:45 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH] net: qrtr: fix null-ptr-deref in qrtr_ns_remove
+Date:   Tue, 5 Jan 2021 10:40:51 +0800
+Message-ID: <20210105024051.150451-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210104101504.GA878104@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+A null-ptr-deref bug is reported by Hulk Robot like this:
+--------------
+KASAN: null-ptr-deref in range [0x0000000000000128-0x000000000000012f]
+Call Trace:
+qrtr_ns_remove+0x22/0x40 [ns]
+qrtr_proto_fini+0xa/0x31 [qrtr]
+__x64_sys_delete_module+0x337/0x4e0
+do_syscall_64+0x34/0x80
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x468ded
+--------------
 
-On 1/4/2021 6:15 PM, Jiri Olsa wrote:
-> On Fri, Dec 25, 2020 at 09:04:09AM +0800, Jin Yao wrote:
-> 
-> SNIP
-> 
->>   void update_stats(struct stats *stats, u64 val)
->> @@ -275,16 +276,39 @@ void evlist__save_aggr_prev_raw_counts(struct evlist *evlist)
->>   
->>   static void zero_per_pkg(struct evsel *counter)
->>   {
->> -	if (counter->per_pkg_mask)
->> -		memset(counter->per_pkg_mask, 0, cpu__max_cpu());
->> +	struct hashmap_entry *entry;
->> +	size_t bkt;
->> +
->> +	if (counter->per_pkg_mask) {
->> +		hashmap__for_each_entry(counter->per_pkg_mask, entry, bkt) {
->> +			bool *used = (bool *)entry->value;
->> +
->> +			*used = false;
->> +		}
->> +	}
->> +}
->> +
->> +static size_t id_hash(const void *key, void *ctx __maybe_unused)
->> +{
->> +	int socket = (int64_t)key >> 32;
->> +
->> +	return socket;
->> +}
->> +
->> +static bool id_equal(const void *key1, const void *key2,
->> +		     void *ctx __maybe_unused)
->> +{
->> +	return (int64_t)key1 == (int64_t)key2;
->>   }
-> 
-> please use more descriptive names, pkg_id_hash/pkg_id_equal or such
-> 
+When qrtr_ns_init fails in qrtr_proto_init, qrtr_ns_remove which would
+be called later on would raise a null-ptr-deref because qrtr_ns.workqueue
+has been destroyed.
 
-Corrected in v4.
+Fix it by making qrtr_ns_init have a return value and adding a check in
+qrtr_proto_init.
 
->>   
->>   static int check_per_pkg(struct evsel *counter,
->>   			 struct perf_counts_values *vals, int cpu, bool *skip)
->>   {
->> -	unsigned long *mask = counter->per_pkg_mask;
->> +	struct hashmap *mask = counter->per_pkg_mask;
->>   	struct perf_cpu_map *cpus = evsel__cpus(counter);
->> -	int s;
->> +	int s, d, ret;
->> +	uint64_t key;
->> +	bool *used;
->>   
->>   	*skip = false;
->>   
->> @@ -295,7 +319,7 @@ static int check_per_pkg(struct evsel *counter,
->>   		return 0;
->>   
->>   	if (!mask) {
->> -		mask = zalloc(cpu__max_cpu());
->> +		mask = hashmap__new(id_hash, id_equal, NULL);
->>   		if (!mask)
->>   			return -ENOMEM;
->>   
->> @@ -317,7 +341,32 @@ static int check_per_pkg(struct evsel *counter,
->>   	if (s < 0)
->>   		return -1;
->>   
->> -	*skip = test_and_set_bit(s, mask) == 1;
->> +	/*
->> +	 * On multi-die system, 0 < die_id < 256. On no-die system, die_id = 0.
->> +	 * We use hashmap(socket, die) to check the used socket+die pair.
->> +	 */
->> +	d = cpu_map__get_die(cpus, cpu, NULL).die;
->> +	if (d < 0)
->> +		return -1;
->> +
->> +	key = (uint64_t)s << 32 | (d & 0xff);
->> +	if (hashmap__find(mask, (void *)key, (void **)&used)) {
->> +		if (*used)
->> +			*skip = true;
->> +		*used = true;
->> +	} else {
->> +		used = zalloc(sizeof(*used));
->> +		if (!used)
->> +			return -1;
-> 
-> hum, what's the point of having extra bool value? once the
-> item is in the hashtab, we have the answer
-> 
-> I think you can add item to hashtab with '1' value and get
-> rid of that bool allocation
-> 
-> zero_per_pkg will be just removing all items from hashtab
-> 
-> jirka
-> 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ net/qrtr/ns.c   |  7 ++++---
+ net/qrtr/qrtr.c | 14 +++++++++++---
+ net/qrtr/qrtr.h |  2 +-
+ 3 files changed, 16 insertions(+), 7 deletions(-)
 
-Thanks for the suggestion! Yes, we don't need the bool value allocation here, it's unnecessary.
+diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
+index 56aaf8cb6..8d00dfe81 100644
+--- a/net/qrtr/ns.c
++++ b/net/qrtr/ns.c
+@@ -755,7 +755,7 @@ static void qrtr_ns_data_ready(struct sock *sk)
+ 	queue_work(qrtr_ns.workqueue, &qrtr_ns.work);
+ }
+ 
+-void qrtr_ns_init(void)
++int qrtr_ns_init(void)
+ {
+ 	struct sockaddr_qrtr sq;
+ 	int ret;
+@@ -766,7 +766,7 @@ void qrtr_ns_init(void)
+ 	ret = sock_create_kern(&init_net, AF_QIPCRTR, SOCK_DGRAM,
+ 			       PF_QIPCRTR, &qrtr_ns.sock);
+ 	if (ret < 0)
+-		return;
++		return ret;
+ 
+ 	ret = kernel_getsockname(qrtr_ns.sock, (struct sockaddr *)&sq);
+ 	if (ret < 0) {
+@@ -797,12 +797,13 @@ void qrtr_ns_init(void)
+ 	if (ret < 0)
+ 		goto err_wq;
+ 
+-	return;
++	return 0;
+ 
+ err_wq:
+ 	destroy_workqueue(qrtr_ns.workqueue);
+ err_sock:
+ 	sock_release(qrtr_ns.sock);
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(qrtr_ns_init);
+ 
+diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
+index f4ab3ca6d..95533e451 100644
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -1288,12 +1288,20 @@ static int __init qrtr_proto_init(void)
+ 
+ 	rc = sock_register(&qrtr_family);
+ 	if (rc) {
+-		proto_unregister(&qrtr_proto);
+-		return rc;
++		goto err_proto;
+ 	}
+ 
+-	qrtr_ns_init();
++	rc = qrtr_ns_init();
++	if (rc) {
++		goto err_sock;
++	}
+ 
++	return 0;
++
++err_sock:
++	sock_unregister(qrtr_family.family);
++err_proto:
++	proto_unregister(&qrtr_proto);
+ 	return rc;
+ }
+ postcore_initcall(qrtr_proto_init);
+diff --git a/net/qrtr/qrtr.h b/net/qrtr/qrtr.h
+index dc2b67f17..3f2d28696 100644
+--- a/net/qrtr/qrtr.h
++++ b/net/qrtr/qrtr.h
+@@ -29,7 +29,7 @@ void qrtr_endpoint_unregister(struct qrtr_endpoint *ep);
+ 
+ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len);
+ 
+-void qrtr_ns_init(void);
++int qrtr_ns_init(void);
+ 
+ void qrtr_ns_remove(void);
+ 
+-- 
+2.23.0
 
-I just post the v4. Please help to take a look.
-
-Thanks
-Jin Yao
