@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BA22EB485
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C21362EB488
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731390AbhAEUvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 15:51:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731367AbhAEUvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 15:51:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A769022262;
-        Tue,  5 Jan 2021 20:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609879824;
-        bh=9VOt6YRWo5PlMhQR000IAJMTQb6o1yGHq5eamT/XZsQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CvuwCYNlPSY/BnoaO4a56xQcVYGwfv5PPRHOIjqdQgNdWSLrSTPnnuQQjxKsQaU7R
-         cijxRJHrbfekvWUDkpL/BqaFrkzz6fa9yU4spz+hbBkjhuAc01hUbd/Qq1yOwPB3hx
-         O5U1yF++D2JLp+04S8vs0TIrwiXd/MgZzfEAJzvGeYdzsRPkFfUnExmrXWNMuE89uz
-         RD4MSQZLyTnqDqCBSJ1KUjm0kUfxY93IqLnBZui5nOWpfLqSbW9KbLWkKE/vOh38Zv
-         ktvWjep89zz0s1xQGxBCf2xJIUG5BtWxeAcNfu80QZL/xiYM3VCtdvpDyaqBX3Y0KV
-         K8Dwv1WgRlKfw==
-Date:   Tue, 5 Jan 2021 21:50:17 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
-        Ray Jui <ray.jui@broadcom.com>,
-        Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lori Hikichi <lori.hikichi@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-Message-ID: <20210105205017.GA1824@ninjato>
-References: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
- <1605316659-3422-1-git-send-email-dphadke@linux.microsoft.com>
- <CAHO=5PFzd9KTR93ntUvAX5dqzxqJQpVXEirs5uoXdvcnZ7hL4g@mail.gmail.com>
- <20201202143505.GA874@kunai>
- <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
- <CAHO=5PE=BRADou_Hn8qP3mgWiSwDezPCxDjuqa0v1MxMOJRyHQ@mail.gmail.com>
- <35541129-df37-fa6f-5dae-34eb34a78731@broadcom.com>
- <CAHO=5PFCsWQb7nv5Sg00DAX6XXTfV7V8BH-ithK-Scq8eFFVbA@mail.gmail.com>
- <20210105162145.GG1842@ninjato>
- <b5e38606-6ca8-b52c-65cd-5f24411661d0@gmail.com>
+        id S1726759AbhAEU6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 15:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbhAEU6U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 15:58:20 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0B7C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 12:57:39 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id x13so1025402oto.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 12:57:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UDLH/Hs5HBNndLsDlkHeSD0b4Pq+bTJ4cNLSTBbqIr4=;
+        b=UJW82L42kHNIfvja9bx4ErmYwAHUE2fbaPv6+W2A5aoWZGaz66Siq/DT3y63Ppsxt5
+         35nW4Jwrqy9Ye9/mr4R1KzFUvFIT2hagniWUxtnzIRT6DfO9IA/OOeA2RCpGMs1P82Xb
+         SnPB11Wh53aoOoubSzbRKoUzlqm5GiYUcHfUNaMaJtchbcvA2qQfCv77qysRW+J/Q7fv
+         EJys4Rj7cKH0L9XUHOwz13/+RSPGu9R0PelXHdC+D7XPfP61yTgL+jcyUOlbWvfn1zEp
+         Ja7O0nB6seC5i7Na6CMZagJtffg7pQOe89ntfDOvEG8OW/RCD+2Na8+CKJNGrivaibJV
+         J1IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UDLH/Hs5HBNndLsDlkHeSD0b4Pq+bTJ4cNLSTBbqIr4=;
+        b=tvGHyi7zsT5Hgwdg4kq3ZZQjbO+BlPyduXof6M+enTdbZBj0bULqXJ9Tgg+fJNg3Yd
+         xPug4grGCqbbM7hotAxXaKP8VIwGzKqXGBvzvVDDY/uBpUeyKwM5h+rT8b1J4cSjUBvM
+         RmILZ4N3qAVJysdB0NtZX2jUSSshZJ1zeENNYfcYue2GDtmaz+DByqlVYPikyGIA8gVs
+         I1KSQBEZ1qaCS45BfhugMbOXWDyV2F7O0Ir8H9YE4nP3RK7Cf/T0nodLacOSyzQDq9w1
+         aBvZkvjHpIA36Hlzj4rYo63x+Fa3esghC2fL5Y+fjpBvS3gS8YGWpcR2HgSs9Ns+1jnM
+         6PtA==
+X-Gm-Message-State: AOAM5315Kp5zqrXU8m6+WDOpXXS7vjgB3QyDnIaveC58iMtIXxUCT/dL
+        eW8RcvQsR7nz6P76X7wiWUzsDBCSyfc=
+X-Google-Smtp-Source: ABdhPJwrxjTr68Y9vgu7Qz5WxDgXWPbz9+vJdK0pbB/3RkSSnnYRx4WtgIPBlMW6hwh8sw6UjvemXg==
+X-Received: by 2002:a9d:67da:: with SMTP id c26mr1013641otn.321.1609880259287;
+        Tue, 05 Jan 2021 12:57:39 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c18sm132084oib.31.2021.01.05.12.57.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 05 Jan 2021 12:57:38 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 5 Jan 2021 12:57:37 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.11-rc2
+Message-ID: <20210105205737.GB230525@roeck-us.net>
+References: <CAHk-=whS+rzNMSsU6vRoLMzrm0JPN-OVg+BxhybMet3NpqpR-Q@mail.gmail.com>
+ <20210105184653.GA88051@roeck-us.net>
+ <CAHk-=why7Sc=bypL-rbXevtoe8GjSv2ifSH1pVZn-ziAGKR+_A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qMm9M+Fa2AknHoGS"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b5e38606-6ca8-b52c-65cd-5f24411661d0@gmail.com>
+In-Reply-To: <CAHk-=why7Sc=bypL-rbXevtoe8GjSv2ifSH1pVZn-ziAGKR+_A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 05, 2021 at 11:55:20AM -0800, Linus Torvalds wrote:
+> On Tue, Jan 5, 2021 at 10:46 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > Problems are as already reported against v5.11-rc1.
+> 
+> Yes. Thanks for keeping on top of this, I'm expecting to get the fixes
+> as people get back from vacations.
+> 
 
---qMm9M+Fa2AknHoGS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+NP. The test are running automatically anyway, so I figured I might
+as well report the results. Does that make sense, or is it just noise ?
 
-
-> We are working on it, but as you may expect with any large corporations
-> it is "complicated".
-
-I understand. Good luck, then!
-
-
---qMm9M+Fa2AknHoGS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/00QUACgkQFA3kzBSg
-KbbD5BAAiFecmQS+ZDRmbLaweW+ydzmXk+B01i4MZeiXZLT5PTzaGVAlpUSXMKOQ
-Oretk1Dke+1bwJxVRH6WHZlk1AuZyLA/TVMieq7VGXksTQqrn8SNV6H5A57woElb
-qw9a+C/cadFLPP71R3Q4o9XkTTIEiwCaeQJXtXcx+4jDSj1IynGphDUl7mw4DaPP
-L3+hKGCoP0Bqpjsu7pFw//CR/3z/uQd+rSqhz+sLyD3kyJgCfagnGwivQeN+wINK
-xnRd4cfHkTHnd6lCFI2VCI7dvB4bv4keIiifu3bddQyyP8rQb/K9gVw1hCHmxQ7O
-+j+TizPriPV4SKcrfYIh85OZSxtFGZz+/E004ozNlqnLyTnW4tpfkkjthZNj4jN1
-BOHFVM7DC7iaMeVu347y8SyljbQu5YrSi2t1pXusSh1SCj9XhzzAEUKyeGgcDSwS
-5EW+SGFafZKZDDvpmg4s0OT2agdTNyXFKTj3PdLGCxhZG7zTlM50Gw+ANz8ZicJ5
-A+37jKTO0cUxSoQA5DkSQOtwnrpOsTi5xsYokTexeW3Wgn3AJVCpQRUFNr6XfMPr
-bdR98aQ1KweTHQ+FRTuiB/pz/QiC+rKqFVQbiyc5nWdn445ToQe0gcZ6lYawLsBc
-ncMxG34p4zlT0FQo8e5m36wAeb0VqXOSkM2MMTm5r/AHOfxwIo0=
-=dsvX
------END PGP SIGNATURE-----
-
---qMm9M+Fa2AknHoGS--
+Thanks,
+Guenter
