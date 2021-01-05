@@ -2,165 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEF82EA5F9
+	by mail.lfdr.de (Postfix) with ESMTP id 296E82EA5F8
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbhAEH3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 02:29:41 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:60763 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbhAEH3l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 02:29:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609831757; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=rlMezvFGRyW9K07G6YKtgfUDZelNds7a4+4Moz15juI=;
- b=uJ+DnDPYHnZbJXhLlq2t/1hLviCffw3wQ/oT9mbi/uNcPZLp354royDPC0m3lkbXWJZ7k4w9
- TdwpH0bkuzn6X89bOLtbl7cuXmg/JjlBomULlM5XRPfO8OWYXgUt7536mB1X/YopFdmGQu9Y
- yXJv36LF8IGrvXfCPefBGfKl6cg=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5ff4153100a8b472193ad22a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 07:28:49
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 92019C43469; Tue,  5 Jan 2021 07:28:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2E8DEC433C6;
-        Tue,  5 Jan 2021 07:28:47 +0000 (UTC)
+        id S1725868AbhAEH3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 02:29:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60630 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725710AbhAEH3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 02:29:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609831732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g9zfEk0l26Pj9jVk+ZnFzhiYCe3O/uNUfabTjYpZ0pI=;
+        b=O8XhB7eIBzACYLM2Dgoz+gj1TLmBC4qIJjlMV+xyHgp1HhKl+ArLNtjOB3rErPFOq47yZz
+        ipKQZ6/N3rDpPkphSxOSFshWB9urjTn49ipzHnrErvl3uvWt3AC8lxAgIV+KuAQp51tCpG
+        toTTdMnp6JqXhDyFBb1oqI7Ku0YFotg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 35D5FAA35;
+        Tue,  5 Jan 2021 07:28:52 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 08:28:51 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, Hui Su <sh_def@163.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_alloc: remove the static for local variable
+ node_order
+Message-ID: <20210105072851.GO13207@dhcp22.suse.cz>
+References: <20201230114014.GA1934427@ubuntu-A520I-AC>
+ <20201230124233.GE28221@casper.infradead.org>
+ <20210104152357.d56d10e0443bae984a174f18@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Jan 2021 15:28:47 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ziqi Chen <ziqichen@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        rnayak@codeaurora.org, vinholikatti@gmail.com,
-        jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, kwmad.kim@samsung.com,
-        stanley.chu@mediatek.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
- violation
-In-Reply-To: <b82dd5f1-179c-6834-9d8f-88005b74ce51@intel.com>
-References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
- <e8980753-fa48-7862-e5ce-0d756d5d97a6@intel.com>
- <X/NkktFnWI48XNcp@builder.lan>
- <b82dd5f1-179c-6834-9d8f-88005b74ce51@intel.com>
-Message-ID: <ff2c3c4379cb8bc41580d5615b01f86a@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104152357.d56d10e0443bae984a174f18@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-05 15:16, Adrian Hunter wrote:
-> On 4/01/21 8:55 pm, Bjorn Andersson wrote:
->> On Mon 04 Jan 03:15 CST 2021, Adrian Hunter wrote:
->> 
->>> On 22/12/20 3:49 pm, Ziqi Chen wrote:
->>>> As per specs, e.g, JESD220E chapter 7.2, while powering
->>>> off/on the ufs device, RST_N signal and REF_CLK signal
->>>> should be between VSS(Ground) and VCCQ/VCCQ2.
->>>> 
->>>> To flexibly control device reset line, refactor the function
->>>> ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
->>>> vops_device_reset(sturct ufs_hba *hba, bool asserted). The
->>>> new parameter "bool asserted" is used to separate device reset
->>>> line pulling down from pulling up.
->>> 
->>> This patch assumes the power is controlled by voltage regulators, but 
->>> for us
->>> it is controlled by firmware (ACPI), so it is not correct to change 
->>> RST_n
->>> for all host controllers as you are doing.
->>> 
->>> Also we might need to use a firmware interface for device reset, in 
->>> which
->>> case the 'asserted' value doe not make sense.
->>> 
->> 
->> Are you saying that the entire flip-flop-the-reset is a single 
->> firmware
->> operation in your case?
+On Mon 04-01-21 15:23:57, Andrew Morton wrote:
+> On Wed, 30 Dec 2020 12:42:33 +0000 Matthew Wilcox <willy@infradead.org> wrote:
 > 
-> Yes
+> > On Wed, Dec 30, 2020 at 07:40:14PM +0800, Hui Su wrote:
+> > > local variable node_order do not need the static here.
+> > 
+> > It bloody well does.  It can be up to 2^10 entries on x86 (and larger
+> > on others) That's 4kB which you've now moved onto the stack.
 > 
->>                         If you look at the Mediatek driver, the
->> implementation of ufs_mtk_device_reset_ctrl() is a jump to firmware.
->> 
->> 
->> But perhaps "asserted" isn't the appropriate English word for saying
->> "the reset is in the resetting state"?
->> 
->> I just wanted to avoid the use of "high"/"lo" as if you look at the
->> Mediatek code they pass the expected line-level to the firmware, while
->> in the Qualcomm code we pass the logical state to the GPIO code which 
->> is
->> setup up as "active low" and thereby flip the meaning before hitting 
->> the
->> pad.
->> 
->>> Can we leave the device reset callback alone, and instead introduce a 
->>> new
->>> variant operation for setting RST_n to match voltage regulator power 
->>> changes?
->> 
->> Wouldn't this new function just have to look like the proposed 
->> patches?
->> In which case for existing platforms we'd have both?
->> 
->> How would you implement this, or would you simply skip implementing
->> this?
-> 
-> Functionally, doing a device reset is not the same as adjusting signal
-> levels to meet power up/off ramp requirements.  However, the issue is 
-> that
-> we do not use regulators, so the power is not necessarily being changed 
-> at
-> those points, and we definitely do not want to reset instead of 
-> entering
-> DeepSleep for example.
-> 
-> Off the top of my head, I imagine something like a callback called
-> ufshcd_vops_prepare_power_ramp(hba, bool on) which is called only if
-> hba->vreg_info->vcc is not NULL.
+> That being said, could we kmalloc the scratch area in
+> __build_all_zonelists()?  And maybe remove that static spinlock?
 
-Hi Adrian,
+I am not sure we can (e.g. early init code) but even if we could, what
+would be an advantage. This code is called very seldom with a very
+shallow stacks so using the stack allocation sounds like the easiest
+thing to do.
 
-I don't see you have the vops device_reset() implemented anywhere in
-current code base, how is this change impacting you? Do I miss anything
-or are you planning to push a change which implements device_reset() 
-soon?
+> (what blocks node and cpu hotplug in there??)
 
-Thanks,
-Can Guo.
+Memory hotplug is excluded by the caller when it matters (e.g. no
+locking for the early init).
+-- 
+Michal Hocko
+SUSE Labs
