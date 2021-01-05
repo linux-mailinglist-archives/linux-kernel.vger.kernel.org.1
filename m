@@ -2,80 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF892EB3E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317812EB3D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731181AbhAEUC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 15:02:57 -0500
-Received: from mga04.intel.com ([192.55.52.120]:12058 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728507AbhAEUC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 15:02:56 -0500
-IronPort-SDR: aQQfpjY8YpwJcHR83f1m2l9bdwaQLem2SeuW5zIJqIc+f3LQt8lZmPWIVk/kvNK1yuh1482DkC
- CJIzLn8h1YAA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="174594277"
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="174594277"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 11:58:36 -0800
-IronPort-SDR: wGdXAXJk25Z+0PBxIT6JblQkQDyAvR368ScmBTC7LdNY6wn5ze9kKiFHj1JQ8MAnFWhJtZbaKa
- vGvkBKHj3uGA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="421901296"
-Received: from ssp-iclu-cdi187.jf.intel.com ([10.54.55.67])
-  by orsmga001.jf.intel.com with ESMTP; 05 Jan 2021 11:58:36 -0800
-From:   kan.liang@linux.intel.com
-To:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org
-Cc:     jolsa@redhat.com, namhyung@kernel.org, eranian@google.com,
-        ak@linux.intel.com, mark.rutland@arm.com, will@kernel.org,
-        mpe@ellerman.id.au
-Subject: [PATCH V4 6/6] perf test: Add test case for PERF_SAMPLE_CODE_PAGE_SIZE
-Date:   Tue,  5 Jan 2021 11:57:52 -0800
-Message-Id: <20210105195752.43489-7-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210105195752.43489-1-kan.liang@linux.intel.com>
-References: <20210105195752.43489-1-kan.liang@linux.intel.com>
+        id S1731047AbhAEUAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 15:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728383AbhAEUAW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 15:00:22 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395B7C061793;
+        Tue,  5 Jan 2021 11:59:42 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id l11so1395884lfg.0;
+        Tue, 05 Jan 2021 11:59:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=w3y172ugq1A8+DfHjAatLK3oOwXsMQTLgHeUXaHnUCU=;
+        b=tBCWlgeIGyCHy0ayfKSb2hKeKiEoFzcgiAtzEEfHQ70m4TqSwGsZqX3Xnx4VJJnvbt
+         n0OP+1QygM+MIfVv5A7Ue/siY9qUR3JrwvKGHP2W3QTyiHhYMLJ6zdE5Ged8pj1n+RjK
+         Bb3lYAmgD2urDHD+97GcmaR9/cYTYUc3lvg36iKQWZkukTkf+xsDRudzvwcq2WaBpdlE
+         x0mE68kMXoFvZrIZWNkF8AnSu3p+LzNJVWTcYgez90NbFkWXHh7/NpKY2fPkuOEA7ZKB
+         w1aIj7VtjxtrBSQz6IaOTRs86szJNL8Gutp0tvolPIaAjingl3R6BlglT66Kk2USW+JA
+         gNew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=w3y172ugq1A8+DfHjAatLK3oOwXsMQTLgHeUXaHnUCU=;
+        b=Uf/I3Ff5O/z44dopGdFH8VxMEy+ps1lg2RbF8K2iK1xaV9636T3q/i+iYVyUz8Zyni
+         MsWVVGYV317Br2hWF051LgKpCrQQHDELvspCXtbGdThQCYNy+XtsQDRrPIJHCE5g2CUn
+         EagliKp6DMlD8opHoL7k/2bqsP9vcJr1BCDiroubtkJJaVmWaBeRsHN0Jm3ieCOWOift
+         6nSBgguqmLI1KVE3C4wzsqu/PCVOGNE41U6sbkHn1ZVoa1V25290yMCYinIrSgxKAUHF
+         zqz0xqumSuZ+BLm4+C5wp2VZPA+3fhGmqSIl5xmiwImFBlPW7nSMEWmyg0JG3x92wW04
+         LYaQ==
+X-Gm-Message-State: AOAM531POKnTvTZAfrh/y7+Go/Vz1dUBRj/f9Vi+j6ruoHUjl8lYn95s
+        mLb00hDHWBa72lE/jSkb+1QGupnzOYrpw4F6szU=
+X-Google-Smtp-Source: ABdhPJxefm71gCAP6d5oS17blFAwFnEd9spoEWiCV79bTaAMdk7JG8QCTPTs9zQB67DoNESWvQ4nEkOaTe/eEP/zqxs=
+X-Received: by 2002:a2e:8156:: with SMTP id t22mr509678ljg.263.1609876780665;
+ Tue, 05 Jan 2021 11:59:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210103035540.23886-1-tiny.windzz@gmail.com> <CAGTfZH37=e4RgdR4xg-3s9-pRjqunHi2jfPQqQgVWkxW94GwOA@mail.gmail.com>
+In-Reply-To: <CAGTfZH37=e4RgdR4xg-3s9-pRjqunHi2jfPQqQgVWkxW94GwOA@mail.gmail.com>
+Reply-To: cwchoi00@gmail.com
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Date:   Wed, 6 Jan 2021 04:59:04 +0900
+Message-ID: <CAGTfZH0kg=-MLrvEb+oHkaAuS3mV+o+Oia=wUCf=n2v7s1oXMg@mail.gmail.com>
+Subject: Re: [PATCH 28/31] PM / devfreq: imx8m-ddrc: convert to use
+ devm_pm_opp_* API
+To:     Yangtao Li <tiny.windzz@gmail.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>, yuq825@gmail.com,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, robdclark@gmail.com,
+        sean@poorly.run, Rob Herring <robh@kernel.org>,
+        tomeu.vizoso@collabora.com, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        mchehab@kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        adrian.hunter@intel.com, Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, jcrouse@codeaurora.org,
+        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
+        marijn.suijten@somainline.org, gustavoars@kernel.org,
+        emil.velikov@collabora.com, Jonathan Marek <jonathan@marek.ca>,
+        akhilpo@codeaurora.org, smasetty@codeaurora.org,
+        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, ddavenport@chromium.org,
+        jsanka@codeaurora.org, rnayak@codeaurora.org,
+        tongtiangen@huawei.com, miaoqinglang@huawei.com,
+        khsieh@codeaurora.org, abhinavk@codeaurora.org,
+        chandanu@codeaurora.org, Guenter Roeck <groeck@chromium.org>,
+        varar@codeaurora.org, Matthias Kaehlcke <mka@chromium.org>,
+        harigovi@codeaurora.org, rikard.falkeborn@gmail.com,
+        natechancellor@gmail.com, Georgi Djakov <georgi.djakov@linaro.org>,
+        akashast@codeaurora.org, parashar@codeaurora.org,
+        Doug Anderson <dianders@chromium.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-tegra@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lima@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Eranian <eranian@google.com>
+Hi Yangtao,
 
-Extend sample-parsing test cases to support new sample type
-PERF_SAMPLE_CODE_PAGE_SIZE.
+On Tue, Jan 5, 2021 at 1:13 PM Chanwoo Choi <cwchoi00@gmail.com> wrote:
+>
+> On Sun, Jan 3, 2021 at 12:58 PM Yangtao Li <tiny.windzz@gmail.com> wrote:
+> >
+> > Use devm_pm_opp_* API to simplify code.
+> >
+> > Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+> > ---
+> >  drivers/devfreq/imx8m-ddrc.c | 15 ++-------------
+> >  1 file changed, 2 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
+> > index bc82d3653bff..9383d6e5538b 100644
+> > --- a/drivers/devfreq/imx8m-ddrc.c
+> > +++ b/drivers/devfreq/imx8m-ddrc.c
+> > @@ -370,11 +370,6 @@ static int imx8m_ddrc_check_opps(struct device *dev)
+> >         return 0;
+> >  }
+> >
+> > -static void imx8m_ddrc_exit(struct device *dev)
+> > -{
+> > -       dev_pm_opp_of_remove_table(dev);
+> > -}
+> > -
+> >  static int imx8m_ddrc_probe(struct platform_device *pdev)
+> >  {
+> >         struct device *dev = &pdev->dev;
+> > @@ -419,7 +414,7 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
+> >                 return ret;
+> >         }
+> >
+> > -       ret = dev_pm_opp_of_add_table(dev);
+> > +       ret = devm_pm_opp_of_add_table(dev);
+> >         if (ret < 0) {
+> >                 dev_err(dev, "failed to get OPP table\n");
+> >                 return ret;
+> > @@ -427,12 +422,11 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
+> >
+> >         ret = imx8m_ddrc_check_opps(dev);
+> >         if (ret < 0)
+> > -               goto err;
+> > +               return ret;
+> >
+> >         priv->profile.polling_ms = 1000;
+> >         priv->profile.target = imx8m_ddrc_target;
+> >         priv->profile.get_dev_status = imx8m_ddrc_get_dev_status;
+> > -       priv->profile.exit = imx8m_ddrc_exit;
+> >         priv->profile.get_cur_freq = imx8m_ddrc_get_cur_freq;
+> >         priv->profile.initial_freq = clk_get_rate(priv->dram_core);
+> >
+> > @@ -441,13 +435,8 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
+> >         if (IS_ERR(priv->devfreq)) {
+> >                 ret = PTR_ERR(priv->devfreq);
+> >                 dev_err(dev, "failed to add devfreq device: %d\n", ret);
+> > -               goto err;
+> >         }
+> >
+> > -       return 0;
+> > -
+> > -err:
+> > -       dev_pm_opp_of_remove_table(dev);
+> >         return ret;
+>
+> devm_devfreq_add_device() doesn't return any integer value.
+> Even if devm_devfreq_add_device() returns the right devfreq instance,
+> the 'ret' value  is not the return value of  devm_devfreq_add_device().
+>
+> On this patch, 'ret' value of 'return ret' is from imx8m_ddrc_check_opps().
+> Surely, it is well working with this modification. But, it is not code
+> for exception handling.
+> So, we need to remain the following codes:
+>
+>     return 0;
+> err:
+>     return ret;
+>
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Stephane Eranian <eranian@google.com>
----
- tools/perf/tests/sample-parsing.c | 4 ++++
- 1 file changed, 4 insertions(+)
+'err' is not necessary. You better to edit it as following:
 
-diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
-index 2393916f6128..e93d0689a27b 100644
---- a/tools/perf/tests/sample-parsing.c
-+++ b/tools/perf/tests/sample-parsing.c
-@@ -157,6 +157,9 @@ static bool samples_same(const struct perf_sample *s1,
- 	if (type & PERF_SAMPLE_DATA_PAGE_SIZE)
- 		COMP(data_page_size);
- 
-+	if (type & PERF_SAMPLE_CODE_PAGE_SIZE)
-+		COMP(code_page_size);
-+
- 	if (type & PERF_SAMPLE_AUX) {
- 		COMP(aux_sample.size);
- 		if (memcmp(s1->aux_sample.data, s2->aux_sample.data,
-@@ -238,6 +241,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
- 		.phys_addr	= 113,
- 		.cgroup		= 114,
- 		.data_page_size = 115,
-+		.code_page_size = 116,
- 		.aux_sample	= {
- 			.size	= sizeof(aux_data),
- 			.data	= (void *)aux_data,
+if (IS_ERR(priv->devfreq)) {
+    dev_err(dev, "failed to add devfreq device: %d\n", ret);
+    return PTR_ERR(priv->devfreq);
+}
+
+return 0;
+
 -- 
-2.25.1
-
+Best Regards,
+Chanwoo Choi
