@@ -2,116 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0462EB430
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5CD2EB460
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731196AbhAEU3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 15:29:02 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:45788 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730159AbhAEU3C (ORCPT
+        id S1728915AbhAEUm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 15:42:59 -0500
+Received: from mail-m964.mail.126.com ([123.126.96.4]:33022 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726549AbhAEUm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 15:29:02 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AB3FF20B7192;
-        Tue,  5 Jan 2021 12:28:20 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AB3FF20B7192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1609878501;
-        bh=Z58yu87FAyCkZKigXOEa5lJQRbPu2cks7pH+f9r7+iY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=bIoV0+sviH3URNl5bPeuGXrRKqg/xTdkHkUfyoXVkbeSz5jigQyFDc3oNUwXyXBy/
-         giJvBDlS5gRncX+SWCCEBQVeOxCrpEKvjLowLXMyI4Fa7XudQ91Im/eDUQFL4qLVqy
-         QNC1bULairXxMVe3eV1q96uzl9y1I2FHtwrHcIFw=
-Subject: Re: [PATCH v9 5/8] IMA: limit critical data measurement based on a
- label
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20201212180251.9943-1-tusharsu@linux.microsoft.com>
- <20201212180251.9943-6-tusharsu@linux.microsoft.com>
- <56db41c08d625b8143454a2e0aaaef3ea2927442.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <2c1d83b6-e344-28ea-e387-01a0febbe391@linux.microsoft.com>
-Date:   Tue, 5 Jan 2021 12:28:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <56db41c08d625b8143454a2e0aaaef3ea2927442.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 5 Jan 2021 15:42:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=FIq1Qe5otFgwpdD56h
+        HaYrYnAQc9gbVeSMeCcDVMe9I=; b=kOlZRvMkuz1poa7vJvxKXxL4TAmQ6oar1k
+        MgL2hkT+m7fRuYhbSzEZiw7TuxWWhR9t5c+6SU5IqbUyWb32ky4b8gyiAqzLW09P
+        fwmLFNq51E+182Nl3MPcp97Er5Xa8b65JhomRUnf1n8BIvTwx+Z0DTS9usLLUwxv
+        5Pc2g707c=
+Received: from localhost.localdomain (unknown [36.112.86.14])
+        by smtp9 (Coremail) with SMTP id NeRpCgCnwXSXjvRfCvlFQg--.36836S2;
+        Wed, 06 Jan 2021 00:06:48 +0800 (CST)
+From:   Defang Bo <bodefang@126.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Defang Bo <bodefang@126.com>
+Subject: [PATCH v2] drm/amdgpu: Add check to prevenet IH overflow
+Date:   Wed,  6 Jan 2021 00:06:39 +0800
+Message-Id: <1609862799-2549739-1-git-send-email-bodefang@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: NeRpCgCnwXSXjvRfCvlFQg--.36836S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxtF43tr4kWr17uFWfGry3Arb_yoWxGw4kpa
+        1Fq34Y9r1Iyr1IyryfZ3Z7uFn8Aw4qgFWfCryDA3W2gF4UJa4vgr98JayFqryUtFWfCF47
+        Kryagay5W3sFvrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRWrWrUUUUU=
+X-Originating-IP: [36.112.86.14]
+X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbi6xgR11pD9eftTAAAsf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Similar to commit <b82175750131>("drm/amdgpu: fix IH overflow on Vega10 v2").
+When an ring buffer overflow happens the appropriate bit is set in the WPTR
+register which is also written back to memory. But clearing the bit in the
+WPTR doesn't trigger another memory writeback.
 
+So what can happen is that we end up processing the buffer overflow over and
+over again because the bit is never cleared. Resulting in a random system
+lockup because of an infinite loop in an interrupt handler.
 
-On 2020-12-24 6:29 a.m., Mimi Zohar wrote:
-> Hi Tushar,
-> 
-> On Sat, 2020-12-12 at 10:02 -0800, Tushar Sugandhi wrote:
->> System administrators should be able to limit which kernel subsystems
->> they want to measure the critical data for. To enable that, an IMA policy
->> condition to choose specific kernel subsystems is needed. This policy
->> condition would constrain the measurement of the critical data based on
->> a label for the given subsystems.
-> 
-> Restricting which kernel integrity critical data is measured is not
-> only of interest to system administrators.   Why single them out?
-> 
-system administrators are usually responsible for system 
-policies/configurations.They own modifications in the config files like
-ima-policy. That's why we wanted to address them to begin with. But you
-are correct. This is not only of interest to sysadmins. I will make the 
-description more generic.
+Signed-off-by: Defang Bo <bodefang@126.com>
+---
+Changes since v1:
+- Modify the subject and replace the wrong register.
+---
+---
+ drivers/gpu/drm/amd/amdgpu/cz_ih.c      | 39 +++++++++++++++++++++------------
+ drivers/gpu/drm/amd/amdgpu/iceland_ih.c | 36 +++++++++++++++++++-----------
+ drivers/gpu/drm/amd/amdgpu/tonga_ih.c   | 37 ++++++++++++++++++++-----------
+ 3 files changed, 72 insertions(+), 40 deletions(-)
 
+diff --git a/drivers/gpu/drm/amd/amdgpu/cz_ih.c b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+index 1dca0cabc326..65361afb21ab 100644
+--- a/drivers/gpu/drm/amd/amdgpu/cz_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+@@ -190,22 +190,33 @@ static u32 cz_ih_get_wptr(struct amdgpu_device *adev,
+ 			  struct amdgpu_ih_ring *ih)
+ {
+ 	u32 wptr, tmp;
+-
++
+ 	wptr = le32_to_cpu(*ih->wptr_cpu);
+ 
+-	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
+-		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
+-		/* When a ring buffer overflow happen start parsing interrupt
+-		 * from the last not overwritten vector (wptr + 16). Hopefully
+-		 * this should allow us to catchup.
+-		 */
+-		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
+-			wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
+-		ih->rptr = (wptr + 16) & ih->ptr_mask;
+-		tmp = RREG32(mmIH_RB_CNTL);
+-		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+-		WREG32(mmIH_RB_CNTL, tmp);
+-	}
++	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++		goto out;
++
++	/* Double check that the overflow wasn't already cleared. */
++	wptr = RREG32(mmIH_RB_WPTR);
++
++	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++		goto out;
++
++	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
++
++	/* When a ring buffer overflow happen start parsing interrupt
++	 * from the last not overwritten vector (wptr + 16). Hopefully
++	 * this should allow us to catchup.
++	 */
++	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
++		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
++	ih->rptr = (wptr + 16) & ih->ptr_mask;
++	tmp = RREG32(mmIH_RB_CNTL);
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
++	WREG32(mmIH_RB_CNTL, tmp);
++
++
++out:
+ 	return (wptr & ih->ptr_mask);
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
+index a13dd9a51149..8e4dae8addb9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
+@@ -193,19 +193,29 @@ static u32 iceland_ih_get_wptr(struct amdgpu_device *adev,
+ 
+ 	wptr = le32_to_cpu(*ih->wptr_cpu);
+ 
+-	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
+-		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
+-		/* When a ring buffer overflow happen start parsing interrupt
+-		 * from the last not overwritten vector (wptr + 16). Hopefully
+-		 * this should allow us to catchup.
+-		 */
+-		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
+-			 wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
+-		ih->rptr = (wptr + 16) & ih->ptr_mask;
+-		tmp = RREG32(mmIH_RB_CNTL);
+-		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+-		WREG32(mmIH_RB_CNTL, tmp);
+-	}
++	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++		goto out;
++
++	/* Double check that the overflow wasn't already cleared. */
++	wptr = RREG32(mmIH_RB_WPTR);
++
++	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++		goto out;
++
++	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
++	/* When a ring buffer overflow happen start parsing interrupt
++	 * from the last not overwritten vector (wptr + 16). Hopefully
++	 * this should allow us to catchup.
++	 */
++	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
++		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
++	ih->rptr = (wptr + 16) & ih->ptr_mask;
++	tmp = RREG32(mmIH_RB_CNTL);
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
++	WREG32(mmIH_RB_CNTL, tmp);
++
++
++out:
+ 	return (wptr & ih->ptr_mask);
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/tonga_ih.c b/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
+index e40140bf6699..2ba1ce323b6d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
+@@ -195,19 +195,30 @@ static u32 tonga_ih_get_wptr(struct amdgpu_device *adev,
+ 
+ 	wptr = le32_to_cpu(*ih->wptr_cpu);
+ 
+-	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
+-		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
+-		/* When a ring buffer overflow happen start parsing interrupt
+-		 * from the last not overwritten vector (wptr + 16). Hopefully
+-		 * this should allow us to catchup.
+-		 */
+-		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
+-			 wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
+-		ih->rptr = (wptr + 16) & ih->ptr_mask;
+-		tmp = RREG32(mmIH_RB_CNTL);
+-		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+-		WREG32(mmIH_RB_CNTL, tmp);
+-	}
++	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++		goto out;
++
++	/* Double check that the overflow wasn't already cleared. */
++	wptr = RREG32(mmIH_RB_WPTR);
++
++	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
++		goto out;
++
++	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
++
++	/* When a ring buffer overflow happen start parsing interrupt
++	 * from the last not overwritten vector (wptr + 16). Hopefully
++	 * this should allow us to catchup.
++	 */
++
++	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
++		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
++	ih->rptr = (wptr + 16) & ih->ptr_mask;
++	tmp = RREG32(mmIH_RB_CNTL);
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
++	WREG32(mmIH_RB_CNTL, tmp);
++
++out:
+ 	return (wptr & ih->ptr_mask);
+ }
+ 
+-- 
+2.7.4
 
-> Limiting which critical data is measured is based on a label, making it
-> flexible.  In your use case scenario, you're grouping the label based
-> on kernel subsystem, but is that really necessary?  In the broader
-> picture, there could be cross subsystem critical data being measured
-> based on a single label.
-> 
-> Please think about the broader picture and re-write the patch
-> descirption more generically.
-> 
-Makes sense. Will make the patch description more generic.
->>
->> Add a new IMA policy condition - "data_source:=" to the IMA func
-> 
-> What is with "add"?  You're "adding support for" or "defining" a new
-> policy condition.  Remove the single hyphen, as explained in 3/8.
-> 
-> Please replace "data_source" with something more generic (e.g. label).
-> 
-Sounds good. Would you prefer "label" or something else like "data_label"?
-
-In the policy file the "label" looks logical and more generic than 
-"data_label".
-    measure func=CRITICAL_DATA label=selinux
-
-For the time being, I will stick with "label", please let me know if you
-prefer something else.
-
-Thanks,
-Tushar
-
-> thanks,
-> 
-> Mimi
-> 
->> CRITICAL_DATA to allow measurement of various kernel subsystems. This
->> policy condition would enable the system administrators to restrict the
->> measurement to the labels listed in "data_source:=".
->>
->> Limit the measurement to the labels that are specified in the IMA
->> policy - CRITICAL_DATA+"data_source:=". If "data_sources:=" is not
->> provided with the func CRITICAL_DATA, the data from all the
->> supported kernel subsystems is measured.
->>
->> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
