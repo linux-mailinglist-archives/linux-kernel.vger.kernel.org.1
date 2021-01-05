@@ -2,177 +2,453 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A352EAA0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7AB2EAA15
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbhAELjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:39:47 -0500
-Received: from foss.arm.com ([217.140.110.172]:53194 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727384AbhAELjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:39:47 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DC7E1FB;
-        Tue,  5 Jan 2021 03:39:01 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E1D03F70D;
-        Tue,  5 Jan 2021 03:38:59 -0800 (PST)
-Date:   Tue, 5 Jan 2021 11:38:57 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Phil Auld <pauld@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        vincent.donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
-        vincent.guittot@linaro.org, LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-Message-ID: <20210105113857.gzqaiuhxsxdtu474@e107158-lin>
-References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
- <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
- <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
- <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
- <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
- <20200902135423.GB93959@lorien.usersys.redhat.com>
- <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
- <20200908131954.GA147026@lorien.usersys.redhat.com>
- <20210104182642.xglderapsfrop6pi@e107158-lin>
- <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
+        id S1729745AbhAELk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:40:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729731AbhAELkz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 06:40:55 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46EFC061795
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 03:40:14 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id b26so71881065lff.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 03:40:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4WmV3D8JBP0XQTlU6MApUJrsQjTDD13v1oqgP243xe0=;
+        b=TZ/h95XqAaYwigXWnpbQpVV3F+lTABd0GUbfYoLpKgSfMhiHE2jVrxQMhtQ4WzBl3/
+         m0W7jQVbRFE5WChI/QcgXgx9Gs+yaAd+AqkwMFAtaVMLockohhi1zgk2DxLvV1gjI+K8
+         BA9ltrM1Aos3wmgmcrATfrGZf/35RbsQ/gtujoCWuX31tm6gukvHtDUjEJIaW8Na1feY
+         r7UxBM5veYDqKhlbOpitkO/MWUmcbk86vMjpdUyrPLQJcFzmCmAbesL+nrJ2khBGixJt
+         uXWJFD1P2TtV5Yvjgv87M/CU8XkeatUp8oDe0+9DnYAQXVZQq6L5DeBnIUYSaoHJ0R8c
+         nEkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4WmV3D8JBP0XQTlU6MApUJrsQjTDD13v1oqgP243xe0=;
+        b=DHrAz9dDlCGLIg9Opf5/vWCRY2K8rQyGVBbdFk5OTaBfRe+C3n08kz2xNyzC1yQ19O
+         FDSepgdZK/wCjjxTjTZ/VRwKkFBHlxIqZKQZnbuw0uIH60XWOIHpeGxHioAYvC9KNcZN
+         W68jiBvLqBoLmuRZRictMwTidUGw6gl75PPKQVZy4vIX1S19TTSdRK92DAmO+Cf4Mq0A
+         FUySDwE5lhsEe/CrMUWWYZIHUmV8hyHerT7EkzboJfH4cbgTUCksBdM/GR+3MZGIw81p
+         YSIDllD9uSqyH73TdR/XY5eNmLhDb1qw07nAzp+38NudG8i6QjXD/3bhmvMc56gs6xoY
+         /etg==
+X-Gm-Message-State: AOAM5309O3p0k+Scjj63mQjfNfQJx+D1jf+qe1iErFz1PIzD8T4SQPsb
+        sw/Azywyg6ki6EA08JPDbhtcE7jw43nNPx67QUVEkA==
+X-Google-Smtp-Source: ABdhPJztWtaEbo422qNi6joJe5c3+c9EZgdGI6wCpuLESqJ6nB6EZdmoIYhpq2spEQ3/Yk28V9ASYDiaM88dhyeUz3A=
+X-Received: by 2002:a2e:9b4f:: with SMTP id o15mr35275335ljj.393.1609846812910;
+ Tue, 05 Jan 2021 03:40:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
+References: <20210104195840.1593-1-alex@ghiti.fr> <20210104195840.1593-2-alex@ghiti.fr>
+In-Reply-To: <20210104195840.1593-2-alex@ghiti.fr>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 5 Jan 2021 17:10:01 +0530
+Message-ID: <CAAhSdy1h+Akz-esWVG2oeLuhjDedcJyvRntV5LuaK8LhirD=Sw@mail.gmail.com>
+Subject: Re: [RFC PATCH 01/12] riscv: Move kernel mapping outside of linear mapping
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Zong Li <zong.li@sifive.com>, Christoph Hellwig <hch@lst.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/21 10:59, Alexei Starovoitov wrote:
-> > > > I did have a patch that allowed that. It might be worth trying to upstream it.
-> > > > It just required a new macro which could be problematic.
-> > > >
-> > > > https://github.com/qais-yousef/linux/commit/fb9fea29edb8af327e6b2bf3bc41469a8e66df8b
-> > > >
-> > > > With the above I could attach using bpf::RAW_TRACEPOINT mechanism.
-> > > >
-> > >
-> > > Yeah, that could work. I meant there was no way to do it with what was there :)
-> > >
-> > > In our initial attempts at using BPF to get at nr_running (which I was not
-> > > involved in and don't have all the details...) there were issues being able to
-> > > keep up and losing events.  That may have been an implementation issue, but
-> > > using the module and trace-cmd doesn't have that problem. Hopefully you don't
-> > > see that using RAW_TRACEPOINTs.
-> >
-> > So I have a proper patch for that now, that actually turned out to be really
-> > tiny once you untangle exactly what is missing.
-> >
-> > Peter, bpf programs aren't considered ABIs AFAIK, do you have concerns about
-> > that?
-> >
-> > Thanks
-> >
-> > --
-> > Qais Yousef
-> >
-> > -->8--
-> >
-> > From cf81de8c7db03d62730939aa902579339e2fc859 Mon Sep 17 00:00:00 2001
-> > From: Qais Yousef <qais.yousef@arm.com>
-> > Date: Wed, 30 Dec 2020 22:20:34 +0000
-> > Subject: [PATCH] trace: bpf: Allow bpf to attach to bare tracepoints
-> >
-> > Some subsystems only have bare tracepoints (a tracepoint with no
-> > associated trace event) to avoid the problem of trace events being an
-> > ABI that can't be changed.
-> >
-> > From bpf presepective, bare tracepoints are what it calls
-> > RAW_TRACEPOINT().
-> >
-> > Since bpf assumed there's 1:1 mapping, it relied on hooking to
-> > DEFINE_EVENT() macro to create bpf mapping of the tracepoints. Since
-> > bare tracepoints use DECLARE_TRACE() to create the tracepoint, bpf had
-> > no knowledge about their existence.
-> >
-> > By teaching bpf_probe.h to parse DECLARE_TRACE() in a similar fashion to
-> > DEFINE_EVENT(), bpf can find and attach to the new raw tracepoints.
-> >
-> > Enabling that comes with the contract that changes to raw tracepoints
-> > don't constitute a regression if they break existing bpf programs.
-> > We need the ability to continue to morph and modify these raw
-> > tracepoints without worrying about any ABI.
-> >
-> > Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-> > ---
-> >  include/trace/bpf_probe.h | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
-> > index cd74bffed5c6..a23be89119aa 100644
-> > --- a/include/trace/bpf_probe.h
-> > +++ b/include/trace/bpf_probe.h
-> > @@ -55,8 +55,7 @@
-> >  /* tracepoints with more than 12 arguments will hit build error */
-> >  #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
-> >
-> > -#undef DECLARE_EVENT_CLASS
-> > -#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
-> > +#define __BPF_DECLARE_TRACE(call, proto, args)                         \
-> >  static notrace void                                                    \
-> >  __bpf_trace_##call(void *__data, proto)                                        \
-> >  {                                                                      \
-> > @@ -64,6 +63,10 @@ __bpf_trace_##call(void *__data, proto)                                      \
-> >         CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
-> >  }
-> >
-> > +#undef DECLARE_EVENT_CLASS
-> > +#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
-> > +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
-> > +
-> >  /*
-> >   * This part is compiled out, it is only here as a build time check
-> >   * to make sure that if the tracepoint handling changes, the
-> > @@ -111,6 +114,11 @@ __DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
-> >  #define DEFINE_EVENT_PRINT(template, name, proto, args, print) \
-> >         DEFINE_EVENT(template, name, PARAMS(proto), PARAMS(args))
-> >
-> > +#undef DECLARE_TRACE
-> > +#define DECLARE_TRACE(call, proto, args)                               \
-> > +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))          \
-> > +       __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
-> > +
-> >  #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
-> 
-> The patch looks fine to me.
-> Please add a few things:
-> - selftests to make sure it gets routinely tested with bpf CI.
+On Tue, Jan 5, 2021 at 1:29 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>
+> This is a preparatory patch for relocatable kernel and sv48 support.
+>
+> The kernel used to be linked at PAGE_OFFSET address therefore we could use
+> the linear mapping for the kernel mapping. But the relocated kernel base
+> address will be different from PAGE_OFFSET and since in the linear mapping,
+> two different virtual addresses cannot point to the same physical address,
+> the kernel mapping needs to lie outside the linear mapping so that we don't
+> have to copy it at the same physical offset.
+>
+> The kernel mapping is moved to the last 2GB of the address space and then
+> BPF and modules are also pushed to the same range since they have to lie
+> close to the kernel inside a 2GB window.
+>
+> Note then that KASLR implementation will simply have to move the kernel in
+> this 2GB range and modify BPF/modules regions accordingly.
+>
+> In addition, by moving the kernel to the end of the address space, both
+> sv39 and sv48 kernels will be exactly the same without needing to be
+> relocated at runtime.
 
-Any pointer to an example test I could base this on?
+Awesome ! This is a good approach with no performance impact.
 
-> - add a doc with contents from commit log.
+>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> ---
+>  arch/riscv/boot/loader.lds.S     |  3 +-
+>  arch/riscv/include/asm/page.h    | 10 ++++-
+>  arch/riscv/include/asm/pgtable.h | 39 +++++++++++++------
+>  arch/riscv/kernel/head.S         |  3 +-
+>  arch/riscv/kernel/module.c       |  4 +-
+>  arch/riscv/kernel/vmlinux.lds.S  |  3 +-
+>  arch/riscv/mm/init.c             | 65 ++++++++++++++++++++++++--------
+>  arch/riscv/mm/physaddr.c         |  2 +-
+>  8 files changed, 94 insertions(+), 35 deletions(-)
+>
+> diff --git a/arch/riscv/boot/loader.lds.S b/arch/riscv/boot/loader.lds.S
+> index 47a5003c2e28..62d94696a19c 100644
+> --- a/arch/riscv/boot/loader.lds.S
+> +++ b/arch/riscv/boot/loader.lds.S
+> @@ -1,13 +1,14 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>
+>  #include <asm/page.h>
+> +#include <asm/pgtable.h>
+>
+>  OUTPUT_ARCH(riscv)
+>  ENTRY(_start)
+>
+>  SECTIONS
+>  {
+> -       . = PAGE_OFFSET;
+> +       . = KERNEL_LINK_ADDR;
+>
+>         .payload : {
+>                 *(.payload)
+> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+> index 2d50f76efe48..98188e315e8d 100644
+> --- a/arch/riscv/include/asm/page.h
+> +++ b/arch/riscv/include/asm/page.h
+> @@ -90,18 +90,26 @@ typedef struct page *pgtable_t;
+>
+>  #ifdef CONFIG_MMU
+>  extern unsigned long va_pa_offset;
+> +extern unsigned long va_kernel_pa_offset;
+>  extern unsigned long pfn_base;
+>  #define ARCH_PFN_OFFSET                (pfn_base)
+>  #else
+>  #define va_pa_offset           0
+> +#define va_kernel_pa_offset    0
+>  #define ARCH_PFN_OFFSET                (PAGE_OFFSET >> PAGE_SHIFT)
+>  #endif /* CONFIG_MMU */
+>
+>  extern unsigned long max_low_pfn;
+>  extern unsigned long min_low_pfn;
+> +extern unsigned long kernel_virt_addr;
+>
+>  #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
+> -#define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
+> +#define linear_mapping_va_to_pa(x)     ((unsigned long)(x) - va_pa_offset)
+> +#define kernel_mapping_va_to_pa(x)     \
+> +       ((unsigned long)(x) - va_kernel_pa_offset)
+> +#define __va_to_pa_nodebug(x)          \
+> +       (((x) < KERNEL_LINK_ADDR) ?             \
+> +               linear_mapping_va_to_pa(x) : kernel_mapping_va_to_pa(x))
+>
+>  #ifdef CONFIG_DEBUG_VIRTUAL
+>  extern phys_addr_t __virt_to_phys(unsigned long x);
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 183f1f4b2ae6..102b728ca146 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -11,23 +11,32 @@
+>
+>  #include <asm/pgtable-bits.h>
+>
+> -#ifndef __ASSEMBLY__
+> -
+> -/* Page Upper Directory not used in RISC-V */
+> -#include <asm-generic/pgtable-nopud.h>
+> -#include <asm/page.h>
+> -#include <asm/tlbflush.h>
+> -#include <linux/mm_types.h>
+> +#ifndef CONFIG_MMU
+> +#define KERNEL_VIRT_ADDR       PAGE_OFFSET
+> +#define KERNEL_LINK_ADDR       PAGE_OFFSET
+> +#else
+>
+> -#ifdef CONFIG_MMU
+> +#define ADDRESS_SPACE_END      (UL(-1))
+> +/*
+> + * Leave 2GB for kernel, modules and BPF at the end of the address space
+> + */
+> +#define KERNEL_VIRT_ADDR       (ADDRESS_SPACE_END - SZ_2G + 1)
+> +#define KERNEL_LINK_ADDR       KERNEL_VIRT_ADDR
+>
+>  #define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
+>  #define VMALLOC_END      (PAGE_OFFSET - 1)
+>  #define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+>
+> +/* KASLR should leave at least 128MB for BPF after the kernel */
+>  #define BPF_JIT_REGION_SIZE    (SZ_128M)
+> -#define BPF_JIT_REGION_START   (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+> -#define BPF_JIT_REGION_END     (VMALLOC_END)
+> +#define BPF_JIT_REGION_START   PFN_ALIGN((unsigned long)&_end)
+> +#define BPF_JIT_REGION_END     (BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
+> +
+> +/* Modules always live before the kernel */
+> +#ifdef CONFIG_64BIT
+> +#define VMALLOC_MODULE_START   (PFN_ALIGN((unsigned long)&_end) - SZ_2G)
+> +#define VMALLOC_MODULE_END     (PFN_ALIGN((unsigned long)&_start))
+> +#endif
 
-You're referring to the ABI part of the changelog, right?
+This does not look right or I am missing something.
 
-> The "Does bpf make things into an abi ?" question keeps coming back
-> over and over again.
-> Everytime we have the same answer that No, bpf cannot bake things into abi.
-> I think once it's spelled out somewhere in Documentation/ it would be easier to
-> repeat this message.
+I think the VMALLOC_MODULE_START should be:
+#define VMALLOC_MODULE_START   (PFN_ALIGN((unsigned long)&_start) - SZ_2G)
 
-How about a new Documentation/bpf/ABI.rst? I can write something up initially
-for us to discuss in detail when I post.
+>
+>  /*
+>   * Roughly size the vmemmap space to be large enough to fit enough
+> @@ -57,9 +66,16 @@
+>  #define FIXADDR_SIZE     PGDIR_SIZE
+>  #endif
+>  #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
+> -
+>  #endif
+>
+> +#ifndef __ASSEMBLY__
+> +
+> +/* Page Upper Directory not used in RISC-V */
+> +#include <asm-generic/pgtable-nopud.h>
+> +#include <asm/page.h>
+> +#include <asm/tlbflush.h>
+> +#include <linux/mm_types.h>
+> +
+>  #ifdef CONFIG_64BIT
+>  #include <asm/pgtable-64.h>
+>  #else
+> @@ -467,6 +483,7 @@ static inline void __kernel_map_pages(struct page *page, int numpages, int enabl
+>
+>  #define kern_addr_valid(addr)   (1) /* FIXME */
+>
+> +extern char _start[];
+>  extern void *dtb_early_va;
+>  extern uintptr_t dtb_early_pa;
+>  void setup_bootmem(void);
+> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+> index 7e849797c9c3..66f40c49bf68 100644
+> --- a/arch/riscv/kernel/head.S
+> +++ b/arch/riscv/kernel/head.S
+> @@ -69,7 +69,8 @@ pe_head_start:
+>  #ifdef CONFIG_MMU
+>  relocate:
+>         /* Relocate return address */
+> -       li a1, PAGE_OFFSET
+> +       la a1, kernel_virt_addr
+> +       REG_L a1, 0(a1)
+>         la a2, _start
+>         sub a1, a1, a2
+>         add ra, ra, a1
+> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> index 104fba889cf7..75a0b9541266 100644
+> --- a/arch/riscv/kernel/module.c
+> +++ b/arch/riscv/kernel/module.c
+> @@ -408,12 +408,10 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+>  }
+>
+>  #if defined(CONFIG_MMU) && defined(CONFIG_64BIT)
+> -#define VMALLOC_MODULE_START \
+> -        max(PFN_ALIGN((unsigned long)&_end - SZ_2G), VMALLOC_START)
+>  void *module_alloc(unsigned long size)
+>  {
+>         return __vmalloc_node_range(size, 1, VMALLOC_MODULE_START,
+> -                                   VMALLOC_END, GFP_KERNEL,
+> +                                   VMALLOC_MODULE_END, GFP_KERNEL,
+>                                     PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
+>                                     __builtin_return_address(0));
+>  }
+> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+> index 3ffbd6cbdb86..c21dc46f41be 100644
+> --- a/arch/riscv/kernel/vmlinux.lds.S
+> +++ b/arch/riscv/kernel/vmlinux.lds.S
+> @@ -4,7 +4,8 @@
+>   * Copyright (C) 2017 SiFive
+>   */
+>
+> -#define LOAD_OFFSET PAGE_OFFSET
+> +#include <asm/pgtable.h>
+> +#define LOAD_OFFSET KERNEL_LINK_ADDR
+>  #include <asm/vmlinux.lds.h>
+>  #include <asm/page.h>
+>  #include <asm/cache.h>
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 8e577f14f120..9d06ff0e015a 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -23,6 +23,9 @@
+>
+>  #include "../kernel/head.h"
+>
+> +unsigned long kernel_virt_addr = KERNEL_VIRT_ADDR;
+> +EXPORT_SYMBOL(kernel_virt_addr);
+> +
+>  unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)]
+>                                                         __page_aligned_bss;
+>  EXPORT_SYMBOL(empty_zero_page);
+> @@ -201,8 +204,12 @@ void __init setup_bootmem(void)
+>  #ifdef CONFIG_MMU
+>  static struct pt_alloc_ops pt_ops;
+>
+> +/* Offset between linear mapping virtual address and kernel load address */
+>  unsigned long va_pa_offset;
+>  EXPORT_SYMBOL(va_pa_offset);
+> +/* Offset between kernel mapping virtual address and kernel load address */
+> +unsigned long va_kernel_pa_offset;
+> +EXPORT_SYMBOL(va_kernel_pa_offset);
+>  unsigned long pfn_base;
+>  EXPORT_SYMBOL(pfn_base);
+>
+> @@ -316,7 +323,7 @@ static phys_addr_t __init alloc_pmd_early(uintptr_t va)
+>  {
+>         uintptr_t pmd_num;
+>
+> -       pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
+> +       pmd_num = (va - kernel_virt_addr) >> PGDIR_SHIFT;
+>         BUG_ON(pmd_num >= NUM_EARLY_PMDS);
+>         return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
+>  }
+> @@ -431,17 +438,34 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
+>  #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
+>  #endif
+>
+> +static uintptr_t load_pa, load_sz;
+> +
+> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+> +{
+> +       uintptr_t va, end_va;
+> +
+> +       end_va = kernel_virt_addr + load_sz;
+> +       for (va = kernel_virt_addr; va < end_va; va += map_size)
+> +               create_pgd_mapping(pgdir, va,
+> +                                  load_pa + (va - kernel_virt_addr),
+> +                                  map_size, PAGE_KERNEL_EXEC);
+> +}
+> +
+>  asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>  {
+> -       uintptr_t va, pa, end_va;
+> -       uintptr_t load_pa = (uintptr_t)(&_start);
+> -       uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
+> -       uintptr_t map_size = best_map_size(load_pa, MAX_EARLY_MAPPING_SIZE);
+> +       uintptr_t pa;
+> +       uintptr_t map_size;
+>  #ifndef __PAGETABLE_PMD_FOLDED
+>         pmd_t fix_bmap_spmd, fix_bmap_epmd;
+>  #endif
+>
+> +       load_pa = (uintptr_t)(&_start);
+> +       load_sz = (uintptr_t)(&_end) - load_pa;
+> +       map_size = best_map_size(load_pa, MAX_EARLY_MAPPING_SIZE);
+> +
+>         va_pa_offset = PAGE_OFFSET - load_pa;
+> +       va_kernel_pa_offset = kernel_virt_addr - load_pa;
+> +
+>         pfn_base = PFN_DOWN(load_pa);
+>
+>         /*
+> @@ -470,26 +494,22 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>         create_pmd_mapping(fixmap_pmd, FIXADDR_START,
+>                            (uintptr_t)fixmap_pte, PMD_SIZE, PAGE_TABLE);
+>         /* Setup trampoline PGD and PMD */
+> -       create_pgd_mapping(trampoline_pg_dir, PAGE_OFFSET,
+> +       create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
+>                            (uintptr_t)trampoline_pmd, PGDIR_SIZE, PAGE_TABLE);
+> -       create_pmd_mapping(trampoline_pmd, PAGE_OFFSET,
+> +       create_pmd_mapping(trampoline_pmd, kernel_virt_addr,
+>                            load_pa, PMD_SIZE, PAGE_KERNEL_EXEC);
+>  #else
+>         /* Setup trampoline PGD */
+> -       create_pgd_mapping(trampoline_pg_dir, PAGE_OFFSET,
+> +       create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
+>                            load_pa, PGDIR_SIZE, PAGE_KERNEL_EXEC);
+>  #endif
+>
+>         /*
+> -        * Setup early PGD covering entire kernel which will allows
+> +        * Setup early PGD covering entire kernel which will allow
+>          * us to reach paging_init(). We map all memory banks later
+>          * in setup_vm_final() below.
+>          */
+> -       end_va = PAGE_OFFSET + load_sz;
+> -       for (va = PAGE_OFFSET; va < end_va; va += map_size)
+> -               create_pgd_mapping(early_pg_dir, va,
+> -                                  load_pa + (va - PAGE_OFFSET),
+> -                                  map_size, PAGE_KERNEL_EXEC);
+> +       create_kernel_page_table(early_pg_dir, map_size);
+>
+>  #ifndef __PAGETABLE_PMD_FOLDED
+>         /* Setup early PMD for DTB */
+> @@ -549,6 +569,7 @@ static void __init setup_vm_final(void)
+>         uintptr_t va, map_size;
+>         phys_addr_t pa, start, end;
+>         u64 i;
+> +       static struct vm_struct vm_kernel = { 0 };
+>
+>         /**
+>          * MMU is enabled at this point. But page table setup is not complete yet.
+> @@ -565,7 +586,7 @@ static void __init setup_vm_final(void)
+>                            __pa_symbol(fixmap_pgd_next),
+>                            PGDIR_SIZE, PAGE_TABLE);
+>
+> -       /* Map all memory banks */
+> +       /* Map all memory banks in the linear mapping */
+>         for_each_mem_range(i, &start, &end) {
+>                 if (start >= end)
+>                         break;
+> @@ -577,10 +598,22 @@ static void __init setup_vm_final(void)
+>                 for (pa = start; pa < end; pa += map_size) {
+>                         va = (uintptr_t)__va(pa);
+>                         create_pgd_mapping(swapper_pg_dir, va, pa,
+> -                                          map_size, PAGE_KERNEL_EXEC);
+> +                                          map_size, PAGE_KERNEL);
+>                 }
+>         }
+>
+> +       /* Map the kernel */
+> +       create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
+> +
+> +       /* Reserve the vmalloc area occupied by the kernel */
+> +       vm_kernel.addr = (void *)kernel_virt_addr;
+> +       vm_kernel.phys_addr = load_pa;
+> +       vm_kernel.size = (load_sz + PMD_SIZE - 1) & ~(PMD_SIZE - 1);
+> +       vm_kernel.flags = VM_MAP | VM_NO_GUARD;
+> +       vm_kernel.caller = __builtin_return_address(0);
+> +
+> +       vm_area_add_early(&vm_kernel);
+> +
+>         /* Clear fixmap PTE and PMD mappings */
+>         clear_fixmap(FIX_PTE);
+>         clear_fixmap(FIX_PMD);
+> diff --git a/arch/riscv/mm/physaddr.c b/arch/riscv/mm/physaddr.c
+> index e8e4dcd39fed..35703d5ef5fd 100644
+> --- a/arch/riscv/mm/physaddr.c
+> +++ b/arch/riscv/mm/physaddr.c
+> @@ -23,7 +23,7 @@ EXPORT_SYMBOL(__virt_to_phys);
+>
+>  phys_addr_t __phys_addr_symbol(unsigned long x)
+>  {
+> -       unsigned long kernel_start = (unsigned long)PAGE_OFFSET;
+> +       unsigned long kernel_start = (unsigned long)kernel_virt_addr;
+>         unsigned long kernel_end = (unsigned long)_end;
+>
+>         /*
+> --
+> 2.20.1
+>
 
-We have Documentation/ABI directory but I don't think it's suitable for what we
-want.
+Apart from the minor comment above, this looks good to me.
 
-> Also please tag future patches to bpf-next tree to make sure things
-> keep being tested.
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-Sure. I understood this means adding a [PATCH bpf-next ...] in the subject
-line.
-
-Thanks
-
---
-Qais Yousef
+Regards,
+Anup
