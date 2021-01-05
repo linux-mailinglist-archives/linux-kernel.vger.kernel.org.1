@@ -2,115 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FAB2EB100
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217B32EB104
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730612AbhAERF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:05:58 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:28368 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729837AbhAERF5 (ORCPT
+        id S1730298AbhAERGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:06:50 -0500
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:51390 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729683AbhAERGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:05:57 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 105H3RpI002497;
-        Tue, 5 Jan 2021 18:05:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=AaKXXBBSLn/MwtIXJ9J+oqskFzFqwJhdPjJtMaNGd3w=;
- b=Ad8AgPEoHISNV4TWrfQYBnrfjVkgwDVMZHyEAVFsb5E8QGdk1kvCHlmXlxaDjnXgYHx8
- A31B3r8CRAHZAAbZUhO8cU0PaBkH/ApJHI+N1mD3VTsQY8maJkMy5WmSskxebWGUTyZA
- CP+bBtCQPaHUVwLaarCyD6TUqILKtFGSzOcxCDDNtzO2njGspREYkSALlOZcPAz57Tkt
- h2WQ0Apd0+8IyKBmbLxOOIc8V9JEa+LtaAqokAiat7YAL5t7AiYP9kid1EEw7dPTEkIe
- c37FjirimPzimaOARIEbnn0Mu85el3BENqkHQ3qJINnSLSeSVpI4r6sK/vknMFMxAHYy Ug== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35tf66x668-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jan 2021 18:05:10 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 65E2610002A;
-        Tue,  5 Jan 2021 18:05:09 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 56A3723A239;
-        Tue,  5 Jan 2021 18:05:09 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 Jan
- 2021 18:05:08 +0100
-Subject: Re: [PATCH v2 10/16] rpmsg: char: allow only one endpoint per device
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
- <20201222105726.16906-11-arnaud.pouliquen@foss.st.com>
- <X/O6BvP+vqLvbi5f@builder.lan>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <9a75e5fa-ad09-0145-18f1-09738433bf88@foss.st.com>
-Date:   Tue, 5 Jan 2021 18:05:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 5 Jan 2021 12:06:49 -0500
+Received: by mail-wm1-f42.google.com with SMTP id v14so215471wml.1;
+        Tue, 05 Jan 2021 09:06:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9YAAdpyFMqA6anlcQcter/Q+CJMEzgthAR/tnl6sjtA=;
+        b=Af9IoeI60Y03TBjvjRHmLKPALC8N+soWiO6dfZ2fXWazV62NFezarL24/LwoJMMkUt
+         9a0neKDEpUOWtVuDR3bP1C9XcoZQA7QbI8mdwjNSPQZDeWiV8kSczo3877Y+1ViGI2Nf
+         APHQpwNlVrb7lrosIUWvO+C1dE8imAbaLRFeP6STp4uh0J5fQyCP3v0ZWcyz4ogvbbBL
+         bcWqxg7u87fjO++q1cKBf6EiBw5o6UH3e8R8Gi9+kgGMGaEhsEIcitOUGR5hKWaEXPmQ
+         f/16U5tbtCkeT3R64rjNU2YAtrZeQPeDXSnS6bqZgJ9t43EjGLh6YUo/15ynhZJG2u6B
+         C0Mw==
+X-Gm-Message-State: AOAM530YNuclOQheXmEu323yAl06bEYuo9h5AeK4RwUTMs4gdhNCoq/v
+        y1peea13Fv2AR+FUuYVHYc4=
+X-Google-Smtp-Source: ABdhPJwAzn5n1uY0WAYpYglCpjpQ7wTQ2gVf/5VxObDSAC0+0hOeTHM7OsV/cLPDVW8XqRYVcBYVCQ==
+X-Received: by 2002:a1c:9e86:: with SMTP id h128mr81485wme.171.1609866367532;
+        Tue, 05 Jan 2021 09:06:07 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id l8sm137946wmf.35.2021.01.05.09.06.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 09:06:06 -0800 (PST)
+Date:   Tue, 5 Jan 2021 18:06:04 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-renesas-soc@vger.kernel.org, aford@beaconembedded.com,
+        biju.das.jz@bp.renesas.com, Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH V2 1/4] dt-bindings: memory: Renesas RPC-IF: Add support
+ for RZ/G2 Series
+Message-ID: <20210105170604.GA26301@kozik-lap>
+References: <20210102115412.3402059-1-aford173@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <X/O6BvP+vqLvbi5f@builder.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-05_05:2021-01-05,2021-01-05 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210102115412.3402059-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/5/21 1:59 AM, Bjorn Andersson wrote:
-> On Tue 22 Dec 04:57 CST 2020, Arnaud Pouliquen wrote:
+On Sat, Jan 02, 2021 at 05:54:09AM -0600, Adam Ford wrote:
+> The RZ/G2 Series has the RPC-IF interface.
+> Update bindings to support: r8a774a1, r8a774b1, r8a774c0, and r8a774e1
 > 
->> Only one endpoint can be created per device, prevent from multi open.
->>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+>  .../bindings/memory-controllers/renesas,rpc-if.yaml         | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> Having multiple invocations of rpmsg_create_ept() with the same chinfo
-> sounds like a bad idea. I think in the SMD and GLINK case the underlying
-> transport would complain that the related chinfo is already "busy", but
-> this seems like an appropriate fix regardless.
-> 
-> Please add a proper Fixes: tag and send this outside of this patch
-> series.
+> V2:  Updated renesas,rcar-gen3-rpc-if to include RZ/G2
 
-I will send it in a separate patch.
+Thanks, applied.
 
-Regards,
-Arnaud
+Best regards,
+Krzysztof
 
-> 
-> Thanks,
-> Bjorn
-> 
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  drivers/rpmsg/rpmsg_char.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->> index 66e01b979e72..4b0674a2e3e9 100644
->> --- a/drivers/rpmsg/rpmsg_char.c
->> +++ b/drivers/rpmsg/rpmsg_char.c
->> @@ -122,6 +122,9 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
->>  	struct rpmsg_device *rpdev = eptdev->rpdev;
->>  	struct device *dev = &eptdev->dev;
->>  
->> +	if (eptdev->ept)
->> +		return -EBUSY;
->> +
->>  	get_device(dev);
->>  
->>  	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
->> -- 
->> 2.17.1
->>
