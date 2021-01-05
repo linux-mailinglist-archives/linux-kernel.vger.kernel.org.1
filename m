@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41D82EB0CE
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF1F2EB0CD
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729919AbhAERBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:01:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729813AbhAERBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:01:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B1D622CB9;
-        Tue,  5 Jan 2021 17:00:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609866042;
-        bh=K8rAAgbvgJOrltjvqkkg0lKreghPjvGcwr3u28D1o1g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f2e3w+dPlvG0kpAb41jDf4ut+9Cjd3hvHKHLzFAQA7synFGutVGBDDCc7CBTfoBlY
-         SuT3hxxP+KHcPF1mPpnQphr528eXRg/yqECTmmyOyeSMMP30in6a9A9qC+D8KvjDo3
-         h8LBLezI2sikU00ALAIDmChhSk9yW9s3yudCv/IIEvQyvJeJoXUMyKSCwTmmuhC5GK
-         pupZVtUjmjE8XqvV+9xPbxE8LokyQOp7pHhu9kgHT1nbCsiw+bdo/+K+kCb3EnUG98
-         QjJRmHCiDGJ+BOSowS11T/j0hBIqbMDTLnWPETcwKvfUqwzuRLSOMoqd76TEZjf1oh
-         vOdpYEAN/jabg==
-Date:   Tue, 5 Jan 2021 17:00:14 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/5] arm64: Add support for SMCCC TRNG entropy source
-Message-ID: <20210105170014.GG4487@sirena.org.uk>
-References: <20210105163652.23646-1-andre.przywara@arm.com>
- <20210105163652.23646-5-andre.przywara@arm.com>
+        id S1729795AbhAERBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:01:18 -0500
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:54490 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbhAERBS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 12:01:18 -0500
+Received: by mail-wm1-f47.google.com with SMTP id c133so181755wme.4;
+        Tue, 05 Jan 2021 09:01:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7rC/3bBxHEIoV+vCWk7wHGZGDIhbhtvFgEsPrKfdLoY=;
+        b=hw8SjIn7ZZAiQg+KPj+0sr42fp7WBCNyjq4dSLVZ5WKQBRW6kUReeUc/y9f2V1ekQh
+         wAkP+VIOD1nHg4QRnrWtLyWqsqyLdIO5QBUKQAL5EzN9dGAocH163bQVh4Ub1Df+N9md
+         rCJsbQALshUulrECHD5X1eKhS5E8nlCcr0lWOO3Fcw4wjWgOFc9u5wSWbJRuHr/x+hqg
+         rEi3nqCf/Txjt/udJwFfrQMEWiX2rNJwQVNgd74agabzuoOuutNTxpUE9PDri9O4xOA0
+         9b9/j2H5xPzS5d1WUwK7pxVTHkNvAUewB/fdoxKZF3OybeJK4YB3uYKEaIhg6ndqO64j
+         kRaw==
+X-Gm-Message-State: AOAM531NKZCkKdZonCOs7lQsT+Z+WioBx+zzIPXn2Xor0h6/0UnsOblK
+        2OQ8FnaQUpSG3aitLjKEm04=
+X-Google-Smtp-Source: ABdhPJxdVH4thBYworKTK5cQ7fRcnmHTI41liWkhfpAJUMLfKGjI41wNdUX5PAVtai0yLCgciW3qMw==
+X-Received: by 2002:a7b:c770:: with SMTP id x16mr53095wmk.139.1609866036070;
+        Tue, 05 Jan 2021 09:00:36 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id b127sm119430wmc.45.2021.01.05.09.00.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 09:00:35 -0800 (PST)
+Date:   Tue, 5 Jan 2021 18:00:33 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v12 1/5] memory: tegra124-emc: Make driver modular
+Message-ID: <20210105170033.GA20651@kozik-lap>
+References: <20201228154920.18846-1-digetx@gmail.com>
+ <20201228154920.18846-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Y+xroYBkGM9OatJL"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210105163652.23646-5-andre.przywara@arm.com>
-X-Cookie: I'm ANN LANDERS!!  I can SHOPLIFT!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201228154920.18846-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 28, 2020 at 06:49:16PM +0300, Dmitry Osipenko wrote:
+> Add modularization support to the Tegra124 EMC driver, which now can be
+> compiled as a loadable kernel module.
+> 
+> Note that EMC clock must be registered at clk-init time, otherwise PLLM
+> will be disabled as unused clock at boot time if EMC driver is compiled
+> as a module. Hence add a prepare/complete callbacks. similarly to what is
+> done for the Tegra20/30 EMC drivers.
+> 
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/clk/tegra/Kconfig            |  3 ++
+>  drivers/clk/tegra/Makefile           |  2 +-
+>  drivers/clk/tegra/clk-tegra124-emc.c | 41 ++++++++++++++++++++++++----
+>  drivers/clk/tegra/clk-tegra124.c     | 26 ++++++++++++++++--
+>  drivers/clk/tegra/clk.h              | 18 ++++++++----
+>  drivers/memory/tegra/Kconfig         |  3 +-
+>  drivers/memory/tegra/tegra124-emc.c  | 31 ++++++++++++++-------
+>  include/linux/clk/tegra.h            |  8 ++++++
+>  include/soc/tegra/emc.h              | 16 -----------
+>  9 files changed, 106 insertions(+), 42 deletions(-)
+>  delete mode 100644 include/soc/tegra/emc.h
 
---Y+xroYBkGM9OatJL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, applied.
 
-On Tue, Jan 05, 2021 at 04:36:51PM +0000, Andre Przywara wrote:
+Best regards,
+Krzysztof
 
-> @@ -77,10 +117,20 @@ arch_get_random_seed_long_early(unsigned long *v)
->  {
->  	WARN_ON(system_state !=3D SYSTEM_BOOTING);
-> =20
-> -	if (!__early_cpu_has_rndr())
-> -		return false;
-> +	if (__early_cpu_has_rndr())
-> +		return __arm64_rndr(v);
-> +
-> +	if (smccc_trng_available) {
-> +		struct arm_smccc_res res;
-
-This still seems to be preferring RNDR over SMCCC for the early seed
-unless I'm misreading the diff?
-
---Y+xroYBkGM9OatJL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/0mx0ACgkQJNaLcl1U
-h9BbEQf/UEKW05M2JoVuTX8s89SZjgXY0yURCLUGmFG3oR3xya0eOY6+tciI5z+h
-6tNafYEkfQZGH4c77s1utt4oz1TSvE9tlaCycjwtdJSFy7wzcnRLsqhHwK2/Gi6F
-pFbVgbcLLIEUzxZ2EwOK0RsDPp49N2bGA2r1KD4EpLwagHXBZ9YTu+2fm01HyFUY
-SXDH/wiiVXzDS9N8v/r/GIHZr+DAsnUj3Qt2Z4/08PeaRF7FSkPU+5KysKg/XOWK
-O1kQQiRiHrPq/Eu88Woo2xbF+zUs5RH1NQ/DRejwJv90kRN9M/YzY4M2WzuX1azR
-uRVPqPzk5c5tt5jx6FR+vrMx4XgIAg==
-=8VqE
------END PGP SIGNATURE-----
-
---Y+xroYBkGM9OatJL--
