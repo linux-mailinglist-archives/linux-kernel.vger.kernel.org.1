@@ -2,145 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9892EABBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A09F72EABB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbhAENSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:18:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41820 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727918AbhAENSQ (ORCPT
+        id S1729377AbhAENSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:18:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729174AbhAENSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:18:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609852609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LtvpE51PJaJIshJkk/nmlb3ypMZHhp2FfVBDGEueVK0=;
-        b=VxGn8A1kUwHE3iGs27b/2BY6Tv8fMolqStOW3/YsRmXuNNKru6DKAFFuKtzlxxyz7jJ6qK
-        DVQgRoMQgd7Lx8YzLJCnFm3i+KWffRIaA2dW6wNJw552RGtN7q1V/TIkcv8E/Cvlzrmxq+
-        8kJyybGS5WgSMGQIeJnXEZ+8XrfRE4I=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-i61F_jBqPFunDic-GQ78-w-1; Tue, 05 Jan 2021 08:16:47 -0500
-X-MC-Unique: i61F_jBqPFunDic-GQ78-w-1
-Received: by mail-ej1-f72.google.com with SMTP id y14so7970662ejf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:16:47 -0800 (PST)
+        Tue, 5 Jan 2021 08:18:00 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27215C061574;
+        Tue,  5 Jan 2021 05:17:35 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id g24so20710441qtq.12;
+        Tue, 05 Jan 2021 05:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jLhbRWXby6luGSFdzAvh4WkvKskLyAT83J5WUyy1B7g=;
+        b=h47nmgU0rIwhajSpfHu3iTWzq30XXTCyDfCURIz5rXQNIRu6C7FopM/0vWUwwTmmyZ
+         +vaowIcYOlJNYAVajvxvjIC1SV/MoypaMqtT5+zxoFAg5NuXq/+80VctTWUzUK0WYb+w
+         a4IvfNrwIDt0sTgffUBa4ECerc3AD4xe1Z3MjJE3Ey8JfCsuhEJGFBvfEttmjQ1+RrZp
+         n8xMASrLIDv003UlpTSxrt+VLhCHOnho52wF8o813HcnuTeAITQ+Ol66zNDRMHM+oubh
+         otFYkYYcOaEoKrOX7+gpHHvRk7VD/jpVhavlJR9h5B5AXPYbf8IshQ7BVjsrXFMunIPf
+         NbTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=LtvpE51PJaJIshJkk/nmlb3ypMZHhp2FfVBDGEueVK0=;
-        b=TxZBXoPfYieNHXEYWHzqM97c6Ei/LcKnD9iqqMQzQ62yCQdo8t1i6uEB/02QMT7onN
-         1bM9HCFcuodWjHXpHyPXnqvc2rzHS8ddOIlEUt+nKnMg5vd10uvhUmtPlvuCexu5IVnn
-         z1cYz7qza4PSdxvdV40giswWxPd7NYIKadqYrK2iFgK8M8VyfRgHEs3N3TKbC4F2KL9n
-         PTiP60cmWVnUij0JOQGhbXJnwWPnBTzY9XgsJaQdH07KVmrypMugvTkVnf1TNWMIMmC2
-         /65VoosQvLlAQw6ZsXWTPcmiezJQAh2Bk7oEIizLSp5J9EOP8P2JnFfnHVVfIxBIzA7U
-         z9EA==
-X-Gm-Message-State: AOAM532v3V0Jm1UmK14BVSwa5VaVK2HKS5xgQfA9LPvVg+aJ0cS4Badq
-        LbMIItMxcGpRb0mobunQFd1lovn4hrVqdXrva0lIKPblfzKRTrYSMG7FbYtGupTIrGykHXwgHDs
-        p0xMfByZSF3YYyvi3gzisHvQUREH0dR1BgPhmC1OH+akPKFM6Y/OgFs81c/X61crClUDrTkslbO
-        mp
-X-Received: by 2002:a17:906:351a:: with SMTP id r26mr67935447eja.204.1609852605889;
-        Tue, 05 Jan 2021 05:16:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzR8665AcodeuSJbYBLUiasXhwrRCFhXP5UBpYr9ukaXtBLdpvwkT7bCIIXAfTHAulHtc13TA==
-X-Received: by 2002:a17:906:351a:: with SMTP id r26mr67935430eja.204.1609852605708;
-        Tue, 05 Jan 2021 05:16:45 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id e1sm24929834edk.51.2021.01.05.05.16.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 05:16:45 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] ACPI: platform-profile: Introduce object pointers
- to callbacks
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210105131447.38036-1-jiaxun.yang@flygoat.com>
- <20210105131447.38036-2-jiaxun.yang@flygoat.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <683c8358-fd71-cd27-8e39-19fdf3e1f71f@redhat.com>
-Date:   Tue, 5 Jan 2021 14:16:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        bh=jLhbRWXby6luGSFdzAvh4WkvKskLyAT83J5WUyy1B7g=;
+        b=b1Dz0vNSyxWhzdQ/ZCtRFsrVe7qAdW6b4xrw8MLcVq1774Xsi7FaFp5pD8riWz3WI9
+         MOSsWFnXLmcT5vMK7PukdHbZLFqcc8u8h1mXPeoa56hoFt1qDo67NhK53urJt7/g/TNq
+         qXIaDrChTMq8+oKun/e2Nvg1zAxMvVl12YN9xrY5D4poyvrVV9eTiOytdukyB/jd5PnB
+         F2+ME3cIQDby+TNakyk6xhkKrwjdYeN3MQzOMwvnsn+YGINZg8BxKyPhonIx/YJo7Jth
+         nzzJlepjpsgwOIHBgfZKEt3T+CtKfXOfm2tx12pbmR6QulY6559EfyWIcy+2jn4IeF/Q
+         MWrg==
+X-Gm-Message-State: AOAM531lv04aHrJClfDq3VWedgK2uZuPzKv/2OaCHZNqJFmSg+f1PHva
+        YVrQ2XzMVApTjrbW2ulK+84T//L1tgedOg==
+X-Google-Smtp-Source: ABdhPJyVzx47+ZOqsoJXupw8slUQFPMehE0nhfa36KTvI6eGYZb4pDueYzmJKn/d/uD3F22/U5vWEg==
+X-Received: by 2002:ac8:1c92:: with SMTP id f18mr71741567qtl.234.1609852654400;
+        Tue, 05 Jan 2021 05:17:34 -0800 (PST)
+Received: from localhost.localdomain ([2804:14d:72b1:8920:77d4:6fb0:85b3:b6f7])
+        by smtp.gmail.com with ESMTPSA id h16sm40697819qko.135.2021.01.05.05.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 05:17:33 -0800 (PST)
+From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+X-Google-Original-From: Daniel W. S. Almeida
+To:     mchehab@kernel.org, hverkuil@xs4all.nl
+Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        linux-media@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4l-utils] test-media: add support for vidtv
+Date:   Tue,  5 Jan 2021 10:17:25 -0300
+Message-Id: <20210105131725.1191046-1-dwlsalmeida@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210105131447.38036-2-jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 
-On 1/5/21 2:14 PM, Jiaxun Yang wrote:
-> Add a object pointer to handler callbacks to avoid having
-> global variables everywhere.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Suggested-by: Hans de Goede <hdegoede@redhat.com>
+Add support for vidtv at the test-media script so that automated testing
+is possible. Proper compliance tests are still pending.
 
-Thanks, patch looks good to me:
+Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+---
+ contrib/test/test-media | 72 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/acpi/platform_profile.c  | 4 ++--
->  include/linux/platform_profile.h | 6 ++++--
->  2 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/acpi/platform_profile.c b/drivers/acpi/platform_profile.c
-> index 91be50a32cc8..bb4d7b0fe2ac 100644
-> --- a/drivers/acpi/platform_profile.c
-> +++ b/drivers/acpi/platform_profile.c
-> @@ -64,7 +64,7 @@ static ssize_t platform_profile_show(struct device *dev,
->  		return -ENODEV;
->  	}
->  
-> -	err = cur_profile->profile_get(&profile);
-> +	err = cur_profile->profile_get(cur_profile, &profile);
->  	mutex_unlock(&profile_lock);
->  	if (err)
->  		return err;
-> @@ -104,7 +104,7 @@ static ssize_t platform_profile_store(struct device *dev,
->  		return -EOPNOTSUPP;
->  	}
->  
-> -	err = cur_profile->profile_set(i);
-> +	err = cur_profile->profile_set(cur_profile, i);
->  	mutex_unlock(&profile_lock);
->  	if (err)
->  		return err;
-> diff --git a/include/linux/platform_profile.h b/include/linux/platform_profile.h
-> index 3623d7108421..43f4583b5259 100644
-> --- a/include/linux/platform_profile.h
-> +++ b/include/linux/platform_profile.h
-> @@ -28,8 +28,10 @@ enum platform_profile_option {
->  
->  struct platform_profile_handler {
->  	unsigned long choices[BITS_TO_LONGS(PLATFORM_PROFILE_LAST)];
-> -	int (*profile_get)(enum platform_profile_option *profile);
-> -	int (*profile_set)(enum platform_profile_option profile);
-> +	int (*profile_get)(struct platform_profile_handler *pprof,
-> +				enum platform_profile_option *profile);
-> +	int (*profile_set)(struct platform_profile_handler *pprof,
-> +				enum platform_profile_option profile);
->  };
->  
->  int platform_profile_register(const struct platform_profile_handler *pprof);
-> 
+diff --git a/contrib/test/test-media b/contrib/test/test-media
+index 1c1d2e37b..86a2e081a 100755
+--- a/contrib/test/test-media
++++ b/contrib/test/test-media
+@@ -4,6 +4,7 @@
+ #
+ # Copyright 2019 Cisco Systems, Inc. and/or its affiliates. All rights reserved.
+ 
++vidtv=0
+ vivid=0
+ vim2m=0
+ vimc=0
+@@ -51,6 +52,7 @@ if [ -z "$1" ]; then
+ 	echo "-32: use v4l2-ctl-32 and v4l2-compliance-32 to test the 32 bit compat layer"
+ 	echo
+ 	echo Test Targets:
++	echo "vidtv: test the vidtv driver"
+ 	echo "vivid: test the vivid driver"
+ 	echo "vim2m: test the vim2m driver"
+ 	echo "vimc: test the vimc driver"
+@@ -96,6 +98,7 @@ while [ ! -z "$1" ]; do
+ 		fi
+ 		;;
+ 	all)
++		vidtv=1
+ 		vivid=1
+ 		vim2m=1
+ 		vimc=1
+@@ -109,6 +112,9 @@ while [ ! -z "$1" ]; do
+ 		vimc=1
+ 		vicodec=1
+ 		;;
++	vidtv)
++		vidtv=1
++		;;
+ 	vivid)
+ 		vivid=1
+ 		;;
+@@ -162,6 +168,72 @@ $v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-out -o1 -x width=3840,height=21
+ 
+ echo
+ 
++if [ $vidtv -eq 1 ]; then
++	rmmod vidtv 2&>/dev/null
++	modprobe vidtv
++	sleep 2
++	dmesg -n notice
++	echo
++
++	if ! media-ctl -d platform:vidtv -p ; then
++		echo "FAIL: the vidtv module failed to load" | tee -a $tmp
++		echo "Grand Total for vidtv: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
++		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
++		rmmod vidtv
++		exit 0
++	fi
++
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo unbind vidtv
++	echo
++	echo -n vidtv.0 >/sys/bus/platform/drivers/vidtv/unbind
++	sleep $unbind_time
++	echo
++	echo rebind vidtv
++	echo
++	echo -n vidtv.0 >/sys/bus/platform/drivers/vidtv/bind
++	sleep 1
++	echo
++	echo second unbind vidtv
++	echo
++	sleep 1
++	echo
++	echo -n vidtv.0 >/sys/bus/platform/drivers/vidtv/unbind
++	sleep $reunbind_time
++	echo
++	echo rmmod vidtv
++	echo
++	rmmod vidtv
++	sleep $rmmod_time
++	if [ $kmemleak -eq 1 ]; then
++		echo
++		echo kmemleak results for vidtv:
++		echo
++		echo scan >/sys/kernel/debug/kmemleak
++		cat /sys/kernel/debug/kmemleak
++		echo
++		echo end of kmemleak results
++		echo clear >/sys/kernel/debug/kmemleak
++	fi
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++
++fi
++
+ if [ $vivid -eq 1 ]; then
+ 	dmesg -n notice
+ 	echo
+-- 
+2.30.0
 
