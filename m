@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DC12EA8EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C4D2EA8F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729194AbhAEKhM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Jan 2021 05:37:12 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:41935 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728291AbhAEKhL (ORCPT
+        id S1729343AbhAEKiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:38:13 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:41319 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729321AbhAEKiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:37:11 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-78-7QYeCnYBNmqiCO7SySjlkg-1; Tue, 05 Jan 2021 10:35:32 +0000
-X-MC-Unique: 7QYeCnYBNmqiCO7SySjlkg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 5 Jan 2021 10:35:31 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 5 Jan 2021 10:35:31 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-CC:     "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>
-Subject: RE: [PATCH] checkpatch: fix unescaped left braces
-Thread-Topic: [PATCH] checkpatch: fix unescaped left braces
-Thread-Index: AQHW40n3I32sBUugtEWF3xXGRvsfoqoY1Xyw
-Date:   Tue, 5 Jan 2021 10:35:31 +0000
-Message-ID: <027501cb2506426d9c05adf56d002781@AcuMS.aculab.com>
-References: <20210105093507.29297-1-dwaipayanray1@gmail.com>
- <cf102ac77eb1f9e6424f30aef835f6c61dd03407.camel@perches.com>
-In-Reply-To: <cf102ac77eb1f9e6424f30aef835f6c61dd03407.camel@perches.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 5 Jan 2021 05:38:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1609843091; x=1641379091;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=mPgqYvT9twuHVMlI0OVkYcEKNKnwJB9l+TzR0S/ALmI=;
+  b=gjyVoJhIODft+iuPNHYQ4DyR10/g2rkqCJzRMk8iiyYZA/3a/z3eo/PI
+   QWgFdVegJQWBOf8Or/ne/7/+SPmlaflIAp2qg6IacPPc5G6xm2559sm6z
+   +RYdXBhIPzQGN8g5RESYwgMYwgyIAFjCuA+HNNp0+DYC1lvOUmveHWGNh
+   s=;
+X-IronPort-AV: E=Sophos;i="5.78,476,1599523200"; 
+   d="scan'208";a="75421730"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 05 Jan 2021 10:37:24 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 8E2D9A2255;
+        Tue,  5 Jan 2021 10:37:22 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.27) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 Jan 2021 10:37:16 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     SeongJae Park <sjpark@amazon.com>, <stable@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.de>, <doebel@amazon.de>,
+        <aams@amazon.de>, <mku@amazon.de>, <jgross@suse.com>,
+        <julien@xen.org>, <wipawel@amazon.de>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/5] Backport of patch series for stable 4.4 branch
+Date:   Tue, 5 Jan 2021 11:37:02 +0100
+Message-ID: <20210105103702.15804-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <X+nBh/5nsI8QrWCg@kroah.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.27]
+X-ClientProxiedBy: EX13D30UWC003.ant.amazon.com (10.43.162.122) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 05 January 2021 10:01
+Hi Greg,
+
+On Mon, 28 Dec 2020 12:29:11 +0100 Greg KH <gregkh@linuxfoundation.org> wrote:
+
+> On Thu, Dec 17, 2020 at 05:03:57PM +0100, SeongJae Park wrote:
+> > From: SeongJae Park <sjpark@amazon.de>
+> > 
+> > Changes from v2
+> > (https://lore.kernel.org/stable/20201217130501.12702-1-sjpark@amazon.com/)
+> > - Move 'nr_pending' increase from 5th patch to 4th patch
+> > 
+> > Changes from v1
+> > (https://lore.kernel.org/stable/20201217081727.8253-1-sjpark@amazon.com/)
+> > - Remove wrong 'Signed-off-by' lines for 'Author Redacted'
 > 
-> On Tue, 2021-01-05 at 15:05 +0530, Dwaipayan Ray wrote:
-> > Perl 5.22 onwards require that "A literal "{" should now be
-> > escaped in a pattern".
+> All now queued up, but you also need a series of this for the 4.9.y tree
+> as well.
 
-Sounds like a good reason to never use perl :-)
+Thank you for your efforts!
 
-> Not quite correct.
-> 
-> > checkpatch contains several literal "{". Fix such instances
-> > by preceding them with a backslash.
-> 
-> Not all literal left braces need to be escaped.
-> https://www.perlmonks.org/?node_id=1191981
-> 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > @@ -2036,7 +2036,7 @@ sub annotate_values {
-> >  			print "ASSIGN($1)\n" if ($dbg_values > 1);
-> >  			$type = 'N';
-> >
-> >
-> > -		} elsif ($cur =~/^(;|{|})/) {
-> > +		} elsif ($cur =~ /^(;|\{|\})/) {
+However, I was able to cherry-pick this series, which is already merged in
+4.4.y, to 4.9.y without conflicts.
 
-isn't (;|{|}) much the same as [;{}] ??
+    $ git checkout stable/linux-4.9.y -b xsa349_4.9
+    $ git cherry-pick d8b0d52e408ca..3c71d2f637c8
+    warning: inexact rename detection was skipped due to too many files.
+    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+    [xsa349_4.9 51b4cb3db28a] xen/xenbus: Allow watches discard events before queueing
+     Date: Mon Dec 14 10:02:45 2020 +0100
+     4 files changed, 16 insertions(+), 1 deletion(-)
+    warning: inexact rename detection was skipped due to too many files.
+    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+    [xsa349_4.9 3242225d9645] xen/xenbus: Add 'will_handle' callback support in xenbus_watch_path()
+     Date: Mon Dec 14 10:04:18 2020 +0100
+     6 files changed, 17 insertions(+), 7 deletions(-)
+    warning: inexact rename detection was skipped due to too many files.
+    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+    [xsa349_4.9 10d6c1301412] xen/xenbus/xen_bus_type: Support will_handle watch callback
+     Date: Mon Dec 14 10:05:47 2020 +0100
+     2 files changed, 4 insertions(+), 1 deletion(-)
+    warning: inexact rename detection was skipped due to too many files.
+    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+    [xsa349_4.9 3875703f1e6b] xen/xenbus: Count pending messages for each watch
+     Date: Mon Dec 14 10:07:13 2020 +0100
+     2 files changed, 21 insertions(+), 12 deletions(-)
+    warning: inexact rename detection was skipped due to too many files.
+    warning: you may want to set your merge.renamelimit variable to at least 6130 and retry the command.
+    [xsa349_4.9 40e3b315cd18] xenbus/xenbus_backend: Disallow pending watch messages
+     Date: Mon Dec 14 10:08:40 2020 +0100
+     1 file changed, 7 insertions(+)
 
-	David
+Seems you tried to merge the series for upstream in 4.9.y:
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+    https://lore.kernel.org/stable/1609154834239118@kroah.com/
 
+This must because I didn't test this series with v4.9 and mention it.  Sorry
+for making a confusion.  Could you please check this again?
+
+
+Thanks,
+SeongJae Park
