@@ -2,121 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5864A2EAE33
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1682EAE3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727489AbhAEP0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:26:06 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:34903 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbhAEP0G (ORCPT
+        id S1727920AbhAEP2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:28:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53761 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727802AbhAEP2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:26:06 -0500
-Received: by mail-il1-f198.google.com with SMTP id p6so144291ilb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 07:25:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wrmsr5GggqH+TghkirLZ6pImT91cR6dCRqhWUi9enro=;
-        b=eurfjOMcIl23YqQ2/vJ4NCsQqZtt+FynNcXbOetkpMnWplk+GWc+gj22mTx7WXMNjG
-         Z8JRAWT0wkZwwcqmCUqePpR9kvqdD2R81eaCAzA6JQFF3n1opKCEFnSV4VgNUBavakzj
-         7R7xyiqB/Tkhor/39vKdiInxVplc2VMkDhY/wFc4rzRwdYX8gjv9SgOBJrohm9p7Efnd
-         uc/uEPCeKYS1A6q6wKMExQiEqgRfmWOdLWqH/Z0FtjLFe0XoOsoqoERUb9QTZYIal3SC
-         kZL7AVCbka2fduswtatsPQzwfbnBWeAUFYXsxitTyDBo9D6Kgq1RDh4UR9Bpo/5tTOAI
-         04iQ==
-X-Gm-Message-State: AOAM532FqBopUStUPimgpveYf3e3yAaLnJnwVP616N/0/MA6YMYOiv5g
-        E4nrQysjKzujDcuKE+mLaG5e5kE3voS1hraAnFeGLuzVJA0o
-X-Google-Smtp-Source: ABdhPJycdNpl2toyalfRRsA2ioEtmD60eKrxNPmp14lkwxLLj19KViYyOvtMc4CIb25Hhc1CQgTPCYRl5DBRzpPE3bROyvg67Crl
+        Tue, 5 Jan 2021 10:28:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609860403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NRNmBZOaPHwmEQZjlu49SykVwvAJ7tCQh5OPc44TFFA=;
+        b=D96QoqrDR4Z6EYr5oLV7orh074S2JMQlT5FolCQGKuceM+fOaGNpW15sUE3shF+jIribVn
+        HUo23hpYRqRxL2Mya/URpTUFG5HWpR7ylkNSG7cqwweueIF/uvJXg36aKYuQggH+hl9zEr
+        /Ubhx+VZs6NmWyxVij7cO9m75lZhwf4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-MgtMswYXNr6ZZdPA9ZMmRA-1; Tue, 05 Jan 2021 10:26:41 -0500
+X-MC-Unique: MgtMswYXNr6ZZdPA9ZMmRA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F887A0CA0;
+        Tue,  5 Jan 2021 15:26:39 +0000 (UTC)
+Received: from treble (ovpn-113-48.rdu2.redhat.com [10.10.113.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A86105F9B8;
+        Tue,  5 Jan 2021 15:26:38 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 09:26:36 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
+Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gcc-plugins:  fix gcc 11 indigestion with plugins...
+Message-ID: <20210105152636.2kkiu3boooaimujd@treble>
+References: <82487.1609006918@turing-police>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:250e:: with SMTP id v14mr201090jat.41.1609860324579;
- Tue, 05 Jan 2021 07:25:24 -0800 (PST)
-Date:   Tue, 05 Jan 2021 07:25:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c8dd4a05b828d04c@google.com>
-Subject: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run7
-From:   syzbot <syzbot+fad5d91c7158ce568634@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <82487.1609006918@turing-police>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Dec 26, 2020 at 01:21:58PM -0500, Valdis Klētnieks wrote:
+> Fedora Rawhide has started including gcc 11,and the g++ compiler
+> throws a wobbly when it hits scripts/gcc-plugins:
+> 
+>   HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
+> In file included from /usr/include/c++/11/type_traits:35,
+>                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/system.h:244,
+>                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/gcc-plugin.h:28,
+>                  from scripts/gcc-plugins/gcc-common.h:7,
+>                  from scripts/gcc-plugins/latent_entropy_plugin.c:78:
+> /usr/include/c++/11/bits/c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO
+>  C++ 2011 standard. This support must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
+>    32 | #error This file requires compiler and library support \
+> 
+> In fact, it works just fine with c++11, which has been in gcc since 4.8,
+> and we now require 4.9 as a minimum.
+> 
+> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
 
-syzbot found the following issue on:
+I'm also needing this.
 
-HEAD commit:    00a279e4 selftests/bpf: Add tests for user- and non-CO-RE ..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11b1fc1f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2eb8bc0ec06304ce
-dashboard link: https://syzkaller.appspot.com/bug?extid=fad5d91c7158ce568634
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+-- 
+Josh
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fad5d91c7158ce568634@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run7+0x48f/0x4a0 kernel/trace/bpf_trace.c:2130
-Read of size 8 at addr ffffc90000ca0030 by task syz-executor.2/10711
-
-CPU: 0 PID: 10711 Comm: syz-executor.2 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- __bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
- bpf_trace_run7+0x48f/0x4a0 kernel/trace/bpf_trace.c:2130
- __bpf_trace_percpu_alloc_percpu+0x1dc/0x220 include/trace/events/percpu.h:10
- trace_percpu_alloc_percpu include/trace/events/percpu.h:10 [inline]
- pcpu_alloc+0xbc4/0x17e0 mm/percpu.c:1844
- perf_trace_event_reg kernel/trace/trace_event_perf.c:107 [inline]
- perf_trace_event_init+0x35f/0xb20 kernel/trace/trace_event_perf.c:204
- perf_trace_init+0x176/0x240 kernel/trace/trace_event_perf.c:228
- perf_tp_event_init+0xa2/0x120 kernel/events/core.c:9563
- perf_try_init_event+0x12a/0x570 kernel/events/core.c:11031
- perf_init_event kernel/events/core.c:11083 [inline]
- perf_event_alloc.part.0+0xe5b/0x3a40 kernel/events/core.c:11361
- perf_event_alloc kernel/events/core.c:11740 [inline]
- __do_sys_perf_event_open+0x647/0x2f30 kernel/events/core.c:11838
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e299
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f1784968c68 EFLAGS: 00000246
- ORIG_RAX: 000000000000012a
-RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 000000000045e299
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000180
-RBP: 000000000119bfd0 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffffffffffff R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffe18fb31bf R14: 00007f17849699c0 R15: 000000000119bf8c
-
-
-Memory state around the buggy address:
- ffffc90000c9ff00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000c9ff80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->ffffc90000ca0000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                                     ^
- ffffc90000ca0080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000ca0100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
