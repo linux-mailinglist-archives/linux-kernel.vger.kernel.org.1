@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4DF2EB0FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F304C2EB0F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730589AbhAERFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:05:35 -0500
-Received: from mail-io1-f51.google.com ([209.85.166.51]:42578 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729505AbhAERFe (ORCPT
+        id S1730571AbhAERFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:05:32 -0500
+Received: from mail-il1-f178.google.com ([209.85.166.178]:41334 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729505AbhAERFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:05:34 -0500
-Received: by mail-io1-f51.google.com with SMTP id q137so28783109iod.9;
-        Tue, 05 Jan 2021 09:05:19 -0800 (PST)
+        Tue, 5 Jan 2021 12:05:31 -0500
+Received: by mail-il1-f178.google.com with SMTP id w17so315131ilj.8;
+        Tue, 05 Jan 2021 09:05:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=sxTRWEC8MOpnTMUesMj6I4isC8VAjw1tkHEHI23HMOY=;
-        b=Yp1OlFAVVJr3/SYx7XsxB0clQ0uvqbYVBkDG7WshR4D0AeJ/UGMerce1rP3WlF+sTj
-         xBkjHmQXaDF/k3SFdE4dNMbsyi7Znuiraa0bWvulNKmhFoj6Ug3YEvvdXM8j/OYP+FZe
-         sZ3H83u5Ju/yWvWp5yynXuDr3EsCMzNTcPtGldnCqiqwSk7GRybIzrYQH2OXE5dvvhpK
-         bwq/DEva1vXPCbTEga6tSDsQdnaT2qK6WaKlDMgMv/BEB0l11/+mQb5FKTBo5HJR5D1R
-         tPzZmXvktmC0ClDyNWu97kaHfEvYxKRCwlVF0kpCR5xNYAAdo8A0GGfBOZD1ovGANkAv
-         e1Pg==
-X-Gm-Message-State: AOAM531EL6tGFA8Pt87aD89FIUPRtDDAk1cfVEVa4rR1qCTcF10UJw1n
-        JCMB+nrlpHJbwH7gqAPQVw==
-X-Google-Smtp-Source: ABdhPJyv0RgKbg7aFtr2sDhxf/W4b4hYcZ75/Cv55V8/TksMzERWMcHIKqT2VRvHjbZ5WhzqUSHWPA==
-X-Received: by 2002:a6b:4f13:: with SMTP id d19mr56135iob.121.1609866293433;
-        Tue, 05 Jan 2021 09:04:53 -0800 (PST)
+        bh=szjyrLYwaZaHX4vAXZif2q9yEP3V/qNPGTizVqWHU30=;
+        b=o7NQvheEo5/aLClIIY16Y0ORBZe+sf8ohLKJRvBT1RE0ZPQp0xKrMpbIPyPYPi1d1v
+         X8BLw3YBANcU1oIBDWfXILJtxoFxTCwQafcVx2YjM0MMHAcJAComR2zHo3p300JMgLvu
+         1jscqoFfEm6K97+XowLdXXq+bMnfPRrbo9+BaEDOxevlcpgVfwWR9Lvojk3JrpsRVdFn
+         CrzEbd3QwCycJFioRGgxFrid3lDN7bI5APqGbbkveaq11AJ84yLQovR8T8x4xCKlQ8xr
+         /Z4Bh0MVlIuVYCUanS8rkDgy3yWEtyrhyZ+ph6XoTLTv1YxEKUmuinMYcy85VEVv2Nmi
+         fZUA==
+X-Gm-Message-State: AOAM531pU9tvHowhhKe7mVZE4UzWFte+vUI87+uVk02f/rm/mZOoCf/8
+        8qXxSQ6rgFq/B2AxRvsBWg==
+X-Google-Smtp-Source: ABdhPJyOvIBC1VtDlm9f8CAH2CirusT8UNwTgPnnqrgUs2zeNid9UusFz2jWO51pCmduXoGkABoTGQ==
+X-Received: by 2002:a92:7b07:: with SMTP id w7mr589022ilc.78.1609866290356;
+        Tue, 05 Jan 2021 09:04:50 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id 9sm57733iob.28.2021.01.05.09.04.51
+        by smtp.gmail.com with ESMTPSA id k5sm64436ioa.27.2021.01.05.09.04.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 09:04:52 -0800 (PST)
-Received: (nullmailer pid 372421 invoked by uid 1000);
+        Tue, 05 Jan 2021 09:04:49 -0800 (PST)
+Received: (nullmailer pid 372418 invoked by uid 1000);
         Tue, 05 Jan 2021 17:04:48 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     rjw@rjwysocki.net, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, viresh.kumar@linaro.org
-In-Reply-To: <1609842147-8161-2-git-send-email-claudiu.beznea@microchip.com>
-References: <1609842147-8161-1-git-send-email-claudiu.beznea@microchip.com> <1609842147-8161-2-git-send-email-claudiu.beznea@microchip.com>
-Subject: Re: [PATCH 1/3] dt-bindings: cpufreq: sama7g5-cpufreq: add dt bindings documentation
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     devicetree@vger.kernel.org, John Crispin <john@phrozen.org>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Birger Koblitz <mail@birger-koblitz.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20210104131755.2979203-2-bert@biot.com>
+References: <20210104131755.2979203-1-bert@biot.com> <20210104131755.2979203-2-bert@biot.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: interrupt-controller: Add Realtek RTL838x/RTL839x support
 Date:   Tue, 05 Jan 2021 10:04:48 -0700
-Message-Id: <1609866288.037184.372420.nullmailer@robh.at.kernel.org>
+Message-Id: <1609866288.019144.372417.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Jan 2021 12:22:25 +0200, Claudiu Beznea wrote:
-> Add DT bindings documentation for SAMA7G5 CPUFreq driver.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+On Mon, 04 Jan 2021 14:17:54 +0100, Bert Vermeulen wrote:
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
 > ---
->  .../bindings/cpufreq/cpufreq-sama7g5.yaml          | 80 ++++++++++++++++++++++
->  1 file changed, 80 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-sama7g5.yaml
+>  .../realtek,rtl-intc.yaml                     | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -65,11 +65,15 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/cpufreq-sama7g5.yaml: properties:cpu-supply: '$ref' is not one of ['description', 'deprecated']
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/cpufreq-sama7g5.yaml: ignoring, error in schema: properties: cpu-supply
-warning: no schema found in file: ./Documentation/devicetree/bindings/cpufreq/cpufreq-sama7g5.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml: properties: 'interrupt-map-mask' is a dependency of 'interrupt-map'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml: ignoring, error in schema: properties
+warning: no schema found in file: ./Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml
+Error: Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.example.dts:30.5-6 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.example.dt.yaml] Error 1
+make: *** [Makefile:1370: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1422407
+See https://patchwork.ozlabs.org/patch/1422078
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
