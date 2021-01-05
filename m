@@ -2,116 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189F22EA9AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5882EA9BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729451AbhAELS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:18:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729196AbhAELSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:18:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 736B5229C5;
-        Tue,  5 Jan 2021 11:18:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609845492;
-        bh=GDmYQRHGn/AcnFt3hdxGi1mf2d4j0SgudD/3lB6HiLU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MGoc1AfjFEcjnH2LG9n6lBEYoM6Ri+jtRDQ3pMETkgkS4xWatgY5WzBCv7tGFTTX4
-         9deGZUIgeLAhm1VPGBdYES++ZORJDj29LOoOSG8tACOto7uS1nWJwFUZ5fw3Q/9+7t
-         9Rnjcz0F86y/qp986vAfUr6GinSVP0XwPgyXu3vSEN7cNL4OxE10chjJdGA85/nxVF
-         lPpoMqPvAHjIz+Tazlv2fQtQtSQARqHG/OYlCfxgVMRWyanIC2bLCSGkFIWiXyTy98
-         QR/IH6Kj4pkkDkHe387Q3RpA+JZkCdNIme8yoaM7itWnaNn71YrIoqeYgceFoOyLsB
-         SI0+F1HbHOM4g==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 4BD5B3C0C94; Tue,  5 Jan 2021 12:18:10 +0100 (CET)
-Date:   Tue, 5 Jan 2021 12:18:10 +0100
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Add missing array size constraints
-Message-ID: <20210105111810.5sdfmjga5in5wgvx@earth.universe>
-References: <20210104230253.2805217-1-robh@kernel.org>
+        id S1729195AbhAELUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:20:16 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:52695 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727764AbhAELUI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 06:20:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1609845608; x=1641381608;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=K1ZVRShcvmk5YfFs3uIXX0LUIC7opQXrnO735QjgTVI=;
+  b=TCSJ5j0VUT8mLe4CYna3BxOFQ9NQ+FmlxV2Pu/dT8P7NVbDWDTqqVyzh
+   MhWdtP0UhOldA128QhtZl+/cOtX4hiaYj6XO0PXuHIqClvuNn6Id1npfk
+   J+lxZrTwOhQ0VLX+vZGCUk2Gi9rXg2UcZ0V/NhjG2CsBRNrkfVWzKl6HT
+   0BI6cYR54evkmWGdPe9GVj3+3SgMQ4a5Ov47WM20vrsCIfzwVSUDFgQt7
+   hLSnugUgf6rENuHcMfsowK0RonD9XeZY9fflAmXPKZwT8a+ZGC0dl7GW+
+   7fA2pbLiaZhoRh9cPkyX52fI7a5xmDKbuir7/fjH2a0breZBW0ruocK41
+   g==;
+IronPort-SDR: PIPqYiu/RlJphDhc78OvKhF2T4Q/jHDswbrWKdBuZAArDAs7Cyz8B1fSrPCL3TBzJQExFXAy3R
+ a53gYcMvvTkNNsdp6utQgxe1/72PctbwUPzCrrBEnyO2xmZ2Z1yy/tYghli2GfiRp7bAB82yl4
+ rZy4WnJGJviTJcN/nO1YJMC9EDjFydoxUg42quhMQcTjNRHKPlVOzHYSN2Mx0Ag31YAXseg64C
+ tTgpWg1Dsed9hqVhn7CF0XHqK2vUG90pCs8638/c3xrLIJeU+Hf0d0V555vu0zlzBdf9vuHgA4
+ Sbg=
+X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
+   d="scan'208";a="101796283"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Jan 2021 04:18:53 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 5 Jan 2021 04:18:52 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 5 Jan 2021 04:18:48 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] ARM: dts: at91: sama5d2: remove atmel,wakeup-type references
+Date:   Tue, 5 Jan 2021 13:18:45 +0200
+Message-ID: <1609845525-10766-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vyuzhxvp4ms2cjlb"
-Content-Disposition: inline
-In-Reply-To: <20210104230253.2805217-1-robh@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+atmel,wakeup-type DT property is not referenced anywhere in the current
+and previous version of the code thus remove it.
 
---vyuzhxvp4ms2cjlb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ arch/arm/boot/dts/at91-kizbox3_common.dtsi    | 1 -
+ arch/arm/boot/dts/at91-sama5d27_som1_ek.dts   | 1 -
+ arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts | 1 -
+ arch/arm/boot/dts/at91-sama5d2_icp.dts        | 1 -
+ arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts     | 1 -
+ arch/arm/boot/dts/at91-sama5d2_xplained.dts   | 1 -
+ 6 files changed, 6 deletions(-)
 
-Hi Rob,
+diff --git a/arch/arm/boot/dts/at91-kizbox3_common.dtsi b/arch/arm/boot/dts/at91-kizbox3_common.dtsi
+index 9ce513dd514b..c4b3750495da 100644
+--- a/arch/arm/boot/dts/at91-kizbox3_common.dtsi
++++ b/arch/arm/boot/dts/at91-kizbox3_common.dtsi
+@@ -341,7 +341,6 @@
+ 
+ 	input@0 {
+ 		reg = <0>;
+-		atmel,wakeup-type = "low";
+ 	};
+ };
+ 
+diff --git a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+index 0e159f879c15..84e1180f3e89 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+@@ -142,7 +142,6 @@
+ 
+ 				input@0 {
+ 					reg = <0>;
+-					atmel,wakeup-type = "low";
+ 				};
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts
+index 6b38fa3f5568..180a08765cb8 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts
+@@ -209,7 +209,6 @@
+ 
+ 	input@0 {
+ 		reg = <0>;
+-		atmel,wakeup-type = "low";
+ 	};
+ };
+ 
+diff --git a/arch/arm/boot/dts/at91-sama5d2_icp.dts b/arch/arm/boot/dts/at91-sama5d2_icp.dts
+index 6783cf16ff81..46722a163184 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_icp.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_icp.dts
+@@ -697,7 +697,6 @@
+ 
+ 	input@0 {
+ 		reg = <0>;
+-		atmel,wakeup-type = "low";
+ 	};
+ };
+ 
+diff --git a/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts b/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
+index c894c7c788a9..8de57d164acd 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
+@@ -206,7 +206,6 @@
+ 
+ 				input@0 {
+ 					reg = <0>;
+-					atmel,wakeup-type = "low";
+ 				};
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+index 058fae1b4a76..4e7cf21f124c 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+@@ -351,7 +351,6 @@
+ 
+ 				input@0 {
+ 					reg = <0>;
+-					atmel,wakeup-type = "low";
+ 				};
+ 			};
+ 
+-- 
+2.7.4
 
-On Mon, Jan 04, 2021 at 04:02:53PM -0700, Rob Herring wrote:
-> DT properties which can have multiple entries need to specify what the
-> entries are and define how many entries there can be. In the case of
-> only a single entry, just 'maxItems: 1' is sufficient.
->=20
-> Add the missing entry constraints. These were found with a modified
-> meta-schema. Unfortunately, there are a few cases where the size
-> constraints are not defined such as common bindings, so the meta-schema
-> can't be part of the normal checks.
->=20
-> [...]
->  .../bindings/power/supply/bq25980.yaml        |  1 +
-> [...]
-
-Acked-by: Sebastian Reichel <sre@kernel.org>
-
--- Sebastian
-
---vyuzhxvp4ms2cjlb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/0SucACgkQ2O7X88g7
-+ppIAQ/8CwCUtes2Mr7K09stdBuNtR3gBayMxcQnnIM6AQvBexKzq6gM2xpDIPB8
-YVpTjaGQkOcwS3BMu7BsRT4t2s3KXy9lVS5jkChykskjyAyr9a7QPsK7MVZVRh2Q
-U896qS+zI2nsNdeX6+kT10+29b7PcoEvTJRtEPEFlsq4UoFbMAsdJhtHBo9v1oUP
-cJMT7NSkqtcHM9HeSPZFCTLyAsoGFPYMTneKdN9ZVlPHoQRkCH0k3vyHMmKKPWAQ
-uafDLlP+nvs9Ug/FSsFsoaLcixHHAI+GkVj48muZL7EVAygGTbrRA27r0txduvfj
-DOxfT7BdNOMkmDge0RR2vk29V/2WYsEg4vwi3uyP2BDQsdXEYpwTn00IJ5IJgcqE
-EAjq7hWsSo7zd8VkMc/CLN1a1W+PEpIJ0CGfS4cLtAMwRLNLdPA+FS4UaBCAoS4k
-T9AZGFXABwtQQHyOAHD8/Hjs5vexDnWdvcRyCuDqgt6YeUX6Lu8pRTWx5lkWPkLy
-GZf/jppVAnP/gtnsOOJnPL37jxbOpelu+4UopYZ/j9YLJb+M7P2xYhsYuRlnKn0r
-aAgoNpEXu3TNpex2apw+Cm70EiidWAGcWqvrOCWhdqWBulGJ+O4v1DYe536LLoZN
-rdX4Hbkx7kBMNJ1ZZVIA3x9YzLwGKo/1nnV2q7fUdTzUEobcJWQ=
-=gWL0
------END PGP SIGNATURE-----
-
---vyuzhxvp4ms2cjlb--
