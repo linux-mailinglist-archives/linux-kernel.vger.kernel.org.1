@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392E82EAB82
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B14DE2EAB81
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730533AbhAENFT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Jan 2021 08:05:19 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:43373 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729829AbhAENFR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730522AbhAENFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 5 Jan 2021 08:05:17 -0500
-Received: from xps13 (lfbn-tou-1-1535-bdcst.w90-89.abo.wanadoo.fr [90.89.98.255])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 82D77240008;
-        Tue,  5 Jan 2021 13:04:32 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 14:04:31 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH 1/1] mtd: spinand: add support for Foresee FS35ND01G
-Message-ID: <20210105140431.185e8ce1@xps13>
-In-Reply-To: <CAFr9PXmPEQ2poQUTtaBH4CZ-S+sJjoUjJ5D_qA5aHZj7AASg7w@mail.gmail.com>
-References: <20201229055059.2255021-1-daniel@0x0f.com>
-        <20201229055059.2255021-2-daniel@0x0f.com>
-        <20210104151746.21cdde24@xps13>
-        <CAFr9PXmPEQ2poQUTtaBH4CZ-S+sJjoUjJ5D_qA5aHZj7AASg7w@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Received: from mail.kernel.org ([198.145.29.99]:57880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727063AbhAENFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:05:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7679522AB9;
+        Tue,  5 Jan 2021 13:04:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609851874;
+        bh=/vqYgpMKu2hcBkqqsBMfs8P1d5Xpd9OHlU7GsZ3xTDU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OdfiePzrPT+X7OqHz5epLl+B0Sd9Kb1ng56057AloxLlnBk/Mb7pK9d6wBEC22v98
+         ri0LxvSQeWp1zKNkW9dVEVmZrJmqaCQZS11uawzBcC8s5ktRt+7m+HNv1iRbQTGlKJ
+         W5tR4gRlwvL0shkBNtDL++G50NSiylpoDq8zlkeI=
+Date:   Tue, 5 Jan 2021 14:05:59 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/63] 5.10.5-rc1 review
+Message-ID: <X/RkN6xJGasmekr4@kroah.com>
+References: <20210104155708.800470590@linuxfoundation.org>
+ <69f585d13328c51811441c967243f4918f6a3c84.camel@rajagiritech.edu.in>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <69f585d13328c51811441c967243f4918f6a3c84.camel@rajagiritech.edu.in>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Tue, Jan 05, 2021 at 06:25:14PM +0530, Jeffrin Jose T wrote:
+> On Mon, 2021-01-04 at 16:56 +0100, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.5 release.
+> > There are 63 patches in this series, all will be posted as a response
+> > to this one.† If anyone has any issues with these being applied,
+> > please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > ††††††††https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.5-rc1.gz
+> > or in the git tree and branch at:
+> > ††††††††git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> > stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> hello,
+> 
+> Compiled  and  booted  5.10.5-rc1+ . dmesg  related shows†
+> no new errors †and  may be no major warning.†
+> 
+> Having said that, "dmesg -l warn"  show  a BUG related stuff.
+> 
+> warning-5.10.5-rc1+.txt file is attached.
 
-Daniel Palmer <daniel@0x0f.com> wrote on Tue, 5 Jan 2021 21:18:21 +0900:
+Is this new?  If so, can you bisect it?
 
-> Hi Miquel,
-> 
-> On Mon, 4 Jan 2021 at 23:17, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > Perhaps giving the link of the datasheet here makes sense.  
-> 
-> Noted. I'll put that into v2.
-> 
-> > > +#define SPINAND_MFR_LONGSYS          0xcd  
-> >
-> > Nitpick: I personally prefer uppercase hex numbers.
-> >  
-> 
-> Noted.
-> 
-> > > +                  NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-> > > +                  NAND_ECCREQ(4, 512),
-> > > +                  SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> > > +                                           &write_cache_variants,
-> > > +                                           &update_cache_variants),  
-> >
-> > This device probably supports more variants (especially dual/quad
-> > ones) but I guess it's not a problem to not have them here right now.  
-> 
-> Right now I can't really test dual or quad because my SPI driver
-> doesn't know to do dual or quad io.
-> I plan to add those in once I can validate they work.
-> 
-> > > +                  SPINAND_HAS_QE_BIT,
-> > > +                  SPINAND_ECCINFO(NULL,
-> > > +                                  NULL)),  
-> >
-> > You should define the ->ecc and ->free hooks of the
-> > mtd_ooblayout_ops structure and point to it here. It defines the free
-> > OOB bytes and bytes used by the on-die ECC engine. You should find this
-> > in the datasheet. You may look at other manufacturer drivers for
-> > examples of how it should be implemented. It is the way to tell the
-> > upper layers that eg. "byte 2 to 17 are ECC bytes, 18 until the end are
-> > free to use".  
-> 
-> Ok I'll add those in. Is there a way I can test that my implementation is right?
-> I.e. is writing something, reading it back and checking if the data is
-> correct a good enough test here?
-> I don't really want to make it look like this flash is supported and
-> break someone's data. :)
+thanks,
 
-You may try to use flash_erase/nandwrite/nanddump from the mtd-utils
-package. You may first use a dummy functions and declare the entire
-zone free (except for the bad block marker at the beginning).
-
-Then, you may write the entire OOB area in regular mode then read it in
-raw mode (-n). Sometimes the ECC bytes are not visible, in this case it
-may be worth trying writing the OOB area with known data and read it
-back and see what you get. But these information probably are in the
-datasheet.
-
-Good luck,
-Miqu√®l
+greg k-h
