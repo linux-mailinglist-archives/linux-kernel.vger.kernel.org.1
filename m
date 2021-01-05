@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037A42EAB28
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0031D2EAB2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730067AbhAEMsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:48:45 -0500
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:40540 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728318AbhAEMso (ORCPT
+        id S1728919AbhAEMtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:49:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726215AbhAEMtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:48:44 -0500
-Received: by mail-lf1-f44.google.com with SMTP id m12so72260383lfo.7;
-        Tue, 05 Jan 2021 04:48:27 -0800 (PST)
+        Tue, 5 Jan 2021 07:49:05 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF44C061574;
+        Tue,  5 Jan 2021 04:48:25 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id q137so28033018iod.9;
+        Tue, 05 Jan 2021 04:48:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CCTyf1sf2ZU7h0cZkeoRQ1POMJK2PzlWyw0VjZ882R0=;
+        b=LNb2SJ/6IKS1JI2IAIJzBNognHzy8pNMScBDz392rTPu3OyZxNZStZXmpSq+K1/Fyh
+         v+kxUmGcDuPXpa4etSFLIBtXEkGYoO50D+wQyY6kDdF+FTSA8lQbRd6mozjFhAbSnFPC
+         q/U4FidfqfI7tRnsGMgJBlbVMwK7D6tKfkxgL7Iv1CTg5lpGY58UWh9x0JURGYTxi9FS
+         LVJmRQpPrz89l4m52Uq2w57e42C4bQXHmBPU0djON2BEj2i7BTvkv7QqKEo/1rRMH5N7
+         wWu7nFUmye2/of/14PWepW+MUV1q/6SmOXEJsJ9roV/gF0QEhzACt8qsRbx5g13GDdNx
+         Z/tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=WVVIx6PVhLwLplystJZYvhWeXG//TClji/7GLWGokI8=;
-        b=GH+3aDIfIEnaSoFnFu/3KBG5w4E4ehNViUVPv5Aen+YqRSsE0+Yt5D/dSdpNHQUtYA
-         ewgl7DayBomFlv1zg3YSG3jIRaBJsgq8MjQXoGuexW6ttJ5AUOIbnAZQPsqZnJ4aVVFT
-         7Olcwme+or2lJhraAPvqJ9Z2wXV9KSiyvjwzJ9xZLG/QmDmap+fFRBtYGIubl0FwmS6e
-         N4lwuWJ4ORdsgt5z5F/bDT7aDF008s7r/JBin21B0o9Xg8qUt1wsNqfKLrTWXMlcx0Zo
-         uWTLthTGJGfbBUIBoUK0JFil8NC2rF4ZccTT/VvZm0AHv6ZL/+RGxilY5byXfZTvo3sw
-         2goQ==
-X-Gm-Message-State: AOAM533xmyMdTKkx4fuwZpuh9tcRnKdy+Jk92eceXBCBXJA6MlmG6nQm
-        EAMOFLJi0xxrdnFk4sWdHwY=
-X-Google-Smtp-Source: ABdhPJwynyN+uxLUCFSfpexwN6aD1GsIHPuTSLZtETHD0K2xhW+5jQnW2bSBTwfcDIv7SGh9zc9TWg==
-X-Received: by 2002:a19:cb12:: with SMTP id b18mr36124105lfg.480.1609850881466;
-        Tue, 05 Jan 2021 04:48:01 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id v7sm7600621lfg.9.2021.01.05.04.48.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 04:48:00 -0800 (PST)
-Date:   Tue, 5 Jan 2021 14:47:54 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-power@fi.rohmeurope.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: BD718x7: Do not depend on parent driver data
-Message-ID: <20210105123028.GA3409663@localhost.localdomain>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CCTyf1sf2ZU7h0cZkeoRQ1POMJK2PzlWyw0VjZ882R0=;
+        b=Cxc5ySq4t7oLKi6PivwJhf537yk7uhJDPVIgIzsSDzwSAU/14n807tLB+pS4dT9aYm
+         R9h5LRv7ZW95vrgFButkzrykDtbrKGDrKdJAFVScIK5MKzcqt1ZyGopBqvTR0J06tvHT
+         Ae3WTejOijfjW/MM9Nngiuzf/xxT3bIKqUT6ph9meASCM4JZDVVeiTDE5inSoIYMcU5G
+         2i3JmVxTFcS1MsdAgpZj3VytOXNrfF13au/hXXJNWx16Jh4M5TBOmDUfDSR9xNE4Z2SE
+         SwPDGdYKARNJ8zATnhCcvmuE/2fmmD7jV4HEbL6wZYYMftH7x7FYySkFuLUXwgZKv+lu
+         E/3g==
+X-Gm-Message-State: AOAM532nRILoOgL/32T6dZMcxN949t4iBzZCtBtR/085zm0J3tiz05tZ
+        XqLO0e9arU3u/hOUEgdIF+eowyOMTn3Zx/AJD1EgUm0X
+X-Google-Smtp-Source: ABdhPJyGOGrjcyejMcrDu5EvsuKeaTBNFVKHaU8l74qNkF/Xo02ZNxPPYfivkyFMT99aFuslZk2q/Ft5edW37rlxkKk=
+X-Received: by 2002:a5d:9a8e:: with SMTP id c14mr63948716iom.178.1609850904542;
+ Tue, 05 Jan 2021 04:48:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201202135950.22164-1-aford173@gmail.com> <20210105030308.GK4142@dragon>
+In-Reply-To: <20210105030308.GK4142@dragon>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Tue, 5 Jan 2021 06:48:13 -0600
+Message-ID: <CAHCN7xJV11LqTwsJ=3Xz9gxHAjRg0B37RnMWgcx3CWDT+DiJHg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm-beacon: Fix WiFi Pinmuxing
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bd718x7 only needs a regmap from parent device. This can be
-obtained by call to dev_get_regmap. Do not require parent to
-populate the driver data for this.
+On Mon, Jan 4, 2021 at 9:03 PM Shawn Guo <shawnguo@kernel.org> wrote:
+>
+> On Wed, Dec 02, 2020 at 07:59:50AM -0600, Adam Ford wrote:
+> > The WiFi chip is capable of communication at SDR104 speeds, and
+> > the pinmux was configured to support this, but the sdhc1 controller
+> > didn't properly reference the pinmux.  Enable 100Mhz and 200MHz pinmux
+> > as was originally intended.
+> >
+> > Fixes: 593816fa2f35 ("arm64: dts: imx: Add Beacon i.MX8m-Mini development kit")
+>
+> This looks more like an improvement than bug fix.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/clk/clk-bd718x7.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Do you want me to resubmit without the fixes tag?
 
-diff --git a/drivers/clk/clk-bd718x7.c b/drivers/clk/clk-bd718x7.c
-index b52e8d6f660c..17d90e09f1c0 100644
---- a/drivers/clk/clk-bd718x7.c
-+++ b/drivers/clk/clk-bd718x7.c
-@@ -31,12 +31,12 @@ struct bd718xx_clk {
- 	u8 reg;
- 	u8 mask;
- 	struct platform_device *pdev;
--	struct rohm_regmap_dev *mfd;
-+	struct regmap *regmap;
- };
- 
- static int bd71837_clk_set(struct bd718xx_clk *c, unsigned int status)
- {
--	return regmap_update_bits(c->mfd->regmap, c->reg, c->mask, status);
-+	return regmap_update_bits(c->regmap, c->reg, c->mask, status);
- }
- 
- static void bd71837_clk_disable(struct clk_hw *hw)
-@@ -62,7 +62,7 @@ static int bd71837_clk_is_enabled(struct clk_hw *hw)
- 	int rval;
- 	struct bd718xx_clk *c = container_of(hw, struct bd718xx_clk, hw);
- 
--	rval = regmap_read(c->mfd->regmap, c->reg, &enabled);
-+	rval = regmap_read(c->regmap, c->reg, &enabled);
- 
- 	if (rval)
- 		return rval;
-@@ -82,7 +82,6 @@ static int bd71837_clk_probe(struct platform_device *pdev)
- 	int rval = -ENOMEM;
- 	const char *parent_clk;
- 	struct device *parent = pdev->dev.parent;
--	struct rohm_regmap_dev *mfd = dev_get_drvdata(parent);
- 	struct clk_init_data init = {
- 		.name = "bd718xx-32k-out",
- 		.ops = &bd71837_clk_ops,
-@@ -93,6 +92,10 @@ static int bd71837_clk_probe(struct platform_device *pdev)
- 	if (!c)
- 		return -ENOMEM;
- 
-+	c->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (!c->regmap)
-+		return -ENODEV;
-+
- 	init.num_parents = 1;
- 	parent_clk = of_clk_get_parent_name(parent->of_node, 0);
- 
-@@ -119,7 +122,6 @@ static int bd71837_clk_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "Unknown clk chip\n");
- 		return -EINVAL;
- 	}
--	c->mfd = mfd;
- 	c->pdev = pdev;
- 	c->hw.init = &init;
- 
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+adam
+>
+> Shawn
+>
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+> > index 6de86a4f0ec4..90fd15e95798 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+> > @@ -217,8 +217,10 @@
+> >  &usdhc1 {
+> >       #address-cells = <1>;
+> >       #size-cells = <0>;
+> > -     pinctrl-names = "default";
+> > +     pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> >       pinctrl-0 = <&pinctrl_usdhc1>;
+> > +     pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
+> > +     pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
+> >       bus-width = <4>;
+> >       non-removable;
+> >       cap-power-off-card;
+> > --
+> > 2.17.1
+> >
