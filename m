@@ -2,82 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D7C2EB25D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 212F92EB260
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728690AbhAESUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:20:02 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:45758 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726651AbhAESUB (ORCPT
+        id S1729239AbhAESUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:20:11 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:41247 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726651AbhAESUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:20:01 -0500
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
- id 3070e0ba3920ff17; Tue, 5 Jan 2021 19:19:19 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Subject: [PATCH] ACPI: PM: s2idle: Drop unused local variables and related code
-Date:   Tue, 05 Jan 2021 19:19:18 +0100
-Message-ID: <3607102.xkEKTzvHZR@kreacher>
+        Tue, 5 Jan 2021 13:20:10 -0500
+Received: by mail-ot1-f45.google.com with SMTP id x13so556789oto.8;
+        Tue, 05 Jan 2021 10:19:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mLDmkFDuqbDYj1G7znQagvP5MQGrjvz1ZtbFc7sI7Vw=;
+        b=hHLfqAq9iY5o4DFZQQJnIoBucv2VJj8zflBo+tvECdVIME9yINgImwtbFzx55YmqBb
+         46OOMQWuAaoWC4YgOv9Q0thwCc4q6ran/mNnoJRoRRtfpAvYY/2R4mLNnGhjNWL3wxDB
+         lwsAcT8ePieY3np7hm2x/Q0EQ8yOaCL7goTm0KW/5YdPOu/C44dGIbNRY1ZTgTE+VrN0
+         n8YYBw7rMziBrl/UiFDl/JtD/cDsUt9YZfpsrbCp6kH6aEgzyCMERYXHWhudDs6wASbW
+         7Ga+1ODz5uBHlTBeohwmcVPexHzS0gHuaxWmiI1gucsLUmgMeugpm/1SYpGGYGkWApn9
+         zf4Q==
+X-Gm-Message-State: AOAM533DHska6+q6rlDozjBXiSJ6Zg3j3dRC8Ke4Qth23AuUvBBLZpFy
+        w79VF2hkvt+lvxlKquD1uTSEMnXgZmaO/8Lf5ic=
+X-Google-Smtp-Source: ABdhPJwdISUovk05672ZFZNTgEp/VEh0H+IhJDl4EbOWW7zKJITnIUadjXwUsiM9ASzIxTLq+mYl6UcGpwXD/4//rZg=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr539735otr.107.1609870769846;
+ Tue, 05 Jan 2021 10:19:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20201228112715.14947-1-wsa+renesas@sang-engineering.com> <20201228112715.14947-4-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20201228112715.14947-4-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Jan 2021 19:19:18 +0100
+Message-ID: <CAMuHMdWwg2OfyT3Dis4Z0_Eex9r9k_4HxcOhgpA27tkbjpNszw@mail.gmail.com>
+Subject: Re: [PATCH 3/6] dt-bindings: serial: renesas,hscif: Add r8a779a0 support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Dec 28, 2020 at 12:27 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Two local variables in drivers/acpi/x86/s2idle.c are never read, so
-drop them along with the code updating their values (in vain).
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Fixes: fef98671194b ("ACPI: PM: s2idle: Move x86-specific code to the x86 directory")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/x86/s2idle.c |   14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+Gr{oetje,eeting}s,
 
-Index: linux-pm/drivers/acpi/x86/s2idle.c
-===================================================================
---- linux-pm.orig/drivers/acpi/x86/s2idle.c
-+++ linux-pm/drivers/acpi/x86/s2idle.c
-@@ -105,18 +105,8 @@ static void lpi_device_get_constraints_a
- 
- 	for (i = 0; i < out_obj->package.count; i++) {
- 		union acpi_object *package = &out_obj->package.elements[i];
--		struct lpi_device_info_amd info = { };
- 
--		if (package->type == ACPI_TYPE_INTEGER) {
--			switch (i) {
--			case 0:
--				info.revision = package->integer.value;
--				break;
--			case 1:
--				info.count = package->integer.value;
--				break;
--			}
--		} else if (package->type == ACPI_TYPE_PACKAGE) {
-+		if (package->type == ACPI_TYPE_PACKAGE) {
- 			lpi_constraints_table = kcalloc(package->package.count,
- 							sizeof(*lpi_constraints_table),
- 							GFP_KERNEL);
-@@ -135,12 +125,10 @@ static void lpi_device_get_constraints_a
- 
- 				for (k = 0; k < info_obj->package.count; ++k) {
- 					union acpi_object *obj = &info_obj->package.elements[k];
--					union acpi_object *obj_new;
- 
- 					list = &lpi_constraints_table[lpi_constraints_table_size];
- 					list->min_dstate = -1;
- 
--					obj_new = &obj[k];
- 					switch (k) {
- 					case 0:
- 						dev_info.enabled = obj->integer.value;
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
