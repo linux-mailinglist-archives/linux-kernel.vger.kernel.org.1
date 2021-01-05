@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FF32EB372
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D252EB376
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730740AbhAETWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 14:22:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
+        id S1730838AbhAET1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 14:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730398AbhAETWl (ORCPT
+        with ESMTP id S1730825AbhAET1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:22:41 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5131C061795
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 11:22:00 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id z5so373012iob.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:22:00 -0800 (PST)
+        Tue, 5 Jan 2021 14:27:00 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FD7C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 11:26:20 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id b8so274191plx.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:26:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NI7JRZUNfaLXyoeGZ8aqowVREIgk5DG9F7C0+4KUbB0=;
-        b=cKXPT0s20xckt3pn4JszbxoqroM4ZFtl1KTkYSLpKTVM4pxFdo8qyExlNNGT8BYpMb
-         NZ2RIqDP3gWJ6bkmP4nvlIVvZXmWQ5joEet2CujZKwpWcJ7N5n/auk1BW+/+tVoS+/s4
-         lT8gVE8FyVV7Ciz+NDT9hiz3e4292ghz1R8TSVmowELFoufgEE91l6yLtA+GErZZEkDD
-         YbByOYNSLpJO+b4s+aYQ+miKLn/QmnSxdVQZ0VKNvimxO5HFTijBWlM7SZ7oh+QA3lXf
-         zI3VjqvvmueJ2mny9sPweOKYQ1sjfncPveIewLrgy3QOtiSHODxs+Eow1AFox5W0KogK
-         VNpA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to;
+        bh=j5YC94PUJukNzrZtum6ex9y7IH98VRbm1CbYMb/DRrI=;
+        b=EDSMsVVwv2y5PGV/sagFGoHXOb+ORS3Yhhm2IG/+DlUgFK2380P/hOafjxJwEpJ4RD
+         yuf9L9Wj0bOVNt4OcMhGYQn5Qbz2vNVqusyvlCFznGfzFxqgF6q1hG3+KtxE/PHgnLix
+         WyL4JlmcmR/NCHy0okbqBwm73J7aaPrA8cyugBAgz/gTgM1ZSJmk1/NXt8+EXfaVd64p
+         Wkewz4eAq6ulyFLDbLYnEooDrMATWzfkZs91IeOocToB0Z0/0dj+N6VcWqBg6EstmiWn
+         I3LYh5AzA1n3OQvNtDG3PjQQuI9nXCH1h/toERdDhMk0D0bWSVHudnqUerWlaHp40O6w
+         wt7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NI7JRZUNfaLXyoeGZ8aqowVREIgk5DG9F7C0+4KUbB0=;
-        b=V8OFD6FDHnjeQwdaqSCAffw9i+myM0vs28E/j0RxozNCPirfvCBXB5clpBa73ytj57
-         RQ8CdkQk7VHTWH7WHyXqUicoi1uU/Ktl9At7Z3flc5xOFnA2D7VrPHTUoum2W2IkT6/J
-         NGZDYLTU6uOEuet2mtTneFJh+YNt5Rem1AB3kqCwARzZ7372tb/MtNkILpxBjLnfE86d
-         hHp04mgCHGi/STj+h8NIVaZmk5ntZd7JsXBrQlkEau89+vjIzQ7PIRk1vwpyxpx1mKOB
-         K/BiVBo+as/55+YpzN/Zsb36Uc9/fXigYjv4ECbjKGJUVHGlWSdimR6yhIL2XC94DAlf
-         Wu+g==
-X-Gm-Message-State: AOAM531w+lNRnqarX7H+v/1LO1S9b4z9S+lYxWKF0UHufsyIHkNRzyUe
-        oE+TJStXZMCaF9xyB5CuPZaFwO4BxpKCAB38T6Vt/Q==
-X-Google-Smtp-Source: ABdhPJw5T3ZD5Nh/LmPjdcOum0L2dSnap3Ff/F39q59yI07xzT2lqKNuTShCiEntAgb6CBTKQgFfqrnYlspLoTObUFk=
-X-Received: by 2002:a02:cf9a:: with SMTP id w26mr958587jar.25.1609874519283;
- Tue, 05 Jan 2021 11:21:59 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=j5YC94PUJukNzrZtum6ex9y7IH98VRbm1CbYMb/DRrI=;
+        b=Fgx//bDpzUhj6DwG100IMAs2do5G5Cm2nU2vH0v0VgbtEkGwT974zz+/htbzYwJ4Pi
+         QNwgphuKX07iXcwI816X42/Rp+FbrMyLrLmEG4RwIphLw+f2a/8T1a/iLGh1LcbhhwNI
+         NY3hfef/2GHMia5S+XeiQ1WkRNWI0j2AIvH6etTKSuM1D/0N2odO9b7LoBPyPZvxKRwN
+         DpF7kR1qG64QIMK6hIga7E7G0NiwOBKUridPTUaywFgG2T47it4kQ58yDnDjub1wpJxP
+         z5GJzb/mg/umzWcZlfRj6KMlWkV4QkETMsOY8lkWnxsiIV1dkjEBPkyorbJ6dbBYSMMA
+         0rbw==
+X-Gm-Message-State: AOAM532PYnbCGbHPaCy4wujw1zn0Evl8mIU0J907iJRYjqtISLZ88nDo
+        p703EQm91jcg3FAYsdmXMZEbWQ==
+X-Google-Smtp-Source: ABdhPJwaC09ywz0ddZ76E+p/nibNhTaf764nwtiyY6k3ZjKWErraTuIJCxOHeEROA5MTGgIzEaBwyg==
+X-Received: by 2002:a17:902:7895:b029:dc:4bf0:2b74 with SMTP id q21-20020a1709027895b02900dc4bf02b74mr783475pll.32.1609874779378;
+        Tue, 05 Jan 2021 11:26:19 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:f693:9fff:fef4:fc72])
+        by smtp.gmail.com with ESMTPSA id j1sm148022pfd.181.2021.01.05.11.26.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 11:26:18 -0800 (PST)
+Date:   Tue, 5 Jan 2021 11:26:12 -0800
+From:   Benson Leung <bleung@google.com>
+To:     enric.balletbo@collabora.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prashant Malani <pmalani@chromium.org>,
+        heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
+Cc:     Guenter Roeck <groeck@chromium.org>, bleung@chromium.org
+Subject: Re: [PATCH v3 00/11] chrome/platform: cros_ec_typec: Register
+ cables, partner altmodes and plug altmodes
+Message-ID: <160987460685.847195.4276750003386377358.b4-ty@chromium.org>
 MIME-Version: 1.0
-References: <4bf6fcae-20e7-3eae-83ec-51fb52110487@oracle.com>
- <8A352C2E-E7D2-4873-807F-635A595DCAEF@gmail.com> <CANgfPd_cbBxWHmPsw0x5NfKrMXzij3YAAiaq665zxn5nnraPGg@mail.gmail.com>
- <CANgfPd8fFB6QM3bOhxQ0WPjw6f5FLqBm1ynCenAxymByq4Lz5g@mail.gmail.com>
- <f360715b-e61b-7e68-1aa9-84df51331d95@redhat.com> <X/Sz9EN0cKbyd1gQ@google.com>
-In-Reply-To: <X/Sz9EN0cKbyd1gQ@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 5 Jan 2021 11:21:48 -0800
-Message-ID: <CANgfPd80nXP8o5_o3wb2x2ahgWS6a8ubHFNzBp3TSQYi=cS9Yg@mail.gmail.com>
-Subject: Re: reproducible BUG() in kvm_mmu_get_root() in TDP MMU
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        leohou1402 <leohou1402@gmail.com>,
-        "maciej.szmigiero@oracle.com" <maciej.szmigiero@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "cannonmatthews@google.com" <cannonmatthews@google.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "pshier@google.com" <pshier@google.com>,
-        "pfeiner@google.com" <pfeiner@google.com>,
-        "junaids@google.com" <junaids@google.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "yulei.kernel@gmail.com" <yulei.kernel@gmail.com>,
-        "kernellwp@gmail.com" <kernellwp@gmail.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eWbforYw+181ZeQA"
+Content-Disposition: inline
+In-Reply-To: <20201116201150.2919178-1-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 10:46 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, Jan 05, 2021, Paolo Bonzini wrote:
-> > On 05/01/21 18:49, Ben Gardon wrote:
-> > > for_each_tdp_mmu_root(kvm, root) {
-> > >          kvm_mmu_get_root(kvm, root);
-> > >          <Do something, yield the MMU lock>
-> > >          kvm_mmu_put_root(kvm, root);
-> > > }
-> > >
-> > > In these cases the get and put root calls are there to ensure that the
-> > > root is not freed while the function is running, however they do this
-> > > too well. If the put root call reduces the root's root_count to 0, it
-> > > should be removed from the roots list and freed before the MMU lock is
-> > > released. However the above pattern never bothers to free the root.
-> > > The following would fix this bug:
-> > >
-> > > -kvm_mmu_put_root(kvm, root);
-> > > +if (kvm_mmu_put_root(kvm, root))
-> > > +       kvm_tdp_mmu_free_root(kvm, root);
-> >
-> > Is it worth writing a more complex iterator struct, so that
-> > for_each_tdp_mmu_root takes care of the get and put?
->
-> Ya, and maybe with an "as_id" variant to avoid the get/put?  Not sure that's a
-> worthwhile optimization though.
 
-I'll see about adding such an iterator. I don't think avoiding the get
-/ put is really worthwhile in this case since they're cheap operations
-and putting them in the iterator makes it less obvious that they're
-missing if those functions ever need to yield.
+--eWbforYw+181ZeQA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> On a related topic, there are a few subtleties with respect to
-> for_each_tdp_mmu_root() that we should document/comment.  The flows that drop
-> mmu_lock while iterating over the roots don't protect against the list itself
-> from being modified.  E.g. the next entry could be deleted, or a new root
-> could be added.  I think I've convinced myself that there are no existing bugs,
-> but we should document that the exact current behavior is required for
-> correctness.
->
-> The use of "unsafe" list_for_each_entry() in particular is unintuitive, as using
-> the "safe" variant would dereference a deleted entry in the "next entry is
-> deleted" scenario.
->
-> And regarding addomg a root, using list_add_tail() instead of list_add() in
-> get_tdp_mmu_vcpu_root() would cause iteration to visit a root that was added
-> after the iteration started (though I don't think this would ever be problematic
-> in practice?).
+Hi Prashant,
 
-A lot of these observations are safe because the operations using this
-iterator only consider one root at a time and aren't really interested
-in the state of the list.
-Your point about the dangers of adding and removing roots while one of
-these functions is running is valid, but like the legacy / shadow MMU
-implementation, properties which need to be guaranteed across multiple
-roots need to be managed at a higher level.
-I believe that with the legacy / shadow MMU the creation of a new
-root, while enabling write protection dirty logging for example, could
-result in entries in the new root being considered, and others not
-considered. That's why we set the dirty logging flag on the memslot
-before we write protect SPTEs.
-I'm not sure where exactly to document these properties, but I agree
-it would be a good thing to do in a future patch set.
+On Mon, 16 Nov 2020 12:11:36 -0800, Prashant Malani wrote:
+> This patch series adds support for the following bits of functionality,
+> parsing USB Type C Power Delivery information from the Chrome Embedded Co=
+ntroller
+> and using the Type C connector class:
+> - Register cable objects (including plug type).
+> - Register "number of altmodes" attribute for partners.
+> - Register altmodes and "number of altmodes" attribute for cable plugs.
+>=20
+> [...]
+
+Applied 4 through 11 of this series, staged for chrome-platform-5.12, thank=
+s!
+
+[04/11] platform/chrome: cros_ec_typec: Make disc_done flag partner-only
+        (no commit info)
+[05/11] platform/chrome: cros_ec_typec: Factor out PD identity parsing
+        (no commit info)
+[06/11] platform/chrome: cros_ec_typec: Rename discovery struct
+        (no commit info)
+[07/11] platform/chrome: cros_ec_typec: Register cable
+        (no commit info)
+[08/11] platform/chrome: cros_ec_typec: Store cable plug type
+        (no commit info)
+[09/11] platform/chrome: cros_ec_typec: Set partner num_altmodes
+        (no commit info)
+[10/11] platform/chrome: cros_ec_typec: Register SOP' cable plug
+        (no commit info)
+[11/11] platform/chrome: cros_ec_typec: Register plug altmodes
+        (no commit info)
+
+Best regards,
+--=20
+Benson Leung
+Staff Software Engineer
+Chrome OS Kernel
+Google Inc.
+bleung@google.com
+Chromium OS Project
+bleung@chromium.org
+
+--eWbforYw+181ZeQA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCX/S9VAAKCRBzbaomhzOw
+whUJAP9s0BcmoZirb6unjOMhQZR/iRAR+J/LCITKhO4Bc9tEHAEAiNrwVDuub/gm
+IeUeUbkN+K7EY1DKV7A/HAQBknfttgU=
+=OVtJ
+-----END PGP SIGNATURE-----
+
+--eWbforYw+181ZeQA--
