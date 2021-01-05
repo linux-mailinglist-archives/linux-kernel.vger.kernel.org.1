@@ -2,67 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6161A2EAA43
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 225BE2EAA54
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbhAEL4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:56:25 -0500
-Received: from smtprelay0228.hostedemail.com ([216.40.44.228]:35568 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726074AbhAEL4X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:56:23 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id C3DED12FB;
-        Tue,  5 Jan 2021 11:55:41 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3871:3872:3873:4321:5007:6691:6742:7652:10004:10400:10848:11232:11658:11914:12297:12663:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14180:14659:21060:21080:21627:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: talk84_2e09490274d8
-X-Filterd-Recvd-Size: 1813
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  5 Jan 2021 11:55:39 +0000 (UTC)
-Message-ID: <d6ee8f44f9ca285f17bdec972bcd0abb89fe64d6.camel@perches.com>
-Subject: Re: [PATCH] drivers: net: wireless: realtek: Fix the word
- association defautly de-faulty
-From:   Joe Perches <joe@perches.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Julian Calaby <julian.calaby@gmail.com>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        zhengbin13@huawei.com, baijiaju1990@gmail.com,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 05 Jan 2021 03:55:38 -0800
-In-Reply-To: <X/RQeqAikxaCO2o0@Gentoo>
-References: <20210105101738.13072-1-unixbhaskar@gmail.com>
-         <CAGRGNgX-JSPW8LSmAUbm=2jkx+K4EYdntCq6P2i8td0TUk7Nww@mail.gmail.com>
-         <X/RD/pll4UoRJG0w@Gentoo>
-         <CAGRGNgVHcOjt4at+tzgrPxn=04_Y3b16pihDw6xucg4Eh1GFSA@mail.gmail.com>
-         <X/RQeqAikxaCO2o0@Gentoo>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1729938AbhAEMDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:03:25 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38628 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726074AbhAEMDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 07:03:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B8F7CAA7C;
+        Tue,  5 Jan 2021 12:02:39 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 01/12] vt: move set_leds to keyboard.c
+Date:   Tue,  5 Jan 2021 13:02:28 +0100
+Message-Id: <20210105120239.28031-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-05 at 17:11 +0530, Bhaskar Chowdhury wrote:
-> On 22:24 Tue 05 Jan 2021, Julian Calaby wrote:
-> > Hi Bhaskar,
-[]
-> > and your change is just making this comment worse.
-> really??? Not sure about it.
+set_leds and compute_shiftstate are called from a single place in vt.c.
+Let's combine these two into vt_set_leds_compute_shiftstate. This allows
+for making keyboard_tasklet local in the next patch.
 
-I agree with Julian.  I'm fairly sure it's worse.
-The change you suggest doesn't parse well and is extremely odd.
-If you _really_ want to just change this use (and the others),
-I repeat his suggestion of "by default".
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+---
+ drivers/tty/vt/keyboard.c | 11 ++++++++++-
+ drivers/tty/vt/vt.c       |  3 +--
+ include/linux/kbd_kern.h  |  8 +-------
+ 3 files changed, 12 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 52922d21a49f..32ec4242b1f2 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -372,6 +372,12 @@ static void to_utf8(struct vc_data *vc, uint c)
+ 	}
+ }
+ 
++/* FIXME: review locking for vt.c callers */
++static void set_leds(void)
++{
++	tasklet_schedule(&keyboard_tasklet);
++}
++
+ /*
+  * Called after returning from RAW mode or when changing consoles - recompute
+  * shift_down[] and shift_state from key_down[] maybe called when keymap is
+@@ -401,9 +407,12 @@ static void do_compute_shiftstate(void)
+ }
+ 
+ /* We still have to export this method to vt.c */
+-void compute_shiftstate(void)
++void vt_set_leds_compute_shiftstate(void)
+ {
+ 	unsigned long flags;
++
++	set_leds();
++
+ 	spin_lock_irqsave(&kbd_event_lock, flags);
+ 	do_compute_shiftstate();
+ 	spin_unlock_irqrestore(&kbd_event_lock, flags);
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index d04a162939a4..fe4fedbc0386 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1036,8 +1036,7 @@ void redraw_screen(struct vc_data *vc, int is_switch)
+ 	}
+ 	set_cursor(vc);
+ 	if (is_switch) {
+-		set_leds();
+-		compute_shiftstate();
++		vt_set_leds_compute_shiftstate();
+ 		notify_update(vc);
+ 	}
+ }
+diff --git a/include/linux/kbd_kern.h b/include/linux/kbd_kern.h
+index 82f29aa35062..adf98004624b 100644
+--- a/include/linux/kbd_kern.h
++++ b/include/linux/kbd_kern.h
+@@ -71,12 +71,6 @@ extern void (*kbd_ledfunc)(unsigned int led);
+ extern int set_console(int nr);
+ extern void schedule_console_callback(void);
+ 
+-/* FIXME: review locking for vt.c callers */
+-static inline void set_leds(void)
+-{
+-	tasklet_schedule(&keyboard_tasklet);
+-}
+-
+ static inline int vc_kbd_mode(struct kbd_struct * kbd, int flag)
+ {
+ 	return ((kbd->modeflags >> flag) & 1);
+@@ -135,7 +129,7 @@ static inline void chg_vc_kbd_led(struct kbd_struct * kbd, int flag)
+ 
+ struct console;
+ 
+-void compute_shiftstate(void);
++void vt_set_leds_compute_shiftstate(void);
+ 
+ /* defkeymap.c */
+ 
+-- 
+2.30.0
 
