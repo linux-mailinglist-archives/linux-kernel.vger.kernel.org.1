@@ -2,139 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBBF2EA723
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32A72EA722
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbhAEJOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:14:39 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41714 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727658AbhAEJOh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:14:37 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10593KCR123968;
-        Tue, 5 Jan 2021 04:13:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Hhc5GiPGpLK0t1a0sKKejme9Rm6KKPSudMwrMquDECE=;
- b=OnI5FpF91Xa7r+WGTmycremIoD10ifB/B+i+D7iwCNRAt7dIJFDQ4yZYPj7A27YOBUCi
- mTLVE6ruROuIQ/LbQbtaPRy+AGghFGM7qMSBpJ4FOsPQPEtWb1FaYDhJnFPadCW00K0+
- L4is+iXmoh5A1HSyiH0BnOF3aGAjku/OVwY7b6juUJUPLCreR9L3LzMXWfeO7mghlcVk
- 674wE3r8frKcr9u1F0n7nx0+UbfvS0mUBu5DLMR8Pox2aJ1VDpkM+oFVzTlMcqk5RVM3
- cIukkzweeJ6mgkysPYEb5oT+vdn5VJ/uMJVLFjTj/nqYK9cL66cHQTHqHwJ1BYC1HBaZ og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35vmg9s6et-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jan 2021 04:13:42 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10596JsG132633;
-        Tue, 5 Jan 2021 04:13:41 -0500
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35vmg9s6dq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jan 2021 04:13:41 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1059DM0S011095;
-        Tue, 5 Jan 2021 09:13:36 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 35tgf89dja-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jan 2021 09:13:36 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1059DYIB44105990
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Jan 2021 09:13:34 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0901A52051;
-        Tue,  5 Jan 2021 09:13:34 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.176.60])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id BC6125204F;
-        Tue,  5 Jan 2021 09:13:32 +0000 (GMT)
-Date:   Tue, 5 Jan 2021 11:13:30 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        kernelci-results-staging@groups.io,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@kernel.org>, Baoquan He <bhe@redhat.com>
-Subject: Re: kernelci/staging-next bisection: sleep.login on
- rk3288-rock2-square #2286-staging
-Message-ID: <20210105091330.GD832698@linux.ibm.com>
-References: <5fd3e5d9.1c69fb81.f9e69.5028@mx.google.com>
- <127999c4-7d56-0c36-7f88-8e1a5c934cae@collabora.com>
- <20201213082314.GA198221@linux.ibm.com>
- <0633d44a-3796-8a1b-e5dc-99fc62aa4dc7@collabora.com>
- <20210103134753.GC832698@linux.ibm.com>
- <X/Ikalm2CLln2alz@redhat.com>
+        id S1727965AbhAEJOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:14:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727658AbhAEJOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:14:23 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3756C225AC;
+        Tue,  5 Jan 2021 09:13:42 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kwiPL-005OSj-R8; Tue, 05 Jan 2021 09:13:39 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/Ikalm2CLln2alz@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-05_01:2021-01-04,2021-01-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- bulkscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1011
- mlxlogscore=999 priorityscore=1501 suspectscore=0 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050052
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 05 Jan 2021 09:13:39 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shenming Lu <lushenming@huawei.com>
+Cc:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v2 2/4] KVM: arm64: GICv4.1: Try to save hw pending
+ state in save_pending_tables
+In-Reply-To: <20210104081613.100-3-lushenming@huawei.com>
+References: <20210104081613.100-1-lushenming@huawei.com>
+ <20210104081613.100-3-lushenming@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <b0f0b2544f8e231ebb5b5545be226164@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: lushenming@huawei.com, eric.auger@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, alex.williamson@redhat.com, cohuck@redhat.com, lorenzo.pieralisi@arm.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 03, 2021 at 03:09:14PM -0500, Andrea Arcangeli wrote:
-> Hello Mike,
+On 2021-01-04 08:16, Shenming Lu wrote:
+> After pausing all vCPUs and devices capable of interrupting, in order
+> to save the information of all interrupts, besides flushing the pending
+> states in kvm’s vgic, we also try to flush the states of VLPIs in the
+> virtual pending tables into guest RAM, but we need to have GICv4.1 and
+> safely unmap the vPEs first.
 > 
-> On Sun, Jan 03, 2021 at 03:47:53PM +0200, Mike Rapoport wrote:
-> > Thanks for the logs, it seems that implicitly adding reserved regions to
-> > memblock.memory wasn't that bright idea :)
+> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+> ---
+>  arch/arm64/kvm/vgic/vgic-v3.c | 58 +++++++++++++++++++++++++++++++----
+>  1 file changed, 52 insertions(+), 6 deletions(-)
 > 
-> Would it be possible to somehow clean up the hack then?
+> diff --git a/arch/arm64/kvm/vgic/vgic-v3.c 
+> b/arch/arm64/kvm/vgic/vgic-v3.c
+> index 9cdf39a94a63..a58c94127cb0 100644
+> --- a/arch/arm64/kvm/vgic/vgic-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-v3.c
+> @@ -1,6 +1,8 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
 > 
-> The only difference between the clean solution and the hack is that
-> the hack intended to achieved the exact same, but without adding the
-> reserved regions to memblock.memory.
-
-I didn't consider adding reserved regions to memblock.memory as a clean
-solution, this was still a hack, but I didn't think that things are that
-fragile.
-
-I still think we cannot rely on memblock.reserved to detect
-memory/zone/node sizes and the boot failure reported here confirms this.
- 
-> The comment on that problematic area says the reserved area cannot be
-> used for DMA because of some unexplained hw issue, and that doing so
-> prevents booting, but since the area got reserved, even with the clean
-> solution, it shouldn't have never been used for DMA?
->
-> So I can only imagine that the physical memory region is way more
-> problematic than just for DMA. It sounds like that anything that
-> touches it, including the CPU, will hang the system, not just DMA. It
-> sounds somewhat similar to the other e820 direct mapping issue on x86?
-
-My understanding is that the boot failed because when I implicitly added
-the reserved region to memblock.memory the memory size seen by
-free_area_init() jumped from 2G to 4G because the reserved area was close
-to 4G. The very first allocation would get a chunk from slightly below of
-4G and as there is no real memory there, the kernel would crash.
- 
-> If you want to test the hack on the arm board to check if it boots you
-> can use the below commit:
+>  #include <linux/irqchip/arm-gic-v3.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqdomain.h>
+>  #include <linux/kvm.h>
+>  #include <linux/kvm_host.h>
+>  #include <kvm/arm_vgic.h>
+> @@ -356,6 +358,38 @@ int vgic_v3_lpi_sync_pending_status(struct kvm
+> *kvm, struct vgic_irq *irq)
+>  	return 0;
+>  }
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/andrea/aa.git/commit/?id=c3ea2633015104ce0df33dcddbc36f57de1392bc
-
-My take is your solution would boot with this memory configuration, but I
-still don't think that using memblock.reserved for zone/node sizing is
-correct.
-
-> Thanks,
-> Andrea
+> +/*
+> + * The deactivation of the doorbell interrupt will trigger the
+> + * unmapping of the associated vPE.
+> + */
+> +static void unmap_all_vpes(struct vgic_dist *dist)
+> +{
+> +	struct irq_desc *desc;
+> +	int i;
+> +
+> +	if (!kvm_vgic_global_state.has_gicv4_1)
+> +		return;
+> +
+> +	for (i = 0; i < dist->its_vm.nr_vpes; i++) {
+> +		desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
+> +		irq_domain_deactivate_irq(irq_desc_get_irq_data(desc));
+> +	}
+> +}
+> +
+> +static void map_all_vpes(struct vgic_dist *dist)
+> +{
+> +	struct irq_desc *desc;
+> +	int i;
+> +
+> +	if (!kvm_vgic_global_state.has_gicv4_1)
+> +		return;
+> +
+> +	for (i = 0; i < dist->its_vm.nr_vpes; i++) {
+> +		desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
+> +		irq_domain_activate_irq(irq_desc_get_irq_data(desc), false);
+> +	}
+> +}
+> +
+>  /**
+>   * vgic_v3_save_pending_tables - Save the pending tables into guest 
+> RAM
+>   * kvm lock and all vcpu lock must be held
+> @@ -365,14 +399,18 @@ int vgic_v3_save_pending_tables(struct kvm *kvm)
+>  	struct vgic_dist *dist = &kvm->arch.vgic;
+>  	struct vgic_irq *irq;
+>  	gpa_t last_ptr = ~(gpa_t)0;
+> -	int ret;
+> +	int ret = 0;
+>  	u8 val;
 > 
+> +	/* As a preparation for getting any VLPI states. */
+> +	unmap_all_vpes(dist);
 
+What if the VPEs are not mapped yet? Is it possible to snapshot a VM
+that has not run at all?
+
+> +
+>  	list_for_each_entry(irq, &dist->lpi_list_head, lpi_list) {
+>  		int byte_offset, bit_nr;
+>  		struct kvm_vcpu *vcpu;
+>  		gpa_t pendbase, ptr;
+>  		bool stored;
+> +		bool is_pending = irq->pending_latch;
+> 
+>  		vcpu = irq->target_vcpu;
+>  		if (!vcpu)
+> @@ -387,24 +425,32 @@ int vgic_v3_save_pending_tables(struct kvm *kvm)
+>  		if (ptr != last_ptr) {
+>  			ret = kvm_read_guest_lock(kvm, ptr, &val, 1);
+>  			if (ret)
+> -				return ret;
+> +				goto out;
+>  			last_ptr = ptr;
+>  		}
+> 
+>  		stored = val & (1U << bit_nr);
+> -		if (stored == irq->pending_latch)
+> +
+> +		if (irq->hw)
+> +			vgic_v4_get_vlpi_state(irq, &is_pending);
+
+You don't check the return value here, so I wonder why the checks
+in vgic_v4_get_vlpi_state().
+
+Another thing that worries me is that vgic_v4_get_vlpi_state() doesn't
+have any cache invalidation, and can end-up hitting in the CPU cache
+(there is no guarantee of coherency between the GIC and the CPU, only
+that the GIC will have flushed its caches).
+
+I'd expect this to happen at unmap time, though, in order to avoid
+repeated single byte invalidations.
+
+> +
+> +		if (stored == is_pending)
+>  			continue;
+> 
+> -		if (irq->pending_latch)
+> +		if (is_pending)
+>  			val |= 1 << bit_nr;
+>  		else
+>  			val &= ~(1 << bit_nr);
+> 
+>  		ret = kvm_write_guest_lock(kvm, ptr, &val, 1);
+>  		if (ret)
+> -			return ret;
+> +			goto out;
+>  	}
+> -	return 0;
+> +
+> +out:
+> +	map_all_vpes(dist);
+> +
+> +	return ret;
+>  }
+> 
+>  /**
+
+Thanks,
+
+         M.
 -- 
-Sincerely yours,
-Mike.
+Jazz is not dead. It just smells funny...
