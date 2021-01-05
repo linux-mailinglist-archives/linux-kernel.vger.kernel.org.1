@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87B92EB072
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9642EB065
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729743AbhAEQsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:48:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58734 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729101AbhAEQsG (ORCPT
+        id S1729457AbhAEQpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729285AbhAEQpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:48:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609865200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EQ/JWdP+ZPuOVG9p+BYjTh339vKnJxeTgO0ZBYjWFtI=;
-        b=BBee7EyEycp998VrBzGKOs/XgeqVCkjSR9+twUODd7A2HayZ8CjOPcdlznM20jvSbRIFu4
-        klM90vq2O626owQhAzgry/SN0ErfdzaNHNzY/YVE9IsS0RjgbALMPt6SGa4hL0hN84O1jy
-        e7Uui1lNw0ZO9tC1goyKbQ4Hr702/lM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-ucwlct3CO_SlGuFY5Y0V9A-1; Tue, 05 Jan 2021 11:44:07 -0500
-X-MC-Unique: ucwlct3CO_SlGuFY5Y0V9A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5FC4F190A7A0;
-        Tue,  5 Jan 2021 16:44:06 +0000 (UTC)
-Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 34A8C5D735;
-        Tue,  5 Jan 2021 16:44:05 +0000 (UTC)
-Subject: Re: [PATCH v3 4/4] mm: remove unneeded local variable in
- free_area_init_core
-To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org
-References: <20210105074708.18483-1-bhe@redhat.com>
- <20210105074708.18483-5-bhe@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <1bb89972-a942-e196-577c-aedb71aef8ee@redhat.com>
-Date:   Tue, 5 Jan 2021 17:44:04 +0100
+        Tue, 5 Jan 2021 11:45:09 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4933C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 08:44:28 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id w18so28817977iot.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 08:44:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tJqOn+TnHD7GEt1ab93AXMEnw/3xo0O1fNmQ2j0lheI=;
+        b=KtCY0ci1sis2/nTY/zGNHCF3FdiEt8ElmtUy0rqdJYGIphMEqfXvL0eHmT1YvH8Jf+
+         DoZPI6JvYNOY84UXS+/Y+32Hb43uW6pVbiMMnyR8/8M1O5UqBNcfh1Dj01WM9pXqzUvo
+         LPSmvS9iwpv8hY1K4ZD3Qqg4IByfd4URJPnTw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tJqOn+TnHD7GEt1ab93AXMEnw/3xo0O1fNmQ2j0lheI=;
+        b=YKxVej7AgJY5NPf9PcEEpzn2Ykx3afWQcF4YKUnXmTcOb0Q63MxmqeZ+p1qwxQwIQY
+         34Zj+19plXIHzufVUQrAHyQqf2rDFgCljUvOsLk/x2op9C7AhmTyNYOF5Sm8mEu+4X8v
+         hlKh7tUxhFJ6RF+5zfZcwTO8SBFXzihLkpbBVTjNNqpVokF+u5CTL6qx6KiOS6lOI7HI
+         YAL68UtXSuFfPKWBhNTf5+jibe8oUzlIJ1I2glIeGqvAUEhNA/ANbEfJXrr+7dOLEm4n
+         caxFYY00ElNjods0SdU7Pn+Fos0JbzmTcQtQcAGmDcKN/z4PfivQnsVQJMPliLFJ6w7C
+         TcAg==
+X-Gm-Message-State: AOAM5300fO9fdx3SGEIualFPZPgoq9Wo9Sjeo2F2p3OJ2PmMV36ZP5Sh
+        oNX7xl41ynck/r1J3MdHx2rVGg==
+X-Google-Smtp-Source: ABdhPJzF8mxEQ3d82KsQTgcFSxd2NLokPD6udZD/GbxXkEzb/7AYfGetY63k2Gv90FjUM9hr+BtRjQ==
+X-Received: by 2002:a5e:dd0d:: with SMTP id t13mr30426iop.132.1609865068253;
+        Tue, 05 Jan 2021 08:44:28 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 15sm44806ilx.84.2021.01.05.08.44.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 08:44:27 -0800 (PST)
+Subject: Re: [PATCH 4.19 00/35] 4.19.165-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20210104155703.375788488@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <46249e9b-218f-0a7f-24fc-23854e8ab7df@linuxfoundation.org>
+Date:   Tue, 5 Jan 2021 09:44:26 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210105074708.18483-5-bhe@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210104155703.375788488@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.01.21 08:47, Baoquan He wrote:
-> Local variable 'zone_start_pfn' is not needed since there's only
-> one call site in free_area_init_core(). Let's remove it and pass
-> zone->zone_start_pfn directly to init_currently_empty_zone().
+On 1/4/21 8:57 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.165 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  mm/page_alloc.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index e0ce6fb6373b..9cacb8652239 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6986,7 +6986,6 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->  	for (j = 0; j < MAX_NR_ZONES; j++) {
->  		struct zone *zone = pgdat->node_zones + j;
->  		unsigned long size, freesize, memmap_pages;
-> -		unsigned long zone_start_pfn = zone->zone_start_pfn;
->  
->  		size = zone->spanned_pages;
->  		freesize = zone->present_pages;
-> @@ -7035,7 +7034,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->  
->  		set_pageblock_order();
->  		setup_usemap(zone);
-> -		init_currently_empty_zone(zone, zone_start_pfn, size);
-> +		init_currently_empty_zone(zone, zone->zone_start_pfn, size);
->  		memmap_init_zone(zone);
->  	}
->  }
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.165-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 > 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Compiled and booted on my test system. No dmesg regressions.
 
--- 
-Thanks,
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-David / dhildenb
-
+thanks,
+-- Shuah
