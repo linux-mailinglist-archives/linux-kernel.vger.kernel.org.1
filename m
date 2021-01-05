@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D674A2EB001
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE862EAFFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbhAEQ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbhAEQ0i (ORCPT
+        id S1728262AbhAEQZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:25:24 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:45073 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbhAEQZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:26:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12493C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 08:25:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3c+2QQ6IEx4+shd4/rUcNQ2aFzXA0gIgRmomRrgLTyE=; b=ZNukMT8lQhROAVs6lpxsQwG8C7
-        mathsUZmQiVV0D/ua9qXGl3+9ZjMRUAMkdOGeR6EQc/specJd4biK6/FkrH5HsFg+6ypgG+x3b3DV
-        17iQBPoohKA8FJSrvCZLCxswzZnzp5vaIFvWdDNAKOh5x93ehimSxsnAaWCcBSeAWRAPVTYpAAf1/
-        8YGQ9yiYwT/8xdYn9fGufhLif/k3iYYtZxXops4xxQdkIqF4JKoPKeKg7WBddTvxKczcr+EbDWefz
-        ywBVUFN9llw1CszyMR5r4+xaS3IzzgtXDCmUa/JgjjvKiYti0tI9tc8atpXDOvTlhambXQT5IbwFj
-        KfIcaKJQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kwp8K-001Qvq-Q7; Tue, 05 Jan 2021 16:24:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1252330377D;
-        Tue,  5 Jan 2021 17:24:31 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CCB41201B8B9C; Tue,  5 Jan 2021 17:24:31 +0100 (CET)
-Date:   Tue, 5 Jan 2021 17:24:31 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH -tip V3 3/8] workqueue: introduce wq_online_cpumask
-Message-ID: <20210105162431.GL3040@hirez.programming.kicks-ass.net>
-References: <20201226025117.2770-1-jiangshanlai@gmail.com>
- <20201226025117.2770-4-jiangshanlai@gmail.com>
- <20210104135649.GO3021@hirez.programming.kicks-ass.net>
- <CAJhGHyB_MUHG8GGANcN9sQbjY7M5m8WPHQgXp-PmkGK481M5Tg@mail.gmail.com>
- <CAJhGHyCwyuzikMZAxub=rxn9oe-N2P5C8CEOmyigd9d55SV5YA@mail.gmail.com>
+        Tue, 5 Jan 2021 11:25:24 -0500
+Received: by mail-ot1-f50.google.com with SMTP id n42so145883ota.12;
+        Tue, 05 Jan 2021 08:25:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pabrFAOrfyjBDuaXLbxg74Eu7UTVIQDOTfs8dfkksOk=;
+        b=mZZRo/i9nujmK0iwjvdBU2i6wNC2oMjc4wbXH0bj6kdnst0UNpozz0cCQ3Vs5Rj8Zi
+         epUZFbp+ALRJsgGmLUpBGyDhKaNW3BxDc5yYNydlq3CcYoKQjksn37II6P1lPl9G+WhF
+         SnbLFHX9ZoBlcWsxpnWSHjGGQSpJrOtsWH2TOpOyrVCwdwP4Hpy0pexzuTff/mBW0Ury
+         2yC9V1MQ2n36wLDNGsU35ZRT7ud4EMe21Vl0IwtIhteSNECfyzCc1VYRs5QfaUd428uP
+         saRAHdg/yEv8s5uVeT/ZI8u+6q2n56bZ5tjT+lcib65pFTTw4YPIR7ebeAimRxu1uZyy
+         m2sQ==
+X-Gm-Message-State: AOAM533P3UHrAk/HAXZBaMovJl2nncEpxMps2zdD4NyTlJxYJreN/fpA
+        54sI5a9y7uQSQAHhbLF7/WO/2wTsbH7/Ul7aVyU=
+X-Google-Smtp-Source: ABdhPJxg7Sj7je9fzBZZG3rqx2gyPNs5HI+dc5+sCbU6bcEv1Hyldl6PDnY4Rv7mhtvf4jmakg7M0kuRVbxlYD2LJ2M=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr124613otr.107.1609863883827;
+ Tue, 05 Jan 2021 08:24:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyCwyuzikMZAxub=rxn9oe-N2P5C8CEOmyigd9d55SV5YA@mail.gmail.com>
+References: <20201228112715.14947-1-wsa+renesas@sang-engineering.com> <20201228112715.14947-7-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20201228112715.14947-7-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Jan 2021 17:24:32 +0100
+Message-ID: <CAMuHMdXZmhTovjjopm01E4X2a4QoE-p0QU+vXdB4H_CFKKB06w@mail.gmail.com>
+Subject: Re: [PATCH 6/6] WIP: arm64: dts: renesas: falcon: switch to from
+ SCIF0 to HSCIF0
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 04:23:44PM +0800, Lai Jiangshan wrote:
+Hi Wolfram,
 
-> Even with the help of wq_online_cpumask, the patchset can't silence
-> the warning in __set_cpus_allowed_ptr() in this case.  It is indeed
-> hard to suppress the warning for unbound pools.  Maybe we need something
-                                   ^^^^^^^
+On Mon, Dec 28, 2020 at 12:28 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Mainly for testing the HSCIF0 node. We could make this switch permanent,
+> but we never did for any other SoC. So, I think this is not to be
+> applied.
 
-Argh.. I forgot about the distinction between bound and unbound again.
+The choice of serial console has to match the bootloader.
+That's why we didn't do it for other SoCs where the serial console can be
+muxed to different serial instances.
 
-> like this (outmost callback of CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
-> so that workqueue can do preparation when offlining before AP_ACTIVE):
-> 
-> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-> index 0042ef362511..ac2103deb20b 100644
-> --- a/include/linux/cpuhotplug.h
-> +++ b/include/linux/cpuhotplug.h
-> @@ -20,6 +20,9 @@
->   *               |                               ^
->   *               v                               |
->   *              AP_ACTIVE                      AP_ACTIVE
-> + *               |                               ^
-> + *               v                               |
-> + *              ONLINE                         ONLINE
->   */
-> 
->  enum cpuhp_state {
-> @@ -194,6 +197,7 @@ enum cpuhp_state {
->         CPUHP_AP_X86_HPET_ONLINE,
->         CPUHP_AP_X86_KVM_CLK_ONLINE,
->         CPUHP_AP_ACTIVE,
-> +       CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
->         CPUHP_ONLINE,
->  };
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Yes, doing the unbound things late should not be a problem.
+> --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
+> +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
+> @@ -14,7 +14,7 @@ / {
+>         compatible = "renesas,falcon-breakout", "renesas,falcon-cpu", "renesas,r8a779a0";
+>
+>         aliases {
+> -               serial0 = &scif0;
+> +               serial0 = &hscif0;
+>         };
 
-> The other way is to modify __set_cpus_allowed_ptr() to suppress the
-> warning for kworkers and believe/let the workqueue handle cpumask correctly.
+Gr{oetje,eeting}s,
 
-The thing is that we don't want 'random' work injected in the CPU during
-the hotplug process since we're not exactly sure what state the thing is
-in. Once we're active, we know all is well and we can run regular crud.
+                        Geert
 
-The thing with bound workers is that they'll only run work originating
-on the CPU itself, and should thus be fine.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
