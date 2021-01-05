@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831F32EA6D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A8A2EA6D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727698AbhAEJA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:00:26 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:49047 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727056AbhAEJAU (ORCPT
+        id S1727760AbhAEJAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:00:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726982AbhAEJAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:00:20 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 9BA5B757;
-        Tue,  5 Jan 2021 03:59:28 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 05 Jan 2021 03:59:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=sYiyZnNaw9vrvutD44uZuAX9Zub
-        ELOu1wtvHaq29vxU=; b=bWoWgCLRb/06NCzWaEDsGxmpYRhcvDXJRQq3xD+h3C4
-        udQZi9Mfv4t+3tr8d45cg32FS5uGtZT8ZqUEBBlrIpnpC1EeCdydbjVXsZ7UJzbj
-        v/uMtKP+q44uzZW5ch13OghGvNsWz53e+Lx/bNj4kUstv7tcs5ZRvIohrF88AXDD
-        mMXjk7Xv66mp876hQeGmnbhwa8C0VNo8TCqDcKKXtDKKn3a6qwwXInHhj8sIcVHS
-        +Vs6iaytKJ6i0E+MfmxpHOfx+s12d0Vbyq1HVwrP+1P194i/ojsSMvz6BUddk3oF
-        zhMRY4Hr9OGSn5faTzIZxYu2aBH9s4ZhZ+BoyMR6rfA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=sYiyZn
-        Naw9vrvutD44uZuAX9ZubELOu1wtvHaq29vxU=; b=OikiACw2mkv0WriVEXKQMG
-        Rsh+/Kuqg3tAEpe8R4UZR8EmDHEVqg7sX9MTNChfYTs3OW1l3hcub3mji4Hm0Bzd
-        IesPR4mSpwA33RiMuQ8LYA4/jaffD0/l48qaePYJrYFwKkeut/DZoH/sI0D74XT1
-        CZHCNtjnZq4rRcno4vOhxy3Y1bnafJDIdOc5mKDne07G8ExBafhOjZhjM9z336pA
-        xUovufkBLLOMZBdcB215FZHBJSXgF46FHelw+vYJDS5i5FbVuOkK1IznaocM2Mbp
-        ovNbq3gUh/znSQ04bNh3MC+mV6j4YpnmLLCtU/OeHOQk9lqfKFZrHqi4T8OkKDJQ
-        ==
-X-ME-Sender: <xms:bir0X4WULSFCtzO6HdLI_UnqP0gs2y5H7PAW7S84FcYdeq9LwEC1Dw>
-    <xme:bir0X8nWaZzAIV6PHvvjtW2rNEBnceC8xDqtI69-UjQ2hHB7SO914PeAO2orpwRUH
-    bEFjU2Ii6lz2e7u3jk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefgedguddvgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeeujefgiedvgfeifeeuveegjeehtddtheegleeghedvgefhtddvgfdvjeek
-    vdefueenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:byr0X8ZhtfYW5_gHCaygOTp2YGY6pcY4JfE86ZxtWbGgCJP27OOuYA>
-    <xmx:byr0X3XxfRwsWPhaNizTQ4UCz_GqTHfIQddAoXXbMFgm9k1y9Uwkeg>
-    <xmx:byr0XymxrpJ-Ycnir-EMe1IiKLLCghOO_lSmHVsTUW4PyonfQS566w>
-    <xmx:cCr0X0WlCjCQSoBNBJK9G2uq3yLUqmaq4PbT8d1fHWzFjOiMqNRHdg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B944324005B;
-        Tue,  5 Jan 2021 03:59:26 -0500 (EST)
-Date:   Tue, 5 Jan 2021 09:59:24 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] dt-bindings: media: Use graph and
- video-interfaces schemas
-Message-ID: <20210105085924.pfkjnaks47dw5gtw@gilmour>
-References: <20210104165808.2166686-1-robh@kernel.org>
- <20210104165808.2166686-3-robh@kernel.org>
+        Tue, 5 Jan 2021 04:00:41 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC98C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 01:00:00 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id m12so70865017lfo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 01:00:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dxfXiWmXKjcXG7MiAZTrs2FCKGpxYiIgWMEbJGIs1oU=;
+        b=bkywPztvzYitrJ+9cLUSF5xNfyzCrl3laky8babFYbiP9F302vAG2D4vJKb8Bu+ATk
+         gw6O3vh2xmZDi1tttnT9qlzaIMRNlK99yS0y3Zgd9eM9YDx4htSuHYeFHOFTtxR915BU
+         V1IqJ39uzNdPKE+7lWDtGZ1iGnoPXMt8u8MG970iuB71aSjr6WoF1ms5RifpA7714SrT
+         Y/ARlYkS0+IRLxG4j1NvKGMzGLa08pEjBeA90fMJ9szWSOR4LussPSo7H1D2cZNlgx/E
+         0aL/f8zmdD1dXNnaHcJkMeFREne/qB0K23FxKfzUx7by7WPpg/Tio/Kuv2bsZG9I/Y3c
+         cQMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dxfXiWmXKjcXG7MiAZTrs2FCKGpxYiIgWMEbJGIs1oU=;
+        b=OjWaa7lMN2MCVgb8MAAkbRnTmNsfWjyvZ4QW31UX2Qxxo0NPo+LzKHuAVTSrGIsgXr
+         oR2y9rIPIUUjhsLmlEA3TaYsiIn8UCM9jTENjbYtHAyg2TdtF8RWw9tC+yvArl4iHsXN
+         h8BvjmvW6OeLVzo9a5Ca0guVp/zaEL8/UayDb5rCwacNdm8tN6yBePAax8FVMdyly4D3
+         JUMMQcP54BF5vF2zeuVycu3gxHgVRG/T3kd5xkanGWywnZwiWjjKcYWseTHZB8819/xx
+         U9qlBiyDiSaBEvwMocIa9z15filAjQkIBeeQ2j7BEjEFzyJ11FwGEB8/rliug8umHBPs
+         BXBw==
+X-Gm-Message-State: AOAM530wdR3vcQArfWnJqLYRpDMKH0XJC2YANVO+8FFeezrdrTzMCfOC
+        K32Z1AqnQJ9zxGDGYcQREgiRXC2KoO66KUb7j2M=
+X-Google-Smtp-Source: ABdhPJzQxOLGksuAu1JGN5vDpr0EChMuotkNvYE/OJIEEJCLnVrn9F31pKW5KwltZMWoPZfDXWljJYSsh88h4gErtgg=
+X-Received: by 2002:ac2:47e7:: with SMTP id b7mr32214831lfp.117.1609837199235;
+ Tue, 05 Jan 2021 00:59:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210104165808.2166686-3-robh@kernel.org>
+References: <20210105082303.15310-1-dwaipayanray1@gmail.com> <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
+In-Reply-To: <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Tue, 5 Jan 2021 14:29:46 +0530
+Message-ID: <CABJPP5DQ0Y42z9ej_j06+KaQevT3ztWcwGMkismj4qv5EHvnxA@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: add a new check for strcpy/strlcpy uses
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 09:58:08AM -0700, Rob Herring wrote:
-> Now that we have graph and video-interfaces schemas, rework the media
-> related schemas to use them.
-> 
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Jacopo Mondi <jacopo@jmondi.org>
-> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> Cc: linux-media@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+On Tue, Jan 5, 2021 at 2:14 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Tue, 2021-01-05 at 13:53 +0530, Dwaipayan Ray wrote:
+> > strcpy() performs no bounds checking on the destination buffer.
+> > This could result in linear overflows beyond the end of the buffer.
+> >
+> > strlcpy() reads the entire source buffer first. This read
+> > may exceed the destination size limit. This can be both inefficient
+> > and lead to linear read overflows.
+> >
+> > The safe replacement to both of these is to use strscpy() instead.
+> > Add a new checkpatch warning which alerts the user on finding usage of
+> > strcpy() or strlcpy().
+>
+> I do not believe that strscpy is preferred over strcpy.
+>
+> When the size of the output buffer is known to be larger
+> than the input, strcpy is faster.
+>
+> There are about 2k uses of strcpy.
+> Is there a use where strcpy use actually matters?
+> I don't know offhand...
+>
+> But I believe compilers do not optimize away the uses of strscpy
+> to a simple memcpy like they do for strcpy with a const from
+>
+>         strcpy(foo, "bar");
+>
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+Yes the optimization here definitely helps. So in case the programmer
+knows that the destination buffer is always larger, then strcpy() should be
+preferred? I think the documentation might have been too strict about
+strcpy() uses here:
 
-Thanks!
-Maxime
+Documentation/process/deprecated.rst:
+"strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading to
+all kinds of misbehaviors. While `CONFIG_FORTIFY_SOURCE=y` and various
+compiler flags help reduce the risk of using this function, there is
+no good reason to add new uses of this function. The safe replacement
+is strscpy(),..."
+
+
+> And lastly there is a existing strlcpy test in checkpatch.
+>
+> commit 5dbdb2d87c29 ("checkpatch: prefer strscpy to strlcpy")
+>
+I will drop this patch. Thanks for your view.
+
+Thank you,
+Dwaipayan.
