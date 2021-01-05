@@ -2,102 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DAC2EABE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F732EABC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbhAEN1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:27:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728935AbhAEN1T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:27:19 -0500
-X-Greylist: delayed 399 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Jan 2021 05:26:38 PST
-Received: from mail.codevoid.de (mail.codevoid.de [IPv6:2a01:4f8:c2c:9b13::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13A9C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 05:26:38 -0800 (PST)
-Received: from mail.codevoid.de (localhost [127.0.0.1])
-        by mail.codevoid.de (OpenSMTPD) with ESMTP id 9127e028
-        for <linux-kernel@vger.kernel.org>;
-        Tue, 5 Jan 2021 14:19:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=codevoid.de; h=date:from
-        :to:subject:message-id:mime-version:content-type
-        :content-transfer-encoding; s=selector1; bh=DUjPwn49vLO9YGiyf29y
-        G8glUfw=; b=XAvUj/G5xW9wd6tsEXu+6SJqVlULBNH1I2SzRdk74HUDu/L37+Sz
-        hmYMs4BwJznb1APljxxnux9n26vLR5xgXcAI7NAIgRatx+5unyMNT2xulyiaPLEF
-        t+Y7df7F33dIzNFILz5unRmLtPnuWj6lp9x6LQbQtw41qqKL578SNrg=
-DomainKey-Signature: a=rsa-sha1; c=nofws; d=codevoid.de; h=date:from:to
-        :subject:message-id:mime-version:content-type
-        :content-transfer-encoding; q=dns; s=selector1; b=WUUoEFdTp6Q1xo
-        DMc8oSf/qoRYCtdSiTekQH+zO5hvsML0aDJapHea3l7Wy4rN5KtIt/pJVpl2CG+H
-        Dn6GHwahnm74P1K5sqCAcIT+rY12ApzVBP7WLOZbXE3oJj2U9yfN3msyL4zyzy4b
-        tlGSQiTfrSFdVKQ9B6dnvP6UucNq4=
-Received: from localhost (p5b151a53.dip0.t-ipconnect.de [91.21.26.83])
-        by mail.codevoid.de (OpenSMTPD) with ESMTPSA id 40530dea (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
-        for <linux-kernel@vger.kernel.org>;
-        Tue, 5 Jan 2021 14:19:53 +0100 (CET)
-Date:   Tue, 5 Jan 2021 14:19:52 +0100
-From:   Stefan Hagen <sh+openbsd-tech@codevoid.de>
-To:     linux-kernel@vger.kernel.org
-Subject: Fw: Hiding the vim user in amdgpu_vcn.c (typo in comment)
-Message-ID: <X/RneNOZ9AKbk8le@puffy.hagen.corp>
+        id S1729945AbhAENVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:21:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728009AbhAENVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:21:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4547F2255F;
+        Tue,  5 Jan 2021 13:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609852823;
+        bh=zA5DtIeOvG2pZAiWgUaakzH1u5nm6GWCrS33DADbJaI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OVLGxHqlEXiK/KmyjD08kFUQx3n1OM/MrRg+P1ZzeqdbgAdIVxEgQXzNgqYTvknlX
+         fOJu+f2LcbJ8RAfFGyfafEr9WV/nu+/yPtxdM6flmGsXSi+WelAatjBqpiI3q/fqB8
+         vToF07UEUrd4LP+K9J+VvtB5AIETSXuZdx2020qg=
+Date:   Tue, 5 Jan 2021 14:21:47 +0100
+From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7,2/2] Serial: silabs si4455 serial driver
+Message-ID: <X/Rn62w/IpMHit5j@kroah.com>
+References: <20210105104347.GA18688@dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-X-Editor: nvi 2.1.3
-X-Mailer: Mutt 2.0.4 (2020-12-30)
-X-PGP-Fingerprint: CBD3 C468 64B4 6517 E8FB B90F B6BC 2EC5 52BE 43BA
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210105104347.GA18688@dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jan 05, 2021 at 10:43:49AM +0000, József Horváth wrote:
+> This is a device tree schema for serial port driver for
+>  Silicon Labs Si4455 Sub-GHz transciver.
+> 
+> Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
+> 
+> Guide: https://github.com/dministro/linux-serial-si4455
+> 
+> Signed-off-by: Jozsef Horvath <info@ministro.hu>
+> ---
 
-Ricardo Mestre wrote:
-> Stefan Hagen wrote:
->> I can totally relate to this one.
->>
->> Found after a conversation about muscle memory and grepping the
->> source tree for ":wq".
->>
-> This issue is present in upstream [0], please take it with them.
->
-> [0] https://sourcegraph.com/github.com/torvalds/linux@30bb5572ce7a8710fa9=
-ea720b6ecb382791c9800/-/blob/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c#L131
+Your subject line is incorrect here :(
 
-Forwarding to upstream.
-The patch below is for the Linux source tree.
+Please fix up and resend the series properly threaded (git send-email
+will do it for you.)
 
-Best Regards,
-Stefan
+thanks,
 
-
-=46rom e4511830bd58ac1508dde86b440a36e15a92b5cc Mon Sep 17 00:00:00 2001
-=46rom: c0dev0id <sh+git@codevoid.de>
-Date: Tue, 5 Jan 2021 13:50:13 +0100
-Subject: [PATCH] drm/amdgpu: fix typo in comment
-
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c b/drivers/gpu/drm/amd/=
-amdgpu/amdgpu_vcn.c
-index 4a77c7424dfc..0c9eeb42d518 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
-@@ -168,7 +168,7 @@ int amdgpu_vcn_sw_init(struct amdgpu_device *adev)
-=20
- 	/* Bit 20-23, it is encode major and non-zero for new naming convention.
- 	 * This field is part of version minor and DRM_DISABLED_FLAG in old naming
--	 * convention. Since the l:wq!atest version minor is 0x5B and DRM_DISABLE=
-D_FLAG
-+	 * convention. Since the latest version minor is 0x5B and DRM_DISABLED_FL=
-AG
- 	 * is zero in old naming convention, this field is always zero so far.
- 	 * These four bits are used to tell which naming convention is present.
- 	 */
---=20
-2.30.0
-
+greg k-h
