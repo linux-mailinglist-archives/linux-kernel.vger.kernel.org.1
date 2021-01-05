@@ -2,212 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC2A2EA91B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B3A2EA916
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:45:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729269AbhAEKpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:45:05 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:58944 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728699AbhAEKpE (ORCPT
+        id S1729184AbhAEKo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:44:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728699AbhAEKoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:45:04 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id F240E11F850;
-        Tue,  5 Jan 2021 11:44:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1609843462;
-        bh=MUjJfk9WqP/192z0Yhwfz2yDLEpbXsF5/dNm7cec5Qc=;
-        h=Date:From:To:Subject:From;
-        b=pNKaIDv3mH4tfXwMO3e2ns0/2uBc1WuMjOW7HUt2V0EMSd8e1MKvxkfLqeqdgIIAx
-         9B3aEoHB9qNBlpI5R3qV5baA1FkgTPD1kiFo0LirNvkMJ5vrisCvpP/CN0HuqOZTdo
-         J8FP4rlucCcfYTlghQSFm5c2zf/ntsLpAA196rhPG1iRlXWvnKQ9+uzLaW3fUCKQz4
-         IAY2Z4n3tPd0S+NK5cy/Y4UNnE3N87wSAGLYyOxXJCD60O90ZMuNnCnHO6i//kLjZ/
-         5msqBlMHp94aFCv8wHfbTFVjnB5hss3fPJWjydL9gSFoLu2RRKZ4bs7Pp4t44NPGri
-         aBjJMUiffhXTg==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 0SvJM_mBQCFY; Tue,  5 Jan 2021 11:43:52 +0100 (CET)
-Received: from dev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 70DA011F84E;
-        Tue,  5 Jan 2021 11:43:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1609843432;
-        bh=MUjJfk9WqP/192z0Yhwfz2yDLEpbXsF5/dNm7cec5Qc=;
-        h=Date:From:To:Subject:From;
-        b=gl6sUBf9Hhf0AobIBw6c8dvq+V6+VT3buC2KAiZaKe7InKK+TGKncksVnQaaSCpPx
-         wYLqMppQsbP1palQBY907WeodxCZfGfDDFMhZ+ypHK7Tv1qiobDMXJI3qtVfkrRr/8
-         xcgcUOY4y6MGsuWgajwLkOF5zZ6r4ge7xMGNSDfTt9r2D4omQMf7wl3oyMvAgNfvGR
-         Fv0RKZ77lH182xMSWSNU1MSdj4zWYZQQCtHgHHvfD1bdqrKN/X6CGEfsEfx3m3Srv2
-         UJNgz03Z09AvQnKJIVloeKPGE8lsDHOTPVFFHeh9w+3x3KNIRNbk8KH9b+GKxp271C
-         03yvPD6RkVhqA==
-Date:   Tue, 5 Jan 2021 10:43:49 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
-        'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        =?iso-8859-1?Q?'J=F3zsef_Horv=E1th'?= <info@ministro.hu>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7,2/2] Serial: silabs si4455 serial driver
-Message-ID: <20210105104347.GA18688@dev>
+        Tue, 5 Jan 2021 05:44:55 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9317EC061574;
+        Tue,  5 Jan 2021 02:44:15 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id q5so28136026ilc.10;
+        Tue, 05 Jan 2021 02:44:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aby+ROLVQe/j+JcF7PcokGiqYcXue3VyQb2cq2QP36E=;
+        b=gAp62h+pW8XjZy1mLWZZh7DeMhKW4dwYVNTP3ESLQWUAQyCLJ2qAeQrIFuDrv92U+D
+         OYYvsIfzmT2yzNAKDF4LlqKXwJyYQJ+k5d38p9v+QTCpJuWkyQwmZPf/jd6h9JIiBCIJ
+         tMIxOa5RJnx6x9/4a6IZ1wXB9hrLN2wdxoSyFVEcJrflXoZzeFBS0EKJ4CzjjSCOniu4
+         Ya2N0ECQZuGo0bOKPLZCFCWgukC4kHSAhtP9uMu0rGJc6VEv1ab47tU8gzp5XUXCYn+H
+         RTxUbnPb03gf12apRVTJ+sgvWhA7HWOjdzZJkS5xN5re5XYzT3Oj8qPtAAvSiPmHwgHd
+         mhOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aby+ROLVQe/j+JcF7PcokGiqYcXue3VyQb2cq2QP36E=;
+        b=R2t+Crwe1acjCc1d/4VaI+5kRt8IfzXZRJsKtDbbEJy8iEaAttr1OM0rPuAxb32QRX
+         Yle/COJ1LzWmuKTXmxVB6KomLawrg9YWvTgF+G7szR+E1w+dvMb862QMVwtzIVoGsOk0
+         AnjAFF2yTQhXn27hBlW4jTLYcByImUiQTw9bphZ0iSUaOqd6igw+FURLxFjDKotxQedL
+         +Ut4YBhGq0MZ5/YcyiCqx3N7MTzPJMEuaZX/cZBXp4sMd/gLOksZ2Q5AzN2vSONABoWe
+         Zhn+OdXz6Wjh77/nvjcQ9XB3bXTdqDbn6TXTLg9KBNopoVNqW6CVLQhWtHvUNb4WJjwE
+         9caQ==
+X-Gm-Message-State: AOAM532vAe4H+9krNy8UkCLMMywy6waHmkh2EK/MMkwMFMdXYnwTjSVq
+        TM/QKJDCg4pseH+UgRA46R8=
+X-Google-Smtp-Source: ABdhPJw5sCo41NxSJ0Cnavo5ZcJU1fgWGGrzaa9kwzbPx/DpC0JvBNiB9+no9NUxhMpf+BP6DDtDcQ==
+X-Received: by 2002:a92:c50d:: with SMTP id r13mr72463098ilg.160.1609843455092;
+        Tue, 05 Jan 2021 02:44:15 -0800 (PST)
+Received: from localhost.localdomain ([156.146.37.136])
+        by smtp.gmail.com with ESMTPSA id f3sm42003691ilu.74.2021.01.05.02.44.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 02:44:14 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, Larry.Finger@lwfinger.net,
+        christophe.jaillet@wanadoo.fr, zhengbin13@huawei.com,
+        baijiaju1990@gmail.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: rtlwifi: rtl8821ae:  defautly to de-faulty ,last in the series
+Date:   Tue,  5 Jan 2021 16:14:20 +0530
+Message-Id: <20210105104420.6051-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a device tree schema for serial port driver for
- Silicon Labs Si4455 Sub-GHz transciver.
+s/defautly/de-faulty/p
 
-Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
-
-Guide: https://github.com/dministro/linux-serial-si4455
-
-Signed-off-by: Jozsef Horvath <info@ministro.hu>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
+ drivers/net/wireless/realtek/rtlwifi/rtl8821ae/trx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-changes v1:
- - fixed: dt: bindings: rename sdn-gpios to shutdown-gpios
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/trx.c
+index 9d6f8dcbf2d6..0e8f7c5fd028 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/trx.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/trx.c
+@@ -970,7 +970,7 @@ bool rtl8821ae_is_tx_desc_closed(struct ieee80211_hw *hw,
 
-changes v3:
- - fixed: dt: bindings: silabs,si4455: more detailed description
- - added: dt: bindings: silabs,si4455: properties silabs,package-size,
-   silabs,tx-channel, silabs,rx-channel, silabs,ez-config
-
-changes v4:
- - fixed: dt: bindings: silabs,si4455: $id
-   from http://devicetree.org/schemas/serial/silabs,si4455.yaml
-   to http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml
-
-changes v5:
- - fixed: dt: bindings: silabs,si4455: $id
-   from http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml
-   to http://devicetree.org/schemas/serial/silabs,si4455.yaml
- - fixed: dt: bindings: silabs,si4455: serial.yaml reference added
-
-changes v7:
- - added: dt: bindings: silabs,si4455: silabs,tx-timeout property definition
----
- .../bindings/serial/silabs,si4455.yaml        | 105 ++++++++++++++++++
- 1 file changed, 105 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/serial/silabs,si4455.yaml
-
-diff --git a/Documentation/devicetree/bindings/serial/silabs,si4455.yaml b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
-new file mode 100644
-index 000000000000..8ba4956064b4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
-@@ -0,0 +1,105 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/serial/silabs,si4455.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Silicon Labs Si4455 device tree bindings
-+
-+maintainers:
-+  - József Horváth <info@ministro.hu>
-+
-+description:
-+  This document is for describing the required device tree parameters for si4455 serial driver.
-+  The si4455 driver tries to represent the Silicon Labs Si4455 sub-GHz transceiver device
-+  like a serial port. The required parameters for proper operation are described below.
-+  https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
-+
-+allOf:
-+  - $ref: "serial.yaml#"
-+
-+properties:
-+  compatible:
-+    const: silabs,si4455
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    description: maximum clock frequency on SPI port
-+    maximum: 500000
-+
-+  shutdown-gpios:
-+    description: gpio pin for SDN
-+    maxItems: 1
-+
-+  silabs,package-size:
-+    description:
-+      Radio payload length, variable packet length is not supported by driver.
-+      This value should equal with EZConfig payload length.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 64
-+    minimum: 1
-+
-+  silabs,tx-channel:
-+    description:
-+      Radio transmit channel selection.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 255
-+    minimum: 0
-+
-+  silabs,rx-channel:
-+    description:
-+      Radio receive channel selection.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 255
-+    minimum: 0
-+
-+  silabs,tx-timeout:
-+    description:
-+      Radio transmit timeout(ms)
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 1000
-+    minimum: 1
-+
-+  firmware-name:
-+    description:
-+      Radio configuration data file name.
-+    $ref: /schemas/types.yaml#/definitions/string
-+    items:
-+      pattern: ^[0-9a-z\._\-]{1,255}$
-+
-+required:
-+  - reg
-+  - interrupts
-+  - spi-max-frequency
-+  - shutdown-gpios
-+  - silabs,package-size
-+  - silabs,tx-channel
-+  - silabs,rx-channel
-+  - firmware-name
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      si4455_0: serial@0 {
-+        compatible = "silabs,si4455";
-+        reg = <0>;
-+        interrupt-parent = <&gpio>;
-+        interrupts = <7 2>;
-+        shutdown-gpios = <&gpio 26 1>;
-+        spi-max-frequency = <300000>;
-+        silabs,package-size = <30>;
-+        silabs,tx-channel = <1>;
-+        silabs,rx-channel = <2>;
-+        firmware-name = "si4455_spi0_0.ez.bin";
-+      };
-+    };
-+...
--- 
-2.17.1
+ 	/**
+ 	 *beacon packet will only use the first
+-	 *descriptor defautly,and the own may not
++	 *descriptor de-faulty,and the own may not
+ 	 *be cleared by the hardware
+ 	 */
+ 	if (own)
+--
+2.26.2
 
