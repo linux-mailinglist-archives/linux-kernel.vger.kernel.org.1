@@ -2,82 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3B92EB4DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 820F82EB4DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731451AbhAEV0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 16:26:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727885AbhAEV0Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:26:16 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1405C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 13:25:35 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id s26so1809428lfc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 13:25:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wiPY1dmibSK4MubYSnWAxTqjr55ZR2eIdX5ruC5r4mU=;
-        b=fcRyS9rIphRzn2ZoD+IEC0vUmDaUtbiaQ7Rac4paDfxdsejrpkaYWyeOp0bVDldz4M
-         WNIdRAZViVn48wDZ8+XxTkQtzWgHvVQ5M/5xMOZHi7kuL92XldqtcvqHFFnsr8SdkkQf
-         TdZEITDAC9grqnaz61mzz9Ar6pPxpBFAFGWN4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wiPY1dmibSK4MubYSnWAxTqjr55ZR2eIdX5ruC5r4mU=;
-        b=sn2rFW5ivDabOqhNNQRDnNb5A2zOhMZnMmSuqKjlBkU5WAXOS7w1E7D8FvZLjiB+TT
-         amkcoXJOf0Zd9vBsh6UK5bF9zb+pVtrtdaRqAqf4dLWtz/WBJ1PQTCg4LooL6ONxJ+/o
-         RQbqJDVtB/iPdvPJYR2qPTatUjYwKJS/KDhwm/CjMhXMuCvPtz6rzvAVkzVtNQbhJA81
-         mMuguEsDZQbf761w3mUL0B9E2qqU/aHHOTXsKa/VyInjpLYIG6J5EhHts4HinHafySVL
-         WCNnA4WQBV9JRoIW1Z9ajhd5t0nc6SK4PW8YqAiw+kS1PrwTED51VZXPWm247wD/KCi+
-         6C1w==
-X-Gm-Message-State: AOAM532/7NTFiQTd3Cf+XLVFF40xjwPLanzbbgWiZoSh0LIu9mnnMQkx
-        J01TgCwlfEdKidAS86bQNrzz6/d/n1VcHg==
-X-Google-Smtp-Source: ABdhPJxyewnmpecDIN9pBWjzOtwbFgkozRMKKdr+0siCQ+sPzSBrssP0Ej5uBaPViNi4m0chOsemXw==
-X-Received: by 2002:a19:857:: with SMTP id 84mr535496lfi.235.1609881934328;
-        Tue, 05 Jan 2021 13:25:34 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id c7sm35446lfm.262.2021.01.05.13.25.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 13:25:33 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id o13so1891791lfr.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 13:25:33 -0800 (PST)
-X-Received: by 2002:ac2:4987:: with SMTP id f7mr486086lfl.41.1609881933003;
- Tue, 05 Jan 2021 13:25:33 -0800 (PST)
+        id S1731454AbhAEV1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 16:27:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726020AbhAEV1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 16:27:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 728A322D5A;
+        Tue,  5 Jan 2021 21:26:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609881993;
+        bh=0h2EnmcGyrtAyDKIV/nV5AQlooTxVMooHJEnIT20PW8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u/P6hBRVV4mtIfq5IHmonZDv3B5ECo0nGBqlJG7qOAnFzlfARclH1h/hDjkWIYVFU
+         do1VpSx/FZSMNiZj6XOSEnuTDK2rWRX23n4VI3JC3meTguoPw608V8QBBbLsZ9ylyk
+         xLpNQ4Wi8hF9AN6bgrz7p/YrWEhk0MY0gJxzxy38kPn5Qr59src6NpisU6VjzUL0C0
+         JTgjMvFlnKfyUnCUjTmPNTNQsi9kCICkxR4N49YqDBOSUSuYq042ixIwnKhKIRCaH1
+         7vTOIqkS8HSgPv0X5kTuZ7Q2u9R82LsQkKy88HrMjewoD2lK1fnwMkOCD3tu4dGmiE
+         d6zUH5/3WvagA==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 589323C0C94; Tue,  5 Jan 2021 22:26:31 +0100 (CET)
+Date:   Tue, 5 Jan 2021 22:26:31 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Cc:     robh+dt@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmurphy@ti.com
+Subject: Re: [PATCH v9 2/2] power: supply: bq256xx: Introduce the BQ256XX
+ charger driver
+Message-ID: <20210105212631.2meujp37e5jqp7eu@earth.universe>
+References: <20210105202949.14677-1-r-rivera-matos@ti.com>
+ <20210105202949.14677-3-r-rivera-matos@ti.com>
 MIME-Version: 1.0
-References: <CAHk-=whS+rzNMSsU6vRoLMzrm0JPN-OVg+BxhybMet3NpqpR-Q@mail.gmail.com>
- <20210105184653.GA88051@roeck-us.net> <CAHk-=why7Sc=bypL-rbXevtoe8GjSv2ifSH1pVZn-ziAGKR+_A@mail.gmail.com>
- <20210105205737.GB230525@roeck-us.net>
-In-Reply-To: <20210105205737.GB230525@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 5 Jan 2021 13:25:17 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whHn5PUQx6MqzfWfxu9OhOcJkOfx9OL=FUWki7vBSJywA@mail.gmail.com>
-Message-ID: <CAHk-=whHn5PUQx6MqzfWfxu9OhOcJkOfx9OL=FUWki7vBSJywA@mail.gmail.com>
-Subject: Re: Linux 5.11-rc2
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3arhu4mpg74a7e7k"
+Content-Disposition: inline
+In-Reply-To: <20210105202949.14677-3-r-rivera-matos@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 12:57 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> NP. The test are running automatically anyway, so I figured I might
-> as well report the results. Does that make sense, or is it just noise ?
 
-Definitely not noise. I very much like seeing the results.
+--3arhu4mpg74a7e7k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In fact, even in situations like this, where the results are a subset
-of what the previous rc already had, I very much like seeing them, if
-only to make sure the issues don't get forgotten about.
+Hi,
 
-So please continue for as long as you have the cycles available..
+On Tue, Jan 05, 2021 at 02:29:49PM -0600, Ricardo Rivera-Matos wrote:
+> The BQ256XX family of devices are highly integrated buck chargers
+> for single cell batteries.
+>=20
+> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+>=20
+> v9 - resolves two warnings issued by kernel test robot
 
-             Linus
+changelog needs to be below --- btw.
+(so that git am does not pick it up :))
+
+> ---
+> [...]
+> +	ret =3D bq256xx_parse_dt(bq, psy_cfg, dev);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to read device tree properties%d\n", ret);
+> +		return ret;
+> +	}
+> [...]
+
+If you want to change psy_cfg, you need to pass it by reference
+and not by value (i.e. use &psy_cfg here and a pointer as argument
+of bq256xx_parse_dt). Providing psy_cfg like this creates a copy
+of the struct.
+
+Did you runtime test this version? It should crash when accessing
+the properties because of psy_cfg.drv_data being NULL.
+
+> [...]
+> +	ret =3D bq256xx_power_supply_init(bq, psy_cfg, dev);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to register power supply\n");
+> +		return ret;
+> +	}
+
+Here it's also better to just provide the address of psy_cfg
+(but not strictly necessary).
+
+-- Sebastian
+
+--3arhu4mpg74a7e7k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/02YQACgkQ2O7X88g7
++prDHRAAkb4EPnHdqNjOJuOVDe8q+gjbcmkrmVCuG5XEroOtaDsIfsirdgRBasIl
+aKm98jle9WyUZcRMTpyPrTPwN9Vpkp7kk19cCrEhwHC3AVc8BQTN50mcJRSUNqNy
+4golBeaqv2p+h3DpNYLXFwbftwGmMkwv1X3KjveteDFTv6ERse8i6pmqKPB7cSQk
+ITUXloAM0gQh2FNdF+VTUUVDy8x+y+EyhGBSuPFYS+WQjSGVh8sM2xD5vEDSoEIb
+li3ZJEJh5hvUjESuZxmgoMVityw0GK0yPHRqFoLy3n6qx906MmwIYGbEmaLXKGBb
+yLUwf9UYKITTqUaqAps4OQc8hMvIWgMXJOUIU5naVrlCAJfFQexDXctMONngU+1X
+FKzHogqHTvTo6P63DM7uyY3xrBfOWOYwkdSqAfcn7Q44tJcme98ThPFMxRz4jYax
+YBqo3UO8OrkchhJO/3+WgyaMWL6vdL0RNXf5BjhibjHTfk0HEo+nU6TqBWGEW0Ev
+PenTSoiHMYVqwQ7End2OnNgw3Se8ziy/jwNRNMnNpKQoG67HVSqQh4eCPozMvJQm
+w4vh4WwoMKdBHSfOv3jB7YROmtTpkVGMaG8Ox99EEw4J397TeLQynifw2AMDZpXk
+g9dQ5LzDYhTLcaRdJazUxPbXKQ/AzpJn+hYl7Yd/vYwdy34Fk40=
+=2tBC
+-----END PGP SIGNATURE-----
+
+--3arhu4mpg74a7e7k--
