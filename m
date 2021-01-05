@@ -2,117 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB342EAC1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A79B2EAC1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730304AbhAENnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:43:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730268AbhAENnb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:43:31 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3625C061795;
-        Tue,  5 Jan 2021 05:42:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+euDtxcGipU8q+U8BbJ2JReGBO3U7/zwdT6b3FGSnPY=; b=sn2God1DiTyvt/Xakejls2197D
-        AtaU+rRl4bMkTxGXmvu96Yu8SsTSfftIky0jfQ9vysJLFWj1MkuAyI0aHyAw1EuNrilBUAD6vCvzw
-        vAaSLruZhxBIIy+ActXuZ++ciZom9mr/W1GQ+So4KfPtUPZQmTxZ7eI2zAyF9+z8ugny5M8yhX+t0
-        4BVeLWCohvdkGgc31SiIpNK6Gn12JToW2sI9I4fAe8oAJYwcGo9DjBYLv8xnx1ZTIPmqn7+uRAMqK
-        OQAHh4YLRVl8ghOp0uCwjP3VyIMoR7UbBA305fQChny26NzVqohc6x+L6/9nSYVFgFfgGTH71M3c4
-        Ud8HQdPg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwmba-0007aK-0c; Tue, 05 Jan 2021 13:42:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E7A430015A;
-        Tue,  5 Jan 2021 14:42:32 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 16893200C641B; Tue,  5 Jan 2021 14:42:32 +0100 (CET)
-Date:   Tue, 5 Jan 2021 14:42:32 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix dynticks_nmi_nesting underflow check in
- rcu_is_cpu_rrupt_from_idle
-Message-ID: <20210105134232.GI3040@hirez.programming.kicks-ass.net>
-References: <1608712777-1769-1-git-send-email-neeraju@codeaurora.org>
- <20201223151231.GC2657@paulmck-ThinkPad-P72>
+        id S1730315AbhAENoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:44:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726076AbhAENoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:44:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A267229C4;
+        Tue,  5 Jan 2021 13:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609854204;
+        bh=wIlnL1VAyIouVMBSrzUu5JMg84xwPJWp1BYOBKzgZ/Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tvWKEFipHEDorOQU8OnU/LqjLJCoa7lP+Aafx3JLPVskDJ6tt1NXyYlWBraWFGGE1
+         V5ubiRc0+jpUzSNkExV72LsTkIHQ6jgbyqrzjK1RJCAdBXhRDXyzDDDBu0Py+Rplk8
+         F42hBCxBHvQCr3QQ0GnK+AVF+qqgPWfHhdZDiW+iGYmlQSknYpK3eFfIDFxGMyTnHY
+         GCuDY+xIS7eufA7abSYllLvAWIL9/nnhtHcGBNl4EAowOLTn+/7sLamfdjkFldiVRe
+         ezBjwTWAL9uzIDeYfPRtA9m4mACI05DbSqb8kAacFag/mj2ESMZsLxuW7t61XSuGbI
+         WsDiprh/w/5og==
+Date:   Tue, 5 Jan 2021 13:42:56 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20210105134256.GA4487@sirena.org.uk>
+References: <20201218155204.GC5333@sirena.org.uk>
+ <20201218162817.GX552508@nvidia.com>
+ <20201218180310.GD5333@sirena.org.uk>
+ <20201218184150.GY552508@nvidia.com>
+ <20201218203211.GE5333@sirena.org.uk>
+ <20201218205856.GZ552508@nvidia.com>
+ <20201221185140.GD4521@sirena.org.uk>
+ <20210104180831.GD552508@nvidia.com>
+ <20210104211930.GI5645@sirena.org.uk>
+ <20210105001341.GL552508@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
 Content-Disposition: inline
-In-Reply-To: <20201223151231.GC2657@paulmck-ThinkPad-P72>
+In-Reply-To: <20210105001341.GL552508@nvidia.com>
+X-Cookie: I'm ANN LANDERS!!  I can SHOPLIFT!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:12:31AM -0800, Paul E. McKenney wrote:
-> On Wed, Dec 23, 2020 at 02:09:37PM +0530, Neeraj Upadhyay wrote:
-> > For the smp_call_function() optimization, where callbacks can run from
-> > idle context, in commit 806f04e9fd2c ("rcu: Allow for smp_call_function()
-> > running callbacks from idle"), an additional check is added in
-> > rcu_is_cpu_rrupt_from_idle(), for dynticks_nmi_nesting value being 0,
-> > for these smp_call_function() callbacks running from idle loop.
-> > However, this commit missed updating a preexisting underflow check
-> > of dynticks_nmi_nesting, which checks for a non zero positive value.
-> > Fix this warning and while at it, read the counter only once.
-> > 
-> > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> > ---
-> > 
-> > Hi,
-> > 
-> > I was not able to get this warning, with scftorture.
-> > 
-> >   RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
-> >     "RCU dynticks_nmi_nesting counter underflow/zero!");
-> > 
-> > Not sure if idle loop smp_call_function() optimization is already present
-> > in mainline?
-> 
-> Now that you mention it, I don't see it.
 
-kernel/sched/idle.c:do_idle() calls flush_smp_call_function_from_idle().
+--5vNYLRcllDrimb99
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-(nothing x86 specific about it)
+On Mon, Jan 04, 2021 at 08:13:41PM -0400, Jason Gunthorpe wrote:
+> On Mon, Jan 04, 2021 at 09:19:30PM +0000, Mark Brown wrote:
 
-> > Another thing, which I am not sure of is, maybe lockdep gets disabled
-> > in the idle loop contexts, where rcu_is_cpu_rrupt_from_idle() is called?
-> > Was this the original intention, to keep the lockdep based
-> > RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0
-> > check separate from idle task context nesting value
-> > WARN_ON_ONCE(!nesting && !is_idle_task(current)) check?
-> 
-> An easy way to test lockdep is to create a pair of locks, acquire them
-> in one order then release them both, and finally acquire them in the
-> other order and then release them both.  If lockdep is configured and
-> enabled, it will complain.
+> > Like I keep saying the same thing applies to all non-enumerable buses -
+> > exactly the same considerations exist for all the other buses like I2C
+> > (including the ACPI naming issue you mention below), and for that matter
+> > with enumerable buses which can have firmware info.
 
-IIRC (and this is after not staring at the computer for 2 weeks) lockdep
-should work just fine in idle, except of course that RCU will be stopped
-so actually taking locks will scream bloody murder due to tracing etc..
+> And most busses do already have their own bus type. ACPI, I2C, PCI,
+> etc. It is just a few that have been squished into platform, notably
+> OF.
 
-> The only reason I used RCU_LOCKDEP_WARN() was that people were complaining
-> to me about idle-entry overhead back at that time.  So without lockdep,
-> there is zero overhead.  Maybe people have become more tolerant of idle
-> delays, or perhaps they are not so worried about an extra check of a
-> cache-hot quantity.
+You're missing the point there.  I2C is enumerated by firmware in
+exactly the same way as the platform bus is, it's not discoverable from
+the hardware (and similarly for a bunch of other buses).  If we were to
+say that we need separate device types for platform devices enumerated
+using firmware then by analogy we should do the same for devices on
+these other buses that happen to be enumerated by firmware.
 
-Not having checks also saves on $I and branches, in general I think
-having checks depend on DEBUG features, esp. those we don't really
-expect to trigger is still sane.
+I'm not convinced this is actually the design that's being pushed by
+Greg here, to the extent anything is being actively pushed.
 
-> I am tempted to pull this in as is, given the current logical
-> inconsistency in the checks.  Thoughts?
+> But now it begs the question, why not push harder to make 'struct
+> device' the generic universal access point and add some resource_get()
+> API along these lines so even a platform_device * isn't needed?
 
-Patch looks ok, although I've seen compilers do CSE on
-__this_cpu_read() (on x86).
+We still need a struct device of some kind so the discussions about
+exactly which bus type one is supposed to use in which circumstances
+remain given that you're not supposed to have raw struct devices.
+
+> Then the path seems much clearer, add a multi-bus-type device_driver
+> that has a probe(struct device *) and uses the 'universal api_get()'
+> style interface to find the generic 'resources'.
+
+That's exactly how things like mixed I2C/SPI devices work at present,
+given that they can usually use regmap to hide register I/O.
+
+> int gpiod_count(struct device *dev, const char *con_id)
+> {
+> 	int count =3D -ENOENT;
+
+> 	if (IS_ENABLED(CONFIG_OF) && dev && dev->of_node)
+> 		count =3D of_gpio_get_count(dev, con_id);
+> 	else if (IS_ENABLED(CONFIG_ACPI) && dev && ACPI_HANDLE(dev))
+> 		count =3D acpi_gpio_count(dev, con_id);
+>=20
+> 	if (count < 0)
+> 		count =3D platform_gpio_count(dev, con_id);
+
+> With an actual bus specific virtual function:
+
+>     return dev->bus->gpio_count(dev);
+
+That won't work, you might have a mix of enumeration types for a given
+bus type in a single system so you'd need to do this per device.  It's
+also not clear to me that it is useful to spread things out like this,
+it makes it more hassle to add new APIs since you have to change core
+code.
+
+--5vNYLRcllDrimb99
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/0bOAACgkQJNaLcl1U
+h9ASGQf+PqdAMqCv0v40Pazm4IUU5EhqpiFSYI0ApyvEeiC+ax6gxyaqepjUv9Iy
+QVScfPevt2Q95DSeFBBbTl0tNmGp6xVJedt1bb3f7O8tT6Og47jvopRj9Ng6Eua3
+WBAXS1FsNefwO1XYB7lZbIPoGtZ3e93zDC3Lhfk8OMSzobu6Oc62xkHOV70E+TAK
+WWk2LX/abBhoGcP71eh6HmH/iSoSrjZFIamO3KNmZ46oq7aDLbIM658cy0/vku0j
+Ed6tn2HjxxT+UaQ4Fh6Egs8MldDGQWwBdvjo6+i8+zTKy+TDbq+ftf0YOjfHPNn/
+BLq3yUaioOz3/qxoY/b+oWE2kwZ2Tg==
+=DXq7
+-----END PGP SIGNATURE-----
+
+--5vNYLRcllDrimb99--
