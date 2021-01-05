@@ -2,85 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED90B2EB004
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE862EB00F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbhAEQ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:27:56 -0500
-Received: from www.zeus03.de ([194.117.254.33]:36372 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726827AbhAEQ1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:27:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=ItCqiLHQl9A4Ym1BH/ajMtYAHSq0
-        U0IE+c+ElmC9zT4=; b=ao0skGe6I0CoQ6Q+jg/ry3yvCr0rMFK96RGUIS94b2lR
-        jhoVwKHTULh6gctCFaacUhhPpj6QXDSjw6UgagdpH6KoCsT7F1neZdvp7wgpdR45
-        I8lVk7ub/gqvVaUegHaBf2SaAWFxU/rVFjjIF+ekxqhrDQUM14/iaKcSiFnwfI4=
-Received: (qmail 121856 invoked from network); 5 Jan 2021 17:27:13 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Jan 2021 17:27:13 +0100
-X-UD-Smtp-Session: l3s3148p1@M9HVrSm4zuUgAwDPXyX1AEdA8SGgn5QT
-Date:   Tue, 5 Jan 2021 17:27:13 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Tho Vu <tho.vu.wh@renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/5] arm64: dts: renesas: falcon: Add Ethernet-AVB support
-Message-ID: <20210105162713.GH1842@ninjato>
-References: <20201227130407.10991-1-wsa+renesas@sang-engineering.com>
- <20201227130407.10991-5-wsa+renesas@sang-engineering.com>
- <CAMuHMdWSZ7Fw2fX6aYhqavDDV01qkYJmXrAUWv8Rud9hKVEBZQ@mail.gmail.com>
+        id S1728288AbhAEQaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:30:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726655AbhAEQaE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:30:04 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E71EC061793;
+        Tue,  5 Jan 2021 08:29:24 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id l11so74029287lfg.0;
+        Tue, 05 Jan 2021 08:29:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WnKBAJVxaowk5MMmWYJeufW/YY0cNztLm0VvLAro1vA=;
+        b=fURn9bOv3P/p4cp2iKgs4R1KSHwzlBISuB5l7hmbgr2m0VDOpMlRldjjH/6B6EpJWf
+         +ScfItVpJyAG/ZfT+qHs+aZX7oCU2hMZDUP8L/RM8dYKlfysJXmrrNF6qatk86qC9x6O
+         B/dzzTXlw3QYb04hueAf4/MQRTknN/Hth25T7EmPOX7+wRBAVEcoqp/D2kmd8DTasyG9
+         MOYMckeOfHOxD33h8B4WpKekj5VqaG2c/Q+qrZdVjaZ6AoFjfeobyHAPMoHihEW22B/m
+         RJxK3yYUdYx0mc7xJeaiq8a598qMOcvAl/jn9tES1XSN8KIcW2EDn+G4q1d2jnPg+Xih
+         YeAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WnKBAJVxaowk5MMmWYJeufW/YY0cNztLm0VvLAro1vA=;
+        b=uU2MERb1jLPcpAjRI2ZXBXI1s8+208GIuRch9Tg36oyTWww46RImh9YkpLWzItEyos
+         uPLdqGwURrt7IYihxa/suLEGVSyTbYA+3kTBmmOogdRa4A9TOvr7wuyZFyyTH9i0RylB
+         YjMjC8ZB1j34XoVInqOzszx9mKxyPR56gdZWFto0GD2PdSQbafeW2IxUA13zUMasVKqa
+         PaZsXAyig+9hy3n7HMRs2MDm8qJrOJmT+s/ykY6fYu1t4uqS+SDWK2cbvQn0L7+Xf1t6
+         e3pbzsmp9dBqivHzemo41+2Ees2eFhcHNaE4Xk97ieC6XFG/YYHkuKUzDArqmt4g4f0D
+         wUqA==
+X-Gm-Message-State: AOAM533hQXedcjZT46uKZp0ZY/lMpKWR0JXL3V70phhN4wyCTrVWbbuY
+        UTgPqqKbEhJxj97x4GhqV6/ge2Z4fzE=
+X-Google-Smtp-Source: ABdhPJy5I4KmUU2D1eK6L9+2fhJOb70aRXLJX7tqprrilhPBBux8G8iXkrdSZolqzRQx+ysFJHNXZA==
+X-Received: by 2002:a2e:720c:: with SMTP id n12mr222633ljc.2.1609864162746;
+        Tue, 05 Jan 2021 08:29:22 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id v63sm14662lfa.89.2021.01.05.08.29.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 08:29:21 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 5 Jan 2021 17:29:19 +0100
+To:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: kerneldoc warnings since commit 538fc2ee870a3 ("rcu: Introduce
+ kfree_rcu() single-argument macro")
+Message-ID: <20210105162919.GA1800@pc638.lan>
+References: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
+ <20210105131441.GA2457@pc638.lan>
+ <20210105145659.GD17086@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UKNXkkdQCYZ6W5l3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWSZ7Fw2fX6aYhqavDDV01qkYJmXrAUWv8Rud9hKVEBZQ@mail.gmail.com>
+In-Reply-To: <20210105145659.GD17086@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 05, 2021 at 06:56:59AM -0800, Paul E. McKenney wrote:
+> On Tue, Jan 05, 2021 at 02:14:41PM +0100, Uladzislau Rezki wrote:
+> > Dear, Lukas.
+> > 
+> > > Dear Uladzislau,
+> > > 
+> > > in commit 538fc2ee870a3 ("rcu: Introduce kfree_rcu() single-argument
+> > > macro"), you have refactored the kfree_rcu macro.
+> > > 
+> > > Since then, make htmldocs warns:
+> > > 
+> > > ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> > > 'ptr' description in 'kfree_rcu'
+> > > ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> > > 'rhf' description in 'kfree_rcu'
+> > > 
+> > > As you deleted the two arguments in the macro definition, kerneldoc
+> > > cannot resolve the argument names in the macro's kerneldoc
+> > > documentation anymore and warns about that.
+> > > 
+> > > Probably, it is best to just turn the formal kerneldoc references to
+> > > the two arguments, which are not used in the macro definition anymore,
+> > > simply into two informal references in the documentation.
+> > > 
+> > Thanks for your suggestion. I am not sure if htmldocs supports something
+> > like "__maybe_unused", but tend to say that it does not. See below the
+> > patch:
+> > 
+> > <snip>
+> > >From 65ecc7c58810c963c02e0596ce2e5758c54ef55d Mon Sep 17 00:00:00 2001
+> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> > Date: Tue, 5 Jan 2021 13:23:30 +0100
+> > Subject: [PATCH] rcu: fix kerneldoc warnings
+> > 
+> > After refactoring of the kfree_rcu(), it becomes possible to use
+> > the macro with one or two arguments. From the other hand, in the
+> > description there are two arguments in the macro definition expected.
+> > That is why the "htmldocs" emits a warning about it:
+> > 
+> > <snip>
+> > ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> > 'ptr' description in 'kfree_rcu'
+> > ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> > 'rhf' description in 'kfree_rcu'
+> > <snip>
+> > 
+> > Fix it by converting two parameters into informal references in the
+> > macro description.
+> > 
+> > Fixes: 3d3d9ff077a9 ("rcu: Introduce kfree_rcu() single-argument macro")
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  include/linux/rcupdate.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > index ebd8dcca4997..e678ce7f5ca2 100644
+> > --- a/include/linux/rcupdate.h
+> > +++ b/include/linux/rcupdate.h
+> > @@ -854,8 +854,8 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+> >  
+> >  /**
+> >   * kfree_rcu() - kfree an object after a grace period.
+> > - * @ptr: pointer to kfree for both single- and double-argument invocations.
+> > - * @rhf: the name of the struct rcu_head within the type of @ptr,
+> > + * ptr: pointer to kfree for both single- and double-argument invocations.
+> > + * rhf: the name of the struct rcu_head within the type of ptr,
+> >   *       but only for double-argument invocations.
+> >   *
+> >   * Many rcu callbacks functions just call kfree() on the base structure.
+> > -- 
+> > 2.20.1
+> > <snip>
+> > 
+> > Paul, does it work for you?
+> 
+> If it works for the documentation generation, then it works for me.  ;-)
+> 
+OK. Then we need the patch to be reviewed by the documentation generation :)
 
---UKNXkkdQCYZ6W5l3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Dear, linux-doc folk!
 
-Hi Geert,
+Could you please review the patch that is in question?
 
-thank you for the reviews!
+Thank you in advance.
 
-> breakout-board, while AVB1-5 are wired to 88Q2110 PHYs connected to a
-> 5port MATEnet connector on the Ethernet sub board.  So all PHYs are
-> present?
-
-I was under the assumption that we don't have the ethernet sub board in
-the lab. Sorry if I was wrong. Then I was probably just missing the
-correct Marvell driver for the phys when I tried to fire the interface
-up. I will retry (with your other suggestions, too).
-
-
---UKNXkkdQCYZ6W5l3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/0k10ACgkQFA3kzBSg
-Kbaggw/+KsCF8MM60YIdpFFEwPseBHo8giyrpaPyVr7YL58wbfBHZIhT8UieP7CE
-V7XV79AgAhucfaajRifa9A2PcfdHiGWXVx6TdjgEfTtoIRfVoZKFfiUJSzitQJH9
-cckmDhzMUhULJf9C2LwOqx97c1KTYrUpjzgW/w4IjsPUOqo/IDkDkJDQFElne+nI
-0CuJuDscuo6UcLeMbYIvO+jrNfzeNsmh9FMdYDx1veFXQtlcXGCLjPGSOuRVRCk2
-NmO65oiS7uS7ZMwaHUcWHQZgTip/UOpgj+QVnDOba2zTsOe6qNBlZtGNnyxdpGiU
-5qxI23fSnwtS8HcqQQVRIe79aNDN4ccgv4abWWZMvvhl3RnBYibdbP9t9dq+raci
-+g0VteK/eY9wh23auP8qwx+KWKYIidjqguD9ogG1T5c+a8mGMyUtum4fBbDgQvz0
-y+2wiQtM+hgOJ0pZRs3e4eHLZh4mxm2MC0ZEwwc9bIGVs/wdzevnCGJR2vtdbjrv
-MhfgeMQ94KyljL5aTGity7o69g2Z/yR0yGbMK4q4SoEIpLDhqbos5+JlEzuEAEs0
-PIBrc4nnuG+0uQP8jeIpVCD87enVwOnSKFVjYNz2BuD1Xst2BqEtcWVrLScYvybD
-WPIC+WoMVZhQQv5jJUAxfkAiNnP2qxQOrUqbWF8hWwc0puK/kvA=
-=D7lI
------END PGP SIGNATURE-----
-
---UKNXkkdQCYZ6W5l3--
+--
+Vlad Rezki
