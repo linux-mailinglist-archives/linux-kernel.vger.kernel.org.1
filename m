@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B002EB207
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DD72EB20E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730338AbhAESGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:06:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        id S1730750AbhAESGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:06:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbhAESGS (ORCPT
+        with ESMTP id S1730742AbhAESGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:06:18 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D13AC061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:06:03 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id e25so402690wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:06:02 -0800 (PST)
+        Tue, 5 Jan 2021 13:06:45 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6578C0617A0
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:06:04 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 190so382064wmz.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:06:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=d+uHwEYDJF0rNRcNiLI17FoJnHpTNGz4U1iUVCU1JMk=;
-        b=A1qy8Fatn8t1RgSdISmQVC6qlsH4y803Jan86/kD1WZTeDTDvDjLWOrDqegDFFSmw8
-         TKdh2NLwqJiS3TYEJKUAqXIHbMK3mgavA/VTK8tDz5Q5NWZB/5ItLHqv8JnOVQXJHhf9
-         kL3ias0GUa15vJo7GDLebt/2Lm5YsJzw7EbEzu8VNFFbDJz3aep4C8W6CumJPT37dVmh
-         iSdMnOmHpakEs+5nO0La0CUOigRqS6VN33HkC5e/q6pj/MrL7mJQnDAWg/IukEOQjbLL
-         3iSeuXk7MuxoeOSf+SJtOHXvBilGQ94GFfV/tJpJa9/M68qgQivprW1pbYxQmpDbIE93
-         s77Q==
+        bh=Pc2HqS8Yp/wLLNaRLrMUR3bpLwxoED7DL6jFSybCHtA=;
+        b=NwMXL8631Z29wz/JNQC2mtB4LPJnxvcjKGq1fr1Utl3B/GGEKRb7ZHDWdnK2lDw5OG
+         oTGcvo+K1wBAfozKawQtmBjFACNet+HKha0Qo7Am+Xt+UPZrvXPm1z1sPj41KhE1h5Ug
+         WmaaMwftJ0NVNgYijUiGGeb3AjPOwDa/YWo+G1T3FO3wElFKgEL0fjPr1o8VWSKO6rBq
+         Xu/nCJ9b+yCkUV1HToIHqLt28Y2OL0eeR387sTRTPas+KNfZHE2LgJc5q6E3Bm8rfVsU
+         qngV6mgx+Uf22eI8s9F/Gt2QpyXWUFeKXyuKk00UgPwt3HbqD6q9MVhb3GYu0KPD5gwx
+         OchQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=d+uHwEYDJF0rNRcNiLI17FoJnHpTNGz4U1iUVCU1JMk=;
-        b=ezuk1y8ViNb8ibl0uFVtU6i/Oil8k/ND/7tTa6GZiwSOUwxm9kxG2VUtBXM23D1P00
-         eldp9CVhCa7z8F4k2UmDaVGC19IPs6svjMre3tzz/knSuavxeELDzCKINaWRjt6HUpAb
-         boTSkEJoTWw4Xaqos47PcIJslb3umT5yrbNC8P/a0NrRPjFkZJztd97IeCwqy3cVuz5r
-         mtGGHextGPEjWahE1pCTJiVXAdHk/cKZrgH6DquwG7OzGvRZaCYbF3DnRIYF4IZ8Puml
-         LBrY04W1s6vLFsFfSoAVqVWMMS7sDE1pMDAj2dEcc/N2A4H+tsZ2bW2PwlC/fkNm0mnG
-         P76g==
-X-Gm-Message-State: AOAM532YGLE57d6SOKHeEqmMbzAMjnsrt6TGMnbsQXIFJKmORMJPbrgV
-        K2IZlWpB/HjxjGVU6ABLSEQzzQ==
-X-Google-Smtp-Source: ABdhPJyttuUSg1/y8da7Nsm0xx22SLzgWchOpa8g8t76VGziw9lqq43TXg5/UfCSbAKypW5NUqu+nQ==
-X-Received: by 2002:a1c:e90b:: with SMTP id q11mr343802wmc.102.1609869961442;
-        Tue, 05 Jan 2021 10:06:01 -0800 (PST)
+        bh=Pc2HqS8Yp/wLLNaRLrMUR3bpLwxoED7DL6jFSybCHtA=;
+        b=Zyt2Jmp5uH/vQCjTKOPUnAbVZBX89xDFzkzfe++Hs/uhjbG5XCFiH/v1AR37aYswR2
+         0wBQOjfY/LPqQX2D+Vo9iJ4l5UTcGuQhZkWGvfK+veDBhGhBBrTJfKcj0QHr0NolwHVe
+         ejKKeFZu4juDAd6d3sO+NU79jDMEa/z2rBbd52CRZtxLk+Snhq3ywEK0gZtXNxZFOfUz
+         /rxvRet5rTW+aYgt8mx6+eu/U9EC+Xhl0Z/klpWnqexCPcJHAlrRhMXzufNJaJm4vV6w
+         U4qPjwTCkqRanxb18RRm4AG+mqkAv4O6ZKAkjq1/tX7jQnqsno9dJJ7XjBBV7ZjJX9ct
+         uVtw==
+X-Gm-Message-State: AOAM531TtJdyiX3Hhg4E5kA9dS9Wzo2k4JOtxeZVoPeoj6tVYlimG/TD
+        S27DdZ9/8Ppu4h0Zzzi6m6gfrQ==
+X-Google-Smtp-Source: ABdhPJyjQgiFG9pABukLWKZ9tumLI2zRT36ETVQba0ShHk4CrZoXSiXzaLRNRGji3/47FkuqoFLB5Q==
+X-Received: by 2002:a1c:5644:: with SMTP id k65mr339701wmb.62.1609869963460;
+        Tue, 05 Jan 2021 10:06:03 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:4957:71a5:7b5c:c94f])
-        by smtp.gmail.com with ESMTPSA id n14sm344620wmi.1.2021.01.05.10.06.00
+        by smtp.gmail.com with ESMTPSA id a14sm767523wrn.3.2021.01.05.10.06.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 10:06:00 -0800 (PST)
+        Tue, 05 Jan 2021 10:06:02 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -59,9 +59,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v2 4/8] KVM: arm64: Generate hyp relocation data
-Date:   Tue,  5 Jan 2021 18:05:37 +0000
-Message-Id: <20210105180541.65031-5-dbrazdil@google.com>
+Subject: [PATCH v2 5/8] KVM: arm64: Apply hyp relocations at runtime
+Date:   Tue,  5 Jan 2021 18:05:38 +0000
+Message-Id: <20210105180541.65031-6-dbrazdil@google.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210105180541.65031-1-dbrazdil@google.com>
 References: <20210105180541.65031-1-dbrazdil@google.com>
@@ -71,549 +71,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a post-processing step to compilation of KVM nVHE hyp code which
-calls a custom host tool (gen-hyprel) on the partially linked object
-file (hyp sections' names prefixed).
+KVM nVHE code runs under a different VA mapping than the kernel, hence
+so far it avoided using absolute addressing because the VA in a constant
+pool is relocated by the linker to a kernel VA (see hyp_symbol_addr).
 
-The tool lists all R_AARCH64_ABS64 data relocations targeting hyp
-sections and generates an assembly file that will form a new section
-.hyp.reloc in the kernel binary. The new section contains an array of
-32-bit offsets to the positions targeted by these relocations.
+Now the kernel has access to a list of positions that contain a kimg VA
+but will be accessed only in hyp execution context. These are generated
+by the gen-hyprel build-time tool and stored in .hyp.reloc.
 
-Since these addresses of those positions will not be determined until
-linking of `vmlinux`, each 32-bit entry carries a R_AARCH64_PREL32
-relocation with addend <section_base_sym> + <r_offset>. The linker of
-`vmlinux` will therefore fill the slot accordingly.
-
-This relocation data will be used at runtime to convert the kernel VAs
-at those positions to hyp VAs.
+Add early boot pass over the entries and convert the kimg VAs to hyp VAs.
+Note that this requires for .hyp* ELF sections to be mapped read-write
+at that point.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/kernel/vmlinux.lds.S      |  11 +
- arch/arm64/kvm/hyp/nvhe/.gitignore   |   2 +
- arch/arm64/kvm/hyp/nvhe/Makefile     |  28 +-
- arch/arm64/kvm/hyp/nvhe/gen-hyprel.c | 413 +++++++++++++++++++++++++++
- 4 files changed, 451 insertions(+), 3 deletions(-)
- create mode 100644 arch/arm64/kvm/hyp/nvhe/gen-hyprel.c
+ arch/arm64/include/asm/kvm_mmu.h  |  1 +
+ arch/arm64/include/asm/sections.h |  1 +
+ arch/arm64/kernel/smp.c           |  4 +++-
+ arch/arm64/kvm/va_layout.c        | 28 ++++++++++++++++++++++++++++
+ 4 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 9672b54bba7c..636ca45aa1d4 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -43,10 +43,19 @@ jiffies = jiffies_64;
- 	HYP_SECTION_NAME(.data..percpu) : {			\
- 		*(HYP_SECTION_NAME(.data..percpu))		\
- 	}
-+
-+#define HYPERVISOR_RELOC_SECTION				\
-+	.hyp.reloc : ALIGN(4) {					\
-+		__hyp_reloc_begin = .;				\
-+		*(.hyp.reloc)					\
-+		__hyp_reloc_end = .;				\
+diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+index e52d82aeadca..6bbb44011c84 100644
+--- a/arch/arm64/include/asm/kvm_mmu.h
++++ b/arch/arm64/include/asm/kvm_mmu.h
+@@ -129,6 +129,7 @@ alternative_cb_end
+ void kvm_update_va_mask(struct alt_instr *alt,
+ 			__le32 *origptr, __le32 *updptr, int nr_inst);
+ void kvm_compute_layout(void);
++void kvm_apply_hyp_relocations(void);
+ 
+ static __always_inline unsigned long __kern_hyp_va(unsigned long v)
+ {
+diff --git a/arch/arm64/include/asm/sections.h b/arch/arm64/include/asm/sections.h
+index a6f3557d1ab2..2f36b16a5b5d 100644
+--- a/arch/arm64/include/asm/sections.h
++++ b/arch/arm64/include/asm/sections.h
+@@ -12,6 +12,7 @@ extern char __hibernate_exit_text_start[], __hibernate_exit_text_end[];
+ extern char __hyp_idmap_text_start[], __hyp_idmap_text_end[];
+ extern char __hyp_text_start[], __hyp_text_end[];
+ extern char __hyp_rodata_start[], __hyp_rodata_end[];
++extern char __hyp_reloc_begin[], __hyp_reloc_end[];
+ extern char __idmap_text_start[], __idmap_text_end[];
+ extern char __initdata_begin[], __initdata_end[];
+ extern char __inittext_begin[], __inittext_end[];
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index d08948c6979b..006f61a86438 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -434,8 +434,10 @@ static void __init hyp_mode_check(void)
+ 			   "CPU: CPUs started in inconsistent modes");
+ 	else
+ 		pr_info("CPU: All CPU(s) started at EL1\n");
+-	if (IS_ENABLED(CONFIG_KVM) && !is_kernel_in_hyp_mode())
++	if (IS_ENABLED(CONFIG_KVM) && !is_kernel_in_hyp_mode()) {
+ 		kvm_compute_layout();
++		kvm_apply_hyp_relocations();
 +	}
-+
- #else /* CONFIG_KVM */
- #define HYPERVISOR_EXTABLE
- #define HYPERVISOR_DATA_SECTIONS
- #define HYPERVISOR_PERCPU_SECTION
-+#define HYPERVISOR_RELOC_SECTION
- #endif
+ }
  
- #define HYPERVISOR_TEXT					\
-@@ -217,6 +226,8 @@ SECTIONS
- 	PERCPU_SECTION(L1_CACHE_BYTES)
- 	HYPERVISOR_PERCPU_SECTION
+ void __init smp_cpus_done(unsigned int max_cpus)
+diff --git a/arch/arm64/kvm/va_layout.c b/arch/arm64/kvm/va_layout.c
+index 70fcd6a12fe1..fee7dcd95d73 100644
+--- a/arch/arm64/kvm/va_layout.c
++++ b/arch/arm64/kvm/va_layout.c
+@@ -81,6 +81,34 @@ __init void kvm_compute_layout(void)
+ 	init_hyp_physvirt_offset();
+ }
  
-+	HYPERVISOR_RELOC_SECTION
-+
- 	.rela.dyn : ALIGN(8) {
- 		*(.rela .rela*)
- 	}
-diff --git a/arch/arm64/kvm/hyp/nvhe/.gitignore b/arch/arm64/kvm/hyp/nvhe/.gitignore
-index 695d73d0249e..5b6c43cc96f8 100644
---- a/arch/arm64/kvm/hyp/nvhe/.gitignore
-+++ b/arch/arm64/kvm/hyp/nvhe/.gitignore
-@@ -1,2 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+gen-hyprel
- hyp.lds
-+hyp-reloc.S
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index 1f1e351c5fe2..268be1376f74 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -6,6 +6,8 @@
- asflags-y := -D__KVM_NVHE_HYPERVISOR__
- ccflags-y := -D__KVM_NVHE_HYPERVISOR__
- 
-+hostprogs := gen-hyprel
-+
- obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
- 	 hyp-main.o hyp-smp.o psci-relay.o
- obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
-@@ -19,7 +21,7 @@ obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
- 
- hyp-obj := $(patsubst %.o,%.nvhe.o,$(obj-y))
- obj-y := kvm_nvhe.o
--extra-y := $(hyp-obj) kvm_nvhe.tmp.o hyp.lds
-+extra-y := $(hyp-obj) kvm_nvhe.tmp.o kvm_nvhe.rel.o hyp.lds hyp-reloc.S hyp-reloc.o
- 
- # 1) Compile all source files to `.nvhe.o` object files. The file extension
- #    avoids file name clashes for files shared with VHE.
-@@ -42,11 +44,31 @@ LDFLAGS_kvm_nvhe.tmp.o := -r -T
- $(obj)/kvm_nvhe.tmp.o: $(obj)/hyp.lds $(addprefix $(obj)/,$(hyp-obj)) FORCE
- 	$(call if_changed,ld)
- 
--# 4) Produce the final 'kvm_nvhe.o', ready to be linked into 'vmlinux'.
-+# 4) Generate list of hyp code/data positions that need to be relocated at
-+#    runtime. Because the hypervisor is part of the kernel binary, relocations
-+#    produce a kernel VA. We enumerate relocations targeting hyp at build time
-+#    and convert the kernel VAs at those positions to hyp VAs.
-+$(obj)/hyp-reloc.S: $(obj)/kvm_nvhe.tmp.o $(obj)/gen-hyprel
-+	$(call if_changed,hyprel)
-+
-+# 5) Compile hyp-reloc.S and link it into the existing partially linked object.
-+#    The object file now contains a section with pointers to hyp positions that
-+#    will contain kernel VAs at runtime. These pointers have relocations on them
-+#    so that they get updated as the hyp object is linked into `vmlinux`.
-+LDFLAGS_kvm_nvhe.rel.o := -r
-+$(obj)/kvm_nvhe.rel.o: $(obj)/kvm_nvhe.tmp.o $(obj)/hyp-reloc.o FORCE
-+	$(call if_changed,ld)
-+
-+# 6) Produce the final 'kvm_nvhe.o', ready to be linked into 'vmlinux'.
- #    Prefixes names of ELF symbols with '__kvm_nvhe_'.
--$(obj)/kvm_nvhe.o: $(obj)/kvm_nvhe.tmp.o FORCE
-+$(obj)/kvm_nvhe.o: $(obj)/kvm_nvhe.rel.o FORCE
- 	$(call if_changed,hypcopy)
- 
-+# The HYPREL command calls `gen-hyprel` to generate an assembly file with
-+# a list of relocations targeting hyp code/data.
-+quiet_cmd_hyprel = HYPREL  $@
-+      cmd_hyprel = $(obj)/gen-hyprel $< > $@
-+
- # The HYPCOPY command uses `objcopy` to prefix all ELF symbol names
- # to avoid clashes with VHE code/data.
- quiet_cmd_hypcopy = HYPCOPY $@
-diff --git a/arch/arm64/kvm/hyp/nvhe/gen-hyprel.c b/arch/arm64/kvm/hyp/nvhe/gen-hyprel.c
-new file mode 100644
-index 000000000000..58fe31fdba8e
---- /dev/null
-+++ b/arch/arm64/kvm/hyp/nvhe/gen-hyprel.c
-@@ -0,0 +1,413 @@
-+// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Copyright (C) 2020 - Google LLC
-+ * Author: David Brazdil <dbrazdil@google.com>
-+ *
-+ * Generates relocation information used by the kernel to convert
-+ * absolute addresses in hyp data from kernel VAs to hyp VAs.
-+ *
-+ * This is necessary because hyp code is linked into the same binary
-+ * as the kernel but executes under different memory mappings.
-+ * If the compiler used absolute addressing, those addresses need to
-+ * be converted before they are used by hyp code.
-+ *
-+ * The input of this program is the relocatable ELF object containing
-+ * all hyp code/data, not yet linked into vmlinux. Hyp section names
-+ * should have been prefixed with `.hyp` at this point.
-+ *
-+ * The output (printed to stdout) is an assembly file containing
-+ * an array of 32-bit integers and static relocations that instruct
-+ * the linker of `vmlinux` to populate the array entries with offsets
-+ * to positions in the kernel binary containing VAs used by hyp code.
-+ *
-+ * Note that dynamic relocations could be used for the same purpose.
-+ * However, those are only generated if CONFIG_RELOCATABLE=y.
++ * The .hyp.reloc ELF section contains a list of kimg positions that
++ * contains kimg VAs but will be accessed only in hyp execution context.
++ * Convert them to hyp VAs. See gen-hyprel.c for more details.
 + */
-+
-+#include <elf.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdbool.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+
-+#define HYP_SECTION_PREFIX		".hyp"
-+#define HYP_RELOC_SECTION		".hyp.reloc"
-+#define HYP_SECTION_SYMBOL_PREFIX	"__hyp_section_"
-+
-+/*
-+ * AArch64 relocation type constants.
-+ * Included in case these are not defined in the host toolchain.
-+ */
-+#ifndef R_AARCH64_ABS64
-+#define R_AARCH64_ABS64			257
-+#endif
-+#ifndef R_AARCH64_LD_PREL_LO19
-+#define R_AARCH64_LD_PREL_LO19		273
-+#endif
-+#ifndef R_AARCH64_ADR_PREL_LO21
-+#define R_AARCH64_ADR_PREL_LO21		274
-+#endif
-+#ifndef R_AARCH64_ADR_PREL_PG_HI21
-+#define R_AARCH64_ADR_PREL_PG_HI21	275
-+#endif
-+#ifndef R_AARCH64_ADR_PREL_PG_HI21_NC
-+#define R_AARCH64_ADR_PREL_PG_HI21_NC	276
-+#endif
-+#ifndef R_AARCH64_ADD_ABS_LO12_NC
-+#define R_AARCH64_ADD_ABS_LO12_NC	277
-+#endif
-+#ifndef R_AARCH64_LDST8_ABS_LO12_NC
-+#define R_AARCH64_LDST8_ABS_LO12_NC	278
-+#endif
-+#ifndef R_AARCH64_TSTBR14
-+#define R_AARCH64_TSTBR14		279
-+#endif
-+#ifndef R_AARCH64_CONDBR19
-+#define R_AARCH64_CONDBR19		280
-+#endif
-+#ifndef R_AARCH64_JUMP26
-+#define R_AARCH64_JUMP26		282
-+#endif
-+#ifndef R_AARCH64_CALL26
-+#define R_AARCH64_CALL26		283
-+#endif
-+#ifndef R_AARCH64_LDST16_ABS_LO12_NC
-+#define R_AARCH64_LDST16_ABS_LO12_NC	284
-+#endif
-+#ifndef R_AARCH64_LDST32_ABS_LO12_NC
-+#define R_AARCH64_LDST32_ABS_LO12_NC	285
-+#endif
-+#ifndef R_AARCH64_LDST64_ABS_LO12_NC
-+#define R_AARCH64_LDST64_ABS_LO12_NC	286
-+#endif
-+#ifndef R_AARCH64_MOVW_PREL_G0
-+#define R_AARCH64_MOVW_PREL_G0		287
-+#endif
-+#ifndef R_AARCH64_MOVW_PREL_G0_NC
-+#define R_AARCH64_MOVW_PREL_G0_NC	288
-+#endif
-+#ifndef R_AARCH64_MOVW_PREL_G1
-+#define R_AARCH64_MOVW_PREL_G1		289
-+#endif
-+#ifndef R_AARCH64_MOVW_PREL_G1_NC
-+#define R_AARCH64_MOVW_PREL_G1_NC	290
-+#endif
-+#ifndef R_AARCH64_MOVW_PREL_G2
-+#define R_AARCH64_MOVW_PREL_G2		291
-+#endif
-+#ifndef R_AARCH64_MOVW_PREL_G2_NC
-+#define R_AARCH64_MOVW_PREL_G2_NC	292
-+#endif
-+#ifndef R_AARCH64_MOVW_PREL_G3
-+#define R_AARCH64_MOVW_PREL_G3		293
-+#endif
-+#ifndef R_AARCH64_LDST128_ABS_LO12_NC
-+#define R_AARCH64_LDST128_ABS_LO12_NC	299
-+#endif
-+
-+/* Global state of the processed ELF. */
-+static struct {
-+	const char	*path;
-+	char		*begin;
-+	size_t		size;
-+	Elf64_Ehdr	*ehdr;
-+	Elf64_Shdr	*sh_table;
-+	const char	*sh_string;
-+} elf;
-+
-+#define fatal_error(fmt, ...)						\
-+	({								\
-+		fprintf(stderr, "error: %s: " fmt "\n",			\
-+			elf.path, ## __VA_ARGS__);			\
-+		exit(EXIT_FAILURE);					\
-+		__builtin_unreachable();				\
-+	})
-+
-+#define fatal_perror(msg)						\
-+	({								\
-+		fprintf(stderr, "error: %s: " msg ": %s\n",		\
-+			elf.path, strerror(errno));			\
-+		exit(EXIT_FAILURE);					\
-+		__builtin_unreachable();				\
-+	})
-+
-+#define assert_op(lhs, rhs, fmt, op)					\
-+	({								\
-+		typeof(lhs) _lhs = (lhs);				\
-+		typeof(rhs) _rhs = (rhs);				\
-+									\
-+		if (!(_lhs op _rhs)) {					\
-+			fatal_error("assertion " #lhs " " #op " " #rhs	\
-+				" failed (lhs=" fmt ", rhs=" fmt	\
-+				", line=%d)", _lhs, _rhs, __LINE__);	\
-+		}							\
-+	})
-+
-+#define assert_eq(lhs, rhs, fmt)	assert_op(lhs, rhs, fmt, ==)
-+#define assert_ne(lhs, rhs, fmt)	assert_op(lhs, rhs, fmt, !=)
-+#define assert_lt(lhs, rhs, fmt)	assert_op(lhs, rhs, fmt, <)
-+#define assert_ge(lhs, rhs, fmt)	assert_op(lhs, rhs, fmt, >=)
-+
-+/*
-+ * Return a pointer of a given type at a given offset from
-+ * the beginning of the ELF file.
-+ */
-+#define elf_ptr(type, off) ((type *)(elf.begin + (off)))
-+
-+/* Iterate over all sections in the ELF. */
-+#define for_each_section(var) \
-+	for (var = elf.sh_table; var < elf.sh_table + elf.ehdr->e_shnum; ++var)
-+
-+/* Iterate over all Elf64_Rela relocations in a given section. */
-+#define for_each_rela(shdr, var)					\
-+	for (var = elf_ptr(Elf64_Rela, shdr->sh_offset);		\
-+	     var < elf_ptr(Elf64_Rela, shdr->sh_offset + shdr->sh_size); var++)
-+
-+/* True if a string starts with a given prefix. */
-+static inline bool starts_with(const char *str, const char *prefix)
++__init void kvm_apply_hyp_relocations(void)
 +{
-+	return memcmp(str, prefix, strlen(prefix)) == 0;
-+}
++	int32_t *rel;
++	int32_t *begin = (int32_t *)__hyp_reloc_begin;
++	int32_t *end = (int32_t *)__hyp_reloc_end;
 +
-+/* Returns a string containing the name of a given section. */
-+static inline const char *section_name(Elf64_Shdr *shdr)
-+{
-+	return elf.sh_string + shdr->sh_name;
-+}
++	for (rel = begin; rel < end; ++rel) {
++		uintptr_t *ptr, kimg_va;
 +
-+/* Returns a pointer to the first byte of section data. */
-+static inline const char *section_begin(Elf64_Shdr *shdr)
-+{
-+	return elf_ptr(char, shdr->sh_offset);
-+}
-+
-+/* Find a section by its offset from the beginning of the file. */
-+static inline Elf64_Shdr *section_by_off(Elf64_Off off)
-+{
-+	assert_ne(off, 0UL, "%lu");
-+	return elf_ptr(Elf64_Shdr, off);
-+}
-+
-+/* Find a section by its index. */
-+static inline Elf64_Shdr *section_by_idx(uint16_t idx)
-+{
-+	assert_ne(idx, SHN_UNDEF, "%u");
-+	return &elf.sh_table[idx];
-+}
-+
-+/*
-+ * Memory-map the given ELF file, perform sanity checks, and
-+ * populate global state.
-+ */
-+static void init_elf(const char *path)
-+{
-+	int fd, ret;
-+	struct stat stat;
-+
-+	/* Store path in the global struct for error printing. */
-+	elf.path = path;
-+
-+	/* Open the ELF file. */
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0)
-+		fatal_perror("Could not open ELF file");
-+
-+	/* Get status of ELF file to obtain its size. */
-+	ret = fstat(fd, &stat);
-+	if (ret < 0) {
-+		close(fd);
-+		fatal_perror("Could not get status of ELF file");
-+	}
-+
-+	/* mmap() the entire ELF file read-only at an arbitrary address. */
-+	elf.begin = mmap(0, stat.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-+	if (elf.begin == MAP_FAILED) {
-+		close(fd);
-+		fatal_perror("Could not mmap ELF file");
-+	}
-+
-+	/* mmap() was successful, close the FD. */
-+	close(fd);
-+
-+	/* Get pointer to the ELF header. */
-+	assert_ge(stat.st_size, sizeof(*elf.ehdr), "%lu");
-+	elf.ehdr = elf_ptr(Elf64_Ehdr, 0);
-+
-+	/* Check the ELF magic. */
-+	assert_eq(elf.ehdr->e_ident[EI_MAG0], ELFMAG0, "0x%x");
-+	assert_eq(elf.ehdr->e_ident[EI_MAG1], ELFMAG1, "0x%x");
-+	assert_eq(elf.ehdr->e_ident[EI_MAG2], ELFMAG2, "0x%x");
-+	assert_eq(elf.ehdr->e_ident[EI_MAG3], ELFMAG3, "0x%x");
-+
-+	/* Sanity check that this is an ELF64 relocatable object for AArch64. */
-+	assert_eq(elf.ehdr->e_ident[EI_CLASS], ELFCLASS64, "%u");
-+	assert_eq(elf.ehdr->e_ident[EI_DATA], ELFDATA2LSB, "%u");
-+	assert_eq(elf.ehdr->e_type, ET_REL, "%u");
-+	assert_eq(elf.ehdr->e_machine, EM_AARCH64, "%u");
-+
-+	/* Populate fields of the global struct. */
-+	elf.sh_table = section_by_off(elf.ehdr->e_shoff);
-+	elf.sh_string = section_begin(section_by_idx(elf.ehdr->e_shstrndx));
-+}
-+
-+/* Print the prologue of the output ASM file. */
-+static void emit_prologue(void)
-+{
-+	printf(".data\n"
-+	       ".pushsection " HYP_RELOC_SECTION ", \"a\"\n");
-+}
-+
-+/* Print ASM statements needed as a prologue to a processed hyp section. */
-+static void emit_section_prologue(const char *sh_orig_name)
-+{
-+	/* Declare the hyp section symbol. */
-+	printf(".global %s%s\n", HYP_SECTION_SYMBOL_PREFIX, sh_orig_name);
-+}
-+
-+/*
-+ * Print ASM statements to create a hyp relocation entry for a given
-+ * R_AARCH64_ABS64 relocation.
-+ *
-+ * The linker of vmlinux will populate the position given by `rela` with
-+ * an absolute 64-bit kernel VA. If the kernel is relocatable, it will
-+ * also generate a dynamic relocation entry so that the kernel can shift
-+ * the address at runtime for KASLR.
-+ *
-+ * Emit a 32-bit offset from the current address to the position given
-+ * by `rela`. This way the kernel can iterate over all kernel VAs used
-+ * by hyp at runtime and convert them to hyp VAs. However, that offset
-+ * will not be known until linking of `vmlinux`, so emit a PREL32
-+ * relocation referencing a symbol that the hyp linker script put at
-+ * the beginning of the relocated section + the offset from `rela`.
-+ */
-+static void emit_rela_abs64(Elf64_Rela *rela, const char *sh_orig_name)
-+{
-+	/* Offset of this reloc from the beginning of HYP_RELOC_SECTION. */
-+	static size_t reloc_offset;
-+
-+	/* Create storage for the 32-bit offset. */
-+	printf(".word 0\n");
-+
-+	/*
-+	 * Create a PREL32 relocation which instructs the linker of `vmlinux`
-+	 * to insert offset to position <base> + <offset>, where <base> is
-+	 * a symbol at the beginning of the relocated section, and <offset>
-+	 * is `rela->r_offset`.
-+	 */
-+	printf(".reloc %lu, R_AARCH64_PREL32, %s%s + 0x%lx\n",
-+		reloc_offset, HYP_SECTION_SYMBOL_PREFIX, sh_orig_name,
-+		rela->r_offset);
-+
-+	reloc_offset += 4;
-+}
-+
-+/* Print the epilogue of the output ASM file. */
-+static void emit_epilogue(void)
-+{
-+	printf(".popsection\n");
-+}
-+
-+/*
-+ * Iterate over all RELA relocations in a given section and emit
-+ * hyp relocation data for all absolute addresses in hyp code/data.
-+ *
-+ * Static relocations that generate PC-relative-addressing are ignored.
-+ * Failure is reported for unexpected relocation types.
-+ */
-+static void emit_rela_section(Elf64_Shdr *sh_rela)
-+{
-+	Elf64_Shdr *sh_orig = &elf.sh_table[sh_rela->sh_info];
-+	const char *sh_orig_name = section_name(sh_orig);
-+	Elf64_Rela *rela;
-+
-+	/* Skip all non-hyp sections. */
-+	if (!starts_with(sh_orig_name, HYP_SECTION_PREFIX))
-+		return;
-+
-+	emit_section_prologue(sh_orig_name);
-+
-+	for_each_rela(sh_rela, rela) {
-+		uint32_t type = (uint32_t)rela->r_info;
-+
-+		/* Check that rela points inside the relocated section. */
-+		assert_lt(rela->r_offset, sh_orig->sh_size, "0x%lx");
-+
-+		switch (type) {
 +		/*
-+		 * Data relocations to generate absolute addressing.
-+		 * Emit a hyp relocation.
++		 * Each entry contains a 32-bit relative offset from itself
++		 * to a kimg VA position.
 +		 */
-+		case R_AARCH64_ABS64:
-+			emit_rela_abs64(rela, sh_orig_name);
-+			break;
-+		/* Allow relocations to generate PC-relative addressing. */
-+		case R_AARCH64_LD_PREL_LO19:
-+		case R_AARCH64_ADR_PREL_LO21:
-+		case R_AARCH64_ADR_PREL_PG_HI21:
-+		case R_AARCH64_ADR_PREL_PG_HI21_NC:
-+		case R_AARCH64_ADD_ABS_LO12_NC:
-+		case R_AARCH64_LDST8_ABS_LO12_NC:
-+		case R_AARCH64_LDST16_ABS_LO12_NC:
-+		case R_AARCH64_LDST32_ABS_LO12_NC:
-+		case R_AARCH64_LDST64_ABS_LO12_NC:
-+		case R_AARCH64_LDST128_ABS_LO12_NC:
-+			break;
-+		/* Allow relative relocations for control-flow instructions. */
-+		case R_AARCH64_TSTBR14:
-+		case R_AARCH64_CONDBR19:
-+		case R_AARCH64_JUMP26:
-+		case R_AARCH64_CALL26:
-+			break;
-+		/* Allow group relocations to create PC-relative offset inline. */
-+		case R_AARCH64_MOVW_PREL_G0:
-+		case R_AARCH64_MOVW_PREL_G0_NC:
-+		case R_AARCH64_MOVW_PREL_G1:
-+		case R_AARCH64_MOVW_PREL_G1_NC:
-+		case R_AARCH64_MOVW_PREL_G2:
-+		case R_AARCH64_MOVW_PREL_G2_NC:
-+		case R_AARCH64_MOVW_PREL_G3:
-+			break;
-+		default:
-+			fatal_error("Unexpected RELA type %u", type);
-+		}
++		ptr = (uintptr_t *)lm_alias((char *)rel + *rel);
++
++		/* Read the kimg VA value at the relocation address. */
++		kimg_va = *ptr;
++
++		/* Convert to hyp VA and store back to the relocation address. */
++		*ptr = __early_kern_hyp_va((uintptr_t)lm_alias(kimg_va));
 +	}
 +}
 +
-+/* Iterate over all sections and emit hyp relocation data for RELA sections. */
-+static void emit_all_relocs(void)
-+{
-+	Elf64_Shdr *shdr;
-+
-+	for_each_section(shdr) {
-+		switch (shdr->sh_type) {
-+		case SHT_REL:
-+			fatal_error("Unexpected SHT_REL section \"%s\"",
-+				section_name(shdr));
-+		case SHT_RELA:
-+			emit_rela_section(shdr);
-+			break;
-+		}
-+	}
-+}
-+
-+int main(int argc, const char **argv)
-+{
-+	if (argc != 2) {
-+		fprintf(stderr, "Usage: %s <elf_input>\n", argv[0]);
-+		return EXIT_FAILURE;
-+	}
-+
-+	init_elf(argv[1]);
-+
-+	emit_prologue();
-+	emit_all_relocs();
-+	emit_epilogue();
-+
-+	return EXIT_SUCCESS;
-+}
+ static u32 compute_instruction(int n, u32 rd, u32 rn)
+ {
+ 	u32 insn = AARCH64_BREAK_FAULT;
 -- 
 2.29.2.729.g45daf8777d-goog
 
