@@ -2,74 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6D52EA556
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F3F2EA55E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbhAEGPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 01:15:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbhAEGPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 01:15:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75B16227C3;
-        Tue,  5 Jan 2021 06:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609827260;
-        bh=CWbfPoQL9q63I1jQit0eAhiT55H+f8NCydgTEbCorC0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OJgt1iQ1EFlkrjdQPvqF6GMxBwbKTHcwGnsx5y1cr2I2yVgRzFEczkafsr9Xhhixb
-         gk+Iv714iiQ3lPzuXMUhOGVddNxTPUm+dkzY+mDLe4PwwUemHpKRgGtEj7lz+g8g0l
-         vrSpTwF74FgjLqFILStpOrTbvZKfGIxI2n2WFA8tfgU2M45js51zm/2D+3XdafXtlu
-         mk2hw6bPaXbafJ3VHYBYrS7Ho49s5QNrq8yiQ9NoFZzSfznrH//xsHTDvGcGlxcZSO
-         JKN+QZE7HPO4NxSEQXKSZVAO1gXbIm9sZVd5nJVn9PNVu+SMVeZ5TfHn5iG/sjNDPU
-         11O6szPkYDEGw==
-Date:   Tue, 5 Jan 2021 11:44:15 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
- bindings
-Message-ID: <20210105061415.GA2771@vkoul-mobl>
-References: <20201208085748.3684670-1-vkoul@kernel.org>
- <20201210135253.GA2405508@robh.at.kernel.org>
- <X/NgUp/pm9T0JlTw@builder.lan>
+        id S1728365AbhAEGTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 01:19:49 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9669 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbhAEGTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 01:19:48 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D92Nd2YL1z15pCc;
+        Tue,  5 Jan 2021 14:17:53 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 5 Jan 2021
+ 14:18:42 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] crypto: hisilicon - register device to uacce
+Date:   Tue, 5 Jan 2021 14:16:41 +0800
+Message-ID: <1609827404-6024-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/NgUp/pm9T0JlTw@builder.lan>
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-01-21, 12:37, Bjorn Andersson wrote:
+1. Add parameter of UACCE mode selection for ZIP.
+2. Register SEC and HPRE devices to UACCE framework for user space drivers.
 
-> > > +properties:
-> > > +  compatible:
-> > > +    const: qcom,sm8350-pinctrl
-> > 
-> > If this block is called TLMM, then I'd expect that to be in the 
-> > compatible string. But I guess this is consistent with the others.
-> > 
-> 
-> This is my mistake 7 years ago and it bothers me every time we write a
-> new one of these - in particular since we now support a few different
-> "Qualcomm pinctrl" blocks.
-> 
-> It would be ugly for a while, but I'm in favor of naming these
-> "qcom,<platform>-tlmm" going forward.
-> 
-> PS. And we can solve the ugliness by introducing the "proper" naming
-> (and keeping the old one for backwards compatibility) as we migrate the
-> binding documents to yaml.
+Kai Ye (3):
+  crypto: hisilicon - add ZIP device using mode parameter
+  crypto: hisilicon/hpre - register HPRE device to uacce
+  crypto: hisilicon/sec - register SEC device to uacce
 
-Okay I will update this one to qcom,sm8350-tlmm. Also we use
-sm8350_pinctrl few places in the driver, will update that to sm8350_tlmm
-as well
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 54 +++++++++++++++++++++++++++++++
+ drivers/crypto/hisilicon/qm.c             |  2 +-
+ drivers/crypto/hisilicon/qm.h             | 27 ++++++++++++++++
+ drivers/crypto/hisilicon/sec2/sec_main.c  | 39 +++++++++++++++++++++-
+ drivers/crypto/hisilicon/zip/zip_main.c   | 14 ++++++++
+ 5 files changed, 134 insertions(+), 2 deletions(-)
 
-Thanks
 -- 
-~Vinod
+2.8.1
+
