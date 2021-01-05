@@ -2,179 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68F52EA832
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41282EA838
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbhAEKHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:07:10 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:16130 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727871AbhAEKHJ (ORCPT
+        id S1728651AbhAEKIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728054AbhAEKIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:07:09 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609841204; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=iPV4BBvWfxou0064ByS5t3TW4OLKrsUABLgZaf1wgpA=;
- b=n8rvKSySGX3M4MhulA8nzkv21ozUj3nDQa3yN3R705qWVnL/41eZvx62jxsNHISYONRqWLAD
- D3XSCON2UMJSffegFfj8WY7DUoeNv4jO3m193A7qOeGFXnnzHWARD4iDiHkUhonjFxhZClKF
- oIyOdpVKWbdbgE9wsw0O0qE/ep0=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5ff43a1700a8b472197ec8b7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 10:06:15
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1939AC43461; Tue,  5 Jan 2021 10:06:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48748C433ED;
-        Tue,  5 Jan 2021 10:06:12 +0000 (UTC)
+        Tue, 5 Jan 2021 05:08:19 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B60EC061793;
+        Tue,  5 Jan 2021 02:07:39 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id o6so27647043iob.10;
+        Tue, 05 Jan 2021 02:07:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ccgp0E4J7ckyMBD4S6oa4zMRT5+hLIG3b8SFsxJtqgc=;
+        b=jQcfDMrbHYolNtINIECH9yXVONwXqWTPajdwaDyOJAyy+8K944lEVJichjqBoFTEOA
+         ZplKD2EVZQu43FJE+jZ+tAdzd8qRFLyY4o9X1H8gYdhpzFbaDUTHvG73fApA8p1tFzc1
+         G6/JcbTA97Ss7datuoJPfCT20IOc2+WKvJUbK9vaCUQ1qPy50pcllC5HIraiCvceH5Rz
+         P6MoohTATljkVoY1g+Q0lnnqlgN9rHUaLa6Fh2/sk87fGw//OHrhuy5sAQjG5C7XVKaY
+         N/kWBHjj3jST43pTqGR1rdCjIWuCyi+CQo3CZSMIoNwM79UBCNye4elvYNBB978YHsLv
+         YbQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ccgp0E4J7ckyMBD4S6oa4zMRT5+hLIG3b8SFsxJtqgc=;
+        b=kwfNF+4xNHb0yy5O9SxJxApeG/OVW9xfxl6YzwLLfTzxNXshHzFPjQ7huvwN+VwEwB
+         CAadBeD6Dzr5ppnsFCC3t8IpP/32Rg+rStkk4LBnegowgkbZSkkwsS6EaTbGW6KbQKG8
+         odYekYQjrrs4VmCbrwxuMv4GKrYRyRpnFprq4eFPLepi/P/1GFoJa/EAgVYj/zya99fx
+         hAmUcBDZyL1NEnA8f8GEh1vKO8Q3yOe6O3OUZEpLNmY5JM1pugC6Qvgl5fJdqZMJBJQR
+         dRwMq8VnyMU17Vkfzekpk6oHf5T8QTjh2S+rb+9rkyqV86AnYViwO1tLzNOzV5QRwPYB
+         gqBQ==
+X-Gm-Message-State: AOAM530RWSO4LHkQrsY7FE8hr+3W5krXMahDh8F3Ua0WO+2xCrc5V+4K
+        ObOKBhHwBFsSf3tu4tl0FYg=
+X-Google-Smtp-Source: ABdhPJynVL0XaQ3YFzifBmzpkJjRWDlbjn3Pz6YeaKeymHLhnqauorQNsT+tWTVW4ijSCcyXvzLbNg==
+X-Received: by 2002:a02:9f8b:: with SMTP id a11mr66785147jam.108.1609841258942;
+        Tue, 05 Jan 2021 02:07:38 -0800 (PST)
+Received: from localhost.localdomain ([156.146.37.136])
+        by smtp.gmail.com with ESMTPSA id v66sm38930437iod.34.2021.01.05.02.07.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 02:07:38 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     song@kernel.org, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: md: Fix another spelling at top of the file
+Date:   Tue,  5 Jan 2021 15:37:36 +0530
+Message-Id: <20210105100736.6237-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-Date:   Tue, 05 Jan 2021 18:06:12 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ziqi Chen <ziqichen@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        rnayak@codeaurora.org, vinholikatti@gmail.com,
-        jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, kwmad.kim@samsung.com,
-        stanley.chu@mediatek.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
- violation
-In-Reply-To: <a509d1ad-617d-8160-1dae-da0dbf19652c@intel.com>
-References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
- <e8980753-fa48-7862-e5ce-0d756d5d97a6@intel.com>
- <X/NkktFnWI48XNcp@builder.lan>
- <b82dd5f1-179c-6834-9d8f-88005b74ce51@intel.com>
- <ff2c3c4379cb8bc41580d5615b01f86a@codeaurora.org>
- <a509d1ad-617d-8160-1dae-da0dbf19652c@intel.com>
-Message-ID: <bb0a37d5825eec1ec03a1ba1104fec86@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-05 15:33, Adrian Hunter wrote:
-> On 5/01/21 9:28 am, Can Guo wrote:
->> On 2021-01-05 15:16, Adrian Hunter wrote:
->>> On 4/01/21 8:55 pm, Bjorn Andersson wrote:
->>>> On Mon 04 Jan 03:15 CST 2021, Adrian Hunter wrote:
->>>> 
->>>>> On 22/12/20 3:49 pm, Ziqi Chen wrote:
->>>>>> As per specs, e.g, JESD220E chapter 7.2, while powering
->>>>>> off/on the ufs device, RST_N signal and REF_CLK signal
->>>>>> should be between VSS(Ground) and VCCQ/VCCQ2.
->>>>>> 
->>>>>> To flexibly control device reset line, refactor the function
->>>>>> ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
->>>>>> vops_device_reset(sturct ufs_hba *hba, bool asserted). The
->>>>>> new parameter "bool asserted" is used to separate device reset
->>>>>> line pulling down from pulling up.
->>>>> 
->>>>> This patch assumes the power is controlled by voltage regulators, 
->>>>> but
->>>>> for us
->>>>> it is controlled by firmware (ACPI), so it is not correct to change 
->>>>> RST_n
->>>>> for all host controllers as you are doing.
->>>>> 
->>>>> Also we might need to use a firmware interface for device reset, in 
->>>>> which
->>>>> case the 'asserted' value doe not make sense.
->>>>> 
->>>> 
->>>> Are you saying that the entire flip-flop-the-reset is a single 
->>>> firmware
->>>> operation in your case?
->>> 
->>> Yes
->>> 
->>>>                         If you look at the Mediatek driver, the
->>>> implementation of ufs_mtk_device_reset_ctrl() is a jump to firmware.
->>>> 
->>>> 
->>>> But perhaps "asserted" isn't the appropriate English word for saying
->>>> "the reset is in the resetting state"?
->>>> 
->>>> I just wanted to avoid the use of "high"/"lo" as if you look at the
->>>> Mediatek code they pass the expected line-level to the firmware, 
->>>> while
->>>> in the Qualcomm code we pass the logical state to the GPIO code 
->>>> which is
->>>> setup up as "active low" and thereby flip the meaning before hitting 
->>>> the
->>>> pad.
->>>> 
->>>>> Can we leave the device reset callback alone, and instead introduce 
->>>>> a new
->>>>> variant operation for setting RST_n to match voltage regulator 
->>>>> power
->>>>> changes?
->>>> 
->>>> Wouldn't this new function just have to look like the proposed 
->>>> patches?
->>>> In which case for existing platforms we'd have both?
->>>> 
->>>> How would you implement this, or would you simply skip implementing
->>>> this?
->>> 
->>> Functionally, doing a device reset is not the same as adjusting 
->>> signal
->>> levels to meet power up/off ramp requirements.  However, the issue is 
->>> that
->>> we do not use regulators, so the power is not necessarily being 
->>> changed at
->>> those points, and we definitely do not want to reset instead of 
->>> entering
->>> DeepSleep for example.
->>> 
->>> Off the top of my head, I imagine something like a callback called
->>> ufshcd_vops_prepare_power_ramp(hba, bool on) which is called only if
->>> hba->vreg_info->vcc is not NULL.
->> 
->> Hi Adrian,
->> 
->> I don't see you have the vops device_reset() implemented anywhere in
->> current code base, how is this change impacting you? Do I miss 
->> anything
->> or are you planning to push a change which implements device_reset() 
->> soon?
-> 
-> At some point, yes.
+s/fautly/faulty/p
 
-OK, then we don't even have to add a new vops, just go back to version 
-#1 to
-use ufshcd_vops_suspend() to control the device_reset. We took the hard 
-way
-because we wanted to fix it for all users.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/md/md-faulty.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/md/md-faulty.c b/drivers/md/md-faulty.c
+index fda4cb3f936f..076b93f7d443 100644
+--- a/drivers/md/md-faulty.c
++++ b/drivers/md/md-faulty.c
+@@ -4,7 +4,7 @@
+  *
+  * Copyright (C) 2004 Neil Brown
+  *
+- * fautly-device-simulator personality for md
++ * faulty-device-simulator personality for md
+  */
+
+
+--
+2.26.2
+
