@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF5A2EB565
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D112EB569
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730715AbhAEWbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 17:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
+        id S1728694AbhAEWel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 17:34:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726663AbhAEWby (ORCPT
+        with ESMTP id S1726663AbhAEWek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 17:31:54 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB99C061796
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 14:31:14 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 23so2149931lfg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 14:31:14 -0800 (PST)
+        Tue, 5 Jan 2021 17:34:40 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCD9C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 14:34:00 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id m12so2205673lfo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 14:34:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EgWaHtbTUAeR2bQoeG/I6X+g25dLoH+Ve/eNWw0Mabs=;
-        b=L6uJNwRsmyaYznnTWDT+A31utq8iL5LGUf0Z3dojlGv45h4Udyqbama8qRSakwybEs
-         gh4l0Yftqio4i0/wsM1FjBBBvWcMBWfWdSNI3fwEqZH8axklBLuRGlRjgyVOMmoJAipR
-         CdIbewVoOGVL8CeRN4mYqVyP50+aR0M1NfHHW3dxz11aAoXb4DYNdqp9Pkk0OUFjgmXE
-         DfV0S1vVFGd9mvKXBJIovbRn+nikuCq5ZKvMCi6vg8kBfRAS6m7DOQzOLXOZA4SToxsG
-         heGmdj46Mn0W7H6YSzjEoNJN2RgKWFKL/eLafV++suT/Owui7mXmTuJCGgb4jlp5UFC/
-         Vn8w==
+        bh=3aYQmDWH67E4Z9TSjXGHOTi1uXdKxTFUY+iwwP2uIQM=;
+        b=xnBsXz8YhrnPFT3oKbuP6bhwJBjzpkA9uhZpSkmPh4EYmmnE6yxWcEYTSNS4fTDOZQ
+         KEKY1pkkkGFgYGuuiIIA7nX9+A2OJeIcmaFPreus6ugOtfVvEVYinlhXtXoUy5EbIIGy
+         nVt0dyoMw42w6iotFPScbdV3DoNweA7+ok1xcBGeWc/BZP12Xb4UBXSl3SY9512SJ/C4
+         JL5oCs1kdJ5xi65WeZmyOB7pA6071OX+6O3iz+YcZNwbWicaQekkXDiG/PZcpyiyy53S
+         ZXjvUkMqziTHxzo3WzFRxzHuhfB5/c3lykR6WqfSaMWvI5j6IB06Ze/TzcBgfhTkmd6S
+         OWKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EgWaHtbTUAeR2bQoeG/I6X+g25dLoH+Ve/eNWw0Mabs=;
-        b=s61Y0fbrbX0UsQIvdM3kzA3J4ae3+ZBIqgGK5Fo8tyZK/m0NHn6TF4k872nUmAMycy
-         Sf/TiQj18wcmBQwkIbS6g3aXGf/tA1KgAN5M7FOLFOyEQF7W+gO3DEdT0Kc4xu2Xthfv
-         nYXgFlDgqH/lH5OwAH3d5zdlw0MJvOwi2gEP1e98oH5gjJTo0NUUhucstUI/E7G30jD7
-         27jxHe9qMNDi4DLAsUgHavljJhaiwcy54z2d1fI+vciv5l1mgD8fIYQQXsL6kzj/yxkU
-         yQeHaOiFMihZK+gjM+9H2pL0wjsAcLrs20ClW5LpbtEMXOUCgcmV6Bo65CbRUzMIz13R
-         P21A==
-X-Gm-Message-State: AOAM531sWfQG9diFNh9tdvOKAHZNaBj/IskeZmtSXhB9Jij2rwBIfc1T
-        nWt/A+zlTwq1d5LeGG3ACL0IVgs1jaLyMitJA3z7uA==
-X-Google-Smtp-Source: ABdhPJw3DTVMcCy8yC9MZcxKB5U7rWF5RRzcr7NBwVvDjB4RL0LkiQ7+AvfoKBAazUqY3amsZR0MzKTOhKQYpfGR7Z0=
-X-Received: by 2002:a2e:9dc3:: with SMTP id x3mr795059ljj.326.1609885872751;
- Tue, 05 Jan 2021 14:31:12 -0800 (PST)
+        bh=3aYQmDWH67E4Z9TSjXGHOTi1uXdKxTFUY+iwwP2uIQM=;
+        b=Gb/rZNVFVX33XAuIlpknbaKi/SH5+nIt0/G72Hm2/0uUl9YXkzedCjK3wXLXE7JDpQ
+         EXhczbXNWv/Uboo81SJRX7AENE+sxc6k0RgX61jjcT8F9PeYEgidL6aMHoVdg7hg3XqB
+         ZmCnGTH0v4tBWSBYtOOy+OAtx7AOyesKHsu5KBZ07phfy41PhuvBDz/WSWsCCGeChtKC
+         X+bbhc6g2j6ls33ZEB7TSqOuh9FtLVFrFrrWWd37aG2UsyhWflAFi7PxhbADI+ht3MnH
+         8txEqVXMvib7b/tvjRAgF48KGvn7ZnH4rBI7Jc3IQhJxL4h9XAexLxO+jIiLPs0yL9Ze
+         xUGg==
+X-Gm-Message-State: AOAM533teIJlf5shoBKmSLo32HBxSt/E9X4yMTMzB8AmE+u5ICWzrtLZ
+        GCJeNfki43UR8az66JXuyB6eqgq/AEZ3no9iVl7ytA==
+X-Google-Smtp-Source: ABdhPJxAz5mRIyyOUrUQQy4+/XvPQsq2YxFLxv9A+C2lNderBtEiRic2qPIvB8xxY1GGP3OLfr0tGv50pEYfQi4ijAc=
+X-Received: by 2002:a05:651c:1312:: with SMTP id u18mr770588lja.200.1609886038870;
+ Tue, 05 Jan 2021 14:33:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20210102022949.92304-1-warthog618@gmail.com>
-In-Reply-To: <20210102022949.92304-1-warthog618@gmail.com>
+References: <20210103135955.3808976-1-arnd@kernel.org>
+In-Reply-To: <20210103135955.3808976-1-arnd@kernel.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 5 Jan 2021 23:31:02 +0100
-Message-ID: <CACRpkdZ_drnFeaRtxeRT1J6cSLoRy=9r132HBFq3kKP7XQyeHQ@mail.gmail.com>
-Subject: Re: [PATCH 0/7] selftests: gpio: rework and port to GPIO uAPI v2
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        shuah@kernel.org, Bamvor Jian Zhang <bamv2005@gmail.com>
+Date:   Tue, 5 Jan 2021 23:33:48 +0100
+Message-ID: <CACRpkdYUS+-Fpxn6TiGNZwq3WRkxdAdxmao9VFMKp+ZiEttc3w@mail.gmail.com>
+Subject: Re: [PATCH] clocksource: ixp4xx: select TIMER_OF when needed
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 2, 2021 at 3:30 AM Kent Gibson <warthog618@gmail.com> wrote:
+On Sun, Jan 3, 2021 at 3:00 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-> Initially I just wanted to port the selftests to the latest GPIO uAPI,
-> but on finding that, due to dependency issues, the selftests are not built
-> for the buildroot environments that I do most of my GPIO testing in, I
-> decided to take a closer look.
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Compile-testing the ixp4xx timer with CONFIG_OF enabled but
+> CONFIG_TIMER_OF disabled leads to a harmless warning:
+>
+> arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ixp4xx.o' being placed in section `__timer_of_table'
+>
+> Move the select statement from the platform code into the driver
+> so it always gets enabled in configurations that rely on it.
+>
+> Fixes: 40df14cc5cc0 ("clocksource/drivers/ixp4xx: Add OF initialization support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-All patches look good to me, I see Andy is helping you to hash out
-some shell script, anyway:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+That's a nice fix!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
