@@ -2,182 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7946F2EB024
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4DA2EB02C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728475AbhAEQef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:34:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:57076 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726132AbhAEQee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:34:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83C64113E;
-        Tue,  5 Jan 2021 08:33:48 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 647673F70D;
-        Tue,  5 Jan 2021 08:33:37 -0800 (PST)
-Subject: Re: [PATCH 19/31] drm/panfrost: convert to use devm_pm_opp_* API
-To:     Yangtao Li <tiny.windzz@gmail.com>, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com, cw00.choi@samsung.com, krzk@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, digetx@gmail.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, yuq825@gmail.com,
-        airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com,
-        sean@poorly.run, robh@kernel.org, tomeu.vizoso@collabora.com,
-        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        lukasz.luba@arm.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
-        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
-        marijn.suijten@somainline.org, gustavoars@kernel.org,
-        emil.velikov@collabora.com, jonathan@marek.ca,
-        akhilpo@codeaurora.org, smasetty@codeaurora.org,
-        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, ddavenport@chromium.org,
-        jsanka@codeaurora.org, rnayak@codeaurora.org,
-        tongtiangen@huawei.com, miaoqinglang@huawei.com,
-        khsieh@codeaurora.org, abhinavk@codeaurora.org,
-        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
-        mka@chromium.org, harigovi@codeaurora.org,
-        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
-        georgi.djakov@linaro.org, akashast@codeaurora.org,
-        parashar@codeaurora.org, dianders@chromium.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20210101165507.19486-1-tiny.windzz@gmail.com>
- <20210101165507.19486-20-tiny.windzz@gmail.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <63e5e2ae-0baf-cbd1-b2eb-43fac89acb7c@arm.com>
-Date:   Tue, 5 Jan 2021 16:33:32 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729101AbhAEQfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:35:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728521AbhAEQfP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:35:15 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9DAC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 08:34:35 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id z5so28738005iob.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 08:34:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eEsV5GjmLKE0KArAhzJzwbLWUdZGk09TCWvllXL+wYc=;
+        b=TRFc9xF6N+Gx71MTz6M6NF5Po6d8blkVfoFTFC9J49EgAaRY5M5VaRdOQJQsqCT4v8
+         0LJtM1ATwRA7DXc4MaowjrtyQGqPnHwC+pOTtoflYlrFrg6bWJY97KBo1m6HbD/KszqJ
+         yGk1bpIZBlJx5JXffjejYa8Lyfya3dyhOjsX0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eEsV5GjmLKE0KArAhzJzwbLWUdZGk09TCWvllXL+wYc=;
+        b=LdIDVjG+qhgKhr8beyAyR/C3slhYhWKGrGT+8yEvNS9qth8OgORXCQ8jF1B1U9KeWI
+         nk+8He3fKu6uYW5fAC4YpyqtYbaF4keaKeyFVb+BOXbyRvo4Gcyv7Lm1JK38ImuPuE3F
+         bbAz2RBCRQb79xnPxzWHd7NU4JmA9zuv5dzIYCTGTVw1S+jDzz9vk94vt8BG6YAsSNlh
+         QdRfn35dTv6rnRT+AQTK6E+nue7IvjdveiZzKN9dSeJOhSjdJDFK6XacPVwVKr0E2UnR
+         RJ/yD48P0Ha9WoZnv1sKLV3LCkZp5vH6KbBVGhmlRqQjU9zX/gG8vEUCHB/g6KnbHTYS
+         FtnQ==
+X-Gm-Message-State: AOAM530W/mprfYlvhblueBqRFeCE2YhTm5xROZqUgLyW+lXtr3cunZyg
+        G0HqXc8R62kkuUd+DP4sdFx1Pg==
+X-Google-Smtp-Source: ABdhPJyoENdD6Y7jK8od4+dyGrYt+P3X2XmyMb3keo0+VCokN+Y87ht4X1zlOfuzyfK+JsibUwltsg==
+X-Received: by 2002:a6b:6016:: with SMTP id r22mr63753744iog.93.1609864474805;
+        Tue, 05 Jan 2021 08:34:34 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l78sm55322ild.30.2021.01.05.08.34.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 08:34:34 -0800 (PST)
+Subject: Re: [PATCH] kunit: tool: Force the use of the 'tty' console for UML
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201222073900.3490607-1-davidgow@google.com>
+ <20201222111102.GC4077@smile.fi.intel.com>
+ <4ae7779c-15c5-0474-5840-44531dcf1d94@linuxfoundation.org>
+ <X/SSJQ+I5zEMaYYJ@alley>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3828c7ee-52b0-42f9-5771-74ef9386756c@linuxfoundation.org>
+Date:   Tue, 5 Jan 2021 09:34:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210101165507.19486-20-tiny.windzz@gmail.com>
+In-Reply-To: <X/SSJQ+I5zEMaYYJ@alley>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/01/2021 16:54, Yangtao Li wrote:
-> Use devm_pm_opp_* API to simplify code, and remove opp_table
-> from panfrost_devfreq.
+On 1/5/21 9:21 AM, Petr Mladek wrote:
+> On Mon 2021-01-04 09:23:57, Shuah Khan wrote:
+>> On 12/22/20 4:11 AM, Andy Shevchenko wrote:
+>>> On Mon, Dec 21, 2020 at 11:39:00PM -0800, David Gow wrote:
+>>>> kunit_tool relies on the UML console outputting printk() output to the
+>>>> tty in order to get results. Since the default console driver could
+>>>> change, pass 'console=tty' to the kernel.
+>>>>
+>>>> This is triggered by a change[1] to use ttynull as a fallback console
+>>>> driver which -- by chance or by design -- seems to have changed the
+>>>> default console output on UML, breaking kunit_tool. While this may be
+>>>> fixed, we should be less fragile to such changes in the default.
+>>>>
+>>>> [1]:
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=757055ae8dedf5333af17b3b5b4b70ba9bc9da4e
+>>>
+>>> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>> Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>>
+>>
+>> Thank you all. Now in linux-kselftest kunit-fixes branch.
+>>
+>> Will send this up for rc3.
+>>
+>> Sorry for the delay - have been away from the keyboard for a
+>> bit.
 > 
-> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-
-Reviewed-by: Steven Price <steven.price@arm.com>
-
-> ---
->   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 34 ++++++---------------
->   drivers/gpu/drm/panfrost/panfrost_devfreq.h |  1 -
->   2 files changed, 10 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> index f44d28fad085..c42fa9eb43b1 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> @@ -92,25 +92,26 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
->   	struct thermal_cooling_device *cooling;
->   	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
->   
-> -	opp_table = dev_pm_opp_set_regulators(dev, pfdev->comp->supply_names,
-> +	opp_table = devm_pm_opp_set_regulators(dev, pfdev->comp->supply_names,
->   					      pfdev->comp->num_supplies);
->   	if (IS_ERR(opp_table)) {
->   		ret = PTR_ERR(opp_table);
->   		/* Continue if the optional regulator is missing */
->   		if (ret != -ENODEV) {
->   			DRM_DEV_ERROR(dev, "Couldn't set OPP regulators\n");
-> -			goto err_fini;
-> +			return ret;
->   		}
-> -	} else {
-> -		pfdevfreq->regulators_opp_table = opp_table;
->   	}
->   
-> -	ret = dev_pm_opp_of_add_table(dev);
-> +	ret = devm_pm_opp_of_add_table(dev);
->   	if (ret) {
-> +		if (!IS_ERR(opp_table))
-> +			devm_pm_opp_put_regulators(dev, opp_table);
-> +
->   		/* Optional, continue without devfreq */
->   		if (ret == -ENODEV)
->   			ret = 0;
-> -		goto err_fini;
-> +		return ret;
->   	}
->   	pfdevfreq->opp_of_table_added = true;
->   
-> @@ -121,10 +122,8 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
->   	cur_freq = clk_get_rate(pfdev->clock);
->   
->   	opp = devfreq_recommended_opp(dev, &cur_freq, 0);
-> -	if (IS_ERR(opp)) {
-> -		ret = PTR_ERR(opp);
-> -		goto err_fini;
-> -	}
-> +	if (IS_ERR(opp))
-> +		return PTR_ERR(opp);
->   
->   	panfrost_devfreq_profile.initial_freq = cur_freq;
->   	dev_pm_opp_put(opp);
-> @@ -133,8 +132,7 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
->   					  DEVFREQ_GOV_SIMPLE_ONDEMAND, NULL);
->   	if (IS_ERR(devfreq)) {
->   		DRM_DEV_ERROR(dev, "Couldn't initialize GPU devfreq\n");
-> -		ret = PTR_ERR(devfreq);
-> -		goto err_fini;
-> +		return PTR_ERR(devfreq);
->   	}
->   	pfdevfreq->devfreq = devfreq;
->   
-> @@ -145,10 +143,6 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
->   		pfdevfreq->cooling = cooling;
->   
->   	return 0;
-> -
-> -err_fini:
-> -	panfrost_devfreq_fini(pfdev);
-> -	return ret;
->   }
->   
->   void panfrost_devfreq_fini(struct panfrost_device *pfdev)
-> @@ -159,14 +153,6 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
->   		devfreq_cooling_unregister(pfdevfreq->cooling);
->   		pfdevfreq->cooling = NULL;
->   	}
-> -
-> -	if (pfdevfreq->opp_of_table_added) {
-> -		dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
-> -		pfdevfreq->opp_of_table_added = false;
-> -	}
-> -
-> -	dev_pm_opp_put_regulators(pfdevfreq->regulators_opp_table);
-> -	pfdevfreq->regulators_opp_table = NULL;
->   }
->   
->   void panfrost_devfreq_resume(struct panfrost_device *pfdev)
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> index db6ea48e21f9..a51854cc8c06 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-> @@ -15,7 +15,6 @@ struct panfrost_device;
->   
->   struct panfrost_devfreq {
->   	struct devfreq *devfreq;
-> -	struct opp_table *regulators_opp_table;
->   	struct thermal_cooling_device *cooling;
->   	bool opp_of_table_added;
->   
+> JFYI, I am not sure that this is the right solution. I am
+> looking into it, see
+> https://lore.kernel.org/linux-kselftest/X%2FSRA1P8t+ONZFKb@alley/
+> for more details.
 > 
 
+Thanks Petr. I will hold off on sending the patch up to Linus and
+let you find a the right solution.
+
+thanks,
+-- Shuah
