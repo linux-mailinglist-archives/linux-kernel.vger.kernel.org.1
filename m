@@ -2,71 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8FC2EAA6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F432EAA62
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730038AbhAEMEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:04:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39250 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729977AbhAEMED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:04:03 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7B1D7AE1C;
-        Tue,  5 Jan 2021 12:02:42 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 12/12] tty: drop termiox user definitions
-Date:   Tue,  5 Jan 2021 13:02:39 +0100
-Message-Id: <20210105120239.28031-12-jslaby@suse.cz>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210105120239.28031-1-jslaby@suse.cz>
-References: <20210105120239.28031-1-jslaby@suse.cz>
+        id S1729972AbhAEMDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:03:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbhAEMDi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 07:03:38 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181FEC061574;
+        Tue,  5 Jan 2021 04:02:58 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id 4so16256942plk.5;
+        Tue, 05 Jan 2021 04:02:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7sOeq1igRILZ3qkNgIHGHcqhKNb2sI9PRb1QCDOORNQ=;
+        b=rIE2bAGQhyd/DbcKpJ7JunAFtkVDOTykjRUNhyPFB7FCRwFRpdNchEY4pWEmLR1hI6
+         AccU8b/Vw3OoXRjkb8ChFKjlcy3J80xaJGzkY7ADI2Xv/zFvLBf/OPV7o0h9nJW92a/g
+         U5Lz2AwmpU/uSrkjy4O73nTFD1cfyWraoos4jwLSwCYerXm3PXuHYq7cmwG7D8/8Qez2
+         8BQXby6B/lD21sBLQ73WclonD0idpvoo8vzi8pIJ9jh/O9s9IQLxLyPwyVc6YSzkwf4u
+         +9Rm1lRTS1QvED7wQOluIQx4ExYm3987VL/DbDAj9HgZ712LkBg/xv64S9nBEOC+CeBX
+         /Q6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7sOeq1igRILZ3qkNgIHGHcqhKNb2sI9PRb1QCDOORNQ=;
+        b=E63aQXwR67u5NEXArux4nIPrmUcXSvIj4CN7v70LUe6Z5iddCFxYRoSW9XkxlnWtgR
+         FTn20jATM5ZQ/DyFKpJohlgSVhGrOOOK8zgR7pd1nY5O3ABaHgqO6+qXQY3WuLQ28rBA
+         rgj+sX8ri+BtRAJO0VHQqua6VNlXvTrCBRhdEzbi+DADBWOccQkKGSaPWUcKFzTlecN3
+         x4jLFiiOlKIkfHjCBEeqt6yCHRZkhl/yKLagwlZSqKeCgGN3dopBQk7UYpj0malwQZ5X
+         FT4hYOZ9077HM+ruz/UxMdHaG087iiQac4gqfNoikAgC2+J+fKOjz8T9emAevDpGxb2c
+         GAZw==
+X-Gm-Message-State: AOAM531G+3svj+Z0a+aOqm2X2D/VllVS1MPAIpqHWJbNGf97HVeDXi6o
+        p5/2yGAo6V/tlz1WrIITM/TfR2P3AK7J2g==
+X-Google-Smtp-Source: ABdhPJwuVzI9pIl1CAC8MAVP8OuT7EwqOLwKDOOZAFiwBG8RXG0G1IGGKfDiABJ291CRQimA95ogQg==
+X-Received: by 2002:a17:90a:fd08:: with SMTP id cv8mr3663921pjb.29.1609848177451;
+        Tue, 05 Jan 2021 04:02:57 -0800 (PST)
+Received: from Leo-laptop-t470s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id u126sm13917515pfu.113.2021.01.05.04.02.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 04:02:57 -0800 (PST)
+Date:   Tue, 5 Jan 2021 20:02:45 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Yi Chen <yiche@redhat.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCHv2 net] selftests: netfilter: Pass the family parameter to
+ conntrack tool
+Message-ID: <20210105120245.GB1421720@Leo-laptop-t470s>
+References: <20210104110723.43564-1-yiche@redhat.com>
+ <20210105094316.23683-1-yiche@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105094316.23683-1-yiche@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As was concluded in a follow-up discussion of commit e0efb3168d34 (tty:
-Remove dead termiox code) [1], termiox ioctls never worked, so there is
-barely anyone using this interface. We can safely remove the user
-definitions for this never adopted interface.
+On Tue, Jan 05, 2021 at 05:43:16PM +0800, Yi Chen wrote:
+> From: yiche <yiche@redhat.com>
+> 
+> Fixes: 619ae8e0697a6 ("selftests: netfilter: add test case for conntrack helper assignment")
+> 
+> Fix nft_conntrack_helper.sh fake fail:
+> conntrack tool need "-f ipv6" parameter to show out ipv6 traffic items.
+> sleep 1 second after background nc send packet, to make sure check
+> is after this statement executed.
 
-[1] https://lore.kernel.org/lkml/c1c9fc04-02eb-2260-195b-44c357f057c0@kernel.org/t/#u
+The Fixes tag should be above your signoff tag
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
----
- include/uapi/linux/termios.h | 15 ---------------
- 1 file changed, 15 deletions(-)
-
-diff --git a/include/uapi/linux/termios.h b/include/uapi/linux/termios.h
-index 33961d4e4de0..e6da9d4433d1 100644
---- a/include/uapi/linux/termios.h
-+++ b/include/uapi/linux/termios.h
-@@ -5,19 +5,4 @@
- #include <linux/types.h>
- #include <asm/termios.h>
- 
--#define NFF	5
--
--struct termiox
--{
--	__u16	x_hflag;
--	__u16	x_cflag;
--	__u16	x_rflag[NFF];
--	__u16	x_sflag;
--};
--
--#define	RTSXOFF		0x0001		/* RTS flow control on input */
--#define	CTSXON		0x0002		/* CTS flow control on output */
--#define	DTRXOFF		0x0004		/* DTR flow control on input */
--#define DSRXON		0x0008		/* DCD flow control on output */
--
- #endif
--- 
-2.30.0
-
+Fixes: 619ae8e0697a6 ("selftests: netfilter: add test case for conntrack helper assignment")
+> Signed-off-by: yiche <yiche@redhat.com>
+> ---
+>  .../selftests/netfilter/nft_conntrack_helper.sh      | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
+> index edf0a48da6bf..bf6b9626c7dd 100755
+> --- a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
+> +++ b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
+> @@ -94,7 +94,13 @@ check_for_helper()
+>  	local message=$2
+>  	local port=$3
+>  
+> -	ip netns exec ${netns} conntrack -L -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
+> +	if echo $message |grep -q 'ipv6';then
+> +		local family="ipv6"
+> +	else
+> +		local family="ipv4"
+> +	fi
+> +
+> +	ip netns exec ${netns} conntrack -L -f $family -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
+>  	if [ $? -ne 0 ] ; then
+>  		echo "FAIL: ${netns} did not show attached helper $message" 1>&2
+>  		ret=1
+> @@ -111,8 +117,8 @@ test_helper()
+>  
+>  	sleep 3 | ip netns exec ${ns2} nc -w 2 -l -p $port > /dev/null &
+>  
+> -	sleep 1
+>  	sleep 1 | ip netns exec ${ns1} nc -w 2 10.0.1.2 $port > /dev/null &
+> +	sleep 1
+>  
+>  	check_for_helper "$ns1" "ip $msg" $port
+>  	check_for_helper "$ns2" "ip $msg" $port
+> @@ -128,8 +134,8 @@ test_helper()
+>  
+>  	sleep 3 | ip netns exec ${ns2} nc -w 2 -6 -l -p $port > /dev/null &
+>  
+> -	sleep 1
+>  	sleep 1 | ip netns exec ${ns1} nc -w 2 -6 dead:1::2 $port > /dev/null &
+> +	sleep 1
+>  
+>  	check_for_helper "$ns1" "ipv6 $msg" $port
+>  	check_for_helper "$ns2" "ipv6 $msg" $port
+> -- 
+> 2.26.2
+> 
