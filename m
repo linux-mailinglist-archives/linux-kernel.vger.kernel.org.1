@@ -2,115 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA12C2EAB55
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690852EAB77
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbhAENAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:00:30 -0500
-Received: from mga12.intel.com ([192.55.52.136]:60338 "EHLO mga12.intel.com"
+        id S1730429AbhAENEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:04:48 -0500
+Received: from mga14.intel.com ([192.55.52.115]:21190 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727524AbhAENA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:00:29 -0500
-IronPort-SDR: bICjH5i68eVLn38AHziT3cRV1aniqVl6/UbYlq5SRAgaW45G5JkZuY0L/JRpCqIZ8h37U463Ey
- b1c3WQb11bQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156293975"
+        id S1729743AbhAENEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:04:47 -0500
+IronPort-SDR: 0lKzZsZknrlN4Qapc4OY2q8WCqK9BMvK6ybjuc5cCRDiD/3j6iCH0JZzUCsP1lR1JRFgPIvrsO
+ p9x8mgOBRqfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="176317813"
 X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
-   d="scan'208";a="156293975"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 04:58:44 -0800
-IronPort-SDR: exPky2lEHu5+iUuOLfjXZ+fqO5wRrh67x/0HSBaQL+2MW6nT7yXJutUQGP3NqM/2YCYpwZsCev
- xP+i2SngoaXQ==
+   d="scan'208";a="176317813"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 05:03:01 -0800
+IronPort-SDR: jptWPMLfWGX6lDuX7MiHAn8ipT9mgPZ6kJanzSCH5wVxQZ/U2gNXiw9a+2klpDQm32tI8BFx0U
+ TIy11gsyWYFg==
 X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
-   d="scan'208";a="395255933"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 04:58:43 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id D4FF9206FD; Tue,  5 Jan 2021 14:58:10 +0200 (EET)
-Date:   Tue, 5 Jan 2021 14:58:10 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH] media: i2c: ov5648/ov8865: Minor cosmetic fixes
-Message-ID: <20210105125810.GQ11878@paasikivi.fi.intel.com>
-References: <20210105093803.5247-1-paul.kocialkowski@bootlin.com>
+   d="scan'208";a="569721207"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 05:02:57 -0800
+Date:   Tue, 5 Jan 2021 14:59:52 +0200 (EET)
+From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+cc:     pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+        daniel.baluta@nxp.com, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
+        Keyon Jie <yang.jie@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marcin Rajwa <marcin.rajwa@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Amery Song <chao.song@intel.com>,
+        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
+        <sound-open-firmware@alsa-project.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/3] ASoC: SOF: Intel: hda: Modify existing helper to
+ disable WAKEEN
+In-Reply-To: <20210104140853.228448-2-kai.heng.feng@canonical.com>
+Message-ID: <alpine.DEB.2.22.394.2101051458590.864696@eliteleevi.tm.intel.com>
+References: <20210104140853.228448-1-kai.heng.feng@canonical.com> <20210104140853.228448-2-kai.heng.feng@canonical.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105093803.5247-1-paul.kocialkowski@bootlin.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Hi,
 
-Thanks for the patch.
+On Mon, 4 Jan 2021, Kai-Heng Feng wrote:
 
-On Tue, Jan 05, 2021 at 10:38:03AM +0100, Paul Kocialkowski wrote:
-> This solves a few minor cosmetic issues picked up by checkpatch for
-> the OV5648 and OV8865 drivers.
-> 
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  drivers/media/i2c/ov5648.c | 2 +-
->  drivers/media/i2c/ov8865.c | 7 +++----
->  2 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/ov5648.c b/drivers/media/i2c/ov5648.c
-> index 609aa67b54ce..752a2e035c49 100644
-> --- a/drivers/media/i2c/ov5648.c
-> +++ b/drivers/media/i2c/ov5648.c
-> @@ -496,7 +496,7 @@
->  	container_of(s, struct ov5648_sensor, subdev)
->  
->  #define ov5648_ctrl_subdev(c) \
-> -	(&container_of(c->handler, struct ov5648_sensor, ctrls.handler)->subdev)
-> +	(&container_of((c)->handler, struct ov5648_sensor, ctrls.handler)->subdev)
+> Modify hda_codec_jack_wake_enable() to also support disable WAKEEN.
+> In addition, this patch also moves the WAKEEN disablement call out of
+> hda_codec_jack_check() into hda_codec_jack_wake_enable().
 
-Over 80; please wrap.
+ack, this looks good:
 
->  
->  /* Data structures */
->  
-> diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
-> index fda5a55979aa..704d75b601e3 100644
-> --- a/drivers/media/i2c/ov8865.c
-> +++ b/drivers/media/i2c/ov8865.c
-> @@ -223,7 +223,6 @@
->  #define OV8865_FORMAT2_FLIP_HORZ_SENSOR_EN	BIT(1)
->  #define OV8865_FORMAT2_SYNC_HBIN_EN		BIT(0)
->  
-> -
->  #define OV8865_INC_Y_ODD_REG			0x382a
->  #define OV8865_INC_Y_ODD(v)			((v) & GENMASK(4, 0))
->  #define OV8865_INC_Y_EVEN_REG			0x382b
-> @@ -460,7 +459,7 @@
->  	container_of(s, struct ov8865_sensor, subdev)
->  
->  #define ov8865_ctrl_subdev(c) \
-> -	(&container_of(c->handler, struct ov8865_sensor, ctrls.handler)->subdev)
-> +	(&container_of((c)->handler, struct ov8865_sensor, ctrls.handler)->subdev)
+Acked-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-Ditto.
-
->  
->  /* Data structures */
->  
-> @@ -1598,8 +1597,8 @@ static int ov8865_mode_pll1_configure(struct ov8865_sensor *sensor,
->  		return ret;
->  
->  	ret = ov8865_update_bits(sensor, OV8865_PCLK_SEL_REG,
-> -			   OV8865_PCLK_SEL_PCLK_DIV_MASK,
-> -			   OV8865_PCLK_SEL_PCLK_DIV(config->pclk_div));
-> +				 OV8865_PCLK_SEL_PCLK_DIV_MASK,
-> +				 OV8865_PCLK_SEL_PCLK_DIV(config->pclk_div));
->  	if (ret)
->  		return ret;
->  
-> -- 
-> 2.29.2
-> 
-
--- 
-Sakari Ailus
+Br, Kai
