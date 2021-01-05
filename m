@@ -2,110 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581D02EB206
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77A72EB209
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730260AbhAESGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        id S1730679AbhAESGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:06:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbhAESGC (ORCPT
+        with ESMTP id S1728751AbhAESGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:06:02 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3983C061793;
-        Tue,  5 Jan 2021 10:05:21 -0800 (PST)
-Date:   Tue, 05 Jan 2021 18:05:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1609869919;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9+v5mLEInRf1Dnm3NFSWVVN0dQUTBpU53ZdB5qcd5go=;
-        b=yRTSFzAgucekhdmIxAVfE9Z5stKMuJTjQ+cWziwmtYHvfbz5wf6Qo54Tqlps8BxtRq1dcS
-        Z2RvC7DjBWaRzz1fQMPZv6klT9iagqBfdWQ1Dpgnau8nfq6vZm03K3GpOjVI1PfBoOLJgH
-        n9HvtwCfEpV2G1Bl1tvtf5c9AQEbWa+tLauTa0ZOa3WAPbmYC1/cLkN0fGYYVfjjTynZ57
-        5Amx0uX3/C+jcQQ0JCyLbaEE45boF2fs4vPEzc/Lrc7BIAWbyd35QnGhnwftX3vE7WFfNi
-        CJSWbRadFHhlGagGAfe1qt7Akxk7zjC27N+G1V+mbqbDFrq0GuijZhqPpE67gg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1609869919;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9+v5mLEInRf1Dnm3NFSWVVN0dQUTBpU53ZdB5qcd5go=;
-        b=rmqPYYRHdzarDpnRbZsFd9ZyUJNif435XwpGFR1NBUfGcq7QsiWhI0l3YI88PCOn8K9s5x
-        8UcSaQL8nQu75lDw==
-From:   "tip-bot2 for Peter Gonda" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/sev-es: Fix SEV-ES OUT/IN immediate opcode vc handling
-Cc:     Peter Gonda <pgonda@google.com>, Borislav Petkov <bp@suse.de>,
-        David Rientjes <rientjes@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210105163311.221490-1-pgonda@google.com>
-References: <20210105163311.221490-1-pgonda@google.com>
+        Tue, 5 Jan 2021 13:06:31 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AD8C061796
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:05:51 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id q18so120858wrn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:05:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hlENDTIUol+EdN5VnNheWvF9f4CyJQRs2PzF8BBX3kg=;
+        b=ekLy75Tx+nSo0ogvhMaVAY8BSdgyBJVQYLbNWQJtFMIw1d8REekvcR0P2SSbZgpjWq
+         5N5G5BKx4y0+C+jgql8evb9s+764J/xZGnwf2ubC3hrwRiu80A+I+7kMMWzDRwhSFEXG
+         YDQTIvMfqZFQrrBABGuKu02ZFfnrMolhcaM/yNzWD1RZMrBOc9wta1h+G0G5aplpepEZ
+         L89uKV+jC6ib+YdkUEQrU2kqZaOgu6C/yUbs0tzprKGRgsJoByHd+BaiAQRTDAKQX77P
+         GUZdEP94V4DfWGv3/oMnqDV1hmhxUF6razvUh1ocEByCXH9vdz9n1w6DPgmx9K7SQBuL
+         pzQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hlENDTIUol+EdN5VnNheWvF9f4CyJQRs2PzF8BBX3kg=;
+        b=mOSQ1qzvU0yQzRqsCq6SGOyZQcIU69FhkLziIY0+Lxt7X4PgHgLL3KWHqx9D8k8OFB
+         RptfCOvX9OXgIrvPREFyIdt2tksPaPOzc7yasDnGgICbNRM/bC7W6J52mA4vnOBFkV4w
+         IKhr1GvJ3KB38/UQCqLZTDbTbleee7fk32Pn2y9/kS+dorvO3QnbZNMyTcpkGKKfB4qJ
+         N4zwn581VlDjgICRPmk4pLn3nihXqfGdYM2AHIpE+EXAFA2bvbSCSKpD86CGAJIsB3J7
+         GyccolHl7fvfpLQAEIGPPp7/zyHUewEfrPZAb5KJWd3k7Z0Te4xzNpnWfKH5r6JEsR5b
+         cOgA==
+X-Gm-Message-State: AOAM5306IP/s6iFC6mUknnR+Y32wdNUxjGsBZAfLgbxvsB26xE46p1m4
+        4aOtp3MwU8Y7f0lOlWEbRCzhxw==
+X-Google-Smtp-Source: ABdhPJzzI0r9N+4/GiWQj8jGCkL+Dm2s32peLrs/YvGf/0LqboOlGOCfcaXZq5RT/gNiTgtdV2/ABg==
+X-Received: by 2002:adf:fbc5:: with SMTP id d5mr775813wrs.82.1609869949626;
+        Tue, 05 Jan 2021 10:05:49 -0800 (PST)
+Received: from localhost ([2a01:4b00:8523:2d03:4957:71a5:7b5c:c94f])
+        by smtp.gmail.com with ESMTPSA id t16sm374514wmi.3.2021.01.05.10.05.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 10:05:48 -0800 (PST)
+From:   David Brazdil <dbrazdil@google.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Brazdil <dbrazdil@google.com>
+Subject: [PATCH v2 0/8] arm64: Relocate absolute hyp VAs
+Date:   Tue,  5 Jan 2021 18:05:33 +0000
+Message-Id: <20210105180541.65031-1-dbrazdil@google.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Message-ID: <160986991879.414.1361812669618654392.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+nVHE hyp code is linked into the same kernel binary but executes under
+different memory mappings. If the compiler of hyp code chooses absolute
+addressing for accessing a symbol, the kernel linker will relocate that
+address to a kernel image virtual address, causing a runtime exception.
 
-Commit-ID:     a8f7e08a81708920a928664a865208fdf451c49f
-Gitweb:        https://git.kernel.org/tip/a8f7e08a81708920a928664a865208fdf451c49f
-Author:        Peter Gonda <pgonda@google.com>
-AuthorDate:    Tue, 05 Jan 2021 08:33:11 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 05 Jan 2021 18:55:00 +01:00
+So far the strategy has been to force PC-relative addressing by wrapping
+all symbol references with the hyp_symbol_addr macro. This is error
+prone and developer unfriendly.
 
-x86/sev-es: Fix SEV-ES OUT/IN immediate opcode vc handling
+The series adds a new build-time step for nVHE hyp object file where
+positions targeted by R_AARCH64_ABS64 relocations are enumerated and
+the information stored in a separate ELF section in the kernel image.
+At runtime, the kernel first relocates all absolute addresses to their
+actual virtual offset (eg. for KASLR), and then addresses listed in this
+section are converted to hyp VAs.
 
-The IN and OUT instructions with port address as an immediate operand
-only use an 8-bit immediate (imm8). The current VC handler uses the
-entire 32-bit immediate value but these instructions only set the first
-bytes.
+The RFC of this series did not have a build-time step and instead relied
+on filtering dynamic relocations at runtime. That approach does not work
+if the kernel is built with !CONFIG_RELOCATABLE, hence an always-present
+set of relocation positions was added.
 
-Cast the operand to an u8 for that.
+The series is based on 5.11-rc2 + kvmarm/next and structured as follows:
+  * patches 1-2 make sure that all sections referred to by hyp code are
+    handled by the hyp linker script and prefixed with .hyp so they can
+    be identified by the build-time tool
+  * patches 3-5 contain the actual changes to identify and relocate VAs
+  * patches 6-7 fix existing code that assumes kernel VAs
+  * patch 8 removes the (now redundant) hyp_symbol_addr
 
- [ bp: Massage commit message. ]
+The series is also available at:
+  https://android-kvm.googlesource.com/linux topic/hyp-reloc_v2
 
-Fixes: 25189d08e5168 ("x86/sev-es: Add support for handling IOIO exceptions")
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: David Rientjes <rientjes@google.com>
-Link: https://lkml.kernel.org/r/20210105163311.221490-1-pgonda@google.com
----
- arch/x86/kernel/sev-es-shared.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes since v1:
+  * fix for older linkers: declare hyp section symbols in hyp-reloc.S
+  * fix for older host glibc: define R_AARCH64_ constants if missing
+  * add generated files to .gitignore
 
-diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
-index 7d04b35..cdc04d0 100644
---- a/arch/x86/kernel/sev-es-shared.c
-+++ b/arch/x86/kernel/sev-es-shared.c
-@@ -305,14 +305,14 @@ static enum es_result vc_ioio_exitinfo(struct es_em_ctxt *ctxt, u64 *exitinfo)
- 	case 0xe4:
- 	case 0xe5:
- 		*exitinfo |= IOIO_TYPE_IN;
--		*exitinfo |= (u64)insn->immediate.value << 16;
-+		*exitinfo |= (u8)insn->immediate.value << 16;
- 		break;
- 
- 	/* OUT immediate opcodes */
- 	case 0xe6:
- 	case 0xe7:
- 		*exitinfo |= IOIO_TYPE_OUT;
--		*exitinfo |= (u64)insn->immediate.value << 16;
-+		*exitinfo |= (u8)insn->immediate.value << 16;
- 		break;
- 
- 	/* IN register opcodes */
+-David
+
+David Brazdil (8):
+  KVM: arm64: Rename .idmap.text in hyp linker script
+  KVM: arm64: Set up .hyp.rodata ELF section
+  KVM: arm64: Add symbol at the beginning of each hyp section
+  KVM: arm64: Generate hyp relocation data
+  KVM: arm64: Apply hyp relocations at runtime
+  KVM: arm64: Fix constant-pool users in hyp
+  KVM: arm64: Remove patching of fn pointers in hyp
+  KVM: arm64: Remove hyp_symbol_addr
+
+ arch/arm64/include/asm/hyp_image.h       |  29 +-
+ arch/arm64/include/asm/kvm_asm.h         |  26 --
+ arch/arm64/include/asm/kvm_mmu.h         |  61 +---
+ arch/arm64/include/asm/sections.h        |   3 +-
+ arch/arm64/kernel/image-vars.h           |   1 -
+ arch/arm64/kernel/smp.c                  |   4 +-
+ arch/arm64/kernel/vmlinux.lds.S          |  18 +-
+ arch/arm64/kvm/arm.c                     |   7 +-
+ arch/arm64/kvm/hyp/include/hyp/switch.h  |   4 +-
+ arch/arm64/kvm/hyp/nvhe/.gitignore       |   2 +
+ arch/arm64/kvm/hyp/nvhe/Makefile         |  28 +-
+ arch/arm64/kvm/hyp/nvhe/gen-hyprel.c     | 413 +++++++++++++++++++++++
+ arch/arm64/kvm/hyp/nvhe/host.S           |  29 +-
+ arch/arm64/kvm/hyp/nvhe/hyp-init.S       |   4 +-
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c       |  11 +-
+ arch/arm64/kvm/hyp/nvhe/hyp-smp.c        |   4 +-
+ arch/arm64/kvm/hyp/nvhe/hyp.lds.S        |   9 +-
+ arch/arm64/kvm/hyp/nvhe/psci-relay.c     |  24 +-
+ arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c |   2 +-
+ arch/arm64/kvm/va_layout.c               |  34 +-
+ 20 files changed, 578 insertions(+), 135 deletions(-)
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/gen-hyprel.c
+
+--
+2.29.2.729.g45daf8777d-goog
