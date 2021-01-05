@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F612EAA53
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138EF2EAA61
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729902AbhAEMDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:03:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38656 "EHLO mx2.suse.de"
+        id S1729960AbhAEMDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:03:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38668 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729884AbhAEMDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:03:21 -0500
+        id S1729885AbhAEMDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 07:03:22 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 30E92AD6B;
+        by mx2.suse.de (Postfix) with ESMTP id 690EAAD75;
         Tue,  5 Jan 2021 12:02:40 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 03/12] vt: keyboard, defkeymap.c_shipped, approach the definitions
-Date:   Tue,  5 Jan 2021 13:02:30 +0100
-Message-Id: <20210105120239.28031-3-jslaby@suse.cz>
+Subject: [PATCH 04/12] vt: keyboard, defkeymap.c_shipped, approach the unicode table
+Date:   Tue,  5 Jan 2021 13:02:31 +0100
+Message-Id: <20210105120239.28031-4-jslaby@suse.cz>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210105120239.28031-1-jslaby@suse.cz>
 References: <20210105120239.28031-1-jslaby@suse.cz>
@@ -31,84 +31,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-loadkeys (from kbd) generates 'unsigned short' instead of 'u_short'
-since 2.0.3. It also marks maps as 'static' for longer than kbd's
-history.
-
-So adapt the shipped defkeymap.c to conform more to loadkeys output.
+Commit 5ce2087ed0eb (Fix default compose table initialization) fixed
+unicode table so that the values are not sign extended. The upstream
+(kbd package) chose a different approach. They use hexadecimal values.
+So use the same, so that the output of loadkeys and our shipped file
+correspond more to each other.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/vt/defkeymap.c_shipped | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/tty/vt/defkeymap.c_shipped | 68 +++++++++++++++---------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/tty/vt/defkeymap.c_shipped b/drivers/tty/vt/defkeymap.c_shipped
-index c7095fb7d2d1..cac1fcbd55c7 100644
+index cac1fcbd55c7..094d95bf0005 100644
 --- a/drivers/tty/vt/defkeymap.c_shipped
 +++ b/drivers/tty/vt/defkeymap.c_shipped
-@@ -6,7 +6,7 @@
- #include <linux/keyboard.h>
- #include <linux/kd.h>
- 
--u_short plain_map[NR_KEYS] = {
-+unsigned short plain_map[NR_KEYS] = {
- 	0xf200,	0xf01b,	0xf031,	0xf032,	0xf033,	0xf034,	0xf035,	0xf036,
- 	0xf037,	0xf038,	0xf039,	0xf030,	0xf02d,	0xf03d,	0xf07f,	0xf009,
- 	0xfb71,	0xfb77,	0xfb65,	0xfb72,	0xfb74,	0xfb79,	0xfb75,	0xfb69,
-@@ -25,7 +25,7 @@ u_short plain_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,
+@@ -224,40 +224,40 @@ char *func_table[MAX_NR_FUNC] = {
  };
  
--u_short shift_map[NR_KEYS] = {
-+static unsigned short shift_map[NR_KEYS] = {
- 	0xf200,	0xf01b,	0xf021,	0xf040,	0xf023,	0xf024,	0xf025,	0xf05e,
- 	0xf026,	0xf02a,	0xf028,	0xf029,	0xf05f,	0xf02b,	0xf07f,	0xf009,
- 	0xfb51,	0xfb57,	0xfb45,	0xfb52,	0xfb54,	0xfb59,	0xfb55,	0xfb49,
-@@ -44,7 +44,7 @@ u_short shift_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,
+ struct kbdiacruc accent_table[MAX_DIACR] = {
+-	{'`', 'A', 0300},	{'`', 'a', 0340},
+-	{'\'', 'A', 0301},	{'\'', 'a', 0341},
+-	{'^', 'A', 0302},	{'^', 'a', 0342},
+-	{'~', 'A', 0303},	{'~', 'a', 0343},
+-	{'"', 'A', 0304},	{'"', 'a', 0344},
+-	{'O', 'A', 0305},	{'o', 'a', 0345},
+-	{'0', 'A', 0305},	{'0', 'a', 0345},
+-	{'A', 'A', 0305},	{'a', 'a', 0345},
+-	{'A', 'E', 0306},	{'a', 'e', 0346},
+-	{',', 'C', 0307},	{',', 'c', 0347},
+-	{'`', 'E', 0310},	{'`', 'e', 0350},
+-	{'\'', 'E', 0311},	{'\'', 'e', 0351},
+-	{'^', 'E', 0312},	{'^', 'e', 0352},
+-	{'"', 'E', 0313},	{'"', 'e', 0353},
+-	{'`', 'I', 0314},	{'`', 'i', 0354},
+-	{'\'', 'I', 0315},	{'\'', 'i', 0355},
+-	{'^', 'I', 0316},	{'^', 'i', 0356},
+-	{'"', 'I', 0317},	{'"', 'i', 0357},
+-	{'-', 'D', 0320},	{'-', 'd', 0360},
+-	{'~', 'N', 0321},	{'~', 'n', 0361},
+-	{'`', 'O', 0322},	{'`', 'o', 0362},
+-	{'\'', 'O', 0323},	{'\'', 'o', 0363},
+-	{'^', 'O', 0324},	{'^', 'o', 0364},
+-	{'~', 'O', 0325},	{'~', 'o', 0365},
+-	{'"', 'O', 0326},	{'"', 'o', 0366},
+-	{'/', 'O', 0330},	{'/', 'o', 0370},
+-	{'`', 'U', 0331},	{'`', 'u', 0371},
+-	{'\'', 'U', 0332},	{'\'', 'u', 0372},
+-	{'^', 'U', 0333},	{'^', 'u', 0373},
+-	{'"', 'U', 0334},	{'"', 'u', 0374},
+-	{'\'', 'Y', 0335},	{'\'', 'y', 0375},
+-	{'T', 'H', 0336},	{'t', 'h', 0376},
+-	{'s', 's', 0337},	{'"', 'y', 0377},
+-	{'s', 'z', 0337},	{'i', 'j', 0377},
++	{'`', 'A', 0x00c0},	{'`', 'a', 0x00e0},
++	{'\'', 'A', 0x00c1},	{'\'', 'a', 0x00e1},
++	{'^', 'A', 0x00c2},	{'^', 'a', 0x00e2},
++	{'~', 'A', 0x00c3},	{'~', 'a', 0x00e3},
++	{'"', 'A', 0x00c4},	{'"', 'a', 0x00e4},
++	{'O', 'A', 0x00c5},	{'o', 'a', 0x00e5},
++	{'0', 'A', 0x00c5},	{'0', 'a', 0x00e5},
++	{'A', 'A', 0x00c5},	{'a', 'a', 0x00e5},
++	{'A', 'E', 0x00c6},	{'a', 'e', 0x00e6},
++	{',', 'C', 0x00c7},	{',', 'c', 0x00e7},
++	{'`', 'E', 0x00c8},	{'`', 'e', 0x00e8},
++	{'\'', 'E', 0x00c9},	{'\'', 'e', 0x00e9},
++	{'^', 'E', 0x00ca},	{'^', 'e', 0x00ea},
++	{'"', 'E', 0x00cb},	{'"', 'e', 0x00eb},
++	{'`', 'I', 0x00cc},	{'`', 'i', 0x00ec},
++	{'\'', 'I', 0x00cd},	{'\'', 'i', 0x00ed},
++	{'^', 'I', 0x00ce},	{'^', 'i', 0x00ee},
++	{'"', 'I', 0x00cf},	{'"', 'i', 0x00ef},
++	{'-', 'D', 0x00d0},	{'-', 'd', 0x00f0},
++	{'~', 'N', 0x00d1},	{'~', 'n', 0x00f1},
++	{'`', 'O', 0x00d2},	{'`', 'o', 0x00f2},
++	{'\'', 'O', 0x00d3},	{'\'', 'o', 0x00f3},
++	{'^', 'O', 0x00d4},	{'^', 'o', 0x00f4},
++	{'~', 'O', 0x00d5},	{'~', 'o', 0x00f5},
++	{'"', 'O', 0x00d6},	{'"', 'o', 0x00f6},
++	{'/', 'O', 0x00d8},	{'/', 'o', 0x00f8},
++	{'`', 'U', 0x00d9},	{'`', 'u', 0x00f9},
++	{'\'', 'U', 0x00da},	{'\'', 'u', 0x00fa},
++	{'^', 'U', 0x00db},	{'^', 'u', 0x00fb},
++	{'"', 'U', 0x00dc},	{'"', 'u', 0x00fc},
++	{'\'', 'Y', 0x00dd},	{'\'', 'y', 0x00fd},
++	{'T', 'H', 0x00de},	{'t', 'h', 0x00fe},
++	{'s', 's', 0x00df},	{'"', 'y', 0x00ff},
++	{'s', 'z', 0x00df},	{'i', 'j', 0x00ff},
  };
  
--u_short altgr_map[NR_KEYS] = {
-+static unsigned short altgr_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf040,	0xf200,	0xf024,	0xf200,	0xf200,
- 	0xf07b,	0xf05b,	0xf05d,	0xf07d,	0xf05c,	0xf200,	0xf200,	0xf200,
- 	0xfb71,	0xfb77,	0xf918,	0xfb72,	0xfb74,	0xfb79,	0xfb75,	0xfb69,
-@@ -63,7 +63,7 @@ u_short altgr_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,
- };
- 
--u_short ctrl_map[NR_KEYS] = {
-+static unsigned short ctrl_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf000,	0xf01b,	0xf01c,	0xf01d,	0xf01e,
- 	0xf01f,	0xf07f,	0xf200,	0xf200,	0xf01f,	0xf200,	0xf008,	0xf200,
- 	0xf011,	0xf017,	0xf005,	0xf012,	0xf014,	0xf019,	0xf015,	0xf009,
-@@ -82,7 +82,7 @@ u_short ctrl_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,
- };
- 
--u_short shift_ctrl_map[NR_KEYS] = {
-+static unsigned short shift_ctrl_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf000,	0xf200,	0xf200,	0xf200,	0xf200,
- 	0xf200,	0xf200,	0xf200,	0xf200,	0xf01f,	0xf200,	0xf200,	0xf200,
- 	0xf011,	0xf017,	0xf005,	0xf012,	0xf014,	0xf019,	0xf015,	0xf009,
-@@ -101,7 +101,7 @@ u_short shift_ctrl_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,
- };
- 
--u_short alt_map[NR_KEYS] = {
-+static unsigned short alt_map[NR_KEYS] = {
- 	0xf200,	0xf81b,	0xf831,	0xf832,	0xf833,	0xf834,	0xf835,	0xf836,
- 	0xf837,	0xf838,	0xf839,	0xf830,	0xf82d,	0xf83d,	0xf87f,	0xf809,
- 	0xf871,	0xf877,	0xf865,	0xf872,	0xf874,	0xf879,	0xf875,	0xf869,
-@@ -120,7 +120,7 @@ u_short alt_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,
- };
- 
--u_short ctrl_alt_map[NR_KEYS] = {
-+static unsigned short ctrl_alt_map[NR_KEYS] = {
- 	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,
- 	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,	0xf200,
- 	0xf811,	0xf817,	0xf805,	0xf812,	0xf814,	0xf819,	0xf815,	0xf809,
+ unsigned int accent_table_size = 68;
 -- 
 2.30.0
 
