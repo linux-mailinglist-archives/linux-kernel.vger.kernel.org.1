@@ -2,482 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477A62EAB9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72152EAB92
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbhAENLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:11:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:54304 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730411AbhAENLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:11:08 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3024F1042;
-        Tue,  5 Jan 2021 05:10:22 -0800 (PST)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 90CDB3F719;
-        Tue,  5 Jan 2021 05:10:20 -0800 (PST)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        Jonathan.Cameron@Huawei.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, robh@kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v4 2/2] firmware: arm_scmi: Add SCMI System Power Control driver
-Date:   Tue,  5 Jan 2021 13:09:45 +0000
-Message-Id: <20210105130945.8192-2-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210105130945.8192-1-cristian.marussi@arm.com>
-References: <20210105130945.8192-1-cristian.marussi@arm.com>
+        id S1729893AbhAENKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:10:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726685AbhAENKg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:10:36 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAC4C061574;
+        Tue,  5 Jan 2021 05:10:11 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id h4so26357399qkk.4;
+        Tue, 05 Jan 2021 05:10:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LQhTpfYHLDRwx3w40/HeUR0qSHC2BNRF9Xp53fgaufk=;
+        b=K+asJL/sTwQZVtAsg4jvOYGxL8o5zGXDs2BXdUyusYKz7dzf7YPyRzg1LcDq6MsY1h
+         ZYI6DLJXK39u/kfja28OWpsXpS1x2R8XSmMYuWSpiqfvCOBnWpU5F3UB3wWJeD8Y4PsD
+         O9IKbYeVMhAQ1Oj3qjriwWp5Am8niHdSLgCi5Iid5+6UNDRrawMeapWQIUIceQCrVh2j
+         tDBKdG/IYYntP+LnMih+Gbu/2h4HdlnPZfppMBPycLmGymC/q+KtuAYJlIUepuH2Rfgl
+         Evly8hJJZxUfPGuRfqjahfc4gtfg42sLwP6xnhtwccrvOwse7vNC0N4eqLwcLslyT8nB
+         AYeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LQhTpfYHLDRwx3w40/HeUR0qSHC2BNRF9Xp53fgaufk=;
+        b=pELGgYVeDLUWaHkcaFoe/GS+EzUW6dZ7lTDSEhD7JCAxVa+vM/ynpLdXkd+SJd93yF
+         vcfqlvEJQUzYPevIo3cgZO1oHxBL8Glr5TUSDIhXWL0rqSUL3mXQ8hgk6ZQtgIMakzOj
+         b3PS6loZV466bkiqk3G9kIEp/nI6JM+PlDMnJS/neKTxfzYWvD54081aMD6+8oEoxg6b
+         mRSgfUKgZ8WZGtRlgoFenXKufk6UWbukKfdw4lCZITiSzWz6Sekve1KgCevpf+4BJ6t9
+         0nOpP58Exz6truCY8bcbxTzPG43oIbvMGnwtVCyZ0OrcuBWlyUO0ewrcsNbJcjLcq+iO
+         MW2Q==
+X-Gm-Message-State: AOAM5311+ub44w/uAQ/uaWLuwLY1TI35BlNoWOgiikk7zw5BdtCfyX0I
+        uoiBgO3hr0LCyxCx/EOKkgg=
+X-Google-Smtp-Source: ABdhPJyqti8Wjdpymn9SgsBRvjq4h577IxB7RlB68c0Z4cwUomJYOyY3ka0YJ+TsgMDibvf53/CpQw==
+X-Received: by 2002:a37:3d1:: with SMTP id 200mr39131698qkd.30.1609852210186;
+        Tue, 05 Jan 2021 05:10:10 -0800 (PST)
+Received: from localhost.localdomain ([2804:14d:72b1:8920:77d4:6fb0:85b3:b6f7])
+        by smtp.gmail.com with ESMTPSA id s14sm19877804qke.45.2021.01.05.05.10.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 05:10:09 -0800 (PST)
+From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+X-Google-Original-From: Daniel W. S. Almeida
+To:     mchehab@kernel.org, hverkuil@xs4all.nl
+Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        linux-media@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] media: vidtv: add media controller support
+Date:   Tue,  5 Jan 2021 10:09:52 -0300
+Message-Id: <20210105130956.1133222-1-dwlsalmeida@gmail.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an SCMI System Power control driver to handle platform's requests
-carried by SYSTEM_POWER_STATE_NOTIFIER notifications: such platform
-requested system-wide power state transitions are handled accordingly,
-gracefully or forcefully, depending on the notifications' message flags.
+From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 
-Graceful requests are by default relayed to userspace using the same
-Kernel API used to handle ACPI Shutdown bus events: alternatively, a few
-available module parameters can be used to tunnel instead such requests to
-userspace via signals addressed to CAD pid.
+This series adds media controller support for vidtv so that we can
+support this driver at the test-media script in v4l-utils.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-This patch, building on top of the recently introduced SCMI System Power
-Protocol support, adds a new SCMI driver which, registering for such SCMI
-System Power notifications, acts accordingly to satisfy such SCMI plaform
-system-wide transition requests.
+I based my implementation on vim2m's.
 
-Given that this driver is called to react on SCMI System Power events, it
-is potentially needed very early on during boot, so it has not been made
-configurable as a loadable module: if you decide to use it, makes no sense
-not to have it builtin, since it has to be immediately ready once SCMI
-subsystem is activated.
+Daniel W. S. Almeida (4):
+  media: vidtv: Add media controller support
+  media: vidtv: reinstate sysfs bind attrs
+  media: vidtv: use a simpler name in platform_{device|driver}
+  media: vidtv: print message when driver is removed
 
-It is currently based on Linux v5.11-rc2.
+ .../media/test-drivers/vidtv/vidtv_bridge.c   | 32 +++++++++++++++++--
+ .../media/test-drivers/vidtv/vidtv_bridge.h   |  7 ++++
+ 2 files changed, 36 insertions(+), 3 deletions(-)
 
-Thanks,
-
-Cristian
-
-v3 --> v4
-- rebased v5.11-rc2
-- removed unneeded ugly usage of atomics and barriers
-- simplfied SysPower shutdown state machine
-- split out macro definition to different patch
-
-v2 --> v3
-- rebased
-- some minor cleanup in codestyle and commit message
-
-v1 --> v2
-- split out of SCMI System Power Protocol series now merged
----
- drivers/firmware/Kconfig                      |  12 +
- drivers/firmware/arm_scmi/Makefile            |   1 +
- .../firmware/arm_scmi/scmi_power_control.c    | 359 ++++++++++++++++++
- 3 files changed, 372 insertions(+)
- create mode 100644 drivers/firmware/arm_scmi/scmi_power_control.c
-
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 3f14dffb9669..2b39453e9dd1 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -40,6 +40,18 @@ config ARM_SCMI_POWER_DOMAIN
- 	  will be called scmi_pm_domain. Note this may needed early in boot
- 	  before rootfs may be available.
- 
-+config ARM_SCMI_POWER_CONTROL
-+	bool "SCMI system power control driver"
-+	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-+	default n
-+	help
-+	  This enables System Power control logic which binds system shutdown or
-+	  reboot actions to SCMI System Power notifications generated by SCP
-+	  firmware.
-+
-+	  Graceful requests' methods and timeout and can be configured using
-+	  a few available module parameters.
-+
- config ARM_SCPI_PROTOCOL
- 	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
- 	depends on ARM || ARM64 || COMPILE_TEST
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index 6a2ef63306d6..ddddb4636ebd 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -9,3 +9,4 @@ scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
- 		    $(scmi-transport-y)
- obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
- obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
-+obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
-diff --git a/drivers/firmware/arm_scmi/scmi_power_control.c b/drivers/firmware/arm_scmi/scmi_power_control.c
-new file mode 100644
-index 000000000000..216c2f031111
---- /dev/null
-+++ b/drivers/firmware/arm_scmi/scmi_power_control.c
-@@ -0,0 +1,359 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * SCMI Generic SystemPower Control driver.
-+ *
-+ * Copyright (C) 2020-2021 ARM Ltd.
-+ */
-+/**
-+ * DOC: Theory of operation
-+ *
-+ * In order to handle platform originated SCMI SystemPower requests (like
-+ * shutdowns or cold/warm resets) we register an SCMI Notification notifier
-+ * block to react when such SCMI SystemPower events are emitted.
-+ *
-+ * Once such a notification is received we act accordingly to perform the
-+ * required system transition depending on the kind of request.
-+ *
-+ * By default graceful requests are routed to userspace through the same
-+ * API methods (orderly_poweroff/reboot()) used by ACPI when handling ACPI
-+ * Shutdown bus events: alternatively, by properly setting a couple of module
-+ * parameters (scmi_graceful_*_signum), it is possible to choose to use signals
-+ * to CAD pid as a mean to communicate such graceful requests to userspace.
-+ *
-+ * Forceful requests, instead, will simply cause an immediate emergency_sync()
-+ * and subsequent Kernel-only shutdown/reboot.
-+ *
-+ * Additionally, setting scmi_graceful_request_tmo_ms to a non-zero value, it
-+ * is possible to convert a timed-out graceful request to a forceful one.
-+ *
-+ * The assumption here is that even graceful requests can be upper-bound by a
-+ * maximum final timeout strictly enforced by the platform itself which can
-+ * ultimately cut the power off at will anytime: in order to avoid such extreme
-+ * scenario, when scmi_graceful_request_tmo_ms is non-zero, we track progress of
-+ * graceful requests through the means of a reboot notifier converting timed-out
-+ * graceful requests to forceful ones: in such a way at least we perform a
-+ * clean sync and shutdown/restart before the power is cut.
-+ *
-+ * Given that such platform hard-timeout, if present, is anyway highly platform
-+ * and event specific and not exposed at run-time by the SCMI SytemPower
-+ * protocol, the parameter scmi_graceful_request_tmo_ms defaults to zero.
-+ */
-+
-+#define pr_fmt(fmt) "SCMI SystemPower - " fmt
-+
-+#include <linux/bitfield.h>
-+#include <linux/err.h>
-+#include <linux/fs.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/reboot.h>
-+#include <linux/sched/signal.h>
-+#include <linux/scmi_protocol.h>
-+#include <linux/slab.h>
-+#include <linux/timer.h>
-+#include <linux/types.h>
-+#include <linux/workqueue.h>
-+
-+enum scmi_syspower_state {
-+	SCMI_SYSPOWER_IDLE,
-+	SCMI_SYSPOWER_IN_PROGRESS,
-+	SCMI_SYSPOWER_REBOOTING
-+};
-+
-+static enum scmi_syspower_state scmi_state;
-+/* Protect access to scmi_state */
-+static DEFINE_MUTEX(scmi_state_mtx);
-+
-+static enum scmi_system_events scmi_required_transition = SCMI_SYSTEM_MAX;
-+
-+static unsigned int scmi_graceful_poweroff_signum;
-+static unsigned int scmi_graceful_reboot_signum;
-+static unsigned int scmi_graceful_request_tmo_ms;
-+
-+static struct timer_list scmi_request_timer;
-+static struct work_struct scmi_forceful_work;
-+
-+/**
-+ * scmi_reboot_notifier  - A reboot notifier to catch an ongoing successful
-+ * system transition
-+ * @nb: Reference to the related notifier block
-+ * @reason: The reason for the ongoing reboot
-+ * @__unused: The cmd being executed on a restart request (unused)
-+ *
-+ * When an ongoing system transition is detected, compatible with the one
-+ * requested by SCMI, cancel the timer work.
-+ * This is registered only when a valid SCMI SystemPower transition has been
-+ * received and scmi_graceful_request_tmo_ms was non-zero.
-+ *
-+ * Return: NOTIFY_OK in any case
-+ */
-+static int scmi_reboot_notifier(struct notifier_block *nb,
-+				unsigned long reason, void *__unused)
-+{
-+	mutex_lock(&scmi_state_mtx);
-+	switch (reason) {
-+	case SYS_HALT:
-+	case SYS_POWER_OFF:
-+		if (scmi_required_transition == SCMI_SYSTEM_SHUTDOWN)
-+			scmi_state = SCMI_SYSPOWER_REBOOTING;
-+		break;
-+	case SYS_RESTART:
-+		if (scmi_required_transition == SCMI_SYSTEM_COLDRESET ||
-+		    scmi_required_transition == SCMI_SYSTEM_WARMRESET)
-+			scmi_state = SCMI_SYSPOWER_REBOOTING;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (scmi_state == SCMI_SYSPOWER_REBOOTING) {
-+		pr_debug("Reboot in progress...cancel timer.\n");
-+		del_timer_sync(&scmi_request_timer);
-+	}
-+	mutex_unlock(&scmi_state_mtx);
-+
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block scmi_reboot_nb = {
-+	.notifier_call = &scmi_reboot_notifier,
-+};
-+
-+static void scmi_request_forceful_transition(void);
-+
-+static void scmi_forceful_work_func(struct work_struct *work)
-+{
-+	if (system_state > SYSTEM_RUNNING)
-+		return;
-+
-+	/* avoid deadlock unregistering reboot notifier */
-+	unregister_reboot_notifier(&scmi_reboot_nb);
-+
-+	mutex_lock(&scmi_state_mtx);
-+	if (scmi_state == SCMI_SYSPOWER_IN_PROGRESS)
-+		scmi_request_forceful_transition();
-+	mutex_unlock(&scmi_state_mtx);
-+}
-+
-+/**
-+ * scmi_request_timeout  - On timeout trigger a forceful transition
-+ * @t: The timer reference
-+ *
-+ * Actual work is deferred out of the timer IRQ context since shutdown/reboot
-+ * code do not play well when !in_task().
-+ */
-+static void scmi_request_timeout(struct timer_list *t)
-+{
-+	pr_debug("Graceful request timed out...forcing !\n");
-+
-+	schedule_work(&scmi_forceful_work);
-+}
-+
-+/**
-+ * scmi_request_graceful_transition  - Request graceful SystemPower transition
-+ *
-+ * Initiates the required SystemPower transition, requesting userspace
-+ * co-operation: by default it uses the same orderly_ methods used by ACPI
-+ * Shutdown event processing, while instead it uses a signal to CAD pid if
-+ * any of the scmi_graceful_poweroff_ module params were non-zero.
-+ *
-+ * If scmi_graceful_request_tmo_ms is non zero, take care also to register a
-+ * reboot notifier and a timer callback in order to detect if userspace actions
-+ * are taking too long and in such a case fall back to a forceful transition.
-+ */
-+static void scmi_request_graceful_transition(void)
-+{
-+	if (scmi_graceful_request_tmo_ms) {
-+		int ret;
-+
-+		ret = register_reboot_notifier(&scmi_reboot_nb);
-+		if (!ret) {
-+			INIT_WORK(&scmi_forceful_work, scmi_forceful_work_func);
-+			scmi_request_timer.expires = jiffies +
-+				msecs_to_jiffies(scmi_graceful_request_tmo_ms);
-+			timer_setup(&scmi_request_timer,
-+				    scmi_request_timeout, 0);
-+			add_timer(&scmi_request_timer);
-+		} else {
-+			/* Carry on best effort even without a reboot notifier */
-+			pr_warn("Cannot register reboot notifier !\n");
-+		}
-+	}
-+
-+	pr_debug("Serving graceful request: %d (timeout_ms:%d)\n",
-+		 scmi_required_transition, scmi_graceful_request_tmo_ms);
-+
-+	switch (scmi_required_transition) {
-+	case SCMI_SYSTEM_SHUTDOWN:
-+		/*
-+		 * When received early at boot-time the 'orderly' branch will
-+		 * fail due to the lack of userspace itself, but the force=true
-+		 * argument will anyway enable us to trigger a successful forced
-+		 * shutdown.
-+		 */
-+		if (!scmi_graceful_poweroff_signum)
-+			orderly_poweroff(true);
-+		else
-+			kill_cad_pid(scmi_graceful_poweroff_signum, 1);
-+		break;
-+	case SCMI_SYSTEM_COLDRESET:
-+	case SCMI_SYSTEM_WARMRESET:
-+		if (!scmi_graceful_reboot_signum)
-+			orderly_reboot();
-+		else
-+			kill_cad_pid(scmi_graceful_reboot_signum, 1);
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+/**
-+ * scmi_request_forceful_transition  - Request forceful SystemPower transition
-+ *
-+ * Initiates the required SystemPower transition without involving userspace:
-+ * just trigger the action at the kernel level after issuing an emergency sync.
-+ */
-+static void scmi_request_forceful_transition(void)
-+{
-+	pr_debug("Serving forceful request:%d\n", scmi_required_transition);
-+
-+	emergency_sync();
-+	switch (scmi_required_transition) {
-+	case SCMI_SYSTEM_SHUTDOWN:
-+		kernel_power_off();
-+		break;
-+	case SCMI_SYSTEM_COLDRESET:
-+	case SCMI_SYSTEM_WARMRESET:
-+		kernel_restart(NULL);
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+/**
-+ * scmi_userspace_notifier  - Notifier callback to act on SystemPower
-+ * Notifications
-+ * @nb: Reference to the related notifier block
-+ * @event: The SystemPower notification event id
-+ * @data: The SystemPower event report
-+ *
-+ * This callback is in charge of decoding the received SystemPower report
-+ * and act accordingly triggering a graceful or forceful system transition.
-+ *
-+ * Note that once a valid SCMI SystemPower event starts being served, any
-+ * other following SystemPower notification received from the same or any
-+ * other SCMI instance (handle) will be ignored.
-+ *
-+ * Return: NOTIFY_OK once a valid SystemPower event has been successfully
-+ * processed.
-+ */
-+static int scmi_userspace_notifier(struct notifier_block *nb,
-+				   unsigned long event, void *data)
-+{
-+	struct scmi_system_power_state_notifier_report *er = data;
-+
-+	if (er->system_state >= SCMI_SYSTEM_POWERUP) {
-+		pr_err("Ignoring invalid request: %d\n", er->system_state);
-+		return NOTIFY_DONE;
-+	}
-+
-+	/*
-+	 * Bail out if system is already shutting down or an SCMI SystemPower
-+	 * requested is already being served.
-+	 */
-+	if (system_state > SYSTEM_RUNNING)
-+		return NOTIFY_DONE;
-+	mutex_lock(&scmi_state_mtx);
-+	if (scmi_state != SCMI_SYSPOWER_IDLE) {
-+		pr_debug("Transition already in progress...ignore.\n");
-+		mutex_unlock(&scmi_state_mtx);
-+		return NOTIFY_DONE;
-+	}
-+	scmi_state = SCMI_SYSPOWER_IN_PROGRESS;
-+	mutex_unlock(&scmi_state_mtx);
-+
-+	scmi_required_transition = er->system_state;
-+
-+	/* Leaving a trace in logs of who triggered the shutdown/reboot. */
-+	pr_info("Serving shutdown/reboot request: %d\n",
-+		scmi_required_transition);
-+
-+	if (SCMI_SYSPOWER_IS_REQUEST_GRACEFUL(er->flags))
-+		scmi_request_graceful_transition();
-+	else
-+		scmi_request_forceful_transition();
-+
-+	return NOTIFY_OK;
-+}
-+
-+static int scmi_syspower_probe(struct scmi_device *sdev)
-+{
-+	int ret;
-+	struct scmi_handle *handle = sdev->handle;
-+	struct notifier_block *userspace_nb;
-+
-+	if (!handle)
-+		return -ENODEV;
-+
-+	userspace_nb = devm_kzalloc(&sdev->dev, sizeof(*userspace_nb),
-+				    GFP_KERNEL);
-+	if (!userspace_nb)
-+		return -ENOMEM;
-+
-+	userspace_nb->notifier_call = &scmi_userspace_notifier;
-+	ret = handle->notify_ops->register_event_notifier(handle,
-+						SCMI_PROTOCOL_SYSTEM,
-+					SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER,
-+					    NULL, userspace_nb);
-+	if (!ret)
-+		dev_set_drvdata(&sdev->dev, userspace_nb);
-+
-+	return ret;
-+}
-+
-+static void scmi_syspower_remove(struct scmi_device *sdev)
-+{
-+	struct notifier_block *userspace_nb;
-+
-+	userspace_nb = dev_get_drvdata(&sdev->dev);
-+	if (userspace_nb) {
-+		const struct scmi_handle *handle = sdev->handle;
-+
-+		handle->notify_ops->unregister_event_notifier(handle,
-+							   SCMI_PROTOCOL_SYSTEM,
-+					 SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER,
-+						      NULL, userspace_nb);
-+	}
-+}
-+
-+static const struct scmi_device_id scmi_id_table[] = {
-+	{ SCMI_PROTOCOL_SYSTEM, "syspower" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(scmi, scmi_id_table);
-+
-+static struct scmi_driver scmi_system_power_driver = {
-+	.name = "scmi-system-power",
-+	.probe = scmi_syspower_probe,
-+	.remove = scmi_syspower_remove,
-+	.id_table = scmi_id_table,
-+};
-+module_scmi_driver(scmi_system_power_driver);
-+
-+module_param(scmi_graceful_request_tmo_ms, uint, 0644);
-+MODULE_PARM_DESC(scmi_graceful_request_tmo_ms,
-+		 "Maximum time(ms) allowed to userspace for complying to the request. Unlimited if zero.");
-+
-+module_param(scmi_graceful_poweroff_signum, uint, 0644);
-+MODULE_PARM_DESC(scmi_graceful_poweroff_signum,
-+		 "Signal to request graceful poweroff to CAD process. Ignored if zero.");
-+
-+module_param(scmi_graceful_reboot_signum, uint, 0644);
-+MODULE_PARM_DESC(scmi_graceful_reboot_signum,
-+		 "Signal to request graceful reboot to CAD process. Ignored if zero.");
-+
-+MODULE_AUTHOR("Cristian Marussi <cristian.marussi@arm.com>");
-+MODULE_DESCRIPTION("ARM SCMI SystemPower Control driver");
-+MODULE_LICENSE("GPL v2");
 -- 
-2.17.1
+2.30.0
 
