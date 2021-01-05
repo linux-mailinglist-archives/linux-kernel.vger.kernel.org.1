@@ -2,168 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABAD2EA2E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC242EA2EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbhAEBeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 20:34:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
+        id S1727254AbhAEBhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 20:37:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727556AbhAEBeD (ORCPT
+        with ESMTP id S1726734AbhAEBhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 20:34:03 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BBCC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 17:33:22 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id 15so34367813oix.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 17:33:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YjjrmI1TJBpi7Irm0qGvA6ztJhR4MpSEaSWj5uIitYo=;
-        b=Di+a2AWDW7bd7YL5Yy80WByU19A7SQge1qLnYyRquxiKeEe5mhx/0UUZzRsJ4r44gn
-         P9MuPLf9UJxmhScHLeMqGpCdbc92Yp1WDrpmLh9wnBVvpFa9Y9qZ4Z04g7jP8cKFQ2tA
-         wxgjt0cI1B0zWKZ4fb3pYdnfYC+H1I+oR+1agtcjXXZ5LAIXiB8YLpShQgOCr/iLV0Wq
-         r4hBj7NRvT3SwP5Bd6WUYxrp8BOI+mv3EOZu8Bd719jcGXTlznSKH1m0FKn0hJHSR04h
-         iasIhbhKOFUzIL+w0lLiM8pDgKLPiv3WXa3sVXVgn1g+VuxXpZGu66/MAJ/I6PPIa7nf
-         q0Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YjjrmI1TJBpi7Irm0qGvA6ztJhR4MpSEaSWj5uIitYo=;
-        b=OzncNkTcCA6FGoKxCL/g8/LZpS3aykA7UQT5ALhGMQF8c5u0vhYtSzISMRpiQcS+Y5
-         h0Eh99QC2nq6q8IITJaEB+0QUA2SflwL5APQBschq2seDlyswvqPoCCDGxSC7TEZuQTi
-         ku1n0c16S8r1JcHYAf124kdC6MzajumW41yqpdeDdMiG21wiaNuqAXj54LzWvHTbCkv3
-         KOT0x9iXpAWG3u3h3oc+MB3gHpMAsx+HevPfd8naA5jNH0W3hN3ONysm/GopgonCtrrE
-         i7aEYHknT7fpryLpRS/brCHR5JelRrRNocViw3I9RZ6q5bUWMBQkPeh25xYvF97jx+JZ
-         YJ+A==
-X-Gm-Message-State: AOAM530Yy41xPvEtLjDW31coQpU2ssDSG5VRlJZ3cLlYMHeF/a1VfrgK
-        3REsS5tno2dKQ8vFR68XuD3oQQ==
-X-Google-Smtp-Source: ABdhPJxnvz9nFenxvDKifxzOuMYNP+KpJ7Ygm/gMu16A7P1BreWCnaI2rkRhKLuHaw3KqV0bXaWMPw==
-X-Received: by 2002:aca:7544:: with SMTP id q65mr1170662oic.51.1609810402083;
-        Mon, 04 Jan 2021 17:33:22 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n16sm13601112oov.23.2021.01.04.17.33.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 17:33:21 -0800 (PST)
-Date:   Mon, 4 Jan 2021 19:33:19 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 04/16] rpmsg: ctrl: implement the ioctl function to
- create device
-Message-ID: <X/PB3z4tMnfvzBnx@builder.lan>
-References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
- <20201222105726.16906-5-arnaud.pouliquen@foss.st.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222105726.16906-5-arnaud.pouliquen@foss.st.com>
+        Mon, 4 Jan 2021 20:37:04 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC35AC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 17:36:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LXlYJZ4cC3/R2uyhS4GACYOAeIwZs2wgdr0lWIojXfk=; b=skCdxAVRDH9FdroXKOhkpYLpnP
+        XWwLsluBiIz3Us25LJQeL3Zw3OelvTmDJ7Pn8yg9eM720DDHgYSvlSEvRAjQZV3Z5WVANJxUAuueq
+        PVaAM/6ULtTs/FMVALMaGnIh8YZ83D1dgyNzlz3vCQzsOeW32C26sWolDAcrQeKbGbQ58MA0M3hnG
+        GPg3KLaSk71k3SttlusmxyUUVR3etss2Ya6BWW0kwWSb+PdXnvIXdDytpfQfYkX8Ak1DC47rqKi8z
+        Bsv0Wuo0PIvDTFqvr4xEV1xb75Rn11eaH0k4oK1kHPiwZh4dtjHbMMR9Es8S01YGSUJ6uDwSewvdk
+        dCjfDUoQ==;
+Received: from 54-240-197-236.amazon.com ([54.240.197.236] helo=u3832b3a9db3152.ant.amazon.com)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwbGh-0005Cq-QV; Tue, 05 Jan 2021 01:36:16 +0000
+Message-ID: <04bbe8bca87f81a3cfa93ec4299e53f47e00e5b3.camel@infradead.org>
+Subject: [PATCH] iommu/amd: Stop irq_remapping_select() matching when
+ remapping is disabled
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Johnathan Smithinovic <johnathan.smithinovic@gmx.at>,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        iommu <iommu@lists.linux-foundation.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>
+Date:   Tue, 05 Jan 2021 01:36:13 +0000
+In-Reply-To: <ed4be9b4-24ac-7128-c522-7ef359e8185d@gmx.at>
+References: <ed4be9b4-24ac-7128-c522-7ef359e8185d@gmx.at>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-KcSsUnzz2AZ4Sfkl+XJP"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22 Dec 04:57 CST 2020, Arnaud Pouliquen wrote:
 
-> Implement the ioctl function that parses the list of
-> rpmsg drivers registered to create an associated device.
-> To be ISO user API, in a first step, the driver_override
-> is only allowed for the RPMsg raw service, supported by the
-> rpmsg_char driver.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/rpmsg/rpmsg_ctrl.c | 43 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 41 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-> index 065e2e304019..8381b5b2b794 100644
-> --- a/drivers/rpmsg/rpmsg_ctrl.c
-> +++ b/drivers/rpmsg/rpmsg_ctrl.c
-> @@ -56,12 +56,51 @@ static int rpmsg_ctrl_dev_open(struct inode *inode, struct file *filp)
->  	return 0;
->  }
->  
-> +static const char *rpmsg_ctrl_get_drv_name(u32 service)
-> +{
-> +	struct rpmsg_ctl_info *drv_info;
-> +
-> +	list_for_each_entry(drv_info, &rpmsg_drv_list, node) {
-> +		if (drv_info->ctrl->service == service)
-> +			return drv_info->ctrl->drv_name;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
->  static long rpmsg_ctrl_dev_ioctl(struct file *fp, unsigned int cmd,
->  				 unsigned long arg)
->  {
->  	struct rpmsg_ctrl_dev *ctrldev = fp->private_data;
-> -
-> -	dev_info(&ctrldev->dev, "Control not yet implemented\n");
-> +	void __user *argp = (void __user *)arg;
-> +	struct rpmsg_channel_info chinfo;
-> +	struct rpmsg_endpoint_info eptinfo;
-> +	struct rpmsg_device *newch;
-> +
-> +	if (cmd != RPMSG_CREATE_EPT_IOCTL)
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
-> +		return -EFAULT;
-> +
-> +	/*
-> +	 * In a frst step only the rpmsg_raw service is supported.
-> +	 * The override is foorced to RPMSG_RAW_SERVICE
-> +	 */
-> +	chinfo.driver_override = rpmsg_ctrl_get_drv_name(RPMSG_RAW_SERVICE);
-> +	if (!chinfo.driver_override)
-> +		return -ENODEV;
-> +
-> +	memcpy(chinfo.name, eptinfo.name, RPMSG_NAME_SIZE);
-> +	chinfo.name[RPMSG_NAME_SIZE - 1] = '\0';
-> +	chinfo.src = eptinfo.src;
-> +	chinfo.dst = eptinfo.dst;
-> +
-> +	newch = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
+--=-KcSsUnzz2AZ4Sfkl+XJP
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Afaict this would create and announce and endpoint (or possibly find a
-endpoint announced by the other side of the link).
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-In the case of the Qualcomm transports, and as been discussed to
-introduce for virtio in the past, the channel actually have a state. So
-opening/announcing it here means that we have no way to close and reopen
-this channel later?
+The AMD IOMMU initialisation registers the IRQ remapping domain for
+each IOMMU before doing the final sanity check that every I/OAPIC is
+covered.
+
+This means that the AMD irq_remapping_select() function gets invoked
+even when IRQ remapping has been disabled, eventually leading to a NULL
+pointer dereference in alloc_irq_table().
+
+Unfortunately, the IVRS isn't fully parsed early enough that the sanity
+check can be done in time to registering the IRQ domain altogether.
+Doing that would be nice, but is a larger and more error-prone task. The
+simple fix is just for irq_remapping_select() to refuse to report a
+match when IRQ remapping has disabled.
+
+Link: https://lore.kernel.org/lkml/ed4be9b4-24ac-7128-c522-7ef359e8185d@gmx=
+.at
+Fixes: a1a785b57242 ("iommu/amd: Implement select() method on remapping irq=
+domain")
+Reported-by: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+---
+ drivers/iommu/amd/iommu.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 7e2c445a1fae..f0adbc48fd17 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -3854,6 +3854,9 @@ static int irq_remapping_select(struct irq_domain *d,=
+ struct irq_fwspec *fwspec,
+ 	struct amd_iommu *iommu;
+ 	int devid =3D -1;
+=20
++	if (!amd_iommu_irq_remap)
++		return 0;
++
+ 	if (x86_fwspec_is_ioapic(fwspec))
+ 		devid =3D get_ioapic_devid(fwspec->param[0]);
+ 	else if (x86_fwspec_is_hpet(fwspec))
+--=20
+2.29.2
 
 
-It would also mean that we announce to the firmware that there's an
-application in Linux now ready to receive data on this channel - but
-that won't be the case until someone actually open the created cdev (or
-tty in your case) - which quite likely will result in data loss.
+--=-KcSsUnzz2AZ4Sfkl+XJP
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-I think instead of piggybacking on the rpmsg_device we should just carry
-these "raw exports to userspace" in some other construct - perhaps a
-auxiliary_bus, or if we still only care for char and tty, not split them
-up at all using the device model.
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
+MTA1MDEzNjEzWjAvBgkqhkiG9w0BCQQxIgQg8yO21tjjPUq2ypyt+LF0U9OszHpLHQoOv+1PouK3
+naMwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAIT6BxIJxI2SxfJJ2dMDO1DbHFM6zAad7EnLR/IKIod2Nl2Hb8myFKvSU3YPQHDm
+08a8qQk2y8Cu2Ww02EA4O/gIHyYn6eZ6im7osCAO018fDd+svrcBoNO5hLbT1PcJTdLbM776xo4r
+3GeTS3t+E2nVfSogHdbExk+vhJ/nblAU9CHqYnMn5YFyImLRM1hYtWIacBuKPkhxC/BgLabRd+SD
+UJzJJ8avFsOAqzYEvGQjKkW2FA9Avrav1WDR+7n0i46TxL+JtzYV96i/VV/cl7qlaD4fm5TCA44c
+aq7U0qPLhT/gYSTKmn25KXiO3aEmJsXUlYx5G3NoUD+b4gt3wJgAAAAAAAA=
 
-Regards,
-Bjorn
 
-> +	if (!newch) {
-> +		dev_err(&ctrldev->dev, "rpmsg_create_channel failed\n");
-> +		return -ENXIO;
-> +	}
->  
->  	return 0;
->  };
-> -- 
-> 2.17.1
-> 
+--=-KcSsUnzz2AZ4Sfkl+XJP--
+
