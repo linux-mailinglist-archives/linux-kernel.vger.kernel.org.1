@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1C62EA39A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 04:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFFD2EA397
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 04:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728503AbhAEDAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 22:00:18 -0500
-Received: from mga17.intel.com ([192.55.52.151]:41795 "EHLO mga17.intel.com"
+        id S1728526AbhAEDAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 22:00:02 -0500
+Received: from mga17.intel.com ([192.55.52.151]:41796 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728423AbhAEC75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:59:57 -0500
-IronPort-SDR: njL0iGto4SlnGaCcmwR5oLwzgLmYS6Qxt9KjIL7BdDSDLQgv9Cm4ke2iviLZwKG/9AO7L4TDij
- XP7inr7SkOfA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156827532"
+        id S1728503AbhAEC76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 21:59:58 -0500
+IronPort-SDR: 2Zhg1gkDOW4y5k2q30wluNlv7VFpTOE/+esI2tJJtHlPeDygw639WZdwACkRbAKNlEsD5Ypxjf
+ 3XcnuOPBW8UQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156827533"
 X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="156827532"
+   d="scan'208";a="156827533"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2021 18:58:20 -0800
-IronPort-SDR: s7jeVhx7UlKimJNbmrrqzgE/jVYgMiOnNpkeTo0U75NiLmOJ5VLEMPS9ZqVNdlhT38TaIp3Tl7
- mNdBx7puDwkw==
+IronPort-SDR: QESEnMSXc/Qp+XX0TWwqI9stJA3nGQaSGdmgyshBQdaDXF4bvtVtqhz/WTc4oxK5zP3dSotQLC
+ XBlIH1M8xclQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,475,1599548400"; 
-   d="scan'208";a="397632183"
+   d="scan'208";a="397632186"
 Received: from txasoft-yocto.an.intel.com ([10.123.72.192])
-  by fmsmga002.fm.intel.com with ESMTP; 04 Jan 2021 18:58:19 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 04 Jan 2021 18:58:20 -0800
 From:   Mike Ximing Chen <mike.ximing.chen@intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
         dan.j.williams@intel.com, pierre-louis.bossart@linux.intel.com,
         Gage Eads <gage.eads@intel.com>
-Subject: [PATCH v8 17/20] dlb: add static queue map register operations
-Date:   Mon,  4 Jan 2021 20:58:36 -0600
-Message-Id: <20210105025839.23169-18-mike.ximing.chen@intel.com>
+Subject: [PATCH v8 18/20] dlb: add dynamic queue map register operations
+Date:   Mon,  4 Jan 2021 20:58:37 -0600
+Message-Id: <20210105025839.23169-19-mike.ximing.chen@intel.com>
 X-Mailer: git-send-email 2.13.6
 In-Reply-To: <20210105025839.23169-1-mike.ximing.chen@intel.com>
 References: <20210105025839.23169-1-mike.ximing.chen@intel.com>
@@ -43,198 +43,449 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the register accesses that implement the static queue map operation and
-handle an unmap request when a queue map operation is in progress.
-
-If a queue map operation is requested before the domain is started, it is a
-synchronous procedure on "static"/unchanging hardware. (The "dynamic"
-operation, when traffic is flowing in the device, will be added in a later
-commit.)
+Adds the "dynamic" map procedure and register operations. If a queue map
+is requested after the domain is started, the driver must disable the
+requested queue and wait for it to quiesce before mapping it to the
+requested port.
 
 Signed-off-by: Gage Eads <gage.eads@intel.com>
 Signed-off-by: Mike Ximing Chen <mike.ximing.chen@intel.com>
 Reviewed-by: Björn Töpel <bjorn.topel@intel.com>
 Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 ---
- drivers/misc/dlb/dlb_resource.c | 146 +++++++++++++++++++++++++++++++-
- 1 file changed, 143 insertions(+), 3 deletions(-)
+ drivers/misc/dlb/dlb_resource.c | 388 +++++++++++++++++++++++++++++++-
+ 1 file changed, 385 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/misc/dlb/dlb_resource.c b/drivers/misc/dlb/dlb_resource.c
-index 3acb9ada964e..67ecbd4150c5 100644
+index 67ecbd4150c5..776285ee92d7 100644
 --- a/drivers/misc/dlb/dlb_resource.c
 +++ b/drivers/misc/dlb/dlb_resource.c
-@@ -2208,12 +2208,146 @@ static int dlb_configure_dir_port(struct dlb_hw *hw,
- 	return 0;
+@@ -337,6 +337,39 @@ dlb_get_domain_dir_pq(u32 id,
+ 	return NULL;
  }
  
-+static int dlb_ldb_port_map_qid_static(struct dlb_hw *hw,
-+				       struct dlb_ldb_port *p,
-+				       struct dlb_ldb_queue *q,
-+				       u8 priority)
++static struct dlb_ldb_queue *
++dlb_get_ldb_queue_from_id(struct dlb_hw *hw,
++			  u32 id,
++			  bool vdev_req,
++			  unsigned int vdev_id)
++{
++	struct dlb_function_resources *rsrcs;
++	struct dlb_hw_domain *domain;
++	struct dlb_ldb_queue *queue;
++
++	if (id >= DLB_MAX_NUM_LDB_QUEUES)
++		return NULL;
++
++	rsrcs = (vdev_req) ? &hw->vdev[vdev_id] : &hw->pf;
++
++	if (!vdev_req)
++		return &hw->rsrcs.ldb_queues[id];
++
++	list_for_each_entry(domain, &rsrcs->used_domains, func_list) {
++		list_for_each_entry(queue, &domain->used_ldb_queues, domain_list) {
++			if (queue->id.virt_id == id)
++				return queue;
++		}
++	}
++
++	list_for_each_entry(queue, &rsrcs->avail_ldb_queues, func_list) {
++		if (queue->id.virt_id == id)
++			return queue;
++	}
++
++	return NULL;
++}
++
+ static struct dlb_ldb_queue *
+ dlb_get_domain_ldb_queue(u32 id,
+ 			 bool vdev_req,
+@@ -2340,6 +2373,76 @@ static void dlb_ldb_port_change_qid_priority(struct dlb_hw *hw,
+ 	port->qid_map[slot].priority = args->priority;
+ }
+ 
++static int dlb_ldb_port_set_has_work_bits(struct dlb_hw *hw,
++					  struct dlb_ldb_port *port,
++					  struct dlb_ldb_queue *queue,
++					  int slot)
++{
++	u32 ctrl = 0;
++	u32 active;
++	u32 enq;
++
++	/* Set the atomic scheduling haswork bit */
++	active = DLB_CSR_RD(hw, LSP_QID_AQED_ACTIVE_CNT(queue->id.phys_id));
++
++	BITS_SET(ctrl, port->id.phys_id, LSP_LDB_SCHED_CTRL_CQ);
++	BITS_SET(ctrl, slot, LSP_LDB_SCHED_CTRL_QIDIX);
++	BIT_SET(ctrl, LSP_LDB_SCHED_CTRL_VALUE);
++	BITS_SET(ctrl, (u32)(BITS_GET(active, LSP_QID_AQED_ACTIVE_CNT_COUNT) > 0),
++		 LSP_LDB_SCHED_CTRL_RLIST_HASWORK_V);
++
++	/* Set the non-atomic scheduling haswork bit */
++	DLB_CSR_WR(hw, LSP_LDB_SCHED_CTRL, ctrl);
++
++	enq = DLB_CSR_RD(hw,
++			 LSP_QID_LDB_ENQUEUE_CNT(queue->id.phys_id));
++
++	memset(&ctrl, 0, sizeof(ctrl));
++
++	BITS_SET(ctrl, port->id.phys_id, LSP_LDB_SCHED_CTRL_CQ);
++	BITS_SET(ctrl, slot, LSP_LDB_SCHED_CTRL_QIDIX);
++	BIT_SET(ctrl, LSP_LDB_SCHED_CTRL_VALUE);
++	BITS_SET(ctrl, (u32)(BITS_GET(enq, LSP_QID_LDB_ENQUEUE_CNT_COUNT) > 0),
++		 LSP_LDB_SCHED_CTRL_NALB_HASWORK_V);
++
++	DLB_CSR_WR(hw, LSP_LDB_SCHED_CTRL, ctrl);
++
++	dlb_flush_csr(hw);
++
++	return 0;
++}
++
++static void dlb_ldb_port_clear_queue_if_status(struct dlb_hw *hw,
++					       struct dlb_ldb_port *port,
++					       int slot)
++{
++	u32 ctrl = 0;
++
++	BITS_SET(ctrl, port->id.phys_id, LSP_LDB_SCHED_CTRL_CQ);
++	BITS_SET(ctrl, slot, LSP_LDB_SCHED_CTRL_QIDIX);
++	BIT_SET(ctrl, LSP_LDB_SCHED_CTRL_INFLIGHT_OK_V);
++
++	DLB_CSR_WR(hw, LSP_LDB_SCHED_CTRL, ctrl);
++
++	dlb_flush_csr(hw);
++}
++
++static void dlb_ldb_port_set_queue_if_status(struct dlb_hw *hw,
++					     struct dlb_ldb_port *port,
++					     int slot)
++{
++	u32 ctrl = 0;
++
++	BITS_SET(ctrl, port->id.phys_id, LSP_LDB_SCHED_CTRL_CQ);
++	BITS_SET(ctrl, slot, LSP_LDB_SCHED_CTRL_QIDIX);
++	BIT_SET(ctrl, LSP_LDB_SCHED_CTRL_VALUE);
++	BIT_SET(ctrl, LSP_LDB_SCHED_CTRL_INFLIGHT_OK_V);
++
++	DLB_CSR_WR(hw, LSP_LDB_SCHED_CTRL, ctrl);
++
++	dlb_flush_csr(hw);
++}
++
+ static void dlb_ldb_queue_set_inflight_limit(struct dlb_hw *hw,
+ 					     struct dlb_ldb_queue *queue)
+ {
+@@ -2350,13 +2453,224 @@ static void dlb_ldb_queue_set_inflight_limit(struct dlb_hw *hw,
+ 	DLB_CSR_WR(hw, LSP_QID_LDB_INFL_LIM(queue->id.phys_id), infl_lim);
+ }
+ 
++static void dlb_ldb_queue_clear_inflight_limit(struct dlb_hw *hw,
++					       struct dlb_ldb_queue *queue)
++{
++	DLB_CSR_WR(hw,
++		   LSP_QID_LDB_INFL_LIM(queue->id.phys_id),
++		   LSP_QID_LDB_INFL_LIM_RST);
++}
++
++/*
++ * dlb_ldb_queue_{enable, disable}_mapped_cqs() don't operate exactly as
++ * their function names imply, and should only be called by the dynamic CQ
++ * mapping code.
++ */
++static void dlb_ldb_queue_disable_mapped_cqs(struct dlb_hw *hw,
++					     struct dlb_hw_domain *domain,
++					     struct dlb_ldb_queue *queue)
++{
++	struct dlb_ldb_port *port;
++	int slot, i;
++
++	for (i = 0; i < DLB_NUM_COS_DOMAINS; i++) {
++		list_for_each_entry(port, &domain->used_ldb_ports[i], domain_list) {
++			enum dlb_qid_map_state state = DLB_QUEUE_MAPPED;
++
++			if (!dlb_port_find_slot_queue(port, state,
++						      queue, &slot))
++				continue;
++
++			if (port->enabled)
++				dlb_ldb_port_cq_disable(hw, port);
++		}
++	}
++}
++
++static void dlb_ldb_queue_enable_mapped_cqs(struct dlb_hw *hw,
++					    struct dlb_hw_domain *domain,
++					    struct dlb_ldb_queue *queue)
++{
++	struct dlb_ldb_port *port;
++	int slot, i;
++
++	for (i = 0; i < DLB_NUM_COS_DOMAINS; i++) {
++		list_for_each_entry(port, &domain->used_ldb_ports[i], domain_list) {
++			enum dlb_qid_map_state state = DLB_QUEUE_MAPPED;
++
++			if (!dlb_port_find_slot_queue(port, state,
++						      queue, &slot))
++				continue;
++
++			if (port->enabled)
++				dlb_ldb_port_cq_enable(hw, port);
++		}
++	}
++}
++
++static int dlb_ldb_port_finish_map_qid_dynamic(struct dlb_hw *hw,
++					       struct dlb_hw_domain *domain,
++					       struct dlb_ldb_port *port,
++					       struct dlb_ldb_queue *queue)
 +{
 +	enum dlb_qid_map_state state;
-+	u32 lsp_qid2cq2;
-+	u32 lsp_qid2cq;
-+	u32 atm_qid2cq;
-+	u32 cq2priov;
-+	u32 cq2qid;
-+	int i;
++	int slot, ret, i;
++	u32 infl_cnt;
++	u8 prio;
 +
-+	/* Look for a pending or already mapped slot, else an unused slot */
-+	if (!dlb_port_find_slot_queue(p, DLB_QUEUE_MAP_IN_PROG, q, &i) &&
-+	    !dlb_port_find_slot_queue(p, DLB_QUEUE_MAPPED, q, &i) &&
-+	    !dlb_port_find_slot(p, DLB_QUEUE_UNMAPPED, &i)) {
++	infl_cnt = DLB_CSR_RD(hw, LSP_QID_LDB_INFL_CNT(queue->id.phys_id));
++
++	if (BITS_GET(infl_cnt, LSP_QID_LDB_INFL_CNT_COUNT)) {
 +		DLB_HW_ERR(hw,
-+			   "[%s():%d] Internal error: CQ has no available QID mapping slots\n",
-+			   __func__, __LINE__);
++			   "[%s()] Internal error: non-zero QID inflight count\n",
++			   __func__);
++		return -EINVAL;
++	}
++
++	/*
++	 * Static map the port and set its corresponding has_work bits.
++	 */
++	state = DLB_QUEUE_MAP_IN_PROG;
++	if (!dlb_port_find_slot_queue(port, state, queue, &slot))
++		return -EINVAL;
++
++	prio = port->qid_map[slot].priority;
++
++	/*
++	 * Update the CQ2QID, CQ2PRIOV, and QID2CQIDX registers, and
++	 * the port's qid_map state.
++	 */
++	ret = dlb_ldb_port_map_qid_static(hw, port, queue, prio);
++	if (ret)
++		return ret;
++
++	ret = dlb_ldb_port_set_has_work_bits(hw, port, queue, slot);
++	if (ret)
++		return ret;
++
++	/*
++	 * Ensure IF_status(cq,qid) is 0 before enabling the port to
++	 * prevent spurious schedules to cause the queue's inflight
++	 * count to increase.
++	 */
++	dlb_ldb_port_clear_queue_if_status(hw, port, slot);
++
++	/* Reset the queue's inflight status */
++	for (i = 0; i < DLB_NUM_COS_DOMAINS; i++) {
++		list_for_each_entry(port, &domain->used_ldb_ports[i], domain_list) {
++			state = DLB_QUEUE_MAPPED;
++			if (!dlb_port_find_slot_queue(port, state,
++						      queue, &slot))
++				continue;
++
++			dlb_ldb_port_set_queue_if_status(hw, port, slot);
++		}
++	}
++
++	dlb_ldb_queue_set_inflight_limit(hw, queue);
++
++	/* Re-enable CQs mapped to this queue */
++	dlb_ldb_queue_enable_mapped_cqs(hw, domain, queue);
++
++	/* If this queue has other mappings pending, clear its inflight limit */
++	if (queue->num_pending_additions > 0)
++		dlb_ldb_queue_clear_inflight_limit(hw, queue);
++
++	return 0;
++}
++
++/**
++ * dlb_ldb_port_map_qid_dynamic() - perform a "dynamic" QID->CQ mapping
++ * @hw: dlb_hw handle for a particular device.
++ * @port: load-balanced port
++ * @queue: load-balanced queue
++ * @priority: queue servicing priority
++ *
++ * Returns 0 if the queue was mapped, 1 if the mapping is scheduled to occur
++ * at a later point, and <0 if an error occurred.
++ */
++static int dlb_ldb_port_map_qid_dynamic(struct dlb_hw *hw,
++					struct dlb_ldb_port *port,
++					struct dlb_ldb_queue *queue,
++					u8 priority)
++{
++	enum dlb_qid_map_state state;
++	struct dlb_hw_domain *domain;
++	int domain_id, slot, ret;
++	u32 infl_cnt;
++
++	domain_id = port->domain_id.phys_id;
++
++	domain = dlb_get_domain_from_id(hw, domain_id, false, 0);
++	if (!domain) {
++		DLB_HW_ERR(hw,
++			   "[%s()] Internal error: unable to find domain %d\n",
++			   __func__, port->domain_id.phys_id);
++		return -EINVAL;
++	}
++
++	/*
++	 * Set the QID inflight limit to 0 to prevent further scheduling of the
++	 * queue.
++	 */
++	DLB_CSR_WR(hw, LSP_QID_LDB_INFL_LIM(queue->id.phys_id), 0);
++
++	if (!dlb_port_find_slot(port, DLB_QUEUE_UNMAPPED, &slot)) {
++		DLB_HW_ERR(hw,
++			   "Internal error: No available unmapped slots\n");
 +		return -EFAULT;
 +	}
 +
-+	/* Read-modify-write the priority and valid bit register */
-+	cq2priov = DLB_CSR_RD(hw, LSP_CQ2PRIOV(p->id.phys_id));
++	port->qid_map[slot].qid = queue->id.phys_id;
++	port->qid_map[slot].priority = priority;
 +
-+	cq2priov |= (1U << (i + LSP_CQ2PRIOV_V_LOC)) & LSP_CQ2PRIOV_V;
-+	cq2priov |= ((priority & 0x7) << (i + LSP_CQ2PRIOV_PRIO_LOC) * 3)
-+		    & LSP_CQ2PRIOV_PRIO;
++	state = DLB_QUEUE_MAP_IN_PROG;
++	ret = dlb_port_slot_state_transition(hw, port, queue, slot, state);
++	if (ret)
++		return ret;
 +
-+	DLB_CSR_WR(hw, LSP_CQ2PRIOV(p->id.phys_id), cq2priov);
++	infl_cnt = DLB_CSR_RD(hw, LSP_QID_LDB_INFL_CNT(queue->id.phys_id));
 +
-+	/* Read-modify-write the QID map register */
-+	if (i < 4)
-+		cq2qid = DLB_CSR_RD(hw, LSP_CQ2QID0(p->id.phys_id));
-+	else
-+		cq2qid = DLB_CSR_RD(hw, LSP_CQ2QID1(p->id.phys_id));
++	if (BITS_GET(infl_cnt, LSP_QID_LDB_INFL_CNT_COUNT))
++		return 1;
 +
-+	if (i == 0 || i == 4)
-+		BITS_SET(cq2qid, q->id.phys_id, LSP_CQ2QID0_QID_P0);
-+	if (i == 1 || i == 5)
-+		BITS_SET(cq2qid, q->id.phys_id, LSP_CQ2QID0_QID_P1);
-+	if (i == 2 || i == 6)
-+		BITS_SET(cq2qid, q->id.phys_id, LSP_CQ2QID0_QID_P2);
-+	if (i == 3 || i == 7)
-+		BITS_SET(cq2qid, q->id.phys_id, LSP_CQ2QID0_QID_P3);
++	/*
++	 * Disable the affected CQ, and the CQs already mapped to the QID,
++	 * before reading the QID's inflight count a second time. There is an
++	 * unlikely race in which the QID may schedule one more QE after we
++	 * read an inflight count of 0, and disabling the CQs guarantees that
++	 * the race will not occur after a re-read of the inflight count
++	 * register.
++	 */
++	if (port->enabled)
++		dlb_ldb_port_cq_disable(hw, port);
 +
-+	if (i < 4)
-+		DLB_CSR_WR(hw, LSP_CQ2QID0(p->id.phys_id), cq2qid);
-+	else
-+		DLB_CSR_WR(hw, LSP_CQ2QID1(p->id.phys_id), cq2qid);
++	dlb_ldb_queue_disable_mapped_cqs(hw, domain, queue);
 +
-+	atm_qid2cq = DLB_CSR_RD(hw,
-+				ATM_QID2CQIDIX(q->id.phys_id,
-+					       p->id.phys_id / 4));
++	infl_cnt = DLB_CSR_RD(hw, LSP_QID_LDB_INFL_CNT(queue->id.phys_id));
 +
-+	lsp_qid2cq = DLB_CSR_RD(hw,
-+				LSP_QID2CQIDIX(q->id.phys_id,
-+					       p->id.phys_id / 4));
++	if (BITS_GET(infl_cnt, LSP_QID_LDB_INFL_CNT_COUNT)) {
++		if (port->enabled)
++			dlb_ldb_port_cq_enable(hw, port);
 +
-+	lsp_qid2cq2 = DLB_CSR_RD(hw,
-+				 LSP_QID2CQIDIX2(q->id.phys_id,
-+						 p->id.phys_id / 4));
++		dlb_ldb_queue_enable_mapped_cqs(hw, domain, queue);
 +
-+	switch (p->id.phys_id % 4) {
-+	case 0:
-+		BIT_SET(atm_qid2cq, 1 << (i + ATM_QID2CQIDIX_00_CQ_P0_LOC));
-+		BIT_SET(lsp_qid2cq, 1 << (i + LSP_QID2CQIDIX_00_CQ_P0_LOC));
-+		BIT_SET(lsp_qid2cq2, 1 << (i + LSP_QID2CQIDIX2_00_CQ_P0_LOC));
-+		break;
-+
-+	case 1:
-+		BIT_SET(atm_qid2cq, 1 << (i + ATM_QID2CQIDIX_00_CQ_P1_LOC));
-+		BIT_SET(lsp_qid2cq, 1 << (i + LSP_QID2CQIDIX_00_CQ_P1_LOC));
-+		BIT_SET(lsp_qid2cq2, 1 << (i + LSP_QID2CQIDIX2_00_CQ_P1_LOC));
-+		break;
-+
-+	case 2:
-+		BIT_SET(atm_qid2cq, 1 << (i + ATM_QID2CQIDIX_00_CQ_P2_LOC));
-+		BIT_SET(lsp_qid2cq, 1 << (i + LSP_QID2CQIDIX_00_CQ_P2_LOC));
-+		BIT_SET(lsp_qid2cq2, 1 << (i + LSP_QID2CQIDIX2_00_CQ_P2_LOC));
-+		break;
-+
-+	case 3:
-+		BIT_SET(atm_qid2cq, 1 << (i + ATM_QID2CQIDIX_00_CQ_P3_LOC));
-+		BIT_SET(lsp_qid2cq, 1 << (i + LSP_QID2CQIDIX_00_CQ_P3_LOC));
-+		BIT_SET(lsp_qid2cq2, 1 << (i + LSP_QID2CQIDIX2_00_CQ_P3_LOC));
-+		break;
++		return 1;
 +	}
 +
-+	DLB_CSR_WR(hw,
-+		   ATM_QID2CQIDIX(q->id.phys_id, p->id.phys_id / 4),
-+		   atm_qid2cq);
-+
-+	DLB_CSR_WR(hw,
-+		   LSP_QID2CQIDIX(q->id.phys_id, p->id.phys_id / 4),
-+		   lsp_qid2cq);
-+
-+	DLB_CSR_WR(hw,
-+		   LSP_QID2CQIDIX2(q->id.phys_id, p->id.phys_id / 4),
-+		   lsp_qid2cq2);
-+
-+	dlb_flush_csr(hw);
-+
-+	p->qid_map[i].qid = q->id.phys_id;
-+	p->qid_map[i].priority = priority;
-+
-+	state = DLB_QUEUE_MAPPED;
-+
-+	return dlb_port_slot_state_transition(hw, p, q, i, state);
++	return dlb_ldb_port_finish_map_qid_dynamic(hw, domain, port, queue);
 +}
 +
- static void dlb_ldb_port_change_qid_priority(struct dlb_hw *hw,
- 					     struct dlb_ldb_port *port,
- 					     int slot,
- 					     struct dlb_map_qid_args *args)
- {
--	/* Placeholder */
-+	u32 cq2priov;
-+
-+	/* Read-modify-write the priority and valid bit register */
-+	cq2priov = DLB_CSR_RD(hw, LSP_CQ2PRIOV(port->id.phys_id));
-+
-+	cq2priov |= (1 << (slot + LSP_CQ2PRIOV_V_LOC)) & LSP_CQ2PRIOV_V;
-+	cq2priov |= ((args->priority & 0x7) << slot * 3) & LSP_CQ2PRIOV_PRIO;
-+
-+	DLB_CSR_WR(hw, LSP_CQ2PRIOV(port->id.phys_id), cq2priov);
-+
-+	dlb_flush_csr(hw);
-+
-+	port->qid_map[slot].priority = args->priority;
-+}
-+
-+static void dlb_ldb_queue_set_inflight_limit(struct dlb_hw *hw,
-+					     struct dlb_ldb_queue *queue)
-+{
-+	u32 infl_lim = 0;
-+
-+	BITS_SET(infl_lim, queue->num_qid_inflights, LSP_QID_LDB_INFL_LIM_LIMIT);
-+
-+	DLB_CSR_WR(hw, LSP_QID_LDB_INFL_LIM(queue->id.phys_id), infl_lim);
- }
- 
  static int dlb_ldb_port_map_qid(struct dlb_hw *hw,
-@@ -2222,8 +2356,7 @@ static int dlb_ldb_port_map_qid(struct dlb_hw *hw,
+ 				struct dlb_hw_domain *domain,
+ 				struct dlb_ldb_port *port,
  				struct dlb_ldb_queue *queue,
  				u8 prio)
  {
--	/* Placeholder */
--	return 0;
-+	return dlb_ldb_port_map_qid_static(hw, port, queue, prio);
+-	return dlb_ldb_port_map_qid_static(hw, port, queue, prio);
++	if (domain->started)
++		return dlb_ldb_port_map_qid_dynamic(hw, port, queue, prio);
++	else
++		return dlb_ldb_port_map_qid_static(hw, port, queue, prio);
  }
  
  static void
-@@ -3071,6 +3204,13 @@ int dlb_hw_unmap_qid(struct dlb_hw *hw,
- 	 */
- 	st = DLB_QUEUE_MAP_IN_PROG;
- 	if (dlb_port_find_slot_queue(port, st, queue, &i)) {
-+		/*
-+		 * Since the in-progress map was aborted, re-enable the QID's
-+		 * inflights.
-+		 */
-+		if (queue->num_pending_additions == 0)
-+			dlb_ldb_queue_set_inflight_limit(hw, queue);
+@@ -2890,12 +3204,80 @@ dlb_domain_finish_unmap_qid_procedures(struct dlb_hw *hw,
+ 	return 0;
+ }
+ 
++static void dlb_domain_finish_map_port(struct dlb_hw *hw,
++				       struct dlb_hw_domain *domain,
++				       struct dlb_ldb_port *port)
++{
++	int i;
 +
- 		st = DLB_QUEUE_UNMAPPED;
- 		ret = dlb_port_slot_state_transition(hw, port, queue, i, st);
- 		if (ret)
++	for (i = 0; i < DLB_MAX_NUM_QIDS_PER_LDB_CQ; i++) {
++		struct dlb_ldb_queue *queue;
++		u32 infl_cnt;
++		int qid;
++
++		if (port->qid_map[i].state != DLB_QUEUE_MAP_IN_PROG)
++			continue;
++
++		qid = port->qid_map[i].qid;
++
++		queue = dlb_get_ldb_queue_from_id(hw, qid, false, 0);
++
++		if (!queue) {
++			DLB_HW_ERR(hw,
++				   "[%s()] Internal error: unable to find queue %d\n",
++				   __func__, qid);
++			continue;
++		}
++
++		infl_cnt = DLB_CSR_RD(hw, LSP_QID_LDB_INFL_CNT(qid));
++
++		if (BITS_GET(infl_cnt, LSP_QID_LDB_INFL_CNT_COUNT))
++			continue;
++
++		/*
++		 * Disable the affected CQ, and the CQs already mapped to the
++		 * QID, before reading the QID's inflight count a second time.
++		 * There is an unlikely race in which the QID may schedule one
++		 * more QE after we read an inflight count of 0, and disabling
++		 * the CQs guarantees that the race will not occur after a
++		 * re-read of the inflight count register.
++		 */
++		if (port->enabled)
++			dlb_ldb_port_cq_disable(hw, port);
++
++		dlb_ldb_queue_disable_mapped_cqs(hw, domain, queue);
++
++		infl_cnt = DLB_CSR_RD(hw, LSP_QID_LDB_INFL_CNT(qid));
++
++		if (BITS_GET(infl_cnt, LSP_QID_LDB_INFL_CNT_COUNT)) {
++			if (port->enabled)
++				dlb_ldb_port_cq_enable(hw, port);
++
++			dlb_ldb_queue_enable_mapped_cqs(hw, domain, queue);
++
++			continue;
++		}
++
++		dlb_ldb_port_finish_map_qid_dynamic(hw, domain, port, queue);
++	}
++}
++
+ static unsigned int
+ dlb_domain_finish_map_qid_procedures(struct dlb_hw *hw,
+ 				     struct dlb_hw_domain *domain)
+ {
+-	/* Placeholder */
+-	return 0;
++	struct dlb_ldb_port *port;
++	int i;
++
++	if (!domain->configured || domain->num_pending_additions == 0)
++		return 0;
++
++	for (i = 0; i < DLB_NUM_COS_DOMAINS; i++) {
++		list_for_each_entry(port, &domain->used_ldb_ports[i], domain_list)
++			dlb_domain_finish_map_port(hw, domain, port);
++	}
++
++	return domain->num_pending_additions;
+ }
+ 
+ static void dlb_log_map_qid(struct dlb_hw *hw,
 -- 
 2.17.1
 
