@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AE22EAD97
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C542EAD99
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbhAEOnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:43:42 -0500
-Received: from mga04.intel.com ([192.55.52.120]:50191 "EHLO mga04.intel.com"
+        id S1727651AbhAEOov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:44:51 -0500
+Received: from mga03.intel.com ([134.134.136.65]:42035 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726502AbhAEOnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:43:41 -0500
-IronPort-SDR: pDCGS368j4VtJzF8z82tUrnSisgB42Wavyn6WReAnjshcprtcIwlBZ06s9A+tJnvzzsLK+FysO
- AXQrFldZZ6pw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="174537846"
+        id S1726523AbhAEOou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:44:50 -0500
+IronPort-SDR: 3Mr+wBXPmLDgN9wjKyn8HP2Khrq239eZmahAYePlmYnGiqSSNV3lZ9KOcTSyzh13WhbQRfH+ze
+ uuKqsxQNZYuA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="177214935"
 X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="174537846"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 06:41:56 -0800
-IronPort-SDR: bpivkxY+nxz/ZxLQsHPsFGGX4EmiEFv4XieEvrtWP21TnXDbfi4io+N4fhpOYVmtcVsUx2apXH
- mvhvVF0qNRBg==
+   d="scan'208";a="177214935"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 06:43:00 -0800
+IronPort-SDR: uhjeaoOcMUJK1tKVMGlVbBf9DHk3DLD9PNv40IwVlaeVm4BS73iZ2rUpFTTWSidu/hUwexYFGv
+ noGDwMdttgbg==
 X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="361188842"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 06:41:52 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id D694F206FD; Tue,  5 Jan 2021 16:41:50 +0200 (EET)
-Date:   Tue, 5 Jan 2021 16:41:50 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kevin.lhopital@hotmail.com,
-        =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>
-Subject: Re: [PATCH v4 2/3] media: i2c: Add support for the OV8865 image
- sensor
-Message-ID: <20210105144150.GS11878@paasikivi.fi.intel.com>
-References: <20201231142702.3095260-1-paul.kocialkowski@bootlin.com>
- <20201231142702.3095260-3-paul.kocialkowski@bootlin.com>
- <20210104120749.GK11878@paasikivi.fi.intel.com>
- <X/Qzp8/4gd/ANdXh@aptenodytes>
+   d="scan'208";a="349883337"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 06:42:58 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kwnZ2-002Cxu-Mv; Tue, 05 Jan 2021 16:44:00 +0200
+Date:   Tue, 5 Jan 2021 16:44:00 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        rafael@kernel.org, bard.liao@intel.com
+Subject: Re: [PATCH 1/2] Revert "device property: Keep secondary firmware
+ node secondary by type"
+Message-ID: <20210105144400.GM4077@smile.fi.intel.com>
+References: <20210105091146.25422-1-yung-chuan.liao@linux.intel.com>
+ <20210105091146.25422-2-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/Qzp8/4gd/ANdXh@aptenodytes>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210105091146.25422-2-yung-chuan.liao@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Tue, Jan 05, 2021 at 05:11:45PM +0800, Bard Liao wrote:
+> While the commit d5dcce0c414f ("device property: Keep secondary firmware
+> node secondary by type")
+> describes everything correct in its commit message the change it made does
+> the opposite and original commit c15e1bdda436 ("device property: Fix the
+> secondary firmware node handling in set_primary_fwnode()") was fully
+> correct. Thus, revert the former one here and improve documentation in
+> the next patch.
 
-On Tue, Jan 05, 2021 at 10:38:47AM +0100, Paul Kocialkowski wrote:
-> Hi Sakari,
-> 
-> On Mon 04 Jan 21, 14:07, Sakari Ailus wrote:
-> > Hi Paul,
-> > 
-> > On Thu, Dec 31, 2020 at 03:27:01PM +0100, Paul Kocialkowski wrote:
-> > > The OV8865 is a 8 Mpx CMOS image sensor producing 3264x2448 at 30 fps.
-> > > Other modes (including some with sub-sampling) are available too.
-> > > It outputs 10-bit bayer CFA data through a MIPI CSI-2 interface with
-> > > up to 4 lanes supported.
-> > 
-> > I've added the patches to a pull request to Mauro; there appear to still be
-> > some checkpatch.pl issues in both of the drivers.
-> > 
-> > I don't mind the warnings on the assignment or the mutex though. Could you
-> > address these in additional patches, please?
-> 
-> Sorry about that, I realized that I never run checkpatch with --strict
-> so I completely missed those.
-> 
-> I'll fix the cosmetic issues in a following patch.
-> 
-> Just to clarify one thing:
-> #define OV8865_PAD_PK_DRIVE_STRENGTH_2X		(1 << 5)
-> #define OV8865_BLC_CTRL1_COL_SHIFT_128		(1 << 4)
-> 
-> these are not single-bit fields so even though it looks like they should
-> use BIT(), this would be incoherent with other possible values, such as:
-> #define OV8865_PAD_PK_DRIVE_STRENGTH_3X		(2 << 5)
-> #define OV8865_BLC_CTRL1_COL_SHIFT_64		(2 << 4)
+Thanks for catching this!
+Yes, my bad that I have misinterpreted Heikki's idea.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Agreed.
-
-You might not assign the top bit, but if you did, the left operand would
-have to be unsigned to guarantee the intended result (otherwise it's
-undefined).
+> Fixes: d5dcce0c414f ("device property: Keep secondary firmware node secondary by type")
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> ---
+>  drivers/base/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 25e08e5f40bd..51b9545a050b 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -4433,7 +4433,7 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+>  		if (fwnode_is_primary(fn)) {
+>  			dev->fwnode = fn->secondary;
+>  			if (!(parent && fn == parent->fwnode))
+> -				fn->secondary = ERR_PTR(-ENODEV);
+> +				fn->secondary = NULL;
+>  		} else {
+>  			dev->fwnode = NULL;
+>  		}
+> -- 
+> 2.17.1
+> 
 
 -- 
-Sakari Ailus
+With Best Regards,
+Andy Shevchenko
+
+
