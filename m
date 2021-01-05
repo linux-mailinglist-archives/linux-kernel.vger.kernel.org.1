@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B262EA726
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D322EA72B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbhAEJQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:16:05 -0500
-Received: from ozlabs.org ([203.11.71.1]:35713 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbhAEJQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:16:04 -0500
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4D96KQ1KJ5z9sWM; Tue,  5 Jan 2021 20:15:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1609838122;
-        bh=EADqwwn7oD0FlfCscvnQrpY01N4uznyjB3jWIAXQL/g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZsDKHd/+RTNrcjY1Wafc4Wbrdfvb0IYrSYzS9/jnoGOPbuBdY7hDjDBDlOwF3k+g8
-         3rXOroz4sy6l5V3dDAl0aq1d3HgU3v82JX2FkwLpkzRK/hJbqyabv1A7IvI1cCJgfY
-         i70rNbIeE/VMSOpf2/bbepwEAh4Y7exxfTj53tFUyVMn1XWstgo0Q3mkCfWspqiodt
-         onJxdeAGJ8qaYnwWroEUW+aOIxbjFxszlDSAL2u97JgVF7uq6Zq00jMfbKDomAkQRt
-         EYZWw1AoIdXb/wcTAdjf2EnVQSSZb68nJieW5zVCdWfHMS+6rqyNj9sMveDOrGxEFL
-         XqzNymymkW9lg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, pantelis.antoniou@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
-        andrew@lunn.ch
-Subject: [PATCH v2] net: ethernet: fs_enet: Add missing MODULE_LICENSE
-Date:   Tue,  5 Jan 2021 20:15:15 +1100
-Message-Id: <20210105091515.87509-1-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.25.1
+        id S1727298AbhAEJSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:18:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22412 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725880AbhAEJSE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:18:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609838198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3/mNj4FXntJ6f+kqOYOdyOb/PeZxp46sguDuCB5Sa8g=;
+        b=gVAwIwT3y1cQ3XjFOnay0M81TKVpLO5CebapgXkgSYEtWf/BYPq/xVgbDAX/aGGjkh+Hnq
+        yx4BGTDg8limHuB/q1ZZzmglvi/2lsVDPPZnjeDvdIb8sVjavW2Rh8otC1ukBG/HaNIWFa
+        CnT1yKZ5HPqqGNp3sExywGsqhMQ1Ey4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-345-67LHksxIP_6SrGcjPnQ5tw-1; Tue, 05 Jan 2021 04:16:36 -0500
+X-MC-Unique: 67LHksxIP_6SrGcjPnQ5tw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2863800D62;
+        Tue,  5 Jan 2021 09:16:34 +0000 (UTC)
+Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F0FD060873;
+        Tue,  5 Jan 2021 09:16:33 +0000 (UTC)
+Subject: Re: uninitialized pmem struct pages
+To:     Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20210104100323.GC13207@dhcp22.suse.cz>
+ <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
+ <CAPcyv4h6mdKrwpqXfO0e_=sKjB-pY5KbP9ii+tQyFsK5bPkb=A@mail.gmail.com>
+ <20210105075028.GS13207@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5fa1ff35-71f3-2526-6819-34c1ee959295@redhat.com>
+Date:   Tue, 5 Jan 2021 10:16:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210105075028.GS13207@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 1d6cd3929360 ("modpost: turn missing MODULE_LICENSE()
-into error") the ppc32_allmodconfig build fails with:
+On 05.01.21 08:50, Michal Hocko wrote:
+> On Mon 04-01-21 21:17:43, Dan Williams wrote:
+>> On Mon, Jan 4, 2021 at 2:45 AM David Hildenbrand <david@redhat.com> wrote:
+> [...]
+>>> I believe Dan mentioned somewhere that he wants to see a real instance
+>>> of this producing a BUG before actually moving forward with a fix. I
+>>> might be wrong.
+>>
+>> I think I'm missing an argument for the user-visible effects of the
+>> "Bad." statements above. I think soft_offline_page() is a candidate
+>> for a local fix because mm/memory-failure.c already has a significant
+>> amount of page-type specific knowledge. So teaching it "yes" for
+>> MEMORY_DEVICE_PRIVATE-ZONE_DEVICE and "no" for other ZONE_DEVICE seems
+>> ok to me.
+> 
+> I believe we do not want to teach _every_ pfn walker about zone device
+> pages. This would be quite error prone. Especially when a missig check
+> could lead to a silently broken data or BUG_ON with debugging enabled
+> (which is not the case for many production users). Or are we talking
+> about different bugs here?
 
-  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-fec.o
-  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-bitbang.o
+I'd like us to stick to the documentation, e.g., include/linux/mmzone.h
 
-Add the missing MODULE_LICENSEs to fix the build. Both files include a
-copyright header indicating they are GPL v2.
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c | 1 +
- drivers/net/ethernet/freescale/fs_enet/mii-fec.c     | 1 +
- 2 files changed, 2 insertions(+)
+"
+pfn_valid() is meant to be able to tell if a given PFN has valid memmap
+associated with it or not. This means that a struct page exists for this
+pfn. The caller cannot assume the page is fully initialized in general.
+Hotplugable pages might not have been onlined yet. pfn_to_online_page()
+will ensure the struct page is fully online and initialized. Special
+pages (e.g. ZONE_DEVICE) are never onlined and should be treated
+accordingly.
+"
 
-v2: Use simply "GPL" as pointed out by Andrew:
-    https://lore.kernel.org/lkml/X%2FPRX+RziaU3IJGi@lunn.ch/
-
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-index c8e5d889bd81..21de56345503 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-@@ -223,3 +223,4 @@ static struct platform_driver fs_enet_bb_mdio_driver = {
- };
- 
- module_platform_driver(fs_enet_bb_mdio_driver);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-index 8b51ee142fa3..152f4d83765a 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-@@ -224,3 +224,4 @@ static struct platform_driver fs_enet_fec_mdio_driver = {
- };
- 
- module_platform_driver(fs_enet_fec_mdio_driver);
-+MODULE_LICENSE("GPL");
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
