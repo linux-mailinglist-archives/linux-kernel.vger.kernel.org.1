@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71B92EAD9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 714692EADAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbhAEOpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:45:36 -0500
-Received: from mga06.intel.com ([134.134.136.31]:5664 "EHLO mga06.intel.com"
+        id S1728197AbhAEOqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:46:20 -0500
+Received: from gofer.mess.org ([88.97.38.141]:54255 "EHLO gofer.mess.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726551AbhAEOpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:45:35 -0500
-IronPort-SDR: 0wKfKPwklrv6LJ+gE8f9q8pdEn2VySIqPUUSzfkjwDZ5BkbEHKSobWQApwe1+6PlAQZ85n2WAP
- Ts02rEvvusbA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="238665577"
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="238665577"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 06:43:47 -0800
-IronPort-SDR: isNkmx9pp854yTHO9IEOrwSKG0Lqa3pJgJ6TU3J/etfYbIPq1xqdtWv5NBApKeoEQEWoK5OWgx
- CWSeDxZR6Wgw==
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="421796225"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 06:43:41 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kwnZj-002Cyn-Ff; Tue, 05 Jan 2021 16:44:43 +0200
-Date:   Tue, 5 Jan 2021 16:44:43 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        rafael@kernel.org, bard.liao@intel.com
-Subject: Re: [PATCH 2/2] device property: add description of fwnode cases
-Message-ID: <20210105144443.GN4077@smile.fi.intel.com>
-References: <20210105091146.25422-1-yung-chuan.liao@linux.intel.com>
- <20210105091146.25422-3-yung-chuan.liao@linux.intel.com>
+        id S1726694AbhAEOqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:46:17 -0500
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 7A5CEC637E; Tue,  5 Jan 2021 14:45:34 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1609857934; bh=iJ86QbxBrhi/nSJypbCAMvYcDP4l2HigQ2w1KwuFLoQ=;
+        h=From:To:Subject:Date:From;
+        b=RKRuRNaOSqpGKmLkT3YE+xHyCRSzR4zz81sZRfyaVxK8mA2RFPOzlnFQrROGo21BW
+         pu8RJr1qccWhZAOhhjmsOxfnYeE/yGxQlLsQAQCe/DDkQXutEIT755yNGygMOy+Jsr
+         bH1UaIJR1DatoIcPI47IOOrWbpNEGXgn9IuNEdPE0IdTCkcgm2FTGF4+WZQnalWrgn
+         V8lvjotfbWfpMf5APdQYlpsHoe5IFvh8EiKq7K9MvmLJs4Av/wYlMF4m43RCZv0La5
+         KQihe77WRKfe8bjxFINZWq2NY83gEgljwPtsHl7r4ENBW7xTZvvXqXvkxYOFe1/OMa
+         46qe4HK4rP3Xg==
+From:   Sean Young <sean@mess.org>
+To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH v3 0/4] btf: support ints larger than 128 bits
+Date:   Tue,  5 Jan 2021 14:45:30 +0000
+Message-Id: <cover.1609855479.git.sean@mess.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105091146.25422-3-yung-chuan.liao@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 05:11:46PM +0800, Bard Liao wrote:
-> There are only four valid fwnode cases which are
-> - primary --> secondary --> -ENODEV
-> - primary --> NULL
-> - secondary --> -ENODEV
-> - NULL
-> 
-> dev->fwnode should be converted between the 4 cases above no matter
-> how/when set_primary_fwnode() and set_secondary_fwnode() are called.
-> Describe it in the code so people will keep it in mind.
+clang supports arbitrary length ints using the _ExtInt extension. This
+can be useful to hold very large values, e.g. 256 bit or 512 bit types.
 
-Thanks! It will help in the future to understand better this code.
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Larger types (e.g. 1024 bits) are possible but I am unaware of a use
+case for these.
 
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> ---
->  drivers/base/core.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 51b9545a050b..17eb14607074 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -4414,6 +4414,12 @@ static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
->   *
->   * Set the device's firmware node pointer to @fwnode, but if a secondary
->   * firmware node of the device is present, preserve it.
-> + *
-> + * Valid fwnode cases are:
-> + *  - primary --> secondary --> -ENODEV
-> + *  - primary --> NULL
-> + *  - secondary --> -ENODEV
-> + *  - NULL
->   */
->  void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
->  {
-> @@ -4432,6 +4438,7 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
->  	} else {
->  		if (fwnode_is_primary(fn)) {
->  			dev->fwnode = fn->secondary;
-> +			/* Set fn->secondary = NULL to keep fn as a primary fwnode */
->  			if (!(parent && fn == parent->fwnode))
->  				fn->secondary = NULL;
->  		} else {
-> -- 
-> 2.17.1
-> 
+This requires the _ExtInt extension enabled in clang, which is under
+review.
+
+Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
+Link: https://reviews.llvm.org/D93103
+
+Signed-off-by: Sean Young <sean@mess.org>
+
+changes since v2:
+ - split patches into 4 distinct patches
+
+changes since v1:
+ - added tests as suggested by Yonghong Song
+ - added kernel pretty-printer
+
+
+Sean Young (4):
+  btf: add support for ints larger than 128 bits
+  libbpf: add support for ints larger than 128 bits
+  bpftool: add support for ints larger than 128 bits
+  bpf: add tests for ints larger than 128 bits
+
+ Documentation/bpf/btf.rst                     |   4 +-
+ include/uapi/linux/btf.h                      |   2 +-
+ kernel/bpf/btf.c                              |  54 +-
+ tools/bpf/bpftool/btf_dumper.c                |  40 ++
+ tools/include/uapi/linux/btf.h                |   2 +-
+ tools/lib/bpf/btf.c                           |   2 +-
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c  |   3 +-
+ .../selftests/bpf/progs/test_btf_extint.c     |  50 ++
+ tools/testing/selftests/bpf/test_extint.py    | 535 ++++++++++++++++++
+ 10 files changed, 679 insertions(+), 16 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_btf_extint.c
+ create mode 100755 tools/testing/selftests/bpf/test_extint.py
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.29.2
 
