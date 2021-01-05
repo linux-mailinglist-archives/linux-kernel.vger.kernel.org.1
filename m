@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F4F2EADED
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0100E2EADF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbhAEPJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:09:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725817AbhAEPJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:09:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A56C522B51;
-        Tue,  5 Jan 2021 15:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609859327;
-        bh=pKCTXl5rA7B82z3XM4ZKa/ZmmuwzyM8wYnCCwVLvojw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cn5usqMTaCHxA8sDPPq/1U63uauMLXbRCOD3prvJvl2sbZHU9miQ81uH9xY/rhcep
-         axbPstN+dfHpeQvNv2G5/JYkLyG5Ny54+logaSITqsnb/nvfQLg0XtSYyA9uVL24Qg
-         AaOZALojoPmuuHJdvTTvKPx1WtUXWPmNKhPg5zacRlFg2EoHOhBiPpOCSgX97zeK0p
-         0J8eq+l++9iSAUaoRDX0Zh8jB7RgXVgLP/ehcBNHI2FlF62M3BU5h70G3k2PoFhlr3
-         QyynFxWBMGm0C4RqpU+Gq8Y9S9uzBcmhkzgarIJjl4m39dUUCIk5kxb78NyGBtkgxw
-         Q3rRngwRQ44ew==
-Date:   Tue, 5 Jan 2021 15:08:42 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH v2 2/2] fs/task_mmu: acquire mmap_lock for write on
- soft-dirty cleanup
-Message-ID: <20210105150841.GA11745@willie-the-truck>
-References: <20201225092529.3228466-1-namit@vmware.com>
- <20201225092529.3228466-3-namit@vmware.com>
+        id S1726984AbhAEPKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:10:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726743AbhAEPKN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:10:13 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3578DC061574;
+        Tue,  5 Jan 2021 07:09:33 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id t22so18515968pfl.3;
+        Tue, 05 Jan 2021 07:09:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B59L1dFJQpmm6U2tlwyxFjjl6hJUIu0OW27SvrE0oos=;
+        b=oyOckUZXtx9AQwQBWUKccCcj191MuBzPQolSutSz9Y0Ul6GN0HMi1jPI/YhgvLMVcC
+         roCrsWzfLsPny8VDJ4eMsf5jIy1/RHJZtLO1jGQvr8yvrUrvT7O+trHihvOFEufE3feN
+         +xcEm8yyOSxtcRzUQ/WVN56XdjvXE+7a7IF/VH4Iav5Y6si4+D8vXRqpg/0XUCaHeoSi
+         xvs5ACLF2pQUuF82kYz3VJqUzlzUv/MEaDEa3TVOpLRZ2y4r7m7P439pEmWDQh4kems2
+         pI+Yf7F3mill4iq22IrKtL5YDQW8m0DKVONOfQubm/kScpHP78doSKJCBcrIHKxcwQ0s
+         PXiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B59L1dFJQpmm6U2tlwyxFjjl6hJUIu0OW27SvrE0oos=;
+        b=QPFdZP4PFXel36OxqWfrcXXiboDBVVf9p/eAc/xh/OYE3u8CT4jylGLkm8VPbYHsVx
+         NXccqNphK5H1ZuZAIZcs5j5gU07x0n3GAoVkzCxO2CdnoRRJgdQEu4TYek/EW4SG4oZc
+         M3EsCe5r/7lTTsIF345PMQBN7cN9p0DLQLxarGWkPlAwQxHr6u1IF3XlkF/blNek6/QV
+         ZCbZ+jafOghpZCG0fWVEa12gXmo0hW0idY1//q4+uFu/7S9vQ66sF5Y6yML1hLy95xkJ
+         HahIQWrgA0H8GLvyetGEZeLJ0gXzcNITXZiASpp9lTXRMD4bKDUsT3mXA+v8+jZf1VZT
+         BINA==
+X-Gm-Message-State: AOAM533Nojtcc8PascuM2OiIDjJjnVg+V66q1McR1E+VZfidGPQr5qvg
+        XFBSvraDJoxi1ZvKib7HSg8pwvCj+ZpccUtXyDg=
+X-Google-Smtp-Source: ABdhPJwfp6jodFZyv1Neb9BHMx5OCcTv9aS6Lx3BAZWVHMmeKBXVbLxSxZ012O4y0PyTpRqMolmxj+eTfkMAL9APlp8=
+X-Received: by 2002:a62:528c:0:b029:19e:4a39:d9ea with SMTP id
+ g134-20020a62528c0000b029019e4a39d9eamr65120pfb.20.1609859372655; Tue, 05 Jan
+ 2021 07:09:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201225092529.3228466-3-namit@vmware.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201130211145.3012-1-james.quinlan@broadcom.com>
+ <20201130211145.3012-2-james.quinlan@broadcom.com> <20201209140122.GA331678@robh.at.kernel.org>
+ <CANCKTBsFALwF8Hy-=orH8D-nd-qyXqFDopATmKCvbqPbUTC7Sw@mail.gmail.com> <20210105140128.GC4487@sirena.org.uk>
+In-Reply-To: <20210105140128.GC4487@sirena.org.uk>
+From:   Jim Quinlan <jim2101024@gmail.com>
+Date:   Tue, 5 Jan 2021 10:09:21 -0500
+Message-ID: <CANCKTBtNgyBTNwwtbtMkR9nFwq+AZyAZmGX9XXfhwf27zwjG_Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
+ voltage regulators
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 25, 2020 at 01:25:29AM -0800, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
-> 
-> Clearing soft-dirty through /proc/[pid]/clear_refs can cause memory
-> corruption as it clears the dirty-bit without acquiring the mmap_lock
-> for write and defers TLB flushes.
-> 
-> As a result of this behavior, it is possible that one of the CPUs would
-> have the stale PTE cached in its TLB and keep updating the page while
-> another thread triggers a page-fault, and the page-fault handler would
-> copy the old page into a new one.
+On Tue, Jan 5, 2021 at 9:01 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Mon, Jan 04, 2021 at 05:12:11PM -0500, Jim Quinlan wrote:
+>
+> > For us, the supplies are for the EP chip's power.  We have the PCIe
+> > controller turning them "on" for power-on/resume and "off" for
+> > power-off/suspend.  We need the "xxx-supply" property in the
+> > controller's DT node because of the chicken-and-egg situation: if the
+> > property was in the EP's DT node, the RC  will never discover the EP
+> > to see that there is a regulator to turn on.   We would be happy with
+> > a single supply name, something like "ep-power".  We would be ecstatic
+> > to have two (ep0-power, ep1-power).
+>
+> Why can't the controller look at the nodes describing devices for
+> standard properties?
+Hi Mark,
 
-[...]
+It just feels wrong for the driver (RC) of one DT node to be acting on
+a property of another driver's (EP) node, even though it is a subnode.
+There is also the possibility of the EP driver acting upon the
+property simultaneously; we don't really have control of what EP
+device and drivers are paired with our SOCs.
+In addition, this just pushes the binding name issue down a level --
+what should these power supplies be called?  They are not slot power
+supplies.  Can the  Broadcom STB PCIe RC driver's binding document
+specify and define the properties of EP sub-nodes?
 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 217aa2705d5d..39b2bd27af79 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1189,6 +1189,7 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
->  	struct mm_struct *mm;
->  	struct vm_area_struct *vma;
->  	enum clear_refs_types type;
-> +	bool write_lock = false;
->  	struct mmu_gather tlb;
->  	int itype;
->  	int rv;
-> @@ -1236,21 +1237,16 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
->  		}
->  		tlb_gather_mmu(&tlb, mm, 0, -1);
->  		if (type == CLEAR_REFS_SOFT_DIRTY) {
-> +			mmap_read_unlock(mm);
-> +			if (mmap_write_lock_killable(mm)) {
-> +				count = -EINTR;
-> +				goto out_mm;
-> +			}
->  			for (vma = mm->mmap; vma; vma = vma->vm_next) {
-> -				if (!(vma->vm_flags & VM_SOFTDIRTY))
-> -					continue;
-> -				mmap_read_unlock(mm);
-> -				if (mmap_write_lock_killable(mm)) {
-> -					count = -EINTR;
-> -					goto out_mm;
-> -				}
-> -				for (vma = mm->mmap; vma; vma = vma->vm_next) {
-> -					vma->vm_flags &= ~VM_SOFTDIRTY;
-> -					vma_set_page_prot(vma);
-> -				}
-> -				mmap_write_downgrade(mm);
-> -				break;
-> +				vma->vm_flags &= ~VM_SOFTDIRTY;
-> +				vma_set_page_prot(vma);
->  			}
-> +			write_lock = true;
->  
->  			mmu_notifier_range_init(&range, MMU_NOTIFY_SOFT_DIRTY,
->  						0, NULL, mm, 0, -1UL);
-> @@ -1261,7 +1257,10 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
->  		if (type == CLEAR_REFS_SOFT_DIRTY)
->  			mmu_notifier_invalidate_range_end(&range);
->  		tlb_finish_mmu(&tlb, 0, -1);
-> -		mmap_read_unlock(mm);
-> +		if (write_lock)
-> +			mmap_write_unlock(mm);
-> +		else
-> +			mmap_read_unlock(mm);
->  out_mm:
->  		mmput(mm);
-
-I probably wouldn't bother with the 'write_lock' variable, and just check
-'type == CLEAR_REFS_SOFT_DIRTY' instead.
-
-But that's trivial and I don't have strong opinions, so:
-
-Acked-by: Will Deacon <will@kernel.org>
-
-Are you intending to land this for 5.11? If so, I can just rebase my other
-series on top of this.
-
-Will
+Regards,
+Jim Quinlan
+Broadcom STB
