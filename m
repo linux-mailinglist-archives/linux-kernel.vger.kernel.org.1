@@ -2,113 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4DA2EB02C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 667312EB03D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbhAEQfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:35:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728521AbhAEQfP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:35:15 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9DAC061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 08:34:35 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id z5so28738005iob.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 08:34:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eEsV5GjmLKE0KArAhzJzwbLWUdZGk09TCWvllXL+wYc=;
-        b=TRFc9xF6N+Gx71MTz6M6NF5Po6d8blkVfoFTFC9J49EgAaRY5M5VaRdOQJQsqCT4v8
-         0LJtM1ATwRA7DXc4MaowjrtyQGqPnHwC+pOTtoflYlrFrg6bWJY97KBo1m6HbD/KszqJ
-         yGk1bpIZBlJx5JXffjejYa8Lyfya3dyhOjsX0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eEsV5GjmLKE0KArAhzJzwbLWUdZGk09TCWvllXL+wYc=;
-        b=LdIDVjG+qhgKhr8beyAyR/C3slhYhWKGrGT+8yEvNS9qth8OgORXCQ8jF1B1U9KeWI
-         nk+8He3fKu6uYW5fAC4YpyqtYbaF4keaKeyFVb+BOXbyRvo4Gcyv7Lm1JK38ImuPuE3F
-         bbAz2RBCRQb79xnPxzWHd7NU4JmA9zuv5dzIYCTGTVw1S+jDzz9vk94vt8BG6YAsSNlh
-         QdRfn35dTv6rnRT+AQTK6E+nue7IvjdveiZzKN9dSeJOhSjdJDFK6XacPVwVKr0E2UnR
-         RJ/yD48P0Ha9WoZnv1sKLV3LCkZp5vH6KbBVGhmlRqQjU9zX/gG8vEUCHB/g6KnbHTYS
-         FtnQ==
-X-Gm-Message-State: AOAM530W/mprfYlvhblueBqRFeCE2YhTm5xROZqUgLyW+lXtr3cunZyg
-        G0HqXc8R62kkuUd+DP4sdFx1Pg==
-X-Google-Smtp-Source: ABdhPJyoENdD6Y7jK8od4+dyGrYt+P3X2XmyMb3keo0+VCokN+Y87ht4X1zlOfuzyfK+JsibUwltsg==
-X-Received: by 2002:a6b:6016:: with SMTP id r22mr63753744iog.93.1609864474805;
-        Tue, 05 Jan 2021 08:34:34 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l78sm55322ild.30.2021.01.05.08.34.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 08:34:34 -0800 (PST)
-Subject: Re: [PATCH] kunit: tool: Force the use of the 'tty' console for UML
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201222073900.3490607-1-davidgow@google.com>
- <20201222111102.GC4077@smile.fi.intel.com>
- <4ae7779c-15c5-0474-5840-44531dcf1d94@linuxfoundation.org>
- <X/SSJQ+I5zEMaYYJ@alley>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3828c7ee-52b0-42f9-5771-74ef9386756c@linuxfoundation.org>
-Date:   Tue, 5 Jan 2021 09:34:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <X/SSJQ+I5zEMaYYJ@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728391AbhAEQhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:37:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:57214 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726132AbhAEQhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:37:45 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1533A1FB;
+        Tue,  5 Jan 2021 08:36:59 -0800 (PST)
+Received: from donnerap.arm.com (donnerap.cambridge.arm.com [10.1.195.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 321C63F70D;
+        Tue,  5 Jan 2021 08:36:57 -0800 (PST)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/5] ARM: arm64: Add SMCCC TRNG entropy service
+Date:   Tue,  5 Jan 2021 16:36:47 +0000
+Message-Id: <20210105163652.23646-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/5/21 9:21 AM, Petr Mladek wrote:
-> On Mon 2021-01-04 09:23:57, Shuah Khan wrote:
->> On 12/22/20 4:11 AM, Andy Shevchenko wrote:
->>> On Mon, Dec 21, 2020 at 11:39:00PM -0800, David Gow wrote:
->>>> kunit_tool relies on the UML console outputting printk() output to the
->>>> tty in order to get results. Since the default console driver could
->>>> change, pass 'console=tty' to the kernel.
->>>>
->>>> This is triggered by a change[1] to use ttynull as a fallback console
->>>> driver which -- by chance or by design -- seems to have changed the
->>>> default console output on UML, breaking kunit_tool. While this may be
->>>> fixed, we should be less fragile to such changes in the default.
->>>>
->>>> [1]:
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=757055ae8dedf5333af17b3b5b4b70ba9bc9da4e
->>>
->>> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>> Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>>
->>
->> Thank you all. Now in linux-kselftest kunit-fixes branch.
->>
->> Will send this up for rc3.
->>
->> Sorry for the delay - have been away from the keyboard for a
->> bit.
-> 
-> JFYI, I am not sure that this is the right solution. I am
-> looking into it, see
-> https://lore.kernel.org/linux-kselftest/X%2FSRA1P8t+ONZFKb@alley/
-> for more details.
-> 
+Hi,
 
-Thanks Petr. I will hold off on sending the patch up to Linus and
-let you find a the right solution.
+a small update to v4, also observing the priority of SMCCC vs. RNDR in
+the early version of the function (as reported by broonie).
+Plus adding review tags and rebasing on v5.11-rc2. Changelog below.
 
-thanks,
--- Shuah
+Will, Catalin: it would be much appreciated if you could consider taking
+patch 1/5. This contains the common definitions, and is a prerequisite
+for every other patch, although they are somewhat independent and likely
+will need to go through different subsystems.
+
+Cheers,
+Andre
+==============================
+
+The ARM architected TRNG firmware interface, described in ARM spec
+DEN0098[1], defines an ARM SMCCC based interface to a true random number
+generator, provided by firmware.
+
+This series collects all the patches implementing this in various
+places: as a user feeding into the ARCH_RANDOM pool, both for ARM and
+arm64, and as a service provider for KVM guests.
+
+Patch 1 introduces the interface definition used by all three entities.
+Patch 2 prepares the Arm SMCCC firmware driver to probe for the
+interface. This patch is needed to avoid a later dependency on *two*
+patches (there might be a better solution to this problem).
+
+Patch 3 implements the ARM part, patch 4 is the arm64 version.
+The final patch 5 adds support to provide random numbers to KVM guests.
+
+This was tested on:
+- QEMU -kernel (no SMCCC, regression test)
+- Juno w/ prototype of the h/w Trusted RNG support
+- mainline KVM (SMCCC, but no TRNG: regression test)
+- ARM and arm64 KVM guests, using the KVM service in patch 5/5
+
+Based on v5.11-rc2, please let me know if I should rebase it on
+something else. A git repo is accessible at:
+https://gitlab.arm.com/linux-arm/linux-ap/-/commits/smccc-trng/v5/
+
+Cheers,
+Andre
+
+[1] https://developer.arm.com/documentation/den0098/latest/
+
+Changelog v4 ... v5:
+- change order of SMCCC call vs. RNDR call in arch_get_random_seed_long_early
+- adding Sudeep's R-b: tags
+
+Changelog v3 ... v4:
+- include cache.h to always have __ro_after_init defined
+- change order of SMCCC call vs. RNDR call in arm64's archrandom.h
+- adding LinusW's R-b: tags
+
+Changelog v2 ... v3:
+- ARM: fix compilation with randconfig
+- arm64: use SMCCC call also in arch_get_random_seed_long_early()
+- KVM: comment on return value usage
+- KVM: use more interesting UUID (enjoy, Marc!)
+- KVM: use bitmaps instead of open coded long arrays
+- KVM: drop direct usage of arch_get_random() interface
+
+Changelog "v1" ... v2:
+- trigger ARCH_RANDOM initialisation from the SMCCC firmware driver
+- use a single bool in smccc.c to hold the initialisation state for arm64
+- handle endianess correctly in the KVM provider
+
+Andre Przywara (2):
+  firmware: smccc: Introduce SMCCC TRNG framework
+  arm64: Add support for SMCCC TRNG entropy source
+
+Ard Biesheuvel (3):
+  firmware: smccc: Add SMCCC TRNG function call IDs
+  ARM: implement support for SMCCC TRNG entropy source
+  KVM: arm64: implement the TRNG hypervisor call
+
+ arch/arm/Kconfig                    |  4 ++
+ arch/arm/include/asm/archrandom.h   | 74 +++++++++++++++++++++++++
+ arch/arm64/include/asm/archrandom.h | 82 ++++++++++++++++++++++++----
+ arch/arm64/include/asm/kvm_host.h   |  2 +
+ arch/arm64/kvm/Makefile             |  2 +-
+ arch/arm64/kvm/hypercalls.c         |  6 ++
+ arch/arm64/kvm/trng.c               | 85 +++++++++++++++++++++++++++++
+ drivers/firmware/smccc/smccc.c      |  6 ++
+ include/linux/arm-smccc.h           | 31 +++++++++++
+ 9 files changed, 281 insertions(+), 11 deletions(-)
+ create mode 100644 arch/arm/include/asm/archrandom.h
+ create mode 100644 arch/arm64/kvm/trng.c
+
+-- 
+2.17.1
+
