@@ -2,282 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149CA2EADE0
+	by mail.lfdr.de (Postfix) with ESMTP id ECC712EADE2
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727296AbhAEPDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:03:34 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:56042 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbhAEPDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:03:33 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 5CBF0122F4D;
-        Tue,  5 Jan 2021 16:02:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1609858971;
-        bh=v350A/6Bd6SJNTcSRSPY7h00OSsm5tIDKCT7HXK1edA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P91yERIXwL03CBiF+YBiKcTK8UVT/NVQbyO55/hzn6XNNy1s3tDT4QfV9KW6nx59n
-         ooJ8l6jtqgz8zPHOYHELY3YYDb9x/E6hRgxIin83qxh08kG0sVaMZ1r0Ef4ssTsKAk
-         9/pGtpfYwRVTli/2fCgbok0WUB5B18K5kBi65KD5Q0/dkYUqn6IItIZ1A/7CSjvCkJ
-         nkvp/C/dnxPgMnDWLmmfiMppXZRpp6YOi3pBlhBRdseohwBYQTsluzzO7Yp6cBjeVQ
-         7dq7MqcfvTfqJnO4WI75wKQshj9mAZDETGU0Z4T06HY0sJW/RERjw7cXK8Z0YecnCq
-         +StUdJryjhB6A==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id VMTWMPg1Qnta; Tue,  5 Jan 2021 16:02:20 +0100 (CET)
-Received: from dev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id AB9B9122F4A;
-        Tue,  5 Jan 2021 16:02:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1609858940;
-        bh=v350A/6Bd6SJNTcSRSPY7h00OSsm5tIDKCT7HXK1edA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oPEEFDxK7bjVVLyQP4TA67RAfBkPh3OzHS8IyNG4Jjv00I1AgqzCgoKgC75CIP7GK
-         MhwcmZ6nSrY9ds4cixAnyf1KX3Apz5n5qiCBPZHoOsNO6Up6ZvXCcVqYlGAX4Kpj7R
-         CQQu1HA0CSpJrpREqc2iWPuL0Jd1zHO7hLe4MRxShOpHt8snXpVRs+dt7INxfxhwlt
-         6JLNFKTInSeeQdeCrP4fYEyO2bY36Kr5GbKJa342q7DgKEsz7idtovKf2QnBr51qus
-         NrbgckdhLA280R2iwRFFbg7k/UqlzYvX5rjpfUsbmnlK2gOYfGMTzxj3WvS8oRVhBE
-         gxaa6FWmSjkKg==
-Date:   Tue, 5 Jan 2021 15:02:15 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7,1/2] Serial: silabs si4455 serial driver
-Message-ID: <20210105150214.GA6031@dev>
-References: <20210105102921.GA10736@dev>
- <X/RpcButq6PhqdIs@kroah.com>
+        id S1727378AbhAEPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:03:44 -0500
+Received: from mga02.intel.com ([134.134.136.20]:41911 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726652AbhAEPDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:03:43 -0500
+IronPort-SDR: hRa12InfB/OTHyqbpKkSYHpo/wLdIcWF7o9yN58YKeeIRCpRGmlsc9Z26p9AV1vleBoKV/pW5Q
+ cktqJtW33mhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="164189911"
+X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
+   d="scan'208";a="164189911"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 07:01:57 -0800
+IronPort-SDR: Oa0Y0EL8fCWv42Gi3WOGSu1cHtMZ/nzOpsp94cGFZCLuJieQfBEkqTa3YviFOSYGrCD5WCk/T9
+ eIdTlmqpfwSQ==
+X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
+   d="scan'208";a="496805998"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 07:01:55 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kwnrN-002DB3-Ai; Tue, 05 Jan 2021 17:02:57 +0200
+Date:   Tue, 5 Jan 2021 17:02:57 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     syzbot <syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        royale@zerezo.com, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: memory leak in zr364xx_probe
+Message-ID: <20210105150257.GP4077@smile.fi.intel.com>
+References: <0000000000006b86be05b7234cc1@google.com>
+ <CAAEAJfADBQpyfgBjWtnnF-y0g_jRryrcHQd_J-123KxSrid5=Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X/RpcButq6PhqdIs@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAAEAJfADBQpyfgBjWtnnF-y0g_jRryrcHQd_J-123KxSrid5=Q@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 02:28:16PM +0100, 'Greg Kroah-Hartman' wrote:
-> On Tue, Jan 05, 2021 at 10:29:25AM +0000, József Horváth wrote:
-> > This is a serial port driver for
-> >  Silicon Labs Si4455 Sub-GHz transciver.
-> > 
-> > The goal of this driver is to removing wires
-> >  between central(linux) device and remote serial devices/sensors,
-> >  but keeping the original user software.
-> >  It represents regular serial interface for the user space.
-> > 
-> > Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
-> > 
-> > Guide: https://github.com/dministro/linux-serial-si4455
-> > 
-> > Signed-off-by: Jozsef Horvath <info@ministro.hu>
+On Thu, Dec 31, 2020 at 05:47:20PM -0300, Ezequiel Garcia wrote:
+> Let's see if this works:
+> 
+> #syz test: https://gitlab.collabora.com/linux/0day.git
+> a1714d224e516b579d09cc1b4c3d85042e42f14c
+
+Thanks for the hint!
+
+> On Wed, 23 Dec 2020 at 12:27, syzbot
+> <syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    3644e2d2 mm/filemap: fix infinite loop in generic_file_buf..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=16f80eff500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=b4d54814b339b5c6bbd4
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1089df07500000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1671c77f500000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com
+> >
+> > BUG: memory leak
+> > unreferenced object 0xffffc90000e71000 (size 200704):
+> >   comm "kworker/0:2", pid 3653, jiffies 4294942426 (age 13.820s)
+> >   hex dump (first 32 bytes):
+> >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> >   backtrace:
+> >     [<00000000110a155e>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2585
+> >     [<000000008a1ee970>] __vmalloc_node mm/vmalloc.c:2617 [inline]
+> >     [<000000008a1ee970>] vmalloc+0x49/0x50 mm/vmalloc.c:2650
+> >     [<00000000a6a3abfa>] zr364xx_board_init drivers/media/usb/zr364xx/zr364xx.c:1348 [inline]
+> >     [<00000000a6a3abfa>] zr364xx_probe+0x60b/0x833 drivers/media/usb/zr364xx/zr364xx.c:1509
+> >     [<0000000014a572f5>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+> >     [<00000000f30ee977>] really_probe+0x159/0x480 drivers/base/dd.c:561
+> >     [<00000000ddb29374>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+> >     [<0000000073c89cb9>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+> >     [<000000009f56a99c>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+> >     [<00000000848d591a>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+> >     [<00000000168be5bb>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+> >     [<00000000464f40a6>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+> >     [<000000008c75a2b5>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+> >     [<00000000071d14a5>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+> >     [<00000000f325b973>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+> >     [<00000000f30ee977>] really_probe+0x159/0x480 drivers/base/dd.c:561
+> >     [<00000000ddb29374>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+> >
+> >
+> >
 > > ---
-> > 
-> >  
-> > +config SERIAL_SI4455
-> > +	tristate "Si4455 support"
-> > +	depends on SPI
-> > +	select SERIAL_CORE
-> > +	help
-> > +	  This driver is for Silicon Labs's Si4455 Sub-GHz transciver.
-> > +	  Say 'Y' here if you wish to use it as serial port.
-> > +
-> 
-> No module name?
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > syzbot can test patches for this issue, for details see:
+> > https://goo.gl/tpsmEJ#testing-patches
 
-Sorry, I dont understand your question. Can you explain it?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> 
-> >  endmenu
-> > +#include <linux/string.h>
-> > +#include <linux/firmware.h>
-> > +#include <linux/timer.h>
-> > +#ifdef CONFIG_DEBUG_FS
-> > +#include <linux/debugfs.h>
-> > +#endif
-> 
-> No need for #ifdef for .h files.
-> 
-
-Ok, its clear. I'll remove it from here and below.
-
-> > +
-> > +#define PORT_SI4455						1096
-> > +#define SI4455_NAME						"Si4455"
-> > +#define SI4455_MAJOR						432
-> > +#define SI4455_MINOR						567
-> 
-> Where are these major/minor numbers being used and where did they come
-> from?  Why do you need them?
-> 
-> > +struct si4455_port {
-> > +	struct uart_port port;
-> > +#ifdef CONFIG_DEBUG_FS
-> > +	struct dentry *dbgfs_dir;
-> > +#endif
-> 
-> Do not put #ifdefs in .c code, you never need to check for this type of
-> thing.
-> 
-> > +static struct uart_driver si4455_uart = {
-> > +	.owner			= THIS_MODULE,
-> > +	.driver_name		= SI4455_NAME,
-> > +#ifdef CONFIG_DEVFS_FS
-> > +	.dev_name		= "ttySI%d",
-> 
-> Looks like you are porting this from a _VERY_ old kernel.  That config
-> option went away 15+ years ago.  Are you sure this works?
-> 
-
-Ok, I'll remove it.
-
-> 
-> > +#else
-> > +	.dev_name		= "ttySI",
-> 
-> Where did you get that name from?
-> 
-
-This is my suggestion. I dont know the naming rules.
-
-> 
-> > +static int si4455_begin_tx(struct uart_port *port, u32 channel, int length,
-> > +			   u8 *data)
-> > +{
-> > +	int ret = 0;
-> > +	struct si4455_int_status int_status = { 0 };
-> > +	struct si4455_fifo_info fifo_info = { 0 };
-> > +
-> > +	dev_dbg(port->dev, "%s(%u, %u)\n", __func__, channel, length);
-> 
-> No need for these types of debugging lines, just use ftrace.
-> 
-> Please remove them, you have them in a few places (same for the end of
-> functions.)
-> 
-> > +static void si4455_null_void(struct uart_port *port)
-> > +{
-> > +	/* Do nothing */
-> 
-> Why do you need this???
-
-I'll check this.
-
-> 
-> > +#ifdef CONFIG_DEBUG_FS
-> 
-> Again, no #ifdef needed.
-> 
-> > +static int si4455_debugfs_init(struct device *dev)
-> > +{
-> > +	struct si4455_port *s = dev_get_drvdata(dev);
-> > +	struct dentry *dbgfs_si_dir;
-> > +	struct dentry *dbgfs_partinfo_dir;
-> > +	struct dentry *dbgfs_entry;
-> > +
-> > +	s->dbgfs_dir = debugfs_create_dir(dev_name(dev), NULL);
-> > +	if (IS_ERR(s->dbgfs_dir))
-> > +		return PTR_ERR(s->dbgfs_dir);
-> 
-> No  need to check any debugfs return value, just use it and move on.
-> 
-> > +
-> > +	dbgfs_si_dir = debugfs_create_dir("si4455", s->dbgfs_dir);
-> > +	if (IS_ERR(dbgfs_si_dir))
-> > +		return PTR_ERR(dbgfs_si_dir);
-> > +
-> > +	dbgfs_entry = debugfs_create_u32("cts_error_count", 0444,
-> > +					 dbgfs_si_dir, &s->cts_error_count);
-> > +	if (IS_ERR(dbgfs_entry))
-> > +		return PTR_ERR(dbgfs_entry);
-> 
-> Same for all of these, no need to check anything.
-
-Ok, its clear.
-
-> 
-> > +
-> > +	dbgfs_entry = debugfs_create_u32("tx_error_count", 0444,
-> > +					 dbgfs_si_dir, &s->tx_error_count);
-> > +	if (IS_ERR(dbgfs_entry))
-> > +		return PTR_ERR(dbgfs_entry);
-> > +
-> > +	dbgfs_partinfo_dir = debugfs_create_dir("partinfo", dbgfs_si_dir);
-> > +	if (IS_ERR(dbgfs_partinfo_dir))
-> > +		return PTR_ERR(dbgfs_partinfo_dir);
-> > +
-> > +	dbgfs_entry = debugfs_create_u8("chip_rev", 0444,
-> > +					dbgfs_partinfo_dir,
-> > +					&s->part_info.chip_rev);
-> 
-> Wait, did you even build this code?  Does it work?  It shouldn't, these
-> debugfs calls have changed...
-> 
-> I'm stopping reviewing here.
-
-Working test systems:
-
-- #1 - one Si4455 connected to spi1.2:
- $ uname -r
-   4.19.66-v7+
-
- $ ls -R /sys/kernel/debug/spi1.2/si4455
-   /sys/kernel/debug/spi1.2/si4455:
-   cts_error_count  partinfo  tx_error_count
-
-   /sys/kernel/debug/spi1.2/si4455/partinfo:
-   chip_rev  part  rom_id
-
- $ ls /dev | grep ttySI
-   ttySI0
-
-- #2 - one Si4455 connected to spi0.0 and an other to spi0.1:
- $ uname -r
-   5.4.79-v7+
-
- $ ls -R /sys/kernel/debug/spi0.0/si4455
-   /sys/kernel/debug/spi0.0/si4455:
-   cts_error_count  partinfo  tx_error_count
-
-   /sys/kernel/debug/spi0.0/si4455/partinfo:
-   chip_rev  part  rom_id
-
- $ ls -R /sys/kernel/debug/spi0.1/si4455
-   /sys/kernel/debug/spi0.1/si4455:
-   cts_error_count  partinfo  tx_error_count
-
-   /sys/kernel/debug/spi0.1/si4455/partinfo:
-   chip_rev  part  rom_id
-
- $ cat /sys/kernel/debug/spi0.0/si4455/partinfo/chip_rev
-   34 <- Its valid
-
- $ ls /dev | grep ttySI
-   ttySI0
-   ttySI1
-
-I made a short guide to using the interfaces, generating the firmware and a simple setup.
-You can see it: https://github.com/dministro/linux-serial-si4455
-I always test, compile, test, compile, test, test, test, checkpatch before sending my patch.
-
-So my answer is yes, but you are right too :)
-
-I found the answer just now, I compiled this for kernel v4.19.66 and v5.4.79 but not for v5.10.
-
-Sorry for this, and thank you for suggestions.
-
-> 
-> thanks,
-> 
-> greg k-h
-
-Üdvözlettel / Best regards:
-József Horváth
 
