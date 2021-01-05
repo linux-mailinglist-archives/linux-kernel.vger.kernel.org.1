@@ -2,88 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7012EB56D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 504D72EB570
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 23:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730759AbhAEWgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 17:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        id S1730808AbhAEWge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 17:36:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730727AbhAEWgG (ORCPT
+        with ESMTP id S1728224AbhAEWge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 17:36:06 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03110C061796
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 14:35:25 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id x20so2137201lfe.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 14:35:25 -0800 (PST)
+        Tue, 5 Jan 2021 17:36:34 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C91C06179A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 14:35:38 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id g3so539644plp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 14:35:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ahZlAn0+MJ2JO85Il4zqrFNJA3yrxvXOMtixl0o8ZDM=;
-        b=xuV05iXPoA0k4FUH7uDKhum9x67A5+g0WrawAcxr+1nwNNKfzDFFhw6RcXhGVjrdAG
-         DIPpNcT0tMeqTolY+1UHSqvl7wF97ndSycgqsK5KNZXYOFouXEAZcmV0db14uxPi/xTw
-         fkiZrDeIfCVzxFPh/s6f5MjQjTE3FbzD//H1CaneHnQ65EKqNmVFIkbD/Q8s3qRbnfpF
-         oeHplvWvkyArKkqqQjholOIaGROH0SMwCIhye89WnfvVn9lg7Rsy+dje5qrZY0xghJSO
-         IVRZp+VQXtSVeFeCiWvHmfOs8HhPvx9IfbltAGF1/00sbuHYdVKbwxTKfWFe05h5vvVQ
-         dbQw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Z3Wsohv7UtGHD8fUFo782sUW7FfrX1llj4qPmo5np5c=;
+        b=PVCg8LSFf2dm9SNMiuqSsBQIOUJcnf+UW7k+5JeH7EIUUj3OzWyI7vtRUxlXtxIBU+
+         wB7SZOz6mfhKhAXkVLqyglotoAvoeVv+9QgMc8D63uGQr8+zGL7QopQ3ecbfqL94qPw3
+         TmOgBLf49K4v1/vMrqphfhNLbo+gcAJwVkF3XomKAo/2K8lcmFlUBco0B/EvbIkDxiUC
+         7Ovf0afVPGYjrT9POgVKO8KgHFQjsmlLuAo9ECFkasayleqYSWq25xuyGikcfJcQWArL
+         wfpy6guMfDBv5XLzEGAUzjBfRt6oQwrIkgs2mPBURtd6VFNP1LChVzQaX8IgSybDuA1b
+         3Jgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ahZlAn0+MJ2JO85Il4zqrFNJA3yrxvXOMtixl0o8ZDM=;
-        b=Dy3/81r8GHyLhcBeC40vMMFDGKnMBUSOLmwOFtnJn/kmZUsflH57DewPdZPibJ6zDw
-         4JcRJ5quggWDSmMSYuzC2B9cHUUa0i4Ws8FzjN1QZdsuRmtM4SHLX1DM2EU0zS89lVUW
-         /XXZ3HpAk7Sr3u6n+oZhIHelnXFhvkuPYu47CG8PjNuyyWI0YqX9at5LcVuwVrAf9Ze2
-         l99sGSlGR8UHNIDXwASiBHZTV76Bn6XAIcJYIBRX2Jk4L2bnumWI2SF0oxrVVgnQF2wA
-         AcF3TVMpUwUKvbm6e1YFOXHUIC+SV5hpsPdGSyUJrywDmBjG2hN6Z5pHL9Sr7t6goYgS
-         tXHA==
-X-Gm-Message-State: AOAM532h/HCIWyuB//Yu/WEat6MWELnYZY8C8lUykJdlpPgOirsx1YLw
-        8v3i8gBxFEeNX46v/vx2/thzbgP+YADPn8EiG7wFvw==
-X-Google-Smtp-Source: ABdhPJzKIX1tyqxO7DBuxtMjhEds0Yt3Gvxf2kvrIu6dSu4kg7r3sapM7iAm3kjKr+iyrDzk5lF6EH5VLy/XUJEFifg=
-X-Received: by 2002:a2e:9dc3:: with SMTP id x3mr800336ljj.326.1609886124436;
- Tue, 05 Jan 2021 14:35:24 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Z3Wsohv7UtGHD8fUFo782sUW7FfrX1llj4qPmo5np5c=;
+        b=UhaPgWH8DWtAEmKps3lTfYuovC3y3M4x1qRYD8Jh4ZEPHya0c8GnQg0HWR3vzJdbrb
+         0Z0yvcT70+dzQXD/4N5M+ZH4TqkLGV7X7YwEBJjxR8FBQn4RLg5tMvyKKLcEVOXSe6cE
+         szyfp9LZkpaVXqX00BPCVFMl898+Pmjk5yeeDlhSJgcZfMjouztww5T6ZFrE1rw+JTp8
+         O3ypTNXEpTV7sBVqlOQEhHo0c399CK0LBLFiMeFBI2Xjh5/jeq+Y8WNskeGJxKoklAtZ
+         qHqpZllh5OTkQa6syBCdEKdWsB/1ad4egolxdx02BgIq6tAypbeinsOQnde6dC1SXv+t
+         8sbQ==
+X-Gm-Message-State: AOAM530HiewVbVvULWZIVSHDD3IUpLLCfmaNJ70dXFH6fDGUwcDX5ckx
+        MkGANjRX9SckV6hEBpzk5NA=
+X-Google-Smtp-Source: ABdhPJwkR38J1HtHKXQpAmlJgGce4mESgrXn/gPq7ZFQpubewHzALlt8tCYYVPb2AoHgv5tbIPR2Qg==
+X-Received: by 2002:a17:90a:7844:: with SMTP id y4mr1332129pjl.68.1609886136322;
+        Tue, 05 Jan 2021 14:35:36 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g7sm219146pjm.46.2021.01.05.14.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 14:35:35 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Include bcm2835 subsequents into search
+Date:   Tue,  5 Jan 2021 14:35:29 -0800
+Message-Id: <20210105223529.1160176-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <1609676675-5361-1-git-send-email-stefan.wahren@i2se.com>
+References: <1609676675-5361-1-git-send-email-stefan.wahren@i2se.com>
 MIME-Version: 1.0
-References: <20210103100007.32867-1-samuel@sholland.org> <20210103100007.32867-3-samuel@sholland.org>
-In-Reply-To: <20210103100007.32867-3-samuel@sholland.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 5 Jan 2021 23:35:13 +0100
-Message-ID: <CACRpkdZbNUxizfV5Oo8F8b0bsjNcBF6JfP=ufykNLeqErvU-ug@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] pinctrl: sunxi: h6-r: Add s_rsb pin functions
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andre Przywara <andre.przywara@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 3, 2021 at 11:00 AM Samuel Holland <samuel@sholland.org> wrote:
+On Sun,  3 Jan 2021 13:24:35 +0100, Stefan Wahren <stefan.wahren@i2se.com> wrote:
+> Change the bcm2835 maintainer info in order to handle subsequent SoCs.
+> After this get_maintainers.pl provides the proper maintainers for
+> irqchip-bcm2836.
+> 
+> Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+> ---
 
-> As there is an RSB controller in the H6 SoC, there should be some pin
-> configuration for it. While no such configuration is documented, the
-> "s_i2c" pins are suspiciously on the "alternate" function 3, with no
-> primary function 2 given. This suggests the primary function for these
-> pins is actually RSB, and that is indeed the case.
->
-> Add the "s_rsb" pin functions so the RSB controller can be used.
->
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-
-Is it OK if I just apply this patch to the pinctrl tree?
-
-Yours,
-Linus Walleij
+Applied to maintainers/next, thanks!
+--
+Florian
