@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE81D2EB0B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF4C2EB0AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728833AbhAEQ5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:57:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28128 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725838AbhAEQ5S (ORCPT
+        id S1729628AbhAEQ4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:56:15 -0500
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:46150 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729334AbhAEQ4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:57:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609865751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=98+pCbtUqbWy+Z4JNrWpa2FBDJ8j13rrHnVYcmJcyK4=;
-        b=Q1SOX1FeHGaK0QnekVfqwLpmW9alDvEwGk6BkEAWiqosu/pUtyiXKyOxpyQRi2GJJGDNwE
-        ovNYKhSuQyfYYXZA7EpoO8L5svtLvC2z0pgtZ9oZg7fZh0QnLgOP2gd94Q3H4bu38VDyV/
-        +1zOOm2xHVeS7Ot0y25K8sq+4qAo2HU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-78-wc2OnmZUOqyhWzCWqLqpqw-1; Tue, 05 Jan 2021 11:55:50 -0500
-X-MC-Unique: wc2OnmZUOqyhWzCWqLqpqw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AB3A1088D70;
-        Tue,  5 Jan 2021 16:55:00 +0000 (UTC)
-Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0BC1957;
-        Tue,  5 Jan 2021 16:54:58 +0000 (UTC)
-Subject: Re: [PATCH v3 3/4] mm: simplify parameter of setup_usemap()
-To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org
-References: <20210105074708.18483-1-bhe@redhat.com>
- <20210105074708.18483-4-bhe@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <60b2a544-ee72-99f8-b584-2cf5851ae83a@redhat.com>
-Date:   Tue, 5 Jan 2021 17:54:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 5 Jan 2021 11:56:14 -0500
+Received: by mail-wr1-f45.google.com with SMTP id d13so36811715wrc.13;
+        Tue, 05 Jan 2021 08:55:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3lly2danYiTb182H8D8avthszPR0+tG65HNd1JQEsbI=;
+        b=HCkl2FtFY5FNxod7qZtBctkCHsuOzup68d7IP2GeF6z9dd+p5B2gmS978t4vzAGdIF
+         wDRoD1bZ0N5aUyl4SvgbjRIRreTxXj3kWZ06RZtvIR9Ce5ZA9cID5Ol+YTjKFD8aS7Ah
+         sPz2WPkqUDrLS+VItLsMWorYVw7h/dD543rk4hfdGLPvU9u7JsnfcU+UNi3o3ED7MRzo
+         hCD6lBZhA6M5DadzoVEdTA5XsFtZuniO/ltffwfC4sj3FxgwfTA5nWHHtu2UN23fYIHP
+         GJ9ccU2wsszmmcPQ8rQwSAUoAdYGRKsP8vBXGtpbAyAPl6GVbQ2YCY5TFLry43C+OJ+c
+         xTMg==
+X-Gm-Message-State: AOAM530BA+GYe+vJYSXYO6sFmnVkKIn1en5V5dwjeKJqa45Zucax/snP
+        +iS23rTZBxJ9GV/WYUhiGlc=
+X-Google-Smtp-Source: ABdhPJzX4fvNgU7hZQaXgWYzHyNSexu7jTttqQRxXT2CO39QS18z96tCMzayhO0xxYI//56QjYAo1A==
+X-Received: by 2002:adf:ec8c:: with SMTP id z12mr500791wrn.208.1609865732300;
+        Tue, 05 Jan 2021 08:55:32 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id o125sm118260wmo.30.2021.01.05.08.55.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 08:55:31 -0800 (PST)
+Date:   Tue, 5 Jan 2021 17:55:29 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Timon Baetz <timon.baetz@protonmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
+ nodes
+Message-ID: <20210105165529.GB20401@kozik-lap>
+References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
+ <20201230205139.1812366-2-timon.baetz@protonmail.com>
+ <20210104135156.GB5645@sirena.org.uk>
+ <20210104181825.GB27043@kozik-lap>
+ <20210104182734.GH5645@sirena.org.uk>
+ <20210104183821.GA29033@kozik-lap>
+ <20210104212449.GJ5645@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210105074708.18483-4-bhe@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Disposition: inline
+In-Reply-To: <20210104212449.GJ5645@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.01.21 08:47, Baoquan He wrote:
-> Parameter 'zone' has got needed information, let's remove other
-> unnecessary parameters.
+On Mon, Jan 04, 2021 at 09:24:49PM +0000, Mark Brown wrote:
+> On Mon, Jan 04, 2021 at 07:38:21PM +0100, Krzysztof Kozlowski wrote:
+> > On Mon, Jan 04, 2021 at 06:27:34PM +0000, Mark Brown wrote:
 > 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  mm/page_alloc.c | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
+> > > We can indicate the presence of features without adding new compatible
+> > > strings, that's just encoding the way Linux currently divides things up
+> > > into the bindings.  For example having an extcon property seems like it
+> > > should be enough to figure out if we're using extcon.
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b2a46ffdaf0b..e0ce6fb6373b 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6824,25 +6824,22 @@ static unsigned long __init usemap_size(unsigned long zone_start_pfn, unsigned l
->  	return usemapsize / 8;
->  }
->  
-> -static void __ref setup_usemap(struct pglist_data *pgdat,
-> -				struct zone *zone,
-> -				unsigned long zone_start_pfn,
-> -				unsigned long zonesize)
-> +static void __ref setup_usemap(struct zone *zone)
->  {
-> -	unsigned long usemapsize = usemap_size(zone_start_pfn, zonesize);
-> +	unsigned long usemapsize = usemap_size(zone->zone_start_pfn,
-> +					       zone->spanned_pages);
->  	zone->pageblock_flags = NULL;
->  	if (usemapsize) {
->  		zone->pageblock_flags =
->  			memblock_alloc_node(usemapsize, SMP_CACHE_BYTES,
-> -					    pgdat->node_id);
-> +					    zone_to_nid(zone));
->  		if (!zone->pageblock_flags)
->  			panic("Failed to allocate %ld bytes for zone %s pageblock flags on node %d\n",
-> -			      usemapsize, zone->name, pgdat->node_id);
-> +			      usemapsize, zone->name, zone_to_nid(zone));
->  	}
->  }
->  #else
-> -static inline void setup_usemap(struct pglist_data *pgdat, struct zone *zone,
-> -				unsigned long zone_start_pfn, unsigned long zonesize) {}
-> +static inline void setup_usemap(struct zone *zone) {}
->  #endif /* CONFIG_SPARSEMEM */
->  
->  #ifdef CONFIG_HUGETLB_PAGE_SIZE_VARIABLE
-> @@ -7037,7 +7034,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->  			continue;
->  
->  		set_pageblock_order();
-> -		setup_usemap(pgdat, zone, zone_start_pfn, size);
-> +		setup_usemap(zone);
->  		init_currently_empty_zone(zone, zone_start_pfn, size);
->  		memmap_init_zone(zone);
->  	}
+> > It won't be enough because MFD will create device for extcon and bind
+> > the driver. The same for the charger. We have a board where max8997 is
+> > used only as PMIC (providing regulators) without battery and USB
+> > connectivity.
 > 
+> I'm not sure I follow, sorry?  Either the core driver can parse the
+> bindings enough to know what children it has or (probably better) it can
+> instantiate the children unconditionally and then the function drivers
+> can figure out if they need to do anything.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Currently the MFD parent/core driver will instantiate children
+unconditionally.  It would have to be adapted. With proposed bindings -
+nothing to change.  MFD core already does the thing.
 
--- 
-Thanks,
+The point is that function drivers should not be even bound, should not
+start to probe. Otherwise if they probe and fail, they will pollute the
+dmesg/probe log with failure. With the failure coming from looking for
+missing of_node or any other condition from parent/core driver.
 
-David / dhildenb
+> > Another point, is that this reflects the real hardware. The same as we
+> > model entire SoC as multiple children of soc node (with their own
+> > properties), here we represent smaller chip which also has
+> > sub-components.
+> 
+> Components we're calling things like "extcon"...
+
+I am rather thinking about charger, but yes, extcon as well. Either you
+have USB socket (and want to use associated logic) or not.
+
+Best regards,
+Krzysztof
+
 
