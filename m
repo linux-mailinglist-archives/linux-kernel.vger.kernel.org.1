@@ -2,149 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F692EAC36
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5EE2EAC3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730484AbhAENpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:45:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
+        id S1729342AbhAENrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:47:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730222AbhAENpa (ORCPT
+        with ESMTP id S1727178AbhAENrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:45:30 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177A6C06179E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 05:44:30 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id t16so36240039wra.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:44:30 -0800 (PST)
+        Tue, 5 Jan 2021 08:47:00 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A38BC061795;
+        Tue,  5 Jan 2021 05:46:20 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id v1so1709604pjr.2;
+        Tue, 05 Jan 2021 05:46:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MXWwO3xQMpsZXQIjSZeQSg/sLrhlY0LSBGkxq2KXeMs=;
-        b=qghb7Qegw2BRCYZjH32sXzyp9c3+eJc0vVu8Js8hrvKyMj2PjLP+g10K9+8yx8nP1J
-         y/JWW/8u4HaIo5N6CpWEUBYHRfCX9jEL2Se+HKIdl5XV+iwRXcgkcaJ/KBXWud3iA10q
-         mcRVC8dw03LVbdO1DM2L7nmIe301zmu8AEhE7s+brBqFS/2YfT4XI5j9/YAOz2H5JTwJ
-         sM+E9rmONSyRN7rjXRAh9JP2ImmMQjE2rxm0g3fpLCnhZSsMi5LwPtuCExZmp/0Yg5VQ
-         FN0V0OZiJciQTxKBZrQCufNgIBqHWwL4wE1f+kh9ETvn5qjoBI5pyV09kSA754eN9h+6
-         P+KQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=g0jobtBXA5sj9lDPVNKn9xThUOLvezyzWjBOk2AQI4o=;
+        b=j7R993e1p6XDqUzZu9+3yl32GIoPMOJlG4ZrwT3Nc2s8L8eOVjRui8reMP0z2Nz0IH
+         dUv9QtWe0gosaeqypUR8P7x6ho54pHerFBxPLwpXGq8BskFLq9lTsdXSLx4g3tHEJvnG
+         hUWjb7zmLX1e3QpUo8VwyXqXZSIgdxY2rM22uSeXmqIMVa1TFMhEuNHffM+uLGAOTV8R
+         Kd12gCUHBb6Ske7B1FuHWdrmYvtP0Z+Zyj6FJcV3ZQP6iBmYVXDOEuWjHFa9a+pfPc0l
+         PwG8W5mVApfcvxSBLnk+QfzHZg/d+sZkgXaD4ht9/EHXsgFXQBQiyzPtSl3MBZmUfA+c
+         0isA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MXWwO3xQMpsZXQIjSZeQSg/sLrhlY0LSBGkxq2KXeMs=;
-        b=suEOsTwP8zZKUN2wMOuHgpKhjgzcKk/8OdCp5omiZN5oiGXNh3I4XmHYeNH6EGtHIM
-         WFQszmKc8yFR+6+wArIl4MulWwKt2fX+Gz40nUsI2rY9ls0prJ17o0WduJftQWZHikUW
-         G1UAnJc/oDXYnH2bWUIunX9QMcx/vQbWoKh/vZQqg4I5gsuecH+1/tkWaxBYmFII5h+4
-         nZLRMJ78+Bkg/BeU6rIXgugk6CW/mID95kVwQrw7a6XerhAZeAp0do1I8VnJsdvLIqci
-         nrqFl/+yyxOuin2IGQIIMqekATHpVyLuuEo2eHdr4PJPzuP1GPhmgooJLXeXxHdDjkJN
-         VRsg==
-X-Gm-Message-State: AOAM530FqaZgeKkwUBra/VxzFMULG54JflnD7KhVJ8JWoMrpnPFoodDi
-        Az+nQPgYhpvL5n22VP8FQwlwvQ==
-X-Google-Smtp-Source: ABdhPJybClqZS9KiB1ynCk/1tI9yl/cX6elGdTHsSDJ5TqLRsPoeYtviJgcO2KLU+PiVPw3GoOxVhw==
-X-Received: by 2002:a5d:4307:: with SMTP id h7mr85638796wrq.353.1609854268850;
-        Tue, 05 Jan 2021 05:44:28 -0800 (PST)
-Received: from localhost.localdomain (pop.92-184-112-247.mobile.abo.orange.fr. [92.184.112.247])
-        by smtp.gmail.com with ESMTPSA id h9sm93873772wre.24.2021.01.05.05.44.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 05:44:28 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-rtc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH] rtc: s5m: use devm_i2c_new_dummy_device()
-Date:   Tue,  5 Jan 2021 14:44:24 +0100
-Message-Id: <20210105134424.30632-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=g0jobtBXA5sj9lDPVNKn9xThUOLvezyzWjBOk2AQI4o=;
+        b=dtqrPiGOo6OP+9LF93AaC1HfBqvIBHgLLNZBnxrXbRlmfeJdAsCE2MRhZhG1IABWwz
+         29ax/4JvY602IeUQ6a3+8P0hJNdU2CjNFbmCl6XAJCpgBtKuuKuGlvAjVQNyyPMrUujg
+         kuOfMhszsIospCf3RfByPaItYYVyaDWS1ip0w2iHhoK7gLJGVT/uLlxYMvHnf9dYSVS0
+         Ytj6mD/IhsvQqR1cIa2M69ntg0HYato8HJFm3WWm2XDVC81muaMT8jE1OfB4jDggj29M
+         4CF5wUOtT/TWlr2x6p0H8ZfXp+oH7Jx7fLvdqu+GGrjyQECISsmf5XN+MySY7pn2Tij0
+         c82Q==
+X-Gm-Message-State: AOAM532M9VdXfq89yyQLi/gibp0dSZazGql11xc5GYQAXPThyht+vgRV
+        2sofjDpJT3GM2j25B8spBpwPqd9xYVk=
+X-Google-Smtp-Source: ABdhPJxvd6mIQv1AA6rT/CDrdeIwQ5Gv03Zr0IMu8Te2vbFbkE9nf31TY6rfagk/VngB0+YLJKjv0Q==
+X-Received: by 2002:a17:90a:1b0d:: with SMTP id q13mr4092457pjq.21.1609854380057;
+        Tue, 05 Jan 2021 05:46:20 -0800 (PST)
+Received: from nj08008nbu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id w63sm57582284pfc.20.2021.01.05.05.46.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Jan 2021 05:46:19 -0800 (PST)
+From:   Kevin Tang <kevin3.tang@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, mark.rutland@arm.com, kevin3.tang@gmail.com
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v3 0/6] Add Unisoc's drm kms module
+Date:   Tue,  5 Jan 2021 21:46:01 +0800
+Message-Id: <1609854367-2720-1-git-send-email-kevin3.tang@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+ChangeList:
+RFC v1:
+1. only upstream modeset and atomic at first commit. 
+2. remove some unused code;
+3. use alpha and blend_mode properties;
+3. add yaml support;
+4. remove auto-adaptive panel driver;
+5. bugfix
 
-Use the managed variant of i2c_new_dummy_device() to shrink code and
-remove the goto label.
+RFC v2:
+1. add sprd crtc and plane module for KMS, preparing for multi crtc&encoder
+2. remove gem drivers, use generic CMA handlers
+3. remove redundant "module_init", all the sub modules loading by KMS
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/rtc/rtc-s5m.c | 24 ++++++++----------------
- 1 file changed, 8 insertions(+), 16 deletions(-)
+RFC v3:
+1. multi crtc&encoder design have problem, so rollback to v1
 
-diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
-index eb9dde4095a9..3432c6213b4c 100644
---- a/drivers/rtc/rtc-s5m.c
-+++ b/drivers/rtc/rtc-s5m.c
-@@ -760,7 +760,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	info->i2c = i2c_new_dummy_device(s5m87xx->i2c->adapter, RTC_I2C_ADDR);
-+	info->i2c = devm_i2c_new_dummy_device(&pdev->dev, s5m87xx->i2c->adapter,
-+					      RTC_I2C_ADDR);
- 	if (IS_ERR(info->i2c)) {
- 		dev_err(&pdev->dev, "Failed to allocate I2C for RTC\n");
- 		return PTR_ERR(info->i2c);
-@@ -768,10 +769,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 
- 	info->regmap = devm_regmap_init_i2c(info->i2c, regmap_cfg);
- 	if (IS_ERR(info->regmap)) {
--		ret = PTR_ERR(info->regmap);
- 		dev_err(&pdev->dev, "Failed to allocate RTC register map: %d\n",
--				ret);
--		goto err;
-+			ret);
-+		return PTR_ERR(info->regmap);
- 	}
- 
- 	info->dev = &pdev->dev;
-@@ -781,10 +781,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	if (s5m87xx->irq_data) {
- 		info->irq = regmap_irq_get_virq(s5m87xx->irq_data, alarm_irq);
- 		if (info->irq <= 0) {
--			ret = -EINVAL;
- 			dev_err(&pdev->dev, "Failed to get virtual IRQ %d\n",
- 				alarm_irq);
--			goto err;
-+			return -EINVAL;
- 		}
- 	}
- 
-@@ -797,10 +796,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	info->rtc_dev = devm_rtc_device_register(&pdev->dev, "s5m-rtc",
- 						 &s5m_rtc_ops, THIS_MODULE);
- 
--	if (IS_ERR(info->rtc_dev)) {
--		ret = PTR_ERR(info->rtc_dev);
--		goto err;
--	}
-+	if (IS_ERR(info->rtc_dev))
-+		return PTR_ERR(info->rtc_dev);
- 
- 	if (!info->irq) {
- 		dev_info(&pdev->dev, "Alarm IRQ not available\n");
-@@ -813,15 +810,10 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
- 			info->irq, ret);
--		goto err;
-+		return ret;
- 	}
- 
- 	return 0;
--
--err:
--	i2c_unregister_device(info->i2c);
--
--	return ret;
- }
- 
- static int s5m_rtc_remove(struct platform_device *pdev)
+RFC v4:
+1. update to gcc-linaro-7.5.0
+2. update to Linux 5.6-rc3
+3. remove pm_runtime support
+4. add COMPILE_TEST, remove unused kconfig
+5. "drm_dev_put" on drm_unbind
+6. fix some naming convention issue
+7. remove semaphore lock for crtc flip
+8. remove static variables
+
+RFC v5:
+1. optimize encoder and connector code implementation
+2. use "platform_get_irq" and "platform_get_resource"
+3. drop useless function return type, drop unless debug log
+4. custom properties should be separate, so drop it
+5. use DRM_XXX replase pr_xxx
+6. drop dsi&dphy hal callback ops
+7. drop unless callback ops checking
+8. add comments for sprd dpu structure
+
+RFC v6:
+1. Access registers via readl/writel
+2. Checking for unsupported KMS properties (format, rotation, blend_mode, etc) on plane_check ops
+3. Remove always true checks for dpu core ops
+
+RFC v7:
+1. Fix DTC unit name warnings
+2. Fix the problem of maintainers
+3. Call drmm_mode_config_init to mode config init
+4. Embed drm_device in sprd_drm and use devm_drm_dev_alloc
+5. Replace DRM_XXX with drm_xxx on KMS module, but not suitable for other subsystems
+6. Remove plane_update stuff, dpu handles all the HW update in crtc->atomic_flush
+7. Dsi&Dphy Code structure adjustment, all move to "sprd/"
+
+v0:
+1. Remove dpu_core_ops stuff layer for sprd drtc driver, but dpu_layer need to keeping.
+   Because all the HW update in crtc->atomic_flush, we need temporary storage all layers for
+   the dpu pageflip of atomic_flush.
+2. Add ports subnode with port@X.
+
+v1:
+1. Remove dphy and dsi graph binding, merge the dphy driver into the dsi.
+2. Add commit messages for Unisoc's virtual nodes.
+
+v2:
+1. Use drm_xxx to replace all DRM_XXX.
+2. Use kzalloc to replace devm_kzalloc for sprd_dsi/sprd_dpu structure init.
+3. Remove dpu_core_ops midlayer.
+
+v3:
+1. Remove dpu_layer midlayer and commit layers by aotmic_update
+
+Kevin Tang (6):
+  dt-bindings: display: add Unisoc's drm master bindings
+  drm/sprd: add Unisoc's drm kms master
+  dt-bindings: display: add Unisoc's dpu bindings
+  drm/sprd: add Unisoc's drm display controller driver
+  dt-bindings: display: add Unisoc's mipi dsi controller bindings
+  drm/sprd: add Unisoc's drm mipi dsi&dphy driver
+
+ .../display/sprd/sprd,display-subsystem.yaml       |   64 +
+ .../bindings/display/sprd/sprd,sharkl3-dpu.yaml    |   77 +
+ .../display/sprd/sprd,sharkl3-dsi-host.yaml        |  102 ++
+ drivers/gpu/drm/Kconfig                            |    2 +
+ drivers/gpu/drm/Makefile                           |    1 +
+ drivers/gpu/drm/sprd/Kconfig                       |   13 +
+ drivers/gpu/drm/sprd/Makefile                      |    8 +
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.c                 |  794 +++++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.h                 | 1475 ++++++++++++++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c             |  157 +++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h             |   26 +
+ drivers/gpu/drm/sprd/megacores_pll.c               |  317 +++++
+ drivers/gpu/drm/sprd/megacores_pll.h               |  146 ++
+ drivers/gpu/drm/sprd/sprd_dpu.c                    |  985 +++++++++++++
+ drivers/gpu/drm/sprd/sprd_dpu.h                    |  120 ++
+ drivers/gpu/drm/sprd/sprd_drm.c                    |  224 +++
+ drivers/gpu/drm/sprd/sprd_drm.h                    |   19 +
+ drivers/gpu/drm/sprd/sprd_dsi.c                    | 1162 +++++++++++++++
+ drivers/gpu/drm/sprd/sprd_dsi.h                    |  107 ++
+ 19 files changed, 5799 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dpu.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-host.yaml
+ create mode 100644 drivers/gpu/drm/sprd/Kconfig
+ create mode 100644 drivers/gpu/drm/sprd/Makefile
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.h
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.c
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.h
+
 -- 
-2.29.1
+2.7.4
 
