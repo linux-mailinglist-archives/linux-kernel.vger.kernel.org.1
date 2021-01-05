@@ -2,116 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2752EAEA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A1F2EAE71
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbhAEPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:35:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34870 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728003AbhAEPf1 (ORCPT
+        id S1728008AbhAEPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:32:19 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:37948 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727994AbhAEPcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:35:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609860841;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=pDzAcq2nT/KXhp+AqF/2GVIqAYTMHTBHiO9DQwkg9VA=;
-        b=gOX4HJPJABAXB1PmPy0l3SP1vGBwYBnboUa8AmqRXfwwtKKat9sBVt4YsyCiiW8yCgEfFc
-        uFljpUMLiZfHTLXQeUnQWMVLT6BlTUW0xjhhafpfy2vnvXAVPqhvXKEACFcE1L7C4MBGih
-        XbNd5bhtv1JjK27PSZiZ0Yaw8iGzWs4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-2-1JPyH1czPxurlL3jUNITaw-1; Tue, 05 Jan 2021 10:31:27 -0500
-X-MC-Unique: 1JPyH1czPxurlL3jUNITaw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A03F8030A3;
-        Tue,  5 Jan 2021 15:31:26 +0000 (UTC)
-Received: from yiche-home.usersys.redhat.com (ovpn-12-69.pek2.redhat.com [10.72.12.69])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F9E6271BF;
-        Tue,  5 Jan 2021 15:31:22 +0000 (UTC)
-From:   Chen Yi <yiche@redhat.com>
-To:     Chen Yi <yiche@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Leo <liuhangbin@gmail.com>
-Subject: [PATCH] selftests: netfilter: Pass family parameter "-f" to conntrack tool
-Date:   Tue,  5 Jan 2021 23:31:20 +0800
-Message-Id: <20210105153120.42710-1-yiche@redhat.com>
-Reply-To: 20210104110723.43564-1-yiche@redhat.com
+        Tue, 5 Jan 2021 10:32:18 -0500
+Received: by mail-oi1-f180.google.com with SMTP id x13so36390406oic.5;
+        Tue, 05 Jan 2021 07:32:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3XCzLc+JrlP85UEWmLYLA8pxjzVQAO+Bfus2Uo0z0ls=;
+        b=PDHZb07NgaYldsX+grGGK8IRRtV9oTg+NjzrBZ0fJCwiTfieRhsv/1zX2ijcJ4XKBv
+         lkHxr8JhI2VJM8GMo9F5vhjK9X97gv2oXVeQxIcF/VjuoUi2t8PXJkxcaToSaTwIjgz2
+         N8QjOJHkpLqwJBd5PDZuoNR0xFxM9Rlqp9qLJsgM13wqRBW2mIu/Z4YeMLYsqJqA4Jsa
+         qqoQK6Ea0ef4BVmPzTXzOtWE3aS/vcCoRaLPbDZX4tzxYy0KKtdOt02882gQVeoCtk9W
+         TEx1RDDUBhDc4h7LH5Dn0oYFJcROt6UPPdflDHZf96ykulUQ4bMeVFgiMdnBG8agkX14
+         SyUw==
+X-Gm-Message-State: AOAM532EeInivWO/DjrhDOeVoOsZoCvAHy8d0EAJSWX6OQ2ut/v8WuJo
+        eDaCufRDu6QH888ssVdWJlq3ma2e9hfxvQoEY7I=
+X-Google-Smtp-Source: ABdhPJxRQ0Rbqs3/fLnMK6omXZo62gnSTOQvDNxnAOkouFndOM1RUVX0vszyuqSY7ykF/J2RX++cKEywBU5I6nUriOo=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr72159oia.54.1609860697036;
+ Tue, 05 Jan 2021 07:31:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201227130407.10991-1-wsa+renesas@sang-engineering.com> <20201227130407.10991-4-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20201227130407.10991-4-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Jan 2021 16:31:26 +0100
+Message-ID: <CAMuHMdWqA8Kv_5Ob4ZycM9H-EaHNydMWCX+6HSECRRK3Z7oHkA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] arm64: dts: renesas: r8a779a0: Add Ethernet-AVB support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Tho Vu <tho.vu.wh@renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix nft_conntrack_helper.sh false fail report:
+Hi Wolfram,
 
-1) Conntrack tool need "-f ipv6" parameter to show out ipv6 traffic items.
+On Sun, Dec 27, 2020 at 2:04 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> From: Tho Vu <tho.vu.wh@renesas.com>
+>
+> Define the generic parts of Ethernet-AVB device nodes. Only AVB0 was
+> tested because it was the only port with a PHY on current hardware.
+>
+> Signed-off-by: Tho Vu <tho.vu.wh@renesas.com>
+> [wsa: double checked & rebased]
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-2) Sleep 1 second after background nc send packet, to make sure check
-is after this statement executed.
+Thanks for your patch!
 
-False report:
-FAIL: ns1-lkjUemYw did not show attached helper ip set via ruleset
-PASS: ns1-lkjUemYw connection on port 2121 has ftp helper attached
-...
+> --- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+> @@ -377,6 +377,276 @@ i2c6: i2c@e66e8000 {
+>                         status = "disabled";
+>                 };
+>
+> +               avb0: ethernet@e6800000 {
+> +                       compatible = "renesas,etheravb-r8a779a0",
+> +                                    "renesas,etheravb-rcar-gen3";
+> +                       reg = <0 0xe6800000 0 0x800>;
+> +                       interrupts = <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 257 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 258 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 260 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 261 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 262 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 263 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 264 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 267 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 268 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 269 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 270 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 271 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 273 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 274 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 275 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 276 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 277 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 278 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 279 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 280 IRQ_TYPE_LEVEL_HIGH>;
+> +                       interrupt-names = "ch0", "ch1", "ch2", "ch3",
+> +                                         "ch4", "ch5", "ch6", "ch7",
+> +                                         "ch8", "ch9", "ch10", "ch11",
+> +                                         "ch12", "ch13", "ch14", "ch15",
+> +                                         "ch16", "ch17", "ch18", "ch19",
+> +                                         "ch20", "ch21", "ch22", "ch23",
+> +                                         "ch24";
+> +                       clocks = <&cpg CPG_MOD 211>;
+> +                       power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
+> +                       resets = <&cpg 211>;
+> +                       phy-mode = "rgmii";
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       status = "disabled";
 
-After fix:
-PASS: ns1-2hUniwU2 connection on port 2121 has ftp helper attached
-PASS: ns2-2hUniwU2 connection on port 2121 has ftp helper attached
-...
+$ make dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/net/renesas,etheravb.yaml
+arch/arm64/boot/dts/renesas/r8a779a0-falcon.dt.yaml:
+ethernet@e6800000: 'rx-internal-delay-ps' is a required property
 
-Fixes: 619ae8e0697a6 ("selftests: netfilter: add test case for conntrack helper assignment")
-Signed-off-by: Chen Yi <yiche@redhat.com>
----
- .../selftests/netfilter/nft_conntrack_helper.sh      | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+Similarly, "tx-internal-delay-ps" should be added to all instances, too.
 
-diff --git a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
-index edf0a48da6bf..bf6b9626c7dd 100755
---- a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
-+++ b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
-@@ -94,7 +94,13 @@ check_for_helper()
- 	local message=$2
- 	local port=$3
- 
--	ip netns exec ${netns} conntrack -L -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
-+	if echo $message |grep -q 'ipv6';then
-+		local family="ipv6"
-+	else
-+		local family="ipv4"
-+	fi
-+
-+	ip netns exec ${netns} conntrack -L -f $family -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
- 	if [ $? -ne 0 ] ; then
- 		echo "FAIL: ${netns} did not show attached helper $message" 1>&2
- 		ret=1
-@@ -111,8 +117,8 @@ test_helper()
- 
- 	sleep 3 | ip netns exec ${ns2} nc -w 2 -l -p $port > /dev/null &
- 
--	sleep 1
- 	sleep 1 | ip netns exec ${ns1} nc -w 2 10.0.1.2 $port > /dev/null &
-+	sleep 1
- 
- 	check_for_helper "$ns1" "ip $msg" $port
- 	check_for_helper "$ns2" "ip $msg" $port
-@@ -128,8 +134,8 @@ test_helper()
- 
- 	sleep 3 | ip netns exec ${ns2} nc -w 2 -6 -l -p $port > /dev/null &
- 
--	sleep 1
- 	sleep 1 | ip netns exec ${ns1} nc -w 2 -6 dead:1::2 $port > /dev/null &
-+	sleep 1
- 
- 	check_for_helper "$ns1" "ipv6 $msg" $port
- 	check_for_helper "$ns2" "ipv6 $msg" $port
+The rest looks good to me, so with the above fixed:
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
