@@ -2,84 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5FD2EB403
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D52212EB407
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729749AbhAEURc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 15:17:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729621AbhAEURc (ORCPT
+        id S1731047AbhAEURe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 15:17:34 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24402 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729621AbhAEURd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 15:17:32 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F71C061574;
-        Tue,  5 Jan 2021 12:16:51 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id b26so1369599lff.9;
-        Tue, 05 Jan 2021 12:16:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kv7FRyLpxDsePZtMhWTC8aZgVd2dSF51s0I3oh8t9/Y=;
-        b=UHxPVwGDu9Ur4uFAgEkxbDuwKk3z0F/XUBrGzykI3s3/WyEVAo91eTrnKqFiU/AFP+
-         rNKVUeLpW+Jnt5eMQbBpzFeSJ0FSsPfWwUm+wZwszZKN4SgHWGMEAEPm7/AH3XVyNQHT
-         LX2R620bQp/xqZp3r8/f9eYLe14gzP8zLOKGdEVDJ7KGhC8Ews8mkuy2FIcU7G2DF0BQ
-         R/ONADrVyabJaS0JHfbKowdGq9izj6foBkEHYT7Xczc9p5YRkUcNW+wy6xFkeEfZgenB
-         sJuymMk9m4kbUAzFrNfsnS+I0216f8U8Q9w0/jJ4TWEpEClmnMpcolidrJUwzIybKOSU
-         tsHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kv7FRyLpxDsePZtMhWTC8aZgVd2dSF51s0I3oh8t9/Y=;
-        b=N0QkAEy7HXPDFq1DRrJ5wzQ9edoI4Y3TqJyqXVSZ5j6wt7uHC8aMsg+01gedXwBpi/
-         hTfMqeTd4tthqgJ2gyQep4syqEjd73srk3NcC5ZQz1uENSW1JeDrjTOEryTz0MbRGTVg
-         g70zqw6VdeV6T7IO6R7ow/kGIqwFCfcvw2uzd1QDZkr2CPb7Ass1fVt5UjCxCMIU8q9+
-         QROD+kYuyj6Pz8TdDsudwFmImt4tZ2lk/4rRo0jh4XCAysUWoUTJJgWWFa3CpjCOcV/G
-         FluOFG6Oaqm4hmpdFQhS8nXh9ua0gBqHpkbI8iMbb/5LKFd1/iKR4j8wJKERU8idlv4S
-         Gemg==
-X-Gm-Message-State: AOAM530I0czxtGjYBhKAILCt6fYWK/vFedPBFzGC3xM2SpxoLmnUoDEm
-        H3RCQb8IFA3+95yQb1yJjdLPLGLuYx9FURAGjPU=
-X-Google-Smtp-Source: ABdhPJypI7RuJrGSPiHcEpDlzI9cUoY5s6jJufq+Xe1vSHq1hJC71Kq94OqP0/SXLdgge3nRFb+h68QTw4lGWcwb4lk=
-X-Received: by 2002:a2e:9792:: with SMTP id y18mr614730lji.204.1609877810058;
- Tue, 05 Jan 2021 12:16:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20210105080027.36692-1-linxichen.01@bytedance.com>
-In-Reply-To: <20210105080027.36692-1-linxichen.01@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 5 Jan 2021 12:16:38 -0800
-Message-ID: <CAADnVQ+i6YaUxy7KcBwKWycQ8dK2Z3vBeFSuJdaa90aphCSkfg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Add signature checking for BPF programs
-To:     Xichen Lin <linxichen.01@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>
+        Tue, 5 Jan 2021 15:17:33 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 105JYl34170166;
+        Tue, 5 Jan 2021 15:16:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=IitCUxfnQFJ8pL7B5kWAuVTYoWZfoGWE0zwB5kzMTRU=;
+ b=ITUBadNeXF2IHRfWEOLoBfjZQaU17/em+0e4h2buLl5XEwWKGdRoBf99ueZo27L3DPEg
+ vsk82F3eLGJHhFXeIg+J1K+uDV+oT7f9iDvsxQR9+rABwBIARpWi4yNkK4SIN8GSo5WN
+ OkBBy5yspeGXMZqAdgWegUTXUjL1kzgev0dT1BDnx3BVhpJGpD7VCHuth0liV4duEbi/
+ kYhEhQfBELbEh3DZ0I0/9ps8iFq8ET9KnFzXgwFszYoFIpvfGKfAKSXNgdLWEHybFUqq
+ CVpZeq56vI79+mgTq5P1/aEJ0tqS/XWUVEuoBiPnyZJzPsUOJ71pPOZshRqsxbHVNYf9 aA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35vwc030jw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Jan 2021 15:16:49 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 105KF647144664;
+        Tue, 5 Jan 2021 15:16:48 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35vwc030j3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Jan 2021 15:16:48 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 105KCU4o030045;
+        Tue, 5 Jan 2021 20:16:46 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 35tgf8b6r0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Jan 2021 20:16:46 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 105KGiCp41091494
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Jan 2021 20:16:44 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0827111C04C;
+        Tue,  5 Jan 2021 20:16:44 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B780511C050;
+        Tue,  5 Jan 2021 20:16:40 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.22.135])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Jan 2021 20:16:40 +0000 (GMT)
+Message-ID: <3b5dd02fab216746409ccede82f51382539824d3.camel@linux.ibm.com>
+Subject: Re: [PATCH v9 3/8] IMA: define a hook to measure kernel integrity
+ critical data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Tue, 05 Jan 2021 15:16:39 -0500
+In-Reply-To: <9afab02b-4b02-485d-cca2-bdf8b1cf87e7@linux.microsoft.com>
+References: <20201212180251.9943-1-tusharsu@linux.microsoft.com>
+         <20201212180251.9943-4-tusharsu@linux.microsoft.com>
+         <5ae72a76664ce7011d3041689efbfe1a2c67d44f.camel@linux.ibm.com>
+         <9afab02b-4b02-485d-cca2-bdf8b1cf87e7@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-05_06:2021-01-05,2021-01-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 impostorscore=0 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 priorityscore=1501 bulkscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101050112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 12:00 AM Xichen Lin <linxichen.01@bytedance.com> wrote:
->
-> From: Xichen Lin <linxichen.01@bytedance.com>
->
-> Check the signature of a BPF program against the same set of keys for
-> module signature checking.
->
-> Currently the format of a signed BPF program is similar to that of
-> a signed kernel module, composed of BPF bytecode, signature,
-> module_signature structure and a magic string, in order, aligned to
-> struct sock_filter.
+On Tue, 2021-01-05 at 12:01 -0800, Tushar Sugandhi wrote:
+> 
+> >> data. However, various data structures, policies, and states
+> > 
+> > Here and everywhere else, there are two blanks after a period.
+> > 
+> I checked this patch file in multiple text editors, but couldn’t find
+> any instance of period followed by two spaces. I will double check again 
+> all the patches for multiple spaces, and remove them if any.
 
-Commit log talks about 'what' and gives no insight into 'why' the
-patch was sent.
-Please take time to clearly explain the motivation for the changes.
-Also please see earlier discussions on the subject and Arnaldo's preso
-from plumbers.
+There should be two blanks after a period, not one blank.
+
+<snip>
+
+> >> + *
+> >> + * Measure the kernel subsystem data, critical to the integrity of the kernel,
+> >> + * into the IMA log and extend the @pcr.
+> >> + *
+> >> + * Use @event_name to describe the state/buffer data change.
+> >> + * Examples of critical data (@buf) could be various data structures,
+> >> + * policies, and states stored in kernel memory that can impact the integrity
+> >> + * of the system.
+> >> + *
+> >> + * If @measure_buf_hash is set to true - measure hash of the buffer data,
+> >> + * else measure the buffer data itself.
+> >> + * @measure_buf_hash can be used to save space, if the data being measured
+> >> + * is too large.
+> >> + *
+> >> + * The data (@buf) can only be measured, not appraised.
+> > 
+> > The "/**" is the start of kernel-doc.  Have you seen anywhere else in
+> My impression was the hooks in ima_main.c e.g. ima_file_free()
+> ima_file_mmap() required the double-asterisk ("/**"), and internal
+> functions like ima_rdwr_violation_check() require a single-asterisk
+> ("/*")
+> 
+> kernel-doc.rst suggest the double-asterisk ("/**") for function comment
+> as well.
+> 
+> Function documentation
+> ----------------------
+> 
+> The general format of a function and function-like macro kernel-doc 
+> comment is::
+> 
+>    /**
+>     * function_name() - Brief description of function.
+> 
+> Please let me know if you still want me to remove the double-asterisk
+> ("/**") here.
+
+Yes, of course this needs to be kernel-doc and requires "/**"
+
+> 
+> > the kernel using the @<variable name> in the longer function
+> > description?  Have you seen this style of longer   function
+> > description?  Refer to Documentation/doc-guide/kernel-doc.rst and other
+> > code for examples.
+> > 
+> Thanks. I will remove the prefix "@" from <variable name> in the longer 
+> function description.
+
+Removing the @<variable name> isn't sufficient.  Please look at other
+examples of longer function definitions before reposting.
+
+thanks,
+
+Mimi
+
