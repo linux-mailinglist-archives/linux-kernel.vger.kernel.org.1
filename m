@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45BA2EAD36
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAAF2EAD38
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727360AbhAEOQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:16:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43736 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726799AbhAEOQF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:16:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609856079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=FFhE3QWiTuwXxm7OOOvYxjR2y1OcGJ9OkHckxaAUKOg=;
-        b=BGDefi9Pjf4kSDMv/8kTTTfroemPMHwdbZ/FK5HmRtRdtuUVvkJo8+qufdB+GKxKDd0OYi
-        WlvUn/476zAZXDVPbe1+xt0g/VR1cU5JJyhD+28Roa2g3C1J7mR+4FcWXY6lTJvkGhKWAl
-        NymnfMnAlc5AZ0PdSrwy5REZdaxPRSE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-230-WmPIvgh9OzCVoS7xFTbaoQ-1; Tue, 05 Jan 2021 09:14:35 -0500
-X-MC-Unique: WmPIvgh9OzCVoS7xFTbaoQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8CC5E180A095;
-        Tue,  5 Jan 2021 14:14:33 +0000 (UTC)
-Received: from janakin.usersys.redhat.com (unknown [10.36.110.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 64C925D6D3;
-        Tue,  5 Jan 2021 14:14:30 +0000 (UTC)
-From:   Jan Stancek <jstancek@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     ziy@nvidia.com, shy828301@gmail.com, jack@suse.cz,
-        willy@infradead.org, mgorman@suse.de, mhocko@suse.com,
-        songliubraving@fb.com, akpm@linux-foundation.org,
-        jstancek@redhat.com
-Subject: [PATCH] mm: migrate: initialize err in do_migrate_pages
-Date:   Tue,  5 Jan 2021 15:14:20 +0100
-Message-Id: <456a021c7ef3636d7668cec9dcb4a446a4244812.1609855564.git.jstancek@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        id S1727473AbhAEOQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:16:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726504AbhAEOQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:16:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87DFA22AAB;
+        Tue,  5 Jan 2021 14:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609856165;
+        bh=CLVMjissewD5ZdHzTYCaSNI7ZR8xFCiUY8G4oTJC+V8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l5lPIZw0Y4PQa+oyffi7WVuBTNZIJYMbhOb0Xx+wZv3DqMSjDes4Fvm1TfTlOr9YI
+         zTJTAO6G4SWFU0DL0XiFt5lbevHWdxg2kx/6uAh1XX+3zRR0rn5IxCbUwJpqg7//Hs
+         z/SlKPtkx7xRwYx20L6JNvYrwSkVnvBdCu8q6bJ4BXkvhZOV19lwmMeqXvuwlSncGb
+         O7Z9cdOZaM4aFeRVNTppg3vBFlkbSvhXIxblsyxB6qYYt6gILPfcYO/3+5+fIffX8/
+         JKkKCeMq3Ulym3Erl4yVuK1LzjONq49nMI0qKIBbfLSZLweklMMhtmFtBqgNLqG0JB
+         NM1G9qJJwVkzA==
+Date:   Tue, 5 Jan 2021 14:15:36 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        ThomasBogendoerfer <tsbogend@alpha.franken.de>,
+        linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, yangtiezhu@loongson.cn,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/4] spi: LS7A: Add Loongson LS7A SPI controller
+ driver support
+Message-ID: <20210105141536.GD4487@sirena.org.uk>
+References: <1609124381-9107-1-git-send-email-zhangqing@loongson.cn>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mSxgbZZZvrAyzONB"
+Content-Disposition: inline
+In-Reply-To: <1609124381-9107-1-git-send-email-zhangqing@loongson.cn>
+X-Cookie: I'm ANN LANDERS!!  I can SHOPLIFT!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")',
-do_migrate_pages can return uninitialized variable 'err' (which is
-propagated to user-space as error) when 'from' and 'to' nodesets
-are identical. This can be reproduced with LTP migrate_pages01,
-which calls migrate_pages() with same set for both old/new_nodes.
 
-Add 'err' initialization back.
+--mSxgbZZZvrAyzONB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")
-Cc: Zi Yan <ziy@nvidia.com>
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- mm/mempolicy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Dec 28, 2020 at 10:59:38AM +0800, Qing Zhang wrote:
 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 8cf96bd21341..2c3a86502053 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -1111,7 +1111,7 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
- 		     const nodemask_t *to, int flags)
- {
- 	int busy = 0;
--	int err;
-+	int err = 0;
- 	nodemask_t tmp;
- 
- 	migrate_prep();
--- 
-2.18.1
+> +	if (!!(spi->mode & SPI_CS_HIGH) == enable)
+> +		ls7a_spi_write_reg(ls7a_spi, SFC_SOFTCS, (0x1 << spi->chip_select) | cs);
+> +	else
+> +		ls7a_spi_write_reg(ls7a_spi, SFC_SOFTCS, (0x11 << spi->chip_select) | cs);
+> +}
 
+The core will handle inverting the chip select for the driver when
+SIP_CS_HIGH so doing it again here will cause bugs.  Just use the value
+of enable directly.  Otherwise this looks good.
+
+--mSxgbZZZvrAyzONB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/0dIcACgkQJNaLcl1U
+h9CFWAf8Drd3eCKlYj8r2/7Zu+rzTEA+cCKsN1h5sKGJ2+iTvwEnRJQoEMUE0LTc
+iFwyukIuELaVLbZRBfa2LkrMxxSG1gvkAFIEKRDTQ6SuWwSZeHNGNfZe0hv6hfhi
+K2ES8w+MDmqHYU3kQ/cOAZw2IhqTYk3f9VYT63Zk37xEl4osSEDhNy3St0k/yK8N
+4CW/xVqxR3wkjJnPWVvcLMlzlz6kf7Np4VXSMpXKXDuRXJ/hbucJR7HPr6WCe3ZG
+9A5DZ5siMMQegDGi78pZ/J4m76GIjMDUzHQ2d9hCgObTovmqVAZdUOU70MTgJN8S
+IAXXy5kaSjg8VQNZ7ObNzjvooudarg==
+=2jt+
+-----END PGP SIGNATURE-----
+
+--mSxgbZZZvrAyzONB--
