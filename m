@@ -2,102 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4BC2EB37F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 888652EB384
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730759AbhAETb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 14:31:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
+        id S1730811AbhAETci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 14:32:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729891AbhAETb2 (ORCPT
+        with ESMTP id S1727742AbhAETch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:31:28 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C66C061793;
-        Tue,  5 Jan 2021 11:30:48 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id j13so232036pjz.3;
-        Tue, 05 Jan 2021 11:30:48 -0800 (PST)
+        Tue, 5 Jan 2021 14:32:37 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C86AC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 11:31:57 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id h205so1122121lfd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:31:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F88oCXSqS5Vbl5G2XzWl1J2aBVDAgNwp3y6EJL4c05c=;
-        b=DftTVuQ6grwuykSF84GnB11LZ2zF7PqajsCoVCL2p3FXEger7h87zDeAffIQzKYSll
-         MBW6lw9uzIKnsmmFmAZjh/ygoFsq/17FXTU2RcB5o3zCe61jx8sEjyai68UVlzy/U/6x
-         4Y2x/6obgGj/3Oz0uEcF4ukGQVbmV6PQsBGkcX+JaBjQFacAAeX8HqP5HbVRXsiRgmb5
-         +5KDCwX8RR1UpQRvwdEL5wQ/MGMrF0+5r7AQFnrM1aGDT1wPLKFw1gXixURrF7y5iYp1
-         Ba/FO+/UcEyrArkV4ptByZ+W/d33yRJvs4vj0rr280SYe2pQ7Ur87PYlPf7dp5e99aNp
-         bmpQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z1FwgA8Ww/7IgT5bjT946IYpX2R2TC69Q6b+o2dVbrM=;
+        b=hA6nC4lKLxKrUs7MpCZCbI/RF0tI9dTZsLbOuov9YMyi2/eXblwkza4XzkyzrEciUj
+         crhUOeNHz05e8YTS0MYujgw/1O+8VFW3/DqDYUINeFKBBLNL9kILdj3grIay+vTfxBP1
+         dk/siDfsguJmdFkH8uAtals9Ndiz3nqLvVNcw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F88oCXSqS5Vbl5G2XzWl1J2aBVDAgNwp3y6EJL4c05c=;
-        b=ATQqQQhRVG6bCEr9YQ3+CFkakZYX5+2Ga0tBYFnrcbZGhletDO0DnIpk6ATEl29XXm
-         YQiERkQpfFZR1OFaDFxWWRUuBQA8f2HIbDgMb8sOkZpqRIxDuMHB5xSMc7wJA15kGPWT
-         sYI0xXHGkMcEm/iDqhrYYYsgyDXBiX5EmrLH3ntt1y4cEYHXRR5OskOZEOrmUNk/XD5g
-         ttCu8MVbEYhHnBAjwQD4EG0swbFndOF6tT2L4L9jkP2NR3h1v9ZzT4iCHMbxv0433sPR
-         m1yp1UIV9Yn6e77dTo5/q61F5Q+RJTCM5OtGw9WC5buZ8gM84QlS4yhCviZEyK98kcpS
-         DYsQ==
-X-Gm-Message-State: AOAM531b6390/YKz95X1EZf2Ne1vTpwYixqIcaNSpfry+IwTcP7i4Z2T
-        W6WdbzYo4TxP+OpwsyR44/Y=
-X-Google-Smtp-Source: ABdhPJyQO3F8uHZPi+sc8C3Ab+VJ46CSdR/2+DxSZqyJNA7TyaNVzzsNeLF2gaMRl7AHrKHbE3kAsw==
-X-Received: by 2002:a17:90a:9483:: with SMTP id s3mr682131pjo.61.1609875048228;
-        Tue, 05 Jan 2021 11:30:48 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:5456])
-        by smtp.gmail.com with ESMTPSA id p16sm11181pju.47.2021.01.05.11.30.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 11:30:47 -0800 (PST)
-Date:   Tue, 5 Jan 2021 11:30:45 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yuri Benditovich <yuri.benditovich@daynix.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, yan@daynix.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS
- program type
-Message-ID: <20210105193045.g3q6n3dsl6idthbe@ast-mbp>
-References: <20210105122416.16492-1-yuri.benditovich@daynix.com>
- <20210105122416.16492-4-yuri.benditovich@daynix.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z1FwgA8Ww/7IgT5bjT946IYpX2R2TC69Q6b+o2dVbrM=;
+        b=tWn25izFKA+7mhLFlaDo+SZjTF25giI4HBtwhTz+2yha3FSIPbEPMeuZ40PZ+6R2jw
+         CCBnMX4kPgaRQzUR5uIVbp7jO5duP0AI9VJLV7wY5p9tGPRzelWnl2/g3ihXPRgoA0I7
+         ui69mDzLWm39Hv6kpIJNSY5CR5OqmlveWmM0QSG0JJdkJni++KGeEi8zcVi5XCGJLP+u
+         ywvIVTP9MWVGc/NaTLelQg+IO4iMoJKlz7aO6/+1d1PMOvvoyBZ1nj2rYB6A2J3nBFjX
+         +6dQyjZIE8O0Mys8bdLuxeZ0ZEBZIwMfAp7JXFGxVp2lQ33uu2rM7Rmgqk8Wz3AIHJnx
+         IUhw==
+X-Gm-Message-State: AOAM5331mGRDIZYUnM7kUiWf7EOUu2vWn8i7nMStyeKmCRqrrsHf5sTt
+        4+kJ+0as1CbYclcmjONCxhtsLThK48ki6g==
+X-Google-Smtp-Source: ABdhPJwezd7IDoLheYCWOEOMM0sFpLYjTOyJCB0KvekqMOSuB4WK/9Mv+YlJmy9A4susqpLC+u41LA==
+X-Received: by 2002:a19:c508:: with SMTP id w8mr365434lfe.658.1609875115516;
+        Tue, 05 Jan 2021 11:31:55 -0800 (PST)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id l17sm9423lfg.205.2021.01.05.11.31.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 11:31:54 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 23so1051416lfg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:31:53 -0800 (PST)
+X-Received: by 2002:a2e:b4af:: with SMTP id q15mr470264ljm.507.1609875113609;
+ Tue, 05 Jan 2021 11:31:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105122416.16492-4-yuri.benditovich@daynix.com>
+References: <000000000000886dbd05b7ffa8db@google.com> <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org>
+ <CAHk-=wi6hd8ATJ1W90goTxjgyvuoFsf0xZdAJmZ2c0dx5wcJSg@mail.gmail.com> <alpine.LSU.2.11.2101041839440.3466@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2101041839440.3466@eggly.anvils>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 5 Jan 2021 11:31:37 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi36CBggdRfdggACvf2hG+djM9kKnorrwsByN6uDvPExA@mail.gmail.com>
+Message-ID: <CAHk-=wi36CBggdRfdggACvf2hG+djM9kKnorrwsByN6uDvPExA@mail.gmail.com>
+Subject: Re: kernel BUG at mm/page-writeback.c:LINE!
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 02:24:12PM +0200, Yuri Benditovich wrote:
-> This program type can set skb hash value. It will be useful
-> when the tun will support hash reporting feature if virtio-net.
-> 
-> Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> ---
->  drivers/net/tun.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index 7959b5c2d11f..455f7afc1f36 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
->  		prog = NULL;
->  	} else {
->  		prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
-> +		if (IS_ERR(prog))
-> +			prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
+On Mon, Jan 4, 2021 at 7:29 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> > But I feel it's really that end_page_writeback() itself is
+> > fundamentally buggy, because the "wakeup" is not atomic with the bit
+> > clearing _and_ it doesn't actually hold the page lock that is
+> > allegedly serializing this all.
+>
+> And we won't be adding a lock_page() into end_page_writeback()!
 
-Patches 1 and 2 are missing for me, so I couldn't review properly,
-but this diff looks odd.
-It allows sched_cls prog type to attach to tun.
-That means everything that sched_cls progs can do will be done from tun hook?
-sched_cls assumes l2 and can modify the packet.
-I think crashes are inevitable.
+Right.
+
+However, the more I think about this, the more I feel
+end_page_writeback() is kind of ok, and the real problem is that we
+should have had a "lock/unlock" pattern for the PG_writeback bit
+instead.
+
+Instead, what we have is basically a special "wait for bit to clear",
+and then external sychronization - even if lacking - for set/clear
+bit.
+
+And the "wait for bit to clear" and "set bit" aren't even adjacent -
+the waiting happens in write_cache_pages(), but then the actual
+setting happens later in the actual "(*writepage)()" function.
+
+What _would_ be nicer, I feel, is if write_cache_pages() simply did
+the equivalent of "lock_page()" except for setting the PG_writeback
+bit. The whole "wait for bit to clear" is fundamentally a much more
+ambiguous thing for that whole "what if somebody else got it" reason,
+but it's also nasty because it can be very unfair (the same way our
+"lock_page()" itself used to be very unfair).
+
+IOW, you can have that situation where one actor continually waits for
+the bit to clear, but then somebody else comes in and gets the bit
+instead.
+
+Of course, writeback is much less likely than lock_page(), so it
+probably doesn't happen much in practice.
+
+And honestly, while I think it would be good to make the rule be
+"writepage function was entered with the writeback bit already held",
+that kind of change would be a major pain. We have at leastr 49
+different 'writepage' implementations, and while I think a few of them
+end up just being block_write_full_page(), it means that we have a lot
+of that
+
+        BUG_ON(PageWriteback(page));
+        set_page_writeback(page);
+
+pattern in various random filesystem code that all would have to be changed.
+
+So I think I know what I'd _like_ the code to be like, but I don't
+think it's worth it.
+
+> > So the one-liner of changing the "if" to "while" in
+> > wait_on_page_writeback() should get us back to what we used to do.
+>
+> I think that is the realistic way to go.
+
+Yeah, that's what I'll do.
+
+> > Which makes me think that the best option would actually be to move
+> > the bit clearing _into_ wake_up_page(). But that looks like a very big
+> > change.
+
+See above - having thought about this overnight, I don't think this is
+even the best change.
+
+> But I expect you to take one look and quickly opt instead for the "while"
+> in wait_on_page_writeback(): which is not so bad now that you've shown a
+> scenario which justifies it.
+
+[ patch removed - I agree, this pain isn't worth it ]
+
+               Linus
