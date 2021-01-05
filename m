@@ -2,84 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF442EB439
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4E12EB446
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731261AbhAEUbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 15:31:10 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:46066 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730191AbhAEUbK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 15:31:10 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D4EFD20B7192;
-        Tue,  5 Jan 2021 12:30:28 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D4EFD20B7192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1609878629;
-        bh=d7fvwMXhNeLHAsVeLOIjrbHL9zgPEuqv7PB0Ukcw3L0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=aNC/iX7/KEHCLBqfh8L5oj08bZPkDiarhorN0YjVvEX8lKkfDiooYibaGcRBYl/4J
-         yXuRHJLBlFJDMFdzcl+qLhz9sHqJjF25KipIvKUjGcu3uRajI7nLpkbahB4Pbi0/QS
-         tn+qCdsj54l0SU/F1yUIY4LITYycSRw+2Jr1xBdg=
-Subject: Re: [PATCH v9 7/8] IMA: define a builtin critical data measurement
- policy
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20201212180251.9943-1-tusharsu@linux.microsoft.com>
- <20201212180251.9943-8-tusharsu@linux.microsoft.com>
- <93dc6912192df78026f8f98c8f6ab67608c188f0.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <aefe90e1-c133-fb5a-0e08-1d68fd950731@linux.microsoft.com>
-Date:   Tue, 5 Jan 2021 12:30:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <93dc6912192df78026f8f98c8f6ab67608c188f0.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1731316AbhAEUbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 15:31:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729608AbhAEUba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 15:31:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6D6AF22D6F;
+        Tue,  5 Jan 2021 20:30:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609878649;
+        bh=6jk8LUNkuT6UT8V2dIEIEAvshdN5ynbOq0LyAdOZGpU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=cXNqYD3Jl5xmhbqwcfTJjHXnpuSewQOLL2CPf8AkLn5d/Ql9SkeC59rFeJeRJSe4P
+         7uONjAVS9250/s/uwKDeDL/eN01W1Uj5v1phDbaCL1ZQQnALgx+90nJA1iA7GDhgij
+         FaUWagEBJutDPdVlmjMcPZxapbE2PD/mJ3KUHRr0HVMYSuIOFL0FSwURUTwysB3Ed8
+         56/Uhg5QL/BBSwN8xaSHuG3LJ08DpjgyTy+x+AEPlzM6cxLZlViWKys4LvXQzv2fIj
+         B1ZHFlgi+1juqNeIQLjx4Sup036yLtQXwNJogOFv1Q4T8LGM+Txr5v8kcFWmWM8Fv0
+         zNvdGci0WAd3g==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 5F35560158;
+        Tue,  5 Jan 2021 20:30:49 +0000 (UTC)
+Subject: Re: [GIT PULL] afs: Fix directory entry name handling
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <313281.1609803317@warthog.procyon.org.uk>
+References: <313281.1609803317@warthog.procyon.org.uk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <313281.1609803317@warthog.procyon.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-fixes-04012021
+X-PR-Tracked-Commit-Id: 366911cd762db02c2dd32fad1be96b72a66f205d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6207214a70bfaec7b41f39502353fd3ca89df68c
+Message-Id: <160987864937.17840.510598651603746746.pr-tracker-bot@kernel.org>
+Date:   Tue, 05 Jan 2021 20:30:49 +0000
+To:     David Howells <dhowells@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>, dhowells@redhat.com,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Mon, 04 Jan 2021 23:35:17 +0000:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-fixes-04012021
 
-On 2020-12-24 6:41 a.m., Mimi Zohar wrote:
-> On Sat, 2020-12-12 at 10:02 -0800, Tushar Sugandhi wrote:
->> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>
->> Define a new critical data builtin policy to allow measuring
->> early kernel integrity critical data before a custom IMA policy
->> is loaded.
->>
->> Add critical data to built-in IMA rules if the kernel command line
->> contains "ima_policy=critical_data".
-> 
-> This sentence isn't really necessary.
-> 
-Will remove.
->>
->> Update the documentation on kernel parameters to document
->> the new critical data builtin policy.
->>
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> 
-> Otherwise,
-> Reviewed-by:  Mimi Zohar <zohar@linux.ibm.com>
-Thanks again for the "Reviewed-by" tag.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6207214a70bfaec7b41f39502353fd3ca89df68c
 
-Thanks,
-Tushar
-> 
-> thanks,
-> 
-> Mimi
-> 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
