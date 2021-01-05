@@ -2,139 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE292EA2E4
+	by mail.lfdr.de (Postfix) with ESMTP id F2E6D2EA2E6
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727372AbhAEBd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 20:33:56 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:60754 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbhAEBdz (ORCPT
+        id S1727543AbhAEBd6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Jan 2021 20:33:58 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2349 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727094AbhAEBd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 20:33:55 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1051Q8kF065056;
-        Tue, 5 Jan 2021 01:33:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=0iX0hYqL8Jp+amfPcfQ+iuYkjd5pDTJ6H1dPNVW+Qbo=;
- b=sB4ROHGSWjjuMToEA3H9bFlMe651xq54ydaErpUN50OSoUBj2Km1q+ObjjeCywVfDCxf
- MZQ1j1x4ExjbIl/yxW2EHM42v/AztKv6pmFwcP8BX0nLKWk7vibvCDZAVg/peWB7ABTo
- /wggX/xsda9ui8zExetNNGrfx7l8ByrclWh8YIqCenjh7BUR2kop0GSK1Zqnn3bKnWiK
- BdYxjMD7Byl6OPt6MuUrbAvqNoin7NSWRZTd8kO3DD26CYo7PPpC0TMitMZbdvHLwLLx
- BUljbUyhAo29M8WW1HM6xr4qm7BEFsmyE8MHN74nMdkCUdjlOzVWrgmX/+OXvKINQRoU oQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 35tg8qxu2g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 05 Jan 2021 01:33:01 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1051SNnP115782;
-        Tue, 5 Jan 2021 01:33:00 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 35v1f81114-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Jan 2021 01:33:00 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1051WtIq031261;
-        Tue, 5 Jan 2021 01:32:57 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Jan 2021 17:32:55 -0800
-Subject: Re: [PATCH 4/6] mm: hugetlb: add return -EAGAIN for
- dissolve_free_huge_page
-To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
-Cc:     hillf.zj@alibaba-inc.com, n-horiguchi@ah.jp.nec.com,
-        ak@linux.intel.com, yongjun_wei@trendmicro.com.cn, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210104065843.5658-1-songmuchun@bytedance.com>
- <20210104065843.5658-4-songmuchun@bytedance.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <e043e137-5ca7-d478-248c-9defcecc6ac7@oracle.com>
-Date:   Mon, 4 Jan 2021 17:32:54 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-MIME-Version: 1.0
-In-Reply-To: <20210104065843.5658-4-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
+        Mon, 4 Jan 2021 20:33:56 -0500
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4D8w2S1Z5nz13cpH;
+        Tue,  5 Jan 2021 09:31:44 +0800 (CST)
+Received: from dggemi711-chm.china.huawei.com (10.3.20.110) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 5 Jan 2021 09:33:12 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi711-chm.china.huawei.com (10.3.20.110) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 5 Jan 2021 09:33:12 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.002;
+ Tue, 5 Jan 2021 09:33:12 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: RE: [PATCH] genirq: add IRQF_NO_AUTOEN for request_irq
+Thread-Topic: [PATCH] genirq: add IRQF_NO_AUTOEN for request_irq
+Thread-Index: AQHW4ulWZlFLRa4THk6hib5h7axwo6oXjxeAgACtIHA=
+Date:   Tue, 5 Jan 2021 01:33:12 +0000
+Message-ID: <fa39c2f9dba4421095d846e87f755407@hisilicon.com>
+References: <20210104222612.2708-1-song.bao.hua@hisilicon.com>
+ <X/OePw97VgXtRBxj@google.com>
+In-Reply-To: <X/OePw97VgXtRBxj@google.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101050005
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 phishscore=0 bulkscore=0
- spamscore=0 impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050005
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.162]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/3/21 10:58 PM, Muchun Song wrote:
-> When dissolve_free_huge_page() races with __free_huge_page(), we can
-> do a retry. Because the race window is small.
 
-In general, I agree that the race window is small.  However, worst case
-would be if the freeing of the page is put on a work queue.  Is it acceptable
-to keep retrying in that case?  In addition, the 'Free some vmemmap' series
-may slow the free_huge_page path even more.
 
-In these worst case scenarios, I am not sure we want to just spin retrying.
+> -----Original Message-----
+> From: Dmitry Torokhov [mailto:dmitry.torokhov@gmail.com]
+> Sent: Tuesday, January 5, 2021 12:01 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: tglx@linutronix.de; maz@kernel.org; gregkh@linuxfoundation.org;
+> linux-input@vger.kernel.org; linux-kernel@vger.kernel.org;
+> linuxarm@openeuler.org
+> Subject: Re: [PATCH] genirq: add IRQF_NO_AUTOEN for request_irq
+> 
+> On Tue, Jan 05, 2021 at 11:26:12AM +1300, Barry Song wrote:
+> > This patch originated from the discussion with Dmitry in the below thread:
+> >
+> https://lore.kernel.org/linux-input/20210102042902.41664-1-song.bao.hua@hi
+> silicon.com/
+> > there are many drivers which don't want interrupts enabled automatically
+> > due to request_irq().
+> > So they are handling this issue by either way of the below two:
+> > (1)
+> > irq_set_status_flags(irq, IRQ_NOAUTOEN);
+> > request_irq(dev, irq...);
+> > (2)
+> > request_irq(dev, irq...);
+> > disable_irq(irq);
+> >
+> > The code in the second way is silly and unsafe. In the small time gap
+> > between request_irq and disable_irq, interrupts can still come.
+> > The code in the first way is safe though we might be able to do it in
+> > the generic irq code.
+> >
+> > I guess Dmitry also prefers genirq handles this as he said
+> > "What I would like to see is to allow passing something like IRQF_DISABLED
+> > to request_irq() so that we would not need neither irq_set_status_flags()
+> > nor disable_irq()" in the original email thread.
+> 
+> One of the reasons I dislike irq_set_status_flags() is that we have to
+> call it before we actually granted our IRQ request...
+> 
+> >
+> > If this one is accepted, hundreds of drivers with this problem will be
+> > handled afterwards.
+> >
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > ---
+> >  include/linux/interrupt.h |  3 +++
+> >  kernel/irq/manage.c       |  3 +++
+> >  kernel/irq/settings.h     | 10 ++++++++++
+> >  3 files changed, 16 insertions(+)
+> >
+> > diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+> > index bb8ff9083e7d..0f22d277078c 100644
+> > --- a/include/linux/interrupt.h
+> > +++ b/include/linux/interrupt.h
+> > @@ -61,6 +61,8 @@
+> >   *                interrupt handler after suspending interrupts. For system
+> >   *                wakeup devices users need to implement wakeup detection in
+> >   *                their interrupt handlers.
+> > + * IRQF_NO_AUTOEN - Don't enable IRQ automatically when users request it.
+> Users
+> > + *                will enable it explicitly by enable_irq() later.
+> >   */
+> >  #define IRQF_SHARED		0x00000080
+> >  #define IRQF_PROBE_SHARED	0x00000100
+> > @@ -74,6 +76,7 @@
+> >  #define IRQF_NO_THREAD		0x00010000
+> >  #define IRQF_EARLY_RESUME	0x00020000
+> >  #define IRQF_COND_SUSPEND	0x00040000
+> > +#define IRQF_NO_AUTOEN		0x00080000
+> >
+> >  #define IRQF_TIMER		(__IRQF_TIMER | IRQF_NO_SUSPEND | IRQF_NO_THREAD)
+> >
+> > diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+> > index ab8567f32501..364e8b47d9ba 100644
+> > --- a/kernel/irq/manage.c
+> > +++ b/kernel/irq/manage.c
+> > @@ -1693,6 +1693,9 @@ __setup_irq(unsigned int irq, struct irq_desc *desc,
+> struct irqaction *new)
+> >  			irqd_set(&desc->irq_data, IRQD_NO_BALANCING);
+> >  		}
+> >
+> > +		if (new->flags & IRQF_NO_AUTOEN)
+> > +			irq_settings_set_noautoen(desc);
+> 
+> Can we make sure we refuse this request if the caller also specified
+> IRQF_SHARED?
 
--- 
-Mike Kravetz
+Right now, there is a warning for IRQF_SHARED + NOAUTOEN:
+
+		if (irq_settings_can_autoenable(desc)) {
+			irq_startup(desc, IRQ_RESEND, IRQ_START_COND);
+		} else {
+			/*
+			 * Shared interrupts do not go well with disabling
+			 * auto enable. The sharing interrupt might request
+			 * it while it's still disabled and then wait for
+			 * interrupts forever.
+			 */
+			WARN_ON_ONCE(new->flags & IRQF_SHARED);
+			/* Undo nested disables: */
+			desc->depth = 1;
+		}
+
+Of course, this could also be clearly rejected in the sanity-check
+of request_threaded_irq() if we want to totally prohibit this
+behavior:
+
+int request_threaded_irq(unsigned int irq, irq_handler_t handler,
+			 irq_handler_t thread_fn, unsigned long irqflags,
+			 const char *devname, void *dev_id)
+{
+	struct irqaction *action;
+	struct irq_desc *desc;
+	int retval;
+
+	if (irq == IRQ_NOTCONNECTED)
+		return -ENOTCONN;
+
+	/*
+	 * Sanity-check: shared interrupts must pass in a real dev-ID,
+	 * otherwise we'll have trouble later trying to figure out
+	 * which interrupt is which (messes up the interrupt freeing
+	 * logic etc).
+	 *
+	 * Also IRQF_COND_SUSPEND only makes sense for shared interrupts and
+	 * it cannot be set along with IRQF_NO_SUSPEND.
+	 */
+	if (((irqflags & IRQF_SHARED) && !dev_id) ||
+	    (!(irqflags & IRQF_SHARED) && (irqflags & IRQF_COND_SUSPEND)) ||
+	    ((irqflags & IRQF_NO_SUSPEND) && (irqflags & IRQF_COND_SUSPEND)))
+		return -EINVAL;
+
 
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/hugetlb.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 72608008f8b4..db00ae375d2a 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1763,10 +1763,11 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
->   * nothing for in-use hugepages and non-hugepages.
->   * This function returns values like below:
->   *
-> - *  -EBUSY: failed to dissolved free hugepages or the hugepage is in-use
-> - *          (allocated or reserved.)
-> - *       0: successfully dissolved free hugepages or the page is not a
-> - *          hugepage (considered as already dissolved)
-> + *  -EAGAIN: race with __free_huge_page() and can do a retry
-> + *  -EBUSY:  failed to dissolved free hugepages or the hugepage is in-use
-> + *           (allocated or reserved.)
-> + *       0:  successfully dissolved free hugepages or the page is not a
-> + *           hugepage (considered as already dissolved)
->   */
->  int dissolve_free_huge_page(struct page *page)
->  {
-> @@ -1815,8 +1816,10 @@ int dissolve_free_huge_page(struct page *page)
->  		 * We should make sure that the page is already on the free list
->  		 * when it is dissolved.
->  		 */
-> -		if (unlikely(!PageHugeFreed(head)))
-> +		if (unlikely(!PageHugeFreed(head))) {
-> +			rc = -EAGAIN;
->  			goto out;
-> +		}
->  
->  		/*
->  		 * Move PageHWPoison flag from head page to the raw error page,
-> @@ -1857,7 +1860,10 @@ int dissolve_free_huge_pages(unsigned long start_pfn, unsigned long end_pfn)
->  
->  	for (pfn = start_pfn; pfn < end_pfn; pfn += 1 << minimum_order) {
->  		page = pfn_to_page(pfn);
-> +retry:
->  		rc = dissolve_free_huge_page(page);
-> +		if (rc == -EAGAIN)
-> +			goto retry;
->  		if (rc)
->  			break;
->  	}
-> 
+> Thanks.
+
+Thanks
+Barry
+
