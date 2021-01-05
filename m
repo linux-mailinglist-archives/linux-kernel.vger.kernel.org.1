@@ -2,190 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09F72EABB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E854D2EABBB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729377AbhAENSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:18:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        id S1729418AbhAENSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:18:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729174AbhAENSA (ORCPT
+        with ESMTP id S1727759AbhAENSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:18:00 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27215C061574;
-        Tue,  5 Jan 2021 05:17:35 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id g24so20710441qtq.12;
-        Tue, 05 Jan 2021 05:17:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jLhbRWXby6luGSFdzAvh4WkvKskLyAT83J5WUyy1B7g=;
-        b=h47nmgU0rIwhajSpfHu3iTWzq30XXTCyDfCURIz5rXQNIRu6C7FopM/0vWUwwTmmyZ
-         +vaowIcYOlJNYAVajvxvjIC1SV/MoypaMqtT5+zxoFAg5NuXq/+80VctTWUzUK0WYb+w
-         a4IvfNrwIDt0sTgffUBa4ECerc3AD4xe1Z3MjJE3Ey8JfCsuhEJGFBvfEttmjQ1+RrZp
-         n8xMASrLIDv003UlpTSxrt+VLhCHOnho52wF8o813HcnuTeAITQ+Ol66zNDRMHM+oubh
-         otFYkYYcOaEoKrOX7+gpHHvRk7VD/jpVhavlJR9h5B5AXPYbf8IshQ7BVjsrXFMunIPf
-         NbTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jLhbRWXby6luGSFdzAvh4WkvKskLyAT83J5WUyy1B7g=;
-        b=b1Dz0vNSyxWhzdQ/ZCtRFsrVe7qAdW6b4xrw8MLcVq1774Xsi7FaFp5pD8riWz3WI9
-         MOSsWFnXLmcT5vMK7PukdHbZLFqcc8u8h1mXPeoa56hoFt1qDo67NhK53urJt7/g/TNq
-         qXIaDrChTMq8+oKun/e2Nvg1zAxMvVl12YN9xrY5D4poyvrVV9eTiOytdukyB/jd5PnB
-         F2+ME3cIQDby+TNakyk6xhkKrwjdYeN3MQzOMwvnsn+YGINZg8BxKyPhonIx/YJo7Jth
-         nzzJlepjpsgwOIHBgfZKEt3T+CtKfXOfm2tx12pbmR6QulY6559EfyWIcy+2jn4IeF/Q
-         MWrg==
-X-Gm-Message-State: AOAM531lv04aHrJClfDq3VWedgK2uZuPzKv/2OaCHZNqJFmSg+f1PHva
-        YVrQ2XzMVApTjrbW2ulK+84T//L1tgedOg==
-X-Google-Smtp-Source: ABdhPJyVzx47+ZOqsoJXupw8slUQFPMehE0nhfa36KTvI6eGYZb4pDueYzmJKn/d/uD3F22/U5vWEg==
-X-Received: by 2002:ac8:1c92:: with SMTP id f18mr71741567qtl.234.1609852654400;
-        Tue, 05 Jan 2021 05:17:34 -0800 (PST)
-Received: from localhost.localdomain ([2804:14d:72b1:8920:77d4:6fb0:85b3:b6f7])
-        by smtp.gmail.com with ESMTPSA id h16sm40697819qko.135.2021.01.05.05.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 05:17:33 -0800 (PST)
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-X-Google-Original-From: Daniel W. S. Almeida
-To:     mchehab@kernel.org, hverkuil@xs4all.nl
-Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        linux-media@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4l-utils] test-media: add support for vidtv
-Date:   Tue,  5 Jan 2021 10:17:25 -0300
-Message-Id: <20210105131725.1191046-1-dwlsalmeida@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Tue, 5 Jan 2021 08:18:30 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85F4C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 05:17:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=m1epUrXXadkkLVjAnDRqjJFcX9If8AVdefiX//g51fc=; b=l6KKsWvexzz0NQFF/DX6fLxCQu
+        zVp4Bs4XEkpgGuGz7acrw+fbOqPzZExp2zDlxythraQv5kx3HKpcVt2rC3LSdQ2fKzMjds89C99w3
+        MVWn8UmWQj9g6fbfAJmDt38ZZqeM9nbWdn0ZzALJQ8yVHNLW9IS/TfZXLrqtTn+qAMDRDaucYqCqL
+        4XiAjuQyz/U3BovB5eDvZoBpFscRxha7fNXqBfYYNk2TTEsPG1gxhfww0jgJJaLcvoeq8LBruA30K
+        EGS0ZWEP0C29uhWg/G5pSuiIyFH2AmjIKEsXkw2ZQXEnLu3PJMGtNVXwSyDQE7tPHzzMFqYLtv59P
+        gar3GXkA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwmDV-0003z2-ID; Tue, 05 Jan 2021 13:17:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F35373013E5;
+        Tue,  5 Jan 2021 14:17:37 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BA6A620CBF4B5; Tue,  5 Jan 2021 14:17:37 +0100 (CET)
+Date:   Tue, 5 Jan 2021 14:17:37 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH -tip V3 3/8] workqueue: introduce wq_online_cpumask
+Message-ID: <20210105131737.GH3040@hirez.programming.kicks-ass.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <20201226025117.2770-4-jiangshanlai@gmail.com>
+ <20210104135649.GO3021@hirez.programming.kicks-ass.net>
+ <CAJhGHyB_MUHG8GGANcN9sQbjY7M5m8WPHQgXp-PmkGK481M5Tg@mail.gmail.com>
+ <CAJhGHyCwyuzikMZAxub=rxn9oe-N2P5C8CEOmyigd9d55SV5YA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyCwyuzikMZAxub=rxn9oe-N2P5C8CEOmyigd9d55SV5YA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+On Tue, Jan 05, 2021 at 04:23:44PM +0800, Lai Jiangshan wrote:
+> On Tue, Jan 5, 2021 at 10:41 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
+> > On Mon, Jan 4, 2021 at 9:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > On Sat, Dec 26, 2020 at 10:51:11AM +0800, Lai Jiangshan wrote:
+> > > > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> > > >
+> > > > wq_online_cpumask is the cached result of cpu_online_mask with the
+> > > > going-down cpu cleared.
+> > >
+> > > You can't use cpu_active_mask ?
+> >
+> > When a cpu is going out:
+> > (cpu_active_mask is not protected by workqueue mutexs.)
 
-Add support for vidtv at the test-media script so that automated testing
-is possible. Proper compliance tests are still pending.
+But it is protected by the hotplug lock, which is really all you need
+afaict.
 
-Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
----
- contrib/test/test-media | 72 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+If the worker thread gets spawned before workqueue_offline_cpu(), said
+function will observe it and adjust the mask, if it gets spawned after
+it, it must observe a 'reduced' cpu_active_mask.
 
-diff --git a/contrib/test/test-media b/contrib/test/test-media
-index 1c1d2e37b..86a2e081a 100755
---- a/contrib/test/test-media
-+++ b/contrib/test/test-media
-@@ -4,6 +4,7 @@
- #
- # Copyright 2019 Cisco Systems, Inc. and/or its affiliates. All rights reserved.
- 
-+vidtv=0
- vivid=0
- vim2m=0
- vimc=0
-@@ -51,6 +52,7 @@ if [ -z "$1" ]; then
- 	echo "-32: use v4l2-ctl-32 and v4l2-compliance-32 to test the 32 bit compat layer"
- 	echo
- 	echo Test Targets:
-+	echo "vidtv: test the vidtv driver"
- 	echo "vivid: test the vivid driver"
- 	echo "vim2m: test the vim2m driver"
- 	echo "vimc: test the vimc driver"
-@@ -96,6 +98,7 @@ while [ ! -z "$1" ]; do
- 		fi
- 		;;
- 	all)
-+		vidtv=1
- 		vivid=1
- 		vim2m=1
- 		vimc=1
-@@ -109,6 +112,9 @@ while [ ! -z "$1" ]; do
- 		vimc=1
- 		vicodec=1
- 		;;
-+	vidtv)
-+		vidtv=1
-+		;;
- 	vivid)
- 		vivid=1
- 		;;
-@@ -162,6 +168,72 @@ $v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-out -o1 -x width=3840,height=21
- 
- echo
- 
-+if [ $vidtv -eq 1 ]; then
-+	rmmod vidtv 2&>/dev/null
-+	modprobe vidtv
-+	sleep 2
-+	dmesg -n notice
-+	echo
-+
-+	if ! media-ctl -d platform:vidtv -p ; then
-+		echo "FAIL: the vidtv module failed to load" | tee -a $tmp
-+		echo "Grand Total for vidtv: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
-+		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
-+		rmmod vidtv
-+		exit 0
-+	fi
-+
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo unbind vidtv
-+	echo
-+	echo -n vidtv.0 >/sys/bus/platform/drivers/vidtv/unbind
-+	sleep $unbind_time
-+	echo
-+	echo rebind vidtv
-+	echo
-+	echo -n vidtv.0 >/sys/bus/platform/drivers/vidtv/bind
-+	sleep 1
-+	echo
-+	echo second unbind vidtv
-+	echo
-+	sleep 1
-+	echo
-+	echo -n vidtv.0 >/sys/bus/platform/drivers/vidtv/unbind
-+	sleep $reunbind_time
-+	echo
-+	echo rmmod vidtv
-+	echo
-+	rmmod vidtv
-+	sleep $rmmod_time
-+	if [ $kmemleak -eq 1 ]; then
-+		echo
-+		echo kmemleak results for vidtv:
-+		echo
-+		echo scan >/sys/kernel/debug/kmemleak
-+		cat /sys/kernel/debug/kmemleak
-+		echo
-+		echo end of kmemleak results
-+		echo clear >/sys/kernel/debug/kmemleak
-+	fi
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+
-+fi
-+
- if [ $vivid -eq 1 ]; then
- 	dmesg -n notice
- 	echo
--- 
-2.30.0
+> >
+> > create_worker() for unbound pool  |  cpu offlining
+> > check cpu_active_mask             |
+> check wq_online_cpumask
+> >                                   |  remove bit from cpu_active_mask
+> >                                   |  no cpu in pool->attrs->cpumask is active
+> > set pool->attrs->cpumask to worker|
+> > and hit the warning
+>                                     |  remove bit from wq_online_cpumask
+> 
+> Even with the help of wq_online_cpumask, the patchset can't silence
+> the warning in __set_cpus_allowed_ptr() in this case.  It is indeed
+> hard to suppress the warning for unbound pools.  Maybe we need something
+> like this (outmost callback of CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
+> so that workqueue can do preparation when offlining before AP_ACTIVE):
+> 
+> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+> index 0042ef362511..ac2103deb20b 100644
+> --- a/include/linux/cpuhotplug.h
+> +++ b/include/linux/cpuhotplug.h
+> @@ -20,6 +20,9 @@
+>   *               |                               ^
+>   *               v                               |
+>   *              AP_ACTIVE                      AP_ACTIVE
+> + *               |                               ^
+> + *               v                               |
+> + *              ONLINE                         ONLINE
+>   */
+> 
+>  enum cpuhp_state {
+> @@ -194,6 +197,7 @@ enum cpuhp_state {
+>         CPUHP_AP_X86_HPET_ONLINE,
+>         CPUHP_AP_X86_KVM_CLK_ONLINE,
+>         CPUHP_AP_ACTIVE,
+> +       CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
+>         CPUHP_ONLINE,
+>  };
+> 
 
+That's waay to late, by then userspace is long running and expecting
+things to 'just-work'.
+
+But afaict, things will mostly work for you when you use cpu_active_mask
+on cpu-down and cpu_online_mask on cpu-up.
+
+But I think I see the problem, it is spawning a new worker after
+workqueue_online_cpu() but before sched_cpu_activate(), right? That
+wants to have the wider mask set.
+
+To solve that, the spawning of workers thing needs to know where we are
+in the hotplug process, and it can track that using
+workqueue_{on,off}line_cpu(). If it happens after offline, it needs to
+use cpu_active_mask, if it happens after online cpu_online_mask is your
+guy.
+
+Does that make sense?
