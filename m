@@ -2,168 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0A22EAFE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2036B2EAFF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727414AbhAEQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:21:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbhAEQVe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:21:34 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF198C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 08:20:53 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id h186so50229pfe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 08:20:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=YY+00AIRRtxJBsSmjelg+ZTD3PBDsqcfuNjtpAy6QDo=;
-        b=B4eaIy0X/gcJ+6Vfog9DvYrA5lzlSG1wkFyLGirBvNF++rcgXb/U/8jhqrKJZpN6Ff
-         0c8/ST4Y+qwjFXVzERQhJpi6yTRl3MeWGI52OW0gJiRDmDyMS9lrtLx5MMYGnO6m9nDj
-         sJO8YD5Q0cHMp9+vJ7cFvE/kzbIMKBbVsXltojydDYvFaFlO4AT7V7PpJ8O7vDfqxTNv
-         pX5bMba8hKh/rsPyD87PZAOoUfCCsdQzHoHE+jnjagNvEPIoUjiM2GyEikkEjDoZMdhr
-         +I8KLgCyCzMrGsrIpyqBQr2zTMwcxmWNZzNXEWomxCEFyBeKPYoBx7R8MHsoobR+fvSI
-         x3MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=YY+00AIRRtxJBsSmjelg+ZTD3PBDsqcfuNjtpAy6QDo=;
-        b=QEsXrb1vOO4XvoOO+CqIV+v1L0EZmew8lqRBMJGEsDAdvwf1IoG/cXhLnI06DuGMqK
-         OeUWEMixEoQs+ijJJ9dQ4nM9ubgoq77ZQgpAZy5VOvVlYgXI4BQp/m3Vyu7NEL3yNCAW
-         PRAp8u8unKpSXje3x8Z1FEwbAGD+yCuRNdkFc+OP+aJKQCbDAh3KITR6JnJo9LdjaugJ
-         GNCk4P1lJ/7lVxhuZobV15nH44t8PR1xL3p/FSocgetwTg8I+lSRf4qaYdltgUAaxRJx
-         QDTzT9/vvaI4UsMWUJQvl9sMYavlV3IcEpWbRe2DCGFmimvtvSzOmReU2sFb54m5ethl
-         42qw==
-X-Gm-Message-State: AOAM532DXYa5mY1JK3KNCz9AZA/iRvd/yHexAq6NJsyt1U4TCwkniMiG
-        YAQFs/meaYSDBCLKSARoUhcQpg==
-X-Google-Smtp-Source: ABdhPJxa5mdRi43w+JAj2QFqGTiJMOhmPhoSZTCD5EpNlZP1Ra7Be1Mha7b3xYN6GHbxzVuUSGXQhg==
-X-Received: by 2002:aa7:954b:0:b029:19e:cb57:f3c with SMTP id w11-20020aa7954b0000b029019ecb570f3cmr253102pfq.51.1609863653323;
-        Tue, 05 Jan 2021 08:20:53 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:1960:9abe:3fe9:fd99? ([2601:646:c200:1ef2:1960:9abe:3fe9:fd99])
-        by smtp.gmail.com with ESMTPSA id y27sm131408pfr.78.2021.01.05.08.20.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 08:20:52 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
+        id S1728078AbhAEQWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:22:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725880AbhAEQWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B56B922D04;
+        Tue,  5 Jan 2021 16:21:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609863711;
+        bh=/AduAAI4tZbebeHCUJOPRqAxhsYnZgNeDS2PrMgEiD0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XYVwTxZ7gcoAgro9GbsM2i62gt2JgDU/jjDAJSMqqD5ZLNsEKTEDXh0DevrHgnTIk
+         LaOYfyrm38BSv4/gARhxNdGXJpj+1hInCvz0r6kM7Mwd4WSkJbWaG0BsiRfwn7oFjE
+         XFg3xx188EI05IyiSW1O35hciv/AzHTVyTb0bZvsAGr5ZH0eWMn4RRX4dQaV1QPg96
+         7sUTGqYOSMnEFpQ4iYYDOKDNzIQbV50jiS+6D+w3Q3vORuCDFQYLmULB4KWKzQYdPv
+         xIxgdYPT6mpsjo5jdE4vmmw4fRCctij/PoCjisD65zJhP6eLy1YvNDcXF85A+qKspu
+         kpGDvPhz4bgIw==
+Date:   Tue, 5 Jan 2021 17:21:45 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Cc:     Ray Jui <ray.jui@broadcom.com>,
+        Dhananjay Phadke <dphadke@linux.microsoft.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lori Hikichi <lori.hikichi@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
+Message-ID: <20210105162145.GG1842@ninjato>
+References: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
+ <1605316659-3422-1-git-send-email-dphadke@linux.microsoft.com>
+ <CAHO=5PFzd9KTR93ntUvAX5dqzxqJQpVXEirs5uoXdvcnZ7hL4g@mail.gmail.com>
+ <20201202143505.GA874@kunai>
+ <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
+ <CAHO=5PE=BRADou_Hn8qP3mgWiSwDezPCxDjuqa0v1MxMOJRyHQ@mail.gmail.com>
+ <35541129-df37-fa6f-5dae-34eb34a78731@broadcom.com>
+ <CAHO=5PFCsWQb7nv5Sg00DAX6XXTfV7V8BH-ithK-Scq8eFFVbA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
-Date:   Tue, 5 Jan 2021 08:20:51 -0800
-Message-Id: <7BFAB97C-1949-46A3-A1E2-DFE108DC7D5E@amacapital.net>
-References: <20210105132623.GB11108@willie-the-truck>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        X86 ML <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        stable <stable@vger.kernel.org>
-In-Reply-To: <20210105132623.GB11108@willie-the-truck>
-To:     Will Deacon <will@kernel.org>
-X-Mailer: iPhone Mail (18B121)
+In-Reply-To: <CAHO=5PFCsWQb7nv5Sg00DAX6XXTfV7V8BH-ithK-Scq8eFFVbA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-> On Jan 5, 2021, at 5:26 AM, Will Deacon <will@kernel.org> wrote:
+> > I think that makes sense, and I'm okay with these patches going in as
+> > they are now.
+> >
+> > Acked-by: Ray Jui <ray.jui@broadcom.com>
 >=20
-> =EF=BB=BFHi Andy,
->=20
-> Sorry for the slow reply, I was socially distanced from my keyboard.
->=20
->> On Mon, Dec 28, 2020 at 04:36:11PM -0800, Andy Lutomirski wrote:
->> On Mon, Dec 28, 2020 at 4:11 PM Nicholas Piggin <npiggin@gmail.com> wrote=
-:
->>>> +static inline void membarrier_sync_core_before_usermode(void)
->>>> +{
->>>> +     /*
->>>> +      * XXX: I know basically nothing about powerpc cache management.
->>>> +      * Is this correct?
->>>> +      */
->>>> +     isync();
->>>=20
->>> This is not about memory ordering or cache management, it's about
->>> pipeline management. Powerpc's return to user mode serializes the
->>> CPU (aka the hardware thread, _not_ the core; another wrongness of
->>> the name, but AFAIKS the HW thread is what is required for
->>> membarrier). So this is wrong, powerpc needs nothing here.
->>=20
->> Fair enough.  I'm happy to defer to you on the powerpc details.  In
->> any case, this just illustrates that we need feedback from a person
->> who knows more about ARM64 than I do.
->=20
-> I think we're in a very similar boat to PowerPC, fwiw. Roughly speaking:
->=20
->  1. SYNC_CORE does _not_ perform any cache management; that is the
->     responsibility of userspace, either by executing the relevant
->     maintenance instructions (arm64) or a system call (arm32). Crucially,
->     the hardware will ensure that this cache maintenance is broadcast
->     to all other CPUs.
+> Thank you.
 
-Is this guaranteed regardless of any aliases?  That is, if I flush from one C=
-PU at one VA and then execute the same physical address from another CPU at a=
- different VA, does this still work?
+Yes, thank you everyone.
 
->=20
->  2. Even with all the cache maintenance in the world, a CPU could have
->     speculatively fetched stale instructions into its "pipeline" ahead of
->     time, and these are _not_ flushed by the broadcast maintenance instruc=
-tions
->     in (1). SYNC_CORE provides a means for userspace to discard these stal=
-e
->     instructions.
->=20
->  3. The context synchronization event on exception entry/exit is
->     sufficient here. The Arm ARM isn't very good at describing what it
->     does, because it's in denial about the existence of a pipeline, but
->     it does have snippets such as:
->=20
->    (s/PE/CPU/)
->       | For all types of memory:
->       | The PE might have fetched the instructions from memory at any time=
+All applied to for-next, thanks!
 
->       | since the last Context synchronization event on that PE.
->=20
->     Interestingly, the architecture recently added a control bit to remove=
+> --=20
+> This electronic communication and the information and any files transmitt=
+ed=20
+> with it, or attached to it, are confidential and are intended solely for=
+=20
+=2E..
 
->     this synchronisation from exception return, so if we set that then we'=
-d
->     have a problem with SYNC_CORE and adding an ISB would be necessary (an=
-d
->     we could probable then make kernel->kernel returns cheaper, but I
->     suspect we're relying on this implicit synchronisation in other places=
+Please remove this paragraph for mailing lists.
 
->     too).
->=20
-
-Is ISB just a context synchronization event or does it do more?
-
-On x86, it=E2=80=99s very hard to tell that MFENCE does any more than LOCK, b=
-ut it=E2=80=99s much slower.  And we have LFENCE, which, as documented, does=
-n=E2=80=99t appear to have any semantics at all.  (Or at least it didn=E2=80=
-=99t before Spectre.)
-
-> Are you seeing a problem in practice, or did this come up while trying to
-> decipher the semantics of SYNC_CORE?
-
-It came up while trying to understand the code and work through various bugs=
- in it.  The code was written using something approximating x86 terminology,=
- but it was definitely wrong on x86 (at least if you believe the SDM, and I h=
-aven=E2=80=99t convinced any architects to say otherwise).
-
-Thanks!
-
->=20
-> Will
