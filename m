@@ -2,88 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED30E2EAEE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DAD2EAF27
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728725AbhAEPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:40:43 -0500
-Received: from mga07.intel.com ([134.134.136.100]:39111 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728256AbhAEPkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:40:42 -0500
-IronPort-SDR: mHcAJcg4LDC3/Dz0wYLajNBuUWO7ro4k0hTqpGxebJE7EpTCZM7U54WsW4UYGpVLGGxNmsHkbD
- Rc9ncfZ51xxw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="241206945"
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="241206945"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 07:40:18 -0800
-IronPort-SDR: TqRN6KWifXOnd/vXHxcN354IsG7FzXBr53v6lAG3W2pj5QrA+MKq/SgZPDsNB1UYoWevdPllQe
- ONLxW+lWFL3Q==
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="496819339"
-Received: from mishravi-mobl3.amr.corp.intel.com (HELO [10.209.147.102]) ([10.209.147.102])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 07:40:17 -0800
-Subject: Re: [PATCH] x86/mm: Fix leak of pmd ptlock
-To:     Dan Williams <dan.j.williams@intel.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de
-Cc:     stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Yi Zhang <yi.zhang@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        willy@infradead.org
-References: <160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <df5209ad-e527-92ce-52a2-33e1aa9deaff@intel.com>
-Date:   Tue, 5 Jan 2021 07:40:16 -0800
+        id S1728245AbhAEPpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727126AbhAEPpK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:45:10 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8A6C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 07:44:30 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id a6so3418739wmc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 07:44:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=u8B6Jcqsj2qQHBVOgCivAszp3Mr4Z2LIctYHDfeemKo=;
+        b=rdkjlnzWp+2zOi5b7d3ppqU3lIZOJ5blen0fY3s5Lownn35zv1OY5oSXisTXNXbPyC
+         Ah5BTaAA34KGKm3jno6izGQnj64gA8NV4bnBGGFhoxXY1cRienDsq01Ly1HW5H5v+TQx
+         RWOPXFrWoVhDadJzet0FLMTTT4lZz790d5QI/C4J4dpDywH6AsGpYvxaqVY/qSlO/BPg
+         ZsWCmKKl3DTc8YgbmzfK8jhQJyf6JzeXIk/ww02n/CzBftFPbXesLu8JnbSGmtitC9xf
+         E+awFJNqK1Q5XoKUMT9yHEi6NGaQRncmPO1aB1pii/ZEpU2u3J2T0L7B86U71oVchq4x
+         u48g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u8B6Jcqsj2qQHBVOgCivAszp3Mr4Z2LIctYHDfeemKo=;
+        b=ty1zWE2gIDKxVFAhH1ktKUWOWfXKQ0nW/ZGxCcyxTW4+NVZASxLZrudTPpPZ2K/tcG
+         GIC7IMe+8XChdHmejCNSXX2hBZ1V/K9W2mgOfGyFH/QPhwOZO2V2FcY5wgpn/0KFZerz
+         gDvSlDfm7080XP50yGfwVUbR+Uw994WEZVkpZpn0o2bMtqqlqRiaqgtoxINKF4qHlV2D
+         y/JnT5srEEkFwUvydjBEG6htzf9dvFVBsULyeUclKglvHsIgqE/es9jA0pOOrV3+H9Xr
+         WNYhsp4EmN1M87RLJr2IDHxqbSVWDBCmaH/o4+pm9C2b92CjSyVB76STgw4czDMNg+b6
+         6Lwg==
+X-Gm-Message-State: AOAM532gThTbxcWYSpsl/XEEqijpNTgDIodL+uNyMArf5z96pt4/RDDV
+        k5lhnEiOwBLqXUwEy4aYC4VyTg==
+X-Google-Smtp-Source: ABdhPJwPZdpUvNf4958mHWq+C7VzsGf8VpOVbdIf0IvglN6LK/TbWfdvoLZMv0Z1Xr0zlF0zVNQlLw==
+X-Received: by 2002:a7b:c246:: with SMTP id b6mr4128150wmj.154.1609861468726;
+        Tue, 05 Jan 2021 07:44:28 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-152-224.adsl.proxad.net. [82.252.152.224])
+        by smtp.googlemail.com with ESMTPSA id s6sm191847wro.79.2021.01.05.07.44.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 07:44:27 -0800 (PST)
+Subject: Re: [PATCH 4/6] acpi/drivers/thermal: Remove TRIPS_NONE cooling
+ device binding
+To:     rui.zhang@intel.com
+Cc:     mjg59@codon.org.uk, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, amitk@kernel.org,
+        thara.gopinath@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI THERMAL DRIVER" <linux-acpi@vger.kernel.org>
+References: <20201214233811.485669-1-daniel.lezcano@linaro.org>
+ <20201214233811.485669-4-daniel.lezcano@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <1de4868e-6229-ed33-f45a-7cd82d3ee48a@linaro.org>
+Date:   Tue, 5 Jan 2021 16:44:26 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <20201214233811.485669-4-daniel.lezcano@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -91,21 +73,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/20 10:28 PM, Dan Williams wrote:
-> Commit 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
-> introduced a new location where a pmd was released, but neglected to run
-> the pmd page destructor. In fact, this happened previously for a
-> different pmd release path and was fixed by commit:
+Hi Rui,
+
+
+On 15/12/2020 00:38, Daniel Lezcano wrote:
+> The loop is here to create default cooling device binding on the
+> THERMAL_TRIPS_NONE number which is used to be the 'forced_passive'
+> feature. However, we removed all code dealing with that in the thermal
+> core, thus this binding does no longer make sense.
 > 
-> c283610e44ec ("x86, mm: do not leak page->ptl for pmd page tables").
+> Remove it.
 > 
-> This issue was hidden until recently because the failure mode is silent,
-> but commit:
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-Looks sane.  Thanks as always for the thorough changelog and the
-investigation into why we're suddenly seeing this now.
+Are you fine with this change?
 
-I agree that ridding ourselves of open-coded free_page()'s is a good
-idea, but this patch itself needs to be around for stable anyway.  So,
+Thanks
 
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+  -- Daniel
+
+> ---
+>  drivers/acpi/thermal.c | 19 -------------------
+>  1 file changed, 19 deletions(-)
+> 
+> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+> index b5e4bc9e3282..26a89ff80a0e 100644
+> --- a/drivers/acpi/thermal.c
+> +++ b/drivers/acpi/thermal.c
+> @@ -764,25 +764,6 @@ static int acpi_thermal_cooling_device_cb(struct thermal_zone_device *thermal,
+>  		}
+>  	}
+>  
+> -	for (i = 0; i < tz->devices.count; i++) {
+> -		handle = tz->devices.handles[i];
+> -		status = acpi_bus_get_device(handle, &dev);
+> -		if (ACPI_SUCCESS(status) && (dev == device)) {
+> -			if (bind)
+> -				result = thermal_zone_bind_cooling_device
+> -						(thermal, THERMAL_TRIPS_NONE,
+> -						 cdev, THERMAL_NO_LIMIT,
+> -						 THERMAL_NO_LIMIT,
+> -						 THERMAL_WEIGHT_DEFAULT);
+> -			else
+> -				result = thermal_zone_unbind_cooling_device
+> -						(thermal, THERMAL_TRIPS_NONE,
+> -						 cdev);
+> -			if (result)
+> -				goto failed;
+> -		}
+> -	}
+> -
+>  failed:
+>  	return result;
+>  }
+> 
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
