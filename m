@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAAF2EAD38
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 457BA2EAD43
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727473AbhAEOQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:16:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726504AbhAEOQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:16:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87DFA22AAB;
-        Tue,  5 Jan 2021 14:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609856165;
-        bh=CLVMjissewD5ZdHzTYCaSNI7ZR8xFCiUY8G4oTJC+V8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l5lPIZw0Y4PQa+oyffi7WVuBTNZIJYMbhOb0Xx+wZv3DqMSjDes4Fvm1TfTlOr9YI
-         zTJTAO6G4SWFU0DL0XiFt5lbevHWdxg2kx/6uAh1XX+3zRR0rn5IxCbUwJpqg7//Hs
-         z/SlKPtkx7xRwYx20L6JNvYrwSkVnvBdCu8q6bJ4BXkvhZOV19lwmMeqXvuwlSncGb
-         O7Z9cdOZaM4aFeRVNTppg3vBFlkbSvhXIxblsyxB6qYYt6gILPfcYO/3+5+fIffX8/
-         JKkKCeMq3Ulym3Erl4yVuK1LzjONq49nMI0qKIBbfLSZLweklMMhtmFtBqgNLqG0JB
-         NM1G9qJJwVkzA==
-Date:   Tue, 5 Jan 2021 14:15:36 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Qing Zhang <zhangqing@loongson.cn>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        ThomasBogendoerfer <tsbogend@alpha.franken.de>,
-        linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, yangtiezhu@loongson.cn,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/4] spi: LS7A: Add Loongson LS7A SPI controller
- driver support
-Message-ID: <20210105141536.GD4487@sirena.org.uk>
-References: <1609124381-9107-1-git-send-email-zhangqing@loongson.cn>
+        id S1727624AbhAEOTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:19:11 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:39518 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726018AbhAEOTK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:19:10 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105EF1aM101866;
+        Tue, 5 Jan 2021 14:17:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=VYAOVPzTCDHPVHPsBdE7ahRv/jF/NxuZ8z4HhpbF+Cc=;
+ b=SE0oq+04evcDpFCjnKCLQPghRdLeNiXKbdU2N0XIAneKqhhzf23Zvr79nCj8PgDZKeBT
+ Vrqmx/XGHjN15zW1ms4epwzNQU5uj94H9vI06S/3WMQWRUytPnmRXAruAVks8DE3bv1G
+ le2GF33B/dwqudcnfm0TqscsGKjG3i4pChHv06qu/Jaxo5g2v298+cgEEHN15WZqM1Pa
+ B4181mm3j3g1x2aogtZ9kHR2deCn6ZcTqVaFJ+M6U4kGSKYN6TYQZ1rcTZyGKnUyJkws
+ woTjsAK9x83V48WFDhK1Pv1WqicOxw/ooBYKIrRKgV495PxV+vxmLPaKSMPBEI0JfThD Qg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 35tgskrxp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 05 Jan 2021 14:17:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105EAlHG005518;
+        Tue, 5 Jan 2021 14:17:58 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 35v1f8nbc7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Jan 2021 14:17:58 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 105EHghU011314;
+        Tue, 5 Jan 2021 14:17:42 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 05 Jan 2021 14:17:41 +0000
+Date:   Tue, 5 Jan 2021 17:17:01 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        devel@driverdev.osuosl.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Torsten Duwe <duwe@lst.de>, Sheng Pan <span@analogixsemi.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v2 2/2] drm/bridge: anx7625: add MIPI DPI input feature
+ support
+Message-ID: <20210105141701.GG2809@kadam>
+References: <cover.1609380663.git.xji@analogixsemi.com>
+ <f7fce2657d3c98a4d705f88eb9684f97b646793e.1609380663.git.xji@analogixsemi.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mSxgbZZZvrAyzONB"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1609124381-9107-1-git-send-email-zhangqing@loongson.cn>
-X-Cookie: I'm ANN LANDERS!!  I can SHOPLIFT!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f7fce2657d3c98a4d705f88eb9684f97b646793e.1609380663.git.xji@analogixsemi.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101050090
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101050090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 31, 2020 at 10:22:36AM +0800, Xin Ji wrote:
+>  static int anx7625_read_ctrl_status_p0(struct anx7625_data *ctx)
+>  {
+>  	return anx7625_reg_read(ctx, ctx->i2c.rx_p0_client, AP_AUX_CTRL_STATUS);
+> @@ -189,10 +203,64 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
+>  			       AP_AUX_CTRL_STATUS);
+>  	if (val < 0 || (val & 0x0F)) {
+>  		DRM_DEV_ERROR(dev, "aux status %02x\n", val);
+> -		val = -EIO;
+> +		return -EIO;
+>  	}
+>  
+> -	return val;
+> +	return 0;
 
---mSxgbZZZvrAyzONB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This s/val/0/ change seems like a bug fix.  Could you please send that
+as a separate patch at the start of the patch set?
 
-On Mon, Dec 28, 2020 at 10:59:38AM +0800, Qing Zhang wrote:
-
-> +	if (!!(spi->mode & SPI_CS_HIGH) == enable)
-> +		ls7a_spi_write_reg(ls7a_spi, SFC_SOFTCS, (0x1 << spi->chip_select) | cs);
-> +	else
-> +		ls7a_spi_write_reg(ls7a_spi, SFC_SOFTCS, (0x11 << spi->chip_select) | cs);
 > +}
 
-The core will handle inverting the chip select for the driver when
-SIP_CS_HIGH so doing it again here will cause bugs.  Just use the value
-of enable directly.  Otherwise this looks good.
+regards,
+dan carpenter
 
---mSxgbZZZvrAyzONB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/0dIcACgkQJNaLcl1U
-h9CFWAf8Drd3eCKlYj8r2/7Zu+rzTEA+cCKsN1h5sKGJ2+iTvwEnRJQoEMUE0LTc
-iFwyukIuELaVLbZRBfa2LkrMxxSG1gvkAFIEKRDTQ6SuWwSZeHNGNfZe0hv6hfhi
-K2ES8w+MDmqHYU3kQ/cOAZw2IhqTYk3f9VYT63Zk37xEl4osSEDhNy3St0k/yK8N
-4CW/xVqxR3wkjJnPWVvcLMlzlz6kf7Np4VXSMpXKXDuRXJ/hbucJR7HPr6WCe3ZG
-9A5DZ5siMMQegDGi78pZ/J4m76GIjMDUzHQ2d9hCgObTovmqVAZdUOU70MTgJN8S
-IAXXy5kaSjg8VQNZ7ObNzjvooudarg==
-=2jt+
------END PGP SIGNATURE-----
-
---mSxgbZZZvrAyzONB--
