@@ -2,88 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637832EA340
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D352EA33A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbhAECOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:14:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
+        id S1727708AbhAECOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:14:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbhAECOr (ORCPT
+        with ESMTP id S1726613AbhAECOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:14:47 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EB9C061796;
-        Mon,  4 Jan 2021 18:14:06 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id e25so1011904wme.0;
-        Mon, 04 Jan 2021 18:14:06 -0800 (PST)
+        Mon, 4 Jan 2021 21:14:23 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38499C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 18:13:43 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id w1so39300803ejf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 18:13:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=40GzxaNwwxkSMXNQB32SQeWYrAuv6Ok0Sq4KbJWmJx0=;
-        b=FRUF0l+vR9KEZSQ3HiGDCOVCU4krSX8z/glTCByHV8Z0LBB6YIMcbAfJWVfq75fk9U
-         TEZ7a6QLKbyfjzERg4FeFiXuZ+tBsODetU3AP2n64qi8/wotrsGMSs5wTkuLtLD6470n
-         lAAVFVS//BnCNtAtjc4G2XlyWJdE0c4DQuN4Hstoq489QHvNpIMTj7EwWib9OLaGL6Yn
-         aOD8Fz72/v3pTDN7+A6YfQB0VwVPYGqyUJl3EBEaGkGVMMMcW2QivAmWsMXUzz5Eu5y8
-         NKPeqTNUkvq3vhC2NHWhSvX6XKZTGkChavi/+iQSvn8rQDpgmjXxeBg7Ay6IC1i9PHGs
-         cE7A==
+        bh=qvV6FEczLH+8PfasNVXOCqdhthLBl7usYa45FALYpbY=;
+        b=xz2K25aOL/42q3USBHxE817PRS+cpeKYlYXsD6knCfIbgZOhhDqnUGKBmS9Fi3H76r
+         5APZiVGO+eEXnw/E61NSj79GlsT1I1RPnX4tB00uIfCMAY8CkMEZmdmjbJbzn3qBCt8d
+         UECtGS1+2PInjKfAk0uMZ6a3T+gclJfxtAFB0t+nS12tYsPbkzcyo4EwvRf2Q667b7EH
+         EnBOHa9nBFEc7HcAss4ze9V+TqgySTrRFQWam39hzF+hIYhaQ6zXMzKAwEXidmCrRW+H
+         fTyOqFFwpKULfuQ+erBVKYMi+B5AXCUW/fGRM7Oc8E2fiGF3b8oyQKZwQk6RYr4y0wJp
+         fGdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=40GzxaNwwxkSMXNQB32SQeWYrAuv6Ok0Sq4KbJWmJx0=;
-        b=YYmtPTolBFCZNdUlEBPYWiqvvzm9a9JMRtHhDLMzBz8gENKQTdyxbodG6qqHb//QOb
-         XxGT1ZPewSNE/6fODQWI2eAvpM1KR0HqjYU1hAqQV6U+J8SX6UYz/hC1EPm/0iX+Zmsl
-         qfmtD1RJlI8gliZS5K3+MGCzpWrRdkPY4WwJectq5mEEU9OttGDeONAMDs1yQRtfrdT9
-         bWhHox16hj0LYM9Flo5+fEeWgEsleZ8/e52e6P/bHsaL8AHbh4SERCzOiiYZkO7JgEGN
-         YGvVQ7DnTV5G/SJ0Pnu2FuIXqtefjNod4E5TaHVnrbhA0K5NkDyKjM9LIQ9GrAmGZwlD
-         fC2g==
-X-Gm-Message-State: AOAM533JbEPJirIfoUtpgm1eXfo4EaeOlyJatD1Kf6TZORL2hy+W26De
-        ouoCsNob3cIapT4zzns26gaucC/Hn+u2BRmspCRQxlr+
-X-Google-Smtp-Source: ABdhPJzrQvjv+X0my5Z8aP3SiM0nbGWCeKhFNCrEJp/qhHsPnZe2xNZeP4GfvVxeDu2S4z5qSzwqiKpg/42fbjzvZf8=
-X-Received: by 2002:a1c:2646:: with SMTP id m67mr1352850wmm.81.1609812845558;
- Mon, 04 Jan 2021 18:14:05 -0800 (PST)
+        bh=qvV6FEczLH+8PfasNVXOCqdhthLBl7usYa45FALYpbY=;
+        b=V2jritAEqoCBcxG0A/NaSpP9273ENPf3Q7QeiLQDRqztJ8dD3JsQ71t0oXmxo/UjcS
+         yhzzr7GHBH1PPC/XV3JDbGWx2lcZrpQ3suyEYDUJs9pNu0powQwzmAGvLW6xUJiJnW7g
+         p/rSffShREeaxQnfWZrFf7BoYD45LAHnCFgShNGy6ok90OSrvAXxu6WN5bkDIKBLaTQG
+         7WmPtR7P4NZK9Y30HBd6jYzRurr6o8Fi4IbUVwHsk144Tg0iR8OM16SuEMSOch0LucU7
+         Jf4/pP6GZPKwVUGVMEnEudiXhPNM2++jTetl8H2b6OMspUpqpknCaVyZUYi5zdTI+3Qr
+         0/3w==
+X-Gm-Message-State: AOAM530wvuCGLTQo7GZjBY9TjSPdoBVtLUpBr7zKAIsr1BPGIvH7fKFJ
+        MF7cayNsnZX3RM5YLFoZiJ3oyw1SFiICT+sCSaxA
+X-Google-Smtp-Source: ABdhPJxgesvJvYIYjYXGI+ZNhOx8UyNLaM5OHTy3tIzCiNoBdqeOCTECBZdd3nkbSmgO657ZMh+Tl7Fz4T89S+WR1R0=
+X-Received: by 2002:a17:907:4126:: with SMTP id mx6mr67633339ejb.91.1609812821733;
+ Mon, 04 Jan 2021 18:13:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20201214045850.1026293-1-zhang.lyra@gmail.com> <20210104182353.GA935@ninjato>
-In-Reply-To: <20210104182353.GA935@ninjato>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Tue, 5 Jan 2021 10:13:29 +0800
-Message-ID: <CAAfSe-t-J3ckbwKjNuRpcm0wq7gme7YFG7fiHqLHk-Pu44jwZQ@mail.gmail.com>
-Subject: Re: [PATCH v2] i2c: sprd: use a specific timeout to avoid system hang
- up issue
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Linhua Xu <linhua.xu@unisoc.com>
+References: <20201212180251.9943-1-tusharsu@linux.microsoft.com>
+ <20201212180251.9943-9-tusharsu@linux.microsoft.com> <CAHC9VhSao7DGtskbDMax8hN+PhQr8homFXUGjm+c7NtEUCtKhg@mail.gmail.com>
+ <2dce2244-adbd-df2a-e890-271bbcc8f9f2@linux.microsoft.com>
+In-Reply-To: <2dce2244-adbd-df2a-e890-271bbcc8f9f2@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 4 Jan 2021 21:13:30 -0500
+Message-ID: <CAHC9VhQ8H+UCnLTJ4Mb=GHCdExGvVEB_+nbK+-keMVie-tnbnQ@mail.gmail.com>
+Subject: Re: [PATCH v9 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        sashal@kernel.org, James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021 at 02:24, Wolfram Sang <wsa@kernel.org> wrote:
->
-> On Mon, Dec 14, 2020 at 12:58:50PM +0800, Chunyan Zhang wrote:
-> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Mon, Jan 4, 2021 at 6:30 PM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+> On 12/23/20 1:10 PM, Paul Moore wrote:
+> Hi Paul,
+
+Hello.
+
+> >> diff --git a/security/selinux/measure.c b/security/selinux/measure.c
+> >> new file mode 100644
+> >> index 000000000000..b7e24358e11d
+> >> --- /dev/null
+> >> +++ b/security/selinux/measure.c
+> >> @@ -0,0 +1,79 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-or-later
+> >> +/*
+> >> + * Measure SELinux state using IMA subsystem.
+> >> + */
+> >> +#include <linux/vmalloc.h>
+> >> +#include <linux/ktime.h>
+> >> +#include <linux/ima.h>
+> >> +#include "security.h"
+> >> +
+> >> +/*
+> >> + * This function creates a unique name by appending the timestamp to
+> >> + * the given string. This string is passed as "event_name" to the IMA
+> >> + * hook to measure the given SELinux data.
+> >> + *
+> >> + * The data provided by SELinux to the IMA subsystem for measuring may have
+> >> + * already been measured (for instance the same state existed earlier).
+> >> + * But for SELinux the current data represents a state change and hence
+> >> + * needs to be measured again. To enable this, pass a unique "event_name"
+> >> + * to the IMA hook so that IMA subsystem will always measure the given data.
+> >> + *
+> >> + * For example,
+> >> + * At time T0 SELinux data to be measured is "foo". IMA measures it.
+> >> + * At time T1 the data is changed to "bar". IMA measures it.
+> >> + * At time T2 the data is changed to "foo" again. IMA will not measure it
+> >> + * (since it was already measured) unless the event_name, for instance,
+> >> + * is different in this call.
+> >> + */
+> >> +static char *selinux_event_name(const char *name_prefix)
+> >> +{
+> >> +       struct timespec64 cur_time;
+> >> +
+> >> +       ktime_get_real_ts64(&cur_time);
+> >> +       return kasprintf(GFP_KERNEL, "%s-%lld:%09ld", name_prefix,
+> >> +                        cur_time.tv_sec, cur_time.tv_nsec);
+> >> +}
 > >
-> > If the i2c device SCL bus being pulled up due to some exception before
-> > message transfer done, the system cannot receive the completing interrupt
-> > signal any more, it would not exit waiting loop until MAX_SCHEDULE_TIMEOUT
-> > jiffies eclipse, that would make the system seemed hang up. To avoid that
-> > happen, this patch adds a specific timeout for message transfer.
+> > Why is this a separate function?  It's three lines long and only
+> > called from selinux_measure_state().  Do you ever see the SELinux/IMA
+> > code in this file expanding to the point where this function is nice
+> > from a reuse standpoint?
+>
+> Earlier I had two measurements - one for SELinux configuration/state and
+> another for SELinux policy. selinux_event_name() was used to generate
+> event name for each of them.
+>
+> In this patch set I have included only one measurement - for SELinux
+> policy. I plan to add "SELinux configuration/state" measurement in a
+> separate patch - I can reuse selinux_event_name() in that patch.
+
+I'm curious about this second measurement.  My apologies if you posted
+it previously, this patchset has gone through several iterations and
+simply can't recall all the different versions without digging through
+the list archives.
+
+Is there a reason why the second measurement isn't included in this
+patch?  Or this patchset if it is too big to be a single patch?
+
+> Also, I think the comment in the function header for
+> selinux_event_name() is useful.
+>
+> I prefer to have a separate function, if that's fine by you.
+
+Given just this patch I would prefer if you folded
+selinux_event_name() into selinux_measure_state().  However, I agree
+with you that the comments in the selinux_event_name() header block is
+useful, I would suggest moving those into the body of
+selinux_measure_state() directly above the calls to
+ktime_get_real_ts64() and kasprintf().
+
+> > Also, I assume you are not concerned about someone circumventing the
+> > IMA measurements by manipulating the time?  In most systems I would
+> > expect the time to be a protected entity, but with many systems
+> > getting their time from remote systems I thought it was worth
+> > mentioning.
+>
+> I am using time function to generate a unique name for the IMA
+> measurement event, such as, "selinux-policy-hash-1609790281:860232824".
+> This is to ensure that state changes in SELinux data are always measured.
+>
+> If you think time manipulation can be an issue, please let me know a
+> better way to generate unique event names.
+
+Yes, I understand that you are using the time value as a way of
+ensuring you always have a different event name and hence a new
+measurement.  However, I was wondering if you would be okay if the
+time was adjusted such that an event name was duplicated and a
+measurement missed?  Is that a problem for you?  It seems like it
+might be an issue, but you and Mimi know IMA better than I do.
+
+> >> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+> >> index 9704c8a32303..dfa2e00894ae 100644
+> >> --- a/security/selinux/ss/services.c
+> >> +++ b/security/selinux/ss/services.c
+> >> @@ -3875,8 +3876,33 @@ int security_netlbl_sid_to_secattr(struct selinux_state *state,
+> >>   }
+> >>   #endif /* CONFIG_NETLABEL */
+> >>
+> >> +/**
+> >> + * security_read_selinux_policy - read the policy.
+> >> + * @policy: SELinux policy
+> >> + * @data: binary policy data
+> >> + * @len: length of data in bytes
+> >> + *
+> >> + */
+> >> +static int security_read_selinux_policy(struct selinux_policy *policy,
+> >> +                                       void *data, size_t *len)
 > >
-> > Fixes: 8b9ec0719834 ("i2c: Add Spreadtrum I2C controller driver")
-> > Signed-off-by: Linhua Xu <linhua.xu@unisoc.com>
-> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > Let's just call this "security_read_policy()".
+> There is another function in this file with the name security_read_policy().
 >
-> Took the liberty to change the errno to ETIMEDOUT and applied to
-> for-current, thanks!
+> How about changing the above function name to "read_selinux_policy()"
+> since this is a local/static function.
 
-Thanks!
+Ooops, sorry about that!  I'm not sure what I was thinking there :)
 
-Chunyan
+How about "__security_read_policy()"?
 
->
+-- 
+paul moore
+www.paul-moore.com
