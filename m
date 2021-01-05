@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2F32EA6C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A93F12EA6CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbhAEI4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 03:56:19 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:22873 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbhAEI4S (ORCPT
+        id S1727294AbhAEI5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 03:57:53 -0500
+Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:48806 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726982AbhAEI5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 03:56:18 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609836960; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=KuJNnND9gNxn87Ys5RVKbNSQ/froZkWCUykAcB4+ZmA=; b=VER/6SgbdPFc27ziWZG0Y+lhqq+POXSd9hy6e5iXCs6C+ZitNp1X1jikHmW0B2RGwJJOtxE6
- EG/8DML409zmNCyXq1Ry5LEDpO4Mw4X6QlxGcBvmfOeWYQAxtoCbxQZGtCDvTwUu1srVAjf8
- infUuQdSKP9RzoGTg+bzjB2q2/4=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
- 5ff42980b73be0303d4c542a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 08:55:28
- GMT
-Sender: varada=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 37917C43464; Tue,  5 Jan 2021 08:55:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: varada)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4A7D5C433C6;
-        Tue,  5 Jan 2021 08:55:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4A7D5C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=varada@codeaurora.org
-Date:   Tue, 5 Jan 2021 14:25:16 +0530
-From:   Varadarajan Narayanan <varada@codeaurora.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linus.walleij@linaro.org, catalin.marinas@arm.com, will@kernel.org,
-        p.zabel@pengutronix.de, nsekar@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH 1/7] clk: qcom: clk-alpha-pll: Add support for Stromer
- PLLs
-Message-ID: <20210105085515.GA30147@codeaurora.org>
-References: <1601270140-4306-1-git-send-email-varada@codeaurora.org>
- <1601270140-4306-2-git-send-email-varada@codeaurora.org>
- <51544129-a04e-16a2-64e5-e004ea19bf8c@somainline.org>
+        Tue, 5 Jan 2021 03:57:52 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 55201100E7B44;
+        Tue,  5 Jan 2021 08:57:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:4321:4605:5007:7652:7875:9121:10004:10400:10848:11232:11658:11914:12297:12346:12740:12760:12895:13069:13095:13161:13229:13311:13357:13439:14096:14097:14181:14659:14721:21080:21433:21451:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
+X-HE-Tag: snail54_12179a2274d7
+X-Filterd-Recvd-Size: 2375
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  5 Jan 2021 08:57:10 +0000 (UTC)
+Message-ID: <5f01770454d163605406265b1bf316e0452753cf.camel@perches.com>
+Subject: Re: [PATCH v3 3/5] checkpatch: kconfig: enforce help text
+ indentation
+From:   Joe Perches <joe@perches.com>
+To:     Nicolai Fischer <nicolai.fischer@fau.de>,
+        linux-kernel@vger.kernel.org
+Cc:     apw@canonical.com, akpm@linux-foundation.org,
+        johannes.czekay@fau.de, linux-kernel@i4.cs.fau.de
+Date:   Tue, 05 Jan 2021 00:57:09 -0800
+In-Reply-To: <0e8754d14cb5624704159ba85b18f8a6bb703b27.camel@perches.com>
+References: <20201226140511.662368-1-nicolai.fischer@fau.de>
+         <20210103075015.23946-1-nicolai.fischer@fau.de>
+         <20210103075015.23946-4-nicolai.fischer@fau.de>
+         <0e8754d14cb5624704159ba85b18f8a6bb703b27.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51544129-a04e-16a2-64e5-e004ea19bf8c@somainline.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 01:51:28AM +0100, Konrad Dybcio wrote:
+On Mon, 2021-01-04 at 14:09 -0800, Joe Perches wrote:
+> On Sun, 2021-01-03 at 08:50 +0100, Nicolai Fischer wrote:
+> > Adds a new warning in case the indentation level of the
+> > first line of a Kconfig help message is not at least two spaces
+> > higher than the keyword itself.
+> > Blank lines between the message and the help keyword
+> > are ignored.
+> > 
+> > Co-developed-by: Johannes Czekay <johannes.czekay@fau.de>
+> > Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
+> > Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
+> > ---
+> > 
+> > Now matches indentation of two or more spaces, instead of exactly two.
+> 
+> No, this should match exactly 2 and warn on any other use.
 
-Konrad,
+To clarify, only the first line after the help keyword needs to
+have a 2 space indent more than the help keyword and the help
+block may start with Kconfig keywords.
 
-> Hi, are you going to resubmit this patch? Looks like
-> MDM9607 uses Stromer PLL for its CPU clocks and could
-> benefit from it.
+Subsequent help block lines may have more than 2 chars.
 
-Yes. But will take some time since we are held up with
-additional activities.
+The help block line count should end when the indent is less than
+the help keyword indent and is a non-blank line.
 
-Thanks
-Varada
+This should be valid:
 
---
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+	help
+	  line 1
+	    -- reason 1
+	    -- reason 2
+	       continuation
+	    -- reason 3
+
+But this should warn only on line 1:
+
+	help
+	   line 1 has a 3 space indent
+	   -- reason 1
+	   -- reason 2
+	       continuation
+	   -- reason 3
+
+
