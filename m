@@ -2,133 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE4A2EA55D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B22132EA561
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728302AbhAEGTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 01:19:46 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9670 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbhAEGTq (ORCPT
+        id S1728400AbhAEGUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 01:20:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725298AbhAEGUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 01:19:46 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D92Nd2j10z15pCm;
-        Tue,  5 Jan 2021 14:17:53 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 5 Jan 2021
- 14:18:43 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] crypto: hisilicon/sec - register SEC device to uacce
-Date:   Tue, 5 Jan 2021 14:16:44 +0800
-Message-ID: <1609827404-6024-4-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1609827404-6024-1-git-send-email-yekai13@huawei.com>
-References: <1609827404-6024-1-git-send-email-yekai13@huawei.com>
+        Tue, 5 Jan 2021 01:20:38 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219FEC061574;
+        Mon,  4 Jan 2021 22:19:58 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D92Qx1twMz9sWT;
+        Tue,  5 Jan 2021 17:19:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1609827594;
+        bh=nDCX2HW9Z7M29EWUeQPgoiP8gTCsHWtWuXpbap0SK9I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N9IPCLaPV1y3i+yViI2X+WdKVSifdIEn8xES3D6e7W5UHDR/WllJNmEAjfQykuuoh
+         guWDRDClDE3gWKfhXx1/La1bZBl4lUb/8O467sifYDOCjeRltmPUHyM24PeySk41B6
+         nKDvloHSpQUsxt/nnNaJ/m+qzvyI1HXQfrX8e+/6gUzxmb0VDhChtumSbrzWX5HTIx
+         gEPXQFKlv8FBi41nHRdPAF3CCPfG4lvrxryuP82o5od7up6WE2JsivDA7Y/Nn6ye6d
+         rf4yIEmKBhm74B4TIGVjyJEx1wOlIAtgMlYu3WW7zlFzsl+oBFba+2H/VIA7In9y/P
+         5+GZUrFTrgzXQ==
+Date:   Tue, 5 Jan 2021 17:19:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Carl Huang <cjhuang@codeaurora.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Abhishek Kumar <kuabhs@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: linux-next: build warnings after merge of the net-next tree
+Message-ID: <20210105171951.0216f0f3@canb.auug.org.au>
+In-Reply-To: <20201221122839.72d29127@canb.auug.org.au>
+References: <20201214201025.60cee658@canb.auug.org.au>
+        <20201221122839.72d29127@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/5y73/z05TAB2IUywJlzhiGn";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register SEC device to uacce framework for user space.
+--Sig_/5y73/z05TAB2IUywJlzhiGn
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec_main.c | 39 +++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+Hi all,
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index b35c1c2..4809c19 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -13,6 +13,7 @@
- #include <linux/pci.h>
- #include <linux/seq_file.h>
- #include <linux/topology.h>
-+#include <linux/uacce.h>
- 
- #include "sec.h"
- 
-@@ -74,6 +75,16 @@
- 
- #define SEC_USER0_SMMU_NORMAL		(BIT(23) | BIT(15))
- #define SEC_USER1_SMMU_NORMAL		(BIT(31) | BIT(23) | BIT(15) | BIT(7))
-+#define SEC_USER1_ENABLE_CONTEXT_SSV	BIT(24)
-+#define SEC_USER1_ENABLE_DATA_SSV	BIT(16)
-+#define SEC_USER1_WB_CONTEXT_SSV	BIT(8)
-+#define SEC_USER1_WB_DATA_SSV		BIT(0)
-+#define SEC_USER1_SVA_SET		(SEC_USER1_ENABLE_CONTEXT_SSV | \
-+					SEC_USER1_ENABLE_DATA_SSV | \
-+					SEC_USER1_WB_CONTEXT_SSV |  \
-+					SEC_USER1_WB_DATA_SSV)
-+#define SEC_USER1_SMMU_SVA		(SEC_USER1_SMMU_NORMAL | SEC_USER1_SVA_SET)
-+#define SEC_USER1_SMMU_MASK		(~SEC_USER1_SVA_SET)
- #define SEC_CORE_INT_STATUS_M_ECC	BIT(2)
- 
- #define SEC_DELAY_10_US			10
-@@ -233,6 +244,18 @@ struct hisi_qp **sec_create_qps(void)
- 	return NULL;
- }
- 
-+static const struct kernel_param_ops sec_uacce_mode_ops = {
-+	.set = uacce_mode_set,
-+	.get = param_get_int,
-+};
-+
-+/*
-+ * uacce_mode = 0 means sec only register to crypto,
-+ * uacce_mode = 1 means sec both register to crypto and uacce.
-+ */
-+static u32 uacce_mode = UACCE_MODE_NOUACCE;
-+module_param_cb(uacce_mode, &sec_uacce_mode_ops, &uacce_mode, 0444);
-+MODULE_PARM_DESC(uacce_mode, UACCE_MODE_DESC);
- 
- static const struct pci_device_id sec_dev_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, SEC_PF_PCI_DEVICE_ID) },
-@@ -299,7 +322,11 @@ static int sec_engine_init(struct hisi_qm *qm)
- 	writel_relaxed(reg, SEC_ADDR(qm, SEC_INTERFACE_USER_CTRL0_REG));
- 
- 	reg = readl_relaxed(SEC_ADDR(qm, SEC_INTERFACE_USER_CTRL1_REG));
--	reg |= SEC_USER1_SMMU_NORMAL;
-+	reg &= SEC_USER1_SMMU_MASK;
-+	if (qm->use_sva)
-+		reg |= SEC_USER1_SMMU_SVA;
-+	else
-+		reg |= SEC_USER1_SMMU_NORMAL;
- 	writel_relaxed(reg, SEC_ADDR(qm, SEC_INTERFACE_USER_CTRL1_REG));
- 
- 	writel(SEC_SINGLE_PORT_MAX_TRANS,
-@@ -758,6 +785,8 @@ static int sec_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
- 
- 	qm->pdev = pdev;
- 	qm->ver = pdev->revision;
-+	qm->algs = "cipher\ndigest\naead\n";
-+	qm->mode = uacce_mode;
- 	qm->sqe_size = SEC_SQE_SIZE;
- 	qm->dev_name = sec_name;
- 
-@@ -885,6 +914,14 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto err_qm_stop;
- 	}
- 
-+	if (qm->uacce) {
-+		ret = uacce_register(qm->uacce);
-+		if (ret) {
-+			pci_err(pdev, "failed to register uacce (%d)!\n", ret);
-+			goto err_alg_unregister;
-+		}
-+	}
-+
- 	if (qm->fun_type == QM_HW_PF && vfs_num) {
- 		ret = hisi_qm_sriov_enable(pdev, vfs_num);
- 		if (ret < 0)
--- 
-2.8.1
+On Mon, 21 Dec 2020 12:28:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Mon, 14 Dec 2020 20:10:25 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > After merging the net-next tree, today's linux-next build (htmldocs)
+> > produced these warnings:
+> >=20
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:1759: warning: Cannot understand  * @struct cfg8=
+0211_sar_chan_ranges - sar frequency ranges
+> >  on line 1759 - I thought it was a doc line
+> > include/net/cfg80211.h:5073: warning: Function parameter or member 'sar=
+_capa' not described in 'wiphy'
+> >=20
+> > Introduced by commit
+> >=20
+> >   6bdb68cef7bf ("nl80211: add common API to configure SAR power limitat=
+ions") =20
+>=20
+> I am now getting these warnings from Linus' tree.
 
+I am still getting these warnings ...
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/5y73/z05TAB2IUywJlzhiGn
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/0BQcACgkQAVBC80lX
+0GxmvQf/eRQx/UG7oUz0cLzIPEX8ae8XnL/S2TLLoOXerz24VtzCXD97IbnELaeM
+RY2PgLNXxSpvle9eH+i7JygaXnEwABsfwR3cMRAL4DJ2Nsua+aDkqhX4fHggTs6U
+uNGFDrU1VFUCwmJ1oUUgKfVuyd1ea6ficp65OMkMjl2+DhdHiFH6+dau/rR897rW
+POdpBDdD/k1RZVNLZG+jiAY2bFdb3Wjd71tX7ububqYkXLg4Ti7ALCEFTnhpaXTO
+AKIUm1FqZiLRau/SaQyw0QIz+RJxdfboqmDAKNlpO5O2+sbB+kdMhbr6vX4C2Ssk
+GS0e0Cc8H2QtsNuoXIoliXRfc1iEvQ==
+=L2Du
+-----END PGP SIGNATURE-----
+
+--Sig_/5y73/z05TAB2IUywJlzhiGn--
