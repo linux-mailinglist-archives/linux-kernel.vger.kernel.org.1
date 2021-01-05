@@ -2,117 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08DF2EB29F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E662EB2A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730681AbhAES3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:29:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbhAES3y (ORCPT
+        id S1730701AbhAESan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:30:43 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:57354 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726651AbhAESam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:29:54 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A209AC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:29:13 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id 81so214318ioc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:29:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=+TyQkEMafuxHeItsQmIw3IkEc+mWTDN39fb3kbBoCAQ=;
-        b=SUnf7RuciFcT7xoD/lKhNL+PDI/zrsFawvjUbXJAVrZn0I7SGaLzrfDZAzVB92/71m
-         9T/bmyhAiNxUrRbDsA5t0Iz50Dma067juh75ksoMK313gwGRyxbn1F/hPp9RQvQYmOyd
-         gYPuLsVF5s0Z6YeiW4ICYvfIyn6vcCslod9h1ZfZ8s++Qz0CFPT0QO5kGwbLGCaCGg7x
-         wCRrn8r+NJkUL4ZOujT2KsDRmfyYNy8e4t0LdVrrZgsv2iqhXkl5KorpXviYaROBRrh9
-         shkuYqNyY05HBiqf8Ozn4Qrka8/fcaOyD+9z38U6W6dOL7mMgoMiRSf6b8dVcF8yV1xt
-         u6eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=+TyQkEMafuxHeItsQmIw3IkEc+mWTDN39fb3kbBoCAQ=;
-        b=O01TyCZiJV4vC2y8L01nNwseztmMGGoi0vxuhjJHHApHxPqkfMCGNvDWswoTxkWo79
-         22/gOxGD3zaEktMWAmrmoLVGkwWFK2zaTASI6ZPgn5uwI5fDt7s7Vs8ec4n6EHSSYzkZ
-         fcLocjSxXBx0QkldEW0buWi69Yq6NJs1LjDkbZaKaHMLsmCXzOxIN0n2VLL/+nAYOq+m
-         t9L2+6Vag4DQgQzWuDLZjaej0bK1QcCOEe3NWRrCoMsGKSLPxFvr3iBMN8DTkLsKphGG
-         W9D8VJ0fpChDRX/e0AqXrFXLxAQX/rG//0N45linfZobCwM6re6ClPugQrqVAEKIQjF8
-         zSzQ==
-X-Gm-Message-State: AOAM533PFKJOyvkoste1tf4MNprxNtukFCOxtTAiCjmP6zEsqtaJPIAe
-        DgAlOPtm6y26NMFsyXwqwVKKKg==
-X-Google-Smtp-Source: ABdhPJzYusZ33kX0BXHdXB9ebF0uo+0mpGyGAAOfZD4Tg5IPe4ZCx+Nhm43vG5uXAXrLq9SUTx16+Q==
-X-Received: by 2002:a02:9691:: with SMTP id w17mr812141jai.9.1609871352998;
-        Tue, 05 Jan 2021 10:29:12 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id k76sm61777ilk.36.2021.01.05.10.29.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 10:29:12 -0800 (PST)
-To:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] fs: process fput task_work with TWA_SIGNAL
-Message-ID: <d6ddf6c2-3789-2e10-ba71-668cba03eb35@kernel.dk>
-Date:   Tue, 5 Jan 2021 11:29:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 5 Jan 2021 13:30:42 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105IMPPB017456;
+        Tue, 5 Jan 2021 18:29:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=zleZhLDJdlixTgQ8PwGfwy0XN/UPjFt/4pghSoy56Qc=;
+ b=pWbkeA4AbyU5DAYZ6oi9cCS1sVIuc/0pjPFZj/8pzed31x4EhwSzClnMe3K0rEr5TdLj
+ WcsFBmjYYxyVQIo1qezrnkGwmJdTCa75njypoy6h436wxzNZzmMhL8Pb3c9DAu2UJZv6
+ u8IYbtGoUJSxwLRfCxf5yYm5p3lmkTjAy/0A8TuT97UWKM/H7KabJLULv8HlDc0nY7af
+ 1QYdTouXwQtoga/oxE1EDmDB+sSkn5uJ2p/FC1Xl+zSwfuvzRapYVuVNMqO47+4xwjZI
+ VN3oj5ZsTuZ8MAInU8akB8TjpuWjse9ClOucf/imiy9MpKnyTEkwwHr+kSsrn0Z6nX/C YA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 35tg8r25vk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 05 Jan 2021 18:29:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105IEl2n045646;
+        Tue, 5 Jan 2021 18:27:34 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 35v1f8wvcp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Jan 2021 18:27:34 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 105IRTPb015020;
+        Tue, 5 Jan 2021 18:27:29 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 05 Jan 2021 18:27:29 +0000
+Date:   Tue, 5 Jan 2021 10:27:28 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, Will Deacon <will@kernel.org>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+Message-ID: <20210105182728.GG6908@magnolia>
+References: <20210105154726.GD1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105154726.GD1551@shell.armlinux.org.uk>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101050107
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 phishscore=0 bulkscore=0
+ spamscore=0 impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101050107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Song reported a boot regression in a kvm image with 5.11-rc, and bisected
-it down to the below patch. Debugging this issue, turns out that the boot
-stalled when a task is waiting on a pipe being released. As we no longer
-run task_work from get_signal() unless it's queued with TWA_SIGNAL, the
-task goes idle without running the task_work. This prevents ->release()
-from being called on the pipe, which another boot task is waiting on.
+On Tue, Jan 05, 2021 at 03:47:26PM +0000, Russell King - ARM Linux admin wrote:
+> Hi,
+> 
+> This is an update on where I am with this long standing issue at the
+> current time.
+> 
+> Since 5.4, I have been struggling with several of my ARM64 systems, of
+> different SoC vendors and differing filesystem media, were sporadically
+> reporting inode checksum failures on their root filesystems.  The time
+> taken to report this has been anything between a few hours and three
+> months of uptime, making the problem unrealistic to bisect.
 
-Use TWA_SIGNAL for the file fput work to ensure it's run before the task
-goes idle.
+Aha, I was wondering what happened to this bug report. :)
 
-Fixes: 98b89b649fce ("signal: kill JOBCTL_TASK_WORK")
-Reported-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> The issue was first seen on my SolidRun Clearfog CX LX2160A based
+> system, but was also subsequently noticed on my Armada 8040 based
+> systems running kernels 5.4 and later. Kernel 5.2 has proven stable
+> with 566 days of uptime with no issue.
+> 
+> It has taken a long time to get debugging in place to see what is going
+> on - and this is currently detailed on the front page of
+> www.armlinux.org.uk right now, which has formed a blog of this problem
+> - since almost no one has taken any interest in it.
+> 
+> However, over the last couple of days, a way to reproduce it has been
+> found, at least for the LX2160A based system.  Power down, leave the
+> machine powered off for some time. Power up, log in and run:
+> 
+> while :; do sleep 5; find /var /usr /bin /sbin -type f -print0 | \
+> 	xargs -0 md5sum >/dev/null; done
 
----
+Does that fill up the page cache enough to push memory reclaim?
 
-The other alternative here is obviously to re-instate the:
+> Within a few minutes it seems to have spat out an inode checksum
+> failure if the problem exists. However, testing for the problem _not_
+> existing is quite difficult - just because it doesn't appear in the
+> first few minutes does not mean it has been solved - see above where it
+> can take three months.
+> 
+> However, evidence is currently pointing towards commit 22ec71615d82
+> ("arm64: io: Relax implicit barriers in default I/O accessors") having
+> revealed this problem. Will is very certain that this change is
+> correct, and we feel that it may have exposed some other issue in the
+> Aarch64 code.
+> 
+> Further attempts seem to suggest that the problem is specifically the
+> barrier in __iormb(). Leaving __iowmb() untouched, and changing the
+> barrier in __iormb() from dma_rmb() to rmb() _appears_ to result in the
+> problem disappearing. "Appears" is stressed because further testing is
+> needed - and that is probably going to take many months before we know
+> for certain.
+> 
+> However, this suggests that there is a memory ordering bug with aarch64
+> somewhere. Will can follow up with his own thoughts to this email.
+> 
+> We don't know if it is:
+> - the kernel.
+> - the Cortex A72.
+> - the Cache coherent interconnect.
+> 
+> I don't think it's the CCI, as I believe the Armada 8040 uses Marvell's
+> own IP for that based around Aurora 2 (the functional spec doesn't make
+> it clear.) Remember, I'm seeing this problem on both Armada 8040 and
+> LX2160A. We don't know of any known errata for the A72 in this area.
+> So, we're down to something in the kernel.
+> 
+> It is possible that it could be compiler related, but I don't see that;
+> if the "dmb oshld" were strong enough, then it should mean that the
+> subsequent reads to checksum the inode data after the inode data has
+> been DMA'd into memory should be reading the correct values from memory
+> already - but they aren't. And if changing "dmb oshld" to "dsb ld" means
+> that the code can then read the right values, that to me points fairly
+> definitively to a hardware problem.
+> 
+> Now, ext4fs is pretty good at checksumming the metadata in the
+> filesystem - each inode is individually checksummed with CRC32C and two
+> 16-bit halves are stored in each inode. Directories are also
+> checksummed. ext4fs validates the inode checksum on every ext4_iget()
+> call. Do other filesystems do similar?
 
-if (unlikely(current->task_works))
-	task_work_run();
+XFS and ext4 both validate the ondisk csum when constructing their
+incore inodes, and set them when flushing the incore inode back to disk.
 
-in get_signal() that we had before this change. Might be safer in case
-there are other cases that need to ensure the work is run in a timely
-fashion, though I do think it's cleaner to long term to correctly mark
-task_work with the needed notification type. Comments welcome...
+I vaguely wonder if there's something else going on here, like ... a
+background memory reclaim thread running on one cpu writes out an inode
+core with new checksum (because reading the file bumped the atime), and
+then another cpu comes along and has to reconstitute the (just
+reclaimed) incore inode, but for whatever reason doesn't get the version
+that the other cpu just wrote?
 
-diff --git a/fs/file_table.c b/fs/file_table.c
-index 45437f8e1003..7c76b611c95b 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -338,7 +338,13 @@ void fput_many(struct file *file, unsigned int refs)
- 
- 		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
- 			init_task_work(&file->f_u.fu_rcuhead, ____fput);
--			if (!task_work_add(task, &file->f_u.fu_rcuhead, TWA_RESUME))
-+			/*
-+			 * We could be dependent on the fput task_work running,
-+			 * eg for pipes where someone is waiting on release
-+			 * being called. Use TWA_SIGNAL to ensure it's run
-+			 * before the task goes idle.
-+			 */
-+			if (!task_work_add(task, &file->f_u.fu_rcuhead, TWA_SIGNAL))
- 				return;
- 			/*
- 			 * After this task has run exit_task_work(),
+That's like 130% speculative though, and note that I have no idea what
+the "outer shareable" domain[1] is.
 
--- 
-Jens Axboe
+[1] https://developer.arm.com/docs/ddi0597/h/base-instructions-alphabetic-order/dmb-data-memory-barrier
 
+> Anyway, here is the patch I'm currently running, which _seems_ so far
+> to be the minimal fix for my problems. Will thinks that this is hiding
+> the real problem by adding barriers, but I don't see there's much
+> choice but to apply this - I don't see what other debugging could be
+> done without the use of expensive hardware simulation, or detailed
+> hardware level tracing - the kind of which a silicon vendor or ARM Ltd
+> would have.
+
+(FWIW I haven't seen checksum errors on xfs or ext4 on arm64, though
+most of my testing is relegated to beating on a raspberry pi very
+slowly...)
+
+> I'm at the end of what I can do with this; I'm going to keep this patch
+> in my kernel, since it fixes it for me.
+
+Well if you've managed to hit this on multiple different machines after
+a long soak time, I wonder how many other people will trip over this too.
+It wouldn't be the first time a fs stunts performance to avoid
+corruption. ;)
+
+> Will would like a reliable reproducer - yes, that would be ideal, but
+> I'm afraid that's a mamoth task in itself. It's taken a year to find
+> this method of reproducing it.
+> 
+> There's also the matter that in one case I've seen, the ext4 checksum
+> has been wrong. The subsequent hexdump has been correct, and the post-
+> hexdump checksum recalculation has remained incorrect - and the same
+> value as the first incorrect checksum. However, the inode with the
+> _same_ checksum has subsequently validated correctly by the kernel and
+> by e2fsck. I can not explain this.
+
+Strange.  You're just using the same ext4_inode_csum() that everything
+else uses, right?
+
+--D
+
+> 
+> diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
+> index ff50dd731852..be63c47aecc4 100644
+> --- a/arch/arm64/include/asm/io.h
+> +++ b/arch/arm64/include/asm/io.h
+> @@ -95,7 +95,7 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
+>  ({									\
+>  	unsigned long tmp;						\
+>  									\
+> -	dma_rmb();								\
+> +	rmb();								\
+>  									\
+>  	/*								\
+>  	 * Create a dummy control dependency from the IO read to any	\
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
