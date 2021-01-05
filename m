@@ -2,116 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4432EAC4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB872EAC53
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728668AbhAENsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:48:00 -0500
-Received: from mga06.intel.com ([134.134.136.31]:1440 "EHLO mga06.intel.com"
+        id S1729117AbhAENs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:48:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727768AbhAENr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:47:59 -0500
-IronPort-SDR: w15NMDQcIHo9vsKz/SQBW/X5rpas3j1hgie1RQsl6VXm2H+bVc+mYyGtYAdMsnLzZixj2UzsUt
- oXlTEQFdWLXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="238657273"
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="238657273"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 05:47:18 -0800
-IronPort-SDR: K+oOaHaTMm745c8x0yJQONHkJSAVG3HVrQAmqA2jXJ7BV8Ngd08TMocGk74SwwVLU82I49e0nR
- gfJydaJf775A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; 
-   d="scan'208";a="421777717"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
-  by orsmga001.jf.intel.com with ESMTP; 05 Jan 2021 05:47:15 -0800
-Subject: Re: [PATCH v6 4/6] mmc: sdhci-of-aspeed: Add KUnit tests for phase
- calculations
-To:     Andrew Jeffery <andrew@aj.id.au>, linux-mmc@vger.kernel.org
-Cc:     ulf.hansson@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, ryan_chen@aspeedtech.com
-References: <20201218035338.1130849-1-andrew@aj.id.au>
- <20201218035338.1130849-5-andrew@aj.id.au>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <ff588027-0fbb-100e-05a9-4a804662d838@intel.com>
-Date:   Tue, 5 Jan 2021 15:47:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727667AbhAENsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:48:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 249C5229C4;
+        Tue,  5 Jan 2021 13:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609854464;
+        bh=gyD3KQsl/AH0kP2J/k+P8mYvYMg3e/UjEIFD6A8fcvg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GSa3SxhMtQZX4I4QN+P9vlGTpDtlaMd0kAhgiI4Xg5NudWKM4YTEtA+yAsyePqL2E
+         a5TrYWlX3wEipkE6kvVYHuKGP/hFOs4JGSloH+8WJ5UcLnLmkajcaMY6TgdyUaHVSQ
+         2/3BQH/4Paqie6W6Ow2OjI5iUInSSmk4W8klSN+CoRyjn0bZ67quO2yTzyrYqmphV8
+         4fy0ScZ8kGM8Y1lgPITWDqDfkaRmYEpRGkhJKYl571Zc8DC899tvYr/L6sPV6X9vMT
+         HuMK1OFnId9k/ak3R6ZDnRN89wIhU0VGEdh4a/pi5qqkCpVFQ3pvMz11zdbjghMBXQ
+         AywMuXT0STKOQ==
+Date:   Tue, 5 Jan 2021 13:47:17 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Birger Koblitz <mail@birger-koblitz.de>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: spi: Realtek RTL838x/RTL839x SPI
+ controller
+Message-ID: <20210105134717.GB4487@sirena.org.uk>
+References: <20210101132432.2785663-1-bert@biot.com>
+ <20210101132432.2785663-2-bert@biot.com>
+ <20210104213131.GL5645@sirena.org.uk>
+ <121d9dc6-7993-d43b-291f-74dd943f4fc6@biot.com>
 MIME-Version: 1.0
-In-Reply-To: <20201218035338.1130849-5-andrew@aj.id.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OwLcNYc0lM97+oe1"
+Content-Disposition: inline
+In-Reply-To: <121d9dc6-7993-d43b-291f-74dd943f4fc6@biot.com>
+X-Cookie: I'm ANN LANDERS!!  I can SHOPLIFT!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/20 5:53 am, Andrew Jeffery wrote:
-> Converting degrees of phase to logic delays is irritating to test on
-> hardware, so lets exercise the function using KUnit.
-> 
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> ---
->  drivers/mmc/host/Kconfig                |  14 ++++
->  drivers/mmc/host/Makefile               |   1 +
->  drivers/mmc/host/sdhci-of-aspeed-test.c | 100 ++++++++++++++++++++++++
->  3 files changed, 115 insertions(+)
->  create mode 100644 drivers/mmc/host/sdhci-of-aspeed-test.c
-> 
-> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> index 596f32637315..d6f00d1d6251 100644
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@ -168,6 +168,20 @@ config MMC_SDHCI_OF_ASPEED
->  
->  	  If unsure, say N.
->  
-> +config MMC_SDHCI_OF_ASPEED_TEST
-> +	bool "Tests for the ASPEED SDHCI driver"
-> +	depends on MMC_SDHCI_OF_ASPEED && KUNIT=y
-> +	help
-> +	  Enable KUnit tests for the ASPEED SDHCI driver. Select this
-> +	  option only if you will boot the kernel for the purpose of running
-> +	  unit tests (e.g. under UML or qemu).
-> +
-> +	  The KUnit tests generally exercise parts of the driver that do not
-> +	  directly touch the hardware, for example, the phase correction
-> +	  calculations.
-> +
-> +	  If unsure, say N.
-> +
->  config MMC_SDHCI_OF_AT91
->  	tristate "SDHCI OF support for the Atmel SDMMC controller"
->  	depends on MMC_SDHCI_PLTFM
-> diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-> index 451c25fc2c69..3ee59d5802cf 100644
-> --- a/drivers/mmc/host/Makefile
-> +++ b/drivers/mmc/host/Makefile
-> @@ -90,6 +90,7 @@ obj-$(CONFIG_MMC_SDHCI_DOVE)		+= sdhci-dove.o
->  obj-$(CONFIG_MMC_SDHCI_TEGRA)		+= sdhci-tegra.o
->  obj-$(CONFIG_MMC_SDHCI_OF_ARASAN)	+= sdhci-of-arasan.o
->  obj-$(CONFIG_MMC_SDHCI_OF_ASPEED)	+= sdhci-of-aspeed.o
-> +obj-$(CONFIG_MMC_SDHCI_OF_ASPEED_TEST)	+= sdhci-of-aspeed-test.o
->  obj-$(CONFIG_MMC_SDHCI_OF_AT91)		+= sdhci-of-at91.o
->  obj-$(CONFIG_MMC_SDHCI_OF_ESDHC)	+= sdhci-of-esdhc.o
->  obj-$(CONFIG_MMC_SDHCI_OF_HLWD)		+= sdhci-of-hlwd.o
-> diff --git a/drivers/mmc/host/sdhci-of-aspeed-test.c b/drivers/mmc/host/sdhci-of-aspeed-test.c
-> new file mode 100644
-> index 000000000000..fb79b278fb81
-> --- /dev/null
-> +++ b/drivers/mmc/host/sdhci-of-aspeed-test.c
-> @@ -0,0 +1,100 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/* Copyright (C) 2020 IBM Corp. */
-> +
-> +#include <kunit/test.h>
-> +
-> +#include "sdhci-of-aspeed.c"
 
-I am not sure including like that is advisable.  Did you consider instead
-doing it the other way around i.e. adding an include to the bottom of
-sdhci-of-aspeed.c?
+--OwLcNYc0lM97+oe1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 05, 2021 at 09:43:59AM +0100, Bert Vermeulen wrote:
+> On 1/4/21 10:31 PM, Mark Brown wrote:
+
+> > This is still just using rtl-spi as the compatible string, please
+> > address the feedback on the previous version.
+
+> The rtl prefix really is as close as it gets. This is being developed on
+> RTL838x and RTL839x, but the driver very likely also works on RTL8196C and
+> RTL93xx series. There's no difference to the SPI block in those SoCs.
+
+> Do you really want a different per-series compatible when the "IP block" was
+> just copy-pasted between series in hardware?
+
+Yes.
+
+--OwLcNYc0lM97+oe1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/0beQACgkQJNaLcl1U
+h9CzbggAgtHmArcCO+zD5/jomt+uuZzBWmKO40hICk9ya9e58s2nPiLdcG64gf0z
+8qM/Q7wnRH6J2Hs/0Gaz8+3yqetgAeAX2cYCnxX8ONS3GmkVhwb7TJc8RH6WyxdY
+/Kq+kS6bzJw8swB4kIj3dOKDPNXjMPZWwrp1IfcJ5UFbxJqgrd9T3VBcjJbN5U2I
+IQBwNqWah7X6+tvTsWl44D1tgihjdS5SU537y9SNOi+uWm636qjBSlTIKK6PDlUe
+ufgLQmiHHj9vm+jA/PaXD1Q7nOENIoty9xwHaZFMlxd4zU4X0G7xj2R38EoqT7nS
+uGvqYC9o4iyHI+uHP2IZis1UNSPmow==
+=yxIH
+-----END PGP SIGNATURE-----
+
+--OwLcNYc0lM97+oe1--
