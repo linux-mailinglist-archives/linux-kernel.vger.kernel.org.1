@@ -2,276 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDD12EAAD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5EE2EAADA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 13:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730286AbhAEM27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 07:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
+        id S1730327AbhAEM3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 07:29:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728735AbhAEM24 (ORCPT
+        with ESMTP id S1730300AbhAEM3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:28:56 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4554BC06138E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 04:27:56 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id f14so1579246pju.4
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 04:27:56 -0800 (PST)
+        Tue, 5 Jan 2021 07:29:02 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91014C061382;
+        Tue,  5 Jan 2021 04:27:34 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 15so21181610pgx.7;
+        Tue, 05 Jan 2021 04:27:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HMhTJmm/aJAOoL9aJNkUA9BuiVKtKAPPcxXpVi5YN0I=;
-        b=IQCnViu6Gscw70F3M40CJz7CWKD+hMrlxpGVlQ4Y/o/Z5LQPcPVPvQUfoyrE+5M5sB
-         5qsyfMFezh/8aYezZD/+eIqWVjLC9d7PWJjjcRfQhEOkkbekZv9HXdrRk1qvJCcEbRal
-         5S1A2KMpknVZ2g+zyrFFgEkcAZ/bqL5F0a13nkR7sBm1w1VUAUsVbAHat/lzQY1YfN6P
-         6se9CnfOY+vlmp9AJDgzRM12GBpMSY8y4YHVX3agSgrePdgifzrPFDzgvkud4m/1+Ut3
-         HdmS0a23US4esyzFsQnY7EOkEUZnOi4rZ2AtJrFpyQGUTJjGNYXf4s7xOiZ/fV/bcg2J
-         ACrQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=XqETI2dj6LLMBcSn8TTOy0ZVVdhDfBt9SMpfQ1dkImQ=;
+        b=WQsow3O8vXyWtIbJBHbR3W4gOlVwK8Qd/A5nbSTl85GhpmUx4R2I2WPb91OFzDusKE
+         i9ktAcKupz8zPLeLVmyNz5//2HjmCTqFfJF2fXJG3Fgxcs2halLHhw11qJ1gasv635qX
+         mX3/v0Q/4fhISLcYCclxQLkA7BJNwSYjJ3lzxbiXcuHQZqbjN3pJc/SQTpahgW9FyCrD
+         YWwf1zAKqFLucH+DeaV//cym6fMcZrihcxKVSwVQBNWswgn9/ZDJ2GI0eACemKu6usj2
+         A+sx9UlNmn7BnkfrcKNfmBUB9+v8iDQKq19XGgQCPJR/H10bvARdcgJB/8924zxCY59I
+         28LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HMhTJmm/aJAOoL9aJNkUA9BuiVKtKAPPcxXpVi5YN0I=;
-        b=e2gJ5QMJRsWvz/SJnfp2UAe85ADnth/jSvbzVr/HrhuEerQFhTRmh1qrRNkFandDtr
-         LRLmC8+GkqFOi9/Wy3ssnABSBzMtGSmQEReLhGz7+3tswQ+6IlDc0cc1vJALJwyfnJKW
-         +S3lkWEFIiO/pQfsidqei2lVI0+XTX/zyBztXKchSnAOk0UlrBodAERpZHs48zFKX/+K
-         UvNXYVB/mVdnPtgH6VQEXcAca7T6eaCDLYATqwHXyoJGrTcXE9rtFTa1wGUpM18tzBrt
-         puaztkigGdM+FJ7TwtJm7tKwYDfofMJIGgO4F891hRFIIOodLz/qBMKpbjybHrNKojt8
-         /UeQ==
-X-Gm-Message-State: AOAM532dyEyTXAACWhvb3bX6T85J+ywHJynCuq5qyyg2sdKJLI0S+E8A
-        cKSfwgWAKoeRgQzH7swurhEY
-X-Google-Smtp-Source: ABdhPJynMcTi+qPSgTqiFxHAuFVh6C/rwoaelZubZHfobNX+jtdW+qrsv8rlTZ3w9HTCPttnvnuUFQ==
-X-Received: by 2002:a17:90a:a012:: with SMTP id q18mr3745238pjp.223.1609849675759;
-        Tue, 05 Jan 2021 04:27:55 -0800 (PST)
-Received: from localhost.localdomain ([103.77.37.191])
-        by smtp.gmail.com with ESMTPSA id t22sm64745402pgm.18.2021.01.05.04.27.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=XqETI2dj6LLMBcSn8TTOy0ZVVdhDfBt9SMpfQ1dkImQ=;
+        b=LKH/61MBScCqNThhyieKoEqilLLWx7nbh9HRbO/9Bft1NQd6f8R3VL2teyobZVhkEq
+         YEshie04dpL3SwcgKlavBhbUHOqrNeGlPXU47+rR/lPdwdQL1ymh+TIhXMSnQdYYdr4+
+         e9K8UZB6lcBsM0Cbl7S7+LvzHufHENol5RPuvmuKkF0lGU/iq3TmYNRsN1awdr8hxwbA
+         cvIVrfgHlsZJtkWmURX2xszbga9X1XwLBJTl6az4UE1QLBE5sLY77tqMZ+87ER/R+EAl
+         +ce1pYdkuNyAvIRJZNbYujhXZ4tr4iT29tF6+/UNHUPxM9W8dK5kyplTJZoLTsF7Fy8x
+         arGg==
+X-Gm-Message-State: AOAM530WrK7AHTnP0U0A4H8znSKnDZ65wEIH3LnUARWx609uB+e3xCO0
+        jCESWmrqpqvGm9R95Luif8MPPBDWD2calA==
+X-Google-Smtp-Source: ABdhPJyQy0Jl0taKm2oXKaclq9kNLyhy6PSoq+ZrxVqR0efdgYnsNiNwszpgiWCRPsmgqf3hr6zucg==
+X-Received: by 2002:aa7:9f97:0:b029:1a5:94d8:9cbf with SMTP id z23-20020aa79f970000b02901a594d89cbfmr68773148pfr.79.1609849653923;
+        Tue, 05 Jan 2021 04:27:33 -0800 (PST)
+Received: from localhost.localdomain ([211.108.35.36])
+        by smtp.gmail.com with ESMTPSA id gw7sm2599647pjb.36.2021.01.05.04.27.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 04:27:55 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 18/18] ARM: dts: qcom: sdx55-mtp: Add regulator nodes
-Date:   Tue,  5 Jan 2021 17:56:49 +0530
-Message-Id: <20210105122649.13581-19-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210105122649.13581-1-manivannan.sadhasivam@linaro.org>
-References: <20210105122649.13581-1-manivannan.sadhasivam@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 05 Jan 2021 04:27:33 -0800 (PST)
+From:   Minwoo Im <minwoo.im.dev@gmail.com>
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvme@lists.infradead.org
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Minwoo Im <minwoo.im.dev@gmail.com>
+Subject: [PATCH V4 0/1] block: fix I/O errors in BLKRRPART
+Date:   Tue,  5 Jan 2021 21:27:16 +0900
+Message-Id: <20210105122717.2568-1-minwoo.im.dev@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+Hello,
 
-This adds the regulators found on SDX55 MTP.
+  This patch fixes I/O errors during BLKRRPART ioctl() behavior right
+after format operation that changed logical block size of the block
+device with a same file descriptor opened.
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- arch/arm/boot/dts/qcom-sdx55-mtp.dts | 179 +++++++++++++++++++++++++++
- 1 file changed, 179 insertions(+)
+Testcase:
 
-diff --git a/arch/arm/boot/dts/qcom-sdx55-mtp.dts b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-index 825cc7d0ba18..61e7d5d4bd48 100644
---- a/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-+++ b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-@@ -6,6 +6,7 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "qcom-sdx55.dtsi"
- #include <arm64/qcom/pm8150b.dtsi>
- #include "qcom-pmx55.dtsi"
-@@ -22,6 +23,184 @@ aliases {
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+	};
-+
-+	vreg_bob_3p3: pmx55-bob {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_bob_3p3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		regulator-always-on;
-+		regulator-boot-on;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+
-+	vreg_s7e_mx_0p752: pmx55-s7e {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_s7e_mx_0p752";
-+		regulator-min-microvolt = <752000>;
-+		regulator-max-microvolt = <752000>;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+
-+	vreg_vddpx_2: vddpx-2 {
-+		compatible = "regulator-gpio";
-+		regulator-name = "vreg_vddpx_2";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <2850000>;
-+		enable-gpios = <&tlmm 98 GPIO_ACTIVE_HIGH>;
-+		gpios = <&tlmm 100 GPIO_ACTIVE_HIGH>;
-+		states = <1800000 0>, <2850000 1>;
-+		startup-delay-us = <200000>;
-+		enable-active-high;
-+		regulator-boot-on;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+};
-+
-+&apps_rsc {
-+	pmx55-rpmh-regulators {
-+		compatible = "qcom,pmx55-rpmh-regulators";
-+		qcom,pmic-id = "e";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+		vdd-l1-l2-supply = <&vreg_s2e_1p224>;
-+		vdd-l3-l9-supply = <&vreg_s3e_0p824>;
-+		vdd-l4-l12-supply = <&vreg_s4e_1p904>;
-+		vdd-l5-l6-supply = <&vreg_s4e_1p904>;
-+		vdd-l7-l8-supply = <&vreg_s3e_0p824>;
-+		vdd-l10-l11-l13-supply = <&vreg_bob_3p3>;
-+		vdd-l14-supply = <&vreg_s7e_mx_0p752>;
-+		vdd-l15-supply = <&vreg_s2e_1p224>;
-+		vdd-l16-supply = <&vreg_s4e_1p904>;
-+
-+		vreg_s2e_1p224: smps2 {
-+			regulator-min-microvolt = <1280000>;
-+			regulator-max-microvolt = <1400000>;
-+		};
-+
-+		vreg_s3e_0p824: smps3 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <1000000>;
-+		};
-+
-+		vreg_s4e_1p904: smps4 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1960000>;
-+		};
-+
-+		ldo1 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo2 {
-+			regulator-min-microvolt = <1128000>;
-+			regulator-max-microvolt = <1128000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo3 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo4 {
-+			regulator-min-microvolt = <872000>;
-+			regulator-max-microvolt = <872000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo5 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <1900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo6 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo7 {
-+			regulator-min-microvolt = <480000>;
-+			regulator-max-microvolt = <900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo8 {
-+			regulator-min-microvolt = <480000>;
-+			regulator-max-microvolt = <900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo9 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo10 {
-+			regulator-min-microvolt = <3088000>;
-+			regulator-max-microvolt = <3088000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo11 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo12 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo13 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo14 {
-+			regulator-min-microvolt = <600000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo15 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo16 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <1904000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+	};
- };
- 
- &blsp1_uart3 {
+  The following testcase is a case of NVMe namespace with the following
+conditions:
+
+  - Current LBA format is lbaf=0 (512 bytes logical block size)
+  - LBA Format(lbaf=1) has 4096 bytes logical block size
+
+  # Format block device logical block size 512B to 4096B                                                                                                                                                                                                                                                                                                                                       
+  nvme format /dev/nvme0n1 --lbaf=1 --force
+
+  This will cause I/O errors because BLKRRPART ioctl() happened right after
+the format command with same file descriptor opened in application
+(e.g., nvme-cli) like:
+
+  fd = open("/dev/nvme0n1", O_RDONLY);
+
+  nvme_format(fd, ...);
+  if (ioctl(fd, BLKRRPART) < 0)
+        ...
+
+Errors:
+
+  We can see the Read command with Number of LBA(NLB) 0xffff(65535) which
+was under-flowed because BLKRRPART operation requested request size based
+on i_blkbits of the block device which is 9 via buffer_head.
+
+  [dmesg-snip]
+    [   10.771740] blk_update_request: operation not supported error, dev nvme0n1, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+    [   10.780262] Buffer I/O error on dev nvme0n1, logical block 0, async page read
+
+  [event-snip]
+    kworker/0:1H-56      [000] ....   913.456922: nvme_setup_cmd: nvme0: disk=nvme0n1, qid=1, cmdid=216, nsid=1, flags=0x0, meta=0x0, cmd=(nvme_cmd_read slba=0, len=65535, ctrl=0x0, dsmgmt=0, reftag=0)
+     ksoftirqd/0-9       [000] .Ns.   916.566351: nvme_complete_rq: nvme0: disk=nvme0n1, qid=1, cmdid=216, res=0x0, retries=0, flags=0x0, status=0x4002
+
+  The patch below fixes the I/O errors by rejecting I/O requests from the
+block layer with setting a flag to request_queue until the file descriptor
+re-opened to be updated by __blkdev_get().  This is based on the previous
+discussion [1].
+
+Since V3(RFC):
+  - Move flag from gendisk to request_queue for future clean-ups.
+    (Christoph, [3])
+
+Since V2(RFC):
+  - Cover letter with testcase and error logs attached. Removed un-related
+    changes: empty line. (Chaitanya, [2])
+  - Put blkdev with blkdev_put_no_open().
+
+Since V1(RFC):
+  - Updated patch to reject I/O rather than updating i_blkbits of the
+    block device's inode directly from driver. (Christoph, [1])
+
+[1] https://lore.kernel.org/linux-nvme/20201223183143.GB13354@localhost.localdomain/T/#t
+[2] https://lore.kernel.org/linux-nvme/20201230140504.GB7917@localhost.localdomain/T/#t
+[3] https://lore.kernel.org/linux-block/20210105101202.GA9970@localhost.localdomain/T/#u
+
+Thanks,
+
+Minwoo Im (1):
+  block: reject I/O for same fd if block size changed
+
+ block/blk-settings.c    |  3 +++
+ block/partitions/core.c | 12 ++++++++++++
+ fs/block_dev.c          |  8 ++++++++
+ include/linux/blkdev.h  |  1 +
+ 4 files changed, 24 insertions(+)
+
 -- 
-2.25.1
+2.17.1
 
