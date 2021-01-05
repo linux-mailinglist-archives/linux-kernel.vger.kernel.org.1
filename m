@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01712EB29D
+	by mail.lfdr.de (Postfix) with ESMTP id 426902EB29C
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730611AbhAES3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        id S1730605AbhAES3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:29:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730477AbhAES3c (ORCPT
+        with ESMTP id S1730486AbhAES3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Jan 2021 13:29:32 -0500
 Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24496C0617A4
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:28:30 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id w5so185745wrl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:28:30 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48689C0617A5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:28:32 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id u3so174317wri.19
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:28:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=4nQbhmxnHYBZMr8XvL6GP6Xh98otRrfrKaNSbxyS0Do=;
-        b=mXBBfUN+FzfkInzUtoplNz0vwvjkPWEvYsa/C8E08aJilRGm+AWudZUAGJM5+pFTIH
-         poBnT5WIIDWrBxEUiKHbhlbugUfTGHwcdmSnYtAMGsFXbAhhSl15pcf6ISa954gXp7s9
-         bUDwGdRJ2T6GDX/Z3oVLB+Rr6d7LvHnw7SnB4dsNhiJzG+WDyd77XksgRLyw4N2PQ9D1
-         iT2IMMGM8EeyqEIsEVpcMWKyipeWwWr+uYDp/o3d9TLQqoyin0jLSxYciL1CqaTgivSP
-         HPGfOOM98qRGJjSi1eoovO4Q8dtflqr4cVtGGWbJRpM6R3ry5zQ2XHrOrK1ndXPEsrvf
-         eRXw==
+        bh=oRho7+sQYL8W8g66lzn3SO+/RCe3iCmUxBQsmdc55nY=;
+        b=VubKJ4tGao6rr39K7dEx8xeHG8th8u0W76NMnX2RgStyrhptBxDAuVLL2jUWFyKyVb
+         CiSab5ZOJMH+oUNih6ugHcAhtNgXlG0WH8r9T70W+LSBjDC/g6VgoyvGP4teEnJffBYA
+         9vUy5dDJA+86MKvcD0pZN9HyN3Fx+zmW6tD8wvH+/oBohedPUCQSeH8UBzRaLjscXver
+         3z2flUWE3gPwKy6z5TQ3zusM3e3GepNs/zVftxGPm6lCwhtemL+D3Q6Y/obzjMmWhSVp
+         4DFFpbjNizMfHnG/4zp4JX6aflPp8f0lzJSigNmUK8b9By/StVB2BOou2FiQ9VY1M0LC
+         k34A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=4nQbhmxnHYBZMr8XvL6GP6Xh98otRrfrKaNSbxyS0Do=;
-        b=O4MtyjYKXqVMelE2oFtW0EaXMGy5YVCI9EsJlum+g7mNw6J1en+VlWhLZmddVOP6cQ
-         SOX5UzHWgRlSfoIJWscs35y4sKSEyxYK6hlhExnjcRqGNLLlHbZAhIRxOdvfeW70suLw
-         ragO9ajie8mv+C/X8pRA9VKzN8RbelTIp3N1xEMCq3/Pq1aJv9KrZGo/+IOpXSPWUIXi
-         M92ZqKf6IGFjgXrYaH0DMpXvjCeKQTYESt8tVp8BZZeGWhf04YLV/Cy37MxN3FNTvSe+
-         YTlaYhAOCyay3SwwYscuCyeJF28CCOWBDoKBFLCc0iyyF8lZu5PwkIw/WEDrcE5TwM27
-         e1Hg==
-X-Gm-Message-State: AOAM531/HdYYqU9iWRIsXAyWIBfVxVXrq8M30bXwrOeJyIKMpEPa9HPz
-        UjPfXopq05Z1RZJUKbmMCGoJ/KkwStnJSz4o
-X-Google-Smtp-Source: ABdhPJyuxXDQ5ArolBq8yD7QTyYcZp0ApwYPODpZTIFI/9Dd1YclIT3DQwIqlLe2Qhloqs4T9Aa206BqX4epsiwQ
+        bh=oRho7+sQYL8W8g66lzn3SO+/RCe3iCmUxBQsmdc55nY=;
+        b=U/WWkuyxmlGajQp63+W5GJZuG1Uvh/bJ8hhY54i5ZMc6+yw6H+SwU1OuDeoyiJZEOd
+         SwE/SJtfvF3/kuE8AL3EygPPzazoa+F7qfOOVWLsUvHjnyY5Kt4OV9qEC8ALTvQPdyrG
+         NTh0M/q8yn+hAWWPXgGk897T0Gl8JxqpuQ4ZCuTO9trz+xPLg2MLTgnYFWqLUm9Ibgvg
+         pRysInFmlTbcKE4QZg56XxhX9iULJTxwdtVa7FM+VBvdjHK7xkhreslG2AhzAXlYpfDd
+         ZvL0NhlTscAjMkF6B+j6QX7GxDuQ1U71amk1gAH9q90CBb2JPUKaKKhRIyMuB6rJGSKT
+         iQbQ==
+X-Gm-Message-State: AOAM532LE+a63j7Mdhc0dLHxj9LbTcQXoz1K8wvtc4WZNurPr2VIC5tK
+        f/NpBQ2AcqIcXSN/C50/eE9cv95k3UxUTlK4
+X-Google-Smtp-Source: ABdhPJxoWEP6BJ1reenr7C4SoK8UHxtinLKxkeHYeahf+7ie4bLyMFrFVqrKacmxVO7J7mnxTF4jJg0mL8c0//vU
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a7b:c044:: with SMTP id
- u4mr601060wmc.1.1609871308429; Tue, 05 Jan 2021 10:28:28 -0800 (PST)
-Date:   Tue,  5 Jan 2021 19:27:54 +0100
+ (user=andreyknvl job=sendgmr) by 2002:adf:9b98:: with SMTP id
+ d24mr846317wrc.240.1609871311014; Tue, 05 Jan 2021 10:28:31 -0800 (PST)
+Date:   Tue,  5 Jan 2021 19:27:55 +0100
 In-Reply-To: <cover.1609871239.git.andreyknvl@google.com>
-Message-Id: <a83aa371e2ef96e79cbdefceebaa960a34957a79.1609871239.git.andreyknvl@google.com>
+Message-Id: <15ca1976b26aa9edcec4a9d0f3b73f5b6536e5d0.1609871239.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1609871239.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH 10/11] kasan: fix bug detection via ksize for HW_TAGS mode
+Subject: [PATCH 11/11] kasan: add proper page allocator tests
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -73,259 +73,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The currently existing kasan_check_read/write() annotations are intended
-to be used for kernel modules that have KASAN compiler instrumentation
-disabled. Thus, they are only relevant for the software KASAN modes that
-rely on compiler instrumentation.
-
-However there's another use case for these annotations: ksize() checks
-that the object passed to it is indeed accessible before unpoisoning the
-whole object. This is currently done via __kasan_check_read(), which is
-compiled away for the hardware tag-based mode that doesn't rely on
-compiler instrumentation. This leads to KASAN missing detecting some
-memory corruptions.
-
-Provide another annotation called kasan_check_byte() that is available
-for all KASAN modes. As the implementation rename and reuse
-kasan_check_invalid_free(). Use this new annotation in ksize().
-
-Also add a new ksize_uaf() test that checks that a use-after-free is
-detected via ksize() itself, and via plain accesses that happen later.
+The currently existing page allocator tests rely on kmalloc fallback
+with large sizes that is only present for SLUB. Add proper tests that
+use alloc/free_pages().
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://linux-review.googlesource.com/id/Iaabf771881d0f9ce1b969f2a62938e99d3308ec5
+Link: https://linux-review.googlesource.com/id/Ia173d5a1b215fe6b2548d814ef0f4433cf983570
 ---
- include/linux/kasan-checks.h |  6 ++++++
- include/linux/kasan.h        | 13 +++++++++++++
- lib/test_kasan.c             | 20 ++++++++++++++++++++
- mm/kasan/common.c            | 11 ++++++++++-
- mm/kasan/generic.c           |  4 ++--
- mm/kasan/kasan.h             | 10 +++++-----
- mm/kasan/sw_tags.c           |  6 +++---
- mm/slab_common.c             | 15 +++++++++------
- 8 files changed, 68 insertions(+), 17 deletions(-)
+ lib/test_kasan.c | 54 +++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 49 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/kasan-checks.h b/include/linux/kasan-checks.h
-index ca5e89fb10d3..3d6d22a25bdc 100644
---- a/include/linux/kasan-checks.h
-+++ b/include/linux/kasan-checks.h
-@@ -4,6 +4,12 @@
- 
- #include <linux/types.h>
- 
-+/*
-+ * The annotations present in this file are only relevant for the software
-+ * KASAN modes that rely on compiler instrumentation, and will be optimized
-+ * away for the hardware tag-based KASAN mode. Use kasan_check_byte() instead.
-+ */
-+
- /*
-  * __kasan_check_*: Always available when KASAN is enabled. This may be used
-  * even in compilation units that selectively disable KASAN, but must use KASAN
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 5e0655fb2a6f..992ba5c653a3 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -243,6 +243,18 @@ static __always_inline void kasan_kfree_large(void *ptr, unsigned long ip)
- 		__kasan_kfree_large(ptr, ip);
- }
- 
-+/*
-+ * Unlike kasan_check_read/write(), kasan_check_byte() is performed even for
-+ * the hardware tag-based mode that doesn't rely on compiler instrumentation.
-+ */
-+bool __kasan_check_byte(const void *addr, unsigned long ip);
-+static __always_inline bool kasan_check_byte(const void *addr, unsigned long ip)
-+{
-+	if (kasan_enabled())
-+		return __kasan_check_byte(addr, ip);
-+	return true;
-+}
-+
- bool kasan_save_enable_multi_shot(void);
- void kasan_restore_multi_shot(bool enabled);
- 
-@@ -299,6 +311,7 @@ static inline void *kasan_krealloc(const void *object, size_t new_size,
- 	return (void *)object;
- }
- static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
-+static inline bool kasan_check_byte(const void *address, unsigned long ip) {}
- 
- #endif /* CONFIG_KASAN */
- 
 diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 3ea52da52714..6261521e57ad 100644
+index 6261521e57ad..24798c034d05 100644
 --- a/lib/test_kasan.c
 +++ b/lib/test_kasan.c
-@@ -490,6 +490,7 @@ static void kasan_global_oob(struct kunit *test)
- 	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
- }
- 
-+/* Check that ksize() makes the whole object accessible. */
- static void ksize_unpoisons_memory(struct kunit *test)
- {
- 	char *ptr;
-@@ -508,6 +509,24 @@ static void ksize_unpoisons_memory(struct kunit *test)
+@@ -128,6 +128,12 @@ static void kmalloc_node_oob_right(struct kunit *test)
  	kfree(ptr);
  }
  
 +/*
-+ * Check that a use-after-free is detected by ksize() and via normal accesses
-+ * after it.
++ * These kmalloc_pagealloc_* tests try allocating a memory chunk that doesn't
++ * fit into a slab cache and therefore is allocated via the page allocator
++ * fallback. Since this kind of fallback is only implemented for SLUB, these
++ * tests are limited to that allocator.
 + */
-+static void ksize_uaf(struct kunit *test)
+ static void kmalloc_pagealloc_oob_right(struct kunit *test)
+ {
+ 	char *ptr;
+@@ -138,14 +144,11 @@ static void kmalloc_pagealloc_oob_right(struct kunit *test)
+ 		return;
+ 	}
+ 
+-	/*
+-	 * Allocate a chunk that does not fit into a SLUB cache to trigger
+-	 * the page allocator fallback.
+-	 */
+ 	ptr = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+ 
+ 	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size + OOB_TAG_OFF] = 0);
++
+ 	kfree(ptr);
+ }
+ 
+@@ -161,8 +164,8 @@ static void kmalloc_pagealloc_uaf(struct kunit *test)
+ 
+ 	ptr = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+-
+ 	kfree(ptr);
++
+ 	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
+ }
+ 
+@@ -182,6 +185,45 @@ static void kmalloc_pagealloc_invalid_free(struct kunit *test)
+ 	KUNIT_EXPECT_KASAN_FAIL(test, kfree(ptr + 1));
+ }
+ 
++static void pagealloc_oob_right(struct kunit *test)
 +{
 +	char *ptr;
-+	int size = 128 - KASAN_GRANULE_SIZE;
++	struct page *pages;
++	size_t order = 4;
++	size_t size = (1UL << (PAGE_SHIFT + order));
 +
-+	ptr = kmalloc(size, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+	kfree(ptr);
-+
-+	KUNIT_EXPECT_KASAN_FAIL(test, ksize(ptr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *ptr);
-+	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *(ptr + size));
-+}
-+
- static void kasan_stack_oob(struct kunit *test)
- {
- 	char stack_array[10];
-@@ -937,6 +956,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kasan_alloca_oob_left),
- 	KUNIT_CASE(kasan_alloca_oob_right),
- 	KUNIT_CASE(ksize_unpoisons_memory),
-+	KUNIT_CASE(ksize_uaf),
- 	KUNIT_CASE(kmem_cache_double_free),
- 	KUNIT_CASE(kmem_cache_invalid_free),
- 	KUNIT_CASE(kasan_memchr),
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index eedc3e0fe365..45ab2c7073a8 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -345,7 +345,7 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
- 	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
- 		return false;
- 
--	if (kasan_check_invalid_free(tagged_object)) {
-+	if (!kasan_check(tagged_object)) {
- 		kasan_report_invalid_free(tagged_object, ip);
- 		return true;
- 	}
-@@ -490,3 +490,12 @@ void __kasan_kfree_large(void *ptr, unsigned long ip)
- 		kasan_report_invalid_free(ptr, ip);
- 	/* The object will be poisoned by kasan_free_pages(). */
- }
-+
-+bool __kasan_check_byte(const void *address, unsigned long ip)
-+{
-+	if (!kasan_check(address)) {
-+		kasan_report_invalid_free((void *)address, ip);
-+		return false;
++	/*
++	 * With generic KASAN page allocations have no redzones, thus
++	 * out-of-bounds detection is not guaranteed.
++	 * See https://bugzilla.kernel.org/show_bug.cgi?id=210503.
++	 */
++	if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
++		kunit_info(test, "skipping, CONFIG_KASAN_GENERIC enabled");
++		return;
 +	}
-+	return true;
++
++	pages = alloc_pages(GFP_KERNEL, order);
++	ptr = page_address(pages);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
++
++	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size] = 0);
++	free_pages((unsigned long)ptr, order);
 +}
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index acab8862dc67..b3631ad9a8ef 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -185,11 +185,11 @@ bool kasan_check_range(unsigned long addr, size_t size, bool write,
- 	return check_region_inline(addr, size, write, ret_ip);
- }
- 
--bool kasan_check_invalid_free(void *addr)
-+bool kasan_check(const void *addr)
++
++static void pagealloc_uaf(struct kunit *test)
++{
++	char *ptr;
++	struct page *pages;
++	size_t order = 4;
++
++	pages = alloc_pages(GFP_KERNEL, order);
++	ptr = page_address(pages);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
++	free_pages((unsigned long)ptr, order);
++
++	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
++}
++
+ static void kmalloc_large_oob_right(struct kunit *test)
  {
- 	s8 shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(addr));
- 
--	return shadow_byte < 0 || shadow_byte >= KASAN_GRANULE_SIZE;
-+	return shadow_byte >= 0 && shadow_byte < KASAN_GRANULE_SIZE;
- }
- 
- void kasan_cache_shrink(struct kmem_cache *cache)
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 292dfbc37deb..f17591545279 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -329,20 +329,20 @@ static inline void kasan_unpoison(const void *address, size_t size)
- 			round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
- }
- 
--static inline bool kasan_check_invalid_free(void *addr)
-+static inline bool kasan_check(const void *addr)
- {
- 	u8 ptr_tag = get_tag(addr);
--	u8 mem_tag = hw_get_mem_tag(addr);
-+	u8 mem_tag = hw_get_mem_tag((void *)addr);
- 
--	return (mem_tag == KASAN_TAG_INVALID) ||
--		(ptr_tag != KASAN_TAG_KERNEL && ptr_tag != mem_tag);
-+	return (mem_tag != KASAN_TAG_INVALID) &&
-+		(ptr_tag == KASAN_TAG_KERNEL || ptr_tag == mem_tag);
- }
- 
- #else /* CONFIG_KASAN_HW_TAGS */
- 
- void kasan_poison(const void *address, size_t size, u8 value);
- void kasan_unpoison(const void *address, size_t size);
--bool kasan_check_invalid_free(void *addr);
-+bool kasan_check(const void *addr);
- 
- #endif /* CONFIG_KASAN_HW_TAGS */
- 
-diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-index cc271fceb5d5..e326caaaaca3 100644
---- a/mm/kasan/sw_tags.c
-+++ b/mm/kasan/sw_tags.c
-@@ -118,13 +118,13 @@ bool kasan_check_range(unsigned long addr, size_t size, bool write,
- 	return true;
- }
- 
--bool kasan_check_invalid_free(void *addr)
-+bool kasan_check(const void *addr)
- {
- 	u8 tag = get_tag(addr);
- 	u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(kasan_reset_tag(addr)));
- 
--	return (shadow_byte == KASAN_TAG_INVALID) ||
--		(tag != KASAN_TAG_KERNEL && tag != shadow_byte);
-+	return (shadow_byte != KASAN_TAG_INVALID) &&
-+		(tag == KASAN_TAG_KERNEL || tag == shadow_byte);
- }
- 
- #define DEFINE_HWASAN_LOAD_STORE(size)					\
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index e981c80d216c..a3bb44516623 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1157,11 +1157,13 @@ size_t ksize(const void *objp)
- 	size_t size;
- 
- 	/*
--	 * We need to check that the pointed to object is valid, and only then
--	 * unpoison the shadow memory below. We use __kasan_check_read(), to
--	 * generate a more useful report at the time ksize() is called (rather
--	 * than later where behaviour is undefined due to potential
--	 * use-after-free or double-free).
-+	 * We need to first check that the pointer to the object is valid, and
-+	 * only then unpoison the memory. The report printed from ksize() is
-+	 * more useful, then when it's printed later when the behaviour could
-+	 * be undefined due to a potential use-after-free or double-free.
-+	 *
-+	 * We use kasan_check_byte(), which is supported for hardware tag-based
-+	 * KASAN mode, unlike kasan_check_read/write().
- 	 *
- 	 * If the pointed to memory is invalid we return 0, to avoid users of
- 	 * ksize() writing to and potentially corrupting the memory region.
-@@ -1169,7 +1171,8 @@ size_t ksize(const void *objp)
- 	 * We want to perform the check before __ksize(), to avoid potentially
- 	 * crashing in __ksize() due to accessing invalid metadata.
- 	 */
--	if (unlikely(ZERO_OR_NULL_PTR(objp)) || !__kasan_check_read(objp, 1))
-+	if (unlikely(ZERO_OR_NULL_PTR(objp)) ||
-+	    !kasan_check_byte(objp, _RET_IP_))
- 		return 0;
- 
- 	size = __ksize(objp);
+ 	char *ptr;
+@@ -933,6 +975,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
+ 	KUNIT_CASE(kmalloc_pagealloc_oob_right),
+ 	KUNIT_CASE(kmalloc_pagealloc_uaf),
+ 	KUNIT_CASE(kmalloc_pagealloc_invalid_free),
++	KUNIT_CASE(pagealloc_oob_right),
++	KUNIT_CASE(pagealloc_uaf),
+ 	KUNIT_CASE(kmalloc_large_oob_right),
+ 	KUNIT_CASE(kmalloc_oob_krealloc_more),
+ 	KUNIT_CASE(kmalloc_oob_krealloc_less),
 -- 
 2.29.2.729.g45daf8777d-goog
 
