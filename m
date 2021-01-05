@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EFE2EA8FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DEA2EA905
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729136AbhAEKkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:40:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728918AbhAEKkg (ORCPT
+        id S1729240AbhAEKl2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Jan 2021 05:41:28 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:36779 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729193AbhAEKl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:40:36 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08362C061574;
-        Tue,  5 Jan 2021 02:39:56 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id w18so27814734iot.0;
-        Tue, 05 Jan 2021 02:39:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pGv5BXQoXt1YV+ky7O4M22sQP/FE/RZ8fZVCbYo6uFY=;
-        b=FnImoHMeL4WdrJXqnC2WmnlwR3hqOxuAHMhq0rHim9uSCx4nRnfw+i3aises70p9Ma
-         qSJGHnSofGJ2YLdIaIvlL3F2Mldlbr1Na4AQ+6i92ZfOZArHrRi7654csUtVl+kQz6pz
-         AZfjvP+gguxk9sODmqBoEmIEJ2BebKo9vdDtQQtqGo+Jg+9pm/Fql8gtYrZftrxRrlX5
-         Z+kH9GQbMhKj3BzLtQI0TzCPe09cUpr8eWxoZfPAsr07ofB2Bz83Qm10QA+m//J/1t1W
-         b3IQLN29R0pdJZiYv8Faj1D1/nXhEh/YzC3PEVbsx0CoHBWgi8O/W20Vmg3GoNj6qWFK
-         x58Q==
+        Tue, 5 Jan 2021 05:41:27 -0500
+Received: by mail-oi1-f169.google.com with SMTP id 9so35523518oiq.3;
+        Tue, 05 Jan 2021 02:41:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pGv5BXQoXt1YV+ky7O4M22sQP/FE/RZ8fZVCbYo6uFY=;
-        b=rfdmG+DK0dH+ggcCdDd22X/HEhlGDLgDb91J31MFqX9g4keEQQMNApoaz+E+BxshyT
-         /taSixbG+0718tkB0uyvmDEfb6EAYimIhxUUCctxgyh/KTvM4f9Ad4YqaSr3fk72z8vX
-         15jrowemv44LGLJ0h3se7xZIt0E2y/yRE60Ux0N0i7XdLuuYq5K1vLSkzCzshXKe1yTf
-         U2rPlGt3nIdrdpTbktplkoA39sIcm/08eDveBZkbraTu+45+jY0AGyRkhNCOmZzdfqhG
-         h7Pi1wyjmblkXUM/ugtsJF+e435HM0XoobgJnE93j7P2ziSgIq/ki2Dif50lbWIeAg6z
-         ReUw==
-X-Gm-Message-State: AOAM532T6AoRtBURYdtvqAl23WY/ilJk1YU6APEDe7DgSPoJqhWXzSgr
-        YaqZVUwHCMntyhElMj97mDw=
-X-Google-Smtp-Source: ABdhPJyJP0w6GHhTuHa0yJW5AJXeGpF1GkZNrKfyt4BBOsRbLkkfFQNGZoZE/po9d8wVyPCS0QPBfQ==
-X-Received: by 2002:a05:6602:2c48:: with SMTP id x8mr63079686iov.24.1609843195428;
-        Tue, 05 Jan 2021 02:39:55 -0800 (PST)
-Received: from localhost.localdomain ([156.146.37.136])
-        by smtp.gmail.com with ESMTPSA id h70sm43347217iof.31.2021.01.05.02.39.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 02:39:54 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, Larry.Finger@lwfinger.net,
-        christophe.jaillet@wanadoo.fr, zhengbin13@huawei.com,
-        baijiaju1990@gmail.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: realtek: rtl8723be:  Correct word presentation as defautly to de-faulty
-Date:   Tue,  5 Jan 2021 16:10:00 +0530
-Message-Id: <20210105104000.14545-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BhNvTa8G3ACpSXzNTr2YPqZ77khq1SLnQS1+ZvTkWb4=;
+        b=BtX1VM99o9XrYAIvGglxQAyxb39XUr1aE+Nev0MMUMpeR5EpQM0mtMUimGE84AX8Q7
+         kD/6KxG8zNDi3pEeHaYiOv6A3TfkyRb53fErK+sww2kWJ26kVhCoXyi6BtuogC9Ywiv+
+         hKqhh3XZfUw+MoGBPrMzbc/iqzMJvgOcPQD92JAhhs/d8z3IXN/D4beU+f12wtuKjC4h
+         Ml74AddofYmKTOhJYe0nenPeC8uoabe5ofJ0a9aImjqmm5Y9Bezf3Id4PewjVOwgn9T/
+         AjaR42ogrAEzOIcYWNG7nhJeyHgxF4OX56sPH19P69NfqT4x1MDRoLRO4iYFLIDAabRt
+         J4mg==
+X-Gm-Message-State: AOAM531Gr69IFK8FgWCFXd7bveD9Ggs7gnnw5C/vJ/Hopo2C4FiYH6eP
+        tK8oZkbr/LYPsNQs92a18edHd81vlT+RVPA5thI=
+X-Google-Smtp-Source: ABdhPJy8Upntzome+hHCzHzvupD1kjZGJllVBhKX3LHK5qrxPAZyZK23MdohxEU+SzXTcGO4EDSsgs+XEqxRl4mKu1o=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr2176737oia.54.1609843246147;
+ Tue, 05 Jan 2021 02:40:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201223172505.34736-1-wsa+renesas@sang-engineering.com> <20201223172505.34736-3-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20201223172505.34736-3-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Jan 2021 11:40:35 +0100
+Message-ID: <CAMuHMdUkWoFzK6vdNSW2c21P01ee_HOtsmHG9sv7g9ogZrsm9g@mail.gmail.com>
+Subject: Re: [PATCH 2/5] clk: renesas: r8a779a0: add clocks for I2C
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/defautly/de-faulty/p
+Hi Wolfram,
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Dec 23, 2020 at 6:25 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c
-index 5a7cd270575a..47886a19ed8c 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/trx.c
-@@ -724,7 +724,7 @@ bool rtl8723be_is_tx_desc_closed(struct ieee80211_hw *hw,
- 	u8 own = (u8)rtl8723be_get_desc(hw, entry, true, HW_DESC_OWN);
+Thanks for your patch!
 
- 	/*beacon packet will only use the first
--	 *descriptor defautly,and the own may not
-+	 *descriptor de-faulty,and the own may not
- 	 *be cleared by the hardware
- 	 */
- 	if (own)
---
-2.26.2
+> --- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+> +++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+> @@ -152,6 +152,13 @@ static const struct mssr_mod_clk r8a779a0_mod_clks[] __initconst = {
+>         DEF_MOD("csi41",        400,    R8A779A0_CLK_CSI0),
+>         DEF_MOD("csi42",        401,    R8A779A0_CLK_CSI0),
+>         DEF_MOD("csi43",        402,    R8A779A0_CLK_CSI0),
+> +       DEF_MOD("i2c0",         518,    R8A779A0_CLK_S3D2),
+> +       DEF_MOD("i2c1",         519,    R8A779A0_CLK_S3D2),
+> +       DEF_MOD("i2c2",         520,    R8A779A0_CLK_S3D2),
+> +       DEF_MOD("i2c3",         521,    R8A779A0_CLK_S3D2),
+> +       DEF_MOD("i2c4",         522,    R8A779A0_CLK_S3D2),
+> +       DEF_MOD("i2c5",         523,    R8A779A0_CLK_S3D2),
+> +       DEF_MOD("i2c6",         524,    R8A779A0_CLK_S3D2),
 
+The R-Car V3U Series User’s Manual Rev.0.5 says the parent clock is S1D4
+for all instances?
+
+>         DEF_MOD("scif0",        702,    R8A779A0_CLK_S1D8),
+>         DEF_MOD("scif1",        703,    R8A779A0_CLK_S1D8),
+>         DEF_MOD("scif3",        704,    R8A779A0_CLK_S1D8),
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
