@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5FB2EB4C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C93832EB4C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730541AbhAEVOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 16:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
+        id S1731393AbhAEVRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 16:17:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbhAEVOd (ORCPT
+        with ESMTP id S1725828AbhAEVQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:14:33 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16668C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 13:13:53 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id b24so1134348otj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 13:13:53 -0800 (PST)
+        Tue, 5 Jan 2021 16:16:59 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679D8C061796
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 13:16:19 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id n3so1586143pjm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 13:16:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=TyYwTxr/bbnMT2s7IdFCyHWoGv5IHohnF+0y9xw1Hc0=;
-        b=oYJOXj4hukhixP9Lp/YhX+mrGoOHmENKZCqb5QXf59taNEzoNQn4gNUnioiQnzAEap
-         TcggBrhAkzaXrtSTxORkZUQzkdbrNe56JJ3eNfUnwEYtex/25bhVgWYNGfXrb2R3wdQQ
-         lffdB8IQcpQ9rSRvbaAyp5aaobUey7vMJD6gO5gyACTZs5S1Tm8X6HG1xJ9m2UCcd9lb
-         CZTOVn+N5NDQWxiqwPRKnfPTsmZikOE68OO6wq61gOL7moVBG+YPuhXpaQRZMUPFzrjt
-         stvVct+vEbFTfkgN/WkeLklNqzJC/bokB+1fWDw78BKH6qw9a+FbAqeeRhiXUQYFJFhD
-         kmNQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QbMPt8I3VcRDdWxFclid09bafyeFef46ToM33ENhg8c=;
+        b=fpeX5OkkCMF1T8lCjn/AmjHrXc25G2Nzid/hZkoJCp3XOp+2OVdMIKyyBw/z2DlDiI
+         a25BAr1DWsHBb/mI6kl2fcWxRwrvWi7EvKbWkjcluD2mY3fZIOUjCb397KCJDm+ctaKx
+         mXB5BoRR4GrMhnsA5vvHOUltn0OEBX8PglQiuUqeMPKJ7zU/5GWUQO5Izb9u0lV5wkR5
+         Lrg5o3cu6or3N1DQ0B12I1LPrPMRS4IIsVwGG4YIiR6sjuE5j1/WesCf9a+cp9Xnu8qc
+         szC8UOrvG9rVI7cmCA9wqg7TfDd2pSko//4lnULUjSCV1oOCWUenVU5t3EQDEiAluKZe
+         aCzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=TyYwTxr/bbnMT2s7IdFCyHWoGv5IHohnF+0y9xw1Hc0=;
-        b=NKehCHUsOo18XLQ1Ja1tzrYPhS+lIlS2bNvEOjgOsn5ftoHuWXLRHjrDgpJqc643VC
-         vyy+cfQwXtHtPjo6xpRykR7ugqVJiGfN26h2U0JPABlBh76kxlXCwNNU2GHlCDfFdyHQ
-         SKH41BanOhWUxwHsyvg/SlpvZG605TYRbfA1Dh1oNWS+hINwQNlSNMWm1qzDdmTwgm2O
-         iK9QfbcylERzlwWjVL6fXgyKtaAe6hH9ievwiatu6Au4edRbjRz1zdy/2JguyX2v2Q7s
-         NyitmRxwK9pFmT/GFeIbpYhxucgOvB4EF4yRIMnONZZcMKWJ3EuHa25XuGMC1kFVUUja
-         6i8w==
-X-Gm-Message-State: AOAM5331j+6tsycWKJMtsXdTP8XTyczyQ/D+q3CmliywMkDFqnpeWx1o
-        TkN7wBoV2DXlJ70DZgt7opABpA==
-X-Google-Smtp-Source: ABdhPJzOGDZpxf1G0r4cHJ2IbaH+Q/Dk5K73HNI5Jsp+DgiUBa1UsMa84YXwrZkQhLFfVPuTRFBurA==
-X-Received: by 2002:a9d:650f:: with SMTP id i15mr1013648otl.347.1609881232257;
-        Tue, 05 Jan 2021 13:13:52 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id i16sm87516otc.61.2021.01.05.13.13.51
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 05 Jan 2021 13:13:51 -0800 (PST)
-Date:   Tue, 5 Jan 2021 13:13:40 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: kernel BUG at mm/page-writeback.c:LINE!
-In-Reply-To: <CAHk-=wh=5kDGukMs2sVZ8uHZJX4VL13oD5+xMAR4HvuY6QckLg@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2101051235500.5906@eggly.anvils>
-References: <000000000000886dbd05b7ffa8db@google.com> <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org> <CAHk-=wi6hd8ATJ1W90goTxjgyvuoFsf0xZdAJmZ2c0dx5wcJSg@mail.gmail.com> <alpine.LSU.2.11.2101041839440.3466@eggly.anvils>
- <CAHk-=wi36CBggdRfdggACvf2hG+djM9kKnorrwsByN6uDvPExA@mail.gmail.com> <CAHk-=wh=5kDGukMs2sVZ8uHZJX4VL13oD5+xMAR4HvuY6QckLg@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QbMPt8I3VcRDdWxFclid09bafyeFef46ToM33ENhg8c=;
+        b=pAUKVHgWQLNYLMhqvXYKBaV8Rersb/Z9Jn9siiDy9EXlb0qU8nuJYLIKP2hZr72qeU
+         iiQHvx1MGxqkRFfxRETjmO2ii92LV2dahx3a9vl3XOWdF5k6GoYEkUc1165nwfv/AKSg
+         gtUUJy/KZS43xEpZoIXiL6r3oECqpmkpATfZpuiPRjnNOdQswrNWo0RQKtKI7vS4YNk9
+         Cp+CU2IgbjxyKbavlAFV2KggKqx0S3D/MbCtL8da7I0x7gm49jdqZ0/pvudift897sEI
+         WygFX6fJmOa3hWbHABmr6dVvl1Gl3QhWi2c1ugn03oKMXP0NmzD74tm1VovqkOpB9v7D
+         ThxQ==
+X-Gm-Message-State: AOAM530dYVcfPtCvPLZTJBgOsLxBeN7EfYgoKSx21Ymtz05mylcFS2za
+        O1El1SJVv6/3fxh9J1pSDqFtSw==
+X-Google-Smtp-Source: ABdhPJzq5QwWRsJrE96Y2r1fco4KEk7Wm4xkd6N+WrDv4kW4wImLyEPrOR/TQmsWiBYpbZX7KkJuVg==
+X-Received: by 2002:a17:902:7292:b029:dc:ac9:25b5 with SMTP id d18-20020a1709027292b02900dc0ac925b5mr1147305pll.2.1609881378803;
+        Tue, 05 Jan 2021 13:16:18 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id b129sm113138pgc.52.2021.01.05.13.16.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 13:16:18 -0800 (PST)
+Date:   Tue, 5 Jan 2021 13:16:11 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 07/17] KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to
+ manage guest DS buffer
+Message-ID: <X/TXGylLUVLHNIC7@google.com>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-8-like.xu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104131542.495413-8-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021, Linus Torvalds wrote:
-> On Tue, Jan 5, 2021 at 11:31 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> > On Mon, Jan 4, 2021 at 7:29 PM Hugh Dickins <hughd@google.com> wrote:
-> > >
-> > > > So the one-liner of changing the "if" to "while" in
-> > > > wait_on_page_writeback() should get us back to what we used to do.
-> > >
-> > > I think that is the realistic way to go.
-> >
-> > Yeah, that's what I'll do.
+On Mon, Jan 04, 2021, Like Xu wrote:
+> When CPUID.01H:EDX.DS[21] is set, the IA32_DS_AREA MSR exists and
+> points to the linear address of the first byte of the DS buffer
+> management area, which is used to manage the PEBS records.
 > 
-> I took your "way to go" statement as an ack, and made it all be commit
-> c2407cf7d22d ("mm: make wait_on_page_writeback() wait for multiple
-> pending writebacks").
+> When guest PEBS is enabled and the value is different from the
+> host, KVM will add the IA32_DS_AREA MSR to the msr-switch list.
+> The guest's DS value can be loaded to the real HW before VM-entry,
+> and will be removed when guest PEBS is disabled.
+> 
+> The WRMSR to IA32_DS_AREA MSR brings a #GP(0) if the source register
+> contains a non-canonical address. The switch of IA32_DS_AREA MSR would
+> also, setup a quiescent period to write the host PEBS records (if any)
+> to host DS area rather than guest DS area.
+> 
+> When guest PEBS is enabled, the MSR_IA32_DS_AREA MSR will be
+> added to the perf_guest_switch_msr() and switched during the
+> VMX transitions just like CORE_PERF_GLOBAL_CTRL MSR.
+> 
+> Originally-by: Andi Kleen <ak@linux.intel.com>
+> Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> ---
+>  arch/x86/events/intel/core.c    | 13 +++++++++++++
+>  arch/x86/include/asm/kvm_host.h |  1 +
+>  arch/x86/kvm/vmx/pmu_intel.c    | 11 +++++++++++
+>  arch/x86/kvm/vmx/vmx.c          |  6 ++++++
+>  4 files changed, 31 insertions(+)
+> 
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index 6453b8a6834a..ccddda455bec 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -3690,6 +3690,7 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr)
+>  {
+>  	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>  	struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
+> +	struct debug_store *ds = __this_cpu_read(cpu_hw_events.ds);
+>  
+>  	arr[0].msr = MSR_CORE_PERF_GLOBAL_CTRL;
+>  	arr[0].host = x86_pmu.intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
+> @@ -3735,6 +3736,18 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr)
+>  		*nr = 2;
+>  	}
+>  
+> +	if (arr[1].guest) {
+> +		arr[2].msr = MSR_IA32_DS_AREA;
+> +		arr[2].host = (unsigned long)ds;
+> +		/* KVM will update MSR_IA32_DS_AREA with the trapped guest value. */
+> +		arr[2].guest = 0ull;
+> +		*nr = 3;
+> +	} else if (*nr == 2) {
+> +		arr[2].msr = MSR_IA32_DS_AREA;
+> +		arr[2].host = arr[2].guest = 0;
+> +		*nr = 3;
+> +	}
 
-Great, thanks, I see it now.
+Similar comments as the previous patch, please figure out a way to properly
+integrate this into the PEBS logic instead of querying arr/nr.
 
-I was going to raise a question, whether you should now revert
-073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and BUG_ON(PageWriteback)"):
-which would not have gone in like that if c2407cf7d22d were already in.
-
-But if it were reverted, we'd need some other fix for the PageTail part
-of it; and I still cannot think of anywhere else where we knowingly
-operated on a struct page without holding a reference; and there have
-been no adverse reports on its extra get_page+put_page.
-
-So I think it's safest to leave it in.
-
-Hugh
+> +
+>  	return arr;
+>  }
