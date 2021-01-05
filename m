@@ -2,114 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D272EADD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6FA2EADF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbhAEPBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:01:01 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:45291 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbhAEPBB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:01:01 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id DDD2B6000A;
-        Tue,  5 Jan 2021 15:00:17 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 16:00:17 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Ilia Mirkin <imirkin@alum.mit.edu>
-Cc:     Simon Ser <contact@emersion.fr>,
-        devicetree <devicetree@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v8 4/4] NOTFORMERGE: drm/logicvc: Add plane colorkey
- support
-Message-ID: <X/R/AY7YXBEyWNG1@aptenodytes>
-References: <20201223212947.160565-1-paul.kocialkowski@bootlin.com>
- <20201223212947.160565-5-paul.kocialkowski@bootlin.com>
- <oDsOkjfTYKa11LxfNy4LBLqutkVidfFn8--tjQPZj4w9gzCYNTOFglHqxXohsrYqTJ4uDv2xgJNKXPHzgAsACGnCkbKQis95SScGucOb1PI=@emersion.fr>
- <CAKb7UvhgHPkG5Sn-HLdpsFw0R=kATJKUmjSwPSuwviDCk0RGyw@mail.gmail.com>
+        id S1727276AbhAEPLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:11:10 -0500
+Received: from tux.runtux.com ([176.9.82.136]:59742 "EHLO tux.runtux.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726499AbhAEPLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:11:09 -0500
+X-Greylist: delayed 540 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 Jan 2021 10:11:08 EST
+Received: from localhost (localhost [127.0.0.1])
+        by tux.runtux.com (Postfix) with ESMTP id 864A26F08A;
+        Tue,  5 Jan 2021 16:01:27 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
+Received: from tux.runtux.com ([127.0.0.1])
+        by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id IqvrxiLmhTSR; Tue,  5 Jan 2021 16:01:25 +0100 (CET)
+Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
+        (Authenticated sender: postmaster@runtux.com)
+        by tux.runtux.com (Postfix) with ESMTPSA id 3D7C16EF52;
+        Tue,  5 Jan 2021 16:01:25 +0100 (CET)
+Received: by bee.priv.zoo (Postfix, from userid 1002)
+        id 62263473; Tue,  5 Jan 2021 16:01:24 +0100 (CET)
+Date:   Tue, 5 Jan 2021 16:01:24 +0100
+From:   Ralf Schlatterbeck <rsc@runtux.com>
+To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] auxdisplay: HD44780 connected to I2C via PCF8574
+Message-ID: <20210105150124.dvlochv3qrp4wpre@runtux.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="OSDOGVu8nZtJl5tY"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKb7UvhgHPkG5Sn-HLdpsFw0R=kATJKUmjSwPSuwviDCk0RGyw@mail.gmail.com>
+X-ray:  beware
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Character LCD driver for the Hitachi HD44780 with I2C connection:
+There already is a driver for displays with parallel gpio connections.
+Re-uses the high-level API.
 
---OSDOGVu8nZtJl5tY
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Concerning the compatible-string: I'm currently using
 
-Hi,
+"hit,hd44780+nxp,pcf8575"
 
-On Wed 23 Dec 20, 18:31, Ilia Mirkin wrote:
-> FWIW this is something I added, hoping it was going to get used at
-> some point, but I never followed up with support in xf86-video-nouveau
-> for Xv. At this point, I'm not sure I ever will. I encoded the
-> "enabled" part into the value with a high bit (1<<24) -- not sure that
-> was such a great idea. All NVIDIA hardware supports colorkey (and not
-> actual alpha, until the very latest GPUs - Volta/Turing families),
-> although my implementation only covers the pre-G80 series (i.e. DX9
-> and earlier GPUs - pre-2008). Should a determination of usefulness be
-> reached, it would be easy to implement on the remainder though.
+- "hit,hd44780" is used for the parallel-connected version of the display
+- nxp,pcf8575 already exists in drivers/gpio/gpio-pcf857x.c which uses
+  the same chip for gpio expansion.
 
-Interesting to know!
+Let me know if this choice of names is fine or should be changed.
+For the other device-tree names I'm reusing (some of) the names from the
+parallel connected display.
 
-Regarding a generic colorkey property, there was a discussion under thread:
-drm: Add generic colorkey properties for display planes
+ .../auxdisplay/hit,hd44780+nxp,pcf8575.yaml (new)  |  65 +++++++
+ drivers/auxdisplay/Kconfig                         |  14 +-
+ drivers/auxdisplay/Makefile                        |   1 +
+ drivers/auxdisplay/hd44780-pcf8574.c (new)         | 207 +++++++++++++++++++++
+ 4 files changed, 286 insertions(+), 1 deletion(-)
 
-and the latest proposal (RFC v4) can be found here:
-https://patchwork.ozlabs.org/project/linux-tegra/patch/20180807172202.1961-=
-2-digetx@gmail.com/
-
-It looks like this was much more complex than anticipated and the series
-was more or less abandonned. I didn't feel like picking it up in my logicvc
-series so I kept the colorkey patch as not for merge.
-
-If someone's up for picking the proposal and continuing the discussion,
-I could provide insight on how it would fit with logicvc though!
-
-Cheers,
-
-Paul
-
-> On Wed, Dec 23, 2020 at 5:20 PM Simon Ser <contact@emersion.fr> wrote:
-> >
-> > nouveau already has something for colorkey:
-> > https://drmdb.emersion.fr/properties/4008636142/colorkey
-> >
-> > I know this is marked "not for merge", but it would be nice to discuss
-> > with them and come up with a standardized property.
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---OSDOGVu8nZtJl5tY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/0fwEACgkQ3cLmz3+f
-v9HOhgf8DU4twNl4hL4kO9201ULcHXezYqI7Ep2Kv9H4WmGOQHCYsz0Orr6KL8x7
-xWdRsnet9x2vfN4UZRBRmSiXv2SA8nQL2TZHWH/VKyrwxmOD4Btt9C+qs0YWhfii
-XfvU0IGYI8Y10uA03JTB44BfiXn409OR7otd1abp9/cO0GAf3zspshGdVuWST4wh
-SgglQZvdpYQljgQJjIcmGJvwJ9hQ1Eyk1+XnBLFLBvZrsrrVgqboKRDSrJ28i+p2
-fJIf2TSAzIdLnJbNBx77dRDiHTuHQlsdpOYomZyeeBPqcYvwiHBhJgE87JO27w03
-OlOzyMecE1vud4/LLA7ySAHGczWt6Q==
-=Ahth
------END PGP SIGNATURE-----
-
---OSDOGVu8nZtJl5tY--
+-- 
+Ralf Schlatterbeck                      Tel:   +43/2243/26465-16
+Open Source Consulting                  www:   www.runtux.com
+Reichergasse 131, A-3411 Weidling       email: office@runtux.com
