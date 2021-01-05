@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D60F2EB1F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 604D92EB204
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729959AbhAESFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:05:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        id S1730202AbhAESFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:05:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbhAESFH (ORCPT
+        with ESMTP id S1726890AbhAESFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:05:07 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF58C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:04:27 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id b2so1583312edm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:04:27 -0800 (PST)
+        Tue, 5 Jan 2021 13:05:40 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5B0C061796
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:04:59 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id b73so1466643edf.13
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:04:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g9dWEenEa1Tbu2wF3XZKdyzz1Vq1iEFWmTgkC1pdmgE=;
-        b=gbHxkwq9CjvYKdpKPtd2ZRrJEAevgMtRmYOb22xACgeJQuGsT2kP/c6aINE2iyvqDh
-         tdJH1JdM40naCrddYIyMiMsUENx53xvhNMADzgLohYngGBuX0McumeV6/7gbDztyy67e
-         oWl8U90wipDPcVTOylJwuJSgvaDFkudEhEdKy0z85h+dvWIYq7TwqJjK1ZliE9r37x/P
-         Nf4fANZwZ4WLBw5I2MbWU9tvHHR6hqLH2dvzrurTCXvRUtgJojsDVF1GeWEzRPdTR+Gp
-         hOIQ3Is353X0KpdkYQhw8Amkqx+8xBUZcDw1Zb4JxHmT1787wDciaHU+koprkXTiO/cc
-         LzWA==
+        bh=8XDnRNruv1BMN32pgPpm0wYF2+zLKqENUZJC1YcQG8E=;
+        b=UMmnZ7onPSCcBs/9pq3qdK0GKHAyO+Sslt6oiVhPTtbpSmnsvh1uwAkd81ohspRKrY
+         E8nBzprH+kCMQarh7Tk+smtUsZqJ7rYkpmN8hUsfwnnrCY+h8WJeJy+q/9S4EMo/nItA
+         5tB0f+6sktCE1+N6Akse8qaRQdyf4URe+uoB/Dmei6HSX+ofZYR7079IE4KC3C/dzk0p
+         /ZGLCNmL0ooYEWw8OaC72La+EMudidWjXATKfOi94Txolpr4bSJksHv7RxJ8IVpzPUs4
+         EU6MYyqU+SDuCnUlnsYKF9ADMAGbqv4MEbcdZVvOsvCaRIOpllpV3cXE1OlTc6S2xpu/
+         0XOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g9dWEenEa1Tbu2wF3XZKdyzz1Vq1iEFWmTgkC1pdmgE=;
-        b=oosAlngV3/Z6yMgUX0uf1uyN83QogfFui8CIVMz7MY07OW1yKUkA3dJJcIRb4bE3BI
-         pO4EN/TVoFoL55hoIN6yCKkrQbwdLzehq90/exczTxUdGUs+vQ8+PMkBPIuvlAMxElt+
-         TTV57C/0ePkMbjLi53hJfM/Rz+kCNvdn9uCYWtxfKzWp9WEdsJH0M0I+ozCUdZdQZ1VF
-         p29OjuiLEo/eMyWaDIuvLKdA2Cbwrt0i05JgwvFJwRYBGyMIBmpKU51rGX9lEKhPjjVh
-         uyVumJRIyfBk/ghHvgRQsvfcwcTRIn4WUU5Q62Jla+lMnIvFLToIGFDMwL+IvdTm3VPi
-         eY7Q==
-X-Gm-Message-State: AOAM531e1z+g73GH/pM5hNvsm336Qd7MuBD6yuk0MtRs/0MD7Tp4PQY0
-        2iBs4vS02wZYbkOv4xMGpgq2Qu0VSogCfyA4YLA=
-X-Google-Smtp-Source: ABdhPJy2q8y1vT9nVv1PXe/O7TiK+riynHFEQmh3eJty2cejYpnhb5xJ60LuQuiK08rsZfPpjTkqH1DQnwPYWgp75Ss=
-X-Received: by 2002:a05:6402:ca2:: with SMTP id cn2mr956808edb.137.1609869865933;
- Tue, 05 Jan 2021 10:04:25 -0800 (PST)
+        bh=8XDnRNruv1BMN32pgPpm0wYF2+zLKqENUZJC1YcQG8E=;
+        b=YMlwopNREuuV6C+aR2vR4AkH5G60MBU1Ac3V8BB7XXjlGvFzt73kfvpC3e5ydN1w/2
+         NBEzGmOUxh/PEy5OQM7oaF6rMKT1RSMQY6H+U5qqg8nXP/YZ4ecRZMZye0Ku0om8ZVRi
+         6PYFrn0lestRsoM/tie9TUt2SZCn77+w8Qc5lOBF/xsUGayMKxX8gy4l7djJYjKXGu5Y
+         5Csj862cohtond3s/dhvRoBNcOz+G9i0YPxfKGt7TDsHNRVyhzE0kqqbgxImMwcCzwio
+         NnJSmxgul/VlO9JoS257MBHWineGiNfGBz0G5wpIZIKVnkVjtvs6XjYaSP5odaDH+abz
+         yN7w==
+X-Gm-Message-State: AOAM531PNioH7KHxkXeUvCTYMsyNB5kF6bIIU2ps6xyu06yTbSPodY3r
+        fGhnge3NTR5yOldMCraxMGEp4oZCH0/QQ7UA2ms=
+X-Google-Smtp-Source: ABdhPJx+L930FDjLcQS1ibgZAJNKrpVQt6flaJ6sFWwBPA8TLp5Vkh+bzsAAQzJrLnTl5xc+J4b460PrAVLDVpN7nEw=
+X-Received: by 2002:a05:6402:746:: with SMTP id p6mr950652edy.313.1609869897809;
+ Tue, 05 Jan 2021 10:04:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20210104065843.5658-1-songmuchun@bytedance.com> <d81664e1-bde0-4dcb-f602-6eb201ceada0@redhat.com>
-In-Reply-To: <d81664e1-bde0-4dcb-f602-6eb201ceada0@redhat.com>
+References: <20210104065843.5658-1-songmuchun@bytedance.com>
+In-Reply-To: <20210104065843.5658-1-songmuchun@bytedance.com>
 From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 5 Jan 2021 10:04:13 -0800
-Message-ID: <CAHbLzko4BH6GOJsz33NEbwLTxJQJxVHH3qLzHzoM1LycT=ccbg@mail.gmail.com>
+Date:   Tue, 5 Jan 2021 10:04:44 -0800
+Message-ID: <CAHbLzkpNKzL052VQxFaOnwSGSMMFDzZotk8KRa_4LVZfO134ZQ@mail.gmail.com>
 Subject: Re: [PATCH 1/6] mm: migrate: do not migrate HugeTLB page whose
  refcount is one
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         hillf.zj@alibaba-inc.com,
         Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
@@ -66,46 +65,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 8:58 AM David Hildenbrand <david@redhat.com> wrote:
+On Sun, Jan 3, 2021 at 11:01 PM Muchun Song <songmuchun@bytedance.com> wrote:
 >
-> On 04.01.21 07:58, Muchun Song wrote:
-> > If the refcount is one when it is migrated, it means that the page
-> > was freed from under us. So we are done and do not need to migrate.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/migrate.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/mm/migrate.c b/mm/migrate.c
-> > index 4385f2fb5d18..a6631c4eb6a6 100644
-> > --- a/mm/migrate.c
-> > +++ b/mm/migrate.c
-> > @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
-> >               return -ENOSYS;
-> >       }
-> >
-> > +     if (page_count(hpage) == 1) {
-> > +             /* page was freed from under us. So we are done. */
-> > +             putback_active_hugepage(hpage);
-> > +             return MIGRATEPAGE_SUCCESS;
-> > +     }
-> > +
-> >       new_hpage = get_new_page(hpage, private);
-> >       if (!new_hpage)
-> >               return -ENOMEM;
-> >
+> If the refcount is one when it is migrated, it means that the page
+> was freed from under us. So we are done and do not need to migrate.
 >
-> This series seems to fix quite some important cases (thanks). Do we want
-> to cc stable some/all?
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/migrate.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 4385f2fb5d18..a6631c4eb6a6 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+>                 return -ENOSYS;
+>         }
+>
+> +       if (page_count(hpage) == 1) {
+> +               /* page was freed from under us. So we are done. */
+> +               putback_active_hugepage(hpage);
+> +               return MIGRATEPAGE_SUCCESS;
+> +       }
+> +
 
-For this particular one, I don't think so IMHO. It is an optimization
-rather than a bug fix.
+Acked-by: Yang Shi <shy828301@gmail.com>
 
->
+>         new_hpage = get_new_page(hpage, private);
+>         if (!new_hpage)
+>                 return -ENOMEM;
 > --
-> Thanks,
->
-> David / dhildenb
+> 2.11.0
 >
 >
