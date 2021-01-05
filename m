@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C7F2EA7C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE68D2EA7D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbhAEJkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:40:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727725AbhAEJkU (ORCPT
+        id S1728106AbhAEJow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:44:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34463 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727807AbhAEJov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:40:20 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A43C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 01:39:40 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id o17so71112569lfg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 01:39:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=i2OQSP8J84ALBsEAvjQwanW64SI0jNYanTtGLf4k6pk=;
-        b=HEGsym/m2D3XZVcE9neY09JeOa1OmfrRG+7sxaN4x4ohoDWwDRZhrAArDwLi1fwV4b
-         n7ARQzRJRBxeU9MGYfIaOUgtRVHULXYHuRsBrSNaFx2hoFpyN/mS6Ar/Fmxc/CnRVHM0
-         iYe3WEfAQ2ngN/QZ71I4wJSUA392S0RdXnP/SzoDDlfDsLw2fWw72J4b8+C/nC0zE8F4
-         4bBD9k5GX0teImtAHfy1NtKu0cRStrqyRN9hrubT6DcfI/UNEFT+pWW08AsqjyzIM865
-         fWXWogRlzqb8mKHNopuQoo4nz5yfhg+/b8VP9wN8R5kXtyzbYft+KEHFYGhasHWVkWOt
-         Tcpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=i2OQSP8J84ALBsEAvjQwanW64SI0jNYanTtGLf4k6pk=;
-        b=DUlNoFs2/8g+w/3eDWZ4/WJEs/hfXS44J0oKDfNkEVOoXJwiYIqhOXdW7hq5AXZvNQ
-         TkVNOLe59kBO0wjJ9G/VlAevxijwASCyrTFIRKcstfVlFuYiAM1aEJroqc9cAj1I0JeR
-         1PObkS1qnjjopDjjrOQTD1sDNesrmcZhyIBJ0zMkBmNqHEwq5ONhk0DV96AU4vK9pOf4
-         R0++GvIu+1b6HVMjYHk1pybE0QpZ/Y19wUbQ+b4+RYU//EnQPs26xc/urZdNUYNuFu92
-         wnQdqVMDM1CQ3/Ou3FjHzZEZXp5U4PX20ZhOMs2NRa1tE550Ex/L/lI3qY4gib5V6vm+
-         UCUA==
-X-Gm-Message-State: AOAM530sIHkD6uHt3iTfSRjo6lhSTqy52AzTyWt4etduNCJ44BK9Sw5d
-        ci2+XiORyrvVPHGAgBPM+uNZYjacMcuBBGzveFjShQlg
-X-Google-Smtp-Source: ABdhPJw3BgRE3gSvQc/Fh6/SsVhA0l3Jkse4uAPKN9VCXwMQx1yufbP7YdJ7cyJadCH5HsXqUASTq4WOcMkonn/2srY=
-X-Received: by 2002:a05:651c:22b:: with SMTP id z11mr36244037ljn.38.1609839578767;
- Tue, 05 Jan 2021 01:39:38 -0800 (PST)
+        Tue, 5 Jan 2021 04:44:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609839805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u/pf3MEGHy4BVUnm30O0L31xAu34MGBgOtsz0A/Rhcg=;
+        b=I9S5rONjo+1VTw6Kvhh4Vno1wNTtUlY1Ms9mWpyPagzILVwJ7BA+/eR7QThkZaQhmmNj+E
+        QuedpZsMQUyGGzuTxOROLowlDZWE724GqPbTFqldqa+MyuyhkHg8SgDqvdChsE/5fG9Iy1
+        JszKO6CfJQrY3ub/Vz0DuReLRB0o8pA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-eV-NK1QRM5yLiP4y727A1Q-1; Tue, 05 Jan 2021 04:43:23 -0500
+X-MC-Unique: eV-NK1QRM5yLiP4y727A1Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA59310054FF;
+        Tue,  5 Jan 2021 09:43:21 +0000 (UTC)
+Received: from yiche-home.usersys.redhat.com (ovpn-12-69.pek2.redhat.com [10.72.12.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C307E62463;
+        Tue,  5 Jan 2021 09:43:18 +0000 (UTC)
+From:   Yi Chen <yiche@redhat.com>
+To:     Chen Yi <yiche@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Leo <liuhangbin@gmail.com>
+Subject: [PATCHv2 net] selftests: netfilter: Pass the family parameter to conntrack tool
+Date:   Tue,  5 Jan 2021 17:43:16 +0800
+Message-Id: <20210105094316.23683-1-yiche@redhat.com>
+In-Reply-To: <20210104110723.43564-1-yiche@redhat.com>
+References: <20210104110723.43564-1-yiche@redhat.com>
 MIME-Version: 1.0
-References: <a5ba7bdf-8510-d0a0-9c22-ec1b81019982@intel.com>
- <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com> <6bfcc500-7c11-f66a-26ea-e8b8bcc79e28@intel.com>
- <20210105092037.GY13207@dhcp22.suse.cz> <71953119-06ff-0bb8-1879-09e24bf80446@redhat.com>
-In-Reply-To: <71953119-06ff-0bb8-1879-09e24bf80446@redhat.com>
-From:   Liang Li <liliang324@gmail.com>
-Date:   Tue, 5 Jan 2021 17:39:27 +0800
-Message-ID: <CA+2MQi-9CmtRoPmOcjpfNt53wkAzF9JB=OE_fx8SARTVe_JR=w@mail.gmail.com>
-Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page
- allocation for __GFP_ZERO
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 5:30 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 05.01.21 10:20, Michal Hocko wrote:
-> > On Mon 04-01-21 15:00:31, Dave Hansen wrote:
-> >> On 1/4/21 12:11 PM, David Hildenbrand wrote:
-> >>>> Yeah, it certainly can't be the default, but it *is* useful for
-> >>>> thing where we know that there are no cache benefits to zeroing
-> >>>> close to where the memory is allocated.
-> >>>>
-> >>>> The trick is opting into it somehow, either in a process or a VMA.
-> >>>>
-> >>> The patch set is mostly trying to optimize starting a new process. So
-> >>> process/vma doesn=E2=80=98t really work.
-> >>
-> >> Let's say you have a system-wide tunable that says: pre-zero pages and
-> >> keep 10GB of them around.  Then, you opt-in a process to being allowed
-> >> to dip into that pool with a process-wide flag or an madvise() call.
-> >> You could even have the flag be inherited across execve() if you wante=
-d
-> >> to have helper apps be able to set the policy and access the pool like
-> >> how numactl works.
-> >
-> > While possible, it sounds quite heavy weight to me. Page allocator woul=
-d
-> > have to somehow maintain those pre-zeroed pages. This pool will also
-> > become a very scarce resource very soon because everybody just want to
-> > run faster. So this would open many more interesting questions.
->
-> Agreed.
->
-> >
-> > A global knob with all or nothing sounds like an easier to use and
-> > maintain solution to me.
->
-> I mean, that brings me back to my original suggestion: just use
-> hugetlbfs and implement some sort of pre-zeroing there (worker thread,
-> whatsoever). Most vfio users should already be better of using hugepages.
->
-> It's a "pool of pages" already. Selected users use it. I really don't
-> see a need to extend the buddy with something like that.
->
+From: yiche <yiche@redhat.com>
 
-OK, since most people prefer hugetlbfs, I will send another revision for th=
-is.
+Fixes: 619ae8e0697a6 ("selftests: netfilter: add test case for conntrack helper assignment")
 
-Thanks
-Liang
+Fix nft_conntrack_helper.sh fake fail:
+conntrack tool need "-f ipv6" parameter to show out ipv6 traffic items.
+sleep 1 second after background nc send packet, to make sure check
+is after this statement executed.
+
+Signed-off-by: yiche <yiche@redhat.com>
+---
+ .../selftests/netfilter/nft_conntrack_helper.sh      | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
+index edf0a48da6bf..bf6b9626c7dd 100755
+--- a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
++++ b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
+@@ -94,7 +94,13 @@ check_for_helper()
+ 	local message=$2
+ 	local port=$3
+ 
+-	ip netns exec ${netns} conntrack -L -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
++	if echo $message |grep -q 'ipv6';then
++		local family="ipv6"
++	else
++		local family="ipv4"
++	fi
++
++	ip netns exec ${netns} conntrack -L -f $family -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
+ 	if [ $? -ne 0 ] ; then
+ 		echo "FAIL: ${netns} did not show attached helper $message" 1>&2
+ 		ret=1
+@@ -111,8 +117,8 @@ test_helper()
+ 
+ 	sleep 3 | ip netns exec ${ns2} nc -w 2 -l -p $port > /dev/null &
+ 
+-	sleep 1
+ 	sleep 1 | ip netns exec ${ns1} nc -w 2 10.0.1.2 $port > /dev/null &
++	sleep 1
+ 
+ 	check_for_helper "$ns1" "ip $msg" $port
+ 	check_for_helper "$ns2" "ip $msg" $port
+@@ -128,8 +134,8 @@ test_helper()
+ 
+ 	sleep 3 | ip netns exec ${ns2} nc -w 2 -6 -l -p $port > /dev/null &
+ 
+-	sleep 1
+ 	sleep 1 | ip netns exec ${ns1} nc -w 2 -6 dead:1::2 $port > /dev/null &
++	sleep 1
+ 
+ 	check_for_helper "$ns1" "ipv6 $msg" $port
+ 	check_for_helper "$ns2" "ipv6 $msg" $port
+-- 
+2.26.2
+
