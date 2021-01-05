@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C993E2EA97C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF7A2EA976
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729543AbhAELEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:04:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52246 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728963AbhAELEw (ORCPT
+        id S1729526AbhAELED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:04:03 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:52871 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729166AbhAELEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:04:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609844606;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2AWR0WkhRJ4TUcyCLZNXdv1ehusPcAteLrZxeB8wrTE=;
-        b=EBAkIHu842/nTr2LUrnMZNzip7KWhG2f+BaA4p3ag4AN92iRz9BHml2IG9qHSQcjx7LyG9
-        dmSPSXY5MaYmtKPVslIn/99lKc/8NeYXgtwX1cRG8ZJ3IRXqJSaVq40gxmiaa2mMDXHPWk
-        2NwVtsK17JlapChpuQUcV1fRAjyMu9M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-36-QO0eIFieP7eVR2Wi7vfZCA-1; Tue, 05 Jan 2021 06:03:22 -0500
-X-MC-Unique: QO0eIFieP7eVR2Wi7vfZCA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7D5A190A7A0;
-        Tue,  5 Jan 2021 11:03:20 +0000 (UTC)
-Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F0CE27048C;
-        Tue,  5 Jan 2021 11:03:18 +0000 (UTC)
-Subject: Re: [PATCH] mm: fix: Uninitialized variable ret.
-To:     YANG LI <abaci-bugfix@linux.alibaba.com>, hannes@cmpxchg.org
-Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <1609311551-97108-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <1d9b6d7c-097d-d6c3-82e5-a46077f3ce44@redhat.com>
-Date:   Tue, 5 Jan 2021 12:03:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 5 Jan 2021 06:04:02 -0500
+Received: by mail-il1-f198.google.com with SMTP id h4so30338953ilq.19
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 03:03:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=L3uN6pisff8aaO4cxH6i9R3Ew7bD6TQmaDC9RmrPw9E=;
+        b=LX62h4hpOjRwUNw1Nhz4dkg4Xh/m3Kg4p+Wh8k7RDKJGVWOaiGAkvmVL0bSl6QewpD
+         gHZ0AnkE1hCfTVE8h/4ttWDaF4VnzMQ3IVlPu3Z+5PN5b1KkIYlm8MWlvk7JdKH6M+xE
+         kwkNHMV5i9bURIQXV/4vwrOoJrKcP6F/SJjb/z6ZJ2B0WlXRlKnVWol8U7CvSXhkkDwO
+         +H8Ai7+32EGtMtpaK3+Ya7bh0zwpbPq4Ciu4czOPvbHIC8eg2ezFxcnsAf3rPNn9Q4mM
+         tp6WKgdZSFp37EVWSzCL2lKVcOqDkAGYcq88aXCQcJBmmFnBxKlSzqtcV4++jufd7wQD
+         wA7Q==
+X-Gm-Message-State: AOAM533vU/Qe+nfMF6AOpDW5ZVk2prqBK3GYN7cPyrsNsQXb8R56ceSG
+        BKh37+qqpHEdtjZlSSy7bfDJQW9+0zUXUSv+yg/vjNc9+8Nz
+X-Google-Smtp-Source: ABdhPJxzSl5Zqr+paPHN/saRVltHDzUUF3FrwKSVQzTlt4Pg93UUoeDRkmMBXDIlOKyGASnogv/6VkOppWlos5gW8638Lv5sL2/j
 MIME-Version: 1.0
-In-Reply-To: <1609311551-97108-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Received: by 2002:a05:6e02:1605:: with SMTP id t5mr46211487ilu.232.1609844601146;
+ Tue, 05 Jan 2021 03:03:21 -0800 (PST)
+Date:   Tue, 05 Jan 2021 03:03:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000098536705b8252721@google.com>
+Subject: WARNING: locking bug in l2cap_sock_teardown_cb
+From:   syzbot <syzbot+9cde9e1af823debba3b2@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.12.20 07:59, YANG LI wrote:
-> The ret is being used but it isn't being initialized,
-> need to assign a value to it, like 0.
-> 
-> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-> Reported-by: Abaci <abaci@linux.alibaba.com>
-> ---
->  mm/memcontrol.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 605f671..15ba17d 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3366,7 +3366,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
->  {
->  	bool enlarge = false;
->  	bool drained = false;
-> -	int ret;
-> +	int ret = 0;
->  	bool limits_invariant;
->  	struct page_counter *counter = memsw ? &memcg->memsw : &memcg->memory;
->  
-> 
+Hello,
 
-Before every "break" in the loop, we have a "ret = ". The loop runs at
-least once.
+syzbot found the following issue on:
 
-Either I am missing something important, or that patch claims something
-that does not hold - at least upstream.
+HEAD commit:    139711f0 Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17a6d077500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=97ec68097e292826
+dashboard link: https://syzkaller.appspot.com/bug?extid=9cde9e1af823debba3b2
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
--- 
-Thanks,
+Unfortunately, I don't have any reproducer for this issue yet.
 
-David / dhildenb
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9cde9e1af823debba3b2@syzkaller.appspotmail.com
 
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(1)
+WARNING: CPU: 1 PID: 69 at kernel/locking/lockdep.c:202 hlock_class kernel/locking/lockdep.c:202 [inline]
+WARNING: CPU: 1 PID: 69 at kernel/locking/lockdep.c:202 hlock_class kernel/locking/lockdep.c:191 [inline]
+WARNING: CPU: 1 PID: 69 at kernel/locking/lockdep.c:202 check_wait_context kernel/locking/lockdep.c:4506 [inline]
+WARNING: CPU: 1 PID: 69 at kernel/locking/lockdep.c:202 __lock_acquire+0x165e/0x5500 kernel/locking/lockdep.c:4782
+Modules linked in:
+CPU: 1 PID: 69 Comm: kworker/1:1 Not tainted 5.11.0-rc1-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Workqueue: events l2cap_chan_timeout
+RIP: 0010:hlock_class kernel/locking/lockdep.c:202 [inline]
+RIP: 0010:hlock_class kernel/locking/lockdep.c:191 [inline]
+RIP: 0010:check_wait_context kernel/locking/lockdep.c:4506 [inline]
+RIP: 0010:__lock_acquire+0x165e/0x5500 kernel/locking/lockdep.c:4782
+Code: 08 84 d2 0f 85 1c 2c 00 00 8b 15 95 67 97 0b 85 d2 0f 85 5f fa ff ff 48 c7 c6 a0 a7 4b 89 48 c7 c7 c0 9d 4b 89 e8 89 7f 5b 07 <0f> 0b e9 45 fa ff ff c7 44 24 60 fe ff ff ff 41 bf 01 00 00 00 c7
+RSP: 0018:ffffc900007b7900 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88801115d280 RSI: ffffffff815b2ae5 RDI: fffff520000f6f12
+RBP: ffff88801115d280 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815abc8e R11: 0000000000000000 R12: ffff88801115dca8
+R13: 00000000000013db R14: ffff888020f740a0 R15: 0000000000040000
+FS:  0000000000000000(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd559fd13c CR3: 000000005a46e000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+ _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ lock_sock_nested+0x3b/0x110 net/core/sock.c:3049
+ l2cap_sock_teardown_cb+0xa1/0x660 net/bluetooth/l2cap_sock.c:1520
+ l2cap_chan_del+0xbc/0xa80 net/bluetooth/l2cap_core.c:618
+ l2cap_chan_close+0x1bc/0xaf0 net/bluetooth/l2cap_core.c:823
+ l2cap_chan_timeout+0x17e/0x2f0 net/bluetooth/l2cap_core.c:436
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
