@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F304C2EB0F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FAB2EB100
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730571AbhAERFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:05:32 -0500
-Received: from mail-il1-f178.google.com ([209.85.166.178]:41334 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729505AbhAERFb (ORCPT
+        id S1730612AbhAERF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:05:58 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:28368 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729837AbhAERF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:05:31 -0500
-Received: by mail-il1-f178.google.com with SMTP id w17so315131ilj.8;
-        Tue, 05 Jan 2021 09:05:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=szjyrLYwaZaHX4vAXZif2q9yEP3V/qNPGTizVqWHU30=;
-        b=o7NQvheEo5/aLClIIY16Y0ORBZe+sf8ohLKJRvBT1RE0ZPQp0xKrMpbIPyPYPi1d1v
-         X8BLw3YBANcU1oIBDWfXILJtxoFxTCwQafcVx2YjM0MMHAcJAComR2zHo3p300JMgLvu
-         1jscqoFfEm6K97+XowLdXXq+bMnfPRrbo9+BaEDOxevlcpgVfwWR9Lvojk3JrpsRVdFn
-         CrzEbd3QwCycJFioRGgxFrid3lDN7bI5APqGbbkveaq11AJ84yLQovR8T8x4xCKlQ8xr
-         /Z4Bh0MVlIuVYCUanS8rkDgy3yWEtyrhyZ+ph6XoTLTv1YxEKUmuinMYcy85VEVv2Nmi
-         fZUA==
-X-Gm-Message-State: AOAM531pU9tvHowhhKe7mVZE4UzWFte+vUI87+uVk02f/rm/mZOoCf/8
-        8qXxSQ6rgFq/B2AxRvsBWg==
-X-Google-Smtp-Source: ABdhPJyOvIBC1VtDlm9f8CAH2CirusT8UNwTgPnnqrgUs2zeNid9UusFz2jWO51pCmduXoGkABoTGQ==
-X-Received: by 2002:a92:7b07:: with SMTP id w7mr589022ilc.78.1609866290356;
-        Tue, 05 Jan 2021 09:04:50 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id k5sm64436ioa.27.2021.01.05.09.04.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 09:04:49 -0800 (PST)
-Received: (nullmailer pid 372418 invoked by uid 1000);
-        Tue, 05 Jan 2021 17:04:48 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     devicetree@vger.kernel.org, John Crispin <john@phrozen.org>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Birger Koblitz <mail@birger-koblitz.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20210104131755.2979203-2-bert@biot.com>
-References: <20210104131755.2979203-1-bert@biot.com> <20210104131755.2979203-2-bert@biot.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: interrupt-controller: Add Realtek RTL838x/RTL839x support
-Date:   Tue, 05 Jan 2021 10:04:48 -0700
-Message-Id: <1609866288.019144.372417.nullmailer@robh.at.kernel.org>
+        Tue, 5 Jan 2021 12:05:57 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 105H3RpI002497;
+        Tue, 5 Jan 2021 18:05:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=AaKXXBBSLn/MwtIXJ9J+oqskFzFqwJhdPjJtMaNGd3w=;
+ b=Ad8AgPEoHISNV4TWrfQYBnrfjVkgwDVMZHyEAVFsb5E8QGdk1kvCHlmXlxaDjnXgYHx8
+ A31B3r8CRAHZAAbZUhO8cU0PaBkH/ApJHI+N1mD3VTsQY8maJkMy5WmSskxebWGUTyZA
+ CP+bBtCQPaHUVwLaarCyD6TUqILKtFGSzOcxCDDNtzO2njGspREYkSALlOZcPAz57Tkt
+ h2WQ0Apd0+8IyKBmbLxOOIc8V9JEa+LtaAqokAiat7YAL5t7AiYP9kid1EEw7dPTEkIe
+ c37FjirimPzimaOARIEbnn0Mu85el3BENqkHQ3qJINnSLSeSVpI4r6sK/vknMFMxAHYy Ug== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35tf66x668-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Jan 2021 18:05:10 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 65E2610002A;
+        Tue,  5 Jan 2021 18:05:09 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 56A3723A239;
+        Tue,  5 Jan 2021 18:05:09 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 Jan
+ 2021 18:05:08 +0100
+Subject: Re: [PATCH v2 10/16] rpmsg: char: allow only one endpoint per device
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+ <20201222105726.16906-11-arnaud.pouliquen@foss.st.com>
+ <X/O6BvP+vqLvbi5f@builder.lan>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <9a75e5fa-ad09-0145-18f1-09738433bf88@foss.st.com>
+Date:   Tue, 5 Jan 2021 18:05:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <X/O6BvP+vqLvbi5f@builder.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-05_05:2021-01-05,2021-01-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Jan 2021 14:17:54 +0100, Bert Vermeulen wrote:
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> ---
->  .../realtek,rtl-intc.yaml                     | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml
+
+
+On 1/5/21 1:59 AM, Bjorn Andersson wrote:
+> On Tue 22 Dec 04:57 CST 2020, Arnaud Pouliquen wrote:
 > 
+>> Only one endpoint can be created per device, prevent from multi open.
+>>
+> 
+> Having multiple invocations of rpmsg_create_ept() with the same chinfo
+> sounds like a bad idea. I think in the SMD and GLINK case the underlying
+> transport would complain that the related chinfo is already "busy", but
+> this seems like an appropriate fix regardless.
+> 
+> Please add a proper Fixes: tag and send this outside of this patch
+> series.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+I will send it in a separate patch.
 
-yamllint warnings/errors:
+Regards,
+Arnaud
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml: properties: 'interrupt-map-mask' is a dependency of 'interrupt-map'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml: ignoring, error in schema: properties
-warning: no schema found in file: ./Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml
-Error: Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.example.dts:30.5-6 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.example.dt.yaml] Error 1
-make: *** [Makefile:1370: dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1422078
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+> 
+> Thanks,
+> Bjorn
+> 
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> ---
+>>  drivers/rpmsg/rpmsg_char.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+>> index 66e01b979e72..4b0674a2e3e9 100644
+>> --- a/drivers/rpmsg/rpmsg_char.c
+>> +++ b/drivers/rpmsg/rpmsg_char.c
+>> @@ -122,6 +122,9 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
+>>  	struct rpmsg_device *rpdev = eptdev->rpdev;
+>>  	struct device *dev = &eptdev->dev;
+>>  
+>> +	if (eptdev->ept)
+>> +		return -EBUSY;
+>> +
+>>  	get_device(dev);
+>>  
+>>  	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
+>> -- 
+>> 2.17.1
+>>
