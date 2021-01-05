@@ -2,206 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB0B2EAD87
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBF92EAD89
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725828AbhAEOlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:41:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S1727989AbhAEOll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:41:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727119AbhAEOlQ (ORCPT
+        with ESMTP id S1726076AbhAEOlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:41:16 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FBEC061795;
-        Tue,  5 Jan 2021 06:40:36 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id 4so16465351plk.5;
-        Tue, 05 Jan 2021 06:40:36 -0800 (PST)
+        Tue, 5 Jan 2021 09:41:40 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663D9C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 06:41:00 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id y5so28404089iow.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 06:41:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HbJW3NsKoqX4vBU/QIX81wQelNyQKvEabn44iqJjckA=;
-        b=CG8lZ13Uk9aywsPfihuJ20nIDYsGGfGMvqKlG7y8QcpjkMwjMTtwPyQrknx2QQ21UU
-         yUQ/nz9t1//fGezhqkSi3NKoOF1CByNVEGOMaMo2fnE00v4soTAQQZNsY1PJkUOiRehw
-         NUHmA3VQdRXiTkwgrqZPy6+noaAwoVoraHX5gSJVwXhr0kbekL3IdNdm2u6T6QoAA83H
-         YaSdeTePFS9yz3VURK450x/WXiKsaXxYDJ9958wP7Vlf8C/1nSJSxczIqLXcttbfEPuZ
-         h4yok8EAFViY/Nw0NtVqM+ZOo/5o5Ns4kyK2IVZfPbcJ6zT2JXiI7gQl6HKJsV0kDqZb
-         VmJQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gxqoPn+21zKs/x8o6HKZun0UuFC+Fq66xhCficN9TJU=;
+        b=rhT9UJDk0WJ+w4uX4caxgwo6jYP3Zc+WBTAvOY+vmiBYSm1LE9m8d9NRK7WiDNmt1P
+         EOsy43DgJjvS4dLF81Xa+/BxZga7WY/C9i5M51E7E1U+H0kgCRpn0S3BfDIoCFhfyqrz
+         oOLFALLIXT8hOZr5wbWnZUdh3L6gx9Ijg3fR9SKr9gep8QFcRsUCw/X1Oromiuds1e5I
+         XwvkM7pCHZh+ceYC1KSeCGgO0Z2+VE1XoYBS06uM1Yfg1Fv1HalfMh87L3kK3ArXmU/6
+         bduUu29brhObwMZ9wac9D/J5qQe+He7pkkIAYPud8oE+PAfDgDeRzHI4XLuwWgN07Lsx
+         87Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HbJW3NsKoqX4vBU/QIX81wQelNyQKvEabn44iqJjckA=;
-        b=hyXpJDIFqOsBWX1fCnxw6jA16i1X8bHcP4/XQ2WifPpPJJVZBjr39Dri+9KRllmSy3
-         4ZW3rRAczBrLxY7FtbSSpuEfYZRc6HylBmv/rPhq4oAIu+2JsncX6HuotUr1WNYUrMpI
-         6qFyShopY5ZRZqExvhrDvoL1QzRJkwPFpD3upc+YuThvyxTnb8hvs0ZrgDpQbl50nDXX
-         2Aud6Tt7yCIZRAr2uDBi9Q7B3NeYfW480eAsxUJwRlzbwngM2m6vHNBPggCjxoYIgsOR
-         Syf8ofDxbkaf7nxcgePMlXz4/mfWKybrOlTabezKckGSqGGRfMZxC+pGrSDjEykG1f3U
-         Evzw==
-X-Gm-Message-State: AOAM532RWRI+lWE/WeVSA6oRUGuLODOExgRXUDNTD1+eEtNDty4m94kN
-        eF+ekK0v87GBreDlMioINgU=
-X-Google-Smtp-Source: ABdhPJyLd/QmTIDSYCxw1lc0fezaujusZC9WG5QcEJEOIr1M9QK7ZjzYYIUqhPQaduoFP/Jm3EK/UQ==
-X-Received: by 2002:a17:902:8f8d:b029:dc:8ac6:98a7 with SMTP id z13-20020a1709028f8db02900dc8ac698a7mr27606plo.13.1609857635819;
-        Tue, 05 Jan 2021 06:40:35 -0800 (PST)
-Received: from masabert (oki-109-236-4-100.jptransit.net. [109.236.4.100])
-        by smtp.gmail.com with ESMTPSA id bg20sm2986982pjb.6.2021.01.05.06.40.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 06:40:35 -0800 (PST)
-Received: by masabert (Postfix, from userid 1000)
-        id E057A236040C; Tue,  5 Jan 2021 23:40:31 +0900 (JST)
-From:   Masanari Iida <standby24x7@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Masanari Iida <standby24x7@gmail.com>
-Subject: [PATCH] net-next: docs: Fix typos in snmp_counter.rst
-Date:   Tue,  5 Jan 2021 23:40:29 +0900
-Message-Id: <20210105144029.219910-1-standby24x7@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gxqoPn+21zKs/x8o6HKZun0UuFC+Fq66xhCficN9TJU=;
+        b=ZzprLptakX6PgtsvzuFwdz00HO30b4V0Z1qFrRbj5v7bFG9q1Xo+C6VnvlfaBbCpYv
+         SuQkPobqtBlgyxKhtaxNfUYeMZGdeklvUAIBTxEXgw4p9gPIr875JGirVRpD5Yqh3obY
+         lKIQIgXfd4g4pqX6jbcgFqUWVSEchTZXyhqwI694cw06sy+m93h8ca552zhS0WTIaXeT
+         KGYVtDwX9jV7Uk7CcDvQ9z86Vs5x0rMyRKB0WAnc+4EheyK46ktxs1BaZZmluU/Tn6Lb
+         nZvQEz0TtcVooA9HvE5H6rdgfB+nFQpAe2O2FFs5uZ9j0yj37+9zknsgzqCA8jLqpA7D
+         9LbA==
+X-Gm-Message-State: AOAM530apuzS/fbbu5LV98LjG5l1F6xv2mpqN6FqfU0TSV66NVAhZMog
+        VbnOxCAbW9vdv+Gc3gobvaGEUSasTT6R6ZXlVz8=
+X-Google-Smtp-Source: ABdhPJwI+WssqWUAJcFjctSlk9sAsxMbRA8xk4anjpoypiCyQGiSAQ7zd2BiA73LHfsRO7z9f8yS7SAcvUNilQGMxbI=
+X-Received: by 2002:a05:6602:388:: with SMTP id f8mr62329418iov.56.1609857659266;
+ Tue, 05 Jan 2021 06:40:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201226025117.2770-1-jiangshanlai@gmail.com> <20201226025117.2770-4-jiangshanlai@gmail.com>
+ <20210104135649.GO3021@hirez.programming.kicks-ass.net> <CAJhGHyB_MUHG8GGANcN9sQbjY7M5m8WPHQgXp-PmkGK481M5Tg@mail.gmail.com>
+ <CAJhGHyCwyuzikMZAxub=rxn9oe-N2P5C8CEOmyigd9d55SV5YA@mail.gmail.com>
+ <20210105131737.GH3040@hirez.programming.kicks-ass.net> <CAJhGHyC1F5mcYpqKvmxwFrmJz_OsJKWe_Zbn9Hm=fx7-_bKq_Q@mail.gmail.com>
+In-Reply-To: <CAJhGHyC1F5mcYpqKvmxwFrmJz_OsJKWe_Zbn9Hm=fx7-_bKq_Q@mail.gmail.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Tue, 5 Jan 2021 22:40:48 +0800
+Message-ID: <CAJhGHyBoZmKVM-BoFhA6p+q3Wg+MjaWkF0y+qMJ31_Or+ivLWA@mail.gmail.com>
+Subject: Re: [PATCH -tip V3 3/8] workqueue: introduce wq_online_cpumask
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes some spelling typos in snmp_counter.rst
+On Tue, Jan 5, 2021 at 10:37 PM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
+>
+> On Tue, Jan 5, 2021 at 9:17 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Tue, Jan 05, 2021 at 04:23:44PM +0800, Lai Jiangshan wrote:
+> > > On Tue, Jan 5, 2021 at 10:41 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
+> > > > On Mon, Jan 4, 2021 at 9:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > > > On Sat, Dec 26, 2020 at 10:51:11AM +0800, Lai Jiangshan wrote:
+> > > > > > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> > > > > >
+> > > > > > wq_online_cpumask is the cached result of cpu_online_mask with the
+> > > > > > going-down cpu cleared.
+> > > > >
+> > > > > You can't use cpu_active_mask ?
+> > > >
+> > > > When a cpu is going out:
+> > > > (cpu_active_mask is not protected by workqueue mutexs.)
+> >
+> > But it is protected by the hotplug lock, which is really all you need
+> > afaict.
+> >
+> > If the worker thread gets spawned before workqueue_offline_cpu(), said
+> > function will observe it and adjust the mask, if it gets spawned after
+> > it, it must observe a 'reduced' cpu_active_mask.
+>
+> Making the workqueue set workers' cpumask correctly is easy.
+> The hard part is how to suppress the warning.
+>
+> It is true that said function will observe it and adjust the mask,
+> but the warning is already issued.
+>
+> >
+> > > >
+> > > > create_worker() for unbound pool  |  cpu offlining
+> > > > check cpu_active_mask             |
+> > > check wq_online_cpumask
+> > > >                                   |  remove bit from cpu_active_mask
+> > > >                                   |  no cpu in pool->attrs->cpumask is active
+> > > > set pool->attrs->cpumask to worker|
+> > > > and hit the warning
+> > >                                     |  remove bit from wq_online_cpumask
+> > >
+> > > Even with the help of wq_online_cpumask, the patchset can't silence
+> > > the warning in __set_cpus_allowed_ptr() in this case.  It is indeed
+> > > hard to suppress the warning for unbound pools.  Maybe we need something
+> > > like this (outmost callback of CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
+> > > so that workqueue can do preparation when offlining before AP_ACTIVE):
+> > >
+> > > diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+> > > index 0042ef362511..ac2103deb20b 100644
+> > > --- a/include/linux/cpuhotplug.h
+> > > +++ b/include/linux/cpuhotplug.h
+> > > @@ -20,6 +20,9 @@
+> > >   *               |                               ^
+> > >   *               v                               |
+> > >   *              AP_ACTIVE                      AP_ACTIVE
+> > > + *               |                               ^
+> > > + *               v                               |
+> > > + *              ONLINE                         ONLINE
+> > >   */
+> > >
+> > >  enum cpuhp_state {
+> > > @@ -194,6 +197,7 @@ enum cpuhp_state {
+> > >         CPUHP_AP_X86_HPET_ONLINE,
+> > >         CPUHP_AP_X86_KVM_CLK_ONLINE,
+> > >         CPUHP_AP_ACTIVE,
+> > > +       CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
+> > >         CPUHP_ONLINE,
+> > >  };
+> > >
+> >
+> > That's waay to late, by then userspace is long running and expecting
+> > things to 'just-work'.
+>
+> I don't like this way either, I just list three ways I can think of.
+> I prefer the way that __set_cpus_allowed_ptr() doesn't warn
+> for kworkers.
+>
+> >
+> > But afaict, things will mostly work for you when you use cpu_active_mask
+> > on cpu-down and cpu_online_mask on cpu-up.
+> >
+> > But I think I see the problem, it is spawning a new worker after
+> > workqueue_online_cpu() but before sched_cpu_activate(), right? That
+> > wants to have the wider mask set.
+> >
+> > To solve that, the spawning of workers thing needs to know where we are
+> > in the hotplug process, and it can track that using
+> > workqueue_{on,off}line_cpu(). If it happens after offline, it needs to
+> > use cpu_active_mask, if it happens after online cpu_online_mask is your
+> > guy.
+> >
+> > Does that make sense?
+>
+> There are six stages we need to know when spawning a worker:
+>
+> stageA ap_deactive stageB workqueue_offline stageC
+> stageD workqueue_online stageE ap_active stageF
+>
+> I don't think create_worker()/worker_attach_to_pool() can know where
+> it is in the hotplug process unless it uses get_online_cpus() so that
+> it knows it is not in the hotplug process.  There is no way to maintain
+> needed information since there are no workqueue callbacks in the proper
+> stages in the hotplug process.
+>
+> Again, making the workqueue set workers' cpumask correctly is easy.
+> But we can't distinguish stageA&B or stageE&F to suppress the warning
+> in __set_cpus_allowed_ptr() for new unbound workers when pool->attr->cpumask
+> has only one cpu online&!active since there is no way to keep
+> cpu_active_mask stable except get_online_cpus().
 
-Signed-off-by: Masanari Iida <standby24x7@gmail.com>
----
- Documentation/networking/snmp_counter.rst | 28 +++++++++++------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/Documentation/networking/snmp_counter.rst b/Documentation/networking/snmp_counter.rst
-index 4edd0d38779e..423d138b5ff3 100644
---- a/Documentation/networking/snmp_counter.rst
-+++ b/Documentation/networking/snmp_counter.rst
-@@ -314,7 +314,7 @@ https://lwn.net/Articles/576263/
- * TcpExtTCPOrigDataSent
- 
- This counter is explained by `kernel commit f19c29e3e391`_, I pasted the
--explaination below::
-+explanation below::
- 
-   TCPOrigDataSent: number of outgoing packets with original data (excluding
-   retransmission but including data-in-SYN). This counter is different from
-@@ -324,7 +324,7 @@ explaination below::
- * TCPSynRetrans
- 
- This counter is explained by `kernel commit f19c29e3e391`_, I pasted the
--explaination below::
-+explanation below::
- 
-   TCPSynRetrans: number of SYN and SYN/ACK retransmits to break down
-   retransmissions into SYN, fast-retransmits, timeout retransmits, etc.
-@@ -332,7 +332,7 @@ explaination below::
- * TCPFastOpenActiveFail
- 
- This counter is explained by `kernel commit f19c29e3e391`_, I pasted the
--explaination below::
-+explanation below::
- 
-   TCPFastOpenActiveFail: Fast Open attempts (SYN/data) failed because
-   the remote does not accept it or the attempts timed out.
-@@ -382,7 +382,7 @@ Defined in `RFC1213 tcpAttemptFails`_.
- 
- Defined in `RFC1213 tcpOutRsts`_. The RFC says this counter indicates
- the 'segments sent containing the RST flag', but in linux kernel, this
--couner indicates the segments kerenl tried to send. The sending
-+counter indicates the segments kernel tried to send. The sending
- process might be failed due to some errors (e.g. memory alloc failed).
- 
- .. _RFC1213 tcpOutRsts: https://tools.ietf.org/html/rfc1213#page-52
-@@ -700,7 +700,7 @@ SACK option could have up to 4 blocks, they are checked
- individually. E.g., if 3 blocks of a SACk is invalid, the
- corresponding counter would be updated 3 times. The comment of the
- `Add counters for discarded SACK blocks`_ patch has additional
--explaination:
-+explanation:
- 
- .. _Add counters for discarded SACK blocks: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=18f02545a9a16c9a89778b91a162ad16d510bb32
- 
-@@ -829,7 +829,7 @@ PAWS check fails or the received sequence number is out of window.
- 
- * TcpExtTCPACKSkippedTimeWait
- 
--Tha ACK is skipped in Time-Wait status, the reason would be either
-+The ACK is skipped in Time-Wait status, the reason would be either
- PAWS check failed or the received sequence number is out of window.
- 
- * TcpExtTCPACKSkippedChallenge
-@@ -984,7 +984,7 @@ TcpExtSyncookiesRecv counter wont be updated.
- 
- Challenge ACK
- =============
--For details of challenge ACK, please refer the explaination of
-+For details of challenge ACK, please refer the explanation of
- TcpExtTCPACKSkippedChallenge.
- 
- * TcpExtTCPChallengeACK
-@@ -1002,7 +1002,7 @@ prune
- =====
- When a socket is under memory pressure, the TCP stack will try to
- reclaim memory from the receiving queue and out of order queue. One of
--the reclaiming method is 'collapse', which means allocate a big sbk,
-+the reclaiming method is 'collapse', which means allocate a big skb,
- copy the contiguous skbs to the single big skb, and free these
- contiguous skbs.
- 
-@@ -1163,7 +1163,7 @@ The server side nstat output::
-   IpExtOutOctets                  52                 0.0
-   IpExtInNoECTPkts                1                  0.0
- 
--Input a string in nc client side again ('world' in our exmaple)::
-+Input a string in nc client side again ('world' in our example)::
- 
-   nstatuser@nstat-a:~$ nc -v nstat-b 9000
-   Connection to nstat-b 9000 port [tcp/*] succeeded!
-@@ -1211,7 +1211,7 @@ replied an ACK. But kernel handled them in different ways. When the
- TCP window scale option is not used, kernel will try to enable fast
- path immediately when the connection comes into the established state,
- but if the TCP window scale option is used, kernel will disable the
--fast path at first, and try to enable it after kerenl receives
-+fast path at first, and try to enable it after kernel receives
- packets. We could use the 'ss' command to verify whether the window
- scale option is used. e.g. run below command on either server or
- client::
-@@ -1343,7 +1343,7 @@ Check TcpExtTCPAbortOnMemory on client::
-   nstatuser@nstat-a:~$ nstat | grep -i abort
-   TcpExtTCPAbortOnMemory          54                 0.0
- 
--Check orphane socket count on client::
-+Check orphaned socket count on client::
- 
-   nstatuser@nstat-a:~$ ss -s
-   Total: 131 (kernel 0)
-@@ -1685,7 +1685,7 @@ Send 3 SYN repeatly to nstat-b::
- 
-   nstatuser@nstat-a:~$ for i in {1..3}; do sudo tcpreplay -i ens3 /tmp/syn_fixcsum.pcap; done
- 
--Check snmp cunter on nstat-b::
-+Check snmp counter on nstat-b::
- 
-   nstatuser@nstat-b:~$ nstat | grep -i skip
-   TcpExtTCPACKSkippedSynRecv      1                  0.0
-@@ -1770,7 +1770,7 @@ string 'foo' in our example::
-   Connection from nstat-a 42132 received!
-   foo
- 
--On nstat-a, the tcpdump should have caputred the ACK. We should check
-+On nstat-a, the tcpdump should have captured the ACK. We should check
- the source port numbers of the two nc clients::
- 
-   nstatuser@nstat-a:~$ ss -ta '( dport = :9000 || dport = :9001 )' | tee
-@@ -1778,7 +1778,7 @@ the source port numbers of the two nc clients::
-   ESTAB  0        0            192.168.122.250:50208       192.168.122.251:9000
-   ESTAB  0        0            192.168.122.250:42132       192.168.122.251:9001
- 
--Run tcprewrite, change port 9001 to port 9000, chagne port 42132 to
-+Run tcprewrite, change port 9001 to port 9000, change port 42132 to
- port 50208::
- 
-   nstatuser@nstat-a:~$ tcprewrite --infile /tmp/seq_pre.pcap --outfile /tmp/seq.pcap -r 9001:9000 -r 42132:50208 --fixcsum
--- 
-2.25.0
-
+when pool->attr->cpumask has multi cpus but only one cpu online&!active.
