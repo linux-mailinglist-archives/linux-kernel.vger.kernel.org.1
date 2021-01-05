@@ -2,157 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2272EB3F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E712EB3FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 21:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729462AbhAEUPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 15:15:36 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:51992 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726252AbhAEUPg (ORCPT
+        id S1729608AbhAEUQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 15:16:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbhAEUQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 15:15:36 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 105KDuiU122204;
-        Tue, 5 Jan 2021 14:13:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1609877636;
-        bh=JkE8Bp/xOwwiFkoNjtFeuE2nXoQc50zBmN0lhx/HY2A=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=YRNMAG481ZjANDHi9eAeXxtQqa8Qu9XPvphOzMRwiWlhIlpYj2xqh0Smj8469ICj7
-         VPKDr2CGDWRdzozah4TIYEl8oPx/qdjM0PUFHW+9J+xP6HdN66ksrJ1JjbyJIYz5Mq
-         9wEd3S8orA2Nw9WqdfOlZaUJHED1qPLbKRYoFemE=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 105KDusX079163
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 5 Jan 2021 14:13:56 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 5 Jan
- 2021 14:13:56 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 5 Jan 2021 14:13:56 -0600
-Received: from [10.250.36.125] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 105KDuWR029366;
-        Tue, 5 Jan 2021 14:13:56 -0600
-Subject: Re: [EXTERNAL] Re: [PATCH v8 2/2] power: supply: bq256xx: Introduce
- the BQ256XX charger driver
-To:     Sebastian Reichel <sre@kernel.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kbuild-all@lists.01.org>, <dmurphy@ti.com>
-References: <20210104202450.9669-3-r-rivera-matos@ti.com>
- <202101051158.UxB5IFs7-lkp@intel.com>
- <20210105141805.vhf7wrgcwujr7uwn@earth.universe>
-From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Message-ID: <26235205-f28a-e836-7863-bed2e9cb6f25@ti.com>
-Date:   Tue, 5 Jan 2021 14:13:55 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 5 Jan 2021 15:16:47 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A52BC061574;
+        Tue,  5 Jan 2021 12:16:07 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id u21so611270qtw.11;
+        Tue, 05 Jan 2021 12:16:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+HK9s/29ASBwdsRk66LeB+PVLzLRMTM0MqUqNfbGHfA=;
+        b=NjUIqFehwQf/ZlLfMbBBhKZ9+FcC2BojJtfi4sGTgXPD0SiT3o1ofDdGtMdHhAR8Vm
+         zUBfQkDrVaYTJaah+0zy/sSCzzhVhfitcGEdRNdM/ibc/sZkBBOQlRKBqM5Ect4QE+uh
+         Wv371jDuwQ0L1rUN6x+4JGGAbfnvchwJcZ9SyelsABhTqPoF6Xd8xkAfPqccxKnAQIm4
+         x3CUYXrMv0Fq0S4oWINxo/roKfQpx3x9yAszzhLZtrw/J+VAwiuGTLGPARWQ0S0G01aU
+         6TdPbUeK1EtNdeHnHLUcWckkoUoVytl5Hu9JmUVELeOEmCdUIZW14ZoRwEB72MdfFUm+
+         rn4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+HK9s/29ASBwdsRk66LeB+PVLzLRMTM0MqUqNfbGHfA=;
+        b=V7Yj4drA8cYhysBpXKDp8f83fwVK/1FMlncJ4cqntLC/lxWJHelwB3GYuAUks8ooM0
+         f+fKI4NoqHlp62SanptQ88009sqRSm0JFWb7NWe8jWTCuSRi2i/du5tlkBCv+jws0bP8
+         DlwXS4Huzwy/U9PqmDg+Cx/QEyGYv2hfSYb/Lei1k3D0vZB742Wuq1Zu+9Dr2VVxxtkz
+         ihbo5GO/K4FRBgbA/f0ipVmI2dD8MB3FHQ+Dkgf78yalVjI9DnNbAZ5TIVGz0RhGMZ8G
+         1nNsV5HBGRyMqG+Z4GGzkeEGI1EtkAE+hIncjQZyrvB1S1Jo5TxqdNYxEzwdpX7LXTDq
+         2LEg==
+X-Gm-Message-State: AOAM533nEeNuJ23x6rcuk3EadTFqUm/Vs+NsiRq25OZfjCjusYfxn+GF
+        v09lYOv+lj2AdIX4dSiYAH8=
+X-Google-Smtp-Source: ABdhPJxZ5R0q8axVeGrqJqrhs/4PmYUK6To1x4gtw6IbjXZt5465sXKC/ZeM1393otNKxUtCfy4YfQ==
+X-Received: by 2002:ac8:5ed5:: with SMTP id s21mr1207318qtx.114.1609877766236;
+        Tue, 05 Jan 2021 12:16:06 -0800 (PST)
+Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id y22sm186640qkj.129.2021.01.05.12.16.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 12:16:05 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>
+Subject: [PATCH] MIPS: lantiq: Explicitly compare LTQ_EBU_PCC_ISTAT against 0
+Date:   Tue,  5 Jan 2021 13:15:48 -0700
+Message-Id: <20210105201548.50920-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210105141805.vhf7wrgcwujr7uwn@earth.universe>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian,
+When building xway_defconfig with clang:
 
-On 1/5/21 8:18 AM, Sebastian Reichel wrote:
-> Hi Ricardo,
->
-> On Tue, Jan 05, 2021 at 11:24:18AM +0800, kernel test robot wrote:
->> Hi Ricardo,
->>
->> Thank you for the patch! Perhaps something to improve:
->>
->> [auto build test WARNING on power-supply/for-next]
->> [also build test WARNING on robh/for-next v5.11-rc2 next-20210104]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url:    https://github.com/0day-ci/linux/commits/Ricardo-Rivera-Matos/Introduce-the-BQ256XX-family-of-chargers/20210105-043028
->> base:   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git for-next
->> config: powerpc64-randconfig-r034-20210105 (attached as .config)
->> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 5c951623bc8965fa1e89660f2f5f4a2944e4981a)
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # install powerpc64 cross compiling tool for clang build
->>          # apt-get install binutils-powerpc64-linux-gnu
->>          # https://github.com/0day-ci/linux/commit/82436c2c6d99c4effb187bbd09b47c4dc59a1f3d
->>          git remote add linux-review https://github.com/0day-ci/linux
->>          git fetch --no-tags linux-review Ricardo-Rivera-Matos/Introduce-the-BQ256XX-family-of-chargers/20210105-043028
->>          git checkout 82436c2c6d99c4effb187bbd09b47c4dc59a1f3d
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All warnings (new ones prefixed by >>):
->>
->>     drivers/power/supply/bq256xx_charger.c:1644:29: warning: variable 'psy_cfg' is uninitialized when used here [-Wuninitialized]
->>             ret = bq256xx_parse_dt(bq, psy_cfg, dev);
->>                                        ^~~~~~~
->>     drivers/power/supply/bq256xx_charger.c:1618:37: note: initialize the variable 'psy_cfg' to silence this warning
->>             struct power_supply_config *psy_cfg;
->>                                                ^
->>                                                 = NULL
-> bah, I missed this serious issue during review :(
->
-> FWIW the compiler provided wrong solution. It would result in
-> dereferencing a NULL pointer afterwards since you never allocate
-> any memory for psy_cfg. You could of course allocate memory for
-> it, but power_supply_config is only needed during device
-> registration.
->
-> Proper solution is to initialize it as variable instead of pointer,
-> so that it ends up on the stack. Also you should initialize it with
-> {} to make sure any fields not explicitly configured are 0.
-ACK
->
->>>> drivers/power/supply/bq256xx_charger.c:1720:36: warning: unused variable 'bq256xx_acpi_match' [-Wunused-const-variable]
->>     static const struct acpi_device_id bq256xx_acpi_match[] = {
-> For this one just change
->
-> .acpi_match_table = ACPI_PTR(bq256xx_acpi_match),
->
-> into
->
-> .acpi_match_table = bq256xx_acpi_match,
-ACK
->
->>     2 warnings generated.
->>
->>
->> vim +/bq256xx_acpi_match +1720 drivers/power/supply/bq256xx_charger.c
->>
->>    1719	
->>> 1720	static const struct acpi_device_id bq256xx_acpi_match[] = {
->>    1721		{ "bq25600", BQ25600 },
->>    1722		{ "bq25600d", BQ25600D },
->>    1723		{ "bq25601", BQ25601 },
->>    1724		{ "bq25601d", BQ25601D },
->>    1725		{ "bq25611d", BQ25611D },
->>    1726		{ "bq25618", BQ25618 },
->>    1727		{ "bq25619", BQ25619 },
->>    1728		{},
->>    1729	};
->>    1730	MODULE_DEVICE_TABLE(acpi, bq256xx_acpi_match);
->>    1731	
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> Thanks,
->
-> -- Sebastian
-Thanks for the feedback on this!
+arch/mips/lantiq/irq.c:305:48: error: use of logical '&&' with constant
+operand [-Werror,-Wconstant-logical-operand]
+        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
+                                                      ^ ~~~~~~~~~~~~~~~~~
+arch/mips/lantiq/irq.c:305:48: note: use '&' for a bitwise operation
+        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
+                                                      ^~
+                                                      &
+arch/mips/lantiq/irq.c:305:48: note: remove constant to silence this
+warning
+        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
+                                                     ~^~~~~~~~~~~~~~~~~~~~
+1 error generated.
 
-Ricardo
+Explicitly compare the constant LTQ_EBU_PCC_ISTAT against 0 to fix the
+warning. Additionally, remove the unnecessary parentheses as this is a
+simple conditional statement and shorthand '== 0' to '!'.
+
+Fixes: 3645da0276ae ("OF: MIPS: lantiq: implement irq_domain support")
+Link: https://github.com/ClangBuiltLinux/linux/issues/807
+Reported-by: Dmitry Golovin <dima@golovin.in>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ arch/mips/lantiq/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
+index df8eed3875f6..43c2f271e6ab 100644
+--- a/arch/mips/lantiq/irq.c
++++ b/arch/mips/lantiq/irq.c
+@@ -302,7 +302,7 @@ static void ltq_hw_irq_handler(struct irq_desc *desc)
+ 	generic_handle_irq(irq_linear_revmap(ltq_domain, hwirq));
+ 
+ 	/* if this is a EBU irq, we need to ack it or get a deadlock */
+-	if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
++	if (irq == LTQ_ICU_EBU_IRQ && !module && LTQ_EBU_PCC_ISTAT != 0)
+ 		ltq_ebu_w32(ltq_ebu_r32(LTQ_EBU_PCC_ISTAT) | 0x10,
+ 			LTQ_EBU_PCC_ISTAT);
+ }
+
+base-commit: 36bbbd0e234d817938bdc52121a0f5473b3e58f5
+-- 
+2.30.0
+
