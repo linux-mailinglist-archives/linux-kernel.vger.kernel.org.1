@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8135F2EA690
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D38FA2EA693
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbhAEIYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 03:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbhAEIYg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 03:24:36 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE93C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 00:23:56 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id 75so27801533ilv.13
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 00:23:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7AFVO2vMpVZ5jq5qo8aLfV1mcP+kckr+/XzUO/WHcrg=;
-        b=SkSDqb1kmN0HYKhVyF6HSBrE0pdbv5FkcHfyeMGTs6MLLg3c/TUJUkbuOSl92knX/f
-         U2xPij1iarMMrVKWQHMVExY0Hw4tSZLrPFY2XmdV/HgzNif2DSKUssjPUAHSyaV5iFNz
-         94OkQgDSDd0zice/1TNmuUOBv9nghVI0jOaHAdQhN5PvnDEofmMqjKUGPsrOKeLpJAyk
-         YkYbpLxkcWDyZc94FmvUrRXHvATuSerCMDgVOLDX9s/Te8v+d7gBDcvp3HdfPqkDIoeW
-         vhw7njsbvILm3lG/o1OMJPqWZoz9HdQHXQtl9yhqTWQ/Of+RihUo6fiPU6nRh2XN7CJo
-         ZJmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7AFVO2vMpVZ5jq5qo8aLfV1mcP+kckr+/XzUO/WHcrg=;
-        b=Iss12Lb0+LQHGMn5iMGhR4+GPb7iAkgAx/Oe2/VEfQ5uH5JeIadT3SbyN3IhJE0Y73
-         a1GOMI+dhSuP0PeiZPQ007tq3ueHDC8Lgj3Bjy66AyROrGa7Y+ZnpBnhBL4iGoQPz0rb
-         czLr8oHYl+XbcMZ0Ev9SZfdcGyTNHTiXSVjpGGLzocoNjDCfkuqm/4+pbkAN7uQMTNZd
-         fRYBE3ecGvl8fDH7UTt5igWHXUIZEsppH91xTQfb9w/0kSc4UH3qenPLdz9w2R6QsDrQ
-         7SntKIg+fLMn7qdP2hXA+B/Cem9oqis/EK0orN5T0+Dfcqc/RwGJ3Sn3AS/PhtHq1EEF
-         W6JA==
-X-Gm-Message-State: AOAM531OLJUEg4oUFyBYCSREzttDt76wGxob+XdLIpWsh5xF1quz89eg
-        fw6YUaO55jWc7HVuGUfEH2kCnU1+Dgs9H8wuo9c=
-X-Google-Smtp-Source: ABdhPJwOKN7OVz4thrN7WHmcmCQJ13ZwXS9E4wM0hRNogWES/6ZtFWrSYMPQPP9NGQmxG6CfkTCjBcAr9ls2y/e2XGc=
-X-Received: by 2002:a92:dcc4:: with SMTP id b4mr73989237ilr.164.1609835035596;
- Tue, 05 Jan 2021 00:23:55 -0800 (PST)
+        id S1727471AbhAEIYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 03:24:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725766AbhAEIYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 03:24:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 296DF22257;
+        Tue,  5 Jan 2021 08:24:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609835052;
+        bh=deo8XaMfgbGmmhIV9cJBRWOZv+tbhfFZQyP36FphooY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j6YWQpFOYWm8WD30VXbBNK4tnO6776SRQtl4XHWsjEGJwbRKJ0dGc3jsddNiWjwmD
+         UJz3s0IGYF3QhgGjIWCQHCP8GR0YKeCRFhONE1PUdCrwwPRfTT0L6D5W4jC8ZWFqb6
+         SSfrfn/R5+thvYLUkWB4WW/I11QgpjmcYGWC73PpDfL9dklmJJdRXtUS4n6tIbyPUd
+         oMMfdIM9bxKiu7oq6I5LXzVkyeQBAiHb7KK0v/njrHlxA15FeArvr5XQeCbdAvionA
+         ELSTXSKcvg3KuOaQx3Xw9e9hJECW39rL1SrIohHAXyM5ChKdro4YmipwsgRzK5t8tz
+         /l+npEFq9PQDg==
+Date:   Tue, 5 Jan 2021 10:24:03 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Qian Cai <qcai@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] mm: fix initialization of struct page for holes
+ in memory layout
+Message-ID: <20210105082403.GA1106298@kernel.org>
+References: <20201209214304.6812-1-rppt@kernel.org>
+ <20201209214304.6812-3-rppt@kernel.org>
+ <768cb57d6ef0989293b3f9fbe0af8e8851723ea1.camel@redhat.com>
 MIME-Version: 1.0
-References: <20201226025117.2770-1-jiangshanlai@gmail.com> <20201226025117.2770-4-jiangshanlai@gmail.com>
- <20210104135649.GO3021@hirez.programming.kicks-ass.net> <CAJhGHyB_MUHG8GGANcN9sQbjY7M5m8WPHQgXp-PmkGK481M5Tg@mail.gmail.com>
-In-Reply-To: <CAJhGHyB_MUHG8GGANcN9sQbjY7M5m8WPHQgXp-PmkGK481M5Tg@mail.gmail.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Tue, 5 Jan 2021 16:23:44 +0800
-Message-ID: <CAJhGHyCwyuzikMZAxub=rxn9oe-N2P5C8CEOmyigd9d55SV5YA@mail.gmail.com>
-Subject: Re: [PATCH -tip V3 3/8] workqueue: introduce wq_online_cpumask
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <768cb57d6ef0989293b3f9fbe0af8e8851723ea1.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 10:41 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
->
-> On Mon, Jan 4, 2021 at 9:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Sat, Dec 26, 2020 at 10:51:11AM +0800, Lai Jiangshan wrote:
-> > > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> > >
-> > > wq_online_cpumask is the cached result of cpu_online_mask with the
-> > > going-down cpu cleared.
-> >
-> > You can't use cpu_active_mask ?
->
->
-> When a cpu is going out:
-> (cpu_active_mask is not protected by workqueue mutexs.)
->
-> create_worker() for unbound pool  |  cpu offlining
-> check cpu_active_mask             |
-check wq_online_cpumask
->                                   |  remove bit from cpu_active_mask
->                                   |  no cpu in pool->attrs->cpumask is active
-> set pool->attrs->cpumask to worker|
-> and hit the warning
-                                    |  remove bit from wq_online_cpumask
+Hi,
 
-Even with the help of wq_online_cpumask, the patchset can't silence
-the warning in __set_cpus_allowed_ptr() in this case.  It is indeed
-hard to suppress the warning for unbound pools.  Maybe we need something
-like this (outmost callback of CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
-so that workqueue can do preparation when offlining before AP_ACTIVE):
+On Mon, Jan 04, 2021 at 02:03:00PM -0500, Qian Cai wrote:
+> On Wed, 2020-12-09 at 23:43 +0200, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Interleave initialization of pages that correspond to holes with the
+> > initialization of memory map, so that zone and node information will be
+> > properly set on such pages.
+> > 
+> > Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
+> > that check each PFN")
+> > Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Reverting this commit on the top of today's linux-next fixed a crash while
+> reading /proc/kpagecount on a NUMA server.
 
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index 0042ef362511..ac2103deb20b 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -20,6 +20,9 @@
-  *               |                               ^
-  *               v                               |
-  *              AP_ACTIVE                      AP_ACTIVE
-+ *               |                               ^
-+ *               v                               |
-+ *              ONLINE                         ONLINE
-  */
+Can you please post the entire dmesg?
+Is it possible to get the pfn that triggered the crash?
+ 
+> [ 8858.006726][T99897] BUG: unable to handle page fault for address: fffffffffffffffe
+> [ 8858.014814][T99897] #PF: supervisor read access in kernel mode
+> [ 8858.020686][T99897] #PF: error_code(0x0000) - not-present page
+> [ 8858.026557][T99897] PGD 1371417067 P4D 1371417067 PUD 1371419067 PMD 0 
+> [ 8858.033224][T99897] Oops: 0000 [#1] SMP KASAN NOPTI
+> [ 8858.038710][T99897] CPU: 28 PID: 99897 Comm: proc01 Tainted: G           O      5.11.0-rc1-next-20210104 #1
+> [ 8858.048515][T99897] Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 03/09/2018
+> [ 8858.057794][T99897] RIP: 0010:kpagecount_read+0x1be/0x5e0
+> PageSlab at include/linux/page-flags.h:342
+> (inlined by) kpagecount_read at fs/proc/page.c:69
 
- enum cpuhp_state {
-@@ -194,6 +197,7 @@ enum cpuhp_state {
-        CPUHP_AP_X86_HPET_ONLINE,
-        CPUHP_AP_X86_KVM_CLK_ONLINE,
-        CPUHP_AP_ACTIVE,
-+       CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
-        CPUHP_ONLINE,
- };
-
-
-The other way is to modify __set_cpus_allowed_ptr() to suppress the
-warning for kworkers and believe/let the workqueue handle cpumask correctly.
-
-And the third way is to use get_online_cpus() in worker_attach_to_pool()
-which might delay work items to be processed during cpuhotplug and might
-be dangerous when someone call flush_work() in cpuhotplug callbacks.
-
-Any thoughts?
-
-Thanks,
-Lai
-
->
->
-> And when a cpu is onlining, there may be some workers which were just created
-> after the workqueue hotplug callback is finished but before cpu_active_mask
-> was updated. workqueue has not call back after cpu_active_mask updated and
-> these workers' cpumask is not updated.
->
-> For percpu workers, these problems can be handled with the help of
-> POOL_DISASSOCIATED which is protected by workqueue mutexs and the
-> help of sched/core.c which doesn't warn when per-cpu-kthread.
->
-> For unbound workers, the way to handle it without using wq_online_cpumask
-> is much more complex when a cpu is going out.
+-- 
+Sincerely yours,
+Mike.
