@@ -2,192 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8431C2EB13A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B412EB13E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730421AbhAERTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:19:30 -0500
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:33098 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729242AbhAERT3 (ORCPT
+        id S1730506AbhAERUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726132AbhAERUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:19:29 -0500
-Received: by mail-oi1-f176.google.com with SMTP id d203so350061oia.0;
-        Tue, 05 Jan 2021 09:19:13 -0800 (PST)
+        Tue, 5 Jan 2021 12:20:51 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665FEC061795
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 09:20:11 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id f14so12335pju.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 09:20:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1pPTiUUmwCILGPwhqjMlwzdtjWGk5FIG2OkWDCPGKCI=;
+        b=St40kywpxzGWUQJd/PTqmSp7Jly2sPjPC7KB2YdngnWIp+3e+N0nbh2JSmwihXWJCR
+         mUUSEIaD5/Sjrp0JY0tqAbfaEBzr7JfQzxJFtQ3njvG6I8mV2BoW7Co2RIzbgA7CzlxQ
+         rIsaSONJQQTKM0qbal8BS+leW3BfFGo0FrYU5DnlXlOXDXE7IcC2eOELl16KFSSR0mfF
+         fo6VkDbLSTUl9X6jh5OBzSspXl+2SCBX2HADmvsYAizYZ5boi3ThNvZjypkPl+lxdekC
+         tM8d4NUFKIvYicaYOIxBDVVym8Px2ENHemIRqsbXkQJeeP5WZ8t/t11IF1oiECO8rgtn
+         SNaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w6rJskTc4hEuFh9sBz5GYGc9LX37ZTG1VymDOHA5oC0=;
-        b=l7vHBKjXB0oCWlck/jjxi1DHyejdBSriTWQQJgkBgCrzISw1wz/9Q6hDzqWvBmc1fW
-         hH7lXSEicSvh0VMSBwXjUqZ4T50tIMSjwlcDH0ODOr+lGOOeQx6UJJP9tdSb1/73hCrr
-         G2bSqOIB9MlUAiK7ZzXaKAaPyfOPdpM83UrrBJjJqYbO9cuL22dOGYrV2fLssVPMsEL7
-         eIq9vkc60skqxDTUuYjUHtruWNezb+i46Ko+WCFx7K9OfYJZ8nIwIZX/qeD5/yJBMgro
-         h8Msn4dzIxD50R9yhR11/SVdBaJHHwaEmIr4vjg4z3iMStU5HsZkQOaMD5WFQUXM1Saq
-         twsw==
-X-Gm-Message-State: AOAM533MbVrkunFZ4ps0CWbbG1n6gXKUjWrhCaVQauRaSQLB4lv3XTIc
-        P5p0uizig+6YDpBIyNmrjoU5slIux6RUPaHGPRM=
-X-Google-Smtp-Source: ABdhPJyeLw9qLKGDfXEat5y3Fu4ARdx1irTIcueXHn8PgQMkxdz03DWfT4YQb+KCnNSWSo2WsrQfBTIdi8X1XnO7U8A=
-X-Received: by 2002:aca:d6c8:: with SMTP id n191mr389256oig.69.1609867127808;
- Tue, 05 Jan 2021 09:18:47 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1pPTiUUmwCILGPwhqjMlwzdtjWGk5FIG2OkWDCPGKCI=;
+        b=bTO4ppBwc59pkEsJBagKzfxnTZF9GeaDWwlAp+SxCSP9o2gWLhBNmDe31SRs6znmVR
+         XD6wxaqMk3X8BhUezwgaPY5Zjkb9FBV2wsPP2vB/LNSXstKyVY89HgGuGwJuVnu8OoPI
+         YI+HGYaHrx34b+iVzJ7foxDQ0Qi0juHJsIlhjgNyly+LrhOMS8nu6hyy1RxdPfVii2he
+         3tcPJrBZm6035ZsB3COZbvBuJvUcsHxxYOGv3h+X3fRlgDvV+Alqzu2cwARyomNF8kh1
+         +7/FVWG31i+Oz8k1n4HHH59U1fW9YeD85LxQca413GTBmlhhAWQNmLc18tfDP6TpggjW
+         GZyw==
+X-Gm-Message-State: AOAM533oybhES2mSnOt5MMBAvwk4hpOivmevIUdBQ5j8I6at3QP385vi
+        5Jga19Tltpg2dIbYJvbrUba7nw==
+X-Google-Smtp-Source: ABdhPJw6GzCJksECMVDlqVq/QteStNuKR9J7lDD7rWOeSSJOM7ScY+4Nt3tgCDF+gJbIo/kAKlaOLw==
+X-Received: by 2002:a17:902:d916:b029:da:3e9e:cd7c with SMTP id c22-20020a170902d916b02900da3e9ecd7cmr330723plz.27.1609867210796;
+        Tue, 05 Jan 2021 09:20:10 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 14sm7319pfy.55.2021.01.05.09.20.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 09:20:10 -0800 (PST)
+Date:   Tue, 5 Jan 2021 09:20:03 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v3 1/3] KVM: SVM: use vmsave/vmload for saving/restoring
+ additional host state
+Message-ID: <X/Sfw15OWarseivB@google.com>
+References: <20210105143749.557054-1-michael.roth@amd.com>
+ <20210105143749.557054-2-michael.roth@amd.com>
 MIME-Version: 1.0
-References: <20210101125629.20974-1-jiaxun.yang@flygoat.com>
- <35ac853a-266c-6944-6e5e-6286456865e3@redhat.com> <CAJZ5v0jcCD3qWUJQcS+nFVJWSCQEbq2eN3i07mN8yFr3WZD9dg@mail.gmail.com>
- <6a29f338-d9e4-150c-81dd-2ffb54f5bc35@redhat.com>
-In-Reply-To: <6a29f338-d9e4-150c-81dd-2ffb54f5bc35@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Jan 2021 18:18:35 +0100
-Message-ID: <CAJZ5v0je41iXQnr3m-RY9fD_C-qnqbLdqYMvUzp0qgBwEvVoJA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] IdeaPad platform profile support
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105143749.557054-2-michael.roth@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 9:58 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 1/4/21 9:33 PM, Rafael J. Wysocki wrote:
-> > On Mon, Jan 4, 2021 at 3:36 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >> On 1/1/21 1:56 PM, Jiaxun Yang wrote:
-> >>> Tested on Lenovo Yoga-14SARE Chinese Edition.
-> >>>
-> >>> Jiaxun Yang (2):
-> >>>   ACPI: platform-profile: Introduce data parameter to handler
-> >>>   platform/x86: ideapad-laptop: DYTC Platform profile support
-> >>>
-> >>>  drivers/acpi/platform_profile.c       |   4 +-
-> >>>  drivers/platform/x86/Kconfig          |   1 +
-> >>>  drivers/platform/x86/ideapad-laptop.c | 281 ++++++++++++++++++++++++++
-> >>>  include/linux/platform_profile.h      |   5 +-
-> >>>  4 files changed, 287 insertions(+), 4 deletions(-)
-> >>
-> >>
-> >> Thank you for your series, unfortunately the
-> >> "ACPI: platform-profile: Introduce data parameter to handler"
-> >> patch causes a conflict with the pending:
-> >> "[PATCH v8 3/3] platform/x86: thinkpad_acpi: Add platform profile support"
-> >> patch.
-> >>
-> >> But I do agree that adding that data parameter makes sense, so
-> >> it might be best to merge:
-> >>
-> >> "ACPI: platform-profile: Introduce data parameter to handler"
-> >>
-> >> First and then rebase the thinkpad_acpi patch on top.
-> >>
-> >> Rafael, do you think you could add:
-> >>
-> >> "ACPI: platform-profile: Introduce data parameter to handler"
-> >>
-> >> To the 2 ACPI: platform-profile patches which you already have pending for 5.11-rc# ?
-> >
-> > I'm not sure why that patch is needed at all, because whoever
-> > registers a platform profile handler needs to have access to the
-> > original handler object anyway.
->
-> True, I was actually thinking that instead of the data argument, we might
-> pass a pointer to the original handler object like this:
->
-> @@ -64,7 +64,7 @@ static ssize_t platform_profile_show(struct device *dev,
->                 return -ENODEV;
->         }
->
-> -       err = cur_profile->profile_get(&profile);
-> +       err = cur_profile->profile_get(cur_profile, &profile);
->         mutex_unlock(&profile_lock);
->         if (err)
->                 return err;
+On Tue, Jan 05, 2021, Michael Roth wrote:
+> @@ -3703,16 +3688,9 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+>  	if (sev_es_guest(svm->vcpu.kvm)) {
+>  		__svm_sev_es_vcpu_run(svm->vmcb_pa);
+>  	} else {
+> -		__svm_vcpu_run(svm->vmcb_pa, (unsigned long *)&svm->vcpu.arch.regs);
+> -
+> -#ifdef CONFIG_X86_64
+> -		native_wrmsrl(MSR_GS_BASE, svm->host.gs_base);
+> -#else
+> -		loadsegment(fs, svm->host.fs);
+> -#ifndef CONFIG_X86_32_LAZY_GS
+> -		loadsegment(gs, svm->host.gs);
+> -#endif
+> -#endif
+> +		__svm_vcpu_run(svm->vmcb_pa, (unsigned long *)&svm->vcpu.arch.regs,
+> +			       page_to_phys(per_cpu(svm_data,
+> +						    vcpu->cpu)->save_area));
 
-I would prefer this approach.
+Does this need to use __sme_page_pa()?
 
->
-> And then the driver which has registered the cur_profile, can get to
-> its own data by using container of on the cur_profile pointer.
->
-> With the code currently in your bleeding-edge branch, there is no way
-> for any driver-code to get to its own (possibly/likely dynamically
-> allocated) driver-data struct.
->
-> E.g. a typical driver using only dynamic data tied to device_get_drvdata,
-> might have this:
->
-> struct driver_data {
->         ...
->         struct platform_profile_handler profile_handler;
->         ...
-> };
->
-> int probe(...) {
->         struct driver_data *my_data;
->
->         my_data = devm_kzalloc(dev, sizeof(*my_data), GFP_KERNEL);
->
->         ...
->
->         ret = platform_profile_register(&my_data->profile_handler);
->         ...
-> }
->
-> And with the change which I suggest above would then be able to
-> get the struct driver_data *my_data back from the profile_get callback by
-> using container_of on the struct platform_profile_handler *profile_handler
-> argument added to the profile_get callback.
+>  	}
+>  
+>  	/*
 
-OK, fair enough.
+...
 
-> I know that the platform_profile stuff is intended to only have a
-> single provider, so this could use global variables, but some
-> drivers which may be a provider use 0 global variables (other then
-> module_params) atm and it would be a lot cleaner from the pov
-> of the design of these drivers to be able to do something like the
-> pseudo code above. Which is why I added my Reviewed-by to patch 1/2
-> of the series from this thread.
->
-> Patch 1/2 does use a slightly different approach then I suggest above,
-> thinking more about this it would be cleaner IMHO to just pass the
-> cur_profile pointer to the callbacks as the pseudo-code patch which I
-> wrote above does. Drivers which use globals can then just ignore
-> the extra argument (and keep the platform_profile_handler struct const)
-> where as drivers which use dynamic allocation can embed the struct in
-> their driver's data-struct.
+> diff --git a/arch/x86/kvm/svm/vmenter.S b/arch/x86/kvm/svm/vmenter.S
+> index 6feb8c08f45a..89f4e8e7bf0e 100644
+> --- a/arch/x86/kvm/svm/vmenter.S
+> +++ b/arch/x86/kvm/svm/vmenter.S
+> @@ -33,6 +33,7 @@
+>   * __svm_vcpu_run - Run a vCPU via a transition to SVM guest mode
+>   * @vmcb_pa:	unsigned long
+>   * @regs:	unsigned long * (to guest registers)
+> + * @hostsa_pa:	unsigned long
+>   */
+>  SYM_FUNC_START(__svm_vcpu_run)
+>  	push %_ASM_BP
+> @@ -47,6 +48,9 @@ SYM_FUNC_START(__svm_vcpu_run)
+>  #endif
+>  	push %_ASM_BX
+>  
+> +	/* Save @hostsa_pa */
+> +	push %_ASM_ARG3
+> +
+>  	/* Save @regs. */
+>  	push %_ASM_ARG2
+>  
+> @@ -154,6 +158,12 @@ SYM_FUNC_START(__svm_vcpu_run)
+>  	xor %r15d, %r15d
+>  #endif
+>  
+> +	/* "POP" @hostsa_pa to RAX. */
+> +	pop %_ASM_AX
+> +
+> +	/* Restore host user state and FS/GS base */
+> +	vmload %_ASM_AX
 
-Agreed.
+This VMLOAD needs the "handle fault on reboot" goo.  Seeing the code, I think
+I'd prefer to handle this in C code, especially if Paolo takes the svm_ops.h
+patch[*].  Actually, I think with that patch it'd make sense to move the
+existing VMSAVE+VMLOAD for the guest into svm.c, too.  And completely unrelated,
+the fault handling in svm/vmenter.S can be cleaned up a smidge to eliminate the
+JMPs.
 
-> > Also, on a somewhat related note, I'm afraid that it may not be a good
-> > idea to push this series for 5.11-rc in the face of recent objections
-> > against new material going in after the merge window.
->
-> That is fine with me, since this did not make rc1 (nor rc2) I'm not entirely
-> comfortable with sending out a late pull-req for the pdx86 side of this
-> either, so lets postpone this to 5.12 (sorry Mark).
->
-> Rafael, once we have the discussion with the passing a pointer back to
-> the drivers data thing resolved (and a patch merged for that if we go
-> that route) can you provide me with an immutable branch to merge into
-> pdx86/for-next so that I can then merge the pdx86 bits on top ?
+Paolo, what do you think about me folding these patches into my series to do the
+above cleanups?  And maybe sending a pull request for the end result?  (I'd also
+like to add on a patch to use the user return MSR mechanism for MSR_TSC_AUX).
 
-Sure, no problem.
+[*] https://lkml.kernel.org/r/20201231002702.2223707-8-seanjc@google.com
 
-> Note this does not need to be done right now around say rc4 would be fine,
-> so that we have some time for the patches currently in bleeding-edge to
-> settle a bit.
-
-OK
-
-Cheers!
+> +
+>  	pop %_ASM_BX
+>  
+>  #ifdef CONFIG_X86_64
+> -- 
+> 2.25.1
+> 
