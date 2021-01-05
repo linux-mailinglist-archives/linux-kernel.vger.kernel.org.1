@@ -2,108 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AE02EB12A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4C32EB12B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730405AbhAERPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729278AbhAERPF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:15:05 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED857C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 09:14:24 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id i24so1293490edj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 09:14:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x+304jrLdAurAmJH5NqHDACRNonQepT8iVWzqqXWcJc=;
-        b=Xj6/eR9CvYPYbUrKWvQ8JDsfo+OG5VqNCb3TwIdnvnN9ufJzbYW1DQuM7TsK42+6wU
-         q6BgmCCUZKHwPHxiClDijJkO3L5Pve9zzH3t1tHJXZWZlfyicKrzNxY1y9bV15qdWfeN
-         pOsY7esyazalszVXu8funaSICWEGLnvZxMAKZm9LJmP6JZs3QS2bNoNPR7FEny/Qz8y/
-         g8sxQQl6FhxoPgEV29Vg9PKYbT+VeBqiLPSqfK+Qo/nJ5u0gYgTlcdixsSY7c0MNbooh
-         7BDZ/u/AZELOhjJFf445H+hVE8s9OrRWob/IKA41AiK72OhyY/b4utuBpig6AQgLPefj
-         do2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x+304jrLdAurAmJH5NqHDACRNonQepT8iVWzqqXWcJc=;
-        b=es6Q10my6aCA2LixbFxEo+oAPBG1Whj5G/O4hwc5uheda614rsk8XYE3b0oU/yjFoo
-         NVIY7xxDCynu6DO3XMek+Z/ioL/eQSr13VPUt3qzGziZyCbrJaxs9P75sNIjwxxizGWa
-         +lEqj0ujDfERP16VMXh2s+CNLVrhy3iFCdi3/i+S3Mr1izI9dSVn7KhuKL5HNEQJwvc0
-         wracEG3R2H3RzVur2Aplut6RRkZS+oTFGV+GX0KyYwp1qKINFe753pTHw/ATvNfAetQ/
-         XupUavIPlOz1SzNJWK/GQDIwEUTw2zk5SczHAmfh7nvVXuYmjHq0nd9dB1LYW851kaYa
-         QHCw==
-X-Gm-Message-State: AOAM531RoJwEXXzB6dkCirCDAKZfH4gQ2DjhKU8+YEVL5ISv6TBRouiw
-        CpHBYjsButdzGVEg0gm1iS6bbPsqGXLfLJWmlQ4=
-X-Google-Smtp-Source: ABdhPJyZ0yJFQ+aCP6nEoSqqYgjLKcz/grwxVjrn9wNYJdtq4qsQ6W5Uw5RgFtiwGIWKfOLkjzAGHY8cTfAStuMapDc=
-X-Received: by 2002:aa7:c3d3:: with SMTP id l19mr792831edr.366.1609866863724;
- Tue, 05 Jan 2021 09:14:23 -0800 (PST)
+        id S1730431AbhAERPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:15:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725838AbhAERPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 12:15:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1237E22CBE;
+        Tue,  5 Jan 2021 17:14:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609866891;
+        bh=ZBm+Do+2kpIYllhXGeLT1fi8UQ0K47P8KRqerz8BmBc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=WGOaQyq6Gxu8cF+0m1fEt4Zq/BlRhG/B6xkErjztRNnP2Nae/r9fPIA3jWymFm1P0
+         d0A6UpJ+1LF7fJxDWvXDfHVz6FP1mpe20RqgpOCvF3BVOVLqc6LG0c9P+Lw9dFGxld
+         GLddJQIpGAJrQfLoqtTEdJbT65HFYmOogzX4IrFtmPtYow5XjiqHA5fu+0v+wNZHmt
+         5PjB7JUR4AXf3254LiS0SBSABhUD4Q4ZvaZWA56Q0+PW/HK1/JVp+jvHVRUehy6gIj
+         9oYs7Atp7/dCJCNf8QRn2nVL/eRZeANfffKJNZbp+/p23WYE4V7KBCV/H/6CuP4tIw
+         bMg/harw4paFw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C76BD3521C49; Tue,  5 Jan 2021 09:14:50 -0800 (PST)
+Date:   Tue, 5 Jan 2021 09:14:50 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix dynticks_nmi_nesting underflow check in
+ rcu_is_cpu_rrupt_from_idle
+Message-ID: <20210105171450.GF17086@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1608712777-1769-1-git-send-email-neeraju@codeaurora.org>
+ <20201223151231.GC2657@paulmck-ThinkPad-P72>
+ <20210105134232.GI3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <456a021c7ef3636d7668cec9dcb4a446a4244812.1609855564.git.jstancek@redhat.com>
-In-Reply-To: <456a021c7ef3636d7668cec9dcb4a446a4244812.1609855564.git.jstancek@redhat.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 5 Jan 2021 09:14:11 -0800
-Message-ID: <CAHbLzkoN3bdnHa-xOmGWQhN+dw7AQtbwygsH=VS5or=QoBk0Jg@mail.gmail.com>
-Subject: Re: [PATCH] mm: migrate: initialize err in do_migrate_pages
-To:     Jan Stancek <jstancek@redhat.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Zi Yan <ziy@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105134232.GI3040@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 6:14 AM Jan Stancek <jstancek@redhat.com> wrote:
->
-> After commit 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")',
-> do_migrate_pages can return uninitialized variable 'err' (which is
-> propagated to user-space as error) when 'from' and 'to' nodesets
-> are identical. This can be reproduced with LTP migrate_pages01,
-> which calls migrate_pages() with same set for both old/new_nodes.
->
-> Add 'err' initialization back.
+On Tue, Jan 05, 2021 at 02:42:32PM +0100, Peter Zijlstra wrote:
+> On Wed, Dec 23, 2020 at 07:12:31AM -0800, Paul E. McKenney wrote:
+> > On Wed, Dec 23, 2020 at 02:09:37PM +0530, Neeraj Upadhyay wrote:
+> > > For the smp_call_function() optimization, where callbacks can run from
+> > > idle context, in commit 806f04e9fd2c ("rcu: Allow for smp_call_function()
+> > > running callbacks from idle"), an additional check is added in
+> > > rcu_is_cpu_rrupt_from_idle(), for dynticks_nmi_nesting value being 0,
+> > > for these smp_call_function() callbacks running from idle loop.
+> > > However, this commit missed updating a preexisting underflow check
+> > > of dynticks_nmi_nesting, which checks for a non zero positive value.
+> > > Fix this warning and while at it, read the counter only once.
+> > > 
+> > > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > > ---
+> > > 
+> > > Hi,
+> > > 
+> > > I was not able to get this warning, with scftorture.
+> > > 
+> > >   RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
+> > >     "RCU dynticks_nmi_nesting counter underflow/zero!");
+> > > 
+> > > Not sure if idle loop smp_call_function() optimization is already present
+> > > in mainline?
+> > 
+> > Now that you mention it, I don't see it.
+> 
+> kernel/sched/idle.c:do_idle() calls flush_smp_call_function_from_idle().
+> 
+> (nothing x86 specific about it)
 
-Thanks for catching this. Acked-by: Yang Shi <shy828301@gmail.com>
+Got it, thank you!
 
->
-> Fixes: 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")
-> Cc: Zi Yan <ziy@nvidia.com>
-> Cc: Yang Shi <shy828301@gmail.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  mm/mempolicy.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 8cf96bd21341..2c3a86502053 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -1111,7 +1111,7 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
->                      const nodemask_t *to, int flags)
->  {
->         int busy = 0;
-> -       int err;
-> +       int err = 0;
->         nodemask_t tmp;
->
->         migrate_prep();
-> --
-> 2.18.1
->
+The reason Neeraj was unable to trigger the problematic warning from
+scftorture is that its smp_call_function() handlers do not invoke
+rcu_is_cpu_rrupt_from_idle().  Without adding this to those handlers
+(which would be a good change to make), the only way to trigger this is
+for an expedited RCU grace period to IPI a CPU that goes idle while the
+IPI is in flight, which is not the easiest thing to make happen.
+
+> > > Another thing, which I am not sure of is, maybe lockdep gets disabled
+> > > in the idle loop contexts, where rcu_is_cpu_rrupt_from_idle() is called?
+> > > Was this the original intention, to keep the lockdep based
+> > > RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0
+> > > check separate from idle task context nesting value
+> > > WARN_ON_ONCE(!nesting && !is_idle_task(current)) check?
+> > 
+> > An easy way to test lockdep is to create a pair of locks, acquire them
+> > in one order then release them both, and finally acquire them in the
+> > other order and then release them both.  If lockdep is configured and
+> > enabled, it will complain.
+> 
+> IIRC (and this is after not staring at the computer for 2 weeks) lockdep
+> should work just fine in idle, except of course that RCU will be stopped
+> so actually taking locks will scream bloody murder due to tracing etc..
+
+Fair enough...
+
+And I hope that the time off went well for you and yours!
+
+> > The only reason I used RCU_LOCKDEP_WARN() was that people were complaining
+> > to me about idle-entry overhead back at that time.  So without lockdep,
+> > there is zero overhead.  Maybe people have become more tolerant of idle
+> > delays, or perhaps they are not so worried about an extra check of a
+> > cache-hot quantity.
+> 
+> Not having checks also saves on $I and branches, in general I think
+> having checks depend on DEBUG features, esp. those we don't really
+> expect to trigger is still sane.
+
+OK, so should we convert the WARN_ON_ONCE() to RCU_LOCKDEP_WARN() while
+we are in the area?
+
+> > I am tempted to pull this in as is, given the current logical
+> > inconsistency in the checks.  Thoughts?
+> 
+> Patch looks ok, although I've seen compilers do CSE on
+> __this_cpu_read() (on x86).
+
+True, but the compilers might might have a harder time of this on other
+architectures.
+
+							Thanx, Paul
