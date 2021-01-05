@@ -2,276 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F4F2EA7F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56A72EA805
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbhAEJsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:48:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728697AbhAEJsl (ORCPT
+        id S1728820AbhAEJt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:49:57 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:29012 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728340AbhAEJtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:48:41 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A708CC061388
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 01:47:42 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id x12so16070678plr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 01:47:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HMhTJmm/aJAOoL9aJNkUA9BuiVKtKAPPcxXpVi5YN0I=;
-        b=Kd2FykxbC/3bScfgxQBMd485VKlyITJL9N76ml9I7ykeuwGse5CuNEIvB2xfb7XJ1p
-         /jX2vfpErR92agoDxrS6OP6u50zDpMVSW59jUWM6GxzvNdLkyGmDhGQ+9vLJMoU/GPXE
-         mzlNnpnfy6ce67U3tsRoOT57LOZ/ZMxJ3VopP/JdR7boZjdcDGXs3rYkAXBZF6JxbyxF
-         g9euX6kuuRfHYw3SScUipfjtVltpwAr2zCz4YkM1/Q7ddLbQ7JYcj/h5ydsGA/vC29na
-         VV8pLG5l1IIM0AY3QhdokoR19Q1NbbonZuitQ63V8rG1Zolgd4NYgeLtQ2iObHaMTvpb
-         7ADg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HMhTJmm/aJAOoL9aJNkUA9BuiVKtKAPPcxXpVi5YN0I=;
-        b=WlPf819bnpmSYHJ+gUgX036oaYNstzvwcOEwWXfwLje5d1TB29CcoGc6ePnBxYSjKD
-         7EMzQJJjq5UNl+RFfMKhBkgrcHk58YFvTqsqi0IMuBIkKkKQ2mAELwKyEZX/+PNLEDMb
-         4CRH84j4GpQIeNERyHentaYQvsrAq3ACAHKST7jq5MkmTJO10vkv6g9G4udTzQDcCt1r
-         Cb6HyTk+9zi+q0/uSQr897zifTN1xrNPA8w6zqOb9NpiQmIot20i1E6c4c0eWGlcE+76
-         1cDQnvlmgsGd04Xrmlq0Pev7L4lEVjb05wtBfAX/c6lAc5s5CVKAP6eW+wroz+tjKBSe
-         0MHA==
-X-Gm-Message-State: AOAM5336K4CLUzcxuzQh22iBf+dk9o7DVJCUxDtwqtyOlrDzEuNkUbm3
-        t6BWPDjNnuD0//Lfobvr6ggs
-X-Google-Smtp-Source: ABdhPJwD60AP4EPqH9IwpZA52jemObCnoqjeApb1Acfq2z3rnSYdeVyyRdyxqi8+aupewewNjRK+7w==
-X-Received: by 2002:a17:902:a401:b029:dc:3e1d:234a with SMTP id p1-20020a170902a401b02900dc3e1d234amr54483154plq.48.1609840062211;
-        Tue, 05 Jan 2021 01:47:42 -0800 (PST)
-Received: from localhost.localdomain ([103.77.37.191])
-        by smtp.gmail.com with ESMTPSA id f64sm60073921pfb.146.2021.01.05.01.47.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 01:47:41 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 18/18] ARM: dts: qcom: sdx55-mtp: Add regulator nodes
-Date:   Tue,  5 Jan 2021 15:16:36 +0530
-Message-Id: <20210105094636.10301-19-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210105094636.10301-1-manivannan.sadhasivam@linaro.org>
-References: <20210105094636.10301-1-manivannan.sadhasivam@linaro.org>
+        Tue, 5 Jan 2021 04:49:55 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1059lGvF002392;
+        Tue, 5 Jan 2021 10:49:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=P6bqie7w0/hFqyjwRS5cr4EagH5X+V9yAXASQZyhJvY=;
+ b=cI5AD3uw0aPsLMbHKfWj2s/i/+lTAHRjWMgVr0OI1dCmWwp7M3UCNbLEhf/7sSRwxOu8
+ pKDM+Mk7Dtk+W5YE03wbsSoYKM6wqL/3zVGwXRv8jsiYg+xKyrx7RqB6OXkPGbCO3GmB
+ MVvBWxcsaqx4KPRnWMs6j9d0S1l0MCLaHRIa2J2nzjA4mscpi85biRPhvTNv85Jv2rl9
+ 2INRC97yq2S1Z+5NSt7amJO4Rbv7BB9YbhvbP64bzvb9X3UkWr5JU4OFUKHuf4ZQyNus
+ an+XZ3GDQt0YfvtZuu3Wcz0U67a9RspCdBlxlJeApvhgx1v39pRYEdKFZRuxVHvMfPCF nw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35tf66v6yj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Jan 2021 10:49:06 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1055C10002A;
+        Tue,  5 Jan 2021 10:49:06 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0100F230519;
+        Tue,  5 Jan 2021 10:49:05 +0100 (CET)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 Jan 2021 10:49:05
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Subject: [PATCH v2 0/3] STM32MP15 OTG params updates
+Date:   Tue, 5 Jan 2021 10:48:52 +0100
+Message-ID: <20210105094855.30763-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-05_01:2021-01-05,2021-01-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+This patchset brings some updates on STM32MP15 OTG HS and FS.
+It sets ahbcfg parameter for both HS and FS as the value reported by the
+hardware is not recommended.
+It also disables Link Power Management on OTG HS because with some Host
+controllers (at least seen with some USB 3.2 Gen2 controllers), OTG doesn't
+succeed to exit L1 state.
+It also enables FS/LS PHY clock selection when the Core is in FS Host mode,
+to have 6MHz PHY clock when the connected device is LS, and 48Mhz PHY clock
+otherwise. 
 
-This adds the regulators found on SDX55 MTP.
-
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- arch/arm/boot/dts/qcom-sdx55-mtp.dts | 179 +++++++++++++++++++++++++++
- 1 file changed, 179 insertions(+)
+Changes in v2:
+- Move author mail address from @st.com to @foss.st.com
+- Add Minas' Reviewed-by on all patches
 
-diff --git a/arch/arm/boot/dts/qcom-sdx55-mtp.dts b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-index 825cc7d0ba18..61e7d5d4bd48 100644
---- a/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-+++ b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-@@ -6,6 +6,7 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "qcom-sdx55.dtsi"
- #include <arm64/qcom/pm8150b.dtsi>
- #include "qcom-pmx55.dtsi"
-@@ -22,6 +23,184 @@ aliases {
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+	};
-+
-+	vreg_bob_3p3: pmx55-bob {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_bob_3p3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		regulator-always-on;
-+		regulator-boot-on;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+
-+	vreg_s7e_mx_0p752: pmx55-s7e {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_s7e_mx_0p752";
-+		regulator-min-microvolt = <752000>;
-+		regulator-max-microvolt = <752000>;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+
-+	vreg_vddpx_2: vddpx-2 {
-+		compatible = "regulator-gpio";
-+		regulator-name = "vreg_vddpx_2";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <2850000>;
-+		enable-gpios = <&tlmm 98 GPIO_ACTIVE_HIGH>;
-+		gpios = <&tlmm 100 GPIO_ACTIVE_HIGH>;
-+		states = <1800000 0>, <2850000 1>;
-+		startup-delay-us = <200000>;
-+		enable-active-high;
-+		regulator-boot-on;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+};
-+
-+&apps_rsc {
-+	pmx55-rpmh-regulators {
-+		compatible = "qcom,pmx55-rpmh-regulators";
-+		qcom,pmic-id = "e";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+		vdd-l1-l2-supply = <&vreg_s2e_1p224>;
-+		vdd-l3-l9-supply = <&vreg_s3e_0p824>;
-+		vdd-l4-l12-supply = <&vreg_s4e_1p904>;
-+		vdd-l5-l6-supply = <&vreg_s4e_1p904>;
-+		vdd-l7-l8-supply = <&vreg_s3e_0p824>;
-+		vdd-l10-l11-l13-supply = <&vreg_bob_3p3>;
-+		vdd-l14-supply = <&vreg_s7e_mx_0p752>;
-+		vdd-l15-supply = <&vreg_s2e_1p224>;
-+		vdd-l16-supply = <&vreg_s4e_1p904>;
-+
-+		vreg_s2e_1p224: smps2 {
-+			regulator-min-microvolt = <1280000>;
-+			regulator-max-microvolt = <1400000>;
-+		};
-+
-+		vreg_s3e_0p824: smps3 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <1000000>;
-+		};
-+
-+		vreg_s4e_1p904: smps4 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1960000>;
-+		};
-+
-+		ldo1 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo2 {
-+			regulator-min-microvolt = <1128000>;
-+			regulator-max-microvolt = <1128000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo3 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo4 {
-+			regulator-min-microvolt = <872000>;
-+			regulator-max-microvolt = <872000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo5 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <1900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo6 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo7 {
-+			regulator-min-microvolt = <480000>;
-+			regulator-max-microvolt = <900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo8 {
-+			regulator-min-microvolt = <480000>;
-+			regulator-max-microvolt = <900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo9 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo10 {
-+			regulator-min-microvolt = <3088000>;
-+			regulator-max-microvolt = <3088000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo11 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo12 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo13 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo14 {
-+			regulator-min-microvolt = <600000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo15 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo16 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <1904000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+	};
- };
- 
- &blsp1_uart3 {
+Amelie Delaunay (3):
+  usb: dwc2: set ahbcfg parameter for STM32MP15 OTG HS and FS
+  usb: dwc2: enable FS/LS PHY clock select on STM32MP15 FS OTG
+  usb: dwc2: disable Link Power Management on STM32MP15 HS OTG
+
+ drivers/usb/dwc2/params.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
 -- 
-2.25.1
+2.17.1
 
