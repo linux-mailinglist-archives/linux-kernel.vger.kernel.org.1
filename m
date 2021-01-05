@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C323F2EA61E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AB12EA620
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbhAEHps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 02:45:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39412 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbhAEHpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 02:45:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609832700; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PZvIHglRXPVzsIw6aGokI+OdkiIsJ0foIp1wMTrMEbw=;
-        b=KzPvVaUgbYSu+YZYoPNmg7zVkoZ5IIN52R0227tJfW51hiywAopxwcmq1HGypt0NpSJjR2
-        7ewRVYuLWl77aFQEebR2mq6AcdPqMiO5vQqS5iobe7qp44qtzZZTI6chjkUitShDNGngsR
-        t/JTBbjOltBbuN/K/Lxux6pCKHwZDzU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A9B04AA35;
-        Tue,  5 Jan 2021 07:45:00 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 08:44:59 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: uninitialized pmem struct pages
-Message-ID: <20210105074459.GR13207@dhcp22.suse.cz>
-References: <20210104100323.GC13207@dhcp22.suse.cz>
- <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
- <20210104142624.GI13207@dhcp22.suse.cz>
- <23a4eea2-9fdb-fd1d-ee92-9cd8ac6e8f41@redhat.com>
- <20210104151005.GK13207@dhcp22.suse.cz>
- <26db2c3e-10c7-c6e3-23f7-21eb5101b31a@redhat.com>
- <20210104153300.GL13207@dhcp22.suse.cz>
- <bf26f568-79b3-67f9-832a-9d8ef3f72c43@redhat.com>
- <20210104155931.GN13207@dhcp22.suse.cz>
- <a2e8f11a-24b0-5d30-2d8f-1940b268392c@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2e8f11a-24b0-5d30-2d8f-1940b268392c@redhat.com>
+        id S1727048AbhAEHss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 02:48:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42793 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725535AbhAEHsr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 02:48:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609832841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=wOy4fK678d0NueCMqqzfT88gnxVHOqdKrxq/VekxyZo=;
+        b=dAhwTj9+asnqiQ3LBHUZKB8akxf6sJgGB/zPLWSivux0BTqNOCK8rs9kny2OHx0rJboa2J
+        dZ5L7KwxdnPqE17+G7QF40T1XYvWv0hN9dMFSOTHRrfUXPHVcZjxGMc8p/yxO3OKzZ+o4L
+        VCvthLqw0EqThqMw4RwkE6V5EmtvY4c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-fUe9xwRuP4me0ntpRdt3Mw-1; Tue, 05 Jan 2021 02:47:17 -0500
+X-MC-Unique: fUe9xwRuP4me0ntpRdt3Mw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A52498015DC;
+        Tue,  5 Jan 2021 07:47:16 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-13-56.pek2.redhat.com [10.72.13.56])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E02A71CA2;
+        Tue,  5 Jan 2021 07:47:10 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
+        david@redhat.com, bhe@redhat.com
+Subject: [PATCH v3 0/4] mm: clean up names and parameters of memmap_init_xxxx functions
+Date:   Tue,  5 Jan 2021 15:47:04 +0800
+Message-Id: <20210105074708.18483-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04-01-21 17:30:48, David Hildenbrand wrote:
-> >> Let's assume this is indeed a reserved pfn in the altmap. What's the
-> >> actual address of the memmap?
-> > 
-> > Not sure what exactly you are asking for but crash says
-> > crash> kmem -p 6060000
-> >       PAGE          PHYSICAL      MAPPING       INDEX CNT FLAGS
-> > fffff8c600181800     6060000                0        0  0 fffffc0000000
-> 
-> ^ this looks like it was somewhat initialized. All flags zero, nid/zone
-> set to -1 (wild guess) and thus the crash? weird
+This patchset is correcting inappropriate function names of
+memmap_init_xxx, and simplify parameters of functions in the code flow
+when I tried to fix a regression bug in memmap defer init. These are
+taken from the v2 patchset, the bug fixing patch has bee sent alone and
+merged. So send the rest as v3.
 
-Yes that made me scratch my head as well.
-  
-> >> I do wonder what hosts pfn_to_page(PHYS_PFN(0x6060000)) - is it actually
-> >> part of the actual altmap (i.e. > 0x6060000) or maybe even self-hosted?
-> > 
-> > I am not really familiar with the pmem so I would need more assistance
-> > here. I've tried this (shot into the dark):
-> > crash> struct page.pgmap fffff8c600181800
-> >       pgmap = 0xfffff8c600181808
-> 
-> That's weird. If the memmap is at fffff8c600181800, why should the pgmap
-> be at an offset of 8 bytes from there. The "pgmap" field is actually at
-> an offset of 8 bytes within the memmap ...
+No any change comparing with v2, except of adding Mike's 'Reviewed-by' tag.
 
-I haven't noticed this is an offset into struct page. This is indeed
-weird because the structure is much larger than struct page. But maybe
-it reuses storage of several struct pages in a row. Or maybe it is not
-pgmap but something else that shares the offset in the structure.
+V2 post is here:
+https://lore.kernel.org/linux-mm/20201220082754.6900-1-bhe@redhat.com/
+
+Baoquan He (4):
+  mm: rename memmap_init() and memmap_init_zone()
+  mm: simplify parater of function memmap_init_zone()
+  mm: simplify parameter of setup_usemap()
+  mm: remove unneeded local variable in free_area_init_core
+
+ arch/ia64/include/asm/pgtable.h |  3 +-
+ arch/ia64/mm/init.c             | 14 +++++----
+ include/linux/mm.h              |  2 +-
+ mm/memory_hotplug.c             |  2 +-
+ mm/page_alloc.c                 | 54 +++++++++++++++------------------
+ 5 files changed, 36 insertions(+), 39 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.17.2
+
