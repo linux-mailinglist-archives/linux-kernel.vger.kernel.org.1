@@ -2,191 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEE12EB11B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BCE2EB120
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbhAERLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:11:40 -0500
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:42833 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbhAERLj (ORCPT
+        id S1730093AbhAERL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:11:58 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:40751 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727036AbhAERL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:11:39 -0500
-Received: by mail-wr1-f42.google.com with SMTP id m5so36845819wrx.9;
-        Tue, 05 Jan 2021 09:11:22 -0800 (PST)
+        Tue, 5 Jan 2021 12:11:57 -0500
+Received: by mail-wr1-f48.google.com with SMTP id 91so36879706wrj.7;
+        Tue, 05 Jan 2021 09:11:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xJK/r8p/by9FBkOupFAoyDbfZBUjbXuGcfwcyoGTbxo=;
-        b=bjG4+MEnVE71pJnAB0bk+/SQkyHuEWsF7kzjrfiUoqTxeFKj+/KkPs+fijCSkTLC6e
-         gGjugJzLBtFZ96PqL0ND+hTBJyWUztgE2YbOl3NRCFBbxAcMlpJMwcdhU3oiLZ9zefKM
-         HbNYyCWC4Lj40IPqEw5yTVU7O6IwsXyiz/pMESE9GKu75dGIVfFJ0jI7OA2A6Gf5wu6A
-         LX51hyBhY83dusBugFVQWj4C3C97RbtZ3W7CIm2bz22hA+2q0nKt6LZ37jJ583SevBoo
-         8ChPaSV1wKLm5hZWDMAnYzYpv0UMjj6DNxY3X0EzyvaIFT75U1FvAWihe+bGf1LuLI9v
-         oZDw==
-X-Gm-Message-State: AOAM533UV7iBKgPXMqMYgwaLPz4qA4wtHrUcyVm7mMYQj+6r7oGDQzsm
-        PNaM8mOWcaBjJl2R7qe6fuw6b5TTTZc=
-X-Google-Smtp-Source: ABdhPJwwQhKHTvXqjkUoaoc28eF6ttd0kJkNKYR0quC5RSyRLD0T9CFJfhAC22jsSrmEW+R9C8mVDg==
-X-Received: by 2002:adf:ba0c:: with SMTP id o12mr550774wrg.322.1609866656716;
-        Tue, 05 Jan 2021 09:10:56 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id g191sm155385wmg.39.2021.01.05.09.10.56
+         :mime-version:content-disposition:in-reply-to;
+        bh=VnFj1rkcJWvtzQFI6dETJ2tJwVrz2a5nNVgi09YeJXc=;
+        b=BGBqSKaeWeXo3Dc8mD/CH0CHrKflfbFzeWfE9TPNPjpijohQnUpIEuibf+xKRFMpNs
+         pbwFutUp7GomgmRT8G+sKFiSyF15wbZobs3khI0aJU8abZFkqkGDgxgXBhXi6K1J+cwf
+         YSzuHaBplD4EtLHiDxDGt0PsEkU1zjnlyyjN5ulBhSs1B1oLEQsVllwtHOdDgWcrg64o
+         /soa/DcMhWQhwUFRxnmd+s6sdGd5cocrdzmqDiJF4csgEhQ5OKuetLKtET8KPMreh0ZT
+         mt5D77cqmSm7e3XOrwvqblGuPayifgSSG51CcgVe6y8+bj6hOB2wWXmvrljR5u20bZwr
+         H6Pg==
+X-Gm-Message-State: AOAM5311dMQZS7WTcWWR5o/DBgY2/g33m+tLzpkFJ1fSgHfsnVYyqgRh
+        8w1ckSCVFGA9F292VxTCp1g=
+X-Google-Smtp-Source: ABdhPJzS2tnUNQsATQJa8H0cqybMnT7xhuS0Tkf5JkW0sqRFgMdJGyc8820QQRayohYw3nqJBZqzFA==
+X-Received: by 2002:adf:94c7:: with SMTP id 65mr492225wrr.423.1609866674773;
+        Tue, 05 Jan 2021 09:11:14 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id n12sm632321wrg.76.2021.01.05.09.11.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 09:10:56 -0800 (PST)
-Date:   Tue, 5 Jan 2021 17:10:54 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@kernel.org" <stable@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>
-Subject: Re: [PATCH] x86/hyper-v: guard against cpu mask changes in
- hyperv_flush_tlb_others()
-Message-ID: <20210105171054.7s2ggrlbsod7pigo@liuwe-devbox-debian-v2>
-References: <20201001013814.2435935-1-sashal@kernel.org>
- <87o8lm9te3.fsf@vitty.brq.redhat.com>
- <20201001115359.6jhhrybemnhizgok@liuwe-devbox-debian-v2>
- <20201001130400.GE2415204@sasha-vm>
- <MW2PR2101MB105242653A8D5C7DD9DF1062D70E0@MW2PR2101MB1052.namprd21.prod.outlook.com>
- <20201005145851.hdyaeqo3celt2wtr@liuwe-devbox-debian-v2>
- <MWHPR21MB1593B4387204C522536F80CCD7D19@MWHPR21MB1593.namprd21.prod.outlook.com>
+        Tue, 05 Jan 2021 09:11:13 -0800 (PST)
+Date:   Tue, 5 Jan 2021 18:11:11 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 00/48] Introduce core voltage scaling for NVIDIA
+ Tegra20/30 SoCs
+Message-ID: <20210105171111.GC26301@kozik-lap>
+References: <20201217180638.22748-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <MWHPR21MB1593B4387204C522536F80CCD7D19@MWHPR21MB1593.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201217180638.22748-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 04:59:10PM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Monday, October 5, 2020 7:59 AM
-> > 
-> > On Sat, Oct 03, 2020 at 05:40:15PM +0000, Michael Kelley wrote:
-> > > From: Sasha Levin <sashal@kernel.org>  Sent: Thursday, October 1, 2020 6:04 AM
-> > > >
-> > > > On Thu, Oct 01, 2020 at 11:53:59AM +0000, Wei Liu wrote:
-> > > > >On Thu, Oct 01, 2020 at 11:40:04AM +0200, Vitaly Kuznetsov wrote:
-> > > > >> Sasha Levin <sashal@kernel.org> writes:
-> > > > >>
-> > > > >> > cpumask can change underneath us, which is generally safe except when we
-> > > > >> > call into hv_cpu_number_to_vp_number(): if cpumask ends up empty we pass
-> > > > >> > num_cpu_possible() into hv_cpu_number_to_vp_number(), causing it to read
-> > > > >> > garbage. As reported by KASAN:
-> > > > >> >
-> > > > >> > [   83.504763] BUG: KASAN: slab-out-of-bounds in hyperv_flush_tlb_others
-> > > > (include/asm-generic/mshyperv.h:128 arch/x86/hyperv/mmu.c:112)
-> > > > >> > [   83.908636] Read of size 4 at addr ffff888267c01370 by task kworker/u8:2/106
-> > > > >> > [   84.196669] CPU: 0 PID: 106 Comm: kworker/u8:2 Tainted: G        W         5.4.60 #1
-> > > > >> > [   84.196669] Hardware name: Microsoft Corporation Virtual Machine/Virtual
-> > Machine,
-> > > > BIOS 090008  12/07/2018
-> > > > >> > [   84.196669] Workqueue: writeback wb_workfn (flush-8:0)
-> > > > >> > [   84.196669] Call Trace:
-> > > > >> > [   84.196669] dump_stack (lib/dump_stack.c:120)
-> > > > >> > [   84.196669] print_address_description.constprop.0 (mm/kasan/report.c:375)
-> > > > >> > [   84.196669] __kasan_report.cold (mm/kasan/report.c:507)
-> > > > >> > [   84.196669] kasan_report (arch/x86/include/asm/smap.h:71
-> > > > mm/kasan/common.c:635)
-> > > > >> > [   84.196669] hyperv_flush_tlb_others (include/asm-generic/mshyperv.h:128
-> > > > arch/x86/hyperv/mmu.c:112)
-> > > > >> > [   84.196669] flush_tlb_mm_range (arch/x86/include/asm/paravirt.h:68
-> > > > arch/x86/mm/tlb.c:798)
-> > > > >> > [   84.196669] ptep_clear_flush (arch/x86/include/asm/tlbflush.h:586 mm/pgtable-
-> > > > generic.c:88)
-> > > > >> >
-> > > > >> > Fixes: 0e4c88f37693 ("x86/hyper-v: Use cheaper
-> > > > HVCALL_FLUSH_VIRTUAL_ADDRESS_{LIST,SPACE} hypercalls when possible")
-> > > > >> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > > > >> > Cc: stable@kernel.org
-> > > > >> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > >> > ---
-> > > > >> >  arch/x86/hyperv/mmu.c | 4 +++-
-> > > > >> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > >> >
-> > > > >> > diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
-> > > > >> > index 5208ba49c89a9..b1d6afc5fc4a3 100644
-> > > > >> > --- a/arch/x86/hyperv/mmu.c
-> > > > >> > +++ b/arch/x86/hyperv/mmu.c
-> > > > >> > @@ -109,7 +109,9 @@ static void hyperv_flush_tlb_others(const struct cpumask
-> > > > *cpus,
-> > > > >> >  		 * must. We will also check all VP numbers when walking the
-> > > > >> >  		 * supplied CPU set to remain correct in all cases.
-> > > > >> >  		 */
-> > > > >> > -		if (hv_cpu_number_to_vp_number(cpumask_last(cpus)) >= 64)
-> > > > >> > +		int last = cpumask_last(cpus);
-> > > > >> > +
-> > > > >> > +		if (last < num_possible_cpus() &&
-> > hv_cpu_number_to_vp_number(last) >=
-> > > > 64)
-> > > > >> >  			goto do_ex_hypercall;
-> > > > >>
-> > > > >> In case 'cpus' can end up being empty (I'm genuinely suprised it can)
-> > > >
-> > > > I was just as surprised as you and spent the good part of a day
-> > > > debugging this. However, a:
-> > > >
-> > > > 	WARN_ON(cpumask_empty(cpus));
-> > > >
-> > > > triggers at that line of code even though we check for cpumask_empty()
-> > > > at the entry of the function.
-> > >
-> > > What does the call stack look like when this triggers?  I'm curious about
-> > > the path where the 'cpus' could be changing while the flush call is in
-> > > progress.
-> > >
-> > > I wonder if CPUs could ever be added to the mask?  Removing CPUs can
-> > > be handled with some care because an unnecessary flush doesn't hurt
-> > > anything.   But adding CPUs has serious correctness problems.
-> > >
-> > 
-> > The cpumask_empty check is done before disabling irq. Is it possible
-> > the mask is modified by an interrupt?
-> > 
-> > If there is a reliable way to trigger this bug, we may be able to test
-> > the following patch.
-> > 
-> > diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
-> > index 5208ba49c89a..23fa08d24c1a 100644
-> > --- a/arch/x86/hyperv/mmu.c
-> > +++ b/arch/x86/hyperv/mmu.c
-> > @@ -66,11 +66,13 @@ static void hyperv_flush_tlb_others(const struct cpumask *cpus,
-> >         if (!hv_hypercall_pg)
-> >                 goto do_native;
-> > 
-> > -       if (cpumask_empty(cpus))
-> > -               return;
-> > -
-> >         local_irq_save(flags);
-> > 
-> > +       if (cpumask_empty(cpus)) {
-> > +               local_irq_restore(flags);
-> > +               return;
-> > +       }
-> > +
-> >         flush_pcpu = (struct hv_tlb_flush **)
-> >                      this_cpu_ptr(hyperv_pcpu_input_arg);
+On Thu, Dec 17, 2020 at 09:05:50PM +0300, Dmitry Osipenko wrote:
+> Introduce core voltage scaling for NVIDIA Tegra20/30 SoCs, which reduces
+> power consumption and heating of the Tegra chips. Tegra SoC has multiple
+> hardware units which belong to a core power domain of the SoC and share
+> the core voltage. The voltage must be selected in accordance to a minimum
+> requirement of every core hardware unit.
 > 
-> This thread died out 3 months ago without any patches being taken.
-> I recently hit the problem again at random, though not in a
-> reproducible way.
+> The minimum core voltage requirement depends on:
 > 
-> I'd like to take Wei Liu's latest proposal to check for an empty
-> cpumask *after* interrupts are disabled.   I think this will almost
-> certainly solve the problem, and in a cleaner way than Sasha's
-> proposal.  I'd also suggest adding a comment in the code to note
-> the importance of the ordering.
+>   1. Clock enable state of a hardware unit.
+>   2. Clock frequency.
+>   3. Unit's internal idling/active state.
 > 
+> This series is tested on Acer A500 (T20), AC100 (T20), Nexus 7 (T30),
+> Ouya (T30), TK1 (T124) and some others. I also added voltage scaling to
+> the Ventana (T20) and Cardhu (T30) boards which are tested by NVIDIA's CI
+> farm. Tegra30 is now couple degrees cooler on Nexus 7 and stays cool on
+> Ouya (instead of becoming burning hot) while system is idling. It should
+> be possible to improve this further by implementing a more advanced power
+> management features for the kernel drivers.
+> 
+> The DVFS support is opt-in for all boards, meaning that older DTBs will
+> continue to work like they did it before this series. It should be possible
+> to easily add the core voltage scaling support for Tegra114+ SoCs based on
+> this grounding work later on, if anyone will want to implement it.
 
-Sure. Let me prepare a proper patch.
+The same comment as for your interconnect work: for sets touching
+multiple systems please mention the dependencies between patches in the
+cover letter. Not as a reply to such remark like I make here, but as a
+separate entry in the cover letter.
 
-Wei.
+Best regards,
+Krzysztof
