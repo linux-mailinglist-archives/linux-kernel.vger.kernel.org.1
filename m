@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91292EA822
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4292EA823
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbhAEKCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:02:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728286AbhAEKCH (ORCPT
+        id S1728479AbhAEKCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:02:34 -0500
+Received: from smtprelay0243.hostedemail.com ([216.40.44.243]:37272 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725831AbhAEKCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:02:07 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C58C061574;
-        Tue,  5 Jan 2021 02:01:27 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id w17so28022119ilj.8;
-        Tue, 05 Jan 2021 02:01:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a+YIO4SqsJOMsreFxnQg6aNJ/TQ1cD1PYTP7J+66kxY=;
-        b=EdCWoYreIIPP48lPVCOtCBBJteDAWlPOoytMHPYSolemn0JXQDVyv+XvCGm+eRqf8A
-         aSAJIHg0QKgwZtEZG4PevHQmz4/sWgMoSYaoDHbjKFQw+maKgiIad808izswjZsMScpP
-         IOzAJXLdtVRCpdCQQ+xbPhpIwGqDQ+RJxcam6Ml7PbQvUr1O1PNvXdSv1SOweJilG66D
-         U7hasc3h6oYEZrAsSGv2PhF9MkE8aYuudjJ4qhXC5mVZie0U7Am1NnBxLq8w3/SnR2yI
-         BDN7t637r1lHqBkJ3d2KzhHDLiLGVUHR2yEjFp+UCwMfVUfgNiQr2I29MdGFrmZEuLdj
-         1b1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a+YIO4SqsJOMsreFxnQg6aNJ/TQ1cD1PYTP7J+66kxY=;
-        b=ff4ZLTUH/XgJp69jsL3j/815mCboqMZwI/EiV8ZJCqbz7bxVAsZRrqSE6Mk00oKpoy
-         eSwrd3QyZTaSZB3o42QXnHMHSk6V0XVXWIinU6A3CsNS6ZIfFThnNoMyWtGcMZhp3Dr5
-         jWI2iDRUGyHwiejvqgxRf9nqL01v9pHX8Y/bdqEm5zJ43ahUd52d5cYNhvb5tZCIWb62
-         F5jGrRKwJEmQ9QlRA2MkyXdQI03Uxtf3t+me/REviSuRDP5Nxd3cipHUYP3Sw58wX7vO
-         RAlXcFpVJ687Tx+PwrZWj409i66NDpR+NSf5b4DCSNgpE9YW2vFfvrzReH6l9XL9BjR8
-         /kjw==
-X-Gm-Message-State: AOAM530PTYmcv4clVpc1AcgC7XGFKygL1z8E8gJqpdBmeyM3K92HV0rw
-        Jie6OFq8vqXftEuVJEpyx0k=
-X-Google-Smtp-Source: ABdhPJxQrMydf1TlDyAj1V01J/O0bI/OUfD4p3DE9seESIFB46J/rQnJY/hGRzF/8WWq1aupqlK+fw==
-X-Received: by 2002:a92:ce47:: with SMTP id a7mr76367323ilr.261.1609840886959;
-        Tue, 05 Jan 2021 02:01:26 -0800 (PST)
-Received: from localhost.localdomain ([156.146.37.136])
-        by smtp.gmail.com with ESMTPSA id e1sm43616932iod.17.2021.01.05.02.01.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 02:01:26 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: crypto: marvell: Fix a spelling s/fautly/faultly/ in comment
-Date:   Tue,  5 Jan 2021 15:31:08 +0530
-Message-Id: <20210105100108.3375-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 5 Jan 2021 05:02:34 -0500
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave03.hostedemail.com (Postfix) with ESMTP id CC36918023EC2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:01:52 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id E7081837F24C;
+        Tue,  5 Jan 2021 10:01:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:7652:7903:8531:8985:9025:10004:10400:11026:11232:11658:11854:11914:12043:12296:12297:12555:12698:12737:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:14764:21080:21221:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: salt47_5a0046f274d8
+X-Filterd-Recvd-Size: 1873
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  5 Jan 2021 10:01:10 +0000 (UTC)
+Message-ID: <cf102ac77eb1f9e6424f30aef835f6c61dd03407.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: fix unescaped left braces
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Tue, 05 Jan 2021 02:01:09 -0800
+In-Reply-To: <20210105093507.29297-1-dwaipayanray1@gmail.com>
+References: <20210105093507.29297-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2021-01-05 at 15:05 +0530, Dwaipayan Ray wrote:
+> Perl 5.22 onwards require that "A literal "{" should now be
+> escaped in a pattern".
 
-s/fautly/faulty/p
+Not quite correct.
 
+> checkpatch contains several literal "{". Fix such instances
+> by preceding them with a backslash.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/crypto/marvell/cesa/tdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Not all literal left braces need to be escaped.
+https://www.perlmonks.org/?node_id=1191981
 
-diff --git a/drivers/crypto/marvell/cesa/tdma.c b/drivers/crypto/marvell/cesa/tdma.c
-index 5d9c48fb72b2..0e0d63359798 100644
---- a/drivers/crypto/marvell/cesa/tdma.c
-+++ b/drivers/crypto/marvell/cesa/tdma.c
-@@ -177,7 +177,7 @@ int mv_cesa_tdma_process(struct mv_cesa_engine *engine, u32 status)
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -2036,7 +2036,7 @@ sub annotate_values {
+>  			print "ASSIGN($1)\n" if ($dbg_values > 1);
+>  			$type = 'N';
+>  
+> 
+> -		} elsif ($cur =~/^(;|{|})/) {
+> +		} elsif ($cur =~ /^(;|\{|\})/) {
 
- 	/*
- 	 * Save the last request in error to engine->req, so that the core
--	 * knows which request was fautly
-+	 * knows which request was faulty
- 	 */
- 	if (res) {
- 		spin_lock_bh(&engine->lock);
---
-2.26.2
+Like this one.  And why escape the right brace too?
+
+>  			print "END($1)\n" if ($dbg_values > 1);
+>  			$type = 'E';
+>  			$av_pend_colon = 'O';
+> @@ -3913,7 +3913,7 @@ sub process {
+>  			# it there is no point in retrying a statement scan
+>  			# until we hit end of it.
+>  			my $frag = $stat; $frag =~ s/;+\s*$//;
+> -			if ($frag !~ /(?:{|;)/) {
+> +			if ($frag !~ /(?:\{|;)/) {
+
+And here.
+
+etc...
 
