@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1682EAE3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB8E2EAE42
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727920AbhAEP2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:28:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53761 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727802AbhAEP2J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:28:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609860403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NRNmBZOaPHwmEQZjlu49SykVwvAJ7tCQh5OPc44TFFA=;
-        b=D96QoqrDR4Z6EYr5oLV7orh074S2JMQlT5FolCQGKuceM+fOaGNpW15sUE3shF+jIribVn
-        HUo23hpYRqRxL2Mya/URpTUFG5HWpR7ylkNSG7cqwweueIF/uvJXg36aKYuQggH+hl9zEr
-        /Ubhx+VZs6NmWyxVij7cO9m75lZhwf4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-MgtMswYXNr6ZZdPA9ZMmRA-1; Tue, 05 Jan 2021 10:26:41 -0500
-X-MC-Unique: MgtMswYXNr6ZZdPA9ZMmRA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F887A0CA0;
-        Tue,  5 Jan 2021 15:26:39 +0000 (UTC)
-Received: from treble (ovpn-113-48.rdu2.redhat.com [10.10.113.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A86105F9B8;
-        Tue,  5 Jan 2021 15:26:38 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 09:26:36 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] gcc-plugins:  fix gcc 11 indigestion with plugins...
-Message-ID: <20210105152636.2kkiu3boooaimujd@treble>
-References: <82487.1609006918@turing-police>
+        id S1727980AbhAEP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:28:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726151AbhAEP2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:28:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63F2422B4B;
+        Tue,  5 Jan 2021 15:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609860469;
+        bh=rlbfB9avIivMtS6hjB8SAE55AFbkBF7zJzZHYTJX2fI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Up4Za5aziRYCLHgdPXgS8tct+y4kb0EYjPVAlBVx4BVz2n9sP5pH/6amlRXMzmx2Z
+         HzfV5BpfcWP7tQYel8nNNgt2j883kJkcAFTu5mt/qNu22cFzLY5cBpC6CfXfCEQsT6
+         /RNWJj1XWRNzcvTYAD+1JLjJJrg2ZPJ971rno8A3SJ866ZvLHbOEvkrWl3tK5e04qM
+         pqKhPROdFcDrXO1ONAaRHp96PINcCXPZnLHV6o94456CA9B5BUouFQ/8vBFxwXregr
+         0K1xoyhLQyGgA0Ey2XdLErgyK1OYMIbrg9txOXPZSbMZnoK5iL9TodgFRp9yXXlW4J
+         fAK2ghPfD+Atw==
+Date:   Tue, 5 Jan 2021 16:27:47 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        pyarlaga@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH V7 2/2] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+Message-ID: <20210105152747.GB1842@ninjato>
+References: <20201221123801.26643-1-rojay@codeaurora.org>
+ <20201221123801.26643-3-rojay@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="K8nIJk4ghYZn606h"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <82487.1609006918@turing-police>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20201221123801.26643-3-rojay@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 01:21:58PM -0500, Valdis Klētnieks wrote:
-> Fedora Rawhide has started including gcc 11,and the g++ compiler
-> throws a wobbly when it hits scripts/gcc-plugins:
-> 
->   HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
-> In file included from /usr/include/c++/11/type_traits:35,
->                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/system.h:244,
->                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/gcc-plugin.h:28,
->                  from scripts/gcc-plugins/gcc-common.h:7,
->                  from scripts/gcc-plugins/latent_entropy_plugin.c:78:
-> /usr/include/c++/11/bits/c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO
->  C++ 2011 standard. This support must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
->    32 | #error This file requires compiler and library support \
-> 
-> In fact, it works just fine with c++11, which has been in gcc since 4.8,
-> and we now require 4.9 as a minimum.
-> 
-> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
 
-I'm also needing this.
+--K8nIJk4ghYZn606h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
--- 
-Josh
+> +	geni_status = readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
+> +	if (!(geni_status & M_GENI_CMD_ACTIVE))
+> +		goto out;
+> +
+> +	cur = gi2c->cur;
+> +	geni_i2c_abort_xfer(gi2c);
+> +	if (cur->flags & I2C_M_RD)
+> +		geni_i2c_rx_msg_cleanup(gi2c, cur);
+> +	else
+> +		geni_i2c_tx_msg_cleanup(gi2c, cur);
+> +out:
+> +	pm_runtime_put_sync_suspend(gi2c->se.dev);
+> +}
 
+The use of 'goto' is not needed here IMHO. I think:
+
+	if (geni_status & M_GENI_CMD_ACTIVE) {
+		do_the_stuff
+	}
+
+	pm_runtime_put_sync_suspend(...);
+
+is more readable, in fact. Also, I don't think we really need the 'cur'
+variable and just use 'gi2c->cur' but that's very minor and you can keep
+it if you like it.
+
+Reset looks good!
+
+
+--K8nIJk4ghYZn606h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/0hXMACgkQFA3kzBSg
+KbZUDQ//bfbDro72OlBzRjWSG17tLd2nH0ssMcm1nM85D3R3qew61g7ywjTicNqF
+vwZroD0K08MYxNsH5xP20TEtWpj/L5crLLFzbLiEdrX9yMNN5IFFEQyQj1j0oanO
+vLVgd9i0CCP8bLyMJ59+TFtJFtYffEH4i/RmTxeD/LIWQNZFcGszTRYkr5kU2hHi
+C13ToRiqckAjsxfkmZj7OeoM2n0d7pj0etJ60uVT0mEU7q8SQ00vcv5WK0rj3mcK
+6I9QDAWlP8yLgB1IErcq/Sfy+Ga6EAk5qh4nIa3fyHoD47+8K7kAIynGWPkolqqj
+czszRtGvmimYkPeLodby4BAgVPEKFcjNvTiKqpl6oOEpkO79yzfmk2c2wVi5VpvU
+KgUfgHk8QHGT239ouB0G5FvTRWVIdNblkgipaRsl1biner8hzWl1yk0ZDJxD7rso
+e1tR3LrBcv0jPloLRH8Kh7Sb5lTtDBYS87moBYknyajpokzU0eNM0GZqD/swuLP/
+2Ni7aVxzG8RZhMQAnMgqG5+6Gl+R78yU4876+A+ZCZtDDACe4j/QaqXRB4/bvHG/
+BlArAYAWhWweMi+fD1jug21mtxsAmQuPkzMo4byj7OvK1t04nQqeyQ6lyvI7IZU1
+iRxdi94opHS0AOG8rXAVXKlivCvF10pVdEW5LpEif/6eY3yJVqQ=
+=TnuI
+-----END PGP SIGNATURE-----
+
+--K8nIJk4ghYZn606h--
