@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E512D2EA18C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDC82EA193
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbhAEAjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 19:39:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
+        id S1726499AbhAEAqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 19:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726711AbhAEAjR (ORCPT
+        with ESMTP id S1725921AbhAEAqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:39:17 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1203C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:38:36 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id a109so27830630otc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:38:36 -0800 (PST)
+        Mon, 4 Jan 2021 19:46:15 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9E0C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:45:34 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id d17so39088664ejy.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:45:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=27wBpppGsYVqhH9Tev4p91dfIlQ30H/+M8uOdR4nqag=;
-        b=NE+fQuSOYQLbp22Vj1ifuOiTj3EgouqSiEOKuRuldyuaDevoKojUARocMb0UQ2QQPI
-         g/9m8NWbT3ttoWh1J+fZ0nsdn6y1ZFbzeQLd9OVS4VtVt6D/3xBcpFw0408TA534aIqS
-         DcZkDrumYyjhZhV1RcPZD6ZyTMC+9kCeTAx1XlDJ1ZQd08M32ZYMTzbWCIYQV17zUu5e
-         VxIpZPXSUc/NWCCr79DMH8Rea/pymGm5l7cZlXIVOawAuSp+KQLXGlncbl99NCrFhtxM
-         o0QGs/gO5X+b+37hvvSBY371rE+izdgqWxbh0Hy6I9TCPK4EtoyXzoSj9/po9l+aFGcp
-         B1bw==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IyfJI4dtsxKeArXoeXBuITYdX7obBLwz+aJmFnS2pHM=;
+        b=IP3IWi6e2D7+xXpMgFoVfG3j5yk5zojwINClAUPfOyGPF89KkP1tHBXXNDwNQxfPmx
+         rclmTN4e01b32Q4BTt8S40p8vEMSozNGdHj6b5R6McxxdV/VFfwbfw4H/7yy/6YD3k59
+         /X0Zrf0wqjSsrk6jC+Ud5ENIFH5F/x7FAm5sb7NPuQwVhMVJ6CgkvudtNdfSbI49ZDwe
+         rUfkAA7lWsAWRmbCZw6s0DwrWLbYHhcQAYe+y3FVjk/LwwFstj6QoczkQruDtDA1MOjX
+         S91vC0wN0Pihqr1Jo3rNYuwX62nlVJ3G0VqUHAjTMQ4m5YxxddZ54T367lb36msf3inh
+         /Glg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=27wBpppGsYVqhH9Tev4p91dfIlQ30H/+M8uOdR4nqag=;
-        b=cQ0e8pRteM0MK/7ewah8vcdTRAcSUKSKLudBsbnmhDfNmEhyDr+9RlZy9f9uCgzuPv
-         pAdoQYqEwv/GpZ3/SZNEWFrk+qEsYuETy8rLGdyf9DrRNkWzozl8zoBIbumzUafCJsAn
-         pMhnjXot/WYs5IUBSCA6euMy0eYDefOH/L8ej4Jk9RiZ1WxqQdSBCODqaZK0zQ6zuZGJ
-         8XxETljWV3rqISvCP9Aap3nxnrDZ7yOVcdNn6TestGvi6GpRgwjV4zOtDLPyqY5FRYl+
-         h01qpPpuFu9qt8U+Z/q46nXIWPB3FbpcA3igwg3dpD0QvCFSDTPg7yHMunNBI4eX/fRW
-         Iw7g==
-X-Gm-Message-State: AOAM531AtMR3CeR3+WgRE1EovLG0HlFSEUowv1bHoABoeIslXiwPnzh7
-        FbAtRvVkMs2sLgKOHImT58+zVg==
-X-Google-Smtp-Source: ABdhPJwzyq76S8h25XBXBt3EvdXIT7lM/bAZQGsQ/z66sUeQ2ltiUA7WRfzwckuKtOvKhdltLJxotQ==
-X-Received: by 2002:a9d:74d3:: with SMTP id a19mr52939634otl.2.1609807116206;
-        Mon, 04 Jan 2021 16:38:36 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g92sm13707748otb.66.2021.01.04.16.38.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 16:38:35 -0800 (PST)
-Date:   Mon, 4 Jan 2021 18:38:33 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 05/16] rpmsg: ns: initialize channel info override
- field
-Message-ID: <X/O1CRjINeCG8PkA@builder.lan>
-References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
- <20201222105726.16906-6-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IyfJI4dtsxKeArXoeXBuITYdX7obBLwz+aJmFnS2pHM=;
+        b=j8AjTGRK2iVxn+dhCgEK8+k5B2/fPtboWnglyd8bdiQt9FTBg3GwP/Wztc9dH8Cfi4
+         EDxF8945yt46qb2lFKbIdjGZmqufzCQTa0azezvNREo9aI1benSKpnpWja0dZlr2s4oT
+         qSF/LieyCmTs+7hQcDBQGKBf2eGvbHtykgz2Gdl0Mvqe4xSyvcAf9z4cQ8fYXEySBYow
+         KNPr2Mj0BOEBRDeTlFPcHtiM+/pkRJuUSnCTqw6nKCDuy/rgpc6DOM7VCrZNOyvEn+dl
+         8sLV9NMJqhZKckycZBapVdFVJmUwzbHRU9+plWcBKiXo7SlPdq/e42lydFbtijmZDcFS
+         mcgA==
+X-Gm-Message-State: AOAM531lggt3bXueMTCCZX7RXjsHMpq+BeHw3XDMxktDZD5fLZnjngxv
+        iFShBlWkWb2p37cUJpaTL9J7Gtlfoj7KCYJ1tQ4p
+X-Google-Smtp-Source: ABdhPJy7SZ7PohnHD5ePcszn2EXBc+UMBN5ZIumng4b1dP5Kx/luaYQk9zl65YJyS2HZ8nOihZv87LflCX3sg/+nDFw=
+X-Received: by 2002:a17:907:700c:: with SMTP id wr12mr67410887ejb.398.1609807533402;
+ Mon, 04 Jan 2021 16:45:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222105726.16906-6-arnaud.pouliquen@foss.st.com>
+References: <20201211084254.2038-1-zhengyongjun3@huawei.com>
+ <20201211153321.GF2015948@madcap2.tricolour.ca> <CAHC9VhS9zCzWLhwE=6AOr7sO-LUdLDS6sb4tC2tDuT=LRYdzHw@mail.gmail.com>
+In-Reply-To: <CAHC9VhS9zCzWLhwE=6AOr7sO-LUdLDS6sb4tC2tDuT=LRYdzHw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 4 Jan 2021 19:45:22 -0500
+Message-ID: <CAHC9VhTDZiPZ0h-51S-RS2cbT4HPhe=1JhzoqTZAdAhdJCa9Ag@mail.gmail.com>
+Subject: Re: [PATCH -next] kernel/audit: convert comma to semicolon
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Richard Guy Briggs <rgb@redhat.com>
+Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22 Dec 04:57 CST 2020, Arnaud Pouliquen wrote:
+On Mon, Dec 14, 2020 at 9:34 PM Paul Moore <paul@paul-moore.com> wrote:
+> On Fri, Dec 11, 2020 at 10:33 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > On 2020-12-11 16:42, Zheng Yongjun wrote:
+> > > Replace a comma between expression statements by a semicolon.
+> > >
+> > > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> > > ---
+> > >  kernel/audit.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/audit.c b/kernel/audit.c
+> > > index 68cee3bc8cfe..c8497115be35 100644
+> > > --- a/kernel/audit.c
+> > > +++ b/kernel/audit.c
+> > > @@ -2282,7 +2282,7 @@ static void audit_log_set_loginuid(kuid_t koldloginuid, kuid_t kloginuid,
+> > >
+> > >       uid = from_kuid(&init_user_ns, task_uid(current));
+> > >       oldloginuid = from_kuid(&init_user_ns, koldloginuid);
+> > > -     loginuid = from_kuid(&init_user_ns, kloginuid),
+> > > +     loginuid = from_kuid(&init_user_ns, kloginuid);
+> >
+> > Nice catch.  That went unnoticed through 3 patches, the last two mine...
+>
+> Yes, thanks for catching this and submitting a patch.  However, as it
+> came very late in the v5.10-rcX release cycle I'm going to wait until
+> after this merge window to merge it into audit/next.
 
-> By default driver_override should be 0 to avoid to force
-> the channel creation with a specified name.The local variable
-> is not initialized.
-> 
+This should be in audit/next now, thanks!
 
-The same problem exists in qcom_glink_native, qcom_smd and rpmsg_char.
-
-Regards,
-Bjorn
-
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/rpmsg/rpmsg_ns.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-> index 762ff1ae279f..a526bff62947 100644
-> --- a/drivers/rpmsg/rpmsg_ns.c
-> +++ b/drivers/rpmsg/rpmsg_ns.c
-> @@ -55,6 +55,7 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
->  	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
->  	chinfo.src = RPMSG_ADDR_ANY;
->  	chinfo.dst = rpmsg32_to_cpu(rpdev, msg->addr);
-> +	chinfo.driver_override = NULL;
->  
->  	dev_info(dev, "%sing channel %s addr 0x%x\n",
->  		 rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
-> -- 
-> 2.17.1
-> 
+-- 
+paul moore
+www.paul-moore.com
