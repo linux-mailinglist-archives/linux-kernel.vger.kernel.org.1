@@ -2,100 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB812EA332
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16842EA335
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbhAECJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:09:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726391AbhAECJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:09:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE25A22573;
-        Tue,  5 Jan 2021 02:08:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609812502;
-        bh=dec///n8ZMLVHWY8v+++x2RI6qJjcxqMCtixy9ig1+Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cwDIbJhkZgyAgmlqqBG7Yv9Sn3Cnk+TYMttcIpz6CecuM9RlmjnQtc0rI/IEFUe2n
-         DPoGdiDRG1T5aWjIsa+7KOFbk/wl6LQpeP7amU7vXnHBfkXACbLIwuxR7rgCfFsoJ9
-         Qjz/IGV2eDhNhh0CIj+WtV7/ZKlbeEvFAyeCy1RY4U0hnXajQrD5Ay4RjeHTMZG6DS
-         TrtmHBNA8chFOffGaSRKRcqgvauylpeqvo/wIuAr6mFAgBKwIb3qPDQySlNO/qhZKm
-         PpHBXFnlcnaCeq2TySxz6NkdSjPQXKGM5ER++NXiH1cNnjx9JIj4DtupY3QZCItHQe
-         M3V4Wz2EKEOKw==
-Received: by mail-ej1-f45.google.com with SMTP id 6so39329649ejz.5;
-        Mon, 04 Jan 2021 18:08:21 -0800 (PST)
-X-Gm-Message-State: AOAM531A3TVK30jStFo8ZWBvplu65YBo1kqwu6YT0vFgh2YMhFSPcPAS
-        USCLIsLZZDdsMU1ymChtLu/hjXzxJaO/4abPyA==
-X-Google-Smtp-Source: ABdhPJwnubR3LrlUWyJOeUCu0SGdf/IcybIxySz3erxk7JJ9r/5zilydM52G3xMb+0s5stBOe5OPaNcVb6dqa1MAeC4=
-X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr66885041ejb.360.1609812500509;
- Mon, 04 Jan 2021 18:08:20 -0800 (PST)
+        id S1727426AbhAECLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:11:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726518AbhAECLw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 21:11:52 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1571DC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 18:11:12 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id h22so69203719lfu.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 18:11:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fKci/xz7+6EpLcrUh49o1pJib0PXFbl6FrFEVFhmoL4=;
+        b=KuiRw5MSAIV5E+dfU2gQh0nJQ/BcNavLGP0fp5zUxbN9wSHOJUh/CK1yjJl7o5Ngi4
+         T5YEmBTpaqFXj1yqLONJFiZ3dOuSuwn214NQtvBigLfC77Mvca3wqUCz95jLJxoL8vN6
+         cU2T2jKBOeQpUloEHASD3AcGdwSEktv9a8OjmJlMp+kU4sFE/ks+TyDSXmd1vI1dUkd3
+         +P128iDhjrXulpKgt1P1Rrk6BQElMmAuVvKhq/pT9CJiBXTMdjBSr56z9NALEEMKzvkk
+         vsevEOO6lQjkXtdhCChOZJKcnRDCLH0wI+pJTX9dP0I4AoRwZPxknUJkvdPShTjBoY1v
+         oiww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fKci/xz7+6EpLcrUh49o1pJib0PXFbl6FrFEVFhmoL4=;
+        b=O2AkwClLltYzuigOtczDwMZiwW/B+pxn9O7Fl3Vh3j3ppQKxGie827BViGROqV21VY
+         bsYxSS9UJTjAsyQf9Qc9RthK/u6S+SCG9TJiJ4Ag86MPx5/FyH5PwdjoKBFQAUIUuIQ7
+         +qLpI6s11Mc6M6ZbxOpGK96cxiedHOX2NOaxCywoED9Mdpq6nrEwZsVo0WM3CLqp7n9r
+         3doMCK95auTUJ531xuk7i0JHp35s3BQFLZkSN0bTJi0GPQ5Jxv33eqktDeQlH0yA+LDz
+         6Ld7n/PeQbwVVZR26+q66UMjBv6a67zB+Cm7uxQjfqPdjGW84650ruEXxiH9iSAL0zDZ
+         fEBw==
+X-Gm-Message-State: AOAM5330zAN+u8ScBlffzE5n7EI42wrPIKKEsQQgG/J6vue7SreCfo+U
+        cvhRkxVIbFGuTEYt2APvpoaVKX3CSKvsSEKJJY4=
+X-Google-Smtp-Source: ABdhPJzWJPWHizgOtsAUHajKlFTA/eA3J1t8aINbOPMSKBLeW58KxBH7kSquVLIIt9111/dxA9sXvdxOZufoiqkkFQo=
+X-Received: by 2002:a2e:9bd6:: with SMTP id w22mr35513731ljj.335.1609812670485;
+ Mon, 04 Jan 2021 18:11:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20201221144707.4a409618@gmail.com>
-In-Reply-To: <20201221144707.4a409618@gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 4 Jan 2021 19:08:08 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqLCeNVnjgYAHhMEiv79iX552EPC7LGgk7GBrt2JsSYo5Q@mail.gmail.com>
-Message-ID: <CAL_JsqLCeNVnjgYAHhMEiv79iX552EPC7LGgk7GBrt2JsSYo5Q@mail.gmail.com>
-Subject: Re: Is there a reason not to use -@ to compile devicetrees ?
-To:     Vincent Pelletier <plr.vincent@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210105012826.956800-1-daeho43@gmail.com> <904b7677-3655-2e81-52e0-48296cf1c0da@huawei.com>
+In-Reply-To: <904b7677-3655-2e81-52e0-48296cf1c0da@huawei.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Tue, 5 Jan 2021 11:10:59 +0900
+Message-ID: <CACOAw_xf9CFOSvU=s1yP4O74dropdc-ozcDOPhmCpBU3Oif4Bw@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix null page reference in redirty_blocks
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Colin Ian King <colin.king@canonical.com>,
+        Daeho Jeong <daehojeong@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 7:47 AM Vincent Pelletier <plr.vincent@gmail.com> wrote:
->
-> Hello,
->
-> Distro: https://raspi.debian.net/ (sid)
-> Hardware: Raspberry Pi Zero W
-> Kernel version: 5.9.11 (linux-image-5.9.0-4-rpi)
->
-> To access a device connected to my pi, I need the spi0 bus, and would
-> like to not be doing GPIO bit-banging when there are perfectly good
-> spi modules capable of using the SPI alternative mode of these pins.
->
-> spi0 is declared in the vanilla devicetree for this device:
-> arch/arm/boot/dts/bcm2835-rpi-zero-w.dts ends up including
-> arch/arm/boot/dts/bcm283x.dtsi which contains:
->                 spi: spi@7e204000 {
->                         compatible = "brcm,bcm2835-spi";
->                         reg = <0x7e204000 0x200>;
->                         interrupts = <2 22>;
->                         clocks = <&clocks BCM2835_CLOCK_VPU>;
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         status = "disabled";
->                 };
-> To my new-to-devicetree eye, this looks like this is intended to be
-> overridden, at least with a
->   status = "okay";
-> property (although a bit more is needed).
-> As I believe is the correct way, I wrote a devicetree overlay doing
-> this and a bit more in order to enable this bus and one of its device
-> (the one matching the chip-select monitored by the board I connected).
->
-> To confirm that I had no typo in my symbol names I ran fdtoverlay with
-> the packaged device tree binary, plus my overlay, but could not get it
-> to work, until I took a closer look at the packaged device tree and
-> realised it lacks a __symbols__ section.
-> So I pulled the source, added "-@" to the cmd_dtc rule in
-> scripts/Makefile.lib, built the dtb, tested fdtoverlay against it and
-> voila, it worked. I could then reboot with this devicetree, load my
-> overlay and use spi0 with no further change.
->
-> So now I wonder why this option is not enabled while there are these
-> sections which seem to not be usable without an overlay ?
-> And further, why it does not seem to be possible to enable with a
-> kernel config option ?
->
-> I must be missing something obvious, but I'm still failing to see it.
+Yes, it's better~ :)
 
-Read the last time this came up:
-
-https://lore.kernel.org/linux-devicetree/71fb0ff289e84c55bd92ecd96bc9aa76@svr-chch-ex1.atlnz.lc/
+2021=EB=85=84 1=EC=9B=94 5=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 10:44, C=
+hao Yu <yuchao0@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On 2021/1/5 9:28, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> >
+> > Fixed null page reference when find_lock_page() fails in
+> > redirty_blocks().
+> >
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > Reported-by: Colin Ian King <colin.king@canonical.com>
+> > Fixes: 5fdb322ff2c2 ("f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_C=
+OMPRESS_FILE")
+> > ---
+> >   fs/f2fs/file.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > index 9e5275716be8..bf6682a52433 100644
+> > --- a/fs/f2fs/file.c
+> > +++ b/fs/f2fs/file.c
+> > @@ -4060,8 +4060,10 @@ static int redirty_blocks(struct inode *inode, p=
+goff_t page_idx, int len)
+> >
+> >       for (i =3D 0; i < page_len; i++, redirty_idx++) {
+> >               page =3D find_lock_page(mapping, redirty_idx);
+> > -             if (!page)
+> > +             if (!page) {
+> >                       ret =3D -ENOENT;
+>
+> ret =3D -ENOMEM;
+>
+> > +                     continue;
+>
+> How about breaking the loop for out-of-memory case, because in such condi=
+tion
+> we have less chance to dirty whole cluster due to no memory, and continue=
+ to
+> allocate pages for target file will make system suffer more memory pressu=
+re,
+> it will make many thing slower.
+>
+> Thnaks,
+>
+> > +             }
+> >               set_page_dirty(page);
+> >               f2fs_put_page(page, 1);
+> >               f2fs_put_page(page, 0);
+> >
