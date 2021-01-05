@@ -2,257 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE8D2EAD51
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F21772EAD56
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbhAEOXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:23:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbhAEOXn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:23:43 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482BBC061574;
-        Tue,  5 Jan 2021 06:23:03 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id ga15so9284516ejb.4;
-        Tue, 05 Jan 2021 06:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=j1NvKmtJGKiFDjjXKZ0rVwy5v3Z3i/GAMZvpNKKRLfc=;
-        b=M65TtKlKHGtX8mX+g+91fAHKCph41gARK7tY21v1oWRfOglc1+76okSjorE6vtFjMx
-         JJbVrreafdRsihFtWoQGrxaLull4FcSN/9QzVSNHuujlY44q+OxDDxkKdAM1QqMibP0n
-         Pk6wBiWKF9Ss8SUk3mC+r4uoQTFT3T9wuN5mMezTf6gMhehl8AX51wQMFk07WoHUBSuY
-         VOzA7W/vIx0lbkqw9RcwNVYhqWZryiE2gDiKn5bICDNMb2EuBEk6Jh7EJxenAlVDegp2
-         E5VQLDbhdXKMkXaCv7yoWgmO6MIVVkXzQiWe8eXaV88qIR2L7UUwO6E1t+V9DFExVU9d
-         HbhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=j1NvKmtJGKiFDjjXKZ0rVwy5v3Z3i/GAMZvpNKKRLfc=;
-        b=Mu7MGNxNxBT3nnkIexpzYCORuRRqU/XnBtXp+irEBEjqCqzUlXz4ky1QG64cQ/XbsT
-         y6U+fcrq37SfpdBNBmz0cAI7+D0lnmrRiJbuPa2tMJ6lHxxrj148WM/X3KcgjwVMQ6Se
-         PV9/5Sd3jeZ8E1LoNqBms7OeZGSXzK3IdbYR9KdZO02DM6Qr9e2CKQHTbwxr7iIPyGhr
-         EYKq+2kMaDNpAQMBCNeam8ec9uaBbvy7XHA8Mcxmofw77jTLSnzHQgXJQgm4i2IRndrF
-         qJInquACddL/JLQAs9sNQ+WISShNv3IWYvMh6EeKcvCjHl0V9A52GfIxKGM3oXQCl2XM
-         +wyQ==
-X-Gm-Message-State: AOAM532fnFrLK5gBIDZ17nkYJ0+WAYtB4dnTIZ4lbiHPcVMD05ahsgqk
-        ptRgcgC0l32bsG7S9Emc7RCgTqox8Ww7QqnEymE=
-X-Google-Smtp-Source: ABdhPJwnxRqHv2aMqHMbFt0kXTvzZaOUW+aFB6JjMi14SNUWLSvVqm2hXOLS8N/UvGELnDV/oZP5zanvNoGhzXZMTZI=
-X-Received: by 2002:a17:907:271c:: with SMTP id w28mr70922796ejk.140.1609856581820;
- Tue, 05 Jan 2021 06:23:01 -0800 (PST)
+        id S1726930AbhAEOZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:25:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34168 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726651AbhAEOZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:25:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609856696; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oD8OhFiTFS91oSo/GxxMnZWrLGad6kBBv+IR7HZxg1Q=;
+        b=JP/nz1QiqHC4h0BO/jt/cnqiI07Z9EoE3GIgDqexKBUfc0T0Q57GZTpMpMn6nJ4KkV9Tkn
+        u+m9AIyTm8UNWZPxMO5ku3GMG5DprV0zr/mon1H3dTKJkoaLscfW+W9i+Fi9lhZXFBxS9G
+        VLXhzInzyruCVVvuW3P9Ve2PwytpzY8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9238FACC6;
+        Tue,  5 Jan 2021 14:24:56 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 15:24:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Jan Stancek <jstancek@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, ziy@nvidia.com,
+        shy828301@gmail.com, jack@suse.cz, willy@infradead.org,
+        mgorman@suse.de, songliubraving@fb.com, akpm@linux-foundation.org
+Subject: Re: [PATCH] mm: migrate: initialize err in do_migrate_pages
+Message-ID: <20210105142454.GH13207@dhcp22.suse.cz>
+References: <456a021c7ef3636d7668cec9dcb4a446a4244812.1609855564.git.jstancek@redhat.com>
 MIME-Version: 1.0
-References: <20210104104159.74236-1-selvakuma.s1@samsung.com>
- <CGME20210104104249epcas5p458d1b5c39b5acfad4e7786eca5dd5c49@epcas5p4.samsung.com>
- <20210104104159.74236-3-selvakuma.s1@samsung.com> <BL0PR04MB651402CFA75F72826AC8EE1CE7D20@BL0PR04MB6514.namprd04.prod.outlook.com>
- <20210104190254.GB6919@magnolia>
-In-Reply-To: <20210104190254.GB6919@magnolia>
-From:   Selva Jove <selvajove@gmail.com>
-Date:   Tue, 5 Jan 2021 19:52:48 +0530
-Message-ID: <CAHqX9vYCRpX9FSCEaf2+xbYkB-zm7wRTmUka9zGs4D1T6nZb_A@mail.gmail.com>
-Subject: Re: [dm-devel] [RFC PATCH v4 2/3] block: add simple copy support
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "mpatocka@redhat.com" <mpatocka@redhat.com>,
-        "joshi.k@samsung.com" <joshi.k@samsung.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "javier.gonz@samsung.com" <javier.gonz@samsung.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "bvanassche@acm.org" <bvanassche@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <456a021c7ef3636d7668cec9dcb4a446a4244812.1609855564.git.jstancek@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Darrick,
+On Tue 05-01-21 15:14:20, Jan Stancek wrote:
+> After commit 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")',
+> do_migrate_pages can return uninitialized variable 'err' (which is
+> propagated to user-space as error) when 'from' and 'to' nodesets
+> are identical. This can be reproduced with LTP migrate_pages01,
+> which calls migrate_pages() with same set for both old/new_nodes.
+> 
+> Add 'err' initialization back.
+> 
+> Fixes: 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")
+> Cc: Zi Yan <ziy@nvidia.com>
+> Cc: Yang Shi <shy828301@gmail.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-On Tue, Jan 5, 2021 at 12:33 AM Darrick J. Wong <darrick.wong@oracle.com> w=
-rote:
->
-> SelvaKumar S: This didn't show up on dm-devel, sorry for the OT reply...
->
-> On Mon, Jan 04, 2021 at 12:47:11PM +0000, Damien Le Moal wrote:
-> > On 2021/01/04 19:48, SelvaKumar S wrote:
-> > > Add new BLKCOPY ioctl that offloads copying of one or more sources
-> > > ranges to a destination in the device. Accepts copy_ranges that conta=
-ins
-> > > destination, no of sources and pointer to the array of source
-> > > ranges. Each range_entry contains start and length of source
-> > > ranges (in bytes).
-> > >
-> > > Introduce REQ_OP_COPY, a no-merge copy offload operation. Create
-> > > bio with control information as payload and submit to the device.
-> > > REQ_OP_COPY(19) is a write op and takes zone_write_lock when submitte=
-d
-> > > to zoned device.
-> > >
-> > > If the device doesn't support copy or copy offload is disabled, then
-> > > copy is emulated by allocating memory of total copy size. The source
-> > > ranges are read into memory by chaining bio for each source ranges an=
-d
-> > > submitting them async and the last bio waits for completion. After da=
-ta
-> > > is read, it is written to the destination.
-> > >
-> > > bio_map_kern() is used to allocate bio and add pages of copy buffer t=
-o
-> > > bio. As bio->bi_private and bio->bi_end_io is needed for chaining the
-> > > bio and over written, invalidate_kernel_vmap_range() for read is call=
-ed
-> > > in the caller.
-> > >
-> > > Introduce queue limits for simple copy and other helper functions.
-> > > Add device limits as sysfs entries.
-> > >     - copy_offload
-> > >     - max_copy_sectors
-> > >     - max_copy_ranges_sectors
-> > >     - max_copy_nr_ranges
-> > >
-> > > copy_offload(=3D 0) is disabled by default.
-> > > max_copy_sectors =3D 0 indicates the device doesn't support native co=
-py.
-> > >
-> > > Native copy offload is not supported for stacked devices and is done =
-via
-> > > copy emulation.
-> > >
-> > > Signed-off-by: SelvaKumar S <selvakuma.s1@samsung.com>
-> > > Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
-> > > Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
-> > > Signed-off-by: Javier Gonz=C3=A1lez <javier.gonz@samsung.com>
-> > > ---
-> > >  block/blk-core.c          |  94 ++++++++++++++--
-> > >  block/blk-lib.c           | 223 ++++++++++++++++++++++++++++++++++++=
-++
-> > >  block/blk-merge.c         |   2 +
-> > >  block/blk-settings.c      |  10 ++
-> > >  block/blk-sysfs.c         |  50 +++++++++
-> > >  block/blk-zoned.c         |   1 +
-> > >  block/bounce.c            |   1 +
-> > >  block/ioctl.c             |  43 ++++++++
-> > >  include/linux/bio.h       |   1 +
-> > >  include/linux/blk_types.h |  15 +++
-> > >  include/linux/blkdev.h    |  13 +++
-> > >  include/uapi/linux/fs.h   |  13 +++
->
-> This series should also be cc'd to linux-api since you're adding a new
-> userspace api.
->
+Thanks!
 
-Sure. Will cc linux-api
+> ---
+>  mm/mempolicy.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 8cf96bd21341..2c3a86502053 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -1111,7 +1111,7 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
+>  		     const nodemask_t *to, int flags)
+>  {
+>  	int busy = 0;
+> -	int err;
+> +	int err = 0;
+>  	nodemask_t tmp;
+>  
+>  	migrate_prep();
+> -- 
+> 2.18.1
+> 
 
->
-> Alternately, save yourself the trouble of passing userspace API review
-> by hooking this up to the existing copy_file_range call in the vfs.  /me
-> hopes you sent blktests to check the operation of this thing, since none
-> of the original patches made it to this list.
->
-
-As the initial version had only source bdev, copy_file_rage call was not
-viable. With this version, we have two bdev for source and destination.
-I'll relook at that. Sure. Will add a new blktests for simple copy.
-
->
-> If you really /do/ need a new kernel call for this, then please send in
-> a manpage documenting the fields of struct range_entry and copy_range,
-> and how users are supposed to use this.
->
-
-Sure. Will send a manpage documentation once the plumbing is concrete.
-
-> <now jumping to the ioctl definition because Damien already reviewed the
-> plumbing...>
->
-> > > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> > > index f44eb0a04afd..5cadb176317a 100644
-> > > --- a/include/uapi/linux/fs.h
-> > > +++ b/include/uapi/linux/fs.h
-> > > @@ -64,6 +64,18 @@ struct fstrim_range {
-> > >     __u64 minlen;
-> > >  };
-> > >
-> > > +struct range_entry {
-> > > +   __u64 src;
->
-> Is this an offset?  Or the fd of an open bdev?
-
-This is the source offset.
-
->
-> > > +   __u64 len;
-> > > +};
-> > > +
-> > > +struct copy_range {
-> > > +   __u64 dest;
-> > > +   __u64 nr_range;
-> > > +   __u64 range_list;
->
-> Hm, I think this is a pointer?  Why not just put the range_entry array
-> at the end of struct copy_range?
->
-
-As the size of the range_entry array can change dynamically depending on
-nr_range, it was difficult to do copy_from_user() on copy_range structure i=
-n the
-ioctl. So I decided to keep that as a pointer to range_entry array
-instead of keeping
-array at the end.
-
-> > > +   __u64 rsvd;
->
-> Also needs a flags argument so we don't have to add BLKCOPY2 in like 3
-> months.
->
-
-'rsvd' field is kept to support future copies. Will rename it.
-
-> --D
->
-> > > +};
-> > > +
-> > >  /* extent-same (dedupe) ioctls; these MUST match the btrfs ioctl def=
-initions */
-> > >  #define FILE_DEDUPE_RANGE_SAME             0
-> > >  #define FILE_DEDUPE_RANGE_DIFFERS  1
-> > > @@ -184,6 +196,7 @@ struct fsxattr {
-> > >  #define BLKSECDISCARD _IO(0x12,125)
-> > >  #define BLKROTATIONAL _IO(0x12,126)
-> > >  #define BLKZEROOUT _IO(0x12,127)
-> > > +#define BLKCOPY _IOWR(0x12, 128, struct copy_range)
-> > >  /*
-> > >   * A jump here: 130-131 are reserved for zoned block devices
-> > >   * (see uapi/linux/blkzoned.h)
-> > >
-> >
-> >
-> > --
-> > Damien Le Moal
-> > Western Digital Research
-> >
-> >
-> >
-> > --
-> > dm-devel mailing list
-> > dm-devel@redhat.com
-> > https://www.redhat.com/mailman/listinfo/dm-devel
-> >
-
-Thanks,
-Selva
+-- 
+Michal Hocko
+SUSE Labs
