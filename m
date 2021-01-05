@@ -2,165 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE862EB00F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F192EB013
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbhAEQaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:30:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726655AbhAEQaE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:30:04 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E71EC061793;
-        Tue,  5 Jan 2021 08:29:24 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id l11so74029287lfg.0;
-        Tue, 05 Jan 2021 08:29:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WnKBAJVxaowk5MMmWYJeufW/YY0cNztLm0VvLAro1vA=;
-        b=fURn9bOv3P/p4cp2iKgs4R1KSHwzlBISuB5l7hmbgr2m0VDOpMlRldjjH/6B6EpJWf
-         +ScfItVpJyAG/ZfT+qHs+aZX7oCU2hMZDUP8L/RM8dYKlfysJXmrrNF6qatk86qC9x6O
-         B/dzzTXlw3QYb04hueAf4/MQRTknN/Hth25T7EmPOX7+wRBAVEcoqp/D2kmd8DTasyG9
-         MOYMckeOfHOxD33h8B4WpKekj5VqaG2c/Q+qrZdVjaZ6AoFjfeobyHAPMoHihEW22B/m
-         RJxK3yYUdYx0mc7xJeaiq8a598qMOcvAl/jn9tES1XSN8KIcW2EDn+G4q1d2jnPg+Xih
-         YeAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WnKBAJVxaowk5MMmWYJeufW/YY0cNztLm0VvLAro1vA=;
-        b=uU2MERb1jLPcpAjRI2ZXBXI1s8+208GIuRch9Tg36oyTWww46RImh9YkpLWzItEyos
-         uPLdqGwURrt7IYihxa/suLEGVSyTbYA+3kTBmmOogdRa4A9TOvr7wuyZFyyTH9i0RylB
-         YjMjC8ZB1j34XoVInqOzszx9mKxyPR56gdZWFto0GD2PdSQbafeW2IxUA13zUMasVKqa
-         PaZsXAyig+9hy3n7HMRs2MDm8qJrOJmT+s/ykY6fYu1t4uqS+SDWK2cbvQn0L7+Xf1t6
-         e3pbzsmp9dBqivHzemo41+2Ees2eFhcHNaE4Xk97ieC6XFG/YYHkuKUzDArqmt4g4f0D
-         wUqA==
-X-Gm-Message-State: AOAM533hQXedcjZT46uKZp0ZY/lMpKWR0JXL3V70phhN4wyCTrVWbbuY
-        UTgPqqKbEhJxj97x4GhqV6/ge2Z4fzE=
-X-Google-Smtp-Source: ABdhPJy5I4KmUU2D1eK6L9+2fhJOb70aRXLJX7tqprrilhPBBux8G8iXkrdSZolqzRQx+ysFJHNXZA==
-X-Received: by 2002:a2e:720c:: with SMTP id n12mr222633ljc.2.1609864162746;
-        Tue, 05 Jan 2021 08:29:22 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id v63sm14662lfa.89.2021.01.05.08.29.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 08:29:21 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 5 Jan 2021 17:29:19 +0100
-To:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: kerneldoc warnings since commit 538fc2ee870a3 ("rcu: Introduce
- kfree_rcu() single-argument macro")
-Message-ID: <20210105162919.GA1800@pc638.lan>
-References: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
- <20210105131441.GA2457@pc638.lan>
- <20210105145659.GD17086@paulmck-ThinkPad-P72>
+        id S1728878AbhAEQac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:30:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727036AbhAEQab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:30:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 705C422CA0;
+        Tue,  5 Jan 2021 16:29:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609864191;
+        bh=rntfB7C5mBvVXgliBl2U7ngampY/9LrSTvoo5JN6PHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S88AqmoJInnEWhe9qFDxHx5FvAYHSp2+rb+N2gfbHNDqaltI/vzxj97J0i6Zl4ZSo
+         FrMnv1h7c5jq1+J/SA2CzP53dUx9Ic5a226yVsQDL87Z/TQTi0ydw0WX0Gj6bWEpff
+         Bpyl/Wv92pZ60y5kZU+mTkDBRRw0n5k3Pfp6MyjOURgVKFyTCYlDKpmW+92zkIrrio
+         AiabCKPbajE3T7uFKNjPkX05HK+As0UcALR8Cs2/Crq2Iy/CX0hUrt7kpGlUCUKYks
+         Y3fP0co3+5kMdsvFM/c9iGlnTGd3Eki1+zbIW6H6Q7OPVStS8Z9lIf0SRS6tjSj6fW
+         QaCVt0a72co2w==
+Date:   Tue, 5 Jan 2021 17:29:46 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.xyz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 18/21] dt-bindings: allwinner: Add H616 compatible
+ strings
+Message-ID: <20210105162946.GI1842@ninjato>
+References: <20201211011934.6171-1-andre.przywara@arm.com>
+ <20201211011934.6171-19-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WIIRZ1HQ6FgrlPgb"
 Content-Disposition: inline
-In-Reply-To: <20210105145659.GD17086@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201211011934.6171-19-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 06:56:59AM -0800, Paul E. McKenney wrote:
-> On Tue, Jan 05, 2021 at 02:14:41PM +0100, Uladzislau Rezki wrote:
-> > Dear, Lukas.
-> > 
-> > > Dear Uladzislau,
-> > > 
-> > > in commit 538fc2ee870a3 ("rcu: Introduce kfree_rcu() single-argument
-> > > macro"), you have refactored the kfree_rcu macro.
-> > > 
-> > > Since then, make htmldocs warns:
-> > > 
-> > > ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> > > 'ptr' description in 'kfree_rcu'
-> > > ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> > > 'rhf' description in 'kfree_rcu'
-> > > 
-> > > As you deleted the two arguments in the macro definition, kerneldoc
-> > > cannot resolve the argument names in the macro's kerneldoc
-> > > documentation anymore and warns about that.
-> > > 
-> > > Probably, it is best to just turn the formal kerneldoc references to
-> > > the two arguments, which are not used in the macro definition anymore,
-> > > simply into two informal references in the documentation.
-> > > 
-> > Thanks for your suggestion. I am not sure if htmldocs supports something
-> > like "__maybe_unused", but tend to say that it does not. See below the
-> > patch:
-> > 
-> > <snip>
-> > >From 65ecc7c58810c963c02e0596ce2e5758c54ef55d Mon Sep 17 00:00:00 2001
-> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> > Date: Tue, 5 Jan 2021 13:23:30 +0100
-> > Subject: [PATCH] rcu: fix kerneldoc warnings
-> > 
-> > After refactoring of the kfree_rcu(), it becomes possible to use
-> > the macro with one or two arguments. From the other hand, in the
-> > description there are two arguments in the macro definition expected.
-> > That is why the "htmldocs" emits a warning about it:
-> > 
-> > <snip>
-> > ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> > 'ptr' description in 'kfree_rcu'
-> > ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> > 'rhf' description in 'kfree_rcu'
-> > <snip>
-> > 
-> > Fix it by converting two parameters into informal references in the
-> > macro description.
-> > 
-> > Fixes: 3d3d9ff077a9 ("rcu: Introduce kfree_rcu() single-argument macro")
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  include/linux/rcupdate.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index ebd8dcca4997..e678ce7f5ca2 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -854,8 +854,8 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-> >  
-> >  /**
-> >   * kfree_rcu() - kfree an object after a grace period.
-> > - * @ptr: pointer to kfree for both single- and double-argument invocations.
-> > - * @rhf: the name of the struct rcu_head within the type of @ptr,
-> > + * ptr: pointer to kfree for both single- and double-argument invocations.
-> > + * rhf: the name of the struct rcu_head within the type of ptr,
-> >   *       but only for double-argument invocations.
-> >   *
-> >   * Many rcu callbacks functions just call kfree() on the base structure.
-> > -- 
-> > 2.20.1
-> > <snip>
-> > 
-> > Paul, does it work for you?
-> 
-> If it works for the documentation generation, then it works for me.  ;-)
-> 
-OK. Then we need the patch to be reviewed by the documentation generation :)
 
-Dear, linux-doc folk!
+--WIIRZ1HQ6FgrlPgb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Could you please review the patch that is in question?
+On Fri, Dec 11, 2020 at 01:19:31AM +0000, Andre Przywara wrote:
+> Add simple "allwinner,sun50i-h616-xxx" compatible names to existing
+> bindings, and pair them with an existing fallback compatible string,
+> as the devices are compatible.
+> This covers I2C, infrared, RTC and SPI.
+>=20
+> Use enums to group all compatible devices together.
+>=20
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 
-Thank you in advance.
+Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
 
---
-Vlad Rezki
+
+--WIIRZ1HQ6FgrlPgb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/0k/oACgkQFA3kzBSg
+KbYcAA//fxeNSjKkeAsUP+tmVP+6UOmYGFWuzggJQKr5y0aThBUNYPfWWF/lDRa/
+wuzgurDJZhsKyb8BxhgY2Bc/EoPsxWZi30fz2l6YdTLi3NfYoky2LhUECl+JYGjV
+MgMCCNdVyLZ8uU39J/PuCBH4oN2gBcuLxmOsiVnXcfkbbWjI6c1DNOxRDJdXx9WU
+4YDBk98pbmW7Bxik+11pmF9nncF1HvMQ4MYU+Z7fDvQfwGV74dogLu4Psr0q30o+
+zNgU/BPvf/U7DLlkcTz18ChX+v9++OZe0AnEPKMtugTZW1rI28SYvNSGhE3QDXcW
+otfDp2FvmbilDX5CtK14mlIi+0mVqu0xx6o20pNVAmx4QTjuDr2zAh+EHJ11kP6O
+KEKQRZIP7Wj0NBbaSi/mAieeF/DvH8lK9FNKUFMj8108wNF05NB00KuZ4DFvhpDA
+M1IgSiSLqJOokZw9Kbw1coKROsYZcWuCrY4tCLVe3m7u0mE9wHIgXsnDtEKLajqL
+Vd7GLY60FVPoF9OMlz2Q2liy4D+gz/NIwKYsrFU87FrMag9Lw0JZQVeH9eqw1akl
+ACSHHN3JNDJUIH5g1Yiem+VGAOQSBrz4Lr0sTTHm+OAo6b9q8k7DJtyuwUrUajG9
+s26hNzxVo+c5AbLTltlCd9esoPiHr4/zia2oKz8kM6WYsDLwKMU=
+=9MjQ
+-----END PGP SIGNATURE-----
+
+--WIIRZ1HQ6FgrlPgb--
