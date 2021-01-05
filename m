@@ -2,137 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC5E2EB349
+	by mail.lfdr.de (Postfix) with ESMTP id ED08B2EB34A
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbhAETEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 14:04:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35038 "EHLO mail.kernel.org"
+        id S1730636AbhAETF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 14:05:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727718AbhAETEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:04:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5906D22D57;
-        Tue,  5 Jan 2021 19:04:10 +0000 (UTC)
+        id S1728981AbhAETF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 14:05:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E6AA22D5B;
+        Tue,  5 Jan 2021 19:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609873451;
-        bh=m7F7jxxf4ap/Rx2gdRXtLy9isGEOULchCtP0u2gWK0k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eFrrIermqvjQT7gdpmnWlTaCTAW7UEa0q5L1WN0EmY3+dW2gbfgscP1wPQNB0q9tM
-         dAI8Cv+4LtIXV8T7aTlMG5XVr+C5eM2o6M0HUI3x2xq+Z2a3W6xa8chZVopTejg9HC
-         4NunOXY1nNyNw3l0ix4ebnb+mgRRZVmUA/dyZmqczWNLxhX/mDtOUD9y+L2/LY6Xy9
-         UPtuCYOXMfKyDAasHxFJ+HIvAQ2brV/kVe4YGXZuIGn1gGU/BjddYdVpj/QF4B29D1
-         IvWctyMH4iz5kCcgFdF87rQVl00JSz+OmtwYS8Oc6qL2HTCgUQ452y2EVcDGMPBGTg
-         0eXV1hLYR7JCQ==
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org
-Subject: [PATCH] arm64: dts: n5x: Add support for Intel's eASIC N5X platform
-Date:   Tue,  5 Jan 2021 13:04:03 -0600
-Message-Id: <20210105190403.2054948-1-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.30.0
+        s=k20201202; t=1609873488;
+        bh=pdXRW916AxUwPNH0kbaMgbe9akT1S9yC68nIHVv6WCY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Can7n0XI6x+F1komFvkalUvv/x7rXUScyw9/9a0C3+bDiPdqzD4xLrOCtLaXzpeBU
+         1gBZ5w5GpyUdxf4dwuET/BE/ul0xSGcViKsDl09rIruNaRgZ0c1dOQkV2HLlhZYiO7
+         F2dwAYmCeyAWavyKHFvJWByFNocak2A51pTJgDl03Cl6//+l7A+XjBe4kV1eTP8W41
+         dh/gAJWdTQCWkV9L48A7bb+1ujJ/CEzFCz7BraSbDL9CJJOraRLzj0+KBpiMkgQ/W7
+         Z+8h5QFeBvhgEO/sReSWgFkGuEyW+Kgixxeo0mkfqKfmsnzhW63qEyB5ZwNuTD3WfF
+         gr47l397khkEQ==
+Date:   Tue, 5 Jan 2021 19:04:43 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Guo Kaijie <Kaijie.Guo@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] iommu/vt-d: Remove unused dma map/unmap trace events
+Message-ID: <20210105190443.GB12182@willie-the-truck>
+References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
+ <20201231005323.2178523-3-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201231005323.2178523-3-baolu.lu@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel eASIC N5X platform shares the same register map as the Agilex
-platform, thus, we can re-use the socfpga_agilex.dtsi as the base
-DTSI.
+On Thu, Dec 31, 2020 at 08:53:21AM +0800, Lu Baolu wrote:
+> With commit c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to
+> the iommu ops"), the trace events for dma map/unmap have no users any
+> more. Remove them so that they don't show up under
+> /sys/kernel/debug/tracing/events/intel_iommu. The users should use the
+> map/unmap traces defined in the iommu core from now on.
+> 
+> Fixes: c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  include/trace/events/intel_iommu.h | 119 -----------------------------
+>  1 file changed, 119 deletions(-)
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
- arch/arm64/Kconfig.platforms                  |  5 ++
- arch/arm64/boot/dts/intel/Makefile            |  1 +
- .../boot/dts/intel/socfpga_n5x_socdk.dts      | 53 +++++++++++++++++++
- 3 files changed, 59 insertions(+)
- create mode 100644 arch/arm64/boot/dts/intel/socfpga_n5x_socdk.dts
+Is this needed in 5.11, or can it wait until 5.12?
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 6eecdef538bd..c20eacd9a931 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -13,6 +13,11 @@ config ARCH_AGILEX
- 	help
- 	  This enables support for Intel's Agilex SoCFPGA Family.
- 
-+config ARCH_N5X
-+	bool "Intel's eASIC N5X SoCFPGA Family"
-+	help
-+	  This enables support for Intel's eASIC N5X SoCFPGA Family.
-+
- config ARCH_SUNXI
- 	bool "Allwinner sunxi 64-bit SoC Family"
- 	select ARCH_HAS_RESET_CONTROLLER
-diff --git a/arch/arm64/boot/dts/intel/Makefile b/arch/arm64/boot/dts/intel/Makefile
-index 296eceec4276..3a052540605b 100644
---- a/arch/arm64/boot/dts/intel/Makefile
-+++ b/arch/arm64/boot/dts/intel/Makefile
-@@ -2,3 +2,4 @@
- dtb-$(CONFIG_ARCH_AGILEX) += socfpga_agilex_socdk.dtb \
- 			     socfpga_agilex_socdk_nand.dtb
- dtb-$(CONFIG_ARCH_KEEMBAY) += keembay-evm.dtb
-+dtb-$(CONFIG_ARCH_N5X) += socfpga_n5x_socdk.dtb
-diff --git a/arch/arm64/boot/dts/intel/socfpga_n5x_socdk.dts b/arch/arm64/boot/dts/intel/socfpga_n5x_socdk.dts
-new file mode 100644
-index 000000000000..5f56e2697fee
---- /dev/null
-+++ b/arch/arm64/boot/dts/intel/socfpga_n5x_socdk.dts
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier:     GPL-2.0
-+/*
-+ * Copyright (C) 2021, Intel Corporation
-+ */
-+#include "socfpga_agilex.dtsi"
-+
-+/ {
-+	model = "eASIC N5X SoCDK";
-+
-+	aliases {
-+		serial0 = &uart0;
-+		ethernet0 = &gmac0;
-+		ethernet1 = &gmac1;
-+		ethernet2 = &gmac2;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory {
-+		device_type = "memory";
-+		/* We expect the bootloader to fill in the reg */
-+		reg = <0 0 0 0>;
-+	};
-+
-+	soc {
-+		clocks {
-+			osc1 {
-+				clock-frequency = <25000000>;
-+			};
-+		};
-+	};
-+};
-+
-+&clkmgr {
-+	compatible = "intel,easic-n5x-clkmgr";
-+};
-+
-+&mmc {
-+	status = "okay";
-+	cap-sd-highspeed;
-+	broken-cd;
-+	bus-width = <4>;
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-+
-+&watchdog0 {
-+	status = "okay";
-+};
--- 
-2.30.0
-
+Will
