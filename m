@@ -2,144 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569E52EAD3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF4C2EAD42
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727477AbhAEOSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:18:37 -0500
-Received: from mail-eopbgr770072.outbound.protection.outlook.com ([40.107.77.72]:39638
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727037AbhAEOSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:18:36 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fvr7ZgH0N1QB602WbtFEW5P0d5IEoGV2iozfvpZJt+DLSzF3VSbfZt8Qkk9nv9rOAfk6AsL2vG7gcauhMDsjqEMHR1pxIkUx0rVXikubjC+2jD5RlIegqjMm+4G2p5nsMssyLId8PdfN80E0hpPxQIa4Uw6QM5Bby6y5w1dvJzjdPvX+Ch27AM4/d3ULtD+gmzxWn6LyKOHzSMK0WAxLYgd+Goiew9qv5BZgqKxA/dZv2pVjcOIQ6D2DrWX+m3C6v7qKL5qb64SdJRUkWllq5cL6Bl/c5KOp1L9nsBMylgWmJM8SBOWDGcCO/NkgOP9WORQoHGrOkh3ws6IOZfMlGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DJePtYBLAr40yF0gUjx0DgIFf4llN7s+DV7X2u3S/Mw=;
- b=ZsStXKNhqNbBs82Fd2AztjXYSEZvZ8afrtrLJjCohavMn9zNV0pBgu4s2lOQjKLMDLoDpHgxht0bofMGHAN67mxgmEedJumzldMDk3oGARHc3hBr04HSdGHuZ1I70uaoDlyE3brjoqwKAhCdfXskwpt0RMyQ7dgXkOwt2nL+L9CzA+x97DRG69rP9p/ThCHYTKCHd6QYdkbiIyYJiVpD3G7iMjsls7u2F7Zg+xvSFV7z8B3pIAo1gKDMd1DLAoT0XA69L+8uGema8axyU+Oas6E0h74EK6QAfIhfz+fYoEqc19r8G0hIFnXwThN7xTZQY4Bofsw21Pi4Ps/7vR5LTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
- dkim=pass header.d=infinera.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DJePtYBLAr40yF0gUjx0DgIFf4llN7s+DV7X2u3S/Mw=;
- b=LpYnf8sZpNt8AStu4tQgB0yioehiFURcxCIYaYQQ00VYreVeNsITAss0n8o4ymP2gXrUJyR+J04Hk6VMHMb8kQxg5k3h+z0V7dP+rpBDF2O9qa3MHvGG1V1sjsoWkoN5qSCIBcq9g8WRObb1/sXRZnbM2rZA0iibQgHlo35Z1mo=
-Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
- (2603:10b6:910:45::21) by CY4PR1001MB2312.namprd10.prod.outlook.com
- (2603:10b6:910:49::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.24; Tue, 5 Jan
- 2021 14:17:42 +0000
-Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
- ([fe80::e83b:f5de:35:9fa7]) by CY4PR1001MB2389.namprd10.prod.outlook.com
- ([fe80::e83b:f5de:35:9fa7%7]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
- 14:17:42 +0000
-From:   Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To:     "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
-        "andrew@lunn.ch" <andrew@lunn.ch>
-CC:     "leoyang.li@nxp.com" <leoyang.li@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "murali.policharla@broadcom.com" <murali.policharla@broadcom.com>,
-        "vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "qiang.zhao@nxp.com" <qiang.zhao@nxp.com>
-Subject: Re: [PATCH 01/20] ethernet: ucc_geth: set dev->max_mtu to 1518
-Thread-Topic: [PATCH 01/20] ethernet: ucc_geth: set dev->max_mtu to 1518
-Thread-Index: AQHWyzvztwOyjy9i30WJ0/nUUTDGzanvkBgAgCm0fAA=
-Date:   Tue, 5 Jan 2021 14:17:42 +0000
-Message-ID: <33816fa937efc8d4865d95754965e59ccfb75f2c.camel@infinera.com>
-References: <20201205191744.7847-1-rasmus.villemoes@prevas.dk>
-         <20201205191744.7847-2-rasmus.villemoes@prevas.dk>
-         <20201210012502.GB2638572@lunn.ch>
-In-Reply-To: <20201210012502.GB2638572@lunn.ch>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.38.2 
-authentication-results: prevas.dk; dkim=none (message not signed)
- header.d=none;prevas.dk; dmarc=none action=none header.from=infinera.com;
-x-originating-ip: [88.131.87.201]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 86cbe9ba-9faf-4095-3fc5-08d8b184aa36
-x-ms-traffictypediagnostic: CY4PR1001MB2312:
-x-microsoft-antispam-prvs: <CY4PR1001MB23120102779635469298D607F4D10@CY4PR1001MB2312.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IaTAfWeT6/KN06pXDWtDxG8Ny6UzPb792D8ISzWm1Rfefxvi26wSXV1gYZtBByfw9hwtMXRa1ABjPCY/mIGILDXfIw7IHbSSM67juMHhvq8OgEu4yxMs27MrJwOuR8rAma1O6FSL/xvYDXJEsLOkTW9eGjfiP3FDQ3/vWYJyTyp9SPa8XyCiMluvae+9J5wCYkbCDC002BvWGUUVfhlBW4Ep9L93g4olMlG6EVleI681JCbGzJoS+S5vdPLxoAUPL4IO8SuQYdBPdlOHfDdDIpdCuCqxa82DitusPhQT4y5E9PMp20HzvescyVy63wtzxHRqcYH/w5wrfiOngn7Y28lxcaPP+ISEIUi0cca98gXEENY/c4bhG+l9LP2CA46kvILUxqL+zGE63qNcLRy3tA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39850400004)(366004)(136003)(396003)(346002)(66476007)(86362001)(2906002)(2616005)(8676002)(64756008)(186003)(316002)(66556008)(66446008)(4326008)(91956017)(76116006)(6486002)(6512007)(6506007)(26005)(4001150100001)(478600001)(71200400001)(66946007)(83380400001)(36756003)(54906003)(7416002)(110136005)(5660300002)(8936002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?M2k5dWxHY25qanpETlE3SzR6KzdpSmNjNGNjSERuSkJSY2l2U09PcEsvQ2ZI?=
- =?utf-8?B?bUVWdzNjd1lFY1lPeW45NkM2OXB6RTcyWG9NaGgxN2NCTi93UTV3YXNkdWl5?=
- =?utf-8?B?U0p3aGlrMDh2bW5kOWxJRi8yVld0c2xzK2VTdllWUnZtVC9PSGx5WEJpZjVZ?=
- =?utf-8?B?SzJuMEQvYTRsVkNBMDJaNDhPNUoydUxnQkJMa3E0T3VLVXg1QXdFNFhFTEZi?=
- =?utf-8?B?TW1rc3NYNUlVNk0vS042RWlGSUV3S3ltSVZnZUFCblFnMTNxZFZZeTZkUU5s?=
- =?utf-8?B?M2NrOGNNQjVqYUFqSDZIdlpZS0x0RTIyWkVLN3dWNlpIRE8xSFVpS1Y4dEJt?=
- =?utf-8?B?YkxmYjQ2Z2RkdHhnWVJabW5adW1sbFdUdm43b2J4VkQreGJ4aFpIUlZCN1o4?=
- =?utf-8?B?K3J6eFk3NXdmbjM5dzNCVE53aUUybDVTaitCemxDYlVpRTg3UnFzR1lza1NI?=
- =?utf-8?B?MEdiNUNRRTRFd3c5VHVHYkMwSE5JRzJ0enpRYXZGTGZvTDNYbnQwaDRleEg5?=
- =?utf-8?B?cmpEb2liUjhjVnJGZjRJVFZuRE5oMUVQTFkwV0JsV3Rva1VUNDdPT3ZpelBN?=
- =?utf-8?B?enZTSkg4ck5vV3JqVmpDU0l0SXQ4UzNWWjBST2FSYkdhOTBabkdwTENjUksz?=
- =?utf-8?B?akdtZWFRUk1LbU11b2lvU3djbEZ5dURlc05pdnlnNDB4MXNxRjVmME85bFJ1?=
- =?utf-8?B?MTI1L1NLM2hDai9LVHVTMjNKcWVwdHpGV0JhaVFvQWpLZ1o0QjF4Z2VZYXgr?=
- =?utf-8?B?ODkrVW1YZk1Cb2krK3dva2x1TUorcmVQZjIrc210QTJjVHVoK2pEcVZzNmND?=
- =?utf-8?B?OVh6YmJEUEQxbVhSQlJLUCsyUUxHNnhUdjhhdWc2MkdjRENGaVdUdW1yOU84?=
- =?utf-8?B?QlZVVG9MYzB5ZTUxdmJ0ZElsdE94eFVITTYxbFZReVlCR2MxT2VDRytWTE53?=
- =?utf-8?B?N0tDWXVwd00wbnVlaVgxREEyVXI0bGVjbFdaQnFtK1lWdjUzRUlOL0xJQUw0?=
- =?utf-8?B?eWJhWjI1aldKQWd3dTlCK1RmMnd5L05yMmFIVVJSenpPaHFHOWV0ZGlzRG5y?=
- =?utf-8?B?d0gzbEJFWDNMWXVkeVp6cG1TMW1WZ1RqYjUzV1d1NXI3eFJqK0NnZkVPRWJE?=
- =?utf-8?B?MUpCYWV6Q0hBajlYSHZablhxeWlqSk9nYjZSd012cnVOWHFPUzdHc091WHB5?=
- =?utf-8?B?Y2tEaVlpSHRUaUNKYWtKaE9GSXhkUHNjU3Rnc1czR2dLakxMOHliS1kvYmpL?=
- =?utf-8?B?b240NHdNKzA0MkpPMEVlUisrYjd0eGR0QUJkcDh6RFVETTMrVXZ3aEEzSW9R?=
- =?utf-8?Q?A7C9nWqK0wP3Noe8JVmZ2sQOlYPmSMisHt?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9D24AF8C590D064A9D4993127EC4B716@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727559AbhAEOSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:18:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbhAEOSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:18:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19D3F22AAB;
+        Tue,  5 Jan 2021 14:18:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609856287;
+        bh=6s31ZIkixY+XOJ1zBcpw8HQ3MQaUtb0FwN/tnF0TkUY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X9W3EgUNZzJnC2z9WBx7doUE6NQHm+ds/uakdLvr0h/dST+VYNnt5lMTuX2NZ1GnO
+         TORpQpoQUsTRAxjuTobBhCnCRLG5ij5148f8DLe7euA8DK+fGNFevj34MdoddRfGmi
+         SWnFY/BXkNvth8RW4ENUcI3zpwR+9H9SimDn38Zz9yV1qXWmS3PikigZqjX/O2TDAR
+         y1EoHDyEu1bU0oKC6BGC0qbWk/BQPWwePYYwd8hRtBs0f9adU3MtaSEvBQ5GA9M6Xq
+         uuejZ4cUgwd7sCxSAG+YK0gLbQkMl1Mu5SrhX+pClDRLNT23CdiyoTSmZddiPAn3g/
+         M6VfSUPTppcXw==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 1E2F13C0C94; Tue,  5 Jan 2021 15:18:05 +0100 (CET)
+Date:   Tue, 5 Jan 2021 15:18:05 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, dmurphy@ti.com
+Subject: Re: [PATCH v8 2/2] power: supply: bq256xx: Introduce the BQ256XX
+ charger driver
+Message-ID: <20210105141805.vhf7wrgcwujr7uwn@earth.universe>
+References: <20210104202450.9669-3-r-rivera-matos@ti.com>
+ <202101051158.UxB5IFs7-lkp@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: infinera.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2389.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 86cbe9ba-9faf-4095-3fc5-08d8b184aa36
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jan 2021 14:17:42.1217
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wWKIKOtb00ROncMfMWhkU84cK10sQQwpERSNPq91+s6pdzYJjPE1aT8qJ7pG/qLSEABi5BdsLGoSI5S1FkuWbA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2312
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="h2556ndxc2dpprsn"
+Content-Disposition: inline
+In-Reply-To: <202101051158.UxB5IFs7-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTEyLTEwIGF0IDAyOjI1ICswMTAwLCBBbmRyZXcgTHVubiB3cm90ZToNCj4g
-T24gU2F0LCBEZWMgMDUsIDIwMjAgYXQgMDg6MTc6MjRQTSArMDEwMCwgUmFzbXVzIFZpbGxlbW9l
-cyB3cm90ZToNCj4gPiBBbGwgdGhlIGJ1ZmZlcnMgYW5kIHJlZ2lzdGVycyBhcmUgYWxyZWFkeSBz
-ZXQgdXAgYXBwcm9wcmlhdGVseSBmb3IgYW4NCj4gPiBNVFUgc2xpZ2h0bHkgYWJvdmUgMTUwMCwg
-c28gd2UganVzdCBuZWVkIHRvIGV4cG9zZSB0aGlzIHRvIHRoZQ0KPiA+IG5ldHdvcmtpbmcgc3Rh
-Y2suIEFGQUlDVCwgdGhlcmUncyBubyBuZWVkIHRvIGltcGxlbWVudCAubmRvX2NoYW5nZV9tdHUN
-Cj4gPiB3aGVuIHRoZSByZWNlaXZlIGJ1ZmZlcnMgYXJlIGFsd2F5cyBzZXQgdXAgdG8gc3VwcG9y
-dCB0aGUgbWF4X210dS4NCj4gPiANCj4gPiBUaGlzIGZpeGVzIHNldmVyYWwgd2FybmluZ3MgZHVy
-aW5nIGJvb3Qgb24gb3VyIG1wYzgzMDktYm9hcmQgd2l0aCBhbg0KPiA+IGVtYmVkZGVkIG12ODhl
-NjI1MCBzd2l0Y2g6DQo+ID4gDQo+ID4gbXY4OGU2MDg1IG1kaW9AZTAxMDIxMjA6MTA6IG5vbmZh
-dGFsIGVycm9yIC0zNCBzZXR0aW5nIE1UVSAxNTAwIG9uIHBvcnQgMA0KPiA+IC4uLg0KPiA+IG12
-ODhlNjA4NSBtZGlvQGUwMTAyMTIwOjEwOiBub25mYXRhbCBlcnJvciAtMzQgc2V0dGluZyBNVFUg
-MTUwMCBvbiBwb3J0IDQNCj4gPiB1Y2NfZ2V0aCBlMDEwMjAwMC5ldGhlcm5ldCBldGgxOiBlcnJv
-ciAtMjIgc2V0dGluZyBNVFUgdG8gMTUwNCB0byBpbmNsdWRlIERTQSBvdmVyaGVhZA0KPiA+IA0K
-PiA+IFRoZSBsYXN0IGxpbmUgZXhwbGFpbnMgd2hhdCB0aGUgRFNBIHN0YWNrIHRyaWVzIHRvIGRv
-OiBhY2hpZXZpbmcgYW4gTVRVDQo+ID4gb2YgMTUwMCBvbi10aGUtd2lyZSByZXF1aXJlcyB0aGF0
-IHRoZSBtYXN0ZXIgbmV0ZGV2aWNlIGNvbm5lY3RlZCB0bw0KPiA+IHRoZSBDUFUgcG9ydCBzdXBw
-b3J0cyBhbiBNVFUgb2YgMTUwMCt0aGUgdGFnZ2luZyBvdmVyaGVhZC4NCj4gPiANCj4gPiBGaXhl
-czogYmZjYjgxMzIwM2U2ICgibmV0OiBkc2E6IGNvbmZpZ3VyZSB0aGUgTVRVIGZvciBzd2l0Y2gg
-cG9ydHMiKQ0KPiA+IENjOiBWbGFkaW1pciBPbHRlYW4gPHZsYWRpbWlyLm9sdGVhbkBueHAuY29t
-Pg0KPiA+IFNpZ25lZC1vZmYtYnk6IFJhc211cyBWaWxsZW1vZXMgPHJhc211cy52aWxsZW1vZXNA
-cHJldmFzLmRrPg0KPiANCj4gUmV2aWV3ZWQtYnk6IEFuZHJldyBMdW5uIDxhbmRyZXdAbHVubi5j
-aD4NCj4gDQo+IMKgwqDCoMKgQW5kcmV3DQoNCkkgZG9uJ3Qgc2VlIHRoaXMgaW4gYW55IGtlcm5l
-bCwgc2VlbXMgc3R1Y2s/IE1heWJlIGJlY2F1c2UgdGhlIHNlcmllcyBhcyBhIHdob2xlIGlzIG5v
-dCBhcHByb3ZlZD8NCg0KIEpvY2tlDQo=
+
+--h2556ndxc2dpprsn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Ricardo,
+
+On Tue, Jan 05, 2021 at 11:24:18AM +0800, kernel test robot wrote:
+> Hi Ricardo,
+>=20
+> Thank you for the patch! Perhaps something to improve:
+>=20
+> [auto build test WARNING on power-supply/for-next]
+> [also build test WARNING on robh/for-next v5.11-rc2 next-20210104]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>=20
+> url:    https://github.com/0day-ci/linux/commits/Ricardo-Rivera-Matos/Int=
+roduce-the-BQ256XX-family-of-chargers/20210105-043028
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-s=
+upply.git for-next
+> config: powerpc64-randconfig-r034-20210105 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 5c95=
+1623bc8965fa1e89660f2f5f4a2944e4981a)
+> reproduce (this is a W=3D1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
+n/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install powerpc64 cross compiling tool for clang build
+>         # apt-get install binutils-powerpc64-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/82436c2c6d99c4effb187bb=
+d09b47c4dc59a1f3d
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Ricardo-Rivera-Matos/Introduce-t=
+he-BQ256XX-family-of-chargers/20210105-043028
+>         git checkout 82436c2c6d99c4effb187bbd09b47c4dc59a1f3d
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross AR=
+CH=3Dpowerpc64=20
+>=20
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>=20
+> All warnings (new ones prefixed by >>):
+>=20
+>    drivers/power/supply/bq256xx_charger.c:1644:29: warning: variable 'psy=
+_cfg' is uninitialized when used here [-Wuninitialized]
+>            ret =3D bq256xx_parse_dt(bq, psy_cfg, dev);
+>                                       ^~~~~~~
+>    drivers/power/supply/bq256xx_charger.c:1618:37: note: initialize the v=
+ariable 'psy_cfg' to silence this warning
+>            struct power_supply_config *psy_cfg;
+>                                               ^
+>                                                =3D NULL
+
+bah, I missed this serious issue during review :(
+
+FWIW the compiler provided wrong solution. It would result in
+dereferencing a NULL pointer afterwards since you never allocate
+any memory for psy_cfg. You could of course allocate memory for
+it, but power_supply_config is only needed during device
+registration.
+
+Proper solution is to initialize it as variable instead of pointer,
+so that it ends up on the stack. Also you should initialize it with
+{} to make sure any fields not explicitly configured are 0.
+
+> >> drivers/power/supply/bq256xx_charger.c:1720:36: warning: unused variab=
+le 'bq256xx_acpi_match' [-Wunused-const-variable]
+>    static const struct acpi_device_id bq256xx_acpi_match[] =3D {
+
+For this one just change
+
+=2Eacpi_match_table =3D ACPI_PTR(bq256xx_acpi_match),
+
+into
+
+=2Eacpi_match_table =3D bq256xx_acpi_match,
+
+>    2 warnings generated.
+>=20
+>=20
+> vim +/bq256xx_acpi_match +1720 drivers/power/supply/bq256xx_charger.c
+>=20
+>   1719=09
+> > 1720	static const struct acpi_device_id bq256xx_acpi_match[] =3D {
+>   1721		{ "bq25600", BQ25600 },
+>   1722		{ "bq25600d", BQ25600D },
+>   1723		{ "bq25601", BQ25601 },
+>   1724		{ "bq25601d", BQ25601D },
+>   1725		{ "bq25611d", BQ25611D },
+>   1726		{ "bq25618", BQ25618 },
+>   1727		{ "bq25619", BQ25619 },
+>   1728		{},
+>   1729	};
+>   1730	MODULE_DEVICE_TABLE(acpi, bq256xx_acpi_match);
+>   1731=09
+>=20
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+Thanks,
+
+-- Sebastian
+
+--h2556ndxc2dpprsn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/0dRUACgkQ2O7X88g7
++pqiEg/9GHmqEAJL5IHzTgu/C/VHwlU5qSAaWbxei3YIOJ0oeIqWjuh96AADjSMQ
+nZmul4Q+N2yHBcMipUkjmttW66tUfA1pXqRkiaSfZLSKsHDn6a5mdNyPfYbGM8Zq
+vttHOKE0FEVwEqLifXmM5yuQEmCW0ulCazhwOMET15Un+LrkTnff25UwGGxYJ49m
+CsfTFxMvjj12uZZKhu9pU3HCgfegDR++H0EQrjywvwwnPn35WMo5IjiY5vARhwwz
+6qSWc7HnuvevTCMoMYYns4XfS4LQYo+r9UTH8RfGVoNTvmnev3dS++kcg6HbFFKH
+JUZudb5KDwpLp1DSn2S8Q3i+SskU/NPvw1k6cZyFilRNGKiyrDphuHbtCgZgGpfo
+OXIdsFHAbPaocq+ubNkYE+wNNMZZ3vYvN6B2hRxEavwSqVV3jOlkBNxngGtefyUw
+BW4H5nlc1hcWYuHMpObFSbH2bcvxh/n4rD7WVZVgiPBMSjS4TvvksCACZHIp0ByH
+McGIJnTEyOoMGpecVZTztpbIH2MtKG6gER6x2jHhPtXzV08Kzb+Ve8DBPhgT5Fbi
+B05JbaQH6EIvCqv+bVC5nMDDsJvPkGL/scAJq8AgMNxbbv+S4pEKN7wQZOXfaNi6
+yTZtU02+n6QAghgU0P2HKBYLMIXx44t7Q3GKDq7py/G3kRVVv7w=
+=TDLb
+-----END PGP SIGNATURE-----
+
+--h2556ndxc2dpprsn--
