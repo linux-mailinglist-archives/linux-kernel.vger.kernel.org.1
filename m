@@ -2,84 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7658C2EB0E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8D12EB0DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730409AbhAERCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:02:48 -0500
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:44560 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729457AbhAERCr (ORCPT
+        id S1730346AbhAERCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:02:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730185AbhAERCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Jan 2021 12:02:47 -0500
-Received: by mail-wr1-f52.google.com with SMTP id w5so36826259wrm.11;
-        Tue, 05 Jan 2021 09:02:30 -0800 (PST)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA6BC061574;
+        Tue,  5 Jan 2021 09:02:06 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id b73so1161584edf.13;
+        Tue, 05 Jan 2021 09:02:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nXr5ak/ayXG0mLNUO+7vuO7bjdOSjjDtr/aQD9ygt94=;
+        b=UwfxheqcSiLFAO91/TjnnIkUrkB6PT/YCmY7jZlQU1agpQXOc4Lgx0mjoaWIonFNm9
+         NwSOwSKa/6cNJBSYGuHlskmt+jsZGbOrKs42zEqMaKZngfCwrPwSmmps69qOExcTKA+r
+         HROEOg6T4QQlkx2GNhyvajHaF/YFKD0amleuLP8xL1ovnE8PaOBHg275uRsGPb8CRx6g
+         70y01GVqGmEXhGe4W1CzFvJ0z4O+216TS3lsA4HUtIDxiymtCjc8VeQNzrvia4wBw8Q6
+         LAU0gZ0Nh/FZ46C6Mnry1LONCCVo3MoTxY+dGSACqNAQoqZD4mRssNHuxksJkMI9KLH8
+         ugSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tYopY2fL6CXBBPr+Io7iofacq52SjkW+6qo7DnbLuZg=;
-        b=VtFmJtej8f2aW6sWfqWmE3P87z5sbNbcucjYf6E09GJU8XB3ASgRxI18YIPWhTepUT
-         3wgmTFisncRDXXiCbVQe4T8CT15jk7hWqbprrhq72F2Jo+jD3JJO9BBAF7l1qGpPTZ47
-         LUpce8Kb/QzWY3J4dEMiEUtgwecXA/LC06b7T/icyqgd9fSxPouB7+EeggZLe7uwIwAr
-         TUkQjvo5bql0MMd3p4Id+7EWjCa+awkRxi6ikknZwqwQwSaJ5Ml5VPdBGVKiITEmlmqY
-         ZjYHrDzuewmOFgmXbMHCE2FqOm7RcHCaHzisvQuKqaPl2LDu0ei6GEQ+81ihdInu3PSA
-         Urlw==
-X-Gm-Message-State: AOAM533AQ8NajxdDEiCcpeODWXmt5nNI1lR4RVuJRbHCX2aM7tC/iZdE
-        MtCyW2/O4/UbGtP9KO5GEGc=
-X-Google-Smtp-Source: ABdhPJw3khmjPZic1mPiMYLc4bWxpVK1upa/cveVFaPiOk/3t+tr7TLU+XjQIi2pQmR9ANetF6J2vw==
-X-Received: by 2002:a5d:43cc:: with SMTP id v12mr461023wrr.319.1609866124790;
-        Tue, 05 Jan 2021 09:02:04 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id h9sm177309wme.11.2021.01.05.09.02.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nXr5ak/ayXG0mLNUO+7vuO7bjdOSjjDtr/aQD9ygt94=;
+        b=K9wLS6P9ThjMwjUF9I9v/I/brNWErdcvRl/McYc6uGvgHKs+gZURslyraJyVybHFRV
+         25HEzxgv3INILImmuooV1zE49SN6tBrJuB8MuMmgjs0JG+NsY4g3y6qCWfYkptCpL5R8
+         oueE+EwL1BiV27N0hXh1Yo0ANdhw93r16GJZs0ZuOt6jh1XifFLi2ylcZ5MTNJlfi2zD
+         kvIAk0LGnjZczduIDB+ccme+hITNagcq+Q4yv62E0EClgzI0hSxXCKPWLoz6w5x7qgH9
+         uNtG8iJ0tjLRXIalpZ39rQ7NAm5pyDfMs62ZbHMiUfIJmWVrqip0wXkWt7SrcdTQP9IU
+         PTMg==
+X-Gm-Message-State: AOAM531WHFu7OHXovtIfVsgVZlyK7AEXKb5/FsSO47SQn2MKKmtFYYcG
+        T7C7ZvXqPcTTI+39VzT0qek=
+X-Google-Smtp-Source: ABdhPJxTHWpX5TO4IyFPB3yzCKjStI6pzZednGNDFCMMLEcZkJn1sMxbR0ie6QI0LnZd5NB+IZyBmA==
+X-Received: by 2002:a50:8a90:: with SMTP id j16mr687135edj.334.1609866125260;
+        Tue, 05 Jan 2021 09:02:05 -0800 (PST)
+Received: from localhost.localdomain ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id u2sm99711ejb.65.2021.01.05.09.02.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 09:02:03 -0800 (PST)
-Date:   Tue, 5 Jan 2021 18:02:02 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v12 2/5] memory: tegra124-emc: Continue probing if
- timings are missing in device-tree
-Message-ID: <20210105170202.GB20651@kozik-lap>
-References: <20201228154920.18846-1-digetx@gmail.com>
- <20201228154920.18846-3-digetx@gmail.com>
+        Tue, 05 Jan 2021 09:02:04 -0800 (PST)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] tty: serial: owl: Add support for kernel debugger
+Date:   Tue,  5 Jan 2021 19:02:02 +0200
+Message-Id: <036c09732183a30eaab230884114f65ca42ca3b9.1609865007.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201228154920.18846-3-digetx@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 06:49:17PM +0300, Dmitry Osipenko wrote:
-> EMC driver will become mandatory after turning it into interconnect
-> provider because interconnect users, like display controller driver, will
-> fail to probe using newer device-trees that have interconnect properties.
-> Thus make EMC driver to probe even if timings are missing in device-tree.
-> 
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/memory/tegra/tegra124-emc.c | 26 +++++++++-----------------
->  1 file changed, 9 insertions(+), 17 deletions(-)
+Implement 'poll_put_char' and 'poll_get_char' callbacks in struct
+'owl_uart_ops' that enables OWL UART to be used for kernel debugging
+over serial line.
 
-Thanks, applied.
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+---
+Changes in v2:
+ - Reverted unnecessary changes per Andreas feedback
+ - Optimized implementation for 'owl_uart_poll_get_char()'
+   and 'owl_uart_poll_put_char()' callbacks
 
-Best regards,
-Krzysztof
+ drivers/tty/serial/owl-uart.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
+index c149f8c30007..54b24669ebc5 100644
+--- a/drivers/tty/serial/owl-uart.c
++++ b/drivers/tty/serial/owl-uart.c
+@@ -12,6 +12,7 @@
+ #include <linux/console.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+@@ -461,6 +462,26 @@ static void owl_uart_config_port(struct uart_port *port, int flags)
+ 	}
+ }
+ 
++#ifdef CONFIG_CONSOLE_POLL
++
++static int owl_uart_poll_get_char(struct uart_port *port)
++{
++	if (owl_uart_read(port, OWL_UART_STAT) & OWL_UART_STAT_RFEM)
++		return NO_POLL_CHAR;
++
++	return owl_uart_read(port, OWL_UART_RXDAT);
++}
++
++static void owl_uart_poll_put_char(struct uart_port *port, unsigned char ch)
++{
++	while (owl_uart_read(port, OWL_UART_STAT) & OWL_UART_STAT_TFFU)
++		cpu_relax();
++
++	owl_uart_write(port, ch, OWL_UART_TXDAT);
++}
++
++#endif /* CONFIG_CONSOLE_POLL */
++
+ static const struct uart_ops owl_uart_ops = {
+ 	.set_mctrl = owl_uart_set_mctrl,
+ 	.get_mctrl = owl_uart_get_mctrl,
+@@ -476,6 +497,10 @@ static const struct uart_ops owl_uart_ops = {
+ 	.request_port = owl_uart_request_port,
+ 	.release_port = owl_uart_release_port,
+ 	.verify_port = owl_uart_verify_port,
++#ifdef CONFIG_CONSOLE_POLL
++	.poll_get_char = owl_uart_poll_get_char,
++	.poll_put_char = owl_uart_poll_put_char,
++#endif
+ };
+ 
+ #ifdef CONFIG_SERIAL_OWL_CONSOLE
+-- 
+2.30.0
 
