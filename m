@@ -2,222 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF9E2EA9BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189F22EA9AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbhAELWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:22:00 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10110 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbhAELV7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:21:59 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D995d61h9z15nny;
-        Tue,  5 Jan 2021 19:20:21 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 5 Jan 2021 19:21:05 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <akshatzen@google.com>, <Viswas.G@microchip.com>,
-        <Ruksar.devadi@microchip.com>, <radha@google.com>,
-        <bjashnani@google.com>, <vishakhavc@google.com>,
-        <jinpu.wang@cloud.ionos.com>, <Ashokkumar.N@microchip.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <hare@suse.de>, <kashyap.desai@broadcom.com>,
-        <ming.lei@redhat.com>, "John Garry" <john.garry@huawei.com>
-Subject: [RFC/RFT PATCH] scsi: pm8001: Expose HW queues for pm80xx hw
-Date:   Tue, 5 Jan 2021 19:17:03 +0800
-Message-ID: <1609845423-110410-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1729451AbhAELS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:18:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729196AbhAELSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 06:18:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 736B5229C5;
+        Tue,  5 Jan 2021 11:18:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609845492;
+        bh=GDmYQRHGn/AcnFt3hdxGi1mf2d4j0SgudD/3lB6HiLU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MGoc1AfjFEcjnH2LG9n6lBEYoM6Ri+jtRDQ3pMETkgkS4xWatgY5WzBCv7tGFTTX4
+         9deGZUIgeLAhm1VPGBdYES++ZORJDj29LOoOSG8tACOto7uS1nWJwFUZ5fw3Q/9+7t
+         9Rnjcz0F86y/qp986vAfUr6GinSVP0XwPgyXu3vSEN7cNL4OxE10chjJdGA85/nxVF
+         lPpoMqPvAHjIz+Tazlv2fQtQtSQARqHG/OYlCfxgVMRWyanIC2bLCSGkFIWiXyTy98
+         QR/IH6Kj4pkkDkHe387Q3RpA+JZkCdNIme8yoaM7itWnaNn71YrIoqeYgceFoOyLsB
+         SI0+F1HbHOM4g==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 4BD5B3C0C94; Tue,  5 Jan 2021 12:18:10 +0100 (CET)
+Date:   Tue, 5 Jan 2021 12:18:10 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Add missing array size constraints
+Message-ID: <20210105111810.5sdfmjga5in5wgvx@earth.universe>
+References: <20210104230253.2805217-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vyuzhxvp4ms2cjlb"
+Content-Disposition: inline
+In-Reply-To: <20210104230253.2805217-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 05c6c029a44d ("scsi: pm80xx: Increase number of supported
-queues"), support for 80xx chip was improved by enabling multiple HW
-queues.
 
-In this, like other SCSI MQ HBA drivers, the HW queues were not exposed
-to upper layer, and instead the driver managed the queues internally.
+--vyuzhxvp4ms2cjlb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-However, this management duplicates blk-mq code. In addition, the HW queue
-management is sub-optimal for a system where the number of CPUs exceeds
-the HW queues - this is because queues are selected in a round-robin
-fashion, when it would be better to make adjacent CPUs submit on the same
-queue. And finally, the affinity of the completion queue interrupts is not
-set to mirror the cpu<->HQ queue mapping, which is suboptimal.
+Hi Rob,
 
-As such, for when MSIX is supported, expose HW queues to upper layer. Flag
-PCI_IRQ_AFFINITY is set for allocating the MSIX vectors to automatically
-assign affinity for the completion queue interrupts.
+On Mon, Jan 04, 2021 at 04:02:53PM -0700, Rob Herring wrote:
+> DT properties which can have multiple entries need to specify what the
+> entries are and define how many entries there can be. In the case of
+> only a single entry, just 'maxItems: 1' is sufficient.
+>=20
+> Add the missing entry constraints. These were found with a modified
+> meta-schema. Unfortunately, there are a few cases where the size
+> constraints are not defined such as common bindings, so the meta-schema
+> can't be part of the normal checks.
+>=20
+> [...]
+>  .../bindings/power/supply/bq25980.yaml        |  1 +
+> [...]
 
-Signed-off-by: John Garry <john.garry@huawei.com>
+Acked-by: Sebastian Reichel <sre@kernel.org>
 
----
-I sent as an RFC/RFT as I have no HW to test. In addition, since HW queue
-#0 is used always for internal commands (like in send_task_abort()), if
-all CPUs associated with HW queue #0 are offlined, the interrupt for that
-queue will be shutdown, and no CPUs would be available to service any
-internal commands completion. To solve that, we need [0] merged first and
-switch over to use the new API. But we can still test performance in the
-meantime.
+-- Sebastian
 
-I assume someone else is making the change to use the request tag for IO
-tag management.
+--vyuzhxvp4ms2cjlb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[0] https://lore.kernel.org/linux-scsi/47ba045e-a490-198b-1744-529f97192d3b@suse.de/
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-index ee2de177d0d0..73479803a23e 100644
---- a/drivers/scsi/pm8001/pm8001_init.c
-+++ b/drivers/scsi/pm8001/pm8001_init.c
-@@ -81,6 +81,15 @@ LIST_HEAD(hba_list);
- 
- struct workqueue_struct *pm8001_wq;
- 
-+static int pm8001_map_queues(struct Scsi_Host *shost)
-+{
-+	struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
-+	struct pm8001_hba_info *pm8001_ha = sha->lldd_ha;
-+	struct blk_mq_queue_map *qmap = &shost->tag_set.map[HCTX_TYPE_DEFAULT];
-+
-+	return blk_mq_pci_map_queues(qmap, pm8001_ha->pdev, 0);
-+}
-+
- /*
-  * The main structure which LLDD must register for scsi core.
-  */
-@@ -106,6 +115,7 @@ static struct scsi_host_template pm8001_sht = {
- #ifdef CONFIG_COMPAT
- 	.compat_ioctl		= sas_ioctl,
- #endif
-+	.map_queues			= pm8001_map_queues,
- 	.shost_attrs		= pm8001_host_attrs,
- 	.track_queue_depth	= 1,
- };
-@@ -923,9 +933,8 @@ static int pm8001_configure_phy_settings(struct pm8001_hba_info *pm8001_ha)
- static u32 pm8001_setup_msix(struct pm8001_hba_info *pm8001_ha)
- {
- 	u32 number_of_intr;
--	int rc, cpu_online_count;
-+	int rc;
- 	unsigned int allocated_irq_vectors;
--
- 	/* SPCv controllers supports 64 msi-x */
- 	if (pm8001_ha->chip_id == chip_8001) {
- 		number_of_intr = 1;
-@@ -933,16 +942,15 @@ static u32 pm8001_setup_msix(struct pm8001_hba_info *pm8001_ha)
- 		number_of_intr = PM8001_MAX_MSIX_VEC;
- 	}
- 
--	cpu_online_count = num_online_cpus();
--	number_of_intr = min_t(int, cpu_online_count, number_of_intr);
--	rc = pci_alloc_irq_vectors(pm8001_ha->pdev, number_of_intr,
--			number_of_intr, PCI_IRQ_MSIX);
-+	/* Use default affinity descriptor, which spreads *all* vectors */
-+	rc = pci_alloc_irq_vectors(pm8001_ha->pdev, 1,
-+			number_of_intr, PCI_IRQ_MSIX | PCI_IRQ_AFFINITY);
- 	allocated_irq_vectors = rc;
- 	if (rc < 0)
- 		return rc;
- 
- 	/* Assigns the number of interrupts */
--	number_of_intr = min_t(int, allocated_irq_vectors, number_of_intr);
-+	number_of_intr = allocated_irq_vectors;
- 	pm8001_ha->number_of_intr = number_of_intr;
- 
- 	/* Maximum queue number updating in HBA structure */
-@@ -1113,6 +1121,16 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
- 	if (rc)
- 		goto err_out_enable;
- 
-+	if (pm8001_ha->number_of_intr > 1) {
-+		shost->nr_hw_queues = pm8001_ha->number_of_intr;
-+		/*
-+		 * For now, ensure we're not sent too many commands by setting
-+		 * host_tagset. This is also required if we start using request
-+		 * tag.
-+		 */
-+		shost->host_tagset = 1;
-+	}
-+
- 	rc = scsi_add_host(shost, &pdev->dev);
- 	if (rc)
- 		goto err_out_ha_free;
-diff --git a/drivers/scsi/pm8001/pm8001_sas.h b/drivers/scsi/pm8001/pm8001_sas.h
-index f2c8cbad3853..74bc6fed693e 100644
---- a/drivers/scsi/pm8001/pm8001_sas.h
-+++ b/drivers/scsi/pm8001/pm8001_sas.h
-@@ -55,6 +55,8 @@
- #include <scsi/scsi_tcq.h>
- #include <scsi/sas_ata.h>
- #include <linux/atomic.h>
-+#include <linux/blk-mq.h>
-+#include <linux/blk-mq-pci.h>
- #include "pm8001_defs.h"
- 
- #define DRV_NAME		"pm80xx"
-diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
-index 6772b0924dac..31d65ce91e7d 100644
---- a/drivers/scsi/pm8001/pm80xx_hwi.c
-+++ b/drivers/scsi/pm8001/pm80xx_hwi.c
-@@ -4299,12 +4299,13 @@ static int pm80xx_chip_ssp_io_req(struct pm8001_hba_info *pm8001_ha,
- 	struct domain_device *dev = task->dev;
- 	struct pm8001_device *pm8001_dev = dev->lldd_dev;
- 	struct ssp_ini_io_start_req ssp_cmd;
-+	struct scsi_cmnd *scmd = task->uldd_task;
- 	u32 tag = ccb->ccb_tag;
- 	int ret;
- 	u64 phys_addr, start_addr, end_addr;
- 	u32 end_addr_high, end_addr_low;
- 	struct inbound_queue_table *circularQ;
--	u32 q_index, cpu_id;
-+	u32 blk_tag, q_index;
- 	u32 opc = OPC_INB_SSPINIIOSTART;
- 	memset(&ssp_cmd, 0, sizeof(ssp_cmd));
- 	memcpy(ssp_cmd.ssp_iu.lun, task->ssp_task.LUN, 8);
-@@ -4323,8 +4324,8 @@ static int pm80xx_chip_ssp_io_req(struct pm8001_hba_info *pm8001_ha,
- 	ssp_cmd.ssp_iu.efb_prio_attr |= (task->ssp_task.task_attr & 7);
- 	memcpy(ssp_cmd.ssp_iu.cdb, task->ssp_task.cmd->cmnd,
- 		       task->ssp_task.cmd->cmd_len);
--	cpu_id = smp_processor_id();
--	q_index = (u32) (cpu_id) % (pm8001_ha->max_q_num);
-+	blk_tag = blk_mq_unique_tag(scmd->request);
-+	q_index = blk_mq_unique_tag_to_hwq(blk_tag);
- 	circularQ = &pm8001_ha->inbnd_q_tbl[q_index];
- 
- 	/* Check if encryption is set */
-@@ -4446,9 +4447,11 @@ static int pm80xx_chip_sata_req(struct pm8001_hba_info *pm8001_ha,
- 	struct sas_task *task = ccb->task;
- 	struct domain_device *dev = task->dev;
- 	struct pm8001_device *pm8001_ha_dev = dev->lldd_dev;
-+	struct ata_queued_cmd *qc = task->uldd_task;
-+	struct scsi_cmnd *scmd = qc->scsicmd;
- 	u32 tag = ccb->ccb_tag;
- 	int ret;
--	u32 q_index, cpu_id;
-+	u32 q_index, blk_tag;
- 	struct sata_start_req sata_cmd;
- 	u32 hdr_tag, ncg_tag = 0;
- 	u64 phys_addr, start_addr, end_addr;
-@@ -4459,8 +4462,9 @@ static int pm80xx_chip_sata_req(struct pm8001_hba_info *pm8001_ha,
- 	unsigned long flags;
- 	u32 opc = OPC_INB_SATA_HOST_OPSTART;
- 	memset(&sata_cmd, 0, sizeof(sata_cmd));
--	cpu_id = smp_processor_id();
--	q_index = (u32) (cpu_id) % (pm8001_ha->max_q_num);
-+
-+	blk_tag = blk_mq_unique_tag(scmd->request);
-+	q_index = blk_mq_unique_tag_to_hwq(blk_tag);
- 	circularQ = &pm8001_ha->inbnd_q_tbl[q_index];
- 
- 	if (task->data_dir == DMA_NONE) {
--- 
-2.26.2
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/0SucACgkQ2O7X88g7
++ppIAQ/8CwCUtes2Mr7K09stdBuNtR3gBayMxcQnnIM6AQvBexKzq6gM2xpDIPB8
+YVpTjaGQkOcwS3BMu7BsRT4t2s3KXy9lVS5jkChykskjyAyr9a7QPsK7MVZVRh2Q
+U896qS+zI2nsNdeX6+kT10+29b7PcoEvTJRtEPEFlsq4UoFbMAsdJhtHBo9v1oUP
+cJMT7NSkqtcHM9HeSPZFCTLyAsoGFPYMTneKdN9ZVlPHoQRkCH0k3vyHMmKKPWAQ
+uafDLlP+nvs9Ug/FSsFsoaLcixHHAI+GkVj48muZL7EVAygGTbrRA27r0txduvfj
+DOxfT7BdNOMkmDge0RR2vk29V/2WYsEg4vwi3uyP2BDQsdXEYpwTn00IJ5IJgcqE
+EAjq7hWsSo7zd8VkMc/CLN1a1W+PEpIJ0CGfS4cLtAMwRLNLdPA+FS4UaBCAoS4k
+T9AZGFXABwtQQHyOAHD8/Hjs5vexDnWdvcRyCuDqgt6YeUX6Lu8pRTWx5lkWPkLy
+GZf/jppVAnP/gtnsOOJnPL37jxbOpelu+4UopYZ/j9YLJb+M7P2xYhsYuRlnKn0r
+aAgoNpEXu3TNpex2apw+Cm70EiidWAGcWqvrOCWhdqWBulGJ+O4v1DYe536LLoZN
+rdX4Hbkx7kBMNJ1ZZVIA3x9YzLwGKo/1nnV2q7fUdTzUEobcJWQ=
+=gWL0
+-----END PGP SIGNATURE-----
 
+--vyuzhxvp4ms2cjlb--
