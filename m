@@ -2,77 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14DE2EAB81
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 855972EAB87
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730522AbhAENFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:05:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727063AbhAENFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:05:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7679522AB9;
-        Tue,  5 Jan 2021 13:04:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609851874;
-        bh=/vqYgpMKu2hcBkqqsBMfs8P1d5Xpd9OHlU7GsZ3xTDU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OdfiePzrPT+X7OqHz5epLl+B0Sd9Kb1ng56057AloxLlnBk/Mb7pK9d6wBEC22v98
-         ri0LxvSQeWp1zKNkW9dVEVmZrJmqaCQZS11uawzBcC8s5ktRt+7m+HNv1iRbQTGlKJ
-         W5tR4gRlwvL0shkBNtDL++G50NSiylpoDq8zlkeI=
-Date:   Tue, 5 Jan 2021 14:05:59 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/63] 5.10.5-rc1 review
-Message-ID: <X/RkN6xJGasmekr4@kroah.com>
-References: <20210104155708.800470590@linuxfoundation.org>
- <69f585d13328c51811441c967243f4918f6a3c84.camel@rajagiritech.edu.in>
+        id S1729838AbhAENHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:07:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55758 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729176AbhAENHk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:07:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609851973;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=85pKVnvSeYA5QLQD5EhADjq2rId3Mid5CE6/9bUvHYM=;
+        b=fjUIk+tGp/ui2/U5U3g4JLTnl7eRfFj1KpkrOBITODmwDs/gGcocJvJfNu6PdSYsOpq4vD
+        57JzmG8m8h53DcjqzhqfNif9TWmoa1ypn8hZTTQ/hRKPxEKfn6Kr9XdEnyCEwEvK5APcVi
+        033oW51nW0ES2lqE+bdyuKbxupgM0BE=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-Q8pAyullO5mQCud3qURWpw-1; Tue, 05 Jan 2021 08:06:11 -0500
+X-MC-Unique: Q8pAyullO5mQCud3qURWpw-1
+Received: by mail-ej1-f72.google.com with SMTP id pv24so7921042ejb.19
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 05:06:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=85pKVnvSeYA5QLQD5EhADjq2rId3Mid5CE6/9bUvHYM=;
+        b=Q9mFhWtAlxPbC3M26fg4dQW4NICm6Vd1a14zu6k0ykdgpgRypA5m3AevlK2y27niJL
+         s8RlUXRqwqdArRaR4PorN6yk3U9Tenu8MZ2JuNf+43YTWTg5mID+Javtc9YDI2fJF5my
+         1bjiVWSlxmh9HXD5bvJ6cv5gmfBX+/JaWkj2UTMuwgs9kpZz86GkMfjflRmOBoVONupO
+         1Bn5atNcpXNTqgUEYHRgrd0mKX+N8wVlkPGOOQboFUB9E6n1CRQBV1aPXI+aYOFR+J5b
+         PNV2ZZHWn+Tcp4oZ6QAgS9TEcnF6ThieMAznQ4sBFVed8UjpcwtaIq7yuPCiEv0EuGUv
+         so3A==
+X-Gm-Message-State: AOAM533ezkmDwSD+9PYyW8iaxaY7ALb0dOPc1QxqY+7n2tXto5s4gQ1s
+        xzOzUGi6UHoWWAbuDZyzL4H+14AJCyI51faKAlqx6ZpASfjGw6QbdM3HEpmBEFdKzGHslba/Y/9
+        Y1KLb4dj24LIziYy/U5EXWC0u
+X-Received: by 2002:a05:6402:3192:: with SMTP id di18mr74257299edb.332.1609851970497;
+        Tue, 05 Jan 2021 05:06:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzIXZH+i4vTIqBL+qL/InbxzIhFkuFWwsUFjB/084QZuJD1bxGWu2omuhWudF/kow2Btliw+A==
+X-Received: by 2002:a05:6402:3192:: with SMTP id di18mr74257264edb.332.1609851970322;
+        Tue, 05 Jan 2021 05:06:10 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id p12sm22637661eds.39.2021.01.05.05.06.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 05:06:09 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Alexey Makhalov <amakhalov@vmware.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, hpa@zytor.com,
+        bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        pv-drivers@vmware.com, sdeep@vmware.com
+Subject: Re: [PATCH] x86/vmware: avoid TSC recalibration
+In-Reply-To: <20210105004752.131069-1-amakhalov@vmware.com>
+References: <20210105004752.131069-1-amakhalov@vmware.com>
+Date:   Tue, 05 Jan 2021 14:06:08 +0100
+Message-ID: <87im8bildr.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <69f585d13328c51811441c967243f4918f6a3c84.camel@rajagiritech.edu.in>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 06:25:14PM +0530, Jeffrin Jose T wrote:
-> On Mon, 2021-01-04 at 16:56 +0100, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.5 release.
-> > There are 63 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied,
-> > please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.5-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> > stable-rc.git linux-5.10.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> hello,
-> 
-> Compiled  and  booted  5.10.5-rc1+ . dmesg  related shows 
-> no new errors  and  may be no major warning. 
-> 
-> Having said that, "dmesg -l warn"  show  a BUG related stuff.
-> 
-> warning-5.10.5-rc1+.txt file is attached.
+Alexey Makhalov <amakhalov@vmware.com> writes:
 
-Is this new?  If so, can you bisect it?
+> When TSC frequency is known (retrieved from hypervisor), we should skip
+> TSC refined calibration by setting X86_FEATURE_TSC_KNOWN_FREQ.
+>
+> Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
+> ---
+>  arch/x86/kernel/cpu/vmware.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/x86/kernel/cpu/vmware.c b/arch/x86/kernel/cpu/vmware.c
+> index c6ede3b3d302..83164110ccc5 100644
+> --- a/arch/x86/kernel/cpu/vmware.c
+> +++ b/arch/x86/kernel/cpu/vmware.c
+> @@ -378,6 +378,8 @@ static void __init vmware_set_capabilities(void)
+>  {
+>  	setup_force_cpu_cap(X86_FEATURE_CONSTANT_TSC);
+>  	setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
+> +	if (vmware_tsc_khz)
+> +		setup_force_cpu_cap(X86_FEATURE_TSC_KNOWN_FREQ);
+>  	if (vmware_hypercall_mode == CPUID_VMWARE_FEATURES_ECX_VMCALL)
+>  		setup_force_cpu_cap(X86_FEATURE_VMCALL);
+>  	else if (vmware_hypercall_mode == CPUID_VMWARE_FEATURES_ECX_VMMCALL)
 
-thanks,
+The same trick is being used in Xen/Jailhouse/KVM code already and
+Hyper-V overwrites x86_platform.calibrate_tsc/x86_platform.calibrate_cpu
+hooks to basically achive the same goal. Should we maybe introduce a
+flag in 'struct hypervisor_x86' or something like that to unify all
+this?
 
-greg k-h
+Just a suggestion.
+
+-- 
+Vitaly
+
