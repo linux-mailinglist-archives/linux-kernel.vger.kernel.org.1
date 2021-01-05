@@ -2,133 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA5D2EB38E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7672EB394
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730859AbhAETio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 14:38:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S1730823AbhAETmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 14:42:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbhAETio (ORCPT
+        with ESMTP id S1730570AbhAETmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:38:44 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B6CC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 11:38:04 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id y8so268357plp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:38:04 -0800 (PST)
+        Tue, 5 Jan 2021 14:42:14 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253A6C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 11:41:34 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2so340805pfq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:41:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2oCqu6lZwFBzT2yVHSFErG6jDdrfnhkGaRpmRP+AbnU=;
-        b=efGnQJXLQBXr05b1JniWegytsOALrtQr85gkWNRQYpktDtfXIlXI0bqqYEEN5xKs35
-         n5l/4ivY3PTmUGSZaDUfWHKtaLcHKbvdi3ToBE0ZvDALgH58p2tP0dnVPcH2uC/VKD7M
-         rSoHdW/h1nNpBfhVJ70Au7o0ulQgd9PZ5D6hf3W3VeF8FyaJ6qQRBH7oN3l92+M/+SwU
-         yELD/CIFzHTbb6iIYCk6I2J1FLXDLtBdcDFYn6PIeXRqkp+ZJy+smqUgriAIB3B3yZ/r
-         mtpYmrr+19Mc2WM4Eq5WMXdXpN0ZxzZ70xxZWJ/81lTGm8i9Zq9tC0+EsKfiAnTa/b50
-         Sb1Q==
+        bh=TMFOAFZFlYW+eUre2PkHe1D8HJjsKx5wuGAw4VigT/k=;
+        b=PYhRu3fodzwT3SmYBMkpVuB+dfW7fvTvp8+QoF5yCIBs0egWnRrypiB5bFIxjUAfnH
+         XkwDQjlATI1N1MIZ8ueqtkUl2y3iV6ysXr60bCnNRCo6vq8igHsXORFf+6SdI924zbxy
+         /83HmwpIlV7icwC6HyMDaBGO0g2BOIw30xVgw67YGpL23IIXDvGI2QBIaC+porCc8hCS
+         neiD6owyzEGK7qNgHuaeYmUNpMX7RAMbDZLBK1L2rbcPnpjPbzzdrawZsoKNaZDl+Bdv
+         UCbOcdJur+iUcfxh/BwARd84J7eFYy/El0qlWbdyENjKOW6msBrh2ZcF9oySrmYZcayH
+         c1dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2oCqu6lZwFBzT2yVHSFErG6jDdrfnhkGaRpmRP+AbnU=;
-        b=UOmOnz0qg5PnIQktu5BRjC3/1U4f7qysxvY3GmZH4W1HDPMLdle2DFEmSZIQWT+/gQ
-         OPJfhWM/kwREzrqHHMaNBdicMnWVDwms9tnuysRdqHUbfrzxq2CGtta7HgRqkL9Tal1i
-         IiTQvCFWaKC6jIKU6I91oLPux/ww0xkQtoHZD9DEAI4G6UYUp51hwsYp2H095w6du5wK
-         c23VTzwcYmsOZxLdLOmF1s4g7bnUH8fmMMe31HMpVF9R/QWSKHe93a0gCFiQrqiRUXII
-         Mkabr4Yw4LzBgmJT23mtVhdBmMRYzkxv7CPzwduU+t634Sq78yQM4kAb91xKNW3jt+DS
-         QMEQ==
-X-Gm-Message-State: AOAM531nZ3M/JXtvDVnqVHaVG/1S5ntTot9NbFC3MNIdzO3npgB9uE0y
-        80LOOohzRiGvWAmy0q7v1+xsD6sosXIYiXfau6yJzA==
-X-Google-Smtp-Source: ABdhPJxGa/6OvYY92ewpSjLysJTFGu3c7+BHjTYFHmuz4/Q7Q+GuiYD8+tdGbXqf9kd1WQMynJPx2sZEAXq/9tw3uxI=
-X-Received: by 2002:a17:90a:6ba4:: with SMTP id w33mr785818pjj.32.1609875483392;
- Tue, 05 Jan 2021 11:38:03 -0800 (PST)
+        bh=TMFOAFZFlYW+eUre2PkHe1D8HJjsKx5wuGAw4VigT/k=;
+        b=X8o/z3KBgIgKnE4pReLJyDOkGG3c8h8LrlPAdpmaQhLjUogI84ZRHNvi6j2kKQEa8I
+         s1DDE1DgxE+oGZoASwRE2ZmLtGv9JVgtnIY900N3bdIYfV7EpE8muYkUi9YWxJpepYwq
+         1iYs22sLo2qREHM3TZOmozpVvYB70LJPS6ZfsaVTjzsZR/kwRk5W5bey5DwgxUIbyeH4
+         gCZx7PLOpBr/bsouhp5dJKU3Ra+77JfTLMn/Vy21dMHazTljVvhb5kLYTcDWStbRpygY
+         cWnynDEzPep1IzEcFxK0XOmSA/060QjTuCbWgwqGh4GUXUYH35q0rBq7QRubU2ZsVjNi
+         eNvA==
+X-Gm-Message-State: AOAM531vCec2/EOxYgw4gakeapA0obyqYs/UShZLG01m1d5n7REe+7Nt
+        PIaOV6F7g+qX7LAFSdjtQ6W70bA7a2zeOab9d/MLrQ==
+X-Google-Smtp-Source: ABdhPJzZaj54e0rqEqOprP4a9mEFCCyzuXKeSYX7ix+zANye147fcj5ZIWekkh9+e/KR+LQ6BaXoGywjQE/GTDeFSCQ=
+X-Received: by 2002:a62:7c4a:0:b029:19d:b7bc:2c51 with SMTP id
+ x71-20020a627c4a0000b029019db7bc2c51mr631636pfc.30.1609875693171; Tue, 05 Jan
+ 2021 11:41:33 -0800 (PST)
 MIME-Version: 1.0
-References: <202012270950.HNbQuTpw-lkp@intel.com>
-In-Reply-To: <202012270950.HNbQuTpw-lkp@intel.com>
+References: <20201222184425.7028-7-p.yadav@ti.com> <202012291151.fApnPO6i-lkp@intel.com>
+ <20201229091806.eyrakehdxo6762sg@ti.com>
+In-Reply-To: <20201229091806.eyrakehdxo6762sg@ti.com>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 5 Jan 2021 11:37:55 -0800
-Message-ID: <CAKwvOdn978FV_FmikQXjMwKYZi_OUXw_f3t56NnMXHiawXDOzw@mail.gmail.com>
-Subject: Re: drivers/i3c/master/mipi-i3c-hci/core.c:780:21: warning: attribute
- declaration must precede definition
-To:     kernel test robot <lkp@intel.com>
-Cc:     Nicolas Pitre <npitre@baylibre.com>, kbuild-all@lists.01.org,
+Date:   Tue, 5 Jan 2021 11:41:25 -0800
+Message-ID: <CAKwvOdnNeAXUsNQnSmVmODT9C4_J9cX7prRaYTs+R588=JW7LA@mail.gmail.com>
+Subject: Re: [PATCH 6/7] spi: cadence-quadspi: Wait at least 500 ms for direct reads
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     kernel test robot <lkp@intel.com>, Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, kbuild-all@lists.01.org,
         clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Boris Brezillon <bbrezillon@kernel.org>
+        linux-spi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix already applied:
-https://lore.kernel.org/lkml/160943653614.132002.12499200411415721355.b4-ty@bootlin.com/
+On Tue, Dec 29, 2020 at 1:18 AM 'Pratyush Yadav' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> On 29/12/20 11:29AM, kernel test robot wrote:
+> > Hi Pratyush,
+> >
+> > Thank you for the patch! Perhaps something to improve:
+> >
+> > [auto build test WARNING on spi/for-next]
+> > [also build test WARNING on v5.11-rc1 next-20201223]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Pratyush-Yadav/spi-cadence-quadspi-Add-Octal-DTR-support/20201223-025328
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> > config: arm-randconfig-r006-20201221 (attached as .config)
+> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project cee1e7d14f4628d6174b33640d502bff3b54ae45)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install arm cross compiling tool for clang build
+> >         # apt-get install binutils-arm-linux-gnueabi
+> >         # https://github.com/0day-ci/linux/commit/04a7bcbc449363e5d6f498376c69116567b49d7d
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review Pratyush-Yadav/spi-cadence-quadspi-Add-Octal-DTR-support/20201223-025328
+> >         git checkout 04a7bcbc449363e5d6f498376c69116567b49d7d
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> > >> drivers/spi/spi-cadence-quadspi.c:966:24: warning: comparison of distinct pointer types ('typeof (len) *' (aka 'unsigned int *') and 'typeof (500UL) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
+> >                                             msecs_to_jiffies(max(len, 500UL)))) {
+> >                                                              ^~~~~~~~~~~~~~~
+> >    include/linux/minmax.h:58:19: note: expanded from macro 'max'
+> >    #define max(x, y)       __careful_cmp(x, y, >)
+> >                            ^~~~~~~~~~~~~~~~~~~~~~
+> >    include/linux/minmax.h:42:24: note: expanded from macro '__careful_cmp'
+> >            __builtin_choose_expr(__safe_cmp(x, y), \
+> >                                  ^~~~~~~~~~~~~~~~
+> >    include/linux/minmax.h:32:4: note: expanded from macro '__safe_cmp'
+> >                    (__typecheck(x, y) && __no_side_effects(x, y))
+> >                     ^~~~~~~~~~~~~~~~~
+> >    include/linux/minmax.h:18:28: note: expanded from macro '__typecheck'
+> >            (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+> >                       ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
+> >    1 warning generated.
+>
+> On arm64 size_t is defined as unsigned long and on arm is it defined as
+> unsigned int. So using 500U would generate the same warning on 64-bit
+> platforms. Maybe the fix is to do something like: max(len, (size_t)500).
+> Any better ideas?
 
-On Sat, Dec 26, 2020 at 5:29 PM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Nicolas,
->
-> FYI, the error/warning still remains.
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   f838f8d2b694cf9d524dc4423e9dd2db13892f3f
-> commit: 95393f3e07ab53855b91881692a4a5b52dcdc03c i3c/master/mipi-i3c-hci: quiet maybe-unused variable warning
-> date:   10 days ago
-> config: arm-randconfig-r011-20201220 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project cee1e7d14f4628d6174b33640d502bff3b54ae45)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install arm cross compiling tool for clang build
->         # apt-get install binutils-arm-linux-gnueabi
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=95393f3e07ab53855b91881692a4a5b52dcdc03c
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 95393f3e07ab53855b91881692a4a5b52dcdc03c
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> drivers/i3c/master/mipi-i3c-hci/core.c:780:21: warning: attribute declaration must precede definition [-Wignored-attributes]
->    static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
->                        ^
->    include/linux/compiler_attributes.h:267:56: note: expanded from macro '__maybe_unused'
->    #define __maybe_unused                  __attribute__((__unused__))
->                                                           ^
->    include/linux/mod_devicetable.h:262:8: note: previous definition is here
->    struct of_device_id {
->           ^
->    drivers/i3c/master/mipi-i3c-hci/core.c:780:49: warning: unused variable 'i3c_hci_of_match' [-Wunused-const-variable]
->    static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
->                                                    ^
->    2 warnings generated.
->
->
-> vim +780 drivers/i3c/master/mipi-i3c-hci/core.c
->
->    779
->  > 780  static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
->    781          { .compatible = "mipi-i3c-hci", },
->    782          {},
->    783  };
->    784  MODULE_DEVICE_TABLE(of, i3c_hci_of_match);
->    785
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/202012270950.HNbQuTpw-lkp%40intel.com.
-
-
+SGTM
 
 -- 
 Thanks,
