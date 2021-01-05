@@ -2,63 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245392EA45B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 05:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 807D12EA45F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 05:20:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbhAEESi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 23:18:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
+        id S1728180AbhAEETl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 23:19:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727148AbhAEESh (ORCPT
+        with ESMTP id S1726749AbhAEETk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 23:18:37 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538B1C061574;
-        Mon,  4 Jan 2021 20:17:57 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwdms-006y0f-FZ; Tue, 05 Jan 2021 04:17:38 +0000
-Date:   Tue, 5 Jan 2021 04:17:38 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vineet Gupta <vgupts@synopsys.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org
-Subject: Re: [PATCH v2] fs/dax: include <asm/page.h> to fix build error on ARC
-Message-ID: <20210105041738.GS3579531@ZenIV.linux.org.uk>
-References: <20210101042914.5313-1-rdunlap@infradead.org>
+        Mon, 4 Jan 2021 23:19:40 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8BCC061794
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 20:19:00 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id n26so39568536eju.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 20:19:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q8gOUdE50UNp9LhAlhCoddse7EZKmhUhGDFbU73aCc4=;
+        b=QQAB3r3U7V/2S0pr/HlzDsASSQCQL5YI2Yu+LKkp2b3uUmYomjrfg0xQ/kZkvLyJQ6
+         upccUaRauLNncsDHq4Dan5ZBkaKXTJoCxVNuWo6SVKRMoKr0n82h1XgfvAGBdNfBPM3x
+         tpbv+nMXZ/yauTzmx7BYKMKDtKWHQl+RnsMxuRFL2Jxbf04JYY8nN/uKYxGMJLS/kCyt
+         15iKGTLQ6np+ytfvUZKLGX8b/FbMtjsr+qXMrCWxWeH2+cjGgV3haAtGTdB0LH492H/g
+         tnFPN+k4sObUPr8XYZaAxDMevIG02HiaO09sA8oN6jeOYaDd9pD9reN7rEjfXdWPhrcE
+         22fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q8gOUdE50UNp9LhAlhCoddse7EZKmhUhGDFbU73aCc4=;
+        b=n+xSSB2MaZPgW+c828oo+NswKdVU+StEfXNP5ZlpDv3hABWP2t0pHbb3PzE3Ywdv4d
+         bZgKFIMxceG5E32GWCj1FmATykq26WvmtowrB6EBfcM598hXv0ADFk7eX2PD03VWRbKb
+         a7ANcMUatAXDDepP/D9fDa3kk5cfpb/t7tii1bn3PIDUI5Kg7c2TcY9An0j2olSBc8gE
+         0c2vR/DaoExlHwsHnlIS2+u8zUKb7bhhF7CXf/mu0gkr+fTmPiSmvRzkEenDgkQCQBWR
+         9Q9FAqAr4ihOZrIffa3FFwFOGbhAVhfxinFnS2/2TcKF2SWrhkLmn7KtkW4BLbQUegZq
+         GYjQ==
+X-Gm-Message-State: AOAM5328f7luV8O/9i9VP1PzpJC1Yx/iFloR+gO0X/oLx7PReGdhhn+k
+        Pu3LsQjA4AFZ2W6lkOfy0+vlxhbqCgutJlSTmdRoHA==
+X-Google-Smtp-Source: ABdhPJwUnQsFATKp5CduacMlqRJgBHibGCWUhJq78mdMhVMEWJEhUC+nU/NhEqVFi56Uab8rCE8D+QUrCHC/kVrYF4o=
+X-Received: by 2002:a17:907:c15:: with SMTP id ga21mr69757557ejc.472.1609820338819;
+ Mon, 04 Jan 2021 20:18:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210101042914.5313-1-rdunlap@infradead.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 4 Jan 2021 20:18:52 -0800
+Message-ID: <CAPcyv4hdrYFCO6xXv0wfM4DFCyGAeYDETJwmJVOOtsJSKwEjNA@mail.gmail.com>
+Subject: Re: [PATCH] x86/mm: Fix leak of pmd ptlock
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     stable <stable@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Yi Zhang <yi.zhang@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 08:29:14PM -0800, Randy Dunlap wrote:
-> fs/dax.c uses copy_user_page() but ARC does not provide that interface,
-> resulting in a build error.
-> 
-> Provide copy_user_page() in <asm/page.h> (beside copy_page()) and
-> add <asm/page.h> to fs/dax.c to fix the build error.
-> 
-> ../fs/dax.c: In function 'copy_cow_page_dax':
-> ../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
+Ping, this bug is still present on v5.11-rc2, need a resend?
 
-Could somebody explain what the force-cast is doing in there?
-I mean, the call is
-        copy_user_page(vto, (void __force *)kaddr, vaddr, to);
-kaddr is a local variable there, declared as void *; AFAICS, that
-had been pure cargo-cult since
-commit 7a9eb20666317794d0279843fbd091af93907780
-Author: Dan Williams <dan.j.williams@intel.com>
-Date:   Fri Jun 3 18:06:47 2016 -0700
-
-    pmem: kill __pmem address space
-
-I mean, it's been more than 4 years, time to bury that body...
+On Wed, Dec 2, 2020 at 10:28 PM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> Commit 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
+> introduced a new location where a pmd was released, but neglected to run
+> the pmd page destructor. In fact, this happened previously for a
+> different pmd release path and was fixed by commit:
+>
+> c283610e44ec ("x86, mm: do not leak page->ptl for pmd page tables").
+>
+> This issue was hidden until recently because the failure mode is silent,
+> but commit:
+>
+> b2b29d6d0119 ("mm: account PMD tables like PTE tables")
+>
+> ...turns the failure mode into this signature:
+>
+>  BUG: Bad page state in process lt-pmem-ns  pfn:15943d
+>  page:000000007262ed7b refcount:0 mapcount:-1024 mapping:0000000000000000 index:0x0 pfn:0x15943d
+>  flags: 0xaffff800000000()
+>  raw: 00affff800000000 dead000000000100 0000000000000000 0000000000000000
+>  raw: 0000000000000000 ffff913a029bcc08 00000000fffffbff 0000000000000000
+>  page dumped because: nonzero mapcount
+>  [..]
+>   dump_stack+0x8b/0xb0
+>   bad_page.cold+0x63/0x94
+>   free_pcp_prepare+0x224/0x270
+>   free_unref_page+0x18/0xd0
+>   pud_free_pmd_page+0x146/0x160
+>   ioremap_pud_range+0xe3/0x350
+>   ioremap_page_range+0x108/0x160
+>   __ioremap_caller.constprop.0+0x174/0x2b0
+>   ? memremap+0x7a/0x110
+>   memremap+0x7a/0x110
+>   devm_memremap+0x53/0xa0
+>   pmem_attach_disk+0x4ed/0x530 [nd_pmem]
+>   ? __devm_release_region+0x52/0x80
+>   nvdimm_bus_probe+0x85/0x210 [libnvdimm]
+>
+> Given this is a repeat occurrence it seemed prudent to look for other
+> places where this destructor might be missing and whether a better
+> helper is needed. try_to_free_pmd_page() looks like a candidate, but
+> testing with setting up and tearing down pmd mappings via the dax unit
+> tests is thus far not triggering the failure. As for a better helper
+> pmd_free() is close, but it is a messy fit due to requiring an @mm arg.
+> Also, ___pmd_free_tlb() wants to call paravirt_tlb_remove_table()
+> instead of free_page(), so open-coded pgtable_pmd_page_dtor() seems the
+> best way forward for now.
+>
+> Fixes: 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
+> Cc: <stable@vger.kernel.org>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Co-debugged-by: Matthew Wilcox <willy@infradead.org>
+> Tested-by: Yi Zhang <yi.zhang@redhat.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+>  arch/x86/mm/pgtable.c |    2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+> index dfd82f51ba66..f6a9e2e36642 100644
+> --- a/arch/x86/mm/pgtable.c
+> +++ b/arch/x86/mm/pgtable.c
+> @@ -829,6 +829,8 @@ int pud_free_pmd_page(pud_t *pud, unsigned long addr)
+>         }
+>
+>         free_page((unsigned long)pmd_sv);
+> +
+> +       pgtable_pmd_page_dtor(virt_to_page(pmd));
+>         free_page((unsigned long)pmd);
+>
+>         return 1;
+>
