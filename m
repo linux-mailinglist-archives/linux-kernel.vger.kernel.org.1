@@ -2,244 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4732EB504
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D29AC2EB506
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731573AbhAEVpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 16:45:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
+        id S1729183AbhAEVtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 16:49:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731554AbhAEVpO (ORCPT
+        with ESMTP id S1727481AbhAEVtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:45:14 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC02C0617A0
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 13:44:14 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id t22so517323pfl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 13:44:14 -0800 (PST)
+        Tue, 5 Jan 2021 16:49:07 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3BBC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 13:48:26 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id m12so1961880lfo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 13:48:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NwFxWchxK+9q/lw5BsjyZ2MIIGZIQylr+hrEjtL9KKU=;
-        b=LIKDqWU4UOYxfB2A57EAwB7Tdv3pVXY9jiD6SiElP+lLjSIvOnh8mlOHlfXQaThRSE
-         YYMdiiaJyqI/H+MjRLcT0g47OpEHL+97eu8/NF4oKd66E7g4daOwifLDYGldLlTaOKtJ
-         LZzlAP/KZHDlpBCkAE1DDeUeuG5sxNR2frs88x8/PMMqAyYYcA/f8GdF54pbwuTFWVYf
-         Zb/tZAQ76mWDZuXmw1nkuH4J/N/iAgnbDEqZ1skBvoSqM5+2hPjMD6c1EmUr/zLz02ew
-         GAlk6CW8/VwrfMuerN//uzBHmcJgcn0qmvKd5onMtxf3ORYocTd6r1bxUPa+K/QIB1zI
-         sniQ==
+        d=mikemestnik-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=TW0hxTviLDNOX8JhOgA6vCelx8pQyhD6qgSkKGEk/Oo=;
+        b=L6p/cL4OVYcPabzlqnf3Se53BMSohwnaRGMZfnVrY5Ets/y+tlWp1VYxugakRxuV+q
+         xFDJ+hEMqVYqMtxlCGl6XftAPvxM/u1XyffeE/mYV7sC+Wd3BdB56xU22qFNpT2AqO74
+         fkMI53m5fwL0DPvM6dlE61AUzQuz0CK4ivoQa3fuAP6SqFz+KCyiD8p4c3KuT0CREIkz
+         9Vqbvr9ovhDvpcUMuBVgsrNFnhyRv7FNd+Xwf8yFQJcjJQhr39IwjEG4kAd6L6JeZThs
+         CkZWRWhA75VwcwHJLWwRpOsrDqpGlsd/mFzPfGSUAqguIhDEq8VgDv4HlQ/FOy3eu1Ml
+         9pyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NwFxWchxK+9q/lw5BsjyZ2MIIGZIQylr+hrEjtL9KKU=;
-        b=fb/gUK10fdXfTSrnJJhzhOkLZYI9c93lHmipg2SiXxgPqvuuIYQCVXyX5gZ1DEtn+O
-         NJLZyDLwCXKVAIN2+ZFI39ReY3bMHI2mYzHR5tTidgt4XOxYmLBACs/JNGqEoA+Ccw9/
-         Z71bhrsBgCyojS3RSTM3sAv7E9KJeVBP6LvubG/rwdTe9W6IgmZ4MLq4Xrv3vy+gAo0K
-         zrXtaRp4Bxo5GqyupjcSziZ0PzF1cmYGeZtpfgaS5V6VRmq/cZovhZDOg6LCM/+TIHQl
-         Fb1sssI2JM7d44xqOBRW+wYybWQNoRz+cxyZ9wF27E3ekaEgMMG5tuWKead41iaS5mhO
-         oQhw==
-X-Gm-Message-State: AOAM531ctSNPwoKvgWqoHOvyQSWXJkjFU0rWz0jdaBH2AoMtn6TyxmVo
-        ax1Kcv8HnFpAGRj0GlRKXES5bQ==
-X-Google-Smtp-Source: ABdhPJw0lapnq0hCUTRBKepVSqNhYwqAHIH3awvJBgb5qA8ejoVN2VnRV4RNJ481p4t0fC46EoA2AQ==
-X-Received: by 2002:a65:6405:: with SMTP id a5mr1136989pgv.389.1609883053575;
-        Tue, 05 Jan 2021 13:44:13 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id b129sm146991pgc.52.2021.01.05.13.44.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 13:44:12 -0800 (PST)
-Date:   Tue, 5 Jan 2021 14:44:10 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, mike.leach@linaro.org, leo.yan@linaro.org,
-        jonathan.zhouwen@huawei.com
-Subject: Re: [PATCH v5 21/25] coresight: etm4x: Refactor probing routine
-Message-ID: <20210105214410.GA2789330@xps15>
-References: <20201214173731.302520-1-suzuki.poulose@arm.com>
- <20201214173731.302520-22-suzuki.poulose@arm.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=TW0hxTviLDNOX8JhOgA6vCelx8pQyhD6qgSkKGEk/Oo=;
+        b=ZaJ7P/+4qlcXXwcVji0zugxF4ID1bb7c4O2N9bDET0bPMLqJwsDMe/JzA/weeotSuI
+         A+btAXo3XS1Bk00icjkvOufqZ64HqfX+JUIpFLAEpkJiCh2nlvLjkcEwo1+WVr/ahL8M
+         cPu5wO56LL8+12Kf6uLJwkjqt6qvRUXmmfWIcqJ9Iwa6bKvjiNmb8fXP5Qg4fDWnQtha
+         L4BJGGuq/b8NEKAPviRjWEVcflvV0gAgtyS0lAKDjCQsS9cTEs6o6hzzd9J8cADzDeUQ
+         t/rEknqBYjBE+6hwQriOVVrAYK7OtoQnVwv4CqTlam9nJYP643SYWvqcBuKTU4ch7Ipx
+         lTwA==
+X-Gm-Message-State: AOAM530gov/rBmAHLfhhec+K+XrKlkqIzd62I4PW31aOSXU55qTRkfMR
+        8+cNoKAGPwArqMX9xHraSVgfb+aX8cbaSqaXvAprN0pTL31KSaiA
+X-Google-Smtp-Source: ABdhPJxjhzDT17udDSGPvR3+Og8YzSgzx/Kda4415FKGJce4ZpL42IIUWiMjDT+7UVlI/ZTpEejEaPhL0BE9qYWzvzk=
+X-Received: by 2002:ac2:46e7:: with SMTP id q7mr525616lfo.311.1609883304929;
+ Tue, 05 Jan 2021 13:48:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214173731.302520-22-suzuki.poulose@arm.com>
+From:   Mike Mestnik <cheako@mikemestnik.net>
+Date:   Tue, 5 Jan 2021 15:48:14 -0600
+Message-ID: <CAF8px55cnNytE=Hg-jt0mtp9CL1grQ5vS1-QXjSrHfQ_C8XXNQ@mail.gmail.com>
+Subject: Config option tags/groups.
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+I can't find good descriptions for CONFIG_IRQ_MSI_IOMMU,
+CONFIG_GENERIC_IRQ_CHIP, and CONFIG_IRQ_FASTEOI_HIERARCHY_HANDLERS.  I
+know that doesn't sound like it has anything to do with the subject,
+I'm getting there.  I'm trying to add cgroups and virtualization to an
+OpenWRT config.  As odd as it seems the config for OWRT is
+*obfuscated(AFAICT), so I'm unable to take that config and just edit
+it.  My new idea is to strip out the "hardware" parts of the config(or
+just the NF config) from Debian's arm64 kernel and merge that with
+what I do have from OpenWRT.  The problem, there is no way of knowing
+what flags(options/CONFIG_) are dependent on some piece of hardware or
+even what flags are part of NF.  I looked at generating a list of
+flags that depend on CONFIG_NETFILTER, but that seems like it would
+involve reading not only the Kconfig files but also the Makefiles.
 
-On Mon, Dec 14, 2020 at 05:37:27PM +0000, Suzuki K Poulose wrote:
-> CoreSight ETM with system register access may not have a
-> memory mapped i/o access. Refactor the ETM specific probing
-> into a common routine to allow reusing the code for such ETMs.
-> 
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Changes since v4:
->  - Refactor the "remove" callback for AMBA driver, for reuse by
->    platform_driver to follow
->  - Removed Reviewed-by from Mathieu, due to the above
-> ---
->  .../coresight/coresight-etm4x-core.c          | 60 ++++++++++++-------
->  1 file changed, 38 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 25eb42c95527..89bb5a424a2b 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -1610,14 +1610,11 @@ static void etm4_pm_clear(void)
->  	}
->  }
->  
-> -static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
-> +static int etm4_probe(struct device *dev, void __iomem *base)
+You may be asking, what do I want the hardware or the NF parts.  The
+answer is either would be a start.  The term hardware is ambiguous(is
+SMT options hardware?), so I think I'd be more interested in having
+groups that are for NF, flags that add things to the userspace
+API(further separated by syscall/proc/sys/dev) and flags that change
+parts of the userspace API.
 
-Please rebase this set to the latest coresight-next (new location on
-git.kernel.org).  There is about half a dozen patches that don't apply anymore,
-including this one where remove @id results in a compilation error due to Liu's
-changes.
+I don't think the metadata should live in the Kconfig files and there
+is also no real reason this should live in the kernel tree at all, but
+I think it's most useful there.  I'm thinking more about files in a
+folder under documentation or something like that.  I would put these
+lists together, but as I started with...  that's just impossible for
+someone without good documentation on what each flag does.
 
-Thanks,
-Mathieu
+* If you merge the base, arch, and board configs together you won't
+get a config that includes things like NetFilter.  You might think
+that's impossible for OpenWRT to work that way, but as it turns out NF
+is added by some Makefile scripting.  I tried to run an OpenWRT build,
+but that was a dead end for me...  I couldn't get the build system
+configured for some reason.
 
->  {
->  	int ret;
-> -	void __iomem *base;
-> -	struct device *dev = &adev->dev;
->  	struct coresight_platform_data *pdata = NULL;
->  	struct etmv4_drvdata *drvdata;
-> -	struct resource *res = &adev->res;
->  	struct coresight_desc desc = { 0 };
->  	struct etm4_init_arg init_arg = { 0 };
->  
-> @@ -1641,11 +1638,6 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  	if (fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
->  		drvdata->skip_power_up = true;
->  
-> -	/* Validity for the resource is already checked by the AMBA core */
-> -	base = devm_ioremap_resource(dev, res);
-> -	if (IS_ERR(base))
-> -		return PTR_ERR(base);
-> -
->  	drvdata->base = base;
->  
->  	spin_lock_init(&drvdata->spinlock);
-> @@ -1675,7 +1667,7 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  	if (IS_ERR(pdata))
->  		return PTR_ERR(pdata);
->  
-> -	adev->dev.platform_data = pdata;
-> +	dev->platform_data = pdata;
->  
->  	desc.type = CORESIGHT_DEV_TYPE_SOURCE;
->  	desc.subtype.source_subtype = CORESIGHT_DEV_SUBTYPE_SOURCE_PROC;
-> @@ -1695,7 +1687,6 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  
->  	etmdrvdata[drvdata->cpu] = drvdata;
->  
-> -	pm_runtime_put(&adev->dev);
->  	dev_info(&drvdata->csdev->dev, "CPU%d: ETM v%d.%d initialized\n",
->  		 drvdata->cpu, ETM_ARCH_MAJOR_VERSION(drvdata->arch),
->  		 ETM_ARCH_MINOR_VERSION(drvdata->arch));
-> @@ -1708,6 +1699,25 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  	return 0;
->  }
->  
-> +static int etm4_probe_amba(struct amba_device *adev, const struct amba_id *id)
-> +{
-> +	void __iomem *base;
-> +	struct device *dev = &adev->dev;
-> +	struct resource *res = &adev->res;
-> +	int ret;
-> +
-> +	/* Validity for the resource is already checked by the AMBA core */
-> +	base = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
-> +	ret = etm4_probe(dev, base);
-> +	if (!ret)
-> +		pm_runtime_put(&adev->dev);
-> +
-> +	return ret;
-> +}
-> +
->  static struct amba_cs_uci_id uci_id_etm4[] = {
->  	{
->  		/*  ETMv4 UCI data */
-> @@ -1724,15 +1734,12 @@ static void clear_etmdrvdata(void *info)
->  	etmdrvdata[cpu] = NULL;
->  }
->  
-> -static int etm4_remove(struct amba_device *adev)
-> +static int __exit etm4_remove_dev(struct etmv4_drvdata *drvdata)
->  {
-> -	struct etmv4_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-> -
->  	etm_perf_symlink(drvdata->csdev, false);
-> -
->  	/*
-> -	 * Taking hotplug lock here to avoid racing between etm4_remove and
-> -	 * CPU hotplug call backs.
-> +	 * Taking hotplug lock here to avoid racing between etm4_remove_dev()
-> +	 * and CPU hotplug call backs.
->  	 */
->  	cpus_read_lock();
->  	/*
-> @@ -1751,6 +1758,15 @@ static int etm4_remove(struct amba_device *adev)
->  	return 0;
->  }
->  
-> +static int __exit etm4_remove_amba(struct amba_device *adev)
-> +{
-> +	struct etmv4_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-> +
-> +	if (drvdata)
-> +		return etm4_remove_dev(drvdata);
-> +	return 0;
-> +}
-> +
->  static const struct amba_id etm4_ids[] = {
->  	CS_AMBA_ID(0x000bb95d),			/* Cortex-A53 */
->  	CS_AMBA_ID(0x000bb95e),			/* Cortex-A57 */
-> @@ -1772,14 +1788,14 @@ static const struct amba_id etm4_ids[] = {
->  
->  MODULE_DEVICE_TABLE(amba, etm4_ids);
->  
-> -static struct amba_driver etm4x_driver = {
-> +static struct amba_driver etm4x_amba_driver = {
->  	.drv = {
->  		.name   = "coresight-etm4x",
->  		.owner  = THIS_MODULE,
->  		.suppress_bind_attrs = true,
->  	},
-> -	.probe		= etm4_probe,
-> -	.remove         = etm4_remove,
-> +	.probe		= etm4_probe_amba,
-> +	.remove         = etm4_remove_amba,
->  	.id_table	= etm4_ids,
->  };
->  
-> @@ -1793,7 +1809,7 @@ static int __init etm4x_init(void)
->  	if (ret)
->  		return ret;
->  
-> -	ret = amba_driver_register(&etm4x_driver);
-> +	ret = amba_driver_register(&etm4x_amba_driver);
->  	if (ret) {
->  		pr_err("Error registering etm4x driver\n");
->  		etm4_pm_clear();
-> @@ -1804,7 +1820,7 @@ static int __init etm4x_init(void)
->  
->  static void __exit etm4x_exit(void)
->  {
-> -	amba_driver_unregister(&etm4x_driver);
-> +	amba_driver_unregister(&etm4x_amba_driver);
->  	etm4_pm_clear();
->  }
->  
-> -- 
-> 2.24.1
-> 
+How I got here, the whole rest of what I'm doing:
+This is for an ESPRESSObin V7 Board /w the Marvell Armada 3700LP
+(88F3720) dual core ARM Cortex A53.  OpenWRT seems to have a great
+config for this board that I'm currently using.  I'd like to add
+cgroups and virtualization to this config and while I'm at it upgrade
+from the 4.x kernel OpenWRT uses.  Doing so, I noticed that
+CONFIG_NETFILER was unset.  So I was like that's ok I'll just grab
+that from Debian's arm64 kernel .config.  You can't do that though,
+AFAICT.  Debian's config has a lot of stuff for other boards and
+notably doesn't include the hardware crypto acceleration OpenWRT does.
+So I'd like to grab all the userspace stuff from Debian's config and
+merge it with the hardware things from OpenWRT, this should be
+simple...  I should be able to tell if
+CONFIG_IRQ_FASTEOI_HIERARCHY_HANDLERS is a piece of hardware or not.
+
+Wile CONFIG_IRQ_MSI_IOMMU sounds like part of a north bridge(that I
+wouldn't have) and CONFIG_GENERIC_IRQ_CHIP sounds like something every
+arm64 should have...  but CONFIG_IRQ_FASTEOI_HIERARCHY_HANDLERS I
+can't tell and have no idea.  These come from running olddefconfig on
+both configs and diffing, Debian seems to set all of these and the
+base OpenWRT kernel has them unset.
+
+I would accept to skip all of this and start working with an
+un-obfuscated OpenWRT config, where I can just turn on the two
+frameworks I'm interested in.  Though there is still the issue that
+Debian seems to have more userspace option flags set, so if I go to
+try and run Debian in a container I expect it to fail on not having
+POSIX_MQUEUE or something.  I'll cross that bridge when I get there.
+
+Cheers.
