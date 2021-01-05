@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58652EB4E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2725A2EB4EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 22:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731486AbhAEVeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 16:34:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
+        id S1731481AbhAEVfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 16:35:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbhAEVeM (ORCPT
+        with ESMTP id S1725817AbhAEVfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:34:12 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1655BC061574;
-        Tue,  5 Jan 2021 13:33:32 -0800 (PST)
+        Tue, 5 Jan 2021 16:35:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C5AC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 13:35:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=nYVjMqbRLfBVIUStOapE6efMR2BK+1HUPqAiQNNoYmg=; b=pPkvq68X9pysO9znCOq+4c8zfb
-        jUx0+IENwAsq8jGo3QxZY/Kx4UEJPYdkHSLzlJm6eLsz5eG9Qzqr92YSXj0E3kyZzdXwWXiLWoyQd
-        nxvYue8Jhq9Dz9xLurOwMhl4G9gHIQJZZ5PLdtJl6y4NY/C7EcvJyqIXjZBqYQhcmeE7iW5Tgvyr3
-        PABBWC61P45MPDYVDPgyaJcJlHHK8pPh2Y/S3+woztuJbzGs1BOU1A5IjMYpKV6Nh3Car+t3V62ab
-        VJdAlP8GVFZioSxJoHprpSwsGnnqOfRj3ZwkyESGA6JkLAZVdQexL+qn7Irbj+FUFNTC2e9Welk24
-        eHCzFwGw==;
-Received: from [2601:1c0:6280:3f0::64ea]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwtxJ-0002vc-HA; Tue, 05 Jan 2021 21:33:29 +0000
-Subject: Re: [PATCH] csky: Fix a typo in Kconfig
-To:     Masanari Iida <standby24x7@gmail.com>, guoren@kernel.org,
-        linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210105134107.217920-1-standby24x7@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ae3672c0-84d1-7ee5-1858-33d119544906@infradead.org>
-Date:   Tue, 5 Jan 2021 13:33:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4fXXGhqhwyZOyY/MzNL+cRERt9hfQzFKJ23KP07oxrg=; b=PMmrvrHj+uqoxe55GQq/rvMKul
+        vnT6PdTMKIcWp7KrN5DXA+ZEJiz3CBALxwj1Uqo8nFC1NGwaoyQK3Grlyl79zD5LUpt+4czdLxlL5
+        2cFEeUZZwnxF78MglNWKES4nrdE+4r9hJ5R1kL+wG/6X9hXK474xKhoyFxg7D1uU8MqOh43ksyJKo
+        pt+S0Vvu7wC+71IE0zC5Cjr7ZiWiLMcxNh1JE65auWFmVWs8sn/AVPG2ByO8YbpGMC92YxQdplu46
+        h/1uASJyw59tHRhBS60tWeXSpBra+QkpGB8Fla2VFDBn/JzRJajbg7BlYVZ3xch6t6BGg+TbOCOvo
+        dSjnFwNQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kwtyL-001hQZ-DD; Tue, 05 Jan 2021 21:34:42 +0000
+Date:   Tue, 5 Jan 2021 21:34:33 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: kernel BUG at mm/page-writeback.c:LINE!
+Message-ID: <20210105213433.GC175893@casper.infradead.org>
+References: <000000000000886dbd05b7ffa8db@google.com>
+ <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org>
+ <CAHk-=wi6hd8ATJ1W90goTxjgyvuoFsf0xZdAJmZ2c0dx5wcJSg@mail.gmail.com>
+ <alpine.LSU.2.11.2101041839440.3466@eggly.anvils>
+ <CAHk-=wi36CBggdRfdggACvf2hG+djM9kKnorrwsByN6uDvPExA@mail.gmail.com>
+ <CAHk-=wh=5kDGukMs2sVZ8uHZJX4VL13oD5+xMAR4HvuY6QckLg@mail.gmail.com>
+ <alpine.LSU.2.11.2101051235500.5906@eggly.anvils>
+ <CAHk-=wiGHdRRmZtrcUt6g6hmATkmueNVLNnSHSBoUp-v-Qy5sw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210105134107.217920-1-standby24x7@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiGHdRRmZtrcUt6g6hmATkmueNVLNnSHSBoUp-v-Qy5sw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-There's a lot more to do here.  Please see below.
-
-On 1/5/21 5:41 AM, Masanari Iida wrote:
-> This patch fixes a spelling typo in Kconfig.
+On Tue, Jan 05, 2021 at 01:22:49PM -0800, Linus Torvalds wrote:
+> On Tue, Jan 5, 2021 at 1:13 PM Hugh Dickins <hughd@google.com> wrote:
+> >
+> > I was going to raise a question, whether you should now revert
+> > 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and BUG_ON(PageWriteback)"):
+> > which would not have gone in like that if c2407cf7d22d were already in.
 > 
-> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
-> ---
->  arch/csky/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Honestly, even if it wasn't for that PageTail issue, I think
+> 073861ed77b6 is just the right thing to do anyway. It just feels _so_
+> much safer to not have the possibility of that page wait thing
+> following while the page is possibly then being free'd and re-used at
+> the same time.
 > 
-> diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-> index 7f1721101ea0..ce680f6e3b4b 100644
-> --- a/arch/csky/Kconfig
-> +++ b/arch/csky/Kconfig
-> @@ -243,7 +243,7 @@ menuconfig HAVE_TCM
->  	bool "Tightly-Coupled/Sram Memory"
->  	select GENERIC_ALLOCATOR
->  	help
-> -	  The implementation are not only used by TCM (Tightly-Coupled Meory)
-> +	  The implementation are not only used by TCM (Tightly-Coupled Memory)
+> So I think the only reason to revert that commit would be if we were
+> to find that it's a huge performance problem to raise the page
+> refcount temporarily. Which I think is very unlikely (since we already
+> dirty the page structure due to the page flags modification - although
+> they are far enough apart that it might be a different cacheline).
 
-	                     is not
-
->  	  but also used by sram on SOC bus. It follow existed linux tcm
-
-	                   SRAM                follows the existing Linux TCM
-
->  	  software interface, so that old tcm application codes could be
-
-	                                  TCM
-
->  	  re-used directly.
-> 
-
-
--- 
-~Randy
-
+struct pages _tend_ to be 64 bytes on 64-bit platforms (and i suspect
+you're long past caring about performance on 32-bit platforms).
