@@ -2,147 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781A52EA40B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 04:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1107A2EA415
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 04:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbhAEDsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 22:48:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
+        id S1728403AbhAEDsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 22:48:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbhAEDsL (ORCPT
+        with ESMTP id S1726168AbhAEDsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 22:48:11 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D349AC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 19:47:30 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id b5so917145pjl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 19:47:30 -0800 (PST)
+        Mon, 4 Jan 2021 22:48:35 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564FBC061794;
+        Mon,  4 Jan 2021 19:47:54 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id m25so69441471lfc.11;
+        Mon, 04 Jan 2021 19:47:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R6VBjqcK5YLZ5deMeqMm/AgkrrOL5bx12zvyrtcYvt8=;
-        b=zvrg0g37kYpekFpHzLswoui8ovwcJGCeMJ0giV3ONJTxaEWTlz3OM7ncuumobeYx7y
-         UNHcSxUmzThAZrUk2KUaMe1WLxtH9ab4j772D6wYNU2l3nQ8OCgqU3yavW7PrriYyK3z
-         fQcIpEQh1munE0iiKCuBZu4Py0iM5kkqAoQNJTyrzGEHIL9ybMU5TMukupp6yQ14C9NA
-         /x7zeMMd0ma90NGVQKdMTl90wF9VkyWz513nR2emqWoZmWRPKZyVNg0dQgkOHy2OkLAP
-         SqYS0VopNy94c1MIibYggwMA0avL0WEPWEsj781DB18Blig+mVZ1NuQQyaTSuXrP1F78
-         s2VQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=h3dbOszFbt6OQaWtwfejouXLhmx5RSkLak0dmAl0EsE=;
+        b=X2HIPa+2nYHaUq4baszZeg/1lPwfRlrkiazbu8bWAZ/4KVDEZZ8UJLHkCiHzu5BoPv
+         +d1r6dGtLI/e5iSeLti/uFDhKLFXF3tY06Jdc3OuTB+60jcWy7nbxvR/X/sbuy5Z2y0a
+         zy9Qm2wdvLKFzbzpL5PwnIXh21X/23EVG7mYWxKtxfix082rS5faNNu/pQ57no+v4JD+
+         BaQRjUTLWwn1bDT7po749l/CDI6APyFbpmhm4QydCPb2EdRw7tEUospHsYRRgYR6FHym
+         oOmjm0bgU9pTqMTv2DoYi3myavoG+000acurgbb4dfthX9S8jl7kSgIjjgmMtRlfqb7V
+         Jf3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R6VBjqcK5YLZ5deMeqMm/AgkrrOL5bx12zvyrtcYvt8=;
-        b=iBiJHFF+u+Rs8mrPPZLYVS47E8nJ9CeOd8SHV7P28kj6Fc6OkaM7LM/lYglfxsrp+3
-         /bB54n+EwBSZOsWtTY2srI8deSOZhIyz8hmIK0FolCsAIbabIySSa+LEoxisddVi9Lvc
-         gz4UHX7ZJCvZ4aNqugZMUZ3qy6dURBu241oAHcg1Dj7Txhjhf8EB3PYTDnOro5EckCf+
-         aR6LRxUeBwegnkcA9wW70QQx2186Mhfn0F3sHDIdV+CeCZ7wVoD6RF6jxp+EEaJ/FNm2
-         n9N2GjtZjnERgxw9g3k/ihM7ipUnvSVimkHhEQ8NuV4ZAfJAFH0SfnKaCHOb0CxADf2q
-         NPvA==
-X-Gm-Message-State: AOAM5322dT6R/twaqwX+3Ex3ZH+WEHUyL2IFDqTuoXIltuetqb1jUj6b
-        449KvKCux23VQ/lCJSa8bMFRmN/5IN7hYICnR+Qbow==
-X-Google-Smtp-Source: ABdhPJybN/E/OaP+FLb4Fj1fxoISneSpVEx88JYdCzoMgKviF1z6kKZ8+17Ucm+6/BUwqg3Ft6T65hGLpA5K+XDZ6hQ=
-X-Received: by 2002:a17:90a:c588:: with SMTP id l8mr2061839pjt.147.1609818450281;
- Mon, 04 Jan 2021 19:47:30 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=h3dbOszFbt6OQaWtwfejouXLhmx5RSkLak0dmAl0EsE=;
+        b=dd7G3Lb1vaKfHk24dyZxF8NzW1w9V2tfzyOCOJtHql4Jdc7Ln21wRiYgpe62h4dMlh
+         HcECjkvf5cmv6Qg/AoIxslXpsDYiNj1rVcy/AGwXEfCk3eGS5UgQPOckRhfr1rxVA7y0
+         NTVI6q1N4eisgYlqmdfDanjvhTaomlSLM0B7sMB4ZdZMbk+74bb3j0L0/hD0yvnMtf/L
+         mKfFtneEN79Y0LYpSA9IyJAE89XsojR30EPH15BbLTLgKAZ44TZIRtwltSFz6H4OO7Vc
+         SqLixdOO/BIR4yE60fjImPZuOw68glbRU6PBStAoVc7Yrvdei+Qq2WCvI/gMuqOALsx2
+         E6Gw==
+X-Gm-Message-State: AOAM530zwnG8HMQmoTyLufFQhzAb9NS8gQL18hxPbRPhdLAXwVjYJGgQ
+        TrGGF5oXeK8DSTdRJQTs6Zm3OKyOizJXfhkQAjg=
+X-Google-Smtp-Source: ABdhPJycvDA2y0kJZnyrX/YoD11eP5GdGX7X4MHU9HChkkRYsRnd6ay+qNKHQmx0en+WU3/yCpN8x9PBPa2srmvjcdU=
+X-Received: by 2002:a19:6b0d:: with SMTP id d13mr32595793lfa.63.1609818472823;
+ Mon, 04 Jan 2021 19:47:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20210104065843.5658-1-songmuchun@bytedance.com>
- <20210104065843.5658-4-songmuchun@bytedance.com> <e043e137-5ca7-d478-248c-9defcecc6ac7@oracle.com>
- <CAMZfGtXZqbNwb2k5sq29gXSBMO3sVNaATiJnPWSggoAG5mZMqA@mail.gmail.com>
-In-Reply-To: <CAMZfGtXZqbNwb2k5sq29gXSBMO3sVNaATiJnPWSggoAG5mZMqA@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 5 Jan 2021 11:46:51 +0800
-Message-ID: <CAMZfGtVU5WfEWbin5hxAkkWLVJw15n2crtPMkmHDRxkBo4_TOQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4/6] mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210103035445.23696-1-tiny.windzz@gmail.com>
+In-Reply-To: <20210103035445.23696-1-tiny.windzz@gmail.com>
+Reply-To: cwchoi00@gmail.com
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Date:   Tue, 5 Jan 2021 12:47:16 +0900
+Message-ID: <CAGTfZH0sLh=8XhBVOzUr9qO2w_=jp-OuWoh5vgNpnmXq6EzYHA@mail.gmail.com>
+Subject: Re: [PATCH 26/31] PM / devfreq: tegra30: convert to use devm_pm_opp_* API
+To:     Yangtao Li <tiny.windzz@gmail.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>, yuq825@gmail.com,
+        David Airlie <airlied@linux.ie>, daniel@ffwll.ch,
+        robdclark@gmail.com, sean@poorly.run,
+        Rob Herring <robh@kernel.org>, tomeu.vizoso@collabora.com,
+        steven.price@arm.com, alyssa.rosenzweig@collabora.com,
+        stanimir.varbanov@linaro.org, agross@kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        mchehab@kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        adrian.hunter@intel.com, Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, jcrouse@codeaurora.org,
+        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
+        marijn.suijten@somainline.org, gustavoars@kernel.org,
+        emil.velikov@collabora.com, jonathan@marek.ca,
+        akhilpo@codeaurora.org, smasetty@codeaurora.org,
+        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, ddavenport@chromium.org,
+        jsanka@codeaurora.org, rnayak@codeaurora.org,
+        tongtiangen@huawei.com, miaoqinglang@huawei.com,
+        khsieh@codeaurora.org, abhinavk@codeaurora.org,
+        chandanu@codeaurora.org, Guenter Roeck <groeck@chromium.org>,
+        varar@codeaurora.org, Matthias Kaehlcke <mka@chromium.org>,
+        harigovi@codeaurora.org, rikard.falkeborn@gmail.com,
+        natechancellor@gmail.com, Georgi Djakov <georgi.djakov@linaro.org>,
+        akashast@codeaurora.org, parashar@codeaurora.org,
+        Doug Anderson <dianders@chromium.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-tegra@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lima@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-serial@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 11:14 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Tue, Jan 5, 2021 at 9:33 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >
-> > On 1/3/21 10:58 PM, Muchun Song wrote:
-> > > When dissolve_free_huge_page() races with __free_huge_page(), we can
-> > > do a retry. Because the race window is small.
-> >
-> > In general, I agree that the race window is small.  However, worst case
-> > would be if the freeing of the page is put on a work queue.  Is it acceptable
-> > to keep retrying in that case?  In addition, the 'Free some vmemmap' series
-> > may slow the free_huge_page path even more.
->
-> I also consider the 'Free some vmemmap' series case. In my next
-> version series, I will flush the work before dissolve_free_huge_page
-> returns when encountering this race. So the retry is acceptable.
-> Right?
+Hi,
 
-Hi Mike,
-
-How about flushing the @free_hpage_work when
-encountering this race?
-
+On Sun, Jan 3, 2021 at 12:57 PM Yangtao Li <tiny.windzz@gmail.com> wrote:
 >
-> Thanks.
+> Use devm_pm_opp_* API to simplify code, and remove opp_table
+> from tegra_devfreq.
 >
-> >
-> > In these worst case scenarios, I am not sure we want to just spin retrying.
-> >
-> > --
-> > Mike Kravetz
-> >
-> > >
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > ---
-> > >  mm/hugetlb.c | 16 +++++++++++-----
-> > >  1 file changed, 11 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > > index 72608008f8b4..db00ae375d2a 100644
-> > > --- a/mm/hugetlb.c
-> > > +++ b/mm/hugetlb.c
-> > > @@ -1763,10 +1763,11 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
-> > >   * nothing for in-use hugepages and non-hugepages.
-> > >   * This function returns values like below:
-> > >   *
-> > > - *  -EBUSY: failed to dissolved free hugepages or the hugepage is in-use
-> > > - *          (allocated or reserved.)
-> > > - *       0: successfully dissolved free hugepages or the page is not a
-> > > - *          hugepage (considered as already dissolved)
-> > > + *  -EAGAIN: race with __free_huge_page() and can do a retry
-> > > + *  -EBUSY:  failed to dissolved free hugepages or the hugepage is in-use
-> > > + *           (allocated or reserved.)
-> > > + *       0:  successfully dissolved free hugepages or the page is not a
-> > > + *           hugepage (considered as already dissolved)
-> > >   */
-> > >  int dissolve_free_huge_page(struct page *page)
-> > >  {
-> > > @@ -1815,8 +1816,10 @@ int dissolve_free_huge_page(struct page *page)
-> > >                * We should make sure that the page is already on the free list
-> > >                * when it is dissolved.
-> > >                */
-> > > -             if (unlikely(!PageHugeFreed(head)))
-> > > +             if (unlikely(!PageHugeFreed(head))) {
-> > > +                     rc = -EAGAIN;
-> > >                       goto out;
-> > > +             }
-> > >
-> > >               /*
-> > >                * Move PageHWPoison flag from head page to the raw error page,
-> > > @@ -1857,7 +1860,10 @@ int dissolve_free_huge_pages(unsigned long start_pfn, unsigned long end_pfn)
-> > >
-> > >       for (pfn = start_pfn; pfn < end_pfn; pfn += 1 << minimum_order) {
-> > >               page = pfn_to_page(pfn);
-> > > +retry:
-> > >               rc = dissolve_free_huge_page(page);
-> > > +             if (rc == -EAGAIN)
-> > > +                     goto retry;
-> > >               if (rc)
-> > >                       break;
-> > >       }
-> > >
+> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+> ---
+>  drivers/devfreq/tegra30-devfreq.c | 21 +++++++--------------
+>  1 file changed, 7 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
+> index 117cad7968ab..4984cb91e9ea 100644
+> --- a/drivers/devfreq/tegra30-devfreq.c
+> +++ b/drivers/devfreq/tegra30-devfreq.c
+> @@ -178,7 +178,6 @@ struct tegra_devfreq_soc_data {
+>
+>  struct tegra_devfreq {
+>         struct devfreq          *devfreq;
+> -       struct opp_table        *opp_table;
+>
+>         struct reset_control    *reset;
+>         struct clk              *clock;
+> @@ -794,6 +793,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>         struct tegra_devfreq_device *dev;
+>         struct tegra_devfreq *tegra;
+>         struct devfreq *devfreq;
+> +       struct opp_tabl *opp_table;
+
+opp_tabl -> opp_table. It will make the build error. Please do build
+test at least.
+
+>         unsigned int i;
+>         long rate;
+>         int err;
+> @@ -841,25 +841,25 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>                 return err;
+>         }
+>
+> -       tegra->opp_table = dev_pm_opp_set_supported_hw(&pdev->dev,
+> -                                                      &hw_version, 1);
+> -       err = PTR_ERR_OR_ZERO(tegra->opp_table);
+> +       opp_table = devm_pm_opp_set_supported_hw(&pdev->dev,
+> +                                                &hw_version, 1);
+> +       err = PTR_ERR_OR_ZERO(opp_table);
+>         if (err) {
+>                 dev_err(&pdev->dev, "Failed to set supported HW: %d\n", err);
+>                 return err;
+>         }
+>
+> -       err = dev_pm_opp_of_add_table(&pdev->dev);
+> +       err = devm_pm_opp_of_add_table(&pdev->dev);
+>         if (err) {
+>                 dev_err(&pdev->dev, "Failed to add OPP table: %d\n", err);
+> -               goto put_hw;
+> +               return err;
+>         }
+>
+>         err = clk_prepare_enable(tegra->clock);
+>         if (err) {
+>                 dev_err(&pdev->dev,
+>                         "Failed to prepare and enable ACTMON clock\n");
+> -               goto remove_table;
+> +               return err;
+>         }
+>
+>         err = reset_control_reset(tegra->reset);
+> @@ -917,10 +917,6 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>         reset_control_reset(tegra->reset);
+>  disable_clk:
+>         clk_disable_unprepare(tegra->clock);
+> -remove_table:
+> -       dev_pm_opp_of_remove_table(&pdev->dev);
+> -put_hw:
+> -       dev_pm_opp_put_supported_hw(tegra->opp_table);
+
+You might remove the 'devm_pm_opp_remove_all_dynamic(&pdev->dev)
+under ' remove_opp' goto statement.kkkk
+
+
+(snip)
+-- 
+Best Regards,
+Chanwoo Choi
