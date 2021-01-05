@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B2D2EA884
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 981352EA880
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729001AbhAEKVs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Jan 2021 05:21:48 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:27007 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728981AbhAEKVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:21:47 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-30-uoFF9HGNMyeCKOzMT-0d8g-1; Tue, 05 Jan 2021 10:20:07 +0000
-X-MC-Unique: uoFF9HGNMyeCKOzMT-0d8g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 5 Jan 2021 10:20:07 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 5 Jan 2021 10:20:07 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-CC:     "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] checkpatch: add a new check for strcpy/strlcpy uses
-Thread-Topic: [PATCH] checkpatch: add a new check for strcpy/strlcpy uses
-Thread-Index: AQHW4z9Q88VHmIJ6eEaZbDSrKKOd0aoY0EBw
-Date:   Tue, 5 Jan 2021 10:20:07 +0000
-Message-ID: <d081ca22bbd44f969fa45a8abc543606@AcuMS.aculab.com>
-References: <20210105082303.15310-1-dwaipayanray1@gmail.com>
- <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
-In-Reply-To: <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1728966AbhAEKVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:21:42 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:45106 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728373AbhAEKVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 05:21:42 -0500
+Received: from zn.tnic (p200300ec2f103700ba0c0ccd6fae6c32.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:3700:ba0c:ccd:6fae:6c32])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 31C911EC0324;
+        Tue,  5 Jan 2021 11:21:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609842060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=EVz+m6gjXCXiRGpAA6hb4FVi0ebUcWmcTwsx9IcT4xo=;
+        b=JnGPYAnlDzMEVLWBbPU/lENeQXdyjPwSRwR7qYaKT5NT7lGBIhzD+Bi3NqtG1hbfAnLi40
+        cDXVyyU9CJzFP8acQfjIWZmwEsIy3R6NhThLIg4H3556Vqimi+caLoF2c+WoEhdqth6vYg
+        UtT01IKy62Nj3CCrnB65BhL6xV4yls0=
+Date:   Tue, 5 Jan 2021 11:20:56 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Subject: Re: [PATCH] iommu/amd: Set iommu->int_enabled consistently when
+ interrupts are set up
+Message-ID: <20210105102056.GA28649@zn.tnic>
+References: <20210104132250.GE32151@zn.tnic>
+ <20210104232353.GJ32151@zn.tnic>
+ <50cd5f55be8ead0937ac315cd2f5b89364f6a9a5.camel@infradead.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <50cd5f55be8ead0937ac315cd2f5b89364f6a9a5.camel@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 05 January 2021 08:44
+On Tue, Jan 05, 2021 at 01:32:51AM +0000, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> On Tue, 2021-01-05 at 13:53 +0530, Dwaipayan Ray wrote:
-> > strcpy() performs no bounds checking on the destination buffer.
-> > This could result in linear overflows beyond the end of the buffer.
-> >
-> > strlcpy() reads the entire source buffer first. This read
-> > may exceed the destination size limit. This can be both inefficient
-> > and lead to linear read overflows.
-> >
-> > The safe replacement to both of these is to use strscpy() instead.
-> > Add a new checkpatch warning which alerts the user on finding usage of
-> > strcpy() or strlcpy().
+> When I made the INTCAPXT support stop gratuitously pretending to be MSI,
+> I missed the fact that iommu_setup_msi() also sets the ->int_enabled
+> flag. I missed this in the iommu_setup_intcapxt() code path, which means
+> that a resume from suspend will try to allocate the IRQ domains again,
+> accidentally re-enabling interrupts as it does, resulting in much sadness.
 > 
-> I do not believe that strscpy is preferred over strcpy.
+> Lift out the bit which sets iommu->int_enabled into the iommu_init_irq()
+> function which is also where it gets checked.
 > 
-> When the size of the output buffer is known to be larger
-> than the input, strcpy is faster.
+> Link: https://lore.kernel.org/r/20210104132250.GE32151@zn.tnic/
+> Fixes: d1adcfbb520c ("iommu/amd: Fix IOMMU interrupt generation in X2APIC mode")
+> Reported-by: Borislav Petkov <bp@alien8.de>
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> ---
+> There's a possibility we also need to ensure that the actual
+> MMIO_INTCAPXT_xxx_OFFSET registers are restored too. Unless you
+> actually trigger something to generate faults, you'll never know.
+> I don't see offhand how that was working in the pretend-to-be-MSI case
+> either.
 > 
-> There are about 2k uses of strcpy.
-> Is there a use where strcpy use actually matters?
-> I don't know offhand...
+>  drivers/iommu/amd/init.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> But I believe compilers do not optimize away the uses of strscpy
-> to a simple memcpy like they do for strcpy with a const from
-> 
-> 	strcpy(foo, "bar");
+> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+> index f54cd79b43e4..6a1f7048dacc 100644
+> --- a/drivers/iommu/amd/init.c
+> +++ b/drivers/iommu/amd/init.c
+> @@ -1973,8 +1973,6 @@ static int iommu_setup_msi(struct amd_iommu *iommu)
+>  		return r;
+>  	}
+>  
+> -	iommu->int_enabled = true;
+> -
+>  	return 0;
+>  }
+>  
+> @@ -2169,6 +2167,7 @@ static int iommu_init_irq(struct amd_iommu *iommu)
+>  	if (ret)
+>  		return ret;
+>  
+> +	iommu->int_enabled = true;
+>  enable_faults:
+>  	iommu_feature_enable(iommu, CONTROL_EVT_INT_EN);
+>  
+> -- 
 
-It ought to be possible to convert:
-	strscpy(foo, "bar", constant_sz)
-to a memcpy() within the .h file.
+Tested-by: Borislav Petkov <bp@suse.de>
 
-Similarly it should be possible to error
-	strcpy(foo, "bar")
-Unless foo is large enough and "bar" is constant.
+Thx.
 
-After all with a length check
-	strcpy(foo, "bar")
-is actually safer than
-	strspy(foo, "bar", sizeof foo)
-because there is less room for error.
+-- 
+Regards/Gruss,
+    Boris.
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+https://people.kernel.org/tglx/notes-about-netiquette
