@@ -2,250 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDBB2EB211
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCB62EB20A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730784AbhAESGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
+        id S1730695AbhAESGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728291AbhAESGv (ORCPT
+        with ESMTP id S1728751AbhAESGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:06:51 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE57C0617A4
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:06:10 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id g25so1870141wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:06:10 -0800 (PST)
+        Tue, 5 Jan 2021 13:06:33 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76721C06179A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:05:52 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id q25so502175otn.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:05:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Gbp0yeP9fLTV4dr+t+2KX9FiCtVVsbkdYRtcsAjBIrU=;
-        b=jFQIQrL34kPIQiwDILOVev4AaFi3ZoNyBOA8xZ6iS62BqlqSP7dEc+U5DcuueL5AZY
-         yms3fpksZn+wuTcHbIA6fAydqmWnIy6wQhjzueC1z9F2cSvxNRkbK6Bfm49JBV/+CSxy
-         f8uJYUJBM70p/Ehv4N2VR2lMw3RQWDHnZBNJ5bk9Kb3vjEfyL9DWHUjOedWgEasHZnm7
-         3hFhQehbUkyMB4YiRZO+AzqUb8zKtnU8W93R5RjuTCvMB7G68FdA1oQQ+m4nJYt7vZvR
-         rHJtRZJOaJR3iu30iN/W1uhb9mboTBcscGAA5bxlqXoSl6XfH2+T3TYVAtHp7W+aiA4p
-         OU1g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a7FQj9WS23NBhN1GnkQfwD+Xu2FEJgNqtA1ZOAmMQY4=;
+        b=a5oX8hdv6rwQ7Wqo9PZcfRXmoebmWEHJv5/aaQBe6XEoByrlC8/F2Onf9n1kiu7bjW
+         YNt/b19/uphxkMEqz8gAQdJNWP30cRIfBY/tb94qlq8AG8PJUDxp+O3Q7iRRgYQ83G2v
+         X01sLioOD4YMhwgOos0t71B7Na9v3vA7hTN2CPxblLMeNe+HN43tzfIjE9IQvnewig7Y
+         LE1YhfEV2b2ABojD0b0qMmK21jtozaTKIrJo9tPhbJYjJRjHXgxhZ6Ojd5F709Al2FKI
+         z0MjEjUeICLuxggSatwFKieroi7TOmIQDejpVtfvMvkcT5VYS35LeVB2EG24r1iOeHgl
+         SHyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Gbp0yeP9fLTV4dr+t+2KX9FiCtVVsbkdYRtcsAjBIrU=;
-        b=HjI0OexhFB1CND7VA56ynIQmRt/Qzf6lbuNOTXpUtz9n7ksVCBWNGjlEVivmqYLGcb
-         lV1xfIvmxIxDMMQq612q9R6di1pdDyo8gieE+5eEhhMDkIX56W1AX6U5UBI3ytWQ1/nd
-         0TLhvmTIwflH3F5U6Xnlcw2HuLYM+IGU8Alq52Q1c4pxHli41HgGVxe4vZsDuPQ8L4Mz
-         6bXx1afK1xLUX4yqhXF48cawhTdMPqAdhKgjhk66JHLTHxTtIRmBwi/ezPoIDUfjYlLF
-         W2hfchsjGURsfob6BlQ0hWY6t+YHmEPkuZDghCIdDhetUEGrptmdPCvZfJ8PCDOTzmlf
-         RM0g==
-X-Gm-Message-State: AOAM531VAubltedPv4TWlFVoEnb1WzPaYNQMv6naSnz4OiBlXbarBqbS
-        TAe82S5hEHTgjC3EPexs+cVk6w==
-X-Google-Smtp-Source: ABdhPJzPGG9RBoyhJQLzttz8EAAC11owesE8rsq+vvvfbhxoYZs+I3UtJZieKVfwRoMz686oJu0KDw==
-X-Received: by 2002:a1c:7d58:: with SMTP id y85mr347623wmc.50.1609869969348;
-        Tue, 05 Jan 2021 10:06:09 -0800 (PST)
-Received: from localhost ([2a01:4b00:8523:2d03:4957:71a5:7b5c:c94f])
-        by smtp.gmail.com with ESMTPSA id l5sm658028wrv.44.2021.01.05.10.06.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 10:06:08 -0800 (PST)
-From:   David Brazdil <dbrazdil@google.com>
-To:     kvmarm@lists.cs.columbia.edu
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v2 8/8] KVM: arm64: Remove hyp_symbol_addr
-Date:   Tue,  5 Jan 2021 18:05:41 +0000
-Message-Id: <20210105180541.65031-9-dbrazdil@google.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210105180541.65031-1-dbrazdil@google.com>
-References: <20210105180541.65031-1-dbrazdil@google.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a7FQj9WS23NBhN1GnkQfwD+Xu2FEJgNqtA1ZOAmMQY4=;
+        b=ia7HTCLseyTnCzgJpdPIMOPw1M4+hXefWk2DnT87IVhwVgUKzRSlo3i0aTnJIE3q0F
+         ujchPCpHjjurFox0UEKjVn2nJqxYXGzrvD5uW7XBBbl1rhbQEp2Q99wX6dYHIFZX2IBk
+         9LX21Ge2jTzV/frpWzVEXhsYCOB9AmCZFJpnWm+Kz7BgB4pVEN+Xtf8tRdDau0oAgHGs
+         AsanYgAZWo/OW5TslYeTZJNI20vlGFgNf1FhiHuS86equwEIDpA3Pt1klpo0wTD5wvZc
+         GgB0luUnncfiO73dbiQEpbVod6S2OEABsOxxxWc5kq10SEIoabwfsyNgnhAC4J7VeSZC
+         EIlw==
+X-Gm-Message-State: AOAM531Y+JDoczRt+dLtNSDWB7weDMYwYYs/6gPBvBjOEZBWrWHVVIWD
+        mYWNIlbbUHY3mY/5hU46kMfuOg==
+X-Google-Smtp-Source: ABdhPJwK/F2DvUCmB9E522VTyRot7CVADz7B3tEHis6xdZUsS9N9RoSHvkyfcCqs5sJyAaGoCg+BtA==
+X-Received: by 2002:a9d:27e9:: with SMTP id c96mr484863otb.15.1609869951840;
+        Tue, 05 Jan 2021 10:05:51 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s17sm62187otg.16.2021.01.05.10.05.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 10:05:51 -0800 (PST)
+Date:   Tue, 5 Jan 2021 12:05:49 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 02/18] ARM: dts: qcom: sdx55: Add reserved memory nodes
+Message-ID: <X/Sqfeonlthrys/O@builder.lan>
+References: <20210105122649.13581-1-manivannan.sadhasivam@linaro.org>
+ <20210105122649.13581-3-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105122649.13581-3-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hyp code used the hyp_symbol_addr helper to force PC-relative addressing
-because absolute addressing results in kernel VAs due to the way hyp
-code is linked. This is not true anymore, so remove the helper and
-update all of its users.
+On Tue 05 Jan 06:26 CST 2021, Manivannan Sadhasivam wrote:
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/include/asm/kvm_asm.h         | 26 ------------------------
- arch/arm64/kvm/hyp/include/hyp/switch.h  |  4 ++--
- arch/arm64/kvm/hyp/nvhe/hyp-smp.c        |  4 ++--
- arch/arm64/kvm/hyp/nvhe/psci-relay.c     | 24 +++++++++++-----------
- arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c |  2 +-
- 5 files changed, 17 insertions(+), 43 deletions(-)
+> From: Vinod Koul <vkoul@kernel.org>
+> 
+> This adds reserved memory nodes to the SDX55 dtsi as defined by v8 of
+> the memory map
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  arch/arm/boot/dts/qcom-sdx55.dtsi | 67 +++++++++++++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
+> index 08b4a40338fa..eeb6bf392f93 100644
+> --- a/arch/arm/boot/dts/qcom-sdx55.dtsi
+> +++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
+> @@ -60,6 +60,73 @@ psci {
+>  		method = "smc";
+>  	};
+>  
+> +	reserved-memory {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
+> +
+> +		mpss_debug_mem: memory@8ef00000 {
+> +			no-map;
+> +			reg = <0x8ef00000 0x800000>;
+> +		};
+> +
+> +		hyp_mem: memory@8fc00000 {
+> +			no-map;
+> +			reg = <0x8fc00000 0x80000>;
+> +		};
+> +
+> +		ac_db_mem: memory@8fc80000 {
+> +			no-map;
+> +			reg = <0x8fc80000 0x40000>;
+> +		};
+> +
+> +		secdata_mem: memory@8fcfd000 {
+> +			no-map;
+> +			reg = <0x8fcfd000 0x1000>;
+> +		};
+> +
+> +		ipa_fw_mem: memory@8fced000 {
+> +			no-map;
+> +			reg = <0x8fced000 0x10000>;
+> +		};
+> +
+> +		sbl_mem: memory@8fd00000 {
+> +			no-map;
+> +			reg = <0x8fd00000 0x100000>;
+> +		};
+> +
+> +		aop_image: memory@8fe00000 {
+> +			no-map;
+> +			reg = <0x8fe00000 0x20000>;
+> +		};
+> +
+> +		aop_cmd_db: memory@8fe20000 {
+> +			compatible = "qcom,cmd-db";
+> +			reg = <0x8fe20000 0x20000>;
+> +			no-map;
+> +		};
+> +
+> +		smem_mem: memory@8fe40000 {
+> +			no-map;
+> +			reg = <0x8fe40000 0xc0000>;
+> +		};
+> +
+> +		tz_mem: memory@8ff00000 {
+> +			no-map;
+> +			reg = <0x8ff00000 0x100000>;
+> +		};
+> +
+> +		tz_apps_mem: memory@0x90000000 {
+> +			no-map;
+> +			reg = <0x90000000 0x500000>;
+> +		};
+> +
+> +		mpss_adsp_mem: memory@90800000 {
+> +			no-map;
+> +			reg = <0x90800000 0xf800000>;
 
-diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-index 8a33d83ea843..22d933e9b59e 100644
---- a/arch/arm64/include/asm/kvm_asm.h
-+++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -199,32 +199,6 @@ extern void __vgic_v3_init_lrs(void);
- 
- extern u32 __kvm_get_mdcr_el2(void);
- 
--#if defined(GCC_VERSION) && GCC_VERSION < 50000
--#define SYM_CONSTRAINT	"i"
--#else
--#define SYM_CONSTRAINT	"S"
--#endif
--
--/*
-- * Obtain the PC-relative address of a kernel symbol
-- * s: symbol
-- *
-- * The goal of this macro is to return a symbol's address based on a
-- * PC-relative computation, as opposed to a loading the VA from a
-- * constant pool or something similar. This works well for HYP, as an
-- * absolute VA is guaranteed to be wrong. Only use this if trying to
-- * obtain the address of a symbol (i.e. not something you obtained by
-- * following a pointer).
-- */
--#define hyp_symbol_addr(s)						\
--	({								\
--		typeof(s) *addr;					\
--		asm("adrp	%0, %1\n"				\
--		    "add	%0, %0, :lo12:%1\n"			\
--		    : "=r" (addr) : SYM_CONSTRAINT (&s));		\
--		addr;							\
--	})
--
- #define __KVM_EXTABLE(from, to)						\
- 	"	.pushsection	__kvm_ex_table, \"a\"\n"		\
- 	"	.align		3\n"					\
-diff --git a/arch/arm64/kvm/hyp/include/hyp/switch.h b/arch/arm64/kvm/hyp/include/hyp/switch.h
-index 84473574c2e7..54f4860cd87c 100644
---- a/arch/arm64/kvm/hyp/include/hyp/switch.h
-+++ b/arch/arm64/kvm/hyp/include/hyp/switch.h
-@@ -505,8 +505,8 @@ static inline void __kvm_unexpected_el2_exception(void)
- 	struct exception_table_entry *entry, *end;
- 	unsigned long elr_el2 = read_sysreg(elr_el2);
- 
--	entry = hyp_symbol_addr(__start___kvm_ex_table);
--	end = hyp_symbol_addr(__stop___kvm_ex_table);
-+	entry = &__start___kvm_ex_table;
-+	end = &__stop___kvm_ex_table;
- 
- 	while (entry < end) {
- 		addr = (unsigned long)&entry->insn + entry->insn;
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-index 2997aa156d8e..879559057dee 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-@@ -33,8 +33,8 @@ unsigned long __hyp_per_cpu_offset(unsigned int cpu)
- 	if (cpu >= ARRAY_SIZE(kvm_arm_hyp_percpu_base))
- 		hyp_panic();
- 
--	cpu_base_array = (unsigned long *)hyp_symbol_addr(kvm_arm_hyp_percpu_base);
-+	cpu_base_array = (unsigned long *)&kvm_arm_hyp_percpu_base;
- 	this_cpu_base = kern_hyp_va(cpu_base_array[cpu]);
--	elf_base = (unsigned long)hyp_symbol_addr(__per_cpu_start);
-+	elf_base = (unsigned long)&__per_cpu_start;
- 	return this_cpu_base - elf_base;
- }
-diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-index e3947846ffcb..f254a425cb3a 100644
---- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-+++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-@@ -134,8 +134,8 @@ static int psci_cpu_on(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	if (cpu_id == INVALID_CPU_ID)
- 		return PSCI_RET_INVALID_PARAMS;
- 
--	boot_args = per_cpu_ptr(hyp_symbol_addr(cpu_on_args), cpu_id);
--	init_params = per_cpu_ptr(hyp_symbol_addr(kvm_init_params), cpu_id);
-+	boot_args = per_cpu_ptr(&cpu_on_args, cpu_id);
-+	init_params = per_cpu_ptr(&kvm_init_params, cpu_id);
- 
- 	/* Check if the target CPU is already being booted. */
- 	if (!try_acquire_boot_args(boot_args))
-@@ -146,7 +146,7 @@ static int psci_cpu_on(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	wmb();
- 
- 	ret = psci_call(func_id, mpidr,
--			__hyp_pa(hyp_symbol_addr(kvm_hyp_cpu_entry)),
-+			__hyp_pa(&kvm_hyp_cpu_entry),
- 			__hyp_pa(init_params));
- 
- 	/* If successful, the lock will be released by the target CPU. */
-@@ -165,8 +165,8 @@ static int psci_cpu_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	struct psci_boot_args *boot_args;
- 	struct kvm_nvhe_init_params *init_params;
- 
--	boot_args = this_cpu_ptr(hyp_symbol_addr(suspend_args));
--	init_params = this_cpu_ptr(hyp_symbol_addr(kvm_init_params));
-+	boot_args = this_cpu_ptr(&suspend_args);
-+	init_params = this_cpu_ptr(&kvm_init_params);
- 
- 	/*
- 	 * No need to acquire a lock before writing to boot_args because a core
-@@ -180,7 +180,7 @@ static int psci_cpu_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	 * point if it is a deep sleep state.
- 	 */
- 	return psci_call(func_id, power_state,
--			 __hyp_pa(hyp_symbol_addr(kvm_hyp_cpu_resume)),
-+			 __hyp_pa(&kvm_hyp_cpu_resume),
- 			 __hyp_pa(init_params));
- }
- 
-@@ -192,8 +192,8 @@ static int psci_system_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 	struct psci_boot_args *boot_args;
- 	struct kvm_nvhe_init_params *init_params;
- 
--	boot_args = this_cpu_ptr(hyp_symbol_addr(suspend_args));
--	init_params = this_cpu_ptr(hyp_symbol_addr(kvm_init_params));
-+	boot_args = this_cpu_ptr(&suspend_args);
-+	init_params = this_cpu_ptr(&kvm_init_params);
- 
- 	/*
- 	 * No need to acquire a lock before writing to boot_args because a core
-@@ -204,7 +204,7 @@ static int psci_system_suspend(u64 func_id, struct kvm_cpu_context *host_ctxt)
- 
- 	/* Will only return on error. */
- 	return psci_call(func_id,
--			 __hyp_pa(hyp_symbol_addr(kvm_hyp_cpu_resume)),
-+			 __hyp_pa(&kvm_hyp_cpu_resume),
- 			 __hyp_pa(init_params), 0);
- }
- 
-@@ -213,12 +213,12 @@ asmlinkage void __noreturn kvm_host_psci_cpu_entry(bool is_cpu_on)
- 	struct psci_boot_args *boot_args;
- 	struct kvm_cpu_context *host_ctxt;
- 
--	host_ctxt = &this_cpu_ptr(hyp_symbol_addr(kvm_host_data))->host_ctxt;
-+	host_ctxt = &this_cpu_ptr(&kvm_host_data)->host_ctxt;
- 
- 	if (is_cpu_on)
--		boot_args = this_cpu_ptr(hyp_symbol_addr(cpu_on_args));
-+		boot_args = this_cpu_ptr(&cpu_on_args);
- 	else
--		boot_args = this_cpu_ptr(hyp_symbol_addr(suspend_args));
-+		boot_args = this_cpu_ptr(&suspend_args);
- 
- 	cpu_reg(host_ctxt, 0) = boot_args->r0;
- 	write_sysreg_el2(boot_args->pc, SYS_ELR);
-diff --git a/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c b/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c
-index 8f0585640241..87a54375bd6e 100644
---- a/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c
-+++ b/arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c
-@@ -64,7 +64,7 @@ int __vgic_v2_perform_cpuif_access(struct kvm_vcpu *vcpu)
- 	}
- 
- 	rd = kvm_vcpu_dabt_get_rd(vcpu);
--	addr  = hyp_symbol_addr(kvm_vgic_global_state)->vcpu_hyp_va;
-+	addr  = kvm_vgic_global_state.vcpu_hyp_va;
- 	addr += fault_ipa - vgic->vgic_cpu_base;
- 
- 	if (kvm_vcpu_dabt_iswrite(vcpu)) {
--- 
-2.29.2.729.g45daf8777d-goog
+Didn't you say this moved to 0x9c000000?
 
+Regards,
+Bjorn
+
+> +		};
+> +	};
+> +
+>  	soc: soc {
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+> -- 
+> 2.25.1
+> 
