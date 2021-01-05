@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755912EA204
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CEE2EA201
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbhAEBAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 20:00:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726518AbhAEA77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:59:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ED992256F;
-        Tue,  5 Jan 2021 00:59:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609808359;
-        bh=KS5gmCZ6EzJVi1yQawSh86bpDzZj0sa0Ft49c6zGkvE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iKY1IGTNXgizkZxPfqeSpmbvLhg/pRDvt9xr+N08cHVW+x0J7rVQan/9sTEC3gNMz
-         Q3q4fLkyBjDMvx4L1bJWAzw0Z6y/wRKWlfcdPhzSIBbm/99gxBy4Nrwj/O5x/QZDL7
-         LVECIpnY7b6ObYRZkFPyPFhfaDRPfgF3JI91aQnNZPyUUtPbVDiM1lNJZMdN4uN474
-         zHJ+rNuQpPkRnYB4GeI2XBeb35VOj0rHblMw2YDjGiSv+HTpQ4cXC7GQWLEoew4Qtu
-         WbNARxKZmuQpVqgOa6AX5Iam6lcsIKhS6yKbMvSCpBVdwA8O5ERqFOtmUPFIJl0Q7X
-         bfPm8DZ0Rt1ng==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bean Huo <beanhuo@micron.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 02/17] scsi: ufs: Fix wrong print message in dev_err()
-Date:   Mon,  4 Jan 2021 19:59:00 -0500
-Message-Id: <20210105005915.3954208-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210105005915.3954208-1-sashal@kernel.org>
-References: <20210105005915.3954208-1-sashal@kernel.org>
+        id S1726779AbhAEA7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 19:59:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726518AbhAEA7x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 19:59:53 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D525BC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:59:12 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id q10so15494220vsr.13
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:59:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kZxuuYiPtHc6s2Zy+bkt3Y3hl+3F1jPre2w81KvLQfw=;
+        b=bLCWFQwUTYyKbRkiIoiB0WKRGHiO3kAx3ufaAPHtT2TOxGQyZ+iwlCyGaHOVutCFt8
+         q5LeZvTxDacbRLXvM8hzOzxPxf7h3iqUKECM9t8nJPDIaLWVic/i3BKLA0AtVs2Q8Krc
+         wYCSvi9xrIo0R29+QXHGzBiJA5s6hrcffWLdU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kZxuuYiPtHc6s2Zy+bkt3Y3hl+3F1jPre2w81KvLQfw=;
+        b=TeF6BZPgGnvTjLbW2C6CQGJyBoYJ5yLfi/JLKDjy70nSO+OV3ShpALjrgBpuTX4EeE
+         it+HV8U5m5l6D54ZYYqPkLW1haxAqBn8wpToB33xgOvycrWKh3Ju+63tX/V8HVInib+X
+         SNCKWPoPc4nKhJa1TTImMtnoQzY7Znh8Tr006BYgIJat0DplMKghHxgcuWaT2kLIT+iL
+         EMzLaNC6XvzxXkfWZgXKL2bkK1ccUuTgPE48KQDdm8DJfZQAkwucLqSsV/GikdaNOk7g
+         17LN0RrBPQZsFvv6xWpDbAHjt8Trt7Cvxga2J+xvzgzjiq0Omr+cOSOQRUtqspCxv6f+
+         RaMg==
+X-Gm-Message-State: AOAM532Npm2/q9FHtqK4P+1d+H3Epv9QLaMk7J+hVOWybG+YivEp2QPu
+        kf6VYSlNVGUlvNv8Bp8NgqpjK+cSDJXMb0RpflFh0g==
+X-Google-Smtp-Source: ABdhPJzB/3Kn2M1TyHyXiaHLvCJYLcm7dAyGmWlRcLpFicTs5UuECGJOIcH1VSh+UbCaJXtfJZqxaSnDWiCRv2KQVsI=
+X-Received: by 2002:a67:ff03:: with SMTP id v3mr44806304vsp.48.1609808352096;
+ Mon, 04 Jan 2021 16:59:12 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20210105001119.2129559-1-drinkcat@chromium.org>
+ <20210105081111.v6.3.I3af068abe30c9c85cabc4486385c52e56527a509@changeid> <20210105003430.GA5061@kevin>
+In-Reply-To: <20210105003430.GA5061@kevin>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Tue, 5 Jan 2021 08:59:01 +0800
+Message-ID: <CANMq1KCjucCWW+FE=JEegw_OmPPuEFRXPBLTmjrc-k7cpBrASQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/4] drm/panfrost: devfreq: Disable devfreq when
+ num_supplies > 1
+To:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Cc:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, hoegsberg@chromium.org,
+        Fei Shao <fshao@chromium.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Tue, Jan 5, 2021 at 8:34 AM Alyssa Rosenzweig
+<alyssa.rosenzweig@collabora.com> wrote:
+>
+> > GPUs with more than a single regulator (e.g. G-57 on MT8183) will
+>
+> G72
 
-[ Upstream commit 1fa0570002e3f66db9b58c32c60de4183b857a19 ]
-
-Change dev_err() print message from "dme-reset" to "dme_enable" in function
-ufshcd_dme_enable().
-
-Link: https://lore.kernel.org/r/20201207190137.6858-3-huobean@gmail.com
-Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
-Acked-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/scsi/ufs/ufshcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 911aba3e7675c..d7e9c4bc80478 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -3620,7 +3620,7 @@ static int ufshcd_dme_enable(struct ufs_hba *hba)
- 	ret = ufshcd_send_uic_cmd(hba, &uic_cmd);
- 	if (ret)
- 		dev_err(hba->dev,
--			"dme-reset: error code %d\n", ret);
-+			"dme-enable: error code %d\n", ret);
- 
- 	return ret;
- }
--- 
-2.27.0
-
+Duh, sorry, yes. I will fix that in v7.
