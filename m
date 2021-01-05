@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB8E2EAE42
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2752EAEA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbhAEP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:28:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726151AbhAEP2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:28:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63F2422B4B;
-        Tue,  5 Jan 2021 15:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609860469;
-        bh=rlbfB9avIivMtS6hjB8SAE55AFbkBF7zJzZHYTJX2fI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Up4Za5aziRYCLHgdPXgS8tct+y4kb0EYjPVAlBVx4BVz2n9sP5pH/6amlRXMzmx2Z
-         HzfV5BpfcWP7tQYel8nNNgt2j883kJkcAFTu5mt/qNu22cFzLY5cBpC6CfXfCEQsT6
-         /RNWJj1XWRNzcvTYAD+1JLjJJrg2ZPJ971rno8A3SJ866ZvLHbOEvkrWl3tK5e04qM
-         pqKhPROdFcDrXO1ONAaRHp96PINcCXPZnLHV6o94456CA9B5BUouFQ/8vBFxwXregr
-         0K1xoyhLQyGgA0Ey2XdLErgyK1OYMIbrg9txOXPZSbMZnoK5iL9TodgFRp9yXXlW4J
-         fAK2ghPfD+Atw==
-Date:   Tue, 5 Jan 2021 16:27:47 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        pyarlaga@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH V7 2/2] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-Message-ID: <20210105152747.GB1842@ninjato>
-References: <20201221123801.26643-1-rojay@codeaurora.org>
- <20201221123801.26643-3-rojay@codeaurora.org>
+        id S1728288AbhAEPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:35:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34870 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728003AbhAEPf1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:35:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609860841;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pDzAcq2nT/KXhp+AqF/2GVIqAYTMHTBHiO9DQwkg9VA=;
+        b=gOX4HJPJABAXB1PmPy0l3SP1vGBwYBnboUa8AmqRXfwwtKKat9sBVt4YsyCiiW8yCgEfFc
+        uFljpUMLiZfHTLXQeUnQWMVLT6BlTUW0xjhhafpfy2vnvXAVPqhvXKEACFcE1L7C4MBGih
+        XbNd5bhtv1JjK27PSZiZ0Yaw8iGzWs4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-1JPyH1czPxurlL3jUNITaw-1; Tue, 05 Jan 2021 10:31:27 -0500
+X-MC-Unique: 1JPyH1czPxurlL3jUNITaw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A03F8030A3;
+        Tue,  5 Jan 2021 15:31:26 +0000 (UTC)
+Received: from yiche-home.usersys.redhat.com (ovpn-12-69.pek2.redhat.com [10.72.12.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F9E6271BF;
+        Tue,  5 Jan 2021 15:31:22 +0000 (UTC)
+From:   Chen Yi <yiche@redhat.com>
+To:     Chen Yi <yiche@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Leo <liuhangbin@gmail.com>
+Subject: [PATCH] selftests: netfilter: Pass family parameter "-f" to conntrack tool
+Date:   Tue,  5 Jan 2021 23:31:20 +0800
+Message-Id: <20210105153120.42710-1-yiche@redhat.com>
+Reply-To: 20210104110723.43564-1-yiche@redhat.com
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="K8nIJk4ghYZn606h"
-Content-Disposition: inline
-In-Reply-To: <20201221123801.26643-3-rojay@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix nft_conntrack_helper.sh false fail report:
 
---K8nIJk4ghYZn606h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+1) Conntrack tool need "-f ipv6" parameter to show out ipv6 traffic items.
 
+2) Sleep 1 second after background nc send packet, to make sure check
+is after this statement executed.
 
-> +	geni_status = readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
-> +	if (!(geni_status & M_GENI_CMD_ACTIVE))
-> +		goto out;
-> +
-> +	cur = gi2c->cur;
-> +	geni_i2c_abort_xfer(gi2c);
-> +	if (cur->flags & I2C_M_RD)
-> +		geni_i2c_rx_msg_cleanup(gi2c, cur);
-> +	else
-> +		geni_i2c_tx_msg_cleanup(gi2c, cur);
-> +out:
-> +	pm_runtime_put_sync_suspend(gi2c->se.dev);
-> +}
+False report:
+FAIL: ns1-lkjUemYw did not show attached helper ip set via ruleset
+PASS: ns1-lkjUemYw connection on port 2121 has ftp helper attached
+...
 
-The use of 'goto' is not needed here IMHO. I think:
+After fix:
+PASS: ns1-2hUniwU2 connection on port 2121 has ftp helper attached
+PASS: ns2-2hUniwU2 connection on port 2121 has ftp helper attached
+...
 
-	if (geni_status & M_GENI_CMD_ACTIVE) {
-		do_the_stuff
-	}
+Fixes: 619ae8e0697a6 ("selftests: netfilter: add test case for conntrack helper assignment")
+Signed-off-by: Chen Yi <yiche@redhat.com>
+---
+ .../selftests/netfilter/nft_conntrack_helper.sh      | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-	pm_runtime_put_sync_suspend(...);
+diff --git a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
+index edf0a48da6bf..bf6b9626c7dd 100755
+--- a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
++++ b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
+@@ -94,7 +94,13 @@ check_for_helper()
+ 	local message=$2
+ 	local port=$3
+ 
+-	ip netns exec ${netns} conntrack -L -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
++	if echo $message |grep -q 'ipv6';then
++		local family="ipv6"
++	else
++		local family="ipv4"
++	fi
++
++	ip netns exec ${netns} conntrack -L -f $family -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
+ 	if [ $? -ne 0 ] ; then
+ 		echo "FAIL: ${netns} did not show attached helper $message" 1>&2
+ 		ret=1
+@@ -111,8 +117,8 @@ test_helper()
+ 
+ 	sleep 3 | ip netns exec ${ns2} nc -w 2 -l -p $port > /dev/null &
+ 
+-	sleep 1
+ 	sleep 1 | ip netns exec ${ns1} nc -w 2 10.0.1.2 $port > /dev/null &
++	sleep 1
+ 
+ 	check_for_helper "$ns1" "ip $msg" $port
+ 	check_for_helper "$ns2" "ip $msg" $port
+@@ -128,8 +134,8 @@ test_helper()
+ 
+ 	sleep 3 | ip netns exec ${ns2} nc -w 2 -6 -l -p $port > /dev/null &
+ 
+-	sleep 1
+ 	sleep 1 | ip netns exec ${ns1} nc -w 2 -6 dead:1::2 $port > /dev/null &
++	sleep 1
+ 
+ 	check_for_helper "$ns1" "ipv6 $msg" $port
+ 	check_for_helper "$ns2" "ipv6 $msg" $port
+-- 
+2.26.2
 
-is more readable, in fact. Also, I don't think we really need the 'cur'
-variable and just use 'gi2c->cur' but that's very minor and you can keep
-it if you like it.
-
-Reset looks good!
-
-
---K8nIJk4ghYZn606h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/0hXMACgkQFA3kzBSg
-KbZUDQ//bfbDro72OlBzRjWSG17tLd2nH0ssMcm1nM85D3R3qew61g7ywjTicNqF
-vwZroD0K08MYxNsH5xP20TEtWpj/L5crLLFzbLiEdrX9yMNN5IFFEQyQj1j0oanO
-vLVgd9i0CCP8bLyMJ59+TFtJFtYffEH4i/RmTxeD/LIWQNZFcGszTRYkr5kU2hHi
-C13ToRiqckAjsxfkmZj7OeoM2n0d7pj0etJ60uVT0mEU7q8SQ00vcv5WK0rj3mcK
-6I9QDAWlP8yLgB1IErcq/Sfy+Ga6EAk5qh4nIa3fyHoD47+8K7kAIynGWPkolqqj
-czszRtGvmimYkPeLodby4BAgVPEKFcjNvTiKqpl6oOEpkO79yzfmk2c2wVi5VpvU
-KgUfgHk8QHGT239ouB0G5FvTRWVIdNblkgipaRsl1biner8hzWl1yk0ZDJxD7rso
-e1tR3LrBcv0jPloLRH8Kh7Sb5lTtDBYS87moBYknyajpokzU0eNM0GZqD/swuLP/
-2Ni7aVxzG8RZhMQAnMgqG5+6Gl+R78yU4876+A+ZCZtDDACe4j/QaqXRB4/bvHG/
-BlArAYAWhWweMi+fD1jug21mtxsAmQuPkzMo4byj7OvK1t04nQqeyQ6lyvI7IZU1
-iRxdi94opHS0AOG8rXAVXKlivCvF10pVdEW5LpEif/6eY3yJVqQ=
-=TnuI
------END PGP SIGNATURE-----
-
---K8nIJk4ghYZn606h--
