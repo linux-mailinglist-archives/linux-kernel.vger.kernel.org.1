@@ -2,219 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400242EB096
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874822EB090
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729817AbhAEQv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:51:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23251 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725838AbhAEQvZ (ORCPT
+        id S1730019AbhAEQvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729518AbhAEQu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:51:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609865398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FD87sYsN1Xyh4PpbrvU4rcezLJMmALlWguqSI3L4270=;
-        b=Fkoo+2YbYB2dU7Swt0c5HhXD/swfjJBMFngDHAexgs6l+uSOsdv9ppgLSUM9rJYUUoqcF0
-        2eO9NW6VRPxFY9dI0DwWOKaXQh8lh/IeYCDsIABSEbCbOav+q39odng2YYW6Zvi1DOcfJy
-        +5fANDWYzsfjD/z+6VMu0qFzZc0JmkI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-J3HfI4lkMEmhC__y_bKJlw-1; Tue, 05 Jan 2021 11:49:56 -0500
-X-MC-Unique: J3HfI4lkMEmhC__y_bKJlw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 675CC10054FF;
-        Tue,  5 Jan 2021 16:49:55 +0000 (UTC)
-Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2431EE140;
-        Tue,  5 Jan 2021 16:49:53 +0000 (UTC)
-Subject: Re: [PATCH v3 1/4] mm: rename memmap_init() and memmap_init_zone()
-To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org
-References: <20210105074708.18483-1-bhe@redhat.com>
- <20210105074708.18483-2-bhe@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a2dc1641-423f-afa2-17ba-4deca2be702e@redhat.com>
-Date:   Tue, 5 Jan 2021 17:49:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 5 Jan 2021 11:50:58 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5E6C061793;
+        Tue,  5 Jan 2021 08:50:17 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwpX3-0076tQ-14; Tue, 05 Jan 2021 16:50:05 +0000
+Date:   Tue, 5 Jan 2021 16:50:05 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v4] proc: Allow pid_revalidate() during LOOKUP_RCU
+Message-ID: <20210105165005.GV3579531@ZenIV.linux.org.uk>
+References: <20210104232123.31378-1-stephen.s.brennan@oracle.com>
+ <20210105055935.GT3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210105074708.18483-2-bhe@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105055935.GT3579531@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.01.21 08:47, Baoquan He wrote:
-> The current memmap_init_zone() only handles memory region inside one zone,
-> actually memmap_init() does the memmap init of one zone. So rename both of
-> them accordingly.
+On Tue, Jan 05, 2021 at 05:59:35AM +0000, Al Viro wrote:
+
+> Umm...  I'm rather worried about the side effect you are removing here -
+> you are suddenly exposing a bunch of methods in there to RCU mode.
+> E.g. is proc_pid_permission() safe with MAY_NOT_BLOCK in the mask?
+> generic_permission() call in there is fine, but has_pid_permission()
+> doesn't even see the mask.  Is that thing safe in RCU mode?  AFAICS,
+> this
+> static int selinux_ptrace_access_check(struct task_struct *child,
+>                                      unsigned int mode)
+> {
+>         u32 sid = current_sid();
+>         u32 csid = task_sid(child);
 > 
-> And also rename the function parameter 'range_start_pfn' and local variable
-> 'range_end_pfn' of memmap_init() to zone_start_pfn/zone_end_pfn.
+>         if (mode & PTRACE_MODE_READ)
+>                 return avc_has_perm(&selinux_state,
+>                                     sid, csid, SECCLASS_FILE, FILE__READ, NULL);
 > 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  arch/ia64/include/asm/pgtable.h |  2 +-
->  arch/ia64/mm/init.c             |  6 +++---
->  include/linux/mm.h              |  2 +-
->  mm/memory_hotplug.c             |  2 +-
->  mm/page_alloc.c                 | 24 ++++++++++++------------
->  5 files changed, 18 insertions(+), 18 deletions(-)
+>         return avc_has_perm(&selinux_state,
+>                             sid, csid, SECCLASS_PROCESS, PROCESS__PTRACE, NULL);
+> }
+> is reachable and IIRC avc_has_perm() should *NOT* be called in RCU mode.
+> If nothing else, audit handling needs care...
 > 
-> diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
-> index 779b6972aa84..dce2ff37df65 100644
-> --- a/arch/ia64/include/asm/pgtable.h
-> +++ b/arch/ia64/include/asm/pgtable.h
-> @@ -520,7 +520,7 @@ extern struct page *zero_page_memmap_ptr;
->  
->  #  ifdef CONFIG_VIRTUAL_MEM_MAP
->    /* arch mem_map init routine is needed due to holes in a virtual mem_map */
-> -    extern void memmap_init (unsigned long size, int nid, unsigned long zone,
-> +    extern void memmap_init_zone(unsigned long size, int nid, unsigned long zone,
->  			     unsigned long start_pfn);
->  #  endif /* CONFIG_VIRTUAL_MEM_MAP */
->  # endif /* !__ASSEMBLY__ */
-> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-> index e76386a3479e..c8e68e92beb3 100644
-> --- a/arch/ia64/mm/init.c
-> +++ b/arch/ia64/mm/init.c
-> @@ -535,18 +535,18 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
->  		    / sizeof(struct page));
->  
->  	if (map_start < map_end)
-> -		memmap_init_zone((unsigned long)(map_end - map_start),
-> +		memmap_init_range((unsigned long)(map_end - map_start),
->  				 args->nid, args->zone, page_to_pfn(map_start), page_to_pfn(map_end),
->  				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
->  	return 0;
->  }
->  
->  void __meminit
-> -memmap_init (unsigned long size, int nid, unsigned long zone,
-> +memmap_init_zone(unsigned long size, int nid, unsigned long zone,
->  	     unsigned long start_pfn)
->  {
->  	if (!vmem_map) {
-> -		memmap_init_zone(size, nid, zone, start_pfn, start_pfn + size,
-> +		memmap_init_range(size, nid, zone, start_pfn, start_pfn + size,
->  				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
->  	} else {
->  		struct page *start;
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 6b3de3c09cd5..26c01f5a028b 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2439,7 +2439,7 @@ extern int __meminit early_pfn_to_nid(unsigned long pfn);
->  #endif
->  
->  extern void set_dma_reserve(unsigned long new_dma_reserve);
-> -extern void memmap_init_zone(unsigned long, int, unsigned long,
-> +extern void memmap_init_range(unsigned long, int, unsigned long,
->  		unsigned long, unsigned long, enum meminit_context,
->  		struct vmem_altmap *, int migratetype);
->  extern void setup_per_zone_wmarks(void);
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index f9d57b9be8c7..ddcb1cd24c60 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -713,7 +713,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
->  	 * expects the zone spans the pfn range. All the pages in the range
->  	 * are reserved so nobody should be touching them so we should be safe
->  	 */
-> -	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn, 0,
-> +	memmap_init_range(nr_pages, nid, zone_idx(zone), start_pfn, 0,
->  			 MEMINIT_HOTPLUG, altmap, migratetype);
->  
->  	set_zone_contiguous(zone);
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3ea9d5cd6058..69ebf75be91c 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6117,7 +6117,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
->   * (usually MIGRATE_MOVABLE). Besides setting the migratetype, no related
->   * zone stats (e.g., nr_isolate_pageblock) are touched.
->   */
-> -void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
-> +void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone,
->  		unsigned long start_pfn, unsigned long zone_end_pfn,
->  		enum meminit_context context,
->  		struct vmem_altmap *altmap, int migratetype)
-> @@ -6292,24 +6292,24 @@ static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
->  }
->  #endif
->  
-> -void __init __weak memmap_init(unsigned long size, int nid,
-> +void __init __weak memmap_init_zone(unsigned long size, int nid,
->  			       unsigned long zone,
-> -			       unsigned long range_start_pfn)
-> +			       unsigned long zone_start_pfn)
->  {
->  	unsigned long start_pfn, end_pfn, hole_start_pfn = 0;
-> -	unsigned long range_end_pfn = range_start_pfn + size;
-> +	unsigned long zone_end_pfn = zone_start_pfn + size;
->  	u64 pgcnt = 0;
->  	int i;
->  
->  	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
-> -		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
-> -		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-> -		hole_start_pfn = clamp(hole_start_pfn, range_start_pfn,
-> -				       range_end_pfn);
-> +		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
-> +		end_pfn = clamp(end_pfn, zone_start_pfn, zone_end_pfn);
-> +		hole_start_pfn = clamp(hole_start_pfn, zone_start_pfn,
-> +				       zone_end_pfn);
->  
->  		if (end_pfn > start_pfn) {
->  			size = end_pfn - start_pfn;
-> -			memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
-> +			memmap_init_range(size, nid, zone, start_pfn, zone_end_pfn,
->  					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
->  		}
->  
-> @@ -6326,8 +6326,8 @@ void __init __weak memmap_init(unsigned long size, int nid,
->  	 * considered initialized. Make sure that memmap has a well defined
->  	 * state.
->  	 */
-> -	if (hole_start_pfn < range_end_pfn)
-> -		pgcnt += init_unavailable_range(hole_start_pfn, range_end_pfn,
-> +	if (hole_start_pfn < zone_end_pfn)
-> +		pgcnt += init_unavailable_range(hole_start_pfn, zone_end_pfn,
->  						zone, nid);
->  
->  	if (pgcnt)
-> @@ -7039,7 +7039,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->  		set_pageblock_order();
->  		setup_usemap(pgdat, zone, zone_start_pfn, size);
->  		init_currently_empty_zone(zone, zone_start_pfn, size);
-> -		memmap_init(size, nid, j, zone_start_pfn);
-> +		memmap_init_zone(size, nid, j, zone_start_pfn);
->  	}
->  }
->  
-> 
+> And LSM-related stuff is only a part of possible issues here.  It does need
+> a careful code audit - you are taking a bunch of methods into the conditions
+> they'd never been tested in.  ->permission(), ->get_link(), ->d_revalidate(),
+> ->d_hash() and ->d_compare() instances for objects that subtree.  The last
+> two are not there in case of anything in /proc/<pid>, but the first 3 very
+> much are.
 
-I would have factored-out renaming the variables or squashed that part
-into patch #2.
+FWIW, after looking through the selinux and smack I started to wonder whether
+we really need that "return -ECHILD rather than audit and fail" in case of
+->inode_permission().
 
-LGTM
+AFAICS, the reason we need it is that dump_common_audit_data() is not safe
+in RCU mode with LSM_AUDIT_DATA_DENTRY and even more so - with
+LSM_AUDIT_DATA_INODE (d_find_alias() + dput() there, and dput() can bloody well
+block).
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+LSM_AUDIT_DATA_DENTRY is easy to handle - wrap
+                audit_log_untrustedstring(ab, a->u.dentry->d_name.name);
+into grabbing/dropping a->u.dentry->d_lock and we are done.  And as for
+the LSM_AUDIT_DATA_INODE...  How about this:
 
--- 
-Thanks,
+/*
+ * Caller *MUST* hold rcu_read_lock() and be guaranteed that inode itself
+ * will be around until that gets dropped.
+ */
+struct dentry *d_find_alias_rcu(struct inode *inode)
+{
+	struct hlist_head *l = &inode->i_dentry;
+        struct dentry *de = NULL;
 
-David / dhildenb
+	spin_lock(&inode->i_lock);
+	// ->i_dentry and ->i_rcu are colocated, but the latter won't be
+	// used without having I_FREEING set, which means no aliases left
+	if (inode->i_state & I_FREEING) {
+		spin_unlock(&inode->i_lock);
+		return NULL;
+	}
+	// we can safely access inode->i_dentry
+        if (hlist_empty(p)) {
+		spin_unlock(&inode->i_lock);
+		return NULL;
+	}
+	if (S_ISDIR(inode->i_mode)) {
+		de = hlist_entry(l->first, struct dentry, d_u.d_alias);
+	} else hlist_for_each_entry(de, l, d_u.d_alias) {
+		if (d_unhashed(de))
+			continue;
+		// hashed + nonrcu really shouldn't be possible
+		if (WARN_ON(READ_ONCE(de->d_flags) & DCACE_NONRCU))
+			continue;
+		break;
+	}
+	spin_unlock(&inode->i_lock);
+        return de;
+}
 
+and have
+        case LSM_AUDIT_DATA_INODE: {
+                struct dentry *dentry;
+                struct inode *inode;
+
+		rcu_read_lock();
+                inode = a->u.inode;
+                dentry = d_find_alias_rcu(inode);
+                if (dentry) {
+                        audit_log_format(ab, " name=");
+			spin_lock(&dentry->d_lock);
+                        audit_log_untrustedstring(ab,
+                                         dentry->d_name.name);
+			spin_unlock(&dentry->d_lock);
+                }
+                audit_log_format(ab, " dev=");
+                audit_log_untrustedstring(ab, inode->i_sb->s_id);
+                audit_log_format(ab, " ino=%lu", inode->i_ino);
+		rcu_read_unlock();
+                break;
+        }
+in dump_common_audit_data().  Would that be enough to stop bothering
+with the entire AVC_NONBLOCKING thing or is there anything else
+involved?
