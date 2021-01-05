@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77152EA5A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 07:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF62D2EA5B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbhAEG7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 01:59:24 -0500
-Received: from mail-eopbgr760080.outbound.protection.outlook.com ([40.107.76.80]:35906
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726133AbhAEG7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 01:59:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XbDiJAk4DDLy59CGSVPBIoUXlJs91lgcAMGvwUegjm2PrIFaOSo12IC+pl7nUntSUypX2pNJKpvob6xxnRkodj86S1i/1Bai+XfBLYXIh4KOZFnwLF3J7XK0+nQJejSJoCKKOOnoxCwcQtWXZUYj7PXgTFoXMMMLLcQZuSKA7cZKf4lc5SglTt986TP8eeZMp7ZD6uA2RSa609hf+i0HoGc4IcWtKwLHsIYnLyqkjvEZrZCU30KfLmuQt4YuH9/uwT7bg6Xy8+InDpcksCOB0MNoghmWX0XB+6ihbdMT6WrTnMsNMUgFTo/I8t9FiqK0iVRboIGPZlL8gZHl0Dr1Iw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a2TJI7OSgImih2sVHh14PbJDdXLJ2yICpg/pwCSyho8=;
- b=mY3nJ9TxY53XfV9DE4Fj+9cwP6mkATQPG+Z+WQRqgplXp+YwoPemggbFRUbHENUjbNLd0se/S8GrHl9kWMTB4//6DA/i/oaSExcZ0xOUozw0h4AS0cDfzzxQ6vGaCzE2fM7d8TQ3IfPaD+eMUvUtuFEWB65ksUn4PzHE8QukdLmWvalCuYteyTH5i3HGaWECuwRHSjbhVNm3yh01We1aNxUn1VymQyy6rBJiDtRz5gQIvFLVYNQHU6vp2xqAhlKZk18RrJhTrsq6Q9wfvIFkKVropTitA5kyHOy3UNrqGxPBqfDOtLBAhYBQOQfDPl8y9yBWR3VZcq8RDlt+mklsWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a2TJI7OSgImih2sVHh14PbJDdXLJ2yICpg/pwCSyho8=;
- b=R/lbuOIzUuynQcwisCDPwC8kzJ8pSllyGVQ9jaNHQOWQPXfnmIpaTU4qp7y4pDFsEbTDJrNRIAYTtGkvSrQpexi1IBAtdg/eu0/lziv0dgh5y27rsrYz//tXNZpaNUnSBJKAfuK9pXbYH0GdSXXExCdkmu1RL5a1JCgZCyamkSQ=
-Received: from SJ0PR11MB5072.namprd11.prod.outlook.com (2603:10b6:a03:2db::18)
- by BY5PR11MB4085.namprd11.prod.outlook.com (2603:10b6:a03:18d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.21; Tue, 5 Jan
- 2021 06:58:40 +0000
-Received: from SJ0PR11MB5072.namprd11.prod.outlook.com
- ([fe80::4934:bf21:e093:8c3e]) by SJ0PR11MB5072.namprd11.prod.outlook.com
- ([fe80::4934:bf21:e093:8c3e%6]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
- 06:58:40 +0000
-From:   "Li, Meng" <Meng.Li@windriver.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "james.quinlan@broadcom.com" <james.quinlan@broadcom.com>,
-        "Hao, Kexin" <Kexin.Hao@windriver.com>
-Subject: RE: [PATCH v2] drivers core: Free dma_range_map when driver probe
- failed
-Thread-Topic: [PATCH v2] drivers core: Free dma_range_map when driver probe
- failed
-Thread-Index: AQHW4yWKa6kEFv0rP0eEpZ2IZR1rOaoYifKAgAAQB7A=
-Date:   Tue, 5 Jan 2021 06:58:40 +0000
-Message-ID: <SJ0PR11MB5072A5F0781FD932A1B3C4BBF1D10@SJ0PR11MB5072.namprd11.prod.outlook.com>
-References: <20210105054148.13625-1-Meng.Li@windriver.com>
- <X/QAk+bJoCc7lf05@kroah.com>
-In-Reply-To: <X/QAk+bJoCc7lf05@kroah.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6e6d45d4-2f43-4940-45eb-08d8b1475585
-x-ms-traffictypediagnostic: BY5PR11MB4085:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB4085DADBCC0EFC5A38CDB64CF1D10@BY5PR11MB4085.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:901;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: q6Raee/SU4vOliQ2b3h+Ngmv3Oe+PP50iFyvmrbpPamVfDAD3801BOf483CjRsQWbPtdpdQ03nYkutZr3ysety+8ytFw7qt+SKTpIF2vw9hFRcQGeA4sifCb0PpJ1eqsDa/i+LVqkY78Ly6kjA+UB/8Zfw7F5WwQ7oz+o033I9ZZMyluVPVst3GYsQtVKeqpYEp2e/3Je9sXHtlqAtRk6UpYnSBpbOFGx60n2VG7pSrzhiO2BRgBwVD3Ml/mDnh4fhsv3w681KKuO0edCgjeyKvTF9mV/SKq3QKnrgHk8b3L/SFNGQ41QNGpuQEKyN9R427FfO6crXHfFTt5OeBtvi2u4k1Z6ya0C2hDVfKECDzfFpLnsRxro1c4avBZu5IqEYdM1ppb6+FCRS/3RNq3NA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5072.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(346002)(376002)(39850400004)(4326008)(54906003)(478600001)(8936002)(66946007)(66476007)(66446008)(66556008)(64756008)(52536014)(55016002)(9686003)(76116006)(86362001)(107886003)(71200400001)(6506007)(2906002)(8676002)(53546011)(26005)(316002)(6916009)(4744005)(83380400001)(7696005)(186003)(33656002)(5660300002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?4zihVh6k6fQyeXIHlr0hKEaSpiervNFVAf3Xi2Zdd1IjhvHzwl9qLBV3dJzo?=
- =?us-ascii?Q?jp/ZEaHkgMAVN9M/OFvEKUhkCKAn93A+hJFsdQ38do/2vuF0UF4Ezj/k51LP?=
- =?us-ascii?Q?idbUkukaSLXSnVSVGuf5WacLIkjmzTwSrhk9fdXNfY9lYA7AmzTB+hdQt4ie?=
- =?us-ascii?Q?qEyTaXj4uTK/CgiwuhIcsKbYOg4WdGCplY/zvA3O4Mzar/8X2ZeCVQlHo0Hx?=
- =?us-ascii?Q?sY1Wnf4PpPs94MJCAbUjSFo3B/accRtsu3oYA9MM5AuakXREm7IYTi9jA5J1?=
- =?us-ascii?Q?+AhOKF3eMvgXUoMffM8Z0OTajy6xYtsEFpMglb2KsigJcBMKump05NjPblOc?=
- =?us-ascii?Q?Ag+LsUMLgZnwISF1tRmk+kw6Ae3AjzQG7WsXRxeq4rj2r2gvqZTeVa9hqTXQ?=
- =?us-ascii?Q?Ejj8LaTVIPESFMKxtQ/OQle85+G+X48gFRicRsUNNC4fBeJ7c+9TQBQPdv/h?=
- =?us-ascii?Q?zHVwiX8LNjm0ZCXU//Jruq+0P2nWulwAdotx4bxfZGrFo9tKZfTEoSG4tNfB?=
- =?us-ascii?Q?OsSWjM6ufQ0+c6+p2ofulZqCShujTQKcM7ciiv6uH/mko+tRnRz/Bruly6cx?=
- =?us-ascii?Q?KgRcBDR2qYntHRjesVkDE7lm6znVrK4JRDSLGqc/tHOT8YvWNL8+Aojt+eoJ?=
- =?us-ascii?Q?n77N8JD91L7pcSq2Lv9m35WJDKwNtlmJhDpPvHV7t8c+TQntSzk+zuG8JYhv?=
- =?us-ascii?Q?D9mKDTLYIsryqJigqTzFvM4sXm7OfXnfy1KFfTuOhtktO8EEySiexMgVcep5?=
- =?us-ascii?Q?uPKKBvsG5Fv5fso4XICK2oNHPZjit4nSwMVcrCKMKtvr64Ozc83n379UKRfw?=
- =?us-ascii?Q?EpiEosBNhqo+uJXsewMdnJqRNa5kZh1so2F1Hw8QdsRKf0nZ8jF3jDFRYJNn?=
- =?us-ascii?Q?/3DR1nDjxQIesVZsNpqOyvt69hiPJ2W0YleA2z2Y/d0+ncJLKY8209W45hSB?=
- =?us-ascii?Q?pU29kGPeUUj7WgqegcPryDOFdxOokklrDZ/TZA+D+nI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5072.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e6d45d4-2f43-4940-45eb-08d8b1475585
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jan 2021 06:58:40.7362
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4VnrpK4DPhJosEcwk9aLD7I0XYLioCDy6GZzd2Q1O7de1VTC8Rp8bs9hWFzaJrGF8mEplaX2WM9L0V1TDafucA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4085
+        id S1725925AbhAEHGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 02:06:46 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:25824 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725769AbhAEHGp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 02:06:45 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609830386; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=2RibZ3quCogr3Bv7+yL4XndtnXP1rZOfy3IGjqSqr84=; b=mQwi1KN7gfxHva0iXsSMR4G8Pes0eiO7pFahNJt/HpQmBSHn/mrEkUvWx9FD8hZWnY1MFUTe
+ SF/8JnKfXGodyRxa/z2xOf6C6DOw0ME8xoV9qmD1igtxvsWnaw5iGvMrX0Njmeh0DnUtAKW4
+ 9Zd7rVlnFzzy/iCTc7b3TnF67ug=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5ff40fc5f7aeb83bf1a57de6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 07:05:41
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 72B82C43461; Tue,  5 Jan 2021 07:05:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62A6BC433C6;
+        Tue,  5 Jan 2021 07:05:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 62A6BC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>
+Subject: [PATCH v2] Resolve LRU page-pinning issue for file-backed pages 
+Date:   Mon,  4 Jan 2021 23:05:32 -0800
+Message-Id: <cover.1609829465.git.cgoldswo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It is possible for file-backed pages to end up in a contiguous memory area
+(CMA), such that the relevant page must be migrated using the .migratepage()
+callback when its backing physical memory is selected for use in an CMA
+allocation (through cma_alloc()).  However, if a set of address space
+operations (AOPs) for a file-backed page lacks a migratepage() page call-back,
+fallback_migrate_page() will be used instead, which through
+try_to_release_page() calls try_to_free_buffers() (which is called directly or
+through a try_to_free_buffers() callback.  try_to_free_buffers() in turn calls
+drop_buffers()
 
+drop_buffers() itself can fail due to the buffer_head associated with a page
+being busy. However, it is possible that the buffer_head is on an LRU list for
+a CPU, such that we can try removing the buffer_head from that list, in order
+to successfully release the page.  Do this.
 
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: Tuesday, January 5, 2021 2:01 PM
-> To: Li, Meng <Meng.Li@windriver.com>
-> Cc: linux-kernel@vger.kernel.org; rafael@kernel.org;
-> james.quinlan@broadcom.com; Hao, Kexin <Kexin.Hao@windriver.com>
-> Subject: Re: [PATCH v2] drivers core: Free dma_range_map when driver
-> probe failed
->=20
-> On Tue, Jan 05, 2021 at 01:41:48PM +0800, Meng.Li@windriver.com wrote:
-> > From: Limeng <Meng.Li@windriver.com>
->=20
-> This does not match your signed-off-by line :(
+v1: https://lore.kernel.org/lkml/cover.1606194703.git.cgoldswo@codeaurora.org/T/#m3a44b5745054206665455625ccaf27379df8a190
+Original version of the patch (with updates to make to account for changes in
+on_each_cpu_cond()).
 
-I will fix it.
+v2: Follow Matthew Wilcox's suggestion of reducing the number of calls to
+on_each_cpu_cond(), by iterating over a page's busy buffer_heads inside of
+on_each_cpu_cond(). To copy from his e-mail, we go from:
 
-Thanks,
-Limeng
+for_each_buffer
+	for_each_cpu
+		for_each_lru_entry
+
+to:
+
+for_each_cpu
+	for_each_buffer
+		for_each_lru_entry
+
+This is done using xarrays, which I found to be the cleanest data structure to
+use, though a pre-allocated array of page_size(page) / bh->b_size elements might
+be more performant.
+
+Laura Abbott (1):
+  fs/buffer.c: Revoke LRU when trying to drop buffers
+
+ fs/buffer.c   | 85 +++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ fs/internal.h |  5 ++++
+ 2 files changed, 85 insertions(+), 5 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
