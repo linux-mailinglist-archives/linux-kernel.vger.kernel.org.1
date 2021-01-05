@@ -2,211 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFE32EB365
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B002EB36F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 20:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729947AbhAETSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 14:18:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727718AbhAETSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:18:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3781222C7B;
-        Tue,  5 Jan 2021 19:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609874276;
-        bh=jize7m4/DZjYwfA/32qqlJW5+QRlsOgSyPCucBxn0NY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KWO6wPdq/k+euIe0Ss07T6qoGZSsFIh9J4QMR5fIirJvlUzPY7xlYQCVL3pCPrQF1
-         dfEfrDBbV8ujXrrIeMWu8/AOHghzIFDKwX7goWrGJVd7jLyUx8kY+JD1QKZx9Axigd
-         R6Cj4z1Z0F/EKRkA0zwHyvXyj0rLF7PozwesylTdiXPCp08qSqu0r2xcFY6scocZPP
-         6VbAoqGbmvO6NeAVb9A28xQhb0Oq8kRleh+XznazIauk4V+hweRGOfv7HNgavXz6Pc
-         lzr/CPs8WWkUqa6k5xa8A5FwxpYI9KzlVqxVNgyTf8qEiVhph4+AYmDlktmTj17Arp
-         Wl42R80gxZhdg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DF1583522A62; Tue,  5 Jan 2021 11:17:55 -0800 (PST)
-Date:   Tue, 5 Jan 2021 11:17:55 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Len Brown <lenb@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 2/4] cpuidle: Fix missing need_resched() check after
- rcu_idle_enter()
-Message-ID: <20210105191755.GH17086@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201222013712.15056-1-frederic@kernel.org>
- <20201222013712.15056-3-frederic@kernel.org>
- <e882be10-548a-8e90-9bc6-acea453a5241@gmail.com>
- <8e9f1c38-ca84-6f5b-afdb-e70c07120332@gmail.com>
+        id S1730569AbhAETUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 14:20:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbhAETUs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 14:20:48 -0500
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C91C061795
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 11:20:07 -0800 (PST)
+Received: by mail-oo1-xc2c.google.com with SMTP id j21so195464oou.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 11:20:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pApZtT3kUoc3iG8fxyNumTsrhIoA70XGH4vOpczgKSg=;
+        b=GFG4+jX20prcNuncQrsCbCXaDE1/+gSTKbaKjfYpz+g0RCZIbl4pXANTxdKUdUTmHS
+         lYnsCEF966ZB+WYWeLXJI5CTuI4zriBu1UQ4Xc02Zuuo6RUFjeJzXQazknR4gKhGe+fC
+         3pPWITGRrA3Ktne+C44Q7JHlkdxng69Cw67wRXX3/ejaBneJgkyykaqaprrnUm7Tr54m
+         0X3tzTP4wrhtMOt1hZFzo7MKIenhTCcdq+DUtEoXASuzsXgY4zHSi92BJ8HQdUhhbhjg
+         chjSOgT7DKZBh+45Ve9DBTxsBmtYtM4IB7XZHzo3IM+dMAOuw43CyXk1+hD5ezrL2lpu
+         dZ4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pApZtT3kUoc3iG8fxyNumTsrhIoA70XGH4vOpczgKSg=;
+        b=cYGXTug5ThQtgEe3V0I55u6LXqAlLI/m3fGaePi01Bg268c/vJVCPZrqwQ18A5aPhE
+         JbeyVcqRsaIZsquXZH5iwF/JFBE7nyRMcH6rvCRFJ34k/nflThLSQu+eobjXCTKa71O7
+         pbwZEGVW5qzr9dDhi4b+ROFl8rnKPg5wEx8UTzXlz1ntgkNKBjFOa7w937r/XtXlQfyC
+         Ze+DP12Zhz6p2fQ00AWP3RB1RjELiaz2CkpiYLVWAd0NlXJ0tfeUBBAIORZ3zpJSS6AV
+         +3StM9K8qzqktcQ4JeGxHalZvsZwKBGGBdugWRPS8VeU9xfAqxsOsQKwPyu/EjUb2+QH
+         6EXw==
+X-Gm-Message-State: AOAM532ABJquoyFr/j31sN7yufeamqbFEmkiqJISDMafpjPWkvv7woaE
+        /pYcXIKgQxUoyStXkKGKg9hCFg==
+X-Google-Smtp-Source: ABdhPJzXak7VMpj8lBTjdyUrKLPtv3rchrkXI4TeIrAZmIGtz8rHTtTrm8rWH9LxaRbq0cAhEmVtRA==
+X-Received: by 2002:a05:6820:441:: with SMTP id p1mr408451oou.21.1609874406662;
+        Tue, 05 Jan 2021 11:20:06 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g21sm23083otj.77.2021.01.05.11.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 11:20:05 -0800 (PST)
+Date:   Tue, 5 Jan 2021 13:20:04 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Md Sadre Alam <mdalam@codeaurora.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH] mmc: sdhci-msm: Fix possible NULL pointer exception
+Message-ID: <X/S75LlfnMWw+seh@builder.lan>
+References: <1608626913-16675-1-git-send-email-mdalam@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8e9f1c38-ca84-6f5b-afdb-e70c07120332@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1608626913-16675-1-git-send-email-mdalam@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 09:10:30PM +0300, Dmitry Osipenko wrote:
-> 05.01.2021 20:25, Dmitry Osipenko пишет:
-> > 22.12.2020 04:37, Frederic Weisbecker пишет:
-> >> Entering RCU idle mode may cause a deferred wake up of an RCU NOCB_GP
-> >> kthread (rcuog) to be serviced.
-> >>
-> >> Usually a wake up happening while running the idle task is spotted in
-> >> one of the need_resched() checks carefully placed within the idle loop
-> >> that can break to the scheduler.
-> >>
-> >> Unfortunately within cpuidle the call to rcu_idle_enter() is already
-> >> beyond the last generic need_resched() check. Some drivers may perform
-> >> their own checks like with mwait_idle_with_hints() but many others don't
-> >> and we may halt the CPU with a resched request unhandled, leaving the
-> >> task hanging.
-> >>
-> >> Fix this with performing a last minute need_resched() check after
-> >> calling rcu_idle_enter().
-> >>
-> >> Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> >> Fixes: 1098582a0f6c (sched,idle,rcu: Push rcu_idle deeper into the idle path)
-> >> Cc: stable@vger.kernel.org
-> >> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> >> Cc: Peter Zijlstra <peterz@infradead.org>
-> >> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >> Cc: Thomas Gleixner <tglx@linutronix.de>
-> >> Cc: Ingo Molnar <mingo@kernel.org>
-> >> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> >> ---
-> >>  drivers/cpuidle/cpuidle.c | 33 +++++++++++++++++++++++++--------
-> >>  1 file changed, 25 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
-> >> index ef2ea1b12cd8..4cc1ba49ce05 100644
-> >> --- a/drivers/cpuidle/cpuidle.c
-> >> +++ b/drivers/cpuidle/cpuidle.c
-> >> @@ -134,8 +134,8 @@ int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
-> >>  }
-> >>  
-> >>  #ifdef CONFIG_SUSPEND
-> >> -static void enter_s2idle_proper(struct cpuidle_driver *drv,
-> >> -				struct cpuidle_device *dev, int index)
-> >> +static int enter_s2idle_proper(struct cpuidle_driver *drv,
-> >> +			       struct cpuidle_device *dev, int index)
-> >>  {
-> >>  	ktime_t time_start, time_end;
-> >>  	struct cpuidle_state *target_state = &drv->states[index];
-> >> @@ -151,7 +151,14 @@ static void enter_s2idle_proper(struct cpuidle_driver *drv,
-> >>  	stop_critical_timings();
-> >>  	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-> >>  		rcu_idle_enter();
-> >> -	target_state->enter_s2idle(dev, drv, index);
-> >> +	/*
-> >> +	 * Last need_resched() check must come after rcu_idle_enter()
-> >> +	 * which may wake up RCU internal tasks.
-> >> +	 */
-> >> +	if (!need_resched())
-> >> +		target_state->enter_s2idle(dev, drv, index);
-> >> +	else
-> >> +		index = -EBUSY;
-> >>  	if (WARN_ON_ONCE(!irqs_disabled()))
-> >>  		local_irq_disable();
-> >>  	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-> >> @@ -159,10 +166,13 @@ static void enter_s2idle_proper(struct cpuidle_driver *drv,
-> >>  	tick_unfreeze();
-> >>  	start_critical_timings();
-> >>  
-> >> -	time_end = ns_to_ktime(local_clock());
-> >> +	if (index > 0) {
-> > 
-> > index=0 is valid too
-> > 
-> >> +		time_end = ns_to_ktime(local_clock());
-> >> +		dev->states_usage[index].s2idle_time += ktime_us_delta(time_end, time_start);
-> >> +		dev->states_usage[index].s2idle_usage++;
-> >> +	}
-> >>  
-> >> -	dev->states_usage[index].s2idle_time += ktime_us_delta(time_end, time_start);
-> >> -	dev->states_usage[index].s2idle_usage++;
-> >> +	return index;
-> >>  }
-> >>  
-> >>  /**
-> >> @@ -184,7 +194,7 @@ int cpuidle_enter_s2idle(struct cpuidle_driver *drv, struct cpuidle_device *dev)
-> >>  	 */
-> >>  	index = find_deepest_state(drv, dev, U64_MAX, 0, true);
-> >>  	if (index > 0) {
-> >> -		enter_s2idle_proper(drv, dev, index);
-> >> +		index = enter_s2idle_proper(drv, dev, index);
-> >>  		local_irq_enable();
-> >>  	}
-> >>  	return index;
-> >> @@ -234,7 +244,14 @@ int cpuidle_enter_state(struct cpuidle_device *dev, struct cpuidle_driver *drv,
-> >>  	stop_critical_timings();
-> >>  	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-> >>  		rcu_idle_enter();
-> >> -	entered_state = target_state->enter(dev, drv, index);
-> >> +	/*
-> >> +	 * Last need_resched() check must come after rcu_idle_enter()
-> >> +	 * which may wake up RCU internal tasks.
-> >> +	 */
-> >> +	if (!need_resched())
-> >> +		entered_state = target_state->enter(dev, drv, index);
-> >> +	else
-> >> +		entered_state = -EBUSY;
-> >>  	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-> >>  		rcu_idle_exit();
-> >>  	start_critical_timings();
-> >>
-> > 
-> > This patch causes a hardlock on NVIDIA Tegra using today's linux-next.
-> > Disabling coupled idling state helps. Please fix thanks in advance.
+On Tue 22 Dec 02:48 CST 2020, Md Sadre Alam wrote:
+
+> of_device_get_match_data returns NULL when no match.
+> So add the NULL pointer check to avoid dereference.
 > 
-> This isn't a proper fix, but it works:
-
-There is some ongoing discussion about what an overall proper fix might
-look like, so in the meantime I am folding you changes below into
-Frederic's original.  ;-)
-
-							Thanx, Paul
-
-> diff --git a/drivers/cpuidle/cpuidle-tegra.c
-> b/drivers/cpuidle/cpuidle-tegra.c
-> index 191966dc8d02..ecc5d9b31553 100644
-> --- a/drivers/cpuidle/cpuidle-tegra.c
-> +++ b/drivers/cpuidle/cpuidle-tegra.c
-> @@ -148,7 +148,7 @@ static int tegra_cpuidle_c7_enter(void)
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> ---
+>  drivers/mmc/host/sdhci-msm.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
->  static int tegra_cpuidle_coupled_barrier(struct cpuidle_device *dev)
->  {
-> -	if (tegra_pending_sgi()) {
-> +	if (tegra_pending_sgi() || need_resched()) {
->  		/*
->  		 * CPU got local interrupt that will be lost after GIC's
->  		 * shutdown because GIC driver doesn't save/restore the
-> diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
-> index 4cc1ba49ce05..2bc52ccc339b 100644
-> --- a/drivers/cpuidle/cpuidle.c
-> +++ b/drivers/cpuidle/cpuidle.c
-> @@ -248,7 +248,7 @@ int cpuidle_enter_state(struct cpuidle_device *dev,
-> struct cpuidle_driver *drv,
->  	 * Last need_resched() check must come after rcu_idle_enter()
->  	 * which may wake up RCU internal tasks.
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index 9c7927b..f20e424 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -2235,6 +2235,8 @@ static int sdhci_msm_probe(struct platform_device *pdev)
+>  	 * the data associated with the version info.
 >  	 */
-> -	if (!need_resched())
-> +	if ((target_state->flags & CPUIDLE_FLAG_COUPLED) || !need_resched())
->  		entered_state = target_state->enter(dev, drv, index);
->  	else
->  		entered_state = -EBUSY;
+>  	var_info = of_device_get_match_data(&pdev->dev);
+> +	if (!var_info)
+
+To get this you (the SDHCI driver developer) needs to add an entry in
+sdhci_msm_dt_match[] without a .data specified.
+
+> +		goto pltfm_free;
+
+And this will cause sdhci_msm_probe() to return 0, giving no hint to
+said developer that they screwed up. Given that this can only be caused
+by a developer working on this driver you should provide feedback
+suitable for such developer, e.g. by:
+
+	if (WARN_ON(!var_info))
+		return -EINVAL;
+
+But given that this is only for the developer himself, I don't see that
+this adds any value over just reading the callstack you get from the
+panic when the next line dereferences var_info (NULL).
+
+Regards,
+Bjorn
+
+>  
+>  	msm_host->mci_removed = var_info->mci_removed;
+>  	msm_host->restore_dll_config = var_info->restore_dll_config;
+> -- 
+> 2.7.4
 > 
