@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BCE2EB120
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AE02EB12A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 18:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730093AbhAERL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 12:11:58 -0500
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:40751 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727036AbhAERL5 (ORCPT
+        id S1730405AbhAERPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 12:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729278AbhAERPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 12:11:57 -0500
-Received: by mail-wr1-f48.google.com with SMTP id 91so36879706wrj.7;
-        Tue, 05 Jan 2021 09:11:40 -0800 (PST)
+        Tue, 5 Jan 2021 12:15:05 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED857C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 09:14:24 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id i24so1293490edj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 09:14:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x+304jrLdAurAmJH5NqHDACRNonQepT8iVWzqqXWcJc=;
+        b=Xj6/eR9CvYPYbUrKWvQ8JDsfo+OG5VqNCb3TwIdnvnN9ufJzbYW1DQuM7TsK42+6wU
+         q6BgmCCUZKHwPHxiClDijJkO3L5Pve9zzH3t1tHJXZWZlfyicKrzNxY1y9bV15qdWfeN
+         pOsY7esyazalszVXu8funaSICWEGLnvZxMAKZm9LJmP6JZs3QS2bNoNPR7FEny/Qz8y/
+         g8sxQQl6FhxoPgEV29Vg9PKYbT+VeBqiLPSqfK+Qo/nJ5u0gYgTlcdixsSY7c0MNbooh
+         7BDZ/u/AZELOhjJFf445H+hVE8s9OrRWob/IKA41AiK72OhyY/b4utuBpig6AQgLPefj
+         do2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VnFj1rkcJWvtzQFI6dETJ2tJwVrz2a5nNVgi09YeJXc=;
-        b=BGBqSKaeWeXo3Dc8mD/CH0CHrKflfbFzeWfE9TPNPjpijohQnUpIEuibf+xKRFMpNs
-         pbwFutUp7GomgmRT8G+sKFiSyF15wbZobs3khI0aJU8abZFkqkGDgxgXBhXi6K1J+cwf
-         YSzuHaBplD4EtLHiDxDGt0PsEkU1zjnlyyjN5ulBhSs1B1oLEQsVllwtHOdDgWcrg64o
-         /soa/DcMhWQhwUFRxnmd+s6sdGd5cocrdzmqDiJF4csgEhQ5OKuetLKtET8KPMreh0ZT
-         mt5D77cqmSm7e3XOrwvqblGuPayifgSSG51CcgVe6y8+bj6hOB2wWXmvrljR5u20bZwr
-         H6Pg==
-X-Gm-Message-State: AOAM5311dMQZS7WTcWWR5o/DBgY2/g33m+tLzpkFJ1fSgHfsnVYyqgRh
-        8w1ckSCVFGA9F292VxTCp1g=
-X-Google-Smtp-Source: ABdhPJzS2tnUNQsATQJa8H0cqybMnT7xhuS0Tkf5JkW0sqRFgMdJGyc8820QQRayohYw3nqJBZqzFA==
-X-Received: by 2002:adf:94c7:: with SMTP id 65mr492225wrr.423.1609866674773;
-        Tue, 05 Jan 2021 09:11:14 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id n12sm632321wrg.76.2021.01.05.09.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 09:11:13 -0800 (PST)
-Date:   Tue, 5 Jan 2021 18:11:11 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 00/48] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-Message-ID: <20210105171111.GC26301@kozik-lap>
-References: <20201217180638.22748-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x+304jrLdAurAmJH5NqHDACRNonQepT8iVWzqqXWcJc=;
+        b=es6Q10my6aCA2LixbFxEo+oAPBG1Whj5G/O4hwc5uheda614rsk8XYE3b0oU/yjFoo
+         NVIY7xxDCynu6DO3XMek+Z/ioL/eQSr13VPUt3qzGziZyCbrJaxs9P75sNIjwxxizGWa
+         +lEqj0ujDfERP16VMXh2s+CNLVrhy3iFCdi3/i+S3Mr1izI9dSVn7KhuKL5HNEQJwvc0
+         wracEG3R2H3RzVur2Aplut6RRkZS+oTFGV+GX0KyYwp1qKINFe753pTHw/ATvNfAetQ/
+         XupUavIPlOz1SzNJWK/GQDIwEUTw2zk5SczHAmfh7nvVXuYmjHq0nd9dB1LYW851kaYa
+         QHCw==
+X-Gm-Message-State: AOAM531RoJwEXXzB6dkCirCDAKZfH4gQ2DjhKU8+YEVL5ISv6TBRouiw
+        CpHBYjsButdzGVEg0gm1iS6bbPsqGXLfLJWmlQ4=
+X-Google-Smtp-Source: ABdhPJyZ0yJFQ+aCP6nEoSqqYgjLKcz/grwxVjrn9wNYJdtq4qsQ6W5Uw5RgFtiwGIWKfOLkjzAGHY8cTfAStuMapDc=
+X-Received: by 2002:aa7:c3d3:: with SMTP id l19mr792831edr.366.1609866863724;
+ Tue, 05 Jan 2021 09:14:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201217180638.22748-1-digetx@gmail.com>
+References: <456a021c7ef3636d7668cec9dcb4a446a4244812.1609855564.git.jstancek@redhat.com>
+In-Reply-To: <456a021c7ef3636d7668cec9dcb4a446a4244812.1609855564.git.jstancek@redhat.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 5 Jan 2021 09:14:11 -0800
+Message-ID: <CAHbLzkoN3bdnHa-xOmGWQhN+dw7AQtbwygsH=VS5or=QoBk0Jg@mail.gmail.com>
+Subject: Re: [PATCH] mm: migrate: initialize err in do_migrate_pages
+To:     Jan Stancek <jstancek@redhat.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Zi Yan <ziy@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 09:05:50PM +0300, Dmitry Osipenko wrote:
-> Introduce core voltage scaling for NVIDIA Tegra20/30 SoCs, which reduces
-> power consumption and heating of the Tegra chips. Tegra SoC has multiple
-> hardware units which belong to a core power domain of the SoC and share
-> the core voltage. The voltage must be selected in accordance to a minimum
-> requirement of every core hardware unit.
-> 
-> The minimum core voltage requirement depends on:
-> 
->   1. Clock enable state of a hardware unit.
->   2. Clock frequency.
->   3. Unit's internal idling/active state.
-> 
-> This series is tested on Acer A500 (T20), AC100 (T20), Nexus 7 (T30),
-> Ouya (T30), TK1 (T124) and some others. I also added voltage scaling to
-> the Ventana (T20) and Cardhu (T30) boards which are tested by NVIDIA's CI
-> farm. Tegra30 is now couple degrees cooler on Nexus 7 and stays cool on
-> Ouya (instead of becoming burning hot) while system is idling. It should
-> be possible to improve this further by implementing a more advanced power
-> management features for the kernel drivers.
-> 
-> The DVFS support is opt-in for all boards, meaning that older DTBs will
-> continue to work like they did it before this series. It should be possible
-> to easily add the core voltage scaling support for Tegra114+ SoCs based on
-> this grounding work later on, if anyone will want to implement it.
+On Tue, Jan 5, 2021 at 6:14 AM Jan Stancek <jstancek@redhat.com> wrote:
+>
+> After commit 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")',
+> do_migrate_pages can return uninitialized variable 'err' (which is
+> propagated to user-space as error) when 'from' and 'to' nodesets
+> are identical. This can be reproduced with LTP migrate_pages01,
+> which calls migrate_pages() with same set for both old/new_nodes.
+>
+> Add 'err' initialization back.
 
-The same comment as for your interconnect work: for sets touching
-multiple systems please mention the dependencies between patches in the
-cover letter. Not as a reply to such remark like I make here, but as a
-separate entry in the cover letter.
+Thanks for catching this. Acked-by: Yang Shi <shy828301@gmail.com>
 
-Best regards,
-Krzysztof
+>
+> Fixes: 236c32eb1096 ("mm: migrate: clean up migrate_prep{_local}")
+> Cc: Zi Yan <ziy@nvidia.com>
+> Cc: Yang Shi <shy828301@gmail.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  mm/mempolicy.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 8cf96bd21341..2c3a86502053 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -1111,7 +1111,7 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
+>                      const nodemask_t *to, int flags)
+>  {
+>         int busy = 0;
+> -       int err;
+> +       int err = 0;
+>         nodemask_t tmp;
+>
+>         migrate_prep();
+> --
+> 2.18.1
+>
