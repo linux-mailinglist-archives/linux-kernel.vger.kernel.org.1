@@ -2,85 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769282EA7D5
+	by mail.lfdr.de (Postfix) with ESMTP id E32D82EA7D6
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbhAEJpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:45:11 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:26248 "EHLO smtp2.axis.com"
+        id S1728342AbhAEJq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:46:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48894 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727682AbhAEJpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:45:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1609839910;
-  x=1641375910;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=CeICFgPaITmi9nZ9tSZ1FQ/bbzfnJaESHlPO8SjV7sU=;
-  b=IjI+E8+Tgo9md3pRitg0ZJs4R1fWGYblmW4VsHgQEn+eRJdFCIfX3uxq
-   4f84YWjfrEyNyRyt12TkJq/UU95aXowtzpQ3EG+LyYwi6Uy2i4LTYx6DK
-   kyIKz3LopqrrAa3Imo3dWTqM+ueKpcMsRqEX/hQlOpHz62Wyb0sEDKLLl
-   WC0v3M986i/0GKufzsl5e85T2Mjo4i+RyfO4e2JT0P1yxVmq2FwJFVG1V
-   x1LNBq6WZ2UkyExmPJpuzi6FjFy1tYXW4pHFW/4yJXPJqazhjGTWMlFYc
-   NtlhPyKGydTFS7NVUfAZkJYj21jDDn4OD25qQF4fRhlRILlgJ25qyYT7d
-   A==;
-Subject: Re: [PATCH] spi: spidev: Fix so the module is autoloaded when built
- as external
-To:     Mark Brown <broonie@kernel.org>,
-        Gustav Wiklander <gustav.wiklander@axis.com>
-CC:     <kernel@axis.com>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210104153436.20083-1-gustav.wiklander@axis.com>
- <20210104213437.GM5645@sirena.org.uk>
-From:   Gustav Wiklander <gustavwi@axis.com>
-Message-ID: <124e3214-37b9-524b-7888-a31e8cb455da@axis.com>
-Date:   Tue, 5 Jan 2021 10:44:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728143AbhAEJq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:46:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 56758AD29;
+        Tue,  5 Jan 2021 09:45:46 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 10:45:45 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Enzo Matsumiya <ematsumiya@suse.de>
+Cc:     Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, Jens Axboe <axboe@fb.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] nvme: hwmon: fix crash on device teardown
+Message-ID: <20210105094545.3tq7c6ev5yn3bhyi@beryllium.lan>
+References: <20201209213228.5044-1-ematsumiya@suse.de>
+ <4ebb1b8c-4bb0-6ebf-3417-d4aee1bdd3a8@suse.de>
+ <20201230143805.2v4izgkzbnisssvr@beryllium.lan>
+ <20201230151653.ozlqlwef7f2tarwz@beryllium.lan>
+ <20201230153138.4f2jd2yd2vkqndby@beryllium.lan>
+ <20210104210610.hliiupywksawgei3@hyori>
 MIME-Version: 1.0
-In-Reply-To: <20210104213437.GM5645@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: XBOX03.axis.com (10.0.5.17) To XBOX01.axis.com (10.0.5.15)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104210610.hliiupywksawgei3@hyori>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/4/21 10:34 PM, Mark Brown wrote:
-> On Mon, Jan 04, 2021 at 04:34:35PM +0100, Gustav Wiklander wrote:
->> From: Gustav Wiklander <gustavwi@axis.com>
->>
->> The spi framework sets the modalias for the spi device to belong in
->> either the acpi device table or the SPI device table. It can never
->> be in the OF table. Therefore the spidev driver should populate the
->> spi device table rather than the OF table.
->>
->> NOTE: platform drivers and i2c drivers support aliases in the
->>        OF device table.
-> 
-> Why is this a good solution rather than ensuring the the OF IDs can be
-> used directly?
-> 
+On Mon, Jan 04, 2021 at 06:06:10PM -0300, Enzo Matsumiya wrote:
+> @Daniel maybe try tweaking your tests to use a smaller controller
+> loss timeout (-l option)? I do this on my tests because the default
+> value kicks in about 30min after hot-removal -- i.e. you
+> have to actually wait for the timeout to expire to trigger the bug.
 
-Hi Mark,
-
-You suggestion is of course a solid alternative forward. However, the 
-downside with supporting the OF device table for automatic module 
-loading is that a lot of spi device drivers must be updated. Also
-it is unclear what is the preferred way to do this in the kernel see
-this patch:
-https://lore.kernel.org/lkml/20190618052644.32446-1-bjorn.andersson@linaro.org/
-
-If adding support of OF device table the spi device drivers must now 
-include a MODULE_DEVICE_TABLE(of,...) as the spi device alias will no 
-longer match the alias in the module.
-
-This command gives 186 spi device drivers.
-git grep "MODULE_DEVICE_TABLE(spi" | wc -l 
-
-186
-
-Best regards
-Gustav Wiklander
+As far I can tell, the blktests test I am using will trigger the same
+bug. The problem is that the lifetime of hwmon sysfs entry should be
+aligned to the lifetime of the nvme sysfs entry. Currently, hwmon's
+lifetime is bound to the lifetime of the ctl sysfs entry. When the nvme
+entry goes away (and obviously also the underlying device), the hwmon
+sysfs entry still references it.
