@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270C72EAE23
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB692EAE1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbhAEPWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:22:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbhAEPWi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:22:38 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103D5C061793;
-        Tue,  5 Jan 2021 07:21:58 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id 15so41490pgx.7;
-        Tue, 05 Jan 2021 07:21:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=XVD1XX3XannWZQkiPFGE0hM1GlNO9UtMwgSsJNHwDMg=;
-        b=QKuUUVMX/n857o6VHwgDSqWTy/n713BPYakWBWEdURp4hpDi9/0heOFJb3AOmVCJ49
-         Qd/Opsl4xmFvFChH+s82FEABDhdC8JpYNN1PnEk9iU2X+gvSwODydEwyK/hOnBT1Cfy1
-         Os4FHV4TMfnWGxI/EIIL3rSEa8eE3CzyowquQwVG/7N+RFiU5YGeEqQ4+D8l2P17bJcj
-         QSleZT7aH2ClSLL1ZrlWJhmNGnAuUexMBTC0WZRTk56ywmEXqVYYNpMzGZEn57U1XypU
-         On3HozuwuAj9uE4e/LgIauJE2AyUUJ9LN/FVpwFsuDeRoBKgtGDiEkdvGYTPWJt6LPcS
-         svRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=XVD1XX3XannWZQkiPFGE0hM1GlNO9UtMwgSsJNHwDMg=;
-        b=ILwHH1Nn7KJSjvGiO2L+X1+GO/NMpq7VHqKFDK6b8fIlm46vzmLLxJm7aCAwFYbTFC
-         WK94mRr22jN+FZEguEI1o7hJO1oBnYh2p8HWsK9pVQa+ouPEXFzesQWkReEyeosAvkjf
-         U522D6+rrUga4vj0m5cDx3LOXVo1/ZSJu80RBxEGedx0i6ZnrjcbsaM1xTIXG2v9zWCV
-         biDjPczp4oq3BpofrLPFEbDZDQlvOXzYG8UQtk0IeivQF4U0PFOWLjYTWJaq0JjgCGn5
-         hKz2BQRmfEIMEw98xsdXsH4z5Px9nHffAk3E9VuZ/5tbPI2fm0nxsH3uPujiiuct6/VW
-         sljQ==
-X-Gm-Message-State: AOAM5312zcWwHmvVNsMXLI+/L5ttqLv1T9FAfVp51jdQHTguNP96mM58
-        PZfIATAK1yv1G9zAh+KRW9bzl7rwF0o=
-X-Google-Smtp-Source: ABdhPJwYw1QXF4XI/GYprpYoDV0KwnTx7v/DjcAXf+m06a2+DS1FV4Ptn6MjXrxKHRAZf9h4+G2k9A==
-X-Received: by 2002:a62:7693:0:b029:19d:92fb:4ec1 with SMTP id r141-20020a6276930000b029019d92fb4ec1mr47108934pfc.4.1609860117655;
-        Tue, 05 Jan 2021 07:21:57 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id b18sm15560pfi.173.2021.01.05.07.21.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 07:21:56 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     shuah@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        jamorris@linux.microsoft.com, dong.menglong@zte.com.cn,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/bpf: remove duplicate include in test_lsm
-Date:   Tue,  5 Jan 2021 07:20:47 -0800
-Message-Id: <20210105152047.6070-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.17.1
+        id S1727660AbhAEPWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:22:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727155AbhAEPWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:22:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1C3522B4B;
+        Tue,  5 Jan 2021 15:21:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609860110;
+        bh=97UVCrOKT2ErdgEJfAOSkI21WLa7Deputq5XkcrSorU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NwTwNrVi66RUa3GtNfMNr9IQIcz725PAprzh5MioC9eDPEj3xGYCWy4hHotoKqH8E
+         GjvP+MwWSlLBrKVr3NusyLcs6M4RltorOOK/iqcvwIWD2NS5V8K2Ky5TzAvjve6G/g
+         VCL5Prj92RXGBsbN/5AMqKXrWaYV0jdi6T4YR6P/C+EhaVAl7yk+48QA+hLtPcfr5+
+         /gF4xJQSJ1YMBWwfDO5cwG+zvl8SuwsDlz0CgVbIHNG4Tt6bjNRpFMn1yCSLiVPPBw
+         lWwDzcOq54Oi8OVxi7mG7nfy989go6YqxfFNdd3cKr77mBRAY0HrETBh23d7MwmO1N
+         Ro1R0RfgHGuOw==
+Received: by mail-ed1-f46.google.com with SMTP id c7so363929edv.6;
+        Tue, 05 Jan 2021 07:21:49 -0800 (PST)
+X-Gm-Message-State: AOAM533TkKfpbQjwK763c3SIjPlrNZ0V1yIAUV6SyXV+isBgJ4EB+aNO
+        BDSHlkmmfIYpcyvs43uFozvqxdPahZ/UkJccTQ==
+X-Google-Smtp-Source: ABdhPJxr4lrBHt+Qp69qQk6ZwZ9AkMYQpVMgEu/oYmZ68rq63mVXGURBFWpkJLNl5EZw+QhMgDoua1jHUFC8pgLapGU=
+X-Received: by 2002:a50:f404:: with SMTP id r4mr286028edm.62.1609860108469;
+ Tue, 05 Jan 2021 07:21:48 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1609844956.git.viresh.kumar@linaro.org>
+In-Reply-To: <cover.1609844956.git.viresh.kumar@linaro.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 5 Jan 2021 08:21:36 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
+Message-ID: <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
+Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Tue, Jan 5, 2021 at 4:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Hello,
+>
+> Here is an attempt to make some changes in the kernel to allow building
+> of device tree overlays.
+>
+> While at it, I would also like to discuss about how we should mention
+> the base DT blobs in the Makefiles for the overlays, so they can be
+> build tested to make sure the overlays apply properly.
+>
+> A simple way is to mention that with -base extension, like this:
+>
+> $(overlay-file)-base := platform-base.dtb
+>
+> Any other preference ?
 
-'unistd.h' included in 'selftests/bpf/prog_tests/test_lsm.c' is
-duplicated.
+I think we'll want something similar to how '-objs' works for modules:
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- tools/testing/selftests/bpf/prog_tests/test_lsm.c | 1 -
- 1 file changed, 1 deletion(-)
+foo-board-1-dtbs := foo-board.dtb foo-overlay1.dtbo
+foo-board-2-dtbs := foo-board.dtb foo-overlay2.dtbo
+foo-board-1-2-dtbs := foo-board.dtb foo-overlay1.dtbo foo-overlay2.dtbo
+dtbs-y += foo-board-1.dtb foo-board-2.dtb foo-board-1-2.dtb
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-index 6ab29226c99b..2755e4f81499 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-@@ -10,7 +10,6 @@
- #include <unistd.h>
- #include <malloc.h>
- #include <stdlib.h>
--#include <unistd.h>
- 
- #include "lsm.skel.h"
- 
--- 
-2.17.1
+(One difference here is we will want all the intermediate targets
+unlike .o files.)
 
+You wouldn't necessarily have all the above combinations, but you have
+to allow for them. I'm not sure how we'd handle applying any common
+overlays where the base and overlay are in different directories.
+
+Another thing here is adding all the above is not really going to
+scale on arm32 where we have a single dts directory. We need to move
+things to per vendor/soc family directories. I have the script to do
+this. We just need to agree on the vendor names and get Arnd/Olof to
+run it. I also want that so we can enable schema checks by default
+once a vendor is warning free (the whole tree is going to take
+forever).
+
+> Also fdtoverlay is an external entity right now, and is not part of the
+> kernel. Do we need to make it part of the kernel ? Or keep using the
+> external entity ?
+
+Part of the kernel. We just need to add it to the dtc sync script and
+makefile I think.
+
+Rob
