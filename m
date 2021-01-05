@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5652EA731
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8502EA732
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727481AbhAEJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:21:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42524 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbhAEJVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:21:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609838438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LkWEVAne/Zp8rRQWRngkUvl4UBybdMI2J/82AEM+QYg=;
-        b=Ow/Cqmex8Vu/mFIxqsr8sPRiLZJva5ws1xp7G4QywxnsDFYkOBWxL4goYV7K7MFPXGmSyv
-        0+Ek2ps4Oro+Niefyb9alahZ0/wm8ZTZ1xQX2nLuHri6RXqxgnMA7WznpkCvQ3KrU1Wd4l
-        ge8iAJ1j6RxsdCW5Jq1YLrx0TTu8f0k=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 02FA6B720;
-        Tue,  5 Jan 2021 09:20:38 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 10:20:37 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page
- allocation for __GFP_ZERO
-Message-ID: <20210105092037.GY13207@dhcp22.suse.cz>
-References: <a5ba7bdf-8510-d0a0-9c22-ec1b81019982@intel.com>
- <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com>
- <6bfcc500-7c11-f66a-26ea-e8b8bcc79e28@intel.com>
+        id S1727962AbhAEJXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:23:36 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9715 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbhAEJXe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:23:34 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D96Sc6ynhzl16w;
+        Tue,  5 Jan 2021 17:21:36 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 5 Jan 2021 17:22:38 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "James Morse" <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: [PATCH] arm64/smp: Remove unused variable irq in arch_show_interrupts()
+Date:   Tue, 5 Jan 2021 17:22:21 +0800
+Message-ID: <20210105092221.15144-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6bfcc500-7c11-f66a-26ea-e8b8bcc79e28@intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04-01-21 15:00:31, Dave Hansen wrote:
-> On 1/4/21 12:11 PM, David Hildenbrand wrote:
-> >> Yeah, it certainly can't be the default, but it *is* useful for
-> >> thing where we know that there are no cache benefits to zeroing
-> >> close to where the memory is allocated.
-> >> 
-> >> The trick is opting into it somehow, either in a process or a VMA.
-> >> 
-> > The patch set is mostly trying to optimize starting a new process. So
-> > process/vma doesn‘t really work.
-> 
-> Let's say you have a system-wide tunable that says: pre-zero pages and
-> keep 10GB of them around.  Then, you opt-in a process to being allowed
-> to dip into that pool with a process-wide flag or an madvise() call.
-> You could even have the flag be inherited across execve() if you wanted
-> to have helper apps be able to set the policy and access the pool like
-> how numactl works.
+The local variable irq is added in commit a26388152531 ("arm64:
+Remove custom IRQ stat accounting"), but forget to remove in
+commit 5089bc51f81f ("arm64/smp: Use irq_desc_kstat_cpu() in
+arch_show_interrupts()"). Just remove it.
 
-While possible, it sounds quite heavy weight to me. Page allocator would
-have to somehow maintain those pre-zeroed pages. This pool will also
-become a very scarce resource very soon because everybody just want to
-run faster. So this would open many more interesting questions.
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+---
+ arch/arm64/kernel/smp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-A global knob with all or nothing sounds like an easier to use and
-maintain solution to me.
-
-> Dan makes a very good point about using filesystems for this, though.
-> It wouldn't be rocket science to set up a special tmpfs mount just for
-> VM memory and pre-zero it from userspace.  For qemu, you'd need to teach
-> the management layer to hand out zeroed files via mem-path=.
-
-Agreed. That would be an interesting option.
-
-> Heck, if
-> you taught MADV_FREE how to handle tmpfs, you could even pre-zero *and*
-> get the memory back quickly if those files ended up over-sized somehow.
-
-We can probably allow MADV_FREE on shmem but that would require an
-exclusively mapped page. Shared case is really tricky because of silent
-data corruption in uncoordinated userspace.
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 6bc3a3698c3d..376343d6f13a 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -807,7 +807,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+ 	unsigned int cpu, i;
+ 
+ 	for (i = 0; i < NR_IPI; i++) {
+-		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
+ 		seq_printf(p, "%*s%u:%s", prec - 1, "IPI", i,
+ 			   prec >= 4 ? " " : "");
+ 		for_each_online_cpu(cpu)
 -- 
-Michal Hocko
-SUSE Labs
+2.19.1
+
