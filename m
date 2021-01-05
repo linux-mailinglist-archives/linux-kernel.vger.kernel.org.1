@@ -2,78 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC71C2EA260
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDD82EA298
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 02:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbhAEBBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 20:01:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728482AbhAEBB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 20:01:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E421F22B51;
-        Tue,  5 Jan 2021 01:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609808431;
-        bh=gWKgDk65pk4N3a3WPjK1gyEft3PaJi9n7dDh+HCNjlY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iIZdvZSrJfFqnynzy9F7VChHBVKgcXOxNYmFGSt33yXib5xeBQJBwwlmO9xhk8GR8
-         4A3ctW19btSYurmeEimwmPHipb15BlsOkNKlMIJ32QrtEI3udZ3e/fuQvDmVpA6Ek3
-         osrfynGEqnA1+lQv8wqkxKQKehguYzRpCFNW54EByRaJjjUcJ0C0YPGNu50YWM6Uv3
-         93A4UV6vZtK4ylK2/iJeg5AhRd9sJnP0adaeSo5322tO9VEe41kbhUVXwQ7JM61hMF
-         w7A4UPXCyYsrCOLN+0YItcL6fSktqHXWyGrVF1XfuPS3jo4EPWkY80PspCMQB3AxA5
-         Dx7F3Wo0vZcGQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 3/3] depmod: handle the case of /sbin/depmod without /sbin in PATH
-Date:   Mon,  4 Jan 2021 20:00:27 -0500
-Message-Id: <20210105010027.3954808-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210105010027.3954808-1-sashal@kernel.org>
-References: <20210105010027.3954808-1-sashal@kernel.org>
+        id S1728909AbhAEBD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 20:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727134AbhAEBDy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 20:03:54 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F87DC061796
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 17:03:14 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id 11so27823596oty.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 17:03:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SBBTs+bvU9iy9EBWJDnY4qaMDeMg6PPS2w0qpSY3yQE=;
+        b=cVeolfQsOycUWSJbpwu3LkQMr/DS38odCyzF18UWKZFcuNylWnEvj4z12vyjZ7a5aA
+         PDgx+jGr3pbE7+4ADo/tkTsXyO3qXvwkwntexOQhz9OniKuSGUkbgHH4ehEELg/aAFTU
+         rRwIoiTQaepYfpmHscGiPXYJcC49U9e4JrhxOXoE/5poWr/pI6aCKBQUJ+xAwk5J5A6j
+         ph/caoL745Grhz4V5VdPDOFJC8MdmAv55Sfd78CE+UNCWvjNY0BSEAZ4ZsLuoAg8ugSS
+         NIQwK67EXYyHV94dhjTcqQJE10R+nApS6oYqOUd6ixRamAAKs1pQ6+Fj1ppYKA+ePA/f
+         RL8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SBBTs+bvU9iy9EBWJDnY4qaMDeMg6PPS2w0qpSY3yQE=;
+        b=WoACbx2JUfKyX8q3KMCQKet/VQ4SZNFVNrp2nf4USgdEpLtsNHYluZuG1PLV9WifpX
+         ywptlSPQeMMAtKUw3TKtGyTkNr0bacGGr285A66+Nf0/umYtpQru3frVUFFysUzDMm7L
+         s8HtePiPx9gxHGB3sSu+vRRwXpGZbA/AGbSQFrjA/WyGyAyFoQnXVS0Pkyx+zFnfg+Uu
+         zVIZ1LH8wZi6kfXO36f/86dI8H3cu0wLL61u+z4lr1lSS77M+hfqubNuI0L6eRgHSom/
+         rOVaRwHtw/5Nj/xTRTRnEMbwKeJQcXUZLQi06UQx9T0b5FOPvNtk4QoCvJvUIRjqY14p
+         oO+A==
+X-Gm-Message-State: AOAM531JLDoeT20FVYFSi4zMMWmj+t0nUwryAnMQpAtb1n027GgJ6Efc
+        TuelXUPQnmZ4kqb9/oZKI+Lxpg==
+X-Google-Smtp-Source: ABdhPJxCHMQuo1VLdZ9IiJnuuTZHNgMeEvrX5FkkWNXHfJzJv7EHGtUi2aT9wnaNlZemU8tohsfnDA==
+X-Received: by 2002:a9d:6c92:: with SMTP id c18mr52506972otr.232.1609808593676;
+        Mon, 04 Jan 2021 17:03:13 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l6sm13572775oof.3.2021.01.04.17.03.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 17:03:13 -0800 (PST)
+Date:   Mon, 4 Jan 2021 19:03:11 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 11/16] rpmsg: char: check destination address is not
+ null
+Message-ID: <X/O6z6ngPmML3nOD@builder.lan>
+References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+ <20201222105726.16906-12-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222105726.16906-12-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+On Tue 22 Dec 04:57 CST 2020, Arnaud Pouliquen wrote:
 
-[ Upstream commit cedd1862be7e666be87ec824dabc6a2b05618f36 ]
+> The name service announcement is not sent if no endpoint is created by
+> default. If the destination address is not precised by the
+> application when creating the device (thanks to the RPMsg CTRL interface),
+> it is not possible to have a valid RPMsg channel.
+> 
 
-Commit 436e980e2ed5 ("kbuild: don't hardcode depmod path") stopped
-hard-coding the path of depmod, but in the process caused trouble for
-distributions that had that /sbin location, but didn't have it in the
-PATH (generally because /sbin is limited to the super-user path).
+In the Qualcomm transports, the chinfo.name is used to identify the
+channel, so there it's valid to create a endpoint without dst.
 
-Work around it for now by just adding /sbin to the end of PATH in the
-depmod.sh script.
+Regards,
+Bjorn
 
-Reported-and-tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- scripts/depmod.sh | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/scripts/depmod.sh b/scripts/depmod.sh
-index baedaef53ca05..b0cb89e73bc56 100755
---- a/scripts/depmod.sh
-+++ b/scripts/depmod.sh
-@@ -14,6 +14,8 @@ if ! test -r System.map ; then
- 	exit 0
- fi
- 
-+# legacy behavior: "depmod" in /sbin, no /sbin in PATH
-+PATH="$PATH:/sbin"
- if [ -z $(command -v $DEPMOD) ]; then
- 	echo "Warning: 'make modules_install' requires $DEPMOD. Please install it." >&2
- 	echo "This is probably in the kmod package." >&2
--- 
-2.27.0
-
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 4b0674a2e3e9..8b1928594d10 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -305,6 +305,16 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+>  	struct device *dev;
+>  	int ret;
+>  
+> +	/* There is not ept created by default. As consequence there is not NS
+> +	 * announcement and the destination address has to be set.
+> +	 * this limitation could be solved in future by adding a helper in
+> +	 * rpmsg_ns.
+> +	 */
+> +	if (rpdev->dst == RPMSG_ADDR_ANY) {
+> +		dev_err(dev, "destination address invalid (%d)\n", rpdev->dst);
+> +		return -EINVAL;
+> +	}
+> +
+>  	eptdev = kzalloc(sizeof(*eptdev), GFP_KERNEL);
+>  	if (!eptdev)
+>  		return -ENOMEM;
+> -- 
+> 2.17.1
+> 
