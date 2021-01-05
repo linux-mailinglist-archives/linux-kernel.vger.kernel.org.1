@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44AA2EA819
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C91292EA822
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbhAEKAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:00:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59666 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725919AbhAEKAS (ORCPT
+        id S1728426AbhAEKCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728286AbhAEKCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:00:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609840731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2jEtueBz8ZOvS21YvDXkoHLYxQlQJlmCqkVMoZHehj0=;
-        b=KuUkVBHISS+POQ5/+rUP1N4ryxGI9s4wqL3JMSLsSxJbgLc0QmlzqcaqRcwshOtwdCCLiA
-        +wUb5G9sK+3wPgz2Uf5KjDGaX6umeYEVXQZZ3Wf70QHhM2dZ3RpK4Pv3VeYrauQVs8pVUa
-        WSKZueLQoHqXE6ltjHardapZV8Ys/jg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-nLM0Vp2RMpScV7p3f5W1rA-1; Tue, 05 Jan 2021 04:58:49 -0500
-X-MC-Unique: nLM0Vp2RMpScV7p3f5W1rA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7DA00800D55;
-        Tue,  5 Jan 2021 09:58:48 +0000 (UTC)
-Received: from [10.36.114.117] (ovpn-114-117.ams2.redhat.com [10.36.114.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A3AFF60BE5;
-        Tue,  5 Jan 2021 09:58:47 +0000 (UTC)
-Subject: Re: uninitialized pmem struct pages
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210104100323.GC13207@dhcp22.suse.cz>
- <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
- <CAPcyv4h6mdKrwpqXfO0e_=sKjB-pY5KbP9ii+tQyFsK5bPkb=A@mail.gmail.com>
- <b5109800-a860-0f82-3e45-c0768cb1b038@redhat.com>
- <CAPcyv4jATooJTwXXGBvPrcCu57Ldt=6aBSEzaSqbwcHmczVaZg@mail.gmail.com>
- <dd49a67a-109e-b5c1-2010-572587fe4ed6@redhat.com>
- <CAPcyv4gMBvHwk6_QzpdKBwWZvRjaFYsN=0O8A9c39q2=CarqGA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <fb87b533-d0b5-9b3a-8089-db81480b3e65@redhat.com>
-Date:   Tue, 5 Jan 2021 10:58:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 5 Jan 2021 05:02:07 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C58C061574;
+        Tue,  5 Jan 2021 02:01:27 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id w17so28022119ilj.8;
+        Tue, 05 Jan 2021 02:01:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a+YIO4SqsJOMsreFxnQg6aNJ/TQ1cD1PYTP7J+66kxY=;
+        b=EdCWoYreIIPP48lPVCOtCBBJteDAWlPOoytMHPYSolemn0JXQDVyv+XvCGm+eRqf8A
+         aSAJIHg0QKgwZtEZG4PevHQmz4/sWgMoSYaoDHbjKFQw+maKgiIad808izswjZsMScpP
+         IOzAJXLdtVRCpdCQQ+xbPhpIwGqDQ+RJxcam6Ml7PbQvUr1O1PNvXdSv1SOweJilG66D
+         U7hasc3h6oYEZrAsSGv2PhF9MkE8aYuudjJ4qhXC5mVZie0U7Am1NnBxLq8w3/SnR2yI
+         BDN7t637r1lHqBkJ3d2KzhHDLiLGVUHR2yEjFp+UCwMfVUfgNiQr2I29MdGFrmZEuLdj
+         1b1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a+YIO4SqsJOMsreFxnQg6aNJ/TQ1cD1PYTP7J+66kxY=;
+        b=ff4ZLTUH/XgJp69jsL3j/815mCboqMZwI/EiV8ZJCqbz7bxVAsZRrqSE6Mk00oKpoy
+         eSwrd3QyZTaSZB3o42QXnHMHSk6V0XVXWIinU6A3CsNS6ZIfFThnNoMyWtGcMZhp3Dr5
+         jWI2iDRUGyHwiejvqgxRf9nqL01v9pHX8Y/bdqEm5zJ43ahUd52d5cYNhvb5tZCIWb62
+         F5jGrRKwJEmQ9QlRA2MkyXdQI03Uxtf3t+me/REviSuRDP5Nxd3cipHUYP3Sw58wX7vO
+         RAlXcFpVJ687Tx+PwrZWj409i66NDpR+NSf5b4DCSNgpE9YW2vFfvrzReH6l9XL9BjR8
+         /kjw==
+X-Gm-Message-State: AOAM530PTYmcv4clVpc1AcgC7XGFKygL1z8E8gJqpdBmeyM3K92HV0rw
+        Jie6OFq8vqXftEuVJEpyx0k=
+X-Google-Smtp-Source: ABdhPJxQrMydf1TlDyAj1V01J/O0bI/OUfD4p3DE9seESIFB46J/rQnJY/hGRzF/8WWq1aupqlK+fw==
+X-Received: by 2002:a92:ce47:: with SMTP id a7mr76367323ilr.261.1609840886959;
+        Tue, 05 Jan 2021 02:01:26 -0800 (PST)
+Received: from localhost.localdomain ([156.146.37.136])
+        by smtp.gmail.com with ESMTPSA id e1sm43616932iod.17.2021.01.05.02.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 02:01:26 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: crypto: marvell: Fix a spelling s/fautly/faultly/ in comment
+Date:   Tue,  5 Jan 2021 15:31:08 +0530
+Message-Id: <20210105100108.3375-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4gMBvHwk6_QzpdKBwWZvRjaFYsN=0O8A9c39q2=CarqGA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.01.21 10:56, Dan Williams wrote:
-> On Tue, Jan 5, 2021 at 1:37 AM David Hildenbrand <david@redhat.com> wrote:
->>
->>>> Yeah, obviously the first one. Being able to add+use PMEM is more
->>>> important than using each and every last MB of main memory.
->>>>
->>>> I wonder if we can just stop adding any system RAM like
->>>>
->>>> [     Memory Section    ]
->>>> [ RAM ] [      Hole     ]
->>>>
->>>> When there could be the possibility that the hole might actually be
->>>> PMEM. (e.g., with CONFIG_ZONE_DEVICE and it being the last section in a
->>>> sequence of sections, not just a tiny hole)
->>>
->>> I like the simplicity of it... I worry that the capacity loss
->>> regression is easy to notice by looking at the output of free(1) from
->>> one kernel to the next and someone screams.
->>
->> Well, you can always make it configurable and then simply fail to add
->> PMEM later if impossible (trying to sub-section hot-add into early
->> section). It's in the hands of the sysadmin then ("max out system ram"
->> vs. "support any PMEM device that could eventually be there at
->> runtime"). Distros would go for the second.
->>
->> I agree that it's not optimal, but sometimes simplicity has to win.
-> 
-> Here's where we left it last time, open to pfn_to_online_page hacks...
-> 
-> https://lore.kernel.org/linux-mm/CAPcyv4ivq=EPUePXiX2ErcVyF7+dV9Yv215Oue7X_Y2X_Jfw8Q@mail.gmail.com
-> 
 
-Yeah, I recall. That's why I favor simple approaches right now - less
-brain power to waste ;)
-
-> I don't think a slow-path flag in the mem-section is too onerous, but
-> I'll withhold judgement until I have the patch I'm thinking of
-> in-hand. Let me give it a shot, you can always nack the final result.
-
-Sure!
+s/fautly/faulty/p
 
 
--- 
-Thanks,
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/crypto/marvell/cesa/tdma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-David / dhildenb
+diff --git a/drivers/crypto/marvell/cesa/tdma.c b/drivers/crypto/marvell/cesa/tdma.c
+index 5d9c48fb72b2..0e0d63359798 100644
+--- a/drivers/crypto/marvell/cesa/tdma.c
++++ b/drivers/crypto/marvell/cesa/tdma.c
+@@ -177,7 +177,7 @@ int mv_cesa_tdma_process(struct mv_cesa_engine *engine, u32 status)
+
+ 	/*
+ 	 * Save the last request in error to engine->req, so that the core
+-	 * knows which request was fautly
++	 * knows which request was faulty
+ 	 */
+ 	if (res) {
+ 		spin_lock_bh(&engine->lock);
+--
+2.26.2
 
