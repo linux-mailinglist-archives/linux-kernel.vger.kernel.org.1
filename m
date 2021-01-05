@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E013A2EB01C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2553A2EB021
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbhAEQdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:33:10 -0500
-Received: from mail1.ugh.no ([178.79.162.34]:58008 "EHLO mail1.ugh.no"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728752AbhAEQdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:33:10 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail1.ugh.no (Postfix) with ESMTP id EB58D253956;
-        Tue,  5 Jan 2021 17:32:28 +0100 (CET)
-Received: from mail1.ugh.no ([127.0.0.1])
-        by localhost (catastrophix.ugh.no [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id pfSrOnDksqq7; Tue,  5 Jan 2021 17:32:28 +0100 (CET)
-Received: from [IPv6:2a0a:2780:4d57:40:54fd:5612:86a2:2c2f] (unknown [IPv6:2a0a:2780:4d57:40:54fd:5612:86a2:2c2f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: andre@tomt.net)
-        by mail.ugh.no (Postfix) with ESMTPSA id 439CA253954;
-        Tue,  5 Jan 2021 17:32:28 +0100 (CET)
-Subject: Re: [PATCH 5.10 637/717] drm/amd/display: Fix memory leaks in S3
- resume
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Stylon Wang <stylon.wang@amd.com>
-References: <20201228125020.963311703@linuxfoundation.org>
- <20201228125051.444911072@linuxfoundation.org>
- <e5d9703f-42a4-f154-cf13-55a3eba10859@tomt.net> <X/QNCtpIiU5qzRp+@kroah.com>
-From:   Andre Tomt <andre@tomt.net>
-Message-ID: <8db47895-e7e4-ed9a-e996-c071b5c6f750@tomt.net>
-Date:   Tue, 5 Jan 2021 17:32:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <X/QNCtpIiU5qzRp+@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728501AbhAEQeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:34:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728069AbhAEQeC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:34:02 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E95EC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 08:33:22 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id 18so24383178pgp.22
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 08:33:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=h9nooU4y2umqpQHwzDyh6ncEi4+PL0Yb57ks4DCKnsU=;
+        b=GssujOQ9Z0hclY8CppqmEJhGfGszyJErCY21B9LWvzcDK5iIJTK1V5QjXi9rr/OhD3
+         EnsI0ZRueg2+dVJfNt6t+y00rDyRc/QqwIzPBVzvNtBwPtXzagft6e2fCga8i6zqqw1s
+         Lr2Q4zzxVIg41pSitUhWDx0DNOpMl3rSlBQaZkaKqkJGNootxf+1yyE8ypKHrVee1ij8
+         KLmIQCZd1XjViaCuz3/mRP3p9kT9s5t75tnBB0y1X/k3yjuouL9g+8tYzL8gKwapGLAM
+         oj77x9PQ/RFdf4NVsBKuaxv/zB6z9DWUDWUi3xkPHZyLlsBYKPhc9uz8HQQRw6ukV75a
+         VfFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=h9nooU4y2umqpQHwzDyh6ncEi4+PL0Yb57ks4DCKnsU=;
+        b=I4MPhOeFOE81YQwNTWh89kYUVEBa7D2cghDhFheMHdVMvQDzw4JBuRrGc18zBEXTLb
+         ZfdHqJqOMhIZiyrTQVTZLq88Sbk6dnhO1Yz9Gyz5IWFkCd64l2AWxcFU/7gJGXGvXFXW
+         4OOCcgO0MMZc/Lb4jTxVwdsCiw4ffXdzA6POZGm8fIqk6qFVEy0qN2R5fGjLMG1W/JFk
+         ptvVchynmwGtFQsPkVycw9Os8HGAYyrm7je8qXuGjq5pyWpzsFu8eaalmHcKJuESvTZh
+         tw2PLSQELNMUYVVIqH0uIMmVzmArl5Q4eVO2//ptxC6kRVnVHT3N515Frygz7wXAyquO
+         8rJw==
+X-Gm-Message-State: AOAM533O0sJkkArggxiWjWpeHKXMR+quprhvEgTO+8L3a3Ih994U6Ngm
+        Br7q34cYHeJ8Z7krLChbd2aTj8obY30=
+X-Google-Smtp-Source: ABdhPJx1mqidWB/2LzAPZKJX1xbAhEcbTHzl844I/iYke7s84yPyG4YpLnSMuevQvuG8DoSV1OBnBM+Htlk=
+Sender: "pgonda via sendgmr" <pgonda@pgonda1.kir.corp.google.com>
+X-Received: from pgonda1.kir.corp.google.com ([2620:0:1008:11:f693:9fff:fef4:e3a2])
+ (user=pgonda job=sendgmr) by 2002:a17:902:8bc8:b029:dc:36d4:fba8 with SMTP id
+ r8-20020a1709028bc8b02900dc36d4fba8mr445842plo.82.1609864401667; Tue, 05 Jan
+ 2021 08:33:21 -0800 (PST)
+Date:   Tue,  5 Jan 2021 08:33:11 -0800
+Message-Id: <20210105163311.221490-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH V2] x86/sev-es: Fix SEV-ES OUT/IN immediate opcode vc handling
+From:   Peter Gonda <pgonda@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Peter Gonda <pgonda@google.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        David Rientjes <rientjes@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.01.2021 07:54, Greg Kroah-Hartman wrote:
-> On Mon, Jan 04, 2021 at 08:04:08PM +0100, Andre Tomt wrote:
->> On 28.12.2020 13:50, Greg Kroah-Hartman wrote:
->>> From: Stylon Wang <stylon.wang@amd.com>
->>>
->>> commit a135a1b4c4db1f3b8cbed9676a40ede39feb3362 upstream.
->>>
->>> EDID parsing in S3 resume pushes new display modes
->>> to probed_modes list but doesn't consolidate to actual
->>> mode list. This creates a race condition when
->>> amdgpu_dm_connector_ddc_get_modes() re-initializes the
->>> list head without walking the list and results in  memory leak.
->>
->> This commit is causing me problems on 5.10.4: when I turn off the display (a
->> LG TV in this case), and turn it back on again later there is no video
->> output and I get the following in the kernel log:
->>
->> [ 8245.259628] [drm:dm_restore_drm_connector_state [amdgpu]] *ERROR*
->> Restoring old state failed with -12
->>
->> I've found another report on this commit as well:
->> https://bugzilla.kernel.org/show_bug.cgi?id=211033
->>
->> And I suspect this is the same:
->> https://bugs.archlinux.org/task/69202
->>
->> Reverting it from 5.10.4 makes things behave again.
->>
->> Have not tested 5.4.86 or 5.11-rc.
->>
->> I'm using a RX570 Polaris based card.
-> 
-> Can you test 5.11-rc to see if this issue is there as well?
 
-Just did, and have the same issue on 5.11-rc2. Reverting it also solves 
-the problem on 5.11-rc2, as it does on 5.10.4
+The IN and OUT immediate instructions only use an 8-bit immediate. The
+current VC handler uses the entire 32-bit immediate value. These
+instructions only set the first bytes.
 
-FWIW one easy way to reproduce seems to be unplugging and re-plugging 
-the HDMI.
+Tested with a loop back port with "outb %0,$0xe0". Before the port seen
+by KVM was 0xffffffffffffffe0 instead of 0xe0. After the correct port
+was seen by KVM and the guests loop back OUT then IN were equal.
+
+
+Fixes: 25189d08e5168 ("x86/sev-es: Add support for handling IOIO exceptions")
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+
+
+---
+ arch/x86/kernel/sev-es-shared.c | 8 ++++++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
+index 7d04b356d44d..6c790377c55c 100644
+--- a/arch/x86/kernel/sev-es-shared.c
++++ b/arch/x86/kernel/sev-es-shared.c
+@@ -305,14 +305,14 @@ static enum es_result vc_ioio_exitinfo(struct es_em_ctxt *ctxt, u64 *exitinfo)
+ 	case 0xe4:
+ 	case 0xe5:
+ 		*exitinfo |= IOIO_TYPE_IN;
+-		*exitinfo |= (u64)insn->immediate.value << 16;
++		*exitinfo |= (u8)insn->immediate.value << 16;
+ 		break;
+ 
+ 	/* OUT immediate opcodes */
+ 	case 0xe6:
+ 	case 0xe7:
+ 		*exitinfo |= IOIO_TYPE_OUT;
+-		*exitinfo |= (u64)insn->immediate.value << 16;
++		*exitinfo |= (u8)insn->immediate.value << 16;
+ 		break;
