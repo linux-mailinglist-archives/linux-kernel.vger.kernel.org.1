@@ -2,100 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E462EA198
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3962EA19B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbhAEAsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 19:48:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
+        id S1727164AbhAEAsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 19:48:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbhAEAsK (ORCPT
+        with ESMTP id S1726329AbhAEAsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:48:10 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF00C061795
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:47:30 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id j1so15466437pld.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:47:30 -0800 (PST)
+        Mon, 4 Jan 2021 19:48:39 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96CBC06179A
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:47:41 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id o11so27856724ote.4
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:47:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=hlRh4oR4QpLbEXotkI1bQimJOvMdeHexVCVFkFuCov0=;
-        b=ZMoH+a2ePM+uJsxc+YHEYLkWcEvr4qyDvp5ohbqQyYbYXXynBDpPY82/Px5C/Dw2wb
-         xYqbaibeqzwww9zQ/+O7PmNK0RAqEfsd9pnR/BGI2ZJfVfPDOz/NksKp0A9f2LMm9w8y
-         Hqc9Z01kAVMRFkhwD8tApswEHcq02b5hSf4VVtOtYk49NHvc4CUG/06KkMTIcVJEDOHs
-         XmGUydo1Qv1ATaKGJenVulX6tGT+qGlIs6/jab1HIlWtxoB6049FjkGTRw3EfcYknPn6
-         0MoOWptCqv0NusJjLOFGGduN7UU01Lk/LtxbNzQF6dd9uMDW92A+5OxJ9QxcuGQYR6ak
-         tQUQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2xG9WgPgtXl4muZ5pfGY83Ze5M/V/IXRnJ0myAHjR2Y=;
+        b=IuJPd0dAkxTO1lWK4TF9V8AFKVnyUB+ihER0PjRAMXfARI3aPpAQzWGfgOBEY6io6u
+         YxbCKcdrQ2g+xWRsWu9n40uE88TCcL92VESuO352htZsGo9AZTAaDIu5yV29L45OMCj+
+         sxRMvPXbsHPAYB3xQAZ3SBn+M77rLneFAkhwNjEj3f8i/eWstOK7oAZfeEQ3xH9fGe/P
+         aZ1fFxTckvQnCbtJ9FHM7MuN+F8QPX0tVbalX7GPYgIwDulOFYiP2myazVy9h/2fchkx
+         SIzwU+Bedf+8RTMon6xn1shsT02RCMPficHoHcW1JGeuZM/joj4wOmF1b3P2YIX7c1TX
+         jn7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=hlRh4oR4QpLbEXotkI1bQimJOvMdeHexVCVFkFuCov0=;
-        b=GL9wpRKzYiEYKJGurP70yhBd2rqgVxJ94ze0iVUTxn2JNgHAjG3wEu2EzDABI/qJG/
-         Iykz9ogctvNREKRKEx6AgKfIuBJi4BLfVcNDVuQLyQ+829jKtsCDH4Ratz3P4xsgBp5w
-         ohZKak/DXVdTHe+fTfSRC7P8D0pNyH6euNki0RMlpNIycxrxpEEp20oPg9HlG6JoFav5
-         SrBX2m8V/C0hPIRuzH/TcZA3Jg4zA6zHYotfJToQ97vkXjXwiMHHYeV3ONwjs4CCthIA
-         U10OAowBLj8xAn+UTg+VnIjSgD7KCIh+X0rGS7pFMVcMvz8Bjvi+oqXrz+OnGKtUzBtK
-         V/kQ==
-X-Gm-Message-State: AOAM533u+hkoKzN+ZXDpW+oy0YaAWqH/WDnrJKBbvjUJXgu1jDqFUH6q
-        IBkbW7WoPWARuL8Icj9Ryh4=
-X-Google-Smtp-Source: ABdhPJw9PEqwAhVUYHWm5Lr1VgNwOZcwQSPBYRTxhR3LPWVjFWZ1theobGWAhkG9EVtZ8+jSvO4jeA==
-X-Received: by 2002:a17:90a:49c5:: with SMTP id l5mr1475905pjm.116.1609807649994;
-        Mon, 04 Jan 2021 16:47:29 -0800 (PST)
-Received: from bj03382pcu.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id p21sm56310706pfn.15.2021.01.04.16.47.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 Jan 2021 16:47:29 -0800 (PST)
-From:   Huangzhaoyang <huangzhaoyang@gmail.com>
-To:     Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] fs: amend SLAB_RECLAIM_ACCOUNT on gfs2 related slab cache
-Date:   Tue,  5 Jan 2021 08:47:22 +0800
-Message-Id: <1609807642-31552-1-git-send-email-huangzhaoyang@gmail.com>
-X-Mailer: git-send-email 1.7.9.5
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2xG9WgPgtXl4muZ5pfGY83Ze5M/V/IXRnJ0myAHjR2Y=;
+        b=gwg1xtWaAaNu2iuSI5eu8EmU2Puy4HP8xWlFVYDZ0RvjwCYnucNuGUQJSForG9Jk9g
+         BsbROr1v7mSpwHAQoO75gEKiX4DtfT35wssO+QAa67HF7IAUBqLtsnPUHToR/Kj+bC5D
+         ACVxy1FtNO/HoRl6ZDPsn7poFyTarrtGa3hNzX5f8UfASOOyDL6c/qHbqfecRvP4BagE
+         CsDdZDlyxqxZ0KUXVGp4wKS4vVY89rSakIOIRQYpVkng3EEnyqMkxgVavC/67k1BuMnX
+         cP8gitMZEc0kUojqAclQmHR3a7ggFjqCxEmcX5wMlQMYwdEA1yXirX31U1P29Oylt/fs
+         nXwA==
+X-Gm-Message-State: AOAM530DJMwpiw6KOJxsDgPquKIUJxEjiAYbwIuVO2Omc2nS+jIDEg0x
+        9r49tB3IoD5yGr6tKUYo/ai4hQ==
+X-Google-Smtp-Source: ABdhPJzZu/6BfSE7VStHvZoEEidbg4VsNLX7l6fOQVUhzjQ/dXnioZdc1qnbY3WMFmzEx2CEKDZ7qQ==
+X-Received: by 2002:a05:6830:20d5:: with SMTP id z21mr53373201otq.310.1609807660949;
+        Mon, 04 Jan 2021 16:47:40 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u141sm13619181oie.46.2021.01.04.16.47.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 16:47:40 -0800 (PST)
+Date:   Mon, 4 Jan 2021 18:47:38 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 07/16] rpmsg: char: clean up rpmsg class
+Message-ID: <X/O3KkJrmVfGvFEF@builder.lan>
+References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+ <20201222105726.16906-8-arnaud.pouliquen@foss.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222105726.16906-8-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+On Tue 22 Dec 04:57 CST 2020, Arnaud Pouliquen wrote:
 
-As gfs2_quotad_cachep and gfs2_glock_cachep have registered
-the shrinker, amending SLAB_RECLAIM_ACCOUNT when creating
-them, which make the slab acount to be presiced.
+This patch doesn't "clean up" the class, as described in $subject. It
+just removes it.
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
-v2: add gfs2_glock_cachep for same operation
----
----
- fs/gfs2/main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Suppress the management of the rpmsg class as attribute. It is already
+> handled in /sys/bus rpmsg as specified in
+> documentation/ABI/testing/sysfs-bus-rpmsg.
 
-diff --git a/fs/gfs2/main.c b/fs/gfs2/main.c
-index 136484e..23144a7 100644
---- a/fs/gfs2/main.c
-+++ b/fs/gfs2/main.c
-@@ -100,7 +100,7 @@ static int __init init_gfs2_fs(void)
- 	error = -ENOMEM;
- 	gfs2_glock_cachep = kmem_cache_create("gfs2_glock",
- 					      sizeof(struct gfs2_glock),
--					      0, 0,
-+					      0, SLAB_RECLAIM_ACCOUNT,
- 					      gfs2_init_glock_once);
- 	if (!gfs2_glock_cachep)
- 		goto fail_cachep1;
-@@ -136,7 +136,7 @@ static int __init init_gfs2_fs(void)
- 
- 	gfs2_quotad_cachep = kmem_cache_create("gfs2_quotad",
- 					       sizeof(struct gfs2_quota_data),
--					       0, 0, NULL);
-+					       0, SLAB_RECLAIM_ACCOUNT, NULL);
- 	if (!gfs2_quotad_cachep)
- 		goto fail_cachep6;
- 
--- 
-1.9.1
+Afaict it doesn't relate to /sys/bus/rpmsg, but rather what attributes
+should be associated with the rpmsg_device (and thereby present in its
+sysfs directory). But if these attributes are also added by the bus,
+then why do we have this code? If that's the case this seems like a nice
+cleanup that we should do outside/before merging the other patches.
 
+> This patch prepares the migration of the control device in rpmsg_ctrl.
+> 
+
+It would be useful if the commit message described how it prepares for
+the migration and why.
+
+Regards,
+Bjorn
+
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 48 --------------------------------------
+>  1 file changed, 48 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 4bbbacdbf3bb..732f5caf068a 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -27,7 +27,6 @@
+>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+>  
+>  static dev_t rpmsg_major;
+> -static struct class *rpmsg_class;
+>  
+>  static DEFINE_IDA(rpmsg_ctrl_ida);
+>  static DEFINE_IDA(rpmsg_ept_ida);
+> @@ -291,41 +290,6 @@ static const struct file_operations rpmsg_eptdev_fops = {
+>  	.compat_ioctl = compat_ptr_ioctl,
+>  };
+>  
+> -static ssize_t name_show(struct device *dev, struct device_attribute *attr,
+> -			 char *buf)
+> -{
+> -	struct rpmsg_eptdev *eptdev = dev_get_drvdata(dev);
+> -
+> -	return sprintf(buf, "%s\n", eptdev->chinfo.name);
+> -}
+> -static DEVICE_ATTR_RO(name);
+> -
+> -static ssize_t src_show(struct device *dev, struct device_attribute *attr,
+> -			 char *buf)
+> -{
+> -	struct rpmsg_eptdev *eptdev = dev_get_drvdata(dev);
+> -
+> -	return sprintf(buf, "%d\n", eptdev->chinfo.src);
+> -}
+> -static DEVICE_ATTR_RO(src);
+> -
+> -static ssize_t dst_show(struct device *dev, struct device_attribute *attr,
+> -			 char *buf)
+> -{
+> -	struct rpmsg_eptdev *eptdev = dev_get_drvdata(dev);
+> -
+> -	return sprintf(buf, "%d\n", eptdev->chinfo.dst);
+> -}
+> -static DEVICE_ATTR_RO(dst);
+> -
+> -static struct attribute *rpmsg_eptdev_attrs[] = {
+> -	&dev_attr_name.attr,
+> -	&dev_attr_src.attr,
+> -	&dev_attr_dst.attr,
+> -	NULL
+> -};
+> -ATTRIBUTE_GROUPS(rpmsg_eptdev);
+> -
+>  static void rpmsg_eptdev_release_device(struct device *dev)
+>  {
+>  	struct rpmsg_eptdev *eptdev = dev_to_eptdev(dev);
+> @@ -358,9 +322,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+>  	init_waitqueue_head(&eptdev->readq);
+>  
+>  	device_initialize(dev);
+> -	dev->class = rpmsg_class;
+>  	dev->parent = &ctrldev->dev;
+> -	dev->groups = rpmsg_eptdev_groups;
+>  	dev_set_drvdata(dev, eptdev);
+>  
+>  	cdev_init(&eptdev->cdev, &rpmsg_eptdev_fops);
+> @@ -477,7 +439,6 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+>  	dev = &ctrldev->dev;
+>  	device_initialize(dev);
+>  	dev->parent = &rpdev->dev;
+> -	dev->class = rpmsg_class;
+>  
+>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
+>  	ctrldev->cdev.owner = THIS_MODULE;
+> @@ -553,17 +514,9 @@ static int rpmsg_char_init(void)
+>  		return ret;
+>  	}
+>  
+> -	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
+> -	if (IS_ERR(rpmsg_class)) {
+> -		pr_err("failed to create rpmsg class\n");
+> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> -		return PTR_ERR(rpmsg_class);
+> -	}
+> -
+>  	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
+>  	if (ret < 0) {
+>  		pr_err("rpmsgchr: failed to register rpmsg driver\n");
+> -		class_destroy(rpmsg_class);
+>  		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>  	}
+>  
+> @@ -574,7 +527,6 @@ postcore_initcall(rpmsg_char_init);
+>  static void rpmsg_chrdev_exit(void)
+>  {
+>  	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
+> -	class_destroy(rpmsg_class);
+>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>  }
+>  module_exit(rpmsg_chrdev_exit);
+> -- 
+> 2.17.1
+> 
